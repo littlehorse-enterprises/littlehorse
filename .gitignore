@@ -1,0 +1,26 @@
+# Ignore binary and build stuff
+.gradle
+app/build
+app/bin/
+
+
+# FOR THE TEST HARNESS:
+# For now, we don't want to check in alembic versions because it will
+# just be very noisy (as the debug cycle wipes away and replaces it).
+# Once we finalize the test harness a bit, and/or start running it on
+# the cloud, we may want to check that in and edit the debug_cycle.sh
+# a bit.
+cloud-test/alembic/versions/*.py
+
+
+# Emacs-related stuff
+*\#
+*~
+
+# Python cache stuff
+*__pycache__*
+
+# Don't pollute stuff with `lhctl compile`.
+*requirements.txt*
+*pre-install.sh*
+*pre-launch.sh*
