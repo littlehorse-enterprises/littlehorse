@@ -41,16 +41,10 @@ public interface TaskCompletedEventPbOrBuilder extends
   com.google.protobuf.TimestampOrBuilder getTimeOrBuilder();
 
   /**
-   * <code>string worker_id = 5;</code>
-   * @return The workerId.
+   * <code>bool success = 5;</code>
+   * @return The success.
    */
-  java.lang.String getWorkerId();
-  /**
-   * <code>string worker_id = 5;</code>
-   * @return The bytes for workerId.
-   */
-  com.google.protobuf.ByteString
-      getWorkerIdBytes();
+  boolean getSuccess();
 
   /**
    * <code>bytes output = 6;</code>
@@ -73,10 +67,4 @@ public interface TaskCompletedEventPbOrBuilder extends
    * @return The logOutput.
    */
   com.google.protobuf.ByteString getLogOutput();
-
-  /**
-   * <code>bool success = 8;</code>
-   * @return The success.
-   */
-  boolean getSuccess();
 }

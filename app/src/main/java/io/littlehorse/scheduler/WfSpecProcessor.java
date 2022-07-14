@@ -2,7 +2,6 @@ package io.littlehorse.scheduler;
 
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.state.KeyValueStore;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.processor.api.Processor;
 import io.littlehorse.common.LHConstants;
@@ -25,12 +24,7 @@ public class WfSpecProcessor implements Processor<String, WfSpec, Void, Void> {
         if (val == null) {
             specStore.delete(k);
         } else {
-            ObjectMapper m = new ObjectMapper();
-            try {
-                System.out.println(m.writeValueAsString(val));
-            } catch(Exception exn) {
-                exn.printStackTrace();
-            }
+            System.out.println("Saved wfspec");
             specStore.put(k, val);
         }
     }

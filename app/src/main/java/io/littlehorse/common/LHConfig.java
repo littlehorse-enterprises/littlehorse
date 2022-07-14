@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.CreateTopicsResult;
@@ -148,10 +149,17 @@ public class LHConfig {
             org.apache.kafka.streams.errors.DefaultProductionExceptionHandler.class
         );
         props.put(StreamsConfig.TOPOLOGY_OPTIMIZATION_CONFIG, "all");
+        props.put(
+            StreamsConfig.NUM_STREAM_THREADS_CONFIG,
+            Integer.valueOf(
+                getOrSetDefault(LHConstants.NUM_STREAM_THREADS_KEY, "1")
+            )
+        );
         return props;
     }
 
-    public void createKafkaTopic(NewTopic topic) {
+    public void createKafkaTopic(NewTopic topic)
+    throws InterruptedException, ExecutionException {
         CreateTopicsResult result = kafkaAdmin.createTopics(
             Collections.singleton(topic)
         );
@@ -162,7 +170,7 @@ public class LHConfig {
             if (e.getCause() != null && e.getCause() instanceof TopicExistsException) {
                 System.out.println("Topic " + topic.name() + " already exists.");
             } else {
-                e.printStackTrace();
+                throw e;
             }
         }
     }

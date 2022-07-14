@@ -15,15 +15,15 @@ public final class LhProto {
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_lh_proto_TaskRunPb_descriptor;
+    internal_static_lh_proto_NodeRunStatePb_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_lh_proto_TaskRunPb_fieldAccessorTable;
+      internal_static_lh_proto_NodeRunStatePb_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_lh_proto_ThreadRunPb_descriptor;
+    internal_static_lh_proto_ThreadRunStatePb_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_lh_proto_ThreadRunPb_fieldAccessorTable;
+      internal_static_lh_proto_ThreadRunStatePb_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_lh_proto_WFRunPb_descriptor;
   static final 
@@ -94,98 +94,88 @@ public final class LhProto {
   static {
     java.lang.String[] descriptorData = {
       "\n\016lh_proto.proto\022\010lh_proto\032\037google/proto" +
-      "buf/timestamp.proto\"\376\003\n\tTaskRunPb\022\021\n\twf_" +
-      "run_id\030\001 \001(\t\022\031\n\021thread_run_number\030\002 \001(\005\022" +
-      "\026\n\016order_position\030\003 \001(\005\022\016\n\006number\030\004 \001(\005\022" +
-      "\021\n\tnode_name\030\005 \001(\t\022\017\n\007node_id\030\006 \001(\t\022\023\n\013t" +
-      "ask_def_id\030\007 \001(\t\022\026\n\tworker_id\030\010 \001(\tH\000\210\001\001" +
-      "\022\026\n\016attempt_number\030\t \001(\005\022$\n\006status\030\n \001(\016" +
-      "2\024.lh_proto.LHStatusPb\022\023\n\006stdout\030\013 \001(\014H\001" +
-      "\210\001\001\022\023\n\006stderr\030\014 \001(\014H\002\210\001\001\022\030\n\013return_code\030" +
-      "\r \001(\005H\003\210\001\001\0222\n\016scheduled_time\030\016 \001(\0132\032.goo" +
-      "gle.protobuf.Timestamp\0220\n\014started_time\030\017" +
-      " \001(\0132\032.google.protobuf.Timestamp\022.\n\nende" +
-      "d_time\030\020 \001(\0132\032.google.protobuf.Timestamp" +
-      "B\014\n\n_worker_idB\t\n\007_stdoutB\t\n\007_stderrB\016\n\014" +
-      "_return_code\"\227\001\n\013ThreadRunPb\022\030\n\020thread_s" +
-      "pec_name\030\001 \001(\t\022-\n\020active_task_runs\030\002 \003(\013" +
-      "2\023.lh_proto.TaskRunPb\022$\n\006status\030\003 \001(\0162\024." +
-      "lh_proto.LHStatusPb\022\031\n\021thread_run_number" +
-      "\030\004 \001(\005\"\201\002\n\007WFRunPb\022\n\n\002id\030\001 \001(\t\022\022\n\nwf_spe" +
-      "c_id\030\002 \001(\t\022\024\n\014wf_spec_name\030\003 \001(\t\022.\n\nstar" +
-      "t_time\030\004 \001(\0132\032.google.protobuf.Timestamp" +
-      "\0221\n\010end_time\030\005 \001(\0132\032.google.protobuf.Tim" +
-      "estampH\000\210\001\001\022$\n\006status\030\006 \001(\0162\024.lh_proto.L" +
-      "HStatusPb\022*\n\013thread_runs\030\007 \003(\0132\025.lh_prot" +
-      "o.ThreadRunPbB\013\n\t_end_time\"7\n\016WFRunReque" +
-      "stPb\022\021\n\twf_run_id\030\001 \001(\t\022\022\n\nwf_spec_id\030\002 " +
-      "\001(\t\"\324\001\n\025TaskScheduleRequestPb\022\023\n\013task_de" +
-      "f_id\030\001 \001(\t\022\025\n\rtask_def_name\030\002 \001(\t\022\031\n\021thr" +
-      "ead_run_number\030\004 \001(\005\022\027\n\017task_run_number\030" +
-      "\005 \001(\005\022\031\n\021task_run_position\030\006 \001(\005\022\021\n\twf_r" +
-      "un_id\030\007 \001(\t\022\031\n\021reply_kafka_topic\030\010 \001(\t\022\022" +
-      "\n\nwf_spec_id\030\t \001(\t\"\215\001\n\022TaskStartedEventP" +
-      "b\022\031\n\021thread_run_number\030\001 \001(\005\022\027\n\017task_run" +
-      "_number\030\002 \001(\005\022\031\n\021task_run_position\030\003 \001(\005" +
-      "\022(\n\004time\030\004 \001(\0132\032.google.protobuf.Timesta" +
-      "mp\"\373\001\n\024TaskCompletedEventPb\022\031\n\021thread_ru" +
-      "n_number\030\001 \001(\005\022\027\n\017task_run_number\030\002 \001(\005\022" +
-      "\031\n\021task_run_position\030\003 \001(\005\022(\n\004time\030\004 \001(\013" +
-      "2\032.google.protobuf.Timestamp\022\021\n\tworker_i" +
-      "d\030\005 \001(\t\022\023\n\006output\030\006 \001(\014H\000\210\001\001\022\027\n\nlog_outp" +
-      "ut\030\007 \001(\014H\001\210\001\001\022\017\n\007success\030\010 \001(\010B\t\n\007_outpu" +
-      "tB\r\n\013_log_output\"\213\002\n\014WFRunEventPb\022\021\n\twf_" +
-      "run_id\030\001 \001(\t\022\022\n\nwf_spec_id\030\002 \001(\t\022(\n\004time" +
-      "\030\003 \001(\0132\032.google.protobuf.Timestamp\022/\n\013ru" +
-      "n_request\030\004 \001(\0132\030.lh_proto.WFRunRequestP" +
-      "bH\000\0225\n\rstarted_event\030\005 \001(\0132\034.lh_proto.Ta" +
-      "skStartedEventPbH\000\0229\n\017completed_event\030\006 " +
-      "\001(\0132\036.lh_proto.TaskCompletedEventPbH\000B\007\n" +
-      "\005event\":\n\006EdgePb\022\030\n\020source_node_name\030\001 \001" +
-      "(\t\022\026\n\016sink_node_name\030\002 \001(\t\"C\n\006NodePb\022\025\n\r" +
-      "task_def_name\030\001 \001(\t\022\"\n\004type\030\002 \001(\0162\024.lh_p" +
-      "roto.NodeTypePb\"\241\001\n\014ThreadSpecPb\022\037\n\005edge" +
-      "s\030\001 \003(\0132\020.lh_proto.EdgePb\0220\n\005nodes\030\002 \003(\013" +
-      "2!.lh_proto.ThreadSpecPb.NodesEntry\032>\n\nN" +
-      "odesEntry\022\013\n\003key\030\001 \001(\t\022\037\n\005value\030\002 \001(\0132\020." +
-      "lh_proto.NodePb:\0028\001\"\303\002\n\010WFSpecPb\022\n\n\002id\030\001" +
-      " \001(\t\022.\n\ncreated_at\030\002 \001(\0132\032.google.protob" +
-      "uf.Timestamp\022.\n\nupdated_at\030\003 \001(\0132\032.googl" +
-      "e.protobuf.Timestamp\0229\n\014thread_specs\030\004 \003" +
-      "(\0132#.lh_proto.WFSpecPb.ThreadSpecsEntry\022" +
-      "\036\n\026entrypoint_thread_name\030\005 \001(\t\022$\n\006statu" +
-      "s\030\006 \001(\0162\024.lh_proto.LHStatusPb\032J\n\020ThreadS" +
-      "pecsEntry\022\013\n\003key\030\001 \001(\t\022%\n\005value\030\002 \001(\0132\026." +
-      "lh_proto.ThreadSpecPb:\0028\001*Z\n\nLHStatusPb\022" +
-      "\014\n\010STARTING\020\000\022\013\n\007RUNNING\020\001\022\r\n\tCOMPLETED\020" +
-      "\002\022\013\n\007HALTING\020\003\022\n\n\006HALTED\020\004\022\t\n\005ERROR\020\005*0\n" +
-      "\nNodeTypePb\022\010\n\004TASK\020\000\022\016\n\nENTRYPOINT\020\001\022\010\n" +
-      "\004EXIT\020\002B(\n\033io.littlehorse.common.protoP\001" +
-      "Z\007.;modelb\006proto3"
+      "buf/timestamp.proto\"\203\001\n\016NodeRunStatePb\022\021" +
+      "\n\tnode_name\030\001 \001(\t\022\026\n\016attempt_number\030\002 \001(" +
+      "\005\022\020\n\010position\030\003 \001(\005\022\016\n\006number\030\004 \001(\005\022$\n\006s" +
+      "tatus\030\005 \001(\0162\024.lh_proto.LHStatusPb\"\240\001\n\020Th" +
+      "readRunStatePb\022\030\n\020thread_spec_name\030\001 \001(\t" +
+      "\022$\n\006status\030\002 \001(\0162\024.lh_proto.LHStatusPb\0227" +
+      "\n\020current_node_run\030\003 \001(\0132\030.lh_proto.Node" +
+      "RunStatePbH\000\210\001\001B\023\n\021_current_node_run\"\360\001\n" +
+      "\007WFRunPb\022\n\n\002id\030\001 \001(\t\022\022\n\nwf_spec_id\030\002 \001(\t" +
+      "\022$\n\006status\030\006 \001(\0162\024.lh_proto.LHStatusPb\022/" +
+      "\n\013thread_runs\030\007 \003(\0132\032.lh_proto.ThreadRun" +
+      "StatePb\022.\n\nstart_time\030\010 \001(\0132\032.google.pro" +
+      "tobuf.Timestamp\0221\n\010end_time\030\t \001(\0132\032.goog" +
+      "le.protobuf.TimestampH\000\210\001\001B\013\n\t_end_time\"" +
+      "7\n\016WFRunRequestPb\022\021\n\twf_run_id\030\001 \001(\t\022\022\n\n" +
+      "wf_spec_id\030\002 \001(\t\"\324\001\n\025TaskScheduleRequest" +
+      "Pb\022\023\n\013task_def_id\030\001 \001(\t\022\025\n\rtask_def_name" +
+      "\030\002 \001(\t\022\031\n\021thread_run_number\030\004 \001(\005\022\027\n\017tas" +
+      "k_run_number\030\005 \001(\005\022\031\n\021task_run_position\030" +
+      "\006 \001(\005\022\021\n\twf_run_id\030\007 \001(\t\022\031\n\021reply_kafka_" +
+      "topic\030\010 \001(\t\022\022\n\nwf_spec_id\030\t \001(\t\"\215\001\n\022Task" +
+      "StartedEventPb\022\031\n\021thread_run_number\030\001 \001(" +
+      "\005\022\027\n\017task_run_number\030\002 \001(\005\022\031\n\021task_run_p" +
+      "osition\030\003 \001(\005\022(\n\004time\030\004 \001(\0132\032.google.pro" +
+      "tobuf.Timestamp\"\350\001\n\024TaskCompletedEventPb" +
+      "\022\031\n\021thread_run_number\030\001 \001(\005\022\027\n\017task_run_" +
+      "number\030\002 \001(\005\022\031\n\021task_run_position\030\003 \001(\005\022" +
+      "(\n\004time\030\004 \001(\0132\032.google.protobuf.Timestam" +
+      "p\022\017\n\007success\030\005 \001(\010\022\023\n\006output\030\006 \001(\014H\000\210\001\001\022" +
+      "\027\n\nlog_output\030\007 \001(\014H\001\210\001\001B\t\n\007_outputB\r\n\013_" +
+      "log_output\"\213\002\n\014WFRunEventPb\022\021\n\twf_run_id" +
+      "\030\001 \001(\t\022\022\n\nwf_spec_id\030\002 \001(\t\022(\n\004time\030\003 \001(\013" +
+      "2\032.google.protobuf.Timestamp\022/\n\013run_requ" +
+      "est\030\004 \001(\0132\030.lh_proto.WFRunRequestPbH\000\0225\n" +
+      "\rstarted_event\030\005 \001(\0132\034.lh_proto.TaskStar" +
+      "tedEventPbH\000\0229\n\017completed_event\030\006 \001(\0132\036." +
+      "lh_proto.TaskCompletedEventPbH\000B\007\n\005event" +
+      "\":\n\006EdgePb\022\030\n\020source_node_name\030\001 \001(\t\022\026\n\016" +
+      "sink_node_name\030\002 \001(\t\"C\n\006NodePb\022\025\n\rtask_d" +
+      "ef_name\030\001 \001(\t\022\"\n\004type\030\002 \001(\0162\024.lh_proto.N" +
+      "odeTypePb\"\241\001\n\014ThreadSpecPb\022\037\n\005edges\030\001 \003(" +
+      "\0132\020.lh_proto.EdgePb\0220\n\005nodes\030\002 \003(\0132!.lh_" +
+      "proto.ThreadSpecPb.NodesEntry\032>\n\nNodesEn" +
+      "try\022\013\n\003key\030\001 \001(\t\022\037\n\005value\030\002 \001(\0132\020.lh_pro" +
+      "to.NodePb:\0028\001\"\321\002\n\010WFSpecPb\022\n\n\002id\030\001 \001(\t\022." +
+      "\n\ncreated_at\030\002 \001(\0132\032.google.protobuf.Tim" +
+      "estamp\022.\n\nupdated_at\030\003 \001(\0132\032.google.prot" +
+      "obuf.Timestamp\0229\n\014thread_specs\030\004 \003(\0132#.l" +
+      "h_proto.WFSpecPb.ThreadSpecsEntry\022\036\n\026ent" +
+      "rypoint_thread_name\030\005 \001(\t\022$\n\006status\030\006 \001(" +
+      "\0162\024.lh_proto.LHStatusPb\022\014\n\004name\030\007 \001(\t\032J\n" +
+      "\020ThreadSpecsEntry\022\013\n\003key\030\001 \001(\t\022%\n\005value\030" +
+      "\002 \001(\0132\026.lh_proto.ThreadSpecPb:\0028\001*Z\n\nLHS" +
+      "tatusPb\022\014\n\010STARTING\020\000\022\013\n\007RUNNING\020\001\022\r\n\tCO" +
+      "MPLETED\020\002\022\013\n\007HALTING\020\003\022\n\n\006HALTED\020\004\022\t\n\005ER" +
+      "ROR\020\005*0\n\nNodeTypePb\022\010\n\004TASK\020\000\022\016\n\nENTRYPO" +
+      "INT\020\001\022\010\n\004EXIT\020\002B(\n\033io.littlehorse.common" +
+      ".protoP\001Z\007.;modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.google.protobuf.TimestampProto.getDescriptor(),
         });
-    internal_static_lh_proto_TaskRunPb_descriptor =
+    internal_static_lh_proto_NodeRunStatePb_descriptor =
       getDescriptor().getMessageTypes().get(0);
-    internal_static_lh_proto_TaskRunPb_fieldAccessorTable = new
+    internal_static_lh_proto_NodeRunStatePb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_lh_proto_TaskRunPb_descriptor,
-        new java.lang.String[] { "WfRunId", "ThreadRunNumber", "OrderPosition", "Number", "NodeName", "NodeId", "TaskDefId", "WorkerId", "AttemptNumber", "Status", "Stdout", "Stderr", "ReturnCode", "ScheduledTime", "StartedTime", "EndedTime", "WorkerId", "Stdout", "Stderr", "ReturnCode", });
-    internal_static_lh_proto_ThreadRunPb_descriptor =
+        internal_static_lh_proto_NodeRunStatePb_descriptor,
+        new java.lang.String[] { "NodeName", "AttemptNumber", "Position", "Number", "Status", });
+    internal_static_lh_proto_ThreadRunStatePb_descriptor =
       getDescriptor().getMessageTypes().get(1);
-    internal_static_lh_proto_ThreadRunPb_fieldAccessorTable = new
+    internal_static_lh_proto_ThreadRunStatePb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_lh_proto_ThreadRunPb_descriptor,
-        new java.lang.String[] { "ThreadSpecName", "ActiveTaskRuns", "Status", "ThreadRunNumber", });
+        internal_static_lh_proto_ThreadRunStatePb_descriptor,
+        new java.lang.String[] { "ThreadSpecName", "Status", "CurrentNodeRun", "CurrentNodeRun", });
     internal_static_lh_proto_WFRunPb_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_lh_proto_WFRunPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_WFRunPb_descriptor,
-        new java.lang.String[] { "Id", "WfSpecId", "WfSpecName", "StartTime", "EndTime", "Status", "ThreadRuns", "EndTime", });
+        new java.lang.String[] { "Id", "WfSpecId", "Status", "ThreadRuns", "StartTime", "EndTime", "EndTime", });
     internal_static_lh_proto_WFRunRequestPb_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_lh_proto_WFRunRequestPb_fieldAccessorTable = new
@@ -209,7 +199,7 @@ public final class LhProto {
     internal_static_lh_proto_TaskCompletedEventPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_TaskCompletedEventPb_descriptor,
-        new java.lang.String[] { "ThreadRunNumber", "TaskRunNumber", "TaskRunPosition", "Time", "WorkerId", "Output", "LogOutput", "Success", "Output", "LogOutput", });
+        new java.lang.String[] { "ThreadRunNumber", "TaskRunNumber", "TaskRunPosition", "Time", "Success", "Output", "LogOutput", "Output", "LogOutput", });
     internal_static_lh_proto_WFRunEventPb_descriptor =
       getDescriptor().getMessageTypes().get(7);
     internal_static_lh_proto_WFRunEventPb_fieldAccessorTable = new
@@ -245,7 +235,7 @@ public final class LhProto {
     internal_static_lh_proto_WFSpecPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_WFSpecPb_descriptor,
-        new java.lang.String[] { "Id", "CreatedAt", "UpdatedAt", "ThreadSpecs", "EntrypointThreadName", "Status", });
+        new java.lang.String[] { "Id", "CreatedAt", "UpdatedAt", "ThreadSpecs", "EntrypointThreadName", "Status", "Name", });
     internal_static_lh_proto_WFSpecPb_ThreadSpecsEntry_descriptor =
       internal_static_lh_proto_WFSpecPb_descriptor.getNestedTypes().get(0);
     internal_static_lh_proto_WFSpecPb_ThreadSpecsEntry_fieldAccessorTable = new

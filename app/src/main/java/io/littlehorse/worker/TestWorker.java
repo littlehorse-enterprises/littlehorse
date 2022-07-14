@@ -1,19 +1,16 @@
 package io.littlehorse.worker;
 
 import java.time.Duration;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.regex.Pattern;
-import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.event.TaskCompletedEvent;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.TaskStartedEvent;
@@ -35,7 +32,14 @@ public class TestWorker {
             TaskScheduleRequestDeserializer.class
         );
         this.prod = config.getKafkaProducer(WFRunEventSerializer.class);
-        this.cons.subscribe(Pattern.compile("task*"));
+        // this.cons.subscribe(Arrays.asList(
+        //     "task1", "task2", "task3", "task4", "task5", "task6", "task7",
+        //     "task8", "task9", "task10"
+        // ));
+        // this.cons.subscribe(Arrays.asList("task1"));
+        this.cons.subscribe(Arrays.asList(
+            System.getenv().getOrDefault("LHORSE_TASK_DEF_ID", "task1")
+        ));
         this.threadPool = Executors.newFixedThreadPool(32);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -54,7 +58,7 @@ public class TestWorker {
     }
 
     private void processRequest(ConsumerRecord<String, TaskScheduleRequest> r) {
-        System.out.println("Processing for " + r.key() + " part " + r.hashCode());
+        System.out.println("Processing for " + r.key() + " part " + r.partition());
         TaskScheduleRequest tsr = r.value();
 
         TaskStartedEvent se = new TaskStartedEvent();

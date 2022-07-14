@@ -16,7 +16,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private TaskCompletedEventPb() {
-    workerId_ = "";
     output_ = com.google.protobuf.ByteString.EMPTY;
     logOutput_ = com.google.protobuf.ByteString.EMPTY;
   }
@@ -80,10 +79,9 @@ private static final long serialVersionUID = 0L;
 
             break;
           }
-          case 42: {
-            java.lang.String s = input.readStringRequireUtf8();
+          case 40: {
 
-            workerId_ = s;
+            success_ = input.readBool();
             break;
           }
           case 50: {
@@ -94,11 +92,6 @@ private static final long serialVersionUID = 0L;
           case 58: {
             bitField0_ |= 0x00000002;
             logOutput_ = input.readBytes();
-            break;
-          }
-          case 64: {
-
-            success_ = input.readBool();
             break;
           }
           default: {
@@ -193,42 +186,15 @@ private static final long serialVersionUID = 0L;
     return getTime();
   }
 
-  public static final int WORKER_ID_FIELD_NUMBER = 5;
-  private volatile java.lang.Object workerId_;
+  public static final int SUCCESS_FIELD_NUMBER = 5;
+  private boolean success_;
   /**
-   * <code>string worker_id = 5;</code>
-   * @return The workerId.
+   * <code>bool success = 5;</code>
+   * @return The success.
    */
   @java.lang.Override
-  public java.lang.String getWorkerId() {
-    java.lang.Object ref = workerId_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      workerId_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string worker_id = 5;</code>
-   * @return The bytes for workerId.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getWorkerIdBytes() {
-    java.lang.Object ref = workerId_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      workerId_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public boolean getSuccess() {
+    return success_;
   }
 
   public static final int OUTPUT_FIELD_NUMBER = 6;
@@ -269,17 +235,6 @@ private static final long serialVersionUID = 0L;
     return logOutput_;
   }
 
-  public static final int SUCCESS_FIELD_NUMBER = 8;
-  private boolean success_;
-  /**
-   * <code>bool success = 8;</code>
-   * @return The success.
-   */
-  @java.lang.Override
-  public boolean getSuccess() {
-    return success_;
-  }
-
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -306,17 +261,14 @@ private static final long serialVersionUID = 0L;
     if (time_ != null) {
       output.writeMessage(4, getTime());
     }
-    if (!getWorkerIdBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, workerId_);
+    if (success_ != false) {
+      output.writeBool(5, success_);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeBytes(6, output_);
     }
     if (((bitField0_ & 0x00000002) != 0)) {
       output.writeBytes(7, logOutput_);
-    }
-    if (success_ != false) {
-      output.writeBool(8, success_);
     }
     unknownFields.writeTo(output);
   }
@@ -343,8 +295,9 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, getTime());
     }
-    if (!getWorkerIdBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, workerId_);
+    if (success_ != false) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(5, success_);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
@@ -353,10 +306,6 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeBytesSize(7, logOutput_);
-    }
-    if (success_ != false) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBoolSize(8, success_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -384,8 +333,8 @@ private static final long serialVersionUID = 0L;
       if (!getTime()
           .equals(other.getTime())) return false;
     }
-    if (!getWorkerId()
-        .equals(other.getWorkerId())) return false;
+    if (getSuccess()
+        != other.getSuccess()) return false;
     if (hasOutput() != other.hasOutput()) return false;
     if (hasOutput()) {
       if (!getOutput()
@@ -396,8 +345,6 @@ private static final long serialVersionUID = 0L;
       if (!getLogOutput()
           .equals(other.getLogOutput())) return false;
     }
-    if (getSuccess()
-        != other.getSuccess()) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -419,8 +366,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + TIME_FIELD_NUMBER;
       hash = (53 * hash) + getTime().hashCode();
     }
-    hash = (37 * hash) + WORKER_ID_FIELD_NUMBER;
-    hash = (53 * hash) + getWorkerId().hashCode();
+    hash = (37 * hash) + SUCCESS_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+        getSuccess());
     if (hasOutput()) {
       hash = (37 * hash) + OUTPUT_FIELD_NUMBER;
       hash = (53 * hash) + getOutput().hashCode();
@@ -429,9 +377,6 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + LOG_OUTPUT_FIELD_NUMBER;
       hash = (53 * hash) + getLogOutput().hashCode();
     }
-    hash = (37 * hash) + SUCCESS_FIELD_NUMBER;
-    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-        getSuccess());
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -577,14 +522,12 @@ private static final long serialVersionUID = 0L;
         time_ = null;
         timeBuilder_ = null;
       }
-      workerId_ = "";
+      success_ = false;
 
       output_ = com.google.protobuf.ByteString.EMPTY;
       bitField0_ = (bitField0_ & ~0x00000001);
       logOutput_ = com.google.protobuf.ByteString.EMPTY;
       bitField0_ = (bitField0_ & ~0x00000002);
-      success_ = false;
-
       return this;
     }
 
@@ -621,7 +564,7 @@ private static final long serialVersionUID = 0L;
       } else {
         result.time_ = timeBuilder_.build();
       }
-      result.workerId_ = workerId_;
+      result.success_ = success_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         to_bitField0_ |= 0x00000001;
       }
@@ -630,7 +573,6 @@ private static final long serialVersionUID = 0L;
         to_bitField0_ |= 0x00000002;
       }
       result.logOutput_ = logOutput_;
-      result.success_ = success_;
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -692,18 +634,14 @@ private static final long serialVersionUID = 0L;
       if (other.hasTime()) {
         mergeTime(other.getTime());
       }
-      if (!other.getWorkerId().isEmpty()) {
-        workerId_ = other.workerId_;
-        onChanged();
+      if (other.getSuccess() != false) {
+        setSuccess(other.getSuccess());
       }
       if (other.hasOutput()) {
         setOutput(other.getOutput());
       }
       if (other.hasLogOutput()) {
         setLogOutput(other.getLogOutput());
-      }
-      if (other.getSuccess() != false) {
-        setSuccess(other.getSuccess());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -947,78 +885,33 @@ private static final long serialVersionUID = 0L;
       return timeBuilder_;
     }
 
-    private java.lang.Object workerId_ = "";
+    private boolean success_ ;
     /**
-     * <code>string worker_id = 5;</code>
-     * @return The workerId.
+     * <code>bool success = 5;</code>
+     * @return The success.
      */
-    public java.lang.String getWorkerId() {
-      java.lang.Object ref = workerId_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        workerId_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
+    @java.lang.Override
+    public boolean getSuccess() {
+      return success_;
     }
     /**
-     * <code>string worker_id = 5;</code>
-     * @return The bytes for workerId.
-     */
-    public com.google.protobuf.ByteString
-        getWorkerIdBytes() {
-      java.lang.Object ref = workerId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        workerId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string worker_id = 5;</code>
-     * @param value The workerId to set.
+     * <code>bool success = 5;</code>
+     * @param value The success to set.
      * @return This builder for chaining.
      */
-    public Builder setWorkerId(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      workerId_ = value;
+    public Builder setSuccess(boolean value) {
+      
+      success_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>string worker_id = 5;</code>
+     * <code>bool success = 5;</code>
      * @return This builder for chaining.
      */
-    public Builder clearWorkerId() {
+    public Builder clearSuccess() {
       
-      workerId_ = getDefaultInstance().getWorkerId();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string worker_id = 5;</code>
-     * @param value The bytes for workerId to set.
-     * @return This builder for chaining.
-     */
-    public Builder setWorkerIdBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      workerId_ = value;
+      success_ = false;
       onChanged();
       return this;
     }
@@ -1103,37 +996,6 @@ private static final long serialVersionUID = 0L;
     public Builder clearLogOutput() {
       bitField0_ = (bitField0_ & ~0x00000002);
       logOutput_ = getDefaultInstance().getLogOutput();
-      onChanged();
-      return this;
-    }
-
-    private boolean success_ ;
-    /**
-     * <code>bool success = 8;</code>
-     * @return The success.
-     */
-    @java.lang.Override
-    public boolean getSuccess() {
-      return success_;
-    }
-    /**
-     * <code>bool success = 8;</code>
-     * @param value The success to set.
-     * @return This builder for chaining.
-     */
-    public Builder setSuccess(boolean value) {
-      
-      success_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>bool success = 8;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearSuccess() {
-      
-      success_ = false;
       onChanged();
       return this;
     }

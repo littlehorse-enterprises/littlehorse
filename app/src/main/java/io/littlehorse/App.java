@@ -4,14 +4,26 @@
 package io.littlehorse;
 
 import java.util.ArrayList;
+import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 import org.apache.kafka.clients.admin.NewTopic;
+import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.StreamsBuilder;
+import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.Topology;
+import org.apache.kafka.streams.kstream.Consumed;
+import org.apache.kafka.streams.kstream.KStream;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.model.run.WfRun;
+import io.littlehorse.common.serde.WFRunSerde;
 import io.littlehorse.scheduler.Scheduler;
 import io.littlehorse.worker.TestWorker;
 
 public class App {
-    public static void doIdempotentSetup(LHConfig config) {
+    public static void doIdempotentSetup(LHConfig config)
+    throws InterruptedException, ExecutionException {
         System.out.println("Creating topics!!");
 
         ArrayList<NewTopic> topics = new ArrayList<>();
@@ -39,7 +51,8 @@ public class App {
         System.out.println("Done creating topics");
 
     }
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    throws InterruptedException, ExecutionException {
 
         if (args.length == 0) {
             System.out.println("Nothing to do.");
@@ -53,7 +66,35 @@ public class App {
                 TestWorker.doMain(config);
             } else if (arg.equals("scheduler")) {
                 Scheduler.doMain(config);
+            } else if (arg.equals("tester")) {
+                tester();
             }
         }
+    }
+
+    public static void tester() {
+        LHConfig config = new LHConfig();
+        Properties sconfig = config.getStreamsConfig();
+        sconfig.put(StreamsConfig.APPLICATION_ID_CONFIG, "tester");
+        StreamsBuilder builder = new StreamsBuilder();
+        String topic = "scheduler-wfrun-changelog";
+
+        KStream<String, WfRun> stream = builder.stream(
+            topic,
+            Consumed.with(Serdes.String(), new WFRunSerde())
+        );
+
+        stream.foreach((k, v) -> {
+            System.out.println("Key: " + k);
+            System.out.println("Value: " + v.toProtoBuilder().build().toString());
+        });
+
+        Topology topology = builder.build();
+        KafkaStreams streams = new KafkaStreams(topology, sconfig);
+        streams.start();
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            streams.close();
+        }));
+
     }
 }

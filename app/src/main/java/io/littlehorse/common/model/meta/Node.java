@@ -1,5 +1,8 @@
 package io.littlehorse.common.model.meta;
 
+import java.util.HashSet;
+import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.littlehorse.common.proto.NodePb;
 import io.littlehorse.common.proto.NodePbOrBuilder;
 import io.littlehorse.common.proto.NodeTypePb;
@@ -22,4 +25,16 @@ public class Node {
         n.type = proto.getType();
         return n;
     }
+
+    // Implementation details below
+
+    public Node() {
+        outgoingEdges = new HashSet<>();
+        incomingEdges = new HashSet<>();
+    }
+
+    @JsonIgnore public Set<Edge> outgoingEdges;
+    @JsonIgnore public Set<Edge> incomingEdges;
+    @JsonIgnore public String name;
+    @JsonIgnore public ThreadSpec threadSpec;
 }

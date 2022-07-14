@@ -16,27 +16,49 @@ enum LHStatusPb {
     ERROR = 5;
 }
 
-message NodeRunStatePb {
-    string node_name = 1;
-    int32 attempt_number = 2;
-    int32 position = 3;
+message TaskRunPb {
+    string wf_run_id = 1;
+    int32 thread_run_number = 2;
+    int32 order_position = 3;
     int32 number = 4;
-    LHStatusPb status = 5;
+
+    string node_name = 5;
+    string node_id = 6;
+
+    string task_def_id = 7;
+
+    optional string worker_id = 8;
+    int32 attempt_number = 9;
+
+    LHStatusPb status = 10;
+
+    optional bytes stdout = 11;
+    optional bytes stderr = 12;
+    optional int32 return_code = 13;
+
+    google.protobuf.Timestamp scheduled_time = 14;
+    google.protobuf.Timestamp started_time = 15;
+    google.protobuf.Timestamp ended_time = 16;
 }
 
-message ThreadRunStatePb {
+message ThreadRunPb {
     string thread_spec_name = 1;
-    LHStatusPb status = 2;
-    optional NodeRunStatePb current_node_run = 3;
+    repeated TaskRunPb active_task_runs = 2;
+    LHStatusPb status = 3;
+    int32 thread_run_number = 4;
 }
 
 message WFRunPb {
     string id = 1;
     string wf_spec_id = 2;
+    string wf_spec_name = 3;
+
+    google.protobuf.Timestamp start_time = 4;
+    optional google.protobuf.Timestamp end_time = 5;
+
     LHStatusPb status = 6;
-    repeated ThreadRunStatePb thread_runs = 7;
-    google.protobuf.Timestamp start_time = 8;
-    optional google.protobuf.Timestamp end_time = 9;
+
+    repeated ThreadRunPb thread_runs = 7;
 }
 
 message WFRunRequestPb {
@@ -67,10 +89,11 @@ message TaskCompletedEventPb {
     int32 task_run_number = 2;
     int32 task_run_position = 3;
     google.protobuf.Timestamp time = 4;
+    string worker_id = 5;
 
-    bool success = 5;
     optional bytes output = 6;
     optional bytes log_output = 7;
+    bool success = 8;
 }
 
 message WFRunEventPb {

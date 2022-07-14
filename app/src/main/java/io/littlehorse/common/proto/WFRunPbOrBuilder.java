@@ -32,48 +32,6 @@ public interface WFRunPbOrBuilder extends
       getWfSpecIdBytes();
 
   /**
-   * <code>string wf_spec_name = 3;</code>
-   * @return The wfSpecName.
-   */
-  java.lang.String getWfSpecName();
-  /**
-   * <code>string wf_spec_name = 3;</code>
-   * @return The bytes for wfSpecName.
-   */
-  com.google.protobuf.ByteString
-      getWfSpecNameBytes();
-
-  /**
-   * <code>.google.protobuf.Timestamp start_time = 4;</code>
-   * @return Whether the startTime field is set.
-   */
-  boolean hasStartTime();
-  /**
-   * <code>.google.protobuf.Timestamp start_time = 4;</code>
-   * @return The startTime.
-   */
-  com.google.protobuf.Timestamp getStartTime();
-  /**
-   * <code>.google.protobuf.Timestamp start_time = 4;</code>
-   */
-  com.google.protobuf.TimestampOrBuilder getStartTimeOrBuilder();
-
-  /**
-   * <code>.google.protobuf.Timestamp end_time = 5;</code>
-   * @return Whether the endTime field is set.
-   */
-  boolean hasEndTime();
-  /**
-   * <code>.google.protobuf.Timestamp end_time = 5;</code>
-   * @return The endTime.
-   */
-  com.google.protobuf.Timestamp getEndTime();
-  /**
-   * <code>.google.protobuf.Timestamp end_time = 5;</code>
-   */
-  com.google.protobuf.TimestampOrBuilder getEndTimeOrBuilder();
-
-  /**
    * <code>.lh_proto.LHStatusPb status = 6;</code>
    * @return The enum numeric value on the wire for status.
    */
@@ -85,26 +43,56 @@ public interface WFRunPbOrBuilder extends
   io.littlehorse.common.proto.LHStatusPb getStatus();
 
   /**
-   * <code>repeated .lh_proto.ThreadRunPb thread_runs = 7;</code>
+   * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
    */
-  java.util.List<io.littlehorse.common.proto.ThreadRunPb> 
+  java.util.List<io.littlehorse.common.proto.ThreadRunStatePb> 
       getThreadRunsList();
   /**
-   * <code>repeated .lh_proto.ThreadRunPb thread_runs = 7;</code>
+   * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
    */
-  io.littlehorse.common.proto.ThreadRunPb getThreadRuns(int index);
+  io.littlehorse.common.proto.ThreadRunStatePb getThreadRuns(int index);
   /**
-   * <code>repeated .lh_proto.ThreadRunPb thread_runs = 7;</code>
+   * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
    */
   int getThreadRunsCount();
   /**
-   * <code>repeated .lh_proto.ThreadRunPb thread_runs = 7;</code>
+   * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
    */
-  java.util.List<? extends io.littlehorse.common.proto.ThreadRunPbOrBuilder> 
+  java.util.List<? extends io.littlehorse.common.proto.ThreadRunStatePbOrBuilder> 
       getThreadRunsOrBuilderList();
   /**
-   * <code>repeated .lh_proto.ThreadRunPb thread_runs = 7;</code>
+   * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
    */
-  io.littlehorse.common.proto.ThreadRunPbOrBuilder getThreadRunsOrBuilder(
+  io.littlehorse.common.proto.ThreadRunStatePbOrBuilder getThreadRunsOrBuilder(
       int index);
+
+  /**
+   * <code>.google.protobuf.Timestamp start_time = 8;</code>
+   * @return Whether the startTime field is set.
+   */
+  boolean hasStartTime();
+  /**
+   * <code>.google.protobuf.Timestamp start_time = 8;</code>
+   * @return The startTime.
+   */
+  com.google.protobuf.Timestamp getStartTime();
+  /**
+   * <code>.google.protobuf.Timestamp start_time = 8;</code>
+   */
+  com.google.protobuf.TimestampOrBuilder getStartTimeOrBuilder();
+
+  /**
+   * <code>.google.protobuf.Timestamp end_time = 9;</code>
+   * @return Whether the endTime field is set.
+   */
+  boolean hasEndTime();
+  /**
+   * <code>.google.protobuf.Timestamp end_time = 9;</code>
+   * @return The endTime.
+   */
+  com.google.protobuf.Timestamp getEndTime();
+  /**
+   * <code>.google.protobuf.Timestamp end_time = 9;</code>
+   */
+  com.google.protobuf.TimestampOrBuilder getEndTimeOrBuilder();
 }

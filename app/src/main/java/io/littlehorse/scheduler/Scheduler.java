@@ -11,7 +11,7 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.event.WFRunEvent;
 import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.model.run.WFRun;
+import io.littlehorse.common.model.run.WfRun;
 import io.littlehorse.common.serde.SchedulerOutputTsrSer;
 import io.littlehorse.common.serde.SchedulerOutputWFRunSer;
 import io.littlehorse.common.serde.WFRunEventSerde;
@@ -19,16 +19,16 @@ import io.littlehorse.common.serde.WFRunSerde;
 import io.littlehorse.common.serde.WfSpecSerde;
 
 public class Scheduler {
+    public static String topoSource = "WFRunEvent Source";
+    public static String runtimeProcessor = "WFRuntime";
+    public static String wfRunSink = "WFRun Sink";
+    public static String taskSchedulerSink = "Scheduled Tasks";
+    
     public static Topology initTopology(LHConfig config) {
         Topology topo = new Topology();
 
-        String topoSource = "WFRunEvent Source";
-        String runtimeProcessor = "WFRuntime";
-        String wfRunSink = "WFRun Sink";
-        String taskSchedulerSink = "Scheduled Tasks";
-
         Serde<WFRunEvent> evtSerde = new WFRunEventSerde();
-        Serde<WFRun> runSerde = new WFRunSerde();
+        Serde<WfRun> runSerde = new WFRunSerde();
         Serde<WfSpec> specSerde = new WfSpecSerde();
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -65,7 +65,7 @@ public class Scheduler {
         topo.addSink(
             taskSchedulerSink,
             (k, v, ctx) -> {
-                return v.request.replyKafkaTopic;
+                return v.request.taskDefName;
             },
             Serdes.String().serializer(),
             new SchedulerOutputTsrSer(),
@@ -73,7 +73,7 @@ public class Scheduler {
         );
 
         // Add state store
-        StoreBuilder<KeyValueStore<String, WFRun>> wfRunStoreBuilder =
+        StoreBuilder<KeyValueStore<String, WfRun>> wfRunStoreBuilder =
             Stores.keyValueStoreBuilder(
                 Stores.persistentKeyValueStore(LHConstants.WF_RUN_STORE_NAME),
                 Serdes.String(),
@@ -88,6 +88,7 @@ public class Scheduler {
                 Serdes.String(),
                 specSerde
             ).withLoggingDisabled();
+
         topo.addGlobalStore(
             wfSpecStoreBuilder,
             "wfSpecViewNode",

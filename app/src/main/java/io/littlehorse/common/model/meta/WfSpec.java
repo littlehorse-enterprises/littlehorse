@@ -2,8 +2,12 @@ package io.littlehorse.common.model.meta;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import io.littlehorse.common.LHUtil;
+import io.littlehorse.common.model.event.TaskScheduleRequest;
+import io.littlehorse.common.model.event.WFRunEvent;
+import io.littlehorse.common.model.run.WfRun;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.ThreadSpecPb;
 import io.littlehorse.common.proto.WFSpecPb;
@@ -11,6 +15,7 @@ import io.littlehorse.common.proto.WFSpecPbOrBuilder;
 
 public class WfSpec {
     public String id;
+    public String name;
     public Date createdAt;
     public Date updatedAt;
 
@@ -50,12 +55,33 @@ public class WfSpec {
         out.updatedAt = LHUtil.fromProtoTs(proto.getUpdatedAt());
         out.entrypointThreadName = proto.getEntrypointThreadName();
         out.status = proto.getStatus();
+        out.name = proto.getName();
 
         for (
             Map.Entry<String, ThreadSpecPb> e: proto.getThreadSpecsMap().entrySet()
         ) {
-            out.threadSpecs.put(e.getKey(), ThreadSpec.fromProto(e.getValue()));
+            ThreadSpec ts = ThreadSpec.fromProto(e.getValue());
+            ts.wfSpec = out;
+            ts.name = e.getKey();
+            out.threadSpecs.put(e.getKey(), ts);
         }
+        return out;
+    }
+
+    public WfRun startNewRun(WFRunEvent e, List<TaskScheduleRequest> toSchedule) {
+        WfRun out = new WfRun();
+
+        out.wfSpec = this;
+        out.toSchedule = toSchedule;
+        out.id = e.wfRunId;
+        out.wfSpecId = id;
+        out.wfSpecName = name;
+        out.startTime = e.time;
+        out.status = LHStatusPb.RUNNING;
+        out.startTime = e.time;
+
+        out.startThread(entrypointThreadName, e.time, null);
+
         return out;
     }
 }
