@@ -98,19 +98,19 @@ public interface ObservabilityEventPbOrBuilder extends
   io.littlehorse.common.proto.TaskStartOePbOrBuilder getTaskStartOrBuilder();
 
   /**
-   * <code>.lh_proto.TaskCompletedEventPb task_complete = 7;</code>
+   * <code>.lh_proto.TaskCompleteOePb task_complete = 7;</code>
    * @return Whether the taskComplete field is set.
    */
   boolean hasTaskComplete();
   /**
-   * <code>.lh_proto.TaskCompletedEventPb task_complete = 7;</code>
+   * <code>.lh_proto.TaskCompleteOePb task_complete = 7;</code>
    * @return The taskComplete.
    */
-  io.littlehorse.common.proto.TaskCompletedEventPb getTaskComplete();
+  io.littlehorse.common.proto.TaskCompleteOePb getTaskComplete();
   /**
-   * <code>.lh_proto.TaskCompletedEventPb task_complete = 7;</code>
+   * <code>.lh_proto.TaskCompleteOePb task_complete = 7;</code>
    */
-  io.littlehorse.common.proto.TaskCompletedEventPbOrBuilder getTaskCompleteOrBuilder();
+  io.littlehorse.common.proto.TaskCompleteOePbOrBuilder getTaskCompleteOrBuilder();
 
   /**
    * <code>.lh_proto.ThreadStatusChangeOePb thread_status = 8;</code>

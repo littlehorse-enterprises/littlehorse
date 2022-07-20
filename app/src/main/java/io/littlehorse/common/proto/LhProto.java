@@ -209,7 +209,7 @@ public final class LhProto {
       "tatusChangeOePb\022\031\n\021thread_run_number\030\001 \001" +
       "(\005\022$\n\006status\030\002 \001(\0162\024.lh_proto.LHStatusPb" +
       "\"=\n\025WfRunStatusChangeOePb\022$\n\006status\030\001 \001(" +
-      "\0162\024.lh_proto.LHStatusPb\"\274\003\n\024Observabilit" +
+      "\0162\024.lh_proto.LHStatusPb\"\270\003\n\024Observabilit" +
       "yEventPb\022(\n\004time\030\001 \001(\0132\032.google.protobuf" +
       ".Timestamp\0228\n\rwf_run_status\030\002 \001(\0132\037.lh_p" +
       "roto.WfRunStatusChangeOePbH\000\022+\n\trun_star" +
@@ -217,17 +217,17 @@ public final class LhProto {
       "ead_start\030\004 \001(\0132\031.lh_proto.ThreadStartOe" +
       "PbH\000\0224\n\rtask_schedule\030\005 \001(\0132\033.lh_proto.T" +
       "askScheduledOePbH\000\022-\n\ntask_start\030\006 \001(\0132\027" +
-      ".lh_proto.TaskStartOePbH\000\0227\n\rtask_comple" +
-      "te\030\007 \001(\0132\036.lh_proto.TaskCompletedEventPb" +
-      "H\000\0229\n\rthread_status\030\010 \001(\0132 .lh_proto.Thr" +
-      "eadStatusChangeOePbH\000B\007\n\005event\"Z\n\025Observ" +
-      "abilityEventsPb\022\021\n\twf_run_id\030\001 \001(\t\022.\n\006ev" +
-      "ents\030\002 \003(\0132\036.lh_proto.ObservabilityEvent" +
-      "Pb*Z\n\nLHStatusPb\022\014\n\010STARTING\020\000\022\013\n\007RUNNIN" +
-      "G\020\001\022\r\n\tCOMPLETED\020\002\022\013\n\007HALTING\020\003\022\n\n\006HALTE" +
-      "D\020\004\022\t\n\005ERROR\020\005*0\n\nNodeTypePb\022\010\n\004TASK\020\000\022\016" +
-      "\n\nENTRYPOINT\020\001\022\010\n\004EXIT\020\002B(\n\033io.littlehor" +
-      "se.common.protoP\001Z\007.;modelb\006proto3"
+      ".lh_proto.TaskStartOePbH\000\0223\n\rtask_comple" +
+      "te\030\007 \001(\0132\032.lh_proto.TaskCompleteOePbH\000\0229" +
+      "\n\rthread_status\030\010 \001(\0132 .lh_proto.ThreadS" +
+      "tatusChangeOePbH\000B\007\n\005event\"Z\n\025Observabil" +
+      "ityEventsPb\022\021\n\twf_run_id\030\001 \001(\t\022.\n\006events" +
+      "\030\002 \003(\0132\036.lh_proto.ObservabilityEventPb*Z" +
+      "\n\nLHStatusPb\022\014\n\010STARTING\020\000\022\013\n\007RUNNING\020\001\022" +
+      "\r\n\tCOMPLETED\020\002\022\013\n\007HALTING\020\003\022\n\n\006HALTED\020\004\022" +
+      "\t\n\005ERROR\020\005*0\n\nNodeTypePb\022\010\n\004TASK\020\000\022\016\n\nEN" +
+      "TRYPOINT\020\001\022\010\n\004EXIT\020\002B(\n\033io.littlehorse.c" +
+      "ommon.protoP\001Z\007.;modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

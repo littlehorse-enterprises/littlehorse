@@ -132,14 +132,14 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 58: {
-            io.littlehorse.common.proto.TaskCompletedEventPb.Builder subBuilder = null;
+            io.littlehorse.common.proto.TaskCompleteOePb.Builder subBuilder = null;
             if (eventCase_ == 7) {
-              subBuilder = ((io.littlehorse.common.proto.TaskCompletedEventPb) event_).toBuilder();
+              subBuilder = ((io.littlehorse.common.proto.TaskCompleteOePb) event_).toBuilder();
             }
             event_ =
-                input.readMessage(io.littlehorse.common.proto.TaskCompletedEventPb.parser(), extensionRegistry);
+                input.readMessage(io.littlehorse.common.proto.TaskCompleteOePb.parser(), extensionRegistry);
             if (subBuilder != null) {
-              subBuilder.mergeFrom((io.littlehorse.common.proto.TaskCompletedEventPb) event_);
+              subBuilder.mergeFrom((io.littlehorse.common.proto.TaskCompleteOePb) event_);
               event_ = subBuilder.buildPartial();
             }
             eventCase_ = 7;
@@ -425,7 +425,7 @@ private static final long serialVersionUID = 0L;
 
   public static final int TASK_COMPLETE_FIELD_NUMBER = 7;
   /**
-   * <code>.lh_proto.TaskCompletedEventPb task_complete = 7;</code>
+   * <code>.lh_proto.TaskCompleteOePb task_complete = 7;</code>
    * @return Whether the taskComplete field is set.
    */
   @java.lang.Override
@@ -433,25 +433,25 @@ private static final long serialVersionUID = 0L;
     return eventCase_ == 7;
   }
   /**
-   * <code>.lh_proto.TaskCompletedEventPb task_complete = 7;</code>
+   * <code>.lh_proto.TaskCompleteOePb task_complete = 7;</code>
    * @return The taskComplete.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.TaskCompletedEventPb getTaskComplete() {
+  public io.littlehorse.common.proto.TaskCompleteOePb getTaskComplete() {
     if (eventCase_ == 7) {
-       return (io.littlehorse.common.proto.TaskCompletedEventPb) event_;
+       return (io.littlehorse.common.proto.TaskCompleteOePb) event_;
     }
-    return io.littlehorse.common.proto.TaskCompletedEventPb.getDefaultInstance();
+    return io.littlehorse.common.proto.TaskCompleteOePb.getDefaultInstance();
   }
   /**
-   * <code>.lh_proto.TaskCompletedEventPb task_complete = 7;</code>
+   * <code>.lh_proto.TaskCompleteOePb task_complete = 7;</code>
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.TaskCompletedEventPbOrBuilder getTaskCompleteOrBuilder() {
+  public io.littlehorse.common.proto.TaskCompleteOePbOrBuilder getTaskCompleteOrBuilder() {
     if (eventCase_ == 7) {
-       return (io.littlehorse.common.proto.TaskCompletedEventPb) event_;
+       return (io.littlehorse.common.proto.TaskCompleteOePb) event_;
     }
-    return io.littlehorse.common.proto.TaskCompletedEventPb.getDefaultInstance();
+    return io.littlehorse.common.proto.TaskCompleteOePb.getDefaultInstance();
   }
 
   public static final int THREAD_STATUS_FIELD_NUMBER = 8;
@@ -518,7 +518,7 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(6, (io.littlehorse.common.proto.TaskStartOePb) event_);
     }
     if (eventCase_ == 7) {
-      output.writeMessage(7, (io.littlehorse.common.proto.TaskCompletedEventPb) event_);
+      output.writeMessage(7, (io.littlehorse.common.proto.TaskCompleteOePb) event_);
     }
     if (eventCase_ == 8) {
       output.writeMessage(8, (io.littlehorse.common.proto.ThreadStatusChangeOePb) event_);
@@ -558,7 +558,7 @@ private static final long serialVersionUID = 0L;
     }
     if (eventCase_ == 7) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(7, (io.littlehorse.common.proto.TaskCompletedEventPb) event_);
+        .computeMessageSize(7, (io.littlehorse.common.proto.TaskCompleteOePb) event_);
     }
     if (eventCase_ == 8) {
       size += com.google.protobuf.CodedOutputStream
@@ -1839,9 +1839,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.TaskCompletedEventPb, io.littlehorse.common.proto.TaskCompletedEventPb.Builder, io.littlehorse.common.proto.TaskCompletedEventPbOrBuilder> taskCompleteBuilder_;
+        io.littlehorse.common.proto.TaskCompleteOePb, io.littlehorse.common.proto.TaskCompleteOePb.Builder, io.littlehorse.common.proto.TaskCompleteOePbOrBuilder> taskCompleteBuilder_;
     /**
-     * <code>.lh_proto.TaskCompletedEventPb task_complete = 7;</code>
+     * <code>.lh_proto.TaskCompleteOePb task_complete = 7;</code>
      * @return Whether the taskComplete field is set.
      */
     @java.lang.Override
@@ -1849,27 +1849,27 @@ private static final long serialVersionUID = 0L;
       return eventCase_ == 7;
     }
     /**
-     * <code>.lh_proto.TaskCompletedEventPb task_complete = 7;</code>
+     * <code>.lh_proto.TaskCompleteOePb task_complete = 7;</code>
      * @return The taskComplete.
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.TaskCompletedEventPb getTaskComplete() {
+    public io.littlehorse.common.proto.TaskCompleteOePb getTaskComplete() {
       if (taskCompleteBuilder_ == null) {
         if (eventCase_ == 7) {
-          return (io.littlehorse.common.proto.TaskCompletedEventPb) event_;
+          return (io.littlehorse.common.proto.TaskCompleteOePb) event_;
         }
-        return io.littlehorse.common.proto.TaskCompletedEventPb.getDefaultInstance();
+        return io.littlehorse.common.proto.TaskCompleteOePb.getDefaultInstance();
       } else {
         if (eventCase_ == 7) {
           return taskCompleteBuilder_.getMessage();
         }
-        return io.littlehorse.common.proto.TaskCompletedEventPb.getDefaultInstance();
+        return io.littlehorse.common.proto.TaskCompleteOePb.getDefaultInstance();
       }
     }
     /**
-     * <code>.lh_proto.TaskCompletedEventPb task_complete = 7;</code>
+     * <code>.lh_proto.TaskCompleteOePb task_complete = 7;</code>
      */
-    public Builder setTaskComplete(io.littlehorse.common.proto.TaskCompletedEventPb value) {
+    public Builder setTaskComplete(io.littlehorse.common.proto.TaskCompleteOePb value) {
       if (taskCompleteBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -1883,10 +1883,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.TaskCompletedEventPb task_complete = 7;</code>
+     * <code>.lh_proto.TaskCompleteOePb task_complete = 7;</code>
      */
     public Builder setTaskComplete(
-        io.littlehorse.common.proto.TaskCompletedEventPb.Builder builderForValue) {
+        io.littlehorse.common.proto.TaskCompleteOePb.Builder builderForValue) {
       if (taskCompleteBuilder_ == null) {
         event_ = builderForValue.build();
         onChanged();
@@ -1897,13 +1897,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.TaskCompletedEventPb task_complete = 7;</code>
+     * <code>.lh_proto.TaskCompleteOePb task_complete = 7;</code>
      */
-    public Builder mergeTaskComplete(io.littlehorse.common.proto.TaskCompletedEventPb value) {
+    public Builder mergeTaskComplete(io.littlehorse.common.proto.TaskCompleteOePb value) {
       if (taskCompleteBuilder_ == null) {
         if (eventCase_ == 7 &&
-            event_ != io.littlehorse.common.proto.TaskCompletedEventPb.getDefaultInstance()) {
-          event_ = io.littlehorse.common.proto.TaskCompletedEventPb.newBuilder((io.littlehorse.common.proto.TaskCompletedEventPb) event_)
+            event_ != io.littlehorse.common.proto.TaskCompleteOePb.getDefaultInstance()) {
+          event_ = io.littlehorse.common.proto.TaskCompleteOePb.newBuilder((io.littlehorse.common.proto.TaskCompleteOePb) event_)
               .mergeFrom(value).buildPartial();
         } else {
           event_ = value;
@@ -1919,7 +1919,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.TaskCompletedEventPb task_complete = 7;</code>
+     * <code>.lh_proto.TaskCompleteOePb task_complete = 7;</code>
      */
     public Builder clearTaskComplete() {
       if (taskCompleteBuilder_ == null) {
@@ -1938,38 +1938,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.TaskCompletedEventPb task_complete = 7;</code>
+     * <code>.lh_proto.TaskCompleteOePb task_complete = 7;</code>
      */
-    public io.littlehorse.common.proto.TaskCompletedEventPb.Builder getTaskCompleteBuilder() {
+    public io.littlehorse.common.proto.TaskCompleteOePb.Builder getTaskCompleteBuilder() {
       return getTaskCompleteFieldBuilder().getBuilder();
     }
     /**
-     * <code>.lh_proto.TaskCompletedEventPb task_complete = 7;</code>
+     * <code>.lh_proto.TaskCompleteOePb task_complete = 7;</code>
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.TaskCompletedEventPbOrBuilder getTaskCompleteOrBuilder() {
+    public io.littlehorse.common.proto.TaskCompleteOePbOrBuilder getTaskCompleteOrBuilder() {
       if ((eventCase_ == 7) && (taskCompleteBuilder_ != null)) {
         return taskCompleteBuilder_.getMessageOrBuilder();
       } else {
         if (eventCase_ == 7) {
-          return (io.littlehorse.common.proto.TaskCompletedEventPb) event_;
+          return (io.littlehorse.common.proto.TaskCompleteOePb) event_;
         }
-        return io.littlehorse.common.proto.TaskCompletedEventPb.getDefaultInstance();
+        return io.littlehorse.common.proto.TaskCompleteOePb.getDefaultInstance();
       }
     }
     /**
-     * <code>.lh_proto.TaskCompletedEventPb task_complete = 7;</code>
+     * <code>.lh_proto.TaskCompleteOePb task_complete = 7;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.TaskCompletedEventPb, io.littlehorse.common.proto.TaskCompletedEventPb.Builder, io.littlehorse.common.proto.TaskCompletedEventPbOrBuilder> 
+        io.littlehorse.common.proto.TaskCompleteOePb, io.littlehorse.common.proto.TaskCompleteOePb.Builder, io.littlehorse.common.proto.TaskCompleteOePbOrBuilder> 
         getTaskCompleteFieldBuilder() {
       if (taskCompleteBuilder_ == null) {
         if (!(eventCase_ == 7)) {
-          event_ = io.littlehorse.common.proto.TaskCompletedEventPb.getDefaultInstance();
+          event_ = io.littlehorse.common.proto.TaskCompleteOePb.getDefaultInstance();
         }
         taskCompleteBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.TaskCompletedEventPb, io.littlehorse.common.proto.TaskCompletedEventPb.Builder, io.littlehorse.common.proto.TaskCompletedEventPbOrBuilder>(
-                (io.littlehorse.common.proto.TaskCompletedEventPb) event_,
+            io.littlehorse.common.proto.TaskCompleteOePb, io.littlehorse.common.proto.TaskCompleteOePb.Builder, io.littlehorse.common.proto.TaskCompleteOePbOrBuilder>(
+                (io.littlehorse.common.proto.TaskCompleteOePb) event_,
                 getParentForChildren(),
                 isClean());
         event_ = null;

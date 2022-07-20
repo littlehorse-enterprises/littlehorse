@@ -175,7 +175,7 @@ message ObservabilityEventPb {
         ThreadStartOePb thread_start = 4;
         TaskScheduledOePb task_schedule = 5;
         TaskStartOePb task_start = 6;
-        TaskCompletedEventPb task_complete = 7;
+        TaskCompleteOePb task_complete = 7;
         ThreadStatusChangeOePb thread_status = 8;
     }
 }
