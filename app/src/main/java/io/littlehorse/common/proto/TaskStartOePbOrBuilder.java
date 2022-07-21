@@ -24,4 +24,16 @@ public interface TaskStartOePbOrBuilder extends
    * @return The taskRunPosition.
    */
   int getTaskRunPosition();
+
+  /**
+   * <code>string node_name = 4;</code>
+   * @return The nodeName.
+   */
+  java.lang.String getNodeName();
+  /**
+   * <code>string node_name = 4;</code>
+   * @return The bytes for nodeName.
+   */
+  com.google.protobuf.ByteString
+      getNodeNameBytes();
 }

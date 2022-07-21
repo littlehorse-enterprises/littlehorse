@@ -54,4 +54,16 @@ public interface TaskScheduledOePbOrBuilder extends
    */
   com.google.protobuf.ByteString
       getWfRunIdBytes();
+
+  /**
+   * <code>string node_name = 7;</code>
+   * @return The nodeName.
+   */
+  java.lang.String getNodeName();
+  /**
+   * <code>string node_name = 7;</code>
+   * @return The bytes for nodeName.
+   */
+  com.google.protobuf.ByteString
+      getNodeNameBytes();
 }

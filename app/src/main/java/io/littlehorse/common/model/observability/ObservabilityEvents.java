@@ -7,9 +7,13 @@ import io.littlehorse.common.proto.ObservabilityEventsPb;
 public class ObservabilityEvents {
     public List<ObservabilityEvent> events;
     public String wfRunId;
-    
+
     public ObservabilityEvents() {
         events = new ArrayList<>();
+    }
+
+    public void add(ObservabilityEvent event) {
+        events.add(event);
     }
 
     public ObservabilityEventsPb.Builder toProtoBuilder() {

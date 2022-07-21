@@ -1,9 +1,9 @@
 package io.littlehorse.scheduler;
 
 import io.littlehorse.common.model.event.TaskScheduleRequest;
-import io.littlehorse.common.model.run.WfRun;
+import io.littlehorse.common.model.observability.ObservabilityEvents;
 
 public class SchedulerOutput {
     public TaskScheduleRequest request;
-    public WfRun wfRun;
+    public ObservabilityEvents observabilityEvents;
 }

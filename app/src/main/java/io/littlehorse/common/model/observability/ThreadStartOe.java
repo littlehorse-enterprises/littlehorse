@@ -13,4 +13,9 @@ public class ThreadStartOe {
 
         return out;
     }
+
+    public ThreadStartOe(int number, String threadSpecName) {
+        this.number = number;
+        this.threadSpecName = threadSpecName;
+    }
 }

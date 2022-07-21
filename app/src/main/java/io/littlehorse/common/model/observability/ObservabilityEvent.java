@@ -57,4 +57,46 @@ public class ObservabilityEvent {
 
         return out;
     }
+
+    public ObservabilityEvent(RunStartOe evt, Date time) {
+        type = EventCase.RUN_START;
+        this.time = time;
+        runStart = evt;
+    }
+
+    public ObservabilityEvent(ThreadStartOe evt, Date time) {
+        this.time = time;
+        type = EventCase.THREAD_START;
+        threadStart = evt;
+    }
+
+    public ObservabilityEvent(TaskScheduledOe evt, Date time) {
+        this.time = time;
+        type = EventCase.TASK_SCHEDULE;
+        taskSchedule = evt;
+    }
+
+    public ObservabilityEvent(TaskStartOe evt, Date time) {
+        this.time = time;
+        type = EventCase.TASK_START;
+        taskStart = evt;
+    }
+
+    public ObservabilityEvent(TaskCompleteOe evt, Date time) {
+        this.time = time;
+        type=  EventCase.TASK_COMPLETE;
+        taskComplete = evt;
+    }
+
+    public ObservabilityEvent(ThreadStatusChangeOe evt, Date time) {
+        this.time = time;
+        type = EventCase.THREAD_STATUS;
+        threadStatus = evt;
+    }
+
+    public ObservabilityEvent(WfRunStatusChangeOe evt, Date time) {
+        this.time = time;
+        type = EventCase.WF_RUN_STATUS;
+        wfRunStatus = evt;
+    }
 }

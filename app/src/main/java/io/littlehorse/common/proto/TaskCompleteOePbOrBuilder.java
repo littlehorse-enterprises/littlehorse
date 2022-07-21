@@ -52,4 +52,16 @@ public interface TaskCompleteOePbOrBuilder extends
    * @return The logOutput.
    */
   com.google.protobuf.ByteString getLogOutput();
+
+  /**
+   * <code>string node_name = 7;</code>
+   * @return The nodeName.
+   */
+  java.lang.String getNodeName();
+  /**
+   * <code>string node_name = 7;</code>
+   * @return The bytes for nodeName.
+   */
+  com.google.protobuf.ByteString
+      getNodeNameBytes();
 }

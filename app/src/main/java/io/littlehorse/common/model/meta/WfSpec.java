@@ -7,6 +7,8 @@ import java.util.Map;
 import io.littlehorse.common.LHUtil;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.WFRunEvent;
+import io.littlehorse.common.model.observability.ObservabilityEvent;
+import io.littlehorse.common.model.observability.RunStartOe;
 import io.littlehorse.common.model.run.WfRun;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.ThreadSpecPb;
@@ -69,16 +71,16 @@ public class WfSpec {
     }
 
     public WfRun startNewRun(WFRunEvent e, List<TaskScheduleRequest> toSchedule) {
-        WfRun out = new WfRun();
+        WfRun out = new WfRun(e.runRequest.wfRunId);
 
         out.wfSpec = this;
         out.toSchedule = toSchedule;
-        out.id = e.wfRunId;
         out.wfSpecId = id;
         out.wfSpecName = name;
         out.startTime = e.time;
         out.status = LHStatusPb.RUNNING;
         out.startTime = e.time;
+        out.oEvents.add(new ObservabilityEvent(new RunStartOe(id), e.time));
 
         out.startThread(entrypointThreadName, e.time, null);
 

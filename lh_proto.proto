@@ -56,6 +56,8 @@ message TaskScheduleRequestPb {
     string wf_run_id = 7;
     string reply_kafka_topic = 8;
     string wf_spec_id = 9;
+    int32 attempt_number = 10;
+    string node_name = 11;
 }
 
 message TaskStartedEventPb {
@@ -140,12 +142,14 @@ message TaskScheduledOePb {
     int32 task_run_position = 4;
     int32 task_run_attempt_number = 5;
     string wf_run_id = 6;
+    string node_name = 7;
 }
 
 message TaskStartOePb {
     int32 thread_run_number = 1;
     int32 task_run_number = 2;
     int32 task_run_position = 3;
+    string node_name = 4;
 }
 
 message TaskCompleteOePb {
@@ -156,6 +160,8 @@ message TaskCompleteOePb {
     bool success = 4;
     optional bytes output = 5;
     optional bytes log_output = 6;
+
+    string node_name = 7;
 }
 
 message ThreadStatusChangeOePb {

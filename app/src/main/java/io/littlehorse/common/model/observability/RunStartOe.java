@@ -9,5 +9,9 @@ public class RunStartOe {
         return RunStartOePb.newBuilder().setWfSpecId(wfSpecId);
     }
 
+    public RunStartOe(String wfSpecId) {
+        this.wfSpecId = wfSpecId;
+    }
+
     // No need to implement loading from protobuf since this repo only writes.
 }

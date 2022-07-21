@@ -10,6 +10,11 @@ import io.littlehorse.common.model.event.WFRunEvent;
 import io.littlehorse.common.model.meta.Edge;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.meta.ThreadSpec;
+import io.littlehorse.common.model.observability.ObservabilityEvent;
+import io.littlehorse.common.model.observability.TaskCompleteOe;
+import io.littlehorse.common.model.observability.TaskScheduledOe;
+import io.littlehorse.common.model.observability.TaskStartOe;
+import io.littlehorse.common.model.observability.ThreadStatusChangeOe;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.NodeTypePb;
 import io.littlehorse.common.proto.ThreadRunStatePb;
@@ -152,20 +157,38 @@ public class ThreadRunState {
         tsr.threadRunNumber = threadRunNumber;
         tsr.wfRunId = wfRun.id;
         tsr.wfSpecId = wfRun.wfSpecId;
+        tsr.nodeName = node.name;
+
+        wfRun.oEvents.add(new ObservabilityEvent(
+            new TaskScheduledOe(tsr),
+            new Date()
+        ));
 
         wfRun.toSchedule.add(tsr);
     }
 
     private void completeThread() {
         status = LHStatusPb.COMPLETED;
-        // This is MAJOR hack.
-        wfRun.status = LHStatusPb.COMPLETED;
-        wfRun.endTime = new Date();
 
+        Date time = new Date();
+        wfRun.oEvents.add(
+            new ObservabilityEvent(
+                new ThreadStatusChangeOe(threadRunNumber, status),
+                time
+            )
+        );
+
+        wfRun.complete(time);
         System.out.println(wfRun.endTime.getTime() - wfRun.startTime.getTime());
     }
 
     public void processStartedEvent(WFRunEvent we) {
+        wfRun.oEvents.add(
+            new ObservabilityEvent(
+                new TaskStartOe(we.startedEvent, currentNodeRun.nodeName),
+                we.time
+            )
+        );
         TaskStartedEvent se = we.startedEvent;
 
         if (currentNodeRun.position != se.taskRunPosition) {
@@ -182,6 +205,10 @@ public class ThreadRunState {
     }
 
     public void processCompletedEvent(WFRunEvent we) {
+        wfRun.oEvents.add(new ObservabilityEvent(
+            new TaskCompleteOe(we.completedEvent, currentNodeRun.nodeName),
+            we.time
+        ));
         TaskCompletedEvent ce = we.completedEvent;
         if (currentNodeRun.position != ce.taskRunPosition) {
             // Out-of-order event due to race conditions between task worker

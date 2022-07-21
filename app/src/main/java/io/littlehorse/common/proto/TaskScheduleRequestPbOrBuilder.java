@@ -84,4 +84,22 @@ public interface TaskScheduleRequestPbOrBuilder extends
    */
   com.google.protobuf.ByteString
       getWfSpecIdBytes();
+
+  /**
+   * <code>int32 attempt_number = 10;</code>
+   * @return The attemptNumber.
+   */
+  int getAttemptNumber();
+
+  /**
+   * <code>string node_name = 11;</code>
+   * @return The nodeName.
+   */
+  java.lang.String getNodeName();
+  /**
+   * <code>string node_name = 11;</code>
+   * @return The bytes for nodeName.
+   */
+  com.google.protobuf.ByteString
+      getNodeNameBytes();
 }

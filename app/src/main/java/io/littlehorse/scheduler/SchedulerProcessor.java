@@ -96,6 +96,7 @@ public class SchedulerProcessor
             wfRun.processEvent(e, toSchedule);
         }
 
+        // Schedule tasks
         for (TaskScheduleRequest r: toSchedule) {
             SchedulerOutput taskOutput = new SchedulerOutput();
             taskOutput.request = r;
@@ -103,6 +104,15 @@ public class SchedulerProcessor
                 record.key(), taskOutput, record.timestamp()
             ), Scheduler.taskSchedulerSink);
         }
+
+        // Forward the observability events
+        SchedulerOutput oeOutput = new SchedulerOutput();
+        oeOutput.observabilityEvents = wfRun.oEvents;
+        context.forward(new Record<>(
+            record.key(), oeOutput, record.timestamp()
+        ), Scheduler.wfRunSink);
+
+        // Save the WfRunState
         wfRunStore.put(record.key(), wfRun);
     }
 }

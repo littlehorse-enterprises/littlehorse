@@ -1,6 +1,7 @@
 package io.littlehorse.common.model.observability;
 
 import com.google.protobuf.ByteString;
+import io.littlehorse.common.model.event.TaskCompletedEvent;
 import io.littlehorse.common.proto.TaskCompleteOePb;
 
 public class TaskCompleteOe {
@@ -12,13 +13,15 @@ public class TaskCompleteOe {
     public byte[] output;
     public byte[] logOutput;
 
+    public String nodeName;
 
     public TaskCompleteOePb.Builder toProtoBuilder() {
         TaskCompleteOePb.Builder out = TaskCompleteOePb.newBuilder()
             .setThreadRunNumber(threadRunNumber)
             .setTaskRunNumber(taskRunNumber)
             .setTaskRunPosition(taskRunPosition)
-            .setSuccess(success);
+            .setSuccess(success)
+            .setNodeName(nodeName);
 
         if (output != null) {
             out.setOutput(ByteString.copyFrom(output));
@@ -28,5 +31,17 @@ public class TaskCompleteOe {
         }
 
         return out;
+    }
+
+    public TaskCompleteOe(TaskCompletedEvent evt, String nodeName) {
+        this.nodeName = nodeName;
+    
+        threadRunNumber = evt.threadRunNumber;
+        taskRunNumber = evt.taskRunNumber;
+        taskRunPosition = evt.taskRunPosition;
+
+        success = evt.success;
+        output = evt.stdout;
+        logOutput = evt.stderr;
     }
 }

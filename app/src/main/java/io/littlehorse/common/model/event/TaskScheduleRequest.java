@@ -12,6 +12,8 @@ public class TaskScheduleRequest {
     public String wfRunId;
     public String replyKafkaTopic;
     public String wfSpecId;
+    public int attemptNumber;
+    public String nodeName;
 
     public TaskScheduleRequestPb.Builder toProtoBuilder() {
         return TaskScheduleRequestPb.newBuilder()
@@ -22,7 +24,9 @@ public class TaskScheduleRequest {
             .setTaskRunPosition(taskRunPosition)
             .setWfRunId(wfRunId)
             .setReplyKafkaTopic(replyKafkaTopic)
-            .setWfSpecId(wfSpecId);
+            .setWfSpecId(wfSpecId)
+            .setAttemptNumber(attemptNumber)
+            .setNodeName(nodeName);
     }
 
     public static TaskScheduleRequest fromProto(TaskScheduleRequestPbOrBuilder p) {
@@ -35,6 +39,8 @@ public class TaskScheduleRequest {
         out.wfRunId = p.getWfRunId();
         out.replyKafkaTopic = p.getReplyKafkaTopic();
         out.wfSpecId = p.getWfSpecId();
+        out.attemptNumber = p.getAttemptNumber();
+        out.nodeName = p.getNodeName();
         return out;
     }
 }

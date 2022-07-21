@@ -12,4 +12,8 @@ public class WfRunStatusChangeOe {
 
         return out;
     }
+
+    public WfRunStatusChangeOe(LHStatusPb status) {
+        this.status = status;
+    }
 }

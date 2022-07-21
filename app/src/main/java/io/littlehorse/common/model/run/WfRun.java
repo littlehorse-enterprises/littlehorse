@@ -11,6 +11,11 @@ import io.littlehorse.common.model.event.TaskStartedEvent;
 import io.littlehorse.common.model.event.WFRunEvent;
 import io.littlehorse.common.model.meta.ThreadSpec;
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.observability.ObservabilityEvent;
+import io.littlehorse.common.model.observability.ObservabilityEvents;
+import io.littlehorse.common.model.observability.TaskCompleteOe;
+import io.littlehorse.common.model.observability.ThreadStartOe;
+import io.littlehorse.common.model.observability.WfRunStatusChangeOe;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.ThreadRunStatePb;
 import io.littlehorse.common.proto.WFRunPb;
@@ -26,8 +31,11 @@ public class WfRun {
 
     public List<ThreadRunState> threadRuns;
 
-    public WfRun() {
+    public WfRun(String id) {
+        this.id = id;
         threadRuns = new ArrayList<>();
+        oEvents = new ObservabilityEvents();
+        oEvents.wfRunId = id;
     }
 
     // Below is Serialization/Deserialization stuff.
@@ -51,8 +59,7 @@ public class WfRun {
     }
 
     public static WfRun fromProto(WFRunPbOrBuilder proto) {
-        WfRun out = new WfRun();
-        out.id = proto.getId();
+        WfRun out = new WfRun(proto.getId());
         out.wfSpecId = proto.getWfSpecId();
         out.status = proto.getStatus();
         out.threadRuns = new ArrayList<>();
@@ -74,12 +81,18 @@ public class WfRun {
     // All below is simply implementation.
     @JsonIgnore public WfSpec wfSpec;
     @JsonIgnore public List<TaskScheduleRequest> toSchedule;
+    @JsonIgnore public ObservabilityEvents oEvents;
 
     public void startThread(String threadName, Date start, Integer parentThreadId) {
         ThreadSpec tspec = wfSpec.threadSpecs.get(threadName);
         if (tspec == null) {
             throw new RuntimeException("Invalid thread name");
         }
+
+        oEvents.add(new ObservabilityEvent(
+            new ThreadStartOe(threadRuns.size(), threadName),
+            new Date()
+        ));
 
         ThreadRunState thread = new ThreadRunState();
         thread.threadSpecName = threadName;
@@ -108,7 +121,20 @@ public class WfRun {
         }
     }
 
+    public void complete(Date time) {
+        endTime = time;
+        status = LHStatusPb.COMPLETED;
+
+        oEvents.add(
+            new ObservabilityEvent(
+                new WfRunStatusChangeOe(status),
+                time
+            )
+        );
+    }
+
     private void handleStartedEvent(WFRunEvent we) {
+
         TaskStartedEvent se = we.startedEvent;
         ThreadRunState thread = threadRuns.get(se.threadRunNumber);
         thread.processStartedEvent(we);

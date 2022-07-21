@@ -18,6 +18,7 @@ private static final long serialVersionUID = 0L;
   private TaskScheduledOePb() {
     taskDefId_ = "";
     wfRunId_ = "";
+    nodeName_ = "";
   }
 
   @java.lang.Override
@@ -80,6 +81,12 @@ private static final long serialVersionUID = 0L;
             java.lang.String s = input.readStringRequireUtf8();
 
             wfRunId_ = s;
+            break;
+          }
+          case 58: {
+            java.lang.String s = input.readStringRequireUtf8();
+
+            nodeName_ = s;
             break;
           }
           default: {
@@ -234,6 +241,44 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int NODE_NAME_FIELD_NUMBER = 7;
+  private volatile java.lang.Object nodeName_;
+  /**
+   * <code>string node_name = 7;</code>
+   * @return The nodeName.
+   */
+  @java.lang.Override
+  public java.lang.String getNodeName() {
+    java.lang.Object ref = nodeName_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      nodeName_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string node_name = 7;</code>
+   * @return The bytes for nodeName.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getNodeNameBytes() {
+    java.lang.Object ref = nodeName_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      nodeName_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -266,6 +311,9 @@ private static final long serialVersionUID = 0L;
     if (!getWfRunIdBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 6, wfRunId_);
     }
+    if (!getNodeNameBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 7, nodeName_);
+    }
     unknownFields.writeTo(output);
   }
 
@@ -297,6 +345,9 @@ private static final long serialVersionUID = 0L;
     if (!getWfRunIdBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, wfRunId_);
     }
+    if (!getNodeNameBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, nodeName_);
+    }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
@@ -324,6 +375,8 @@ private static final long serialVersionUID = 0L;
         != other.getTaskRunAttemptNumber()) return false;
     if (!getWfRunId()
         .equals(other.getWfRunId())) return false;
+    if (!getNodeName()
+        .equals(other.getNodeName())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -347,6 +400,8 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getTaskRunAttemptNumber();
     hash = (37 * hash) + WF_RUN_ID_FIELD_NUMBER;
     hash = (53 * hash) + getWfRunId().hashCode();
+    hash = (37 * hash) + NODE_NAME_FIELD_NUMBER;
+    hash = (53 * hash) + getNodeName().hashCode();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -492,6 +547,8 @@ private static final long serialVersionUID = 0L;
 
       wfRunId_ = "";
 
+      nodeName_ = "";
+
       return this;
     }
 
@@ -524,6 +581,7 @@ private static final long serialVersionUID = 0L;
       result.taskRunPosition_ = taskRunPosition_;
       result.taskRunAttemptNumber_ = taskRunAttemptNumber_;
       result.wfRunId_ = wfRunId_;
+      result.nodeName_ = nodeName_;
       onBuilt();
       return result;
     }
@@ -590,6 +648,10 @@ private static final long serialVersionUID = 0L;
       }
       if (!other.getWfRunId().isEmpty()) {
         wfRunId_ = other.wfRunId_;
+        onChanged();
+      }
+      if (!other.getNodeName().isEmpty()) {
+        nodeName_ = other.nodeName_;
         onChanged();
       }
       this.mergeUnknownFields(other.unknownFields);
@@ -893,6 +955,82 @@ private static final long serialVersionUID = 0L;
   checkByteStringIsUtf8(value);
       
       wfRunId_ = value;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object nodeName_ = "";
+    /**
+     * <code>string node_name = 7;</code>
+     * @return The nodeName.
+     */
+    public java.lang.String getNodeName() {
+      java.lang.Object ref = nodeName_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        nodeName_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string node_name = 7;</code>
+     * @return The bytes for nodeName.
+     */
+    public com.google.protobuf.ByteString
+        getNodeNameBytes() {
+      java.lang.Object ref = nodeName_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        nodeName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string node_name = 7;</code>
+     * @param value The nodeName to set.
+     * @return This builder for chaining.
+     */
+    public Builder setNodeName(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      nodeName_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string node_name = 7;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearNodeName() {
+      
+      nodeName_ = getDefaultInstance().getNodeName();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string node_name = 7;</code>
+     * @param value The bytes for nodeName to set.
+     * @return This builder for chaining.
+     */
+    public Builder setNodeNameBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      nodeName_ = value;
       onChanged();
       return this;
     }
