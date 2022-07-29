@@ -1,10 +1,10 @@
-package io.littlehorse.common.model.run;
+package io.littlehorse.common.model.scheduler;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.littlehorse.common.LHUtil;
+import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.event.TaskCompletedEvent;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.TaskStartedEvent;
@@ -13,15 +13,15 @@ import io.littlehorse.common.model.meta.ThreadSpec;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.observability.ObservabilityEvent;
 import io.littlehorse.common.model.observability.ObservabilityEvents;
-import io.littlehorse.common.model.observability.TaskCompleteOe;
 import io.littlehorse.common.model.observability.ThreadStartOe;
 import io.littlehorse.common.model.observability.WfRunStatusChangeOe;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.ThreadRunStatePb;
 import io.littlehorse.common.proto.WFRunPb;
 import io.littlehorse.common.proto.WFRunPbOrBuilder;
+import io.littlehorse.common.util.LHUtil;
 
-public class WfRun {
+public class WfRun extends GETable {
     public String id;
     public String wfSpecId;
     public String wfSpecName;

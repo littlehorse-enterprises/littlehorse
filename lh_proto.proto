@@ -92,8 +92,7 @@ message WFRunEventPb {
 // The below relates to WFSpec.
 
 message EdgePb {
-    string source_node_name = 1;
-    string sink_node_name = 2;
+    string sink_node_name = 1;
 }
 
 enum NodeTypePb {
@@ -105,11 +104,11 @@ enum NodeTypePb {
 message NodePb {
     string task_def_name = 1;
     NodeTypePb type = 2;
+    repeated EdgePb outgoing_edges = 3;
 }
 
 message ThreadSpecPb {
-    repeated EdgePb edges = 1;
-    map<string, NodePb> nodes = 2;
+    map<string, NodePb> nodes = 1;
 }
 
 message WFSpecPb {
@@ -122,6 +121,22 @@ message WFSpecPb {
 
     LHStatusPb status = 6;
     string name = 7;
+}
+
+message VariableValuePb {
+    oneof val {
+        bytes json_obj = 1;
+        bytes json_arr = 2;
+        double dub = 3;
+        bool bool = 4;
+        string str = 5;
+        int64 int = 6;
+        bytes byte = 7;
+    }
+}
+
+message TaskDefPb {
+    string name = 1;
 }
 
 // This section contains observability events produced by the Scheduler.

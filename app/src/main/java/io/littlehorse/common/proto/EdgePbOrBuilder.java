@@ -8,24 +8,12 @@ public interface EdgePbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string source_node_name = 1;</code>
-   * @return The sourceNodeName.
-   */
-  java.lang.String getSourceNodeName();
-  /**
-   * <code>string source_node_name = 1;</code>
-   * @return The bytes for sourceNodeName.
-   */
-  com.google.protobuf.ByteString
-      getSourceNodeNameBytes();
-
-  /**
-   * <code>string sink_node_name = 2;</code>
+   * <code>string sink_node_name = 1;</code>
    * @return The sinkNodeName.
    */
   java.lang.String getSinkNodeName();
   /**
-   * <code>string sink_node_name = 2;</code>
+   * <code>string sink_node_name = 1;</code>
    * @return The bytes for sinkNodeName.
    */
   com.google.protobuf.ByteString

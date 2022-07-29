@@ -1,4 +1,4 @@
-package io.littlehorse.common;
+package io.littlehorse.common.util;
 
 import java.time.Instant;
 import java.util.Date;

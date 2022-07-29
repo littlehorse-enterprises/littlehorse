@@ -8,35 +8,11 @@ public interface ThreadSpecPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>repeated .lh_proto.EdgePb edges = 1;</code>
-   */
-  java.util.List<io.littlehorse.common.proto.EdgePb> 
-      getEdgesList();
-  /**
-   * <code>repeated .lh_proto.EdgePb edges = 1;</code>
-   */
-  io.littlehorse.common.proto.EdgePb getEdges(int index);
-  /**
-   * <code>repeated .lh_proto.EdgePb edges = 1;</code>
-   */
-  int getEdgesCount();
-  /**
-   * <code>repeated .lh_proto.EdgePb edges = 1;</code>
-   */
-  java.util.List<? extends io.littlehorse.common.proto.EdgePbOrBuilder> 
-      getEdgesOrBuilderList();
-  /**
-   * <code>repeated .lh_proto.EdgePb edges = 1;</code>
-   */
-  io.littlehorse.common.proto.EdgePbOrBuilder getEdgesOrBuilder(
-      int index);
-
-  /**
-   * <code>map&lt;string, .lh_proto.NodePb&gt; nodes = 2;</code>
+   * <code>map&lt;string, .lh_proto.NodePb&gt; nodes = 1;</code>
    */
   int getNodesCount();
   /**
-   * <code>map&lt;string, .lh_proto.NodePb&gt; nodes = 2;</code>
+   * <code>map&lt;string, .lh_proto.NodePb&gt; nodes = 1;</code>
    */
   boolean containsNodes(
       java.lang.String key);
@@ -47,19 +23,19 @@ public interface ThreadSpecPbOrBuilder extends
   java.util.Map<java.lang.String, io.littlehorse.common.proto.NodePb>
   getNodes();
   /**
-   * <code>map&lt;string, .lh_proto.NodePb&gt; nodes = 2;</code>
+   * <code>map&lt;string, .lh_proto.NodePb&gt; nodes = 1;</code>
    */
   java.util.Map<java.lang.String, io.littlehorse.common.proto.NodePb>
   getNodesMap();
   /**
-   * <code>map&lt;string, .lh_proto.NodePb&gt; nodes = 2;</code>
+   * <code>map&lt;string, .lh_proto.NodePb&gt; nodes = 1;</code>
    */
 
   io.littlehorse.common.proto.NodePb getNodesOrDefault(
       java.lang.String key,
       io.littlehorse.common.proto.NodePb defaultValue);
   /**
-   * <code>map&lt;string, .lh_proto.NodePb&gt; nodes = 2;</code>
+   * <code>map&lt;string, .lh_proto.NodePb&gt; nodes = 1;</code>
    */
 
   io.littlehorse.common.proto.NodePb getNodesOrThrow(

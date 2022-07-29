@@ -14,11 +14,11 @@ import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
+import io.littlehorse.broker.processor.LHTopology;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.model.run.WfRun;
+import io.littlehorse.common.model.scheduler.WfRun;
 import io.littlehorse.common.serde.WFRunSerde;
-import io.littlehorse.scheduler.Scheduler;
 import io.littlehorse.worker.TestWorker;
 
 public class App {
@@ -65,7 +65,7 @@ public class App {
             if (arg.equals("worker")) {
                 TestWorker.doMain(config);
             } else if (arg.equals("scheduler")) {
-                Scheduler.doMain(config);
+                LHTopology.doMain(config);
             } else if (arg.equals("tester")) {
                 tester();
             }

@@ -1,9 +1,9 @@
 package io.littlehorse.common.model.observability;
 
 import java.util.Date;
-import io.littlehorse.common.LHUtil;
 import io.littlehorse.common.proto.ObservabilityEventPb;
 import io.littlehorse.common.proto.ObservabilityEventPb.EventCase;
+import io.littlehorse.common.util.LHUtil;
 
 public class ObservabilityEvent {
     public Date time;

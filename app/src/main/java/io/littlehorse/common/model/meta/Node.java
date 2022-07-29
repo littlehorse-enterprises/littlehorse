@@ -3,6 +3,7 @@ package io.littlehorse.common.model.meta;
 import java.util.HashSet;
 import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.littlehorse.common.proto.EdgePb;
 import io.littlehorse.common.proto.NodePb;
 import io.littlehorse.common.proto.NodePbOrBuilder;
 import io.littlehorse.common.proto.NodeTypePb;
@@ -23,6 +24,10 @@ public class Node {
         Node n = new Node();
         n.taskDefName = proto.getTaskDefName();
         n.type = proto.getType();
+
+        for (EdgePb e: proto.getOutgoingEdgesList()) {
+            n.outgoingEdges.add(Edge.fromProto(e));
+        }
         return n;
     }
 
@@ -30,11 +35,9 @@ public class Node {
 
     public Node() {
         outgoingEdges = new HashSet<>();
-        incomingEdges = new HashSet<>();
     }
 
     @JsonIgnore public Set<Edge> outgoingEdges;
-    @JsonIgnore public Set<Edge> incomingEdges;
     @JsonIgnore public String name;
     @JsonIgnore public ThreadSpec threadSpec;
 }

@@ -4,26 +4,26 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf type {@code lh_proto.EdgePb}
+ * Protobuf type {@code lh_proto.TaskDefPb}
  */
-public final class EdgePb extends
+public final class TaskDefPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.EdgePb)
-    EdgePbOrBuilder {
+    // @@protoc_insertion_point(message_implements:lh_proto.TaskDefPb)
+    TaskDefPbOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use EdgePb.newBuilder() to construct.
-  private EdgePb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use TaskDefPb.newBuilder() to construct.
+  private TaskDefPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private EdgePb() {
-    sinkNodeName_ = "";
+  private TaskDefPb() {
+    name_ = "";
   }
 
   @java.lang.Override
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new EdgePb();
+    return new TaskDefPb();
   }
 
   @java.lang.Override
@@ -31,7 +31,7 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
-  private EdgePb(
+  private TaskDefPb(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -52,7 +52,7 @@ private static final long serialVersionUID = 0L;
           case 10: {
             java.lang.String s = input.readStringRequireUtf8();
 
-            sinkNodeName_ = s;
+            name_ = s;
             break;
           }
           default: {
@@ -76,49 +76,49 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_EdgePb_descriptor;
+    return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_TaskDefPb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_EdgePb_fieldAccessorTable
+    return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_TaskDefPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.common.proto.EdgePb.class, io.littlehorse.common.proto.EdgePb.Builder.class);
+            io.littlehorse.common.proto.TaskDefPb.class, io.littlehorse.common.proto.TaskDefPb.Builder.class);
   }
 
-  public static final int SINK_NODE_NAME_FIELD_NUMBER = 1;
-  private volatile java.lang.Object sinkNodeName_;
+  public static final int NAME_FIELD_NUMBER = 1;
+  private volatile java.lang.Object name_;
   /**
-   * <code>string sink_node_name = 1;</code>
-   * @return The sinkNodeName.
+   * <code>string name = 1;</code>
+   * @return The name.
    */
   @java.lang.Override
-  public java.lang.String getSinkNodeName() {
-    java.lang.Object ref = sinkNodeName_;
+  public java.lang.String getName() {
+    java.lang.Object ref = name_;
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      sinkNodeName_ = s;
+      name_ = s;
       return s;
     }
   }
   /**
-   * <code>string sink_node_name = 1;</code>
-   * @return The bytes for sinkNodeName.
+   * <code>string name = 1;</code>
+   * @return The bytes for name.
    */
   @java.lang.Override
   public com.google.protobuf.ByteString
-      getSinkNodeNameBytes() {
-    java.lang.Object ref = sinkNodeName_;
+      getNameBytes() {
+    java.lang.Object ref = name_;
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      sinkNodeName_ = b;
+      name_ = b;
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
@@ -139,8 +139,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!getSinkNodeNameBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, sinkNodeName_);
+    if (!getNameBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
     }
     unknownFields.writeTo(output);
   }
@@ -151,8 +151,8 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (!getSinkNodeNameBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, sinkNodeName_);
+    if (!getNameBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -164,13 +164,13 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.common.proto.EdgePb)) {
+    if (!(obj instanceof io.littlehorse.common.proto.TaskDefPb)) {
       return super.equals(obj);
     }
-    io.littlehorse.common.proto.EdgePb other = (io.littlehorse.common.proto.EdgePb) obj;
+    io.littlehorse.common.proto.TaskDefPb other = (io.littlehorse.common.proto.TaskDefPb) obj;
 
-    if (!getSinkNodeName()
-        .equals(other.getSinkNodeName())) return false;
+    if (!getName()
+        .equals(other.getName())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -182,76 +182,76 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + SINK_NODE_NAME_FIELD_NUMBER;
-    hash = (53 * hash) + getSinkNodeName().hashCode();
+    hash = (37 * hash) + NAME_FIELD_NUMBER;
+    hash = (53 * hash) + getName().hashCode();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
   }
 
-  public static io.littlehorse.common.proto.EdgePb parseFrom(
+  public static io.littlehorse.common.proto.TaskDefPb parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.EdgePb parseFrom(
+  public static io.littlehorse.common.proto.TaskDefPb parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.EdgePb parseFrom(
+  public static io.littlehorse.common.proto.TaskDefPb parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.EdgePb parseFrom(
+  public static io.littlehorse.common.proto.TaskDefPb parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.EdgePb parseFrom(byte[] data)
+  public static io.littlehorse.common.proto.TaskDefPb parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.EdgePb parseFrom(
+  public static io.littlehorse.common.proto.TaskDefPb parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.EdgePb parseFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.TaskDefPb parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.EdgePb parseFrom(
+  public static io.littlehorse.common.proto.TaskDefPb parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.EdgePb parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.TaskDefPb parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.EdgePb parseDelimitedFrom(
+  public static io.littlehorse.common.proto.TaskDefPb parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.EdgePb parseFrom(
+  public static io.littlehorse.common.proto.TaskDefPb parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.EdgePb parseFrom(
+  public static io.littlehorse.common.proto.TaskDefPb parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -264,7 +264,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.common.proto.EdgePb prototype) {
+  public static Builder newBuilder(io.littlehorse.common.proto.TaskDefPb prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -280,26 +280,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.EdgePb}
+   * Protobuf type {@code lh_proto.TaskDefPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.EdgePb)
-      io.littlehorse.common.proto.EdgePbOrBuilder {
+      // @@protoc_insertion_point(builder_implements:lh_proto.TaskDefPb)
+      io.littlehorse.common.proto.TaskDefPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_EdgePb_descriptor;
+      return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_TaskDefPb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_EdgePb_fieldAccessorTable
+      return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_TaskDefPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.common.proto.EdgePb.class, io.littlehorse.common.proto.EdgePb.Builder.class);
+              io.littlehorse.common.proto.TaskDefPb.class, io.littlehorse.common.proto.TaskDefPb.Builder.class);
     }
 
-    // Construct using io.littlehorse.common.proto.EdgePb.newBuilder()
+    // Construct using io.littlehorse.common.proto.TaskDefPb.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -317,7 +317,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      sinkNodeName_ = "";
+      name_ = "";
 
       return this;
     }
@@ -325,17 +325,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_EdgePb_descriptor;
+      return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_TaskDefPb_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.EdgePb getDefaultInstanceForType() {
-      return io.littlehorse.common.proto.EdgePb.getDefaultInstance();
+    public io.littlehorse.common.proto.TaskDefPb getDefaultInstanceForType() {
+      return io.littlehorse.common.proto.TaskDefPb.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.EdgePb build() {
-      io.littlehorse.common.proto.EdgePb result = buildPartial();
+    public io.littlehorse.common.proto.TaskDefPb build() {
+      io.littlehorse.common.proto.TaskDefPb result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -343,9 +343,9 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.EdgePb buildPartial() {
-      io.littlehorse.common.proto.EdgePb result = new io.littlehorse.common.proto.EdgePb(this);
-      result.sinkNodeName_ = sinkNodeName_;
+    public io.littlehorse.common.proto.TaskDefPb buildPartial() {
+      io.littlehorse.common.proto.TaskDefPb result = new io.littlehorse.common.proto.TaskDefPb(this);
+      result.name_ = name_;
       onBuilt();
       return result;
     }
@@ -384,18 +384,18 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.common.proto.EdgePb) {
-        return mergeFrom((io.littlehorse.common.proto.EdgePb)other);
+      if (other instanceof io.littlehorse.common.proto.TaskDefPb) {
+        return mergeFrom((io.littlehorse.common.proto.TaskDefPb)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.common.proto.EdgePb other) {
-      if (other == io.littlehorse.common.proto.EdgePb.getDefaultInstance()) return this;
-      if (!other.getSinkNodeName().isEmpty()) {
-        sinkNodeName_ = other.sinkNodeName_;
+    public Builder mergeFrom(io.littlehorse.common.proto.TaskDefPb other) {
+      if (other == io.littlehorse.common.proto.TaskDefPb.getDefaultInstance()) return this;
+      if (!other.getName().isEmpty()) {
+        name_ = other.name_;
         onChanged();
       }
       this.mergeUnknownFields(other.unknownFields);
@@ -413,11 +413,11 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      io.littlehorse.common.proto.EdgePb parsedMessage = null;
+      io.littlehorse.common.proto.TaskDefPb parsedMessage = null;
       try {
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (io.littlehorse.common.proto.EdgePb) e.getUnfinishedMessage();
+        parsedMessage = (io.littlehorse.common.proto.TaskDefPb) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
@@ -427,78 +427,78 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.lang.Object sinkNodeName_ = "";
+    private java.lang.Object name_ = "";
     /**
-     * <code>string sink_node_name = 1;</code>
-     * @return The sinkNodeName.
+     * <code>string name = 1;</code>
+     * @return The name.
      */
-    public java.lang.String getSinkNodeName() {
-      java.lang.Object ref = sinkNodeName_;
+    public java.lang.String getName() {
+      java.lang.Object ref = name_;
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        sinkNodeName_ = s;
+        name_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
       }
     }
     /**
-     * <code>string sink_node_name = 1;</code>
-     * @return The bytes for sinkNodeName.
+     * <code>string name = 1;</code>
+     * @return The bytes for name.
      */
     public com.google.protobuf.ByteString
-        getSinkNodeNameBytes() {
-      java.lang.Object ref = sinkNodeName_;
+        getNameBytes() {
+      java.lang.Object ref = name_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        sinkNodeName_ = b;
+        name_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
     /**
-     * <code>string sink_node_name = 1;</code>
-     * @param value The sinkNodeName to set.
+     * <code>string name = 1;</code>
+     * @param value The name to set.
      * @return This builder for chaining.
      */
-    public Builder setSinkNodeName(
+    public Builder setName(
         java.lang.String value) {
       if (value == null) {
     throw new NullPointerException();
   }
   
-      sinkNodeName_ = value;
+      name_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>string sink_node_name = 1;</code>
+     * <code>string name = 1;</code>
      * @return This builder for chaining.
      */
-    public Builder clearSinkNodeName() {
+    public Builder clearName() {
       
-      sinkNodeName_ = getDefaultInstance().getSinkNodeName();
+      name_ = getDefaultInstance().getName();
       onChanged();
       return this;
     }
     /**
-     * <code>string sink_node_name = 1;</code>
-     * @param value The bytes for sinkNodeName to set.
+     * <code>string name = 1;</code>
+     * @param value The bytes for name to set.
      * @return This builder for chaining.
      */
-    public Builder setSinkNodeNameBytes(
+    public Builder setNameBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
       
-      sinkNodeName_ = value;
+      name_ = value;
       onChanged();
       return this;
     }
@@ -515,41 +515,41 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.EdgePb)
+    // @@protoc_insertion_point(builder_scope:lh_proto.TaskDefPb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.EdgePb)
-  private static final io.littlehorse.common.proto.EdgePb DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:lh_proto.TaskDefPb)
+  private static final io.littlehorse.common.proto.TaskDefPb DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.common.proto.EdgePb();
+    DEFAULT_INSTANCE = new io.littlehorse.common.proto.TaskDefPb();
   }
 
-  public static io.littlehorse.common.proto.EdgePb getDefaultInstance() {
+  public static io.littlehorse.common.proto.TaskDefPb getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<EdgePb>
-      PARSER = new com.google.protobuf.AbstractParser<EdgePb>() {
+  private static final com.google.protobuf.Parser<TaskDefPb>
+      PARSER = new com.google.protobuf.AbstractParser<TaskDefPb>() {
     @java.lang.Override
-    public EdgePb parsePartialFrom(
+    public TaskDefPb parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new EdgePb(input, extensionRegistry);
+      return new TaskDefPb(input, extensionRegistry);
     }
   };
 
-  public static com.google.protobuf.Parser<EdgePb> parser() {
+  public static com.google.protobuf.Parser<TaskDefPb> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<EdgePb> getParserForType() {
+  public com.google.protobuf.Parser<TaskDefPb> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.common.proto.EdgePb getDefaultInstanceForType() {
+  public io.littlehorse.common.proto.TaskDefPb getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

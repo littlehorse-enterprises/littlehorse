@@ -29,4 +29,28 @@ public interface NodePbOrBuilder extends
    * @return The type.
    */
   io.littlehorse.common.proto.NodeTypePb getType();
+
+  /**
+   * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+   */
+  java.util.List<io.littlehorse.common.proto.EdgePb> 
+      getOutgoingEdgesList();
+  /**
+   * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+   */
+  io.littlehorse.common.proto.EdgePb getOutgoingEdges(int index);
+  /**
+   * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+   */
+  int getOutgoingEdgesCount();
+  /**
+   * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+   */
+  java.util.List<? extends io.littlehorse.common.proto.EdgePbOrBuilder> 
+      getOutgoingEdgesOrBuilderList();
+  /**
+   * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+   */
+  io.littlehorse.common.proto.EdgePbOrBuilder getOutgoingEdgesOrBuilder(
+      int index);
 }

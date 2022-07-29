@@ -1,7 +1,7 @@
 package io.littlehorse.common.serde;
 
 import org.apache.kafka.common.serialization.Serializer;
-import io.littlehorse.scheduler.SchedulerOutput;
+import io.littlehorse.broker.processor.SchedulerOutput;
 
 public class SchedulerOutputTsrSer implements Serializer<SchedulerOutput> {
 

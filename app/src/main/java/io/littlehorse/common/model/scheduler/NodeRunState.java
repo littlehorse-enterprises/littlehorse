@@ -1,4 +1,4 @@
-package io.littlehorse.common.model.run;
+package io.littlehorse.common.model.scheduler;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.littlehorse.common.proto.LHStatusPb;

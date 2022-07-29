@@ -18,13 +18,21 @@ import org.apache.kafka.common.errors.TopicExistsException;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.serialization.Serializer;
+import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.state.HostInfo;
+import io.javalin.Javalin;
+import io.littlehorse.common.util.KStreamsStateListener;
+import io.littlehorse.common.util.LHApiClient;
 
 public class LHConfig {
     private Properties props;
     private HashSet<String> seenConsumerTypes;
     private HashSet<String> seenProducerTypes;
     private Admin kafkaAdmin;
+
+    private HashSet<KafkaProducer<?, ?>> producersToClose;
+    private HashSet<KafkaConsumer<?, ?>> consumersToClose;
 
     public String getBootstrapServers() {
         return getOrSetDefault(LHConstants.KAFKA_BOOTSTRAP_KEY, "localhost:9092");
@@ -60,6 +68,53 @@ public class LHConfig {
         return getOrSetDefault(LHConstants.KAFKA_STATE_DIR_KEY, "/tmp/kafkaState");
     }
 
+    public String getAdvertisedProto() {
+        return getOrSetDefault(
+            LHConstants.ADVERTISED_PROTOCOL_KEY, "http"
+        );
+    }
+
+    public String getAdvertisedUrl() {
+        return String.format(
+            "%s://%s:%d",
+            getAdvertisedProto(),
+            this.getAdvertisedHost(),
+            getAdvertisedPort()
+        );
+    }
+
+    public String getAdvertisedHost() {
+        return getOrSetDefault(
+            LHConstants.ADVERTISED_HOST_KEY, "localhost"
+        );
+    }
+
+    public int getAdvertisedPort() {
+        return Integer.valueOf(getOrSetDefault(
+            LHConstants.ADVERTISED_PORT_KEY, "5000"
+        ));
+    }
+
+    public int getExposedPort() {
+        return Integer.valueOf(getOrSetDefault(
+            LHConstants.EXPOSED_PORT_KEY, "5000"
+        ));
+    }
+
+    public HostInfo getHostInfo() {
+        return new HostInfo(getAdvertisedHost(), getAdvertisedPort());
+    }
+
+    public void cleanup() {
+        if (this.kafkaAdmin != null) this.kafkaAdmin.close();
+
+        for (KafkaProducer<?, ?> p: producersToClose) p.close();
+        for (KafkaConsumer<?, ?> c: consumersToClose) c.close();
+    }
+
+    public LHApiClient getApiClient() {
+        return new LHApiClient();
+    }
 
     public <U, T extends Serializer<U>> KafkaProducer<String, U> getKafkaProducer(
         Class<T> serializerClass
@@ -86,7 +141,9 @@ public class LHConfig {
             org.apache.kafka.common.serialization.StringSerializer.class
         );
 
-        return new KafkaProducer<String, U>(conf);
+        KafkaProducer<String, U> prod = new KafkaProducer<String, U>(conf);
+        producersToClose.add(prod);
+        return prod;
     }
 
     public <U, T extends Deserializer<U>> KafkaConsumer<String, U> getKafkaConsumer(
@@ -117,7 +174,9 @@ public class LHConfig {
 
         // Uncomment when done with production.
         // conf.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
-        return new KafkaConsumer<String, U>(conf);
+        KafkaConsumer<String, U> cons = new KafkaConsumer<String, U>(conf);
+        consumersToClose.add(cons);
+        return cons;
     }
 
     public Properties getStreamsConfig() {
@@ -187,6 +246,8 @@ public class LHConfig {
             AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG,
             getBootstrapServers()
         );
+        consumersToClose = new HashSet<>();
+        producersToClose = new HashSet<>();
         this.kafkaAdmin = Admin.create(akProperties);
     }
 
@@ -218,5 +279,23 @@ public class LHConfig {
         } else {
             return result;
         }
+    }
+
+    public static Javalin createAppWithHealth(KStreamsStateListener listener) {
+        Javalin app = Javalin.create(javalinConf -> {
+            javalinConf.prefer405over404 = true;
+            javalinConf.enableCorsForAllOrigins();
+        });
+
+        app.get("/health", (ctx) -> {
+            if (listener.getState() == KafkaStreams.State.RUNNING) {
+                ctx.status(200);
+                ctx.result("OK");
+            } else {
+                ctx.status(500);
+                ctx.result(listener.getState().toString());
+            }
+        });
+        return app;
     }
 }

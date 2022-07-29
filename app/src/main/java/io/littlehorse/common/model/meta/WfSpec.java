@@ -4,18 +4,19 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import io.littlehorse.common.LHUtil;
+import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.WFRunEvent;
 import io.littlehorse.common.model.observability.ObservabilityEvent;
 import io.littlehorse.common.model.observability.RunStartOe;
-import io.littlehorse.common.model.run.WfRun;
+import io.littlehorse.common.model.scheduler.WfRun;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.ThreadSpecPb;
 import io.littlehorse.common.proto.WFSpecPb;
 import io.littlehorse.common.proto.WFSpecPbOrBuilder;
+import io.littlehorse.common.util.LHUtil;
 
-public class WfSpec {
+public class WfSpec extends GETable {
     public String id;
     public String name;
     public Date createdAt;

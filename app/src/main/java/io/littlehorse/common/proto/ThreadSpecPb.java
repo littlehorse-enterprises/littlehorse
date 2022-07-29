@@ -16,7 +16,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private ThreadSpecPb() {
-    edges_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -52,18 +51,9 @@ private static final long serialVersionUID = 0L;
             break;
           case 10: {
             if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-              edges_ = new java.util.ArrayList<io.littlehorse.common.proto.EdgePb>();
-              mutable_bitField0_ |= 0x00000001;
-            }
-            edges_.add(
-                input.readMessage(io.littlehorse.common.proto.EdgePb.parser(), extensionRegistry));
-            break;
-          }
-          case 18: {
-            if (!((mutable_bitField0_ & 0x00000002) != 0)) {
               nodes_ = com.google.protobuf.MapField.newMapField(
                   NodesDefaultEntryHolder.defaultEntry);
-              mutable_bitField0_ |= 0x00000002;
+              mutable_bitField0_ |= 0x00000001;
             }
             com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.common.proto.NodePb>
             nodes__ = input.readMessage(
@@ -87,9 +77,6 @@ private static final long serialVersionUID = 0L;
       throw new com.google.protobuf.InvalidProtocolBufferException(
           e).setUnfinishedMessage(this);
     } finally {
-      if (((mutable_bitField0_ & 0x00000001) != 0)) {
-        edges_ = java.util.Collections.unmodifiableList(edges_);
-      }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
@@ -104,7 +91,7 @@ private static final long serialVersionUID = 0L;
   protected com.google.protobuf.MapField internalGetMapField(
       int number) {
     switch (number) {
-      case 2:
+      case 1:
         return internalGetNodes();
       default:
         throw new RuntimeException(
@@ -119,47 +106,7 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.common.proto.ThreadSpecPb.class, io.littlehorse.common.proto.ThreadSpecPb.Builder.class);
   }
 
-  public static final int EDGES_FIELD_NUMBER = 1;
-  private java.util.List<io.littlehorse.common.proto.EdgePb> edges_;
-  /**
-   * <code>repeated .lh_proto.EdgePb edges = 1;</code>
-   */
-  @java.lang.Override
-  public java.util.List<io.littlehorse.common.proto.EdgePb> getEdgesList() {
-    return edges_;
-  }
-  /**
-   * <code>repeated .lh_proto.EdgePb edges = 1;</code>
-   */
-  @java.lang.Override
-  public java.util.List<? extends io.littlehorse.common.proto.EdgePbOrBuilder> 
-      getEdgesOrBuilderList() {
-    return edges_;
-  }
-  /**
-   * <code>repeated .lh_proto.EdgePb edges = 1;</code>
-   */
-  @java.lang.Override
-  public int getEdgesCount() {
-    return edges_.size();
-  }
-  /**
-   * <code>repeated .lh_proto.EdgePb edges = 1;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.EdgePb getEdges(int index) {
-    return edges_.get(index);
-  }
-  /**
-   * <code>repeated .lh_proto.EdgePb edges = 1;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.EdgePbOrBuilder getEdgesOrBuilder(
-      int index) {
-    return edges_.get(index);
-  }
-
-  public static final int NODES_FIELD_NUMBER = 2;
+  public static final int NODES_FIELD_NUMBER = 1;
   private static final class NodesDefaultEntryHolder {
     static final com.google.protobuf.MapEntry<
         java.lang.String, io.littlehorse.common.proto.NodePb> defaultEntry =
@@ -186,7 +133,7 @@ private static final long serialVersionUID = 0L;
     return internalGetNodes().getMap().size();
   }
   /**
-   * <code>map&lt;string, .lh_proto.NodePb&gt; nodes = 2;</code>
+   * <code>map&lt;string, .lh_proto.NodePb&gt; nodes = 1;</code>
    */
 
   @java.lang.Override
@@ -204,7 +151,7 @@ private static final long serialVersionUID = 0L;
     return getNodesMap();
   }
   /**
-   * <code>map&lt;string, .lh_proto.NodePb&gt; nodes = 2;</code>
+   * <code>map&lt;string, .lh_proto.NodePb&gt; nodes = 1;</code>
    */
   @java.lang.Override
 
@@ -212,7 +159,7 @@ private static final long serialVersionUID = 0L;
     return internalGetNodes().getMap();
   }
   /**
-   * <code>map&lt;string, .lh_proto.NodePb&gt; nodes = 2;</code>
+   * <code>map&lt;string, .lh_proto.NodePb&gt; nodes = 1;</code>
    */
   @java.lang.Override
 
@@ -225,7 +172,7 @@ private static final long serialVersionUID = 0L;
     return map.containsKey(key) ? map.get(key) : defaultValue;
   }
   /**
-   * <code>map&lt;string, .lh_proto.NodePb&gt; nodes = 2;</code>
+   * <code>map&lt;string, .lh_proto.NodePb&gt; nodes = 1;</code>
    */
   @java.lang.Override
 
@@ -254,15 +201,12 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    for (int i = 0; i < edges_.size(); i++) {
-      output.writeMessage(1, edges_.get(i));
-    }
     com.google.protobuf.GeneratedMessageV3
       .serializeStringMapTo(
         output,
         internalGetNodes(),
         NodesDefaultEntryHolder.defaultEntry,
-        2);
+        1);
     unknownFields.writeTo(output);
   }
 
@@ -272,10 +216,6 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    for (int i = 0; i < edges_.size(); i++) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, edges_.get(i));
-    }
     for (java.util.Map.Entry<java.lang.String, io.littlehorse.common.proto.NodePb> entry
          : internalGetNodes().getMap().entrySet()) {
       com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.common.proto.NodePb>
@@ -284,7 +224,7 @@ private static final long serialVersionUID = 0L;
           .setValue(entry.getValue())
           .build();
       size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, nodes__);
+          .computeMessageSize(1, nodes__);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -301,8 +241,6 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.common.proto.ThreadSpecPb other = (io.littlehorse.common.proto.ThreadSpecPb) obj;
 
-    if (!getEdgesList()
-        .equals(other.getEdgesList())) return false;
     if (!internalGetNodes().equals(
         other.internalGetNodes())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
@@ -316,10 +254,6 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (getEdgesCount() > 0) {
-      hash = (37 * hash) + EDGES_FIELD_NUMBER;
-      hash = (53 * hash) + getEdgesList().hashCode();
-    }
     if (!internalGetNodes().getMap().isEmpty()) {
       hash = (37 * hash) + NODES_FIELD_NUMBER;
       hash = (53 * hash) + internalGetNodes().hashCode();
@@ -435,7 +369,7 @@ private static final long serialVersionUID = 0L;
     protected com.google.protobuf.MapField internalGetMapField(
         int number) {
       switch (number) {
-        case 2:
+        case 1:
           return internalGetNodes();
         default:
           throw new RuntimeException(
@@ -446,7 +380,7 @@ private static final long serialVersionUID = 0L;
     protected com.google.protobuf.MapField internalGetMutableMapField(
         int number) {
       switch (number) {
-        case 2:
+        case 1:
           return internalGetMutableNodes();
         default:
           throw new RuntimeException(
@@ -474,18 +408,11 @@ private static final long serialVersionUID = 0L;
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
-        getEdgesFieldBuilder();
       }
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      if (edgesBuilder_ == null) {
-        edges_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000001);
-      } else {
-        edgesBuilder_.clear();
-      }
       internalGetMutableNodes().clear();
       return this;
     }
@@ -514,15 +441,6 @@ private static final long serialVersionUID = 0L;
     public io.littlehorse.common.proto.ThreadSpecPb buildPartial() {
       io.littlehorse.common.proto.ThreadSpecPb result = new io.littlehorse.common.proto.ThreadSpecPb(this);
       int from_bitField0_ = bitField0_;
-      if (edgesBuilder_ == null) {
-        if (((bitField0_ & 0x00000001) != 0)) {
-          edges_ = java.util.Collections.unmodifiableList(edges_);
-          bitField0_ = (bitField0_ & ~0x00000001);
-        }
-        result.edges_ = edges_;
-      } else {
-        result.edges_ = edgesBuilder_.build();
-      }
       result.nodes_ = internalGetNodes();
       result.nodes_.makeImmutable();
       onBuilt();
@@ -573,32 +491,6 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.common.proto.ThreadSpecPb other) {
       if (other == io.littlehorse.common.proto.ThreadSpecPb.getDefaultInstance()) return this;
-      if (edgesBuilder_ == null) {
-        if (!other.edges_.isEmpty()) {
-          if (edges_.isEmpty()) {
-            edges_ = other.edges_;
-            bitField0_ = (bitField0_ & ~0x00000001);
-          } else {
-            ensureEdgesIsMutable();
-            edges_.addAll(other.edges_);
-          }
-          onChanged();
-        }
-      } else {
-        if (!other.edges_.isEmpty()) {
-          if (edgesBuilder_.isEmpty()) {
-            edgesBuilder_.dispose();
-            edgesBuilder_ = null;
-            edges_ = other.edges_;
-            bitField0_ = (bitField0_ & ~0x00000001);
-            edgesBuilder_ = 
-              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                 getEdgesFieldBuilder() : null;
-          } else {
-            edgesBuilder_.addAllMessages(other.edges_);
-          }
-        }
-      }
       internalGetMutableNodes().mergeFrom(
           other.internalGetNodes());
       this.mergeUnknownFields(other.unknownFields);
@@ -631,246 +523,6 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private java.util.List<io.littlehorse.common.proto.EdgePb> edges_ =
-      java.util.Collections.emptyList();
-    private void ensureEdgesIsMutable() {
-      if (!((bitField0_ & 0x00000001) != 0)) {
-        edges_ = new java.util.ArrayList<io.littlehorse.common.proto.EdgePb>(edges_);
-        bitField0_ |= 0x00000001;
-       }
-    }
-
-    private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.common.proto.EdgePb, io.littlehorse.common.proto.EdgePb.Builder, io.littlehorse.common.proto.EdgePbOrBuilder> edgesBuilder_;
-
-    /**
-     * <code>repeated .lh_proto.EdgePb edges = 1;</code>
-     */
-    public java.util.List<io.littlehorse.common.proto.EdgePb> getEdgesList() {
-      if (edgesBuilder_ == null) {
-        return java.util.Collections.unmodifiableList(edges_);
-      } else {
-        return edgesBuilder_.getMessageList();
-      }
-    }
-    /**
-     * <code>repeated .lh_proto.EdgePb edges = 1;</code>
-     */
-    public int getEdgesCount() {
-      if (edgesBuilder_ == null) {
-        return edges_.size();
-      } else {
-        return edgesBuilder_.getCount();
-      }
-    }
-    /**
-     * <code>repeated .lh_proto.EdgePb edges = 1;</code>
-     */
-    public io.littlehorse.common.proto.EdgePb getEdges(int index) {
-      if (edgesBuilder_ == null) {
-        return edges_.get(index);
-      } else {
-        return edgesBuilder_.getMessage(index);
-      }
-    }
-    /**
-     * <code>repeated .lh_proto.EdgePb edges = 1;</code>
-     */
-    public Builder setEdges(
-        int index, io.littlehorse.common.proto.EdgePb value) {
-      if (edgesBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureEdgesIsMutable();
-        edges_.set(index, value);
-        onChanged();
-      } else {
-        edgesBuilder_.setMessage(index, value);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .lh_proto.EdgePb edges = 1;</code>
-     */
-    public Builder setEdges(
-        int index, io.littlehorse.common.proto.EdgePb.Builder builderForValue) {
-      if (edgesBuilder_ == null) {
-        ensureEdgesIsMutable();
-        edges_.set(index, builderForValue.build());
-        onChanged();
-      } else {
-        edgesBuilder_.setMessage(index, builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .lh_proto.EdgePb edges = 1;</code>
-     */
-    public Builder addEdges(io.littlehorse.common.proto.EdgePb value) {
-      if (edgesBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureEdgesIsMutable();
-        edges_.add(value);
-        onChanged();
-      } else {
-        edgesBuilder_.addMessage(value);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .lh_proto.EdgePb edges = 1;</code>
-     */
-    public Builder addEdges(
-        int index, io.littlehorse.common.proto.EdgePb value) {
-      if (edgesBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureEdgesIsMutable();
-        edges_.add(index, value);
-        onChanged();
-      } else {
-        edgesBuilder_.addMessage(index, value);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .lh_proto.EdgePb edges = 1;</code>
-     */
-    public Builder addEdges(
-        io.littlehorse.common.proto.EdgePb.Builder builderForValue) {
-      if (edgesBuilder_ == null) {
-        ensureEdgesIsMutable();
-        edges_.add(builderForValue.build());
-        onChanged();
-      } else {
-        edgesBuilder_.addMessage(builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .lh_proto.EdgePb edges = 1;</code>
-     */
-    public Builder addEdges(
-        int index, io.littlehorse.common.proto.EdgePb.Builder builderForValue) {
-      if (edgesBuilder_ == null) {
-        ensureEdgesIsMutable();
-        edges_.add(index, builderForValue.build());
-        onChanged();
-      } else {
-        edgesBuilder_.addMessage(index, builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .lh_proto.EdgePb edges = 1;</code>
-     */
-    public Builder addAllEdges(
-        java.lang.Iterable<? extends io.littlehorse.common.proto.EdgePb> values) {
-      if (edgesBuilder_ == null) {
-        ensureEdgesIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, edges_);
-        onChanged();
-      } else {
-        edgesBuilder_.addAllMessages(values);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .lh_proto.EdgePb edges = 1;</code>
-     */
-    public Builder clearEdges() {
-      if (edgesBuilder_ == null) {
-        edges_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000001);
-        onChanged();
-      } else {
-        edgesBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .lh_proto.EdgePb edges = 1;</code>
-     */
-    public Builder removeEdges(int index) {
-      if (edgesBuilder_ == null) {
-        ensureEdgesIsMutable();
-        edges_.remove(index);
-        onChanged();
-      } else {
-        edgesBuilder_.remove(index);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .lh_proto.EdgePb edges = 1;</code>
-     */
-    public io.littlehorse.common.proto.EdgePb.Builder getEdgesBuilder(
-        int index) {
-      return getEdgesFieldBuilder().getBuilder(index);
-    }
-    /**
-     * <code>repeated .lh_proto.EdgePb edges = 1;</code>
-     */
-    public io.littlehorse.common.proto.EdgePbOrBuilder getEdgesOrBuilder(
-        int index) {
-      if (edgesBuilder_ == null) {
-        return edges_.get(index);  } else {
-        return edgesBuilder_.getMessageOrBuilder(index);
-      }
-    }
-    /**
-     * <code>repeated .lh_proto.EdgePb edges = 1;</code>
-     */
-    public java.util.List<? extends io.littlehorse.common.proto.EdgePbOrBuilder> 
-         getEdgesOrBuilderList() {
-      if (edgesBuilder_ != null) {
-        return edgesBuilder_.getMessageOrBuilderList();
-      } else {
-        return java.util.Collections.unmodifiableList(edges_);
-      }
-    }
-    /**
-     * <code>repeated .lh_proto.EdgePb edges = 1;</code>
-     */
-    public io.littlehorse.common.proto.EdgePb.Builder addEdgesBuilder() {
-      return getEdgesFieldBuilder().addBuilder(
-          io.littlehorse.common.proto.EdgePb.getDefaultInstance());
-    }
-    /**
-     * <code>repeated .lh_proto.EdgePb edges = 1;</code>
-     */
-    public io.littlehorse.common.proto.EdgePb.Builder addEdgesBuilder(
-        int index) {
-      return getEdgesFieldBuilder().addBuilder(
-          index, io.littlehorse.common.proto.EdgePb.getDefaultInstance());
-    }
-    /**
-     * <code>repeated .lh_proto.EdgePb edges = 1;</code>
-     */
-    public java.util.List<io.littlehorse.common.proto.EdgePb.Builder> 
-         getEdgesBuilderList() {
-      return getEdgesFieldBuilder().getBuilderList();
-    }
-    private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.common.proto.EdgePb, io.littlehorse.common.proto.EdgePb.Builder, io.littlehorse.common.proto.EdgePbOrBuilder> 
-        getEdgesFieldBuilder() {
-      if (edgesBuilder_ == null) {
-        edgesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            io.littlehorse.common.proto.EdgePb, io.littlehorse.common.proto.EdgePb.Builder, io.littlehorse.common.proto.EdgePbOrBuilder>(
-                edges_,
-                ((bitField0_ & 0x00000001) != 0),
-                getParentForChildren(),
-                isClean());
-        edges_ = null;
-      }
-      return edgesBuilder_;
-    }
-
     private com.google.protobuf.MapField<
         java.lang.String, io.littlehorse.common.proto.NodePb> nodes_;
     private com.google.protobuf.MapField<java.lang.String, io.littlehorse.common.proto.NodePb>
@@ -898,7 +550,7 @@ private static final long serialVersionUID = 0L;
       return internalGetNodes().getMap().size();
     }
     /**
-     * <code>map&lt;string, .lh_proto.NodePb&gt; nodes = 2;</code>
+     * <code>map&lt;string, .lh_proto.NodePb&gt; nodes = 1;</code>
      */
 
     @java.lang.Override
@@ -916,7 +568,7 @@ private static final long serialVersionUID = 0L;
       return getNodesMap();
     }
     /**
-     * <code>map&lt;string, .lh_proto.NodePb&gt; nodes = 2;</code>
+     * <code>map&lt;string, .lh_proto.NodePb&gt; nodes = 1;</code>
      */
     @java.lang.Override
 
@@ -924,7 +576,7 @@ private static final long serialVersionUID = 0L;
       return internalGetNodes().getMap();
     }
     /**
-     * <code>map&lt;string, .lh_proto.NodePb&gt; nodes = 2;</code>
+     * <code>map&lt;string, .lh_proto.NodePb&gt; nodes = 1;</code>
      */
     @java.lang.Override
 
@@ -937,7 +589,7 @@ private static final long serialVersionUID = 0L;
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
-     * <code>map&lt;string, .lh_proto.NodePb&gt; nodes = 2;</code>
+     * <code>map&lt;string, .lh_proto.NodePb&gt; nodes = 1;</code>
      */
     @java.lang.Override
 
@@ -958,7 +610,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>map&lt;string, .lh_proto.NodePb&gt; nodes = 2;</code>
+     * <code>map&lt;string, .lh_proto.NodePb&gt; nodes = 1;</code>
      */
 
     public Builder removeNodes(
@@ -977,7 +629,7 @@ private static final long serialVersionUID = 0L;
       return internalGetMutableNodes().getMutableMap();
     }
     /**
-     * <code>map&lt;string, .lh_proto.NodePb&gt; nodes = 2;</code>
+     * <code>map&lt;string, .lh_proto.NodePb&gt; nodes = 1;</code>
      */
     public Builder putNodes(
         java.lang.String key,
@@ -989,7 +641,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>map&lt;string, .lh_proto.NodePb&gt; nodes = 2;</code>
+     * <code>map&lt;string, .lh_proto.NodePb&gt; nodes = 1;</code>
      */
 
     public Builder putAllNodes(

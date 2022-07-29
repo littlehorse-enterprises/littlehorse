@@ -1,4 +1,4 @@
-package io.littlehorse.common.model.run;
+package io.littlehorse.common.model.scheduler;
 
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonIgnore;

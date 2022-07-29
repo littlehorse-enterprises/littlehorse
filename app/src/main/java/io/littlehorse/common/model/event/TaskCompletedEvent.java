@@ -2,9 +2,9 @@ package io.littlehorse.common.model.event;
 
 import java.util.Date;
 import com.google.protobuf.ByteString;
-import io.littlehorse.common.LHUtil;
 import io.littlehorse.common.proto.TaskCompletedEventPb;
 import io.littlehorse.common.proto.TaskCompletedEventPbOrBuilder;
+import io.littlehorse.common.util.LHUtil;
 
 public class TaskCompletedEvent {
     public int threadRunNumber;

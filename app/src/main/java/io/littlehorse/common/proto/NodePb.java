@@ -18,6 +18,7 @@ private static final long serialVersionUID = 0L;
   private NodePb() {
     taskDefName_ = "";
     type_ = 0;
+    outgoingEdges_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -40,6 +41,7 @@ private static final long serialVersionUID = 0L;
     if (extensionRegistry == null) {
       throw new java.lang.NullPointerException();
     }
+    int mutable_bitField0_ = 0;
     com.google.protobuf.UnknownFieldSet.Builder unknownFields =
         com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
@@ -62,6 +64,15 @@ private static final long serialVersionUID = 0L;
             type_ = rawValue;
             break;
           }
+          case 26: {
+            if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+              outgoingEdges_ = new java.util.ArrayList<io.littlehorse.common.proto.EdgePb>();
+              mutable_bitField0_ |= 0x00000001;
+            }
+            outgoingEdges_.add(
+                input.readMessage(io.littlehorse.common.proto.EdgePb.parser(), extensionRegistry));
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -77,6 +88,9 @@ private static final long serialVersionUID = 0L;
       throw new com.google.protobuf.InvalidProtocolBufferException(
           e).setUnfinishedMessage(this);
     } finally {
+      if (((mutable_bitField0_ & 0x00000001) != 0)) {
+        outgoingEdges_ = java.util.Collections.unmodifiableList(outgoingEdges_);
+      }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
@@ -151,6 +165,46 @@ private static final long serialVersionUID = 0L;
     return result == null ? io.littlehorse.common.proto.NodeTypePb.UNRECOGNIZED : result;
   }
 
+  public static final int OUTGOING_EDGES_FIELD_NUMBER = 3;
+  private java.util.List<io.littlehorse.common.proto.EdgePb> outgoingEdges_;
+  /**
+   * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+   */
+  @java.lang.Override
+  public java.util.List<io.littlehorse.common.proto.EdgePb> getOutgoingEdgesList() {
+    return outgoingEdges_;
+  }
+  /**
+   * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+   */
+  @java.lang.Override
+  public java.util.List<? extends io.littlehorse.common.proto.EdgePbOrBuilder> 
+      getOutgoingEdgesOrBuilderList() {
+    return outgoingEdges_;
+  }
+  /**
+   * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+   */
+  @java.lang.Override
+  public int getOutgoingEdgesCount() {
+    return outgoingEdges_.size();
+  }
+  /**
+   * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.EdgePb getOutgoingEdges(int index) {
+    return outgoingEdges_.get(index);
+  }
+  /**
+   * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.EdgePbOrBuilder getOutgoingEdgesOrBuilder(
+      int index) {
+    return outgoingEdges_.get(index);
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -171,6 +225,9 @@ private static final long serialVersionUID = 0L;
     if (type_ != io.littlehorse.common.proto.NodeTypePb.TASK.getNumber()) {
       output.writeEnum(2, type_);
     }
+    for (int i = 0; i < outgoingEdges_.size(); i++) {
+      output.writeMessage(3, outgoingEdges_.get(i));
+    }
     unknownFields.writeTo(output);
   }
 
@@ -186,6 +243,10 @@ private static final long serialVersionUID = 0L;
     if (type_ != io.littlehorse.common.proto.NodeTypePb.TASK.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(2, type_);
+    }
+    for (int i = 0; i < outgoingEdges_.size(); i++) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, outgoingEdges_.get(i));
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -205,6 +266,8 @@ private static final long serialVersionUID = 0L;
     if (!getTaskDefName()
         .equals(other.getTaskDefName())) return false;
     if (type_ != other.type_) return false;
+    if (!getOutgoingEdgesList()
+        .equals(other.getOutgoingEdgesList())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -220,6 +283,10 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getTaskDefName().hashCode();
     hash = (37 * hash) + TYPE_FIELD_NUMBER;
     hash = (53 * hash) + type_;
+    if (getOutgoingEdgesCount() > 0) {
+      hash = (37 * hash) + OUTGOING_EDGES_FIELD_NUMBER;
+      hash = (53 * hash) + getOutgoingEdgesList().hashCode();
+    }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -348,6 +415,7 @@ private static final long serialVersionUID = 0L;
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
+        getOutgoingEdgesFieldBuilder();
       }
     }
     @java.lang.Override
@@ -357,6 +425,12 @@ private static final long serialVersionUID = 0L;
 
       type_ = 0;
 
+      if (outgoingEdgesBuilder_ == null) {
+        outgoingEdges_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+      } else {
+        outgoingEdgesBuilder_.clear();
+      }
       return this;
     }
 
@@ -383,8 +457,18 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.common.proto.NodePb buildPartial() {
       io.littlehorse.common.proto.NodePb result = new io.littlehorse.common.proto.NodePb(this);
+      int from_bitField0_ = bitField0_;
       result.taskDefName_ = taskDefName_;
       result.type_ = type_;
+      if (outgoingEdgesBuilder_ == null) {
+        if (((bitField0_ & 0x00000001) != 0)) {
+          outgoingEdges_ = java.util.Collections.unmodifiableList(outgoingEdges_);
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
+        result.outgoingEdges_ = outgoingEdges_;
+      } else {
+        result.outgoingEdges_ = outgoingEdgesBuilder_.build();
+      }
       onBuilt();
       return result;
     }
@@ -440,6 +524,32 @@ private static final long serialVersionUID = 0L;
       if (other.type_ != 0) {
         setTypeValue(other.getTypeValue());
       }
+      if (outgoingEdgesBuilder_ == null) {
+        if (!other.outgoingEdges_.isEmpty()) {
+          if (outgoingEdges_.isEmpty()) {
+            outgoingEdges_ = other.outgoingEdges_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureOutgoingEdgesIsMutable();
+            outgoingEdges_.addAll(other.outgoingEdges_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.outgoingEdges_.isEmpty()) {
+          if (outgoingEdgesBuilder_.isEmpty()) {
+            outgoingEdgesBuilder_.dispose();
+            outgoingEdgesBuilder_ = null;
+            outgoingEdges_ = other.outgoingEdges_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+            outgoingEdgesBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getOutgoingEdgesFieldBuilder() : null;
+          } else {
+            outgoingEdgesBuilder_.addAllMessages(other.outgoingEdges_);
+          }
+        }
+      }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
@@ -468,6 +578,7 @@ private static final long serialVersionUID = 0L;
       }
       return this;
     }
+    private int bitField0_;
 
     private java.lang.Object taskDefName_ = "";
     /**
@@ -597,6 +708,246 @@ private static final long serialVersionUID = 0L;
       type_ = 0;
       onChanged();
       return this;
+    }
+
+    private java.util.List<io.littlehorse.common.proto.EdgePb> outgoingEdges_ =
+      java.util.Collections.emptyList();
+    private void ensureOutgoingEdgesIsMutable() {
+      if (!((bitField0_ & 0x00000001) != 0)) {
+        outgoingEdges_ = new java.util.ArrayList<io.littlehorse.common.proto.EdgePb>(outgoingEdges_);
+        bitField0_ |= 0x00000001;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.common.proto.EdgePb, io.littlehorse.common.proto.EdgePb.Builder, io.littlehorse.common.proto.EdgePbOrBuilder> outgoingEdgesBuilder_;
+
+    /**
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     */
+    public java.util.List<io.littlehorse.common.proto.EdgePb> getOutgoingEdgesList() {
+      if (outgoingEdgesBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(outgoingEdges_);
+      } else {
+        return outgoingEdgesBuilder_.getMessageList();
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     */
+    public int getOutgoingEdgesCount() {
+      if (outgoingEdgesBuilder_ == null) {
+        return outgoingEdges_.size();
+      } else {
+        return outgoingEdgesBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     */
+    public io.littlehorse.common.proto.EdgePb getOutgoingEdges(int index) {
+      if (outgoingEdgesBuilder_ == null) {
+        return outgoingEdges_.get(index);
+      } else {
+        return outgoingEdgesBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     */
+    public Builder setOutgoingEdges(
+        int index, io.littlehorse.common.proto.EdgePb value) {
+      if (outgoingEdgesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureOutgoingEdgesIsMutable();
+        outgoingEdges_.set(index, value);
+        onChanged();
+      } else {
+        outgoingEdgesBuilder_.setMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     */
+    public Builder setOutgoingEdges(
+        int index, io.littlehorse.common.proto.EdgePb.Builder builderForValue) {
+      if (outgoingEdgesBuilder_ == null) {
+        ensureOutgoingEdgesIsMutable();
+        outgoingEdges_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        outgoingEdgesBuilder_.setMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     */
+    public Builder addOutgoingEdges(io.littlehorse.common.proto.EdgePb value) {
+      if (outgoingEdgesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureOutgoingEdgesIsMutable();
+        outgoingEdges_.add(value);
+        onChanged();
+      } else {
+        outgoingEdgesBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     */
+    public Builder addOutgoingEdges(
+        int index, io.littlehorse.common.proto.EdgePb value) {
+      if (outgoingEdgesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureOutgoingEdgesIsMutable();
+        outgoingEdges_.add(index, value);
+        onChanged();
+      } else {
+        outgoingEdgesBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     */
+    public Builder addOutgoingEdges(
+        io.littlehorse.common.proto.EdgePb.Builder builderForValue) {
+      if (outgoingEdgesBuilder_ == null) {
+        ensureOutgoingEdgesIsMutable();
+        outgoingEdges_.add(builderForValue.build());
+        onChanged();
+      } else {
+        outgoingEdgesBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     */
+    public Builder addOutgoingEdges(
+        int index, io.littlehorse.common.proto.EdgePb.Builder builderForValue) {
+      if (outgoingEdgesBuilder_ == null) {
+        ensureOutgoingEdgesIsMutable();
+        outgoingEdges_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        outgoingEdgesBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     */
+    public Builder addAllOutgoingEdges(
+        java.lang.Iterable<? extends io.littlehorse.common.proto.EdgePb> values) {
+      if (outgoingEdgesBuilder_ == null) {
+        ensureOutgoingEdgesIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, outgoingEdges_);
+        onChanged();
+      } else {
+        outgoingEdgesBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     */
+    public Builder clearOutgoingEdges() {
+      if (outgoingEdgesBuilder_ == null) {
+        outgoingEdges_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+      } else {
+        outgoingEdgesBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     */
+    public Builder removeOutgoingEdges(int index) {
+      if (outgoingEdgesBuilder_ == null) {
+        ensureOutgoingEdgesIsMutable();
+        outgoingEdges_.remove(index);
+        onChanged();
+      } else {
+        outgoingEdgesBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     */
+    public io.littlehorse.common.proto.EdgePb.Builder getOutgoingEdgesBuilder(
+        int index) {
+      return getOutgoingEdgesFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     */
+    public io.littlehorse.common.proto.EdgePbOrBuilder getOutgoingEdgesOrBuilder(
+        int index) {
+      if (outgoingEdgesBuilder_ == null) {
+        return outgoingEdges_.get(index);  } else {
+        return outgoingEdgesBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     */
+    public java.util.List<? extends io.littlehorse.common.proto.EdgePbOrBuilder> 
+         getOutgoingEdgesOrBuilderList() {
+      if (outgoingEdgesBuilder_ != null) {
+        return outgoingEdgesBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(outgoingEdges_);
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     */
+    public io.littlehorse.common.proto.EdgePb.Builder addOutgoingEdgesBuilder() {
+      return getOutgoingEdgesFieldBuilder().addBuilder(
+          io.littlehorse.common.proto.EdgePb.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     */
+    public io.littlehorse.common.proto.EdgePb.Builder addOutgoingEdgesBuilder(
+        int index) {
+      return getOutgoingEdgesFieldBuilder().addBuilder(
+          index, io.littlehorse.common.proto.EdgePb.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     */
+    public java.util.List<io.littlehorse.common.proto.EdgePb.Builder> 
+         getOutgoingEdgesBuilderList() {
+      return getOutgoingEdgesFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.common.proto.EdgePb, io.littlehorse.common.proto.EdgePb.Builder, io.littlehorse.common.proto.EdgePbOrBuilder> 
+        getOutgoingEdgesFieldBuilder() {
+      if (outgoingEdgesBuilder_ == null) {
+        outgoingEdgesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            io.littlehorse.common.proto.EdgePb, io.littlehorse.common.proto.EdgePb.Builder, io.littlehorse.common.proto.EdgePbOrBuilder>(
+                outgoingEdges_,
+                ((bitField0_ & 0x00000001) != 0),
+                getParentForChildren(),
+                isClean());
+        outgoingEdges_ = null;
+      }
+      return outgoingEdgesBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

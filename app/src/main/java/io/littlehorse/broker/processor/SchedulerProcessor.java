@@ -1,4 +1,4 @@
-package io.littlehorse.scheduler;
+package io.littlehorse.broker.processor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +13,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.WFRunEvent;
 import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.model.run.WfRun;
+import io.littlehorse.common.model.scheduler.WfRun;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.WFRunEventPb.EventCase;
 
@@ -102,7 +102,7 @@ public class SchedulerProcessor
             taskOutput.request = r;
             context.forward(new Record<>(
                 record.key(), taskOutput, record.timestamp()
-            ), Scheduler.taskSchedulerSink);
+            ), LHTopology.taskSchedulerSink);
         }
 
         // Forward the observability events
@@ -110,7 +110,7 @@ public class SchedulerProcessor
         oeOutput.observabilityEvents = wfRun.oEvents;
         context.forward(new Record<>(
             record.key(), oeOutput, record.timestamp()
-        ), Scheduler.wfRunSink);
+        ), LHTopology.wfRunSink);
 
         // Save the WfRunState
         wfRunStore.put(record.key(), wfRun);
