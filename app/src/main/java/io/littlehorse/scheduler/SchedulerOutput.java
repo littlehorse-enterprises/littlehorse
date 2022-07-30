@@ -1,4 +1,4 @@
-package io.littlehorse.broker.processor;
+package io.littlehorse.scheduler;
 
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.observability.ObservabilityEvents;

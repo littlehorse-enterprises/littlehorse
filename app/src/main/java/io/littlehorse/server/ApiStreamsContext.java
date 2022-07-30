@@ -1,4 +1,4 @@
-package io.littlehorse.broker.processor;
+package io.littlehorse.server;
 
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
@@ -7,11 +7,13 @@ import org.apache.kafka.streams.StoreQueryParameters;
 import org.apache.kafka.streams.state.HostInfo;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
-import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHConnectionError;
+import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.server.IndexEntry;
 import io.littlehorse.common.model.server.RangeResponse;
@@ -28,8 +30,9 @@ public class ApiStreamsContext {
         this.client = config.getApiClient();
     }
 
-    public <T extends GETable> T get(String id, Class<T> cls)
-    throws LHConnectionError {
+    public <U extends MessageOrBuilder, T extends GETable<U>>
+    T get(String id, Class<T> cls) throws LHConnectionError {
+
         String storeName = cls.getSimpleName();
         KeyQueryMetadata metadata = streams.queryMetadataForKey(
             storeName, id, Serdes.String().serializer()
@@ -41,19 +44,20 @@ public class ApiStreamsContext {
                 storeName, metadata.activeHost(), id
             );
             try {
-                return GETable.fromProtoBytes(serialized, cls);
-            } catch(InvalidProtocolBufferException exn) {
+                return LHSerializable.fromBytes(serialized, cls);
+            } catch(LHSerdeError exn) {
                 throw new LHConnectionError(
                     exn, "Got invalid protobuf over the wire: ");
             }
         }
     }
 
-    public <T extends GETable> T localGet(String id, Class<T> cls) {
+    public <U extends MessageOrBuilder, T extends GETable<U>>
+    T localGet(String id, Class<T> cls) {
         return getGETableStore(cls).get(id);
     }
 
-    public <T extends POSTable> T post(T toSave, Class<T> cls)
+    public <U extends MessageOrBuilder, T extends POSTable<U>>T post(T toSave, Class<T> cls)
     throws LHConnectionError {
         // Step 1: send the POST to the kafka topic.
 
@@ -79,9 +83,9 @@ public class ApiStreamsContext {
         return null;
     }
 
-    private <T extends GETable> ReadOnlyKeyValueStore<String, T> getGETableStore(
-        Class<T> cls
-    ) {
+    private <U extends MessageOrBuilder, T extends GETable<U>>
+    ReadOnlyKeyValueStore<String, T> getGETableStore(Class<T> cls) {
+
         return streams.store(
             StoreQueryParameters.fromNameAndType(
                 cls.getName(),
@@ -90,7 +94,7 @@ public class ApiStreamsContext {
         );
     }
 
-    private ReadOnlyKeyValueStore<String, IndexEntry> getIndexStore() {
+    public ReadOnlyKeyValueStore<String, IndexEntry> getIndexStore() {
         return streams.store(
             StoreQueryParameters.fromNameAndType(
                 LHConstants.INDEX_STORE_NAME,

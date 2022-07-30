@@ -3,16 +3,21 @@ package io.littlehorse.common.model.meta;
 import java.util.HashSet;
 import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.EdgePb;
 import io.littlehorse.common.proto.NodePb;
 import io.littlehorse.common.proto.NodePbOrBuilder;
 import io.littlehorse.common.proto.NodeTypePb;
 
-public class Node {
+public class Node extends LHSerializable<NodePbOrBuilder> {
     public String taskDefName;
     public NodeTypePb type;
 
-    public NodePb.Builder toProtoBuilder() {
+    public Class<NodePb> getProtoBaseClass() {
+        return NodePb.class;
+    }
+
+    public NodePb.Builder toProto() {
         NodePb.Builder out = NodePb.newBuilder()
             .setTaskDefName(taskDefName)
             .setType(type);
@@ -20,14 +25,18 @@ public class Node {
         return out;
     }
 
-    public static Node fromProto(NodePbOrBuilder proto) {
-        Node n = new Node();
-        n.taskDefName = proto.getTaskDefName();
-        n.type = proto.getType();
+    public void initFrom(NodePbOrBuilder proto) {
+        taskDefName = proto.getTaskDefName();
+        type = proto.getType();
 
         for (EdgePb e: proto.getOutgoingEdgesList()) {
-            n.outgoingEdges.add(Edge.fromProto(e));
+            outgoingEdges.add(Edge.fromProto(e));
         }
+    }
+
+    public static Node fromProto(NodePbOrBuilder proto) {
+        Node n = new Node();
+        n.initFrom(proto);
         return n;
     }
 

@@ -1,4 +1,4 @@
-package io.littlehorse.broker.processor;
+package io.littlehorse.scheduler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,14 +13,14 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.WFRunEvent;
 import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.model.scheduler.WfRun;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.WFRunEventPb.EventCase;
+import io.littlehorse.scheduler.model.WfRunState;
 
 public class SchedulerProcessor
     implements Processor<String, WFRunEvent, String, SchedulerOutput>
 {
-    private KeyValueStore<String, WfRun> wfRunStore;
+    private KeyValueStore<String, WfRunState> wfRunStore;
     private KeyValueStore<String, WfSpec> wfSpecStore;
     private Map<String, WfSpec> wfSpecCache;
     private ProcessorContext<String, SchedulerOutput> context;
@@ -43,7 +43,7 @@ public class SchedulerProcessor
             processHelper(record);
         } catch(Exception exn) {
             String wfRunId = record.key();
-            WfRun wfRun = wfRunStore.get(wfRunId);
+            WfRunState wfRun = wfRunStore.get(wfRunId);
             if (wfRun == null) {
                 exn.printStackTrace();
                 return;
@@ -78,7 +78,7 @@ public class SchedulerProcessor
         }
 
         WFRunEvent e = record.value();
-        WfRun wfRun = wfRunStore.get(record.key());
+        WfRunState wfRun = wfRunStore.get(record.key());
 
         List<TaskScheduleRequest> toSchedule = new ArrayList<>();
 
@@ -102,7 +102,7 @@ public class SchedulerProcessor
             taskOutput.request = r;
             context.forward(new Record<>(
                 record.key(), taskOutput, record.timestamp()
-            ), LHTopology.taskSchedulerSink);
+            ), SchedulerTopology.taskSchedulerSink);
         }
 
         // Forward the observability events
@@ -110,7 +110,7 @@ public class SchedulerProcessor
         oeOutput.observabilityEvents = wfRun.oEvents;
         context.forward(new Record<>(
             record.key(), oeOutput, record.timestamp()
-        ), LHTopology.wfRunSink);
+        ), SchedulerTopology.wfRunSink);
 
         // Save the WfRunState
         wfRunStore.put(record.key(), wfRun);

@@ -1,4 +1,4 @@
-package io.littlehorse.broker.processor;
+package io.littlehorse.scheduler;
 
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
@@ -11,14 +11,14 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.event.WFRunEvent;
 import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.model.scheduler.WfRun;
 import io.littlehorse.common.serde.SchedulerOutputTsrSer;
 import io.littlehorse.common.serde.SchedulerOutputWFRunSer;
 import io.littlehorse.common.serde.WFRunEventSerde;
 import io.littlehorse.common.serde.WFRunSerde;
 import io.littlehorse.common.serde.WfSpecSerde;
+import io.littlehorse.scheduler.model.WfRunState;
 
-public class LHTopology {
+public class SchedulerTopology {
     public static String topoSource = "WFRunEvent Source";
     public static String runtimeProcessor = "WFRuntime";
     public static String wfRunSink = "WFRun Sink";
@@ -28,7 +28,7 @@ public class LHTopology {
         Topology topo = new Topology();
 
         Serde<WFRunEvent> evtSerde = new WFRunEventSerde();
-        Serde<WfRun> runSerde = new WFRunSerde();
+        Serde<WfRunState> runSerde = new WFRunSerde();
         Serde<WfSpec> specSerde = new WfSpecSerde();
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -73,7 +73,7 @@ public class LHTopology {
         );
 
         // Add state store
-        StoreBuilder<KeyValueStore<String, WfRun>> wfRunStoreBuilder =
+        StoreBuilder<KeyValueStore<String, WfRunState>> wfRunStoreBuilder =
             Stores.keyValueStoreBuilder(
                 Stores.persistentKeyValueStore(LHConstants.WF_RUN_STORE_NAME),
                 Serdes.String(),

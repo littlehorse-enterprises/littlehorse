@@ -9,14 +9,14 @@ import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.WFRunEvent;
 import io.littlehorse.common.model.observability.ObservabilityEvent;
 import io.littlehorse.common.model.observability.RunStartOe;
-import io.littlehorse.common.model.scheduler.WfRun;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.ThreadSpecPb;
 import io.littlehorse.common.proto.WFSpecPb;
 import io.littlehorse.common.proto.WFSpecPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.scheduler.model.WfRunState;
 
-public class WfSpec extends GETable {
+public class WfSpec extends GETable<WFSpecPbOrBuilder> {
     public String id;
     public String name;
     public Date createdAt;
@@ -31,7 +31,7 @@ public class WfSpec extends GETable {
         threadSpecs = new HashMap<>();
     }
 
-    public WFSpecPb.Builder toProtoBuilder() {
+    public WFSpecPb.Builder toProto() {
         WFSpecPb.Builder out = WFSpecPb.newBuilder()
             .setId(id)
             .setCreatedAt(LHUtil.fromDate(createdAt))
@@ -43,7 +43,7 @@ public class WfSpec extends GETable {
             for (Map.Entry<String, ThreadSpec> p: threadSpecs.entrySet()) {
                 out.putThreadSpecs(
                     p.getKey(),
-                    p.getValue().toProtoBuilder().build()
+                    p.getValue().toProto().build()
                 );
             }
         }
@@ -51,28 +51,36 @@ public class WfSpec extends GETable {
         return out;
     }
 
-    public static WfSpec fromProto(WFSpecPbOrBuilder proto) {
-        WfSpec out = new WfSpec();
-        out.id = proto.getId();
-        out.createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
-        out.updatedAt = LHUtil.fromProtoTs(proto.getUpdatedAt());
-        out.entrypointThreadName = proto.getEntrypointThreadName();
-        out.status = proto.getStatus();
-        out.name = proto.getName();
+    public void initFrom(WFSpecPbOrBuilder proto) {
+        createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
+        id = proto.getId();
+        updatedAt = LHUtil.fromProtoTs(proto.getUpdatedAt());
+        entrypointThreadName = proto.getEntrypointThreadName();
+        status = proto.getStatus();
+        name = proto.getName();
 
         for (
             Map.Entry<String, ThreadSpecPb> e: proto.getThreadSpecsMap().entrySet()
         ) {
             ThreadSpec ts = ThreadSpec.fromProto(e.getValue());
-            ts.wfSpec = out;
+            ts.wfSpec = this;
             ts.name = e.getKey();
-            out.threadSpecs.put(e.getKey(), ts);
+            threadSpecs.put(e.getKey(), ts);
         }
+    }
+
+    public Class<WFSpecPb> getProtoBaseClass() {
+        return WFSpecPb.class;
+    }
+
+    public static WfSpec fromProto(WFSpecPbOrBuilder proto) {
+        WfSpec out = new WfSpec();
+        out.initFrom(proto);
         return out;
     }
 
-    public WfRun startNewRun(WFRunEvent e, List<TaskScheduleRequest> toSchedule) {
-        WfRun out = new WfRun(e.runRequest.wfRunId);
+    public WfRunState startNewRun(WFRunEvent e, List<TaskScheduleRequest> toSchedule) {
+        WfRunState out = new WfRunState(e.runRequest.wfRunId);
 
         out.wfSpec = this;
         out.toSchedule = toSchedule;

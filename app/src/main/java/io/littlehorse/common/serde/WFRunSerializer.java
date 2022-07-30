@@ -1,10 +1,10 @@
 package io.littlehorse.common.serde;
 
 import org.apache.kafka.common.serialization.Serializer;
-import io.littlehorse.common.model.scheduler.WfRun;
+import io.littlehorse.scheduler.model.WfRunState;
 
-public class WFRunSerializer implements Serializer<WfRun> {
-    public byte[] serialize(String topic, WfRun wfRun) {
+public class WFRunSerializer implements Serializer<WfRunState> {
+    public byte[] serialize(String topic, WfRunState wfRun) {
         return wfRun.toProtoBuilder().build().toByteArray();
     }
 }

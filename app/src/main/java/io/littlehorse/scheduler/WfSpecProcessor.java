@@ -1,4 +1,4 @@
-package io.littlehorse.broker.processor;
+package io.littlehorse.scheduler;
 
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.state.KeyValueStore;

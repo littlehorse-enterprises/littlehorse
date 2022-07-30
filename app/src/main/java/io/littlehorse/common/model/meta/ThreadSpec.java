@@ -3,12 +3,13 @@ package io.littlehorse.common.model.meta;
 import java.util.HashMap;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.NodePb;
 import io.littlehorse.common.proto.NodeTypePb;
 import io.littlehorse.common.proto.ThreadSpecPb;
 import io.littlehorse.common.proto.ThreadSpecPbOrBuilder;
 
-public class ThreadSpec {
+public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
     public String name;
 
     public Map<String, Node> nodes;
@@ -17,29 +18,35 @@ public class ThreadSpec {
         nodes = new HashMap<>();
     }
 
+    public Class<ThreadSpecPb> getProtoBaseClass() {
+        return ThreadSpecPb.class;
+    }
+
     // Below is Serde
-    public ThreadSpecPb.Builder toProtoBuilder() {
+    public ThreadSpecPb.Builder toProto() {
         ThreadSpecPb.Builder out = ThreadSpecPb.newBuilder();
 
         for (Map.Entry<String, Node> e: nodes.entrySet()) {
-            out.putNodes(e.getKey(), e.getValue().toProtoBuilder().build());
+            out.putNodes(e.getKey(), e.getValue().toProto().build());
         }
         return out;
     }
 
-    public static ThreadSpec fromProto(ThreadSpecPbOrBuilder proto) {
-        ThreadSpec out = new ThreadSpec();
-
+    public void initFrom(ThreadSpecPbOrBuilder proto) {
         for (Map.Entry<String, NodePb> p: proto.getNodesMap().entrySet()) {
             Node n = Node.fromProto(p.getValue());
-            n.threadSpec = out;
+            n.threadSpec = this;
             n.name = p.getKey();
-            out.nodes.put(p.getKey(), n);
+            this.nodes.put(p.getKey(), n);
             if (n.type == NodeTypePb.ENTRYPOINT) {
-                out.entrypointNodeName = n.name;
+                this.entrypointNodeName = n.name;
             }
         }
+    }
 
+    public static ThreadSpec fromProto(ThreadSpecPbOrBuilder proto) {
+        ThreadSpec out = new ThreadSpec();
+        out.initFrom(proto);
         return out;
     }
 

@@ -14,11 +14,12 @@ import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
-import io.littlehorse.broker.processor.LHTopology;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.model.scheduler.WfRun;
 import io.littlehorse.common.serde.WFRunSerde;
+import io.littlehorse.scheduler.SchedulerTopology;
+import io.littlehorse.scheduler.model.WfRunState;
+import io.littlehorse.server.LHApi;
 import io.littlehorse.worker.TestWorker;
 
 public class App {
@@ -64,12 +65,29 @@ public class App {
 
             if (arg.equals("worker")) {
                 TestWorker.doMain(config);
+            } else if (arg.equals("both")) {
+                schedulerAndServer(config);
             } else if (arg.equals("scheduler")) {
-                LHTopology.doMain(config);
+                SchedulerTopology.doMain(config);
             } else if (arg.equals("tester")) {
                 tester();
             }
         }
+    }
+
+    public static void  schedulerAndServer(LHConfig config) {
+        Topology topology = SchedulerTopology.initTopology(config);
+        KafkaStreams scheduler = new KafkaStreams(topology, config.getStreamsConfig());
+
+        LHApi api = new LHApi(config);
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            scheduler.close();
+            config.cleanup();
+        }));
+
+        scheduler.start();
+        api.start();
     }
 
     public static void tester() {
@@ -79,7 +97,7 @@ public class App {
         StreamsBuilder builder = new StreamsBuilder();
         String topic = "scheduler-wfrun-changelog";
 
-        KStream<String, WfRun> stream = builder.stream(
+        KStream<String, WfRunState> stream = builder.stream(
             topic,
             Consumed.with(Serdes.String(), new WFRunSerde())
         );

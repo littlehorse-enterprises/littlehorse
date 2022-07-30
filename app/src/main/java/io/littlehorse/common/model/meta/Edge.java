@@ -1,22 +1,31 @@
 package io.littlehorse.common.model.meta;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.EdgePb;
 import io.littlehorse.common.proto.EdgePbOrBuilder;
 
-public class Edge {
+public class Edge extends LHSerializable<EdgePbOrBuilder> {
     public String sinkNodeName;
 
-    public EdgePb.Builder toProtoBuilder() {
+    public Class<EdgePb> getProtoBaseClass() {
+        return EdgePb.class;
+    }
+
+    public EdgePb.Builder toProto() {
         EdgePb.Builder out = EdgePb.newBuilder()
             .setSinkNodeName(sinkNodeName);
 
         return out;
     }
 
+    public void initFrom(EdgePbOrBuilder proto) {
+        sinkNodeName = proto.getSinkNodeName();
+    }
+
     public static Edge fromProto(EdgePbOrBuilder proto) {
         Edge out = new Edge();
-        out.sinkNodeName = proto.getSinkNodeName();
+        out.initFrom(proto);
         return out;
     }
 

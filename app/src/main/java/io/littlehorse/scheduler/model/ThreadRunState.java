@@ -1,4 +1,4 @@
-package io.littlehorse.common.model.scheduler;
+package io.littlehorse.scheduler.model;
 
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -52,7 +52,7 @@ public class ThreadRunState {
     }
 
     // Implementation details below.
-    @JsonIgnore public WfRun wfRun;
+    @JsonIgnore public WfRunState wfRun;
     @JsonIgnore private ThreadSpec threadSpec;
 
     @JsonIgnore public ThreadSpec getThreadSpec() {

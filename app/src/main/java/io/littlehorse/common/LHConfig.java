@@ -188,14 +188,9 @@ public class LHConfig {
         props.put(StreamsConfig.STATE_DIR_CONFIG, this.getStateDirectory());
         props.put(StreamsConfig.METADATA_MAX_AGE_CONFIG, 4000);
         props.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, "exactly_once_v2");
-        props.put(
-            StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG,
-            Serdes.StringSerde.class.getName()
-        );
-        props.put(
-            StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG,
-            Serdes.StringSerde.class.getName()
-        );
+        props.put(StreamsConfig.TOPOLOGY_OPTIMIZATION_CONFIG, "all");
+        props.put(StreamsConfig.producerPrefix(ProducerConfig.ACKS_CONFIG), "all");
+        props.put(StreamsConfig.REPLICATION_FACTOR_CONFIG, getReplicationFactor());
         props.put(
             StreamsConfig.consumerPrefix(ConsumerConfig.METADATA_MAX_AGE_CONFIG), 4000
         );
@@ -207,14 +202,42 @@ public class LHConfig {
             StreamsConfig.DEFAULT_PRODUCTION_EXCEPTION_HANDLER_CLASS_CONFIG,
             org.apache.kafka.streams.errors.DefaultProductionExceptionHandler.class
         );
-        props.put(StreamsConfig.TOPOLOGY_OPTIMIZATION_CONFIG, "all");
         props.put(
             StreamsConfig.NUM_STREAM_THREADS_CONFIG,
             Integer.valueOf(
                 getOrSetDefault(LHConstants.NUM_STREAM_THREADS_KEY, "1")
             )
         );
+        props.put(
+            StreamsConfig.NUM_STANDBY_REPLICAS_CONFIG,
+            this.getStandbyReplicas()
+        );
+        props.put(
+            StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG,
+            Serdes.StringSerde.class.getName()
+        );
+        props.put(
+            StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG,
+            Serdes.StringSerde.class.getName()
+        );
+        props.put(
+            StreamsConfig.COMMIT_INTERVAL_MS_CONFIG,
+            getStreamsCommitInterval()
+        );
         return props;
+    }
+
+    public int getStreamsCommitInterval() {
+        return Integer.valueOf(getOrSetDefault(
+            LHConstants.STREAMS_COMMIT_INTERVAL,
+            "50"
+        ));
+    }
+
+    public int getStandbyReplicas() {
+        return Integer.valueOf(
+            getOrSetDefault(LHConstants.NUM_STANDBY_REPLICAS_KEY, "1")
+        );
     }
 
     public void createKafkaTopic(NewTopic topic)

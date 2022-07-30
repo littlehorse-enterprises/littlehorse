@@ -1,23 +1,21 @@
-package io.littlehorse.broker.server;
+package io.littlehorse.server;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.model.scheduler.WfRun;
 import io.littlehorse.common.util.KStreamsStateListener;
 
+
 public class LHApi {
-    private Javalin app; 
+    private Javalin app;
     private LHConfig config;
 
     public static List<String> GETables = Arrays.asList(
-        WfSpec.class.getSimpleName(), TaskDef.class.getSimpleName(),
-        WfRun.class.getSimpleName(), TaskRun.class.getSimpleName()
+        WfSpec.class.getSimpleName(), TaskDef.class.getSimpleName()
     );
 
     public LHApi(LHConfig config) {

@@ -4,16 +4,18 @@ import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.proto.TaskDefPb;
 import io.littlehorse.common.proto.TaskDefPbOrBuilder;
 
-public class TaskDef extends GETable {
+public class TaskDef extends GETable<TaskDefPbOrBuilder> {
     public String name;
 
-    public TaskDefPb.Builder toProtoBuilder() {
+    public Class<TaskDefPb> getProtoBaseClass() {
+        return TaskDefPb.class;
+    }
+
+    public TaskDefPb.Builder toProto() {
         return TaskDefPb.newBuilder().setName(name);
     }
 
-    public static TaskDef fromProto(TaskDefPbOrBuilder proto) {
-        TaskDef out = new TaskDef();
-        out.name = proto.getName();
-        return out;
+    public void initFrom(TaskDefPbOrBuilder proto) {
+        name = proto.getName();
     }
 }

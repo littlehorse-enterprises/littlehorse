@@ -2,13 +2,13 @@ package io.littlehorse.common.serde;
 
 import org.apache.kafka.common.serialization.Deserializer;
 import com.google.protobuf.InvalidProtocolBufferException;
-import io.littlehorse.common.model.scheduler.WfRun;
 import io.littlehorse.common.proto.WFRunPb;
+import io.littlehorse.scheduler.model.WfRunState;
 
-public class WFRunDeserializer implements Deserializer<WfRun> {
-    public WfRun deserialize(String topic, byte[] data) {
+public class WFRunDeserializer implements Deserializer<WfRunState> {
+    public WfRunState deserialize(String topic, byte[] data) {
         try {
-            return WfRun.fromProto(WFRunPb.parseFrom(data));
+            return WfRunState.fromProto(WFRunPb.parseFrom(data));
         } catch(InvalidProtocolBufferException exn) {
             throw new RuntimeException(exn);
         }

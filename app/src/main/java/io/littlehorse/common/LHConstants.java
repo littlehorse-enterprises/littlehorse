@@ -12,6 +12,8 @@ public class LHConstants {
     public static String TASK_PARTITIONS_KEY = "LHORSE_TASK_PARTITIONS";
     public static String CLUSTER_PARTITIONS_KEY = "LHORSE_CLUSTER_PARTITIONS";
     public static String NUM_STREAM_THREADS_KEY = "LHORSE_NUM_STREAM_THREADS";
+    public static String NUM_STANDBY_REPLICAS_KEY = "LHORSE_NUM_STANDBY_REPLICAS";
+    public static String STREAMS_COMMIT_INTERVAL = "LHORSE_STREAMS_COMMIT_INTERVAL";
 
     public static String WF_RUN_EVENT_TOPIC = "WFRun_Event";
     public static String WF_RUN_ENTITY_TOPIC = "WFRun_Entity";

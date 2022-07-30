@@ -6,7 +6,7 @@ import io.littlehorse.common.proto.WFSpecPb;
 
 public class WfSpecSerializer implements Serializer<WfSpec> {
     public byte[] serialize(String topic, WfSpec evt) {
-        WFSpecPb proto = evt.toProtoBuilder().build();
+        WFSpecPb proto = evt.toProto().build();
         return proto.toByteArray();
     }
 }

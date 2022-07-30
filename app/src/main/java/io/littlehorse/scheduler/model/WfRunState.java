@@ -1,4 +1,4 @@
-package io.littlehorse.common.model.scheduler;
+package io.littlehorse.scheduler.model;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,7 +21,7 @@ import io.littlehorse.common.proto.WFRunPb;
 import io.littlehorse.common.proto.WFRunPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
 
-public class WfRun extends GETable {
+public class WfRunState {
     public String id;
     public String wfSpecId;
     public String wfSpecName;
@@ -31,7 +31,7 @@ public class WfRun extends GETable {
 
     public List<ThreadRunState> threadRuns;
 
-    public WfRun(String id) {
+    public WfRunState(String id) {
         this.id = id;
         threadRuns = new ArrayList<>();
         oEvents = new ObservabilityEvents();
@@ -58,8 +58,8 @@ public class WfRun extends GETable {
         return b;
     }
 
-    public static WfRun fromProto(WFRunPbOrBuilder proto) {
-        WfRun out = new WfRun(proto.getId());
+    public static WfRunState fromProto(WFRunPbOrBuilder proto) {
+        WfRunState out = new WfRunState(proto.getId());
         out.wfSpecId = proto.getWfSpecId();
         out.status = proto.getStatus();
         out.threadRuns = new ArrayList<>();
