@@ -4,18 +4,18 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf type {@code lh_proto.WFRunPb}
+ * Protobuf type {@code lh_proto.WFRunStatePb}
  */
-public final class WFRunPb extends
+public final class WFRunStatePb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.WFRunPb)
-    WFRunPbOrBuilder {
+    // @@protoc_insertion_point(message_implements:lh_proto.WFRunStatePb)
+    WFRunStatePbOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use WFRunPb.newBuilder() to construct.
-  private WFRunPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use WFRunStatePb.newBuilder() to construct.
+  private WFRunStatePb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private WFRunPb() {
+  private WFRunStatePb() {
     id_ = "";
     wfSpecId_ = "";
     status_ = 0;
@@ -26,7 +26,7 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new WFRunPb();
+    return new WFRunStatePb();
   }
 
   @java.lang.Override
@@ -34,7 +34,7 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
-  private WFRunPb(
+  private WFRunStatePb(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -130,15 +130,15 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_WFRunPb_descriptor;
+    return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_WFRunStatePb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_WFRunPb_fieldAccessorTable
+    return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_WFRunStatePb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.common.proto.WFRunPb.class, io.littlehorse.common.proto.WFRunPb.Builder.class);
+            io.littlehorse.common.proto.WFRunStatePb.class, io.littlehorse.common.proto.WFRunStatePb.Builder.class);
   }
 
   private int bitField0_;
@@ -402,10 +402,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.common.proto.WFRunPb)) {
+    if (!(obj instanceof io.littlehorse.common.proto.WFRunStatePb)) {
       return super.equals(obj);
     }
-    io.littlehorse.common.proto.WFRunPb other = (io.littlehorse.common.proto.WFRunPb) obj;
+    io.littlehorse.common.proto.WFRunStatePb other = (io.littlehorse.common.proto.WFRunStatePb) obj;
 
     if (!getId()
         .equals(other.getId())) return false;
@@ -458,69 +458,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static io.littlehorse.common.proto.WFRunPb parseFrom(
+  public static io.littlehorse.common.proto.WFRunStatePb parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.WFRunPb parseFrom(
+  public static io.littlehorse.common.proto.WFRunStatePb parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.WFRunPb parseFrom(
+  public static io.littlehorse.common.proto.WFRunStatePb parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.WFRunPb parseFrom(
+  public static io.littlehorse.common.proto.WFRunStatePb parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.WFRunPb parseFrom(byte[] data)
+  public static io.littlehorse.common.proto.WFRunStatePb parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.WFRunPb parseFrom(
+  public static io.littlehorse.common.proto.WFRunStatePb parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.WFRunPb parseFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.WFRunStatePb parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.WFRunPb parseFrom(
+  public static io.littlehorse.common.proto.WFRunStatePb parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.WFRunPb parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.WFRunStatePb parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.WFRunPb parseDelimitedFrom(
+  public static io.littlehorse.common.proto.WFRunStatePb parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.WFRunPb parseFrom(
+  public static io.littlehorse.common.proto.WFRunStatePb parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.WFRunPb parseFrom(
+  public static io.littlehorse.common.proto.WFRunStatePb parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -533,7 +533,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.common.proto.WFRunPb prototype) {
+  public static Builder newBuilder(io.littlehorse.common.proto.WFRunStatePb prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -549,26 +549,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.WFRunPb}
+   * Protobuf type {@code lh_proto.WFRunStatePb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.WFRunPb)
-      io.littlehorse.common.proto.WFRunPbOrBuilder {
+      // @@protoc_insertion_point(builder_implements:lh_proto.WFRunStatePb)
+      io.littlehorse.common.proto.WFRunStatePbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_WFRunPb_descriptor;
+      return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_WFRunStatePb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_WFRunPb_fieldAccessorTable
+      return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_WFRunStatePb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.common.proto.WFRunPb.class, io.littlehorse.common.proto.WFRunPb.Builder.class);
+              io.littlehorse.common.proto.WFRunStatePb.class, io.littlehorse.common.proto.WFRunStatePb.Builder.class);
     }
 
-    // Construct using io.littlehorse.common.proto.WFRunPb.newBuilder()
+    // Construct using io.littlehorse.common.proto.WFRunStatePb.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -618,17 +618,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_WFRunPb_descriptor;
+      return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_WFRunStatePb_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.WFRunPb getDefaultInstanceForType() {
-      return io.littlehorse.common.proto.WFRunPb.getDefaultInstance();
+    public io.littlehorse.common.proto.WFRunStatePb getDefaultInstanceForType() {
+      return io.littlehorse.common.proto.WFRunStatePb.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.WFRunPb build() {
-      io.littlehorse.common.proto.WFRunPb result = buildPartial();
+    public io.littlehorse.common.proto.WFRunStatePb build() {
+      io.littlehorse.common.proto.WFRunStatePb result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -636,8 +636,8 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.WFRunPb buildPartial() {
-      io.littlehorse.common.proto.WFRunPb result = new io.littlehorse.common.proto.WFRunPb(this);
+    public io.littlehorse.common.proto.WFRunStatePb buildPartial() {
+      io.littlehorse.common.proto.WFRunStatePb result = new io.littlehorse.common.proto.WFRunStatePb(this);
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
       result.id_ = id_;
@@ -704,16 +704,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.common.proto.WFRunPb) {
-        return mergeFrom((io.littlehorse.common.proto.WFRunPb)other);
+      if (other instanceof io.littlehorse.common.proto.WFRunStatePb) {
+        return mergeFrom((io.littlehorse.common.proto.WFRunStatePb)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.common.proto.WFRunPb other) {
-      if (other == io.littlehorse.common.proto.WFRunPb.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.common.proto.WFRunStatePb other) {
+      if (other == io.littlehorse.common.proto.WFRunStatePb.getDefaultInstance()) return this;
       if (!other.getId().isEmpty()) {
         id_ = other.id_;
         onChanged();
@@ -772,11 +772,11 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      io.littlehorse.common.proto.WFRunPb parsedMessage = null;
+      io.littlehorse.common.proto.WFRunStatePb parsedMessage = null;
       try {
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (io.littlehorse.common.proto.WFRunPb) e.getUnfinishedMessage();
+        parsedMessage = (io.littlehorse.common.proto.WFRunStatePb) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
@@ -1484,41 +1484,41 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.WFRunPb)
+    // @@protoc_insertion_point(builder_scope:lh_proto.WFRunStatePb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.WFRunPb)
-  private static final io.littlehorse.common.proto.WFRunPb DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:lh_proto.WFRunStatePb)
+  private static final io.littlehorse.common.proto.WFRunStatePb DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.common.proto.WFRunPb();
+    DEFAULT_INSTANCE = new io.littlehorse.common.proto.WFRunStatePb();
   }
 
-  public static io.littlehorse.common.proto.WFRunPb getDefaultInstance() {
+  public static io.littlehorse.common.proto.WFRunStatePb getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<WFRunPb>
-      PARSER = new com.google.protobuf.AbstractParser<WFRunPb>() {
+  private static final com.google.protobuf.Parser<WFRunStatePb>
+      PARSER = new com.google.protobuf.AbstractParser<WFRunStatePb>() {
     @java.lang.Override
-    public WFRunPb parsePartialFrom(
+    public WFRunStatePb parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new WFRunPb(input, extensionRegistry);
+      return new WFRunStatePb(input, extensionRegistry);
     }
   };
 
-  public static com.google.protobuf.Parser<WFRunPb> parser() {
+  public static com.google.protobuf.Parser<WFRunStatePb> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<WFRunPb> getParserForType() {
+  public com.google.protobuf.Parser<WFRunStatePb> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.common.proto.WFRunPb getDefaultInstanceForType() {
+  public io.littlehorse.common.proto.WFRunStatePb getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

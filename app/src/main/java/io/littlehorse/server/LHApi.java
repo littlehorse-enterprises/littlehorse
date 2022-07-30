@@ -37,8 +37,6 @@ public class LHApi {
     public void search(Context ctx) {
         String type = ctx.pathParam("type");
         String key = ctx.pathParam("key");
-        
-
     }
 
     public void get(Context ctx) {

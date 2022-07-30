@@ -4,8 +4,11 @@ import java.util.Date;
 import com.google.protobuf.MessageOrBuilder;
 
 public abstract class GETable<T extends MessageOrBuilder> extends LHSerializable<T> {
-    public String id;
     public Date createdAt;
+
+    public abstract String getPartitionKey();
+
+    public abstract String getStoreKey();
 }
 
 /*

@@ -27,6 +27,14 @@ public class WfSpec extends GETable<WFSpecPbOrBuilder> {
     public String entrypointThreadName;
     public LHStatusPb status;
 
+    public String getStoreKey() {
+        return id;
+    }
+
+    public String getPartitionKey() {
+        return id;
+    }
+
     public WfSpec() {
         threadSpecs = new HashMap<>();
     }

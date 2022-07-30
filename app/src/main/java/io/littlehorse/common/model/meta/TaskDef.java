@@ -7,6 +7,14 @@ import io.littlehorse.common.proto.TaskDefPbOrBuilder;
 public class TaskDef extends GETable<TaskDefPbOrBuilder> {
     public String name;
 
+    public String getStoreKey() {
+        return name;
+    }
+
+    public String getPartitionKey() {
+        return name;
+    }
+
     public Class<TaskDefPb> getProtoBaseClass() {
         return TaskDefPb.class;
     }

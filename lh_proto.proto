@@ -32,7 +32,7 @@ message ThreadRunStatePb {
     optional NodeRunStatePb current_node_run = 3;
 }
 
-message WFRunPb {
+message WFRunStatePb {
     string id = 1;
     string wf_spec_id = 2;
     LHStatusPb status = 6;
@@ -204,4 +204,53 @@ message ObservabilityEventPb {
 message ObservabilityEventsPb {
     string wf_run_id = 1;
     repeated ObservabilityEventPb events = 2;
+}
+
+// This section contains models used by the Server for observability
+message WfRunPb {
+    // Yeah ok it's similar to WfRunStatePb but hear me out
+    string id = 1;
+    string wf_spec_id = 2;
+    string wf_spec_name = 3;
+    LHStatusPb status = 4;
+
+    int64 last_update_offset = 5;
+
+    google.protobuf.Timestamp start_time = 6;
+    optional google.protobuf.Timestamp end_time = 7;
+    repeated ThreadRunPb thread_runs = 8;
+}
+
+message ThreadRunPb {
+    string wf_run_id = 1;
+    int32 number = 2;
+
+    LHStatusPb status = 3;
+    string wf_spec_id = 4;
+    string thread_spec_name = 5;
+    int32 num_steps = 6;
+
+    google.protobuf.Timestamp start_time = 7;
+    optional google.protobuf.Timestamp end_time = 8;
+}
+
+message TaskRunPb {
+    string wf_run_id = 1;
+    int32 thread_run_number = 2;
+    int32 position = 3;
+
+    int32 number = 4;
+    int32 attempt_number = 5;
+    LHStatusPb status = 6;
+    optional bytes output = 7;
+    optional bytes log_output = 8;
+
+    google.protobuf.Timestamp schedule_time = 9;
+    optional google.protobuf.Timestamp start_time = 10;
+    optional google.protobuf.Timestamp end_time = 11;
+
+    string wf_spec_id = 12;
+    string thread_spec_name = 13;
+    string node_name = 14;
+    string task_def_id = 15;
 }

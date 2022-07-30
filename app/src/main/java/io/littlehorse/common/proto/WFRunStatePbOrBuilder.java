@@ -3,8 +3,8 @@
 
 package io.littlehorse.common.proto;
 
-public interface WFRunPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.WFRunPb)
+public interface WFRunStatePbOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:lh_proto.WFRunStatePb)
     com.google.protobuf.MessageOrBuilder {
 
   /**

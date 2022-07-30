@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.event.TaskCompletedEvent;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.TaskStartedEvent;
@@ -17,8 +16,8 @@ import io.littlehorse.common.model.observability.ThreadStartOe;
 import io.littlehorse.common.model.observability.WfRunStatusChangeOe;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.ThreadRunStatePb;
-import io.littlehorse.common.proto.WFRunPb;
-import io.littlehorse.common.proto.WFRunPbOrBuilder;
+import io.littlehorse.common.proto.WFRunStatePb;
+import io.littlehorse.common.proto.WFRunStatePbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
 
 public class WfRunState {
@@ -39,8 +38,8 @@ public class WfRunState {
     }
 
     // Below is Serialization/Deserialization stuff.
-    public WFRunPb.Builder toProtoBuilder() {
-        WFRunPb.Builder b = WFRunPb.newBuilder()
+    public WFRunStatePb.Builder toProtoBuilder() {
+        WFRunStatePb.Builder b = WFRunStatePb.newBuilder()
             .setId(id)
             .setWfSpecId(wfSpecId)
             .setStatus(status);
@@ -58,7 +57,7 @@ public class WfRunState {
         return b;
     }
 
-    public static WfRunState fromProto(WFRunPbOrBuilder proto) {
+    public static WfRunState fromProto(WFRunStatePbOrBuilder proto) {
         WfRunState out = new WfRunState(proto.getId());
         out.wfSpecId = proto.getWfSpecId();
         out.status = proto.getStatus();

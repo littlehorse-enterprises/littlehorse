@@ -1,4 +1,4 @@
-package io.littlehorse.common.model.server;
+package io.littlehorse.server.model.internal;
 
 import java.util.List;
 

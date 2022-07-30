@@ -1,4 +1,4 @@
-package io.littlehorse.common.model.server;
+package io.littlehorse.server.model.internal;
 
 import java.util.Date;
 import io.littlehorse.common.model.GETable;
@@ -13,10 +13,8 @@ public class IndexEntry {
     public IndexEntry() {}
 
     // TODO: Figure out how to make this more than just strings.
-    public IndexEntry(GETable o, String label, byte[] value) {
-        objectId = o.id;
+    public IndexEntry(GETable<?> o, String label, byte[] value) {
         createdAt = o.createdAt;
-
     }
 
     public byte[] getStoreKey() {
