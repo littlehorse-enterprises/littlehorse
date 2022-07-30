@@ -15,4 +15,28 @@ public class LHUtil {
         if (proto == null) return null;
         return Date.from(Instant.ofEpochSecond(proto.getSeconds(), proto.getNanos()));
     }
+
+    public static void logBack(int framesBack, Object... things) {
+        framesBack += 2;  // 2 frames needed for processing the thing.
+        StackTraceElement ste = Thread.currentThread().getStackTrace()[framesBack];
+
+        System.out.print("LHorse: ");
+        System.out.print(ste.getMethodName());
+        System.out.print(" ");
+        System.out.print(ste.getFileName());
+        System.out.print(": ");
+        System.out.print(ste.getLineNumber());
+        System.out.print(": ");
+        for (Object thing : things) {
+            System.out.print(thing == null ? "null" : thing.toString());
+            System.out.print(" ");
+        }
+        System.out.println();
+    }
+
+    public static void log(Object... things) {
+        logBack(1, things);  // Add one frame back because of this method call.
+    }
+
+
 }

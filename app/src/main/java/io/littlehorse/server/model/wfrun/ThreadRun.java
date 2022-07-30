@@ -18,6 +18,13 @@ public class ThreadRun extends GETable<ThreadRunPb> {
     public Date startTime;
     public Date endTime;
 
+    public Date getCreatedAt() {
+        return startTime;
+    }
+
+    public static String getStoreKey(String wfRunId, int threadRunNumber) {
+        return wfRunId + "-" + threadRunNumber;
+    }
 
     public void initFrom(ThreadRunPb proto) {
         wfRunId = proto.getWfRunId();
@@ -59,7 +66,7 @@ public class ThreadRun extends GETable<ThreadRunPb> {
     }
 
     public String getStoreKey() {
-        return wfRunId + "-" + number;
+        return ThreadRun.getStoreKey(wfRunId, number);
     }
 
     public Class<ThreadRunPb> getProtoBaseClass() {

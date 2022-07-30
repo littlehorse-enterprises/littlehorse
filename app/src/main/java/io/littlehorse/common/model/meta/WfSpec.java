@@ -31,6 +31,10 @@ public class WfSpec extends GETable<WFSpecPbOrBuilder> {
         return id;
     }
 
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
     public String getPartitionKey() {
         return id;
     }

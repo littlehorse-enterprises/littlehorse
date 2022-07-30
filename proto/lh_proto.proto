@@ -1,0 +1,27 @@
+syntax = "proto3";
+package lh_proto;
+
+option go_package = ".;model";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.common.proto";
+
+enum LHStatusPb {
+    STARTING = 0;
+    RUNNING = 1;
+    COMPLETED = 2;
+    HALTING = 3;
+    HALTED = 4;
+    ERROR = 5;
+}
+
+message VariableValuePb {
+    oneof val {
+        bytes json_obj = 1;
+        bytes json_arr = 2;
+        double dub = 3;
+        bool bool = 4;
+        string str = 5;
+        int64 int = 6;
+        bytes byte = 7;
+    }
+}

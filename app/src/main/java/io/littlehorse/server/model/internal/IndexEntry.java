@@ -14,7 +14,7 @@ public class IndexEntry {
 
     // TODO: Figure out how to make this more than just strings.
     public IndexEntry(GETable<?> o, String label, byte[] value) {
-        createdAt = o.createdAt;
+        createdAt = o.getCreatedAt();
     }
 
     public byte[] getStoreKey() {

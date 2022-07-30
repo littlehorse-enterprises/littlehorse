@@ -28,7 +28,11 @@ public class TaskRun extends GETable<TaskRunPb> {
     public String taskDefId;
 
     public String getStoreKey() {
-        return wfRunId + "-" + threadRunNumber + "-" + position;
+        return TaskRun.getStoreKey(wfRunId, threadRunNumber, position);
+    }
+
+    public static String getStoreKey(String wfRunId, int threadNum, int position) {
+        return wfRunId + "-" + threadNum + "-" + position;
     }
 
     public String getPartitionKey() {
@@ -37,6 +41,10 @@ public class TaskRun extends GETable<TaskRunPb> {
 
     public Class<TaskRunPb> getProtoBaseClass() {
         return TaskRunPb.class;
+    }
+
+    public Date getCreatedAt() {
+        return scheduleTime;
     }
 
     public void initFrom(TaskRunPb proto) {

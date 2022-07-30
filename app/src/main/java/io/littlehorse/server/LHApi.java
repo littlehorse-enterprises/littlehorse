@@ -2,29 +2,52 @@ package io.littlehorse.server;
 
 import java.util.Arrays;
 import java.util.List;
+import com.google.protobuf.MessageOrBuilder;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.exceptions.LHConnectionError;
+import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.proto.ErrorCodePb;
 import io.littlehorse.common.util.KStreamsStateListener;
+import io.littlehorse.server.model.response.ErrorResponse;
+import io.littlehorse.server.model.wfrun.TaskRun;
+import io.littlehorse.server.model.wfrun.ThreadRun;
+import io.littlehorse.server.model.wfrun.WfRun;
 
 
 public class LHApi {
     private Javalin app;
     private LHConfig config;
+    private ApiStreamsContext streams;
 
     public static List<String> GETables = Arrays.asList(
         WfSpec.class.getSimpleName(), TaskDef.class.getSimpleName()
     );
 
-    public LHApi(LHConfig config) {
+    public LHApi(LHConfig config, ApiStreamsContext streams) {
         this.config = config;
         KStreamsStateListener listener = new KStreamsStateListener();
         this.app = LHConfig.createAppWithHealth(listener);
 
-        this.app.get("/search/{type}", this::search);
-        this.app.get("/{type}/{id}", this::get);
+        this.app.get("/WfSpec/{id}", this::getWfSpec);
+        this.app.get("/WfRun/{id}", this::getWfRun);
+        // this.app.get("/WfRun/{id}/ThreadRun", this::listThreadRuns);
+        this.app.get(
+            "/WfRun/{wfRunId}/ThreadRun/{threadRunNumber}",
+            this::getThreadRun
+        );
+        // this.app.get(
+        //     "/WfRun/{id}/ThreadRun/{number}/TaskRun", this::getTasksForThread);
+        this.app.get(
+            "/WfRun/{wfRunId}/ThreadRun/{threadRunNumber}/TaskRun/{taskRunPosition}",
+            this::getTask
+        );
+        // this.app.get("/WfRun/{id}/TaskRun", this::listAllTasksForWfRun);
+
 
         this.app.post("/WFSpec", this::postWFSpec);
         this.app.post("/TaskDef", this::postTaskDef);
@@ -34,25 +57,83 @@ public class LHApi {
         app.start(config.getExposedPort());
     }
 
-    public void search(Context ctx) {
-        String type = ctx.pathParam("type");
-        String key = ctx.pathParam("key");
-    }
-
-    public void get(Context ctx) {
-        String type = ctx.pathParam("type");
-        String id = ctx.pathParam("id");
-
-        if (!GETables.contains(type)) {
-            
-        }
-    }
-
     public void postTaskDef(Context ctx) {
         // TODO: post the wfspec
     }
 
     public void postWFSpec(Context ctx) {
         // TODO: post the wfspec
+    }
+
+    public void getTask(Context ctx) {
+        String wfRunId = ctx.pathParam("wfRunId");
+        int threadRunNumber = ctx.pathParamAsClass(
+            "threadNumber", Integer.class
+        ).get();
+        int taskRunPosition = ctx.pathParamAsClass(
+            "taskRunPosition", Integer.class
+        ).get();
+
+        String storeKey = TaskRun.getStoreKey(
+            wfRunId, threadRunNumber, taskRunPosition
+        );
+
+        returnLookup(wfRunId, storeKey, ThreadRun.class, ctx);
+    }
+
+    public void getWfSpec(Context ctx) {
+        String id = ctx.pathParam("id");
+        returnLookup(id, id, WfSpec.class, ctx);
+    }
+
+    public void getWfRun(Context ctx) {
+        String id = ctx.pathParam("id");
+        returnLookup(id, id, WfRun.class, ctx);
+    }
+
+    public void getThreadRun(Context ctx) {
+        String wfRunId = ctx.pathParam("wfRunId");
+        int threadRunNumber = ctx.pathParamAsClass(
+            "threadNumber", Integer.class
+        ).get();
+
+        String storeKey = ThreadRun.getStoreKey(wfRunId, threadRunNumber);
+        returnLookup(wfRunId, storeKey, ThreadRun.class, ctx);
+    }
+
+    private <U extends MessageOrBuilder, T extends GETable<U>> void returnLookup(
+        String partitionKey,
+        String storeKey,
+        Class<T> cls,
+        Context ctx
+    ) {
+        try {
+            T out = streams.get(storeKey, partitionKey, cls);
+            if (out == null) {
+                json(
+                    new ErrorResponse(
+                        ErrorCodePb.NOT_FOUND_ERROR,
+                        "Couldn't find described " + cls.getSimpleName()
+                    ), 404, ctx
+                );
+                return;
+            } else {
+                json(out, 200, ctx);
+            }
+        } catch(LHConnectionError exn) {
+            json(
+                new ErrorResponse(
+                    ErrorCodePb.CONNECTION_ERROR,
+                    "Failed looking up the " + cls.getSimpleName() + ": "
+                    + exn.getMessage()
+                ), 500, ctx
+            );
+        }
+    }
+
+    private void json(LHSerializable<?> out, int status, Context ctx) {
+        ctx.status(status);
+        ctx.contentType("json");
+        ctx.result(out.toJson());
     }
 }

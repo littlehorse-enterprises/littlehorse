@@ -1,0 +1,48 @@
+syntax = "proto3";
+package lh_proto;
+
+import "google/protobuf/timestamp.proto";
+import "lh_proto.proto";
+
+option go_package = ".;model";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.common.proto";
+
+// The below relates to WFSpec.
+
+message EdgePb {
+    string sink_node_name = 1;
+}
+
+enum NodeTypePb {
+    TASK = 0;
+    ENTRYPOINT = 1;
+    EXIT = 2;
+}
+
+message NodePb {
+    string task_def_name = 1;
+    NodeTypePb type = 2;
+    repeated EdgePb outgoing_edges = 3;
+}
+
+message ThreadSpecPb {
+    map<string, NodePb> nodes = 1;
+}
+
+message WFSpecPb {
+    string id = 1;
+    google.protobuf.Timestamp created_at = 2;
+    google.protobuf.Timestamp updated_at = 3;
+
+    map<string, ThreadSpecPb> thread_specs = 4;
+    string entrypoint_thread_name = 5;
+
+    LHStatusPb status = 6;
+    string name = 7;
+}
+
+message TaskDefPb {
+    string name = 1;
+    google.protobuf.Timestamp createdAt = 2;
+}

@@ -1,5 +1,6 @@
 package io.littlehorse.server;
 
+import java.util.Set;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyQueryMetadata;
@@ -16,6 +17,7 @@ import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.util.LHApiClient;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.model.internal.IndexEntry;
 import io.littlehorse.server.model.internal.RangeResponse;
 
@@ -31,17 +33,17 @@ public class ApiStreamsContext {
     }
 
     public <U extends MessageOrBuilder, T extends GETable<U>>
-    T get(String id, Class<T> cls) throws LHConnectionError {
-
+    T get(String storeKey, String partitionKey, Class<T> cls)
+    throws LHConnectionError {
         String storeName = cls.getSimpleName();
         KeyQueryMetadata metadata = streams.queryMetadataForKey(
-            storeName, id, Serdes.String().serializer()
+            storeName, partitionKey, Serdes.String().serializer()
         );
         if (metadata.activeHost().equals(thisHost)) {
-            return localGet(id, cls);
+            return localGet(storeKey, cls);
         } else {
             byte[] serialized = queryRemoteBytes(
-                storeName, metadata.activeHost(), id
+                storeName, metadata.activeHost(), storeKey, metadata.standbyHosts()
             );
             try {
                 return LHSerializable.fromBytes(serialized, cls);
@@ -53,8 +55,13 @@ public class ApiStreamsContext {
     }
 
     public <U extends MessageOrBuilder, T extends GETable<U>>
-    T localGet(String id, Class<T> cls) {
-        return getGETableStore(cls).get(id);
+    T localGet(String storeKey, Class<T> cls) {
+        return getGETableStore(cls).get(storeKey);
+    }
+
+    public byte[] localGetBytes(String storeName, String storeKey) {
+        GETable<?> obj = getStore(storeName).get(storeKey);
+        return obj == null ? null : obj.toBytes();
     }
 
     public <U extends MessageOrBuilder, T extends POSTable<U>>T post(T toSave, Class<T> cls)
@@ -83,6 +90,15 @@ public class ApiStreamsContext {
         return null;
     }
 
+    private ReadOnlyKeyValueStore<String, GETable<?>> getStore(String storeName) {
+        return streams.store(
+            StoreQueryParameters.fromNameAndType(
+                storeName,
+                QueryableStoreTypes.keyValueStore()
+            )
+        );
+    }
+
     private <U extends MessageOrBuilder, T extends GETable<U>>
     ReadOnlyKeyValueStore<String, T> getGETableStore(Class<T> cls) {
 
@@ -104,8 +120,23 @@ public class ApiStreamsContext {
     }
 
     private byte[] queryRemoteBytes(
-        String storeName, HostInfo host, String storeKey
+        String storeName, HostInfo host, String storeKey, Set<HostInfo> standbys
     ) throws LHConnectionError {
-        return client.getResponse(host, "/storeBytes/" + storeName + "/" + storeKey);
+        LHConnectionError caught = null;
+        String path = "/storeBytes/" + storeName + "/" + storeKey;
+        try {
+            return client.getResponse(host, path);
+        } catch(LHConnectionError exn) {
+            caught = exn;
+            for (HostInfo standby: standbys) {
+                try {
+                    LHUtil.log("Calling standby: ", standby);
+                    return client.getResponse(standby, path);
+                } catch(LHConnectionError other) {
+                    LHUtil.log("Failed making standby call.");
+                }
+            }
+        }
+        throw caught;
     }
 }

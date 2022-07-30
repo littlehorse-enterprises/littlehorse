@@ -23,6 +23,10 @@ public class WfRun extends GETable<WfRunPb> {
         threadRuns = new ArrayList<>();
     }
 
+    public Date getCreatedAt() {
+        return startTime;
+    }
+
     public void initFrom(WfRunPb proto) {
         id = proto.getId();
         wfSpecId = proto.getWfSpecId();
