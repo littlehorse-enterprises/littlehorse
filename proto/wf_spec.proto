@@ -40,9 +40,12 @@ message WFSpecPb {
 
     LHStatusPb status = 6;
     string name = 7;
+
+    int64 last_updated_offset = 8;
 }
 
 message TaskDefPb {
     string name = 1;
     google.protobuf.Timestamp createdAt = 2;
+    int64 last_updated_offset = 3;
 }

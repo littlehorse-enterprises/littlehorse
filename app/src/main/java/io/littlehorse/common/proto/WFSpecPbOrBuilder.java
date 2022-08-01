@@ -117,4 +117,10 @@ public interface WFSpecPbOrBuilder extends
    */
   com.google.protobuf.ByteString
       getNameBytes();
+
+  /**
+   * <code>int64 last_updated_offset = 8;</code>
+   * @return The lastUpdatedOffset.
+   */
+  long getLastUpdatedOffset();
 }

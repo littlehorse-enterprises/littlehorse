@@ -10,7 +10,6 @@ import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.GETable;
@@ -18,7 +17,6 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.util.LHApiClient;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.model.internal.IndexEntry;
 import io.littlehorse.server.model.internal.RangeResponse;
 
 public class ApiStreamsContext {
@@ -105,15 +103,6 @@ public class ApiStreamsContext {
         return streams.store(
             StoreQueryParameters.fromNameAndType(
                 cls.getName(),
-                QueryableStoreTypes.keyValueStore()
-            )
-        );
-    }
-
-    public ReadOnlyKeyValueStore<String, IndexEntry> getIndexStore() {
-        return streams.store(
-            StoreQueryParameters.fromNameAndType(
-                LHConstants.INDEX_STORE_NAME,
                 QueryableStoreTypes.keyValueStore()
             )
         );

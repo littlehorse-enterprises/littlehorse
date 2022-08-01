@@ -226,7 +226,7 @@ public class LHConfig {
 
     public int getStreamsCommitInterval() {
         return Integer.valueOf(getOrSetDefault(
-            LHConstants.STREAMS_COMMIT_INTERVAL,
+            LHConstants.COMMIT_INTERVAL_KEY,
             "50"
         ));
     }

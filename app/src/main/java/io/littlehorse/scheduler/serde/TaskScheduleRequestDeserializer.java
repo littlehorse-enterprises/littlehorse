@@ -1,4 +1,4 @@
-package io.littlehorse.common.serde;
+package io.littlehorse.scheduler.serde;
 
 import org.apache.kafka.common.serialization.Deserializer;
 import com.google.protobuf.InvalidProtocolBufferException;

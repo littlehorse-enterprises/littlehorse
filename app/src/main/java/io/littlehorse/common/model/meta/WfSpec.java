@@ -21,6 +21,8 @@ public class WfSpec extends GETable<WFSpecPbOrBuilder> {
     public String name;
     public Date createdAt;
     public Date updatedAt;
+    public long lastOffset;
+
 
     public Map<String, ThreadSpec> threadSpecs;
 
@@ -43,13 +45,22 @@ public class WfSpec extends GETable<WFSpecPbOrBuilder> {
         threadSpecs = new HashMap<>();
     }
 
+    public long getLastUpdatedOffset() {
+        return lastOffset;
+    }
+
+    public void setLastUpdatedOffset(long newOffset) {
+        lastOffset = newOffset;
+    }
+
     public WFSpecPb.Builder toProto() {
         WFSpecPb.Builder out = WFSpecPb.newBuilder()
             .setId(id)
             .setCreatedAt(LHUtil.fromDate(createdAt))
             .setUpdatedAt(LHUtil.fromDate(updatedAt))
             .setEntrypointThreadName(entrypointThreadName)
-            .setStatus(status);
+            .setStatus(status)
+            .setLastUpdatedOffset(lastOffset);
 
         if (threadSpecs != null) {
             for (Map.Entry<String, ThreadSpec> p: threadSpecs.entrySet()) {
@@ -70,6 +81,7 @@ public class WfSpec extends GETable<WFSpecPbOrBuilder> {
         entrypointThreadName = proto.getEntrypointThreadName();
         status = proto.getStatus();
         name = proto.getName();
+        lastOffset = proto.getLastUpdatedOffset();
 
         for (
             Map.Entry<String, ThreadSpecPb> e: proto.getThreadSpecsMap().entrySet()

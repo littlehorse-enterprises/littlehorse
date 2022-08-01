@@ -102,7 +102,7 @@ public class SchedulerProcessor
             taskOutput.request = r;
             context.forward(new Record<>(
                 record.key(), taskOutput, record.timestamp()
-            ), SchedulerTopology.taskSchedulerSink);
+            ), Scheduler.taskSchedulerSink);
         }
 
         // Forward the observability events
@@ -110,7 +110,7 @@ public class SchedulerProcessor
         oeOutput.observabilityEvents = wfRun.oEvents;
         context.forward(new Record<>(
             record.key(), oeOutput, record.timestamp()
-        ), SchedulerTopology.wfRunSink);
+        ), Scheduler.wfRunSink);
 
         // Save the WfRunState
         wfRunStore.put(record.key(), wfRun);

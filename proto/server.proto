@@ -3,6 +3,7 @@ package lh_proto;
 
 import "google/protobuf/timestamp.proto";
 import "lh_proto.proto";
+import "wf_spec.proto";
 
 option go_package = ".;model";
 option java_multiple_files = true;
@@ -71,3 +72,32 @@ message ErrorResponsePb {
     ErrorCodePb code = 1;
     string message = 2;
 }
+
+// This section describes internal messages used by the server
+
+message PutWfSpecPb {
+    WFSpecPb spec = 1;
+}
+
+message PutTaskDefPb {
+    TaskDefPb spec = 1;
+}
+
+message DeleteWfSpecPb {
+    string id = 1;
+}
+
+message DeleteTaskDefPb {
+    string id = 1;
+}
+
+message MetadataEventPb {
+    oneof event {
+        PutWfSpecPb put_wf_spec = 1;
+        PutTaskDefPb put_task_def = 2;
+        DeleteWfSpecPb delete_wf_spec = 3;
+        DeleteTaskDefPb delete_task_def = 4;
+    }
+}
+// NOTE: Maybe later we'll add an Entity output thing that lets the
+// world know what was just created, but that's for later.

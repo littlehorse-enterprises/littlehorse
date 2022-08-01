@@ -68,6 +68,11 @@ private static final long serialVersionUID = 0L;
 
             break;
           }
+          case 24: {
+
+            lastUpdatedOffset_ = input.readInt64();
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -164,6 +169,17 @@ private static final long serialVersionUID = 0L;
     return getCreatedAt();
   }
 
+  public static final int LAST_UPDATED_OFFSET_FIELD_NUMBER = 3;
+  private long lastUpdatedOffset_;
+  /**
+   * <code>int64 last_updated_offset = 3;</code>
+   * @return The lastUpdatedOffset.
+   */
+  @java.lang.Override
+  public long getLastUpdatedOffset() {
+    return lastUpdatedOffset_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -184,6 +200,9 @@ private static final long serialVersionUID = 0L;
     if (createdAt_ != null) {
       output.writeMessage(2, getCreatedAt());
     }
+    if (lastUpdatedOffset_ != 0L) {
+      output.writeInt64(3, lastUpdatedOffset_);
+    }
     unknownFields.writeTo(output);
   }
 
@@ -199,6 +218,10 @@ private static final long serialVersionUID = 0L;
     if (createdAt_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, getCreatedAt());
+    }
+    if (lastUpdatedOffset_ != 0L) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt64Size(3, lastUpdatedOffset_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -222,6 +245,8 @@ private static final long serialVersionUID = 0L;
       if (!getCreatedAt()
           .equals(other.getCreatedAt())) return false;
     }
+    if (getLastUpdatedOffset()
+        != other.getLastUpdatedOffset()) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -239,6 +264,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + CREATEDAT_FIELD_NUMBER;
       hash = (53 * hash) + getCreatedAt().hashCode();
     }
+    hash = (37 * hash) + LAST_UPDATED_OFFSET_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        getLastUpdatedOffset());
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -380,6 +408,8 @@ private static final long serialVersionUID = 0L;
         createdAt_ = null;
         createdAtBuilder_ = null;
       }
+      lastUpdatedOffset_ = 0L;
+
       return this;
     }
 
@@ -412,6 +442,7 @@ private static final long serialVersionUID = 0L;
       } else {
         result.createdAt_ = createdAtBuilder_.build();
       }
+      result.lastUpdatedOffset_ = lastUpdatedOffset_;
       onBuilt();
       return result;
     }
@@ -466,6 +497,9 @@ private static final long serialVersionUID = 0L;
       }
       if (other.hasCreatedAt()) {
         mergeCreatedAt(other.getCreatedAt());
+      }
+      if (other.getLastUpdatedOffset() != 0L) {
+        setLastUpdatedOffset(other.getLastUpdatedOffset());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -689,6 +723,37 @@ private static final long serialVersionUID = 0L;
         createdAt_ = null;
       }
       return createdAtBuilder_;
+    }
+
+    private long lastUpdatedOffset_ ;
+    /**
+     * <code>int64 last_updated_offset = 3;</code>
+     * @return The lastUpdatedOffset.
+     */
+    @java.lang.Override
+    public long getLastUpdatedOffset() {
+      return lastUpdatedOffset_;
+    }
+    /**
+     * <code>int64 last_updated_offset = 3;</code>
+     * @param value The lastUpdatedOffset to set.
+     * @return This builder for chaining.
+     */
+    public Builder setLastUpdatedOffset(long value) {
+      
+      lastUpdatedOffset_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int64 last_updated_offset = 3;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearLastUpdatedOffset() {
+      
+      lastUpdatedOffset_ = 0L;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

@@ -116,6 +116,11 @@ private static final long serialVersionUID = 0L;
             name_ = s;
             break;
           }
+          case 64: {
+
+            lastUpdatedOffset_ = input.readInt64();
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -426,6 +431,17 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int LAST_UPDATED_OFFSET_FIELD_NUMBER = 8;
+  private long lastUpdatedOffset_;
+  /**
+   * <code>int64 last_updated_offset = 8;</code>
+   * @return The lastUpdatedOffset.
+   */
+  @java.lang.Override
+  public long getLastUpdatedOffset() {
+    return lastUpdatedOffset_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -463,6 +479,9 @@ private static final long serialVersionUID = 0L;
     }
     if (!getNameBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 7, name_);
+    }
+    if (lastUpdatedOffset_ != 0L) {
+      output.writeInt64(8, lastUpdatedOffset_);
     }
     unknownFields.writeTo(output);
   }
@@ -504,6 +523,10 @@ private static final long serialVersionUID = 0L;
     if (!getNameBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, name_);
     }
+    if (lastUpdatedOffset_ != 0L) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt64Size(8, lastUpdatedOffset_);
+    }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
@@ -538,6 +561,8 @@ private static final long serialVersionUID = 0L;
     if (status_ != other.status_) return false;
     if (!getName()
         .equals(other.getName())) return false;
+    if (getLastUpdatedOffset()
+        != other.getLastUpdatedOffset()) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -569,6 +594,9 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + status_;
     hash = (37 * hash) + NAME_FIELD_NUMBER;
     hash = (53 * hash) + getName().hashCode();
+    hash = (37 * hash) + LAST_UPDATED_OFFSET_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        getLastUpdatedOffset());
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -745,6 +773,8 @@ private static final long serialVersionUID = 0L;
 
       name_ = "";
 
+      lastUpdatedOffset_ = 0L;
+
       return this;
     }
 
@@ -788,6 +818,7 @@ private static final long serialVersionUID = 0L;
       result.entrypointThreadName_ = entrypointThreadName_;
       result.status_ = status_;
       result.name_ = name_;
+      result.lastUpdatedOffset_ = lastUpdatedOffset_;
       onBuilt();
       return result;
     }
@@ -858,6 +889,9 @@ private static final long serialVersionUID = 0L;
       if (!other.getName().isEmpty()) {
         name_ = other.name_;
         onChanged();
+      }
+      if (other.getLastUpdatedOffset() != 0L) {
+        setLastUpdatedOffset(other.getLastUpdatedOffset());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -1533,6 +1567,37 @@ private static final long serialVersionUID = 0L;
   checkByteStringIsUtf8(value);
       
       name_ = value;
+      onChanged();
+      return this;
+    }
+
+    private long lastUpdatedOffset_ ;
+    /**
+     * <code>int64 last_updated_offset = 8;</code>
+     * @return The lastUpdatedOffset.
+     */
+    @java.lang.Override
+    public long getLastUpdatedOffset() {
+      return lastUpdatedOffset_;
+    }
+    /**
+     * <code>int64 last_updated_offset = 8;</code>
+     * @param value The lastUpdatedOffset to set.
+     * @return This builder for chaining.
+     */
+    public Builder setLastUpdatedOffset(long value) {
+      
+      lastUpdatedOffset_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int64 last_updated_offset = 8;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearLastUpdatedOffset() {
+      
+      lastUpdatedOffset_ = 0L;
       onChanged();
       return this;
     }

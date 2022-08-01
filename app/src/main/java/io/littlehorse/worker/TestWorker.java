@@ -16,8 +16,8 @@ import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.TaskStartedEvent;
 import io.littlehorse.common.model.event.WFRunEvent;
 import io.littlehorse.common.proto.WFRunEventPb.EventCase;
-import io.littlehorse.common.serde.TaskScheduleRequestDeserializer;
-import io.littlehorse.common.serde.WFRunEventSerializer;
+import io.littlehorse.scheduler.serde.TaskScheduleRequestDeserializer;
+import io.littlehorse.scheduler.serde.WFRunEventSerializer;
 
 /**
  * This is a shortcut, obviously.

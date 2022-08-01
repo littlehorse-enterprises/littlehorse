@@ -16,10 +16,10 @@ import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.serde.WFRunSerde;
-import io.littlehorse.scheduler.SchedulerTopology;
+import io.littlehorse.scheduler.Scheduler;
 import io.littlehorse.scheduler.model.WfRunState;
-import io.littlehorse.server.LHApi;
+import io.littlehorse.scheduler.serde.WFRunSerde;
+import io.littlehorse.server.Server;
 import io.littlehorse.worker.TestWorker;
 
 public class App {
@@ -52,43 +52,42 @@ public class App {
         System.out.println("Done creating topics");
 
     }
+
     public static void main(String[] args)
     throws InterruptedException, ExecutionException {
+        String arg = args[0];
+        if (arg.equals("tester")) {
+            tester();
+            System.exit(0);
+        }
 
-        if (args.length == 0) {
-            System.out.println("Nothing to do.");
+        LHConfig config = new LHConfig();
+        doIdempotentSetup(config);
 
-        } else {
-            String arg = args[0];
-            LHConfig config = new LHConfig();
-            doIdempotentSetup(config);
-
-            if (arg.equals("worker")) {
-                TestWorker.doMain(config);
-            } else if (arg.equals("both")) {
-                schedulerAndServer(config);
-            } else if (arg.equals("scheduler")) {
-                SchedulerTopology.doMain(config);
-            } else if (arg.equals("tester")) {
-                tester();
-            }
+        if (arg.equals("worker")) {
+            TestWorker.doMain(config);
+        } else if (arg.equals("scheduler")) {
+            Scheduler.doMain(config);
+        } else if (arg.equals("server")) {
+            Server.doMain(config);
         }
     }
 
-    public static void  schedulerAndServer(LHConfig config) {
-        Topology topology = SchedulerTopology.initTopology(config);
-        KafkaStreams scheduler = new KafkaStreams(topology, config.getStreamsConfig());
+    // public static void  schedulerAndServer(LHConfig config) {
+    //     Topology topology = Scheduler.initTopology(config);
+    //     KafkaStreams scheduler = new KafkaStreams(topology, config.getStreamsConfig());
 
-        LHApi api = new LHApi(config);
+    //     ApiStreamsContext context = new ApiStreamsContext(config, serverStreams);
+    //     LHApi api = new LHApi(config, context);
 
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            scheduler.close();
-            config.cleanup();
-        }));
+    //     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+    //         scheduler.close();
+    //         config.cleanup();
+    //     }));
 
-        scheduler.start();
-        api.start();
-    }
+    //     scheduler.start();
+    //     api.start();
+    // }
 
     public static void tester() {
         LHConfig config = new LHConfig();

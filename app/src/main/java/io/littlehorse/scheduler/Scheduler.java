@@ -11,19 +11,19 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.event.WFRunEvent;
 import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.serde.SchedulerOutputTsrSer;
-import io.littlehorse.common.serde.SchedulerOutputWFRunSer;
-import io.littlehorse.common.serde.WFRunEventSerde;
-import io.littlehorse.common.serde.WFRunSerde;
-import io.littlehorse.common.serde.WfSpecSerde;
 import io.littlehorse.scheduler.model.WfRunState;
+import io.littlehorse.scheduler.serde.SchedulerOutputTsrSer;
+import io.littlehorse.scheduler.serde.SchedulerOutputWFRunSer;
+import io.littlehorse.scheduler.serde.WFRunEventSerde;
+import io.littlehorse.scheduler.serde.WFRunSerde;
+import io.littlehorse.scheduler.serde.WfSpecSerde;
 
-public class SchedulerTopology {
+public class Scheduler {
     public static String topoSource = "WFRunEvent Source";
     public static String runtimeProcessor = "WFRuntime";
     public static String wfRunSink = "WFRun Sink";
     public static String taskSchedulerSink = "Scheduled Tasks";
-    
+
     public static Topology initTopology(LHConfig config) {
         Topology topo = new Topology();
 
