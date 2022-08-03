@@ -7,11 +7,14 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHConnectionError;
+import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.proto.ErrorCodePb;
+import io.littlehorse.common.proto.POSTableResponsePb;
 import io.littlehorse.common.util.KStreamsStateListener;
 import io.littlehorse.server.model.response.ErrorResponse;
 import io.littlehorse.server.model.wfrun.TaskRun;
@@ -35,34 +38,71 @@ public class LHApi {
 
         this.app.get("/WfSpec/{id}", this::getWfSpec);
         this.app.get("/WfRun/{id}", this::getWfRun);
-        // this.app.get("/WfRun/{id}/ThreadRun", this::listThreadRuns);
         this.app.get(
             "/WfRun/{wfRunId}/ThreadRun/{threadRunNumber}",
             this::getThreadRun
         );
-        // this.app.get(
-        //     "/WfRun/{id}/ThreadRun/{number}/TaskRun", this::getTasksForThread);
         this.app.get(
             "/WfRun/{wfRunId}/ThreadRun/{threadRunNumber}/TaskRun/{taskRunPosition}",
             this::getTask
         );
-        // this.app.get("/WfRun/{id}/TaskRun", this::listAllTasksForWfRun);
 
+        this.app.post("/WFSpec", (ctx) -> {
+            this.post(ctx, WfSpec.class);
+        });
+        this.app.post("/TaskDef", (ctx) -> {
+            this.post(ctx, TaskDef.class);
+        });
 
-        this.app.post("/WFSpec", this::postWFSpec);
-        this.app.post("/TaskDef", this::postTaskDef);
+        this.app.get("/internal/waitForResponse/{requestId}", this::waitForResponse);
+        this.app.get("/internal/storeBytes/{storeName}/{storeKey}", this::getBytes);
     }
 
     public void start() {
         app.start(config.getExposedPort());
     }
 
-    public void postTaskDef(Context ctx) {
-        // TODO: post the wfspec
-    }
+    public <U extends MessageOrBuilder, T extends POSTable<U>> void post(
+        Context ctx, Class<T> cls
+    ) {
+        T t;
+        try {
+            t = LHSerializable.fromBytes(ctx.bodyAsBytes(), cls);
+        } catch(LHSerdeError exn) {
+            json(
+                new ErrorResponse(
+                    ErrorCodePb.VALIDATION_ERROR,
+                    "Couldn't deserialize resource: " + exn.getMessage()
+                ), 400, ctx
+            );
+            return;
+        }
 
-    public void postWFSpec(Context ctx) {
-        // TODO: post the wfspec
+        byte[] out;
+        try {
+            out = streams.post(t, cls);
+            if (out == null) {
+                throw new LHConnectionError(null, "Processing timed out");
+            }
+        } catch (LHConnectionError exn) {
+            json(
+                new ErrorResponse(
+                    ErrorCodePb.CONNECTION_ERROR,
+                    "Unexpected error: " + exn.getMessage()
+                ), 500, ctx
+            );
+            return;
+        }
+
+        POSTableResponsePb resp;
+        try {
+            resp = POSTableResponsePb.parseFrom(out);
+        } catch(Exception exn) {
+            throw new RuntimeException("Not possible");
+        }
+
+        ctx.status(resp.getStatus());
+        ctx.result(resp.getResponse().toByteArray());
     }
 
     public void getTask(Context ctx) {
@@ -99,6 +139,39 @@ public class LHApi {
 
         String storeKey = ThreadRun.getStoreKey(wfRunId, threadRunNumber);
         returnLookup(wfRunId, storeKey, ThreadRun.class, ctx);
+    }
+
+    public void waitForResponse(Context ctx) {
+        String requestId = ctx.pathParam("requestId");
+
+        try {
+            byte[] response = streams.localWait(requestId);
+            if (response == null) {
+                ctx.status(404);
+            } else {
+                ctx.result(response);
+            }
+        } catch (Exception exn) {
+            json(
+                new ErrorResponse(
+                    ErrorCodePb.CONNECTION_ERROR,
+                    "Failed waiting for request to be processed"
+                ), 500, ctx
+            );
+        }
+    }
+
+    public void getBytes(Context ctx) {
+        String storeName = ctx.pathParam("storeName");
+        String storeKey = ctx.pathParam("storeKey");
+
+        byte[] out = streams.localGetBytes(storeName, storeKey);
+
+        if (out == null) {
+            ctx.status(404);
+        } else {
+            ctx.result(out);
+        }
     }
 
     private <U extends MessageOrBuilder, T extends GETable<U>> void returnLookup(

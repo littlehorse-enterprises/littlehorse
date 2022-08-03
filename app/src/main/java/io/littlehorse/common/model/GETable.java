@@ -1,7 +1,9 @@
 package io.littlehorse.common.model;
 
 import java.util.Date;
+import java.util.List;
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.server.model.internal.IndexEntry;
 
 public abstract class GETable<T extends MessageOrBuilder> extends LHSerializable<T> {
     public abstract Date getCreatedAt();
@@ -9,6 +11,12 @@ public abstract class GETable<T extends MessageOrBuilder> extends LHSerializable
     public abstract String getPartitionKey();
 
     public abstract String getStoreKey();
+
+    public abstract List<IndexEntry> getIndexEntries();
+
+    public static String getBaseStoreName(Class<? extends GETable<?>> cls) {
+        return cls.getSimpleName();
+    }
 }
 
 /*

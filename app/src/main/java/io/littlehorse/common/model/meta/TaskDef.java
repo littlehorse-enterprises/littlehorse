@@ -1,10 +1,13 @@
 package io.littlehorse.common.model.meta;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.proto.TaskDefPb;
 import io.littlehorse.common.proto.TaskDefPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.server.model.internal.IndexEntry;
 
 public class TaskDef extends POSTable<TaskDefPbOrBuilder> {
     public String name;
@@ -48,16 +51,18 @@ public class TaskDef extends POSTable<TaskDefPbOrBuilder> {
         lastOffset = newOffset;
     }
 
-    public void validate() {
-
+    public void handlePost(POSTable<TaskDefPbOrBuilder> old) {
+        // if (!(old == null || old instanceof TaskDef)) {
+        //     throw new RuntimeException("Bad method call.");
+        // }
+        // TaskDef oldTd = old == null ? null : (TaskDef) old;
     }
 
-    public void validateChange(POSTable<TaskDefPbOrBuilder> old) {
-        if (!(old == null || old instanceof TaskDef)) {
-            throw new RuntimeException("Bad method call.");
-        }
-        TaskDef oldTd = old == null ? null : (TaskDef) old;
+    public boolean handleDelete() {
+        return true;
+    }
 
-
+    public List<IndexEntry> getIndexEntries() {
+        return new ArrayList<>();
     }
 }

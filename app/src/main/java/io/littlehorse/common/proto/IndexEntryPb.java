@@ -4,26 +4,31 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf type {@code lh_proto.DeleteTaskDefPb}
+ * <pre>
+ * This section defines internal data structures used for data stores.
+ * </pre>
+ *
+ * Protobuf type {@code lh_proto.IndexEntryPb}
  */
-public final class DeleteTaskDefPb extends
+public final class IndexEntryPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.DeleteTaskDefPb)
-    DeleteTaskDefPbOrBuilder {
+    // @@protoc_insertion_point(message_implements:lh_proto.IndexEntryPb)
+    IndexEntryPbOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use DeleteTaskDefPb.newBuilder() to construct.
-  private DeleteTaskDefPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use IndexEntryPb.newBuilder() to construct.
+  private IndexEntryPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private DeleteTaskDefPb() {
-    id_ = "";
+  private IndexEntryPb() {
+    partitionKey_ = "";
+    storeKey_ = "";
   }
 
   @java.lang.Override
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new DeleteTaskDefPb();
+    return new IndexEntryPb();
   }
 
   @java.lang.Override
@@ -31,7 +36,7 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
-  private DeleteTaskDefPb(
+  private IndexEntryPb(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -52,7 +57,13 @@ private static final long serialVersionUID = 0L;
           case 10: {
             java.lang.String s = input.readStringRequireUtf8();
 
-            id_ = s;
+            partitionKey_ = s;
+            break;
+          }
+          case 18: {
+            java.lang.String s = input.readStringRequireUtf8();
+
+            storeKey_ = s;
             break;
           }
           default: {
@@ -76,49 +87,87 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.Server.internal_static_lh_proto_DeleteTaskDefPb_descriptor;
+    return io.littlehorse.common.proto.Server.internal_static_lh_proto_IndexEntryPb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.Server.internal_static_lh_proto_DeleteTaskDefPb_fieldAccessorTable
+    return io.littlehorse.common.proto.Server.internal_static_lh_proto_IndexEntryPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.common.proto.DeleteTaskDefPb.class, io.littlehorse.common.proto.DeleteTaskDefPb.Builder.class);
+            io.littlehorse.common.proto.IndexEntryPb.class, io.littlehorse.common.proto.IndexEntryPb.Builder.class);
   }
 
-  public static final int ID_FIELD_NUMBER = 1;
-  private volatile java.lang.Object id_;
+  public static final int PARTITION_KEY_FIELD_NUMBER = 1;
+  private volatile java.lang.Object partitionKey_;
   /**
-   * <code>string id = 1;</code>
-   * @return The id.
+   * <code>string partition_key = 1;</code>
+   * @return The partitionKey.
    */
   @java.lang.Override
-  public java.lang.String getId() {
-    java.lang.Object ref = id_;
+  public java.lang.String getPartitionKey() {
+    java.lang.Object ref = partitionKey_;
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      id_ = s;
+      partitionKey_ = s;
       return s;
     }
   }
   /**
-   * <code>string id = 1;</code>
-   * @return The bytes for id.
+   * <code>string partition_key = 1;</code>
+   * @return The bytes for partitionKey.
    */
   @java.lang.Override
   public com.google.protobuf.ByteString
-      getIdBytes() {
-    java.lang.Object ref = id_;
+      getPartitionKeyBytes() {
+    java.lang.Object ref = partitionKey_;
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      id_ = b;
+      partitionKey_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int STORE_KEY_FIELD_NUMBER = 2;
+  private volatile java.lang.Object storeKey_;
+  /**
+   * <code>string store_key = 2;</code>
+   * @return The storeKey.
+   */
+  @java.lang.Override
+  public java.lang.String getStoreKey() {
+    java.lang.Object ref = storeKey_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      storeKey_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string store_key = 2;</code>
+   * @return The bytes for storeKey.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getStoreKeyBytes() {
+    java.lang.Object ref = storeKey_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      storeKey_ = b;
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
@@ -139,8 +188,11 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!getIdBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, id_);
+    if (!getPartitionKeyBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, partitionKey_);
+    }
+    if (!getStoreKeyBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, storeKey_);
     }
     unknownFields.writeTo(output);
   }
@@ -151,8 +203,11 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (!getIdBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, id_);
+    if (!getPartitionKeyBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, partitionKey_);
+    }
+    if (!getStoreKeyBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, storeKey_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -164,13 +219,15 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.common.proto.DeleteTaskDefPb)) {
+    if (!(obj instanceof io.littlehorse.common.proto.IndexEntryPb)) {
       return super.equals(obj);
     }
-    io.littlehorse.common.proto.DeleteTaskDefPb other = (io.littlehorse.common.proto.DeleteTaskDefPb) obj;
+    io.littlehorse.common.proto.IndexEntryPb other = (io.littlehorse.common.proto.IndexEntryPb) obj;
 
-    if (!getId()
-        .equals(other.getId())) return false;
+    if (!getPartitionKey()
+        .equals(other.getPartitionKey())) return false;
+    if (!getStoreKey()
+        .equals(other.getStoreKey())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -182,76 +239,78 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + ID_FIELD_NUMBER;
-    hash = (53 * hash) + getId().hashCode();
+    hash = (37 * hash) + PARTITION_KEY_FIELD_NUMBER;
+    hash = (53 * hash) + getPartitionKey().hashCode();
+    hash = (37 * hash) + STORE_KEY_FIELD_NUMBER;
+    hash = (53 * hash) + getStoreKey().hashCode();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
   }
 
-  public static io.littlehorse.common.proto.DeleteTaskDefPb parseFrom(
+  public static io.littlehorse.common.proto.IndexEntryPb parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.DeleteTaskDefPb parseFrom(
+  public static io.littlehorse.common.proto.IndexEntryPb parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.DeleteTaskDefPb parseFrom(
+  public static io.littlehorse.common.proto.IndexEntryPb parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.DeleteTaskDefPb parseFrom(
+  public static io.littlehorse.common.proto.IndexEntryPb parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.DeleteTaskDefPb parseFrom(byte[] data)
+  public static io.littlehorse.common.proto.IndexEntryPb parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.DeleteTaskDefPb parseFrom(
+  public static io.littlehorse.common.proto.IndexEntryPb parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.DeleteTaskDefPb parseFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.IndexEntryPb parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.DeleteTaskDefPb parseFrom(
+  public static io.littlehorse.common.proto.IndexEntryPb parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.DeleteTaskDefPb parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.IndexEntryPb parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.DeleteTaskDefPb parseDelimitedFrom(
+  public static io.littlehorse.common.proto.IndexEntryPb parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.DeleteTaskDefPb parseFrom(
+  public static io.littlehorse.common.proto.IndexEntryPb parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.DeleteTaskDefPb parseFrom(
+  public static io.littlehorse.common.proto.IndexEntryPb parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -264,7 +323,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.common.proto.DeleteTaskDefPb prototype) {
+  public static Builder newBuilder(io.littlehorse.common.proto.IndexEntryPb prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -280,26 +339,30 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.DeleteTaskDefPb}
+   * <pre>
+   * This section defines internal data structures used for data stores.
+   * </pre>
+   *
+   * Protobuf type {@code lh_proto.IndexEntryPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.DeleteTaskDefPb)
-      io.littlehorse.common.proto.DeleteTaskDefPbOrBuilder {
+      // @@protoc_insertion_point(builder_implements:lh_proto.IndexEntryPb)
+      io.littlehorse.common.proto.IndexEntryPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.Server.internal_static_lh_proto_DeleteTaskDefPb_descriptor;
+      return io.littlehorse.common.proto.Server.internal_static_lh_proto_IndexEntryPb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.Server.internal_static_lh_proto_DeleteTaskDefPb_fieldAccessorTable
+      return io.littlehorse.common.proto.Server.internal_static_lh_proto_IndexEntryPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.common.proto.DeleteTaskDefPb.class, io.littlehorse.common.proto.DeleteTaskDefPb.Builder.class);
+              io.littlehorse.common.proto.IndexEntryPb.class, io.littlehorse.common.proto.IndexEntryPb.Builder.class);
     }
 
-    // Construct using io.littlehorse.common.proto.DeleteTaskDefPb.newBuilder()
+    // Construct using io.littlehorse.common.proto.IndexEntryPb.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -317,7 +380,9 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      id_ = "";
+      partitionKey_ = "";
+
+      storeKey_ = "";
 
       return this;
     }
@@ -325,17 +390,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.Server.internal_static_lh_proto_DeleteTaskDefPb_descriptor;
+      return io.littlehorse.common.proto.Server.internal_static_lh_proto_IndexEntryPb_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.DeleteTaskDefPb getDefaultInstanceForType() {
-      return io.littlehorse.common.proto.DeleteTaskDefPb.getDefaultInstance();
+    public io.littlehorse.common.proto.IndexEntryPb getDefaultInstanceForType() {
+      return io.littlehorse.common.proto.IndexEntryPb.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.DeleteTaskDefPb build() {
-      io.littlehorse.common.proto.DeleteTaskDefPb result = buildPartial();
+    public io.littlehorse.common.proto.IndexEntryPb build() {
+      io.littlehorse.common.proto.IndexEntryPb result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -343,9 +408,10 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.DeleteTaskDefPb buildPartial() {
-      io.littlehorse.common.proto.DeleteTaskDefPb result = new io.littlehorse.common.proto.DeleteTaskDefPb(this);
-      result.id_ = id_;
+    public io.littlehorse.common.proto.IndexEntryPb buildPartial() {
+      io.littlehorse.common.proto.IndexEntryPb result = new io.littlehorse.common.proto.IndexEntryPb(this);
+      result.partitionKey_ = partitionKey_;
+      result.storeKey_ = storeKey_;
       onBuilt();
       return result;
     }
@@ -384,18 +450,22 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.common.proto.DeleteTaskDefPb) {
-        return mergeFrom((io.littlehorse.common.proto.DeleteTaskDefPb)other);
+      if (other instanceof io.littlehorse.common.proto.IndexEntryPb) {
+        return mergeFrom((io.littlehorse.common.proto.IndexEntryPb)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.common.proto.DeleteTaskDefPb other) {
-      if (other == io.littlehorse.common.proto.DeleteTaskDefPb.getDefaultInstance()) return this;
-      if (!other.getId().isEmpty()) {
-        id_ = other.id_;
+    public Builder mergeFrom(io.littlehorse.common.proto.IndexEntryPb other) {
+      if (other == io.littlehorse.common.proto.IndexEntryPb.getDefaultInstance()) return this;
+      if (!other.getPartitionKey().isEmpty()) {
+        partitionKey_ = other.partitionKey_;
+        onChanged();
+      }
+      if (!other.getStoreKey().isEmpty()) {
+        storeKey_ = other.storeKey_;
         onChanged();
       }
       this.mergeUnknownFields(other.unknownFields);
@@ -413,11 +483,11 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      io.littlehorse.common.proto.DeleteTaskDefPb parsedMessage = null;
+      io.littlehorse.common.proto.IndexEntryPb parsedMessage = null;
       try {
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (io.littlehorse.common.proto.DeleteTaskDefPb) e.getUnfinishedMessage();
+        parsedMessage = (io.littlehorse.common.proto.IndexEntryPb) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
@@ -427,78 +497,154 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.lang.Object id_ = "";
+    private java.lang.Object partitionKey_ = "";
     /**
-     * <code>string id = 1;</code>
-     * @return The id.
+     * <code>string partition_key = 1;</code>
+     * @return The partitionKey.
      */
-    public java.lang.String getId() {
-      java.lang.Object ref = id_;
+    public java.lang.String getPartitionKey() {
+      java.lang.Object ref = partitionKey_;
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        id_ = s;
+        partitionKey_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
       }
     }
     /**
-     * <code>string id = 1;</code>
-     * @return The bytes for id.
+     * <code>string partition_key = 1;</code>
+     * @return The bytes for partitionKey.
      */
     public com.google.protobuf.ByteString
-        getIdBytes() {
-      java.lang.Object ref = id_;
+        getPartitionKeyBytes() {
+      java.lang.Object ref = partitionKey_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        id_ = b;
+        partitionKey_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
     /**
-     * <code>string id = 1;</code>
-     * @param value The id to set.
+     * <code>string partition_key = 1;</code>
+     * @param value The partitionKey to set.
      * @return This builder for chaining.
      */
-    public Builder setId(
+    public Builder setPartitionKey(
         java.lang.String value) {
       if (value == null) {
     throw new NullPointerException();
   }
   
-      id_ = value;
+      partitionKey_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>string id = 1;</code>
+     * <code>string partition_key = 1;</code>
      * @return This builder for chaining.
      */
-    public Builder clearId() {
+    public Builder clearPartitionKey() {
       
-      id_ = getDefaultInstance().getId();
+      partitionKey_ = getDefaultInstance().getPartitionKey();
       onChanged();
       return this;
     }
     /**
-     * <code>string id = 1;</code>
-     * @param value The bytes for id to set.
+     * <code>string partition_key = 1;</code>
+     * @param value The bytes for partitionKey to set.
      * @return This builder for chaining.
      */
-    public Builder setIdBytes(
+    public Builder setPartitionKeyBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
       
-      id_ = value;
+      partitionKey_ = value;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object storeKey_ = "";
+    /**
+     * <code>string store_key = 2;</code>
+     * @return The storeKey.
+     */
+    public java.lang.String getStoreKey() {
+      java.lang.Object ref = storeKey_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        storeKey_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string store_key = 2;</code>
+     * @return The bytes for storeKey.
+     */
+    public com.google.protobuf.ByteString
+        getStoreKeyBytes() {
+      java.lang.Object ref = storeKey_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        storeKey_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string store_key = 2;</code>
+     * @param value The storeKey to set.
+     * @return This builder for chaining.
+     */
+    public Builder setStoreKey(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      storeKey_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string store_key = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearStoreKey() {
+      
+      storeKey_ = getDefaultInstance().getStoreKey();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string store_key = 2;</code>
+     * @param value The bytes for storeKey to set.
+     * @return This builder for chaining.
+     */
+    public Builder setStoreKeyBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      storeKey_ = value;
       onChanged();
       return this;
     }
@@ -515,41 +661,41 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.DeleteTaskDefPb)
+    // @@protoc_insertion_point(builder_scope:lh_proto.IndexEntryPb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.DeleteTaskDefPb)
-  private static final io.littlehorse.common.proto.DeleteTaskDefPb DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:lh_proto.IndexEntryPb)
+  private static final io.littlehorse.common.proto.IndexEntryPb DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.common.proto.DeleteTaskDefPb();
+    DEFAULT_INSTANCE = new io.littlehorse.common.proto.IndexEntryPb();
   }
 
-  public static io.littlehorse.common.proto.DeleteTaskDefPb getDefaultInstance() {
+  public static io.littlehorse.common.proto.IndexEntryPb getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<DeleteTaskDefPb>
-      PARSER = new com.google.protobuf.AbstractParser<DeleteTaskDefPb>() {
+  private static final com.google.protobuf.Parser<IndexEntryPb>
+      PARSER = new com.google.protobuf.AbstractParser<IndexEntryPb>() {
     @java.lang.Override
-    public DeleteTaskDefPb parsePartialFrom(
+    public IndexEntryPb parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new DeleteTaskDefPb(input, extensionRegistry);
+      return new IndexEntryPb(input, extensionRegistry);
     }
   };
 
-  public static com.google.protobuf.Parser<DeleteTaskDefPb> parser() {
+  public static com.google.protobuf.Parser<IndexEntryPb> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<DeleteTaskDefPb> getParserForType() {
+  public com.google.protobuf.Parser<IndexEntryPb> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.common.proto.DeleteTaskDefPb getDefaultInstanceForType() {
+  public io.littlehorse.common.proto.IndexEntryPb getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

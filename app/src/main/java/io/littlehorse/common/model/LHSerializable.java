@@ -10,7 +10,7 @@ import io.littlehorse.common.exceptions.LHSerdeError;
 public abstract class LHSerializable<T extends MessageOrBuilder> {
     public abstract GeneratedMessageV3.Builder<?> toProto();
 
-    public abstract void initFrom(T proto);
+    public abstract void initFrom(MessageOrBuilder proto);
 
     public abstract Class<? extends GeneratedMessageV3> getProtoBaseClass();
 
@@ -31,7 +31,7 @@ public abstract class LHSerializable<T extends MessageOrBuilder> {
     // Probably don't want to use reflection for everything, but hey we gotta
     // get a prototype out the door.
     @SuppressWarnings("unchecked")
-    public static <U extends MessageOrBuilder, T extends LHSerializable<U>>
+    public static <T extends LHSerializable<?>>
     T fromBytes(byte[] b, Class<T> cls) throws LHSerdeError {
 
         try {
@@ -41,7 +41,7 @@ public abstract class LHSerializable<T extends MessageOrBuilder> {
             GeneratedMessageV3 proto = protoClass.cast(
                 protoClass.getMethod("parseFrom", byte[].class).invoke(null, b)
             );
-            out.initFrom((U) proto);
+            out.initFrom(proto);
             return out;
 
         } catch (Exception exn) {
@@ -52,8 +52,7 @@ public abstract class LHSerializable<T extends MessageOrBuilder> {
     }
 
     @SuppressWarnings("unchecked")
-    public static <U extends MessageOrBuilder, T extends LHSerializable<U>>
-    T fromJson(String json, Class<T> cls) throws LHSerdeError {
+    public static <T extends LHSerializable<?>> T fromJson(String json, Class<T> cls) throws LHSerdeError {
         GeneratedMessageV3.Builder<?> builder;
         T out;
 

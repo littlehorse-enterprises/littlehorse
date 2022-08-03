@@ -1,10 +1,11 @@
 package io.littlehorse.common.model.meta;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.WFRunEvent;
 import io.littlehorse.common.model.observability.ObservabilityEvent;
@@ -15,8 +16,10 @@ import io.littlehorse.common.proto.WFSpecPb;
 import io.littlehorse.common.proto.WFSpecPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.scheduler.model.WfRunState;
+import io.littlehorse.server.model.internal.IndexEntry;
 
-public class WfSpec extends GETable<WFSpecPbOrBuilder> {
+
+public class WfSpec extends POSTable<WFSpecPbOrBuilder> {
     public String id;
     public String name;
     public Date createdAt;
@@ -101,6 +104,18 @@ public class WfSpec extends GETable<WFSpecPbOrBuilder> {
         WfSpec out = new WfSpec();
         out.initFrom(proto);
         return out;
+    }
+
+    public boolean handleDelete() {
+        return true;
+    }
+
+    public void handlePost(POSTable<WFSpecPbOrBuilder> old) {
+        // Eventually we'll do some validation
+    }
+
+    public List<IndexEntry> getIndexEntries() {
+        return new ArrayList<>();
     }
 
     public WfRunState startNewRun(WFRunEvent e, List<TaskScheduleRequest> toSchedule) {

@@ -1,9 +1,10 @@
 package io.littlehorse.common.util;
 
+import static com.google.protobuf.util.Timestamps.fromMillis;
 import java.time.Instant;
 import java.util.Date;
+import java.util.UUID;
 import com.google.protobuf.Timestamp;
-import static com.google.protobuf.util.Timestamps.fromMillis;
 
 public class LHUtil {
     public static Timestamp fromDate(Date date) {
@@ -38,5 +39,7 @@ public class LHUtil {
         logBack(1, things);  // Add one frame back because of this method call.
     }
 
-
+    public static String generateGuid() {
+        return UUID.randomUUID().toString();
+    }
 }
