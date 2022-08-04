@@ -96,21 +96,22 @@ public final class Server {
       "\n\021POSTableRequestPb\022%\n\004type\030\001 \001(\0162\027.lh_p" +
       "roto.RequestTypePb\022\021\n\tstore_key\030\002 \001(\t\022\022\n" +
       "\nrequest_id\030\003 \001(\t\022\024\n\007payload\030\004 \001(\014H\000\210\001\001B" +
-      "\n\n\010_payload\"\263\001\n\022POSTableResponsePb\022\016\n\006st" +
+      "\n\n\010_payload\"\341\001\n\022POSTableResponsePb\022\016\n\006st" +
       "atus\030\001 \001(\005\022(\n\004code\030\002 \001(\0162\025.lh_proto.Erro" +
       "rCodePbH\000\210\001\001\022\024\n\007message\030\003 \001(\tH\001\210\001\001\022\017\n\002id" +
-      "\030\004 \001(\tH\002\210\001\001\022\024\n\007payload\030\005 \001(\014H\003\210\001\001B\007\n\005_co" +
-      "deB\n\n\010_messageB\005\n\003_idB\n\n\010_payload\"8\n\014Ind" +
-      "exEntryPb\022\025\n\rpartition_key\030\001 \001(\t\022\021\n\tstor" +
-      "e_key\030\002 \001(\t\"~\n\016GETableEntryPb\022\r\n\005entry\030\001" +
-      " \001(\014\022\021\n\tpartition\030\002 \001(\005\022\033\n\023last_updated_" +
-      "offset\030\003 \001(\003\022-\n\rindex_entries\030\004 \003(\0132\026.lh" +
-      "_proto.IndexEntryPb*e\n\013ErrorCodePb\022\024\n\020VA" +
-      "LIDATION_ERROR\020\000\022\024\n\020CONNECTION_ERROR\020\001\022\023" +
-      "\n\017NOT_FOUND_ERROR\020\002\022\025\n\021BAD_REQUEST_ERROR" +
-      "\020\003*%\n\rRequestTypePb\022\010\n\004POST\020\000\022\n\n\006DELETE\020" +
-      "\001B(\n\033io.littlehorse.common.protoP\001Z\007.;mo" +
-      "delb\006proto3"
+      "\030\004 \001(\tH\002\210\001\001\022\024\n\007payload\030\005 \001(\014H\003\210\001\001\022\032\n\rpay" +
+      "load_class\030\006 \001(\tH\004\210\001\001B\007\n\005_codeB\n\n\010_messa" +
+      "geB\005\n\003_idB\n\n\010_payloadB\020\n\016_payload_class\"" +
+      "8\n\014IndexEntryPb\022\025\n\rpartition_key\030\001 \001(\t\022\021" +
+      "\n\tstore_key\030\002 \001(\t\"~\n\016GETableEntryPb\022\r\n\005e" +
+      "ntry\030\001 \001(\014\022\021\n\tpartition\030\002 \001(\005\022\033\n\023last_up" +
+      "dated_offset\030\003 \001(\003\022-\n\rindex_entries\030\004 \003(" +
+      "\0132\026.lh_proto.IndexEntryPb*e\n\013ErrorCodePb" +
+      "\022\024\n\020VALIDATION_ERROR\020\000\022\024\n\020CONNECTION_ERR" +
+      "OR\020\001\022\023\n\017NOT_FOUND_ERROR\020\002\022\025\n\021BAD_REQUEST" +
+      "_ERROR\020\003*%\n\rRequestTypePb\022\010\n\004POST\020\000\022\n\n\006D" +
+      "ELETE\020\001B(\n\033io.littlehorse.common.protoP\001" +
+      "Z\007.;modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -153,7 +154,7 @@ public final class Server {
     internal_static_lh_proto_POSTableResponsePb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_POSTableResponsePb_descriptor,
-        new java.lang.String[] { "Status", "Code", "Message", "Id", "Payload", "Code", "Message", "Id", "Payload", });
+        new java.lang.String[] { "Status", "Code", "Message", "Id", "Payload", "PayloadClass", "Code", "Message", "Id", "Payload", "PayloadClass", });
     internal_static_lh_proto_IndexEntryPb_descriptor =
       getDescriptor().getMessageTypes().get(6);
     internal_static_lh_proto_IndexEntryPb_fieldAccessorTable = new

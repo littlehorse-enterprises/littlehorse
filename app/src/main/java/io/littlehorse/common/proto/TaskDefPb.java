@@ -68,11 +68,6 @@ private static final long serialVersionUID = 0L;
 
             break;
           }
-          case 24: {
-
-            lastUpdatedOffset_ = input.readInt64();
-            break;
-          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -143,10 +138,10 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int CREATEDAT_FIELD_NUMBER = 2;
+  public static final int CREATED_AT_FIELD_NUMBER = 2;
   private com.google.protobuf.Timestamp createdAt_;
   /**
-   * <code>.google.protobuf.Timestamp createdAt = 2;</code>
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return Whether the createdAt field is set.
    */
   @java.lang.Override
@@ -154,7 +149,7 @@ private static final long serialVersionUID = 0L;
     return createdAt_ != null;
   }
   /**
-   * <code>.google.protobuf.Timestamp createdAt = 2;</code>
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return The createdAt.
    */
   @java.lang.Override
@@ -162,22 +157,11 @@ private static final long serialVersionUID = 0L;
     return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
   }
   /**
-   * <code>.google.protobuf.Timestamp createdAt = 2;</code>
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
    */
   @java.lang.Override
   public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
     return getCreatedAt();
-  }
-
-  public static final int LAST_UPDATED_OFFSET_FIELD_NUMBER = 3;
-  private long lastUpdatedOffset_;
-  /**
-   * <code>int64 last_updated_offset = 3;</code>
-   * @return The lastUpdatedOffset.
-   */
-  @java.lang.Override
-  public long getLastUpdatedOffset() {
-    return lastUpdatedOffset_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -200,9 +184,6 @@ private static final long serialVersionUID = 0L;
     if (createdAt_ != null) {
       output.writeMessage(2, getCreatedAt());
     }
-    if (lastUpdatedOffset_ != 0L) {
-      output.writeInt64(3, lastUpdatedOffset_);
-    }
     unknownFields.writeTo(output);
   }
 
@@ -218,10 +199,6 @@ private static final long serialVersionUID = 0L;
     if (createdAt_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, getCreatedAt());
-    }
-    if (lastUpdatedOffset_ != 0L) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt64Size(3, lastUpdatedOffset_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -245,8 +222,6 @@ private static final long serialVersionUID = 0L;
       if (!getCreatedAt()
           .equals(other.getCreatedAt())) return false;
     }
-    if (getLastUpdatedOffset()
-        != other.getLastUpdatedOffset()) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -261,12 +236,9 @@ private static final long serialVersionUID = 0L;
     hash = (37 * hash) + NAME_FIELD_NUMBER;
     hash = (53 * hash) + getName().hashCode();
     if (hasCreatedAt()) {
-      hash = (37 * hash) + CREATEDAT_FIELD_NUMBER;
+      hash = (37 * hash) + CREATED_AT_FIELD_NUMBER;
       hash = (53 * hash) + getCreatedAt().hashCode();
     }
-    hash = (37 * hash) + LAST_UPDATED_OFFSET_FIELD_NUMBER;
-    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-        getLastUpdatedOffset());
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -408,8 +380,6 @@ private static final long serialVersionUID = 0L;
         createdAt_ = null;
         createdAtBuilder_ = null;
       }
-      lastUpdatedOffset_ = 0L;
-
       return this;
     }
 
@@ -442,7 +412,6 @@ private static final long serialVersionUID = 0L;
       } else {
         result.createdAt_ = createdAtBuilder_.build();
       }
-      result.lastUpdatedOffset_ = lastUpdatedOffset_;
       onBuilt();
       return result;
     }
@@ -497,9 +466,6 @@ private static final long serialVersionUID = 0L;
       }
       if (other.hasCreatedAt()) {
         mergeCreatedAt(other.getCreatedAt());
-      }
-      if (other.getLastUpdatedOffset() != 0L) {
-        setLastUpdatedOffset(other.getLastUpdatedOffset());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -610,14 +576,14 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> createdAtBuilder_;
     /**
-     * <code>.google.protobuf.Timestamp createdAt = 2;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      * @return Whether the createdAt field is set.
      */
     public boolean hasCreatedAt() {
       return createdAtBuilder_ != null || createdAt_ != null;
     }
     /**
-     * <code>.google.protobuf.Timestamp createdAt = 2;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      * @return The createdAt.
      */
     public com.google.protobuf.Timestamp getCreatedAt() {
@@ -628,7 +594,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp createdAt = 2;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder setCreatedAt(com.google.protobuf.Timestamp value) {
       if (createdAtBuilder_ == null) {
@@ -644,7 +610,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp createdAt = 2;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder setCreatedAt(
         com.google.protobuf.Timestamp.Builder builderForValue) {
@@ -658,7 +624,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp createdAt = 2;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder mergeCreatedAt(com.google.protobuf.Timestamp value) {
       if (createdAtBuilder_ == null) {
@@ -676,7 +642,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp createdAt = 2;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public Builder clearCreatedAt() {
       if (createdAtBuilder_ == null) {
@@ -690,7 +656,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp createdAt = 2;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public com.google.protobuf.Timestamp.Builder getCreatedAtBuilder() {
       
@@ -698,7 +664,7 @@ private static final long serialVersionUID = 0L;
       return getCreatedAtFieldBuilder().getBuilder();
     }
     /**
-     * <code>.google.protobuf.Timestamp createdAt = 2;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
       if (createdAtBuilder_ != null) {
@@ -709,7 +675,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp createdAt = 2;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
@@ -723,37 +689,6 @@ private static final long serialVersionUID = 0L;
         createdAt_ = null;
       }
       return createdAtBuilder_;
-    }
-
-    private long lastUpdatedOffset_ ;
-    /**
-     * <code>int64 last_updated_offset = 3;</code>
-     * @return The lastUpdatedOffset.
-     */
-    @java.lang.Override
-    public long getLastUpdatedOffset() {
-      return lastUpdatedOffset_;
-    }
-    /**
-     * <code>int64 last_updated_offset = 3;</code>
-     * @param value The lastUpdatedOffset to set.
-     * @return This builder for chaining.
-     */
-    public Builder setLastUpdatedOffset(long value) {
-      
-      lastUpdatedOffset_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>int64 last_updated_offset = 3;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearLastUpdatedOffset() {
-      
-      lastUpdatedOffset_ = 0L;
-      onChanged();
-      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

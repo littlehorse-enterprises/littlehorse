@@ -118,11 +118,19 @@ public class ApiStreamsContext {
         ReadOnlyKeyValueStore<String, POSTableResponse> respStore = getResponseStore();
 
         // TODO: add a timeout
-        while (true) {
+        int iterations = 0;
+        while (iterations++ < 500) {
             POSTableResponse out = respStore.get(requestId);
-            if (out == null) continue;
+            if (out == null) {
+                try {
+                    Thread.sleep(30);
+                } catch(Exception exn) {}
+                continue;
+            }
             return out.toBytes();
         }
+        System.out.println("Failed.");
+        return null;
     }
 
     private ReadOnlyKeyValueStore<String, GETable<?>> getStore(String storeName) {

@@ -73,4 +73,21 @@ public interface POSTableResponsePbOrBuilder extends
    * @return The payload.
    */
   com.google.protobuf.ByteString getPayload();
+
+  /**
+   * <code>string payload_class = 6;</code>
+   * @return Whether the payloadClass field is set.
+   */
+  boolean hasPayloadClass();
+  /**
+   * <code>string payload_class = 6;</code>
+   * @return The payloadClass.
+   */
+  java.lang.String getPayloadClass();
+  /**
+   * <code>string payload_class = 6;</code>
+   * @return The bytes for payloadClass.
+   */
+  com.google.protobuf.ByteString
+      getPayloadClassBytes();
 }

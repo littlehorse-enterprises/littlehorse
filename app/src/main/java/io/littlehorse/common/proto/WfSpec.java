@@ -76,12 +76,11 @@ public final class WfSpec {
       "\022\014\n\004name\030\007 \001(\t\022\033\n\023last_updated_offset\030\010 " +
       "\001(\003\032J\n\020ThreadSpecsEntry\022\013\n\003key\030\001 \001(\t\022%\n\005" +
       "value\030\002 \001(\0132\026.lh_proto.ThreadSpecPb:\0028\001\"" +
-      "e\n\tTaskDefPb\022\014\n\004name\030\001 \001(\t\022-\n\tcreatedAt\030" +
-      "\002 \001(\0132\032.google.protobuf.Timestamp\022\033\n\023las" +
-      "t_updated_offset\030\003 \001(\003*0\n\nNodeTypePb\022\010\n\004" +
-      "TASK\020\000\022\016\n\nENTRYPOINT\020\001\022\010\n\004EXIT\020\002B(\n\033io.l" +
-      "ittlehorse.common.protoP\001Z\007.;modelb\006prot" +
-      "o3"
+      "I\n\tTaskDefPb\022\014\n\004name\030\001 \001(\t\022.\n\ncreated_at" +
+      "\030\002 \001(\0132\032.google.protobuf.Timestamp*0\n\nNo" +
+      "deTypePb\022\010\n\004TASK\020\000\022\016\n\nENTRYPOINT\020\001\022\010\n\004EX" +
+      "IT\020\002B(\n\033io.littlehorse.common.protoP\001Z\007." +
+      ";modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -130,7 +129,7 @@ public final class WfSpec {
     internal_static_lh_proto_TaskDefPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_TaskDefPb_descriptor,
-        new java.lang.String[] { "Name", "CreatedAt", "LastUpdatedOffset", });
+        new java.lang.String[] { "Name", "CreatedAt", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.common.proto.LhProto.getDescriptor();
   }

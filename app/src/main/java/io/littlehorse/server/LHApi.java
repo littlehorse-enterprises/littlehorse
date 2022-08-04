@@ -14,8 +14,8 @@ import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.proto.ErrorCodePb;
-import io.littlehorse.common.proto.POSTableResponsePb;
 import io.littlehorse.common.util.KStreamsStateListener;
+import io.littlehorse.server.model.internal.POSTableResponse;
 import io.littlehorse.server.model.response.ErrorResponse;
 import io.littlehorse.server.model.wfrun.TaskRun;
 import io.littlehorse.server.model.wfrun.ThreadRun;
@@ -28,7 +28,7 @@ public class LHApi {
     private ApiStreamsContext streams;
 
     private interface HandlerFunc {
-        public void handle(Context ctx);
+        public void handle(Context ctx) throws Exception;
     }
 
     private void handle(HandlerFunc func, Context ctx) {
@@ -36,7 +36,7 @@ public class LHApi {
             func.handle(ctx);
         } catch(Exception exn) {
             exn.printStackTrace();
-            throw exn;
+            throw new RuntimeException(exn);
         }
     }
 
@@ -86,12 +86,10 @@ public class LHApi {
 
     public <U extends MessageOrBuilder, T extends POSTable<U>> void post(
         Context ctx, Class<T> cls
-    ) {
+    ) throws LHSerdeError { // should never throw it though
         T t;
         try {
-            System.out.println("Hi there");
             t = LHSerializable.fromJson(ctx.body(), cls);
-            System.out.println("Got the thing");
         } catch(LHSerdeError exn) {
             json(
                 new ErrorResponse(
@@ -103,9 +101,11 @@ public class LHApi {
         }
 
         byte[] out;
+        boolean skipPrintStacktrace = false;
         try {
             out = streams.post(t, cls);
             if (out == null) {
+                skipPrintStacktrace = true;
                 throw new LHConnectionError(null, "Processing timed out");
             }
         } catch (LHConnectionError exn) {
@@ -115,28 +115,15 @@ public class LHApi {
                     "Unexpected error: " + exn.getMessage()
                 ), 500, ctx
             );
-            exn.printStackTrace();
+            if (!skipPrintStacktrace) exn.printStackTrace();
             return;
         }
 
-        POSTableResponsePb resp;
-        try {
-            resp = POSTableResponsePb.parseFrom(out);
-        } catch(Exception exn) {
-            exn.printStackTrace();
-            throw new RuntimeException("Not possible");
-        }
-
-        ctx.status(resp.getStatus());
-        ctx.contentType("json");
-        try {
-            T tOut = LHSerializable.fromBytes(resp.getPayload().toByteArray(), cls);
-            ctx.result(new String(tOut.toJson()));
-        } catch(LHSerdeError exn) {
-            // Not possible
-            exn.printStackTrace();
-            throw new RuntimeException(exn);
-        }
+        POSTableResponse resp = LHSerializable.fromBytes(
+            out, POSTableResponse.class
+        );
+        ctx.status(resp.status);
+        ctx.json(resp);
     }
 
     public void getTaskRun(Context ctx) {
@@ -231,7 +218,11 @@ public class LHApi {
                 );
                 return;
             } else {
-                json(out, 200, ctx);
+                POSTableResponse resp = new POSTableResponse();
+                resp.result = out;
+                resp.code = null;
+                resp.id = out.getStoreKey();
+                ctx.json(resp);
             }
         } catch(LHConnectionError exn) {
             json(

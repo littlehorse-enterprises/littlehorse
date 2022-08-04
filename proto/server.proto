@@ -92,6 +92,7 @@ message POSTableResponsePb {
     optional string message = 3;
     optional string id = 4;
     optional bytes payload = 5;
+    optional string payload_class = 6;
 }
 
 // NOTE: Maybe later we'll add an Entity output thing that lets the

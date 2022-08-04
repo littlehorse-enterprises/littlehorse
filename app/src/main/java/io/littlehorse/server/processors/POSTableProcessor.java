@@ -13,6 +13,7 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.proto.ErrorCodePb;
 import io.littlehorse.server.model.internal.POSTableRequest;
 import io.littlehorse.server.model.internal.POSTableResponse;
 
@@ -51,19 +52,22 @@ public class POSTableProcessor<U extends MessageOrBuilder, T extends POSTable<U>
         }
 
         T oldT = store.get(key);
+        POSTableResponse resp = new POSTableResponse();
+        resp.id = key;
 
         try {
             newT.handlePost(oldT);
+            resp.status = 200;
+            resp.result = newT;
         } catch(LHConnectionError exn) {
-            return;
+            resp.status = 500;
+            resp.message = exn.getMessage();
+            resp.code = ErrorCodePb.CONNECTION_ERROR;
         } catch(LHValidationError exn) {
-            return;
+            resp.status = 400;
+            resp.message = exn.getMessage();
+            resp.code = ErrorCodePb.VALIDATION_ERROR;
         }
-
-        POSTableResponse resp = new POSTableResponse();
-        resp.status = 200;
-        resp.id = key;
-        resp.payload = newT.toBytes();
 
         responseStore.put(req.requestId, resp);
         store.put(key, newT);

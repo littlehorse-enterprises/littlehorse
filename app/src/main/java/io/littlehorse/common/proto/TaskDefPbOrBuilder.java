@@ -20,23 +20,17 @@ public interface TaskDefPbOrBuilder extends
       getNameBytes();
 
   /**
-   * <code>.google.protobuf.Timestamp createdAt = 2;</code>
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return Whether the createdAt field is set.
    */
   boolean hasCreatedAt();
   /**
-   * <code>.google.protobuf.Timestamp createdAt = 2;</code>
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
    * @return The createdAt.
    */
   com.google.protobuf.Timestamp getCreatedAt();
   /**
-   * <code>.google.protobuf.Timestamp createdAt = 2;</code>
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
    */
   com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
-
-  /**
-   * <code>int64 last_updated_offset = 3;</code>
-   * @return The lastUpdatedOffset.
-   */
-  long getLastUpdatedOffset();
 }
