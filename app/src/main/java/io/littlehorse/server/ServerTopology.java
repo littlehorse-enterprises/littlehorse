@@ -3,22 +3,21 @@ package io.littlehorse.server;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.Topology;
+import org.apache.kafka.streams.state.KeyValueStore;
+import org.apache.kafka.streams.state.StoreBuilder;
+import org.apache.kafka.streams.state.Stores;
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.proto.POSTableRequestPb;
-import io.littlehorse.common.proto.POSTableRequestPbOrBuilder;
-import io.littlehorse.common.proto.POSTableResponsePb;
 import io.littlehorse.common.proto.TaskDefPbOrBuilder;
-import io.littlehorse.common.proto.WFSpecPb;
 import io.littlehorse.common.proto.WFSpecPbOrBuilder;
 import io.littlehorse.common.util.serde.LHSerde;
+import io.littlehorse.common.util.serde.LHSerializer;
 import io.littlehorse.server.model.internal.POSTableRequest;
+import io.littlehorse.server.model.internal.POSTableResponse;
 import io.littlehorse.server.processors.POSTableProcessor;
-import io.littlehorse.server.serde.MetadataEntitySerializer;
-import io.littlehorse.server.serde.POSTableRequestSerde;
-import io.littlehorse.server.serde.POSTableResponsePbSerde;
 
 public class ServerTopology {
     public static String wfSpecSource = "wfSpecSource";
@@ -35,12 +34,12 @@ public class ServerTopology {
         Topology topo = new Topology();
 
         Serde<POSTableRequest> reqSerde = new LHSerde<
-            POSTableRequestPb, POSTableRequest
+            POSTableRequest
         >(POSTableRequest.class);
 
-        Serde<POSTableResponsePb> respSerde = new LHSerde<
-            POSTableResponsePb, POSTableResponse
-        >(POSTableResponse.class);
+        Serde<POSTableResponse> respSerde = new LHSerde<POSTableResponse>(
+            POSTableResponse.class
+        );
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             reqSerde.close();
@@ -56,7 +55,9 @@ public class ServerTopology {
 
         topo.addProcessor(
             wfSpecProcessor,
-            () -> {return new POSTableProcessor<WFSpecPbOrBuilder, WfSpec>();},
+            () -> {return new POSTableProcessor<WFSpecPbOrBuilder, WfSpec>(
+                WfSpec.class
+            );},
             wfSpecSource
         );
 
@@ -64,7 +65,7 @@ public class ServerTopology {
             wfSpecSink,
             POSTable.getEntitytTopicName(WfSpec.class),
             Serdes.String().serializer(),
-            new MetadataEntitySerializer(),
+            new LHSerializer<WfSpec>(),
             wfSpecProcessor
         );
 
@@ -78,7 +79,9 @@ public class ServerTopology {
 
         topo.addProcessor(
             taskDefProcessor,
-            () -> {return new POSTableProcessor<TaskDefPbOrBuilder, TaskDef>();},
+            () -> {return new POSTableProcessor<TaskDefPbOrBuilder, TaskDef>(
+                TaskDef.class
+            );},
             taskDefSource
         );
 
@@ -86,10 +89,38 @@ public class ServerTopology {
             taskDefSink,
             POSTable.getEntitytTopicName(TaskDef.class),
             Serdes.String().serializer(),
-            new TaskDefSerializer(),
+            new LHSerializer<TaskDef>(),
             taskDefProcessor
         );
 
+        StoreBuilder<KeyValueStore<String, POSTableResponse>> responseStoreBuilder = 
+            Stores.keyValueStoreBuilder(
+                Stores.persistentKeyValueStore(LHConstants.RESPONSE_STORE_NAME),
+                Serdes.String(),
+                new LHSerde<POSTableResponse>(POSTableResponse.class)
+            );
+
+        topo.addStateStore(responseStoreBuilder, taskDefProcessor, wfSpecProcessor);
+
+        StoreBuilder<KeyValueStore<String, WfSpec>> wfSpecStoreBuilder =
+            Stores.keyValueStoreBuilder(
+                Stores.persistentKeyValueStore(
+                    POSTable.getBaseStoreName(WfSpec.class)
+                ),
+                Serdes.String(),
+                new LHSerde<>(WfSpec.class)
+            );
+        topo.addStateStore(wfSpecStoreBuilder, wfSpecProcessor);
+
+        StoreBuilder<KeyValueStore<String, TaskDef>> taskDefStoreBuilder =
+            Stores.keyValueStoreBuilder(
+                Stores.persistentKeyValueStore(POSTable.getBaseStoreName(
+                    TaskDef.class
+                )),
+                Serdes.String(),
+                new LHSerde<>(TaskDef.class)
+            );
+        topo.addStateStore(taskDefStoreBuilder, taskDefProcessor);
 
         return topo;
     }

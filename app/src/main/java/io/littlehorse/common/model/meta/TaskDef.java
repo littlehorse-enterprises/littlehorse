@@ -3,6 +3,7 @@ package io.littlehorse.common.model.meta;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.proto.TaskDefPb;
 import io.littlehorse.common.proto.TaskDefPbOrBuilder;
@@ -37,7 +38,8 @@ public class TaskDef extends POSTable<TaskDefPbOrBuilder> {
             .setLastUpdatedOffset(lastOffset);
     }
 
-    public void initFrom(TaskDefPbOrBuilder proto) {
+    public void initFrom(MessageOrBuilder p) {
+        TaskDefPbOrBuilder proto = (TaskDefPbOrBuilder) p;
         name = proto.getName();
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
         lastOffset = proto.getLastUpdatedOffset();

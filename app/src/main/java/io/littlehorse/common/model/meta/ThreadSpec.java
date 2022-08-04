@@ -3,6 +3,7 @@ package io.littlehorse.common.model.meta;
 import java.util.HashMap;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.NodePb;
 import io.littlehorse.common.proto.NodeTypePb;
@@ -32,7 +33,8 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
         return out;
     }
 
-    public void initFrom(ThreadSpecPbOrBuilder proto) {
+    public void initFrom(MessageOrBuilder pr) {
+        ThreadSpecPbOrBuilder proto = (ThreadSpecPbOrBuilder) pr;
         for (Map.Entry<String, NodePb> p: proto.getNodesMap().entrySet()) {
             Node n = Node.fromProto(p.getValue());
             n.threadSpec = this;

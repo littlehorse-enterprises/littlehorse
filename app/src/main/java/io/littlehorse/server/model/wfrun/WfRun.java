@@ -3,11 +3,14 @@ package io.littlehorse.server.model.wfrun;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.ThreadRunPb;
 import io.littlehorse.common.proto.WfRunPb;
+import io.littlehorse.common.proto.WfRunPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.server.model.internal.IndexEntry;
 
 public class WfRun extends GETable<WfRunPb> {
     public String id;
@@ -27,7 +30,8 @@ public class WfRun extends GETable<WfRunPb> {
         return startTime;
     }
 
-    public void initFrom(WfRunPb proto) {
+    public void initFrom(MessageOrBuilder p) {
+        WfRunPbOrBuilder proto = (WfRunPbOrBuilder) p;
         id = proto.getId();
         wfSpecId = proto.getWfSpecId();
         wfSpecName = proto.getWfSpecName();
@@ -76,4 +80,7 @@ public class WfRun extends GETable<WfRunPb> {
         return id;
     }
 
+    public List<IndexEntry> getIndexEntries() {
+        return new ArrayList<>();
+    }
 }

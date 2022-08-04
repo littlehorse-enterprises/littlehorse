@@ -4,7 +4,6 @@ import java.util.Set;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyQueryMetadata;
 import org.apache.kafka.streams.StoreQueryParameters;
@@ -22,8 +21,9 @@ import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.proto.RequestTypePb;
 import io.littlehorse.common.util.LHApiClient;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.server.model.POSTableRequestSerializer;
 import io.littlehorse.server.model.internal.POSTableRequest;
-import io.littlehorse.server.serde.POSTableRequestSerializer;
+import io.littlehorse.server.model.internal.POSTableResponse;
 
 public class ApiStreamsContext {
     private KafkaStreams streams;
@@ -82,6 +82,7 @@ public class ApiStreamsContext {
         request.type = RequestTypePb.POST;
         request.storeKey = toSave.getStoreKey();
         String requestId = LHUtil.generateGuid();
+        request.requestId = requestId;
         request.payload = toSave.toBytes();
 
         this.producer.send(new ProducerRecord<>(
@@ -114,13 +115,13 @@ public class ApiStreamsContext {
     }
 
     public byte[] localWait(String requestId) {
-        ReadOnlyKeyValueStore<String, Bytes> respStore = getResponseStore();
+        ReadOnlyKeyValueStore<String, POSTableResponse> respStore = getResponseStore();
 
         // TODO: add a timeout
         while (true) {
-            Bytes out = respStore.get(requestId);
+            POSTableResponse out = respStore.get(requestId);
             if (out == null) continue;
-            return out.get();
+            return out.toBytes();
         }
     }
 
@@ -138,13 +139,13 @@ public class ApiStreamsContext {
 
         return streams.store(
             StoreQueryParameters.fromNameAndType(
-                cls.getName(),
+                cls.getSimpleName(),
                 QueryableStoreTypes.keyValueStore()
             )
         );
     }
 
-    private ReadOnlyKeyValueStore<String, Bytes> getResponseStore() {
+    private ReadOnlyKeyValueStore<String, POSTableResponse> getResponseStore() {
 
         return streams.store(
             StoreQueryParameters.fromNameAndType(

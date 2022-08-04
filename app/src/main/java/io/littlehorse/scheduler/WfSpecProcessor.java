@@ -13,7 +13,7 @@ public class WfSpecProcessor implements Processor<String, WfSpec, Void, Void> {
 
     @Override
     public void init(final ProcessorContext<Void, Void> context) {
-        specStore = context.getStateStore(LHConstants.WF_SPEC_STORE_NAME);
+        specStore = context.getStateStore(LHConstants.SCHED_WF_SPEC_STORE_NAME);
     }
 
     @Override

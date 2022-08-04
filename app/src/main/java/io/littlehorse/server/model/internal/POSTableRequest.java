@@ -1,9 +1,10 @@
 package io.littlehorse.server.model.internal;
 
 import com.google.protobuf.ByteString;
+import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.proto.POSTableRequestPb;
+import io.littlehorse.common.proto.POSTableRequestPbOrBuilder;
 import io.littlehorse.common.proto.RequestTypePb;
 
 public class POSTableRequest extends LHSerializable<POSTableRequestPb> {
@@ -16,7 +17,8 @@ public class POSTableRequest extends LHSerializable<POSTableRequestPb> {
         return POSTableRequestPb.class;
     }
 
-    public void initFrom(POSTableRequestPb proto) {
+    public void initFrom(MessageOrBuilder p) {
+        POSTableRequestPbOrBuilder proto = (POSTableRequestPbOrBuilder) p;
         type = proto.getType();
         storeKey = proto.getStoreKey();
         requestId = proto.getRequestId();

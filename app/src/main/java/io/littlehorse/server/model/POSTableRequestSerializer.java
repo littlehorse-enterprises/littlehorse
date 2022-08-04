@@ -1,4 +1,4 @@
-package io.littlehorse.server.serde;
+package io.littlehorse.server.model;
 
 import org.apache.kafka.common.serialization.Serializer;
 import io.littlehorse.server.model.internal.POSTableRequest;

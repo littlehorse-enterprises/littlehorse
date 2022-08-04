@@ -3,6 +3,7 @@ package io.littlehorse.common.model.meta;
 import java.util.HashSet;
 import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.EdgePb;
 import io.littlehorse.common.proto.NodePb;
@@ -25,7 +26,8 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
         return out;
     }
 
-    public void initFrom(NodePbOrBuilder proto) {
+    public void initFrom(MessageOrBuilder p) {
+        NodePbOrBuilder proto = (NodePbOrBuilder) p;
         taskDefName = proto.getTaskDefName();
         type = proto.getType();
 

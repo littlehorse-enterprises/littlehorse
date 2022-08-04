@@ -1,13 +1,10 @@
 package io.littlehorse.common.util.serde;
 
 import org.apache.kafka.common.serialization.Deserializer;
-import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.LHSerializable;
 
-public class LHDeserializer<
-    U extends MessageOrBuilder, T extends LHSerializable<U>
-> implements Deserializer<T> {
+public class LHDeserializer<T extends LHSerializable<?>> implements Deserializer<T> {
     private Class<T> cls;
 
     public LHDeserializer(Class<T> cls) {

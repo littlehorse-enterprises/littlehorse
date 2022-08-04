@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.WFRunEvent;
@@ -77,7 +78,8 @@ public class WfSpec extends POSTable<WFSpecPbOrBuilder> {
         return out;
     }
 
-    public void initFrom(WFSpecPbOrBuilder proto) {
+    public void initFrom(MessageOrBuilder pr) {
+        WFSpecPbOrBuilder proto = (WFSpecPbOrBuilder) pr;
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
         id = proto.getId();
         updatedAt = LHUtil.fromProtoTs(proto.getUpdatedAt());

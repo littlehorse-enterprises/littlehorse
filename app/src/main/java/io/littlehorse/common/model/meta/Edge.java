@@ -1,6 +1,8 @@
 package io.littlehorse.common.model.meta;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.protobuf.Message;
+import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.EdgePb;
 import io.littlehorse.common.proto.EdgePbOrBuilder;
@@ -19,7 +21,8 @@ public class Edge extends LHSerializable<EdgePbOrBuilder> {
         return out;
     }
 
-    public void initFrom(EdgePbOrBuilder proto) {
+    public void initFrom(MessageOrBuilder p) {
+        EdgePbOrBuilder proto = (EdgePbOrBuilder) p;
         sinkNodeName = proto.getSinkNodeName();
     }
 

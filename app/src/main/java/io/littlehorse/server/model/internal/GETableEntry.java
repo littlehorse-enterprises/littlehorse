@@ -3,8 +3,10 @@ package io.littlehorse.server.model.internal;
 import java.util.ArrayList;
 import java.util.List;
 import com.google.protobuf.ByteString;
+import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.GETableEntryPb;
+import io.littlehorse.common.proto.GETableEntryPbOrBuilder;
 import io.littlehorse.common.proto.IndexEntryPb;
 
 public class GETableEntry extends LHSerializable<GETableEntryPb>
@@ -22,7 +24,8 @@ public class GETableEntry extends LHSerializable<GETableEntryPb>
         return GETableEntryPb.class;
     }
 
-    public void initFrom(GETableEntryPb proto) {
+    public void initFrom(MessageOrBuilder p) {
+        GETableEntryPbOrBuilder proto = (GETableEntryPbOrBuilder) p;
         this.entry = proto.getEntry().toByteArray();
         this.partition = proto.getPartition();
         this.lastUpdatedOffset = proto.getLastUpdatedOffset();

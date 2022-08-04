@@ -16,6 +16,9 @@ import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.model.POSTable;
+import io.littlehorse.common.model.meta.TaskDef;
+import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.scheduler.Scheduler;
 import io.littlehorse.scheduler.model.WfRunState;
 import io.littlehorse.scheduler.serde.WFRunSerde;
@@ -35,7 +38,17 @@ public class App {
         }
 
         topics.add(new NewTopic(
-            LHConstants.WF_RUN_ENTITY_TOPIC,
+            POSTable.getRequestTopicName(WfSpec.class),
+            3, config.getReplicationFactor()
+        ));
+
+        topics.add(new NewTopic(
+            POSTable.getRequestTopicName(TaskDef.class),
+            3, config.getReplicationFactor()
+        ));
+
+        topics.add(new NewTopic(
+            LHConstants.WF_RUN_OBSERVABILITY_TOPIC,
             config.getClusterPartitions(),
             config.getReplicationFactor())
         );
@@ -91,27 +104,6 @@ public class App {
 
     public static void tester() {
         LHConfig config = new LHConfig();
-        Properties sconfig = config.getStreamsConfig();
-        sconfig.put(StreamsConfig.APPLICATION_ID_CONFIG, "tester");
-        StreamsBuilder builder = new StreamsBuilder();
-        String topic = "scheduler-wfrun-changelog";
-
-        KStream<String, WfRunState> stream = builder.stream(
-            topic,
-            Consumed.with(Serdes.String(), new WFRunSerde())
-        );
-
-        stream.foreach((k, v) -> {
-            System.out.println("Key: " + k);
-            System.out.println("Value: " + v.toProtoBuilder().build().toString());
-        });
-
-        Topology topology = builder.build();
-        KafkaStreams streams = new KafkaStreams(topology, sconfig);
-        streams.start();
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            streams.close();
-        }));
-
+        System.out.println(config.getHostInfo().toString());
     }
 }

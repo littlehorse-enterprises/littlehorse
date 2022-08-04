@@ -31,13 +31,16 @@ public class LHApi {
         WfSpec.class.getSimpleName(), TaskDef.class.getSimpleName()
     );
 
-    public LHApi(LHConfig config, ApiStreamsContext streams) {
+    public LHApi(
+        LHConfig config, ApiStreamsContext streams, KStreamsStateListener listener
+    ) {
+        this.streams = streams;
         this.config = config;
-        KStreamsStateListener listener = new KStreamsStateListener();
         this.app = LHConfig.createAppWithHealth(listener);
 
         this.app.get("/WfSpec/{id}", this::getWfSpec);
         this.app.get("/WfRun/{id}", this::getWfRun);
+        this.app.get("/TaskDef/{id}", this::getTaskDef);
         this.app.get(
             "/WfRun/{wfRunId}/ThreadRun/{threadRunNumber}",
             this::getThreadRun
@@ -65,9 +68,22 @@ public class LHApi {
     public <U extends MessageOrBuilder, T extends POSTable<U>> void post(
         Context ctx, Class<T> cls
     ) {
+        try {
+            postHelp(ctx, cls);
+        } catch(Exception exn) {
+            exn.printStackTrace();
+            ctx.result("hello there");
+        }
+    }
+
+    public <U extends MessageOrBuilder, T extends POSTable<U>> void postHelp(
+        Context ctx, Class<T> cls
+    ) {
         T t;
         try {
-            t = LHSerializable.fromBytes(ctx.bodyAsBytes(), cls);
+            System.out.println("Hi there");
+            t = LHSerializable.fromJson(ctx.body(), cls);
+            System.out.println("Got the thing");
         } catch(LHSerdeError exn) {
             json(
                 new ErrorResponse(
@@ -91,6 +107,7 @@ public class LHApi {
                     "Unexpected error: " + exn.getMessage()
                 ), 500, ctx
             );
+            exn.printStackTrace();
             return;
         }
 
@@ -98,11 +115,20 @@ public class LHApi {
         try {
             resp = POSTableResponsePb.parseFrom(out);
         } catch(Exception exn) {
+            exn.printStackTrace();
             throw new RuntimeException("Not possible");
         }
 
         ctx.status(resp.getStatus());
-        ctx.result(resp.getResponse().toByteArray());
+        ctx.contentType("json");
+        try {
+            T tOut = LHSerializable.fromBytes(resp.getPayload().toByteArray(), cls);
+            ctx.result(new String(tOut.toJson()));
+        } catch(LHSerdeError exn) {
+            // Not possible
+            exn.printStackTrace();
+            throw new RuntimeException(exn);
+        }
     }
 
     public void getTask(Context ctx) {
@@ -130,6 +156,16 @@ public class LHApi {
         String id = ctx.pathParam("id");
         returnLookup(id, id, WfRun.class, ctx);
     }
+
+    public void getTaskDef(Context ctx) {
+        try {
+            String id = ctx.pathParam("id");
+            returnLookup(id, id, TaskDef.class, ctx);
+        } catch(Exception exn) {
+            exn.printStackTrace();
+        }
+    }
+
 
     public void getThreadRun(Context ctx) {
         String wfRunId = ctx.pathParam("wfRunId");

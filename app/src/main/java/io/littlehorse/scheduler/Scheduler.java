@@ -55,7 +55,7 @@ public class Scheduler {
         // Add sink for WFRun
         topo.addSink(
             wfRunSink,
-            LHConstants.WF_RUN_ENTITY_TOPIC,
+            LHConstants.WF_RUN_OBSERVABILITY_TOPIC,
             Serdes.String().serializer(),
             new SchedulerOutputWFRunSer(),
             runtimeProcessor
@@ -75,7 +75,7 @@ public class Scheduler {
         // Add state store
         StoreBuilder<KeyValueStore<String, WfRunState>> wfRunStoreBuilder =
             Stores.keyValueStoreBuilder(
-                Stores.persistentKeyValueStore(LHConstants.WF_RUN_STORE_NAME),
+                Stores.persistentKeyValueStore(LHConstants.SCHED_WF_RUN_STORE_NAME),
                 Serdes.String(),
                 runSerde
             );
@@ -84,10 +84,10 @@ public class Scheduler {
         // Add global store for WFSpec lookup
         StoreBuilder<KeyValueStore<String, WfSpec>> wfSpecStoreBuilder =
             Stores.keyValueStoreBuilder(
-                Stores.persistentKeyValueStore(LHConstants.WF_SPEC_STORE_NAME),
+                Stores.persistentKeyValueStore(LHConstants.SCHED_WF_SPEC_STORE_NAME),
                 Serdes.String(),
                 specSerde
-            ).withLoggingDisabled();
+            );
 
         topo.addGlobalStore(
             wfSpecStoreBuilder,

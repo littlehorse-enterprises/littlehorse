@@ -1,10 +1,14 @@
 package io.littlehorse.server.model.wfrun;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.ThreadRunPb;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.server.model.internal.IndexEntry;
 
 public class ThreadRun extends GETable<ThreadRunPb> {
     public String wfRunId;
@@ -26,7 +30,8 @@ public class ThreadRun extends GETable<ThreadRunPb> {
         return wfRunId + "-" + threadRunNumber;
     }
 
-    public void initFrom(ThreadRunPb proto) {
+    public void initFrom(MessageOrBuilder p) {
+        ThreadRunPb proto = (ThreadRunPb) p;
         wfRunId = proto.getWfRunId();
         number = proto.getNumber();
         status = proto.getStatus();
@@ -55,9 +60,9 @@ public class ThreadRun extends GETable<ThreadRunPb> {
         return out;
     }
 
-    public static ThreadRun fromProto(ThreadRunPb proto) {
+    public static ThreadRun fromProto(MessageOrBuilder p) {
         ThreadRun out = new ThreadRun();
-        out.initFrom(proto);
+        out.initFrom(p);
         return out;
     }
 
@@ -71,5 +76,9 @@ public class ThreadRun extends GETable<ThreadRunPb> {
 
     public Class<ThreadRunPb> getProtoBaseClass() {
         return ThreadRunPb.class;
+    }
+
+    public List<IndexEntry> getIndexEntries() {
+        return new ArrayList<>();
     }
 }

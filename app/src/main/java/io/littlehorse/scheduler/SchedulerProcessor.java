@@ -31,8 +31,8 @@ public class SchedulerProcessor
 
     @Override
     public void init(final ProcessorContext<String, SchedulerOutput> context) {
-        wfRunStore = context.getStateStore(LHConstants.WF_RUN_STORE_NAME);
-        wfSpecStore = context.getStateStore(LHConstants.WF_SPEC_STORE_NAME);
+        wfRunStore = context.getStateStore(LHConstants.SCHED_WF_RUN_STORE_NAME);
+        wfSpecStore = context.getStateStore(LHConstants.SCHED_WF_SPEC_STORE_NAME);
         this.context = context;
         this.wfSpecCache = new HashMap<>();
     }

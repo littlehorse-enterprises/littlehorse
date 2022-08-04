@@ -16,11 +16,10 @@ public class LHConstants {
     public static final String COMMIT_INTERVAL_KEY = "LHORSE_COMMIT_INTERVAL";
 
     public static final String WF_RUN_EVENT_TOPIC = "WFRun_Event";
-    public static final String WF_RUN_ENTITY_TOPIC = "WFRun_Entity";
+    public static final String WF_RUN_OBSERVABILITY_TOPIC = "WFRun_Observability";
 
-    public static final String WF_RUN_STORE_NAME = "wfrun";
-    public static final String WF_SPEC_STORE_NAME = "wfSpec";
-    public static final String TASK_DEF_STORE_NAME = "taskDef";
+    public static final String SCHED_WF_RUN_STORE_NAME = "wfrun";
+    public static final String SCHED_WF_SPEC_STORE_NAME = "wfSpec";
     public static final String WF_SPEC_ENTITY_TOPIC = "WFSpec_Entity";
     public static final String INDEX_STORE_NAME = "INDEX_STORE";
     public static final String RESPONSE_STORE_NAME = "INDEX_STORE";

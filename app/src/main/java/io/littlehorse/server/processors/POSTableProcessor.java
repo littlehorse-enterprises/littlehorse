@@ -4,7 +4,6 @@ import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
-import com.google.protobuf.ByteString;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHConnectionError;
@@ -14,16 +13,20 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.proto.POSTableResponsePb;
 import io.littlehorse.server.model.internal.POSTableRequest;
+import io.littlehorse.server.model.internal.POSTableResponse;
 
 public class POSTableProcessor<U extends MessageOrBuilder, T extends POSTable<U>>
     implements Processor<String, POSTableRequest, String, T>
 {
     private KeyValueStore<String, T> store;
-    private KeyValueStore<String, POSTableResponsePb> responseStore;
+    private KeyValueStore<String, POSTableResponse> responseStore;
     private Class<T> cls;
     private ProcessorContext<String, T> context;
+
+    public POSTableProcessor(Class<T> cls) {
+        this.cls = cls;
+    }
 
     @Override
     public void init(final ProcessorContext<String, T> context) {
@@ -57,12 +60,12 @@ public class POSTableProcessor<U extends MessageOrBuilder, T extends POSTable<U>
             return;
         }
 
-        POSTableResponsePb.Builder builder = POSTableResponsePb.newBuilder()
-            .setStatus(200)
-            .setId(key)
-            .setPayload(ByteString.copyFrom(newT.toBytes()));
+        POSTableResponse resp = new POSTableResponse();
+        resp.status = 200;
+        resp.id = key;
+        resp.payload = newT.toBytes();
 
-        responseStore.put(req.requestId, builder.build());
+        responseStore.put(req.requestId, resp);
         store.put(key, newT);
 
         context.forward(new Record<String, T>(

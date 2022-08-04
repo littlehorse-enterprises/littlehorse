@@ -30,7 +30,6 @@ public abstract class LHSerializable<T extends MessageOrBuilder> {
 
     // Probably don't want to use reflection for everything, but hey we gotta
     // get a prototype out the door.
-    @SuppressWarnings("unchecked")
     public static <T extends LHSerializable<?>>
     T fromBytes(byte[] b, Class<T> cls) throws LHSerdeError {
 
@@ -51,8 +50,8 @@ public abstract class LHSerializable<T extends MessageOrBuilder> {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T extends LHSerializable<?>> T fromJson(String json, Class<T> cls) throws LHSerdeError {
+    public static <T extends LHSerializable<?>> T fromJson(String json, Class<T> cls)
+    throws LHSerdeError {
         GeneratedMessageV3.Builder<?> builder;
         T out;
 
@@ -71,7 +70,7 @@ public abstract class LHSerializable<T extends MessageOrBuilder> {
             throw new LHSerdeError(exn, "bad protobuf for " + cls.getName());
         }
 
-        out.initFrom((U) builder);
+        out.initFrom(builder.build());
         return out;
     }
 

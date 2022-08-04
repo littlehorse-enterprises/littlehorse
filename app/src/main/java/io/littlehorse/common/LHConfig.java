@@ -181,6 +181,10 @@ public class LHConfig {
 
     public Properties getStreamsConfig() {
         Properties props = new Properties();
+        props.put(
+            StreamsConfig.APPLICATION_SERVER_CONFIG,
+            this.getAdvertisedHost() + ":" + this.getAdvertisedPort()
+        );
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, this.getKafkaGroupId());
         props.put(ConsumerConfig.GROUP_INSTANCE_ID_CONFIG, this.getKafkaInstanceId());
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, this.getBootstrapServers());
@@ -190,7 +194,9 @@ public class LHConfig {
         props.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, "exactly_once_v2");
         props.put(StreamsConfig.TOPOLOGY_OPTIMIZATION_CONFIG, "all");
         props.put(StreamsConfig.producerPrefix(ProducerConfig.ACKS_CONFIG), "all");
-        props.put(StreamsConfig.REPLICATION_FACTOR_CONFIG, getReplicationFactor());
+        props.put(
+            StreamsConfig.REPLICATION_FACTOR_CONFIG, (int) getReplicationFactor()
+        );
         props.put(
             StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG,
             org.apache.kafka.streams.errors.LogAndContinueExceptionHandler.class
@@ -233,7 +239,7 @@ public class LHConfig {
 
     public int getStandbyReplicas() {
         return Integer.valueOf(
-            getOrSetDefault(LHConstants.NUM_STANDBY_REPLICAS_KEY, "1")
+            getOrSetDefault(LHConstants.NUM_STANDBY_REPLICAS_KEY, "0")
         );
     }
 

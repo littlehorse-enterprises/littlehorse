@@ -1,11 +1,16 @@
 package io.littlehorse.server.model.wfrun;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import com.google.protobuf.ByteString;
+import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.TaskRunPb;
+import io.littlehorse.common.proto.TaskRunPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.server.model.internal.IndexEntry;
 
 public class TaskRun extends GETable<TaskRunPb> {
     public String wfRunId;
@@ -47,7 +52,8 @@ public class TaskRun extends GETable<TaskRunPb> {
         return scheduleTime;
     }
 
-    public void initFrom(TaskRunPb proto) {
+    public void initFrom(MessageOrBuilder p) {
+        TaskRunPbOrBuilder proto = (TaskRunPbOrBuilder) p;
         wfRunId = proto.getWfRunId();
         threadRunNumber = proto.getThreadRunNumber();
         position = proto.getPosition();
@@ -91,5 +97,9 @@ public class TaskRun extends GETable<TaskRunPb> {
         if (endTime != null) out.setEndTime(LHUtil.fromDate(endTime));
 
         return out;
+    }
+
+    public List<IndexEntry> getIndexEntries() {
+        return new ArrayList<>();
     }
 }

@@ -1,8 +1,10 @@
 package io.littlehorse.server.model.response;
 
+import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.ErrorCodePb;
 import io.littlehorse.common.proto.ErrorResponsePb;
+import io.littlehorse.common.proto.ErrorResponsePbOrBuilder;
 
 public class ErrorResponse extends LHSerializable<ErrorResponsePb> {
     public ErrorCodePb code;
@@ -19,7 +21,8 @@ public class ErrorResponse extends LHSerializable<ErrorResponsePb> {
         this.message = message;
     }
 
-    public void initFrom(ErrorResponsePb proto) {
+    public void initFrom(MessageOrBuilder p) {
+        ErrorResponsePbOrBuilder proto = (ErrorResponsePbOrBuilder) p;
         this.code = proto.getCode();
         this.message = proto.getMessage();
     }

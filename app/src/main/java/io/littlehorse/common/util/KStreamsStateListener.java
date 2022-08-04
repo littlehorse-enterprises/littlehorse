@@ -15,6 +15,7 @@ public class KStreamsStateListener implements StateListener {
     }
 
     public State getState() {
+        System.out.println("hello there");
         return this.state;
     }
 }
