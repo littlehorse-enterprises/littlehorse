@@ -27,6 +27,19 @@ public class LHApi {
     private LHConfig config;
     private ApiStreamsContext streams;
 
+    private interface HandlerFunc {
+        public void handle(Context ctx);
+    }
+
+    private void handle(HandlerFunc func, Context ctx) {
+        try {
+            func.handle(ctx);
+        } catch(Exception exn) {
+            exn.printStackTrace();
+            throw exn;
+        }
+    }
+
     public static List<String> GETables = Arrays.asList(
         WfSpec.class.getSimpleName(), TaskDef.class.getSimpleName()
     );
@@ -38,27 +51,33 @@ public class LHApi {
         this.config = config;
         this.app = LHConfig.createAppWithHealth(listener);
 
-        this.app.get("/WfSpec/{id}", this::getWfSpec);
-        this.app.get("/WfRun/{id}", this::getWfRun);
-        this.app.get("/TaskDef/{id}", this::getTaskDef);
+        this.app.get("/WfSpec/{id}", (ctx) -> handle(this::getWfSpec, ctx));
+        this.app.get("/WfRun/{id}", (ctx) -> handle(this::getWfRun, ctx));
+        this.app.get("/TaskDef/{id}", (ctx) -> handle(this::getTaskDef, ctx));
         this.app.get(
             "/WfRun/{wfRunId}/ThreadRun/{threadRunNumber}",
-            this::getThreadRun
+            (ctx) -> handle(this::getThreadRun, ctx)
         );
         this.app.get(
             "/WfRun/{wfRunId}/ThreadRun/{threadRunNumber}/TaskRun/{taskRunPosition}",
-            this::getTask
+            this::getTaskRun
         );
 
         this.app.post("/WFSpec", (ctx) -> {
-            this.post(ctx, WfSpec.class);
+            handle((c) -> {this.post(c, WfSpec.class);}, ctx);
         });
         this.app.post("/TaskDef", (ctx) -> {
-            this.post(ctx, TaskDef.class);
+            handle((c) -> {this.post(c, TaskDef.class);}, ctx);
         });
 
-        this.app.get("/internal/waitForResponse/{requestId}", this::waitForResponse);
-        this.app.get("/internal/storeBytes/{storeName}/{storeKey}", this::getBytes);
+        this.app.get(
+            "/internal/waitForResponse/{requestId}", 
+            (ctx) -> handle(this::waitForResponse, ctx)
+        );
+        this.app.get(
+            "/internal/storeBytes/{storeName}/{storeKey}",
+            (ctx) -> handle(this::getBytes, ctx)
+        );
     }
 
     public void start() {
@@ -66,17 +85,6 @@ public class LHApi {
     }
 
     public <U extends MessageOrBuilder, T extends POSTable<U>> void post(
-        Context ctx, Class<T> cls
-    ) {
-        try {
-            postHelp(ctx, cls);
-        } catch(Exception exn) {
-            exn.printStackTrace();
-            ctx.result("hello there");
-        }
-    }
-
-    public <U extends MessageOrBuilder, T extends POSTable<U>> void postHelp(
         Context ctx, Class<T> cls
     ) {
         T t;
@@ -131,7 +139,7 @@ public class LHApi {
         }
     }
 
-    public void getTask(Context ctx) {
+    public void getTaskRun(Context ctx) {
         String wfRunId = ctx.pathParam("wfRunId");
         int threadRunNumber = ctx.pathParamAsClass(
             "threadNumber", Integer.class
@@ -158,12 +166,8 @@ public class LHApi {
     }
 
     public void getTaskDef(Context ctx) {
-        try {
-            String id = ctx.pathParam("id");
-            returnLookup(id, id, TaskDef.class, ctx);
-        } catch(Exception exn) {
-            exn.printStackTrace();
-        }
+        String id = ctx.pathParam("id");
+        returnLookup(id, id, TaskDef.class, ctx);
     }
 
 
