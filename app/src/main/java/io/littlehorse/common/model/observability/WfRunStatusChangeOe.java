@@ -1,7 +1,7 @@
 package io.littlehorse.common.model.observability;
 
 import io.littlehorse.common.proto.LHStatusPb;
-import io.littlehorse.common.proto.WfRunStatusChangeOePb;
+import io.littlehorse.common.proto.observability.WfRunStatusChangeOePb;
 
 public class WfRunStatusChangeOe {
     public LHStatusPb status;

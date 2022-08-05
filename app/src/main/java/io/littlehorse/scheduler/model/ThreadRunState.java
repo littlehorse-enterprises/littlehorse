@@ -16,9 +16,9 @@ import io.littlehorse.common.model.observability.TaskScheduledOe;
 import io.littlehorse.common.model.observability.TaskStartOe;
 import io.littlehorse.common.model.observability.ThreadStatusChangeOe;
 import io.littlehorse.common.proto.LHStatusPb;
-import io.littlehorse.common.proto.NodeTypePb;
-import io.littlehorse.common.proto.ThreadRunStatePb;
-import io.littlehorse.common.proto.ThreadRunStatePbOrBuilder;
+import io.littlehorse.common.proto.wfspec.NodeTypePb;
+import io.littlehorse.common.proto.scheduler.ThreadRunStatePb;
+import io.littlehorse.common.proto.scheduler.ThreadRunStatePbOrBuilder;
 
 
 public class ThreadRunState {

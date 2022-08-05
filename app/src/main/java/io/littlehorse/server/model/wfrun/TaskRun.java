@@ -7,8 +7,8 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.proto.LHStatusPb;
-import io.littlehorse.common.proto.TaskRunPb;
-import io.littlehorse.common.proto.TaskRunPbOrBuilder;
+import io.littlehorse.common.proto.server.TaskRunPb;
+import io.littlehorse.common.proto.server.TaskRunPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.model.internal.IndexEntry;
 

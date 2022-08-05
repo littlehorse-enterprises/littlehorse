@@ -14,7 +14,7 @@ import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.WFRunEvent;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.proto.LHStatusPb;
-import io.littlehorse.common.proto.WFRunEventPb.EventCase;
+import io.littlehorse.common.proto.scheduler.WFRunEventPb.EventCase;
 import io.littlehorse.scheduler.model.WfRunState;
 
 public class SchedulerProcessor

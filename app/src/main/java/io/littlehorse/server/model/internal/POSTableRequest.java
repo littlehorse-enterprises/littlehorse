@@ -3,9 +3,9 @@ package io.littlehorse.server.model.internal;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.proto.POSTableRequestPb;
-import io.littlehorse.common.proto.POSTableRequestPbOrBuilder;
-import io.littlehorse.common.proto.RequestTypePb;
+import io.littlehorse.common.proto.server.POSTableRequestPb;
+import io.littlehorse.common.proto.server.POSTableRequestPbOrBuilder;
+import io.littlehorse.common.proto.server.RequestTypePb;
 
 public class POSTableRequest extends LHSerializable<POSTableRequestPb> {
     public RequestTypePb type;

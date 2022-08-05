@@ -1,7 +1,7 @@
 package io.littlehorse.common.model.observability;
 
 import io.littlehorse.common.model.event.TaskStartedEvent;
-import io.littlehorse.common.proto.TaskStartOePb;
+import io.littlehorse.common.proto.observability.TaskStartOePb;
 
 public class TaskStartOe {
     public int threadRunNumber;

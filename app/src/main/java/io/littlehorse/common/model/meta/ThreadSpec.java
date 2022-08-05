@@ -8,10 +8,10 @@ import io.littlehorse.common.LHDatabaseClient;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.proto.NodePb;
-import io.littlehorse.common.proto.NodeTypePb;
-import io.littlehorse.common.proto.ThreadSpecPb;
-import io.littlehorse.common.proto.ThreadSpecPbOrBuilder;
+import io.littlehorse.common.proto.wfspec.NodePb;
+import io.littlehorse.common.proto.wfspec.NodeTypePb;
+import io.littlehorse.common.proto.wfspec.ThreadSpecPb;
+import io.littlehorse.common.proto.wfspec.ThreadSpecPbOrBuilder;
 
 public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
     public String name;

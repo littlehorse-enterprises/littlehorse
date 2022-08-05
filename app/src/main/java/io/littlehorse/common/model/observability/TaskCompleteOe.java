@@ -2,7 +2,7 @@ package io.littlehorse.common.model.observability;
 
 import com.google.protobuf.ByteString;
 import io.littlehorse.common.model.event.TaskCompletedEvent;
-import io.littlehorse.common.proto.TaskCompleteOePb;
+import io.littlehorse.common.proto.observability.TaskCompleteOePb;
 
 public class TaskCompleteOe {
     public int threadRunNumber;

@@ -6,7 +6,7 @@ import "lh_proto.proto";
 
 option go_package = ".;model";
 option java_multiple_files = true;
-option java_package = "io.littlehorse.common.proto";
+option java_package = "io.littlehorse.common.proto.observability";
 
 // This section contains observability events produced by the Scheduler.
 

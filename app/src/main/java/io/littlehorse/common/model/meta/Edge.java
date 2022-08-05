@@ -1,11 +1,10 @@
 package io.littlehorse.common.model.meta;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.protobuf.Message;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.proto.EdgePb;
-import io.littlehorse.common.proto.EdgePbOrBuilder;
+import io.littlehorse.common.proto.wfspec.EdgePb;
+import io.littlehorse.common.proto.wfspec.EdgePbOrBuilder;
 
 public class Edge extends LHSerializable<EdgePbOrBuilder> {
     public String sinkNodeName;

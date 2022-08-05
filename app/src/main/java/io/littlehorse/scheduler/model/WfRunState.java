@@ -15,9 +15,9 @@ import io.littlehorse.common.model.observability.ObservabilityEvents;
 import io.littlehorse.common.model.observability.ThreadStartOe;
 import io.littlehorse.common.model.observability.WfRunStatusChangeOe;
 import io.littlehorse.common.proto.LHStatusPb;
-import io.littlehorse.common.proto.ThreadRunStatePb;
-import io.littlehorse.common.proto.WFRunStatePb;
-import io.littlehorse.common.proto.WFRunStatePbOrBuilder;
+import io.littlehorse.common.proto.scheduler.ThreadRunStatePb;
+import io.littlehorse.common.proto.scheduler.WFRunStatePb;
+import io.littlehorse.common.proto.scheduler.WFRunStatePbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
 
 public class WfRunState {

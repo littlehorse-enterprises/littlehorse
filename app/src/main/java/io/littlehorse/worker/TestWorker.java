@@ -15,7 +15,7 @@ import io.littlehorse.common.model.event.TaskCompletedEvent;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.TaskStartedEvent;
 import io.littlehorse.common.model.event.WFRunEvent;
-import io.littlehorse.common.proto.WFRunEventPb.EventCase;
+import io.littlehorse.common.proto.scheduler.WFRunEventPb.EventCase;
 import io.littlehorse.scheduler.serde.TaskScheduleRequestDeserializer;
 import io.littlehorse.scheduler.serde.WFRunEventSerializer;
 

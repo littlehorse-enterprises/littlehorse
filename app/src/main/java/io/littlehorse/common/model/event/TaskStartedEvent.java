@@ -1,8 +1,8 @@
 package io.littlehorse.common.model.event;
 
 import java.util.Date;
-import io.littlehorse.common.proto.TaskStartedEventPb;
-import io.littlehorse.common.proto.TaskStartedEventPbOrBuilder;
+import io.littlehorse.common.proto.scheduler.TaskStartedEventPb;
+import io.littlehorse.common.proto.scheduler.TaskStartedEventPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
 
 public class TaskStartedEvent {

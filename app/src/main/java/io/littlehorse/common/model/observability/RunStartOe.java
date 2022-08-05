@@ -1,6 +1,6 @@
 package io.littlehorse.common.model.observability;
 
-import io.littlehorse.common.proto.RunStartOePb;
+import io.littlehorse.common.proto.observability.RunStartOePb;
 
 public class RunStartOe {
     public String wfSpecId;

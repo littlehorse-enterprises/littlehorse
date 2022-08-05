@@ -15,7 +15,7 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.proto.LHResponseCodePb;
+import io.littlehorse.common.proto.server.LHResponseCodePb;
 import io.littlehorse.server.model.internal.POSTableRequest;
 import io.littlehorse.server.model.internal.LHResponse;
 

@@ -2,7 +2,7 @@ package io.littlehorse.common.model.observability;
 
 import java.util.ArrayList;
 import java.util.List;
-import io.littlehorse.common.proto.ObservabilityEventsPb;
+import io.littlehorse.common.proto.observability.ObservabilityEventsPb;
 
 public class ObservabilityEvents {
     public List<ObservabilityEvent> events;

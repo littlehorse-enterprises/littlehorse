@@ -2,8 +2,8 @@ package io.littlehorse.scheduler.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.littlehorse.common.proto.LHStatusPb;
-import io.littlehorse.common.proto.NodeRunStatePb;
-import io.littlehorse.common.proto.NodeRunStatePbOrBuilder;
+import io.littlehorse.common.proto.scheduler.NodeRunStatePb;
+import io.littlehorse.common.proto.scheduler.NodeRunStatePbOrBuilder;
 
 public class NodeRunState {
     public String nodeName;

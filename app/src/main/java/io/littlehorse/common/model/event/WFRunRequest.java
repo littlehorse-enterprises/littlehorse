@@ -1,7 +1,7 @@
 package io.littlehorse.common.model.event;
 
-import io.littlehorse.common.proto.WFRunRequestPb;
-import io.littlehorse.common.proto.WFRunRequestPbOrBuilder;
+import io.littlehorse.common.proto.scheduler.WFRunRequestPb;
+import io.littlehorse.common.proto.scheduler.WFRunRequestPbOrBuilder;
 
 public class WFRunRequest {
     public String wfRunId;

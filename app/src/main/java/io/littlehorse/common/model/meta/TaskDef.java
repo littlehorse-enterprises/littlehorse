@@ -7,8 +7,8 @@ import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHDatabaseClient;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.POSTable;
-import io.littlehorse.common.proto.TaskDefPb;
-import io.littlehorse.common.proto.TaskDefPbOrBuilder;
+import io.littlehorse.common.proto.wfspec.TaskDefPb;
+import io.littlehorse.common.proto.wfspec.TaskDefPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.model.internal.IndexEntry;
 

@@ -8,10 +8,10 @@ import io.littlehorse.common.LHDatabaseClient;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.proto.EdgePb;
-import io.littlehorse.common.proto.NodePb;
-import io.littlehorse.common.proto.NodePbOrBuilder;
-import io.littlehorse.common.proto.NodeTypePb;
+import io.littlehorse.common.proto.wfspec.EdgePb;
+import io.littlehorse.common.proto.wfspec.NodePb;
+import io.littlehorse.common.proto.wfspec.NodePbOrBuilder;
+import io.littlehorse.common.proto.wfspec.NodeTypePb;
 
 public class Node extends LHSerializable<NodePbOrBuilder> {
     public String taskDefName;

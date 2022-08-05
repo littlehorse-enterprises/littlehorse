@@ -6,7 +6,7 @@ import "lh_proto.proto";
 
 option go_package = ".;model";
 option java_multiple_files = true;
-option java_package = "io.littlehorse.common.proto";
+option java_package = "io.littlehorse.common.proto.server";
 
 // This section contains models used by the Server for observability
 message WfRunPb {
@@ -94,7 +94,7 @@ message POSTableRequestPb {
 // This section defines internal data structures used for data stores.
 message IndexEntryPb {
     string partition_key = 1;
-    string store_key = 2;
+    string value = 2;
 }
 
 message GETableEntryPb {

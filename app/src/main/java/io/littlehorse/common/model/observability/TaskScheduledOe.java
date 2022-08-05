@@ -1,7 +1,7 @@
 package io.littlehorse.common.model.observability;
 
 import io.littlehorse.common.model.event.TaskScheduleRequest;
-import io.littlehorse.common.proto.TaskScheduledOePb;
+import io.littlehorse.common.proto.observability.TaskScheduledOePb;
 
 public class TaskScheduledOe {
     public String taskDefId;

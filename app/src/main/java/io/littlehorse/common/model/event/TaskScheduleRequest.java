@@ -1,7 +1,7 @@
 package io.littlehorse.common.model.event;
 
-import io.littlehorse.common.proto.TaskScheduleRequestPb;
-import io.littlehorse.common.proto.TaskScheduleRequestPbOrBuilder;
+import io.littlehorse.common.proto.scheduler.TaskScheduleRequestPb;
+import io.littlehorse.common.proto.scheduler.TaskScheduleRequestPbOrBuilder;
 
 public class TaskScheduleRequest {
     public String taskDefId;

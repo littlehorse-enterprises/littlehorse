@@ -5,9 +5,9 @@ import java.util.List;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.proto.GETableEntryPb;
-import io.littlehorse.common.proto.GETableEntryPbOrBuilder;
-import io.littlehorse.common.proto.IndexEntryPb;
+import io.littlehorse.common.proto.server.GETableEntryPb;
+import io.littlehorse.common.proto.server.GETableEntryPbOrBuilder;
+import io.littlehorse.common.proto.server.IndexEntryPb;
 
 public class GETableEntry extends LHSerializable<GETableEntryPb>
 {

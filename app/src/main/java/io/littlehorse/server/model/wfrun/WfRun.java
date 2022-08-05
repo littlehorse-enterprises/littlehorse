@@ -6,9 +6,9 @@ import java.util.List;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.proto.LHStatusPb;
-import io.littlehorse.common.proto.ThreadRunPb;
-import io.littlehorse.common.proto.WfRunPb;
-import io.littlehorse.common.proto.WfRunPbOrBuilder;
+import io.littlehorse.common.proto.server.ThreadRunPb;
+import io.littlehorse.common.proto.server.WfRunPb;
+import io.littlehorse.common.proto.server.WfRunPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.model.internal.IndexEntry;
 

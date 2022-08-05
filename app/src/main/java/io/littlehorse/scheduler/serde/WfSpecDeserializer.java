@@ -3,7 +3,7 @@ package io.littlehorse.scheduler.serde;
 import org.apache.kafka.common.serialization.Deserializer;
 import com.google.protobuf.InvalidProtocolBufferException;
 import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.proto.WFSpecPb;
+import io.littlehorse.common.proto.wfspec.WFSpecPb;
 
 public class WfSpecDeserializer implements Deserializer<WfSpec> {
     public WfSpec deserialize(String topic, byte[] data) {

@@ -5,9 +5,9 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.proto.LHResponseCodePb;
-import io.littlehorse.common.proto.LHResponsePb;
-import io.littlehorse.common.proto.LHResponsePbOrBuilder;
+import io.littlehorse.common.proto.server.LHResponseCodePb;
+import io.littlehorse.common.proto.server.LHResponsePb;
+import io.littlehorse.common.proto.server.LHResponsePbOrBuilder;
 
 public class LHResponse extends LHSerializable<LHResponsePb> {
     public LHResponseCodePb code;

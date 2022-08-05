@@ -1,8 +1,8 @@
 package io.littlehorse.common.model.event;
 
 import java.util.Date;
-import io.littlehorse.common.proto.WFRunEventPb;
-import io.littlehorse.common.proto.WFRunEventPb.EventCase;
+import io.littlehorse.common.proto.scheduler.WFRunEventPb;
+import io.littlehorse.common.proto.scheduler.WFRunEventPb.EventCase;
 import io.littlehorse.common.util.LHUtil;
 
 public class WFRunEvent {

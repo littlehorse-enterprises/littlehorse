@@ -2,12 +2,12 @@ package io.littlehorse.server.model.internal;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.proto.IndexEntryPb;
-import io.littlehorse.common.proto.IndexEntryPbOrBuilder;
+import io.littlehorse.common.proto.server.IndexEntryPb;
+import io.littlehorse.common.proto.server.IndexEntryPbOrBuilder;
 
 public class IndexEntry extends LHSerializable<IndexEntryPb> {
     public String partitionKey;
-    public String storeKey;
+    public String value;
 
     public Class<IndexEntryPb> getProtoBaseClass() {
         return IndexEntryPb.class;
@@ -16,13 +16,13 @@ public class IndexEntry extends LHSerializable<IndexEntryPb> {
     public void initFrom(MessageOrBuilder p) {
         IndexEntryPbOrBuilder proto = (IndexEntryPbOrBuilder) p;
         partitionKey = proto.getPartitionKey();
-        storeKey = proto.getStoreKey();
+        value = proto.getValue();
     }
 
     public IndexEntryPb.Builder toProto() {
         IndexEntryPb.Builder out = IndexEntryPb.newBuilder()
             .setPartitionKey(partitionKey)
-            .setStoreKey(storeKey);
+            .setValue(value);
 
         return out;
     }

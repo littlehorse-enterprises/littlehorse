@@ -1,7 +1,7 @@
 package io.littlehorse.common.model.observability;
 
 import io.littlehorse.common.proto.LHStatusPb;
-import io.littlehorse.common.proto.ThreadStatusChangeOePb;
+import io.littlehorse.common.proto.observability.ThreadStatusChangeOePb;
 
 public class ThreadStatusChangeOe {
     public int threadRunNumber;

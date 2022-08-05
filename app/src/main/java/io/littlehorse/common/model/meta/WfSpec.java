@@ -16,9 +16,9 @@ import io.littlehorse.common.model.event.WFRunEvent;
 import io.littlehorse.common.model.observability.ObservabilityEvent;
 import io.littlehorse.common.model.observability.RunStartOe;
 import io.littlehorse.common.proto.LHStatusPb;
-import io.littlehorse.common.proto.ThreadSpecPb;
-import io.littlehorse.common.proto.WFSpecPb;
-import io.littlehorse.common.proto.WFSpecPbOrBuilder;
+import io.littlehorse.common.proto.wfspec.ThreadSpecPb;
+import io.littlehorse.common.proto.wfspec.WFSpecPb;
+import io.littlehorse.common.proto.wfspec.WFSpecPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.scheduler.model.WfRunState;
 import io.littlehorse.server.model.internal.IndexEntry;
@@ -134,7 +134,10 @@ public class WfSpec extends POSTable<WFSpecPbOrBuilder> {
     }
 
     public List<IndexEntry> getIndexEntries() {
-        return new ArrayList<>();
+        ArrayList<IndexEntry> out = new ArrayList<>();
+        
+
+        return out;
     }
 
     public WfRunState startNewRun(WFRunEvent e, List<TaskScheduleRequest> toSchedule) {

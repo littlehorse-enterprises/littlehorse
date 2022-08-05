@@ -2,7 +2,7 @@ package io.littlehorse.scheduler.serde;
 
 import org.apache.kafka.common.serialization.Deserializer;
 import com.google.protobuf.InvalidProtocolBufferException;
-import io.littlehorse.common.proto.WFRunStatePb;
+import io.littlehorse.common.proto.scheduler.WFRunStatePb;
 import io.littlehorse.scheduler.model.WfRunState;
 
 public class WFRunDeserializer implements Deserializer<WfRunState> {
