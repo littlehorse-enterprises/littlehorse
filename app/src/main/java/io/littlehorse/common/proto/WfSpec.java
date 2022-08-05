@@ -60,27 +60,27 @@ public final class WfSpec {
     java.lang.String[] descriptorData = {
       "\n\rwf_spec.proto\022\010lh_proto\032\037google/protob" +
       "uf/timestamp.proto\032\016lh_proto.proto\" \n\006Ed" +
-      "gePb\022\026\n\016sink_node_name\030\001 \001(\t\"m\n\006NodePb\022\025" +
-      "\n\rtask_def_name\030\001 \001(\t\022\"\n\004type\030\002 \001(\0162\024.lh" +
-      "_proto.NodeTypePb\022(\n\016outgoing_edges\030\003 \003(" +
-      "\0132\020.lh_proto.EdgePb\"\200\001\n\014ThreadSpecPb\0220\n\005" +
-      "nodes\030\001 \003(\0132!.lh_proto.ThreadSpecPb.Node" +
-      "sEntry\032>\n\nNodesEntry\022\013\n\003key\030\001 \001(\t\022\037\n\005val" +
-      "ue\030\002 \001(\0132\020.lh_proto.NodePb:\0028\001\"\356\002\n\010WFSpe" +
-      "cPb\022\n\n\002id\030\001 \001(\t\022.\n\ncreated_at\030\002 \001(\0132\032.go" +
-      "ogle.protobuf.Timestamp\022.\n\nupdated_at\030\003 " +
-      "\001(\0132\032.google.protobuf.Timestamp\0229\n\014threa" +
-      "d_specs\030\004 \003(\0132#.lh_proto.WFSpecPb.Thread" +
-      "SpecsEntry\022\036\n\026entrypoint_thread_name\030\005 \001" +
-      "(\t\022$\n\006status\030\006 \001(\0162\024.lh_proto.LHStatusPb" +
-      "\022\014\n\004name\030\007 \001(\t\022\033\n\023last_updated_offset\030\010 " +
-      "\001(\003\032J\n\020ThreadSpecsEntry\022\013\n\003key\030\001 \001(\t\022%\n\005" +
-      "value\030\002 \001(\0132\026.lh_proto.ThreadSpecPb:\0028\001\"" +
-      "I\n\tTaskDefPb\022\014\n\004name\030\001 \001(\t\022.\n\ncreated_at" +
-      "\030\002 \001(\0132\032.google.protobuf.Timestamp*0\n\nNo" +
-      "deTypePb\022\010\n\004TASK\020\000\022\016\n\nENTRYPOINT\020\001\022\010\n\004EX" +
-      "IT\020\002B(\n\033io.littlehorse.common.protoP\001Z\007." +
-      ";modelb\006proto3"
+      "gePb\022\026\n\016sink_node_name\030\001 \001(\t\"\204\001\n\006NodePb\022" +
+      "\032\n\rtask_def_name\030\001 \001(\tH\000\210\001\001\022\"\n\004type\030\002 \001(" +
+      "\0162\024.lh_proto.NodeTypePb\022(\n\016outgoing_edge" +
+      "s\030\003 \003(\0132\020.lh_proto.EdgePbB\020\n\016_task_def_n" +
+      "ame\"\200\001\n\014ThreadSpecPb\0220\n\005nodes\030\001 \003(\0132!.lh" +
+      "_proto.ThreadSpecPb.NodesEntry\032>\n\nNodesE" +
+      "ntry\022\013\n\003key\030\001 \001(\t\022\037\n\005value\030\002 \001(\0132\020.lh_pr" +
+      "oto.NodePb:\0028\001\"\356\002\n\010WFSpecPb\022\n\n\002id\030\001 \001(\t\022" +
+      ".\n\ncreated_at\030\002 \001(\0132\032.google.protobuf.Ti" +
+      "mestamp\022.\n\nupdated_at\030\003 \001(\0132\032.google.pro" +
+      "tobuf.Timestamp\0229\n\014thread_specs\030\004 \003(\0132#." +
+      "lh_proto.WFSpecPb.ThreadSpecsEntry\022\036\n\026en" +
+      "trypoint_thread_name\030\005 \001(\t\022$\n\006status\030\006 \001" +
+      "(\0162\024.lh_proto.LHStatusPb\022\014\n\004name\030\007 \001(\t\022\033" +
+      "\n\023last_updated_offset\030\010 \001(\003\032J\n\020ThreadSpe" +
+      "csEntry\022\013\n\003key\030\001 \001(\t\022%\n\005value\030\002 \001(\0132\026.lh" +
+      "_proto.ThreadSpecPb:\0028\001\"I\n\tTaskDefPb\022\014\n\004" +
+      "name\030\001 \001(\t\022.\n\ncreated_at\030\002 \001(\0132\032.google." +
+      "protobuf.Timestamp*0\n\nNodeTypePb\022\010\n\004TASK" +
+      "\020\000\022\016\n\nENTRYPOINT\020\001\022\010\n\004EXIT\020\002B(\n\033io.littl" +
+      "ehorse.common.protoP\001Z\007.;modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -99,7 +99,7 @@ public final class WfSpec {
     internal_static_lh_proto_NodePb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_NodePb_descriptor,
-        new java.lang.String[] { "TaskDefName", "Type", "OutgoingEdges", });
+        new java.lang.String[] { "TaskDefName", "Type", "OutgoingEdges", "TaskDefName", });
     internal_static_lh_proto_ThreadSpecPb_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_lh_proto_ThreadSpecPb_fieldAccessorTable = new

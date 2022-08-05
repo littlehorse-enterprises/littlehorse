@@ -71,8 +71,8 @@ message LHResponsePb {
     LHResponseCodePb code = 1;
     optional string id = 2;
     optional string message = 3;
-    optional bytes payload = 4;
-    optional string payload_class = 5;
+    optional bytes result = 4;
+    optional string result_class = 5;
 }
 
 enum RequestTypePb {

@@ -46,8 +46,8 @@ public class LHResponse extends LHSerializable<LHResponsePb> {
         if (id != null) out.setId(id);
         if (result != null) {
             // This is jank i know
-            out.setPayload(ByteString.copyFrom(result.toBytes()));
-            out.setPayloadClass(result.getClass().getCanonicalName());
+            out.setResult(ByteString.copyFrom(result.toBytes()));
+            out.setResultClass(result.getClass().getCanonicalName());
         }
         return out;
     }
@@ -58,11 +58,11 @@ public class LHResponse extends LHSerializable<LHResponsePb> {
         code = proto.getCode();
         if (proto.hasMessage()) message = proto.getMessage();
         if (proto.hasId()) id = proto.getId();
-        if (proto.hasPayload()) {
+        if (proto.hasResult()) {
             try {
                 result = LHSerializable.fromBytes(
-                    proto.getPayload().toByteArray(),
-                    (Class<LHSerializable<?>>) Class.forName(proto.getPayloadClass())
+                    proto.getResult().toByteArray(),
+                    (Class<LHSerializable<?>>) Class.forName(proto.getResultClass())
                 );
             } catch(LHSerdeError|ClassNotFoundException exn) {
                 // Should be impossible

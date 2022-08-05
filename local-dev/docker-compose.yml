@@ -26,14 +26,3 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
     network_mode: "host"
-
-  db:
-    image: postgres
-    container_name: postgres
-    restart: always
-    network_mode: "host"
-    labels:
-      - io.littlehorse/active=true
-    environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_USER: postgres

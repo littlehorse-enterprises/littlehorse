@@ -14,25 +14,20 @@ public class LHApiClient {
         client = new OkHttpClient();
     }
 
+    public byte[] getResponseAsBytes(HostInfo host, String path)
+    throws LHConnectionError {
+        return getResponse(host, path + "?asProto=true");
+    }
+
     public byte[] getResponse(HostInfo host, String path)
     throws LHConnectionError {
         String url = "http://" + host.host() + ":" + host.port() + path;
+        System.out.println(url);
         Request req = new Request.Builder().url(url).build();
 
         try {
             Response resp = client.newCall(req).execute();
-            byte[] body = resp.body().bytes();
-            if (resp.code() < 300 && resp.code() >= 200) {
-                return body;
-            } else {
-                throw new LHConnectionError(
-                    null,
-                    String.format(
-                        "Got a %s response from API: %s", resp.code(),
-                        new String(body)
-                    )
-                );
-            }
+            return resp.body().bytes();
         } catch(IOException exn) {
             // java.net.ConnectException is included in IOException.
             // java.net.SocketTimeoutException also included in IOException.

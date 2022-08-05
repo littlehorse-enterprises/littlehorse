@@ -53,30 +53,30 @@ public interface LHResponsePbOrBuilder extends
       getMessageBytes();
 
   /**
-   * <code>bytes payload = 4;</code>
-   * @return Whether the payload field is set.
+   * <code>bytes result = 4;</code>
+   * @return Whether the result field is set.
    */
-  boolean hasPayload();
+  boolean hasResult();
   /**
-   * <code>bytes payload = 4;</code>
-   * @return The payload.
+   * <code>bytes result = 4;</code>
+   * @return The result.
    */
-  com.google.protobuf.ByteString getPayload();
+  com.google.protobuf.ByteString getResult();
 
   /**
-   * <code>string payload_class = 5;</code>
-   * @return Whether the payloadClass field is set.
+   * <code>string result_class = 5;</code>
+   * @return Whether the resultClass field is set.
    */
-  boolean hasPayloadClass();
+  boolean hasResultClass();
   /**
-   * <code>string payload_class = 5;</code>
-   * @return The payloadClass.
+   * <code>string result_class = 5;</code>
+   * @return The resultClass.
    */
-  java.lang.String getPayloadClass();
+  java.lang.String getResultClass();
   /**
-   * <code>string payload_class = 5;</code>
-   * @return The bytes for payloadClass.
+   * <code>string result_class = 5;</code>
+   * @return The bytes for resultClass.
    */
   com.google.protobuf.ByteString
-      getPayloadClassBytes();
+      getResultClassBytes();
 }

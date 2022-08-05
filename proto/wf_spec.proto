@@ -21,7 +21,7 @@ enum NodeTypePb {
 }
 
 message NodePb {
-    string task_def_name = 1;
+    optional string task_def_name = 1;
     NodeTypePb type = 2;
     repeated EdgePb outgoing_edges = 3;
 }

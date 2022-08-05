@@ -1,0 +1,28 @@
+{
+  "name": "simple_wf",
+  "threadSpecs": {
+    "simple_wf": {
+      "nodes": {
+        "entrypoint": {
+          "type": "ENTRYPOINT",
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "t1"
+            }
+          ]
+        },
+        "t1": {
+          "type": "TASK",
+          "taskDefName": "task1",
+          "outgoingEdges": [{
+            "sinkNodeName": "exit"
+          }]
+        },
+        "exit": {
+          "type": "EXIT"
+        }
+      }
+    }
+  },
+  "entrypointThreadName": "simple_wf"
+}

@@ -5,8 +5,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHDatabaseClient;
+import io.littlehorse.common.exceptions.LHConnectionError;
+import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.WFRunEvent;
@@ -99,7 +102,7 @@ public class WfSpec extends POSTable<WFSpecPbOrBuilder> {
         }
     }
 
-    public Class<WFSpecPb> getProtoBaseClass() {
+    @JsonIgnore public Class<WFSpecPb> getProtoBaseClass() {
         return WFSpecPb.class;
     }
 
@@ -109,12 +112,25 @@ public class WfSpec extends POSTable<WFSpecPbOrBuilder> {
         return out;
     }
 
-    public boolean handleDelete() {
+    @JsonIgnore public boolean handleDelete() {
         return true;
     }
 
-    public void handlePost(POSTable<WFSpecPbOrBuilder> old, LHDatabaseClient c) {
-        // Eventually we'll do some validation
+    @JsonIgnore public void handlePost(
+        POSTable<WFSpecPbOrBuilder> old, LHDatabaseClient dbClient
+    ) throws LHValidationError, LHConnectionError {
+        if (old != null) {
+            throw new LHValidationError(null, "Mutating WfSpec not yet supported");
+        }
+
+        if (threadSpecs.get(entrypointThreadName) == null) {
+            throw new LHValidationError(null, "Unknown entrypoint thread");
+        }
+
+        for (Map.Entry<String, ThreadSpec> e: threadSpecs.entrySet()) {
+            ThreadSpec ts = e.getValue();
+            ts.validate(dbClient);
+        }
     }
 
     public List<IndexEntry> getIndexEntries() {

@@ -77,4 +77,8 @@ public abstract class LHSerializable<T extends MessageOrBuilder> {
     public byte[] serialize() {
         return toProto().build().toByteArray();
     }
+
+    @Override public String toString() {
+        return toJson();
+    }
 }

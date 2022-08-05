@@ -63,20 +63,21 @@ public class POSTableProcessor<U extends MessageOrBuilder, T extends POSTable<U>
             newT.handlePost(oldT, dbClient);
             resp.result = newT;
             resp.code = LHResponseCodePb.OK;
+            store.put(key, newT);
+            context.forward(new Record<String, T>(
+                key, newT, record.timestamp()
+            ));
+
         } catch(LHConnectionError exn) {
             resp.message = exn.getMessage();
             resp.code = LHResponseCodePb.CONNECTION_ERROR;
+
         } catch(LHValidationError exn) {
             resp.message = exn.getMessage();
             resp.code = LHResponseCodePb.VALIDATION_ERROR;
         }
 
         responseStore.put(req.requestId, resp);
-        store.put(key, newT);
-
-        context.forward(new Record<String, T>(
-            key, newT, record.timestamp()
-        ));
     }
 }
 

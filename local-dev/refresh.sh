@@ -17,9 +17,6 @@ fi
 
 # $SCRIPT_DIR/cleanup.sh
 # $SCRIPT_DIR/setup.sh
-docker stop postgres
-docker rm postgres
-docker-compose up -d
 
 rm -r /tmp/kafkaState
 

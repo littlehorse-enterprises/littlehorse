@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.LHDatabaseClient;
+import io.littlehorse.common.exceptions.LHConnectionError;
+import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.NodePb;
 import io.littlehorse.common.proto.NodeTypePb;
@@ -19,12 +22,12 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
         nodes = new HashMap<>();
     }
 
-    public Class<ThreadSpecPb> getProtoBaseClass() {
+    @JsonIgnore public Class<ThreadSpecPb> getProtoBaseClass() {
         return ThreadSpecPb.class;
     }
 
     // Below is Serde
-    public ThreadSpecPb.Builder toProto() {
+    @JsonIgnore public ThreadSpecPb.Builder toProto() {
         ThreadSpecPb.Builder out = ThreadSpecPb.newBuilder();
 
         for (Map.Entry<String, Node> e: nodes.entrySet()) {
@@ -55,4 +58,27 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
     // Below is Implementation
     @JsonIgnore public String entrypointNodeName;
     @JsonIgnore public WfSpec wfSpec;
+
+    public void validate(LHDatabaseClient dbClient)
+    throws LHValidationError, LHConnectionError {
+        if (entrypointNodeName == null) {
+            throw new LHValidationError(
+                null, "thread " + name + " missing ENTRYPOITNT node!"
+            );
+        }
+
+        boolean seenEntrypoint = false;
+        for (Node node: nodes.values()) {
+            if (node.type == NodeTypePb.ENTRYPOINT) {
+                if (seenEntrypoint) {
+                    throw new LHValidationError(
+                        null,
+                        "Thread " + name + " has multiple ENTRYPOINT nodes!"
+                    );
+                }
+                seenEntrypoint = true;
+            }
+            node.validate(dbClient);
+        }
+    }
 }

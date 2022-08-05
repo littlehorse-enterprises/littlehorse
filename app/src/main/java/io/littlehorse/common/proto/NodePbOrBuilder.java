@@ -9,6 +9,11 @@ public interface NodePbOrBuilder extends
 
   /**
    * <code>string task_def_name = 1;</code>
+   * @return Whether the taskDefName field is set.
+   */
+  boolean hasTaskDefName();
+  /**
+   * <code>string task_def_name = 1;</code>
    * @return The taskDefName.
    */
   java.lang.String getTaskDefName();

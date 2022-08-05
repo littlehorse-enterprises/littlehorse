@@ -174,6 +174,10 @@ public class LHApi {
         Class<T> cls,
         Context ctx
     ) {
+        boolean asProto = ctx.queryParamAsClass(
+            "asProto", Boolean.class
+        ).getOrDefault(false);
+
         LHResponse resp = new LHResponse();
         try {
             T out = streams.get(storeKey, partitionKey, cls);
@@ -194,6 +198,10 @@ public class LHApi {
                 + exn.getMessage();
             ctx.status(500);
         }
-        ctx.json(resp);
+        if (asProto) {
+            ctx.result(resp.toBytes());
+        } else {
+            ctx.json(resp);
+        }
     }
 }

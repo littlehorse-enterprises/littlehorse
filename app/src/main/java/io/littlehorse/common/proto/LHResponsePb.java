@@ -19,8 +19,8 @@ private static final long serialVersionUID = 0L;
     code_ = 0;
     id_ = "";
     message_ = "";
-    payload_ = com.google.protobuf.ByteString.EMPTY;
-    payloadClass_ = "";
+    result_ = com.google.protobuf.ByteString.EMPTY;
+    resultClass_ = "";
   }
 
   @java.lang.Override
@@ -74,13 +74,13 @@ private static final long serialVersionUID = 0L;
           }
           case 34: {
             bitField0_ |= 0x00000004;
-            payload_ = input.readBytes();
+            result_ = input.readBytes();
             break;
           }
           case 42: {
             java.lang.String s = input.readStringRequireUtf8();
             bitField0_ |= 0x00000008;
-            payloadClass_ = s;
+            resultClass_ = s;
             break;
           }
           default: {
@@ -227,65 +227,65 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int PAYLOAD_FIELD_NUMBER = 4;
-  private com.google.protobuf.ByteString payload_;
+  public static final int RESULT_FIELD_NUMBER = 4;
+  private com.google.protobuf.ByteString result_;
   /**
-   * <code>bytes payload = 4;</code>
-   * @return Whether the payload field is set.
+   * <code>bytes result = 4;</code>
+   * @return Whether the result field is set.
    */
   @java.lang.Override
-  public boolean hasPayload() {
+  public boolean hasResult() {
     return ((bitField0_ & 0x00000004) != 0);
   }
   /**
-   * <code>bytes payload = 4;</code>
-   * @return The payload.
+   * <code>bytes result = 4;</code>
+   * @return The result.
    */
   @java.lang.Override
-  public com.google.protobuf.ByteString getPayload() {
-    return payload_;
+  public com.google.protobuf.ByteString getResult() {
+    return result_;
   }
 
-  public static final int PAYLOAD_CLASS_FIELD_NUMBER = 5;
-  private volatile java.lang.Object payloadClass_;
+  public static final int RESULT_CLASS_FIELD_NUMBER = 5;
+  private volatile java.lang.Object resultClass_;
   /**
-   * <code>string payload_class = 5;</code>
-   * @return Whether the payloadClass field is set.
+   * <code>string result_class = 5;</code>
+   * @return Whether the resultClass field is set.
    */
   @java.lang.Override
-  public boolean hasPayloadClass() {
+  public boolean hasResultClass() {
     return ((bitField0_ & 0x00000008) != 0);
   }
   /**
-   * <code>string payload_class = 5;</code>
-   * @return The payloadClass.
+   * <code>string result_class = 5;</code>
+   * @return The resultClass.
    */
   @java.lang.Override
-  public java.lang.String getPayloadClass() {
-    java.lang.Object ref = payloadClass_;
+  public java.lang.String getResultClass() {
+    java.lang.Object ref = resultClass_;
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      payloadClass_ = s;
+      resultClass_ = s;
       return s;
     }
   }
   /**
-   * <code>string payload_class = 5;</code>
-   * @return The bytes for payloadClass.
+   * <code>string result_class = 5;</code>
+   * @return The bytes for resultClass.
    */
   @java.lang.Override
   public com.google.protobuf.ByteString
-      getPayloadClassBytes() {
-    java.lang.Object ref = payloadClass_;
+      getResultClassBytes() {
+    java.lang.Object ref = resultClass_;
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      payloadClass_ = b;
+      resultClass_ = b;
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
@@ -316,10 +316,10 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.GeneratedMessageV3.writeString(output, 3, message_);
     }
     if (((bitField0_ & 0x00000004) != 0)) {
-      output.writeBytes(4, payload_);
+      output.writeBytes(4, result_);
     }
     if (((bitField0_ & 0x00000008) != 0)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, payloadClass_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, resultClass_);
     }
     unknownFields.writeTo(output);
   }
@@ -342,10 +342,10 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000004) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(4, payload_);
+        .computeBytesSize(4, result_);
     }
     if (((bitField0_ & 0x00000008) != 0)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, payloadClass_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, resultClass_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -373,15 +373,15 @@ private static final long serialVersionUID = 0L;
       if (!getMessage()
           .equals(other.getMessage())) return false;
     }
-    if (hasPayload() != other.hasPayload()) return false;
-    if (hasPayload()) {
-      if (!getPayload()
-          .equals(other.getPayload())) return false;
+    if (hasResult() != other.hasResult()) return false;
+    if (hasResult()) {
+      if (!getResult()
+          .equals(other.getResult())) return false;
     }
-    if (hasPayloadClass() != other.hasPayloadClass()) return false;
-    if (hasPayloadClass()) {
-      if (!getPayloadClass()
-          .equals(other.getPayloadClass())) return false;
+    if (hasResultClass() != other.hasResultClass()) return false;
+    if (hasResultClass()) {
+      if (!getResultClass()
+          .equals(other.getResultClass())) return false;
     }
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
@@ -404,13 +404,13 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + MESSAGE_FIELD_NUMBER;
       hash = (53 * hash) + getMessage().hashCode();
     }
-    if (hasPayload()) {
-      hash = (37 * hash) + PAYLOAD_FIELD_NUMBER;
-      hash = (53 * hash) + getPayload().hashCode();
+    if (hasResult()) {
+      hash = (37 * hash) + RESULT_FIELD_NUMBER;
+      hash = (53 * hash) + getResult().hashCode();
     }
-    if (hasPayloadClass()) {
-      hash = (37 * hash) + PAYLOAD_CLASS_FIELD_NUMBER;
-      hash = (53 * hash) + getPayloadClass().hashCode();
+    if (hasResultClass()) {
+      hash = (37 * hash) + RESULT_CLASS_FIELD_NUMBER;
+      hash = (53 * hash) + getResultClass().hashCode();
     }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
@@ -551,9 +551,9 @@ private static final long serialVersionUID = 0L;
       bitField0_ = (bitField0_ & ~0x00000001);
       message_ = "";
       bitField0_ = (bitField0_ & ~0x00000002);
-      payload_ = com.google.protobuf.ByteString.EMPTY;
+      result_ = com.google.protobuf.ByteString.EMPTY;
       bitField0_ = (bitField0_ & ~0x00000004);
-      payloadClass_ = "";
+      resultClass_ = "";
       bitField0_ = (bitField0_ & ~0x00000008);
       return this;
     }
@@ -595,11 +595,11 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000004) != 0)) {
         to_bitField0_ |= 0x00000004;
       }
-      result.payload_ = payload_;
+      result.result_ = result_;
       if (((from_bitField0_ & 0x00000008) != 0)) {
         to_bitField0_ |= 0x00000008;
       }
-      result.payloadClass_ = payloadClass_;
+      result.resultClass_ = resultClass_;
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -662,12 +662,12 @@ private static final long serialVersionUID = 0L;
         message_ = other.message_;
         onChanged();
       }
-      if (other.hasPayload()) {
-        setPayload(other.getPayload());
+      if (other.hasResult()) {
+        setResult(other.getResult());
       }
-      if (other.hasPayloadClass()) {
+      if (other.hasResultClass()) {
         bitField0_ |= 0x00000008;
-        payloadClass_ = other.payloadClass_;
+        resultClass_ = other.resultClass_;
         onChanged();
       }
       this.mergeUnknownFields(other.unknownFields);
@@ -920,127 +920,127 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private com.google.protobuf.ByteString payload_ = com.google.protobuf.ByteString.EMPTY;
+    private com.google.protobuf.ByteString result_ = com.google.protobuf.ByteString.EMPTY;
     /**
-     * <code>bytes payload = 4;</code>
-     * @return Whether the payload field is set.
+     * <code>bytes result = 4;</code>
+     * @return Whether the result field is set.
      */
     @java.lang.Override
-    public boolean hasPayload() {
+    public boolean hasResult() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>bytes payload = 4;</code>
-     * @return The payload.
+     * <code>bytes result = 4;</code>
+     * @return The result.
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString getPayload() {
-      return payload_;
+    public com.google.protobuf.ByteString getResult() {
+      return result_;
     }
     /**
-     * <code>bytes payload = 4;</code>
-     * @param value The payload to set.
+     * <code>bytes result = 4;</code>
+     * @param value The result to set.
      * @return This builder for chaining.
      */
-    public Builder setPayload(com.google.protobuf.ByteString value) {
+    public Builder setResult(com.google.protobuf.ByteString value) {
       if (value == null) {
     throw new NullPointerException();
   }
   bitField0_ |= 0x00000004;
-      payload_ = value;
+      result_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>bytes payload = 4;</code>
+     * <code>bytes result = 4;</code>
      * @return This builder for chaining.
      */
-    public Builder clearPayload() {
+    public Builder clearResult() {
       bitField0_ = (bitField0_ & ~0x00000004);
-      payload_ = getDefaultInstance().getPayload();
+      result_ = getDefaultInstance().getResult();
       onChanged();
       return this;
     }
 
-    private java.lang.Object payloadClass_ = "";
+    private java.lang.Object resultClass_ = "";
     /**
-     * <code>string payload_class = 5;</code>
-     * @return Whether the payloadClass field is set.
+     * <code>string result_class = 5;</code>
+     * @return Whether the resultClass field is set.
      */
-    public boolean hasPayloadClass() {
+    public boolean hasResultClass() {
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
-     * <code>string payload_class = 5;</code>
-     * @return The payloadClass.
+     * <code>string result_class = 5;</code>
+     * @return The resultClass.
      */
-    public java.lang.String getPayloadClass() {
-      java.lang.Object ref = payloadClass_;
+    public java.lang.String getResultClass() {
+      java.lang.Object ref = resultClass_;
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        payloadClass_ = s;
+        resultClass_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
       }
     }
     /**
-     * <code>string payload_class = 5;</code>
-     * @return The bytes for payloadClass.
+     * <code>string result_class = 5;</code>
+     * @return The bytes for resultClass.
      */
     public com.google.protobuf.ByteString
-        getPayloadClassBytes() {
-      java.lang.Object ref = payloadClass_;
+        getResultClassBytes() {
+      java.lang.Object ref = resultClass_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        payloadClass_ = b;
+        resultClass_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
     /**
-     * <code>string payload_class = 5;</code>
-     * @param value The payloadClass to set.
+     * <code>string result_class = 5;</code>
+     * @param value The resultClass to set.
      * @return This builder for chaining.
      */
-    public Builder setPayloadClass(
+    public Builder setResultClass(
         java.lang.String value) {
       if (value == null) {
     throw new NullPointerException();
   }
   bitField0_ |= 0x00000008;
-      payloadClass_ = value;
+      resultClass_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>string payload_class = 5;</code>
+     * <code>string result_class = 5;</code>
      * @return This builder for chaining.
      */
-    public Builder clearPayloadClass() {
+    public Builder clearResultClass() {
       bitField0_ = (bitField0_ & ~0x00000008);
-      payloadClass_ = getDefaultInstance().getPayloadClass();
+      resultClass_ = getDefaultInstance().getResultClass();
       onChanged();
       return this;
     }
     /**
-     * <code>string payload_class = 5;</code>
-     * @param value The bytes for payloadClass to set.
+     * <code>string result_class = 5;</code>
+     * @param value The bytes for resultClass to set.
      * @return This builder for chaining.
      */
-    public Builder setPayloadClassBytes(
+    public Builder setResultClassBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
       bitField0_ |= 0x00000008;
-      payloadClass_ = value;
+      resultClass_ = value;
       onChanged();
       return this;
     }

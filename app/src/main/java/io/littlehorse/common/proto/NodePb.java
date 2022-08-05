@@ -54,7 +54,7 @@ private static final long serialVersionUID = 0L;
             break;
           case 10: {
             java.lang.String s = input.readStringRequireUtf8();
-
+            bitField0_ |= 0x00000001;
             taskDefName_ = s;
             break;
           }
@@ -65,9 +65,9 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 26: {
-            if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+            if (!((mutable_bitField0_ & 0x00000002) != 0)) {
               outgoingEdges_ = new java.util.ArrayList<io.littlehorse.common.proto.EdgePb>();
-              mutable_bitField0_ |= 0x00000001;
+              mutable_bitField0_ |= 0x00000002;
             }
             outgoingEdges_.add(
                 input.readMessage(io.littlehorse.common.proto.EdgePb.parser(), extensionRegistry));
@@ -88,7 +88,7 @@ private static final long serialVersionUID = 0L;
       throw new com.google.protobuf.InvalidProtocolBufferException(
           e).setUnfinishedMessage(this);
     } finally {
-      if (((mutable_bitField0_ & 0x00000001) != 0)) {
+      if (((mutable_bitField0_ & 0x00000002) != 0)) {
         outgoingEdges_ = java.util.Collections.unmodifiableList(outgoingEdges_);
       }
       this.unknownFields = unknownFields.build();
@@ -108,8 +108,17 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.common.proto.NodePb.class, io.littlehorse.common.proto.NodePb.Builder.class);
   }
 
+  private int bitField0_;
   public static final int TASK_DEF_NAME_FIELD_NUMBER = 1;
   private volatile java.lang.Object taskDefName_;
+  /**
+   * <code>string task_def_name = 1;</code>
+   * @return Whether the taskDefName field is set.
+   */
+  @java.lang.Override
+  public boolean hasTaskDefName() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
   /**
    * <code>string task_def_name = 1;</code>
    * @return The taskDefName.
@@ -219,7 +228,7 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!getTaskDefNameBytes().isEmpty()) {
+    if (((bitField0_ & 0x00000001) != 0)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, taskDefName_);
     }
     if (type_ != io.littlehorse.common.proto.NodeTypePb.TASK.getNumber()) {
@@ -237,7 +246,7 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (!getTaskDefNameBytes().isEmpty()) {
+    if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, taskDefName_);
     }
     if (type_ != io.littlehorse.common.proto.NodeTypePb.TASK.getNumber()) {
@@ -263,8 +272,11 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.common.proto.NodePb other = (io.littlehorse.common.proto.NodePb) obj;
 
-    if (!getTaskDefName()
-        .equals(other.getTaskDefName())) return false;
+    if (hasTaskDefName() != other.hasTaskDefName()) return false;
+    if (hasTaskDefName()) {
+      if (!getTaskDefName()
+          .equals(other.getTaskDefName())) return false;
+    }
     if (type_ != other.type_) return false;
     if (!getOutgoingEdgesList()
         .equals(other.getOutgoingEdgesList())) return false;
@@ -279,8 +291,10 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + TASK_DEF_NAME_FIELD_NUMBER;
-    hash = (53 * hash) + getTaskDefName().hashCode();
+    if (hasTaskDefName()) {
+      hash = (37 * hash) + TASK_DEF_NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getTaskDefName().hashCode();
+    }
     hash = (37 * hash) + TYPE_FIELD_NUMBER;
     hash = (53 * hash) + type_;
     if (getOutgoingEdgesCount() > 0) {
@@ -422,12 +436,12 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       taskDefName_ = "";
-
+      bitField0_ = (bitField0_ & ~0x00000001);
       type_ = 0;
 
       if (outgoingEdgesBuilder_ == null) {
         outgoingEdges_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000001);
+        bitField0_ = (bitField0_ & ~0x00000002);
       } else {
         outgoingEdgesBuilder_.clear();
       }
@@ -458,17 +472,22 @@ private static final long serialVersionUID = 0L;
     public io.littlehorse.common.proto.NodePb buildPartial() {
       io.littlehorse.common.proto.NodePb result = new io.littlehorse.common.proto.NodePb(this);
       int from_bitField0_ = bitField0_;
+      int to_bitField0_ = 0;
+      if (((from_bitField0_ & 0x00000001) != 0)) {
+        to_bitField0_ |= 0x00000001;
+      }
       result.taskDefName_ = taskDefName_;
       result.type_ = type_;
       if (outgoingEdgesBuilder_ == null) {
-        if (((bitField0_ & 0x00000001) != 0)) {
+        if (((bitField0_ & 0x00000002) != 0)) {
           outgoingEdges_ = java.util.Collections.unmodifiableList(outgoingEdges_);
-          bitField0_ = (bitField0_ & ~0x00000001);
+          bitField0_ = (bitField0_ & ~0x00000002);
         }
         result.outgoingEdges_ = outgoingEdges_;
       } else {
         result.outgoingEdges_ = outgoingEdgesBuilder_.build();
       }
+      result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
     }
@@ -517,7 +536,8 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.common.proto.NodePb other) {
       if (other == io.littlehorse.common.proto.NodePb.getDefaultInstance()) return this;
-      if (!other.getTaskDefName().isEmpty()) {
+      if (other.hasTaskDefName()) {
+        bitField0_ |= 0x00000001;
         taskDefName_ = other.taskDefName_;
         onChanged();
       }
@@ -528,7 +548,7 @@ private static final long serialVersionUID = 0L;
         if (!other.outgoingEdges_.isEmpty()) {
           if (outgoingEdges_.isEmpty()) {
             outgoingEdges_ = other.outgoingEdges_;
-            bitField0_ = (bitField0_ & ~0x00000001);
+            bitField0_ = (bitField0_ & ~0x00000002);
           } else {
             ensureOutgoingEdgesIsMutable();
             outgoingEdges_.addAll(other.outgoingEdges_);
@@ -541,7 +561,7 @@ private static final long serialVersionUID = 0L;
             outgoingEdgesBuilder_.dispose();
             outgoingEdgesBuilder_ = null;
             outgoingEdges_ = other.outgoingEdges_;
-            bitField0_ = (bitField0_ & ~0x00000001);
+            bitField0_ = (bitField0_ & ~0x00000002);
             outgoingEdgesBuilder_ = 
               com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                  getOutgoingEdgesFieldBuilder() : null;
@@ -581,6 +601,13 @@ private static final long serialVersionUID = 0L;
     private int bitField0_;
 
     private java.lang.Object taskDefName_ = "";
+    /**
+     * <code>string task_def_name = 1;</code>
+     * @return Whether the taskDefName field is set.
+     */
+    public boolean hasTaskDefName() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
     /**
      * <code>string task_def_name = 1;</code>
      * @return The taskDefName.
@@ -624,7 +651,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  bitField0_ |= 0x00000001;
       taskDefName_ = value;
       onChanged();
       return this;
@@ -634,7 +661,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearTaskDefName() {
-      
+      bitField0_ = (bitField0_ & ~0x00000001);
       taskDefName_ = getDefaultInstance().getTaskDefName();
       onChanged();
       return this;
@@ -650,7 +677,7 @@ private static final long serialVersionUID = 0L;
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
-      
+      bitField0_ |= 0x00000001;
       taskDefName_ = value;
       onChanged();
       return this;
@@ -713,9 +740,9 @@ private static final long serialVersionUID = 0L;
     private java.util.List<io.littlehorse.common.proto.EdgePb> outgoingEdges_ =
       java.util.Collections.emptyList();
     private void ensureOutgoingEdgesIsMutable() {
-      if (!((bitField0_ & 0x00000001) != 0)) {
+      if (!((bitField0_ & 0x00000002) != 0)) {
         outgoingEdges_ = new java.util.ArrayList<io.littlehorse.common.proto.EdgePb>(outgoingEdges_);
-        bitField0_ |= 0x00000001;
+        bitField0_ |= 0x00000002;
        }
     }
 
@@ -865,7 +892,7 @@ private static final long serialVersionUID = 0L;
     public Builder clearOutgoingEdges() {
       if (outgoingEdgesBuilder_ == null) {
         outgoingEdges_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000001);
+        bitField0_ = (bitField0_ & ~0x00000002);
         onChanged();
       } else {
         outgoingEdgesBuilder_.clear();
@@ -942,7 +969,7 @@ private static final long serialVersionUID = 0L;
         outgoingEdgesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             io.littlehorse.common.proto.EdgePb, io.littlehorse.common.proto.EdgePb.Builder, io.littlehorse.common.proto.EdgePbOrBuilder>(
                 outgoingEdges_,
-                ((bitField0_ & 0x00000001) != 0),
+                ((bitField0_ & 0x00000002) != 0),
                 getParentForChildren(),
                 isClean());
         outgoingEdges_ = null;

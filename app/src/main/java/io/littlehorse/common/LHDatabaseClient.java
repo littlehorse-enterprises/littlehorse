@@ -18,13 +18,15 @@ public class LHDatabaseClient {
     }
 
     public TaskDef getTaskDef(String idOrName) throws LHConnectionError {
-        byte[] response = client.getResponse(apiHostInfo, "/TaskDef/" + idOrName);
+        byte[] response = client.getResponseAsBytes(
+            apiHostInfo, "/TaskDef/" + idOrName
+        );
         if (response == null) return null;
 
         LHResponse resp;
         try {
-            resp = LHSerializable.fromJson(
-                new String(response), LHResponse.class
+            resp = LHSerializable.fromBytes(
+                response, LHResponse.class
             );
         } catch (LHSerdeError exn) {
             throw new LHConnectionError(exn, "Got an unrecognizable response: ");
