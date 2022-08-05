@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.LHDatabaseClient;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.proto.TaskDefPb;
@@ -44,7 +45,7 @@ public class TaskDef extends POSTable<TaskDefPbOrBuilder> {
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
     }
 
-    public void handlePost(POSTable<TaskDefPbOrBuilder> old)
+    public void handlePost(POSTable<TaskDefPbOrBuilder> old, LHDatabaseClient c)
     throws LHValidationError {
         if (!(old == null || old instanceof TaskDef)) {
             throw new RuntimeException("Bad method call.");

@@ -14,6 +14,8 @@ public class LHConstants {
     public static final String NUM_STREAM_THREADS_KEY = "LHORSE_NUM_STREAM_THREADS";
     public static final String NUM_STANDBY_REPLICAS_KEY = "LHORSE_NUM_STANDBY_REPLICAS";
     public static final String COMMIT_INTERVAL_KEY = "LHORSE_COMMIT_INTERVAL";
+    public static final String API_HOST_KEY = "LHORSE_API_HOST";
+    public static final String API_PORT_KEY = "LHORSE_API_PORT";
 
     public static final String WF_RUN_EVENT_TOPIC = "WFRun_Event";
     public static final String WF_RUN_OBSERVABILITY_TOPIC = "WFRun_Observability";

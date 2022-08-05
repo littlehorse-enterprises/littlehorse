@@ -4,14 +4,14 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf enum {@code lh_proto.ErrorCodePb}
+ * Protobuf enum {@code lh_proto.LHResponseCodePb}
  */
-public enum ErrorCodePb
+public enum LHResponseCodePb
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
-   * <code>VALIDATION_ERROR = 0;</code>
+   * <code>OK = 0;</code>
    */
-  VALIDATION_ERROR(0),
+  OK(0),
   /**
    * <code>CONNECTION_ERROR = 1;</code>
    */
@@ -24,13 +24,17 @@ public enum ErrorCodePb
    * <code>BAD_REQUEST_ERROR = 3;</code>
    */
   BAD_REQUEST_ERROR(3),
+  /**
+   * <code>VALIDATION_ERROR = 4;</code>
+   */
+  VALIDATION_ERROR(4),
   UNRECOGNIZED(-1),
   ;
 
   /**
-   * <code>VALIDATION_ERROR = 0;</code>
+   * <code>OK = 0;</code>
    */
-  public static final int VALIDATION_ERROR_VALUE = 0;
+  public static final int OK_VALUE = 0;
   /**
    * <code>CONNECTION_ERROR = 1;</code>
    */
@@ -43,6 +47,10 @@ public enum ErrorCodePb
    * <code>BAD_REQUEST_ERROR = 3;</code>
    */
   public static final int BAD_REQUEST_ERROR_VALUE = 3;
+  /**
+   * <code>VALIDATION_ERROR = 4;</code>
+   */
+  public static final int VALIDATION_ERROR_VALUE = 4;
 
 
   public final int getNumber() {
@@ -59,7 +67,7 @@ public enum ErrorCodePb
    * @deprecated Use {@link #forNumber(int)} instead.
    */
   @java.lang.Deprecated
-  public static ErrorCodePb valueOf(int value) {
+  public static LHResponseCodePb valueOf(int value) {
     return forNumber(value);
   }
 
@@ -67,25 +75,26 @@ public enum ErrorCodePb
    * @param value The numeric wire value of the corresponding enum entry.
    * @return The enum associated with the given numeric wire value.
    */
-  public static ErrorCodePb forNumber(int value) {
+  public static LHResponseCodePb forNumber(int value) {
     switch (value) {
-      case 0: return VALIDATION_ERROR;
+      case 0: return OK;
       case 1: return CONNECTION_ERROR;
       case 2: return NOT_FOUND_ERROR;
       case 3: return BAD_REQUEST_ERROR;
+      case 4: return VALIDATION_ERROR;
       default: return null;
     }
   }
 
-  public static com.google.protobuf.Internal.EnumLiteMap<ErrorCodePb>
+  public static com.google.protobuf.Internal.EnumLiteMap<LHResponseCodePb>
       internalGetValueMap() {
     return internalValueMap;
   }
   private static final com.google.protobuf.Internal.EnumLiteMap<
-      ErrorCodePb> internalValueMap =
-        new com.google.protobuf.Internal.EnumLiteMap<ErrorCodePb>() {
-          public ErrorCodePb findValueByNumber(int number) {
-            return ErrorCodePb.forNumber(number);
+      LHResponseCodePb> internalValueMap =
+        new com.google.protobuf.Internal.EnumLiteMap<LHResponseCodePb>() {
+          public LHResponseCodePb findValueByNumber(int number) {
+            return LHResponseCodePb.forNumber(number);
           }
         };
 
@@ -106,9 +115,9 @@ public enum ErrorCodePb
     return io.littlehorse.common.proto.Server.getDescriptor().getEnumTypes().get(0);
   }
 
-  private static final ErrorCodePb[] VALUES = values();
+  private static final LHResponseCodePb[] VALUES = values();
 
-  public static ErrorCodePb valueOf(
+  public static LHResponseCodePb valueOf(
       com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
     if (desc.getType() != getDescriptor()) {
       throw new java.lang.IllegalArgumentException(
@@ -122,10 +131,10 @@ public enum ErrorCodePb
 
   private final int value;
 
-  private ErrorCodePb(int value) {
+  private LHResponseCodePb(int value) {
     this.value = value;
   }
 
-  // @@protoc_insertion_point(enum_scope:lh_proto.ErrorCodePb)
+  // @@protoc_insertion_point(enum_scope:lh_proto.LHResponseCodePb)
 }
 

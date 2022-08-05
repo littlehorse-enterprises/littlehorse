@@ -13,10 +13,9 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.proto.ErrorCodePb;
+import io.littlehorse.common.proto.LHResponseCodePb;
 import io.littlehorse.common.util.KStreamsStateListener;
-import io.littlehorse.server.model.internal.POSTableResponse;
-import io.littlehorse.server.model.response.ErrorResponse;
+import io.littlehorse.server.model.internal.LHResponse;
 import io.littlehorse.server.model.wfrun.TaskRun;
 import io.littlehorse.server.model.wfrun.ThreadRun;
 import io.littlehorse.server.model.wfrun.WfRun;
@@ -72,11 +71,11 @@ public class LHApi {
 
         this.app.get(
             "/internal/waitForResponse/{requestId}", 
-            (ctx) -> handle(this::waitForResponse, ctx)
+            (ctx) -> handle(this::internalWaitForResponse, ctx)
         );
         this.app.get(
             "/internal/storeBytes/{storeName}/{storeKey}",
-            (ctx) -> handle(this::getBytes, ctx)
+            (ctx) -> handle(this::internalGetBytes, ctx)
         );
     }
 
@@ -87,42 +86,23 @@ public class LHApi {
     public <U extends MessageOrBuilder, T extends POSTable<U>> void post(
         Context ctx, Class<T> cls
     ) throws LHSerdeError { // should never throw it though
-        T t;
+        LHResponse resp = new LHResponse();
         try {
-            t = LHSerializable.fromJson(ctx.body(), cls);
+            T t = LHSerializable.fromJson(ctx.body(), cls);
+            byte[] rawResponse = streams.post(t, cls);
+            resp = LHSerializable.fromBytes(rawResponse, LHResponse.class);
+
         } catch(LHSerdeError exn) {
-            json(
-                new ErrorResponse(
-                    ErrorCodePb.VALIDATION_ERROR,
-                    "Couldn't deserialize resource: " + exn.getMessage()
-                ), 400, ctx
-            );
-            return;
+            resp.code = LHResponseCodePb.VALIDATION_ERROR;
+            resp.message = "Couldn't deserialize resource: " + exn.getMessage();
+            ctx.status(400);
+        } catch(LHConnectionError exn) {
+            resp.code = LHResponseCodePb.CONNECTION_ERROR;
+            resp.message = "Error: " + exn.getMessage();
+            ctx.status(500);
         }
 
-        byte[] out;
-        boolean skipPrintStacktrace = false;
-        try {
-            out = streams.post(t, cls);
-            if (out == null) {
-                skipPrintStacktrace = true;
-                throw new LHConnectionError(null, "Processing timed out");
-            }
-        } catch (LHConnectionError exn) {
-            json(
-                new ErrorResponse(
-                    ErrorCodePb.CONNECTION_ERROR,
-                    "Unexpected error: " + exn.getMessage()
-                ), 500, ctx
-            );
-            if (!skipPrintStacktrace) exn.printStackTrace();
-            return;
-        }
-
-        POSTableResponse resp = LHSerializable.fromBytes(
-            out, POSTableResponse.class
-        );
-        ctx.status(resp.status);
+        ctx.status(resp.getStatus());
         ctx.json(resp);
     }
 
@@ -168,27 +148,14 @@ public class LHApi {
         returnLookup(wfRunId, storeKey, ThreadRun.class, ctx);
     }
 
-    public void waitForResponse(Context ctx) {
+    // This method returns the protobuf data in binary format, not json.
+    public void internalWaitForResponse(Context ctx) {
         String requestId = ctx.pathParam("requestId");
-
-        try {
-            byte[] response = streams.localWait(requestId);
-            if (response == null) {
-                ctx.status(404);
-            } else {
-                ctx.result(response);
-            }
-        } catch (Exception exn) {
-            json(
-                new ErrorResponse(
-                    ErrorCodePb.CONNECTION_ERROR,
-                    "Failed waiting for request to be processed"
-                ), 500, ctx
-            );
-        }
+        ctx.result(streams.localWait(requestId));
     }
 
-    public void getBytes(Context ctx) {
+    // This method returns the protobuf data in binary format, not json.
+    public void internalGetBytes(Context ctx) {
         String storeName = ctx.pathParam("storeName");
         String storeKey = ctx.pathParam("storeKey");
 
@@ -207,37 +174,26 @@ public class LHApi {
         Class<T> cls,
         Context ctx
     ) {
+        LHResponse resp = new LHResponse();
         try {
             T out = streams.get(storeKey, partitionKey, cls);
+            resp.result = out;
+
             if (out == null) {
-                json(
-                    new ErrorResponse(
-                        ErrorCodePb.NOT_FOUND_ERROR,
-                        "Couldn't find described " + cls.getSimpleName()
-                    ), 404, ctx
-                );
-                return;
+                resp.code = LHResponseCodePb.NOT_FOUND_ERROR;
+                resp.message = "Couldn't find described " + cls.getSimpleName();
+                ctx.status(404);
             } else {
-                POSTableResponse resp = new POSTableResponse();
                 resp.result = out;
-                resp.code = null;
+                resp.code = LHResponseCodePb.OK;
                 resp.id = out.getStoreKey();
-                ctx.json(resp);
             }
         } catch(LHConnectionError exn) {
-            json(
-                new ErrorResponse(
-                    ErrorCodePb.CONNECTION_ERROR,
-                    "Failed looking up the " + cls.getSimpleName() + ": "
-                    + exn.getMessage()
-                ), 500, ctx
-            );
+            resp.code = LHResponseCodePb.CONNECTION_ERROR;
+            resp.message = "Failed looking up the " + cls.getSimpleName() + ": "
+                + exn.getMessage();
+            ctx.status(500);
         }
-    }
-
-    private void json(LHSerializable<?> out, int status, Context ctx) {
-        ctx.status(status);
-        ctx.contentType("json");
-        ctx.result(out.toJson());
+        ctx.json(resp);
     }
 }

@@ -1,11 +1,12 @@
 package io.littlehorse.common.model;
 
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.LHDatabaseClient;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.exceptions.LHValidationError;
 
 public abstract class POSTable<T extends MessageOrBuilder> extends GETable<T> {
-    public abstract void handlePost(POSTable<T> old)
+    public abstract void handlePost(POSTable<T> old, LHDatabaseClient client)
     throws LHValidationError, LHConnectionError;
 
     // TODO: Need to think about how to make wait's transactional.

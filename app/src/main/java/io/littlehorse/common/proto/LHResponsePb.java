@@ -4,21 +4,21 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf type {@code lh_proto.POSTableResponsePb}
+ * Protobuf type {@code lh_proto.LHResponsePb}
  */
-public final class POSTableResponsePb extends
+public final class LHResponsePb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.POSTableResponsePb)
-    POSTableResponsePbOrBuilder {
+    // @@protoc_insertion_point(message_implements:lh_proto.LHResponsePb)
+    LHResponsePbOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use POSTableResponsePb.newBuilder() to construct.
-  private POSTableResponsePb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use LHResponsePb.newBuilder() to construct.
+  private LHResponsePb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private POSTableResponsePb() {
+  private LHResponsePb() {
     code_ = 0;
-    message_ = "";
     id_ = "";
+    message_ = "";
     payload_ = com.google.protobuf.ByteString.EMPTY;
     payloadClass_ = "";
   }
@@ -27,7 +27,7 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new POSTableResponsePb();
+    return new LHResponsePb();
   }
 
   @java.lang.Override
@@ -35,7 +35,7 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
-  private POSTableResponsePb(
+  private LHResponsePb(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -55,14 +55,15 @@ private static final long serialVersionUID = 0L;
             done = true;
             break;
           case 8: {
+            int rawValue = input.readEnum();
 
-            status_ = input.readInt32();
+            code_ = rawValue;
             break;
           }
-          case 16: {
-            int rawValue = input.readEnum();
+          case 18: {
+            java.lang.String s = input.readStringRequireUtf8();
             bitField0_ |= 0x00000001;
-            code_ = rawValue;
+            id_ = s;
             break;
           }
           case 26: {
@@ -72,19 +73,13 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 34: {
-            java.lang.String s = input.readStringRequireUtf8();
             bitField0_ |= 0x00000004;
-            id_ = s;
-            break;
-          }
-          case 42: {
-            bitField0_ |= 0x00000008;
             payload_ = input.readBytes();
             break;
           }
-          case 50: {
+          case 42: {
             java.lang.String s = input.readStringRequireUtf8();
-            bitField0_ |= 0x00000010;
+            bitField0_ |= 0x00000008;
             payloadClass_ = s;
             break;
           }
@@ -109,53 +104,81 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.Server.internal_static_lh_proto_POSTableResponsePb_descriptor;
+    return io.littlehorse.common.proto.Server.internal_static_lh_proto_LHResponsePb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.Server.internal_static_lh_proto_POSTableResponsePb_fieldAccessorTable
+    return io.littlehorse.common.proto.Server.internal_static_lh_proto_LHResponsePb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.common.proto.POSTableResponsePb.class, io.littlehorse.common.proto.POSTableResponsePb.Builder.class);
+            io.littlehorse.common.proto.LHResponsePb.class, io.littlehorse.common.proto.LHResponsePb.Builder.class);
   }
 
   private int bitField0_;
-  public static final int STATUS_FIELD_NUMBER = 1;
-  private int status_;
-  /**
-   * <code>int32 status = 1;</code>
-   * @return The status.
-   */
-  @java.lang.Override
-  public int getStatus() {
-    return status_;
-  }
-
-  public static final int CODE_FIELD_NUMBER = 2;
+  public static final int CODE_FIELD_NUMBER = 1;
   private int code_;
   /**
-   * <code>.lh_proto.ErrorCodePb code = 2;</code>
-   * @return Whether the code field is set.
-   */
-  @java.lang.Override public boolean hasCode() {
-    return ((bitField0_ & 0x00000001) != 0);
-  }
-  /**
-   * <code>.lh_proto.ErrorCodePb code = 2;</code>
+   * <code>.lh_proto.LHResponseCodePb code = 1;</code>
    * @return The enum numeric value on the wire for code.
    */
   @java.lang.Override public int getCodeValue() {
     return code_;
   }
   /**
-   * <code>.lh_proto.ErrorCodePb code = 2;</code>
+   * <code>.lh_proto.LHResponseCodePb code = 1;</code>
    * @return The code.
    */
-  @java.lang.Override public io.littlehorse.common.proto.ErrorCodePb getCode() {
+  @java.lang.Override public io.littlehorse.common.proto.LHResponseCodePb getCode() {
     @SuppressWarnings("deprecation")
-    io.littlehorse.common.proto.ErrorCodePb result = io.littlehorse.common.proto.ErrorCodePb.valueOf(code_);
-    return result == null ? io.littlehorse.common.proto.ErrorCodePb.UNRECOGNIZED : result;
+    io.littlehorse.common.proto.LHResponseCodePb result = io.littlehorse.common.proto.LHResponseCodePb.valueOf(code_);
+    return result == null ? io.littlehorse.common.proto.LHResponseCodePb.UNRECOGNIZED : result;
+  }
+
+  public static final int ID_FIELD_NUMBER = 2;
+  private volatile java.lang.Object id_;
+  /**
+   * <code>string id = 2;</code>
+   * @return Whether the id field is set.
+   */
+  @java.lang.Override
+  public boolean hasId() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <code>string id = 2;</code>
+   * @return The id.
+   */
+  @java.lang.Override
+  public java.lang.String getId() {
+    java.lang.Object ref = id_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      id_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string id = 2;</code>
+   * @return The bytes for id.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getIdBytes() {
+    java.lang.Object ref = id_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      id_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
   }
 
   public static final int MESSAGE_FIELD_NUMBER = 3;
@@ -204,64 +227,18 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int ID_FIELD_NUMBER = 4;
-  private volatile java.lang.Object id_;
-  /**
-   * <code>string id = 4;</code>
-   * @return Whether the id field is set.
-   */
-  @java.lang.Override
-  public boolean hasId() {
-    return ((bitField0_ & 0x00000004) != 0);
-  }
-  /**
-   * <code>string id = 4;</code>
-   * @return The id.
-   */
-  @java.lang.Override
-  public java.lang.String getId() {
-    java.lang.Object ref = id_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      id_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string id = 4;</code>
-   * @return The bytes for id.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getIdBytes() {
-    java.lang.Object ref = id_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      id_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
-  public static final int PAYLOAD_FIELD_NUMBER = 5;
+  public static final int PAYLOAD_FIELD_NUMBER = 4;
   private com.google.protobuf.ByteString payload_;
   /**
-   * <code>bytes payload = 5;</code>
+   * <code>bytes payload = 4;</code>
    * @return Whether the payload field is set.
    */
   @java.lang.Override
   public boolean hasPayload() {
-    return ((bitField0_ & 0x00000008) != 0);
+    return ((bitField0_ & 0x00000004) != 0);
   }
   /**
-   * <code>bytes payload = 5;</code>
+   * <code>bytes payload = 4;</code>
    * @return The payload.
    */
   @java.lang.Override
@@ -269,18 +246,18 @@ private static final long serialVersionUID = 0L;
     return payload_;
   }
 
-  public static final int PAYLOAD_CLASS_FIELD_NUMBER = 6;
+  public static final int PAYLOAD_CLASS_FIELD_NUMBER = 5;
   private volatile java.lang.Object payloadClass_;
   /**
-   * <code>string payload_class = 6;</code>
+   * <code>string payload_class = 5;</code>
    * @return Whether the payloadClass field is set.
    */
   @java.lang.Override
   public boolean hasPayloadClass() {
-    return ((bitField0_ & 0x00000010) != 0);
+    return ((bitField0_ & 0x00000008) != 0);
   }
   /**
-   * <code>string payload_class = 6;</code>
+   * <code>string payload_class = 5;</code>
    * @return The payloadClass.
    */
   @java.lang.Override
@@ -297,7 +274,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>string payload_class = 6;</code>
+   * <code>string payload_class = 5;</code>
    * @return The bytes for payloadClass.
    */
   @java.lang.Override
@@ -329,23 +306,20 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (status_ != 0) {
-      output.writeInt32(1, status_);
+    if (code_ != io.littlehorse.common.proto.LHResponseCodePb.OK.getNumber()) {
+      output.writeEnum(1, code_);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeEnum(2, code_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, id_);
     }
     if (((bitField0_ & 0x00000002) != 0)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 3, message_);
     }
     if (((bitField0_ & 0x00000004) != 0)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 4, id_);
+      output.writeBytes(4, payload_);
     }
     if (((bitField0_ & 0x00000008) != 0)) {
-      output.writeBytes(5, payload_);
-    }
-    if (((bitField0_ & 0x00000010) != 0)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 6, payloadClass_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, payloadClass_);
     }
     unknownFields.writeTo(output);
   }
@@ -356,26 +330,22 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (status_ != 0) {
+    if (code_ != io.littlehorse.common.proto.LHResponseCodePb.OK.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(1, status_);
+        .computeEnumSize(1, code_);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(2, code_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, id_);
     }
     if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, message_);
     }
     if (((bitField0_ & 0x00000004) != 0)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, id_);
+      size += com.google.protobuf.CodedOutputStream
+        .computeBytesSize(4, payload_);
     }
     if (((bitField0_ & 0x00000008) != 0)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(5, payload_);
-    }
-    if (((bitField0_ & 0x00000010) != 0)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, payloadClass_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, payloadClass_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -387,26 +357,21 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.common.proto.POSTableResponsePb)) {
+    if (!(obj instanceof io.littlehorse.common.proto.LHResponsePb)) {
       return super.equals(obj);
     }
-    io.littlehorse.common.proto.POSTableResponsePb other = (io.littlehorse.common.proto.POSTableResponsePb) obj;
+    io.littlehorse.common.proto.LHResponsePb other = (io.littlehorse.common.proto.LHResponsePb) obj;
 
-    if (getStatus()
-        != other.getStatus()) return false;
-    if (hasCode() != other.hasCode()) return false;
-    if (hasCode()) {
-      if (code_ != other.code_) return false;
+    if (code_ != other.code_) return false;
+    if (hasId() != other.hasId()) return false;
+    if (hasId()) {
+      if (!getId()
+          .equals(other.getId())) return false;
     }
     if (hasMessage() != other.hasMessage()) return false;
     if (hasMessage()) {
       if (!getMessage()
           .equals(other.getMessage())) return false;
-    }
-    if (hasId() != other.hasId()) return false;
-    if (hasId()) {
-      if (!getId()
-          .equals(other.getId())) return false;
     }
     if (hasPayload() != other.hasPayload()) return false;
     if (hasPayload()) {
@@ -429,19 +394,15 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + STATUS_FIELD_NUMBER;
-    hash = (53 * hash) + getStatus();
-    if (hasCode()) {
-      hash = (37 * hash) + CODE_FIELD_NUMBER;
-      hash = (53 * hash) + code_;
+    hash = (37 * hash) + CODE_FIELD_NUMBER;
+    hash = (53 * hash) + code_;
+    if (hasId()) {
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId().hashCode();
     }
     if (hasMessage()) {
       hash = (37 * hash) + MESSAGE_FIELD_NUMBER;
       hash = (53 * hash) + getMessage().hashCode();
-    }
-    if (hasId()) {
-      hash = (37 * hash) + ID_FIELD_NUMBER;
-      hash = (53 * hash) + getId().hashCode();
     }
     if (hasPayload()) {
       hash = (37 * hash) + PAYLOAD_FIELD_NUMBER;
@@ -456,69 +417,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static io.littlehorse.common.proto.POSTableResponsePb parseFrom(
+  public static io.littlehorse.common.proto.LHResponsePb parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.POSTableResponsePb parseFrom(
+  public static io.littlehorse.common.proto.LHResponsePb parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.POSTableResponsePb parseFrom(
+  public static io.littlehorse.common.proto.LHResponsePb parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.POSTableResponsePb parseFrom(
+  public static io.littlehorse.common.proto.LHResponsePb parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.POSTableResponsePb parseFrom(byte[] data)
+  public static io.littlehorse.common.proto.LHResponsePb parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.POSTableResponsePb parseFrom(
+  public static io.littlehorse.common.proto.LHResponsePb parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.POSTableResponsePb parseFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.LHResponsePb parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.POSTableResponsePb parseFrom(
+  public static io.littlehorse.common.proto.LHResponsePb parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.POSTableResponsePb parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.LHResponsePb parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.POSTableResponsePb parseDelimitedFrom(
+  public static io.littlehorse.common.proto.LHResponsePb parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.POSTableResponsePb parseFrom(
+  public static io.littlehorse.common.proto.LHResponsePb parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.POSTableResponsePb parseFrom(
+  public static io.littlehorse.common.proto.LHResponsePb parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -531,7 +492,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.common.proto.POSTableResponsePb prototype) {
+  public static Builder newBuilder(io.littlehorse.common.proto.LHResponsePb prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -547,26 +508,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.POSTableResponsePb}
+   * Protobuf type {@code lh_proto.LHResponsePb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.POSTableResponsePb)
-      io.littlehorse.common.proto.POSTableResponsePbOrBuilder {
+      // @@protoc_insertion_point(builder_implements:lh_proto.LHResponsePb)
+      io.littlehorse.common.proto.LHResponsePbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.Server.internal_static_lh_proto_POSTableResponsePb_descriptor;
+      return io.littlehorse.common.proto.Server.internal_static_lh_proto_LHResponsePb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.Server.internal_static_lh_proto_POSTableResponsePb_fieldAccessorTable
+      return io.littlehorse.common.proto.Server.internal_static_lh_proto_LHResponsePb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.common.proto.POSTableResponsePb.class, io.littlehorse.common.proto.POSTableResponsePb.Builder.class);
+              io.littlehorse.common.proto.LHResponsePb.class, io.littlehorse.common.proto.LHResponsePb.Builder.class);
     }
 
-    // Construct using io.littlehorse.common.proto.POSTableResponsePb.newBuilder()
+    // Construct using io.littlehorse.common.proto.LHResponsePb.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -584,35 +545,33 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      status_ = 0;
-
       code_ = 0;
+
+      id_ = "";
       bitField0_ = (bitField0_ & ~0x00000001);
       message_ = "";
       bitField0_ = (bitField0_ & ~0x00000002);
-      id_ = "";
-      bitField0_ = (bitField0_ & ~0x00000004);
       payload_ = com.google.protobuf.ByteString.EMPTY;
-      bitField0_ = (bitField0_ & ~0x00000008);
+      bitField0_ = (bitField0_ & ~0x00000004);
       payloadClass_ = "";
-      bitField0_ = (bitField0_ & ~0x00000010);
+      bitField0_ = (bitField0_ & ~0x00000008);
       return this;
     }
 
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.Server.internal_static_lh_proto_POSTableResponsePb_descriptor;
+      return io.littlehorse.common.proto.Server.internal_static_lh_proto_LHResponsePb_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.POSTableResponsePb getDefaultInstanceForType() {
-      return io.littlehorse.common.proto.POSTableResponsePb.getDefaultInstance();
+    public io.littlehorse.common.proto.LHResponsePb getDefaultInstanceForType() {
+      return io.littlehorse.common.proto.LHResponsePb.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.POSTableResponsePb build() {
-      io.littlehorse.common.proto.POSTableResponsePb result = buildPartial();
+    public io.littlehorse.common.proto.LHResponsePb build() {
+      io.littlehorse.common.proto.LHResponsePb result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -620,15 +579,15 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.POSTableResponsePb buildPartial() {
-      io.littlehorse.common.proto.POSTableResponsePb result = new io.littlehorse.common.proto.POSTableResponsePb(this);
+    public io.littlehorse.common.proto.LHResponsePb buildPartial() {
+      io.littlehorse.common.proto.LHResponsePb result = new io.littlehorse.common.proto.LHResponsePb(this);
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
-      result.status_ = status_;
+      result.code_ = code_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         to_bitField0_ |= 0x00000001;
       }
-      result.code_ = code_;
+      result.id_ = id_;
       if (((from_bitField0_ & 0x00000002) != 0)) {
         to_bitField0_ |= 0x00000002;
       }
@@ -636,13 +595,9 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000004) != 0)) {
         to_bitField0_ |= 0x00000004;
       }
-      result.id_ = id_;
+      result.payload_ = payload_;
       if (((from_bitField0_ & 0x00000008) != 0)) {
         to_bitField0_ |= 0x00000008;
-      }
-      result.payload_ = payload_;
-      if (((from_bitField0_ & 0x00000010) != 0)) {
-        to_bitField0_ |= 0x00000010;
       }
       result.payloadClass_ = payloadClass_;
       result.bitField0_ = to_bitField0_;
@@ -684,37 +639,34 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.common.proto.POSTableResponsePb) {
-        return mergeFrom((io.littlehorse.common.proto.POSTableResponsePb)other);
+      if (other instanceof io.littlehorse.common.proto.LHResponsePb) {
+        return mergeFrom((io.littlehorse.common.proto.LHResponsePb)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.common.proto.POSTableResponsePb other) {
-      if (other == io.littlehorse.common.proto.POSTableResponsePb.getDefaultInstance()) return this;
-      if (other.getStatus() != 0) {
-        setStatus(other.getStatus());
+    public Builder mergeFrom(io.littlehorse.common.proto.LHResponsePb other) {
+      if (other == io.littlehorse.common.proto.LHResponsePb.getDefaultInstance()) return this;
+      if (other.code_ != 0) {
+        setCodeValue(other.getCodeValue());
       }
-      if (other.hasCode()) {
-        setCode(other.getCode());
+      if (other.hasId()) {
+        bitField0_ |= 0x00000001;
+        id_ = other.id_;
+        onChanged();
       }
       if (other.hasMessage()) {
         bitField0_ |= 0x00000002;
         message_ = other.message_;
         onChanged();
       }
-      if (other.hasId()) {
-        bitField0_ |= 0x00000004;
-        id_ = other.id_;
-        onChanged();
-      }
       if (other.hasPayload()) {
         setPayload(other.getPayload());
       }
       if (other.hasPayloadClass()) {
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000008;
         payloadClass_ = other.payloadClass_;
         onChanged();
       }
@@ -733,11 +685,11 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      io.littlehorse.common.proto.POSTableResponsePb parsedMessage = null;
+      io.littlehorse.common.proto.LHResponsePb parsedMessage = null;
       try {
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (io.littlehorse.common.proto.POSTableResponsePb) e.getUnfinishedMessage();
+        parsedMessage = (io.littlehorse.common.proto.LHResponsePb) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
@@ -748,94 +700,139 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private int status_ ;
-    /**
-     * <code>int32 status = 1;</code>
-     * @return The status.
-     */
-    @java.lang.Override
-    public int getStatus() {
-      return status_;
-    }
-    /**
-     * <code>int32 status = 1;</code>
-     * @param value The status to set.
-     * @return This builder for chaining.
-     */
-    public Builder setStatus(int value) {
-      
-      status_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>int32 status = 1;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearStatus() {
-      
-      status_ = 0;
-      onChanged();
-      return this;
-    }
-
     private int code_ = 0;
     /**
-     * <code>.lh_proto.ErrorCodePb code = 2;</code>
-     * @return Whether the code field is set.
-     */
-    @java.lang.Override public boolean hasCode() {
-      return ((bitField0_ & 0x00000001) != 0);
-    }
-    /**
-     * <code>.lh_proto.ErrorCodePb code = 2;</code>
+     * <code>.lh_proto.LHResponseCodePb code = 1;</code>
      * @return The enum numeric value on the wire for code.
      */
     @java.lang.Override public int getCodeValue() {
       return code_;
     }
     /**
-     * <code>.lh_proto.ErrorCodePb code = 2;</code>
+     * <code>.lh_proto.LHResponseCodePb code = 1;</code>
      * @param value The enum numeric value on the wire for code to set.
      * @return This builder for chaining.
      */
     public Builder setCodeValue(int value) {
-      bitField0_ |= 0x00000001;
+      
       code_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>.lh_proto.ErrorCodePb code = 2;</code>
+     * <code>.lh_proto.LHResponseCodePb code = 1;</code>
      * @return The code.
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.ErrorCodePb getCode() {
+    public io.littlehorse.common.proto.LHResponseCodePb getCode() {
       @SuppressWarnings("deprecation")
-      io.littlehorse.common.proto.ErrorCodePb result = io.littlehorse.common.proto.ErrorCodePb.valueOf(code_);
-      return result == null ? io.littlehorse.common.proto.ErrorCodePb.UNRECOGNIZED : result;
+      io.littlehorse.common.proto.LHResponseCodePb result = io.littlehorse.common.proto.LHResponseCodePb.valueOf(code_);
+      return result == null ? io.littlehorse.common.proto.LHResponseCodePb.UNRECOGNIZED : result;
     }
     /**
-     * <code>.lh_proto.ErrorCodePb code = 2;</code>
+     * <code>.lh_proto.LHResponseCodePb code = 1;</code>
      * @param value The code to set.
      * @return This builder for chaining.
      */
-    public Builder setCode(io.littlehorse.common.proto.ErrorCodePb value) {
+    public Builder setCode(io.littlehorse.common.proto.LHResponseCodePb value) {
       if (value == null) {
         throw new NullPointerException();
       }
-      bitField0_ |= 0x00000001;
+      
       code_ = value.getNumber();
       onChanged();
       return this;
     }
     /**
-     * <code>.lh_proto.ErrorCodePb code = 2;</code>
+     * <code>.lh_proto.LHResponseCodePb code = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearCode() {
-      bitField0_ = (bitField0_ & ~0x00000001);
+      
       code_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object id_ = "";
+    /**
+     * <code>string id = 2;</code>
+     * @return Whether the id field is set.
+     */
+    public boolean hasId() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>string id = 2;</code>
+     * @return The id.
+     */
+    public java.lang.String getId() {
+      java.lang.Object ref = id_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        id_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string id = 2;</code>
+     * @return The bytes for id.
+     */
+    public com.google.protobuf.ByteString
+        getIdBytes() {
+      java.lang.Object ref = id_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        id_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string id = 2;</code>
+     * @param value The id to set.
+     * @return This builder for chaining.
+     */
+    public Builder setId(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+      id_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string id = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearId() {
+      bitField0_ = (bitField0_ & ~0x00000001);
+      id_ = getDefaultInstance().getId();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string id = 2;</code>
+     * @param value The bytes for id to set.
+     * @return This builder for chaining.
+     */
+    public Builder setIdBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      bitField0_ |= 0x00000001;
+      id_ = value;
       onChanged();
       return this;
     }
@@ -923,100 +920,17 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.lang.Object id_ = "";
-    /**
-     * <code>string id = 4;</code>
-     * @return Whether the id field is set.
-     */
-    public boolean hasId() {
-      return ((bitField0_ & 0x00000004) != 0);
-    }
-    /**
-     * <code>string id = 4;</code>
-     * @return The id.
-     */
-    public java.lang.String getId() {
-      java.lang.Object ref = id_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        id_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>string id = 4;</code>
-     * @return The bytes for id.
-     */
-    public com.google.protobuf.ByteString
-        getIdBytes() {
-      java.lang.Object ref = id_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        id_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string id = 4;</code>
-     * @param value The id to set.
-     * @return This builder for chaining.
-     */
-    public Builder setId(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000004;
-      id_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string id = 4;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearId() {
-      bitField0_ = (bitField0_ & ~0x00000004);
-      id_ = getDefaultInstance().getId();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string id = 4;</code>
-     * @param value The bytes for id to set.
-     * @return This builder for chaining.
-     */
-    public Builder setIdBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      bitField0_ |= 0x00000004;
-      id_ = value;
-      onChanged();
-      return this;
-    }
-
     private com.google.protobuf.ByteString payload_ = com.google.protobuf.ByteString.EMPTY;
     /**
-     * <code>bytes payload = 5;</code>
+     * <code>bytes payload = 4;</code>
      * @return Whether the payload field is set.
      */
     @java.lang.Override
     public boolean hasPayload() {
-      return ((bitField0_ & 0x00000008) != 0);
+      return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>bytes payload = 5;</code>
+     * <code>bytes payload = 4;</code>
      * @return The payload.
      */
     @java.lang.Override
@@ -1024,7 +938,7 @@ private static final long serialVersionUID = 0L;
       return payload_;
     }
     /**
-     * <code>bytes payload = 5;</code>
+     * <code>bytes payload = 4;</code>
      * @param value The payload to set.
      * @return This builder for chaining.
      */
@@ -1032,17 +946,17 @@ private static final long serialVersionUID = 0L;
       if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000008;
+  bitField0_ |= 0x00000004;
       payload_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>bytes payload = 5;</code>
+     * <code>bytes payload = 4;</code>
      * @return This builder for chaining.
      */
     public Builder clearPayload() {
-      bitField0_ = (bitField0_ & ~0x00000008);
+      bitField0_ = (bitField0_ & ~0x00000004);
       payload_ = getDefaultInstance().getPayload();
       onChanged();
       return this;
@@ -1050,14 +964,14 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object payloadClass_ = "";
     /**
-     * <code>string payload_class = 6;</code>
+     * <code>string payload_class = 5;</code>
      * @return Whether the payloadClass field is set.
      */
     public boolean hasPayloadClass() {
-      return ((bitField0_ & 0x00000010) != 0);
+      return ((bitField0_ & 0x00000008) != 0);
     }
     /**
-     * <code>string payload_class = 6;</code>
+     * <code>string payload_class = 5;</code>
      * @return The payloadClass.
      */
     public java.lang.String getPayloadClass() {
@@ -1073,7 +987,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string payload_class = 6;</code>
+     * <code>string payload_class = 5;</code>
      * @return The bytes for payloadClass.
      */
     public com.google.protobuf.ByteString
@@ -1090,7 +1004,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string payload_class = 6;</code>
+     * <code>string payload_class = 5;</code>
      * @param value The payloadClass to set.
      * @return This builder for chaining.
      */
@@ -1099,23 +1013,23 @@ private static final long serialVersionUID = 0L;
       if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000010;
+  bitField0_ |= 0x00000008;
       payloadClass_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>string payload_class = 6;</code>
+     * <code>string payload_class = 5;</code>
      * @return This builder for chaining.
      */
     public Builder clearPayloadClass() {
-      bitField0_ = (bitField0_ & ~0x00000010);
+      bitField0_ = (bitField0_ & ~0x00000008);
       payloadClass_ = getDefaultInstance().getPayloadClass();
       onChanged();
       return this;
     }
     /**
-     * <code>string payload_class = 6;</code>
+     * <code>string payload_class = 5;</code>
      * @param value The bytes for payloadClass to set.
      * @return This builder for chaining.
      */
@@ -1125,7 +1039,7 @@ private static final long serialVersionUID = 0L;
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000008;
       payloadClass_ = value;
       onChanged();
       return this;
@@ -1143,41 +1057,41 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.POSTableResponsePb)
+    // @@protoc_insertion_point(builder_scope:lh_proto.LHResponsePb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.POSTableResponsePb)
-  private static final io.littlehorse.common.proto.POSTableResponsePb DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:lh_proto.LHResponsePb)
+  private static final io.littlehorse.common.proto.LHResponsePb DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.common.proto.POSTableResponsePb();
+    DEFAULT_INSTANCE = new io.littlehorse.common.proto.LHResponsePb();
   }
 
-  public static io.littlehorse.common.proto.POSTableResponsePb getDefaultInstance() {
+  public static io.littlehorse.common.proto.LHResponsePb getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<POSTableResponsePb>
-      PARSER = new com.google.protobuf.AbstractParser<POSTableResponsePb>() {
+  private static final com.google.protobuf.Parser<LHResponsePb>
+      PARSER = new com.google.protobuf.AbstractParser<LHResponsePb>() {
     @java.lang.Override
-    public POSTableResponsePb parsePartialFrom(
+    public LHResponsePb parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new POSTableResponsePb(input, extensionRegistry);
+      return new LHResponsePb(input, extensionRegistry);
     }
   };
 
-  public static com.google.protobuf.Parser<POSTableResponsePb> parser() {
+  public static com.google.protobuf.Parser<LHResponsePb> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<POSTableResponsePb> getParserForType() {
+  public com.google.protobuf.Parser<LHResponsePb> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.common.proto.POSTableResponsePb getDefaultInstanceForType() {
+  public io.littlehorse.common.proto.LHResponsePb getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

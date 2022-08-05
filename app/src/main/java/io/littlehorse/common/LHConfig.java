@@ -105,6 +105,18 @@ public class LHConfig {
         return new HostInfo(getAdvertisedHost(), getAdvertisedPort());
     }
 
+    public HostInfo getApiHostInfo() {
+        return new HostInfo(getApiHost(), getApiPort());
+    }
+
+    public String getApiHost() {
+        return getOrSetDefault(LHConstants.API_HOST_KEY, "localhost");
+    }
+
+    public int getApiPort() {
+        return Integer.valueOf(getOrSetDefault(LHConstants.API_PORT_KEY, "5000"));
+    }
+
     public void cleanup() {
         if (this.kafkaAdmin != null) this.kafkaAdmin.close();
 

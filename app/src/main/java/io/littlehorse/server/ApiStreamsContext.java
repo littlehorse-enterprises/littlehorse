@@ -18,12 +18,13 @@ import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.POSTable;
+import io.littlehorse.common.proto.LHResponseCodePb;
 import io.littlehorse.common.proto.RequestTypePb;
 import io.littlehorse.common.util.LHApiClient;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.model.POSTableRequestSerializer;
 import io.littlehorse.server.model.internal.POSTableRequest;
-import io.littlehorse.server.model.internal.POSTableResponse;
+import io.littlehorse.server.model.internal.LHResponse;
 
 public class ApiStreamsContext {
     private KafkaStreams streams;
@@ -115,12 +116,11 @@ public class ApiStreamsContext {
     }
 
     public byte[] localWait(String requestId) {
-        ReadOnlyKeyValueStore<String, POSTableResponse> respStore = getResponseStore();
+        ReadOnlyKeyValueStore<String, LHResponse> respStore = getResponseStore();
 
-        // TODO: add a timeout
         int iterations = 0;
         while (iterations++ < 500) {
-            POSTableResponse out = respStore.get(requestId);
+            LHResponse out = respStore.get(requestId);
             if (out == null) {
                 try {
                     Thread.sleep(30);
@@ -129,8 +129,12 @@ public class ApiStreamsContext {
             }
             return out.toBytes();
         }
-        System.out.println("Failed.");
-        return null;
+
+        // Timed out waiting for response.
+        LHResponse timeOut = new LHResponse();
+        timeOut.code = LHResponseCodePb.CONNECTION_ERROR;
+        timeOut.message = "Timed out waiting for request of ID: " + requestId;
+        return timeOut.toBytes();
     }
 
     private ReadOnlyKeyValueStore<String, GETable<?>> getStore(String storeName) {
@@ -153,7 +157,7 @@ public class ApiStreamsContext {
         );
     }
 
-    private ReadOnlyKeyValueStore<String, POSTableResponse> getResponseStore() {
+    private ReadOnlyKeyValueStore<String, LHResponse> getResponseStore() {
 
         return streams.store(
             StoreQueryParameters.fromNameAndType(

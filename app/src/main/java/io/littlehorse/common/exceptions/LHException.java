@@ -11,7 +11,7 @@ public class LHException extends Exception {
 
     @Override
     public String getMessage() {
-        return this.message;
+        return this.message + (parent == null ? "" : parent.getMessage());
     }
 
     public Exception parent() {

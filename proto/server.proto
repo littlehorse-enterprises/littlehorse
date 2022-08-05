@@ -60,19 +60,20 @@ message TaskRunPb {
 
 // This section defines some common Util responses used by the server.
 
-enum ErrorCodePb {
-    VALIDATION_ERROR = 0;
+enum LHResponseCodePb {
+    OK = 0;
     CONNECTION_ERROR = 1;
     NOT_FOUND_ERROR = 2;
     BAD_REQUEST_ERROR = 3;
+    VALIDATION_ERROR = 4;
 }
-
-message ErrorResponsePb {
-    ErrorCodePb code = 1;
-    string message = 2;
+message LHResponsePb {
+    LHResponseCodePb code = 1;
+    optional string id = 2;
+    optional string message = 3;
+    optional bytes payload = 4;
+    optional string payload_class = 5;
 }
-
-// This section describes internal messages used by the server
 
 enum RequestTypePb {
     POST = 0;
@@ -84,15 +85,6 @@ message POSTableRequestPb {
     string store_key = 2;
     string request_id = 3;
     optional bytes payload = 4;
-}
-
-message POSTableResponsePb {
-    int32 status = 1;
-    optional ErrorCodePb code = 2;
-    optional string message = 3;
-    optional string id = 4;
-    optional bytes payload = 5;
-    optional string payload_class = 6;
 }
 
 // NOTE: Maybe later we'll add an Entity output thing that lets the

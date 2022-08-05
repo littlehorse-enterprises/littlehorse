@@ -16,7 +16,7 @@ import io.littlehorse.common.proto.WFSpecPbOrBuilder;
 import io.littlehorse.common.util.serde.LHSerde;
 import io.littlehorse.common.util.serde.LHSerializer;
 import io.littlehorse.server.model.internal.POSTableRequest;
-import io.littlehorse.server.model.internal.POSTableResponse;
+import io.littlehorse.server.model.internal.LHResponse;
 import io.littlehorse.server.processors.POSTableProcessor;
 
 public class ServerTopology {
@@ -37,8 +37,8 @@ public class ServerTopology {
             POSTableRequest
         >(POSTableRequest.class);
 
-        Serde<POSTableResponse> respSerde = new LHSerde<POSTableResponse>(
-            POSTableResponse.class
+        Serde<LHResponse> respSerde = new LHSerde<LHResponse>(
+            LHResponse.class
         );
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -56,7 +56,7 @@ public class ServerTopology {
         topo.addProcessor(
             wfSpecProcessor,
             () -> {return new POSTableProcessor<WFSpecPbOrBuilder, WfSpec>(
-                WfSpec.class
+                WfSpec.class, config
             );},
             wfSpecSource
         );
@@ -80,7 +80,7 @@ public class ServerTopology {
         topo.addProcessor(
             taskDefProcessor,
             () -> {return new POSTableProcessor<TaskDefPbOrBuilder, TaskDef>(
-                TaskDef.class
+                TaskDef.class, config
             );},
             taskDefSource
         );
@@ -93,11 +93,11 @@ public class ServerTopology {
             taskDefProcessor
         );
 
-        StoreBuilder<KeyValueStore<String, POSTableResponse>> responseStoreBuilder = 
+        StoreBuilder<KeyValueStore<String, LHResponse>> responseStoreBuilder = 
             Stores.keyValueStoreBuilder(
                 Stores.persistentKeyValueStore(LHConstants.RESPONSE_STORE_NAME),
                 Serdes.String(),
-                new LHSerde<POSTableResponse>(POSTableResponse.class)
+                new LHSerde<LHResponse>(LHResponse.class)
             );
 
         topo.addStateStore(responseStoreBuilder, taskDefProcessor, wfSpecProcessor);

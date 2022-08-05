@@ -5,7 +5,9 @@ import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.LHDatabaseClient;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.exceptions.LHValidationError;
@@ -13,19 +15,21 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.proto.ErrorCodePb;
+import io.littlehorse.common.proto.LHResponseCodePb;
 import io.littlehorse.server.model.internal.POSTableRequest;
-import io.littlehorse.server.model.internal.POSTableResponse;
+import io.littlehorse.server.model.internal.LHResponse;
 
 public class POSTableProcessor<U extends MessageOrBuilder, T extends POSTable<U>>
     implements Processor<String, POSTableRequest, String, T>
 {
     private KeyValueStore<String, T> store;
-    private KeyValueStore<String, POSTableResponse> responseStore;
+    private KeyValueStore<String, LHResponse> responseStore;
     private Class<T> cls;
     private ProcessorContext<String, T> context;
+    private LHDatabaseClient dbClient;
 
-    public POSTableProcessor(Class<T> cls) {
+    public POSTableProcessor(Class<T> cls, LHConfig config) {
+        this.dbClient = new LHDatabaseClient(config);
         this.cls = cls;
     }
 
@@ -52,21 +56,19 @@ public class POSTableProcessor<U extends MessageOrBuilder, T extends POSTable<U>
         }
 
         T oldT = store.get(key);
-        POSTableResponse resp = new POSTableResponse();
+        LHResponse resp = new LHResponse();
         resp.id = key;
 
         try {
-            newT.handlePost(oldT);
-            resp.status = 200;
+            newT.handlePost(oldT, dbClient);
             resp.result = newT;
+            resp.code = LHResponseCodePb.OK;
         } catch(LHConnectionError exn) {
-            resp.status = 500;
             resp.message = exn.getMessage();
-            resp.code = ErrorCodePb.CONNECTION_ERROR;
+            resp.code = LHResponseCodePb.CONNECTION_ERROR;
         } catch(LHValidationError exn) {
-            resp.status = 400;
             resp.message = exn.getMessage();
-            resp.code = ErrorCodePb.VALIDATION_ERROR;
+            resp.code = LHResponseCodePb.VALIDATION_ERROR;
         }
 
         responseStore.put(req.requestId, resp);

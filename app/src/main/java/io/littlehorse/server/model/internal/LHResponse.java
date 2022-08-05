@@ -5,26 +5,43 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.proto.ErrorCodePb;
-import io.littlehorse.common.proto.POSTableResponsePb;
-import io.littlehorse.common.proto.POSTableResponsePbOrBuilder;
+import io.littlehorse.common.proto.LHResponseCodePb;
+import io.littlehorse.common.proto.LHResponsePb;
+import io.littlehorse.common.proto.LHResponsePbOrBuilder;
 
-public class POSTableResponse extends LHSerializable<POSTableResponsePb> {
-    @JsonIgnore public int status;
-    public ErrorCodePb code;
+public class LHResponse extends LHSerializable<LHResponsePb> {
+    public LHResponseCodePb code;
     public String message;
     public String id;
     public LHSerializable<?> result;
 
-    @JsonIgnore public Class<POSTableResponsePb> getProtoBaseClass() {
-        return POSTableResponsePb.class;
+    @JsonIgnore public Class<LHResponsePb> getProtoBaseClass() {
+        return LHResponsePb.class;
     }
 
-    public POSTableResponsePb.Builder toProto() {
-        POSTableResponsePb.Builder out = POSTableResponsePb.newBuilder()
-            .setStatus(status);
+    @JsonIgnore public int getStatus() {
+        switch(code) {
+        case OK:
+            return 200;
 
-        if (code != null) out.setCode(code);
+        case NOT_FOUND_ERROR:
+            return 404;
+
+        case VALIDATION_ERROR:
+        case BAD_REQUEST_ERROR:
+            return 400;
+
+        case CONNECTION_ERROR:
+        case UNRECOGNIZED:
+        default:
+            return 500;
+        }
+    }
+
+    public LHResponsePb.Builder toProto() {
+        LHResponsePb.Builder out = LHResponsePb.newBuilder();
+
+        out.setCode(code);
         if (message != null) out.setMessage(message);
         if (id != null) out.setId(id);
         if (result != null) {
@@ -37,9 +54,8 @@ public class POSTableResponse extends LHSerializable<POSTableResponsePb> {
 
     @SuppressWarnings("unchecked")
     public void initFrom(MessageOrBuilder p) {
-        POSTableResponsePbOrBuilder proto = (POSTableResponsePbOrBuilder) p;
-        status = proto.getStatus();
-        if (proto.hasCode()) code = proto.getCode();
+        LHResponsePbOrBuilder proto = (LHResponsePbOrBuilder) p;
+        code = proto.getCode();
         if (proto.hasMessage()) message = proto.getMessage();
         if (proto.hasId()) id = proto.getId();
         if (proto.hasPayload()) {
