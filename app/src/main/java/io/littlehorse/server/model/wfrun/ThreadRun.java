@@ -70,7 +70,7 @@ public class ThreadRun extends GETable<ThreadRunPb> {
         return wfRunId;
     }
 
-    public String getStoreKey() {
+    public String getObjectId() {
         return ThreadRun.getStoreKey(wfRunId, number);
     }
 

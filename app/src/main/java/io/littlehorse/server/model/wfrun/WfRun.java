@@ -72,7 +72,7 @@ public class WfRun extends GETable<WfRunPb> {
         return WfRunPb.class;
     }
 
-    @Override public String getStoreKey() {
+    @Override public String getObjectId() {
         return id;
     }
 

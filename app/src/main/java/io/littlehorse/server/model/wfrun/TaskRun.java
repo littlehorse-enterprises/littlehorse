@@ -32,7 +32,7 @@ public class TaskRun extends GETable<TaskRunPb> {
     public String nodeName;
     public String taskDefId;
 
-    public String getStoreKey() {
+    public String getObjectId() {
         return TaskRun.getStoreKey(wfRunId, threadRunNumber, position);
     }
 

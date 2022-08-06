@@ -7,7 +7,7 @@ import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.server.GETableEntryPb;
 import io.littlehorse.common.proto.server.GETableEntryPbOrBuilder;
-import io.littlehorse.common.proto.server.IndexEntryPb;
+// import io.littlehorse.common.proto.server.IndexEntryPb;
 
 public class GETableEntry extends LHSerializable<GETableEntryPb>
 {
@@ -29,9 +29,9 @@ public class GETableEntry extends LHSerializable<GETableEntryPb>
         this.entry = proto.getEntry().toByteArray();
         this.partition = proto.getPartition();
         this.lastUpdatedOffset = proto.getLastUpdatedOffset();
-        for (IndexEntryPb iepb: proto.getIndexEntriesList()) {
-            indexEntries.add(IndexEntry.fromProto(iepb));
-        }
+        // for (IndexEntryPb iepb: proto.getIndexEntriesList()) {
+        //     indexEntries.add(IndexEntry.fromProto(iepb));
+        // }
     }
 
     public GETableEntryPb.Builder toProto() {
@@ -39,7 +39,7 @@ public class GETableEntry extends LHSerializable<GETableEntryPb>
             .setPartition(partition)
             .setLastUpdatedOffset(lastUpdatedOffset);
 
-        for (IndexEntry ie: indexEntries) out.addIndexEntries(ie.toProto());
+        // for (IndexEntry ie: indexEntries) out.addIndexEntries(ie.toProto());
 
         if (entry != null) out.setEntry(ByteString.copyFrom(entry));
         return out;

@@ -26,26 +26,26 @@ public interface GETableEntryPbOrBuilder extends
   long getLastUpdatedOffset();
 
   /**
-   * <code>repeated .lh_proto.IndexEntryPb index_entries = 4;</code>
+   * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
    */
-  java.util.List<io.littlehorse.common.proto.server.IndexEntryPb> 
+  java.util.List<io.littlehorse.common.proto.server.IndexKeyPb> 
       getIndexEntriesList();
   /**
-   * <code>repeated .lh_proto.IndexEntryPb index_entries = 4;</code>
+   * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
    */
-  io.littlehorse.common.proto.server.IndexEntryPb getIndexEntries(int index);
+  io.littlehorse.common.proto.server.IndexKeyPb getIndexEntries(int index);
   /**
-   * <code>repeated .lh_proto.IndexEntryPb index_entries = 4;</code>
+   * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
    */
   int getIndexEntriesCount();
   /**
-   * <code>repeated .lh_proto.IndexEntryPb index_entries = 4;</code>
+   * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
    */
-  java.util.List<? extends io.littlehorse.common.proto.server.IndexEntryPbOrBuilder> 
+  java.util.List<? extends io.littlehorse.common.proto.server.IndexKeyPbOrBuilder> 
       getIndexEntriesOrBuilderList();
   /**
-   * <code>repeated .lh_proto.IndexEntryPb index_entries = 4;</code>
+   * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
    */
-  io.littlehorse.common.proto.server.IndexEntryPbOrBuilder getIndexEntriesOrBuilder(
+  io.littlehorse.common.proto.server.IndexKeyPbOrBuilder getIndexEntriesOrBuilder(
       int index);
 }

@@ -13,11 +13,12 @@ import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.proto.wfspec.TaskDefPbOrBuilder;
 import io.littlehorse.common.proto.wfspec.WFSpecPbOrBuilder;
+import io.littlehorse.common.util.serde.LHDeserializer;
 import io.littlehorse.common.util.serde.LHSerde;
-import io.littlehorse.common.util.serde.LHSerializer;
 import io.littlehorse.server.model.internal.POSTableRequest;
 import io.littlehorse.server.model.internal.LHResponse;
 import io.littlehorse.server.processors.POSTableProcessor;
+import io.littlehorse.server.processors.POSTableProcessorOutput;
 
 public class ServerTopology {
     public static String wfSpecSource = "wfSpecSource";
@@ -28,35 +29,30 @@ public class ServerTopology {
     public static String taskDefProcessor = "taskDefProcessor";
     public static String taskDefSink = "taskDefSink";
 
+    public static String indexStoreSink = "indexStoreSink";
+
     public static String wfRunSource = "wfRunSource";
 
     public static Topology initTopology(LHConfig config) {
         Topology topo = new Topology();
 
-        Serde<POSTableRequest> reqSerde = new LHSerde<
-            POSTableRequest
-        >(POSTableRequest.class);
-
         Serde<LHResponse> respSerde = new LHSerde<LHResponse>(
             LHResponse.class
         );
 
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            reqSerde.close();
-            respSerde.close();
-        }));
+        Runtime.getRuntime().addShutdownHook(new Thread(respSerde::close));
 
         topo.addSource(
             wfSpecSource,
             Serdes.String().deserializer(),
-            reqSerde.deserializer(),
+            new LHDeserializer<POSTableRequest>(POSTableRequest.class),
             POSTable.getRequestTopicName(WfSpec.class)
         );
 
         topo.addProcessor(
             wfSpecProcessor,
             () -> {return new POSTableProcessor<WFSpecPbOrBuilder, WfSpec>(
-                WfSpec.class, config
+                WfSpec.class, config, wfSpecSink
             );},
             wfSpecSource
         );
@@ -65,7 +61,9 @@ public class ServerTopology {
             wfSpecSink,
             POSTable.getEntitytTopicName(WfSpec.class),
             Serdes.String().serializer(),
-            new LHSerializer<WfSpec>(),
+            (topic, output) -> {
+                return ((POSTableProcessorOutput)output).t.toBytes();
+            },
             wfSpecProcessor
         );
 
@@ -73,14 +71,14 @@ public class ServerTopology {
         topo.addSource(
             taskDefSource,
             Serdes.String().deserializer(),
-            reqSerde.deserializer(),
+            new LHDeserializer<POSTableRequest>(POSTableRequest.class),
             POSTable.getRequestTopicName(TaskDef.class)
         );
 
         topo.addProcessor(
             taskDefProcessor,
             () -> {return new POSTableProcessor<TaskDefPbOrBuilder, TaskDef>(
-                TaskDef.class, config
+                TaskDef.class, config, taskDefSink
             );},
             taskDefSource
         );
@@ -89,8 +87,20 @@ public class ServerTopology {
             taskDefSink,
             POSTable.getEntitytTopicName(TaskDef.class),
             Serdes.String().serializer(),
-            new LHSerializer<TaskDef>(),
+            (topic, output) -> {
+                return ((POSTableProcessorOutput)output).t.toBytes();
+            },
             taskDefProcessor
+        );
+
+        topo.addSink(
+            indexStoreSink,
+            LHConstants.INDEX_TOPIC_NAME,
+            Serdes.String().serializer(),
+            (topic, output) -> {
+                return ((POSTableProcessorOutput)output).action.toBytes();
+            },
+            wfSpecProcessor, taskDefProcessor
         );
 
         StoreBuilder<KeyValueStore<String, LHResponse>> responseStoreBuilder = 

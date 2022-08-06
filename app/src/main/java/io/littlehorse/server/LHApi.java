@@ -190,7 +190,7 @@ public class LHApi {
             } else {
                 resp.result = out;
                 resp.code = LHResponseCodePb.OK;
-                resp.id = out.getStoreKey();
+                resp.id = out.getObjectId();
             }
         } catch(LHConnectionError exn) {
             resp.code = LHResponseCodePb.CONNECTION_ERROR;

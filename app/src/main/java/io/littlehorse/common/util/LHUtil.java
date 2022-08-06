@@ -42,4 +42,8 @@ public class LHUtil {
     public static String generateGuid() {
         return UUID.randomUUID().toString();
     }
+
+    public static String toLhDbFormat(Date date) {
+        return String.format("%012d", date.getTime());
+    }
 }

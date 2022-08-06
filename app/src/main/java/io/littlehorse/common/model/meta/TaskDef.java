@@ -1,8 +1,9 @@
 package io.littlehorse.common.model.meta;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import org.apache.commons.lang3.tuple.Pair;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHDatabaseClient;
 import io.littlehorse.common.exceptions.LHValidationError;
@@ -21,7 +22,7 @@ public class TaskDef extends POSTable<TaskDefPbOrBuilder> {
         return createdAt;
     }
 
-    public String getStoreKey() {
+    public String getObjectId() {
         return name;
     }
 
@@ -61,6 +62,8 @@ public class TaskDef extends POSTable<TaskDefPbOrBuilder> {
     }
 
     public List<IndexEntry> getIndexEntries() {
-        return new ArrayList<>();
+        return Arrays.asList(
+            new IndexEntry(this, Pair.of("name", name))
+        );
     }
 }

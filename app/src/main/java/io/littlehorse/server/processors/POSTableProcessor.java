@@ -1,5 +1,7 @@
 package io.littlehorse.server.processors;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
@@ -17,24 +19,30 @@ import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.proto.server.LHResponseCodePb;
 import io.littlehorse.server.model.internal.POSTableRequest;
+import io.littlehorse.server.ServerTopology;
+import io.littlehorse.server.model.internal.IndexEntry;
 import io.littlehorse.server.model.internal.LHResponse;
 
 public class POSTableProcessor<U extends MessageOrBuilder, T extends POSTable<U>>
-    implements Processor<String, POSTableRequest, String, T>
+    implements Processor<String, POSTableRequest, String, POSTableProcessorOutput>
 {
     private KeyValueStore<String, T> store;
     private KeyValueStore<String, LHResponse> responseStore;
     private Class<T> cls;
-    private ProcessorContext<String, T> context;
+    private ProcessorContext<String, POSTableProcessorOutput> context;
     private LHDatabaseClient dbClient;
+    private String sinkName;
 
-    public POSTableProcessor(Class<T> cls, LHConfig config) {
+    public POSTableProcessor(Class<T> cls, LHConfig config, String sinkName) {
         this.dbClient = new LHDatabaseClient(config);
         this.cls = cls;
+        this.sinkName = sinkName;
     }
 
     @Override
-    public void init(final ProcessorContext<String, T> context) {
+    public void init(
+        final ProcessorContext<String, POSTableProcessorOutput> context
+    ) {
         this.context = context;
         this.store = context.getStateStore(
             POSTable.getBaseStoreName(cls)
@@ -63,10 +71,24 @@ public class POSTableProcessor<U extends MessageOrBuilder, T extends POSTable<U>
             newT.handlePost(oldT, dbClient);
             resp.result = newT;
             resp.code = LHResponseCodePb.OK;
+            context.forward(
+                new Record<String, POSTableProcessorOutput>(
+                    key, new POSTableProcessorOutput(newT), record.timestamp()
+                ),
+                sinkName
+            );
+
+            List<IndexEntry> oldIdx = (oldT == null)
+                ? new ArrayList<>(): oldT.getIndexEntries();
+
+            for (IndexEntry ie: newT.getIndexEntries()) {
+                if (!oldIdx.contains(ie)) {
+                    Record<> rec = new Record(
+                        ie.getPartitionKey(),
+                        , timestamp)
+                }
+            }
             store.put(key, newT);
-            context.forward(new Record<String, T>(
-                key, newT, record.timestamp()
-            ));
 
         } catch(LHConnectionError exn) {
             resp.message = exn.getMessage();

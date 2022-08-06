@@ -4,26 +4,27 @@
 package io.littlehorse.common.proto.server;
 
 /**
- * Protobuf type {@code lh_proto.IndexEntryPb}
+ * Protobuf type {@code lh_proto.AttributePb}
  */
-public final class IndexEntryPb extends
+public final class AttributePb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.IndexEntryPb)
-    IndexEntryPbOrBuilder {
+    // @@protoc_insertion_point(message_implements:lh_proto.AttributePb)
+    AttributePbOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use IndexEntryPb.newBuilder() to construct.
-  private IndexEntryPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use AttributePb.newBuilder() to construct.
+  private AttributePb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private IndexEntryPb() {
-    storeKey_ = "";
+  private AttributePb() {
+    key_ = "";
+    val_ = "";
   }
 
   @java.lang.Override
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new IndexEntryPb();
+    return new AttributePb();
   }
 
   @java.lang.Override
@@ -31,7 +32,7 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
-  private IndexEntryPb(
+  private AttributePb(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -50,22 +51,15 @@ private static final long serialVersionUID = 0L;
             done = true;
             break;
           case 10: {
-            io.littlehorse.common.proto.server.IndexKeyPb.Builder subBuilder = null;
-            if (key_ != null) {
-              subBuilder = key_.toBuilder();
-            }
-            key_ = input.readMessage(io.littlehorse.common.proto.server.IndexKeyPb.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom(key_);
-              key_ = subBuilder.buildPartial();
-            }
+            java.lang.String s = input.readStringRequireUtf8();
 
+            key_ = s;
             break;
           }
           case 18: {
             java.lang.String s = input.readStringRequireUtf8();
 
-            storeKey_ = s;
+            val_ = s;
             break;
           }
           default: {
@@ -89,75 +83,87 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.server.Server.internal_static_lh_proto_IndexEntryPb_descriptor;
+    return io.littlehorse.common.proto.server.Server.internal_static_lh_proto_AttributePb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.server.Server.internal_static_lh_proto_IndexEntryPb_fieldAccessorTable
+    return io.littlehorse.common.proto.server.Server.internal_static_lh_proto_AttributePb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.common.proto.server.IndexEntryPb.class, io.littlehorse.common.proto.server.IndexEntryPb.Builder.class);
+            io.littlehorse.common.proto.server.AttributePb.class, io.littlehorse.common.proto.server.AttributePb.Builder.class);
   }
 
   public static final int KEY_FIELD_NUMBER = 1;
-  private io.littlehorse.common.proto.server.IndexKeyPb key_;
+  private volatile java.lang.Object key_;
   /**
-   * <code>.lh_proto.IndexKeyPb key = 1;</code>
-   * @return Whether the key field is set.
-   */
-  @java.lang.Override
-  public boolean hasKey() {
-    return key_ != null;
-  }
-  /**
-   * <code>.lh_proto.IndexKeyPb key = 1;</code>
+   * <code>string key = 1;</code>
    * @return The key.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.server.IndexKeyPb getKey() {
-    return key_ == null ? io.littlehorse.common.proto.server.IndexKeyPb.getDefaultInstance() : key_;
-  }
-  /**
-   * <code>.lh_proto.IndexKeyPb key = 1;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.server.IndexKeyPbOrBuilder getKeyOrBuilder() {
-    return getKey();
-  }
-
-  public static final int STORE_KEY_FIELD_NUMBER = 2;
-  private volatile java.lang.Object storeKey_;
-  /**
-   * <code>string store_key = 2;</code>
-   * @return The storeKey.
-   */
-  @java.lang.Override
-  public java.lang.String getStoreKey() {
-    java.lang.Object ref = storeKey_;
+  public java.lang.String getKey() {
+    java.lang.Object ref = key_;
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      storeKey_ = s;
+      key_ = s;
       return s;
     }
   }
   /**
-   * <code>string store_key = 2;</code>
-   * @return The bytes for storeKey.
+   * <code>string key = 1;</code>
+   * @return The bytes for key.
    */
   @java.lang.Override
   public com.google.protobuf.ByteString
-      getStoreKeyBytes() {
-    java.lang.Object ref = storeKey_;
+      getKeyBytes() {
+    java.lang.Object ref = key_;
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      storeKey_ = b;
+      key_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int VAL_FIELD_NUMBER = 2;
+  private volatile java.lang.Object val_;
+  /**
+   * <code>string val = 2;</code>
+   * @return The val.
+   */
+  @java.lang.Override
+  public java.lang.String getVal() {
+    java.lang.Object ref = val_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      val_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string val = 2;</code>
+   * @return The bytes for val.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getValBytes() {
+    java.lang.Object ref = val_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      val_ = b;
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
@@ -178,11 +184,11 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (key_ != null) {
-      output.writeMessage(1, getKey());
+    if (!getKeyBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, key_);
     }
-    if (!getStoreKeyBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, storeKey_);
+    if (!getValBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, val_);
     }
     unknownFields.writeTo(output);
   }
@@ -193,12 +199,11 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (key_ != null) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, getKey());
+    if (!getKeyBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, key_);
     }
-    if (!getStoreKeyBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, storeKey_);
+    if (!getValBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, val_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -210,18 +215,15 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.common.proto.server.IndexEntryPb)) {
+    if (!(obj instanceof io.littlehorse.common.proto.server.AttributePb)) {
       return super.equals(obj);
     }
-    io.littlehorse.common.proto.server.IndexEntryPb other = (io.littlehorse.common.proto.server.IndexEntryPb) obj;
+    io.littlehorse.common.proto.server.AttributePb other = (io.littlehorse.common.proto.server.AttributePb) obj;
 
-    if (hasKey() != other.hasKey()) return false;
-    if (hasKey()) {
-      if (!getKey()
-          .equals(other.getKey())) return false;
-    }
-    if (!getStoreKey()
-        .equals(other.getStoreKey())) return false;
+    if (!getKey()
+        .equals(other.getKey())) return false;
+    if (!getVal()
+        .equals(other.getVal())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -233,80 +235,78 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (hasKey()) {
-      hash = (37 * hash) + KEY_FIELD_NUMBER;
-      hash = (53 * hash) + getKey().hashCode();
-    }
-    hash = (37 * hash) + STORE_KEY_FIELD_NUMBER;
-    hash = (53 * hash) + getStoreKey().hashCode();
+    hash = (37 * hash) + KEY_FIELD_NUMBER;
+    hash = (53 * hash) + getKey().hashCode();
+    hash = (37 * hash) + VAL_FIELD_NUMBER;
+    hash = (53 * hash) + getVal().hashCode();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
   }
 
-  public static io.littlehorse.common.proto.server.IndexEntryPb parseFrom(
+  public static io.littlehorse.common.proto.server.AttributePb parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.server.IndexEntryPb parseFrom(
+  public static io.littlehorse.common.proto.server.AttributePb parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.server.IndexEntryPb parseFrom(
+  public static io.littlehorse.common.proto.server.AttributePb parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.server.IndexEntryPb parseFrom(
+  public static io.littlehorse.common.proto.server.AttributePb parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.server.IndexEntryPb parseFrom(byte[] data)
+  public static io.littlehorse.common.proto.server.AttributePb parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.server.IndexEntryPb parseFrom(
+  public static io.littlehorse.common.proto.server.AttributePb parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.server.IndexEntryPb parseFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.server.AttributePb parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.server.IndexEntryPb parseFrom(
+  public static io.littlehorse.common.proto.server.AttributePb parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.server.IndexEntryPb parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.server.AttributePb parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.server.IndexEntryPb parseDelimitedFrom(
+  public static io.littlehorse.common.proto.server.AttributePb parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.server.IndexEntryPb parseFrom(
+  public static io.littlehorse.common.proto.server.AttributePb parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.server.IndexEntryPb parseFrom(
+  public static io.littlehorse.common.proto.server.AttributePb parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -319,7 +319,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.common.proto.server.IndexEntryPb prototype) {
+  public static Builder newBuilder(io.littlehorse.common.proto.server.AttributePb prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -335,26 +335,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.IndexEntryPb}
+   * Protobuf type {@code lh_proto.AttributePb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.IndexEntryPb)
-      io.littlehorse.common.proto.server.IndexEntryPbOrBuilder {
+      // @@protoc_insertion_point(builder_implements:lh_proto.AttributePb)
+      io.littlehorse.common.proto.server.AttributePbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.server.Server.internal_static_lh_proto_IndexEntryPb_descriptor;
+      return io.littlehorse.common.proto.server.Server.internal_static_lh_proto_AttributePb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.server.Server.internal_static_lh_proto_IndexEntryPb_fieldAccessorTable
+      return io.littlehorse.common.proto.server.Server.internal_static_lh_proto_AttributePb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.common.proto.server.IndexEntryPb.class, io.littlehorse.common.proto.server.IndexEntryPb.Builder.class);
+              io.littlehorse.common.proto.server.AttributePb.class, io.littlehorse.common.proto.server.AttributePb.Builder.class);
     }
 
-    // Construct using io.littlehorse.common.proto.server.IndexEntryPb.newBuilder()
+    // Construct using io.littlehorse.common.proto.server.AttributePb.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -372,13 +372,9 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      if (keyBuilder_ == null) {
-        key_ = null;
-      } else {
-        key_ = null;
-        keyBuilder_ = null;
-      }
-      storeKey_ = "";
+      key_ = "";
+
+      val_ = "";
 
       return this;
     }
@@ -386,17 +382,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.server.Server.internal_static_lh_proto_IndexEntryPb_descriptor;
+      return io.littlehorse.common.proto.server.Server.internal_static_lh_proto_AttributePb_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.server.IndexEntryPb getDefaultInstanceForType() {
-      return io.littlehorse.common.proto.server.IndexEntryPb.getDefaultInstance();
+    public io.littlehorse.common.proto.server.AttributePb getDefaultInstanceForType() {
+      return io.littlehorse.common.proto.server.AttributePb.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.server.IndexEntryPb build() {
-      io.littlehorse.common.proto.server.IndexEntryPb result = buildPartial();
+    public io.littlehorse.common.proto.server.AttributePb build() {
+      io.littlehorse.common.proto.server.AttributePb result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -404,14 +400,10 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.server.IndexEntryPb buildPartial() {
-      io.littlehorse.common.proto.server.IndexEntryPb result = new io.littlehorse.common.proto.server.IndexEntryPb(this);
-      if (keyBuilder_ == null) {
-        result.key_ = key_;
-      } else {
-        result.key_ = keyBuilder_.build();
-      }
-      result.storeKey_ = storeKey_;
+    public io.littlehorse.common.proto.server.AttributePb buildPartial() {
+      io.littlehorse.common.proto.server.AttributePb result = new io.littlehorse.common.proto.server.AttributePb(this);
+      result.key_ = key_;
+      result.val_ = val_;
       onBuilt();
       return result;
     }
@@ -450,21 +442,22 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.common.proto.server.IndexEntryPb) {
-        return mergeFrom((io.littlehorse.common.proto.server.IndexEntryPb)other);
+      if (other instanceof io.littlehorse.common.proto.server.AttributePb) {
+        return mergeFrom((io.littlehorse.common.proto.server.AttributePb)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.common.proto.server.IndexEntryPb other) {
-      if (other == io.littlehorse.common.proto.server.IndexEntryPb.getDefaultInstance()) return this;
-      if (other.hasKey()) {
-        mergeKey(other.getKey());
+    public Builder mergeFrom(io.littlehorse.common.proto.server.AttributePb other) {
+      if (other == io.littlehorse.common.proto.server.AttributePb.getDefaultInstance()) return this;
+      if (!other.getKey().isEmpty()) {
+        key_ = other.key_;
+        onChanged();
       }
-      if (!other.getStoreKey().isEmpty()) {
-        storeKey_ = other.storeKey_;
+      if (!other.getVal().isEmpty()) {
+        val_ = other.val_;
         onChanged();
       }
       this.mergeUnknownFields(other.unknownFields);
@@ -482,11 +475,11 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      io.littlehorse.common.proto.server.IndexEntryPb parsedMessage = null;
+      io.littlehorse.common.proto.server.AttributePb parsedMessage = null;
       try {
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (io.littlehorse.common.proto.server.IndexEntryPb) e.getUnfinishedMessage();
+        parsedMessage = (io.littlehorse.common.proto.server.AttributePb) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
@@ -496,197 +489,154 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private io.littlehorse.common.proto.server.IndexKeyPb key_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.server.IndexKeyPb, io.littlehorse.common.proto.server.IndexKeyPb.Builder, io.littlehorse.common.proto.server.IndexKeyPbOrBuilder> keyBuilder_;
+    private java.lang.Object key_ = "";
     /**
-     * <code>.lh_proto.IndexKeyPb key = 1;</code>
-     * @return Whether the key field is set.
-     */
-    public boolean hasKey() {
-      return keyBuilder_ != null || key_ != null;
-    }
-    /**
-     * <code>.lh_proto.IndexKeyPb key = 1;</code>
+     * <code>string key = 1;</code>
      * @return The key.
      */
-    public io.littlehorse.common.proto.server.IndexKeyPb getKey() {
-      if (keyBuilder_ == null) {
-        return key_ == null ? io.littlehorse.common.proto.server.IndexKeyPb.getDefaultInstance() : key_;
-      } else {
-        return keyBuilder_.getMessage();
-      }
-    }
-    /**
-     * <code>.lh_proto.IndexKeyPb key = 1;</code>
-     */
-    public Builder setKey(io.littlehorse.common.proto.server.IndexKeyPb value) {
-      if (keyBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        key_ = value;
-        onChanged();
-      } else {
-        keyBuilder_.setMessage(value);
-      }
-
-      return this;
-    }
-    /**
-     * <code>.lh_proto.IndexKeyPb key = 1;</code>
-     */
-    public Builder setKey(
-        io.littlehorse.common.proto.server.IndexKeyPb.Builder builderForValue) {
-      if (keyBuilder_ == null) {
-        key_ = builderForValue.build();
-        onChanged();
-      } else {
-        keyBuilder_.setMessage(builderForValue.build());
-      }
-
-      return this;
-    }
-    /**
-     * <code>.lh_proto.IndexKeyPb key = 1;</code>
-     */
-    public Builder mergeKey(io.littlehorse.common.proto.server.IndexKeyPb value) {
-      if (keyBuilder_ == null) {
-        if (key_ != null) {
-          key_ =
-            io.littlehorse.common.proto.server.IndexKeyPb.newBuilder(key_).mergeFrom(value).buildPartial();
-        } else {
-          key_ = value;
-        }
-        onChanged();
-      } else {
-        keyBuilder_.mergeFrom(value);
-      }
-
-      return this;
-    }
-    /**
-     * <code>.lh_proto.IndexKeyPb key = 1;</code>
-     */
-    public Builder clearKey() {
-      if (keyBuilder_ == null) {
-        key_ = null;
-        onChanged();
-      } else {
-        key_ = null;
-        keyBuilder_ = null;
-      }
-
-      return this;
-    }
-    /**
-     * <code>.lh_proto.IndexKeyPb key = 1;</code>
-     */
-    public io.littlehorse.common.proto.server.IndexKeyPb.Builder getKeyBuilder() {
-      
-      onChanged();
-      return getKeyFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.lh_proto.IndexKeyPb key = 1;</code>
-     */
-    public io.littlehorse.common.proto.server.IndexKeyPbOrBuilder getKeyOrBuilder() {
-      if (keyBuilder_ != null) {
-        return keyBuilder_.getMessageOrBuilder();
-      } else {
-        return key_ == null ?
-            io.littlehorse.common.proto.server.IndexKeyPb.getDefaultInstance() : key_;
-      }
-    }
-    /**
-     * <code>.lh_proto.IndexKeyPb key = 1;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.server.IndexKeyPb, io.littlehorse.common.proto.server.IndexKeyPb.Builder, io.littlehorse.common.proto.server.IndexKeyPbOrBuilder> 
-        getKeyFieldBuilder() {
-      if (keyBuilder_ == null) {
-        keyBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.server.IndexKeyPb, io.littlehorse.common.proto.server.IndexKeyPb.Builder, io.littlehorse.common.proto.server.IndexKeyPbOrBuilder>(
-                getKey(),
-                getParentForChildren(),
-                isClean());
-        key_ = null;
-      }
-      return keyBuilder_;
-    }
-
-    private java.lang.Object storeKey_ = "";
-    /**
-     * <code>string store_key = 2;</code>
-     * @return The storeKey.
-     */
-    public java.lang.String getStoreKey() {
-      java.lang.Object ref = storeKey_;
+    public java.lang.String getKey() {
+      java.lang.Object ref = key_;
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        storeKey_ = s;
+        key_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
       }
     }
     /**
-     * <code>string store_key = 2;</code>
-     * @return The bytes for storeKey.
+     * <code>string key = 1;</code>
+     * @return The bytes for key.
      */
     public com.google.protobuf.ByteString
-        getStoreKeyBytes() {
-      java.lang.Object ref = storeKey_;
+        getKeyBytes() {
+      java.lang.Object ref = key_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        storeKey_ = b;
+        key_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
     /**
-     * <code>string store_key = 2;</code>
-     * @param value The storeKey to set.
+     * <code>string key = 1;</code>
+     * @param value The key to set.
      * @return This builder for chaining.
      */
-    public Builder setStoreKey(
+    public Builder setKey(
         java.lang.String value) {
       if (value == null) {
     throw new NullPointerException();
   }
   
-      storeKey_ = value;
+      key_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>string store_key = 2;</code>
+     * <code>string key = 1;</code>
      * @return This builder for chaining.
      */
-    public Builder clearStoreKey() {
+    public Builder clearKey() {
       
-      storeKey_ = getDefaultInstance().getStoreKey();
+      key_ = getDefaultInstance().getKey();
       onChanged();
       return this;
     }
     /**
-     * <code>string store_key = 2;</code>
-     * @param value The bytes for storeKey to set.
+     * <code>string key = 1;</code>
+     * @param value The bytes for key to set.
      * @return This builder for chaining.
      */
-    public Builder setStoreKeyBytes(
+    public Builder setKeyBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
       
-      storeKey_ = value;
+      key_ = value;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object val_ = "";
+    /**
+     * <code>string val = 2;</code>
+     * @return The val.
+     */
+    public java.lang.String getVal() {
+      java.lang.Object ref = val_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        val_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string val = 2;</code>
+     * @return The bytes for val.
+     */
+    public com.google.protobuf.ByteString
+        getValBytes() {
+      java.lang.Object ref = val_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        val_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string val = 2;</code>
+     * @param value The val to set.
+     * @return This builder for chaining.
+     */
+    public Builder setVal(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      val_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string val = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearVal() {
+      
+      val_ = getDefaultInstance().getVal();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string val = 2;</code>
+     * @param value The bytes for val to set.
+     * @return This builder for chaining.
+     */
+    public Builder setValBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      val_ = value;
       onChanged();
       return this;
     }
@@ -703,41 +653,41 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.IndexEntryPb)
+    // @@protoc_insertion_point(builder_scope:lh_proto.AttributePb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.IndexEntryPb)
-  private static final io.littlehorse.common.proto.server.IndexEntryPb DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:lh_proto.AttributePb)
+  private static final io.littlehorse.common.proto.server.AttributePb DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.common.proto.server.IndexEntryPb();
+    DEFAULT_INSTANCE = new io.littlehorse.common.proto.server.AttributePb();
   }
 
-  public static io.littlehorse.common.proto.server.IndexEntryPb getDefaultInstance() {
+  public static io.littlehorse.common.proto.server.AttributePb getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<IndexEntryPb>
-      PARSER = new com.google.protobuf.AbstractParser<IndexEntryPb>() {
+  private static final com.google.protobuf.Parser<AttributePb>
+      PARSER = new com.google.protobuf.AbstractParser<AttributePb>() {
     @java.lang.Override
-    public IndexEntryPb parsePartialFrom(
+    public AttributePb parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new IndexEntryPb(input, extensionRegistry);
+      return new AttributePb(input, extensionRegistry);
     }
   };
 
-  public static com.google.protobuf.Parser<IndexEntryPb> parser() {
+  public static com.google.protobuf.Parser<AttributePb> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<IndexEntryPb> getParserForType() {
+  public com.google.protobuf.Parser<AttributePb> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.common.proto.server.IndexEntryPb getDefaultInstanceForType() {
+  public io.littlehorse.common.proto.server.AttributePb getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

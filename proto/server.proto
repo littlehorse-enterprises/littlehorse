@@ -92,14 +92,47 @@ message POSTableRequestPb {
 
 
 // This section defines internal data structures used for data stores.
+enum GETableClassEnumPb {
+    TASK_DEF = 0;
+    WF_SPEC = 1;
+    WF_RUN = 2;
+    THREAD_RUN = 3;
+    TASK_RUN = 4;
+}
+
+message AttributePb {
+    string key = 1;
+    string val = 2;
+}
+
+message IndexKeyPb {
+    repeated AttributePb attributes = 1;
+    GETableClassEnumPb type = 2;
+    google.protobuf.Timestamp created = 3;
+}
+
+message IndexValuePb {
+    repeated string store_key = 1;
+}
+
 message IndexEntryPb {
-    string partition_key = 1;
-    string value = 2;
+    IndexKeyPb key = 1;
+    string store_key = 2;
+}
+
+enum IndexActionEnum {
+    CREATE_IDX_ENTRY = 0;
+    DELETE_IDX_ENTRY = 1;
+}
+
+message IndexEntryActionPb {
+    IndexEntryPb entry = 1;
+    IndexActionEnum action = 2;
 }
 
 message GETableEntryPb {
     bytes entry = 1;
     int32 partition = 2;
     int64 last_updated_offset = 3;
-    repeated IndexEntryPb index_entries = 4;
+    repeated IndexKeyPb index_entries = 4;
 }

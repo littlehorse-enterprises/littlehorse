@@ -68,11 +68,11 @@ private static final long serialVersionUID = 0L;
           }
           case 34: {
             if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-              indexEntries_ = new java.util.ArrayList<io.littlehorse.common.proto.server.IndexEntryPb>();
+              indexEntries_ = new java.util.ArrayList<io.littlehorse.common.proto.server.IndexKeyPb>();
               mutable_bitField0_ |= 0x00000001;
             }
             indexEntries_.add(
-                input.readMessage(io.littlehorse.common.proto.server.IndexEntryPb.parser(), extensionRegistry));
+                input.readMessage(io.littlehorse.common.proto.server.IndexKeyPb.parser(), extensionRegistry));
             break;
           }
           default: {
@@ -144,41 +144,41 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int INDEX_ENTRIES_FIELD_NUMBER = 4;
-  private java.util.List<io.littlehorse.common.proto.server.IndexEntryPb> indexEntries_;
+  private java.util.List<io.littlehorse.common.proto.server.IndexKeyPb> indexEntries_;
   /**
-   * <code>repeated .lh_proto.IndexEntryPb index_entries = 4;</code>
+   * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
    */
   @java.lang.Override
-  public java.util.List<io.littlehorse.common.proto.server.IndexEntryPb> getIndexEntriesList() {
+  public java.util.List<io.littlehorse.common.proto.server.IndexKeyPb> getIndexEntriesList() {
     return indexEntries_;
   }
   /**
-   * <code>repeated .lh_proto.IndexEntryPb index_entries = 4;</code>
+   * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
    */
   @java.lang.Override
-  public java.util.List<? extends io.littlehorse.common.proto.server.IndexEntryPbOrBuilder> 
+  public java.util.List<? extends io.littlehorse.common.proto.server.IndexKeyPbOrBuilder> 
       getIndexEntriesOrBuilderList() {
     return indexEntries_;
   }
   /**
-   * <code>repeated .lh_proto.IndexEntryPb index_entries = 4;</code>
+   * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
    */
   @java.lang.Override
   public int getIndexEntriesCount() {
     return indexEntries_.size();
   }
   /**
-   * <code>repeated .lh_proto.IndexEntryPb index_entries = 4;</code>
+   * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.server.IndexEntryPb getIndexEntries(int index) {
+  public io.littlehorse.common.proto.server.IndexKeyPb getIndexEntries(int index) {
     return indexEntries_.get(index);
   }
   /**
-   * <code>repeated .lh_proto.IndexEntryPb index_entries = 4;</code>
+   * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.server.IndexEntryPbOrBuilder getIndexEntriesOrBuilder(
+  public io.littlehorse.common.proto.server.IndexKeyPbOrBuilder getIndexEntriesOrBuilder(
       int index) {
     return indexEntries_.get(index);
   }
@@ -673,22 +673,22 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.util.List<io.littlehorse.common.proto.server.IndexEntryPb> indexEntries_ =
+    private java.util.List<io.littlehorse.common.proto.server.IndexKeyPb> indexEntries_ =
       java.util.Collections.emptyList();
     private void ensureIndexEntriesIsMutable() {
       if (!((bitField0_ & 0x00000001) != 0)) {
-        indexEntries_ = new java.util.ArrayList<io.littlehorse.common.proto.server.IndexEntryPb>(indexEntries_);
+        indexEntries_ = new java.util.ArrayList<io.littlehorse.common.proto.server.IndexKeyPb>(indexEntries_);
         bitField0_ |= 0x00000001;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.common.proto.server.IndexEntryPb, io.littlehorse.common.proto.server.IndexEntryPb.Builder, io.littlehorse.common.proto.server.IndexEntryPbOrBuilder> indexEntriesBuilder_;
+        io.littlehorse.common.proto.server.IndexKeyPb, io.littlehorse.common.proto.server.IndexKeyPb.Builder, io.littlehorse.common.proto.server.IndexKeyPbOrBuilder> indexEntriesBuilder_;
 
     /**
-     * <code>repeated .lh_proto.IndexEntryPb index_entries = 4;</code>
+     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
      */
-    public java.util.List<io.littlehorse.common.proto.server.IndexEntryPb> getIndexEntriesList() {
+    public java.util.List<io.littlehorse.common.proto.server.IndexKeyPb> getIndexEntriesList() {
       if (indexEntriesBuilder_ == null) {
         return java.util.Collections.unmodifiableList(indexEntries_);
       } else {
@@ -696,7 +696,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .lh_proto.IndexEntryPb index_entries = 4;</code>
+     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
      */
     public int getIndexEntriesCount() {
       if (indexEntriesBuilder_ == null) {
@@ -706,9 +706,9 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .lh_proto.IndexEntryPb index_entries = 4;</code>
+     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
      */
-    public io.littlehorse.common.proto.server.IndexEntryPb getIndexEntries(int index) {
+    public io.littlehorse.common.proto.server.IndexKeyPb getIndexEntries(int index) {
       if (indexEntriesBuilder_ == null) {
         return indexEntries_.get(index);
       } else {
@@ -716,10 +716,10 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .lh_proto.IndexEntryPb index_entries = 4;</code>
+     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
      */
     public Builder setIndexEntries(
-        int index, io.littlehorse.common.proto.server.IndexEntryPb value) {
+        int index, io.littlehorse.common.proto.server.IndexKeyPb value) {
       if (indexEntriesBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -733,10 +733,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.IndexEntryPb index_entries = 4;</code>
+     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
      */
     public Builder setIndexEntries(
-        int index, io.littlehorse.common.proto.server.IndexEntryPb.Builder builderForValue) {
+        int index, io.littlehorse.common.proto.server.IndexKeyPb.Builder builderForValue) {
       if (indexEntriesBuilder_ == null) {
         ensureIndexEntriesIsMutable();
         indexEntries_.set(index, builderForValue.build());
@@ -747,9 +747,9 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.IndexEntryPb index_entries = 4;</code>
+     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
      */
-    public Builder addIndexEntries(io.littlehorse.common.proto.server.IndexEntryPb value) {
+    public Builder addIndexEntries(io.littlehorse.common.proto.server.IndexKeyPb value) {
       if (indexEntriesBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -763,10 +763,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.IndexEntryPb index_entries = 4;</code>
+     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
      */
     public Builder addIndexEntries(
-        int index, io.littlehorse.common.proto.server.IndexEntryPb value) {
+        int index, io.littlehorse.common.proto.server.IndexKeyPb value) {
       if (indexEntriesBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -780,10 +780,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.IndexEntryPb index_entries = 4;</code>
+     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
      */
     public Builder addIndexEntries(
-        io.littlehorse.common.proto.server.IndexEntryPb.Builder builderForValue) {
+        io.littlehorse.common.proto.server.IndexKeyPb.Builder builderForValue) {
       if (indexEntriesBuilder_ == null) {
         ensureIndexEntriesIsMutable();
         indexEntries_.add(builderForValue.build());
@@ -794,10 +794,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.IndexEntryPb index_entries = 4;</code>
+     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
      */
     public Builder addIndexEntries(
-        int index, io.littlehorse.common.proto.server.IndexEntryPb.Builder builderForValue) {
+        int index, io.littlehorse.common.proto.server.IndexKeyPb.Builder builderForValue) {
       if (indexEntriesBuilder_ == null) {
         ensureIndexEntriesIsMutable();
         indexEntries_.add(index, builderForValue.build());
@@ -808,10 +808,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.IndexEntryPb index_entries = 4;</code>
+     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
      */
     public Builder addAllIndexEntries(
-        java.lang.Iterable<? extends io.littlehorse.common.proto.server.IndexEntryPb> values) {
+        java.lang.Iterable<? extends io.littlehorse.common.proto.server.IndexKeyPb> values) {
       if (indexEntriesBuilder_ == null) {
         ensureIndexEntriesIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -823,7 +823,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.IndexEntryPb index_entries = 4;</code>
+     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
      */
     public Builder clearIndexEntries() {
       if (indexEntriesBuilder_ == null) {
@@ -836,7 +836,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.IndexEntryPb index_entries = 4;</code>
+     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
      */
     public Builder removeIndexEntries(int index) {
       if (indexEntriesBuilder_ == null) {
@@ -849,16 +849,16 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.IndexEntryPb index_entries = 4;</code>
+     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
      */
-    public io.littlehorse.common.proto.server.IndexEntryPb.Builder getIndexEntriesBuilder(
+    public io.littlehorse.common.proto.server.IndexKeyPb.Builder getIndexEntriesBuilder(
         int index) {
       return getIndexEntriesFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .lh_proto.IndexEntryPb index_entries = 4;</code>
+     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
      */
-    public io.littlehorse.common.proto.server.IndexEntryPbOrBuilder getIndexEntriesOrBuilder(
+    public io.littlehorse.common.proto.server.IndexKeyPbOrBuilder getIndexEntriesOrBuilder(
         int index) {
       if (indexEntriesBuilder_ == null) {
         return indexEntries_.get(index);  } else {
@@ -866,9 +866,9 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .lh_proto.IndexEntryPb index_entries = 4;</code>
+     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
      */
-    public java.util.List<? extends io.littlehorse.common.proto.server.IndexEntryPbOrBuilder> 
+    public java.util.List<? extends io.littlehorse.common.proto.server.IndexKeyPbOrBuilder> 
          getIndexEntriesOrBuilderList() {
       if (indexEntriesBuilder_ != null) {
         return indexEntriesBuilder_.getMessageOrBuilderList();
@@ -877,33 +877,33 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .lh_proto.IndexEntryPb index_entries = 4;</code>
+     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
      */
-    public io.littlehorse.common.proto.server.IndexEntryPb.Builder addIndexEntriesBuilder() {
+    public io.littlehorse.common.proto.server.IndexKeyPb.Builder addIndexEntriesBuilder() {
       return getIndexEntriesFieldBuilder().addBuilder(
-          io.littlehorse.common.proto.server.IndexEntryPb.getDefaultInstance());
+          io.littlehorse.common.proto.server.IndexKeyPb.getDefaultInstance());
     }
     /**
-     * <code>repeated .lh_proto.IndexEntryPb index_entries = 4;</code>
+     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
      */
-    public io.littlehorse.common.proto.server.IndexEntryPb.Builder addIndexEntriesBuilder(
+    public io.littlehorse.common.proto.server.IndexKeyPb.Builder addIndexEntriesBuilder(
         int index) {
       return getIndexEntriesFieldBuilder().addBuilder(
-          index, io.littlehorse.common.proto.server.IndexEntryPb.getDefaultInstance());
+          index, io.littlehorse.common.proto.server.IndexKeyPb.getDefaultInstance());
     }
     /**
-     * <code>repeated .lh_proto.IndexEntryPb index_entries = 4;</code>
+     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
      */
-    public java.util.List<io.littlehorse.common.proto.server.IndexEntryPb.Builder> 
+    public java.util.List<io.littlehorse.common.proto.server.IndexKeyPb.Builder> 
          getIndexEntriesBuilderList() {
       return getIndexEntriesFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.common.proto.server.IndexEntryPb, io.littlehorse.common.proto.server.IndexEntryPb.Builder, io.littlehorse.common.proto.server.IndexEntryPbOrBuilder> 
+        io.littlehorse.common.proto.server.IndexKeyPb, io.littlehorse.common.proto.server.IndexKeyPb.Builder, io.littlehorse.common.proto.server.IndexKeyPbOrBuilder> 
         getIndexEntriesFieldBuilder() {
       if (indexEntriesBuilder_ == null) {
         indexEntriesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            io.littlehorse.common.proto.server.IndexEntryPb, io.littlehorse.common.proto.server.IndexEntryPb.Builder, io.littlehorse.common.proto.server.IndexEntryPbOrBuilder>(
+            io.littlehorse.common.proto.server.IndexKeyPb, io.littlehorse.common.proto.server.IndexKeyPb.Builder, io.littlehorse.common.proto.server.IndexKeyPbOrBuilder>(
                 indexEntries_,
                 ((bitField0_ & 0x00000001) != 0),
                 getParentForChildren(),

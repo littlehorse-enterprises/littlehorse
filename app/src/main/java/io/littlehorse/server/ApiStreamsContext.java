@@ -81,7 +81,7 @@ public class ApiStreamsContext {
 
         POSTableRequest request = new POSTableRequest();
         request.type = RequestTypePb.POST;
-        request.storeKey = toSave.getStoreKey();
+        request.storeKey = toSave.getObjectId();
         String requestId = LHUtil.generateGuid();
         request.requestId = requestId;
         request.payload = toSave.toBytes();

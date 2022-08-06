@@ -40,10 +40,30 @@ public final class Server {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_lh_proto_POSTableRequestPb_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_lh_proto_AttributePb_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_lh_proto_AttributePb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_lh_proto_IndexKeyPb_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_lh_proto_IndexKeyPb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_lh_proto_IndexValuePb_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_lh_proto_IndexValuePb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_lh_proto_IndexEntryPb_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_lh_proto_IndexEntryPb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_lh_proto_IndexEntryActionPb_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_lh_proto_IndexEntryActionPb_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_lh_proto_GETableEntryPb_descriptor;
   static final 
@@ -94,17 +114,29 @@ public final class Server {
       "\n\021POSTableRequestPb\022%\n\004type\030\001 \001(\0162\027.lh_p" +
       "roto.RequestTypePb\022\021\n\tstore_key\030\002 \001(\t\022\022\n" +
       "\nrequest_id\030\003 \001(\t\022\024\n\007payload\030\004 \001(\014H\000\210\001\001B" +
-      "\n\n\010_payload\"4\n\014IndexEntryPb\022\025\n\rpartition" +
-      "_key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t\"~\n\016GETableEntr" +
-      "yPb\022\r\n\005entry\030\001 \001(\014\022\021\n\tpartition\030\002 \001(\005\022\033\n" +
-      "\023last_updated_offset\030\003 \001(\003\022-\n\rindex_entr" +
-      "ies\030\004 \003(\0132\026.lh_proto.IndexEntryPb*r\n\020LHR" +
-      "esponseCodePb\022\006\n\002OK\020\000\022\024\n\020CONNECTION_ERRO" +
-      "R\020\001\022\023\n\017NOT_FOUND_ERROR\020\002\022\025\n\021BAD_REQUEST_" +
-      "ERROR\020\003\022\024\n\020VALIDATION_ERROR\020\004*%\n\rRequest" +
-      "TypePb\022\010\n\004POST\020\000\022\n\n\006DELETE\020\001B/\n\"io.littl" +
-      "ehorse.common.proto.serverP\001Z\007.;modelb\006p" +
-      "roto3"
+      "\n\n\010_payload\"\'\n\013AttributePb\022\013\n\003key\030\001 \001(\t\022" +
+      "\013\n\003val\030\002 \001(\t\"\220\001\n\nIndexKeyPb\022)\n\nattribute" +
+      "s\030\001 \003(\0132\025.lh_proto.AttributePb\022*\n\004type\030\002" +
+      " \001(\0162\034.lh_proto.GETableClassEnumPb\022+\n\007cr" +
+      "eated\030\003 \001(\0132\032.google.protobuf.Timestamp\"" +
+      "!\n\014IndexValuePb\022\021\n\tstore_key\030\001 \003(\t\"D\n\014In" +
+      "dexEntryPb\022!\n\003key\030\001 \001(\0132\024.lh_proto.Index" +
+      "KeyPb\022\021\n\tstore_key\030\002 \001(\t\"f\n\022IndexEntryAc" +
+      "tionPb\022%\n\005entry\030\001 \001(\0132\026.lh_proto.IndexEn" +
+      "tryPb\022)\n\006action\030\002 \001(\0162\031.lh_proto.IndexAc" +
+      "tionEnum\"|\n\016GETableEntryPb\022\r\n\005entry\030\001 \001(" +
+      "\014\022\021\n\tpartition\030\002 \001(\005\022\033\n\023last_updated_off" +
+      "set\030\003 \001(\003\022+\n\rindex_entries\030\004 \003(\0132\024.lh_pr" +
+      "oto.IndexKeyPb*r\n\020LHResponseCodePb\022\006\n\002OK" +
+      "\020\000\022\024\n\020CONNECTION_ERROR\020\001\022\023\n\017NOT_FOUND_ER" +
+      "ROR\020\002\022\025\n\021BAD_REQUEST_ERROR\020\003\022\024\n\020VALIDATI" +
+      "ON_ERROR\020\004*%\n\rRequestTypePb\022\010\n\004POST\020\000\022\n\n" +
+      "\006DELETE\020\001*Y\n\022GETableClassEnumPb\022\014\n\010TASK_" +
+      "DEF\020\000\022\013\n\007WF_SPEC\020\001\022\n\n\006WF_RUN\020\002\022\016\n\nTHREAD" +
+      "_RUN\020\003\022\014\n\010TASK_RUN\020\004*=\n\017IndexActionEnum\022" +
+      "\024\n\020CREATE_IDX_ENTRY\020\000\022\024\n\020DELETE_IDX_ENTR" +
+      "Y\020\001B/\n\"io.littlehorse.common.proto.serve" +
+      "rP\001Z\007.;modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -142,14 +174,38 @@ public final class Server {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_POSTableRequestPb_descriptor,
         new java.lang.String[] { "Type", "StoreKey", "RequestId", "Payload", "Payload", });
-    internal_static_lh_proto_IndexEntryPb_descriptor =
+    internal_static_lh_proto_AttributePb_descriptor =
       getDescriptor().getMessageTypes().get(5);
+    internal_static_lh_proto_AttributePb_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_lh_proto_AttributePb_descriptor,
+        new java.lang.String[] { "Key", "Val", });
+    internal_static_lh_proto_IndexKeyPb_descriptor =
+      getDescriptor().getMessageTypes().get(6);
+    internal_static_lh_proto_IndexKeyPb_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_lh_proto_IndexKeyPb_descriptor,
+        new java.lang.String[] { "Attributes", "Type", "Created", });
+    internal_static_lh_proto_IndexValuePb_descriptor =
+      getDescriptor().getMessageTypes().get(7);
+    internal_static_lh_proto_IndexValuePb_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_lh_proto_IndexValuePb_descriptor,
+        new java.lang.String[] { "StoreKey", });
+    internal_static_lh_proto_IndexEntryPb_descriptor =
+      getDescriptor().getMessageTypes().get(8);
     internal_static_lh_proto_IndexEntryPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_IndexEntryPb_descriptor,
-        new java.lang.String[] { "PartitionKey", "Value", });
+        new java.lang.String[] { "Key", "StoreKey", });
+    internal_static_lh_proto_IndexEntryActionPb_descriptor =
+      getDescriptor().getMessageTypes().get(9);
+    internal_static_lh_proto_IndexEntryActionPb_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_lh_proto_IndexEntryActionPb_descriptor,
+        new java.lang.String[] { "Entry", "Action", });
     internal_static_lh_proto_GETableEntryPb_descriptor =
-      getDescriptor().getMessageTypes().get(6);
+      getDescriptor().getMessageTypes().get(10);
     internal_static_lh_proto_GETableEntryPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_GETableEntryPb_descriptor,

@@ -8,26 +8,29 @@ public interface IndexEntryPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string partition_key = 1;</code>
-   * @return The partitionKey.
+   * <code>.lh_proto.IndexKeyPb key = 1;</code>
+   * @return Whether the key field is set.
    */
-  java.lang.String getPartitionKey();
+  boolean hasKey();
   /**
-   * <code>string partition_key = 1;</code>
-   * @return The bytes for partitionKey.
+   * <code>.lh_proto.IndexKeyPb key = 1;</code>
+   * @return The key.
    */
-  com.google.protobuf.ByteString
-      getPartitionKeyBytes();
+  io.littlehorse.common.proto.server.IndexKeyPb getKey();
+  /**
+   * <code>.lh_proto.IndexKeyPb key = 1;</code>
+   */
+  io.littlehorse.common.proto.server.IndexKeyPbOrBuilder getKeyOrBuilder();
 
   /**
-   * <code>string value = 2;</code>
-   * @return The value.
+   * <code>string store_key = 2;</code>
+   * @return The storeKey.
    */
-  java.lang.String getValue();
+  java.lang.String getStoreKey();
   /**
-   * <code>string value = 2;</code>
-   * @return The bytes for value.
+   * <code>string store_key = 2;</code>
+   * @return The bytes for storeKey.
    */
   com.google.protobuf.ByteString
-      getValueBytes();
+      getStoreKeyBytes();
 }

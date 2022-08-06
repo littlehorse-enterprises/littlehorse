@@ -1,10 +1,11 @@
 package io.littlehorse.common.model.meta;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.tuple.Pair;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHDatabaseClient;
@@ -37,7 +38,7 @@ public class WfSpec extends POSTable<WFSpecPbOrBuilder> {
     public String entrypointThreadName;
     public LHStatusPb status;
 
-    public String getStoreKey() {
+    public String getObjectId() {
         return id;
     }
 
@@ -134,8 +135,9 @@ public class WfSpec extends POSTable<WFSpecPbOrBuilder> {
     }
 
     public List<IndexEntry> getIndexEntries() {
-        ArrayList<IndexEntry> out = new ArrayList<>();
-        
+        List<IndexEntry> out = Arrays.asList(
+            new IndexEntry(this, Pair.of("name", name))
+        );
 
         return out;
     }
