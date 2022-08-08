@@ -72,6 +72,7 @@ public class WfSpec extends POSTable<WFSpecPbOrBuilder> {
             .setUpdatedAt(LHUtil.fromDate(updatedAt))
             .setEntrypointThreadName(entrypointThreadName)
             .setStatus(status)
+            .setName(name)
             .setLastUpdatedOffset(lastOffset);
 
         if (threadSpecs != null) {

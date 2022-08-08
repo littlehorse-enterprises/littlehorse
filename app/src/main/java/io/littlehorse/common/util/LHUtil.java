@@ -14,7 +14,15 @@ public class LHUtil {
 
     public static Date fromProtoTs(Timestamp proto) {
         if (proto == null) return null;
-        return Date.from(Instant.ofEpochSecond(proto.getSeconds(), proto.getNanos()));
+        Date out = Date.from(
+            Instant.ofEpochSecond(proto.getSeconds(), proto.getNanos())
+        );
+
+        if (out.getTime() == 0) {
+            out = new Date();
+        }
+
+        return out;
     }
 
     public static void logBack(int framesBack, Object... things) {

@@ -19,22 +19,10 @@ import io.littlehorse.server.model.internal.IndexEntryAction;
 import io.littlehorse.server.model.internal.LHResponse;
 import io.littlehorse.server.model.internal.POSTableRequest;
 import io.littlehorse.server.processors.IndexFanoutProcessor;
+import io.littlehorse.server.processors.IndexProcessor;
 import io.littlehorse.server.processors.POSTableProcessor;
 
 public class ServerTopology {
-    public static String wfSpecSource = "wfSpecSource";
-    public static String wfSpecProcessor = "wfSpecProcessor";
-    public static String wfSpecSink = "wfSpecSink";
-
-    public static String taskDefSource = "taskDefSource";
-    public static String taskDefProcessor = "taskDefProcessor";
-    public static String taskDefSink = "taskDefSink";
-
-    public static String indexFanoutProcessor = "indexFanoutProcessor";
-    public static String indexStoreSink = "indexStoreSink";
-    public static String indexStoreProcessor = "indexStoreProcessor";
-
-    public static String wfRunSource = "wfRunSource";
 
     public static Topology initTopology(LHConfig config) {
         Topology topo = new Topology();
@@ -42,7 +30,33 @@ public class ServerTopology {
         addPOSTableSubTopology(topo, WfSpec.class, config);
         addPOSTableSubTopology(topo, TaskDef.class, config);
 
+        addIdxSubTopology(topo);
+
         return topo;
+    }
+
+    private static void addIdxSubTopology(Topology topo) {
+        topo.addSource(
+            "Index Source",
+            Serdes.String().deserializer(),
+            new LHDeserializer<>(IndexEntryAction.class),
+            LHConstants.INDEX_TOPIC_NAME
+        );
+
+        topo.addProcessor(
+            "Index Processor",
+            () -> {return new IndexProcessor();},
+            "Index Source"
+        );
+
+        StoreBuilder<KeyValueStore<String, IndexEntries>> idxStateStoreBuilder =
+        Stores.keyValueStoreBuilder(
+                Stores.persistentKeyValueStore(LHConstants.INDEX_STORE_NAME),
+                Serdes.String(),
+                new LHSerde<>(IndexEntries.class)
+            );
+        topo.addStateStore(idxStateStoreBuilder, "Index Processor");
+
     }
 
     private static <U extends MessageOrBuilder, T extends POSTable<U>>
