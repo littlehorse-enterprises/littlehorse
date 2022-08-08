@@ -86,11 +86,15 @@ public class ApiStreamsContext {
         request.requestId = requestId;
         request.payload = toSave.toBytes();
 
-        this.producer.send(new ProducerRecord<>(
+        ProducerRecord<String, POSTableRequest> record = new ProducerRecord<>(
             topic,
             partitionKey,
             request
-        ));
+        );
+        record.headers().add(
+            LHConstants.OBJECT_ID_HEADER, toSave.getObjectId().getBytes()
+        );
+        this.producer.send(record);
 
         boolean checkLocalResponseStoreOnly = false;
         return waitForResponse(
@@ -108,15 +112,16 @@ public class ApiStreamsContext {
         );
 
         if (metadata.activeHost().equals(thisHost)) {
-            return localWait(requestId);
+            return localWait(requestId, cls);
         } else {
-            String path = "/internal/waitForResponse/" + requestId;
+            String path = "/internal/waitForResponse/" + requestId + "/" +
+                cls.getCanonicalName();
             return client.getResponse(metadata.activeHost(), path);
         }
     }
 
-    public byte[] localWait(String requestId) {
-        ReadOnlyKeyValueStore<String, LHResponse> respStore = getResponseStore();
+    public byte[] localWait(String requestId, Class<? extends POSTable<?>> cls) {
+        ReadOnlyKeyValueStore<String, LHResponse> respStore = getResponseStore(cls);
 
         int iterations = 0;
         while (iterations++ < 500) {
@@ -157,11 +162,13 @@ public class ApiStreamsContext {
         );
     }
 
-    private ReadOnlyKeyValueStore<String, LHResponse> getResponseStore() {
+    private ReadOnlyKeyValueStore<String, LHResponse> getResponseStore(
+        Class<? extends POSTable<?>> cls
+    ) {
 
         return streams.store(
             StoreQueryParameters.fromNameAndType(
-                LHConstants.RESPONSE_STORE_NAME,
+                POSTable.getResponseStoreName(cls),
                 QueryableStoreTypes.keyValueStore()
             )
         );

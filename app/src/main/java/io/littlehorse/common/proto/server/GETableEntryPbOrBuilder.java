@@ -24,28 +24,4 @@ public interface GETableEntryPbOrBuilder extends
    * @return The lastUpdatedOffset.
    */
   long getLastUpdatedOffset();
-
-  /**
-   * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
-   */
-  java.util.List<io.littlehorse.common.proto.server.IndexKeyPb> 
-      getIndexEntriesList();
-  /**
-   * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
-   */
-  io.littlehorse.common.proto.server.IndexKeyPb getIndexEntries(int index);
-  /**
-   * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
-   */
-  int getIndexEntriesCount();
-  /**
-   * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
-   */
-  java.util.List<? extends io.littlehorse.common.proto.server.IndexKeyPbOrBuilder> 
-      getIndexEntriesOrBuilderList();
-  /**
-   * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
-   */
-  io.littlehorse.common.proto.server.IndexKeyPbOrBuilder getIndexEntriesOrBuilder(
-      int index);
 }

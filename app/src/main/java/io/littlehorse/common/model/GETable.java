@@ -24,6 +24,10 @@ public abstract class GETable<T extends MessageOrBuilder> extends LHSerializable
         return cls.getSimpleName();
     }
 
+    public static String getIndexStoreName(Class<? extends GETable<?>> cls) {
+        return cls.getSimpleName() + "_IdxCache";
+    }
+
     public static GETableClassEnumPb getTypeEnum(Class<? extends GETable<?>> cls) {
         if (cls.equals(WfRun.class)) {
             return GETableClassEnumPb.WF_RUN;

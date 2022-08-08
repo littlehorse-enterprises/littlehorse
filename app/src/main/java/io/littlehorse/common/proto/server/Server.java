@@ -69,6 +69,11 @@ public final class Server {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_lh_proto_GETableEntryPb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_lh_proto_IndexEntriesPb_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_lh_proto_IndexEntriesPb_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -124,19 +129,19 @@ public final class Server {
       "KeyPb\022\021\n\tstore_key\030\002 \001(\t\"f\n\022IndexEntryAc" +
       "tionPb\022%\n\005entry\030\001 \001(\0132\026.lh_proto.IndexEn" +
       "tryPb\022)\n\006action\030\002 \001(\0162\031.lh_proto.IndexAc" +
-      "tionEnum\"|\n\016GETableEntryPb\022\r\n\005entry\030\001 \001(" +
+      "tionEnum\"O\n\016GETableEntryPb\022\r\n\005entry\030\001 \001(" +
       "\014\022\021\n\tpartition\030\002 \001(\005\022\033\n\023last_updated_off" +
-      "set\030\003 \001(\003\022+\n\rindex_entries\030\004 \003(\0132\024.lh_pr" +
-      "oto.IndexKeyPb*r\n\020LHResponseCodePb\022\006\n\002OK" +
-      "\020\000\022\024\n\020CONNECTION_ERROR\020\001\022\023\n\017NOT_FOUND_ER" +
-      "ROR\020\002\022\025\n\021BAD_REQUEST_ERROR\020\003\022\024\n\020VALIDATI" +
-      "ON_ERROR\020\004*%\n\rRequestTypePb\022\010\n\004POST\020\000\022\n\n" +
-      "\006DELETE\020\001*Y\n\022GETableClassEnumPb\022\014\n\010TASK_" +
-      "DEF\020\000\022\013\n\007WF_SPEC\020\001\022\n\n\006WF_RUN\020\002\022\016\n\nTHREAD" +
-      "_RUN\020\003\022\014\n\010TASK_RUN\020\004*=\n\017IndexActionEnum\022" +
-      "\024\n\020CREATE_IDX_ENTRY\020\000\022\024\n\020DELETE_IDX_ENTR" +
-      "Y\020\001B/\n\"io.littlehorse.common.proto.serve" +
-      "rP\001Z\007.;modelb\006proto3"
+      "set\030\003 \001(\003\"9\n\016IndexEntriesPb\022\'\n\007entries\030\001" +
+      " \003(\0132\026.lh_proto.IndexEntryPb*r\n\020LHRespon" +
+      "seCodePb\022\006\n\002OK\020\000\022\024\n\020CONNECTION_ERROR\020\001\022\023" +
+      "\n\017NOT_FOUND_ERROR\020\002\022\025\n\021BAD_REQUEST_ERROR" +
+      "\020\003\022\024\n\020VALIDATION_ERROR\020\004*%\n\rRequestTypeP" +
+      "b\022\010\n\004POST\020\000\022\n\n\006DELETE\020\001*Y\n\022GETableClassE" +
+      "numPb\022\014\n\010TASK_DEF\020\000\022\013\n\007WF_SPEC\020\001\022\n\n\006WF_R" +
+      "UN\020\002\022\016\n\nTHREAD_RUN\020\003\022\014\n\010TASK_RUN\020\004*=\n\017In" +
+      "dexActionEnum\022\024\n\020CREATE_IDX_ENTRY\020\000\022\024\n\020D" +
+      "ELETE_IDX_ENTRY\020\001B/\n\"io.littlehorse.comm" +
+      "on.proto.serverP\001Z\007.;modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -209,7 +214,13 @@ public final class Server {
     internal_static_lh_proto_GETableEntryPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_GETableEntryPb_descriptor,
-        new java.lang.String[] { "Entry", "Partition", "LastUpdatedOffset", "IndexEntries", });
+        new java.lang.String[] { "Entry", "Partition", "LastUpdatedOffset", });
+    internal_static_lh_proto_IndexEntriesPb_descriptor =
+      getDescriptor().getMessageTypes().get(11);
+    internal_static_lh_proto_IndexEntriesPb_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_lh_proto_IndexEntriesPb_descriptor,
+        new java.lang.String[] { "Entries", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.common.proto.LhProto.getDescriptor();
   }

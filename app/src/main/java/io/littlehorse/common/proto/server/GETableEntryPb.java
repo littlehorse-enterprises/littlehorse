@@ -17,7 +17,6 @@ private static final long serialVersionUID = 0L;
   }
   private GETableEntryPb() {
     entry_ = com.google.protobuf.ByteString.EMPTY;
-    indexEntries_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -40,7 +39,6 @@ private static final long serialVersionUID = 0L;
     if (extensionRegistry == null) {
       throw new java.lang.NullPointerException();
     }
-    int mutable_bitField0_ = 0;
     com.google.protobuf.UnknownFieldSet.Builder unknownFields =
         com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
@@ -66,15 +64,6 @@ private static final long serialVersionUID = 0L;
             lastUpdatedOffset_ = input.readInt64();
             break;
           }
-          case 34: {
-            if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-              indexEntries_ = new java.util.ArrayList<io.littlehorse.common.proto.server.IndexKeyPb>();
-              mutable_bitField0_ |= 0x00000001;
-            }
-            indexEntries_.add(
-                input.readMessage(io.littlehorse.common.proto.server.IndexKeyPb.parser(), extensionRegistry));
-            break;
-          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -90,9 +79,6 @@ private static final long serialVersionUID = 0L;
       throw new com.google.protobuf.InvalidProtocolBufferException(
           e).setUnfinishedMessage(this);
     } finally {
-      if (((mutable_bitField0_ & 0x00000001) != 0)) {
-        indexEntries_ = java.util.Collections.unmodifiableList(indexEntries_);
-      }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
@@ -143,46 +129,6 @@ private static final long serialVersionUID = 0L;
     return lastUpdatedOffset_;
   }
 
-  public static final int INDEX_ENTRIES_FIELD_NUMBER = 4;
-  private java.util.List<io.littlehorse.common.proto.server.IndexKeyPb> indexEntries_;
-  /**
-   * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
-   */
-  @java.lang.Override
-  public java.util.List<io.littlehorse.common.proto.server.IndexKeyPb> getIndexEntriesList() {
-    return indexEntries_;
-  }
-  /**
-   * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
-   */
-  @java.lang.Override
-  public java.util.List<? extends io.littlehorse.common.proto.server.IndexKeyPbOrBuilder> 
-      getIndexEntriesOrBuilderList() {
-    return indexEntries_;
-  }
-  /**
-   * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
-   */
-  @java.lang.Override
-  public int getIndexEntriesCount() {
-    return indexEntries_.size();
-  }
-  /**
-   * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.server.IndexKeyPb getIndexEntries(int index) {
-    return indexEntries_.get(index);
-  }
-  /**
-   * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.server.IndexKeyPbOrBuilder getIndexEntriesOrBuilder(
-      int index) {
-    return indexEntries_.get(index);
-  }
-
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -206,9 +152,6 @@ private static final long serialVersionUID = 0L;
     if (lastUpdatedOffset_ != 0L) {
       output.writeInt64(3, lastUpdatedOffset_);
     }
-    for (int i = 0; i < indexEntries_.size(); i++) {
-      output.writeMessage(4, indexEntries_.get(i));
-    }
     unknownFields.writeTo(output);
   }
 
@@ -229,10 +172,6 @@ private static final long serialVersionUID = 0L;
     if (lastUpdatedOffset_ != 0L) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt64Size(3, lastUpdatedOffset_);
-    }
-    for (int i = 0; i < indexEntries_.size(); i++) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, indexEntries_.get(i));
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -255,8 +194,6 @@ private static final long serialVersionUID = 0L;
         != other.getPartition()) return false;
     if (getLastUpdatedOffset()
         != other.getLastUpdatedOffset()) return false;
-    if (!getIndexEntriesList()
-        .equals(other.getIndexEntriesList())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -275,10 +212,6 @@ private static final long serialVersionUID = 0L;
     hash = (37 * hash) + LAST_UPDATED_OFFSET_FIELD_NUMBER;
     hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
         getLastUpdatedOffset());
-    if (getIndexEntriesCount() > 0) {
-      hash = (37 * hash) + INDEX_ENTRIES_FIELD_NUMBER;
-      hash = (53 * hash) + getIndexEntriesList().hashCode();
-    }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -407,7 +340,6 @@ private static final long serialVersionUID = 0L;
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
-        getIndexEntriesFieldBuilder();
       }
     }
     @java.lang.Override
@@ -419,12 +351,6 @@ private static final long serialVersionUID = 0L;
 
       lastUpdatedOffset_ = 0L;
 
-      if (indexEntriesBuilder_ == null) {
-        indexEntries_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000001);
-      } else {
-        indexEntriesBuilder_.clear();
-      }
       return this;
     }
 
@@ -451,19 +377,9 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.common.proto.server.GETableEntryPb buildPartial() {
       io.littlehorse.common.proto.server.GETableEntryPb result = new io.littlehorse.common.proto.server.GETableEntryPb(this);
-      int from_bitField0_ = bitField0_;
       result.entry_ = entry_;
       result.partition_ = partition_;
       result.lastUpdatedOffset_ = lastUpdatedOffset_;
-      if (indexEntriesBuilder_ == null) {
-        if (((bitField0_ & 0x00000001) != 0)) {
-          indexEntries_ = java.util.Collections.unmodifiableList(indexEntries_);
-          bitField0_ = (bitField0_ & ~0x00000001);
-        }
-        result.indexEntries_ = indexEntries_;
-      } else {
-        result.indexEntries_ = indexEntriesBuilder_.build();
-      }
       onBuilt();
       return result;
     }
@@ -521,32 +437,6 @@ private static final long serialVersionUID = 0L;
       if (other.getLastUpdatedOffset() != 0L) {
         setLastUpdatedOffset(other.getLastUpdatedOffset());
       }
-      if (indexEntriesBuilder_ == null) {
-        if (!other.indexEntries_.isEmpty()) {
-          if (indexEntries_.isEmpty()) {
-            indexEntries_ = other.indexEntries_;
-            bitField0_ = (bitField0_ & ~0x00000001);
-          } else {
-            ensureIndexEntriesIsMutable();
-            indexEntries_.addAll(other.indexEntries_);
-          }
-          onChanged();
-        }
-      } else {
-        if (!other.indexEntries_.isEmpty()) {
-          if (indexEntriesBuilder_.isEmpty()) {
-            indexEntriesBuilder_.dispose();
-            indexEntriesBuilder_ = null;
-            indexEntries_ = other.indexEntries_;
-            bitField0_ = (bitField0_ & ~0x00000001);
-            indexEntriesBuilder_ = 
-              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                 getIndexEntriesFieldBuilder() : null;
-          } else {
-            indexEntriesBuilder_.addAllMessages(other.indexEntries_);
-          }
-        }
-      }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
@@ -575,7 +465,6 @@ private static final long serialVersionUID = 0L;
       }
       return this;
     }
-    private int bitField0_;
 
     private com.google.protobuf.ByteString entry_ = com.google.protobuf.ByteString.EMPTY;
     /**
@@ -671,246 +560,6 @@ private static final long serialVersionUID = 0L;
       lastUpdatedOffset_ = 0L;
       onChanged();
       return this;
-    }
-
-    private java.util.List<io.littlehorse.common.proto.server.IndexKeyPb> indexEntries_ =
-      java.util.Collections.emptyList();
-    private void ensureIndexEntriesIsMutable() {
-      if (!((bitField0_ & 0x00000001) != 0)) {
-        indexEntries_ = new java.util.ArrayList<io.littlehorse.common.proto.server.IndexKeyPb>(indexEntries_);
-        bitField0_ |= 0x00000001;
-       }
-    }
-
-    private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.common.proto.server.IndexKeyPb, io.littlehorse.common.proto.server.IndexKeyPb.Builder, io.littlehorse.common.proto.server.IndexKeyPbOrBuilder> indexEntriesBuilder_;
-
-    /**
-     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
-     */
-    public java.util.List<io.littlehorse.common.proto.server.IndexKeyPb> getIndexEntriesList() {
-      if (indexEntriesBuilder_ == null) {
-        return java.util.Collections.unmodifiableList(indexEntries_);
-      } else {
-        return indexEntriesBuilder_.getMessageList();
-      }
-    }
-    /**
-     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
-     */
-    public int getIndexEntriesCount() {
-      if (indexEntriesBuilder_ == null) {
-        return indexEntries_.size();
-      } else {
-        return indexEntriesBuilder_.getCount();
-      }
-    }
-    /**
-     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
-     */
-    public io.littlehorse.common.proto.server.IndexKeyPb getIndexEntries(int index) {
-      if (indexEntriesBuilder_ == null) {
-        return indexEntries_.get(index);
-      } else {
-        return indexEntriesBuilder_.getMessage(index);
-      }
-    }
-    /**
-     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
-     */
-    public Builder setIndexEntries(
-        int index, io.littlehorse.common.proto.server.IndexKeyPb value) {
-      if (indexEntriesBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureIndexEntriesIsMutable();
-        indexEntries_.set(index, value);
-        onChanged();
-      } else {
-        indexEntriesBuilder_.setMessage(index, value);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
-     */
-    public Builder setIndexEntries(
-        int index, io.littlehorse.common.proto.server.IndexKeyPb.Builder builderForValue) {
-      if (indexEntriesBuilder_ == null) {
-        ensureIndexEntriesIsMutable();
-        indexEntries_.set(index, builderForValue.build());
-        onChanged();
-      } else {
-        indexEntriesBuilder_.setMessage(index, builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
-     */
-    public Builder addIndexEntries(io.littlehorse.common.proto.server.IndexKeyPb value) {
-      if (indexEntriesBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureIndexEntriesIsMutable();
-        indexEntries_.add(value);
-        onChanged();
-      } else {
-        indexEntriesBuilder_.addMessage(value);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
-     */
-    public Builder addIndexEntries(
-        int index, io.littlehorse.common.proto.server.IndexKeyPb value) {
-      if (indexEntriesBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureIndexEntriesIsMutable();
-        indexEntries_.add(index, value);
-        onChanged();
-      } else {
-        indexEntriesBuilder_.addMessage(index, value);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
-     */
-    public Builder addIndexEntries(
-        io.littlehorse.common.proto.server.IndexKeyPb.Builder builderForValue) {
-      if (indexEntriesBuilder_ == null) {
-        ensureIndexEntriesIsMutable();
-        indexEntries_.add(builderForValue.build());
-        onChanged();
-      } else {
-        indexEntriesBuilder_.addMessage(builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
-     */
-    public Builder addIndexEntries(
-        int index, io.littlehorse.common.proto.server.IndexKeyPb.Builder builderForValue) {
-      if (indexEntriesBuilder_ == null) {
-        ensureIndexEntriesIsMutable();
-        indexEntries_.add(index, builderForValue.build());
-        onChanged();
-      } else {
-        indexEntriesBuilder_.addMessage(index, builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
-     */
-    public Builder addAllIndexEntries(
-        java.lang.Iterable<? extends io.littlehorse.common.proto.server.IndexKeyPb> values) {
-      if (indexEntriesBuilder_ == null) {
-        ensureIndexEntriesIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, indexEntries_);
-        onChanged();
-      } else {
-        indexEntriesBuilder_.addAllMessages(values);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
-     */
-    public Builder clearIndexEntries() {
-      if (indexEntriesBuilder_ == null) {
-        indexEntries_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000001);
-        onChanged();
-      } else {
-        indexEntriesBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
-     */
-    public Builder removeIndexEntries(int index) {
-      if (indexEntriesBuilder_ == null) {
-        ensureIndexEntriesIsMutable();
-        indexEntries_.remove(index);
-        onChanged();
-      } else {
-        indexEntriesBuilder_.remove(index);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
-     */
-    public io.littlehorse.common.proto.server.IndexKeyPb.Builder getIndexEntriesBuilder(
-        int index) {
-      return getIndexEntriesFieldBuilder().getBuilder(index);
-    }
-    /**
-     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
-     */
-    public io.littlehorse.common.proto.server.IndexKeyPbOrBuilder getIndexEntriesOrBuilder(
-        int index) {
-      if (indexEntriesBuilder_ == null) {
-        return indexEntries_.get(index);  } else {
-        return indexEntriesBuilder_.getMessageOrBuilder(index);
-      }
-    }
-    /**
-     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
-     */
-    public java.util.List<? extends io.littlehorse.common.proto.server.IndexKeyPbOrBuilder> 
-         getIndexEntriesOrBuilderList() {
-      if (indexEntriesBuilder_ != null) {
-        return indexEntriesBuilder_.getMessageOrBuilderList();
-      } else {
-        return java.util.Collections.unmodifiableList(indexEntries_);
-      }
-    }
-    /**
-     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
-     */
-    public io.littlehorse.common.proto.server.IndexKeyPb.Builder addIndexEntriesBuilder() {
-      return getIndexEntriesFieldBuilder().addBuilder(
-          io.littlehorse.common.proto.server.IndexKeyPb.getDefaultInstance());
-    }
-    /**
-     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
-     */
-    public io.littlehorse.common.proto.server.IndexKeyPb.Builder addIndexEntriesBuilder(
-        int index) {
-      return getIndexEntriesFieldBuilder().addBuilder(
-          index, io.littlehorse.common.proto.server.IndexKeyPb.getDefaultInstance());
-    }
-    /**
-     * <code>repeated .lh_proto.IndexKeyPb index_entries = 4;</code>
-     */
-    public java.util.List<io.littlehorse.common.proto.server.IndexKeyPb.Builder> 
-         getIndexEntriesBuilderList() {
-      return getIndexEntriesFieldBuilder().getBuilderList();
-    }
-    private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.common.proto.server.IndexKeyPb, io.littlehorse.common.proto.server.IndexKeyPb.Builder, io.littlehorse.common.proto.server.IndexKeyPbOrBuilder> 
-        getIndexEntriesFieldBuilder() {
-      if (indexEntriesBuilder_ == null) {
-        indexEntriesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            io.littlehorse.common.proto.server.IndexKeyPb, io.littlehorse.common.proto.server.IndexKeyPb.Builder, io.littlehorse.common.proto.server.IndexKeyPbOrBuilder>(
-                indexEntries_,
-                ((bitField0_ & 0x00000001) != 0),
-                getParentForChildren(),
-                isClean());
-        indexEntries_ = null;
-      }
-      return indexEntriesBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

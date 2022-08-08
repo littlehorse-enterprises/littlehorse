@@ -4,24 +4,12 @@
 package io.littlehorse;
 
 import java.util.ArrayList;
-import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import org.apache.kafka.clients.admin.NewTopic;
-import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.StreamsBuilder;
-import org.apache.kafka.streams.StreamsConfig;
-import org.apache.kafka.streams.Topology;
-import org.apache.kafka.streams.kstream.Consumed;
-import org.apache.kafka.streams.kstream.KStream;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.POSTable;
-import io.littlehorse.common.model.meta.TaskDef;
-import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.scheduler.Scheduler;
-import io.littlehorse.scheduler.model.WfRunState;
-import io.littlehorse.scheduler.serde.WFRunSerde;
 import io.littlehorse.server.Server;
 import io.littlehorse.worker.TestWorker;
 
@@ -37,15 +25,18 @@ public class App {
             ));
         }
 
-        topics.add(new NewTopic(
-            POSTable.getRequestTopicName(WfSpec.class),
-            3, config.getReplicationFactor()
-        ));
+        for (Class<? extends POSTable<?>> cls: POSTable.POSTables) {
+            topics.add(new NewTopic(
+                POSTable.getRequestTopicName(cls),
+                3, config.getReplicationFactor()
+            ));
+        }
 
         topics.add(new NewTopic(
-            POSTable.getRequestTopicName(TaskDef.class),
-            3, config.getReplicationFactor()
-        ));
+            LHConstants.INDEX_TOPIC_NAME,
+            config.getClusterPartitions(),
+            config.getReplicationFactor())
+        );
 
         topics.add(new NewTopic(
             LHConstants.WF_RUN_OBSERVABILITY_TOPIC,
@@ -85,22 +76,6 @@ public class App {
             Server.doMain(config);
         }
     }
-
-    // public static void  schedulerAndServer(LHConfig config) {
-    //     Topology topology = Scheduler.initTopology(config);
-    //     KafkaStreams scheduler = new KafkaStreams(topology, config.getStreamsConfig());
-
-    //     ApiStreamsContext context = new ApiStreamsContext(config, serverStreams);
-    //     LHApi api = new LHApi(config, context);
-
-    //     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-    //         scheduler.close();
-    //         config.cleanup();
-    //     }));
-
-    //     scheduler.start();
-    //     api.start();
-    // }
 
     public static void tester() {
         LHConfig config = new LHConfig();

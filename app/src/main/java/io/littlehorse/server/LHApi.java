@@ -70,7 +70,7 @@ public class LHApi {
         });
 
         this.app.get(
-            "/internal/waitForResponse/{requestId}", 
+            "/internal/waitForResponse/{requestId}/{className}", 
             (ctx) -> handle(this::internalWaitForResponse, ctx)
         );
         this.app.get(
@@ -149,9 +149,17 @@ public class LHApi {
     }
 
     // This method returns the protobuf data in binary format, not json.
+    @SuppressWarnings("unchecked")
     public void internalWaitForResponse(Context ctx) {
         String requestId = ctx.pathParam("requestId");
-        ctx.result(streams.localWait(requestId));
+        String clsName = ctx.pathParam("className");
+        Class<? extends POSTable<?>> cls;
+        try {
+            cls = (Class<? extends POSTable<?>>) Class.forName(clsName);
+            ctx.result(streams.localWait(requestId, cls));
+        } catch(ClassNotFoundException exn) {
+            ctx.status(400);
+        }
     }
 
     // This method returns the protobuf data in binary format, not json.

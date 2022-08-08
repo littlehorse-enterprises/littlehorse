@@ -134,5 +134,8 @@ message GETableEntryPb {
     bytes entry = 1;
     int32 partition = 2;
     int64 last_updated_offset = 3;
-    repeated IndexKeyPb index_entries = 4;
+}
+
+message IndexEntriesPb {
+    repeated IndexEntryPb entries = 1;
 }

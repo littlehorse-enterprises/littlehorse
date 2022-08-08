@@ -25,7 +25,6 @@ public class LHConstants {
     public static final String WF_SPEC_ENTITY_TOPIC = "WFSpec_Entity";
     public static final String INDEX_STORE_NAME = "INDEX_STORE";
     public static final String INDEX_TOPIC_NAME = "INDEX_STORE";
-    public static final String RESPONSE_STORE_NAME = "INDEX_STORE";
 
     public static final String ADVERTISED_PROTOCOL_KEY = "LHORSE_ADVERTISED_PROTOCOL";
     public static final String ADVERTISED_HOST_KEY = "LHORSE_ADVERTISED_HOST";
@@ -34,6 +33,8 @@ public class LHConstants {
     public static final String STATE_DIR_KEY = "LHORSE_KAFKA_STREAMS_STATE_DIR";
 
     public static final Duration PUNCTUATOR_INERVAL = Duration.ofSeconds(4);
+
+    public static final String OBJECT_ID_HEADER = "STORE_KEY";
 }
 
 // NOTE: Use m6a.4xlarge
