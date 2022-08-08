@@ -25,7 +25,7 @@ public abstract class POSTable<T extends MessageOrBuilder> extends GETable<T> {
         return cls.getSimpleName();
     }
 
-    public static String getEntitytTopicName(Class<? extends POSTable<?>> cls) {
+    public static String getEntityTopicName(Class<? extends POSTable<?>> cls) {
         return cls.getSimpleName() + "_Entity";
     }
 

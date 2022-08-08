@@ -30,6 +30,11 @@ public class App {
                 POSTable.getRequestTopicName(cls),
                 3, config.getReplicationFactor()
             ));
+
+            topics.add(new NewTopic(
+                POSTable.getEntityTopicName(cls),
+                3, config.getReplicationFactor()
+            ));
         }
 
         topics.add(new NewTopic(

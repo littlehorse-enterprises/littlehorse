@@ -22,7 +22,6 @@ public class LHConstants {
 
     public static final String SCHED_WF_RUN_STORE_NAME = "wfrun";
     public static final String SCHED_WF_SPEC_STORE_NAME = "wfSpec";
-    public static final String WF_SPEC_ENTITY_TOPIC = "WFSpec_Entity";
     public static final String INDEX_STORE_NAME = "INDEX_STORE";
     public static final String INDEX_TOPIC_NAME = "INDEX_STORE";
 

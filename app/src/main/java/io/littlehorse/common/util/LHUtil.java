@@ -40,7 +40,7 @@ public class LHUtil {
     }
 
     public static String generateGuid() {
-        return UUID.randomUUID().toString();
+        return UUID.randomUUID().toString().replaceAll("-", "");
     }
 
     public static String toLhDbFormat(Date date) {

@@ -71,7 +71,7 @@ public class ServerTopology {
 
         topo.addSink(
             entitySink,
-            POSTable.getEntitytTopicName(cls),
+            POSTable.getEntityTopicName(cls),
             Serdes.String().serializer(),
             new LHSerializer<T>(),
             baseProcessorName

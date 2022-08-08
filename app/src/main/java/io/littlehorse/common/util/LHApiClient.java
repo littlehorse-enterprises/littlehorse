@@ -22,7 +22,6 @@ public class LHApiClient {
     public byte[] getResponse(HostInfo host, String path)
     throws LHConnectionError {
         String url = "http://" + host.host() + ":" + host.port() + path;
-        System.out.println(url);
         Request req = new Request.Builder().url(url).build();
 
         try {

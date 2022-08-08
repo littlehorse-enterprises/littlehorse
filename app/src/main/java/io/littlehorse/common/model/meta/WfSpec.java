@@ -39,6 +39,9 @@ public class WfSpec extends POSTable<WFSpecPbOrBuilder> {
     public LHStatusPb status;
 
     public String getObjectId() {
+        if (id.equals("")) {
+            id = LHUtil.generateGuid();
+        }
         return id;
     }
 
@@ -47,7 +50,7 @@ public class WfSpec extends POSTable<WFSpecPbOrBuilder> {
     }
 
     public String getPartitionKey() {
-        return id;
+        return getObjectId();
     }
 
     public WfSpec() {

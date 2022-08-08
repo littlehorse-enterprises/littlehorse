@@ -9,6 +9,7 @@ import org.apache.kafka.streams.state.StoreBuilder;
 import org.apache.kafka.streams.state.Stores;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.event.WFRunEvent;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.scheduler.model.WfRunState;
@@ -94,7 +95,7 @@ public class Scheduler {
             "wfSpecViewNode",
             Serdes.String().deserializer(),
             specSerde.deserializer(),
-            LHConstants.WF_SPEC_ENTITY_TOPIC,
+            POSTable.getEntityTopicName(WfSpec.class),
             "wfSpecViewProcessor",
             () -> {return new WfSpecProcessor();}
         );
