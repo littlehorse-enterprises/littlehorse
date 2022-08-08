@@ -17,7 +17,7 @@ import io.littlehorse.common.model.event.TaskStartedEvent;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.proto.scheduler.WfRunEventPb.EventCase;
 import io.littlehorse.scheduler.serde.TaskScheduleRequestDeserializer;
-import io.littlehorse.scheduler.serde.WFRunEventSerializer;
+import io.littlehorse.scheduler.serde.WfRunEventSerializer;
 
 /**
  * This is a shortcut, obviously.
@@ -31,7 +31,7 @@ public class TestWorker {
         this.cons = config.getKafkaConsumer(
             TaskScheduleRequestDeserializer.class
         );
-        this.prod = config.getKafkaProducer(WFRunEventSerializer.class);
+        this.prod = config.getKafkaProducer(WfRunEventSerializer.class);
         // this.cons.subscribe(Arrays.asList(
         //     "task1", "task2", "task3", "task4", "task5", "task6", "task7",
         //     "task8", "task9", "task10"

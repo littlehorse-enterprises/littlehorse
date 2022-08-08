@@ -15,8 +15,8 @@ import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.scheduler.model.WfRunState;
 import io.littlehorse.scheduler.serde.SchedulerOutputTsrSer;
 import io.littlehorse.scheduler.serde.SchedulerOutputWFRunSer;
-import io.littlehorse.scheduler.serde.WFRunEventSerde;
-import io.littlehorse.scheduler.serde.WFRunSerde;
+import io.littlehorse.scheduler.serde.WfRunEventSerde;
+import io.littlehorse.scheduler.serde.WfRunSerde;
 import io.littlehorse.scheduler.serde.WfSpecSerde;
 
 public class Scheduler {
@@ -28,8 +28,8 @@ public class Scheduler {
     public static Topology initTopology(LHConfig config) {
         Topology topo = new Topology();
 
-        Serde<WfRunEvent> evtSerde = new WFRunEventSerde();
-        Serde<WfRunState> runSerde = new WFRunSerde();
+        Serde<WfRunEvent> evtSerde = new WfRunEventSerde();
+        Serde<WfRunState> runSerde = new WfRunSerde();
         Serde<WfSpec> specSerde = new WfSpecSerde();
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {

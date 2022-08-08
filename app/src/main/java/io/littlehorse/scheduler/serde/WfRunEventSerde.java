@@ -5,13 +5,13 @@ import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serializer;
 import io.littlehorse.common.model.event.WfRunEvent;
 
-public class WFRunEventSerde implements Serde<WfRunEvent> {
+public class WfRunEventSerde implements Serde<WfRunEvent> {
     private Deserializer<WfRunEvent> d;
     private Serializer<WfRunEvent> s;
 
-    public WFRunEventSerde() {
-        d = new WFRunEventDeserializer();
-        s = new WFRunEventSerializer();
+    public WfRunEventSerde() {
+        d = new WfRunEventDeserializer();
+        s = new WfRunEventSerializer();
     }
 
     public Serializer<WfRunEvent> serializer() {

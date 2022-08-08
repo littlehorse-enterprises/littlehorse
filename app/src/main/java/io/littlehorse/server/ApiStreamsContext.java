@@ -6,8 +6,10 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyQueryMetadata;
+import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StoreQueryParameters;
 import org.apache.kafka.streams.state.HostInfo;
+import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import com.google.protobuf.MessageOrBuilder;
@@ -25,6 +27,8 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.model.POSTableRequestSerializer;
 import io.littlehorse.server.model.internal.POSTableRequest;
 import io.littlehorse.server.model.internal.RangeResponse;
+import io.littlehorse.server.model.internal.IndexEntries;
+import io.littlehorse.server.model.internal.IndexEntry;
 import io.littlehorse.server.model.internal.LHResponse;
 
 public class ApiStreamsContext {
@@ -161,7 +165,30 @@ public class ApiStreamsContext {
     public RangeResponse internalLocalKeyedPrefixScan(
         String prefixKey, String token, int limit
     ) {
-        return null;
+        RangeResponse out = new RangeResponse();
+
+        try (KeyValueIterator<String, IndexEntries> iter = getIdxStore().prefixScan(
+            prefixKey, Serdes.String().serializer()
+        )) {
+            while (iter.hasNext()) {
+                KeyValue<String, IndexEntries> kvp = iter.next();
+                IndexEntries entries = kvp.value;
+                for (IndexEntry entry: entries.entries) {
+                    out.ids.add(entry.resultObjectId);
+                }
+            }
+        }
+
+        return out;
+    }
+
+    private ReadOnlyKeyValueStore<String, IndexEntries> getIdxStore() {
+        return streams.store(
+            StoreQueryParameters.fromNameAndType(
+                LHConstants.INDEX_STORE_NAME,
+                QueryableStoreTypes.keyValueStore()
+            )
+        );
     }
 
     private ReadOnlyKeyValueStore<String, GETable<?>> getStore(String storeName) {

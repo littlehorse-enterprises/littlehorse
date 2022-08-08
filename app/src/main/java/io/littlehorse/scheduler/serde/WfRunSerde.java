@@ -5,13 +5,13 @@ import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serializer;
 import io.littlehorse.scheduler.model.WfRunState;
 
-public class WFRunSerde implements Serde<WfRunState> {
+public class WfRunSerde implements Serde<WfRunState> {
     private Deserializer<WfRunState> d;
     private Serializer<WfRunState> s;
 
-    public WFRunSerde() {
+    public WfRunSerde() {
         d = new WFRunDeserializer();
-        s = new WFRunSerializer();
+        s = new WfRunSerializer();
     }
 
     public Serializer<WfRunState> serializer() {
