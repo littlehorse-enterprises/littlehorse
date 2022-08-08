@@ -2,6 +2,7 @@ package io.littlehorse.server;
 
 import java.util.Arrays;
 import java.util.List;
+import org.apache.commons.lang3.tuple.Pair;
 import com.google.protobuf.MessageOrBuilder;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
@@ -13,9 +14,12 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.proto.server.GETableClassEnumPb;
 import io.littlehorse.common.proto.server.LHResponseCodePb;
 import io.littlehorse.common.util.KStreamsStateListener;
+import io.littlehorse.server.model.internal.IndexEntry;
 import io.littlehorse.server.model.internal.LHResponse;
+import io.littlehorse.server.model.internal.RangeResponse;
 import io.littlehorse.server.model.wfrun.TaskRun;
 import io.littlehorse.server.model.wfrun.ThreadRun;
 import io.littlehorse.server.model.wfrun.WfRun;
@@ -62,12 +66,14 @@ public class LHApi {
             this::getTaskRun
         );
 
-        this.app.post("/WFSpec", (ctx) -> {
+        this.app.post("/WfSpec", (ctx) -> {
             handle((c) -> {this.post(c, WfSpec.class);}, ctx);
         });
         this.app.post("/TaskDef", (ctx) -> {
             handle((c) -> {this.post(c, TaskDef.class);}, ctx);
         });
+
+        this.app.get("/search/WfSpec/name/{name}", this::getWfSpecByName);
 
         this.app.get(
             "/internal/waitForResponse/{requestId}/{className}", 
@@ -76,6 +82,10 @@ public class LHApi {
         this.app.get(
             "/internal/storeBytes/{storeName}/{storeKey}",
             (ctx) -> handle(this::internalGetBytes, ctx)
+        );
+        this.app.get(
+            "/internal/localKeyedPrefixScan/{prefixKey}",
+            this::internalLocalKeyedPrefixScanBytes
         );
     }
 
@@ -148,6 +158,15 @@ public class LHApi {
         returnLookup(wfRunId, storeKey, ThreadRun.class, ctx);
     }
 
+    public void getWfSpecByName(Context ctx) {
+        String name = ctx.pathParam("name");
+        keyedPrefixScan(
+            Arrays.asList(Pair.of("name", name)),
+            WfSpec.class,
+            ctx
+        );
+    }
+
     // This method returns the protobuf data in binary format, not json.
     @SuppressWarnings("unchecked")
     public void internalWaitForResponse(Context ctx) {
@@ -162,6 +181,19 @@ public class LHApi {
         }
     }
 
+    public void internalLocalKeyedPrefixScanBytes(Context ctx) {
+        String token = ctx.queryParamAsClass(
+            "token", String.class
+        ).getOrDefault(null);
+        String prefix = ctx.pathParam("prefix");
+        int limit = ctx.queryParamAsClass("limit", Integer.class).getOrDefault(1000);
+
+        RangeResponse resp = streams.internalLocalKeyedPrefixScan(
+            prefix, token, limit
+        );
+        ctx.result(resp.toBytes());
+    }
+
     // This method returns the protobuf data in binary format, not json.
     public void internalGetBytes(Context ctx) {
         String storeName = ctx.pathParam("storeName");
@@ -173,6 +205,42 @@ public class LHApi {
             ctx.status(404);
         } else {
             ctx.result(out);
+        }
+    }
+
+    private <U extends MessageOrBuilder, T extends GETable<U>> void keyedPrefixScan(
+        List<Pair<String, String>> attributes,
+        Class<T> cls,
+        Context ctx
+    ) {
+        GETableClassEnumPb asEnum = GETable.getTypeEnum(cls);
+        String prefixKey = IndexEntry.getPartitionKey(attributes, asEnum);
+        String token = ctx.queryParamAsClass(
+            "token", String.class
+        ).getOrDefault(null);
+
+        boolean asProto = ctx.queryParamAsClass(
+            "asProto", Boolean.class
+        ).getOrDefault(false);
+
+        int limit = ctx.queryParamAsClass("limit", Integer.class).getOrDefault(1000);
+
+        LHResponse resp = new LHResponse();
+        try {
+            RangeResponse out = streams.keyedPrefixScan(prefixKey, token, limit);
+            resp.code = LHResponseCodePb.OK;
+            resp.result = out;
+        } catch(LHConnectionError exn) {
+            resp.code = LHResponseCodePb.CONNECTION_ERROR;
+            resp.message = "Failed looking up the " + cls.getSimpleName() + ": "
+                + exn.getMessage();
+            ctx.status(500);
+        }
+
+        if (asProto) {
+            ctx.result(resp.toBytes());
+        } else {
+            ctx.json(resp);
         }
     }
 

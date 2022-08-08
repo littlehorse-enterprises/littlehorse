@@ -14,8 +14,8 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.event.TaskCompletedEvent;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.TaskStartedEvent;
-import io.littlehorse.common.model.event.WFRunEvent;
-import io.littlehorse.common.proto.scheduler.WFRunEventPb.EventCase;
+import io.littlehorse.common.model.event.WfRunEvent;
+import io.littlehorse.common.proto.scheduler.WfRunEventPb.EventCase;
 import io.littlehorse.scheduler.serde.TaskScheduleRequestDeserializer;
 import io.littlehorse.scheduler.serde.WFRunEventSerializer;
 
@@ -24,7 +24,7 @@ import io.littlehorse.scheduler.serde.WFRunEventSerializer;
  */
 public class TestWorker {
     private KafkaConsumer<String, TaskScheduleRequest> cons;
-    private KafkaProducer<String, WFRunEvent> prod;
+    private KafkaProducer<String, WfRunEvent> prod;
     private ExecutorService threadPool;
 
     public TestWorker(LHConfig config) {
@@ -67,14 +67,14 @@ public class TestWorker {
         se.threadRunNumber = tsr.threadRunNumber;
         se.time = new Date();
 
-        WFRunEvent event = new WFRunEvent();
+        WfRunEvent event = new WfRunEvent();
         event.wfRunId = tsr.wfRunId;
         event.wfSpecId = tsr.wfSpecId;
         event.time = se.time;
         event.startedEvent = se;
         event.type = EventCase.STARTED_EVENT;
 
-        prod.send(new ProducerRecord<String,WFRunEvent>(
+        prod.send(new ProducerRecord<String,WfRunEvent>(
             tsr.replyKafkaTopic, tsr.wfRunId, event
         ));
 
@@ -93,7 +93,7 @@ public class TestWorker {
         ce.stdout = ("Completed task " + tsr.taskDefName + " " + tsr.wfRunId)
             .getBytes();
 
-        WFRunEvent event = new WFRunEvent();
+        WfRunEvent event = new WfRunEvent();
         event.wfRunId = tsr.wfRunId;
         event.wfSpecId = tsr.wfSpecId;
         event.time = ce.time;
@@ -101,7 +101,7 @@ public class TestWorker {
         event.type = EventCase.COMPLETED_EVENT;
 
         System.out.println("Completing " + tsr.wfRunId);
-        prod.send(new ProducerRecord<String, WFRunEvent>(
+        prod.send(new ProducerRecord<String, WfRunEvent>(
             tsr.replyKafkaTopic, tsr.wfRunId, event
         ));
     }

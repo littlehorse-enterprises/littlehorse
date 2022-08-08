@@ -30,7 +30,7 @@ message ThreadSpecPb {
     map<string, NodePb> nodes = 1;
 }
 
-message WFSpecPb {
+message WfSpecPb {
     string id = 1;
     google.protobuf.Timestamp created_at = 2;
     google.protobuf.Timestamp updated_at = 3;

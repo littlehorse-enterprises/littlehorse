@@ -4,18 +4,18 @@
 package io.littlehorse.common.proto.wfspec;
 
 /**
- * Protobuf type {@code lh_proto.WFSpecPb}
+ * Protobuf type {@code lh_proto.WfSpecPb}
  */
-public final class WFSpecPb extends
+public final class WfSpecPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.WFSpecPb)
-    WFSpecPbOrBuilder {
+    // @@protoc_insertion_point(message_implements:lh_proto.WfSpecPb)
+    WfSpecPbOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use WFSpecPb.newBuilder() to construct.
-  private WFSpecPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use WfSpecPb.newBuilder() to construct.
+  private WfSpecPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private WFSpecPb() {
+  private WfSpecPb() {
     id_ = "";
     entrypointThreadName_ = "";
     status_ = 0;
@@ -26,7 +26,7 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new WFSpecPb();
+    return new WfSpecPb();
   }
 
   @java.lang.Override
@@ -34,7 +34,7 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
-  private WFSpecPb(
+  private WfSpecPb(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -142,7 +142,7 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.wfspec.WfSpec.internal_static_lh_proto_WFSpecPb_descriptor;
+    return io.littlehorse.common.proto.wfspec.WfSpec.internal_static_lh_proto_WfSpecPb_descriptor;
   }
 
   @SuppressWarnings({"rawtypes"})
@@ -160,9 +160,9 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.wfspec.WfSpec.internal_static_lh_proto_WFSpecPb_fieldAccessorTable
+    return io.littlehorse.common.proto.wfspec.WfSpec.internal_static_lh_proto_WfSpecPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.common.proto.wfspec.WFSpecPb.class, io.littlehorse.common.proto.wfspec.WFSpecPb.Builder.class);
+            io.littlehorse.common.proto.wfspec.WfSpecPb.class, io.littlehorse.common.proto.wfspec.WfSpecPb.Builder.class);
   }
 
   public static final int ID_FIELD_NUMBER = 1;
@@ -261,7 +261,7 @@ private static final long serialVersionUID = 0L;
         java.lang.String, io.littlehorse.common.proto.wfspec.ThreadSpecPb> defaultEntry =
             com.google.protobuf.MapEntry
             .<java.lang.String, io.littlehorse.common.proto.wfspec.ThreadSpecPb>newDefaultInstance(
-                io.littlehorse.common.proto.wfspec.WfSpec.internal_static_lh_proto_WFSpecPb_ThreadSpecsEntry_descriptor, 
+                io.littlehorse.common.proto.wfspec.WfSpec.internal_static_lh_proto_WfSpecPb_ThreadSpecsEntry_descriptor, 
                 com.google.protobuf.WireFormat.FieldType.STRING,
                 "",
                 com.google.protobuf.WireFormat.FieldType.MESSAGE,
@@ -537,10 +537,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.common.proto.wfspec.WFSpecPb)) {
+    if (!(obj instanceof io.littlehorse.common.proto.wfspec.WfSpecPb)) {
       return super.equals(obj);
     }
-    io.littlehorse.common.proto.wfspec.WFSpecPb other = (io.littlehorse.common.proto.wfspec.WFSpecPb) obj;
+    io.littlehorse.common.proto.wfspec.WfSpecPb other = (io.littlehorse.common.proto.wfspec.WfSpecPb) obj;
 
     if (!getId()
         .equals(other.getId())) return false;
@@ -602,69 +602,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static io.littlehorse.common.proto.wfspec.WFSpecPb parseFrom(
+  public static io.littlehorse.common.proto.wfspec.WfSpecPb parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.wfspec.WFSpecPb parseFrom(
+  public static io.littlehorse.common.proto.wfspec.WfSpecPb parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.wfspec.WFSpecPb parseFrom(
+  public static io.littlehorse.common.proto.wfspec.WfSpecPb parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.wfspec.WFSpecPb parseFrom(
+  public static io.littlehorse.common.proto.wfspec.WfSpecPb parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.wfspec.WFSpecPb parseFrom(byte[] data)
+  public static io.littlehorse.common.proto.wfspec.WfSpecPb parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.wfspec.WFSpecPb parseFrom(
+  public static io.littlehorse.common.proto.wfspec.WfSpecPb parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.wfspec.WFSpecPb parseFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.wfspec.WfSpecPb parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.wfspec.WFSpecPb parseFrom(
+  public static io.littlehorse.common.proto.wfspec.WfSpecPb parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.wfspec.WFSpecPb parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.wfspec.WfSpecPb parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.wfspec.WFSpecPb parseDelimitedFrom(
+  public static io.littlehorse.common.proto.wfspec.WfSpecPb parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.wfspec.WFSpecPb parseFrom(
+  public static io.littlehorse.common.proto.wfspec.WfSpecPb parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.wfspec.WFSpecPb parseFrom(
+  public static io.littlehorse.common.proto.wfspec.WfSpecPb parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -677,7 +677,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.common.proto.wfspec.WFSpecPb prototype) {
+  public static Builder newBuilder(io.littlehorse.common.proto.wfspec.WfSpecPb prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -693,15 +693,15 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.WFSpecPb}
+   * Protobuf type {@code lh_proto.WfSpecPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.WFSpecPb)
-      io.littlehorse.common.proto.wfspec.WFSpecPbOrBuilder {
+      // @@protoc_insertion_point(builder_implements:lh_proto.WfSpecPb)
+      io.littlehorse.common.proto.wfspec.WfSpecPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.wfspec.WfSpec.internal_static_lh_proto_WFSpecPb_descriptor;
+      return io.littlehorse.common.proto.wfspec.WfSpec.internal_static_lh_proto_WfSpecPb_descriptor;
     }
 
     @SuppressWarnings({"rawtypes"})
@@ -729,12 +729,12 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.wfspec.WfSpec.internal_static_lh_proto_WFSpecPb_fieldAccessorTable
+      return io.littlehorse.common.proto.wfspec.WfSpec.internal_static_lh_proto_WfSpecPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.common.proto.wfspec.WFSpecPb.class, io.littlehorse.common.proto.wfspec.WFSpecPb.Builder.class);
+              io.littlehorse.common.proto.wfspec.WfSpecPb.class, io.littlehorse.common.proto.wfspec.WfSpecPb.Builder.class);
     }
 
-    // Construct using io.littlehorse.common.proto.wfspec.WFSpecPb.newBuilder()
+    // Construct using io.littlehorse.common.proto.wfspec.WfSpecPb.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -781,17 +781,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.wfspec.WfSpec.internal_static_lh_proto_WFSpecPb_descriptor;
+      return io.littlehorse.common.proto.wfspec.WfSpec.internal_static_lh_proto_WfSpecPb_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.wfspec.WFSpecPb getDefaultInstanceForType() {
-      return io.littlehorse.common.proto.wfspec.WFSpecPb.getDefaultInstance();
+    public io.littlehorse.common.proto.wfspec.WfSpecPb getDefaultInstanceForType() {
+      return io.littlehorse.common.proto.wfspec.WfSpecPb.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.wfspec.WFSpecPb build() {
-      io.littlehorse.common.proto.wfspec.WFSpecPb result = buildPartial();
+    public io.littlehorse.common.proto.wfspec.WfSpecPb build() {
+      io.littlehorse.common.proto.wfspec.WfSpecPb result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -799,8 +799,8 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.wfspec.WFSpecPb buildPartial() {
-      io.littlehorse.common.proto.wfspec.WFSpecPb result = new io.littlehorse.common.proto.wfspec.WFSpecPb(this);
+    public io.littlehorse.common.proto.wfspec.WfSpecPb buildPartial() {
+      io.littlehorse.common.proto.wfspec.WfSpecPb result = new io.littlehorse.common.proto.wfspec.WfSpecPb(this);
       int from_bitField0_ = bitField0_;
       result.id_ = id_;
       if (createdAtBuilder_ == null) {
@@ -857,16 +857,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.common.proto.wfspec.WFSpecPb) {
-        return mergeFrom((io.littlehorse.common.proto.wfspec.WFSpecPb)other);
+      if (other instanceof io.littlehorse.common.proto.wfspec.WfSpecPb) {
+        return mergeFrom((io.littlehorse.common.proto.wfspec.WfSpecPb)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.common.proto.wfspec.WFSpecPb other) {
-      if (other == io.littlehorse.common.proto.wfspec.WFSpecPb.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.common.proto.wfspec.WfSpecPb other) {
+      if (other == io.littlehorse.common.proto.wfspec.WfSpecPb.getDefaultInstance()) return this;
       if (!other.getId().isEmpty()) {
         id_ = other.id_;
         onChanged();
@@ -908,11 +908,11 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      io.littlehorse.common.proto.wfspec.WFSpecPb parsedMessage = null;
+      io.littlehorse.common.proto.wfspec.WfSpecPb parsedMessage = null;
       try {
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (io.littlehorse.common.proto.wfspec.WFSpecPb) e.getUnfinishedMessage();
+        parsedMessage = (io.littlehorse.common.proto.wfspec.WfSpecPb) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
@@ -1614,41 +1614,41 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.WFSpecPb)
+    // @@protoc_insertion_point(builder_scope:lh_proto.WfSpecPb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.WFSpecPb)
-  private static final io.littlehorse.common.proto.wfspec.WFSpecPb DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:lh_proto.WfSpecPb)
+  private static final io.littlehorse.common.proto.wfspec.WfSpecPb DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.common.proto.wfspec.WFSpecPb();
+    DEFAULT_INSTANCE = new io.littlehorse.common.proto.wfspec.WfSpecPb();
   }
 
-  public static io.littlehorse.common.proto.wfspec.WFSpecPb getDefaultInstance() {
+  public static io.littlehorse.common.proto.wfspec.WfSpecPb getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<WFSpecPb>
-      PARSER = new com.google.protobuf.AbstractParser<WFSpecPb>() {
+  private static final com.google.protobuf.Parser<WfSpecPb>
+      PARSER = new com.google.protobuf.AbstractParser<WfSpecPb>() {
     @java.lang.Override
-    public WFSpecPb parsePartialFrom(
+    public WfSpecPb parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new WFSpecPb(input, extensionRegistry);
+      return new WfSpecPb(input, extensionRegistry);
     }
   };
 
-  public static com.google.protobuf.Parser<WFSpecPb> parser() {
+  public static com.google.protobuf.Parser<WfSpecPb> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<WFSpecPb> getParserForType() {
+  public com.google.protobuf.Parser<WfSpecPb> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.common.proto.wfspec.WFSpecPb getDefaultInstanceForType() {
+  public io.littlehorse.common.proto.wfspec.WfSpecPb getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

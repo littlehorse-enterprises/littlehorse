@@ -10,7 +10,7 @@ import org.apache.kafka.streams.state.Stores;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.POSTable;
-import io.littlehorse.common.model.event.WFRunEvent;
+import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.scheduler.model.WfRunState;
 import io.littlehorse.scheduler.serde.SchedulerOutputTsrSer;
@@ -28,7 +28,7 @@ public class Scheduler {
     public static Topology initTopology(LHConfig config) {
         Topology topo = new Topology();
 
-        Serde<WFRunEvent> evtSerde = new WFRunEventSerde();
+        Serde<WfRunEvent> evtSerde = new WFRunEventSerde();
         Serde<WfRunState> runSerde = new WFRunSerde();
         Serde<WfSpec> specSerde = new WfSpecSerde();
 

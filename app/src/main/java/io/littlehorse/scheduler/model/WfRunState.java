@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.littlehorse.common.model.event.TaskCompletedEvent;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.TaskStartedEvent;
-import io.littlehorse.common.model.event.WFRunEvent;
+import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.ThreadSpec;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.observability.ObservabilityEvent;
@@ -16,8 +16,8 @@ import io.littlehorse.common.model.observability.ThreadStartOe;
 import io.littlehorse.common.model.observability.WfRunStatusChangeOe;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.scheduler.ThreadRunStatePb;
-import io.littlehorse.common.proto.scheduler.WFRunStatePb;
-import io.littlehorse.common.proto.scheduler.WFRunStatePbOrBuilder;
+import io.littlehorse.common.proto.scheduler.WfRunStatePb;
+import io.littlehorse.common.proto.scheduler.WfRunStatePbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
 
 public class WfRunState {
@@ -38,8 +38,8 @@ public class WfRunState {
     }
 
     // Below is Serialization/Deserialization stuff.
-    public WFRunStatePb.Builder toProtoBuilder() {
-        WFRunStatePb.Builder b = WFRunStatePb.newBuilder()
+    public WfRunStatePb.Builder toProtoBuilder() {
+        WfRunStatePb.Builder b = WfRunStatePb.newBuilder()
             .setId(id)
             .setWfSpecId(wfSpecId)
             .setStatus(status);
@@ -57,7 +57,7 @@ public class WfRunState {
         return b;
     }
 
-    public static WfRunState fromProto(WFRunStatePbOrBuilder proto) {
+    public static WfRunState fromProto(WfRunStatePbOrBuilder proto) {
         WfRunState out = new WfRunState(proto.getId());
         out.wfSpecId = proto.getWfSpecId();
         out.status = proto.getStatus();
@@ -103,7 +103,7 @@ public class WfRunState {
         thread.advance();
     }
 
-    public void processEvent(WFRunEvent e, List<TaskScheduleRequest> toSchedule) {
+    public void processEvent(WfRunEvent e, List<TaskScheduleRequest> toSchedule) {
         this.toSchedule = toSchedule;
 
         switch(e.type) {
@@ -132,7 +132,7 @@ public class WfRunState {
         );
     }
 
-    private void handleStartedEvent(WFRunEvent we) {
+    private void handleStartedEvent(WfRunEvent we) {
 
         TaskStartedEvent se = we.startedEvent;
         ThreadRunState thread = threadRuns.get(se.threadRunNumber);
@@ -140,7 +140,7 @@ public class WfRunState {
         thread.advance();
     }
 
-    private void handleCompletedEvent(WFRunEvent we) {
+    private void handleCompletedEvent(WfRunEvent we) {
         TaskCompletedEvent ce = we.completedEvent;
         ThreadRunState thread = threadRuns.get(ce.threadRunNumber);
         thread.processCompletedEvent(we);

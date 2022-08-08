@@ -11,14 +11,14 @@ import org.apache.kafka.streams.state.KeyValueStore;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
-import io.littlehorse.common.model.event.WFRunEvent;
+import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.scheduler.WFRunEventPb.EventCase;
 import io.littlehorse.scheduler.model.WfRunState;
 
 public class SchedulerProcessor
-    implements Processor<String, WFRunEvent, String, SchedulerOutput>
+    implements Processor<String, WfRunEvent, String, SchedulerOutput>
 {
     private KeyValueStore<String, WfRunState> wfRunStore;
     private KeyValueStore<String, WfSpec> wfSpecStore;
@@ -38,7 +38,7 @@ public class SchedulerProcessor
     }
 
     @Override
-    public void process(final Record<String, WFRunEvent> record) {
+    public void process(final Record<String, WfRunEvent> record) {
         try {
             processHelper(record);
         } catch(Exception exn) {
@@ -70,14 +70,14 @@ public class SchedulerProcessor
         return out;
     }
 
-    private void processHelper(final Record<String, WFRunEvent> record) {
+    private void processHelper(final Record<String, WfRunEvent> record) {
         WfSpec spec = getWfSpec(record.value().wfSpecId);
         if (spec == null) {
             System.out.println("Couldn't find spec, TODO: DeadLetter Queue");
             return;
         }
 
-        WFRunEvent e = record.value();
+        WfRunEvent e = record.value();
         WfRunState wfRun = wfRunStore.get(record.key());
 
         List<TaskScheduleRequest> toSchedule = new ArrayList<>();

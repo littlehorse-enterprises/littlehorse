@@ -90,6 +90,10 @@ message POSTableRequestPb {
 // NOTE: Maybe later we'll add an Entity output thing that lets the
 // world know what was just created, but that's for later.
 
+message RangeResponsePb {
+    repeated string ids = 1;
+    optional string token = 2;
+}
 
 // This section defines internal data structures used for data stores.
 enum GETableClassEnumPb {

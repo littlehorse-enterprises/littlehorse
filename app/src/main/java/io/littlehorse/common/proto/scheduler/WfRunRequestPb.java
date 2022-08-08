@@ -8,18 +8,18 @@ package io.littlehorse.common.proto.scheduler;
  * This section contains Input Events to the Scheduler.
  * </pre>
  *
- * Protobuf type {@code lh_proto.WFRunRequestPb}
+ * Protobuf type {@code lh_proto.WfRunRequestPb}
  */
-public final class WFRunRequestPb extends
+public final class WfRunRequestPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.WFRunRequestPb)
-    WFRunRequestPbOrBuilder {
+    // @@protoc_insertion_point(message_implements:lh_proto.WfRunRequestPb)
+    WfRunRequestPbOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use WFRunRequestPb.newBuilder() to construct.
-  private WFRunRequestPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use WfRunRequestPb.newBuilder() to construct.
+  private WfRunRequestPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private WFRunRequestPb() {
+  private WfRunRequestPb() {
     wfRunId_ = "";
     wfSpecId_ = "";
   }
@@ -28,7 +28,7 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new WFRunRequestPb();
+    return new WfRunRequestPb();
   }
 
   @java.lang.Override
@@ -36,7 +36,7 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
-  private WFRunRequestPb(
+  private WfRunRequestPb(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -87,15 +87,15 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.scheduler.Scheduler.internal_static_lh_proto_WFRunRequestPb_descriptor;
+    return io.littlehorse.common.proto.scheduler.Scheduler.internal_static_lh_proto_WfRunRequestPb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.scheduler.Scheduler.internal_static_lh_proto_WFRunRequestPb_fieldAccessorTable
+    return io.littlehorse.common.proto.scheduler.Scheduler.internal_static_lh_proto_WfRunRequestPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.common.proto.scheduler.WFRunRequestPb.class, io.littlehorse.common.proto.scheduler.WFRunRequestPb.Builder.class);
+            io.littlehorse.common.proto.scheduler.WfRunRequestPb.class, io.littlehorse.common.proto.scheduler.WfRunRequestPb.Builder.class);
   }
 
   public static final int WF_RUN_ID_FIELD_NUMBER = 1;
@@ -219,10 +219,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.common.proto.scheduler.WFRunRequestPb)) {
+    if (!(obj instanceof io.littlehorse.common.proto.scheduler.WfRunRequestPb)) {
       return super.equals(obj);
     }
-    io.littlehorse.common.proto.scheduler.WFRunRequestPb other = (io.littlehorse.common.proto.scheduler.WFRunRequestPb) obj;
+    io.littlehorse.common.proto.scheduler.WfRunRequestPb other = (io.littlehorse.common.proto.scheduler.WfRunRequestPb) obj;
 
     if (!getWfRunId()
         .equals(other.getWfRunId())) return false;
@@ -248,69 +248,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static io.littlehorse.common.proto.scheduler.WFRunRequestPb parseFrom(
+  public static io.littlehorse.common.proto.scheduler.WfRunRequestPb parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.scheduler.WFRunRequestPb parseFrom(
+  public static io.littlehorse.common.proto.scheduler.WfRunRequestPb parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.scheduler.WFRunRequestPb parseFrom(
+  public static io.littlehorse.common.proto.scheduler.WfRunRequestPb parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.scheduler.WFRunRequestPb parseFrom(
+  public static io.littlehorse.common.proto.scheduler.WfRunRequestPb parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.scheduler.WFRunRequestPb parseFrom(byte[] data)
+  public static io.littlehorse.common.proto.scheduler.WfRunRequestPb parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.scheduler.WFRunRequestPb parseFrom(
+  public static io.littlehorse.common.proto.scheduler.WfRunRequestPb parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.scheduler.WFRunRequestPb parseFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.scheduler.WfRunRequestPb parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.scheduler.WFRunRequestPb parseFrom(
+  public static io.littlehorse.common.proto.scheduler.WfRunRequestPb parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.scheduler.WFRunRequestPb parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.scheduler.WfRunRequestPb parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.scheduler.WFRunRequestPb parseDelimitedFrom(
+  public static io.littlehorse.common.proto.scheduler.WfRunRequestPb parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.scheduler.WFRunRequestPb parseFrom(
+  public static io.littlehorse.common.proto.scheduler.WfRunRequestPb parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.scheduler.WFRunRequestPb parseFrom(
+  public static io.littlehorse.common.proto.scheduler.WfRunRequestPb parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -323,7 +323,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.common.proto.scheduler.WFRunRequestPb prototype) {
+  public static Builder newBuilder(io.littlehorse.common.proto.scheduler.WfRunRequestPb prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -343,26 +343,26 @@ private static final long serialVersionUID = 0L;
    * This section contains Input Events to the Scheduler.
    * </pre>
    *
-   * Protobuf type {@code lh_proto.WFRunRequestPb}
+   * Protobuf type {@code lh_proto.WfRunRequestPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.WFRunRequestPb)
-      io.littlehorse.common.proto.scheduler.WFRunRequestPbOrBuilder {
+      // @@protoc_insertion_point(builder_implements:lh_proto.WfRunRequestPb)
+      io.littlehorse.common.proto.scheduler.WfRunRequestPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.scheduler.Scheduler.internal_static_lh_proto_WFRunRequestPb_descriptor;
+      return io.littlehorse.common.proto.scheduler.Scheduler.internal_static_lh_proto_WfRunRequestPb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.scheduler.Scheduler.internal_static_lh_proto_WFRunRequestPb_fieldAccessorTable
+      return io.littlehorse.common.proto.scheduler.Scheduler.internal_static_lh_proto_WfRunRequestPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.common.proto.scheduler.WFRunRequestPb.class, io.littlehorse.common.proto.scheduler.WFRunRequestPb.Builder.class);
+              io.littlehorse.common.proto.scheduler.WfRunRequestPb.class, io.littlehorse.common.proto.scheduler.WfRunRequestPb.Builder.class);
     }
 
-    // Construct using io.littlehorse.common.proto.scheduler.WFRunRequestPb.newBuilder()
+    // Construct using io.littlehorse.common.proto.scheduler.WfRunRequestPb.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -390,17 +390,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.scheduler.Scheduler.internal_static_lh_proto_WFRunRequestPb_descriptor;
+      return io.littlehorse.common.proto.scheduler.Scheduler.internal_static_lh_proto_WfRunRequestPb_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.scheduler.WFRunRequestPb getDefaultInstanceForType() {
-      return io.littlehorse.common.proto.scheduler.WFRunRequestPb.getDefaultInstance();
+    public io.littlehorse.common.proto.scheduler.WfRunRequestPb getDefaultInstanceForType() {
+      return io.littlehorse.common.proto.scheduler.WfRunRequestPb.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.scheduler.WFRunRequestPb build() {
-      io.littlehorse.common.proto.scheduler.WFRunRequestPb result = buildPartial();
+    public io.littlehorse.common.proto.scheduler.WfRunRequestPb build() {
+      io.littlehorse.common.proto.scheduler.WfRunRequestPb result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -408,8 +408,8 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.scheduler.WFRunRequestPb buildPartial() {
-      io.littlehorse.common.proto.scheduler.WFRunRequestPb result = new io.littlehorse.common.proto.scheduler.WFRunRequestPb(this);
+    public io.littlehorse.common.proto.scheduler.WfRunRequestPb buildPartial() {
+      io.littlehorse.common.proto.scheduler.WfRunRequestPb result = new io.littlehorse.common.proto.scheduler.WfRunRequestPb(this);
       result.wfRunId_ = wfRunId_;
       result.wfSpecId_ = wfSpecId_;
       onBuilt();
@@ -450,16 +450,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.common.proto.scheduler.WFRunRequestPb) {
-        return mergeFrom((io.littlehorse.common.proto.scheduler.WFRunRequestPb)other);
+      if (other instanceof io.littlehorse.common.proto.scheduler.WfRunRequestPb) {
+        return mergeFrom((io.littlehorse.common.proto.scheduler.WfRunRequestPb)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.common.proto.scheduler.WFRunRequestPb other) {
-      if (other == io.littlehorse.common.proto.scheduler.WFRunRequestPb.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.common.proto.scheduler.WfRunRequestPb other) {
+      if (other == io.littlehorse.common.proto.scheduler.WfRunRequestPb.getDefaultInstance()) return this;
       if (!other.getWfRunId().isEmpty()) {
         wfRunId_ = other.wfRunId_;
         onChanged();
@@ -483,11 +483,11 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      io.littlehorse.common.proto.scheduler.WFRunRequestPb parsedMessage = null;
+      io.littlehorse.common.proto.scheduler.WfRunRequestPb parsedMessage = null;
       try {
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (io.littlehorse.common.proto.scheduler.WFRunRequestPb) e.getUnfinishedMessage();
+        parsedMessage = (io.littlehorse.common.proto.scheduler.WfRunRequestPb) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
@@ -661,41 +661,41 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.WFRunRequestPb)
+    // @@protoc_insertion_point(builder_scope:lh_proto.WfRunRequestPb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.WFRunRequestPb)
-  private static final io.littlehorse.common.proto.scheduler.WFRunRequestPb DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:lh_proto.WfRunRequestPb)
+  private static final io.littlehorse.common.proto.scheduler.WfRunRequestPb DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.common.proto.scheduler.WFRunRequestPb();
+    DEFAULT_INSTANCE = new io.littlehorse.common.proto.scheduler.WfRunRequestPb();
   }
 
-  public static io.littlehorse.common.proto.scheduler.WFRunRequestPb getDefaultInstance() {
+  public static io.littlehorse.common.proto.scheduler.WfRunRequestPb getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<WFRunRequestPb>
-      PARSER = new com.google.protobuf.AbstractParser<WFRunRequestPb>() {
+  private static final com.google.protobuf.Parser<WfRunRequestPb>
+      PARSER = new com.google.protobuf.AbstractParser<WfRunRequestPb>() {
     @java.lang.Override
-    public WFRunRequestPb parsePartialFrom(
+    public WfRunRequestPb parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new WFRunRequestPb(input, extensionRegistry);
+      return new WfRunRequestPb(input, extensionRegistry);
     }
   };
 
-  public static com.google.protobuf.Parser<WFRunRequestPb> parser() {
+  public static com.google.protobuf.Parser<WfRunRequestPb> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<WFRunRequestPb> getParserForType() {
+  public com.google.protobuf.Parser<WfRunRequestPb> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.common.proto.scheduler.WFRunRequestPb getDefaultInstanceForType() {
+  public io.littlehorse.common.proto.scheduler.WfRunRequestPb getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

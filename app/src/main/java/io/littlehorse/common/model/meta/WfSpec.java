@@ -13,19 +13,19 @@ import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
-import io.littlehorse.common.model.event.WFRunEvent;
+import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.observability.ObservabilityEvent;
 import io.littlehorse.common.model.observability.RunStartOe;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.wfspec.ThreadSpecPb;
-import io.littlehorse.common.proto.wfspec.WFSpecPb;
-import io.littlehorse.common.proto.wfspec.WFSpecPbOrBuilder;
+import io.littlehorse.common.proto.wfspec.WfSpecPb;
+import io.littlehorse.common.proto.wfspec.WfSpecPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.scheduler.model.WfRunState;
 import io.littlehorse.server.model.internal.IndexEntry;
 
 
-public class WfSpec extends POSTable<WFSpecPbOrBuilder> {
+public class WfSpec extends POSTable<WfSpecPbOrBuilder> {
     public String id;
     public String name;
     public Date createdAt;
@@ -65,8 +65,8 @@ public class WfSpec extends POSTable<WFSpecPbOrBuilder> {
         lastOffset = newOffset;
     }
 
-    public WFSpecPb.Builder toProto() {
-        WFSpecPb.Builder out = WFSpecPb.newBuilder()
+    public WfSpecPb.Builder toProto() {
+        WfSpecPb.Builder out = WfSpecPb.newBuilder()
             .setId(id)
             .setCreatedAt(LHUtil.fromDate(createdAt))
             .setUpdatedAt(LHUtil.fromDate(updatedAt))
@@ -88,7 +88,7 @@ public class WfSpec extends POSTable<WFSpecPbOrBuilder> {
     }
 
     public void initFrom(MessageOrBuilder pr) {
-        WFSpecPbOrBuilder proto = (WFSpecPbOrBuilder) pr;
+        WfSpecPbOrBuilder proto = (WfSpecPbOrBuilder) pr;
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
         id = proto.getId();
         updatedAt = LHUtil.fromProtoTs(proto.getUpdatedAt());
@@ -107,11 +107,11 @@ public class WfSpec extends POSTable<WFSpecPbOrBuilder> {
         }
     }
 
-    @JsonIgnore public Class<WFSpecPb> getProtoBaseClass() {
-        return WFSpecPb.class;
+    @JsonIgnore public Class<WfSpecPb> getProtoBaseClass() {
+        return WfSpecPb.class;
     }
 
-    public static WfSpec fromProto(WFSpecPbOrBuilder proto) {
+    public static WfSpec fromProto(WfSpecPbOrBuilder proto) {
         WfSpec out = new WfSpec();
         out.initFrom(proto);
         return out;
@@ -122,7 +122,7 @@ public class WfSpec extends POSTable<WFSpecPbOrBuilder> {
     }
 
     @JsonIgnore public void handlePost(
-        POSTable<WFSpecPbOrBuilder> old, LHDatabaseClient dbClient
+        POSTable<WfSpecPbOrBuilder> old, LHDatabaseClient dbClient
     ) throws LHValidationError, LHConnectionError {
         if (old != null) {
             throw new LHValidationError(null, "Mutating WfSpec not yet supported");
@@ -146,7 +146,7 @@ public class WfSpec extends POSTable<WFSpecPbOrBuilder> {
         return out;
     }
 
-    public WfRunState startNewRun(WFRunEvent e, List<TaskScheduleRequest> toSchedule) {
+    public WfRunState startNewRun(WfRunEvent e, List<TaskScheduleRequest> toSchedule) {
         WfRunState out = new WfRunState(e.runRequest.wfRunId);
 
         out.wfSpec = this;

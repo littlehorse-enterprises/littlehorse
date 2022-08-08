@@ -25,15 +25,15 @@ public final class Scheduler {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_lh_proto_ThreadRunStatePb_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_lh_proto_WFRunStatePb_descriptor;
+    internal_static_lh_proto_WfRunStatePb_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_lh_proto_WFRunStatePb_fieldAccessorTable;
+      internal_static_lh_proto_WfRunStatePb_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_lh_proto_WFRunRequestPb_descriptor;
+    internal_static_lh_proto_WfRunRequestPb_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_lh_proto_WFRunRequestPb_fieldAccessorTable;
+      internal_static_lh_proto_WfRunRequestPb_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_lh_proto_TaskScheduleRequestPb_descriptor;
   static final 
@@ -50,10 +50,10 @@ public final class Scheduler {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_lh_proto_TaskCompletedEventPb_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_lh_proto_WFRunEventPb_descriptor;
+    internal_static_lh_proto_WfRunEventPb_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_lh_proto_WFRunEventPb_fieldAccessorTable;
+      internal_static_lh_proto_WfRunEventPb_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -72,13 +72,13 @@ public final class Scheduler {
       "d_spec_name\030\001 \001(\t\022$\n\006status\030\002 \001(\0162\024.lh_p" +
       "roto.LHStatusPb\0227\n\020current_node_run\030\003 \001(" +
       "\0132\030.lh_proto.NodeRunStatePbH\000\210\001\001B\023\n\021_cur" +
-      "rent_node_run\"\365\001\n\014WFRunStatePb\022\n\n\002id\030\001 \001" +
+      "rent_node_run\"\365\001\n\014WfRunStatePb\022\n\n\002id\030\001 \001" +
       "(\t\022\022\n\nwf_spec_id\030\002 \001(\t\022$\n\006status\030\006 \001(\0162\024" +
       ".lh_proto.LHStatusPb\022/\n\013thread_runs\030\007 \003(" +
       "\0132\032.lh_proto.ThreadRunStatePb\022.\n\nstart_t" +
       "ime\030\010 \001(\0132\032.google.protobuf.Timestamp\0221\n" +
       "\010end_time\030\t \001(\0132\032.google.protobuf.Timest" +
-      "ampH\000\210\001\001B\013\n\t_end_time\"7\n\016WFRunRequestPb\022" +
+      "ampH\000\210\001\001B\013\n\t_end_time\"7\n\016WfRunRequestPb\022" +
       "\021\n\twf_run_id\030\001 \001(\t\022\022\n\nwf_spec_id\030\002 \001(\t\"\377" +
       "\001\n\025TaskScheduleRequestPb\022\023\n\013task_def_id\030" +
       "\001 \001(\t\022\025\n\rtask_def_name\030\002 \001(\t\022\031\n\021thread_r" +
@@ -96,10 +96,10 @@ public final class Scheduler {
       ".google.protobuf.Timestamp\022\017\n\007success\030\005 " +
       "\001(\010\022\023\n\006output\030\006 \001(\014H\000\210\001\001\022\027\n\nlog_output\030\007" +
       " \001(\014H\001\210\001\001B\t\n\007_outputB\r\n\013_log_output\"\213\002\n\014" +
-      "WFRunEventPb\022\021\n\twf_run_id\030\001 \001(\t\022\022\n\nwf_sp" +
+      "WfRunEventPb\022\021\n\twf_run_id\030\001 \001(\t\022\022\n\nwf_sp" +
       "ec_id\030\002 \001(\t\022(\n\004time\030\003 \001(\0132\032.google.proto" +
       "buf.Timestamp\022/\n\013run_request\030\004 \001(\0132\030.lh_" +
-      "proto.WFRunRequestPbH\000\0225\n\rstarted_event\030" +
+      "proto.WfRunRequestPbH\000\0225\n\rstarted_event\030" +
       "\005 \001(\0132\034.lh_proto.TaskStartedEventPbH\000\0229\n" +
       "\017completed_event\030\006 \001(\0132\036.lh_proto.TaskCo" +
       "mpletedEventPbH\000B\007\n\005eventB2\n%io.littleho" +
@@ -124,17 +124,17 @@ public final class Scheduler {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_ThreadRunStatePb_descriptor,
         new java.lang.String[] { "ThreadSpecName", "Status", "CurrentNodeRun", "CurrentNodeRun", });
-    internal_static_lh_proto_WFRunStatePb_descriptor =
+    internal_static_lh_proto_WfRunStatePb_descriptor =
       getDescriptor().getMessageTypes().get(2);
-    internal_static_lh_proto_WFRunStatePb_fieldAccessorTable = new
+    internal_static_lh_proto_WfRunStatePb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_lh_proto_WFRunStatePb_descriptor,
+        internal_static_lh_proto_WfRunStatePb_descriptor,
         new java.lang.String[] { "Id", "WfSpecId", "Status", "ThreadRuns", "StartTime", "EndTime", "EndTime", });
-    internal_static_lh_proto_WFRunRequestPb_descriptor =
+    internal_static_lh_proto_WfRunRequestPb_descriptor =
       getDescriptor().getMessageTypes().get(3);
-    internal_static_lh_proto_WFRunRequestPb_fieldAccessorTable = new
+    internal_static_lh_proto_WfRunRequestPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_lh_proto_WFRunRequestPb_descriptor,
+        internal_static_lh_proto_WfRunRequestPb_descriptor,
         new java.lang.String[] { "WfRunId", "WfSpecId", });
     internal_static_lh_proto_TaskScheduleRequestPb_descriptor =
       getDescriptor().getMessageTypes().get(4);
@@ -154,11 +154,11 @@ public final class Scheduler {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_TaskCompletedEventPb_descriptor,
         new java.lang.String[] { "ThreadRunNumber", "TaskRunNumber", "TaskRunPosition", "Time", "Success", "Output", "LogOutput", "Output", "LogOutput", });
-    internal_static_lh_proto_WFRunEventPb_descriptor =
+    internal_static_lh_proto_WfRunEventPb_descriptor =
       getDescriptor().getMessageTypes().get(7);
-    internal_static_lh_proto_WFRunEventPb_fieldAccessorTable = new
+    internal_static_lh_proto_WfRunEventPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_lh_proto_WFRunEventPb_descriptor,
+        internal_static_lh_proto_WfRunEventPb_descriptor,
         new java.lang.String[] { "WfRunId", "WfSpecId", "Time", "RunRequest", "StartedEvent", "CompletedEvent", "Event", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.common.proto.LhProto.getDescriptor();

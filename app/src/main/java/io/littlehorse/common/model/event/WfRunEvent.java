@@ -1,11 +1,11 @@
 package io.littlehorse.common.model.event;
 
 import java.util.Date;
-import io.littlehorse.common.proto.scheduler.WFRunEventPb;
-import io.littlehorse.common.proto.scheduler.WFRunEventPb.EventCase;
+import io.littlehorse.common.proto.scheduler.WfRunEventPb;
+import io.littlehorse.common.proto.scheduler.WfRunEventPb.EventCase;
 import io.littlehorse.common.util.LHUtil;
 
-public class WFRunEvent {
+public class WfRunEvent {
     public String wfRunId;
     public String wfSpecId;
     public Date time;
@@ -15,8 +15,8 @@ public class WFRunEvent {
     public TaskCompletedEvent completedEvent;
     public WFRunRequest runRequest;
 
-    public WFRunEventPb.Builder toProtoBuilder() {
-        WFRunEventPb.Builder b = WFRunEventPb.newBuilder()
+    public WfRunEventPb.Builder toProtoBuilder() {
+        WfRunEventPb.Builder b = WfRunEventPb.newBuilder()
             .setWfRunId(wfRunId)
             .setWfSpecId(wfSpecId)
             .setTime(LHUtil.fromDate(time));
@@ -39,8 +39,8 @@ public class WFRunEvent {
         return b;
     }
 
-    public static WFRunEvent fromProto(WFRunEventPb proto) {
-        WFRunEvent out = new WFRunEvent();
+    public static WfRunEvent fromProto(WfRunEventPb proto) {
+        WfRunEvent out = new WfRunEvent();
         out.wfRunId = proto.getWfRunId();
         out.wfSpecId = proto.getWfSpecId();
         out.time = LHUtil.fromProtoTs(proto.getTime());

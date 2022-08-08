@@ -3,8 +3,8 @@
 
 package io.littlehorse.common.proto.scheduler;
 
-public interface WFRunStatePbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.WFRunStatePb)
+public interface WfRunStatePbOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:lh_proto.WfRunStatePb)
     com.google.protobuf.MessageOrBuilder {
 
   /**

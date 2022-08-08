@@ -3,8 +3,8 @@
 
 package io.littlehorse.common.proto.scheduler;
 
-public interface WFRunEventPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.WFRunEventPb)
+public interface WfRunEventPbOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:lh_proto.WfRunEventPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**
@@ -47,19 +47,19 @@ public interface WFRunEventPbOrBuilder extends
   com.google.protobuf.TimestampOrBuilder getTimeOrBuilder();
 
   /**
-   * <code>.lh_proto.WFRunRequestPb run_request = 4;</code>
+   * <code>.lh_proto.WfRunRequestPb run_request = 4;</code>
    * @return Whether the runRequest field is set.
    */
   boolean hasRunRequest();
   /**
-   * <code>.lh_proto.WFRunRequestPb run_request = 4;</code>
+   * <code>.lh_proto.WfRunRequestPb run_request = 4;</code>
    * @return The runRequest.
    */
-  io.littlehorse.common.proto.scheduler.WFRunRequestPb getRunRequest();
+  io.littlehorse.common.proto.scheduler.WfRunRequestPb getRunRequest();
   /**
-   * <code>.lh_proto.WFRunRequestPb run_request = 4;</code>
+   * <code>.lh_proto.WfRunRequestPb run_request = 4;</code>
    */
-  io.littlehorse.common.proto.scheduler.WFRunRequestPbOrBuilder getRunRequestOrBuilder();
+  io.littlehorse.common.proto.scheduler.WfRunRequestPbOrBuilder getRunRequestOrBuilder();
 
   /**
    * <code>.lh_proto.TaskStartedEventPb started_event = 5;</code>
@@ -91,5 +91,5 @@ public interface WFRunEventPbOrBuilder extends
    */
   io.littlehorse.common.proto.scheduler.TaskCompletedEventPbOrBuilder getCompletedEventOrBuilder();
 
-  public io.littlehorse.common.proto.scheduler.WFRunEventPb.EventCase getEventCase();
+  public io.littlehorse.common.proto.scheduler.WfRunEventPb.EventCase getEventCase();
 }

@@ -40,6 +40,11 @@ public final class Server {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_lh_proto_POSTableRequestPb_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_lh_proto_RangeResponsePb_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_lh_proto_RangeResponsePb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_lh_proto_AttributePb_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -119,29 +124,31 @@ public final class Server {
       "\n\021POSTableRequestPb\022%\n\004type\030\001 \001(\0162\027.lh_p" +
       "roto.RequestTypePb\022\021\n\tstore_key\030\002 \001(\t\022\022\n" +
       "\nrequest_id\030\003 \001(\t\022\024\n\007payload\030\004 \001(\014H\000\210\001\001B" +
-      "\n\n\010_payload\"\'\n\013AttributePb\022\013\n\003key\030\001 \001(\t\022" +
-      "\013\n\003val\030\002 \001(\t\"\220\001\n\nIndexKeyPb\022)\n\nattribute" +
-      "s\030\001 \003(\0132\025.lh_proto.AttributePb\022*\n\004type\030\002" +
-      " \001(\0162\034.lh_proto.GETableClassEnumPb\022+\n\007cr" +
-      "eated\030\003 \001(\0132\032.google.protobuf.Timestamp\"" +
-      "!\n\014IndexValuePb\022\021\n\tstore_key\030\001 \003(\t\"D\n\014In" +
-      "dexEntryPb\022!\n\003key\030\001 \001(\0132\024.lh_proto.Index" +
-      "KeyPb\022\021\n\tstore_key\030\002 \001(\t\"f\n\022IndexEntryAc" +
-      "tionPb\022%\n\005entry\030\001 \001(\0132\026.lh_proto.IndexEn" +
-      "tryPb\022)\n\006action\030\002 \001(\0162\031.lh_proto.IndexAc" +
-      "tionEnum\"O\n\016GETableEntryPb\022\r\n\005entry\030\001 \001(" +
-      "\014\022\021\n\tpartition\030\002 \001(\005\022\033\n\023last_updated_off" +
-      "set\030\003 \001(\003\"9\n\016IndexEntriesPb\022\'\n\007entries\030\001" +
-      " \003(\0132\026.lh_proto.IndexEntryPb*r\n\020LHRespon" +
-      "seCodePb\022\006\n\002OK\020\000\022\024\n\020CONNECTION_ERROR\020\001\022\023" +
-      "\n\017NOT_FOUND_ERROR\020\002\022\025\n\021BAD_REQUEST_ERROR" +
-      "\020\003\022\024\n\020VALIDATION_ERROR\020\004*%\n\rRequestTypeP" +
-      "b\022\010\n\004POST\020\000\022\n\n\006DELETE\020\001*Y\n\022GETableClassE" +
-      "numPb\022\014\n\010TASK_DEF\020\000\022\013\n\007WF_SPEC\020\001\022\n\n\006WF_R" +
-      "UN\020\002\022\016\n\nTHREAD_RUN\020\003\022\014\n\010TASK_RUN\020\004*=\n\017In" +
-      "dexActionEnum\022\024\n\020CREATE_IDX_ENTRY\020\000\022\024\n\020D" +
-      "ELETE_IDX_ENTRY\020\001B/\n\"io.littlehorse.comm" +
-      "on.proto.serverP\001Z\007.;modelb\006proto3"
+      "\n\n\010_payload\"<\n\017RangeResponsePb\022\013\n\003ids\030\001 " +
+      "\003(\t\022\022\n\005token\030\002 \001(\tH\000\210\001\001B\010\n\006_token\"\'\n\013Att" +
+      "ributePb\022\013\n\003key\030\001 \001(\t\022\013\n\003val\030\002 \001(\t\"\220\001\n\nI" +
+      "ndexKeyPb\022)\n\nattributes\030\001 \003(\0132\025.lh_proto" +
+      ".AttributePb\022*\n\004type\030\002 \001(\0162\034.lh_proto.GE" +
+      "TableClassEnumPb\022+\n\007created\030\003 \001(\0132\032.goog" +
+      "le.protobuf.Timestamp\"!\n\014IndexValuePb\022\021\n" +
+      "\tstore_key\030\001 \003(\t\"D\n\014IndexEntryPb\022!\n\003key\030" +
+      "\001 \001(\0132\024.lh_proto.IndexKeyPb\022\021\n\tstore_key" +
+      "\030\002 \001(\t\"f\n\022IndexEntryActionPb\022%\n\005entry\030\001 " +
+      "\001(\0132\026.lh_proto.IndexEntryPb\022)\n\006action\030\002 " +
+      "\001(\0162\031.lh_proto.IndexActionEnum\"O\n\016GETabl" +
+      "eEntryPb\022\r\n\005entry\030\001 \001(\014\022\021\n\tpartition\030\002 \001" +
+      "(\005\022\033\n\023last_updated_offset\030\003 \001(\003\"9\n\016Index" +
+      "EntriesPb\022\'\n\007entries\030\001 \003(\0132\026.lh_proto.In" +
+      "dexEntryPb*r\n\020LHResponseCodePb\022\006\n\002OK\020\000\022\024" +
+      "\n\020CONNECTION_ERROR\020\001\022\023\n\017NOT_FOUND_ERROR\020" +
+      "\002\022\025\n\021BAD_REQUEST_ERROR\020\003\022\024\n\020VALIDATION_E" +
+      "RROR\020\004*%\n\rRequestTypePb\022\010\n\004POST\020\000\022\n\n\006DEL" +
+      "ETE\020\001*Y\n\022GETableClassEnumPb\022\014\n\010TASK_DEF\020" +
+      "\000\022\013\n\007WF_SPEC\020\001\022\n\n\006WF_RUN\020\002\022\016\n\nTHREAD_RUN" +
+      "\020\003\022\014\n\010TASK_RUN\020\004*=\n\017IndexActionEnum\022\024\n\020C" +
+      "REATE_IDX_ENTRY\020\000\022\024\n\020DELETE_IDX_ENTRY\020\001B" +
+      "/\n\"io.littlehorse.common.proto.serverP\001Z" +
+      "\007.;modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -179,44 +186,50 @@ public final class Server {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_POSTableRequestPb_descriptor,
         new java.lang.String[] { "Type", "StoreKey", "RequestId", "Payload", "Payload", });
-    internal_static_lh_proto_AttributePb_descriptor =
+    internal_static_lh_proto_RangeResponsePb_descriptor =
       getDescriptor().getMessageTypes().get(5);
+    internal_static_lh_proto_RangeResponsePb_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_lh_proto_RangeResponsePb_descriptor,
+        new java.lang.String[] { "Ids", "Token", "Token", });
+    internal_static_lh_proto_AttributePb_descriptor =
+      getDescriptor().getMessageTypes().get(6);
     internal_static_lh_proto_AttributePb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_AttributePb_descriptor,
         new java.lang.String[] { "Key", "Val", });
     internal_static_lh_proto_IndexKeyPb_descriptor =
-      getDescriptor().getMessageTypes().get(6);
+      getDescriptor().getMessageTypes().get(7);
     internal_static_lh_proto_IndexKeyPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_IndexKeyPb_descriptor,
         new java.lang.String[] { "Attributes", "Type", "Created", });
     internal_static_lh_proto_IndexValuePb_descriptor =
-      getDescriptor().getMessageTypes().get(7);
+      getDescriptor().getMessageTypes().get(8);
     internal_static_lh_proto_IndexValuePb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_IndexValuePb_descriptor,
         new java.lang.String[] { "StoreKey", });
     internal_static_lh_proto_IndexEntryPb_descriptor =
-      getDescriptor().getMessageTypes().get(8);
+      getDescriptor().getMessageTypes().get(9);
     internal_static_lh_proto_IndexEntryPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_IndexEntryPb_descriptor,
         new java.lang.String[] { "Key", "StoreKey", });
     internal_static_lh_proto_IndexEntryActionPb_descriptor =
-      getDescriptor().getMessageTypes().get(9);
+      getDescriptor().getMessageTypes().get(10);
     internal_static_lh_proto_IndexEntryActionPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_IndexEntryActionPb_descriptor,
         new java.lang.String[] { "Entry", "Action", });
     internal_static_lh_proto_GETableEntryPb_descriptor =
-      getDescriptor().getMessageTypes().get(10);
+      getDescriptor().getMessageTypes().get(11);
     internal_static_lh_proto_GETableEntryPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_GETableEntryPb_descriptor,
         new java.lang.String[] { "Entry", "Partition", "LastUpdatedOffset", });
     internal_static_lh_proto_IndexEntriesPb_descriptor =
-      getDescriptor().getMessageTypes().get(11);
+      getDescriptor().getMessageTypes().get(12);
     internal_static_lh_proto_IndexEntriesPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_IndexEntriesPb_descriptor,

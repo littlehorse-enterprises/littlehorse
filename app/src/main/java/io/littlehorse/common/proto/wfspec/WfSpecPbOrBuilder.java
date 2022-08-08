@@ -3,8 +3,8 @@
 
 package io.littlehorse.common.proto.wfspec;
 
-public interface WFSpecPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.WFSpecPb)
+public interface WfSpecPbOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:lh_proto.WfSpecPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**

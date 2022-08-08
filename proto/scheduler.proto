@@ -24,7 +24,7 @@ message ThreadRunStatePb {
     optional NodeRunStatePb current_node_run = 3;
 }
 
-message WFRunStatePb {
+message WfRunStatePb {
     string id = 1;
     string wf_spec_id = 2;
     LHStatusPb status = 6;
@@ -34,7 +34,7 @@ message WFRunStatePb {
 }
 
 // This section contains Input Events to the Scheduler.
-message WFRunRequestPb {
+message WfRunRequestPb {
     string wf_run_id = 1;
     string wf_spec_id = 2;
 }
@@ -70,12 +70,12 @@ message TaskCompletedEventPb {
     optional bytes log_output = 7;
 }
 
-message WFRunEventPb {
+message WfRunEventPb {
     string wf_run_id = 1;
     string wf_spec_id = 2;
     google.protobuf.Timestamp time = 3;
     oneof event {
-        WFRunRequestPb run_request = 4;
+        WfRunRequestPb run_request = 4;
         TaskStartedEventPb started_event = 5;
         TaskCompletedEventPb completed_event = 6;
     }

@@ -6,7 +6,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.event.TaskCompletedEvent;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.TaskStartedEvent;
-import io.littlehorse.common.model.event.WFRunEvent;
+import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.Edge;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.meta.ThreadSpec;
@@ -182,7 +182,7 @@ public class ThreadRunState {
         System.out.println(wfRun.endTime.getTime() - wfRun.startTime.getTime());
     }
 
-    public void processStartedEvent(WFRunEvent we) {
+    public void processStartedEvent(WfRunEvent we) {
         wfRun.oEvents.add(
             new ObservabilityEvent(
                 new TaskStartOe(we.startedEvent, currentNodeRun.nodeName),
@@ -204,7 +204,7 @@ public class ThreadRunState {
         currentNodeRun.status = LHStatusPb.RUNNING;
     }
 
-    public void processCompletedEvent(WFRunEvent we) {
+    public void processCompletedEvent(WfRunEvent we) {
         wfRun.oEvents.add(new ObservabilityEvent(
             new TaskCompleteOe(we.completedEvent, currentNodeRun.nodeName),
             we.time

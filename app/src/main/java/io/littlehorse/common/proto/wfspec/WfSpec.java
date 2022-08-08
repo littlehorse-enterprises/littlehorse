@@ -35,15 +35,15 @@ public final class WfSpec {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_lh_proto_ThreadSpecPb_NodesEntry_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_lh_proto_WFSpecPb_descriptor;
+    internal_static_lh_proto_WfSpecPb_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_lh_proto_WFSpecPb_fieldAccessorTable;
+      internal_static_lh_proto_WfSpecPb_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_lh_proto_WFSpecPb_ThreadSpecsEntry_descriptor;
+    internal_static_lh_proto_WfSpecPb_ThreadSpecsEntry_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_lh_proto_WFSpecPb_ThreadSpecsEntry_fieldAccessorTable;
+      internal_static_lh_proto_WfSpecPb_ThreadSpecsEntry_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_lh_proto_TaskDefPb_descriptor;
   static final 
@@ -67,11 +67,11 @@ public final class WfSpec {
       "ame\"\200\001\n\014ThreadSpecPb\0220\n\005nodes\030\001 \003(\0132!.lh" +
       "_proto.ThreadSpecPb.NodesEntry\032>\n\nNodesE" +
       "ntry\022\013\n\003key\030\001 \001(\t\022\037\n\005value\030\002 \001(\0132\020.lh_pr" +
-      "oto.NodePb:\0028\001\"\356\002\n\010WFSpecPb\022\n\n\002id\030\001 \001(\t\022" +
+      "oto.NodePb:\0028\001\"\356\002\n\010WfSpecPb\022\n\n\002id\030\001 \001(\t\022" +
       ".\n\ncreated_at\030\002 \001(\0132\032.google.protobuf.Ti" +
       "mestamp\022.\n\nupdated_at\030\003 \001(\0132\032.google.pro" +
       "tobuf.Timestamp\0229\n\014thread_specs\030\004 \003(\0132#." +
-      "lh_proto.WFSpecPb.ThreadSpecsEntry\022\036\n\026en" +
+      "lh_proto.WfSpecPb.ThreadSpecsEntry\022\036\n\026en" +
       "trypoint_thread_name\030\005 \001(\t\022$\n\006status\030\006 \001" +
       "(\0162\024.lh_proto.LHStatusPb\022\014\n\004name\030\007 \001(\t\022\033" +
       "\n\023last_updated_offset\030\010 \001(\003\032J\n\020ThreadSpe" +
@@ -113,17 +113,17 @@ public final class WfSpec {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_ThreadSpecPb_NodesEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
-    internal_static_lh_proto_WFSpecPb_descriptor =
+    internal_static_lh_proto_WfSpecPb_descriptor =
       getDescriptor().getMessageTypes().get(3);
-    internal_static_lh_proto_WFSpecPb_fieldAccessorTable = new
+    internal_static_lh_proto_WfSpecPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_lh_proto_WFSpecPb_descriptor,
+        internal_static_lh_proto_WfSpecPb_descriptor,
         new java.lang.String[] { "Id", "CreatedAt", "UpdatedAt", "ThreadSpecs", "EntrypointThreadName", "Status", "Name", "LastUpdatedOffset", });
-    internal_static_lh_proto_WFSpecPb_ThreadSpecsEntry_descriptor =
-      internal_static_lh_proto_WFSpecPb_descriptor.getNestedTypes().get(0);
-    internal_static_lh_proto_WFSpecPb_ThreadSpecsEntry_fieldAccessorTable = new
+    internal_static_lh_proto_WfSpecPb_ThreadSpecsEntry_descriptor =
+      internal_static_lh_proto_WfSpecPb_descriptor.getNestedTypes().get(0);
+    internal_static_lh_proto_WfSpecPb_ThreadSpecsEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_lh_proto_WFSpecPb_ThreadSpecsEntry_descriptor,
+        internal_static_lh_proto_WfSpecPb_ThreadSpecsEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_lh_proto_TaskDefPb_descriptor =
       getDescriptor().getMessageTypes().get(4);

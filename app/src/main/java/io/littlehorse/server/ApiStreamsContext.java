@@ -24,6 +24,7 @@ import io.littlehorse.common.util.LHApiClient;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.model.POSTableRequestSerializer;
 import io.littlehorse.server.model.internal.POSTableRequest;
+import io.littlehorse.server.model.internal.RangeResponse;
 import io.littlehorse.server.model.internal.LHResponse;
 
 public class ApiStreamsContext {
@@ -142,6 +143,27 @@ public class ApiStreamsContext {
         return timeOut.toBytes();
     }
 
+    public RangeResponse keyedPrefixScan(String prefixKey, String token, int limit)
+    throws LHConnectionError {
+        String storeName = LHConstants.INDEX_STORE_NAME;
+        KeyQueryMetadata metadata = streams.queryMetadataForKey(
+            storeName, prefixKey, Serdes.String().serializer()
+        );
+        if (metadata.activeHost().equals(thisHost)) {
+            return internalLocalKeyedPrefixScan(prefixKey, token, limit);
+        } else {
+            return remoteKeyedPrefixScan(
+                prefixKey, token, limit, metadata.activeHost(), metadata.standbyHosts()
+            );
+        }
+    }
+
+    public RangeResponse internalLocalKeyedPrefixScan(
+        String prefixKey, String token, int limit
+    ) {
+        return null;
+    }
+
     private ReadOnlyKeyValueStore<String, GETable<?>> getStore(String storeName) {
         return streams.store(
             StoreQueryParameters.fromNameAndType(
@@ -172,6 +194,39 @@ public class ApiStreamsContext {
                 QueryableStoreTypes.keyValueStore()
             )
         );
+    }
+
+    private RangeResponse remoteKeyedPrefixScan(
+        String prefixKey, String token, int limit,
+        HostInfo host, Set<HostInfo> standbys
+    ) throws LHConnectionError {
+        LHConnectionError caught = null;
+        String path = "/internal/localKeyedPrefixScan/" + prefixKey;
+        path += "?limit=" + limit;
+        if (token != null) {
+            path += "&token=" + token;
+        }
+        try {
+            return LHSerializable.fromBytes(
+                client.getResponse(host, path), RangeResponse.class
+            );
+        } catch(LHConnectionError exn) {
+            for (HostInfo standby: standbys) {
+                caught = exn;
+                try {
+                    LHUtil.log("Calling standby: ", standby);
+                    return LHSerializable.fromBytes(
+                        client.getResponse(standby, path), RangeResponse.class
+                    );
+                } catch(LHConnectionError other) {
+                    LHUtil.log("Failed making standby call.");
+                } catch(LHSerdeError impossibleError) {
+                    throw new RuntimeException(impossibleError);
+                }
+            }
+        } catch(LHSerdeError exn) {/* not possible */}
+
+        throw caught;
     }
 
     private byte[] queryRemoteBytes(
