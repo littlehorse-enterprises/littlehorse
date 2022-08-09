@@ -50,6 +50,10 @@ public class LHConfig {
         ));
     }
 
+    public LHDatabaseClient getDbClient() {
+        return new LHDatabaseClient(this);
+    }
+
     public int getClusterPartitions() {
         return Integer.valueOf(String.class.cast(props.getOrDefault(
             LHConstants.CLUSTER_PARTITIONS_KEY, "72")

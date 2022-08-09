@@ -15,7 +15,7 @@ public class TaskCompletedEvent {
     public byte[] stderr;
     public boolean success;
 
-    public TaskCompletedEventPb.Builder toProtoBuilder() {
+    public TaskCompletedEventPb.Builder toProto() {
         TaskCompletedEventPb.Builder b = TaskCompletedEventPb.newBuilder()
             .setThreadRunNumber(threadRunNumber)
             .setTaskRunNumber(taskRunNumber)

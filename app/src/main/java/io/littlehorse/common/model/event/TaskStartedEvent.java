@@ -11,7 +11,7 @@ public class TaskStartedEvent {
     public int taskRunPosition;
     public Date time;
 
-    public TaskStartedEventPb.Builder toProtoBuilder() {
+    public TaskStartedEventPb.Builder toProto() {
         TaskStartedEventPb.Builder b = TaskStartedEventPb.newBuilder()
             .setThreadRunNumber(threadRunNumber)
             .setTaskRunNumber(taskRunNumber)

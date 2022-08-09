@@ -3,20 +3,26 @@ package io.littlehorse.server;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.kafka.clients.producer.Producer;
 import com.google.protobuf.MessageOrBuilder;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHDatabaseClient;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.POSTable;
+import io.littlehorse.common.model.event.WfRunEvent;
+import io.littlehorse.common.model.event.WfRunRequest;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.proto.server.GETableClassEnumPb;
 import io.littlehorse.common.proto.server.LHResponseCodePb;
 import io.littlehorse.common.util.KStreamsStateListener;
+import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.scheduler.serde.WfRunEventSerializer;
 import io.littlehorse.server.model.internal.IndexEntry;
 import io.littlehorse.server.model.internal.LHResponse;
 import io.littlehorse.server.model.internal.RangeResponse;
@@ -29,6 +35,8 @@ public class LHApi {
     private Javalin app;
     private LHConfig config;
     private ApiStreamsContext streams;
+    private LHDatabaseClient client;
+    private Producer<String, WfRunEvent> wfRunProducer;
 
     private interface HandlerFunc {
         public void handle(Context ctx) throws Exception;
@@ -53,6 +61,8 @@ public class LHApi {
         this.streams = streams;
         this.config = config;
         this.app = LHConfig.createAppWithHealth(listener);
+        this.client = config.getDbClient();
+        this.wfRunProducer = config.getKafkaProducer(WfRunEventSerializer.class);
 
         this.app.get("/WfSpec/{id}", (ctx) -> handle(this::getWfSpec, ctx));
         this.app.get("/WfRun/{id}", (ctx) -> handle(this::getWfRun, ctx));
@@ -72,6 +82,7 @@ public class LHApi {
         this.app.post("/TaskDef", (ctx) -> {
             handle((c) -> {this.post(c, TaskDef.class);}, ctx);
         });
+        this.app.post("/WfRun", this::postWfRun);
 
         this.app.get("/search/WfSpec/name/{name}", this::getWfSpecByName);
 
@@ -147,6 +158,32 @@ public class LHApi {
         returnLookup(id, id, TaskDef.class, ctx);
     }
 
+    public void postWfRun(Context ctx) {
+        LHResponse resp = new LHResponse();
+        try {
+            WfRunRequest req = LHSerializable.fromJson(
+                ctx.body(), WfRunRequest.class
+            );
+            if (req.wfRunId == null) {
+                req.wfRunId = LHUtil.generateGuid();
+            }
+
+            WfSpec spec = client.getWfSpec(req.wfSpecId);
+            if (spec == null) {
+                resp.code = LHResponseCodePb.NOT_FOUND_ERROR;
+                resp.message = "Could not find specified WfSpec.";
+            } else {
+                req.wfSpecId = spec.getObjectId();
+
+            }
+        } catch(LHSerdeError exn) {
+            resp.code = LHResponseCodePb.BAD_REQUEST_ERROR;
+            resp.message = "Failed to unmarshal input: " + exn.getMessage();
+        } catch(LHConnectionError exn) {
+            resp.code = LHResponseCodePb.CONNECTION_ERROR;
+            resp.message = "Had an internal error: " + exn.getMessage();
+        }
+    }
 
     public void getThreadRun(Context ctx) {
         String wfRunId = ctx.pathParam("wfRunId");

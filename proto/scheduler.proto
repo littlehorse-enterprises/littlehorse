@@ -35,7 +35,7 @@ message WfRunStatePb {
 
 // This section contains Input Events to the Scheduler.
 message WfRunRequestPb {
-    string wf_run_id = 1;
+    optional string wf_run_id = 1;
     string wf_spec_id = 2;
 }
 

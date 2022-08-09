@@ -6,7 +6,7 @@ import io.littlehorse.common.proto.scheduler.WfRunEventPb;
 
 public class WfRunEventSerializer implements Serializer<WfRunEvent> {
     public byte[] serialize(String topic, WfRunEvent evt) {
-        WfRunEventPb proto = evt.toProtoBuilder().build();
+        WfRunEventPb proto = evt.toProto().build();
         return proto.toByteArray();
     }
 }

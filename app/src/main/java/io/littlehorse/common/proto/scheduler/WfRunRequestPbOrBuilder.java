@@ -9,6 +9,11 @@ public interface WfRunRequestPbOrBuilder extends
 
   /**
    * <code>string wf_run_id = 1;</code>
+   * @return Whether the wfRunId field is set.
+   */
+  boolean hasWfRunId();
+  /**
+   * <code>string wf_run_id = 1;</code>
    * @return The wfRunId.
    */
   java.lang.String getWfRunId();

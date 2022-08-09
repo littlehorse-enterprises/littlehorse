@@ -13,9 +13,9 @@ public class WfRunEvent {
     public EventCase type;
     public TaskStartedEvent startedEvent;
     public TaskCompletedEvent completedEvent;
-    public WFRunRequest runRequest;
+    public WfRunRequest runRequest;
 
-    public WfRunEventPb.Builder toProtoBuilder() {
+    public WfRunEventPb.Builder toProto() {
         WfRunEventPb.Builder b = WfRunEventPb.newBuilder()
             .setWfRunId(wfRunId)
             .setWfSpecId(wfSpecId)
@@ -27,13 +27,13 @@ public class WfRunEvent {
         case EVENT_NOT_SET:
             break;
         case STARTED_EVENT:
-            b.setStartedEvent(startedEvent.toProtoBuilder());
+            b.setStartedEvent(startedEvent.toProto());
             break;
         case COMPLETED_EVENT:
-            b.setCompletedEvent(completedEvent.toProtoBuilder());
+            b.setCompletedEvent(completedEvent.toProto());
             break;
         case RUN_REQUEST:
-            b.setRunRequest(runRequest.toProtoBuilder());
+            b.setRunRequest(runRequest.toProto());
             break;
         }
         return b;
@@ -58,7 +58,7 @@ public class WfRunEvent {
                 .fromProto(proto.getCompletedEvent());
             break;
         case RUN_REQUEST:
-            out.runRequest = WFRunRequest.fromProto(proto.getRunRequest());
+            out.runRequest = WfRunRequest.fromProto(proto.getRunRequest());
         }
         return out;
     }
