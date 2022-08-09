@@ -11,7 +11,6 @@ import org.apache.kafka.clients.admin.CreateTopicsResult;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.KafkaFuture;
 import org.apache.kafka.common.errors.TopicExistsException;
@@ -23,13 +22,16 @@ import org.apache.kafka.streams.state.HostInfo;
 import io.javalin.Javalin;
 import io.littlehorse.common.util.KStreamsStateListener;
 import io.littlehorse.common.util.LHApiClient;
+import io.littlehorse.common.util.LHProducer;
+import io.littlehorse.common.util.LHUtil;
 
 public class LHConfig {
     private Properties props;
     private HashSet<String> seenConsumerTypes;
     private Admin kafkaAdmin;
+    private LHProducer producer;
+    private LHProducer txnProducer;
 
-    private HashSet<KafkaProducer<?, ?>> producersToClose;
     private HashSet<KafkaConsumer<?, ?>> consumersToClose;
 
     public String getBootstrapServers() {
@@ -121,8 +123,9 @@ public class LHConfig {
 
     public void cleanup() {
         if (this.kafkaAdmin != null) this.kafkaAdmin.close();
+        if (this.producer != null) this.producer.close();
+        if (this.txnProducer != null) this.txnProducer.close();
 
-        for (KafkaProducer<?, ?> p: producersToClose) p.close();
         for (KafkaConsumer<?, ?> c: consumersToClose) c.close();
     }
 
@@ -130,25 +133,19 @@ public class LHConfig {
         return new LHApiClient();
     }
 
-    // public <U, T extends Serializer<U>> KafkaProducer<String, U> getKafkaProducer(
-    //     Class<T> serializerClass
-    // ) {
-    //     if (seenProducerTypes == null) seenProducerTypes = new HashSet<>();
+    public LHProducer getProducer() {
+        if (producer == null) {
+            producer = new LHProducer(this, false);
+        }
+        return producer;
+    }
 
-    //     if (seenProducerTypes.contains(serializerClass.getCanonicalName())) {
-    //         throw new RuntimeException(
-    //             "Twice got consumer with " + serializerClass.getCanonicalName()
-    //         );
-    //     }
-    //     seenProducerTypes.add(serializerClass.getCanonicalName());
-
-    //     Properties conf = new Properties();
-        
-
-    //     KafkaProducer<String, U> prod = new KafkaProducer<String, U>(conf);
-    //     producersToClose.add(prod);
-    //     return prod;
-    // }
+    public LHProducer getTxnProducer() {
+        if (txnProducer == null) {
+            txnProducer = new LHProducer(this, true);
+        }
+        return txnProducer;
+    }
 
     public Properties getKafkaProducerConfig() {
         Properties conf = new Properties();
@@ -156,7 +153,7 @@ public class LHConfig {
         conf.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");
         conf.put(
             ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-            Serdes.Bytes().serializer()
+            Serdes.Bytes().serializer().getClass()
         );
         conf.put(
             ProducerConfig.CLIENT_ID_CONFIG,
@@ -167,13 +164,17 @@ public class LHConfig {
             org.apache.kafka.common.serialization.StringSerializer.class
         );
         conf.put(ProducerConfig.ACKS_CONFIG, "all");
+        return conf;
+    }
+
+    public Properties getKafkaTxnProducerConfig() {
+        Properties conf = getKafkaProducerConfig();
         conf.put(
             ProducerConfig.TRANSACTIONAL_ID_CONFIG,
             getKafkaGroupId() + "__" + getKafkaInstanceId()
         );
         return conf;
     }
-
     public <U, T extends Deserializer<U>> KafkaConsumer<String, U> getKafkaConsumer(
         Class<T> deserializerClass
     ) {
@@ -281,7 +282,7 @@ public class LHConfig {
             future.get();
         } catch (Exception e) {
             if (e.getCause() != null && e.getCause() instanceof TopicExistsException) {
-                System.out.println("Topic " + topic.name() + " already exists.");
+                LHUtil.log("Topic " + topic.name() + " already exists.");
             } else {
                 throw e;
             }
@@ -301,7 +302,6 @@ public class LHConfig {
             getBootstrapServers()
         );
         consumersToClose = new HashSet<>();
-        producersToClose = new HashSet<>();
         this.kafkaAdmin = Admin.create(akProperties);
     }
 

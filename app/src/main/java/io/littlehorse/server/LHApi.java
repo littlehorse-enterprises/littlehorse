@@ -1,24 +1,31 @@
 package io.littlehorse.server;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.kafka.common.KafkaException;
 import com.google.protobuf.MessageOrBuilder;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDatabaseClient;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.POSTable;
+import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.event.WfRunRequest;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.proto.scheduler.WfRunEventPb.EventCase;
 import io.littlehorse.common.proto.server.GETableClassEnumPb;
 import io.littlehorse.common.proto.server.LHResponseCodePb;
 import io.littlehorse.common.util.KStreamsStateListener;
+import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.model.internal.IndexEntry;
 import io.littlehorse.server.model.internal.LHResponse;
@@ -33,6 +40,7 @@ public class LHApi {
     private LHConfig config;
     private ApiStreamsContext streams;
     private LHDatabaseClient client;
+    private LHProducer producer;
 
     private interface HandlerFunc {
         public void handle(Context ctx) throws Exception;
@@ -54,6 +62,7 @@ public class LHApi {
     public LHApi(
         LHConfig config, ApiStreamsContext streams, KStreamsStateListener listener
     ) {
+        this.producer = config.getProducer();
         this.streams = streams;
         this.config = config;
         this.app = LHConfig.createAppWithHealth(listener);
@@ -77,7 +86,7 @@ public class LHApi {
         this.app.post("/TaskDef", (ctx) -> {
             handle((c) -> {this.post(c, TaskDef.class);}, ctx);
         });
-        this.app.post("/WfRun", this::postWfRun);
+        this.app.post("/WfRun", (ctx) -> handle(this::postWfRun, ctx));
 
         this.app.get("/search/WfSpec/name/{name}", this::getWfSpecByName);
 
@@ -157,6 +166,7 @@ public class LHApi {
 
     public void postWfRun(Context ctx) {
         LHResponse resp = new LHResponse(config);
+        resp.code = LHResponseCodePb.OK;
         try {
             WfRunRequest req = LHSerializable.fromJson(
                 ctx.body(), WfRunRequest.class, config
@@ -169,9 +179,19 @@ public class LHApi {
             if (spec == null) {
                 resp.code = LHResponseCodePb.NOT_FOUND_ERROR;
                 resp.message = "Could not find specified WfSpec.";
-            } else {
-                req.wfSpecId = spec.getObjectId();
 
+            } else {
+                WfRunEvent event = new WfRunEvent();
+                event.type = EventCase.RUN_REQUEST;
+                event.runRequest = req;
+                event.time = new Date();
+                event.wfRunId = req.wfRunId;
+                event.wfSpecId = req.wfSpecId;
+                req.wfSpecId = spec.getObjectId();
+                resp.id = req.wfRunId;
+                producer.send(
+                    req.wfRunId, event, LHConstants.WF_RUN_EVENT_TOPIC
+                ).get();
             }
         } catch(LHSerdeError exn) {
             resp.code = LHResponseCodePb.BAD_REQUEST_ERROR;
@@ -179,7 +199,13 @@ public class LHApi {
         } catch(LHConnectionError exn) {
             resp.code = LHResponseCodePb.CONNECTION_ERROR;
             resp.message = "Had an internal error: " + exn.getMessage();
+        } catch(InterruptedException|ExecutionException|KafkaException exn) {
+            resp.code = LHResponseCodePb.CONNECTION_ERROR;
+            resp.message = "Problem sending Kafka Record: "
+                + exn.getMessage();
         }
+        ctx.status(resp.getStatus());
+        ctx.json(resp);
     }
 
     public void getThreadRun(Context ctx) {

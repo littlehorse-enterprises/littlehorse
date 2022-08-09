@@ -24,7 +24,6 @@ public class WfSpecProcessor implements Processor<String, WfSpec, Void, Void> {
         if (val == null) {
             specStore.delete(k);
         } else {
-            System.out.println("Saved wfspec");
             specStore.put(k, val);
         }
     }

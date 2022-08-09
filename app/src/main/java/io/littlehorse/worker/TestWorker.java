@@ -15,6 +15,7 @@ import io.littlehorse.common.model.event.TaskStartedEvent;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.proto.scheduler.WfRunEventPb.EventCase;
 import io.littlehorse.common.util.LHProducer;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.scheduler.serde.TaskScheduleRequestDeserializer;
 
 /**
@@ -25,8 +26,8 @@ public class TestWorker {
     private LHProducer prod;
     private ExecutorService threadPool;
 
-    public TestWorker(LHConfig config, LHProducer producer) {
-        this.prod = producer;
+    public TestWorker(LHConfig config) {
+        this.prod = config.getProducer();
         this.cons = config.getKafkaConsumer(
             TaskScheduleRequestDeserializer.class
         );
@@ -56,7 +57,7 @@ public class TestWorker {
     }
 
     private void processRequest(ConsumerRecord<String, TaskScheduleRequest> r) {
-        System.out.println("Processing for " + r.key() + " part " + r.partition());
+        LHUtil.log("Processing for " + r.key() + " part " + r.partition());
         TaskScheduleRequest tsr = r.value();
 
         TaskStartedEvent se = new TaskStartedEvent();
@@ -96,12 +97,12 @@ public class TestWorker {
         event.completedEvent = ce;
         event.type = EventCase.COMPLETED_EVENT;
 
-        System.out.println("Completing " + tsr.wfRunId);
+        LHUtil.log("Completing " + tsr.wfRunId);
         prod.send(tsr.wfRunId, event, tsr.replyKafkaTopic);
     }
 
     public static void doMain(LHConfig config) {
-        TestWorker worker = new TestWorker(config, new LHProducer(config, false));
+        TestWorker worker = new TestWorker(config);
         worker.run();
     }
 }

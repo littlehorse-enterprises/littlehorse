@@ -1,5 +1,6 @@
 package io.littlehorse.common.model;
 
+import java.lang.reflect.InvocationTargetException;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.MessageOrBuilder;
@@ -38,7 +39,7 @@ public abstract class LHSerializable<T extends MessageOrBuilder> {
     T fromBytes(byte[] b, Class<T> cls, LHConfig config) throws LHSerdeError {
 
         try {
-            T out = cls.getDeclaredConstructor().newInstance();
+            T out = load(cls, config);
             Class<? extends GeneratedMessageV3> protoClass = out.getProtoBaseClass();
 
             GeneratedMessageV3 proto = protoClass.cast(
@@ -48,9 +49,20 @@ public abstract class LHSerializable<T extends MessageOrBuilder> {
             return out;
 
         } catch (Exception exn) {
+            exn.printStackTrace();
             throw new LHSerdeError(
                 exn, "unable to process bytes for " + cls.getName()
             );
+        }
+    }
+
+    private static <T extends LHSerializable<?>> T load(Class<T> cls, LHConfig config)
+    throws IllegalAccessException, InvocationTargetException, NoSuchMethodException,
+    InstantiationException {
+        try {
+            return cls.getDeclaredConstructor().newInstance();
+        } catch (NoSuchMethodException exn) { 
+            return cls.getDeclaredConstructor(LHConfig.class).newInstance(config);
         }
     }
 
@@ -61,11 +73,11 @@ public abstract class LHSerializable<T extends MessageOrBuilder> {
         T out;
 
         try {
-            out = cls.getDeclaredConstructor().newInstance();
+            out = load(cls, config);
             builder = (GeneratedMessageV3.Builder<?>) out.getProtoBaseClass()
                 .getMethod("newBuilder")
                 .invoke(null);
-        } catch (Exception exn) {
+        } catch(Exception exn) {
             throw new LHSerdeError(exn, "Failed to reflect the protobuilder");
         }
 

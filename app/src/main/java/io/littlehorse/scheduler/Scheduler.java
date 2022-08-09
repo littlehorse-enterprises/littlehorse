@@ -9,7 +9,6 @@ import org.apache.kafka.streams.state.StoreBuilder;
 import org.apache.kafka.streams.state.Stores;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.scheduler.model.WfRunState;
@@ -82,23 +81,23 @@ public class Scheduler {
             );
         topo.addStateStore(wfRunStoreBuilder, runtimeProcessor);
 
-        // Add global store for WFSpec lookup
-        StoreBuilder<KeyValueStore<String, WfSpec>> wfSpecStoreBuilder =
-            Stores.keyValueStoreBuilder(
-                Stores.persistentKeyValueStore(LHConstants.SCHED_WF_SPEC_STORE_NAME),
-                Serdes.String(),
-                specSerde
-            );
+        // // Add global store for WFSpec lookup
+        // StoreBuilder<KeyValueStore<String, WfSpec>> wfSpecStoreBuilder =
+        //     Stores.keyValueStoreBuilder(
+        //         Stores.persistentKeyValueStore(LHConstants.SCHED_WF_SPEC_STORE_NAME),
+        //         Serdes.String(),
+        //         specSerde
+        //     );
 
-        topo.addGlobalStore(
-            wfSpecStoreBuilder,
-            "wfSpecViewNode",
-            Serdes.String().deserializer(),
-            specSerde.deserializer(),
-            POSTable.getEntityTopicName(WfSpec.class),
-            "wfSpecViewProcessor",
-            () -> {return new WfSpecProcessor();}
-        );
+        // topo.addGlobalStore(
+        //     wfSpecStoreBuilder,
+        //     "wfSpecViewNode",
+        //     Serdes.String().deserializer(),
+        //     specSerde.deserializer(),
+        //     POSTable.getEntityTopicName(WfSpec.class),
+        //     "wfSpecViewProcessor",
+        //     () -> {return new WfSpecProcessor();}
+        // );
 
         return topo;
     }

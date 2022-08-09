@@ -4,7 +4,6 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.Topology;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.util.KStreamsStateListener;
-import io.littlehorse.common.util.LHProducer;
 
 public class Server {
     public static void doMain(LHConfig config) {
@@ -12,8 +11,7 @@ public class Server {
         KafkaStreams streams = new KafkaStreams(topo, config.getStreamsConfig());
         ApiStreamsContext ctx = new ApiStreamsContext(
             config,
-            streams,
-            new LHProducer(config, false)
+            streams
         );
         KStreamsStateListener listener = new KStreamsStateListener();
         streams.setStateListener(listener);

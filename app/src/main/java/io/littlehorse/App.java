@@ -9,6 +9,7 @@ import org.apache.kafka.clients.admin.NewTopic;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.POSTable;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.scheduler.Scheduler;
 import io.littlehorse.server.Server;
 import io.littlehorse.worker.TestWorker;
@@ -16,7 +17,7 @@ import io.littlehorse.worker.TestWorker;
 public class App {
     public static void doIdempotentSetup(LHConfig config)
     throws InterruptedException, ExecutionException {
-        System.out.println("Creating topics!!");
+        LHUtil.log("Creating topics!!");
 
         ArrayList<NewTopic> topics = new ArrayList<>();
         for (int i = 1; i < 11; i++) {
@@ -58,7 +59,7 @@ public class App {
         for (NewTopic topic: topics) {
             config.createKafkaTopic(topic);
         }
-        System.out.println("Done creating topics");
+        LHUtil.log("Done creating topics");
 
     }
 
@@ -84,6 +85,6 @@ public class App {
 
     public static void tester() {
         LHConfig config = new LHConfig();
-        System.out.println(config.getHostInfo().toString());
+        LHUtil.log(config.getHostInfo().toString());
     }
 }

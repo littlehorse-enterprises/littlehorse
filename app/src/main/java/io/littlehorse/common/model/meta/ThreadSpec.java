@@ -39,9 +39,10 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
     public void initFrom(MessageOrBuilder pr) {
         ThreadSpecPbOrBuilder proto = (ThreadSpecPbOrBuilder) pr;
         for (Map.Entry<String, NodePb> p: proto.getNodesMap().entrySet()) {
-            Node n = Node.fromProto(p.getValue());
-            n.threadSpec = this;
+            Node n = new Node();
             n.name = p.getKey();
+            n.threadSpec = this;
+            n.initFrom(p.getValue());
             this.nodes.put(p.getKey(), n);
             if (n.type == NodeTypePb.ENTRYPOINT) {
                 this.entrypointNodeName = n.name;

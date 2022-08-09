@@ -1,7 +1,7 @@
 package io.littlehorse.common.model.meta;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHDatabaseClient;
@@ -26,6 +26,10 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
             .setType(type);
         if (taskDefName != null) out.setTaskDefName(taskDefName);
 
+        for (Edge o: outgoingEdges) {
+            out.addOutgoingEdges(o.toProto());
+        }
+
         return out;
     }
 
@@ -34,8 +38,10 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
         if (proto.hasTaskDefName()) taskDefName = proto.getTaskDefName();
         type = proto.getType();
 
-        for (EdgePb e: proto.getOutgoingEdgesList()) {
-            outgoingEdges.add(Edge.fromProto(e));
+        for (EdgePb epb: proto.getOutgoingEdgesList()) {
+            Edge edge = Edge.fromProto(epb);
+            edge.threadSpec = threadSpec;
+            outgoingEdges.add(edge);
         }
     }
 
@@ -48,11 +54,11 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
     // Implementation details below
 
     public Node() {
-        outgoingEdges = new HashSet<>();
+        outgoingEdges = new ArrayList<>();
     }
 
-    @JsonIgnore public Set<Edge> outgoingEdges;
-    @JsonIgnore public String name;
+    public List<Edge> outgoingEdges;
+    public String name;
     @JsonIgnore public ThreadSpec threadSpec;
 
     public void validate(LHDatabaseClient client)

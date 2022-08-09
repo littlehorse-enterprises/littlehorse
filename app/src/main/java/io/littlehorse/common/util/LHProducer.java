@@ -20,9 +20,11 @@ public class LHProducer implements Closeable {
 
     public LHProducer(LHConfig config, boolean transactional) {
         this.transactional = transactional;
-        prod = new KafkaProducer<>(config.getKafkaProducerConfig());
         if (transactional) {
+            prod = new KafkaProducer<>(config.getKafkaTxnProducerConfig());
             prod.initTransactions();
+        } else {
+            prod = new KafkaProducer<>(config.getKafkaProducerConfig());
         }
         this.config = config;
     }

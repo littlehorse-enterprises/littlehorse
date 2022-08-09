@@ -8,6 +8,7 @@ import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.proto.server.LHResponseCodePb;
 import io.littlehorse.common.util.LHApiClient;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.model.internal.LHResponse;
 import io.littlehorse.server.model.internal.RangeResponse;
 
@@ -25,7 +26,7 @@ public class LHDatabaseClient {
     public WfSpec getWfSpec(String idOrName) throws LHConnectionError{
         try {
             LHResponse response = LHSerializable.fromBytes(
-                client.getResponse(apiHost, "/WfSpec/" + idOrName),
+                client.getResponseAsBytes(apiHost, "/WfSpec/" + idOrName),
                 LHResponse.class,
                 config
             );
@@ -33,7 +34,10 @@ public class LHDatabaseClient {
             // Then it's either a `name` (not `id`) OR it doesn't exist.
             if (response.code == LHResponseCodePb.NOT_FOUND_ERROR) {
                 LHResponse lookupResponse = LHSerializable.fromBytes(
-                    client.getResponse(apiHost, "/search/WfSpec/name/" + idOrName),
+                    client.getResponseAsBytes(
+                        apiHost,
+                        "/search/WfSpec/name/" + idOrName
+                    ),
                     LHResponse.class,
                     config
                 );
@@ -43,7 +47,7 @@ public class LHDatabaseClient {
                 if (entries.ids.isEmpty()) return null;
                 String theId = entries.ids.get(0);
                 response = LHSerializable.fromBytes(
-                    client.getResponse(apiHost, "/WfSpec/" + theId),
+                    client.getResponseAsBytes(apiHost, "/WfSpec/" + theId),
                     LHResponse.class,
                     config
                 );
@@ -51,6 +55,7 @@ public class LHDatabaseClient {
 
             return (WfSpec) response.result;
         } catch(LHSerdeError exn) {
+            LHUtil.log("Caught LHSerdeError, transforming to RuntimeException");
             throw new RuntimeException(exn);
         }
     }

@@ -12,10 +12,10 @@ public class KStreamsStateListener implements StateListener {
 
     public void onChange(State newState, State oldState) {
         this.state = newState;
+        LHUtil.log("New state: ", newState);
     }
 
     public State getState() {
-        System.out.println("hello there");
         return this.state;
     }
 }

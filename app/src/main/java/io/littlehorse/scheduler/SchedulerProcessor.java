@@ -10,29 +10,31 @@ import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.LHDatabaseClient;
+import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.scheduler.WfRunEventPb.EventCase;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.scheduler.model.WfRunState;
 
 public class SchedulerProcessor
     implements Processor<String, WfRunEvent, String, SchedulerOutput>
 {
     private KeyValueStore<String, WfRunState> wfRunStore;
-    private KeyValueStore<String, WfSpec> wfSpecStore;
     private Map<String, WfSpec> wfSpecCache;
     private ProcessorContext<String, SchedulerOutput> context;
+    private LHDatabaseClient client;
 
     public SchedulerProcessor(LHConfig config) {
-
+        this.client = config.getDbClient();
     }
 
     @Override
     public void init(final ProcessorContext<String, SchedulerOutput> context) {
         wfRunStore = context.getStateStore(LHConstants.SCHED_WF_RUN_STORE_NAME);
-        wfSpecStore = context.getStateStore(LHConstants.SCHED_WF_SPEC_STORE_NAME);
         this.context = context;
         this.wfSpecCache = new HashMap<>();
     }
@@ -51,7 +53,7 @@ public class SchedulerProcessor
             try {
                 exn.printStackTrace();
                 wfRun.status = LHStatusPb.ERROR;
-                System.out.println(
+                LHUtil.log(
                     "Bad WFRun, putting in ERROR. TODO: add a FailureMessage to WFRun"
                 );
                 wfRunStore.put(wfRunId, wfRun);
@@ -64,8 +66,12 @@ public class SchedulerProcessor
     private WfSpec getWfSpec(String id) {
         WfSpec out = wfSpecCache.get(id);
         if (out == null) {
-            out = wfSpecStore.get(id);
-            wfSpecCache.put(id, out);
+            try {
+                out = client.getWfSpec(id);
+                wfSpecCache.put(id, out);
+            } catch(LHConnectionError exn) {
+                exn.printStackTrace();
+            }
         }
         return out;
     }
@@ -73,7 +79,7 @@ public class SchedulerProcessor
     private void processHelper(final Record<String, WfRunEvent> record) {
         WfSpec spec = getWfSpec(record.value().wfSpecId);
         if (spec == null) {
-            System.out.println("Couldn't find spec, TODO: DeadLetter Queue");
+            LHUtil.log("Couldn't find spec, TODO: DeadLetter Queue");
             return;
         }
 
@@ -84,7 +90,7 @@ public class SchedulerProcessor
 
         if (e.type == EventCase.RUN_REQUEST) {
             if (wfRun != null) {
-                System.out.println(
+                LHUtil.log(
                     "Got a past run for id " + record.key() + ", skipping"
                 );
                 return;

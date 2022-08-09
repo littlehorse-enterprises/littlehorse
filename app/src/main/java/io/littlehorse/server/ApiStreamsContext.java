@@ -37,13 +37,11 @@ public class ApiStreamsContext {
     private LHProducer producer;
     private LHConfig config;
 
-    public ApiStreamsContext(
-        LHConfig config, KafkaStreams streams, LHProducer producer
-    ) {
+    public ApiStreamsContext(LHConfig config, KafkaStreams streams) {
         this.streams = streams;
         this.thisHost = config.getHostInfo();
         this.client = config.getApiClient();
-        this.producer = producer;
+        this.producer = config.getProducer();
         this.config = config;
     }
 
