@@ -14,24 +14,28 @@ import io.littlehorse.server.model.internal.RangeResponse;
 public class LHDatabaseClient {
     private LHApiClient client;
     private HostInfo apiHost;
+    private LHConfig config;
 
     public LHDatabaseClient(LHConfig config) {
         this.client = config.getApiClient();
         this.apiHost = config.getApiHostInfo();
+        this.config = config;
     }
 
     public WfSpec getWfSpec(String idOrName) throws LHConnectionError{
         try {
             LHResponse response = LHSerializable.fromBytes(
                 client.getResponse(apiHost, "/WfSpec/" + idOrName),
-                LHResponse.class
+                LHResponse.class,
+                config
             );
 
             // Then it's either a `name` (not `id`) OR it doesn't exist.
             if (response.code == LHResponseCodePb.NOT_FOUND_ERROR) {
                 LHResponse lookupResponse = LHSerializable.fromBytes(
                     client.getResponse(apiHost, "/search/WfSpec/name/" + idOrName),
-                    LHResponse.class
+                    LHResponse.class,
+                    config
                 );
                 RangeResponse entries = (RangeResponse) lookupResponse.result;
 
@@ -40,7 +44,8 @@ public class LHDatabaseClient {
                 String theId = entries.ids.get(0);
                 response = LHSerializable.fromBytes(
                     client.getResponse(apiHost, "/WfSpec/" + theId),
-                    LHResponse.class
+                    LHResponse.class,
+                    config
                 );
             }
 
@@ -59,7 +64,7 @@ public class LHDatabaseClient {
         LHResponse resp;
         try {
             resp = LHSerializable.fromBytes(
-                response, LHResponse.class
+                response, LHResponse.class, config
             );
         } catch (LHSerdeError exn) {
             throw new LHConnectionError(exn, "Got an unrecognizable response: ");

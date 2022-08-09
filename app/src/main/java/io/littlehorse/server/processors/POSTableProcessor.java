@@ -27,10 +27,12 @@ public class POSTableProcessor<U extends MessageOrBuilder, T extends POSTable<U>
     private Class<T> cls;
     private ProcessorContext<String, T> context;
     private LHDatabaseClient dbClient;
+    private LHConfig config;
 
     public POSTableProcessor(Class<T> cls, LHConfig config) {
         this.dbClient = new LHDatabaseClient(config);
         this.cls = cls;
+        this.config = config;
     }
 
     @Override
@@ -53,14 +55,14 @@ public class POSTableProcessor<U extends MessageOrBuilder, T extends POSTable<U>
         T newT;
 
         try {
-            newT = LHSerializable.fromBytes(req.payload, cls);
+            newT = LHSerializable.fromBytes(req.payload, cls, config);
         } catch(LHSerdeError exn) {
             // TODO: throw an error in response
             return;
         }
 
         T oldT = store.get(key);
-        LHResponse resp = new LHResponse();
+        LHResponse resp = new LHResponse(config);
         resp.id = key;
 
         try {

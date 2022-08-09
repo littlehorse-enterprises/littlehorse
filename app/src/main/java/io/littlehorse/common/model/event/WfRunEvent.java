@@ -1,11 +1,13 @@
 package io.littlehorse.common.model.event;
 
 import java.util.Date;
+import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.scheduler.WfRunEventPb;
 import io.littlehorse.common.proto.scheduler.WfRunEventPb.EventCase;
 import io.littlehorse.common.util.LHUtil;
 
-public class WfRunEvent {
+public class WfRunEvent extends LHSerializable<WfRunEventPb> {
     public String wfRunId;
     public String wfSpecId;
     public Date time;
@@ -39,27 +41,35 @@ public class WfRunEvent {
         return b;
     }
 
-    public static WfRunEvent fromProto(WfRunEventPb proto) {
-        WfRunEvent out = new WfRunEvent();
-        out.wfRunId = proto.getWfRunId();
-        out.wfSpecId = proto.getWfSpecId();
-        out.time = LHUtil.fromProtoTs(proto.getTime());
+    public Class<WfRunEventPb> getProtoBaseClass() {
+        return WfRunEventPb.class;
+    }
 
-        out.type = proto.getEventCase();
+    public void initFrom(MessageOrBuilder p) {
+        WfRunEventPb proto = (WfRunEventPb) p;
+        this.wfRunId = proto.getWfRunId();
+        this.wfSpecId = proto.getWfSpecId();
+        this.time = LHUtil.fromProtoTs(proto.getTime());
 
-        switch (out.type) {
+        this.type = proto.getEventCase();
+
+        switch (this.type) {
         case EVENT_NOT_SET:
             break;
         case STARTED_EVENT:
-            out.startedEvent = TaskStartedEvent.fromProto(proto.getStartedEvent());
+            this.startedEvent = TaskStartedEvent.fromProto(proto.getStartedEvent());
             break;
         case COMPLETED_EVENT:
-            out.completedEvent = TaskCompletedEvent
+            this.completedEvent = TaskCompletedEvent
                 .fromProto(proto.getCompletedEvent());
             break;
         case RUN_REQUEST:
-            out.runRequest = WfRunRequest.fromProto(proto.getRunRequest());
+            this.runRequest = WfRunRequest.fromProto(proto.getRunRequest());
         }
+    }
+    public static WfRunEvent fromProto(WfRunEventPb proto) {
+        WfRunEvent out = new WfRunEvent();
+        out.initFrom(proto);
         return out;
     }
 }

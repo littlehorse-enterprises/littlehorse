@@ -8,30 +8,28 @@ import java.util.concurrent.Executors;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerRecord;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.event.TaskCompletedEvent;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.TaskStartedEvent;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.proto.scheduler.WfRunEventPb.EventCase;
+import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.scheduler.serde.TaskScheduleRequestDeserializer;
-import io.littlehorse.scheduler.serde.WfRunEventSerializer;
 
 /**
  * This is a shortcut, obviously.
  */
 public class TestWorker {
     private KafkaConsumer<String, TaskScheduleRequest> cons;
-    private KafkaProducer<String, WfRunEvent> prod;
+    private LHProducer prod;
     private ExecutorService threadPool;
 
-    public TestWorker(LHConfig config) {
+    public TestWorker(LHConfig config, LHProducer producer) {
+        this.prod = producer;
         this.cons = config.getKafkaConsumer(
             TaskScheduleRequestDeserializer.class
         );
-        this.prod = config.getKafkaProducer(WfRunEventSerializer.class);
         // this.cons.subscribe(Arrays.asList(
         //     "task1", "task2", "task3", "task4", "task5", "task6", "task7",
         //     "task8", "task9", "task10"
@@ -74,9 +72,7 @@ public class TestWorker {
         event.startedEvent = se;
         event.type = EventCase.STARTED_EVENT;
 
-        prod.send(new ProducerRecord<String,WfRunEvent>(
-            tsr.replyKafkaTopic, tsr.wfRunId, event
-        ));
+        prod.send(tsr.wfRunId, event, tsr.replyKafkaTopic);
 
         this.threadPool.submit(() -> { this.herdCats(tsr);});
     }
@@ -101,13 +97,11 @@ public class TestWorker {
         event.type = EventCase.COMPLETED_EVENT;
 
         System.out.println("Completing " + tsr.wfRunId);
-        prod.send(new ProducerRecord<String, WfRunEvent>(
-            tsr.replyKafkaTopic, tsr.wfRunId, event
-        ));
+        prod.send(tsr.wfRunId, event, tsr.replyKafkaTopic);
     }
 
     public static void doMain(LHConfig config) {
-        TestWorker worker = new TestWorker(config);
+        TestWorker worker = new TestWorker(config, new LHProducer(config, false));
         worker.run();
     }
 }

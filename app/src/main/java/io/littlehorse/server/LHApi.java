@@ -3,7 +3,6 @@ package io.littlehorse.server;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.kafka.clients.producer.Producer;
 import com.google.protobuf.MessageOrBuilder;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
@@ -14,7 +13,6 @@ import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.POSTable;
-import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.event.WfRunRequest;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
@@ -22,7 +20,6 @@ import io.littlehorse.common.proto.server.GETableClassEnumPb;
 import io.littlehorse.common.proto.server.LHResponseCodePb;
 import io.littlehorse.common.util.KStreamsStateListener;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.scheduler.serde.WfRunEventSerializer;
 import io.littlehorse.server.model.internal.IndexEntry;
 import io.littlehorse.server.model.internal.LHResponse;
 import io.littlehorse.server.model.internal.RangeResponse;
@@ -36,7 +33,6 @@ public class LHApi {
     private LHConfig config;
     private ApiStreamsContext streams;
     private LHDatabaseClient client;
-    private Producer<String, WfRunEvent> wfRunProducer;
 
     private interface HandlerFunc {
         public void handle(Context ctx) throws Exception;
@@ -62,7 +58,6 @@ public class LHApi {
         this.config = config;
         this.app = LHConfig.createAppWithHealth(listener);
         this.client = config.getDbClient();
-        this.wfRunProducer = config.getKafkaProducer(WfRunEventSerializer.class);
 
         this.app.get("/WfSpec/{id}", (ctx) -> handle(this::getWfSpec, ctx));
         this.app.get("/WfRun/{id}", (ctx) -> handle(this::getWfRun, ctx));
@@ -107,11 +102,13 @@ public class LHApi {
     public <U extends MessageOrBuilder, T extends POSTable<U>> void post(
         Context ctx, Class<T> cls
     ) throws LHSerdeError { // should never throw it though
-        LHResponse resp = new LHResponse();
+        LHResponse resp = new LHResponse(config);
         try {
-            T t = LHSerializable.fromJson(ctx.body(), cls);
+            T t = LHSerializable.fromJson(ctx.body(), cls, config);
             byte[] rawResponse = streams.post(t, cls);
-            resp = LHSerializable.fromBytes(rawResponse, LHResponse.class);
+            resp = LHSerializable.fromBytes(
+                rawResponse, LHResponse.class, config
+            );
 
         } catch(LHSerdeError exn) {
             resp.code = LHResponseCodePb.VALIDATION_ERROR;
@@ -159,10 +156,10 @@ public class LHApi {
     }
 
     public void postWfRun(Context ctx) {
-        LHResponse resp = new LHResponse();
+        LHResponse resp = new LHResponse(config);
         try {
             WfRunRequest req = LHSerializable.fromJson(
-                ctx.body(), WfRunRequest.class
+                ctx.body(), WfRunRequest.class, config
             );
             if (req.wfRunId == null) {
                 req.wfRunId = LHUtil.generateGuid();
@@ -228,7 +225,7 @@ public class LHApi {
         RangeResponse resp = streams.internalLocalKeyedPrefixScan(
             prefix, token, limit
         );
-        ctx.result(resp.toBytes());
+        ctx.result(resp.toBytes(config));
     }
 
     // This method returns the protobuf data in binary format, not json.
@@ -262,7 +259,7 @@ public class LHApi {
 
         int limit = ctx.queryParamAsClass("limit", Integer.class).getOrDefault(1000);
 
-        LHResponse resp = new LHResponse();
+        LHResponse resp = new LHResponse(config);
         try {
             RangeResponse out = streams.keyedPrefixScan(prefixKey, token, limit);
             resp.code = LHResponseCodePb.OK;
@@ -275,7 +272,7 @@ public class LHApi {
         }
 
         if (asProto) {
-            ctx.result(resp.toBytes());
+            ctx.result(resp.toBytes(config));
         } else {
             ctx.json(resp);
         }
@@ -291,7 +288,7 @@ public class LHApi {
             "asProto", Boolean.class
         ).getOrDefault(false);
 
-        LHResponse resp = new LHResponse();
+        LHResponse resp = new LHResponse(config);
         try {
             T out = streams.get(storeKey, partitionKey, cls);
             resp.result = out;
@@ -312,7 +309,7 @@ public class LHApi {
             ctx.status(500);
         }
         if (asProto) {
-            ctx.result(resp.toBytes());
+            ctx.result(resp.toBytes(config));
         } else {
             ctx.json(resp);
         }

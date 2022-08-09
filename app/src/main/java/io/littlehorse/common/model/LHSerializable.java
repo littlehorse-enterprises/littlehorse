@@ -4,6 +4,7 @@ import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.MessageOrBuilder;
 import com.google.protobuf.util.JsonFormat;
+import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHSerdeError;
 
 // `P` is the proto class used to serialize.
@@ -24,14 +25,17 @@ public abstract class LHSerializable<T extends MessageOrBuilder> {
         }
     }
 
-    public byte[] toBytes() {
+    public byte[] toBytes(LHConfig config) {
+        // TODO: figure out how we're going to get this to work with encryption.
+        // Could just have a global static reference to an encryptor which we use
+        // here and in the fromBytes() thing.
         return toProto().build().toByteArray();
     }
 
     // Probably don't want to use reflection for everything, but hey we gotta
     // get a prototype out the door.
     public static <T extends LHSerializable<?>>
-    T fromBytes(byte[] b, Class<T> cls) throws LHSerdeError {
+    T fromBytes(byte[] b, Class<T> cls, LHConfig config) throws LHSerdeError {
 
         try {
             T out = cls.getDeclaredConstructor().newInstance();
@@ -50,8 +54,9 @@ public abstract class LHSerializable<T extends MessageOrBuilder> {
         }
     }
 
-    public static <T extends LHSerializable<?>> T fromJson(String json, Class<T> cls)
-    throws LHSerdeError {
+    public static <T extends LHSerializable<?>> T fromJson(
+        String json, Class<T> cls, LHConfig config
+    ) throws LHSerdeError {
         GeneratedMessageV3.Builder<?> builder;
         T out;
 
@@ -74,9 +79,9 @@ public abstract class LHSerializable<T extends MessageOrBuilder> {
         return out;
     }
 
-    public byte[] serialize() {
-        return toProto().build().toByteArray();
-    }
+    // public byte[] serialize() {
+    //     return toProto().build().toByteArray();
+    // }
 
     @Override public String toString() {
         return toJson();

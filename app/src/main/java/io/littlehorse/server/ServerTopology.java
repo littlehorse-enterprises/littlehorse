@@ -30,16 +30,16 @@ public class ServerTopology {
         addPOSTableSubTopology(topo, WfSpec.class, config);
         addPOSTableSubTopology(topo, TaskDef.class, config);
 
-        addIdxSubTopology(topo);
+        addIdxSubTopology(topo, config);
 
         return topo;
     }
 
-    private static void addIdxSubTopology(Topology topo) {
+    private static void addIdxSubTopology(Topology topo, LHConfig config) {
         topo.addSource(
             "Index Source",
             Serdes.String().deserializer(),
-            new LHDeserializer<>(IndexEntryAction.class),
+            new LHDeserializer<>(IndexEntryAction.class, config),
             LHConstants.INDEX_TOPIC_NAME
         );
 
@@ -53,7 +53,7 @@ public class ServerTopology {
         Stores.keyValueStoreBuilder(
                 Stores.persistentKeyValueStore(LHConstants.INDEX_STORE_NAME),
                 Serdes.String(),
-                new LHSerde<>(IndexEntries.class)
+                new LHSerde<>(IndexEntries.class, config)
             );
         topo.addStateStore(idxStateStoreBuilder, "Index Processor");
 
@@ -71,7 +71,7 @@ public class ServerTopology {
         topo.addSource(
             sourceName,
             Serdes.String().deserializer(),
-            new LHDeserializer<POSTableRequest>(POSTableRequest.class),
+            new LHDeserializer<POSTableRequest>(POSTableRequest.class, config),
             POSTable.getRequestTopicName(cls)
         );
 
@@ -87,7 +87,7 @@ public class ServerTopology {
             entitySink,
             POSTable.getEntityTopicName(cls),
             Serdes.String().serializer(),
-            new LHSerializer<T>(),
+            new LHSerializer<T>(config),
             baseProcessorName
         );
 
@@ -103,7 +103,7 @@ public class ServerTopology {
             idxSink,
             LHConstants.INDEX_TOPIC_NAME,
             Serdes.String().serializer(),
-            new LHSerializer<IndexEntryAction>(),
+            new LHSerializer<IndexEntryAction>(config),
             idxFanoutProcessorName
         );
 
@@ -111,7 +111,7 @@ public class ServerTopology {
             Stores.keyValueStoreBuilder(
                 Stores.persistentKeyValueStore(POSTable.getBaseStoreName(cls)),
                 Serdes.String(),
-                new LHSerde<>(cls)
+                new LHSerde<>(cls, config)
             );
         topo.addStateStore(baseStoreBuilder, baseProcessorName);
 
@@ -119,7 +119,7 @@ public class ServerTopology {
             Stores.keyValueStoreBuilder(
                 Stores.persistentKeyValueStore(POSTable.getIndexStoreName(cls)),
                 Serdes.String(),
-                new LHSerde<>(IndexEntries.class)
+                new LHSerde<>(IndexEntries.class, config)
             );
         topo.addStateStore(idxStateStoreBuilder, idxFanoutProcessorName);
 
@@ -127,7 +127,7 @@ public class ServerTopology {
         Stores.keyValueStoreBuilder(
             Stores.persistentKeyValueStore(POSTable.getResponseStoreName(cls)),
             Serdes.String(),
-            new LHSerde<LHResponse>(LHResponse.class)
+            new LHSerde<LHResponse>(LHResponse.class, config)
         );
         topo.addStateStore(responseStoreBuilder, baseProcessorName);
     }

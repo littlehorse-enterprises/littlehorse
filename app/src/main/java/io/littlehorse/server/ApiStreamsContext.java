@@ -1,8 +1,7 @@
 package io.littlehorse.server;
 
+import java.util.Map;
 import java.util.Set;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyQueryMetadata;
@@ -23,25 +22,29 @@ import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.proto.server.LHResponseCodePb;
 import io.littlehorse.common.proto.server.RequestTypePb;
 import io.littlehorse.common.util.LHApiClient;
+import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.model.POSTableRequestSerializer;
-import io.littlehorse.server.model.internal.POSTableRequest;
-import io.littlehorse.server.model.internal.RangeResponse;
 import io.littlehorse.server.model.internal.IndexEntries;
 import io.littlehorse.server.model.internal.IndexEntry;
 import io.littlehorse.server.model.internal.LHResponse;
+import io.littlehorse.server.model.internal.POSTableRequest;
+import io.littlehorse.server.model.internal.RangeResponse;
 
 public class ApiStreamsContext {
     private KafkaStreams streams;
     private HostInfo thisHost;
     private LHApiClient client;
-    private Producer<String, POSTableRequest> producer;
+    private LHProducer producer;
+    private LHConfig config;
 
-    public ApiStreamsContext(LHConfig config, KafkaStreams streams) {
+    public ApiStreamsContext(
+        LHConfig config, KafkaStreams streams, LHProducer producer
+    ) {
         this.streams = streams;
         this.thisHost = config.getHostInfo();
         this.client = config.getApiClient();
-        this.producer = config.getKafkaProducer(POSTableRequestSerializer.class);
+        this.producer = producer;
+        this.config = config;
     }
 
     public <U extends MessageOrBuilder, T extends GETable<U>>
@@ -59,7 +62,7 @@ public class ApiStreamsContext {
                 storeName, metadata.activeHost(), storeKey, metadata.standbyHosts()
             );
             try {
-                return LHSerializable.fromBytes(serialized, cls);
+                return LHSerializable.fromBytes(serialized, cls, config);
             } catch(LHSerdeError exn) {
                 throw new LHConnectionError(
                     exn, "Got invalid protobuf over the wire: ");
@@ -74,7 +77,7 @@ public class ApiStreamsContext {
 
     public byte[] localGetBytes(String storeName, String storeKey) {
         GETable<?> obj = getStore(storeName).get(storeKey);
-        return obj == null ? null : obj.toBytes();
+        return obj == null ? null : obj.toBytes(config);
     }
 
     public <U extends MessageOrBuilder, T extends POSTable<U>> byte[] post(
@@ -89,17 +92,14 @@ public class ApiStreamsContext {
         request.storeKey = toSave.getObjectId();
         String requestId = LHUtil.generateGuid();
         request.requestId = requestId;
-        request.payload = toSave.toBytes();
+        request.payload = toSave.toBytes(config);
 
-        ProducerRecord<String, POSTableRequest> record = new ProducerRecord<>(
-            topic,
+        this.producer.send(
             partitionKey,
-            request
+            request,
+            topic,
+            Map.of(LHConstants.OBJECT_ID_HEADER, toSave.getObjectId().getBytes())
         );
-        record.headers().add(
-            LHConstants.OBJECT_ID_HEADER, toSave.getObjectId().getBytes()
-        );
-        this.producer.send(record);
 
         boolean checkLocalResponseStoreOnly = false;
         return waitForResponse(
@@ -137,14 +137,14 @@ public class ApiStreamsContext {
                 } catch(Exception exn) {}
                 continue;
             }
-            return out.toBytes();
+            return out.toBytes(config);
         }
 
         // Timed out waiting for response.
-        LHResponse timeOut = new LHResponse();
+        LHResponse timeOut = new LHResponse(config);
         timeOut.code = LHResponseCodePb.CONNECTION_ERROR;
         timeOut.message = "Timed out waiting for request of ID: " + requestId;
-        return timeOut.toBytes();
+        return timeOut.toBytes(config);
     }
 
     public RangeResponse keyedPrefixScan(String prefixKey, String token, int limit)
@@ -235,7 +235,7 @@ public class ApiStreamsContext {
         }
         try {
             return LHSerializable.fromBytes(
-                client.getResponse(host, path), RangeResponse.class
+                client.getResponse(host, path), RangeResponse.class, config
             );
         } catch(LHConnectionError exn) {
             for (HostInfo standby: standbys) {
@@ -243,7 +243,7 @@ public class ApiStreamsContext {
                 try {
                     LHUtil.log("Calling standby: ", standby);
                     return LHSerializable.fromBytes(
-                        client.getResponse(standby, path), RangeResponse.class
+                        client.getResponse(standby, path), RangeResponse.class, config
                     );
                 } catch(LHConnectionError other) {
                     LHUtil.log("Failed making standby call.");

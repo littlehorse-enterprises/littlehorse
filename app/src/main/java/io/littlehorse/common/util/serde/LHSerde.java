@@ -3,6 +3,7 @@ package io.littlehorse.common.util.serde;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serializer;
+import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.LHSerializable;
 
 public class LHSerde<T extends LHSerializable<?>> implements Serde<T> {
@@ -17,8 +18,10 @@ public class LHSerde<T extends LHSerializable<?>> implements Serde<T> {
         return deser;
     }
 
-    public LHSerde(Class<T> cls) {
-        this.ser = new LHSerializer<T>();
-        this.deser = new LHDeserializer<T>(cls);
+    // When we do encryption, we'll need to inject the LHConfig object for
+    // access to the encryption keys.
+    public LHSerde(Class<T> cls, LHConfig config) {
+        this.ser = new LHSerializer<T>(config);
+        this.deser = new LHDeserializer<T>(cls, config);
     }
 }

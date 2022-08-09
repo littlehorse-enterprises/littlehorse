@@ -17,7 +17,6 @@ import org.apache.kafka.common.KafkaFuture;
 import org.apache.kafka.common.errors.TopicExistsException;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.common.serialization.Serializer;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.state.HostInfo;
@@ -28,7 +27,6 @@ import io.littlehorse.common.util.LHApiClient;
 public class LHConfig {
     private Properties props;
     private HashSet<String> seenConsumerTypes;
-    private HashSet<String> seenProducerTypes;
     private Admin kafkaAdmin;
 
     private HashSet<KafkaProducer<?, ?>> producersToClose;
@@ -132,22 +130,34 @@ public class LHConfig {
         return new LHApiClient();
     }
 
-    public <U, T extends Serializer<U>> KafkaProducer<String, U> getKafkaProducer(
-        Class<T> serializerClass
-    ) {
-        if (seenProducerTypes == null) seenProducerTypes = new HashSet<>();
+    // public <U, T extends Serializer<U>> KafkaProducer<String, U> getKafkaProducer(
+    //     Class<T> serializerClass
+    // ) {
+    //     if (seenProducerTypes == null) seenProducerTypes = new HashSet<>();
 
-        if (seenProducerTypes.contains(serializerClass.getCanonicalName())) {
-            throw new RuntimeException(
-                "Twice got consumer with " + serializerClass.getCanonicalName()
-            );
-        }
-        seenProducerTypes.add(serializerClass.getCanonicalName());
+    //     if (seenProducerTypes.contains(serializerClass.getCanonicalName())) {
+    //         throw new RuntimeException(
+    //             "Twice got consumer with " + serializerClass.getCanonicalName()
+    //         );
+    //     }
+    //     seenProducerTypes.add(serializerClass.getCanonicalName());
 
+    //     Properties conf = new Properties();
+        
+
+    //     KafkaProducer<String, U> prod = new KafkaProducer<String, U>(conf);
+    //     producersToClose.add(prod);
+    //     return prod;
+    // }
+
+    public Properties getKafkaProducerConfig() {
         Properties conf = new Properties();
         conf.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers());
         conf.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");
-        conf.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, serializerClass);
+        conf.put(
+            ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
+            Serdes.Bytes().serializer()
+        );
         conf.put(
             ProducerConfig.CLIENT_ID_CONFIG,
             getKafkaGroupId() + "-" + getKafkaInstanceId()
@@ -156,10 +166,12 @@ public class LHConfig {
             ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
             org.apache.kafka.common.serialization.StringSerializer.class
         );
-
-        KafkaProducer<String, U> prod = new KafkaProducer<String, U>(conf);
-        producersToClose.add(prod);
-        return prod;
+        conf.put(ProducerConfig.ACKS_CONFIG, "all");
+        conf.put(
+            ProducerConfig.TRANSACTIONAL_ID_CONFIG,
+            getKafkaGroupId() + "__" + getKafkaInstanceId()
+        );
+        return conf;
     }
 
     public <U, T extends Deserializer<U>> KafkaConsumer<String, U> getKafkaConsumer(
