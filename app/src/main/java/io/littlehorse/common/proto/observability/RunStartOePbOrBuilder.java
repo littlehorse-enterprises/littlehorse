@@ -18,4 +18,16 @@ public interface RunStartOePbOrBuilder extends
    */
   com.google.protobuf.ByteString
       getWfSpecIdBytes();
+
+  /**
+   * <code>string wf_spec_name = 2;</code>
+   * @return The wfSpecName.
+   */
+  java.lang.String getWfSpecName();
+  /**
+   * <code>string wf_spec_name = 2;</code>
+   * @return The bytes for wfSpecName.
+   */
+  com.google.protobuf.ByteString
+      getWfSpecNameBytes();
 }

@@ -70,41 +70,41 @@ public final class Observability {
     java.lang.String[] descriptorData = {
       "\n\023observability.proto\022\010lh_proto\032\037google/" +
       "protobuf/timestamp.proto\032\016lh_proto.proto" +
-      "\"\"\n\014RunStartOePb\022\022\n\nwf_spec_id\030\001 \001(\t\";\n\017" +
-      "ThreadStartOePb\022\016\n\006number\030\001 \001(\005\022\030\n\020threa" +
-      "d_spec_name\030\002 \001(\t\"\276\001\n\021TaskScheduledOePb\022" +
-      "\023\n\013task_def_id\030\001 \001(\t\022\031\n\021thread_run_numbe" +
-      "r\030\002 \001(\005\022\027\n\017task_run_number\030\003 \001(\005\022\031\n\021task" +
-      "_run_position\030\004 \001(\005\022\037\n\027task_run_attempt_" +
-      "number\030\005 \001(\005\022\021\n\twf_run_id\030\006 \001(\t\022\021\n\tnode_" +
-      "name\030\007 \001(\t\"q\n\rTaskStartOePb\022\031\n\021thread_ru" +
-      "n_number\030\001 \001(\005\022\027\n\017task_run_number\030\002 \001(\005\022" +
-      "\031\n\021task_run_position\030\003 \001(\005\022\021\n\tnode_name\030" +
-      "\004 \001(\t\"\315\001\n\020TaskCompleteOePb\022\031\n\021thread_run" +
-      "_number\030\001 \001(\005\022\027\n\017task_run_number\030\002 \001(\005\022\031" +
-      "\n\021task_run_position\030\003 \001(\005\022\017\n\007success\030\004 \001" +
-      "(\010\022\023\n\006output\030\005 \001(\014H\000\210\001\001\022\027\n\nlog_output\030\006 " +
-      "\001(\014H\001\210\001\001\022\021\n\tnode_name\030\007 \001(\tB\t\n\007_outputB\r" +
-      "\n\013_log_output\"Y\n\026ThreadStatusChangeOePb\022" +
-      "\031\n\021thread_run_number\030\001 \001(\005\022$\n\006status\030\002 \001" +
-      "(\0162\024.lh_proto.LHStatusPb\"=\n\025WfRunStatusC" +
-      "hangeOePb\022$\n\006status\030\001 \001(\0162\024.lh_proto.LHS" +
-      "tatusPb\"\270\003\n\024ObservabilityEventPb\022(\n\004time" +
-      "\030\001 \001(\0132\032.google.protobuf.Timestamp\0228\n\rwf" +
-      "_run_status\030\002 \001(\0132\037.lh_proto.WfRunStatus" +
-      "ChangeOePbH\000\022+\n\trun_start\030\003 \001(\0132\026.lh_pro" +
-      "to.RunStartOePbH\000\0221\n\014thread_start\030\004 \001(\0132" +
-      "\031.lh_proto.ThreadStartOePbH\000\0224\n\rtask_sch" +
-      "edule\030\005 \001(\0132\033.lh_proto.TaskScheduledOePb" +
-      "H\000\022-\n\ntask_start\030\006 \001(\0132\027.lh_proto.TaskSt" +
-      "artOePbH\000\0223\n\rtask_complete\030\007 \001(\0132\032.lh_pr" +
-      "oto.TaskCompleteOePbH\000\0229\n\rthread_status\030" +
-      "\010 \001(\0132 .lh_proto.ThreadStatusChangeOePbH" +
-      "\000B\007\n\005event\"Z\n\025ObservabilityEventsPb\022\021\n\tw" +
-      "f_run_id\030\001 \001(\t\022.\n\006events\030\002 \003(\0132\036.lh_prot" +
-      "o.ObservabilityEventPbB6\n)io.littlehorse" +
-      ".common.proto.observabilityP\001Z\007.;modelb\006" +
-      "proto3"
+      "\"8\n\014RunStartOePb\022\022\n\nwf_spec_id\030\001 \001(\t\022\024\n\014" +
+      "wf_spec_name\030\002 \001(\t\";\n\017ThreadStartOePb\022\016\n" +
+      "\006number\030\001 \001(\005\022\030\n\020thread_spec_name\030\002 \001(\t\"" +
+      "\276\001\n\021TaskScheduledOePb\022\023\n\013task_def_id\030\001 \001" +
+      "(\t\022\031\n\021thread_run_number\030\002 \001(\005\022\027\n\017task_ru" +
+      "n_number\030\003 \001(\005\022\031\n\021task_run_position\030\004 \001(" +
+      "\005\022\037\n\027task_run_attempt_number\030\005 \001(\005\022\021\n\twf" +
+      "_run_id\030\006 \001(\t\022\021\n\tnode_name\030\007 \001(\t\"q\n\rTask" +
+      "StartOePb\022\031\n\021thread_run_number\030\001 \001(\005\022\027\n\017" +
+      "task_run_number\030\002 \001(\005\022\031\n\021task_run_positi" +
+      "on\030\003 \001(\005\022\021\n\tnode_name\030\004 \001(\t\"\315\001\n\020TaskComp" +
+      "leteOePb\022\031\n\021thread_run_number\030\001 \001(\005\022\027\n\017t" +
+      "ask_run_number\030\002 \001(\005\022\031\n\021task_run_positio" +
+      "n\030\003 \001(\005\022\017\n\007success\030\004 \001(\010\022\023\n\006output\030\005 \001(\014" +
+      "H\000\210\001\001\022\027\n\nlog_output\030\006 \001(\014H\001\210\001\001\022\021\n\tnode_n" +
+      "ame\030\007 \001(\tB\t\n\007_outputB\r\n\013_log_output\"Y\n\026T" +
+      "hreadStatusChangeOePb\022\031\n\021thread_run_numb" +
+      "er\030\001 \001(\005\022$\n\006status\030\002 \001(\0162\024.lh_proto.LHSt" +
+      "atusPb\"=\n\025WfRunStatusChangeOePb\022$\n\006statu" +
+      "s\030\001 \001(\0162\024.lh_proto.LHStatusPb\"\270\003\n\024Observ" +
+      "abilityEventPb\022(\n\004time\030\001 \001(\0132\032.google.pr" +
+      "otobuf.Timestamp\0228\n\rwf_run_status\030\002 \001(\0132" +
+      "\037.lh_proto.WfRunStatusChangeOePbH\000\022+\n\tru" +
+      "n_start\030\003 \001(\0132\026.lh_proto.RunStartOePbH\000\022" +
+      "1\n\014thread_start\030\004 \001(\0132\031.lh_proto.ThreadS" +
+      "tartOePbH\000\0224\n\rtask_schedule\030\005 \001(\0132\033.lh_p" +
+      "roto.TaskScheduledOePbH\000\022-\n\ntask_start\030\006" +
+      " \001(\0132\027.lh_proto.TaskStartOePbH\000\0223\n\rtask_" +
+      "complete\030\007 \001(\0132\032.lh_proto.TaskCompleteOe" +
+      "PbH\000\0229\n\rthread_status\030\010 \001(\0132 .lh_proto.T" +
+      "hreadStatusChangeOePbH\000B\007\n\005event\"Z\n\025Obse" +
+      "rvabilityEventsPb\022\021\n\twf_run_id\030\001 \001(\t\022.\n\006" +
+      "events\030\002 \003(\0132\036.lh_proto.ObservabilityEve" +
+      "ntPbB6\n)io.littlehorse.common.proto.obse" +
+      "rvabilityP\001Z\007.;modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -117,7 +117,7 @@ public final class Observability {
     internal_static_lh_proto_RunStartOePb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_RunStartOePb_descriptor,
-        new java.lang.String[] { "WfSpecId", });
+        new java.lang.String[] { "WfSpecId", "WfSpecName", });
     internal_static_lh_proto_ThreadStartOePb_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_lh_proto_ThreadStartOePb_fieldAccessorTable = new

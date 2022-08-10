@@ -8,6 +8,7 @@ import org.apache.kafka.streams.state.Stores;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
@@ -19,9 +20,12 @@ import io.littlehorse.server.model.internal.IndexEntries;
 import io.littlehorse.server.model.internal.IndexEntryAction;
 import io.littlehorse.server.model.internal.LHResponse;
 import io.littlehorse.server.model.internal.POSTableRequest;
+import io.littlehorse.server.model.wfrun.TaskRun;
+import io.littlehorse.server.model.wfrun.WfRun;
 import io.littlehorse.server.processors.IndexFanoutProcessor;
 import io.littlehorse.server.processors.IndexProcessor;
 import io.littlehorse.server.processors.POSTableProcessor;
+import io.littlehorse.server.processors.WfRunProcessor;
 
 public class ServerTopology {
 
@@ -39,12 +43,40 @@ public class ServerTopology {
     }
 
     private static void addWfRunSubTOpology(Topology topo, LHConfig config) {
+        String wfRunProcessor = "WfRun Processor";
+        String wfRunSource = "WfRun Source";
         topo.addSource(
-            "WfRun Source",
+            wfRunSource,
             Serdes.String().deserializer(),
             new LHDeserializer<>(ObservabilityEvent.class, config),
             LHConstants.WF_RUN_OBSERVABILITY_TOPIC
         );
+
+        topo.addProcessor(
+            wfRunProcessor,
+            () -> {return new WfRunProcessor(config);},
+            wfRunSource
+        );
+
+        StoreBuilder<KeyValueStore<String, WfRun>> wfRunStoreBuilder =
+        Stores.keyValueStoreBuilder(
+                Stores.persistentKeyValueStore(
+                    GETable.getBaseStoreName(WfRun.class)
+                ),
+                Serdes.String(),
+                new LHSerde<>(WfRun.class, config)
+            );
+        topo.addStateStore(wfRunStoreBuilder, wfRunProcessor);
+
+        StoreBuilder<KeyValueStore<String, TaskRun>> taskRunStoreBuilder =
+        Stores.keyValueStoreBuilder(
+                Stores.persistentKeyValueStore(
+                    GETable.getBaseStoreName(TaskRun.class)
+                ),
+                Serdes.String(),
+                new LHSerde<>(TaskRun.class, config)
+            );
+        topo.addStateStore(taskRunStoreBuilder, wfRunProcessor);
     }
 
     private static void addIdxSubTopology(Topology topo, LHConfig config) {

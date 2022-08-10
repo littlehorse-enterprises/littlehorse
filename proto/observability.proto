@@ -12,6 +12,7 @@ option java_package = "io.littlehorse.common.proto.observability";
 
 message RunStartOePb {
     string wf_spec_id = 1;
+    string wf_spec_name = 2;
 }
 
 message ThreadStartOePb {

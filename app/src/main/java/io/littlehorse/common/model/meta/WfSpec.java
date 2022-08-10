@@ -158,7 +158,9 @@ public class WfSpec extends POSTable<WfSpecPbOrBuilder> {
         out.startTime = e.time;
         out.status = LHStatusPb.RUNNING;
         out.startTime = e.time;
-        out.oEvents.add(new ObservabilityEvent(new RunStartOe(id), e.time));
+        out.oEvents.add(new ObservabilityEvent(
+            new RunStartOe(id, name), e.time)
+        );
 
         out.startThread(entrypointThreadName, e.time, null);
 

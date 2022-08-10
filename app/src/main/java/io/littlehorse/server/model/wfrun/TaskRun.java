@@ -28,6 +28,7 @@ public class TaskRun extends GETable<TaskRunPb> {
     public Date endTime;
 
     public String wfSpecId;
+    public String wfSpecName;
     public String threadSpecName;
     public String nodeName;
     public String taskDefId;
