@@ -53,6 +53,7 @@ public class ApiStreamsContext {
         KeyQueryMetadata metadata = streams.queryMetadataForKey(
             storeName, partitionKey, Serdes.String().serializer()
         );
+
         if (metadata.activeHost().equals(thisHost)) {
             return localGet(storeKey, cls);
         } else {

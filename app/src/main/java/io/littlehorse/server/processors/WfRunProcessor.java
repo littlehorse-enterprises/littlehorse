@@ -124,6 +124,7 @@ public class WfRunProcessor implements Processor<
         ThreadStartOe ts = evt.threadStart;
         ThreadRun thr = new ThreadRun();
         thr.wfRunId = wfRun.id;
+        thr.wfSpecId = wfRun.wfSpecId;
         thr.number = wfRun.threadRuns.size();
         thr.status = LHStatusPb.RUNNING;
         thr.threadSpecName = ts.threadSpecName;
@@ -176,6 +177,7 @@ public class WfRunProcessor implements Processor<
             LHUtil.log("tried to start task which hadn't been created yet ):");
             task = new TaskRun();
             task.wfRunId = wfRun.id;
+            task.status = LHStatusPb.RUNNING;
             task.threadRunNumber = ts.threadRunNumber;
             task.position = ts.taskRunPosition;
         }

@@ -2,9 +2,12 @@ package io.littlehorse.common.model.observability;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.proto.observability.ObservabilityEventPb;
 import io.littlehorse.common.proto.observability.ObservabilityEventsPb;
 
-public class ObservabilityEvents {
+public class ObservabilityEvents extends LHSerializable<ObservabilityEventsPb> {
     public List<ObservabilityEvent> events;
     public String wfRunId;
 
@@ -16,7 +19,7 @@ public class ObservabilityEvents {
         events.add(event);
     }
 
-    public ObservabilityEventsPb.Builder toProtoBuilder() {
+    public ObservabilityEventsPb.Builder toProto() {
         ObservabilityEventsPb.Builder out = ObservabilityEventsPb.newBuilder()
             .setWfRunId(wfRunId);
 
@@ -25,5 +28,19 @@ public class ObservabilityEvents {
         }
 
         return out;
+    }
+
+    public Class<ObservabilityEventsPb> getProtoBaseClass() {
+        return ObservabilityEventsPb.class;
+    }
+
+    public void initFrom(MessageOrBuilder proto) {
+        ObservabilityEventsPb p = (ObservabilityEventsPb) proto;
+        wfRunId = p.getWfRunId();
+        for (ObservabilityEventPb oepb: p.getEventsList()) {
+            ObservabilityEvent oe = new ObservabilityEvent();
+            oe.initFrom(oepb);
+            events.add(oe);
+        }
     }
 }

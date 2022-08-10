@@ -12,7 +12,7 @@ import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.model.observability.ObservabilityEvent;
+import io.littlehorse.common.model.observability.ObservabilityEvents;
 import io.littlehorse.common.util.serde.LHDeserializer;
 import io.littlehorse.common.util.serde.LHSerde;
 import io.littlehorse.common.util.serde.LHSerializer;
@@ -48,7 +48,7 @@ public class ServerTopology {
         topo.addSource(
             wfRunSource,
             Serdes.String().deserializer(),
-            new LHDeserializer<>(ObservabilityEvent.class, config),
+            new LHDeserializer<>(ObservabilityEvents.class, config),
             LHConstants.WF_RUN_OBSERVABILITY_TOPIC
         );
 

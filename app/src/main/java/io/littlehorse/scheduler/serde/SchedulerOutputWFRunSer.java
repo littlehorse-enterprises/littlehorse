@@ -6,6 +6,6 @@ import io.littlehorse.scheduler.SchedulerOutput;
 public class SchedulerOutputWFRunSer implements Serializer<SchedulerOutput> {
 
     public byte[] serialize(String topic, SchedulerOutput input) {
-        return input.observabilityEvents.toProtoBuilder().build().toByteArray();
+        return input.observabilityEvents.toProto().build().toByteArray();
     }
 }

@@ -14,6 +14,7 @@ public class LHSerializer<T extends LHSerializable<?>> implements Serializer<T> 
     }
     
     public byte[] serialize(String topic, T t) {
+        if (t == null) return null;
         return t.toBytes(config);
     }
 }

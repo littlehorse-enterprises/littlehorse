@@ -69,15 +69,12 @@ public class LHApi {
         this.client = config.getDbClient();
 
         this.app.get("/WfSpec/{id}", (ctx) -> handle(this::getWfSpec, ctx));
-        this.app.get("/WfRun/{id}", (ctx) -> handle(this::getWfRun, ctx));
         this.app.get("/TaskDef/{id}", (ctx) -> handle(this::getTaskDef, ctx));
+
+        this.app.get("/WfRun/{id}", (ctx) -> handle(this::getWfRun, ctx));
         this.app.get(
-            "/WfRun/{wfRunId}/ThreadRun/{threadRunNumber}",
-            (ctx) -> handle(this::getThreadRun, ctx)
-        );
-        this.app.get(
-            "/WfRun/{wfRunId}/ThreadRun/{threadRunNumber}/TaskRun/{taskRunPosition}",
-            this::getTaskRun
+            "/TaskRun/{wfRunId}/{threadRunNumber}/{taskRunPosition}",
+            (ctx) -> handle(this::getTaskRun, ctx)
         );
 
         this.app.post("/WfSpec", (ctx) -> {
@@ -136,7 +133,7 @@ public class LHApi {
     public void getTaskRun(Context ctx) {
         String wfRunId = ctx.pathParam("wfRunId");
         int threadRunNumber = ctx.pathParamAsClass(
-            "threadNumber", Integer.class
+            "threadRunNumber", Integer.class
         ).get();
         int taskRunPosition = ctx.pathParamAsClass(
             "taskRunPosition", Integer.class
@@ -146,7 +143,7 @@ public class LHApi {
             wfRunId, threadRunNumber, taskRunPosition
         );
 
-        returnLookup(wfRunId, storeKey, ThreadRun.class, ctx);
+        returnLookup(wfRunId, storeKey, TaskRun.class, ctx);
     }
 
     public void getWfSpec(Context ctx) {
@@ -206,16 +203,6 @@ public class LHApi {
         }
         ctx.status(resp.getStatus());
         ctx.json(resp);
-    }
-
-    public void getThreadRun(Context ctx) {
-        String wfRunId = ctx.pathParam("wfRunId");
-        int threadRunNumber = ctx.pathParamAsClass(
-            "threadNumber", Integer.class
-        ).get();
-
-        String storeKey = ThreadRun.getStoreKey(wfRunId, threadRunNumber);
-        returnLookup(wfRunId, storeKey, ThreadRun.class, ctx);
     }
 
     public void getWfSpecByName(Context ctx) {

@@ -76,6 +76,7 @@ public class TaskRun extends GETable<TaskRunPb> {
         threadSpecName = proto.getThreadSpecName();
         nodeName = proto.getNodeName();
         taskDefId = proto.getTaskDefId();
+        status = proto.getStatus();
     }
 
     public TaskRunPb.Builder toProto() {
