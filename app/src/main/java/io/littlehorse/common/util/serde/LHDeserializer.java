@@ -4,6 +4,7 @@ import org.apache.kafka.common.serialization.Deserializer;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.util.LHUtil;
 
 public class LHDeserializer<T extends LHSerializable<?>> implements Deserializer<T> {
     private Class<T> cls;
@@ -20,7 +21,8 @@ public class LHDeserializer<T extends LHSerializable<?>> implements Deserializer
         try {
             return LHSerializable.fromBytes(b, cls, config);
         } catch(LHSerdeError exn) {
-            return null;
+            LHUtil.log("Caught and re-throwing exception from deserializer.");
+            throw new RuntimeException(exn);
         }
     }
 }

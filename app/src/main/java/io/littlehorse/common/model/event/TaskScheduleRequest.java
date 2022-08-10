@@ -1,9 +1,11 @@
 package io.littlehorse.common.model.event;
 
+import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.scheduler.TaskScheduleRequestPb;
 import io.littlehorse.common.proto.scheduler.TaskScheduleRequestPbOrBuilder;
 
-public class TaskScheduleRequest {
+public class TaskScheduleRequest extends LHSerializable<TaskScheduleRequestPb> {
     public String taskDefId;
     public String taskDefName;
     public int threadRunNumber;
@@ -15,7 +17,7 @@ public class TaskScheduleRequest {
     public int attemptNumber;
     public String nodeName;
 
-    public TaskScheduleRequestPb.Builder toProtoBuilder() {
+    public TaskScheduleRequestPb.Builder toProto() {
         return TaskScheduleRequestPb.newBuilder()
             .setTaskDefId(taskDefId)
             .setTaskDefName(taskDefName)
@@ -29,18 +31,27 @@ public class TaskScheduleRequest {
             .setNodeName(nodeName);
     }
 
+    public Class<TaskScheduleRequestPb> getProtoBaseClass() {
+        return TaskScheduleRequestPb.class;
+    }
+
     public static TaskScheduleRequest fromProto(TaskScheduleRequestPbOrBuilder p) {
         TaskScheduleRequest out = new TaskScheduleRequest();
-        out.taskDefId = p.getTaskDefId();
-        out.taskDefName = p.getTaskDefName();
-        out.threadRunNumber = p.getThreadRunNumber();
-        out.taskRunNumber = p.getTaskRunNumber();
-        out.taskRunPosition = p.getTaskRunPosition();
-        out.wfRunId = p.getWfRunId();
-        out.replyKafkaTopic = p.getReplyKafkaTopic();
-        out.wfSpecId = p.getWfSpecId();
-        out.attemptNumber = p.getAttemptNumber();
-        out.nodeName = p.getNodeName();
+        out.initFrom(p);
         return out;
+    }
+
+    public void initFrom(MessageOrBuilder proto) {
+        TaskScheduleRequestPbOrBuilder p = (TaskScheduleRequestPbOrBuilder) proto;
+        this.taskDefId = p.getTaskDefId();
+        this.taskDefName = p.getTaskDefName();
+        this.threadRunNumber = p.getThreadRunNumber();
+        this.taskRunNumber = p.getTaskRunNumber();
+        this.taskRunPosition = p.getTaskRunPosition();
+        this.wfRunId = p.getWfRunId();
+        this.replyKafkaTopic = p.getReplyKafkaTopic();
+        this.wfSpecId = p.getWfSpecId();
+        this.attemptNumber = p.getAttemptNumber();
+        this.nodeName = p.getNodeName();
     }
 }

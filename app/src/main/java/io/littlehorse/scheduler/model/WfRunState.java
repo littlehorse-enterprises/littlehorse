@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.event.TaskCompletedEvent;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.TaskStartedEvent;
@@ -20,7 +22,7 @@ import io.littlehorse.common.proto.scheduler.WfRunStatePb;
 import io.littlehorse.common.proto.scheduler.WfRunStatePbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
 
-public class WfRunState {
+public class WfRunState extends LHSerializable<WfRunStatePb> {
     public String id;
     public String wfSpecId;
     public String wfSpecName;
@@ -30,15 +32,17 @@ public class WfRunState {
 
     public List<ThreadRunState> threadRuns;
 
-    public WfRunState(String id) {
-        this.id = id;
+    public WfRunState() {
         threadRuns = new ArrayList<>();
         oEvents = new ObservabilityEvents();
-        oEvents.wfRunId = id;
+    }
+
+    public Class<WfRunStatePb> getProtoBaseClass() {
+        return WfRunStatePb.class;
     }
 
     // Below is Serialization/Deserialization stuff.
-    public WfRunStatePb.Builder toProtoBuilder() {
+    public WfRunStatePb.Builder toProto() {
         WfRunStatePb.Builder b = WfRunStatePb.newBuilder()
             .setId(id)
             .setWfSpecId(wfSpecId)
@@ -52,29 +56,37 @@ public class WfRunState {
         }
 
         for (ThreadRunState t : threadRuns) {
-            b.addThreadRuns(t.toProtoBuilder());
+            b.addThreadRuns(t.toProto());
         }
         return b;
     }
 
     public static WfRunState fromProto(WfRunStatePbOrBuilder proto) {
-        WfRunState out = new WfRunState(proto.getId());
-        out.wfSpecId = proto.getWfSpecId();
-        out.status = proto.getStatus();
-        out.threadRuns = new ArrayList<>();
+        WfRunState out = new WfRunState();
+        out.initFrom(proto);
+        return out;
+    }
+
+    public void initFrom(MessageOrBuilder p) {
+        WfRunStatePbOrBuilder proto = (WfRunStatePbOrBuilder) p;
+        this.id = proto.getId();
+        this.oEvents.wfRunId = this.id;
+
+        this.wfSpecId = proto.getWfSpecId();
+        this.status = proto.getStatus();
+        this.threadRuns = new ArrayList<>();
 
         for (ThreadRunStatePb tpb : proto.getThreadRunsList()) {
             ThreadRunState tr = ThreadRunState.fromProto(tpb);
-            tr.wfRun = out;
-            out.threadRuns.add(tr);
+            tr.wfRun = this;
+            this.threadRuns.add(tr);
         }
         if (proto.hasStartTime()) {
-            out.startTime = LHUtil.fromProtoTs(proto.getStartTime());
+            this.startTime = LHUtil.fromProtoTs(proto.getStartTime());
         }
         if (proto.hasEndTime()) {
-            out.endTime = LHUtil.fromProtoTs(proto.getEndTime());
+            this.endTime = LHUtil.fromProtoTs(proto.getEndTime());
         }
-        return out;
     }
 
     // All below is simply implementation.

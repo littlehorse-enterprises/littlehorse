@@ -11,6 +11,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.observability.ObservabilityEvent;
 import io.littlehorse.common.util.serde.LHDeserializer;
 import io.littlehorse.common.util.serde.LHSerde;
 import io.littlehorse.common.util.serde.LHSerializer;
@@ -32,7 +33,18 @@ public class ServerTopology {
 
         addIdxSubTopology(topo, config);
 
+        addWfRunSubTOpology(topo, config);
+
         return topo;
+    }
+
+    private static void addWfRunSubTOpology(Topology topo, LHConfig config) {
+        topo.addSource(
+            "WfRun Source",
+            Serdes.String().deserializer(),
+            new LHDeserializer<>(ObservabilityEvent.class, config),
+            LHConstants.WF_RUN_OBSERVABILITY_TOPIC
+        );
     }
 
     private static void addIdxSubTopology(Topology topo, LHConfig config) {

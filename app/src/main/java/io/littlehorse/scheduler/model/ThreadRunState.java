@@ -29,7 +29,7 @@ public class ThreadRunState {
     // Below is just implementation details
     @JsonIgnore public int threadRunNumber;
 
-    public ThreadRunStatePb.Builder toProtoBuilder() {
+    public ThreadRunStatePb.Builder toProto() {
         ThreadRunStatePb.Builder b = ThreadRunStatePb.newBuilder()
             .setThreadSpecName(threadSpecName)
             .setStatus(status);

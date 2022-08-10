@@ -6,6 +6,6 @@ import io.littlehorse.scheduler.SchedulerOutput;
 public class SchedulerOutputTsrSer implements Serializer<SchedulerOutput> {
 
     public byte[] serialize(String topic, SchedulerOutput input) {
-        return input.request.toProtoBuilder().build().toByteArray();
+        return input.request.toProto().build().toByteArray();
     }
 }

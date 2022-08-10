@@ -1,7 +1,7 @@
 package io.littlehorse.common;
 
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
@@ -14,8 +14,8 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.KafkaFuture;
 import org.apache.kafka.common.errors.TopicExistsException;
-import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.state.HostInfo;
@@ -27,12 +27,10 @@ import io.littlehorse.common.util.LHUtil;
 
 public class LHConfig {
     private Properties props;
-    private HashSet<String> seenConsumerTypes;
     private Admin kafkaAdmin;
     private LHProducer producer;
     private LHProducer txnProducer;
-
-    private HashSet<KafkaConsumer<?, ?>> consumersToClose;
+    private KafkaConsumer<String, Bytes> kafkaConsumer;
 
     public String getBootstrapServers() {
         return getOrSetDefault(LHConstants.KAFKA_BOOTSTRAP_KEY, "localhost:9092");
@@ -125,8 +123,6 @@ public class LHConfig {
         if (this.kafkaAdmin != null) this.kafkaAdmin.close();
         if (this.producer != null) this.producer.close();
         if (this.txnProducer != null) this.txnProducer.close();
-
-        for (KafkaConsumer<?, ?> c: consumersToClose) c.close();
     }
 
     public LHApiClient getApiClient() {
@@ -175,19 +171,11 @@ public class LHConfig {
         );
         return conf;
     }
-    public <U, T extends Deserializer<U>> KafkaConsumer<String, U> getKafkaConsumer(
-        Class<T> deserializerClass
-    ) {
-        if (seenConsumerTypes == null) {
-            seenConsumerTypes = new HashSet<>();
-        }
 
-        if (seenConsumerTypes.contains(deserializerClass.getCanonicalName())) {
-            throw new RuntimeException(
-                "Twice got consumer with " + deserializerClass.getCanonicalName()
-            );
+    public KafkaConsumer<String, Bytes> getKafkaConsumer(List<String> topics) {
+        if (kafkaConsumer != null) {
+            throw new RuntimeException("Tried to initialize consumer twice!");
         }
-        seenConsumerTypes.add(deserializerClass.getCanonicalName());
 
         Properties conf = new Properties();
         conf.put(ConsumerConfig.GROUP_ID_CONFIG, getKafkaGroupId());
@@ -199,13 +187,17 @@ public class LHConfig {
             ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
             org.apache.kafka.common.serialization.StringDeserializer.class
         );
-        conf.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, deserializerClass);
+        conf.put(
+            ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
+            org.apache.kafka.common.serialization.BytesDeserializer.class
+        );
 
-        // Uncomment when done with production.
+        // Uncomment when ready for production.
         // conf.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
-        KafkaConsumer<String, U> cons = new KafkaConsumer<String, U>(conf);
-        consumersToClose.add(cons);
-        return cons;
+
+        kafkaConsumer = new KafkaConsumer<>(conf);
+        kafkaConsumer.subscribe(topics);
+        return kafkaConsumer;
     }
 
     public Properties getStreamsConfig() {
@@ -301,7 +293,6 @@ public class LHConfig {
             AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG,
             getBootstrapServers()
         );
-        consumersToClose = new HashSet<>();
         this.kafkaAdmin = Admin.create(akProperties);
     }
 

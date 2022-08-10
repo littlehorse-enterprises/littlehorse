@@ -21,7 +21,7 @@ public class ObservabilityEvents {
             .setWfRunId(wfRunId);
 
         for (ObservabilityEvent e: events) {
-            out.addEvents(e.toProtoBuilder());
+            out.addEvents(e.toProto());
         }
 
         return out;

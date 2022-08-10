@@ -1,11 +1,14 @@
 package io.littlehorse.common.model.observability;
 
 import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.observability.ObservabilityEventPb;
 import io.littlehorse.common.proto.observability.ObservabilityEventPb.EventCase;
 import io.littlehorse.common.util.LHUtil;
 
-public class ObservabilityEvent {
+public class ObservabilityEvent extends LHSerializable<ObservabilityEventPb> {
     public Date time;
     public EventCase type;
 
@@ -18,7 +21,7 @@ public class ObservabilityEvent {
     public TaskCompleteOe taskComplete;
     public ThreadStatusChangeOe threadStatus;
 
-    public ObservabilityEventPb.Builder toProtoBuilder() {
+    public ObservabilityEventPb.Builder toProto() {
         ObservabilityEventPb.Builder out = ObservabilityEventPb.newBuilder()
             .setTime(LHUtil.fromDate(time));
 
@@ -27,36 +30,79 @@ public class ObservabilityEvent {
             break;
 
         case RUN_START:
-            out.setRunStart(runStart.toProtoBuilder());
+            out.setRunStart(runStart.toProto());
             break;
 
         case THREAD_START:
-            out.setThreadStart(threadStart.toProtoBuilder());
+            out.setThreadStart(threadStart.toProto());
             break;
 
         case TASK_SCHEDULE:
-            out.setTaskSchedule(taskSchedule.toProtoBuilder());
+            out.setTaskSchedule(taskSchedule.toProto());
             break;
 
         case TASK_START:
-            out.setTaskStart(taskStart.toProtoBuilder());
+            out.setTaskStart(taskStart.toProto());
             break;
 
         case TASK_COMPLETE:
-            out.setTaskComplete(taskComplete.toProtoBuilder());
+            out.setTaskComplete(taskComplete.toProto());
             break;
 
         case THREAD_STATUS:
-            out.setThreadStatus(threadStatus.toProtoBuilder());
+            out.setThreadStatus(threadStatus.toProto());
             break;
 
         case WF_RUN_STATUS:
-            out.setWfRunStatus(wfRunStatus.toProtoBuilder());
+            out.setWfRunStatus(wfRunStatus.toProto());
             break;
         }
 
         return out;
     }
+
+    @JsonIgnore public Class<ObservabilityEventPb> getProtoBaseClass() {
+        return ObservabilityEventPb.class;
+    }
+
+    public void initFrom(MessageOrBuilder proto) {
+        ObservabilityEventPb p = (ObservabilityEventPb) proto;
+        time = LHUtil.fromProtoTs(p.getTime());
+        type = p.getEventCase();
+        switch(type) {
+        case EVENT_NOT_SET:
+            break;
+        case RUN_START:
+            runStart = RunStartOe.fromProto(p.getRunStart());
+            break;
+
+        case THREAD_START:
+            threadStart = ThreadStartOe.fromProto(p.getThreadStart());
+            break;
+
+        case TASK_SCHEDULE:
+            taskSchedule = TaskScheduledOe.fromProto(p.getTaskSchedule());
+            break;
+
+        case TASK_START:
+            taskStart = TaskStartOe.fromProto(p.getTaskStart());
+            break;
+
+        case TASK_COMPLETE:
+            taskComplete = TaskCompleteOe.fromProto(p.getTaskComplete());
+            break;
+
+        case THREAD_STATUS:
+            threadStatus = ThreadStatusChangeOe.fromProto(p.getThreadStatus());
+            break;
+
+        case WF_RUN_STATUS:
+            wfRunStatus = WfRunStatusChangeOe.fromProto(p.getWfRunStatus());
+            break;
+        }
+    }
+
+    public ObservabilityEvent() {}
 
     public ObservabilityEvent(RunStartOe evt, Date time) {
         type = EventCase.RUN_START;

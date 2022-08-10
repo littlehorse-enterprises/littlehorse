@@ -147,7 +147,9 @@ public class WfSpec extends POSTable<WfSpecPbOrBuilder> {
     }
 
     public WfRunState startNewRun(WfRunEvent e, List<TaskScheduleRequest> toSchedule) {
-        WfRunState out = new WfRunState(e.runRequest.wfRunId);
+        WfRunState out = new WfRunState();
+        out.id = e.runRequest.wfRunId;
+        out.oEvents.wfRunId = out.id;
 
         out.wfSpec = this;
         out.toSchedule = toSchedule;
