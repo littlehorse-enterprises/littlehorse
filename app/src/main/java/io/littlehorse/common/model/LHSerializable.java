@@ -12,7 +12,7 @@ import io.littlehorse.common.exceptions.LHSerdeError;
 public abstract class LHSerializable<T extends MessageOrBuilder> {
     public abstract GeneratedMessageV3.Builder<?> toProto();
 
-    public abstract void initFrom(MessageOrBuilder proto);
+    public abstract void initFrom(MessageOrBuilder proto) throws LHSerdeError;
 
     public abstract Class<? extends GeneratedMessageV3> getProtoBaseClass();
 
@@ -82,7 +82,7 @@ public abstract class LHSerializable<T extends MessageOrBuilder> {
         }
 
         try {
-            JsonFormat.parser().ignoringUnknownFields().merge(json, builder);
+            JsonFormat.parser().merge(json, builder);
         } catch (InvalidProtocolBufferException exn) {
             throw new LHSerdeError(exn, "bad protobuf for " + cls.getName());
         }

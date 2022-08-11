@@ -174,7 +174,7 @@ public class WfRunProcessor implements Processor<
             Node node = wfSpec.threadSpecs.get(
                 task.threadSpecName
             ).nodes.get(task.nodeName);
-            task.taskDefId = node.taskDefName;
+            task.taskDefId = node.taskNode.taskDefName;
         }
 
         taskRunStore.put(task.getObjectId(), task);

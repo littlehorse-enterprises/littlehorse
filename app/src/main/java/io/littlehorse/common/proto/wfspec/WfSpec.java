@@ -25,6 +25,21 @@ public final class WfSpec {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_lh_proto_NodePb_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_lh_proto_TaskNodePb_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_lh_proto_TaskNodePb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_lh_proto_EntrypointNodePb_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_lh_proto_EntrypointNodePb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_lh_proto_ExitNodePb_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_lh_proto_ExitNodePb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_lh_proto_ThreadSpecPb_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -60,28 +75,31 @@ public final class WfSpec {
     java.lang.String[] descriptorData = {
       "\n\rwf_spec.proto\022\010lh_proto\032\037google/protob" +
       "uf/timestamp.proto\032\016lh_proto.proto\" \n\006Ed" +
-      "gePb\022\026\n\016sink_node_name\030\001 \001(\t\"\204\001\n\006NodePb\022" +
-      "\032\n\rtask_def_name\030\001 \001(\tH\000\210\001\001\022\"\n\004type\030\002 \001(" +
-      "\0162\024.lh_proto.NodeTypePb\022(\n\016outgoing_edge" +
-      "s\030\003 \003(\0132\020.lh_proto.EdgePbB\020\n\016_task_def_n" +
-      "ame\"\200\001\n\014ThreadSpecPb\0220\n\005nodes\030\001 \003(\0132!.lh" +
-      "_proto.ThreadSpecPb.NodesEntry\032>\n\nNodesE" +
-      "ntry\022\013\n\003key\030\001 \001(\t\022\037\n\005value\030\002 \001(\0132\020.lh_pr" +
-      "oto.NodePb:\0028\001\"\356\002\n\010WfSpecPb\022\n\n\002id\030\001 \001(\t\022" +
-      ".\n\ncreated_at\030\002 \001(\0132\032.google.protobuf.Ti" +
-      "mestamp\022.\n\nupdated_at\030\003 \001(\0132\032.google.pro" +
-      "tobuf.Timestamp\0229\n\014thread_specs\030\004 \003(\0132#." +
-      "lh_proto.WfSpecPb.ThreadSpecsEntry\022\036\n\026en" +
-      "trypoint_thread_name\030\005 \001(\t\022$\n\006status\030\006 \001" +
-      "(\0162\024.lh_proto.LHStatusPb\022\014\n\004name\030\007 \001(\t\022\033" +
-      "\n\023last_updated_offset\030\010 \001(\003\032J\n\020ThreadSpe" +
-      "csEntry\022\013\n\003key\030\001 \001(\t\022%\n\005value\030\002 \001(\0132\026.lh" +
-      "_proto.ThreadSpecPb:\0028\001\"I\n\tTaskDefPb\022\014\n\004" +
-      "name\030\001 \001(\t\022.\n\ncreated_at\030\002 \001(\0132\032.google." +
-      "protobuf.Timestamp*0\n\nNodeTypePb\022\010\n\004TASK" +
-      "\020\000\022\016\n\nENTRYPOINT\020\001\022\010\n\004EXIT\020\002B/\n\"io.littl" +
-      "ehorse.common.proto.wfspecP\001Z\007.;modelb\006p" +
-      "roto3"
+      "gePb\022\026\n\016sink_node_name\030\001 \001(\t\"\270\001\n\006NodePb\022" +
+      "(\n\016outgoing_edges\030\001 \003(\0132\020.lh_proto.EdgeP" +
+      "b\022$\n\004task\030\002 \001(\0132\024.lh_proto.TaskNodePbH\000\022" +
+      "0\n\nentrypoint\030\003 \001(\0132\032.lh_proto.Entrypoin" +
+      "tNodePbH\000\022$\n\004exit\030\004 \001(\0132\024.lh_proto.ExitN" +
+      "odePbH\000B\006\n\004node\"U\n\nTaskNodePb\022\025\n\rtask_de" +
+      "f_name\030\001 \001(\t\022\034\n\017timeout_seconds\030\002 \001(\005H\000\210" +
+      "\001\001B\022\n\020_timeout_seconds\"\022\n\020EntrypointNode" +
+      "Pb\"\014\n\nExitNodePb\"\200\001\n\014ThreadSpecPb\0220\n\005nod" +
+      "es\030\001 \003(\0132!.lh_proto.ThreadSpecPb.NodesEn" +
+      "try\032>\n\nNodesEntry\022\013\n\003key\030\001 \001(\t\022\037\n\005value\030" +
+      "\002 \001(\0132\020.lh_proto.NodePb:\0028\001\"\356\002\n\010WfSpecPb" +
+      "\022\n\n\002id\030\001 \001(\t\022.\n\ncreated_at\030\002 \001(\0132\032.googl" +
+      "e.protobuf.Timestamp\022.\n\nupdated_at\030\003 \001(\013" +
+      "2\032.google.protobuf.Timestamp\0229\n\014thread_s" +
+      "pecs\030\004 \003(\0132#.lh_proto.WfSpecPb.ThreadSpe" +
+      "csEntry\022\036\n\026entrypoint_thread_name\030\005 \001(\t\022" +
+      "$\n\006status\030\006 \001(\0162\024.lh_proto.LHStatusPb\022\014\n" +
+      "\004name\030\007 \001(\t\022\033\n\023last_updated_offset\030\010 \001(\003" +
+      "\032J\n\020ThreadSpecsEntry\022\013\n\003key\030\001 \001(\t\022%\n\005val" +
+      "ue\030\002 \001(\0132\026.lh_proto.ThreadSpecPb:\0028\001\"I\n\t" +
+      "TaskDefPb\022\014\n\004name\030\001 \001(\t\022.\n\ncreated_at\030\002 " +
+      "\001(\0132\032.google.protobuf.TimestampB/\n\"io.li" +
+      "ttlehorse.common.proto.wfspecP\001Z\007.;model" +
+      "b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -100,9 +118,27 @@ public final class WfSpec {
     internal_static_lh_proto_NodePb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_NodePb_descriptor,
-        new java.lang.String[] { "TaskDefName", "Type", "OutgoingEdges", "TaskDefName", });
-    internal_static_lh_proto_ThreadSpecPb_descriptor =
+        new java.lang.String[] { "OutgoingEdges", "Task", "Entrypoint", "Exit", "Node", });
+    internal_static_lh_proto_TaskNodePb_descriptor =
       getDescriptor().getMessageTypes().get(2);
+    internal_static_lh_proto_TaskNodePb_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_lh_proto_TaskNodePb_descriptor,
+        new java.lang.String[] { "TaskDefName", "TimeoutSeconds", "TimeoutSeconds", });
+    internal_static_lh_proto_EntrypointNodePb_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_lh_proto_EntrypointNodePb_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_lh_proto_EntrypointNodePb_descriptor,
+        new java.lang.String[] { });
+    internal_static_lh_proto_ExitNodePb_descriptor =
+      getDescriptor().getMessageTypes().get(4);
+    internal_static_lh_proto_ExitNodePb_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_lh_proto_ExitNodePb_descriptor,
+        new java.lang.String[] { });
+    internal_static_lh_proto_ThreadSpecPb_descriptor =
+      getDescriptor().getMessageTypes().get(5);
     internal_static_lh_proto_ThreadSpecPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_ThreadSpecPb_descriptor,
@@ -114,7 +150,7 @@ public final class WfSpec {
         internal_static_lh_proto_ThreadSpecPb_NodesEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_lh_proto_WfSpecPb_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(6);
     internal_static_lh_proto_WfSpecPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_WfSpecPb_descriptor,
@@ -126,7 +162,7 @@ public final class WfSpec {
         internal_static_lh_proto_WfSpecPb_ThreadSpecsEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_lh_proto_TaskDefPb_descriptor =
-      getDescriptor().getMessageTypes().get(4);
+      getDescriptor().getMessageTypes().get(7);
     internal_static_lh_proto_TaskDefPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_TaskDefPb_descriptor,

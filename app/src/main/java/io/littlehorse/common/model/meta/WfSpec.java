@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHDatabaseClient;
 import io.littlehorse.common.exceptions.LHConnectionError;
+import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
@@ -87,7 +88,7 @@ public class WfSpec extends POSTable<WfSpecPbOrBuilder> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder pr) {
+    public void initFrom(MessageOrBuilder pr) throws LHSerdeError {
         WfSpecPbOrBuilder proto = (WfSpecPbOrBuilder) pr;
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
         id = proto.getId();
@@ -100,9 +101,10 @@ public class WfSpec extends POSTable<WfSpecPbOrBuilder> {
         for (
             Map.Entry<String, ThreadSpecPb> e: proto.getThreadSpecsMap().entrySet()
         ) {
-            ThreadSpec ts = ThreadSpec.fromProto(e.getValue());
+            ThreadSpec ts = new ThreadSpec();
             ts.wfSpec = this;
             ts.name = e.getKey();
+            ts.initFrom(e.getValue());
             threadSpecs.put(e.getKey(), ts);
         }
     }
@@ -111,7 +113,7 @@ public class WfSpec extends POSTable<WfSpecPbOrBuilder> {
         return WfSpecPb.class;
     }
 
-    public static WfSpec fromProto(WfSpecPbOrBuilder proto) {
+    public static WfSpec fromProto(WfSpecPbOrBuilder proto) throws LHSerdeError {
         WfSpec out = new WfSpec();
         out.initFrom(proto);
         return out;

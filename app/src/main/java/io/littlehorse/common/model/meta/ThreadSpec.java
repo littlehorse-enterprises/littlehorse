@@ -6,10 +6,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHDatabaseClient;
 import io.littlehorse.common.exceptions.LHConnectionError;
+import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.wfspec.NodePb;
-import io.littlehorse.common.proto.wfspec.NodeTypePb;
+import io.littlehorse.common.proto.wfspec.NodePb.NodeCase;
 import io.littlehorse.common.proto.wfspec.ThreadSpecPb;
 import io.littlehorse.common.proto.wfspec.ThreadSpecPbOrBuilder;
 
@@ -36,7 +37,7 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder pr) {
+    public void initFrom(MessageOrBuilder pr) throws LHSerdeError {
         ThreadSpecPbOrBuilder proto = (ThreadSpecPbOrBuilder) pr;
         for (Map.Entry<String, NodePb> p: proto.getNodesMap().entrySet()) {
             Node n = new Node();
@@ -44,16 +45,10 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
             n.threadSpec = this;
             n.initFrom(p.getValue());
             this.nodes.put(p.getKey(), n);
-            if (n.type == NodeTypePb.ENTRYPOINT) {
+            if (n.type == NodeCase.ENTRYPOINT) {
                 this.entrypointNodeName = n.name;
             }
         }
-    }
-
-    public static ThreadSpec fromProto(ThreadSpecPbOrBuilder proto) {
-        ThreadSpec out = new ThreadSpec();
-        out.initFrom(proto);
-        return out;
     }
 
     // Below is Implementation
@@ -70,7 +65,7 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
 
         boolean seenEntrypoint = false;
         for (Node node: nodes.values()) {
-            if (node.type == NodeTypePb.ENTRYPOINT) {
+            if (node.type == NodeCase.ENTRYPOINT) {
                 if (seenEntrypoint) {
                     throw new LHValidationError(
                         null,

@@ -1,0 +1,27 @@
+package io.littlehorse.common.model.meta.node;
+
+import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.proto.wfspec.TaskNodePb;
+import io.littlehorse.common.proto.wfspec.TaskNodePbOrBuilder;
+
+public class TaskNode extends LHSerializable<TaskNodePb> {
+    public String taskDefName;
+    public Integer timeoutSeconds;
+
+    public Class<TaskNodePb> getProtoBaseClass() {
+        return TaskNodePb.class;
+    }
+
+    public void initFrom(MessageOrBuilder proto) {
+        TaskNodePbOrBuilder p = (TaskNodePbOrBuilder) proto;
+        taskDefName = p.getTaskDefName();
+        timeoutSeconds = p.getTimeoutSeconds();
+    }
+
+    public TaskNodePb.Builder toProto() {
+        return TaskNodePb.newBuilder()
+            .setTimeoutSeconds(timeoutSeconds)
+            .setTaskDefName(taskDefName);
+    }
+}

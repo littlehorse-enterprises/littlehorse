@@ -16,7 +16,7 @@ import io.littlehorse.common.model.observability.TaskScheduledOe;
 import io.littlehorse.common.model.observability.TaskStartOe;
 import io.littlehorse.common.model.observability.ThreadStatusChangeOe;
 import io.littlehorse.common.proto.LHStatusPb;
-import io.littlehorse.common.proto.wfspec.NodeTypePb;
+import io.littlehorse.common.proto.wfspec.NodePb.NodeCase;
 import io.littlehorse.common.proto.scheduler.ThreadRunStatePb;
 import io.littlehorse.common.proto.scheduler.ThreadRunStatePbOrBuilder;
 
@@ -85,7 +85,7 @@ public class ThreadRunState {
         case EXIT:
             completeThread();
             break;
-        case UNRECOGNIZED:
+        case NODE_NOT_SET:
             throw new RuntimeException("Invalid nodetype.");
         }
     }
@@ -114,7 +114,7 @@ public class ThreadRunState {
             current = getThreadSpec().nodes.get(currentNodeRun.nodeName);
         }
 
-        if (current.type == NodeTypePb.EXIT) {
+        if (current.type == NodeCase.EXIT) {
             return null;
         }
 
@@ -132,7 +132,7 @@ public class ThreadRunState {
     }
 
     private void activateTaskNode(Node node) {
-        if (node.type != NodeTypePb.TASK) {
+        if (node.type != NodeCase.TASK) {
             throw new RuntimeException("Yikerz");
         }
 
@@ -150,8 +150,8 @@ public class ThreadRunState {
 
         // TODO: Add a TaskDefProcessor.
         tsr.replyKafkaTopic = LHConstants.WF_RUN_EVENT_TOPIC;
-        tsr.taskDefId = node.taskDefName;
-        tsr.taskDefName = node.taskDefName;
+        tsr.taskDefId = node.taskNode.taskDefName;
+        tsr.taskDefName = node.taskNode.taskDefName;
         tsr.taskRunNumber = currentNodeRun.number;
         tsr.taskRunPosition = currentNodeRun.position;
         tsr.threadRunNumber = threadRunNumber;

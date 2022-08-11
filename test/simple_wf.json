@@ -4,22 +4,39 @@
     "simple_wf": {
       "nodes": {
         "entrypoint": {
-          "type": "ENTRYPOINT",
           "outgoingEdges": [
             {
               "sinkNodeName": "t1"
             }
-          ]
+          ],
+          "entrypoint": {}
         },
         "t1": {
-          "type": "TASK",
-          "taskDefName": "task1",
+          "task": {
+            "taskDefName": "task1"
+          },
+          "outgoingEdges": [{
+            "sinkNodeName": "t2"
+          }]
+        },
+        "t2": {
+          "task": {
+            "taskDefName": "task1"
+          },
+          "outgoingEdges": [{
+            "sinkNodeName": "t3"
+          }]
+        },
+        "t3": {
+          "task": {
+            "taskDefName": "task1"
+          },
           "outgoingEdges": [{
             "sinkNodeName": "exit"
           }]
         },
         "exit": {
-          "type": "EXIT"
+          "exit": {}
         }
       }
     }

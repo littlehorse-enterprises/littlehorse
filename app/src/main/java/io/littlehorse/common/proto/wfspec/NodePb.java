@@ -16,8 +16,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private NodePb() {
-    taskDefName_ = "";
-    type_ = 0;
     outgoingEdges_ = java.util.Collections.emptyList();
   }
 
@@ -53,24 +51,54 @@ private static final long serialVersionUID = 0L;
             done = true;
             break;
           case 10: {
-            java.lang.String s = input.readStringRequireUtf8();
-            bitField0_ |= 0x00000001;
-            taskDefName_ = s;
-            break;
-          }
-          case 16: {
-            int rawValue = input.readEnum();
-
-            type_ = rawValue;
-            break;
-          }
-          case 26: {
-            if (!((mutable_bitField0_ & 0x00000002) != 0)) {
+            if (!((mutable_bitField0_ & 0x00000001) != 0)) {
               outgoingEdges_ = new java.util.ArrayList<io.littlehorse.common.proto.wfspec.EdgePb>();
-              mutable_bitField0_ |= 0x00000002;
+              mutable_bitField0_ |= 0x00000001;
             }
             outgoingEdges_.add(
                 input.readMessage(io.littlehorse.common.proto.wfspec.EdgePb.parser(), extensionRegistry));
+            break;
+          }
+          case 18: {
+            io.littlehorse.common.proto.wfspec.TaskNodePb.Builder subBuilder = null;
+            if (nodeCase_ == 2) {
+              subBuilder = ((io.littlehorse.common.proto.wfspec.TaskNodePb) node_).toBuilder();
+            }
+            node_ =
+                input.readMessage(io.littlehorse.common.proto.wfspec.TaskNodePb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.common.proto.wfspec.TaskNodePb) node_);
+              node_ = subBuilder.buildPartial();
+            }
+            nodeCase_ = 2;
+            break;
+          }
+          case 26: {
+            io.littlehorse.common.proto.wfspec.EntrypointNodePb.Builder subBuilder = null;
+            if (nodeCase_ == 3) {
+              subBuilder = ((io.littlehorse.common.proto.wfspec.EntrypointNodePb) node_).toBuilder();
+            }
+            node_ =
+                input.readMessage(io.littlehorse.common.proto.wfspec.EntrypointNodePb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.common.proto.wfspec.EntrypointNodePb) node_);
+              node_ = subBuilder.buildPartial();
+            }
+            nodeCase_ = 3;
+            break;
+          }
+          case 34: {
+            io.littlehorse.common.proto.wfspec.ExitNodePb.Builder subBuilder = null;
+            if (nodeCase_ == 4) {
+              subBuilder = ((io.littlehorse.common.proto.wfspec.ExitNodePb) node_).toBuilder();
+            }
+            node_ =
+                input.readMessage(io.littlehorse.common.proto.wfspec.ExitNodePb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.common.proto.wfspec.ExitNodePb) node_);
+              node_ = subBuilder.buildPartial();
+            }
+            nodeCase_ = 4;
             break;
           }
           default: {
@@ -88,7 +116,7 @@ private static final long serialVersionUID = 0L;
       throw new com.google.protobuf.InvalidProtocolBufferException(
           e).setUnfinishedMessage(this);
     } finally {
-      if (((mutable_bitField0_ & 0x00000002) != 0)) {
+      if (((mutable_bitField0_ & 0x00000001) != 0)) {
         outgoingEdges_ = java.util.Collections.unmodifiableList(outgoingEdges_);
       }
       this.unknownFields = unknownFields.build();
@@ -108,83 +136,60 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.common.proto.wfspec.NodePb.class, io.littlehorse.common.proto.wfspec.NodePb.Builder.class);
   }
 
-  private int bitField0_;
-  public static final int TASK_DEF_NAME_FIELD_NUMBER = 1;
-  private volatile java.lang.Object taskDefName_;
-  /**
-   * <code>string task_def_name = 1;</code>
-   * @return Whether the taskDefName field is set.
-   */
-  @java.lang.Override
-  public boolean hasTaskDefName() {
-    return ((bitField0_ & 0x00000001) != 0);
-  }
-  /**
-   * <code>string task_def_name = 1;</code>
-   * @return The taskDefName.
-   */
-  @java.lang.Override
-  public java.lang.String getTaskDefName() {
-    java.lang.Object ref = taskDefName_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      taskDefName_ = s;
-      return s;
+  private int nodeCase_ = 0;
+  private java.lang.Object node_;
+  public enum NodeCase
+      implements com.google.protobuf.Internal.EnumLite,
+          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+    TASK(2),
+    ENTRYPOINT(3),
+    EXIT(4),
+    NODE_NOT_SET(0);
+    private final int value;
+    private NodeCase(int value) {
+      this.value = value;
     }
-  }
-  /**
-   * <code>string task_def_name = 1;</code>
-   * @return The bytes for taskDefName.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getTaskDefNameBytes() {
-    java.lang.Object ref = taskDefName_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      taskDefName_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
+    /**
+     * @param value The number of the enum to look for.
+     * @return The enum associated with the given number.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static NodeCase valueOf(int value) {
+      return forNumber(value);
     }
+
+    public static NodeCase forNumber(int value) {
+      switch (value) {
+        case 2: return TASK;
+        case 3: return ENTRYPOINT;
+        case 4: return EXIT;
+        case 0: return NODE_NOT_SET;
+        default: return null;
+      }
+    }
+    public int getNumber() {
+      return this.value;
+    }
+  };
+
+  public NodeCase
+  getNodeCase() {
+    return NodeCase.forNumber(
+        nodeCase_);
   }
 
-  public static final int TYPE_FIELD_NUMBER = 2;
-  private int type_;
-  /**
-   * <code>.lh_proto.NodeTypePb type = 2;</code>
-   * @return The enum numeric value on the wire for type.
-   */
-  @java.lang.Override public int getTypeValue() {
-    return type_;
-  }
-  /**
-   * <code>.lh_proto.NodeTypePb type = 2;</code>
-   * @return The type.
-   */
-  @java.lang.Override public io.littlehorse.common.proto.wfspec.NodeTypePb getType() {
-    @SuppressWarnings("deprecation")
-    io.littlehorse.common.proto.wfspec.NodeTypePb result = io.littlehorse.common.proto.wfspec.NodeTypePb.valueOf(type_);
-    return result == null ? io.littlehorse.common.proto.wfspec.NodeTypePb.UNRECOGNIZED : result;
-  }
-
-  public static final int OUTGOING_EDGES_FIELD_NUMBER = 3;
+  public static final int OUTGOING_EDGES_FIELD_NUMBER = 1;
   private java.util.List<io.littlehorse.common.proto.wfspec.EdgePb> outgoingEdges_;
   /**
-   * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+   * <code>repeated .lh_proto.EdgePb outgoing_edges = 1;</code>
    */
   @java.lang.Override
   public java.util.List<io.littlehorse.common.proto.wfspec.EdgePb> getOutgoingEdgesList() {
     return outgoingEdges_;
   }
   /**
-   * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+   * <code>repeated .lh_proto.EdgePb outgoing_edges = 1;</code>
    */
   @java.lang.Override
   public java.util.List<? extends io.littlehorse.common.proto.wfspec.EdgePbOrBuilder> 
@@ -192,26 +197,119 @@ private static final long serialVersionUID = 0L;
     return outgoingEdges_;
   }
   /**
-   * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+   * <code>repeated .lh_proto.EdgePb outgoing_edges = 1;</code>
    */
   @java.lang.Override
   public int getOutgoingEdgesCount() {
     return outgoingEdges_.size();
   }
   /**
-   * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+   * <code>repeated .lh_proto.EdgePb outgoing_edges = 1;</code>
    */
   @java.lang.Override
   public io.littlehorse.common.proto.wfspec.EdgePb getOutgoingEdges(int index) {
     return outgoingEdges_.get(index);
   }
   /**
-   * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+   * <code>repeated .lh_proto.EdgePb outgoing_edges = 1;</code>
    */
   @java.lang.Override
   public io.littlehorse.common.proto.wfspec.EdgePbOrBuilder getOutgoingEdgesOrBuilder(
       int index) {
     return outgoingEdges_.get(index);
+  }
+
+  public static final int TASK_FIELD_NUMBER = 2;
+  /**
+   * <code>.lh_proto.TaskNodePb task = 2;</code>
+   * @return Whether the task field is set.
+   */
+  @java.lang.Override
+  public boolean hasTask() {
+    return nodeCase_ == 2;
+  }
+  /**
+   * <code>.lh_proto.TaskNodePb task = 2;</code>
+   * @return The task.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.wfspec.TaskNodePb getTask() {
+    if (nodeCase_ == 2) {
+       return (io.littlehorse.common.proto.wfspec.TaskNodePb) node_;
+    }
+    return io.littlehorse.common.proto.wfspec.TaskNodePb.getDefaultInstance();
+  }
+  /**
+   * <code>.lh_proto.TaskNodePb task = 2;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.wfspec.TaskNodePbOrBuilder getTaskOrBuilder() {
+    if (nodeCase_ == 2) {
+       return (io.littlehorse.common.proto.wfspec.TaskNodePb) node_;
+    }
+    return io.littlehorse.common.proto.wfspec.TaskNodePb.getDefaultInstance();
+  }
+
+  public static final int ENTRYPOINT_FIELD_NUMBER = 3;
+  /**
+   * <code>.lh_proto.EntrypointNodePb entrypoint = 3;</code>
+   * @return Whether the entrypoint field is set.
+   */
+  @java.lang.Override
+  public boolean hasEntrypoint() {
+    return nodeCase_ == 3;
+  }
+  /**
+   * <code>.lh_proto.EntrypointNodePb entrypoint = 3;</code>
+   * @return The entrypoint.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.wfspec.EntrypointNodePb getEntrypoint() {
+    if (nodeCase_ == 3) {
+       return (io.littlehorse.common.proto.wfspec.EntrypointNodePb) node_;
+    }
+    return io.littlehorse.common.proto.wfspec.EntrypointNodePb.getDefaultInstance();
+  }
+  /**
+   * <code>.lh_proto.EntrypointNodePb entrypoint = 3;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.wfspec.EntrypointNodePbOrBuilder getEntrypointOrBuilder() {
+    if (nodeCase_ == 3) {
+       return (io.littlehorse.common.proto.wfspec.EntrypointNodePb) node_;
+    }
+    return io.littlehorse.common.proto.wfspec.EntrypointNodePb.getDefaultInstance();
+  }
+
+  public static final int EXIT_FIELD_NUMBER = 4;
+  /**
+   * <code>.lh_proto.ExitNodePb exit = 4;</code>
+   * @return Whether the exit field is set.
+   */
+  @java.lang.Override
+  public boolean hasExit() {
+    return nodeCase_ == 4;
+  }
+  /**
+   * <code>.lh_proto.ExitNodePb exit = 4;</code>
+   * @return The exit.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.wfspec.ExitNodePb getExit() {
+    if (nodeCase_ == 4) {
+       return (io.littlehorse.common.proto.wfspec.ExitNodePb) node_;
+    }
+    return io.littlehorse.common.proto.wfspec.ExitNodePb.getDefaultInstance();
+  }
+  /**
+   * <code>.lh_proto.ExitNodePb exit = 4;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.wfspec.ExitNodePbOrBuilder getExitOrBuilder() {
+    if (nodeCase_ == 4) {
+       return (io.littlehorse.common.proto.wfspec.ExitNodePb) node_;
+    }
+    return io.littlehorse.common.proto.wfspec.ExitNodePb.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -228,14 +326,17 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (((bitField0_ & 0x00000001) != 0)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, taskDefName_);
-    }
-    if (type_ != io.littlehorse.common.proto.wfspec.NodeTypePb.TASK.getNumber()) {
-      output.writeEnum(2, type_);
-    }
     for (int i = 0; i < outgoingEdges_.size(); i++) {
-      output.writeMessage(3, outgoingEdges_.get(i));
+      output.writeMessage(1, outgoingEdges_.get(i));
+    }
+    if (nodeCase_ == 2) {
+      output.writeMessage(2, (io.littlehorse.common.proto.wfspec.TaskNodePb) node_);
+    }
+    if (nodeCase_ == 3) {
+      output.writeMessage(3, (io.littlehorse.common.proto.wfspec.EntrypointNodePb) node_);
+    }
+    if (nodeCase_ == 4) {
+      output.writeMessage(4, (io.littlehorse.common.proto.wfspec.ExitNodePb) node_);
     }
     unknownFields.writeTo(output);
   }
@@ -246,16 +347,21 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (((bitField0_ & 0x00000001) != 0)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, taskDefName_);
-    }
-    if (type_ != io.littlehorse.common.proto.wfspec.NodeTypePb.TASK.getNumber()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(2, type_);
-    }
     for (int i = 0; i < outgoingEdges_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, outgoingEdges_.get(i));
+        .computeMessageSize(1, outgoingEdges_.get(i));
+    }
+    if (nodeCase_ == 2) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(2, (io.littlehorse.common.proto.wfspec.TaskNodePb) node_);
+    }
+    if (nodeCase_ == 3) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, (io.littlehorse.common.proto.wfspec.EntrypointNodePb) node_);
+    }
+    if (nodeCase_ == 4) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(4, (io.littlehorse.common.proto.wfspec.ExitNodePb) node_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -272,14 +378,25 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.common.proto.wfspec.NodePb other = (io.littlehorse.common.proto.wfspec.NodePb) obj;
 
-    if (hasTaskDefName() != other.hasTaskDefName()) return false;
-    if (hasTaskDefName()) {
-      if (!getTaskDefName()
-          .equals(other.getTaskDefName())) return false;
-    }
-    if (type_ != other.type_) return false;
     if (!getOutgoingEdgesList()
         .equals(other.getOutgoingEdgesList())) return false;
+    if (!getNodeCase().equals(other.getNodeCase())) return false;
+    switch (nodeCase_) {
+      case 2:
+        if (!getTask()
+            .equals(other.getTask())) return false;
+        break;
+      case 3:
+        if (!getEntrypoint()
+            .equals(other.getEntrypoint())) return false;
+        break;
+      case 4:
+        if (!getExit()
+            .equals(other.getExit())) return false;
+        break;
+      case 0:
+      default:
+    }
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -291,15 +408,25 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (hasTaskDefName()) {
-      hash = (37 * hash) + TASK_DEF_NAME_FIELD_NUMBER;
-      hash = (53 * hash) + getTaskDefName().hashCode();
-    }
-    hash = (37 * hash) + TYPE_FIELD_NUMBER;
-    hash = (53 * hash) + type_;
     if (getOutgoingEdgesCount() > 0) {
       hash = (37 * hash) + OUTGOING_EDGES_FIELD_NUMBER;
       hash = (53 * hash) + getOutgoingEdgesList().hashCode();
+    }
+    switch (nodeCase_) {
+      case 2:
+        hash = (37 * hash) + TASK_FIELD_NUMBER;
+        hash = (53 * hash) + getTask().hashCode();
+        break;
+      case 3:
+        hash = (37 * hash) + ENTRYPOINT_FIELD_NUMBER;
+        hash = (53 * hash) + getEntrypoint().hashCode();
+        break;
+      case 4:
+        hash = (37 * hash) + EXIT_FIELD_NUMBER;
+        hash = (53 * hash) + getExit().hashCode();
+        break;
+      case 0:
+      default:
     }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
@@ -435,16 +562,14 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      taskDefName_ = "";
-      bitField0_ = (bitField0_ & ~0x00000001);
-      type_ = 0;
-
       if (outgoingEdgesBuilder_ == null) {
         outgoingEdges_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000002);
+        bitField0_ = (bitField0_ & ~0x00000001);
       } else {
         outgoingEdgesBuilder_.clear();
       }
+      nodeCase_ = 0;
+      node_ = null;
       return this;
     }
 
@@ -472,22 +597,37 @@ private static final long serialVersionUID = 0L;
     public io.littlehorse.common.proto.wfspec.NodePb buildPartial() {
       io.littlehorse.common.proto.wfspec.NodePb result = new io.littlehorse.common.proto.wfspec.NodePb(this);
       int from_bitField0_ = bitField0_;
-      int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        to_bitField0_ |= 0x00000001;
-      }
-      result.taskDefName_ = taskDefName_;
-      result.type_ = type_;
       if (outgoingEdgesBuilder_ == null) {
-        if (((bitField0_ & 0x00000002) != 0)) {
+        if (((bitField0_ & 0x00000001) != 0)) {
           outgoingEdges_ = java.util.Collections.unmodifiableList(outgoingEdges_);
-          bitField0_ = (bitField0_ & ~0x00000002);
+          bitField0_ = (bitField0_ & ~0x00000001);
         }
         result.outgoingEdges_ = outgoingEdges_;
       } else {
         result.outgoingEdges_ = outgoingEdgesBuilder_.build();
       }
-      result.bitField0_ = to_bitField0_;
+      if (nodeCase_ == 2) {
+        if (taskBuilder_ == null) {
+          result.node_ = node_;
+        } else {
+          result.node_ = taskBuilder_.build();
+        }
+      }
+      if (nodeCase_ == 3) {
+        if (entrypointBuilder_ == null) {
+          result.node_ = node_;
+        } else {
+          result.node_ = entrypointBuilder_.build();
+        }
+      }
+      if (nodeCase_ == 4) {
+        if (exitBuilder_ == null) {
+          result.node_ = node_;
+        } else {
+          result.node_ = exitBuilder_.build();
+        }
+      }
+      result.nodeCase_ = nodeCase_;
       onBuilt();
       return result;
     }
@@ -536,19 +676,11 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.common.proto.wfspec.NodePb other) {
       if (other == io.littlehorse.common.proto.wfspec.NodePb.getDefaultInstance()) return this;
-      if (other.hasTaskDefName()) {
-        bitField0_ |= 0x00000001;
-        taskDefName_ = other.taskDefName_;
-        onChanged();
-      }
-      if (other.type_ != 0) {
-        setTypeValue(other.getTypeValue());
-      }
       if (outgoingEdgesBuilder_ == null) {
         if (!other.outgoingEdges_.isEmpty()) {
           if (outgoingEdges_.isEmpty()) {
             outgoingEdges_ = other.outgoingEdges_;
-            bitField0_ = (bitField0_ & ~0x00000002);
+            bitField0_ = (bitField0_ & ~0x00000001);
           } else {
             ensureOutgoingEdgesIsMutable();
             outgoingEdges_.addAll(other.outgoingEdges_);
@@ -561,13 +693,30 @@ private static final long serialVersionUID = 0L;
             outgoingEdgesBuilder_.dispose();
             outgoingEdgesBuilder_ = null;
             outgoingEdges_ = other.outgoingEdges_;
-            bitField0_ = (bitField0_ & ~0x00000002);
+            bitField0_ = (bitField0_ & ~0x00000001);
             outgoingEdgesBuilder_ = 
               com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                  getOutgoingEdgesFieldBuilder() : null;
           } else {
             outgoingEdgesBuilder_.addAllMessages(other.outgoingEdges_);
           }
+        }
+      }
+      switch (other.getNodeCase()) {
+        case TASK: {
+          mergeTask(other.getTask());
+          break;
+        }
+        case ENTRYPOINT: {
+          mergeEntrypoint(other.getEntrypoint());
+          break;
+        }
+        case EXIT: {
+          mergeExit(other.getExit());
+          break;
+        }
+        case NODE_NOT_SET: {
+          break;
         }
       }
       this.mergeUnknownFields(other.unknownFields);
@@ -598,151 +747,29 @@ private static final long serialVersionUID = 0L;
       }
       return this;
     }
+    private int nodeCase_ = 0;
+    private java.lang.Object node_;
+    public NodeCase
+        getNodeCase() {
+      return NodeCase.forNumber(
+          nodeCase_);
+    }
+
+    public Builder clearNode() {
+      nodeCase_ = 0;
+      node_ = null;
+      onChanged();
+      return this;
+    }
+
     private int bitField0_;
-
-    private java.lang.Object taskDefName_ = "";
-    /**
-     * <code>string task_def_name = 1;</code>
-     * @return Whether the taskDefName field is set.
-     */
-    public boolean hasTaskDefName() {
-      return ((bitField0_ & 0x00000001) != 0);
-    }
-    /**
-     * <code>string task_def_name = 1;</code>
-     * @return The taskDefName.
-     */
-    public java.lang.String getTaskDefName() {
-      java.lang.Object ref = taskDefName_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        taskDefName_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>string task_def_name = 1;</code>
-     * @return The bytes for taskDefName.
-     */
-    public com.google.protobuf.ByteString
-        getTaskDefNameBytes() {
-      java.lang.Object ref = taskDefName_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        taskDefName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string task_def_name = 1;</code>
-     * @param value The taskDefName to set.
-     * @return This builder for chaining.
-     */
-    public Builder setTaskDefName(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-      taskDefName_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string task_def_name = 1;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearTaskDefName() {
-      bitField0_ = (bitField0_ & ~0x00000001);
-      taskDefName_ = getDefaultInstance().getTaskDefName();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string task_def_name = 1;</code>
-     * @param value The bytes for taskDefName to set.
-     * @return This builder for chaining.
-     */
-    public Builder setTaskDefNameBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      bitField0_ |= 0x00000001;
-      taskDefName_ = value;
-      onChanged();
-      return this;
-    }
-
-    private int type_ = 0;
-    /**
-     * <code>.lh_proto.NodeTypePb type = 2;</code>
-     * @return The enum numeric value on the wire for type.
-     */
-    @java.lang.Override public int getTypeValue() {
-      return type_;
-    }
-    /**
-     * <code>.lh_proto.NodeTypePb type = 2;</code>
-     * @param value The enum numeric value on the wire for type to set.
-     * @return This builder for chaining.
-     */
-    public Builder setTypeValue(int value) {
-      
-      type_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.lh_proto.NodeTypePb type = 2;</code>
-     * @return The type.
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.wfspec.NodeTypePb getType() {
-      @SuppressWarnings("deprecation")
-      io.littlehorse.common.proto.wfspec.NodeTypePb result = io.littlehorse.common.proto.wfspec.NodeTypePb.valueOf(type_);
-      return result == null ? io.littlehorse.common.proto.wfspec.NodeTypePb.UNRECOGNIZED : result;
-    }
-    /**
-     * <code>.lh_proto.NodeTypePb type = 2;</code>
-     * @param value The type to set.
-     * @return This builder for chaining.
-     */
-    public Builder setType(io.littlehorse.common.proto.wfspec.NodeTypePb value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      
-      type_ = value.getNumber();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.lh_proto.NodeTypePb type = 2;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearType() {
-      
-      type_ = 0;
-      onChanged();
-      return this;
-    }
 
     private java.util.List<io.littlehorse.common.proto.wfspec.EdgePb> outgoingEdges_ =
       java.util.Collections.emptyList();
     private void ensureOutgoingEdgesIsMutable() {
-      if (!((bitField0_ & 0x00000002) != 0)) {
+      if (!((bitField0_ & 0x00000001) != 0)) {
         outgoingEdges_ = new java.util.ArrayList<io.littlehorse.common.proto.wfspec.EdgePb>(outgoingEdges_);
-        bitField0_ |= 0x00000002;
+        bitField0_ |= 0x00000001;
        }
     }
 
@@ -750,7 +777,7 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.common.proto.wfspec.EdgePb, io.littlehorse.common.proto.wfspec.EdgePb.Builder, io.littlehorse.common.proto.wfspec.EdgePbOrBuilder> outgoingEdgesBuilder_;
 
     /**
-     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 1;</code>
      */
     public java.util.List<io.littlehorse.common.proto.wfspec.EdgePb> getOutgoingEdgesList() {
       if (outgoingEdgesBuilder_ == null) {
@@ -760,7 +787,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 1;</code>
      */
     public int getOutgoingEdgesCount() {
       if (outgoingEdgesBuilder_ == null) {
@@ -770,7 +797,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 1;</code>
      */
     public io.littlehorse.common.proto.wfspec.EdgePb getOutgoingEdges(int index) {
       if (outgoingEdgesBuilder_ == null) {
@@ -780,7 +807,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 1;</code>
      */
     public Builder setOutgoingEdges(
         int index, io.littlehorse.common.proto.wfspec.EdgePb value) {
@@ -797,7 +824,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 1;</code>
      */
     public Builder setOutgoingEdges(
         int index, io.littlehorse.common.proto.wfspec.EdgePb.Builder builderForValue) {
@@ -811,7 +838,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 1;</code>
      */
     public Builder addOutgoingEdges(io.littlehorse.common.proto.wfspec.EdgePb value) {
       if (outgoingEdgesBuilder_ == null) {
@@ -827,7 +854,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 1;</code>
      */
     public Builder addOutgoingEdges(
         int index, io.littlehorse.common.proto.wfspec.EdgePb value) {
@@ -844,7 +871,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 1;</code>
      */
     public Builder addOutgoingEdges(
         io.littlehorse.common.proto.wfspec.EdgePb.Builder builderForValue) {
@@ -858,7 +885,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 1;</code>
      */
     public Builder addOutgoingEdges(
         int index, io.littlehorse.common.proto.wfspec.EdgePb.Builder builderForValue) {
@@ -872,7 +899,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 1;</code>
      */
     public Builder addAllOutgoingEdges(
         java.lang.Iterable<? extends io.littlehorse.common.proto.wfspec.EdgePb> values) {
@@ -887,12 +914,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 1;</code>
      */
     public Builder clearOutgoingEdges() {
       if (outgoingEdgesBuilder_ == null) {
         outgoingEdges_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000002);
+        bitField0_ = (bitField0_ & ~0x00000001);
         onChanged();
       } else {
         outgoingEdgesBuilder_.clear();
@@ -900,7 +927,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 1;</code>
      */
     public Builder removeOutgoingEdges(int index) {
       if (outgoingEdgesBuilder_ == null) {
@@ -913,14 +940,14 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 1;</code>
      */
     public io.littlehorse.common.proto.wfspec.EdgePb.Builder getOutgoingEdgesBuilder(
         int index) {
       return getOutgoingEdgesFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 1;</code>
      */
     public io.littlehorse.common.proto.wfspec.EdgePbOrBuilder getOutgoingEdgesOrBuilder(
         int index) {
@@ -930,7 +957,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 1;</code>
      */
     public java.util.List<? extends io.littlehorse.common.proto.wfspec.EdgePbOrBuilder> 
          getOutgoingEdgesOrBuilderList() {
@@ -941,14 +968,14 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 1;</code>
      */
     public io.littlehorse.common.proto.wfspec.EdgePb.Builder addOutgoingEdgesBuilder() {
       return getOutgoingEdgesFieldBuilder().addBuilder(
           io.littlehorse.common.proto.wfspec.EdgePb.getDefaultInstance());
     }
     /**
-     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 1;</code>
      */
     public io.littlehorse.common.proto.wfspec.EdgePb.Builder addOutgoingEdgesBuilder(
         int index) {
@@ -956,7 +983,7 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.common.proto.wfspec.EdgePb.getDefaultInstance());
     }
     /**
-     * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+     * <code>repeated .lh_proto.EdgePb outgoing_edges = 1;</code>
      */
     public java.util.List<io.littlehorse.common.proto.wfspec.EdgePb.Builder> 
          getOutgoingEdgesBuilderList() {
@@ -969,12 +996,435 @@ private static final long serialVersionUID = 0L;
         outgoingEdgesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             io.littlehorse.common.proto.wfspec.EdgePb, io.littlehorse.common.proto.wfspec.EdgePb.Builder, io.littlehorse.common.proto.wfspec.EdgePbOrBuilder>(
                 outgoingEdges_,
-                ((bitField0_ & 0x00000002) != 0),
+                ((bitField0_ & 0x00000001) != 0),
                 getParentForChildren(),
                 isClean());
         outgoingEdges_ = null;
       }
       return outgoingEdgesBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.wfspec.TaskNodePb, io.littlehorse.common.proto.wfspec.TaskNodePb.Builder, io.littlehorse.common.proto.wfspec.TaskNodePbOrBuilder> taskBuilder_;
+    /**
+     * <code>.lh_proto.TaskNodePb task = 2;</code>
+     * @return Whether the task field is set.
+     */
+    @java.lang.Override
+    public boolean hasTask() {
+      return nodeCase_ == 2;
+    }
+    /**
+     * <code>.lh_proto.TaskNodePb task = 2;</code>
+     * @return The task.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.wfspec.TaskNodePb getTask() {
+      if (taskBuilder_ == null) {
+        if (nodeCase_ == 2) {
+          return (io.littlehorse.common.proto.wfspec.TaskNodePb) node_;
+        }
+        return io.littlehorse.common.proto.wfspec.TaskNodePb.getDefaultInstance();
+      } else {
+        if (nodeCase_ == 2) {
+          return taskBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.wfspec.TaskNodePb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.TaskNodePb task = 2;</code>
+     */
+    public Builder setTask(io.littlehorse.common.proto.wfspec.TaskNodePb value) {
+      if (taskBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        node_ = value;
+        onChanged();
+      } else {
+        taskBuilder_.setMessage(value);
+      }
+      nodeCase_ = 2;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.TaskNodePb task = 2;</code>
+     */
+    public Builder setTask(
+        io.littlehorse.common.proto.wfspec.TaskNodePb.Builder builderForValue) {
+      if (taskBuilder_ == null) {
+        node_ = builderForValue.build();
+        onChanged();
+      } else {
+        taskBuilder_.setMessage(builderForValue.build());
+      }
+      nodeCase_ = 2;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.TaskNodePb task = 2;</code>
+     */
+    public Builder mergeTask(io.littlehorse.common.proto.wfspec.TaskNodePb value) {
+      if (taskBuilder_ == null) {
+        if (nodeCase_ == 2 &&
+            node_ != io.littlehorse.common.proto.wfspec.TaskNodePb.getDefaultInstance()) {
+          node_ = io.littlehorse.common.proto.wfspec.TaskNodePb.newBuilder((io.littlehorse.common.proto.wfspec.TaskNodePb) node_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          node_ = value;
+        }
+        onChanged();
+      } else {
+        if (nodeCase_ == 2) {
+          taskBuilder_.mergeFrom(value);
+        }
+        taskBuilder_.setMessage(value);
+      }
+      nodeCase_ = 2;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.TaskNodePb task = 2;</code>
+     */
+    public Builder clearTask() {
+      if (taskBuilder_ == null) {
+        if (nodeCase_ == 2) {
+          nodeCase_ = 0;
+          node_ = null;
+          onChanged();
+        }
+      } else {
+        if (nodeCase_ == 2) {
+          nodeCase_ = 0;
+          node_ = null;
+        }
+        taskBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.lh_proto.TaskNodePb task = 2;</code>
+     */
+    public io.littlehorse.common.proto.wfspec.TaskNodePb.Builder getTaskBuilder() {
+      return getTaskFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.TaskNodePb task = 2;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.wfspec.TaskNodePbOrBuilder getTaskOrBuilder() {
+      if ((nodeCase_ == 2) && (taskBuilder_ != null)) {
+        return taskBuilder_.getMessageOrBuilder();
+      } else {
+        if (nodeCase_ == 2) {
+          return (io.littlehorse.common.proto.wfspec.TaskNodePb) node_;
+        }
+        return io.littlehorse.common.proto.wfspec.TaskNodePb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.TaskNodePb task = 2;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.wfspec.TaskNodePb, io.littlehorse.common.proto.wfspec.TaskNodePb.Builder, io.littlehorse.common.proto.wfspec.TaskNodePbOrBuilder> 
+        getTaskFieldBuilder() {
+      if (taskBuilder_ == null) {
+        if (!(nodeCase_ == 2)) {
+          node_ = io.littlehorse.common.proto.wfspec.TaskNodePb.getDefaultInstance();
+        }
+        taskBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.wfspec.TaskNodePb, io.littlehorse.common.proto.wfspec.TaskNodePb.Builder, io.littlehorse.common.proto.wfspec.TaskNodePbOrBuilder>(
+                (io.littlehorse.common.proto.wfspec.TaskNodePb) node_,
+                getParentForChildren(),
+                isClean());
+        node_ = null;
+      }
+      nodeCase_ = 2;
+      onChanged();;
+      return taskBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.wfspec.EntrypointNodePb, io.littlehorse.common.proto.wfspec.EntrypointNodePb.Builder, io.littlehorse.common.proto.wfspec.EntrypointNodePbOrBuilder> entrypointBuilder_;
+    /**
+     * <code>.lh_proto.EntrypointNodePb entrypoint = 3;</code>
+     * @return Whether the entrypoint field is set.
+     */
+    @java.lang.Override
+    public boolean hasEntrypoint() {
+      return nodeCase_ == 3;
+    }
+    /**
+     * <code>.lh_proto.EntrypointNodePb entrypoint = 3;</code>
+     * @return The entrypoint.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.wfspec.EntrypointNodePb getEntrypoint() {
+      if (entrypointBuilder_ == null) {
+        if (nodeCase_ == 3) {
+          return (io.littlehorse.common.proto.wfspec.EntrypointNodePb) node_;
+        }
+        return io.littlehorse.common.proto.wfspec.EntrypointNodePb.getDefaultInstance();
+      } else {
+        if (nodeCase_ == 3) {
+          return entrypointBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.wfspec.EntrypointNodePb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.EntrypointNodePb entrypoint = 3;</code>
+     */
+    public Builder setEntrypoint(io.littlehorse.common.proto.wfspec.EntrypointNodePb value) {
+      if (entrypointBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        node_ = value;
+        onChanged();
+      } else {
+        entrypointBuilder_.setMessage(value);
+      }
+      nodeCase_ = 3;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.EntrypointNodePb entrypoint = 3;</code>
+     */
+    public Builder setEntrypoint(
+        io.littlehorse.common.proto.wfspec.EntrypointNodePb.Builder builderForValue) {
+      if (entrypointBuilder_ == null) {
+        node_ = builderForValue.build();
+        onChanged();
+      } else {
+        entrypointBuilder_.setMessage(builderForValue.build());
+      }
+      nodeCase_ = 3;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.EntrypointNodePb entrypoint = 3;</code>
+     */
+    public Builder mergeEntrypoint(io.littlehorse.common.proto.wfspec.EntrypointNodePb value) {
+      if (entrypointBuilder_ == null) {
+        if (nodeCase_ == 3 &&
+            node_ != io.littlehorse.common.proto.wfspec.EntrypointNodePb.getDefaultInstance()) {
+          node_ = io.littlehorse.common.proto.wfspec.EntrypointNodePb.newBuilder((io.littlehorse.common.proto.wfspec.EntrypointNodePb) node_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          node_ = value;
+        }
+        onChanged();
+      } else {
+        if (nodeCase_ == 3) {
+          entrypointBuilder_.mergeFrom(value);
+        }
+        entrypointBuilder_.setMessage(value);
+      }
+      nodeCase_ = 3;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.EntrypointNodePb entrypoint = 3;</code>
+     */
+    public Builder clearEntrypoint() {
+      if (entrypointBuilder_ == null) {
+        if (nodeCase_ == 3) {
+          nodeCase_ = 0;
+          node_ = null;
+          onChanged();
+        }
+      } else {
+        if (nodeCase_ == 3) {
+          nodeCase_ = 0;
+          node_ = null;
+        }
+        entrypointBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.lh_proto.EntrypointNodePb entrypoint = 3;</code>
+     */
+    public io.littlehorse.common.proto.wfspec.EntrypointNodePb.Builder getEntrypointBuilder() {
+      return getEntrypointFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.EntrypointNodePb entrypoint = 3;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.wfspec.EntrypointNodePbOrBuilder getEntrypointOrBuilder() {
+      if ((nodeCase_ == 3) && (entrypointBuilder_ != null)) {
+        return entrypointBuilder_.getMessageOrBuilder();
+      } else {
+        if (nodeCase_ == 3) {
+          return (io.littlehorse.common.proto.wfspec.EntrypointNodePb) node_;
+        }
+        return io.littlehorse.common.proto.wfspec.EntrypointNodePb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.EntrypointNodePb entrypoint = 3;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.wfspec.EntrypointNodePb, io.littlehorse.common.proto.wfspec.EntrypointNodePb.Builder, io.littlehorse.common.proto.wfspec.EntrypointNodePbOrBuilder> 
+        getEntrypointFieldBuilder() {
+      if (entrypointBuilder_ == null) {
+        if (!(nodeCase_ == 3)) {
+          node_ = io.littlehorse.common.proto.wfspec.EntrypointNodePb.getDefaultInstance();
+        }
+        entrypointBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.wfspec.EntrypointNodePb, io.littlehorse.common.proto.wfspec.EntrypointNodePb.Builder, io.littlehorse.common.proto.wfspec.EntrypointNodePbOrBuilder>(
+                (io.littlehorse.common.proto.wfspec.EntrypointNodePb) node_,
+                getParentForChildren(),
+                isClean());
+        node_ = null;
+      }
+      nodeCase_ = 3;
+      onChanged();;
+      return entrypointBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.wfspec.ExitNodePb, io.littlehorse.common.proto.wfspec.ExitNodePb.Builder, io.littlehorse.common.proto.wfspec.ExitNodePbOrBuilder> exitBuilder_;
+    /**
+     * <code>.lh_proto.ExitNodePb exit = 4;</code>
+     * @return Whether the exit field is set.
+     */
+    @java.lang.Override
+    public boolean hasExit() {
+      return nodeCase_ == 4;
+    }
+    /**
+     * <code>.lh_proto.ExitNodePb exit = 4;</code>
+     * @return The exit.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.wfspec.ExitNodePb getExit() {
+      if (exitBuilder_ == null) {
+        if (nodeCase_ == 4) {
+          return (io.littlehorse.common.proto.wfspec.ExitNodePb) node_;
+        }
+        return io.littlehorse.common.proto.wfspec.ExitNodePb.getDefaultInstance();
+      } else {
+        if (nodeCase_ == 4) {
+          return exitBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.wfspec.ExitNodePb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.ExitNodePb exit = 4;</code>
+     */
+    public Builder setExit(io.littlehorse.common.proto.wfspec.ExitNodePb value) {
+      if (exitBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        node_ = value;
+        onChanged();
+      } else {
+        exitBuilder_.setMessage(value);
+      }
+      nodeCase_ = 4;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.ExitNodePb exit = 4;</code>
+     */
+    public Builder setExit(
+        io.littlehorse.common.proto.wfspec.ExitNodePb.Builder builderForValue) {
+      if (exitBuilder_ == null) {
+        node_ = builderForValue.build();
+        onChanged();
+      } else {
+        exitBuilder_.setMessage(builderForValue.build());
+      }
+      nodeCase_ = 4;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.ExitNodePb exit = 4;</code>
+     */
+    public Builder mergeExit(io.littlehorse.common.proto.wfspec.ExitNodePb value) {
+      if (exitBuilder_ == null) {
+        if (nodeCase_ == 4 &&
+            node_ != io.littlehorse.common.proto.wfspec.ExitNodePb.getDefaultInstance()) {
+          node_ = io.littlehorse.common.proto.wfspec.ExitNodePb.newBuilder((io.littlehorse.common.proto.wfspec.ExitNodePb) node_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          node_ = value;
+        }
+        onChanged();
+      } else {
+        if (nodeCase_ == 4) {
+          exitBuilder_.mergeFrom(value);
+        }
+        exitBuilder_.setMessage(value);
+      }
+      nodeCase_ = 4;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.ExitNodePb exit = 4;</code>
+     */
+    public Builder clearExit() {
+      if (exitBuilder_ == null) {
+        if (nodeCase_ == 4) {
+          nodeCase_ = 0;
+          node_ = null;
+          onChanged();
+        }
+      } else {
+        if (nodeCase_ == 4) {
+          nodeCase_ = 0;
+          node_ = null;
+        }
+        exitBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.lh_proto.ExitNodePb exit = 4;</code>
+     */
+    public io.littlehorse.common.proto.wfspec.ExitNodePb.Builder getExitBuilder() {
+      return getExitFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.ExitNodePb exit = 4;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.wfspec.ExitNodePbOrBuilder getExitOrBuilder() {
+      if ((nodeCase_ == 4) && (exitBuilder_ != null)) {
+        return exitBuilder_.getMessageOrBuilder();
+      } else {
+        if (nodeCase_ == 4) {
+          return (io.littlehorse.common.proto.wfspec.ExitNodePb) node_;
+        }
+        return io.littlehorse.common.proto.wfspec.ExitNodePb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.ExitNodePb exit = 4;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.wfspec.ExitNodePb, io.littlehorse.common.proto.wfspec.ExitNodePb.Builder, io.littlehorse.common.proto.wfspec.ExitNodePbOrBuilder> 
+        getExitFieldBuilder() {
+      if (exitBuilder_ == null) {
+        if (!(nodeCase_ == 4)) {
+          node_ = io.littlehorse.common.proto.wfspec.ExitNodePb.getDefaultInstance();
+        }
+        exitBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.wfspec.ExitNodePb, io.littlehorse.common.proto.wfspec.ExitNodePb.Builder, io.littlehorse.common.proto.wfspec.ExitNodePbOrBuilder>(
+                (io.littlehorse.common.proto.wfspec.ExitNodePb) node_,
+                getParentForChildren(),
+                isClean());
+        node_ = null;
+      }
+      nodeCase_ = 4;
+      onChanged();;
+      return exitBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

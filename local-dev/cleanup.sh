@@ -22,3 +22,4 @@ else
     docker rm $CONTAINERS
 fi
 
+rm -r /tmp/kafkaState

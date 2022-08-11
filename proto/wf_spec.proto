@@ -14,16 +14,26 @@ message EdgePb {
     string sink_node_name = 1;
 }
 
-enum NodeTypePb {
-    TASK = 0;
-    ENTRYPOINT = 1;
-    EXIT = 2;
+message NodePb {
+    repeated EdgePb outgoing_edges = 1;
+    oneof node {
+        TaskNodePb task = 2;
+        EntrypointNodePb entrypoint = 3;
+        ExitNodePb exit = 4;
+    }
 }
 
-message NodePb {
-    optional string task_def_name = 1;
-    NodeTypePb type = 2;
-    repeated EdgePb outgoing_edges = 3;
+message TaskNodePb {
+    string task_def_name = 1;
+    optional int32 timeout_seconds = 2;
+}
+
+message EntrypointNodePb {
+
+}
+
+message ExitNodePb {
+
 }
 
 message ThreadSpecPb {

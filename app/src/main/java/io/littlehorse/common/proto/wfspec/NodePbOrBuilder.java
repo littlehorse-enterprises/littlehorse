@@ -8,54 +8,73 @@ public interface NodePbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string task_def_name = 1;</code>
-   * @return Whether the taskDefName field is set.
-   */
-  boolean hasTaskDefName();
-  /**
-   * <code>string task_def_name = 1;</code>
-   * @return The taskDefName.
-   */
-  java.lang.String getTaskDefName();
-  /**
-   * <code>string task_def_name = 1;</code>
-   * @return The bytes for taskDefName.
-   */
-  com.google.protobuf.ByteString
-      getTaskDefNameBytes();
-
-  /**
-   * <code>.lh_proto.NodeTypePb type = 2;</code>
-   * @return The enum numeric value on the wire for type.
-   */
-  int getTypeValue();
-  /**
-   * <code>.lh_proto.NodeTypePb type = 2;</code>
-   * @return The type.
-   */
-  io.littlehorse.common.proto.wfspec.NodeTypePb getType();
-
-  /**
-   * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+   * <code>repeated .lh_proto.EdgePb outgoing_edges = 1;</code>
    */
   java.util.List<io.littlehorse.common.proto.wfspec.EdgePb> 
       getOutgoingEdgesList();
   /**
-   * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+   * <code>repeated .lh_proto.EdgePb outgoing_edges = 1;</code>
    */
   io.littlehorse.common.proto.wfspec.EdgePb getOutgoingEdges(int index);
   /**
-   * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+   * <code>repeated .lh_proto.EdgePb outgoing_edges = 1;</code>
    */
   int getOutgoingEdgesCount();
   /**
-   * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+   * <code>repeated .lh_proto.EdgePb outgoing_edges = 1;</code>
    */
   java.util.List<? extends io.littlehorse.common.proto.wfspec.EdgePbOrBuilder> 
       getOutgoingEdgesOrBuilderList();
   /**
-   * <code>repeated .lh_proto.EdgePb outgoing_edges = 3;</code>
+   * <code>repeated .lh_proto.EdgePb outgoing_edges = 1;</code>
    */
   io.littlehorse.common.proto.wfspec.EdgePbOrBuilder getOutgoingEdgesOrBuilder(
       int index);
+
+  /**
+   * <code>.lh_proto.TaskNodePb task = 2;</code>
+   * @return Whether the task field is set.
+   */
+  boolean hasTask();
+  /**
+   * <code>.lh_proto.TaskNodePb task = 2;</code>
+   * @return The task.
+   */
+  io.littlehorse.common.proto.wfspec.TaskNodePb getTask();
+  /**
+   * <code>.lh_proto.TaskNodePb task = 2;</code>
+   */
+  io.littlehorse.common.proto.wfspec.TaskNodePbOrBuilder getTaskOrBuilder();
+
+  /**
+   * <code>.lh_proto.EntrypointNodePb entrypoint = 3;</code>
+   * @return Whether the entrypoint field is set.
+   */
+  boolean hasEntrypoint();
+  /**
+   * <code>.lh_proto.EntrypointNodePb entrypoint = 3;</code>
+   * @return The entrypoint.
+   */
+  io.littlehorse.common.proto.wfspec.EntrypointNodePb getEntrypoint();
+  /**
+   * <code>.lh_proto.EntrypointNodePb entrypoint = 3;</code>
+   */
+  io.littlehorse.common.proto.wfspec.EntrypointNodePbOrBuilder getEntrypointOrBuilder();
+
+  /**
+   * <code>.lh_proto.ExitNodePb exit = 4;</code>
+   * @return Whether the exit field is set.
+   */
+  boolean hasExit();
+  /**
+   * <code>.lh_proto.ExitNodePb exit = 4;</code>
+   * @return The exit.
+   */
+  io.littlehorse.common.proto.wfspec.ExitNodePb getExit();
+  /**
+   * <code>.lh_proto.ExitNodePb exit = 4;</code>
+   */
+  io.littlehorse.common.proto.wfspec.ExitNodePbOrBuilder getExitOrBuilder();
+
+  public io.littlehorse.common.proto.wfspec.NodePb.NodeCase getNodeCase();
 }

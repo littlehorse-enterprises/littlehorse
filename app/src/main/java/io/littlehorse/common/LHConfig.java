@@ -258,6 +258,13 @@ public class LHConfig {
         ));
     }
 
+    public int getDefaultTaskTimeout() {
+        return Integer.valueOf(getOrSetDefault(
+            LHConstants.DEFAULT_TIMEOUT_KEY,
+            "10"
+        ));
+    }
+
     public int getStandbyReplicas() {
         return Integer.valueOf(
             getOrSetDefault(LHConstants.NUM_STANDBY_REPLICAS_KEY, "0")
