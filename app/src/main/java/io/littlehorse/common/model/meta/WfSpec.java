@@ -157,7 +157,6 @@ public class WfSpec extends POSTable<WfSpecPbOrBuilder> {
         out.wfSpecName = name;
         out.startTime = e.time;
         out.status = LHStatusPb.RUNNING;
-        out.startTime = e.time;
         out.oEvents.add(new ObservabilityEvent(
             new RunStartOe(id, name), e.time)
         );

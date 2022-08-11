@@ -49,7 +49,7 @@ public class ApiStreamsContext {
         T get(String storeKey, String partitionKey, Class<T> cls)
         throws LHConnectionError
     {
-        String storeName = cls.getSimpleName();
+        String storeName = GETable.getBaseStoreName(cls);
         KeyQueryMetadata metadata = streams.queryMetadataForKey(
             storeName, partitionKey, Serdes.String().serializer()
         );
@@ -204,7 +204,7 @@ public class ApiStreamsContext {
 
         return streams.store(
             StoreQueryParameters.fromNameAndType(
-                cls.getSimpleName(),
+                GETable.getBaseStoreName(cls),
                 QueryableStoreTypes.keyValueStore()
             )
         );

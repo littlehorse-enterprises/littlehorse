@@ -23,7 +23,7 @@ public class LHConstants {
     public static final String SCHED_WF_RUN_STORE_NAME = "wfrun";
     public static final String SCHED_WF_SPEC_STORE_NAME = "wfSpec";
     public static final String INDEX_STORE_NAME = "INDEX_STORE";
-    public static final String INDEX_TOPIC_NAME = "INDEX_STORE";    
+    public static final String INDEX_TOPIC_NAME = "INDEX_ENTRY_ACTIONS";
 
     public static final String ADVERTISED_PROTOCOL_KEY = "LHORSE_ADVERTISED_PROTOCOL";
     public static final String ADVERTISED_HOST_KEY = "LHORSE_ADVERTISED_HOST";

@@ -21,7 +21,7 @@ public abstract class GETable<T extends MessageOrBuilder> extends LHSerializable
     public abstract List<IndexEntry> getIndexEntries();
 
     public static String getBaseStoreName(Class<? extends GETable<?>> cls) {
-        return cls.getSimpleName();
+        return cls.getSimpleName() + "_BaseStore";
     }
 
     public static String getIndexStoreName(Class<? extends GETable<?>> cls) {

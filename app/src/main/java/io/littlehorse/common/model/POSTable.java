@@ -22,7 +22,7 @@ public abstract class POSTable<T extends MessageOrBuilder> extends GETable<T> {
     );
 
     public static String getRequestTopicName(Class<? extends POSTable<?>> cls) {
-        return cls.getSimpleName();
+        return cls.getSimpleName() + "_Requests";
     }
 
     public static String getEntityTopicName(Class<? extends POSTable<?>> cls) {

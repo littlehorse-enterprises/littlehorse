@@ -6,6 +6,7 @@ import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.proto.server.IndexActionEnum;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.model.internal.IndexEntries;
 import io.littlehorse.server.model.internal.IndexEntry;
 import io.littlehorse.server.model.internal.IndexEntryAction;
@@ -20,6 +21,15 @@ public class IndexProcessor implements Processor<
     }
 
     @Override public void process(final Record<String, IndexEntryAction> record) {
+        try {
+            processHelper(record);
+        } catch(RuntimeException exn) {
+            exn.printStackTrace();
+            // TODO: Throw to deadletter queue
+        }
+    }
+
+    private void processHelper(final Record<String, IndexEntryAction> record) {
         String partitionKey = record.key();
         IndexEntryAction action = record.value();
         IndexEntry entry = action.indexEntry;
@@ -35,9 +45,12 @@ public class IndexProcessor implements Processor<
             if (entries == null) entries = new IndexEntries();
             entries.entries.add(entry);
             store.put(storeKey, entries);
-        } else {
+        } else if (action.action == IndexActionEnum.DELETE_IDX_ENTRY) {
             if (entries == null) {
-                throw new RuntimeException("Should be impossible to have null");
+                LHUtil.log("\n\nGot null!");
+                LHUtil.log("null: ", storeKey);
+                // throw new RuntimeException("Should be impossible to have null");
+                return;
             }
 
             if (!entries.entries.contains(entry)) {
@@ -55,6 +68,8 @@ public class IndexProcessor implements Processor<
             } else {
                 store.put(storeKey, entries);
             }
+        } else {
+            throw new RuntimeException("Yikes, unrecognized enum.");
         }
     }
 }

@@ -31,7 +31,6 @@ import io.littlehorse.server.model.internal.IndexEntry;
 import io.littlehorse.server.model.internal.LHResponse;
 import io.littlehorse.server.model.internal.RangeResponse;
 import io.littlehorse.server.model.wfrun.TaskRun;
-import io.littlehorse.server.model.wfrun.ThreadRun;
 import io.littlehorse.server.model.wfrun.WfRun;
 
 
@@ -75,6 +74,20 @@ public class LHApi {
         this.app.get(
             "/TaskRun/{wfRunId}/{threadRunNumber}/{taskRunPosition}",
             (ctx) -> handle(this::getTaskRun, ctx)
+        );
+
+        this.app.get(
+            "/search/WfRun/wfSpecId/{id}",
+            (ctx) -> handle(this::getRunBySpecId, ctx)
+        );
+
+        this.app.get(
+            "/search/WfRun/wfSpecName/{name}",
+            (ctx) -> handle(this::getRunBySpecName, ctx)
+        );
+        this.app.get(
+            "/search/TaskRun/taskDefId/{taskDefId}/status/{status}",
+            (ctx) -> handle(this::getTaskRunByStatus, ctx)
         );
 
         this.app.post("/WfSpec", (ctx) -> {
@@ -210,6 +223,29 @@ public class LHApi {
         keyedPrefixScan(
             Arrays.asList(Pair.of("name", name)),
             WfSpec.class,
+            ctx
+        );
+    }
+
+    public void getRunBySpecId(Context ctx) {
+        String id = ctx.pathParam("id");
+        keyedPrefixScan(Arrays.asList(Pair.of("wfSpecId", id)), WfRun.class, ctx);
+    }
+
+    public void getRunBySpecName(Context ctx) {
+        String name = ctx.pathParam("name");
+        keyedPrefixScan(Arrays.asList(Pair.of("wfSpecName", name)), WfRun.class, ctx);
+    }
+
+    public void getTaskRunByStatus(Context ctx) {
+        String taskDefId = ctx.pathParam("taskDefId");
+        String status = ctx.pathParam("status");
+        keyedPrefixScan(
+            Arrays.asList(
+                Pair.of("taskDefId", taskDefId),
+                Pair.of("status", status)
+            ),
+            TaskRun.class,
             ctx
         );
     }

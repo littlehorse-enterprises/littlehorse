@@ -1,8 +1,11 @@
 package io.littlehorse.server.model.wfrun;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import org.apache.commons.lang3.tuple.Pair;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.proto.LHStatusPb;
@@ -26,7 +29,7 @@ public class WfRun extends GETable<WfRunPb> {
         threadRuns = new ArrayList<>();
     }
 
-    public Date getCreatedAt() {
+    @JsonIgnore public Date getCreatedAt() {
         return startTime;
     }
 
@@ -48,7 +51,7 @@ public class WfRun extends GETable<WfRunPb> {
         }
     }
 
-    public WfRunPb.Builder toProto() {
+    @JsonIgnore public WfRunPb.Builder toProto() {
         WfRunPb.Builder out = WfRunPb.newBuilder()
             .setId(id)
             .setWfSpecId(wfSpecId)
@@ -68,19 +71,22 @@ public class WfRun extends GETable<WfRunPb> {
         return out;
     }
 
-    public Class<WfRunPb> getProtoBaseClass() {
+    @JsonIgnore public Class<WfRunPb> getProtoBaseClass() {
         return WfRunPb.class;
     }
 
-    @Override public String getObjectId() {
+    @JsonIgnore @Override public String getObjectId() {
         return id;
     }
 
-    @Override public String getPartitionKey() {
+    @JsonIgnore @Override public String getPartitionKey() {
         return id;
     }
 
     public List<IndexEntry> getIndexEntries() {
-        return new ArrayList<>();
+        return Arrays.asList(
+            new IndexEntry(this, Pair.of("wfSpecName", wfSpecName)),
+            new IndexEntry(this, Pair.of("wfSpecId", wfSpecId))
+        );
     }
 }

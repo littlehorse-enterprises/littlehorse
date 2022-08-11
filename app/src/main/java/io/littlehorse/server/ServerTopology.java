@@ -28,6 +28,7 @@ import io.littlehorse.server.processors.POSTableProcessor;
 import io.littlehorse.server.processors.WfRunProcessor;
 
 public class ServerTopology {
+    private static final String WfRunIdxStore = "WF_RUN_INDEX_TMP_STORE";
 
     public static Topology initTopology(LHConfig config) {
         Topology topo = new Topology();
@@ -37,14 +38,17 @@ public class ServerTopology {
 
         addIdxSubTopology(topo, config);
 
-        addWfRunSubTOpology(topo, config);
+        addWfRunSubTopology(topo, config);
 
         return topo;
     }
 
-    private static void addWfRunSubTOpology(Topology topo, LHConfig config) {
+    private static void addWfRunSubTopology(Topology topo, LHConfig config) {
         String wfRunProcessor = "WfRun Processor";
         String wfRunSource = "WfRun Source";
+        String idxFanoutProcessor = "WfRun Index Fanout Processor";
+        String idxSink = "WfRun Index sink";
+
         topo.addSource(
             wfRunSource,
             Serdes.String().deserializer(),
@@ -56,6 +60,20 @@ public class ServerTopology {
             wfRunProcessor,
             () -> {return new WfRunProcessor(config);},
             wfRunSource
+        );
+
+        topo.addProcessor(
+            idxFanoutProcessor,
+            () -> {return new IndexFanoutProcessor<>(GETable.class, WfRunIdxStore);},
+            wfRunProcessor
+        );
+
+        topo.addSink(
+            idxSink,
+            LHConstants.INDEX_TOPIC_NAME,
+            Serdes.String().serializer(),
+            new LHSerializer<IndexEntryAction>(config),
+            idxFanoutProcessor
         );
 
         StoreBuilder<KeyValueStore<String, WfRun>> wfRunStoreBuilder =
@@ -77,6 +95,14 @@ public class ServerTopology {
                 new LHSerde<>(TaskRun.class, config)
             );
         topo.addStateStore(taskRunStoreBuilder, wfRunProcessor);
+
+        StoreBuilder<KeyValueStore<String, IndexEntries>> idxStateStoreBuilder =
+        Stores.keyValueStoreBuilder(
+                Stores.persistentKeyValueStore(WfRunIdxStore),
+                Serdes.String(),
+                new LHSerde<>(IndexEntries.class, config)
+            );
+        topo.addStateStore(idxStateStoreBuilder, idxFanoutProcessor);
     }
 
     private static void addIdxSubTopology(Topology topo, LHConfig config) {
@@ -138,7 +164,9 @@ public class ServerTopology {
         topo.addProcessor(
             idxFanoutProcessorName,
             () -> {
-                return new IndexFanoutProcessor<>(cls);
+                return new IndexFanoutProcessor<>(
+                    cls, GETable.getIndexStoreName(cls)
+                );
             },
             baseProcessorName
         );

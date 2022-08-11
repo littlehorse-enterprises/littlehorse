@@ -23,6 +23,7 @@ public class Server {
             streams.close();
         }));
 
+        System.out.println(topo.describe().toString());
         app.start();
         streams.start();
     }

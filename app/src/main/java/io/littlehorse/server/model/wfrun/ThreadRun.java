@@ -10,6 +10,7 @@ import io.littlehorse.common.proto.server.ThreadRunPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.model.internal.IndexEntry;
 
+// TODO: I don't think this should be GETable. Maybe just LHSerializable.
 public class ThreadRun extends GETable<ThreadRunPb> {
     public String wfRunId;
     public int number;

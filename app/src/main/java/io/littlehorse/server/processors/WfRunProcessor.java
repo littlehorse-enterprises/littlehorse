@@ -6,6 +6,7 @@ import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDatabaseClient;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.model.GETable;
@@ -27,9 +28,9 @@ import io.littlehorse.server.model.wfrun.ThreadRun;
 import io.littlehorse.server.model.wfrun.WfRun;
 
 public class WfRunProcessor implements Processor<
-    String, ObservabilityEvents, Void, Void
+    String, ObservabilityEvents, String, GETable<?>
 > {
-    // private ProcessorContext<Void, Void> ctx;
+    private ProcessorContext<String, GETable<?>> ctx;
     private KeyValueStore<String, WfRun> wfRunStore;
     private KeyValueStore<String, TaskRun> taskRunStore;
     private HashMap<String, WfSpec> wfSpecCache;
@@ -57,8 +58,8 @@ public class WfRunProcessor implements Processor<
         return out;
     }
 
-    @Override public void init(final ProcessorContext<Void, Void> ctx) {
-        // this.ctx = ctx;
+    @Override public void init(final ProcessorContext<String, GETable<?>> ctx) {
+        this.ctx = ctx;
         this.wfRunStore = ctx.getStateStore(GETable.getBaseStoreName(WfRun.class));
         this.taskRunStore = ctx.getStateStore(
             GETable.getBaseStoreName(TaskRun.class)
@@ -106,6 +107,18 @@ public class WfRunProcessor implements Processor<
             }
         }
         wfRunStore.put(wfRunId, wfRun);
+        forward(wfRun);
+    }
+
+    private void forward(GETable<?> getable) {
+        Record<String, GETable<?>> newRec = new Record<>(
+            getable.getPartitionKey(), getable, ctx.currentStreamTimeMs()
+        );
+        newRec.headers().add(
+            LHConstants.OBJECT_ID_HEADER,
+            getable.getObjectId().getBytes()
+        );
+        ctx.forward(newRec);
     }
 
     private WfRun handleRunStart(String wfRunId, ObservabilityEvent evt) {
@@ -165,6 +178,7 @@ public class WfRunProcessor implements Processor<
         }
 
         taskRunStore.put(task.getObjectId(), task);
+        forward(task);
     }
 
     private void handleTaskStart(WfRun wfRun, ObservabilityEvent evt) {
@@ -182,8 +196,9 @@ public class WfRunProcessor implements Processor<
             task.position = ts.taskRunPosition;
         }
 
-        task.scheduleTime = evt.time;
+        task.startTime = evt.time;
         taskRunStore.put(task.getObjectId(), task);
+        forward(task);
     }
 
     private void handleTaskComplete(WfRun wfRun, ObservabilityEvent evt) {
@@ -198,6 +213,7 @@ public class WfRunProcessor implements Processor<
         task.status = tc.success ? LHStatusPb.COMPLETED : LHStatusPb.ERROR;
 
         taskRunStore.put(task.getObjectId(), task);
+        forward(task);
     }
 
     private void handleThreadStatus(WfRun wfRun, ObservabilityEvent evt) {

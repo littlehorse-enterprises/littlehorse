@@ -1,8 +1,9 @@
 package io.littlehorse.server.model.wfrun;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import org.apache.commons.lang3.tuple.Pair;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.GETable;
@@ -102,6 +103,12 @@ public class TaskRun extends GETable<TaskRunPb> {
     }
 
     public List<IndexEntry> getIndexEntries() {
-        return new ArrayList<>();
+        return Arrays.asList(
+            new IndexEntry(
+                this,
+                Pair.of("taskDefId", taskDefId),
+                Pair.of("status", status.toString())
+            )
+        );
     }
 }

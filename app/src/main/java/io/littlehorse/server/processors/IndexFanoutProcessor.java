@@ -18,15 +18,16 @@ public class IndexFanoutProcessor<U extends MessageOrBuilder, T extends GETable<
 implements Processor<String, T, String, IndexEntryAction> {
     private ProcessorContext<String, IndexEntryAction> ctx;
     private KeyValueStore<String, IndexEntries> store;
-    private Class<T> cls;
+    // private Class<T> cls;
+    private String storeName;
 
-    public IndexFanoutProcessor(Class<T> cls) {
-        this.cls = cls;
+    public IndexFanoutProcessor(Class<T> cls, String storeName) {
+        this.storeName = storeName;
     }
 
     public void init(final ProcessorContext<String, IndexEntryAction> ctx) {
         this.ctx = ctx;
-        this.store = ctx.getStateStore(GETable.getIndexStoreName(cls));
+        this.store = ctx.getStateStore(storeName);
     }
 
     public void process(final Record<String, T> record) {
@@ -60,7 +61,7 @@ implements Processor<String, T, String, IndexEntryAction> {
                 Record<String, IndexEntryAction> rec = new Record<>(
                     ie.getPartitionKey(),
                     action,
-                    record.timestamp()
+                    ie.createdAt.getTime()
                 );
                 rec.headers().add(LHConstants.OBJECT_ID_HEADER, objectId.getBytes());
                 ctx.forward(rec);
@@ -75,7 +76,7 @@ implements Processor<String, T, String, IndexEntryAction> {
                     new Record<String, IndexEntryAction>(
                         ie.getPartitionKey(),
                         action,
-                        record.timestamp()
+                        ie.createdAt.getTime()
                     )
                 );
             }
