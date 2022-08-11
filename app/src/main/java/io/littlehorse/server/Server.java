@@ -22,8 +22,6 @@ public class Server {
             config.cleanup();
             streams.close();
         }));
-
-        System.out.println(topo.describe().toString());
         app.start();
         streams.start();
     }

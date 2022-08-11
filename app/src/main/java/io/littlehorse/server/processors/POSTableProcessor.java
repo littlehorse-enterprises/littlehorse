@@ -66,7 +66,7 @@ public class POSTableProcessor<U extends MessageOrBuilder, T extends POSTable<U>
         resp.id = key;
 
         try {
-            newT.handlePost(oldT, dbClient);
+            newT.handlePost(oldT, dbClient, config);
             resp.result = newT;
             resp.code = LHResponseCodePb.OK;
             Record<String, T> newRec = new Record<String, T>(

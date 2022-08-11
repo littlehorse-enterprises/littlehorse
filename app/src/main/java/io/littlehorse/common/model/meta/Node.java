@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHDatabaseClient;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.exceptions.LHSerdeError;
@@ -98,7 +99,7 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
     public String name;
     @JsonIgnore public ThreadSpec threadSpec;
 
-    public void validate(LHDatabaseClient client)
+    public void validate(LHDatabaseClient client, LHConfig config)
     throws LHValidationError, LHConnectionError {
         for (Edge e: outgoingEdges) {
             Node sink = threadSpec.nodes.get(e.sinkNodeName);
@@ -119,11 +120,11 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
         }
 
         if (type == NodeCase.TASK) {
-            validateTask(client);
+            validateTask(client, config);
         }
     }
 
-    private void validateTask(LHDatabaseClient client)
+    private void validateTask(LHDatabaseClient client, LHConfig config)
     throws LHConnectionError, LHValidationError {
         TaskDef task = client.getTaskDef(taskNode.taskDefName);
         if (task == null) {
@@ -132,6 +133,12 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
                 "Node " + name + " on thread " + threadSpec.name + " refers to "
                 + "nonexistent TaskDef " + taskNode.taskDefName
             );
+        }
+        if (taskNode.timeoutSeconds == null) {
+            taskNode.timeoutSeconds = config.getDefaultTaskTimeout();
+        }
+        if (taskNode.timeoutSeconds < 1) {
+            throw new LHValidationError(null, "Task Timeout must be > 1s");
         }
     }
 }

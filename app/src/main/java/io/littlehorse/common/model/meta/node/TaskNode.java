@@ -16,12 +16,16 @@ public class TaskNode extends LHSerializable<TaskNodePb> {
     public void initFrom(MessageOrBuilder proto) {
         TaskNodePbOrBuilder p = (TaskNodePbOrBuilder) proto;
         taskDefName = p.getTaskDefName();
-        timeoutSeconds = p.getTimeoutSeconds();
+        if (p.hasTimeoutSeconds()) timeoutSeconds = p.getTimeoutSeconds();
     }
 
     public TaskNodePb.Builder toProto() {
-        return TaskNodePb.newBuilder()
-            .setTimeoutSeconds(timeoutSeconds)
+        TaskNodePb.Builder out = TaskNodePb.newBuilder()
             .setTaskDefName(taskDefName);
+
+        if (timeoutSeconds != null) {
+            out.setTimeoutSeconds(timeoutSeconds);
+        }
+        return out;
     }
 }

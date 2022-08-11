@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHDatabaseClient;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.exceptions.LHSerdeError;
@@ -124,7 +125,7 @@ public class WfSpec extends POSTable<WfSpecPbOrBuilder> {
     }
 
     @JsonIgnore public void handlePost(
-        POSTable<WfSpecPbOrBuilder> old, LHDatabaseClient dbClient
+        POSTable<WfSpecPbOrBuilder> old, LHDatabaseClient dbClient, LHConfig config
     ) throws LHValidationError, LHConnectionError {
         if (old != null) {
             throw new LHValidationError(null, "Mutating WfSpec not yet supported");
@@ -136,7 +137,7 @@ public class WfSpec extends POSTable<WfSpecPbOrBuilder> {
 
         for (Map.Entry<String, ThreadSpec> e: threadSpecs.entrySet()) {
             ThreadSpec ts = e.getValue();
-            ts.validate(dbClient);
+            ts.validate(dbClient, config);
         }
     }
 

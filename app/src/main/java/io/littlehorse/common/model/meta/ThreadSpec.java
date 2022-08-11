@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHDatabaseClient;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.exceptions.LHSerdeError;
@@ -55,7 +56,7 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
     @JsonIgnore public String entrypointNodeName;
     @JsonIgnore public WfSpec wfSpec;
 
-    public void validate(LHDatabaseClient dbClient)
+    public void validate(LHDatabaseClient dbClient, LHConfig config)
     throws LHValidationError, LHConnectionError {
         if (entrypointNodeName == null) {
             throw new LHValidationError(
@@ -74,7 +75,7 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
                 }
                 seenEntrypoint = true;
             }
-            node.validate(dbClient);
+            node.validate(dbClient, config);
         }
     }
 }
