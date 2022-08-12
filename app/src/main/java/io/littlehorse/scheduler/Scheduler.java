@@ -12,6 +12,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.util.serde.LHSerde;
+import io.littlehorse.scheduler.model.SchedulerTimer;
 import io.littlehorse.scheduler.model.WfRunState;
 import io.littlehorse.scheduler.serde.SchedulerOutputTsrSer;
 import io.littlehorse.scheduler.serde.SchedulerOutputWFRunSer;
@@ -55,7 +56,7 @@ public class Scheduler {
             wfRunSink,
             LHConstants.WF_RUN_OBSERVABILITY_TOPIC,
             Serdes.String().serializer(),
-            new SchedulerOutputWFRunSer(),
+            new SchedulerOutputWFRunSer(config),
             runtimeProcessor
         );
 
@@ -63,10 +64,12 @@ public class Scheduler {
         topo.addSink(
             taskSchedulerSink,
             (k, v, ctx) -> {
+                // TODO: Eventually, kafka topics may not exactly match with
+                // task def name; or task def name may not match task def id.
                 return v.request.taskDefName;
             },
             Serdes.String().serializer(),
-            new SchedulerOutputTsrSer(),
+            new SchedulerOutputTsrSer(config),
             runtimeProcessor
         );
 
@@ -79,23 +82,13 @@ public class Scheduler {
             );
         topo.addStateStore(wfRunStoreBuilder, runtimeProcessor);
 
-        // // Add global store for WFSpec lookup
-        // StoreBuilder<KeyValueStore<String, WfSpec>> wfSpecStoreBuilder =
-        //     Stores.keyValueStoreBuilder(
-        //         Stores.persistentKeyValueStore(LHConstants.SCHED_WF_SPEC_STORE_NAME),
-        //         Serdes.String(),
-        //         specSerde
-        //     );
-
-        // topo.addGlobalStore(
-        //     wfSpecStoreBuilder,
-        //     "wfSpecViewNode",
-        //     Serdes.String().deserializer(),
-        //     specSerde.deserializer(),
-        //     POSTable.getEntityTopicName(WfSpec.class),
-        //     "wfSpecViewProcessor",
-        //     () -> {return new WfSpecProcessor();}
-        // );
+        StoreBuilder<KeyValueStore<String, SchedulerTimer>> timerStoreBuilder =
+            Stores.keyValueStoreBuilder(
+                Stores.persistentKeyValueStore(LHConstants.SCHED_TIMER_STORE_NAME),
+                Serdes.String(),
+                new LHSerde<>(SchedulerTimer.class, config)
+            );
+        topo.addStateStore(timerStoreBuilder, runtimeProcessor);
 
         return topo;
     }

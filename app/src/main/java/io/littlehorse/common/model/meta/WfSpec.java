@@ -23,6 +23,7 @@ import io.littlehorse.common.proto.wfspec.ThreadSpecPb;
 import io.littlehorse.common.proto.wfspec.WfSpecPb;
 import io.littlehorse.common.proto.wfspec.WfSpecPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.scheduler.model.SchedulerTimer;
 import io.littlehorse.scheduler.model.WfRunState;
 import io.littlehorse.server.model.internal.IndexEntry;
 
@@ -149,13 +150,18 @@ public class WfSpec extends POSTable<WfSpecPbOrBuilder> {
         return out;
     }
 
-    public WfRunState startNewRun(WfRunEvent e, List<TaskScheduleRequest> toSchedule) {
+    public WfRunState startNewRun(
+        WfRunEvent e,
+        List<TaskScheduleRequest> tasksToSchedule,
+        List<SchedulerTimer> timersToSchedule
+    ) {
         WfRunState out = new WfRunState();
         out.id = e.runRequest.wfRunId;
         out.oEvents.wfRunId = out.id;
 
         out.wfSpec = this;
-        out.toSchedule = toSchedule;
+        out.tasksToSchedule = tasksToSchedule;
+        out.timersToSchedule = timersToSchedule;
         out.wfSpecId = id;
         out.wfSpecName = name;
         out.startTime = e.time;

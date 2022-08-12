@@ -18,12 +18,14 @@ import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.scheduler.WfRunEventPb.EventCase;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.scheduler.model.SchedulerTimer;
 import io.littlehorse.scheduler.model.WfRunState;
 
 public class SchedulerProcessor
     implements Processor<String, WfRunEvent, String, SchedulerOutput>
 {
     private KeyValueStore<String, WfRunState> wfRunStore;
+    private KeyValueStore<String, SchedulerTimer> timerStore;
     private Map<String, WfSpec> wfSpecCache;
     private ProcessorContext<String, SchedulerOutput> context;
     private LHDatabaseClient client;
@@ -35,6 +37,7 @@ public class SchedulerProcessor
     @Override
     public void init(final ProcessorContext<String, SchedulerOutput> context) {
         wfRunStore = context.getStateStore(LHConstants.SCHED_WF_RUN_STORE_NAME);
+        timerStore = context.getStateStore(LHConstants.SCHED_TIMER_STORE_NAME);
         this.context = context;
         this.wfSpecCache = new HashMap<>();
     }
@@ -86,7 +89,8 @@ public class SchedulerProcessor
         WfRunEvent e = record.value();
         WfRunState wfRun = wfRunStore.get(record.key());
 
-        List<TaskScheduleRequest> toSchedule = new ArrayList<>();
+        List<TaskScheduleRequest> tasksToSchedule = new ArrayList<>();
+        List<SchedulerTimer> timersToSchedule = new ArrayList<>();
 
         if (e.type == EventCase.RUN_REQUEST) {
             if (wfRun != null) {
@@ -95,20 +99,25 @@ public class SchedulerProcessor
                 );
                 return;
             }
-            wfRun = spec.startNewRun(e, toSchedule);
+            wfRun = spec.startNewRun(e, tasksToSchedule, timersToSchedule);
 
         } else {
             wfRun.wfSpec = spec;
-            wfRun.processEvent(e, toSchedule);
+            wfRun.processEvent(e, tasksToSchedule, timersToSchedule);
         }
 
         // Schedule tasks
-        for (TaskScheduleRequest r: toSchedule) {
+        for (TaskScheduleRequest r: tasksToSchedule) {
             SchedulerOutput taskOutput = new SchedulerOutput();
             taskOutput.request = r;
             context.forward(new Record<>(
                 record.key(), taskOutput, record.timestamp()
             ), Scheduler.taskSchedulerSink);
+        }
+
+        for (SchedulerTimer timer: timersToSchedule) {
+            String timerStoreKey = LHUtil.toLhDbFormat(timer.maturationTime);
+            timerStore.put(timerStoreKey, timer);
         }
 
         // Forward the observability events

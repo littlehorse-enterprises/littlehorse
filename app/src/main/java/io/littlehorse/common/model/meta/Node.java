@@ -137,8 +137,19 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
         if (taskNode.timeoutSeconds == null) {
             taskNode.timeoutSeconds = config.getDefaultTaskTimeout();
         }
+        if (taskNode.retries < 0) {
+            throw new LHValidationError(
+                null,
+                "Node " + name + " on thread " + threadSpec.name + "has negative " +
+                "number of retries!"
+            );
+        }
         if (taskNode.timeoutSeconds < 1) {
-            throw new LHValidationError(null, "Task Timeout must be > 1s");
+            throw new LHValidationError(
+                null,
+                "Task Timeout must be > 1s for node " + name + " on thread "
+                + threadSpec.name
+            );
         }
     }
 }

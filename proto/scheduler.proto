@@ -78,5 +78,21 @@ message WfRunEventPb {
         WfRunRequestPb run_request = 4;
         TaskStartedEventPb started_event = 5;
         TaskCompletedEventPb completed_event = 6;
+        SchedulerTimerPb timer_event = 7;
     }
+}
+
+// Timer-related stuff
+
+message SchedulerTimerPb {
+    google.protobuf.Timestamp maturation_time = 1;
+    oneof timer_message {
+        TaskTimeoutPb task_timeout = 2;
+    }
+}
+
+message TaskTimeoutPb {
+    string wf_run_id = 1;
+    int32 thread_run_number = 2;
+    int32 task_run_position = 3;
 }

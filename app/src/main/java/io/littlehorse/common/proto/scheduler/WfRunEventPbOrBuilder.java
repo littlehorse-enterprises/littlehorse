@@ -91,5 +91,20 @@ public interface WfRunEventPbOrBuilder extends
    */
   io.littlehorse.common.proto.scheduler.TaskCompletedEventPbOrBuilder getCompletedEventOrBuilder();
 
+  /**
+   * <code>.lh_proto.SchedulerTimerPb timer_event = 7;</code>
+   * @return Whether the timerEvent field is set.
+   */
+  boolean hasTimerEvent();
+  /**
+   * <code>.lh_proto.SchedulerTimerPb timer_event = 7;</code>
+   * @return The timerEvent.
+   */
+  io.littlehorse.common.proto.scheduler.SchedulerTimerPb getTimerEvent();
+  /**
+   * <code>.lh_proto.SchedulerTimerPb timer_event = 7;</code>
+   */
+  io.littlehorse.common.proto.scheduler.SchedulerTimerPbOrBuilder getTimerEventOrBuilder();
+
   public io.littlehorse.common.proto.scheduler.WfRunEventPb.EventCase getEventCase();
 }

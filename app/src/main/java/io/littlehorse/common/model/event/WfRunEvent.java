@@ -6,6 +6,7 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.scheduler.WfRunEventPb;
 import io.littlehorse.common.proto.scheduler.WfRunEventPb.EventCase;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.scheduler.model.SchedulerTimer;
 
 public class WfRunEvent extends LHSerializable<WfRunEventPb> {
     public String wfRunId;
@@ -16,6 +17,7 @@ public class WfRunEvent extends LHSerializable<WfRunEventPb> {
     public TaskStartedEvent startedEvent;
     public TaskCompletedEvent completedEvent;
     public WfRunRequest runRequest;
+    public SchedulerTimer timerEvent;
 
     public WfRunEventPb.Builder toProto() {
         WfRunEventPb.Builder b = WfRunEventPb.newBuilder()
@@ -36,6 +38,9 @@ public class WfRunEvent extends LHSerializable<WfRunEventPb> {
             break;
         case RUN_REQUEST:
             b.setRunRequest(runRequest.toProto());
+            break;
+        case TIMER_EVENT:
+            b.setTimerEvent(timerEvent.toProto());
             break;
         }
         return b;
@@ -65,6 +70,11 @@ public class WfRunEvent extends LHSerializable<WfRunEventPb> {
             break;
         case RUN_REQUEST:
             this.runRequest = WfRunRequest.fromProto(proto.getRunRequest());
+            break;
+        case TIMER_EVENT:
+            this.timerEvent = new SchedulerTimer();
+            timerEvent.initFrom(proto.getTimerEvent());
+            break;
         }
     }
     public static WfRunEvent fromProto(WfRunEventPb proto) {

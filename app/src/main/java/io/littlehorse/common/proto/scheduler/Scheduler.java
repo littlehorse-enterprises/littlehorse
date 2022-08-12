@@ -54,6 +54,16 @@ public final class Scheduler {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_lh_proto_WfRunEventPb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_lh_proto_SchedulerTimerPb_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_lh_proto_SchedulerTimerPb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_lh_proto_TaskTimeoutPb_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_lh_proto_TaskTimeoutPb_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -96,15 +106,22 @@ public final class Scheduler {
       "\001(\005\022(\n\004time\030\004 \001(\0132\032.google.protobuf.Time" +
       "stamp\022\017\n\007success\030\005 \001(\010\022\023\n\006output\030\006 \001(\014H\000" +
       "\210\001\001\022\027\n\nlog_output\030\007 \001(\014H\001\210\001\001B\t\n\007_outputB" +
-      "\r\n\013_log_output\"\213\002\n\014WfRunEventPb\022\021\n\twf_ru" +
+      "\r\n\013_log_output\"\276\002\n\014WfRunEventPb\022\021\n\twf_ru" +
       "n_id\030\001 \001(\t\022\022\n\nwf_spec_id\030\002 \001(\t\022(\n\004time\030\003" +
       " \001(\0132\032.google.protobuf.Timestamp\022/\n\013run_" +
       "request\030\004 \001(\0132\030.lh_proto.WfRunRequestPbH" +
       "\000\0225\n\rstarted_event\030\005 \001(\0132\034.lh_proto.Task" +
       "StartedEventPbH\000\0229\n\017completed_event\030\006 \001(" +
-      "\0132\036.lh_proto.TaskCompletedEventPbH\000B\007\n\005e" +
-      "ventB2\n%io.littlehorse.common.proto.sche" +
-      "dulerP\001Z\007.;modelb\006proto3"
+      "\0132\036.lh_proto.TaskCompletedEventPbH\000\0221\n\013t" +
+      "imer_event\030\007 \001(\0132\032.lh_proto.SchedulerTim" +
+      "erPbH\000B\007\n\005event\"\211\001\n\020SchedulerTimerPb\0223\n\017" +
+      "maturation_time\030\001 \001(\0132\032.google.protobuf." +
+      "Timestamp\022/\n\014task_timeout\030\002 \001(\0132\027.lh_pro" +
+      "to.TaskTimeoutPbH\000B\017\n\rtimer_message\"X\n\rT" +
+      "askTimeoutPb\022\021\n\twf_run_id\030\001 \001(\t\022\031\n\021threa" +
+      "d_run_number\030\002 \001(\005\022\031\n\021task_run_position\030" +
+      "\003 \001(\005B2\n%io.littlehorse.common.proto.sch" +
+      "edulerP\001Z\007.;modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -159,7 +176,19 @@ public final class Scheduler {
     internal_static_lh_proto_WfRunEventPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_WfRunEventPb_descriptor,
-        new java.lang.String[] { "WfRunId", "WfSpecId", "Time", "RunRequest", "StartedEvent", "CompletedEvent", "Event", });
+        new java.lang.String[] { "WfRunId", "WfSpecId", "Time", "RunRequest", "StartedEvent", "CompletedEvent", "TimerEvent", "Event", });
+    internal_static_lh_proto_SchedulerTimerPb_descriptor =
+      getDescriptor().getMessageTypes().get(8);
+    internal_static_lh_proto_SchedulerTimerPb_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_lh_proto_SchedulerTimerPb_descriptor,
+        new java.lang.String[] { "MaturationTime", "TaskTimeout", "TimerMessage", });
+    internal_static_lh_proto_TaskTimeoutPb_descriptor =
+      getDescriptor().getMessageTypes().get(9);
+    internal_static_lh_proto_TaskTimeoutPb_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_lh_proto_TaskTimeoutPb_descriptor,
+        new java.lang.String[] { "WfRunId", "ThreadRunNumber", "TaskRunPosition", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.common.proto.LhProto.getDescriptor();
   }

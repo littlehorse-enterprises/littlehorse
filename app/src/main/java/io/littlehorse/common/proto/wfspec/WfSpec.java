@@ -80,26 +80,26 @@ public final class WfSpec {
       "b\022$\n\004task\030\002 \001(\0132\024.lh_proto.TaskNodePbH\000\022" +
       "0\n\nentrypoint\030\003 \001(\0132\032.lh_proto.Entrypoin" +
       "tNodePbH\000\022$\n\004exit\030\004 \001(\0132\024.lh_proto.ExitN" +
-      "odePbH\000B\006\n\004node\"U\n\nTaskNodePb\022\025\n\rtask_de" +
+      "odePbH\000B\006\n\004node\"f\n\nTaskNodePb\022\025\n\rtask_de" +
       "f_name\030\001 \001(\t\022\034\n\017timeout_seconds\030\002 \001(\005H\000\210" +
-      "\001\001B\022\n\020_timeout_seconds\"\022\n\020EntrypointNode" +
-      "Pb\"\014\n\nExitNodePb\"\200\001\n\014ThreadSpecPb\0220\n\005nod" +
-      "es\030\001 \003(\0132!.lh_proto.ThreadSpecPb.NodesEn" +
-      "try\032>\n\nNodesEntry\022\013\n\003key\030\001 \001(\t\022\037\n\005value\030" +
-      "\002 \001(\0132\020.lh_proto.NodePb:\0028\001\"\356\002\n\010WfSpecPb" +
-      "\022\n\n\002id\030\001 \001(\t\022.\n\ncreated_at\030\002 \001(\0132\032.googl" +
-      "e.protobuf.Timestamp\022.\n\nupdated_at\030\003 \001(\013" +
-      "2\032.google.protobuf.Timestamp\0229\n\014thread_s" +
-      "pecs\030\004 \003(\0132#.lh_proto.WfSpecPb.ThreadSpe" +
-      "csEntry\022\036\n\026entrypoint_thread_name\030\005 \001(\t\022" +
-      "$\n\006status\030\006 \001(\0162\024.lh_proto.LHStatusPb\022\014\n" +
-      "\004name\030\007 \001(\t\022\033\n\023last_updated_offset\030\010 \001(\003" +
-      "\032J\n\020ThreadSpecsEntry\022\013\n\003key\030\001 \001(\t\022%\n\005val" +
-      "ue\030\002 \001(\0132\026.lh_proto.ThreadSpecPb:\0028\001\"I\n\t" +
-      "TaskDefPb\022\014\n\004name\030\001 \001(\t\022.\n\ncreated_at\030\002 " +
-      "\001(\0132\032.google.protobuf.TimestampB/\n\"io.li" +
-      "ttlehorse.common.proto.wfspecP\001Z\007.;model" +
-      "b\006proto3"
+      "\001\001\022\017\n\007retries\030\003 \001(\005B\022\n\020_timeout_seconds\"" +
+      "\022\n\020EntrypointNodePb\"\014\n\nExitNodePb\"\200\001\n\014Th" +
+      "readSpecPb\0220\n\005nodes\030\001 \003(\0132!.lh_proto.Thr" +
+      "eadSpecPb.NodesEntry\032>\n\nNodesEntry\022\013\n\003ke" +
+      "y\030\001 \001(\t\022\037\n\005value\030\002 \001(\0132\020.lh_proto.NodePb" +
+      ":\0028\001\"\356\002\n\010WfSpecPb\022\n\n\002id\030\001 \001(\t\022.\n\ncreated" +
+      "_at\030\002 \001(\0132\032.google.protobuf.Timestamp\022.\n" +
+      "\nupdated_at\030\003 \001(\0132\032.google.protobuf.Time" +
+      "stamp\0229\n\014thread_specs\030\004 \003(\0132#.lh_proto.W" +
+      "fSpecPb.ThreadSpecsEntry\022\036\n\026entrypoint_t" +
+      "hread_name\030\005 \001(\t\022$\n\006status\030\006 \001(\0162\024.lh_pr" +
+      "oto.LHStatusPb\022\014\n\004name\030\007 \001(\t\022\033\n\023last_upd" +
+      "ated_offset\030\010 \001(\003\032J\n\020ThreadSpecsEntry\022\013\n" +
+      "\003key\030\001 \001(\t\022%\n\005value\030\002 \001(\0132\026.lh_proto.Thr" +
+      "eadSpecPb:\0028\001\"I\n\tTaskDefPb\022\014\n\004name\030\001 \001(\t" +
+      "\022.\n\ncreated_at\030\002 \001(\0132\032.google.protobuf.T" +
+      "imestampB/\n\"io.littlehorse.common.proto." +
+      "wfspecP\001Z\007.;modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -124,7 +124,7 @@ public final class WfSpec {
     internal_static_lh_proto_TaskNodePb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_TaskNodePb_descriptor,
-        new java.lang.String[] { "TaskDefName", "TimeoutSeconds", "TimeoutSeconds", });
+        new java.lang.String[] { "TaskDefName", "TimeoutSeconds", "Retries", "TimeoutSeconds", });
     internal_static_lh_proto_EntrypointNodePb_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_lh_proto_EntrypointNodePb_fieldAccessorTable = new

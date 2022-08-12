@@ -29,4 +29,10 @@ public interface TaskNodePbOrBuilder extends
    * @return The timeoutSeconds.
    */
   int getTimeoutSeconds();
+
+  /**
+   * <code>int32 retries = 3;</code>
+   * @return The retries.
+   */
+  int getRetries();
 }

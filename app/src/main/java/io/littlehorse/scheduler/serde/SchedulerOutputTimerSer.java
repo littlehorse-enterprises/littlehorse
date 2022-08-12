@@ -4,14 +4,14 @@ import org.apache.kafka.common.serialization.Serializer;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.scheduler.SchedulerOutput;
 
-public class SchedulerOutputTsrSer implements Serializer<SchedulerOutput> {
+public class SchedulerOutputTimerSer implements Serializer<SchedulerOutput> {
     private LHConfig config;
 
-    public SchedulerOutputTsrSer(LHConfig config) {
+    public SchedulerOutputTimerSer(LHConfig config) {
         this.config = config;
     }
 
     public byte[] serialize(String topic, SchedulerOutput input) {
-        return input.request.toBytes(config);
+        return input.timer.toBytes(config);
     }
 }

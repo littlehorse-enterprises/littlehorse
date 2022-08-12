@@ -91,8 +91,9 @@ public class WfRunState extends LHSerializable<WfRunStatePb> {
 
     // All below is simply implementation.
     @JsonIgnore public WfSpec wfSpec;
-    @JsonIgnore public List<TaskScheduleRequest> toSchedule;
+    @JsonIgnore public List<TaskScheduleRequest> tasksToSchedule;
     @JsonIgnore public ObservabilityEvents oEvents;
+    @JsonIgnore public List<SchedulerTimer> timersToSchedule;
 
     public void startThread(String threadName, Date start, Integer parentThreadId) {
         ThreadSpec tspec = wfSpec.threadSpecs.get(threadName);
@@ -115,8 +116,13 @@ public class WfRunState extends LHSerializable<WfRunStatePb> {
         thread.advance();
     }
 
-    public void processEvent(WfRunEvent e, List<TaskScheduleRequest> toSchedule) {
-        this.toSchedule = toSchedule;
+    public void processEvent(
+        WfRunEvent e,
+        List<TaskScheduleRequest> tasksToSchedule,
+        List<SchedulerTimer> timersToSchedule
+    ) {
+        this.timersToSchedule = timersToSchedule;
+        this.tasksToSchedule = tasksToSchedule;
 
         switch(e.type) {
         case RUN_REQUEST:
@@ -127,9 +133,31 @@ public class WfRunState extends LHSerializable<WfRunStatePb> {
         case STARTED_EVENT:
             handleStartedEvent(e);
             break;
+        case TIMER_EVENT:
+            handleTimerEvent(e);
+            break;
         case EVENT_NOT_SET:
             throw new RuntimeException("Impossible or Out of date scheduler.");
         }
+    }
+
+    public void handleTimerEvent(WfRunEvent evt) {
+        SchedulerTimer timer = evt.timerEvent;
+        switch(timer.type) {
+        case TASK_TIMEOUT:
+            handleTaskTimeout(evt, timer);
+            break;
+        case TIMERMESSAGE_NOT_SET:
+            // Nothing to do.
+            break;
+        }
+    }
+
+    private void handleTaskTimeout(WfRunEvent evt, SchedulerTimer timer) {
+        TaskTimeout timeout = timer.taskTimeout;
+        ThreadRunState thread = threadRuns.get(timeout.threadRunNumber);
+        thread.processTimeout(evt, timeout);
+        thread.advance();
     }
 
     public void complete(Date time) {

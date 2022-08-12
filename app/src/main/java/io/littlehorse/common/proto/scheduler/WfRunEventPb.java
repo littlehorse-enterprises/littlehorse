@@ -117,6 +117,20 @@ private static final long serialVersionUID = 0L;
             eventCase_ = 6;
             break;
           }
+          case 58: {
+            io.littlehorse.common.proto.scheduler.SchedulerTimerPb.Builder subBuilder = null;
+            if (eventCase_ == 7) {
+              subBuilder = ((io.littlehorse.common.proto.scheduler.SchedulerTimerPb) event_).toBuilder();
+            }
+            event_ =
+                input.readMessage(io.littlehorse.common.proto.scheduler.SchedulerTimerPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.common.proto.scheduler.SchedulerTimerPb) event_);
+              event_ = subBuilder.buildPartial();
+            }
+            eventCase_ = 7;
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -157,6 +171,7 @@ private static final long serialVersionUID = 0L;
     RUN_REQUEST(4),
     STARTED_EVENT(5),
     COMPLETED_EVENT(6),
+    TIMER_EVENT(7),
     EVENT_NOT_SET(0);
     private final int value;
     private EventCase(int value) {
@@ -177,6 +192,7 @@ private static final long serialVersionUID = 0L;
         case 4: return RUN_REQUEST;
         case 5: return STARTED_EVENT;
         case 6: return COMPLETED_EVENT;
+        case 7: return TIMER_EVENT;
         case 0: return EVENT_NOT_SET;
         default: return null;
       }
@@ -387,6 +403,37 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.scheduler.TaskCompletedEventPb.getDefaultInstance();
   }
 
+  public static final int TIMER_EVENT_FIELD_NUMBER = 7;
+  /**
+   * <code>.lh_proto.SchedulerTimerPb timer_event = 7;</code>
+   * @return Whether the timerEvent field is set.
+   */
+  @java.lang.Override
+  public boolean hasTimerEvent() {
+    return eventCase_ == 7;
+  }
+  /**
+   * <code>.lh_proto.SchedulerTimerPb timer_event = 7;</code>
+   * @return The timerEvent.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.scheduler.SchedulerTimerPb getTimerEvent() {
+    if (eventCase_ == 7) {
+       return (io.littlehorse.common.proto.scheduler.SchedulerTimerPb) event_;
+    }
+    return io.littlehorse.common.proto.scheduler.SchedulerTimerPb.getDefaultInstance();
+  }
+  /**
+   * <code>.lh_proto.SchedulerTimerPb timer_event = 7;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.scheduler.SchedulerTimerPbOrBuilder getTimerEventOrBuilder() {
+    if (eventCase_ == 7) {
+       return (io.littlehorse.common.proto.scheduler.SchedulerTimerPb) event_;
+    }
+    return io.littlehorse.common.proto.scheduler.SchedulerTimerPb.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -419,6 +466,9 @@ private static final long serialVersionUID = 0L;
     if (eventCase_ == 6) {
       output.writeMessage(6, (io.littlehorse.common.proto.scheduler.TaskCompletedEventPb) event_);
     }
+    if (eventCase_ == 7) {
+      output.writeMessage(7, (io.littlehorse.common.proto.scheduler.SchedulerTimerPb) event_);
+    }
     unknownFields.writeTo(output);
   }
 
@@ -449,6 +499,10 @@ private static final long serialVersionUID = 0L;
     if (eventCase_ == 6) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(6, (io.littlehorse.common.proto.scheduler.TaskCompletedEventPb) event_);
+    }
+    if (eventCase_ == 7) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(7, (io.littlehorse.common.proto.scheduler.SchedulerTimerPb) event_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -488,6 +542,10 @@ private static final long serialVersionUID = 0L;
         if (!getCompletedEvent()
             .equals(other.getCompletedEvent())) return false;
         break;
+      case 7:
+        if (!getTimerEvent()
+            .equals(other.getTimerEvent())) return false;
+        break;
       case 0:
       default:
     }
@@ -522,6 +580,10 @@ private static final long serialVersionUID = 0L;
       case 6:
         hash = (37 * hash) + COMPLETED_EVENT_FIELD_NUMBER;
         hash = (53 * hash) + getCompletedEvent().hashCode();
+        break;
+      case 7:
+        hash = (37 * hash) + TIMER_EVENT_FIELD_NUMBER;
+        hash = (53 * hash) + getTimerEvent().hashCode();
         break;
       case 0:
       default:
@@ -725,6 +787,13 @@ private static final long serialVersionUID = 0L;
           result.event_ = completedEventBuilder_.build();
         }
       }
+      if (eventCase_ == 7) {
+        if (timerEventBuilder_ == null) {
+          result.event_ = event_;
+        } else {
+          result.event_ = timerEventBuilder_.build();
+        }
+      }
       result.eventCase_ = eventCase_;
       onBuilt();
       return result;
@@ -796,6 +865,10 @@ private static final long serialVersionUID = 0L;
         }
         case COMPLETED_EVENT: {
           mergeCompletedEvent(other.getCompletedEvent());
+          break;
+        }
+        case TIMER_EVENT: {
+          mergeTimerEvent(other.getTimerEvent());
           break;
         }
         case EVENT_NOT_SET: {
@@ -1538,6 +1611,147 @@ private static final long serialVersionUID = 0L;
       eventCase_ = 6;
       onChanged();;
       return completedEventBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.scheduler.SchedulerTimerPb, io.littlehorse.common.proto.scheduler.SchedulerTimerPb.Builder, io.littlehorse.common.proto.scheduler.SchedulerTimerPbOrBuilder> timerEventBuilder_;
+    /**
+     * <code>.lh_proto.SchedulerTimerPb timer_event = 7;</code>
+     * @return Whether the timerEvent field is set.
+     */
+    @java.lang.Override
+    public boolean hasTimerEvent() {
+      return eventCase_ == 7;
+    }
+    /**
+     * <code>.lh_proto.SchedulerTimerPb timer_event = 7;</code>
+     * @return The timerEvent.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.scheduler.SchedulerTimerPb getTimerEvent() {
+      if (timerEventBuilder_ == null) {
+        if (eventCase_ == 7) {
+          return (io.littlehorse.common.proto.scheduler.SchedulerTimerPb) event_;
+        }
+        return io.littlehorse.common.proto.scheduler.SchedulerTimerPb.getDefaultInstance();
+      } else {
+        if (eventCase_ == 7) {
+          return timerEventBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.scheduler.SchedulerTimerPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.SchedulerTimerPb timer_event = 7;</code>
+     */
+    public Builder setTimerEvent(io.littlehorse.common.proto.scheduler.SchedulerTimerPb value) {
+      if (timerEventBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        event_ = value;
+        onChanged();
+      } else {
+        timerEventBuilder_.setMessage(value);
+      }
+      eventCase_ = 7;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.SchedulerTimerPb timer_event = 7;</code>
+     */
+    public Builder setTimerEvent(
+        io.littlehorse.common.proto.scheduler.SchedulerTimerPb.Builder builderForValue) {
+      if (timerEventBuilder_ == null) {
+        event_ = builderForValue.build();
+        onChanged();
+      } else {
+        timerEventBuilder_.setMessage(builderForValue.build());
+      }
+      eventCase_ = 7;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.SchedulerTimerPb timer_event = 7;</code>
+     */
+    public Builder mergeTimerEvent(io.littlehorse.common.proto.scheduler.SchedulerTimerPb value) {
+      if (timerEventBuilder_ == null) {
+        if (eventCase_ == 7 &&
+            event_ != io.littlehorse.common.proto.scheduler.SchedulerTimerPb.getDefaultInstance()) {
+          event_ = io.littlehorse.common.proto.scheduler.SchedulerTimerPb.newBuilder((io.littlehorse.common.proto.scheduler.SchedulerTimerPb) event_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          event_ = value;
+        }
+        onChanged();
+      } else {
+        if (eventCase_ == 7) {
+          timerEventBuilder_.mergeFrom(value);
+        }
+        timerEventBuilder_.setMessage(value);
+      }
+      eventCase_ = 7;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.SchedulerTimerPb timer_event = 7;</code>
+     */
+    public Builder clearTimerEvent() {
+      if (timerEventBuilder_ == null) {
+        if (eventCase_ == 7) {
+          eventCase_ = 0;
+          event_ = null;
+          onChanged();
+        }
+      } else {
+        if (eventCase_ == 7) {
+          eventCase_ = 0;
+          event_ = null;
+        }
+        timerEventBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.lh_proto.SchedulerTimerPb timer_event = 7;</code>
+     */
+    public io.littlehorse.common.proto.scheduler.SchedulerTimerPb.Builder getTimerEventBuilder() {
+      return getTimerEventFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.SchedulerTimerPb timer_event = 7;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.scheduler.SchedulerTimerPbOrBuilder getTimerEventOrBuilder() {
+      if ((eventCase_ == 7) && (timerEventBuilder_ != null)) {
+        return timerEventBuilder_.getMessageOrBuilder();
+      } else {
+        if (eventCase_ == 7) {
+          return (io.littlehorse.common.proto.scheduler.SchedulerTimerPb) event_;
+        }
+        return io.littlehorse.common.proto.scheduler.SchedulerTimerPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.SchedulerTimerPb timer_event = 7;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.scheduler.SchedulerTimerPb, io.littlehorse.common.proto.scheduler.SchedulerTimerPb.Builder, io.littlehorse.common.proto.scheduler.SchedulerTimerPbOrBuilder> 
+        getTimerEventFieldBuilder() {
+      if (timerEventBuilder_ == null) {
+        if (!(eventCase_ == 7)) {
+          event_ = io.littlehorse.common.proto.scheduler.SchedulerTimerPb.getDefaultInstance();
+        }
+        timerEventBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.scheduler.SchedulerTimerPb, io.littlehorse.common.proto.scheduler.SchedulerTimerPb.Builder, io.littlehorse.common.proto.scheduler.SchedulerTimerPbOrBuilder>(
+                (io.littlehorse.common.proto.scheduler.SchedulerTimerPb) event_,
+                getParentForChildren(),
+                isClean());
+        event_ = null;
+      }
+      eventCase_ = 7;
+      onChanged();;
+      return timerEventBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

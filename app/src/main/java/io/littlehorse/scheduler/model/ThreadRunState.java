@@ -17,6 +17,7 @@ import io.littlehorse.common.model.observability.TaskStartOe;
 import io.littlehorse.common.model.observability.ThreadStatusChangeOe;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.wfspec.NodePb.NodeCase;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.common.proto.scheduler.ThreadRunStatePb;
 import io.littlehorse.common.proto.scheduler.ThreadRunStatePbOrBuilder;
 
@@ -123,7 +124,9 @@ public class ThreadRunState {
                 return e.getSinkNode();
             }
         }
-        throw new RuntimeException("Not possible");
+        throw new RuntimeException(
+            "Not possible to have a node with zero activated edges"
+        );
     }
 
     // TODO: Do some conditional logic processing here.
@@ -164,7 +167,7 @@ public class ThreadRunState {
             new Date()
         ));
 
-        wfRun.toSchedule.add(tsr);
+        wfRun.tasksToSchedule.add(tsr);
     }
 
     private void completeThread() {
@@ -222,5 +225,21 @@ public class ThreadRunState {
         }
 
         currentNodeRun.status = LHStatusPb.COMPLETED;
+    }
+
+    public void processTimeout(WfRunEvent evt, TaskTimeout timer) {
+        // TODO: Send observabilityEvent
+        if (currentNodeRun.position > timer.taskRunPosition) {
+            // TODO: Determine if this is theoretically impossible.
+            // If it's impossible, throw exception to prevent silent bugs.
+            LHUtil.log("Warning: Got stale task timeout.");
+            return;
+        }
+
+        if (currentNodeRun.position < timer.taskRunPosition) {
+            throw new RuntimeException("Caught a message from the future!");
+        }
+
+        currentNodeRun.status = LHStatusPb.ERROR;
     }
 }
