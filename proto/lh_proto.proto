@@ -25,3 +25,8 @@ message VariableValuePb {
         bytes byte = 7;
     }
 }
+
+enum TaskFailureReasonPb {
+    TASK_FAILURE = 0;
+    TIMEOUT = 1;
+}

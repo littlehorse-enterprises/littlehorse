@@ -34,8 +34,10 @@ public final class LhProto {
       "\003str\030\005 \001(\tH\000\022\r\n\003int\030\006 \001(\003H\000\022\016\n\004byte\030\007 \001(" +
       "\014H\000B\005\n\003val*Z\n\nLHStatusPb\022\014\n\010STARTING\020\000\022\013" +
       "\n\007RUNNING\020\001\022\r\n\tCOMPLETED\020\002\022\013\n\007HALTING\020\003\022" +
-      "\n\n\006HALTED\020\004\022\t\n\005ERROR\020\005B(\n\033io.littlehorse" +
-      ".common.protoP\001Z\007.;modelb\006proto3"
+      "\n\n\006HALTED\020\004\022\t\n\005ERROR\020\005*4\n\023TaskFailureRea" +
+      "sonPb\022\020\n\014TASK_FAILURE\020\000\022\013\n\007TIMEOUT\020\001B(\n\033" +
+      "io.littlehorse.common.protoP\001Z\007.;modelb\006" +
+      "proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

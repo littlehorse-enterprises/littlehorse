@@ -16,6 +16,7 @@ message NodeRunStatePb {
     int32 position = 3;
     int32 number = 4;
     LHStatusPb status = 5;
+    repeated string timer_keys = 6;
 }
 
 message ThreadRunStatePb {
@@ -68,6 +69,17 @@ message TaskCompletedEventPb {
     bool success = 5;
     optional bytes output = 6;
     optional bytes log_output = 7;
+}
+
+message TaskFailedEventPb {
+    int32 thread_run_number = 1;
+    int32 task_run_number = 2;
+    int32 task_run_position = 3;
+    google.protobuf.Timestamp time = 4;
+
+    TaskFailureReasonPb failure_reason = 5;
+    optional bytes output = 6;
+    optional bytes log_output = 7;  
 }
 
 message WfRunEventPb {

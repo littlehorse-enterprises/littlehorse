@@ -1,5 +1,7 @@
 package io.littlehorse.scheduler.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.scheduler.NodeRunStatePb;
@@ -11,6 +13,11 @@ public class NodeRunState {
     public int position;
     public int number;
     public LHStatusPb status;
+    public List<String> timerKeys;
+
+    public NodeRunState() {
+        timerKeys = new ArrayList<>();
+    }
 
     // Below are implementation details
     @JsonIgnore public ThreadRunState threadRun;
@@ -24,6 +31,9 @@ public class NodeRunState {
             .setNodeName(nodeName)
             .setPosition(position);
 
+        for (String tk: timerKeys) {
+            b.addTimerKeys(tk);
+        }
         return b;
     }
 
@@ -34,6 +44,9 @@ public class NodeRunState {
         out.attemptNumber = proto.getAttemptNumber();
         out.status = proto.getStatus();
         out.position = proto.getPosition();
+        for (String tk: proto.getTimerKeysList()) {
+            out.timerKeys.add(tk);
+        }
         return out;
     }
 }

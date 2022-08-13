@@ -47,4 +47,29 @@ public interface NodeRunStatePbOrBuilder extends
    * @return The status.
    */
   io.littlehorse.common.proto.LHStatusPb getStatus();
+
+  /**
+   * <code>repeated string timer_keys = 6;</code>
+   * @return A list containing the timerKeys.
+   */
+  java.util.List<java.lang.String>
+      getTimerKeysList();
+  /**
+   * <code>repeated string timer_keys = 6;</code>
+   * @return The count of timerKeys.
+   */
+  int getTimerKeysCount();
+  /**
+   * <code>repeated string timer_keys = 6;</code>
+   * @param index The index of the element to return.
+   * @return The timerKeys at the given index.
+   */
+  java.lang.String getTimerKeys(int index);
+  /**
+   * <code>repeated string timer_keys = 6;</code>
+   * @param index The index of the value to return.
+   * @return The bytes of the timerKeys at the given index.
+   */
+  com.google.protobuf.ByteString
+      getTimerKeysBytes(int index);
 }
