@@ -4,19 +4,19 @@
 package io.littlehorse.common.proto.scheduler;
 
 /**
- * Protobuf type {@code lh_proto.TaskFailedEventPb}
+ * Protobuf type {@code lh_proto.TaskResultEventPb}
  */
-public final class TaskFailedEventPb extends
+public final class TaskResultEventPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.TaskFailedEventPb)
-    TaskFailedEventPbOrBuilder {
+    // @@protoc_insertion_point(message_implements:lh_proto.TaskResultEventPb)
+    TaskResultEventPbOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use TaskFailedEventPb.newBuilder() to construct.
-  private TaskFailedEventPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use TaskResultEventPb.newBuilder() to construct.
+  private TaskResultEventPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private TaskFailedEventPb() {
-    failureReason_ = 0;
+  private TaskResultEventPb() {
+    resultCode_ = 0;
     output_ = com.google.protobuf.ByteString.EMPTY;
     logOutput_ = com.google.protobuf.ByteString.EMPTY;
   }
@@ -25,7 +25,7 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new TaskFailedEventPb();
+    return new TaskResultEventPb();
   }
 
   @java.lang.Override
@@ -33,7 +33,7 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
-  private TaskFailedEventPb(
+  private TaskResultEventPb(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -83,7 +83,7 @@ private static final long serialVersionUID = 0L;
           case 40: {
             int rawValue = input.readEnum();
 
-            failureReason_ = rawValue;
+            resultCode_ = rawValue;
             break;
           }
           case 50: {
@@ -117,15 +117,15 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.scheduler.Scheduler.internal_static_lh_proto_TaskFailedEventPb_descriptor;
+    return io.littlehorse.common.proto.scheduler.Scheduler.internal_static_lh_proto_TaskResultEventPb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.scheduler.Scheduler.internal_static_lh_proto_TaskFailedEventPb_fieldAccessorTable
+    return io.littlehorse.common.proto.scheduler.Scheduler.internal_static_lh_proto_TaskResultEventPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.common.proto.scheduler.TaskFailedEventPb.class, io.littlehorse.common.proto.scheduler.TaskFailedEventPb.Builder.class);
+            io.littlehorse.common.proto.scheduler.TaskResultEventPb.class, io.littlehorse.common.proto.scheduler.TaskResultEventPb.Builder.class);
   }
 
   private int bitField0_;
@@ -188,23 +188,23 @@ private static final long serialVersionUID = 0L;
     return getTime();
   }
 
-  public static final int FAILURE_REASON_FIELD_NUMBER = 5;
-  private int failureReason_;
+  public static final int RESULT_CODE_FIELD_NUMBER = 5;
+  private int resultCode_;
   /**
-   * <code>.lh_proto.TaskFailureReasonPb failure_reason = 5;</code>
-   * @return The enum numeric value on the wire for failureReason.
+   * <code>.lh_proto.TaskResultCodePb result_code = 5;</code>
+   * @return The enum numeric value on the wire for resultCode.
    */
-  @java.lang.Override public int getFailureReasonValue() {
-    return failureReason_;
+  @java.lang.Override public int getResultCodeValue() {
+    return resultCode_;
   }
   /**
-   * <code>.lh_proto.TaskFailureReasonPb failure_reason = 5;</code>
-   * @return The failureReason.
+   * <code>.lh_proto.TaskResultCodePb result_code = 5;</code>
+   * @return The resultCode.
    */
-  @java.lang.Override public io.littlehorse.common.proto.TaskFailureReasonPb getFailureReason() {
+  @java.lang.Override public io.littlehorse.common.proto.TaskResultCodePb getResultCode() {
     @SuppressWarnings("deprecation")
-    io.littlehorse.common.proto.TaskFailureReasonPb result = io.littlehorse.common.proto.TaskFailureReasonPb.valueOf(failureReason_);
-    return result == null ? io.littlehorse.common.proto.TaskFailureReasonPb.UNRECOGNIZED : result;
+    io.littlehorse.common.proto.TaskResultCodePb result = io.littlehorse.common.proto.TaskResultCodePb.valueOf(resultCode_);
+    return result == null ? io.littlehorse.common.proto.TaskResultCodePb.UNRECOGNIZED : result;
   }
 
   public static final int OUTPUT_FIELD_NUMBER = 6;
@@ -271,8 +271,8 @@ private static final long serialVersionUID = 0L;
     if (time_ != null) {
       output.writeMessage(4, getTime());
     }
-    if (failureReason_ != io.littlehorse.common.proto.TaskFailureReasonPb.TASK_FAILURE.getNumber()) {
-      output.writeEnum(5, failureReason_);
+    if (resultCode_ != io.littlehorse.common.proto.TaskResultCodePb.SUCCESS.getNumber()) {
+      output.writeEnum(5, resultCode_);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeBytes(6, output_);
@@ -305,9 +305,9 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, getTime());
     }
-    if (failureReason_ != io.littlehorse.common.proto.TaskFailureReasonPb.TASK_FAILURE.getNumber()) {
+    if (resultCode_ != io.littlehorse.common.proto.TaskResultCodePb.SUCCESS.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(5, failureReason_);
+        .computeEnumSize(5, resultCode_);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
@@ -327,10 +327,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.common.proto.scheduler.TaskFailedEventPb)) {
+    if (!(obj instanceof io.littlehorse.common.proto.scheduler.TaskResultEventPb)) {
       return super.equals(obj);
     }
-    io.littlehorse.common.proto.scheduler.TaskFailedEventPb other = (io.littlehorse.common.proto.scheduler.TaskFailedEventPb) obj;
+    io.littlehorse.common.proto.scheduler.TaskResultEventPb other = (io.littlehorse.common.proto.scheduler.TaskResultEventPb) obj;
 
     if (getThreadRunNumber()
         != other.getThreadRunNumber()) return false;
@@ -343,7 +343,7 @@ private static final long serialVersionUID = 0L;
       if (!getTime()
           .equals(other.getTime())) return false;
     }
-    if (failureReason_ != other.failureReason_) return false;
+    if (resultCode_ != other.resultCode_) return false;
     if (hasOutput() != other.hasOutput()) return false;
     if (hasOutput()) {
       if (!getOutput()
@@ -375,8 +375,8 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + TIME_FIELD_NUMBER;
       hash = (53 * hash) + getTime().hashCode();
     }
-    hash = (37 * hash) + FAILURE_REASON_FIELD_NUMBER;
-    hash = (53 * hash) + failureReason_;
+    hash = (37 * hash) + RESULT_CODE_FIELD_NUMBER;
+    hash = (53 * hash) + resultCode_;
     if (hasOutput()) {
       hash = (37 * hash) + OUTPUT_FIELD_NUMBER;
       hash = (53 * hash) + getOutput().hashCode();
@@ -390,69 +390,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static io.littlehorse.common.proto.scheduler.TaskFailedEventPb parseFrom(
+  public static io.littlehorse.common.proto.scheduler.TaskResultEventPb parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.scheduler.TaskFailedEventPb parseFrom(
+  public static io.littlehorse.common.proto.scheduler.TaskResultEventPb parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.scheduler.TaskFailedEventPb parseFrom(
+  public static io.littlehorse.common.proto.scheduler.TaskResultEventPb parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.scheduler.TaskFailedEventPb parseFrom(
+  public static io.littlehorse.common.proto.scheduler.TaskResultEventPb parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.scheduler.TaskFailedEventPb parseFrom(byte[] data)
+  public static io.littlehorse.common.proto.scheduler.TaskResultEventPb parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.scheduler.TaskFailedEventPb parseFrom(
+  public static io.littlehorse.common.proto.scheduler.TaskResultEventPb parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.scheduler.TaskFailedEventPb parseFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.scheduler.TaskResultEventPb parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.scheduler.TaskFailedEventPb parseFrom(
+  public static io.littlehorse.common.proto.scheduler.TaskResultEventPb parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.scheduler.TaskFailedEventPb parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.scheduler.TaskResultEventPb parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.scheduler.TaskFailedEventPb parseDelimitedFrom(
+  public static io.littlehorse.common.proto.scheduler.TaskResultEventPb parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.scheduler.TaskFailedEventPb parseFrom(
+  public static io.littlehorse.common.proto.scheduler.TaskResultEventPb parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.scheduler.TaskFailedEventPb parseFrom(
+  public static io.littlehorse.common.proto.scheduler.TaskResultEventPb parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -465,7 +465,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.common.proto.scheduler.TaskFailedEventPb prototype) {
+  public static Builder newBuilder(io.littlehorse.common.proto.scheduler.TaskResultEventPb prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -481,26 +481,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.TaskFailedEventPb}
+   * Protobuf type {@code lh_proto.TaskResultEventPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.TaskFailedEventPb)
-      io.littlehorse.common.proto.scheduler.TaskFailedEventPbOrBuilder {
+      // @@protoc_insertion_point(builder_implements:lh_proto.TaskResultEventPb)
+      io.littlehorse.common.proto.scheduler.TaskResultEventPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.scheduler.Scheduler.internal_static_lh_proto_TaskFailedEventPb_descriptor;
+      return io.littlehorse.common.proto.scheduler.Scheduler.internal_static_lh_proto_TaskResultEventPb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.scheduler.Scheduler.internal_static_lh_proto_TaskFailedEventPb_fieldAccessorTable
+      return io.littlehorse.common.proto.scheduler.Scheduler.internal_static_lh_proto_TaskResultEventPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.common.proto.scheduler.TaskFailedEventPb.class, io.littlehorse.common.proto.scheduler.TaskFailedEventPb.Builder.class);
+              io.littlehorse.common.proto.scheduler.TaskResultEventPb.class, io.littlehorse.common.proto.scheduler.TaskResultEventPb.Builder.class);
     }
 
-    // Construct using io.littlehorse.common.proto.scheduler.TaskFailedEventPb.newBuilder()
+    // Construct using io.littlehorse.common.proto.scheduler.TaskResultEventPb.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -530,7 +530,7 @@ private static final long serialVersionUID = 0L;
         time_ = null;
         timeBuilder_ = null;
       }
-      failureReason_ = 0;
+      resultCode_ = 0;
 
       output_ = com.google.protobuf.ByteString.EMPTY;
       bitField0_ = (bitField0_ & ~0x00000001);
@@ -542,17 +542,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.scheduler.Scheduler.internal_static_lh_proto_TaskFailedEventPb_descriptor;
+      return io.littlehorse.common.proto.scheduler.Scheduler.internal_static_lh_proto_TaskResultEventPb_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.scheduler.TaskFailedEventPb getDefaultInstanceForType() {
-      return io.littlehorse.common.proto.scheduler.TaskFailedEventPb.getDefaultInstance();
+    public io.littlehorse.common.proto.scheduler.TaskResultEventPb getDefaultInstanceForType() {
+      return io.littlehorse.common.proto.scheduler.TaskResultEventPb.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.scheduler.TaskFailedEventPb build() {
-      io.littlehorse.common.proto.scheduler.TaskFailedEventPb result = buildPartial();
+    public io.littlehorse.common.proto.scheduler.TaskResultEventPb build() {
+      io.littlehorse.common.proto.scheduler.TaskResultEventPb result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -560,8 +560,8 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.scheduler.TaskFailedEventPb buildPartial() {
-      io.littlehorse.common.proto.scheduler.TaskFailedEventPb result = new io.littlehorse.common.proto.scheduler.TaskFailedEventPb(this);
+    public io.littlehorse.common.proto.scheduler.TaskResultEventPb buildPartial() {
+      io.littlehorse.common.proto.scheduler.TaskResultEventPb result = new io.littlehorse.common.proto.scheduler.TaskResultEventPb(this);
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
       result.threadRunNumber_ = threadRunNumber_;
@@ -572,7 +572,7 @@ private static final long serialVersionUID = 0L;
       } else {
         result.time_ = timeBuilder_.build();
       }
-      result.failureReason_ = failureReason_;
+      result.resultCode_ = resultCode_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         to_bitField0_ |= 0x00000001;
       }
@@ -620,16 +620,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.common.proto.scheduler.TaskFailedEventPb) {
-        return mergeFrom((io.littlehorse.common.proto.scheduler.TaskFailedEventPb)other);
+      if (other instanceof io.littlehorse.common.proto.scheduler.TaskResultEventPb) {
+        return mergeFrom((io.littlehorse.common.proto.scheduler.TaskResultEventPb)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.common.proto.scheduler.TaskFailedEventPb other) {
-      if (other == io.littlehorse.common.proto.scheduler.TaskFailedEventPb.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.common.proto.scheduler.TaskResultEventPb other) {
+      if (other == io.littlehorse.common.proto.scheduler.TaskResultEventPb.getDefaultInstance()) return this;
       if (other.getThreadRunNumber() != 0) {
         setThreadRunNumber(other.getThreadRunNumber());
       }
@@ -642,8 +642,8 @@ private static final long serialVersionUID = 0L;
       if (other.hasTime()) {
         mergeTime(other.getTime());
       }
-      if (other.failureReason_ != 0) {
-        setFailureReasonValue(other.getFailureReasonValue());
+      if (other.resultCode_ != 0) {
+        setResultCodeValue(other.getResultCodeValue());
       }
       if (other.hasOutput()) {
         setOutput(other.getOutput());
@@ -666,11 +666,11 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      io.littlehorse.common.proto.scheduler.TaskFailedEventPb parsedMessage = null;
+      io.littlehorse.common.proto.scheduler.TaskResultEventPb parsedMessage = null;
       try {
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (io.littlehorse.common.proto.scheduler.TaskFailedEventPb) e.getUnfinishedMessage();
+        parsedMessage = (io.littlehorse.common.proto.scheduler.TaskResultEventPb) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
@@ -893,56 +893,56 @@ private static final long serialVersionUID = 0L;
       return timeBuilder_;
     }
 
-    private int failureReason_ = 0;
+    private int resultCode_ = 0;
     /**
-     * <code>.lh_proto.TaskFailureReasonPb failure_reason = 5;</code>
-     * @return The enum numeric value on the wire for failureReason.
+     * <code>.lh_proto.TaskResultCodePb result_code = 5;</code>
+     * @return The enum numeric value on the wire for resultCode.
      */
-    @java.lang.Override public int getFailureReasonValue() {
-      return failureReason_;
+    @java.lang.Override public int getResultCodeValue() {
+      return resultCode_;
     }
     /**
-     * <code>.lh_proto.TaskFailureReasonPb failure_reason = 5;</code>
-     * @param value The enum numeric value on the wire for failureReason to set.
+     * <code>.lh_proto.TaskResultCodePb result_code = 5;</code>
+     * @param value The enum numeric value on the wire for resultCode to set.
      * @return This builder for chaining.
      */
-    public Builder setFailureReasonValue(int value) {
+    public Builder setResultCodeValue(int value) {
       
-      failureReason_ = value;
+      resultCode_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>.lh_proto.TaskFailureReasonPb failure_reason = 5;</code>
-     * @return The failureReason.
+     * <code>.lh_proto.TaskResultCodePb result_code = 5;</code>
+     * @return The resultCode.
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.TaskFailureReasonPb getFailureReason() {
+    public io.littlehorse.common.proto.TaskResultCodePb getResultCode() {
       @SuppressWarnings("deprecation")
-      io.littlehorse.common.proto.TaskFailureReasonPb result = io.littlehorse.common.proto.TaskFailureReasonPb.valueOf(failureReason_);
-      return result == null ? io.littlehorse.common.proto.TaskFailureReasonPb.UNRECOGNIZED : result;
+      io.littlehorse.common.proto.TaskResultCodePb result = io.littlehorse.common.proto.TaskResultCodePb.valueOf(resultCode_);
+      return result == null ? io.littlehorse.common.proto.TaskResultCodePb.UNRECOGNIZED : result;
     }
     /**
-     * <code>.lh_proto.TaskFailureReasonPb failure_reason = 5;</code>
-     * @param value The failureReason to set.
+     * <code>.lh_proto.TaskResultCodePb result_code = 5;</code>
+     * @param value The resultCode to set.
      * @return This builder for chaining.
      */
-    public Builder setFailureReason(io.littlehorse.common.proto.TaskFailureReasonPb value) {
+    public Builder setResultCode(io.littlehorse.common.proto.TaskResultCodePb value) {
       if (value == null) {
         throw new NullPointerException();
       }
       
-      failureReason_ = value.getNumber();
+      resultCode_ = value.getNumber();
       onChanged();
       return this;
     }
     /**
-     * <code>.lh_proto.TaskFailureReasonPb failure_reason = 5;</code>
+     * <code>.lh_proto.TaskResultCodePb result_code = 5;</code>
      * @return This builder for chaining.
      */
-    public Builder clearFailureReason() {
+    public Builder clearResultCode() {
       
-      failureReason_ = 0;
+      resultCode_ = 0;
       onChanged();
       return this;
     }
@@ -1043,41 +1043,41 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.TaskFailedEventPb)
+    // @@protoc_insertion_point(builder_scope:lh_proto.TaskResultEventPb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.TaskFailedEventPb)
-  private static final io.littlehorse.common.proto.scheduler.TaskFailedEventPb DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:lh_proto.TaskResultEventPb)
+  private static final io.littlehorse.common.proto.scheduler.TaskResultEventPb DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.common.proto.scheduler.TaskFailedEventPb();
+    DEFAULT_INSTANCE = new io.littlehorse.common.proto.scheduler.TaskResultEventPb();
   }
 
-  public static io.littlehorse.common.proto.scheduler.TaskFailedEventPb getDefaultInstance() {
+  public static io.littlehorse.common.proto.scheduler.TaskResultEventPb getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<TaskFailedEventPb>
-      PARSER = new com.google.protobuf.AbstractParser<TaskFailedEventPb>() {
+  private static final com.google.protobuf.Parser<TaskResultEventPb>
+      PARSER = new com.google.protobuf.AbstractParser<TaskResultEventPb>() {
     @java.lang.Override
-    public TaskFailedEventPb parsePartialFrom(
+    public TaskResultEventPb parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new TaskFailedEventPb(input, extensionRegistry);
+      return new TaskResultEventPb(input, extensionRegistry);
     }
   };
 
-  public static com.google.protobuf.Parser<TaskFailedEventPb> parser() {
+  public static com.google.protobuf.Parser<TaskResultEventPb> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<TaskFailedEventPb> getParserForType() {
+  public com.google.protobuf.Parser<TaskResultEventPb> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.common.proto.scheduler.TaskFailedEventPb getDefaultInstanceForType() {
+  public io.littlehorse.common.proto.scheduler.TaskResultEventPb getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

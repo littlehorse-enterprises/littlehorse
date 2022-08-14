@@ -35,10 +35,10 @@ public final class Observability {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_lh_proto_TaskStartOePb_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_lh_proto_TaskCompleteOePb_descriptor;
+    internal_static_lh_proto_TaskResultOePb_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_lh_proto_TaskCompleteOePb_fieldAccessorTable;
+      internal_static_lh_proto_TaskResultOePb_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_lh_proto_ThreadStatusChangeOePb_descriptor;
   static final 
@@ -80,31 +80,32 @@ public final class Observability {
       "_run_id\030\006 \001(\t\022\021\n\tnode_name\030\007 \001(\t\"q\n\rTask" +
       "StartOePb\022\031\n\021thread_run_number\030\001 \001(\005\022\027\n\017" +
       "task_run_number\030\002 \001(\005\022\031\n\021task_run_positi" +
-      "on\030\003 \001(\005\022\021\n\tnode_name\030\004 \001(\t\"\315\001\n\020TaskComp" +
-      "leteOePb\022\031\n\021thread_run_number\030\001 \001(\005\022\027\n\017t" +
-      "ask_run_number\030\002 \001(\005\022\031\n\021task_run_positio" +
-      "n\030\003 \001(\005\022\017\n\007success\030\004 \001(\010\022\023\n\006output\030\005 \001(\014" +
-      "H\000\210\001\001\022\027\n\nlog_output\030\006 \001(\014H\001\210\001\001\022\021\n\tnode_n" +
-      "ame\030\007 \001(\tB\t\n\007_outputB\r\n\013_log_output\"Y\n\026T" +
-      "hreadStatusChangeOePb\022\031\n\021thread_run_numb" +
-      "er\030\001 \001(\005\022$\n\006status\030\002 \001(\0162\024.lh_proto.LHSt" +
-      "atusPb\"=\n\025WfRunStatusChangeOePb\022$\n\006statu" +
-      "s\030\001 \001(\0162\024.lh_proto.LHStatusPb\"\270\003\n\024Observ" +
-      "abilityEventPb\022(\n\004time\030\001 \001(\0132\032.google.pr" +
-      "otobuf.Timestamp\0228\n\rwf_run_status\030\002 \001(\0132" +
-      "\037.lh_proto.WfRunStatusChangeOePbH\000\022+\n\tru" +
-      "n_start\030\003 \001(\0132\026.lh_proto.RunStartOePbH\000\022" +
-      "1\n\014thread_start\030\004 \001(\0132\031.lh_proto.ThreadS" +
-      "tartOePbH\000\0224\n\rtask_schedule\030\005 \001(\0132\033.lh_p" +
-      "roto.TaskScheduledOePbH\000\022-\n\ntask_start\030\006" +
-      " \001(\0132\027.lh_proto.TaskStartOePbH\000\0223\n\rtask_" +
-      "complete\030\007 \001(\0132\032.lh_proto.TaskCompleteOe" +
-      "PbH\000\0229\n\rthread_status\030\010 \001(\0132 .lh_proto.T" +
-      "hreadStatusChangeOePbH\000B\007\n\005event\"Z\n\025Obse" +
-      "rvabilityEventsPb\022\021\n\twf_run_id\030\001 \001(\t\022.\n\006" +
-      "events\030\002 \003(\0132\036.lh_proto.ObservabilityEve" +
-      "ntPbB6\n)io.littlehorse.common.proto.obse" +
-      "rvabilityP\001Z\007.;modelb\006proto3"
+      "on\030\003 \001(\005\022\021\n\tnode_name\030\004 \001(\t\"\353\001\n\016TaskResu" +
+      "ltOePb\022\031\n\021thread_run_number\030\001 \001(\005\022\027\n\017tas" +
+      "k_run_number\030\002 \001(\005\022\031\n\021task_run_position\030" +
+      "\003 \001(\005\022/\n\013result_code\030\004 \001(\0162\032.lh_proto.Ta" +
+      "skResultCodePb\022\023\n\006output\030\005 \001(\014H\000\210\001\001\022\027\n\nl" +
+      "og_output\030\006 \001(\014H\001\210\001\001\022\021\n\tnode_name\030\007 \001(\tB" +
+      "\t\n\007_outputB\r\n\013_log_output\"Y\n\026ThreadStatu" +
+      "sChangeOePb\022\031\n\021thread_run_number\030\001 \001(\005\022$" +
+      "\n\006status\030\002 \001(\0162\024.lh_proto.LHStatusPb\"=\n\025" +
+      "WfRunStatusChangeOePb\022$\n\006status\030\001 \001(\0162\024." +
+      "lh_proto.LHStatusPb\"\264\003\n\024ObservabilityEve" +
+      "ntPb\022(\n\004time\030\001 \001(\0132\032.google.protobuf.Tim" +
+      "estamp\0228\n\rwf_run_status\030\002 \001(\0132\037.lh_proto" +
+      ".WfRunStatusChangeOePbH\000\022+\n\trun_start\030\003 " +
+      "\001(\0132\026.lh_proto.RunStartOePbH\000\0221\n\014thread_" +
+      "start\030\004 \001(\0132\031.lh_proto.ThreadStartOePbH\000" +
+      "\0224\n\rtask_schedule\030\005 \001(\0132\033.lh_proto.TaskS" +
+      "cheduledOePbH\000\022-\n\ntask_start\030\006 \001(\0132\027.lh_" +
+      "proto.TaskStartOePbH\000\022/\n\013task_result\030\007 \001" +
+      "(\0132\030.lh_proto.TaskResultOePbH\000\0229\n\rthread" +
+      "_status\030\010 \001(\0132 .lh_proto.ThreadStatusCha" +
+      "ngeOePbH\000B\007\n\005event\"Z\n\025ObservabilityEvent" +
+      "sPb\022\021\n\twf_run_id\030\001 \001(\t\022.\n\006events\030\002 \003(\0132\036" +
+      ".lh_proto.ObservabilityEventPbB6\n)io.lit" +
+      "tlehorse.common.proto.observabilityP\001Z\007." +
+      ";modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -136,12 +137,12 @@ public final class Observability {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_TaskStartOePb_descriptor,
         new java.lang.String[] { "ThreadRunNumber", "TaskRunNumber", "TaskRunPosition", "NodeName", });
-    internal_static_lh_proto_TaskCompleteOePb_descriptor =
+    internal_static_lh_proto_TaskResultOePb_descriptor =
       getDescriptor().getMessageTypes().get(4);
-    internal_static_lh_proto_TaskCompleteOePb_fieldAccessorTable = new
+    internal_static_lh_proto_TaskResultOePb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_lh_proto_TaskCompleteOePb_descriptor,
-        new java.lang.String[] { "ThreadRunNumber", "TaskRunNumber", "TaskRunPosition", "Success", "Output", "LogOutput", "NodeName", "Output", "LogOutput", });
+        internal_static_lh_proto_TaskResultOePb_descriptor,
+        new java.lang.String[] { "ThreadRunNumber", "TaskRunNumber", "TaskRunPosition", "ResultCode", "Output", "LogOutput", "NodeName", "Output", "LogOutput", });
     internal_static_lh_proto_ThreadStatusChangeOePb_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_lh_proto_ThreadStatusChangeOePb_fieldAccessorTable = new
@@ -159,7 +160,7 @@ public final class Observability {
     internal_static_lh_proto_ObservabilityEventPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_ObservabilityEventPb_descriptor,
-        new java.lang.String[] { "Time", "WfRunStatus", "RunStart", "ThreadStart", "TaskSchedule", "TaskStart", "TaskComplete", "ThreadStatus", "Event", });
+        new java.lang.String[] { "Time", "WfRunStatus", "RunStart", "ThreadStart", "TaskSchedule", "TaskStart", "TaskResult", "ThreadStatus", "Event", });
     internal_static_lh_proto_ObservabilityEventsPb_descriptor =
       getDescriptor().getMessageTypes().get(8);
     internal_static_lh_proto_ObservabilityEventsPb_fieldAccessorTable = new

@@ -4,6 +4,7 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.event.TaskResultEvent;
 import io.littlehorse.common.proto.scheduler.SchedulerTimerPb;
 import io.littlehorse.common.proto.scheduler.SchedulerTimerPb.TimerMessageCase;
 import io.littlehorse.common.util.LHUtil;
@@ -11,7 +12,7 @@ import io.littlehorse.common.util.LHUtil;
 public class SchedulerTimer extends LHSerializable<SchedulerTimerPb> {
     public Date maturationTime;
     public TimerMessageCase type;
-    public TaskTimeout taskTimeout;
+    public TaskResultEvent taskResult;
 
     public void initFrom(MessageOrBuilder proto) {
         SchedulerTimerPb p = (SchedulerTimerPb) proto;
@@ -19,9 +20,9 @@ public class SchedulerTimer extends LHSerializable<SchedulerTimerPb> {
         maturationTime = LHUtil.fromProtoTs(p.getMaturationTime());
 
         switch(type) {
-        case TASK_TIMEOUT:
-            taskTimeout = new TaskTimeout();
-            taskTimeout.initFrom(p.getTaskTimeout());
+        case TASK_RESULT:
+            taskResult = new TaskResultEvent();
+            taskResult.initFrom(p.getTaskResult());
             break;
 
         case TIMERMESSAGE_NOT_SET:

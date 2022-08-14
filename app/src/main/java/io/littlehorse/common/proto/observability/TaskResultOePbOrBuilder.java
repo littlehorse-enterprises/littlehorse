@@ -3,8 +3,8 @@
 
 package io.littlehorse.common.proto.observability;
 
-public interface TaskCompleteOePbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.TaskCompleteOePb)
+public interface TaskResultOePbOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:lh_proto.TaskResultOePb)
     com.google.protobuf.MessageOrBuilder {
 
   /**
@@ -26,10 +26,15 @@ public interface TaskCompleteOePbOrBuilder extends
   int getTaskRunPosition();
 
   /**
-   * <code>bool success = 4;</code>
-   * @return The success.
+   * <code>.lh_proto.TaskResultCodePb result_code = 4;</code>
+   * @return The enum numeric value on the wire for resultCode.
    */
-  boolean getSuccess();
+  int getResultCodeValue();
+  /**
+   * <code>.lh_proto.TaskResultCodePb result_code = 4;</code>
+   * @return The resultCode.
+   */
+  io.littlehorse.common.proto.TaskResultCodePb getResultCode();
 
   /**
    * <code>bytes output = 5;</code>

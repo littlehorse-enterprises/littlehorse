@@ -60,26 +60,15 @@ message TaskStartedEventPb {
     google.protobuf.Timestamp time = 4;
 }
 
-message TaskCompletedEventPb {
+message TaskResultEventPb {
     int32 thread_run_number = 1;
     int32 task_run_number = 2;
     int32 task_run_position = 3;
     google.protobuf.Timestamp time = 4;
 
-    bool success = 5;
+    TaskResultCodePb result_code = 5;
     optional bytes output = 6;
     optional bytes log_output = 7;
-}
-
-message TaskFailedEventPb {
-    int32 thread_run_number = 1;
-    int32 task_run_number = 2;
-    int32 task_run_position = 3;
-    google.protobuf.Timestamp time = 4;
-
-    TaskFailureReasonPb failure_reason = 5;
-    optional bytes output = 6;
-    optional bytes log_output = 7;  
 }
 
 message WfRunEventPb {
@@ -89,8 +78,7 @@ message WfRunEventPb {
     oneof event {
         WfRunRequestPb run_request = 4;
         TaskStartedEventPb started_event = 5;
-        TaskCompletedEventPb completed_event = 6;
-        SchedulerTimerPb timer_event = 7;
+        TaskResultEventPb task_result = 6;
     }
 }
 
@@ -99,12 +87,6 @@ message WfRunEventPb {
 message SchedulerTimerPb {
     google.protobuf.Timestamp maturation_time = 1;
     oneof timer_message {
-        TaskTimeoutPb task_timeout = 2;
+        TaskResultEventPb task_result = 2; // currently used for TimeOuts
     }
-}
-
-message TaskTimeoutPb {
-    string wf_run_id = 1;
-    int32 thread_run_number = 2;
-    int32 task_run_position = 3;
 }

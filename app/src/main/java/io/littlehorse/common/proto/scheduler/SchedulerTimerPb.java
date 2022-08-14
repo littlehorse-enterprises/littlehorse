@@ -62,14 +62,14 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 18: {
-            io.littlehorse.common.proto.scheduler.TaskTimeoutPb.Builder subBuilder = null;
+            io.littlehorse.common.proto.scheduler.TaskResultEventPb.Builder subBuilder = null;
             if (timerMessageCase_ == 2) {
-              subBuilder = ((io.littlehorse.common.proto.scheduler.TaskTimeoutPb) timerMessage_).toBuilder();
+              subBuilder = ((io.littlehorse.common.proto.scheduler.TaskResultEventPb) timerMessage_).toBuilder();
             }
             timerMessage_ =
-                input.readMessage(io.littlehorse.common.proto.scheduler.TaskTimeoutPb.parser(), extensionRegistry);
+                input.readMessage(io.littlehorse.common.proto.scheduler.TaskResultEventPb.parser(), extensionRegistry);
             if (subBuilder != null) {
-              subBuilder.mergeFrom((io.littlehorse.common.proto.scheduler.TaskTimeoutPb) timerMessage_);
+              subBuilder.mergeFrom((io.littlehorse.common.proto.scheduler.TaskResultEventPb) timerMessage_);
               timerMessage_ = subBuilder.buildPartial();
             }
             timerMessageCase_ = 2;
@@ -112,7 +112,7 @@ private static final long serialVersionUID = 0L;
   public enum TimerMessageCase
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    TASK_TIMEOUT(2),
+    TASK_RESULT(2),
     TIMERMESSAGE_NOT_SET(0);
     private final int value;
     private TimerMessageCase(int value) {
@@ -130,7 +130,7 @@ private static final long serialVersionUID = 0L;
 
     public static TimerMessageCase forNumber(int value) {
       switch (value) {
-        case 2: return TASK_TIMEOUT;
+        case 2: return TASK_RESULT;
         case 0: return TIMERMESSAGE_NOT_SET;
         default: return null;
       }
@@ -172,35 +172,47 @@ private static final long serialVersionUID = 0L;
     return getMaturationTime();
   }
 
-  public static final int TASK_TIMEOUT_FIELD_NUMBER = 2;
+  public static final int TASK_RESULT_FIELD_NUMBER = 2;
   /**
-   * <code>.lh_proto.TaskTimeoutPb task_timeout = 2;</code>
-   * @return Whether the taskTimeout field is set.
+   * <pre>
+   * currently used for TimeOuts
+   * </pre>
+   *
+   * <code>.lh_proto.TaskResultEventPb task_result = 2;</code>
+   * @return Whether the taskResult field is set.
    */
   @java.lang.Override
-  public boolean hasTaskTimeout() {
+  public boolean hasTaskResult() {
     return timerMessageCase_ == 2;
   }
   /**
-   * <code>.lh_proto.TaskTimeoutPb task_timeout = 2;</code>
-   * @return The taskTimeout.
+   * <pre>
+   * currently used for TimeOuts
+   * </pre>
+   *
+   * <code>.lh_proto.TaskResultEventPb task_result = 2;</code>
+   * @return The taskResult.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.scheduler.TaskTimeoutPb getTaskTimeout() {
+  public io.littlehorse.common.proto.scheduler.TaskResultEventPb getTaskResult() {
     if (timerMessageCase_ == 2) {
-       return (io.littlehorse.common.proto.scheduler.TaskTimeoutPb) timerMessage_;
+       return (io.littlehorse.common.proto.scheduler.TaskResultEventPb) timerMessage_;
     }
-    return io.littlehorse.common.proto.scheduler.TaskTimeoutPb.getDefaultInstance();
+    return io.littlehorse.common.proto.scheduler.TaskResultEventPb.getDefaultInstance();
   }
   /**
-   * <code>.lh_proto.TaskTimeoutPb task_timeout = 2;</code>
+   * <pre>
+   * currently used for TimeOuts
+   * </pre>
+   *
+   * <code>.lh_proto.TaskResultEventPb task_result = 2;</code>
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.scheduler.TaskTimeoutPbOrBuilder getTaskTimeoutOrBuilder() {
+  public io.littlehorse.common.proto.scheduler.TaskResultEventPbOrBuilder getTaskResultOrBuilder() {
     if (timerMessageCase_ == 2) {
-       return (io.littlehorse.common.proto.scheduler.TaskTimeoutPb) timerMessage_;
+       return (io.littlehorse.common.proto.scheduler.TaskResultEventPb) timerMessage_;
     }
-    return io.littlehorse.common.proto.scheduler.TaskTimeoutPb.getDefaultInstance();
+    return io.littlehorse.common.proto.scheduler.TaskResultEventPb.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -221,7 +233,7 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(1, getMaturationTime());
     }
     if (timerMessageCase_ == 2) {
-      output.writeMessage(2, (io.littlehorse.common.proto.scheduler.TaskTimeoutPb) timerMessage_);
+      output.writeMessage(2, (io.littlehorse.common.proto.scheduler.TaskResultEventPb) timerMessage_);
     }
     unknownFields.writeTo(output);
   }
@@ -238,7 +250,7 @@ private static final long serialVersionUID = 0L;
     }
     if (timerMessageCase_ == 2) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, (io.littlehorse.common.proto.scheduler.TaskTimeoutPb) timerMessage_);
+        .computeMessageSize(2, (io.littlehorse.common.proto.scheduler.TaskResultEventPb) timerMessage_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -263,8 +275,8 @@ private static final long serialVersionUID = 0L;
     if (!getTimerMessageCase().equals(other.getTimerMessageCase())) return false;
     switch (timerMessageCase_) {
       case 2:
-        if (!getTaskTimeout()
-            .equals(other.getTaskTimeout())) return false;
+        if (!getTaskResult()
+            .equals(other.getTaskResult())) return false;
         break;
       case 0:
       default:
@@ -286,8 +298,8 @@ private static final long serialVersionUID = 0L;
     }
     switch (timerMessageCase_) {
       case 2:
-        hash = (37 * hash) + TASK_TIMEOUT_FIELD_NUMBER;
-        hash = (53 * hash) + getTaskTimeout().hashCode();
+        hash = (37 * hash) + TASK_RESULT_FIELD_NUMBER;
+        hash = (53 * hash) + getTaskResult().hashCode();
         break;
       case 0:
       default:
@@ -465,10 +477,10 @@ private static final long serialVersionUID = 0L;
         result.maturationTime_ = maturationTimeBuilder_.build();
       }
       if (timerMessageCase_ == 2) {
-        if (taskTimeoutBuilder_ == null) {
+        if (taskResultBuilder_ == null) {
           result.timerMessage_ = timerMessage_;
         } else {
-          result.timerMessage_ = taskTimeoutBuilder_.build();
+          result.timerMessage_ = taskResultBuilder_.build();
         }
       }
       result.timerMessageCase_ = timerMessageCase_;
@@ -524,8 +536,8 @@ private static final long serialVersionUID = 0L;
         mergeMaturationTime(other.getMaturationTime());
       }
       switch (other.getTimerMessageCase()) {
-        case TASK_TIMEOUT: {
-          mergeTaskTimeout(other.getTaskTimeout());
+        case TASK_RESULT: {
+          mergeTaskResult(other.getTaskResult());
           break;
         }
         case TIMERMESSAGE_NOT_SET: {
@@ -696,71 +708,91 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.scheduler.TaskTimeoutPb, io.littlehorse.common.proto.scheduler.TaskTimeoutPb.Builder, io.littlehorse.common.proto.scheduler.TaskTimeoutPbOrBuilder> taskTimeoutBuilder_;
+        io.littlehorse.common.proto.scheduler.TaskResultEventPb, io.littlehorse.common.proto.scheduler.TaskResultEventPb.Builder, io.littlehorse.common.proto.scheduler.TaskResultEventPbOrBuilder> taskResultBuilder_;
     /**
-     * <code>.lh_proto.TaskTimeoutPb task_timeout = 2;</code>
-     * @return Whether the taskTimeout field is set.
+     * <pre>
+     * currently used for TimeOuts
+     * </pre>
+     *
+     * <code>.lh_proto.TaskResultEventPb task_result = 2;</code>
+     * @return Whether the taskResult field is set.
      */
     @java.lang.Override
-    public boolean hasTaskTimeout() {
+    public boolean hasTaskResult() {
       return timerMessageCase_ == 2;
     }
     /**
-     * <code>.lh_proto.TaskTimeoutPb task_timeout = 2;</code>
-     * @return The taskTimeout.
+     * <pre>
+     * currently used for TimeOuts
+     * </pre>
+     *
+     * <code>.lh_proto.TaskResultEventPb task_result = 2;</code>
+     * @return The taskResult.
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.scheduler.TaskTimeoutPb getTaskTimeout() {
-      if (taskTimeoutBuilder_ == null) {
+    public io.littlehorse.common.proto.scheduler.TaskResultEventPb getTaskResult() {
+      if (taskResultBuilder_ == null) {
         if (timerMessageCase_ == 2) {
-          return (io.littlehorse.common.proto.scheduler.TaskTimeoutPb) timerMessage_;
+          return (io.littlehorse.common.proto.scheduler.TaskResultEventPb) timerMessage_;
         }
-        return io.littlehorse.common.proto.scheduler.TaskTimeoutPb.getDefaultInstance();
+        return io.littlehorse.common.proto.scheduler.TaskResultEventPb.getDefaultInstance();
       } else {
         if (timerMessageCase_ == 2) {
-          return taskTimeoutBuilder_.getMessage();
+          return taskResultBuilder_.getMessage();
         }
-        return io.littlehorse.common.proto.scheduler.TaskTimeoutPb.getDefaultInstance();
+        return io.littlehorse.common.proto.scheduler.TaskResultEventPb.getDefaultInstance();
       }
     }
     /**
-     * <code>.lh_proto.TaskTimeoutPb task_timeout = 2;</code>
+     * <pre>
+     * currently used for TimeOuts
+     * </pre>
+     *
+     * <code>.lh_proto.TaskResultEventPb task_result = 2;</code>
      */
-    public Builder setTaskTimeout(io.littlehorse.common.proto.scheduler.TaskTimeoutPb value) {
-      if (taskTimeoutBuilder_ == null) {
+    public Builder setTaskResult(io.littlehorse.common.proto.scheduler.TaskResultEventPb value) {
+      if (taskResultBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
         timerMessage_ = value;
         onChanged();
       } else {
-        taskTimeoutBuilder_.setMessage(value);
+        taskResultBuilder_.setMessage(value);
       }
       timerMessageCase_ = 2;
       return this;
     }
     /**
-     * <code>.lh_proto.TaskTimeoutPb task_timeout = 2;</code>
+     * <pre>
+     * currently used for TimeOuts
+     * </pre>
+     *
+     * <code>.lh_proto.TaskResultEventPb task_result = 2;</code>
      */
-    public Builder setTaskTimeout(
-        io.littlehorse.common.proto.scheduler.TaskTimeoutPb.Builder builderForValue) {
-      if (taskTimeoutBuilder_ == null) {
+    public Builder setTaskResult(
+        io.littlehorse.common.proto.scheduler.TaskResultEventPb.Builder builderForValue) {
+      if (taskResultBuilder_ == null) {
         timerMessage_ = builderForValue.build();
         onChanged();
       } else {
-        taskTimeoutBuilder_.setMessage(builderForValue.build());
+        taskResultBuilder_.setMessage(builderForValue.build());
       }
       timerMessageCase_ = 2;
       return this;
     }
     /**
-     * <code>.lh_proto.TaskTimeoutPb task_timeout = 2;</code>
+     * <pre>
+     * currently used for TimeOuts
+     * </pre>
+     *
+     * <code>.lh_proto.TaskResultEventPb task_result = 2;</code>
      */
-    public Builder mergeTaskTimeout(io.littlehorse.common.proto.scheduler.TaskTimeoutPb value) {
-      if (taskTimeoutBuilder_ == null) {
+    public Builder mergeTaskResult(io.littlehorse.common.proto.scheduler.TaskResultEventPb value) {
+      if (taskResultBuilder_ == null) {
         if (timerMessageCase_ == 2 &&
-            timerMessage_ != io.littlehorse.common.proto.scheduler.TaskTimeoutPb.getDefaultInstance()) {
-          timerMessage_ = io.littlehorse.common.proto.scheduler.TaskTimeoutPb.newBuilder((io.littlehorse.common.proto.scheduler.TaskTimeoutPb) timerMessage_)
+            timerMessage_ != io.littlehorse.common.proto.scheduler.TaskResultEventPb.getDefaultInstance()) {
+          timerMessage_ = io.littlehorse.common.proto.scheduler.TaskResultEventPb.newBuilder((io.littlehorse.common.proto.scheduler.TaskResultEventPb) timerMessage_)
               .mergeFrom(value).buildPartial();
         } else {
           timerMessage_ = value;
@@ -768,18 +800,22 @@ private static final long serialVersionUID = 0L;
         onChanged();
       } else {
         if (timerMessageCase_ == 2) {
-          taskTimeoutBuilder_.mergeFrom(value);
+          taskResultBuilder_.mergeFrom(value);
         }
-        taskTimeoutBuilder_.setMessage(value);
+        taskResultBuilder_.setMessage(value);
       }
       timerMessageCase_ = 2;
       return this;
     }
     /**
-     * <code>.lh_proto.TaskTimeoutPb task_timeout = 2;</code>
+     * <pre>
+     * currently used for TimeOuts
+     * </pre>
+     *
+     * <code>.lh_proto.TaskResultEventPb task_result = 2;</code>
      */
-    public Builder clearTaskTimeout() {
-      if (taskTimeoutBuilder_ == null) {
+    public Builder clearTaskResult() {
+      if (taskResultBuilder_ == null) {
         if (timerMessageCase_ == 2) {
           timerMessageCase_ = 0;
           timerMessage_ = null;
@@ -790,50 +826,62 @@ private static final long serialVersionUID = 0L;
           timerMessageCase_ = 0;
           timerMessage_ = null;
         }
-        taskTimeoutBuilder_.clear();
+        taskResultBuilder_.clear();
       }
       return this;
     }
     /**
-     * <code>.lh_proto.TaskTimeoutPb task_timeout = 2;</code>
+     * <pre>
+     * currently used for TimeOuts
+     * </pre>
+     *
+     * <code>.lh_proto.TaskResultEventPb task_result = 2;</code>
      */
-    public io.littlehorse.common.proto.scheduler.TaskTimeoutPb.Builder getTaskTimeoutBuilder() {
-      return getTaskTimeoutFieldBuilder().getBuilder();
+    public io.littlehorse.common.proto.scheduler.TaskResultEventPb.Builder getTaskResultBuilder() {
+      return getTaskResultFieldBuilder().getBuilder();
     }
     /**
-     * <code>.lh_proto.TaskTimeoutPb task_timeout = 2;</code>
+     * <pre>
+     * currently used for TimeOuts
+     * </pre>
+     *
+     * <code>.lh_proto.TaskResultEventPb task_result = 2;</code>
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.scheduler.TaskTimeoutPbOrBuilder getTaskTimeoutOrBuilder() {
-      if ((timerMessageCase_ == 2) && (taskTimeoutBuilder_ != null)) {
-        return taskTimeoutBuilder_.getMessageOrBuilder();
+    public io.littlehorse.common.proto.scheduler.TaskResultEventPbOrBuilder getTaskResultOrBuilder() {
+      if ((timerMessageCase_ == 2) && (taskResultBuilder_ != null)) {
+        return taskResultBuilder_.getMessageOrBuilder();
       } else {
         if (timerMessageCase_ == 2) {
-          return (io.littlehorse.common.proto.scheduler.TaskTimeoutPb) timerMessage_;
+          return (io.littlehorse.common.proto.scheduler.TaskResultEventPb) timerMessage_;
         }
-        return io.littlehorse.common.proto.scheduler.TaskTimeoutPb.getDefaultInstance();
+        return io.littlehorse.common.proto.scheduler.TaskResultEventPb.getDefaultInstance();
       }
     }
     /**
-     * <code>.lh_proto.TaskTimeoutPb task_timeout = 2;</code>
+     * <pre>
+     * currently used for TimeOuts
+     * </pre>
+     *
+     * <code>.lh_proto.TaskResultEventPb task_result = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.scheduler.TaskTimeoutPb, io.littlehorse.common.proto.scheduler.TaskTimeoutPb.Builder, io.littlehorse.common.proto.scheduler.TaskTimeoutPbOrBuilder> 
-        getTaskTimeoutFieldBuilder() {
-      if (taskTimeoutBuilder_ == null) {
+        io.littlehorse.common.proto.scheduler.TaskResultEventPb, io.littlehorse.common.proto.scheduler.TaskResultEventPb.Builder, io.littlehorse.common.proto.scheduler.TaskResultEventPbOrBuilder> 
+        getTaskResultFieldBuilder() {
+      if (taskResultBuilder_ == null) {
         if (!(timerMessageCase_ == 2)) {
-          timerMessage_ = io.littlehorse.common.proto.scheduler.TaskTimeoutPb.getDefaultInstance();
+          timerMessage_ = io.littlehorse.common.proto.scheduler.TaskResultEventPb.getDefaultInstance();
         }
-        taskTimeoutBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.scheduler.TaskTimeoutPb, io.littlehorse.common.proto.scheduler.TaskTimeoutPb.Builder, io.littlehorse.common.proto.scheduler.TaskTimeoutPbOrBuilder>(
-                (io.littlehorse.common.proto.scheduler.TaskTimeoutPb) timerMessage_,
+        taskResultBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.scheduler.TaskResultEventPb, io.littlehorse.common.proto.scheduler.TaskResultEventPb.Builder, io.littlehorse.common.proto.scheduler.TaskResultEventPbOrBuilder>(
+                (io.littlehorse.common.proto.scheduler.TaskResultEventPb) timerMessage_,
                 getParentForChildren(),
                 isClean());
         timerMessage_ = null;
       }
       timerMessageCase_ = 2;
       onChanged();;
-      return taskTimeoutBuilder_;
+      return taskResultBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

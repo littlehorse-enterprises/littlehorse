@@ -15,7 +15,7 @@ import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.observability.ObservabilityEvent;
 import io.littlehorse.common.model.observability.ObservabilityEvents;
 import io.littlehorse.common.model.observability.RunStartOe;
-import io.littlehorse.common.model.observability.TaskCompleteOe;
+import io.littlehorse.common.model.observability.TaskResultOe;
 import io.littlehorse.common.model.observability.TaskScheduledOe;
 import io.littlehorse.common.model.observability.TaskStartOe;
 import io.littlehorse.common.model.observability.ThreadStartOe;
@@ -202,7 +202,7 @@ public class WfRunProcessor implements Processor<
     }
 
     private void handleTaskComplete(WfRun wfRun, ObservabilityEvent evt) {
-        TaskCompleteOe tc = evt.taskComplete;
+        TaskResultOe tc = evt.taskResult;
         TaskRun task = taskRunStore.get(
             TaskRun.getStoreKey(wfRun.id, tc.threadRunNumber, tc.taskRunPosition)
         );

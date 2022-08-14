@@ -3,7 +3,7 @@ package io.littlehorse.scheduler.model;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.model.event.TaskCompletedEvent;
+import io.littlehorse.common.model.event.TaskResultEvent;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.TaskStartedEvent;
 import io.littlehorse.common.model.event.WfRunEvent;
@@ -11,7 +11,7 @@ import io.littlehorse.common.model.meta.Edge;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.meta.ThreadSpec;
 import io.littlehorse.common.model.observability.ObservabilityEvent;
-import io.littlehorse.common.model.observability.TaskCompleteOe;
+import io.littlehorse.common.model.observability.TaskResultOe;
 import io.littlehorse.common.model.observability.TaskScheduledOe;
 import io.littlehorse.common.model.observability.TaskStartOe;
 import io.littlehorse.common.model.observability.ThreadStatusChangeOe;
@@ -63,6 +63,14 @@ public class ThreadRunState {
         return threadSpec;
     }
 
+    @JsonIgnore public Node getCurrentNode() {
+        if (currentNodeRun == null) {
+            return getThreadSpec().nodes.get(getThreadSpec().entrypointNodeName);
+        } else {
+            return getThreadSpec().nodes.get(currentNodeRun.nodeName);
+        }
+    }
+
     @JsonIgnore public void advance() {
         if (status != LHStatusPb.RUNNING) {
             return;
@@ -108,12 +116,7 @@ public class ThreadRunState {
             return null;
         }
 
-        Node current;
-        if (currentNodeRun == null) {
-            current = getThreadSpec().nodes.get(getThreadSpec().entrypointNodeName);
-        } else {
-            current = getThreadSpec().nodes.get(currentNodeRun.nodeName);
-        }
+        Node current = getCurrentNode();
 
         if (current.type == NodeCase.EXIT) {
             return null;
@@ -209,37 +212,37 @@ public class ThreadRunState {
 
     public void processCompletedEvent(WfRunEvent we) {
         wfRun.oEvents.add(new ObservabilityEvent(
-            new TaskCompleteOe(we.completedEvent, currentNodeRun.nodeName),
+            new TaskResultOe(we.taskResult, currentNodeRun.nodeName),
             we.time
         ));
-        TaskCompletedEvent ce = we.completedEvent;
-        if (currentNodeRun.position != ce.taskRunPosition) {
-            // Out-of-order event due to race conditions between task worker
-            // transactional producer and regular producer
-            return;
-        }
-        if (currentNodeRun.number != ce.taskRunNumber) {
-            // Out-of-order event due to race conditions between task worker
-            // transactional producer and regular producer
-            return;
-        }
-
-        currentNodeRun.status = LHStatusPb.COMPLETED;
-    }
-
-    public void processTimeout(WfRunEvent evt, TaskTimeout timer) {
-        // TODO: Send observabilityEvent
-        if (currentNodeRun.position > timer.taskRunPosition) {
+        TaskResultEvent ce = we.taskResult;
+        if (currentNodeRun.position > ce.taskRunPosition) {
             // TODO: Determine if this is theoretically impossible.
             // If it's impossible, throw exception to prevent silent bugs.
             LHUtil.log("Warning: Got stale task timeout.");
             return;
         }
 
-        if (currentNodeRun.position < timer.taskRunPosition) {
+        if (currentNodeRun.position < ce.taskRunPosition) {
             throw new RuntimeException("Caught a message from the future!");
         }
 
-        currentNodeRun.status = LHStatusPb.ERROR;
+        if (currentNodeRun.number != ce.taskRunNumber) {
+            // Out-of-order event due to race conditions between task worker
+            // transactional producer and regular producer
+            return;
+        }
+
+        switch (ce.resultCode) {
+            case SUCCESS:
+                currentNodeRun.status = LHStatusPb.COMPLETED;
+
+            case TIMEOUT:
+            case TASK_FAILURE:
+                currentNodeRun.status = LHStatusPb.ERROR;
+
+            case UNRECOGNIZED:
+                throw new RuntimeException("Unrecognized TaskResultCode: " + ce.resultCode);
+        }
     }
 }

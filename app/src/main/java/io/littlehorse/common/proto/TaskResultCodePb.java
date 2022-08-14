@@ -4,29 +4,37 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf enum {@code lh_proto.TaskFailureReasonPb}
+ * Protobuf enum {@code lh_proto.TaskResultCodePb}
  */
-public enum TaskFailureReasonPb
+public enum TaskResultCodePb
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
-   * <code>TASK_FAILURE = 0;</code>
+   * <code>SUCCESS = 0;</code>
    */
-  TASK_FAILURE(0),
+  SUCCESS(0),
   /**
    * <code>TIMEOUT = 1;</code>
    */
   TIMEOUT(1),
+  /**
+   * <code>TASK_FAILURE = 2;</code>
+   */
+  TASK_FAILURE(2),
   UNRECOGNIZED(-1),
   ;
 
   /**
-   * <code>TASK_FAILURE = 0;</code>
+   * <code>SUCCESS = 0;</code>
    */
-  public static final int TASK_FAILURE_VALUE = 0;
+  public static final int SUCCESS_VALUE = 0;
   /**
    * <code>TIMEOUT = 1;</code>
    */
   public static final int TIMEOUT_VALUE = 1;
+  /**
+   * <code>TASK_FAILURE = 2;</code>
+   */
+  public static final int TASK_FAILURE_VALUE = 2;
 
 
   public final int getNumber() {
@@ -43,7 +51,7 @@ public enum TaskFailureReasonPb
    * @deprecated Use {@link #forNumber(int)} instead.
    */
   @java.lang.Deprecated
-  public static TaskFailureReasonPb valueOf(int value) {
+  public static TaskResultCodePb valueOf(int value) {
     return forNumber(value);
   }
 
@@ -51,23 +59,24 @@ public enum TaskFailureReasonPb
    * @param value The numeric wire value of the corresponding enum entry.
    * @return The enum associated with the given numeric wire value.
    */
-  public static TaskFailureReasonPb forNumber(int value) {
+  public static TaskResultCodePb forNumber(int value) {
     switch (value) {
-      case 0: return TASK_FAILURE;
+      case 0: return SUCCESS;
       case 1: return TIMEOUT;
+      case 2: return TASK_FAILURE;
       default: return null;
     }
   }
 
-  public static com.google.protobuf.Internal.EnumLiteMap<TaskFailureReasonPb>
+  public static com.google.protobuf.Internal.EnumLiteMap<TaskResultCodePb>
       internalGetValueMap() {
     return internalValueMap;
   }
   private static final com.google.protobuf.Internal.EnumLiteMap<
-      TaskFailureReasonPb> internalValueMap =
-        new com.google.protobuf.Internal.EnumLiteMap<TaskFailureReasonPb>() {
-          public TaskFailureReasonPb findValueByNumber(int number) {
-            return TaskFailureReasonPb.forNumber(number);
+      TaskResultCodePb> internalValueMap =
+        new com.google.protobuf.Internal.EnumLiteMap<TaskResultCodePb>() {
+          public TaskResultCodePb findValueByNumber(int number) {
+            return TaskResultCodePb.forNumber(number);
           }
         };
 
@@ -88,9 +97,9 @@ public enum TaskFailureReasonPb
     return io.littlehorse.common.proto.LhProto.getDescriptor().getEnumTypes().get(1);
   }
 
-  private static final TaskFailureReasonPb[] VALUES = values();
+  private static final TaskResultCodePb[] VALUES = values();
 
-  public static TaskFailureReasonPb valueOf(
+  public static TaskResultCodePb valueOf(
       com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
     if (desc.getType() != getDescriptor()) {
       throw new java.lang.IllegalArgumentException(
@@ -104,10 +113,10 @@ public enum TaskFailureReasonPb
 
   private final int value;
 
-  private TaskFailureReasonPb(int value) {
+  private TaskResultCodePb(int value) {
     this.value = value;
   }
 
-  // @@protoc_insertion_point(enum_scope:lh_proto.TaskFailureReasonPb)
+  // @@protoc_insertion_point(enum_scope:lh_proto.TaskResultCodePb)
 }
 

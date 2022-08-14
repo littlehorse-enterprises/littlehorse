@@ -168,4 +168,20 @@ public interface TaskRunPbOrBuilder extends
    */
   com.google.protobuf.ByteString
       getTaskDefIdBytes();
+
+  /**
+   * <code>.lh_proto.TaskResultCodePb result_code = 16;</code>
+   * @return Whether the resultCode field is set.
+   */
+  boolean hasResultCode();
+  /**
+   * <code>.lh_proto.TaskResultCodePb result_code = 16;</code>
+   * @return The enum numeric value on the wire for resultCode.
+   */
+  int getResultCodeValue();
+  /**
+   * <code>.lh_proto.TaskResultCodePb result_code = 16;</code>
+   * @return The resultCode.
+   */
+  io.littlehorse.common.proto.TaskResultCodePb getResultCode();
 }

@@ -3,8 +3,8 @@
 
 package io.littlehorse.common.proto.scheduler;
 
-public interface TaskFailedEventPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.TaskFailedEventPb)
+public interface TaskResultEventPbOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:lh_proto.TaskResultEventPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**
@@ -41,15 +41,15 @@ public interface TaskFailedEventPbOrBuilder extends
   com.google.protobuf.TimestampOrBuilder getTimeOrBuilder();
 
   /**
-   * <code>.lh_proto.TaskFailureReasonPb failure_reason = 5;</code>
-   * @return The enum numeric value on the wire for failureReason.
+   * <code>.lh_proto.TaskResultCodePb result_code = 5;</code>
+   * @return The enum numeric value on the wire for resultCode.
    */
-  int getFailureReasonValue();
+  int getResultCodeValue();
   /**
-   * <code>.lh_proto.TaskFailureReasonPb failure_reason = 5;</code>
-   * @return The failureReason.
+   * <code>.lh_proto.TaskResultCodePb result_code = 5;</code>
+   * @return The resultCode.
    */
-  io.littlehorse.common.proto.TaskFailureReasonPb getFailureReason();
+  io.littlehorse.common.proto.TaskResultCodePb getResultCode();
 
   /**
    * <code>bytes output = 6;</code>

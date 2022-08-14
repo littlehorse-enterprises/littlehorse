@@ -6,7 +6,6 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.scheduler.WfRunEventPb;
 import io.littlehorse.common.proto.scheduler.WfRunEventPb.EventCase;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.scheduler.model.SchedulerTimer;
 
 public class WfRunEvent extends LHSerializable<WfRunEventPb> {
     public String wfRunId;
@@ -15,9 +14,8 @@ public class WfRunEvent extends LHSerializable<WfRunEventPb> {
 
     public EventCase type;
     public TaskStartedEvent startedEvent;
-    public TaskCompletedEvent completedEvent;
+    public TaskResultEvent taskResult;
     public WfRunRequest runRequest;
-    public SchedulerTimer timerEvent;
 
     public WfRunEventPb.Builder toProto() {
         WfRunEventPb.Builder b = WfRunEventPb.newBuilder()
@@ -33,14 +31,11 @@ public class WfRunEvent extends LHSerializable<WfRunEventPb> {
         case STARTED_EVENT:
             b.setStartedEvent(startedEvent.toProto());
             break;
-        case COMPLETED_EVENT:
-            b.setCompletedEvent(completedEvent.toProto());
+        case TASK_RESULT:
+            b.setTaskResult(taskResult.toProto());
             break;
         case RUN_REQUEST:
             b.setRunRequest(runRequest.toProto());
-            break;
-        case TIMER_EVENT:
-            b.setTimerEvent(timerEvent.toProto());
             break;
         }
         return b;
@@ -64,16 +59,11 @@ public class WfRunEvent extends LHSerializable<WfRunEventPb> {
         case STARTED_EVENT:
             this.startedEvent = TaskStartedEvent.fromProto(proto.getStartedEvent());
             break;
-        case COMPLETED_EVENT:
-            this.completedEvent = TaskCompletedEvent
-                .fromProto(proto.getCompletedEvent());
+        case TASK_RESULT:
+            this.taskResult = TaskResultEvent.fromProto(proto.getTaskResult());
             break;
         case RUN_REQUEST:
             this.runRequest = WfRunRequest.fromProto(proto.getRunRequest());
-            break;
-        case TIMER_EVENT:
-            this.timerEvent = new SchedulerTimer();
-            timerEvent.initFrom(proto.getTimerEvent());
             break;
         }
     }

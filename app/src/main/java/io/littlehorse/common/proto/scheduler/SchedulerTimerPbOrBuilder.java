@@ -23,19 +23,31 @@ public interface SchedulerTimerPbOrBuilder extends
   com.google.protobuf.TimestampOrBuilder getMaturationTimeOrBuilder();
 
   /**
-   * <code>.lh_proto.TaskTimeoutPb task_timeout = 2;</code>
-   * @return Whether the taskTimeout field is set.
+   * <pre>
+   * currently used for TimeOuts
+   * </pre>
+   *
+   * <code>.lh_proto.TaskResultEventPb task_result = 2;</code>
+   * @return Whether the taskResult field is set.
    */
-  boolean hasTaskTimeout();
+  boolean hasTaskResult();
   /**
-   * <code>.lh_proto.TaskTimeoutPb task_timeout = 2;</code>
-   * @return The taskTimeout.
+   * <pre>
+   * currently used for TimeOuts
+   * </pre>
+   *
+   * <code>.lh_proto.TaskResultEventPb task_result = 2;</code>
+   * @return The taskResult.
    */
-  io.littlehorse.common.proto.scheduler.TaskTimeoutPb getTaskTimeout();
+  io.littlehorse.common.proto.scheduler.TaskResultEventPb getTaskResult();
   /**
-   * <code>.lh_proto.TaskTimeoutPb task_timeout = 2;</code>
+   * <pre>
+   * currently used for TimeOuts
+   * </pre>
+   *
+   * <code>.lh_proto.TaskResultEventPb task_result = 2;</code>
    */
-  io.littlehorse.common.proto.scheduler.TaskTimeoutPbOrBuilder getTaskTimeoutOrBuilder();
+  io.littlehorse.common.proto.scheduler.TaskResultEventPbOrBuilder getTaskResultOrBuilder();
 
   public io.littlehorse.common.proto.scheduler.SchedulerTimerPb.TimerMessageCase getTimerMessageCase();
 }

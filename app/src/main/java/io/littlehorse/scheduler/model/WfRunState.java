@@ -6,7 +6,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.event.TaskCompletedEvent;
+import io.littlehorse.common.model.event.TaskResultEvent;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.TaskStartedEvent;
 import io.littlehorse.common.model.event.WfRunEvent;
@@ -127,37 +127,15 @@ public class WfRunState extends LHSerializable<WfRunStatePb> {
         switch(e.type) {
         case RUN_REQUEST:
             throw new RuntimeException("Shouldn't happen here.");
-        case COMPLETED_EVENT:
-            handleCompletedEvent(e);
+        case TASK_RESULT:
+            handleTaskResult(e);
             break;
         case STARTED_EVENT:
             handleStartedEvent(e);
             break;
-        case TIMER_EVENT:
-            handleTimerEvent(e);
-            break;
         case EVENT_NOT_SET:
             throw new RuntimeException("Impossible or Out of date scheduler.");
         }
-    }
-
-    public void handleTimerEvent(WfRunEvent evt) {
-        SchedulerTimer timer = evt.timerEvent;
-        switch(timer.type) {
-        case TASK_TIMEOUT:
-            handleTaskTimeout(evt, timer);
-            break;
-        case TIMERMESSAGE_NOT_SET:
-            // Nothing to do.
-            break;
-        }
-    }
-
-    private void handleTaskTimeout(WfRunEvent evt, SchedulerTimer timer) {
-        TaskTimeout timeout = timer.taskTimeout;
-        ThreadRunState thread = threadRuns.get(timeout.threadRunNumber);
-        thread.processTimeout(evt, timeout);
-        thread.advance();
     }
 
     public void complete(Date time) {
@@ -180,8 +158,8 @@ public class WfRunState extends LHSerializable<WfRunStatePb> {
         thread.advance();
     }
 
-    private void handleCompletedEvent(WfRunEvent we) {
-        TaskCompletedEvent ce = we.completedEvent;
+    private void handleTaskResult(WfRunEvent we) {
+        TaskResultEvent ce = we.taskResult;
         ThreadRunState thread = threadRuns.get(ce.threadRunNumber);
         thread.processCompletedEvent(we);
         thread.advance();

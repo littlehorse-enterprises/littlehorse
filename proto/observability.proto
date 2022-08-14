@@ -37,12 +37,12 @@ message TaskStartOePb {
     string node_name = 4;
 }
 
-message TaskCompleteOePb {
+message TaskResultOePb {
     int32 thread_run_number = 1;
     int32 task_run_number = 2;
     int32 task_run_position = 3;
 
-    bool success = 4;
+    TaskResultCodePb result_code = 4;
     optional bytes output = 5;
     optional bytes log_output = 6;
 
@@ -66,7 +66,7 @@ message ObservabilityEventPb {
         ThreadStartOePb thread_start = 4;
         TaskScheduledOePb task_schedule = 5;
         TaskStartOePb task_start = 6;
-        TaskCompleteOePb task_complete = 7;
+        TaskResultOePb task_result = 7;
         ThreadStatusChangeOePb thread_status = 8;
     }
 }

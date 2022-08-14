@@ -103,7 +103,7 @@ public final class Server {
       "_spec_name\030\005 \001(\t\022\021\n\tnum_steps\030\006 \001(\005\022.\n\ns" +
       "tart_time\030\007 \001(\0132\032.google.protobuf.Timest" +
       "amp\0221\n\010end_time\030\010 \001(\0132\032.google.protobuf." +
-      "TimestampH\000\210\001\001B\013\n\t_end_time\"\356\003\n\tTaskRunP" +
+      "TimestampH\000\210\001\001B\013\n\t_end_time\"\264\004\n\tTaskRunP" +
       "b\022\021\n\twf_run_id\030\001 \001(\t\022\031\n\021thread_run_numbe" +
       "r\030\002 \001(\005\022\020\n\010position\030\003 \001(\005\022\016\n\006number\030\004 \001(" +
       "\005\022\026\n\016attempt_number\030\005 \001(\005\022$\n\006status\030\006 \001(" +
@@ -114,41 +114,43 @@ public final class Server {
       "imestampH\002\210\001\001\0221\n\010end_time\030\013 \001(\0132\032.google" +
       ".protobuf.TimestampH\003\210\001\001\022\022\n\nwf_spec_id\030\014" +
       " \001(\t\022\030\n\020thread_spec_name\030\r \001(\t\022\021\n\tnode_n" +
-      "ame\030\016 \001(\t\022\023\n\013task_def_id\030\017 \001(\tB\t\n\007_outpu" +
-      "tB\r\n\013_log_outputB\r\n\013_start_timeB\013\n\t_end_" +
-      "time\"\276\001\n\014LHResponsePb\022(\n\004code\030\001 \001(\0162\032.lh" +
-      "_proto.LHResponseCodePb\022\017\n\002id\030\002 \001(\tH\000\210\001\001" +
-      "\022\024\n\007message\030\003 \001(\tH\001\210\001\001\022\023\n\006result\030\004 \001(\014H\002" +
-      "\210\001\001\022\031\n\014result_class\030\005 \001(\tH\003\210\001\001B\005\n\003_idB\n\n" +
-      "\010_messageB\t\n\007_resultB\017\n\r_result_class\"\203\001" +
-      "\n\021POSTableRequestPb\022%\n\004type\030\001 \001(\0162\027.lh_p" +
-      "roto.RequestTypePb\022\021\n\tstore_key\030\002 \001(\t\022\022\n" +
-      "\nrequest_id\030\003 \001(\t\022\024\n\007payload\030\004 \001(\014H\000\210\001\001B" +
-      "\n\n\010_payload\"<\n\017RangeResponsePb\022\013\n\003ids\030\001 " +
-      "\003(\t\022\022\n\005token\030\002 \001(\tH\000\210\001\001B\010\n\006_token\"\'\n\013Att" +
-      "ributePb\022\013\n\003key\030\001 \001(\t\022\013\n\003val\030\002 \001(\t\"\220\001\n\nI" +
-      "ndexKeyPb\022)\n\nattributes\030\001 \003(\0132\025.lh_proto" +
-      ".AttributePb\022*\n\004type\030\002 \001(\0162\034.lh_proto.GE" +
-      "TableClassEnumPb\022+\n\007created\030\003 \001(\0132\032.goog" +
-      "le.protobuf.Timestamp\"!\n\014IndexValuePb\022\021\n" +
-      "\tstore_key\030\001 \003(\t\"D\n\014IndexEntryPb\022!\n\003key\030" +
-      "\001 \001(\0132\024.lh_proto.IndexKeyPb\022\021\n\tstore_key" +
-      "\030\002 \001(\t\"f\n\022IndexEntryActionPb\022%\n\005entry\030\001 " +
-      "\001(\0132\026.lh_proto.IndexEntryPb\022)\n\006action\030\002 " +
-      "\001(\0162\031.lh_proto.IndexActionEnum\"O\n\016GETabl" +
-      "eEntryPb\022\r\n\005entry\030\001 \001(\014\022\021\n\tpartition\030\002 \001" +
-      "(\005\022\033\n\023last_updated_offset\030\003 \001(\003\"9\n\016Index" +
-      "EntriesPb\022\'\n\007entries\030\001 \003(\0132\026.lh_proto.In" +
-      "dexEntryPb*r\n\020LHResponseCodePb\022\006\n\002OK\020\000\022\024" +
-      "\n\020CONNECTION_ERROR\020\001\022\023\n\017NOT_FOUND_ERROR\020" +
-      "\002\022\025\n\021BAD_REQUEST_ERROR\020\003\022\024\n\020VALIDATION_E" +
-      "RROR\020\004*%\n\rRequestTypePb\022\010\n\004POST\020\000\022\n\n\006DEL" +
-      "ETE\020\001*Y\n\022GETableClassEnumPb\022\014\n\010TASK_DEF\020" +
-      "\000\022\013\n\007WF_SPEC\020\001\022\n\n\006WF_RUN\020\002\022\016\n\nTHREAD_RUN" +
-      "\020\003\022\014\n\010TASK_RUN\020\004*=\n\017IndexActionEnum\022\024\n\020C" +
-      "REATE_IDX_ENTRY\020\000\022\024\n\020DELETE_IDX_ENTRY\020\001B" +
-      "/\n\"io.littlehorse.common.proto.serverP\001Z" +
-      "\007.;modelb\006proto3"
+      "ame\030\016 \001(\t\022\023\n\013task_def_id\030\017 \001(\t\0224\n\013result" +
+      "_code\030\020 \001(\0162\032.lh_proto.TaskResultCodePbH" +
+      "\004\210\001\001B\t\n\007_outputB\r\n\013_log_outputB\r\n\013_start" +
+      "_timeB\013\n\t_end_timeB\016\n\014_result_code\"\276\001\n\014L" +
+      "HResponsePb\022(\n\004code\030\001 \001(\0162\032.lh_proto.LHR" +
+      "esponseCodePb\022\017\n\002id\030\002 \001(\tH\000\210\001\001\022\024\n\007messag" +
+      "e\030\003 \001(\tH\001\210\001\001\022\023\n\006result\030\004 \001(\014H\002\210\001\001\022\031\n\014res" +
+      "ult_class\030\005 \001(\tH\003\210\001\001B\005\n\003_idB\n\n\010_messageB" +
+      "\t\n\007_resultB\017\n\r_result_class\"\203\001\n\021POSTable" +
+      "RequestPb\022%\n\004type\030\001 \001(\0162\027.lh_proto.Reque" +
+      "stTypePb\022\021\n\tstore_key\030\002 \001(\t\022\022\n\nrequest_i" +
+      "d\030\003 \001(\t\022\024\n\007payload\030\004 \001(\014H\000\210\001\001B\n\n\010_payloa" +
+      "d\"<\n\017RangeResponsePb\022\013\n\003ids\030\001 \003(\t\022\022\n\005tok" +
+      "en\030\002 \001(\tH\000\210\001\001B\010\n\006_token\"\'\n\013AttributePb\022\013" +
+      "\n\003key\030\001 \001(\t\022\013\n\003val\030\002 \001(\t\"\220\001\n\nIndexKeyPb\022" +
+      ")\n\nattributes\030\001 \003(\0132\025.lh_proto.Attribute" +
+      "Pb\022*\n\004type\030\002 \001(\0162\034.lh_proto.GETableClass" +
+      "EnumPb\022+\n\007created\030\003 \001(\0132\032.google.protobu" +
+      "f.Timestamp\"!\n\014IndexValuePb\022\021\n\tstore_key" +
+      "\030\001 \003(\t\"D\n\014IndexEntryPb\022!\n\003key\030\001 \001(\0132\024.lh" +
+      "_proto.IndexKeyPb\022\021\n\tstore_key\030\002 \001(\t\"f\n\022" +
+      "IndexEntryActionPb\022%\n\005entry\030\001 \001(\0132\026.lh_p" +
+      "roto.IndexEntryPb\022)\n\006action\030\002 \001(\0162\031.lh_p" +
+      "roto.IndexActionEnum\"O\n\016GETableEntryPb\022\r" +
+      "\n\005entry\030\001 \001(\014\022\021\n\tpartition\030\002 \001(\005\022\033\n\023last" +
+      "_updated_offset\030\003 \001(\003\"9\n\016IndexEntriesPb\022" +
+      "\'\n\007entries\030\001 \003(\0132\026.lh_proto.IndexEntryPb" +
+      "*r\n\020LHResponseCodePb\022\006\n\002OK\020\000\022\024\n\020CONNECTI" +
+      "ON_ERROR\020\001\022\023\n\017NOT_FOUND_ERROR\020\002\022\025\n\021BAD_R" +
+      "EQUEST_ERROR\020\003\022\024\n\020VALIDATION_ERROR\020\004*%\n\r" +
+      "RequestTypePb\022\010\n\004POST\020\000\022\n\n\006DELETE\020\001*Y\n\022G" +
+      "ETableClassEnumPb\022\014\n\010TASK_DEF\020\000\022\013\n\007WF_SP" +
+      "EC\020\001\022\n\n\006WF_RUN\020\002\022\016\n\nTHREAD_RUN\020\003\022\014\n\010TASK" +
+      "_RUN\020\004*=\n\017IndexActionEnum\022\024\n\020CREATE_IDX_" +
+      "ENTRY\020\000\022\024\n\020DELETE_IDX_ENTRY\020\001B/\n\"io.litt" +
+      "lehorse.common.proto.serverP\001Z\007.;modelb\006" +
+      "proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -173,7 +175,7 @@ public final class Server {
     internal_static_lh_proto_TaskRunPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_TaskRunPb_descriptor,
-        new java.lang.String[] { "WfRunId", "ThreadRunNumber", "Position", "Number", "AttemptNumber", "Status", "Output", "LogOutput", "ScheduleTime", "StartTime", "EndTime", "WfSpecId", "ThreadSpecName", "NodeName", "TaskDefId", "Output", "LogOutput", "StartTime", "EndTime", });
+        new java.lang.String[] { "WfRunId", "ThreadRunNumber", "Position", "Number", "AttemptNumber", "Status", "Output", "LogOutput", "ScheduleTime", "StartTime", "EndTime", "WfSpecId", "ThreadSpecName", "NodeName", "TaskDefId", "ResultCode", "Output", "LogOutput", "StartTime", "EndTime", "ResultCode", });
     internal_static_lh_proto_LHResponsePb_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_lh_proto_LHResponsePb_fieldAccessorTable = new

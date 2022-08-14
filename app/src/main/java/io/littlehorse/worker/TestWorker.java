@@ -12,7 +12,7 @@ import org.apache.kafka.common.utils.Bytes;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.event.TaskCompletedEvent;
+import io.littlehorse.common.model.event.TaskResultEvent;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.TaskStartedEvent;
 import io.littlehorse.common.model.event.WfRunEvent;
@@ -90,7 +90,7 @@ public class TestWorker {
     }
 
     private void herdCats(TaskScheduleRequest tsr) {
-        TaskCompletedEvent ce = new TaskCompletedEvent();
+        TaskResultEvent ce = new TaskResultEvent();
         ce.taskRunNumber = tsr.taskRunNumber;
         ce.taskRunPosition = tsr.taskRunPosition;
         ce.threadRunNumber = tsr.threadRunNumber;
@@ -105,7 +105,7 @@ public class TestWorker {
         event.wfRunId = tsr.wfRunId;
         event.wfSpecId = tsr.wfSpecId;
         event.time = ce.time;
-        event.completedEvent = ce;
+        event.taskResult = ce;
         event.type = EventCase.COMPLETED_EVENT;
 
         LHUtil.log("Completing " + tsr.wfRunId);

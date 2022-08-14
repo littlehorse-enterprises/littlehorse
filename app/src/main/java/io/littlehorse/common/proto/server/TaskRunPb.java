@@ -24,6 +24,7 @@ private static final long serialVersionUID = 0L;
     threadSpecName_ = "";
     nodeName_ = "";
     taskDefId_ = "";
+    resultCode_ = 0;
   }
 
   @java.lang.Override
@@ -160,6 +161,12 @@ private static final long serialVersionUID = 0L;
             java.lang.String s = input.readStringRequireUtf8();
 
             taskDefId_ = s;
+            break;
+          }
+          case 128: {
+            int rawValue = input.readEnum();
+            bitField0_ |= 0x00000010;
+            resultCode_ = rawValue;
             break;
           }
           default: {
@@ -564,6 +571,32 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int RESULT_CODE_FIELD_NUMBER = 16;
+  private int resultCode_;
+  /**
+   * <code>.lh_proto.TaskResultCodePb result_code = 16;</code>
+   * @return Whether the resultCode field is set.
+   */
+  @java.lang.Override public boolean hasResultCode() {
+    return ((bitField0_ & 0x00000010) != 0);
+  }
+  /**
+   * <code>.lh_proto.TaskResultCodePb result_code = 16;</code>
+   * @return The enum numeric value on the wire for resultCode.
+   */
+  @java.lang.Override public int getResultCodeValue() {
+    return resultCode_;
+  }
+  /**
+   * <code>.lh_proto.TaskResultCodePb result_code = 16;</code>
+   * @return The resultCode.
+   */
+  @java.lang.Override public io.littlehorse.common.proto.TaskResultCodePb getResultCode() {
+    @SuppressWarnings("deprecation")
+    io.littlehorse.common.proto.TaskResultCodePb result = io.littlehorse.common.proto.TaskResultCodePb.valueOf(resultCode_);
+    return result == null ? io.littlehorse.common.proto.TaskResultCodePb.UNRECOGNIZED : result;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -622,6 +655,9 @@ private static final long serialVersionUID = 0L;
     }
     if (!getTaskDefIdBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 15, taskDefId_);
+    }
+    if (((bitField0_ & 0x00000010) != 0)) {
+      output.writeEnum(16, resultCode_);
     }
     unknownFields.writeTo(output);
   }
@@ -687,6 +723,10 @@ private static final long serialVersionUID = 0L;
     if (!getTaskDefIdBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(15, taskDefId_);
     }
+    if (((bitField0_ & 0x00000010) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeEnumSize(16, resultCode_);
+    }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
@@ -746,6 +786,10 @@ private static final long serialVersionUID = 0L;
         .equals(other.getNodeName())) return false;
     if (!getTaskDefId()
         .equals(other.getTaskDefId())) return false;
+    if (hasResultCode() != other.hasResultCode()) return false;
+    if (hasResultCode()) {
+      if (resultCode_ != other.resultCode_) return false;
+    }
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -797,6 +841,10 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getNodeName().hashCode();
     hash = (37 * hash) + TASK_DEF_ID_FIELD_NUMBER;
     hash = (53 * hash) + getTaskDefId().hashCode();
+    if (hasResultCode()) {
+      hash = (37 * hash) + RESULT_CODE_FIELD_NUMBER;
+      hash = (53 * hash) + resultCode_;
+    }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -974,6 +1022,8 @@ private static final long serialVersionUID = 0L;
 
       taskDefId_ = "";
 
+      resultCode_ = 0;
+      bitField0_ = (bitField0_ & ~0x00000010);
       return this;
     }
 
@@ -1041,6 +1091,10 @@ private static final long serialVersionUID = 0L;
       result.threadSpecName_ = threadSpecName_;
       result.nodeName_ = nodeName_;
       result.taskDefId_ = taskDefId_;
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        to_bitField0_ |= 0x00000010;
+      }
+      result.resultCode_ = resultCode_;
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -1139,6 +1193,9 @@ private static final long serialVersionUID = 0L;
       if (!other.getTaskDefId().isEmpty()) {
         taskDefId_ = other.taskDefId_;
         onChanged();
+      }
+      if (other.hasResultCode()) {
+        setResultCode(other.getResultCode());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -2167,6 +2224,67 @@ private static final long serialVersionUID = 0L;
   checkByteStringIsUtf8(value);
       
       taskDefId_ = value;
+      onChanged();
+      return this;
+    }
+
+    private int resultCode_ = 0;
+    /**
+     * <code>.lh_proto.TaskResultCodePb result_code = 16;</code>
+     * @return Whether the resultCode field is set.
+     */
+    @java.lang.Override public boolean hasResultCode() {
+      return ((bitField0_ & 0x00000010) != 0);
+    }
+    /**
+     * <code>.lh_proto.TaskResultCodePb result_code = 16;</code>
+     * @return The enum numeric value on the wire for resultCode.
+     */
+    @java.lang.Override public int getResultCodeValue() {
+      return resultCode_;
+    }
+    /**
+     * <code>.lh_proto.TaskResultCodePb result_code = 16;</code>
+     * @param value The enum numeric value on the wire for resultCode to set.
+     * @return This builder for chaining.
+     */
+    public Builder setResultCodeValue(int value) {
+      bitField0_ |= 0x00000010;
+      resultCode_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.lh_proto.TaskResultCodePb result_code = 16;</code>
+     * @return The resultCode.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.TaskResultCodePb getResultCode() {
+      @SuppressWarnings("deprecation")
+      io.littlehorse.common.proto.TaskResultCodePb result = io.littlehorse.common.proto.TaskResultCodePb.valueOf(resultCode_);
+      return result == null ? io.littlehorse.common.proto.TaskResultCodePb.UNRECOGNIZED : result;
+    }
+    /**
+     * <code>.lh_proto.TaskResultCodePb result_code = 16;</code>
+     * @param value The resultCode to set.
+     * @return This builder for chaining.
+     */
+    public Builder setResultCode(io.littlehorse.common.proto.TaskResultCodePb value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      bitField0_ |= 0x00000010;
+      resultCode_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.lh_proto.TaskResultCodePb result_code = 16;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearResultCode() {
+      bitField0_ = (bitField0_ & ~0x00000010);
+      resultCode_ = 0;
       onChanged();
       return this;
     }

@@ -26,7 +26,8 @@ message VariableValuePb {
     }
 }
 
-enum TaskFailureReasonPb {
-    TASK_FAILURE = 0;
+enum TaskResultCodePb {
+    SUCCESS = 0;
     TIMEOUT = 1;
+    TASK_FAILURE = 2;
 }

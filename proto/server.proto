@@ -55,6 +55,8 @@ message TaskRunPb {
     string thread_spec_name = 13;
     string node_name = 14;
     string task_def_id = 15;
+
+    optional TaskResultCodePb result_code = 16;
 }
 
 

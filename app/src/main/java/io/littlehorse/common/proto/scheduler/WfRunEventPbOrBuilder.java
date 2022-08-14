@@ -77,34 +77,19 @@ public interface WfRunEventPbOrBuilder extends
   io.littlehorse.common.proto.scheduler.TaskStartedEventPbOrBuilder getStartedEventOrBuilder();
 
   /**
-   * <code>.lh_proto.TaskCompletedEventPb completed_event = 6;</code>
-   * @return Whether the completedEvent field is set.
+   * <code>.lh_proto.TaskResultEventPb task_result = 6;</code>
+   * @return Whether the taskResult field is set.
    */
-  boolean hasCompletedEvent();
+  boolean hasTaskResult();
   /**
-   * <code>.lh_proto.TaskCompletedEventPb completed_event = 6;</code>
-   * @return The completedEvent.
+   * <code>.lh_proto.TaskResultEventPb task_result = 6;</code>
+   * @return The taskResult.
    */
-  io.littlehorse.common.proto.scheduler.TaskCompletedEventPb getCompletedEvent();
+  io.littlehorse.common.proto.scheduler.TaskResultEventPb getTaskResult();
   /**
-   * <code>.lh_proto.TaskCompletedEventPb completed_event = 6;</code>
+   * <code>.lh_proto.TaskResultEventPb task_result = 6;</code>
    */
-  io.littlehorse.common.proto.scheduler.TaskCompletedEventPbOrBuilder getCompletedEventOrBuilder();
-
-  /**
-   * <code>.lh_proto.SchedulerTimerPb timer_event = 7;</code>
-   * @return Whether the timerEvent field is set.
-   */
-  boolean hasTimerEvent();
-  /**
-   * <code>.lh_proto.SchedulerTimerPb timer_event = 7;</code>
-   * @return The timerEvent.
-   */
-  io.littlehorse.common.proto.scheduler.SchedulerTimerPb getTimerEvent();
-  /**
-   * <code>.lh_proto.SchedulerTimerPb timer_event = 7;</code>
-   */
-  io.littlehorse.common.proto.scheduler.SchedulerTimerPbOrBuilder getTimerEventOrBuilder();
+  io.littlehorse.common.proto.scheduler.TaskResultEventPbOrBuilder getTaskResultOrBuilder();
 
   public io.littlehorse.common.proto.scheduler.WfRunEventPb.EventCase getEventCase();
 }

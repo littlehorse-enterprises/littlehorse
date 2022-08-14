@@ -18,7 +18,7 @@ public class ObservabilityEvent extends LHSerializable<ObservabilityEventPb> {
     public ThreadStartOe threadStart;
     public TaskScheduledOe taskSchedule;
     public TaskStartOe taskStart;
-    public TaskCompleteOe taskComplete;
+    public TaskResultOe taskResult;
     public ThreadStatusChangeOe threadStatus;
 
     public ObservabilityEventPb.Builder toProto() {
@@ -45,8 +45,8 @@ public class ObservabilityEvent extends LHSerializable<ObservabilityEventPb> {
             out.setTaskStart(taskStart.toProto());
             break;
 
-        case TASK_COMPLETE:
-            out.setTaskComplete(taskComplete.toProto());
+        case TASK_RESULT:
+            out.setTaskResult(taskResult.toProto());
             break;
 
         case THREAD_STATUS:
@@ -88,8 +88,8 @@ public class ObservabilityEvent extends LHSerializable<ObservabilityEventPb> {
             taskStart = TaskStartOe.fromProto(p.getTaskStart());
             break;
 
-        case TASK_COMPLETE:
-            taskComplete = TaskCompleteOe.fromProto(p.getTaskComplete());
+        case TASK_RESULT:
+            taskResult = TaskResultOe.fromProto(p.getTaskResult());
             break;
 
         case THREAD_STATUS:
@@ -128,10 +128,10 @@ public class ObservabilityEvent extends LHSerializable<ObservabilityEventPb> {
         taskStart = evt;
     }
 
-    public ObservabilityEvent(TaskCompleteOe evt, Date time) {
+    public ObservabilityEvent(TaskResultOe evt, Date time) {
         this.time = time;
-        type=  EventCase.TASK_COMPLETE;
-        taskComplete = evt;
+        type = EventCase.TASK_RESULT;
+        taskResult = evt;
     }
 
     public ObservabilityEvent(ThreadStatusChangeOe evt, Date time) {
