@@ -1,13 +1,19 @@
 package io.littlehorse.worker;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.OffsetAndMetadata;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.utils.Bytes;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHSerdeError;
@@ -27,21 +33,23 @@ import io.littlehorse.common.util.LHUtil;
 public class TestWorker {
     private KafkaConsumer<String, Bytes> cons;
     private LHProducer prod;
+    private LHProducer txnProd;
     private ExecutorService threadPool;
     private LHConfig config;
 
+    private List<TaskScheduleRequest> acknowledgedTasks;
+    private Map<TopicPartition, OffsetAndMetadata> offsetMap;
+
     public TestWorker(LHConfig config) {
         this.prod = config.getProducer();
+        this.txnProd = config.getTxnProducer();
         this.cons = config.getKafkaConsumer(Arrays.asList(
             System.getenv().getOrDefault("LHORSE_TASK_DEF_ID", "task1")
         ));
         this.config = config;
-        // this.cons.subscribe(Arrays.asList(
-        //     "task1", "task2", "task3", "task4", "task5", "task6", "task7",
-        //     "task8", "task9", "task10"
-        // ));
-        // this.cons.subscribe(Arrays.asList("task1"));
         this.threadPool = Executors.newFixedThreadPool(32);
+        acknowledgedTasks = new ArrayList<>();
+        offsetMap = new HashMap<>();
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             this.prod.close();
@@ -54,12 +62,23 @@ public class TestWorker {
         while(true) {
             ConsumerRecords<String, Bytes> records = cons.poll(
                 Duration.ofMillis(50));
-            records.forEach(this::processRequest);
+
+            acknowledgedTasks.clear();
+            offsetMap.clear();
+            txnProd.beginTransaction();
+            try {
+                records.forEach(this::acknowledgeRequest);
+                txnProd.sendOffsetsToTransaction(offsetMap, cons.groupMetadata());
+                txnProd.commitTransaction();
+            } catch(Exception exn) {
+                txnProd.abortTransaction();
+            }
+
+            enqueueAcknowledgedTasks();
         }
     }
 
-    private void processRequest(ConsumerRecord<String, Bytes> r) {
-        LHUtil.log("Processing for " + r.key() + " part " + r.partition());
+    private void acknowledgeRequest(ConsumerRecord<String, Bytes> r) {
         TaskScheduleRequest tsr;
         try {
             tsr = LHSerializable.fromBytes(
@@ -85,12 +104,21 @@ public class TestWorker {
         event.startedEvent = se;
         event.type = EventCase.STARTED_EVENT;
 
-        prod.send(tsr.wfRunId, event, tsr.replyKafkaTopic);
+        txnProd.send(tsr.wfRunId, event, tsr.replyKafkaTopic);
+        acknowledgedTasks.add(tsr);
 
-        this.threadPool.submit(() -> { this.herdCats(tsr);});
+        TopicPartition partition = new TopicPartition(r.topic(), r.partition());
+        OffsetAndMetadata offset = new OffsetAndMetadata(r.offset() + 1);
+        offsetMap.put(partition, offset);
     }
 
-    private void herdCats(TaskScheduleRequest tsr) {
+    private void enqueueAcknowledgedTasks() {
+        for (TaskScheduleRequest tsr: acknowledgedTasks) {
+            this.threadPool.submit(() -> {this.executeTask(tsr);});
+        }
+    }
+
+    private void executeTask(TaskScheduleRequest tsr) {
         TaskResultEvent ce = new TaskResultEvent();
         ce.taskRunNumber = tsr.taskRunNumber;
         ce.taskRunPosition = tsr.taskRunPosition;
@@ -99,8 +127,7 @@ public class TestWorker {
 
         ce.resultCode = TaskResultCodePb.SUCCESS;
         ce.stderr = null;
-        ce.stdout = ("Completed task " + tsr.taskDefName + " " + tsr.wfRunId)
-            .getBytes();
+        ce.stdout = ("Completed task " + tsr.taskDefName + " " + tsr.wfRunId).getBytes();
 
         WfRunEvent event = new WfRunEvent();
         event.wfRunId = tsr.wfRunId;
@@ -109,8 +136,9 @@ public class TestWorker {
         event.taskResult = ce;
         event.type = EventCase.TASK_RESULT;
 
-        LHUtil.log("Completing " + tsr.wfRunId);
+        LHUtil.log("Starting " + tsr.wfRunId);
         try {Thread.sleep(5000);} catch(Exception exn) {}
+        LHUtil.log("Completing " + tsr.wfRunId);
         prod.send(tsr.wfRunId, event, tsr.replyKafkaTopic);
     }
 

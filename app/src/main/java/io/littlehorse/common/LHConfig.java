@@ -167,7 +167,11 @@ public class LHConfig {
         Properties conf = getKafkaProducerConfig();
         conf.put(
             ProducerConfig.TRANSACTIONAL_ID_CONFIG,
-            getKafkaGroupId() + "__" + getKafkaInstanceId()
+            getKafkaGroupId() + "__" + getKafkaInstanceId() + "__transactional"
+        );
+        conf.put(
+            ProducerConfig.CLIENT_ID_CONFIG,
+            getKafkaGroupId() + "-" + getKafkaInstanceId() + "__transactional"
         );
         return conf;
     }
@@ -191,9 +195,7 @@ public class LHConfig {
             ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
             org.apache.kafka.common.serialization.BytesDeserializer.class
         );
-
-        // Uncomment when ready for production.
-        // conf.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
+        conf.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
 
         kafkaConsumer = new KafkaConsumer<>(conf);
         kafkaConsumer.subscribe(topics);
