@@ -86,7 +86,6 @@ message WfRunEventPb {
 
 message SchedulerTimerPb {
     google.protobuf.Timestamp maturation_time = 1;
-    oneof timer_message {
-        TaskResultEventPb task_result = 2; // currently used for TimeOuts
-    }
+    string wf_run_id = 2;
+    WfRunEventPb event = 3;
 }

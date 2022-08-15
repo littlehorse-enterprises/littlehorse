@@ -1,12 +1,17 @@
 package io.littlehorse.scheduler;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.kafka.streams.KeyValue;
+import org.apache.kafka.streams.processor.Cancellable;
+import org.apache.kafka.streams.processor.PunctuationType;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
+import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.KeyValueStore;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
@@ -29,6 +34,7 @@ public class SchedulerProcessor
     private Map<String, WfSpec> wfSpecCache;
     private ProcessorContext<String, SchedulerOutput> context;
     private LHDatabaseClient client;
+    private Cancellable punctuator;
 
     public SchedulerProcessor(LHConfig config) {
         this.client = config.getDbClient();
@@ -40,14 +46,29 @@ public class SchedulerProcessor
         timerStore = context.getStateStore(LHConstants.SCHED_TIMER_STORE_NAME);
         this.context = context;
         this.wfSpecCache = new HashMap<>();
+
+        punctuator = context.schedule(
+            LHConstants.PUNCTUATOR_INERVAL,
+            PunctuationType.WALL_CLOCK_TIME,
+            this::clearTimers
+        );
     }
 
     @Override
     public void process(final Record<String, WfRunEvent> record) {
+        safeProcess(record.key(), record.timestamp(), record.value());
+    }
+
+    @Override
+    public void close() {
+        punctuator.cancel();
+    }
+
+    private void safeProcess(String key, long timestamp, WfRunEvent value) {
         try {
-            processHelper(record.key(), record.timestamp(), record.value());
+            processHelper(key, timestamp, value);
         } catch(Exception exn) {
-            String wfRunId = record.key();
+            String wfRunId = key;
             WfRunState wfRun = wfRunStore.get(wfRunId);
             if (wfRun == null) {
                 exn.printStackTrace();
@@ -77,17 +98,18 @@ public class SchedulerProcessor
 
         List<TaskScheduleRequest> tasksToSchedule = new ArrayList<>();
         List<SchedulerTimer> timersToSchedule = new ArrayList<>();
+        List<String> timersToClear = new ArrayList<>();
 
         if (e.type == EventCase.RUN_REQUEST) {
             if (wfRun != null) {
                 LHUtil.log("Got a past run for id " + key + ", skipping");
                 return;
             }
-            wfRun = spec.startNewRun(e, tasksToSchedule, timersToSchedule);
+            wfRun = spec.startNewRun(e, tasksToSchedule, timersToSchedule, timersToClear);
 
         } else {
             wfRun.wfSpec = spec;
-            wfRun.processEvent(e, tasksToSchedule, timersToSchedule);
+            wfRun.processEvent(e, tasksToSchedule, timersToSchedule, timersToClear);
         }
 
         // Schedule tasks
@@ -100,8 +122,12 @@ public class SchedulerProcessor
         }
 
         for (SchedulerTimer timer: timersToSchedule) {
-            String timerStoreKey = LHUtil.toLhDbFormat(timer.maturationTime);
+            String timerStoreKey = timer.getStoreKey();
             timerStore.put(timerStoreKey, timer);
+        }
+
+        for (String timerKey: timersToClear) {
+            timerStore.delete(timerKey);
         }
 
         // Forward the observability events
@@ -111,6 +137,20 @@ public class SchedulerProcessor
 
         // Save the WfRunState
         wfRunStore.put(key, wfRun);
+    }
+
+    public void clearTimers(long timestamp) {
+        // First timer
+        String start = "00000000";
+        String end = LHUtil.toLhDbFormat(new Date(timestamp));
+        try (KeyValueIterator<String, SchedulerTimer> iter = timerStore.range(start, end)) {
+            while (iter.hasNext()) {
+                KeyValue<String, SchedulerTimer> entry = iter.next();
+                SchedulerTimer timer = entry.value;
+                safeProcess(timer.wfRunId, timestamp, timer.event);
+                timerStore.delete(entry.key);
+            }
+        }
     }
 
     private WfSpec getWfSpec(String id) {

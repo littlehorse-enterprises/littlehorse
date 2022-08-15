@@ -16,10 +16,12 @@ import io.littlehorse.common.model.observability.TaskScheduledOe;
 import io.littlehorse.common.model.observability.TaskStartOe;
 import io.littlehorse.common.model.observability.ThreadStatusChangeOe;
 import io.littlehorse.common.proto.LHStatusPb;
+import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.proto.wfspec.NodePb.NodeCase;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.common.proto.scheduler.ThreadRunStatePb;
 import io.littlehorse.common.proto.scheduler.ThreadRunStatePbOrBuilder;
+import io.littlehorse.common.proto.scheduler.WfRunEventPb.EventCase;
 
 
 public class ThreadRunState {
@@ -236,7 +238,28 @@ public class ThreadRunState {
             return;
         }
         currentNodeRun.status = LHStatusPb.RUNNING;
-    }
+
+        // set timer for TimeOut
+        WfRunEvent timerEvt = new WfRunEvent();
+        timerEvt.wfRunId = wfRun.id;
+        timerEvt.wfSpecId = wfRun.wfSpecId;
+        Node node = getCurrentNode();
+        SchedulerTimer timer = new SchedulerTimer();
+        timer.wfRunId = wfRun.id;
+
+        timer.event = timerEvt;
+        timerEvt.type = EventCase.TASK_RESULT;
+        timerEvt.taskResult = new TaskResultEvent();
+        timerEvt.taskResult.resultCode = TaskResultCodePb.TIMEOUT;
+        timerEvt.taskResult.taskRunNumber = currentNodeRun.number;
+        timerEvt.taskResult.taskRunPosition = currentNodeRun.position;
+        timerEvt.taskResult.threadRunNumber = threadRunNumber;
+        timerEvt.time = timer.maturationTime = timerEvt.taskResult.time
+            = new Date(new Date().getTime() + (1000 * node.taskNode.timeoutSeconds));
+
+        wfRun.timersToSchedule.add(timer);
+        currentNodeRun.timerKeys.add(timer.getStoreKey());
+}
 
     public void processCompletedEvent(WfRunEvent we) {
         wfRun.oEvents.add(new ObservabilityEvent(
@@ -259,6 +282,10 @@ public class ThreadRunState {
             // Out-of-order event due to race conditions between task worker
             // transactional producer and regular producer
             return;
+        }
+
+        for (String timerKey: currentNodeRun.timerKeys) {
+            wfRun.timersToClear.add(timerKey);
         }
 
         switch (ce.resultCode) {

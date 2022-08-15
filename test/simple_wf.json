@@ -13,7 +13,8 @@
         },
         "t1": {
           "task": {
-            "taskDefName": "task1"
+            "taskDefName": "task1",
+            "retries": 3
           },
           "outgoingEdges": [{
             "sinkNodeName": "t2"
@@ -21,7 +22,8 @@
         },
         "t2": {
           "task": {
-            "taskDefName": "task1"
+            "taskDefName": "task1",
+            "retries": 3
           },
           "outgoingEdges": [{
             "sinkNodeName": "t3"
@@ -29,7 +31,8 @@
         },
         "t3": {
           "task": {
-            "taskDefName": "task1"
+            "taskDefName": "task1",
+            "retries": 3
           },
           "outgoingEdges": [{
             "sinkNodeName": "exit"

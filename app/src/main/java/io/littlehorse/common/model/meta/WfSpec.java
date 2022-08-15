@@ -153,7 +153,8 @@ public class WfSpec extends POSTable<WfSpecPbOrBuilder> {
     public WfRunState startNewRun(
         WfRunEvent e,
         List<TaskScheduleRequest> tasksToSchedule,
-        List<SchedulerTimer> timersToSchedule
+        List<SchedulerTimer> timersToSchedule,
+        List<String> timersToClear
     ) {
         WfRunState out = new WfRunState();
         out.id = e.runRequest.wfRunId;
@@ -162,6 +163,7 @@ public class WfSpec extends POSTable<WfSpecPbOrBuilder> {
         out.wfSpec = this;
         out.tasksToSchedule = tasksToSchedule;
         out.timersToSchedule = timersToSchedule;
+        out.timersToClear = timersToClear;
         out.wfSpecId = id;
         out.wfSpecName = name;
         out.startTime = e.time;

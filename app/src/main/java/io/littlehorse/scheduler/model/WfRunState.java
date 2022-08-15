@@ -95,6 +95,7 @@ public class WfRunState extends LHSerializable<WfRunStatePb> {
     @JsonIgnore public List<TaskScheduleRequest> tasksToSchedule;
     @JsonIgnore public ObservabilityEvents oEvents;
     @JsonIgnore public List<SchedulerTimer> timersToSchedule;
+    @JsonIgnore public List<String> timersToClear;
 
     public void startThread(String threadName, Date start, Integer parentThreadId) {
         ThreadSpec tspec = wfSpec.threadSpecs.get(threadName);
@@ -120,10 +121,12 @@ public class WfRunState extends LHSerializable<WfRunStatePb> {
     public void processEvent(
         WfRunEvent e,
         List<TaskScheduleRequest> tasksToSchedule,
-        List<SchedulerTimer> timersToSchedule
+        List<SchedulerTimer> timersToSchedule,
+        List<String> timersToClear
     ) {
         this.timersToSchedule = timersToSchedule;
         this.tasksToSchedule = tasksToSchedule;
+        this.timersToClear = timersToClear;
 
         switch(e.type) {
         case RUN_REQUEST:

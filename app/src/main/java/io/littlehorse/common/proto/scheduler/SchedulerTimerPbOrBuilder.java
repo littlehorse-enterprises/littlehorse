@@ -23,31 +23,29 @@ public interface SchedulerTimerPbOrBuilder extends
   com.google.protobuf.TimestampOrBuilder getMaturationTimeOrBuilder();
 
   /**
-   * <pre>
-   * currently used for TimeOuts
-   * </pre>
-   *
-   * <code>.lh_proto.TaskResultEventPb task_result = 2;</code>
-   * @return Whether the taskResult field is set.
+   * <code>string wf_run_id = 2;</code>
+   * @return The wfRunId.
    */
-  boolean hasTaskResult();
+  java.lang.String getWfRunId();
   /**
-   * <pre>
-   * currently used for TimeOuts
-   * </pre>
-   *
-   * <code>.lh_proto.TaskResultEventPb task_result = 2;</code>
-   * @return The taskResult.
+   * <code>string wf_run_id = 2;</code>
+   * @return The bytes for wfRunId.
    */
-  io.littlehorse.common.proto.scheduler.TaskResultEventPb getTaskResult();
-  /**
-   * <pre>
-   * currently used for TimeOuts
-   * </pre>
-   *
-   * <code>.lh_proto.TaskResultEventPb task_result = 2;</code>
-   */
-  io.littlehorse.common.proto.scheduler.TaskResultEventPbOrBuilder getTaskResultOrBuilder();
+  com.google.protobuf.ByteString
+      getWfRunIdBytes();
 
-  public io.littlehorse.common.proto.scheduler.SchedulerTimerPb.TimerMessageCase getTimerMessageCase();
+  /**
+   * <code>.lh_proto.WfRunEventPb event = 3;</code>
+   * @return Whether the event field is set.
+   */
+  boolean hasEvent();
+  /**
+   * <code>.lh_proto.WfRunEventPb event = 3;</code>
+   * @return The event.
+   */
+  io.littlehorse.common.proto.scheduler.WfRunEventPb getEvent();
+  /**
+   * <code>.lh_proto.WfRunEventPb event = 3;</code>
+   */
+  io.littlehorse.common.proto.scheduler.WfRunEventPbOrBuilder getEventOrBuilder();
 }

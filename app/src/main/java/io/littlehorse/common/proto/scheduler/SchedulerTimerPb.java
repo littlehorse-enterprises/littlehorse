@@ -16,6 +16,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private SchedulerTimerPb() {
+    wfRunId_ = "";
   }
 
   @java.lang.Override
@@ -62,17 +63,22 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 18: {
-            io.littlehorse.common.proto.scheduler.TaskResultEventPb.Builder subBuilder = null;
-            if (timerMessageCase_ == 2) {
-              subBuilder = ((io.littlehorse.common.proto.scheduler.TaskResultEventPb) timerMessage_).toBuilder();
+            java.lang.String s = input.readStringRequireUtf8();
+
+            wfRunId_ = s;
+            break;
+          }
+          case 26: {
+            io.littlehorse.common.proto.scheduler.WfRunEventPb.Builder subBuilder = null;
+            if (event_ != null) {
+              subBuilder = event_.toBuilder();
             }
-            timerMessage_ =
-                input.readMessage(io.littlehorse.common.proto.scheduler.TaskResultEventPb.parser(), extensionRegistry);
+            event_ = input.readMessage(io.littlehorse.common.proto.scheduler.WfRunEventPb.parser(), extensionRegistry);
             if (subBuilder != null) {
-              subBuilder.mergeFrom((io.littlehorse.common.proto.scheduler.TaskResultEventPb) timerMessage_);
-              timerMessage_ = subBuilder.buildPartial();
+              subBuilder.mergeFrom(event_);
+              event_ = subBuilder.buildPartial();
             }
-            timerMessageCase_ = 2;
+
             break;
           }
           default: {
@@ -107,45 +113,6 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.common.proto.scheduler.SchedulerTimerPb.class, io.littlehorse.common.proto.scheduler.SchedulerTimerPb.Builder.class);
   }
 
-  private int timerMessageCase_ = 0;
-  private java.lang.Object timerMessage_;
-  public enum TimerMessageCase
-      implements com.google.protobuf.Internal.EnumLite,
-          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    TASK_RESULT(2),
-    TIMERMESSAGE_NOT_SET(0);
-    private final int value;
-    private TimerMessageCase(int value) {
-      this.value = value;
-    }
-    /**
-     * @param value The number of the enum to look for.
-     * @return The enum associated with the given number.
-     * @deprecated Use {@link #forNumber(int)} instead.
-     */
-    @java.lang.Deprecated
-    public static TimerMessageCase valueOf(int value) {
-      return forNumber(value);
-    }
-
-    public static TimerMessageCase forNumber(int value) {
-      switch (value) {
-        case 2: return TASK_RESULT;
-        case 0: return TIMERMESSAGE_NOT_SET;
-        default: return null;
-      }
-    }
-    public int getNumber() {
-      return this.value;
-    }
-  };
-
-  public TimerMessageCase
-  getTimerMessageCase() {
-    return TimerMessageCase.forNumber(
-        timerMessageCase_);
-  }
-
   public static final int MATURATION_TIME_FIELD_NUMBER = 1;
   private com.google.protobuf.Timestamp maturationTime_;
   /**
@@ -172,47 +139,68 @@ private static final long serialVersionUID = 0L;
     return getMaturationTime();
   }
 
-  public static final int TASK_RESULT_FIELD_NUMBER = 2;
+  public static final int WF_RUN_ID_FIELD_NUMBER = 2;
+  private volatile java.lang.Object wfRunId_;
   /**
-   * <pre>
-   * currently used for TimeOuts
-   * </pre>
-   *
-   * <code>.lh_proto.TaskResultEventPb task_result = 2;</code>
-   * @return Whether the taskResult field is set.
+   * <code>string wf_run_id = 2;</code>
+   * @return The wfRunId.
    */
   @java.lang.Override
-  public boolean hasTaskResult() {
-    return timerMessageCase_ == 2;
+  public java.lang.String getWfRunId() {
+    java.lang.Object ref = wfRunId_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      wfRunId_ = s;
+      return s;
+    }
   }
   /**
-   * <pre>
-   * currently used for TimeOuts
-   * </pre>
-   *
-   * <code>.lh_proto.TaskResultEventPb task_result = 2;</code>
-   * @return The taskResult.
+   * <code>string wf_run_id = 2;</code>
+   * @return The bytes for wfRunId.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.scheduler.TaskResultEventPb getTaskResult() {
-    if (timerMessageCase_ == 2) {
-       return (io.littlehorse.common.proto.scheduler.TaskResultEventPb) timerMessage_;
+  public com.google.protobuf.ByteString
+      getWfRunIdBytes() {
+    java.lang.Object ref = wfRunId_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      wfRunId_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
     }
-    return io.littlehorse.common.proto.scheduler.TaskResultEventPb.getDefaultInstance();
+  }
+
+  public static final int EVENT_FIELD_NUMBER = 3;
+  private io.littlehorse.common.proto.scheduler.WfRunEventPb event_;
+  /**
+   * <code>.lh_proto.WfRunEventPb event = 3;</code>
+   * @return Whether the event field is set.
+   */
+  @java.lang.Override
+  public boolean hasEvent() {
+    return event_ != null;
   }
   /**
-   * <pre>
-   * currently used for TimeOuts
-   * </pre>
-   *
-   * <code>.lh_proto.TaskResultEventPb task_result = 2;</code>
+   * <code>.lh_proto.WfRunEventPb event = 3;</code>
+   * @return The event.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.scheduler.TaskResultEventPbOrBuilder getTaskResultOrBuilder() {
-    if (timerMessageCase_ == 2) {
-       return (io.littlehorse.common.proto.scheduler.TaskResultEventPb) timerMessage_;
-    }
-    return io.littlehorse.common.proto.scheduler.TaskResultEventPb.getDefaultInstance();
+  public io.littlehorse.common.proto.scheduler.WfRunEventPb getEvent() {
+    return event_ == null ? io.littlehorse.common.proto.scheduler.WfRunEventPb.getDefaultInstance() : event_;
+  }
+  /**
+   * <code>.lh_proto.WfRunEventPb event = 3;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.scheduler.WfRunEventPbOrBuilder getEventOrBuilder() {
+    return getEvent();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -232,8 +220,11 @@ private static final long serialVersionUID = 0L;
     if (maturationTime_ != null) {
       output.writeMessage(1, getMaturationTime());
     }
-    if (timerMessageCase_ == 2) {
-      output.writeMessage(2, (io.littlehorse.common.proto.scheduler.TaskResultEventPb) timerMessage_);
+    if (!getWfRunIdBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, wfRunId_);
+    }
+    if (event_ != null) {
+      output.writeMessage(3, getEvent());
     }
     unknownFields.writeTo(output);
   }
@@ -248,9 +239,12 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, getMaturationTime());
     }
-    if (timerMessageCase_ == 2) {
+    if (!getWfRunIdBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, wfRunId_);
+    }
+    if (event_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, (io.littlehorse.common.proto.scheduler.TaskResultEventPb) timerMessage_);
+        .computeMessageSize(3, getEvent());
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -272,14 +266,12 @@ private static final long serialVersionUID = 0L;
       if (!getMaturationTime()
           .equals(other.getMaturationTime())) return false;
     }
-    if (!getTimerMessageCase().equals(other.getTimerMessageCase())) return false;
-    switch (timerMessageCase_) {
-      case 2:
-        if (!getTaskResult()
-            .equals(other.getTaskResult())) return false;
-        break;
-      case 0:
-      default:
+    if (!getWfRunId()
+        .equals(other.getWfRunId())) return false;
+    if (hasEvent() != other.hasEvent()) return false;
+    if (hasEvent()) {
+      if (!getEvent()
+          .equals(other.getEvent())) return false;
     }
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
@@ -296,13 +288,11 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + MATURATION_TIME_FIELD_NUMBER;
       hash = (53 * hash) + getMaturationTime().hashCode();
     }
-    switch (timerMessageCase_) {
-      case 2:
-        hash = (37 * hash) + TASK_RESULT_FIELD_NUMBER;
-        hash = (53 * hash) + getTaskResult().hashCode();
-        break;
-      case 0:
-      default:
+    hash = (37 * hash) + WF_RUN_ID_FIELD_NUMBER;
+    hash = (53 * hash) + getWfRunId().hashCode();
+    if (hasEvent()) {
+      hash = (37 * hash) + EVENT_FIELD_NUMBER;
+      hash = (53 * hash) + getEvent().hashCode();
     }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
@@ -443,8 +433,14 @@ private static final long serialVersionUID = 0L;
         maturationTime_ = null;
         maturationTimeBuilder_ = null;
       }
-      timerMessageCase_ = 0;
-      timerMessage_ = null;
+      wfRunId_ = "";
+
+      if (eventBuilder_ == null) {
+        event_ = null;
+      } else {
+        event_ = null;
+        eventBuilder_ = null;
+      }
       return this;
     }
 
@@ -476,14 +472,12 @@ private static final long serialVersionUID = 0L;
       } else {
         result.maturationTime_ = maturationTimeBuilder_.build();
       }
-      if (timerMessageCase_ == 2) {
-        if (taskResultBuilder_ == null) {
-          result.timerMessage_ = timerMessage_;
-        } else {
-          result.timerMessage_ = taskResultBuilder_.build();
-        }
+      result.wfRunId_ = wfRunId_;
+      if (eventBuilder_ == null) {
+        result.event_ = event_;
+      } else {
+        result.event_ = eventBuilder_.build();
       }
-      result.timerMessageCase_ = timerMessageCase_;
       onBuilt();
       return result;
     }
@@ -535,14 +529,12 @@ private static final long serialVersionUID = 0L;
       if (other.hasMaturationTime()) {
         mergeMaturationTime(other.getMaturationTime());
       }
-      switch (other.getTimerMessageCase()) {
-        case TASK_RESULT: {
-          mergeTaskResult(other.getTaskResult());
-          break;
-        }
-        case TIMERMESSAGE_NOT_SET: {
-          break;
-        }
+      if (!other.getWfRunId().isEmpty()) {
+        wfRunId_ = other.wfRunId_;
+        onChanged();
+      }
+      if (other.hasEvent()) {
+        mergeEvent(other.getEvent());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -572,21 +564,6 @@ private static final long serialVersionUID = 0L;
       }
       return this;
     }
-    private int timerMessageCase_ = 0;
-    private java.lang.Object timerMessage_;
-    public TimerMessageCase
-        getTimerMessageCase() {
-      return TimerMessageCase.forNumber(
-          timerMessageCase_);
-    }
-
-    public Builder clearTimerMessage() {
-      timerMessageCase_ = 0;
-      timerMessage_ = null;
-      onChanged();
-      return this;
-    }
-
 
     private com.google.protobuf.Timestamp maturationTime_;
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -707,181 +684,199 @@ private static final long serialVersionUID = 0L;
       return maturationTimeBuilder_;
     }
 
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.scheduler.TaskResultEventPb, io.littlehorse.common.proto.scheduler.TaskResultEventPb.Builder, io.littlehorse.common.proto.scheduler.TaskResultEventPbOrBuilder> taskResultBuilder_;
+    private java.lang.Object wfRunId_ = "";
     /**
-     * <pre>
-     * currently used for TimeOuts
-     * </pre>
-     *
-     * <code>.lh_proto.TaskResultEventPb task_result = 2;</code>
-     * @return Whether the taskResult field is set.
+     * <code>string wf_run_id = 2;</code>
+     * @return The wfRunId.
      */
-    @java.lang.Override
-    public boolean hasTaskResult() {
-      return timerMessageCase_ == 2;
-    }
-    /**
-     * <pre>
-     * currently used for TimeOuts
-     * </pre>
-     *
-     * <code>.lh_proto.TaskResultEventPb task_result = 2;</code>
-     * @return The taskResult.
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.scheduler.TaskResultEventPb getTaskResult() {
-      if (taskResultBuilder_ == null) {
-        if (timerMessageCase_ == 2) {
-          return (io.littlehorse.common.proto.scheduler.TaskResultEventPb) timerMessage_;
-        }
-        return io.littlehorse.common.proto.scheduler.TaskResultEventPb.getDefaultInstance();
+    public java.lang.String getWfRunId() {
+      java.lang.Object ref = wfRunId_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        wfRunId_ = s;
+        return s;
       } else {
-        if (timerMessageCase_ == 2) {
-          return taskResultBuilder_.getMessage();
-        }
-        return io.littlehorse.common.proto.scheduler.TaskResultEventPb.getDefaultInstance();
+        return (java.lang.String) ref;
       }
     }
     /**
-     * <pre>
-     * currently used for TimeOuts
-     * </pre>
-     *
-     * <code>.lh_proto.TaskResultEventPb task_result = 2;</code>
+     * <code>string wf_run_id = 2;</code>
+     * @return The bytes for wfRunId.
      */
-    public Builder setTaskResult(io.littlehorse.common.proto.scheduler.TaskResultEventPb value) {
-      if (taskResultBuilder_ == null) {
+    public com.google.protobuf.ByteString
+        getWfRunIdBytes() {
+      java.lang.Object ref = wfRunId_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        wfRunId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string wf_run_id = 2;</code>
+     * @param value The wfRunId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setWfRunId(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      wfRunId_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string wf_run_id = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearWfRunId() {
+      
+      wfRunId_ = getDefaultInstance().getWfRunId();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string wf_run_id = 2;</code>
+     * @param value The bytes for wfRunId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setWfRunIdBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      wfRunId_ = value;
+      onChanged();
+      return this;
+    }
+
+    private io.littlehorse.common.proto.scheduler.WfRunEventPb event_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.scheduler.WfRunEventPb, io.littlehorse.common.proto.scheduler.WfRunEventPb.Builder, io.littlehorse.common.proto.scheduler.WfRunEventPbOrBuilder> eventBuilder_;
+    /**
+     * <code>.lh_proto.WfRunEventPb event = 3;</code>
+     * @return Whether the event field is set.
+     */
+    public boolean hasEvent() {
+      return eventBuilder_ != null || event_ != null;
+    }
+    /**
+     * <code>.lh_proto.WfRunEventPb event = 3;</code>
+     * @return The event.
+     */
+    public io.littlehorse.common.proto.scheduler.WfRunEventPb getEvent() {
+      if (eventBuilder_ == null) {
+        return event_ == null ? io.littlehorse.common.proto.scheduler.WfRunEventPb.getDefaultInstance() : event_;
+      } else {
+        return eventBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.lh_proto.WfRunEventPb event = 3;</code>
+     */
+    public Builder setEvent(io.littlehorse.common.proto.scheduler.WfRunEventPb value) {
+      if (eventBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        timerMessage_ = value;
+        event_ = value;
         onChanged();
       } else {
-        taskResultBuilder_.setMessage(value);
+        eventBuilder_.setMessage(value);
       }
-      timerMessageCase_ = 2;
+
       return this;
     }
     /**
-     * <pre>
-     * currently used for TimeOuts
-     * </pre>
-     *
-     * <code>.lh_proto.TaskResultEventPb task_result = 2;</code>
+     * <code>.lh_proto.WfRunEventPb event = 3;</code>
      */
-    public Builder setTaskResult(
-        io.littlehorse.common.proto.scheduler.TaskResultEventPb.Builder builderForValue) {
-      if (taskResultBuilder_ == null) {
-        timerMessage_ = builderForValue.build();
+    public Builder setEvent(
+        io.littlehorse.common.proto.scheduler.WfRunEventPb.Builder builderForValue) {
+      if (eventBuilder_ == null) {
+        event_ = builderForValue.build();
         onChanged();
       } else {
-        taskResultBuilder_.setMessage(builderForValue.build());
+        eventBuilder_.setMessage(builderForValue.build());
       }
-      timerMessageCase_ = 2;
+
       return this;
     }
     /**
-     * <pre>
-     * currently used for TimeOuts
-     * </pre>
-     *
-     * <code>.lh_proto.TaskResultEventPb task_result = 2;</code>
+     * <code>.lh_proto.WfRunEventPb event = 3;</code>
      */
-    public Builder mergeTaskResult(io.littlehorse.common.proto.scheduler.TaskResultEventPb value) {
-      if (taskResultBuilder_ == null) {
-        if (timerMessageCase_ == 2 &&
-            timerMessage_ != io.littlehorse.common.proto.scheduler.TaskResultEventPb.getDefaultInstance()) {
-          timerMessage_ = io.littlehorse.common.proto.scheduler.TaskResultEventPb.newBuilder((io.littlehorse.common.proto.scheduler.TaskResultEventPb) timerMessage_)
-              .mergeFrom(value).buildPartial();
+    public Builder mergeEvent(io.littlehorse.common.proto.scheduler.WfRunEventPb value) {
+      if (eventBuilder_ == null) {
+        if (event_ != null) {
+          event_ =
+            io.littlehorse.common.proto.scheduler.WfRunEventPb.newBuilder(event_).mergeFrom(value).buildPartial();
         } else {
-          timerMessage_ = value;
+          event_ = value;
         }
         onChanged();
       } else {
-        if (timerMessageCase_ == 2) {
-          taskResultBuilder_.mergeFrom(value);
-        }
-        taskResultBuilder_.setMessage(value);
+        eventBuilder_.mergeFrom(value);
       }
-      timerMessageCase_ = 2;
+
       return this;
     }
     /**
-     * <pre>
-     * currently used for TimeOuts
-     * </pre>
-     *
-     * <code>.lh_proto.TaskResultEventPb task_result = 2;</code>
+     * <code>.lh_proto.WfRunEventPb event = 3;</code>
      */
-    public Builder clearTaskResult() {
-      if (taskResultBuilder_ == null) {
-        if (timerMessageCase_ == 2) {
-          timerMessageCase_ = 0;
-          timerMessage_ = null;
-          onChanged();
-        }
+    public Builder clearEvent() {
+      if (eventBuilder_ == null) {
+        event_ = null;
+        onChanged();
       } else {
-        if (timerMessageCase_ == 2) {
-          timerMessageCase_ = 0;
-          timerMessage_ = null;
-        }
-        taskResultBuilder_.clear();
+        event_ = null;
+        eventBuilder_ = null;
       }
+
       return this;
     }
     /**
-     * <pre>
-     * currently used for TimeOuts
-     * </pre>
-     *
-     * <code>.lh_proto.TaskResultEventPb task_result = 2;</code>
+     * <code>.lh_proto.WfRunEventPb event = 3;</code>
      */
-    public io.littlehorse.common.proto.scheduler.TaskResultEventPb.Builder getTaskResultBuilder() {
-      return getTaskResultFieldBuilder().getBuilder();
+    public io.littlehorse.common.proto.scheduler.WfRunEventPb.Builder getEventBuilder() {
+      
+      onChanged();
+      return getEventFieldBuilder().getBuilder();
     }
     /**
-     * <pre>
-     * currently used for TimeOuts
-     * </pre>
-     *
-     * <code>.lh_proto.TaskResultEventPb task_result = 2;</code>
+     * <code>.lh_proto.WfRunEventPb event = 3;</code>
      */
-    @java.lang.Override
-    public io.littlehorse.common.proto.scheduler.TaskResultEventPbOrBuilder getTaskResultOrBuilder() {
-      if ((timerMessageCase_ == 2) && (taskResultBuilder_ != null)) {
-        return taskResultBuilder_.getMessageOrBuilder();
+    public io.littlehorse.common.proto.scheduler.WfRunEventPbOrBuilder getEventOrBuilder() {
+      if (eventBuilder_ != null) {
+        return eventBuilder_.getMessageOrBuilder();
       } else {
-        if (timerMessageCase_ == 2) {
-          return (io.littlehorse.common.proto.scheduler.TaskResultEventPb) timerMessage_;
-        }
-        return io.littlehorse.common.proto.scheduler.TaskResultEventPb.getDefaultInstance();
+        return event_ == null ?
+            io.littlehorse.common.proto.scheduler.WfRunEventPb.getDefaultInstance() : event_;
       }
     }
     /**
-     * <pre>
-     * currently used for TimeOuts
-     * </pre>
-     *
-     * <code>.lh_proto.TaskResultEventPb task_result = 2;</code>
+     * <code>.lh_proto.WfRunEventPb event = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.scheduler.TaskResultEventPb, io.littlehorse.common.proto.scheduler.TaskResultEventPb.Builder, io.littlehorse.common.proto.scheduler.TaskResultEventPbOrBuilder> 
-        getTaskResultFieldBuilder() {
-      if (taskResultBuilder_ == null) {
-        if (!(timerMessageCase_ == 2)) {
-          timerMessage_ = io.littlehorse.common.proto.scheduler.TaskResultEventPb.getDefaultInstance();
-        }
-        taskResultBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.scheduler.TaskResultEventPb, io.littlehorse.common.proto.scheduler.TaskResultEventPb.Builder, io.littlehorse.common.proto.scheduler.TaskResultEventPbOrBuilder>(
-                (io.littlehorse.common.proto.scheduler.TaskResultEventPb) timerMessage_,
+        io.littlehorse.common.proto.scheduler.WfRunEventPb, io.littlehorse.common.proto.scheduler.WfRunEventPb.Builder, io.littlehorse.common.proto.scheduler.WfRunEventPbOrBuilder> 
+        getEventFieldBuilder() {
+      if (eventBuilder_ == null) {
+        eventBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.scheduler.WfRunEventPb, io.littlehorse.common.proto.scheduler.WfRunEventPb.Builder, io.littlehorse.common.proto.scheduler.WfRunEventPbOrBuilder>(
+                getEvent(),
                 getParentForChildren(),
                 isClean());
-        timerMessage_ = null;
+        event_ = null;
       }
-      timerMessageCase_ = 2;
-      onChanged();;
-      return taskResultBuilder_;
+      return eventBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

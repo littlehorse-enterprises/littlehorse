@@ -110,6 +110,7 @@ public class TestWorker {
         event.type = EventCase.TASK_RESULT;
 
         LHUtil.log("Completing " + tsr.wfRunId);
+        try {Thread.sleep(5000);} catch(Exception exn) {}
         prod.send(tsr.wfRunId, event, tsr.replyKafkaTopic);
     }
 
