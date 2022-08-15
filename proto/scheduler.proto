@@ -29,7 +29,7 @@ message WfRunStatePb {
     string id = 1;
     string wf_spec_id = 2;
     LHStatusPb status = 6;
-    repeated ThreadRunStatePb thread_runs = 7;
+    map<int32, ThreadRunStatePb> thread_runs = 7;
     google.protobuf.Timestamp start_time = 8;
     optional google.protobuf.Timestamp end_time = 9;
 }

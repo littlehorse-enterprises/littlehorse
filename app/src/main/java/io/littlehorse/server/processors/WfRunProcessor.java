@@ -22,6 +22,7 @@ import io.littlehorse.common.model.observability.ThreadStartOe;
 import io.littlehorse.common.model.observability.ThreadStatusChangeOe;
 import io.littlehorse.common.model.observability.WfRunStatusChangeOe;
 import io.littlehorse.common.proto.LHStatusPb;
+import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.model.wfrun.TaskRun;
 import io.littlehorse.server.model.wfrun.ThreadRun;
@@ -90,8 +91,8 @@ public class WfRunProcessor implements Processor<
                 handleTaskStart(wfRun, evt);
                 break;
 
-            case TASK_COMPLETE:
-                handleTaskComplete(wfRun, evt);
+            case TASK_RESULT:
+                handleTaskResult(wfRun, evt);
                 break;
 
             case THREAD_STATUS:
@@ -201,7 +202,7 @@ public class WfRunProcessor implements Processor<
         forward(task);
     }
 
-    private void handleTaskComplete(WfRun wfRun, ObservabilityEvent evt) {
+    private void handleTaskResult(WfRun wfRun, ObservabilityEvent evt) {
         TaskResultOe tc = evt.taskResult;
         TaskRun task = taskRunStore.get(
             TaskRun.getStoreKey(wfRun.id, tc.threadRunNumber, tc.taskRunPosition)
@@ -210,7 +211,9 @@ public class WfRunProcessor implements Processor<
         task.endTime = evt.time;
         task.output = tc.output;
         task.logOutput = tc.logOutput;
-        task.status = tc.success ? LHStatusPb.COMPLETED : LHStatusPb.ERROR;
+        task.status = tc.resultCode == TaskResultCodePb.SUCCESS
+            ? LHStatusPb.COMPLETED : LHStatusPb.ERROR;
+        task.resultCode = tc.resultCode;
 
         taskRunStore.put(task.getObjectId(), task);
         forward(task);

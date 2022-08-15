@@ -43,28 +43,38 @@ public interface WfRunStatePbOrBuilder extends
   io.littlehorse.common.proto.LHStatusPb getStatus();
 
   /**
-   * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
-   */
-  java.util.List<io.littlehorse.common.proto.scheduler.ThreadRunStatePb> 
-      getThreadRunsList();
-  /**
-   * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
-   */
-  io.littlehorse.common.proto.scheduler.ThreadRunStatePb getThreadRuns(int index);
-  /**
-   * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
+   * <code>map&lt;int32, .lh_proto.ThreadRunStatePb&gt; thread_runs = 7;</code>
    */
   int getThreadRunsCount();
   /**
-   * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
+   * <code>map&lt;int32, .lh_proto.ThreadRunStatePb&gt; thread_runs = 7;</code>
    */
-  java.util.List<? extends io.littlehorse.common.proto.scheduler.ThreadRunStatePbOrBuilder> 
-      getThreadRunsOrBuilderList();
+  boolean containsThreadRuns(
+      int key);
   /**
-   * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
+   * Use {@link #getThreadRunsMap()} instead.
    */
-  io.littlehorse.common.proto.scheduler.ThreadRunStatePbOrBuilder getThreadRunsOrBuilder(
-      int index);
+  @java.lang.Deprecated
+  java.util.Map<java.lang.Integer, io.littlehorse.common.proto.scheduler.ThreadRunStatePb>
+  getThreadRuns();
+  /**
+   * <code>map&lt;int32, .lh_proto.ThreadRunStatePb&gt; thread_runs = 7;</code>
+   */
+  java.util.Map<java.lang.Integer, io.littlehorse.common.proto.scheduler.ThreadRunStatePb>
+  getThreadRunsMap();
+  /**
+   * <code>map&lt;int32, .lh_proto.ThreadRunStatePb&gt; thread_runs = 7;</code>
+   */
+
+  io.littlehorse.common.proto.scheduler.ThreadRunStatePb getThreadRunsOrDefault(
+      int key,
+      io.littlehorse.common.proto.scheduler.ThreadRunStatePb defaultValue);
+  /**
+   * <code>map&lt;int32, .lh_proto.ThreadRunStatePb&gt; thread_runs = 7;</code>
+   */
+
+  io.littlehorse.common.proto.scheduler.ThreadRunStatePb getThreadRunsOrThrow(
+      int key);
 
   /**
    * <code>.google.protobuf.Timestamp start_time = 8;</code>

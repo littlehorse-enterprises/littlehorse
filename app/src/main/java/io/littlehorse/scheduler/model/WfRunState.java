@@ -1,8 +1,9 @@
 package io.littlehorse.scheduler.model;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
@@ -30,10 +31,10 @@ public class WfRunState extends LHSerializable<WfRunStatePb> {
     public Date endTime;
     public LHStatusPb status;
 
-    public List<ThreadRunState> threadRuns;
+    public Map<Integer, ThreadRunState> threadRuns;
 
     public WfRunState() {
-        threadRuns = new ArrayList<>();
+        threadRuns = new HashMap<>();
         oEvents = new ObservabilityEvents();
     }
 
@@ -55,8 +56,8 @@ public class WfRunState extends LHSerializable<WfRunStatePb> {
             b.setEndTime(LHUtil.fromDate(endTime));
         }
 
-        for (ThreadRunState t : threadRuns) {
-            b.addThreadRuns(t.toProto());
+        for (Map.Entry<Integer, ThreadRunState> entry: threadRuns.entrySet()) {
+            b.putThreadRuns(entry.getKey(), entry.getValue().toProto().build());
         }
         return b;
     }
@@ -74,12 +75,12 @@ public class WfRunState extends LHSerializable<WfRunStatePb> {
 
         this.wfSpecId = proto.getWfSpecId();
         this.status = proto.getStatus();
-        this.threadRuns = new ArrayList<>();
+        this.threadRuns = new HashMap<>();
 
-        for (ThreadRunStatePb tpb : proto.getThreadRunsList()) {
-            ThreadRunState tr = ThreadRunState.fromProto(tpb);
+        for (Map.Entry<Integer, ThreadRunStatePb> entry: proto.getThreadRunsMap().entrySet()) {
+            ThreadRunState tr = ThreadRunState.fromProto(entry.getValue());
             tr.wfRun = this;
-            this.threadRuns.add(tr);
+            this.threadRuns.put(entry.getKey(), tr);
         }
         if (proto.hasStartTime()) {
             this.startTime = LHUtil.fromProtoTs(proto.getStartTime());
@@ -111,7 +112,7 @@ public class WfRunState extends LHSerializable<WfRunStatePb> {
         thread.status = LHStatusPb.RUNNING;
         thread.threadRunNumber = threadRuns.size();
         thread.wfRun = this;
-        threadRuns.add(thread);
+        threadRuns.put(thread.threadRunNumber, thread);
 
         thread.advance();
     }
@@ -138,20 +139,39 @@ public class WfRunState extends LHSerializable<WfRunStatePb> {
         }
     }
 
-    public void complete(Date time) {
-        endTime = time;
-        status = LHStatusPb.COMPLETED;
+    // As a precondition, the status of the calling thread must already be updated to complete.
+    public void handleThreadStatus(int threadRunNumber, Date time, LHStatusPb newStatus) {
+        if (threadRunNumber != 0) {
+            throw new RuntimeException("TODO: Support threading.");
+        }
+        // TODO: In the future, there may be some other lifecycle hooks here, such as forcibly
+        // killing (or waiting for) any child threads. To be determined based on threading design.
+        if (newStatus == LHStatusPb.COMPLETED) {
+            endTime = time;
+            status = LHStatusPb.COMPLETED;
 
-        oEvents.add(
-            new ObservabilityEvent(
-                new WfRunStatusChangeOe(status),
-                time
-            )
-        );
+            oEvents.add(
+                new ObservabilityEvent(
+                    new WfRunStatusChangeOe(status),
+                    time
+                )
+            );
+        } else if (newStatus == LHStatusPb.ERROR) {
+            endTime = time;
+            status = LHStatusPb.ERROR;
+            oEvents.add(
+                new ObservabilityEvent(
+                    new WfRunStatusChangeOe(status),
+                    time
+                )
+            );
+        }
+
+        // TODO: when there are multiple threads, we need to think about what happens when one thread
+        // fails and others are still alive.
     }
 
     private void handleStartedEvent(WfRunEvent we) {
-
         TaskStartedEvent se = we.startedEvent;
         ThreadRunState thread = threadRuns.get(se.threadRunNumber);
         thread.processStartedEvent(we);

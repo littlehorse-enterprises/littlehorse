@@ -8,6 +8,7 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.proto.LHStatusPb;
+import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.proto.server.TaskRunPb;
 import io.littlehorse.common.proto.server.TaskRunPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
@@ -33,6 +34,8 @@ public class TaskRun extends GETable<TaskRunPb> {
     public String threadSpecName;
     public String nodeName;
     public String taskDefId;
+
+    public TaskResultCodePb resultCode;
 
     public String getObjectId() {
         return TaskRun.getStoreKey(wfRunId, threadRunNumber, position);
@@ -78,6 +81,8 @@ public class TaskRun extends GETable<TaskRunPb> {
         nodeName = proto.getNodeName();
         taskDefId = proto.getTaskDefId();
         status = proto.getStatus();
+
+        if (proto.hasResultCode()) resultCode = proto.getResultCode();
     }
 
     public TaskRunPb.Builder toProto() {
@@ -98,6 +103,8 @@ public class TaskRun extends GETable<TaskRunPb> {
 
         if (startTime != null) out.setStartTime(LHUtil.fromDate(startTime));
         if (endTime != null) out.setEndTime(LHUtil.fromDate(endTime));
+
+        if (resultCode != null) out.setResultCode(resultCode);
 
         return out;
     }

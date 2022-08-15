@@ -45,7 +45,7 @@ public class SchedulerProcessor
     @Override
     public void process(final Record<String, WfRunEvent> record) {
         try {
-            processHelper(record);
+            processHelper(record.key(), record.timestamp(), record.value());
         } catch(Exception exn) {
             String wfRunId = record.key();
             WfRunState wfRun = wfRunStore.get(wfRunId);
@@ -66,37 +66,21 @@ public class SchedulerProcessor
         }
     }
 
-    private WfSpec getWfSpec(String id) {
-        WfSpec out = wfSpecCache.get(id);
-        if (out == null) {
-            try {
-                out = client.getWfSpec(id);
-                wfSpecCache.put(id, out);
-            } catch(LHConnectionError exn) {
-                exn.printStackTrace();
-            }
-        }
-        return out;
-    }
-
-    private void processHelper(final Record<String, WfRunEvent> record) {
-        WfSpec spec = getWfSpec(record.value().wfSpecId);
+    private void processHelper(String key, long timestamp, WfRunEvent e) {
+        WfSpec spec = getWfSpec(e.wfSpecId);
         if (spec == null) {
             LHUtil.log("Couldn't find spec, TODO: DeadLetter Queue");
             return;
         }
 
-        WfRunEvent e = record.value();
-        WfRunState wfRun = wfRunStore.get(record.key());
+        WfRunState wfRun = wfRunStore.get(key);
 
         List<TaskScheduleRequest> tasksToSchedule = new ArrayList<>();
         List<SchedulerTimer> timersToSchedule = new ArrayList<>();
 
         if (e.type == EventCase.RUN_REQUEST) {
             if (wfRun != null) {
-                LHUtil.log(
-                    "Got a past run for id " + record.key() + ", skipping"
-                );
+                LHUtil.log("Got a past run for id " + key + ", skipping");
                 return;
             }
             wfRun = spec.startNewRun(e, tasksToSchedule, timersToSchedule);
@@ -111,7 +95,7 @@ public class SchedulerProcessor
             SchedulerOutput taskOutput = new SchedulerOutput();
             taskOutput.request = r;
             context.forward(new Record<>(
-                record.key(), taskOutput, record.timestamp()
+                key, taskOutput, timestamp
             ), Scheduler.taskSchedulerSink);
         }
 
@@ -123,11 +107,22 @@ public class SchedulerProcessor
         // Forward the observability events
         SchedulerOutput oeOutput = new SchedulerOutput();
         oeOutput.observabilityEvents = wfRun.oEvents;
-        context.forward(new Record<>(
-            record.key(), oeOutput, record.timestamp()
-        ), Scheduler.wfRunSink);
+        context.forward(new Record<>(key, oeOutput, timestamp), Scheduler.wfRunSink);
 
         // Save the WfRunState
-        wfRunStore.put(record.key(), wfRun);
+        wfRunStore.put(key, wfRun);
+    }
+
+    private WfSpec getWfSpec(String id) {
+        WfSpec out = wfSpecCache.get(id);
+        if (out == null) {
+            try {
+                out = client.getWfSpec(id);
+                wfSpecCache.put(id, out);
+            } catch(LHConnectionError exn) {
+                exn.printStackTrace();
+            }
+        }
+        return out;
     }
 }

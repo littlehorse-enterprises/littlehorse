@@ -19,7 +19,6 @@ private static final long serialVersionUID = 0L;
     id_ = "";
     wfSpecId_ = "";
     status_ = 0;
-    threadRuns_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -73,11 +72,15 @@ private static final long serialVersionUID = 0L;
           }
           case 58: {
             if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-              threadRuns_ = new java.util.ArrayList<io.littlehorse.common.proto.scheduler.ThreadRunStatePb>();
+              threadRuns_ = com.google.protobuf.MapField.newMapField(
+                  ThreadRunsDefaultEntryHolder.defaultEntry);
               mutable_bitField0_ |= 0x00000001;
             }
-            threadRuns_.add(
-                input.readMessage(io.littlehorse.common.proto.scheduler.ThreadRunStatePb.parser(), extensionRegistry));
+            com.google.protobuf.MapEntry<java.lang.Integer, io.littlehorse.common.proto.scheduler.ThreadRunStatePb>
+            threadRuns__ = input.readMessage(
+                ThreadRunsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+            threadRuns_.getMutableMap().put(
+                threadRuns__.getKey(), threadRuns__.getValue());
             break;
           }
           case 66: {
@@ -121,9 +124,6 @@ private static final long serialVersionUID = 0L;
       throw new com.google.protobuf.InvalidProtocolBufferException(
           e).setUnfinishedMessage(this);
     } finally {
-      if (((mutable_bitField0_ & 0x00000001) != 0)) {
-        threadRuns_ = java.util.Collections.unmodifiableList(threadRuns_);
-      }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
@@ -133,6 +133,18 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.scheduler.Scheduler.internal_static_lh_proto_WfRunStatePb_descriptor;
   }
 
+  @SuppressWarnings({"rawtypes"})
+  @java.lang.Override
+  protected com.google.protobuf.MapField internalGetMapField(
+      int number) {
+    switch (number) {
+      case 7:
+        return internalGetThreadRuns();
+      default:
+        throw new RuntimeException(
+            "Invalid map field number: " + number);
+    }
+  }
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
@@ -238,43 +250,84 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int THREAD_RUNS_FIELD_NUMBER = 7;
-  private java.util.List<io.littlehorse.common.proto.scheduler.ThreadRunStatePb> threadRuns_;
-  /**
-   * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
-   */
-  @java.lang.Override
-  public java.util.List<io.littlehorse.common.proto.scheduler.ThreadRunStatePb> getThreadRunsList() {
+  private static final class ThreadRunsDefaultEntryHolder {
+    static final com.google.protobuf.MapEntry<
+        java.lang.Integer, io.littlehorse.common.proto.scheduler.ThreadRunStatePb> defaultEntry =
+            com.google.protobuf.MapEntry
+            .<java.lang.Integer, io.littlehorse.common.proto.scheduler.ThreadRunStatePb>newDefaultInstance(
+                io.littlehorse.common.proto.scheduler.Scheduler.internal_static_lh_proto_WfRunStatePb_ThreadRunsEntry_descriptor, 
+                com.google.protobuf.WireFormat.FieldType.INT32,
+                0,
+                com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                io.littlehorse.common.proto.scheduler.ThreadRunStatePb.getDefaultInstance());
+  }
+  private com.google.protobuf.MapField<
+      java.lang.Integer, io.littlehorse.common.proto.scheduler.ThreadRunStatePb> threadRuns_;
+  private com.google.protobuf.MapField<java.lang.Integer, io.littlehorse.common.proto.scheduler.ThreadRunStatePb>
+  internalGetThreadRuns() {
+    if (threadRuns_ == null) {
+      return com.google.protobuf.MapField.emptyMapField(
+          ThreadRunsDefaultEntryHolder.defaultEntry);
+    }
     return threadRuns_;
   }
-  /**
-   * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
-   */
-  @java.lang.Override
-  public java.util.List<? extends io.littlehorse.common.proto.scheduler.ThreadRunStatePbOrBuilder> 
-      getThreadRunsOrBuilderList() {
-    return threadRuns_;
-  }
-  /**
-   * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
-   */
-  @java.lang.Override
+
   public int getThreadRunsCount() {
-    return threadRuns_.size();
+    return internalGetThreadRuns().getMap().size();
   }
   /**
-   * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
+   * <code>map&lt;int32, .lh_proto.ThreadRunStatePb&gt; thread_runs = 7;</code>
    */
+
   @java.lang.Override
-  public io.littlehorse.common.proto.scheduler.ThreadRunStatePb getThreadRuns(int index) {
-    return threadRuns_.get(index);
+  public boolean containsThreadRuns(
+      int key) {
+    
+    return internalGetThreadRuns().getMap().containsKey(key);
   }
   /**
-   * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
+   * Use {@link #getThreadRunsMap()} instead.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.scheduler.ThreadRunStatePbOrBuilder getThreadRunsOrBuilder(
-      int index) {
-    return threadRuns_.get(index);
+  @java.lang.Deprecated
+  public java.util.Map<java.lang.Integer, io.littlehorse.common.proto.scheduler.ThreadRunStatePb> getThreadRuns() {
+    return getThreadRunsMap();
+  }
+  /**
+   * <code>map&lt;int32, .lh_proto.ThreadRunStatePb&gt; thread_runs = 7;</code>
+   */
+  @java.lang.Override
+
+  public java.util.Map<java.lang.Integer, io.littlehorse.common.proto.scheduler.ThreadRunStatePb> getThreadRunsMap() {
+    return internalGetThreadRuns().getMap();
+  }
+  /**
+   * <code>map&lt;int32, .lh_proto.ThreadRunStatePb&gt; thread_runs = 7;</code>
+   */
+  @java.lang.Override
+
+  public io.littlehorse.common.proto.scheduler.ThreadRunStatePb getThreadRunsOrDefault(
+      int key,
+      io.littlehorse.common.proto.scheduler.ThreadRunStatePb defaultValue) {
+    
+    java.util.Map<java.lang.Integer, io.littlehorse.common.proto.scheduler.ThreadRunStatePb> map =
+        internalGetThreadRuns().getMap();
+    return map.containsKey(key) ? map.get(key) : defaultValue;
+  }
+  /**
+   * <code>map&lt;int32, .lh_proto.ThreadRunStatePb&gt; thread_runs = 7;</code>
+   */
+  @java.lang.Override
+
+  public io.littlehorse.common.proto.scheduler.ThreadRunStatePb getThreadRunsOrThrow(
+      int key) {
+    
+    java.util.Map<java.lang.Integer, io.littlehorse.common.proto.scheduler.ThreadRunStatePb> map =
+        internalGetThreadRuns().getMap();
+    if (!map.containsKey(key)) {
+      throw new java.lang.IllegalArgumentException();
+    }
+    return map.get(key);
   }
 
   public static final int START_TIME_FIELD_NUMBER = 8;
@@ -352,9 +405,12 @@ private static final long serialVersionUID = 0L;
     if (status_ != io.littlehorse.common.proto.LHStatusPb.STARTING.getNumber()) {
       output.writeEnum(6, status_);
     }
-    for (int i = 0; i < threadRuns_.size(); i++) {
-      output.writeMessage(7, threadRuns_.get(i));
-    }
+    com.google.protobuf.GeneratedMessageV3
+      .serializeIntegerMapTo(
+        output,
+        internalGetThreadRuns(),
+        ThreadRunsDefaultEntryHolder.defaultEntry,
+        7);
     if (startTime_ != null) {
       output.writeMessage(8, getStartTime());
     }
@@ -380,9 +436,15 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(6, status_);
     }
-    for (int i = 0; i < threadRuns_.size(); i++) {
+    for (java.util.Map.Entry<java.lang.Integer, io.littlehorse.common.proto.scheduler.ThreadRunStatePb> entry
+         : internalGetThreadRuns().getMap().entrySet()) {
+      com.google.protobuf.MapEntry<java.lang.Integer, io.littlehorse.common.proto.scheduler.ThreadRunStatePb>
+      threadRuns__ = ThreadRunsDefaultEntryHolder.defaultEntry.newBuilderForType()
+          .setKey(entry.getKey())
+          .setValue(entry.getValue())
+          .build();
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(7, threadRuns_.get(i));
+          .computeMessageSize(7, threadRuns__);
     }
     if (startTime_ != null) {
       size += com.google.protobuf.CodedOutputStream
@@ -412,8 +474,8 @@ private static final long serialVersionUID = 0L;
     if (!getWfSpecId()
         .equals(other.getWfSpecId())) return false;
     if (status_ != other.status_) return false;
-    if (!getThreadRunsList()
-        .equals(other.getThreadRunsList())) return false;
+    if (!internalGetThreadRuns().equals(
+        other.internalGetThreadRuns())) return false;
     if (hasStartTime() != other.hasStartTime()) return false;
     if (hasStartTime()) {
       if (!getStartTime()
@@ -441,9 +503,9 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getWfSpecId().hashCode();
     hash = (37 * hash) + STATUS_FIELD_NUMBER;
     hash = (53 * hash) + status_;
-    if (getThreadRunsCount() > 0) {
+    if (!internalGetThreadRuns().getMap().isEmpty()) {
       hash = (37 * hash) + THREAD_RUNS_FIELD_NUMBER;
-      hash = (53 * hash) + getThreadRunsList().hashCode();
+      hash = (53 * hash) + internalGetThreadRuns().hashCode();
     }
     if (hasStartTime()) {
       hash = (37 * hash) + START_TIME_FIELD_NUMBER;
@@ -560,6 +622,28 @@ private static final long serialVersionUID = 0L;
       return io.littlehorse.common.proto.scheduler.Scheduler.internal_static_lh_proto_WfRunStatePb_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 7:
+          return internalGetThreadRuns();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapField internalGetMutableMapField(
+        int number) {
+      switch (number) {
+        case 7:
+          return internalGetMutableThreadRuns();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -581,7 +665,6 @@ private static final long serialVersionUID = 0L;
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
-        getThreadRunsFieldBuilder();
         getEndTimeFieldBuilder();
       }
     }
@@ -594,12 +677,7 @@ private static final long serialVersionUID = 0L;
 
       status_ = 0;
 
-      if (threadRunsBuilder_ == null) {
-        threadRuns_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000001);
-      } else {
-        threadRunsBuilder_.clear();
-      }
+      internalGetMutableThreadRuns().clear();
       if (startTimeBuilder_ == null) {
         startTime_ = null;
       } else {
@@ -643,15 +721,8 @@ private static final long serialVersionUID = 0L;
       result.id_ = id_;
       result.wfSpecId_ = wfSpecId_;
       result.status_ = status_;
-      if (threadRunsBuilder_ == null) {
-        if (((bitField0_ & 0x00000001) != 0)) {
-          threadRuns_ = java.util.Collections.unmodifiableList(threadRuns_);
-          bitField0_ = (bitField0_ & ~0x00000001);
-        }
-        result.threadRuns_ = threadRuns_;
-      } else {
-        result.threadRuns_ = threadRunsBuilder_.build();
-      }
+      result.threadRuns_ = internalGetThreadRuns();
+      result.threadRuns_.makeImmutable();
       if (startTimeBuilder_ == null) {
         result.startTime_ = startTime_;
       } else {
@@ -725,32 +796,8 @@ private static final long serialVersionUID = 0L;
       if (other.status_ != 0) {
         setStatusValue(other.getStatusValue());
       }
-      if (threadRunsBuilder_ == null) {
-        if (!other.threadRuns_.isEmpty()) {
-          if (threadRuns_.isEmpty()) {
-            threadRuns_ = other.threadRuns_;
-            bitField0_ = (bitField0_ & ~0x00000001);
-          } else {
-            ensureThreadRunsIsMutable();
-            threadRuns_.addAll(other.threadRuns_);
-          }
-          onChanged();
-        }
-      } else {
-        if (!other.threadRuns_.isEmpty()) {
-          if (threadRunsBuilder_.isEmpty()) {
-            threadRunsBuilder_.dispose();
-            threadRunsBuilder_ = null;
-            threadRuns_ = other.threadRuns_;
-            bitField0_ = (bitField0_ & ~0x00000001);
-            threadRunsBuilder_ = 
-              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                 getThreadRunsFieldBuilder() : null;
-          } else {
-            threadRunsBuilder_.addAllMessages(other.threadRuns_);
-          }
-        }
-      }
+      internalGetMutableThreadRuns().mergeFrom(
+          other.internalGetThreadRuns());
       if (other.hasStartTime()) {
         mergeStartTime(other.getStartTime());
       }
@@ -993,244 +1040,132 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.util.List<io.littlehorse.common.proto.scheduler.ThreadRunStatePb> threadRuns_ =
-      java.util.Collections.emptyList();
-    private void ensureThreadRunsIsMutable() {
-      if (!((bitField0_ & 0x00000001) != 0)) {
-        threadRuns_ = new java.util.ArrayList<io.littlehorse.common.proto.scheduler.ThreadRunStatePb>(threadRuns_);
-        bitField0_ |= 0x00000001;
-       }
-    }
-
-    private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.common.proto.scheduler.ThreadRunStatePb, io.littlehorse.common.proto.scheduler.ThreadRunStatePb.Builder, io.littlehorse.common.proto.scheduler.ThreadRunStatePbOrBuilder> threadRunsBuilder_;
-
-    /**
-     * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
-     */
-    public java.util.List<io.littlehorse.common.proto.scheduler.ThreadRunStatePb> getThreadRunsList() {
-      if (threadRunsBuilder_ == null) {
-        return java.util.Collections.unmodifiableList(threadRuns_);
-      } else {
-        return threadRunsBuilder_.getMessageList();
+    private com.google.protobuf.MapField<
+        java.lang.Integer, io.littlehorse.common.proto.scheduler.ThreadRunStatePb> threadRuns_;
+    private com.google.protobuf.MapField<java.lang.Integer, io.littlehorse.common.proto.scheduler.ThreadRunStatePb>
+    internalGetThreadRuns() {
+      if (threadRuns_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            ThreadRunsDefaultEntryHolder.defaultEntry);
       }
+      return threadRuns_;
     }
-    /**
-     * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
-     */
+    private com.google.protobuf.MapField<java.lang.Integer, io.littlehorse.common.proto.scheduler.ThreadRunStatePb>
+    internalGetMutableThreadRuns() {
+      onChanged();;
+      if (threadRuns_ == null) {
+        threadRuns_ = com.google.protobuf.MapField.newMapField(
+            ThreadRunsDefaultEntryHolder.defaultEntry);
+      }
+      if (!threadRuns_.isMutable()) {
+        threadRuns_ = threadRuns_.copy();
+      }
+      return threadRuns_;
+    }
+
     public int getThreadRunsCount() {
-      if (threadRunsBuilder_ == null) {
-        return threadRuns_.size();
-      } else {
-        return threadRunsBuilder_.getCount();
-      }
+      return internalGetThreadRuns().getMap().size();
     }
     /**
-     * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
+     * <code>map&lt;int32, .lh_proto.ThreadRunStatePb&gt; thread_runs = 7;</code>
      */
-    public io.littlehorse.common.proto.scheduler.ThreadRunStatePb getThreadRuns(int index) {
-      if (threadRunsBuilder_ == null) {
-        return threadRuns_.get(index);
-      } else {
-        return threadRunsBuilder_.getMessage(index);
-      }
+
+    @java.lang.Override
+    public boolean containsThreadRuns(
+        int key) {
+      
+      return internalGetThreadRuns().getMap().containsKey(key);
     }
     /**
-     * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
+     * Use {@link #getThreadRunsMap()} instead.
      */
-    public Builder setThreadRuns(
-        int index, io.littlehorse.common.proto.scheduler.ThreadRunStatePb value) {
-      if (threadRunsBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureThreadRunsIsMutable();
-        threadRuns_.set(index, value);
-        onChanged();
-      } else {
-        threadRunsBuilder_.setMessage(index, value);
-      }
-      return this;
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.Integer, io.littlehorse.common.proto.scheduler.ThreadRunStatePb> getThreadRuns() {
+      return getThreadRunsMap();
     }
     /**
-     * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
+     * <code>map&lt;int32, .lh_proto.ThreadRunStatePb&gt; thread_runs = 7;</code>
      */
-    public Builder setThreadRuns(
-        int index, io.littlehorse.common.proto.scheduler.ThreadRunStatePb.Builder builderForValue) {
-      if (threadRunsBuilder_ == null) {
-        ensureThreadRunsIsMutable();
-        threadRuns_.set(index, builderForValue.build());
-        onChanged();
-      } else {
-        threadRunsBuilder_.setMessage(index, builderForValue.build());
-      }
-      return this;
+    @java.lang.Override
+
+    public java.util.Map<java.lang.Integer, io.littlehorse.common.proto.scheduler.ThreadRunStatePb> getThreadRunsMap() {
+      return internalGetThreadRuns().getMap();
     }
     /**
-     * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
+     * <code>map&lt;int32, .lh_proto.ThreadRunStatePb&gt; thread_runs = 7;</code>
      */
-    public Builder addThreadRuns(io.littlehorse.common.proto.scheduler.ThreadRunStatePb value) {
-      if (threadRunsBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureThreadRunsIsMutable();
-        threadRuns_.add(value);
-        onChanged();
-      } else {
-        threadRunsBuilder_.addMessage(value);
-      }
-      return this;
+    @java.lang.Override
+
+    public io.littlehorse.common.proto.scheduler.ThreadRunStatePb getThreadRunsOrDefault(
+        int key,
+        io.littlehorse.common.proto.scheduler.ThreadRunStatePb defaultValue) {
+      
+      java.util.Map<java.lang.Integer, io.littlehorse.common.proto.scheduler.ThreadRunStatePb> map =
+          internalGetThreadRuns().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
-     * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
+     * <code>map&lt;int32, .lh_proto.ThreadRunStatePb&gt; thread_runs = 7;</code>
      */
-    public Builder addThreadRuns(
-        int index, io.littlehorse.common.proto.scheduler.ThreadRunStatePb value) {
-      if (threadRunsBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureThreadRunsIsMutable();
-        threadRuns_.add(index, value);
-        onChanged();
-      } else {
-        threadRunsBuilder_.addMessage(index, value);
+    @java.lang.Override
+
+    public io.littlehorse.common.proto.scheduler.ThreadRunStatePb getThreadRunsOrThrow(
+        int key) {
+      
+      java.util.Map<java.lang.Integer, io.littlehorse.common.proto.scheduler.ThreadRunStatePb> map =
+          internalGetThreadRuns().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
       }
-      return this;
+      return map.get(key);
     }
-    /**
-     * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
-     */
-    public Builder addThreadRuns(
-        io.littlehorse.common.proto.scheduler.ThreadRunStatePb.Builder builderForValue) {
-      if (threadRunsBuilder_ == null) {
-        ensureThreadRunsIsMutable();
-        threadRuns_.add(builderForValue.build());
-        onChanged();
-      } else {
-        threadRunsBuilder_.addMessage(builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
-     */
-    public Builder addThreadRuns(
-        int index, io.littlehorse.common.proto.scheduler.ThreadRunStatePb.Builder builderForValue) {
-      if (threadRunsBuilder_ == null) {
-        ensureThreadRunsIsMutable();
-        threadRuns_.add(index, builderForValue.build());
-        onChanged();
-      } else {
-        threadRunsBuilder_.addMessage(index, builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
-     */
-    public Builder addAllThreadRuns(
-        java.lang.Iterable<? extends io.littlehorse.common.proto.scheduler.ThreadRunStatePb> values) {
-      if (threadRunsBuilder_ == null) {
-        ensureThreadRunsIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, threadRuns_);
-        onChanged();
-      } else {
-        threadRunsBuilder_.addAllMessages(values);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
-     */
+
     public Builder clearThreadRuns() {
-      if (threadRunsBuilder_ == null) {
-        threadRuns_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000001);
-        onChanged();
-      } else {
-        threadRunsBuilder_.clear();
-      }
+      internalGetMutableThreadRuns().getMutableMap()
+          .clear();
       return this;
     }
     /**
-     * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
+     * <code>map&lt;int32, .lh_proto.ThreadRunStatePb&gt; thread_runs = 7;</code>
      */
-    public Builder removeThreadRuns(int index) {
-      if (threadRunsBuilder_ == null) {
-        ensureThreadRunsIsMutable();
-        threadRuns_.remove(index);
-        onChanged();
-      } else {
-        threadRunsBuilder_.remove(index);
-      }
+
+    public Builder removeThreadRuns(
+        int key) {
+      
+      internalGetMutableThreadRuns().getMutableMap()
+          .remove(key);
       return this;
     }
     /**
-     * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
+     * Use alternate mutation accessors instead.
      */
-    public io.littlehorse.common.proto.scheduler.ThreadRunStatePb.Builder getThreadRunsBuilder(
-        int index) {
-      return getThreadRunsFieldBuilder().getBuilder(index);
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.Integer, io.littlehorse.common.proto.scheduler.ThreadRunStatePb>
+    getMutableThreadRuns() {
+      return internalGetMutableThreadRuns().getMutableMap();
     }
     /**
-     * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
+     * <code>map&lt;int32, .lh_proto.ThreadRunStatePb&gt; thread_runs = 7;</code>
      */
-    public io.littlehorse.common.proto.scheduler.ThreadRunStatePbOrBuilder getThreadRunsOrBuilder(
-        int index) {
-      if (threadRunsBuilder_ == null) {
-        return threadRuns_.get(index);  } else {
-        return threadRunsBuilder_.getMessageOrBuilder(index);
-      }
+    public Builder putThreadRuns(
+        int key,
+        io.littlehorse.common.proto.scheduler.ThreadRunStatePb value) {
+      
+      if (value == null) { throw new java.lang.NullPointerException(); }
+      internalGetMutableThreadRuns().getMutableMap()
+          .put(key, value);
+      return this;
     }
     /**
-     * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
+     * <code>map&lt;int32, .lh_proto.ThreadRunStatePb&gt; thread_runs = 7;</code>
      */
-    public java.util.List<? extends io.littlehorse.common.proto.scheduler.ThreadRunStatePbOrBuilder> 
-         getThreadRunsOrBuilderList() {
-      if (threadRunsBuilder_ != null) {
-        return threadRunsBuilder_.getMessageOrBuilderList();
-      } else {
-        return java.util.Collections.unmodifiableList(threadRuns_);
-      }
-    }
-    /**
-     * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
-     */
-    public io.littlehorse.common.proto.scheduler.ThreadRunStatePb.Builder addThreadRunsBuilder() {
-      return getThreadRunsFieldBuilder().addBuilder(
-          io.littlehorse.common.proto.scheduler.ThreadRunStatePb.getDefaultInstance());
-    }
-    /**
-     * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
-     */
-    public io.littlehorse.common.proto.scheduler.ThreadRunStatePb.Builder addThreadRunsBuilder(
-        int index) {
-      return getThreadRunsFieldBuilder().addBuilder(
-          index, io.littlehorse.common.proto.scheduler.ThreadRunStatePb.getDefaultInstance());
-    }
-    /**
-     * <code>repeated .lh_proto.ThreadRunStatePb thread_runs = 7;</code>
-     */
-    public java.util.List<io.littlehorse.common.proto.scheduler.ThreadRunStatePb.Builder> 
-         getThreadRunsBuilderList() {
-      return getThreadRunsFieldBuilder().getBuilderList();
-    }
-    private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.common.proto.scheduler.ThreadRunStatePb, io.littlehorse.common.proto.scheduler.ThreadRunStatePb.Builder, io.littlehorse.common.proto.scheduler.ThreadRunStatePbOrBuilder> 
-        getThreadRunsFieldBuilder() {
-      if (threadRunsBuilder_ == null) {
-        threadRunsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            io.littlehorse.common.proto.scheduler.ThreadRunStatePb, io.littlehorse.common.proto.scheduler.ThreadRunStatePb.Builder, io.littlehorse.common.proto.scheduler.ThreadRunStatePbOrBuilder>(
-                threadRuns_,
-                ((bitField0_ & 0x00000001) != 0),
-                getParentForChildren(),
-                isClean());
-        threadRuns_ = null;
-      }
-      return threadRunsBuilder_;
+
+    public Builder putAllThreadRuns(
+        java.util.Map<java.lang.Integer, io.littlehorse.common.proto.scheduler.ThreadRunStatePb> values) {
+      internalGetMutableThreadRuns().getMutableMap()
+          .putAll(values);
+      return this;
     }
 
     private com.google.protobuf.Timestamp startTime_;

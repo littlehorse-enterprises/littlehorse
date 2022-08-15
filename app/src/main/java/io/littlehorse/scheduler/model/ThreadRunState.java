@@ -73,15 +73,64 @@ public class ThreadRunState {
 
     @JsonIgnore public void advance() {
         if (status != LHStatusPb.RUNNING) {
+            if (status == LHStatusPb.HALTED) {
+                throw new RuntimeException("Tried to advance HALTED thread");
+            }
+            if (status == LHStatusPb.HALTING) {
+                status = LHStatusPb.HALTED;
+            }
+            if (status == LHStatusPb.COMPLETED || status == LHStatusPb.ERROR) {
+                throw new RuntimeException("Tried to advance COMPLETED or ERROR thread");
+            }
             return;
         }
 
-        Node nextNode = getNextNode();
+        Node curNode = getCurrentNode();
 
-        while (nextNode != null) {
-            activateNode(nextNode);
-            nextNode = getNextNode();
+        if (currentNodeRun == null) {
+            // activate entrypoint node
+            advanceFrom(curNode);
+        } else if (currentNodeRun.status == LHStatusPb.COMPLETED) {
+            // activate next node
+            advanceFrom(curNode);
+        } else if (currentNodeRun.status == LHStatusPb.ERROR) {
+            // determine whether to retry or fail
+            if (shouldRetry(curNode, currentNodeRun)) {
+                scheduleRetry(curNode, currentNodeRun);
+            } else {
+                LHUtil.log("The node is failed and not retryable. Failing thread now.");
+                setStatus(LHStatusPb.ERROR);
+            }
+        } else if (currentNodeRun.status == LHStatusPb.RUNNING) {
+            // Nothing to do, just wait for next event to come in.
+        } else {
+            throw new RuntimeException("Unexpected state for noderun: " + currentNodeRun.status);
         }
+    }
+
+    private boolean shouldRetry(Node curNode, NodeRunState currNodeRun) {
+        if (curNode.type != NodeCase.TASK) return false;
+
+        return currNodeRun.attemptNumber < curNode.taskNode.retries;
+    }
+
+    private void scheduleRetry(Node curNode, NodeRunState curNodeRun) {
+        scheduleTaskNode(curNode, curNodeRun.attemptNumber + 1);
+    }
+
+    private void advanceFrom(Node curNode) {
+        Node nextNode = null;
+        for (Edge e: curNode.outgoingEdges) {
+            if (evaluateEdge(e)) {
+                nextNode = e.getSinkNode();
+                break;
+            }
+        }
+        if (nextNode == null) {
+            throw new RuntimeException("Not possible to have a node with zero activated edges");
+        }
+
+        activateNode(nextNode);
     }
 
     private void activateNode(Node node) {
@@ -89,47 +138,14 @@ public class ThreadRunState {
         case ENTRYPOINT:
             throw new RuntimeException("Not possible.");
         case TASK:
-            activateTaskNode(node);
+            scheduleTaskNode(node);
             break;
         case EXIT:
-            completeThread();
+            setStatus(LHStatusPb.COMPLETED);
             break;
         case NODE_NOT_SET:
             throw new RuntimeException("Invalid nodetype.");
         }
-    }
-
-    /**
-     * Returns the next node to activate, or null if currently blocked by some
-     * other thread (i.e. for variable contention).
-     * @param current The currently running node.
-     * @return the next Node to activate, or null if blocked. TODO: Maybe will need
-     *         to return info about the thread which is blocking us, or set that
-     *         info somewhere.
-     */
-    public Node getNextNode() {
-        if (status != LHStatusPb.RUNNING) {
-            return null;
-        }
-
-        if (currentNodeRun != null && currentNodeRun.status != LHStatusPb.COMPLETED) {
-            return null;
-        }
-
-        Node current = getCurrentNode();
-
-        if (current.type == NodeCase.EXIT) {
-            return null;
-        }
-
-        for (Edge e: current.outgoingEdges) {
-            if (evaluateEdge(e)) {
-                return e.getSinkNode();
-            }
-        }
-        throw new RuntimeException(
-            "Not possible to have a node with zero activated edges"
-        );
     }
 
     // TODO: Do some conditional logic processing here.
@@ -137,19 +153,33 @@ public class ThreadRunState {
         return true;
     }
 
-    private void activateTaskNode(Node node) {
+    private void scheduleTaskNode(Node node) {
+        scheduleTaskNode(node, 0);
+    }
+
+    private void scheduleTaskNode(Node node, int attemptNumber) {
         if (node.type != NodeCase.TASK) {
             throw new RuntimeException("Yikerz");
         }
 
         if (currentNodeRun == null) {
             currentNodeRun = new NodeRunState();
+            if (attemptNumber > 0) {
+                throw new RuntimeException("Not possible.");
+            }
+
         } else {
-            currentNodeRun.number++;
+            // Regardless of whether retry or not, actual position in the list increases.
             currentNodeRun.position++;
+
+            // If we're doing a retry, it's the same logical number, so don't increment.
+            if (attemptNumber == 0) {
+                currentNodeRun.number++;
+            }
         }
+
         currentNodeRun.nodeName = node.name;
-        currentNodeRun.attemptNumber = 0;
+        currentNodeRun.attemptNumber = attemptNumber;
         currentNodeRun.status = LHStatusPb.STARTING;
 
         TaskScheduleRequest tsr = new TaskScheduleRequest();
@@ -173,8 +203,8 @@ public class ThreadRunState {
         wfRun.tasksToSchedule.add(tsr);
     }
 
-    private void completeThread() {
-        status = LHStatusPb.COMPLETED;
+    private void setStatus(LHStatusPb newStatus) {
+        status = newStatus;
 
         Date time = new Date();
         wfRun.oEvents.add(
@@ -184,8 +214,11 @@ public class ThreadRunState {
             )
         );
 
-        wfRun.complete(time);
-        System.out.println(wfRun.endTime.getTime() - wfRun.startTime.getTime());
+        wfRun.handleThreadStatus(threadRunNumber, time, newStatus);
+        
+        if (newStatus == LHStatusPb.COMPLETED) {
+            System.out.println(wfRun.endTime.getTime() - wfRun.startTime.getTime());
+        }
     }
 
     public void processStartedEvent(WfRunEvent we) {
@@ -198,11 +231,6 @@ public class ThreadRunState {
         TaskStartedEvent se = we.startedEvent;
 
         if (currentNodeRun.position != se.taskRunPosition) {
-            // Out-of-order event due to race conditions between task worker
-            // transactional producer and regular producer
-            return;
-        }
-        if (currentNodeRun.number != se.taskRunNumber) {
             // Out-of-order event due to race conditions between task worker
             // transactional producer and regular producer
             return;
@@ -236,10 +264,12 @@ public class ThreadRunState {
         switch (ce.resultCode) {
             case SUCCESS:
                 currentNodeRun.status = LHStatusPb.COMPLETED;
+                break;
 
             case TIMEOUT:
             case TASK_FAILURE:
                 currentNodeRun.status = LHStatusPb.ERROR;
+                break;
 
             case UNRECOGNIZED:
                 throw new RuntimeException("Unrecognized TaskResultCode: " + ce.resultCode);

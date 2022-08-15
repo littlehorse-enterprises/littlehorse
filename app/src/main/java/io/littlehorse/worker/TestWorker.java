@@ -16,6 +16,7 @@ import io.littlehorse.common.model.event.TaskResultEvent;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.TaskStartedEvent;
 import io.littlehorse.common.model.event.WfRunEvent;
+import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.proto.scheduler.WfRunEventPb.EventCase;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
@@ -96,7 +97,7 @@ public class TestWorker {
         ce.threadRunNumber = tsr.threadRunNumber;
         ce.time = new Date();
 
-        ce.success = true;
+        ce.resultCode = TaskResultCodePb.SUCCESS;
         ce.stderr = null;
         ce.stdout = ("Completed task " + tsr.taskDefName + " " + tsr.wfRunId)
             .getBytes();
@@ -106,7 +107,7 @@ public class TestWorker {
         event.wfSpecId = tsr.wfSpecId;
         event.time = ce.time;
         event.taskResult = ce;
-        event.type = EventCase.COMPLETED_EVENT;
+        event.type = EventCase.TASK_RESULT;
 
         LHUtil.log("Completing " + tsr.wfRunId);
         prod.send(tsr.wfRunId, event, tsr.replyKafkaTopic);
