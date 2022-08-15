@@ -127,7 +127,11 @@ public class TestWorker {
 
         ce.resultCode = TaskResultCodePb.SUCCESS;
         ce.stderr = null;
-        ce.stdout = ("Completed task " + tsr.taskDefName + " " + tsr.wfRunId).getBytes();
+        String stdoutStr = "Completed task " + tsr.taskDefName + " " + tsr.wfRunId;
+        for (int i = 0; i < 10; i++) {
+            stdoutStr += stdoutStr;
+        }
+        ce.stdout = stdoutStr.getBytes();
 
         WfRunEvent event = new WfRunEvent();
         event.wfRunId = tsr.wfRunId;
@@ -136,9 +140,7 @@ public class TestWorker {
         event.taskResult = ce;
         event.type = EventCase.TASK_RESULT;
 
-        LHUtil.log("Starting " + tsr.wfRunId);
-        try {Thread.sleep(5000);} catch(Exception exn) {}
-        LHUtil.log("Completing " + tsr.wfRunId);
+        LHUtil.log("Completing " + tsr.wfRunId + " " + tsr.threadRunNumber + " " + tsr.taskRunNumber);
         prod.send(tsr.wfRunId, event, tsr.replyKafkaTopic);
     }
 

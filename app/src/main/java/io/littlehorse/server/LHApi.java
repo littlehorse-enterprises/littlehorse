@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.KafkaException;
@@ -114,6 +115,10 @@ public class LHApi {
         this.app.get(
             "/internal/localKeyedPrefixScan/{prefixKey}",
             this::internalLocalKeyedPrefixScanBytes
+        );
+
+        this.app.get(
+            "/metrics/diskUsage", this::getDiskUsage
         );
     }
 
@@ -402,5 +407,10 @@ public class LHApi {
         } else {
             ctx.json(resp);
         }
+    }
+
+    public void getDiskUsage(Context ctx) {
+        Long size = FileUtils.sizeOfDirectory(FileUtils.getFile(config.getStateDirectory()));
+        ctx.result(size.toString());
     }
 }
