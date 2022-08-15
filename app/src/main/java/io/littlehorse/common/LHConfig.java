@@ -20,10 +20,10 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.state.HostInfo;
 import io.javalin.Javalin;
-import io.littlehorse.common.util.KStreamsStateListener;
 import io.littlehorse.common.util.LHApiClient;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.common.util.kstreamlisteners.KStreamsStateListener;
 
 public class LHConfig {
     private Properties props;
@@ -341,7 +341,18 @@ public class LHConfig {
             javalinConf.enableCorsForAllOrigins();
         });
 
-        app.get("/health", (ctx) -> {
+        app.get("/live", (ctx) -> {
+            KafkaStreams.State state = listener.getState();
+            if (state == KafkaStreams.State.RUNNING || state == KafkaStreams.State.REBALANCING) {
+                ctx.status(200);
+                ctx.result(state.toString());
+            } else {
+                ctx.status(500);
+                ctx.result(state.toString());
+            }
+        });
+
+        app.get("/ready", (ctx) -> {
             if (listener.getState() == KafkaStreams.State.RUNNING) {
                 ctx.status(200);
                 ctx.result("OK");

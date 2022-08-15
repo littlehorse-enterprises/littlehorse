@@ -3,7 +3,7 @@ package io.littlehorse.server;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.Topology;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.util.KStreamsStateListener;
+import io.littlehorse.common.util.kstreamlisteners.KStreamsStateListener;
 
 public class Server {
     public static void doMain(LHConfig config) {

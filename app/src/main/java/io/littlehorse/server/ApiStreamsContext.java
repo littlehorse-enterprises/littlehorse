@@ -7,6 +7,7 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyQueryMetadata;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StoreQueryParameters;
+import org.apache.kafka.streams.StreamsMetadata;
 import org.apache.kafka.streams.state.HostInfo;
 import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
@@ -274,5 +275,21 @@ public class ApiStreamsContext {
             }
         }
         throw caught;
+    }
+
+    public Long count(String storeName) throws LHConnectionError {
+        long result = 0;
+        for (StreamsMetadata meta: streams.streamsMetadataForStore(storeName)) {
+            byte[] resp = client.getResponse(meta.hostInfo(), "/internal/countLocal/" + storeName);
+            result += Long.valueOf(new String(resp));
+        }
+        return result;
+    }
+
+    public Long countLocal(String storeName) {
+        ReadOnlyKeyValueStore<?, ?> store = streams.store(
+            StoreQueryParameters.fromNameAndType(storeName, QueryableStoreTypes.keyValueStore())
+        );
+        return store.approximateNumEntries();
     }
 }

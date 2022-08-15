@@ -27,9 +27,9 @@ import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.proto.scheduler.WfRunEventPb.EventCase;
 import io.littlehorse.common.proto.server.GETableClassEnumPb;
 import io.littlehorse.common.proto.server.LHResponseCodePb;
-import io.littlehorse.common.util.KStreamsStateListener;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.common.util.kstreamlisteners.KStreamsStateListener;
 import io.littlehorse.server.model.internal.IndexEntry;
 import io.littlehorse.server.model.internal.LHResponse;
 import io.littlehorse.server.model.internal.RangeResponse;
@@ -120,6 +120,11 @@ public class LHApi {
         this.app.get(
             "/metrics/diskUsage", this::getDiskUsage
         );
+
+        this.app.get("/metrics/taskRuns", this::countTaskRuns);
+        this.app.get("/metrics/wfRuns", this::countWfRuns);
+        this.app.get("/metrics/indexStore", this::countIndexEntries);
+        this.app.get("/internal/countLocal/{storeName}", this::internalCountStore);
     }
 
     public void start() {
@@ -412,5 +417,21 @@ public class LHApi {
     public void getDiskUsage(Context ctx) {
         Long size = FileUtils.sizeOfDirectory(FileUtils.getFile(config.getStateDirectory()));
         ctx.result(size.toString());
+    }
+
+    public void countTaskRuns(Context ctx) throws LHConnectionError {
+        ctx.result(streams.count(GETable.getBaseStoreName(TaskRun.class)).toString());
+    }
+
+    public void countWfRuns(Context ctx) throws LHConnectionError {
+        ctx.result(streams.count(GETable.getBaseStoreName(WfRun.class)).toString());
+    }
+
+    public void countIndexEntries(Context ctx) throws LHConnectionError {
+        ctx.result(streams.count(LHConstants.INDEX_STORE_NAME).toString());
+    }
+
+    public void internalCountStore(Context ctx) {
+        ctx.result(streams.countLocal(ctx.pathParam("storeName")).toString());
     }
 }
