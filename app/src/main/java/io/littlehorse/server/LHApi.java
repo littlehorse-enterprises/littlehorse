@@ -4,7 +4,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.KafkaException;
 import com.google.protobuf.MessageOrBuilder;
 import io.javalin.Javalin;
@@ -97,6 +99,7 @@ public class LHApi {
             handle((c) -> {this.post(c, TaskDef.class);}, ctx);
         });
         this.app.post("/WfRun", (ctx) -> handle(this::postWfRun, ctx));
+        this.app.post("/WfRunMany", (ctx) -> handle(this::postManyWfRuns, ctx));
 
         this.app.get("/search/WfSpec/name/{name}", this::getWfSpecByName);
 
@@ -175,6 +178,7 @@ public class LHApi {
     }
 
     public void postWfRun(Context ctx) {
+        boolean async = ctx.queryParamAsClass("async", Boolean.class).getOrDefault(false);
         LHResponse resp = new LHResponse(config);
         resp.code = LHResponseCodePb.OK;
         try {
@@ -196,12 +200,13 @@ public class LHApi {
                 event.runRequest = req;
                 event.time = new Date();
                 event.wfRunId = req.wfRunId;
-                event.wfSpecId = req.wfSpecId;
+                event.wfSpecId = spec.getObjectId();
                 req.wfSpecId = spec.getObjectId();
                 resp.id = req.wfRunId;
-                producer.send(
+                Future<RecordMetadata> future = producer.send(
                     req.wfRunId, event, LHConstants.WF_RUN_EVENT_TOPIC
-                ).get();
+                );
+                if (!async) future.get();
             }
         } catch(LHSerdeError exn) {
             resp.code = LHResponseCodePb.BAD_REQUEST_ERROR;
@@ -213,6 +218,41 @@ public class LHApi {
             resp.code = LHResponseCodePb.CONNECTION_ERROR;
             resp.message = "Problem sending Kafka Record: "
                 + exn.getMessage();
+        }
+        ctx.status(resp.getStatus());
+        ctx.json(resp);
+    }
+
+    public void postManyWfRuns(Context ctx) throws Exception {
+        int howMany = ctx.queryParamAsClass("howMany", Integer.class).getOrDefault(1000);
+        LHResponse resp = new LHResponse(config);
+        resp.code = LHResponseCodePb.OK;
+        WfRunRequest req = LHSerializable.fromJson(
+            ctx.body(), WfRunRequest.class, config
+        );
+        String guid = req.wfRunId == null ? LHUtil.generateGuid() : req.wfRunId;
+
+        WfSpec spec = client.getWfSpec(req.wfSpecId);
+
+        if (spec == null) {
+            resp.code = LHResponseCodePb.NOT_FOUND_ERROR;
+            resp.message = "Could not find specified WfSpec.";
+
+        } else {
+            for (int i = 0; i < howMany; i++) {
+                req.wfRunId = guid + "-" + i;
+                WfRunEvent event = new WfRunEvent();
+                event.type = EventCase.RUN_REQUEST;
+                event.runRequest = req;
+                event.time = new Date();
+                event.wfSpecId = spec.getObjectId();
+                req.wfSpecId = spec.getObjectId();
+                event.wfRunId = req.wfRunId;
+                resp.id = event.wfRunId;
+                producer.send(
+                    event.wfRunId, event, LHConstants.WF_RUN_EVENT_TOPIC
+                );
+            }
         }
         ctx.status(resp.getStatus());
         ctx.json(resp);
