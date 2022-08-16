@@ -58,6 +58,12 @@ public class LHConfig {
         ));
     }
 
+    public int getWorkerThreads() {
+        return Integer.valueOf(getOrSetDefault(
+            LHConstants.NUM_WORKER_THREADS_KEY, "64")
+        );
+    }
+
     public String getKafkaGroupId() {
         return getOrSetDefault(LHConstants.KAFKA_GROUP_ID_KEY, "unset-group-id-bad");
     }
@@ -196,6 +202,9 @@ public class LHConfig {
             org.apache.kafka.common.serialization.BytesDeserializer.class
         );
         conf.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
+
+        // TODO: Make this more graceful
+        conf.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, getWorkerThreads());
 
         kafkaConsumer = new KafkaConsumer<>(conf);
         kafkaConsumer.subscribe(topics);

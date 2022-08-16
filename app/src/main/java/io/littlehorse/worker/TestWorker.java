@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -36,6 +38,7 @@ public class TestWorker {
     private LHProducer txnProd;
     private ExecutorService threadPool;
     private LHConfig config;
+    private Semaphore availThreadsSemaphore;
 
     private List<TaskScheduleRequest> acknowledgedTasks;
     private Map<TopicPartition, OffsetAndMetadata> offsetMap;
@@ -47,9 +50,10 @@ public class TestWorker {
             System.getenv().getOrDefault("LHORSE_TASK_DEF_ID", "task1")
         ));
         this.config = config;
-        this.threadPool = Executors.newFixedThreadPool(32);
+        this.threadPool = Executors.newFixedThreadPool(config.getWorkerThreads());
         acknowledgedTasks = new ArrayList<>();
         offsetMap = new HashMap<>();
+        availThreadsSemaphore = new Semaphore(config.getWorkerThreads());
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             this.prod.close();
@@ -66,19 +70,26 @@ public class TestWorker {
             acknowledgedTasks.clear();
             offsetMap.clear();
             txnProd.beginTransaction();
+            boolean committed = false;
             try {
                 records.forEach(this::acknowledgeRequest);
                 txnProd.sendOffsetsToTransaction(offsetMap, cons.groupMetadata());
                 txnProd.commitTransaction();
+                committed = true;
             } catch(Exception exn) {
                 txnProd.abortTransaction();
             }
-
-            enqueueAcknowledgedTasks();
+            if (committed) enqueueAcknowledgedTasks();
         }
     }
 
     private void acknowledgeRequest(ConsumerRecord<String, Bytes> r) {
+        try {
+            availThreadsSemaphore.acquire();
+        } catch(InterruptedException exn) {
+            throw new RuntimeException(exn);
+        }
+
         TaskScheduleRequest tsr;
         try {
             tsr = LHSerializable.fromBytes(
@@ -119,6 +130,14 @@ public class TestWorker {
     }
 
     private void executeTask(TaskScheduleRequest tsr) {
+        try {
+            executeHelper(tsr);
+        } catch(Exception exn) {
+            exn.printStackTrace();
+        }
+    }
+
+    private void executeHelper(TaskScheduleRequest tsr) throws Exception {
         TaskResultEvent ce = new TaskResultEvent();
         ce.taskRunNumber = tsr.taskRunNumber;
         ce.taskRunPosition = tsr.taskRunPosition;
@@ -140,8 +159,9 @@ public class TestWorker {
         event.taskResult = ce;
         event.type = EventCase.TASK_RESULT;
 
-        LHUtil.log("Completing " + tsr.wfRunId + " " + tsr.threadRunNumber + " " + tsr.taskRunNumber);
-        prod.send(tsr.wfRunId, event, tsr.replyKafkaTopic);
+        // LHUtil.log("Completing " + tsr.wfRunId + " " + tsr.threadRunNumber + " " + tsr.taskRunNumber);
+        prod.send(tsr.wfRunId, event, tsr.replyKafkaTopic).get();
+        availThreadsSemaphore.release();
     }
 
     public static void doMain(LHConfig config) {

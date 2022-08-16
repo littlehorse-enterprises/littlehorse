@@ -294,6 +294,10 @@ public class ThreadRunState {
                 break;
 
             case TIMEOUT:
+                LHUtil.log(
+                    "evt number:", ce.taskRunNumber, " vs ", currentNodeRun.number,
+                    "evt position: ", ce.taskRunPosition, " vs ", currentNodeRun.position
+                );
             case TASK_FAILURE:
                 currentNodeRun.status = LHStatusPb.ERROR;
                 break;

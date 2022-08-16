@@ -17,6 +17,7 @@ public class LHConstants {
     public static final String API_HOST_KEY = "LHORSE_API_HOST";
     public static final String API_PORT_KEY = "LHORSE_API_PORT";
     public static final String DEFAULT_TIMEOUT_KEY = "LHORSE_DEFAULT_TIMEOUT";
+    public static final String NUM_WORKER_THREADS_KEY = "LHORSE_NUM_WORKER_THREADS";
 
     public static final String WF_RUN_EVENT_TOPIC = "WFRun_Event";
     public static final String WF_RUN_OBSERVABILITY_TOPIC = "WFRun_Observability";
