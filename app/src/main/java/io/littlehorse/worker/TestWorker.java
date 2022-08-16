@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -27,7 +26,6 @@ import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.proto.scheduler.WfRunEventPb.EventCase;
 import io.littlehorse.common.util.LHProducer;
-import io.littlehorse.common.util.LHUtil;
 
 /**
  * This is a shortcut, obviously.
@@ -147,7 +145,7 @@ public class TestWorker {
         ce.resultCode = TaskResultCodePb.SUCCESS;
         ce.stderr = null;
         String stdoutStr = "Completed task " + tsr.taskDefName + " " + tsr.wfRunId;
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 5; i++) {
             stdoutStr += stdoutStr;
         }
         ce.stdout = stdoutStr.getBytes();
@@ -159,7 +157,6 @@ public class TestWorker {
         event.taskResult = ce;
         event.type = EventCase.TASK_RESULT;
 
-        // LHUtil.log("Completing " + tsr.wfRunId + " " + tsr.threadRunNumber + " " + tsr.taskRunNumber);
         prod.send(tsr.wfRunId, event, tsr.replyKafkaTopic).get();
         availThreadsSemaphore.release();
     }

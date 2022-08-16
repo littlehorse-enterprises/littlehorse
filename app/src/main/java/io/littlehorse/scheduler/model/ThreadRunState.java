@@ -105,6 +105,11 @@ public class ThreadRunState {
             }
         } else if (currentNodeRun.status == LHStatusPb.RUNNING) {
             // Nothing to do, just wait for next event to come in.
+        } else if (currentNodeRun.status == LHStatusPb.STARTING) {
+            // Nothing to do.
+            // This is possible if we have scheduled a retry due to timeout and then an old
+            // event just came in, or (to be implemented) if an external event comes in, or if
+            // another thread notifies this thread that it's no longer blocked, etc.
         } else {
             throw new RuntimeException("Unexpected state for noderun: " + currentNodeRun.status);
         }
@@ -219,7 +224,7 @@ public class ThreadRunState {
         wfRun.handleThreadStatus(threadRunNumber, time, newStatus);
         
         if (newStatus == LHStatusPb.COMPLETED) {
-            System.out.println(wfRun.endTime.getTime() - wfRun.startTime.getTime());
+            LHUtil.log(wfRun.id, "COMPLETED at", wfRun.endTime.getTime() - wfRun.startTime.getTime());
         }
     }
 
