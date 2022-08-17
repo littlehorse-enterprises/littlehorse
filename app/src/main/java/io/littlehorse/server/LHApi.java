@@ -78,6 +78,9 @@ public class LHApi {
             "/TaskRun/{wfRunId}/{threadRunNumber}/{taskRunPosition}",
             (ctx) -> handle(this::getTaskRun, ctx)
         );
+        this.app.get(
+            "/search/TaskRun/wfRunId/{wfRunId}", this::getTaskRunsByWfRun
+        );
 
         this.app.get(
             "/search/WfRun/wfSpecId/{id}",
@@ -113,8 +116,12 @@ public class LHApi {
             (ctx) -> handle(this::internalGetBytes, ctx)
         );
         this.app.get(
-            "/internal/localKeyedPrefixScan/{prefixKey}",
-            this::internalLocalKeyedPrefixScanBytes
+            "/internal/localKeyedPrefixIdxScan/{storeKeyPrefix}",
+            this::internalLocalKeyedPrefixIdxScanBytes
+        );
+        this.app.get(
+            "/internal/localKeyedPrefixObjScan/{storeName}/{storeKeyPrefix}",
+            this::internalLocalKeyedPrefixObjScanBytes
         );
 
         this.app.get(
@@ -270,7 +277,7 @@ public class LHApi {
 
     public void getWfSpecByName(Context ctx) {
         String name = ctx.pathParam("name");
-        keyedPrefixScan(
+        keyedPrefixIdxScan(
             Arrays.asList(Pair.of("name", name)),
             WfSpec.class,
             ctx
@@ -279,18 +286,23 @@ public class LHApi {
 
     public void getRunBySpecId(Context ctx) {
         String id = ctx.pathParam("id");
-        keyedPrefixScan(Arrays.asList(Pair.of("wfSpecId", id)), WfRun.class, ctx);
+        keyedPrefixIdxScan(Arrays.asList(Pair.of("wfSpecId", id)), WfRun.class, ctx);
+    }
+
+    public void getTaskRunsByWfRun(Context ctx) {
+        String wfRunId = ctx.pathParam("wfRunId");
+        keyedPrefixObjScan(wfRunId, TaskRun.class, wfRunId, ctx);
     }
 
     public void getRunBySpecName(Context ctx) {
         String name = ctx.pathParam("name");
-        keyedPrefixScan(Arrays.asList(Pair.of("wfSpecName", name)), WfRun.class, ctx);
+        keyedPrefixIdxScan(Arrays.asList(Pair.of("wfSpecName", name)), WfRun.class, ctx);
     }
 
     public void getTaskRunByStatus(Context ctx) {
         String taskDefId = ctx.pathParam("taskDefId");
         String status = ctx.pathParam("status");
-        keyedPrefixScan(
+        keyedPrefixIdxScan(
             Arrays.asList(
                 Pair.of("taskDefId", taskDefId),
                 Pair.of("status", status)
@@ -314,15 +326,29 @@ public class LHApi {
         }
     }
 
-    public void internalLocalKeyedPrefixScanBytes(Context ctx) {
+    public void internalLocalKeyedPrefixIdxScanBytes(Context ctx) {
         String token = ctx.queryParamAsClass(
             "token", String.class
         ).getOrDefault(null);
-        String prefix = ctx.pathParam("prefix");
+        String prefix = ctx.pathParam("storeKeyPrefix");
         int limit = ctx.queryParamAsClass("limit", Integer.class).getOrDefault(1000);
 
-        RangeResponse resp = streams.internalLocalKeyedPrefixScan(
+        RangeResponse resp = streams.internalLocalKeyedIdxPrefixScan(
             prefix, token, limit
+        );
+        ctx.result(resp.toBytes(config));
+    }
+
+    public void internalLocalKeyedPrefixObjScanBytes(Context ctx) {
+        String token = ctx.queryParamAsClass(
+            "token", String.class
+        ).getOrDefault(null);
+        String storeName = ctx.pathParam("storeName");
+        String prefix = ctx.pathParam("storeKeyPrefix");
+        int limit = ctx.queryParamAsClass("limit", Integer.class).getOrDefault(1000);
+
+        RangeResponse resp = streams.internalLocalKeyedObjPrefixScan(
+            storeName, prefix, token, limit
         );
         ctx.result(resp.toBytes(config));
     }
@@ -341,7 +367,7 @@ public class LHApi {
         }
     }
 
-    private <U extends MessageOrBuilder, T extends GETable<U>> void keyedPrefixScan(
+    private <U extends MessageOrBuilder, T extends GETable<U>> void keyedPrefixIdxScan(
         List<Pair<String, String>> attributes,
         Class<T> cls,
         Context ctx
@@ -360,7 +386,38 @@ public class LHApi {
 
         LHResponse resp = new LHResponse(config);
         try {
-            RangeResponse out = streams.keyedPrefixScan(prefixKey, token, limit);
+            RangeResponse out = streams.keyedPrefixIdxScan(prefixKey, token, limit);
+            resp.code = LHResponseCodePb.OK;
+            resp.result = out;
+        } catch(LHConnectionError exn) {
+            resp.code = LHResponseCodePb.CONNECTION_ERROR;
+            resp.message = "Failed looking up the " + cls.getSimpleName() + ": "
+                + exn.getMessage();
+            ctx.status(500);
+        }
+
+        if (asProto) {
+            ctx.result(resp.toBytes(config));
+        } else {
+            ctx.json(resp);
+        }
+    }
+
+    private <U extends MessageOrBuilder, T extends GETable<U>> void keyedPrefixObjScan(
+        String partitionKey,
+        Class<T> cls,
+        String storeKeyPrefix,
+        Context ctx
+    ) {
+        String token = ctx.queryParamAsClass("token", String.class).getOrDefault(null);
+        boolean asProto = ctx.queryParamAsClass("asProto", Boolean.class).getOrDefault(false);
+        int limit = ctx.queryParamAsClass("limit", Integer.class).getOrDefault(1000);
+
+        LHResponse resp = new LHResponse(config);
+        try {
+            RangeResponse out = streams.keyedPrefixObjScan(
+                GETable.getBaseStoreName(cls), partitionKey, storeKeyPrefix, token, limit
+            );
             resp.code = LHResponseCodePb.OK;
             resp.result = out;
         } catch(LHConnectionError exn) {

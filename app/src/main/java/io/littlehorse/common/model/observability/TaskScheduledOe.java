@@ -47,7 +47,7 @@ public class TaskScheduledOe extends LHSerializable<TaskScheduledOePb> {
         TaskScheduledOePb p = (TaskScheduledOePb) proto;
         taskDefId = p.getTaskDefId();
         threadRunNumber = p.getThreadRunNumber();
-        taskRunNumber = p.getTaskRunAttemptNumber();
+        taskRunNumber = p.getTaskRunNumber();
         taskRunPosition = p.getTaskRunPosition();
         taskRunAttemptNumber = p.getTaskRunAttemptNumber();
         wfRunId = p.getWfRunId();

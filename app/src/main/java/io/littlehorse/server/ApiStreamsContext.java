@@ -147,22 +147,22 @@ public class ApiStreamsContext {
         return timeOut.toBytes(config);
     }
 
-    public RangeResponse keyedPrefixScan(String prefixKey, String token, int limit)
+    public RangeResponse keyedPrefixIdxScan(String prefixKey, String token, int limit)
     throws LHConnectionError {
         String storeName = LHConstants.INDEX_STORE_NAME;
         KeyQueryMetadata metadata = streams.queryMetadataForKey(
             storeName, prefixKey, Serdes.String().serializer()
         );
         if (metadata.activeHost().equals(thisHost)) {
-            return internalLocalKeyedPrefixScan(prefixKey, token, limit);
+            return internalLocalKeyedIdxPrefixScan(prefixKey, token, limit);
         } else {
-            return remoteKeyedPrefixScan(
+            return remoteKeyedPrefixIdxScan(
                 prefixKey, token, limit, metadata.activeHost(), metadata.standbyHosts()
             );
         }
     }
 
-    public RangeResponse internalLocalKeyedPrefixScan(
+    public RangeResponse internalLocalKeyedIdxPrefixScan(
         String prefixKey, String token, int limit
     ) {
         RangeResponse out = new RangeResponse();
@@ -179,6 +179,45 @@ public class ApiStreamsContext {
             }
         }
 
+        return out;
+    }
+
+    public RangeResponse keyedPrefixObjScan(
+        String storeName,
+        String partitionKey,
+        String storeKeyPrefix,
+        String token,
+        int limit
+    ) throws LHConnectionError {
+        KeyQueryMetadata metadata = streams.queryMetadataForKey(
+            storeName, partitionKey, Serdes.String().serializer()
+        );
+        if (metadata.activeHost().equals(thisHost)) {
+            return internalLocalKeyedObjPrefixScan(storeName, storeKeyPrefix, token, limit);
+        } else {
+            return remoteKeyedPrefixObjScan(
+                storeName, storeKeyPrefix, token, limit,
+                metadata.activeHost(), metadata.standbyHosts()
+            );
+        }
+    }
+
+    public RangeResponse internalLocalKeyedObjPrefixScan(
+        String storeName,
+        String prefix,
+        String token,
+        int limit
+    ) {
+        RangeResponse out = new RangeResponse();
+        ReadOnlyKeyValueStore<String, GETable<?>> store = getStore(storeName);
+        try (KeyValueIterator<String, GETable<?>> iter = store.prefixScan(
+            prefix, Serdes.String().serializer()
+        )) {
+            while (iter.hasNext()) {
+                KeyValue<String, GETable<?>> kvp = iter.next();
+                out.ids.add(kvp.key);
+            }
+        }
         return out;
     }
 
@@ -223,12 +262,46 @@ public class ApiStreamsContext {
         );
     }
 
-    private RangeResponse remoteKeyedPrefixScan(
+    private RangeResponse remoteKeyedPrefixObjScan(
+        String storeName, String prefixKey, String token, int limit,
+        HostInfo host, Set<HostInfo> standbys
+    ) throws LHConnectionError {
+        LHConnectionError caught = null;
+        String path = "/internal/localKeyedObjectScan/" + storeName + "/" + prefixKey;
+        path += "?limit=" + limit;
+        if (token != null) {
+            path += "&token=" + token;
+        }
+        try {
+            return LHSerializable.fromBytes(
+                client.getResponse(host, path), RangeResponse.class, config
+            );
+        } catch(LHConnectionError exn) {
+            for (HostInfo standby: standbys) {
+                caught = exn;
+                try {
+                    LHUtil.log("Calling standby: ", standby);
+                    return LHSerializable.fromBytes(
+                        client.getResponse(standby, path), RangeResponse.class, config
+                    );
+                } catch(LHConnectionError other) {
+                    LHUtil.log("Failed making standby call.");
+                } catch(LHSerdeError impossibleError) {
+                    throw new RuntimeException(impossibleError);
+                }
+            }
+        } catch(LHSerdeError exn) {/* not possible */}
+
+        throw caught;
+    }
+    
+
+    private RangeResponse remoteKeyedPrefixIdxScan(
         String prefixKey, String token, int limit,
         HostInfo host, Set<HostInfo> standbys
     ) throws LHConnectionError {
         LHConnectionError caught = null;
-        String path = "/internal/localKeyedPrefixScan/" + prefixKey;
+        String path = "/internal/localKeyedPrefixIdxScan/" + prefixKey;
         path += "?limit=" + limit;
         if (token != null) {
             path += "&token=" + token;
