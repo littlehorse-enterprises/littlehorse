@@ -222,7 +222,6 @@ public class LHConfig {
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, this.getBootstrapServers());
         props.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
         props.put(StreamsConfig.STATE_DIR_CONFIG, this.getStateDirectory());
-        props.put(StreamsConfig.METADATA_MAX_AGE_CONFIG, 4000);
         props.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, "exactly_once_v2");
         props.put(StreamsConfig.TOPOLOGY_OPTIMIZATION_CONFIG, "all");
         props.put(StreamsConfig.producerPrefix(ProducerConfig.ACKS_CONFIG), "all");

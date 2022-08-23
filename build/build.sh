@@ -8,5 +8,4 @@ cd ${SCRIPT_DIR}/..
 
 gradle fatJar
 
-docker build -f ${SCRIPT_DIR}/Dockerfile.scheduler -t lh-scheduler .
-docker build -f ${SCRIPT_DIR}/Dockerfile.worker -t lh-worker .
+docker build -f ${SCRIPT_DIR}/Dockerfile -t littlehorse .

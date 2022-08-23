@@ -1,0 +1,96 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: Kafka
+metadata:
+  name: lh-kafka
+  namespace: kafka
+spec:
+  kafka:
+    version: 3.1.0
+    replicas: 3
+    listeners:
+      - name: plain
+        port: 9092
+        type: internal
+        tls: false
+      - name: tls
+        port: 9093
+        type: internal
+        tls: true
+    rack:
+      topologyKey: topology.kubernetes.io/zone
+    config:
+      offsets.topic.replication.factor: 3
+      transaction.state.log.replication.factor: 3
+      transaction.state.log.min.isr: 3
+      default.replication.factor: 3
+      min.insync.replicas: 2
+      inter.broker.protocol.version: "3.1"
+    rack:
+      topologyKey: topology.kubernetes.io/zone
+    storage:
+      type: jbod
+      volumes:
+      - id: 0
+        type: persistent-claim
+        size: 30Gi
+        deleteClaim: true
+  zookeeper:
+    replicas: 3
+    storage:
+      type: persistent-claim
+      size: 10Gi
+      deleteClaim: true
+  entityOperator:
+    topicOperator: {}
+    userOperator: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: postgres
+    io.littlehorse/active: "true"
+  name: postgres
+  namespace: kafka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+      io.littlehorse/active: "true"
+  template:
+    metadata:
+      labels:
+        app: postgres
+        io.littlehorse/active: "true"
+    spec:
+      containers:
+      - env:
+        - name: POSTGRES_DB
+          value: postgres
+        - name: POSTGRES_USER
+          value: postgres
+        - name: POSTGRES_PASSWORD
+          value: postgres
+        image: postgres:10.4
+        imagePullPolicy: IfNotPresent
+        name: postgres
+        ports:
+        - containerPort: 5432
+          protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: postgres
+    io.littlehorse/active: "true"
+  name: postgres
+  namespace: kafka
+spec:
+  ports:
+  - port: 5432
+  selector:
+    app: postgres
+    io.littlehorse/active: "true"
+  type: ClusterIP
