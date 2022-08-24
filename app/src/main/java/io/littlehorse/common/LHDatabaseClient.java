@@ -51,6 +51,11 @@ public class LHDatabaseClient {
                     LHResponse.class,
                     config
                 );
+            } else if (response.code != LHResponseCodePb.OK) {
+                throw new LHConnectionError(
+                    null,
+                    "Failed to load the thing: " + response.code + " " + response.message
+                );
             }
 
             return (WfSpec) response.result;

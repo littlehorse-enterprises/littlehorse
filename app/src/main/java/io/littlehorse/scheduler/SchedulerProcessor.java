@@ -158,7 +158,6 @@ public class SchedulerProcessor
         if (out == null) {
             try {
                 out = client.getWfSpec(id);
-                System.out.println(out.toJson());
                 wfSpecCache.put(id, out);
             } catch(LHConnectionError exn) {
                 exn.printStackTrace();

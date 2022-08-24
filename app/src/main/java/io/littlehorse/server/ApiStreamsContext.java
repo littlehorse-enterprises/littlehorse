@@ -61,11 +61,11 @@ public class ApiStreamsContext {
             byte[] serialized = queryRemoteBytes(
                 storeName, metadata.activeHost(), storeKey, metadata.standbyHosts()
             );
+            if (serialized == null) return null;
             try {
                 return LHSerializable.fromBytes(serialized, cls, config);
             } catch(LHSerdeError exn) {
-                throw new LHConnectionError(
-                    exn, "Got invalid protobuf over the wire: ");
+                throw new LHConnectionError(exn, "Got invalid protobuf over the wire: ");
             }
         }
     }
@@ -267,15 +267,15 @@ public class ApiStreamsContext {
         HostInfo host, Set<HostInfo> standbys
     ) throws LHConnectionError {
         LHConnectionError caught = null;
-        String path = "/internal/localKeyedObjectScan/" + storeName + "/" + prefixKey;
+        String path = "/internal/localKeyedPrefixObjScan/" + storeName + "/" + prefixKey;
         path += "?limit=" + limit;
+        byte[] resp = null;
         if (token != null) {
             path += "&token=" + token;
         }
         try {
-            return LHSerializable.fromBytes(
-                client.getResponse(host, path), RangeResponse.class, config
-            );
+            resp = client.getResponse(host, path);
+            return LHSerializable.fromBytes(resp, RangeResponse.class, config);
         } catch(LHConnectionError exn) {
             for (HostInfo standby: standbys) {
                 caught = exn;
@@ -290,11 +290,16 @@ public class ApiStreamsContext {
                     throw new RuntimeException(impossibleError);
                 }
             }
-        } catch(LHSerdeError exn) {/* not possible */}
+        } catch(LHSerdeError exn) {
+            String respstr = "";
+            try {
+                respstr = new String(resp);
+            } catch(Exception exn2) {}
 
+            throw new LHConnectionError(exn, "Yikes, got the exn: " + exn.getMessage() + respstr);
+        }
         throw caught;
     }
-    
 
     private RangeResponse remoteKeyedPrefixIdxScan(
         String prefixKey, String token, int limit,
@@ -335,7 +340,12 @@ public class ApiStreamsContext {
         LHConnectionError caught = null;
         String path = "/internal/storeBytes/" + storeName + "/" + storeKey;
         try {
-            return client.getResponse(host, path);
+            byte[] out = client.getResponse(host, path);
+            if (out.length == 0) {
+                return null;
+            } else {
+                return out;
+            }
         } catch(LHConnectionError exn) {
             caught = exn;
             for (HostInfo standby: standbys) {

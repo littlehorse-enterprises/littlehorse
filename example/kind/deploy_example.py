@@ -19,7 +19,7 @@ metadata:
     app: {name}
     io.littlehorse/deployedBy: "true"
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: {name}

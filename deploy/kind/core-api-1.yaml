@@ -8,7 +8,7 @@ metadata:
     app: lh-server
     io.littlehorse/active: "true"
 spec:
-  replicas: 2
+  replicas: 6
   serviceName: lh-server
   selector:
     matchLabels:
@@ -110,7 +110,7 @@ metadata:
     io.littlehorse/active: "true"
 spec:
   serviceName: lh-scheduler
-  replicas: 2
+  replicas: 6
   selector:
     matchLabels:
       app: lh-scheduler
@@ -141,14 +141,6 @@ spec:
               fieldPath: metadata.name
         - name: "LHORSE_KAFKA_STREAMS_STATE_DIR"
           value: "/kafkaStateStores"
-        # - name: LHORSE_ADVERTISED_HOST
-        #   valueFrom:
-        #     fieldRef:
-        #       fieldPath: status.podIP
-        # - name: LHORSE_ADVERTISED_PORT
-        #   value: "5000"
-        # - name: "LHORSE_ADVERTISED_PROTO"
-        #   value: "http"
         - name: "LHORSE_CLUSTER_PARTITIONS"
           value: "72"
         - name: "LHORSE_TASK_PARTITIONS"
