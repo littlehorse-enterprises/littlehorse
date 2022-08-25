@@ -19,7 +19,7 @@ metadata:
     app: {name}
     io.littlehorse/deployedBy: "true"
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
       app: {name}
@@ -28,6 +28,13 @@ spec:
       labels:
         app: {name}
     spec:
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: topology.kubernetes.io/zone
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            app: {name}
       containers:
       - name: {name}
         image: {image}
