@@ -6,7 +6,7 @@ metadata:
 spec:
   kafka:
     version: 3.1.0
-    replicas: 3
+    replicas: 6
     template:
       pod:
         topologySpreadConstraints:
@@ -29,7 +29,7 @@ spec:
     config:
       offsets.topic.replication.factor: 3
       transaction.state.log.replication.factor: 3
-      transaction.state.log.min.isr: 3
+      transaction.state.log.min.isr: 2
       default.replication.factor: 3
       min.insync.replicas: 2
       inter.broker.protocol.version: "3.1"
@@ -53,7 +53,7 @@ spec:
             matchLabels:
               app.kubernetes.io/name: zookeeper
               strimzi.io/cluster: lh-kafka
-    replicas: 1
+    replicas: 3
     storage:
       type: persistent-claim
       size: 5Gi

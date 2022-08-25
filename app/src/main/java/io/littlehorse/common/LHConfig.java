@@ -240,6 +240,7 @@ public class LHConfig {
             StreamsConfig.consumerPrefix(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG),
             10000
         );
+        props.put(StreamsConfig.METADATA_MAX_AGE_CONFIG, "4000");
         props.put(
             StreamsConfig.NUM_STREAM_THREADS_CONFIG,
             Integer.valueOf(
@@ -247,21 +248,13 @@ public class LHConfig {
             )
         );
         props.put(
-            StreamsConfig.NUM_STANDBY_REPLICAS_CONFIG,
-            this.getStandbyReplicas()
-        );
-        props.put(
-            StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG,
-            Serdes.StringSerde.class.getName()
-        );
-        props.put(
             StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG,
             Serdes.StringSerde.class.getName()
         );
-        props.put(
-            StreamsConfig.COMMIT_INTERVAL_MS_CONFIG,
-            getStreamsCommitInterval()
-        );
+        props.put(StreamsConfig.NUM_STANDBY_REPLICAS_CONFIG, this.getStandbyReplicas());
+        props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.StringSerde.class.getName());
+        props.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, getStreamsCommitInterval());
+
         return props;
     }
 

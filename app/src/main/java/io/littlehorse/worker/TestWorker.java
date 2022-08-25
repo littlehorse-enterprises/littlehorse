@@ -26,6 +26,7 @@ import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.proto.scheduler.WfRunEventPb.EventCase;
 import io.littlehorse.common.util.LHProducer;
+import io.littlehorse.common.util.LHUtil;
 
 /**
  * This is a shortcut, obviously.
@@ -149,6 +150,7 @@ public class TestWorker {
             stdoutStr += stdoutStr;
         }
         ce.stdout = stdoutStr.getBytes();
+        LHUtil.log(tsr.wfRunId, tsr.taskRunPosition);
 
         WfRunEvent event = new WfRunEvent();
         event.wfRunId = tsr.wfRunId;
