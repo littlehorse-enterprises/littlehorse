@@ -11,6 +11,7 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.util.kstreamlisteners.KStreamsStateListener;
 import io.littlehorse.common.util.serde.LHSerde;
 import io.littlehorse.scheduler.model.SchedulerTimer;
 import io.littlehorse.scheduler.model.WfRunState;
@@ -96,6 +97,7 @@ public class Scheduler {
     public static void doMain(LHConfig config) {
         Topology topology = initTopology(config);
         KafkaStreams scheduler = new KafkaStreams(topology, config.getStreamsConfig());
+        scheduler.setStateListener(new KStreamsStateListener());
 
         Runtime.getRuntime().addShutdownHook(new Thread(scheduler::close));
         scheduler.start();

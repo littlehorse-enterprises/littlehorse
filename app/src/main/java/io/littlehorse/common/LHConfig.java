@@ -237,6 +237,10 @@ public class LHConfig {
             org.apache.kafka.streams.errors.DefaultProductionExceptionHandler.class
         );
         props.put(
+            StreamsConfig.consumerPrefix(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG),
+            10000
+        );
+        props.put(
             StreamsConfig.NUM_STREAM_THREADS_CONFIG,
             Integer.valueOf(
                 getOrSetDefault(LHConstants.NUM_STREAM_THREADS_KEY, "1")
