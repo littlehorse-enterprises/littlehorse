@@ -90,7 +90,7 @@ spec:
           value: "5000"
         ports:
         - containerPort: 5000
-        command: ['java', '-cp', '/littleHorse.jar', 'io.littlehorse.App', 'server']
+        command: ['/server']
         volumeMounts:
         - name: streams-state
           mountPath: /kafkaStateStores
@@ -173,7 +173,7 @@ spec:
           value: "5000"
         ports:
         - containerPort: 5000
-        command: ['java', '-cp', '/littleHorse.jar', 'io.littlehorse.App', 'scheduler']
+        command: ['/scheduler']
         volumeMounts:
         - name: streams-state
           mountPath: /kafkaStateStores

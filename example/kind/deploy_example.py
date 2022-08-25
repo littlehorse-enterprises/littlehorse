@@ -39,7 +39,7 @@ spec:
       - name: {name}
         image: {image}
         imagePullPolicy: IfNotPresent
-        command: ['java', '-cp', '/littleHorse.jar', 'io.littlehorse.App', 'worker']
+        command: ['/worker']
         env:
         - name: "LHORSE_KAFKA_BOOTSTRAP"
           value: "lh-kafka-kafka-bootstrap.kafka:9092"
