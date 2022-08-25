@@ -234,8 +234,8 @@ public class ApiStreamsContext {
         return streams.store(
             StoreQueryParameters.fromNameAndType(
                 storeName,
-                QueryableStoreTypes.keyValueStore()
-            )
+                QueryableStoreTypes.<String, GETable<?>>keyValueStore()
+            ).enableStaleStores()
         );
     }
 
