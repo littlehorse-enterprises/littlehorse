@@ -2,6 +2,9 @@ package io.littlehorse.server;
 
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.Topology;
+import org.apache.kafka.streams.processor.api.ProcessorContext;
+import org.apache.kafka.streams.processor.api.Processor;
+import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.StoreBuilder;
 import org.apache.kafka.streams.state.Stores;
@@ -13,6 +16,7 @@ import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.observability.ObservabilityEvents;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.common.util.serde.LHDeserializer;
 import io.littlehorse.common.util.serde.LHSerde;
 import io.littlehorse.common.util.serde.LHSerializer;
@@ -35,12 +39,35 @@ public class ServerTopology {
 
         addPOSTableSubTopology(topo, WfSpec.class, config);
         addPOSTableSubTopology(topo, TaskDef.class, config);
+        addGlobalMetaStore(topo, WfSpec.class, config);
+        addGlobalMetaStore(topo, TaskDef.class, config);
 
         addIdxSubTopology(topo, config);
 
         addWfRunSubTopology(topo, config);
 
         return topo;
+    }
+
+    private static <U extends MessageOrBuilder, T extends POSTable<U>>
+    void addGlobalMetaStore(Topology topology, Class<T> cls, LHConfig config) {
+        String sourceName = POSTable.getGlobalStoreSourceName(cls);
+        String inputTopic = POSTable.getEntityTopicName(cls);
+        String processorName = POSTable.getGlobalStoreProcessorName(cls);
+
+        topology.addGlobalStore(
+            Stores.keyValueStoreBuilder(
+                Stores.persistentKeyValueStore(POSTable.getGlobalStoreName(cls)),
+                Serdes.String(),
+                new LHSerde<>(cls, config)
+            ).withLoggingDisabled(),
+            sourceName,
+            Serdes.String().deserializer(),
+            new LHDeserializer<T>(cls, config),
+            inputTopic,
+            processorName,
+            () -> {return new GlobalMetaStoreProcessor<T>(cls);}
+        );
     }
 
     private static void addWfRunSubTopology(Topology topo, LHConfig config) {
@@ -202,5 +229,35 @@ public class ServerTopology {
             new LHSerde<LHResponse>(LHResponse.class, config)
         );
         topo.addStateStore(responseStoreBuilder, baseProcessorName);
+    }
+}
+
+// TODO: This results in duplicate storage and processing. Could be merged/replaced with the
+// POSTableProcessor to save space.
+class GlobalMetaStoreProcessor<T extends POSTable<?>>
+implements Processor<String, T, Void, Void> {
+    private KeyValueStore<String, T> store;
+    private Class<T> cls;
+
+    public GlobalMetaStoreProcessor(Class<T> cls) {
+        this.cls = cls;
+    }
+
+    @Override
+    public void init(final ProcessorContext<Void, Void> ctx) {
+        this.store = ctx.getStateStore(POSTable.getGlobalStoreName(cls));
+    }
+
+    @Override
+    public void process(final Record<String, T> record) {
+        T v = record.value();
+        String k = record.key();
+        if (v == null) {
+            LHUtil.log("delete");
+            store.delete(k);
+        } else {
+            LHUtil.log("put");
+            store.put(k, v);
+        }
     }
 }

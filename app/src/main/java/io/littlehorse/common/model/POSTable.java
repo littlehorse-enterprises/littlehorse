@@ -54,4 +54,19 @@ public abstract class POSTable<T extends MessageOrBuilder> extends GETable<T> {
     public static String getResponseStoreName(Class<? extends POSTable<?>> cls) {
         return cls.getSimpleName() + "_ResponseStore";
     }
+
+    public static String getGlobalStoreSourceName(Class<? extends POSTable<?>> cls) {
+                // TODO: this should throw exception if used with invalid type.
+                return cls.getSimpleName() + "_GlobalStoreSource";
+    }
+
+    public static String getGlobalStoreName(Class<? extends POSTable<?>> cls) {
+        // TODO: this should throw exception if used with invalid type.
+        return cls.getSimpleName() + "_GlobalStore";
+    }
+
+    public static String getGlobalStoreProcessorName(Class<? extends POSTable<?>> cls) {
+        // TODO: this should throw exception if used with invalid type.
+        return cls.getSimpleName() + "_GlobalStoreProcessor";
+    }
 }
