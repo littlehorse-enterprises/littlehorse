@@ -1,8 +1,0 @@
-#!/bin/bash
-
-java -cp /javaInclude:/littleHorse.jar io.littlehorse.App scheduler &
-
-while true
-do
-  sleep 1000
-done

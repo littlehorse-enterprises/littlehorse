@@ -275,6 +275,18 @@ public class ThreadRunState {
         if (currentNodeRun.position > ce.taskRunPosition) {
             // TODO: Determine if this is theoretically impossible.
             // If it's impossible, throw exception to prevent silent bugs.
+
+            // Update 8/25: I think this is legally possible eg when a task gets timed out but
+            // then the event comes in later. Perhaps if the producer retry timeout on the task
+            // worker is longer than the task timeout...
+
+            // default delivery.timeout.ms is 2 minutes.
+            // TODO: As an experiment, see what happens when we reduce that to something less than
+            // the task timeout (which we have at 10 seconds). If our theory is correct, then
+            // we shouldn't get any warnings for stale task timeouts.
+
+            // Also of note is the default `request.timeout.ms` set to 30 seconds. Also greater than
+            // our task timeout.
             LHUtil.log("Warning: Got stale task timeout.");
             return;
         }

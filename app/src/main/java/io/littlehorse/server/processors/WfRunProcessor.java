@@ -5,11 +5,11 @@ import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
+import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.LHDatabaseClient;
-import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.observability.ObservabilityEvent;
@@ -34,26 +34,17 @@ public class WfRunProcessor implements Processor<
     private ProcessorContext<String, GETable<?>> ctx;
     private KeyValueStore<String, WfRun> wfRunStore;
     private KeyValueStore<String, TaskRun> taskRunStore;
+    private ReadOnlyKeyValueStore<String, WfSpec> wfSpecStore;
     private HashMap<String, WfSpec> wfSpecCache;
-    private LHDatabaseClient client;
 
     public WfRunProcessor(LHConfig config) {
         wfSpecCache = new HashMap<>();
-        this.client = config.getDbClient();
     }
 
     public WfSpec getWfSpec(String id) {
         WfSpec out = wfSpecCache.get(id);
         if (out == null) {
-            try {
-                out = client.getWfSpec(id);
-            } catch(LHConnectionError exn) {
-                LHUtil.log(
-                    "Caught and suppressed LHConnection error from client: "
-                    + exn.getMessage()
-                );
-                return null;
-            }
+            out = wfSpecStore.get(id);
             wfSpecCache.put(id, out);
         }
         return out;
@@ -65,6 +56,7 @@ public class WfRunProcessor implements Processor<
         this.taskRunStore = ctx.getStateStore(
             GETable.getBaseStoreName(TaskRun.class)
         );
+        this.wfSpecStore = ctx.getStateStore(POSTable.getGlobalStoreName(WfSpec.class));
     }
 
     public void process(final Record<String, ObservabilityEvents> record) {
