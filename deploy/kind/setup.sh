@@ -15,8 +15,8 @@ docker pull quay.io/strimzi/operator:0.28.0 &
 
 wait
 
-kind load docker-image --name littlehorse quay.io/strimzi/kafka:0.28.0-kafka-3.1.0 &
-kind load docker-image --name littlehorse quay.io/strimzi/operator:0.28.0 &
+kind load docker-image --name littlehorse quay.io/strimzi/kafka:0.30.0-kafka-3.2.0 &
+kind load docker-image --name littlehorse quay.io/strimzi/operator:0.30.0 &
 kind load docker-image --name littlehorse littlehorse &
 
 wait

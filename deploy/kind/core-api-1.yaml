@@ -36,7 +36,7 @@ spec:
           httpGet:
             path: /live
             port: 5000
-          failureThreshold: 10
+          failureThreshold: 5
           periodSeconds: 3
 
         livenessProbe:

@@ -348,13 +348,16 @@ public class LHConfig {
 
         app.get("/live", (ctx) -> {
             KafkaStreams.State state = listener.getState();
-            if (state == KafkaStreams.State.RUNNING || state == KafkaStreams.State.REBALANCING) {
-                ctx.status(200);
-                ctx.result(state.toString());
-            } else {
+            if (state == KafkaStreams.State.NOT_RUNNING ||
+                state == KafkaStreams.State.PENDING_ERROR ||
+                state == KafkaStreams.State.PENDING_SHUTDOWN ||
+                state == KafkaStreams.State.ERROR
+            ) {
                 ctx.status(500);
-                ctx.result(state.toString());
+            } else {
+                ctx.status(200);
             }
+            ctx.result(state.toString());
         });
 
         app.get("/ready", (ctx) -> {

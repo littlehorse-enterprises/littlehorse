@@ -5,7 +5,7 @@ metadata:
   namespace: kafka
 spec:
   kafka:
-    version: 3.1.0
+    version: 3.2.0
     replicas: 6
     template:
       pod:
@@ -32,7 +32,7 @@ spec:
       transaction.state.log.min.isr: 2
       default.replication.factor: 3
       min.insync.replicas: 2
-      inter.broker.protocol.version: "3.1"
+      inter.broker.protocol.version: "3.2"
     rack:
       topologyKey: topology.kubernetes.io/zone
     storage:
@@ -42,6 +42,8 @@ spec:
         type: persistent-claim
         size: 5Gi
         deleteClaim: true
+  # ZooKeeper is required when validating the CR spec. However it's ignored by the controller
+  # when UseKRaft is set.
   zookeeper:
     template:
       pod:
@@ -58,7 +60,7 @@ spec:
       type: persistent-claim
       size: 5Gi
       deleteClaim: true
-  entityOperator:
-    topicOperator: {}
-    userOperator: {}
+  # entityOperator:
+  #   topicOperator: {}
+  #   userOperator: {}
 ---
