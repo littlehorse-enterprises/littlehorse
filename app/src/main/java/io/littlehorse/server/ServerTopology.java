@@ -24,15 +24,41 @@ import io.littlehorse.server.model.internal.IndexEntries;
 import io.littlehorse.server.model.internal.IndexEntryAction;
 import io.littlehorse.server.model.internal.LHResponse;
 import io.littlehorse.server.model.internal.POSTableRequest;
+import io.littlehorse.server.model.scheduler.SchedulerTimer;
+import io.littlehorse.server.model.scheduler.WfRunState;
+import io.littlehorse.server.model.scheduler.util.SchedulerOutputTsrSer;
+import io.littlehorse.server.model.scheduler.util.SchedulerOutputWFRunSer;
 import io.littlehorse.server.model.wfrun.TaskRun;
 import io.littlehorse.server.model.wfrun.WfRun;
 import io.littlehorse.server.processors.IndexFanoutProcessor;
 import io.littlehorse.server.processors.IndexProcessor;
 import io.littlehorse.server.processors.POSTableProcessor;
+import io.littlehorse.server.processors.SchedulerProcessor;
 import io.littlehorse.server.processors.WfRunProcessor;
+
+
+import org.apache.kafka.common.serialization.Serde;
+import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.Topology;
+import org.apache.kafka.streams.state.KeyValueStore;
+import org.apache.kafka.streams.state.StoreBuilder;
+import org.apache.kafka.streams.state.Stores;
+import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.model.event.WfRunEvent;
+import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.util.kstreamlisteners.KStreamsStateListener;
+import io.littlehorse.common.util.serde.LHSerde;
 
 public class ServerTopology {
     private static final String WfRunIdxStore = "WF_RUN_INDEX_TMP_STORE";
+
+    public static String schedulerSource = "Scheduler Source";
+    public static String schedulerProcessor = "SchedulerProcessor";
+    public static String schedulerWfRunSink = "Scheduler WFRun Sink";
+    public static String schedulerTaskSink = "Scheduled Tasks";
+
 
     public static Topology initTopology(LHConfig config) {
         Topology topo = new Topology();
@@ -46,7 +72,76 @@ public class ServerTopology {
 
         addWfRunSubTopology(topo, config);
 
+        addSchedulerTopology(topo, config);
+
         return topo;
+    }
+
+    private static void addSchedulerTopology(Topology topo, LHConfig config) {
+        Serde<WfRunEvent> evtSerde = new LHSerde<>(WfRunEvent.class, config);
+        Serde<WfRunState> runSerde = new LHSerde<>(WfRunState.class, config);
+        Serde<WfSpec> specSerde = new LHSerde<>(WfSpec.class, config);
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            evtSerde.close();
+            runSerde.close();
+            specSerde.close();
+        }));
+
+        topo.addSource(
+            schedulerSource,
+            Serdes.String().deserializer(),
+            evtSerde.deserializer(),
+            LHConstants.WF_RUN_EVENT_TOPIC
+        );
+
+        topo.addProcessor(
+            schedulerProcessor,
+            () -> {
+                return new SchedulerProcessor(config);
+            },
+            schedulerSource
+        );
+
+        // Add sink for WFRun
+        topo.addSink(
+            schedulerWfRunSink,
+            LHConstants.WF_RUN_OBSERVABILITY_TOPIC,
+            Serdes.String().serializer(),
+            new SchedulerOutputWFRunSer(config),
+            schedulerProcessor
+        );
+
+        // Add sink for Task Schedule
+        topo.addSink(
+            schedulerTaskSink,
+            (k, v, ctx) -> {
+                // TODO: Eventually, kafka topics may not exactly match with
+                // task def name; or task def name may not match task def id.
+                return v.request.taskDefName;
+            },
+            Serdes.String().serializer(),
+            new SchedulerOutputTsrSer(config),
+            schedulerProcessor
+        );
+
+        // Add state store
+        StoreBuilder<KeyValueStore<String, WfRunState>> wfRunStoreBuilder =
+            Stores.keyValueStoreBuilder(
+                Stores.persistentKeyValueStore(LHConstants.SCHED_WF_RUN_STORE_NAME),
+                Serdes.String(),
+                runSerde
+            );
+        topo.addStateStore(wfRunStoreBuilder, schedulerProcessor);
+
+        StoreBuilder<KeyValueStore<String, SchedulerTimer>> timerStoreBuilder =
+            Stores.keyValueStoreBuilder(
+                Stores.persistentKeyValueStore(LHConstants.SCHED_TIMER_STORE_NAME),
+                Serdes.String(),
+                new LHSerde<>(SchedulerTimer.class, config)
+            );
+        topo.addStateStore(timerStoreBuilder, schedulerProcessor);
+
     }
 
     private static <U extends MessageOrBuilder, T extends POSTable<U>>

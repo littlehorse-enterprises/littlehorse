@@ -23,9 +23,9 @@ import io.littlehorse.common.proto.wfspec.ThreadSpecPb;
 import io.littlehorse.common.proto.wfspec.WfSpecPb;
 import io.littlehorse.common.proto.wfspec.WfSpecPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.scheduler.model.SchedulerTimer;
-import io.littlehorse.scheduler.model.WfRunState;
 import io.littlehorse.server.model.internal.IndexEntry;
+import io.littlehorse.server.model.scheduler.SchedulerTimer;
+import io.littlehorse.server.model.scheduler.WfRunState;
 
 
 public class WfSpec extends POSTable<WfSpecPbOrBuilder> {

@@ -1,4 +1,4 @@
-package io.littlehorse.scheduler.model;
+package io.littlehorse.server.model.scheduler;
 
 import java.util.ArrayList;
 import java.util.List;

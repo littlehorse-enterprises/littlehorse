@@ -1,8 +1,7 @@
-package io.littlehorse.scheduler.serde;
+package io.littlehorse.server.model.scheduler.util;
 
 import org.apache.kafka.common.serialization.Serializer;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.scheduler.SchedulerOutput;
 
 public class SchedulerOutputTsrSer implements Serializer<SchedulerOutput> {
     private LHConfig config;

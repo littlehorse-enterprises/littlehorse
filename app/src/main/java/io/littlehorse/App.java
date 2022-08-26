@@ -10,7 +10,6 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.scheduler.Scheduler;
 import io.littlehorse.server.Server;
 import io.littlehorse.worker.TestWorker;
 
@@ -76,8 +75,6 @@ public class App {
 
         if (arg.equals("worker")) {
             TestWorker.doMain(config);
-        } else if (arg.equals("scheduler")) {
-            Scheduler.doMain(config);
         } else if (arg.equals("server")) {
             Server.doMain(config);
         }

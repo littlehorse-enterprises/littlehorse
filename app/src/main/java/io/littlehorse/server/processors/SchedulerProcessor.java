@@ -1,4 +1,4 @@
-package io.littlehorse.scheduler;
+package io.littlehorse.server.processors;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,8 +23,10 @@ import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.scheduler.WfRunEventPb.EventCase;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.scheduler.model.SchedulerTimer;
-import io.littlehorse.scheduler.model.WfRunState;
+import io.littlehorse.server.ServerTopology;
+import io.littlehorse.server.model.scheduler.SchedulerTimer;
+import io.littlehorse.server.model.scheduler.WfRunState;
+import io.littlehorse.server.model.scheduler.util.SchedulerOutput;
 
 public class SchedulerProcessor
     implements Processor<String, WfRunEvent, String, SchedulerOutput>
@@ -118,7 +120,7 @@ public class SchedulerProcessor
             taskOutput.request = r;
             context.forward(new Record<>(
                 key, taskOutput, timestamp
-            ), Scheduler.taskSchedulerSink);
+            ), ServerTopology.schedulerTaskSink);
         }
 
         for (SchedulerTimer timer: timersToSchedule) {
@@ -133,7 +135,7 @@ public class SchedulerProcessor
         // Forward the observability events
         SchedulerOutput oeOutput = new SchedulerOutput();
         oeOutput.observabilityEvents = wfRun.oEvents;
-        context.forward(new Record<>(key, oeOutput, timestamp), Scheduler.wfRunSink);
+        context.forward(new Record<>(key, oeOutput, timestamp), ServerTopology.schedulerWfRunSink);
 
         // Save the WfRunState
         wfRunStore.put(key, wfRun);
