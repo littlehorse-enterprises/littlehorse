@@ -1,9 +1,10 @@
 package io.littlehorse.server;
 
+import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.Topology;
-import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Processor;
+import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.StoreBuilder;
@@ -13,6 +14,7 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.POSTable;
+import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.observability.ObservabilityEvents;
@@ -26,8 +28,7 @@ import io.littlehorse.server.model.internal.LHResponse;
 import io.littlehorse.server.model.internal.POSTableRequest;
 import io.littlehorse.server.model.scheduler.SchedulerTimer;
 import io.littlehorse.server.model.scheduler.WfRunState;
-import io.littlehorse.server.model.scheduler.util.SchedulerOutputTsrSer;
-import io.littlehorse.server.model.scheduler.util.SchedulerOutputWFRunSer;
+import io.littlehorse.server.model.scheduler.util.SchedulerOutput;
 import io.littlehorse.server.model.wfrun.TaskRun;
 import io.littlehorse.server.model.wfrun.WfRun;
 import io.littlehorse.server.processors.IndexFanoutProcessor;
@@ -35,21 +36,6 @@ import io.littlehorse.server.processors.IndexProcessor;
 import io.littlehorse.server.processors.POSTableProcessor;
 import io.littlehorse.server.processors.SchedulerProcessor;
 import io.littlehorse.server.processors.WfRunProcessor;
-
-
-import org.apache.kafka.common.serialization.Serde;
-import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.Topology;
-import org.apache.kafka.streams.state.KeyValueStore;
-import org.apache.kafka.streams.state.StoreBuilder;
-import org.apache.kafka.streams.state.Stores;
-import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.model.event.WfRunEvent;
-import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.util.kstreamlisteners.KStreamsStateListener;
-import io.littlehorse.common.util.serde.LHSerde;
 
 public class ServerTopology {
     private static final String WfRunIdxStore = "WF_RUN_INDEX_TMP_STORE";
@@ -108,7 +94,10 @@ public class ServerTopology {
             schedulerWfRunSink,
             LHConstants.WF_RUN_OBSERVABILITY_TOPIC,
             Serdes.String().serializer(),
-            new SchedulerOutputWFRunSer(config),
+            (topic, schedulerOutput) -> {
+                // Serializer
+                return ((SchedulerOutput) schedulerOutput).observabilityEvents.toBytes(config);
+            },
             schedulerProcessor
         );
 
@@ -118,10 +107,13 @@ public class ServerTopology {
             (k, v, ctx) -> {
                 // TODO: Eventually, kafka topics may not exactly match with
                 // task def name; or task def name may not match task def id.
-                return v.request.taskDefName;
+                // May need to look up from task store.
+                return ((SchedulerOutput)v).request.taskDefName;
             },
             Serdes.String().serializer(),
-            new SchedulerOutputTsrSer(config),
+            (topic, schedulerOutput) -> {
+                return ((SchedulerOutput) schedulerOutput).request.toBytes(config);
+            },
             schedulerProcessor
         );
 

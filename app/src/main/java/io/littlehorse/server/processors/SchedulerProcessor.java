@@ -13,10 +13,10 @@ import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.KeyValueStore;
+import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.LHDatabaseClient;
-import io.littlehorse.common.exceptions.LHConnectionError;
+import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.WfSpec;
@@ -35,17 +35,19 @@ public class SchedulerProcessor
     private KeyValueStore<String, SchedulerTimer> timerStore;
     private Map<String, WfSpec> wfSpecCache;
     private ProcessorContext<String, SchedulerOutput> context;
-    private LHDatabaseClient client;
+    private ReadOnlyKeyValueStore<String, WfSpec> wfSpecStore;
     private Cancellable punctuator;
 
     public SchedulerProcessor(LHConfig config) {
-        this.client = config.getDbClient();
+        // this.client = config.getDbClient();
     }
 
     @Override
     public void init(final ProcessorContext<String, SchedulerOutput> context) {
         wfRunStore = context.getStateStore(LHConstants.SCHED_WF_RUN_STORE_NAME);
         timerStore = context.getStateStore(LHConstants.SCHED_TIMER_STORE_NAME);
+        wfSpecStore = context.getStateStore(POSTable.getGlobalStoreName(WfSpec.class));
+
         this.context = context;
         this.wfSpecCache = new HashMap<>();
 
@@ -158,12 +160,7 @@ public class SchedulerProcessor
     private WfSpec getWfSpec(String id) {
         WfSpec out = wfSpecCache.get(id);
         if (out == null) {
-            try {
-                out = client.getWfSpec(id);
-                wfSpecCache.put(id, out);
-            } catch(LHConnectionError exn) {
-                exn.printStackTrace();
-            }
+            out = wfSpecStore.get(id);
         }
         return out;
     }
