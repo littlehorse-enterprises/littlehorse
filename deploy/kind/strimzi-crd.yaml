@@ -13462,6 +13462,8 @@ spec:
                   fieldPath: metadata.namespace
             - name: STRIMZI_FEATURE_GATES
               value: '+UseStrimziPodSets,+UseKRaft'
+              # value: '-UseStrimziPodSets'
+              # value: ''
           livenessProbe:
             httpGet:
               path: /healthy

@@ -67,8 +67,6 @@ for i in range(1, 4):
         "kubectl apply -f -".split(), input=yaml.encode(),
     )
 
-time.sleep(5)
-
 with open("simple_wf.json", 'r') as f:
     wf = json.loads(f.read())
 

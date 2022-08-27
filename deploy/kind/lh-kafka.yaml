@@ -44,7 +44,7 @@ spec:
         deleteClaim: true
   # ZooKeeper is required when validating the CR spec. However it's ignored by the controller
   # when UseKRaft is set.
-  zookeeper:
+  zookeeper: 
     template:
       pod:
         topologySpreadConstraints:
@@ -60,6 +60,7 @@ spec:
       type: persistent-claim
       size: 5Gi
       deleteClaim: true
+  cruiseControl: {}
   # entityOperator:
   #   topicOperator: {}
   #   userOperator: {}

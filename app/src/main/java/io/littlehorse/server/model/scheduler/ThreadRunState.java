@@ -82,7 +82,7 @@ public class ThreadRunState {
                 status = LHStatusPb.HALTED;
             }
             if (status == LHStatusPb.COMPLETED || status == LHStatusPb.ERROR) {
-                throw new RuntimeException("Tried to advance COMPLETED or ERROR thread");
+                throw new RuntimeException("Tried to advance " + status + " thread");
             }
             return;
         }
@@ -100,7 +100,7 @@ public class ThreadRunState {
             if (shouldRetry(curNode, currentNodeRun)) {
                 scheduleRetry(curNode, currentNodeRun);
             } else {
-                LHUtil.log("The node is failed and not retryable. Failing thread now.");
+                LHUtil.log(wfRun.id, "The node is failed and not retryable. Failing thread now.");
                 setStatus(LHStatusPb.ERROR);
             }
         } else if (currentNodeRun.status == LHStatusPb.RUNNING) {
@@ -311,10 +311,6 @@ public class ThreadRunState {
                 break;
 
             case TIMEOUT:
-                LHUtil.log(
-                    "evt number:", ce.taskRunNumber, " vs ", currentNodeRun.number,
-                    "evt position: ", ce.taskRunPosition, " vs ", currentNodeRun.position
-                );
             case TASK_FAILURE:
                 currentNodeRun.status = LHStatusPb.ERROR;
                 break;

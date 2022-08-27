@@ -10,8 +10,8 @@ kind create cluster --name littlehorse --config ${SCRIPT_DIR}/kind-config.yaml
 kubectl apply -f ${SCRIPT_DIR}/kafka-ns.yaml
 kubectl apply -f ${SCRIPT_DIR}/strimzi-crd.yaml
 
-docker pull quay.io/strimzi/kafka:0.28.0-kafka-3.1.0 &
-docker pull quay.io/strimzi/operator:0.28.0 &
+docker pull quay.io/strimzi/kafka:0.30.0-kafka-3.2.0 &
+docker pull quay.io/strimzi/operator:0.30.0 &
 
 wait
 
