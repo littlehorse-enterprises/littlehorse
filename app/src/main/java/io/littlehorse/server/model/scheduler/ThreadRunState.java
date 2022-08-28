@@ -287,7 +287,7 @@ public class ThreadRunState {
 
             // Also of note is the default `request.timeout.ms` set to 30 seconds. Also greater than
             // our task timeout.
-            LHUtil.log("Warning: Got stale task timeout.");
+            LHUtil.log("Warning: Got stale task event of type:", ce.resultCode);
             return;
         }
 

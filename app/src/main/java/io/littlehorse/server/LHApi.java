@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.KafkaException;
@@ -27,9 +26,9 @@ import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.proto.scheduler.WfRunEventPb.EventCase;
 import io.littlehorse.common.proto.server.GETableClassEnumPb;
 import io.littlehorse.common.proto.server.LHResponseCodePb;
+import io.littlehorse.common.util.LHKStreamsListener;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.common.util.kstreamlisteners.KStreamsStateListener;
 import io.littlehorse.server.model.internal.IndexEntry;
 import io.littlehorse.server.model.internal.LHResponse;
 import io.littlehorse.server.model.internal.RangeResponse;
@@ -62,12 +61,12 @@ public class LHApi {
     );
 
     public LHApi(
-        LHConfig config, ApiStreamsContext streams, KStreamsStateListener listener
+        LHConfig config, ApiStreamsContext streams, LHKStreamsListener listener
     ) {
         this.producer = config.getProducer();
         this.streams = streams;
         this.config = config;
-        this.app = LHConfig.createAppWithHealth(listener);
+        this.app = config.createAppWithHealth(listener);
         this.client = config.getDbClient();
 
         this.app.get("/WfSpec/{id}", (ctx) -> handle(this::getWfSpec, ctx));
@@ -105,7 +104,7 @@ public class LHApi {
         this.app.post("/WfRun", (ctx) -> handle(this::postWfRun, ctx));
         this.app.post("/WfRunMany", (ctx) -> handle(this::postManyWfRuns, ctx));
 
-        this.app.get("/search/WfSpec/name/{name}", this::getWfSpecByName);
+        this.app.get("/search/WfSpec/name/{name}", (ctx) -> handle(this::getWfSpecByName, ctx));
 
         this.app.get(
             "/internal/waitForResponse/{requestId}/{className}", 
@@ -123,11 +122,6 @@ public class LHApi {
             "/internal/localKeyedPrefixObjScan/{storeName}/{storeKeyPrefix}",
             this::internalLocalKeyedPrefixObjScanBytes
         );
-
-        this.app.get(
-            "/metrics/diskUsage", this::getDiskUsage
-        );
-
         this.app.get("/metrics/taskRuns", this::countTaskRuns);
         this.app.get("/metrics/wfRuns", this::countWfRuns);
         this.app.get("/metrics/indexStore", this::countIndexEntries);
@@ -469,11 +463,6 @@ public class LHApi {
         } else {
             ctx.json(resp);
         }
-    }
-
-    public void getDiskUsage(Context ctx) {
-        Long size = FileUtils.sizeOfDirectory(FileUtils.getFile(config.getStateDirectory()));
-        ctx.result(size.toString());
     }
 
     public void countTaskRuns(Context ctx) throws LHConnectionError {

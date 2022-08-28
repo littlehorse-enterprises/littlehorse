@@ -29,18 +29,20 @@ public class LHUtil {
         framesBack += 2;  // 2 frames needed for processing the thing.
         StackTraceElement ste = Thread.currentThread().getStackTrace()[framesBack];
 
-        System.out.print("LHorse: ");
-        System.out.print(ste.getMethodName());
-        System.out.print(" ");
-        System.out.print(ste.getFileName());
-        System.out.print(": ");
-        System.out.print(ste.getLineNumber());
-        System.out.print(": ");
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("LHorse: ");
+        builder.append(ste.getMethodName());
+        builder.append(" ");
+        builder.append(ste.getFileName());
+        builder.append(": ");
+        builder.append(ste.getLineNumber());
+        builder.append(": ");
         for (Object thing : things) {
-            System.out.print(thing == null ? "null" : thing.toString());
-            System.out.print(" ");
+            builder.append(thing == null ? "null" : thing.toString());
+            builder.append(" ");
         }
-        System.out.println();
+        System.out.println(builder.toString());
     }
 
     public static void log(Object... things) {

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
+import org.apache.commons.io.FileUtils;
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.CreateTopicsResult;
@@ -21,9 +22,9 @@ import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.state.HostInfo;
 import io.javalin.Javalin;
 import io.littlehorse.common.util.LHApiClient;
+import io.littlehorse.common.util.LHKStreamsListener;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.common.util.kstreamlisteners.KStreamsStateListener;
 
 public class LHConfig {
     private Properties props;
@@ -122,7 +123,9 @@ public class LHConfig {
     }
 
     public int getApiPort() {
-        return Integer.valueOf(getOrSetDefault(LHConstants.API_PORT_KEY, "5000"));
+        // return Integer.valueOf(getOrSetDefault(LHConstants.API_PORT_KEY, "5000"));
+
+        return Integer.valueOf(getOrSetDefault(LHConstants.EXPOSED_PORT_KEY, "5000"));
     }
 
     public void cleanup() {
@@ -340,35 +343,46 @@ public class LHConfig {
         }
     }
 
-    public static Javalin createAppWithHealth(KStreamsStateListener listener) {
+    public Javalin createAppWithHealth(LHKStreamsListener listener) {
         Javalin app = Javalin.create(javalinConf -> {
             javalinConf.prefer405over404 = true;
             javalinConf.enableCorsForAllOrigins();
         });
 
         app.get("/live", (ctx) -> {
-            KafkaStreams.State state = listener.getState();
+            LHKStreamsListener.ProbeResponse resp = listener.getResponse();
+
+            KafkaStreams.State state = resp.state;
             if (state == KafkaStreams.State.NOT_RUNNING ||
                 state == KafkaStreams.State.PENDING_ERROR ||
                 state == KafkaStreams.State.PENDING_SHUTDOWN ||
                 state == KafkaStreams.State.ERROR
             ) {
                 ctx.status(500);
+            } else if (state == KafkaStreams.State.REBALANCING && resp.activeRestores == 0) {
+                // ctx.status(500);
+                resp.message = "Yikes, rebalancing but zero active restores!";
             } else {
                 ctx.status(200);
             }
-            ctx.result(state.toString());
+            ctx.json(resp);
         });
 
         app.get("/ready", (ctx) -> {
-            if (listener.getState() == KafkaStreams.State.RUNNING) {
+            LHKStreamsListener.ProbeResponse resp = listener.getResponse();
+            if (resp.state == KafkaStreams.State.RUNNING) {
                 ctx.status(200);
-                ctx.result("OK");
             } else {
                 ctx.status(500);
-                ctx.result(listener.getState().toString());
             }
+            ctx.json(resp);
         });
+
+        app.get("/diskUsage", (ctx) -> {
+            Long size = FileUtils.sizeOfDirectory(FileUtils.getFile(getStateDirectory()));
+            ctx.result(size.toString());
+        });
+
         return app;
     }
 }
