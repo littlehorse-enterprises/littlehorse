@@ -32,9 +32,11 @@ public class LHKStreamsListener implements StateRestoreListener, StateListener {
         out.longestRestoreSeconds = longestRestoreSeconds;
         out.totalCompletedRestores = totalCompletedRestores;
         out.averageRestoreSeconds = totalRestoreSeconds / totalCompletedRestores;
+        out.topicPartsProcessing = new ArrayList<>();
 
         for (KstreamRestore restore: activeRestores) {
             out.recordsLeftToProcess = restore.totalRecordsToProcess - restore.recordsProcessed;
+            out.topicPartsProcessing.add(restore.topicPart.toString());
         }
         return out;
     }
@@ -187,5 +189,7 @@ public class LHKStreamsListener implements StateRestoreListener, StateListener {
         public State state;
         public String message;
         public long recordsLeftToProcess;
+
+        public List<String> topicPartsProcessing;
     }
 }
