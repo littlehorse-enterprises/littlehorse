@@ -36,8 +36,8 @@ dependencies {
     implementation 'org.apache.logging.log4j:log4j-api:2.17.1'
 
     // Stuff for Kafka
-    implementation 'org.apache.kafka:kafka-clients:3.2.0'
-    implementation 'org.apache.kafka:kafka-streams:3.2.0'
+    implementation 'org.apache.kafka:kafka-clients:3.2.1'
+    implementation 'org.apache.kafka:kafka-streams:3.2.1'
 
     // HTTP Client
     implementation 'com.squareup.okhttp3:okhttp:4.9.0'

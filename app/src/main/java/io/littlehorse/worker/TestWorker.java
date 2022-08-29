@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -71,12 +72,18 @@ public class TestWorker {
             txnProd.beginTransaction();
             boolean committed = false;
             try {
-                records.forEach(this::acknowledgeRequest);
+                Iterator<ConsumerRecord<String, Bytes>> iter = records.iterator();
+                while (iter.hasNext()) {
+                    ConsumerRecord<String, Bytes> rec = iter.next();
+                    acknowledgeRequest(rec);
+                }
                 txnProd.sendOffsetsToTransaction(offsetMap, cons.groupMetadata());
                 txnProd.commitTransaction();
                 committed = true;
             } catch(Exception exn) {
                 txnProd.abortTransaction();
+                LHUtil.log("Exiting loop now, things are yikerz.");
+                throw new RuntimeException(exn);
             }
             if (committed) enqueueAcknowledgedTasks();
         }

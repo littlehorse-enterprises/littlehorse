@@ -10,7 +10,6 @@ kubectl rollout restart sts lh-server -ndefault &
 kubectl rollout restart sts lh-scheduler -ndefault &
 
 kubectl rollout status sts lh-server -ndefault
-kubectl rollout status sts lh-scheduler -ndefault
 
 wait
 

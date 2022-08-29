@@ -82,7 +82,11 @@ public class ThreadRunState {
                 status = LHStatusPb.HALTED;
             }
             if (status == LHStatusPb.COMPLETED || status == LHStatusPb.ERROR) {
-                throw new RuntimeException("Tried to advance " + status + " thread");
+                LHUtil.log(
+                    "WARN: Tried to advancece", status,
+                    "thread. Likely due to a stale event coming in."
+                );
+                return;
             }
             return;
         }

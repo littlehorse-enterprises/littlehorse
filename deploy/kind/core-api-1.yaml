@@ -8,8 +8,9 @@ metadata:
     app: lh-server
     io.littlehorse/active: "true"
 spec:
-  replicas: 6
+  replicas: 3
   serviceName: lh-server
+  podManagementPolicy: Parallel
   selector:
     matchLabels:
       app: lh-server
@@ -22,7 +23,7 @@ spec:
       topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: topology.kubernetes.io/zone
-        whenUnsatisfiable: DoNotSchedule
+        whenUnsatisfiable: ScheduleAnyway
         labelSelector:
           matchLabels:
             app: lh-server
@@ -43,7 +44,7 @@ spec:
           httpGet:
             path: /live
             port: 5000
-          failureThreshold: 20
+          failureThreshold: 5
           periodSeconds: 3
 
         readinessProbe:

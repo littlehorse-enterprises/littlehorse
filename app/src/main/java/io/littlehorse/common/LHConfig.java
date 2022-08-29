@@ -227,6 +227,7 @@ public class LHConfig {
         props.put(StreamsConfig.STATE_DIR_CONFIG, this.getStateDirectory());
         props.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, "exactly_once_v2");
         props.put(StreamsConfig.TOPOLOGY_OPTIMIZATION_CONFIG, "all");
+        props.put(StreamsConfig.REQUEST_TIMEOUT_MS_CONFIG, 30000);
         props.put(StreamsConfig.producerPrefix(ProducerConfig.ACKS_CONFIG), "all");
         props.put(
             StreamsConfig.REPLICATION_FACTOR_CONFIG, (int) getReplicationFactor()
@@ -250,6 +251,8 @@ public class LHConfig {
                 getOrSetDefault(LHConstants.NUM_STREAM_THREADS_KEY, "1")
             )
         );
+        props.put(StreamsConfig.TASK_TIMEOUT_MS_CONFIG, 0);
+        props.put(StreamsConfig.producerPrefix(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG), 10000);
         props.put(
             StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG,
             Serdes.StringSerde.class.getName()
