@@ -1,5 +1,6 @@
 package io.littlehorse.server.model.internal;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
@@ -33,5 +34,12 @@ public class RemoteStoreQueryResponse extends LHSerializable<RemoteStoreQueryRes
         }
 
         return out;
+    }
+
+    @JsonIgnore public boolean isValid() {
+        return (
+            code == RemoteStoreQueryStatusPb.RSQ_OK
+            || code == RemoteStoreQueryStatusPb.RSQ_NOT_FOUND
+        );
     }
 }

@@ -32,7 +32,6 @@ import io.littlehorse.server.model.internal.IndexEntry;
 import io.littlehorse.server.model.internal.LHResponse;
 import io.littlehorse.server.model.internal.POSTableRequest;
 import io.littlehorse.server.model.internal.RangeResponse;
-import io.littlehorse.server.model.internal.RemoteStoreQueryRequest;
 import io.littlehorse.server.model.internal.RemoteStoreQueryResponse;
 
 public class ApiStreamsContext {
@@ -127,22 +126,24 @@ public class ApiStreamsContext {
         }
     }
 
-    public RemoteStoreQueryResponse handleRemoteStoreQuery(RemoteStoreQueryRequest req) {
+    public RemoteStoreQueryResponse handleRemoteStoreQuery(
+        String storeName, int partition, String storeKey, boolean activeHost
+    ) {
         RemoteStoreQueryResponse resp = new RemoteStoreQueryResponse();
         try {
             StoreQueryParameters<ReadOnlyKeyValueStore<String, GETable<?>>> storeParams =
                 StoreQueryParameters.fromNameAndType(
-                    req.storeName,
+                    storeName,
                     QueryableStoreTypes.<String, GETable<?>>keyValueStore()
-                ).withPartition(req.partition);
+                ).withPartition(partition);
 
-            if (!req.isActiveStore) {
+            if (!activeHost) {
                 storeParams = storeParams.enableStaleStores();
             }
             ReadOnlyKeyValueStore<String, GETable<?>> store = streams.store(storeParams);
-            GETable<?> obj = store.get(req.storeKey);
+            GETable<?> obj = store.get(storeKey);
 
-            resp.approximateLag = getApproximateLag(req.storeName, req.partition);
+            resp.approximateLag = getApproximateLag(storeName, partition);
             if (obj != null) {
                 resp.code = RemoteStoreQueryStatusPb.RSQ_OK;
                 resp.result = obj.toBytes(config);
@@ -150,9 +151,9 @@ public class ApiStreamsContext {
                 resp.code = RemoteStoreQueryStatusPb.RSQ_NOT_FOUND;
             }
         } catch(InvalidStateStoreException exn) {
+            exn.printStackTrace();
             resp.code = RemoteStoreQueryStatusPb.RSQ_NOT_AVAILABLE;
         }
-
         return resp;
     }
 
@@ -373,22 +374,57 @@ public class ApiStreamsContext {
     private byte[] queryRemoteBytes(
         String storeName, KeyQueryMetadata metadata, String storeKey
     ) throws LHConnectionError {
-        LHConnectionError caught = null;
-        String path = "/internal/storeBytes";
-
-        RemoteStoreQueryRequest req = new RemoteStoreQueryRequest(
-            metadata, storeName, storeKey, true
+        Exception caught = null;
+        String path = (
+            "/internal/storeBytes/" +
+            storeName + "/" +
+            metadata.partition() + "/" +
+            storeKey
         );
 
         // First, query the active host. If we get it, then return that.
         RemoteStoreQueryResponse resp = new RemoteStoreQueryResponse();
         try {
-            byte[] out = client.getResponse(metadata.activeHost(), path, req.toBytes(config));
-            resp = 
-        } catch(LHConnectionError exn) {
-
+            byte[] out = client.getResponse(metadata.activeHost(), path + "/true");
+            resp = LHSerializable.fromBytes(out, RemoteStoreQueryResponse.class, config);
+        } catch(LHConnectionError|LHSerdeError exn) {
+            exn.printStackTrace();
+            caught = exn;
         }
 
+        // if the request to primary succeeds, woohoo!
+        if (resp.isValid()) return resp.result;
+
+        // If we got this far, it means that the Active Host is unavailable.
+        resp = null;
+
+        for (HostInfo standbyHost: metadata.standbyHosts()) {
+            try {
+                byte[] out = client.getResponse(metadata.activeHost(), path + "/false");
+                RemoteStoreQueryResponse candidate = LHSerializable.fromBytes(
+                    out, RemoteStoreQueryResponse.class, config
+                );
+                // Check if the thing is valid
+                if (candidate.isValid()) {
+                    if (resp == null || candidate.approximateLag < resp.approximateLag) {
+                        // Then this is the best valid response we've received so far.
+                        resp = candidate;
+                    }
+                }
+            } catch(LHConnectionError|LHSerdeError exn) {
+                LHUtil.log("Could not contact standby", standbyHost, exn.getMessage());
+            }
+        }
+
+        if (resp != null) {
+            if (!resp.isValid()) throw new RuntimeException("Impossible, see above.");
+            return resp.result;
+        } else {
+            throw new LHConnectionError(
+                caught,
+                "Failed to look up desired data from active or standby replicas."
+            );
+        }
     }
 
     public Long count(String storeName) throws LHConnectionError {

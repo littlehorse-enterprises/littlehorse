@@ -191,12 +191,12 @@ enum RemoteStoreQueryStatusPb {
     RSQ_NOT_AVAILABLE = 3;
 }
 
-message RemoteStoreQueryRequestPb {
-    string store_name = 1;
-    int32 partition = 2;
-    string store_key = 3;
-    bool is_active_store = 4;
-}
+// message RemoteStoreQueryRequestPb {
+//     string store_name = 1;
+//     int32 partition = 2;
+//     string store_key = 3;
+//     bool is_active_store = 4;
+// }
 
 message RemoteStoreQueryResponsePb {
     RemoteStoreQueryStatusPb code = 1;

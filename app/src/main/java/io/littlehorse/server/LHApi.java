@@ -32,7 +32,6 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.model.internal.IndexEntry;
 import io.littlehorse.server.model.internal.LHResponse;
 import io.littlehorse.server.model.internal.RangeResponse;
-import io.littlehorse.server.model.internal.RemoteStoreQueryRequest;
 import io.littlehorse.server.model.wfrun.TaskRun;
 import io.littlehorse.server.model.wfrun.WfRun;
 
@@ -112,7 +111,7 @@ public class LHApi {
             (ctx) -> handle(this::internalWaitForResponse, ctx)
         );
         this.app.get(
-            "/internal/storeBytes/{storeName}/{storeKey}",
+            "/internal/storeBytes/{storeName}/{partition}/{storeKey}/{activeHost}",
             (ctx) -> handle(this::internalGetBytes, ctx)
         );
         this.app.get(
@@ -350,14 +349,13 @@ public class LHApi {
 
     // This method returns the protobuf data in binary format, not json.
     public void internalGetBytes(Context ctx) {
-        RemoteStoreQueryRequest req;
-        try {
-            req = LHSerializable.fromBytes(ctx.bodyAsBytes(), RemoteStoreQueryRequest.class, config);
-        } catch(LHSerdeError exn) {
-            ctx.status(400);
-            return;
-        }
-        ctx.result(streams.handleRemoteStoreQuery(req).toBytes(config));
+        String storeName = ctx.pathParam("storeName");
+        String storeKey = ctx.pathParam("storeKey");
+        int partition = ctx.pathParamAsClass("partition", Integer.class).get();
+        boolean activeHost = ctx.pathParamAsClass("activeHost", Boolean.class).get();
+        ctx.result(streams.handleRemoteStoreQuery(
+            storeName, partition, storeKey, activeHost
+        ).toBytes(config));
     }
 
     private <U extends MessageOrBuilder, T extends GETable<U>> void keyedPrefixIdxScan(
