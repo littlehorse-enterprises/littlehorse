@@ -89,6 +89,10 @@ spec:
           value: "localhost"
         - name: "LHORSE_API_PORT"
           value: "5000"
+        - name: "LHORSE_RACK_ID"
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
         ports:
         - containerPort: 5000
         command: ['/server']

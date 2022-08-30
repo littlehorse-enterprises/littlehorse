@@ -260,8 +260,14 @@ public class LHConfig {
         props.put(StreamsConfig.NUM_STANDBY_REPLICAS_CONFIG, this.getStandbyReplicas());
         props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.StringSerde.class.getName());
         props.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, getStreamsCommitInterval());
+        props.put(StreamsConfig.RACK_AWARE_ASSIGNMENT_TAGS_CONFIG, "rack");
+        props.put(StreamsConfig.CLIENT_TAG_PREFIX + "rack", getRackId());
 
         return props;
+    }
+
+    public String getRackId() {
+        return getOrSetDefault(LHConstants.RACK_ID_KEY, "unset-rack-id-bad-bad");
     }
 
     public int getStreamsCommitInterval() {
