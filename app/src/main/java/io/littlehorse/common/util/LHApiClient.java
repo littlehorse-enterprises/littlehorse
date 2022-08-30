@@ -5,6 +5,7 @@ import org.apache.kafka.streams.state.HostInfo;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class LHApiClient {
@@ -23,6 +24,30 @@ public class LHApiClient {
     throws LHConnectionError {
         String url = "http://" + host.host() + ":" + host.port() + path;
         Request req = new Request.Builder().url(url).build();
+
+        try {
+            Response resp = client.newCall(req).execute();
+            return resp.body().bytes();
+        } catch(IOException exn) {
+            // java.net.ConnectException is included in IOException.
+            // java.net.SocketTimeoutException also included in IOException.
+            throw new LHConnectionError(
+                exn,
+                String.format(
+                    "Had %s error connectiong to %s: %s",
+                    exn.getClass().getName(), url, exn.getMessage()
+                )
+            );
+        }
+    }
+
+    /**
+     * Makes a GET request with a payload. NOT a POST.
+     */
+    public byte[] getResponse(HostInfo host, String path, byte[] payload)
+    throws LHConnectionError {
+        String url = "http://" + host.host() + ":" + host.port() + path;
+        Request req = new Request.Builder().url(url).post(RequestBody.create(payload)).get().build();
 
         try {
             Response resp = client.newCall(req).execute();

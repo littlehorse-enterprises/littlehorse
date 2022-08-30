@@ -32,6 +32,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.model.internal.IndexEntry;
 import io.littlehorse.server.model.internal.LHResponse;
 import io.littlehorse.server.model.internal.RangeResponse;
+import io.littlehorse.server.model.internal.RemoteStoreQueryRequest;
 import io.littlehorse.server.model.wfrun.TaskRun;
 import io.littlehorse.server.model.wfrun.WfRun;
 
@@ -349,16 +350,14 @@ public class LHApi {
 
     // This method returns the protobuf data in binary format, not json.
     public void internalGetBytes(Context ctx) {
-        String storeName = ctx.pathParam("storeName");
-        String storeKey = ctx.pathParam("storeKey");
-
-        byte[] out = streams.localGetBytes(storeName, storeKey);
-
-        if (out == null) {
-            ctx.status(404);
-        } else {
-            ctx.result(out);
+        RemoteStoreQueryRequest req;
+        try {
+            req = LHSerializable.fromBytes(ctx.bodyAsBytes(), RemoteStoreQueryRequest.class, config);
+        } catch(LHSerdeError exn) {
+            ctx.status(400);
+            return;
         }
+        ctx.result(streams.handleRemoteStoreQuery(req).toBytes(config));
     }
 
     private <U extends MessageOrBuilder, T extends GETable<U>> void keyedPrefixIdxScan(

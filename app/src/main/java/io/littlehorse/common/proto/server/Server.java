@@ -79,6 +79,16 @@ public final class Server {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_lh_proto_IndexEntriesPb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_lh_proto_RemoteStoreQueryRequestPb_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_lh_proto_RemoteStoreQueryRequestPb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_lh_proto_RemoteStoreQueryResponsePb_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_lh_proto_RemoteStoreQueryResponsePb_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -141,16 +151,24 @@ public final class Server {
       "\n\005entry\030\001 \001(\014\022\021\n\tpartition\030\002 \001(\005\022\033\n\023last" +
       "_updated_offset\030\003 \001(\003\"9\n\016IndexEntriesPb\022" +
       "\'\n\007entries\030\001 \003(\0132\026.lh_proto.IndexEntryPb" +
-      "*r\n\020LHResponseCodePb\022\006\n\002OK\020\000\022\024\n\020CONNECTI" +
-      "ON_ERROR\020\001\022\023\n\017NOT_FOUND_ERROR\020\002\022\025\n\021BAD_R" +
-      "EQUEST_ERROR\020\003\022\024\n\020VALIDATION_ERROR\020\004*%\n\r" +
-      "RequestTypePb\022\010\n\004POST\020\000\022\n\n\006DELETE\020\001*Y\n\022G" +
-      "ETableClassEnumPb\022\014\n\010TASK_DEF\020\000\022\013\n\007WF_SP" +
-      "EC\020\001\022\n\n\006WF_RUN\020\002\022\016\n\nTHREAD_RUN\020\003\022\014\n\010TASK" +
-      "_RUN\020\004*=\n\017IndexActionEnum\022\024\n\020CREATE_IDX_" +
-      "ENTRY\020\000\022\024\n\020DELETE_IDX_ENTRY\020\001B/\n\"io.litt" +
-      "lehorse.common.proto.serverP\001Z\007.;modelb\006" +
-      "proto3"
+      "\"n\n\031RemoteStoreQueryRequestPb\022\022\n\nstore_n" +
+      "ame\030\001 \001(\t\022\021\n\tpartition\030\002 \001(\005\022\021\n\tstore_ke" +
+      "y\030\003 \001(\t\022\027\n\017is_active_store\030\004 \001(\010\"\207\001\n\032Rem" +
+      "oteStoreQueryResponsePb\0220\n\004code\030\001 \001(\0162\"." +
+      "lh_proto.RemoteStoreQueryStatusPb\022\023\n\006res" +
+      "ult\030\002 \001(\014H\000\210\001\001\022\027\n\017approximate_lag\030\003 \001(\003B" +
+      "\t\n\007_result*r\n\020LHResponseCodePb\022\006\n\002OK\020\000\022\024" +
+      "\n\020CONNECTION_ERROR\020\001\022\023\n\017NOT_FOUND_ERROR\020" +
+      "\002\022\025\n\021BAD_REQUEST_ERROR\020\003\022\024\n\020VALIDATION_E" +
+      "RROR\020\004*%\n\rRequestTypePb\022\010\n\004POST\020\000\022\n\n\006DEL" +
+      "ETE\020\001*Y\n\022GETableClassEnumPb\022\014\n\010TASK_DEF\020" +
+      "\000\022\013\n\007WF_SPEC\020\001\022\n\n\006WF_RUN\020\002\022\016\n\nTHREAD_RUN" +
+      "\020\003\022\014\n\010TASK_RUN\020\004*=\n\017IndexActionEnum\022\024\n\020C" +
+      "REATE_IDX_ENTRY\020\000\022\024\n\020DELETE_IDX_ENTRY\020\001*" +
+      "b\n\030RemoteStoreQueryStatusPb\022\n\n\006RSQ_OK\020\000\022" +
+      "\021\n\rRSQ_NOT_FOUND\020\001\022\020\n\014RSQ_MIGRATED\020\002\022\025\n\021" +
+      "RSQ_NOT_AVAILABLE\020\003B/\n\"io.littlehorse.co" +
+      "mmon.proto.serverP\001Z\007.;modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -236,6 +254,18 @@ public final class Server {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_IndexEntriesPb_descriptor,
         new java.lang.String[] { "Entries", });
+    internal_static_lh_proto_RemoteStoreQueryRequestPb_descriptor =
+      getDescriptor().getMessageTypes().get(13);
+    internal_static_lh_proto_RemoteStoreQueryRequestPb_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_lh_proto_RemoteStoreQueryRequestPb_descriptor,
+        new java.lang.String[] { "StoreName", "Partition", "StoreKey", "IsActiveStore", });
+    internal_static_lh_proto_RemoteStoreQueryResponsePb_descriptor =
+      getDescriptor().getMessageTypes().get(14);
+    internal_static_lh_proto_RemoteStoreQueryResponsePb_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_lh_proto_RemoteStoreQueryResponsePb_descriptor,
+        new java.lang.String[] { "Code", "Result", "ApproximateLag", "Result", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.common.proto.LhProto.getDescriptor();
   }

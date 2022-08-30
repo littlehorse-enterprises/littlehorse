@@ -145,3 +145,61 @@ message GETableEntryPb {
 message IndexEntriesPb {
     repeated IndexEntryPb entries = 1;
 }
+
+// For inter-broker communication, eg queryRemoteBytes.
+/*
+Possible outcomes:
+
+- Success, found the thing. Here are the bytes
+- Queried store appropriately but didn't find bytes.
+- Couldn't query store, rebalancing.
+- Task has migrated and I am no longer the assignee for that partition key.
+
+"task has migrated" type of response requires that request includes the partition key along with
+store key
+
+Also may want to distinguish between querying the active and standby. Do we want to pass in info about
+the partition? -> can do that, `KeyQueryMetadata#partition()` is what we want.
+
+On another note, how do we want to do readinessProbes? Options are:
+
+-- Make sure state is RUNNING
+This would really lean towards Consistency not Availability for queries. 
+
+-- Just check to see if we can get a store. If so, we're good.
+Could lead to a bunch of weirdness if in the PARTITIONS_ASSIGNED state and the current active leader.
+Will result in a failure. Then the entrypoint caller will have to realize that it failed, then
+call standby's. But that shouldn't be too hard.
+
+-- Just make sure we're not in PENDING_ERROR or something like that.
+This allows for maximum availability in theory. Depending on the state of each task, the store may
+or may not be available. We can surface the info about whether it's running or not via the result.
+
+-----
+
+When forced to query standbys, we can query all of them and return the least-stale result.
+
+Will need to schedule a thread in the background that makes a
+call to `streams.allLocalStorePartitionLags()`. It would be best to NOT piggyback the punctuator
+because that method takes a long time to return. Probably want to do it every 15 seconds.
+*/
+
+enum RemoteStoreQueryStatusPb {
+    RSQ_OK = 0;
+    RSQ_NOT_FOUND = 1;
+    RSQ_MIGRATED = 2;
+    RSQ_NOT_AVAILABLE = 3;
+}
+
+message RemoteStoreQueryRequestPb {
+    string store_name = 1;
+    int32 partition = 2;
+    string store_key = 3;
+    bool is_active_store = 4;
+}
+
+message RemoteStoreQueryResponsePb {
+    RemoteStoreQueryStatusPb code = 1;
+    optional bytes result = 2;
+    int64 approximate_lag = 3;
+}

@@ -8,6 +8,7 @@ import org.apache.kafka.streams.KeyQueryMetadata;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StoreQueryParameters;
 import org.apache.kafka.streams.StreamsMetadata;
+import org.apache.kafka.streams.errors.InvalidStateStoreException;
 import org.apache.kafka.streams.state.HostInfo;
 import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
@@ -21,6 +22,7 @@ import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.proto.server.LHResponseCodePb;
+import io.littlehorse.common.proto.server.RemoteStoreQueryStatusPb;
 import io.littlehorse.common.proto.server.RequestTypePb;
 import io.littlehorse.common.util.LHApiClient;
 import io.littlehorse.common.util.LHProducer;
@@ -30,6 +32,8 @@ import io.littlehorse.server.model.internal.IndexEntry;
 import io.littlehorse.server.model.internal.LHResponse;
 import io.littlehorse.server.model.internal.POSTableRequest;
 import io.littlehorse.server.model.internal.RangeResponse;
+import io.littlehorse.server.model.internal.RemoteStoreQueryRequest;
+import io.littlehorse.server.model.internal.RemoteStoreQueryResponse;
 
 public class ApiStreamsContext {
     private KafkaStreams streams;
@@ -58,9 +62,7 @@ public class ApiStreamsContext {
         if (metadata.activeHost().equals(thisHost)) {
             return localGet(storeKey, cls);
         } else {
-            byte[] serialized = queryRemoteBytes(
-                storeName, metadata.activeHost(), storeKey, metadata.standbyHosts()
-            );
+            byte[] serialized = queryRemoteBytes(storeName, metadata, storeKey);
             if (serialized == null) return null;
             try {
                 return LHSerializable.fromBytes(serialized, cls, config);
@@ -123,6 +125,40 @@ public class ApiStreamsContext {
                 cls.getCanonicalName();
             return client.getResponse(metadata.activeHost(), path);
         }
+    }
+
+    public RemoteStoreQueryResponse handleRemoteStoreQuery(RemoteStoreQueryRequest req) {
+        RemoteStoreQueryResponse resp = new RemoteStoreQueryResponse();
+        try {
+            StoreQueryParameters<ReadOnlyKeyValueStore<String, GETable<?>>> storeParams =
+                StoreQueryParameters.fromNameAndType(
+                    req.storeName,
+                    QueryableStoreTypes.<String, GETable<?>>keyValueStore()
+                ).withPartition(req.partition);
+
+            if (!req.isActiveStore) {
+                storeParams = storeParams.enableStaleStores();
+            }
+            ReadOnlyKeyValueStore<String, GETable<?>> store = streams.store(storeParams);
+            GETable<?> obj = store.get(req.storeKey);
+
+            resp.approximateLag = getApproximateLag(req.storeName, req.partition);
+            if (obj != null) {
+                resp.code = RemoteStoreQueryStatusPb.RSQ_OK;
+                resp.result = obj.toBytes(config);
+            } else {
+                resp.code = RemoteStoreQueryStatusPb.RSQ_NOT_FOUND;
+            }
+        } catch(InvalidStateStoreException exn) {
+            resp.code = RemoteStoreQueryStatusPb.RSQ_NOT_AVAILABLE;
+        }
+
+        return resp;
+    }
+
+    public long getApproximateLag(String storeName, int partition) {
+        // TODO
+        return 0;
     }
 
     public byte[] localWait(String requestId, Class<? extends POSTable<?>> cls) {
@@ -335,29 +371,24 @@ public class ApiStreamsContext {
     }
 
     private byte[] queryRemoteBytes(
-        String storeName, HostInfo host, String storeKey, Set<HostInfo> standbys
+        String storeName, KeyQueryMetadata metadata, String storeKey
     ) throws LHConnectionError {
         LHConnectionError caught = null;
-        String path = "/internal/storeBytes/" + storeName + "/" + storeKey;
+        String path = "/internal/storeBytes";
+
+        RemoteStoreQueryRequest req = new RemoteStoreQueryRequest(
+            metadata, storeName, storeKey, true
+        );
+
+        // First, query the active host. If we get it, then return that.
+        RemoteStoreQueryResponse resp = new RemoteStoreQueryResponse();
         try {
-            byte[] out = client.getResponse(host, path);
-            if (out.length == 0) {
-                return null;
-            } else {
-                return out;
-            }
+            byte[] out = client.getResponse(metadata.activeHost(), path, req.toBytes(config));
+            resp = 
         } catch(LHConnectionError exn) {
-            caught = exn;
-            for (HostInfo standby: standbys) {
-                try {
-                    LHUtil.log("Calling standby: ", standby);
-                    return client.getResponse(standby, path);
-                } catch(LHConnectionError other) {
-                    LHUtil.log("Failed making standby call.");
-                }
-            }
+
         }
-        throw caught;
+
     }
 
     public Long count(String storeName) throws LHConnectionError {
