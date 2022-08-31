@@ -207,7 +207,10 @@ public class LHConfig {
         conf.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
 
         // TODO: Make this more graceful
-        conf.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, getWorkerThreads());
+        conf.put(
+            ConsumerConfig.MAX_POLL_RECORDS_CONFIG,
+            getWorkerThreads() / 2 > 0 ? getWorkerThreads() / 2 : 1
+        );
 
         kafkaConsumer = new KafkaConsumer<>(conf);
         kafkaConsumer.subscribe(topics);

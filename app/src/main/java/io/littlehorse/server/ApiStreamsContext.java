@@ -2,10 +2,12 @@ package io.littlehorse.server;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyQueryMetadata;
 import org.apache.kafka.streams.KeyValue;
+import org.apache.kafka.streams.LagInfo;
 import org.apache.kafka.streams.StoreQueryParameters;
 import org.apache.kafka.streams.StreamsMetadata;
 import org.apache.kafka.streams.errors.InvalidStateStoreException;
@@ -40,6 +42,8 @@ public class ApiStreamsContext {
     private LHApiClient client;
     private LHProducer producer;
     private LHConfig config;
+    private Map<String, Map<Integer, LagInfo>> storeLagMap;
+    private ReentrantReadWriteLock storeLagMapLock;
 
     public ApiStreamsContext(LHConfig config, KafkaStreams streams) {
         this.streams = streams;
@@ -47,6 +51,30 @@ public class ApiStreamsContext {
         this.client = config.getApiClient();
         this.producer = config.getProducer();
         this.config = config;
+        storeLagMap = streams.allLocalStorePartitionLags();
+        storeLagMapLock = new ReentrantReadWriteLock();
+
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(1000 * 10);
+                } catch(InterruptedException exn) {
+                    throw new RuntimeException(
+                        "Trooper: 'It is time to go.' Organa: 'And so it is.'"
+                    );
+                }
+
+                Map<String, Map<Integer, LagInfo>> newMap = streams.allLocalStorePartitionLags();
+                try {
+                    storeLagMapLock.writeLock().lock();
+                    storeLagMap = newMap;
+                } catch(Exception exn) {
+                    LHUtil.log("Failed refreshing local lags: ", exn.getMessage());
+                } finally {
+                    storeLagMapLock.writeLock().unlock();
+                }
+            }
+        }).start();
     }
 
     public <U extends MessageOrBuilder, T extends GETable<U>>
@@ -158,8 +186,23 @@ public class ApiStreamsContext {
     }
 
     public long getApproximateLag(String storeName, int partition) {
-        // TODO
-        return 0;
+        Map<Integer, LagInfo> storeMap = null;
+        try {
+            storeLagMapLock.readLock().lock();
+            storeMap = storeLagMap.get(storeName);
+        } finally {
+            storeLagMapLock.readLock().unlock();
+        }
+
+        if (storeMap != null) {
+            LagInfo lag = storeMap.get(partition);
+            if (lag != null) {
+                return lag.offsetLag();
+            }
+        }
+        // Then the approximate lag hasn't been updated in time to reflect the new assignments.
+        // PROBABLY have a restore going on, so leave a big result and prefer other standby's.
+        return Integer.MAX_VALUE;
     }
 
     public byte[] localWait(String requestId, Class<? extends POSTable<?>> cls) {

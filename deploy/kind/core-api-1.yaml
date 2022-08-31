@@ -8,7 +8,7 @@ metadata:
     app: lh-server
     io.littlehorse/active: "true"
 spec:
-  replicas: 3
+  replicas: 6
   serviceName: lh-server
   podManagementPolicy: Parallel
   selector:
