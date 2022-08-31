@@ -38,10 +38,11 @@ spec:
       topologyKey: topology.kubernetes.io/zone
     storage:
       type: jbod
+      class: lh-resizable-gp2
       volumes:
       - id: 0
         type: persistent-claim
-        size: 5Gi
+        size: 80Gi
         deleteClaim: true
   # ZooKeeper is required when validating the CR spec. However it's ignored by the controller
   # when UseKRaft is set.

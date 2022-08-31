@@ -8,4 +8,4 @@ cd ${SCRIPT_DIR}/..
 
 gradle fatJar
 
-docker build -f ${SCRIPT_DIR}/Dockerfile -t littlehorse .
+docker build -f ${SCRIPT_DIR}/Dockerfile -t littlehorse:latest .

@@ -61,7 +61,7 @@ public class LHConfig {
 
     public int getWorkerThreads() {
         return Integer.valueOf(getOrSetDefault(
-            LHConstants.NUM_WORKER_THREADS_KEY, "64")
+            LHConstants.NUM_WORKER_THREADS_KEY, "128")
         );
     }
 
@@ -209,7 +209,7 @@ public class LHConfig {
         // TODO: Make this more graceful
         conf.put(
             ConsumerConfig.MAX_POLL_RECORDS_CONFIG,
-            getWorkerThreads() / 2 > 0 ? getWorkerThreads() / 2 : 1
+            getWorkerThreads()
         );
 
         kafkaConsumer = new KafkaConsumer<>(conf);
