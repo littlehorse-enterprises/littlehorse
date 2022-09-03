@@ -70,7 +70,6 @@ public class TestWorker {
             acknowledgedTasks.clear();
             offsetMap.clear();
             txnProd.beginTransaction();
-            boolean committed = false;
             try {
                 Iterator<ConsumerRecord<String, Bytes>> iter = records.iterator();
                 while (iter.hasNext()) {
@@ -79,13 +78,12 @@ public class TestWorker {
                 }
                 txnProd.sendOffsetsToTransaction(offsetMap, cons.groupMetadata());
                 txnProd.commitTransaction();
-                committed = true;
             } catch(Exception exn) {
                 txnProd.abortTransaction();
                 LHUtil.log("Exiting loop now, things are yikerz.");
                 throw new RuntimeException(exn);
             }
-            if (committed) enqueueAcknowledgedTasks();
+            enqueueAcknowledgedTasks();
         }
     }
 

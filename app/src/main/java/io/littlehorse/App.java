@@ -44,6 +44,12 @@ public class App {
         );
 
         topics.add(new NewTopic(
+            LHConstants.TIMER_TOPIC_NAME,
+            config.getClusterPartitions(),
+            config.getReplicationFactor())
+        );
+
+        topics.add(new NewTopic(
             LHConstants.WF_RUN_OBSERVABILITY_TOPIC,
             config.getClusterPartitions(),
             config.getReplicationFactor())

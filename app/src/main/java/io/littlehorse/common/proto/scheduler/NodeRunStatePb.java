@@ -18,7 +18,6 @@ private static final long serialVersionUID = 0L;
   private NodeRunStatePb() {
     nodeName_ = "";
     status_ = 0;
-    timerKeys_ = com.google.protobuf.LazyStringArrayList.EMPTY;
   }
 
   @java.lang.Override
@@ -41,7 +40,6 @@ private static final long serialVersionUID = 0L;
     if (extensionRegistry == null) {
       throw new java.lang.NullPointerException();
     }
-    int mutable_bitField0_ = 0;
     com.google.protobuf.UnknownFieldSet.Builder unknownFields =
         com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
@@ -79,15 +77,6 @@ private static final long serialVersionUID = 0L;
             status_ = rawValue;
             break;
           }
-          case 50: {
-            java.lang.String s = input.readStringRequireUtf8();
-            if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-              timerKeys_ = new com.google.protobuf.LazyStringArrayList();
-              mutable_bitField0_ |= 0x00000001;
-            }
-            timerKeys_.add(s);
-            break;
-          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -103,9 +92,6 @@ private static final long serialVersionUID = 0L;
       throw new com.google.protobuf.InvalidProtocolBufferException(
           e).setUnfinishedMessage(this);
     } finally {
-      if (((mutable_bitField0_ & 0x00000001) != 0)) {
-        timerKeys_ = timerKeys_.getUnmodifiableView();
-      }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
@@ -213,41 +199,6 @@ private static final long serialVersionUID = 0L;
     return result == null ? io.littlehorse.common.proto.LHStatusPb.UNRECOGNIZED : result;
   }
 
-  public static final int TIMER_KEYS_FIELD_NUMBER = 6;
-  private com.google.protobuf.LazyStringList timerKeys_;
-  /**
-   * <code>repeated string timer_keys = 6;</code>
-   * @return A list containing the timerKeys.
-   */
-  public com.google.protobuf.ProtocolStringList
-      getTimerKeysList() {
-    return timerKeys_;
-  }
-  /**
-   * <code>repeated string timer_keys = 6;</code>
-   * @return The count of timerKeys.
-   */
-  public int getTimerKeysCount() {
-    return timerKeys_.size();
-  }
-  /**
-   * <code>repeated string timer_keys = 6;</code>
-   * @param index The index of the element to return.
-   * @return The timerKeys at the given index.
-   */
-  public java.lang.String getTimerKeys(int index) {
-    return timerKeys_.get(index);
-  }
-  /**
-   * <code>repeated string timer_keys = 6;</code>
-   * @param index The index of the value to return.
-   * @return The bytes of the timerKeys at the given index.
-   */
-  public com.google.protobuf.ByteString
-      getTimerKeysBytes(int index) {
-    return timerKeys_.getByteString(index);
-  }
-
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -277,9 +228,6 @@ private static final long serialVersionUID = 0L;
     if (status_ != io.littlehorse.common.proto.LHStatusPb.STARTING.getNumber()) {
       output.writeEnum(5, status_);
     }
-    for (int i = 0; i < timerKeys_.size(); i++) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 6, timerKeys_.getRaw(i));
-    }
     unknownFields.writeTo(output);
   }
 
@@ -308,14 +256,6 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(5, status_);
     }
-    {
-      int dataSize = 0;
-      for (int i = 0; i < timerKeys_.size(); i++) {
-        dataSize += computeStringSizeNoTag(timerKeys_.getRaw(i));
-      }
-      size += dataSize;
-      size += 1 * getTimerKeysList().size();
-    }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
@@ -340,8 +280,6 @@ private static final long serialVersionUID = 0L;
     if (getNumber()
         != other.getNumber()) return false;
     if (status_ != other.status_) return false;
-    if (!getTimerKeysList()
-        .equals(other.getTimerKeysList())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -363,10 +301,6 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getNumber();
     hash = (37 * hash) + STATUS_FIELD_NUMBER;
     hash = (53 * hash) + status_;
-    if (getTimerKeysCount() > 0) {
-      hash = (37 * hash) + TIMER_KEYS_FIELD_NUMBER;
-      hash = (53 * hash) + getTimerKeysList().hashCode();
-    }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -510,8 +444,6 @@ private static final long serialVersionUID = 0L;
 
       status_ = 0;
 
-      timerKeys_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-      bitField0_ = (bitField0_ & ~0x00000001);
       return this;
     }
 
@@ -538,17 +470,11 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.common.proto.scheduler.NodeRunStatePb buildPartial() {
       io.littlehorse.common.proto.scheduler.NodeRunStatePb result = new io.littlehorse.common.proto.scheduler.NodeRunStatePb(this);
-      int from_bitField0_ = bitField0_;
       result.nodeName_ = nodeName_;
       result.attemptNumber_ = attemptNumber_;
       result.position_ = position_;
       result.number_ = number_;
       result.status_ = status_;
-      if (((bitField0_ & 0x00000001) != 0)) {
-        timerKeys_ = timerKeys_.getUnmodifiableView();
-        bitField0_ = (bitField0_ & ~0x00000001);
-      }
-      result.timerKeys_ = timerKeys_;
       onBuilt();
       return result;
     }
@@ -613,16 +539,6 @@ private static final long serialVersionUID = 0L;
       if (other.status_ != 0) {
         setStatusValue(other.getStatusValue());
       }
-      if (!other.timerKeys_.isEmpty()) {
-        if (timerKeys_.isEmpty()) {
-          timerKeys_ = other.timerKeys_;
-          bitField0_ = (bitField0_ & ~0x00000001);
-        } else {
-          ensureTimerKeysIsMutable();
-          timerKeys_.addAll(other.timerKeys_);
-        }
-        onChanged();
-      }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
@@ -651,7 +567,6 @@ private static final long serialVersionUID = 0L;
       }
       return this;
     }
-    private int bitField0_;
 
     private java.lang.Object nodeName_ = "";
     /**
@@ -872,116 +787,6 @@ private static final long serialVersionUID = 0L;
     public Builder clearStatus() {
       
       status_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private com.google.protobuf.LazyStringList timerKeys_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-    private void ensureTimerKeysIsMutable() {
-      if (!((bitField0_ & 0x00000001) != 0)) {
-        timerKeys_ = new com.google.protobuf.LazyStringArrayList(timerKeys_);
-        bitField0_ |= 0x00000001;
-       }
-    }
-    /**
-     * <code>repeated string timer_keys = 6;</code>
-     * @return A list containing the timerKeys.
-     */
-    public com.google.protobuf.ProtocolStringList
-        getTimerKeysList() {
-      return timerKeys_.getUnmodifiableView();
-    }
-    /**
-     * <code>repeated string timer_keys = 6;</code>
-     * @return The count of timerKeys.
-     */
-    public int getTimerKeysCount() {
-      return timerKeys_.size();
-    }
-    /**
-     * <code>repeated string timer_keys = 6;</code>
-     * @param index The index of the element to return.
-     * @return The timerKeys at the given index.
-     */
-    public java.lang.String getTimerKeys(int index) {
-      return timerKeys_.get(index);
-    }
-    /**
-     * <code>repeated string timer_keys = 6;</code>
-     * @param index The index of the value to return.
-     * @return The bytes of the timerKeys at the given index.
-     */
-    public com.google.protobuf.ByteString
-        getTimerKeysBytes(int index) {
-      return timerKeys_.getByteString(index);
-    }
-    /**
-     * <code>repeated string timer_keys = 6;</code>
-     * @param index The index to set the value at.
-     * @param value The timerKeys to set.
-     * @return This builder for chaining.
-     */
-    public Builder setTimerKeys(
-        int index, java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureTimerKeysIsMutable();
-      timerKeys_.set(index, value);
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>repeated string timer_keys = 6;</code>
-     * @param value The timerKeys to add.
-     * @return This builder for chaining.
-     */
-    public Builder addTimerKeys(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureTimerKeysIsMutable();
-      timerKeys_.add(value);
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>repeated string timer_keys = 6;</code>
-     * @param values The timerKeys to add.
-     * @return This builder for chaining.
-     */
-    public Builder addAllTimerKeys(
-        java.lang.Iterable<java.lang.String> values) {
-      ensureTimerKeysIsMutable();
-      com.google.protobuf.AbstractMessageLite.Builder.addAll(
-          values, timerKeys_);
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>repeated string timer_keys = 6;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearTimerKeys() {
-      timerKeys_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-      bitField0_ = (bitField0_ & ~0x00000001);
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>repeated string timer_keys = 6;</code>
-     * @param value The bytes of the timerKeys to add.
-     * @return This builder for chaining.
-     */
-    public Builder addTimerKeysBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      ensureTimerKeysIsMutable();
-      timerKeys_.add(value);
       onChanged();
       return this;
     }

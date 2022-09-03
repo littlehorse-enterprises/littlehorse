@@ -83,10 +83,17 @@ public class WfRun extends GETable<WfRunPb> {
         return id;
     }
 
-    public List<IndexEntry> getIndexEntries() {
-        return Arrays.asList(
+    @JsonIgnore public List<IndexEntry> getIndexEntries() {
+        List<IndexEntry> out = Arrays.asList(
             new IndexEntry(this, Pair.of("wfSpecName", wfSpecName)),
-            new IndexEntry(this, Pair.of("wfSpecId", wfSpecId))
+            new IndexEntry(this, Pair.of("wfSpecId", wfSpecId)),
+            new IndexEntry(
+                this,
+                Pair.of("wfSpecId", wfSpecId),
+                Pair.of("status", status.toString())
+            )
         );
+
+        return out;
     }
 }

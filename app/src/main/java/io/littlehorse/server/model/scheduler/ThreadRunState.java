@@ -73,18 +73,20 @@ public class ThreadRunState {
         }
     }
 
-    @JsonIgnore public void advance() {
+    @JsonIgnore public void advance(Date eventTime) {
         if (status != LHStatusPb.RUNNING) {
             if (status == LHStatusPb.HALTED) {
+                // Note, now that we have timers as actual events in the `WFRun_Event` log, this
+                // isn't a Panic-able error. Totally valid. Once we actually do something with the
+                // HALTED state, we need to fix this a bit.
                 throw new RuntimeException("Tried to advance HALTED thread");
             }
             if (status == LHStatusPb.HALTING) {
                 status = LHStatusPb.HALTED;
             }
             if (status == LHStatusPb.COMPLETED || status == LHStatusPb.ERROR) {
-                LHUtil.log(
-                    "WARN: Tried to advancece", status,
-                    "thread. Likely due to a stale event coming in."
+                if (status == LHStatusPb.ERROR) LHUtil.log(
+                    "YIKERZ", wfRun.id, currentNodeRun.position, eventTime.getTime()
                 );
                 return;
             }
@@ -104,7 +106,7 @@ public class ThreadRunState {
             if (shouldRetry(curNode, currentNodeRun)) {
                 scheduleRetry(curNode, currentNodeRun);
             } else {
-                LHUtil.log(wfRun.id, "The node is failed and not retryable. Failing thread now.");
+                LHUtil.log("Timing out", wfRun.id, currentNodeRun.position, eventTime.getTime());
                 setStatus(LHStatusPb.ERROR);
             }
         } else if (currentNodeRun.status == LHStatusPb.RUNNING) {
@@ -226,10 +228,6 @@ public class ThreadRunState {
         );
 
         wfRun.handleThreadStatus(threadRunNumber, time, newStatus);
-        
-        if (newStatus == LHStatusPb.COMPLETED) {
-            LHUtil.log(wfRun.id, "COMPLETED at", wfRun.endTime.getTime() - wfRun.startTime.getTime());
-        }
     }
 
     public void processStartedEvent(WfRunEvent we) {
@@ -253,22 +251,18 @@ public class ThreadRunState {
         timerEvt.wfRunId = wfRun.id;
         timerEvt.wfSpecId = wfRun.wfSpecId;
         Node node = getCurrentNode();
-        SchedulerTimer timer = new SchedulerTimer();
-        timer.wfRunId = wfRun.id;
 
-        timer.event = timerEvt;
         timerEvt.type = EventCase.TASK_RESULT;
         timerEvt.taskResult = new TaskResultEvent();
         timerEvt.taskResult.resultCode = TaskResultCodePb.TIMEOUT;
         timerEvt.taskResult.taskRunNumber = currentNodeRun.number;
         timerEvt.taskResult.taskRunPosition = currentNodeRun.position;
         timerEvt.taskResult.threadRunNumber = threadRunNumber;
-        timerEvt.time = timer.maturationTime = timerEvt.taskResult.time
-            = new Date(new Date().getTime() + (1000 * node.taskNode.timeoutSeconds));
+        timerEvt.time = new Date(new Date().getTime() + (1000 * node.taskNode.timeoutSeconds));
+        timerEvt.taskResult.time = timerEvt.time;
 
-        wfRun.timersToSchedule.add(timer);
-        currentNodeRun.timerKeys.add(timer.getStoreKey());
-}
+        wfRun.timersToSchedule.add(new LHTimer(timerEvt, timerEvt.time));
+    }
 
     public void processCompletedEvent(WfRunEvent we) {
         wfRun.oEvents.add(new ObservabilityEvent(
@@ -291,7 +285,6 @@ public class ThreadRunState {
 
             // Also of note is the default `request.timeout.ms` set to 30 seconds. Also greater than
             // our task timeout.
-            LHUtil.log("Warning: Got stale task event of type:", ce.resultCode);
             return;
         }
 
@@ -303,10 +296,6 @@ public class ThreadRunState {
             // Out-of-order event due to race conditions between task worker
             // transactional producer and regular producer
             return;
-        }
-
-        for (String timerKey: currentNodeRun.timerKeys) {
-            wfRun.timersToClear.add(timerKey);
         }
 
         switch (ce.resultCode) {

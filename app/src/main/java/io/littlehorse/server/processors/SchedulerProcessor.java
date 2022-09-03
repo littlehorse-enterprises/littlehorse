@@ -1,17 +1,12 @@
 package io.littlehorse.server.processors;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.kafka.streams.KeyValue;
-import org.apache.kafka.streams.processor.Cancellable;
-import org.apache.kafka.streams.processor.PunctuationType;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
-import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import io.littlehorse.common.LHConfig;
@@ -24,7 +19,7 @@ import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.scheduler.WfRunEventPb.EventCase;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.ServerTopology;
-import io.littlehorse.server.model.scheduler.SchedulerTimer;
+import io.littlehorse.server.model.scheduler.LHTimer;
 import io.littlehorse.server.model.scheduler.WfRunState;
 import io.littlehorse.server.model.scheduler.util.SchedulerOutput;
 
@@ -32,11 +27,9 @@ public class SchedulerProcessor
     implements Processor<String, WfRunEvent, String, SchedulerOutput>
 {
     private KeyValueStore<String, WfRunState> wfRunStore;
-    private KeyValueStore<String, SchedulerTimer> timerStore;
     private Map<String, WfSpec> wfSpecCache;
     private ProcessorContext<String, SchedulerOutput> context;
     private ReadOnlyKeyValueStore<String, WfSpec> wfSpecStore;
-    private Cancellable punctuator;
 
     public SchedulerProcessor(LHConfig config) {
         // this.client = config.getDbClient();
@@ -45,27 +38,20 @@ public class SchedulerProcessor
     @Override
     public void init(final ProcessorContext<String, SchedulerOutput> context) {
         wfRunStore = context.getStateStore(LHConstants.SCHED_WF_RUN_STORE_NAME);
-        timerStore = context.getStateStore(LHConstants.SCHED_TIMER_STORE_NAME);
         wfSpecStore = context.getStateStore(POSTable.getGlobalStoreName(WfSpec.class));
 
         this.context = context;
         this.wfSpecCache = new HashMap<>();
-
-        punctuator = context.schedule(
-            LHConstants.PUNCTUATOR_INERVAL,
-            PunctuationType.WALL_CLOCK_TIME,
-            this::clearTimers
-        );
     }
 
     @Override
     public void process(final Record<String, WfRunEvent> record) {
+        if (record.value() == null) {
+            // Then it's a null event which is used simply to tick up the stream time for the
+            // timer clearing method.
+            return;
+        }
         safeProcess(record.key(), record.timestamp(), record.value());
-    }
-
-    @Override
-    public void close() {
-        punctuator.cancel();
     }
 
     private void safeProcess(String key, long timestamp, WfRunEvent value) {
@@ -101,19 +87,18 @@ public class SchedulerProcessor
         WfRunState wfRun = wfRunStore.get(key);
 
         List<TaskScheduleRequest> tasksToSchedule = new ArrayList<>();
-        List<SchedulerTimer> timersToSchedule = new ArrayList<>();
-        List<String> timersToClear = new ArrayList<>();
+        List<LHTimer> timersToSchedule = new ArrayList<>();
 
         if (e.type == EventCase.RUN_REQUEST) {
             if (wfRun != null) {
                 LHUtil.log("Got a past run for id " + key + ", skipping");
                 return;
             }
-            wfRun = spec.startNewRun(e, tasksToSchedule, timersToSchedule, timersToClear);
+            wfRun = spec.startNewRun(e, tasksToSchedule, timersToSchedule);
 
         } else {
             wfRun.wfSpec = spec;
-            wfRun.processEvent(e, tasksToSchedule, timersToSchedule, timersToClear);
+            wfRun.processEvent(e, tasksToSchedule, timersToSchedule);
         }
 
         // Schedule tasks
@@ -125,13 +110,13 @@ public class SchedulerProcessor
             ), ServerTopology.schedulerTaskSink);
         }
 
-        for (SchedulerTimer timer: timersToSchedule) {
-            String timerStoreKey = timer.getStoreKey();
-            timerStore.put(timerStoreKey, timer);
-        }
-
-        for (String timerKey: timersToClear) {
-            timerStore.delete(timerKey);
+        for (LHTimer timer: timersToSchedule) {
+            SchedulerOutput out = new SchedulerOutput();
+            out.timer = timer;
+            context.forward(
+                new Record<>(key, out, timestamp),
+                ServerTopology.newTimerSink
+            );
         }
 
         // Forward the observability events
@@ -141,20 +126,6 @@ public class SchedulerProcessor
 
         // Save the WfRunState
         wfRunStore.put(key, wfRun);
-    }
-
-    public void clearTimers(long timestamp) {
-        // First timer
-        String start = "00000000";
-        String end = LHUtil.toLhDbFormat(new Date(timestamp));
-        try (KeyValueIterator<String, SchedulerTimer> iter = timerStore.range(start, end)) {
-            while (iter.hasNext()) {
-                KeyValue<String, SchedulerTimer> entry = iter.next();
-                SchedulerTimer timer = entry.value;
-                safeProcess(timer.wfRunId, timestamp, timer.event);
-                timerStore.delete(entry.key);
-            }
-        }
     }
 
     private WfSpec getWfSpec(String id) {

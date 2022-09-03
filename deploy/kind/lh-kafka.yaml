@@ -41,7 +41,7 @@ spec:
       volumes:
       - id: 0
         type: persistent-claim
-        size: 5Gi
+        size: 20Gi
         deleteClaim: true
   # ZooKeeper is required when validating the CR spec. However it's ignored by the controller
   # when UseKRaft is set.
@@ -59,7 +59,7 @@ spec:
     replicas: 3
     storage:
       type: persistent-claim
-      size: 5Gi
+      size: 10Gi
       deleteClaim: true
   cruiseControl: {}
   # entityOperator:

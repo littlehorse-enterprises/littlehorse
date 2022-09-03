@@ -16,7 +16,6 @@ message NodeRunStatePb {
     int32 position = 3;
     int32 number = 4;
     LHStatusPb status = 5;
-    repeated string timer_keys = 6;
 }
 
 message ThreadRunStatePb {
@@ -84,8 +83,11 @@ message WfRunEventPb {
 
 // Timer-related stuff
 
-message SchedulerTimerPb {
+message LHTimerPb {
     google.protobuf.Timestamp maturation_time = 1;
-    string wf_run_id = 2;
-    WfRunEventPb event = 3;
+    string key = 2;
+    string topic = 3;
+    oneof payload {
+        WfRunEventPb wf_run_event = 4;
+    };
 }

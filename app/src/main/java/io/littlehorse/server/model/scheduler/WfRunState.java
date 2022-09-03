@@ -94,8 +94,7 @@ public class WfRunState extends LHSerializable<WfRunStatePb> {
     @JsonIgnore public WfSpec wfSpec;
     @JsonIgnore public List<TaskScheduleRequest> tasksToSchedule;
     @JsonIgnore public ObservabilityEvents oEvents;
-    @JsonIgnore public List<SchedulerTimer> timersToSchedule;
-    @JsonIgnore public List<String> timersToClear;
+    @JsonIgnore public List<LHTimer> timersToSchedule;
 
     public void startThread(String threadName, Date start, Integer parentThreadId) {
         ThreadSpec tspec = wfSpec.threadSpecs.get(threadName);
@@ -115,18 +114,16 @@ public class WfRunState extends LHSerializable<WfRunStatePb> {
         thread.wfRun = this;
         threadRuns.put(thread.threadRunNumber, thread);
 
-        thread.advance();
+        thread.advance(start);
     }
 
     public void processEvent(
         WfRunEvent e,
         List<TaskScheduleRequest> tasksToSchedule,
-        List<SchedulerTimer> timersToSchedule,
-        List<String> timersToClear
+        List<LHTimer> timersToSchedule
     ) {
         this.timersToSchedule = timersToSchedule;
         this.tasksToSchedule = tasksToSchedule;
-        this.timersToClear = timersToClear;
 
         switch(e.type) {
         case RUN_REQUEST:
@@ -178,13 +175,13 @@ public class WfRunState extends LHSerializable<WfRunStatePb> {
         TaskStartedEvent se = we.startedEvent;
         ThreadRunState thread = threadRuns.get(se.threadRunNumber);
         thread.processStartedEvent(we);
-        thread.advance();
+        thread.advance(we.time);
     }
 
     private void handleTaskResult(WfRunEvent we) {
         TaskResultEvent ce = we.taskResult;
         ThreadRunState thread = threadRuns.get(ce.threadRunNumber);
         thread.processCompletedEvent(we);
-        thread.advance();
+        thread.advance(we.time);
     }
 }

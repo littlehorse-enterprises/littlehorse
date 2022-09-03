@@ -7,23 +7,33 @@ import io.littlehorse.common.util.LHKStreamsListener;
 
 public class Server {
     public static void doMain(LHConfig config) {
-        Topology topo = ServerTopology.initTopology(config);
-        KafkaStreams streams = new KafkaStreams(topo, config.getStreamsConfig());
+        Topology serverTopo = ServerTopology.initMainTopology(config);
+        KafkaStreams serverStreams = new KafkaStreams(serverTopo, config.getStreamsConfig("main"));
         ApiStreamsContext ctx = new ApiStreamsContext(
             config,
-            streams
+            serverStreams
         );
         LHKStreamsListener listener = new LHKStreamsListener();
-        streams.setStateListener(listener);
-        streams.setGlobalStateRestoreListener(listener);
+        serverStreams.setStateListener(listener);
+        serverStreams.setGlobalStateRestoreListener(listener);
 
         LHApi app = new LHApi(config, ctx, listener);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             config.cleanup();
-            streams.close();
+            serverStreams.close();
         }));
+
+        Topology timerTopo = ServerTopology.initTimerTopology(config);
+        KafkaStreams timerStreams = new KafkaStreams(timerTopo, config.getStreamsConfig("timer"));
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            serverStreams.close();
+            timerStreams.close();
+        }));
+
         app.start();
-        streams.start();
+        serverStreams.start();
+        timerStreams.start();
     }
 }

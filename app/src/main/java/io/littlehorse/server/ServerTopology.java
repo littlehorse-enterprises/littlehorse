@@ -26,7 +26,7 @@ import io.littlehorse.server.model.internal.IndexEntries;
 import io.littlehorse.server.model.internal.IndexEntryAction;
 import io.littlehorse.server.model.internal.LHResponse;
 import io.littlehorse.server.model.internal.POSTableRequest;
-import io.littlehorse.server.model.scheduler.SchedulerTimer;
+import io.littlehorse.server.model.scheduler.LHTimer;
 import io.littlehorse.server.model.scheduler.WfRunState;
 import io.littlehorse.server.model.scheduler.util.SchedulerOutput;
 import io.littlehorse.server.model.wfrun.TaskRun;
@@ -35,6 +35,7 @@ import io.littlehorse.server.processors.IndexFanoutProcessor;
 import io.littlehorse.server.processors.IndexProcessor;
 import io.littlehorse.server.processors.POSTableProcessor;
 import io.littlehorse.server.processors.SchedulerProcessor;
+import io.littlehorse.server.processors.TimerProcessor;
 import io.littlehorse.server.processors.WfRunProcessor;
 
 public class ServerTopology {
@@ -44,9 +45,59 @@ public class ServerTopology {
     public static String schedulerProcessor = "SchedulerProcessor";
     public static String schedulerWfRunSink = "Scheduler WFRun Sink";
     public static String schedulerTaskSink = "Scheduled Tasks";
+    public static String schedulerTickerSink = "Scheduler Ticks";
 
+    public static String timerSource = "Timer Source";
+    public static String timerProcessor = "Timer Processor";
+    public static String newTimerSink = "New Timer Sink";
+    public static String maturedTimerSink = "Matured Timer Sink";
 
-    public static Topology initTopology(LHConfig config) {
+    public static Topology initTimerTopology(LHConfig config) {
+        Topology topo = new Topology();
+        Serde<LHTimer> timerSerde = new LHSerde<>(LHTimer.class, config);
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            timerSerde.close();
+        }));
+
+        topo.addSource(
+            timerSource,
+            Serdes.String().deserializer(),
+            timerSerde.deserializer(),
+            LHConstants.TIMER_TOPIC_NAME
+        );
+
+        topo.addProcessor(
+            timerProcessor,
+            () -> {return new TimerProcessor();},
+            timerSource
+        );
+
+        topo.addSink(
+            maturedTimerSink,
+            (key, lhTimer, ctx) -> {
+                return ((LHTimer)lhTimer).topic;
+            },
+            Serdes.String().serializer(),
+            (topic, lhTimer) -> {
+                return ((LHTimer)lhTimer).getPayload(config);
+            },
+            timerProcessor
+        );
+
+        // Add state store
+        StoreBuilder<KeyValueStore<String, LHTimer>> timerStoreBuilder =
+            Stores.keyValueStoreBuilder(
+                Stores.persistentKeyValueStore(LHConstants.TIMER_STORE_NAME),
+                Serdes.String(),
+                timerSerde
+            );
+        topo.addStateStore(timerStoreBuilder, timerProcessor);
+
+        return topo;
+    }
+
+    public static Topology initMainTopology(LHConfig config) {
         Topology topo = new Topology();
 
         addPOSTableSubTopology(topo, WfSpec.class, config);
@@ -111,8 +162,19 @@ public class ServerTopology {
                 return ((SchedulerOutput)v).request.taskDefName;
             },
             Serdes.String().serializer(),
+            // Serializer
             (topic, schedulerOutput) -> {
                 return ((SchedulerOutput) schedulerOutput).request.toBytes(config);
+            },
+            schedulerProcessor
+        );
+
+        topo.addSink(
+            newTimerSink,
+            LHConstants.TIMER_TOPIC_NAME,
+            Serdes.String().serializer(),
+            (topic, schedulerOutput) -> {
+                return ((SchedulerOutput) schedulerOutput).timer.toBytes(config);
             },
             schedulerProcessor
         );
@@ -125,15 +187,6 @@ public class ServerTopology {
                 runSerde
             );
         topo.addStateStore(wfRunStoreBuilder, schedulerProcessor);
-
-        StoreBuilder<KeyValueStore<String, SchedulerTimer>> timerStoreBuilder =
-            Stores.keyValueStoreBuilder(
-                Stores.persistentKeyValueStore(LHConstants.SCHED_TIMER_STORE_NAME),
-                Serdes.String(),
-                new LHSerde<>(SchedulerTimer.class, config)
-            );
-        topo.addStateStore(timerStoreBuilder, schedulerProcessor);
-
     }
 
     private static <U extends MessageOrBuilder, T extends POSTable<U>>

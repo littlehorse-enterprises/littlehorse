@@ -20,10 +20,11 @@ public class LHConstants {
     public static final String RACK_ID_KEY = "LHORSE_RACK_ID";
 
     public static final String WF_RUN_EVENT_TOPIC = "WFRun_Event";
+    public static final String TIMER_TOPIC_NAME = "Timer";
     public static final String WF_RUN_OBSERVABILITY_TOPIC = "WFRun_Observability";
 
     public static final String SCHED_WF_RUN_STORE_NAME = "Scheduler_WfRunState_Store";
-    public static final String SCHED_TIMER_STORE_NAME = "Scheduler_Timer_Store";
+    public static final String TIMER_STORE_NAME = "Timer_Store";
     public static final String INDEX_STORE_NAME = "Core_Server_Index_Store";
     public static final String INDEX_TOPIC_NAME = "Index_Entry_Actions";
 
@@ -34,6 +35,7 @@ public class LHConstants {
     public static final String KAFKA_STATE_DIR_KEY = "LHORSE_KAFKA_STREAMS_STATE_DIR";
 
     public static final Duration PUNCTUATOR_INERVAL = Duration.ofSeconds(4);
+    public static final Duration TICKER_INTERVAL = Duration.ofSeconds(4);
 
     public static final String OBJECT_ID_HEADER = "STORE_KEY";
 }

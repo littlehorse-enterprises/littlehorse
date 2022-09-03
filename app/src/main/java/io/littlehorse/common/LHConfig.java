@@ -65,6 +65,10 @@ public class LHConfig {
         );
     }
 
+    public String getKafkaGroupId(String component) {
+        return getKafkaGroupId() + "-" + component;
+    }
+
     public String getKafkaGroupId() {
         return getOrSetDefault(LHConstants.KAFKA_GROUP_ID_KEY, "unset-group-id-bad");
     }
@@ -217,13 +221,13 @@ public class LHConfig {
         return kafkaConsumer;
     }
 
-    public Properties getStreamsConfig() {
+    public Properties getStreamsConfig(String component) {
         Properties props = new Properties();
         props.put(
             StreamsConfig.APPLICATION_SERVER_CONFIG,
             this.getAdvertisedHost() + ":" + this.getAdvertisedPort()
         );
-        props.put(StreamsConfig.APPLICATION_ID_CONFIG, this.getKafkaGroupId());
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, this.getKafkaGroupId(component));
         props.put(ConsumerConfig.GROUP_INSTANCE_ID_CONFIG, this.getKafkaInstanceId());
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, this.getBootstrapServers());
         props.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
