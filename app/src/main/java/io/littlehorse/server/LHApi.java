@@ -11,9 +11,9 @@ import org.apache.kafka.common.KafkaException;
 import com.google.protobuf.MessageOrBuilder;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import io.littlehorse.common.LHApiClient;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.LHDatabaseClient;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.GETable;
@@ -40,7 +40,7 @@ public class LHApi {
     private Javalin app;
     private LHConfig config;
     private ApiStreamsContext streams;
-    private LHDatabaseClient client;
+    private LHApiClient client;
     private LHProducer producer;
 
     private interface HandlerFunc {
@@ -67,7 +67,7 @@ public class LHApi {
         this.streams = streams;
         this.config = config;
         this.app = config.createAppWithHealth(listener);
-        this.client = config.getDbClient();
+        this.client = config.getApiClient();
 
         this.app.get("/WfSpec/{id}", (ctx) -> handle(this::getWfSpec, ctx));
         this.app.get("/TaskDef/{id}", (ctx) -> handle(this::getTaskDef, ctx));

@@ -26,7 +26,7 @@ import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.proto.server.LHResponseCodePb;
 import io.littlehorse.common.proto.server.RemoteStoreQueryStatusPb;
 import io.littlehorse.common.proto.server.RequestTypePb;
-import io.littlehorse.common.util.LHApiClient;
+import io.littlehorse.common.util.LHRpcClient;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.model.internal.IndexEntries;
@@ -39,7 +39,7 @@ import io.littlehorse.server.model.internal.RemoteStoreQueryResponse;
 public class ApiStreamsContext {
     private KafkaStreams streams;
     private HostInfo thisHost;
-    private LHApiClient client;
+    private LHRpcClient client;
     private LHProducer producer;
     private LHConfig config;
     private Map<String, Map<Integer, LagInfo>> storeLagMap;
@@ -48,7 +48,7 @@ public class ApiStreamsContext {
     public ApiStreamsContext(LHConfig config, KafkaStreams streams) {
         this.streams = streams;
         this.thisHost = config.getHostInfo();
-        this.client = config.getApiClient();
+        this.client = config.getRpcClient();
         this.producer = config.getProducer();
         this.config = config;
         storeLagMap = streams.allLocalStorePartitionLags();

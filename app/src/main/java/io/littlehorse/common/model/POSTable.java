@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.LHDatabaseClient;
+import io.littlehorse.common.LHGlobalMetaStores;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.meta.TaskDef;
@@ -12,8 +12,8 @@ import io.littlehorse.common.model.meta.WfSpec;
 
 public abstract class POSTable<T extends MessageOrBuilder> extends GETable<T> {
     public abstract void handlePost(
-        POSTable<T> old, LHDatabaseClient client, LHConfig config
-    ) throws LHValidationError, LHConnectionError;
+        POSTable<T> old, LHGlobalMetaStores client, LHConfig config
+    ) throws LHValidationError;
 
     // TODO: Need to think about how to make wait's transactional.
     public abstract boolean handleDelete()

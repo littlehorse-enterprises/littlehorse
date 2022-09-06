@@ -7,8 +7,7 @@ import org.apache.kafka.streams.state.KeyValueStore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.LHDatabaseClient;
-import io.littlehorse.common.exceptions.LHConnectionError;
+import io.littlehorse.common.LHGlobalMetaStores;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
@@ -26,11 +25,10 @@ public class POSTableProcessor<U extends MessageOrBuilder, T extends POSTable<U>
     private KeyValueStore<String, LHResponse> responseStore;
     private Class<T> cls;
     private ProcessorContext<String, T> context;
-    private LHDatabaseClient dbClient;
+    private LHGlobalMetaStores dbClient;
     private LHConfig config;
 
     public POSTableProcessor(Class<T> cls, LHConfig config) {
-        this.dbClient = new LHDatabaseClient(config);
         this.cls = cls;
         this.config = config;
     }
@@ -46,6 +44,7 @@ public class POSTableProcessor<U extends MessageOrBuilder, T extends POSTable<U>
         this.responseStore = context.getStateStore(
             POSTable.getResponseStoreName(cls)
         );
+        this.dbClient = new LHGlobalMetaStores(context);
     }
 
     @Override
@@ -80,10 +79,6 @@ public class POSTableProcessor<U extends MessageOrBuilder, T extends POSTable<U>
             context.forward(newRec);
 
             store.put(key, newT);
-
-        } catch(LHConnectionError exn) {
-            resp.message = exn.getMessage();
-            resp.code = LHResponseCodePb.CONNECTION_ERROR;
 
         } catch(LHValidationError exn) {
             resp.message = exn.getMessage();

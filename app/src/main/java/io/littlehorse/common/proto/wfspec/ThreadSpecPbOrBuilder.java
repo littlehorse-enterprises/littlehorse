@@ -40,4 +40,38 @@ public interface ThreadSpecPbOrBuilder extends
 
   io.littlehorse.common.proto.wfspec.NodePb getNodesOrThrow(
       java.lang.String key);
+
+  /**
+   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; variable_defs = 2;</code>
+   */
+  int getVariableDefsCount();
+  /**
+   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; variable_defs = 2;</code>
+   */
+  boolean containsVariableDefs(
+      java.lang.String key);
+  /**
+   * Use {@link #getVariableDefsMap()} instead.
+   */
+  @java.lang.Deprecated
+  java.util.Map<java.lang.String, io.littlehorse.common.proto.wfspec.VariableDefPb>
+  getVariableDefs();
+  /**
+   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; variable_defs = 2;</code>
+   */
+  java.util.Map<java.lang.String, io.littlehorse.common.proto.wfspec.VariableDefPb>
+  getVariableDefsMap();
+  /**
+   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; variable_defs = 2;</code>
+   */
+
+  io.littlehorse.common.proto.wfspec.VariableDefPb getVariableDefsOrDefault(
+      java.lang.String key,
+      io.littlehorse.common.proto.wfspec.VariableDefPb defaultValue);
+  /**
+   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; variable_defs = 2;</code>
+   */
+
+  io.littlehorse.common.proto.wfspec.VariableDefPb getVariableDefsOrThrow(
+      java.lang.String key);
 }

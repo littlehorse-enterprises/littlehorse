@@ -5,8 +5,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.LHDatabaseClient;
-import io.littlehorse.common.exceptions.LHConnectionError;
+import io.littlehorse.common.LHGlobalMetaStores;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
@@ -99,8 +98,7 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
     public String name;
     @JsonIgnore public ThreadSpec threadSpec;
 
-    public void validate(LHDatabaseClient client, LHConfig config)
-    throws LHValidationError, LHConnectionError {
+    public void validate(LHGlobalMetaStores client, LHConfig config) throws LHValidationError {
         for (Edge e: outgoingEdges) {
             Node sink = threadSpec.nodes.get(e.sinkNodeName);
             if (sink == null) {
@@ -124,9 +122,8 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
         }
     }
 
-    private void validateTask(LHDatabaseClient client, LHConfig config)
-    throws LHConnectionError, LHValidationError {
-        TaskDef task = client.getTaskDef(taskNode.taskDefName);
+    private void validateTask(LHGlobalMetaStores stores, LHConfig config) throws LHValidationError {
+        TaskDef task = stores.getTaskDef(taskNode.taskDefName);
         if (task == null) {
             throw new LHValidationError(
                 null,

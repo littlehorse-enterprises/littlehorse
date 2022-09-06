@@ -37,6 +37,7 @@ message WfRunStatePb {
 message WfRunRequestPb {
     optional string wf_run_id = 1;
     string wf_spec_id = 2;
+    map<string, VariableValuePb> variables = 3;
 }
 
 message TaskScheduleRequestPb {

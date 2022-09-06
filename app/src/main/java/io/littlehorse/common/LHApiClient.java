@@ -7,23 +7,23 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.proto.server.LHResponseCodePb;
-import io.littlehorse.common.util.LHApiClient;
+import io.littlehorse.common.util.LHRpcClient;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.model.internal.LHResponse;
 import io.littlehorse.server.model.internal.RangeResponse;
 
-public class LHDatabaseClient {
-    private LHApiClient client;
+public class LHApiClient {
+    private LHRpcClient client;
     private HostInfo apiHost;
     private LHConfig config;
 
-    public LHDatabaseClient(LHConfig config) {
-        this.client = config.getApiClient();
-        this.apiHost = config.getApiHostInfo();
+    public LHApiClient(LHConfig config) {
         this.config = config;
+        this.apiHost = config.getApiHostInfo();
+        this.client = config.getRpcClient();
     }
 
-    public WfSpec getWfSpec(String idOrName) throws LHConnectionError{
+    public WfSpec getWfSpec(String idOrName) throws LHConnectionError {
         try {
             LHResponse response = LHSerializable.fromBytes(
                 client.getResponseAsBytes(apiHost, "/WfSpec/" + idOrName),
@@ -97,6 +97,5 @@ public class LHDatabaseClient {
             // This really shouldn't be possible.
             throw new LHConnectionError(null, "Mysterious error: " + resp.toJson());
         }
-
     }
 }

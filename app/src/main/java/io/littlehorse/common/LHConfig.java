@@ -21,7 +21,7 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.state.HostInfo;
 import io.javalin.Javalin;
-import io.littlehorse.common.util.LHApiClient;
+import io.littlehorse.common.util.LHRpcClient;
 import io.littlehorse.common.util.LHKStreamsListener;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
@@ -47,10 +47,6 @@ public class LHConfig {
         return Integer.valueOf(String.class.cast(props.getOrDefault(
             LHConstants.TASK_PARTITIONS_KEY, "12")
         ));
-    }
-
-    public LHDatabaseClient getDbClient() {
-        return new LHDatabaseClient(this);
     }
 
     public int getClusterPartitions() {
@@ -126,6 +122,10 @@ public class LHConfig {
         return getOrSetDefault(LHConstants.API_HOST_KEY, "localhost");
     }
 
+    public LHApiClient getApiClient() {
+        return new LHApiClient(this);
+    }
+
     public int getApiPort() {
         // return Integer.valueOf(getOrSetDefault(LHConstants.API_PORT_KEY, "5000"));
 
@@ -138,8 +138,8 @@ public class LHConfig {
         if (this.txnProducer != null) this.txnProducer.close();
     }
 
-    public LHApiClient getApiClient() {
-        return new LHApiClient();
+    public LHRpcClient getRpcClient() {
+        return new LHRpcClient();
     }
 
     public LHProducer getProducer() {

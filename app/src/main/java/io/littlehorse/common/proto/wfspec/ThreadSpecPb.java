@@ -62,6 +62,19 @@ private static final long serialVersionUID = 0L;
                 nodes__.getKey(), nodes__.getValue());
             break;
           }
+          case 18: {
+            if (!((mutable_bitField0_ & 0x00000002) != 0)) {
+              variableDefs_ = com.google.protobuf.MapField.newMapField(
+                  VariableDefsDefaultEntryHolder.defaultEntry);
+              mutable_bitField0_ |= 0x00000002;
+            }
+            com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.common.proto.wfspec.VariableDefPb>
+            variableDefs__ = input.readMessage(
+                VariableDefsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+            variableDefs_.getMutableMap().put(
+                variableDefs__.getKey(), variableDefs__.getValue());
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -93,6 +106,8 @@ private static final long serialVersionUID = 0L;
     switch (number) {
       case 1:
         return internalGetNodes();
+      case 2:
+        return internalGetVariableDefs();
       default:
         throw new RuntimeException(
             "Invalid map field number: " + number);
@@ -187,6 +202,87 @@ private static final long serialVersionUID = 0L;
     return map.get(key);
   }
 
+  public static final int VARIABLE_DEFS_FIELD_NUMBER = 2;
+  private static final class VariableDefsDefaultEntryHolder {
+    static final com.google.protobuf.MapEntry<
+        java.lang.String, io.littlehorse.common.proto.wfspec.VariableDefPb> defaultEntry =
+            com.google.protobuf.MapEntry
+            .<java.lang.String, io.littlehorse.common.proto.wfspec.VariableDefPb>newDefaultInstance(
+                io.littlehorse.common.proto.wfspec.WfSpec.internal_static_lh_proto_ThreadSpecPb_VariableDefsEntry_descriptor, 
+                com.google.protobuf.WireFormat.FieldType.STRING,
+                "",
+                com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                io.littlehorse.common.proto.wfspec.VariableDefPb.getDefaultInstance());
+  }
+  private com.google.protobuf.MapField<
+      java.lang.String, io.littlehorse.common.proto.wfspec.VariableDefPb> variableDefs_;
+  private com.google.protobuf.MapField<java.lang.String, io.littlehorse.common.proto.wfspec.VariableDefPb>
+  internalGetVariableDefs() {
+    if (variableDefs_ == null) {
+      return com.google.protobuf.MapField.emptyMapField(
+          VariableDefsDefaultEntryHolder.defaultEntry);
+    }
+    return variableDefs_;
+  }
+
+  public int getVariableDefsCount() {
+    return internalGetVariableDefs().getMap().size();
+  }
+  /**
+   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; variable_defs = 2;</code>
+   */
+
+  @java.lang.Override
+  public boolean containsVariableDefs(
+      java.lang.String key) {
+    if (key == null) { throw new java.lang.NullPointerException(); }
+    return internalGetVariableDefs().getMap().containsKey(key);
+  }
+  /**
+   * Use {@link #getVariableDefsMap()} instead.
+   */
+  @java.lang.Override
+  @java.lang.Deprecated
+  public java.util.Map<java.lang.String, io.littlehorse.common.proto.wfspec.VariableDefPb> getVariableDefs() {
+    return getVariableDefsMap();
+  }
+  /**
+   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; variable_defs = 2;</code>
+   */
+  @java.lang.Override
+
+  public java.util.Map<java.lang.String, io.littlehorse.common.proto.wfspec.VariableDefPb> getVariableDefsMap() {
+    return internalGetVariableDefs().getMap();
+  }
+  /**
+   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; variable_defs = 2;</code>
+   */
+  @java.lang.Override
+
+  public io.littlehorse.common.proto.wfspec.VariableDefPb getVariableDefsOrDefault(
+      java.lang.String key,
+      io.littlehorse.common.proto.wfspec.VariableDefPb defaultValue) {
+    if (key == null) { throw new java.lang.NullPointerException(); }
+    java.util.Map<java.lang.String, io.littlehorse.common.proto.wfspec.VariableDefPb> map =
+        internalGetVariableDefs().getMap();
+    return map.containsKey(key) ? map.get(key) : defaultValue;
+  }
+  /**
+   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; variable_defs = 2;</code>
+   */
+  @java.lang.Override
+
+  public io.littlehorse.common.proto.wfspec.VariableDefPb getVariableDefsOrThrow(
+      java.lang.String key) {
+    if (key == null) { throw new java.lang.NullPointerException(); }
+    java.util.Map<java.lang.String, io.littlehorse.common.proto.wfspec.VariableDefPb> map =
+        internalGetVariableDefs().getMap();
+    if (!map.containsKey(key)) {
+      throw new java.lang.IllegalArgumentException();
+    }
+    return map.get(key);
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -207,6 +303,12 @@ private static final long serialVersionUID = 0L;
         internalGetNodes(),
         NodesDefaultEntryHolder.defaultEntry,
         1);
+    com.google.protobuf.GeneratedMessageV3
+      .serializeStringMapTo(
+        output,
+        internalGetVariableDefs(),
+        VariableDefsDefaultEntryHolder.defaultEntry,
+        2);
     unknownFields.writeTo(output);
   }
 
@@ -226,6 +328,16 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, nodes__);
     }
+    for (java.util.Map.Entry<java.lang.String, io.littlehorse.common.proto.wfspec.VariableDefPb> entry
+         : internalGetVariableDefs().getMap().entrySet()) {
+      com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.common.proto.wfspec.VariableDefPb>
+      variableDefs__ = VariableDefsDefaultEntryHolder.defaultEntry.newBuilderForType()
+          .setKey(entry.getKey())
+          .setValue(entry.getValue())
+          .build();
+      size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, variableDefs__);
+    }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
@@ -243,6 +355,8 @@ private static final long serialVersionUID = 0L;
 
     if (!internalGetNodes().equals(
         other.internalGetNodes())) return false;
+    if (!internalGetVariableDefs().equals(
+        other.internalGetVariableDefs())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -257,6 +371,10 @@ private static final long serialVersionUID = 0L;
     if (!internalGetNodes().getMap().isEmpty()) {
       hash = (37 * hash) + NODES_FIELD_NUMBER;
       hash = (53 * hash) + internalGetNodes().hashCode();
+    }
+    if (!internalGetVariableDefs().getMap().isEmpty()) {
+      hash = (37 * hash) + VARIABLE_DEFS_FIELD_NUMBER;
+      hash = (53 * hash) + internalGetVariableDefs().hashCode();
     }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
@@ -371,6 +489,8 @@ private static final long serialVersionUID = 0L;
       switch (number) {
         case 1:
           return internalGetNodes();
+        case 2:
+          return internalGetVariableDefs();
         default:
           throw new RuntimeException(
               "Invalid map field number: " + number);
@@ -382,6 +502,8 @@ private static final long serialVersionUID = 0L;
       switch (number) {
         case 1:
           return internalGetMutableNodes();
+        case 2:
+          return internalGetMutableVariableDefs();
         default:
           throw new RuntimeException(
               "Invalid map field number: " + number);
@@ -414,6 +536,7 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       internalGetMutableNodes().clear();
+      internalGetMutableVariableDefs().clear();
       return this;
     }
 
@@ -443,6 +566,8 @@ private static final long serialVersionUID = 0L;
       int from_bitField0_ = bitField0_;
       result.nodes_ = internalGetNodes();
       result.nodes_.makeImmutable();
+      result.variableDefs_ = internalGetVariableDefs();
+      result.variableDefs_.makeImmutable();
       onBuilt();
       return result;
     }
@@ -493,6 +618,8 @@ private static final long serialVersionUID = 0L;
       if (other == io.littlehorse.common.proto.wfspec.ThreadSpecPb.getDefaultInstance()) return this;
       internalGetMutableNodes().mergeFrom(
           other.internalGetNodes());
+      internalGetMutableVariableDefs().mergeFrom(
+          other.internalGetVariableDefs());
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
@@ -647,6 +774,134 @@ private static final long serialVersionUID = 0L;
     public Builder putAllNodes(
         java.util.Map<java.lang.String, io.littlehorse.common.proto.wfspec.NodePb> values) {
       internalGetMutableNodes().getMutableMap()
+          .putAll(values);
+      return this;
+    }
+
+    private com.google.protobuf.MapField<
+        java.lang.String, io.littlehorse.common.proto.wfspec.VariableDefPb> variableDefs_;
+    private com.google.protobuf.MapField<java.lang.String, io.littlehorse.common.proto.wfspec.VariableDefPb>
+    internalGetVariableDefs() {
+      if (variableDefs_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            VariableDefsDefaultEntryHolder.defaultEntry);
+      }
+      return variableDefs_;
+    }
+    private com.google.protobuf.MapField<java.lang.String, io.littlehorse.common.proto.wfspec.VariableDefPb>
+    internalGetMutableVariableDefs() {
+      onChanged();;
+      if (variableDefs_ == null) {
+        variableDefs_ = com.google.protobuf.MapField.newMapField(
+            VariableDefsDefaultEntryHolder.defaultEntry);
+      }
+      if (!variableDefs_.isMutable()) {
+        variableDefs_ = variableDefs_.copy();
+      }
+      return variableDefs_;
+    }
+
+    public int getVariableDefsCount() {
+      return internalGetVariableDefs().getMap().size();
+    }
+    /**
+     * <code>map&lt;string, .lh_proto.VariableDefPb&gt; variable_defs = 2;</code>
+     */
+
+    @java.lang.Override
+    public boolean containsVariableDefs(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      return internalGetVariableDefs().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getVariableDefsMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, io.littlehorse.common.proto.wfspec.VariableDefPb> getVariableDefs() {
+      return getVariableDefsMap();
+    }
+    /**
+     * <code>map&lt;string, .lh_proto.VariableDefPb&gt; variable_defs = 2;</code>
+     */
+    @java.lang.Override
+
+    public java.util.Map<java.lang.String, io.littlehorse.common.proto.wfspec.VariableDefPb> getVariableDefsMap() {
+      return internalGetVariableDefs().getMap();
+    }
+    /**
+     * <code>map&lt;string, .lh_proto.VariableDefPb&gt; variable_defs = 2;</code>
+     */
+    @java.lang.Override
+
+    public io.littlehorse.common.proto.wfspec.VariableDefPb getVariableDefsOrDefault(
+        java.lang.String key,
+        io.littlehorse.common.proto.wfspec.VariableDefPb defaultValue) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, io.littlehorse.common.proto.wfspec.VariableDefPb> map =
+          internalGetVariableDefs().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <code>map&lt;string, .lh_proto.VariableDefPb&gt; variable_defs = 2;</code>
+     */
+    @java.lang.Override
+
+    public io.littlehorse.common.proto.wfspec.VariableDefPb getVariableDefsOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, io.littlehorse.common.proto.wfspec.VariableDefPb> map =
+          internalGetVariableDefs().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+
+    public Builder clearVariableDefs() {
+      internalGetMutableVariableDefs().getMutableMap()
+          .clear();
+      return this;
+    }
+    /**
+     * <code>map&lt;string, .lh_proto.VariableDefPb&gt; variable_defs = 2;</code>
+     */
+
+    public Builder removeVariableDefs(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      internalGetMutableVariableDefs().getMutableMap()
+          .remove(key);
+      return this;
+    }
+    /**
+     * Use alternate mutation accessors instead.
+     */
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, io.littlehorse.common.proto.wfspec.VariableDefPb>
+    getMutableVariableDefs() {
+      return internalGetMutableVariableDefs().getMutableMap();
+    }
+    /**
+     * <code>map&lt;string, .lh_proto.VariableDefPb&gt; variable_defs = 2;</code>
+     */
+    public Builder putVariableDefs(
+        java.lang.String key,
+        io.littlehorse.common.proto.wfspec.VariableDefPb value) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      if (value == null) { throw new java.lang.NullPointerException(); }
+      internalGetMutableVariableDefs().getMutableMap()
+          .put(key, value);
+      return this;
+    }
+    /**
+     * <code>map&lt;string, .lh_proto.VariableDefPb&gt; variable_defs = 2;</code>
+     */
+
+    public Builder putAllVariableDefs(
+        java.util.Map<java.lang.String, io.littlehorse.common.proto.wfspec.VariableDefPb> values) {
+      internalGetMutableVariableDefs().getMutableMap()
           .putAll(values);
       return this;
     }

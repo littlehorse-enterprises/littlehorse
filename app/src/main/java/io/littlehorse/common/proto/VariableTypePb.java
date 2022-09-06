@@ -4,37 +4,69 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf enum {@code lh_proto.TaskResultCodePb}
+ * Protobuf enum {@code lh_proto.VariableTypePb}
  */
-public enum TaskResultCodePb
+public enum VariableTypePb
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
-   * <code>SUCCESS = 0;</code>
+   * <code>JSON_OBJ = 0;</code>
    */
-  SUCCESS(0),
+  JSON_OBJ(0),
   /**
-   * <code>TIMEOUT = 1;</code>
+   * <code>JSON_ARR = 1;</code>
    */
-  TIMEOUT(1),
+  JSON_ARR(1),
   /**
-   * <code>TASK_FAILURE = 2;</code>
+   * <code>DOUBLE = 2;</code>
    */
-  TASK_FAILURE(2),
+  DOUBLE(2),
+  /**
+   * <code>BOOL = 3;</code>
+   */
+  BOOL(3),
+  /**
+   * <code>STR = 4;</code>
+   */
+  STR(4),
+  /**
+   * <code>INT = 5;</code>
+   */
+  INT(5),
+  /**
+   * <code>BYTES = 6;</code>
+   */
+  BYTES(6),
   UNRECOGNIZED(-1),
   ;
 
   /**
-   * <code>SUCCESS = 0;</code>
+   * <code>JSON_OBJ = 0;</code>
    */
-  public static final int SUCCESS_VALUE = 0;
+  public static final int JSON_OBJ_VALUE = 0;
   /**
-   * <code>TIMEOUT = 1;</code>
+   * <code>JSON_ARR = 1;</code>
    */
-  public static final int TIMEOUT_VALUE = 1;
+  public static final int JSON_ARR_VALUE = 1;
   /**
-   * <code>TASK_FAILURE = 2;</code>
+   * <code>DOUBLE = 2;</code>
    */
-  public static final int TASK_FAILURE_VALUE = 2;
+  public static final int DOUBLE_VALUE = 2;
+  /**
+   * <code>BOOL = 3;</code>
+   */
+  public static final int BOOL_VALUE = 3;
+  /**
+   * <code>STR = 4;</code>
+   */
+  public static final int STR_VALUE = 4;
+  /**
+   * <code>INT = 5;</code>
+   */
+  public static final int INT_VALUE = 5;
+  /**
+   * <code>BYTES = 6;</code>
+   */
+  public static final int BYTES_VALUE = 6;
 
 
   public final int getNumber() {
@@ -51,7 +83,7 @@ public enum TaskResultCodePb
    * @deprecated Use {@link #forNumber(int)} instead.
    */
   @java.lang.Deprecated
-  public static TaskResultCodePb valueOf(int value) {
+  public static VariableTypePb valueOf(int value) {
     return forNumber(value);
   }
 
@@ -59,24 +91,28 @@ public enum TaskResultCodePb
    * @param value The numeric wire value of the corresponding enum entry.
    * @return The enum associated with the given numeric wire value.
    */
-  public static TaskResultCodePb forNumber(int value) {
+  public static VariableTypePb forNumber(int value) {
     switch (value) {
-      case 0: return SUCCESS;
-      case 1: return TIMEOUT;
-      case 2: return TASK_FAILURE;
+      case 0: return JSON_OBJ;
+      case 1: return JSON_ARR;
+      case 2: return DOUBLE;
+      case 3: return BOOL;
+      case 4: return STR;
+      case 5: return INT;
+      case 6: return BYTES;
       default: return null;
     }
   }
 
-  public static com.google.protobuf.Internal.EnumLiteMap<TaskResultCodePb>
+  public static com.google.protobuf.Internal.EnumLiteMap<VariableTypePb>
       internalGetValueMap() {
     return internalValueMap;
   }
   private static final com.google.protobuf.Internal.EnumLiteMap<
-      TaskResultCodePb> internalValueMap =
-        new com.google.protobuf.Internal.EnumLiteMap<TaskResultCodePb>() {
-          public TaskResultCodePb findValueByNumber(int number) {
-            return TaskResultCodePb.forNumber(number);
+      VariableTypePb> internalValueMap =
+        new com.google.protobuf.Internal.EnumLiteMap<VariableTypePb>() {
+          public VariableTypePb findValueByNumber(int number) {
+            return VariableTypePb.forNumber(number);
           }
         };
 
@@ -94,12 +130,12 @@ public enum TaskResultCodePb
   }
   public static final com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.LhProto.getDescriptor().getEnumTypes().get(2);
+    return io.littlehorse.common.proto.LhProto.getDescriptor().getEnumTypes().get(1);
   }
 
-  private static final TaskResultCodePb[] VALUES = values();
+  private static final VariableTypePb[] VALUES = values();
 
-  public static TaskResultCodePb valueOf(
+  public static VariableTypePb valueOf(
       com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
     if (desc.getType() != getDescriptor()) {
       throw new java.lang.IllegalArgumentException(
@@ -113,10 +149,10 @@ public enum TaskResultCodePb
 
   private final int value;
 
-  private TaskResultCodePb(int value) {
+  private VariableTypePb(int value) {
     this.value = value;
   }
 
-  // @@protoc_insertion_point(enum_scope:lh_proto.TaskResultCodePb)
+  // @@protoc_insertion_point(enum_scope:lh_proto.VariableTypePb)
 }
 

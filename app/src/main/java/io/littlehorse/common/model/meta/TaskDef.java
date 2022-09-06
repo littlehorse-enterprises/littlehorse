@@ -6,7 +6,7 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.LHDatabaseClient;
+import io.littlehorse.common.LHGlobalMetaStores;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.proto.wfspec.TaskDefPb;
@@ -48,7 +48,7 @@ public class TaskDef extends POSTable<TaskDefPbOrBuilder> {
     }
 
     public void handlePost(
-        POSTable<TaskDefPbOrBuilder> old, LHDatabaseClient c, LHConfig config
+        POSTable<TaskDefPbOrBuilder> old, LHGlobalMetaStores c, LHConfig config
     ) throws LHValidationError {
         if (!(old == null || old instanceof TaskDef)) {
             throw new RuntimeException("Bad method call.");

@@ -31,9 +31,7 @@ public class SchedulerProcessor
     private ProcessorContext<String, SchedulerOutput> context;
     private ReadOnlyKeyValueStore<String, WfSpec> wfSpecStore;
 
-    public SchedulerProcessor(LHConfig config) {
-        // this.client = config.getDbClient();
-    }
+    public SchedulerProcessor(LHConfig config) {}
 
     @Override
     public void init(final ProcessorContext<String, SchedulerOutput> context) {

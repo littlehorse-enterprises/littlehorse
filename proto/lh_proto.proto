@@ -14,16 +14,25 @@ enum LHStatusPb {
     ERROR = 5;
 }
 
+enum VariableTypePb {
+    JSON_OBJ = 0;
+    JSON_ARR = 1;
+    DOUBLE = 2;
+    BOOL = 3;
+    STR = 4;
+    INT = 5;
+    BYTES = 6;
+}
+
 message VariableValuePb {
-    oneof val {
-        bytes json_obj = 1;
-        bytes json_arr = 2;
-        double dub = 3;
-        bool bool = 4;
-        string str = 5;
-        int64 int = 6;
-        bytes byte = 7;
-    }
+    VariableTypePb type = 1;
+    optional string json_obj = 2;
+    optional string json_arr = 3;
+    optional double double = 4;
+    optional bool bool = 5;
+    optional string str = 6;
+    optional int32 int = 7;
+    optional bytes bytes = 8;
 }
 
 enum TaskResultCodePb {

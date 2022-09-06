@@ -37,8 +37,15 @@ message ExitNodePb {
 
 }
 
+message VariableDefPb {
+    VariableTypePb type = 1;
+    optional VariableValuePb default_val = 2;
+    bool required = 3;
+}
+
 message ThreadSpecPb {
     map<string, NodePb> nodes = 1;
+    map<string, VariableDefPb> variable_defs = 2;
 }
 
 message WfSpecPb {

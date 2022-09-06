@@ -8,52 +8,108 @@ public interface VariableValuePbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>bytes json_obj = 1;</code>
+   * <code>.lh_proto.VariableTypePb type = 1;</code>
+   * @return The enum numeric value on the wire for type.
+   */
+  int getTypeValue();
+  /**
+   * <code>.lh_proto.VariableTypePb type = 1;</code>
+   * @return The type.
+   */
+  io.littlehorse.common.proto.VariableTypePb getType();
+
+  /**
+   * <code>string json_obj = 2;</code>
+   * @return Whether the jsonObj field is set.
+   */
+  boolean hasJsonObj();
+  /**
+   * <code>string json_obj = 2;</code>
    * @return The jsonObj.
    */
-  com.google.protobuf.ByteString getJsonObj();
+  java.lang.String getJsonObj();
+  /**
+   * <code>string json_obj = 2;</code>
+   * @return The bytes for jsonObj.
+   */
+  com.google.protobuf.ByteString
+      getJsonObjBytes();
 
   /**
-   * <code>bytes json_arr = 2;</code>
+   * <code>string json_arr = 3;</code>
+   * @return Whether the jsonArr field is set.
+   */
+  boolean hasJsonArr();
+  /**
+   * <code>string json_arr = 3;</code>
    * @return The jsonArr.
    */
-  com.google.protobuf.ByteString getJsonArr();
-
+  java.lang.String getJsonArr();
   /**
-   * <code>double dub = 3;</code>
-   * @return The dub.
+   * <code>string json_arr = 3;</code>
+   * @return The bytes for jsonArr.
    */
-  double getDub();
+  com.google.protobuf.ByteString
+      getJsonArrBytes();
 
   /**
-   * <code>bool bool = 4;</code>
+   * <code>double double = 4;</code>
+   * @return Whether the double field is set.
+   */
+  boolean hasDouble();
+  /**
+   * <code>double double = 4;</code>
+   * @return The double.
+   */
+  double getDouble();
+
+  /**
+   * <code>bool bool = 5;</code>
+   * @return Whether the bool field is set.
+   */
+  boolean hasBool();
+  /**
+   * <code>bool bool = 5;</code>
    * @return The bool.
    */
   boolean getBool();
 
   /**
-   * <code>string str = 5;</code>
+   * <code>string str = 6;</code>
+   * @return Whether the str field is set.
+   */
+  boolean hasStr();
+  /**
+   * <code>string str = 6;</code>
    * @return The str.
    */
   java.lang.String getStr();
   /**
-   * <code>string str = 5;</code>
+   * <code>string str = 6;</code>
    * @return The bytes for str.
    */
   com.google.protobuf.ByteString
       getStrBytes();
 
   /**
-   * <code>int64 int = 6;</code>
+   * <code>int32 int = 7;</code>
+   * @return Whether the int field is set.
+   */
+  boolean hasInt();
+  /**
+   * <code>int32 int = 7;</code>
    * @return The int.
    */
-  long getInt();
+  int getInt();
 
   /**
-   * <code>bytes byte = 7;</code>
-   * @return The byte.
+   * <code>bytes bytes = 8;</code>
+   * @return Whether the bytes field is set.
    */
-  com.google.protobuf.ByteString getByte();
-
-  public io.littlehorse.common.proto.VariableValuePb.ValCase getValCase();
+  boolean hasBytes();
+  /**
+   * <code>bytes bytes = 8;</code>
+   * @return The bytes.
+   */
+  com.google.protobuf.ByteString getBytes();
 }
