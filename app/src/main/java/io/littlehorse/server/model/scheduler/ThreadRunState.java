@@ -216,7 +216,7 @@ public class ThreadRunState {
         wfRun.tasksToSchedule.add(tsr);
     }
 
-    private void setStatus(LHStatusPb newStatus) {
+    public void setStatus(LHStatusPb newStatus) {
         status = newStatus;
 
         Date time = new Date();

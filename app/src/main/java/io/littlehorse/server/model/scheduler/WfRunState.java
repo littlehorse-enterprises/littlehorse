@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.event.TaskResultEvent;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
@@ -96,10 +97,15 @@ public class WfRunState extends LHSerializable<WfRunStatePb> {
     @JsonIgnore public ObservabilityEvents oEvents;
     @JsonIgnore public List<LHTimer> timersToSchedule;
 
-    public void startThread(String threadName, Date start, Integer parentThreadId) {
+    public void startThread(
+        String threadName,
+        Date start,
+        Integer parentThreadId,
+        Map<String, VariableValue> variables
+    ) {
         ThreadSpec tspec = wfSpec.threadSpecs.get(threadName);
         if (tspec == null) {
-            throw new RuntimeException("Invalid thread name");
+            throw new RuntimeException("Invalid thread name, should be impossible");
         }
 
         oEvents.add(new ObservabilityEvent(
@@ -114,7 +120,14 @@ public class WfRunState extends LHSerializable<WfRunStatePb> {
         thread.wfRun = this;
         threadRuns.put(thread.threadRunNumber, thread);
 
-        thread.advance(start);
+        try {
+            tspec.validateStartVariables(variables);
+            thread.advance(start);
+        } catch(LHValidationError exn) {
+            LHUtil.log("Invalid variables received");
+            // Now we gotta figure out how to fail a workflow
+            thread.setStatus(LHStatusPb.ERROR);
+        }
     }
 
     public void processEvent(

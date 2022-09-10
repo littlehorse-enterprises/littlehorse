@@ -1,4 +1,6 @@
 #!/bin/bash
 
-HOW_MANY=$1
-curl -d '{"wfSpecId":"simple_wf"}' localhost:5000/WfRun
+# pardon the grossness here, I struggle with bash string concatenation ):
+PAYLOAD='{"wfSpecId":"'
+PAYLOAD=${PAYLOAD}$1'"}'
+curl -d $PAYLOAD localhost:5000/WfRun

@@ -163,6 +163,10 @@ public class WfSpec extends POSTable<WfSpecPbOrBuilder> {
         );
     }
 
+    @JsonIgnore public Map<String, VariableDef> getRequiredVariables() {
+        return threadSpecs.get(entrypointThreadName).getRequiredVariables();
+    }
+
     private void validateVariablesHelper(
         Set<String> seenThreads, Map<String, String> seenVars, String threadName
     ) throws LHValidationError {
@@ -292,7 +296,7 @@ public class WfSpec extends POSTable<WfSpecPbOrBuilder> {
             new RunStartOe(id, name), e.time)
         );
 
-        out.startThread(entrypointThreadName, e.time, null);
+        out.startThread(entrypointThreadName, e.time, null, e.runRequest.variables);
 
         return out;
     }

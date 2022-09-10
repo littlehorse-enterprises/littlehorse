@@ -16,12 +16,14 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.exceptions.LHSerdeError;
+import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.event.WfRunRequest;
 import io.littlehorse.common.model.meta.TaskDef;
+import io.littlehorse.common.model.meta.ThreadSpec;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.proto.scheduler.WfRunEventPb.EventCase;
 import io.littlehorse.common.proto.server.GETableClassEnumPb;
@@ -206,18 +208,33 @@ public class LHApi {
                 resp.message = "Could not find specified WfSpec.";
 
             } else {
-                WfRunEvent event = new WfRunEvent();
-                event.type = EventCase.RUN_REQUEST;
-                event.runRequest = req;
-                event.time = new Date();
-                event.wfRunId = req.wfRunId;
-                event.wfSpecId = spec.getObjectId();
-                req.wfSpecId = spec.getObjectId();
-                resp.id = req.wfRunId;
-                Future<RecordMetadata> future = producer.send(
-                    req.wfRunId, event, LHConstants.WF_RUN_EVENT_TOPIC
-                );
-                if (!async) future.get();
+                // Validate that all of the variables are present.
+                // NOTE: the validation here needs to happen every time we start a thread, not just
+                // when we start a workflow. This is just a special case of starting the entrypoint
+                // thread. Therefore, this logic will also be executed in the scheduler. That means
+                // this is just a "pre-emptive check" to make sure that it doesn't blow up later on.
+
+                ThreadSpec entrypoint = spec.threadSpecs.get(spec.entrypointThreadName);
+                try {
+                    entrypoint.validateStartVariables(req.variables);
+                    WfRunEvent event = new WfRunEvent();
+                    event.type = EventCase.RUN_REQUEST;
+                    event.runRequest = req;
+                    event.time = new Date();
+                    event.wfRunId = req.wfRunId;
+                    event.wfSpecId = spec.getObjectId();
+                    req.wfSpecId = spec.getObjectId();
+                    resp.id = req.wfRunId;
+                    Future<RecordMetadata> future = producer.send(
+                        req.wfRunId, event, LHConstants.WF_RUN_EVENT_TOPIC
+                    );
+                    if (!async) future.get();
+                } catch(LHValidationError exn) {
+                    resp.code = LHResponseCodePb.VALIDATION_ERROR;
+                    resp.message = exn.getMessage();
+                    resp.id = null;
+                }
+
             }
         } catch(LHSerdeError exn) {
             resp.code = LHResponseCodePb.BAD_REQUEST_ERROR;

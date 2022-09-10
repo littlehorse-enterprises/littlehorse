@@ -1,3 +1,3 @@
 #!/bin/bash
 
-curl -d @./simple_wf.json -Hcontent-type:application/json localhost:5000/WfSpec
+curl -d @$1 -Hcontent-type:application/json localhost:5000/WfSpec

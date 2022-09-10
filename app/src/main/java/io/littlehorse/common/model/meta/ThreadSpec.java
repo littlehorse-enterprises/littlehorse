@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHGlobalMetaStores;
-import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
@@ -15,6 +14,7 @@ import io.littlehorse.common.proto.wfspec.NodePb.NodeCase;
 import io.littlehorse.common.proto.wfspec.ThreadSpecPb;
 import io.littlehorse.common.proto.wfspec.ThreadSpecPbOrBuilder;
 import io.littlehorse.common.proto.wfspec.VariableDefPb;
+import io.littlehorse.server.model.scheduler.VariableValue;
 
 public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
     public String name;
@@ -70,6 +70,17 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
     @JsonIgnore public String entrypointNodeName;
     @JsonIgnore public WfSpec wfSpec;
 
+    @JsonIgnore public Map<String, VariableDef> getRequiredVariables() {
+        HashMap<String, VariableDef> out = new HashMap<>();
+        for (Map.Entry<String, VariableDef> entry: variableDefs.entrySet()) {
+            if (entry.getValue().required) {
+                out.put(entry.getKey(), entry.getValue());
+            }
+        }
+
+        return out;
+    }
+
     public void validate(LHGlobalMetaStores dbClient, LHConfig config) throws LHValidationError {
         if (entrypointNodeName == null) {
             throw new LHValidationError(
@@ -89,6 +100,33 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
                 seenEntrypoint = true;
             }
             node.validate(dbClient, config);
+        }
+    }
+
+    public void validateStartVariables(Map<String, VariableValue> vars) throws LHValidationError {
+        Map<String, VariableDef> required = getRequiredVariables();
+
+        for (Map.Entry<String, VariableDef> e: required.entrySet()) {
+            VariableValue val = vars.get(e.getKey());
+            if (val == null) {
+                throw new LHValidationError(null,
+                    "Thread " + name + " requires variable " + e.getKey()
+                );
+            }
+
+            if (val.type != e.getValue().type) {
+                throw new LHValidationError(null,
+                    "Var " + e.getKey() + " should be " + e.getValue().type + " but is " + val.type
+                );
+            }
+        }
+
+        for (Map.Entry<String, VariableValue> e: vars.entrySet()) {
+            if (!required.containsKey(e.getKey())) {
+                throw new LHValidationError(null,
+                    "Var " + e.getKey() + " provided but not needed for thread " + name
+                );
+            }
         }
     }
 }

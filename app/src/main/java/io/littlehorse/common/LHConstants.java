@@ -24,6 +24,7 @@ public class LHConstants {
     public static final String WF_RUN_OBSERVABILITY_TOPIC = "WFRun_Observability";
 
     public static final String SCHED_WF_RUN_STORE_NAME = "Scheduler_WfRunState_Store";
+    public static final String SCHED_VARIABLE_STORE_NAME = "Scheduler_Variable_Store";
     public static final String TIMER_STORE_NAME = "Timer_Store";
     public static final String INDEX_STORE_NAME = "Core_Server_Index_Store";
     public static final String INDEX_TOPIC_NAME = "Index_Entry_Actions";
