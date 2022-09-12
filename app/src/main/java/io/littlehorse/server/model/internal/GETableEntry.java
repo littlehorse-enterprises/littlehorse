@@ -14,7 +14,7 @@ public class GETableEntry extends LHSerializable<GETableEntryPb>
     public byte[] entry;
     public int partition;
     public long lastUpdatedOffset;
-    public List<IndexEntry> indexEntries;
+    public List<Tag> indexEntries;
 
     public GETableEntry() {
         indexEntries = new ArrayList<>();

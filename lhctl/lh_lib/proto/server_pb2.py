@@ -22,7 +22,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=b'\n\"io.littlehorse.common.proto.serverP\001Z\007.;model',
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0cserver.proto\x12\x08lh_proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x0elh_proto.proto\"\x9d\x02\n\x07WfRunPb\x12\n\n\x02id\x18\x01 \x01(\t\x12\x12\n\nwf_spec_id\x18\x02 \x01(\t\x12\x14\n\x0cwf_spec_name\x18\x03 \x01(\t\x12$\n\x06status\x18\x04 \x01(\x0e\x32\x14.lh_proto.LHStatusPb\x12\x1a\n\x12last_update_offset\x18\x05 \x01(\x03\x12.\n\nstart_time\x18\x06 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\x08\x65nd_time\x18\x07 \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x00\x88\x01\x01\x12*\n\x0bthread_runs\x18\x08 \x03(\x0b\x32\x15.lh_proto.ThreadRunPbB\x0b\n\t_end_time\"\x87\x02\n\x0bThreadRunPb\x12\x11\n\twf_run_id\x18\x01 \x01(\t\x12\x0e\n\x06number\x18\x02 \x01(\x05\x12$\n\x06status\x18\x03 \x01(\x0e\x32\x14.lh_proto.LHStatusPb\x12\x12\n\nwf_spec_id\x18\x04 \x01(\t\x12\x18\n\x10thread_spec_name\x18\x05 \x01(\t\x12\x11\n\tnum_steps\x18\x06 \x01(\x05\x12.\n\nstart_time\x18\x07 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\x08\x65nd_time\x18\x08 \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x00\x88\x01\x01\x42\x0b\n\t_end_time\"\xb4\x04\n\tTaskRunPb\x12\x11\n\twf_run_id\x18\x01 \x01(\t\x12\x19\n\x11thread_run_number\x18\x02 \x01(\x05\x12\x10\n\x08position\x18\x03 \x01(\x05\x12\x0e\n\x06number\x18\x04 \x01(\x05\x12\x16\n\x0e\x61ttempt_number\x18\x05 \x01(\x05\x12$\n\x06status\x18\x06 \x01(\x0e\x32\x14.lh_proto.LHStatusPb\x12\x13\n\x06output\x18\x07 \x01(\x0cH\x00\x88\x01\x01\x12\x17\n\nlog_output\x18\x08 \x01(\x0cH\x01\x88\x01\x01\x12\x31\n\rschedule_time\x18\t \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x33\n\nstart_time\x18\n \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x02\x88\x01\x01\x12\x31\n\x08\x65nd_time\x18\x0b \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x03\x88\x01\x01\x12\x12\n\nwf_spec_id\x18\x0c \x01(\t\x12\x18\n\x10thread_spec_name\x18\r \x01(\t\x12\x11\n\tnode_name\x18\x0e \x01(\t\x12\x13\n\x0btask_def_id\x18\x0f \x01(\t\x12\x34\n\x0bresult_code\x18\x10 \x01(\x0e\x32\x1a.lh_proto.TaskResultCodePbH\x04\x88\x01\x01\x42\t\n\x07_outputB\r\n\x0b_log_outputB\r\n\x0b_start_timeB\x0b\n\t_end_timeB\x0e\n\x0c_result_code\"\xbe\x01\n\x0cLHResponsePb\x12(\n\x04\x63ode\x18\x01 \x01(\x0e\x32\x1a.lh_proto.LHResponseCodePb\x12\x0f\n\x02id\x18\x02 \x01(\tH\x00\x88\x01\x01\x12\x14\n\x07message\x18\x03 \x01(\tH\x01\x88\x01\x01\x12\x13\n\x06result\x18\x04 \x01(\x0cH\x02\x88\x01\x01\x12\x19\n\x0cresult_class\x18\x05 \x01(\tH\x03\x88\x01\x01\x42\x05\n\x03_idB\n\n\x08_messageB\t\n\x07_resultB\x0f\n\r_result_class\"\x83\x01\n\x11POSTableRequestPb\x12%\n\x04type\x18\x01 \x01(\x0e\x32\x17.lh_proto.RequestTypePb\x12\x11\n\tstore_key\x18\x02 \x01(\t\x12\x12\n\nrequest_id\x18\x03 \x01(\t\x12\x14\n\x07payload\x18\x04 \x01(\x0cH\x00\x88\x01\x01\x42\n\n\x08_payload\"<\n\x0fRangeResponsePb\x12\x0b\n\x03ids\x18\x01 \x03(\t\x12\x12\n\x05token\x18\x02 \x01(\tH\x00\x88\x01\x01\x42\x08\n\x06_token\"\'\n\x0b\x41ttributePb\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0b\n\x03val\x18\x02 \x01(\t\"\x90\x01\n\nIndexKeyPb\x12)\n\nattributes\x18\x01 \x03(\x0b\x32\x15.lh_proto.AttributePb\x12*\n\x04type\x18\x02 \x01(\x0e\x32\x1c.lh_proto.GETableClassEnumPb\x12+\n\x07\x63reated\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"!\n\x0cIndexValuePb\x12\x11\n\tstore_key\x18\x01 \x03(\t\"D\n\x0cIndexEntryPb\x12!\n\x03key\x18\x01 \x01(\x0b\x32\x14.lh_proto.IndexKeyPb\x12\x11\n\tstore_key\x18\x02 \x01(\t\"f\n\x12IndexEntryActionPb\x12%\n\x05\x65ntry\x18\x01 \x01(\x0b\x32\x16.lh_proto.IndexEntryPb\x12)\n\x06\x61\x63tion\x18\x02 \x01(\x0e\x32\x19.lh_proto.IndexActionEnum\"O\n\x0eGETableEntryPb\x12\r\n\x05\x65ntry\x18\x01 \x01(\x0c\x12\x11\n\tpartition\x18\x02 \x01(\x05\x12\x1b\n\x13last_updated_offset\x18\x03 \x01(\x03\"9\n\x0eIndexEntriesPb\x12\'\n\x07\x65ntries\x18\x01 \x03(\x0b\x32\x16.lh_proto.IndexEntryPb\"\x87\x01\n\x1aRemoteStoreQueryResponsePb\x12\x30\n\x04\x63ode\x18\x01 \x01(\x0e\x32\".lh_proto.RemoteStoreQueryStatusPb\x12\x13\n\x06result\x18\x02 \x01(\x0cH\x00\x88\x01\x01\x12\x17\n\x0f\x61pproximate_lag\x18\x03 \x01(\x03\x42\t\n\x07_result*r\n\x10LHResponseCodePb\x12\x06\n\x02OK\x10\x00\x12\x14\n\x10\x43ONNECTION_ERROR\x10\x01\x12\x13\n\x0fNOT_FOUND_ERROR\x10\x02\x12\x15\n\x11\x42\x41\x44_REQUEST_ERROR\x10\x03\x12\x14\n\x10VALIDATION_ERROR\x10\x04*%\n\rRequestTypePb\x12\x08\n\x04POST\x10\x00\x12\n\n\x06\x44\x45LETE\x10\x01*Y\n\x12GETableClassEnumPb\x12\x0c\n\x08TASK_DEF\x10\x00\x12\x0b\n\x07WF_SPEC\x10\x01\x12\n\n\x06WF_RUN\x10\x02\x12\x0e\n\nTHREAD_RUN\x10\x03\x12\x0c\n\x08TASK_RUN\x10\x04*=\n\x0fIndexActionEnum\x12\x14\n\x10\x43REATE_IDX_ENTRY\x10\x00\x12\x14\n\x10\x44\x45LETE_IDX_ENTRY\x10\x01*b\n\x18RemoteStoreQueryStatusPb\x12\n\n\x06RSQ_OK\x10\x00\x12\x11\n\rRSQ_NOT_FOUND\x10\x01\x12\x10\n\x0cRSQ_MIGRATED\x10\x02\x12\x15\n\x11RSQ_NOT_AVAILABLE\x10\x03\x42/\n\"io.littlehorse.common.proto.serverP\x01Z\x07.;modelb\x06proto3'
+  serialized_pb=b'\n\x0cserver.proto\x12\x08lh_proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x0elh_proto.proto\"\x9d\x02\n\x07WfRunPb\x12\n\n\x02id\x18\x01 \x01(\t\x12\x12\n\nwf_spec_id\x18\x02 \x01(\t\x12\x14\n\x0cwf_spec_name\x18\x03 \x01(\t\x12$\n\x06status\x18\x04 \x01(\x0e\x32\x14.lh_proto.LHStatusPb\x12\x1a\n\x12last_update_offset\x18\x05 \x01(\x03\x12.\n\nstart_time\x18\x06 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\x08\x65nd_time\x18\x07 \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x00\x88\x01\x01\x12*\n\x0bthread_runs\x18\x08 \x03(\x0b\x32\x15.lh_proto.ThreadRunPbB\x0b\n\t_end_time\"\x87\x02\n\x0bThreadRunPb\x12\x11\n\twf_run_id\x18\x01 \x01(\t\x12\x0e\n\x06number\x18\x02 \x01(\x05\x12$\n\x06status\x18\x03 \x01(\x0e\x32\x14.lh_proto.LHStatusPb\x12\x12\n\nwf_spec_id\x18\x04 \x01(\t\x12\x18\n\x10thread_spec_name\x18\x05 \x01(\t\x12\x11\n\tnum_steps\x18\x06 \x01(\x05\x12.\n\nstart_time\x18\x07 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\x08\x65nd_time\x18\x08 \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x00\x88\x01\x01\x42\x0b\n\t_end_time\"\xb4\x04\n\tTaskRunPb\x12\x11\n\twf_run_id\x18\x01 \x01(\t\x12\x19\n\x11thread_run_number\x18\x02 \x01(\x05\x12\x10\n\x08position\x18\x03 \x01(\x05\x12\x0e\n\x06number\x18\x04 \x01(\x05\x12\x16\n\x0e\x61ttempt_number\x18\x05 \x01(\x05\x12$\n\x06status\x18\x06 \x01(\x0e\x32\x14.lh_proto.LHStatusPb\x12\x13\n\x06output\x18\x07 \x01(\x0cH\x00\x88\x01\x01\x12\x17\n\nlog_output\x18\x08 \x01(\x0cH\x01\x88\x01\x01\x12\x31\n\rschedule_time\x18\t \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x33\n\nstart_time\x18\n \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x02\x88\x01\x01\x12\x31\n\x08\x65nd_time\x18\x0b \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x03\x88\x01\x01\x12\x12\n\nwf_spec_id\x18\x0c \x01(\t\x12\x18\n\x10thread_spec_name\x18\r \x01(\t\x12\x11\n\tnode_name\x18\x0e \x01(\t\x12\x13\n\x0btask_def_id\x18\x0f \x01(\t\x12\x34\n\x0bresult_code\x18\x10 \x01(\x0e\x32\x1a.lh_proto.TaskResultCodePbH\x04\x88\x01\x01\x42\t\n\x07_outputB\r\n\x0b_log_outputB\r\n\x0b_start_timeB\x0b\n\t_end_timeB\x0e\n\x0c_result_code\"\xbe\x01\n\x0cLHResponsePb\x12(\n\x04\x63ode\x18\x01 \x01(\x0e\x32\x1a.lh_proto.LHResponseCodePb\x12\x0f\n\x02id\x18\x02 \x01(\tH\x00\x88\x01\x01\x12\x14\n\x07message\x18\x03 \x01(\tH\x01\x88\x01\x01\x12\x13\n\x06result\x18\x04 \x01(\x0cH\x02\x88\x01\x01\x12\x19\n\x0cresult_class\x18\x05 \x01(\tH\x03\x88\x01\x01\x42\x05\n\x03_idB\n\n\x08_messageB\t\n\x07_resultB\x0f\n\r_result_class\"\x83\x01\n\x11POSTableRequestPb\x12%\n\x04type\x18\x01 \x01(\x0e\x32\x17.lh_proto.RequestTypePb\x12\x11\n\tstore_key\x18\x02 \x01(\t\x12\x12\n\nrequest_id\x18\x03 \x01(\t\x12\x14\n\x07payload\x18\x04 \x01(\x0cH\x00\x88\x01\x01\x42\n\n\x08_payload\"<\n\x0fRangeResponsePb\x12\x0b\n\x03ids\x18\x01 \x03(\t\x12\x12\n\x05token\x18\x02 \x01(\tH\x00\x88\x01\x01\x42\x08\n\x06_token\"\'\n\x0b\x41ttributePb\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0b\n\x03val\x18\x02 \x01(\t\"\x90\x01\n\nIndexKeyPb\x12)\n\nattributes\x18\x01 \x03(\x0b\x32\x15.lh_proto.AttributePb\x12*\n\x04type\x18\x02 \x01(\x0e\x32\x1c.lh_proto.GETableClassEnumPb\x12+\n\x07\x63reated\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"!\n\x0cIndexValuePb\x12\x11\n\tstore_key\x18\x01 \x03(\t\"=\n\x05TagPb\x12!\n\x03key\x18\x01 \x01(\x0b\x32\x14.lh_proto.IndexKeyPb\x12\x11\n\tstore_key\x18\x02 \x01(\t\"X\n\x0bTagActionPb\x12\x1e\n\x05\x65ntry\x18\x01 \x01(\x0b\x32\x0f.lh_proto.TagPb\x12)\n\x06\x61\x63tion\x18\x02 \x01(\x0e\x32\x19.lh_proto.IndexActionEnum\"O\n\x0eGETableEntryPb\x12\r\n\x05\x65ntry\x18\x01 \x01(\x0c\x12\x11\n\tpartition\x18\x02 \x01(\x05\x12\x1b\n\x13last_updated_offset\x18\x03 \x01(\x03\"*\n\x06TagsPb\x12 \n\x07\x65ntries\x18\x01 \x03(\x0b\x32\x0f.lh_proto.TagPb\"\x87\x01\n\x1aRemoteStoreQueryResponsePb\x12\x30\n\x04\x63ode\x18\x01 \x01(\x0e\x32\".lh_proto.RemoteStoreQueryStatusPb\x12\x13\n\x06result\x18\x02 \x01(\x0cH\x00\x88\x01\x01\x12\x17\n\x0f\x61pproximate_lag\x18\x03 \x01(\x03\x42\t\n\x07_result*r\n\x10LHResponseCodePb\x12\x06\n\x02OK\x10\x00\x12\x14\n\x10\x43ONNECTION_ERROR\x10\x01\x12\x13\n\x0fNOT_FOUND_ERROR\x10\x02\x12\x15\n\x11\x42\x41\x44_REQUEST_ERROR\x10\x03\x12\x14\n\x10VALIDATION_ERROR\x10\x04*%\n\rRequestTypePb\x12\x08\n\x04POST\x10\x00\x12\n\n\x06\x44\x45LETE\x10\x01*Y\n\x12GETableClassEnumPb\x12\x0c\n\x08TASK_DEF\x10\x00\x12\x0b\n\x07WF_SPEC\x10\x01\x12\n\n\x06WF_RUN\x10\x02\x12\x0e\n\nTHREAD_RUN\x10\x03\x12\x0c\n\x08TASK_RUN\x10\x04*=\n\x0fIndexActionEnum\x12\x14\n\x10\x43REATE_IDX_ENTRY\x10\x00\x12\x14\n\x10\x44\x45LETE_IDX_ENTRY\x10\x01*b\n\x18RemoteStoreQueryStatusPb\x12\n\n\x06RSQ_OK\x10\x00\x12\x11\n\rRSQ_NOT_FOUND\x10\x01\x12\x10\n\x0cRSQ_MIGRATED\x10\x02\x12\x15\n\x11RSQ_NOT_AVAILABLE\x10\x03\x42/\n\"io.littlehorse.common.proto.serverP\x01Z\x07.;modelb\x06proto3'
   ,
   dependencies=[google_dot_protobuf_dot_timestamp__pb2.DESCRIPTOR,lh__proto__pb2.DESCRIPTOR,])
 
@@ -61,8 +61,8 @@ _LHRESPONSECODEPB = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=2260,
-  serialized_end=2374,
+  serialized_start=2224,
+  serialized_end=2338,
 )
 _sym_db.RegisterEnumDescriptor(_LHRESPONSECODEPB)
 
@@ -87,8 +87,8 @@ _REQUESTTYPEPB = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=2376,
-  serialized_end=2413,
+  serialized_start=2340,
+  serialized_end=2377,
 )
 _sym_db.RegisterEnumDescriptor(_REQUESTTYPEPB)
 
@@ -128,8 +128,8 @@ _GETABLECLASSENUMPB = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=2415,
-  serialized_end=2504,
+  serialized_start=2379,
+  serialized_end=2468,
 )
 _sym_db.RegisterEnumDescriptor(_GETABLECLASSENUMPB)
 
@@ -154,8 +154,8 @@ _INDEXACTIONENUM = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=2506,
-  serialized_end=2567,
+  serialized_start=2470,
+  serialized_end=2531,
 )
 _sym_db.RegisterEnumDescriptor(_INDEXACTIONENUM)
 
@@ -190,8 +190,8 @@ _REMOTESTOREQUERYSTATUSPB = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=2569,
-  serialized_end=2667,
+  serialized_start=2533,
+  serialized_end=2631,
 )
 _sym_db.RegisterEnumDescriptor(_REMOTESTOREQUERYSTATUSPB)
 
@@ -850,23 +850,23 @@ _INDEXVALUEPB = _descriptor.Descriptor(
 )
 
 
-_INDEXENTRYPB = _descriptor.Descriptor(
-  name='IndexEntryPb',
-  full_name='lh_proto.IndexEntryPb',
+_TAGPB = _descriptor.Descriptor(
+  name='TagPb',
+  full_name='lh_proto.TagPb',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='key', full_name='lh_proto.IndexEntryPb.key', index=0,
+      name='key', full_name='lh_proto.TagPb.key', index=0,
       number=1, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='store_key', full_name='lh_proto.IndexEntryPb.store_key', index=1,
+      name='store_key', full_name='lh_proto.TagPb.store_key', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -885,27 +885,27 @@ _INDEXENTRYPB = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=1808,
-  serialized_end=1876,
+  serialized_end=1869,
 )
 
 
-_INDEXENTRYACTIONPB = _descriptor.Descriptor(
-  name='IndexEntryActionPb',
-  full_name='lh_proto.IndexEntryActionPb',
+_TAGACTIONPB = _descriptor.Descriptor(
+  name='TagActionPb',
+  full_name='lh_proto.TagActionPb',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='entry', full_name='lh_proto.IndexEntryActionPb.entry', index=0,
+      name='entry', full_name='lh_proto.TagActionPb.entry', index=0,
       number=1, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='action', full_name='lh_proto.IndexEntryActionPb.action', index=1,
+      name='action', full_name='lh_proto.TagActionPb.action', index=1,
       number=2, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -923,8 +923,8 @@ _INDEXENTRYACTIONPB = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1878,
-  serialized_end=1980,
+  serialized_start=1871,
+  serialized_end=1959,
 )
 
 
@@ -969,21 +969,21 @@ _GETABLEENTRYPB = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1982,
-  serialized_end=2061,
+  serialized_start=1961,
+  serialized_end=2040,
 )
 
 
-_INDEXENTRIESPB = _descriptor.Descriptor(
-  name='IndexEntriesPb',
-  full_name='lh_proto.IndexEntriesPb',
+_TAGSPB = _descriptor.Descriptor(
+  name='TagsPb',
+  full_name='lh_proto.TagsPb',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='entries', full_name='lh_proto.IndexEntriesPb.entries', index=0,
+      name='entries', full_name='lh_proto.TagsPb.entries', index=0,
       number=1, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -1001,8 +1001,8 @@ _INDEXENTRIESPB = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2063,
-  serialized_end=2120,
+  serialized_start=2042,
+  serialized_end=2084,
 )
 
 
@@ -1052,8 +1052,8 @@ _REMOTESTOREQUERYRESPONSEPB = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=2123,
-  serialized_end=2258,
+  serialized_start=2087,
+  serialized_end=2222,
 )
 
 _WFRUNPB.fields_by_name['status'].enum_type = lh__proto__pb2._LHSTATUSPB
@@ -1112,10 +1112,10 @@ _RANGERESPONSEPB.fields_by_name['token'].containing_oneof = _RANGERESPONSEPB.one
 _INDEXKEYPB.fields_by_name['attributes'].message_type = _ATTRIBUTEPB
 _INDEXKEYPB.fields_by_name['type'].enum_type = _GETABLECLASSENUMPB
 _INDEXKEYPB.fields_by_name['created'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
-_INDEXENTRYPB.fields_by_name['key'].message_type = _INDEXKEYPB
-_INDEXENTRYACTIONPB.fields_by_name['entry'].message_type = _INDEXENTRYPB
-_INDEXENTRYACTIONPB.fields_by_name['action'].enum_type = _INDEXACTIONENUM
-_INDEXENTRIESPB.fields_by_name['entries'].message_type = _INDEXENTRYPB
+_TAGPB.fields_by_name['key'].message_type = _INDEXKEYPB
+_TAGACTIONPB.fields_by_name['entry'].message_type = _TAGPB
+_TAGACTIONPB.fields_by_name['action'].enum_type = _INDEXACTIONENUM
+_TAGSPB.fields_by_name['entries'].message_type = _TAGPB
 _REMOTESTOREQUERYRESPONSEPB.fields_by_name['code'].enum_type = _REMOTESTOREQUERYSTATUSPB
 _REMOTESTOREQUERYRESPONSEPB.oneofs_by_name['_result'].fields.append(
   _REMOTESTOREQUERYRESPONSEPB.fields_by_name['result'])
@@ -1129,10 +1129,10 @@ DESCRIPTOR.message_types_by_name['RangeResponsePb'] = _RANGERESPONSEPB
 DESCRIPTOR.message_types_by_name['AttributePb'] = _ATTRIBUTEPB
 DESCRIPTOR.message_types_by_name['IndexKeyPb'] = _INDEXKEYPB
 DESCRIPTOR.message_types_by_name['IndexValuePb'] = _INDEXVALUEPB
-DESCRIPTOR.message_types_by_name['IndexEntryPb'] = _INDEXENTRYPB
-DESCRIPTOR.message_types_by_name['IndexEntryActionPb'] = _INDEXENTRYACTIONPB
+DESCRIPTOR.message_types_by_name['TagPb'] = _TAGPB
+DESCRIPTOR.message_types_by_name['TagActionPb'] = _TAGACTIONPB
 DESCRIPTOR.message_types_by_name['GETableEntryPb'] = _GETABLEENTRYPB
-DESCRIPTOR.message_types_by_name['IndexEntriesPb'] = _INDEXENTRIESPB
+DESCRIPTOR.message_types_by_name['TagsPb'] = _TAGSPB
 DESCRIPTOR.message_types_by_name['RemoteStoreQueryResponsePb'] = _REMOTESTOREQUERYRESPONSEPB
 DESCRIPTOR.enum_types_by_name['LHResponseCodePb'] = _LHRESPONSECODEPB
 DESCRIPTOR.enum_types_by_name['RequestTypePb'] = _REQUESTTYPEPB
@@ -1204,19 +1204,19 @@ IndexValuePb = _reflection.GeneratedProtocolMessageType('IndexValuePb', (_messag
   })
 _sym_db.RegisterMessage(IndexValuePb)
 
-IndexEntryPb = _reflection.GeneratedProtocolMessageType('IndexEntryPb', (_message.Message,), {
-  'DESCRIPTOR' : _INDEXENTRYPB,
+TagPb = _reflection.GeneratedProtocolMessageType('TagPb', (_message.Message,), {
+  'DESCRIPTOR' : _TAGPB,
   '__module__' : 'server_pb2'
-  # @@protoc_insertion_point(class_scope:lh_proto.IndexEntryPb)
+  # @@protoc_insertion_point(class_scope:lh_proto.TagPb)
   })
-_sym_db.RegisterMessage(IndexEntryPb)
+_sym_db.RegisterMessage(TagPb)
 
-IndexEntryActionPb = _reflection.GeneratedProtocolMessageType('IndexEntryActionPb', (_message.Message,), {
-  'DESCRIPTOR' : _INDEXENTRYACTIONPB,
+TagActionPb = _reflection.GeneratedProtocolMessageType('TagActionPb', (_message.Message,), {
+  'DESCRIPTOR' : _TAGACTIONPB,
   '__module__' : 'server_pb2'
-  # @@protoc_insertion_point(class_scope:lh_proto.IndexEntryActionPb)
+  # @@protoc_insertion_point(class_scope:lh_proto.TagActionPb)
   })
-_sym_db.RegisterMessage(IndexEntryActionPb)
+_sym_db.RegisterMessage(TagActionPb)
 
 GETableEntryPb = _reflection.GeneratedProtocolMessageType('GETableEntryPb', (_message.Message,), {
   'DESCRIPTOR' : _GETABLEENTRYPB,
@@ -1225,12 +1225,12 @@ GETableEntryPb = _reflection.GeneratedProtocolMessageType('GETableEntryPb', (_me
   })
 _sym_db.RegisterMessage(GETableEntryPb)
 
-IndexEntriesPb = _reflection.GeneratedProtocolMessageType('IndexEntriesPb', (_message.Message,), {
-  'DESCRIPTOR' : _INDEXENTRIESPB,
+TagsPb = _reflection.GeneratedProtocolMessageType('TagsPb', (_message.Message,), {
+  'DESCRIPTOR' : _TAGSPB,
   '__module__' : 'server_pb2'
-  # @@protoc_insertion_point(class_scope:lh_proto.IndexEntriesPb)
+  # @@protoc_insertion_point(class_scope:lh_proto.TagsPb)
   })
-_sym_db.RegisterMessage(IndexEntriesPb)
+_sym_db.RegisterMessage(TagsPb)
 
 RemoteStoreQueryResponsePb = _reflection.GeneratedProtocolMessageType('RemoteStoreQueryResponsePb', (_message.Message,), {
   'DESCRIPTOR' : _REMOTESTOREQUERYRESPONSEPB,

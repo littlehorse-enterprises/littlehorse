@@ -13,7 +13,7 @@ import io.littlehorse.common.proto.server.ThreadRunPb;
 import io.littlehorse.common.proto.server.WfRunPb;
 import io.littlehorse.common.proto.server.WfRunPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.model.internal.IndexEntry;
+import io.littlehorse.server.model.internal.Tag;
 
 public class WfRun extends GETable<WfRunPb> {
     public String id;
@@ -83,11 +83,11 @@ public class WfRun extends GETable<WfRunPb> {
         return id;
     }
 
-    @JsonIgnore public List<IndexEntry> getIndexEntries() {
-        List<IndexEntry> out = Arrays.asList(
-            new IndexEntry(this, Pair.of("wfSpecName", wfSpecName)),
-            new IndexEntry(this, Pair.of("wfSpecId", wfSpecId)),
-            new IndexEntry(
+    @JsonIgnore public List<Tag> getTags() {
+        List<Tag> out = Arrays.asList(
+            new Tag(this, Pair.of("wfSpecName", wfSpecName)),
+            new Tag(this, Pair.of("wfSpecId", wfSpecId)),
+            new Tag(
                 this,
                 Pair.of("wfSpecId", wfSpecId),
                 Pair.of("status", status.toString())

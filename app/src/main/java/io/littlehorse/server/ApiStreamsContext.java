@@ -29,8 +29,8 @@ import io.littlehorse.common.proto.server.RequestTypePb;
 import io.littlehorse.common.util.LHRpcClient;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.model.internal.IndexEntries;
-import io.littlehorse.server.model.internal.IndexEntry;
+import io.littlehorse.server.model.internal.Tags;
+import io.littlehorse.server.model.internal.Tag;
 import io.littlehorse.server.model.internal.LHResponse;
 import io.littlehorse.server.model.internal.POSTableRequest;
 import io.littlehorse.server.model.internal.RangeResponse;
@@ -247,13 +247,13 @@ public class ApiStreamsContext {
     ) {
         RangeResponse out = new RangeResponse();
 
-        try (KeyValueIterator<String, IndexEntries> iter = getIdxStore().prefixScan(
+        try (KeyValueIterator<String, Tags> iter = getIdxStore().prefixScan(
             prefixKey, Serdes.String().serializer()
         )) {
             while (iter.hasNext()) {
-                KeyValue<String, IndexEntries> kvp = iter.next();
-                IndexEntries entries = kvp.value;
-                for (IndexEntry entry: entries.entries) {
+                KeyValue<String, Tags> kvp = iter.next();
+                Tags entries = kvp.value;
+                for (Tag entry: entries.entries) {
                     out.ids.add(entry.resultObjectId);
                 }
             }
@@ -301,7 +301,7 @@ public class ApiStreamsContext {
         return out;
     }
 
-    private ReadOnlyKeyValueStore<String, IndexEntries> getIdxStore() {
+    private ReadOnlyKeyValueStore<String, Tags> getIdxStore() {
         return streams.store(
             StoreQueryParameters.fromNameAndType(
                 LHConstants.INDEX_STORE_NAME,

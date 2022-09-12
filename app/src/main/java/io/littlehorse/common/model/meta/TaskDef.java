@@ -12,7 +12,7 @@ import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.proto.wfspec.TaskDefPb;
 import io.littlehorse.common.proto.wfspec.TaskDefPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.model.internal.IndexEntry;
+import io.littlehorse.server.model.internal.Tag;
 
 public class TaskDef extends POSTable<TaskDefPbOrBuilder> {
     public String name;
@@ -63,9 +63,9 @@ public class TaskDef extends POSTable<TaskDefPbOrBuilder> {
         return true;
     }
 
-    public List<IndexEntry> getIndexEntries() {
+    public List<Tag> getTags() {
         return Arrays.asList(
-            new IndexEntry(this, Pair.of("name", name))
+            new Tag(this, Pair.of("name", name))
         );
     }
 }

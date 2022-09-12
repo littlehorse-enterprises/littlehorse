@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.server.ThreadRunPb;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.model.internal.IndexEntry;
+import io.littlehorse.server.model.internal.Tag;
 
 // TODO: I don't think this should be GETable. Maybe just LHSerializable.
-public class ThreadRun extends GETable<ThreadRunPb> {
+public class ThreadRun extends LHSerializable<ThreadRunPb> {
     public String wfRunId;
     public int number;
 
@@ -22,14 +22,6 @@ public class ThreadRun extends GETable<ThreadRunPb> {
 
     public Date startTime;
     public Date endTime;
-
-    public Date getCreatedAt() {
-        return startTime;
-    }
-
-    public static String getStoreKey(String wfRunId, int threadRunNumber) {
-        return wfRunId + "-" + threadRunNumber;
-    }
 
     public void initFrom(MessageOrBuilder p) {
         ThreadRunPb proto = (ThreadRunPb) p;
@@ -67,19 +59,11 @@ public class ThreadRun extends GETable<ThreadRunPb> {
         return out;
     }
 
-    public String getPartitionKey() {
-        return wfRunId;
-    }
-
-    public String getObjectId() {
-        return ThreadRun.getStoreKey(wfRunId, number);
-    }
-
     public Class<ThreadRunPb> getProtoBaseClass() {
         return ThreadRunPb.class;
     }
 
-    public List<IndexEntry> getIndexEntries() {
+    public List<Tag> getIndexEntries() {
         return new ArrayList<>();
     }
 }

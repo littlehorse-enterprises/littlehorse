@@ -60,25 +60,25 @@ public final class Server {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_lh_proto_IndexValuePb_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_lh_proto_IndexEntryPb_descriptor;
+    internal_static_lh_proto_TagPb_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_lh_proto_IndexEntryPb_fieldAccessorTable;
+      internal_static_lh_proto_TagPb_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_lh_proto_IndexEntryActionPb_descriptor;
+    internal_static_lh_proto_TagActionPb_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_lh_proto_IndexEntryActionPb_fieldAccessorTable;
+      internal_static_lh_proto_TagActionPb_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_lh_proto_GETableEntryPb_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_lh_proto_GETableEntryPb_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_lh_proto_IndexEntriesPb_descriptor;
+    internal_static_lh_proto_TagsPb_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_lh_proto_IndexEntriesPb_fieldAccessorTable;
+      internal_static_lh_proto_TagsPb_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_lh_proto_RemoteStoreQueryResponsePb_descriptor;
   static final 
@@ -138,30 +138,29 @@ public final class Server {
       "Pb\022*\n\004type\030\002 \001(\0162\034.lh_proto.GETableClass" +
       "EnumPb\022+\n\007created\030\003 \001(\0132\032.google.protobu" +
       "f.Timestamp\"!\n\014IndexValuePb\022\021\n\tstore_key" +
-      "\030\001 \003(\t\"D\n\014IndexEntryPb\022!\n\003key\030\001 \001(\0132\024.lh" +
-      "_proto.IndexKeyPb\022\021\n\tstore_key\030\002 \001(\t\"f\n\022" +
-      "IndexEntryActionPb\022%\n\005entry\030\001 \001(\0132\026.lh_p" +
-      "roto.IndexEntryPb\022)\n\006action\030\002 \001(\0162\031.lh_p" +
-      "roto.IndexActionEnum\"O\n\016GETableEntryPb\022\r" +
-      "\n\005entry\030\001 \001(\014\022\021\n\tpartition\030\002 \001(\005\022\033\n\023last" +
-      "_updated_offset\030\003 \001(\003\"9\n\016IndexEntriesPb\022" +
-      "\'\n\007entries\030\001 \003(\0132\026.lh_proto.IndexEntryPb" +
-      "\"\207\001\n\032RemoteStoreQueryResponsePb\0220\n\004code\030" +
-      "\001 \001(\0162\".lh_proto.RemoteStoreQueryStatusP" +
-      "b\022\023\n\006result\030\002 \001(\014H\000\210\001\001\022\027\n\017approximate_la" +
-      "g\030\003 \001(\003B\t\n\007_result*r\n\020LHResponseCodePb\022\006" +
-      "\n\002OK\020\000\022\024\n\020CONNECTION_ERROR\020\001\022\023\n\017NOT_FOUN" +
-      "D_ERROR\020\002\022\025\n\021BAD_REQUEST_ERROR\020\003\022\024\n\020VALI" +
-      "DATION_ERROR\020\004*%\n\rRequestTypePb\022\010\n\004POST\020" +
-      "\000\022\n\n\006DELETE\020\001*Y\n\022GETableClassEnumPb\022\014\n\010T" +
-      "ASK_DEF\020\000\022\013\n\007WF_SPEC\020\001\022\n\n\006WF_RUN\020\002\022\016\n\nTH" +
-      "READ_RUN\020\003\022\014\n\010TASK_RUN\020\004*=\n\017IndexActionE" +
-      "num\022\024\n\020CREATE_IDX_ENTRY\020\000\022\024\n\020DELETE_IDX_" +
-      "ENTRY\020\001*b\n\030RemoteStoreQueryStatusPb\022\n\n\006R" +
-      "SQ_OK\020\000\022\021\n\rRSQ_NOT_FOUND\020\001\022\020\n\014RSQ_MIGRAT" +
-      "ED\020\002\022\025\n\021RSQ_NOT_AVAILABLE\020\003B/\n\"io.little" +
-      "horse.common.proto.serverP\001Z\007.;modelb\006pr" +
-      "oto3"
+      "\030\001 \003(\t\"=\n\005TagPb\022!\n\003key\030\001 \001(\0132\024.lh_proto." +
+      "IndexKeyPb\022\021\n\tstore_key\030\002 \001(\t\"X\n\013TagActi" +
+      "onPb\022\036\n\005entry\030\001 \001(\0132\017.lh_proto.TagPb\022)\n\006" +
+      "action\030\002 \001(\0162\031.lh_proto.IndexActionEnum\"" +
+      "O\n\016GETableEntryPb\022\r\n\005entry\030\001 \001(\014\022\021\n\tpart" +
+      "ition\030\002 \001(\005\022\033\n\023last_updated_offset\030\003 \001(\003" +
+      "\"*\n\006TagsPb\022 \n\007entries\030\001 \003(\0132\017.lh_proto.T" +
+      "agPb\"\207\001\n\032RemoteStoreQueryResponsePb\0220\n\004c" +
+      "ode\030\001 \001(\0162\".lh_proto.RemoteStoreQuerySta" +
+      "tusPb\022\023\n\006result\030\002 \001(\014H\000\210\001\001\022\027\n\017approximat" +
+      "e_lag\030\003 \001(\003B\t\n\007_result*r\n\020LHResponseCode" +
+      "Pb\022\006\n\002OK\020\000\022\024\n\020CONNECTION_ERROR\020\001\022\023\n\017NOT_" +
+      "FOUND_ERROR\020\002\022\025\n\021BAD_REQUEST_ERROR\020\003\022\024\n\020" +
+      "VALIDATION_ERROR\020\004*%\n\rRequestTypePb\022\010\n\004P" +
+      "OST\020\000\022\n\n\006DELETE\020\001*Y\n\022GETableClassEnumPb\022" +
+      "\014\n\010TASK_DEF\020\000\022\013\n\007WF_SPEC\020\001\022\n\n\006WF_RUN\020\002\022\016" +
+      "\n\nTHREAD_RUN\020\003\022\014\n\010TASK_RUN\020\004*=\n\017IndexAct" +
+      "ionEnum\022\024\n\020CREATE_IDX_ENTRY\020\000\022\024\n\020DELETE_" +
+      "IDX_ENTRY\020\001*b\n\030RemoteStoreQueryStatusPb\022" +
+      "\n\n\006RSQ_OK\020\000\022\021\n\rRSQ_NOT_FOUND\020\001\022\020\n\014RSQ_MI" +
+      "GRATED\020\002\022\025\n\021RSQ_NOT_AVAILABLE\020\003B/\n\"io.li" +
+      "ttlehorse.common.proto.serverP\001Z\007.;model" +
+      "b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -223,17 +222,17 @@ public final class Server {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_IndexValuePb_descriptor,
         new java.lang.String[] { "StoreKey", });
-    internal_static_lh_proto_IndexEntryPb_descriptor =
+    internal_static_lh_proto_TagPb_descriptor =
       getDescriptor().getMessageTypes().get(9);
-    internal_static_lh_proto_IndexEntryPb_fieldAccessorTable = new
+    internal_static_lh_proto_TagPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_lh_proto_IndexEntryPb_descriptor,
+        internal_static_lh_proto_TagPb_descriptor,
         new java.lang.String[] { "Key", "StoreKey", });
-    internal_static_lh_proto_IndexEntryActionPb_descriptor =
+    internal_static_lh_proto_TagActionPb_descriptor =
       getDescriptor().getMessageTypes().get(10);
-    internal_static_lh_proto_IndexEntryActionPb_fieldAccessorTable = new
+    internal_static_lh_proto_TagActionPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_lh_proto_IndexEntryActionPb_descriptor,
+        internal_static_lh_proto_TagActionPb_descriptor,
         new java.lang.String[] { "Entry", "Action", });
     internal_static_lh_proto_GETableEntryPb_descriptor =
       getDescriptor().getMessageTypes().get(11);
@@ -241,11 +240,11 @@ public final class Server {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_GETableEntryPb_descriptor,
         new java.lang.String[] { "Entry", "Partition", "LastUpdatedOffset", });
-    internal_static_lh_proto_IndexEntriesPb_descriptor =
+    internal_static_lh_proto_TagsPb_descriptor =
       getDescriptor().getMessageTypes().get(12);
-    internal_static_lh_proto_IndexEntriesPb_fieldAccessorTable = new
+    internal_static_lh_proto_TagsPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_lh_proto_IndexEntriesPb_descriptor,
+        internal_static_lh_proto_TagsPb_descriptor,
         new java.lang.String[] { "Entries", });
     internal_static_lh_proto_RemoteStoreQueryResponsePb_descriptor =
       getDescriptor().getMessageTypes().get(13);

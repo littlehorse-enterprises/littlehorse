@@ -9,25 +9,25 @@ import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.server.AttributePb;
 import io.littlehorse.common.proto.server.GETableClassEnumPb;
-import io.littlehorse.common.proto.server.IndexEntryPb;
-import io.littlehorse.common.proto.server.IndexEntryPbOrBuilder;
+import io.littlehorse.common.proto.server.TagPb;
+import io.littlehorse.common.proto.server.TagPbOrBuilder;
 import io.littlehorse.common.proto.server.IndexKeyPb;
 import io.littlehorse.common.util.LHUtil;
 
-public class IndexEntry extends LHSerializable<IndexEntryPb>{
+public class Tag extends LHSerializable<TagPb>{
     public GETableClassEnumPb type;
     public List<Pair<String, String>> attributes;
     public Date createdAt;
 
     public String resultObjectId;
 
-    public IndexEntry() {
+    public Tag() {
         attributes = new ArrayList<>();
     }
 
     @SafeVarargs
     @SuppressWarnings("unchecked")
-    public IndexEntry(GETable<?> getable, Pair<String, String>...atts) {
+    public Tag(GETable<?> getable, Pair<String, String>...atts) {
         this.type = GETable.getTypeEnum(
             (Class<? extends GETable<?>>) getable.getClass()
         );
@@ -51,19 +51,19 @@ public class IndexEntry extends LHSerializable<IndexEntryPb>{
     }
 
     public String getPartitionKey() {
-        return IndexEntry.getPartitionKey(attributes, type);
+        return Tag.getPartitionKey(attributes, type);
     }
 
     public String getStoreKey() {
         return getPartitionKey() + "_" + LHUtil.toLhDbFormat(createdAt);
     }
 
-    public Class<IndexEntryPb> getProtoBaseClass() {
-        return IndexEntryPb.class;
+    public Class<TagPb> getProtoBaseClass() {
+        return TagPb.class;
     }
 
     public void initFrom(MessageOrBuilder p) {
-        IndexEntryPbOrBuilder proto = (IndexEntryPbOrBuilder) p;
+        TagPbOrBuilder proto = (TagPbOrBuilder) p;
         type = proto.getKey().getType();
         for (AttributePb a: proto.getKey().getAttributesList()) {
             attributes.add(Pair.of(a.getKey(), a.getVal()));
@@ -72,7 +72,7 @@ public class IndexEntry extends LHSerializable<IndexEntryPb>{
         resultObjectId = proto.getStoreKey();
     }
 
-    public IndexEntryPb.Builder toProto() {
+    public TagPb.Builder toProto() {
         IndexKeyPb.Builder ib = IndexKeyPb.newBuilder()
             .setCreated(LHUtil.fromDate(createdAt))
             .setType(type);
@@ -83,7 +83,7 @@ public class IndexEntry extends LHSerializable<IndexEntryPb>{
                 .setVal(attribute.getRight())
             );
         }
-        return IndexEntryPb.newBuilder()
+        return TagPb.newBuilder()
             .setKey(ib)
             .setStoreKey(resultObjectId);
     }
@@ -95,8 +95,8 @@ public class IndexEntry extends LHSerializable<IndexEntryPb>{
 
     public boolean equals(Object o) {
         if (o == null) return false;
-        if (!(o instanceof IndexEntry)) return false;
-        IndexEntry oe = (IndexEntry) o;
+        if (!(o instanceof Tag)) return false;
+        Tag oe = (Tag) o;
         return (
             oe.getPartitionKey().equals(getPartitionKey())
             && oe.resultObjectId.equals(resultObjectId)

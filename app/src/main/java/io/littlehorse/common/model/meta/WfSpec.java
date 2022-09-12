@@ -24,7 +24,7 @@ import io.littlehorse.common.proto.wfspec.ThreadSpecPb;
 import io.littlehorse.common.proto.wfspec.WfSpecPb;
 import io.littlehorse.common.proto.wfspec.WfSpecPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.model.internal.IndexEntry;
+import io.littlehorse.server.model.internal.Tag;
 import io.littlehorse.server.model.scheduler.LHTimer;
 import io.littlehorse.server.model.scheduler.WfRunState;
 
@@ -268,9 +268,9 @@ public class WfSpec extends POSTable<WfSpecPbOrBuilder> {
         }
     }
 
-    public List<IndexEntry> getIndexEntries() {
-        List<IndexEntry> out = Arrays.asList(
-            new IndexEntry(this, Pair.of("name", name))
+    public List<Tag> getTags() {
+        List<Tag> out = Arrays.asList(
+            new Tag(this, Pair.of("name", name))
         );
 
         return out;

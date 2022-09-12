@@ -4,18 +4,18 @@
 package io.littlehorse.common.proto.server;
 
 /**
- * Protobuf type {@code lh_proto.IndexEntryPb}
+ * Protobuf type {@code lh_proto.TagPb}
  */
-public final class IndexEntryPb extends
+public final class TagPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.IndexEntryPb)
-    IndexEntryPbOrBuilder {
+    // @@protoc_insertion_point(message_implements:lh_proto.TagPb)
+    TagPbOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use IndexEntryPb.newBuilder() to construct.
-  private IndexEntryPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use TagPb.newBuilder() to construct.
+  private TagPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private IndexEntryPb() {
+  private TagPb() {
     storeKey_ = "";
   }
 
@@ -23,7 +23,7 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new IndexEntryPb();
+    return new TagPb();
   }
 
   @java.lang.Override
@@ -31,7 +31,7 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
-  private IndexEntryPb(
+  private TagPb(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -89,15 +89,15 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.server.Server.internal_static_lh_proto_IndexEntryPb_descriptor;
+    return io.littlehorse.common.proto.server.Server.internal_static_lh_proto_TagPb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.server.Server.internal_static_lh_proto_IndexEntryPb_fieldAccessorTable
+    return io.littlehorse.common.proto.server.Server.internal_static_lh_proto_TagPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.common.proto.server.IndexEntryPb.class, io.littlehorse.common.proto.server.IndexEntryPb.Builder.class);
+            io.littlehorse.common.proto.server.TagPb.class, io.littlehorse.common.proto.server.TagPb.Builder.class);
   }
 
   public static final int KEY_FIELD_NUMBER = 1;
@@ -210,10 +210,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.common.proto.server.IndexEntryPb)) {
+    if (!(obj instanceof io.littlehorse.common.proto.server.TagPb)) {
       return super.equals(obj);
     }
-    io.littlehorse.common.proto.server.IndexEntryPb other = (io.littlehorse.common.proto.server.IndexEntryPb) obj;
+    io.littlehorse.common.proto.server.TagPb other = (io.littlehorse.common.proto.server.TagPb) obj;
 
     if (hasKey() != other.hasKey()) return false;
     if (hasKey()) {
@@ -244,69 +244,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static io.littlehorse.common.proto.server.IndexEntryPb parseFrom(
+  public static io.littlehorse.common.proto.server.TagPb parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.server.IndexEntryPb parseFrom(
+  public static io.littlehorse.common.proto.server.TagPb parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.server.IndexEntryPb parseFrom(
+  public static io.littlehorse.common.proto.server.TagPb parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.server.IndexEntryPb parseFrom(
+  public static io.littlehorse.common.proto.server.TagPb parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.server.IndexEntryPb parseFrom(byte[] data)
+  public static io.littlehorse.common.proto.server.TagPb parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.server.IndexEntryPb parseFrom(
+  public static io.littlehorse.common.proto.server.TagPb parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.server.IndexEntryPb parseFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.server.TagPb parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.server.IndexEntryPb parseFrom(
+  public static io.littlehorse.common.proto.server.TagPb parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.server.IndexEntryPb parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.server.TagPb parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.server.IndexEntryPb parseDelimitedFrom(
+  public static io.littlehorse.common.proto.server.TagPb parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.server.IndexEntryPb parseFrom(
+  public static io.littlehorse.common.proto.server.TagPb parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.server.IndexEntryPb parseFrom(
+  public static io.littlehorse.common.proto.server.TagPb parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -319,7 +319,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.common.proto.server.IndexEntryPb prototype) {
+  public static Builder newBuilder(io.littlehorse.common.proto.server.TagPb prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -335,26 +335,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.IndexEntryPb}
+   * Protobuf type {@code lh_proto.TagPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.IndexEntryPb)
-      io.littlehorse.common.proto.server.IndexEntryPbOrBuilder {
+      // @@protoc_insertion_point(builder_implements:lh_proto.TagPb)
+      io.littlehorse.common.proto.server.TagPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.server.Server.internal_static_lh_proto_IndexEntryPb_descriptor;
+      return io.littlehorse.common.proto.server.Server.internal_static_lh_proto_TagPb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.server.Server.internal_static_lh_proto_IndexEntryPb_fieldAccessorTable
+      return io.littlehorse.common.proto.server.Server.internal_static_lh_proto_TagPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.common.proto.server.IndexEntryPb.class, io.littlehorse.common.proto.server.IndexEntryPb.Builder.class);
+              io.littlehorse.common.proto.server.TagPb.class, io.littlehorse.common.proto.server.TagPb.Builder.class);
     }
 
-    // Construct using io.littlehorse.common.proto.server.IndexEntryPb.newBuilder()
+    // Construct using io.littlehorse.common.proto.server.TagPb.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -386,17 +386,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.server.Server.internal_static_lh_proto_IndexEntryPb_descriptor;
+      return io.littlehorse.common.proto.server.Server.internal_static_lh_proto_TagPb_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.server.IndexEntryPb getDefaultInstanceForType() {
-      return io.littlehorse.common.proto.server.IndexEntryPb.getDefaultInstance();
+    public io.littlehorse.common.proto.server.TagPb getDefaultInstanceForType() {
+      return io.littlehorse.common.proto.server.TagPb.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.server.IndexEntryPb build() {
-      io.littlehorse.common.proto.server.IndexEntryPb result = buildPartial();
+    public io.littlehorse.common.proto.server.TagPb build() {
+      io.littlehorse.common.proto.server.TagPb result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -404,8 +404,8 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.server.IndexEntryPb buildPartial() {
-      io.littlehorse.common.proto.server.IndexEntryPb result = new io.littlehorse.common.proto.server.IndexEntryPb(this);
+    public io.littlehorse.common.proto.server.TagPb buildPartial() {
+      io.littlehorse.common.proto.server.TagPb result = new io.littlehorse.common.proto.server.TagPb(this);
       if (keyBuilder_ == null) {
         result.key_ = key_;
       } else {
@@ -450,16 +450,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.common.proto.server.IndexEntryPb) {
-        return mergeFrom((io.littlehorse.common.proto.server.IndexEntryPb)other);
+      if (other instanceof io.littlehorse.common.proto.server.TagPb) {
+        return mergeFrom((io.littlehorse.common.proto.server.TagPb)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.common.proto.server.IndexEntryPb other) {
-      if (other == io.littlehorse.common.proto.server.IndexEntryPb.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.common.proto.server.TagPb other) {
+      if (other == io.littlehorse.common.proto.server.TagPb.getDefaultInstance()) return this;
       if (other.hasKey()) {
         mergeKey(other.getKey());
       }
@@ -482,11 +482,11 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      io.littlehorse.common.proto.server.IndexEntryPb parsedMessage = null;
+      io.littlehorse.common.proto.server.TagPb parsedMessage = null;
       try {
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (io.littlehorse.common.proto.server.IndexEntryPb) e.getUnfinishedMessage();
+        parsedMessage = (io.littlehorse.common.proto.server.TagPb) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
@@ -703,41 +703,41 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.IndexEntryPb)
+    // @@protoc_insertion_point(builder_scope:lh_proto.TagPb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.IndexEntryPb)
-  private static final io.littlehorse.common.proto.server.IndexEntryPb DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:lh_proto.TagPb)
+  private static final io.littlehorse.common.proto.server.TagPb DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.common.proto.server.IndexEntryPb();
+    DEFAULT_INSTANCE = new io.littlehorse.common.proto.server.TagPb();
   }
 
-  public static io.littlehorse.common.proto.server.IndexEntryPb getDefaultInstance() {
+  public static io.littlehorse.common.proto.server.TagPb getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<IndexEntryPb>
-      PARSER = new com.google.protobuf.AbstractParser<IndexEntryPb>() {
+  private static final com.google.protobuf.Parser<TagPb>
+      PARSER = new com.google.protobuf.AbstractParser<TagPb>() {
     @java.lang.Override
-    public IndexEntryPb parsePartialFrom(
+    public TagPb parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new IndexEntryPb(input, extensionRegistry);
+      return new TagPb(input, extensionRegistry);
     }
   };
 
-  public static com.google.protobuf.Parser<IndexEntryPb> parser() {
+  public static com.google.protobuf.Parser<TagPb> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<IndexEntryPb> getParserForType() {
+  public com.google.protobuf.Parser<TagPb> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.common.proto.server.IndexEntryPb getDefaultInstanceForType() {
+  public io.littlehorse.common.proto.server.TagPb getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

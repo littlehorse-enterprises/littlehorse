@@ -12,7 +12,7 @@ import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.proto.server.TaskRunPb;
 import io.littlehorse.common.proto.server.TaskRunPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.model.internal.IndexEntry;
+import io.littlehorse.server.model.internal.Tag;
 
 public class TaskRun extends GETable<TaskRunPb> {
     public String wfRunId;
@@ -109,9 +109,9 @@ public class TaskRun extends GETable<TaskRunPb> {
         return out;
     }
 
-    public List<IndexEntry> getIndexEntries() {
+    public List<Tag> getTags() {
         return Arrays.asList(
-            new IndexEntry(
+            new Tag(
                 this,
                 Pair.of("taskDefId", taskDefId),
                 Pair.of("status", status.toString())

@@ -22,7 +22,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.common.util.serde.LHDeserializer;
 import io.littlehorse.common.util.serde.LHSerde;
 import io.littlehorse.common.util.serde.LHSerializer;
-import io.littlehorse.server.model.internal.IndexEntries;
+import io.littlehorse.server.model.internal.Tags;
 import io.littlehorse.server.model.internal.IndexEntryAction;
 import io.littlehorse.server.model.internal.LHResponse;
 import io.littlehorse.server.model.internal.POSTableRequest;
@@ -31,7 +31,7 @@ import io.littlehorse.server.model.scheduler.WfRunState;
 import io.littlehorse.server.model.scheduler.util.SchedulerOutput;
 import io.littlehorse.server.model.wfrun.TaskRun;
 import io.littlehorse.server.model.wfrun.WfRun;
-import io.littlehorse.server.processors.IndexFanoutProcessor;
+import io.littlehorse.server.processors.TaggingProcessor;
 import io.littlehorse.server.processors.IndexProcessor;
 import io.littlehorse.server.processors.POSTableProcessor;
 import io.littlehorse.server.processors.SchedulerProcessor;
@@ -229,12 +229,6 @@ public class ServerTopology {
             wfRunSource
         );
 
-        topo.addProcessor(
-            idxFanoutProcessor,
-            () -> {return new IndexFanoutProcessor<>(GETable.class, WfRunIdxStore);},
-            wfRunProcessor
-        );
-
         topo.addSink(
             idxSink,
             LHConstants.INDEX_TOPIC_NAME,
@@ -263,11 +257,11 @@ public class ServerTopology {
             );
         topo.addStateStore(taskRunStoreBuilder, wfRunProcessor);
 
-        StoreBuilder<KeyValueStore<String, IndexEntries>> idxStateStoreBuilder =
+        StoreBuilder<KeyValueStore<String, Tags>> idxStateStoreBuilder =
         Stores.keyValueStoreBuilder(
                 Stores.persistentKeyValueStore(WfRunIdxStore),
                 Serdes.String(),
-                new LHSerde<>(IndexEntries.class, config)
+                new LHSerde<>(Tags.class, config)
             );
         topo.addStateStore(idxStateStoreBuilder, idxFanoutProcessor);
     }
@@ -286,11 +280,11 @@ public class ServerTopology {
             "Index Source"
         );
 
-        StoreBuilder<KeyValueStore<String, IndexEntries>> idxStateStoreBuilder =
+        StoreBuilder<KeyValueStore<String, Tags>> idxStateStoreBuilder =
         Stores.keyValueStoreBuilder(
                 Stores.persistentKeyValueStore(LHConstants.INDEX_STORE_NAME),
                 Serdes.String(),
-                new LHSerde<>(IndexEntries.class, config)
+                new LHSerde<>(Tags.class, config)
             );
         topo.addStateStore(idxStateStoreBuilder, "Index Processor");
 
@@ -331,8 +325,8 @@ public class ServerTopology {
         topo.addProcessor(
             idxFanoutProcessorName,
             () -> {
-                return new IndexFanoutProcessor<>(
-                    cls, GETable.getIndexStoreName(cls)
+                return new TaggingProcessor<>(
+                    cls, GETable.getTagStoreName(cls)
                 );
             },
             baseProcessorName
@@ -354,11 +348,11 @@ public class ServerTopology {
             );
         topo.addStateStore(baseStoreBuilder, baseProcessorName);
 
-        StoreBuilder<KeyValueStore<String, IndexEntries>> idxStateStoreBuilder =
+        StoreBuilder<KeyValueStore<String, Tags>> idxStateStoreBuilder =
             Stores.keyValueStoreBuilder(
-                Stores.persistentKeyValueStore(POSTable.getIndexStoreName(cls)),
+                Stores.persistentKeyValueStore(POSTable.getTagStoreName(cls)),
                 Serdes.String(),
-                new LHSerde<>(IndexEntries.class, config)
+                new LHSerde<>(Tags.class, config)
             );
         topo.addStateStore(idxStateStoreBuilder, idxFanoutProcessorName);
 

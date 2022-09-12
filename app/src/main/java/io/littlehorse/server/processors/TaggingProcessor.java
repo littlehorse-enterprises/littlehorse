@@ -10,18 +10,18 @@ import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.proto.server.IndexActionEnum;
-import io.littlehorse.server.model.internal.IndexEntries;
-import io.littlehorse.server.model.internal.IndexEntry;
+import io.littlehorse.server.model.internal.Tags;
+import io.littlehorse.server.model.internal.Tag;
 import io.littlehorse.server.model.internal.IndexEntryAction;
 
-public class IndexFanoutProcessor<U extends MessageOrBuilder, T extends GETable<U>>
+public class TaggingProcessor<U extends MessageOrBuilder, T extends GETable<U>>
 implements Processor<String, T, String, IndexEntryAction> {
     private ProcessorContext<String, IndexEntryAction> ctx;
-    private KeyValueStore<String, IndexEntries> store;
+    private KeyValueStore<String, Tags> store;
     // private Class<T> cls;
     private String storeName;
 
-    public IndexFanoutProcessor(Class<T> cls, String storeName) {
+    public TaggingProcessor(Class<T> cls, String storeName) {
         this.storeName = storeName;
     }
 
@@ -36,24 +36,24 @@ implements Processor<String, T, String, IndexEntryAction> {
         ).value());
         T newT = record.value();
 
-        IndexEntries oldEntriesObj = store.get(objectId);
-        List<IndexEntry> oldIdx = (
+        Tags oldEntriesObj = store.get(objectId);
+        List<Tag> oldIdx = (
             oldEntriesObj == null ? new ArrayList<>() : oldEntriesObj.entries
         );
 
-        List<IndexEntry> newIdx = (
-            newT == null ? new ArrayList<>() : newT.getIndexEntries()
+        List<Tag> newIdx = (
+            newT == null ? new ArrayList<>() : newT.getTags()
         );
 
         if (newT == null) {
             store.delete(objectId);
         } else {
-            IndexEntries newIdxEntries = new IndexEntries();
+            Tags newIdxEntries = new Tags();
             newIdxEntries.entries = newIdx;
             store.put(objectId, newIdxEntries);
         }
 
-        for (IndexEntry ie: newIdx) {
+        for (Tag ie: newIdx) {
             if (!oldIdx.contains(ie)) {
                 IndexEntryAction action = new IndexEntryAction();
                 action.action = IndexActionEnum.CREATE_IDX_ENTRY;
@@ -67,7 +67,7 @@ implements Processor<String, T, String, IndexEntryAction> {
                 ctx.forward(rec);
             }
         }
-        for (IndexEntry ie: oldIdx) {
+        for (Tag ie: oldIdx) {
             if (!newIdx.contains(ie)) {
                 IndexEntryAction action = new IndexEntryAction();
                 action.action = IndexActionEnum.DELETE_IDX_ENTRY;

@@ -3,8 +3,8 @@
 
 package io.littlehorse.common.proto.server;
 
-public interface IndexEntryPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.IndexEntryPb)
+public interface TagPbOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:lh_proto.TagPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**

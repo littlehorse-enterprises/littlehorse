@@ -6,7 +6,7 @@ import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.proto.server.GETableClassEnumPb;
-import io.littlehorse.server.model.internal.IndexEntry;
+import io.littlehorse.server.model.internal.Tag;
 import io.littlehorse.server.model.wfrun.TaskRun;
 import io.littlehorse.server.model.wfrun.ThreadRun;
 import io.littlehorse.server.model.wfrun.WfRun;
@@ -18,14 +18,14 @@ public abstract class GETable<T extends MessageOrBuilder> extends LHSerializable
 
     public abstract String getObjectId();
 
-    public abstract List<IndexEntry> getIndexEntries();
+    public abstract List<Tag> getTags();
 
     public static String getBaseStoreName(Class<? extends GETable<?>> cls) {
         return cls.getSimpleName() + "_BaseStore";
     }
 
-    public static String getIndexStoreName(Class<? extends GETable<?>> cls) {
-        return cls.getSimpleName() + "_IdxCache";
+    public static String getTagStoreName(Class<? extends GETable<?>> cls) {
+        return cls.getSimpleName() + "_TagCache";
     }
 
     public static GETableClassEnumPb getTypeEnum(Class<? extends GETable<?>> cls) {
@@ -53,8 +53,6 @@ public abstract class GETable<T extends MessageOrBuilder> extends LHSerializable
         switch(type){
         case WF_RUN:
             return WfRun.class;
-        case THREAD_RUN:
-            return ThreadRun.class;
         case TASK_RUN:
             return TaskRun.class;
         case WF_SPEC:

@@ -121,7 +121,7 @@ message IndexValuePb {
     repeated string store_key = 1;
 }
 
-message IndexEntryPb {
+message TagPb {
     IndexKeyPb key = 1;
     string store_key = 2;
 }
@@ -131,8 +131,8 @@ enum IndexActionEnum {
     DELETE_IDX_ENTRY = 1;
 }
 
-message IndexEntryActionPb {
-    IndexEntryPb entry = 1;
+message TagActionPb {
+    TagPb entry = 1;
     IndexActionEnum action = 2;
 }
 
@@ -142,8 +142,8 @@ message GETableEntryPb {
     int64 last_updated_offset = 3;
 }
 
-message IndexEntriesPb {
-    repeated IndexEntryPb entries = 1;
+message TagsPb {
+    repeated TagPb entries = 1;
 }
 
 // For inter-broker communication, eg queryRemoteBytes.

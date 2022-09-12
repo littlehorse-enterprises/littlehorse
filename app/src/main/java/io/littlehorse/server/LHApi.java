@@ -31,7 +31,7 @@ import io.littlehorse.common.proto.server.LHResponseCodePb;
 import io.littlehorse.common.util.LHKStreamsListener;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.model.internal.IndexEntry;
+import io.littlehorse.server.model.internal.Tag;
 import io.littlehorse.server.model.internal.LHResponse;
 import io.littlehorse.server.model.internal.RangeResponse;
 import io.littlehorse.server.model.wfrun.TaskRun;
@@ -381,7 +381,7 @@ public class LHApi {
         Context ctx
     ) {
         GETableClassEnumPb asEnum = GETable.getTypeEnum(cls);
-        String prefixKey = IndexEntry.getPartitionKey(attributes, asEnum);
+        String prefixKey = Tag.getPartitionKey(attributes, asEnum);
         String token = ctx.queryParamAsClass(
             "token", String.class
         ).getOrDefault(null);
