@@ -3,7 +3,7 @@ package io.littlehorse.common.model.observability;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.event.TaskStartedEvent;
-import io.littlehorse.common.proto.observability.TaskStartOePb;
+import io.littlehorse.common.proto.TaskStartOePb;
 
 public class TaskStartOe extends LHSerializable<TaskStartOePb> {
 

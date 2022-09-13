@@ -5,7 +5,7 @@ import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.event.TaskResultEvent;
 import io.littlehorse.common.proto.TaskResultCodePb;
-import io.littlehorse.common.proto.observability.TaskResultOePb;
+import io.littlehorse.common.proto.TaskResultOePb;
 
 public class TaskResultOe extends LHSerializable<TaskResultOePb> {
 

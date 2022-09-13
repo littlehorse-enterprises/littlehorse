@@ -2,8 +2,8 @@ package io.littlehorse.common.model.observability;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.proto.observability.ObservabilityEventPb;
-import io.littlehorse.common.proto.observability.ObservabilityEventsPb;
+import io.littlehorse.common.proto.ObservabilityEventPb;
+import io.littlehorse.common.proto.ObservabilityEventsPb;
 import java.util.ArrayList;
 import java.util.List;
 

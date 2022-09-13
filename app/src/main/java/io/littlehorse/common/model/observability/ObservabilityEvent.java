@@ -3,8 +3,8 @@ package io.littlehorse.common.model.observability;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.proto.observability.ObservabilityEventPb;
-import io.littlehorse.common.proto.observability.ObservabilityEventPb.EventCase;
+import io.littlehorse.common.proto.ObservabilityEventPb;
+import io.littlehorse.common.proto.ObservabilityEventPb.EventCase;
 import io.littlehorse.common.util.LHUtil;
 import java.util.Date;
 

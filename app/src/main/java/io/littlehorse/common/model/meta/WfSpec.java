@@ -3,7 +3,6 @@ package io.littlehorse.common.model.meta;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.LHGlobalMetaStores;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.POSTable;
@@ -11,14 +10,15 @@ import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.observability.ObservabilityEvent;
 import io.littlehorse.common.model.observability.RunStartOe;
+import io.littlehorse.common.model.server.Tag;
+import io.littlehorse.common.model.wfrun.LHTimer;
+import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.LHStatusPb;
-import io.littlehorse.common.proto.wfspec.ThreadSpecPb;
-import io.littlehorse.common.proto.wfspec.WfSpecPb;
-import io.littlehorse.common.proto.wfspec.WfSpecPbOrBuilder;
+import io.littlehorse.common.proto.ThreadSpecPb;
+import io.littlehorse.common.proto.WfSpecPb;
+import io.littlehorse.common.proto.WfSpecPbOrBuilder;
+import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.model.internal.Tag;
-import io.littlehorse.server.model.scheduler.LHTimer;
-import io.littlehorse.server.model.scheduler.WfRunState;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -282,12 +282,12 @@ public class WfSpec extends POSTable<WfSpecPbOrBuilder> {
     return out;
   }
 
-  public WfRunState startNewRun(
+  public WfRun startNewRun(
     WfRunEvent e,
     List<TaskScheduleRequest> tasksToSchedule,
     List<LHTimer> timersToSchedule
   ) {
-    WfRunState out = new WfRunState();
+    WfRun out = new WfRun();
     out.id = e.runRequest.wfRunId;
     out.oEvents.wfRunId = out.id;
 

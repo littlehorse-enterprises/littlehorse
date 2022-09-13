@@ -3,10 +3,10 @@ package io.littlehorse.common.model.meta;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.wfrun.VariableValue;
+import io.littlehorse.common.proto.VariableDefPb;
+import io.littlehorse.common.proto.VariableDefPbOrBuilder;
 import io.littlehorse.common.proto.VariableTypePb;
-import io.littlehorse.common.proto.wfspec.VariableDefPb;
-import io.littlehorse.common.proto.wfspec.VariableDefPbOrBuilder;
-import io.littlehorse.server.model.scheduler.VariableValue;
 
 public class VariableDef extends LHSerializable<VariableDefPb> {
 

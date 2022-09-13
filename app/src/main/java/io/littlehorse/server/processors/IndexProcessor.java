@@ -1,11 +1,11 @@
 package io.littlehorse.server.processors;
 
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.proto.server.IndexActionEnum;
+import io.littlehorse.common.model.server.IndexEntryAction;
+import io.littlehorse.common.model.server.Tag;
+import io.littlehorse.common.model.server.Tags;
+import io.littlehorse.common.proto.IndexActionEnum;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.model.internal.IndexEntryAction;
-import io.littlehorse.server.model.internal.Tag;
-import io.littlehorse.server.model.internal.Tags;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;

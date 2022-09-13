@@ -1,6 +1,7 @@
 package io.littlehorse.common;
 
 import io.javalin.Javalin;
+import io.littlehorse.common.util.LHApiClient;
 import io.littlehorse.common.util.LHKStreamsListener;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHRpcClient;

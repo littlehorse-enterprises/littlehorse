@@ -2,11 +2,11 @@ package io.littlehorse.common.model.event;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.proto.VariableValuePb;
-import io.littlehorse.common.proto.scheduler.WfRunRequestPb;
-import io.littlehorse.common.proto.scheduler.WfRunRequestPbOrBuilder;
+import io.littlehorse.common.proto.WfRunRequestPb;
+import io.littlehorse.common.proto.WfRunRequestPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.model.scheduler.VariableValue;
 import java.util.HashMap;
 import java.util.Map;
 

@@ -4,8 +4,8 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.TaskResultCodePb;
-import io.littlehorse.common.proto.scheduler.TaskResultEventPb;
-import io.littlehorse.common.proto.scheduler.TaskResultEventPbOrBuilder;
+import io.littlehorse.common.proto.TaskResultEventPb;
+import io.littlehorse.common.proto.TaskResultEventPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
 import java.util.Date;
 

@@ -2,8 +2,8 @@ package io.littlehorse.common.model.event;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.proto.scheduler.WfRunEventPb;
-import io.littlehorse.common.proto.scheduler.WfRunEventPb.EventCase;
+import io.littlehorse.common.proto.WfRunEventPb;
+import io.littlehorse.common.proto.WfRunEventPb.EventCase;
 import io.littlehorse.common.util.LHUtil;
 import java.util.Date;
 

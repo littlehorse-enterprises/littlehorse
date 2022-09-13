@@ -2,7 +2,7 @@ package io.littlehorse.common.model.meta.node;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.proto.wfspec.ExitNodePb;
+import io.littlehorse.common.proto.ExitNodePb;
 
 public class ExitNode extends LHSerializable<ExitNodePb> {
 

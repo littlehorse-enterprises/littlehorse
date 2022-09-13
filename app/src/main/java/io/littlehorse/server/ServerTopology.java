@@ -9,25 +9,24 @@ import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.observability.ObservabilityEvents;
+import io.littlehorse.common.model.server.IndexEntryAction;
+import io.littlehorse.common.model.server.LHResponse;
+import io.littlehorse.common.model.server.POSTableRequest;
+import io.littlehorse.common.model.server.Tags;
+import io.littlehorse.common.model.wfrun.LHTimer;
+import io.littlehorse.common.model.wfrun.TaskRun;
+import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.common.util.serde.LHDeserializer;
 import io.littlehorse.common.util.serde.LHSerde;
 import io.littlehorse.common.util.serde.LHSerializer;
-import io.littlehorse.server.model.internal.IndexEntryAction;
-import io.littlehorse.server.model.internal.LHResponse;
-import io.littlehorse.server.model.internal.POSTableRequest;
-import io.littlehorse.server.model.internal.Tags;
-import io.littlehorse.server.model.scheduler.LHTimer;
-import io.littlehorse.server.model.scheduler.WfRunState;
-import io.littlehorse.server.model.scheduler.util.SchedulerOutput;
-import io.littlehorse.server.model.wfrun.TaskRun;
-import io.littlehorse.server.model.wfrun.WfRun;
 import io.littlehorse.server.processors.IndexProcessor;
 import io.littlehorse.server.processors.POSTableProcessor;
 import io.littlehorse.server.processors.SchedulerProcessor;
 import io.littlehorse.server.processors.TaggingProcessor;
 import io.littlehorse.server.processors.TimerProcessor;
 import io.littlehorse.server.processors.WfRunProcessor;
+import io.littlehorse.server.processors.util.SchedulerOutput;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.Topology;
@@ -122,7 +121,7 @@ public class ServerTopology {
 
   private static void addSchedulerTopology(Topology topo, LHConfig config) {
     Serde<WfRunEvent> evtSerde = new LHSerde<>(WfRunEvent.class, config);
-    Serde<WfRunState> runSerde = new LHSerde<>(WfRunState.class, config);
+    Serde<WfRun> runSerde = new LHSerde<>(WfRun.class, config);
     Serde<WfSpec> specSerde = new LHSerde<>(WfSpec.class, config);
 
     Runtime
@@ -192,7 +191,7 @@ public class ServerTopology {
     );
 
     // Add state store
-    StoreBuilder<KeyValueStore<String, WfRunState>> wfRunStoreBuilder = Stores.keyValueStoreBuilder(
+    StoreBuilder<KeyValueStore<String, WfRun>> wfRunStoreBuilder = Stores.keyValueStoreBuilder(
       Stores.persistentKeyValueStore(LHConstants.SCHED_WF_RUN_STORE_NAME),
       Serdes.String(),
       runSerde

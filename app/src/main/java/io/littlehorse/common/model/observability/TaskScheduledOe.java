@@ -3,7 +3,7 @@ package io.littlehorse.common.model.observability;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
-import io.littlehorse.common.proto.observability.TaskScheduledOePb;
+import io.littlehorse.common.proto.TaskScheduledOePb;
 
 public class TaskScheduledOe extends LHSerializable<TaskScheduledOePb> {
 

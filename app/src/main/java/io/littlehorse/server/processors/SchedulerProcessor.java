@@ -6,13 +6,13 @@ import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.wfrun.LHTimer;
+import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.LHStatusPb;
-import io.littlehorse.common.proto.scheduler.WfRunEventPb.EventCase;
+import io.littlehorse.common.proto.WfRunEventPb.EventCase;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.ServerTopology;
-import io.littlehorse.server.model.scheduler.LHTimer;
-import io.littlehorse.server.model.scheduler.WfRunState;
-import io.littlehorse.server.model.scheduler.util.SchedulerOutput;
+import io.littlehorse.server.processors.util.SchedulerOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +26,7 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 public class SchedulerProcessor
   implements Processor<String, WfRunEvent, String, SchedulerOutput> {
 
-  private KeyValueStore<String, WfRunState> wfRunStore;
+  private KeyValueStore<String, WfRun> wfRunStore;
   private Map<String, WfSpec> wfSpecCache;
   private ProcessorContext<String, SchedulerOutput> context;
   private ReadOnlyKeyValueStore<String, WfSpec> wfSpecStore;
@@ -58,7 +58,7 @@ public class SchedulerProcessor
       processHelper(key, timestamp, value);
     } catch (Exception exn) {
       String wfRunId = key;
-      WfRunState wfRun = wfRunStore.get(wfRunId);
+      WfRun wfRun = wfRunStore.get(wfRunId);
       if (wfRun == null) {
         exn.printStackTrace();
         return;
@@ -83,7 +83,7 @@ public class SchedulerProcessor
       return;
     }
 
-    WfRunState wfRun = wfRunStore.get(key);
+    WfRun wfRun = wfRunStore.get(key);
 
     List<TaskScheduleRequest> tasksToSchedule = new ArrayList<>();
     List<LHTimer> timersToSchedule = new ArrayList<>();
@@ -126,7 +126,7 @@ public class SchedulerProcessor
       ServerTopology.schedulerWfRunSink
     );
 
-    // Save the WfRunState
+    // Save the WfRun
     wfRunStore.put(key, wfRun);
   }
 

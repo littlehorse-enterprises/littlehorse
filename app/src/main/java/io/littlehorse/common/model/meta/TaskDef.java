@@ -2,13 +2,13 @@ package io.littlehorse.common.model.meta;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.LHGlobalMetaStores;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.POSTable;
-import io.littlehorse.common.proto.wfspec.TaskDefPb;
-import io.littlehorse.common.proto.wfspec.TaskDefPbOrBuilder;
+import io.littlehorse.common.model.server.Tag;
+import io.littlehorse.common.proto.TaskDefPb;
+import io.littlehorse.common.proto.TaskDefPbOrBuilder;
+import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.model.internal.Tag;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;

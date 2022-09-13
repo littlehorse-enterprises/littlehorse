@@ -5,6 +5,8 @@ option go_package = ".;model";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.common.proto";
 
+import "google/protobuf/timestamp.proto";
+
 enum LHStatusPb {
     STARTING = 0;
     RUNNING = 1;
@@ -39,4 +41,398 @@ enum TaskResultCodePb {
     SUCCESS = 0;
     TIMEOUT = 1;
     TASK_FAILURE = 2;
+}
+
+//
+
+
+// Observability Events emitted by the Scheduler
+
+message RunStartOePb {
+    string wf_spec_id = 1;
+    string wf_spec_name = 2;
+}
+
+message ThreadStartOePb {
+    int32 number = 1;
+    string thread_spec_name = 2;
+}
+
+message TaskScheduledOePb {
+    string task_def_id = 1;
+    int32 thread_run_number = 2;
+    int32 task_run_number = 3;
+    int32 task_run_position = 4;
+    int32 task_run_attempt_number = 5;
+    string wf_run_id = 6;
+    string node_name = 7;
+}
+
+message TaskStartOePb {
+    int32 thread_run_number = 1;
+    int32 task_run_number = 2;
+    int32 task_run_position = 3;
+    string node_name = 4;
+}
+
+message TaskResultOePb {
+    int32 thread_run_number = 1;
+    int32 task_run_number = 2;
+    int32 task_run_position = 3;
+
+    TaskResultCodePb result_code = 4;
+    optional bytes output = 5;
+    optional bytes log_output = 6;
+
+    string node_name = 7;
+}
+
+message ThreadStatusChangeOePb {
+    int32 thread_run_number = 1;
+    LHStatusPb status = 2;
+}
+
+message WfRunStatusChangeOePb {
+    LHStatusPb status = 1;
+}
+
+message ObservabilityEventPb {
+    google.protobuf.Timestamp time = 1;
+    oneof event {
+        WfRunStatusChangeOePb wf_run_status = 2;
+        RunStartOePb run_start = 3;
+        ThreadStartOePb thread_start = 4;
+        TaskScheduledOePb task_schedule = 5;
+        TaskStartOePb task_start = 6;
+        TaskResultOePb task_result = 7;
+        ThreadStatusChangeOePb thread_status = 8;
+    }
+}
+
+message ObservabilityEventsPb {
+    string wf_run_id = 1;
+    repeated ObservabilityEventPb events = 2;
+}
+
+// WfSpec stuff
+
+
+message EdgePb {
+    string sink_node_name = 1;
+}
+
+message NodePb {
+    repeated EdgePb outgoing_edges = 1;
+    oneof node {
+        TaskNodePb task = 2;
+        EntrypointNodePb entrypoint = 3;
+        ExitNodePb exit = 4;
+    }
+}
+
+message TaskNodePb {
+    string task_def_name = 1;
+    optional int32 timeout_seconds = 2;
+    int32 retries = 3;
+}
+
+message EntrypointNodePb {
+
+}
+
+message ExitNodePb {
+
+}
+
+message VariableDefPb {
+    VariableTypePb type = 1;
+    optional VariableValuePb default_val = 2;
+    bool required = 3;
+}
+
+message ThreadSpecPb {
+    map<string, NodePb> nodes = 1;
+    map<string, VariableDefPb> variable_defs = 2;
+}
+
+message WfSpecPb {
+    string id = 1;
+    google.protobuf.Timestamp created_at = 2;
+    google.protobuf.Timestamp updated_at = 3;
+
+    map<string, ThreadSpecPb> thread_specs = 4;
+    string entrypoint_thread_name = 5;
+
+    LHStatusPb status = 6;
+    string name = 7;
+
+    int64 last_updated_offset = 8;
+}
+
+message TaskDefPb {
+    string name = 1;
+    google.protobuf.Timestamp created_at = 2;
+}
+
+
+// Schema for a WfRun
+
+message WfRunPb {
+    // Yeah ok it's similar to WfRunStatePb but hear me out
+    string id = 1;
+    string wf_spec_id = 2;
+    string wf_spec_name = 3;
+    LHStatusPb status = 4;
+
+    int64 last_update_offset = 5;
+
+    google.protobuf.Timestamp start_time = 6;
+    optional google.protobuf.Timestamp end_time = 7;
+    repeated ThreadRunPb thread_runs = 8;
+}
+
+message ThreadRunPb {
+    string wf_run_id = 1;
+    int32 number = 2;
+
+    LHStatusPb status = 3;
+    string wf_spec_id = 4;
+    string thread_spec_name = 5;
+    int32 num_steps = 6;
+
+    google.protobuf.Timestamp start_time = 7;
+    optional google.protobuf.Timestamp end_time = 8;
+}
+
+message TaskRunPb {
+    string wf_run_id = 1;
+    int32 thread_run_number = 2;
+    int32 position = 3;
+
+    int32 number = 4;
+    int32 attempt_number = 5;
+    LHStatusPb status = 6;
+    optional bytes output = 7;
+    optional bytes log_output = 8;
+
+    google.protobuf.Timestamp schedule_time = 9;
+    optional google.protobuf.Timestamp start_time = 10;
+    optional google.protobuf.Timestamp end_time = 11;
+
+    string wf_spec_id = 12;
+    string thread_spec_name = 13;
+    string node_name = 14;
+    string task_def_id = 15;
+
+    optional TaskResultCodePb result_code = 16;
+}
+
+message NodeRunStatePb {
+    string node_name = 1;
+    int32 attempt_number = 2;
+    int32 position = 3;
+    int32 number = 4;
+    LHStatusPb status = 5;
+}
+
+// This section contains Input Events to the Scheduler.
+message WfRunRequestPb {
+    optional string wf_run_id = 1;
+    string wf_spec_id = 2;
+    map<string, VariableValuePb> variables = 3;
+}
+
+message TaskScheduleRequestPb {
+    string task_def_id = 1;
+    string task_def_name = 2;
+    int32 thread_run_number = 4;
+    int32 task_run_number = 5;
+    int32 task_run_position = 6;
+    string wf_run_id = 7;
+    string reply_kafka_topic = 8;
+    string wf_spec_id = 9;
+    int32 attempt_number = 10;
+    string node_name = 11;
+}
+
+message TaskStartedEventPb {
+    int32 thread_run_number = 1;
+    int32 task_run_number = 2;
+    int32 task_run_position = 3;
+    google.protobuf.Timestamp time = 4;
+}
+
+message TaskResultEventPb {
+    int32 thread_run_number = 1;
+    int32 task_run_number = 2;
+    int32 task_run_position = 3;
+    google.protobuf.Timestamp time = 4;
+
+    TaskResultCodePb result_code = 5;
+    optional bytes output = 6;
+    optional bytes log_output = 7;
+}
+
+message WfRunEventPb {
+    string wf_run_id = 1;
+    string wf_spec_id = 2;
+    google.protobuf.Timestamp time = 3;
+    oneof event {
+        WfRunRequestPb run_request = 4;
+        TaskStartedEventPb started_event = 5;
+        TaskResultEventPb task_result = 6;
+    }
+}
+
+// Timer-related stuff
+
+message LHTimerPb {
+    google.protobuf.Timestamp maturation_time = 1;
+    string key = 2;
+    string topic = 3;
+    oneof payload {
+        WfRunEventPb wf_run_event = 4;
+    };
+}
+
+
+// This section defines some common Util responses used by the server.
+
+enum LHResponseCodePb {
+    OK = 0;
+    CONNECTION_ERROR = 1;
+    NOT_FOUND_ERROR = 2;
+    BAD_REQUEST_ERROR = 3;
+    VALIDATION_ERROR = 4;
+}
+message LHResponsePb {
+    LHResponseCodePb code = 1;
+    optional string id = 2;
+    optional string message = 3;
+    optional bytes result = 4;
+    optional string result_class = 5;
+}
+
+enum RequestTypePb {
+    POST = 0;
+    DELETE = 1;
+}
+
+message POSTableRequestPb {
+    RequestTypePb type = 1;
+    string store_key = 2;
+    string request_id = 3;
+    optional bytes payload = 4;
+}
+
+message RangeResponsePb {
+    repeated string ids = 1;
+    optional string token = 2;
+}
+
+// This section defines internal data structures used for data stores.
+enum GETableClassEnumPb {
+    TASK_DEF = 0;
+    WF_SPEC = 1;
+    WF_RUN = 2;
+    THREAD_RUN = 3;
+    TASK_RUN = 4;
+}
+
+message AttributePb {
+    string key = 1;
+    string val = 2;
+}
+
+message IndexKeyPb {
+    repeated AttributePb attributes = 1;
+    GETableClassEnumPb type = 2;
+    google.protobuf.Timestamp created = 3;
+}
+
+message IndexValuePb {
+    repeated string store_key = 1;
+}
+
+message TagPb {
+    IndexKeyPb key = 1;
+    string store_key = 2;
+}
+
+enum IndexActionEnum {
+    CREATE_IDX_ENTRY = 0;
+    DELETE_IDX_ENTRY = 1;
+}
+
+message TagActionPb {
+    TagPb entry = 1;
+    IndexActionEnum action = 2;
+}
+
+message GETableEntryPb {
+    bytes entry = 1;
+    int32 partition = 2;
+    int64 last_updated_offset = 3;
+}
+
+message TagsPb {
+    repeated TagPb entries = 1;
+}
+
+// For inter-broker communication, eg queryRemoteBytes.
+/*
+Possible outcomes:
+
+- Success, found the thing. Here are the bytes
+- Queried store appropriately but didn't find bytes.
+- Couldn't query store, rebalancing.
+- Task has migrated and I am no longer the assignee for that partition key.
+
+"task has migrated" type of response requires that request includes the partition key along with
+store key
+
+Also may want to distinguish between querying the active and standby. Do we want to pass in info about
+the partition? -> can do that, `KeyQueryMetadata#partition()` is what we want.
+
+On another note, how do we want to do readinessProbes? Options are:
+
+-- Make sure state is RUNNING
+This would really lean towards Consistency not Availability for queries. 
+
+-- Just check to see if we can get a store. If so, we're good.
+Could lead to a bunch of weirdness if in the PARTITIONS_ASSIGNED state and the current active leader.
+Will result in a failure. Then the entrypoint caller will have to realize that it failed, then
+call standby's. But that shouldn't be too hard.
+
+-- Just make sure we're not in PENDING_ERROR or something like that.
+This allows for maximum availability in theory. Depending on the state of each task, the store may
+or may not be available. We can surface the info about whether it's running or not via the result.
+
+-----
+
+When forced to query standbys, we can query all of them and return the least-stale result.
+
+Will need to schedule a thread in the background that makes a
+call to `streams.allLocalStorePartitionLags()`. It would be best to NOT piggyback the punctuator
+because that method takes a long time to return. Probably want to do it every 15 seconds.
+*/
+
+enum RemoteStoreQueryStatusPb {
+    RSQ_OK = 0;
+    RSQ_NOT_FOUND = 1;
+    RSQ_MIGRATED = 2;
+    RSQ_NOT_AVAILABLE = 3;
+}
+
+// message RemoteStoreQueryRequestPb {
+//     string store_name = 1;
+//     int32 partition = 2;
+//     string store_key = 3;
+//     bool is_active_store = 4;
+// }
+
+message RemoteStoreQueryResponsePb {
+    RemoteStoreQueryStatusPb code = 1;
+    optional bytes result = 2;
+    int64 approximate_lag = 3;
 }

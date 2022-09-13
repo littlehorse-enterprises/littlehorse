@@ -3,11 +3,11 @@ package io.littlehorse.common.model;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.proto.server.GETableClassEnumPb;
-import io.littlehorse.server.model.internal.Tag;
-import io.littlehorse.server.model.wfrun.TaskRun;
-import io.littlehorse.server.model.wfrun.ThreadRun;
-import io.littlehorse.server.model.wfrun.WfRun;
+import io.littlehorse.common.model.server.Tag;
+import io.littlehorse.common.model.wfrun.TaskRun;
+import io.littlehorse.common.model.wfrun.ThreadRun;
+import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.proto.GETableClassEnumPb;
 import java.util.Date;
 import java.util.List;
 

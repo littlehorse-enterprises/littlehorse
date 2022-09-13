@@ -1,8 +1,8 @@
 package io.littlehorse.server.processors;
 
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.model.scheduler.LHTimer;
 import java.util.Date;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.processor.Cancellable;

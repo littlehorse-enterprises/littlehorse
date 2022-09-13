@@ -8,7 +8,7 @@ import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.TaskStartedEvent;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.proto.TaskResultCodePb;
-import io.littlehorse.common.proto.scheduler.WfRunEventPb.EventCase;
+import io.littlehorse.common.proto.WfRunEventPb.EventCase;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import java.time.Duration;

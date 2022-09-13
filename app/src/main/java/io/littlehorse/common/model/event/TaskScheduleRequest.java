@@ -2,8 +2,8 @@ package io.littlehorse.common.model.event;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.proto.scheduler.TaskScheduleRequestPb;
-import io.littlehorse.common.proto.scheduler.TaskScheduleRequestPbOrBuilder;
+import io.littlehorse.common.proto.TaskScheduleRequestPb;
+import io.littlehorse.common.proto.TaskScheduleRequestPbOrBuilder;
 
 public class TaskScheduleRequest extends LHSerializable<TaskScheduleRequestPb> {
 

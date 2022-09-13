@@ -2,11 +2,11 @@ package io.littlehorse.common.model;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.LHGlobalMetaStores;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.util.LHGlobalMetaStores;
 import java.util.Arrays;
 import java.util.List;
 
