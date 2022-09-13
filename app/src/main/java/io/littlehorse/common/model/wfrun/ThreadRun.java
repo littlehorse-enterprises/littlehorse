@@ -25,7 +25,10 @@ import io.littlehorse.common.proto.WfRunEventPb.EventCase;
 import io.littlehorse.common.util.LHUtil;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
 // TODO: I don't think this should be GETable. Maybe just LHSerializable.
 public class ThreadRun extends LHSerializable<ThreadRunPb> {
@@ -42,6 +45,10 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
 
   public Date startTime;
   public Date endTime;
+
+  public ThreadRun() {
+    variables = new HashMap<>();
+  }
 
   public void initFrom(MessageOrBuilder p) {
     ThreadRunPb proto = (ThreadRunPb) p;
@@ -101,7 +108,23 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
   public WfRun wfRun;
 
   @JsonIgnore
+  public Map<String, Variable> variables;
+
+  @JsonIgnore
   private ThreadSpec threadSpec;
+
+  @JsonIgnore
+  private Variable getVariable(
+    String varName,
+    ReadOnlyKeyValueStore<String, Variable> store
+  ) {
+    Variable out = variables.get(varName);
+    if (out == null) {
+      out = store.get(varName);
+      variables.put(varName, out);
+    }
+    return out;
+  }
 
   @JsonIgnore
   public ThreadSpec getThreadSpec() {
