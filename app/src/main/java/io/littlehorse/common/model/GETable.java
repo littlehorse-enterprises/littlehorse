@@ -11,55 +11,58 @@ import io.littlehorse.common.proto.GETableClassEnumPb;
 import java.util.Date;
 import java.util.List;
 
-public abstract class GETable<T extends MessageOrBuilder> extends LHSerializable<T> {
+public abstract class GETable<T extends MessageOrBuilder>
+    extends LHSerializable<T> {
 
-  public abstract Date getCreatedAt();
+    public abstract Date getCreatedAt();
 
-  public abstract String getPartitionKey();
+    public abstract String getPartitionKey();
 
-  public abstract String getObjectId();
+    public abstract String getObjectId();
 
-  public abstract List<Tag> getTags();
+    public abstract List<Tag> getTags();
 
-  public static String getBaseStoreName(Class<? extends GETable<?>> cls) {
-    return cls.getSimpleName() + "_BaseStore";
-  }
-
-  public static String getTagStoreName(Class<? extends GETable<?>> cls) {
-    return cls.getSimpleName() + "_TagCache";
-  }
-
-  public static GETableClassEnumPb getTypeEnum(Class<? extends GETable<?>> cls) {
-    if (cls.equals(WfRun.class)) {
-      return GETableClassEnumPb.WF_RUN;
-    } else if (cls.equals(ThreadRun.class)) {
-      return GETableClassEnumPb.THREAD_RUN;
-    } else if (cls.equals(TaskRun.class)) {
-      return GETableClassEnumPb.TASK_RUN;
-    } else if (cls.equals(WfSpec.class)) {
-      return GETableClassEnumPb.WF_SPEC;
-    } else if (cls.equals(TaskDef.class)) {
-      return GETableClassEnumPb.TASK_DEF;
-    } else {
-      throw new RuntimeException("Uh oh, unrecognized: " + cls.getName());
+    public static String getBaseStoreName(Class<? extends GETable<?>> cls) {
+        return cls.getSimpleName() + "_BaseStore";
     }
-  }
 
-  public static Class<? extends GETable<?>> getCls(GETableClassEnumPb type) {
-    switch (type) {
-      case WF_RUN:
-        return WfRun.class;
-      case TASK_RUN:
-        return TaskRun.class;
-      case WF_SPEC:
-        return WfSpec.class;
-      case TASK_DEF:
-        return TaskDef.class;
-      case UNRECOGNIZED:
-      default:
-        throw new RuntimeException("Uh oh, unrecognized enum");
+    public static String getTagStoreName(Class<? extends GETable<?>> cls) {
+        return cls.getSimpleName() + "_TagCache";
     }
-  }
+
+    public static GETableClassEnumPb getTypeEnum(
+        Class<? extends GETable<?>> cls
+    ) {
+        if (cls.equals(WfRun.class)) {
+            return GETableClassEnumPb.WF_RUN;
+        } else if (cls.equals(ThreadRun.class)) {
+            return GETableClassEnumPb.THREAD_RUN;
+        } else if (cls.equals(TaskRun.class)) {
+            return GETableClassEnumPb.TASK_RUN;
+        } else if (cls.equals(WfSpec.class)) {
+            return GETableClassEnumPb.WF_SPEC;
+        } else if (cls.equals(TaskDef.class)) {
+            return GETableClassEnumPb.TASK_DEF;
+        } else {
+            throw new RuntimeException("Uh oh, unrecognized: " + cls.getName());
+        }
+    }
+
+    public static Class<? extends GETable<?>> getCls(GETableClassEnumPb type) {
+        switch (type) {
+            case WF_RUN:
+                return WfRun.class;
+            case TASK_RUN:
+                return TaskRun.class;
+            case WF_SPEC:
+                return WfSpec.class;
+            case TASK_DEF:
+                return TaskDef.class;
+            case UNRECOGNIZED:
+            default:
+                throw new RuntimeException("Uh oh, unrecognized enum");
+        }
+    }
 }
 /*
  * Some random thoughts:

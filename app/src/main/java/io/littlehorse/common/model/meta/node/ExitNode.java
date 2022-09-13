@@ -6,13 +6,13 @@ import io.littlehorse.common.proto.ExitNodePb;
 
 public class ExitNode extends LHSerializable<ExitNodePb> {
 
-  public Class<ExitNodePb> getProtoBaseClass() {
-    return ExitNodePb.class;
-  }
+    public Class<ExitNodePb> getProtoBaseClass() {
+        return ExitNodePb.class;
+    }
 
-  public void initFrom(MessageOrBuilder proto) {}
+    public void initFrom(MessageOrBuilder proto) {}
 
-  public ExitNodePb.Builder toProto() {
-    return ExitNodePb.newBuilder();
-  }
+    public ExitNodePb.Builder toProto() {
+        return ExitNodePb.newBuilder();
+    }
 }

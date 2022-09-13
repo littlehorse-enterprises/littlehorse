@@ -6,13 +6,13 @@ import io.littlehorse.common.proto.EntrypointNodePb;
 
 public class EntrypointNode extends LHSerializable<EntrypointNodePb> {
 
-  public Class<EntrypointNodePb> getProtoBaseClass() {
-    return EntrypointNodePb.class;
-  }
+    public Class<EntrypointNodePb> getProtoBaseClass() {
+        return EntrypointNodePb.class;
+    }
 
-  public EntrypointNodePb.Builder toProto() {
-    return EntrypointNodePb.newBuilder();
-  }
+    public EntrypointNodePb.Builder toProto() {
+        return EntrypointNodePb.newBuilder();
+    }
 
-  public void initFrom(MessageOrBuilder proto) {}
+    public void initFrom(MessageOrBuilder proto) {}
 }

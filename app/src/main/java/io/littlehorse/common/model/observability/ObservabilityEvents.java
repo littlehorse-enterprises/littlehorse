@@ -9,40 +9,40 @@ import java.util.List;
 
 public class ObservabilityEvents extends LHSerializable<ObservabilityEventsPb> {
 
-  public List<ObservabilityEvent> events;
-  public String wfRunId;
+    public List<ObservabilityEvent> events;
+    public String wfRunId;
 
-  public ObservabilityEvents() {
-    events = new ArrayList<>();
-  }
-
-  public void add(ObservabilityEvent event) {
-    events.add(event);
-  }
-
-  public ObservabilityEventsPb.Builder toProto() {
-    ObservabilityEventsPb.Builder out = ObservabilityEventsPb
-      .newBuilder()
-      .setWfRunId(wfRunId);
-
-    for (ObservabilityEvent e : events) {
-      out.addEvents(e.toProto());
+    public ObservabilityEvents() {
+        events = new ArrayList<>();
     }
 
-    return out;
-  }
-
-  public Class<ObservabilityEventsPb> getProtoBaseClass() {
-    return ObservabilityEventsPb.class;
-  }
-
-  public void initFrom(MessageOrBuilder proto) {
-    ObservabilityEventsPb p = (ObservabilityEventsPb) proto;
-    wfRunId = p.getWfRunId();
-    for (ObservabilityEventPb oepb : p.getEventsList()) {
-      ObservabilityEvent oe = new ObservabilityEvent();
-      oe.initFrom(oepb);
-      events.add(oe);
+    public void add(ObservabilityEvent event) {
+        events.add(event);
     }
-  }
+
+    public ObservabilityEventsPb.Builder toProto() {
+        ObservabilityEventsPb.Builder out = ObservabilityEventsPb
+            .newBuilder()
+            .setWfRunId(wfRunId);
+
+        for (ObservabilityEvent e : events) {
+            out.addEvents(e.toProto());
+        }
+
+        return out;
+    }
+
+    public Class<ObservabilityEventsPb> getProtoBaseClass() {
+        return ObservabilityEventsPb.class;
+    }
+
+    public void initFrom(MessageOrBuilder proto) {
+        ObservabilityEventsPb p = (ObservabilityEventsPb) proto;
+        wfRunId = p.getWfRunId();
+        for (ObservabilityEventPb oepb : p.getEventsList()) {
+            ObservabilityEvent oe = new ObservabilityEvent();
+            oe.initFrom(oepb);
+            events.add(oe);
+        }
+    }
 }

@@ -7,30 +7,30 @@ import io.littlehorse.common.proto.TaskNodePbOrBuilder;
 
 public class TaskNode extends LHSerializable<TaskNodePb> {
 
-  public String taskDefName;
-  public Integer timeoutSeconds;
-  public int retries;
+    public String taskDefName;
+    public Integer timeoutSeconds;
+    public int retries;
 
-  public Class<TaskNodePb> getProtoBaseClass() {
-    return TaskNodePb.class;
-  }
-
-  public void initFrom(MessageOrBuilder proto) {
-    TaskNodePbOrBuilder p = (TaskNodePbOrBuilder) proto;
-    taskDefName = p.getTaskDefName();
-    retries = p.getRetries();
-    if (p.hasTimeoutSeconds()) timeoutSeconds = p.getTimeoutSeconds();
-  }
-
-  public TaskNodePb.Builder toProto() {
-    TaskNodePb.Builder out = TaskNodePb
-      .newBuilder()
-      .setTaskDefName(taskDefName)
-      .setRetries(retries);
-
-    if (timeoutSeconds != null) {
-      out.setTimeoutSeconds(timeoutSeconds);
+    public Class<TaskNodePb> getProtoBaseClass() {
+        return TaskNodePb.class;
     }
-    return out;
-  }
+
+    public void initFrom(MessageOrBuilder proto) {
+        TaskNodePbOrBuilder p = (TaskNodePbOrBuilder) proto;
+        taskDefName = p.getTaskDefName();
+        retries = p.getRetries();
+        if (p.hasTimeoutSeconds()) timeoutSeconds = p.getTimeoutSeconds();
+    }
+
+    public TaskNodePb.Builder toProto() {
+        TaskNodePb.Builder out = TaskNodePb
+            .newBuilder()
+            .setTaskDefName(taskDefName)
+            .setRetries(retries);
+
+        if (timeoutSeconds != null) {
+            out.setTimeoutSeconds(timeoutSeconds);
+        }
+        return out;
+    }
 }

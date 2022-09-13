@@ -9,31 +9,31 @@ import java.util.List;
 
 public class RangeResponse extends LHSerializable<RangeResponsePb> {
 
-  public String token;
-  public List<String> ids;
+    public String token;
+    public List<String> ids;
 
-  public RangeResponse() {
-    ids = new ArrayList<>();
-  }
-
-  public Class<RangeResponsePb> getProtoBaseClass() {
-    return RangeResponsePb.class;
-  }
-
-  public void initFrom(MessageOrBuilder proto) {
-    RangeResponsePbOrBuilder p = (RangeResponsePbOrBuilder) proto;
-    if (p.hasToken()) token = p.getToken();
-    for (String theId : p.getIdsList()) {
-      ids.add(theId);
+    public RangeResponse() {
+        ids = new ArrayList<>();
     }
-  }
 
-  public RangeResponsePb.Builder toProto() {
-    RangeResponsePb.Builder out = RangeResponsePb.newBuilder();
-    for (String id : ids) {
-      out.addIds(id);
+    public Class<RangeResponsePb> getProtoBaseClass() {
+        return RangeResponsePb.class;
     }
-    if (token != null) out.setToken(token);
-    return out;
-  }
+
+    public void initFrom(MessageOrBuilder proto) {
+        RangeResponsePbOrBuilder p = (RangeResponsePbOrBuilder) proto;
+        if (p.hasToken()) token = p.getToken();
+        for (String theId : p.getIdsList()) {
+            ids.add(theId);
+        }
+    }
+
+    public RangeResponsePb.Builder toProto() {
+        RangeResponsePb.Builder out = RangeResponsePb.newBuilder();
+        for (String id : ids) {
+            out.addIds(id);
+        }
+        if (token != null) out.setToken(token);
+        return out;
+    }
 }

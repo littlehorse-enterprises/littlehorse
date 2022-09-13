@@ -7,38 +7,38 @@ import io.littlehorse.common.proto.NodeRunStatePbOrBuilder;
 
 public class NodeRunState {
 
-  public String nodeName;
-  public int attemptNumber;
-  public int position;
-  public int number;
-  public LHStatusPb status;
+    public String nodeName;
+    public int attemptNumber;
+    public int position;
+    public int number;
+    public LHStatusPb status;
 
-  public NodeRunState() {}
+    public NodeRunState() {}
 
-  // Below are implementation details
-  @JsonIgnore
-  public ThreadRun threadRun;
+    // Below are implementation details
+    @JsonIgnore
+    public ThreadRun threadRun;
 
-  public NodeRunStatePb.Builder toProto() {
-    NodeRunStatePb.Builder b = NodeRunStatePb
-      .newBuilder()
-      .setNumber(number)
-      .setNodeName(nodeName)
-      .setAttemptNumber(attemptNumber)
-      .setStatus(status)
-      .setNodeName(nodeName)
-      .setPosition(position);
+    public NodeRunStatePb.Builder toProto() {
+        NodeRunStatePb.Builder b = NodeRunStatePb
+            .newBuilder()
+            .setNumber(number)
+            .setNodeName(nodeName)
+            .setAttemptNumber(attemptNumber)
+            .setStatus(status)
+            .setNodeName(nodeName)
+            .setPosition(position);
 
-    return b;
-  }
+        return b;
+    }
 
-  public static NodeRunState fromProto(NodeRunStatePbOrBuilder proto) {
-    NodeRunState out = new NodeRunState();
-    out.number = proto.getNumber();
-    out.nodeName = proto.getNodeName();
-    out.attemptNumber = proto.getAttemptNumber();
-    out.status = proto.getStatus();
-    out.position = proto.getPosition();
-    return out;
-  }
+    public static NodeRunState fromProto(NodeRunStatePbOrBuilder proto) {
+        NodeRunState out = new NodeRunState();
+        out.number = proto.getNumber();
+        out.nodeName = proto.getNodeName();
+        out.attemptNumber = proto.getAttemptNumber();
+        out.status = proto.getStatus();
+        out.position = proto.getPosition();
+        return out;
+    }
 }

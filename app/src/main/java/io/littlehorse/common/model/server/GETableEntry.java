@@ -12,38 +12,38 @@ import java.util.List;
 
 public class GETableEntry extends LHSerializable<GETableEntryPb> {
 
-  public byte[] entry;
-  public int partition;
-  public long lastUpdatedOffset;
-  public List<Tag> indexEntries;
+    public byte[] entry;
+    public int partition;
+    public long lastUpdatedOffset;
+    public List<Tag> indexEntries;
 
-  public GETableEntry() {
-    indexEntries = new ArrayList<>();
-  }
+    public GETableEntry() {
+        indexEntries = new ArrayList<>();
+    }
 
-  public Class<GETableEntryPb> getProtoBaseClass() {
-    return GETableEntryPb.class;
-  }
+    public Class<GETableEntryPb> getProtoBaseClass() {
+        return GETableEntryPb.class;
+    }
 
-  public void initFrom(MessageOrBuilder p) {
-    GETableEntryPbOrBuilder proto = (GETableEntryPbOrBuilder) p;
-    this.entry = proto.getEntry().toByteArray();
-    this.partition = proto.getPartition();
-    this.lastUpdatedOffset = proto.getLastUpdatedOffset();
-    // for (IndexEntryPb iepb: proto.getIndexEntriesList()) {
-    //     indexEntries.add(IndexEntry.fromProto(iepb));
-    // }
-  }
+    public void initFrom(MessageOrBuilder p) {
+        GETableEntryPbOrBuilder proto = (GETableEntryPbOrBuilder) p;
+        this.entry = proto.getEntry().toByteArray();
+        this.partition = proto.getPartition();
+        this.lastUpdatedOffset = proto.getLastUpdatedOffset();
+        // for (IndexEntryPb iepb: proto.getIndexEntriesList()) {
+        //     indexEntries.add(IndexEntry.fromProto(iepb));
+        // }
+    }
 
-  public GETableEntryPb.Builder toProto() {
-    GETableEntryPb.Builder out = GETableEntryPb
-      .newBuilder()
-      .setPartition(partition)
-      .setLastUpdatedOffset(lastUpdatedOffset);
+    public GETableEntryPb.Builder toProto() {
+        GETableEntryPb.Builder out = GETableEntryPb
+            .newBuilder()
+            .setPartition(partition)
+            .setLastUpdatedOffset(lastUpdatedOffset);
 
-    // for (IndexEntry ie: indexEntries) out.addIndexEntries(ie.toProto());
+        // for (IndexEntry ie: indexEntries) out.addIndexEntries(ie.toProto());
 
-    if (entry != null) out.setEntry(ByteString.copyFrom(entry));
-    return out;
-  }
+        if (entry != null) out.setEntry(ByteString.copyFrom(entry));
+        return out;
+    }
 }

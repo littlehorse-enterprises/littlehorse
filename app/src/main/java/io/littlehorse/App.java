@@ -15,97 +15,97 @@ import org.apache.kafka.clients.admin.NewTopic;
 
 public class App {
 
-  public static void doIdempotentSetup(LHConfig config)
-    throws InterruptedException, ExecutionException {
-    LHUtil.log("Creating topics!!");
+    public static void doIdempotentSetup(LHConfig config)
+        throws InterruptedException, ExecutionException {
+        LHUtil.log("Creating topics!!");
 
-    ArrayList<NewTopic> topics = new ArrayList<>();
-    for (int i = 1; i < 11; i++) {
-      topics.add(
-        new NewTopic(
-          "task" + i,
-          config.getTaskPartitions(),
-          config.getReplicationFactor()
-        )
-      );
+        ArrayList<NewTopic> topics = new ArrayList<>();
+        for (int i = 1; i < 11; i++) {
+            topics.add(
+                new NewTopic(
+                    "task" + i,
+                    config.getTaskPartitions(),
+                    config.getReplicationFactor()
+                )
+            );
+        }
+
+        for (Class<? extends POSTable<?>> cls : POSTable.POSTables) {
+            topics.add(
+                new NewTopic(
+                    POSTable.getRequestTopicName(cls),
+                    3,
+                    config.getReplicationFactor()
+                )
+            );
+
+            topics.add(
+                new NewTopic(
+                    POSTable.getEntityTopicName(cls),
+                    3,
+                    config.getReplicationFactor()
+                )
+            );
+        }
+
+        topics.add(
+            new NewTopic(
+                LHConstants.INDEX_TOPIC_NAME,
+                config.getClusterPartitions(),
+                config.getReplicationFactor()
+            )
+        );
+
+        topics.add(
+            new NewTopic(
+                LHConstants.TIMER_TOPIC_NAME,
+                config.getClusterPartitions(),
+                config.getReplicationFactor()
+            )
+        );
+
+        topics.add(
+            new NewTopic(
+                LHConstants.WF_RUN_OBSERVABILITY_TOPIC,
+                config.getClusterPartitions(),
+                config.getReplicationFactor()
+            )
+        );
+
+        topics.add(
+            new NewTopic(
+                LHConstants.WF_RUN_EVENT_TOPIC,
+                config.getClusterPartitions(),
+                config.getReplicationFactor()
+            )
+        );
+
+        for (NewTopic topic : topics) {
+            config.createKafkaTopic(topic);
+        }
+        LHUtil.log("Done creating topics");
     }
 
-    for (Class<? extends POSTable<?>> cls : POSTable.POSTables) {
-      topics.add(
-        new NewTopic(
-          POSTable.getRequestTopicName(cls),
-          3,
-          config.getReplicationFactor()
-        )
-      );
+    public static void main(String[] args)
+        throws InterruptedException, ExecutionException {
+        String arg = args[0];
+        if (arg.equals("tester")) {
+            tester();
+            System.exit(0);
+        }
 
-      topics.add(
-        new NewTopic(
-          POSTable.getEntityTopicName(cls),
-          3,
-          config.getReplicationFactor()
-        )
-      );
+        LHConfig config = new LHConfig();
+        doIdempotentSetup(config);
+
+        if (arg.equals("worker")) {
+            TestWorker.doMain(config);
+        } else if (arg.equals("server")) {
+            Server.doMain(config);
+        }
     }
 
-    topics.add(
-      new NewTopic(
-        LHConstants.INDEX_TOPIC_NAME,
-        config.getClusterPartitions(),
-        config.getReplicationFactor()
-      )
-    );
-
-    topics.add(
-      new NewTopic(
-        LHConstants.TIMER_TOPIC_NAME,
-        config.getClusterPartitions(),
-        config.getReplicationFactor()
-      )
-    );
-
-    topics.add(
-      new NewTopic(
-        LHConstants.WF_RUN_OBSERVABILITY_TOPIC,
-        config.getClusterPartitions(),
-        config.getReplicationFactor()
-      )
-    );
-
-    topics.add(
-      new NewTopic(
-        LHConstants.WF_RUN_EVENT_TOPIC,
-        config.getClusterPartitions(),
-        config.getReplicationFactor()
-      )
-    );
-
-    for (NewTopic topic : topics) {
-      config.createKafkaTopic(topic);
+    public static void tester() {
+        LHConfig config = new LHConfig();
+        LHUtil.log(config.getHostInfo().toString());
     }
-    LHUtil.log("Done creating topics");
-  }
-
-  public static void main(String[] args)
-    throws InterruptedException, ExecutionException {
-    String arg = args[0];
-    if (arg.equals("tester")) {
-      tester();
-      System.exit(0);
-    }
-
-    LHConfig config = new LHConfig();
-    doIdempotentSetup(config);
-
-    if (arg.equals("worker")) {
-      TestWorker.doMain(config);
-    } else if (arg.equals("server")) {
-      Server.doMain(config);
-    }
-  }
-
-  public static void tester() {
-    LHConfig config = new LHConfig();
-    LHUtil.log(config.getHostInfo().toString());
-  }
 }

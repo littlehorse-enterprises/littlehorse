@@ -14,72 +14,94 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class Variable extends GETable<VariablePb> {
 
-  public VariableValue value;
-  public String wfRunId;
-  public int threadRunNumber;
-  public String name;
-  public Date date;
+    public VariableValue value;
+    public String wfRunId;
+    public int threadRunNumber;
+    public String name;
+    public Date date;
 
-  public Class<VariablePb> getProtoBaseClass() {
-    return VariablePb.class;
-  }
-
-  public void initFrom(MessageOrBuilder proto) {
-    VariablePbOrBuilder p = (VariablePbOrBuilder) proto;
-    value = VariableValue.fromProto(p.getValue());
-    wfRunId = p.getWfRunId();
-    name = p.getName();
-    threadRunNumber = p.getThreadRunNumber();
-    date = LHUtil.fromProtoTs(p.getDate());
-  }
-
-  public VariablePb.Builder toProto() {
-    VariablePb.Builder out = VariablePb
-      .newBuilder()
-      .setName(name)
-      .setThreadRunNumber(threadRunNumber)
-      .setWfRunId(wfRunId)
-      .setDate(LHUtil.fromDate(date))
-      .setValue(value.toProto());
-
-    return out;
-  }
-
-  public List<Tag> getTags() {
-    List<Tag> out = new ArrayList<>();
-
-    out.add(
-      new Tag(this, Pair.of("type", value.type.toString()), Pair.of("name", name))
-    );
-
-    if (value.type == VariableTypePb.STR) {
-      out.add(new Tag(this, Pair.of("strVal", LHUtil.toLhDbFormat(value.strVal))));
-    } else if (value.type == VariableTypePb.INT) {
-      out.add(new Tag(this, Pair.of("intVal", LHUtil.toLhDbFormat(value.intVal))));
-    } else if (value.type == VariableTypePb.DOUBLE) {
-      out.add(
-        new Tag(this, Pair.of("doubleVal", LHUtil.toLhDbFormat(value.doubleVal)))
-      );
-    } else if (value.type == VariableTypePb.BOOL) {
-      out.add(new Tag(this, Pair.of("boolVal", LHUtil.toLhDbFormat(value.boolVal))));
-    } else if (value.type == VariableTypePb.JSON_ARR) {
-      // don't do anything yet...in the future we'll do some jsonpath stuff.
-    } else if (value.type == VariableTypePb.JSON_OBJ) {
-      // don't do anything yet...in the future we'll do some jsonpath stuff.
+    public Class<VariablePb> getProtoBaseClass() {
+        return VariablePb.class;
     }
 
-    return out;
-  }
+    public void initFrom(MessageOrBuilder proto) {
+        VariablePbOrBuilder p = (VariablePbOrBuilder) proto;
+        value = VariableValue.fromProto(p.getValue());
+        wfRunId = p.getWfRunId();
+        name = p.getName();
+        threadRunNumber = p.getThreadRunNumber();
+        date = LHUtil.fromProtoTs(p.getDate());
+    }
 
-  public String getObjectId() {
-    return wfRunId + "-" + threadRunNumber + "-" + name;
-  }
+    public VariablePb.Builder toProto() {
+        VariablePb.Builder out = VariablePb
+            .newBuilder()
+            .setName(name)
+            .setThreadRunNumber(threadRunNumber)
+            .setWfRunId(wfRunId)
+            .setDate(LHUtil.fromDate(date))
+            .setValue(value.toProto());
 
-  public Date getCreatedAt() {
-    return date;
-  }
+        return out;
+    }
 
-  public String getPartitionKey() {
-    return wfRunId;
-  }
+    public List<Tag> getTags() {
+        List<Tag> out = new ArrayList<>();
+
+        out.add(
+            new Tag(
+                this,
+                Pair.of("type", value.type.toString()),
+                Pair.of("name", name)
+            )
+        );
+
+        if (value.type == VariableTypePb.STR) {
+            out.add(
+                new Tag(
+                    this,
+                    Pair.of("strVal", LHUtil.toLhDbFormat(value.strVal))
+                )
+            );
+        } else if (value.type == VariableTypePb.INT) {
+            out.add(
+                new Tag(
+                    this,
+                    Pair.of("intVal", LHUtil.toLhDbFormat(value.intVal))
+                )
+            );
+        } else if (value.type == VariableTypePb.DOUBLE) {
+            out.add(
+                new Tag(
+                    this,
+                    Pair.of("doubleVal", LHUtil.toLhDbFormat(value.doubleVal))
+                )
+            );
+        } else if (value.type == VariableTypePb.BOOL) {
+            out.add(
+                new Tag(
+                    this,
+                    Pair.of("boolVal", LHUtil.toLhDbFormat(value.boolVal))
+                )
+            );
+        } else if (value.type == VariableTypePb.JSON_ARR) {
+            // don't do anything yet...in the future we'll do some jsonpath stuff.
+        } else if (value.type == VariableTypePb.JSON_OBJ) {
+            // don't do anything yet...in the future we'll do some jsonpath stuff.
+        }
+
+        return out;
+    }
+
+    public String getObjectId() {
+        return wfRunId + "-" + threadRunNumber + "-" + name;
+    }
+
+    public Date getCreatedAt() {
+        return date;
+    }
+
+    public String getPartitionKey() {
+        return wfRunId;
+    }
 }

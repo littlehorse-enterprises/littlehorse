@@ -8,8 +8,8 @@ import java.util.List;
 
 public class SchedulerOutput {
 
-  public TaskScheduleRequest request;
-  public ObservabilityEvents observabilityEvents;
-  public LHTimer timer;
-  public List<Variable> variables;
+    public TaskScheduleRequest request;
+    public ObservabilityEvents observabilityEvents;
+    public LHTimer timer;
+    public List<Variable> variables;
 }

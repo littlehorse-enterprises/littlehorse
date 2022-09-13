@@ -9,32 +9,32 @@ import io.littlehorse.common.proto.RequestTypePb;
 
 public class POSTableRequest extends LHSerializable<POSTableRequestPb> {
 
-  public RequestTypePb type;
-  public String storeKey;
-  public String requestId;
-  public byte[] payload;
+    public RequestTypePb type;
+    public String storeKey;
+    public String requestId;
+    public byte[] payload;
 
-  public Class<POSTableRequestPb> getProtoBaseClass() {
-    return POSTableRequestPb.class;
-  }
+    public Class<POSTableRequestPb> getProtoBaseClass() {
+        return POSTableRequestPb.class;
+    }
 
-  public void initFrom(MessageOrBuilder p) {
-    POSTableRequestPbOrBuilder proto = (POSTableRequestPbOrBuilder) p;
-    type = proto.getType();
-    storeKey = proto.getStoreKey();
-    requestId = proto.getRequestId();
-    payload = proto.hasPayload() ? proto.getPayload().toByteArray() : null;
-  }
+    public void initFrom(MessageOrBuilder p) {
+        POSTableRequestPbOrBuilder proto = (POSTableRequestPbOrBuilder) p;
+        type = proto.getType();
+        storeKey = proto.getStoreKey();
+        requestId = proto.getRequestId();
+        payload = proto.hasPayload() ? proto.getPayload().toByteArray() : null;
+    }
 
-  public POSTableRequestPb.Builder toProto() {
-    POSTableRequestPb.Builder out = POSTableRequestPb
-      .newBuilder()
-      .setType(type)
-      .setStoreKey(storeKey)
-      .setRequestId(requestId);
+    public POSTableRequestPb.Builder toProto() {
+        POSTableRequestPb.Builder out = POSTableRequestPb
+            .newBuilder()
+            .setType(type)
+            .setStoreKey(storeKey)
+            .setRequestId(requestId);
 
-    if (payload != null) out.setPayload(ByteString.copyFrom(payload));
+        if (payload != null) out.setPayload(ByteString.copyFrom(payload));
 
-    return out;
-  }
+        return out;
+    }
 }
