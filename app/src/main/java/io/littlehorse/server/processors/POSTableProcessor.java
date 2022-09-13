@@ -1,9 +1,5 @@
 package io.littlehorse.server.processors;
 
-import org.apache.kafka.streams.processor.api.Processor;
-import org.apache.kafka.streams.processor.api.ProcessorContext;
-import org.apache.kafka.streams.processor.api.Record;
-import org.apache.kafka.streams.state.KeyValueStore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
@@ -17,91 +13,94 @@ import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.proto.server.LHResponseCodePb;
 import io.littlehorse.server.model.internal.LHResponse;
 import io.littlehorse.server.model.internal.POSTableRequest;
+import org.apache.kafka.streams.processor.api.Processor;
+import org.apache.kafka.streams.processor.api.ProcessorContext;
+import org.apache.kafka.streams.processor.api.Record;
+import org.apache.kafka.streams.state.KeyValueStore;
 
-public class POSTableProcessor<U extends MessageOrBuilder, T extends POSTable<U>>
-    implements Processor<String, POSTableRequest, String, T>
-{
-    private KeyValueStore<String, T> store;
-    private KeyValueStore<String, LHResponse> responseStore;
-    private Class<T> cls;
-    private ProcessorContext<String, T> context;
-    private LHGlobalMetaStores dbClient;
-    private LHConfig config;
+public class POSTableProcessor<
+  U extends MessageOrBuilder, T extends POSTable<U>
+>
+  implements Processor<String, POSTableRequest, String, T> {
 
-    public POSTableProcessor(Class<T> cls, LHConfig config) {
-        this.cls = cls;
-        this.config = config;
+  private KeyValueStore<String, T> store;
+  private KeyValueStore<String, LHResponse> responseStore;
+  private Class<T> cls;
+  private ProcessorContext<String, T> context;
+  private LHGlobalMetaStores dbClient;
+  private LHConfig config;
+
+  public POSTableProcessor(Class<T> cls, LHConfig config) {
+    this.cls = cls;
+    this.config = config;
+  }
+
+  @Override
+  public void init(final ProcessorContext<String, T> context) {
+    this.context = context;
+    this.store = context.getStateStore(POSTable.getBaseStoreName(cls));
+    this.responseStore =
+      context.getStateStore(POSTable.getResponseStoreName(cls));
+    this.dbClient = new LHGlobalMetaStores(context);
+  }
+
+  @Override
+  public void process(final Record<String, POSTableRequest> record) {
+    POSTableRequest req = record.value();
+    String key = record.key();
+    T newT;
+
+    try {
+      newT = LHSerializable.fromBytes(req.payload, cls, config);
+    } catch (LHSerdeError exn) {
+      // TODO: throw an error in response
+      return;
     }
 
-    @Override
-    public void init(
-        final ProcessorContext<String, T> context
-    ) {
-        this.context = context;
-        this.store = context.getStateStore(
-            POSTable.getBaseStoreName(cls)
-        );
-        this.responseStore = context.getStateStore(
-            POSTable.getResponseStoreName(cls)
-        );
-        this.dbClient = new LHGlobalMetaStores(context);
+    T oldT = store.get(key);
+    LHResponse resp = new LHResponse(config);
+    resp.id = key;
+
+    try {
+      newT.handlePost(oldT, dbClient, config);
+      resp.result = newT;
+      resp.code = LHResponseCodePb.OK;
+      Record<String, T> newRec = new Record<String, T>(
+        key,
+        newT,
+        record.timestamp()
+      );
+      newRec
+        .headers()
+        .add(LHConstants.OBJECT_ID_HEADER, newT.getObjectId().getBytes());
+
+      context.forward(newRec);
+
+      store.put(key, newT);
+    } catch (LHValidationError exn) {
+      resp.message = exn.getMessage();
+      resp.code = LHResponseCodePb.VALIDATION_ERROR;
     }
 
-    @Override
-    public void process(final Record<String, POSTableRequest> record) {
-        POSTableRequest req = record.value();
-        String key = record.key();
-        T newT;
-
-        try {
-            newT = LHSerializable.fromBytes(req.payload, cls, config);
-        } catch(LHSerdeError exn) {
-            // TODO: throw an error in response
-            return;
-        }
-
-        T oldT = store.get(key);
-        LHResponse resp = new LHResponse(config);
-        resp.id = key;
-
-        try {
-            newT.handlePost(oldT, dbClient, config);
-            resp.result = newT;
-            resp.code = LHResponseCodePb.OK;
-            Record<String, T> newRec = new Record<String, T>(
-                key, newT, record.timestamp()
-            );
-            newRec.headers().add(
-                LHConstants.OBJECT_ID_HEADER,
-                newT.getObjectId().getBytes()
-            );
-
-            context.forward(newRec);
-
-            store.put(key, newT);
-
-        } catch(LHValidationError exn) {
-            resp.message = exn.getMessage();
-            resp.code = LHResponseCodePb.VALIDATION_ERROR;
-        }
-
-        responseStore.put(req.requestId, resp);
-    }
+    responseStore.put(req.requestId, resp);
+  }
 }
 
 class MetadataStore {
-    private KeyValueStore<String, TaskDef> taskDefStore;
-    // private KeyValueStore<String, WfSpec> wfSpecStore;
 
-    public MetadataStore(
-        KeyValueStore<String, TaskDef> taskDefStore,
-        KeyValueStore<String, WfSpec> wfSpecStore
-    ) {
-        this.taskDefStore = taskDefStore;
-        // this.wfSpecStore = wfSpecStore;
-    }
+  private KeyValueStore<String, TaskDef> taskDefStore;
 
-    public TaskDef lookupTaskDef(String name) {
-        return taskDefStore.get(name);
-    }
+  // private KeyValueStore<String, WfSpec> wfSpecStore;
+
+  public MetadataStore(
+    KeyValueStore<String, TaskDef> taskDefStore,
+    KeyValueStore<String, WfSpec> wfSpecStore
+  ) {
+    this.taskDefStore = taskDefStore;
+    // this.wfSpecStore = wfSpecStore;
+  }
+
+  public TaskDef lookupTaskDef(String name) {
+    return taskDefStore.get(name);
+  }
 }

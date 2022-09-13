@@ -6,57 +6,59 @@ import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.proto.observability.TaskScheduledOePb;
 
 public class TaskScheduledOe extends LHSerializable<TaskScheduledOePb> {
-    public String taskDefId;
-    public int threadRunNumber;
-    public int taskRunNumber;
-    public int taskRunPosition;
-    public int taskRunAttemptNumber;
-    public String wfRunId;
-    public String nodeName;
 
-    public Class<TaskScheduledOePb> getProtoBaseClass() {
-        return TaskScheduledOePb.class;
-    }
+  public String taskDefId;
+  public int threadRunNumber;
+  public int taskRunNumber;
+  public int taskRunPosition;
+  public int taskRunAttemptNumber;
+  public String wfRunId;
+  public String nodeName;
 
-    public TaskScheduledOePb.Builder toProto() {
-        TaskScheduledOePb.Builder out = TaskScheduledOePb.newBuilder()
-            .setTaskDefId(taskDefId)
-            .setThreadRunNumber(threadRunNumber)
-            .setTaskRunNumber(taskRunNumber)
-            .setTaskRunPosition(taskRunPosition)
-            .setTaskRunAttemptNumber(taskRunAttemptNumber)
-            .setWfRunId(wfRunId)
-            .setNodeName(nodeName);
+  public Class<TaskScheduledOePb> getProtoBaseClass() {
+    return TaskScheduledOePb.class;
+  }
 
-        return out;
-    }
+  public TaskScheduledOePb.Builder toProto() {
+    TaskScheduledOePb.Builder out = TaskScheduledOePb
+      .newBuilder()
+      .setTaskDefId(taskDefId)
+      .setThreadRunNumber(threadRunNumber)
+      .setTaskRunNumber(taskRunNumber)
+      .setTaskRunPosition(taskRunPosition)
+      .setTaskRunAttemptNumber(taskRunAttemptNumber)
+      .setWfRunId(wfRunId)
+      .setNodeName(nodeName);
 
-    public TaskScheduledOe(TaskScheduleRequest tsr) {
-        taskDefId = tsr.taskDefId;
-        threadRunNumber = tsr.threadRunNumber;
-        taskRunNumber = tsr.taskRunNumber;
-        taskRunPosition = tsr.taskRunPosition;
-        taskRunAttemptNumber = tsr.attemptNumber;
-        wfRunId = tsr.wfRunId;
-        nodeName = tsr.nodeName;
-    }
+    return out;
+  }
 
-    public TaskScheduledOe() {}
+  public TaskScheduledOe(TaskScheduleRequest tsr) {
+    taskDefId = tsr.taskDefId;
+    threadRunNumber = tsr.threadRunNumber;
+    taskRunNumber = tsr.taskRunNumber;
+    taskRunPosition = tsr.taskRunPosition;
+    taskRunAttemptNumber = tsr.attemptNumber;
+    wfRunId = tsr.wfRunId;
+    nodeName = tsr.nodeName;
+  }
 
-    public void initFrom(MessageOrBuilder proto) {
-        TaskScheduledOePb p = (TaskScheduledOePb) proto;
-        taskDefId = p.getTaskDefId();
-        threadRunNumber = p.getThreadRunNumber();
-        taskRunNumber = p.getTaskRunNumber();
-        taskRunPosition = p.getTaskRunPosition();
-        taskRunAttemptNumber = p.getTaskRunAttemptNumber();
-        wfRunId = p.getWfRunId();
-        nodeName = p.getNodeName();
-    }
+  public TaskScheduledOe() {}
 
-    public static TaskScheduledOe fromProto(TaskScheduledOePb proto) {
-        TaskScheduledOe out = new TaskScheduledOe();
-        out.initFrom(proto);
-        return out;
-    }
+  public void initFrom(MessageOrBuilder proto) {
+    TaskScheduledOePb p = (TaskScheduledOePb) proto;
+    taskDefId = p.getTaskDefId();
+    threadRunNumber = p.getThreadRunNumber();
+    taskRunNumber = p.getTaskRunNumber();
+    taskRunPosition = p.getTaskRunPosition();
+    taskRunAttemptNumber = p.getTaskRunAttemptNumber();
+    wfRunId = p.getWfRunId();
+    nodeName = p.getNodeName();
+  }
+
+  public static TaskScheduledOe fromProto(TaskScheduledOePb proto) {
+    TaskScheduledOe out = new TaskScheduledOe();
+    out.initFrom(proto);
+    return out;
+  }
 }

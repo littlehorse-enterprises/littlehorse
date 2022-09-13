@@ -5,37 +5,39 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.observability.ThreadStartOePb;
 
 public class ThreadStartOe extends LHSerializable<ThreadStartOePb> {
-    public int number;
-    public String threadSpecName;
 
-    public ThreadStartOePb.Builder toProto() {
-        ThreadStartOePb.Builder out = ThreadStartOePb.newBuilder()
-            .setNumber(number)
-            .setThreadSpecName(threadSpecName);
+  public int number;
+  public String threadSpecName;
 
-        return out;
-    }
+  public ThreadStartOePb.Builder toProto() {
+    ThreadStartOePb.Builder out = ThreadStartOePb
+      .newBuilder()
+      .setNumber(number)
+      .setThreadSpecName(threadSpecName);
 
-    public Class<ThreadStartOePb> getProtoBaseClass() {
-        return ThreadStartOePb.class;
-    }
+    return out;
+  }
 
-    public void initFrom(MessageOrBuilder proto) {
-        ThreadStartOePb p = (ThreadStartOePb) proto;
-        number = p.getNumber();
-        threadSpecName = p.getThreadSpecName();
-    }
+  public Class<ThreadStartOePb> getProtoBaseClass() {
+    return ThreadStartOePb.class;
+  }
 
-    public ThreadStartOe() {}
+  public void initFrom(MessageOrBuilder proto) {
+    ThreadStartOePb p = (ThreadStartOePb) proto;
+    number = p.getNumber();
+    threadSpecName = p.getThreadSpecName();
+  }
 
-    public static ThreadStartOe fromProto(ThreadStartOePb proto) {
-        ThreadStartOe out = new ThreadStartOe();
-        out.initFrom(proto);
-        return out;
-    }
+  public ThreadStartOe() {}
 
-    public ThreadStartOe(int number, String threadSpecName) {
-        this.number = number;
-        this.threadSpecName = threadSpecName;
-    }
+  public static ThreadStartOe fromProto(ThreadStartOePb proto) {
+    ThreadStartOe out = new ThreadStartOe();
+    out.initFrom(proto);
+    return out;
+  }
+
+  public ThreadStartOe(int number, String threadSpecName) {
+    this.number = number;
+    this.threadSpecName = threadSpecName;
+  }
 }

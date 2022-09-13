@@ -9,33 +9,39 @@ import io.littlehorse.common.proto.wfspec.VariableDefPbOrBuilder;
 import io.littlehorse.server.model.scheduler.VariableValue;
 
 public class VariableDef extends LHSerializable<VariableDefPb> {
-    public VariableTypePb type;
-    public VariableValue defaultValue;
-    public boolean required;
 
-    @JsonIgnore public String name;
-    @JsonIgnore public ThreadSpec threadSpec;
+  public VariableTypePb type;
+  public VariableValue defaultValue;
+  public boolean required;
 
-    public Class<VariableDefPb> getProtoBaseClass() {
-        return VariableDefPb.class;
+  @JsonIgnore
+  public String name;
+
+  @JsonIgnore
+  public ThreadSpec threadSpec;
+
+  public Class<VariableDefPb> getProtoBaseClass() {
+    return VariableDefPb.class;
+  }
+
+  public void initFrom(MessageOrBuilder proto) {
+    VariableDefPbOrBuilder p = (VariableDefPbOrBuilder) proto;
+    if (p.hasDefaultVal()) defaultValue =
+      VariableValue.fromProto(p.getDefaultVal());
+    type = p.getType();
+    required = p.getRequired();
+  }
+
+  public VariableDefPb.Builder toProto() {
+    VariableDefPb.Builder out = VariableDefPb
+      .newBuilder()
+      .setType(type)
+      .setRequired(required);
+
+    if (defaultValue != null) {
+      out.setDefaultVal(defaultValue.toProto());
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        VariableDefPbOrBuilder p = (VariableDefPbOrBuilder) proto;
-        if (p.hasDefaultVal()) defaultValue = VariableValue.fromProto(p.getDefaultVal());
-        type = p.getType();
-        required = p.getRequired();
-    }
-
-    public VariableDefPb.Builder toProto() {
-        VariableDefPb.Builder out = VariableDefPb.newBuilder()
-            .setType(type)
-            .setRequired(required);
-
-        if (defaultValue != null) {
-            out.setDefaultVal(defaultValue.toProto());
-        }
-
-        return out;
-    }
+    return out;
+  }
 }

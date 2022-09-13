@@ -1,47 +1,49 @@
 package io.littlehorse.server.model.internal;
 
-import java.util.ArrayList;
-import java.util.List;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.server.GETableEntryPb;
 import io.littlehorse.common.proto.server.GETableEntryPbOrBuilder;
+import java.util.ArrayList;
+import java.util.List;
+
 // import io.littlehorse.common.proto.server.IndexEntryPb;
 
-public class GETableEntry extends LHSerializable<GETableEntryPb>
-{
-    public byte[] entry;
-    public int partition;
-    public long lastUpdatedOffset;
-    public List<Tag> indexEntries;
+public class GETableEntry extends LHSerializable<GETableEntryPb> {
 
-    public GETableEntry() {
-        indexEntries = new ArrayList<>();
-    }
+  public byte[] entry;
+  public int partition;
+  public long lastUpdatedOffset;
+  public List<Tag> indexEntries;
 
-    public Class<GETableEntryPb> getProtoBaseClass() {
-        return GETableEntryPb.class;
-    }
+  public GETableEntry() {
+    indexEntries = new ArrayList<>();
+  }
 
-    public void initFrom(MessageOrBuilder p) {
-        GETableEntryPbOrBuilder proto = (GETableEntryPbOrBuilder) p;
-        this.entry = proto.getEntry().toByteArray();
-        this.partition = proto.getPartition();
-        this.lastUpdatedOffset = proto.getLastUpdatedOffset();
-        // for (IndexEntryPb iepb: proto.getIndexEntriesList()) {
-        //     indexEntries.add(IndexEntry.fromProto(iepb));
-        // }
-    }
+  public Class<GETableEntryPb> getProtoBaseClass() {
+    return GETableEntryPb.class;
+  }
 
-    public GETableEntryPb.Builder toProto() {
-        GETableEntryPb.Builder out = GETableEntryPb.newBuilder()
-            .setPartition(partition)
-            .setLastUpdatedOffset(lastUpdatedOffset);
+  public void initFrom(MessageOrBuilder p) {
+    GETableEntryPbOrBuilder proto = (GETableEntryPbOrBuilder) p;
+    this.entry = proto.getEntry().toByteArray();
+    this.partition = proto.getPartition();
+    this.lastUpdatedOffset = proto.getLastUpdatedOffset();
+    // for (IndexEntryPb iepb: proto.getIndexEntriesList()) {
+    //     indexEntries.add(IndexEntry.fromProto(iepb));
+    // }
+  }
 
-        // for (IndexEntry ie: indexEntries) out.addIndexEntries(ie.toProto());
+  public GETableEntryPb.Builder toProto() {
+    GETableEntryPb.Builder out = GETableEntryPb
+      .newBuilder()
+      .setPartition(partition)
+      .setLastUpdatedOffset(lastUpdatedOffset);
 
-        if (entry != null) out.setEntry(ByteString.copyFrom(entry));
-        return out;
-    }
+    // for (IndexEntry ie: indexEntries) out.addIndexEntries(ie.toProto());
+
+    if (entry != null) out.setEntry(ByteString.copyFrom(entry));
+    return out;
+  }
 }

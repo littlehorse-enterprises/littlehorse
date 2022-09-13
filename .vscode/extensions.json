@@ -1,0 +1,7 @@
+{
+  "recommendations": [
+	"redhat.vscode-xml",
+	"esbenp.prettier-vscode", // the classic prettier extension
+	"shengchen.vscode-checkstyle",
+  ]
+}

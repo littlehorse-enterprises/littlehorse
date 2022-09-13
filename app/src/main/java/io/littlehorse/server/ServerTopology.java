@@ -1,14 +1,5 @@
 package io.littlehorse.server;
 
-import org.apache.kafka.common.serialization.Serde;
-import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.streams.Topology;
-import org.apache.kafka.streams.processor.api.Processor;
-import org.apache.kafka.streams.processor.api.ProcessorContext;
-import org.apache.kafka.streams.processor.api.Record;
-import org.apache.kafka.streams.state.KeyValueStore;
-import org.apache.kafka.streams.state.StoreBuilder;
-import org.apache.kafka.streams.state.Stores;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
@@ -22,376 +13,392 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.common.util.serde.LHDeserializer;
 import io.littlehorse.common.util.serde.LHSerde;
 import io.littlehorse.common.util.serde.LHSerializer;
-import io.littlehorse.server.model.internal.Tags;
 import io.littlehorse.server.model.internal.IndexEntryAction;
 import io.littlehorse.server.model.internal.LHResponse;
 import io.littlehorse.server.model.internal.POSTableRequest;
+import io.littlehorse.server.model.internal.Tags;
 import io.littlehorse.server.model.scheduler.LHTimer;
 import io.littlehorse.server.model.scheduler.WfRunState;
 import io.littlehorse.server.model.scheduler.util.SchedulerOutput;
 import io.littlehorse.server.model.wfrun.TaskRun;
 import io.littlehorse.server.model.wfrun.WfRun;
-import io.littlehorse.server.processors.TaggingProcessor;
 import io.littlehorse.server.processors.IndexProcessor;
 import io.littlehorse.server.processors.POSTableProcessor;
 import io.littlehorse.server.processors.SchedulerProcessor;
+import io.littlehorse.server.processors.TaggingProcessor;
 import io.littlehorse.server.processors.TimerProcessor;
 import io.littlehorse.server.processors.WfRunProcessor;
+import org.apache.kafka.common.serialization.Serde;
+import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.streams.Topology;
+import org.apache.kafka.streams.processor.api.Processor;
+import org.apache.kafka.streams.processor.api.ProcessorContext;
+import org.apache.kafka.streams.processor.api.Record;
+import org.apache.kafka.streams.state.KeyValueStore;
+import org.apache.kafka.streams.state.StoreBuilder;
+import org.apache.kafka.streams.state.Stores;
 
 public class ServerTopology {
-    private static final String WfRunIdxStore = "WF_RUN_INDEX_TMP_STORE";
 
-    public static String schedulerSource = "Scheduler Source";
-    public static String schedulerProcessor = "SchedulerProcessor";
-    public static String schedulerWfRunSink = "Scheduler WFRun Sink";
-    public static String schedulerTaskSink = "Scheduled Tasks";
-    public static String schedulerTickerSink = "Scheduler Ticks";
+  private static final String WfRunIdxStore = "WF_RUN_INDEX_TMP_STORE";
 
-    public static String timerSource = "Timer Source";
-    public static String timerProcessor = "Timer Processor";
-    public static String newTimerSink = "New Timer Sink";
-    public static String maturedTimerSink = "Matured Timer Sink";
+  public static String schedulerSource = "Scheduler Source";
+  public static String schedulerProcessor = "SchedulerProcessor";
+  public static String schedulerWfRunSink = "Scheduler WFRun Sink";
+  public static String schedulerTaskSink = "Scheduled Tasks";
+  public static String schedulerTickerSink = "Scheduler Ticks";
 
-    public static Topology initTimerTopology(LHConfig config) {
-        Topology topo = new Topology();
-        Serde<LHTimer> timerSerde = new LHSerde<>(LHTimer.class, config);
+  public static String timerSource = "Timer Source";
+  public static String timerProcessor = "Timer Processor";
+  public static String newTimerSink = "New Timer Sink";
+  public static String maturedTimerSink = "Matured Timer Sink";
 
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            timerSerde.close();
-        }));
+  public static Topology initTimerTopology(LHConfig config) {
+    Topology topo = new Topology();
+    Serde<LHTimer> timerSerde = new LHSerde<>(LHTimer.class, config);
 
-        topo.addSource(
-            timerSource,
-            Serdes.String().deserializer(),
-            timerSerde.deserializer(),
-            LHConstants.TIMER_TOPIC_NAME
-        );
+    Runtime
+      .getRuntime()
+      .addShutdownHook(
+        new Thread(() -> {
+          timerSerde.close();
+        })
+      );
 
-        topo.addProcessor(
-            timerProcessor,
-            () -> {return new TimerProcessor();},
-            timerSource
-        );
+    topo.addSource(
+      timerSource,
+      Serdes.String().deserializer(),
+      timerSerde.deserializer(),
+      LHConstants.TIMER_TOPIC_NAME
+    );
 
-        topo.addSink(
-            maturedTimerSink,
-            (key, lhTimer, ctx) -> {
-                return ((LHTimer)lhTimer).topic;
-            },
-            Serdes.String().serializer(),
-            (topic, lhTimer) -> {
-                return ((LHTimer)lhTimer).getPayload(config);
-            },
-            timerProcessor
-        );
+    topo.addProcessor(
+      timerProcessor,
+      () -> {
+        return new TimerProcessor();
+      },
+      timerSource
+    );
 
-        // Add state store
-        StoreBuilder<KeyValueStore<String, LHTimer>> timerStoreBuilder =
-            Stores.keyValueStoreBuilder(
-                Stores.persistentKeyValueStore(LHConstants.TIMER_STORE_NAME),
-                Serdes.String(),
-                timerSerde
-            );
-        topo.addStateStore(timerStoreBuilder, timerProcessor);
+    topo.addSink(
+      maturedTimerSink,
+      (key, lhTimer, ctx) -> {
+        return ((LHTimer) lhTimer).topic;
+      },
+      Serdes.String().serializer(),
+      (topic, lhTimer) -> {
+        return ((LHTimer) lhTimer).getPayload(config);
+      },
+      timerProcessor
+    );
 
-        return topo;
-    }
+    // Add state store
+    StoreBuilder<KeyValueStore<String, LHTimer>> timerStoreBuilder = Stores.keyValueStoreBuilder(
+      Stores.persistentKeyValueStore(LHConstants.TIMER_STORE_NAME),
+      Serdes.String(),
+      timerSerde
+    );
+    topo.addStateStore(timerStoreBuilder, timerProcessor);
 
-    public static Topology initMainTopology(LHConfig config) {
-        Topology topo = new Topology();
+    return topo;
+  }
 
-        addPOSTableSubTopology(topo, WfSpec.class, config);
-        addPOSTableSubTopology(topo, TaskDef.class, config);
-        addGlobalMetaStore(topo, WfSpec.class, config);
-        addGlobalMetaStore(topo, TaskDef.class, config);
+  public static Topology initMainTopology(LHConfig config) {
+    Topology topo = new Topology();
 
-        addIdxSubTopology(topo, config);
+    addPOSTableSubTopology(topo, WfSpec.class, config);
+    addPOSTableSubTopology(topo, TaskDef.class, config);
+    addGlobalMetaStore(topo, WfSpec.class, config);
+    addGlobalMetaStore(topo, TaskDef.class, config);
 
-        addWfRunSubTopology(topo, config);
+    addIdxSubTopology(topo, config);
 
-        addSchedulerTopology(topo, config);
+    addWfRunSubTopology(topo, config);
 
-        return topo;
-    }
+    addSchedulerTopology(topo, config);
 
-    private static void addSchedulerTopology(Topology topo, LHConfig config) {
-        Serde<WfRunEvent> evtSerde = new LHSerde<>(WfRunEvent.class, config);
-        Serde<WfRunState> runSerde = new LHSerde<>(WfRunState.class, config);
-        Serde<WfSpec> specSerde = new LHSerde<>(WfSpec.class, config);
+    return topo;
+  }
 
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            evtSerde.close();
-            runSerde.close();
-            specSerde.close();
-        }));
+  private static void addSchedulerTopology(Topology topo, LHConfig config) {
+    Serde<WfRunEvent> evtSerde = new LHSerde<>(WfRunEvent.class, config);
+    Serde<WfRunState> runSerde = new LHSerde<>(WfRunState.class, config);
+    Serde<WfSpec> specSerde = new LHSerde<>(WfSpec.class, config);
 
-        topo.addSource(
-            schedulerSource,
-            Serdes.String().deserializer(),
-            evtSerde.deserializer(),
-            LHConstants.WF_RUN_EVENT_TOPIC
-        );
+    Runtime
+      .getRuntime()
+      .addShutdownHook(
+        new Thread(() -> {
+          evtSerde.close();
+          runSerde.close();
+          specSerde.close();
+        })
+      );
 
-        topo.addProcessor(
-            schedulerProcessor,
-            () -> {
-                return new SchedulerProcessor(config);
-            },
-            schedulerSource
-        );
+    topo.addSource(
+      schedulerSource,
+      Serdes.String().deserializer(),
+      evtSerde.deserializer(),
+      LHConstants.WF_RUN_EVENT_TOPIC
+    );
 
-        // Add sink for WFRun
-        topo.addSink(
-            schedulerWfRunSink,
-            LHConstants.WF_RUN_OBSERVABILITY_TOPIC,
-            Serdes.String().serializer(),
-            (topic, schedulerOutput) -> {
-                // Serializer
-                return ((SchedulerOutput) schedulerOutput).observabilityEvents.toBytes(config);
-            },
-            schedulerProcessor
-        );
+    topo.addProcessor(
+      schedulerProcessor,
+      () -> {
+        return new SchedulerProcessor(config);
+      },
+      schedulerSource
+    );
 
-        // Add sink for Task Schedule
-        topo.addSink(
-            schedulerTaskSink,
-            (k, v, ctx) -> {
-                // TODO: Eventually, kafka topics may not exactly match with
-                // task def name; or task def name may not match task def id.
-                // May need to look up from task store.
-                return ((SchedulerOutput)v).request.taskDefName;
-            },
-            Serdes.String().serializer(),
-            // Serializer
-            (topic, schedulerOutput) -> {
-                return ((SchedulerOutput) schedulerOutput).request.toBytes(config);
-            },
-            schedulerProcessor
-        );
+    // Add sink for WFRun
+    topo.addSink(
+      schedulerWfRunSink,
+      LHConstants.WF_RUN_OBSERVABILITY_TOPIC,
+      Serdes.String().serializer(),
+      (topic, schedulerOutput) -> {
+        // Serializer
+        return ((SchedulerOutput) schedulerOutput).observabilityEvents.toBytes(
+            config
+          );
+      },
+      schedulerProcessor
+    );
 
-        topo.addSink(
-            newTimerSink,
-            LHConstants.TIMER_TOPIC_NAME,
-            Serdes.String().serializer(),
-            (topic, schedulerOutput) -> {
-                return ((SchedulerOutput) schedulerOutput).timer.toBytes(config);
-            },
-            schedulerProcessor
-        );
+    // Add sink for Task Schedule
+    topo.addSink(
+      schedulerTaskSink,
+      (k, v, ctx) -> {
+        // TODO: Eventually, kafka topics may not exactly match with
+        // task def name; or task def name may not match task def id.
+        // May need to look up from task store.
+        return ((SchedulerOutput) v).request.taskDefName;
+      },
+      Serdes.String().serializer(),
+      // Serializer
+      (topic, schedulerOutput) -> {
+        return ((SchedulerOutput) schedulerOutput).request.toBytes(config);
+      },
+      schedulerProcessor
+    );
 
-        // Add state store
-        StoreBuilder<KeyValueStore<String, WfRunState>> wfRunStoreBuilder =
-            Stores.keyValueStoreBuilder(
-                Stores.persistentKeyValueStore(LHConstants.SCHED_WF_RUN_STORE_NAME),
-                Serdes.String(),
-                runSerde
-            );
-        topo.addStateStore(wfRunStoreBuilder, schedulerProcessor);
-    }
+    topo.addSink(
+      newTimerSink,
+      LHConstants.TIMER_TOPIC_NAME,
+      Serdes.String().serializer(),
+      (topic, schedulerOutput) -> {
+        return ((SchedulerOutput) schedulerOutput).timer.toBytes(config);
+      },
+      schedulerProcessor
+    );
 
-    private static <U extends MessageOrBuilder, T extends POSTable<U>>
-    void addGlobalMetaStore(Topology topology, Class<T> cls, LHConfig config) {
-        String sourceName = POSTable.getGlobalStoreSourceName(cls);
-        String inputTopic = POSTable.getEntityTopicName(cls);
-        String processorName = POSTable.getGlobalStoreProcessorName(cls);
+    // Add state store
+    StoreBuilder<KeyValueStore<String, WfRunState>> wfRunStoreBuilder = Stores.keyValueStoreBuilder(
+      Stores.persistentKeyValueStore(LHConstants.SCHED_WF_RUN_STORE_NAME),
+      Serdes.String(),
+      runSerde
+    );
+    topo.addStateStore(wfRunStoreBuilder, schedulerProcessor);
+  }
 
-        topology.addGlobalStore(
-            Stores.keyValueStoreBuilder(
-                Stores.persistentKeyValueStore(POSTable.getGlobalStoreName(cls)),
-                Serdes.String(),
-                new LHSerde<>(cls, config)
-            ).withLoggingDisabled(),
-            sourceName,
-            Serdes.String().deserializer(),
-            new LHDeserializer<T>(cls, config),
-            inputTopic,
-            processorName,
-            () -> {return new GlobalMetaStoreProcessor<T>(cls);}
-        );
-    }
+  private static <
+    U extends MessageOrBuilder, T extends POSTable<U>
+  > void addGlobalMetaStore(Topology topology, Class<T> cls, LHConfig config) {
+    String sourceName = POSTable.getGlobalStoreSourceName(cls);
+    String inputTopic = POSTable.getEntityTopicName(cls);
+    String processorName = POSTable.getGlobalStoreProcessorName(cls);
 
-    private static void addWfRunSubTopology(Topology topo, LHConfig config) {
-        String wfRunProcessor = "WfRun Processor";
-        String wfRunSource = "WfRun Source";
-        String idxFanoutProcessor = "WfRun Index Fanout Processor";
-        String idxSink = "WfRun Index sink";
+    topology.addGlobalStore(
+      Stores
+        .keyValueStoreBuilder(
+          Stores.persistentKeyValueStore(POSTable.getGlobalStoreName(cls)),
+          Serdes.String(),
+          new LHSerde<>(cls, config)
+        )
+        .withLoggingDisabled(),
+      sourceName,
+      Serdes.String().deserializer(),
+      new LHDeserializer<T>(cls, config),
+      inputTopic,
+      processorName,
+      () -> {
+        return new GlobalMetaStoreProcessor<T>(cls);
+      }
+    );
+  }
 
-        topo.addSource(
-            wfRunSource,
-            Serdes.String().deserializer(),
-            new LHDeserializer<>(ObservabilityEvents.class, config),
-            LHConstants.WF_RUN_OBSERVABILITY_TOPIC
-        );
+  private static void addWfRunSubTopology(Topology topo, LHConfig config) {
+    String wfRunProcessor = "WfRun Processor";
+    String wfRunSource = "WfRun Source";
+    String idxFanoutProcessor = "WfRun Index Fanout Processor";
+    String idxSink = "WfRun Index sink";
 
-        topo.addProcessor(
-            wfRunProcessor,
-            () -> {return new WfRunProcessor(config);},
-            wfRunSource
-        );
+    topo.addSource(
+      wfRunSource,
+      Serdes.String().deserializer(),
+      new LHDeserializer<>(ObservabilityEvents.class, config),
+      LHConstants.WF_RUN_OBSERVABILITY_TOPIC
+    );
 
-        topo.addSink(
-            idxSink,
-            LHConstants.INDEX_TOPIC_NAME,
-            Serdes.String().serializer(),
-            new LHSerializer<IndexEntryAction>(config),
-            idxFanoutProcessor
-        );
+    topo.addProcessor(
+      wfRunProcessor,
+      () -> {
+        return new WfRunProcessor(config);
+      },
+      wfRunSource
+    );
 
-        StoreBuilder<KeyValueStore<String, WfRun>> wfRunStoreBuilder =
-        Stores.keyValueStoreBuilder(
-                Stores.persistentKeyValueStore(
-                    GETable.getBaseStoreName(WfRun.class)
-                ),
-                Serdes.String(),
-                new LHSerde<>(WfRun.class, config)
-            );
-        topo.addStateStore(wfRunStoreBuilder, wfRunProcessor);
+    topo.addSink(
+      idxSink,
+      LHConstants.INDEX_TOPIC_NAME,
+      Serdes.String().serializer(),
+      new LHSerializer<IndexEntryAction>(config),
+      idxFanoutProcessor
+    );
 
-        StoreBuilder<KeyValueStore<String, TaskRun>> taskRunStoreBuilder =
-        Stores.keyValueStoreBuilder(
-                Stores.persistentKeyValueStore(
-                    GETable.getBaseStoreName(TaskRun.class)
-                ),
-                Serdes.String(),
-                new LHSerde<>(TaskRun.class, config)
-            );
-        topo.addStateStore(taskRunStoreBuilder, wfRunProcessor);
+    StoreBuilder<KeyValueStore<String, WfRun>> wfRunStoreBuilder = Stores.keyValueStoreBuilder(
+      Stores.persistentKeyValueStore(GETable.getBaseStoreName(WfRun.class)),
+      Serdes.String(),
+      new LHSerde<>(WfRun.class, config)
+    );
+    topo.addStateStore(wfRunStoreBuilder, wfRunProcessor);
 
-        StoreBuilder<KeyValueStore<String, Tags>> idxStateStoreBuilder =
-        Stores.keyValueStoreBuilder(
-                Stores.persistentKeyValueStore(WfRunIdxStore),
-                Serdes.String(),
-                new LHSerde<>(Tags.class, config)
-            );
-        topo.addStateStore(idxStateStoreBuilder, idxFanoutProcessor);
-    }
+    StoreBuilder<KeyValueStore<String, TaskRun>> taskRunStoreBuilder = Stores.keyValueStoreBuilder(
+      Stores.persistentKeyValueStore(GETable.getBaseStoreName(TaskRun.class)),
+      Serdes.String(),
+      new LHSerde<>(TaskRun.class, config)
+    );
+    topo.addStateStore(taskRunStoreBuilder, wfRunProcessor);
 
-    private static void addIdxSubTopology(Topology topo, LHConfig config) {
-        topo.addSource(
-            "Index Source",
-            Serdes.String().deserializer(),
-            new LHDeserializer<>(IndexEntryAction.class, config),
-            LHConstants.INDEX_TOPIC_NAME
-        );
+    StoreBuilder<KeyValueStore<String, Tags>> idxStateStoreBuilder = Stores.keyValueStoreBuilder(
+      Stores.persistentKeyValueStore(WfRunIdxStore),
+      Serdes.String(),
+      new LHSerde<>(Tags.class, config)
+    );
+    topo.addStateStore(idxStateStoreBuilder, idxFanoutProcessor);
+  }
 
-        topo.addProcessor(
-            "Index Processor",
-            () -> {return new IndexProcessor();},
-            "Index Source"
-        );
+  private static void addIdxSubTopology(Topology topo, LHConfig config) {
+    topo.addSource(
+      "Index Source",
+      Serdes.String().deserializer(),
+      new LHDeserializer<>(IndexEntryAction.class, config),
+      LHConstants.INDEX_TOPIC_NAME
+    );
 
-        StoreBuilder<KeyValueStore<String, Tags>> idxStateStoreBuilder =
-        Stores.keyValueStoreBuilder(
-                Stores.persistentKeyValueStore(LHConstants.INDEX_STORE_NAME),
-                Serdes.String(),
-                new LHSerde<>(Tags.class, config)
-            );
-        topo.addStateStore(idxStateStoreBuilder, "Index Processor");
+    topo.addProcessor(
+      "Index Processor",
+      () -> {
+        return new IndexProcessor();
+      },
+      "Index Source"
+    );
 
-    }
+    StoreBuilder<KeyValueStore<String, Tags>> idxStateStoreBuilder = Stores.keyValueStoreBuilder(
+      Stores.persistentKeyValueStore(LHConstants.INDEX_STORE_NAME),
+      Serdes.String(),
+      new LHSerde<>(Tags.class, config)
+    );
+    topo.addStateStore(idxStateStoreBuilder, "Index Processor");
+  }
 
-    private static <U extends MessageOrBuilder, T extends POSTable<U>>
-    void addPOSTableSubTopology(Topology topo, Class<T> cls, LHConfig config) {
+  private static <
+    U extends MessageOrBuilder, T extends POSTable<U>
+  > void addPOSTableSubTopology(Topology topo, Class<T> cls, LHConfig config) {
+    String sourceName = POSTable.getTopoSourceName(cls);
+    String baseProcessorName = POSTable.getTopoProcessorName(cls);
+    String idxFanoutProcessorName = POSTable.getIdxFanoutProcessorName(cls);
+    String idxSink = POSTable.getIdxSinkName(cls);
+    String entitySink = POSTable.getEntitySinkName(cls);
 
-        String sourceName = POSTable.getTopoSourceName(cls);
-        String baseProcessorName = POSTable.getTopoProcessorName(cls);
-        String idxFanoutProcessorName = POSTable.getIdxFanoutProcessorName(cls);
-        String idxSink = POSTable.getIdxSinkName(cls);
-        String entitySink = POSTable.getEntitySinkName(cls);
+    topo.addSource(
+      sourceName,
+      Serdes.String().deserializer(),
+      new LHDeserializer<POSTableRequest>(POSTableRequest.class, config),
+      POSTable.getRequestTopicName(cls)
+    );
 
-        topo.addSource(
-            sourceName,
-            Serdes.String().deserializer(),
-            new LHDeserializer<POSTableRequest>(POSTableRequest.class, config),
-            POSTable.getRequestTopicName(cls)
-        );
+    topo.addProcessor(
+      baseProcessorName,
+      () -> {
+        return new POSTableProcessor<U, T>(cls, config);
+      },
+      sourceName
+    );
 
-        topo.addProcessor(
-            baseProcessorName,
-            () -> {
-                return new POSTableProcessor<U, T>(cls, config);
-            },
-            sourceName
-        );
+    topo.addSink(
+      entitySink,
+      POSTable.getEntityTopicName(cls),
+      Serdes.String().serializer(),
+      new LHSerializer<T>(config),
+      baseProcessorName
+    );
 
-        topo.addSink(
-            entitySink,
-            POSTable.getEntityTopicName(cls),
-            Serdes.String().serializer(),
-            new LHSerializer<T>(config),
-            baseProcessorName
-        );
+    topo.addProcessor(
+      idxFanoutProcessorName,
+      () -> {
+        return new TaggingProcessor<>(cls, GETable.getTagStoreName(cls));
+      },
+      baseProcessorName
+    );
 
-        topo.addProcessor(
-            idxFanoutProcessorName,
-            () -> {
-                return new TaggingProcessor<>(
-                    cls, GETable.getTagStoreName(cls)
-                );
-            },
-            baseProcessorName
-        );
+    topo.addSink(
+      idxSink,
+      LHConstants.INDEX_TOPIC_NAME,
+      Serdes.String().serializer(),
+      new LHSerializer<IndexEntryAction>(config),
+      idxFanoutProcessorName
+    );
 
-        topo.addSink(
-            idxSink,
-            LHConstants.INDEX_TOPIC_NAME,
-            Serdes.String().serializer(),
-            new LHSerializer<IndexEntryAction>(config),
-            idxFanoutProcessorName
-        );
+    StoreBuilder<KeyValueStore<String, T>> baseStoreBuilder = Stores.keyValueStoreBuilder(
+      Stores.persistentKeyValueStore(POSTable.getBaseStoreName(cls)),
+      Serdes.String(),
+      new LHSerde<>(cls, config)
+    );
+    topo.addStateStore(baseStoreBuilder, baseProcessorName);
 
-        StoreBuilder<KeyValueStore<String, T>> baseStoreBuilder =
-            Stores.keyValueStoreBuilder(
-                Stores.persistentKeyValueStore(POSTable.getBaseStoreName(cls)),
-                Serdes.String(),
-                new LHSerde<>(cls, config)
-            );
-        topo.addStateStore(baseStoreBuilder, baseProcessorName);
+    StoreBuilder<KeyValueStore<String, Tags>> idxStateStoreBuilder = Stores.keyValueStoreBuilder(
+      Stores.persistentKeyValueStore(POSTable.getTagStoreName(cls)),
+      Serdes.String(),
+      new LHSerde<>(Tags.class, config)
+    );
+    topo.addStateStore(idxStateStoreBuilder, idxFanoutProcessorName);
 
-        StoreBuilder<KeyValueStore<String, Tags>> idxStateStoreBuilder =
-            Stores.keyValueStoreBuilder(
-                Stores.persistentKeyValueStore(POSTable.getTagStoreName(cls)),
-                Serdes.String(),
-                new LHSerde<>(Tags.class, config)
-            );
-        topo.addStateStore(idxStateStoreBuilder, idxFanoutProcessorName);
-
-        StoreBuilder<KeyValueStore<String, LHResponse>> responseStoreBuilder = 
-        Stores.keyValueStoreBuilder(
-            Stores.persistentKeyValueStore(POSTable.getResponseStoreName(cls)),
-            Serdes.String(),
-            new LHSerde<LHResponse>(LHResponse.class, config)
-        );
-        topo.addStateStore(responseStoreBuilder, baseProcessorName);
-    }
+    StoreBuilder<KeyValueStore<String, LHResponse>> responseStoreBuilder = Stores.keyValueStoreBuilder(
+      Stores.persistentKeyValueStore(POSTable.getResponseStoreName(cls)),
+      Serdes.String(),
+      new LHSerde<LHResponse>(LHResponse.class, config)
+    );
+    topo.addStateStore(responseStoreBuilder, baseProcessorName);
+  }
 }
 
 // TODO: This results in duplicate storage and processing. Could be merged/replaced with the
 // POSTableProcessor to save space.
 class GlobalMetaStoreProcessor<T extends POSTable<?>>
-implements Processor<String, T, Void, Void> {
-    private KeyValueStore<String, T> store;
-    private Class<T> cls;
+  implements Processor<String, T, Void, Void> {
 
-    public GlobalMetaStoreProcessor(Class<T> cls) {
-        this.cls = cls;
-    }
+  private KeyValueStore<String, T> store;
+  private Class<T> cls;
 
-    @Override
-    public void init(final ProcessorContext<Void, Void> ctx) {
-        this.store = ctx.getStateStore(POSTable.getGlobalStoreName(cls));
-    }
+  public GlobalMetaStoreProcessor(Class<T> cls) {
+    this.cls = cls;
+  }
 
-    @Override
-    public void process(final Record<String, T> record) {
-        T v = record.value();
-        String k = record.key();
-        if (v == null) {
-            LHUtil.log("delete");
-            store.delete(k);
-        } else {
-            LHUtil.log("put");
-            store.put(k, v);
-        }
+  @Override
+  public void init(final ProcessorContext<Void, Void> ctx) {
+    this.store = ctx.getStateStore(POSTable.getGlobalStoreName(cls));
+  }
+
+  @Override
+  public void process(final Record<String, T> record) {
+    T v = record.value();
+    String k = record.key();
+    if (v == null) {
+      LHUtil.log("delete");
+      store.delete(k);
+    } else {
+      LHUtil.log("put");
+      store.put(k, v);
     }
+  }
 }

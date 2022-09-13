@@ -1,6 +1,5 @@
 package io.littlehorse.server.model.scheduler;
 
-import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.event.TaskResultEvent;
@@ -17,299 +16,321 @@ import io.littlehorse.common.model.observability.TaskStartOe;
 import io.littlehorse.common.model.observability.ThreadStatusChangeOe;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.TaskResultCodePb;
-import io.littlehorse.common.proto.wfspec.NodePb.NodeCase;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.common.proto.scheduler.ThreadRunStatePb;
 import io.littlehorse.common.proto.scheduler.ThreadRunStatePbOrBuilder;
 import io.littlehorse.common.proto.scheduler.WfRunEventPb.EventCase;
-
+import io.littlehorse.common.proto.wfspec.NodePb.NodeCase;
+import io.littlehorse.common.util.LHUtil;
+import java.util.Date;
 
 public class ThreadRunState {
-    public String threadSpecName;
-    public LHStatusPb status;
-    public NodeRunState currentNodeRun;
 
-    // Below is just implementation details
-    @JsonIgnore public int threadRunNumber;
+  public String threadSpecName;
+  public LHStatusPb status;
+  public NodeRunState currentNodeRun;
 
-    public ThreadRunStatePb.Builder toProto() {
-        ThreadRunStatePb.Builder b = ThreadRunStatePb.newBuilder()
-            .setThreadSpecName(threadSpecName)
-            .setStatus(status);
+  // Below is just implementation details
+  @JsonIgnore
+  public int threadRunNumber;
 
-        if (currentNodeRun != null) {
-            b.setCurrentNodeRun(currentNodeRun.toProtoBuilder());
-        }
+  public ThreadRunStatePb.Builder toProto() {
+    ThreadRunStatePb.Builder b = ThreadRunStatePb
+      .newBuilder()
+      .setThreadSpecName(threadSpecName)
+      .setStatus(status);
 
-        return b;
+    if (currentNodeRun != null) {
+      b.setCurrentNodeRun(currentNodeRun.toProtoBuilder());
     }
 
-    public static ThreadRunState fromProto(ThreadRunStatePbOrBuilder proto) {
-        ThreadRunState out = new ThreadRunState();
-        out.threadSpecName = proto.getThreadSpecName();
-        out.status = proto.getStatus();
-        if (proto.hasCurrentNodeRun()) {
-            out.currentNodeRun = NodeRunState.fromProto(proto.getCurrentNodeRun());
-        }
-        return out;
+    return b;
+  }
+
+  public static ThreadRunState fromProto(ThreadRunStatePbOrBuilder proto) {
+    ThreadRunState out = new ThreadRunState();
+    out.threadSpecName = proto.getThreadSpecName();
+    out.status = proto.getStatus();
+    if (proto.hasCurrentNodeRun()) {
+      out.currentNodeRun = NodeRunState.fromProto(proto.getCurrentNodeRun());
     }
+    return out;
+  }
 
-    // Implementation details below.
-    @JsonIgnore public WfRunState wfRun;
-    @JsonIgnore private ThreadSpec threadSpec;
+  // Implementation details below.
+  @JsonIgnore
+  public WfRunState wfRun;
 
-    @JsonIgnore public ThreadSpec getThreadSpec() {
-        if (threadSpec == null) {
-            threadSpec = wfRun.wfSpec.threadSpecs.get(threadSpecName);
-        }
-        return threadSpec;
+  @JsonIgnore
+  private ThreadSpec threadSpec;
+
+  @JsonIgnore
+  public ThreadSpec getThreadSpec() {
+    if (threadSpec == null) {
+      threadSpec = wfRun.wfSpec.threadSpecs.get(threadSpecName);
     }
+    return threadSpec;
+  }
 
-    @JsonIgnore public Node getCurrentNode() {
-        if (currentNodeRun == null) {
-            return getThreadSpec().nodes.get(getThreadSpec().entrypointNodeName);
-        } else {
-            return getThreadSpec().nodes.get(currentNodeRun.nodeName);
-        }
+  @JsonIgnore
+  public Node getCurrentNode() {
+    if (currentNodeRun == null) {
+      return getThreadSpec().nodes.get(getThreadSpec().entrypointNodeName);
+    } else {
+      return getThreadSpec().nodes.get(currentNodeRun.nodeName);
     }
+  }
 
-    @JsonIgnore public void advance(Date eventTime) {
-        if (status != LHStatusPb.RUNNING) {
-            if (status == LHStatusPb.HALTED) {
-                // Note, now that we have timers as actual events in the `WFRun_Event` log, this
-                // isn't a Panic-able error. Totally valid. Once we actually do something with the
-                // HALTED state, we need to fix this a bit.
-                throw new RuntimeException("Tried to advance HALTED thread");
-            }
-            if (status == LHStatusPb.HALTING) {
-                status = LHStatusPb.HALTED;
-            }
-            if (status == LHStatusPb.COMPLETED || status == LHStatusPb.ERROR) {
-                if (status == LHStatusPb.ERROR) LHUtil.log(
-                    "YIKERZ", wfRun.id, currentNodeRun.position, eventTime.getTime()
-                );
-                return;
-            }
-            return;
-        }
-
-        Node curNode = getCurrentNode();
-
-        if (currentNodeRun == null) {
-            // activate entrypoint node
-            advanceFrom(curNode);
-        } else if (currentNodeRun.status == LHStatusPb.COMPLETED) {
-            // activate next node
-            advanceFrom(curNode);
-        } else if (currentNodeRun.status == LHStatusPb.ERROR) {
-            // determine whether to retry or fail
-            if (shouldRetry(curNode, currentNodeRun)) {
-                scheduleRetry(curNode, currentNodeRun);
-            } else {
-                LHUtil.log("Timing out", wfRun.id, currentNodeRun.position, eventTime.getTime());
-                setStatus(LHStatusPb.ERROR);
-            }
-        } else if (currentNodeRun.status == LHStatusPb.RUNNING) {
-            // Nothing to do, just wait for next event to come in.
-        } else if (currentNodeRun.status == LHStatusPb.STARTING) {
-            // Nothing to do.
-            // This is possible if we have scheduled a retry due to timeout and then an old
-            // event just came in, or (to be implemented) if an external event comes in, or if
-            // another thread notifies this thread that it's no longer blocked, etc.
-        } else {
-            throw new RuntimeException("Unexpected state for noderun: " + currentNodeRun.status);
-        }
-    }
-
-    private boolean shouldRetry(Node curNode, NodeRunState currNodeRun) {
-        if (curNode.type != NodeCase.TASK) return false;
-
-        return currNodeRun.attemptNumber < curNode.taskNode.retries;
-    }
-
-    private void scheduleRetry(Node curNode, NodeRunState curNodeRun) {
-        scheduleTaskNode(curNode, curNodeRun.attemptNumber + 1);
-    }
-
-    private void advanceFrom(Node curNode) {
-        Node nextNode = null;
-        for (Edge e: curNode.outgoingEdges) {
-            if (evaluateEdge(e)) {
-                nextNode = e.getSinkNode();
-                break;
-            }
-        }
-        if (nextNode == null) {
-            throw new RuntimeException("Not possible to have a node with zero activated edges");
-        }
-
-        activateNode(nextNode);
-    }
-
-    private void activateNode(Node node) {
-        switch (node.type) {
-        case ENTRYPOINT:
-            throw new RuntimeException("Not possible.");
-        case TASK:
-            scheduleTaskNode(node);
-            break;
-        case EXIT:
-            setStatus(LHStatusPb.COMPLETED);
-            break;
-        case NODE_NOT_SET:
-            throw new RuntimeException("Invalid nodetype.");
-        }
-    }
-
-    // TODO: Do some conditional logic processing here.
-    private boolean evaluateEdge(Edge e) {
-        return true;
-    }
-
-    private void scheduleTaskNode(Node node) {
-        scheduleTaskNode(node, 0);
-    }
-
-    private void scheduleTaskNode(Node node, int attemptNumber) {
-        if (node.type != NodeCase.TASK) {
-            throw new RuntimeException("Yikerz");
-        }
-
-        if (currentNodeRun == null) {
-            currentNodeRun = new NodeRunState();
-            if (attemptNumber > 0) {
-                throw new RuntimeException("Not possible.");
-            }
-
-        } else {
-            // Regardless of whether retry or not, actual position in the list increases.
-            currentNodeRun.position++;
-
-            // If we're doing a retry, it's the same logical number, so don't increment.
-            if (attemptNumber == 0) {
-                currentNodeRun.number++;
-            }
-        }
-
-        currentNodeRun.nodeName = node.name;
-        currentNodeRun.attemptNumber = attemptNumber;
-        currentNodeRun.status = LHStatusPb.STARTING;
-
-        TaskScheduleRequest tsr = new TaskScheduleRequest();
-
-        // TODO: Add a TaskDefProcessor.
-        tsr.replyKafkaTopic = LHConstants.WF_RUN_EVENT_TOPIC;
-        tsr.taskDefId = node.taskNode.taskDefName;
-        tsr.taskDefName = node.taskNode.taskDefName;
-        tsr.taskRunNumber = currentNodeRun.number;
-        tsr.taskRunPosition = currentNodeRun.position;
-        tsr.threadRunNumber = threadRunNumber;
-        tsr.wfRunId = wfRun.id;
-        tsr.wfSpecId = wfRun.wfSpecId;
-        tsr.nodeName = node.name;
-
-        wfRun.oEvents.add(new ObservabilityEvent(
-            new TaskScheduledOe(tsr),
-            new Date()
-        ));
-
-        wfRun.tasksToSchedule.add(tsr);
-    }
-
-    public void setStatus(LHStatusPb newStatus) {
-        status = newStatus;
-
-        Date time = new Date();
-        wfRun.oEvents.add(
-            new ObservabilityEvent(
-                new ThreadStatusChangeOe(threadRunNumber, status),
-                time
-            )
+  @JsonIgnore
+  public void advance(Date eventTime) {
+    if (status != LHStatusPb.RUNNING) {
+      if (status == LHStatusPb.HALTED) {
+        // Note, now that we have timers as actual events in the `WFRun_Event` log, this
+        // isn't a Panic-able error. Totally valid. Once we actually do something with the
+        // HALTED state, we need to fix this a bit.
+        throw new RuntimeException("Tried to advance HALTED thread");
+      }
+      if (status == LHStatusPb.HALTING) {
+        status = LHStatusPb.HALTED;
+      }
+      if (status == LHStatusPb.COMPLETED || status == LHStatusPb.ERROR) {
+        if (status == LHStatusPb.ERROR) LHUtil.log(
+          "YIKERZ",
+          wfRun.id,
+          currentNodeRun.position,
+          eventTime.getTime()
         );
-
-        wfRun.handleThreadStatus(threadRunNumber, time, newStatus);
+        return;
+      }
+      return;
     }
 
-    public void processStartedEvent(WfRunEvent we) {
-        wfRun.oEvents.add(
-            new ObservabilityEvent(
-                new TaskStartOe(we.startedEvent, currentNodeRun.nodeName),
-                we.time
-            )
+    Node curNode = getCurrentNode();
+
+    if (currentNodeRun == null) {
+      // activate entrypoint node
+      advanceFrom(curNode);
+    } else if (currentNodeRun.status == LHStatusPb.COMPLETED) {
+      // activate next node
+      advanceFrom(curNode);
+    } else if (currentNodeRun.status == LHStatusPb.ERROR) {
+      // determine whether to retry or fail
+      if (shouldRetry(curNode, currentNodeRun)) {
+        scheduleRetry(curNode, currentNodeRun);
+      } else {
+        LHUtil.log(
+          "Timing out",
+          wfRun.id,
+          currentNodeRun.position,
+          eventTime.getTime()
         );
-        TaskStartedEvent se = we.startedEvent;
+        setStatus(LHStatusPb.ERROR);
+      }
+    } else if (currentNodeRun.status == LHStatusPb.RUNNING) {
+      // Nothing to do, just wait for next event to come in.
+    } else if (currentNodeRun.status == LHStatusPb.STARTING) {
+      // Nothing to do.
+      // This is possible if we have scheduled a retry due to timeout and then an old
+      // event just came in, or (to be implemented) if an external event comes in, or if
+      // another thread notifies this thread that it's no longer blocked, etc.
+    } else {
+      throw new RuntimeException(
+        "Unexpected state for noderun: " + currentNodeRun.status
+      );
+    }
+  }
 
-        if (currentNodeRun.position != se.taskRunPosition) {
-            // Out-of-order event due to race conditions between task worker
-            // transactional producer and regular producer
-            return;
-        }
-        currentNodeRun.status = LHStatusPb.RUNNING;
+  private boolean shouldRetry(Node curNode, NodeRunState currNodeRun) {
+    if (curNode.type != NodeCase.TASK) return false;
 
-        // set timer for TimeOut
-        WfRunEvent timerEvt = new WfRunEvent();
-        timerEvt.wfRunId = wfRun.id;
-        timerEvt.wfSpecId = wfRun.wfSpecId;
-        Node node = getCurrentNode();
+    return currNodeRun.attemptNumber < curNode.taskNode.retries;
+  }
 
-        timerEvt.type = EventCase.TASK_RESULT;
-        timerEvt.taskResult = new TaskResultEvent();
-        timerEvt.taskResult.resultCode = TaskResultCodePb.TIMEOUT;
-        timerEvt.taskResult.taskRunNumber = currentNodeRun.number;
-        timerEvt.taskResult.taskRunPosition = currentNodeRun.position;
-        timerEvt.taskResult.threadRunNumber = threadRunNumber;
-        timerEvt.time = new Date(new Date().getTime() + (1000 * node.taskNode.timeoutSeconds));
-        timerEvt.taskResult.time = timerEvt.time;
+  private void scheduleRetry(Node curNode, NodeRunState curNodeRun) {
+    scheduleTaskNode(curNode, curNodeRun.attemptNumber + 1);
+  }
 
-        wfRun.timersToSchedule.add(new LHTimer(timerEvt, timerEvt.time));
+  private void advanceFrom(Node curNode) {
+    Node nextNode = null;
+    for (Edge e : curNode.outgoingEdges) {
+      if (evaluateEdge(e)) {
+        nextNode = e.getSinkNode();
+        break;
+      }
+    }
+    if (nextNode == null) {
+      throw new RuntimeException(
+        "Not possible to have a node with zero activated edges"
+      );
     }
 
-    public void processCompletedEvent(WfRunEvent we) {
-        wfRun.oEvents.add(new ObservabilityEvent(
-            new TaskResultOe(we.taskResult, currentNodeRun.nodeName),
-            we.time
-        ));
-        TaskResultEvent ce = we.taskResult;
-        if (currentNodeRun.position > ce.taskRunPosition) {
-            // TODO: Determine if this is theoretically impossible.
-            // If it's impossible, throw exception to prevent silent bugs.
+    activateNode(nextNode);
+  }
 
-            // Update 8/25: I think this is legally possible eg when a task gets timed out but
-            // then the event comes in later. Perhaps if the producer retry timeout on the task
-            // worker is longer than the task timeout...
-
-            // default delivery.timeout.ms is 2 minutes.
-            // TODO: As an experiment, see what happens when we reduce that to something less than
-            // the task timeout (which we have at 10 seconds). If our theory is correct, then
-            // we shouldn't get any warnings for stale task timeouts.
-
-            // Also of note is the default `request.timeout.ms` set to 30 seconds. Also greater than
-            // our task timeout.
-            return;
-        }
-
-        if (currentNodeRun.position < ce.taskRunPosition) {
-            throw new RuntimeException("Caught a message from the future!");
-        }
-
-        if (currentNodeRun.number != ce.taskRunNumber) {
-            // Out-of-order event due to race conditions between task worker
-            // transactional producer and regular producer
-            return;
-        }
-
-        switch (ce.resultCode) {
-            case SUCCESS:
-                currentNodeRun.status = LHStatusPb.COMPLETED;
-                break;
-
-            case TIMEOUT:
-            case TASK_FAILURE:
-                currentNodeRun.status = LHStatusPb.ERROR;
-                break;
-
-            case UNRECOGNIZED:
-                throw new RuntimeException("Unrecognized TaskResultCode: " + ce.resultCode);
-        }
+  private void activateNode(Node node) {
+    switch (node.type) {
+      case ENTRYPOINT:
+        throw new RuntimeException("Not possible.");
+      case TASK:
+        scheduleTaskNode(node);
+        break;
+      case EXIT:
+        setStatus(LHStatusPb.COMPLETED);
+        break;
+      case NODE_NOT_SET:
+        throw new RuntimeException("Invalid nodetype.");
     }
+  }
+
+  // TODO: Do some conditional logic processing here.
+  private boolean evaluateEdge(Edge e) {
+    return true;
+  }
+
+  private void scheduleTaskNode(Node node) {
+    scheduleTaskNode(node, 0);
+  }
+
+  private void scheduleTaskNode(Node node, int attemptNumber) {
+    if (node.type != NodeCase.TASK) {
+      throw new RuntimeException("Yikerz");
+    }
+
+    if (currentNodeRun == null) {
+      currentNodeRun = new NodeRunState();
+      if (attemptNumber > 0) {
+        throw new RuntimeException("Not possible.");
+      }
+    } else {
+      // Regardless of whether retry or not, actual position in the list increases.
+      currentNodeRun.position++;
+
+      // If we're doing a retry, it's the same logical number, so don't increment.
+      if (attemptNumber == 0) {
+        currentNodeRun.number++;
+      }
+    }
+
+    currentNodeRun.nodeName = node.name;
+    currentNodeRun.attemptNumber = attemptNumber;
+    currentNodeRun.status = LHStatusPb.STARTING;
+
+    TaskScheduleRequest tsr = new TaskScheduleRequest();
+
+    // TODO: Add a TaskDefProcessor.
+    tsr.replyKafkaTopic = LHConstants.WF_RUN_EVENT_TOPIC;
+    tsr.taskDefId = node.taskNode.taskDefName;
+    tsr.taskDefName = node.taskNode.taskDefName;
+    tsr.taskRunNumber = currentNodeRun.number;
+    tsr.taskRunPosition = currentNodeRun.position;
+    tsr.threadRunNumber = threadRunNumber;
+    tsr.wfRunId = wfRun.id;
+    tsr.wfSpecId = wfRun.wfSpecId;
+    tsr.nodeName = node.name;
+
+    wfRun.oEvents.add(
+      new ObservabilityEvent(new TaskScheduledOe(tsr), new Date())
+    );
+
+    wfRun.tasksToSchedule.add(tsr);
+  }
+
+  public void setStatus(LHStatusPb newStatus) {
+    status = newStatus;
+
+    Date time = new Date();
+    wfRun.oEvents.add(
+      new ObservabilityEvent(
+        new ThreadStatusChangeOe(threadRunNumber, status),
+        time
+      )
+    );
+
+    wfRun.handleThreadStatus(threadRunNumber, time, newStatus);
+  }
+
+  public void processStartedEvent(WfRunEvent we) {
+    wfRun.oEvents.add(
+      new ObservabilityEvent(
+        new TaskStartOe(we.startedEvent, currentNodeRun.nodeName),
+        we.time
+      )
+    );
+    TaskStartedEvent se = we.startedEvent;
+
+    if (currentNodeRun.position != se.taskRunPosition) {
+      // Out-of-order event due to race conditions between task worker
+      // transactional producer and regular producer
+      return;
+    }
+    currentNodeRun.status = LHStatusPb.RUNNING;
+
+    // set timer for TimeOut
+    WfRunEvent timerEvt = new WfRunEvent();
+    timerEvt.wfRunId = wfRun.id;
+    timerEvt.wfSpecId = wfRun.wfSpecId;
+    Node node = getCurrentNode();
+
+    timerEvt.type = EventCase.TASK_RESULT;
+    timerEvt.taskResult = new TaskResultEvent();
+    timerEvt.taskResult.resultCode = TaskResultCodePb.TIMEOUT;
+    timerEvt.taskResult.taskRunNumber = currentNodeRun.number;
+    timerEvt.taskResult.taskRunPosition = currentNodeRun.position;
+    timerEvt.taskResult.threadRunNumber = threadRunNumber;
+    timerEvt.time =
+      new Date(new Date().getTime() + (1000 * node.taskNode.timeoutSeconds));
+    timerEvt.taskResult.time = timerEvt.time;
+
+    wfRun.timersToSchedule.add(new LHTimer(timerEvt, timerEvt.time));
+  }
+
+  public void processCompletedEvent(WfRunEvent we) {
+    wfRun.oEvents.add(
+      new ObservabilityEvent(
+        new TaskResultOe(we.taskResult, currentNodeRun.nodeName),
+        we.time
+      )
+    );
+    TaskResultEvent ce = we.taskResult;
+    if (currentNodeRun.position > ce.taskRunPosition) {
+      // TODO: Determine if this is theoretically impossible.
+      // If it's impossible, throw exception to prevent silent bugs.
+
+      // Update 8/25: I think this is legally possible eg when a task gets timed out but
+      // then the event comes in later. Perhaps if the producer retry timeout on the task
+      // worker is longer than the task timeout...
+
+      // default delivery.timeout.ms is 2 minutes.
+      // TODO: As an experiment, see what happens when we reduce that to something less than
+      // the task timeout (which we have at 10 seconds). If our theory is correct, then
+      // we shouldn't get any warnings for stale task timeouts.
+
+      // Also of note is the default `request.timeout.ms` set to 30 seconds. Also greater than
+      // our task timeout.
+      return;
+    }
+
+    if (currentNodeRun.position < ce.taskRunPosition) {
+      throw new RuntimeException("Caught a message from the future!");
+    }
+
+    if (currentNodeRun.number != ce.taskRunNumber) {
+      // Out-of-order event due to race conditions between task worker
+      // transactional producer and regular producer
+      return;
+    }
+
+    switch (ce.resultCode) {
+      case SUCCESS:
+        currentNodeRun.status = LHStatusPb.COMPLETED;
+        break;
+      case TIMEOUT:
+      case TASK_FAILURE:
+        currentNodeRun.status = LHStatusPb.ERROR;
+        break;
+      case UNRECOGNIZED:
+        throw new RuntimeException(
+          "Unrecognized TaskResultCode: " + ce.resultCode
+        );
+    }
+  }
 }

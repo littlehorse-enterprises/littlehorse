@@ -24,3 +24,5 @@ cloud-test/alembic/versions/*.py
 *requirements.txt*
 *pre-install.sh*
 *pre-launch.sh*
+
+node_modules/

@@ -1,38 +1,39 @@
 package io.littlehorse.server.model.internal;
 
-import java.util.ArrayList;
-import java.util.List;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.server.RangeResponsePb;
 import io.littlehorse.common.proto.server.RangeResponsePbOrBuilder;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RangeResponse extends LHSerializable<RangeResponsePb> {
-    public String token;
-    public List<String> ids;
 
-    public RangeResponse() {
-        ids = new ArrayList<>();
-    }
+  public String token;
+  public List<String> ids;
 
-    public Class<RangeResponsePb> getProtoBaseClass() {
-        return RangeResponsePb.class;
-    }
+  public RangeResponse() {
+    ids = new ArrayList<>();
+  }
 
-    public void initFrom(MessageOrBuilder proto) {
-        RangeResponsePbOrBuilder p = (RangeResponsePbOrBuilder) proto;
-        if (p.hasToken()) token = p.getToken();
-        for (String theId: p.getIdsList()) {
-            ids.add(theId);
-        }
-    }
+  public Class<RangeResponsePb> getProtoBaseClass() {
+    return RangeResponsePb.class;
+  }
 
-    public RangeResponsePb.Builder toProto() {
-        RangeResponsePb.Builder out = RangeResponsePb.newBuilder();
-        for (String id: ids) {
-            out.addIds(id);
-        }
-        if (token != null) out.setToken(token);
-        return out;
+  public void initFrom(MessageOrBuilder proto) {
+    RangeResponsePbOrBuilder p = (RangeResponsePbOrBuilder) proto;
+    if (p.hasToken()) token = p.getToken();
+    for (String theId : p.getIdsList()) {
+      ids.add(theId);
     }
+  }
+
+  public RangeResponsePb.Builder toProto() {
+    RangeResponsePb.Builder out = RangeResponsePb.newBuilder();
+    for (String id : ids) {
+      out.addIds(id);
+    }
+    if (token != null) out.setToken(token);
+    return out;
+  }
 }

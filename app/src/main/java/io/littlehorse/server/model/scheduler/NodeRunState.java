@@ -6,36 +6,39 @@ import io.littlehorse.common.proto.scheduler.NodeRunStatePb;
 import io.littlehorse.common.proto.scheduler.NodeRunStatePbOrBuilder;
 
 public class NodeRunState {
-    public String nodeName;
-    public int attemptNumber;
-    public int position;
-    public int number;
-    public LHStatusPb status;
 
-    public NodeRunState() {}
+  public String nodeName;
+  public int attemptNumber;
+  public int position;
+  public int number;
+  public LHStatusPb status;
 
-    // Below are implementation details
-    @JsonIgnore public ThreadRunState threadRun;
+  public NodeRunState() {}
 
-    public NodeRunStatePb.Builder toProtoBuilder() {
-        NodeRunStatePb.Builder b = NodeRunStatePb.newBuilder()
-            .setNumber(number)
-            .setNodeName(nodeName)
-            .setAttemptNumber(attemptNumber)
-            .setStatus(status)
-            .setNodeName(nodeName)
-            .setPosition(position);
+  // Below are implementation details
+  @JsonIgnore
+  public ThreadRunState threadRun;
 
-        return b;
-    }
+  public NodeRunStatePb.Builder toProtoBuilder() {
+    NodeRunStatePb.Builder b = NodeRunStatePb
+      .newBuilder()
+      .setNumber(number)
+      .setNodeName(nodeName)
+      .setAttemptNumber(attemptNumber)
+      .setStatus(status)
+      .setNodeName(nodeName)
+      .setPosition(position);
 
-    public static NodeRunState fromProto(NodeRunStatePbOrBuilder proto) {
-        NodeRunState out = new NodeRunState();
-        out.number = proto.getNumber();
-        out.nodeName = proto.getNodeName();
-        out.attemptNumber = proto.getAttemptNumber();
-        out.status = proto.getStatus();
-        out.position = proto.getPosition();
-        return out;
-    }
+    return b;
+  }
+
+  public static NodeRunState fromProto(NodeRunStatePbOrBuilder proto) {
+    NodeRunState out = new NodeRunState();
+    out.number = proto.getNumber();
+    out.nodeName = proto.getNodeName();
+    out.attemptNumber = proto.getAttemptNumber();
+    out.status = proto.getStatus();
+    out.position = proto.getPosition();
+    return out;
+  }
 }

@@ -6,33 +6,35 @@ import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.observability.WfRunStatusChangeOePb;
 
 public class WfRunStatusChangeOe extends LHSerializable<WfRunStatusChangeOePb> {
-    public LHStatusPb status;
 
-    public WfRunStatusChangeOePb.Builder toProto() {
-        WfRunStatusChangeOePb.Builder out = WfRunStatusChangeOePb.newBuilder()
-            .setStatus(status);
+  public LHStatusPb status;
 
-        return out;
-    }
+  public WfRunStatusChangeOePb.Builder toProto() {
+    WfRunStatusChangeOePb.Builder out = WfRunStatusChangeOePb
+      .newBuilder()
+      .setStatus(status);
 
-    public Class<WfRunStatusChangeOePb> getProtoBaseClass() {
-        return WfRunStatusChangeOePb.class;
-    }
+    return out;
+  }
 
-    public WfRunStatusChangeOe() {}
+  public Class<WfRunStatusChangeOePb> getProtoBaseClass() {
+    return WfRunStatusChangeOePb.class;
+  }
 
-    public void initFrom(MessageOrBuilder proto) {
-        WfRunStatusChangeOePb p = (WfRunStatusChangeOePb) proto;
-        status = p.getStatus();
-    }
+  public WfRunStatusChangeOe() {}
 
-    public static WfRunStatusChangeOe fromProto(WfRunStatusChangeOePb proto) {
-        WfRunStatusChangeOe out = new WfRunStatusChangeOe();
-        out.initFrom(proto);
-        return out;
-    }
+  public void initFrom(MessageOrBuilder proto) {
+    WfRunStatusChangeOePb p = (WfRunStatusChangeOePb) proto;
+    status = p.getStatus();
+  }
 
-    public WfRunStatusChangeOe(LHStatusPb status) {
-        this.status = status;
-    }
+  public static WfRunStatusChangeOe fromProto(WfRunStatusChangeOePb proto) {
+    WfRunStatusChangeOe out = new WfRunStatusChangeOe();
+    out.initFrom(proto);
+    return out;
+  }
+
+  public WfRunStatusChangeOe(LHStatusPb status) {
+    this.status = status;
+  }
 }

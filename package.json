@@ -1,0 +1,17 @@
+{
+  "name": "api",
+  "version": "0.0.1",
+  "private": true,
+  "devDependencies": {
+    "prettier": "2.5.1",
+    "prettier-plugin-java": "1.6.1"
+  },
+  "engines": {
+    "node": "16.x"
+  },
+  "scripts": {
+    "format": "prettier --write \"{,**/}*.java\"",
+    "check-format": "prettier --check \"{,**/}*.java\"",
+    "lint": "npm run check-format"
+  }
+}

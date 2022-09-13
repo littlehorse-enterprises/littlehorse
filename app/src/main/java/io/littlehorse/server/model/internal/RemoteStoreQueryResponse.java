@@ -8,38 +8,42 @@ import io.littlehorse.common.proto.server.RemoteStoreQueryResponsePb;
 import io.littlehorse.common.proto.server.RemoteStoreQueryResponsePbOrBuilder;
 import io.littlehorse.common.proto.server.RemoteStoreQueryStatusPb;
 
-public class RemoteStoreQueryResponse extends LHSerializable<RemoteStoreQueryResponsePb> {
-    public RemoteStoreQueryStatusPb code;
-    public byte[] result;
-    public long approximateLag;
+public class RemoteStoreQueryResponse
+  extends LHSerializable<RemoteStoreQueryResponsePb> {
 
-    public Class<RemoteStoreQueryResponsePb> getProtoBaseClass() {
-        return RemoteStoreQueryResponsePb.class;
+  public RemoteStoreQueryStatusPb code;
+  public byte[] result;
+  public long approximateLag;
+
+  public Class<RemoteStoreQueryResponsePb> getProtoBaseClass() {
+    return RemoteStoreQueryResponsePb.class;
+  }
+
+  public void initFrom(MessageOrBuilder proto) {
+    RemoteStoreQueryResponsePbOrBuilder p = (RemoteStoreQueryResponsePbOrBuilder) proto;
+    code = p.getCode();
+    if (p.hasResult()) result = p.getResult().toByteArray();
+    approximateLag = p.getApproximateLag();
+  }
+
+  public RemoteStoreQueryResponsePb.Builder toProto() {
+    RemoteStoreQueryResponsePb.Builder out = RemoteStoreQueryResponsePb
+      .newBuilder()
+      .setApproximateLag(approximateLag)
+      .setCode(code);
+
+    if (result != null) {
+      out.setResult(ByteString.copyFrom(result));
     }
 
-    public void initFrom(MessageOrBuilder proto)  {
-        RemoteStoreQueryResponsePbOrBuilder p = (RemoteStoreQueryResponsePbOrBuilder) proto;
-        code = p.getCode();
-        if (p.hasResult()) result = p.getResult().toByteArray();
-        approximateLag = p.getApproximateLag();
-    }
+    return out;
+  }
 
-    public RemoteStoreQueryResponsePb.Builder toProto() {
-        RemoteStoreQueryResponsePb.Builder out = RemoteStoreQueryResponsePb.newBuilder()
-            .setApproximateLag(approximateLag)
-            .setCode(code);
-
-        if (result != null) {
-            out.setResult(ByteString.copyFrom(result));
-        }
-
-        return out;
-    }
-
-    @JsonIgnore public boolean isValid() {
-        return (
-            code == RemoteStoreQueryStatusPb.RSQ_OK
-            || code == RemoteStoreQueryStatusPb.RSQ_NOT_FOUND
-        );
-    }
+  @JsonIgnore
+  public boolean isValid() {
+    return (
+      code == RemoteStoreQueryStatusPb.RSQ_OK ||
+      code == RemoteStoreQueryStatusPb.RSQ_NOT_FOUND
+    );
+  }
 }
