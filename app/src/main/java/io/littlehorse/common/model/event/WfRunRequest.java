@@ -45,9 +45,7 @@ public class WfRunRequest extends LHSerializable<WfRunRequestPb> {
     }
     wfSpecId = proto.getWfSpecId();
 
-    for (Map.Entry<String, VariableValuePb> e : proto
-      .getVariablesMap()
-      .entrySet()) {
+    for (Map.Entry<String, VariableValuePb> e : proto.getVariablesMap().entrySet()) {
       variables.put(e.getKey(), VariableValue.fromProto(e.getValue()));
     }
   }

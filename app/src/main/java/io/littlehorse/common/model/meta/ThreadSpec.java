@@ -60,9 +60,7 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
       }
     }
 
-    for (Map.Entry<String, VariableDefPb> p : proto
-      .getVariableDefsMap()
-      .entrySet()) {
+    for (Map.Entry<String, VariableDefPb> p : proto.getVariableDefsMap().entrySet()) {
       VariableDef v = new VariableDef();
       v.initFrom(p.getValue());
       v.name = p.getKey();

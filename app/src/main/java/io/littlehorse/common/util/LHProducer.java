@@ -30,11 +30,7 @@ public class LHProducer implements Closeable {
     this.config = config;
   }
 
-  public Future<RecordMetadata> send(
-    String key,
-    LHSerializable<?> t,
-    String topic
-  ) {
+  public Future<RecordMetadata> send(String key, LHSerializable<?> t, String topic) {
     return send(new ProducerRecord<>(topic, key, new Bytes(t.toBytes(config))));
   }
 

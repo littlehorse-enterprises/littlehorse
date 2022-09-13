@@ -29,8 +29,7 @@ public class Tag extends LHSerializable<TagPb> {
   @SafeVarargs
   @SuppressWarnings("unchecked")
   public Tag(GETable<?> getable, Pair<String, String>... atts) {
-    this.type =
-      GETable.getTypeEnum((Class<? extends GETable<?>>) getable.getClass());
+    this.type = GETable.getTypeEnum((Class<? extends GETable<?>>) getable.getClass());
     createdAt = getable.getCreatedAt();
     resultObjectId = getable.getObjectId();
 

@@ -95,4 +95,19 @@ public interface ThreadRunPbOrBuilder extends
    * <code>.google.protobuf.Timestamp end_time = 8;</code>
    */
   com.google.protobuf.TimestampOrBuilder getEndTimeOrBuilder();
+
+  /**
+   * <code>.lh_proto.NodeRunStatePb current_node_run = 9;</code>
+   * @return Whether the currentNodeRun field is set.
+   */
+  boolean hasCurrentNodeRun();
+  /**
+   * <code>.lh_proto.NodeRunStatePb current_node_run = 9;</code>
+   * @return The currentNodeRun.
+   */
+  io.littlehorse.common.proto.NodeRunStatePb getCurrentNodeRun();
+  /**
+   * <code>.lh_proto.NodeRunStatePb current_node_run = 9;</code>
+   */
+  io.littlehorse.common.proto.NodeRunStatePbOrBuilder getCurrentNodeRunOrBuilder();
 }

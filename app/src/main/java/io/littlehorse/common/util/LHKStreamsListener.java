@@ -81,16 +81,11 @@ public class LHKStreamsListener implements StateRestoreListener, StateListener {
     try {
       lock.lock();
       boolean shouldDelete = true;
-      KstreamRestore restore = getRestore(
-        topicPartition,
-        storeName,
-        shouldDelete
-      );
+      KstreamRestore restore = getRestore(topicPartition, storeName, shouldDelete);
 
       restore.end = new Date();
       restore.recordsProcessed = totalRestored;
-      long secondsTaken =
-        (restore.end.getTime() - restore.start.getTime()) / 1000;
+      long secondsTaken = (restore.end.getTime() - restore.start.getTime()) / 1000;
 
       if (secondsTaken > longestRestoreSeconds) {
         longestRestoreSeconds = secondsTaken;
@@ -196,9 +191,7 @@ public class LHKStreamsListener implements StateRestoreListener, StateListener {
     }
 
     public static String getId(TopicPartition topicPart, String storeName) {
-      return (
-        topicPart.topic() + "__" + topicPart.partition() + "__" + storeName
-      );
+      return (topicPart.topic() + "__" + topicPart.partition() + "__" + storeName);
     }
 
     public void addRecords(long howMany) {

@@ -42,11 +42,7 @@ public class TaskRun extends GETable<TaskRunPb> {
     return TaskRun.getStoreKey(wfRunId, threadRunNumber, position);
   }
 
-  public static String getStoreKey(
-    String wfRunId,
-    int threadNum,
-    int position
-  ) {
+  public static String getStoreKey(String wfRunId, int threadNum, int position) {
     return wfRunId + "-" + threadNum + "-" + position;
   }
 

@@ -64,10 +64,7 @@ public class LHApiClient {
   }
 
   public TaskDef getTaskDef(String idOrName) throws LHConnectionError {
-    byte[] response = client.getResponseAsBytes(
-      apiHost,
-      "/TaskDef/" + idOrName
-    );
+    byte[] response = client.getResponseAsBytes(apiHost, "/TaskDef/" + idOrName);
     if (response == null) return null;
 
     LHResponse resp;

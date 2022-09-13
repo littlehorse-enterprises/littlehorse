@@ -6,8 +6,7 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.util.LHUtil;
 import org.apache.kafka.common.serialization.Deserializer;
 
-public class LHDeserializer<T extends LHSerializable<?>>
-  implements Deserializer<T> {
+public class LHDeserializer<T extends LHSerializable<?>> implements Deserializer<T> {
 
   private Class<T> cls;
   private LHConfig config;

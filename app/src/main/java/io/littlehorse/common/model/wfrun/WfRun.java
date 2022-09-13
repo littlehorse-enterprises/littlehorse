@@ -40,6 +40,7 @@ public class WfRun extends GETable<WfRunPb> {
 
   public WfRun() {
     threadRuns = new ArrayList<>();
+    oEvents = new ObservabilityEvents();
   }
 
   @JsonIgnore
@@ -61,8 +62,12 @@ public class WfRun extends GETable<WfRunPb> {
     }
 
     for (ThreadRunPb trpb : proto.getThreadRunsList()) {
-      threadRuns.add(ThreadRun.fromProto(trpb));
+      ThreadRun thr = ThreadRun.fromProto(trpb);
+      thr.wfRun = this;
+      threadRuns.add(thr);
     }
+
+    oEvents.wfRunId = id;
   }
 
   @JsonIgnore
@@ -152,9 +157,16 @@ public class WfRun extends GETable<WfRunPb> {
     );
 
     ThreadRun thread = new ThreadRun();
-    thread.threadSpecName = threadName;
-    thread.status = LHStatusPb.RUNNING;
+    thread.wfRunId = id;
     thread.number = threadRuns.size();
+
+    thread.status = LHStatusPb.RUNNING;
+    thread.wfSpecId = wfSpecId;
+    thread.threadSpecName = threadName;
+    thread.numSteps = 0;
+
+    thread.startTime = new Date();
+
     thread.wfRun = this;
     threadRuns.add(thread);
 
@@ -205,15 +217,11 @@ public class WfRun extends GETable<WfRunPb> {
       endTime = time;
       status = LHStatusPb.COMPLETED;
 
-      oEvents.add(
-        new ObservabilityEvent(new WfRunStatusChangeOe(status), time)
-      );
+      oEvents.add(new ObservabilityEvent(new WfRunStatusChangeOe(status), time));
     } else if (newStatus == LHStatusPb.ERROR) {
       endTime = time;
       status = LHStatusPb.ERROR;
-      oEvents.add(
-        new ObservabilityEvent(new WfRunStatusChangeOe(status), time)
-      );
+      oEvents.add(new ObservabilityEvent(new WfRunStatusChangeOe(status), time));
     }
     // TODO: when there are multiple threads, we need to think about what happens when one thread
     // fails and others are still alive.

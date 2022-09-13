@@ -41,32 +41,24 @@ public class LHConfig {
 
   public short getReplicationFactor() {
     return Short.valueOf(
-      String.class.cast(
-          props.getOrDefault(LHConstants.REPLICATION_FACTOR_KEY, "1")
-        )
+      String.class.cast(props.getOrDefault(LHConstants.REPLICATION_FACTOR_KEY, "1"))
     );
   }
 
   public int getTaskPartitions() {
     return Integer.valueOf(
-      String.class.cast(
-          props.getOrDefault(LHConstants.TASK_PARTITIONS_KEY, "12")
-        )
+      String.class.cast(props.getOrDefault(LHConstants.TASK_PARTITIONS_KEY, "12"))
     );
   }
 
   public int getClusterPartitions() {
     return Integer.valueOf(
-      String.class.cast(
-          props.getOrDefault(LHConstants.CLUSTER_PARTITIONS_KEY, "72")
-        )
+      String.class.cast(props.getOrDefault(LHConstants.CLUSTER_PARTITIONS_KEY, "72"))
     );
   }
 
   public int getWorkerThreads() {
-    return Integer.valueOf(
-      getOrSetDefault(LHConstants.NUM_WORKER_THREADS_KEY, "128")
-    );
+    return Integer.valueOf(getOrSetDefault(LHConstants.NUM_WORKER_THREADS_KEY, "128"));
   }
 
   public String getKafkaGroupId(String component) {
@@ -74,17 +66,11 @@ public class LHConfig {
   }
 
   public String getKafkaGroupId() {
-    return getOrSetDefault(
-      LHConstants.KAFKA_GROUP_ID_KEY,
-      "unset-group-id-bad"
-    );
+    return getOrSetDefault(LHConstants.KAFKA_GROUP_ID_KEY, "unset-group-id-bad");
   }
 
   public String getKafkaInstanceId() {
-    return getOrSetDefault(
-      LHConstants.KAFKA_GROUP_IID_KEY,
-      "Unset-group-iid-bad"
-    );
+    return getOrSetDefault(LHConstants.KAFKA_GROUP_IID_KEY, "Unset-group-iid-bad");
   }
 
   public String getStateDirectory() {
@@ -109,15 +95,11 @@ public class LHConfig {
   }
 
   public int getAdvertisedPort() {
-    return Integer.valueOf(
-      getOrSetDefault(LHConstants.ADVERTISED_PORT_KEY, "5000")
-    );
+    return Integer.valueOf(getOrSetDefault(LHConstants.ADVERTISED_PORT_KEY, "5000"));
   }
 
   public int getExposedPort() {
-    return Integer.valueOf(
-      getOrSetDefault(LHConstants.EXPOSED_PORT_KEY, "5000")
-    );
+    return Integer.valueOf(getOrSetDefault(LHConstants.EXPOSED_PORT_KEY, "5000"));
   }
 
   public HostInfo getHostInfo() {
@@ -139,9 +121,7 @@ public class LHConfig {
   public int getApiPort() {
     // return Integer.valueOf(getOrSetDefault(LHConstants.API_PORT_KEY, "5000"));
 
-    return Integer.valueOf(
-      getOrSetDefault(LHConstants.EXPOSED_PORT_KEY, "5000")
-    );
+    return Integer.valueOf(getOrSetDefault(LHConstants.EXPOSED_PORT_KEY, "5000"));
   }
 
   public void cleanup() {
@@ -236,28 +216,16 @@ public class LHConfig {
       StreamsConfig.APPLICATION_SERVER_CONFIG,
       this.getAdvertisedHost() + ":" + this.getAdvertisedPort()
     );
-    props.put(
-      StreamsConfig.APPLICATION_ID_CONFIG,
-      this.getKafkaGroupId(component)
-    );
-    props.put(
-      ConsumerConfig.GROUP_INSTANCE_ID_CONFIG,
-      this.getKafkaInstanceId()
-    );
-    props.put(
-      StreamsConfig.BOOTSTRAP_SERVERS_CONFIG,
-      this.getBootstrapServers()
-    );
+    props.put(StreamsConfig.APPLICATION_ID_CONFIG, this.getKafkaGroupId(component));
+    props.put(ConsumerConfig.GROUP_INSTANCE_ID_CONFIG, this.getKafkaInstanceId());
+    props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, this.getBootstrapServers());
     props.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
     props.put(StreamsConfig.STATE_DIR_CONFIG, this.getStateDirectory());
     props.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, "exactly_once_v2");
     props.put(StreamsConfig.TOPOLOGY_OPTIMIZATION_CONFIG, "all");
     props.put(StreamsConfig.REQUEST_TIMEOUT_MS_CONFIG, 30000);
     props.put(StreamsConfig.producerPrefix(ProducerConfig.ACKS_CONFIG), "all");
-    props.put(
-      StreamsConfig.REPLICATION_FACTOR_CONFIG,
-      (int) getReplicationFactor()
-    );
+    props.put(StreamsConfig.REPLICATION_FACTOR_CONFIG, (int) getReplicationFactor());
     props.put(
       StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG,
       org.apache.kafka.streams.errors.LogAndContinueExceptionHandler.class
@@ -284,18 +252,12 @@ public class LHConfig {
       StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG,
       Serdes.StringSerde.class.getName()
     );
-    props.put(
-      StreamsConfig.NUM_STANDBY_REPLICAS_CONFIG,
-      this.getStandbyReplicas()
-    );
+    props.put(StreamsConfig.NUM_STANDBY_REPLICAS_CONFIG, this.getStandbyReplicas());
     props.put(
       StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG,
       Serdes.StringSerde.class.getName()
     );
-    props.put(
-      StreamsConfig.COMMIT_INTERVAL_MS_CONFIG,
-      getStreamsCommitInterval()
-    );
+    props.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, getStreamsCommitInterval());
     props.put(StreamsConfig.RACK_AWARE_ASSIGNMENT_TAGS_CONFIG, "rack");
     props.put(StreamsConfig.CLIENT_TAG_PREFIX + "rack", getRackId());
 
@@ -307,35 +269,25 @@ public class LHConfig {
   }
 
   public int getStreamsCommitInterval() {
-    return Integer.valueOf(
-      getOrSetDefault(LHConstants.COMMIT_INTERVAL_KEY, "50")
-    );
+    return Integer.valueOf(getOrSetDefault(LHConstants.COMMIT_INTERVAL_KEY, "50"));
   }
 
   public int getDefaultTaskTimeout() {
-    return Integer.valueOf(
-      getOrSetDefault(LHConstants.DEFAULT_TIMEOUT_KEY, "10")
-    );
+    return Integer.valueOf(getOrSetDefault(LHConstants.DEFAULT_TIMEOUT_KEY, "10"));
   }
 
   public int getStandbyReplicas() {
-    return Integer.valueOf(
-      getOrSetDefault(LHConstants.NUM_STANDBY_REPLICAS_KEY, "0")
-    );
+    return Integer.valueOf(getOrSetDefault(LHConstants.NUM_STANDBY_REPLICAS_KEY, "0"));
   }
 
   public void createKafkaTopic(NewTopic topic)
     throws InterruptedException, ExecutionException {
-    CreateTopicsResult result = kafkaAdmin.createTopics(
-      Collections.singleton(topic)
-    );
+    CreateTopicsResult result = kafkaAdmin.createTopics(Collections.singleton(topic));
     KafkaFuture<Void> future = result.values().get(topic.name());
     try {
       future.get();
     } catch (Exception e) {
-      if (
-        e.getCause() != null && e.getCause() instanceof TopicExistsException
-      ) {
+      if (e.getCause() != null && e.getCause() instanceof TopicExistsException) {
         LHUtil.log("Topic " + topic.name() + " already exists.");
       } else {
         throw e;
@@ -435,9 +387,7 @@ public class LHConfig {
     app.get(
       "/diskUsage",
       ctx -> {
-        Long size = FileUtils.sizeOfDirectory(
-          FileUtils.getFile(getStateDirectory())
-        );
+        Long size = FileUtils.sizeOfDirectory(FileUtils.getFile(getStateDirectory()));
         ctx.result(size.toString());
       }
     );

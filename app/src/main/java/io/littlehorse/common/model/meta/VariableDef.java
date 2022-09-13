@@ -26,8 +26,7 @@ public class VariableDef extends LHSerializable<VariableDefPb> {
 
   public void initFrom(MessageOrBuilder proto) {
     VariableDefPbOrBuilder p = (VariableDefPbOrBuilder) proto;
-    if (p.hasDefaultVal()) defaultValue =
-      VariableValue.fromProto(p.getDefaultVal());
+    if (p.hasDefaultVal()) defaultValue = VariableValue.fromProto(p.getDefaultVal());
     type = p.getType();
     required = p.getRequired();
   }

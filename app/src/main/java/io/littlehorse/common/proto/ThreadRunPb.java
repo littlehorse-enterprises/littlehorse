@@ -113,6 +113,19 @@ private static final long serialVersionUID = 0L;
             bitField0_ |= 0x00000001;
             break;
           }
+          case 74: {
+            io.littlehorse.common.proto.NodeRunStatePb.Builder subBuilder = null;
+            if (currentNodeRun_ != null) {
+              subBuilder = currentNodeRun_.toBuilder();
+            }
+            currentNodeRun_ = input.readMessage(io.littlehorse.common.proto.NodeRunStatePb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom(currentNodeRun_);
+              currentNodeRun_ = subBuilder.buildPartial();
+            }
+
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -353,6 +366,32 @@ private static final long serialVersionUID = 0L;
     return endTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : endTime_;
   }
 
+  public static final int CURRENT_NODE_RUN_FIELD_NUMBER = 9;
+  private io.littlehorse.common.proto.NodeRunStatePb currentNodeRun_;
+  /**
+   * <code>.lh_proto.NodeRunStatePb current_node_run = 9;</code>
+   * @return Whether the currentNodeRun field is set.
+   */
+  @java.lang.Override
+  public boolean hasCurrentNodeRun() {
+    return currentNodeRun_ != null;
+  }
+  /**
+   * <code>.lh_proto.NodeRunStatePb current_node_run = 9;</code>
+   * @return The currentNodeRun.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.NodeRunStatePb getCurrentNodeRun() {
+    return currentNodeRun_ == null ? io.littlehorse.common.proto.NodeRunStatePb.getDefaultInstance() : currentNodeRun_;
+  }
+  /**
+   * <code>.lh_proto.NodeRunStatePb current_node_run = 9;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.NodeRunStatePbOrBuilder getCurrentNodeRunOrBuilder() {
+    return getCurrentNodeRun();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -390,6 +429,9 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(8, getEndTime());
+    }
+    if (currentNodeRun_ != null) {
+      output.writeMessage(9, getCurrentNodeRun());
     }
     unknownFields.writeTo(output);
   }
@@ -429,6 +471,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(8, getEndTime());
     }
+    if (currentNodeRun_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(9, getCurrentNodeRun());
+    }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
@@ -465,6 +511,11 @@ private static final long serialVersionUID = 0L;
       if (!getEndTime()
           .equals(other.getEndTime())) return false;
     }
+    if (hasCurrentNodeRun() != other.hasCurrentNodeRun()) return false;
+    if (hasCurrentNodeRun()) {
+      if (!getCurrentNodeRun()
+          .equals(other.getCurrentNodeRun())) return false;
+    }
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -495,6 +546,10 @@ private static final long serialVersionUID = 0L;
     if (hasEndTime()) {
       hash = (37 * hash) + END_TIME_FIELD_NUMBER;
       hash = (53 * hash) + getEndTime().hashCode();
+    }
+    if (hasCurrentNodeRun()) {
+      hash = (37 * hash) + CURRENT_NODE_RUN_FIELD_NUMBER;
+      hash = (53 * hash) + getCurrentNodeRun().hashCode();
     }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
@@ -654,6 +709,12 @@ private static final long serialVersionUID = 0L;
         endTimeBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000001);
+      if (currentNodeRunBuilder_ == null) {
+        currentNodeRun_ = null;
+      } else {
+        currentNodeRun_ = null;
+        currentNodeRunBuilder_ = null;
+      }
       return this;
     }
 
@@ -700,6 +761,11 @@ private static final long serialVersionUID = 0L;
           result.endTime_ = endTimeBuilder_.build();
         }
         to_bitField0_ |= 0x00000001;
+      }
+      if (currentNodeRunBuilder_ == null) {
+        result.currentNodeRun_ = currentNodeRun_;
+      } else {
+        result.currentNodeRun_ = currentNodeRunBuilder_.build();
       }
       result.bitField0_ = to_bitField0_;
       onBuilt();
@@ -776,6 +842,9 @@ private static final long serialVersionUID = 0L;
       }
       if (other.hasEndTime()) {
         mergeEndTime(other.getEndTime());
+      }
+      if (other.hasCurrentNodeRun()) {
+        mergeCurrentNodeRun(other.getCurrentNodeRun());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -1388,6 +1457,125 @@ private static final long serialVersionUID = 0L;
         endTime_ = null;
       }
       return endTimeBuilder_;
+    }
+
+    private io.littlehorse.common.proto.NodeRunStatePb currentNodeRun_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.NodeRunStatePb, io.littlehorse.common.proto.NodeRunStatePb.Builder, io.littlehorse.common.proto.NodeRunStatePbOrBuilder> currentNodeRunBuilder_;
+    /**
+     * <code>.lh_proto.NodeRunStatePb current_node_run = 9;</code>
+     * @return Whether the currentNodeRun field is set.
+     */
+    public boolean hasCurrentNodeRun() {
+      return currentNodeRunBuilder_ != null || currentNodeRun_ != null;
+    }
+    /**
+     * <code>.lh_proto.NodeRunStatePb current_node_run = 9;</code>
+     * @return The currentNodeRun.
+     */
+    public io.littlehorse.common.proto.NodeRunStatePb getCurrentNodeRun() {
+      if (currentNodeRunBuilder_ == null) {
+        return currentNodeRun_ == null ? io.littlehorse.common.proto.NodeRunStatePb.getDefaultInstance() : currentNodeRun_;
+      } else {
+        return currentNodeRunBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.lh_proto.NodeRunStatePb current_node_run = 9;</code>
+     */
+    public Builder setCurrentNodeRun(io.littlehorse.common.proto.NodeRunStatePb value) {
+      if (currentNodeRunBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        currentNodeRun_ = value;
+        onChanged();
+      } else {
+        currentNodeRunBuilder_.setMessage(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.lh_proto.NodeRunStatePb current_node_run = 9;</code>
+     */
+    public Builder setCurrentNodeRun(
+        io.littlehorse.common.proto.NodeRunStatePb.Builder builderForValue) {
+      if (currentNodeRunBuilder_ == null) {
+        currentNodeRun_ = builderForValue.build();
+        onChanged();
+      } else {
+        currentNodeRunBuilder_.setMessage(builderForValue.build());
+      }
+
+      return this;
+    }
+    /**
+     * <code>.lh_proto.NodeRunStatePb current_node_run = 9;</code>
+     */
+    public Builder mergeCurrentNodeRun(io.littlehorse.common.proto.NodeRunStatePb value) {
+      if (currentNodeRunBuilder_ == null) {
+        if (currentNodeRun_ != null) {
+          currentNodeRun_ =
+            io.littlehorse.common.proto.NodeRunStatePb.newBuilder(currentNodeRun_).mergeFrom(value).buildPartial();
+        } else {
+          currentNodeRun_ = value;
+        }
+        onChanged();
+      } else {
+        currentNodeRunBuilder_.mergeFrom(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.lh_proto.NodeRunStatePb current_node_run = 9;</code>
+     */
+    public Builder clearCurrentNodeRun() {
+      if (currentNodeRunBuilder_ == null) {
+        currentNodeRun_ = null;
+        onChanged();
+      } else {
+        currentNodeRun_ = null;
+        currentNodeRunBuilder_ = null;
+      }
+
+      return this;
+    }
+    /**
+     * <code>.lh_proto.NodeRunStatePb current_node_run = 9;</code>
+     */
+    public io.littlehorse.common.proto.NodeRunStatePb.Builder getCurrentNodeRunBuilder() {
+      
+      onChanged();
+      return getCurrentNodeRunFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.NodeRunStatePb current_node_run = 9;</code>
+     */
+    public io.littlehorse.common.proto.NodeRunStatePbOrBuilder getCurrentNodeRunOrBuilder() {
+      if (currentNodeRunBuilder_ != null) {
+        return currentNodeRunBuilder_.getMessageOrBuilder();
+      } else {
+        return currentNodeRun_ == null ?
+            io.littlehorse.common.proto.NodeRunStatePb.getDefaultInstance() : currentNodeRun_;
+      }
+    }
+    /**
+     * <code>.lh_proto.NodeRunStatePb current_node_run = 9;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.NodeRunStatePb, io.littlehorse.common.proto.NodeRunStatePb.Builder, io.littlehorse.common.proto.NodeRunStatePbOrBuilder> 
+        getCurrentNodeRunFieldBuilder() {
+      if (currentNodeRunBuilder_ == null) {
+        currentNodeRunBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.NodeRunStatePb, io.littlehorse.common.proto.NodeRunStatePb.Builder, io.littlehorse.common.proto.NodeRunStatePbOrBuilder>(
+                getCurrentNodeRun(),
+                getParentForChildren(),
+                isClean());
+        currentNodeRun_ = null;
+      }
+      return currentNodeRunBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

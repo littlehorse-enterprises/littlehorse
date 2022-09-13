@@ -49,9 +49,7 @@ public class TestWorker {
     this.txnProd = config.getTxnProducer();
     this.cons =
       config.getKafkaConsumer(
-        Arrays.asList(
-          System.getenv().getOrDefault("LHORSE_TASK_DEF_ID", "task1")
-        )
+        Arrays.asList(System.getenv().getOrDefault("LHORSE_TASK_DEF_ID", "task1"))
       );
     this.config = config;
     this.threadPool = Executors.newFixedThreadPool(config.getWorkerThreads());
@@ -104,11 +102,7 @@ public class TestWorker {
     TaskScheduleRequest tsr;
     try {
       tsr =
-        LHSerializable.fromBytes(
-          r.value().get(),
-          TaskScheduleRequest.class,
-          config
-        );
+        LHSerializable.fromBytes(r.value().get(), TaskScheduleRequest.class, config);
     } catch (LHSerdeError exn) {
       // TODO: in production LittleHorse, we may want to throw some sort of
       // error back to the scheduler.

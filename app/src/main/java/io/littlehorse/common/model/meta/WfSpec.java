@@ -98,9 +98,7 @@ public class WfSpec extends POSTable<WfSpecPbOrBuilder> {
     name = proto.getName();
     lastOffset = proto.getLastUpdatedOffset();
 
-    for (Map.Entry<String, ThreadSpecPb> e : proto
-      .getThreadSpecsMap()
-      .entrySet()) {
+    for (Map.Entry<String, ThreadSpecPb> e : proto.getThreadSpecsMap().entrySet()) {
       ThreadSpec ts = new ThreadSpec();
       ts.wfSpec = this;
       ts.name = e.getKey();
@@ -159,11 +157,7 @@ public class WfSpec extends POSTable<WfSpecPbOrBuilder> {
     HashSet<String> seenThreads = new HashSet<String>();
     HashMap<String, String> visibleVariables = new HashMap<>();
     // This will get tricky with interrupts, but...
-    validateVariablesHelper(
-      seenThreads,
-      visibleVariables,
-      this.entrypointThreadName
-    );
+    validateVariablesHelper(seenThreads, visibleVariables, this.entrypointThreadName);
   }
 
   @JsonIgnore

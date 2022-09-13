@@ -19,10 +19,7 @@ public abstract class LHSerializable<T extends MessageOrBuilder> {
 
   public String toJson() {
     try {
-      return JsonFormat
-        .printer()
-        .includingDefaultValueFields()
-        .print(toProto());
+      return JsonFormat.printer().includingDefaultValueFields().print(toProto());
     } catch (InvalidProtocolBufferException exn) {
       throw new RuntimeException(exn);
     }
@@ -53,17 +50,11 @@ public abstract class LHSerializable<T extends MessageOrBuilder> {
       return out;
     } catch (Exception exn) {
       exn.printStackTrace();
-      throw new LHSerdeError(
-        exn,
-        "unable to process bytes for " + cls.getName()
-      );
+      throw new LHSerdeError(exn, "unable to process bytes for " + cls.getName());
     }
   }
 
-  private static <T extends LHSerializable<?>> T load(
-    Class<T> cls,
-    LHConfig config
-  )
+  private static <T extends LHSerializable<?>> T load(Class<T> cls, LHConfig config)
     throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException {
     try {
       return cls.getDeclaredConstructor().newInstance();

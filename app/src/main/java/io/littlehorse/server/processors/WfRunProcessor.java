@@ -54,10 +54,8 @@ public class WfRunProcessor
   public void init(final ProcessorContext<String, GETable<?>> ctx) {
     this.ctx = ctx;
     this.wfRunStore = ctx.getStateStore(GETable.getBaseStoreName(WfRun.class));
-    this.taskRunStore =
-      ctx.getStateStore(GETable.getBaseStoreName(TaskRun.class));
-    this.wfSpecStore =
-      ctx.getStateStore(POSTable.getGlobalStoreName(WfSpec.class));
+    this.taskRunStore = ctx.getStateStore(GETable.getBaseStoreName(TaskRun.class));
+    this.wfSpecStore = ctx.getStateStore(POSTable.getGlobalStoreName(WfSpec.class));
   }
 
   public void process(final Record<String, ObservabilityEvents> record) {
@@ -159,9 +157,7 @@ public class WfRunProcessor
 
     WfSpec wfSpec = getWfSpec(wfRun.wfSpecId);
     if (wfSpec != null) {
-      Node node = wfSpec.threadSpecs
-        .get(task.threadSpecName)
-        .nodes.get(task.nodeName);
+      Node node = wfSpec.threadSpecs.get(task.threadSpecName).nodes.get(task.nodeName);
       task.taskDefId = node.taskNode.taskDefName;
     }
 
@@ -212,9 +208,7 @@ public class WfRunProcessor
     ThreadStatusChangeOe tsc = evt.threadStatus;
     ThreadRun thread = wfRun.threadRuns.get(tsc.threadRunNumber);
     thread.status = tsc.status;
-    if (
-      thread.status == LHStatusPb.COMPLETED || thread.status == LHStatusPb.ERROR
-    ) {
+    if (thread.status == LHStatusPb.COMPLETED || thread.status == LHStatusPb.ERROR) {
       thread.endTime = evt.time;
     }
   }
@@ -223,9 +217,7 @@ public class WfRunProcessor
     WfRunStatusChangeOe wsc = evt.wfRunStatus;
     wfRun.status = wsc.status;
 
-    if (
-      wfRun.status == LHStatusPb.COMPLETED || wfRun.status == LHStatusPb.ERROR
-    ) {
+    if (wfRun.status == LHStatusPb.COMPLETED || wfRun.status == LHStatusPb.ERROR) {
       wfRun.endTime = evt.time;
     }
   }

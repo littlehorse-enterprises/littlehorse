@@ -4,8 +4,7 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.LHSerializable;
 import org.apache.kafka.common.serialization.Serializer;
 
-public class LHSerializer<T extends LHSerializable<?>>
-  implements Serializer<T> {
+public class LHSerializer<T extends LHSerializable<?>> implements Serializer<T> {
 
   private LHConfig config;
 

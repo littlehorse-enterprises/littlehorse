@@ -15,8 +15,7 @@ public class LHGlobalMetaStores {
     final ProcessorContext<String, T> ctx
   ) {
     wfSpecStore = ctx.getStateStore(POSTable.getGlobalStoreName(WfSpec.class));
-    taskDefStore =
-      ctx.getStateStore(POSTable.getGlobalStoreName(TaskDef.class));
+    taskDefStore = ctx.getStateStore(POSTable.getGlobalStoreName(TaskDef.class));
   }
 
   public WfSpec getWfSpec(String id) {

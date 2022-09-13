@@ -13,8 +13,7 @@ import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.KeyValueStore;
 
-public class TimerProcessor
-  implements Processor<String, LHTimer, String, LHTimer> {
+public class TimerProcessor implements Processor<String, LHTimer, String, LHTimer> {
 
   private ProcessorContext<String, LHTimer> context;
   private KeyValueStore<String, LHTimer> timerStore;
@@ -45,15 +44,11 @@ public class TimerProcessor
     String start = "00000000";
     String end = LHUtil.toLhDbFormat(new Date(timestamp));
 
-    try (
-      KeyValueIterator<String, LHTimer> iter = timerStore.range(start, end)
-    ) {
+    try (KeyValueIterator<String, LHTimer> iter = timerStore.range(start, end)) {
       while (iter.hasNext()) {
         KeyValue<String, LHTimer> entry = iter.next();
         LHTimer timer = entry.value;
-        if (!entry.key.equals(timer.getStoreKey())) throw new RuntimeException(
-          "WTF?"
-        );
+        if (!entry.key.equals(timer.getStoreKey())) throw new RuntimeException("WTF?");
 
         // Now we gotta forward the timer.
         Record<String, LHTimer> record = new Record<String, LHTimer>(

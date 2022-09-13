@@ -19,8 +19,7 @@ public abstract class POSTable<T extends MessageOrBuilder> extends GETable<T> {
   ) throws LHValidationError;
 
   // TODO: Need to think about how to make wait's transactional.
-  public abstract boolean handleDelete()
-    throws LHValidationError, LHConnectionError;
+  public abstract boolean handleDelete() throws LHValidationError, LHConnectionError;
 
   public static final List<Class<? extends POSTable<?>>> POSTables = Arrays.asList(
     WfSpec.class,
@@ -43,9 +42,7 @@ public abstract class POSTable<T extends MessageOrBuilder> extends GETable<T> {
     return cls.getSimpleName() + "_Processor";
   }
 
-  public static String getIdxFanoutProcessorName(
-    Class<? extends POSTable<?>> cls
-  ) {
+  public static String getIdxFanoutProcessorName(Class<? extends POSTable<?>> cls) {
     return cls.getSimpleName() + "_IndexFanoutProcessor";
   }
 
@@ -61,9 +58,7 @@ public abstract class POSTable<T extends MessageOrBuilder> extends GETable<T> {
     return cls.getSimpleName() + "_ResponseStore";
   }
 
-  public static String getGlobalStoreSourceName(
-    Class<? extends POSTable<?>> cls
-  ) {
+  public static String getGlobalStoreSourceName(Class<? extends POSTable<?>> cls) {
     // TODO: this should throw exception if used with invalid type.
     return cls.getSimpleName() + "_GlobalStoreSource";
   }
@@ -73,9 +68,7 @@ public abstract class POSTable<T extends MessageOrBuilder> extends GETable<T> {
     return cls.getSimpleName() + "_GlobalStore";
   }
 
-  public static String getGlobalStoreProcessorName(
-    Class<? extends POSTable<?>> cls
-  ) {
+  public static String getGlobalStoreProcessorName(Class<? extends POSTable<?>> cls) {
     // TODO: this should throw exception if used with invalid type.
     return cls.getSimpleName() + "_GlobalStoreProcessor";
   }

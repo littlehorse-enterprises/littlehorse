@@ -19,7 +19,7 @@ public class NodeRunState {
   @JsonIgnore
   public ThreadRun threadRun;
 
-  public NodeRunStatePb.Builder toProtoBuilder() {
+  public NodeRunStatePb.Builder toProto() {
     NodeRunStatePb.Builder b = NodeRunStatePb
       .newBuilder()
       .setNumber(number)

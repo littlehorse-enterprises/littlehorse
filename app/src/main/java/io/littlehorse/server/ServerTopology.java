@@ -8,13 +8,13 @@ import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.model.observability.ObservabilityEvents;
 import io.littlehorse.common.model.server.IndexEntryAction;
 import io.littlehorse.common.model.server.LHResponse;
 import io.littlehorse.common.model.server.POSTableRequest;
 import io.littlehorse.common.model.server.Tags;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.TaskRun;
+import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.common.util.serde.LHDeserializer;
@@ -25,7 +25,6 @@ import io.littlehorse.server.processors.POSTableProcessor;
 import io.littlehorse.server.processors.SchedulerProcessor;
 import io.littlehorse.server.processors.TaggingProcessor;
 import io.littlehorse.server.processors.TimerProcessor;
-import io.littlehorse.server.processors.WfRunProcessor;
 import io.littlehorse.server.processors.util.SchedulerOutput;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
@@ -38,8 +37,6 @@ import org.apache.kafka.streams.state.StoreBuilder;
 import org.apache.kafka.streams.state.Stores;
 
 public class ServerTopology {
-
-  private static final String WfRunIdxStore = "WF_RUN_INDEX_TMP_STORE";
 
   public static String schedulerSource = "Scheduler Source";
   public static String schedulerProcessor = "SchedulerProcessor";
@@ -112,8 +109,6 @@ public class ServerTopology {
 
     addIdxSubTopology(topo, config);
 
-    addWfRunSubTopology(topo, config);
-
     addSchedulerTopology(topo, config);
 
     return topo;
@@ -123,6 +118,7 @@ public class ServerTopology {
     Serde<WfRunEvent> evtSerde = new LHSerde<>(WfRunEvent.class, config);
     Serde<WfRun> runSerde = new LHSerde<>(WfRun.class, config);
     Serde<WfSpec> specSerde = new LHSerde<>(WfSpec.class, config);
+    String idxFanoutProcessor = "WfRun Index Fanout Processor";
 
     Runtime
       .getRuntime()
@@ -149,16 +145,25 @@ public class ServerTopology {
       schedulerSource
     );
 
-    // Add sink for WFRun
+    topo.addProcessor(
+      idxFanoutProcessor,
+      () -> {
+        return new TaggingProcessor<>(
+          WfRun.class,
+          GETable.getTagStoreName(WfRun.class)
+        );
+      },
+      schedulerProcessor
+    );
+
+    // Add sink for Observability Events
     topo.addSink(
       schedulerWfRunSink,
       LHConstants.WF_RUN_OBSERVABILITY_TOPIC,
       Serdes.String().serializer(),
       (topic, schedulerOutput) -> {
         // Serializer
-        return ((SchedulerOutput) schedulerOutput).observabilityEvents.toBytes(
-            config
-          );
+        return ((SchedulerOutput) schedulerOutput).observabilityEvents.toBytes(config);
       },
       schedulerProcessor
     );
@@ -180,6 +185,7 @@ public class ServerTopology {
       schedulerProcessor
     );
 
+    // Sink for new Timers
     topo.addSink(
       newTimerSink,
       LHConstants.TIMER_TOPIC_NAME,
@@ -190,13 +196,37 @@ public class ServerTopology {
       schedulerProcessor
     );
 
-    // Add state store
+    // Add WfRun state store
     StoreBuilder<KeyValueStore<String, WfRun>> wfRunStoreBuilder = Stores.keyValueStoreBuilder(
-      Stores.persistentKeyValueStore(LHConstants.SCHED_WF_RUN_STORE_NAME),
+      Stores.persistentKeyValueStore(GETable.getBaseStoreName(WfRun.class)),
       Serdes.String(),
       runSerde
     );
     topo.addStateStore(wfRunStoreBuilder, schedulerProcessor);
+
+    // TaskRun State Store
+    StoreBuilder<KeyValueStore<String, TaskRun>> taskRunStoreBuilder = Stores.keyValueStoreBuilder(
+      Stores.persistentKeyValueStore(GETable.getBaseStoreName(TaskRun.class)),
+      Serdes.String(),
+      new LHSerde<>(TaskRun.class, config)
+    );
+    topo.addStateStore(taskRunStoreBuilder, schedulerProcessor);
+
+    // Variable Value Store
+    StoreBuilder<KeyValueStore<String, Variable>> varValStoreBuilder = Stores.keyValueStoreBuilder(
+      Stores.persistentKeyValueStore(GETable.getBaseStoreName(Variable.class)),
+      Serdes.String(),
+      new LHSerde<>(Variable.class, config)
+    );
+    topo.addStateStore(varValStoreBuilder, schedulerProcessor);
+
+    // Tag Cache State Store
+    StoreBuilder<KeyValueStore<String, Tags>> tagCacheStoreBuilder = Stores.keyValueStoreBuilder(
+      Stores.persistentKeyValueStore(GETable.getTagStoreName(WfRun.class)),
+      Serdes.String(),
+      new LHSerde<>(Tags.class, config)
+    );
+    topo.addStateStore(tagCacheStoreBuilder, idxFanoutProcessor);
   }
 
   private static <
@@ -223,57 +253,6 @@ public class ServerTopology {
         return new GlobalMetaStoreProcessor<T>(cls);
       }
     );
-  }
-
-  private static void addWfRunSubTopology(Topology topo, LHConfig config) {
-    String wfRunProcessor = "WfRun Processor";
-    String wfRunSource = "WfRun Source";
-    String idxFanoutProcessor = "WfRun Index Fanout Processor";
-    String idxSink = "WfRun Index sink";
-
-    topo.addSource(
-      wfRunSource,
-      Serdes.String().deserializer(),
-      new LHDeserializer<>(ObservabilityEvents.class, config),
-      LHConstants.WF_RUN_OBSERVABILITY_TOPIC
-    );
-
-    topo.addProcessor(
-      wfRunProcessor,
-      () -> {
-        return new WfRunProcessor(config);
-      },
-      wfRunSource
-    );
-
-    topo.addSink(
-      idxSink,
-      LHConstants.INDEX_TOPIC_NAME,
-      Serdes.String().serializer(),
-      new LHSerializer<IndexEntryAction>(config),
-      idxFanoutProcessor
-    );
-
-    StoreBuilder<KeyValueStore<String, WfRun>> wfRunStoreBuilder = Stores.keyValueStoreBuilder(
-      Stores.persistentKeyValueStore(GETable.getBaseStoreName(WfRun.class)),
-      Serdes.String(),
-      new LHSerde<>(WfRun.class, config)
-    );
-    topo.addStateStore(wfRunStoreBuilder, wfRunProcessor);
-
-    StoreBuilder<KeyValueStore<String, TaskRun>> taskRunStoreBuilder = Stores.keyValueStoreBuilder(
-      Stores.persistentKeyValueStore(GETable.getBaseStoreName(TaskRun.class)),
-      Serdes.String(),
-      new LHSerde<>(TaskRun.class, config)
-    );
-    topo.addStateStore(taskRunStoreBuilder, wfRunProcessor);
-
-    StoreBuilder<KeyValueStore<String, Tags>> idxStateStoreBuilder = Stores.keyValueStoreBuilder(
-      Stores.persistentKeyValueStore(WfRunIdxStore),
-      Serdes.String(),
-      new LHSerde<>(Tags.class, config)
-    );
-    topo.addStateStore(idxStateStoreBuilder, idxFanoutProcessor);
   }
 
   private static void addIdxSubTopology(Topology topo, LHConfig config) {

@@ -1,7 +1,7 @@
 package io.littlehorse.server.processors;
 
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.WfRunEvent;
@@ -35,9 +35,8 @@ public class SchedulerProcessor
 
   @Override
   public void init(final ProcessorContext<String, SchedulerOutput> context) {
-    wfRunStore = context.getStateStore(LHConstants.SCHED_WF_RUN_STORE_NAME);
-    wfSpecStore =
-      context.getStateStore(POSTable.getGlobalStoreName(WfSpec.class));
+    wfRunStore = context.getStateStore(GETable.getBaseStoreName(WfRun.class));
+    wfSpecStore = context.getStateStore(POSTable.getGlobalStoreName(WfSpec.class));
 
     this.context = context;
     this.wfSpecCache = new HashMap<>();
@@ -66,9 +65,7 @@ public class SchedulerProcessor
       try {
         exn.printStackTrace();
         wfRun.status = LHStatusPb.ERROR;
-        LHUtil.log(
-          "Bad WFRun, putting in ERROR. TODO: add a FailureMessage to WFRun"
-        );
+        LHUtil.log("Bad WFRun, putting in ERROR. TODO: add a FailureMessage to WFRun");
         wfRunStore.put(wfRunId, wfRun);
       } catch (Exception exn2) {
         exn2.printStackTrace();
@@ -112,10 +109,7 @@ public class SchedulerProcessor
     for (LHTimer timer : timersToSchedule) {
       SchedulerOutput out = new SchedulerOutput();
       out.timer = timer;
-      context.forward(
-        new Record<>(key, out, timestamp),
-        ServerTopology.newTimerSink
-      );
+      context.forward(new Record<>(key, out, timestamp), ServerTopology.newTimerSink);
     }
 
     // Forward the observability events

@@ -99,10 +99,7 @@ public class ApiStreamsContext {
       try {
         return LHSerializable.fromBytes(serialized, cls, config);
       } catch (LHSerdeError exn) {
-        throw new LHConnectionError(
-          exn,
-          "Got invalid protobuf over the wire: "
-        );
+        throw new LHConnectionError(exn, "Got invalid protobuf over the wire: ");
       }
     }
   }
@@ -142,12 +139,7 @@ public class ApiStreamsContext {
       );
 
     boolean checkLocalResponseStoreOnly = false;
-    return waitForResponse(
-      partitionKey,
-      cls,
-      requestId,
-      checkLocalResponseStoreOnly
-    );
+    return waitForResponse(partitionKey, cls, requestId, checkLocalResponseStoreOnly);
   }
 
   public byte[] waitForResponse(
@@ -190,9 +182,7 @@ public class ApiStreamsContext {
       if (!activeHost) {
         storeParams = storeParams.enableStaleStores();
       }
-      ReadOnlyKeyValueStore<String, GETable<?>> store = streams.store(
-        storeParams
-      );
+      ReadOnlyKeyValueStore<String, GETable<?>> store = streams.store(storeParams);
       GETable<?> obj = store.get(storeKey);
 
       resp.approximateLag = getApproximateLag(storeName, partition);
@@ -251,11 +241,8 @@ public class ApiStreamsContext {
     return timeOut.toBytes(config);
   }
 
-  public RangeResponse keyedPrefixIdxScan(
-    String prefixKey,
-    String token,
-    int limit
-  ) throws LHConnectionError {
+  public RangeResponse keyedPrefixIdxScan(String prefixKey, String token, int limit)
+    throws LHConnectionError {
     String storeName = LHConstants.INDEX_STORE_NAME;
     KeyQueryMetadata metadata = streams.queryMetadataForKey(
       storeName,
@@ -311,12 +298,7 @@ public class ApiStreamsContext {
       Serdes.String().serializer()
     );
     if (metadata.activeHost().equals(thisHost)) {
-      return internalLocalKeyedObjPrefixScan(
-        storeName,
-        storeKeyPrefix,
-        token,
-        limit
-      );
+      return internalLocalKeyedObjPrefixScan(storeName, storeKeyPrefix, token, limit);
     } else {
       return remoteKeyedPrefixObjScan(
         storeName,
@@ -402,8 +384,7 @@ public class ApiStreamsContext {
     Set<HostInfo> standbys
   ) throws LHConnectionError {
     LHConnectionError caught = null;
-    String path =
-      "/internal/localKeyedPrefixObjScan/" + storeName + "/" + prefixKey;
+    String path = "/internal/localKeyedPrefixObjScan/" + storeName + "/" + prefixKey;
     path += "?limit=" + limit;
     byte[] resp = null;
     if (token != null) {
@@ -504,8 +485,7 @@ public class ApiStreamsContext {
     RemoteStoreQueryResponse resp = new RemoteStoreQueryResponse();
     try {
       byte[] out = client.getResponse(metadata.activeHost(), path + "/true");
-      resp =
-        LHSerializable.fromBytes(out, RemoteStoreQueryResponse.class, config);
+      resp = LHSerializable.fromBytes(out, RemoteStoreQueryResponse.class, config);
     } catch (LHConnectionError | LHSerdeError exn) {
       exn.printStackTrace();
       caught = exn;

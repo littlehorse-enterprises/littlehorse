@@ -20,8 +20,7 @@ public class LHRpcClient {
     return getResponse(host, path + "?asProto=true");
   }
 
-  public byte[] getResponse(HostInfo host, String path)
-    throws LHConnectionError {
+  public byte[] getResponse(HostInfo host, String path) throws LHConnectionError {
     String url = "http://" + host.host() + ":" + host.port() + path;
     Request req = new Request.Builder().url(url).build();
 

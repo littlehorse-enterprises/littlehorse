@@ -18,9 +18,7 @@ import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 
-public class POSTableProcessor<
-  U extends MessageOrBuilder, T extends POSTable<U>
->
+public class POSTableProcessor<U extends MessageOrBuilder, T extends POSTable<U>>
   implements Processor<String, POSTableRequest, String, T> {
 
   private KeyValueStore<String, T> store;
@@ -39,8 +37,7 @@ public class POSTableProcessor<
   public void init(final ProcessorContext<String, T> context) {
     this.context = context;
     this.store = context.getStateStore(POSTable.getBaseStoreName(cls));
-    this.responseStore =
-      context.getStateStore(POSTable.getResponseStoreName(cls));
+    this.responseStore = context.getStateStore(POSTable.getResponseStoreName(cls));
     this.dbClient = new LHGlobalMetaStores(context);
   }
 
@@ -65,11 +62,7 @@ public class POSTableProcessor<
       newT.handlePost(oldT, dbClient, config);
       resp.result = newT;
       resp.code = LHResponseCodePb.OK;
-      Record<String, T> newRec = new Record<String, T>(
-        key,
-        newT,
-        record.timestamp()
-      );
+      Record<String, T> newRec = new Record<String, T>(key, newT, record.timestamp());
       newRec
         .headers()
         .add(LHConstants.OBJECT_ID_HEADER, newT.getObjectId().getBytes());

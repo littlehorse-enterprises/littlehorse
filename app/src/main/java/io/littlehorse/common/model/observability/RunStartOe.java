@@ -10,10 +10,7 @@ public class RunStartOe extends LHSerializable<RunStartOePb> {
   public String wfSpecName;
 
   public RunStartOePb.Builder toProto() {
-    return RunStartOePb
-      .newBuilder()
-      .setWfSpecId(wfSpecId)
-      .setWfSpecName(wfSpecName);
+    return RunStartOePb.newBuilder().setWfSpecId(wfSpecId).setWfSpecName(wfSpecName);
   }
 
   public RunStartOe() {}

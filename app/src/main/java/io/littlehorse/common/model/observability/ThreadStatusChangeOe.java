@@ -5,8 +5,7 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.ThreadStatusChangeOePb;
 
-public class ThreadStatusChangeOe
-  extends LHSerializable<ThreadStatusChangeOePb> {
+public class ThreadStatusChangeOe extends LHSerializable<ThreadStatusChangeOePb> {
 
   public int threadRunNumber;
   public LHStatusPb status;

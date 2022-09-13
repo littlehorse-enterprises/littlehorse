@@ -37,6 +37,14 @@ message VariableValuePb {
     optional bytes bytes = 8;
 }
 
+message VariablePb {
+    VariableValuePb value = 1;
+    string wf_run_id = 2;
+    int32 thread_run_number = 3;
+    string name = 4;
+    google.protobuf.Timestamp date = 5;
+}
+
 enum TaskResultCodePb {
     SUCCESS = 0;
     TIMEOUT = 1;
@@ -202,6 +210,8 @@ message ThreadRunPb {
 
     google.protobuf.Timestamp start_time = 7;
     optional google.protobuf.Timestamp end_time = 8;
+
+    NodeRunStatePb current_node_run = 9;
 }
 
 message TaskRunPb {

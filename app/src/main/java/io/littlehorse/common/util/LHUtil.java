@@ -16,9 +16,7 @@ public class LHUtil {
 
   public static Date fromProtoTs(Timestamp proto) {
     if (proto == null) return null;
-    Date out = Date.from(
-      Instant.ofEpochSecond(proto.getSeconds(), proto.getNanos())
-    );
+    Date out = Date.from(Instant.ofEpochSecond(proto.getSeconds(), proto.getNanos()));
 
     if (out.getTime() == 0) {
       out = new Date();
@@ -56,6 +54,27 @@ public class LHUtil {
   }
 
   public static String toLhDbFormat(Date date) {
-    return String.format("%012d", date.getTime());
+    return date == null ? "null" : String.format("%012d", date.getTime());
+  }
+
+  public static String toLhDbFormat(Integer val) {
+    return val == null ? "null" : String.format("%012d", val);
+  }
+
+  public static String toLhDbFormat(Boolean val) {
+    return val == null ? "null" : val.toString();
+  }
+
+  /**
+   * TODO: THis needs more thought. We want the double to be searchable both positive and negative,
+   * and we want to be able to do range queries.
+   */
+  public static String toLhDbFormat(Double val) {
+    return val == null ? "null" : String.format("%20.10f", val);
+  }
+
+  public static String toLhDbFormat(String val) {
+    // TODO: Determine if we want to truncate this by just hashing it.
+    return val;
   }
 }

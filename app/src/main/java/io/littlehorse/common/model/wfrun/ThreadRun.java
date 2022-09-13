@@ -55,6 +55,10 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     if (proto.hasEndTime()) {
       endTime = LHUtil.fromProtoTs(proto.getEndTime());
     }
+    if (proto.hasCurrentNodeRun()) {
+      currentNodeRun = NodeRunState.fromProto(proto.getCurrentNodeRun());
+      currentNodeRun.threadRun = this;
+    }
   }
 
   public ThreadRunPb.Builder toProto() {
@@ -70,6 +74,10 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
 
     if (endTime != null) {
       out.setEndTime(LHUtil.fromDate(endTime));
+    }
+
+    if (currentNodeRun != null) {
+      out.setCurrentNodeRun(currentNodeRun.toProto());
     }
     return out;
   }
@@ -229,6 +237,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
 
     if (currentNodeRun == null) {
       currentNodeRun = new NodeRunState();
+      currentNodeRun.threadRun = this;
       if (attemptNumber > 0) {
         throw new RuntimeException("Not possible.");
       }
@@ -259,9 +268,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     tsr.wfSpecId = wfRun.wfSpecId;
     tsr.nodeName = node.name;
 
-    wfRun.oEvents.add(
-      new ObservabilityEvent(new TaskScheduledOe(tsr), new Date())
-    );
+    wfRun.oEvents.add(new ObservabilityEvent(new TaskScheduledOe(tsr), new Date()));
 
     wfRun.tasksToSchedule.add(tsr);
   }
@@ -357,9 +364,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         currentNodeRun.status = LHStatusPb.ERROR;
         break;
       case UNRECOGNIZED:
-        throw new RuntimeException(
-          "Unrecognized TaskResultCode: " + ce.resultCode
-        );
+        throw new RuntimeException("Unrecognized TaskResultCode: " + ce.resultCode);
     }
   }
 }

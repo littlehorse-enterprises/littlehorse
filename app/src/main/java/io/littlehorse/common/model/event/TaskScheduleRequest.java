@@ -37,9 +37,7 @@ public class TaskScheduleRequest extends LHSerializable<TaskScheduleRequestPb> {
     return TaskScheduleRequestPb.class;
   }
 
-  public static TaskScheduleRequest fromProto(
-    TaskScheduleRequestPbOrBuilder p
-  ) {
+  public static TaskScheduleRequest fromProto(TaskScheduleRequestPbOrBuilder p) {
     TaskScheduleRequest out = new TaskScheduleRequest();
     out.initFrom(p);
     return out;

@@ -163,10 +163,7 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
     if (taskNode.timeoutSeconds < 1) {
       throw new LHValidationError(
         null,
-        "Task Timeout must be > 1s for node " +
-        name +
-        " on thread " +
-        threadSpec.name
+        "Task Timeout must be > 1s for node " + name + " on thread " + threadSpec.name
       );
     }
   }
