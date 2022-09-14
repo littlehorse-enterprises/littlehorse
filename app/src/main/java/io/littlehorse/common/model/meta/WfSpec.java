@@ -5,6 +5,7 @@ import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.model.GlobalPOSTable;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.WfRunEvent;
@@ -28,7 +29,7 @@ import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class WfSpec extends POSTable<WfSpecPbOrBuilder> {
+public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
 
     public String id;
     public String name;
@@ -40,6 +41,10 @@ public class WfSpec extends POSTable<WfSpecPbOrBuilder> {
 
     public String entrypointThreadName;
     public LHStatusPb status;
+
+    public String getName() {
+        return name;
+    }
 
     public String getObjectId() {
         if (id.equals("")) {

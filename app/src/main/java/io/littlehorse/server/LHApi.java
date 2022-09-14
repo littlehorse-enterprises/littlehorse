@@ -24,7 +24,7 @@ import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.GETableClassEnumPb;
 import io.littlehorse.common.proto.LHResponseCodePb;
 import io.littlehorse.common.proto.WfRunEventPb.EventCase;
-import io.littlehorse.common.util.LHApiClient;
+import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHKStreamsListener;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
@@ -42,7 +42,7 @@ public class LHApi {
     private Javalin app;
     private LHConfig config;
     private ApiStreamsContext streams;
-    private LHApiClient client;
+    private LHGlobalMetaStores globalStores;
     private LHProducer producer;
 
     private interface HandlerFunc {
@@ -72,7 +72,7 @@ public class LHApi {
         this.streams = streams;
         this.config = config;
         this.app = config.createAppWithHealth(listener);
-        this.client = config.getApiClient();
+        this.globalStores = new LHGlobalMetaStores(streams);
 
         this.app.get("/WfSpec/{id}", ctx -> handle(this::getWfSpec, ctx));
         this.app.get("/TaskDef/{id}", ctx -> handle(this::getTaskDef, ctx));
@@ -233,7 +233,7 @@ public class LHApi {
                 req.wfRunId = LHUtil.generateGuid();
             }
 
-            WfSpec spec = client.getWfSpec(req.wfSpecId);
+            WfSpec spec = globalStores.getWfSpec(req.wfSpecId);
             if (spec == null) {
                 resp.code = LHResponseCodePb.NOT_FOUND_ERROR;
                 resp.message = "Could not find specified WfSpec.";
@@ -272,9 +272,6 @@ public class LHApi {
         } catch (LHSerdeError exn) {
             resp.code = LHResponseCodePb.BAD_REQUEST_ERROR;
             resp.message = "Failed to unmarshal input: " + exn.getMessage();
-        } catch (LHConnectionError exn) {
-            resp.code = LHResponseCodePb.CONNECTION_ERROR;
-            resp.message = "Had an internal error: " + exn.getMessage();
         } catch (
             InterruptedException | ExecutionException | KafkaException exn
         ) {
@@ -298,7 +295,7 @@ public class LHApi {
         );
         String guid = req.wfRunId == null ? LHUtil.generateGuid() : req.wfRunId;
 
-        WfSpec spec = client.getWfSpec(req.wfSpecId);
+        WfSpec spec = globalStores.getWfSpec(req.wfSpecId);
 
         if (spec == null) {
             resp.code = LHResponseCodePb.NOT_FOUND_ERROR;

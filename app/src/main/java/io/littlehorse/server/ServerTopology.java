@@ -4,6 +4,7 @@ import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.GlobalPOSTable;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.TaskDef;
@@ -244,21 +245,21 @@ public class ServerTopology {
     }
 
     private static <
-        U extends MessageOrBuilder, T extends POSTable<U>
+        U extends MessageOrBuilder, T extends GlobalPOSTable<U>
     > void addGlobalMetaStore(
         Topology topology,
         Class<T> cls,
         LHConfig config
     ) {
-        String sourceName = POSTable.getGlobalStoreSourceName(cls);
-        String inputTopic = POSTable.getEntityTopicName(cls);
-        String processorName = POSTable.getGlobalStoreProcessorName(cls);
+        String sourceName = GlobalPOSTable.getGlobalStoreSourceName(cls);
+        String inputTopic = GlobalPOSTable.getEntityTopicName(cls);
+        String processorName = GlobalPOSTable.getGlobalStoreProcessorName(cls);
 
         topology.addGlobalStore(
             Stores
                 .keyValueStoreBuilder(
                     Stores.persistentKeyValueStore(
-                        POSTable.getGlobalStoreName(cls)
+                        GlobalPOSTable.getGlobalStoreName(cls)
                     ),
                     Serdes.String(),
                     new LHSerde<>(cls, config)
@@ -379,7 +380,7 @@ public class ServerTopology {
 
 // TODO: This results in duplicate storage and processing. Could be merged/replaced with the
 // POSTableProcessor to save space.
-class GlobalMetaStoreProcessor<T extends POSTable<?>>
+class GlobalMetaStoreProcessor<T extends GlobalPOSTable<?>>
     implements Processor<String, T, Void, Void> {
 
     private KeyValueStore<String, T> store;
@@ -391,7 +392,7 @@ class GlobalMetaStoreProcessor<T extends POSTable<?>>
 
     @Override
     public void init(final ProcessorContext<Void, Void> ctx) {
-        this.store = ctx.getStateStore(POSTable.getGlobalStoreName(cls));
+        this.store = ctx.getStateStore(GlobalPOSTable.getGlobalStoreName(cls));
     }
 
     @Override
@@ -404,6 +405,9 @@ class GlobalMetaStoreProcessor<T extends POSTable<?>>
         } else {
             LHUtil.log("put");
             store.put(k, v);
+            // TODO: Need to ensure somehow that there's never conflict between ID
+            // and name.
+            store.put(v.getName(), v);
         }
     }
 }

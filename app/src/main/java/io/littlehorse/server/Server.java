@@ -18,6 +18,15 @@ public class Server {
         serverStreams.setStateListener(listener);
         serverStreams.setGlobalStateRestoreListener(listener);
 
+        Topology timerTopo = ServerTopology.initTimerTopology(config);
+        KafkaStreams timerStreams = new KafkaStreams(
+            timerTopo,
+            config.getStreamsConfig("timer")
+        );
+
+        serverStreams.start();
+        timerStreams.start();
+
         LHApi app = new LHApi(config, ctx, listener);
 
         Runtime
@@ -26,26 +35,10 @@ public class Server {
                 new Thread(() -> {
                     config.cleanup();
                     serverStreams.close();
-                })
-            );
-
-        Topology timerTopo = ServerTopology.initTimerTopology(config);
-        KafkaStreams timerStreams = new KafkaStreams(
-            timerTopo,
-            config.getStreamsConfig("timer")
-        );
-
-        Runtime
-            .getRuntime()
-            .addShutdownHook(
-                new Thread(() -> {
-                    serverStreams.close();
                     timerStreams.close();
                 })
             );
 
         app.start();
-        serverStreams.start();
-        timerStreams.start();
     }
 }

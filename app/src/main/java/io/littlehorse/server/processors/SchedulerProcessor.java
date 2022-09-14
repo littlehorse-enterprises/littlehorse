@@ -2,7 +2,7 @@ package io.littlehorse.server.processors;
 
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.GETable;
-import io.littlehorse.common.model.POSTable;
+import io.littlehorse.common.model.GlobalPOSTable;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.WfSpec;
@@ -38,7 +38,9 @@ public class SchedulerProcessor
         wfRunStore =
             context.getStateStore(GETable.getBaseStoreName(WfRun.class));
         wfSpecStore =
-            context.getStateStore(POSTable.getGlobalStoreName(WfSpec.class));
+            context.getStateStore(
+                GlobalPOSTable.getGlobalStoreName(WfSpec.class)
+            );
 
         this.context = context;
         this.wfSpecCache = new HashMap<>();

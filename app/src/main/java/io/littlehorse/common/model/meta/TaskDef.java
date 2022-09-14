@@ -3,6 +3,7 @@ package io.littlehorse.common.model.meta;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.model.GlobalPOSTable;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.server.Tag;
 import io.littlehorse.common.proto.TaskDefPb;
@@ -14,7 +15,7 @@ import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class TaskDef extends POSTable<TaskDefPbOrBuilder> {
+public class TaskDef extends GlobalPOSTable<TaskDefPbOrBuilder> {
 
     public String name;
     public Date createdAt;
@@ -22,6 +23,10 @@ public class TaskDef extends POSTable<TaskDefPbOrBuilder> {
     public Date getCreatedAt() {
         if (createdAt == null) createdAt = new Date();
         return createdAt;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getObjectId() {

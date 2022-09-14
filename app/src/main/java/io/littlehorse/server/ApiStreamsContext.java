@@ -6,6 +6,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.GlobalPOSTable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.server.LHResponse;
@@ -369,6 +370,17 @@ public class ApiStreamsContext {
         return streams.store(
             StoreQueryParameters.fromNameAndType(
                 LHConstants.INDEX_STORE_NAME,
+                QueryableStoreTypes.keyValueStore()
+            )
+        );
+    }
+
+    public <
+        T extends POSTable<?>
+    > ReadOnlyKeyValueStore<String, T> getGlobalStore(Class<T> cls) {
+        return streams.store(
+            StoreQueryParameters.fromNameAndType(
+                GlobalPOSTable.getGlobalStoreName(cls),
                 QueryableStoreTypes.keyValueStore()
             )
         );

@@ -1,8 +1,10 @@
 package io.littlehorse.common.util;
 
+import io.littlehorse.common.model.GlobalPOSTable;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.server.ApiStreamsContext;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
@@ -15,9 +17,14 @@ public class LHGlobalMetaStores {
         final ProcessorContext<String, T> ctx
     ) {
         wfSpecStore =
-            ctx.getStateStore(POSTable.getGlobalStoreName(WfSpec.class));
+            ctx.getStateStore(GlobalPOSTable.getGlobalStoreName(WfSpec.class));
         taskDefStore =
-            ctx.getStateStore(POSTable.getGlobalStoreName(TaskDef.class));
+            ctx.getStateStore(GlobalPOSTable.getGlobalStoreName(TaskDef.class));
+    }
+
+    public LHGlobalMetaStores(ApiStreamsContext streams) {
+        wfSpecStore = streams.getGlobalStore(WfSpec.class);
+        taskDefStore = streams.getGlobalStore(TaskDef.class);
     }
 
     public WfSpec getWfSpec(String id) {

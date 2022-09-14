@@ -3,7 +3,7 @@ package io.littlehorse.server.processors;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.GETable;
-import io.littlehorse.common.model.POSTable;
+import io.littlehorse.common.model.GlobalPOSTable;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.observability.ObservabilityEvent;
@@ -58,7 +58,7 @@ public class WfRunProcessor
         this.taskRunStore =
             ctx.getStateStore(GETable.getBaseStoreName(TaskRun.class));
         this.wfSpecStore =
-            ctx.getStateStore(POSTable.getGlobalStoreName(WfSpec.class));
+            ctx.getStateStore(GlobalPOSTable.getGlobalStoreName(WfSpec.class));
     }
 
     public void process(final Record<String, ObservabilityEvents> record) {
