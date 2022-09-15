@@ -1,5 +1,11 @@
 package io.littlehorse.common.model.wfrun;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import org.apache.commons.lang3.tuple.Pair;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.exceptions.LHValidationError;
@@ -9,6 +15,7 @@ import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.TaskStartedEvent;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.ThreadSpec;
+import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.observability.ObservabilityEvent;
 import io.littlehorse.common.model.observability.ObservabilityEvents;
@@ -21,12 +28,6 @@ import io.littlehorse.common.proto.WfRunPb;
 import io.littlehorse.common.proto.WfRunPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.processors.util.WfRunStoreAccess;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class WfRun extends GETable<WfRunPb> {
 
@@ -177,12 +178,31 @@ public class WfRun extends GETable<WfRunPb> {
 
         try {
             tspec.validateStartVariables(variables);
-            thread.advance(start);
         } catch (LHValidationError exn) {
             LHUtil.log("Invalid variables received");
             // Now we gotta figure out how to fail a workflow
             thread.setStatus(LHStatusPb.ERROR);
+            return;
         }
+
+        for (Map.Entry<String, VariableDef> entry: tspec.variableDefs.entrySet()) {
+            String varName = entry.getKey();
+            VariableDef varDef = entry.getValue();
+            VariableValue val;
+
+            if (variables.containsKey(varName)) {
+                val = variables.get(varName);
+            } else if (varDef.defaultValue != null) {
+                val = varDef.defaultValue;
+            } else {
+                val = new VariableValue();
+                val.type = varDef.type;
+            }
+
+            thread.putLocalVariable(varName, val);
+        }
+        thread.advance(start);
+
     }
 
     public void processEvent(

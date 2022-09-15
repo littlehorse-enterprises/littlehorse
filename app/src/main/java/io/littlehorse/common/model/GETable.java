@@ -6,6 +6,7 @@ import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.server.Tag;
 import io.littlehorse.common.model.wfrun.TaskRun;
 import io.littlehorse.common.model.wfrun.ThreadRun;
+import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.GETableClassEnumPb;
 import java.util.Date;
@@ -49,6 +50,8 @@ public abstract class GETable<T extends MessageOrBuilder>
             return GETableClassEnumPb.WF_SPEC;
         } else if (cls.equals(TaskDef.class)) {
             return GETableClassEnumPb.TASK_DEF;
+        } else if (cls.equals(Variable.class)) {
+            return GETableClassEnumPb.VARIABLE;
         } else {
             throw new RuntimeException("Uh oh, unrecognized: " + cls.getName());
         }
@@ -64,6 +67,8 @@ public abstract class GETable<T extends MessageOrBuilder>
                 return WfSpec.class;
             case TASK_DEF:
                 return TaskDef.class;
+            case VARIABLE:
+                return Variable.class;
             case UNRECOGNIZED:
             default:
                 throw new RuntimeException("Uh oh, unrecognized enum");

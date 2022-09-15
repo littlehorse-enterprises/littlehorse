@@ -425,15 +425,15 @@ public final class LhProto {
       "nseCodePb\022\006\n\002OK\020\000\022\024\n\020CONNECTION_ERROR\020\001\022" +
       "\023\n\017NOT_FOUND_ERROR\020\002\022\025\n\021BAD_REQUEST_ERRO" +
       "R\020\003\022\024\n\020VALIDATION_ERROR\020\004*%\n\rRequestType" +
-      "Pb\022\010\n\004POST\020\000\022\n\n\006DELETE\020\001*Y\n\022GETableClass" +
+      "Pb\022\010\n\004POST\020\000\022\n\n\006DELETE\020\001*g\n\022GETableClass" +
       "EnumPb\022\014\n\010TASK_DEF\020\000\022\013\n\007WF_SPEC\020\001\022\n\n\006WF_" +
-      "RUN\020\002\022\016\n\nTHREAD_RUN\020\003\022\014\n\010TASK_RUN\020\004*=\n\017I" +
-      "ndexActionEnum\022\024\n\020CREATE_IDX_ENTRY\020\000\022\024\n\020" +
-      "DELETE_IDX_ENTRY\020\001*b\n\030RemoteStoreQuerySt" +
-      "atusPb\022\n\n\006RSQ_OK\020\000\022\021\n\rRSQ_NOT_FOUND\020\001\022\020\n" +
-      "\014RSQ_MIGRATED\020\002\022\025\n\021RSQ_NOT_AVAILABLE\020\003B(" +
-      "\n\033io.littlehorse.common.protoP\001Z\007.;model" +
-      "b\006proto3"
+      "RUN\020\002\022\016\n\nTHREAD_RUN\020\003\022\014\n\010TASK_RUN\020\004\022\014\n\010V" +
+      "ARIABLE\020\005*=\n\017IndexActionEnum\022\024\n\020CREATE_I" +
+      "DX_ENTRY\020\000\022\024\n\020DELETE_IDX_ENTRY\020\001*b\n\030Remo" +
+      "teStoreQueryStatusPb\022\n\n\006RSQ_OK\020\000\022\021\n\rRSQ_" +
+      "NOT_FOUND\020\001\022\020\n\014RSQ_MIGRATED\020\002\022\025\n\021RSQ_NOT" +
+      "_AVAILABLE\020\003B(\n\033io.littlehorse.common.pr" +
+      "otoP\001Z\007.;modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

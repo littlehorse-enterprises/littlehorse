@@ -20,6 +20,7 @@ import io.littlehorse.common.model.server.LHResponse;
 import io.littlehorse.common.model.server.RangeResponse;
 import io.littlehorse.common.model.server.Tag;
 import io.littlehorse.common.model.wfrun.TaskRun;
+import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.GETableClassEnumPb;
 import io.littlehorse.common.proto.LHResponseCodePb;
@@ -84,7 +85,16 @@ public class LHApi {
             );
         this.app.get(
                 "/search/TaskRun/wfRunId/{wfRunId}",
-                this::getTaskRunsByWfRun
+                ctx -> handle(this::getTaskRunsByWfRun, ctx)
+            );
+
+        this.app.get(
+                "Variable/{wfRunId}/{threadRunNumber}/{name}",
+                ctx -> handle(this::getVariable, ctx)
+            );
+        this.app.get(
+                "search/Variable/wfRunId/{wfRunId}",
+                ctx -> handle(this::getVariablesByWfRun, ctx)
             );
 
         this.app.get(
@@ -210,6 +220,22 @@ public class LHApi {
     public void getWfRun(Context ctx) {
         String id = ctx.pathParam("id");
         returnLookup(id, id, WfRun.class, ctx);
+    }
+
+    public void getVariable(Context ctx) {
+        String wfRunId = ctx.pathParam("wfRunId");
+        int threadRunNumber = ctx
+            .pathParamAsClass("threadRunNumber", Integer.class)
+            .get();
+        String name = ctx.pathParam("name");
+
+        String objId = Variable.getObjectId(wfRunId, threadRunNumber, name);
+        returnLookup(wfRunId, objId, Variable.class, ctx);
+    }
+
+    public void getVariablesByWfRun(Context ctx) {
+        String wfRunId = ctx.pathParam("wfRunId");
+        keyedPrefixObjScan(wfRunId, Variable.class, wfRunId, ctx);
     }
 
     public void getTaskDef(Context ctx) {

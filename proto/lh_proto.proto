@@ -347,6 +347,7 @@ enum GETableClassEnumPb {
     WF_RUN = 2;
     THREAD_RUN = 3;
     TASK_RUN = 4;
+    VARIABLE = 5;
 }
 
 message AttributePb {

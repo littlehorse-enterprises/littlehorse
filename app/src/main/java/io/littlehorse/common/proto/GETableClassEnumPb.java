@@ -32,6 +32,10 @@ public enum GETableClassEnumPb
    * <code>TASK_RUN = 4;</code>
    */
   TASK_RUN(4),
+  /**
+   * <code>VARIABLE = 5;</code>
+   */
+  VARIABLE(5),
   UNRECOGNIZED(-1),
   ;
 
@@ -55,6 +59,10 @@ public enum GETableClassEnumPb
    * <code>TASK_RUN = 4;</code>
    */
   public static final int TASK_RUN_VALUE = 4;
+  /**
+   * <code>VARIABLE = 5;</code>
+   */
+  public static final int VARIABLE_VALUE = 5;
 
 
   public final int getNumber() {
@@ -86,6 +94,7 @@ public enum GETableClassEnumPb
       case 2: return WF_RUN;
       case 3: return THREAD_RUN;
       case 4: return TASK_RUN;
+      case 5: return VARIABLE;
       default: return null;
     }
   }

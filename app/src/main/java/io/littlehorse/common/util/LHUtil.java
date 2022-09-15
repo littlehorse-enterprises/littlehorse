@@ -2,12 +2,19 @@ package io.littlehorse.common.util;
 
 import static com.google.protobuf.util.Timestamps.fromMillis;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.protobuf.Timestamp;
 import java.time.Instant;
+import java.util.Base64;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class LHUtil {
+
+    public static final ObjectMapper mapper = new ObjectMapper();
 
     public static Timestamp fromDate(Date date) {
         if (date == null) return null;
@@ -80,5 +87,26 @@ public class LHUtil {
     public static String toLhDbFormat(String val) {
         // TODO: Determine if we want to truncate this by just hashing it.
         return val;
+    }
+
+    public static List<?> strToJsonArr(String jsonStr) {
+        try {
+            return mapper.readValue(jsonStr, List.class);
+        } catch (JsonProcessingException exn) {
+            return null;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Map<String, ?> strToJsonObj(String jsonStr) {
+        try {
+            return mapper.readValue(jsonStr, Map.class);
+        } catch (JsonProcessingException exn) {
+            return null;
+        }
+    }
+
+    public static String b64Encode(byte[] bytes) {
+        return Base64.getEncoder().encodeToString(bytes);
     }
 }

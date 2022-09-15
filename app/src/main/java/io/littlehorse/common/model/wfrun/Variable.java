@@ -1,5 +1,6 @@
 package io.littlehorse.common.model.wfrun;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.server.Tag;
@@ -14,12 +15,18 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class Variable extends GETable<VariablePb> {
 
+    @JsonIgnore
     public VariableValue value;
+    @JsonIgnore
     public String wfRunId;
+    @JsonIgnore
     public int threadRunNumber;
+    @JsonIgnore
     public String name;
+    @JsonIgnore
     public Date date;
 
+    @JsonIgnore
     public Class<VariablePb> getProtoBaseClass() {
         return VariablePb.class;
     }
@@ -45,6 +52,7 @@ public class Variable extends GETable<VariablePb> {
         return out;
     }
 
+    @JsonIgnore
     public List<Tag> getTags() {
         List<Tag> out = new ArrayList<>();
 
@@ -93,10 +101,12 @@ public class Variable extends GETable<VariablePb> {
         return out;
     }
 
+    @JsonIgnore
     public String getObjectId() {
         return getObjectId(wfRunId, threadRunNumber, name);
     }
 
+    @JsonIgnore
     public static String getObjectId(
         String wfRunId,
         int threadNum,
@@ -105,11 +115,41 @@ public class Variable extends GETable<VariablePb> {
         return wfRunId + "-" + threadNum + "-" + name;
     }
 
+    @JsonIgnore
     public Date getCreatedAt() {
         return date;
     }
 
+    @JsonIgnore
     public String getPartitionKey() {
         return wfRunId;
     }
+
+    // The below is just for Jackson
+    public VariableTypePb getType() {
+        return value.type;
+    }
+
+    public Object getVal() {
+        switch(getType()) {
+        case INT:
+            return value.intVal;
+        case DOUBLE:
+            return value.doubleVal;
+        case STR:
+            return value.strVal;
+        case BOOL:
+            return value.boolVal;
+        case JSON_ARR:
+            return LHUtil.strToJsonArr(value.jsonArrVal);
+        case JSON_OBJ:
+            return LHUtil.strToJsonObj(value.jsonObjVal);
+        case BYTES:
+            return LHUtil.b64Encode(value.bytesVal);
+        case UNRECOGNIZED:
+        default:
+            return null;
+        }
+    }
+    // End Jackson section
 }
