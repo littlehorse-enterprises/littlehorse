@@ -236,6 +236,14 @@ public class ServerTopology {
                 schedulerProcessor
             );
 
+            topo.addSink(
+                processorName + "_Sink",
+                LHConstants.TAG_TOPIC_NAME,
+                Serdes.String().serializer(),
+                new LHSerializer<IndexEntryAction>(config),
+                processorName
+            );
+
             // Tag Cache State Store
             StoreBuilder<KeyValueStore<String, Tags>> tagCacheStoreBuilder = Stores.keyValueStoreBuilder(
                 Stores.persistentKeyValueStore(storeName),

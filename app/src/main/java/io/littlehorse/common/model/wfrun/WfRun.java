@@ -114,7 +114,6 @@ public class WfRun extends GETable<WfRunPb> {
     public List<Tag> getTags() {
         List<Tag> out = Arrays.asList(
             new Tag(this, Pair.of("wfSpecName", wfSpecName)),
-            new Tag(this, Pair.of("wfSpecId", wfSpecId)),
             new Tag(
                 this,
                 Pair.of("wfSpecId", wfSpecId),

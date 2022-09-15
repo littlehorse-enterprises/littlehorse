@@ -1,6 +1,7 @@
 package io.littlehorse.server.processors;
 
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.GlobalPOSTable;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
@@ -144,34 +145,42 @@ public class SchedulerProcessor
             ServerTopology.schedulerWfRunSink
         );
 
+        // Update the Data Store and send objects to be Tagged+Indexed
+        // Variables
         for (Map.Entry<String, Variable> entry : wsa.variablePuts.entrySet()) {
             variableStore.put(entry.getKey(), entry.getValue());
-
-            // now forward the thing to be indexed.
-            GenericOutput varOutput = new GenericOutput();
-            varOutput.thingToTag = entry.getValue();
-            context.forward(
-                new Record<>(key, varOutput, timestamp),
-                GETable.getTaggingProcessorName(Variable.class)
-            );
+            forwardforTagging(entry.getValue(), timestamp);
         }
 
+        // TaskRuns
         for (Map.Entry<String, TaskRun> entry : wsa.taskPuts.entrySet()) {
             taskRunStore.put(entry.getKey(), entry.getValue());
-
-            // now forward the thing to be indexed.
-            GenericOutput varOutput = new GenericOutput();
-            varOutput.thingToTag = entry.getValue();
-            context.forward(
-                new Record<>(key, varOutput, timestamp),
-                GETable.getTaggingProcessorName(TaskRun.class)
-            );
+            forwardforTagging(entry.getValue(), timestamp);
         }
 
-        // Now forward the WfRun to be indexed.
-
-        // Save the WfRun
+        // WfRuns
         wfRunStore.put(key, wfRun);
+        forwardforTagging(wfRun, timestamp);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void forwardforTagging(GETable<?> out, long timestamp) {
+        GenericOutput varOutput = new GenericOutput();
+        varOutput.thingToTag = out;
+
+        Record<String, GenericOutput> rec = new Record<>(
+            varOutput.thingToTag.getPartitionKey(),
+            varOutput,
+            timestamp
+        );
+        rec
+            .headers()
+            .add(LHConstants.OBJECT_ID_HEADER, out.getObjectId().getBytes());
+
+        context.forward(
+            rec,
+            GETable.getTaggingProcessorName((Class<GETable<?>>) out.getClass())
+        );
     }
 
     private WfSpec getWfSpec(String id) {

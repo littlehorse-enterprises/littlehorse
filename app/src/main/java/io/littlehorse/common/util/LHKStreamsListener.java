@@ -102,17 +102,16 @@ public class LHKStreamsListener implements StateRestoreListener, StateListener {
             }
             totalCompletedRestores++;
             totalRestoreSeconds += secondsTaken;
-
-            LHUtil.log(
-                "Completed restore for ",
-                restore.topicPart.partition(),
-                restore.topicPart.topic(),
-                ", took ",
-                ((float) (restore.end.getTime() - restore.start.getTime())) /
-                1000.0,
-                ", numRecords: ",
-                totalRestored
-            );
+            // LHUtil.log(
+            //     "Completed restore for ",
+            //     restore.topicPart.partition(),
+            //     restore.topicPart.topic(),
+            //     ", took ",
+            //     ((float) (restore.end.getTime() - restore.start.getTime())) /
+            //     1000.0,
+            //     ", numRecords: ",
+            //     totalRestored
+            // );
         } finally {
             lock.unlock();
         }
@@ -132,13 +131,13 @@ public class LHKStreamsListener implements StateRestoreListener, StateListener {
                 endingOffset - startingOffset
             );
             activeRestores.add(restore);
-            LHUtil.log(
-                "Starting restore for ",
-                topicPartition.partition(),
-                topicPartition.topic(),
-                startingOffset,
-                endingOffset
-            );
+            // LHUtil.log(
+            //     "Starting restore for ",
+            //     topicPartition.partition(),
+            //     topicPartition.topic(),
+            //     startingOffset,
+            //     endingOffset
+            // );
         } finally {
             lock.unlock();
         }

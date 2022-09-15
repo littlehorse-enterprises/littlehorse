@@ -373,6 +373,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         // Now we update the task in the data store
         TaskRun task = getTaskRun(currentNodeRun.position);
         task.startTime = we.time;
+        task.status = LHStatusPb.RUNNING;
         putTask(task);
     }
 
@@ -384,7 +385,10 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             )
         );
         TaskResultEvent ce = we.taskResult;
-        if (currentNodeRun.position > ce.taskRunPosition) {
+        if (
+            currentNodeRun.position > ce.taskRunPosition ||
+            currentNodeRun.status == LHStatusPb.COMPLETED
+        ) {
             // TODO: Determine if this is theoretically impossible.
             // If it's impossible, throw exception to prevent silent bugs.
 
@@ -407,9 +411,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         }
 
         if (currentNodeRun.number != ce.taskRunNumber) {
-            // Out-of-order event due to race conditions between task worker
-            // transactional producer and regular producer
-            return;
+            throw new RuntimeException("This should be impossible");
         }
 
         switch (ce.resultCode) {
@@ -425,6 +427,18 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
                     "Unrecognized TaskResultCode: " + ce.resultCode
                 );
         }
+
+        // Now make the task observable.
+        TaskRun task = getTaskRun(currentNodeRun.position);
+        task.endTime = we.time;
+        task.output = ce.stdout;
+        task.logOutput = ce.stderr;
+        task.status =
+            ce.resultCode == TaskResultCodePb.SUCCESS
+                ? LHStatusPb.COMPLETED
+                : LHStatusPb.ERROR;
+        task.resultCode = ce.resultCode;
+        putTask(task);
     }
 
     public void putTask(TaskRun task) {

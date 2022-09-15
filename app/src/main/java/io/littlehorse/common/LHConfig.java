@@ -68,7 +68,7 @@ public class LHConfig {
 
     public int getWorkerThreads() {
         return Integer.valueOf(
-            getOrSetDefault(LHConstants.NUM_WORKER_THREADS_KEY, "128")
+            getOrSetDefault(LHConstants.NUM_WORKER_THREADS_KEY, "2")
         );
     }
 

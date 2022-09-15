@@ -170,9 +170,9 @@ public class TestWorker {
         ce.stderr = null;
         String stdoutStr =
             "Completed task " + tsr.taskDefName + " " + tsr.wfRunId;
-        for (int i = 0; i < 10; i++) {
-            stdoutStr += stdoutStr;
-        }
+        // for (int i = 0; i < 10; i++) {
+        //     stdoutStr += stdoutStr;
+        // }
         ce.stdout = stdoutStr.getBytes();
         LHUtil.log(tsr.wfRunId, tsr.taskRunPosition);
 
