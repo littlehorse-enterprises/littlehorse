@@ -50,7 +50,7 @@ public class App {
 
         topics.add(
             new NewTopic(
-                LHConstants.INDEX_TOPIC_NAME,
+                LHConstants.TAG_TOPIC_NAME,
                 config.getClusterPartitions(),
                 config.getReplicationFactor()
             )
@@ -66,7 +66,7 @@ public class App {
 
         topics.add(
             new NewTopic(
-                LHConstants.WF_RUN_OBSERVABILITY_TOPIC,
+                LHConstants.OBSERVABILITY_TOPIC,
                 config.getClusterPartitions(),
                 config.getReplicationFactor()
             )

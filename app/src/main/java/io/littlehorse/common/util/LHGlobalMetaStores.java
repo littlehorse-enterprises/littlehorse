@@ -1,10 +1,10 @@
 package io.littlehorse.common.util;
 
 import io.littlehorse.common.model.GlobalPOSTable;
-import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.server.ApiStreamsContext;
+import io.littlehorse.server.processors.util.GenericOutput;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
@@ -13,8 +13,8 @@ public class LHGlobalMetaStores {
     private ReadOnlyKeyValueStore<String, WfSpec> wfSpecStore;
     private ReadOnlyKeyValueStore<String, TaskDef> taskDefStore;
 
-    public <T extends POSTable<?>> LHGlobalMetaStores(
-        final ProcessorContext<String, T> ctx
+    public LHGlobalMetaStores(
+        final ProcessorContext<String, GenericOutput> ctx
     ) {
         wfSpecStore =
             ctx.getStateStore(GlobalPOSTable.getGlobalStoreName(WfSpec.class));

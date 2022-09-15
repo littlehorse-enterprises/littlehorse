@@ -13,6 +13,7 @@ import io.littlehorse.common.model.server.LHResponse;
 import io.littlehorse.common.model.server.POSTableRequest;
 import io.littlehorse.common.proto.LHResponseCodePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
+import io.littlehorse.server.processors.util.GenericOutput;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
@@ -21,12 +22,12 @@ import org.apache.kafka.streams.state.KeyValueStore;
 public class POSTableProcessor<
     U extends MessageOrBuilder, T extends POSTable<U>
 >
-    implements Processor<String, POSTableRequest, String, T> {
+    implements Processor<String, POSTableRequest, String, GenericOutput> {
 
     private KeyValueStore<String, T> store;
     private KeyValueStore<String, LHResponse> responseStore;
     private Class<T> cls;
-    private ProcessorContext<String, T> context;
+    private ProcessorContext<String, GenericOutput> context;
     private LHGlobalMetaStores dbClient;
     private LHConfig config;
 
@@ -36,7 +37,7 @@ public class POSTableProcessor<
     }
 
     @Override
-    public void init(final ProcessorContext<String, T> context) {
+    public void init(final ProcessorContext<String, GenericOutput> context) {
         this.context = context;
         this.store = context.getStateStore(POSTable.getBaseStoreName(cls));
         this.responseStore =
@@ -65,9 +66,11 @@ public class POSTableProcessor<
             newT.handlePost(oldT, dbClient, config);
             resp.result = newT;
             resp.code = LHResponseCodePb.OK;
-            Record<String, T> newRec = new Record<String, T>(
+            GenericOutput out = new GenericOutput();
+            out.thingToTag = newT;
+            Record<String, GenericOutput> newRec = new Record<>(
                 key,
-                newT,
+                out,
                 record.timestamp()
             );
             newRec

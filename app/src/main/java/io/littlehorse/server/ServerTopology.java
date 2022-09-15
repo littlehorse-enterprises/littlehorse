@@ -26,7 +26,8 @@ import io.littlehorse.server.processors.POSTableProcessor;
 import io.littlehorse.server.processors.SchedulerProcessor;
 import io.littlehorse.server.processors.TaggingProcessor;
 import io.littlehorse.server.processors.TimerProcessor;
-import io.littlehorse.server.processors.util.SchedulerOutput;
+import io.littlehorse.server.processors.util.GenericOutput;
+import java.util.Arrays;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.Topology;
@@ -119,7 +120,6 @@ public class ServerTopology {
         Serde<WfRunEvent> evtSerde = new LHSerde<>(WfRunEvent.class, config);
         Serde<WfRun> runSerde = new LHSerde<>(WfRun.class, config);
         Serde<WfSpec> specSerde = new LHSerde<>(WfSpec.class, config);
-        String idxFanoutProcessor = "WfRun Index Fanout Processor";
 
         Runtime
             .getRuntime()
@@ -146,26 +146,15 @@ public class ServerTopology {
             schedulerSource
         );
 
-        topo.addProcessor(
-            idxFanoutProcessor,
-            () -> {
-                return new TaggingProcessor<>(
-                    WfRun.class,
-                    GETable.getTagStoreName(WfRun.class)
-                );
-            },
-            schedulerProcessor
-        );
-
         // Add sink for Observability Events
         topo.addSink(
             schedulerWfRunSink,
-            LHConstants.WF_RUN_OBSERVABILITY_TOPIC,
+            LHConstants.OBSERVABILITY_TOPIC,
             Serdes.String().serializer(),
             (topic, schedulerOutput) -> {
                 // Serializer
                 return (
-                    (SchedulerOutput) schedulerOutput
+                    (GenericOutput) schedulerOutput
                 ).observabilityEvents.toBytes(config);
             },
             schedulerProcessor
@@ -178,12 +167,12 @@ public class ServerTopology {
                 // TODO: Eventually, kafka topics may not exactly match with
                 // task def name; or task def name may not match task def id.
                 // May need to look up from task store.
-                return ((SchedulerOutput) v).request.taskDefName;
+                return ((GenericOutput) v).request.taskDefName;
             },
             Serdes.String().serializer(),
             // Serializer
             (topic, schedulerOutput) -> {
-                return ((SchedulerOutput) schedulerOutput).request.toBytes(
+                return ((GenericOutput) schedulerOutput).request.toBytes(
                         config
                     );
             },
@@ -196,9 +185,7 @@ public class ServerTopology {
             LHConstants.TIMER_TOPIC_NAME,
             Serdes.String().serializer(),
             (topic, schedulerOutput) -> {
-                return ((SchedulerOutput) schedulerOutput).timer.toBytes(
-                        config
-                    );
+                return ((GenericOutput) schedulerOutput).timer.toBytes(config);
             },
             schedulerProcessor
         );
@@ -233,15 +220,30 @@ public class ServerTopology {
         );
         topo.addStateStore(varValStoreBuilder, schedulerProcessor);
 
-        // Tag Cache State Store
-        StoreBuilder<KeyValueStore<String, Tags>> tagCacheStoreBuilder = Stores.keyValueStoreBuilder(
-            Stores.persistentKeyValueStore(
-                GETable.getTagStoreName(WfRun.class)
-            ),
-            Serdes.String(),
-            new LHSerde<>(Tags.class, config)
-        );
-        topo.addStateStore(tagCacheStoreBuilder, idxFanoutProcessor);
+        for (Class<? extends GETable<?>> cls : Arrays.asList(
+            Variable.class,
+            TaskRun.class,
+            WfRun.class
+        )) {
+            String storeName = GETable.getTagStoreName(cls);
+            String processorName = GETable.getTaggingProcessorName(cls);
+
+            topo.addProcessor(
+                processorName,
+                () -> {
+                    return new TaggingProcessor(cls);
+                },
+                schedulerProcessor
+            );
+
+            // Tag Cache State Store
+            StoreBuilder<KeyValueStore<String, Tags>> tagCacheStoreBuilder = Stores.keyValueStoreBuilder(
+                Stores.persistentKeyValueStore(storeName),
+                Serdes.String(),
+                new LHSerde<>(Tags.class, config)
+            );
+            topo.addStateStore(tagCacheStoreBuilder, processorName);
+        }
     }
 
     private static <
@@ -276,12 +278,15 @@ public class ServerTopology {
         );
     }
 
+    /**
+     * This subtopology processes all of the Tag events sent to the
+     */
     private static void addIdxSubTopology(Topology topo, LHConfig config) {
         topo.addSource(
             "Index Source",
             Serdes.String().deserializer(),
             new LHDeserializer<>(IndexEntryAction.class, config),
-            LHConstants.INDEX_TOPIC_NAME
+            LHConstants.TAG_TOPIC_NAME
         );
 
         topo.addProcessor(
@@ -309,7 +314,7 @@ public class ServerTopology {
     ) {
         String sourceName = POSTable.getTopoSourceName(cls);
         String baseProcessorName = POSTable.getTopoProcessorName(cls);
-        String idxFanoutProcessorName = POSTable.getIdxFanoutProcessorName(cls);
+        String taggingProcessorName = POSTable.getTaggingProcessorName(cls);
         String idxSink = POSTable.getIdxSinkName(cls);
         String entitySink = POSTable.getEntitySinkName(cls);
 
@@ -332,27 +337,28 @@ public class ServerTopology {
             entitySink,
             POSTable.getEntityTopicName(cls),
             Serdes.String().serializer(),
-            new LHSerializer<T>(config),
+            (topic, genericOutput) -> {
+                return ((GenericOutput) genericOutput).thingToTag.toBytes(
+                        config
+                    );
+            },
             baseProcessorName
         );
 
         topo.addProcessor(
-            idxFanoutProcessorName,
+            taggingProcessorName,
             () -> {
-                return new TaggingProcessor<>(
-                    cls,
-                    GETable.getTagStoreName(cls)
-                );
+                return new TaggingProcessor(cls);
             },
             baseProcessorName
         );
 
         topo.addSink(
             idxSink,
-            LHConstants.INDEX_TOPIC_NAME,
+            LHConstants.TAG_TOPIC_NAME,
             Serdes.String().serializer(),
             new LHSerializer<IndexEntryAction>(config),
-            idxFanoutProcessorName
+            taggingProcessorName
         );
 
         StoreBuilder<KeyValueStore<String, T>> baseStoreBuilder = Stores.keyValueStoreBuilder(
@@ -367,7 +373,7 @@ public class ServerTopology {
             Serdes.String(),
             new LHSerde<>(Tags.class, config)
         );
-        topo.addStateStore(idxStateStoreBuilder, idxFanoutProcessorName);
+        topo.addStateStore(idxStateStoreBuilder, taggingProcessorName);
 
         StoreBuilder<KeyValueStore<String, LHResponse>> responseStoreBuilder = Stores.keyValueStoreBuilder(
             Stores.persistentKeyValueStore(POSTable.getResponseStoreName(cls)),

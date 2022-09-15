@@ -30,6 +30,12 @@ public abstract class GETable<T extends MessageOrBuilder>
         return cls.getSimpleName() + "_TagCache";
     }
 
+    public static String getTaggingProcessorName(
+        Class<? extends GETable<?>> cls
+    ) {
+        return cls.getSimpleName() + "_TaggingProcessor";
+    }
+
     public static GETableClassEnumPb getTypeEnum(
         Class<? extends GETable<?>> cls
     ) {

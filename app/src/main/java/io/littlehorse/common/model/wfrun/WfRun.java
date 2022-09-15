@@ -20,6 +20,7 @@ import io.littlehorse.common.proto.ThreadRunPb;
 import io.littlehorse.common.proto.WfRunPb;
 import io.littlehorse.common.proto.WfRunPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.server.processors.util.WfRunStoreAccess;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -131,6 +132,9 @@ public class WfRun extends GETable<WfRunPb> {
 
     @JsonIgnore
     public List<TaskScheduleRequest> tasksToSchedule;
+
+    @JsonIgnore
+    public WfRunStoreAccess stores;
 
     @JsonIgnore
     public ObservabilityEvents oEvents;

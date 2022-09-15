@@ -45,12 +45,6 @@ public abstract class POSTable<T extends MessageOrBuilder> extends GETable<T> {
         return cls.getSimpleName() + "_Processor";
     }
 
-    public static String getIdxFanoutProcessorName(
-        Class<? extends POSTable<?>> cls
-    ) {
-        return cls.getSimpleName() + "_IndexFanoutProcessor";
-    }
-
     public static String getIdxSinkName(Class<? extends POSTable<?>> cls) {
         return cls.getSimpleName() + "_IndexSink";
     }

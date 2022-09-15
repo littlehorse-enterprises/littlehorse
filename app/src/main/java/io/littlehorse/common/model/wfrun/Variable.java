@@ -94,7 +94,15 @@ public class Variable extends GETable<VariablePb> {
     }
 
     public String getObjectId() {
-        return wfRunId + "-" + threadRunNumber + "-" + name;
+        return getObjectId(wfRunId, threadRunNumber, name);
+    }
+
+    public static String getObjectId(
+        String wfRunId,
+        int threadNum,
+        String name
+    ) {
+        return wfRunId + "-" + threadNum + "-" + name;
     }
 
     public Date getCreatedAt() {

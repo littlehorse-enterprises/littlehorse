@@ -27,12 +27,11 @@ public class LHConstants {
 
     public static final String WF_RUN_EVENT_TOPIC = "WFRun_Event";
     public static final String TIMER_TOPIC_NAME = "Timer";
-    public static final String WF_RUN_OBSERVABILITY_TOPIC =
-        "WFRun_Observability";
+    public static final String OBSERVABILITY_TOPIC = "Observability";
 
     public static final String TIMER_STORE_NAME = "Timer_Store";
     public static final String INDEX_STORE_NAME = "Core_Server_Index_Store";
-    public static final String INDEX_TOPIC_NAME = "Index_Entry_Actions";
+    public static final String TAG_TOPIC_NAME = "Tag_Topics";
 
     public static final String ADVERTISED_PROTOCOL_KEY =
         "LHORSE_ADVERTISED_PROTOCOL";

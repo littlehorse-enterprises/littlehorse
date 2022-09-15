@@ -20,6 +20,7 @@ import io.littlehorse.common.proto.WfSpecPb;
 import io.littlehorse.common.proto.WfSpecPbOrBuilder;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.server.processors.util.WfRunStoreAccess;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -294,9 +295,11 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
     public WfRun startNewRun(
         WfRunEvent e,
         List<TaskScheduleRequest> tasksToSchedule,
-        List<LHTimer> timersToSchedule
+        List<LHTimer> timersToSchedule,
+        WfRunStoreAccess wsa
     ) {
         WfRun out = new WfRun();
+        out.stores = wsa;
         out.id = e.runRequest.wfRunId;
         out.oEvents.wfRunId = out.id;
 

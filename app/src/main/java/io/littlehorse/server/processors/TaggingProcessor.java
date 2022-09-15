@@ -1,12 +1,12 @@
 package io.littlehorse.server.processors;
 
-import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.server.IndexEntryAction;
 import io.littlehorse.common.model.server.Tag;
 import io.littlehorse.common.model.server.Tags;
 import io.littlehorse.common.proto.IndexActionEnum;
+import io.littlehorse.server.processors.util.GenericOutput;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.kafka.streams.processor.api.Processor;
@@ -14,16 +14,15 @@ import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 
-public class TaggingProcessor<U extends MessageOrBuilder, T extends GETable<U>>
-    implements Processor<String, T, String, IndexEntryAction> {
+public class TaggingProcessor
+    implements Processor<String, GenericOutput, String, IndexEntryAction> {
 
     private ProcessorContext<String, IndexEntryAction> ctx;
     private KeyValueStore<String, Tags> store;
-    // private Class<T> cls;
     private String storeName;
 
-    public TaggingProcessor(Class<T> cls, String storeName) {
-        this.storeName = storeName;
+    public TaggingProcessor(Class<? extends GETable<?>> cls) {
+        this.storeName = GETable.getTagStoreName(cls);
     }
 
     public void init(final ProcessorContext<String, IndexEntryAction> ctx) {
@@ -31,11 +30,11 @@ public class TaggingProcessor<U extends MessageOrBuilder, T extends GETable<U>>
         this.store = ctx.getStateStore(storeName);
     }
 
-    public void process(final Record<String, T> record) {
+    public void process(final Record<String, GenericOutput> record) {
         String objectId = new String(
             record.headers().lastHeader(LHConstants.OBJECT_ID_HEADER).value()
         );
-        T newT = record.value();
+        GETable<?> newT = record.value().thingToTag;
 
         Tags oldEntriesObj = store.get(objectId);
         List<Tag> oldIdx =

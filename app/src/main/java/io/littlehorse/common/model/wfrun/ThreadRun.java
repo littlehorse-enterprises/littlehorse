@@ -292,11 +292,32 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         tsr.wfSpecId = wfRun.wfSpecId;
         tsr.nodeName = node.name;
 
+        Date scheduleTime = new Date();
+
         wfRun.oEvents.add(
-            new ObservabilityEvent(new TaskScheduledOe(tsr), new Date())
+            new ObservabilityEvent(new TaskScheduledOe(tsr), scheduleTime)
         );
 
         wfRun.tasksToSchedule.add(tsr);
+
+        // Now we need to add the TaskRun to the store so it can be queried.
+        TaskRun task = new TaskRun();
+        task.wfRunId = wfRun.id;
+        task.threadRunNumber = tsr.threadRunNumber;
+        task.position = tsr.taskRunPosition;
+
+        task.number = tsr.taskRunNumber;
+        task.attemptNumber = tsr.attemptNumber;
+        task.status = LHStatusPb.STARTING;
+
+        task.scheduleTime = scheduleTime;
+
+        task.wfSpecId = wfRun.wfSpecId;
+        task.wfSpecName = wfRun.wfSpecName;
+        task.nodeName = tsr.nodeName;
+        task.taskDefId = node.taskNode.taskDefName;
+
+        putTask(task);
     }
 
     public void setStatus(LHStatusPb newStatus) {
@@ -348,6 +369,11 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         timerEvt.taskResult.time = timerEvt.time;
 
         wfRun.timersToSchedule.add(new LHTimer(timerEvt, timerEvt.time));
+
+        // Now we update the task in the data store
+        TaskRun task = getTaskRun(currentNodeRun.position);
+        task.startTime = we.time;
+        putTask(task);
     }
 
     public void processCompletedEvent(WfRunEvent we) {
@@ -399,5 +425,21 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
                     "Unrecognized TaskResultCode: " + ce.resultCode
                 );
         }
+    }
+
+    public void putTask(TaskRun task) {
+        wfRun.stores.putTask(task);
+    }
+
+    public TaskRun getTaskRun(int position) {
+        return wfRun.stores.getTaskRun(number, position);
+    }
+
+    public void putLocalVariable(String name, VariableValue var) {
+        wfRun.stores.putVariable(name, var, number);
+    }
+
+    public VariableValue getLocalVariable(String name) {
+        return wfRun.stores.getVariable(name, number);
     }
 }
