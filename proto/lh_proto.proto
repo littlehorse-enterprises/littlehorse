@@ -129,12 +129,47 @@ message EdgePb {
     string sink_node_name = 1;
 }
 
+enum VariableMutationTypePb {
+    ASSIGN = 0;
+    ADD = 1;
+    EXTEND = 2;
+    SUBTRACT = 3;
+    MULTIPLY = 4;
+    DIVIDE = 5;
+    REMOVE_IF_PRESENT = 6;
+    REMOVE_INDEX = 7;
+    REMOVE_KEY = 8;
+}
+
+message VariableAssignmentPb {
+    optional string json_path = 1;
+    optional VariableValuePb default_value = 2;
+    oneof source {
+        string variable_name = 3;
+        VariableValuePb literal_value = 4;
+        bool node_output = 5; // Dummy protobuf syntax hack
+    }
+}
+
+message VariableMutationPb {
+    string lhs_name = 1;
+    optional string lhs_json_path = 2;
+    VariableMutationTypePb operation = 3;
+    oneof rhs_value {
+        VariableAssignmentPb source_variable = 4;
+        VariableValuePb literal_value = 5;
+        int32 task_run_output_number = 6;
+    }
+    optional string rhs_json_path = 7;
+}
+
 message NodePb {
     repeated EdgePb outgoing_edges = 1;
+    repeated VariableMutationPb variable_mutations = 2;
     oneof node {
-        TaskNodePb task = 2;
-        EntrypointNodePb entrypoint = 3;
-        ExitNodePb exit = 4;
+        TaskNodePb task = 3;
+        EntrypointNodePb entrypoint = 4;
+        ExitNodePb exit = 5;
     }
 }
 

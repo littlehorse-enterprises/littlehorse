@@ -17,6 +17,7 @@ private static final long serialVersionUID = 0L;
   }
   private NodePb() {
     outgoingEdges_ = java.util.Collections.emptyList();
+    variableMutations_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -60,8 +61,17 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 18: {
+            if (!((mutable_bitField0_ & 0x00000002) != 0)) {
+              variableMutations_ = new java.util.ArrayList<io.littlehorse.common.proto.VariableMutationPb>();
+              mutable_bitField0_ |= 0x00000002;
+            }
+            variableMutations_.add(
+                input.readMessage(io.littlehorse.common.proto.VariableMutationPb.parser(), extensionRegistry));
+            break;
+          }
+          case 26: {
             io.littlehorse.common.proto.TaskNodePb.Builder subBuilder = null;
-            if (nodeCase_ == 2) {
+            if (nodeCase_ == 3) {
               subBuilder = ((io.littlehorse.common.proto.TaskNodePb) node_).toBuilder();
             }
             node_ =
@@ -70,12 +80,12 @@ private static final long serialVersionUID = 0L;
               subBuilder.mergeFrom((io.littlehorse.common.proto.TaskNodePb) node_);
               node_ = subBuilder.buildPartial();
             }
-            nodeCase_ = 2;
+            nodeCase_ = 3;
             break;
           }
-          case 26: {
+          case 34: {
             io.littlehorse.common.proto.EntrypointNodePb.Builder subBuilder = null;
-            if (nodeCase_ == 3) {
+            if (nodeCase_ == 4) {
               subBuilder = ((io.littlehorse.common.proto.EntrypointNodePb) node_).toBuilder();
             }
             node_ =
@@ -84,12 +94,12 @@ private static final long serialVersionUID = 0L;
               subBuilder.mergeFrom((io.littlehorse.common.proto.EntrypointNodePb) node_);
               node_ = subBuilder.buildPartial();
             }
-            nodeCase_ = 3;
+            nodeCase_ = 4;
             break;
           }
-          case 34: {
+          case 42: {
             io.littlehorse.common.proto.ExitNodePb.Builder subBuilder = null;
-            if (nodeCase_ == 4) {
+            if (nodeCase_ == 5) {
               subBuilder = ((io.littlehorse.common.proto.ExitNodePb) node_).toBuilder();
             }
             node_ =
@@ -98,7 +108,7 @@ private static final long serialVersionUID = 0L;
               subBuilder.mergeFrom((io.littlehorse.common.proto.ExitNodePb) node_);
               node_ = subBuilder.buildPartial();
             }
-            nodeCase_ = 4;
+            nodeCase_ = 5;
             break;
           }
           default: {
@@ -118,6 +128,9 @@ private static final long serialVersionUID = 0L;
     } finally {
       if (((mutable_bitField0_ & 0x00000001) != 0)) {
         outgoingEdges_ = java.util.Collections.unmodifiableList(outgoingEdges_);
+      }
+      if (((mutable_bitField0_ & 0x00000002) != 0)) {
+        variableMutations_ = java.util.Collections.unmodifiableList(variableMutations_);
       }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
@@ -141,9 +154,9 @@ private static final long serialVersionUID = 0L;
   public enum NodeCase
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    TASK(2),
-    ENTRYPOINT(3),
-    EXIT(4),
+    TASK(3),
+    ENTRYPOINT(4),
+    EXIT(5),
     NODE_NOT_SET(0);
     private final int value;
     private NodeCase(int value) {
@@ -161,9 +174,9 @@ private static final long serialVersionUID = 0L;
 
     public static NodeCase forNumber(int value) {
       switch (value) {
-        case 2: return TASK;
-        case 3: return ENTRYPOINT;
-        case 4: return EXIT;
+        case 3: return TASK;
+        case 4: return ENTRYPOINT;
+        case 5: return EXIT;
         case 0: return NODE_NOT_SET;
         default: return null;
       }
@@ -219,94 +232,134 @@ private static final long serialVersionUID = 0L;
     return outgoingEdges_.get(index);
   }
 
-  public static final int TASK_FIELD_NUMBER = 2;
+  public static final int VARIABLE_MUTATIONS_FIELD_NUMBER = 2;
+  private java.util.List<io.littlehorse.common.proto.VariableMutationPb> variableMutations_;
   /**
-   * <code>.lh_proto.TaskNodePb task = 2;</code>
+   * <code>repeated .lh_proto.VariableMutationPb variable_mutations = 2;</code>
+   */
+  @java.lang.Override
+  public java.util.List<io.littlehorse.common.proto.VariableMutationPb> getVariableMutationsList() {
+    return variableMutations_;
+  }
+  /**
+   * <code>repeated .lh_proto.VariableMutationPb variable_mutations = 2;</code>
+   */
+  @java.lang.Override
+  public java.util.List<? extends io.littlehorse.common.proto.VariableMutationPbOrBuilder> 
+      getVariableMutationsOrBuilderList() {
+    return variableMutations_;
+  }
+  /**
+   * <code>repeated .lh_proto.VariableMutationPb variable_mutations = 2;</code>
+   */
+  @java.lang.Override
+  public int getVariableMutationsCount() {
+    return variableMutations_.size();
+  }
+  /**
+   * <code>repeated .lh_proto.VariableMutationPb variable_mutations = 2;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.VariableMutationPb getVariableMutations(int index) {
+    return variableMutations_.get(index);
+  }
+  /**
+   * <code>repeated .lh_proto.VariableMutationPb variable_mutations = 2;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.VariableMutationPbOrBuilder getVariableMutationsOrBuilder(
+      int index) {
+    return variableMutations_.get(index);
+  }
+
+  public static final int TASK_FIELD_NUMBER = 3;
+  /**
+   * <code>.lh_proto.TaskNodePb task = 3;</code>
    * @return Whether the task field is set.
    */
   @java.lang.Override
   public boolean hasTask() {
-    return nodeCase_ == 2;
+    return nodeCase_ == 3;
   }
   /**
-   * <code>.lh_proto.TaskNodePb task = 2;</code>
+   * <code>.lh_proto.TaskNodePb task = 3;</code>
    * @return The task.
    */
   @java.lang.Override
   public io.littlehorse.common.proto.TaskNodePb getTask() {
-    if (nodeCase_ == 2) {
+    if (nodeCase_ == 3) {
        return (io.littlehorse.common.proto.TaskNodePb) node_;
     }
     return io.littlehorse.common.proto.TaskNodePb.getDefaultInstance();
   }
   /**
-   * <code>.lh_proto.TaskNodePb task = 2;</code>
+   * <code>.lh_proto.TaskNodePb task = 3;</code>
    */
   @java.lang.Override
   public io.littlehorse.common.proto.TaskNodePbOrBuilder getTaskOrBuilder() {
-    if (nodeCase_ == 2) {
+    if (nodeCase_ == 3) {
        return (io.littlehorse.common.proto.TaskNodePb) node_;
     }
     return io.littlehorse.common.proto.TaskNodePb.getDefaultInstance();
   }
 
-  public static final int ENTRYPOINT_FIELD_NUMBER = 3;
+  public static final int ENTRYPOINT_FIELD_NUMBER = 4;
   /**
-   * <code>.lh_proto.EntrypointNodePb entrypoint = 3;</code>
+   * <code>.lh_proto.EntrypointNodePb entrypoint = 4;</code>
    * @return Whether the entrypoint field is set.
    */
   @java.lang.Override
   public boolean hasEntrypoint() {
-    return nodeCase_ == 3;
+    return nodeCase_ == 4;
   }
   /**
-   * <code>.lh_proto.EntrypointNodePb entrypoint = 3;</code>
+   * <code>.lh_proto.EntrypointNodePb entrypoint = 4;</code>
    * @return The entrypoint.
    */
   @java.lang.Override
   public io.littlehorse.common.proto.EntrypointNodePb getEntrypoint() {
-    if (nodeCase_ == 3) {
+    if (nodeCase_ == 4) {
        return (io.littlehorse.common.proto.EntrypointNodePb) node_;
     }
     return io.littlehorse.common.proto.EntrypointNodePb.getDefaultInstance();
   }
   /**
-   * <code>.lh_proto.EntrypointNodePb entrypoint = 3;</code>
+   * <code>.lh_proto.EntrypointNodePb entrypoint = 4;</code>
    */
   @java.lang.Override
   public io.littlehorse.common.proto.EntrypointNodePbOrBuilder getEntrypointOrBuilder() {
-    if (nodeCase_ == 3) {
+    if (nodeCase_ == 4) {
        return (io.littlehorse.common.proto.EntrypointNodePb) node_;
     }
     return io.littlehorse.common.proto.EntrypointNodePb.getDefaultInstance();
   }
 
-  public static final int EXIT_FIELD_NUMBER = 4;
+  public static final int EXIT_FIELD_NUMBER = 5;
   /**
-   * <code>.lh_proto.ExitNodePb exit = 4;</code>
+   * <code>.lh_proto.ExitNodePb exit = 5;</code>
    * @return Whether the exit field is set.
    */
   @java.lang.Override
   public boolean hasExit() {
-    return nodeCase_ == 4;
+    return nodeCase_ == 5;
   }
   /**
-   * <code>.lh_proto.ExitNodePb exit = 4;</code>
+   * <code>.lh_proto.ExitNodePb exit = 5;</code>
    * @return The exit.
    */
   @java.lang.Override
   public io.littlehorse.common.proto.ExitNodePb getExit() {
-    if (nodeCase_ == 4) {
+    if (nodeCase_ == 5) {
        return (io.littlehorse.common.proto.ExitNodePb) node_;
     }
     return io.littlehorse.common.proto.ExitNodePb.getDefaultInstance();
   }
   /**
-   * <code>.lh_proto.ExitNodePb exit = 4;</code>
+   * <code>.lh_proto.ExitNodePb exit = 5;</code>
    */
   @java.lang.Override
   public io.littlehorse.common.proto.ExitNodePbOrBuilder getExitOrBuilder() {
-    if (nodeCase_ == 4) {
+    if (nodeCase_ == 5) {
        return (io.littlehorse.common.proto.ExitNodePb) node_;
     }
     return io.littlehorse.common.proto.ExitNodePb.getDefaultInstance();
@@ -329,14 +382,17 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < outgoingEdges_.size(); i++) {
       output.writeMessage(1, outgoingEdges_.get(i));
     }
-    if (nodeCase_ == 2) {
-      output.writeMessage(2, (io.littlehorse.common.proto.TaskNodePb) node_);
+    for (int i = 0; i < variableMutations_.size(); i++) {
+      output.writeMessage(2, variableMutations_.get(i));
     }
     if (nodeCase_ == 3) {
-      output.writeMessage(3, (io.littlehorse.common.proto.EntrypointNodePb) node_);
+      output.writeMessage(3, (io.littlehorse.common.proto.TaskNodePb) node_);
     }
     if (nodeCase_ == 4) {
-      output.writeMessage(4, (io.littlehorse.common.proto.ExitNodePb) node_);
+      output.writeMessage(4, (io.littlehorse.common.proto.EntrypointNodePb) node_);
+    }
+    if (nodeCase_ == 5) {
+      output.writeMessage(5, (io.littlehorse.common.proto.ExitNodePb) node_);
     }
     unknownFields.writeTo(output);
   }
@@ -351,17 +407,21 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, outgoingEdges_.get(i));
     }
-    if (nodeCase_ == 2) {
+    for (int i = 0; i < variableMutations_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, (io.littlehorse.common.proto.TaskNodePb) node_);
+        .computeMessageSize(2, variableMutations_.get(i));
     }
     if (nodeCase_ == 3) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, (io.littlehorse.common.proto.EntrypointNodePb) node_);
+        .computeMessageSize(3, (io.littlehorse.common.proto.TaskNodePb) node_);
     }
     if (nodeCase_ == 4) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, (io.littlehorse.common.proto.ExitNodePb) node_);
+        .computeMessageSize(4, (io.littlehorse.common.proto.EntrypointNodePb) node_);
+    }
+    if (nodeCase_ == 5) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(5, (io.littlehorse.common.proto.ExitNodePb) node_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -380,17 +440,19 @@ private static final long serialVersionUID = 0L;
 
     if (!getOutgoingEdgesList()
         .equals(other.getOutgoingEdgesList())) return false;
+    if (!getVariableMutationsList()
+        .equals(other.getVariableMutationsList())) return false;
     if (!getNodeCase().equals(other.getNodeCase())) return false;
     switch (nodeCase_) {
-      case 2:
+      case 3:
         if (!getTask()
             .equals(other.getTask())) return false;
         break;
-      case 3:
+      case 4:
         if (!getEntrypoint()
             .equals(other.getEntrypoint())) return false;
         break;
-      case 4:
+      case 5:
         if (!getExit()
             .equals(other.getExit())) return false;
         break;
@@ -412,16 +474,20 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + OUTGOING_EDGES_FIELD_NUMBER;
       hash = (53 * hash) + getOutgoingEdgesList().hashCode();
     }
+    if (getVariableMutationsCount() > 0) {
+      hash = (37 * hash) + VARIABLE_MUTATIONS_FIELD_NUMBER;
+      hash = (53 * hash) + getVariableMutationsList().hashCode();
+    }
     switch (nodeCase_) {
-      case 2:
+      case 3:
         hash = (37 * hash) + TASK_FIELD_NUMBER;
         hash = (53 * hash) + getTask().hashCode();
         break;
-      case 3:
+      case 4:
         hash = (37 * hash) + ENTRYPOINT_FIELD_NUMBER;
         hash = (53 * hash) + getEntrypoint().hashCode();
         break;
-      case 4:
+      case 5:
         hash = (37 * hash) + EXIT_FIELD_NUMBER;
         hash = (53 * hash) + getExit().hashCode();
         break;
@@ -557,6 +623,7 @@ private static final long serialVersionUID = 0L;
       if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
         getOutgoingEdgesFieldBuilder();
+        getVariableMutationsFieldBuilder();
       }
     }
     @java.lang.Override
@@ -567,6 +634,12 @@ private static final long serialVersionUID = 0L;
         bitField0_ = (bitField0_ & ~0x00000001);
       } else {
         outgoingEdgesBuilder_.clear();
+      }
+      if (variableMutationsBuilder_ == null) {
+        variableMutations_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000002);
+      } else {
+        variableMutationsBuilder_.clear();
       }
       nodeCase_ = 0;
       node_ = null;
@@ -606,21 +679,30 @@ private static final long serialVersionUID = 0L;
       } else {
         result.outgoingEdges_ = outgoingEdgesBuilder_.build();
       }
-      if (nodeCase_ == 2) {
+      if (variableMutationsBuilder_ == null) {
+        if (((bitField0_ & 0x00000002) != 0)) {
+          variableMutations_ = java.util.Collections.unmodifiableList(variableMutations_);
+          bitField0_ = (bitField0_ & ~0x00000002);
+        }
+        result.variableMutations_ = variableMutations_;
+      } else {
+        result.variableMutations_ = variableMutationsBuilder_.build();
+      }
+      if (nodeCase_ == 3) {
         if (taskBuilder_ == null) {
           result.node_ = node_;
         } else {
           result.node_ = taskBuilder_.build();
         }
       }
-      if (nodeCase_ == 3) {
+      if (nodeCase_ == 4) {
         if (entrypointBuilder_ == null) {
           result.node_ = node_;
         } else {
           result.node_ = entrypointBuilder_.build();
         }
       }
-      if (nodeCase_ == 4) {
+      if (nodeCase_ == 5) {
         if (exitBuilder_ == null) {
           result.node_ = node_;
         } else {
@@ -699,6 +781,32 @@ private static final long serialVersionUID = 0L;
                  getOutgoingEdgesFieldBuilder() : null;
           } else {
             outgoingEdgesBuilder_.addAllMessages(other.outgoingEdges_);
+          }
+        }
+      }
+      if (variableMutationsBuilder_ == null) {
+        if (!other.variableMutations_.isEmpty()) {
+          if (variableMutations_.isEmpty()) {
+            variableMutations_ = other.variableMutations_;
+            bitField0_ = (bitField0_ & ~0x00000002);
+          } else {
+            ensureVariableMutationsIsMutable();
+            variableMutations_.addAll(other.variableMutations_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.variableMutations_.isEmpty()) {
+          if (variableMutationsBuilder_.isEmpty()) {
+            variableMutationsBuilder_.dispose();
+            variableMutationsBuilder_ = null;
+            variableMutations_ = other.variableMutations_;
+            bitField0_ = (bitField0_ & ~0x00000002);
+            variableMutationsBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getVariableMutationsFieldBuilder() : null;
+          } else {
+            variableMutationsBuilder_.addAllMessages(other.variableMutations_);
           }
         }
       }
@@ -1004,36 +1112,276 @@ private static final long serialVersionUID = 0L;
       return outgoingEdgesBuilder_;
     }
 
+    private java.util.List<io.littlehorse.common.proto.VariableMutationPb> variableMutations_ =
+      java.util.Collections.emptyList();
+    private void ensureVariableMutationsIsMutable() {
+      if (!((bitField0_ & 0x00000002) != 0)) {
+        variableMutations_ = new java.util.ArrayList<io.littlehorse.common.proto.VariableMutationPb>(variableMutations_);
+        bitField0_ |= 0x00000002;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.common.proto.VariableMutationPb, io.littlehorse.common.proto.VariableMutationPb.Builder, io.littlehorse.common.proto.VariableMutationPbOrBuilder> variableMutationsBuilder_;
+
+    /**
+     * <code>repeated .lh_proto.VariableMutationPb variable_mutations = 2;</code>
+     */
+    public java.util.List<io.littlehorse.common.proto.VariableMutationPb> getVariableMutationsList() {
+      if (variableMutationsBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(variableMutations_);
+      } else {
+        return variableMutationsBuilder_.getMessageList();
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.VariableMutationPb variable_mutations = 2;</code>
+     */
+    public int getVariableMutationsCount() {
+      if (variableMutationsBuilder_ == null) {
+        return variableMutations_.size();
+      } else {
+        return variableMutationsBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.VariableMutationPb variable_mutations = 2;</code>
+     */
+    public io.littlehorse.common.proto.VariableMutationPb getVariableMutations(int index) {
+      if (variableMutationsBuilder_ == null) {
+        return variableMutations_.get(index);
+      } else {
+        return variableMutationsBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.VariableMutationPb variable_mutations = 2;</code>
+     */
+    public Builder setVariableMutations(
+        int index, io.littlehorse.common.proto.VariableMutationPb value) {
+      if (variableMutationsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureVariableMutationsIsMutable();
+        variableMutations_.set(index, value);
+        onChanged();
+      } else {
+        variableMutationsBuilder_.setMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.VariableMutationPb variable_mutations = 2;</code>
+     */
+    public Builder setVariableMutations(
+        int index, io.littlehorse.common.proto.VariableMutationPb.Builder builderForValue) {
+      if (variableMutationsBuilder_ == null) {
+        ensureVariableMutationsIsMutable();
+        variableMutations_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        variableMutationsBuilder_.setMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.VariableMutationPb variable_mutations = 2;</code>
+     */
+    public Builder addVariableMutations(io.littlehorse.common.proto.VariableMutationPb value) {
+      if (variableMutationsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureVariableMutationsIsMutable();
+        variableMutations_.add(value);
+        onChanged();
+      } else {
+        variableMutationsBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.VariableMutationPb variable_mutations = 2;</code>
+     */
+    public Builder addVariableMutations(
+        int index, io.littlehorse.common.proto.VariableMutationPb value) {
+      if (variableMutationsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureVariableMutationsIsMutable();
+        variableMutations_.add(index, value);
+        onChanged();
+      } else {
+        variableMutationsBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.VariableMutationPb variable_mutations = 2;</code>
+     */
+    public Builder addVariableMutations(
+        io.littlehorse.common.proto.VariableMutationPb.Builder builderForValue) {
+      if (variableMutationsBuilder_ == null) {
+        ensureVariableMutationsIsMutable();
+        variableMutations_.add(builderForValue.build());
+        onChanged();
+      } else {
+        variableMutationsBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.VariableMutationPb variable_mutations = 2;</code>
+     */
+    public Builder addVariableMutations(
+        int index, io.littlehorse.common.proto.VariableMutationPb.Builder builderForValue) {
+      if (variableMutationsBuilder_ == null) {
+        ensureVariableMutationsIsMutable();
+        variableMutations_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        variableMutationsBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.VariableMutationPb variable_mutations = 2;</code>
+     */
+    public Builder addAllVariableMutations(
+        java.lang.Iterable<? extends io.littlehorse.common.proto.VariableMutationPb> values) {
+      if (variableMutationsBuilder_ == null) {
+        ensureVariableMutationsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, variableMutations_);
+        onChanged();
+      } else {
+        variableMutationsBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.VariableMutationPb variable_mutations = 2;</code>
+     */
+    public Builder clearVariableMutations() {
+      if (variableMutationsBuilder_ == null) {
+        variableMutations_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+      } else {
+        variableMutationsBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.VariableMutationPb variable_mutations = 2;</code>
+     */
+    public Builder removeVariableMutations(int index) {
+      if (variableMutationsBuilder_ == null) {
+        ensureVariableMutationsIsMutable();
+        variableMutations_.remove(index);
+        onChanged();
+      } else {
+        variableMutationsBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.VariableMutationPb variable_mutations = 2;</code>
+     */
+    public io.littlehorse.common.proto.VariableMutationPb.Builder getVariableMutationsBuilder(
+        int index) {
+      return getVariableMutationsFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .lh_proto.VariableMutationPb variable_mutations = 2;</code>
+     */
+    public io.littlehorse.common.proto.VariableMutationPbOrBuilder getVariableMutationsOrBuilder(
+        int index) {
+      if (variableMutationsBuilder_ == null) {
+        return variableMutations_.get(index);  } else {
+        return variableMutationsBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.VariableMutationPb variable_mutations = 2;</code>
+     */
+    public java.util.List<? extends io.littlehorse.common.proto.VariableMutationPbOrBuilder> 
+         getVariableMutationsOrBuilderList() {
+      if (variableMutationsBuilder_ != null) {
+        return variableMutationsBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(variableMutations_);
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.VariableMutationPb variable_mutations = 2;</code>
+     */
+    public io.littlehorse.common.proto.VariableMutationPb.Builder addVariableMutationsBuilder() {
+      return getVariableMutationsFieldBuilder().addBuilder(
+          io.littlehorse.common.proto.VariableMutationPb.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .lh_proto.VariableMutationPb variable_mutations = 2;</code>
+     */
+    public io.littlehorse.common.proto.VariableMutationPb.Builder addVariableMutationsBuilder(
+        int index) {
+      return getVariableMutationsFieldBuilder().addBuilder(
+          index, io.littlehorse.common.proto.VariableMutationPb.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .lh_proto.VariableMutationPb variable_mutations = 2;</code>
+     */
+    public java.util.List<io.littlehorse.common.proto.VariableMutationPb.Builder> 
+         getVariableMutationsBuilderList() {
+      return getVariableMutationsFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.common.proto.VariableMutationPb, io.littlehorse.common.proto.VariableMutationPb.Builder, io.littlehorse.common.proto.VariableMutationPbOrBuilder> 
+        getVariableMutationsFieldBuilder() {
+      if (variableMutationsBuilder_ == null) {
+        variableMutationsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            io.littlehorse.common.proto.VariableMutationPb, io.littlehorse.common.proto.VariableMutationPb.Builder, io.littlehorse.common.proto.VariableMutationPbOrBuilder>(
+                variableMutations_,
+                ((bitField0_ & 0x00000002) != 0),
+                getParentForChildren(),
+                isClean());
+        variableMutations_ = null;
+      }
+      return variableMutationsBuilder_;
+    }
+
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.TaskNodePb, io.littlehorse.common.proto.TaskNodePb.Builder, io.littlehorse.common.proto.TaskNodePbOrBuilder> taskBuilder_;
     /**
-     * <code>.lh_proto.TaskNodePb task = 2;</code>
+     * <code>.lh_proto.TaskNodePb task = 3;</code>
      * @return Whether the task field is set.
      */
     @java.lang.Override
     public boolean hasTask() {
-      return nodeCase_ == 2;
+      return nodeCase_ == 3;
     }
     /**
-     * <code>.lh_proto.TaskNodePb task = 2;</code>
+     * <code>.lh_proto.TaskNodePb task = 3;</code>
      * @return The task.
      */
     @java.lang.Override
     public io.littlehorse.common.proto.TaskNodePb getTask() {
       if (taskBuilder_ == null) {
-        if (nodeCase_ == 2) {
+        if (nodeCase_ == 3) {
           return (io.littlehorse.common.proto.TaskNodePb) node_;
         }
         return io.littlehorse.common.proto.TaskNodePb.getDefaultInstance();
       } else {
-        if (nodeCase_ == 2) {
+        if (nodeCase_ == 3) {
           return taskBuilder_.getMessage();
         }
         return io.littlehorse.common.proto.TaskNodePb.getDefaultInstance();
       }
     }
     /**
-     * <code>.lh_proto.TaskNodePb task = 2;</code>
+     * <code>.lh_proto.TaskNodePb task = 3;</code>
      */
     public Builder setTask(io.littlehorse.common.proto.TaskNodePb value) {
       if (taskBuilder_ == null) {
@@ -1045,11 +1393,11 @@ private static final long serialVersionUID = 0L;
       } else {
         taskBuilder_.setMessage(value);
       }
-      nodeCase_ = 2;
+      nodeCase_ = 3;
       return this;
     }
     /**
-     * <code>.lh_proto.TaskNodePb task = 2;</code>
+     * <code>.lh_proto.TaskNodePb task = 3;</code>
      */
     public Builder setTask(
         io.littlehorse.common.proto.TaskNodePb.Builder builderForValue) {
@@ -1059,15 +1407,15 @@ private static final long serialVersionUID = 0L;
       } else {
         taskBuilder_.setMessage(builderForValue.build());
       }
-      nodeCase_ = 2;
+      nodeCase_ = 3;
       return this;
     }
     /**
-     * <code>.lh_proto.TaskNodePb task = 2;</code>
+     * <code>.lh_proto.TaskNodePb task = 3;</code>
      */
     public Builder mergeTask(io.littlehorse.common.proto.TaskNodePb value) {
       if (taskBuilder_ == null) {
-        if (nodeCase_ == 2 &&
+        if (nodeCase_ == 3 &&
             node_ != io.littlehorse.common.proto.TaskNodePb.getDefaultInstance()) {
           node_ = io.littlehorse.common.proto.TaskNodePb.newBuilder((io.littlehorse.common.proto.TaskNodePb) node_)
               .mergeFrom(value).buildPartial();
@@ -1076,26 +1424,26 @@ private static final long serialVersionUID = 0L;
         }
         onChanged();
       } else {
-        if (nodeCase_ == 2) {
+        if (nodeCase_ == 3) {
           taskBuilder_.mergeFrom(value);
         }
         taskBuilder_.setMessage(value);
       }
-      nodeCase_ = 2;
+      nodeCase_ = 3;
       return this;
     }
     /**
-     * <code>.lh_proto.TaskNodePb task = 2;</code>
+     * <code>.lh_proto.TaskNodePb task = 3;</code>
      */
     public Builder clearTask() {
       if (taskBuilder_ == null) {
-        if (nodeCase_ == 2) {
+        if (nodeCase_ == 3) {
           nodeCase_ = 0;
           node_ = null;
           onChanged();
         }
       } else {
-        if (nodeCase_ == 2) {
+        if (nodeCase_ == 3) {
           nodeCase_ = 0;
           node_ = null;
         }
@@ -1104,33 +1452,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.TaskNodePb task = 2;</code>
+     * <code>.lh_proto.TaskNodePb task = 3;</code>
      */
     public io.littlehorse.common.proto.TaskNodePb.Builder getTaskBuilder() {
       return getTaskFieldBuilder().getBuilder();
     }
     /**
-     * <code>.lh_proto.TaskNodePb task = 2;</code>
+     * <code>.lh_proto.TaskNodePb task = 3;</code>
      */
     @java.lang.Override
     public io.littlehorse.common.proto.TaskNodePbOrBuilder getTaskOrBuilder() {
-      if ((nodeCase_ == 2) && (taskBuilder_ != null)) {
+      if ((nodeCase_ == 3) && (taskBuilder_ != null)) {
         return taskBuilder_.getMessageOrBuilder();
       } else {
-        if (nodeCase_ == 2) {
+        if (nodeCase_ == 3) {
           return (io.littlehorse.common.proto.TaskNodePb) node_;
         }
         return io.littlehorse.common.proto.TaskNodePb.getDefaultInstance();
       }
     }
     /**
-     * <code>.lh_proto.TaskNodePb task = 2;</code>
+     * <code>.lh_proto.TaskNodePb task = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.TaskNodePb, io.littlehorse.common.proto.TaskNodePb.Builder, io.littlehorse.common.proto.TaskNodePbOrBuilder> 
         getTaskFieldBuilder() {
       if (taskBuilder_ == null) {
-        if (!(nodeCase_ == 2)) {
+        if (!(nodeCase_ == 3)) {
           node_ = io.littlehorse.common.proto.TaskNodePb.getDefaultInstance();
         }
         taskBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
@@ -1140,7 +1488,7 @@ private static final long serialVersionUID = 0L;
                 isClean());
         node_ = null;
       }
-      nodeCase_ = 2;
+      nodeCase_ = 3;
       onChanged();;
       return taskBuilder_;
     }
@@ -1148,33 +1496,33 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.EntrypointNodePb, io.littlehorse.common.proto.EntrypointNodePb.Builder, io.littlehorse.common.proto.EntrypointNodePbOrBuilder> entrypointBuilder_;
     /**
-     * <code>.lh_proto.EntrypointNodePb entrypoint = 3;</code>
+     * <code>.lh_proto.EntrypointNodePb entrypoint = 4;</code>
      * @return Whether the entrypoint field is set.
      */
     @java.lang.Override
     public boolean hasEntrypoint() {
-      return nodeCase_ == 3;
+      return nodeCase_ == 4;
     }
     /**
-     * <code>.lh_proto.EntrypointNodePb entrypoint = 3;</code>
+     * <code>.lh_proto.EntrypointNodePb entrypoint = 4;</code>
      * @return The entrypoint.
      */
     @java.lang.Override
     public io.littlehorse.common.proto.EntrypointNodePb getEntrypoint() {
       if (entrypointBuilder_ == null) {
-        if (nodeCase_ == 3) {
+        if (nodeCase_ == 4) {
           return (io.littlehorse.common.proto.EntrypointNodePb) node_;
         }
         return io.littlehorse.common.proto.EntrypointNodePb.getDefaultInstance();
       } else {
-        if (nodeCase_ == 3) {
+        if (nodeCase_ == 4) {
           return entrypointBuilder_.getMessage();
         }
         return io.littlehorse.common.proto.EntrypointNodePb.getDefaultInstance();
       }
     }
     /**
-     * <code>.lh_proto.EntrypointNodePb entrypoint = 3;</code>
+     * <code>.lh_proto.EntrypointNodePb entrypoint = 4;</code>
      */
     public Builder setEntrypoint(io.littlehorse.common.proto.EntrypointNodePb value) {
       if (entrypointBuilder_ == null) {
@@ -1186,11 +1534,11 @@ private static final long serialVersionUID = 0L;
       } else {
         entrypointBuilder_.setMessage(value);
       }
-      nodeCase_ = 3;
+      nodeCase_ = 4;
       return this;
     }
     /**
-     * <code>.lh_proto.EntrypointNodePb entrypoint = 3;</code>
+     * <code>.lh_proto.EntrypointNodePb entrypoint = 4;</code>
      */
     public Builder setEntrypoint(
         io.littlehorse.common.proto.EntrypointNodePb.Builder builderForValue) {
@@ -1200,15 +1548,15 @@ private static final long serialVersionUID = 0L;
       } else {
         entrypointBuilder_.setMessage(builderForValue.build());
       }
-      nodeCase_ = 3;
+      nodeCase_ = 4;
       return this;
     }
     /**
-     * <code>.lh_proto.EntrypointNodePb entrypoint = 3;</code>
+     * <code>.lh_proto.EntrypointNodePb entrypoint = 4;</code>
      */
     public Builder mergeEntrypoint(io.littlehorse.common.proto.EntrypointNodePb value) {
       if (entrypointBuilder_ == null) {
-        if (nodeCase_ == 3 &&
+        if (nodeCase_ == 4 &&
             node_ != io.littlehorse.common.proto.EntrypointNodePb.getDefaultInstance()) {
           node_ = io.littlehorse.common.proto.EntrypointNodePb.newBuilder((io.littlehorse.common.proto.EntrypointNodePb) node_)
               .mergeFrom(value).buildPartial();
@@ -1217,26 +1565,26 @@ private static final long serialVersionUID = 0L;
         }
         onChanged();
       } else {
-        if (nodeCase_ == 3) {
+        if (nodeCase_ == 4) {
           entrypointBuilder_.mergeFrom(value);
         }
         entrypointBuilder_.setMessage(value);
       }
-      nodeCase_ = 3;
+      nodeCase_ = 4;
       return this;
     }
     /**
-     * <code>.lh_proto.EntrypointNodePb entrypoint = 3;</code>
+     * <code>.lh_proto.EntrypointNodePb entrypoint = 4;</code>
      */
     public Builder clearEntrypoint() {
       if (entrypointBuilder_ == null) {
-        if (nodeCase_ == 3) {
+        if (nodeCase_ == 4) {
           nodeCase_ = 0;
           node_ = null;
           onChanged();
         }
       } else {
-        if (nodeCase_ == 3) {
+        if (nodeCase_ == 4) {
           nodeCase_ = 0;
           node_ = null;
         }
@@ -1245,33 +1593,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.EntrypointNodePb entrypoint = 3;</code>
+     * <code>.lh_proto.EntrypointNodePb entrypoint = 4;</code>
      */
     public io.littlehorse.common.proto.EntrypointNodePb.Builder getEntrypointBuilder() {
       return getEntrypointFieldBuilder().getBuilder();
     }
     /**
-     * <code>.lh_proto.EntrypointNodePb entrypoint = 3;</code>
+     * <code>.lh_proto.EntrypointNodePb entrypoint = 4;</code>
      */
     @java.lang.Override
     public io.littlehorse.common.proto.EntrypointNodePbOrBuilder getEntrypointOrBuilder() {
-      if ((nodeCase_ == 3) && (entrypointBuilder_ != null)) {
+      if ((nodeCase_ == 4) && (entrypointBuilder_ != null)) {
         return entrypointBuilder_.getMessageOrBuilder();
       } else {
-        if (nodeCase_ == 3) {
+        if (nodeCase_ == 4) {
           return (io.littlehorse.common.proto.EntrypointNodePb) node_;
         }
         return io.littlehorse.common.proto.EntrypointNodePb.getDefaultInstance();
       }
     }
     /**
-     * <code>.lh_proto.EntrypointNodePb entrypoint = 3;</code>
+     * <code>.lh_proto.EntrypointNodePb entrypoint = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.EntrypointNodePb, io.littlehorse.common.proto.EntrypointNodePb.Builder, io.littlehorse.common.proto.EntrypointNodePbOrBuilder> 
         getEntrypointFieldBuilder() {
       if (entrypointBuilder_ == null) {
-        if (!(nodeCase_ == 3)) {
+        if (!(nodeCase_ == 4)) {
           node_ = io.littlehorse.common.proto.EntrypointNodePb.getDefaultInstance();
         }
         entrypointBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
@@ -1281,7 +1629,7 @@ private static final long serialVersionUID = 0L;
                 isClean());
         node_ = null;
       }
-      nodeCase_ = 3;
+      nodeCase_ = 4;
       onChanged();;
       return entrypointBuilder_;
     }
@@ -1289,33 +1637,33 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.ExitNodePb, io.littlehorse.common.proto.ExitNodePb.Builder, io.littlehorse.common.proto.ExitNodePbOrBuilder> exitBuilder_;
     /**
-     * <code>.lh_proto.ExitNodePb exit = 4;</code>
+     * <code>.lh_proto.ExitNodePb exit = 5;</code>
      * @return Whether the exit field is set.
      */
     @java.lang.Override
     public boolean hasExit() {
-      return nodeCase_ == 4;
+      return nodeCase_ == 5;
     }
     /**
-     * <code>.lh_proto.ExitNodePb exit = 4;</code>
+     * <code>.lh_proto.ExitNodePb exit = 5;</code>
      * @return The exit.
      */
     @java.lang.Override
     public io.littlehorse.common.proto.ExitNodePb getExit() {
       if (exitBuilder_ == null) {
-        if (nodeCase_ == 4) {
+        if (nodeCase_ == 5) {
           return (io.littlehorse.common.proto.ExitNodePb) node_;
         }
         return io.littlehorse.common.proto.ExitNodePb.getDefaultInstance();
       } else {
-        if (nodeCase_ == 4) {
+        if (nodeCase_ == 5) {
           return exitBuilder_.getMessage();
         }
         return io.littlehorse.common.proto.ExitNodePb.getDefaultInstance();
       }
     }
     /**
-     * <code>.lh_proto.ExitNodePb exit = 4;</code>
+     * <code>.lh_proto.ExitNodePb exit = 5;</code>
      */
     public Builder setExit(io.littlehorse.common.proto.ExitNodePb value) {
       if (exitBuilder_ == null) {
@@ -1327,11 +1675,11 @@ private static final long serialVersionUID = 0L;
       } else {
         exitBuilder_.setMessage(value);
       }
-      nodeCase_ = 4;
+      nodeCase_ = 5;
       return this;
     }
     /**
-     * <code>.lh_proto.ExitNodePb exit = 4;</code>
+     * <code>.lh_proto.ExitNodePb exit = 5;</code>
      */
     public Builder setExit(
         io.littlehorse.common.proto.ExitNodePb.Builder builderForValue) {
@@ -1341,15 +1689,15 @@ private static final long serialVersionUID = 0L;
       } else {
         exitBuilder_.setMessage(builderForValue.build());
       }
-      nodeCase_ = 4;
+      nodeCase_ = 5;
       return this;
     }
     /**
-     * <code>.lh_proto.ExitNodePb exit = 4;</code>
+     * <code>.lh_proto.ExitNodePb exit = 5;</code>
      */
     public Builder mergeExit(io.littlehorse.common.proto.ExitNodePb value) {
       if (exitBuilder_ == null) {
-        if (nodeCase_ == 4 &&
+        if (nodeCase_ == 5 &&
             node_ != io.littlehorse.common.proto.ExitNodePb.getDefaultInstance()) {
           node_ = io.littlehorse.common.proto.ExitNodePb.newBuilder((io.littlehorse.common.proto.ExitNodePb) node_)
               .mergeFrom(value).buildPartial();
@@ -1358,26 +1706,26 @@ private static final long serialVersionUID = 0L;
         }
         onChanged();
       } else {
-        if (nodeCase_ == 4) {
+        if (nodeCase_ == 5) {
           exitBuilder_.mergeFrom(value);
         }
         exitBuilder_.setMessage(value);
       }
-      nodeCase_ = 4;
+      nodeCase_ = 5;
       return this;
     }
     /**
-     * <code>.lh_proto.ExitNodePb exit = 4;</code>
+     * <code>.lh_proto.ExitNodePb exit = 5;</code>
      */
     public Builder clearExit() {
       if (exitBuilder_ == null) {
-        if (nodeCase_ == 4) {
+        if (nodeCase_ == 5) {
           nodeCase_ = 0;
           node_ = null;
           onChanged();
         }
       } else {
-        if (nodeCase_ == 4) {
+        if (nodeCase_ == 5) {
           nodeCase_ = 0;
           node_ = null;
         }
@@ -1386,33 +1734,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.ExitNodePb exit = 4;</code>
+     * <code>.lh_proto.ExitNodePb exit = 5;</code>
      */
     public io.littlehorse.common.proto.ExitNodePb.Builder getExitBuilder() {
       return getExitFieldBuilder().getBuilder();
     }
     /**
-     * <code>.lh_proto.ExitNodePb exit = 4;</code>
+     * <code>.lh_proto.ExitNodePb exit = 5;</code>
      */
     @java.lang.Override
     public io.littlehorse.common.proto.ExitNodePbOrBuilder getExitOrBuilder() {
-      if ((nodeCase_ == 4) && (exitBuilder_ != null)) {
+      if ((nodeCase_ == 5) && (exitBuilder_ != null)) {
         return exitBuilder_.getMessageOrBuilder();
       } else {
-        if (nodeCase_ == 4) {
+        if (nodeCase_ == 5) {
           return (io.littlehorse.common.proto.ExitNodePb) node_;
         }
         return io.littlehorse.common.proto.ExitNodePb.getDefaultInstance();
       }
     }
     /**
-     * <code>.lh_proto.ExitNodePb exit = 4;</code>
+     * <code>.lh_proto.ExitNodePb exit = 5;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.ExitNodePb, io.littlehorse.common.proto.ExitNodePb.Builder, io.littlehorse.common.proto.ExitNodePbOrBuilder> 
         getExitFieldBuilder() {
       if (exitBuilder_ == null) {
-        if (!(nodeCase_ == 4)) {
+        if (!(nodeCase_ == 5)) {
           node_ = io.littlehorse.common.proto.ExitNodePb.getDefaultInstance();
         }
         exitBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
@@ -1422,7 +1770,7 @@ private static final long serialVersionUID = 0L;
                 isClean());
         node_ = null;
       }
-      nodeCase_ = 4;
+      nodeCase_ = 5;
       onChanged();;
       return exitBuilder_;
     }

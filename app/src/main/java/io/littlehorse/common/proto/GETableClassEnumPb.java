@@ -125,7 +125,7 @@ public enum GETableClassEnumPb
   }
   public static final com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.LhProto.getDescriptor().getEnumTypes().get(5);
+    return io.littlehorse.common.proto.LhProto.getDescriptor().getEnumTypes().get(6);
   }
 
   private static final GETableClassEnumPb[] VALUES = values();

@@ -103,7 +103,7 @@ public enum RemoteStoreQueryStatusPb
   }
   public static final com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.LhProto.getDescriptor().getEnumTypes().get(7);
+    return io.littlehorse.common.proto.LhProto.getDescriptor().getEnumTypes().get(8);
   }
 
   private static final RemoteStoreQueryStatusPb[] VALUES = values();

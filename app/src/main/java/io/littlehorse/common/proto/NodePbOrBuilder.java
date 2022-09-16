@@ -32,47 +32,71 @@ public interface NodePbOrBuilder extends
       int index);
 
   /**
-   * <code>.lh_proto.TaskNodePb task = 2;</code>
+   * <code>repeated .lh_proto.VariableMutationPb variable_mutations = 2;</code>
+   */
+  java.util.List<io.littlehorse.common.proto.VariableMutationPb> 
+      getVariableMutationsList();
+  /**
+   * <code>repeated .lh_proto.VariableMutationPb variable_mutations = 2;</code>
+   */
+  io.littlehorse.common.proto.VariableMutationPb getVariableMutations(int index);
+  /**
+   * <code>repeated .lh_proto.VariableMutationPb variable_mutations = 2;</code>
+   */
+  int getVariableMutationsCount();
+  /**
+   * <code>repeated .lh_proto.VariableMutationPb variable_mutations = 2;</code>
+   */
+  java.util.List<? extends io.littlehorse.common.proto.VariableMutationPbOrBuilder> 
+      getVariableMutationsOrBuilderList();
+  /**
+   * <code>repeated .lh_proto.VariableMutationPb variable_mutations = 2;</code>
+   */
+  io.littlehorse.common.proto.VariableMutationPbOrBuilder getVariableMutationsOrBuilder(
+      int index);
+
+  /**
+   * <code>.lh_proto.TaskNodePb task = 3;</code>
    * @return Whether the task field is set.
    */
   boolean hasTask();
   /**
-   * <code>.lh_proto.TaskNodePb task = 2;</code>
+   * <code>.lh_proto.TaskNodePb task = 3;</code>
    * @return The task.
    */
   io.littlehorse.common.proto.TaskNodePb getTask();
   /**
-   * <code>.lh_proto.TaskNodePb task = 2;</code>
+   * <code>.lh_proto.TaskNodePb task = 3;</code>
    */
   io.littlehorse.common.proto.TaskNodePbOrBuilder getTaskOrBuilder();
 
   /**
-   * <code>.lh_proto.EntrypointNodePb entrypoint = 3;</code>
+   * <code>.lh_proto.EntrypointNodePb entrypoint = 4;</code>
    * @return Whether the entrypoint field is set.
    */
   boolean hasEntrypoint();
   /**
-   * <code>.lh_proto.EntrypointNodePb entrypoint = 3;</code>
+   * <code>.lh_proto.EntrypointNodePb entrypoint = 4;</code>
    * @return The entrypoint.
    */
   io.littlehorse.common.proto.EntrypointNodePb getEntrypoint();
   /**
-   * <code>.lh_proto.EntrypointNodePb entrypoint = 3;</code>
+   * <code>.lh_proto.EntrypointNodePb entrypoint = 4;</code>
    */
   io.littlehorse.common.proto.EntrypointNodePbOrBuilder getEntrypointOrBuilder();
 
   /**
-   * <code>.lh_proto.ExitNodePb exit = 4;</code>
+   * <code>.lh_proto.ExitNodePb exit = 5;</code>
    * @return Whether the exit field is set.
    */
   boolean hasExit();
   /**
-   * <code>.lh_proto.ExitNodePb exit = 4;</code>
+   * <code>.lh_proto.ExitNodePb exit = 5;</code>
    * @return The exit.
    */
   io.littlehorse.common.proto.ExitNodePb getExit();
   /**
-   * <code>.lh_proto.ExitNodePb exit = 4;</code>
+   * <code>.lh_proto.ExitNodePb exit = 5;</code>
    */
   io.littlehorse.common.proto.ExitNodePbOrBuilder getExitOrBuilder();
 

@@ -85,7 +85,7 @@ public enum IndexActionEnum
   }
   public static final com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.LhProto.getDescriptor().getEnumTypes().get(6);
+    return io.littlehorse.common.proto.LhProto.getDescriptor().getEnumTypes().get(7);
   }
 
   private static final IndexActionEnum[] VALUES = values();
