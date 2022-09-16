@@ -206,66 +206,69 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
             seenVars.put(varName, threadName);
         }
 
-        // // Now iterate through all of the tasks in this thread and see if the
-        // // variables are defined.
-        // for (Node node: thread.nodes.values()) {
-        //     for (String varName: node.variables.keySet()) {
-        //         VariableAssignment assign = node.variables.get(varName);
-        //         if (assign.wfRunVariableName == null) {
-        //             continue;
-        //         }
-        //         if (!seenVars.containsKey(assign.wfRunVariableName)) {
-        //             throw new LHValidationError(
-        //                 "Variable " + varName + "refers to wfRunVariable named " +
-        //                 assign.wfRunVariableName + ", which is either not defined"
-        //                 + " or not in scope for thread " + thread.name + " on node "
-        //                 + node.name
-        //             );
-        //         }
-        //     }
+        // Now iterate through all of the tasks in this thread and see if the
+        // variables are defined.
+        for (Node node : thread.nodes.values()) {
+            // for (String varName: node.variables.keySet()) {
+            //     VariableAssignment assign = node.variables.get(varName);
+            //     if (assign.wfRunVariableName == null) {
+            //         continue;
+            //     }
+            //     if (!seenVars.containsKey(assign.wfRunVariableName)) {
+            //         throw new LHValidationError(
+            //             "Variable " + varName + "refers to wfRunVariable named " +
+            //             assign.wfRunVariableName + ", which is either not defined"
+            //             + " or not in scope for thread " + thread.name + " on node "
+            //             + node.name
+            //         );
+            //     }
+            // }
 
-        //     for (String varName: node.variableMutations.keySet()) {
-        //         if (!seenVars.containsKey(varName)) {
-        //             throw new LHValidationError(
-        //                 "Variable " + varName + " either not defined or not in " +
-        //                 "scope for thread " + thread.name + " on node " + node.name
-        //             );
-        //         }
-        //     }
+            for (VariableMutation vm : node.variableMutations) {
+                if (!seenVars.containsKey(vm.lhsName)) {
+                    throw new LHValidationError(
+                        null,
+                        vm.lhsName +
+                        " either not defined or not in scope for thread " +
+                        thread.name +
+                        " on node " +
+                        node.name
+                    );
+                }
+            }
+            //     if (node.timeoutSeconds != null) {
+            //         VariableAssignment assn = node.timeoutSeconds;
+            //         if (assn.wfRunVariableName != null) {
+            //             if (!seenVars.containsKey(node.timeoutSeconds.wfRunVariableName)) {
+            //                 throw new LHValidationError(
+            //                     "refers to wfRunVariable named " +
+            //                     assn.wfRunVariableName + ", which is either not defined"
+            //                     + " or not in scope for thread " + thread.name +
+            //                     " on node " + node.name
+            //                 );
+            //             }
+            //         }
+            //     }
+            // }
 
-        //     if (node.timeoutSeconds != null) {
-        //         VariableAssignment assn = node.timeoutSeconds;
-        //         if (assn.wfRunVariableName != null) {
-        //             if (!seenVars.containsKey(node.timeoutSeconds.wfRunVariableName)) {
-        //                 throw new LHValidationError(
-        //                     "refers to wfRunVariable named " +
-        //                     assn.wfRunVariableName + ", which is either not defined"
-        //                     + " or not in scope for thread " + thread.name +
-        //                     " on node " + node.name
-        //                 );
-        //             }
-        //         }
-        //     }
-        // }
+            // // Now process every potential child thread.
+            // for (Node node: thread.nodes.values()) {
+            //     if (node.nodeType == NodeType.SPAWN_THREAD) {
+            //         String nextThreadName = node.threadSpawnThreadSpecName;
+            //         validateVariablesHelper(seenThreads, seenVars, nextThreadName);
+            //     }
+            //     if (node.baseExceptionhandler != null) {
+            //         String threadSpec = node.baseExceptionhandler.handlerThreadSpecName;
+            //         if (threadSpec != null) {
+            //             validateVariablesHelper(seenThreads, seenVars, threadSpec);
+            //         }
+            //     }
+            // }
 
-        // // Now process every potential child thread.
-        // for (Node node: thread.nodes.values()) {
-        //     if (node.nodeType == NodeType.SPAWN_THREAD) {
-        //         String nextThreadName = node.threadSpawnThreadSpecName;
-        //         validateVariablesHelper(seenThreads, seenVars, nextThreadName);
-        //     }
-        //     if (node.baseExceptionhandler != null) {
-        //         String threadSpec = node.baseExceptionhandler.handlerThreadSpecName;
-        //         if (threadSpec != null) {
-        //             validateVariablesHelper(seenThreads, seenVars, threadSpec);
-        //         }
-        //     }
-        // }
-
-        // // Due to recursive backtracking, we need to remove the elements we added.
-        // for (String varName: thread.variableDefs.keySet()) {
-        //     seenVars.remove(varName);
-        // }
+            // // Due to recursive backtracking, we need to remove the elements we added.
+            // for (String varName: thread.variableDefs.keySet()) {
+            //     seenVars.remove(varName);
+        }
         seenThreads.remove(threadName);
     }
 

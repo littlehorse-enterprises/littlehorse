@@ -13,6 +13,7 @@ import io.littlehorse.common.proto.EdgePb;
 import io.littlehorse.common.proto.NodePb;
 import io.littlehorse.common.proto.NodePb.NodeCase;
 import io.littlehorse.common.proto.NodePbOrBuilder;
+import io.littlehorse.common.proto.VariableMutationPb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
     public TaskNode taskNode;
     public EntrypointNode entrypointNode;
     public ExitNode exitNode;
+    public List<VariableMutation> variableMutations;
 
     @JsonIgnore
     public Class<NodePb> getProtoBaseClass() {
@@ -35,6 +37,10 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
 
         for (Edge o : outgoingEdges) {
             out.addOutgoingEdges(o.toProto());
+        }
+
+        for (VariableMutation v : variableMutations) {
+            out.addVariableMutations(v.toProto());
         }
 
         switch (type) {
@@ -62,6 +68,12 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
             Edge edge = Edge.fromProto(epb);
             edge.threadSpec = threadSpec;
             outgoingEdges.add(edge);
+        }
+
+        for (VariableMutationPb vmpb : proto.getVariableMutationsList()) {
+            VariableMutation vm = new VariableMutation();
+            vm.initFrom(vmpb);
+            variableMutations.add(vm);
         }
 
         switch (type) {
@@ -93,6 +105,7 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
 
     public Node() {
         outgoingEdges = new ArrayList<>();
+        variableMutations = new ArrayList<>();
     }
 
     public List<Edge> outgoingEdges;
