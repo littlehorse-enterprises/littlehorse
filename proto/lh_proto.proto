@@ -147,7 +147,6 @@ message VariableAssignmentPb {
     oneof source {
         string variable_name = 3;
         VariableValuePb literal_value = 4;
-        bool node_output = 5; // Dummy protobuf syntax hack
     }
 }
 
@@ -158,7 +157,7 @@ message VariableMutationPb {
     oneof rhs_value {
         VariableAssignmentPb source_variable = 4;
         VariableValuePb literal_value = 5;
-        int32 task_run_output_number = 6;
+        bool node_output = 6; // Dummy protobuf syntax hack
     }
     optional string rhs_json_path = 7;
 }

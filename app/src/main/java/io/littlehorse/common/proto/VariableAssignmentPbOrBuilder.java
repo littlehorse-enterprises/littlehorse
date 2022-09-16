@@ -66,15 +66,5 @@ public interface VariableAssignmentPbOrBuilder extends
    */
   io.littlehorse.common.proto.VariableValuePbOrBuilder getLiteralValueOrBuilder();
 
-  /**
-   * <pre>
-   * Dummy protobuf syntax hack
-   * </pre>
-   *
-   * <code>bool node_output = 5;</code>
-   * @return The nodeOutput.
-   */
-  boolean getNodeOutput();
-
   public io.littlehorse.common.proto.VariableAssignmentPb.SourceCase getSourceCase();
 }

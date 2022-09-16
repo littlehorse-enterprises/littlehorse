@@ -17,12 +17,16 @@ public class Variable extends GETable<VariablePb> {
 
     @JsonIgnore
     public VariableValue value;
+
     @JsonIgnore
     public String wfRunId;
+
     @JsonIgnore
     public int threadRunNumber;
+
     @JsonIgnore
     public String name;
+
     @JsonIgnore
     public Date date;
 
@@ -131,24 +135,24 @@ public class Variable extends GETable<VariablePb> {
     }
 
     public Object getVal() {
-        switch(getType()) {
-        case INT:
-            return value.intVal;
-        case DOUBLE:
-            return value.doubleVal;
-        case STR:
-            return value.strVal;
-        case BOOL:
-            return value.boolVal;
-        case JSON_ARR:
-            return LHUtil.strToJsonArr(value.jsonArrVal);
-        case JSON_OBJ:
-            return LHUtil.strToJsonObj(value.jsonObjVal);
-        case BYTES:
-            return LHUtil.b64Encode(value.bytesVal);
-        case UNRECOGNIZED:
-        default:
-            return null;
+        switch (getType()) {
+            case INT:
+                return value.intVal;
+            case DOUBLE:
+                return value.doubleVal;
+            case STR:
+                return value.strVal;
+            case BOOL:
+                return value.boolVal;
+            case JSON_ARR:
+                return LHUtil.strToJsonArr(value.jsonArrVal);
+            case JSON_OBJ:
+                return LHUtil.strToJsonObj(value.jsonObjVal);
+            case BYTES:
+                return LHUtil.b64Encode(value.bytesVal);
+            case UNRECOGNIZED:
+            default:
+                return null;
         }
     }
     // End Jackson section

@@ -78,10 +78,14 @@ public interface VariableMutationPbOrBuilder extends
   io.littlehorse.common.proto.VariableValuePbOrBuilder getLiteralValueOrBuilder();
 
   /**
-   * <code>int32 task_run_output_number = 6;</code>
-   * @return The taskRunOutputNumber.
+   * <pre>
+   * Dummy protobuf syntax hack
+   * </pre>
+   *
+   * <code>bool node_output = 6;</code>
+   * @return The nodeOutput.
    */
-  int getTaskRunOutputNumber();
+  boolean getNodeOutput();
 
   /**
    * <code>string rhs_json_path = 7;</code>

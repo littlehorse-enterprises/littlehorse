@@ -1,11 +1,5 @@
 package io.littlehorse.common.model.wfrun;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import org.apache.commons.lang3.tuple.Pair;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.exceptions.LHValidationError;
@@ -28,6 +22,12 @@ import io.littlehorse.common.proto.WfRunPb;
 import io.littlehorse.common.proto.WfRunPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.processors.util.WfRunStoreAccess;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class WfRun extends GETable<WfRunPb> {
 
@@ -185,7 +185,7 @@ public class WfRun extends GETable<WfRunPb> {
             return;
         }
 
-        for (Map.Entry<String, VariableDef> entry: tspec.variableDefs.entrySet()) {
+        for (Map.Entry<String, VariableDef> entry : tspec.variableDefs.entrySet()) {
             String varName = entry.getKey();
             VariableDef varDef = entry.getValue();
             VariableValue val;
@@ -202,7 +202,6 @@ public class WfRun extends GETable<WfRunPb> {
             thread.putLocalVariable(varName, val);
         }
         thread.advance(start);
-
     }
 
     public void processEvent(

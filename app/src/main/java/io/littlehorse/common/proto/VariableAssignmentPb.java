@@ -89,11 +89,6 @@ private static final long serialVersionUID = 0L;
             sourceCase_ = 4;
             break;
           }
-          case 40: {
-            sourceCase_ = 5;
-            source_ = input.readBool();
-            break;
-          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -134,7 +129,6 @@ private static final long serialVersionUID = 0L;
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
     VARIABLE_NAME(3),
     LITERAL_VALUE(4),
-    NODE_OUTPUT(5),
     SOURCE_NOT_SET(0);
     private final int value;
     private SourceCase(int value) {
@@ -154,7 +148,6 @@ private static final long serialVersionUID = 0L;
       switch (value) {
         case 3: return VARIABLE_NAME;
         case 4: return LITERAL_VALUE;
-        case 5: return NODE_OUTPUT;
         case 0: return SOURCE_NOT_SET;
         default: return null;
       }
@@ -318,23 +311,6 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.VariableValuePb.getDefaultInstance();
   }
 
-  public static final int NODE_OUTPUT_FIELD_NUMBER = 5;
-  /**
-   * <pre>
-   * Dummy protobuf syntax hack
-   * </pre>
-   *
-   * <code>bool node_output = 5;</code>
-   * @return The nodeOutput.
-   */
-  @java.lang.Override
-  public boolean getNodeOutput() {
-    if (sourceCase_ == 5) {
-      return (java.lang.Boolean) source_;
-    }
-    return false;
-  }
-
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -361,10 +337,6 @@ private static final long serialVersionUID = 0L;
     if (sourceCase_ == 4) {
       output.writeMessage(4, (io.littlehorse.common.proto.VariableValuePb) source_);
     }
-    if (sourceCase_ == 5) {
-      output.writeBool(
-          5, (boolean)((java.lang.Boolean) source_));
-    }
     unknownFields.writeTo(output);
   }
 
@@ -387,11 +359,6 @@ private static final long serialVersionUID = 0L;
     if (sourceCase_ == 4) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, (io.littlehorse.common.proto.VariableValuePb) source_);
-    }
-    if (sourceCase_ == 5) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBoolSize(
-            5, (boolean)((java.lang.Boolean) source_));
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -428,10 +395,6 @@ private static final long serialVersionUID = 0L;
         if (!getLiteralValue()
             .equals(other.getLiteralValue())) return false;
         break;
-      case 5:
-        if (getNodeOutput()
-            != other.getNodeOutput()) return false;
-        break;
       case 0:
       default:
     }
@@ -462,11 +425,6 @@ private static final long serialVersionUID = 0L;
       case 4:
         hash = (37 * hash) + LITERAL_VALUE_FIELD_NUMBER;
         hash = (53 * hash) + getLiteralValue().hashCode();
-        break;
-      case 5:
-        hash = (37 * hash) + NODE_OUTPUT_FIELD_NUMBER;
-        hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-            getNodeOutput());
         break;
       case 0:
       default:
@@ -665,9 +623,6 @@ private static final long serialVersionUID = 0L;
           result.source_ = literalValueBuilder_.build();
         }
       }
-      if (sourceCase_ == 5) {
-        result.source_ = source_;
-      }
       result.bitField0_ = to_bitField0_;
       result.sourceCase_ = sourceCase_;
       onBuilt();
@@ -735,10 +690,6 @@ private static final long serialVersionUID = 0L;
         }
         case LITERAL_VALUE: {
           mergeLiteralValue(other.getLiteralValue());
-          break;
-        }
-        case NODE_OUTPUT: {
-          setNodeOutput(other.getNodeOutput());
           break;
         }
         case SOURCE_NOT_SET: {
@@ -1221,52 +1172,6 @@ private static final long serialVersionUID = 0L;
       sourceCase_ = 4;
       onChanged();;
       return literalValueBuilder_;
-    }
-
-    /**
-     * <pre>
-     * Dummy protobuf syntax hack
-     * </pre>
-     *
-     * <code>bool node_output = 5;</code>
-     * @return The nodeOutput.
-     */
-    public boolean getNodeOutput() {
-      if (sourceCase_ == 5) {
-        return (java.lang.Boolean) source_;
-      }
-      return false;
-    }
-    /**
-     * <pre>
-     * Dummy protobuf syntax hack
-     * </pre>
-     *
-     * <code>bool node_output = 5;</code>
-     * @param value The nodeOutput to set.
-     * @return This builder for chaining.
-     */
-    public Builder setNodeOutput(boolean value) {
-      sourceCase_ = 5;
-      source_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * Dummy protobuf syntax hack
-     * </pre>
-     *
-     * <code>bool node_output = 5;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearNodeOutput() {
-      if (sourceCase_ == 5) {
-        sourceCase_ = 0;
-        source_ = null;
-        onChanged();
-      }
-      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

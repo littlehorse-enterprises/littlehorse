@@ -101,7 +101,7 @@ private static final long serialVersionUID = 0L;
           }
           case 48: {
             rhsValueCase_ = 6;
-            rhsValue_ = input.readInt32();
+            rhsValue_ = input.readBool();
             break;
           }
           case 58: {
@@ -150,7 +150,7 @@ private static final long serialVersionUID = 0L;
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
     SOURCE_VARIABLE(4),
     LITERAL_VALUE(5),
-    TASK_RUN_OUTPUT_NUMBER(6),
+    NODE_OUTPUT(6),
     RHSVALUE_NOT_SET(0);
     private final int value;
     private RhsValueCase(int value) {
@@ -170,7 +170,7 @@ private static final long serialVersionUID = 0L;
       switch (value) {
         case 4: return SOURCE_VARIABLE;
         case 5: return LITERAL_VALUE;
-        case 6: return TASK_RUN_OUTPUT_NUMBER;
+        case 6: return NODE_OUTPUT;
         case 0: return RHSVALUE_NOT_SET;
         default: return null;
       }
@@ -351,17 +351,21 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.VariableValuePb.getDefaultInstance();
   }
 
-  public static final int TASK_RUN_OUTPUT_NUMBER_FIELD_NUMBER = 6;
+  public static final int NODE_OUTPUT_FIELD_NUMBER = 6;
   /**
-   * <code>int32 task_run_output_number = 6;</code>
-   * @return The taskRunOutputNumber.
+   * <pre>
+   * Dummy protobuf syntax hack
+   * </pre>
+   *
+   * <code>bool node_output = 6;</code>
+   * @return The nodeOutput.
    */
   @java.lang.Override
-  public int getTaskRunOutputNumber() {
+  public boolean getNodeOutput() {
     if (rhsValueCase_ == 6) {
-      return (java.lang.Integer) rhsValue_;
+      return (java.lang.Boolean) rhsValue_;
     }
-    return 0;
+    return false;
   }
 
   public static final int RHS_JSON_PATH_FIELD_NUMBER = 7;
@@ -440,8 +444,8 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(5, (io.littlehorse.common.proto.VariableValuePb) rhsValue_);
     }
     if (rhsValueCase_ == 6) {
-      output.writeInt32(
-          6, (int)((java.lang.Integer) rhsValue_));
+      output.writeBool(
+          6, (boolean)((java.lang.Boolean) rhsValue_));
     }
     if (((bitField0_ & 0x00000002) != 0)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 7, rhsJsonPath_);
@@ -475,8 +479,8 @@ private static final long serialVersionUID = 0L;
     }
     if (rhsValueCase_ == 6) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(
-            6, (int)((java.lang.Integer) rhsValue_));
+        .computeBoolSize(
+            6, (boolean)((java.lang.Boolean) rhsValue_));
     }
     if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, rhsJsonPath_);
@@ -520,8 +524,8 @@ private static final long serialVersionUID = 0L;
             .equals(other.getLiteralValue())) return false;
         break;
       case 6:
-        if (getTaskRunOutputNumber()
-            != other.getTaskRunOutputNumber()) return false;
+        if (getNodeOutput()
+            != other.getNodeOutput()) return false;
         break;
       case 0:
       default:
@@ -559,8 +563,9 @@ private static final long serialVersionUID = 0L;
         hash = (53 * hash) + getLiteralValue().hashCode();
         break;
       case 6:
-        hash = (37 * hash) + TASK_RUN_OUTPUT_NUMBER_FIELD_NUMBER;
-        hash = (53 * hash) + getTaskRunOutputNumber();
+        hash = (37 * hash) + NODE_OUTPUT_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+            getNodeOutput());
         break;
       case 0:
       default:
@@ -839,8 +844,8 @@ private static final long serialVersionUID = 0L;
           mergeLiteralValue(other.getLiteralValue());
           break;
         }
-        case TASK_RUN_OUTPUT_NUMBER: {
-          setTaskRunOutputNumber(other.getTaskRunOutputNumber());
+        case NODE_OUTPUT: {
+          setNodeOutput(other.getNodeOutput());
           break;
         }
         case RHSVALUE_NOT_SET: {
@@ -1388,31 +1393,43 @@ private static final long serialVersionUID = 0L;
     }
 
     /**
-     * <code>int32 task_run_output_number = 6;</code>
-     * @return The taskRunOutputNumber.
+     * <pre>
+     * Dummy protobuf syntax hack
+     * </pre>
+     *
+     * <code>bool node_output = 6;</code>
+     * @return The nodeOutput.
      */
-    public int getTaskRunOutputNumber() {
+    public boolean getNodeOutput() {
       if (rhsValueCase_ == 6) {
-        return (java.lang.Integer) rhsValue_;
+        return (java.lang.Boolean) rhsValue_;
       }
-      return 0;
+      return false;
     }
     /**
-     * <code>int32 task_run_output_number = 6;</code>
-     * @param value The taskRunOutputNumber to set.
+     * <pre>
+     * Dummy protobuf syntax hack
+     * </pre>
+     *
+     * <code>bool node_output = 6;</code>
+     * @param value The nodeOutput to set.
      * @return This builder for chaining.
      */
-    public Builder setTaskRunOutputNumber(int value) {
+    public Builder setNodeOutput(boolean value) {
       rhsValueCase_ = 6;
       rhsValue_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>int32 task_run_output_number = 6;</code>
+     * <pre>
+     * Dummy protobuf syntax hack
+     * </pre>
+     *
+     * <code>bool node_output = 6;</code>
      * @return This builder for chaining.
      */
-    public Builder clearTaskRunOutputNumber() {
+    public Builder clearNodeOutput() {
       if (rhsValueCase_ == 6) {
         rhsValueCase_ = 0;
         rhsValue_ = null;
