@@ -47,4 +47,37 @@ public interface NodeRunStatePbOrBuilder extends
    * @return The status.
    */
   io.littlehorse.common.proto.LHStatusPb getStatus();
+
+  /**
+   * <code>.lh_proto.TaskResultCodePb result_code = 6;</code>
+   * @return Whether the resultCode field is set.
+   */
+  boolean hasResultCode();
+  /**
+   * <code>.lh_proto.TaskResultCodePb result_code = 6;</code>
+   * @return The enum numeric value on the wire for resultCode.
+   */
+  int getResultCodeValue();
+  /**
+   * <code>.lh_proto.TaskResultCodePb result_code = 6;</code>
+   * @return The resultCode.
+   */
+  io.littlehorse.common.proto.TaskResultCodePb getResultCode();
+
+  /**
+   * <code>string error_message = 7;</code>
+   * @return Whether the errorMessage field is set.
+   */
+  boolean hasErrorMessage();
+  /**
+   * <code>string error_message = 7;</code>
+   * @return The errorMessage.
+   */
+  java.lang.String getErrorMessage();
+  /**
+   * <code>string error_message = 7;</code>
+   * @return The bytes for errorMessage.
+   */
+  com.google.protobuf.ByteString
+      getErrorMessageBytes();
 }

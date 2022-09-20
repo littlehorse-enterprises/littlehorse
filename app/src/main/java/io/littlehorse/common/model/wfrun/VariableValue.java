@@ -3,6 +3,7 @@ package io.littlehorse.common.model.wfrun;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.proto.VariableMutationTypePb;
 import io.littlehorse.common.proto.VariableTypePb;
 import io.littlehorse.common.proto.VariableValuePb;
 import io.littlehorse.common.proto.VariableValuePbOrBuilder;
@@ -88,5 +89,15 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
         }
 
         return out;
+    }
+
+    public VariableValue getCopy() {
+        VariableValue out = new VariableValue();
+        out.initFrom(toProto());
+        return out;
+    }
+
+    public VariableValue operate(VariableMutationTypePb operation, VariableValue rhs) {
+        throw new RuntimeException("implement me");
     }
 }

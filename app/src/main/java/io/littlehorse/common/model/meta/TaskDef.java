@@ -19,6 +19,7 @@ public class TaskDef extends GlobalPOSTable<TaskDefPbOrBuilder> {
 
     public String name;
     public Date createdAt;
+    public OutputSchema outputSchema;
 
     public Date getCreatedAt() {
         if (createdAt == null) createdAt = new Date();
@@ -45,13 +46,15 @@ public class TaskDef extends GlobalPOSTable<TaskDefPbOrBuilder> {
         return TaskDefPb
             .newBuilder()
             .setName(name)
-            .setCreatedAt(LHUtil.fromDate(getCreatedAt()));
+            .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
+            .setOutputSchema(outputSchema.toProto());
     }
 
     public void initFrom(MessageOrBuilder p) {
         TaskDefPbOrBuilder proto = (TaskDefPbOrBuilder) p;
         name = proto.getName();
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
+        outputSchema = OutputSchema.fromProto(proto.getOutputSchemaOrBuilder());
     }
 
     public void handlePost(

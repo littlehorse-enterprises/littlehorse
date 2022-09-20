@@ -110,4 +110,37 @@ public interface ThreadRunPbOrBuilder extends
    * <code>.lh_proto.NodeRunStatePb current_node_run = 9;</code>
    */
   io.littlehorse.common.proto.NodeRunStatePbOrBuilder getCurrentNodeRunOrBuilder();
+
+  /**
+   * <code>string error_message = 10;</code>
+   * @return Whether the errorMessage field is set.
+   */
+  boolean hasErrorMessage();
+  /**
+   * <code>string error_message = 10;</code>
+   * @return The errorMessage.
+   */
+  java.lang.String getErrorMessage();
+  /**
+   * <code>string error_message = 10;</code>
+   * @return The bytes for errorMessage.
+   */
+  com.google.protobuf.ByteString
+      getErrorMessageBytes();
+
+  /**
+   * <code>.lh_proto.TaskResultCodePb result_code = 11;</code>
+   * @return Whether the resultCode field is set.
+   */
+  boolean hasResultCode();
+  /**
+   * <code>.lh_proto.TaskResultCodePb result_code = 11;</code>
+   * @return The enum numeric value on the wire for resultCode.
+   */
+  int getResultCodeValue();
+  /**
+   * <code>.lh_proto.TaskResultCodePb result_code = 11;</code>
+   * @return The resultCode.
+   */
+  io.littlehorse.common.proto.TaskResultCodePb getResultCode();
 }

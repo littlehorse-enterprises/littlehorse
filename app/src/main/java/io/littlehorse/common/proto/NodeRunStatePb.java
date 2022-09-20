@@ -18,6 +18,8 @@ private static final long serialVersionUID = 0L;
   private NodeRunStatePb() {
     nodeName_ = "";
     status_ = 0;
+    resultCode_ = 0;
+    errorMessage_ = "";
   }
 
   @java.lang.Override
@@ -40,6 +42,7 @@ private static final long serialVersionUID = 0L;
     if (extensionRegistry == null) {
       throw new java.lang.NullPointerException();
     }
+    int mutable_bitField0_ = 0;
     com.google.protobuf.UnknownFieldSet.Builder unknownFields =
         com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
@@ -77,6 +80,18 @@ private static final long serialVersionUID = 0L;
             status_ = rawValue;
             break;
           }
+          case 48: {
+            int rawValue = input.readEnum();
+            bitField0_ |= 0x00000001;
+            resultCode_ = rawValue;
+            break;
+          }
+          case 58: {
+            java.lang.String s = input.readStringRequireUtf8();
+            bitField0_ |= 0x00000002;
+            errorMessage_ = s;
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -109,6 +124,7 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.common.proto.NodeRunStatePb.class, io.littlehorse.common.proto.NodeRunStatePb.Builder.class);
   }
 
+  private int bitField0_;
   public static final int NODE_NAME_FIELD_NUMBER = 1;
   private volatile java.lang.Object nodeName_;
   /**
@@ -199,6 +215,78 @@ private static final long serialVersionUID = 0L;
     return result == null ? io.littlehorse.common.proto.LHStatusPb.UNRECOGNIZED : result;
   }
 
+  public static final int RESULT_CODE_FIELD_NUMBER = 6;
+  private int resultCode_;
+  /**
+   * <code>.lh_proto.TaskResultCodePb result_code = 6;</code>
+   * @return Whether the resultCode field is set.
+   */
+  @java.lang.Override public boolean hasResultCode() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <code>.lh_proto.TaskResultCodePb result_code = 6;</code>
+   * @return The enum numeric value on the wire for resultCode.
+   */
+  @java.lang.Override public int getResultCodeValue() {
+    return resultCode_;
+  }
+  /**
+   * <code>.lh_proto.TaskResultCodePb result_code = 6;</code>
+   * @return The resultCode.
+   */
+  @java.lang.Override public io.littlehorse.common.proto.TaskResultCodePb getResultCode() {
+    @SuppressWarnings("deprecation")
+    io.littlehorse.common.proto.TaskResultCodePb result = io.littlehorse.common.proto.TaskResultCodePb.valueOf(resultCode_);
+    return result == null ? io.littlehorse.common.proto.TaskResultCodePb.UNRECOGNIZED : result;
+  }
+
+  public static final int ERROR_MESSAGE_FIELD_NUMBER = 7;
+  private volatile java.lang.Object errorMessage_;
+  /**
+   * <code>string error_message = 7;</code>
+   * @return Whether the errorMessage field is set.
+   */
+  @java.lang.Override
+  public boolean hasErrorMessage() {
+    return ((bitField0_ & 0x00000002) != 0);
+  }
+  /**
+   * <code>string error_message = 7;</code>
+   * @return The errorMessage.
+   */
+  @java.lang.Override
+  public java.lang.String getErrorMessage() {
+    java.lang.Object ref = errorMessage_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      errorMessage_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string error_message = 7;</code>
+   * @return The bytes for errorMessage.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getErrorMessageBytes() {
+    java.lang.Object ref = errorMessage_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      errorMessage_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -228,6 +316,12 @@ private static final long serialVersionUID = 0L;
     if (status_ != io.littlehorse.common.proto.LHStatusPb.STARTING.getNumber()) {
       output.writeEnum(5, status_);
     }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      output.writeEnum(6, resultCode_);
+    }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 7, errorMessage_);
+    }
     unknownFields.writeTo(output);
   }
 
@@ -256,6 +350,13 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(5, status_);
     }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeEnumSize(6, resultCode_);
+    }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, errorMessage_);
+    }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
@@ -280,6 +381,15 @@ private static final long serialVersionUID = 0L;
     if (getNumber()
         != other.getNumber()) return false;
     if (status_ != other.status_) return false;
+    if (hasResultCode() != other.hasResultCode()) return false;
+    if (hasResultCode()) {
+      if (resultCode_ != other.resultCode_) return false;
+    }
+    if (hasErrorMessage() != other.hasErrorMessage()) return false;
+    if (hasErrorMessage()) {
+      if (!getErrorMessage()
+          .equals(other.getErrorMessage())) return false;
+    }
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -301,6 +411,14 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getNumber();
     hash = (37 * hash) + STATUS_FIELD_NUMBER;
     hash = (53 * hash) + status_;
+    if (hasResultCode()) {
+      hash = (37 * hash) + RESULT_CODE_FIELD_NUMBER;
+      hash = (53 * hash) + resultCode_;
+    }
+    if (hasErrorMessage()) {
+      hash = (37 * hash) + ERROR_MESSAGE_FIELD_NUMBER;
+      hash = (53 * hash) + getErrorMessage().hashCode();
+    }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -444,6 +562,10 @@ private static final long serialVersionUID = 0L;
 
       status_ = 0;
 
+      resultCode_ = 0;
+      bitField0_ = (bitField0_ & ~0x00000001);
+      errorMessage_ = "";
+      bitField0_ = (bitField0_ & ~0x00000002);
       return this;
     }
 
@@ -470,11 +592,22 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.common.proto.NodeRunStatePb buildPartial() {
       io.littlehorse.common.proto.NodeRunStatePb result = new io.littlehorse.common.proto.NodeRunStatePb(this);
+      int from_bitField0_ = bitField0_;
+      int to_bitField0_ = 0;
       result.nodeName_ = nodeName_;
       result.attemptNumber_ = attemptNumber_;
       result.position_ = position_;
       result.number_ = number_;
       result.status_ = status_;
+      if (((from_bitField0_ & 0x00000001) != 0)) {
+        to_bitField0_ |= 0x00000001;
+      }
+      result.resultCode_ = resultCode_;
+      if (((from_bitField0_ & 0x00000002) != 0)) {
+        to_bitField0_ |= 0x00000002;
+      }
+      result.errorMessage_ = errorMessage_;
+      result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
     }
@@ -539,6 +672,14 @@ private static final long serialVersionUID = 0L;
       if (other.status_ != 0) {
         setStatusValue(other.getStatusValue());
       }
+      if (other.hasResultCode()) {
+        setResultCode(other.getResultCode());
+      }
+      if (other.hasErrorMessage()) {
+        bitField0_ |= 0x00000002;
+        errorMessage_ = other.errorMessage_;
+        onChanged();
+      }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
@@ -567,6 +708,7 @@ private static final long serialVersionUID = 0L;
       }
       return this;
     }
+    private int bitField0_;
 
     private java.lang.Object nodeName_ = "";
     /**
@@ -787,6 +929,150 @@ private static final long serialVersionUID = 0L;
     public Builder clearStatus() {
       
       status_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private int resultCode_ = 0;
+    /**
+     * <code>.lh_proto.TaskResultCodePb result_code = 6;</code>
+     * @return Whether the resultCode field is set.
+     */
+    @java.lang.Override public boolean hasResultCode() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>.lh_proto.TaskResultCodePb result_code = 6;</code>
+     * @return The enum numeric value on the wire for resultCode.
+     */
+    @java.lang.Override public int getResultCodeValue() {
+      return resultCode_;
+    }
+    /**
+     * <code>.lh_proto.TaskResultCodePb result_code = 6;</code>
+     * @param value The enum numeric value on the wire for resultCode to set.
+     * @return This builder for chaining.
+     */
+    public Builder setResultCodeValue(int value) {
+      bitField0_ |= 0x00000001;
+      resultCode_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.lh_proto.TaskResultCodePb result_code = 6;</code>
+     * @return The resultCode.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.TaskResultCodePb getResultCode() {
+      @SuppressWarnings("deprecation")
+      io.littlehorse.common.proto.TaskResultCodePb result = io.littlehorse.common.proto.TaskResultCodePb.valueOf(resultCode_);
+      return result == null ? io.littlehorse.common.proto.TaskResultCodePb.UNRECOGNIZED : result;
+    }
+    /**
+     * <code>.lh_proto.TaskResultCodePb result_code = 6;</code>
+     * @param value The resultCode to set.
+     * @return This builder for chaining.
+     */
+    public Builder setResultCode(io.littlehorse.common.proto.TaskResultCodePb value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      bitField0_ |= 0x00000001;
+      resultCode_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.lh_proto.TaskResultCodePb result_code = 6;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearResultCode() {
+      bitField0_ = (bitField0_ & ~0x00000001);
+      resultCode_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object errorMessage_ = "";
+    /**
+     * <code>string error_message = 7;</code>
+     * @return Whether the errorMessage field is set.
+     */
+    public boolean hasErrorMessage() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>string error_message = 7;</code>
+     * @return The errorMessage.
+     */
+    public java.lang.String getErrorMessage() {
+      java.lang.Object ref = errorMessage_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        errorMessage_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string error_message = 7;</code>
+     * @return The bytes for errorMessage.
+     */
+    public com.google.protobuf.ByteString
+        getErrorMessageBytes() {
+      java.lang.Object ref = errorMessage_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        errorMessage_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string error_message = 7;</code>
+     * @param value The errorMessage to set.
+     * @return This builder for chaining.
+     */
+    public Builder setErrorMessage(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+      errorMessage_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string error_message = 7;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearErrorMessage() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      errorMessage_ = getDefaultInstance().getErrorMessage();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string error_message = 7;</code>
+     * @param value The bytes for errorMessage to set.
+     * @return This builder for chaining.
+     */
+    public Builder setErrorMessageBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      bitField0_ |= 0x00000002;
+      errorMessage_ = value;
       onChanged();
       return this;
     }

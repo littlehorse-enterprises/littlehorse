@@ -531,13 +531,9 @@ public class ApiStreamsContext {
         // First, query the active host. If we get it, then return that.
         RemoteStoreQueryResponse resp = new RemoteStoreQueryResponse();
         try {
-            byte[] out = client.getResponse(
-                metadata.activeHost(),
-                path + "/true"
-            );
             resp =
                 LHSerializable.fromBytes(
-                    out,
+                    client.getResponse(metadata.activeHost(), path + "/true"),
                     RemoteStoreQueryResponse.class,
                     config
                 );
@@ -550,6 +546,7 @@ public class ApiStreamsContext {
         if (resp.isValid()) return resp.result;
 
         // If we got this far, it means that the Active Host is unavailable.
+        // Now we query all standby's and return the most up-to-date one.
         resp = null;
 
         for (HostInfo standbyHost : metadata.standbyHosts()) {

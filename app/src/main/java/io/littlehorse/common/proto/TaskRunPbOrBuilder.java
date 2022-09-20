@@ -184,4 +184,21 @@ public interface TaskRunPbOrBuilder extends
    * @return The resultCode.
    */
   io.littlehorse.common.proto.TaskResultCodePb getResultCode();
+
+  /**
+   * <code>string error_message = 17;</code>
+   * @return Whether the errorMessage field is set.
+   */
+  boolean hasErrorMessage();
+  /**
+   * <code>string error_message = 17;</code>
+   * @return The errorMessage.
+   */
+  java.lang.String getErrorMessage();
+  /**
+   * <code>string error_message = 17;</code>
+   * @return The bytes for errorMessage.
+   */
+  com.google.protobuf.ByteString
+      getErrorMessageBytes();
 }

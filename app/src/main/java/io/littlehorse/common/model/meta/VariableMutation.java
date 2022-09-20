@@ -1,7 +1,11 @@
 package io.littlehorse.common.model.meta;
 
+import java.util.Map;
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.event.TaskResultEvent;
+import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.proto.VariableMutationPb;
 import io.littlehorse.common.proto.VariableMutationPb.RhsValueCase;
@@ -73,5 +77,66 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
             // not possible
         }
         if (p.hasRhsJsonPath()) rhsJsonPath = p.getRhsJsonPath();
+    }
+
+    public VariableValue getLhsValue(
+        ThreadRun thread,
+        Map<String, VariableValue> txnCache
+    ) throws LHVarSubError {
+        return getVarValFromThreadInTxn(this.lhsName, thread, txnCache);
+    }
+
+    private VariableValue getVarValFromThreadInTxn(
+        String varName,
+        ThreadRun thread,
+        Map<String, VariableValue> txnCache
+    ) throws LHVarSubError {
+        VariableValue lhsVar = txnCache.get(this.lhsName);
+        if (lhsVar == null) {
+            lhsVar = thread.getVariable(this.lhsName).value;
+        }
+        if (lhsJsonPath != null) {
+            throw new RuntimeException("JsonPath not implemented yet");
+        }
+        return lhsVar.getCopy();
+    }
+
+    public VariableValue getRhsValue(
+        ThreadRun thread,
+        Map<String, VariableValue> txnCache,
+        TaskResultEvent tre
+    ) throws LHVarSubError {
+        VariableValue out = null;
+        if (rhsValueType == RhsValueCase.LITERAL_VALUE) {
+            return rhsLiteralValue;
+        } else if (rhsValueType == RhsValueCase.SOURCE_VARIABLE) {
+            return thread.assignVariable(rhsSourceVariable, txnCache);
+        } else if (rhsValueType == RhsValueCase.NODE_OUTPUT) {
+            out = new VariableValue();
+            out.type =
+                thread.getCurrentNode().getTaskDef().outputSchema.outputType;
+            throw new RuntimeException(
+                "Continue here and just take the variablevalue from the output."
+            );
+        } else {
+            // throw new RuntimeException(
+            //     "Unimplemented RHS Value type: " + rhsValueType
+            // );
+        }
+
+        if (rhsJsonPath != null) {
+            throw new RuntimeException("JsonPath not yet implemented");
+        }
+        return out;
+    }
+
+    public void execute(
+        ThreadRun thread,
+        Map<String, VariableValue> editedVars,
+        TaskResultEvent tre
+    ) throws LHVarSubError {
+        VariableValue lhsVal = getLhsValue(thread, editedVars);
+        VariableValue rhsVal = getRhsValue(thread, editedVars, tre);
+        editedVars.put(lhsName, lhsVal.operate(operation, rhsVal));
     }
 }

@@ -26,6 +26,14 @@ enum VariableTypePb {
     BYTES = 6;
 }
 
+enum TaskResultCodePb {
+    SUCCESS = 0;
+    TIMEOUT = 1;
+    FAILED = 2;
+    VAR_SUB_ERROR = 3;
+    VAR_MUTATION_ERROR = 4;
+}
+
 message VariableValuePb {
     VariableTypePb type = 1;
     optional string json_obj = 2;
@@ -44,15 +52,6 @@ message VariablePb {
     string name = 4;
     google.protobuf.Timestamp date = 5;
 }
-
-enum TaskResultCodePb {
-    SUCCESS = 0;
-    TIMEOUT = 1;
-    TASK_FAILURE = 2;
-}
-
-//
-
 
 // Observability Events emitted by the Scheduler
 
@@ -131,14 +130,14 @@ message EdgePb {
 
 enum VariableMutationTypePb {
     ASSIGN = 0;
-    ADD = 1;
-    EXTEND = 2;
-    SUBTRACT = 3;
-    MULTIPLY = 4;
-    DIVIDE = 5;
-    REMOVE_IF_PRESENT = 6;
-    REMOVE_INDEX = 7;
-    REMOVE_KEY = 8;
+    // ADD = 1;
+    // EXTEND = 2;
+    // SUBTRACT = 3;
+    // MULTIPLY = 4;
+    // DIVIDE = 5;
+    // REMOVE_IF_PRESENT = 6;
+    // REMOVE_INDEX = 7;
+    // REMOVE_KEY = 8;
 }
 
 message VariableAssignmentPb {
@@ -211,9 +210,14 @@ message WfSpecPb {
     int64 last_updated_offset = 8;
 }
 
+message OutputSchemaPb {
+    VariableTypePb output_type = 1;
+}
+
 message TaskDefPb {
     string name = 1;
     google.protobuf.Timestamp created_at = 2;
+    OutputSchemaPb output_schema = 3;
 }
 
 
@@ -246,6 +250,8 @@ message ThreadRunPb {
     optional google.protobuf.Timestamp end_time = 8;
 
     NodeRunStatePb current_node_run = 9;
+    optional string error_message = 10;
+    optional TaskResultCodePb result_code = 11;
 }
 
 message TaskRunPb {
@@ -269,6 +275,7 @@ message TaskRunPb {
     string task_def_id = 15;
 
     optional TaskResultCodePb result_code = 16;
+    optional string error_message = 17;
 }
 
 message NodeRunStatePb {
@@ -277,6 +284,8 @@ message NodeRunStatePb {
     int32 position = 3;
     int32 number = 4;
     LHStatusPb status = 5;
+    optional TaskResultCodePb result_code = 6;
+    optional string error_message = 7;
 }
 
 // This section contains Input Events to the Scheduler.
@@ -424,23 +433,18 @@ message TagsPb {
     repeated TagPb entries = 1;
 }
 
-// For inter-broker communication, eg queryRemoteBytes.
 /*
-Possible outcomes:
+Possible outcome for a RemoteStoreQuery:
 
-- Success, found the thing. Here are the bytes
-- Queried store appropriately but didn't find bytes.
+- Success, found the thing. Here are the bytes and approximate lag.
+- Queried store appropriately but didn't find bytes. Here's approximate lag.
 - Couldn't query store, rebalancing.
 - Task has migrated and I am no longer the assignee for that partition key.
 
 "task has migrated" type of response requires that request includes the partition key along with
 store key
 
-Also may want to distinguish between querying the active and standby. Do we want to pass in info about
-the partition? -> can do that, `KeyQueryMetadata#partition()` is what we want.
-
-On another note, how do we want to do readinessProbes? Options are:
-
+How do we want to do readinessProbes? Options are:
 -- Make sure state is RUNNING
 This would really lean towards Consistency not Availability for queries. 
 
@@ -468,13 +472,6 @@ enum RemoteStoreQueryStatusPb {
     RSQ_MIGRATED = 2;
     RSQ_NOT_AVAILABLE = 3;
 }
-
-// message RemoteStoreQueryRequestPb {
-//     string store_name = 1;
-//     int32 partition = 2;
-//     string store_key = 3;
-//     bool is_active_store = 4;
-// }
 
 message RemoteStoreQueryResponsePb {
     RemoteStoreQueryStatusPb code = 1;

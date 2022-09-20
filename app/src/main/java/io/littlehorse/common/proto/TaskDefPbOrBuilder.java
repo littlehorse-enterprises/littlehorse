@@ -33,4 +33,19 @@ public interface TaskDefPbOrBuilder extends
    * <code>.google.protobuf.Timestamp created_at = 2;</code>
    */
   com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
+
+  /**
+   * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
+   * @return Whether the outputSchema field is set.
+   */
+  boolean hasOutputSchema();
+  /**
+   * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
+   * @return The outputSchema.
+   */
+  io.littlehorse.common.proto.OutputSchemaPb getOutputSchema();
+  /**
+   * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
+   */
+  io.littlehorse.common.proto.OutputSchemaPbOrBuilder getOutputSchemaOrBuilder();
 }

@@ -121,24 +121,22 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
             if (sink == null) {
                 throw new LHValidationError(
                     null,
-                    "Node " +
-                    name +
-                    " on thread " +
-                    threadSpec.name +
-                    " has edge" +
-                    " referring to nonexistent node " +
-                    e.sinkNodeName
+                    String.format(
+                        "Node %s on thread %s has edge referring to missing node %s!",
+                        name,
+                        threadSpec.name,
+                        e.sinkNodeName
+                    )
                 );
             }
             if (sink.type == NodeCase.ENTRYPOINT) {
                 throw new LHValidationError(
                     null,
-                    "Thread " +
-                    threadSpec.name +
-                    " has entrypoint node with " +
-                    " incoming edge from node " +
-                    name +
-                    "."
+                    String.format(
+                        "Thread %s has entrypoint node with incoming edge from node %s.",
+                        threadSpec.name,
+                        name
+                    )
                 );
             }
         }
@@ -146,6 +144,10 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
         if (type == NodeCase.TASK) {
             validateTask(client, config);
         }
+    }
+
+    @JsonIgnore public TaskDef getTaskDef() {
+        throw new RuntimeException("implement me!");
     }
 
     private void validateTask(LHGlobalMetaStores stores, LHConfig config)

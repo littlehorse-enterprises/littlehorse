@@ -50,15 +50,19 @@ public class WfRunStoreAccess {
         var.date = new Date();
         var.name = name;
 
+        putVariable(var);
+    }
+
+    public void putVariable(Variable var) {
         variablePuts.put(var.getObjectId(), var);
     }
 
-    public VariableValue getVariable(String name, int threadNum) {
+    public Variable getVariable(String name, int threadNum) {
         String key = Variable.getObjectId(wfRunId, threadNum, name);
         Variable out = variablePuts.get(key);
         if (out == null) {
             out = variableStore.get(key);
         }
-        return out.value;
+        return out;
     }
 }

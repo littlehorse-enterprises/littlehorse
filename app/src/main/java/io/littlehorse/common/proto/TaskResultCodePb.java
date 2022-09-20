@@ -17,9 +17,17 @@ public enum TaskResultCodePb
    */
   TIMEOUT(1),
   /**
-   * <code>TASK_FAILURE = 2;</code>
+   * <code>FAILED = 2;</code>
    */
-  TASK_FAILURE(2),
+  FAILED(2),
+  /**
+   * <code>VAR_SUB_ERROR = 3;</code>
+   */
+  VAR_SUB_ERROR(3),
+  /**
+   * <code>VAR_MUTATION_ERROR = 4;</code>
+   */
+  VAR_MUTATION_ERROR(4),
   UNRECOGNIZED(-1),
   ;
 
@@ -32,9 +40,17 @@ public enum TaskResultCodePb
    */
   public static final int TIMEOUT_VALUE = 1;
   /**
-   * <code>TASK_FAILURE = 2;</code>
+   * <code>FAILED = 2;</code>
    */
-  public static final int TASK_FAILURE_VALUE = 2;
+  public static final int FAILED_VALUE = 2;
+  /**
+   * <code>VAR_SUB_ERROR = 3;</code>
+   */
+  public static final int VAR_SUB_ERROR_VALUE = 3;
+  /**
+   * <code>VAR_MUTATION_ERROR = 4;</code>
+   */
+  public static final int VAR_MUTATION_ERROR_VALUE = 4;
 
 
   public final int getNumber() {
@@ -63,7 +79,9 @@ public enum TaskResultCodePb
     switch (value) {
       case 0: return SUCCESS;
       case 1: return TIMEOUT;
-      case 2: return TASK_FAILURE;
+      case 2: return FAILED;
+      case 3: return VAR_SUB_ERROR;
+      case 4: return VAR_MUTATION_ERROR;
       default: return null;
     }
   }

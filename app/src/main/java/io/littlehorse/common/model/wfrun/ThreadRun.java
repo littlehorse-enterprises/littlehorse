@@ -3,6 +3,7 @@ package io.littlehorse.common.model.wfrun;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.event.TaskResultEvent;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
@@ -11,6 +12,8 @@ import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.Edge;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.meta.ThreadSpec;
+import io.littlehorse.common.model.meta.VariableAssignment;
+import io.littlehorse.common.model.meta.VariableMutation;
 import io.littlehorse.common.model.observability.ObservabilityEvent;
 import io.littlehorse.common.model.observability.TaskResultOe;
 import io.littlehorse.common.model.observability.TaskScheduledOe;
@@ -182,12 +185,14 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
                 scheduleRetry(curNode, currentNodeRun);
             } else {
                 LHUtil.log(
-                    "Timing out",
+                    "Failing threadrun",
                     wfRun.id,
                     currentNodeRun.position,
                     eventTime.getTime()
                 );
                 setStatus(LHStatusPb.ERROR);
+                // Probably want to mark down why the node failed.
+
             }
         } else if (currentNodeRun.status == LHStatusPb.RUNNING) {
             // Nothing to do, just wait for next event to come in.
@@ -205,6 +210,14 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
 
     private boolean shouldRetry(Node curNode, NodeRunState currNodeRun) {
         if (curNode.type != NodeCase.TASK) return false;
+
+        if (
+            currNodeRun.resultCode != TaskResultCodePb.FAILED &&
+            currNodeRun.resultCode != TaskResultCodePb.TIMEOUT
+        ) {
+            // Can only retry timeout or task failure.
+            return false;
+        }
 
         return currNodeRun.attemptNumber < curNode.taskNode.retries;
     }
@@ -417,11 +430,24 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         switch (ce.resultCode) {
             case SUCCESS:
                 currentNodeRun.status = LHStatusPb.COMPLETED;
+                try {
+                    mutateVariables(ce);
+                } catch (LHVarSubError exn) {
+                    currentNodeRun.status = LHStatusPb.ERROR;
+                    currentNodeRun.resultCode =
+                        TaskResultCodePb.VAR_MUTATION_ERROR;
+                    currentNodeRun.errorMessage =
+                        "Failed mutating variables: " + exn.getMessage();
+                }
+
                 break;
             case TIMEOUT:
-            case TASK_FAILURE:
+            case FAILED:
                 currentNodeRun.status = LHStatusPb.ERROR;
                 break;
+            case VAR_MUTATION_ERROR:
+            case VAR_SUB_ERROR:
+                throw new RuntimeException("Implement me!");
             case UNRECOGNIZED:
                 throw new RuntimeException(
                     "Unrecognized TaskResultCode: " + ce.resultCode
@@ -433,13 +459,39 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         task.endTime = we.time;
         task.output = ce.stdout;
         task.logOutput = ce.stderr;
-        task.status =
-            ce.resultCode == TaskResultCodePb.SUCCESS
-                ? LHStatusPb.COMPLETED
-                : LHStatusPb.ERROR;
+        task.status = currentNodeRun.status;
         task.resultCode = ce.resultCode;
         putTask(task);
     }
+
+    private void mutateVariables(TaskResultEvent ce) throws LHVarSubError {
+        Node node = getThreadSpec().nodes.get(currentNodeRun.nodeName);
+
+        // Need to do this atomically in a transaction, so that if one of the
+        // mutations fail then none of them occur.
+        // That's why we write to an in-memory Map. If all mutations succeed,
+        // then we flush the contents of the Map to the Variables.
+        Map<String, VariableValue> varCache = new HashMap<>();
+        for (VariableMutation mut : node.variableMutations) {
+            mut.execute(this, varCache, ce);
+        }
+
+        // If we got this far without a LHVarSubError, then we can safely save all
+        // of the variables.
+        for (Map.Entry<String, VariableValue> entry : varCache.entrySet()) {
+            // TODO: This needs to be extended once we add Threads.
+            putLocalVariable(entry.getKey(), entry.getValue());
+        }
+    }
+
+    public VariableValue assignVariable(
+        VariableAssignment assn,
+        Map<String, VariableValue> txnCache
+    ) throws LHVarSubError {
+        throw new RuntimeException("implement me!");
+    }
+
+    // private VariableValue
 
     public void putTask(TaskRun task) {
         wfRun.stores.putTask(task);
@@ -449,11 +501,23 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         return wfRun.stores.getTaskRun(number, position);
     }
 
+    public void putVariable(Variable var) {
+        wfRun.threadRuns
+            .get(var.threadRunNumber)
+            .putLocalVariable(var.name, var.value);
+    }
+
+    public Variable getVariable(String name) {
+        // For now, just do the local one
+        // Once we have threads, this will do a backtrack up the thread tree.
+        return getLocalVariable(name);
+    }
+
     public void putLocalVariable(String name, VariableValue var) {
         wfRun.stores.putVariable(name, var, number);
     }
 
-    public VariableValue getLocalVariable(String name) {
+    public Variable getLocalVariable(String name) {
         return wfRun.stores.getVariable(name, number);
     }
 }
