@@ -447,7 +447,8 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
                 break;
             case VAR_MUTATION_ERROR:
             case VAR_SUB_ERROR:
-                throw new RuntimeException("Implement me!");
+                // This shouldn't be possible.
+                throw new RuntimeException("Impossible TaskResultCodePb");
             case UNRECOGNIZED:
                 throw new RuntimeException(
                     "Unrecognized TaskResultCode: " + ce.resultCode
@@ -488,10 +489,24 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         VariableAssignment assn,
         Map<String, VariableValue> txnCache
     ) throws LHVarSubError {
-        throw new RuntimeException("implement me!");
-    }
+        VariableValue val = null;
+        switch (assn.rhsSourceType) {
+            case LITERAL_VALUE:
+                val = assn.rhsLiteralValue;
+                break;
+            case VARIABLE_NAME:
+                val = getVariable(assn.rhsVariableName).value;
+                break;
+            case SOURCE_NOT_SET:
+                throw new RuntimeException("Not possible");
+        }
 
-    // private VariableValue
+        if (assn.jsonPath != null) {
+            val = val.jsonPath(assn.jsonPath);
+        }
+
+        return val;
+    }
 
     public void putTask(TaskRun task) {
         wfRun.stores.putTask(task);

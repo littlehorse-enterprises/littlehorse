@@ -92,15 +92,15 @@ public interface VariableValuePbOrBuilder extends
       getStrBytes();
 
   /**
-   * <code>int32 int = 7;</code>
+   * <code>int64 int = 7;</code>
    * @return Whether the int field is set.
    */
   boolean hasInt();
   /**
-   * <code>int32 int = 7;</code>
+   * <code>int64 int = 7;</code>
    * @return The int.
    */
-  int getInt();
+  long getInt();
 
   /**
    * <code>bytes bytes = 8;</code>

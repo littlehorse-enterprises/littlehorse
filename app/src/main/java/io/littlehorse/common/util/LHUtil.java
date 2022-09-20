@@ -68,7 +68,7 @@ public class LHUtil {
         return date == null ? "null" : String.format("%012d", date.getTime());
     }
 
-    public static String toLhDbFormat(Integer val) {
+    public static String toLhDbFormat(Long val) {
         return val == null ? "null" : String.format("%012d", val);
     }
 
@@ -108,5 +108,23 @@ public class LHUtil {
 
     public static String b64Encode(byte[] bytes) {
         return Base64.getEncoder().encodeToString(bytes);
+    }
+
+    public static String objToString(Object obj) {
+        if (obj == null) return null;
+        if (obj instanceof Map || obj instanceof List) {
+            try {
+                return mapper.writeValueAsString(obj);
+            } catch (Exception exn) {
+                LHUtil.log("Failed writing map or list to json, returning null.");
+                return null;
+            }
+        }
+        return obj.toString();
+    }
+
+    public static byte[] objToBytes(Object obj) {
+        String s = objToString(obj);
+        return s == null ? null : s.getBytes();
     }
 }

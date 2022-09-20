@@ -96,7 +96,7 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
             lhsVar = thread.getVariable(this.lhsName).value;
         }
         if (lhsJsonPath != null) {
-            throw new RuntimeException("JsonPath not implemented yet");
+            throw new RuntimeException("JsonPath not supported yet");
         }
         return lhsVar.getCopy();
     }
@@ -116,12 +116,12 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
             out = tre.stdout;
         } else {
             throw new RuntimeException(
-                "Unimplemented RHS Value type: " + rhsValueType
+                "Unsupported RHS Value type: " + rhsValueType
             );
         }
 
         if (rhsJsonPath != null) {
-            throw new RuntimeException("JsonPath not yet implemented");
+            throw new RuntimeException("JsonPath not yet supported");
         }
         return out;
     }
@@ -133,6 +133,9 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
     ) throws LHVarSubError {
         VariableValue lhsVal = getLhsValue(thread, editedVars);
         VariableValue rhsVal = getRhsValue(thread, editedVars, tre);
+
+        rhsVal = rhsVal.coerceToType(lhsVal.type);
+
         editedVars.put(lhsName, lhsVal.operate(operation, rhsVal));
     }
 }

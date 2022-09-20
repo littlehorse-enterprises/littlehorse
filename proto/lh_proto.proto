@@ -42,7 +42,7 @@ message VariableValuePb {
     optional double double = 4;
     optional bool bool = 5;
     optional string str = 6;
-    optional int32 int = 7;
+    optional int64 int = 7;
     optional bytes bytes = 8;
 }
 

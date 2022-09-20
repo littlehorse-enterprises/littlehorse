@@ -90,7 +90,7 @@ private static final long serialVersionUID = 0L;
           }
           case 56: {
             bitField0_ |= 0x00000020;
-            int_ = input.readInt32();
+            int_ = input.readInt64();
             break;
           }
           case 66: {
@@ -327,9 +327,9 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int INT_FIELD_NUMBER = 7;
-  private int int_;
+  private long int_;
   /**
-   * <code>int32 int = 7;</code>
+   * <code>int64 int = 7;</code>
    * @return Whether the int field is set.
    */
   @java.lang.Override
@@ -337,11 +337,11 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000020) != 0);
   }
   /**
-   * <code>int32 int = 7;</code>
+   * <code>int64 int = 7;</code>
    * @return The int.
    */
   @java.lang.Override
-  public int getInt() {
+  public long getInt() {
     return int_;
   }
 
@@ -397,7 +397,7 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.GeneratedMessageV3.writeString(output, 6, str_);
     }
     if (((bitField0_ & 0x00000020) != 0)) {
-      output.writeInt32(7, int_);
+      output.writeInt64(7, int_);
     }
     if (((bitField0_ & 0x00000040) != 0)) {
       output.writeBytes(8, bytes_);
@@ -434,7 +434,7 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000020) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(7, int_);
+        .computeInt64Size(7, int_);
     }
     if (((bitField0_ & 0x00000040) != 0)) {
       size += com.google.protobuf.CodedOutputStream
@@ -529,7 +529,8 @@ private static final long serialVersionUID = 0L;
     }
     if (hasInt()) {
       hash = (37 * hash) + INT_FIELD_NUMBER;
-      hash = (53 * hash) + getInt();
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getInt());
     }
     if (hasBytes()) {
       hash = (37 * hash) + BYTES_FIELD_NUMBER;
@@ -680,7 +681,7 @@ private static final long serialVersionUID = 0L;
       bitField0_ = (bitField0_ & ~0x00000008);
       str_ = "";
       bitField0_ = (bitField0_ & ~0x00000010);
-      int_ = 0;
+      int_ = 0L;
       bitField0_ = (bitField0_ & ~0x00000020);
       bytes_ = com.google.protobuf.ByteString.EMPTY;
       bitField0_ = (bitField0_ & ~0x00000040);
@@ -1231,9 +1232,9 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int int_ ;
+    private long int_ ;
     /**
-     * <code>int32 int = 7;</code>
+     * <code>int64 int = 7;</code>
      * @return Whether the int field is set.
      */
     @java.lang.Override
@@ -1241,31 +1242,31 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000020) != 0);
     }
     /**
-     * <code>int32 int = 7;</code>
+     * <code>int64 int = 7;</code>
      * @return The int.
      */
     @java.lang.Override
-    public int getInt() {
+    public long getInt() {
       return int_;
     }
     /**
-     * <code>int32 int = 7;</code>
+     * <code>int64 int = 7;</code>
      * @param value The int to set.
      * @return This builder for chaining.
      */
-    public Builder setInt(int value) {
+    public Builder setInt(long value) {
       bitField0_ |= 0x00000020;
       int_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>int32 int = 7;</code>
+     * <code>int64 int = 7;</code>
      * @return This builder for chaining.
      */
     public Builder clearInt() {
       bitField0_ = (bitField0_ & ~0x00000020);
-      int_ = 0;
+      int_ = 0L;
       onChanged();
       return this;
     }
