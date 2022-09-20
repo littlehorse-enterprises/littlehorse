@@ -55,15 +55,19 @@ public interface TaskRunPbOrBuilder extends
   io.littlehorse.common.proto.LHStatusPb getStatus();
 
   /**
-   * <code>bytes output = 7;</code>
+   * <code>.lh_proto.VariableValuePb output = 7;</code>
    * @return Whether the output field is set.
    */
   boolean hasOutput();
   /**
-   * <code>bytes output = 7;</code>
+   * <code>.lh_proto.VariableValuePb output = 7;</code>
    * @return The output.
    */
-  com.google.protobuf.ByteString getOutput();
+  io.littlehorse.common.proto.VariableValuePb getOutput();
+  /**
+   * <code>.lh_proto.VariableValuePb output = 7;</code>
+   */
+  io.littlehorse.common.proto.VariableValuePbOrBuilder getOutputOrBuilder();
 
   /**
    * <code>bytes log_output = 8;</code>

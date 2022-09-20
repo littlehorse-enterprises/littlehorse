@@ -79,7 +79,7 @@ public interface VariableMutationPbOrBuilder extends
 
   /**
    * <pre>
-   * Dummy protobuf syntax hack
+   * Dummy protobuf syntax hack, only care about the enum val
    * </pre>
    *
    * <code>bool node_output = 6;</code>

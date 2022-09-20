@@ -14,6 +14,7 @@ import io.littlehorse.common.proto.NodePb;
 import io.littlehorse.common.proto.NodePb.NodeCase;
 import io.littlehorse.common.proto.NodePbOrBuilder;
 import io.littlehorse.common.proto.VariableMutationPb;
+import io.littlehorse.common.proto.VariableTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,10 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
     public EntrypointNode entrypointNode;
     public ExitNode exitNode;
     public List<VariableMutation> variableMutations;
+    public OutputSchema outputSchema;
+
+    @JsonIgnore
+    private TaskDef taskDef;
 
     @JsonIgnore
     public Class<NodePb> getProtoBaseClass() {
@@ -33,7 +38,9 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
 
     @JsonIgnore
     public NodePb.Builder toProto() {
-        NodePb.Builder out = NodePb.newBuilder();
+        NodePb.Builder out = NodePb
+            .newBuilder()
+            .setOutputSchema(outputSchema.toProto());
 
         for (Edge o : outgoingEdges) {
             out.addOutgoingEdges(o.toProto());
@@ -63,6 +70,7 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
     public void initFrom(MessageOrBuilder p) throws LHSerdeError {
         NodePbOrBuilder proto = (NodePbOrBuilder) p;
         type = proto.getNodeCase();
+        outputSchema = OutputSchema.fromProto(proto.getOutputSchemaOrBuilder());
 
         for (EdgePb epb : proto.getOutgoingEdgesList()) {
             Edge edge = Edge.fromProto(epb);
@@ -106,6 +114,7 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
     public Node() {
         outgoingEdges = new ArrayList<>();
         variableMutations = new ArrayList<>();
+        outputSchema = new OutputSchema();
     }
 
     public List<Edge> outgoingEdges;
@@ -143,17 +152,42 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
 
         if (type == NodeCase.TASK) {
             validateTask(client, config);
+        } else if (type == NodeCase.ENTRYPOINT) {
+            validateEntrypoint(client, config);
+        } else if (type == NodeCase.EXIT) {
+            validateExit(client, config);
+        } else {
+            throw new RuntimeException("Unhandled node type " + type);
         }
     }
 
-    @JsonIgnore public TaskDef getTaskDef() {
-        throw new RuntimeException("implement me!");
+    @JsonIgnore
+    public TaskDef getTaskDef() {
+        if (type != NodeCase.TASK) {
+            throw new RuntimeException(
+                "Tried to get TaskDef from non TASK node!"
+            );
+        }
+        return taskDef;
+    }
+
+    private void validateEntrypoint(
+        LHGlobalMetaStores stores,
+        LHConfig config
+    ) {
+        outputSchema = new OutputSchema();
+        outputSchema.outputType = VariableTypePb.VOID;
+    }
+
+    private void validateExit(LHGlobalMetaStores stores, LHConfig config) {
+        outputSchema = new OutputSchema();
+        outputSchema.outputType = VariableTypePb.VOID;
     }
 
     private void validateTask(LHGlobalMetaStores stores, LHConfig config)
         throws LHValidationError {
-        TaskDef task = stores.getTaskDef(taskNode.taskDefName);
-        if (task == null) {
+        taskDef = stores.getTaskDef(taskNode.taskDefName);
+        if (taskDef == null) {
             throw new LHValidationError(
                 null,
                 "Node " +

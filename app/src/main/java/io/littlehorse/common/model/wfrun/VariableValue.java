@@ -1,5 +1,6 @@
 package io.littlehorse.common.model.wfrun;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
@@ -7,16 +8,31 @@ import io.littlehorse.common.proto.VariableMutationTypePb;
 import io.littlehorse.common.proto.VariableTypePb;
 import io.littlehorse.common.proto.VariableValuePb;
 import io.littlehorse.common.proto.VariableValuePbOrBuilder;
+import io.littlehorse.common.util.LHUtil;
 
 public class VariableValue extends LHSerializable<VariableValuePb> {
 
     public VariableTypePb type;
+
+    @JsonIgnore
     public String jsonObjVal;
+
+    @JsonIgnore
     public String jsonArrVal;
+
+    @JsonIgnore
     public Double doubleVal;
+
+    @JsonIgnore
     public Boolean boolVal;
+
+    @JsonIgnore
     public String strVal;
+
+    @JsonIgnore
     public Integer intVal;
+
+    @JsonIgnore
     public byte[] bytesVal;
 
     public static VariableValue fromProto(VariableValuePbOrBuilder proto) {
@@ -25,6 +41,7 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
         return out;
     }
 
+    @JsonIgnore
     public Class<VariableValuePb> getProtoBaseClass() {
         return VariableValuePb.class;
     }
@@ -53,6 +70,9 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
                 break;
             case BYTES:
                 bytesVal = p.getBytes().toByteArray();
+                break;
+            case VOID:
+                // nothing to do
                 break;
             case UNRECOGNIZED:
                 throw new RuntimeException("Panic: impossible type");
@@ -84,6 +104,9 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
             case BYTES:
                 out.setBytes(ByteString.copyFrom(bytesVal));
                 break;
+            case VOID:
+                // nothing to do
+                break;
             case UNRECOGNIZED:
                 throw new RuntimeException("Panic: impossible type");
         }
@@ -91,13 +114,39 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
         return out;
     }
 
+    @JsonIgnore
     public VariableValue getCopy() {
         VariableValue out = new VariableValue();
         out.initFrom(toProto());
         return out;
     }
 
-    public VariableValue operate(VariableMutationTypePb operation, VariableValue rhs) {
+    public VariableValue operate(
+        VariableMutationTypePb operation,
+        VariableValue rhs
+    ) {
         throw new RuntimeException("implement me");
+    }
+
+    public Object getVal() {
+        switch (type) {
+            case INT:
+                return this.intVal;
+            case DOUBLE:
+                return this.doubleVal;
+            case STR:
+                return this.strVal;
+            case BOOL:
+                return this.boolVal;
+            case JSON_ARR:
+                return LHUtil.strToJsonArr(this.jsonArrVal);
+            case JSON_OBJ:
+                return LHUtil.strToJsonObj(this.jsonObjVal);
+            case BYTES:
+                return LHUtil.b64Encode(this.bytesVal);
+            case UNRECOGNIZED:
+            default:
+                return null;
+        }
     }
 }

@@ -17,7 +17,6 @@ private static final long serialVersionUID = 0L;
   }
   private TaskResultEventPb() {
     resultCode_ = 0;
-    output_ = com.google.protobuf.ByteString.EMPTY;
     logOutput_ = com.google.protobuf.ByteString.EMPTY;
   }
 
@@ -87,8 +86,16 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 50: {
+            io.littlehorse.common.proto.VariableValuePb.Builder subBuilder = null;
+            if (((bitField0_ & 0x00000001) != 0)) {
+              subBuilder = output_.toBuilder();
+            }
+            output_ = input.readMessage(io.littlehorse.common.proto.VariableValuePb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom(output_);
+              output_ = subBuilder.buildPartial();
+            }
             bitField0_ |= 0x00000001;
-            output_ = input.readBytes();
             break;
           }
           case 58: {
@@ -208,9 +215,9 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int OUTPUT_FIELD_NUMBER = 6;
-  private com.google.protobuf.ByteString output_;
+  private io.littlehorse.common.proto.VariableValuePb output_;
   /**
-   * <code>bytes output = 6;</code>
+   * <code>.lh_proto.VariableValuePb output = 6;</code>
    * @return Whether the output field is set.
    */
   @java.lang.Override
@@ -218,12 +225,19 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>bytes output = 6;</code>
+   * <code>.lh_proto.VariableValuePb output = 6;</code>
    * @return The output.
    */
   @java.lang.Override
-  public com.google.protobuf.ByteString getOutput() {
-    return output_;
+  public io.littlehorse.common.proto.VariableValuePb getOutput() {
+    return output_ == null ? io.littlehorse.common.proto.VariableValuePb.getDefaultInstance() : output_;
+  }
+  /**
+   * <code>.lh_proto.VariableValuePb output = 6;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.VariableValuePbOrBuilder getOutputOrBuilder() {
+    return output_ == null ? io.littlehorse.common.proto.VariableValuePb.getDefaultInstance() : output_;
   }
 
   public static final int LOG_OUTPUT_FIELD_NUMBER = 7;
@@ -275,7 +289,7 @@ private static final long serialVersionUID = 0L;
       output.writeEnum(5, resultCode_);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeBytes(6, output_);
+      output.writeMessage(6, getOutput());
     }
     if (((bitField0_ & 0x00000002) != 0)) {
       output.writeBytes(7, logOutput_);
@@ -311,7 +325,7 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(6, output_);
+        .computeMessageSize(6, getOutput());
     }
     if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.CodedOutputStream
@@ -513,6 +527,7 @@ private static final long serialVersionUID = 0L;
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
+        getOutputFieldBuilder();
       }
     }
     @java.lang.Override
@@ -532,7 +547,11 @@ private static final long serialVersionUID = 0L;
       }
       resultCode_ = 0;
 
-      output_ = com.google.protobuf.ByteString.EMPTY;
+      if (outputBuilder_ == null) {
+        output_ = null;
+      } else {
+        outputBuilder_.clear();
+      }
       bitField0_ = (bitField0_ & ~0x00000001);
       logOutput_ = com.google.protobuf.ByteString.EMPTY;
       bitField0_ = (bitField0_ & ~0x00000002);
@@ -574,9 +593,13 @@ private static final long serialVersionUID = 0L;
       }
       result.resultCode_ = resultCode_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
+        if (outputBuilder_ == null) {
+          result.output_ = output_;
+        } else {
+          result.output_ = outputBuilder_.build();
+        }
         to_bitField0_ |= 0x00000001;
       }
-      result.output_ = output_;
       if (((from_bitField0_ & 0x00000002) != 0)) {
         to_bitField0_ |= 0x00000002;
       }
@@ -646,7 +669,7 @@ private static final long serialVersionUID = 0L;
         setResultCodeValue(other.getResultCodeValue());
       }
       if (other.hasOutput()) {
-        setOutput(other.getOutput());
+        mergeOutput(other.getOutput());
       }
       if (other.hasLogOutput()) {
         setLogOutput(other.getLogOutput());
@@ -947,46 +970,124 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private com.google.protobuf.ByteString output_ = com.google.protobuf.ByteString.EMPTY;
+    private io.littlehorse.common.proto.VariableValuePb output_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.VariableValuePb, io.littlehorse.common.proto.VariableValuePb.Builder, io.littlehorse.common.proto.VariableValuePbOrBuilder> outputBuilder_;
     /**
-     * <code>bytes output = 6;</code>
+     * <code>.lh_proto.VariableValuePb output = 6;</code>
      * @return Whether the output field is set.
      */
-    @java.lang.Override
     public boolean hasOutput() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>bytes output = 6;</code>
+     * <code>.lh_proto.VariableValuePb output = 6;</code>
      * @return The output.
      */
-    @java.lang.Override
-    public com.google.protobuf.ByteString getOutput() {
-      return output_;
+    public io.littlehorse.common.proto.VariableValuePb getOutput() {
+      if (outputBuilder_ == null) {
+        return output_ == null ? io.littlehorse.common.proto.VariableValuePb.getDefaultInstance() : output_;
+      } else {
+        return outputBuilder_.getMessage();
+      }
     }
     /**
-     * <code>bytes output = 6;</code>
-     * @param value The output to set.
-     * @return This builder for chaining.
+     * <code>.lh_proto.VariableValuePb output = 6;</code>
      */
-    public Builder setOutput(com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-      output_ = value;
-      onChanged();
+    public Builder setOutput(io.littlehorse.common.proto.VariableValuePb value) {
+      if (outputBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        output_ = value;
+        onChanged();
+      } else {
+        outputBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000001;
       return this;
     }
     /**
-     * <code>bytes output = 6;</code>
-     * @return This builder for chaining.
+     * <code>.lh_proto.VariableValuePb output = 6;</code>
+     */
+    public Builder setOutput(
+        io.littlehorse.common.proto.VariableValuePb.Builder builderForValue) {
+      if (outputBuilder_ == null) {
+        output_ = builderForValue.build();
+        onChanged();
+      } else {
+        outputBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000001;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.VariableValuePb output = 6;</code>
+     */
+    public Builder mergeOutput(io.littlehorse.common.proto.VariableValuePb value) {
+      if (outputBuilder_ == null) {
+        if (((bitField0_ & 0x00000001) != 0) &&
+            output_ != null &&
+            output_ != io.littlehorse.common.proto.VariableValuePb.getDefaultInstance()) {
+          output_ =
+            io.littlehorse.common.proto.VariableValuePb.newBuilder(output_).mergeFrom(value).buildPartial();
+        } else {
+          output_ = value;
+        }
+        onChanged();
+      } else {
+        outputBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000001;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.VariableValuePb output = 6;</code>
      */
     public Builder clearOutput() {
+      if (outputBuilder_ == null) {
+        output_ = null;
+        onChanged();
+      } else {
+        outputBuilder_.clear();
+      }
       bitField0_ = (bitField0_ & ~0x00000001);
-      output_ = getDefaultInstance().getOutput();
-      onChanged();
       return this;
+    }
+    /**
+     * <code>.lh_proto.VariableValuePb output = 6;</code>
+     */
+    public io.littlehorse.common.proto.VariableValuePb.Builder getOutputBuilder() {
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return getOutputFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.VariableValuePb output = 6;</code>
+     */
+    public io.littlehorse.common.proto.VariableValuePbOrBuilder getOutputOrBuilder() {
+      if (outputBuilder_ != null) {
+        return outputBuilder_.getMessageOrBuilder();
+      } else {
+        return output_ == null ?
+            io.littlehorse.common.proto.VariableValuePb.getDefaultInstance() : output_;
+      }
+    }
+    /**
+     * <code>.lh_proto.VariableValuePb output = 6;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.VariableValuePb, io.littlehorse.common.proto.VariableValuePb.Builder, io.littlehorse.common.proto.VariableValuePbOrBuilder> 
+        getOutputFieldBuilder() {
+      if (outputBuilder_ == null) {
+        outputBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.VariableValuePb, io.littlehorse.common.proto.VariableValuePb.Builder, io.littlehorse.common.proto.VariableValuePbOrBuilder>(
+                getOutput(),
+                getParentForChildren(),
+                isClean());
+        output_ = null;
+      }
+      return outputBuilder_;
     }
 
     private com.google.protobuf.ByteString logOutput_ = com.google.protobuf.ByteString.EMPTY;

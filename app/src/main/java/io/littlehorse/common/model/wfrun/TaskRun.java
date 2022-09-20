@@ -1,5 +1,6 @@
 package io.littlehorse.common.model.wfrun;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.GETable;
@@ -23,7 +24,7 @@ public class TaskRun extends GETable<TaskRunPb> {
     public int number;
     public int attemptNumber;
     public LHStatusPb status;
-    public byte[] output;
+    public VariableValue output;
     public byte[] logOutput;
 
     public Date scheduleTime;
@@ -70,8 +71,10 @@ public class TaskRun extends GETable<TaskRunPb> {
 
         number = proto.getNumber();
         attemptNumber = proto.getAttemptNumber();
-        if (proto.hasOutput()) output = proto.getOutput().toByteArray();
-        if (proto.hasLogOutput()) output = proto.getLogOutput().toByteArray();
+        if (proto.hasOutput()) output =
+            VariableValue.fromProto(proto.getOutput());
+        if (proto.hasLogOutput()) logOutput =
+            proto.getLogOutput().toByteArray();
 
         scheduleTime = LHUtil.fromProtoTs(proto.getScheduleTime());
         if (proto.hasStartTime()) {
@@ -104,7 +107,7 @@ public class TaskRun extends GETable<TaskRunPb> {
             .setNodeName(nodeName)
             .setTaskDefId(taskDefId);
 
-        if (output != null) out.setOutput(ByteString.copyFrom(output));
+        if (output != null) out.setOutput(output.toProto());
         if (logOutput != null) out.setLogOutput(ByteString.copyFrom(logOutput));
 
         if (startTime != null) out.setStartTime(LHUtil.fromDate(startTime));
@@ -115,6 +118,7 @@ public class TaskRun extends GETable<TaskRunPb> {
         return out;
     }
 
+    @JsonIgnore
     public List<Tag> getTags() {
         return Arrays.asList(
             new Tag(

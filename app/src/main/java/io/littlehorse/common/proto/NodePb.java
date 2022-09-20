@@ -111,6 +111,19 @@ private static final long serialVersionUID = 0L;
             nodeCase_ = 5;
             break;
           }
+          case 50: {
+            io.littlehorse.common.proto.OutputSchemaPb.Builder subBuilder = null;
+            if (outputSchema_ != null) {
+              subBuilder = outputSchema_.toBuilder();
+            }
+            outputSchema_ = input.readMessage(io.littlehorse.common.proto.OutputSchemaPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom(outputSchema_);
+              outputSchema_ = subBuilder.buildPartial();
+            }
+
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -365,6 +378,32 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.ExitNodePb.getDefaultInstance();
   }
 
+  public static final int OUTPUT_SCHEMA_FIELD_NUMBER = 6;
+  private io.littlehorse.common.proto.OutputSchemaPb outputSchema_;
+  /**
+   * <code>.lh_proto.OutputSchemaPb output_schema = 6;</code>
+   * @return Whether the outputSchema field is set.
+   */
+  @java.lang.Override
+  public boolean hasOutputSchema() {
+    return outputSchema_ != null;
+  }
+  /**
+   * <code>.lh_proto.OutputSchemaPb output_schema = 6;</code>
+   * @return The outputSchema.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.OutputSchemaPb getOutputSchema() {
+    return outputSchema_ == null ? io.littlehorse.common.proto.OutputSchemaPb.getDefaultInstance() : outputSchema_;
+  }
+  /**
+   * <code>.lh_proto.OutputSchemaPb output_schema = 6;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.OutputSchemaPbOrBuilder getOutputSchemaOrBuilder() {
+    return getOutputSchema();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -393,6 +432,9 @@ private static final long serialVersionUID = 0L;
     }
     if (nodeCase_ == 5) {
       output.writeMessage(5, (io.littlehorse.common.proto.ExitNodePb) node_);
+    }
+    if (outputSchema_ != null) {
+      output.writeMessage(6, getOutputSchema());
     }
     unknownFields.writeTo(output);
   }
@@ -423,6 +465,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(5, (io.littlehorse.common.proto.ExitNodePb) node_);
     }
+    if (outputSchema_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(6, getOutputSchema());
+    }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
@@ -442,6 +488,11 @@ private static final long serialVersionUID = 0L;
         .equals(other.getOutgoingEdgesList())) return false;
     if (!getVariableMutationsList()
         .equals(other.getVariableMutationsList())) return false;
+    if (hasOutputSchema() != other.hasOutputSchema()) return false;
+    if (hasOutputSchema()) {
+      if (!getOutputSchema()
+          .equals(other.getOutputSchema())) return false;
+    }
     if (!getNodeCase().equals(other.getNodeCase())) return false;
     switch (nodeCase_) {
       case 3:
@@ -477,6 +528,10 @@ private static final long serialVersionUID = 0L;
     if (getVariableMutationsCount() > 0) {
       hash = (37 * hash) + VARIABLE_MUTATIONS_FIELD_NUMBER;
       hash = (53 * hash) + getVariableMutationsList().hashCode();
+    }
+    if (hasOutputSchema()) {
+      hash = (37 * hash) + OUTPUT_SCHEMA_FIELD_NUMBER;
+      hash = (53 * hash) + getOutputSchema().hashCode();
     }
     switch (nodeCase_) {
       case 3:
@@ -641,6 +696,12 @@ private static final long serialVersionUID = 0L;
       } else {
         variableMutationsBuilder_.clear();
       }
+      if (outputSchemaBuilder_ == null) {
+        outputSchema_ = null;
+      } else {
+        outputSchema_ = null;
+        outputSchemaBuilder_ = null;
+      }
       nodeCase_ = 0;
       node_ = null;
       return this;
@@ -708,6 +769,11 @@ private static final long serialVersionUID = 0L;
         } else {
           result.node_ = exitBuilder_.build();
         }
+      }
+      if (outputSchemaBuilder_ == null) {
+        result.outputSchema_ = outputSchema_;
+      } else {
+        result.outputSchema_ = outputSchemaBuilder_.build();
       }
       result.nodeCase_ = nodeCase_;
       onBuilt();
@@ -809,6 +875,9 @@ private static final long serialVersionUID = 0L;
             variableMutationsBuilder_.addAllMessages(other.variableMutations_);
           }
         }
+      }
+      if (other.hasOutputSchema()) {
+        mergeOutputSchema(other.getOutputSchema());
       }
       switch (other.getNodeCase()) {
         case TASK: {
@@ -1773,6 +1842,125 @@ private static final long serialVersionUID = 0L;
       nodeCase_ = 5;
       onChanged();;
       return exitBuilder_;
+    }
+
+    private io.littlehorse.common.proto.OutputSchemaPb outputSchema_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.OutputSchemaPb, io.littlehorse.common.proto.OutputSchemaPb.Builder, io.littlehorse.common.proto.OutputSchemaPbOrBuilder> outputSchemaBuilder_;
+    /**
+     * <code>.lh_proto.OutputSchemaPb output_schema = 6;</code>
+     * @return Whether the outputSchema field is set.
+     */
+    public boolean hasOutputSchema() {
+      return outputSchemaBuilder_ != null || outputSchema_ != null;
+    }
+    /**
+     * <code>.lh_proto.OutputSchemaPb output_schema = 6;</code>
+     * @return The outputSchema.
+     */
+    public io.littlehorse.common.proto.OutputSchemaPb getOutputSchema() {
+      if (outputSchemaBuilder_ == null) {
+        return outputSchema_ == null ? io.littlehorse.common.proto.OutputSchemaPb.getDefaultInstance() : outputSchema_;
+      } else {
+        return outputSchemaBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.lh_proto.OutputSchemaPb output_schema = 6;</code>
+     */
+    public Builder setOutputSchema(io.littlehorse.common.proto.OutputSchemaPb value) {
+      if (outputSchemaBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        outputSchema_ = value;
+        onChanged();
+      } else {
+        outputSchemaBuilder_.setMessage(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.lh_proto.OutputSchemaPb output_schema = 6;</code>
+     */
+    public Builder setOutputSchema(
+        io.littlehorse.common.proto.OutputSchemaPb.Builder builderForValue) {
+      if (outputSchemaBuilder_ == null) {
+        outputSchema_ = builderForValue.build();
+        onChanged();
+      } else {
+        outputSchemaBuilder_.setMessage(builderForValue.build());
+      }
+
+      return this;
+    }
+    /**
+     * <code>.lh_proto.OutputSchemaPb output_schema = 6;</code>
+     */
+    public Builder mergeOutputSchema(io.littlehorse.common.proto.OutputSchemaPb value) {
+      if (outputSchemaBuilder_ == null) {
+        if (outputSchema_ != null) {
+          outputSchema_ =
+            io.littlehorse.common.proto.OutputSchemaPb.newBuilder(outputSchema_).mergeFrom(value).buildPartial();
+        } else {
+          outputSchema_ = value;
+        }
+        onChanged();
+      } else {
+        outputSchemaBuilder_.mergeFrom(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.lh_proto.OutputSchemaPb output_schema = 6;</code>
+     */
+    public Builder clearOutputSchema() {
+      if (outputSchemaBuilder_ == null) {
+        outputSchema_ = null;
+        onChanged();
+      } else {
+        outputSchema_ = null;
+        outputSchemaBuilder_ = null;
+      }
+
+      return this;
+    }
+    /**
+     * <code>.lh_proto.OutputSchemaPb output_schema = 6;</code>
+     */
+    public io.littlehorse.common.proto.OutputSchemaPb.Builder getOutputSchemaBuilder() {
+      
+      onChanged();
+      return getOutputSchemaFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.OutputSchemaPb output_schema = 6;</code>
+     */
+    public io.littlehorse.common.proto.OutputSchemaPbOrBuilder getOutputSchemaOrBuilder() {
+      if (outputSchemaBuilder_ != null) {
+        return outputSchemaBuilder_.getMessageOrBuilder();
+      } else {
+        return outputSchema_ == null ?
+            io.littlehorse.common.proto.OutputSchemaPb.getDefaultInstance() : outputSchema_;
+      }
+    }
+    /**
+     * <code>.lh_proto.OutputSchemaPb output_schema = 6;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.OutputSchemaPb, io.littlehorse.common.proto.OutputSchemaPb.Builder, io.littlehorse.common.proto.OutputSchemaPbOrBuilder> 
+        getOutputSchemaFieldBuilder() {
+      if (outputSchemaBuilder_ == null) {
+        outputSchemaBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.OutputSchemaPb, io.littlehorse.common.proto.OutputSchemaPb.Builder, io.littlehorse.common.proto.OutputSchemaPbOrBuilder>(
+                getOutputSchema(),
+                getParentForChildren(),
+                isClean());
+        outputSchema_ = null;
+      }
+      return outputSchemaBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

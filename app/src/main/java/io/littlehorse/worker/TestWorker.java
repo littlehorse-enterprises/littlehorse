@@ -7,7 +7,9 @@ import io.littlehorse.common.model.event.TaskResultEvent;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.TaskStartedEvent;
 import io.littlehorse.common.model.event.WfRunEvent;
+import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.proto.TaskResultCodePb;
+import io.littlehorse.common.proto.VariableTypePb;
 import io.littlehorse.common.proto.WfRunEventPb.EventCase;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
@@ -173,7 +175,9 @@ public class TestWorker {
         // for (int i = 0; i < 10; i++) {
         //     stdoutStr += stdoutStr;
         // }
-        ce.stdout = stdoutStr.getBytes();
+        ce.stdout = new VariableValue();
+        ce.stdout.type = VariableTypePb.STR;
+        ce.stdout.strVal = stdoutStr;
         LHUtil.log(tsr.wfRunId, tsr.taskRunPosition);
 
         WfRunEvent event = new WfRunEvent();

@@ -3,6 +3,7 @@ package io.littlehorse.common.model.event;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.proto.TaskResultEventPb;
 import io.littlehorse.common.proto.TaskResultEventPbOrBuilder;
@@ -15,7 +16,7 @@ public class TaskResultEvent extends LHSerializable<TaskResultEventPb> {
     public int taskRunNumber;
     public int taskRunPosition;
     public Date time;
-    public byte[] stdout;
+    public VariableValue stdout;
     public byte[] stderr;
     public TaskResultCodePb resultCode;
 
@@ -32,7 +33,7 @@ public class TaskResultEvent extends LHSerializable<TaskResultEventPb> {
             .setTime(LHUtil.fromDate(time))
             .setResultCode(resultCode);
 
-        if (stdout != null) b.setOutput(ByteString.copyFrom(stdout));
+        if (stdout != null) b.setOutput(stdout.toProto());
         if (stderr != null) b.setLogOutput(ByteString.copyFrom(stderr));
 
         return b;
@@ -47,7 +48,7 @@ public class TaskResultEvent extends LHSerializable<TaskResultEventPb> {
         this.resultCode = proto.getResultCode();
 
         if (proto.hasOutput()) {
-            this.stdout = proto.getOutput().toByteArray();
+            this.stdout = VariableValue.fromProto(proto.getOutputOrBuilder());
         }
         if (proto.hasLogOutput()) {
             this.stderr = proto.getLogOutput().toByteArray();

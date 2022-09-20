@@ -1,6 +1,5 @@
 package io.littlehorse.common.model.meta;
 
-import java.util.Map;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
@@ -11,6 +10,7 @@ import io.littlehorse.common.proto.VariableMutationPb;
 import io.littlehorse.common.proto.VariableMutationPb.RhsValueCase;
 import io.littlehorse.common.proto.VariableMutationPbOrBuilder;
 import io.littlehorse.common.proto.VariableMutationTypePb;
+import java.util.Map;
 
 public class VariableMutation extends LHSerializable<VariableMutationPb> {
 
@@ -107,21 +107,17 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
         TaskResultEvent tre
     ) throws LHVarSubError {
         VariableValue out = null;
+
         if (rhsValueType == RhsValueCase.LITERAL_VALUE) {
-            return rhsLiteralValue;
+            out = rhsLiteralValue;
         } else if (rhsValueType == RhsValueCase.SOURCE_VARIABLE) {
-            return thread.assignVariable(rhsSourceVariable, txnCache);
+            out = thread.assignVariable(rhsSourceVariable, txnCache);
         } else if (rhsValueType == RhsValueCase.NODE_OUTPUT) {
-            out = new VariableValue();
-            out.type =
-                thread.getCurrentNode().getTaskDef().outputSchema.outputType;
-            throw new RuntimeException(
-                "Continue here and just take the variablevalue from the output."
-            );
+            out = tre.stdout;
         } else {
-            // throw new RuntimeException(
-            //     "Unimplemented RHS Value type: " + rhsValueType
-            // );
+            throw new RuntimeException(
+                "Unimplemented RHS Value type: " + rhsValueType
+            );
         }
 
         if (rhsJsonPath != null) {

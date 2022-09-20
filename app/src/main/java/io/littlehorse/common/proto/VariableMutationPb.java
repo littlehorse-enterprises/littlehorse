@@ -354,7 +354,7 @@ private static final long serialVersionUID = 0L;
   public static final int NODE_OUTPUT_FIELD_NUMBER = 6;
   /**
    * <pre>
-   * Dummy protobuf syntax hack
+   * Dummy protobuf syntax hack, only care about the enum val
    * </pre>
    *
    * <code>bool node_output = 6;</code>
@@ -1394,7 +1394,7 @@ private static final long serialVersionUID = 0L;
 
     /**
      * <pre>
-     * Dummy protobuf syntax hack
+     * Dummy protobuf syntax hack, only care about the enum val
      * </pre>
      *
      * <code>bool node_output = 6;</code>
@@ -1408,7 +1408,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Dummy protobuf syntax hack
+     * Dummy protobuf syntax hack, only care about the enum val
      * </pre>
      *
      * <code>bool node_output = 6;</code>
@@ -1423,7 +1423,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Dummy protobuf syntax hack
+     * Dummy protobuf syntax hack, only care about the enum val
      * </pre>
      *
      * <code>bool node_output = 6;</code>

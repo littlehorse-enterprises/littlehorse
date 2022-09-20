@@ -100,5 +100,20 @@ public interface NodePbOrBuilder extends
    */
   io.littlehorse.common.proto.ExitNodePbOrBuilder getExitOrBuilder();
 
+  /**
+   * <code>.lh_proto.OutputSchemaPb output_schema = 6;</code>
+   * @return Whether the outputSchema field is set.
+   */
+  boolean hasOutputSchema();
+  /**
+   * <code>.lh_proto.OutputSchemaPb output_schema = 6;</code>
+   * @return The outputSchema.
+   */
+  io.littlehorse.common.proto.OutputSchemaPb getOutputSchema();
+  /**
+   * <code>.lh_proto.OutputSchemaPb output_schema = 6;</code>
+   */
+  io.littlehorse.common.proto.OutputSchemaPbOrBuilder getOutputSchemaOrBuilder();
+
   public io.littlehorse.common.proto.NodePb.NodeCase getNodeCase();
 }

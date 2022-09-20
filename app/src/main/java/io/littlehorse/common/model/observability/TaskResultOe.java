@@ -4,6 +4,7 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.event.TaskResultEvent;
+import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.proto.TaskResultOePb;
 
@@ -14,7 +15,7 @@ public class TaskResultOe extends LHSerializable<TaskResultOePb> {
     public int taskRunPosition;
 
     public TaskResultCodePb resultCode;
-    public byte[] output;
+    public VariableValue output;
     public byte[] logOutput;
 
     public String nodeName;
@@ -33,7 +34,7 @@ public class TaskResultOe extends LHSerializable<TaskResultOePb> {
             .setNodeName(nodeName);
 
         if (output != null) {
-            out.setOutput(ByteString.copyFrom(output));
+            out.setOutput(output.toProto());
         }
         if (logOutput != null) {
             out.setLogOutput(ByteString.copyFrom(logOutput));
@@ -48,7 +49,7 @@ public class TaskResultOe extends LHSerializable<TaskResultOePb> {
         taskRunNumber = p.getTaskRunNumber();
         taskRunPosition = p.getTaskRunPosition();
         resultCode = p.getResultCode();
-        if (p.hasOutput()) output = p.getOutput().toByteArray();
+        if (p.hasOutput()) output = VariableValue.fromProto(p.getOutput());
         if (p.hasLogOutput()) logOutput = p.getLogOutput().toByteArray();
         nodeName = p.getNodeName();
     }

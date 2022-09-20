@@ -36,6 +36,10 @@ public enum VariableTypePb
    * <code>BYTES = 6;</code>
    */
   BYTES(6),
+  /**
+   * <code>VOID = 7;</code>
+   */
+  VOID(7),
   UNRECOGNIZED(-1),
   ;
 
@@ -67,6 +71,10 @@ public enum VariableTypePb
    * <code>BYTES = 6;</code>
    */
   public static final int BYTES_VALUE = 6;
+  /**
+   * <code>VOID = 7;</code>
+   */
+  public static final int VOID_VALUE = 7;
 
 
   public final int getNumber() {
@@ -100,6 +108,7 @@ public enum VariableTypePb
       case 4: return STR;
       case 5: return INT;
       case 6: return BYTES;
+      case 7: return VOID;
       default: return null;
     }
   }
