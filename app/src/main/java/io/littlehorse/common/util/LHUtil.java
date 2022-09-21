@@ -104,6 +104,7 @@ public class LHUtil {
         try {
             return mapper.readValue(jsonStr, Map.class);
         } catch (JsonProcessingException exn) {
+            exn.printStackTrace();
             return null;
         }
     }

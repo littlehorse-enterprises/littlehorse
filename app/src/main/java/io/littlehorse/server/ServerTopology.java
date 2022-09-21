@@ -417,7 +417,6 @@ class GlobalMetaStoreProcessor<T extends GlobalPOSTable<?>>
             LHUtil.log("delete");
             store.delete(k);
         } else {
-            LHUtil.log("put");
             store.put(k, v);
             // TODO: Need to ensure somehow that there's never conflict between ID
             // and name.
