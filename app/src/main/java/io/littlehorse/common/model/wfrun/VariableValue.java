@@ -301,16 +301,29 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
         throws LHVarSubError {
         List<Object> lhsList = asArr().jsonArrVal;
         Object o = other.getVal();
-        lhsList.removeIf(i -> Objects.equals(i, o));
+        lhsList.removeIf(i -> {
+            return isEqual(i, o);
+        });
         return new VariableValue(lhsList);
+    }
+
+    private boolean isEqual(Object a, Object b) {
+        if (a instanceof Integer) {
+            a = ((Integer)a).longValue();
+        }
+        if (b instanceof Integer) {
+            b = ((Integer)b).longValue();
+        }
+        return Objects.equals(a, b);
     }
 
     public VariableValue removeIndex(VariableValue other) throws LHVarSubError {
         List<Object> lhsList = asArr().jsonArrVal;
-        Long idx = other.asInt().intVal;
-        if (idx == null) {
+        Long longIdx = other.asInt().intVal;
+        if (longIdx == null) {
             throw new LHVarSubError(null, "Tried to remove null index");
         }
+        int idx = longIdx.intValue();
         lhsList.remove(idx);
         return new VariableValue(lhsList);
     }

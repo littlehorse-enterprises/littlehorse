@@ -1,0 +1,48 @@
+{
+  "name": "arr_remove_if_present",
+  "threadSpecs": {
+    "var_demo": {
+      "variableDefs": {
+        "my_var": {
+          "type": "JSON_ARR",
+          "required": false,
+          "defaultVal": {
+            "type": "JSON_ARR",
+            "jsonArr": "[1, 2, 4, 2, 5, 6]"
+          }
+        }
+      },
+      "nodes": {
+        "entrypoint": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "t1"
+            }
+          ],
+          "entrypoint": {}
+        },
+        "t1": {
+          "task": {
+            "taskDefName": "task1",
+            "retries": 3
+          },
+          "variableMutations": [{
+            "lhsName": "my_var",
+            "operation": "REMOVE_IF_PRESENT",
+            "literalValue": {
+              "type": "INT",
+              "int": 2
+            }
+          }],
+          "outgoingEdges": [{
+            "sinkNodeName": "exit"
+          }]
+        },
+        "exit": {
+          "exit": {}
+        }
+      }
+    }
+  },
+  "entrypointThreadName": "var_demo"
+}
