@@ -89,16 +89,18 @@ public class LHUtil {
         return val;
     }
 
-    public static List<?> strToJsonArr(String jsonStr) {
+    @SuppressWarnings("unchecked")
+    public static List<Object> strToJsonArr(String jsonStr) {
         try {
             return mapper.readValue(jsonStr, List.class);
         } catch (JsonProcessingException exn) {
+            exn.printStackTrace();
             return null;
         }
     }
 
     @SuppressWarnings("unchecked")
-    public static Map<String, ?> strToJsonObj(String jsonStr) {
+    public static Map<String, Object> strToJsonObj(String jsonStr) {
         try {
             return mapper.readValue(jsonStr, Map.class);
         } catch (JsonProcessingException exn) {

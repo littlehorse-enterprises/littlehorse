@@ -10,16 +10,22 @@ import io.littlehorse.common.proto.VariableTypePb;
 import io.littlehorse.common.proto.VariableValuePb;
 import io.littlehorse.common.proto.VariableValuePbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class VariableValue extends LHSerializable<VariableValuePb> {
 
     public VariableTypePb type;
 
     @JsonIgnore
-    public String jsonObjVal;
+    public Map<String, Object> jsonObjVal;
 
     @JsonIgnore
-    public String jsonArrVal;
+    public List<Object> jsonArrVal;
 
     @JsonIgnore
     public Double doubleVal;
@@ -52,10 +58,10 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
         type = p.getType();
         switch (type) {
             case JSON_ARR:
-                jsonArrVal = p.getJsonArr();
+                jsonArrVal = LHUtil.strToJsonArr(p.getJsonArr());
                 break;
             case JSON_OBJ:
-                jsonObjVal = p.getJsonObj();
+                jsonObjVal = LHUtil.strToJsonObj(p.getJsonObj());
                 break;
             case DOUBLE:
                 doubleVal = p.getDouble();
@@ -85,10 +91,10 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
         out.setType(type);
         switch (type) {
             case JSON_ARR:
-                out.setJsonArr(jsonArrVal);
+                out.setJsonArr(LHUtil.objToString(jsonArrVal));
                 break;
             case JSON_OBJ:
-                out.setJsonObj(jsonObjVal);
+                out.setJsonObj(LHUtil.objToString(jsonObjVal));
                 break;
             case DOUBLE:
                 out.setDouble(doubleVal);
@@ -125,16 +131,127 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
     public VariableValue operate(
         VariableMutationTypePb operation,
         VariableValue rhs
-    ) {
+    ) throws LHVarSubError {
         if (operation == VariableMutationTypePb.ASSIGN) {
-            return rhs;
-        } else {
-            throw new RuntimeException("Unsupported operation: " + operation);
+            return rhs.coerceToType(type);
+        } else if (operation == VariableMutationTypePb.ADD) {
+            return add(rhs);
+        } else if (operation == VariableMutationTypePb.SUBTRACT) {
+            return subtract(rhs);
+        } else if (operation == VariableMutationTypePb.MULTIPLY) {
+            return multiply(rhs);
+        } else if (operation == VariableMutationTypePb.DIVIDE) {
+            return divide(rhs);
+        } else if (operation == VariableMutationTypePb.EXTEND) {
+            return extend(rhs);
+        } else if (operation == VariableMutationTypePb.REMOVE_IF_PRESENT) {
+            return removeIfPresent(rhs);
+        } else if (operation == VariableMutationTypePb.REMOVE_INDEX) {
+            return removeIndex(rhs);
+        } else if (operation == VariableMutationTypePb.REMOVE_KEY) {
+            return removeKey(rhs);
         }
+        throw new RuntimeException("Unsupported operation: " + operation);
     }
 
     public VariableValue jsonPath(String path) throws LHVarSubError {
         throw new RuntimeException("JsonPath not implemented yet");
+    }
+
+    public VariableValue add(VariableValue rhs) throws LHVarSubError {
+        if (type == VariableTypePb.INT) {
+            return new VariableValue(asInt().intVal + rhs.asInt().intVal);
+        } else if (type == VariableTypePb.DOUBLE) {
+            return new VariableValue(
+                asDouble().doubleVal + rhs.asDouble().doubleVal
+            );
+        } else if (type == VariableTypePb.STR) {
+            return new VariableValue(asStr().strVal + rhs.asStr().strVal);
+        }
+        throw new LHVarSubError(null, "Cannot add to var of type " + type);
+    }
+
+    public VariableValue subtract(VariableValue rhs) throws LHVarSubError {
+        if (type == VariableTypePb.INT) {
+            return new VariableValue(asInt().intVal - rhs.asInt().intVal);
+        } else if (type == VariableTypePb.DOUBLE) {
+            return new VariableValue(
+                asDouble().doubleVal - rhs.asDouble().doubleVal
+            );
+        }
+        throw new LHVarSubError(
+            null,
+            "Cannot subtract from var of type " + type
+        );
+    }
+
+    public VariableValue multiply(VariableValue rhs) throws LHVarSubError {
+        if (type == VariableTypePb.INT) {
+            return new VariableValue(
+                (long) (asInt().intVal * rhs.asDouble().doubleVal)
+            );
+        } else if (type == VariableTypePb.DOUBLE) {
+            return new VariableValue(
+                (double) (asDouble().doubleVal * rhs.asDouble().doubleVal)
+            );
+        }
+        throw new LHVarSubError(null, "Cannot multiply var of type " + type);
+    }
+
+    public VariableValue divide(VariableValue rhs) throws LHVarSubError {
+        if (type == VariableTypePb.INT) {
+            return new VariableValue(
+                (long) (asDouble().doubleVal / rhs.asDouble().doubleVal)
+            );
+        } else if (type == VariableTypePb.DOUBLE) {
+            return new VariableValue(
+                (double) (asDouble().doubleVal / rhs.asDouble().doubleVal)
+            );
+        }
+        throw new LHVarSubError(null, "Cannot divide var of type " + type);
+    }
+
+    public VariableValue extend(VariableValue rhs) throws LHVarSubError {
+        if (type == VariableTypePb.JSON_ARR) {
+            List<Object> newList = new ArrayList<>();
+            newList.addAll(asArr().jsonArrVal);
+            newList.addAll(rhs.asArr().jsonArrVal);
+            return new VariableValue(newList);
+        } else if (type == VariableTypePb.BYTES) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            try {
+                if (bytesVal != null) baos.write(bytesVal);
+                rhs = rhs.asBytes();
+                if (rhs.bytesVal != null) baos.write(rhs.bytesVal);
+            } catch (IOException exn) {
+                throw new LHVarSubError(exn, "Failed concatenating bytes");
+            }
+            return new VariableValue(baos.toByteArray());
+        }
+        throw new LHVarSubError(null, "Cannot extend var of type " + type);
+    }
+
+    public VariableValue removeIfPresent(VariableValue other) throws LHVarSubError {
+        List<Object> lhsList = asArr().jsonArrVal;
+        Object o = other.getVal();
+        lhsList.removeIf((i) -> Objects.equals(i, o));
+        return new VariableValue(lhsList);
+    }
+
+    public VariableValue removeIndex(VariableValue other) throws LHVarSubError {
+        List<Object> lhsList = asArr().jsonArrVal;
+        Long idx = other.asInt().intVal;
+        if (idx == null) {
+            throw new LHVarSubError(null, "Tried to remove null index");
+        }
+        lhsList.remove(idx);
+        return new VariableValue(lhsList);
+    }
+
+    public VariableValue removeKey(VariableValue other) throws LHVarSubError {
+        Map<String, Object> m = asObj().jsonObjVal;
+        m.remove(other.asStr().strVal);
+        return new VariableValue(m);
     }
 
     // Intended for use only by Jackson to pretty-print the Json.
@@ -149,9 +266,9 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
             case BOOL:
                 return this.boolVal;
             case JSON_ARR:
-                return LHUtil.strToJsonArr(this.jsonArrVal);
+                return this.jsonArrVal;
             case JSON_OBJ:
-                return LHUtil.strToJsonObj(this.jsonObjVal);
+                return this.jsonObjVal;
             case BYTES:
                 return LHUtil.b64Encode(this.bytesVal);
             case UNRECOGNIZED:
@@ -282,10 +399,43 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
         } else {
             b = LHUtil.objToBytes(getVal());
         }
+        return new VariableValue(b);
+    }
 
-        VariableValue out = new VariableValue();
-        out.type = VariableTypePb.BYTES;
-        out.bytesVal = b;
-        return out;
+    public VariableValue() {}
+
+    public VariableValue(long val) {
+        intVal = val;
+        type = VariableTypePb.INT;
+    }
+
+    public VariableValue(double val) {
+        doubleVal = val;
+        type = VariableTypePb.DOUBLE;
+    }
+
+    public VariableValue(String val) {
+        strVal = val;
+        type = VariableTypePb.STR;
+    }
+
+    public VariableValue(byte[] bytes) {
+        bytesVal = bytes;
+        type = VariableTypePb.BYTES;
+    }
+
+    public VariableValue(List<Object> val) {
+        jsonArrVal = val;
+        type = VariableTypePb.JSON_ARR;
+    }
+
+    public VariableValue(Map<String, Object> val) {
+        jsonObjVal = val;
+        type = VariableTypePb.JSON_OBJ;
+    }
+
+    public VariableValue(boolean val) {
+        type = VariableTypePb.BOOL;
+        boolVal = val;
     }
 }

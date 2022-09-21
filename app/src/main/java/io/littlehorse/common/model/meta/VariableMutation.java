@@ -134,8 +134,6 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
         VariableValue lhsVal = getLhsValue(thread, editedVars);
         VariableValue rhsVal = getRhsValue(thread, editedVars, tre);
 
-        rhsVal = rhsVal.coerceToType(lhsVal.type);
-
         editedVars.put(lhsName, lhsVal.operate(operation, rhsVal));
     }
 }

@@ -131,14 +131,14 @@ message EdgePb {
 
 enum VariableMutationTypePb {
     ASSIGN = 0;
-    // ADD = 1;
-    // EXTEND = 2;
-    // SUBTRACT = 3;
-    // MULTIPLY = 4;
-    // DIVIDE = 5;
-    // REMOVE_IF_PRESENT = 6;
-    // REMOVE_INDEX = 7;
-    // REMOVE_KEY = 8;
+    ADD = 1;
+    EXTEND = 2;
+    SUBTRACT = 3;
+    MULTIPLY = 4;
+    DIVIDE = 5;
+    REMOVE_IF_PRESENT = 6;
+    REMOVE_INDEX = 7;
+    REMOVE_KEY = 8;
 }
 
 message VariableAssignmentPb {
