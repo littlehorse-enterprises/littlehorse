@@ -134,6 +134,16 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
         VariableValue lhsVal = getLhsValue(thread, editedVars);
         VariableValue rhsVal = getRhsValue(thread, editedVars, tre);
 
-        editedVars.put(lhsName, lhsVal.operate(operation, rhsVal));
+        try {
+            editedVars.put(lhsName, lhsVal.operate(operation, rhsVal));
+        } catch (LHVarSubError exn) {
+            throw exn;
+        } catch (Exception exn) {
+            throw new LHVarSubError(
+                exn,
+                "Caught unexpected error when mutating variables: " +
+                exn.getMessage()
+            );
+        }
     }
 }
