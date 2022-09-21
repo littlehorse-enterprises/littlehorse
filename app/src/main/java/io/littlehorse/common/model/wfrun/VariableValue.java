@@ -191,8 +191,17 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
             // TODO: Need to handle this better.
             return new VariableValue();
         }
+
+        if (!(val instanceof List)) {
+            throw new RuntimeException("Unexpected result from jsonpath");
+        }
+
+        val = ((List<Object>) val).get(0);
+
         if (Long.class.isAssignableFrom(val.getClass())) {
             return new VariableValue((long) val);
+        } else if (Integer.class.isAssignableFrom(val.getClass())) {
+            return new VariableValue(Long.valueOf((long) ((Integer) val)));
         } else if (String.class.isAssignableFrom(val.getClass())) {
             return new VariableValue((String) val);
         } else if (Boolean.class.isAssignableFrom(val.getClass())) {
@@ -204,6 +213,7 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
         } else if (List.class.isAssignableFrom(val.getClass())) {
             return new VariableValue((List<Object>) val);
         } else {
+            LHUtil.log(val, val.getClass());
             throw new RuntimeException(
                 "Not possible to get this from jsonpath"
             );
@@ -379,6 +389,7 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
                 throw new LHVarSubError(exn, "Couldn't convert strVal to INT");
             }
         } else {
+            LHUtil.log(LHUtil.objToString(jsonArrVal));
             throw new LHVarSubError(null, "Cant convert " + type + " to INT");
         }
 
