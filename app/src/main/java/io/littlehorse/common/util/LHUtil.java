@@ -118,7 +118,9 @@ public class LHUtil {
             try {
                 return mapper.writeValueAsString(obj);
             } catch (Exception exn) {
-                LHUtil.log("Failed writing map or list to json, returning null.");
+                LHUtil.log(
+                    "Failed writing map or list to json, returning null."
+                );
                 return null;
             }
         }

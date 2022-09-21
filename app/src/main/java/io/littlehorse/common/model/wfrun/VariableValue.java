@@ -3,6 +3,7 @@ package io.littlehorse.common.model.wfrun;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.MessageOrBuilder;
+import com.jayway.jsonpath.JsonPath;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.VariableMutationTypePb;
@@ -154,8 +155,53 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
         throw new RuntimeException("Unsupported operation: " + operation);
     }
 
+    @SuppressWarnings("unchecked")
     public VariableValue jsonPath(String path) throws LHVarSubError {
-        throw new RuntimeException("JsonPath not implemented yet");
+        Object val;
+        String jsonStr;
+        if (type == VariableTypePb.JSON_ARR) {
+            jsonStr = LHUtil.objToString(jsonArrVal);
+        } else if (type == VariableTypePb.JSON_OBJ) {
+            jsonStr = LHUtil.objToString(jsonObjVal);
+        } else {
+            throw new LHVarSubError(null, "Cannot jsonpath on " + type);
+        }
+
+        try {
+            val = JsonPath.parse(jsonStr).read(path);
+        } catch (Exception exn) {
+            throw new LHVarSubError(
+                exn,
+                "Failed accessing path " +
+                path +
+                " on data " +
+                jsonStr +
+                "  :\n" +
+                exn.getMessage()
+            );
+        }
+
+        if (val == null) {
+            // TODO: Need to handle this better.
+            return new VariableValue();
+        }
+        if (Long.class.isAssignableFrom(val.getClass())) {
+            return new VariableValue((long) val);
+        } else if (String.class.isAssignableFrom(val.getClass())) {
+            return new VariableValue((String) val);
+        } else if (Boolean.class.isAssignableFrom(val.getClass())) {
+            return new VariableValue((Boolean) val);
+        } else if (Double.class.isAssignableFrom(val.getClass())) {
+            return new VariableValue((Double) val);
+        } else if (Map.class.isAssignableFrom(val.getClass())) {
+            return new VariableValue((Map<String, Object>) val);
+        } else if (List.class.isAssignableFrom(val.getClass())) {
+            return new VariableValue((List<Object>) val);
+        } else {
+            throw new RuntimeException(
+                "Not possible to get this from jsonpath"
+            );
+        }
     }
 
     public VariableValue add(VariableValue rhs) throws LHVarSubError {
@@ -231,10 +277,11 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
         throw new LHVarSubError(null, "Cannot extend var of type " + type);
     }
 
-    public VariableValue removeIfPresent(VariableValue other) throws LHVarSubError {
+    public VariableValue removeIfPresent(VariableValue other)
+        throws LHVarSubError {
         List<Object> lhsList = asArr().jsonArrVal;
         Object o = other.getVal();
-        lhsList.removeIf((i) -> Objects.equals(i, o));
+        lhsList.removeIf(i -> Objects.equals(i, o));
         return new VariableValue(lhsList);
     }
 
@@ -402,7 +449,9 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
         return new VariableValue(b);
     }
 
-    public VariableValue() {}
+    public VariableValue() {
+        type = VariableTypePb.VOID;
+    }
 
     public VariableValue(long val) {
         intVal = val;
