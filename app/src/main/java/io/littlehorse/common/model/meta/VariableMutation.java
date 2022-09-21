@@ -43,7 +43,7 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
                 out.setSourceVariable(rhsSourceVariable.toProto());
                 break;
             case NODE_OUTPUT:
-                // nothing to do
+                out.setNodeOutput(true); // just set the flag
                 break;
             case RHSVALUE_NOT_SET:
             // not possible
@@ -121,7 +121,7 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
         }
 
         if (rhsJsonPath != null) {
-            throw new RuntimeException("JsonPath not yet supported");
+            out = out.jsonPath(rhsJsonPath);
         }
         return out;
     }

@@ -86,7 +86,11 @@ public class Tag extends LHSerializable<TagPb> {
                 AttributePb
                     .newBuilder()
                     .setKey(attribute.getLeft())
-                    .setVal(attribute.getRight())
+                    .setVal(
+                        attribute.getRight() == null
+                            ? "null"
+                            : attribute.getRight()
+                    )
             );
         }
         return TagPb.newBuilder().setKey(ib).setStoreKey(resultObjectId);

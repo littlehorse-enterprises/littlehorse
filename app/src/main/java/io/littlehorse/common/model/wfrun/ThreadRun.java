@@ -160,12 +160,8 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
                 status = LHStatusPb.HALTED;
             }
             if (status == LHStatusPb.COMPLETED || status == LHStatusPb.ERROR) {
-                if (status == LHStatusPb.ERROR) LHUtil.log(
-                    "YIKERZ",
-                    wfRun.id,
-                    currentNodeRun.position,
-                    eventTime.getTime()
-                );
+                // This is innocuous. Occurs when a timeout event comes in after
+                // a thread fails or completes.
                 return;
             }
             return;

@@ -92,25 +92,31 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
         out.setType(type);
         switch (type) {
             case JSON_ARR:
-                out.setJsonArr(LHUtil.objToString(jsonArrVal));
+                if (jsonArrVal != null) {
+                    out.setJsonArr(LHUtil.objToString(jsonArrVal));
+                }
                 break;
             case JSON_OBJ:
-                out.setJsonObj(LHUtil.objToString(jsonObjVal));
+                if (jsonObjVal != null) {
+                    out.setJsonObj(LHUtil.objToString(jsonObjVal));
+                }
                 break;
             case DOUBLE:
-                out.setDouble(doubleVal);
+                if (doubleVal != null) out.setDouble(doubleVal);
                 break;
             case BOOL:
-                out.setBool(boolVal);
+                if (boolVal != null) out.setBool(boolVal);
                 break;
             case STR:
-                out.setStr(strVal);
+                if (strVal != null) out.setStr(strVal);
                 break;
             case INT:
-                out.setInt(intVal);
+                if (intVal != null) out.setInt(intVal);
                 break;
             case BYTES:
-                out.setBytes(ByteString.copyFrom(bytesVal));
+                if (bytesVal != null) {
+                    out.setBytes(ByteString.copyFrom(bytesVal));
+                }
                 break;
             case VOID:
                 // nothing to do
