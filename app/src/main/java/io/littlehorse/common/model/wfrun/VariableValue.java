@@ -246,9 +246,13 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
 
     public VariableValue divide(VariableValue rhs) throws LHVarSubError {
         if (type == VariableTypePb.INT) {
-            return new VariableValue(
-                (long) (asDouble().doubleVal / rhs.asDouble().doubleVal)
-            );
+            if (rhs.type == VariableTypePb.DOUBLE) {
+                return new VariableValue(
+                    (long) (asDouble().doubleVal / rhs.asDouble().doubleVal)
+                );
+            } else {
+                return new VariableValue((long) (intVal / rhs.asInt().intVal));
+            }
         } else if (type == VariableTypePb.DOUBLE) {
             return new VariableValue(
                 (double) (asDouble().doubleVal / rhs.asDouble().doubleVal)

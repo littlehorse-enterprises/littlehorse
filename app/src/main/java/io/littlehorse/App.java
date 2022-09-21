@@ -105,7 +105,7 @@ public class App {
     }
 
     public static void tester() {
-        LHConfig config = new LHConfig();
-        LHUtil.log(config.getHostInfo().toString());
+        double f = 0.0;
+        double b = 5 / f;
     }
 }

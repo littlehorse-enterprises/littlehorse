@@ -89,7 +89,7 @@ public class LHApi {
             );
 
         this.app.get(
-                "Variable/{wfRunId}/{threadRunNumber}/{name}",
+                "/Variable/{wfRunId}/{threadRunNumber}/{name}",
                 ctx -> handle(this::getVariable, ctx)
             );
         this.app.get(

@@ -61,7 +61,7 @@ public class LHConfig {
     public int getClusterPartitions() {
         return Integer.valueOf(
             String.class.cast(
-                    props.getOrDefault(LHConstants.CLUSTER_PARTITIONS_KEY, "72")
+                    props.getOrDefault(LHConstants.CLUSTER_PARTITIONS_KEY, "12")
                 )
         );
     }

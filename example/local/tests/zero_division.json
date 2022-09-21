@@ -1,0 +1,50 @@
+{
+  "name": "zero_division",
+  "threadSpecs": {
+    "var_demo": {
+      "variableDefs": {
+        "my_var": {
+          "type": "INT",
+          "defaultVal": {
+            "type": "INT",
+            "int": 1234
+          },
+          "required": false
+        }
+      },
+      "nodes": {
+        "entrypoint": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "t1"
+            }
+          ],
+          "entrypoint": {}
+        },
+        "t1": {
+          "task": {
+            "taskDefName": "task1",
+            "retries": 3
+          },
+          "variableMutations": [
+            {
+              "lhsName": "my_var",
+              "operation": "DIVIDE",
+              "literalValue": {
+                "type": "INT",
+                "int": 0
+              }
+            }
+          ],
+          "outgoingEdges": [{
+            "sinkNodeName": "exit"
+          }]
+        },
+        "exit": {
+          "exit": {}
+        }
+      }
+    }
+  },
+  "entrypointThreadName": "var_demo"
+}
