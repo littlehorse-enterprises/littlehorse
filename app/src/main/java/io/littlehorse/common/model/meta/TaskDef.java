@@ -8,11 +8,14 @@ import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.server.Tag;
 import io.littlehorse.common.proto.TaskDefPb;
 import io.littlehorse.common.proto.TaskDefPbOrBuilder;
+import io.littlehorse.common.proto.VariableDefPb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class TaskDef extends GlobalPOSTable<TaskDefPbOrBuilder> {
@@ -20,6 +23,11 @@ public class TaskDef extends GlobalPOSTable<TaskDefPbOrBuilder> {
     public String name;
     public Date createdAt;
     public OutputSchema outputSchema;
+    public Map<String, VariableDef> requiredVars;
+
+    public TaskDef() {
+        requiredVars = new HashMap<>();
+    }
 
     public Date getCreatedAt() {
         if (createdAt == null) createdAt = new Date();
@@ -43,11 +51,20 @@ public class TaskDef extends GlobalPOSTable<TaskDefPbOrBuilder> {
     }
 
     public TaskDefPb.Builder toProto() {
-        return TaskDefPb
+        TaskDefPb.Builder b = TaskDefPb
             .newBuilder()
             .setName(name)
             .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
             .setOutputSchema(outputSchema.toProto());
+
+        for (Map.Entry<String, VariableDef> entry : requiredVars.entrySet()) {
+            b.putRequiredVars(
+                entry.getKey(),
+                entry.getValue().toProto().build()
+            );
+        }
+
+        return b;
     }
 
     public void initFrom(MessageOrBuilder p) {
@@ -55,6 +72,15 @@ public class TaskDef extends GlobalPOSTable<TaskDefPbOrBuilder> {
         name = proto.getName();
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
         outputSchema = OutputSchema.fromProto(proto.getOutputSchemaOrBuilder());
+
+        for (Map.Entry<String, VariableDefPb> entry : proto
+            .getRequiredVarsMap()
+            .entrySet()) {
+            requiredVars.put(
+                entry.getKey(),
+                VariableDef.fromProto(entry.getValue())
+            );
+        }
     }
 
     public void handlePost(

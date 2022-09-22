@@ -177,6 +177,7 @@ message TaskNodePb {
     string task_def_name = 1;
     optional VariableAssignmentPb timeout_seconds = 2;
     int32 retries = 3;
+    map<string, VariableAssignmentPb> variables = 4;
 }
 
 message EntrypointNodePb {
@@ -220,6 +221,7 @@ message TaskDefPb {
     string name = 1;
     google.protobuf.Timestamp created_at = 2;
     OutputSchemaPb output_schema = 3;
+    map<string, VariableDefPb> required_vars = 4;
 }
 
 

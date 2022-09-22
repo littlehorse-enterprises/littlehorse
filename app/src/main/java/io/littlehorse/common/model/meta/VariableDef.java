@@ -44,4 +44,10 @@ public class VariableDef extends LHSerializable<VariableDefPb> {
 
         return out;
     }
+
+    public static VariableDef fromProto(VariableDefPbOrBuilder proto) {
+        VariableDef o = new VariableDef();
+        o.initFrom(proto);
+        return o;
+    }
 }

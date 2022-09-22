@@ -39,4 +39,38 @@ public interface TaskNodePbOrBuilder extends
    * @return The retries.
    */
   int getRetries();
+
+  /**
+   * <code>map&lt;string, .lh_proto.VariableAssignmentPb&gt; variables = 4;</code>
+   */
+  int getVariablesCount();
+  /**
+   * <code>map&lt;string, .lh_proto.VariableAssignmentPb&gt; variables = 4;</code>
+   */
+  boolean containsVariables(
+      java.lang.String key);
+  /**
+   * Use {@link #getVariablesMap()} instead.
+   */
+  @java.lang.Deprecated
+  java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableAssignmentPb>
+  getVariables();
+  /**
+   * <code>map&lt;string, .lh_proto.VariableAssignmentPb&gt; variables = 4;</code>
+   */
+  java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableAssignmentPb>
+  getVariablesMap();
+  /**
+   * <code>map&lt;string, .lh_proto.VariableAssignmentPb&gt; variables = 4;</code>
+   */
+
+  io.littlehorse.common.proto.VariableAssignmentPb getVariablesOrDefault(
+      java.lang.String key,
+      io.littlehorse.common.proto.VariableAssignmentPb defaultValue);
+  /**
+   * <code>map&lt;string, .lh_proto.VariableAssignmentPb&gt; variables = 4;</code>
+   */
+
+  io.littlehorse.common.proto.VariableAssignmentPb getVariablesOrThrow(
+      java.lang.String key);
 }

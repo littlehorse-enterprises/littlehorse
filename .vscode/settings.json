@@ -1,12 +1,11 @@
 {
     "java.configuration.updateBuildConfiguration": "automatic",
     "protoc": {
-      "options": [
-        "-I=proto/"
-      ]
+        "options": ["-I=proto/"]
     },
     "[java]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
     },
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
