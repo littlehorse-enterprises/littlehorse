@@ -71,10 +71,7 @@ public class ApiStreamsContext {
                     storeLagMapLock.writeLock().lock();
                     storeLagMap = newMap;
                 } catch (Exception exn) {
-                    LHUtil.log(
-                        "Failed refreshing local lags: ",
-                        exn.getMessage()
-                    );
+                    LHUtil.log("Failed refreshing local lags: ", exn.getMessage());
                 } finally {
                     storeLagMapLock.writeLock().unlock();
                 }
@@ -142,10 +139,7 @@ public class ApiStreamsContext {
                 partitionKey,
                 request,
                 topic,
-                Map.of(
-                    LHConstants.OBJECT_ID_HEADER,
-                    toSave.getObjectId().getBytes()
-                )
+                Map.of(LHConstants.OBJECT_ID_HEADER, toSave.getObjectId().getBytes())
             );
 
         boolean checkLocalResponseStoreOnly = false;
@@ -239,13 +233,8 @@ public class ApiStreamsContext {
         return Integer.MAX_VALUE;
     }
 
-    public byte[] localWait(
-        String requestId,
-        Class<? extends POSTable<?>> cls
-    ) {
-        ReadOnlyKeyValueStore<String, LHResponse> respStore = getResponseStore(
-            cls
-        );
+    public byte[] localWait(String requestId, Class<? extends POSTable<?>> cls) {
+        ReadOnlyKeyValueStore<String, LHResponse> respStore = getResponseStore(cls);
 
         int iterations = 0;
         while (iterations++ < 500) {
@@ -375,9 +364,9 @@ public class ApiStreamsContext {
         );
     }
 
-    public <
-        T extends POSTable<?>
-    > ReadOnlyKeyValueStore<String, T> getGlobalStore(Class<T> cls) {
+    public <T extends POSTable<?>> ReadOnlyKeyValueStore<String, T> getGlobalStore(
+        Class<T> cls
+    ) {
         return streams.store(
             StoreQueryParameters.fromNameAndType(
                 GlobalPOSTable.getGlobalStoreName(cls),
@@ -386,9 +375,7 @@ public class ApiStreamsContext {
         );
     }
 
-    private ReadOnlyKeyValueStore<String, GETable<?>> getStore(
-        String storeName
-    ) {
+    private ReadOnlyKeyValueStore<String, GETable<?>> getStore(String storeName) {
         return streams.store(
             StoreQueryParameters
                 .fromNameAndType(
@@ -563,8 +550,7 @@ public class ApiStreamsContext {
                 // Check if the thing is valid
                 if (candidate.isValid()) {
                     if (
-                        resp == null ||
-                        candidate.approximateLag < resp.approximateLag
+                        resp == null || candidate.approximateLag < resp.approximateLag
                     ) {
                         // Then this is the best valid response we've received so far.
                         resp = candidate;
@@ -580,9 +566,7 @@ public class ApiStreamsContext {
         }
 
         if (resp != null) {
-            if (!resp.isValid()) throw new RuntimeException(
-                "Impossible, see above."
-            );
+            if (!resp.isValid()) throw new RuntimeException("Impossible, see above.");
             return resp.result;
         } else {
             throw new LHConnectionError(
@@ -594,9 +578,7 @@ public class ApiStreamsContext {
 
     public Long count(String storeName) throws LHConnectionError {
         long result = 0;
-        for (StreamsMetadata meta : streams.streamsMetadataForStore(
-            storeName
-        )) {
+        for (StreamsMetadata meta : streams.streamsMetadataForStore(storeName)) {
             byte[] resp = client.getResponse(
                 meta.hostInfo(),
                 "/internal/countLocal/" + storeName

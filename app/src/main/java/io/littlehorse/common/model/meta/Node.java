@@ -104,11 +104,7 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
             case NODE_NOT_SET:
                 throw new LHSerdeError(
                     null,
-                    "Node " +
-                    name +
-                    " on thread " +
-                    threadSpec.name +
-                    " is unset!"
+                    "Node " + name + " on thread " + threadSpec.name + " is unset!"
                 );
         }
     }
@@ -141,10 +137,7 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
         }
 
         if (type == NodeCase.TASK) {
-            if (
-                taskNode.timeoutSeconds.rhsSourceType ==
-                SourceCase.VARIABLE_NAME
-            ) {
+            if (taskNode.timeoutSeconds.rhsSourceType == SourceCase.VARIABLE_NAME) {
                 out.add(taskNode.timeoutSeconds.rhsVariableName);
             }
         }
@@ -193,17 +186,12 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
     @JsonIgnore
     public TaskDef getTaskDef() {
         if (type != NodeCase.TASK) {
-            throw new RuntimeException(
-                "Tried to get TaskDef from non TASK node!"
-            );
+            throw new RuntimeException("Tried to get TaskDef from non TASK node!");
         }
         return taskDef;
     }
 
-    private void validateEntrypoint(
-        LHGlobalMetaStores stores,
-        LHConfig config
-    ) {
+    private void validateEntrypoint(LHGlobalMetaStores stores, LHConfig config) {
         outputSchema = new OutputSchema();
         outputSchema.outputType = VariableTypePb.VOID;
     }

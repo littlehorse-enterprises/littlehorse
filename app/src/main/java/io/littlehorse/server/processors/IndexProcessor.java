@@ -56,17 +56,13 @@ public class IndexProcessor
             }
 
             if (!entries.entries.contains(entry)) {
-                throw new RuntimeException(
-                    "Impossible to not have it contained"
-                );
+                throw new RuntimeException("Impossible to not have it contained");
             }
 
             entries.entries.remove(entry);
 
             if (entries.entries.contains(entry)) {
-                throw new RuntimeException(
-                    "Should be impossible to still have"
-                );
+                throw new RuntimeException("Should be impossible to still have");
             }
 
             if (entries.entries.isEmpty()) {

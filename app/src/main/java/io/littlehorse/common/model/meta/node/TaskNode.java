@@ -30,8 +30,7 @@ public class TaskNode extends LHSerializable<TaskNodePb> {
         retries = p.getRetries();
 
         if (p.hasTimeoutSeconds()) {
-            timeoutSeconds =
-                VariableAssignment.fromProto(p.getTimeoutSeconds());
+            timeoutSeconds = VariableAssignment.fromProto(p.getTimeoutSeconds());
         }
 
         for (Map.Entry<String, VariableAssignmentPb> entry : p
@@ -54,10 +53,7 @@ public class TaskNode extends LHSerializable<TaskNodePb> {
             out.setTimeoutSeconds(timeoutSeconds.toProto());
         }
         for (Map.Entry<String, VariableAssignment> entry : variables.entrySet()) {
-            out.putVariables(
-                entry.getKey(),
-                entry.getValue().toProto().build()
-            );
+            out.putVariables(entry.getKey(), entry.getValue().toProto().build());
         }
         return out;
     }

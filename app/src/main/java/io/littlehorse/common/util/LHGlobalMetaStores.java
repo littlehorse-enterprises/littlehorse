@@ -13,9 +13,7 @@ public class LHGlobalMetaStores {
     private ReadOnlyKeyValueStore<String, WfSpec> wfSpecStore;
     private ReadOnlyKeyValueStore<String, TaskDef> taskDefStore;
 
-    public LHGlobalMetaStores(
-        final ProcessorContext<String, GenericOutput> ctx
-    ) {
+    public LHGlobalMetaStores(final ProcessorContext<String, GenericOutput> ctx) {
         wfSpecStore =
             ctx.getStateStore(GlobalPOSTable.getGlobalStoreName(WfSpec.class));
         taskDefStore =

@@ -56,8 +56,7 @@ public class TestWorker {
                 )
             );
         this.config = config;
-        this.threadPool =
-            Executors.newFixedThreadPool(config.getWorkerThreads());
+        this.threadPool = Executors.newFixedThreadPool(config.getWorkerThreads());
         acknowledgedTasks = new ArrayList<>();
         offsetMap = new HashMap<>();
         availThreadsSemaphore = new Semaphore(config.getWorkerThreads());
@@ -75,9 +74,7 @@ public class TestWorker {
 
     public void run() {
         while (true) {
-            ConsumerRecords<String, Bytes> records = cons.poll(
-                Duration.ofMillis(50)
-            );
+            ConsumerRecords<String, Bytes> records = cons.poll(Duration.ofMillis(50));
 
             acknowledgedTasks.clear();
             offsetMap.clear();
@@ -88,10 +85,7 @@ public class TestWorker {
                     ConsumerRecord<String, Bytes> rec = iter.next();
                     acknowledgeRequest(rec);
                 }
-                txnProd.sendOffsetsToTransaction(
-                    offsetMap,
-                    cons.groupMetadata()
-                );
+                txnProd.sendOffsetsToTransaction(offsetMap, cons.groupMetadata());
                 txnProd.commitTransaction();
             } catch (Exception exn) {
                 txnProd.abortTransaction();
@@ -170,8 +164,7 @@ public class TestWorker {
 
         ce.resultCode = TaskResultCodePb.SUCCESS;
         ce.stderr = null;
-        String stdoutStr =
-            "Completed task " + tsr.taskDefName + " " + tsr.wfRunId;
+        String stdoutStr = "Completed task " + tsr.taskDefName + " " + tsr.wfRunId;
         // for (int i = 0; i < 10; i++) {
         //     stdoutStr += stdoutStr;
         // }

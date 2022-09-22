@@ -36,9 +36,7 @@ public class LHUtil {
 
     public static void logBack(int framesBack, Object... things) {
         framesBack += 2; // 2 frames needed for processing the thing.
-        StackTraceElement ste = Thread
-            .currentThread()
-            .getStackTrace()[framesBack];
+        StackTraceElement ste = Thread.currentThread().getStackTrace()[framesBack];
 
         StringBuilder builder = new StringBuilder();
 
@@ -119,9 +117,7 @@ public class LHUtil {
             try {
                 return mapper.writeValueAsString(obj);
             } catch (Exception exn) {
-                LHUtil.log(
-                    "Failed writing map or list to json, returning null."
-                );
+                LHUtil.log("Failed writing map or list to json, returning null.");
                 return null;
             }
         }

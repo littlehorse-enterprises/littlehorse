@@ -63,8 +63,7 @@ public class WfRunEvent extends LHSerializable<WfRunEventPb> {
                     TaskStartedEvent.fromProto(proto.getStartedEvent());
                 break;
             case TASK_RESULT:
-                this.taskResult =
-                    TaskResultEvent.fromProto(proto.getTaskResult());
+                this.taskResult = TaskResultEvent.fromProto(proto.getTaskResult());
                 break;
             case RUN_REQUEST:
                 this.runRequest = WfRunRequest.fromProto(proto.getRunRequest());

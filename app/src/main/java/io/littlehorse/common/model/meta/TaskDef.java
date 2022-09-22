@@ -1,5 +1,6 @@
 package io.littlehorse.common.model.meta;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHValidationError;
@@ -58,10 +59,7 @@ public class TaskDef extends GlobalPOSTable<TaskDefPbOrBuilder> {
             .setOutputSchema(outputSchema.toProto());
 
         for (Map.Entry<String, VariableDef> entry : requiredVars.entrySet()) {
-            b.putRequiredVars(
-                entry.getKey(),
-                entry.getValue().toProto().build()
-            );
+            b.putRequiredVars(entry.getKey(), entry.getValue().toProto().build());
         }
 
         return b;
@@ -76,10 +74,7 @@ public class TaskDef extends GlobalPOSTable<TaskDefPbOrBuilder> {
         for (Map.Entry<String, VariableDefPb> entry : proto
             .getRequiredVarsMap()
             .entrySet()) {
-            requiredVars.put(
-                entry.getKey(),
-                VariableDef.fromProto(entry.getValue())
-            );
+            requiredVars.put(entry.getKey(), VariableDef.fromProto(entry.getValue()));
         }
     }
 
@@ -93,10 +88,7 @@ public class TaskDef extends GlobalPOSTable<TaskDefPbOrBuilder> {
         }
         TaskDef oldTd = old == null ? null : (TaskDef) old;
         if (oldTd != null) {
-            throw new LHValidationError(
-                null,
-                "Conflict: Cannot mutate taskdef"
-            );
+            throw new LHValidationError(null, "Conflict: Cannot mutate taskdef");
         }
     }
 
@@ -104,6 +96,7 @@ public class TaskDef extends GlobalPOSTable<TaskDefPbOrBuilder> {
         return true;
     }
 
+    @JsonIgnore
     public List<Tag> getTags() {
         return Arrays.asList(new Tag(this, Pair.of("name", name)));
     }

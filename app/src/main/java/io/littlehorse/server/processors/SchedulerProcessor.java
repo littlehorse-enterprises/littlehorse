@@ -41,14 +41,10 @@ public class SchedulerProcessor
 
     @Override
     public void init(final ProcessorContext<String, GenericOutput> context) {
-        wfRunStore =
-            context.getStateStore(GETable.getBaseStoreName(WfRun.class));
+        wfRunStore = context.getStateStore(GETable.getBaseStoreName(WfRun.class));
         wfSpecStore =
-            context.getStateStore(
-                GlobalPOSTable.getGlobalStoreName(WfSpec.class)
-            );
-        taskRunStore =
-            context.getStateStore(GETable.getBaseStoreName(TaskRun.class));
+            context.getStateStore(GlobalPOSTable.getGlobalStoreName(WfSpec.class));
+        taskRunStore = context.getStateStore(GETable.getBaseStoreName(TaskRun.class));
         variableStore =
             context.getStateStore(GETable.getBaseStoreName(Variable.class));
         this.context = context;
@@ -99,19 +95,14 @@ public class SchedulerProcessor
 
         List<TaskScheduleRequest> tasksToSchedule = new ArrayList<>();
         List<LHTimer> timersToSchedule = new ArrayList<>();
-        WfRunStoreAccess wsa = new WfRunStoreAccess(
-            taskRunStore,
-            variableStore,
-            key
-        );
+        WfRunStoreAccess wsa = new WfRunStoreAccess(taskRunStore, variableStore, key);
 
         if (evt.type == EventCase.RUN_REQUEST) {
             if (wfRun != null) {
                 LHUtil.log("Got a past run for id " + key + ", skipping");
                 return;
             }
-            wfRun =
-                spec.startNewRun(evt, tasksToSchedule, timersToSchedule, wsa);
+            wfRun = spec.startNewRun(evt, tasksToSchedule, timersToSchedule, wsa);
         } else {
             wfRun.wfSpec = spec;
             wfRun.stores = wsa;
@@ -173,9 +164,7 @@ public class SchedulerProcessor
             varOutput,
             timestamp
         );
-        rec
-            .headers()
-            .add(LHConstants.OBJECT_ID_HEADER, out.getObjectId().getBytes());
+        rec.headers().add(LHConstants.OBJECT_ID_HEADER, out.getObjectId().getBytes());
 
         context.forward(
             rec,

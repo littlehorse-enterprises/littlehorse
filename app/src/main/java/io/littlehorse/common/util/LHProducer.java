@@ -35,9 +35,7 @@ public class LHProducer implements Closeable {
         LHSerializable<?> t,
         String topic
     ) {
-        return send(
-            new ProducerRecord<>(topic, key, new Bytes(t.toBytes(config)))
-        );
+        return send(new ProducerRecord<>(topic, key, new Bytes(t.toBytes(config))));
     }
 
     public Future<RecordMetadata> send(
@@ -59,27 +57,21 @@ public class LHProducer implements Closeable {
 
     public void beginTransaction() {
         if (!transactional) {
-            throw new RuntimeException(
-                "Tried to begin txn on non-txn producer!"
-            );
+            throw new RuntimeException("Tried to begin txn on non-txn producer!");
         }
         prod.beginTransaction();
     }
 
     public void abortTransaction() {
         if (!transactional) {
-            throw new RuntimeException(
-                "Tried to begin txn on non-txn producer!"
-            );
+            throw new RuntimeException("Tried to begin txn on non-txn producer!");
         }
         prod.abortTransaction();
     }
 
     public void commitTransaction() {
         if (!transactional) {
-            throw new RuntimeException(
-                "Tried to begin txn on non-txn producer!"
-            );
+            throw new RuntimeException("Tried to begin txn on non-txn producer!");
         }
         prod.commitTransaction();
     }
@@ -89,9 +81,7 @@ public class LHProducer implements Closeable {
         ConsumerGroupMetadata groupMetadata
     ) {
         if (!transactional) {
-            throw new RuntimeException(
-                "Tried to begin txn on non-txn producer!"
-            );
+            throw new RuntimeException("Tried to begin txn on non-txn producer!");
         }
         prod.sendOffsetsToTransaction(offsets, groupMetadata);
     }

@@ -150,9 +150,7 @@ public class WfRun extends GETable<WfRunPb> {
     ) {
         ThreadSpec tspec = wfSpec.threadSpecs.get(threadName);
         if (tspec == null) {
-            throw new RuntimeException(
-                "Invalid thread name, should be impossible"
-            );
+            throw new RuntimeException("Invalid thread name, should be impossible");
         }
 
         oEvents.add(
@@ -222,9 +220,7 @@ public class WfRun extends GETable<WfRunPb> {
                 handleStartedEvent(e);
                 break;
             case EVENT_NOT_SET:
-                throw new RuntimeException(
-                    "Impossible or Out of date scheduler."
-                );
+                throw new RuntimeException("Impossible or Out of date scheduler.");
         }
     }
 

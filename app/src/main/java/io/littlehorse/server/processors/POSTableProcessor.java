@@ -19,9 +19,7 @@ import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 
-public class POSTableProcessor<
-    U extends MessageOrBuilder, T extends POSTable<U>
->
+public class POSTableProcessor<U extends MessageOrBuilder, T extends POSTable<U>>
     implements Processor<String, POSTableRequest, String, GenericOutput> {
 
     private KeyValueStore<String, T> store;
@@ -75,10 +73,7 @@ public class POSTableProcessor<
             );
             newRec
                 .headers()
-                .add(
-                    LHConstants.OBJECT_ID_HEADER,
-                    newT.getObjectId().getBytes()
-                );
+                .add(LHConstants.OBJECT_ID_HEADER, newT.getObjectId().getBytes());
 
             context.forward(newRec);
 

@@ -140,8 +140,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     @JsonIgnore
     public Node getCurrentNode() {
         if (currentNodeRun == null) {
-            return getThreadSpec()
-                .nodes.get(getThreadSpec().entrypointNodeName);
+            return getThreadSpec().nodes.get(getThreadSpec().entrypointNodeName);
         } else {
             return getThreadSpec().nodes.get(currentNodeRun.nodeName);
         }
@@ -334,10 +333,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
 
         Date time = new Date();
         wfRun.oEvents.add(
-            new ObservabilityEvent(
-                new ThreadStatusChangeOe(number, status),
-                time
-            )
+            new ObservabilityEvent(new ThreadStatusChangeOe(number, status), time)
         );
 
         wfRun.handleThreadStatus(number, time, newStatus);
@@ -437,8 +433,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
                     mutateVariables(ce);
                 } catch (LHVarSubError exn) {
                     currentNodeRun.status = LHStatusPb.ERROR;
-                    currentNodeRun.resultCode =
-                        TaskResultCodePb.VAR_MUTATION_ERROR;
+                    currentNodeRun.resultCode = TaskResultCodePb.VAR_MUTATION_ERROR;
                     currentNodeRun.errorMessage =
                         "Failed mutating variables: " + exn.getMessage();
                 }

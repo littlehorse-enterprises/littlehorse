@@ -39,9 +39,7 @@ public abstract class POSTable<T extends MessageOrBuilder> extends GETable<T> {
         return cls.getSimpleName() + "_Source";
     }
 
-    public static String getTopoProcessorName(
-        Class<? extends POSTable<?>> cls
-    ) {
+    public static String getTopoProcessorName(Class<? extends POSTable<?>> cls) {
         return cls.getSimpleName() + "_Processor";
     }
 
@@ -53,9 +51,7 @@ public abstract class POSTable<T extends MessageOrBuilder> extends GETable<T> {
         return cls.getSimpleName() + "_EntitySink";
     }
 
-    public static String getResponseStoreName(
-        Class<? extends POSTable<?>> cls
-    ) {
+    public static String getResponseStoreName(Class<? extends POSTable<?>> cls) {
         return cls.getSimpleName() + "_ResponseStore";
     }
 }

@@ -120,8 +120,7 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
         return WfSpecPb.class;
     }
 
-    public static WfSpec fromProto(WfSpecPbOrBuilder proto)
-        throws LHSerdeError {
+    public static WfSpec fromProto(WfSpecPbOrBuilder proto) throws LHSerdeError {
         WfSpec out = new WfSpec();
         out.initFrom(proto);
         return out;
@@ -140,10 +139,7 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
     ) throws LHValidationError {
         // This does a lot of validation; therefore, it's quite complicated.
         if (old != null) {
-            throw new LHValidationError(
-                null,
-                "Mutating WfSpec not yet supported"
-            );
+            throw new LHValidationError(null, "Mutating WfSpec not yet supported");
         }
 
         validate(dbClient, config);
@@ -286,16 +282,9 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
         out.wfSpecName = name;
         out.startTime = e.time;
         out.status = LHStatusPb.RUNNING;
-        out.oEvents.add(
-            new ObservabilityEvent(new RunStartOe(id, name), e.time)
-        );
+        out.oEvents.add(new ObservabilityEvent(new RunStartOe(id, name), e.time));
 
-        out.startThread(
-            entrypointThreadName,
-            e.time,
-            null,
-            e.runRequest.variables
-        );
+        out.startThread(entrypointThreadName, e.time, null, e.runRequest.variables);
 
         return out;
     }

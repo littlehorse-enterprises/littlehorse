@@ -22,9 +22,7 @@ public class TaskStartedEvent {
         return b;
     }
 
-    public static TaskStartedEvent fromProto(
-        TaskStartedEventPbOrBuilder proto
-    ) {
+    public static TaskStartedEvent fromProto(TaskStartedEventPbOrBuilder proto) {
         TaskStartedEvent out = new TaskStartedEvent();
         out.threadRunNumber = proto.getThreadRunNumber();
         out.taskRunNumber = proto.getTaskRunNumber();

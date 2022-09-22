@@ -135,10 +135,8 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
         return out;
     }
 
-    public VariableValue operate(
-        VariableMutationTypePb operation,
-        VariableValue rhs
-    ) throws LHVarSubError {
+    public VariableValue operate(VariableMutationTypePb operation, VariableValue rhs)
+        throws LHVarSubError {
         if (operation == VariableMutationTypePb.ASSIGN) {
             return rhs.coerceToType(type);
         } else if (operation == VariableMutationTypePb.ADD) {
@@ -214,9 +212,7 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
             return new VariableValue((List<Object>) val);
         } else {
             LHUtil.log(val, val.getClass());
-            throw new RuntimeException(
-                "Not possible to get this from jsonpath"
-            );
+            throw new RuntimeException("Not possible to get this from jsonpath");
         }
     }
 
@@ -224,9 +220,7 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
         if (type == VariableTypePb.INT) {
             return new VariableValue(asInt().intVal + rhs.asInt().intVal);
         } else if (type == VariableTypePb.DOUBLE) {
-            return new VariableValue(
-                asDouble().doubleVal + rhs.asDouble().doubleVal
-            );
+            return new VariableValue(asDouble().doubleVal + rhs.asDouble().doubleVal);
         } else if (type == VariableTypePb.STR) {
             return new VariableValue(asStr().strVal + rhs.asStr().strVal);
         }
@@ -237,14 +231,9 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
         if (type == VariableTypePb.INT) {
             return new VariableValue(asInt().intVal - rhs.asInt().intVal);
         } else if (type == VariableTypePb.DOUBLE) {
-            return new VariableValue(
-                asDouble().doubleVal - rhs.asDouble().doubleVal
-            );
+            return new VariableValue(asDouble().doubleVal - rhs.asDouble().doubleVal);
         }
-        throw new LHVarSubError(
-            null,
-            "Cannot subtract from var of type " + type
-        );
+        throw new LHVarSubError(null, "Cannot subtract from var of type " + type);
     }
 
     public VariableValue multiply(VariableValue rhs) throws LHVarSubError {
@@ -297,8 +286,7 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
         throw new LHVarSubError(null, "Cannot extend var of type " + type);
     }
 
-    public VariableValue removeIfPresent(VariableValue other)
-        throws LHVarSubError {
+    public VariableValue removeIfPresent(VariableValue other) throws LHVarSubError {
         List<Object> lhsList = asArr().jsonArrVal;
         Object o = other.getVal();
         lhsList.removeIf(i -> {
@@ -357,13 +345,9 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
         }
     }
 
-    public VariableValue coerceToType(VariableTypePb otherType)
-        throws LHVarSubError {
+    public VariableValue coerceToType(VariableTypePb otherType) throws LHVarSubError {
         if (type == VariableTypePb.VOID || otherType == VariableTypePb.VOID) {
-            throw new LHVarSubError(
-                null,
-                "Coercing to or from VOID not supported."
-            );
+            throw new LHVarSubError(null, "Coercing to or from VOID not supported.");
         }
 
         if (otherType == VariableTypePb.INT) {
@@ -426,10 +410,7 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
                 throw new LHVarSubError(exn, "Couldn't convert STR to DOUBLE");
             }
         } else {
-            throw new LHVarSubError(
-                null,
-                "Cant convert " + type + " to DOUBLE"
-            );
+            throw new LHVarSubError(null, "Cant convert " + type + " to DOUBLE");
         }
 
         VariableValue result = new VariableValue();
@@ -455,20 +436,14 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
 
     public VariableValue asArr() throws LHVarSubError {
         if (type != VariableTypePb.JSON_ARR) {
-            throw new LHVarSubError(
-                null,
-                "Converting to JSON_ARR not supported."
-            );
+            throw new LHVarSubError(null, "Converting to JSON_ARR not supported.");
         }
         return getCopy();
     }
 
     public VariableValue asObj() throws LHVarSubError {
         if (type != VariableTypePb.JSON_OBJ) {
-            throw new LHVarSubError(
-                null,
-                "Converting to JSON_OBJ not supported."
-            );
+            throw new LHVarSubError(null, "Converting to JSON_OBJ not supported.");
         }
         return getCopy();
     }

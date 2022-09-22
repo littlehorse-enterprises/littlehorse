@@ -68,9 +68,7 @@ public abstract class LHSerializable<T extends MessageOrBuilder> {
         try {
             return cls.getDeclaredConstructor().newInstance();
         } catch (NoSuchMethodException exn) {
-            return cls
-                .getDeclaredConstructor(LHConfig.class)
-                .newInstance(config);
+            return cls.getDeclaredConstructor(LHConfig.class).newInstance(config);
         }
     }
 

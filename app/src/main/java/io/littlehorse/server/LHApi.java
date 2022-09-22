@@ -160,10 +160,7 @@ public class LHApi {
         this.app.get("/metrics/taskRuns", this::countTaskRuns);
         this.app.get("/metrics/wfRuns", this::countWfRuns);
         this.app.get("/metrics/indexStore", this::countIndexEntries);
-        this.app.get(
-                "/internal/countLocal/{storeName}",
-                this::internalCountStore
-            );
+        this.app.get("/internal/countLocal/{storeName}", this::internalCountStore);
     }
 
     public void start() {
@@ -178,8 +175,7 @@ public class LHApi {
         try {
             T t = LHSerializable.fromJson(ctx.body(), cls, config);
             byte[] rawResponse = streams.post(t, cls);
-            resp =
-                LHSerializable.fromBytes(rawResponse, LHResponse.class, config);
+            resp = LHSerializable.fromBytes(rawResponse, LHResponse.class, config);
         } catch (LHSerdeError exn) {
             resp.code = LHResponseCodePb.VALIDATION_ERROR;
             resp.message = "Couldn't deserialize resource: " + exn.getMessage();
@@ -298,9 +294,7 @@ public class LHApi {
         } catch (LHSerdeError exn) {
             resp.code = LHResponseCodePb.BAD_REQUEST_ERROR;
             resp.message = "Failed to unmarshal input: " + exn.getMessage();
-        } catch (
-            InterruptedException | ExecutionException | KafkaException exn
-        ) {
+        } catch (InterruptedException | ExecutionException | KafkaException exn) {
             resp.code = LHResponseCodePb.CONNECTION_ERROR;
             resp.message = "Problem sending Kafka Record: " + exn.getMessage();
         }
@@ -337,11 +331,7 @@ public class LHApi {
                 req.wfSpecId = spec.getObjectId();
                 event.wfRunId = req.wfRunId;
                 resp.id = event.wfRunId;
-                producer.send(
-                    event.wfRunId,
-                    event,
-                    LHConstants.WF_RUN_EVENT_TOPIC
-                );
+                producer.send(event.wfRunId, event, LHConstants.WF_RUN_EVENT_TOPIC);
             }
         }
         ctx.status(resp.getStatus());
@@ -350,20 +340,12 @@ public class LHApi {
 
     public void getWfSpecByName(Context ctx) {
         String name = ctx.pathParam("name");
-        keyedPrefixIdxScan(
-            Arrays.asList(Pair.of("name", name)),
-            WfSpec.class,
-            ctx
-        );
+        keyedPrefixIdxScan(Arrays.asList(Pair.of("name", name)), WfSpec.class, ctx);
     }
 
     public void getRunBySpecId(Context ctx) {
         String id = ctx.pathParam("id");
-        keyedPrefixIdxScan(
-            Arrays.asList(Pair.of("wfSpecId", id)),
-            WfRun.class,
-            ctx
-        );
+        keyedPrefixIdxScan(Arrays.asList(Pair.of("wfSpecId", id)), WfRun.class, ctx);
     }
 
     public void getTaskRunsByWfRun(Context ctx) {
@@ -384,10 +366,7 @@ public class LHApi {
         String taskDefId = ctx.pathParam("taskDefId");
         String status = ctx.pathParam("status");
         keyedPrefixIdxScan(
-            Arrays.asList(
-                Pair.of("taskDefId", taskDefId),
-                Pair.of("status", status)
-            ),
+            Arrays.asList(Pair.of("taskDefId", taskDefId), Pair.of("status", status)),
             TaskRun.class,
             ctx
         );
@@ -412,9 +391,7 @@ public class LHApi {
             .queryParamAsClass("token", String.class)
             .getOrDefault(null);
         String prefix = ctx.pathParam("storeKeyPrefix");
-        int limit = ctx
-            .queryParamAsClass("limit", Integer.class)
-            .getOrDefault(1000);
+        int limit = ctx.queryParamAsClass("limit", Integer.class).getOrDefault(1000);
 
         RangeResponse resp = streams.internalLocalKeyedIdxPrefixScan(
             prefix,
@@ -430,9 +407,7 @@ public class LHApi {
             .getOrDefault(null);
         String storeName = ctx.pathParam("storeName");
         String prefix = ctx.pathParam("storeKeyPrefix");
-        int limit = ctx
-            .queryParamAsClass("limit", Integer.class)
-            .getOrDefault(1000);
+        int limit = ctx.queryParamAsClass("limit", Integer.class).getOrDefault(1000);
 
         RangeResponse resp = streams.internalLocalKeyedObjPrefixScan(
             storeName,
@@ -448,17 +423,10 @@ public class LHApi {
         String storeName = ctx.pathParam("storeName");
         String storeKey = ctx.pathParam("storeKey");
         int partition = ctx.pathParamAsClass("partition", Integer.class).get();
-        boolean activeHost = ctx
-            .pathParamAsClass("activeHost", Boolean.class)
-            .get();
+        boolean activeHost = ctx.pathParamAsClass("activeHost", Boolean.class).get();
         ctx.result(
             streams
-                .handleRemoteStoreQuery(
-                    storeName,
-                    partition,
-                    storeKey,
-                    activeHost
-                )
+                .handleRemoteStoreQuery(storeName, partition, storeKey, activeHost)
                 .toBytes(config)
         );
     }
@@ -480,17 +448,11 @@ public class LHApi {
             .queryParamAsClass("asProto", Boolean.class)
             .getOrDefault(false);
 
-        int limit = ctx
-            .queryParamAsClass("limit", Integer.class)
-            .getOrDefault(1000);
+        int limit = ctx.queryParamAsClass("limit", Integer.class).getOrDefault(1000);
 
         LHResponse resp = new LHResponse(config);
         try {
-            RangeResponse out = streams.keyedPrefixIdxScan(
-                prefixKey,
-                token,
-                limit
-            );
+            RangeResponse out = streams.keyedPrefixIdxScan(prefixKey, token, limit);
             resp.code = LHResponseCodePb.OK;
             resp.result = out;
         } catch (LHConnectionError exn) {
@@ -524,9 +486,7 @@ public class LHApi {
         boolean asProto = ctx
             .queryParamAsClass("asProto", Boolean.class)
             .getOrDefault(false);
-        int limit = ctx
-            .queryParamAsClass("limit", Integer.class)
-            .getOrDefault(1000);
+        int limit = ctx.queryParamAsClass("limit", Integer.class).getOrDefault(1000);
 
         LHResponse resp = new LHResponse(config);
         try {
@@ -556,9 +516,7 @@ public class LHApi {
         }
     }
 
-    private <
-        U extends MessageOrBuilder, T extends GETable<U>
-    > void returnLookup(
+    private <U extends MessageOrBuilder, T extends GETable<U>> void returnLookup(
         String partitionKey,
         String storeKey,
         Class<T> cls,
@@ -599,15 +557,11 @@ public class LHApi {
     }
 
     public void countTaskRuns(Context ctx) throws LHConnectionError {
-        ctx.result(
-            streams.count(GETable.getBaseStoreName(TaskRun.class)).toString()
-        );
+        ctx.result(streams.count(GETable.getBaseStoreName(TaskRun.class)).toString());
     }
 
     public void countWfRuns(Context ctx) throws LHConnectionError {
-        ctx.result(
-            streams.count(GETable.getBaseStoreName(WfRun.class)).toString()
-        );
+        ctx.result(streams.count(GETable.getBaseStoreName(WfRun.class)).toString());
     }
 
     public void countIndexEntries(Context ctx) throws LHConnectionError {

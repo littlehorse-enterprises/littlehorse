@@ -60,9 +60,7 @@ public class TaggingProcessor
                     action,
                     ie.createdAt.getTime()
                 );
-                rec
-                    .headers()
-                    .add(LHConstants.OBJECT_ID_HEADER, objectId.getBytes());
+                rec.headers().add(LHConstants.OBJECT_ID_HEADER, objectId.getBytes());
                 ctx.forward(rec);
             }
         }

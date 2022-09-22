@@ -43,11 +43,7 @@ public class TaskRun extends GETable<TaskRunPb> {
         return TaskRun.getStoreKey(wfRunId, threadRunNumber, position);
     }
 
-    public static String getStoreKey(
-        String wfRunId,
-        int threadNum,
-        int position
-    ) {
+    public static String getStoreKey(String wfRunId, int threadNum, int position) {
         return wfRunId + "-" + threadNum + "-" + position;
     }
 
@@ -71,10 +67,8 @@ public class TaskRun extends GETable<TaskRunPb> {
 
         number = proto.getNumber();
         attemptNumber = proto.getAttemptNumber();
-        if (proto.hasOutput()) output =
-            VariableValue.fromProto(proto.getOutput());
-        if (proto.hasLogOutput()) logOutput =
-            proto.getLogOutput().toByteArray();
+        if (proto.hasOutput()) output = VariableValue.fromProto(proto.getOutput());
+        if (proto.hasLogOutput()) logOutput = proto.getLogOutput().toByteArray();
 
         scheduleTime = LHUtil.fromProtoTs(proto.getScheduleTime());
         if (proto.hasStartTime()) {

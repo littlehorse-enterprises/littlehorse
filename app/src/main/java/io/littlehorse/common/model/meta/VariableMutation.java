@@ -115,9 +115,7 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
         } else if (rhsValueType == RhsValueCase.NODE_OUTPUT) {
             out = tre.stdout;
         } else {
-            throw new RuntimeException(
-                "Unsupported RHS Value type: " + rhsValueType
-            );
+            throw new RuntimeException("Unsupported RHS Value type: " + rhsValueType);
         }
 
         if (rhsJsonPath != null) {
@@ -141,8 +139,7 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
         } catch (Exception exn) {
             throw new LHVarSubError(
                 exn,
-                "Caught unexpected error when mutating variables: " +
-                exn.getMessage()
+                "Caught unexpected error when mutating variables: " + exn.getMessage()
             );
         }
     }

@@ -12,8 +12,7 @@ import io.littlehorse.common.proto.GETableClassEnumPb;
 import java.util.Date;
 import java.util.List;
 
-public abstract class GETable<T extends MessageOrBuilder>
-    extends LHSerializable<T> {
+public abstract class GETable<T extends MessageOrBuilder> extends LHSerializable<T> {
 
     public abstract Date getCreatedAt();
 
@@ -31,15 +30,11 @@ public abstract class GETable<T extends MessageOrBuilder>
         return cls.getSimpleName() + "_TagCache";
     }
 
-    public static String getTaggingProcessorName(
-        Class<? extends GETable<?>> cls
-    ) {
+    public static String getTaggingProcessorName(Class<? extends GETable<?>> cls) {
         return cls.getSimpleName() + "_TaggingProcessor";
     }
 
-    public static GETableClassEnumPb getTypeEnum(
-        Class<? extends GETable<?>> cls
-    ) {
+    public static GETableClassEnumPb getTypeEnum(Class<? extends GETable<?>> cls) {
         if (cls.equals(WfRun.class)) {
             return GETableClassEnumPb.WF_RUN;
         } else if (cls.equals(ThreadRun.class)) {

@@ -2,14 +2,11 @@ package io.littlehorse.common.model;
 
 import com.google.protobuf.MessageOrBuilder;
 
-public abstract class GlobalPOSTable<T extends MessageOrBuilder>
-    extends POSTable<T> {
+public abstract class GlobalPOSTable<T extends MessageOrBuilder> extends POSTable<T> {
 
     public abstract String getName();
 
-    public static String getGlobalStoreSourceName(
-        Class<? extends POSTable<?>> cls
-    ) {
+    public static String getGlobalStoreSourceName(Class<? extends POSTable<?>> cls) {
         return cls.getSimpleName() + "_GlobalStoreSource";
     }
 

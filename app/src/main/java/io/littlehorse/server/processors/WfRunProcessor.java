@@ -53,8 +53,7 @@ public class WfRunProcessor
     @Override
     public void init(final ProcessorContext<String, GETable<?>> ctx) {
         this.ctx = ctx;
-        this.wfRunStore =
-            ctx.getStateStore(GETable.getBaseStoreName(WfRun.class));
+        this.wfRunStore = ctx.getStateStore(GETable.getBaseStoreName(WfRun.class));
         this.taskRunStore =
             ctx.getStateStore(GETable.getBaseStoreName(TaskRun.class));
         this.wfSpecStore =
@@ -106,10 +105,7 @@ public class WfRunProcessor
         );
         newRec
             .headers()
-            .add(
-                LHConstants.OBJECT_ID_HEADER,
-                getable.getObjectId().getBytes()
-            );
+            .add(LHConstants.OBJECT_ID_HEADER, getable.getObjectId().getBytes());
         ctx.forward(newRec);
     }
 
@@ -176,11 +172,7 @@ public class WfRunProcessor
     private void handleTaskStart(WfRun wfRun, ObservabilityEvent evt) {
         TaskStartOe ts = evt.taskStart;
         TaskRun task = taskRunStore.get(
-            TaskRun.getStoreKey(
-                wfRun.id,
-                ts.threadRunNumber,
-                ts.taskRunPosition
-            )
+            TaskRun.getStoreKey(wfRun.id, ts.threadRunNumber, ts.taskRunPosition)
         );
 
         if (task == null) {
@@ -200,11 +192,7 @@ public class WfRunProcessor
     private void handleTaskResult(WfRun wfRun, ObservabilityEvent evt) {
         TaskResultOe tc = evt.taskResult;
         TaskRun task = taskRunStore.get(
-            TaskRun.getStoreKey(
-                wfRun.id,
-                tc.threadRunNumber,
-                tc.taskRunPosition
-            )
+            TaskRun.getStoreKey(wfRun.id, tc.threadRunNumber, tc.taskRunPosition)
         );
 
         task.endTime = evt.time;
@@ -225,8 +213,7 @@ public class WfRunProcessor
         ThreadRun thread = wfRun.threadRuns.get(tsc.threadRunNumber);
         thread.status = tsc.status;
         if (
-            thread.status == LHStatusPb.COMPLETED ||
-            thread.status == LHStatusPb.ERROR
+            thread.status == LHStatusPb.COMPLETED || thread.status == LHStatusPb.ERROR
         ) {
             thread.endTime = evt.time;
         }
@@ -237,8 +224,7 @@ public class WfRunProcessor
         wfRun.status = wsc.status;
 
         if (
-            wfRun.status == LHStatusPb.COMPLETED ||
-            wfRun.status == LHStatusPb.ERROR
+            wfRun.status == LHStatusPb.COMPLETED || wfRun.status == LHStatusPb.ERROR
         ) {
             wfRun.endTime = evt.time;
         }

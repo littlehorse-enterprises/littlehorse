@@ -84,8 +84,7 @@ public class ObservabilityEvent extends LHSerializable<ObservabilityEventPb> {
                 taskResult = TaskResultOe.fromProto(p.getTaskResult());
                 break;
             case THREAD_STATUS:
-                threadStatus =
-                    ThreadStatusChangeOe.fromProto(p.getThreadStatus());
+                threadStatus = ThreadStatusChangeOe.fromProto(p.getThreadStatus());
                 break;
             case WF_RUN_STATUS:
                 wfRunStatus = WfRunStatusChangeOe.fromProto(p.getWfRunStatus());

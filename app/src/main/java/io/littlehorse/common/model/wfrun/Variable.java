@@ -70,17 +70,11 @@ public class Variable extends GETable<VariablePb> {
 
         if (value.type == VariableTypePb.STR) {
             out.add(
-                new Tag(
-                    this,
-                    Pair.of("strVal", LHUtil.toLhDbFormat(value.strVal))
-                )
+                new Tag(this, Pair.of("strVal", LHUtil.toLhDbFormat(value.strVal)))
             );
         } else if (value.type == VariableTypePb.INT) {
             out.add(
-                new Tag(
-                    this,
-                    Pair.of("intVal", LHUtil.toLhDbFormat(value.intVal))
-                )
+                new Tag(this, Pair.of("intVal", LHUtil.toLhDbFormat(value.intVal)))
             );
         } else if (value.type == VariableTypePb.DOUBLE) {
             out.add(
@@ -91,10 +85,7 @@ public class Variable extends GETable<VariablePb> {
             );
         } else if (value.type == VariableTypePb.BOOL) {
             out.add(
-                new Tag(
-                    this,
-                    Pair.of("boolVal", LHUtil.toLhDbFormat(value.boolVal))
-                )
+                new Tag(this, Pair.of("boolVal", LHUtil.toLhDbFormat(value.boolVal)))
             );
         } else if (value.type == VariableTypePb.JSON_ARR) {
             // don't do anything yet...in the future we'll do some jsonpath stuff.
@@ -111,11 +102,7 @@ public class Variable extends GETable<VariablePb> {
     }
 
     @JsonIgnore
-    public static String getObjectId(
-        String wfRunId,
-        int threadNum,
-        String name
-    ) {
+    public static String getObjectId(String wfRunId, int threadNum, String name) {
         return wfRunId + "-" + threadNum + "-" + name;
     }
 

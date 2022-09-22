@@ -30,9 +30,7 @@ public class Tag extends LHSerializable<TagPb> {
     @SuppressWarnings("unchecked")
     public Tag(GETable<?> getable, Pair<String, String>... atts) {
         this.type =
-            GETable.getTypeEnum(
-                (Class<? extends GETable<?>>) getable.getClass()
-            );
+            GETable.getTypeEnum((Class<? extends GETable<?>>) getable.getClass());
         createdAt = getable.getCreatedAt();
         resultObjectId = getable.getObjectId();
 
@@ -87,9 +85,7 @@ public class Tag extends LHSerializable<TagPb> {
                     .newBuilder()
                     .setKey(attribute.getLeft())
                     .setVal(
-                        attribute.getRight() == null
-                            ? "null"
-                            : attribute.getRight()
+                        attribute.getRight() == null ? "null" : attribute.getRight()
                     )
             );
         }
@@ -97,8 +93,7 @@ public class Tag extends LHSerializable<TagPb> {
     }
 
     public int hashCode() {
-        String theString =
-            getPartitionKey() + "asdfadpjgfawepo" + resultObjectId;
+        String theString = getPartitionKey() + "asdfadpjgfawepo" + resultObjectId;
         return theString.hashCode();
     }
 

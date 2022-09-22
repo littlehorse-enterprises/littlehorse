@@ -32,8 +32,7 @@ public class LHKStreamsListener implements StateRestoreListener, StateListener {
         out.state = state;
         out.longestRestoreSeconds = longestRestoreSeconds;
         out.totalCompletedRestores = totalCompletedRestores;
-        out.averageRestoreSeconds =
-            totalRestoreSeconds / totalCompletedRestores;
+        out.averageRestoreSeconds = totalRestoreSeconds / totalCompletedRestores;
         out.topicPartsProcessing = new ArrayList<>();
 
         for (KstreamRestore restore : activeRestores) {
@@ -66,11 +65,7 @@ public class LHKStreamsListener implements StateRestoreListener, StateListener {
     ) {
         try {
             lock.lock();
-            KstreamRestore restore = getRestore(
-                topicPartition,
-                storeName,
-                false
-            );
+            KstreamRestore restore = getRestore(topicPartition, storeName, false);
             restore.end = new Date();
             restore.addRecords(numRestored);
         } finally {
@@ -202,11 +197,7 @@ public class LHKStreamsListener implements StateRestoreListener, StateListener {
 
         public static String getId(TopicPartition topicPart, String storeName) {
             return (
-                topicPart.topic() +
-                "__" +
-                topicPart.partition() +
-                "__" +
-                storeName
+                topicPart.topic() + "__" + topicPart.partition() + "__" + storeName
             );
         }
 

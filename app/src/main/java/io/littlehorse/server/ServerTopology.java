@@ -153,9 +153,9 @@ public class ServerTopology {
             Serdes.String().serializer(),
             (topic, schedulerOutput) -> {
                 // Serializer
-                return (
-                    (GenericOutput) schedulerOutput
-                ).observabilityEvents.toBytes(config);
+                return ((GenericOutput) schedulerOutput).observabilityEvents.toBytes(
+                        config
+                    );
             },
             schedulerProcessor
         );
@@ -172,9 +172,7 @@ public class ServerTopology {
             Serdes.String().serializer(),
             // Serializer
             (topic, schedulerOutput) -> {
-                return ((GenericOutput) schedulerOutput).request.toBytes(
-                        config
-                    );
+                return ((GenericOutput) schedulerOutput).request.toBytes(config);
             },
             schedulerProcessor
         );
@@ -192,9 +190,7 @@ public class ServerTopology {
 
         // Add WfRun state store
         StoreBuilder<KeyValueStore<String, WfRun>> wfRunStoreBuilder = Stores.keyValueStoreBuilder(
-            Stores.persistentKeyValueStore(
-                GETable.getBaseStoreName(WfRun.class)
-            ),
+            Stores.persistentKeyValueStore(GETable.getBaseStoreName(WfRun.class)),
             Serdes.String(),
             runSerde
         );
@@ -202,9 +198,7 @@ public class ServerTopology {
 
         // TaskRun State Store
         StoreBuilder<KeyValueStore<String, TaskRun>> taskRunStoreBuilder = Stores.keyValueStoreBuilder(
-            Stores.persistentKeyValueStore(
-                GETable.getBaseStoreName(TaskRun.class)
-            ),
+            Stores.persistentKeyValueStore(GETable.getBaseStoreName(TaskRun.class)),
             Serdes.String(),
             new LHSerde<>(TaskRun.class, config)
         );
@@ -212,9 +206,7 @@ public class ServerTopology {
 
         // Variable Value Store
         StoreBuilder<KeyValueStore<String, Variable>> varValStoreBuilder = Stores.keyValueStoreBuilder(
-            Stores.persistentKeyValueStore(
-                GETable.getBaseStoreName(Variable.class)
-            ),
+            Stores.persistentKeyValueStore(GETable.getBaseStoreName(Variable.class)),
             Serdes.String(),
             new LHSerde<>(Variable.class, config)
         );
@@ -256,11 +248,7 @@ public class ServerTopology {
 
     private static <
         U extends MessageOrBuilder, T extends GlobalPOSTable<U>
-    > void addGlobalMetaStore(
-        Topology topology,
-        Class<T> cls,
-        LHConfig config
-    ) {
+    > void addGlobalMetaStore(Topology topology, Class<T> cls, LHConfig config) {
         String sourceName = GlobalPOSTable.getGlobalStoreSourceName(cls);
         String inputTopic = GlobalPOSTable.getEntityTopicName(cls);
         String processorName = GlobalPOSTable.getGlobalStoreProcessorName(cls);
@@ -315,11 +303,7 @@ public class ServerTopology {
 
     private static <
         U extends MessageOrBuilder, T extends POSTable<U>
-    > void addPOSTableSubTopology(
-        Topology topo,
-        Class<T> cls,
-        LHConfig config
-    ) {
+    > void addPOSTableSubTopology(Topology topo, Class<T> cls, LHConfig config) {
         String sourceName = POSTable.getTopoSourceName(cls);
         String baseProcessorName = POSTable.getTopoProcessorName(cls);
         String taggingProcessorName = POSTable.getTaggingProcessorName(cls);
@@ -346,9 +330,7 @@ public class ServerTopology {
             POSTable.getEntityTopicName(cls),
             Serdes.String().serializer(),
             (topic, genericOutput) -> {
-                return ((GenericOutput) genericOutput).thingToTag.toBytes(
-                        config
-                    );
+                return ((GenericOutput) genericOutput).thingToTag.toBytes(config);
             },
             baseProcessorName
         );

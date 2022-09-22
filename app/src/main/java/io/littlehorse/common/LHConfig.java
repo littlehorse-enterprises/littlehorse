@@ -39,10 +39,7 @@ public class LHConfig {
     private KafkaConsumer<String, Bytes> kafkaConsumer;
 
     public String getBootstrapServers() {
-        return getOrSetDefault(
-            LHConstants.KAFKA_BOOTSTRAP_KEY,
-            "localhost:9092"
-        );
+        return getOrSetDefault(LHConstants.KAFKA_BOOTSTRAP_KEY, "localhost:9092");
     }
 
     public short getReplicationFactor() {
@@ -80,10 +77,7 @@ public class LHConfig {
     }
 
     public String getKafkaGroupId() {
-        return getOrSetDefault(
-            LHConstants.KAFKA_GROUP_ID_KEY,
-            "unset-group-id-bad"
-        );
+        return getOrSetDefault(LHConstants.KAFKA_GROUP_ID_KEY, "unset-group-id-bad");
     }
 
     public String getKafkaInstanceId() {
@@ -94,10 +88,7 @@ public class LHConfig {
     }
 
     public String getStateDirectory() {
-        return getOrSetDefault(
-            LHConstants.KAFKA_STATE_DIR_KEY,
-            "/tmp/kafkaState"
-        );
+        return getOrSetDefault(LHConstants.KAFKA_STATE_DIR_KEY, "/tmp/kafkaState");
     }
 
     public String getAdvertisedProto() {
@@ -124,9 +115,7 @@ public class LHConfig {
     }
 
     public int getExposedPort() {
-        return Integer.valueOf(
-            getOrSetDefault(LHConstants.EXPOSED_PORT_KEY, "5000")
-        );
+        return Integer.valueOf(getOrSetDefault(LHConstants.EXPOSED_PORT_KEY, "5000"));
     }
 
     public HostInfo getHostInfo() {
@@ -148,9 +137,7 @@ public class LHConfig {
     public int getApiPort() {
         // return Integer.valueOf(getOrSetDefault(LHConstants.API_PORT_KEY, "5000"));
 
-        return Integer.valueOf(
-            getOrSetDefault(LHConstants.EXPOSED_PORT_KEY, "5000")
-        );
+        return Integer.valueOf(getOrSetDefault(LHConstants.EXPOSED_PORT_KEY, "5000"));
     }
 
     public void cleanup() {
@@ -179,10 +166,7 @@ public class LHConfig {
 
     public Properties getKafkaProducerConfig() {
         Properties conf = new Properties();
-        conf.put(
-            ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
-            getBootstrapServers()
-        );
+        conf.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers());
         conf.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");
         conf.put(
             ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
@@ -221,10 +205,7 @@ public class LHConfig {
         Properties conf = new Properties();
         conf.put(ConsumerConfig.GROUP_ID_CONFIG, getKafkaGroupId());
         conf.put(ConsumerConfig.GROUP_INSTANCE_ID_CONFIG, getKafkaInstanceId());
-        conf.put(
-            ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
-            getBootstrapServers()
-        );
+        conf.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers());
         conf.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed");
         conf.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         conf.put(
@@ -255,23 +236,14 @@ public class LHConfig {
             StreamsConfig.APPLICATION_ID_CONFIG,
             this.getKafkaGroupId(component)
         );
-        props.put(
-            ConsumerConfig.GROUP_INSTANCE_ID_CONFIG,
-            this.getKafkaInstanceId()
-        );
-        props.put(
-            StreamsConfig.BOOTSTRAP_SERVERS_CONFIG,
-            this.getBootstrapServers()
-        );
+        props.put(ConsumerConfig.GROUP_INSTANCE_ID_CONFIG, this.getKafkaInstanceId());
+        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, this.getBootstrapServers());
         props.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
         props.put(StreamsConfig.STATE_DIR_CONFIG, this.getStateDirectory());
         props.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, "exactly_once_v2");
         props.put(StreamsConfig.TOPOLOGY_OPTIMIZATION_CONFIG, "all");
         props.put(StreamsConfig.REQUEST_TIMEOUT_MS_CONFIG, 30000);
-        props.put(
-            StreamsConfig.producerPrefix(ProducerConfig.ACKS_CONFIG),
-            "all"
-        );
+        props.put(StreamsConfig.producerPrefix(ProducerConfig.ACKS_CONFIG), "all");
         props.put(
             StreamsConfig.REPLICATION_FACTOR_CONFIG,
             (int) getReplicationFactor()
@@ -285,23 +257,17 @@ public class LHConfig {
             org.apache.kafka.streams.errors.DefaultProductionExceptionHandler.class
         );
         props.put(
-            StreamsConfig.consumerPrefix(
-                ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG
-            ),
+            StreamsConfig.consumerPrefix(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG),
             10000
         );
         props.put(StreamsConfig.METADATA_MAX_AGE_CONFIG, "4000");
         props.put(
             StreamsConfig.NUM_STREAM_THREADS_CONFIG,
-            Integer.valueOf(
-                getOrSetDefault(LHConstants.NUM_STREAM_THREADS_KEY, "1")
-            )
+            Integer.valueOf(getOrSetDefault(LHConstants.NUM_STREAM_THREADS_KEY, "1"))
         );
         props.put(StreamsConfig.TASK_TIMEOUT_MS_CONFIG, 0);
         props.put(
-            StreamsConfig.producerPrefix(
-                ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG
-            ),
+            StreamsConfig.producerPrefix(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG),
             10000
         );
         props.put(
@@ -327,10 +293,7 @@ public class LHConfig {
     }
 
     public String getRackId() {
-        return getOrSetDefault(
-            LHConstants.RACK_ID_KEY,
-            "unset-rack-id-bad-bad"
-        );
+        return getOrSetDefault(LHConstants.RACK_ID_KEY, "unset-rack-id-bad-bad");
     }
 
     public int getStreamsCommitInterval() {
@@ -367,8 +330,7 @@ public class LHConfig {
             future.get();
         } catch (Exception e) {
             if (
-                e.getCause() != null &&
-                e.getCause() instanceof TopicExistsException
+                e.getCause() != null && e.getCause() instanceof TopicExistsException
             ) {
                 LHUtil.log("Topic " + topic.name() + " already exists.");
             } else {
@@ -446,8 +408,7 @@ public class LHConfig {
                     resp.activeRestores == 0
                 ) {
                     // ctx.status(500);
-                    resp.message =
-                        "Yikes, rebalancing but zero active restores!";
+                    resp.message = "Yikes, rebalancing but zero active restores!";
                 } else {
                     ctx.status(200);
                 }

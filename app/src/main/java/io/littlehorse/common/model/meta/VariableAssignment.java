@@ -60,9 +60,7 @@ public class VariableAssignment extends LHSerializable<VariableAssignmentPb> {
         return out;
     }
 
-    public static VariableAssignment fromProto(
-        VariableAssignmentPbOrBuilder proto
-    ) {
+    public static VariableAssignment fromProto(VariableAssignmentPbOrBuilder proto) {
         VariableAssignment out = new VariableAssignment();
         out.initFrom(proto);
         return out;
