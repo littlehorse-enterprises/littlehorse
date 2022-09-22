@@ -175,7 +175,7 @@ message NodePb {
 
 message TaskNodePb {
     string task_def_name = 1;
-    optional int32 timeout_seconds = 2;
+    optional VariableAssignmentPb timeout_seconds = 2;
     int32 retries = 3;
 }
 

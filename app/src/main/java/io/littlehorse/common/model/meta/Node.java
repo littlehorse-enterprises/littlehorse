@@ -13,11 +13,15 @@ import io.littlehorse.common.proto.EdgePb;
 import io.littlehorse.common.proto.NodePb;
 import io.littlehorse.common.proto.NodePb.NodeCase;
 import io.littlehorse.common.proto.NodePbOrBuilder;
+import io.littlehorse.common.proto.VariableAssignmentPb.SourceCase;
 import io.littlehorse.common.proto.VariableMutationPb;
 import io.littlehorse.common.proto.VariableTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class Node extends LHSerializable<NodePbOrBuilder> {
 
@@ -123,6 +127,31 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
     @JsonIgnore
     public ThreadSpec threadSpec;
 
+    @JsonIgnore
+    public Set<String> neededVariableNames() {
+        Set<String> out = new HashSet<>();
+
+        for (VariableMutation mut : variableMutations) {
+            out.add(mut.lhsName);
+            if (mut.rhsSourceVariable != null) {
+                if (mut.rhsSourceVariable.rhsVariableName != null) {
+                    out.add(mut.rhsSourceVariable.rhsVariableName);
+                }
+            }
+        }
+
+        if (type == NodeCase.TASK) {
+            if (
+                taskNode.timeoutSeconds.rhsSourceType ==
+                SourceCase.VARIABLE_NAME
+            ) {
+                out.add(taskNode.timeoutSeconds.rhsVariableName);
+            }
+        }
+
+        return out;
+    }
+
     public void validate(LHGlobalMetaStores client, LHConfig config)
         throws LHValidationError {
         for (Edge e : outgoingEdges) {
@@ -213,14 +242,37 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
                 "number of retries!"
             );
         }
-        if (taskNode.timeoutSeconds < 1) {
-            throw new LHValidationError(
-                null,
-                "Task Timeout must be > 1s for node " +
-                name +
-                " on thread " +
-                threadSpec.name
+
+        if (taskNode.timeoutSeconds.rhsSourceType == SourceCase.VARIABLE_NAME) {
+            Pair<String, VariableDef> defPair = lookupVarDef(
+                taskNode.timeoutSeconds.rhsVariableName
             );
+            if (defPair == null) {
+                throw new LHValidationError(
+                    null,
+                    "Timeout on node " +
+                    name +
+                    " refers to missing variable " +
+                    taskNode.timeoutSeconds.rhsVariableName
+                );
+            }
+
+            if (defPair.getValue().type != VariableTypePb.INT) {
+                throw new LHValidationError(
+                    null,
+                    "Timeout on node " +
+                    name +
+                    " refers to non INT variable " +
+                    taskNode.timeoutSeconds.rhsVariableName
+                );
+            }
         }
+    }
+
+    public Pair<String, VariableDef> lookupVarDef(String name) {
+        // TODO: When we add threads, this becomes more complex.
+        VariableDef varDef = threadSpec.variableDefs.get(name);
+        if (varDef == null) return null;
+        return Pair.of(threadSpec.name, varDef);
     }
 }

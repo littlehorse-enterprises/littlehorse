@@ -371,10 +371,17 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         timerEvt.taskResult.taskRunNumber = currentNodeRun.number;
         timerEvt.taskResult.taskRunPosition = currentNodeRun.position;
         timerEvt.taskResult.threadRunNumber = number;
-        timerEvt.time =
-            new Date(
-                new Date().getTime() + (1000 * node.taskNode.timeoutSeconds)
-            );
+
+        try {
+            timerEvt.time =
+                new Date(
+                    new Date().getTime() +
+                    (1000 * assignVariable(node.taskNode.timeoutSeconds).intVal)
+                );
+        } catch (LHVarSubError exn) {
+            // This should be impossible.
+            throw new RuntimeException(exn);
+        }
         timerEvt.taskResult.time = timerEvt.time;
 
         wfRun.timersToSchedule.add(new LHTimer(timerEvt, timerEvt.time));
@@ -479,6 +486,11 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             // TODO: This needs to be extended once we add Threads.
             putLocalVariable(entry.getKey(), entry.getValue());
         }
+    }
+
+    public VariableValue assignVariable(VariableAssignment assn)
+        throws LHVarSubError {
+        return assignVariable(assn, new HashMap<>());
     }
 
     public VariableValue assignVariable(

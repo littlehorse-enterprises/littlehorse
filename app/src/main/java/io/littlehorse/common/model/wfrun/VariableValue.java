@@ -309,10 +309,10 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
 
     private boolean isEqual(Object a, Object b) {
         if (a instanceof Integer) {
-            a = ((Integer)a).longValue();
+            a = ((Integer) a).longValue();
         }
         if (b instanceof Integer) {
-            b = ((Integer)b).longValue();
+            b = ((Integer) b).longValue();
         }
         return Objects.equals(a, b);
     }

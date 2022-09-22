@@ -1,6 +1,9 @@
 package io.littlehorse.common;
 
 import io.javalin.Javalin;
+import io.littlehorse.common.model.meta.VariableAssignment;
+import io.littlehorse.common.model.wfrun.VariableValue;
+import io.littlehorse.common.proto.VariableAssignmentPb.SourceCase;
 import io.littlehorse.common.util.LHApiClient;
 import io.littlehorse.common.util.LHKStreamsListener;
 import io.littlehorse.common.util.LHProducer;
@@ -336,10 +339,16 @@ public class LHConfig {
         );
     }
 
-    public int getDefaultTaskTimeout() {
-        return Integer.valueOf(
+    public VariableAssignment getDefaultTaskTimeout() {
+        int timeout = Integer.valueOf(
             getOrSetDefault(LHConstants.DEFAULT_TIMEOUT_KEY, "10")
         );
+
+        VariableValue val = new VariableValue(timeout);
+        VariableAssignment out = new VariableAssignment();
+        out.rhsSourceType = SourceCase.LITERAL_VALUE;
+        out.rhsLiteralValue = val;
+        return out;
     }
 
     public int getStandbyReplicas() {

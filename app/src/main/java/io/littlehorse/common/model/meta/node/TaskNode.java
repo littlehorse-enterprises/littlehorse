@@ -2,13 +2,14 @@ package io.littlehorse.common.model.meta.node;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.common.proto.TaskNodePb;
 import io.littlehorse.common.proto.TaskNodePbOrBuilder;
 
 public class TaskNode extends LHSerializable<TaskNodePb> {
 
     public String taskDefName;
-    public Integer timeoutSeconds;
+    public VariableAssignment timeoutSeconds;
     public int retries;
 
     public Class<TaskNodePb> getProtoBaseClass() {
@@ -19,7 +20,10 @@ public class TaskNode extends LHSerializable<TaskNodePb> {
         TaskNodePbOrBuilder p = (TaskNodePbOrBuilder) proto;
         taskDefName = p.getTaskDefName();
         retries = p.getRetries();
-        if (p.hasTimeoutSeconds()) timeoutSeconds = p.getTimeoutSeconds();
+        if (p.hasTimeoutSeconds()) {
+            timeoutSeconds =
+                VariableAssignment.fromProto(p.getTimeoutSeconds());
+        }
     }
 
     public TaskNodePb.Builder toProto() {
@@ -29,7 +33,7 @@ public class TaskNode extends LHSerializable<TaskNodePb> {
             .setRetries(retries);
 
         if (timeoutSeconds != null) {
-            out.setTimeoutSeconds(timeoutSeconds);
+            out.setTimeoutSeconds(timeoutSeconds.toProto());
         }
         return out;
     }
