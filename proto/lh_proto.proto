@@ -124,9 +124,26 @@ message ObservabilityEventsPb {
 
 // WfSpec stuff
 
+enum ComparatorPb {
+    LESS_THAN = 0;
+    GREATER_THAN = 1;
+    LESS_THAN_EQ = 2;
+    GREATER_THAN_EQ = 3;
+    EQUALS = 4;
+    NOT_EQUALS = 5;
+    IN = 6;
+    NOT_IN = 7;
+}
+
+message EdgeConditionPb {
+    ComparatorPb comparator = 1;
+    VariableAssignmentPb left = 2;
+    VariableAssignmentPb right = 3;
+}
 
 message EdgePb {
     string sink_node_name = 1;
+    optional EdgeConditionPb condition = 2;
 }
 
 enum VariableMutationTypePb {

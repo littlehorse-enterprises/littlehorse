@@ -10,7 +10,9 @@ import io.littlehorse.common.proto.VariableMutationPb;
 import io.littlehorse.common.proto.VariableMutationPb.RhsValueCase;
 import io.littlehorse.common.proto.VariableMutationPbOrBuilder;
 import io.littlehorse.common.proto.VariableMutationTypePb;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class VariableMutation extends LHSerializable<VariableMutationPb> {
 
@@ -142,5 +144,14 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
                 "Caught unexpected error when mutating variables: " + exn.getMessage()
             );
         }
+    }
+
+    public Set<String> getRequiredVariableNames() {
+        Set<String> out = new HashSet<>();
+        out.add(lhsName);
+        if (rhsValueType == RhsValueCase.SOURCE_VARIABLE) {
+            out.addAll(rhsSourceVariable.getRequiredVariableNames());
+        }
+        return out;
     }
 }

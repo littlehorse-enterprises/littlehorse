@@ -170,6 +170,9 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
                     )
                 );
             }
+            if (e.condition != null) {
+                e.condition.validate();
+            }
         }
 
         if (type == NodeCase.TASK) {
@@ -232,7 +235,7 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
         }
 
         if (taskNode.timeoutSeconds.rhsSourceType == SourceCase.VARIABLE_NAME) {
-            Pair<String, VariableDef> defPair = lookupVarDef(
+            Pair<String, VariableDef> defPair = threadSpec.lookupVarDef(
                 taskNode.timeoutSeconds.rhsVariableName
             );
             if (defPair == null) {
@@ -257,10 +260,19 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
         }
     }
 
-    public Pair<String, VariableDef> lookupVarDef(String name) {
-        // TODO: When we add threads, this becomes more complex.
-        VariableDef varDef = threadSpec.variableDefs.get(name);
-        if (varDef == null) return null;
-        return Pair.of(threadSpec.name, varDef);
+    @JsonIgnore
+    public Set<String> getRequiredVariableNames() {
+        Set<String> out = new HashSet<>();
+        for (VariableMutation mut : variableMutations) {
+            out.addAll(mut.getRequiredVariableNames());
+        }
+
+        // TODO: When we add input variables, we need to add those...
+
+        for (Edge edge : outgoingEdges) {
+            out.addAll(edge.getRequiredVariableNames());
+        }
+
+        return out;
     }
 }

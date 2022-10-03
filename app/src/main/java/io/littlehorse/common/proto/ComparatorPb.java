@@ -4,65 +4,77 @@
 package io.littlehorse.common.proto;
 
 /**
- * <pre>
- * This section defines internal data structures used for data stores.
- * </pre>
- *
- * Protobuf enum {@code lh_proto.GETableClassEnumPb}
+ * Protobuf enum {@code lh_proto.ComparatorPb}
  */
-public enum GETableClassEnumPb
+public enum ComparatorPb
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
-   * <code>TASK_DEF = 0;</code>
+   * <code>LESS_THAN = 0;</code>
    */
-  TASK_DEF(0),
+  LESS_THAN(0),
   /**
-   * <code>WF_SPEC = 1;</code>
+   * <code>GREATER_THAN = 1;</code>
    */
-  WF_SPEC(1),
+  GREATER_THAN(1),
   /**
-   * <code>WF_RUN = 2;</code>
+   * <code>LESS_THAN_EQ = 2;</code>
    */
-  WF_RUN(2),
+  LESS_THAN_EQ(2),
   /**
-   * <code>THREAD_RUN = 3;</code>
+   * <code>GREATER_THAN_EQ = 3;</code>
    */
-  THREAD_RUN(3),
+  GREATER_THAN_EQ(3),
   /**
-   * <code>TASK_RUN = 4;</code>
+   * <code>EQUALS = 4;</code>
    */
-  TASK_RUN(4),
+  EQUALS(4),
   /**
-   * <code>VARIABLE = 5;</code>
+   * <code>NOT_EQUALS = 5;</code>
    */
-  VARIABLE(5),
+  NOT_EQUALS(5),
+  /**
+   * <code>IN = 6;</code>
+   */
+  IN(6),
+  /**
+   * <code>NOT_IN = 7;</code>
+   */
+  NOT_IN(7),
   UNRECOGNIZED(-1),
   ;
 
   /**
-   * <code>TASK_DEF = 0;</code>
+   * <code>LESS_THAN = 0;</code>
    */
-  public static final int TASK_DEF_VALUE = 0;
+  public static final int LESS_THAN_VALUE = 0;
   /**
-   * <code>WF_SPEC = 1;</code>
+   * <code>GREATER_THAN = 1;</code>
    */
-  public static final int WF_SPEC_VALUE = 1;
+  public static final int GREATER_THAN_VALUE = 1;
   /**
-   * <code>WF_RUN = 2;</code>
+   * <code>LESS_THAN_EQ = 2;</code>
    */
-  public static final int WF_RUN_VALUE = 2;
+  public static final int LESS_THAN_EQ_VALUE = 2;
   /**
-   * <code>THREAD_RUN = 3;</code>
+   * <code>GREATER_THAN_EQ = 3;</code>
    */
-  public static final int THREAD_RUN_VALUE = 3;
+  public static final int GREATER_THAN_EQ_VALUE = 3;
   /**
-   * <code>TASK_RUN = 4;</code>
+   * <code>EQUALS = 4;</code>
    */
-  public static final int TASK_RUN_VALUE = 4;
+  public static final int EQUALS_VALUE = 4;
   /**
-   * <code>VARIABLE = 5;</code>
+   * <code>NOT_EQUALS = 5;</code>
    */
-  public static final int VARIABLE_VALUE = 5;
+  public static final int NOT_EQUALS_VALUE = 5;
+  /**
+   * <code>IN = 6;</code>
+   */
+  public static final int IN_VALUE = 6;
+  /**
+   * <code>NOT_IN = 7;</code>
+   */
+  public static final int NOT_IN_VALUE = 7;
 
 
   public final int getNumber() {
@@ -79,7 +91,7 @@ public enum GETableClassEnumPb
    * @deprecated Use {@link #forNumber(int)} instead.
    */
   @java.lang.Deprecated
-  public static GETableClassEnumPb valueOf(int value) {
+  public static ComparatorPb valueOf(int value) {
     return forNumber(value);
   }
 
@@ -87,27 +99,29 @@ public enum GETableClassEnumPb
    * @param value The numeric wire value of the corresponding enum entry.
    * @return The enum associated with the given numeric wire value.
    */
-  public static GETableClassEnumPb forNumber(int value) {
+  public static ComparatorPb forNumber(int value) {
     switch (value) {
-      case 0: return TASK_DEF;
-      case 1: return WF_SPEC;
-      case 2: return WF_RUN;
-      case 3: return THREAD_RUN;
-      case 4: return TASK_RUN;
-      case 5: return VARIABLE;
+      case 0: return LESS_THAN;
+      case 1: return GREATER_THAN;
+      case 2: return LESS_THAN_EQ;
+      case 3: return GREATER_THAN_EQ;
+      case 4: return EQUALS;
+      case 5: return NOT_EQUALS;
+      case 6: return IN;
+      case 7: return NOT_IN;
       default: return null;
     }
   }
 
-  public static com.google.protobuf.Internal.EnumLiteMap<GETableClassEnumPb>
+  public static com.google.protobuf.Internal.EnumLiteMap<ComparatorPb>
       internalGetValueMap() {
     return internalValueMap;
   }
   private static final com.google.protobuf.Internal.EnumLiteMap<
-      GETableClassEnumPb> internalValueMap =
-        new com.google.protobuf.Internal.EnumLiteMap<GETableClassEnumPb>() {
-          public GETableClassEnumPb findValueByNumber(int number) {
-            return GETableClassEnumPb.forNumber(number);
+      ComparatorPb> internalValueMap =
+        new com.google.protobuf.Internal.EnumLiteMap<ComparatorPb>() {
+          public ComparatorPb findValueByNumber(int number) {
+            return ComparatorPb.forNumber(number);
           }
         };
 
@@ -125,12 +139,12 @@ public enum GETableClassEnumPb
   }
   public static final com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.LhProto.getDescriptor().getEnumTypes().get(7);
+    return io.littlehorse.common.proto.LhProto.getDescriptor().getEnumTypes().get(3);
   }
 
-  private static final GETableClassEnumPb[] VALUES = values();
+  private static final ComparatorPb[] VALUES = values();
 
-  public static GETableClassEnumPb valueOf(
+  public static ComparatorPb valueOf(
       com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
     if (desc.getType() != getDescriptor()) {
       throw new java.lang.IllegalArgumentException(
@@ -144,10 +158,10 @@ public enum GETableClassEnumPb
 
   private final int value;
 
-  private GETableClassEnumPb(int value) {
+  private ComparatorPb(int value) {
     this.value = value;
   }
 
-  // @@protoc_insertion_point(enum_scope:lh_proto.GETableClassEnumPb)
+  // @@protoc_insertion_point(enum_scope:lh_proto.ComparatorPb)
 }
 

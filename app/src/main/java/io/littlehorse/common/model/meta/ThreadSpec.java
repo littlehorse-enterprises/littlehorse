@@ -15,6 +15,7 @@ import io.littlehorse.common.proto.VariableDefPb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
 
@@ -90,6 +91,13 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
         return out;
     }
 
+    public Pair<String, VariableDef> lookupVarDef(String name) {
+        // TODO: When we add threads, this becomes more complex.
+        VariableDef varDef = variableDefs.get(name);
+        if (varDef == null) return null;
+        return Pair.of(name, varDef);
+    }
+
     public void validate(LHGlobalMetaStores dbClient, LHConfig config)
         throws LHValidationError {
         if (entrypointNodeName == null) {
@@ -101,6 +109,20 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
 
         boolean seenEntrypoint = false;
         for (Node node : nodes.values()) {
+            for (String varName : node.getRequiredVariableNames()) {
+                Pair<String, VariableDef> result = lookupVarDef(varName);
+                if (result == null) {
+                    throw new LHValidationError(
+                        null,
+                        "Thread " +
+                        name +
+                        " node " +
+                        node.name +
+                        " refers to unknown or out-of-scope variable " +
+                        varName
+                    );
+                }
+            }
             if (node.type == NodeCase.ENTRYPOINT) {
                 if (seenEntrypoint) {
                     throw new LHValidationError(

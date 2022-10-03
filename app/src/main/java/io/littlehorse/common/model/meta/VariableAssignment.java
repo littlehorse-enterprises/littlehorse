@@ -6,6 +6,8 @@ import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.proto.VariableAssignmentPb;
 import io.littlehorse.common.proto.VariableAssignmentPb.SourceCase;
 import io.littlehorse.common.proto.VariableAssignmentPbOrBuilder;
+import java.util.HashSet;
+import java.util.Set;
 
 public class VariableAssignment extends LHSerializable<VariableAssignmentPb> {
 
@@ -63,6 +65,14 @@ public class VariableAssignment extends LHSerializable<VariableAssignmentPb> {
     public static VariableAssignment fromProto(VariableAssignmentPbOrBuilder proto) {
         VariableAssignment out = new VariableAssignment();
         out.initFrom(proto);
+        return out;
+    }
+
+    public Set<String> getRequiredVariableNames() {
+        Set<String> out = new HashSet<>();
+        if (rhsSourceType == SourceCase.VARIABLE_NAME) {
+            out.add(rhsVariableName);
+        }
         return out;
     }
 }

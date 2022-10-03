@@ -18,4 +18,19 @@ public interface EdgePbOrBuilder extends
    */
   com.google.protobuf.ByteString
       getSinkNodeNameBytes();
+
+  /**
+   * <code>.lh_proto.EdgeConditionPb condition = 2;</code>
+   * @return Whether the condition field is set.
+   */
+  boolean hasCondition();
+  /**
+   * <code>.lh_proto.EdgeConditionPb condition = 2;</code>
+   * @return The condition.
+   */
+  io.littlehorse.common.proto.EdgeConditionPb getCondition();
+  /**
+   * <code>.lh_proto.EdgeConditionPb condition = 2;</code>
+   */
+  io.littlehorse.common.proto.EdgeConditionPbOrBuilder getConditionOrBuilder();
 }

@@ -148,7 +148,7 @@ public enum VariableMutationTypePb
   }
   public static final com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.LhProto.getDescriptor().getEnumTypes().get(3);
+    return io.littlehorse.common.proto.LhProto.getDescriptor().getEnumTypes().get(4);
   }
 
   private static final VariableMutationTypePb[] VALUES = values();

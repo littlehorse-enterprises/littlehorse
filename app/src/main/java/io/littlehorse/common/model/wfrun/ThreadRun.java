@@ -501,6 +501,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
                 val = getVariable(assn.rhsVariableName).value;
                 break;
             case SOURCE_NOT_SET:
+            default:
                 throw new RuntimeException("Not possible");
         }
 

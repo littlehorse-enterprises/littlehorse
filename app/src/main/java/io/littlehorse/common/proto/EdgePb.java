@@ -39,6 +39,7 @@ private static final long serialVersionUID = 0L;
     if (extensionRegistry == null) {
       throw new java.lang.NullPointerException();
     }
+    int mutable_bitField0_ = 0;
     com.google.protobuf.UnknownFieldSet.Builder unknownFields =
         com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
@@ -53,6 +54,19 @@ private static final long serialVersionUID = 0L;
             java.lang.String s = input.readStringRequireUtf8();
 
             sinkNodeName_ = s;
+            break;
+          }
+          case 18: {
+            io.littlehorse.common.proto.EdgeConditionPb.Builder subBuilder = null;
+            if (((bitField0_ & 0x00000001) != 0)) {
+              subBuilder = condition_.toBuilder();
+            }
+            condition_ = input.readMessage(io.littlehorse.common.proto.EdgeConditionPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom(condition_);
+              condition_ = subBuilder.buildPartial();
+            }
+            bitField0_ |= 0x00000001;
             break;
           }
           default: {
@@ -87,6 +101,7 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.common.proto.EdgePb.class, io.littlehorse.common.proto.EdgePb.Builder.class);
   }
 
+  private int bitField0_;
   public static final int SINK_NODE_NAME_FIELD_NUMBER = 1;
   private volatile java.lang.Object sinkNodeName_;
   /**
@@ -125,6 +140,32 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int CONDITION_FIELD_NUMBER = 2;
+  private io.littlehorse.common.proto.EdgeConditionPb condition_;
+  /**
+   * <code>.lh_proto.EdgeConditionPb condition = 2;</code>
+   * @return Whether the condition field is set.
+   */
+  @java.lang.Override
+  public boolean hasCondition() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <code>.lh_proto.EdgeConditionPb condition = 2;</code>
+   * @return The condition.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.EdgeConditionPb getCondition() {
+    return condition_ == null ? io.littlehorse.common.proto.EdgeConditionPb.getDefaultInstance() : condition_;
+  }
+  /**
+   * <code>.lh_proto.EdgeConditionPb condition = 2;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.EdgeConditionPbOrBuilder getConditionOrBuilder() {
+    return condition_ == null ? io.littlehorse.common.proto.EdgeConditionPb.getDefaultInstance() : condition_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -142,6 +183,9 @@ private static final long serialVersionUID = 0L;
     if (!getSinkNodeNameBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, sinkNodeName_);
     }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      output.writeMessage(2, getCondition());
+    }
     unknownFields.writeTo(output);
   }
 
@@ -153,6 +197,10 @@ private static final long serialVersionUID = 0L;
     size = 0;
     if (!getSinkNodeNameBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, sinkNodeName_);
+    }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(2, getCondition());
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -171,6 +219,11 @@ private static final long serialVersionUID = 0L;
 
     if (!getSinkNodeName()
         .equals(other.getSinkNodeName())) return false;
+    if (hasCondition() != other.hasCondition()) return false;
+    if (hasCondition()) {
+      if (!getCondition()
+          .equals(other.getCondition())) return false;
+    }
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -184,6 +237,10 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + SINK_NODE_NAME_FIELD_NUMBER;
     hash = (53 * hash) + getSinkNodeName().hashCode();
+    if (hasCondition()) {
+      hash = (37 * hash) + CONDITION_FIELD_NUMBER;
+      hash = (53 * hash) + getCondition().hashCode();
+    }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -312,6 +369,7 @@ private static final long serialVersionUID = 0L;
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
+        getConditionFieldBuilder();
       }
     }
     @java.lang.Override
@@ -319,6 +377,12 @@ private static final long serialVersionUID = 0L;
       super.clear();
       sinkNodeName_ = "";
 
+      if (conditionBuilder_ == null) {
+        condition_ = null;
+      } else {
+        conditionBuilder_.clear();
+      }
+      bitField0_ = (bitField0_ & ~0x00000001);
       return this;
     }
 
@@ -345,7 +409,18 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.common.proto.EdgePb buildPartial() {
       io.littlehorse.common.proto.EdgePb result = new io.littlehorse.common.proto.EdgePb(this);
+      int from_bitField0_ = bitField0_;
+      int to_bitField0_ = 0;
       result.sinkNodeName_ = sinkNodeName_;
+      if (((from_bitField0_ & 0x00000001) != 0)) {
+        if (conditionBuilder_ == null) {
+          result.condition_ = condition_;
+        } else {
+          result.condition_ = conditionBuilder_.build();
+        }
+        to_bitField0_ |= 0x00000001;
+      }
+      result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
     }
@@ -398,6 +473,9 @@ private static final long serialVersionUID = 0L;
         sinkNodeName_ = other.sinkNodeName_;
         onChanged();
       }
+      if (other.hasCondition()) {
+        mergeCondition(other.getCondition());
+      }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
@@ -426,6 +504,7 @@ private static final long serialVersionUID = 0L;
       }
       return this;
     }
+    private int bitField0_;
 
     private java.lang.Object sinkNodeName_ = "";
     /**
@@ -501,6 +580,126 @@ private static final long serialVersionUID = 0L;
       sinkNodeName_ = value;
       onChanged();
       return this;
+    }
+
+    private io.littlehorse.common.proto.EdgeConditionPb condition_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.EdgeConditionPb, io.littlehorse.common.proto.EdgeConditionPb.Builder, io.littlehorse.common.proto.EdgeConditionPbOrBuilder> conditionBuilder_;
+    /**
+     * <code>.lh_proto.EdgeConditionPb condition = 2;</code>
+     * @return Whether the condition field is set.
+     */
+    public boolean hasCondition() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>.lh_proto.EdgeConditionPb condition = 2;</code>
+     * @return The condition.
+     */
+    public io.littlehorse.common.proto.EdgeConditionPb getCondition() {
+      if (conditionBuilder_ == null) {
+        return condition_ == null ? io.littlehorse.common.proto.EdgeConditionPb.getDefaultInstance() : condition_;
+      } else {
+        return conditionBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.lh_proto.EdgeConditionPb condition = 2;</code>
+     */
+    public Builder setCondition(io.littlehorse.common.proto.EdgeConditionPb value) {
+      if (conditionBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        condition_ = value;
+        onChanged();
+      } else {
+        conditionBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000001;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.EdgeConditionPb condition = 2;</code>
+     */
+    public Builder setCondition(
+        io.littlehorse.common.proto.EdgeConditionPb.Builder builderForValue) {
+      if (conditionBuilder_ == null) {
+        condition_ = builderForValue.build();
+        onChanged();
+      } else {
+        conditionBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000001;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.EdgeConditionPb condition = 2;</code>
+     */
+    public Builder mergeCondition(io.littlehorse.common.proto.EdgeConditionPb value) {
+      if (conditionBuilder_ == null) {
+        if (((bitField0_ & 0x00000001) != 0) &&
+            condition_ != null &&
+            condition_ != io.littlehorse.common.proto.EdgeConditionPb.getDefaultInstance()) {
+          condition_ =
+            io.littlehorse.common.proto.EdgeConditionPb.newBuilder(condition_).mergeFrom(value).buildPartial();
+        } else {
+          condition_ = value;
+        }
+        onChanged();
+      } else {
+        conditionBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000001;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.EdgeConditionPb condition = 2;</code>
+     */
+    public Builder clearCondition() {
+      if (conditionBuilder_ == null) {
+        condition_ = null;
+        onChanged();
+      } else {
+        conditionBuilder_.clear();
+      }
+      bitField0_ = (bitField0_ & ~0x00000001);
+      return this;
+    }
+    /**
+     * <code>.lh_proto.EdgeConditionPb condition = 2;</code>
+     */
+    public io.littlehorse.common.proto.EdgeConditionPb.Builder getConditionBuilder() {
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return getConditionFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.EdgeConditionPb condition = 2;</code>
+     */
+    public io.littlehorse.common.proto.EdgeConditionPbOrBuilder getConditionOrBuilder() {
+      if (conditionBuilder_ != null) {
+        return conditionBuilder_.getMessageOrBuilder();
+      } else {
+        return condition_ == null ?
+            io.littlehorse.common.proto.EdgeConditionPb.getDefaultInstance() : condition_;
+      }
+    }
+    /**
+     * <code>.lh_proto.EdgeConditionPb condition = 2;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.EdgeConditionPb, io.littlehorse.common.proto.EdgeConditionPb.Builder, io.littlehorse.common.proto.EdgeConditionPbOrBuilder> 
+        getConditionFieldBuilder() {
+      if (conditionBuilder_ == null) {
+        conditionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.EdgeConditionPb, io.littlehorse.common.proto.EdgeConditionPb.Builder, io.littlehorse.common.proto.EdgeConditionPbOrBuilder>(
+                getCondition(),
+                getParentForChildren(),
+                isClean());
+        condition_ = null;
+      }
+      return conditionBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
