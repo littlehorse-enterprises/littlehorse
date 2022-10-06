@@ -292,13 +292,19 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
     }
 
     public void addMetaDependencies(
-        ReadOnlyKeyValueStore<String, TaskDef> taskDefStore
+        ReadOnlyKeyValueStore<String, TaskDef> taskDefStore,
+        ReadOnlyKeyValueStore<String, ExternalEventDef> externalEventDefStore
     ) {
         for (ThreadSpec thread : threadSpecs.values()) {
             for (Node node : thread.nodes.values()) {
                 if (node.type == NodeCase.TASK) {
                     node.taskNode.taskDef =
                         taskDefStore.get(node.taskNode.taskDefName);
+                } else if (node.type == NodeCase.EXTERNAL_EVENT) {
+                    node.externalEventNode.externalEventDef =
+                        externalEventDefStore.get(
+                            node.externalEventNode.externalEventDefName
+                        );
                 }
             }
         }

@@ -311,6 +311,16 @@ message TaskRunPb {
     optional string error_message = 17;
 }
 
+message ExternalEventPb {
+    string wf_run_id = 1;
+    string external_event_def_id = 2;
+    string guid = 3;
+    google.protobuf.Timestamp created_at = 4;
+    bytes content = 5;
+    optional int32 thread_run_number = 6;
+    optional int32 task_run_position = 7;
+}
+
 message NodeRunStatePb {
     string node_name = 1;
     int32 attempt_number = 2;
@@ -368,6 +378,7 @@ message WfRunEventPb {
         WfRunRequestPb run_request = 4;
         TaskStartedEventPb started_event = 5;
         TaskResultEventPb task_result = 6;
+        ExternalEventPb external_event = 7;
     }
 }
 

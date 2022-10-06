@@ -117,6 +117,20 @@ private static final long serialVersionUID = 0L;
             eventCase_ = 6;
             break;
           }
+          case 58: {
+            io.littlehorse.common.proto.ExternalEventPb.Builder subBuilder = null;
+            if (eventCase_ == 7) {
+              subBuilder = ((io.littlehorse.common.proto.ExternalEventPb) event_).toBuilder();
+            }
+            event_ =
+                input.readMessage(io.littlehorse.common.proto.ExternalEventPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.common.proto.ExternalEventPb) event_);
+              event_ = subBuilder.buildPartial();
+            }
+            eventCase_ = 7;
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -157,6 +171,7 @@ private static final long serialVersionUID = 0L;
     RUN_REQUEST(4),
     STARTED_EVENT(5),
     TASK_RESULT(6),
+    EXTERNAL_EVENT(7),
     EVENT_NOT_SET(0);
     private final int value;
     private EventCase(int value) {
@@ -177,6 +192,7 @@ private static final long serialVersionUID = 0L;
         case 4: return RUN_REQUEST;
         case 5: return STARTED_EVENT;
         case 6: return TASK_RESULT;
+        case 7: return EXTERNAL_EVENT;
         case 0: return EVENT_NOT_SET;
         default: return null;
       }
@@ -387,6 +403,37 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.TaskResultEventPb.getDefaultInstance();
   }
 
+  public static final int EXTERNAL_EVENT_FIELD_NUMBER = 7;
+  /**
+   * <code>.lh_proto.ExternalEventPb external_event = 7;</code>
+   * @return Whether the externalEvent field is set.
+   */
+  @java.lang.Override
+  public boolean hasExternalEvent() {
+    return eventCase_ == 7;
+  }
+  /**
+   * <code>.lh_proto.ExternalEventPb external_event = 7;</code>
+   * @return The externalEvent.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.ExternalEventPb getExternalEvent() {
+    if (eventCase_ == 7) {
+       return (io.littlehorse.common.proto.ExternalEventPb) event_;
+    }
+    return io.littlehorse.common.proto.ExternalEventPb.getDefaultInstance();
+  }
+  /**
+   * <code>.lh_proto.ExternalEventPb external_event = 7;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.ExternalEventPbOrBuilder getExternalEventOrBuilder() {
+    if (eventCase_ == 7) {
+       return (io.littlehorse.common.proto.ExternalEventPb) event_;
+    }
+    return io.littlehorse.common.proto.ExternalEventPb.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -419,6 +466,9 @@ private static final long serialVersionUID = 0L;
     if (eventCase_ == 6) {
       output.writeMessage(6, (io.littlehorse.common.proto.TaskResultEventPb) event_);
     }
+    if (eventCase_ == 7) {
+      output.writeMessage(7, (io.littlehorse.common.proto.ExternalEventPb) event_);
+    }
     unknownFields.writeTo(output);
   }
 
@@ -449,6 +499,10 @@ private static final long serialVersionUID = 0L;
     if (eventCase_ == 6) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(6, (io.littlehorse.common.proto.TaskResultEventPb) event_);
+    }
+    if (eventCase_ == 7) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(7, (io.littlehorse.common.proto.ExternalEventPb) event_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -488,6 +542,10 @@ private static final long serialVersionUID = 0L;
         if (!getTaskResult()
             .equals(other.getTaskResult())) return false;
         break;
+      case 7:
+        if (!getExternalEvent()
+            .equals(other.getExternalEvent())) return false;
+        break;
       case 0:
       default:
     }
@@ -522,6 +580,10 @@ private static final long serialVersionUID = 0L;
       case 6:
         hash = (37 * hash) + TASK_RESULT_FIELD_NUMBER;
         hash = (53 * hash) + getTaskResult().hashCode();
+        break;
+      case 7:
+        hash = (37 * hash) + EXTERNAL_EVENT_FIELD_NUMBER;
+        hash = (53 * hash) + getExternalEvent().hashCode();
         break;
       case 0:
       default:
@@ -725,6 +787,13 @@ private static final long serialVersionUID = 0L;
           result.event_ = taskResultBuilder_.build();
         }
       }
+      if (eventCase_ == 7) {
+        if (externalEventBuilder_ == null) {
+          result.event_ = event_;
+        } else {
+          result.event_ = externalEventBuilder_.build();
+        }
+      }
       result.eventCase_ = eventCase_;
       onBuilt();
       return result;
@@ -796,6 +865,10 @@ private static final long serialVersionUID = 0L;
         }
         case TASK_RESULT: {
           mergeTaskResult(other.getTaskResult());
+          break;
+        }
+        case EXTERNAL_EVENT: {
+          mergeExternalEvent(other.getExternalEvent());
           break;
         }
         case EVENT_NOT_SET: {
@@ -1538,6 +1611,147 @@ private static final long serialVersionUID = 0L;
       eventCase_ = 6;
       onChanged();;
       return taskResultBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.ExternalEventPb, io.littlehorse.common.proto.ExternalEventPb.Builder, io.littlehorse.common.proto.ExternalEventPbOrBuilder> externalEventBuilder_;
+    /**
+     * <code>.lh_proto.ExternalEventPb external_event = 7;</code>
+     * @return Whether the externalEvent field is set.
+     */
+    @java.lang.Override
+    public boolean hasExternalEvent() {
+      return eventCase_ == 7;
+    }
+    /**
+     * <code>.lh_proto.ExternalEventPb external_event = 7;</code>
+     * @return The externalEvent.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.ExternalEventPb getExternalEvent() {
+      if (externalEventBuilder_ == null) {
+        if (eventCase_ == 7) {
+          return (io.littlehorse.common.proto.ExternalEventPb) event_;
+        }
+        return io.littlehorse.common.proto.ExternalEventPb.getDefaultInstance();
+      } else {
+        if (eventCase_ == 7) {
+          return externalEventBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.ExternalEventPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.ExternalEventPb external_event = 7;</code>
+     */
+    public Builder setExternalEvent(io.littlehorse.common.proto.ExternalEventPb value) {
+      if (externalEventBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        event_ = value;
+        onChanged();
+      } else {
+        externalEventBuilder_.setMessage(value);
+      }
+      eventCase_ = 7;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.ExternalEventPb external_event = 7;</code>
+     */
+    public Builder setExternalEvent(
+        io.littlehorse.common.proto.ExternalEventPb.Builder builderForValue) {
+      if (externalEventBuilder_ == null) {
+        event_ = builderForValue.build();
+        onChanged();
+      } else {
+        externalEventBuilder_.setMessage(builderForValue.build());
+      }
+      eventCase_ = 7;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.ExternalEventPb external_event = 7;</code>
+     */
+    public Builder mergeExternalEvent(io.littlehorse.common.proto.ExternalEventPb value) {
+      if (externalEventBuilder_ == null) {
+        if (eventCase_ == 7 &&
+            event_ != io.littlehorse.common.proto.ExternalEventPb.getDefaultInstance()) {
+          event_ = io.littlehorse.common.proto.ExternalEventPb.newBuilder((io.littlehorse.common.proto.ExternalEventPb) event_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          event_ = value;
+        }
+        onChanged();
+      } else {
+        if (eventCase_ == 7) {
+          externalEventBuilder_.mergeFrom(value);
+        }
+        externalEventBuilder_.setMessage(value);
+      }
+      eventCase_ = 7;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.ExternalEventPb external_event = 7;</code>
+     */
+    public Builder clearExternalEvent() {
+      if (externalEventBuilder_ == null) {
+        if (eventCase_ == 7) {
+          eventCase_ = 0;
+          event_ = null;
+          onChanged();
+        }
+      } else {
+        if (eventCase_ == 7) {
+          eventCase_ = 0;
+          event_ = null;
+        }
+        externalEventBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.lh_proto.ExternalEventPb external_event = 7;</code>
+     */
+    public io.littlehorse.common.proto.ExternalEventPb.Builder getExternalEventBuilder() {
+      return getExternalEventFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.ExternalEventPb external_event = 7;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.ExternalEventPbOrBuilder getExternalEventOrBuilder() {
+      if ((eventCase_ == 7) && (externalEventBuilder_ != null)) {
+        return externalEventBuilder_.getMessageOrBuilder();
+      } else {
+        if (eventCase_ == 7) {
+          return (io.littlehorse.common.proto.ExternalEventPb) event_;
+        }
+        return io.littlehorse.common.proto.ExternalEventPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.ExternalEventPb external_event = 7;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.ExternalEventPb, io.littlehorse.common.proto.ExternalEventPb.Builder, io.littlehorse.common.proto.ExternalEventPbOrBuilder> 
+        getExternalEventFieldBuilder() {
+      if (externalEventBuilder_ == null) {
+        if (!(eventCase_ == 7)) {
+          event_ = io.littlehorse.common.proto.ExternalEventPb.getDefaultInstance();
+        }
+        externalEventBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.ExternalEventPb, io.littlehorse.common.proto.ExternalEventPb.Builder, io.littlehorse.common.proto.ExternalEventPbOrBuilder>(
+                (io.littlehorse.common.proto.ExternalEventPb) event_,
+                getParentForChildren(),
+                isClean());
+        event_ = null;
+      }
+      eventCase_ = 7;
+      onChanged();;
+      return externalEventBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

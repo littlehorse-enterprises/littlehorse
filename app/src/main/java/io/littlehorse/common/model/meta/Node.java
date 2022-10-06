@@ -8,6 +8,7 @@ import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.meta.node.EntrypointNode;
 import io.littlehorse.common.model.meta.node.ExitNode;
+import io.littlehorse.common.model.meta.node.ExternalEventNode;
 import io.littlehorse.common.model.meta.node.TaskNode;
 import io.littlehorse.common.proto.EdgePb;
 import io.littlehorse.common.proto.NodePb;
@@ -28,13 +29,11 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
 
     public NodeCase type;
     public TaskNode taskNode;
+    public ExternalEventNode externalEventNode;
     public EntrypointNode entrypointNode;
     public ExitNode exitNode;
     public List<VariableMutation> variableMutations;
     public OutputSchema outputSchema;
-
-    @JsonIgnore
-    private TaskDef taskDef;
 
     @JsonIgnore
     public Class<NodePb> getProtoBaseClass() {
@@ -64,6 +63,9 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
                 break;
             case EXIT:
                 out.setExit(exitNode.toProto());
+                break;
+            case EXTERNAL_EVENT:
+                out.setExternalEvent(externalEventNode.toProto());
                 break;
             case NODE_NOT_SET:
             // nothing to do.
@@ -102,7 +104,12 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
                 exitNode = new ExitNode();
                 exitNode.initFrom(proto.getExit());
                 break;
+            case EXTERNAL_EVENT:
+                externalEventNode = new ExternalEventNode();
+                externalEventNode.initFrom(proto.getExternalEvent());
+                break;
             case NODE_NOT_SET:
+            default:
                 throw new LHSerdeError(
                     null,
                     "Node " + name + " on thread " + threadSpec.name + " is unset!"
@@ -196,17 +203,11 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
             validateEntrypoint(client, config);
         } else if (type == NodeCase.EXIT) {
             validateExit(client, config);
+        } else if (type == NodeCase.EXTERNAL_EVENT) {
+            validateExternalEvent(client, config);
         } else {
             throw new RuntimeException("Unhandled node type " + type);
         }
-    }
-
-    @JsonIgnore
-    public TaskDef getTaskDef() {
-        if (type != NodeCase.TASK) {
-            throw new RuntimeException("Tried to get TaskDef from non TASK node!");
-        }
-        return taskDef;
     }
 
     private void validateEntrypoint(LHGlobalMetaStores stores, LHConfig config) {
@@ -219,9 +220,29 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
         outputSchema.outputType = VariableTypePb.VOID;
     }
 
+    private void validateExternalEvent(LHGlobalMetaStores stores, LHConfig config)
+        throws LHValidationError {
+        ExternalEventDef eed = stores.getExternalEventDef(
+            externalEventNode.externalEventDefName
+        );
+
+        if (eed == null) {
+            throw new LHValidationError(
+                null,
+                "Node " +
+                name +
+                " on thread " +
+                threadSpec.name +
+                " refers to " +
+                "nonexistent ExternalEventDef " +
+                externalEventNode.externalEventDefName
+            );
+        }
+    }
+
     private void validateTask(LHGlobalMetaStores stores, LHConfig config)
         throws LHValidationError {
-        taskDef = stores.getTaskDef(taskNode.taskDefName);
+        TaskDef taskDef = stores.getTaskDef(taskNode.taskDefName);
         if (taskDef == null) {
             throw new LHValidationError(
                 null,

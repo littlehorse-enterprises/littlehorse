@@ -91,5 +91,20 @@ public interface WfRunEventPbOrBuilder extends
    */
   io.littlehorse.common.proto.TaskResultEventPbOrBuilder getTaskResultOrBuilder();
 
+  /**
+   * <code>.lh_proto.ExternalEventPb external_event = 7;</code>
+   * @return Whether the externalEvent field is set.
+   */
+  boolean hasExternalEvent();
+  /**
+   * <code>.lh_proto.ExternalEventPb external_event = 7;</code>
+   * @return The externalEvent.
+   */
+  io.littlehorse.common.proto.ExternalEventPb getExternalEvent();
+  /**
+   * <code>.lh_proto.ExternalEventPb external_event = 7;</code>
+   */
+  io.littlehorse.common.proto.ExternalEventPbOrBuilder getExternalEventOrBuilder();
+
   public io.littlehorse.common.proto.WfRunEventPb.EventCase getEventCase();
 }

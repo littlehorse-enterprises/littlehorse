@@ -224,6 +224,9 @@ public class WfRun extends GETable<WfRunPb> {
             case STARTED_EVENT:
                 handleStartedEvent(e);
                 break;
+            case EXTERNAL_EVENT:
+                handleExternalEvent(e);
+                break;
             case EVENT_NOT_SET:
                 throw new RuntimeException("Impossible or Out of date scheduler.");
         }
@@ -270,5 +273,19 @@ public class WfRun extends GETable<WfRunPb> {
         ThreadRun thread = threadRuns.get(ce.threadRunNumber);
         thread.processCompletedEvent(we);
         thread.advance(we.time);
+    }
+
+    private void handleExternalEvent(WfRunEvent we) {
+        // This doesn't need to do anything except advance the thread.
+        if (we.externalEvent.threadRunNumber != null) {
+            ThreadRun thread = threadRuns.get(we.externalEvent.threadRunNumber);
+            if (thread != null) {
+                thread.advance(we.time);
+            } else {
+                LHUtil.log("Warning: unknown threadrun for external event");
+            }
+        } else {
+            LHUtil.log("Warning: skipping the advancing from after external event");
+        }
     }
 }

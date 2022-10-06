@@ -6,6 +6,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.GlobalPOSTable;
 import io.littlehorse.common.model.POSTable;
+import io.littlehorse.common.model.event.ExternalEvent;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
@@ -123,6 +124,7 @@ public class ServerTopology {
         Serde<WfRunEvent> evtSerde = new LHSerde<>(WfRunEvent.class, config);
         Serde<WfRun> runSerde = new LHSerde<>(WfRun.class, config);
         Serde<WfSpec> specSerde = new LHSerde<>(WfSpec.class, config);
+        Serde<ExternalEvent> extEvtSerde = new LHSerde<>(ExternalEvent.class, config);
 
         Runtime
             .getRuntime()
@@ -131,6 +133,7 @@ public class ServerTopology {
                     evtSerde.close();
                     runSerde.close();
                     specSerde.close();
+                    extEvtSerde.close();
                 })
             );
 
@@ -215,10 +218,21 @@ public class ServerTopology {
         );
         topo.addStateStore(varValStoreBuilder, schedulerProcessor);
 
+        // External Event Payload store
+        StoreBuilder<KeyValueStore<String, ExternalEvent>> extEvtStoreBuilder = Stores.keyValueStoreBuilder(
+            Stores.persistentKeyValueStore(
+                GETable.getBaseStoreName(ExternalEvent.class)
+            ),
+            Serdes.String(),
+            extEvtSerde
+        );
+        topo.addStateStore(extEvtStoreBuilder, schedulerProcessor);
+
         for (Class<? extends GETable<?>> cls : Arrays.asList(
             Variable.class,
             TaskRun.class,
-            WfRun.class
+            WfRun.class,
+            ExternalEvent.class
         )) {
             String storeName = GETable.getTagStoreName(cls);
             String processorName = GETable.getTaggingProcessorName(cls);

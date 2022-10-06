@@ -4,8 +4,10 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.GlobalPOSTable;
+import io.littlehorse.common.model.event.ExternalEvent;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.WfRunEvent;
+import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.wfrun.LHTimer;
@@ -38,6 +40,8 @@ public class SchedulerProcessor
     private KeyValueStore<String, TaskRun> taskRunStore;
     private KeyValueStore<String, Variable> variableStore;
     private ReadOnlyKeyValueStore<String, TaskDef> taskDefStore;
+    private ReadOnlyKeyValueStore<String, ExternalEventDef> eedStore;
+    private KeyValueStore<String, ExternalEvent> extEvtStore;
 
     public SchedulerProcessor(LHConfig config) {}
 
@@ -51,6 +55,12 @@ public class SchedulerProcessor
             context.getStateStore(GETable.getBaseStoreName(Variable.class));
         taskDefStore =
             context.getStateStore(GlobalPOSTable.getGlobalStoreName(TaskDef.class));
+        eedStore =
+            context.getStateStore(
+                GlobalPOSTable.getGlobalStoreName(ExternalEventDef.class)
+            );
+        extEvtStore =
+            context.getStateStore(GETable.getBaseStoreName(ExternalEvent.class));
         this.context = context;
         this.wfSpecCache = new HashMap<>();
     }
@@ -99,14 +109,41 @@ public class SchedulerProcessor
 
         List<TaskScheduleRequest> tasksToSchedule = new ArrayList<>();
         List<LHTimer> timersToSchedule = new ArrayList<>();
-        WfRunStoreAccess wsa = new WfRunStoreAccess(taskRunStore, variableStore, key);
+        WfRunStoreAccess wsa = new WfRunStoreAccess(
+            taskRunStore,
+            variableStore,
+            extEvtStore,
+            key
+        );
 
         if (evt.type == EventCase.RUN_REQUEST) {
             if (wfRun != null) {
                 LHUtil.log("Got a past run for id " + key + ", skipping");
                 return;
             }
+
             wfRun = spec.startNewRun(evt, tasksToSchedule, timersToSchedule, wsa);
+        } else if (evt.type == EventCase.EXTERNAL_EVENT) {
+            // Need to save the ExternalEvent payload.
+            ExternalEvent extEvt = evt.externalEvent;
+            extEvtStore.put(extEvt.getObjectId(), extEvt);
+
+            if (wfRun == null) {
+                // Then it's a potential future WfRun. Current implementation saves
+                // the ExternalEvent in case the WfRun comes through later, enabling
+                // joins for "late-arriving" WfRuns.
+                //
+                // The problem with that approach is that it can lead to a lot of data
+                // accumulating and never going anywhere. May need to implement some
+                // cleanup policies. Options are:
+                // 1. Disallow the saving of ExternalEvents beforehand (not likely)
+                // 2. Set a separate retention period for orphan ExternalEvents
+                //    - Normally, cleanup would happen when we do cleanup of WfRun
+                //      but this is a separate and special case.
+                return;
+            } else {
+                wfRun.processEvent(evt, tasksToSchedule, timersToSchedule);
+            }
         } else {
             wfRun.wfSpec = spec;
             wfRun.stores = wsa;
@@ -180,7 +217,7 @@ public class SchedulerProcessor
         WfSpec out = wfSpecCache.get(id);
         if (out == null) {
             out = wfSpecStore.get(id);
-            out.addMetaDependencies(taskDefStore);
+            out.addMetaDependencies(taskDefStore, eedStore);
         }
         return out;
     }

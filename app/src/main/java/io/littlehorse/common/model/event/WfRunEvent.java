@@ -17,6 +17,7 @@ public class WfRunEvent extends LHSerializable<WfRunEventPb> {
     public TaskStartedEvent startedEvent;
     public TaskResultEvent taskResult;
     public WfRunRequest runRequest;
+    public ExternalEvent externalEvent;
 
     public WfRunEventPb.Builder toProto() {
         WfRunEventPb.Builder b = WfRunEventPb
@@ -38,6 +39,9 @@ public class WfRunEvent extends LHSerializable<WfRunEventPb> {
                 break;
             case RUN_REQUEST:
                 b.setRunRequest(runRequest.toProto());
+                break;
+            case EXTERNAL_EVENT:
+                b.setExternalEvent(externalEvent.toProto());
                 break;
         }
         return b;
@@ -68,6 +72,9 @@ public class WfRunEvent extends LHSerializable<WfRunEventPb> {
             case RUN_REQUEST:
                 this.runRequest = WfRunRequest.fromProto(proto.getRunRequest());
                 break;
+            case EXTERNAL_EVENT:
+                this.externalEvent =
+                    ExternalEvent.fromProto(proto.getExternalEvent());
         }
     }
 
