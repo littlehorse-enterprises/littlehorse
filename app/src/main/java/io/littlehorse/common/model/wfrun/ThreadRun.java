@@ -24,6 +24,7 @@ import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.NodePb.NodeCase;
 import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.proto.ThreadRunPb;
+import io.littlehorse.common.proto.VariableTypePb;
 import io.littlehorse.common.proto.WfRunEventPb.EventCase;
 import io.littlehorse.common.util.LHUtil;
 import java.util.ArrayList;
@@ -49,6 +50,9 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     public Date startTime;
     public Date endTime;
 
+    public String errorMessage;
+    public TaskResultCodePb resultCode;
+
     public ThreadRun() {
         variables = new HashMap<>();
     }
@@ -69,6 +73,12 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             currentNodeRun = NodeRunState.fromProto(proto.getCurrentNodeRun());
             currentNodeRun.threadRun = this;
         }
+        if (proto.hasErrorMessage()) {
+            errorMessage = proto.getErrorMessage();
+        }
+        if (proto.hasResultCode()) {
+            resultCode = proto.getResultCode();
+        }
     }
 
     public ThreadRunPb.Builder toProto() {
@@ -81,6 +91,14 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             .setThreadSpecName(threadSpecName)
             .setNumSteps(numSteps)
             .setStartTime(LHUtil.fromDate(startTime));
+
+        if (resultCode != null) {
+            out.setResultCode(resultCode);
+        }
+
+        if (errorMessage != null) {
+            out.setErrorMessage(errorMessage);
+        }
 
         if (endTime != null) {
             out.setEndTime(LHUtil.fromDate(endTime));
@@ -185,7 +203,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
                     currentNodeRun.position,
                     eventTime.getTime()
                 );
-                setStatus(LHStatusPb.ERROR);
+                setStatus(LHStatusPb.ERROR, "Node failed", currentNodeRun.resultCode);
                 // Probably want to mark down why the node failed.
 
             }
@@ -224,9 +242,22 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     private void advanceFrom(Node curNode) {
         Node nextNode = null;
         for (Edge e : curNode.outgoingEdges) {
-            if (evaluateEdge(e)) {
-                nextNode = e.getSinkNode();
-                break;
+            try {
+                if (evaluateEdge(e)) {
+                    nextNode = e.getSinkNode();
+                    break;
+                }
+            } catch (LHVarSubError exn) {
+                LHUtil.log(
+                    "Failing threadrun due to VarSubError",
+                    wfRun.id,
+                    currentNodeRun.position
+                );
+                setStatus(
+                    LHStatusPb.ERROR,
+                    "Failed evaluating outgoing edge: " + exn.getMessage(),
+                    TaskResultCodePb.VAR_MUTATION_ERROR
+                );
             }
         }
         if (nextNode == null) {
@@ -246,7 +277,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
                 scheduleTaskNode(node);
                 break;
             case EXIT:
-                setStatus(LHStatusPb.COMPLETED);
+                setStatus(LHStatusPb.COMPLETED, null, TaskResultCodePb.SUCCESS);
                 break;
             case NODE_NOT_SET:
                 throw new RuntimeException("Invalid nodetype.");
@@ -254,8 +285,36 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     }
 
     // TODO: Do some conditional logic processing here.
-    private boolean evaluateEdge(Edge e) {
-        return true;
+    private boolean evaluateEdge(Edge e) throws LHVarSubError {
+        if (e.condition == null) {
+            return true;
+        }
+
+        VariableValue lhs = assignVariable(e.condition.left);
+        VariableValue rhs = assignVariable(e.condition.right);
+
+        switch (e.condition.comparator) {
+            case LESS_THAN:
+                return Comparer.compare(lhs, rhs) < 0;
+            case LESS_THAN_EQ:
+                return Comparer.compare(lhs, rhs) <= 0;
+            case GREATER_THAN:
+                return Comparer.compare(lhs, rhs) > 0;
+            case GREATER_THAN_EQ:
+                return Comparer.compare(lhs, rhs) >= 0;
+            case EQUALS:
+                return lhs != null && lhs.equals(rhs);
+            case NOT_EQUALS:
+                return lhs != null && !lhs.equals(rhs);
+            case IN:
+                return Comparer.contains(rhs, lhs);
+            case NOT_IN:
+                return !Comparer.contains(rhs, lhs);
+            default:
+                throw new RuntimeException(
+                    "Unhandled comparison enum " + e.condition.comparator
+                );
+        }
     }
 
     private void scheduleTaskNode(Node node) {
@@ -328,8 +387,14 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         putTask(task);
     }
 
-    public void setStatus(LHStatusPb newStatus) {
+    public void setStatus(
+        LHStatusPb newStatus,
+        String errorMessage,
+        TaskResultCodePb code
+    ) {
         status = newStatus;
+        resultCode = code;
+        this.errorMessage = errorMessage;
 
         Date time = new Date();
         wfRun.oEvents.add(
@@ -538,5 +603,45 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
 
     public Variable getLocalVariable(String name) {
         return wfRun.stores.getVariable(name, number);
+    }
+}
+
+class Comparer {
+
+    @SuppressWarnings("all") // lol
+    public static int compare(VariableValue left, VariableValue right)
+        throws LHVarSubError {
+        try {
+            int result = ((Comparable) left).compareTo((Comparable) right);
+            return result;
+        } catch (Exception exn) {
+            LHUtil.log(exn.getMessage());
+            throw new LHVarSubError(exn, "Failed comparing the provided values.");
+        }
+    }
+
+    public static boolean contains(VariableValue left, VariableValue right)
+        throws LHVarSubError {
+        // Can only do for Str, Arr, and Obj
+
+        if (left.type == VariableTypePb.STR) {
+            String rStr = right.asStr().strVal;
+
+            return left.asStr().strVal.contains(rStr);
+        } else if (left.type == VariableTypePb.JSON_ARR) {
+            Object rObj = right.getVal();
+            List<Object> lhs = left.asArr().jsonArrVal;
+
+            for (Object o : lhs) {
+                if (LHUtil.deepEquals(o, rObj)) {
+                    return true;
+                }
+            }
+            return false;
+        } else if (left.type == VariableTypePb.JSON_OBJ) {
+            return left.asObj().jsonObjVal.containsKey(right.asStr().strVal);
+        } else {
+            throw new LHVarSubError(null, "Can't do CONTAINS on " + left.type);
+        }
     }
 }

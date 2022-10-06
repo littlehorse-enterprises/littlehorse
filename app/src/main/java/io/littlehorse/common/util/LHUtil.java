@@ -128,4 +128,39 @@ public class LHUtil {
         String s = objToString(obj);
         return s == null ? null : s.getBytes();
     }
+
+    @SuppressWarnings("all")
+    public static boolean deepEquals(Object left, Object right) {
+        if (left == null && right == null) return true;
+        if (left != null || right != null) return false;
+
+        if (!left.getClass().equals(right.getClass())) {
+            return false;
+        }
+
+        if (left instanceof List) {
+            List<Object> lList = (List<Object>) left;
+            List<Object> rList = (List<Object>) right;
+            if (rList.size() != lList.size()) return false;
+
+            for (int i = 0; i < lList.size(); i++) {
+                if (!deepEquals(lList.get(i), rList.get(i))) {
+                    return false;
+                }
+            }
+            return true;
+        } else if (left instanceof Map) {
+            Map<String, Object> rMap = (Map<String, Object>) right;
+            Map<String, Object> lMap = (Map<String, Object>) left;
+
+            for (Map.Entry<String, Object> e : rMap.entrySet()) {
+                if (!deepEquals(e.getValue(), lMap.get(e.getKey()))) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return left.equals(right);
+        }
+    }
 }

@@ -175,6 +175,20 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
             }
         }
 
+        if (!outgoingEdges.isEmpty()) {
+            Edge last = outgoingEdges.get(outgoingEdges.size() - 1);
+            if (last.condition != null) {
+                throw new LHValidationError(
+                    null,
+                    "Node " +
+                    name +
+                    " on thread " +
+                    threadSpec.name +
+                    " last edge has non-null condition!"
+                );
+            }
+        }
+
         if (type == NodeCase.TASK) {
             validateTask(client, config);
         } else if (type == NodeCase.ENTRYPOINT) {

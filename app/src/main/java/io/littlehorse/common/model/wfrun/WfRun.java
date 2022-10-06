@@ -17,6 +17,7 @@ import io.littlehorse.common.model.observability.ThreadStartOe;
 import io.littlehorse.common.model.observability.WfRunStatusChangeOe;
 import io.littlehorse.common.model.server.Tag;
 import io.littlehorse.common.proto.LHStatusPb;
+import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.proto.ThreadRunPb;
 import io.littlehorse.common.proto.WfRunPb;
 import io.littlehorse.common.proto.WfRunPbOrBuilder;
@@ -179,7 +180,11 @@ public class WfRun extends GETable<WfRunPb> {
         } catch (LHValidationError exn) {
             LHUtil.log("Invalid variables received");
             // Now we gotta figure out how to fail a workflow
-            thread.setStatus(LHStatusPb.ERROR);
+            thread.setStatus(
+                LHStatusPb.ERROR,
+                "Failed validating variables on start: " + exn.getMessage(),
+                TaskResultCodePb.VAR_MUTATION_ERROR
+            );
             return;
         }
 

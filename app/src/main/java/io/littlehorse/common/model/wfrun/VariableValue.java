@@ -1,6 +1,7 @@
 package io.littlehorse.common.model.wfrun;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.MessageOrBuilder;
 import com.jayway.jsonpath.JsonPath;
@@ -323,6 +324,31 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
     }
 
     // Intended for use only by Jackson to pretty-print the Json.
+    @JsonProperty("value")
+    public Object getValForJackson() {
+        switch (type) {
+            case INT:
+                return this.intVal;
+            case DOUBLE:
+                return this.doubleVal;
+            case STR:
+                return this.strVal;
+            case BOOL:
+                return this.boolVal;
+            case JSON_ARR:
+                return this.jsonArrVal;
+            case JSON_OBJ:
+                return this.jsonObjVal;
+            case BYTES:
+                // here's the magic, we turn the bytes into string.
+                return LHUtil.b64Encode(this.bytesVal);
+            case UNRECOGNIZED:
+            default:
+                return null;
+        }
+    }
+
+    @JsonIgnore
     public Object getVal() {
         switch (type) {
             case INT:
@@ -338,7 +364,7 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
             case JSON_OBJ:
                 return this.jsonObjVal;
             case BYTES:
-                return LHUtil.b64Encode(this.bytesVal);
+                return this.bytesVal;
             case UNRECOGNIZED:
             default:
                 return null;
