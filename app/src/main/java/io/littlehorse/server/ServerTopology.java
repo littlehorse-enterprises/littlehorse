@@ -7,6 +7,7 @@ import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.GlobalPOSTable;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.event.WfRunEvent;
+import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.server.IndexEntryAction;
@@ -106,8 +107,10 @@ public class ServerTopology {
 
         addPOSTableSubTopology(topo, WfSpec.class, config);
         addPOSTableSubTopology(topo, TaskDef.class, config);
+        addPOSTableSubTopology(topo, ExternalEventDef.class, config);
         addGlobalMetaStore(topo, WfSpec.class, config);
         addGlobalMetaStore(topo, TaskDef.class, config);
+        addGlobalMetaStore(topo, ExternalEventDef.class, config);
 
         addIdxSubTopology(topo, config);
 

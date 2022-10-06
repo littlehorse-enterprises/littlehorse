@@ -1,6 +1,7 @@
 package io.littlehorse.common.model;
 
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.server.Tag;
@@ -47,6 +48,8 @@ public abstract class GETable<T extends MessageOrBuilder> extends LHSerializable
             return GETableClassEnumPb.TASK_DEF;
         } else if (cls.equals(Variable.class)) {
             return GETableClassEnumPb.VARIABLE;
+        } else if (cls.equals(ExternalEventDef.class)) {
+            return GETableClassEnumPb.EXTERNAL_EVENT_DEF;
         } else {
             throw new RuntimeException("Uh oh, unrecognized: " + cls.getName());
         }
@@ -64,6 +67,8 @@ public abstract class GETable<T extends MessageOrBuilder> extends LHSerializable
                 return TaskDef.class;
             case VARIABLE:
                 return Variable.class;
+            case EXTERNAL_EVENT_DEF:
+                return ExternalEventDef.class;
             case UNRECOGNIZED:
             default:
                 throw new RuntimeException("Uh oh, unrecognized enum");

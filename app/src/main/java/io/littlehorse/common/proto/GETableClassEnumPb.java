@@ -36,6 +36,10 @@ public enum GETableClassEnumPb
    * <code>VARIABLE = 5;</code>
    */
   VARIABLE(5),
+  /**
+   * <code>EXTERNAL_EVENT_DEF = 6;</code>
+   */
+  EXTERNAL_EVENT_DEF(6),
   UNRECOGNIZED(-1),
   ;
 
@@ -63,6 +67,10 @@ public enum GETableClassEnumPb
    * <code>VARIABLE = 5;</code>
    */
   public static final int VARIABLE_VALUE = 5;
+  /**
+   * <code>EXTERNAL_EVENT_DEF = 6;</code>
+   */
+  public static final int EXTERNAL_EVENT_DEF_VALUE = 6;
 
 
   public final int getNumber() {
@@ -95,6 +103,7 @@ public enum GETableClassEnumPb
       case 3: return THREAD_RUN;
       case 4: return TASK_RUN;
       case 5: return VARIABLE;
+      case 6: return EXTERNAL_EVENT_DEF;
       default: return null;
     }
   }

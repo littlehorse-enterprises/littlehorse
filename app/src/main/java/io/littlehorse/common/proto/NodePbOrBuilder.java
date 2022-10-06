@@ -101,17 +101,32 @@ public interface NodePbOrBuilder extends
   io.littlehorse.common.proto.ExitNodePbOrBuilder getExitOrBuilder();
 
   /**
-   * <code>.lh_proto.OutputSchemaPb output_schema = 6;</code>
+   * <code>.lh_proto.ExternalEventNodePb external_event = 6;</code>
+   * @return Whether the externalEvent field is set.
+   */
+  boolean hasExternalEvent();
+  /**
+   * <code>.lh_proto.ExternalEventNodePb external_event = 6;</code>
+   * @return The externalEvent.
+   */
+  io.littlehorse.common.proto.ExternalEventNodePb getExternalEvent();
+  /**
+   * <code>.lh_proto.ExternalEventNodePb external_event = 6;</code>
+   */
+  io.littlehorse.common.proto.ExternalEventNodePbOrBuilder getExternalEventOrBuilder();
+
+  /**
+   * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
    * @return Whether the outputSchema field is set.
    */
   boolean hasOutputSchema();
   /**
-   * <code>.lh_proto.OutputSchemaPb output_schema = 6;</code>
+   * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
    * @return The outputSchema.
    */
   io.littlehorse.common.proto.OutputSchemaPb getOutputSchema();
   /**
-   * <code>.lh_proto.OutputSchemaPb output_schema = 6;</code>
+   * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
    */
   io.littlehorse.common.proto.OutputSchemaPbOrBuilder getOutputSchemaOrBuilder();
 

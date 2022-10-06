@@ -112,6 +112,20 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 50: {
+            io.littlehorse.common.proto.ExternalEventNodePb.Builder subBuilder = null;
+            if (nodeCase_ == 6) {
+              subBuilder = ((io.littlehorse.common.proto.ExternalEventNodePb) node_).toBuilder();
+            }
+            node_ =
+                input.readMessage(io.littlehorse.common.proto.ExternalEventNodePb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.common.proto.ExternalEventNodePb) node_);
+              node_ = subBuilder.buildPartial();
+            }
+            nodeCase_ = 6;
+            break;
+          }
+          case 58: {
             io.littlehorse.common.proto.OutputSchemaPb.Builder subBuilder = null;
             if (outputSchema_ != null) {
               subBuilder = outputSchema_.toBuilder();
@@ -170,6 +184,7 @@ private static final long serialVersionUID = 0L;
     TASK(3),
     ENTRYPOINT(4),
     EXIT(5),
+    EXTERNAL_EVENT(6),
     NODE_NOT_SET(0);
     private final int value;
     private NodeCase(int value) {
@@ -190,6 +205,7 @@ private static final long serialVersionUID = 0L;
         case 3: return TASK;
         case 4: return ENTRYPOINT;
         case 5: return EXIT;
+        case 6: return EXTERNAL_EVENT;
         case 0: return NODE_NOT_SET;
         default: return null;
       }
@@ -378,10 +394,41 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.ExitNodePb.getDefaultInstance();
   }
 
-  public static final int OUTPUT_SCHEMA_FIELD_NUMBER = 6;
+  public static final int EXTERNAL_EVENT_FIELD_NUMBER = 6;
+  /**
+   * <code>.lh_proto.ExternalEventNodePb external_event = 6;</code>
+   * @return Whether the externalEvent field is set.
+   */
+  @java.lang.Override
+  public boolean hasExternalEvent() {
+    return nodeCase_ == 6;
+  }
+  /**
+   * <code>.lh_proto.ExternalEventNodePb external_event = 6;</code>
+   * @return The externalEvent.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.ExternalEventNodePb getExternalEvent() {
+    if (nodeCase_ == 6) {
+       return (io.littlehorse.common.proto.ExternalEventNodePb) node_;
+    }
+    return io.littlehorse.common.proto.ExternalEventNodePb.getDefaultInstance();
+  }
+  /**
+   * <code>.lh_proto.ExternalEventNodePb external_event = 6;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.ExternalEventNodePbOrBuilder getExternalEventOrBuilder() {
+    if (nodeCase_ == 6) {
+       return (io.littlehorse.common.proto.ExternalEventNodePb) node_;
+    }
+    return io.littlehorse.common.proto.ExternalEventNodePb.getDefaultInstance();
+  }
+
+  public static final int OUTPUT_SCHEMA_FIELD_NUMBER = 7;
   private io.littlehorse.common.proto.OutputSchemaPb outputSchema_;
   /**
-   * <code>.lh_proto.OutputSchemaPb output_schema = 6;</code>
+   * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
    * @return Whether the outputSchema field is set.
    */
   @java.lang.Override
@@ -389,7 +436,7 @@ private static final long serialVersionUID = 0L;
     return outputSchema_ != null;
   }
   /**
-   * <code>.lh_proto.OutputSchemaPb output_schema = 6;</code>
+   * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
    * @return The outputSchema.
    */
   @java.lang.Override
@@ -397,7 +444,7 @@ private static final long serialVersionUID = 0L;
     return outputSchema_ == null ? io.littlehorse.common.proto.OutputSchemaPb.getDefaultInstance() : outputSchema_;
   }
   /**
-   * <code>.lh_proto.OutputSchemaPb output_schema = 6;</code>
+   * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
    */
   @java.lang.Override
   public io.littlehorse.common.proto.OutputSchemaPbOrBuilder getOutputSchemaOrBuilder() {
@@ -433,8 +480,11 @@ private static final long serialVersionUID = 0L;
     if (nodeCase_ == 5) {
       output.writeMessage(5, (io.littlehorse.common.proto.ExitNodePb) node_);
     }
+    if (nodeCase_ == 6) {
+      output.writeMessage(6, (io.littlehorse.common.proto.ExternalEventNodePb) node_);
+    }
     if (outputSchema_ != null) {
-      output.writeMessage(6, getOutputSchema());
+      output.writeMessage(7, getOutputSchema());
     }
     unknownFields.writeTo(output);
   }
@@ -465,9 +515,13 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(5, (io.littlehorse.common.proto.ExitNodePb) node_);
     }
+    if (nodeCase_ == 6) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(6, (io.littlehorse.common.proto.ExternalEventNodePb) node_);
+    }
     if (outputSchema_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(6, getOutputSchema());
+        .computeMessageSize(7, getOutputSchema());
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -507,6 +561,10 @@ private static final long serialVersionUID = 0L;
         if (!getExit()
             .equals(other.getExit())) return false;
         break;
+      case 6:
+        if (!getExternalEvent()
+            .equals(other.getExternalEvent())) return false;
+        break;
       case 0:
       default:
     }
@@ -545,6 +603,10 @@ private static final long serialVersionUID = 0L;
       case 5:
         hash = (37 * hash) + EXIT_FIELD_NUMBER;
         hash = (53 * hash) + getExit().hashCode();
+        break;
+      case 6:
+        hash = (37 * hash) + EXTERNAL_EVENT_FIELD_NUMBER;
+        hash = (53 * hash) + getExternalEvent().hashCode();
         break;
       case 0:
       default:
@@ -770,6 +832,13 @@ private static final long serialVersionUID = 0L;
           result.node_ = exitBuilder_.build();
         }
       }
+      if (nodeCase_ == 6) {
+        if (externalEventBuilder_ == null) {
+          result.node_ = node_;
+        } else {
+          result.node_ = externalEventBuilder_.build();
+        }
+      }
       if (outputSchemaBuilder_ == null) {
         result.outputSchema_ = outputSchema_;
       } else {
@@ -890,6 +959,10 @@ private static final long serialVersionUID = 0L;
         }
         case EXIT: {
           mergeExit(other.getExit());
+          break;
+        }
+        case EXTERNAL_EVENT: {
+          mergeExternalEvent(other.getExternalEvent());
           break;
         }
         case NODE_NOT_SET: {
@@ -1844,18 +1917,159 @@ private static final long serialVersionUID = 0L;
       return exitBuilder_;
     }
 
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.ExternalEventNodePb, io.littlehorse.common.proto.ExternalEventNodePb.Builder, io.littlehorse.common.proto.ExternalEventNodePbOrBuilder> externalEventBuilder_;
+    /**
+     * <code>.lh_proto.ExternalEventNodePb external_event = 6;</code>
+     * @return Whether the externalEvent field is set.
+     */
+    @java.lang.Override
+    public boolean hasExternalEvent() {
+      return nodeCase_ == 6;
+    }
+    /**
+     * <code>.lh_proto.ExternalEventNodePb external_event = 6;</code>
+     * @return The externalEvent.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.ExternalEventNodePb getExternalEvent() {
+      if (externalEventBuilder_ == null) {
+        if (nodeCase_ == 6) {
+          return (io.littlehorse.common.proto.ExternalEventNodePb) node_;
+        }
+        return io.littlehorse.common.proto.ExternalEventNodePb.getDefaultInstance();
+      } else {
+        if (nodeCase_ == 6) {
+          return externalEventBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.ExternalEventNodePb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.ExternalEventNodePb external_event = 6;</code>
+     */
+    public Builder setExternalEvent(io.littlehorse.common.proto.ExternalEventNodePb value) {
+      if (externalEventBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        node_ = value;
+        onChanged();
+      } else {
+        externalEventBuilder_.setMessage(value);
+      }
+      nodeCase_ = 6;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.ExternalEventNodePb external_event = 6;</code>
+     */
+    public Builder setExternalEvent(
+        io.littlehorse.common.proto.ExternalEventNodePb.Builder builderForValue) {
+      if (externalEventBuilder_ == null) {
+        node_ = builderForValue.build();
+        onChanged();
+      } else {
+        externalEventBuilder_.setMessage(builderForValue.build());
+      }
+      nodeCase_ = 6;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.ExternalEventNodePb external_event = 6;</code>
+     */
+    public Builder mergeExternalEvent(io.littlehorse.common.proto.ExternalEventNodePb value) {
+      if (externalEventBuilder_ == null) {
+        if (nodeCase_ == 6 &&
+            node_ != io.littlehorse.common.proto.ExternalEventNodePb.getDefaultInstance()) {
+          node_ = io.littlehorse.common.proto.ExternalEventNodePb.newBuilder((io.littlehorse.common.proto.ExternalEventNodePb) node_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          node_ = value;
+        }
+        onChanged();
+      } else {
+        if (nodeCase_ == 6) {
+          externalEventBuilder_.mergeFrom(value);
+        }
+        externalEventBuilder_.setMessage(value);
+      }
+      nodeCase_ = 6;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.ExternalEventNodePb external_event = 6;</code>
+     */
+    public Builder clearExternalEvent() {
+      if (externalEventBuilder_ == null) {
+        if (nodeCase_ == 6) {
+          nodeCase_ = 0;
+          node_ = null;
+          onChanged();
+        }
+      } else {
+        if (nodeCase_ == 6) {
+          nodeCase_ = 0;
+          node_ = null;
+        }
+        externalEventBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.lh_proto.ExternalEventNodePb external_event = 6;</code>
+     */
+    public io.littlehorse.common.proto.ExternalEventNodePb.Builder getExternalEventBuilder() {
+      return getExternalEventFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.ExternalEventNodePb external_event = 6;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.ExternalEventNodePbOrBuilder getExternalEventOrBuilder() {
+      if ((nodeCase_ == 6) && (externalEventBuilder_ != null)) {
+        return externalEventBuilder_.getMessageOrBuilder();
+      } else {
+        if (nodeCase_ == 6) {
+          return (io.littlehorse.common.proto.ExternalEventNodePb) node_;
+        }
+        return io.littlehorse.common.proto.ExternalEventNodePb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.ExternalEventNodePb external_event = 6;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.ExternalEventNodePb, io.littlehorse.common.proto.ExternalEventNodePb.Builder, io.littlehorse.common.proto.ExternalEventNodePbOrBuilder> 
+        getExternalEventFieldBuilder() {
+      if (externalEventBuilder_ == null) {
+        if (!(nodeCase_ == 6)) {
+          node_ = io.littlehorse.common.proto.ExternalEventNodePb.getDefaultInstance();
+        }
+        externalEventBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.ExternalEventNodePb, io.littlehorse.common.proto.ExternalEventNodePb.Builder, io.littlehorse.common.proto.ExternalEventNodePbOrBuilder>(
+                (io.littlehorse.common.proto.ExternalEventNodePb) node_,
+                getParentForChildren(),
+                isClean());
+        node_ = null;
+      }
+      nodeCase_ = 6;
+      onChanged();;
+      return externalEventBuilder_;
+    }
+
     private io.littlehorse.common.proto.OutputSchemaPb outputSchema_;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.OutputSchemaPb, io.littlehorse.common.proto.OutputSchemaPb.Builder, io.littlehorse.common.proto.OutputSchemaPbOrBuilder> outputSchemaBuilder_;
     /**
-     * <code>.lh_proto.OutputSchemaPb output_schema = 6;</code>
+     * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
      * @return Whether the outputSchema field is set.
      */
     public boolean hasOutputSchema() {
       return outputSchemaBuilder_ != null || outputSchema_ != null;
     }
     /**
-     * <code>.lh_proto.OutputSchemaPb output_schema = 6;</code>
+     * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
      * @return The outputSchema.
      */
     public io.littlehorse.common.proto.OutputSchemaPb getOutputSchema() {
@@ -1866,7 +2080,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.lh_proto.OutputSchemaPb output_schema = 6;</code>
+     * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
      */
     public Builder setOutputSchema(io.littlehorse.common.proto.OutputSchemaPb value) {
       if (outputSchemaBuilder_ == null) {
@@ -1882,7 +2096,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.OutputSchemaPb output_schema = 6;</code>
+     * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
      */
     public Builder setOutputSchema(
         io.littlehorse.common.proto.OutputSchemaPb.Builder builderForValue) {
@@ -1896,7 +2110,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.OutputSchemaPb output_schema = 6;</code>
+     * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
      */
     public Builder mergeOutputSchema(io.littlehorse.common.proto.OutputSchemaPb value) {
       if (outputSchemaBuilder_ == null) {
@@ -1914,7 +2128,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.OutputSchemaPb output_schema = 6;</code>
+     * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
      */
     public Builder clearOutputSchema() {
       if (outputSchemaBuilder_ == null) {
@@ -1928,7 +2142,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.OutputSchemaPb output_schema = 6;</code>
+     * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
      */
     public io.littlehorse.common.proto.OutputSchemaPb.Builder getOutputSchemaBuilder() {
       
@@ -1936,7 +2150,7 @@ private static final long serialVersionUID = 0L;
       return getOutputSchemaFieldBuilder().getBuilder();
     }
     /**
-     * <code>.lh_proto.OutputSchemaPb output_schema = 6;</code>
+     * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
      */
     public io.littlehorse.common.proto.OutputSchemaPbOrBuilder getOutputSchemaOrBuilder() {
       if (outputSchemaBuilder_ != null) {
@@ -1947,7 +2161,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.lh_proto.OutputSchemaPb output_schema = 6;</code>
+     * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.OutputSchemaPb, io.littlehorse.common.proto.OutputSchemaPb.Builder, io.littlehorse.common.proto.OutputSchemaPbOrBuilder> 

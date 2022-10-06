@@ -187,8 +187,9 @@ message NodePb {
         TaskNodePb task = 3;
         EntrypointNodePb entrypoint = 4;
         ExitNodePb exit = 5;
+        ExternalEventNodePb external_event = 6;
     }
-    OutputSchemaPb output_schema = 6;
+    OutputSchemaPb output_schema = 7;
 }
 
 message TaskNodePb {
@@ -196,6 +197,10 @@ message TaskNodePb {
     optional VariableAssignmentPb timeout_seconds = 2;
     int32 retries = 3;
     map<string, VariableAssignmentPb> variables = 4;
+}
+
+message ExternalEventNodePb {
+    string external_event_def_name = 1;
 }
 
 message EntrypointNodePb {
@@ -242,6 +247,12 @@ message TaskDefPb {
     map<string, VariableDefPb> required_vars = 4;
 }
 
+message ExternalEventDefPb {
+    string name = 1;
+    google.protobuf.Timestamp created_at = 2;
+    // TODO: In the future, maybe add schema? Maybe add correlations?
+    // Unclear until we have some customer feedback.
+}
 
 // Schema for a WfRun
 
@@ -414,6 +425,7 @@ enum GETableClassEnumPb {
     THREAD_RUN = 3;
     TASK_RUN = 4;
     VARIABLE = 5;
+    EXTERNAL_EVENT_DEF = 6;
 }
 
 message AttributePb {

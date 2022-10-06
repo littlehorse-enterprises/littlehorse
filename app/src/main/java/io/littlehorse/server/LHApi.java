@@ -13,6 +13,7 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.event.WfRunRequest;
+import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.ThreadSpec;
 import io.littlehorse.common.model.meta.WfSpec;
@@ -77,6 +78,10 @@ public class LHApi {
 
         this.app.get("/WfSpec/{id}", ctx -> handle(this::getWfSpec, ctx));
         this.app.get("/TaskDef/{id}", ctx -> handle(this::getTaskDef, ctx));
+        this.app.get(
+                "/ExternalEventDef/{id}",
+                ctx -> handle(this::getExternalEventDef, ctx)
+            );
 
         this.app.get("/WfRun/{id}", ctx -> handle(this::getWfRun, ctx));
         this.app.get(
@@ -128,6 +133,17 @@ public class LHApi {
                     handle(
                         c -> {
                             this.post(c, TaskDef.class);
+                        },
+                        ctx
+                    );
+                }
+            );
+        this.app.post(
+                "/ExternalEventDef",
+                ctx -> {
+                    handle(
+                        c -> {
+                            this.post(c, ExternalEventDef.class);
                         },
                         ctx
                     );
@@ -232,6 +248,11 @@ public class LHApi {
     public void getVariablesByWfRun(Context ctx) {
         String wfRunId = ctx.pathParam("wfRunId");
         keyedPrefixObjScan(wfRunId, Variable.class, wfRunId, ctx);
+    }
+
+    public void getExternalEventDef(Context ctx) {
+        String id = ctx.pathParam("id");
+        returnLookup(id, id, ExternalEventDef.class, ctx);
     }
 
     public void getTaskDef(Context ctx) {
