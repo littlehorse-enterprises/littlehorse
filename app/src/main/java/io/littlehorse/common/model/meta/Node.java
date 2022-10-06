@@ -20,6 +20,7 @@ import io.littlehorse.common.util.LHGlobalMetaStores;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -272,8 +273,32 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
                 );
             }
         }
+
+        // Now need to validate that all of the variables are provided.
+        for (Map.Entry<String, VariableDef> e : taskDef.requiredVars.entrySet()) {
+            VariableDef varDef = e.getValue();
+            if (varDef.defaultValue == null) {
+                // Then we NEED the value.
+                if (!taskNode.variables.containsKey(e.getKey())) {
+                    throw new LHValidationError(
+                        null,
+                        "TASK node " +
+                        name +
+                        " on thread " +
+                        threadSpec.name +
+                        " is missing required input variable " +
+                        e.getKey()
+                    );
+                }
+            }
+            // TODO: May want to do some validation of types.
+        }
     }
 
+    /**
+     * Returns the set of all thread variable names referred to by this
+     * Node. Used internally for validation of the WfSpec.
+     */
     @JsonIgnore
     public Set<String> getRequiredVariableNames() {
         Set<String> out = new HashSet<>();

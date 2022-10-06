@@ -1,0 +1,69 @@
+{
+    "name": "input_var",
+    "threadSpecs": {
+        "simple_wf": {
+            "variableDefs": {
+                "my_var": {
+                    "type": "STR",
+                    "defaultVal": {
+                        "type": "STR",
+                        "str": "This value was sent from variable"
+                    },
+                    "required": false
+                }
+            },
+            "nodes": {
+                "entrypoint": {
+                    "outgoingEdges": [
+                        {
+                            "sinkNodeName": "t1"
+                        }
+                    ],
+                    "entrypoint": {}
+                },
+                "t1": {
+                    "task": {
+                        "taskDefName": "task1",
+                        "retries": 3,
+                        "variables": {
+                            "myTaskVar": {
+                                "variableName": "my_var"
+                            }
+                        }
+                    },
+                    "outgoingEdges": [
+                        {
+                            "sinkNodeName": "exit"
+                        }
+                    ]
+                },
+                "t2": {
+                    "task": {
+                        "taskDefName": "task1",
+                        "retries": 3
+                    },
+                    "outgoingEdges": [
+                        {
+                            "sinkNodeName": "t3"
+                        }
+                    ]
+                },
+                "t3": {
+                    "task": {
+                        "taskDefName": "task1",
+                        "retries": 3
+                    },
+                    "outgoingEdges": [
+                        {
+                            "sinkNodeName": "exit"
+                        }
+                    ]
+                },
+                "exit": {
+                    "exit": {}
+                }
+            }
+        }
+    },
+    "entrypointThreadName": "simple_wf"
+}

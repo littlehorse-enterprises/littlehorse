@@ -11,8 +11,10 @@ import io.littlehorse.common.model.event.TaskStartedEvent;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.Edge;
 import io.littlehorse.common.model.meta.Node;
+import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.ThreadSpec;
 import io.littlehorse.common.model.meta.VariableAssignment;
+import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.meta.VariableMutation;
 import io.littlehorse.common.model.observability.ObservabilityEvent;
 import io.littlehorse.common.model.observability.TaskResultOe;
@@ -321,9 +323,62 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         scheduleTaskNode(node, 0);
     }
 
+    // TODO: variable locking may have to consider this.
+    private Map<String, VariableValue> assignVarsForNode(Node node)
+        throws LHVarSubError {
+        Map<String, VariableValue> out = new HashMap<>();
+        TaskDef taskDef = node.taskNode.taskDef;
+
+        for (Map.Entry<String, VariableDef> entry : taskDef.requiredVars.entrySet()) {
+            String varName = entry.getKey();
+            VariableDef requiredVarDef = entry.getValue();
+            VariableAssignment assn = node.taskNode.variables.get(varName);
+            VariableValue val;
+
+            if (assn != null) {
+                val = assignVariable(assn);
+            } else {
+                if (requiredVarDef.defaultValue == null) {
+                    throw new LHVarSubError(
+                        null,
+                        "Variable " +
+                        varName +
+                        " neither has default value nor assignment."
+                    );
+                }
+                val = requiredVarDef.defaultValue;
+            }
+            if (val.type != requiredVarDef.type) {
+                throw new LHVarSubError(
+                    null,
+                    "Variable " +
+                    varName +
+                    " should be " +
+                    requiredVarDef.type +
+                    " but is of type " +
+                    val.type
+                );
+            }
+            out.put(varName, val);
+        }
+        return out;
+    }
+
     private void scheduleTaskNode(Node node, int attemptNumber) {
         if (node.type != NodeCase.TASK) {
             throw new RuntimeException("Yikerz");
+        }
+
+        Map<String, VariableValue> varVals;
+        try {
+            varVals = assignVarsForNode(node);
+        } catch (LHVarSubError exn) {
+            setStatus(
+                LHStatusPb.ERROR,
+                "Could not assign input variables: " + exn.getMessage(),
+                TaskResultCodePb.VAR_MUTATION_ERROR
+            );
+            return;
         }
 
         if (currentNodeRun == null) {
@@ -358,6 +413,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         tsr.wfRunId = wfRun.id;
         tsr.wfSpecId = wfRun.wfSpecId;
         tsr.nodeName = node.name;
+        tsr.variables = varVals;
 
         Date scheduleTime = new Date();
 

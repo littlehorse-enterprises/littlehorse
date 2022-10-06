@@ -66,4 +66,38 @@ public interface TaskScheduledOePbOrBuilder extends
    */
   com.google.protobuf.ByteString
       getNodeNameBytes();
+
+  /**
+   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 8;</code>
+   */
+  int getVariablesCount();
+  /**
+   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 8;</code>
+   */
+  boolean containsVariables(
+      java.lang.String key);
+  /**
+   * Use {@link #getVariablesMap()} instead.
+   */
+  @java.lang.Deprecated
+  java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableValuePb>
+  getVariables();
+  /**
+   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 8;</code>
+   */
+  java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableValuePb>
+  getVariablesMap();
+  /**
+   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 8;</code>
+   */
+
+  io.littlehorse.common.proto.VariableValuePb getVariablesOrDefault(
+      java.lang.String key,
+      io.littlehorse.common.proto.VariableValuePb defaultValue);
+  /**
+   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 8;</code>
+   */
+
+  io.littlehorse.common.proto.VariableValuePb getVariablesOrThrow(
+      java.lang.String key);
 }

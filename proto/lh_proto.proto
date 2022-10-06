@@ -74,6 +74,7 @@ message TaskScheduledOePb {
     int32 task_run_attempt_number = 5;
     string wf_run_id = 6;
     string node_name = 7;
+    map<string, VariableValuePb> variables = 8;
 }
 
 message TaskStartOePb {
@@ -327,6 +328,7 @@ message TaskScheduleRequestPb {
     string wf_spec_id = 9;
     int32 attempt_number = 10;
     string node_name = 11;
+    map<string, VariableValuePb> variables = 12;
 }
 
 message TaskStartedEventPb {

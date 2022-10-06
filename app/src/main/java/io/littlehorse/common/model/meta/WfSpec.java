@@ -15,6 +15,7 @@ import io.littlehorse.common.model.server.Tag;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.LHStatusPb;
+import io.littlehorse.common.proto.NodePb.NodeCase;
 import io.littlehorse.common.proto.ThreadSpecPb;
 import io.littlehorse.common.proto.WfSpecPb;
 import io.littlehorse.common.proto.WfSpecPbOrBuilder;
@@ -29,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
 public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
 
@@ -287,5 +289,18 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
         out.startThread(entrypointThreadName, e.time, null, e.runRequest.variables);
 
         return out;
+    }
+
+    public void addMetaDependencies(
+        ReadOnlyKeyValueStore<String, TaskDef> taskDefStore
+    ) {
+        for (ThreadSpec thread : threadSpecs.values()) {
+            for (Node node : thread.nodes.values()) {
+                if (node.type == NodeCase.TASK) {
+                    node.taskNode.taskDef =
+                        taskDefStore.get(node.taskNode.taskDefName);
+                }
+            }
+        }
     }
 }

@@ -6,6 +6,7 @@ import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.GlobalPOSTable;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.WfRunEvent;
+import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.TaskRun;
@@ -36,6 +37,7 @@ public class SchedulerProcessor
     private ReadOnlyKeyValueStore<String, WfSpec> wfSpecStore;
     private KeyValueStore<String, TaskRun> taskRunStore;
     private KeyValueStore<String, Variable> variableStore;
+    private ReadOnlyKeyValueStore<String, TaskDef> taskDefStore;
 
     public SchedulerProcessor(LHConfig config) {}
 
@@ -47,6 +49,8 @@ public class SchedulerProcessor
         taskRunStore = context.getStateStore(GETable.getBaseStoreName(TaskRun.class));
         variableStore =
             context.getStateStore(GETable.getBaseStoreName(Variable.class));
+        taskDefStore =
+            context.getStateStore(GlobalPOSTable.getGlobalStoreName(TaskDef.class));
         this.context = context;
         this.wfSpecCache = new HashMap<>();
     }
@@ -176,6 +180,7 @@ public class SchedulerProcessor
         WfSpec out = wfSpecCache.get(id);
         if (out == null) {
             out = wfSpecStore.get(id);
+            out.addMetaDependencies(taskDefStore);
         }
         return out;
     }

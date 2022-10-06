@@ -164,14 +164,14 @@ public class TestWorker {
 
         ce.resultCode = TaskResultCodePb.SUCCESS;
         ce.stderr = null;
-        String stdoutStr = "Completed task " + tsr.taskDefName + " " + tsr.wfRunId;
-        // for (int i = 0; i < 10; i++) {
-        //     stdoutStr += stdoutStr;
-        // }
+
         ce.stdout = new VariableValue();
         ce.stdout.type = VariableTypePb.STR;
+        VariableValue varVal = tsr.variables.get("myTaskVar");
+        String stdoutStr = "Got: " + varVal.strVal;
+
         ce.stdout.strVal = stdoutStr;
-        LHUtil.log(tsr.wfRunId, tsr.taskRunPosition);
+        LHUtil.log(tsr.wfRunId, tsr.taskRunPosition, stdoutStr);
 
         WfRunEvent event = new WfRunEvent();
         event.wfRunId = tsr.wfRunId;

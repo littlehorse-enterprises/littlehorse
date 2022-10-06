@@ -2,8 +2,12 @@ package io.littlehorse.common.model.event;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.proto.TaskScheduleRequestPb;
 import io.littlehorse.common.proto.TaskScheduleRequestPbOrBuilder;
+import io.littlehorse.common.proto.VariableValuePb;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TaskScheduleRequest extends LHSerializable<TaskScheduleRequestPb> {
 
@@ -17,9 +21,14 @@ public class TaskScheduleRequest extends LHSerializable<TaskScheduleRequestPb> {
     public String wfSpecId;
     public int attemptNumber;
     public String nodeName;
+    public Map<String, VariableValue> variables;
+
+    public TaskScheduleRequest() {
+        variables = new HashMap<>();
+    }
 
     public TaskScheduleRequestPb.Builder toProto() {
-        return TaskScheduleRequestPb
+        TaskScheduleRequestPb.Builder out = TaskScheduleRequestPb
             .newBuilder()
             .setTaskDefId(taskDefId)
             .setTaskDefName(taskDefName)
@@ -31,6 +40,12 @@ public class TaskScheduleRequest extends LHSerializable<TaskScheduleRequestPb> {
             .setWfSpecId(wfSpecId)
             .setAttemptNumber(attemptNumber)
             .setNodeName(nodeName);
+
+        for (Map.Entry<String, VariableValue> e : variables.entrySet()) {
+            out.putVariables(e.getKey(), e.getValue().toProto().build());
+        }
+
+        return out;
     }
 
     public Class<TaskScheduleRequestPb> getProtoBaseClass() {
@@ -55,5 +70,9 @@ public class TaskScheduleRequest extends LHSerializable<TaskScheduleRequestPb> {
         this.wfSpecId = p.getWfSpecId();
         this.attemptNumber = p.getAttemptNumber();
         this.nodeName = p.getNodeName();
+
+        for (Map.Entry<String, VariableValuePb> e : p.getVariablesMap().entrySet()) {
+            variables.put(e.getKey(), VariableValue.fromProto(e.getValue()));
+        }
     }
 }

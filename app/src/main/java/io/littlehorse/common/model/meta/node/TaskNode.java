@@ -1,7 +1,9 @@
 package io.littlehorse.common.model.meta.node;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.common.proto.TaskNodePb;
 import io.littlehorse.common.proto.TaskNodePbOrBuilder;
@@ -15,6 +17,9 @@ public class TaskNode extends LHSerializable<TaskNodePb> {
     public VariableAssignment timeoutSeconds;
     public int retries;
     public Map<String, VariableAssignment> variables;
+
+    @JsonIgnore
+    public TaskDef taskDef;
 
     public TaskNode() {
         variables = new HashMap<>();
