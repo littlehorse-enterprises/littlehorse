@@ -1,0 +1,79 @@
+{
+    "name": "conditionals",
+    "threadSpecs": {
+        "simple_wf": {
+            "variableDefs": {
+                "my_var": {
+                    "type": "INT",
+                    "defaultVal": {
+                        "type": "INT",
+                        "int": 1
+                    },
+                    "required": false
+                }
+            },
+            "nodes": {
+                "entrypoint": {
+                    "outgoingEdges": [
+                        {
+                            "sinkNodeName": "t1"
+                        }
+                    ],
+                    "entrypoint": {}
+                },
+                "t1": {
+                    "task": {
+                        "taskDefName": "task1",
+                        "retries": 3
+                    },
+                    "outgoingEdges": [
+                        {
+                            "sinkNodeName": "t2",
+                            "condition": {
+                                "comparator": "LESS_THAN",
+                                "left": {
+                                    "variableName": "my_var"
+                                },
+                                "right": {
+                                    "literalValue": {
+                                        "type": "INT",
+                                        "int": 5
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "sinkNodeName": "t3"
+                        }
+                    ]
+                },
+                "t2": {
+                    "task": {
+                        "taskDefName": "task1",
+                        "retries": 3
+                    },
+                    "outgoingEdges": [
+                        {
+                            "sinkNodeName": "t3"
+                        }
+                    ]
+                },
+                "t3": {
+                    "task": {
+                        "taskDefName": "task1",
+                        "retries": 3
+                    },
+                    "outgoingEdges": [
+                        {
+                            "sinkNodeName": "exit"
+                        }
+                    ]
+                },
+                "exit": {
+                    "exit": {}
+                }
+            }
+        }
+    },
+    "entrypointThreadName": "simple_wf"
+}

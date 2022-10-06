@@ -163,7 +163,7 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
         }
 
         for (Map.Entry<String, VariableValue> e : vars.entrySet()) {
-            if (!required.containsKey(e.getKey())) {
+            if (!variableDefs.containsKey(e.getKey())) {
                 throw new LHValidationError(
                     null,
                     "Var " +

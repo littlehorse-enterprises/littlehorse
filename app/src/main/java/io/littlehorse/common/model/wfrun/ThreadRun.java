@@ -612,7 +612,8 @@ class Comparer {
     public static int compare(VariableValue left, VariableValue right)
         throws LHVarSubError {
         try {
-            int result = ((Comparable) left).compareTo((Comparable) right);
+            int result =
+                ((Comparable) left.getVal()).compareTo((Comparable) right.getVal());
             return result;
         } catch (Exception exn) {
             LHUtil.log(exn.getMessage());
