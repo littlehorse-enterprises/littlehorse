@@ -66,15 +66,28 @@ message ThreadStartOePb {
     string thread_spec_name = 2;
 }
 
+message NodeReachedOePb {
+    string wf_run_id = 1;
+    int32 thread_run_number = 2;
+    int32 node_run_position = 3;
+
+    int32 node_run_number = 4;
+    string node_name = 5;
+
+    oneof node_type {
+        WaitForEvtOePb evt = 6;
+        TaskScheduledOePb task = 7;
+    }
+}
+
 message TaskScheduledOePb {
     string task_def_id = 1;
-    int32 thread_run_number = 2;
-    int32 task_run_number = 3;
-    int32 task_run_position = 4;
-    int32 task_run_attempt_number = 5;
-    string wf_run_id = 6;
-    string node_name = 7;
-    map<string, VariableValuePb> variables = 8;
+    int32 task_run_attempt_number = 2;
+    map<string, VariableValuePb> variables = 3;
+}
+
+message WaitForEvtOePb {
+    string external_event_def_id = 1;
 }
 
 message TaskStartOePb {
@@ -84,16 +97,27 @@ message TaskStartOePb {
     string node_name = 4;
 }
 
-message TaskResultOePb {
+message NodeResultOePb {
     int32 thread_run_number = 1;
     int32 task_run_number = 2;
     int32 task_run_position = 3;
 
     TaskResultCodePb result_code = 4;
-    optional VariableValuePb output = 5;
-    optional bytes log_output = 6;
+    optional string error_message = 5;
 
-    string node_name = 7;
+    oneof node_type {
+        ExternalEventResultOePb external_event = 6;
+        TaskResultOePb task = 7;
+    }
+}
+
+message ExternalEventResultOePb {
+    optional string correlated_event_id = 1;
+}
+
+message TaskResultOePb {
+    optional VariableValuePb result = 1;
+    optional bytes log_output = 2;
 }
 
 message ThreadStatusChangeOePb {
@@ -111,9 +135,9 @@ message ObservabilityEventPb {
         WfRunStatusChangeOePb wf_run_status = 2;
         RunStartOePb run_start = 3;
         ThreadStartOePb thread_start = 4;
-        TaskScheduledOePb task_schedule = 5;
+        NodeReachedOePb node_reached = 5;
         TaskStartOePb task_start = 6;
-        TaskResultOePb task_result = 7;
+        NodeResultOePb task_result = 7;
         ThreadStatusChangeOePb thread_status = 8;
     }
 }
@@ -287,28 +311,42 @@ message ThreadRunPb {
     optional TaskResultCodePb result_code = 11;
 }
 
-message TaskRunPb {
+message NodeRunPb {
     string wf_run_id = 1;
     int32 thread_run_number = 2;
     int32 position = 3;
 
     int32 number = 4;
-    int32 attempt_number = 5;
-    LHStatusPb status = 6;
-    optional VariableValuePb output = 7;
-    optional bytes log_output = 8;
+    LHStatusPb status = 5;
 
-    google.protobuf.Timestamp schedule_time = 9;
-    optional google.protobuf.Timestamp start_time = 10;
-    optional google.protobuf.Timestamp end_time = 11;
+    google.protobuf.Timestamp arrival_time = 6;
+    optional google.protobuf.Timestamp end_time = 7;
+    string wf_spec_id = 8;
+    string thread_spec_name = 9;
+    string node_name = 10;
 
-    string wf_spec_id = 12;
-    string thread_spec_name = 13;
-    string node_name = 14;
-    string task_def_id = 15;
+    optional TaskResultCodePb result_code = 11;
+    optional string error_message = 12;
 
-    optional TaskResultCodePb result_code = 16;
-    optional string error_message = 17;
+    oneof node_type {
+        TaskRunPb task = 13;
+        ExternalEventRunPb external_event = 14;
+    }
+}
+
+message TaskRunPb {
+    int32 attempt_number = 1; // Task only
+    optional VariableValuePb output = 2;
+    optional bytes log_output = 3;
+
+    optional google.protobuf.Timestamp start_time = 4;
+    string task_def_id = 5;
+}
+
+message ExternalEventRunPb {
+    string external_event_def_id = 1;
+    optional google.protobuf.Timestamp event_time = 2;
+    
 }
 
 message ExternalEventPb {
@@ -316,7 +354,7 @@ message ExternalEventPb {
     string external_event_def_id = 2;
     string guid = 3;
     google.protobuf.Timestamp created_at = 4;
-    bytes content = 5;
+    VariableValuePb content = 5;
     optional int32 thread_run_number = 6;
     optional int32 task_run_position = 7;
 }

@@ -1,34 +1,30 @@
-package io.littlehorse.common.model.wfrun;
+package io.littlehorse.common.model.wfrun.noderun;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.protobuf.ByteString;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.server.Tag;
 import io.littlehorse.common.proto.LHStatusPb;
+import io.littlehorse.common.proto.NodeRunPb;
+import io.littlehorse.common.proto.NodeRunPb.NodeTypeCase;
+import io.littlehorse.common.proto.NodeRunPbOrBuilder;
 import io.littlehorse.common.proto.TaskResultCodePb;
-import io.littlehorse.common.proto.TaskRunPb;
-import io.littlehorse.common.proto.TaskRunPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class TaskRun extends GETable<TaskRunPb> {
+public class NodeRun extends GETable<NodeRunPb> {
 
     public String wfRunId;
     public int threadRunNumber;
     public int position;
 
     public int number;
-    public int attemptNumber;
     public LHStatusPb status;
-    public VariableValue output;
-    public byte[] logOutput;
 
-    public Date scheduleTime;
-    public Date startTime;
+    public Date arrivalTime;
     public Date endTime;
 
     public String wfSpecId;
@@ -38,9 +34,13 @@ public class TaskRun extends GETable<TaskRunPb> {
     public String taskDefId;
 
     public TaskResultCodePb resultCode;
+    public NodeTypeCase type;
+
+    public TaskRun taskRun;
+    public ExternalEventRun externalEventRun;
 
     public String getObjectId() {
-        return TaskRun.getStoreKey(wfRunId, threadRunNumber, position);
+        return NodeRun.getStoreKey(wfRunId, threadRunNumber, position);
     }
 
     public static String getStoreKey(String wfRunId, int threadNum, int position) {
@@ -51,29 +51,23 @@ public class TaskRun extends GETable<TaskRunPb> {
         return wfRunId;
     }
 
-    public Class<TaskRunPb> getProtoBaseClass() {
-        return TaskRunPb.class;
+    public Class<NodeRunPb> getProtoBaseClass() {
+        return NodeRunPb.class;
     }
 
     public Date getCreatedAt() {
-        return scheduleTime;
+        return arrivalTime;
     }
 
     public void initFrom(MessageOrBuilder p) {
-        TaskRunPbOrBuilder proto = (TaskRunPbOrBuilder) p;
+        NodeRunPbOrBuilder proto = (NodeRunPbOrBuilder) p;
         wfRunId = proto.getWfRunId();
         threadRunNumber = proto.getThreadRunNumber();
         position = proto.getPosition();
 
         number = proto.getNumber();
-        attemptNumber = proto.getAttemptNumber();
-        if (proto.hasOutput()) output = VariableValue.fromProto(proto.getOutput());
-        if (proto.hasLogOutput()) logOutput = proto.getLogOutput().toByteArray();
 
-        scheduleTime = LHUtil.fromProtoTs(proto.getScheduleTime());
-        if (proto.hasStartTime()) {
-            startTime = LHUtil.fromProtoTs(proto.getStartTime());
-        }
+        arrivalTime = LHUtil.fromProtoTs(proto.getArrivalTime());
         if (proto.hasEndTime()) {
             endTime = LHUtil.fromProtoTs(proto.getEndTime());
         }
@@ -81,33 +75,52 @@ public class TaskRun extends GETable<TaskRunPb> {
         wfSpecId = proto.getWfSpecId();
         threadSpecName = proto.getThreadSpecName();
         nodeName = proto.getNodeName();
-        taskDefId = proto.getTaskDefId();
         status = proto.getStatus();
 
         if (proto.hasResultCode()) resultCode = proto.getResultCode();
+
+        type = proto.getNodeTypeCase();
+        switch (type) {
+            case TASK:
+                taskRun = TaskRun.fromProto(proto.getTask());
+                break;
+            case EXTERNAL_EVENT:
+                externalEventRun =
+                    ExternalEventRun.fromProto(proto.getExternalEvent());
+            case NODETYPE_NOT_SET:
+            default:
+                throw new RuntimeException("Not possible");
+        }
     }
 
-    public TaskRunPb.Builder toProto() {
-        TaskRunPb.Builder out = TaskRunPb
+    public NodeRunPb.Builder toProto() {
+        NodeRunPb.Builder out = NodeRunPb
             .newBuilder()
             .setWfRunId(wfRunId)
             .setThreadRunNumber(threadRunNumber)
             .setPosition(position)
             .setNumber(number)
-            .setAttemptNumber(attemptNumber)
             .setStatus(status)
-            .setScheduleTime(LHUtil.fromDate(scheduleTime))
+            .setArrivalTime(LHUtil.fromDate(arrivalTime))
             .setWfSpecId(wfSpecId)
-            .setNodeName(nodeName)
-            .setTaskDefId(taskDefId);
+            .setThreadSpecName(threadSpecName)
+            .setNodeName(nodeName);
 
-        if (output != null) out.setOutput(output.toProto());
-        if (logOutput != null) out.setLogOutput(ByteString.copyFrom(logOutput));
-
-        if (startTime != null) out.setStartTime(LHUtil.fromDate(startTime));
         if (endTime != null) out.setEndTime(LHUtil.fromDate(endTime));
 
         if (resultCode != null) out.setResultCode(resultCode);
+
+        switch (type) {
+            case TASK:
+                out.setTask(taskRun.toProto());
+                break;
+            case EXTERNAL_EVENT:
+                out.setExternalEvent(externalEventRun.toProto());
+                break;
+            case NODETYPE_NOT_SET:
+            default:
+                throw new RuntimeException("Not possible");
+        }
 
         return out;
     }

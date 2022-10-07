@@ -1,10 +1,10 @@
 package io.littlehorse.common.model.event;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.protobuf.ByteString;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.server.Tag;
+import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.proto.ExternalEventPb;
 import io.littlehorse.common.proto.ExternalEventPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
@@ -20,7 +20,7 @@ public class ExternalEvent extends GETable<ExternalEventPb> {
     public String wfRunId;
     public String externalEventDeId;
     public Date createdAt;
-    public byte[] content;
+    public VariableValue content;
     public Integer threadRunNumber;
     public Integer taskRunPosition;
 
@@ -34,7 +34,7 @@ public class ExternalEvent extends GETable<ExternalEventPb> {
         externalEventDeId = p.getExternalEventDefId();
         guid = p.getGuid();
         createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
-        content = p.getContent().toByteArray();
+        content = VariableValue.fromProto(p.getContentOrBuilder());
 
         if (p.hasThreadRunNumber()) {
             threadRunNumber = p.getThreadRunNumber();
@@ -51,7 +51,7 @@ public class ExternalEvent extends GETable<ExternalEventPb> {
             .setExternalEventDefId(externalEventDeId)
             .setGuid(guid)
             .setCreatedAt(LHUtil.fromDate(createdAt))
-            .setContent(ByteString.copyFrom(content));
+            .setContent(content.toProto());
 
         if (threadRunNumber != null) {
             out.setThreadRunNumber(threadRunNumber);

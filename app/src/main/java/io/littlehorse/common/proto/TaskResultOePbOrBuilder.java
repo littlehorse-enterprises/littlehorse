@@ -8,69 +8,28 @@ public interface TaskResultOePbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>int32 thread_run_number = 1;</code>
-   * @return The threadRunNumber.
+   * <code>.lh_proto.VariableValuePb result = 1;</code>
+   * @return Whether the result field is set.
    */
-  int getThreadRunNumber();
+  boolean hasResult();
+  /**
+   * <code>.lh_proto.VariableValuePb result = 1;</code>
+   * @return The result.
+   */
+  io.littlehorse.common.proto.VariableValuePb getResult();
+  /**
+   * <code>.lh_proto.VariableValuePb result = 1;</code>
+   */
+  io.littlehorse.common.proto.VariableValuePbOrBuilder getResultOrBuilder();
 
   /**
-   * <code>int32 task_run_number = 2;</code>
-   * @return The taskRunNumber.
-   */
-  int getTaskRunNumber();
-
-  /**
-   * <code>int32 task_run_position = 3;</code>
-   * @return The taskRunPosition.
-   */
-  int getTaskRunPosition();
-
-  /**
-   * <code>.lh_proto.TaskResultCodePb result_code = 4;</code>
-   * @return The enum numeric value on the wire for resultCode.
-   */
-  int getResultCodeValue();
-  /**
-   * <code>.lh_proto.TaskResultCodePb result_code = 4;</code>
-   * @return The resultCode.
-   */
-  io.littlehorse.common.proto.TaskResultCodePb getResultCode();
-
-  /**
-   * <code>.lh_proto.VariableValuePb output = 5;</code>
-   * @return Whether the output field is set.
-   */
-  boolean hasOutput();
-  /**
-   * <code>.lh_proto.VariableValuePb output = 5;</code>
-   * @return The output.
-   */
-  io.littlehorse.common.proto.VariableValuePb getOutput();
-  /**
-   * <code>.lh_proto.VariableValuePb output = 5;</code>
-   */
-  io.littlehorse.common.proto.VariableValuePbOrBuilder getOutputOrBuilder();
-
-  /**
-   * <code>bytes log_output = 6;</code>
+   * <code>bytes log_output = 2;</code>
    * @return Whether the logOutput field is set.
    */
   boolean hasLogOutput();
   /**
-   * <code>bytes log_output = 6;</code>
+   * <code>bytes log_output = 2;</code>
    * @return The logOutput.
    */
   com.google.protobuf.ByteString getLogOutput();
-
-  /**
-   * <code>string node_name = 7;</code>
-   * @return The nodeName.
-   */
-  java.lang.String getNodeName();
-  /**
-   * <code>string node_name = 7;</code>
-   * @return The bytes for nodeName.
-   */
-  com.google.protobuf.ByteString
-      getNodeNameBytes();
 }

@@ -16,14 +16,18 @@ import io.littlehorse.common.model.meta.ThreadSpec;
 import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.meta.VariableMutation;
+import io.littlehorse.common.model.observability.NodeReachedOe;
 import io.littlehorse.common.model.observability.ObservabilityEvent;
-import io.littlehorse.common.model.observability.TaskResultOe;
 import io.littlehorse.common.model.observability.TaskScheduledOe;
 import io.littlehorse.common.model.observability.TaskStartOe;
 import io.littlehorse.common.model.observability.ThreadStatusChangeOe;
+import io.littlehorse.common.model.observability.node.NodeResultOe;
 import io.littlehorse.common.model.server.Tag;
+import io.littlehorse.common.model.wfrun.noderun.NodeRun;
+import io.littlehorse.common.model.wfrun.noderun.TaskRun;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.NodePb.NodeCase;
+import io.littlehorse.common.proto.NodeRunPb.NodeTypeCase;
 import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.proto.ThreadRunPb;
 import io.littlehorse.common.proto.VariableTypePb;
@@ -281,7 +285,11 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             case EXIT:
                 setStatus(LHStatusPb.COMPLETED, null, TaskResultCodePb.SUCCESS);
                 break;
+            case EXTERNAL_EVENT:
+                handleExternalEventNode(node);
+                break;
             case NODE_NOT_SET:
+            default:
                 throw new RuntimeException("Invalid nodetype.");
         }
     }
@@ -417,30 +425,49 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
 
         Date scheduleTime = new Date();
 
-        wfRun.oEvents.add(
-            new ObservabilityEvent(new TaskScheduledOe(tsr), scheduleTime)
-        );
+        NodeReachedOe nroe = new NodeReachedOe(currentNodeRun);
+        nroe.task = new TaskScheduledOe(tsr);
+        wfRun.oEvents.add(new ObservabilityEvent(nroe, scheduleTime));
 
         wfRun.tasksToSchedule.add(tsr);
 
         // Now we need to add the TaskRun to the store so it can be queried.
-        TaskRun task = new TaskRun();
-        task.wfRunId = wfRun.id;
-        task.threadRunNumber = tsr.threadRunNumber;
-        task.position = tsr.taskRunPosition;
+        NodeRun nr = new NodeRun();
+        nr.wfRunId = wfRun.id;
+        nr.threadRunNumber = tsr.threadRunNumber;
+        nr.position = tsr.taskRunPosition;
 
-        task.number = tsr.taskRunNumber;
-        task.attemptNumber = tsr.attemptNumber;
-        task.status = LHStatusPb.STARTING;
+        nr.taskRun = new TaskRun();
+        nr.taskRun.attemptNumber = tsr.attemptNumber;
+        nr.taskRun.taskDefId = node.taskNode.taskDefName;
 
-        task.scheduleTime = scheduleTime;
+        nr.number = tsr.taskRunNumber;
+        nr.status = LHStatusPb.STARTING;
+        nr.threadSpecName = threadSpecName;
+        nr.type = NodeTypeCase.TASK;
 
-        task.wfSpecId = wfRun.wfSpecId;
-        task.wfSpecName = wfRun.wfSpecName;
-        task.nodeName = tsr.nodeName;
-        task.taskDefId = node.taskNode.taskDefName;
+        nr.arrivalTime = scheduleTime;
 
-        putTask(task);
+        nr.wfSpecId = wfRun.wfSpecId;
+        nr.wfSpecName = wfRun.wfSpecName;
+        nr.nodeName = tsr.nodeName;
+        nr.taskDefId = node.taskNode.taskDefName;
+
+        putNodeRun(nr);
+    }
+
+    private void handleExternalEventNode(Node node) {
+        if (node.type != NodeCase.EXTERNAL_EVENT) {
+            throw new RuntimeException("Yikerz");
+        }
+
+        if (currentNodeRun == null) {
+            currentNodeRun = new NodeRunState();
+            currentNodeRun.threadRun = this;
+        } else {
+            currentNodeRun.position++;
+            currentNodeRun.number++;
+        }
     }
 
     public void setStatus(
@@ -504,16 +531,16 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         wfRun.timersToSchedule.add(new LHTimer(timerEvt, timerEvt.time));
 
         // Now we update the task in the data store
-        TaskRun task = getTaskRun(currentNodeRun.position);
-        task.startTime = we.time;
+        NodeRun task = getNodeRun(currentNodeRun.position);
+        task.taskRun.startTime = we.time;
         task.status = LHStatusPb.RUNNING;
-        putTask(task);
+        putNodeRun(task);
     }
 
     public void processCompletedEvent(WfRunEvent we) {
         wfRun.oEvents.add(
             new ObservabilityEvent(
-                new TaskResultOe(we.taskResult, currentNodeRun.nodeName),
+                new NodeResultOe(we.taskResult, currentNodeRun.nodeName),
                 we.time
             )
         );
@@ -575,13 +602,13 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         }
 
         // Now make the task observable.
-        TaskRun task = getTaskRun(currentNodeRun.position);
+        NodeRun task = getNodeRun(currentNodeRun.position);
         task.endTime = we.time;
-        task.output = ce.stdout;
-        task.logOutput = ce.stderr;
+        task.taskRun.output = ce.stdout;
+        task.taskRun.logOutput = ce.stderr;
         task.status = currentNodeRun.status;
         task.resultCode = ce.resultCode;
-        putTask(task);
+        putNodeRun(task);
     }
 
     private void mutateVariables(TaskResultEvent ce) throws LHVarSubError {
@@ -633,12 +660,12 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         return val;
     }
 
-    public void putTask(TaskRun task) {
-        wfRun.stores.putTask(task);
+    public void putNodeRun(NodeRun task) {
+        wfRun.stores.putNodeRun(task);
     }
 
-    public TaskRun getTaskRun(int position) {
-        return wfRun.stores.getTaskRun(number, position);
+    public NodeRun getNodeRun(int position) {
+        return wfRun.stores.getNodeRun(number, position);
     }
 
     public void putVariable(Variable var) {

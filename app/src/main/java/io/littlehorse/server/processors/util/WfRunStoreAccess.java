@@ -1,9 +1,9 @@
 package io.littlehorse.server.processors.util;
 
 import io.littlehorse.common.model.event.ExternalEvent;
-import io.littlehorse.common.model.wfrun.TaskRun;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.VariableValue;
+import io.littlehorse.common.model.wfrun.noderun.NodeRun;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,40 +11,40 @@ import org.apache.kafka.streams.state.KeyValueStore;
 
 public class WfRunStoreAccess {
 
-    public KeyValueStore<String, TaskRun> taskRunStore;
+    public KeyValueStore<String, NodeRun> nodeRunStore;
     public KeyValueStore<String, Variable> variableStore;
     public KeyValueStore<String, ExternalEvent> extEvtStore;
-    public Map<String, TaskRun> taskPuts;
+    public Map<String, NodeRun> nodeRunPuts;
     public Map<String, Variable> variablePuts;
     public Map<String, ExternalEvent> extEvtPuts;
 
     private String wfRunId;
 
     public WfRunStoreAccess(
-        KeyValueStore<String, TaskRun> taskRunStore,
+        KeyValueStore<String, NodeRun> taskRunStore,
         KeyValueStore<String, Variable> variableStore,
         KeyValueStore<String, ExternalEvent> extEvtStore,
         String wfRunId
     ) {
-        this.taskRunStore = taskRunStore;
+        this.nodeRunStore = taskRunStore;
         this.variableStore = variableStore;
         this.extEvtStore = extEvtStore;
 
-        taskPuts = new HashMap<>();
+        nodeRunPuts = new HashMap<>();
         variablePuts = new HashMap<>();
         extEvtPuts = new HashMap<>();
         this.wfRunId = wfRunId;
     }
 
-    public void putTask(TaskRun task) {
-        taskPuts.put(task.getObjectId(), task);
+    public void putNodeRun(NodeRun nr) {
+        nodeRunPuts.put(nr.getObjectId(), nr);
     }
 
-    public TaskRun getTaskRun(int threadNum, int position) {
-        String key = TaskRun.getStoreKey(wfRunId, threadNum, position);
-        TaskRun out = taskPuts.get(key);
+    public NodeRun getNodeRun(int threadNum, int position) {
+        String key = NodeRun.getStoreKey(wfRunId, threadNum, position);
+        NodeRun out = nodeRunPuts.get(key);
         if (out == null) {
-            out = taskRunStore.get(key);
+            out = nodeRunStore.get(key);
         }
         return out;
     }

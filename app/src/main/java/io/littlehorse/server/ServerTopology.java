@@ -16,9 +16,9 @@ import io.littlehorse.common.model.server.LHResponse;
 import io.littlehorse.common.model.server.POSTableRequest;
 import io.littlehorse.common.model.server.Tags;
 import io.littlehorse.common.model.wfrun.LHTimer;
-import io.littlehorse.common.model.wfrun.TaskRun;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.wfrun.noderun.NodeRun;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.common.util.serde.LHDeserializer;
 import io.littlehorse.common.util.serde.LHSerde;
@@ -202,13 +202,13 @@ public class ServerTopology {
         );
         topo.addStateStore(wfRunStoreBuilder, schedulerProcessor);
 
-        // TaskRun State Store
-        StoreBuilder<KeyValueStore<String, TaskRun>> taskRunStoreBuilder = Stores.keyValueStoreBuilder(
-            Stores.persistentKeyValueStore(GETable.getBaseStoreName(TaskRun.class)),
+        // NodeRun State Store
+        StoreBuilder<KeyValueStore<String, NodeRun>> nodeRunStoreBuilder = Stores.keyValueStoreBuilder(
+            Stores.persistentKeyValueStore(GETable.getBaseStoreName(NodeRun.class)),
             Serdes.String(),
-            new LHSerde<>(TaskRun.class, config)
+            new LHSerde<>(NodeRun.class, config)
         );
-        topo.addStateStore(taskRunStoreBuilder, schedulerProcessor);
+        topo.addStateStore(nodeRunStoreBuilder, schedulerProcessor);
 
         // Variable Value Store
         StoreBuilder<KeyValueStore<String, Variable>> varValStoreBuilder = Stores.keyValueStoreBuilder(
@@ -230,7 +230,7 @@ public class ServerTopology {
 
         for (Class<? extends GETable<?>> cls : Arrays.asList(
             Variable.class,
-            TaskRun.class,
+            NodeRun.class,
             WfRun.class,
             ExternalEvent.class
         )) {

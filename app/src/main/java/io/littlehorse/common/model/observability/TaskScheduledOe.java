@@ -12,12 +12,7 @@ import java.util.Map;
 public class TaskScheduledOe extends LHSerializable<TaskScheduledOePb> {
 
     public String taskDefId;
-    public int threadRunNumber;
-    public int taskRunNumber;
-    public int taskRunPosition;
     public int taskRunAttemptNumber;
-    public String wfRunId;
-    public String nodeName;
     public Map<String, VariableValue> variables;
 
     public Class<TaskScheduledOePb> getProtoBaseClass() {
@@ -28,12 +23,7 @@ public class TaskScheduledOe extends LHSerializable<TaskScheduledOePb> {
         TaskScheduledOePb.Builder out = TaskScheduledOePb
             .newBuilder()
             .setTaskDefId(taskDefId)
-            .setThreadRunNumber(threadRunNumber)
-            .setTaskRunNumber(taskRunNumber)
-            .setTaskRunPosition(taskRunPosition)
-            .setTaskRunAttemptNumber(taskRunAttemptNumber)
-            .setWfRunId(wfRunId)
-            .setNodeName(nodeName);
+            .setTaskRunAttemptNumber(taskRunAttemptNumber);
 
         for (Map.Entry<String, VariableValue> e : variables.entrySet()) {
             out.putVariables(e.getKey(), e.getValue().toProto().build());
@@ -45,12 +35,7 @@ public class TaskScheduledOe extends LHSerializable<TaskScheduledOePb> {
     public TaskScheduledOe(TaskScheduleRequest tsr) {
         variables = tsr.variables; // Note: don't mutate this.
         taskDefId = tsr.taskDefId;
-        threadRunNumber = tsr.threadRunNumber;
-        taskRunNumber = tsr.taskRunNumber;
-        taskRunPosition = tsr.taskRunPosition;
         taskRunAttemptNumber = tsr.attemptNumber;
-        wfRunId = tsr.wfRunId;
-        nodeName = tsr.nodeName;
     }
 
     public TaskScheduledOe() {
@@ -60,12 +45,7 @@ public class TaskScheduledOe extends LHSerializable<TaskScheduledOePb> {
     public void initFrom(MessageOrBuilder proto) {
         TaskScheduledOePb p = (TaskScheduledOePb) proto;
         taskDefId = p.getTaskDefId();
-        threadRunNumber = p.getThreadRunNumber();
-        taskRunNumber = p.getTaskRunNumber();
-        taskRunPosition = p.getTaskRunPosition();
         taskRunAttemptNumber = p.getTaskRunAttemptNumber();
-        wfRunId = p.getWfRunId();
-        nodeName = p.getNodeName();
 
         for (Map.Entry<String, VariableValuePb> e : p.getVariablesMap().entrySet()) {
             variables.put(e.getKey(), VariableValue.fromProto(e.getValue()));

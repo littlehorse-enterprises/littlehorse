@@ -19,7 +19,6 @@ private static final long serialVersionUID = 0L;
     wfRunId_ = "";
     externalEventDefId_ = "";
     guid_ = "";
-    content_ = com.google.protobuf.ByteString.EMPTY;
   }
 
   @java.lang.Override
@@ -85,8 +84,16 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 42: {
+            io.littlehorse.common.proto.VariableValuePb.Builder subBuilder = null;
+            if (content_ != null) {
+              subBuilder = content_.toBuilder();
+            }
+            content_ = input.readMessage(io.littlehorse.common.proto.VariableValuePb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom(content_);
+              content_ = subBuilder.buildPartial();
+            }
 
-            content_ = input.readBytes();
             break;
           }
           case 48: {
@@ -273,14 +280,29 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int CONTENT_FIELD_NUMBER = 5;
-  private com.google.protobuf.ByteString content_;
+  private io.littlehorse.common.proto.VariableValuePb content_;
   /**
-   * <code>bytes content = 5;</code>
+   * <code>.lh_proto.VariableValuePb content = 5;</code>
+   * @return Whether the content field is set.
+   */
+  @java.lang.Override
+  public boolean hasContent() {
+    return content_ != null;
+  }
+  /**
+   * <code>.lh_proto.VariableValuePb content = 5;</code>
    * @return The content.
    */
   @java.lang.Override
-  public com.google.protobuf.ByteString getContent() {
-    return content_;
+  public io.littlehorse.common.proto.VariableValuePb getContent() {
+    return content_ == null ? io.littlehorse.common.proto.VariableValuePb.getDefaultInstance() : content_;
+  }
+  /**
+   * <code>.lh_proto.VariableValuePb content = 5;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.VariableValuePbOrBuilder getContentOrBuilder() {
+    return getContent();
   }
 
   public static final int THREAD_RUN_NUMBER_FIELD_NUMBER = 6;
@@ -347,8 +369,8 @@ private static final long serialVersionUID = 0L;
     if (createdAt_ != null) {
       output.writeMessage(4, getCreatedAt());
     }
-    if (!content_.isEmpty()) {
-      output.writeBytes(5, content_);
+    if (content_ != null) {
+      output.writeMessage(5, getContent());
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeInt32(6, threadRunNumber_);
@@ -378,9 +400,9 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, getCreatedAt());
     }
-    if (!content_.isEmpty()) {
+    if (content_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(5, content_);
+        .computeMessageSize(5, getContent());
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
@@ -416,8 +438,11 @@ private static final long serialVersionUID = 0L;
       if (!getCreatedAt()
           .equals(other.getCreatedAt())) return false;
     }
-    if (!getContent()
-        .equals(other.getContent())) return false;
+    if (hasContent() != other.hasContent()) return false;
+    if (hasContent()) {
+      if (!getContent()
+          .equals(other.getContent())) return false;
+    }
     if (hasThreadRunNumber() != other.hasThreadRunNumber()) return false;
     if (hasThreadRunNumber()) {
       if (getThreadRunNumber()
@@ -449,8 +474,10 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + CREATED_AT_FIELD_NUMBER;
       hash = (53 * hash) + getCreatedAt().hashCode();
     }
-    hash = (37 * hash) + CONTENT_FIELD_NUMBER;
-    hash = (53 * hash) + getContent().hashCode();
+    if (hasContent()) {
+      hash = (37 * hash) + CONTENT_FIELD_NUMBER;
+      hash = (53 * hash) + getContent().hashCode();
+    }
     if (hasThreadRunNumber()) {
       hash = (37 * hash) + THREAD_RUN_NUMBER_FIELD_NUMBER;
       hash = (53 * hash) + getThreadRunNumber();
@@ -604,8 +631,12 @@ private static final long serialVersionUID = 0L;
         createdAt_ = null;
         createdAtBuilder_ = null;
       }
-      content_ = com.google.protobuf.ByteString.EMPTY;
-
+      if (contentBuilder_ == null) {
+        content_ = null;
+      } else {
+        content_ = null;
+        contentBuilder_ = null;
+      }
       threadRunNumber_ = 0;
       bitField0_ = (bitField0_ & ~0x00000001);
       taskRunPosition_ = 0;
@@ -646,7 +677,11 @@ private static final long serialVersionUID = 0L;
       } else {
         result.createdAt_ = createdAtBuilder_.build();
       }
-      result.content_ = content_;
+      if (contentBuilder_ == null) {
+        result.content_ = content_;
+      } else {
+        result.content_ = contentBuilder_.build();
+      }
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.threadRunNumber_ = threadRunNumber_;
         to_bitField0_ |= 0x00000001;
@@ -719,8 +754,8 @@ private static final long serialVersionUID = 0L;
       if (other.hasCreatedAt()) {
         mergeCreatedAt(other.getCreatedAt());
       }
-      if (other.getContent() != com.google.protobuf.ByteString.EMPTY) {
-        setContent(other.getContent());
+      if (other.hasContent()) {
+        mergeContent(other.getContent());
       }
       if (other.hasThreadRunNumber()) {
         setThreadRunNumber(other.getThreadRunNumber());
@@ -1105,38 +1140,123 @@ private static final long serialVersionUID = 0L;
       return createdAtBuilder_;
     }
 
-    private com.google.protobuf.ByteString content_ = com.google.protobuf.ByteString.EMPTY;
+    private io.littlehorse.common.proto.VariableValuePb content_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.VariableValuePb, io.littlehorse.common.proto.VariableValuePb.Builder, io.littlehorse.common.proto.VariableValuePbOrBuilder> contentBuilder_;
     /**
-     * <code>bytes content = 5;</code>
+     * <code>.lh_proto.VariableValuePb content = 5;</code>
+     * @return Whether the content field is set.
+     */
+    public boolean hasContent() {
+      return contentBuilder_ != null || content_ != null;
+    }
+    /**
+     * <code>.lh_proto.VariableValuePb content = 5;</code>
      * @return The content.
      */
-    @java.lang.Override
-    public com.google.protobuf.ByteString getContent() {
-      return content_;
+    public io.littlehorse.common.proto.VariableValuePb getContent() {
+      if (contentBuilder_ == null) {
+        return content_ == null ? io.littlehorse.common.proto.VariableValuePb.getDefaultInstance() : content_;
+      } else {
+        return contentBuilder_.getMessage();
+      }
     }
     /**
-     * <code>bytes content = 5;</code>
-     * @param value The content to set.
-     * @return This builder for chaining.
+     * <code>.lh_proto.VariableValuePb content = 5;</code>
      */
-    public Builder setContent(com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      content_ = value;
-      onChanged();
+    public Builder setContent(io.littlehorse.common.proto.VariableValuePb value) {
+      if (contentBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        content_ = value;
+        onChanged();
+      } else {
+        contentBuilder_.setMessage(value);
+      }
+
       return this;
     }
     /**
-     * <code>bytes content = 5;</code>
-     * @return This builder for chaining.
+     * <code>.lh_proto.VariableValuePb content = 5;</code>
+     */
+    public Builder setContent(
+        io.littlehorse.common.proto.VariableValuePb.Builder builderForValue) {
+      if (contentBuilder_ == null) {
+        content_ = builderForValue.build();
+        onChanged();
+      } else {
+        contentBuilder_.setMessage(builderForValue.build());
+      }
+
+      return this;
+    }
+    /**
+     * <code>.lh_proto.VariableValuePb content = 5;</code>
+     */
+    public Builder mergeContent(io.littlehorse.common.proto.VariableValuePb value) {
+      if (contentBuilder_ == null) {
+        if (content_ != null) {
+          content_ =
+            io.littlehorse.common.proto.VariableValuePb.newBuilder(content_).mergeFrom(value).buildPartial();
+        } else {
+          content_ = value;
+        }
+        onChanged();
+      } else {
+        contentBuilder_.mergeFrom(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.lh_proto.VariableValuePb content = 5;</code>
      */
     public Builder clearContent() {
-      
-      content_ = getDefaultInstance().getContent();
-      onChanged();
+      if (contentBuilder_ == null) {
+        content_ = null;
+        onChanged();
+      } else {
+        content_ = null;
+        contentBuilder_ = null;
+      }
+
       return this;
+    }
+    /**
+     * <code>.lh_proto.VariableValuePb content = 5;</code>
+     */
+    public io.littlehorse.common.proto.VariableValuePb.Builder getContentBuilder() {
+      
+      onChanged();
+      return getContentFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.VariableValuePb content = 5;</code>
+     */
+    public io.littlehorse.common.proto.VariableValuePbOrBuilder getContentOrBuilder() {
+      if (contentBuilder_ != null) {
+        return contentBuilder_.getMessageOrBuilder();
+      } else {
+        return content_ == null ?
+            io.littlehorse.common.proto.VariableValuePb.getDefaultInstance() : content_;
+      }
+    }
+    /**
+     * <code>.lh_proto.VariableValuePb content = 5;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.VariableValuePb, io.littlehorse.common.proto.VariableValuePb.Builder, io.littlehorse.common.proto.VariableValuePbOrBuilder> 
+        getContentFieldBuilder() {
+      if (contentBuilder_ == null) {
+        contentBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.VariableValuePb, io.littlehorse.common.proto.VariableValuePb.Builder, io.littlehorse.common.proto.VariableValuePbOrBuilder>(
+                getContent(),
+                getParentForChildren(),
+                isClean());
+        content_ = null;
+      }
+      return contentBuilder_;
     }
 
     private int threadRunNumber_ ;

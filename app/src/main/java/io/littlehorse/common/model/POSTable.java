@@ -4,6 +4,7 @@ import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.util.LHGlobalMetaStores;
@@ -24,7 +25,8 @@ public abstract class POSTable<T extends MessageOrBuilder> extends GETable<T> {
 
     public static final List<Class<? extends POSTable<?>>> POSTables = Arrays.asList(
         WfSpec.class,
-        TaskDef.class
+        TaskDef.class,
+        ExternalEventDef.class
     );
 
     public static String getRequestTopicName(Class<? extends POSTable<?>> cls) {

@@ -11,9 +11,9 @@ import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.wfrun.LHTimer;
-import io.littlehorse.common.model.wfrun.TaskRun;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.wfrun.noderun.NodeRun;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.WfRunEventPb.EventCase;
 import io.littlehorse.common.util.LHUtil;
@@ -37,7 +37,7 @@ public class SchedulerProcessor
     private Map<String, WfSpec> wfSpecCache;
     private ProcessorContext<String, GenericOutput> context;
     private ReadOnlyKeyValueStore<String, WfSpec> wfSpecStore;
-    private KeyValueStore<String, TaskRun> taskRunStore;
+    private KeyValueStore<String, NodeRun> nodeRunStore;
     private KeyValueStore<String, Variable> variableStore;
     private ReadOnlyKeyValueStore<String, TaskDef> taskDefStore;
     private ReadOnlyKeyValueStore<String, ExternalEventDef> eedStore;
@@ -50,7 +50,7 @@ public class SchedulerProcessor
         wfRunStore = context.getStateStore(GETable.getBaseStoreName(WfRun.class));
         wfSpecStore =
             context.getStateStore(GlobalPOSTable.getGlobalStoreName(WfSpec.class));
-        taskRunStore = context.getStateStore(GETable.getBaseStoreName(TaskRun.class));
+        nodeRunStore = context.getStateStore(GETable.getBaseStoreName(NodeRun.class));
         variableStore =
             context.getStateStore(GETable.getBaseStoreName(Variable.class));
         taskDefStore =
@@ -110,7 +110,7 @@ public class SchedulerProcessor
         List<TaskScheduleRequest> tasksToSchedule = new ArrayList<>();
         List<LHTimer> timersToSchedule = new ArrayList<>();
         WfRunStoreAccess wsa = new WfRunStoreAccess(
-            taskRunStore,
+            nodeRunStore,
             variableStore,
             extEvtStore,
             key
@@ -185,8 +185,8 @@ public class SchedulerProcessor
         }
 
         // TaskRuns
-        for (Map.Entry<String, TaskRun> entry : wsa.taskPuts.entrySet()) {
-            taskRunStore.put(entry.getKey(), entry.getValue());
+        for (Map.Entry<String, NodeRun> entry : wsa.nodeRunPuts.entrySet()) {
+            nodeRunStore.put(entry.getKey(), entry.getValue());
             forwardforTagging(entry.getValue(), timestamp);
         }
 

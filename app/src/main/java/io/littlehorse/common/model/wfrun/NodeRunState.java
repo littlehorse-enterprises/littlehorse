@@ -1,7 +1,9 @@
 package io.littlehorse.common.model.wfrun;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.proto.LHStatusPb;
+import io.littlehorse.common.proto.NodePb.NodeCase;
 import io.littlehorse.common.proto.NodeRunStatePb;
 import io.littlehorse.common.proto.NodeRunStatePbOrBuilder;
 import io.littlehorse.common.proto.TaskResultCodePb;
@@ -21,6 +23,18 @@ public class NodeRunState {
     // Below are implementation details
     @JsonIgnore
     public ThreadRun threadRun;
+
+    @JsonIgnore
+    public Node getNode() {
+        return threadRun.getThreadSpec().nodes.get(nodeName);
+    }
+
+    // Have Jackson ignore this because otherwise NullPointerException encountered.
+    // That's because the getNode() requires the threadSpec() being set.
+    @JsonIgnore
+    public NodeCase getNodeType() {
+        return getNode().type;
+    }
 
     public NodeRunStatePb.Builder toProto() {
         NodeRunStatePb.Builder b = NodeRunStatePb

@@ -428,6 +428,7 @@ public class ApiStreamsContext {
             resp = client.getResponse(host, path);
             return LHSerializable.fromBytes(resp, RangeResponse.class, config);
         } catch (LHConnectionError exn) {
+            caught = exn;
             for (HostInfo standby : standbys) {
                 caught = exn;
                 try {
@@ -477,6 +478,7 @@ public class ApiStreamsContext {
                 config
             );
         } catch (LHConnectionError exn) {
+            caught = exn;
             for (HostInfo standby : standbys) {
                 caught = exn;
                 try {
@@ -493,6 +495,11 @@ public class ApiStreamsContext {
                 }
             }
         } catch (LHSerdeError exn) {
+            caught =
+                new LHConnectionError(
+                    exn,
+                    "Got unreadable response: " + exn.getMessage()
+                );
             /* not possible */
         }
 

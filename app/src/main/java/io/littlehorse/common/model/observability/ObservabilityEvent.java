@@ -3,6 +3,7 @@ package io.littlehorse.common.model.observability;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.observability.node.NodeResultOe;
 import io.littlehorse.common.proto.ObservabilityEventPb;
 import io.littlehorse.common.proto.ObservabilityEventPb.EventCase;
 import io.littlehorse.common.util.LHUtil;
@@ -17,9 +18,9 @@ public class ObservabilityEvent extends LHSerializable<ObservabilityEventPb> {
 
     public RunStartOe runStart;
     public ThreadStartOe threadStart;
-    public TaskScheduledOe taskSchedule;
+    public NodeReachedOe nodeReached;
     public TaskStartOe taskStart;
-    public TaskResultOe taskResult;
+    public NodeResultOe taskResult;
     public ThreadStatusChangeOe threadStatus;
 
     public ObservabilityEventPb.Builder toProto() {
@@ -36,8 +37,8 @@ public class ObservabilityEvent extends LHSerializable<ObservabilityEventPb> {
             case THREAD_START:
                 out.setThreadStart(threadStart.toProto());
                 break;
-            case TASK_SCHEDULE:
-                out.setTaskSchedule(taskSchedule.toProto());
+            case NODE_REACHED:
+                out.setNodeReached(nodeReached.toProto());
                 break;
             case TASK_START:
                 out.setTaskStart(taskStart.toProto());
@@ -74,14 +75,14 @@ public class ObservabilityEvent extends LHSerializable<ObservabilityEventPb> {
             case THREAD_START:
                 threadStart = ThreadStartOe.fromProto(p.getThreadStart());
                 break;
-            case TASK_SCHEDULE:
-                taskSchedule = TaskScheduledOe.fromProto(p.getTaskSchedule());
+            case NODE_REACHED:
+                nodeReached = NodeReachedOe.fromProto(p.getNodeReached());
                 break;
             case TASK_START:
                 taskStart = TaskStartOe.fromProto(p.getTaskStart());
                 break;
             case TASK_RESULT:
-                taskResult = TaskResultOe.fromProto(p.getTaskResult());
+                taskResult = NodeResultOe.fromProto(p.getTaskResult());
                 break;
             case THREAD_STATUS:
                 threadStatus = ThreadStatusChangeOe.fromProto(p.getThreadStatus());
@@ -106,10 +107,10 @@ public class ObservabilityEvent extends LHSerializable<ObservabilityEventPb> {
         threadStart = evt;
     }
 
-    public ObservabilityEvent(TaskScheduledOe evt, Date time) {
+    public ObservabilityEvent(NodeReachedOe evt, Date time) {
         this.time = time;
-        type = EventCase.TASK_SCHEDULE;
-        taskSchedule = evt;
+        type = EventCase.NODE_REACHED;
+        nodeReached = evt;
     }
 
     public ObservabilityEvent(TaskStartOe evt, Date time) {
@@ -118,7 +119,7 @@ public class ObservabilityEvent extends LHSerializable<ObservabilityEventPb> {
         taskStart = evt;
     }
 
-    public ObservabilityEvent(TaskResultOe evt, Date time) {
+    public ObservabilityEvent(NodeResultOe evt, Date time) {
         this.time = time;
         type = EventCase.TASK_RESULT;
         taskResult = evt;

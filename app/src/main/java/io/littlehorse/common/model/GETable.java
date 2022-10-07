@@ -5,10 +5,10 @@ import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.server.Tag;
-import io.littlehorse.common.model.wfrun.TaskRun;
 import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.wfrun.noderun.NodeRun;
 import io.littlehorse.common.proto.GETableClassEnumPb;
 import java.util.Date;
 import java.util.List;
@@ -40,7 +40,7 @@ public abstract class GETable<T extends MessageOrBuilder> extends LHSerializable
             return GETableClassEnumPb.WF_RUN;
         } else if (cls.equals(ThreadRun.class)) {
             return GETableClassEnumPb.THREAD_RUN;
-        } else if (cls.equals(TaskRun.class)) {
+        } else if (cls.equals(NodeRun.class)) {
             return GETableClassEnumPb.TASK_RUN;
         } else if (cls.equals(WfSpec.class)) {
             return GETableClassEnumPb.WF_SPEC;
@@ -60,7 +60,7 @@ public abstract class GETable<T extends MessageOrBuilder> extends LHSerializable
             case WF_RUN:
                 return WfRun.class;
             case TASK_RUN:
-                return TaskRun.class;
+                return NodeRun.class;
             case WF_SPEC:
                 return WfSpec.class;
             case TASK_DEF:

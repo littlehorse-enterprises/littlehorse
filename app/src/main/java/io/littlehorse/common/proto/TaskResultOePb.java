@@ -16,9 +16,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private TaskResultOePb() {
-    resultCode_ = 0;
     logOutput_ = com.google.protobuf.ByteString.EMPTY;
-    nodeName_ = "";
   }
 
   @java.lang.Override
@@ -52,49 +50,22 @@ private static final long serialVersionUID = 0L;
           case 0:
             done = true;
             break;
-          case 8: {
-
-            threadRunNumber_ = input.readInt32();
-            break;
-          }
-          case 16: {
-
-            taskRunNumber_ = input.readInt32();
-            break;
-          }
-          case 24: {
-
-            taskRunPosition_ = input.readInt32();
-            break;
-          }
-          case 32: {
-            int rawValue = input.readEnum();
-
-            resultCode_ = rawValue;
-            break;
-          }
-          case 42: {
+          case 10: {
             io.littlehorse.common.proto.VariableValuePb.Builder subBuilder = null;
             if (((bitField0_ & 0x00000001) != 0)) {
-              subBuilder = output_.toBuilder();
+              subBuilder = result_.toBuilder();
             }
-            output_ = input.readMessage(io.littlehorse.common.proto.VariableValuePb.parser(), extensionRegistry);
+            result_ = input.readMessage(io.littlehorse.common.proto.VariableValuePb.parser(), extensionRegistry);
             if (subBuilder != null) {
-              subBuilder.mergeFrom(output_);
-              output_ = subBuilder.buildPartial();
+              subBuilder.mergeFrom(result_);
+              result_ = subBuilder.buildPartial();
             }
             bitField0_ |= 0x00000001;
             break;
           }
-          case 50: {
+          case 18: {
             bitField0_ |= 0x00000002;
             logOutput_ = input.readBytes();
-            break;
-          }
-          case 58: {
-            java.lang.String s = input.readStringRequireUtf8();
-
-            nodeName_ = s;
             break;
           }
           default: {
@@ -130,88 +101,36 @@ private static final long serialVersionUID = 0L;
   }
 
   private int bitField0_;
-  public static final int THREAD_RUN_NUMBER_FIELD_NUMBER = 1;
-  private int threadRunNumber_;
+  public static final int RESULT_FIELD_NUMBER = 1;
+  private io.littlehorse.common.proto.VariableValuePb result_;
   /**
-   * <code>int32 thread_run_number = 1;</code>
-   * @return The threadRunNumber.
+   * <code>.lh_proto.VariableValuePb result = 1;</code>
+   * @return Whether the result field is set.
    */
   @java.lang.Override
-  public int getThreadRunNumber() {
-    return threadRunNumber_;
-  }
-
-  public static final int TASK_RUN_NUMBER_FIELD_NUMBER = 2;
-  private int taskRunNumber_;
-  /**
-   * <code>int32 task_run_number = 2;</code>
-   * @return The taskRunNumber.
-   */
-  @java.lang.Override
-  public int getTaskRunNumber() {
-    return taskRunNumber_;
-  }
-
-  public static final int TASK_RUN_POSITION_FIELD_NUMBER = 3;
-  private int taskRunPosition_;
-  /**
-   * <code>int32 task_run_position = 3;</code>
-   * @return The taskRunPosition.
-   */
-  @java.lang.Override
-  public int getTaskRunPosition() {
-    return taskRunPosition_;
-  }
-
-  public static final int RESULT_CODE_FIELD_NUMBER = 4;
-  private int resultCode_;
-  /**
-   * <code>.lh_proto.TaskResultCodePb result_code = 4;</code>
-   * @return The enum numeric value on the wire for resultCode.
-   */
-  @java.lang.Override public int getResultCodeValue() {
-    return resultCode_;
-  }
-  /**
-   * <code>.lh_proto.TaskResultCodePb result_code = 4;</code>
-   * @return The resultCode.
-   */
-  @java.lang.Override public io.littlehorse.common.proto.TaskResultCodePb getResultCode() {
-    @SuppressWarnings("deprecation")
-    io.littlehorse.common.proto.TaskResultCodePb result = io.littlehorse.common.proto.TaskResultCodePb.valueOf(resultCode_);
-    return result == null ? io.littlehorse.common.proto.TaskResultCodePb.UNRECOGNIZED : result;
-  }
-
-  public static final int OUTPUT_FIELD_NUMBER = 5;
-  private io.littlehorse.common.proto.VariableValuePb output_;
-  /**
-   * <code>.lh_proto.VariableValuePb output = 5;</code>
-   * @return Whether the output field is set.
-   */
-  @java.lang.Override
-  public boolean hasOutput() {
+  public boolean hasResult() {
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>.lh_proto.VariableValuePb output = 5;</code>
-   * @return The output.
+   * <code>.lh_proto.VariableValuePb result = 1;</code>
+   * @return The result.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.VariableValuePb getOutput() {
-    return output_ == null ? io.littlehorse.common.proto.VariableValuePb.getDefaultInstance() : output_;
+  public io.littlehorse.common.proto.VariableValuePb getResult() {
+    return result_ == null ? io.littlehorse.common.proto.VariableValuePb.getDefaultInstance() : result_;
   }
   /**
-   * <code>.lh_proto.VariableValuePb output = 5;</code>
+   * <code>.lh_proto.VariableValuePb result = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.VariableValuePbOrBuilder getOutputOrBuilder() {
-    return output_ == null ? io.littlehorse.common.proto.VariableValuePb.getDefaultInstance() : output_;
+  public io.littlehorse.common.proto.VariableValuePbOrBuilder getResultOrBuilder() {
+    return result_ == null ? io.littlehorse.common.proto.VariableValuePb.getDefaultInstance() : result_;
   }
 
-  public static final int LOG_OUTPUT_FIELD_NUMBER = 6;
+  public static final int LOG_OUTPUT_FIELD_NUMBER = 2;
   private com.google.protobuf.ByteString logOutput_;
   /**
-   * <code>bytes log_output = 6;</code>
+   * <code>bytes log_output = 2;</code>
    * @return Whether the logOutput field is set.
    */
   @java.lang.Override
@@ -219,50 +138,12 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
-   * <code>bytes log_output = 6;</code>
+   * <code>bytes log_output = 2;</code>
    * @return The logOutput.
    */
   @java.lang.Override
   public com.google.protobuf.ByteString getLogOutput() {
     return logOutput_;
-  }
-
-  public static final int NODE_NAME_FIELD_NUMBER = 7;
-  private volatile java.lang.Object nodeName_;
-  /**
-   * <code>string node_name = 7;</code>
-   * @return The nodeName.
-   */
-  @java.lang.Override
-  public java.lang.String getNodeName() {
-    java.lang.Object ref = nodeName_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      nodeName_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string node_name = 7;</code>
-   * @return The bytes for nodeName.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getNodeNameBytes() {
-    java.lang.Object ref = nodeName_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      nodeName_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
   }
 
   private byte memoizedIsInitialized = -1;
@@ -279,26 +160,11 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (threadRunNumber_ != 0) {
-      output.writeInt32(1, threadRunNumber_);
-    }
-    if (taskRunNumber_ != 0) {
-      output.writeInt32(2, taskRunNumber_);
-    }
-    if (taskRunPosition_ != 0) {
-      output.writeInt32(3, taskRunPosition_);
-    }
-    if (resultCode_ != io.littlehorse.common.proto.TaskResultCodePb.SUCCESS.getNumber()) {
-      output.writeEnum(4, resultCode_);
-    }
     if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeMessage(5, getOutput());
+      output.writeMessage(1, getResult());
     }
     if (((bitField0_ & 0x00000002) != 0)) {
-      output.writeBytes(6, logOutput_);
-    }
-    if (!getNodeNameBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 7, nodeName_);
+      output.writeBytes(2, logOutput_);
     }
     unknownFields.writeTo(output);
   }
@@ -309,32 +175,13 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (threadRunNumber_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(1, threadRunNumber_);
-    }
-    if (taskRunNumber_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(2, taskRunNumber_);
-    }
-    if (taskRunPosition_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(3, taskRunPosition_);
-    }
-    if (resultCode_ != io.littlehorse.common.proto.TaskResultCodePb.SUCCESS.getNumber()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(4, resultCode_);
-    }
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(5, getOutput());
+        .computeMessageSize(1, getResult());
     }
     if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(6, logOutput_);
-    }
-    if (!getNodeNameBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, nodeName_);
+        .computeBytesSize(2, logOutput_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -351,25 +198,16 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.common.proto.TaskResultOePb other = (io.littlehorse.common.proto.TaskResultOePb) obj;
 
-    if (getThreadRunNumber()
-        != other.getThreadRunNumber()) return false;
-    if (getTaskRunNumber()
-        != other.getTaskRunNumber()) return false;
-    if (getTaskRunPosition()
-        != other.getTaskRunPosition()) return false;
-    if (resultCode_ != other.resultCode_) return false;
-    if (hasOutput() != other.hasOutput()) return false;
-    if (hasOutput()) {
-      if (!getOutput()
-          .equals(other.getOutput())) return false;
+    if (hasResult() != other.hasResult()) return false;
+    if (hasResult()) {
+      if (!getResult()
+          .equals(other.getResult())) return false;
     }
     if (hasLogOutput() != other.hasLogOutput()) return false;
     if (hasLogOutput()) {
       if (!getLogOutput()
           .equals(other.getLogOutput())) return false;
     }
-    if (!getNodeName()
-        .equals(other.getNodeName())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -381,24 +219,14 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + THREAD_RUN_NUMBER_FIELD_NUMBER;
-    hash = (53 * hash) + getThreadRunNumber();
-    hash = (37 * hash) + TASK_RUN_NUMBER_FIELD_NUMBER;
-    hash = (53 * hash) + getTaskRunNumber();
-    hash = (37 * hash) + TASK_RUN_POSITION_FIELD_NUMBER;
-    hash = (53 * hash) + getTaskRunPosition();
-    hash = (37 * hash) + RESULT_CODE_FIELD_NUMBER;
-    hash = (53 * hash) + resultCode_;
-    if (hasOutput()) {
-      hash = (37 * hash) + OUTPUT_FIELD_NUMBER;
-      hash = (53 * hash) + getOutput().hashCode();
+    if (hasResult()) {
+      hash = (37 * hash) + RESULT_FIELD_NUMBER;
+      hash = (53 * hash) + getResult().hashCode();
     }
     if (hasLogOutput()) {
       hash = (37 * hash) + LOG_OUTPUT_FIELD_NUMBER;
       hash = (53 * hash) + getLogOutput().hashCode();
     }
-    hash = (37 * hash) + NODE_NAME_FIELD_NUMBER;
-    hash = (53 * hash) + getNodeName().hashCode();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -527,30 +355,20 @@ private static final long serialVersionUID = 0L;
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
-        getOutputFieldBuilder();
+        getResultFieldBuilder();
       }
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      threadRunNumber_ = 0;
-
-      taskRunNumber_ = 0;
-
-      taskRunPosition_ = 0;
-
-      resultCode_ = 0;
-
-      if (outputBuilder_ == null) {
-        output_ = null;
+      if (resultBuilder_ == null) {
+        result_ = null;
       } else {
-        outputBuilder_.clear();
+        resultBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000001);
       logOutput_ = com.google.protobuf.ByteString.EMPTY;
       bitField0_ = (bitField0_ & ~0x00000002);
-      nodeName_ = "";
-
       return this;
     }
 
@@ -579,15 +397,11 @@ private static final long serialVersionUID = 0L;
       io.littlehorse.common.proto.TaskResultOePb result = new io.littlehorse.common.proto.TaskResultOePb(this);
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
-      result.threadRunNumber_ = threadRunNumber_;
-      result.taskRunNumber_ = taskRunNumber_;
-      result.taskRunPosition_ = taskRunPosition_;
-      result.resultCode_ = resultCode_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        if (outputBuilder_ == null) {
-          result.output_ = output_;
+        if (resultBuilder_ == null) {
+          result.result_ = result_;
         } else {
-          result.output_ = outputBuilder_.build();
+          result.result_ = resultBuilder_.build();
         }
         to_bitField0_ |= 0x00000001;
       }
@@ -595,7 +409,6 @@ private static final long serialVersionUID = 0L;
         to_bitField0_ |= 0x00000002;
       }
       result.logOutput_ = logOutput_;
-      result.nodeName_ = nodeName_;
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -645,27 +458,11 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.common.proto.TaskResultOePb other) {
       if (other == io.littlehorse.common.proto.TaskResultOePb.getDefaultInstance()) return this;
-      if (other.getThreadRunNumber() != 0) {
-        setThreadRunNumber(other.getThreadRunNumber());
-      }
-      if (other.getTaskRunNumber() != 0) {
-        setTaskRunNumber(other.getTaskRunNumber());
-      }
-      if (other.getTaskRunPosition() != 0) {
-        setTaskRunPosition(other.getTaskRunPosition());
-      }
-      if (other.resultCode_ != 0) {
-        setResultCodeValue(other.getResultCodeValue());
-      }
-      if (other.hasOutput()) {
-        mergeOutput(other.getOutput());
+      if (other.hasResult()) {
+        mergeResult(other.getResult());
       }
       if (other.hasLogOutput()) {
         setLogOutput(other.getLogOutput());
-      }
-      if (!other.getNodeName().isEmpty()) {
-        nodeName_ = other.nodeName_;
-        onChanged();
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -697,276 +494,129 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private int threadRunNumber_ ;
-    /**
-     * <code>int32 thread_run_number = 1;</code>
-     * @return The threadRunNumber.
-     */
-    @java.lang.Override
-    public int getThreadRunNumber() {
-      return threadRunNumber_;
-    }
-    /**
-     * <code>int32 thread_run_number = 1;</code>
-     * @param value The threadRunNumber to set.
-     * @return This builder for chaining.
-     */
-    public Builder setThreadRunNumber(int value) {
-      
-      threadRunNumber_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>int32 thread_run_number = 1;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearThreadRunNumber() {
-      
-      threadRunNumber_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private int taskRunNumber_ ;
-    /**
-     * <code>int32 task_run_number = 2;</code>
-     * @return The taskRunNumber.
-     */
-    @java.lang.Override
-    public int getTaskRunNumber() {
-      return taskRunNumber_;
-    }
-    /**
-     * <code>int32 task_run_number = 2;</code>
-     * @param value The taskRunNumber to set.
-     * @return This builder for chaining.
-     */
-    public Builder setTaskRunNumber(int value) {
-      
-      taskRunNumber_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>int32 task_run_number = 2;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearTaskRunNumber() {
-      
-      taskRunNumber_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private int taskRunPosition_ ;
-    /**
-     * <code>int32 task_run_position = 3;</code>
-     * @return The taskRunPosition.
-     */
-    @java.lang.Override
-    public int getTaskRunPosition() {
-      return taskRunPosition_;
-    }
-    /**
-     * <code>int32 task_run_position = 3;</code>
-     * @param value The taskRunPosition to set.
-     * @return This builder for chaining.
-     */
-    public Builder setTaskRunPosition(int value) {
-      
-      taskRunPosition_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>int32 task_run_position = 3;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearTaskRunPosition() {
-      
-      taskRunPosition_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private int resultCode_ = 0;
-    /**
-     * <code>.lh_proto.TaskResultCodePb result_code = 4;</code>
-     * @return The enum numeric value on the wire for resultCode.
-     */
-    @java.lang.Override public int getResultCodeValue() {
-      return resultCode_;
-    }
-    /**
-     * <code>.lh_proto.TaskResultCodePb result_code = 4;</code>
-     * @param value The enum numeric value on the wire for resultCode to set.
-     * @return This builder for chaining.
-     */
-    public Builder setResultCodeValue(int value) {
-      
-      resultCode_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.lh_proto.TaskResultCodePb result_code = 4;</code>
-     * @return The resultCode.
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.TaskResultCodePb getResultCode() {
-      @SuppressWarnings("deprecation")
-      io.littlehorse.common.proto.TaskResultCodePb result = io.littlehorse.common.proto.TaskResultCodePb.valueOf(resultCode_);
-      return result == null ? io.littlehorse.common.proto.TaskResultCodePb.UNRECOGNIZED : result;
-    }
-    /**
-     * <code>.lh_proto.TaskResultCodePb result_code = 4;</code>
-     * @param value The resultCode to set.
-     * @return This builder for chaining.
-     */
-    public Builder setResultCode(io.littlehorse.common.proto.TaskResultCodePb value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      
-      resultCode_ = value.getNumber();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.lh_proto.TaskResultCodePb result_code = 4;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearResultCode() {
-      
-      resultCode_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private io.littlehorse.common.proto.VariableValuePb output_;
+    private io.littlehorse.common.proto.VariableValuePb result_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.VariableValuePb, io.littlehorse.common.proto.VariableValuePb.Builder, io.littlehorse.common.proto.VariableValuePbOrBuilder> outputBuilder_;
+        io.littlehorse.common.proto.VariableValuePb, io.littlehorse.common.proto.VariableValuePb.Builder, io.littlehorse.common.proto.VariableValuePbOrBuilder> resultBuilder_;
     /**
-     * <code>.lh_proto.VariableValuePb output = 5;</code>
-     * @return Whether the output field is set.
+     * <code>.lh_proto.VariableValuePb result = 1;</code>
+     * @return Whether the result field is set.
      */
-    public boolean hasOutput() {
+    public boolean hasResult() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>.lh_proto.VariableValuePb output = 5;</code>
-     * @return The output.
+     * <code>.lh_proto.VariableValuePb result = 1;</code>
+     * @return The result.
      */
-    public io.littlehorse.common.proto.VariableValuePb getOutput() {
-      if (outputBuilder_ == null) {
-        return output_ == null ? io.littlehorse.common.proto.VariableValuePb.getDefaultInstance() : output_;
+    public io.littlehorse.common.proto.VariableValuePb getResult() {
+      if (resultBuilder_ == null) {
+        return result_ == null ? io.littlehorse.common.proto.VariableValuePb.getDefaultInstance() : result_;
       } else {
-        return outputBuilder_.getMessage();
+        return resultBuilder_.getMessage();
       }
     }
     /**
-     * <code>.lh_proto.VariableValuePb output = 5;</code>
+     * <code>.lh_proto.VariableValuePb result = 1;</code>
      */
-    public Builder setOutput(io.littlehorse.common.proto.VariableValuePb value) {
-      if (outputBuilder_ == null) {
+    public Builder setResult(io.littlehorse.common.proto.VariableValuePb value) {
+      if (resultBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        output_ = value;
+        result_ = value;
         onChanged();
       } else {
-        outputBuilder_.setMessage(value);
+        resultBuilder_.setMessage(value);
       }
       bitField0_ |= 0x00000001;
       return this;
     }
     /**
-     * <code>.lh_proto.VariableValuePb output = 5;</code>
+     * <code>.lh_proto.VariableValuePb result = 1;</code>
      */
-    public Builder setOutput(
+    public Builder setResult(
         io.littlehorse.common.proto.VariableValuePb.Builder builderForValue) {
-      if (outputBuilder_ == null) {
-        output_ = builderForValue.build();
+      if (resultBuilder_ == null) {
+        result_ = builderForValue.build();
         onChanged();
       } else {
-        outputBuilder_.setMessage(builderForValue.build());
+        resultBuilder_.setMessage(builderForValue.build());
       }
       bitField0_ |= 0x00000001;
       return this;
     }
     /**
-     * <code>.lh_proto.VariableValuePb output = 5;</code>
+     * <code>.lh_proto.VariableValuePb result = 1;</code>
      */
-    public Builder mergeOutput(io.littlehorse.common.proto.VariableValuePb value) {
-      if (outputBuilder_ == null) {
+    public Builder mergeResult(io.littlehorse.common.proto.VariableValuePb value) {
+      if (resultBuilder_ == null) {
         if (((bitField0_ & 0x00000001) != 0) &&
-            output_ != null &&
-            output_ != io.littlehorse.common.proto.VariableValuePb.getDefaultInstance()) {
-          output_ =
-            io.littlehorse.common.proto.VariableValuePb.newBuilder(output_).mergeFrom(value).buildPartial();
+            result_ != null &&
+            result_ != io.littlehorse.common.proto.VariableValuePb.getDefaultInstance()) {
+          result_ =
+            io.littlehorse.common.proto.VariableValuePb.newBuilder(result_).mergeFrom(value).buildPartial();
         } else {
-          output_ = value;
+          result_ = value;
         }
         onChanged();
       } else {
-        outputBuilder_.mergeFrom(value);
+        resultBuilder_.mergeFrom(value);
       }
       bitField0_ |= 0x00000001;
       return this;
     }
     /**
-     * <code>.lh_proto.VariableValuePb output = 5;</code>
+     * <code>.lh_proto.VariableValuePb result = 1;</code>
      */
-    public Builder clearOutput() {
-      if (outputBuilder_ == null) {
-        output_ = null;
+    public Builder clearResult() {
+      if (resultBuilder_ == null) {
+        result_ = null;
         onChanged();
       } else {
-        outputBuilder_.clear();
+        resultBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000001);
       return this;
     }
     /**
-     * <code>.lh_proto.VariableValuePb output = 5;</code>
+     * <code>.lh_proto.VariableValuePb result = 1;</code>
      */
-    public io.littlehorse.common.proto.VariableValuePb.Builder getOutputBuilder() {
+    public io.littlehorse.common.proto.VariableValuePb.Builder getResultBuilder() {
       bitField0_ |= 0x00000001;
       onChanged();
-      return getOutputFieldBuilder().getBuilder();
+      return getResultFieldBuilder().getBuilder();
     }
     /**
-     * <code>.lh_proto.VariableValuePb output = 5;</code>
+     * <code>.lh_proto.VariableValuePb result = 1;</code>
      */
-    public io.littlehorse.common.proto.VariableValuePbOrBuilder getOutputOrBuilder() {
-      if (outputBuilder_ != null) {
-        return outputBuilder_.getMessageOrBuilder();
+    public io.littlehorse.common.proto.VariableValuePbOrBuilder getResultOrBuilder() {
+      if (resultBuilder_ != null) {
+        return resultBuilder_.getMessageOrBuilder();
       } else {
-        return output_ == null ?
-            io.littlehorse.common.proto.VariableValuePb.getDefaultInstance() : output_;
+        return result_ == null ?
+            io.littlehorse.common.proto.VariableValuePb.getDefaultInstance() : result_;
       }
     }
     /**
-     * <code>.lh_proto.VariableValuePb output = 5;</code>
+     * <code>.lh_proto.VariableValuePb result = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.VariableValuePb, io.littlehorse.common.proto.VariableValuePb.Builder, io.littlehorse.common.proto.VariableValuePbOrBuilder> 
-        getOutputFieldBuilder() {
-      if (outputBuilder_ == null) {
-        outputBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+        getResultFieldBuilder() {
+      if (resultBuilder_ == null) {
+        resultBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
             io.littlehorse.common.proto.VariableValuePb, io.littlehorse.common.proto.VariableValuePb.Builder, io.littlehorse.common.proto.VariableValuePbOrBuilder>(
-                getOutput(),
+                getResult(),
                 getParentForChildren(),
                 isClean());
-        output_ = null;
+        result_ = null;
       }
-      return outputBuilder_;
+      return resultBuilder_;
     }
 
     private com.google.protobuf.ByteString logOutput_ = com.google.protobuf.ByteString.EMPTY;
     /**
-     * <code>bytes log_output = 6;</code>
+     * <code>bytes log_output = 2;</code>
      * @return Whether the logOutput field is set.
      */
     @java.lang.Override
@@ -974,7 +624,7 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>bytes log_output = 6;</code>
+     * <code>bytes log_output = 2;</code>
      * @return The logOutput.
      */
     @java.lang.Override
@@ -982,7 +632,7 @@ private static final long serialVersionUID = 0L;
       return logOutput_;
     }
     /**
-     * <code>bytes log_output = 6;</code>
+     * <code>bytes log_output = 2;</code>
      * @param value The logOutput to set.
      * @return This builder for chaining.
      */
@@ -996,88 +646,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>bytes log_output = 6;</code>
+     * <code>bytes log_output = 2;</code>
      * @return This builder for chaining.
      */
     public Builder clearLogOutput() {
       bitField0_ = (bitField0_ & ~0x00000002);
       logOutput_ = getDefaultInstance().getLogOutput();
-      onChanged();
-      return this;
-    }
-
-    private java.lang.Object nodeName_ = "";
-    /**
-     * <code>string node_name = 7;</code>
-     * @return The nodeName.
-     */
-    public java.lang.String getNodeName() {
-      java.lang.Object ref = nodeName_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        nodeName_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>string node_name = 7;</code>
-     * @return The bytes for nodeName.
-     */
-    public com.google.protobuf.ByteString
-        getNodeNameBytes() {
-      java.lang.Object ref = nodeName_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        nodeName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string node_name = 7;</code>
-     * @param value The nodeName to set.
-     * @return This builder for chaining.
-     */
-    public Builder setNodeName(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      nodeName_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string node_name = 7;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearNodeName() {
-      
-      nodeName_ = getDefaultInstance().getNodeName();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string node_name = 7;</code>
-     * @param value The bytes for nodeName to set.
-     * @return This builder for chaining.
-     */
-    public Builder setNodeNameBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      nodeName_ = value;
       onChanged();
       return this;
     }

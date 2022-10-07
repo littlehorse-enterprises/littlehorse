@@ -8,201 +8,65 @@ public interface TaskRunPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string wf_run_id = 1;</code>
-   * @return The wfRunId.
-   */
-  java.lang.String getWfRunId();
-  /**
-   * <code>string wf_run_id = 1;</code>
-   * @return The bytes for wfRunId.
-   */
-  com.google.protobuf.ByteString
-      getWfRunIdBytes();
-
-  /**
-   * <code>int32 thread_run_number = 2;</code>
-   * @return The threadRunNumber.
-   */
-  int getThreadRunNumber();
-
-  /**
-   * <code>int32 position = 3;</code>
-   * @return The position.
-   */
-  int getPosition();
-
-  /**
-   * <code>int32 number = 4;</code>
-   * @return The number.
-   */
-  int getNumber();
-
-  /**
-   * <code>int32 attempt_number = 5;</code>
+   * <pre>
+   * Task only
+   * </pre>
+   *
+   * <code>int32 attempt_number = 1;</code>
    * @return The attemptNumber.
    */
   int getAttemptNumber();
 
   /**
-   * <code>.lh_proto.LHStatusPb status = 6;</code>
-   * @return The enum numeric value on the wire for status.
-   */
-  int getStatusValue();
-  /**
-   * <code>.lh_proto.LHStatusPb status = 6;</code>
-   * @return The status.
-   */
-  io.littlehorse.common.proto.LHStatusPb getStatus();
-
-  /**
-   * <code>.lh_proto.VariableValuePb output = 7;</code>
+   * <code>.lh_proto.VariableValuePb output = 2;</code>
    * @return Whether the output field is set.
    */
   boolean hasOutput();
   /**
-   * <code>.lh_proto.VariableValuePb output = 7;</code>
+   * <code>.lh_proto.VariableValuePb output = 2;</code>
    * @return The output.
    */
   io.littlehorse.common.proto.VariableValuePb getOutput();
   /**
-   * <code>.lh_proto.VariableValuePb output = 7;</code>
+   * <code>.lh_proto.VariableValuePb output = 2;</code>
    */
   io.littlehorse.common.proto.VariableValuePbOrBuilder getOutputOrBuilder();
 
   /**
-   * <code>bytes log_output = 8;</code>
+   * <code>bytes log_output = 3;</code>
    * @return Whether the logOutput field is set.
    */
   boolean hasLogOutput();
   /**
-   * <code>bytes log_output = 8;</code>
+   * <code>bytes log_output = 3;</code>
    * @return The logOutput.
    */
   com.google.protobuf.ByteString getLogOutput();
 
   /**
-   * <code>.google.protobuf.Timestamp schedule_time = 9;</code>
-   * @return Whether the scheduleTime field is set.
-   */
-  boolean hasScheduleTime();
-  /**
-   * <code>.google.protobuf.Timestamp schedule_time = 9;</code>
-   * @return The scheduleTime.
-   */
-  com.google.protobuf.Timestamp getScheduleTime();
-  /**
-   * <code>.google.protobuf.Timestamp schedule_time = 9;</code>
-   */
-  com.google.protobuf.TimestampOrBuilder getScheduleTimeOrBuilder();
-
-  /**
-   * <code>.google.protobuf.Timestamp start_time = 10;</code>
+   * <code>.google.protobuf.Timestamp start_time = 4;</code>
    * @return Whether the startTime field is set.
    */
   boolean hasStartTime();
   /**
-   * <code>.google.protobuf.Timestamp start_time = 10;</code>
+   * <code>.google.protobuf.Timestamp start_time = 4;</code>
    * @return The startTime.
    */
   com.google.protobuf.Timestamp getStartTime();
   /**
-   * <code>.google.protobuf.Timestamp start_time = 10;</code>
+   * <code>.google.protobuf.Timestamp start_time = 4;</code>
    */
   com.google.protobuf.TimestampOrBuilder getStartTimeOrBuilder();
 
   /**
-   * <code>.google.protobuf.Timestamp end_time = 11;</code>
-   * @return Whether the endTime field is set.
-   */
-  boolean hasEndTime();
-  /**
-   * <code>.google.protobuf.Timestamp end_time = 11;</code>
-   * @return The endTime.
-   */
-  com.google.protobuf.Timestamp getEndTime();
-  /**
-   * <code>.google.protobuf.Timestamp end_time = 11;</code>
-   */
-  com.google.protobuf.TimestampOrBuilder getEndTimeOrBuilder();
-
-  /**
-   * <code>string wf_spec_id = 12;</code>
-   * @return The wfSpecId.
-   */
-  java.lang.String getWfSpecId();
-  /**
-   * <code>string wf_spec_id = 12;</code>
-   * @return The bytes for wfSpecId.
-   */
-  com.google.protobuf.ByteString
-      getWfSpecIdBytes();
-
-  /**
-   * <code>string thread_spec_name = 13;</code>
-   * @return The threadSpecName.
-   */
-  java.lang.String getThreadSpecName();
-  /**
-   * <code>string thread_spec_name = 13;</code>
-   * @return The bytes for threadSpecName.
-   */
-  com.google.protobuf.ByteString
-      getThreadSpecNameBytes();
-
-  /**
-   * <code>string node_name = 14;</code>
-   * @return The nodeName.
-   */
-  java.lang.String getNodeName();
-  /**
-   * <code>string node_name = 14;</code>
-   * @return The bytes for nodeName.
-   */
-  com.google.protobuf.ByteString
-      getNodeNameBytes();
-
-  /**
-   * <code>string task_def_id = 15;</code>
+   * <code>string task_def_id = 5;</code>
    * @return The taskDefId.
    */
   java.lang.String getTaskDefId();
   /**
-   * <code>string task_def_id = 15;</code>
+   * <code>string task_def_id = 5;</code>
    * @return The bytes for taskDefId.
    */
   com.google.protobuf.ByteString
       getTaskDefIdBytes();
-
-  /**
-   * <code>.lh_proto.TaskResultCodePb result_code = 16;</code>
-   * @return Whether the resultCode field is set.
-   */
-  boolean hasResultCode();
-  /**
-   * <code>.lh_proto.TaskResultCodePb result_code = 16;</code>
-   * @return The enum numeric value on the wire for resultCode.
-   */
-  int getResultCodeValue();
-  /**
-   * <code>.lh_proto.TaskResultCodePb result_code = 16;</code>
-   * @return The resultCode.
-   */
-  io.littlehorse.common.proto.TaskResultCodePb getResultCode();
-
-  /**
-   * <code>string error_message = 17;</code>
-   * @return Whether the errorMessage field is set.
-   */
-  boolean hasErrorMessage();
-  /**
-   * <code>string error_message = 17;</code>
-   * @return The errorMessage.
-   */
-  java.lang.String getErrorMessage();
-  /**
-   * <code>string error_message = 17;</code>
-   * @return The bytes for errorMessage.
-   */
-  com.google.protobuf.ByteString
-      getErrorMessageBytes();
 }

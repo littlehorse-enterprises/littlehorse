@@ -20,9 +20,9 @@ import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.server.LHResponse;
 import io.littlehorse.common.model.server.RangeResponse;
 import io.littlehorse.common.model.server.Tag;
-import io.littlehorse.common.model.wfrun.TaskRun;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.wfrun.noderun.NodeRun;
 import io.littlehorse.common.proto.GETableClassEnumPb;
 import io.littlehorse.common.proto.LHResponseCodePb;
 import io.littlehorse.common.proto.WfRunEventPb.EventCase;
@@ -85,12 +85,12 @@ public class LHApi {
 
         this.app.get("/WfRun/{id}", ctx -> handle(this::getWfRun, ctx));
         this.app.get(
-                "/TaskRun/{wfRunId}/{threadRunNumber}/{taskRunPosition}",
-                ctx -> handle(this::getTaskRun, ctx)
+                "/NodeRun/{wfRunId}/{threadRunNumber}/{nodeRunPosition}",
+                ctx -> handle(this::getNodeRun, ctx)
             );
         this.app.get(
-                "/search/TaskRun/wfRunId/{wfRunId}",
-                ctx -> handle(this::getTaskRunsByWfRun, ctx)
+                "/search/NodeRun/wfRunId/{wfRunId}",
+                ctx -> handle(this::getNodeRunsByWfRun, ctx)
             );
 
         this.app.get(
@@ -112,8 +112,8 @@ public class LHApi {
                 ctx -> handle(this::getRunBySpecName, ctx)
             );
         this.app.get(
-                "/search/TaskRun/taskDefId/{taskDefId}/status/{status}",
-                ctx -> handle(this::getTaskRunByStatus, ctx)
+                "/search/NodeRun/taskDefId/{taskDefId}/status/{status}",
+                ctx -> handle(this::getNodeRunByStatus, ctx)
             );
 
         this.app.post(
@@ -173,7 +173,7 @@ public class LHApi {
                 "/internal/localKeyedPrefixObjScan/{storeName}/{storeKeyPrefix}",
                 this::internalLocalKeyedPrefixObjScanBytes
             );
-        this.app.get("/metrics/taskRuns", this::countTaskRuns);
+        this.app.get("/metrics/nodeRuns", this::countNodeRuns);
         this.app.get("/metrics/wfRuns", this::countWfRuns);
         this.app.get("/metrics/indexStore", this::countIndexEntries);
         this.app.get("/internal/countLocal/{storeName}", this::internalCountStore);
@@ -206,22 +206,22 @@ public class LHApi {
         ctx.json(resp);
     }
 
-    public void getTaskRun(Context ctx) {
+    public void getNodeRun(Context ctx) {
         String wfRunId = ctx.pathParam("wfRunId");
         int threadRunNumber = ctx
             .pathParamAsClass("threadRunNumber", Integer.class)
             .get();
-        int taskRunPosition = ctx
-            .pathParamAsClass("taskRunPosition", Integer.class)
+        int nodeRunPosition = ctx
+            .pathParamAsClass("nodeRunPosition", Integer.class)
             .get();
 
-        String storeKey = TaskRun.getStoreKey(
+        String storeKey = NodeRun.getStoreKey(
             wfRunId,
             threadRunNumber,
-            taskRunPosition
+            nodeRunPosition
         );
 
-        returnLookup(wfRunId, storeKey, TaskRun.class, ctx);
+        returnLookup(wfRunId, storeKey, NodeRun.class, ctx);
     }
 
     public void getWfSpec(Context ctx) {
@@ -369,9 +369,9 @@ public class LHApi {
         keyedPrefixIdxScan(Arrays.asList(Pair.of("wfSpecId", id)), WfRun.class, ctx);
     }
 
-    public void getTaskRunsByWfRun(Context ctx) {
+    public void getNodeRunsByWfRun(Context ctx) {
         String wfRunId = ctx.pathParam("wfRunId");
-        keyedPrefixObjScan(wfRunId, TaskRun.class, wfRunId, ctx);
+        keyedPrefixObjScan(wfRunId, NodeRun.class, wfRunId, ctx);
     }
 
     public void getRunBySpecName(Context ctx) {
@@ -383,12 +383,12 @@ public class LHApi {
         );
     }
 
-    public void getTaskRunByStatus(Context ctx) {
+    public void getNodeRunByStatus(Context ctx) {
         String taskDefId = ctx.pathParam("taskDefId");
         String status = ctx.pathParam("status");
         keyedPrefixIdxScan(
             Arrays.asList(Pair.of("taskDefId", taskDefId), Pair.of("status", status)),
-            TaskRun.class,
+            NodeRun.class,
             ctx
         );
     }
@@ -577,8 +577,8 @@ public class LHApi {
         }
     }
 
-    public void countTaskRuns(Context ctx) throws LHConnectionError {
-        ctx.result(streams.count(GETable.getBaseStoreName(TaskRun.class)).toString());
+    public void countNodeRuns(Context ctx) throws LHConnectionError {
+        ctx.result(streams.count(GETable.getBaseStoreName(NodeRun.class)).toString());
     }
 
     public void countWfRuns(Context ctx) throws LHConnectionError {

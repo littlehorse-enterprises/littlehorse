@@ -16,15 +16,8 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private TaskRunPb() {
-    wfRunId_ = "";
-    status_ = 0;
     logOutput_ = com.google.protobuf.ByteString.EMPTY;
-    wfSpecId_ = "";
-    threadSpecName_ = "";
-    nodeName_ = "";
     taskDefId_ = "";
-    resultCode_ = 0;
-    errorMessage_ = "";
   }
 
   @java.lang.Override
@@ -58,39 +51,12 @@ private static final long serialVersionUID = 0L;
           case 0:
             done = true;
             break;
-          case 10: {
-            java.lang.String s = input.readStringRequireUtf8();
-
-            wfRunId_ = s;
-            break;
-          }
-          case 16: {
-
-            threadRunNumber_ = input.readInt32();
-            break;
-          }
-          case 24: {
-
-            position_ = input.readInt32();
-            break;
-          }
-          case 32: {
-
-            number_ = input.readInt32();
-            break;
-          }
-          case 40: {
+          case 8: {
 
             attemptNumber_ = input.readInt32();
             break;
           }
-          case 48: {
-            int rawValue = input.readEnum();
-
-            status_ = rawValue;
-            break;
-          }
-          case 58: {
+          case 18: {
             io.littlehorse.common.proto.VariableValuePb.Builder subBuilder = null;
             if (((bitField0_ & 0x00000001) != 0)) {
               subBuilder = output_.toBuilder();
@@ -103,25 +69,12 @@ private static final long serialVersionUID = 0L;
             bitField0_ |= 0x00000001;
             break;
           }
-          case 66: {
+          case 26: {
             bitField0_ |= 0x00000002;
             logOutput_ = input.readBytes();
             break;
           }
-          case 74: {
-            com.google.protobuf.Timestamp.Builder subBuilder = null;
-            if (scheduleTime_ != null) {
-              subBuilder = scheduleTime_.toBuilder();
-            }
-            scheduleTime_ = input.readMessage(com.google.protobuf.Timestamp.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom(scheduleTime_);
-              scheduleTime_ = subBuilder.buildPartial();
-            }
-
-            break;
-          }
-          case 82: {
+          case 34: {
             com.google.protobuf.Timestamp.Builder subBuilder = null;
             if (((bitField0_ & 0x00000004) != 0)) {
               subBuilder = startTime_.toBuilder();
@@ -134,53 +87,10 @@ private static final long serialVersionUID = 0L;
             bitField0_ |= 0x00000004;
             break;
           }
-          case 90: {
-            com.google.protobuf.Timestamp.Builder subBuilder = null;
-            if (((bitField0_ & 0x00000008) != 0)) {
-              subBuilder = endTime_.toBuilder();
-            }
-            endTime_ = input.readMessage(com.google.protobuf.Timestamp.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom(endTime_);
-              endTime_ = subBuilder.buildPartial();
-            }
-            bitField0_ |= 0x00000008;
-            break;
-          }
-          case 98: {
-            java.lang.String s = input.readStringRequireUtf8();
-
-            wfSpecId_ = s;
-            break;
-          }
-          case 106: {
-            java.lang.String s = input.readStringRequireUtf8();
-
-            threadSpecName_ = s;
-            break;
-          }
-          case 114: {
-            java.lang.String s = input.readStringRequireUtf8();
-
-            nodeName_ = s;
-            break;
-          }
-          case 122: {
+          case 42: {
             java.lang.String s = input.readStringRequireUtf8();
 
             taskDefId_ = s;
-            break;
-          }
-          case 128: {
-            int rawValue = input.readEnum();
-            bitField0_ |= 0x00000010;
-            resultCode_ = rawValue;
-            break;
-          }
-          case 138: {
-            java.lang.String s = input.readStringRequireUtf8();
-            bitField0_ |= 0x00000020;
-            errorMessage_ = s;
             break;
           }
           default: {
@@ -216,81 +126,14 @@ private static final long serialVersionUID = 0L;
   }
 
   private int bitField0_;
-  public static final int WF_RUN_ID_FIELD_NUMBER = 1;
-  private volatile java.lang.Object wfRunId_;
-  /**
-   * <code>string wf_run_id = 1;</code>
-   * @return The wfRunId.
-   */
-  @java.lang.Override
-  public java.lang.String getWfRunId() {
-    java.lang.Object ref = wfRunId_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      wfRunId_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string wf_run_id = 1;</code>
-   * @return The bytes for wfRunId.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getWfRunIdBytes() {
-    java.lang.Object ref = wfRunId_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      wfRunId_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
-  public static final int THREAD_RUN_NUMBER_FIELD_NUMBER = 2;
-  private int threadRunNumber_;
-  /**
-   * <code>int32 thread_run_number = 2;</code>
-   * @return The threadRunNumber.
-   */
-  @java.lang.Override
-  public int getThreadRunNumber() {
-    return threadRunNumber_;
-  }
-
-  public static final int POSITION_FIELD_NUMBER = 3;
-  private int position_;
-  /**
-   * <code>int32 position = 3;</code>
-   * @return The position.
-   */
-  @java.lang.Override
-  public int getPosition() {
-    return position_;
-  }
-
-  public static final int NUMBER_FIELD_NUMBER = 4;
-  private int number_;
-  /**
-   * <code>int32 number = 4;</code>
-   * @return The number.
-   */
-  @java.lang.Override
-  public int getNumber() {
-    return number_;
-  }
-
-  public static final int ATTEMPT_NUMBER_FIELD_NUMBER = 5;
+  public static final int ATTEMPT_NUMBER_FIELD_NUMBER = 1;
   private int attemptNumber_;
   /**
-   * <code>int32 attempt_number = 5;</code>
+   * <pre>
+   * Task only
+   * </pre>
+   *
+   * <code>int32 attempt_number = 1;</code>
    * @return The attemptNumber.
    */
   @java.lang.Override
@@ -298,29 +141,10 @@ private static final long serialVersionUID = 0L;
     return attemptNumber_;
   }
 
-  public static final int STATUS_FIELD_NUMBER = 6;
-  private int status_;
-  /**
-   * <code>.lh_proto.LHStatusPb status = 6;</code>
-   * @return The enum numeric value on the wire for status.
-   */
-  @java.lang.Override public int getStatusValue() {
-    return status_;
-  }
-  /**
-   * <code>.lh_proto.LHStatusPb status = 6;</code>
-   * @return The status.
-   */
-  @java.lang.Override public io.littlehorse.common.proto.LHStatusPb getStatus() {
-    @SuppressWarnings("deprecation")
-    io.littlehorse.common.proto.LHStatusPb result = io.littlehorse.common.proto.LHStatusPb.valueOf(status_);
-    return result == null ? io.littlehorse.common.proto.LHStatusPb.UNRECOGNIZED : result;
-  }
-
-  public static final int OUTPUT_FIELD_NUMBER = 7;
+  public static final int OUTPUT_FIELD_NUMBER = 2;
   private io.littlehorse.common.proto.VariableValuePb output_;
   /**
-   * <code>.lh_proto.VariableValuePb output = 7;</code>
+   * <code>.lh_proto.VariableValuePb output = 2;</code>
    * @return Whether the output field is set.
    */
   @java.lang.Override
@@ -328,7 +152,7 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>.lh_proto.VariableValuePb output = 7;</code>
+   * <code>.lh_proto.VariableValuePb output = 2;</code>
    * @return The output.
    */
   @java.lang.Override
@@ -336,17 +160,17 @@ private static final long serialVersionUID = 0L;
     return output_ == null ? io.littlehorse.common.proto.VariableValuePb.getDefaultInstance() : output_;
   }
   /**
-   * <code>.lh_proto.VariableValuePb output = 7;</code>
+   * <code>.lh_proto.VariableValuePb output = 2;</code>
    */
   @java.lang.Override
   public io.littlehorse.common.proto.VariableValuePbOrBuilder getOutputOrBuilder() {
     return output_ == null ? io.littlehorse.common.proto.VariableValuePb.getDefaultInstance() : output_;
   }
 
-  public static final int LOG_OUTPUT_FIELD_NUMBER = 8;
+  public static final int LOG_OUTPUT_FIELD_NUMBER = 3;
   private com.google.protobuf.ByteString logOutput_;
   /**
-   * <code>bytes log_output = 8;</code>
+   * <code>bytes log_output = 3;</code>
    * @return Whether the logOutput field is set.
    */
   @java.lang.Override
@@ -354,7 +178,7 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
-   * <code>bytes log_output = 8;</code>
+   * <code>bytes log_output = 3;</code>
    * @return The logOutput.
    */
   @java.lang.Override
@@ -362,36 +186,10 @@ private static final long serialVersionUID = 0L;
     return logOutput_;
   }
 
-  public static final int SCHEDULE_TIME_FIELD_NUMBER = 9;
-  private com.google.protobuf.Timestamp scheduleTime_;
-  /**
-   * <code>.google.protobuf.Timestamp schedule_time = 9;</code>
-   * @return Whether the scheduleTime field is set.
-   */
-  @java.lang.Override
-  public boolean hasScheduleTime() {
-    return scheduleTime_ != null;
-  }
-  /**
-   * <code>.google.protobuf.Timestamp schedule_time = 9;</code>
-   * @return The scheduleTime.
-   */
-  @java.lang.Override
-  public com.google.protobuf.Timestamp getScheduleTime() {
-    return scheduleTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : scheduleTime_;
-  }
-  /**
-   * <code>.google.protobuf.Timestamp schedule_time = 9;</code>
-   */
-  @java.lang.Override
-  public com.google.protobuf.TimestampOrBuilder getScheduleTimeOrBuilder() {
-    return getScheduleTime();
-  }
-
-  public static final int START_TIME_FIELD_NUMBER = 10;
+  public static final int START_TIME_FIELD_NUMBER = 4;
   private com.google.protobuf.Timestamp startTime_;
   /**
-   * <code>.google.protobuf.Timestamp start_time = 10;</code>
+   * <code>.google.protobuf.Timestamp start_time = 4;</code>
    * @return Whether the startTime field is set.
    */
   @java.lang.Override
@@ -399,7 +197,7 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000004) != 0);
   }
   /**
-   * <code>.google.protobuf.Timestamp start_time = 10;</code>
+   * <code>.google.protobuf.Timestamp start_time = 4;</code>
    * @return The startTime.
    */
   @java.lang.Override
@@ -407,157 +205,17 @@ private static final long serialVersionUID = 0L;
     return startTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : startTime_;
   }
   /**
-   * <code>.google.protobuf.Timestamp start_time = 10;</code>
+   * <code>.google.protobuf.Timestamp start_time = 4;</code>
    */
   @java.lang.Override
   public com.google.protobuf.TimestampOrBuilder getStartTimeOrBuilder() {
     return startTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : startTime_;
   }
 
-  public static final int END_TIME_FIELD_NUMBER = 11;
-  private com.google.protobuf.Timestamp endTime_;
-  /**
-   * <code>.google.protobuf.Timestamp end_time = 11;</code>
-   * @return Whether the endTime field is set.
-   */
-  @java.lang.Override
-  public boolean hasEndTime() {
-    return ((bitField0_ & 0x00000008) != 0);
-  }
-  /**
-   * <code>.google.protobuf.Timestamp end_time = 11;</code>
-   * @return The endTime.
-   */
-  @java.lang.Override
-  public com.google.protobuf.Timestamp getEndTime() {
-    return endTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : endTime_;
-  }
-  /**
-   * <code>.google.protobuf.Timestamp end_time = 11;</code>
-   */
-  @java.lang.Override
-  public com.google.protobuf.TimestampOrBuilder getEndTimeOrBuilder() {
-    return endTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : endTime_;
-  }
-
-  public static final int WF_SPEC_ID_FIELD_NUMBER = 12;
-  private volatile java.lang.Object wfSpecId_;
-  /**
-   * <code>string wf_spec_id = 12;</code>
-   * @return The wfSpecId.
-   */
-  @java.lang.Override
-  public java.lang.String getWfSpecId() {
-    java.lang.Object ref = wfSpecId_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      wfSpecId_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string wf_spec_id = 12;</code>
-   * @return The bytes for wfSpecId.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getWfSpecIdBytes() {
-    java.lang.Object ref = wfSpecId_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      wfSpecId_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
-  public static final int THREAD_SPEC_NAME_FIELD_NUMBER = 13;
-  private volatile java.lang.Object threadSpecName_;
-  /**
-   * <code>string thread_spec_name = 13;</code>
-   * @return The threadSpecName.
-   */
-  @java.lang.Override
-  public java.lang.String getThreadSpecName() {
-    java.lang.Object ref = threadSpecName_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      threadSpecName_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string thread_spec_name = 13;</code>
-   * @return The bytes for threadSpecName.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getThreadSpecNameBytes() {
-    java.lang.Object ref = threadSpecName_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      threadSpecName_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
-  public static final int NODE_NAME_FIELD_NUMBER = 14;
-  private volatile java.lang.Object nodeName_;
-  /**
-   * <code>string node_name = 14;</code>
-   * @return The nodeName.
-   */
-  @java.lang.Override
-  public java.lang.String getNodeName() {
-    java.lang.Object ref = nodeName_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      nodeName_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string node_name = 14;</code>
-   * @return The bytes for nodeName.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getNodeNameBytes() {
-    java.lang.Object ref = nodeName_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      nodeName_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
-  public static final int TASK_DEF_ID_FIELD_NUMBER = 15;
+  public static final int TASK_DEF_ID_FIELD_NUMBER = 5;
   private volatile java.lang.Object taskDefId_;
   /**
-   * <code>string task_def_id = 15;</code>
+   * <code>string task_def_id = 5;</code>
    * @return The taskDefId.
    */
   @java.lang.Override
@@ -574,7 +232,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>string task_def_id = 15;</code>
+   * <code>string task_def_id = 5;</code>
    * @return The bytes for taskDefId.
    */
   @java.lang.Override
@@ -586,78 +244,6 @@ private static final long serialVersionUID = 0L;
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
       taskDefId_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
-  public static final int RESULT_CODE_FIELD_NUMBER = 16;
-  private int resultCode_;
-  /**
-   * <code>.lh_proto.TaskResultCodePb result_code = 16;</code>
-   * @return Whether the resultCode field is set.
-   */
-  @java.lang.Override public boolean hasResultCode() {
-    return ((bitField0_ & 0x00000010) != 0);
-  }
-  /**
-   * <code>.lh_proto.TaskResultCodePb result_code = 16;</code>
-   * @return The enum numeric value on the wire for resultCode.
-   */
-  @java.lang.Override public int getResultCodeValue() {
-    return resultCode_;
-  }
-  /**
-   * <code>.lh_proto.TaskResultCodePb result_code = 16;</code>
-   * @return The resultCode.
-   */
-  @java.lang.Override public io.littlehorse.common.proto.TaskResultCodePb getResultCode() {
-    @SuppressWarnings("deprecation")
-    io.littlehorse.common.proto.TaskResultCodePb result = io.littlehorse.common.proto.TaskResultCodePb.valueOf(resultCode_);
-    return result == null ? io.littlehorse.common.proto.TaskResultCodePb.UNRECOGNIZED : result;
-  }
-
-  public static final int ERROR_MESSAGE_FIELD_NUMBER = 17;
-  private volatile java.lang.Object errorMessage_;
-  /**
-   * <code>string error_message = 17;</code>
-   * @return Whether the errorMessage field is set.
-   */
-  @java.lang.Override
-  public boolean hasErrorMessage() {
-    return ((bitField0_ & 0x00000020) != 0);
-  }
-  /**
-   * <code>string error_message = 17;</code>
-   * @return The errorMessage.
-   */
-  @java.lang.Override
-  public java.lang.String getErrorMessage() {
-    java.lang.Object ref = errorMessage_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      errorMessage_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string error_message = 17;</code>
-   * @return The bytes for errorMessage.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getErrorMessageBytes() {
-    java.lang.Object ref = errorMessage_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      errorMessage_ = b;
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
@@ -678,56 +264,20 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!getWfRunIdBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, wfRunId_);
-    }
-    if (threadRunNumber_ != 0) {
-      output.writeInt32(2, threadRunNumber_);
-    }
-    if (position_ != 0) {
-      output.writeInt32(3, position_);
-    }
-    if (number_ != 0) {
-      output.writeInt32(4, number_);
-    }
     if (attemptNumber_ != 0) {
-      output.writeInt32(5, attemptNumber_);
-    }
-    if (status_ != io.littlehorse.common.proto.LHStatusPb.STARTING.getNumber()) {
-      output.writeEnum(6, status_);
+      output.writeInt32(1, attemptNumber_);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeMessage(7, getOutput());
+      output.writeMessage(2, getOutput());
     }
     if (((bitField0_ & 0x00000002) != 0)) {
-      output.writeBytes(8, logOutput_);
-    }
-    if (scheduleTime_ != null) {
-      output.writeMessage(9, getScheduleTime());
+      output.writeBytes(3, logOutput_);
     }
     if (((bitField0_ & 0x00000004) != 0)) {
-      output.writeMessage(10, getStartTime());
-    }
-    if (((bitField0_ & 0x00000008) != 0)) {
-      output.writeMessage(11, getEndTime());
-    }
-    if (!getWfSpecIdBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 12, wfSpecId_);
-    }
-    if (!getThreadSpecNameBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 13, threadSpecName_);
-    }
-    if (!getNodeNameBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 14, nodeName_);
+      output.writeMessage(4, getStartTime());
     }
     if (!getTaskDefIdBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 15, taskDefId_);
-    }
-    if (((bitField0_ & 0x00000010) != 0)) {
-      output.writeEnum(16, resultCode_);
-    }
-    if (((bitField0_ & 0x00000020) != 0)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 17, errorMessage_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, taskDefId_);
     }
     unknownFields.writeTo(output);
   }
@@ -738,67 +288,24 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (!getWfRunIdBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, wfRunId_);
-    }
-    if (threadRunNumber_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(2, threadRunNumber_);
-    }
-    if (position_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(3, position_);
-    }
-    if (number_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(4, number_);
-    }
     if (attemptNumber_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(5, attemptNumber_);
-    }
-    if (status_ != io.littlehorse.common.proto.LHStatusPb.STARTING.getNumber()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(6, status_);
+        .computeInt32Size(1, attemptNumber_);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(7, getOutput());
+        .computeMessageSize(2, getOutput());
     }
     if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(8, logOutput_);
-    }
-    if (scheduleTime_ != null) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(9, getScheduleTime());
+        .computeBytesSize(3, logOutput_);
     }
     if (((bitField0_ & 0x00000004) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(10, getStartTime());
-    }
-    if (((bitField0_ & 0x00000008) != 0)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(11, getEndTime());
-    }
-    if (!getWfSpecIdBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(12, wfSpecId_);
-    }
-    if (!getThreadSpecNameBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(13, threadSpecName_);
-    }
-    if (!getNodeNameBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(14, nodeName_);
+        .computeMessageSize(4, getStartTime());
     }
     if (!getTaskDefIdBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(15, taskDefId_);
-    }
-    if (((bitField0_ & 0x00000010) != 0)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(16, resultCode_);
-    }
-    if (((bitField0_ & 0x00000020) != 0)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(17, errorMessage_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, taskDefId_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -815,17 +322,8 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.common.proto.TaskRunPb other = (io.littlehorse.common.proto.TaskRunPb) obj;
 
-    if (!getWfRunId()
-        .equals(other.getWfRunId())) return false;
-    if (getThreadRunNumber()
-        != other.getThreadRunNumber()) return false;
-    if (getPosition()
-        != other.getPosition()) return false;
-    if (getNumber()
-        != other.getNumber()) return false;
     if (getAttemptNumber()
         != other.getAttemptNumber()) return false;
-    if (status_ != other.status_) return false;
     if (hasOutput() != other.hasOutput()) return false;
     if (hasOutput()) {
       if (!getOutput()
@@ -836,38 +334,13 @@ private static final long serialVersionUID = 0L;
       if (!getLogOutput()
           .equals(other.getLogOutput())) return false;
     }
-    if (hasScheduleTime() != other.hasScheduleTime()) return false;
-    if (hasScheduleTime()) {
-      if (!getScheduleTime()
-          .equals(other.getScheduleTime())) return false;
-    }
     if (hasStartTime() != other.hasStartTime()) return false;
     if (hasStartTime()) {
       if (!getStartTime()
           .equals(other.getStartTime())) return false;
     }
-    if (hasEndTime() != other.hasEndTime()) return false;
-    if (hasEndTime()) {
-      if (!getEndTime()
-          .equals(other.getEndTime())) return false;
-    }
-    if (!getWfSpecId()
-        .equals(other.getWfSpecId())) return false;
-    if (!getThreadSpecName()
-        .equals(other.getThreadSpecName())) return false;
-    if (!getNodeName()
-        .equals(other.getNodeName())) return false;
     if (!getTaskDefId()
         .equals(other.getTaskDefId())) return false;
-    if (hasResultCode() != other.hasResultCode()) return false;
-    if (hasResultCode()) {
-      if (resultCode_ != other.resultCode_) return false;
-    }
-    if (hasErrorMessage() != other.hasErrorMessage()) return false;
-    if (hasErrorMessage()) {
-      if (!getErrorMessage()
-          .equals(other.getErrorMessage())) return false;
-    }
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -879,18 +352,8 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + WF_RUN_ID_FIELD_NUMBER;
-    hash = (53 * hash) + getWfRunId().hashCode();
-    hash = (37 * hash) + THREAD_RUN_NUMBER_FIELD_NUMBER;
-    hash = (53 * hash) + getThreadRunNumber();
-    hash = (37 * hash) + POSITION_FIELD_NUMBER;
-    hash = (53 * hash) + getPosition();
-    hash = (37 * hash) + NUMBER_FIELD_NUMBER;
-    hash = (53 * hash) + getNumber();
     hash = (37 * hash) + ATTEMPT_NUMBER_FIELD_NUMBER;
     hash = (53 * hash) + getAttemptNumber();
-    hash = (37 * hash) + STATUS_FIELD_NUMBER;
-    hash = (53 * hash) + status_;
     if (hasOutput()) {
       hash = (37 * hash) + OUTPUT_FIELD_NUMBER;
       hash = (53 * hash) + getOutput().hashCode();
@@ -899,34 +362,12 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + LOG_OUTPUT_FIELD_NUMBER;
       hash = (53 * hash) + getLogOutput().hashCode();
     }
-    if (hasScheduleTime()) {
-      hash = (37 * hash) + SCHEDULE_TIME_FIELD_NUMBER;
-      hash = (53 * hash) + getScheduleTime().hashCode();
-    }
     if (hasStartTime()) {
       hash = (37 * hash) + START_TIME_FIELD_NUMBER;
       hash = (53 * hash) + getStartTime().hashCode();
     }
-    if (hasEndTime()) {
-      hash = (37 * hash) + END_TIME_FIELD_NUMBER;
-      hash = (53 * hash) + getEndTime().hashCode();
-    }
-    hash = (37 * hash) + WF_SPEC_ID_FIELD_NUMBER;
-    hash = (53 * hash) + getWfSpecId().hashCode();
-    hash = (37 * hash) + THREAD_SPEC_NAME_FIELD_NUMBER;
-    hash = (53 * hash) + getThreadSpecName().hashCode();
-    hash = (37 * hash) + NODE_NAME_FIELD_NUMBER;
-    hash = (53 * hash) + getNodeName().hashCode();
     hash = (37 * hash) + TASK_DEF_ID_FIELD_NUMBER;
     hash = (53 * hash) + getTaskDefId().hashCode();
-    if (hasResultCode()) {
-      hash = (37 * hash) + RESULT_CODE_FIELD_NUMBER;
-      hash = (53 * hash) + resultCode_;
-    }
-    if (hasErrorMessage()) {
-      hash = (37 * hash) + ERROR_MESSAGE_FIELD_NUMBER;
-      hash = (53 * hash) + getErrorMessage().hashCode();
-    }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -1057,23 +498,12 @@ private static final long serialVersionUID = 0L;
               .alwaysUseFieldBuilders) {
         getOutputFieldBuilder();
         getStartTimeFieldBuilder();
-        getEndTimeFieldBuilder();
       }
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      wfRunId_ = "";
-
-      threadRunNumber_ = 0;
-
-      position_ = 0;
-
-      number_ = 0;
-
       attemptNumber_ = 0;
-
-      status_ = 0;
 
       if (outputBuilder_ == null) {
         output_ = null;
@@ -1083,36 +513,14 @@ private static final long serialVersionUID = 0L;
       bitField0_ = (bitField0_ & ~0x00000001);
       logOutput_ = com.google.protobuf.ByteString.EMPTY;
       bitField0_ = (bitField0_ & ~0x00000002);
-      if (scheduleTimeBuilder_ == null) {
-        scheduleTime_ = null;
-      } else {
-        scheduleTime_ = null;
-        scheduleTimeBuilder_ = null;
-      }
       if (startTimeBuilder_ == null) {
         startTime_ = null;
       } else {
         startTimeBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000004);
-      if (endTimeBuilder_ == null) {
-        endTime_ = null;
-      } else {
-        endTimeBuilder_.clear();
-      }
-      bitField0_ = (bitField0_ & ~0x00000008);
-      wfSpecId_ = "";
-
-      threadSpecName_ = "";
-
-      nodeName_ = "";
-
       taskDefId_ = "";
 
-      resultCode_ = 0;
-      bitField0_ = (bitField0_ & ~0x00000010);
-      errorMessage_ = "";
-      bitField0_ = (bitField0_ & ~0x00000020);
       return this;
     }
 
@@ -1141,12 +549,7 @@ private static final long serialVersionUID = 0L;
       io.littlehorse.common.proto.TaskRunPb result = new io.littlehorse.common.proto.TaskRunPb(this);
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
-      result.wfRunId_ = wfRunId_;
-      result.threadRunNumber_ = threadRunNumber_;
-      result.position_ = position_;
-      result.number_ = number_;
       result.attemptNumber_ = attemptNumber_;
-      result.status_ = status_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         if (outputBuilder_ == null) {
           result.output_ = output_;
@@ -1159,11 +562,6 @@ private static final long serialVersionUID = 0L;
         to_bitField0_ |= 0x00000002;
       }
       result.logOutput_ = logOutput_;
-      if (scheduleTimeBuilder_ == null) {
-        result.scheduleTime_ = scheduleTime_;
-      } else {
-        result.scheduleTime_ = scheduleTimeBuilder_.build();
-      }
       if (((from_bitField0_ & 0x00000004) != 0)) {
         if (startTimeBuilder_ == null) {
           result.startTime_ = startTime_;
@@ -1172,26 +570,7 @@ private static final long serialVersionUID = 0L;
         }
         to_bitField0_ |= 0x00000004;
       }
-      if (((from_bitField0_ & 0x00000008) != 0)) {
-        if (endTimeBuilder_ == null) {
-          result.endTime_ = endTime_;
-        } else {
-          result.endTime_ = endTimeBuilder_.build();
-        }
-        to_bitField0_ |= 0x00000008;
-      }
-      result.wfSpecId_ = wfSpecId_;
-      result.threadSpecName_ = threadSpecName_;
-      result.nodeName_ = nodeName_;
       result.taskDefId_ = taskDefId_;
-      if (((from_bitField0_ & 0x00000010) != 0)) {
-        to_bitField0_ |= 0x00000010;
-      }
-      result.resultCode_ = resultCode_;
-      if (((from_bitField0_ & 0x00000020) != 0)) {
-        to_bitField0_ |= 0x00000020;
-      }
-      result.errorMessage_ = errorMessage_;
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -1241,24 +620,8 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.common.proto.TaskRunPb other) {
       if (other == io.littlehorse.common.proto.TaskRunPb.getDefaultInstance()) return this;
-      if (!other.getWfRunId().isEmpty()) {
-        wfRunId_ = other.wfRunId_;
-        onChanged();
-      }
-      if (other.getThreadRunNumber() != 0) {
-        setThreadRunNumber(other.getThreadRunNumber());
-      }
-      if (other.getPosition() != 0) {
-        setPosition(other.getPosition());
-      }
-      if (other.getNumber() != 0) {
-        setNumber(other.getNumber());
-      }
       if (other.getAttemptNumber() != 0) {
         setAttemptNumber(other.getAttemptNumber());
-      }
-      if (other.status_ != 0) {
-        setStatusValue(other.getStatusValue());
       }
       if (other.hasOutput()) {
         mergeOutput(other.getOutput());
@@ -1266,37 +629,11 @@ private static final long serialVersionUID = 0L;
       if (other.hasLogOutput()) {
         setLogOutput(other.getLogOutput());
       }
-      if (other.hasScheduleTime()) {
-        mergeScheduleTime(other.getScheduleTime());
-      }
       if (other.hasStartTime()) {
         mergeStartTime(other.getStartTime());
       }
-      if (other.hasEndTime()) {
-        mergeEndTime(other.getEndTime());
-      }
-      if (!other.getWfSpecId().isEmpty()) {
-        wfSpecId_ = other.wfSpecId_;
-        onChanged();
-      }
-      if (!other.getThreadSpecName().isEmpty()) {
-        threadSpecName_ = other.threadSpecName_;
-        onChanged();
-      }
-      if (!other.getNodeName().isEmpty()) {
-        nodeName_ = other.nodeName_;
-        onChanged();
-      }
       if (!other.getTaskDefId().isEmpty()) {
         taskDefId_ = other.taskDefId_;
-        onChanged();
-      }
-      if (other.hasResultCode()) {
-        setResultCode(other.getResultCode());
-      }
-      if (other.hasErrorMessage()) {
-        bitField0_ |= 0x00000020;
-        errorMessage_ = other.errorMessage_;
         onChanged();
       }
       this.mergeUnknownFields(other.unknownFields);
@@ -1329,178 +666,13 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private java.lang.Object wfRunId_ = "";
-    /**
-     * <code>string wf_run_id = 1;</code>
-     * @return The wfRunId.
-     */
-    public java.lang.String getWfRunId() {
-      java.lang.Object ref = wfRunId_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        wfRunId_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>string wf_run_id = 1;</code>
-     * @return The bytes for wfRunId.
-     */
-    public com.google.protobuf.ByteString
-        getWfRunIdBytes() {
-      java.lang.Object ref = wfRunId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        wfRunId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string wf_run_id = 1;</code>
-     * @param value The wfRunId to set.
-     * @return This builder for chaining.
-     */
-    public Builder setWfRunId(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      wfRunId_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string wf_run_id = 1;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearWfRunId() {
-      
-      wfRunId_ = getDefaultInstance().getWfRunId();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string wf_run_id = 1;</code>
-     * @param value The bytes for wfRunId to set.
-     * @return This builder for chaining.
-     */
-    public Builder setWfRunIdBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      wfRunId_ = value;
-      onChanged();
-      return this;
-    }
-
-    private int threadRunNumber_ ;
-    /**
-     * <code>int32 thread_run_number = 2;</code>
-     * @return The threadRunNumber.
-     */
-    @java.lang.Override
-    public int getThreadRunNumber() {
-      return threadRunNumber_;
-    }
-    /**
-     * <code>int32 thread_run_number = 2;</code>
-     * @param value The threadRunNumber to set.
-     * @return This builder for chaining.
-     */
-    public Builder setThreadRunNumber(int value) {
-      
-      threadRunNumber_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>int32 thread_run_number = 2;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearThreadRunNumber() {
-      
-      threadRunNumber_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private int position_ ;
-    /**
-     * <code>int32 position = 3;</code>
-     * @return The position.
-     */
-    @java.lang.Override
-    public int getPosition() {
-      return position_;
-    }
-    /**
-     * <code>int32 position = 3;</code>
-     * @param value The position to set.
-     * @return This builder for chaining.
-     */
-    public Builder setPosition(int value) {
-      
-      position_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>int32 position = 3;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearPosition() {
-      
-      position_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private int number_ ;
-    /**
-     * <code>int32 number = 4;</code>
-     * @return The number.
-     */
-    @java.lang.Override
-    public int getNumber() {
-      return number_;
-    }
-    /**
-     * <code>int32 number = 4;</code>
-     * @param value The number to set.
-     * @return This builder for chaining.
-     */
-    public Builder setNumber(int value) {
-      
-      number_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>int32 number = 4;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearNumber() {
-      
-      number_ = 0;
-      onChanged();
-      return this;
-    }
-
     private int attemptNumber_ ;
     /**
-     * <code>int32 attempt_number = 5;</code>
+     * <pre>
+     * Task only
+     * </pre>
+     *
+     * <code>int32 attempt_number = 1;</code>
      * @return The attemptNumber.
      */
     @java.lang.Override
@@ -1508,7 +680,11 @@ private static final long serialVersionUID = 0L;
       return attemptNumber_;
     }
     /**
-     * <code>int32 attempt_number = 5;</code>
+     * <pre>
+     * Task only
+     * </pre>
+     *
+     * <code>int32 attempt_number = 1;</code>
      * @param value The attemptNumber to set.
      * @return This builder for chaining.
      */
@@ -1519,7 +695,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>int32 attempt_number = 5;</code>
+     * <pre>
+     * Task only
+     * </pre>
+     *
+     * <code>int32 attempt_number = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearAttemptNumber() {
@@ -1529,72 +709,18 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int status_ = 0;
-    /**
-     * <code>.lh_proto.LHStatusPb status = 6;</code>
-     * @return The enum numeric value on the wire for status.
-     */
-    @java.lang.Override public int getStatusValue() {
-      return status_;
-    }
-    /**
-     * <code>.lh_proto.LHStatusPb status = 6;</code>
-     * @param value The enum numeric value on the wire for status to set.
-     * @return This builder for chaining.
-     */
-    public Builder setStatusValue(int value) {
-      
-      status_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.lh_proto.LHStatusPb status = 6;</code>
-     * @return The status.
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.LHStatusPb getStatus() {
-      @SuppressWarnings("deprecation")
-      io.littlehorse.common.proto.LHStatusPb result = io.littlehorse.common.proto.LHStatusPb.valueOf(status_);
-      return result == null ? io.littlehorse.common.proto.LHStatusPb.UNRECOGNIZED : result;
-    }
-    /**
-     * <code>.lh_proto.LHStatusPb status = 6;</code>
-     * @param value The status to set.
-     * @return This builder for chaining.
-     */
-    public Builder setStatus(io.littlehorse.common.proto.LHStatusPb value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      
-      status_ = value.getNumber();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.lh_proto.LHStatusPb status = 6;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearStatus() {
-      
-      status_ = 0;
-      onChanged();
-      return this;
-    }
-
     private io.littlehorse.common.proto.VariableValuePb output_;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.VariableValuePb, io.littlehorse.common.proto.VariableValuePb.Builder, io.littlehorse.common.proto.VariableValuePbOrBuilder> outputBuilder_;
     /**
-     * <code>.lh_proto.VariableValuePb output = 7;</code>
+     * <code>.lh_proto.VariableValuePb output = 2;</code>
      * @return Whether the output field is set.
      */
     public boolean hasOutput() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>.lh_proto.VariableValuePb output = 7;</code>
+     * <code>.lh_proto.VariableValuePb output = 2;</code>
      * @return The output.
      */
     public io.littlehorse.common.proto.VariableValuePb getOutput() {
@@ -1605,7 +731,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.lh_proto.VariableValuePb output = 7;</code>
+     * <code>.lh_proto.VariableValuePb output = 2;</code>
      */
     public Builder setOutput(io.littlehorse.common.proto.VariableValuePb value) {
       if (outputBuilder_ == null) {
@@ -1621,7 +747,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.VariableValuePb output = 7;</code>
+     * <code>.lh_proto.VariableValuePb output = 2;</code>
      */
     public Builder setOutput(
         io.littlehorse.common.proto.VariableValuePb.Builder builderForValue) {
@@ -1635,7 +761,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.VariableValuePb output = 7;</code>
+     * <code>.lh_proto.VariableValuePb output = 2;</code>
      */
     public Builder mergeOutput(io.littlehorse.common.proto.VariableValuePb value) {
       if (outputBuilder_ == null) {
@@ -1655,7 +781,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.VariableValuePb output = 7;</code>
+     * <code>.lh_proto.VariableValuePb output = 2;</code>
      */
     public Builder clearOutput() {
       if (outputBuilder_ == null) {
@@ -1668,7 +794,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.VariableValuePb output = 7;</code>
+     * <code>.lh_proto.VariableValuePb output = 2;</code>
      */
     public io.littlehorse.common.proto.VariableValuePb.Builder getOutputBuilder() {
       bitField0_ |= 0x00000001;
@@ -1676,7 +802,7 @@ private static final long serialVersionUID = 0L;
       return getOutputFieldBuilder().getBuilder();
     }
     /**
-     * <code>.lh_proto.VariableValuePb output = 7;</code>
+     * <code>.lh_proto.VariableValuePb output = 2;</code>
      */
     public io.littlehorse.common.proto.VariableValuePbOrBuilder getOutputOrBuilder() {
       if (outputBuilder_ != null) {
@@ -1687,7 +813,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.lh_proto.VariableValuePb output = 7;</code>
+     * <code>.lh_proto.VariableValuePb output = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.VariableValuePb, io.littlehorse.common.proto.VariableValuePb.Builder, io.littlehorse.common.proto.VariableValuePbOrBuilder> 
@@ -1705,7 +831,7 @@ private static final long serialVersionUID = 0L;
 
     private com.google.protobuf.ByteString logOutput_ = com.google.protobuf.ByteString.EMPTY;
     /**
-     * <code>bytes log_output = 8;</code>
+     * <code>bytes log_output = 3;</code>
      * @return Whether the logOutput field is set.
      */
     @java.lang.Override
@@ -1713,7 +839,7 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>bytes log_output = 8;</code>
+     * <code>bytes log_output = 3;</code>
      * @return The logOutput.
      */
     @java.lang.Override
@@ -1721,7 +847,7 @@ private static final long serialVersionUID = 0L;
       return logOutput_;
     }
     /**
-     * <code>bytes log_output = 8;</code>
+     * <code>bytes log_output = 3;</code>
      * @param value The logOutput to set.
      * @return This builder for chaining.
      */
@@ -1735,7 +861,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>bytes log_output = 8;</code>
+     * <code>bytes log_output = 3;</code>
      * @return This builder for chaining.
      */
     public Builder clearLogOutput() {
@@ -1745,137 +871,18 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private com.google.protobuf.Timestamp scheduleTime_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> scheduleTimeBuilder_;
-    /**
-     * <code>.google.protobuf.Timestamp schedule_time = 9;</code>
-     * @return Whether the scheduleTime field is set.
-     */
-    public boolean hasScheduleTime() {
-      return scheduleTimeBuilder_ != null || scheduleTime_ != null;
-    }
-    /**
-     * <code>.google.protobuf.Timestamp schedule_time = 9;</code>
-     * @return The scheduleTime.
-     */
-    public com.google.protobuf.Timestamp getScheduleTime() {
-      if (scheduleTimeBuilder_ == null) {
-        return scheduleTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : scheduleTime_;
-      } else {
-        return scheduleTimeBuilder_.getMessage();
-      }
-    }
-    /**
-     * <code>.google.protobuf.Timestamp schedule_time = 9;</code>
-     */
-    public Builder setScheduleTime(com.google.protobuf.Timestamp value) {
-      if (scheduleTimeBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        scheduleTime_ = value;
-        onChanged();
-      } else {
-        scheduleTimeBuilder_.setMessage(value);
-      }
-
-      return this;
-    }
-    /**
-     * <code>.google.protobuf.Timestamp schedule_time = 9;</code>
-     */
-    public Builder setScheduleTime(
-        com.google.protobuf.Timestamp.Builder builderForValue) {
-      if (scheduleTimeBuilder_ == null) {
-        scheduleTime_ = builderForValue.build();
-        onChanged();
-      } else {
-        scheduleTimeBuilder_.setMessage(builderForValue.build());
-      }
-
-      return this;
-    }
-    /**
-     * <code>.google.protobuf.Timestamp schedule_time = 9;</code>
-     */
-    public Builder mergeScheduleTime(com.google.protobuf.Timestamp value) {
-      if (scheduleTimeBuilder_ == null) {
-        if (scheduleTime_ != null) {
-          scheduleTime_ =
-            com.google.protobuf.Timestamp.newBuilder(scheduleTime_).mergeFrom(value).buildPartial();
-        } else {
-          scheduleTime_ = value;
-        }
-        onChanged();
-      } else {
-        scheduleTimeBuilder_.mergeFrom(value);
-      }
-
-      return this;
-    }
-    /**
-     * <code>.google.protobuf.Timestamp schedule_time = 9;</code>
-     */
-    public Builder clearScheduleTime() {
-      if (scheduleTimeBuilder_ == null) {
-        scheduleTime_ = null;
-        onChanged();
-      } else {
-        scheduleTime_ = null;
-        scheduleTimeBuilder_ = null;
-      }
-
-      return this;
-    }
-    /**
-     * <code>.google.protobuf.Timestamp schedule_time = 9;</code>
-     */
-    public com.google.protobuf.Timestamp.Builder getScheduleTimeBuilder() {
-      
-      onChanged();
-      return getScheduleTimeFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.google.protobuf.Timestamp schedule_time = 9;</code>
-     */
-    public com.google.protobuf.TimestampOrBuilder getScheduleTimeOrBuilder() {
-      if (scheduleTimeBuilder_ != null) {
-        return scheduleTimeBuilder_.getMessageOrBuilder();
-      } else {
-        return scheduleTime_ == null ?
-            com.google.protobuf.Timestamp.getDefaultInstance() : scheduleTime_;
-      }
-    }
-    /**
-     * <code>.google.protobuf.Timestamp schedule_time = 9;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
-        getScheduleTimeFieldBuilder() {
-      if (scheduleTimeBuilder_ == null) {
-        scheduleTimeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
-                getScheduleTime(),
-                getParentForChildren(),
-                isClean());
-        scheduleTime_ = null;
-      }
-      return scheduleTimeBuilder_;
-    }
-
     private com.google.protobuf.Timestamp startTime_;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> startTimeBuilder_;
     /**
-     * <code>.google.protobuf.Timestamp start_time = 10;</code>
+     * <code>.google.protobuf.Timestamp start_time = 4;</code>
      * @return Whether the startTime field is set.
      */
     public boolean hasStartTime() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>.google.protobuf.Timestamp start_time = 10;</code>
+     * <code>.google.protobuf.Timestamp start_time = 4;</code>
      * @return The startTime.
      */
     public com.google.protobuf.Timestamp getStartTime() {
@@ -1886,7 +893,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp start_time = 10;</code>
+     * <code>.google.protobuf.Timestamp start_time = 4;</code>
      */
     public Builder setStartTime(com.google.protobuf.Timestamp value) {
       if (startTimeBuilder_ == null) {
@@ -1902,7 +909,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp start_time = 10;</code>
+     * <code>.google.protobuf.Timestamp start_time = 4;</code>
      */
     public Builder setStartTime(
         com.google.protobuf.Timestamp.Builder builderForValue) {
@@ -1916,7 +923,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp start_time = 10;</code>
+     * <code>.google.protobuf.Timestamp start_time = 4;</code>
      */
     public Builder mergeStartTime(com.google.protobuf.Timestamp value) {
       if (startTimeBuilder_ == null) {
@@ -1936,7 +943,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp start_time = 10;</code>
+     * <code>.google.protobuf.Timestamp start_time = 4;</code>
      */
     public Builder clearStartTime() {
       if (startTimeBuilder_ == null) {
@@ -1949,7 +956,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp start_time = 10;</code>
+     * <code>.google.protobuf.Timestamp start_time = 4;</code>
      */
     public com.google.protobuf.Timestamp.Builder getStartTimeBuilder() {
       bitField0_ |= 0x00000004;
@@ -1957,7 +964,7 @@ private static final long serialVersionUID = 0L;
       return getStartTimeFieldBuilder().getBuilder();
     }
     /**
-     * <code>.google.protobuf.Timestamp start_time = 10;</code>
+     * <code>.google.protobuf.Timestamp start_time = 4;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getStartTimeOrBuilder() {
       if (startTimeBuilder_ != null) {
@@ -1968,7 +975,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp start_time = 10;</code>
+     * <code>.google.protobuf.Timestamp start_time = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
@@ -1984,357 +991,9 @@ private static final long serialVersionUID = 0L;
       return startTimeBuilder_;
     }
 
-    private com.google.protobuf.Timestamp endTime_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> endTimeBuilder_;
-    /**
-     * <code>.google.protobuf.Timestamp end_time = 11;</code>
-     * @return Whether the endTime field is set.
-     */
-    public boolean hasEndTime() {
-      return ((bitField0_ & 0x00000008) != 0);
-    }
-    /**
-     * <code>.google.protobuf.Timestamp end_time = 11;</code>
-     * @return The endTime.
-     */
-    public com.google.protobuf.Timestamp getEndTime() {
-      if (endTimeBuilder_ == null) {
-        return endTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : endTime_;
-      } else {
-        return endTimeBuilder_.getMessage();
-      }
-    }
-    /**
-     * <code>.google.protobuf.Timestamp end_time = 11;</code>
-     */
-    public Builder setEndTime(com.google.protobuf.Timestamp value) {
-      if (endTimeBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        endTime_ = value;
-        onChanged();
-      } else {
-        endTimeBuilder_.setMessage(value);
-      }
-      bitField0_ |= 0x00000008;
-      return this;
-    }
-    /**
-     * <code>.google.protobuf.Timestamp end_time = 11;</code>
-     */
-    public Builder setEndTime(
-        com.google.protobuf.Timestamp.Builder builderForValue) {
-      if (endTimeBuilder_ == null) {
-        endTime_ = builderForValue.build();
-        onChanged();
-      } else {
-        endTimeBuilder_.setMessage(builderForValue.build());
-      }
-      bitField0_ |= 0x00000008;
-      return this;
-    }
-    /**
-     * <code>.google.protobuf.Timestamp end_time = 11;</code>
-     */
-    public Builder mergeEndTime(com.google.protobuf.Timestamp value) {
-      if (endTimeBuilder_ == null) {
-        if (((bitField0_ & 0x00000008) != 0) &&
-            endTime_ != null &&
-            endTime_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
-          endTime_ =
-            com.google.protobuf.Timestamp.newBuilder(endTime_).mergeFrom(value).buildPartial();
-        } else {
-          endTime_ = value;
-        }
-        onChanged();
-      } else {
-        endTimeBuilder_.mergeFrom(value);
-      }
-      bitField0_ |= 0x00000008;
-      return this;
-    }
-    /**
-     * <code>.google.protobuf.Timestamp end_time = 11;</code>
-     */
-    public Builder clearEndTime() {
-      if (endTimeBuilder_ == null) {
-        endTime_ = null;
-        onChanged();
-      } else {
-        endTimeBuilder_.clear();
-      }
-      bitField0_ = (bitField0_ & ~0x00000008);
-      return this;
-    }
-    /**
-     * <code>.google.protobuf.Timestamp end_time = 11;</code>
-     */
-    public com.google.protobuf.Timestamp.Builder getEndTimeBuilder() {
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return getEndTimeFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.google.protobuf.Timestamp end_time = 11;</code>
-     */
-    public com.google.protobuf.TimestampOrBuilder getEndTimeOrBuilder() {
-      if (endTimeBuilder_ != null) {
-        return endTimeBuilder_.getMessageOrBuilder();
-      } else {
-        return endTime_ == null ?
-            com.google.protobuf.Timestamp.getDefaultInstance() : endTime_;
-      }
-    }
-    /**
-     * <code>.google.protobuf.Timestamp end_time = 11;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
-        getEndTimeFieldBuilder() {
-      if (endTimeBuilder_ == null) {
-        endTimeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
-                getEndTime(),
-                getParentForChildren(),
-                isClean());
-        endTime_ = null;
-      }
-      return endTimeBuilder_;
-    }
-
-    private java.lang.Object wfSpecId_ = "";
-    /**
-     * <code>string wf_spec_id = 12;</code>
-     * @return The wfSpecId.
-     */
-    public java.lang.String getWfSpecId() {
-      java.lang.Object ref = wfSpecId_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        wfSpecId_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>string wf_spec_id = 12;</code>
-     * @return The bytes for wfSpecId.
-     */
-    public com.google.protobuf.ByteString
-        getWfSpecIdBytes() {
-      java.lang.Object ref = wfSpecId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        wfSpecId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string wf_spec_id = 12;</code>
-     * @param value The wfSpecId to set.
-     * @return This builder for chaining.
-     */
-    public Builder setWfSpecId(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      wfSpecId_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string wf_spec_id = 12;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearWfSpecId() {
-      
-      wfSpecId_ = getDefaultInstance().getWfSpecId();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string wf_spec_id = 12;</code>
-     * @param value The bytes for wfSpecId to set.
-     * @return This builder for chaining.
-     */
-    public Builder setWfSpecIdBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      wfSpecId_ = value;
-      onChanged();
-      return this;
-    }
-
-    private java.lang.Object threadSpecName_ = "";
-    /**
-     * <code>string thread_spec_name = 13;</code>
-     * @return The threadSpecName.
-     */
-    public java.lang.String getThreadSpecName() {
-      java.lang.Object ref = threadSpecName_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        threadSpecName_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>string thread_spec_name = 13;</code>
-     * @return The bytes for threadSpecName.
-     */
-    public com.google.protobuf.ByteString
-        getThreadSpecNameBytes() {
-      java.lang.Object ref = threadSpecName_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        threadSpecName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string thread_spec_name = 13;</code>
-     * @param value The threadSpecName to set.
-     * @return This builder for chaining.
-     */
-    public Builder setThreadSpecName(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      threadSpecName_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string thread_spec_name = 13;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearThreadSpecName() {
-      
-      threadSpecName_ = getDefaultInstance().getThreadSpecName();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string thread_spec_name = 13;</code>
-     * @param value The bytes for threadSpecName to set.
-     * @return This builder for chaining.
-     */
-    public Builder setThreadSpecNameBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      threadSpecName_ = value;
-      onChanged();
-      return this;
-    }
-
-    private java.lang.Object nodeName_ = "";
-    /**
-     * <code>string node_name = 14;</code>
-     * @return The nodeName.
-     */
-    public java.lang.String getNodeName() {
-      java.lang.Object ref = nodeName_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        nodeName_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>string node_name = 14;</code>
-     * @return The bytes for nodeName.
-     */
-    public com.google.protobuf.ByteString
-        getNodeNameBytes() {
-      java.lang.Object ref = nodeName_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        nodeName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string node_name = 14;</code>
-     * @param value The nodeName to set.
-     * @return This builder for chaining.
-     */
-    public Builder setNodeName(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      nodeName_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string node_name = 14;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearNodeName() {
-      
-      nodeName_ = getDefaultInstance().getNodeName();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string node_name = 14;</code>
-     * @param value The bytes for nodeName to set.
-     * @return This builder for chaining.
-     */
-    public Builder setNodeNameBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      nodeName_ = value;
-      onChanged();
-      return this;
-    }
-
     private java.lang.Object taskDefId_ = "";
     /**
-     * <code>string task_def_id = 15;</code>
+     * <code>string task_def_id = 5;</code>
      * @return The taskDefId.
      */
     public java.lang.String getTaskDefId() {
@@ -2350,7 +1009,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string task_def_id = 15;</code>
+     * <code>string task_def_id = 5;</code>
      * @return The bytes for taskDefId.
      */
     public com.google.protobuf.ByteString
@@ -2367,7 +1026,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string task_def_id = 15;</code>
+     * <code>string task_def_id = 5;</code>
      * @param value The taskDefId to set.
      * @return This builder for chaining.
      */
@@ -2382,7 +1041,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string task_def_id = 15;</code>
+     * <code>string task_def_id = 5;</code>
      * @return This builder for chaining.
      */
     public Builder clearTaskDefId() {
@@ -2392,7 +1051,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string task_def_id = 15;</code>
+     * <code>string task_def_id = 5;</code>
      * @param value The bytes for taskDefId to set.
      * @return This builder for chaining.
      */
@@ -2404,150 +1063,6 @@ private static final long serialVersionUID = 0L;
   checkByteStringIsUtf8(value);
       
       taskDefId_ = value;
-      onChanged();
-      return this;
-    }
-
-    private int resultCode_ = 0;
-    /**
-     * <code>.lh_proto.TaskResultCodePb result_code = 16;</code>
-     * @return Whether the resultCode field is set.
-     */
-    @java.lang.Override public boolean hasResultCode() {
-      return ((bitField0_ & 0x00000010) != 0);
-    }
-    /**
-     * <code>.lh_proto.TaskResultCodePb result_code = 16;</code>
-     * @return The enum numeric value on the wire for resultCode.
-     */
-    @java.lang.Override public int getResultCodeValue() {
-      return resultCode_;
-    }
-    /**
-     * <code>.lh_proto.TaskResultCodePb result_code = 16;</code>
-     * @param value The enum numeric value on the wire for resultCode to set.
-     * @return This builder for chaining.
-     */
-    public Builder setResultCodeValue(int value) {
-      bitField0_ |= 0x00000010;
-      resultCode_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.lh_proto.TaskResultCodePb result_code = 16;</code>
-     * @return The resultCode.
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.TaskResultCodePb getResultCode() {
-      @SuppressWarnings("deprecation")
-      io.littlehorse.common.proto.TaskResultCodePb result = io.littlehorse.common.proto.TaskResultCodePb.valueOf(resultCode_);
-      return result == null ? io.littlehorse.common.proto.TaskResultCodePb.UNRECOGNIZED : result;
-    }
-    /**
-     * <code>.lh_proto.TaskResultCodePb result_code = 16;</code>
-     * @param value The resultCode to set.
-     * @return This builder for chaining.
-     */
-    public Builder setResultCode(io.littlehorse.common.proto.TaskResultCodePb value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      bitField0_ |= 0x00000010;
-      resultCode_ = value.getNumber();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.lh_proto.TaskResultCodePb result_code = 16;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearResultCode() {
-      bitField0_ = (bitField0_ & ~0x00000010);
-      resultCode_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private java.lang.Object errorMessage_ = "";
-    /**
-     * <code>string error_message = 17;</code>
-     * @return Whether the errorMessage field is set.
-     */
-    public boolean hasErrorMessage() {
-      return ((bitField0_ & 0x00000020) != 0);
-    }
-    /**
-     * <code>string error_message = 17;</code>
-     * @return The errorMessage.
-     */
-    public java.lang.String getErrorMessage() {
-      java.lang.Object ref = errorMessage_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        errorMessage_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>string error_message = 17;</code>
-     * @return The bytes for errorMessage.
-     */
-    public com.google.protobuf.ByteString
-        getErrorMessageBytes() {
-      java.lang.Object ref = errorMessage_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        errorMessage_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string error_message = 17;</code>
-     * @param value The errorMessage to set.
-     * @return This builder for chaining.
-     */
-    public Builder setErrorMessage(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000020;
-      errorMessage_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string error_message = 17;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearErrorMessage() {
-      bitField0_ = (bitField0_ & ~0x00000020);
-      errorMessage_ = getDefaultInstance().getErrorMessage();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string error_message = 17;</code>
-     * @param value The bytes for errorMessage to set.
-     * @return This builder for chaining.
-     */
-    public Builder setErrorMessageBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      bitField0_ |= 0x00000020;
-      errorMessage_ = value;
       onChanged();
       return this;
     }

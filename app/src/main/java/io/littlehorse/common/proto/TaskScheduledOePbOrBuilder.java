@@ -20,59 +20,17 @@ public interface TaskScheduledOePbOrBuilder extends
       getTaskDefIdBytes();
 
   /**
-   * <code>int32 thread_run_number = 2;</code>
-   * @return The threadRunNumber.
-   */
-  int getThreadRunNumber();
-
-  /**
-   * <code>int32 task_run_number = 3;</code>
-   * @return The taskRunNumber.
-   */
-  int getTaskRunNumber();
-
-  /**
-   * <code>int32 task_run_position = 4;</code>
-   * @return The taskRunPosition.
-   */
-  int getTaskRunPosition();
-
-  /**
-   * <code>int32 task_run_attempt_number = 5;</code>
+   * <code>int32 task_run_attempt_number = 2;</code>
    * @return The taskRunAttemptNumber.
    */
   int getTaskRunAttemptNumber();
 
   /**
-   * <code>string wf_run_id = 6;</code>
-   * @return The wfRunId.
-   */
-  java.lang.String getWfRunId();
-  /**
-   * <code>string wf_run_id = 6;</code>
-   * @return The bytes for wfRunId.
-   */
-  com.google.protobuf.ByteString
-      getWfRunIdBytes();
-
-  /**
-   * <code>string node_name = 7;</code>
-   * @return The nodeName.
-   */
-  java.lang.String getNodeName();
-  /**
-   * <code>string node_name = 7;</code>
-   * @return The bytes for nodeName.
-   */
-  com.google.protobuf.ByteString
-      getNodeNameBytes();
-
-  /**
-   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 8;</code>
+   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 3;</code>
    */
   int getVariablesCount();
   /**
-   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 8;</code>
+   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 3;</code>
    */
   boolean containsVariables(
       java.lang.String key);
@@ -83,19 +41,19 @@ public interface TaskScheduledOePbOrBuilder extends
   java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableValuePb>
   getVariables();
   /**
-   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 8;</code>
+   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 3;</code>
    */
   java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableValuePb>
   getVariablesMap();
   /**
-   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 8;</code>
+   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 3;</code>
    */
 
   io.littlehorse.common.proto.VariableValuePb getVariablesOrDefault(
       java.lang.String key,
       io.littlehorse.common.proto.VariableValuePb defaultValue);
   /**
-   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 8;</code>
+   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 3;</code>
    */
 
   io.littlehorse.common.proto.VariableValuePb getVariablesOrThrow(

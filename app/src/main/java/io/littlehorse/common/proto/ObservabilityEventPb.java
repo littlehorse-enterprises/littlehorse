@@ -104,14 +104,14 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 42: {
-            io.littlehorse.common.proto.TaskScheduledOePb.Builder subBuilder = null;
+            io.littlehorse.common.proto.NodeReachedOePb.Builder subBuilder = null;
             if (eventCase_ == 5) {
-              subBuilder = ((io.littlehorse.common.proto.TaskScheduledOePb) event_).toBuilder();
+              subBuilder = ((io.littlehorse.common.proto.NodeReachedOePb) event_).toBuilder();
             }
             event_ =
-                input.readMessage(io.littlehorse.common.proto.TaskScheduledOePb.parser(), extensionRegistry);
+                input.readMessage(io.littlehorse.common.proto.NodeReachedOePb.parser(), extensionRegistry);
             if (subBuilder != null) {
-              subBuilder.mergeFrom((io.littlehorse.common.proto.TaskScheduledOePb) event_);
+              subBuilder.mergeFrom((io.littlehorse.common.proto.NodeReachedOePb) event_);
               event_ = subBuilder.buildPartial();
             }
             eventCase_ = 5;
@@ -132,14 +132,14 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 58: {
-            io.littlehorse.common.proto.TaskResultOePb.Builder subBuilder = null;
+            io.littlehorse.common.proto.NodeResultOePb.Builder subBuilder = null;
             if (eventCase_ == 7) {
-              subBuilder = ((io.littlehorse.common.proto.TaskResultOePb) event_).toBuilder();
+              subBuilder = ((io.littlehorse.common.proto.NodeResultOePb) event_).toBuilder();
             }
             event_ =
-                input.readMessage(io.littlehorse.common.proto.TaskResultOePb.parser(), extensionRegistry);
+                input.readMessage(io.littlehorse.common.proto.NodeResultOePb.parser(), extensionRegistry);
             if (subBuilder != null) {
-              subBuilder.mergeFrom((io.littlehorse.common.proto.TaskResultOePb) event_);
+              subBuilder.mergeFrom((io.littlehorse.common.proto.NodeResultOePb) event_);
               event_ = subBuilder.buildPartial();
             }
             eventCase_ = 7;
@@ -199,7 +199,7 @@ private static final long serialVersionUID = 0L;
     WF_RUN_STATUS(2),
     RUN_START(3),
     THREAD_START(4),
-    TASK_SCHEDULE(5),
+    NODE_REACHED(5),
     TASK_START(6),
     TASK_RESULT(7),
     THREAD_STATUS(8),
@@ -223,7 +223,7 @@ private static final long serialVersionUID = 0L;
         case 2: return WF_RUN_STATUS;
         case 3: return RUN_START;
         case 4: return THREAD_START;
-        case 5: return TASK_SCHEDULE;
+        case 5: return NODE_REACHED;
         case 6: return TASK_START;
         case 7: return TASK_RESULT;
         case 8: return THREAD_STATUS;
@@ -361,35 +361,35 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.ThreadStartOePb.getDefaultInstance();
   }
 
-  public static final int TASK_SCHEDULE_FIELD_NUMBER = 5;
+  public static final int NODE_REACHED_FIELD_NUMBER = 5;
   /**
-   * <code>.lh_proto.TaskScheduledOePb task_schedule = 5;</code>
-   * @return Whether the taskSchedule field is set.
+   * <code>.lh_proto.NodeReachedOePb node_reached = 5;</code>
+   * @return Whether the nodeReached field is set.
    */
   @java.lang.Override
-  public boolean hasTaskSchedule() {
+  public boolean hasNodeReached() {
     return eventCase_ == 5;
   }
   /**
-   * <code>.lh_proto.TaskScheduledOePb task_schedule = 5;</code>
-   * @return The taskSchedule.
+   * <code>.lh_proto.NodeReachedOePb node_reached = 5;</code>
+   * @return The nodeReached.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.TaskScheduledOePb getTaskSchedule() {
+  public io.littlehorse.common.proto.NodeReachedOePb getNodeReached() {
     if (eventCase_ == 5) {
-       return (io.littlehorse.common.proto.TaskScheduledOePb) event_;
+       return (io.littlehorse.common.proto.NodeReachedOePb) event_;
     }
-    return io.littlehorse.common.proto.TaskScheduledOePb.getDefaultInstance();
+    return io.littlehorse.common.proto.NodeReachedOePb.getDefaultInstance();
   }
   /**
-   * <code>.lh_proto.TaskScheduledOePb task_schedule = 5;</code>
+   * <code>.lh_proto.NodeReachedOePb node_reached = 5;</code>
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.TaskScheduledOePbOrBuilder getTaskScheduleOrBuilder() {
+  public io.littlehorse.common.proto.NodeReachedOePbOrBuilder getNodeReachedOrBuilder() {
     if (eventCase_ == 5) {
-       return (io.littlehorse.common.proto.TaskScheduledOePb) event_;
+       return (io.littlehorse.common.proto.NodeReachedOePb) event_;
     }
-    return io.littlehorse.common.proto.TaskScheduledOePb.getDefaultInstance();
+    return io.littlehorse.common.proto.NodeReachedOePb.getDefaultInstance();
   }
 
   public static final int TASK_START_FIELD_NUMBER = 6;
@@ -425,7 +425,7 @@ private static final long serialVersionUID = 0L;
 
   public static final int TASK_RESULT_FIELD_NUMBER = 7;
   /**
-   * <code>.lh_proto.TaskResultOePb task_result = 7;</code>
+   * <code>.lh_proto.NodeResultOePb task_result = 7;</code>
    * @return Whether the taskResult field is set.
    */
   @java.lang.Override
@@ -433,25 +433,25 @@ private static final long serialVersionUID = 0L;
     return eventCase_ == 7;
   }
   /**
-   * <code>.lh_proto.TaskResultOePb task_result = 7;</code>
+   * <code>.lh_proto.NodeResultOePb task_result = 7;</code>
    * @return The taskResult.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.TaskResultOePb getTaskResult() {
+  public io.littlehorse.common.proto.NodeResultOePb getTaskResult() {
     if (eventCase_ == 7) {
-       return (io.littlehorse.common.proto.TaskResultOePb) event_;
+       return (io.littlehorse.common.proto.NodeResultOePb) event_;
     }
-    return io.littlehorse.common.proto.TaskResultOePb.getDefaultInstance();
+    return io.littlehorse.common.proto.NodeResultOePb.getDefaultInstance();
   }
   /**
-   * <code>.lh_proto.TaskResultOePb task_result = 7;</code>
+   * <code>.lh_proto.NodeResultOePb task_result = 7;</code>
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.TaskResultOePbOrBuilder getTaskResultOrBuilder() {
+  public io.littlehorse.common.proto.NodeResultOePbOrBuilder getTaskResultOrBuilder() {
     if (eventCase_ == 7) {
-       return (io.littlehorse.common.proto.TaskResultOePb) event_;
+       return (io.littlehorse.common.proto.NodeResultOePb) event_;
     }
-    return io.littlehorse.common.proto.TaskResultOePb.getDefaultInstance();
+    return io.littlehorse.common.proto.NodeResultOePb.getDefaultInstance();
   }
 
   public static final int THREAD_STATUS_FIELD_NUMBER = 8;
@@ -512,13 +512,13 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(4, (io.littlehorse.common.proto.ThreadStartOePb) event_);
     }
     if (eventCase_ == 5) {
-      output.writeMessage(5, (io.littlehorse.common.proto.TaskScheduledOePb) event_);
+      output.writeMessage(5, (io.littlehorse.common.proto.NodeReachedOePb) event_);
     }
     if (eventCase_ == 6) {
       output.writeMessage(6, (io.littlehorse.common.proto.TaskStartOePb) event_);
     }
     if (eventCase_ == 7) {
-      output.writeMessage(7, (io.littlehorse.common.proto.TaskResultOePb) event_);
+      output.writeMessage(7, (io.littlehorse.common.proto.NodeResultOePb) event_);
     }
     if (eventCase_ == 8) {
       output.writeMessage(8, (io.littlehorse.common.proto.ThreadStatusChangeOePb) event_);
@@ -550,7 +550,7 @@ private static final long serialVersionUID = 0L;
     }
     if (eventCase_ == 5) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(5, (io.littlehorse.common.proto.TaskScheduledOePb) event_);
+        .computeMessageSize(5, (io.littlehorse.common.proto.NodeReachedOePb) event_);
     }
     if (eventCase_ == 6) {
       size += com.google.protobuf.CodedOutputStream
@@ -558,7 +558,7 @@ private static final long serialVersionUID = 0L;
     }
     if (eventCase_ == 7) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(7, (io.littlehorse.common.proto.TaskResultOePb) event_);
+        .computeMessageSize(7, (io.littlehorse.common.proto.NodeResultOePb) event_);
     }
     if (eventCase_ == 8) {
       size += com.google.protobuf.CodedOutputStream
@@ -599,8 +599,8 @@ private static final long serialVersionUID = 0L;
             .equals(other.getThreadStart())) return false;
         break;
       case 5:
-        if (!getTaskSchedule()
-            .equals(other.getTaskSchedule())) return false;
+        if (!getNodeReached()
+            .equals(other.getNodeReached())) return false;
         break;
       case 6:
         if (!getTaskStart()
@@ -646,8 +646,8 @@ private static final long serialVersionUID = 0L;
         hash = (53 * hash) + getThreadStart().hashCode();
         break;
       case 5:
-        hash = (37 * hash) + TASK_SCHEDULE_FIELD_NUMBER;
-        hash = (53 * hash) + getTaskSchedule().hashCode();
+        hash = (37 * hash) + NODE_REACHED_FIELD_NUMBER;
+        hash = (53 * hash) + getNodeReached().hashCode();
         break;
       case 6:
         hash = (37 * hash) + TASK_START_FIELD_NUMBER;
@@ -858,10 +858,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       if (eventCase_ == 5) {
-        if (taskScheduleBuilder_ == null) {
+        if (nodeReachedBuilder_ == null) {
           result.event_ = event_;
         } else {
-          result.event_ = taskScheduleBuilder_.build();
+          result.event_ = nodeReachedBuilder_.build();
         }
       }
       if (eventCase_ == 6) {
@@ -950,8 +950,8 @@ private static final long serialVersionUID = 0L;
           mergeThreadStart(other.getThreadStart());
           break;
         }
-        case TASK_SCHEDULE: {
-          mergeTaskSchedule(other.getTaskSchedule());
+        case NODE_REACHED: {
+          mergeNodeReached(other.getNodeReached());
           break;
         }
         case TASK_START: {
@@ -1557,71 +1557,71 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.TaskScheduledOePb, io.littlehorse.common.proto.TaskScheduledOePb.Builder, io.littlehorse.common.proto.TaskScheduledOePbOrBuilder> taskScheduleBuilder_;
+        io.littlehorse.common.proto.NodeReachedOePb, io.littlehorse.common.proto.NodeReachedOePb.Builder, io.littlehorse.common.proto.NodeReachedOePbOrBuilder> nodeReachedBuilder_;
     /**
-     * <code>.lh_proto.TaskScheduledOePb task_schedule = 5;</code>
-     * @return Whether the taskSchedule field is set.
+     * <code>.lh_proto.NodeReachedOePb node_reached = 5;</code>
+     * @return Whether the nodeReached field is set.
      */
     @java.lang.Override
-    public boolean hasTaskSchedule() {
+    public boolean hasNodeReached() {
       return eventCase_ == 5;
     }
     /**
-     * <code>.lh_proto.TaskScheduledOePb task_schedule = 5;</code>
-     * @return The taskSchedule.
+     * <code>.lh_proto.NodeReachedOePb node_reached = 5;</code>
+     * @return The nodeReached.
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.TaskScheduledOePb getTaskSchedule() {
-      if (taskScheduleBuilder_ == null) {
+    public io.littlehorse.common.proto.NodeReachedOePb getNodeReached() {
+      if (nodeReachedBuilder_ == null) {
         if (eventCase_ == 5) {
-          return (io.littlehorse.common.proto.TaskScheduledOePb) event_;
+          return (io.littlehorse.common.proto.NodeReachedOePb) event_;
         }
-        return io.littlehorse.common.proto.TaskScheduledOePb.getDefaultInstance();
+        return io.littlehorse.common.proto.NodeReachedOePb.getDefaultInstance();
       } else {
         if (eventCase_ == 5) {
-          return taskScheduleBuilder_.getMessage();
+          return nodeReachedBuilder_.getMessage();
         }
-        return io.littlehorse.common.proto.TaskScheduledOePb.getDefaultInstance();
+        return io.littlehorse.common.proto.NodeReachedOePb.getDefaultInstance();
       }
     }
     /**
-     * <code>.lh_proto.TaskScheduledOePb task_schedule = 5;</code>
+     * <code>.lh_proto.NodeReachedOePb node_reached = 5;</code>
      */
-    public Builder setTaskSchedule(io.littlehorse.common.proto.TaskScheduledOePb value) {
-      if (taskScheduleBuilder_ == null) {
+    public Builder setNodeReached(io.littlehorse.common.proto.NodeReachedOePb value) {
+      if (nodeReachedBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
         event_ = value;
         onChanged();
       } else {
-        taskScheduleBuilder_.setMessage(value);
+        nodeReachedBuilder_.setMessage(value);
       }
       eventCase_ = 5;
       return this;
     }
     /**
-     * <code>.lh_proto.TaskScheduledOePb task_schedule = 5;</code>
+     * <code>.lh_proto.NodeReachedOePb node_reached = 5;</code>
      */
-    public Builder setTaskSchedule(
-        io.littlehorse.common.proto.TaskScheduledOePb.Builder builderForValue) {
-      if (taskScheduleBuilder_ == null) {
+    public Builder setNodeReached(
+        io.littlehorse.common.proto.NodeReachedOePb.Builder builderForValue) {
+      if (nodeReachedBuilder_ == null) {
         event_ = builderForValue.build();
         onChanged();
       } else {
-        taskScheduleBuilder_.setMessage(builderForValue.build());
+        nodeReachedBuilder_.setMessage(builderForValue.build());
       }
       eventCase_ = 5;
       return this;
     }
     /**
-     * <code>.lh_proto.TaskScheduledOePb task_schedule = 5;</code>
+     * <code>.lh_proto.NodeReachedOePb node_reached = 5;</code>
      */
-    public Builder mergeTaskSchedule(io.littlehorse.common.proto.TaskScheduledOePb value) {
-      if (taskScheduleBuilder_ == null) {
+    public Builder mergeNodeReached(io.littlehorse.common.proto.NodeReachedOePb value) {
+      if (nodeReachedBuilder_ == null) {
         if (eventCase_ == 5 &&
-            event_ != io.littlehorse.common.proto.TaskScheduledOePb.getDefaultInstance()) {
-          event_ = io.littlehorse.common.proto.TaskScheduledOePb.newBuilder((io.littlehorse.common.proto.TaskScheduledOePb) event_)
+            event_ != io.littlehorse.common.proto.NodeReachedOePb.getDefaultInstance()) {
+          event_ = io.littlehorse.common.proto.NodeReachedOePb.newBuilder((io.littlehorse.common.proto.NodeReachedOePb) event_)
               .mergeFrom(value).buildPartial();
         } else {
           event_ = value;
@@ -1629,18 +1629,18 @@ private static final long serialVersionUID = 0L;
         onChanged();
       } else {
         if (eventCase_ == 5) {
-          taskScheduleBuilder_.mergeFrom(value);
+          nodeReachedBuilder_.mergeFrom(value);
         }
-        taskScheduleBuilder_.setMessage(value);
+        nodeReachedBuilder_.setMessage(value);
       }
       eventCase_ = 5;
       return this;
     }
     /**
-     * <code>.lh_proto.TaskScheduledOePb task_schedule = 5;</code>
+     * <code>.lh_proto.NodeReachedOePb node_reached = 5;</code>
      */
-    public Builder clearTaskSchedule() {
-      if (taskScheduleBuilder_ == null) {
+    public Builder clearNodeReached() {
+      if (nodeReachedBuilder_ == null) {
         if (eventCase_ == 5) {
           eventCase_ = 0;
           event_ = null;
@@ -1651,50 +1651,50 @@ private static final long serialVersionUID = 0L;
           eventCase_ = 0;
           event_ = null;
         }
-        taskScheduleBuilder_.clear();
+        nodeReachedBuilder_.clear();
       }
       return this;
     }
     /**
-     * <code>.lh_proto.TaskScheduledOePb task_schedule = 5;</code>
+     * <code>.lh_proto.NodeReachedOePb node_reached = 5;</code>
      */
-    public io.littlehorse.common.proto.TaskScheduledOePb.Builder getTaskScheduleBuilder() {
-      return getTaskScheduleFieldBuilder().getBuilder();
+    public io.littlehorse.common.proto.NodeReachedOePb.Builder getNodeReachedBuilder() {
+      return getNodeReachedFieldBuilder().getBuilder();
     }
     /**
-     * <code>.lh_proto.TaskScheduledOePb task_schedule = 5;</code>
+     * <code>.lh_proto.NodeReachedOePb node_reached = 5;</code>
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.TaskScheduledOePbOrBuilder getTaskScheduleOrBuilder() {
-      if ((eventCase_ == 5) && (taskScheduleBuilder_ != null)) {
-        return taskScheduleBuilder_.getMessageOrBuilder();
+    public io.littlehorse.common.proto.NodeReachedOePbOrBuilder getNodeReachedOrBuilder() {
+      if ((eventCase_ == 5) && (nodeReachedBuilder_ != null)) {
+        return nodeReachedBuilder_.getMessageOrBuilder();
       } else {
         if (eventCase_ == 5) {
-          return (io.littlehorse.common.proto.TaskScheduledOePb) event_;
+          return (io.littlehorse.common.proto.NodeReachedOePb) event_;
         }
-        return io.littlehorse.common.proto.TaskScheduledOePb.getDefaultInstance();
+        return io.littlehorse.common.proto.NodeReachedOePb.getDefaultInstance();
       }
     }
     /**
-     * <code>.lh_proto.TaskScheduledOePb task_schedule = 5;</code>
+     * <code>.lh_proto.NodeReachedOePb node_reached = 5;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.TaskScheduledOePb, io.littlehorse.common.proto.TaskScheduledOePb.Builder, io.littlehorse.common.proto.TaskScheduledOePbOrBuilder> 
-        getTaskScheduleFieldBuilder() {
-      if (taskScheduleBuilder_ == null) {
+        io.littlehorse.common.proto.NodeReachedOePb, io.littlehorse.common.proto.NodeReachedOePb.Builder, io.littlehorse.common.proto.NodeReachedOePbOrBuilder> 
+        getNodeReachedFieldBuilder() {
+      if (nodeReachedBuilder_ == null) {
         if (!(eventCase_ == 5)) {
-          event_ = io.littlehorse.common.proto.TaskScheduledOePb.getDefaultInstance();
+          event_ = io.littlehorse.common.proto.NodeReachedOePb.getDefaultInstance();
         }
-        taskScheduleBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.TaskScheduledOePb, io.littlehorse.common.proto.TaskScheduledOePb.Builder, io.littlehorse.common.proto.TaskScheduledOePbOrBuilder>(
-                (io.littlehorse.common.proto.TaskScheduledOePb) event_,
+        nodeReachedBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.NodeReachedOePb, io.littlehorse.common.proto.NodeReachedOePb.Builder, io.littlehorse.common.proto.NodeReachedOePbOrBuilder>(
+                (io.littlehorse.common.proto.NodeReachedOePb) event_,
                 getParentForChildren(),
                 isClean());
         event_ = null;
       }
       eventCase_ = 5;
       onChanged();;
-      return taskScheduleBuilder_;
+      return nodeReachedBuilder_;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1839,9 +1839,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.TaskResultOePb, io.littlehorse.common.proto.TaskResultOePb.Builder, io.littlehorse.common.proto.TaskResultOePbOrBuilder> taskResultBuilder_;
+        io.littlehorse.common.proto.NodeResultOePb, io.littlehorse.common.proto.NodeResultOePb.Builder, io.littlehorse.common.proto.NodeResultOePbOrBuilder> taskResultBuilder_;
     /**
-     * <code>.lh_proto.TaskResultOePb task_result = 7;</code>
+     * <code>.lh_proto.NodeResultOePb task_result = 7;</code>
      * @return Whether the taskResult field is set.
      */
     @java.lang.Override
@@ -1849,27 +1849,27 @@ private static final long serialVersionUID = 0L;
       return eventCase_ == 7;
     }
     /**
-     * <code>.lh_proto.TaskResultOePb task_result = 7;</code>
+     * <code>.lh_proto.NodeResultOePb task_result = 7;</code>
      * @return The taskResult.
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.TaskResultOePb getTaskResult() {
+    public io.littlehorse.common.proto.NodeResultOePb getTaskResult() {
       if (taskResultBuilder_ == null) {
         if (eventCase_ == 7) {
-          return (io.littlehorse.common.proto.TaskResultOePb) event_;
+          return (io.littlehorse.common.proto.NodeResultOePb) event_;
         }
-        return io.littlehorse.common.proto.TaskResultOePb.getDefaultInstance();
+        return io.littlehorse.common.proto.NodeResultOePb.getDefaultInstance();
       } else {
         if (eventCase_ == 7) {
           return taskResultBuilder_.getMessage();
         }
-        return io.littlehorse.common.proto.TaskResultOePb.getDefaultInstance();
+        return io.littlehorse.common.proto.NodeResultOePb.getDefaultInstance();
       }
     }
     /**
-     * <code>.lh_proto.TaskResultOePb task_result = 7;</code>
+     * <code>.lh_proto.NodeResultOePb task_result = 7;</code>
      */
-    public Builder setTaskResult(io.littlehorse.common.proto.TaskResultOePb value) {
+    public Builder setTaskResult(io.littlehorse.common.proto.NodeResultOePb value) {
       if (taskResultBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -1883,10 +1883,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.TaskResultOePb task_result = 7;</code>
+     * <code>.lh_proto.NodeResultOePb task_result = 7;</code>
      */
     public Builder setTaskResult(
-        io.littlehorse.common.proto.TaskResultOePb.Builder builderForValue) {
+        io.littlehorse.common.proto.NodeResultOePb.Builder builderForValue) {
       if (taskResultBuilder_ == null) {
         event_ = builderForValue.build();
         onChanged();
@@ -1897,13 +1897,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.TaskResultOePb task_result = 7;</code>
+     * <code>.lh_proto.NodeResultOePb task_result = 7;</code>
      */
-    public Builder mergeTaskResult(io.littlehorse.common.proto.TaskResultOePb value) {
+    public Builder mergeTaskResult(io.littlehorse.common.proto.NodeResultOePb value) {
       if (taskResultBuilder_ == null) {
         if (eventCase_ == 7 &&
-            event_ != io.littlehorse.common.proto.TaskResultOePb.getDefaultInstance()) {
-          event_ = io.littlehorse.common.proto.TaskResultOePb.newBuilder((io.littlehorse.common.proto.TaskResultOePb) event_)
+            event_ != io.littlehorse.common.proto.NodeResultOePb.getDefaultInstance()) {
+          event_ = io.littlehorse.common.proto.NodeResultOePb.newBuilder((io.littlehorse.common.proto.NodeResultOePb) event_)
               .mergeFrom(value).buildPartial();
         } else {
           event_ = value;
@@ -1919,7 +1919,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.TaskResultOePb task_result = 7;</code>
+     * <code>.lh_proto.NodeResultOePb task_result = 7;</code>
      */
     public Builder clearTaskResult() {
       if (taskResultBuilder_ == null) {
@@ -1938,38 +1938,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.TaskResultOePb task_result = 7;</code>
+     * <code>.lh_proto.NodeResultOePb task_result = 7;</code>
      */
-    public io.littlehorse.common.proto.TaskResultOePb.Builder getTaskResultBuilder() {
+    public io.littlehorse.common.proto.NodeResultOePb.Builder getTaskResultBuilder() {
       return getTaskResultFieldBuilder().getBuilder();
     }
     /**
-     * <code>.lh_proto.TaskResultOePb task_result = 7;</code>
+     * <code>.lh_proto.NodeResultOePb task_result = 7;</code>
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.TaskResultOePbOrBuilder getTaskResultOrBuilder() {
+    public io.littlehorse.common.proto.NodeResultOePbOrBuilder getTaskResultOrBuilder() {
       if ((eventCase_ == 7) && (taskResultBuilder_ != null)) {
         return taskResultBuilder_.getMessageOrBuilder();
       } else {
         if (eventCase_ == 7) {
-          return (io.littlehorse.common.proto.TaskResultOePb) event_;
+          return (io.littlehorse.common.proto.NodeResultOePb) event_;
         }
-        return io.littlehorse.common.proto.TaskResultOePb.getDefaultInstance();
+        return io.littlehorse.common.proto.NodeResultOePb.getDefaultInstance();
       }
     }
     /**
-     * <code>.lh_proto.TaskResultOePb task_result = 7;</code>
+     * <code>.lh_proto.NodeResultOePb task_result = 7;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.TaskResultOePb, io.littlehorse.common.proto.TaskResultOePb.Builder, io.littlehorse.common.proto.TaskResultOePbOrBuilder> 
+        io.littlehorse.common.proto.NodeResultOePb, io.littlehorse.common.proto.NodeResultOePb.Builder, io.littlehorse.common.proto.NodeResultOePbOrBuilder> 
         getTaskResultFieldBuilder() {
       if (taskResultBuilder_ == null) {
         if (!(eventCase_ == 7)) {
-          event_ = io.littlehorse.common.proto.TaskResultOePb.getDefaultInstance();
+          event_ = io.littlehorse.common.proto.NodeResultOePb.getDefaultInstance();
         }
         taskResultBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.TaskResultOePb, io.littlehorse.common.proto.TaskResultOePb.Builder, io.littlehorse.common.proto.TaskResultOePbOrBuilder>(
-                (io.littlehorse.common.proto.TaskResultOePb) event_,
+            io.littlehorse.common.proto.NodeResultOePb, io.littlehorse.common.proto.NodeResultOePb.Builder, io.littlehorse.common.proto.NodeResultOePbOrBuilder>(
+                (io.littlehorse.common.proto.NodeResultOePb) event_,
                 getParentForChildren(),
                 isClean());
         event_ = null;

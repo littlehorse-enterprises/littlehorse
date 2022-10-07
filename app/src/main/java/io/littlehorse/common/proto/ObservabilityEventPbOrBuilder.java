@@ -68,19 +68,19 @@ public interface ObservabilityEventPbOrBuilder extends
   io.littlehorse.common.proto.ThreadStartOePbOrBuilder getThreadStartOrBuilder();
 
   /**
-   * <code>.lh_proto.TaskScheduledOePb task_schedule = 5;</code>
-   * @return Whether the taskSchedule field is set.
+   * <code>.lh_proto.NodeReachedOePb node_reached = 5;</code>
+   * @return Whether the nodeReached field is set.
    */
-  boolean hasTaskSchedule();
+  boolean hasNodeReached();
   /**
-   * <code>.lh_proto.TaskScheduledOePb task_schedule = 5;</code>
-   * @return The taskSchedule.
+   * <code>.lh_proto.NodeReachedOePb node_reached = 5;</code>
+   * @return The nodeReached.
    */
-  io.littlehorse.common.proto.TaskScheduledOePb getTaskSchedule();
+  io.littlehorse.common.proto.NodeReachedOePb getNodeReached();
   /**
-   * <code>.lh_proto.TaskScheduledOePb task_schedule = 5;</code>
+   * <code>.lh_proto.NodeReachedOePb node_reached = 5;</code>
    */
-  io.littlehorse.common.proto.TaskScheduledOePbOrBuilder getTaskScheduleOrBuilder();
+  io.littlehorse.common.proto.NodeReachedOePbOrBuilder getNodeReachedOrBuilder();
 
   /**
    * <code>.lh_proto.TaskStartOePb task_start = 6;</code>
@@ -98,19 +98,19 @@ public interface ObservabilityEventPbOrBuilder extends
   io.littlehorse.common.proto.TaskStartOePbOrBuilder getTaskStartOrBuilder();
 
   /**
-   * <code>.lh_proto.TaskResultOePb task_result = 7;</code>
+   * <code>.lh_proto.NodeResultOePb task_result = 7;</code>
    * @return Whether the taskResult field is set.
    */
   boolean hasTaskResult();
   /**
-   * <code>.lh_proto.TaskResultOePb task_result = 7;</code>
+   * <code>.lh_proto.NodeResultOePb task_result = 7;</code>
    * @return The taskResult.
    */
-  io.littlehorse.common.proto.TaskResultOePb getTaskResult();
+  io.littlehorse.common.proto.NodeResultOePb getTaskResult();
   /**
-   * <code>.lh_proto.TaskResultOePb task_result = 7;</code>
+   * <code>.lh_proto.NodeResultOePb task_result = 7;</code>
    */
-  io.littlehorse.common.proto.TaskResultOePbOrBuilder getTaskResultOrBuilder();
+  io.littlehorse.common.proto.NodeResultOePbOrBuilder getTaskResultOrBuilder();
 
   /**
    * <code>.lh_proto.ThreadStatusChangeOePb thread_status = 8;</code>
