@@ -4,6 +4,7 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.GlobalPOSTable;
+import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.event.ExternalEvent;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.WfRunEvent;
@@ -89,7 +90,8 @@ public class SchedulerProcessor
                 exn.printStackTrace();
                 wfRun.status = LHStatusPb.ERROR;
                 LHUtil.log(
-                    "Bad WFRun, putting in ERROR. TODO: add a FailureMessage to WFRun"
+                    "Bad WFRun, putting in ERROR. TODO: add a FailureMessage to WFRun",
+                    value.type
                 );
                 wfRunStore.put(wfRunId, wfRun);
             } catch (Exception exn2) {
@@ -99,32 +101,11 @@ public class SchedulerProcessor
     }
 
     private void processHelper(String key, long timestamp, WfRunEvent evt) {
-        WfSpec spec = getWfSpec(evt.wfSpecId);
-        if (spec == null) {
-            LHUtil.log("Couldn't find spec, TODO: DeadLetter Queue");
-            return;
-        }
-
+        // This is gross, TODO: Maybe in the future refactor the special handling
+        // for ExternalEvent. But I want to keep an aggressive schedule...
         WfRun wfRun = wfRunStore.get(key);
 
-        List<TaskScheduleRequest> tasksToSchedule = new ArrayList<>();
-        List<LHTimer> timersToSchedule = new ArrayList<>();
-        WfRunStoreAccess wsa = new WfRunStoreAccess(
-            nodeRunStore,
-            variableStore,
-            extEvtStore,
-            key
-        );
-
-        if (evt.type == EventCase.RUN_REQUEST) {
-            if (wfRun != null) {
-                LHUtil.log("Got a past run for id " + key + ", skipping");
-                return;
-            }
-
-            wfRun = spec.startNewRun(evt, tasksToSchedule, timersToSchedule, wsa);
-        } else if (evt.type == EventCase.EXTERNAL_EVENT) {
-            // Need to save the ExternalEvent payload.
+        if (evt.type == EventCase.EXTERNAL_EVENT) {
             ExternalEvent extEvt = evt.externalEvent;
             extEvtStore.put(extEvt.getObjectId(), extEvt);
 
@@ -142,8 +123,32 @@ public class SchedulerProcessor
                 //      but this is a separate and special case.
                 return;
             } else {
-                wfRun.processEvent(evt, tasksToSchedule, timersToSchedule);
+                evt.wfSpecId = wfRun.wfSpecId;
             }
+        }
+        WfSpec spec = getWfSpec(evt.wfSpecId);
+
+        if (spec == null) {
+            LHUtil.log("Couldn't find spec, TODO: DeadLetter Queue");
+            return;
+        }
+
+        List<TaskScheduleRequest> tasksToSchedule = new ArrayList<>();
+        List<LHTimer> timersToSchedule = new ArrayList<>();
+        WfRunStoreAccess wsa = new WfRunStoreAccess(
+            nodeRunStore,
+            variableStore,
+            extEvtStore,
+            key
+        );
+
+        if (evt.type == EventCase.RUN_REQUEST) {
+            if (wfRun != null) {
+                LHUtil.log("Got a past run for id " + key + ", skipping");
+                return;
+            }
+
+            wfRun = spec.startNewRun(evt, tasksToSchedule, timersToSchedule, wsa);
         } else {
             wfRun.wfSpec = spec;
             wfRun.stores = wsa;
@@ -187,6 +192,12 @@ public class SchedulerProcessor
         // TaskRuns
         for (Map.Entry<String, NodeRun> entry : wsa.nodeRunPuts.entrySet()) {
             nodeRunStore.put(entry.getKey(), entry.getValue());
+            forwardforTagging(entry.getValue(), timestamp);
+        }
+
+        // ExternalEvents
+        for (Map.Entry<String, ExternalEvent> entry : wsa.extEvtPuts.entrySet()) {
+            extEvtStore.put(entry.getKey(), entry.getValue());
             forwardforTagging(entry.getValue(), timestamp);
         }
 

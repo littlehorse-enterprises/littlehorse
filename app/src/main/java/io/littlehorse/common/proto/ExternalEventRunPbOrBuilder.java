@@ -8,16 +8,16 @@ public interface ExternalEventRunPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string external_event_def_id = 1;</code>
-   * @return The externalEventDefId.
+   * <code>string external_event_def_name = 1;</code>
+   * @return The externalEventDefName.
    */
-  java.lang.String getExternalEventDefId();
+  java.lang.String getExternalEventDefName();
   /**
-   * <code>string external_event_def_id = 1;</code>
-   * @return The bytes for externalEventDefId.
+   * <code>string external_event_def_name = 1;</code>
+   * @return The bytes for externalEventDefName.
    */
   com.google.protobuf.ByteString
-      getExternalEventDefIdBytes();
+      getExternalEventDefNameBytes();
 
   /**
    * <code>.google.protobuf.Timestamp event_time = 2;</code>

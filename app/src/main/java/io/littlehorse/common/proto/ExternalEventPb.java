@@ -17,7 +17,7 @@ private static final long serialVersionUID = 0L;
   }
   private ExternalEventPb() {
     wfRunId_ = "";
-    externalEventDefId_ = "";
+    externalEventDefName_ = "";
     guid_ = "";
   }
 
@@ -61,7 +61,7 @@ private static final long serialVersionUID = 0L;
           case 18: {
             java.lang.String s = input.readStringRequireUtf8();
 
-            externalEventDefId_ = s;
+            externalEventDefName_ = s;
             break;
           }
           case 26: {
@@ -104,6 +104,11 @@ private static final long serialVersionUID = 0L;
           case 56: {
             bitField0_ |= 0x00000002;
             taskRunPosition_ = input.readInt32();
+            break;
+          }
+          case 64: {
+
+            claimed_ = input.readBool();
             break;
           }
           default: {
@@ -177,38 +182,38 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int EXTERNAL_EVENT_DEF_ID_FIELD_NUMBER = 2;
-  private volatile java.lang.Object externalEventDefId_;
+  public static final int EXTERNAL_EVENT_DEF_NAME_FIELD_NUMBER = 2;
+  private volatile java.lang.Object externalEventDefName_;
   /**
-   * <code>string external_event_def_id = 2;</code>
-   * @return The externalEventDefId.
+   * <code>string external_event_def_name = 2;</code>
+   * @return The externalEventDefName.
    */
   @java.lang.Override
-  public java.lang.String getExternalEventDefId() {
-    java.lang.Object ref = externalEventDefId_;
+  public java.lang.String getExternalEventDefName() {
+    java.lang.Object ref = externalEventDefName_;
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      externalEventDefId_ = s;
+      externalEventDefName_ = s;
       return s;
     }
   }
   /**
-   * <code>string external_event_def_id = 2;</code>
-   * @return The bytes for externalEventDefId.
+   * <code>string external_event_def_name = 2;</code>
+   * @return The bytes for externalEventDefName.
    */
   @java.lang.Override
   public com.google.protobuf.ByteString
-      getExternalEventDefIdBytes() {
-    java.lang.Object ref = externalEventDefId_;
+      getExternalEventDefNameBytes() {
+    java.lang.Object ref = externalEventDefName_;
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      externalEventDefId_ = b;
+      externalEventDefName_ = b;
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
@@ -343,6 +348,17 @@ private static final long serialVersionUID = 0L;
     return taskRunPosition_;
   }
 
+  public static final int CLAIMED_FIELD_NUMBER = 8;
+  private boolean claimed_;
+  /**
+   * <code>bool claimed = 8;</code>
+   * @return The claimed.
+   */
+  @java.lang.Override
+  public boolean getClaimed() {
+    return claimed_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -360,8 +376,8 @@ private static final long serialVersionUID = 0L;
     if (!getWfRunIdBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, wfRunId_);
     }
-    if (!getExternalEventDefIdBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, externalEventDefId_);
+    if (!getExternalEventDefNameBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, externalEventDefName_);
     }
     if (!getGuidBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 3, guid_);
@@ -378,6 +394,9 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000002) != 0)) {
       output.writeInt32(7, taskRunPosition_);
     }
+    if (claimed_ != false) {
+      output.writeBool(8, claimed_);
+    }
     unknownFields.writeTo(output);
   }
 
@@ -390,8 +409,8 @@ private static final long serialVersionUID = 0L;
     if (!getWfRunIdBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, wfRunId_);
     }
-    if (!getExternalEventDefIdBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, externalEventDefId_);
+    if (!getExternalEventDefNameBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, externalEventDefName_);
     }
     if (!getGuidBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, guid_);
@@ -412,6 +431,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(7, taskRunPosition_);
     }
+    if (claimed_ != false) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(8, claimed_);
+    }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
@@ -429,8 +452,8 @@ private static final long serialVersionUID = 0L;
 
     if (!getWfRunId()
         .equals(other.getWfRunId())) return false;
-    if (!getExternalEventDefId()
-        .equals(other.getExternalEventDefId())) return false;
+    if (!getExternalEventDefName()
+        .equals(other.getExternalEventDefName())) return false;
     if (!getGuid()
         .equals(other.getGuid())) return false;
     if (hasCreatedAt() != other.hasCreatedAt()) return false;
@@ -453,6 +476,8 @@ private static final long serialVersionUID = 0L;
       if (getTaskRunPosition()
           != other.getTaskRunPosition()) return false;
     }
+    if (getClaimed()
+        != other.getClaimed()) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -466,8 +491,8 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + WF_RUN_ID_FIELD_NUMBER;
     hash = (53 * hash) + getWfRunId().hashCode();
-    hash = (37 * hash) + EXTERNAL_EVENT_DEF_ID_FIELD_NUMBER;
-    hash = (53 * hash) + getExternalEventDefId().hashCode();
+    hash = (37 * hash) + EXTERNAL_EVENT_DEF_NAME_FIELD_NUMBER;
+    hash = (53 * hash) + getExternalEventDefName().hashCode();
     hash = (37 * hash) + GUID_FIELD_NUMBER;
     hash = (53 * hash) + getGuid().hashCode();
     if (hasCreatedAt()) {
@@ -486,6 +511,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + TASK_RUN_POSITION_FIELD_NUMBER;
       hash = (53 * hash) + getTaskRunPosition();
     }
+    hash = (37 * hash) + CLAIMED_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+        getClaimed());
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -621,7 +649,7 @@ private static final long serialVersionUID = 0L;
       super.clear();
       wfRunId_ = "";
 
-      externalEventDefId_ = "";
+      externalEventDefName_ = "";
 
       guid_ = "";
 
@@ -641,6 +669,8 @@ private static final long serialVersionUID = 0L;
       bitField0_ = (bitField0_ & ~0x00000001);
       taskRunPosition_ = 0;
       bitField0_ = (bitField0_ & ~0x00000002);
+      claimed_ = false;
+
       return this;
     }
 
@@ -670,7 +700,7 @@ private static final long serialVersionUID = 0L;
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
       result.wfRunId_ = wfRunId_;
-      result.externalEventDefId_ = externalEventDefId_;
+      result.externalEventDefName_ = externalEventDefName_;
       result.guid_ = guid_;
       if (createdAtBuilder_ == null) {
         result.createdAt_ = createdAt_;
@@ -690,6 +720,7 @@ private static final long serialVersionUID = 0L;
         result.taskRunPosition_ = taskRunPosition_;
         to_bitField0_ |= 0x00000002;
       }
+      result.claimed_ = claimed_;
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -743,8 +774,8 @@ private static final long serialVersionUID = 0L;
         wfRunId_ = other.wfRunId_;
         onChanged();
       }
-      if (!other.getExternalEventDefId().isEmpty()) {
-        externalEventDefId_ = other.externalEventDefId_;
+      if (!other.getExternalEventDefName().isEmpty()) {
+        externalEventDefName_ = other.externalEventDefName_;
         onChanged();
       }
       if (!other.getGuid().isEmpty()) {
@@ -762,6 +793,9 @@ private static final long serialVersionUID = 0L;
       }
       if (other.hasTaskRunPosition()) {
         setTaskRunPosition(other.getTaskRunPosition());
+      }
+      if (other.getClaimed() != false) {
+        setClaimed(other.getClaimed());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -869,78 +903,78 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.lang.Object externalEventDefId_ = "";
+    private java.lang.Object externalEventDefName_ = "";
     /**
-     * <code>string external_event_def_id = 2;</code>
-     * @return The externalEventDefId.
+     * <code>string external_event_def_name = 2;</code>
+     * @return The externalEventDefName.
      */
-    public java.lang.String getExternalEventDefId() {
-      java.lang.Object ref = externalEventDefId_;
+    public java.lang.String getExternalEventDefName() {
+      java.lang.Object ref = externalEventDefName_;
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        externalEventDefId_ = s;
+        externalEventDefName_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
       }
     }
     /**
-     * <code>string external_event_def_id = 2;</code>
-     * @return The bytes for externalEventDefId.
+     * <code>string external_event_def_name = 2;</code>
+     * @return The bytes for externalEventDefName.
      */
     public com.google.protobuf.ByteString
-        getExternalEventDefIdBytes() {
-      java.lang.Object ref = externalEventDefId_;
+        getExternalEventDefNameBytes() {
+      java.lang.Object ref = externalEventDefName_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        externalEventDefId_ = b;
+        externalEventDefName_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
     /**
-     * <code>string external_event_def_id = 2;</code>
-     * @param value The externalEventDefId to set.
+     * <code>string external_event_def_name = 2;</code>
+     * @param value The externalEventDefName to set.
      * @return This builder for chaining.
      */
-    public Builder setExternalEventDefId(
+    public Builder setExternalEventDefName(
         java.lang.String value) {
       if (value == null) {
     throw new NullPointerException();
   }
   
-      externalEventDefId_ = value;
+      externalEventDefName_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>string external_event_def_id = 2;</code>
+     * <code>string external_event_def_name = 2;</code>
      * @return This builder for chaining.
      */
-    public Builder clearExternalEventDefId() {
+    public Builder clearExternalEventDefName() {
       
-      externalEventDefId_ = getDefaultInstance().getExternalEventDefId();
+      externalEventDefName_ = getDefaultInstance().getExternalEventDefName();
       onChanged();
       return this;
     }
     /**
-     * <code>string external_event_def_id = 2;</code>
-     * @param value The bytes for externalEventDefId to set.
+     * <code>string external_event_def_name = 2;</code>
+     * @param value The bytes for externalEventDefName to set.
      * @return This builder for chaining.
      */
-    public Builder setExternalEventDefIdBytes(
+    public Builder setExternalEventDefNameBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
       
-      externalEventDefId_ = value;
+      externalEventDefName_ = value;
       onChanged();
       return this;
     }
@@ -1333,6 +1367,37 @@ private static final long serialVersionUID = 0L;
     public Builder clearTaskRunPosition() {
       bitField0_ = (bitField0_ & ~0x00000002);
       taskRunPosition_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private boolean claimed_ ;
+    /**
+     * <code>bool claimed = 8;</code>
+     * @return The claimed.
+     */
+    @java.lang.Override
+    public boolean getClaimed() {
+      return claimed_;
+    }
+    /**
+     * <code>bool claimed = 8;</code>
+     * @param value The claimed to set.
+     * @return This builder for chaining.
+     */
+    public Builder setClaimed(boolean value) {
+      
+      claimed_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>bool claimed = 8;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearClaimed() {
+      
+      claimed_ = false;
       onChanged();
       return this;
     }

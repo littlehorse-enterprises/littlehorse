@@ -23,9 +23,11 @@ public class WfRunEvent extends LHSerializable<WfRunEventPb> {
         WfRunEventPb.Builder b = WfRunEventPb
             .newBuilder()
             .setWfRunId(wfRunId)
-            .setWfSpecId(wfSpecId)
             .setTime(LHUtil.fromDate(time));
 
+        if (wfSpecId != null) {
+            b.setWfSpecId(wfSpecId);
+        }
         b.clearEvent();
 
         switch (type) {
@@ -54,7 +56,7 @@ public class WfRunEvent extends LHSerializable<WfRunEventPb> {
     public void initFrom(MessageOrBuilder p) {
         WfRunEventPb proto = (WfRunEventPb) p;
         this.wfRunId = proto.getWfRunId();
-        this.wfSpecId = proto.getWfSpecId();
+        if (proto.hasWfSpecId()) this.wfSpecId = proto.getWfSpecId();
         this.time = LHUtil.fromProtoTs(proto.getTime());
 
         this.type = proto.getEventCase();

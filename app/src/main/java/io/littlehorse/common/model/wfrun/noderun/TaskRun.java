@@ -3,11 +3,15 @@ package io.littlehorse.common.model.wfrun.noderun;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.server.Tag;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.proto.TaskRunPb;
 import io.littlehorse.common.proto.TaskRunPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class TaskRun extends LHSerializable<TaskRunPb> {
 
@@ -16,7 +20,7 @@ public class TaskRun extends LHSerializable<TaskRunPb> {
     public byte[] logOutput;
 
     public Date startTime;
-    public String taskDefId;
+    public String taskDefName;
 
     public Class<TaskRunPb> getProtoBaseClass() {
         return TaskRunPb.class;
@@ -35,13 +39,13 @@ public class TaskRun extends LHSerializable<TaskRunPb> {
         if (p.hasStartTime()) {
             startTime = LHUtil.fromProtoTs(p.getStartTime());
         }
-        taskDefId = p.getTaskDefId();
+        taskDefName = p.getTaskDefId();
     }
 
     public TaskRunPb.Builder toProto() {
         TaskRunPb.Builder out = TaskRunPb
             .newBuilder()
-            .setTaskDefId(taskDefId)
+            .setTaskDefId(taskDefName)
             .setAttemptNumber(attemptNumber);
 
         if (output != null) {
@@ -60,6 +64,19 @@ public class TaskRun extends LHSerializable<TaskRunPb> {
     public static TaskRun fromProto(TaskRunPbOrBuilder proto) {
         TaskRun out = new TaskRun();
         out.initFrom(proto);
+        return out;
+    }
+
+    public List<Tag> getTags(NodeRun parent) {
+        List<Tag> out = new ArrayList<>();
+        out.add(
+            new Tag(
+                parent,
+                Pair.of("type", "TASK"),
+                Pair.of("taskDefName", taskDefName)
+            )
+        );
+
         return out;
     }
 }

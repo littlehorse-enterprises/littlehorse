@@ -40,6 +40,7 @@ private static final long serialVersionUID = 0L;
     if (extensionRegistry == null) {
       throw new java.lang.NullPointerException();
     }
+    int mutable_bitField0_ = 0;
     com.google.protobuf.UnknownFieldSet.Builder unknownFields =
         com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
@@ -58,7 +59,7 @@ private static final long serialVersionUID = 0L;
           }
           case 18: {
             java.lang.String s = input.readStringRequireUtf8();
-
+            bitField0_ |= 0x00000001;
             wfSpecId_ = s;
             break;
           }
@@ -163,6 +164,7 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.common.proto.WfRunEventPb.class, io.littlehorse.common.proto.WfRunEventPb.Builder.class);
   }
 
+  private int bitField0_;
   private int eventCase_ = 0;
   private java.lang.Object event_;
   public enum EventCase
@@ -248,6 +250,14 @@ private static final long serialVersionUID = 0L;
 
   public static final int WF_SPEC_ID_FIELD_NUMBER = 2;
   private volatile java.lang.Object wfSpecId_;
+  /**
+   * <code>string wf_spec_id = 2;</code>
+   * @return Whether the wfSpecId field is set.
+   */
+  @java.lang.Override
+  public boolean hasWfSpecId() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
   /**
    * <code>string wf_spec_id = 2;</code>
    * @return The wfSpecId.
@@ -451,7 +461,7 @@ private static final long serialVersionUID = 0L;
     if (!getWfRunIdBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, wfRunId_);
     }
-    if (!getWfSpecIdBytes().isEmpty()) {
+    if (((bitField0_ & 0x00000001) != 0)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, wfSpecId_);
     }
     if (time_ != null) {
@@ -481,7 +491,7 @@ private static final long serialVersionUID = 0L;
     if (!getWfRunIdBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, wfRunId_);
     }
-    if (!getWfSpecIdBytes().isEmpty()) {
+    if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, wfSpecId_);
     }
     if (time_ != null) {
@@ -521,8 +531,11 @@ private static final long serialVersionUID = 0L;
 
     if (!getWfRunId()
         .equals(other.getWfRunId())) return false;
-    if (!getWfSpecId()
-        .equals(other.getWfSpecId())) return false;
+    if (hasWfSpecId() != other.hasWfSpecId()) return false;
+    if (hasWfSpecId()) {
+      if (!getWfSpecId()
+          .equals(other.getWfSpecId())) return false;
+    }
     if (hasTime() != other.hasTime()) return false;
     if (hasTime()) {
       if (!getTime()
@@ -562,8 +575,10 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + WF_RUN_ID_FIELD_NUMBER;
     hash = (53 * hash) + getWfRunId().hashCode();
-    hash = (37 * hash) + WF_SPEC_ID_FIELD_NUMBER;
-    hash = (53 * hash) + getWfSpecId().hashCode();
+    if (hasWfSpecId()) {
+      hash = (37 * hash) + WF_SPEC_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getWfSpecId().hashCode();
+    }
     if (hasTime()) {
       hash = (37 * hash) + TIME_FIELD_NUMBER;
       hash = (53 * hash) + getTime().hashCode();
@@ -724,7 +739,7 @@ private static final long serialVersionUID = 0L;
       wfRunId_ = "";
 
       wfSpecId_ = "";
-
+      bitField0_ = (bitField0_ & ~0x00000001);
       if (timeBuilder_ == null) {
         time_ = null;
       } else {
@@ -759,7 +774,12 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.common.proto.WfRunEventPb buildPartial() {
       io.littlehorse.common.proto.WfRunEventPb result = new io.littlehorse.common.proto.WfRunEventPb(this);
+      int from_bitField0_ = bitField0_;
+      int to_bitField0_ = 0;
       result.wfRunId_ = wfRunId_;
+      if (((from_bitField0_ & 0x00000001) != 0)) {
+        to_bitField0_ |= 0x00000001;
+      }
       result.wfSpecId_ = wfSpecId_;
       if (timeBuilder_ == null) {
         result.time_ = time_;
@@ -794,6 +814,7 @@ private static final long serialVersionUID = 0L;
           result.event_ = externalEventBuilder_.build();
         }
       }
+      result.bitField0_ = to_bitField0_;
       result.eventCase_ = eventCase_;
       onBuilt();
       return result;
@@ -847,7 +868,8 @@ private static final long serialVersionUID = 0L;
         wfRunId_ = other.wfRunId_;
         onChanged();
       }
-      if (!other.getWfSpecId().isEmpty()) {
+      if (other.hasWfSpecId()) {
+        bitField0_ |= 0x00000001;
         wfSpecId_ = other.wfSpecId_;
         onChanged();
       }
@@ -918,6 +940,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
+    private int bitField0_;
 
     private java.lang.Object wfRunId_ = "";
     /**
@@ -998,6 +1021,13 @@ private static final long serialVersionUID = 0L;
     private java.lang.Object wfSpecId_ = "";
     /**
      * <code>string wf_spec_id = 2;</code>
+     * @return Whether the wfSpecId field is set.
+     */
+    public boolean hasWfSpecId() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>string wf_spec_id = 2;</code>
      * @return The wfSpecId.
      */
     public java.lang.String getWfSpecId() {
@@ -1039,7 +1069,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  bitField0_ |= 0x00000001;
       wfSpecId_ = value;
       onChanged();
       return this;
@@ -1049,7 +1079,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearWfSpecId() {
-      
+      bitField0_ = (bitField0_ & ~0x00000001);
       wfSpecId_ = getDefaultInstance().getWfSpecId();
       onChanged();
       return this;
@@ -1065,7 +1095,7 @@ private static final long serialVersionUID = 0L;
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
-      
+      bitField0_ |= 0x00000001;
       wfSpecId_ = value;
       onChanged();
       return this;

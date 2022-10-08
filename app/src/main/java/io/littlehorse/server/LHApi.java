@@ -11,6 +11,7 @@ import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.POSTable;
+import io.littlehorse.common.model.event.ExternalEvent;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.event.WfRunRequest;
 import io.littlehorse.common.model.meta.ExternalEventDef;
@@ -149,6 +150,7 @@ public class LHApi {
                     );
                 }
             );
+        this.app.post("/ExternalEvent", ctx -> handle(this::postExternalEvent, ctx));
         this.app.post("/WfRun", ctx -> handle(this::postWfRun, ctx));
         this.app.post("/WfRunMany", ctx -> handle(this::postManyWfRuns, ctx));
 
@@ -575,6 +577,69 @@ public class LHApi {
         } else {
             ctx.json(resp);
         }
+    }
+
+    public void postExternalEvent(Context ctx) {
+        boolean async = ctx
+            .queryParamAsClass("async", Boolean.class)
+            .getOrDefault(false);
+
+        LHResponse resp = new LHResponse(config);
+        resp.code = LHResponseCodePb.OK;
+        try {
+            ExternalEvent req = LHSerializable.fromJson(
+                ctx.body(),
+                ExternalEvent.class,
+                config
+            );
+            if (req.guid == null) {
+                req.guid = LHUtil.generateGuid();
+            }
+
+            if (req.wfRunId == null) {
+                resp.message = "Must provide wfRunId for ExternalEvent!";
+                resp.code = LHResponseCodePb.VALIDATION_ERROR;
+                ctx.status(resp.getStatus());
+                ctx.json(resp);
+                return;
+            }
+
+            ExternalEventDef eed = globalStores.getExternalEventDef(
+                req.externalEventDefName
+            );
+            if (eed == null) {
+                resp.code = LHResponseCodePb.NOT_FOUND_ERROR;
+                resp.message = "Could not find specified WfSpec.";
+                ctx.status(resp.getStatus());
+                ctx.json(resp);
+                return;
+            } else {
+                // TODO: When we add schemas to ExternalEventDef, we will need to
+                // do validation here.
+                WfRunEvent evt = new WfRunEvent();
+                evt.wfRunId = req.wfRunId;
+                evt.time = new Date();
+                evt.externalEvent = req;
+                evt.type = EventCase.EXTERNAL_EVENT;
+
+                Future<RecordMetadata> future = producer.send(
+                    evt.wfRunId,
+                    evt,
+                    LHConstants.WF_RUN_EVENT_TOPIC
+                );
+                if (!async) {
+                    future.get();
+                }
+            }
+        } catch (LHSerdeError exn) {
+            resp.code = LHResponseCodePb.BAD_REQUEST_ERROR;
+            resp.message = "Failed to unmarshal input: " + exn.getMessage();
+        } catch (InterruptedException | ExecutionException | KafkaException exn) {
+            resp.code = LHResponseCodePb.CONNECTION_ERROR;
+            resp.message = "Problem sending Kafka Record: " + exn.getMessage();
+        }
+        ctx.status(resp.getStatus());
+        ctx.json(resp);
     }
 
     public void countNodeRuns(Context ctx) throws LHConnectionError {

@@ -21,6 +21,11 @@ public interface WfRunEventPbOrBuilder extends
 
   /**
    * <code>string wf_spec_id = 2;</code>
+   * @return Whether the wfSpecId field is set.
+   */
+  boolean hasWfSpecId();
+  /**
+   * <code>string wf_spec_id = 2;</code>
    * @return The wfSpecId.
    */
   java.lang.String getWfSpecId();

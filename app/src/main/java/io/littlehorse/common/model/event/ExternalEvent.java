@@ -18,11 +18,12 @@ public class ExternalEvent extends GETable<ExternalEventPb> {
     public String guid;
 
     public String wfRunId;
-    public String externalEventDeId;
+    public String externalEventDefName;
     public Date createdAt;
     public VariableValue content;
     public Integer threadRunNumber;
     public Integer taskRunPosition;
+    public boolean claimed;
 
     public Class<ExternalEventPb> getProtoBaseClass() {
         return ExternalEventPb.class;
@@ -31,10 +32,11 @@ public class ExternalEvent extends GETable<ExternalEventPb> {
     public void initFrom(MessageOrBuilder proto) {
         ExternalEventPbOrBuilder p = (ExternalEventPbOrBuilder) proto;
         wfRunId = p.getWfRunId();
-        externalEventDeId = p.getExternalEventDefId();
+        externalEventDefName = p.getExternalEventDefName();
         guid = p.getGuid();
         createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
         content = VariableValue.fromProto(p.getContentOrBuilder());
+        claimed = p.getClaimed();
 
         if (p.hasThreadRunNumber()) {
             threadRunNumber = p.getThreadRunNumber();
@@ -48,10 +50,11 @@ public class ExternalEvent extends GETable<ExternalEventPb> {
         ExternalEventPb.Builder out = ExternalEventPb
             .newBuilder()
             .setWfRunId(wfRunId)
-            .setExternalEventDefId(externalEventDeId)
+            .setExternalEventDefName(externalEventDefName)
             .setGuid(guid)
             .setCreatedAt(LHUtil.fromDate(createdAt))
-            .setContent(content.toProto());
+            .setContent(content.toProto())
+            .setClaimed(claimed);
 
         if (threadRunNumber != null) {
             out.setThreadRunNumber(threadRunNumber);
@@ -66,7 +69,15 @@ public class ExternalEvent extends GETable<ExternalEventPb> {
     @JsonIgnore
     @Override
     public String getObjectId() {
-        return wfRunId + "-" + externalEventDeId + "-" + guid;
+        return getObjectId(wfRunId, externalEventDefName, guid);
+    }
+
+    public static String getObjectId(
+        String wfRunId,
+        String externalEventDefName,
+        String guid
+    ) {
+        return getStorePrefix(wfRunId, externalEventDefName) + "-" + guid;
     }
 
     // Just for Jackson
@@ -101,5 +112,9 @@ public class ExternalEvent extends GETable<ExternalEventPb> {
         ExternalEvent out = new ExternalEvent();
         out.initFrom(p);
         return out;
+    }
+
+    public static String getStorePrefix(String wfRunId, String externalEventDefId) {
+        return wfRunId + "-" + externalEventDefId;
     }
 }

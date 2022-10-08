@@ -7,7 +7,7 @@ import io.littlehorse.common.proto.WaitForEvtOePbOrBuilder;
 
 public class WaitForEvtOe extends LHSerializable<WaitForEvtOePb> {
 
-    public String externalEventDefId;
+    public String externalEventDefName;
 
     public Class<WaitForEvtOePb> getProtoBaseClass() {
         return WaitForEvtOePb.class;
@@ -15,12 +15,12 @@ public class WaitForEvtOe extends LHSerializable<WaitForEvtOePb> {
 
     public void initFrom(MessageOrBuilder proto) {
         WaitForEvtOePbOrBuilder p = (WaitForEvtOePbOrBuilder) proto;
-        externalEventDefId = p.getExternalEventDefId();
+        externalEventDefName = p.getExternalEventDefName();
     }
 
     public WaitForEvtOePb.Builder toProto() {
         WaitForEvtOePb.Builder out = WaitForEvtOePb.newBuilder();
-        out.setExternalEventDefId(externalEventDefId);
+        out.setExternalEventDefName(externalEventDefName);
         return out;
     }
 

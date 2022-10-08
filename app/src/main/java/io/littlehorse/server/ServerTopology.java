@@ -109,6 +109,7 @@ public class ServerTopology {
         addPOSTableSubTopology(topo, WfSpec.class, config);
         addPOSTableSubTopology(topo, TaskDef.class, config);
         addPOSTableSubTopology(topo, ExternalEventDef.class, config);
+
         addGlobalMetaStore(topo, WfSpec.class, config);
         addGlobalMetaStore(topo, TaskDef.class, config);
         addGlobalMetaStore(topo, ExternalEventDef.class, config);

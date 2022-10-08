@@ -285,7 +285,9 @@ public class WfRun extends GETable<WfRunPb> {
                 LHUtil.log("Warning: unknown threadrun for external event");
             }
         } else {
-            LHUtil.log("Warning: skipping the advancing from after external event");
+            for (ThreadRun thread : threadRuns) {
+                thread.advance(we.time);
+            }
         }
     }
 }

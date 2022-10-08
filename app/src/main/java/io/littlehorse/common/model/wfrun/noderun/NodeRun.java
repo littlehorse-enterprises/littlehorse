@@ -10,7 +10,7 @@ import io.littlehorse.common.proto.NodeRunPb.NodeTypeCase;
 import io.littlehorse.common.proto.NodeRunPbOrBuilder;
 import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.util.LHUtil;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
@@ -87,6 +87,7 @@ public class NodeRun extends GETable<NodeRunPb> {
             case EXTERNAL_EVENT:
                 externalEventRun =
                     ExternalEventRun.fromProto(proto.getExternalEvent());
+                break;
             case NODETYPE_NOT_SET:
             default:
                 throw new RuntimeException("Not possible");
@@ -127,12 +128,22 @@ public class NodeRun extends GETable<NodeRunPb> {
 
     @JsonIgnore
     public List<Tag> getTags() {
-        return Arrays.asList(
+        List<Tag> out = new ArrayList<>();
+
+        out.add(
             new Tag(
                 this,
-                Pair.of("taskDefId", taskDefId),
+                Pair.of("type", type.toString()),
                 Pair.of("status", status.toString())
             )
         );
+
+        if (type == NodeTypeCase.TASK) {
+            out.addAll(taskRun.getTags(this));
+        } else if (type == NodeTypeCase.EXTERNAL_EVENT) {
+            out.addAll(externalEventRun.getTags(this));
+        }
+
+        return out;
     }
 }

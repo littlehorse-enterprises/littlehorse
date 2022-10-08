@@ -5,6 +5,7 @@ import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.event.ExternalEvent;
 import io.littlehorse.common.model.event.TaskResultEvent;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.TaskStartedEvent;
@@ -16,17 +17,21 @@ import io.littlehorse.common.model.meta.ThreadSpec;
 import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.meta.VariableMutation;
+import io.littlehorse.common.model.meta.node.ExternalEventNode;
 import io.littlehorse.common.model.observability.NodeReachedOe;
 import io.littlehorse.common.model.observability.ObservabilityEvent;
 import io.littlehorse.common.model.observability.TaskScheduledOe;
 import io.littlehorse.common.model.observability.TaskStartOe;
 import io.littlehorse.common.model.observability.ThreadStatusChangeOe;
+import io.littlehorse.common.model.observability.WaitForEvtOe;
 import io.littlehorse.common.model.observability.node.NodeResultOe;
 import io.littlehorse.common.model.server.Tag;
+import io.littlehorse.common.model.wfrun.noderun.ExternalEventRun;
 import io.littlehorse.common.model.wfrun.noderun.NodeRun;
 import io.littlehorse.common.model.wfrun.noderun.TaskRun;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.NodePb.NodeCase;
+import io.littlehorse.common.proto.NodeReachedOePb;
 import io.littlehorse.common.proto.NodeRunPb.NodeTypeCase;
 import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.proto.ThreadRunPb;
@@ -214,7 +219,11 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
 
             }
         } else if (currentNodeRun.status == LHStatusPb.RUNNING) {
-            // Nothing to do, just wait for next event to come in.
+            // As of this writing, the only time we want to do anything here is
+            // if we're waiting for an ExternalEvent.
+            if (currentNodeRun.getNodeType() == NodeCase.EXTERNAL_EVENT) {
+                checkToAdvanceExternalEvent();
+            }
         } else if (currentNodeRun.status == LHStatusPb.STARTING) {
             // Nothing to do.
             // This is possible if we have scheduled a retry due to timeout and then an old
@@ -225,6 +234,37 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
                 "Unexpected state for noderun: " + currentNodeRun.status
             );
         }
+    }
+
+    private void checkToAdvanceExternalEvent() {
+        Node node = currentNodeRun.getNode();
+        ExternalEventNode eNode = node.externalEventNode;
+
+        ExternalEvent evt = wfRun.stores.getUnclaimedEvent(
+            eNode.externalEventDefName
+        );
+        if (evt == null) {
+            // It hasn't come in yet.
+            return;
+        }
+
+        evt.claimed = true;
+        evt.taskRunPosition = currentNodeRun.position;
+        evt.threadRunNumber = number;
+
+        currentNodeRun.status = LHStatusPb.COMPLETED;
+        try {
+            mutateVariables(evt.content);
+        } catch (LHVarSubError exn) {
+            currentNodeRun.status = LHStatusPb.ERROR;
+            currentNodeRun.resultCode = TaskResultCodePb.VAR_MUTATION_ERROR;
+            currentNodeRun.errorMessage =
+                "Failed mutating variables: " + exn.getMessage();
+        }
+
+        wfRun.stores.saveExternalEvent(evt);
+
+        advanceFrom(node);
     }
 
     private boolean shouldRetry(Node curNode, NodeRunState currNodeRun) {
@@ -439,7 +479,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
 
         nr.taskRun = new TaskRun();
         nr.taskRun.attemptNumber = tsr.attemptNumber;
-        nr.taskRun.taskDefId = node.taskNode.taskDefName;
+        nr.taskRun.taskDefName = node.taskNode.taskDefName;
 
         nr.number = tsr.taskRunNumber;
         nr.status = LHStatusPb.STARTING;
@@ -460,6 +500,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         if (node.type != NodeCase.EXTERNAL_EVENT) {
             throw new RuntimeException("Yikerz");
         }
+        Date reachedTime = new Date();
 
         if (currentNodeRun == null) {
             currentNodeRun = new NodeRunState();
@@ -468,6 +509,42 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             currentNodeRun.position++;
             currentNodeRun.number++;
         }
+
+        // TODO: "RUNNING" means "waiting for External Event"...maybe want to
+        // do some thing more clear.
+        currentNodeRun.status = LHStatusPb.RUNNING;
+        currentNodeRun.nodeName = node.name;
+
+        NodeReachedOe nroe = new NodeReachedOe(currentNodeRun);
+        nroe.type = NodeReachedOePb.NodeTypeCase.EVT;
+        nroe.evt = new WaitForEvtOe();
+        nroe.evt.externalEventDefName = node.externalEventNode.externalEventDefName;
+
+        // Now we need to add the TaskRun to the store so it can be queried.
+        NodeRun nr = new NodeRun();
+        nr.wfRunId = wfRun.id;
+        nr.threadRunNumber = this.number;
+        nr.position = currentNodeRun.position;
+
+        nr.externalEventRun = new ExternalEventRun();
+        nr.externalEventRun.externalEventDefName =
+            node.externalEventNode.externalEventDefName;
+
+        nr.number = currentNodeRun.number;
+        nr.status = LHStatusPb.RUNNING;
+        nr.threadSpecName = threadSpecName;
+        nr.type = NodeTypeCase.EXTERNAL_EVENT;
+
+        nr.arrivalTime = reachedTime;
+
+        nr.wfSpecId = wfRun.wfSpecId;
+        nr.wfSpecName = wfRun.wfSpecName;
+        nr.nodeName = currentNodeRun.nodeName;
+
+        putNodeRun(nr);
+        wfRun.oEvents.add(new ObservabilityEvent(nroe, reachedTime));
+
+        checkToAdvanceExternalEvent();
     }
 
     public void setStatus(
@@ -578,7 +655,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             case SUCCESS:
                 currentNodeRun.status = LHStatusPb.COMPLETED;
                 try {
-                    mutateVariables(ce);
+                    mutateVariables(ce.stdout);
                 } catch (LHVarSubError exn) {
                     currentNodeRun.status = LHStatusPb.ERROR;
                     currentNodeRun.resultCode = TaskResultCodePb.VAR_MUTATION_ERROR;
@@ -611,7 +688,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         putNodeRun(task);
     }
 
-    private void mutateVariables(TaskResultEvent ce) throws LHVarSubError {
+    private void mutateVariables(VariableValue nodeOutput) throws LHVarSubError {
         Node node = getThreadSpec().nodes.get(currentNodeRun.nodeName);
 
         // Need to do this atomically in a transaction, so that if one of the
@@ -620,7 +697,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         // then we flush the contents of the Map to the Variables.
         Map<String, VariableValue> varCache = new HashMap<>();
         for (VariableMutation mut : node.variableMutations) {
-            mut.execute(this, varCache, ce);
+            mut.execute(this, varCache, nodeOutput);
         }
 
         // If we got this far without a LHVarSubError, then we can safely save all

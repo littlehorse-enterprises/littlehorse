@@ -3,7 +3,6 @@ package io.littlehorse.common.model.meta;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.event.TaskResultEvent;
 import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.proto.VariableMutationPb;
@@ -106,7 +105,7 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
     public VariableValue getRhsValue(
         ThreadRun thread,
         Map<String, VariableValue> txnCache,
-        TaskResultEvent tre
+        VariableValue nodeOutput
     ) throws LHVarSubError {
         VariableValue out = null;
 
@@ -115,7 +114,7 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
         } else if (rhsValueType == RhsValueCase.SOURCE_VARIABLE) {
             out = thread.assignVariable(rhsSourceVariable, txnCache);
         } else if (rhsValueType == RhsValueCase.NODE_OUTPUT) {
-            out = tre.stdout;
+            out = nodeOutput;
         } else {
             throw new RuntimeException("Unsupported RHS Value type: " + rhsValueType);
         }
@@ -129,10 +128,10 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
     public void execute(
         ThreadRun thread,
         Map<String, VariableValue> editedVars,
-        TaskResultEvent tre
+        VariableValue nodeOutput
     ) throws LHVarSubError {
         VariableValue lhsVal = getLhsValue(thread, editedVars);
-        VariableValue rhsVal = getRhsValue(thread, editedVars, tre);
+        VariableValue rhsVal = getRhsValue(thread, editedVars, nodeOutput);
 
         try {
             editedVars.put(lhsName, lhsVal.operate(operation, rhsVal));

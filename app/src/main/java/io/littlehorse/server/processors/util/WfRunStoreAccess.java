@@ -7,6 +7,9 @@ import io.littlehorse.common.model.wfrun.noderun.NodeRun;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.streams.KeyValue;
+import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.KeyValueStore;
 
 public class WfRunStoreAccess {
@@ -70,5 +73,51 @@ public class WfRunStoreAccess {
             out = variableStore.get(key);
         }
         return out;
+    }
+
+    public ExternalEvent getUnclaimedEvent(String externalEventDefName) {
+        // Need to load all of them and then get the least recent that hasn't been
+        // claimed yet.
+        String prefix = ExternalEvent.getStorePrefix(wfRunId, externalEventDefName);
+
+        // TODO: This is O(N) for number of events correlated with the WfRun.
+        // Generally that will only be a small number, but there could be weird
+        // use-cases where this could take a long time (if there's 1000 events or
+        // so then it could take seconds, which holds up the entire scheduling).
+        ExternalEvent out = null;
+        try (
+            KeyValueIterator<String, ExternalEvent> iter = extEvtStore.prefixScan(
+                prefix,
+                Serdes.String().serializer()
+            )
+        ) {
+            while (iter.hasNext()) {
+                KeyValue<String, ExternalEvent> kvp = iter.next();
+                ExternalEvent candidate;
+                if (extEvtPuts.containsKey(kvp.key)) {
+                    candidate = extEvtPuts.get(kvp.key);
+                } else {
+                    candidate = kvp.value;
+                    extEvtPuts.put(kvp.key, candidate); // TODO: Is this necessary?
+                }
+
+                if (candidate.claimed) {
+                    continue;
+                }
+
+                if (
+                    out == null ||
+                    out.getCreatedAt().getTime() > candidate.getCreatedAt().getTime()
+                ) {
+                    out = candidate;
+                }
+            }
+        }
+
+        return out;
+    }
+
+    public void saveExternalEvent(ExternalEvent evt) {
+        extEvtPuts.put(evt.getObjectId(), evt);
     }
 }
