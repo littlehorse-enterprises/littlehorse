@@ -56,29 +56,16 @@ private static final long serialVersionUID = 0L;
             taskDefName_ = s;
             break;
           }
-          case 18: {
-            io.littlehorse.common.proto.VariableAssignmentPb.Builder subBuilder = null;
-            if (((bitField0_ & 0x00000001) != 0)) {
-              subBuilder = timeoutSeconds_.toBuilder();
-            }
-            timeoutSeconds_ = input.readMessage(io.littlehorse.common.proto.VariableAssignmentPb.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom(timeoutSeconds_);
-              timeoutSeconds_ = subBuilder.buildPartial();
-            }
-            bitField0_ |= 0x00000001;
-            break;
-          }
           case 24: {
 
             retries_ = input.readInt32();
             break;
           }
           case 34: {
-            if (!((mutable_bitField0_ & 0x00000002) != 0)) {
+            if (!((mutable_bitField0_ & 0x00000001) != 0)) {
               variables_ = com.google.protobuf.MapField.newMapField(
                   VariablesDefaultEntryHolder.defaultEntry);
-              mutable_bitField0_ |= 0x00000002;
+              mutable_bitField0_ |= 0x00000001;
             }
             com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.common.proto.VariableAssignmentPb>
             variables__ = input.readMessage(
@@ -131,7 +118,6 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.common.proto.TaskNodePb.class, io.littlehorse.common.proto.TaskNodePb.Builder.class);
   }
 
-  private int bitField0_;
   public static final int TASK_DEF_NAME_FIELD_NUMBER = 1;
   private volatile java.lang.Object taskDefName_;
   /**
@@ -168,32 +154,6 @@ private static final long serialVersionUID = 0L;
     } else {
       return (com.google.protobuf.ByteString) ref;
     }
-  }
-
-  public static final int TIMEOUT_SECONDS_FIELD_NUMBER = 2;
-  private io.littlehorse.common.proto.VariableAssignmentPb timeoutSeconds_;
-  /**
-   * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 2;</code>
-   * @return Whether the timeoutSeconds field is set.
-   */
-  @java.lang.Override
-  public boolean hasTimeoutSeconds() {
-    return ((bitField0_ & 0x00000001) != 0);
-  }
-  /**
-   * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 2;</code>
-   * @return The timeoutSeconds.
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.VariableAssignmentPb getTimeoutSeconds() {
-    return timeoutSeconds_ == null ? io.littlehorse.common.proto.VariableAssignmentPb.getDefaultInstance() : timeoutSeconds_;
-  }
-  /**
-   * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 2;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.VariableAssignmentPbOrBuilder getTimeoutSecondsOrBuilder() {
-    return timeoutSeconds_ == null ? io.littlehorse.common.proto.VariableAssignmentPb.getDefaultInstance() : timeoutSeconds_;
   }
 
   public static final int RETRIES_FIELD_NUMBER = 3;
@@ -305,9 +265,6 @@ private static final long serialVersionUID = 0L;
     if (!getTaskDefNameBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, taskDefName_);
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeMessage(2, getTimeoutSeconds());
-    }
     if (retries_ != 0) {
       output.writeInt32(3, retries_);
     }
@@ -328,10 +285,6 @@ private static final long serialVersionUID = 0L;
     size = 0;
     if (!getTaskDefNameBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, taskDefName_);
-    }
-    if (((bitField0_ & 0x00000001) != 0)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, getTimeoutSeconds());
     }
     if (retries_ != 0) {
       size += com.google.protobuf.CodedOutputStream
@@ -364,11 +317,6 @@ private static final long serialVersionUID = 0L;
 
     if (!getTaskDefName()
         .equals(other.getTaskDefName())) return false;
-    if (hasTimeoutSeconds() != other.hasTimeoutSeconds()) return false;
-    if (hasTimeoutSeconds()) {
-      if (!getTimeoutSeconds()
-          .equals(other.getTimeoutSeconds())) return false;
-    }
     if (getRetries()
         != other.getRetries()) return false;
     if (!internalGetVariables().equals(
@@ -386,10 +334,6 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + TASK_DEF_NAME_FIELD_NUMBER;
     hash = (53 * hash) + getTaskDefName().hashCode();
-    if (hasTimeoutSeconds()) {
-      hash = (37 * hash) + TIMEOUT_SECONDS_FIELD_NUMBER;
-      hash = (53 * hash) + getTimeoutSeconds().hashCode();
-    }
     hash = (37 * hash) + RETRIES_FIELD_NUMBER;
     hash = (53 * hash) + getRetries();
     if (!internalGetVariables().getMap().isEmpty()) {
@@ -546,7 +490,6 @@ private static final long serialVersionUID = 0L;
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
-        getTimeoutSecondsFieldBuilder();
       }
     }
     @java.lang.Override
@@ -554,12 +497,6 @@ private static final long serialVersionUID = 0L;
       super.clear();
       taskDefName_ = "";
 
-      if (timeoutSecondsBuilder_ == null) {
-        timeoutSeconds_ = null;
-      } else {
-        timeoutSecondsBuilder_.clear();
-      }
-      bitField0_ = (bitField0_ & ~0x00000001);
       retries_ = 0;
 
       internalGetMutableVariables().clear();
@@ -590,20 +527,10 @@ private static final long serialVersionUID = 0L;
     public io.littlehorse.common.proto.TaskNodePb buildPartial() {
       io.littlehorse.common.proto.TaskNodePb result = new io.littlehorse.common.proto.TaskNodePb(this);
       int from_bitField0_ = bitField0_;
-      int to_bitField0_ = 0;
       result.taskDefName_ = taskDefName_;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        if (timeoutSecondsBuilder_ == null) {
-          result.timeoutSeconds_ = timeoutSeconds_;
-        } else {
-          result.timeoutSeconds_ = timeoutSecondsBuilder_.build();
-        }
-        to_bitField0_ |= 0x00000001;
-      }
       result.retries_ = retries_;
       result.variables_ = internalGetVariables();
       result.variables_.makeImmutable();
-      result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
     }
@@ -655,9 +582,6 @@ private static final long serialVersionUID = 0L;
       if (!other.getTaskDefName().isEmpty()) {
         taskDefName_ = other.taskDefName_;
         onChanged();
-      }
-      if (other.hasTimeoutSeconds()) {
-        mergeTimeoutSeconds(other.getTimeoutSeconds());
       }
       if (other.getRetries() != 0) {
         setRetries(other.getRetries());
@@ -768,126 +692,6 @@ private static final long serialVersionUID = 0L;
       taskDefName_ = value;
       onChanged();
       return this;
-    }
-
-    private io.littlehorse.common.proto.VariableAssignmentPb timeoutSeconds_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.VariableAssignmentPb, io.littlehorse.common.proto.VariableAssignmentPb.Builder, io.littlehorse.common.proto.VariableAssignmentPbOrBuilder> timeoutSecondsBuilder_;
-    /**
-     * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 2;</code>
-     * @return Whether the timeoutSeconds field is set.
-     */
-    public boolean hasTimeoutSeconds() {
-      return ((bitField0_ & 0x00000001) != 0);
-    }
-    /**
-     * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 2;</code>
-     * @return The timeoutSeconds.
-     */
-    public io.littlehorse.common.proto.VariableAssignmentPb getTimeoutSeconds() {
-      if (timeoutSecondsBuilder_ == null) {
-        return timeoutSeconds_ == null ? io.littlehorse.common.proto.VariableAssignmentPb.getDefaultInstance() : timeoutSeconds_;
-      } else {
-        return timeoutSecondsBuilder_.getMessage();
-      }
-    }
-    /**
-     * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 2;</code>
-     */
-    public Builder setTimeoutSeconds(io.littlehorse.common.proto.VariableAssignmentPb value) {
-      if (timeoutSecondsBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        timeoutSeconds_ = value;
-        onChanged();
-      } else {
-        timeoutSecondsBuilder_.setMessage(value);
-      }
-      bitField0_ |= 0x00000001;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 2;</code>
-     */
-    public Builder setTimeoutSeconds(
-        io.littlehorse.common.proto.VariableAssignmentPb.Builder builderForValue) {
-      if (timeoutSecondsBuilder_ == null) {
-        timeoutSeconds_ = builderForValue.build();
-        onChanged();
-      } else {
-        timeoutSecondsBuilder_.setMessage(builderForValue.build());
-      }
-      bitField0_ |= 0x00000001;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 2;</code>
-     */
-    public Builder mergeTimeoutSeconds(io.littlehorse.common.proto.VariableAssignmentPb value) {
-      if (timeoutSecondsBuilder_ == null) {
-        if (((bitField0_ & 0x00000001) != 0) &&
-            timeoutSeconds_ != null &&
-            timeoutSeconds_ != io.littlehorse.common.proto.VariableAssignmentPb.getDefaultInstance()) {
-          timeoutSeconds_ =
-            io.littlehorse.common.proto.VariableAssignmentPb.newBuilder(timeoutSeconds_).mergeFrom(value).buildPartial();
-        } else {
-          timeoutSeconds_ = value;
-        }
-        onChanged();
-      } else {
-        timeoutSecondsBuilder_.mergeFrom(value);
-      }
-      bitField0_ |= 0x00000001;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 2;</code>
-     */
-    public Builder clearTimeoutSeconds() {
-      if (timeoutSecondsBuilder_ == null) {
-        timeoutSeconds_ = null;
-        onChanged();
-      } else {
-        timeoutSecondsBuilder_.clear();
-      }
-      bitField0_ = (bitField0_ & ~0x00000001);
-      return this;
-    }
-    /**
-     * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 2;</code>
-     */
-    public io.littlehorse.common.proto.VariableAssignmentPb.Builder getTimeoutSecondsBuilder() {
-      bitField0_ |= 0x00000001;
-      onChanged();
-      return getTimeoutSecondsFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 2;</code>
-     */
-    public io.littlehorse.common.proto.VariableAssignmentPbOrBuilder getTimeoutSecondsOrBuilder() {
-      if (timeoutSecondsBuilder_ != null) {
-        return timeoutSecondsBuilder_.getMessageOrBuilder();
-      } else {
-        return timeoutSeconds_ == null ?
-            io.littlehorse.common.proto.VariableAssignmentPb.getDefaultInstance() : timeoutSeconds_;
-      }
-    }
-    /**
-     * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 2;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.VariableAssignmentPb, io.littlehorse.common.proto.VariableAssignmentPb.Builder, io.littlehorse.common.proto.VariableAssignmentPbOrBuilder> 
-        getTimeoutSecondsFieldBuilder() {
-      if (timeoutSecondsBuilder_ == null) {
-        timeoutSecondsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.VariableAssignmentPb, io.littlehorse.common.proto.VariableAssignmentPb.Builder, io.littlehorse.common.proto.VariableAssignmentPbOrBuilder>(
-                getTimeoutSeconds(),
-                getParentForChildren(),
-                isClean());
-        timeoutSeconds_ = null;
-      }
-      return timeoutSecondsBuilder_;
     }
 
     private int retries_ ;

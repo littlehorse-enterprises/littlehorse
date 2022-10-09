@@ -56,79 +56,109 @@ public interface NodePbOrBuilder extends
       int index);
 
   /**
-   * <code>.lh_proto.TaskNodePb task = 3;</code>
-   * @return Whether the task field is set.
-   */
-  boolean hasTask();
-  /**
-   * <code>.lh_proto.TaskNodePb task = 3;</code>
-   * @return The task.
-   */
-  io.littlehorse.common.proto.TaskNodePb getTask();
-  /**
-   * <code>.lh_proto.TaskNodePb task = 3;</code>
-   */
-  io.littlehorse.common.proto.TaskNodePbOrBuilder getTaskOrBuilder();
-
-  /**
-   * <code>.lh_proto.EntrypointNodePb entrypoint = 4;</code>
-   * @return Whether the entrypoint field is set.
-   */
-  boolean hasEntrypoint();
-  /**
-   * <code>.lh_proto.EntrypointNodePb entrypoint = 4;</code>
-   * @return The entrypoint.
-   */
-  io.littlehorse.common.proto.EntrypointNodePb getEntrypoint();
-  /**
-   * <code>.lh_proto.EntrypointNodePb entrypoint = 4;</code>
-   */
-  io.littlehorse.common.proto.EntrypointNodePbOrBuilder getEntrypointOrBuilder();
-
-  /**
-   * <code>.lh_proto.ExitNodePb exit = 5;</code>
-   * @return Whether the exit field is set.
-   */
-  boolean hasExit();
-  /**
-   * <code>.lh_proto.ExitNodePb exit = 5;</code>
-   * @return The exit.
-   */
-  io.littlehorse.common.proto.ExitNodePb getExit();
-  /**
-   * <code>.lh_proto.ExitNodePb exit = 5;</code>
-   */
-  io.littlehorse.common.proto.ExitNodePbOrBuilder getExitOrBuilder();
-
-  /**
-   * <code>.lh_proto.ExternalEventNodePb external_event = 6;</code>
-   * @return Whether the externalEvent field is set.
-   */
-  boolean hasExternalEvent();
-  /**
-   * <code>.lh_proto.ExternalEventNodePb external_event = 6;</code>
-   * @return The externalEvent.
-   */
-  io.littlehorse.common.proto.ExternalEventNodePb getExternalEvent();
-  /**
-   * <code>.lh_proto.ExternalEventNodePb external_event = 6;</code>
-   */
-  io.littlehorse.common.proto.ExternalEventNodePbOrBuilder getExternalEventOrBuilder();
-
-  /**
-   * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
+   * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
    * @return Whether the outputSchema field is set.
    */
   boolean hasOutputSchema();
   /**
-   * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
+   * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
    * @return The outputSchema.
    */
   io.littlehorse.common.proto.OutputSchemaPb getOutputSchema();
   /**
-   * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
+   * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
    */
   io.littlehorse.common.proto.OutputSchemaPbOrBuilder getOutputSchemaOrBuilder();
+
+  /**
+   * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 4;</code>
+   * @return Whether the timeoutSeconds field is set.
+   */
+  boolean hasTimeoutSeconds();
+  /**
+   * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 4;</code>
+   * @return The timeoutSeconds.
+   */
+  io.littlehorse.common.proto.VariableAssignmentPb getTimeoutSeconds();
+  /**
+   * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 4;</code>
+   */
+  io.littlehorse.common.proto.VariableAssignmentPbOrBuilder getTimeoutSecondsOrBuilder();
+
+  /**
+   * <code>.lh_proto.EntrypointNodePb entrypoint = 5;</code>
+   * @return Whether the entrypoint field is set.
+   */
+  boolean hasEntrypoint();
+  /**
+   * <code>.lh_proto.EntrypointNodePb entrypoint = 5;</code>
+   * @return The entrypoint.
+   */
+  io.littlehorse.common.proto.EntrypointNodePb getEntrypoint();
+  /**
+   * <code>.lh_proto.EntrypointNodePb entrypoint = 5;</code>
+   */
+  io.littlehorse.common.proto.EntrypointNodePbOrBuilder getEntrypointOrBuilder();
+
+  /**
+   * <code>.lh_proto.ExitNodePb exit = 6;</code>
+   * @return Whether the exit field is set.
+   */
+  boolean hasExit();
+  /**
+   * <code>.lh_proto.ExitNodePb exit = 6;</code>
+   * @return The exit.
+   */
+  io.littlehorse.common.proto.ExitNodePb getExit();
+  /**
+   * <code>.lh_proto.ExitNodePb exit = 6;</code>
+   */
+  io.littlehorse.common.proto.ExitNodePbOrBuilder getExitOrBuilder();
+
+  /**
+   * <code>.lh_proto.TaskNodePb task = 7;</code>
+   * @return Whether the task field is set.
+   */
+  boolean hasTask();
+  /**
+   * <code>.lh_proto.TaskNodePb task = 7;</code>
+   * @return The task.
+   */
+  io.littlehorse.common.proto.TaskNodePb getTask();
+  /**
+   * <code>.lh_proto.TaskNodePb task = 7;</code>
+   */
+  io.littlehorse.common.proto.TaskNodePbOrBuilder getTaskOrBuilder();
+
+  /**
+   * <pre>
+   * StartThreadNodePb start_thread = 9;
+   * WaitForThreadNodePb wait_for_thread = 10;
+   * </pre>
+   *
+   * <code>.lh_proto.ExternalEventNodePb external_event = 8;</code>
+   * @return Whether the externalEvent field is set.
+   */
+  boolean hasExternalEvent();
+  /**
+   * <pre>
+   * StartThreadNodePb start_thread = 9;
+   * WaitForThreadNodePb wait_for_thread = 10;
+   * </pre>
+   *
+   * <code>.lh_proto.ExternalEventNodePb external_event = 8;</code>
+   * @return The externalEvent.
+   */
+  io.littlehorse.common.proto.ExternalEventNodePb getExternalEvent();
+  /**
+   * <pre>
+   * StartThreadNodePb start_thread = 9;
+   * WaitForThreadNodePb wait_for_thread = 10;
+   * </pre>
+   *
+   * <code>.lh_proto.ExternalEventNodePb external_event = 8;</code>
+   */
+  io.littlehorse.common.proto.ExternalEventNodePbOrBuilder getExternalEventOrBuilder();
 
   public io.littlehorse.common.proto.NodePb.NodeCase getNodeCase();
 }
