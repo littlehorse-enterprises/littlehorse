@@ -62,16 +62,16 @@ public interface TaskScheduleRequestPbOrBuilder extends
       getWfRunIdBytes();
 
   /**
-   * <code>string reply_kafka_topic = 8;</code>
-   * @return The replyKafkaTopic.
+   * <code>string wf_run_event_queue = 8;</code>
+   * @return The wfRunEventQueue.
    */
-  java.lang.String getReplyKafkaTopic();
+  java.lang.String getWfRunEventQueue();
   /**
-   * <code>string reply_kafka_topic = 8;</code>
-   * @return The bytes for replyKafkaTopic.
+   * <code>string wf_run_event_queue = 8;</code>
+   * @return The bytes for wfRunEventQueue.
    */
   com.google.protobuf.ByteString
-      getReplyKafkaTopicBytes();
+      getWfRunEventQueueBytes();
 
   /**
    * <code>string wf_spec_id = 9;</code>

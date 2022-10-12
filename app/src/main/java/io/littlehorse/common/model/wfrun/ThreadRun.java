@@ -12,18 +12,19 @@ import io.littlehorse.common.model.meta.ThreadSpec;
 import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.meta.VariableMutation;
+import io.littlehorse.common.model.meta.subnode.TaskNode;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.proto.ThreadRunPb;
 import io.littlehorse.common.proto.VariableTypePb;
 import io.littlehorse.common.util.LHUtil;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
+import java.util.Set;
 
-// TODO: I don't think this should be GETable. Maybe just LHSerializable.
 public class ThreadRun extends LHSerializable<ThreadRunPb> {
 
     public String wfRunId;
@@ -40,8 +41,12 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     public String errorMessage;
     public TaskResultCodePb resultCode;
 
+    public List<Integer> childThreadIds;
+    public Integer parentThreadId;
+
     public ThreadRun() {
         variables = new HashMap<>();
+        childThreadIds = new ArrayList<>();
     }
 
     public void initFrom(MessageOrBuilder p) {
@@ -62,6 +67,8 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         if (proto.hasResultCode()) {
             resultCode = proto.getResultCode();
         }
+        if (proto.hasParentThreadId()) parentThreadId = proto.getParentThreadId();
+        childThreadIds = proto.getChildThreadIdsList();
     }
 
     public ThreadRunPb.Builder toProto() {
@@ -86,6 +93,10 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         if (endTime != null) {
             out.setEndTime(LHUtil.fromDate(endTime));
         }
+        if (parentThreadId != null) {
+            out.setParentThreadId(parentThreadId);
+        }
+        out.addAllChildThreadIds(childThreadIds);
 
         return out;
     }
@@ -109,19 +120,6 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
 
     @JsonIgnore
     private ThreadSpec threadSpec;
-
-    @JsonIgnore
-    private Variable getVariable(
-        String varName,
-        ReadOnlyKeyValueStore<String, Variable> store
-    ) {
-        Variable out = variables.get(varName);
-        if (out == null) {
-            out = store.get(varName);
-            variables.put(varName, out);
-        }
-        return out;
-    }
 
     @JsonIgnore
     public ThreadSpec getThreadSpec() {
@@ -356,16 +354,22 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         }
     }
 
+    @JsonIgnore
+    public ThreadRun getParent() {
+        if (parentThreadId == null) return null;
+        return wfRun.threadRuns.get(parentThreadId);
+    }
+
     // TODO: variable locking may have to consider this.
-    public Map<String, VariableValue> assignVarsForNode(Node node)
+    public Map<String, VariableValue> assignVarsForNode(TaskNode node)
         throws LHVarSubError {
         Map<String, VariableValue> out = new HashMap<>();
-        TaskDef taskDef = node.taskNode.taskDef;
+        TaskDef taskDef = node.taskDef;
 
         for (Map.Entry<String, VariableDef> entry : taskDef.requiredVars.entrySet()) {
             String varName = entry.getKey();
             VariableDef requiredVarDef = entry.getValue();
-            VariableAssignment assn = node.taskNode.variables.get(varName);
+            VariableAssignment assn = node.variables.get(varName);
             VariableValue val;
 
             if (assn != null) {
@@ -397,20 +401,6 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         return out;
     }
 
-    // public void setStatus(
-    //     LHStatusPb newStatus,
-    //     String errorMessage,
-    //     TaskResultCodePb code
-    // ) {
-    //     status = newStatus;
-    //     resultCode = code;
-    //     this.errorMessage = errorMessage;
-
-    //     Date time = new Date();
-
-    //     wfRun.handleThreadStatus(number, time, newStatus);
-    // }
-
     private void mutateVariables(VariableValue nodeOutput) throws LHVarSubError {
         Node node = getCurrentNode();
 
@@ -427,8 +417,12 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         // of the variables.
         for (Map.Entry<String, VariableValue> entry : varCache.entrySet()) {
             // TODO: This needs to be extended once we add Threads.
-            putLocalVariable(entry.getKey(), entry.getValue());
+            putVariable(entry.getKey(), entry.getValue());
         }
+    }
+
+    public boolean isTerminated() {
+        return status == LHStatusPb.COMPLETED || status == LHStatusPb.ERROR;
     }
 
     public VariableValue assignVariable(VariableAssignment assn)
@@ -447,6 +441,14 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
                 break;
             case VARIABLE_NAME:
                 val = getVariable(assn.rhsVariableName).value;
+
+                if (val == null) {
+                    throw new LHVarSubError(
+                        null,
+                        "Variable " + assn.rhsVariableName + " not in scope!"
+                    );
+                }
+
                 break;
             case SOURCE_NOT_SET:
             default:
@@ -472,24 +474,38 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         return out;
     }
 
-    public void putVariable(Variable var) {
-        wfRun.threadRuns
-            .get(var.threadRunNumber)
-            .putLocalVariable(var.name, var.value);
+    @JsonIgnore
+    public Set<String> getLocallyDefinedVarNames() {
+        return getThreadSpec().variableDefs.keySet();
     }
 
-    public Variable getVariable(String name) {
+    public void putVariable(String varName, VariableValue var) throws LHVarSubError {
+        if (getLocallyDefinedVarNames().contains(varName)) {
+            wfRun.stores.putVariable(varName, var, number);
+        } else {
+            if (getParent() != null) {
+                getParent().putVariable(varName, var);
+            } else {
+                throw new LHVarSubError(
+                    null,
+                    "Tried to save out-of-scope var " + varName
+                );
+            }
+        }
+    }
+
+    public Variable getVariable(String varName) {
         // For now, just do the local one
         // Once we have threads, this will do a backtrack up the thread tree.
-        return getLocalVariable(name);
-    }
+        Variable out = wfRun.stores.getVariable(varName, this.number);
+        if (out != null) {
+            return out;
+        }
+        if (getParent() != null) {
+            return getParent().getVariable(varName);
+        }
 
-    public void putLocalVariable(String name, VariableValue var) {
-        wfRun.stores.putVariable(name, var, number);
-    }
-
-    public Variable getLocalVariable(String name) {
-        return wfRun.stores.getVariable(name, number);
+        return null;
     }
 }
 

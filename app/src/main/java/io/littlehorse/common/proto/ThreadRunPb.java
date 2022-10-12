@@ -22,6 +22,7 @@ private static final long serialVersionUID = 0L;
     threadSpecName_ = "";
     errorMessage_ = "";
     resultCode_ = 0;
+    childThreadIds_ = emptyIntList();
   }
 
   @java.lang.Override
@@ -127,6 +128,32 @@ private static final long serialVersionUID = 0L;
             resultCode_ = rawValue;
             break;
           }
+          case 88: {
+            if (!((mutable_bitField0_ & 0x00000008) != 0)) {
+              childThreadIds_ = newIntList();
+              mutable_bitField0_ |= 0x00000008;
+            }
+            childThreadIds_.addInt(input.readInt32());
+            break;
+          }
+          case 90: {
+            int length = input.readRawVarint32();
+            int limit = input.pushLimit(length);
+            if (!((mutable_bitField0_ & 0x00000008) != 0) && input.getBytesUntilLimit() > 0) {
+              childThreadIds_ = newIntList();
+              mutable_bitField0_ |= 0x00000008;
+            }
+            while (input.getBytesUntilLimit() > 0) {
+              childThreadIds_.addInt(input.readInt32());
+            }
+            input.popLimit(limit);
+            break;
+          }
+          case 96: {
+            bitField0_ |= 0x00000008;
+            parentThreadId_ = input.readInt32();
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -142,6 +169,9 @@ private static final long serialVersionUID = 0L;
       throw new com.google.protobuf.InvalidProtocolBufferException(
           e).setUnfinishedMessage(this);
     } finally {
+      if (((mutable_bitField0_ & 0x00000008) != 0)) {
+        childThreadIds_.makeImmutable(); // C
+      }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
@@ -439,6 +469,53 @@ private static final long serialVersionUID = 0L;
     return result == null ? io.littlehorse.common.proto.TaskResultCodePb.UNRECOGNIZED : result;
   }
 
+  public static final int CHILD_THREAD_IDS_FIELD_NUMBER = 11;
+  private com.google.protobuf.Internal.IntList childThreadIds_;
+  /**
+   * <code>repeated int32 child_thread_ids = 11;</code>
+   * @return A list containing the childThreadIds.
+   */
+  @java.lang.Override
+  public java.util.List<java.lang.Integer>
+      getChildThreadIdsList() {
+    return childThreadIds_;
+  }
+  /**
+   * <code>repeated int32 child_thread_ids = 11;</code>
+   * @return The count of childThreadIds.
+   */
+  public int getChildThreadIdsCount() {
+    return childThreadIds_.size();
+  }
+  /**
+   * <code>repeated int32 child_thread_ids = 11;</code>
+   * @param index The index of the element to return.
+   * @return The childThreadIds at the given index.
+   */
+  public int getChildThreadIds(int index) {
+    return childThreadIds_.getInt(index);
+  }
+  private int childThreadIdsMemoizedSerializedSize = -1;
+
+  public static final int PARENT_THREAD_ID_FIELD_NUMBER = 12;
+  private int parentThreadId_;
+  /**
+   * <code>int32 parent_thread_id = 12;</code>
+   * @return Whether the parentThreadId field is set.
+   */
+  @java.lang.Override
+  public boolean hasParentThreadId() {
+    return ((bitField0_ & 0x00000008) != 0);
+  }
+  /**
+   * <code>int32 parent_thread_id = 12;</code>
+   * @return The parentThreadId.
+   */
+  @java.lang.Override
+  public int getParentThreadId() {
+    return parentThreadId_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -453,6 +530,7 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
+    getSerializedSize();
     if (!getWfRunIdBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, wfRunId_);
     }
@@ -482,6 +560,16 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000004) != 0)) {
       output.writeEnum(10, resultCode_);
+    }
+    if (getChildThreadIdsList().size() > 0) {
+      output.writeUInt32NoTag(90);
+      output.writeUInt32NoTag(childThreadIdsMemoizedSerializedSize);
+    }
+    for (int i = 0; i < childThreadIds_.size(); i++) {
+      output.writeInt32NoTag(childThreadIds_.getInt(i));
+    }
+    if (((bitField0_ & 0x00000008) != 0)) {
+      output.writeInt32(12, parentThreadId_);
     }
     unknownFields.writeTo(output);
   }
@@ -528,6 +616,24 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(10, resultCode_);
     }
+    {
+      int dataSize = 0;
+      for (int i = 0; i < childThreadIds_.size(); i++) {
+        dataSize += com.google.protobuf.CodedOutputStream
+          .computeInt32SizeNoTag(childThreadIds_.getInt(i));
+      }
+      size += dataSize;
+      if (!getChildThreadIdsList().isEmpty()) {
+        size += 1;
+        size += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(dataSize);
+      }
+      childThreadIdsMemoizedSerializedSize = dataSize;
+    }
+    if (((bitField0_ & 0x00000008) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(12, parentThreadId_);
+    }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
@@ -573,6 +679,13 @@ private static final long serialVersionUID = 0L;
     if (hasResultCode()) {
       if (resultCode_ != other.resultCode_) return false;
     }
+    if (!getChildThreadIdsList()
+        .equals(other.getChildThreadIdsList())) return false;
+    if (hasParentThreadId() != other.hasParentThreadId()) return false;
+    if (hasParentThreadId()) {
+      if (getParentThreadId()
+          != other.getParentThreadId()) return false;
+    }
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -611,6 +724,14 @@ private static final long serialVersionUID = 0L;
     if (hasResultCode()) {
       hash = (37 * hash) + RESULT_CODE_FIELD_NUMBER;
       hash = (53 * hash) + resultCode_;
+    }
+    if (getChildThreadIdsCount() > 0) {
+      hash = (37 * hash) + CHILD_THREAD_IDS_FIELD_NUMBER;
+      hash = (53 * hash) + getChildThreadIdsList().hashCode();
+    }
+    if (hasParentThreadId()) {
+      hash = (37 * hash) + PARENT_THREAD_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getParentThreadId();
     }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
@@ -774,6 +895,10 @@ private static final long serialVersionUID = 0L;
       bitField0_ = (bitField0_ & ~0x00000002);
       resultCode_ = 0;
       bitField0_ = (bitField0_ & ~0x00000004);
+      childThreadIds_ = emptyIntList();
+      bitField0_ = (bitField0_ & ~0x00000008);
+      parentThreadId_ = 0;
+      bitField0_ = (bitField0_ & ~0x00000010);
       return this;
     }
 
@@ -829,6 +954,15 @@ private static final long serialVersionUID = 0L;
         to_bitField0_ |= 0x00000004;
       }
       result.resultCode_ = resultCode_;
+      if (((bitField0_ & 0x00000008) != 0)) {
+        childThreadIds_.makeImmutable();
+        bitField0_ = (bitField0_ & ~0x00000008);
+      }
+      result.childThreadIds_ = childThreadIds_;
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.parentThreadId_ = parentThreadId_;
+        to_bitField0_ |= 0x00000008;
+      }
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -912,6 +1046,19 @@ private static final long serialVersionUID = 0L;
       }
       if (other.hasResultCode()) {
         setResultCode(other.getResultCode());
+      }
+      if (!other.childThreadIds_.isEmpty()) {
+        if (childThreadIds_.isEmpty()) {
+          childThreadIds_ = other.childThreadIds_;
+          bitField0_ = (bitField0_ & ~0x00000008);
+        } else {
+          ensureChildThreadIdsIsMutable();
+          childThreadIds_.addAll(other.childThreadIds_);
+        }
+        onChanged();
+      }
+      if (other.hasParentThreadId()) {
+        setParentThreadId(other.getParentThreadId());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -1666,6 +1813,124 @@ private static final long serialVersionUID = 0L;
     public Builder clearResultCode() {
       bitField0_ = (bitField0_ & ~0x00000004);
       resultCode_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private com.google.protobuf.Internal.IntList childThreadIds_ = emptyIntList();
+    private void ensureChildThreadIdsIsMutable() {
+      if (!((bitField0_ & 0x00000008) != 0)) {
+        childThreadIds_ = mutableCopy(childThreadIds_);
+        bitField0_ |= 0x00000008;
+       }
+    }
+    /**
+     * <code>repeated int32 child_thread_ids = 11;</code>
+     * @return A list containing the childThreadIds.
+     */
+    public java.util.List<java.lang.Integer>
+        getChildThreadIdsList() {
+      return ((bitField0_ & 0x00000008) != 0) ?
+               java.util.Collections.unmodifiableList(childThreadIds_) : childThreadIds_;
+    }
+    /**
+     * <code>repeated int32 child_thread_ids = 11;</code>
+     * @return The count of childThreadIds.
+     */
+    public int getChildThreadIdsCount() {
+      return childThreadIds_.size();
+    }
+    /**
+     * <code>repeated int32 child_thread_ids = 11;</code>
+     * @param index The index of the element to return.
+     * @return The childThreadIds at the given index.
+     */
+    public int getChildThreadIds(int index) {
+      return childThreadIds_.getInt(index);
+    }
+    /**
+     * <code>repeated int32 child_thread_ids = 11;</code>
+     * @param index The index to set the value at.
+     * @param value The childThreadIds to set.
+     * @return This builder for chaining.
+     */
+    public Builder setChildThreadIds(
+        int index, int value) {
+      ensureChildThreadIdsIsMutable();
+      childThreadIds_.setInt(index, value);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated int32 child_thread_ids = 11;</code>
+     * @param value The childThreadIds to add.
+     * @return This builder for chaining.
+     */
+    public Builder addChildThreadIds(int value) {
+      ensureChildThreadIdsIsMutable();
+      childThreadIds_.addInt(value);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated int32 child_thread_ids = 11;</code>
+     * @param values The childThreadIds to add.
+     * @return This builder for chaining.
+     */
+    public Builder addAllChildThreadIds(
+        java.lang.Iterable<? extends java.lang.Integer> values) {
+      ensureChildThreadIdsIsMutable();
+      com.google.protobuf.AbstractMessageLite.Builder.addAll(
+          values, childThreadIds_);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated int32 child_thread_ids = 11;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearChildThreadIds() {
+      childThreadIds_ = emptyIntList();
+      bitField0_ = (bitField0_ & ~0x00000008);
+      onChanged();
+      return this;
+    }
+
+    private int parentThreadId_ ;
+    /**
+     * <code>int32 parent_thread_id = 12;</code>
+     * @return Whether the parentThreadId field is set.
+     */
+    @java.lang.Override
+    public boolean hasParentThreadId() {
+      return ((bitField0_ & 0x00000010) != 0);
+    }
+    /**
+     * <code>int32 parent_thread_id = 12;</code>
+     * @return The parentThreadId.
+     */
+    @java.lang.Override
+    public int getParentThreadId() {
+      return parentThreadId_;
+    }
+    /**
+     * <code>int32 parent_thread_id = 12;</code>
+     * @param value The parentThreadId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setParentThreadId(int value) {
+      bitField0_ |= 0x00000010;
+      parentThreadId_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 parent_thread_id = 12;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearParentThreadId() {
+      bitField0_ = (bitField0_ & ~0x00000010);
+      parentThreadId_ = 0;
       onChanged();
       return this;
     }

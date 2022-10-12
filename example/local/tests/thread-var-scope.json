@@ -1,0 +1,97 @@
+{
+    "name": "thread_var_scope",
+    "threadSpecs": {
+        "parent": {
+            "variableDefs": {
+                "my_var": {
+                    "type": "INT",
+                    "defaultVal": {
+                        "type": "STR",
+                        "str": "Default val for parent"
+                    },
+                    "required": false
+                }
+            },
+            "nodes": {
+                "entrypoint": {
+                    "outgoingEdges": [
+                        {
+                            "sinkNodeName": "t1"
+                        }
+                    ],
+                    "entrypoint": {}
+                },
+                "t1": {
+                    "startThread": {
+                        "threadSpecName": "child"
+                    },
+                    "outgoingEdges": [
+                        {
+                            "sinkNodeName": "t2"
+                        }
+                    ]
+                },
+                "t2": {
+                    "waitForThread": {
+                        "threadRunNumber": {
+                            "literalValue": {
+                                "type": "INT",
+                                "int": 1
+                            }
+                        }
+                    },
+                    "outgoingEdges": [
+                        {
+                            "sinkNodeName": "exit"
+                        }
+                    ]
+                },
+                "exit": {
+                    "exit": {}
+                }
+            }
+        },
+        "child": {
+            "nodes": {
+                "entrypoint": {
+                    "outgoingEdges": [
+                        {
+                            "sinkNodeName": "t1"
+                        }
+                    ],
+                    "entrypoint": {}
+                },
+                "t1": {
+                    "task": {
+                        "taskDefName": "task1",
+                        "retries": 3,
+                        "variables": {
+                            "myTaskVar": {
+                                "variableName": "my_var"
+                            }
+                        }
+                    },
+                    "outgoingEdges": [
+                        {
+                            "sinkNodeName": "exit"
+                        }
+                    ],
+                    "variableMutations": [
+                        {
+                            "lhsName": "my_var",
+                            "operation": "ASSIGN",
+                            "literalValue": {
+                                "type": "STR",
+                                "str": "Edited by the child!"
+                            }
+                        }
+                    ]
+                },
+                "exit": {
+                    "exit": {}
+                }
+            }
+        }
+    },
+    "entrypointThreadName": "parent"
+}

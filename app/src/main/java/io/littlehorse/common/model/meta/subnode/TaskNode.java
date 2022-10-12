@@ -14,14 +14,12 @@ import io.littlehorse.common.proto.TaskNodePb;
 import io.littlehorse.common.proto.TaskNodePbOrBuilder;
 import io.littlehorse.common.proto.VariableAssignmentPb;
 import io.littlehorse.common.proto.VariableAssignmentPb.SourceCase;
-import io.littlehorse.common.proto.VariableTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class TaskNode extends SubNode<TaskNodePb> {
 
@@ -113,36 +111,23 @@ public class TaskNode extends SubNode<TaskNodePb> {
 
         if (timeoutSeconds == null) {
             timeoutSeconds = config.getDefaultTaskTimeout();
-        } else if (timeoutSeconds.rhsSourceType == SourceCase.VARIABLE_NAME) {
-            Pair<String, VariableDef> defPair = node.threadSpec.lookupVarDef(
-                timeoutSeconds.rhsVariableName
-            );
-            if (defPair == null) {
-                throw new LHValidationError(
-                    null,
-                    "Timeout on node " +
-                    node.name +
-                    " refers to missing variable " +
-                    timeoutSeconds.rhsVariableName
-                );
-            }
-            if (defPair.getValue().type != VariableTypePb.INT) {
-                throw new LHValidationError(
-                    null,
-                    "Timeout on node " +
-                    node.name +
-                    " refers to non INT variable " +
-                    timeoutSeconds.rhsVariableName
-                );
-            }
+        } else {
+            node.threadSpec.validateTimeoutAssignment(node.name, timeoutSeconds);
         }
     }
 
     @Override
     public Set<String> getNeededVariableNames() {
         Set<String> out = new HashSet<>();
-        if (timeoutSeconds.rhsSourceType == SourceCase.VARIABLE_NAME) {
+        if (
+            timeoutSeconds != null &&
+            timeoutSeconds.rhsSourceType == SourceCase.VARIABLE_NAME
+        ) {
             out.add(timeoutSeconds.rhsVariableName);
+        }
+
+        for (Map.Entry<String, VariableAssignment> e : variables.entrySet()) {
+            out.addAll(e.getValue().getRequiredVariableNames());
         }
         return out;
     }

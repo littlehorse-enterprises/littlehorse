@@ -138,6 +138,34 @@ private static final long serialVersionUID = 0L;
             nodeCase_ = 8;
             break;
           }
+          case 74: {
+            io.littlehorse.common.proto.StartThreadNodePb.Builder subBuilder = null;
+            if (nodeCase_ == 9) {
+              subBuilder = ((io.littlehorse.common.proto.StartThreadNodePb) node_).toBuilder();
+            }
+            node_ =
+                input.readMessage(io.littlehorse.common.proto.StartThreadNodePb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.common.proto.StartThreadNodePb) node_);
+              node_ = subBuilder.buildPartial();
+            }
+            nodeCase_ = 9;
+            break;
+          }
+          case 82: {
+            io.littlehorse.common.proto.WaitForThreadNodePb.Builder subBuilder = null;
+            if (nodeCase_ == 10) {
+              subBuilder = ((io.littlehorse.common.proto.WaitForThreadNodePb) node_).toBuilder();
+            }
+            node_ =
+                input.readMessage(io.littlehorse.common.proto.WaitForThreadNodePb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.common.proto.WaitForThreadNodePb) node_);
+              node_ = subBuilder.buildPartial();
+            }
+            nodeCase_ = 10;
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -185,6 +213,8 @@ private static final long serialVersionUID = 0L;
     EXIT(6),
     TASK(7),
     EXTERNAL_EVENT(8),
+    START_THREAD(9),
+    WAIT_FOR_THREAD(10),
     NODE_NOT_SET(0);
     private final int value;
     private NodeCase(int value) {
@@ -206,6 +236,8 @@ private static final long serialVersionUID = 0L;
         case 6: return EXIT;
         case 7: return TASK;
         case 8: return EXTERNAL_EVENT;
+        case 9: return START_THREAD;
+        case 10: return WAIT_FOR_THREAD;
         case 0: return NODE_NOT_SET;
         default: return null;
       }
@@ -422,11 +454,6 @@ private static final long serialVersionUID = 0L;
 
   public static final int EXTERNAL_EVENT_FIELD_NUMBER = 8;
   /**
-   * <pre>
-   * StartThreadNodePb start_thread = 9;
-   * WaitForThreadNodePb wait_for_thread = 10;
-   * </pre>
-   *
    * <code>.lh_proto.ExternalEventNodePb external_event = 8;</code>
    * @return Whether the externalEvent field is set.
    */
@@ -435,11 +462,6 @@ private static final long serialVersionUID = 0L;
     return nodeCase_ == 8;
   }
   /**
-   * <pre>
-   * StartThreadNodePb start_thread = 9;
-   * WaitForThreadNodePb wait_for_thread = 10;
-   * </pre>
-   *
    * <code>.lh_proto.ExternalEventNodePb external_event = 8;</code>
    * @return The externalEvent.
    */
@@ -451,11 +473,6 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.ExternalEventNodePb.getDefaultInstance();
   }
   /**
-   * <pre>
-   * StartThreadNodePb start_thread = 9;
-   * WaitForThreadNodePb wait_for_thread = 10;
-   * </pre>
-   *
    * <code>.lh_proto.ExternalEventNodePb external_event = 8;</code>
    */
   @java.lang.Override
@@ -464,6 +481,68 @@ private static final long serialVersionUID = 0L;
        return (io.littlehorse.common.proto.ExternalEventNodePb) node_;
     }
     return io.littlehorse.common.proto.ExternalEventNodePb.getDefaultInstance();
+  }
+
+  public static final int START_THREAD_FIELD_NUMBER = 9;
+  /**
+   * <code>.lh_proto.StartThreadNodePb start_thread = 9;</code>
+   * @return Whether the startThread field is set.
+   */
+  @java.lang.Override
+  public boolean hasStartThread() {
+    return nodeCase_ == 9;
+  }
+  /**
+   * <code>.lh_proto.StartThreadNodePb start_thread = 9;</code>
+   * @return The startThread.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.StartThreadNodePb getStartThread() {
+    if (nodeCase_ == 9) {
+       return (io.littlehorse.common.proto.StartThreadNodePb) node_;
+    }
+    return io.littlehorse.common.proto.StartThreadNodePb.getDefaultInstance();
+  }
+  /**
+   * <code>.lh_proto.StartThreadNodePb start_thread = 9;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.StartThreadNodePbOrBuilder getStartThreadOrBuilder() {
+    if (nodeCase_ == 9) {
+       return (io.littlehorse.common.proto.StartThreadNodePb) node_;
+    }
+    return io.littlehorse.common.proto.StartThreadNodePb.getDefaultInstance();
+  }
+
+  public static final int WAIT_FOR_THREAD_FIELD_NUMBER = 10;
+  /**
+   * <code>.lh_proto.WaitForThreadNodePb wait_for_thread = 10;</code>
+   * @return Whether the waitForThread field is set.
+   */
+  @java.lang.Override
+  public boolean hasWaitForThread() {
+    return nodeCase_ == 10;
+  }
+  /**
+   * <code>.lh_proto.WaitForThreadNodePb wait_for_thread = 10;</code>
+   * @return The waitForThread.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.WaitForThreadNodePb getWaitForThread() {
+    if (nodeCase_ == 10) {
+       return (io.littlehorse.common.proto.WaitForThreadNodePb) node_;
+    }
+    return io.littlehorse.common.proto.WaitForThreadNodePb.getDefaultInstance();
+  }
+  /**
+   * <code>.lh_proto.WaitForThreadNodePb wait_for_thread = 10;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.WaitForThreadNodePbOrBuilder getWaitForThreadOrBuilder() {
+    if (nodeCase_ == 10) {
+       return (io.littlehorse.common.proto.WaitForThreadNodePb) node_;
+    }
+    return io.littlehorse.common.proto.WaitForThreadNodePb.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -501,6 +580,12 @@ private static final long serialVersionUID = 0L;
     if (nodeCase_ == 8) {
       output.writeMessage(8, (io.littlehorse.common.proto.ExternalEventNodePb) node_);
     }
+    if (nodeCase_ == 9) {
+      output.writeMessage(9, (io.littlehorse.common.proto.StartThreadNodePb) node_);
+    }
+    if (nodeCase_ == 10) {
+      output.writeMessage(10, (io.littlehorse.common.proto.WaitForThreadNodePb) node_);
+    }
     unknownFields.writeTo(output);
   }
 
@@ -537,6 +622,14 @@ private static final long serialVersionUID = 0L;
     if (nodeCase_ == 8) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(8, (io.littlehorse.common.proto.ExternalEventNodePb) node_);
+    }
+    if (nodeCase_ == 9) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(9, (io.littlehorse.common.proto.StartThreadNodePb) node_);
+    }
+    if (nodeCase_ == 10) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(10, (io.littlehorse.common.proto.WaitForThreadNodePb) node_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -580,6 +673,14 @@ private static final long serialVersionUID = 0L;
         if (!getExternalEvent()
             .equals(other.getExternalEvent())) return false;
         break;
+      case 9:
+        if (!getStartThread()
+            .equals(other.getStartThread())) return false;
+        break;
+      case 10:
+        if (!getWaitForThread()
+            .equals(other.getWaitForThread())) return false;
+        break;
       case 0:
       default:
     }
@@ -622,6 +723,14 @@ private static final long serialVersionUID = 0L;
       case 8:
         hash = (37 * hash) + EXTERNAL_EVENT_FIELD_NUMBER;
         hash = (53 * hash) + getExternalEvent().hashCode();
+        break;
+      case 9:
+        hash = (37 * hash) + START_THREAD_FIELD_NUMBER;
+        hash = (53 * hash) + getStartThread().hashCode();
+        break;
+      case 10:
+        hash = (37 * hash) + WAIT_FOR_THREAD_FIELD_NUMBER;
+        hash = (53 * hash) + getWaitForThread().hashCode();
         break;
       case 0:
       default:
@@ -859,6 +968,20 @@ private static final long serialVersionUID = 0L;
           result.node_ = externalEventBuilder_.build();
         }
       }
+      if (nodeCase_ == 9) {
+        if (startThreadBuilder_ == null) {
+          result.node_ = node_;
+        } else {
+          result.node_ = startThreadBuilder_.build();
+        }
+      }
+      if (nodeCase_ == 10) {
+        if (waitForThreadBuilder_ == null) {
+          result.node_ = node_;
+        } else {
+          result.node_ = waitForThreadBuilder_.build();
+        }
+      }
       result.nodeCase_ = nodeCase_;
       onBuilt();
       return result;
@@ -978,6 +1101,14 @@ private static final long serialVersionUID = 0L;
         }
         case EXTERNAL_EVENT: {
           mergeExternalEvent(other.getExternalEvent());
+          break;
+        }
+        case START_THREAD: {
+          mergeStartThread(other.getStartThread());
+          break;
+        }
+        case WAIT_FOR_THREAD: {
+          mergeWaitForThread(other.getWaitForThread());
           break;
         }
         case NODE_NOT_SET: {
@@ -2054,11 +2185,6 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.ExternalEventNodePb, io.littlehorse.common.proto.ExternalEventNodePb.Builder, io.littlehorse.common.proto.ExternalEventNodePbOrBuilder> externalEventBuilder_;
     /**
-     * <pre>
-     * StartThreadNodePb start_thread = 9;
-     * WaitForThreadNodePb wait_for_thread = 10;
-     * </pre>
-     *
      * <code>.lh_proto.ExternalEventNodePb external_event = 8;</code>
      * @return Whether the externalEvent field is set.
      */
@@ -2067,11 +2193,6 @@ private static final long serialVersionUID = 0L;
       return nodeCase_ == 8;
     }
     /**
-     * <pre>
-     * StartThreadNodePb start_thread = 9;
-     * WaitForThreadNodePb wait_for_thread = 10;
-     * </pre>
-     *
      * <code>.lh_proto.ExternalEventNodePb external_event = 8;</code>
      * @return The externalEvent.
      */
@@ -2090,11 +2211,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * StartThreadNodePb start_thread = 9;
-     * WaitForThreadNodePb wait_for_thread = 10;
-     * </pre>
-     *
      * <code>.lh_proto.ExternalEventNodePb external_event = 8;</code>
      */
     public Builder setExternalEvent(io.littlehorse.common.proto.ExternalEventNodePb value) {
@@ -2111,11 +2227,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * StartThreadNodePb start_thread = 9;
-     * WaitForThreadNodePb wait_for_thread = 10;
-     * </pre>
-     *
      * <code>.lh_proto.ExternalEventNodePb external_event = 8;</code>
      */
     public Builder setExternalEvent(
@@ -2130,11 +2241,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * StartThreadNodePb start_thread = 9;
-     * WaitForThreadNodePb wait_for_thread = 10;
-     * </pre>
-     *
      * <code>.lh_proto.ExternalEventNodePb external_event = 8;</code>
      */
     public Builder mergeExternalEvent(io.littlehorse.common.proto.ExternalEventNodePb value) {
@@ -2157,11 +2263,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * StartThreadNodePb start_thread = 9;
-     * WaitForThreadNodePb wait_for_thread = 10;
-     * </pre>
-     *
      * <code>.lh_proto.ExternalEventNodePb external_event = 8;</code>
      */
     public Builder clearExternalEvent() {
@@ -2181,22 +2282,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * StartThreadNodePb start_thread = 9;
-     * WaitForThreadNodePb wait_for_thread = 10;
-     * </pre>
-     *
      * <code>.lh_proto.ExternalEventNodePb external_event = 8;</code>
      */
     public io.littlehorse.common.proto.ExternalEventNodePb.Builder getExternalEventBuilder() {
       return getExternalEventFieldBuilder().getBuilder();
     }
     /**
-     * <pre>
-     * StartThreadNodePb start_thread = 9;
-     * WaitForThreadNodePb wait_for_thread = 10;
-     * </pre>
-     *
      * <code>.lh_proto.ExternalEventNodePb external_event = 8;</code>
      */
     @java.lang.Override
@@ -2211,11 +2302,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * StartThreadNodePb start_thread = 9;
-     * WaitForThreadNodePb wait_for_thread = 10;
-     * </pre>
-     *
      * <code>.lh_proto.ExternalEventNodePb external_event = 8;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -2235,6 +2321,288 @@ private static final long serialVersionUID = 0L;
       nodeCase_ = 8;
       onChanged();;
       return externalEventBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.StartThreadNodePb, io.littlehorse.common.proto.StartThreadNodePb.Builder, io.littlehorse.common.proto.StartThreadNodePbOrBuilder> startThreadBuilder_;
+    /**
+     * <code>.lh_proto.StartThreadNodePb start_thread = 9;</code>
+     * @return Whether the startThread field is set.
+     */
+    @java.lang.Override
+    public boolean hasStartThread() {
+      return nodeCase_ == 9;
+    }
+    /**
+     * <code>.lh_proto.StartThreadNodePb start_thread = 9;</code>
+     * @return The startThread.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.StartThreadNodePb getStartThread() {
+      if (startThreadBuilder_ == null) {
+        if (nodeCase_ == 9) {
+          return (io.littlehorse.common.proto.StartThreadNodePb) node_;
+        }
+        return io.littlehorse.common.proto.StartThreadNodePb.getDefaultInstance();
+      } else {
+        if (nodeCase_ == 9) {
+          return startThreadBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.StartThreadNodePb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.StartThreadNodePb start_thread = 9;</code>
+     */
+    public Builder setStartThread(io.littlehorse.common.proto.StartThreadNodePb value) {
+      if (startThreadBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        node_ = value;
+        onChanged();
+      } else {
+        startThreadBuilder_.setMessage(value);
+      }
+      nodeCase_ = 9;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.StartThreadNodePb start_thread = 9;</code>
+     */
+    public Builder setStartThread(
+        io.littlehorse.common.proto.StartThreadNodePb.Builder builderForValue) {
+      if (startThreadBuilder_ == null) {
+        node_ = builderForValue.build();
+        onChanged();
+      } else {
+        startThreadBuilder_.setMessage(builderForValue.build());
+      }
+      nodeCase_ = 9;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.StartThreadNodePb start_thread = 9;</code>
+     */
+    public Builder mergeStartThread(io.littlehorse.common.proto.StartThreadNodePb value) {
+      if (startThreadBuilder_ == null) {
+        if (nodeCase_ == 9 &&
+            node_ != io.littlehorse.common.proto.StartThreadNodePb.getDefaultInstance()) {
+          node_ = io.littlehorse.common.proto.StartThreadNodePb.newBuilder((io.littlehorse.common.proto.StartThreadNodePb) node_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          node_ = value;
+        }
+        onChanged();
+      } else {
+        if (nodeCase_ == 9) {
+          startThreadBuilder_.mergeFrom(value);
+        }
+        startThreadBuilder_.setMessage(value);
+      }
+      nodeCase_ = 9;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.StartThreadNodePb start_thread = 9;</code>
+     */
+    public Builder clearStartThread() {
+      if (startThreadBuilder_ == null) {
+        if (nodeCase_ == 9) {
+          nodeCase_ = 0;
+          node_ = null;
+          onChanged();
+        }
+      } else {
+        if (nodeCase_ == 9) {
+          nodeCase_ = 0;
+          node_ = null;
+        }
+        startThreadBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.lh_proto.StartThreadNodePb start_thread = 9;</code>
+     */
+    public io.littlehorse.common.proto.StartThreadNodePb.Builder getStartThreadBuilder() {
+      return getStartThreadFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.StartThreadNodePb start_thread = 9;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.StartThreadNodePbOrBuilder getStartThreadOrBuilder() {
+      if ((nodeCase_ == 9) && (startThreadBuilder_ != null)) {
+        return startThreadBuilder_.getMessageOrBuilder();
+      } else {
+        if (nodeCase_ == 9) {
+          return (io.littlehorse.common.proto.StartThreadNodePb) node_;
+        }
+        return io.littlehorse.common.proto.StartThreadNodePb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.StartThreadNodePb start_thread = 9;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.StartThreadNodePb, io.littlehorse.common.proto.StartThreadNodePb.Builder, io.littlehorse.common.proto.StartThreadNodePbOrBuilder> 
+        getStartThreadFieldBuilder() {
+      if (startThreadBuilder_ == null) {
+        if (!(nodeCase_ == 9)) {
+          node_ = io.littlehorse.common.proto.StartThreadNodePb.getDefaultInstance();
+        }
+        startThreadBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.StartThreadNodePb, io.littlehorse.common.proto.StartThreadNodePb.Builder, io.littlehorse.common.proto.StartThreadNodePbOrBuilder>(
+                (io.littlehorse.common.proto.StartThreadNodePb) node_,
+                getParentForChildren(),
+                isClean());
+        node_ = null;
+      }
+      nodeCase_ = 9;
+      onChanged();;
+      return startThreadBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.WaitForThreadNodePb, io.littlehorse.common.proto.WaitForThreadNodePb.Builder, io.littlehorse.common.proto.WaitForThreadNodePbOrBuilder> waitForThreadBuilder_;
+    /**
+     * <code>.lh_proto.WaitForThreadNodePb wait_for_thread = 10;</code>
+     * @return Whether the waitForThread field is set.
+     */
+    @java.lang.Override
+    public boolean hasWaitForThread() {
+      return nodeCase_ == 10;
+    }
+    /**
+     * <code>.lh_proto.WaitForThreadNodePb wait_for_thread = 10;</code>
+     * @return The waitForThread.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.WaitForThreadNodePb getWaitForThread() {
+      if (waitForThreadBuilder_ == null) {
+        if (nodeCase_ == 10) {
+          return (io.littlehorse.common.proto.WaitForThreadNodePb) node_;
+        }
+        return io.littlehorse.common.proto.WaitForThreadNodePb.getDefaultInstance();
+      } else {
+        if (nodeCase_ == 10) {
+          return waitForThreadBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.WaitForThreadNodePb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.WaitForThreadNodePb wait_for_thread = 10;</code>
+     */
+    public Builder setWaitForThread(io.littlehorse.common.proto.WaitForThreadNodePb value) {
+      if (waitForThreadBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        node_ = value;
+        onChanged();
+      } else {
+        waitForThreadBuilder_.setMessage(value);
+      }
+      nodeCase_ = 10;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.WaitForThreadNodePb wait_for_thread = 10;</code>
+     */
+    public Builder setWaitForThread(
+        io.littlehorse.common.proto.WaitForThreadNodePb.Builder builderForValue) {
+      if (waitForThreadBuilder_ == null) {
+        node_ = builderForValue.build();
+        onChanged();
+      } else {
+        waitForThreadBuilder_.setMessage(builderForValue.build());
+      }
+      nodeCase_ = 10;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.WaitForThreadNodePb wait_for_thread = 10;</code>
+     */
+    public Builder mergeWaitForThread(io.littlehorse.common.proto.WaitForThreadNodePb value) {
+      if (waitForThreadBuilder_ == null) {
+        if (nodeCase_ == 10 &&
+            node_ != io.littlehorse.common.proto.WaitForThreadNodePb.getDefaultInstance()) {
+          node_ = io.littlehorse.common.proto.WaitForThreadNodePb.newBuilder((io.littlehorse.common.proto.WaitForThreadNodePb) node_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          node_ = value;
+        }
+        onChanged();
+      } else {
+        if (nodeCase_ == 10) {
+          waitForThreadBuilder_.mergeFrom(value);
+        }
+        waitForThreadBuilder_.setMessage(value);
+      }
+      nodeCase_ = 10;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.WaitForThreadNodePb wait_for_thread = 10;</code>
+     */
+    public Builder clearWaitForThread() {
+      if (waitForThreadBuilder_ == null) {
+        if (nodeCase_ == 10) {
+          nodeCase_ = 0;
+          node_ = null;
+          onChanged();
+        }
+      } else {
+        if (nodeCase_ == 10) {
+          nodeCase_ = 0;
+          node_ = null;
+        }
+        waitForThreadBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.lh_proto.WaitForThreadNodePb wait_for_thread = 10;</code>
+     */
+    public io.littlehorse.common.proto.WaitForThreadNodePb.Builder getWaitForThreadBuilder() {
+      return getWaitForThreadFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.WaitForThreadNodePb wait_for_thread = 10;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.WaitForThreadNodePbOrBuilder getWaitForThreadOrBuilder() {
+      if ((nodeCase_ == 10) && (waitForThreadBuilder_ != null)) {
+        return waitForThreadBuilder_.getMessageOrBuilder();
+      } else {
+        if (nodeCase_ == 10) {
+          return (io.littlehorse.common.proto.WaitForThreadNodePb) node_;
+        }
+        return io.littlehorse.common.proto.WaitForThreadNodePb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.WaitForThreadNodePb wait_for_thread = 10;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.WaitForThreadNodePb, io.littlehorse.common.proto.WaitForThreadNodePb.Builder, io.littlehorse.common.proto.WaitForThreadNodePbOrBuilder> 
+        getWaitForThreadFieldBuilder() {
+      if (waitForThreadBuilder_ == null) {
+        if (!(nodeCase_ == 10)) {
+          node_ = io.littlehorse.common.proto.WaitForThreadNodePb.getDefaultInstance();
+        }
+        waitForThreadBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.WaitForThreadNodePb, io.littlehorse.common.proto.WaitForThreadNodePb.Builder, io.littlehorse.common.proto.WaitForThreadNodePbOrBuilder>(
+                (io.littlehorse.common.proto.WaitForThreadNodePb) node_,
+                getParentForChildren(),
+                isClean());
+        node_ = null;
+      }
+      nodeCase_ = 10;
+      onChanged();;
+      return waitForThreadBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

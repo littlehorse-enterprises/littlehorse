@@ -3,6 +3,7 @@ package io.littlehorse.common.model.wfrun;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.ThreadSpec;
@@ -124,7 +125,7 @@ public class WfRun extends GETable<WfRunPb> {
     @JsonIgnore
     public WfRunStoreAccess stores;
 
-    public void startThread(
+    public ThreadRun startThread(
         String threadName,
         Date start,
         Integer parentThreadId,
@@ -138,6 +139,7 @@ public class WfRun extends GETable<WfRunPb> {
         ThreadRun thread = new ThreadRun();
         thread.wfRunId = id;
         thread.number = threadRuns.size();
+        thread.parentThreadId = parentThreadId;
 
         thread.status = LHStatusPb.RUNNING;
         thread.wfSpecId = wfSpecId;
@@ -159,7 +161,7 @@ public class WfRun extends GETable<WfRunPb> {
                 "Failed validating variables on start: " + exn.getMessage(),
                 thread.startTime
             );
-            return;
+            return thread;
         }
 
         for (Map.Entry<String, VariableDef> entry : tspec.variableDefs.entrySet()) {
@@ -176,10 +178,15 @@ public class WfRun extends GETable<WfRunPb> {
                 val.type = varDef.type;
             }
 
-            thread.putLocalVariable(varName, val);
+            try {
+                thread.putVariable(varName, val);
+            } catch (LHVarSubError exn) {
+                throw new RuntimeException("Not possible");
+            }
         }
         thread.activateNode(thread.getCurrentNode());
         thread.advance(start);
+        return thread;
     }
 
     public void processEvent(WfRunEvent e) {
@@ -199,8 +206,10 @@ public class WfRun extends GETable<WfRunPb> {
         LHStatusPb newStatus
     ) {
         if (threadRunNumber != 0) {
-            throw new RuntimeException("TODO: Support threading.");
+            // Nothing to do, since all we care about is the root thread.
+            return;
         }
+
         // TODO: In the future, there may be some other lifecycle hooks here, such as forcibly
         // killing (or waiting for) any child threads. To be determined based on threading design.
         if (newStatus == LHStatusPb.COMPLETED) {

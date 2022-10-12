@@ -200,6 +200,34 @@ private static final long serialVersionUID = 0L;
             nodeTypeCase_ = 17;
             break;
           }
+          case 146: {
+            io.littlehorse.common.proto.StartThreadRunPb.Builder subBuilder = null;
+            if (nodeTypeCase_ == 18) {
+              subBuilder = ((io.littlehorse.common.proto.StartThreadRunPb) nodeType_).toBuilder();
+            }
+            nodeType_ =
+                input.readMessage(io.littlehorse.common.proto.StartThreadRunPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.common.proto.StartThreadRunPb) nodeType_);
+              nodeType_ = subBuilder.buildPartial();
+            }
+            nodeTypeCase_ = 18;
+            break;
+          }
+          case 154: {
+            io.littlehorse.common.proto.WaitThreadRunPb.Builder subBuilder = null;
+            if (nodeTypeCase_ == 19) {
+              subBuilder = ((io.littlehorse.common.proto.WaitThreadRunPb) nodeType_).toBuilder();
+            }
+            nodeType_ =
+                input.readMessage(io.littlehorse.common.proto.WaitThreadRunPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.common.proto.WaitThreadRunPb) nodeType_);
+              nodeType_ = subBuilder.buildPartial();
+            }
+            nodeTypeCase_ = 19;
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -242,6 +270,8 @@ private static final long serialVersionUID = 0L;
     EXTERNAL_EVENT(15),
     ENTRYPOINT(16),
     EXIT(17),
+    START_THREAD(18),
+    WAIT_THREAD(19),
     NODETYPE_NOT_SET(0);
     private final int value;
     private NodeTypeCase(int value) {
@@ -263,6 +293,8 @@ private static final long serialVersionUID = 0L;
         case 15: return EXTERNAL_EVENT;
         case 16: return ENTRYPOINT;
         case 17: return EXIT;
+        case 18: return START_THREAD;
+        case 19: return WAIT_THREAD;
         case 0: return NODETYPE_NOT_SET;
         default: return null;
       }
@@ -741,6 +773,68 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.ExitRunPb.getDefaultInstance();
   }
 
+  public static final int START_THREAD_FIELD_NUMBER = 18;
+  /**
+   * <code>.lh_proto.StartThreadRunPb start_thread = 18;</code>
+   * @return Whether the startThread field is set.
+   */
+  @java.lang.Override
+  public boolean hasStartThread() {
+    return nodeTypeCase_ == 18;
+  }
+  /**
+   * <code>.lh_proto.StartThreadRunPb start_thread = 18;</code>
+   * @return The startThread.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.StartThreadRunPb getStartThread() {
+    if (nodeTypeCase_ == 18) {
+       return (io.littlehorse.common.proto.StartThreadRunPb) nodeType_;
+    }
+    return io.littlehorse.common.proto.StartThreadRunPb.getDefaultInstance();
+  }
+  /**
+   * <code>.lh_proto.StartThreadRunPb start_thread = 18;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.StartThreadRunPbOrBuilder getStartThreadOrBuilder() {
+    if (nodeTypeCase_ == 18) {
+       return (io.littlehorse.common.proto.StartThreadRunPb) nodeType_;
+    }
+    return io.littlehorse.common.proto.StartThreadRunPb.getDefaultInstance();
+  }
+
+  public static final int WAIT_THREAD_FIELD_NUMBER = 19;
+  /**
+   * <code>.lh_proto.WaitThreadRunPb wait_thread = 19;</code>
+   * @return Whether the waitThread field is set.
+   */
+  @java.lang.Override
+  public boolean hasWaitThread() {
+    return nodeTypeCase_ == 19;
+  }
+  /**
+   * <code>.lh_proto.WaitThreadRunPb wait_thread = 19;</code>
+   * @return The waitThread.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.WaitThreadRunPb getWaitThread() {
+    if (nodeTypeCase_ == 19) {
+       return (io.littlehorse.common.proto.WaitThreadRunPb) nodeType_;
+    }
+    return io.littlehorse.common.proto.WaitThreadRunPb.getDefaultInstance();
+  }
+  /**
+   * <code>.lh_proto.WaitThreadRunPb wait_thread = 19;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.WaitThreadRunPbOrBuilder getWaitThreadOrBuilder() {
+    if (nodeTypeCase_ == 19) {
+       return (io.littlehorse.common.proto.WaitThreadRunPb) nodeType_;
+    }
+    return io.littlehorse.common.proto.WaitThreadRunPb.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -805,6 +899,12 @@ private static final long serialVersionUID = 0L;
     }
     if (nodeTypeCase_ == 17) {
       output.writeMessage(17, (io.littlehorse.common.proto.ExitRunPb) nodeType_);
+    }
+    if (nodeTypeCase_ == 18) {
+      output.writeMessage(18, (io.littlehorse.common.proto.StartThreadRunPb) nodeType_);
+    }
+    if (nodeTypeCase_ == 19) {
+      output.writeMessage(19, (io.littlehorse.common.proto.WaitThreadRunPb) nodeType_);
     }
     unknownFields.writeTo(output);
   }
@@ -878,6 +978,14 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(17, (io.littlehorse.common.proto.ExitRunPb) nodeType_);
     }
+    if (nodeTypeCase_ == 18) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(18, (io.littlehorse.common.proto.StartThreadRunPb) nodeType_);
+    }
+    if (nodeTypeCase_ == 19) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(19, (io.littlehorse.common.proto.WaitThreadRunPb) nodeType_);
+    }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
@@ -947,6 +1055,14 @@ private static final long serialVersionUID = 0L;
         if (!getExit()
             .equals(other.getExit())) return false;
         break;
+      case 18:
+        if (!getStartThread()
+            .equals(other.getStartThread())) return false;
+        break;
+      case 19:
+        if (!getWaitThread()
+            .equals(other.getWaitThread())) return false;
+        break;
       case 0:
       default:
     }
@@ -1011,6 +1127,14 @@ private static final long serialVersionUID = 0L;
       case 17:
         hash = (37 * hash) + EXIT_FIELD_NUMBER;
         hash = (53 * hash) + getExit().hashCode();
+        break;
+      case 18:
+        hash = (37 * hash) + START_THREAD_FIELD_NUMBER;
+        hash = (53 * hash) + getStartThread().hashCode();
+        break;
+      case 19:
+        hash = (37 * hash) + WAIT_THREAD_FIELD_NUMBER;
+        hash = (53 * hash) + getWaitThread().hashCode();
         break;
       case 0:
       default:
@@ -1271,6 +1395,20 @@ private static final long serialVersionUID = 0L;
           result.nodeType_ = exitBuilder_.build();
         }
       }
+      if (nodeTypeCase_ == 18) {
+        if (startThreadBuilder_ == null) {
+          result.nodeType_ = nodeType_;
+        } else {
+          result.nodeType_ = startThreadBuilder_.build();
+        }
+      }
+      if (nodeTypeCase_ == 19) {
+        if (waitThreadBuilder_ == null) {
+          result.nodeType_ = nodeType_;
+        } else {
+          result.nodeType_ = waitThreadBuilder_.build();
+        }
+      }
       result.bitField0_ = to_bitField0_;
       result.nodeTypeCase_ = nodeTypeCase_;
       onBuilt();
@@ -1381,6 +1519,14 @@ private static final long serialVersionUID = 0L;
         }
         case EXIT: {
           mergeExit(other.getExit());
+          break;
+        }
+        case START_THREAD: {
+          mergeStartThread(other.getStartThread());
+          break;
+        }
+        case WAIT_THREAD: {
+          mergeWaitThread(other.getWaitThread());
           break;
         }
         case NODETYPE_NOT_SET: {
@@ -2859,6 +3005,288 @@ private static final long serialVersionUID = 0L;
       nodeTypeCase_ = 17;
       onChanged();;
       return exitBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.StartThreadRunPb, io.littlehorse.common.proto.StartThreadRunPb.Builder, io.littlehorse.common.proto.StartThreadRunPbOrBuilder> startThreadBuilder_;
+    /**
+     * <code>.lh_proto.StartThreadRunPb start_thread = 18;</code>
+     * @return Whether the startThread field is set.
+     */
+    @java.lang.Override
+    public boolean hasStartThread() {
+      return nodeTypeCase_ == 18;
+    }
+    /**
+     * <code>.lh_proto.StartThreadRunPb start_thread = 18;</code>
+     * @return The startThread.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.StartThreadRunPb getStartThread() {
+      if (startThreadBuilder_ == null) {
+        if (nodeTypeCase_ == 18) {
+          return (io.littlehorse.common.proto.StartThreadRunPb) nodeType_;
+        }
+        return io.littlehorse.common.proto.StartThreadRunPb.getDefaultInstance();
+      } else {
+        if (nodeTypeCase_ == 18) {
+          return startThreadBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.StartThreadRunPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.StartThreadRunPb start_thread = 18;</code>
+     */
+    public Builder setStartThread(io.littlehorse.common.proto.StartThreadRunPb value) {
+      if (startThreadBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        nodeType_ = value;
+        onChanged();
+      } else {
+        startThreadBuilder_.setMessage(value);
+      }
+      nodeTypeCase_ = 18;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.StartThreadRunPb start_thread = 18;</code>
+     */
+    public Builder setStartThread(
+        io.littlehorse.common.proto.StartThreadRunPb.Builder builderForValue) {
+      if (startThreadBuilder_ == null) {
+        nodeType_ = builderForValue.build();
+        onChanged();
+      } else {
+        startThreadBuilder_.setMessage(builderForValue.build());
+      }
+      nodeTypeCase_ = 18;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.StartThreadRunPb start_thread = 18;</code>
+     */
+    public Builder mergeStartThread(io.littlehorse.common.proto.StartThreadRunPb value) {
+      if (startThreadBuilder_ == null) {
+        if (nodeTypeCase_ == 18 &&
+            nodeType_ != io.littlehorse.common.proto.StartThreadRunPb.getDefaultInstance()) {
+          nodeType_ = io.littlehorse.common.proto.StartThreadRunPb.newBuilder((io.littlehorse.common.proto.StartThreadRunPb) nodeType_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          nodeType_ = value;
+        }
+        onChanged();
+      } else {
+        if (nodeTypeCase_ == 18) {
+          startThreadBuilder_.mergeFrom(value);
+        }
+        startThreadBuilder_.setMessage(value);
+      }
+      nodeTypeCase_ = 18;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.StartThreadRunPb start_thread = 18;</code>
+     */
+    public Builder clearStartThread() {
+      if (startThreadBuilder_ == null) {
+        if (nodeTypeCase_ == 18) {
+          nodeTypeCase_ = 0;
+          nodeType_ = null;
+          onChanged();
+        }
+      } else {
+        if (nodeTypeCase_ == 18) {
+          nodeTypeCase_ = 0;
+          nodeType_ = null;
+        }
+        startThreadBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.lh_proto.StartThreadRunPb start_thread = 18;</code>
+     */
+    public io.littlehorse.common.proto.StartThreadRunPb.Builder getStartThreadBuilder() {
+      return getStartThreadFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.StartThreadRunPb start_thread = 18;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.StartThreadRunPbOrBuilder getStartThreadOrBuilder() {
+      if ((nodeTypeCase_ == 18) && (startThreadBuilder_ != null)) {
+        return startThreadBuilder_.getMessageOrBuilder();
+      } else {
+        if (nodeTypeCase_ == 18) {
+          return (io.littlehorse.common.proto.StartThreadRunPb) nodeType_;
+        }
+        return io.littlehorse.common.proto.StartThreadRunPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.StartThreadRunPb start_thread = 18;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.StartThreadRunPb, io.littlehorse.common.proto.StartThreadRunPb.Builder, io.littlehorse.common.proto.StartThreadRunPbOrBuilder> 
+        getStartThreadFieldBuilder() {
+      if (startThreadBuilder_ == null) {
+        if (!(nodeTypeCase_ == 18)) {
+          nodeType_ = io.littlehorse.common.proto.StartThreadRunPb.getDefaultInstance();
+        }
+        startThreadBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.StartThreadRunPb, io.littlehorse.common.proto.StartThreadRunPb.Builder, io.littlehorse.common.proto.StartThreadRunPbOrBuilder>(
+                (io.littlehorse.common.proto.StartThreadRunPb) nodeType_,
+                getParentForChildren(),
+                isClean());
+        nodeType_ = null;
+      }
+      nodeTypeCase_ = 18;
+      onChanged();;
+      return startThreadBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.WaitThreadRunPb, io.littlehorse.common.proto.WaitThreadRunPb.Builder, io.littlehorse.common.proto.WaitThreadRunPbOrBuilder> waitThreadBuilder_;
+    /**
+     * <code>.lh_proto.WaitThreadRunPb wait_thread = 19;</code>
+     * @return Whether the waitThread field is set.
+     */
+    @java.lang.Override
+    public boolean hasWaitThread() {
+      return nodeTypeCase_ == 19;
+    }
+    /**
+     * <code>.lh_proto.WaitThreadRunPb wait_thread = 19;</code>
+     * @return The waitThread.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.WaitThreadRunPb getWaitThread() {
+      if (waitThreadBuilder_ == null) {
+        if (nodeTypeCase_ == 19) {
+          return (io.littlehorse.common.proto.WaitThreadRunPb) nodeType_;
+        }
+        return io.littlehorse.common.proto.WaitThreadRunPb.getDefaultInstance();
+      } else {
+        if (nodeTypeCase_ == 19) {
+          return waitThreadBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.WaitThreadRunPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.WaitThreadRunPb wait_thread = 19;</code>
+     */
+    public Builder setWaitThread(io.littlehorse.common.proto.WaitThreadRunPb value) {
+      if (waitThreadBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        nodeType_ = value;
+        onChanged();
+      } else {
+        waitThreadBuilder_.setMessage(value);
+      }
+      nodeTypeCase_ = 19;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.WaitThreadRunPb wait_thread = 19;</code>
+     */
+    public Builder setWaitThread(
+        io.littlehorse.common.proto.WaitThreadRunPb.Builder builderForValue) {
+      if (waitThreadBuilder_ == null) {
+        nodeType_ = builderForValue.build();
+        onChanged();
+      } else {
+        waitThreadBuilder_.setMessage(builderForValue.build());
+      }
+      nodeTypeCase_ = 19;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.WaitThreadRunPb wait_thread = 19;</code>
+     */
+    public Builder mergeWaitThread(io.littlehorse.common.proto.WaitThreadRunPb value) {
+      if (waitThreadBuilder_ == null) {
+        if (nodeTypeCase_ == 19 &&
+            nodeType_ != io.littlehorse.common.proto.WaitThreadRunPb.getDefaultInstance()) {
+          nodeType_ = io.littlehorse.common.proto.WaitThreadRunPb.newBuilder((io.littlehorse.common.proto.WaitThreadRunPb) nodeType_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          nodeType_ = value;
+        }
+        onChanged();
+      } else {
+        if (nodeTypeCase_ == 19) {
+          waitThreadBuilder_.mergeFrom(value);
+        }
+        waitThreadBuilder_.setMessage(value);
+      }
+      nodeTypeCase_ = 19;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.WaitThreadRunPb wait_thread = 19;</code>
+     */
+    public Builder clearWaitThread() {
+      if (waitThreadBuilder_ == null) {
+        if (nodeTypeCase_ == 19) {
+          nodeTypeCase_ = 0;
+          nodeType_ = null;
+          onChanged();
+        }
+      } else {
+        if (nodeTypeCase_ == 19) {
+          nodeTypeCase_ = 0;
+          nodeType_ = null;
+        }
+        waitThreadBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.lh_proto.WaitThreadRunPb wait_thread = 19;</code>
+     */
+    public io.littlehorse.common.proto.WaitThreadRunPb.Builder getWaitThreadBuilder() {
+      return getWaitThreadFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.WaitThreadRunPb wait_thread = 19;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.WaitThreadRunPbOrBuilder getWaitThreadOrBuilder() {
+      if ((nodeTypeCase_ == 19) && (waitThreadBuilder_ != null)) {
+        return waitThreadBuilder_.getMessageOrBuilder();
+      } else {
+        if (nodeTypeCase_ == 19) {
+          return (io.littlehorse.common.proto.WaitThreadRunPb) nodeType_;
+        }
+        return io.littlehorse.common.proto.WaitThreadRunPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.WaitThreadRunPb wait_thread = 19;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.WaitThreadRunPb, io.littlehorse.common.proto.WaitThreadRunPb.Builder, io.littlehorse.common.proto.WaitThreadRunPbOrBuilder> 
+        getWaitThreadFieldBuilder() {
+      if (waitThreadBuilder_ == null) {
+        if (!(nodeTypeCase_ == 19)) {
+          nodeType_ = io.littlehorse.common.proto.WaitThreadRunPb.getDefaultInstance();
+        }
+        waitThreadBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.WaitThreadRunPb, io.littlehorse.common.proto.WaitThreadRunPb.Builder, io.littlehorse.common.proto.WaitThreadRunPbOrBuilder>(
+                (io.littlehorse.common.proto.WaitThreadRunPb) nodeType_,
+                getParentForChildren(),
+                isClean());
+        nodeType_ = null;
+      }
+      nodeTypeCase_ = 19;
+      onChanged();;
+      return waitThreadBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

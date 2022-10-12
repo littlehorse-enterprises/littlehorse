@@ -131,7 +131,7 @@ public class TestWorker {
         event.startedEvent = se;
         event.type = EventCase.STARTED_EVENT;
 
-        txnProd.send(tsr.wfRunId, event, tsr.replyKafkaTopic);
+        txnProd.send(tsr.wfRunId, event, tsr.wfRunEventQueue);
         acknowledgedTasks.add(tsr);
 
         TopicPartition partition = new TopicPartition(r.topic(), r.partition());
@@ -180,7 +180,7 @@ public class TestWorker {
         event.taskResult = ce;
         event.type = EventCase.TASK_RESULT;
 
-        prod.send(tsr.wfRunId, event, tsr.replyKafkaTopic).get();
+        prod.send(tsr.wfRunId, event, tsr.wfRunEventQueue).get();
         availThreadsSemaphore.release();
     }
 

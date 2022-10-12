@@ -9,7 +9,9 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.meta.subnode.EntrypointNode;
 import io.littlehorse.common.model.meta.subnode.ExitNode;
 import io.littlehorse.common.model.meta.subnode.ExternalEventNode;
+import io.littlehorse.common.model.meta.subnode.StartThreadNode;
 import io.littlehorse.common.model.meta.subnode.TaskNode;
+import io.littlehorse.common.model.meta.subnode.WaitForThreadNode;
 import io.littlehorse.common.proto.EdgePb;
 import io.littlehorse.common.proto.NodePb;
 import io.littlehorse.common.proto.NodePb.NodeCase;
@@ -28,6 +30,9 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
     public ExternalEventNode externalEventNode;
     public EntrypointNode entrypointNode;
     public ExitNode exitNode;
+    public StartThreadNode startThreadNode;
+    public WaitForThreadNode waitForThreadNode;
+
     public List<VariableMutation> variableMutations;
     public OutputSchema outputSchema;
 
@@ -63,8 +68,14 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
             case EXTERNAL_EVENT:
                 out.setExternalEvent(externalEventNode.toProto());
                 break;
+            case START_THREAD:
+                out.setStartThread(startThreadNode.toProto());
+                break;
+            case WAIT_FOR_THREAD:
+                out.setWaitForThread(waitForThreadNode.toProto());
+                break;
             case NODE_NOT_SET:
-            // nothing to do.
+                throw new RuntimeException("Not possible");
         }
 
         return out;
@@ -104,8 +115,15 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
                 externalEventNode = new ExternalEventNode();
                 externalEventNode.initFrom(proto.getExternalEvent());
                 break;
+            case START_THREAD:
+                startThreadNode = new StartThreadNode();
+                startThreadNode.initFrom(proto.getStartThread());
+                break;
+            case WAIT_FOR_THREAD:
+                waitForThreadNode = new WaitForThreadNode();
+                waitForThreadNode.initFrom(proto.getWaitForThread());
+                break;
             case NODE_NOT_SET:
-            default:
                 throw new LHSerdeError(
                     null,
                     "Node " + name + " on thread " + threadSpec.name + " is unset!"
@@ -149,6 +167,13 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
     public void validate(LHGlobalMetaStores client, LHConfig config)
         throws LHValidationError {
         for (Edge e : outgoingEdges) {
+            if (e.sinkNodeName.equals(name)) {
+                throw new LHValidationError(
+                    null,
+                    "Node " + name + " thread " + threadSpec.name + " self loops!"
+                );
+            }
+
             Node sink = threadSpec.nodes.get(e.sinkNodeName);
             if (sink == null) {
                 throw new LHValidationError(
@@ -161,6 +186,7 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
                     )
                 );
             }
+
             if (sink.type == NodeCase.ENTRYPOINT) {
                 throw new LHValidationError(
                     null,
@@ -208,6 +234,10 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
             return exitNode;
         } else if (type == NodeCase.EXTERNAL_EVENT) {
             return externalEventNode;
+        } else if (type == NodeCase.START_THREAD) {
+            return startThreadNode;
+        } else if (type == NodeCase.WAIT_FOR_THREAD) {
+            return waitForThreadNode;
         } else {
             throw new RuntimeException("Unhandled node type " + type);
         }
@@ -224,11 +254,11 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
             out.addAll(mut.getRequiredVariableNames());
         }
 
-        // TODO: When we add input variables, we need to add those...
-
         for (Edge edge : outgoingEdges) {
             out.addAll(edge.getRequiredVariableNames());
         }
+
+        out.addAll(getSubNode().getNeededVariableNames());
 
         return out;
     }

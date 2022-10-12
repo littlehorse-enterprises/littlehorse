@@ -213,5 +213,35 @@ public interface NodeRunPbOrBuilder extends
    */
   io.littlehorse.common.proto.ExitRunPbOrBuilder getExitOrBuilder();
 
+  /**
+   * <code>.lh_proto.StartThreadRunPb start_thread = 18;</code>
+   * @return Whether the startThread field is set.
+   */
+  boolean hasStartThread();
+  /**
+   * <code>.lh_proto.StartThreadRunPb start_thread = 18;</code>
+   * @return The startThread.
+   */
+  io.littlehorse.common.proto.StartThreadRunPb getStartThread();
+  /**
+   * <code>.lh_proto.StartThreadRunPb start_thread = 18;</code>
+   */
+  io.littlehorse.common.proto.StartThreadRunPbOrBuilder getStartThreadOrBuilder();
+
+  /**
+   * <code>.lh_proto.WaitThreadRunPb wait_thread = 19;</code>
+   * @return Whether the waitThread field is set.
+   */
+  boolean hasWaitThread();
+  /**
+   * <code>.lh_proto.WaitThreadRunPb wait_thread = 19;</code>
+   * @return The waitThread.
+   */
+  io.littlehorse.common.proto.WaitThreadRunPb getWaitThread();
+  /**
+   * <code>.lh_proto.WaitThreadRunPb wait_thread = 19;</code>
+   */
+  io.littlehorse.common.proto.WaitThreadRunPbOrBuilder getWaitThreadOrBuilder();
+
   public io.littlehorse.common.proto.NodeRunPb.NodeTypeCase getNodeTypeCase();
 }

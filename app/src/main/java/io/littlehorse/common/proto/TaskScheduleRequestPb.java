@@ -19,7 +19,7 @@ private static final long serialVersionUID = 0L;
     taskDefId_ = "";
     taskDefName_ = "";
     wfRunId_ = "";
-    replyKafkaTopic_ = "";
+    wfRunEventQueue_ = "";
     wfSpecId_ = "";
     nodeName_ = "";
   }
@@ -91,7 +91,7 @@ private static final long serialVersionUID = 0L;
           case 66: {
             java.lang.String s = input.readStringRequireUtf8();
 
-            replyKafkaTopic_ = s;
+            wfRunEventQueue_ = s;
             break;
           }
           case 74: {
@@ -315,38 +315,38 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int REPLY_KAFKA_TOPIC_FIELD_NUMBER = 8;
-  private volatile java.lang.Object replyKafkaTopic_;
+  public static final int WF_RUN_EVENT_QUEUE_FIELD_NUMBER = 8;
+  private volatile java.lang.Object wfRunEventQueue_;
   /**
-   * <code>string reply_kafka_topic = 8;</code>
-   * @return The replyKafkaTopic.
+   * <code>string wf_run_event_queue = 8;</code>
+   * @return The wfRunEventQueue.
    */
   @java.lang.Override
-  public java.lang.String getReplyKafkaTopic() {
-    java.lang.Object ref = replyKafkaTopic_;
+  public java.lang.String getWfRunEventQueue() {
+    java.lang.Object ref = wfRunEventQueue_;
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      replyKafkaTopic_ = s;
+      wfRunEventQueue_ = s;
       return s;
     }
   }
   /**
-   * <code>string reply_kafka_topic = 8;</code>
-   * @return The bytes for replyKafkaTopic.
+   * <code>string wf_run_event_queue = 8;</code>
+   * @return The bytes for wfRunEventQueue.
    */
   @java.lang.Override
   public com.google.protobuf.ByteString
-      getReplyKafkaTopicBytes() {
-    java.lang.Object ref = replyKafkaTopic_;
+      getWfRunEventQueueBytes() {
+    java.lang.Object ref = wfRunEventQueue_;
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      replyKafkaTopic_ = b;
+      wfRunEventQueue_ = b;
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
@@ -553,8 +553,8 @@ private static final long serialVersionUID = 0L;
     if (!getWfRunIdBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 7, wfRunId_);
     }
-    if (!getReplyKafkaTopicBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 8, replyKafkaTopic_);
+    if (!getWfRunEventQueueBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 8, wfRunEventQueue_);
     }
     if (!getWfSpecIdBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 9, wfSpecId_);
@@ -601,8 +601,8 @@ private static final long serialVersionUID = 0L;
     if (!getWfRunIdBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, wfRunId_);
     }
-    if (!getReplyKafkaTopicBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(8, replyKafkaTopic_);
+    if (!getWfRunEventQueueBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(8, wfRunEventQueue_);
     }
     if (!getWfSpecIdBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(9, wfSpecId_);
@@ -651,8 +651,8 @@ private static final long serialVersionUID = 0L;
         != other.getTaskRunPosition()) return false;
     if (!getWfRunId()
         .equals(other.getWfRunId())) return false;
-    if (!getReplyKafkaTopic()
-        .equals(other.getReplyKafkaTopic())) return false;
+    if (!getWfRunEventQueue()
+        .equals(other.getWfRunEventQueue())) return false;
     if (!getWfSpecId()
         .equals(other.getWfSpecId())) return false;
     if (getAttemptNumber()
@@ -684,8 +684,8 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getTaskRunPosition();
     hash = (37 * hash) + WF_RUN_ID_FIELD_NUMBER;
     hash = (53 * hash) + getWfRunId().hashCode();
-    hash = (37 * hash) + REPLY_KAFKA_TOPIC_FIELD_NUMBER;
-    hash = (53 * hash) + getReplyKafkaTopic().hashCode();
+    hash = (37 * hash) + WF_RUN_EVENT_QUEUE_FIELD_NUMBER;
+    hash = (53 * hash) + getWfRunEventQueue().hashCode();
     hash = (37 * hash) + WF_SPEC_ID_FIELD_NUMBER;
     hash = (53 * hash) + getWfSpecId().hashCode();
     hash = (37 * hash) + ATTEMPT_NUMBER_FIELD_NUMBER;
@@ -863,7 +863,7 @@ private static final long serialVersionUID = 0L;
 
       wfRunId_ = "";
 
-      replyKafkaTopic_ = "";
+      wfRunEventQueue_ = "";
 
       wfSpecId_ = "";
 
@@ -905,7 +905,7 @@ private static final long serialVersionUID = 0L;
       result.taskRunNumber_ = taskRunNumber_;
       result.taskRunPosition_ = taskRunPosition_;
       result.wfRunId_ = wfRunId_;
-      result.replyKafkaTopic_ = replyKafkaTopic_;
+      result.wfRunEventQueue_ = wfRunEventQueue_;
       result.wfSpecId_ = wfSpecId_;
       result.attemptNumber_ = attemptNumber_;
       result.nodeName_ = nodeName_;
@@ -980,8 +980,8 @@ private static final long serialVersionUID = 0L;
         wfRunId_ = other.wfRunId_;
         onChanged();
       }
-      if (!other.getReplyKafkaTopic().isEmpty()) {
-        replyKafkaTopic_ = other.replyKafkaTopic_;
+      if (!other.getWfRunEventQueue().isEmpty()) {
+        wfRunEventQueue_ = other.wfRunEventQueue_;
         onChanged();
       }
       if (!other.getWfSpecId().isEmpty()) {
@@ -1348,78 +1348,78 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.lang.Object replyKafkaTopic_ = "";
+    private java.lang.Object wfRunEventQueue_ = "";
     /**
-     * <code>string reply_kafka_topic = 8;</code>
-     * @return The replyKafkaTopic.
+     * <code>string wf_run_event_queue = 8;</code>
+     * @return The wfRunEventQueue.
      */
-    public java.lang.String getReplyKafkaTopic() {
-      java.lang.Object ref = replyKafkaTopic_;
+    public java.lang.String getWfRunEventQueue() {
+      java.lang.Object ref = wfRunEventQueue_;
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        replyKafkaTopic_ = s;
+        wfRunEventQueue_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
       }
     }
     /**
-     * <code>string reply_kafka_topic = 8;</code>
-     * @return The bytes for replyKafkaTopic.
+     * <code>string wf_run_event_queue = 8;</code>
+     * @return The bytes for wfRunEventQueue.
      */
     public com.google.protobuf.ByteString
-        getReplyKafkaTopicBytes() {
-      java.lang.Object ref = replyKafkaTopic_;
+        getWfRunEventQueueBytes() {
+      java.lang.Object ref = wfRunEventQueue_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        replyKafkaTopic_ = b;
+        wfRunEventQueue_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
     /**
-     * <code>string reply_kafka_topic = 8;</code>
-     * @param value The replyKafkaTopic to set.
+     * <code>string wf_run_event_queue = 8;</code>
+     * @param value The wfRunEventQueue to set.
      * @return This builder for chaining.
      */
-    public Builder setReplyKafkaTopic(
+    public Builder setWfRunEventQueue(
         java.lang.String value) {
       if (value == null) {
     throw new NullPointerException();
   }
   
-      replyKafkaTopic_ = value;
+      wfRunEventQueue_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>string reply_kafka_topic = 8;</code>
+     * <code>string wf_run_event_queue = 8;</code>
      * @return This builder for chaining.
      */
-    public Builder clearReplyKafkaTopic() {
+    public Builder clearWfRunEventQueue() {
       
-      replyKafkaTopic_ = getDefaultInstance().getReplyKafkaTopic();
+      wfRunEventQueue_ = getDefaultInstance().getWfRunEventQueue();
       onChanged();
       return this;
     }
     /**
-     * <code>string reply_kafka_topic = 8;</code>
-     * @param value The bytes for replyKafkaTopic to set.
+     * <code>string wf_run_event_queue = 8;</code>
+     * @param value The bytes for wfRunEventQueue to set.
      * @return This builder for chaining.
      */
-    public Builder setReplyKafkaTopicBytes(
+    public Builder setWfRunEventQueueBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
       
-      replyKafkaTopic_ = value;
+      wfRunEventQueue_ = value;
       onChanged();
       return this;
     }

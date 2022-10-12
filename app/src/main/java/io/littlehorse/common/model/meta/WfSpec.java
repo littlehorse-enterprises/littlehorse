@@ -11,7 +11,6 @@ import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.server.Tag;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.LHStatusPb;
-import io.littlehorse.common.proto.NodePb.NodeCase;
 import io.littlehorse.common.proto.ThreadSpecPb;
 import io.littlehorse.common.proto.WfSpecPb;
 import io.littlehorse.common.proto.WfSpecPbOrBuilder;
@@ -26,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
 public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
 
@@ -151,13 +149,6 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
 
         Map<String, Map<String, VariableDef>> allVarDefs = new HashMap<>();
 
-        for (Map.Entry<String, ThreadSpec> e : threadSpecs.entrySet()) {
-            ThreadSpec ts = e.getValue();
-            ts.validate(dbClient, config);
-
-            allVarDefs.put(ts.name, ts.variableDefs);
-        }
-
         // Validate the variable definitions.
         ensureNoDuplicateVarNames(allVarDefs);
         HashSet<String> seenThreads = new HashSet<String>();
@@ -168,6 +159,13 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
             visibleVariables,
             this.entrypointThreadName
         );
+
+        for (Map.Entry<String, ThreadSpec> e : threadSpecs.entrySet()) {
+            ThreadSpec ts = e.getValue();
+            ts.validate(dbClient, config);
+
+            allVarDefs.put(ts.name, ts.variableDefs);
+        }
     }
 
     @JsonIgnore
@@ -276,24 +274,5 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
         out.startThread(entrypointThreadName, e.time, null, e.runRequest.variables);
 
         return out;
-    }
-
-    public void addMetaDependencies(
-        ReadOnlyKeyValueStore<String, TaskDef> taskDefStore,
-        ReadOnlyKeyValueStore<String, ExternalEventDef> externalEventDefStore
-    ) {
-        for (ThreadSpec thread : threadSpecs.values()) {
-            for (Node node : thread.nodes.values()) {
-                if (node.type == NodeCase.TASK) {
-                    node.taskNode.taskDef =
-                        taskDefStore.get(node.taskNode.taskDefName);
-                } else if (node.type == NodeCase.EXTERNAL_EVENT) {
-                    node.externalEventNode.externalEventDef =
-                        externalEventDefStore.get(
-                            node.externalEventNode.externalEventDefName
-                        );
-                }
-            }
-        }
     }
 }

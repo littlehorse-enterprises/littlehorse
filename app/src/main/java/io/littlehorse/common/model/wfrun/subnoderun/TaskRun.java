@@ -125,7 +125,7 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
 
         Map<String, VariableValue> varVals;
         try {
-            varVals = nodeRun.threadRun.assignVarsForNode(node);
+            varVals = nodeRun.threadRun.assignVarsForNode(node.taskNode);
         } catch (LHVarSubError exn) {
             // make a call to `ThreadRun::fail()`
             nodeRun.fail(
@@ -136,12 +136,12 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
             return;
         }
 
-        tsr.replyKafkaTopic = LHConstants.WF_RUN_EVENT_TOPIC;
+        tsr.wfRunEventQueue = LHConstants.WF_RUN_EVENT_TOPIC;
         tsr.taskDefId = node.taskNode.taskDefName;
         tsr.taskDefName = node.taskNode.taskDefName;
         tsr.taskRunNumber = nodeRun.number;
         tsr.taskRunPosition = nodeRun.position;
-        tsr.threadRunNumber = nodeRun.number;
+        tsr.threadRunNumber = nodeRun.threadRunNumber;
         tsr.wfRunId = nodeRun.threadRun.wfRunId;
         tsr.wfSpecId = nodeRun.threadRun.wfSpecId;
         tsr.nodeName = node.name;
@@ -172,7 +172,7 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
         timerEvt.taskResult.resultCode = TaskResultCodePb.TIMEOUT;
         timerEvt.taskResult.taskRunNumber = nodeRun.number;
         timerEvt.taskResult.taskRunPosition = nodeRun.position;
-        timerEvt.taskResult.threadRunNumber = nodeRun.number;
+        timerEvt.taskResult.threadRunNumber = nodeRun.threadRunNumber;
 
         try {
             timerEvt.time =

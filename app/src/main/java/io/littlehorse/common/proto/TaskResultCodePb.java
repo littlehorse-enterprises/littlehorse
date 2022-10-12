@@ -28,6 +28,10 @@ public enum TaskResultCodePb
    * <code>VAR_MUTATION_ERROR = 4;</code>
    */
   VAR_MUTATION_ERROR(4),
+  /**
+   * <code>CHILD_FALIED = 5;</code>
+   */
+  CHILD_FALIED(5),
   UNRECOGNIZED(-1),
   ;
 
@@ -51,6 +55,10 @@ public enum TaskResultCodePb
    * <code>VAR_MUTATION_ERROR = 4;</code>
    */
   public static final int VAR_MUTATION_ERROR_VALUE = 4;
+  /**
+   * <code>CHILD_FALIED = 5;</code>
+   */
+  public static final int CHILD_FALIED_VALUE = 5;
 
 
   public final int getNumber() {
@@ -82,6 +90,7 @@ public enum TaskResultCodePb
       case 2: return FAILED;
       case 3: return VAR_SUB_ERROR;
       case 4: return VAR_MUTATION_ERROR;
+      case 5: return CHILD_FALIED;
       default: return null;
     }
   }

@@ -17,7 +17,7 @@ public class TaskScheduleRequest extends LHSerializable<TaskScheduleRequestPb> {
     public int taskRunNumber;
     public int taskRunPosition;
     public String wfRunId;
-    public String replyKafkaTopic;
+    public String wfRunEventQueue;
     public String wfSpecId;
     public int attemptNumber;
     public String nodeName;
@@ -36,7 +36,7 @@ public class TaskScheduleRequest extends LHSerializable<TaskScheduleRequestPb> {
             .setTaskRunNumber(taskRunNumber)
             .setTaskRunPosition(taskRunPosition)
             .setWfRunId(wfRunId)
-            .setReplyKafkaTopic(replyKafkaTopic)
+            .setWfRunEventQueue(wfRunEventQueue)
             .setWfSpecId(wfSpecId)
             .setAttemptNumber(attemptNumber)
             .setNodeName(nodeName);
@@ -66,7 +66,7 @@ public class TaskScheduleRequest extends LHSerializable<TaskScheduleRequestPb> {
         this.taskRunNumber = p.getTaskRunNumber();
         this.taskRunPosition = p.getTaskRunPosition();
         this.wfRunId = p.getWfRunId();
-        this.replyKafkaTopic = p.getReplyKafkaTopic();
+        this.wfRunEventQueue = p.getWfRunEventQueue();
         this.wfSpecId = p.getWfSpecId();
         this.attemptNumber = p.getAttemptNumber();
         this.nodeName = p.getNodeName();

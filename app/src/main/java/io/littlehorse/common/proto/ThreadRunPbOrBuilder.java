@@ -128,4 +128,32 @@ public interface ThreadRunPbOrBuilder extends
    * @return The resultCode.
    */
   io.littlehorse.common.proto.TaskResultCodePb getResultCode();
+
+  /**
+   * <code>repeated int32 child_thread_ids = 11;</code>
+   * @return A list containing the childThreadIds.
+   */
+  java.util.List<java.lang.Integer> getChildThreadIdsList();
+  /**
+   * <code>repeated int32 child_thread_ids = 11;</code>
+   * @return The count of childThreadIds.
+   */
+  int getChildThreadIdsCount();
+  /**
+   * <code>repeated int32 child_thread_ids = 11;</code>
+   * @param index The index of the element to return.
+   * @return The childThreadIds at the given index.
+   */
+  int getChildThreadIds(int index);
+
+  /**
+   * <code>int32 parent_thread_id = 12;</code>
+   * @return Whether the parentThreadId field is set.
+   */
+  boolean hasParentThreadId();
+  /**
+   * <code>int32 parent_thread_id = 12;</code>
+   * @return The parentThreadId.
+   */
+  int getParentThreadId();
 }

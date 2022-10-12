@@ -6,6 +6,7 @@ import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.proto.VariableAssignmentPb;
 import io.littlehorse.common.proto.VariableAssignmentPb.SourceCase;
 import io.littlehorse.common.proto.VariableAssignmentPbOrBuilder;
+import io.littlehorse.common.proto.VariableTypePb;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -74,5 +75,22 @@ public class VariableAssignment extends LHSerializable<VariableAssignmentPb> {
             out.add(rhsVariableName);
         }
         return out;
+    }
+
+    public boolean canBeType(VariableTypePb type, ThreadSpec tspec) {
+        if (jsonPath != null) return true;
+
+        VariableTypePb baseType;
+
+        if (rhsSourceType == SourceCase.VARIABLE_NAME) {
+            VariableDef varDef = tspec.getVarDef(rhsVariableName);
+            baseType = varDef.type;
+        } else if (rhsSourceType == SourceCase.LITERAL_VALUE) {
+            baseType = rhsLiteralValue.type;
+        } else {
+            throw new RuntimeException("impossible");
+        }
+
+        return baseType == type;
     }
 }

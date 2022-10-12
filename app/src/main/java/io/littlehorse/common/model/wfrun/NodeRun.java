@@ -9,7 +9,9 @@ import io.littlehorse.common.model.server.Tag;
 import io.littlehorse.common.model.wfrun.subnoderun.EntrypointRun;
 import io.littlehorse.common.model.wfrun.subnoderun.ExitRun;
 import io.littlehorse.common.model.wfrun.subnoderun.ExternalEventRun;
+import io.littlehorse.common.model.wfrun.subnoderun.StartThreadRun;
 import io.littlehorse.common.model.wfrun.subnoderun.TaskRun;
+import io.littlehorse.common.model.wfrun.subnoderun.WaitThreadRun;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.NodePb.NodeCase;
 import io.littlehorse.common.proto.NodeRunPb;
@@ -48,6 +50,8 @@ public class NodeRun extends GETable<NodeRunPb> {
     public ExternalEventRun externalEventRun;
     public ExitRun exitRun;
     public EntrypointRun entrypointRun;
+    public StartThreadRun startThreadRun;
+    public WaitThreadRun waitThreadRun;
 
     @JsonIgnore
     public ThreadRun threadRun;
@@ -111,6 +115,13 @@ public class NodeRun extends GETable<NodeRunPb> {
                 break;
             case ENTRYPOINT:
                 entrypointRun = EntrypointRun.fromProto(proto.getEntrypoint());
+                break;
+            case START_THREAD:
+                startThreadRun = StartThreadRun.fromProto(proto.getStartThread());
+                break;
+            case WAIT_THREAD:
+                waitThreadRun = WaitThreadRun.fromProto(proto.getWaitThread());
+                break;
             case NODETYPE_NOT_SET:
             default:
                 throw new RuntimeException("Not possible");
@@ -130,6 +141,10 @@ public class NodeRun extends GETable<NodeRunPb> {
                 return entrypointRun;
             case EXIT:
                 return exitRun;
+            case WAIT_THREAD:
+                return waitThreadRun;
+            case START_THREAD:
+                return startThreadRun;
             case NODETYPE_NOT_SET:
             default:
                 throw new RuntimeException("Not possible");
@@ -150,6 +165,12 @@ public class NodeRun extends GETable<NodeRunPb> {
         } else if (cls.equals(ExternalEventRun.class)) {
             type = NodeTypeCase.EXTERNAL_EVENT;
             externalEventRun = (ExternalEventRun) snr;
+        } else if (cls.equals(StartThreadRun.class)) {
+            type = NodeTypeCase.START_THREAD;
+            startThreadRun = (StartThreadRun) snr;
+        } else if (cls.equals(WaitThreadRun.class)) {
+            type = NodeTypeCase.WAIT_THREAD;
+            waitThreadRun = (WaitThreadRun) snr;
         } else {
             throw new RuntimeException("Didn't recognize " + snr.getClass());
         }
@@ -189,6 +210,12 @@ public class NodeRun extends GETable<NodeRunPb> {
                 break;
             case EXIT:
                 out.setExit(exitRun.toProto());
+                break;
+            case START_THREAD:
+                out.setStartThread(startThreadRun.toProto());
+                break;
+            case WAIT_THREAD:
+                out.setWaitThread(waitThreadRun.toProto());
                 break;
             case NODETYPE_NOT_SET:
             default:
@@ -247,6 +274,8 @@ public class NodeRun extends GETable<NodeRunPb> {
     }
 
     public void complete(VariableValue output, Date time) {
+        endTime = time;
+        status = LHStatusPb.COMPLETED;
         threadRun.completeCurrentNode(output, time);
     }
 

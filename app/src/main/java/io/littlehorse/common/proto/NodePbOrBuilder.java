@@ -116,34 +116,49 @@ public interface NodePbOrBuilder extends
   io.littlehorse.common.proto.TaskNodePbOrBuilder getTaskOrBuilder();
 
   /**
-   * <pre>
-   * StartThreadNodePb start_thread = 9;
-   * WaitForThreadNodePb wait_for_thread = 10;
-   * </pre>
-   *
    * <code>.lh_proto.ExternalEventNodePb external_event = 8;</code>
    * @return Whether the externalEvent field is set.
    */
   boolean hasExternalEvent();
   /**
-   * <pre>
-   * StartThreadNodePb start_thread = 9;
-   * WaitForThreadNodePb wait_for_thread = 10;
-   * </pre>
-   *
    * <code>.lh_proto.ExternalEventNodePb external_event = 8;</code>
    * @return The externalEvent.
    */
   io.littlehorse.common.proto.ExternalEventNodePb getExternalEvent();
   /**
-   * <pre>
-   * StartThreadNodePb start_thread = 9;
-   * WaitForThreadNodePb wait_for_thread = 10;
-   * </pre>
-   *
    * <code>.lh_proto.ExternalEventNodePb external_event = 8;</code>
    */
   io.littlehorse.common.proto.ExternalEventNodePbOrBuilder getExternalEventOrBuilder();
+
+  /**
+   * <code>.lh_proto.StartThreadNodePb start_thread = 9;</code>
+   * @return Whether the startThread field is set.
+   */
+  boolean hasStartThread();
+  /**
+   * <code>.lh_proto.StartThreadNodePb start_thread = 9;</code>
+   * @return The startThread.
+   */
+  io.littlehorse.common.proto.StartThreadNodePb getStartThread();
+  /**
+   * <code>.lh_proto.StartThreadNodePb start_thread = 9;</code>
+   */
+  io.littlehorse.common.proto.StartThreadNodePbOrBuilder getStartThreadOrBuilder();
+
+  /**
+   * <code>.lh_proto.WaitForThreadNodePb wait_for_thread = 10;</code>
+   * @return Whether the waitForThread field is set.
+   */
+  boolean hasWaitForThread();
+  /**
+   * <code>.lh_proto.WaitForThreadNodePb wait_for_thread = 10;</code>
+   * @return The waitForThread.
+   */
+  io.littlehorse.common.proto.WaitForThreadNodePb getWaitForThread();
+  /**
+   * <code>.lh_proto.WaitForThreadNodePb wait_for_thread = 10;</code>
+   */
+  io.littlehorse.common.proto.WaitForThreadNodePbOrBuilder getWaitForThreadOrBuilder();
 
   public io.littlehorse.common.proto.NodePb.NodeCase getNodeCase();
 }

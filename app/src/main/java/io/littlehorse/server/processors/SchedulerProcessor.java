@@ -8,13 +8,16 @@ import io.littlehorse.common.model.event.ExternalEvent;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.ExternalEventDef;
+import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.meta.TaskDef;
+import io.littlehorse.common.model.meta.ThreadSpec;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.LHStatusPb;
+import io.littlehorse.common.proto.NodePb.NodeCase;
 import io.littlehorse.common.proto.WfRunEventPb.EventCase;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.ServerTopology;
@@ -226,8 +229,28 @@ public class SchedulerProcessor
         WfSpec out = wfSpecCache.get(id);
         if (out == null) {
             out = wfSpecStore.get(id);
-            out.addMetaDependencies(taskDefStore, eedStore);
+            addMetaDependencies(taskDefStore, eedStore, out);
         }
         return out;
+    }
+
+    private void addMetaDependencies(
+        ReadOnlyKeyValueStore<String, TaskDef> taskDefStore,
+        ReadOnlyKeyValueStore<String, ExternalEventDef> externalEventDefStore,
+        WfSpec spec
+    ) {
+        for (ThreadSpec thread : spec.threadSpecs.values()) {
+            for (Node node : thread.nodes.values()) {
+                if (node.type == NodeCase.TASK) {
+                    node.taskNode.taskDef =
+                        taskDefStore.get(node.taskNode.taskDefName);
+                } else if (node.type == NodeCase.EXTERNAL_EVENT) {
+                    node.externalEventNode.externalEventDef =
+                        externalEventDefStore.get(
+                            node.externalEventNode.externalEventDefName
+                        );
+                }
+            }
+        }
     }
 }
