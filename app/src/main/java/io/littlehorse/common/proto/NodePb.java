@@ -82,19 +82,6 @@ private static final long serialVersionUID = 0L;
 
             break;
           }
-          case 34: {
-            io.littlehorse.common.proto.VariableAssignmentPb.Builder subBuilder = null;
-            if (timeoutSeconds_ != null) {
-              subBuilder = timeoutSeconds_.toBuilder();
-            }
-            timeoutSeconds_ = input.readMessage(io.littlehorse.common.proto.VariableAssignmentPb.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom(timeoutSeconds_);
-              timeoutSeconds_ = subBuilder.buildPartial();
-            }
-
-            break;
-          }
           case 42: {
             io.littlehorse.common.proto.EntrypointNodePb.Builder subBuilder = null;
             if (nodeCase_ == 5) {
@@ -340,32 +327,6 @@ private static final long serialVersionUID = 0L;
     return getOutputSchema();
   }
 
-  public static final int TIMEOUT_SECONDS_FIELD_NUMBER = 4;
-  private io.littlehorse.common.proto.VariableAssignmentPb timeoutSeconds_;
-  /**
-   * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 4;</code>
-   * @return Whether the timeoutSeconds field is set.
-   */
-  @java.lang.Override
-  public boolean hasTimeoutSeconds() {
-    return timeoutSeconds_ != null;
-  }
-  /**
-   * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 4;</code>
-   * @return The timeoutSeconds.
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.VariableAssignmentPb getTimeoutSeconds() {
-    return timeoutSeconds_ == null ? io.littlehorse.common.proto.VariableAssignmentPb.getDefaultInstance() : timeoutSeconds_;
-  }
-  /**
-   * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 4;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.VariableAssignmentPbOrBuilder getTimeoutSecondsOrBuilder() {
-    return getTimeoutSeconds();
-  }
-
   public static final int ENTRYPOINT_FIELD_NUMBER = 5;
   /**
    * <code>.lh_proto.EntrypointNodePb entrypoint = 5;</code>
@@ -528,9 +489,6 @@ private static final long serialVersionUID = 0L;
     if (outputSchema_ != null) {
       output.writeMessage(3, getOutputSchema());
     }
-    if (timeoutSeconds_ != null) {
-      output.writeMessage(4, getTimeoutSeconds());
-    }
     if (nodeCase_ == 5) {
       output.writeMessage(5, (io.littlehorse.common.proto.EntrypointNodePb) node_);
     }
@@ -563,10 +521,6 @@ private static final long serialVersionUID = 0L;
     if (outputSchema_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getOutputSchema());
-    }
-    if (timeoutSeconds_ != null) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, getTimeoutSeconds());
     }
     if (nodeCase_ == 5) {
       size += com.google.protobuf.CodedOutputStream
@@ -607,11 +561,6 @@ private static final long serialVersionUID = 0L;
     if (hasOutputSchema()) {
       if (!getOutputSchema()
           .equals(other.getOutputSchema())) return false;
-    }
-    if (hasTimeoutSeconds() != other.hasTimeoutSeconds()) return false;
-    if (hasTimeoutSeconds()) {
-      if (!getTimeoutSeconds()
-          .equals(other.getTimeoutSeconds())) return false;
     }
     if (!getNodeCase().equals(other.getNodeCase())) return false;
     switch (nodeCase_) {
@@ -656,10 +605,6 @@ private static final long serialVersionUID = 0L;
     if (hasOutputSchema()) {
       hash = (37 * hash) + OUTPUT_SCHEMA_FIELD_NUMBER;
       hash = (53 * hash) + getOutputSchema().hashCode();
-    }
-    if (hasTimeoutSeconds()) {
-      hash = (37 * hash) + TIMEOUT_SECONDS_FIELD_NUMBER;
-      hash = (53 * hash) + getTimeoutSeconds().hashCode();
     }
     switch (nodeCase_) {
       case 5:
@@ -834,12 +779,6 @@ private static final long serialVersionUID = 0L;
         outputSchema_ = null;
         outputSchemaBuilder_ = null;
       }
-      if (timeoutSecondsBuilder_ == null) {
-        timeoutSeconds_ = null;
-      } else {
-        timeoutSeconds_ = null;
-        timeoutSecondsBuilder_ = null;
-      }
       nodeCase_ = 0;
       node_ = null;
       return this;
@@ -891,11 +830,6 @@ private static final long serialVersionUID = 0L;
         result.outputSchema_ = outputSchema_;
       } else {
         result.outputSchema_ = outputSchemaBuilder_.build();
-      }
-      if (timeoutSecondsBuilder_ == null) {
-        result.timeoutSeconds_ = timeoutSeconds_;
-      } else {
-        result.timeoutSeconds_ = timeoutSecondsBuilder_.build();
       }
       if (nodeCase_ == 5) {
         if (entrypointBuilder_ == null) {
@@ -1028,9 +962,6 @@ private static final long serialVersionUID = 0L;
       }
       if (other.hasOutputSchema()) {
         mergeOutputSchema(other.getOutputSchema());
-      }
-      if (other.hasTimeoutSeconds()) {
-        mergeTimeoutSeconds(other.getTimeoutSeconds());
       }
       switch (other.getNodeCase()) {
         case ENTRYPOINT: {
@@ -1695,125 +1626,6 @@ private static final long serialVersionUID = 0L;
         outputSchema_ = null;
       }
       return outputSchemaBuilder_;
-    }
-
-    private io.littlehorse.common.proto.VariableAssignmentPb timeoutSeconds_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.VariableAssignmentPb, io.littlehorse.common.proto.VariableAssignmentPb.Builder, io.littlehorse.common.proto.VariableAssignmentPbOrBuilder> timeoutSecondsBuilder_;
-    /**
-     * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 4;</code>
-     * @return Whether the timeoutSeconds field is set.
-     */
-    public boolean hasTimeoutSeconds() {
-      return timeoutSecondsBuilder_ != null || timeoutSeconds_ != null;
-    }
-    /**
-     * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 4;</code>
-     * @return The timeoutSeconds.
-     */
-    public io.littlehorse.common.proto.VariableAssignmentPb getTimeoutSeconds() {
-      if (timeoutSecondsBuilder_ == null) {
-        return timeoutSeconds_ == null ? io.littlehorse.common.proto.VariableAssignmentPb.getDefaultInstance() : timeoutSeconds_;
-      } else {
-        return timeoutSecondsBuilder_.getMessage();
-      }
-    }
-    /**
-     * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 4;</code>
-     */
-    public Builder setTimeoutSeconds(io.littlehorse.common.proto.VariableAssignmentPb value) {
-      if (timeoutSecondsBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        timeoutSeconds_ = value;
-        onChanged();
-      } else {
-        timeoutSecondsBuilder_.setMessage(value);
-      }
-
-      return this;
-    }
-    /**
-     * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 4;</code>
-     */
-    public Builder setTimeoutSeconds(
-        io.littlehorse.common.proto.VariableAssignmentPb.Builder builderForValue) {
-      if (timeoutSecondsBuilder_ == null) {
-        timeoutSeconds_ = builderForValue.build();
-        onChanged();
-      } else {
-        timeoutSecondsBuilder_.setMessage(builderForValue.build());
-      }
-
-      return this;
-    }
-    /**
-     * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 4;</code>
-     */
-    public Builder mergeTimeoutSeconds(io.littlehorse.common.proto.VariableAssignmentPb value) {
-      if (timeoutSecondsBuilder_ == null) {
-        if (timeoutSeconds_ != null) {
-          timeoutSeconds_ =
-            io.littlehorse.common.proto.VariableAssignmentPb.newBuilder(timeoutSeconds_).mergeFrom(value).buildPartial();
-        } else {
-          timeoutSeconds_ = value;
-        }
-        onChanged();
-      } else {
-        timeoutSecondsBuilder_.mergeFrom(value);
-      }
-
-      return this;
-    }
-    /**
-     * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 4;</code>
-     */
-    public Builder clearTimeoutSeconds() {
-      if (timeoutSecondsBuilder_ == null) {
-        timeoutSeconds_ = null;
-        onChanged();
-      } else {
-        timeoutSeconds_ = null;
-        timeoutSecondsBuilder_ = null;
-      }
-
-      return this;
-    }
-    /**
-     * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 4;</code>
-     */
-    public io.littlehorse.common.proto.VariableAssignmentPb.Builder getTimeoutSecondsBuilder() {
-      
-      onChanged();
-      return getTimeoutSecondsFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 4;</code>
-     */
-    public io.littlehorse.common.proto.VariableAssignmentPbOrBuilder getTimeoutSecondsOrBuilder() {
-      if (timeoutSecondsBuilder_ != null) {
-        return timeoutSecondsBuilder_.getMessageOrBuilder();
-      } else {
-        return timeoutSeconds_ == null ?
-            io.littlehorse.common.proto.VariableAssignmentPb.getDefaultInstance() : timeoutSeconds_;
-      }
-    }
-    /**
-     * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 4;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.VariableAssignmentPb, io.littlehorse.common.proto.VariableAssignmentPb.Builder, io.littlehorse.common.proto.VariableAssignmentPbOrBuilder> 
-        getTimeoutSecondsFieldBuilder() {
-      if (timeoutSecondsBuilder_ == null) {
-        timeoutSecondsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.VariableAssignmentPb, io.littlehorse.common.proto.VariableAssignmentPb.Builder, io.littlehorse.common.proto.VariableAssignmentPbOrBuilder>(
-                getTimeoutSeconds(),
-                getParentForChildren(),
-                isClean());
-        timeoutSeconds_ = null;
-      }
-      return timeoutSecondsBuilder_;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<

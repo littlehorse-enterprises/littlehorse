@@ -1,10 +1,17 @@
-package io.littlehorse.common.model.wfrun.noderun;
+package io.littlehorse.common.model.wfrun;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.event.WfRunEvent;
+import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.server.Tag;
+import io.littlehorse.common.model.wfrun.subnoderun.EntrypointRun;
+import io.littlehorse.common.model.wfrun.subnoderun.ExitRun;
+import io.littlehorse.common.model.wfrun.subnoderun.ExternalEventRun;
+import io.littlehorse.common.model.wfrun.subnoderun.TaskRun;
 import io.littlehorse.common.proto.LHStatusPb;
+import io.littlehorse.common.proto.NodePb.NodeCase;
 import io.littlehorse.common.proto.NodeRunPb;
 import io.littlehorse.common.proto.NodeRunPb.NodeTypeCase;
 import io.littlehorse.common.proto.NodeRunPbOrBuilder;
@@ -21,6 +28,7 @@ public class NodeRun extends GETable<NodeRunPb> {
     public int threadRunNumber;
     public int position;
 
+    public int attemptNumber;
     public int number;
     public LHStatusPb status;
 
@@ -31,13 +39,18 @@ public class NodeRun extends GETable<NodeRunPb> {
     public String wfSpecName;
     public String threadSpecName;
     public String nodeName;
-    public String taskDefId;
 
     public TaskResultCodePb resultCode;
+    public String errorMessage;
     public NodeTypeCase type;
 
     public TaskRun taskRun;
     public ExternalEventRun externalEventRun;
+    public ExitRun exitRun;
+    public EntrypointRun entrypointRun;
+
+    @JsonIgnore
+    public ThreadRun threadRun;
 
     public String getObjectId() {
         return NodeRun.getStoreKey(wfRunId, threadRunNumber, position);
@@ -47,10 +60,12 @@ public class NodeRun extends GETable<NodeRunPb> {
         return wfRunId + "-" + threadNum + "-" + position;
     }
 
+    @JsonIgnore
     public String getPartitionKey() {
         return wfRunId;
     }
 
+    @JsonIgnore
     public Class<NodeRunPb> getProtoBaseClass() {
         return NodeRunPb.class;
     }
@@ -76,8 +91,11 @@ public class NodeRun extends GETable<NodeRunPb> {
         threadSpecName = proto.getThreadSpecName();
         nodeName = proto.getNodeName();
         status = proto.getStatus();
+        attemptNumber = proto.getAttemptNumber();
 
         if (proto.hasResultCode()) resultCode = proto.getResultCode();
+
+        if (proto.hasErrorMessage()) errorMessage = proto.getErrorMessage();
 
         type = proto.getNodeTypeCase();
         switch (type) {
@@ -88,10 +106,55 @@ public class NodeRun extends GETable<NodeRunPb> {
                 externalEventRun =
                     ExternalEventRun.fromProto(proto.getExternalEvent());
                 break;
+            case EXIT:
+                exitRun = ExitRun.fromProto(proto.getExit());
+                break;
+            case ENTRYPOINT:
+                entrypointRun = EntrypointRun.fromProto(proto.getEntrypoint());
             case NODETYPE_NOT_SET:
             default:
                 throw new RuntimeException("Not possible");
         }
+
+        getSubNodeRun().setNodeRun(this);
+    }
+
+    @JsonIgnore
+    public SubNodeRun<?> getSubNodeRun() {
+        switch (type) {
+            case TASK:
+                return taskRun;
+            case EXTERNAL_EVENT:
+                return externalEventRun;
+            case ENTRYPOINT:
+                return entrypointRun;
+            case EXIT:
+                return exitRun;
+            case NODETYPE_NOT_SET:
+            default:
+                throw new RuntimeException("Not possible");
+        }
+    }
+
+    public void setSubNodeRun(SubNodeRun<?> snr) {
+        Class<?> cls = snr.getClass();
+        if (cls.equals(TaskRun.class)) {
+            type = NodeTypeCase.TASK;
+            taskRun = (TaskRun) snr;
+        } else if (cls.equals(EntrypointRun.class)) {
+            type = NodeTypeCase.ENTRYPOINT;
+            entrypointRun = (EntrypointRun) snr;
+        } else if (cls.equals(ExitRun.class)) {
+            type = NodeTypeCase.EXIT;
+            exitRun = (ExitRun) snr;
+        } else if (cls.equals(ExternalEventRun.class)) {
+            type = NodeTypeCase.EXTERNAL_EVENT;
+            externalEventRun = (ExternalEventRun) snr;
+        } else {
+            throw new RuntimeException("Didn't recognize " + snr.getClass());
+        }
+
+        snr.nodeRun = this;
     }
 
     public NodeRunPb.Builder toProto() {
@@ -105,11 +168,14 @@ public class NodeRun extends GETable<NodeRunPb> {
             .setArrivalTime(LHUtil.fromDate(arrivalTime))
             .setWfSpecId(wfSpecId)
             .setThreadSpecName(threadSpecName)
-            .setNodeName(nodeName);
+            .setNodeName(nodeName)
+            .setAttemptNumber(attemptNumber);
 
         if (endTime != null) out.setEndTime(LHUtil.fromDate(endTime));
 
         if (resultCode != null) out.setResultCode(resultCode);
+
+        if (errorMessage != null) out.setErrorMessage(errorMessage);
 
         switch (type) {
             case TASK:
@@ -117,6 +183,12 @@ public class NodeRun extends GETable<NodeRunPb> {
                 break;
             case EXTERNAL_EVENT:
                 out.setExternalEvent(externalEventRun.toProto());
+                break;
+            case ENTRYPOINT:
+                out.setEntrypoint(entrypointRun.toProto());
+                break;
+            case EXIT:
+                out.setExit(exitRun.toProto());
                 break;
             case NODETYPE_NOT_SET:
             default:
@@ -145,5 +217,53 @@ public class NodeRun extends GETable<NodeRunPb> {
         }
 
         return out;
+    }
+
+    @JsonIgnore
+    public boolean isInProgress() {
+        return (
+            status != LHStatusPb.COMPLETED &&
+            status != LHStatusPb.HALTED &&
+            status != LHStatusPb.ERROR
+        );
+    }
+
+    @JsonIgnore
+    public Node getNode() {
+        return threadRun.getThreadSpec().nodes.get(nodeName);
+    }
+
+    @JsonIgnore
+    public NodeCase getNodeType() {
+        return getNode().type;
+    }
+
+    public void processEvent(WfRunEvent e) {
+        getSubNodeRun().processEvent(e);
+    }
+
+    public void advanceIfPossible(Date time) {
+        getSubNodeRun().advanceIfPossible(time);
+    }
+
+    public void complete(VariableValue output, Date time) {
+        threadRun.completeCurrentNode(output, time);
+    }
+
+    public void fail(TaskResultCodePb resultCode, String message, Date time) {
+        endTime = time;
+        this.resultCode = resultCode;
+        this.errorMessage = message;
+        threadRun.fail(resultCode, message, time);
+    }
+
+    public void doRetry(TaskResultCodePb resultCode, String message, Date time) {
+        endTime = time;
+        errorMessage = "Doing a retry: " + message;
+        this.resultCode = resultCode;
+
+        LHUtil.log("Doing retry");
+
+        threadRun.activateNode(getNode());
     }
 }

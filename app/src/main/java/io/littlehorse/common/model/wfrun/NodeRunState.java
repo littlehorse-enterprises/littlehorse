@@ -63,4 +63,12 @@ public class NodeRunState {
         if (proto.hasErrorMessage()) out.errorMessage = proto.getErrorMessage();
         return out;
     }
+
+    public boolean isInProgress() {
+        return (
+            status != LHStatusPb.COMPLETED &&
+            status != LHStatusPb.ERROR &&
+            status != LHStatusPb.HALTED
+        );
+    }
 }

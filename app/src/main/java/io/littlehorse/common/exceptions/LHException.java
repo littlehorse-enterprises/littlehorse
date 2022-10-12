@@ -18,4 +18,8 @@ public class LHException extends Exception {
     public Exception parent() {
         return this.parent;
     }
+
+    public void addPrefix(String prefix) {
+        message = prefix + ": " + message;
+    }
 }

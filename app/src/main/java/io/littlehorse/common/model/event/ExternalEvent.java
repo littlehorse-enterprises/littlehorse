@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class ExternalEvent extends GETable<ExternalEventPb> {
+public class ExternalEvent extends GETable<ExternalEventPb> implements WfRunSubEvent {
 
     @JsonIgnore // We want Jackson to show  the full ID, not this.
     public String guid;
@@ -116,5 +116,13 @@ public class ExternalEvent extends GETable<ExternalEventPb> {
 
     public static String getStorePrefix(String wfRunId, String externalEventDefId) {
         return wfRunId + "-" + externalEventDefId;
+    }
+
+    public Integer getThreadRunNumber() {
+        return threadRunNumber;
+    }
+
+    public Integer getNodeRunPosition() {
+        return taskRunPosition;
     }
 }

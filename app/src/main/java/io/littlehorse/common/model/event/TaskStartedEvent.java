@@ -1,16 +1,24 @@
 package io.littlehorse.common.model.event;
 
+import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.TaskStartedEventPb;
 import io.littlehorse.common.proto.TaskStartedEventPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
 import java.util.Date;
 
-public class TaskStartedEvent {
+public class TaskStartedEvent
+    extends LHSerializable<TaskStartedEventPb>
+    implements WfRunSubEvent {
 
     public int threadRunNumber;
     public int taskRunNumber;
     public int taskRunPosition;
     public Date time;
+
+    public Class<TaskStartedEventPb> getProtoBaseClass() {
+        return TaskStartedEventPb.class;
+    }
 
     public TaskStartedEventPb.Builder toProto() {
         TaskStartedEventPb.Builder b = TaskStartedEventPb
@@ -24,11 +32,23 @@ public class TaskStartedEvent {
 
     public static TaskStartedEvent fromProto(TaskStartedEventPbOrBuilder proto) {
         TaskStartedEvent out = new TaskStartedEvent();
-        out.threadRunNumber = proto.getThreadRunNumber();
-        out.taskRunNumber = proto.getTaskRunNumber();
-        out.taskRunPosition = proto.getTaskRunPosition();
-        out.time = LHUtil.fromProtoTs(proto.getTime());
-
+        out.initFrom(proto);
         return out;
+    }
+
+    public void initFrom(MessageOrBuilder p) {
+        TaskStartedEventPbOrBuilder proto = (TaskStartedEventPbOrBuilder) p;
+        this.threadRunNumber = proto.getThreadRunNumber();
+        this.taskRunNumber = proto.getTaskRunNumber();
+        this.taskRunPosition = proto.getTaskRunPosition();
+        this.time = LHUtil.fromProtoTs(proto.getTime());
+    }
+
+    public Integer getThreadRunNumber() {
+        return threadRunNumber;
+    }
+
+    public Integer getNodeRunPosition() {
+        return taskRunPosition;
     }
 }

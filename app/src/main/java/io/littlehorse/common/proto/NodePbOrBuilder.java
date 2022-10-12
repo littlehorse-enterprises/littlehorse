@@ -71,21 +71,6 @@ public interface NodePbOrBuilder extends
   io.littlehorse.common.proto.OutputSchemaPbOrBuilder getOutputSchemaOrBuilder();
 
   /**
-   * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 4;</code>
-   * @return Whether the timeoutSeconds field is set.
-   */
-  boolean hasTimeoutSeconds();
-  /**
-   * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 4;</code>
-   * @return The timeoutSeconds.
-   */
-  io.littlehorse.common.proto.VariableAssignmentPb getTimeoutSeconds();
-  /**
-   * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 4;</code>
-   */
-  io.littlehorse.common.proto.VariableAssignmentPbOrBuilder getTimeoutSecondsOrBuilder();
-
-  /**
    * <code>.lh_proto.EntrypointNodePb entrypoint = 5;</code>
    * @return Whether the entrypoint field is set.
    */

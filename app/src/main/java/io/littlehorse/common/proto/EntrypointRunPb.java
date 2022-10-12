@@ -4,26 +4,25 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf type {@code lh_proto.ThreadStatusChangeOePb}
+ * Protobuf type {@code lh_proto.EntrypointRunPb}
  */
-public final class ThreadStatusChangeOePb extends
+public final class EntrypointRunPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.ThreadStatusChangeOePb)
-    ThreadStatusChangeOePbOrBuilder {
+    // @@protoc_insertion_point(message_implements:lh_proto.EntrypointRunPb)
+    EntrypointRunPbOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use ThreadStatusChangeOePb.newBuilder() to construct.
-  private ThreadStatusChangeOePb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use EntrypointRunPb.newBuilder() to construct.
+  private EntrypointRunPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private ThreadStatusChangeOePb() {
-    status_ = 0;
+  private EntrypointRunPb() {
   }
 
   @java.lang.Override
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new ThreadStatusChangeOePb();
+    return new EntrypointRunPb();
   }
 
   @java.lang.Override
@@ -31,7 +30,7 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
-  private ThreadStatusChangeOePb(
+  private EntrypointRunPb(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -49,17 +48,6 @@ private static final long serialVersionUID = 0L;
           case 0:
             done = true;
             break;
-          case 8: {
-
-            threadRunNumber_ = input.readInt32();
-            break;
-          }
-          case 16: {
-            int rawValue = input.readEnum();
-
-            status_ = rawValue;
-            break;
-          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -81,45 +69,15 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_ThreadStatusChangeOePb_descriptor;
+    return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_EntrypointRunPb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_ThreadStatusChangeOePb_fieldAccessorTable
+    return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_EntrypointRunPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.common.proto.ThreadStatusChangeOePb.class, io.littlehorse.common.proto.ThreadStatusChangeOePb.Builder.class);
-  }
-
-  public static final int THREAD_RUN_NUMBER_FIELD_NUMBER = 1;
-  private int threadRunNumber_;
-  /**
-   * <code>int32 thread_run_number = 1;</code>
-   * @return The threadRunNumber.
-   */
-  @java.lang.Override
-  public int getThreadRunNumber() {
-    return threadRunNumber_;
-  }
-
-  public static final int STATUS_FIELD_NUMBER = 2;
-  private int status_;
-  /**
-   * <code>.lh_proto.LHStatusPb status = 2;</code>
-   * @return The enum numeric value on the wire for status.
-   */
-  @java.lang.Override public int getStatusValue() {
-    return status_;
-  }
-  /**
-   * <code>.lh_proto.LHStatusPb status = 2;</code>
-   * @return The status.
-   */
-  @java.lang.Override public io.littlehorse.common.proto.LHStatusPb getStatus() {
-    @SuppressWarnings("deprecation")
-    io.littlehorse.common.proto.LHStatusPb result = io.littlehorse.common.proto.LHStatusPb.valueOf(status_);
-    return result == null ? io.littlehorse.common.proto.LHStatusPb.UNRECOGNIZED : result;
+            io.littlehorse.common.proto.EntrypointRunPb.class, io.littlehorse.common.proto.EntrypointRunPb.Builder.class);
   }
 
   private byte memoizedIsInitialized = -1;
@@ -136,12 +94,6 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (threadRunNumber_ != 0) {
-      output.writeInt32(1, threadRunNumber_);
-    }
-    if (status_ != io.littlehorse.common.proto.LHStatusPb.STARTING.getNumber()) {
-      output.writeEnum(2, status_);
-    }
     unknownFields.writeTo(output);
   }
 
@@ -151,14 +103,6 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (threadRunNumber_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(1, threadRunNumber_);
-    }
-    if (status_ != io.littlehorse.common.proto.LHStatusPb.STARTING.getNumber()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(2, status_);
-    }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
@@ -169,14 +113,11 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.common.proto.ThreadStatusChangeOePb)) {
+    if (!(obj instanceof io.littlehorse.common.proto.EntrypointRunPb)) {
       return super.equals(obj);
     }
-    io.littlehorse.common.proto.ThreadStatusChangeOePb other = (io.littlehorse.common.proto.ThreadStatusChangeOePb) obj;
+    io.littlehorse.common.proto.EntrypointRunPb other = (io.littlehorse.common.proto.EntrypointRunPb) obj;
 
-    if (getThreadRunNumber()
-        != other.getThreadRunNumber()) return false;
-    if (status_ != other.status_) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -188,78 +129,74 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + THREAD_RUN_NUMBER_FIELD_NUMBER;
-    hash = (53 * hash) + getThreadRunNumber();
-    hash = (37 * hash) + STATUS_FIELD_NUMBER;
-    hash = (53 * hash) + status_;
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
   }
 
-  public static io.littlehorse.common.proto.ThreadStatusChangeOePb parseFrom(
+  public static io.littlehorse.common.proto.EntrypointRunPb parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.ThreadStatusChangeOePb parseFrom(
+  public static io.littlehorse.common.proto.EntrypointRunPb parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.ThreadStatusChangeOePb parseFrom(
+  public static io.littlehorse.common.proto.EntrypointRunPb parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.ThreadStatusChangeOePb parseFrom(
+  public static io.littlehorse.common.proto.EntrypointRunPb parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.ThreadStatusChangeOePb parseFrom(byte[] data)
+  public static io.littlehorse.common.proto.EntrypointRunPb parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.ThreadStatusChangeOePb parseFrom(
+  public static io.littlehorse.common.proto.EntrypointRunPb parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.ThreadStatusChangeOePb parseFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.EntrypointRunPb parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.ThreadStatusChangeOePb parseFrom(
+  public static io.littlehorse.common.proto.EntrypointRunPb parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.ThreadStatusChangeOePb parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.EntrypointRunPb parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.ThreadStatusChangeOePb parseDelimitedFrom(
+  public static io.littlehorse.common.proto.EntrypointRunPb parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.ThreadStatusChangeOePb parseFrom(
+  public static io.littlehorse.common.proto.EntrypointRunPb parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.ThreadStatusChangeOePb parseFrom(
+  public static io.littlehorse.common.proto.EntrypointRunPb parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -272,7 +209,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.common.proto.ThreadStatusChangeOePb prototype) {
+  public static Builder newBuilder(io.littlehorse.common.proto.EntrypointRunPb prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -288,26 +225,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.ThreadStatusChangeOePb}
+   * Protobuf type {@code lh_proto.EntrypointRunPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.ThreadStatusChangeOePb)
-      io.littlehorse.common.proto.ThreadStatusChangeOePbOrBuilder {
+      // @@protoc_insertion_point(builder_implements:lh_proto.EntrypointRunPb)
+      io.littlehorse.common.proto.EntrypointRunPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_ThreadStatusChangeOePb_descriptor;
+      return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_EntrypointRunPb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_ThreadStatusChangeOePb_fieldAccessorTable
+      return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_EntrypointRunPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.common.proto.ThreadStatusChangeOePb.class, io.littlehorse.common.proto.ThreadStatusChangeOePb.Builder.class);
+              io.littlehorse.common.proto.EntrypointRunPb.class, io.littlehorse.common.proto.EntrypointRunPb.Builder.class);
     }
 
-    // Construct using io.littlehorse.common.proto.ThreadStatusChangeOePb.newBuilder()
+    // Construct using io.littlehorse.common.proto.EntrypointRunPb.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -325,27 +262,23 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      threadRunNumber_ = 0;
-
-      status_ = 0;
-
       return this;
     }
 
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_ThreadStatusChangeOePb_descriptor;
+      return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_EntrypointRunPb_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.ThreadStatusChangeOePb getDefaultInstanceForType() {
-      return io.littlehorse.common.proto.ThreadStatusChangeOePb.getDefaultInstance();
+    public io.littlehorse.common.proto.EntrypointRunPb getDefaultInstanceForType() {
+      return io.littlehorse.common.proto.EntrypointRunPb.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.ThreadStatusChangeOePb build() {
-      io.littlehorse.common.proto.ThreadStatusChangeOePb result = buildPartial();
+    public io.littlehorse.common.proto.EntrypointRunPb build() {
+      io.littlehorse.common.proto.EntrypointRunPb result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -353,10 +286,8 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.ThreadStatusChangeOePb buildPartial() {
-      io.littlehorse.common.proto.ThreadStatusChangeOePb result = new io.littlehorse.common.proto.ThreadStatusChangeOePb(this);
-      result.threadRunNumber_ = threadRunNumber_;
-      result.status_ = status_;
+    public io.littlehorse.common.proto.EntrypointRunPb buildPartial() {
+      io.littlehorse.common.proto.EntrypointRunPb result = new io.littlehorse.common.proto.EntrypointRunPb(this);
       onBuilt();
       return result;
     }
@@ -395,22 +326,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.common.proto.ThreadStatusChangeOePb) {
-        return mergeFrom((io.littlehorse.common.proto.ThreadStatusChangeOePb)other);
+      if (other instanceof io.littlehorse.common.proto.EntrypointRunPb) {
+        return mergeFrom((io.littlehorse.common.proto.EntrypointRunPb)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.common.proto.ThreadStatusChangeOePb other) {
-      if (other == io.littlehorse.common.proto.ThreadStatusChangeOePb.getDefaultInstance()) return this;
-      if (other.getThreadRunNumber() != 0) {
-        setThreadRunNumber(other.getThreadRunNumber());
-      }
-      if (other.status_ != 0) {
-        setStatusValue(other.getStatusValue());
-      }
+    public Builder mergeFrom(io.littlehorse.common.proto.EntrypointRunPb other) {
+      if (other == io.littlehorse.common.proto.EntrypointRunPb.getDefaultInstance()) return this;
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
@@ -426,102 +351,17 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      io.littlehorse.common.proto.ThreadStatusChangeOePb parsedMessage = null;
+      io.littlehorse.common.proto.EntrypointRunPb parsedMessage = null;
       try {
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (io.littlehorse.common.proto.ThreadStatusChangeOePb) e.getUnfinishedMessage();
+        parsedMessage = (io.littlehorse.common.proto.EntrypointRunPb) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
           mergeFrom(parsedMessage);
         }
       }
-      return this;
-    }
-
-    private int threadRunNumber_ ;
-    /**
-     * <code>int32 thread_run_number = 1;</code>
-     * @return The threadRunNumber.
-     */
-    @java.lang.Override
-    public int getThreadRunNumber() {
-      return threadRunNumber_;
-    }
-    /**
-     * <code>int32 thread_run_number = 1;</code>
-     * @param value The threadRunNumber to set.
-     * @return This builder for chaining.
-     */
-    public Builder setThreadRunNumber(int value) {
-      
-      threadRunNumber_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>int32 thread_run_number = 1;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearThreadRunNumber() {
-      
-      threadRunNumber_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private int status_ = 0;
-    /**
-     * <code>.lh_proto.LHStatusPb status = 2;</code>
-     * @return The enum numeric value on the wire for status.
-     */
-    @java.lang.Override public int getStatusValue() {
-      return status_;
-    }
-    /**
-     * <code>.lh_proto.LHStatusPb status = 2;</code>
-     * @param value The enum numeric value on the wire for status to set.
-     * @return This builder for chaining.
-     */
-    public Builder setStatusValue(int value) {
-      
-      status_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.lh_proto.LHStatusPb status = 2;</code>
-     * @return The status.
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.LHStatusPb getStatus() {
-      @SuppressWarnings("deprecation")
-      io.littlehorse.common.proto.LHStatusPb result = io.littlehorse.common.proto.LHStatusPb.valueOf(status_);
-      return result == null ? io.littlehorse.common.proto.LHStatusPb.UNRECOGNIZED : result;
-    }
-    /**
-     * <code>.lh_proto.LHStatusPb status = 2;</code>
-     * @param value The status to set.
-     * @return This builder for chaining.
-     */
-    public Builder setStatus(io.littlehorse.common.proto.LHStatusPb value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      
-      status_ = value.getNumber();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.lh_proto.LHStatusPb status = 2;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearStatus() {
-      
-      status_ = 0;
-      onChanged();
       return this;
     }
     @java.lang.Override
@@ -537,41 +377,41 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.ThreadStatusChangeOePb)
+    // @@protoc_insertion_point(builder_scope:lh_proto.EntrypointRunPb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.ThreadStatusChangeOePb)
-  private static final io.littlehorse.common.proto.ThreadStatusChangeOePb DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:lh_proto.EntrypointRunPb)
+  private static final io.littlehorse.common.proto.EntrypointRunPb DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.common.proto.ThreadStatusChangeOePb();
+    DEFAULT_INSTANCE = new io.littlehorse.common.proto.EntrypointRunPb();
   }
 
-  public static io.littlehorse.common.proto.ThreadStatusChangeOePb getDefaultInstance() {
+  public static io.littlehorse.common.proto.EntrypointRunPb getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<ThreadStatusChangeOePb>
-      PARSER = new com.google.protobuf.AbstractParser<ThreadStatusChangeOePb>() {
+  private static final com.google.protobuf.Parser<EntrypointRunPb>
+      PARSER = new com.google.protobuf.AbstractParser<EntrypointRunPb>() {
     @java.lang.Override
-    public ThreadStatusChangeOePb parsePartialFrom(
+    public EntrypointRunPb parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new ThreadStatusChangeOePb(input, extensionRegistry);
+      return new EntrypointRunPb(input, extensionRegistry);
     }
   };
 
-  public static com.google.protobuf.Parser<ThreadStatusChangeOePb> parser() {
+  public static com.google.protobuf.Parser<EntrypointRunPb> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<ThreadStatusChangeOePb> getParserForType() {
+  public com.google.protobuf.Parser<EntrypointRunPb> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.common.proto.ThreadStatusChangeOePb getDefaultInstanceForType() {
+  public io.littlehorse.common.proto.EntrypointRunPb getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

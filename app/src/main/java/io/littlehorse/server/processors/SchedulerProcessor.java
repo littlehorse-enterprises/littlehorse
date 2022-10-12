@@ -4,7 +4,6 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.GlobalPOSTable;
-import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.event.ExternalEvent;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.WfRunEvent;
@@ -12,18 +11,16 @@ import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.wfrun.LHTimer;
+import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
-import io.littlehorse.common.model.wfrun.noderun.NodeRun;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.WfRunEventPb.EventCase;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.ServerTopology;
 import io.littlehorse.server.processors.util.GenericOutput;
 import io.littlehorse.server.processors.util.WfRunStoreAccess;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
@@ -100,14 +97,24 @@ public class SchedulerProcessor
         }
     }
 
-    private void processHelper(String key, long timestamp, WfRunEvent evt) {
-        // This is gross, TODO: Maybe in the future refactor the special handling
-        // for ExternalEvent. But I want to keep an aggressive schedule...
-        WfRun wfRun = wfRunStore.get(key);
+    // NOTE: the wfRunId is also just the key from the Kafka record.
+    private void processHelper(String wfRunID, long timestamp, WfRunEvent evt) {
+        WfRun wfRun = wfRunStore.get(wfRunID);
+        WfSpec spec = getWfSpec(evt.wfSpecId);
+        // Both `wfRun` and `spec` could be null at this point:
+        // `spec` is null if it's an ExternalEvent
+        // `wfRun` is null if it's a WfRunRequest or an ExternalEvent that comes
+        //   before the associated WfRun.
 
+        WfRunStoreAccess wsa = new WfRunStoreAccess(
+            nodeRunStore,
+            variableStore,
+            extEvtStore,
+            wfRunID
+        );
         if (evt.type == EventCase.EXTERNAL_EVENT) {
             ExternalEvent extEvt = evt.externalEvent;
-            extEvtStore.put(extEvt.getObjectId(), extEvt);
+            wsa.saveExternalEvent(extEvt);
 
             if (wfRun == null) {
                 // Then it's a potential future WfRun. Current implementation saves
@@ -122,67 +129,56 @@ public class SchedulerProcessor
                 //    - Normally, cleanup would happen when we do cleanup of WfRun
                 //      but this is a separate and special case.
                 return;
-            } else {
-                evt.wfSpecId = wfRun.wfSpecId;
             }
-        }
-        WfSpec spec = getWfSpec(evt.wfSpecId);
 
+            // ExternalEvent's don't have the wfSpecId on them set by default
+            // when they're sent through the API. This is a hack that solves it.
+            evt.wfSpecId = wfRun.wfSpecId;
+            spec = getWfSpec(evt.wfSpecId);
+        } else if (evt.type == EventCase.RUN_REQUEST) {
+            if (wfRun != null) {
+                LHUtil.log("Got a past run for id " + wfRunID + ", skipping");
+                return;
+            }
+            wfRun = spec.startNewRun(evt, wsa);
+        }
+
+        // now `spec` can't be null.
         if (spec == null) {
             LHUtil.log("Couldn't find spec, TODO: DeadLetter Queue");
             return;
         }
 
-        List<TaskScheduleRequest> tasksToSchedule = new ArrayList<>();
-        List<LHTimer> timersToSchedule = new ArrayList<>();
-        WfRunStoreAccess wsa = new WfRunStoreAccess(
-            nodeRunStore,
-            variableStore,
-            extEvtStore,
-            key
-        );
+        wfRun.wfSpec = spec;
+        wfRun.stores = wsa;
+        wfRun.processEvent(evt);
 
-        if (evt.type == EventCase.RUN_REQUEST) {
-            if (wfRun != null) {
-                LHUtil.log("Got a past run for id " + key + ", skipping");
-                return;
-            }
+        flushChanges(wfRun, wsa, timestamp);
+    }
 
-            wfRun = spec.startNewRun(evt, tasksToSchedule, timersToSchedule, wsa);
-        } else {
-            wfRun.wfSpec = spec;
-            wfRun.stores = wsa;
-            wfRun.processEvent(evt, tasksToSchedule, timersToSchedule);
-        }
-
+    private void flushChanges(WfRun wfRun, WfRunStoreAccess wsa, long timestamp) {
         // Schedule tasks
-        for (TaskScheduleRequest r : tasksToSchedule) {
+        for (TaskScheduleRequest r : wsa.tasksToSchedule) {
             GenericOutput taskOutput = new GenericOutput();
             taskOutput.request = r;
             context.forward(
-                new Record<>(key, taskOutput, timestamp),
+                new Record<>(wfRun.id, taskOutput, timestamp),
                 ServerTopology.schedulerTaskSink
             );
         }
 
-        for (LHTimer timer : timersToSchedule) {
+        // Schedule timers
+        for (LHTimer timer : wsa.timersToSchedule) {
             GenericOutput out = new GenericOutput();
             out.timer = timer;
             context.forward(
-                new Record<>(key, out, timestamp),
+                new Record<>(wfRun.id, out, timestamp),
                 ServerTopology.newTimerSink
             );
         }
 
-        // Forward the observability events
-        GenericOutput oeOutput = new GenericOutput();
-        oeOutput.observabilityEvents = wfRun.oEvents;
-        context.forward(
-            new Record<>(key, oeOutput, timestamp),
-            ServerTopology.schedulerWfRunSink
-        );
+        // Update the Data Store and send objects to be Tagged+Indexed:
 
-        // Update the Data Store and send objects to be Tagged+Indexed
         // Variables
         for (Map.Entry<String, Variable> entry : wsa.variablePuts.entrySet()) {
             variableStore.put(entry.getKey(), entry.getValue());
@@ -201,8 +197,8 @@ public class SchedulerProcessor
             forwardforTagging(entry.getValue(), timestamp);
         }
 
-        // WfRuns
-        wfRunStore.put(key, wfRun);
+        // The WfRun
+        wfRunStore.put(wfRun.id, wfRun);
         forwardforTagging(wfRun, timestamp);
     }
 
@@ -225,6 +221,8 @@ public class SchedulerProcessor
     }
 
     private WfSpec getWfSpec(String id) {
+        if (id == null) return null;
+
         WfSpec out = wfSpecCache.get(id);
         if (out == null) {
             out = wfSpecStore.get(id);

@@ -111,5 +111,16 @@ public interface WfRunEventPbOrBuilder extends
    */
   io.littlehorse.common.proto.ExternalEventPbOrBuilder getExternalEventOrBuilder();
 
+  /**
+   * <code>int32 thread_run_number = 8;</code>
+   * @return Whether the threadRunNumber field is set.
+   */
+  boolean hasThreadRunNumber();
+  /**
+   * <code>int32 thread_run_number = 8;</code>
+   * @return The threadRunNumber.
+   */
+  int getThreadRunNumber();
+
   public io.littlehorse.common.proto.WfRunEventPb.EventCase getEventCase();
 }

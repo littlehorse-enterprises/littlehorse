@@ -32,150 +32,186 @@ public interface NodeRunPbOrBuilder extends
   int getPosition();
 
   /**
-   * <code>int32 number = 4;</code>
+   * <code>int32 attempt_number = 4;</code>
+   * @return The attemptNumber.
+   */
+  int getAttemptNumber();
+
+  /**
+   * <code>int32 number = 5;</code>
    * @return The number.
    */
   int getNumber();
 
   /**
-   * <code>.lh_proto.LHStatusPb status = 5;</code>
+   * <code>.lh_proto.LHStatusPb status = 6;</code>
    * @return The enum numeric value on the wire for status.
    */
   int getStatusValue();
   /**
-   * <code>.lh_proto.LHStatusPb status = 5;</code>
+   * <code>.lh_proto.LHStatusPb status = 6;</code>
    * @return The status.
    */
   io.littlehorse.common.proto.LHStatusPb getStatus();
 
   /**
-   * <code>.google.protobuf.Timestamp arrival_time = 6;</code>
+   * <code>.google.protobuf.Timestamp arrival_time = 7;</code>
    * @return Whether the arrivalTime field is set.
    */
   boolean hasArrivalTime();
   /**
-   * <code>.google.protobuf.Timestamp arrival_time = 6;</code>
+   * <code>.google.protobuf.Timestamp arrival_time = 7;</code>
    * @return The arrivalTime.
    */
   com.google.protobuf.Timestamp getArrivalTime();
   /**
-   * <code>.google.protobuf.Timestamp arrival_time = 6;</code>
+   * <code>.google.protobuf.Timestamp arrival_time = 7;</code>
    */
   com.google.protobuf.TimestampOrBuilder getArrivalTimeOrBuilder();
 
   /**
-   * <code>.google.protobuf.Timestamp end_time = 7;</code>
+   * <code>.google.protobuf.Timestamp end_time = 8;</code>
    * @return Whether the endTime field is set.
    */
   boolean hasEndTime();
   /**
-   * <code>.google.protobuf.Timestamp end_time = 7;</code>
+   * <code>.google.protobuf.Timestamp end_time = 8;</code>
    * @return The endTime.
    */
   com.google.protobuf.Timestamp getEndTime();
   /**
-   * <code>.google.protobuf.Timestamp end_time = 7;</code>
+   * <code>.google.protobuf.Timestamp end_time = 8;</code>
    */
   com.google.protobuf.TimestampOrBuilder getEndTimeOrBuilder();
 
   /**
-   * <code>string wf_spec_id = 8;</code>
+   * <code>string wf_spec_id = 9;</code>
    * @return The wfSpecId.
    */
   java.lang.String getWfSpecId();
   /**
-   * <code>string wf_spec_id = 8;</code>
+   * <code>string wf_spec_id = 9;</code>
    * @return The bytes for wfSpecId.
    */
   com.google.protobuf.ByteString
       getWfSpecIdBytes();
 
   /**
-   * <code>string thread_spec_name = 9;</code>
+   * <code>string thread_spec_name = 10;</code>
    * @return The threadSpecName.
    */
   java.lang.String getThreadSpecName();
   /**
-   * <code>string thread_spec_name = 9;</code>
+   * <code>string thread_spec_name = 10;</code>
    * @return The bytes for threadSpecName.
    */
   com.google.protobuf.ByteString
       getThreadSpecNameBytes();
 
   /**
-   * <code>string node_name = 10;</code>
+   * <code>string node_name = 11;</code>
    * @return The nodeName.
    */
   java.lang.String getNodeName();
   /**
-   * <code>string node_name = 10;</code>
+   * <code>string node_name = 11;</code>
    * @return The bytes for nodeName.
    */
   com.google.protobuf.ByteString
       getNodeNameBytes();
 
   /**
-   * <code>.lh_proto.TaskResultCodePb result_code = 11;</code>
+   * <code>.lh_proto.TaskResultCodePb result_code = 12;</code>
    * @return Whether the resultCode field is set.
    */
   boolean hasResultCode();
   /**
-   * <code>.lh_proto.TaskResultCodePb result_code = 11;</code>
+   * <code>.lh_proto.TaskResultCodePb result_code = 12;</code>
    * @return The enum numeric value on the wire for resultCode.
    */
   int getResultCodeValue();
   /**
-   * <code>.lh_proto.TaskResultCodePb result_code = 11;</code>
+   * <code>.lh_proto.TaskResultCodePb result_code = 12;</code>
    * @return The resultCode.
    */
   io.littlehorse.common.proto.TaskResultCodePb getResultCode();
 
   /**
-   * <code>string error_message = 12;</code>
+   * <code>string error_message = 13;</code>
    * @return Whether the errorMessage field is set.
    */
   boolean hasErrorMessage();
   /**
-   * <code>string error_message = 12;</code>
+   * <code>string error_message = 13;</code>
    * @return The errorMessage.
    */
   java.lang.String getErrorMessage();
   /**
-   * <code>string error_message = 12;</code>
+   * <code>string error_message = 13;</code>
    * @return The bytes for errorMessage.
    */
   com.google.protobuf.ByteString
       getErrorMessageBytes();
 
   /**
-   * <code>.lh_proto.TaskRunPb task = 13;</code>
+   * <code>.lh_proto.TaskRunPb task = 14;</code>
    * @return Whether the task field is set.
    */
   boolean hasTask();
   /**
-   * <code>.lh_proto.TaskRunPb task = 13;</code>
+   * <code>.lh_proto.TaskRunPb task = 14;</code>
    * @return The task.
    */
   io.littlehorse.common.proto.TaskRunPb getTask();
   /**
-   * <code>.lh_proto.TaskRunPb task = 13;</code>
+   * <code>.lh_proto.TaskRunPb task = 14;</code>
    */
   io.littlehorse.common.proto.TaskRunPbOrBuilder getTaskOrBuilder();
 
   /**
-   * <code>.lh_proto.ExternalEventRunPb external_event = 14;</code>
+   * <code>.lh_proto.ExternalEventRunPb external_event = 15;</code>
    * @return Whether the externalEvent field is set.
    */
   boolean hasExternalEvent();
   /**
-   * <code>.lh_proto.ExternalEventRunPb external_event = 14;</code>
+   * <code>.lh_proto.ExternalEventRunPb external_event = 15;</code>
    * @return The externalEvent.
    */
   io.littlehorse.common.proto.ExternalEventRunPb getExternalEvent();
   /**
-   * <code>.lh_proto.ExternalEventRunPb external_event = 14;</code>
+   * <code>.lh_proto.ExternalEventRunPb external_event = 15;</code>
    */
   io.littlehorse.common.proto.ExternalEventRunPbOrBuilder getExternalEventOrBuilder();
+
+  /**
+   * <code>.lh_proto.EntrypointRunPb entrypoint = 16;</code>
+   * @return Whether the entrypoint field is set.
+   */
+  boolean hasEntrypoint();
+  /**
+   * <code>.lh_proto.EntrypointRunPb entrypoint = 16;</code>
+   * @return The entrypoint.
+   */
+  io.littlehorse.common.proto.EntrypointRunPb getEntrypoint();
+  /**
+   * <code>.lh_proto.EntrypointRunPb entrypoint = 16;</code>
+   */
+  io.littlehorse.common.proto.EntrypointRunPbOrBuilder getEntrypointOrBuilder();
+
+  /**
+   * <code>.lh_proto.ExitRunPb exit = 17;</code>
+   * @return Whether the exit field is set.
+   */
+  boolean hasExit();
+  /**
+   * <code>.lh_proto.ExitRunPb exit = 17;</code>
+   * @return The exit.
+   */
+  io.littlehorse.common.proto.ExitRunPb getExit();
+  /**
+   * <code>.lh_proto.ExitRunPb exit = 17;</code>
+   */
+  io.littlehorse.common.proto.ExitRunPbOrBuilder getExitOrBuilder();
 
   public io.littlehorse.common.proto.NodeRunPb.NodeTypeCase getNodeTypeCase();
 }

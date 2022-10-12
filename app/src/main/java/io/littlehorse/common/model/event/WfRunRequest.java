@@ -10,7 +10,9 @@ import io.littlehorse.common.util.LHUtil;
 import java.util.HashMap;
 import java.util.Map;
 
-public class WfRunRequest extends LHSerializable<WfRunRequestPb> {
+public class WfRunRequest
+    extends LHSerializable<WfRunRequestPb>
+    implements WfRunSubEvent {
 
     public String wfRunId;
     public String wfSpecId;
@@ -60,5 +62,13 @@ public class WfRunRequest extends LHSerializable<WfRunRequestPb> {
         WfRunRequest out = new WfRunRequest();
         out.initFrom(proto);
         return out;
+    }
+
+    public Integer getThreadRunNumber() {
+        return 0;
+    }
+
+    public Integer getNodeRunPosition() {
+        return 0;
     }
 }

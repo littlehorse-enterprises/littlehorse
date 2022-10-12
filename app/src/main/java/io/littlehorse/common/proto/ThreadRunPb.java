@@ -84,12 +84,7 @@ private static final long serialVersionUID = 0L;
             threadSpecName_ = s;
             break;
           }
-          case 48: {
-
-            numSteps_ = input.readInt32();
-            break;
-          }
-          case 58: {
+          case 50: {
             com.google.protobuf.Timestamp.Builder subBuilder = null;
             if (startTime_ != null) {
               subBuilder = startTime_.toBuilder();
@@ -102,7 +97,7 @@ private static final long serialVersionUID = 0L;
 
             break;
           }
-          case 66: {
+          case 58: {
             com.google.protobuf.Timestamp.Builder subBuilder = null;
             if (((bitField0_ & 0x00000001) != 0)) {
               subBuilder = endTime_.toBuilder();
@@ -115,26 +110,18 @@ private static final long serialVersionUID = 0L;
             bitField0_ |= 0x00000001;
             break;
           }
-          case 74: {
-            io.littlehorse.common.proto.NodeRunStatePb.Builder subBuilder = null;
-            if (currentNodeRun_ != null) {
-              subBuilder = currentNodeRun_.toBuilder();
-            }
-            currentNodeRun_ = input.readMessage(io.littlehorse.common.proto.NodeRunStatePb.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom(currentNodeRun_);
-              currentNodeRun_ = subBuilder.buildPartial();
-            }
+          case 64: {
 
+            currentNodePosition_ = input.readInt32();
             break;
           }
-          case 82: {
+          case 74: {
             java.lang.String s = input.readStringRequireUtf8();
             bitField0_ |= 0x00000002;
             errorMessage_ = s;
             break;
           }
-          case 88: {
+          case 80: {
             int rawValue = input.readEnum();
             bitField0_ |= 0x00000004;
             resultCode_ = rawValue;
@@ -317,21 +304,10 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int NUM_STEPS_FIELD_NUMBER = 6;
-  private int numSteps_;
-  /**
-   * <code>int32 num_steps = 6;</code>
-   * @return The numSteps.
-   */
-  @java.lang.Override
-  public int getNumSteps() {
-    return numSteps_;
-  }
-
-  public static final int START_TIME_FIELD_NUMBER = 7;
+  public static final int START_TIME_FIELD_NUMBER = 6;
   private com.google.protobuf.Timestamp startTime_;
   /**
-   * <code>.google.protobuf.Timestamp start_time = 7;</code>
+   * <code>.google.protobuf.Timestamp start_time = 6;</code>
    * @return Whether the startTime field is set.
    */
   @java.lang.Override
@@ -339,7 +315,7 @@ private static final long serialVersionUID = 0L;
     return startTime_ != null;
   }
   /**
-   * <code>.google.protobuf.Timestamp start_time = 7;</code>
+   * <code>.google.protobuf.Timestamp start_time = 6;</code>
    * @return The startTime.
    */
   @java.lang.Override
@@ -347,17 +323,17 @@ private static final long serialVersionUID = 0L;
     return startTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : startTime_;
   }
   /**
-   * <code>.google.protobuf.Timestamp start_time = 7;</code>
+   * <code>.google.protobuf.Timestamp start_time = 6;</code>
    */
   @java.lang.Override
   public com.google.protobuf.TimestampOrBuilder getStartTimeOrBuilder() {
     return getStartTime();
   }
 
-  public static final int END_TIME_FIELD_NUMBER = 8;
+  public static final int END_TIME_FIELD_NUMBER = 7;
   private com.google.protobuf.Timestamp endTime_;
   /**
-   * <code>.google.protobuf.Timestamp end_time = 8;</code>
+   * <code>.google.protobuf.Timestamp end_time = 7;</code>
    * @return Whether the endTime field is set.
    */
   @java.lang.Override
@@ -365,7 +341,7 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>.google.protobuf.Timestamp end_time = 8;</code>
+   * <code>.google.protobuf.Timestamp end_time = 7;</code>
    * @return The endTime.
    */
   @java.lang.Override
@@ -373,43 +349,28 @@ private static final long serialVersionUID = 0L;
     return endTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : endTime_;
   }
   /**
-   * <code>.google.protobuf.Timestamp end_time = 8;</code>
+   * <code>.google.protobuf.Timestamp end_time = 7;</code>
    */
   @java.lang.Override
   public com.google.protobuf.TimestampOrBuilder getEndTimeOrBuilder() {
     return endTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : endTime_;
   }
 
-  public static final int CURRENT_NODE_RUN_FIELD_NUMBER = 9;
-  private io.littlehorse.common.proto.NodeRunStatePb currentNodeRun_;
+  public static final int CURRENT_NODE_POSITION_FIELD_NUMBER = 8;
+  private int currentNodePosition_;
   /**
-   * <code>.lh_proto.NodeRunStatePb current_node_run = 9;</code>
-   * @return Whether the currentNodeRun field is set.
+   * <code>int32 current_node_position = 8;</code>
+   * @return The currentNodePosition.
    */
   @java.lang.Override
-  public boolean hasCurrentNodeRun() {
-    return currentNodeRun_ != null;
-  }
-  /**
-   * <code>.lh_proto.NodeRunStatePb current_node_run = 9;</code>
-   * @return The currentNodeRun.
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.NodeRunStatePb getCurrentNodeRun() {
-    return currentNodeRun_ == null ? io.littlehorse.common.proto.NodeRunStatePb.getDefaultInstance() : currentNodeRun_;
-  }
-  /**
-   * <code>.lh_proto.NodeRunStatePb current_node_run = 9;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.NodeRunStatePbOrBuilder getCurrentNodeRunOrBuilder() {
-    return getCurrentNodeRun();
+  public int getCurrentNodePosition() {
+    return currentNodePosition_;
   }
 
-  public static final int ERROR_MESSAGE_FIELD_NUMBER = 10;
+  public static final int ERROR_MESSAGE_FIELD_NUMBER = 9;
   private volatile java.lang.Object errorMessage_;
   /**
-   * <code>string error_message = 10;</code>
+   * <code>string error_message = 9;</code>
    * @return Whether the errorMessage field is set.
    */
   @java.lang.Override
@@ -417,7 +378,7 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
-   * <code>string error_message = 10;</code>
+   * <code>string error_message = 9;</code>
    * @return The errorMessage.
    */
   @java.lang.Override
@@ -434,7 +395,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>string error_message = 10;</code>
+   * <code>string error_message = 9;</code>
    * @return The bytes for errorMessage.
    */
   @java.lang.Override
@@ -452,24 +413,24 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int RESULT_CODE_FIELD_NUMBER = 11;
+  public static final int RESULT_CODE_FIELD_NUMBER = 10;
   private int resultCode_;
   /**
-   * <code>.lh_proto.TaskResultCodePb result_code = 11;</code>
+   * <code>.lh_proto.TaskResultCodePb result_code = 10;</code>
    * @return Whether the resultCode field is set.
    */
   @java.lang.Override public boolean hasResultCode() {
     return ((bitField0_ & 0x00000004) != 0);
   }
   /**
-   * <code>.lh_proto.TaskResultCodePb result_code = 11;</code>
+   * <code>.lh_proto.TaskResultCodePb result_code = 10;</code>
    * @return The enum numeric value on the wire for resultCode.
    */
   @java.lang.Override public int getResultCodeValue() {
     return resultCode_;
   }
   /**
-   * <code>.lh_proto.TaskResultCodePb result_code = 11;</code>
+   * <code>.lh_proto.TaskResultCodePb result_code = 10;</code>
    * @return The resultCode.
    */
   @java.lang.Override public io.littlehorse.common.proto.TaskResultCodePb getResultCode() {
@@ -507,23 +468,20 @@ private static final long serialVersionUID = 0L;
     if (!getThreadSpecNameBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 5, threadSpecName_);
     }
-    if (numSteps_ != 0) {
-      output.writeInt32(6, numSteps_);
-    }
     if (startTime_ != null) {
-      output.writeMessage(7, getStartTime());
+      output.writeMessage(6, getStartTime());
     }
     if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeMessage(8, getEndTime());
+      output.writeMessage(7, getEndTime());
     }
-    if (currentNodeRun_ != null) {
-      output.writeMessage(9, getCurrentNodeRun());
+    if (currentNodePosition_ != 0) {
+      output.writeInt32(8, currentNodePosition_);
     }
     if (((bitField0_ & 0x00000002) != 0)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 10, errorMessage_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 9, errorMessage_);
     }
     if (((bitField0_ & 0x00000004) != 0)) {
-      output.writeEnum(11, resultCode_);
+      output.writeEnum(10, resultCode_);
     }
     unknownFields.writeTo(output);
   }
@@ -551,28 +509,24 @@ private static final long serialVersionUID = 0L;
     if (!getThreadSpecNameBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, threadSpecName_);
     }
-    if (numSteps_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(6, numSteps_);
-    }
     if (startTime_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(7, getStartTime());
+        .computeMessageSize(6, getStartTime());
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(8, getEndTime());
+        .computeMessageSize(7, getEndTime());
     }
-    if (currentNodeRun_ != null) {
+    if (currentNodePosition_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(9, getCurrentNodeRun());
+        .computeInt32Size(8, currentNodePosition_);
     }
     if (((bitField0_ & 0x00000002) != 0)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(10, errorMessage_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(9, errorMessage_);
     }
     if (((bitField0_ & 0x00000004) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(11, resultCode_);
+        .computeEnumSize(10, resultCode_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -598,8 +552,6 @@ private static final long serialVersionUID = 0L;
         .equals(other.getWfSpecId())) return false;
     if (!getThreadSpecName()
         .equals(other.getThreadSpecName())) return false;
-    if (getNumSteps()
-        != other.getNumSteps()) return false;
     if (hasStartTime() != other.hasStartTime()) return false;
     if (hasStartTime()) {
       if (!getStartTime()
@@ -610,11 +562,8 @@ private static final long serialVersionUID = 0L;
       if (!getEndTime()
           .equals(other.getEndTime())) return false;
     }
-    if (hasCurrentNodeRun() != other.hasCurrentNodeRun()) return false;
-    if (hasCurrentNodeRun()) {
-      if (!getCurrentNodeRun()
-          .equals(other.getCurrentNodeRun())) return false;
-    }
+    if (getCurrentNodePosition()
+        != other.getCurrentNodePosition()) return false;
     if (hasErrorMessage() != other.hasErrorMessage()) return false;
     if (hasErrorMessage()) {
       if (!getErrorMessage()
@@ -645,8 +594,6 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getWfSpecId().hashCode();
     hash = (37 * hash) + THREAD_SPEC_NAME_FIELD_NUMBER;
     hash = (53 * hash) + getThreadSpecName().hashCode();
-    hash = (37 * hash) + NUM_STEPS_FIELD_NUMBER;
-    hash = (53 * hash) + getNumSteps();
     if (hasStartTime()) {
       hash = (37 * hash) + START_TIME_FIELD_NUMBER;
       hash = (53 * hash) + getStartTime().hashCode();
@@ -655,10 +602,8 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + END_TIME_FIELD_NUMBER;
       hash = (53 * hash) + getEndTime().hashCode();
     }
-    if (hasCurrentNodeRun()) {
-      hash = (37 * hash) + CURRENT_NODE_RUN_FIELD_NUMBER;
-      hash = (53 * hash) + getCurrentNodeRun().hashCode();
-    }
+    hash = (37 * hash) + CURRENT_NODE_POSITION_FIELD_NUMBER;
+    hash = (53 * hash) + getCurrentNodePosition();
     if (hasErrorMessage()) {
       hash = (37 * hash) + ERROR_MESSAGE_FIELD_NUMBER;
       hash = (53 * hash) + getErrorMessage().hashCode();
@@ -811,8 +756,6 @@ private static final long serialVersionUID = 0L;
 
       threadSpecName_ = "";
 
-      numSteps_ = 0;
-
       if (startTimeBuilder_ == null) {
         startTime_ = null;
       } else {
@@ -825,12 +768,8 @@ private static final long serialVersionUID = 0L;
         endTimeBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000001);
-      if (currentNodeRunBuilder_ == null) {
-        currentNodeRun_ = null;
-      } else {
-        currentNodeRun_ = null;
-        currentNodeRunBuilder_ = null;
-      }
+      currentNodePosition_ = 0;
+
       errorMessage_ = "";
       bitField0_ = (bitField0_ & ~0x00000002);
       resultCode_ = 0;
@@ -868,7 +807,6 @@ private static final long serialVersionUID = 0L;
       result.status_ = status_;
       result.wfSpecId_ = wfSpecId_;
       result.threadSpecName_ = threadSpecName_;
-      result.numSteps_ = numSteps_;
       if (startTimeBuilder_ == null) {
         result.startTime_ = startTime_;
       } else {
@@ -882,11 +820,7 @@ private static final long serialVersionUID = 0L;
         }
         to_bitField0_ |= 0x00000001;
       }
-      if (currentNodeRunBuilder_ == null) {
-        result.currentNodeRun_ = currentNodeRun_;
-      } else {
-        result.currentNodeRun_ = currentNodeRunBuilder_.build();
-      }
+      result.currentNodePosition_ = currentNodePosition_;
       if (((from_bitField0_ & 0x00000002) != 0)) {
         to_bitField0_ |= 0x00000002;
       }
@@ -962,17 +896,14 @@ private static final long serialVersionUID = 0L;
         threadSpecName_ = other.threadSpecName_;
         onChanged();
       }
-      if (other.getNumSteps() != 0) {
-        setNumSteps(other.getNumSteps());
-      }
       if (other.hasStartTime()) {
         mergeStartTime(other.getStartTime());
       }
       if (other.hasEndTime()) {
         mergeEndTime(other.getEndTime());
       }
-      if (other.hasCurrentNodeRun()) {
-        mergeCurrentNodeRun(other.getCurrentNodeRun());
+      if (other.getCurrentNodePosition() != 0) {
+        setCurrentNodePosition(other.getCurrentNodePosition());
       }
       if (other.hasErrorMessage()) {
         bitField0_ |= 0x00000002;
@@ -1325,49 +1256,18 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int numSteps_ ;
-    /**
-     * <code>int32 num_steps = 6;</code>
-     * @return The numSteps.
-     */
-    @java.lang.Override
-    public int getNumSteps() {
-      return numSteps_;
-    }
-    /**
-     * <code>int32 num_steps = 6;</code>
-     * @param value The numSteps to set.
-     * @return This builder for chaining.
-     */
-    public Builder setNumSteps(int value) {
-      
-      numSteps_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>int32 num_steps = 6;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearNumSteps() {
-      
-      numSteps_ = 0;
-      onChanged();
-      return this;
-    }
-
     private com.google.protobuf.Timestamp startTime_;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> startTimeBuilder_;
     /**
-     * <code>.google.protobuf.Timestamp start_time = 7;</code>
+     * <code>.google.protobuf.Timestamp start_time = 6;</code>
      * @return Whether the startTime field is set.
      */
     public boolean hasStartTime() {
       return startTimeBuilder_ != null || startTime_ != null;
     }
     /**
-     * <code>.google.protobuf.Timestamp start_time = 7;</code>
+     * <code>.google.protobuf.Timestamp start_time = 6;</code>
      * @return The startTime.
      */
     public com.google.protobuf.Timestamp getStartTime() {
@@ -1378,7 +1278,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp start_time = 7;</code>
+     * <code>.google.protobuf.Timestamp start_time = 6;</code>
      */
     public Builder setStartTime(com.google.protobuf.Timestamp value) {
       if (startTimeBuilder_ == null) {
@@ -1394,7 +1294,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp start_time = 7;</code>
+     * <code>.google.protobuf.Timestamp start_time = 6;</code>
      */
     public Builder setStartTime(
         com.google.protobuf.Timestamp.Builder builderForValue) {
@@ -1408,7 +1308,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp start_time = 7;</code>
+     * <code>.google.protobuf.Timestamp start_time = 6;</code>
      */
     public Builder mergeStartTime(com.google.protobuf.Timestamp value) {
       if (startTimeBuilder_ == null) {
@@ -1426,7 +1326,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp start_time = 7;</code>
+     * <code>.google.protobuf.Timestamp start_time = 6;</code>
      */
     public Builder clearStartTime() {
       if (startTimeBuilder_ == null) {
@@ -1440,7 +1340,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp start_time = 7;</code>
+     * <code>.google.protobuf.Timestamp start_time = 6;</code>
      */
     public com.google.protobuf.Timestamp.Builder getStartTimeBuilder() {
       
@@ -1448,7 +1348,7 @@ private static final long serialVersionUID = 0L;
       return getStartTimeFieldBuilder().getBuilder();
     }
     /**
-     * <code>.google.protobuf.Timestamp start_time = 7;</code>
+     * <code>.google.protobuf.Timestamp start_time = 6;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getStartTimeOrBuilder() {
       if (startTimeBuilder_ != null) {
@@ -1459,7 +1359,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp start_time = 7;</code>
+     * <code>.google.protobuf.Timestamp start_time = 6;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
@@ -1479,14 +1379,14 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> endTimeBuilder_;
     /**
-     * <code>.google.protobuf.Timestamp end_time = 8;</code>
+     * <code>.google.protobuf.Timestamp end_time = 7;</code>
      * @return Whether the endTime field is set.
      */
     public boolean hasEndTime() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>.google.protobuf.Timestamp end_time = 8;</code>
+     * <code>.google.protobuf.Timestamp end_time = 7;</code>
      * @return The endTime.
      */
     public com.google.protobuf.Timestamp getEndTime() {
@@ -1497,7 +1397,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp end_time = 8;</code>
+     * <code>.google.protobuf.Timestamp end_time = 7;</code>
      */
     public Builder setEndTime(com.google.protobuf.Timestamp value) {
       if (endTimeBuilder_ == null) {
@@ -1513,7 +1413,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp end_time = 8;</code>
+     * <code>.google.protobuf.Timestamp end_time = 7;</code>
      */
     public Builder setEndTime(
         com.google.protobuf.Timestamp.Builder builderForValue) {
@@ -1527,7 +1427,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp end_time = 8;</code>
+     * <code>.google.protobuf.Timestamp end_time = 7;</code>
      */
     public Builder mergeEndTime(com.google.protobuf.Timestamp value) {
       if (endTimeBuilder_ == null) {
@@ -1547,7 +1447,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp end_time = 8;</code>
+     * <code>.google.protobuf.Timestamp end_time = 7;</code>
      */
     public Builder clearEndTime() {
       if (endTimeBuilder_ == null) {
@@ -1560,7 +1460,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp end_time = 8;</code>
+     * <code>.google.protobuf.Timestamp end_time = 7;</code>
      */
     public com.google.protobuf.Timestamp.Builder getEndTimeBuilder() {
       bitField0_ |= 0x00000001;
@@ -1568,7 +1468,7 @@ private static final long serialVersionUID = 0L;
       return getEndTimeFieldBuilder().getBuilder();
     }
     /**
-     * <code>.google.protobuf.Timestamp end_time = 8;</code>
+     * <code>.google.protobuf.Timestamp end_time = 7;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getEndTimeOrBuilder() {
       if (endTimeBuilder_ != null) {
@@ -1579,7 +1479,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp end_time = 8;</code>
+     * <code>.google.protobuf.Timestamp end_time = 7;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
@@ -1595,135 +1495,47 @@ private static final long serialVersionUID = 0L;
       return endTimeBuilder_;
     }
 
-    private io.littlehorse.common.proto.NodeRunStatePb currentNodeRun_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.NodeRunStatePb, io.littlehorse.common.proto.NodeRunStatePb.Builder, io.littlehorse.common.proto.NodeRunStatePbOrBuilder> currentNodeRunBuilder_;
+    private int currentNodePosition_ ;
     /**
-     * <code>.lh_proto.NodeRunStatePb current_node_run = 9;</code>
-     * @return Whether the currentNodeRun field is set.
+     * <code>int32 current_node_position = 8;</code>
+     * @return The currentNodePosition.
      */
-    public boolean hasCurrentNodeRun() {
-      return currentNodeRunBuilder_ != null || currentNodeRun_ != null;
+    @java.lang.Override
+    public int getCurrentNodePosition() {
+      return currentNodePosition_;
     }
     /**
-     * <code>.lh_proto.NodeRunStatePb current_node_run = 9;</code>
-     * @return The currentNodeRun.
+     * <code>int32 current_node_position = 8;</code>
+     * @param value The currentNodePosition to set.
+     * @return This builder for chaining.
      */
-    public io.littlehorse.common.proto.NodeRunStatePb getCurrentNodeRun() {
-      if (currentNodeRunBuilder_ == null) {
-        return currentNodeRun_ == null ? io.littlehorse.common.proto.NodeRunStatePb.getDefaultInstance() : currentNodeRun_;
-      } else {
-        return currentNodeRunBuilder_.getMessage();
-      }
-    }
-    /**
-     * <code>.lh_proto.NodeRunStatePb current_node_run = 9;</code>
-     */
-    public Builder setCurrentNodeRun(io.littlehorse.common.proto.NodeRunStatePb value) {
-      if (currentNodeRunBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        currentNodeRun_ = value;
-        onChanged();
-      } else {
-        currentNodeRunBuilder_.setMessage(value);
-      }
-
-      return this;
-    }
-    /**
-     * <code>.lh_proto.NodeRunStatePb current_node_run = 9;</code>
-     */
-    public Builder setCurrentNodeRun(
-        io.littlehorse.common.proto.NodeRunStatePb.Builder builderForValue) {
-      if (currentNodeRunBuilder_ == null) {
-        currentNodeRun_ = builderForValue.build();
-        onChanged();
-      } else {
-        currentNodeRunBuilder_.setMessage(builderForValue.build());
-      }
-
-      return this;
-    }
-    /**
-     * <code>.lh_proto.NodeRunStatePb current_node_run = 9;</code>
-     */
-    public Builder mergeCurrentNodeRun(io.littlehorse.common.proto.NodeRunStatePb value) {
-      if (currentNodeRunBuilder_ == null) {
-        if (currentNodeRun_ != null) {
-          currentNodeRun_ =
-            io.littlehorse.common.proto.NodeRunStatePb.newBuilder(currentNodeRun_).mergeFrom(value).buildPartial();
-        } else {
-          currentNodeRun_ = value;
-        }
-        onChanged();
-      } else {
-        currentNodeRunBuilder_.mergeFrom(value);
-      }
-
-      return this;
-    }
-    /**
-     * <code>.lh_proto.NodeRunStatePb current_node_run = 9;</code>
-     */
-    public Builder clearCurrentNodeRun() {
-      if (currentNodeRunBuilder_ == null) {
-        currentNodeRun_ = null;
-        onChanged();
-      } else {
-        currentNodeRun_ = null;
-        currentNodeRunBuilder_ = null;
-      }
-
-      return this;
-    }
-    /**
-     * <code>.lh_proto.NodeRunStatePb current_node_run = 9;</code>
-     */
-    public io.littlehorse.common.proto.NodeRunStatePb.Builder getCurrentNodeRunBuilder() {
+    public Builder setCurrentNodePosition(int value) {
       
+      currentNodePosition_ = value;
       onChanged();
-      return getCurrentNodeRunFieldBuilder().getBuilder();
+      return this;
     }
     /**
-     * <code>.lh_proto.NodeRunStatePb current_node_run = 9;</code>
+     * <code>int32 current_node_position = 8;</code>
+     * @return This builder for chaining.
      */
-    public io.littlehorse.common.proto.NodeRunStatePbOrBuilder getCurrentNodeRunOrBuilder() {
-      if (currentNodeRunBuilder_ != null) {
-        return currentNodeRunBuilder_.getMessageOrBuilder();
-      } else {
-        return currentNodeRun_ == null ?
-            io.littlehorse.common.proto.NodeRunStatePb.getDefaultInstance() : currentNodeRun_;
-      }
-    }
-    /**
-     * <code>.lh_proto.NodeRunStatePb current_node_run = 9;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.NodeRunStatePb, io.littlehorse.common.proto.NodeRunStatePb.Builder, io.littlehorse.common.proto.NodeRunStatePbOrBuilder> 
-        getCurrentNodeRunFieldBuilder() {
-      if (currentNodeRunBuilder_ == null) {
-        currentNodeRunBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.NodeRunStatePb, io.littlehorse.common.proto.NodeRunStatePb.Builder, io.littlehorse.common.proto.NodeRunStatePbOrBuilder>(
-                getCurrentNodeRun(),
-                getParentForChildren(),
-                isClean());
-        currentNodeRun_ = null;
-      }
-      return currentNodeRunBuilder_;
+    public Builder clearCurrentNodePosition() {
+      
+      currentNodePosition_ = 0;
+      onChanged();
+      return this;
     }
 
     private java.lang.Object errorMessage_ = "";
     /**
-     * <code>string error_message = 10;</code>
+     * <code>string error_message = 9;</code>
      * @return Whether the errorMessage field is set.
      */
     public boolean hasErrorMessage() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>string error_message = 10;</code>
+     * <code>string error_message = 9;</code>
      * @return The errorMessage.
      */
     public java.lang.String getErrorMessage() {
@@ -1739,7 +1551,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string error_message = 10;</code>
+     * <code>string error_message = 9;</code>
      * @return The bytes for errorMessage.
      */
     public com.google.protobuf.ByteString
@@ -1756,7 +1568,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string error_message = 10;</code>
+     * <code>string error_message = 9;</code>
      * @param value The errorMessage to set.
      * @return This builder for chaining.
      */
@@ -1771,7 +1583,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string error_message = 10;</code>
+     * <code>string error_message = 9;</code>
      * @return This builder for chaining.
      */
     public Builder clearErrorMessage() {
@@ -1781,7 +1593,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string error_message = 10;</code>
+     * <code>string error_message = 9;</code>
      * @param value The bytes for errorMessage to set.
      * @return This builder for chaining.
      */
@@ -1799,21 +1611,21 @@ private static final long serialVersionUID = 0L;
 
     private int resultCode_ = 0;
     /**
-     * <code>.lh_proto.TaskResultCodePb result_code = 11;</code>
+     * <code>.lh_proto.TaskResultCodePb result_code = 10;</code>
      * @return Whether the resultCode field is set.
      */
     @java.lang.Override public boolean hasResultCode() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>.lh_proto.TaskResultCodePb result_code = 11;</code>
+     * <code>.lh_proto.TaskResultCodePb result_code = 10;</code>
      * @return The enum numeric value on the wire for resultCode.
      */
     @java.lang.Override public int getResultCodeValue() {
       return resultCode_;
     }
     /**
-     * <code>.lh_proto.TaskResultCodePb result_code = 11;</code>
+     * <code>.lh_proto.TaskResultCodePb result_code = 10;</code>
      * @param value The enum numeric value on the wire for resultCode to set.
      * @return This builder for chaining.
      */
@@ -1824,7 +1636,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.TaskResultCodePb result_code = 11;</code>
+     * <code>.lh_proto.TaskResultCodePb result_code = 10;</code>
      * @return The resultCode.
      */
     @java.lang.Override
@@ -1834,7 +1646,7 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.common.proto.TaskResultCodePb.UNRECOGNIZED : result;
     }
     /**
-     * <code>.lh_proto.TaskResultCodePb result_code = 11;</code>
+     * <code>.lh_proto.TaskResultCodePb result_code = 10;</code>
      * @param value The resultCode to set.
      * @return This builder for chaining.
      */
@@ -1848,7 +1660,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.TaskResultCodePb result_code = 11;</code>
+     * <code>.lh_proto.TaskResultCodePb result_code = 10;</code>
      * @return This builder for chaining.
      */
     public Builder clearResultCode() {

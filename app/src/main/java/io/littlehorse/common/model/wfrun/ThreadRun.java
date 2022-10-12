@@ -2,13 +2,8 @@ package io.littlehorse.common.model.wfrun;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.event.ExternalEvent;
-import io.littlehorse.common.model.event.TaskResultEvent;
-import io.littlehorse.common.model.event.TaskScheduleRequest;
-import io.littlehorse.common.model.event.TaskStartedEvent;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.Edge;
 import io.littlehorse.common.model.meta.Node;
@@ -17,28 +12,11 @@ import io.littlehorse.common.model.meta.ThreadSpec;
 import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.meta.VariableMutation;
-import io.littlehorse.common.model.meta.node.ExternalEventNode;
-import io.littlehorse.common.model.observability.NodeReachedOe;
-import io.littlehorse.common.model.observability.ObservabilityEvent;
-import io.littlehorse.common.model.observability.TaskScheduledOe;
-import io.littlehorse.common.model.observability.TaskStartOe;
-import io.littlehorse.common.model.observability.ThreadStatusChangeOe;
-import io.littlehorse.common.model.observability.WaitForEvtOe;
-import io.littlehorse.common.model.observability.node.NodeResultOe;
-import io.littlehorse.common.model.server.Tag;
-import io.littlehorse.common.model.wfrun.noderun.ExternalEventRun;
-import io.littlehorse.common.model.wfrun.noderun.NodeRun;
-import io.littlehorse.common.model.wfrun.noderun.TaskRun;
 import io.littlehorse.common.proto.LHStatusPb;
-import io.littlehorse.common.proto.NodePb.NodeCase;
-import io.littlehorse.common.proto.NodeReachedOePb;
-import io.littlehorse.common.proto.NodeRunPb.NodeTypeCase;
 import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.proto.ThreadRunPb;
 import io.littlehorse.common.proto.VariableTypePb;
-import io.littlehorse.common.proto.WfRunEventPb.EventCase;
 import io.littlehorse.common.util.LHUtil;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -54,9 +32,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     public LHStatusPb status;
     public String wfSpecId;
     public String threadSpecName;
-    public int numSteps;
-
-    public NodeRunState currentNodeRun;
+    public int currentNodePosition;
 
     public Date startTime;
     public Date endTime;
@@ -75,14 +51,10 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         status = proto.getStatus();
         wfSpecId = proto.getWfSpecId();
         threadSpecName = proto.getThreadSpecName();
-        numSteps = proto.getNumSteps();
+        currentNodePosition = proto.getCurrentNodePosition();
         startTime = LHUtil.fromProtoTs(proto.getStartTime());
         if (proto.hasEndTime()) {
             endTime = LHUtil.fromProtoTs(proto.getEndTime());
-        }
-        if (proto.hasCurrentNodeRun()) {
-            currentNodeRun = NodeRunState.fromProto(proto.getCurrentNodeRun());
-            currentNodeRun.threadRun = this;
         }
         if (proto.hasErrorMessage()) {
             errorMessage = proto.getErrorMessage();
@@ -100,7 +72,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             .setStatus(status)
             .setWfSpecId(wfSpecId)
             .setThreadSpecName(threadSpecName)
-            .setNumSteps(numSteps)
+            .setCurrentNodePosition(currentNodePosition)
             .setStartTime(LHUtil.fromDate(startTime));
 
         if (resultCode != null) {
@@ -115,9 +87,6 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             out.setEndTime(LHUtil.fromDate(endTime));
         }
 
-        if (currentNodeRun != null) {
-            out.setCurrentNodeRun(currentNodeRun.toProto());
-        }
         return out;
     }
 
@@ -129,10 +98,6 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
 
     public Class<ThreadRunPb> getProtoBaseClass() {
         return ThreadRunPb.class;
-    }
-
-    public List<Tag> getIndexEntries() {
-        return new ArrayList<>();
     }
 
     // For Scheduler
@@ -168,124 +133,122 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
 
     @JsonIgnore
     public Node getCurrentNode() {
-        if (currentNodeRun == null) {
-            return getThreadSpec().nodes.get(getThreadSpec().entrypointNodeName);
+        NodeRun currRun = getCurrentNodeRun();
+        ThreadSpec t = getThreadSpec();
+        if (currRun == null) {
+            return t.nodes.get(t.entrypointNodeName);
+        }
+
+        return t.nodes.get(currRun.nodeName);
+    }
+
+    @JsonIgnore
+    public NodeRun getCurrentNodeRun() {
+        return getNodeRun(currentNodePosition);
+    }
+
+    public void processEvent(WfRunEvent e) {
+        if (e.getThreadRunNumber() == null || e.getThreadRunNumber() != number) {
+            LHUtil.log("Ignoring event for different thread");
+            return;
+        }
+
+        /*
+         * WfRunEvents can be any of the following:
+         * - WF_RUN_REQUEST
+         * - TASK_STARTED
+         * - TASK_RESULT
+         * - EXTERNAL_EVENT
+         */
+
+        Integer nrpos = e.getNodeRunPosition();
+        if (nrpos != null) {
+            if (nrpos > currentNodePosition) {
+                LHUtil.log("Got event for unknown future node. Skipping.");
+                return;
+            }
+            getNodeRun(nrpos).processEvent(e);
         } else {
-            return getThreadSpec().nodes.get(currentNodeRun.nodeName);
+            // In the future, we may have things like Interrupts or STOP_REQUEST
+            // in which it's assigned to a Thread but not a Node.
+            LHUtil.log("Got an event without assigned to node. Skipping.");
         }
     }
 
     @JsonIgnore
     public void advance(Date eventTime) {
-        if (status != LHStatusPb.RUNNING) {
-            if (status == LHStatusPb.HALTED) {
-                // Note, now that we have timers as actual events in the `WFRun_Event` log, this
-                // isn't a Panic-able error. Totally valid. Once we actually do something with the
-                // HALTED state, we need to fix this a bit.
-                throw new RuntimeException("Tried to advance HALTED thread");
-            }
-            if (status == LHStatusPb.HALTING) {
+        NodeRun currentNodeRun = getCurrentNodeRun();
+
+        if (status == LHStatusPb.RUNNING) {
+            // Just advance the node. Not fancy.
+            currentNodeRun.advanceIfPossible(eventTime);
+        } else if (status == LHStatusPb.HALTED) {
+            // This means we just need to wait until advance() is called again
+            // after Thread Resumption
+
+            LHUtil.log("Tried to advance HALTED thread. Doing nothing.");
+        } else if (status == LHStatusPb.HALTING) {
+            // TODO: Decide whether we want to pull this out into a method
+            // like `ThreadRun::updateStatus()` or keep it here
+
+            LHUtil.log("Tried to advance HALTING thread, checking if halted yet.");
+
+            if (!currentNodeRun.isInProgress()) {
                 status = LHStatusPb.HALTED;
+                LHUtil.log("Moving thread to HALTED");
             }
-            if (status == LHStatusPb.COMPLETED || status == LHStatusPb.ERROR) {
-                // This is innocuous. Occurs when a timeout event comes in after
-                // a thread fails or completes.
-                return;
-            }
-            return;
-        }
-
-        Node curNode = getCurrentNode();
-
-        if (currentNodeRun == null) {
-            // activate entrypoint node
-            advanceFrom(curNode);
-        } else if (currentNodeRun.status == LHStatusPb.COMPLETED) {
-            // activate next node
-            advanceFrom(curNode);
-        } else if (currentNodeRun.status == LHStatusPb.ERROR) {
-            // determine whether to retry or fail
-            if (shouldRetry(curNode, currentNodeRun)) {
-                scheduleRetry(curNode, currentNodeRun);
-            } else {
-                LHUtil.log(
-                    "Failing threadrun",
-                    wfRun.id,
-                    currentNodeRun.position,
-                    eventTime.getTime()
-                );
-                setStatus(LHStatusPb.ERROR, "Node failed", currentNodeRun.resultCode);
-                // Probably want to mark down why the node failed.
-
-            }
-        } else if (currentNodeRun.status == LHStatusPb.RUNNING) {
-            // As of this writing, the only time we want to do anything here is
-            // if we're waiting for an ExternalEvent.
-            if (currentNodeRun.getNodeType() == NodeCase.EXTERNAL_EVENT) {
-                checkToAdvanceExternalEvent();
-            }
-        } else if (currentNodeRun.status == LHStatusPb.STARTING) {
-            // Nothing to do.
-            // This is possible if we have scheduled a retry due to timeout and then an old
-            // event just came in, or (to be implemented) if an external event comes in, or if
-            // another thread notifies this thread that it's no longer blocked, etc.
+        } else if (status == LHStatusPb.COMPLETED) {
+            // Nothing to do, this is likely an innocuous event.
+        } else if (status == LHStatusPb.ERROR) {
+            // This is innocuous. Occurs when a timeout event comes in after
+            // a thread fails or completes. Nothing to do.
+        } else if (status == LHStatusPb.STARTING) {
+            status = LHStatusPb.RUNNING;
+            currentNodeRun.advanceIfPossible(eventTime);
         } else {
-            throw new RuntimeException(
-                "Unexpected state for noderun: " + currentNodeRun.status
-            );
+            throw new RuntimeException("Unrecognized status: " + status);
         }
     }
 
-    private void checkToAdvanceExternalEvent() {
-        Node node = currentNodeRun.getNode();
-        ExternalEventNode eNode = node.externalEventNode;
+    public void fail(TaskResultCodePb resultCode, String msg, Date time) {
+        this.resultCode = resultCode;
+        this.errorMessage = msg;
+        status = LHStatusPb.ERROR;
+        this.endTime = time;
 
-        ExternalEvent evt = wfRun.stores.getUnclaimedEvent(
-            eNode.externalEventDefName
-        );
-        if (evt == null) {
-            // It hasn't come in yet.
+        wfRun.handleThreadStatus(number, new Date(), status);
+    }
+
+    public void complete(Date time) {
+        this.resultCode = TaskResultCodePb.SUCCESS;
+        this.errorMessage = null;
+        status = LHStatusPb.COMPLETED;
+        endTime = time;
+
+        wfRun.handleThreadStatus(number, new Date(), status);
+    }
+
+    public void completeCurrentNode(VariableValue output, Date eventTime) {
+        NodeRun crn = getCurrentNodeRun();
+        crn.status = LHStatusPb.COMPLETED;
+
+        try {
+            mutateVariables(output);
+        } catch (LHVarSubError exn) {
+            fail(
+                TaskResultCodePb.VAR_MUTATION_ERROR,
+                "Failed mutating variables: " + exn.getMessage(),
+                eventTime
+            );
+            // TODO: Maybe explicitly call `failThread()` here
             return;
         }
 
-        evt.claimed = true;
-        evt.taskRunPosition = currentNodeRun.position;
-        evt.threadRunNumber = number;
-
-        currentNodeRun.status = LHStatusPb.COMPLETED;
-        try {
-            mutateVariables(evt.content);
-        } catch (LHVarSubError exn) {
-            currentNodeRun.status = LHStatusPb.ERROR;
-            currentNodeRun.resultCode = TaskResultCodePb.VAR_MUTATION_ERROR;
-            currentNodeRun.errorMessage =
-                "Failed mutating variables: " + exn.getMessage();
-        }
-
-        wfRun.stores.saveExternalEvent(evt);
-
-        advanceFrom(node);
+        // If we got here, then we're good.
+        advanceFrom(getCurrentNode());
     }
 
-    private boolean shouldRetry(Node curNode, NodeRunState currNodeRun) {
-        if (curNode.type != NodeCase.TASK) return false;
-
-        if (
-            currNodeRun.resultCode != TaskResultCodePb.FAILED &&
-            currNodeRun.resultCode != TaskResultCodePb.TIMEOUT
-        ) {
-            // Can only retry timeout or task failure.
-            return false;
-        }
-
-        return currNodeRun.attemptNumber < curNode.taskNode.retries;
-    }
-
-    private void scheduleRetry(Node curNode, NodeRunState curNodeRun) {
-        scheduleTaskNode(curNode, curNodeRun.attemptNumber + 1);
-    }
-
-    private void advanceFrom(Node curNode) {
+    public void advanceFrom(Node curNode) {
         Node nextNode = null;
         for (Edge e : curNode.outgoingEdges) {
             try {
@@ -297,13 +260,14 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
                 LHUtil.log(
                     "Failing threadrun due to VarSubError",
                     wfRun.id,
-                    currentNodeRun.position
+                    currentNodePosition
                 );
-                setStatus(
-                    LHStatusPb.ERROR,
+                fail(
+                    TaskResultCodePb.VAR_MUTATION_ERROR,
                     "Failed evaluating outgoing edge: " + exn.getMessage(),
-                    TaskResultCodePb.VAR_MUTATION_ERROR
+                    new Date()
                 );
+                return;
             }
         }
         if (nextNode == null) {
@@ -315,26 +279,51 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         activateNode(nextNode);
     }
 
-    private void activateNode(Node node) {
-        switch (node.type) {
-            case ENTRYPOINT:
-                throw new RuntimeException("Not possible.");
-            case TASK:
-                scheduleTaskNode(node);
-                break;
-            case EXIT:
-                setStatus(LHStatusPb.COMPLETED, null, TaskResultCodePb.SUCCESS);
-                break;
-            case EXTERNAL_EVENT:
-                handleExternalEventNode(node);
-                break;
-            case NODE_NOT_SET:
-            default:
-                throw new RuntimeException("Invalid nodetype.");
+    public void activateNode(Node node) {
+        Date arrivalTime = new Date();
+
+        currentNodePosition++;
+        NodeRun old = getCurrentNodeRun();
+        Node oldNode = old == null ? null : old.getNode();
+
+        NodeRun cnr = new NodeRun();
+        cnr.threadRun = this;
+        cnr.nodeName = node.name;
+        cnr.status = LHStatusPb.STARTING;
+
+        cnr.wfRunId = wfRunId;
+        cnr.threadRunNumber = number;
+        cnr.position = currentNodePosition;
+        cnr.threadSpecName = threadSpecName;
+
+        cnr.arrivalTime = arrivalTime;
+        cnr.wfSpecId = wfSpecId;
+        cnr.nodeName = node.name;
+
+        cnr.position = currentNodePosition;
+
+        if (oldNode == null || old == null) {
+            // then it's a start node
+            cnr.number = 0;
+            cnr.attemptNumber = 0;
+        } else if (oldNode.name.equals(node.name)) {
+            // Then it's a retry, since we don't allow edges pointing to the same
+            // node.
+            cnr.number = old.number;
+            cnr.attemptNumber = old.attemptNumber + 1;
+        } else {
+            // Not a retry, so it's a new "number" and attemptNumber is 0.
+            cnr.number = old.number + 1;
+            cnr.attemptNumber = 0;
         }
+        cnr.setSubNodeRun(node.getSubNode().createRun(arrivalTime));
+
+        putNodeRun(cnr);
+
+        cnr.getSubNodeRun().arrive(arrivalTime);
+        cnr.getSubNodeRun().advanceIfPossible(arrivalTime);
     }
 
-    // TODO: Do some conditional logic processing here.
     private boolean evaluateEdge(Edge e) throws LHVarSubError {
         if (e.condition == null) {
             return true;
@@ -367,12 +356,8 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         }
     }
 
-    private void scheduleTaskNode(Node node) {
-        scheduleTaskNode(node, 0);
-    }
-
     // TODO: variable locking may have to consider this.
-    private Map<String, VariableValue> assignVarsForNode(Node node)
+    public Map<String, VariableValue> assignVarsForNode(Node node)
         throws LHVarSubError {
         Map<String, VariableValue> out = new HashMap<>();
         TaskDef taskDef = node.taskNode.taskDef;
@@ -412,284 +397,22 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         return out;
     }
 
-    private void scheduleTaskNode(Node node, int attemptNumber) {
-        if (node.type != NodeCase.TASK) {
-            throw new RuntimeException("Yikerz");
-        }
+    // public void setStatus(
+    //     LHStatusPb newStatus,
+    //     String errorMessage,
+    //     TaskResultCodePb code
+    // ) {
+    //     status = newStatus;
+    //     resultCode = code;
+    //     this.errorMessage = errorMessage;
 
-        Map<String, VariableValue> varVals;
-        try {
-            varVals = assignVarsForNode(node);
-        } catch (LHVarSubError exn) {
-            setStatus(
-                LHStatusPb.ERROR,
-                "Could not assign input variables: " + exn.getMessage(),
-                TaskResultCodePb.VAR_MUTATION_ERROR
-            );
-            return;
-        }
+    //     Date time = new Date();
 
-        if (currentNodeRun == null) {
-            currentNodeRun = new NodeRunState();
-            currentNodeRun.threadRun = this;
-            if (attemptNumber > 0) {
-                throw new RuntimeException("Not possible.");
-            }
-        } else {
-            // Regardless of whether retry or not, actual position in the list increases.
-            currentNodeRun.position++;
-
-            // If we're doing a retry, it's the same logical number, so don't increment.
-            if (attemptNumber == 0) {
-                currentNodeRun.number++;
-            }
-        }
-
-        currentNodeRun.nodeName = node.name;
-        currentNodeRun.attemptNumber = attemptNumber;
-        currentNodeRun.status = LHStatusPb.STARTING;
-
-        TaskScheduleRequest tsr = new TaskScheduleRequest();
-
-        // TODO: Add a TaskDefProcessor.
-        tsr.replyKafkaTopic = LHConstants.WF_RUN_EVENT_TOPIC;
-        tsr.taskDefId = node.taskNode.taskDefName;
-        tsr.taskDefName = node.taskNode.taskDefName;
-        tsr.taskRunNumber = currentNodeRun.number;
-        tsr.taskRunPosition = currentNodeRun.position;
-        tsr.threadRunNumber = number;
-        tsr.wfRunId = wfRun.id;
-        tsr.wfSpecId = wfRun.wfSpecId;
-        tsr.nodeName = node.name;
-        tsr.variables = varVals;
-
-        Date scheduleTime = new Date();
-
-        NodeReachedOe nroe = new NodeReachedOe(currentNodeRun);
-        nroe.task = new TaskScheduledOe(tsr);
-        wfRun.oEvents.add(new ObservabilityEvent(nroe, scheduleTime));
-
-        wfRun.tasksToSchedule.add(tsr);
-
-        // Now we need to add the TaskRun to the store so it can be queried.
-        NodeRun nr = new NodeRun();
-        nr.wfRunId = wfRun.id;
-        nr.threadRunNumber = tsr.threadRunNumber;
-        nr.position = tsr.taskRunPosition;
-
-        nr.taskRun = new TaskRun();
-        nr.taskRun.attemptNumber = tsr.attemptNumber;
-        nr.taskRun.taskDefName = node.taskNode.taskDefName;
-
-        nr.number = tsr.taskRunNumber;
-        nr.status = LHStatusPb.STARTING;
-        nr.threadSpecName = threadSpecName;
-        nr.type = NodeTypeCase.TASK;
-
-        nr.arrivalTime = scheduleTime;
-
-        nr.wfSpecId = wfRun.wfSpecId;
-        nr.wfSpecName = wfRun.wfSpecName;
-        nr.nodeName = tsr.nodeName;
-        nr.taskDefId = node.taskNode.taskDefName;
-
-        putNodeRun(nr);
-    }
-
-    private void handleExternalEventNode(Node node) {
-        if (node.type != NodeCase.EXTERNAL_EVENT) {
-            throw new RuntimeException("Yikerz");
-        }
-        Date reachedTime = new Date();
-
-        if (currentNodeRun == null) {
-            currentNodeRun = new NodeRunState();
-            currentNodeRun.threadRun = this;
-        } else {
-            currentNodeRun.position++;
-            currentNodeRun.number++;
-        }
-
-        // TODO: "RUNNING" means "waiting for External Event"...maybe want to
-        // do some thing more clear.
-        currentNodeRun.status = LHStatusPb.RUNNING;
-        currentNodeRun.nodeName = node.name;
-
-        NodeReachedOe nroe = new NodeReachedOe(currentNodeRun);
-        nroe.type = NodeReachedOePb.NodeTypeCase.EVT;
-        nroe.evt = new WaitForEvtOe();
-        nroe.evt.externalEventDefName = node.externalEventNode.externalEventDefName;
-
-        // Now we need to add the TaskRun to the store so it can be queried.
-        NodeRun nr = new NodeRun();
-        nr.wfRunId = wfRun.id;
-        nr.threadRunNumber = this.number;
-        nr.position = currentNodeRun.position;
-
-        nr.externalEventRun = new ExternalEventRun();
-        nr.externalEventRun.externalEventDefName =
-            node.externalEventNode.externalEventDefName;
-
-        nr.number = currentNodeRun.number;
-        nr.status = LHStatusPb.RUNNING;
-        nr.threadSpecName = threadSpecName;
-        nr.type = NodeTypeCase.EXTERNAL_EVENT;
-
-        nr.arrivalTime = reachedTime;
-
-        nr.wfSpecId = wfRun.wfSpecId;
-        nr.wfSpecName = wfRun.wfSpecName;
-        nr.nodeName = currentNodeRun.nodeName;
-
-        putNodeRun(nr);
-        wfRun.oEvents.add(new ObservabilityEvent(nroe, reachedTime));
-
-        checkToAdvanceExternalEvent();
-    }
-
-    public void setStatus(
-        LHStatusPb newStatus,
-        String errorMessage,
-        TaskResultCodePb code
-    ) {
-        status = newStatus;
-        resultCode = code;
-        this.errorMessage = errorMessage;
-
-        Date time = new Date();
-        wfRun.oEvents.add(
-            new ObservabilityEvent(new ThreadStatusChangeOe(number, status), time)
-        );
-
-        wfRun.handleThreadStatus(number, time, newStatus);
-    }
-
-    public void processStartedEvent(WfRunEvent we) {
-        wfRun.oEvents.add(
-            new ObservabilityEvent(
-                new TaskStartOe(we.startedEvent, currentNodeRun.nodeName),
-                we.time
-            )
-        );
-        TaskStartedEvent se = we.startedEvent;
-
-        if (currentNodeRun.position != se.taskRunPosition) {
-            // Out-of-order event due to race conditions between task worker
-            // transactional producer and regular producer
-            return;
-        }
-        currentNodeRun.status = LHStatusPb.RUNNING;
-
-        // set timer for TimeOut
-        WfRunEvent timerEvt = new WfRunEvent();
-        timerEvt.wfRunId = wfRun.id;
-        timerEvt.wfSpecId = wfRun.wfSpecId;
-        Node node = getCurrentNode();
-
-        timerEvt.type = EventCase.TASK_RESULT;
-        timerEvt.taskResult = new TaskResultEvent();
-        timerEvt.taskResult.resultCode = TaskResultCodePb.TIMEOUT;
-        timerEvt.taskResult.taskRunNumber = currentNodeRun.number;
-        timerEvt.taskResult.taskRunPosition = currentNodeRun.position;
-        timerEvt.taskResult.threadRunNumber = number;
-
-        try {
-            timerEvt.time =
-                new Date(
-                    new Date().getTime() +
-                    (1000 * assignVariable(node.taskNode.timeoutSeconds).intVal)
-                );
-        } catch (LHVarSubError exn) {
-            // This should be impossible.
-            throw new RuntimeException(exn);
-        }
-        timerEvt.taskResult.time = timerEvt.time;
-
-        wfRun.timersToSchedule.add(new LHTimer(timerEvt, timerEvt.time));
-
-        // Now we update the task in the data store
-        NodeRun task = getNodeRun(currentNodeRun.position);
-        task.taskRun.startTime = we.time;
-        task.status = LHStatusPb.RUNNING;
-        putNodeRun(task);
-    }
-
-    public void processCompletedEvent(WfRunEvent we) {
-        wfRun.oEvents.add(
-            new ObservabilityEvent(
-                new NodeResultOe(we.taskResult, currentNodeRun.nodeName),
-                we.time
-            )
-        );
-        TaskResultEvent ce = we.taskResult;
-        if (
-            currentNodeRun.position > ce.taskRunPosition ||
-            currentNodeRun.status == LHStatusPb.COMPLETED
-        ) {
-            // TODO: Determine if this is theoretically impossible.
-            // If it's impossible, throw exception to prevent silent bugs.
-
-            // Update 8/25: I think this is legally possible eg when a task gets timed out but
-            // then the event comes in later. Perhaps if the producer retry timeout on the task
-            // worker is longer than the task timeout...
-
-            // default delivery.timeout.ms is 2 minutes.
-            // TODO: As an experiment, see what happens when we reduce that to something less than
-            // the task timeout (which we have at 10 seconds). If our theory is correct, then
-            // we shouldn't get any warnings for stale task timeouts.
-
-            // Also of note is the default `request.timeout.ms` set to 30 seconds. Also greater than
-            // our task timeout.
-            return;
-        }
-
-        if (currentNodeRun.position < ce.taskRunPosition) {
-            throw new RuntimeException("Caught a message from the future!");
-        }
-
-        if (currentNodeRun.number != ce.taskRunNumber) {
-            throw new RuntimeException("This should be impossible");
-        }
-
-        switch (ce.resultCode) {
-            case SUCCESS:
-                currentNodeRun.status = LHStatusPb.COMPLETED;
-                try {
-                    mutateVariables(ce.stdout);
-                } catch (LHVarSubError exn) {
-                    currentNodeRun.status = LHStatusPb.ERROR;
-                    currentNodeRun.resultCode = TaskResultCodePb.VAR_MUTATION_ERROR;
-                    currentNodeRun.errorMessage =
-                        "Failed mutating variables: " + exn.getMessage();
-                }
-
-                break;
-            case TIMEOUT:
-            case FAILED:
-                currentNodeRun.status = LHStatusPb.ERROR;
-                break;
-            case VAR_MUTATION_ERROR:
-            case VAR_SUB_ERROR:
-                // This shouldn't be possible.
-                throw new RuntimeException("Impossible TaskResultCodePb");
-            case UNRECOGNIZED:
-                throw new RuntimeException(
-                    "Unrecognized TaskResultCode: " + ce.resultCode
-                );
-        }
-
-        // Now make the task observable.
-        NodeRun task = getNodeRun(currentNodeRun.position);
-        task.endTime = we.time;
-        task.taskRun.output = ce.stdout;
-        task.taskRun.logOutput = ce.stderr;
-        task.status = currentNodeRun.status;
-        task.resultCode = ce.resultCode;
-        putNodeRun(task);
-    }
+    //     wfRun.handleThreadStatus(number, time, newStatus);
+    // }
 
     private void mutateVariables(VariableValue nodeOutput) throws LHVarSubError {
-        Node node = getThreadSpec().nodes.get(currentNodeRun.nodeName);
+        Node node = getCurrentNode();
 
         // Need to do this atomically in a transaction, so that if one of the
         // mutations fail then none of them occur.
@@ -742,7 +465,11 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     }
 
     public NodeRun getNodeRun(int position) {
-        return wfRun.stores.getNodeRun(number, position);
+        NodeRun out = wfRun.stores.getNodeRun(number, position);
+        if (out != null) {
+            out.threadRun = this;
+        }
+        return out;
     }
 
     public void putVariable(Variable var) {
@@ -806,3 +533,173 @@ class Comparer {
         }
     }
 }
+/* From ThreadRun::advance():
+
+        if (currentNodeRun == null) {
+            // activate entrypoint node
+            advanceFrom(curNode);
+        } else if (currentNodeRun.status == LHStatusPb.COMPLETED) {
+            // activate next node
+            advanceFrom(curNode);
+        } else if (currentNodeRun.status == LHStatusPb.ERROR) {
+            // determine whether to retry or fail
+            if (shouldRetry(curNode, currentNodeRun)) {
+                scheduleRetry(curNode, currentNodeRun);
+            } else {
+                LHUtil.log(
+                    "Failing threadrun",
+                    wfRun.id,
+                    currentNodeRun.position,
+                    eventTime.getTime()
+                );
+                setStatus(LHStatusPb.ERROR, "Node failed", currentNodeRun.resultCode);
+                // Probably want to mark down why the node failed.
+
+            }
+        } else if (currentNodeRun.status == LHStatusPb.RUNNING) {
+            // As of this writing, the only time we want to do anything here is
+            // if we're waiting for an ExternalEvent.
+            if (currentNodeRun.getNodeType() == NodeCase.EXTERNAL_EVENT) {
+                checkToAdvanceExternalEvent();
+            }
+        } else if (currentNodeRun.status == LHStatusPb.STARTING) {
+            // Nothing to do.
+            // This is possible if we have scheduled a retry due to timeout and then an old
+            // event just came in, or (to be implemented) if an external event comes in, or if
+            // another thread notifies this thread that it's no longer blocked, etc.
+        } else {
+            throw new RuntimeException(
+                "Unexpected state for noderun: " + currentNodeRun.status
+            );
+        }
+ */
+/*
+
+    private void handleExternalEventNode(Node node) {
+        if (node.type != NodeCase.EXTERNAL_EVENT) {
+            throw new RuntimeException("Yikerz");
+        }
+        Date reachedTime = new Date();
+
+        if (currentNodeRun == null) {
+            currentNodeRun = new NodeRunState();
+            currentNodeRun.threadRun = this;
+        } else {
+            currentNodeRun.position++;
+            currentNodeRun.number++;
+        }
+
+        // TODO: "RUNNING" means "waiting for External Event"...maybe want to
+        // do some thing more clear.
+        currentNodeRun.status = LHStatusPb.RUNNING;
+        currentNodeRun.nodeName = node.name;
+
+        // Now we need to add the TaskRun to the store so it can be queried.
+        NodeRun nr = new NodeRun();
+        nr.wfRunId = wfRun.id;
+        nr.threadRunNumber = this.number;
+        nr.position = currentNodeRun.position;
+
+        nr.externalEventRun = new ExternalEventRun();
+        nr.externalEventRun.externalEventDefName =
+            node.externalEventNode.externalEventDefName;
+
+        nr.number = currentNodeRun.number;
+        nr.status = LHStatusPb.RUNNING;
+        nr.threadSpecName = threadSpecName;
+        nr.type = NodeTypeCase.EXTERNAL_EVENT;
+
+        nr.arrivalTime = reachedTime;
+
+        nr.wfSpecId = wfRun.wfSpecId;
+        nr.wfSpecName = wfRun.wfSpecName;
+        nr.nodeName = currentNodeRun.nodeName;
+
+        putNodeRun(nr);
+
+        checkToAdvanceExternalEvent();
+    }
+
+  */
+/*
+    private void scheduleTaskNode(Node node, int attemptNumber) {
+        NodeRun currentNodeRun = getCurrentNodeRun();
+        if (node.type != NodeCase.TASK) {
+            throw new RuntimeException("Yikerz");
+        }
+
+        Map<String, VariableValue> varVals;
+        try {
+            varVals = assignVarsForNode(node);
+        } catch (LHVarSubError exn) {
+            setStatus(
+                LHStatusPb.ERROR,
+                "Could not assign input variables: " + exn.getMessage(),
+                TaskResultCodePb.VAR_MUTATION_ERROR
+            );
+            return;
+        }
+
+        if (currentNodeRun == null) {
+            currentNodeRun = new NodeRunState();
+            currentNodeRun.threadRun = this;
+            if (attemptNumber > 0) {
+                throw new RuntimeException("Not possible.");
+            }
+        } else {
+            // Regardless of whether retry or not, actual position in the list increases.
+            currentNodeRun.position++;
+
+            // If we're doing a retry, it's the same logical number, so don't increment.
+            if (attemptNumber == 0) {
+                currentNodeRun.number++;
+            }
+        }
+
+        currentNodeRun.nodeName = node.name;
+        currentNodeRun.attemptNumber = attemptNumber;
+        currentNodeRun.status = LHStatusPb.STARTING;
+
+        TaskScheduleRequest tsr = new TaskScheduleRequest();
+
+        tsr.replyKafkaTopic = LHConstants.WF_RUN_EVENT_TOPIC;
+        tsr.taskDefId = node.taskNode.taskDefName;
+        tsr.taskDefName = node.taskNode.taskDefName;
+        tsr.taskRunNumber = currentNodeRun.number;
+        tsr.taskRunPosition = currentNodeRun.position;
+        tsr.threadRunNumber = number;
+        tsr.wfRunId = wfRun.id;
+        tsr.wfSpecId = wfRun.wfSpecId;
+        tsr.nodeName = node.name;
+        tsr.variables = varVals;
+
+        Date scheduleTime = new Date();
+
+        wfRun.stores.scheduleTask(tsr);
+
+        // Now we need to add the TaskRun to the store so it can be queried.
+        NodeRun nr = new NodeRun();
+        nr.wfRunId = wfRun.id;
+        nr.threadRunNumber = tsr.threadRunNumber;
+        nr.position = tsr.taskRunPosition;
+
+        nr.taskRun = new TaskRun();
+        nr.taskRun.attemptNumber = tsr.attemptNumber;
+        nr.taskRun.taskDefName = node.taskNode.taskDefName;
+
+        nr.number = tsr.taskRunNumber;
+        nr.status = LHStatusPb.STARTING;
+        nr.threadSpecName = threadSpecName;
+        nr.type = NodeTypeCase.TASK;
+
+        nr.arrivalTime = scheduleTime;
+
+        nr.wfSpecId = wfRun.wfSpecId;
+        nr.wfSpecName = wfRun.wfSpecName;
+        nr.nodeName = tsr.nodeName;
+        nr.taskDefId = node.taskNode.taskDefName;
+
+        putNodeRun(nr);
+    }
+
+   */

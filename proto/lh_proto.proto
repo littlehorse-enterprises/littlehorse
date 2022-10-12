@@ -54,99 +54,6 @@ message VariablePb {
     google.protobuf.Timestamp date = 5;
 }
 
-// Observability Events emitted by the Scheduler
-
-message RunStartOePb {
-    string wf_spec_id = 1;
-    string wf_spec_name = 2;
-}
-
-message ThreadStartOePb {
-    int32 number = 1;
-    string thread_spec_name = 2;
-}
-
-message NodeReachedOePb {
-    string wf_run_id = 1;
-    int32 thread_run_number = 2;
-    int32 node_run_position = 3;
-
-    int32 node_run_number = 4;
-    string node_name = 5;
-
-    oneof node_type {
-        WaitForEvtOePb evt = 6;
-        TaskScheduledOePb task = 7;
-    }
-}
-
-message TaskScheduledOePb {
-    string task_def_id = 1;
-    int32 task_run_attempt_number = 2;
-    map<string, VariableValuePb> variables = 3;
-}
-
-message WaitForEvtOePb {
-    string external_event_def_name = 1;
-}
-
-message TaskStartOePb {
-    int32 thread_run_number = 1;
-    int32 task_run_number = 2;
-    int32 task_run_position = 3;
-    string node_name = 4;
-}
-
-message NodeResultOePb {
-    int32 thread_run_number = 1;
-    int32 task_run_number = 2;
-    int32 task_run_position = 3;
-
-    TaskResultCodePb result_code = 4;
-    optional string error_message = 5;
-
-    oneof node_type {
-        ExternalEventResultOePb external_event = 6;
-        TaskResultOePb task = 7;
-    }
-}
-
-message ExternalEventResultOePb {
-    optional string correlated_event_id = 1;
-}
-
-message TaskResultOePb {
-    optional VariableValuePb result = 1;
-    optional bytes log_output = 2;
-}
-
-message ThreadStatusChangeOePb {
-    int32 thread_run_number = 1;
-    LHStatusPb status = 2;
-}
-
-message WfRunStatusChangeOePb {
-    LHStatusPb status = 1;
-}
-
-message ObservabilityEventPb {
-    google.protobuf.Timestamp time = 1;
-    oneof event {
-        WfRunStatusChangeOePb wf_run_status = 2;
-        RunStartOePb run_start = 3;
-        ThreadStartOePb thread_start = 4;
-        NodeReachedOePb node_reached = 5;
-        TaskStartOePb task_start = 6;
-        NodeResultOePb task_result = 7;
-        ThreadStatusChangeOePb thread_status = 8;
-    }
-}
-
-message ObservabilityEventsPb {
-    string wf_run_id = 1;
-    repeated ObservabilityEventPb events = 2;
-}
-
 // WfSpec stuff
 
 enum ComparatorPb {
@@ -208,7 +115,6 @@ message NodePb {
     repeated EdgePb outgoing_edges = 1;
     repeated VariableMutationPb variable_mutations = 2;
     OutputSchemaPb output_schema = 3;
-    VariableAssignmentPb timeout_seconds = 4;
     oneof node {
         EntrypointNodePb entrypoint = 5;
         ExitNodePb exit = 6;
@@ -231,6 +137,7 @@ message NodePb {
 
 message TaskNodePb {
     string task_def_name = 1;
+    VariableAssignmentPb timeout_seconds = 2;
     int32 retries = 3;
     map<string, VariableAssignmentPb> variables = 4;
 }
@@ -313,14 +220,14 @@ message ThreadRunPb {
     LHStatusPb status = 3;
     string wf_spec_id = 4;
     string thread_spec_name = 5;
-    int32 num_steps = 6;
 
-    google.protobuf.Timestamp start_time = 7;
-    optional google.protobuf.Timestamp end_time = 8;
+    google.protobuf.Timestamp start_time = 6;
+    optional google.protobuf.Timestamp end_time = 7;
 
-    NodeRunStatePb current_node_run = 9;
-    optional string error_message = 10;
-    optional TaskResultCodePb result_code = 11;
+    int32 current_node_position = 8;
+
+    optional string error_message = 9;
+    optional TaskResultCodePb result_code = 10;
 }
 
 message NodeRunPb {
@@ -328,21 +235,24 @@ message NodeRunPb {
     int32 thread_run_number = 2;
     int32 position = 3;
 
-    int32 number = 4;
-    LHStatusPb status = 5;
+    int32 attempt_number = 4;
+    int32 number = 5;
+    LHStatusPb status = 6;
 
-    google.protobuf.Timestamp arrival_time = 6;
-    optional google.protobuf.Timestamp end_time = 7;
-    string wf_spec_id = 8;
-    string thread_spec_name = 9;
-    string node_name = 10;
+    google.protobuf.Timestamp arrival_time = 7;
+    optional google.protobuf.Timestamp end_time = 8;
+    string wf_spec_id = 9;
+    string thread_spec_name = 10;
+    string node_name = 11;
 
-    optional TaskResultCodePb result_code = 11;
-    optional string error_message = 12;
+    optional TaskResultCodePb result_code = 12;
+    optional string error_message = 13;
 
     oneof node_type {
-        TaskRunPb task = 13;
-        ExternalEventRunPb external_event = 14;
+        TaskRunPb task = 14;
+        ExternalEventRunPb external_event = 15;
+        EntrypointRunPb entrypoint = 16;
+        ExitRunPb exit = 17;
     }
 }
 
@@ -355,10 +265,14 @@ message TaskRunPb {
     string task_def_id = 5;
 }
 
+message EntrypointRunPb {}
+
+message ExitRunPb {} // Later will have info once we add threads
+
 message ExternalEventRunPb {
     string external_event_def_name = 1;
     optional google.protobuf.Timestamp event_time = 2;
-    
+    optional string external_event_id = 3;    
 }
 
 message ExternalEventPb {
@@ -431,6 +345,7 @@ message WfRunEventPb {
         TaskResultEventPb task_result = 6;
         ExternalEventPb external_event = 7;
     }
+    optional int32 thread_run_number = 8;
 }
 
 // Timer-related stuff

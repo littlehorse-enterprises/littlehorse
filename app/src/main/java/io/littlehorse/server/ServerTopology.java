@@ -16,9 +16,9 @@ import io.littlehorse.common.model.server.LHResponse;
 import io.littlehorse.common.model.server.POSTableRequest;
 import io.littlehorse.common.model.server.Tags;
 import io.littlehorse.common.model.wfrun.LHTimer;
+import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
-import io.littlehorse.common.model.wfrun.noderun.NodeRun;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.common.util.serde.LHDeserializer;
 import io.littlehorse.common.util.serde.LHSerde;
@@ -151,20 +151,6 @@ public class ServerTopology {
                 return new SchedulerProcessor(config);
             },
             schedulerSource
-        );
-
-        // Add sink for Observability Events
-        topo.addSink(
-            schedulerWfRunSink,
-            LHConstants.OBSERVABILITY_TOPIC,
-            Serdes.String().serializer(),
-            (topic, schedulerOutput) -> {
-                // Serializer
-                return ((GenericOutput) schedulerOutput).observabilityEvents.toBytes(
-                        config
-                    );
-            },
-            schedulerProcessor
         );
 
         // Add sink for Task Schedule

@@ -19,6 +19,8 @@ public class WfRunEvent extends LHSerializable<WfRunEventPb> {
     public WfRunRequest runRequest;
     public ExternalEvent externalEvent;
 
+    public Integer threadRunNumber;
+
     public WfRunEventPb.Builder toProto() {
         WfRunEventPb.Builder b = WfRunEventPb
             .newBuilder()
@@ -27,6 +29,9 @@ public class WfRunEvent extends LHSerializable<WfRunEventPb> {
 
         if (wfSpecId != null) {
             b.setWfSpecId(wfSpecId);
+        }
+        if (threadRunNumber != null) {
+            b.setThreadRunNumber(threadRunNumber);
         }
         b.clearEvent();
 
@@ -59,6 +64,8 @@ public class WfRunEvent extends LHSerializable<WfRunEventPb> {
         if (proto.hasWfSpecId()) this.wfSpecId = proto.getWfSpecId();
         this.time = LHUtil.fromProtoTs(proto.getTime());
 
+        if (proto.hasThreadRunNumber()) threadRunNumber = proto.getThreadRunNumber();
+
         this.type = proto.getEventCase();
 
         switch (this.type) {
@@ -84,5 +91,29 @@ public class WfRunEvent extends LHSerializable<WfRunEventPb> {
         WfRunEvent out = new WfRunEvent();
         out.initFrom(proto);
         return out;
+    }
+
+    public WfRunSubEvent getSubEvent() {
+        switch (type) {
+            case STARTED_EVENT:
+                return startedEvent;
+            case TASK_RESULT:
+                return taskResult;
+            case RUN_REQUEST:
+                return runRequest;
+            case EXTERNAL_EVENT:
+                return externalEvent;
+            case EVENT_NOT_SET:
+            default:
+                throw new RuntimeException("Not possible");
+        }
+    }
+
+    public Integer getThreadRunNumber() {
+        return getSubEvent().getThreadRunNumber();
+    }
+
+    public Integer getNodeRunPosition() {
+        return getSubEvent().getNodeRunPosition();
     }
 }

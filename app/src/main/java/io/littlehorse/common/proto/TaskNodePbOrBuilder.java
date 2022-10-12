@@ -20,6 +20,21 @@ public interface TaskNodePbOrBuilder extends
       getTaskDefNameBytes();
 
   /**
+   * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 2;</code>
+   * @return Whether the timeoutSeconds field is set.
+   */
+  boolean hasTimeoutSeconds();
+  /**
+   * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 2;</code>
+   * @return The timeoutSeconds.
+   */
+  io.littlehorse.common.proto.VariableAssignmentPb getTimeoutSeconds();
+  /**
+   * <code>.lh_proto.VariableAssignmentPb timeout_seconds = 2;</code>
+   */
+  io.littlehorse.common.proto.VariableAssignmentPbOrBuilder getTimeoutSecondsOrBuilder();
+
+  /**
    * <code>int32 retries = 3;</code>
    * @return The retries.
    */

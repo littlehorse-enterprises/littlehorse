@@ -33,4 +33,21 @@ public interface ExternalEventRunPbOrBuilder extends
    * <code>.google.protobuf.Timestamp event_time = 2;</code>
    */
   com.google.protobuf.TimestampOrBuilder getEventTimeOrBuilder();
+
+  /**
+   * <code>string external_event_id = 3;</code>
+   * @return Whether the externalEventId field is set.
+   */
+  boolean hasExternalEventId();
+  /**
+   * <code>string external_event_id = 3;</code>
+   * @return The externalEventId.
+   */
+  java.lang.String getExternalEventId();
+  /**
+   * <code>string external_event_id = 3;</code>
+   * @return The bytes for externalEventId.
+   */
+  com.google.protobuf.ByteString
+      getExternalEventIdBytes();
 }

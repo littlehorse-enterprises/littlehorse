@@ -10,7 +10,9 @@ import io.littlehorse.common.proto.TaskResultEventPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
 import java.util.Date;
 
-public class TaskResultEvent extends LHSerializable<TaskResultEventPb> {
+public class TaskResultEvent
+    extends LHSerializable<TaskResultEventPb>
+    implements WfRunSubEvent {
 
     public int threadRunNumber;
     public int taskRunNumber;
@@ -22,6 +24,14 @@ public class TaskResultEvent extends LHSerializable<TaskResultEventPb> {
 
     public Class<TaskResultEventPb> getProtoBaseClass() {
         return TaskResultEventPb.class;
+    }
+
+    public Integer getThreadRunNumber() {
+        return threadRunNumber;
+    }
+
+    public Integer getNodeRunPosition() {
+        return taskRunPosition;
     }
 
     public TaskResultEventPb.Builder toProto() {

@@ -6,24 +6,20 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.meta.node.EntrypointNode;
-import io.littlehorse.common.model.meta.node.ExitNode;
-import io.littlehorse.common.model.meta.node.ExternalEventNode;
-import io.littlehorse.common.model.meta.node.TaskNode;
+import io.littlehorse.common.model.meta.subnode.EntrypointNode;
+import io.littlehorse.common.model.meta.subnode.ExitNode;
+import io.littlehorse.common.model.meta.subnode.ExternalEventNode;
+import io.littlehorse.common.model.meta.subnode.TaskNode;
 import io.littlehorse.common.proto.EdgePb;
 import io.littlehorse.common.proto.NodePb;
 import io.littlehorse.common.proto.NodePb.NodeCase;
 import io.littlehorse.common.proto.NodePbOrBuilder;
-import io.littlehorse.common.proto.VariableAssignmentPb.SourceCase;
 import io.littlehorse.common.proto.VariableMutationPb;
-import io.littlehorse.common.proto.VariableTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class Node extends LHSerializable<NodePbOrBuilder> {
 
@@ -115,6 +111,7 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
                     "Node " + name + " on thread " + threadSpec.name + " is unset!"
                 );
         }
+        getSubNode().setNode(this);
     }
 
     // Implementation details below
@@ -144,11 +141,7 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
             }
         }
 
-        if (type == NodeCase.TASK) {
-            if (taskNode.timeoutSeconds.rhsSourceType == SourceCase.VARIABLE_NAME) {
-                out.add(taskNode.timeoutSeconds.rhsVariableName);
-            }
-        }
+        out.addAll(getSubNode().getNeededVariableNames());
 
         return out;
     }
@@ -197,122 +190,26 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
             }
         }
 
+        try {
+            getSubNode().validate(client, config);
+        } catch (LHValidationError exn) {
+            // Decorate the exception with contextual info
+            exn.addPrefix("Thread " + threadSpec.name + " node " + name);
+            throw exn;
+        }
+    }
+
+    public SubNode<?> getSubNode() {
         if (type == NodeCase.TASK) {
-            validateTask(client, config);
+            return taskNode;
         } else if (type == NodeCase.ENTRYPOINT) {
-            validateEntrypoint(client, config);
+            return entrypointNode;
         } else if (type == NodeCase.EXIT) {
-            validateExit(client, config);
+            return exitNode;
         } else if (type == NodeCase.EXTERNAL_EVENT) {
-            validateExternalEvent(client, config);
+            return externalEventNode;
         } else {
             throw new RuntimeException("Unhandled node type " + type);
-        }
-    }
-
-    private void validateEntrypoint(LHGlobalMetaStores stores, LHConfig config) {
-        outputSchema = new OutputSchema();
-        outputSchema.outputType = VariableTypePb.VOID;
-    }
-
-    private void validateExit(LHGlobalMetaStores stores, LHConfig config) {
-        outputSchema = new OutputSchema();
-        outputSchema.outputType = VariableTypePb.VOID;
-    }
-
-    private void validateExternalEvent(LHGlobalMetaStores stores, LHConfig config)
-        throws LHValidationError {
-        ExternalEventDef eed = stores.getExternalEventDef(
-            externalEventNode.externalEventDefName
-        );
-
-        if (eed == null) {
-            throw new LHValidationError(
-                null,
-                "Node " +
-                name +
-                " on thread " +
-                threadSpec.name +
-                " refers to " +
-                "nonexistent ExternalEventDef " +
-                externalEventNode.externalEventDefName
-            );
-        }
-    }
-
-    private void validateTask(LHGlobalMetaStores stores, LHConfig config)
-        throws LHValidationError {
-        TaskDef taskDef = stores.getTaskDef(taskNode.taskDefName);
-        if (taskDef == null) {
-            throw new LHValidationError(
-                null,
-                "Node " +
-                name +
-                " on thread " +
-                threadSpec.name +
-                " refers to " +
-                "nonexistent TaskDef " +
-                taskNode.taskDefName
-            );
-        }
-        if (taskNode.timeoutSeconds == null) {
-            taskNode.timeoutSeconds = config.getDefaultTaskTimeout();
-        }
-        if (taskNode.retries < 0) {
-            throw new LHValidationError(
-                null,
-                "Node " +
-                name +
-                " on thread " +
-                threadSpec.name +
-                "has negative " +
-                "number of retries!"
-            );
-        }
-
-        if (taskNode.timeoutSeconds.rhsSourceType == SourceCase.VARIABLE_NAME) {
-            Pair<String, VariableDef> defPair = threadSpec.lookupVarDef(
-                taskNode.timeoutSeconds.rhsVariableName
-            );
-            if (defPair == null) {
-                throw new LHValidationError(
-                    null,
-                    "Timeout on node " +
-                    name +
-                    " refers to missing variable " +
-                    taskNode.timeoutSeconds.rhsVariableName
-                );
-            }
-
-            if (defPair.getValue().type != VariableTypePb.INT) {
-                throw new LHValidationError(
-                    null,
-                    "Timeout on node " +
-                    name +
-                    " refers to non INT variable " +
-                    taskNode.timeoutSeconds.rhsVariableName
-                );
-            }
-        }
-
-        // Now need to validate that all of the variables are provided.
-        for (Map.Entry<String, VariableDef> e : taskDef.requiredVars.entrySet()) {
-            VariableDef varDef = e.getValue();
-            if (varDef.defaultValue == null) {
-                // Then we NEED the value.
-                if (!taskNode.variables.containsKey(e.getKey())) {
-                    throw new LHValidationError(
-                        null,
-                        "TASK node " +
-                        name +
-                        " on thread " +
-                        threadSpec.name +
-                        " is missing required input variable " +
-                        e.getKey()
-                    );
-                }
-            }
-            // TODO: May want to do some validation of types.
         }
     }
 

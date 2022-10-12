@@ -1,11 +1,15 @@
 package io.littlehorse.server.processors.util;
 
 import io.littlehorse.common.model.event.ExternalEvent;
+import io.littlehorse.common.model.event.TaskScheduleRequest;
+import io.littlehorse.common.model.wfrun.LHTimer;
+import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.VariableValue;
-import io.littlehorse.common.model.wfrun.noderun.NodeRun;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KeyValue;
@@ -20,6 +24,9 @@ public class WfRunStoreAccess {
     public Map<String, NodeRun> nodeRunPuts;
     public Map<String, Variable> variablePuts;
     public Map<String, ExternalEvent> extEvtPuts;
+
+    public List<TaskScheduleRequest> tasksToSchedule;
+    public List<LHTimer> timersToSchedule;
 
     private String wfRunId;
 
@@ -37,6 +44,9 @@ public class WfRunStoreAccess {
         variablePuts = new HashMap<>();
         extEvtPuts = new HashMap<>();
         this.wfRunId = wfRunId;
+
+        this.tasksToSchedule = new ArrayList<>();
+        this.timersToSchedule = new ArrayList<>();
     }
 
     public void putNodeRun(NodeRun nr) {
@@ -48,6 +58,9 @@ public class WfRunStoreAccess {
         NodeRun out = nodeRunPuts.get(key);
         if (out == null) {
             out = nodeRunStore.get(key);
+
+            // Little trick so that if it gets modified it is automatically saved
+            if (out != null) nodeRunPuts.put(key, out);
         }
         return out;
     }
@@ -119,5 +132,13 @@ public class WfRunStoreAccess {
 
     public void saveExternalEvent(ExternalEvent evt) {
         extEvtPuts.put(evt.getObjectId(), evt);
+    }
+
+    public void scheduleTask(TaskScheduleRequest tsr) {
+        tasksToSchedule.add(tsr);
+    }
+
+    public void scheduleTimer(LHTimer timer) {
+        timersToSchedule.add(timer);
     }
 }

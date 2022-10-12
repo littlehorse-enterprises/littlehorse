@@ -4,26 +4,25 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf type {@code lh_proto.WaitForEvtOePb}
+ * Protobuf type {@code lh_proto.ExitRunPb}
  */
-public final class WaitForEvtOePb extends
+public final class ExitRunPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.WaitForEvtOePb)
-    WaitForEvtOePbOrBuilder {
+    // @@protoc_insertion_point(message_implements:lh_proto.ExitRunPb)
+    ExitRunPbOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use WaitForEvtOePb.newBuilder() to construct.
-  private WaitForEvtOePb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use ExitRunPb.newBuilder() to construct.
+  private ExitRunPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private WaitForEvtOePb() {
-    externalEventDefName_ = "";
+  private ExitRunPb() {
   }
 
   @java.lang.Override
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new WaitForEvtOePb();
+    return new ExitRunPb();
   }
 
   @java.lang.Override
@@ -31,7 +30,7 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
-  private WaitForEvtOePb(
+  private ExitRunPb(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -49,12 +48,6 @@ private static final long serialVersionUID = 0L;
           case 0:
             done = true;
             break;
-          case 10: {
-            java.lang.String s = input.readStringRequireUtf8();
-
-            externalEventDefName_ = s;
-            break;
-          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -76,53 +69,15 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_WaitForEvtOePb_descriptor;
+    return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_ExitRunPb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_WaitForEvtOePb_fieldAccessorTable
+    return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_ExitRunPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.common.proto.WaitForEvtOePb.class, io.littlehorse.common.proto.WaitForEvtOePb.Builder.class);
-  }
-
-  public static final int EXTERNAL_EVENT_DEF_NAME_FIELD_NUMBER = 1;
-  private volatile java.lang.Object externalEventDefName_;
-  /**
-   * <code>string external_event_def_name = 1;</code>
-   * @return The externalEventDefName.
-   */
-  @java.lang.Override
-  public java.lang.String getExternalEventDefName() {
-    java.lang.Object ref = externalEventDefName_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      externalEventDefName_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string external_event_def_name = 1;</code>
-   * @return The bytes for externalEventDefName.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getExternalEventDefNameBytes() {
-    java.lang.Object ref = externalEventDefName_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      externalEventDefName_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+            io.littlehorse.common.proto.ExitRunPb.class, io.littlehorse.common.proto.ExitRunPb.Builder.class);
   }
 
   private byte memoizedIsInitialized = -1;
@@ -139,9 +94,6 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!getExternalEventDefNameBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, externalEventDefName_);
-    }
     unknownFields.writeTo(output);
   }
 
@@ -151,9 +103,6 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (!getExternalEventDefNameBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, externalEventDefName_);
-    }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
@@ -164,13 +113,11 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.common.proto.WaitForEvtOePb)) {
+    if (!(obj instanceof io.littlehorse.common.proto.ExitRunPb)) {
       return super.equals(obj);
     }
-    io.littlehorse.common.proto.WaitForEvtOePb other = (io.littlehorse.common.proto.WaitForEvtOePb) obj;
+    io.littlehorse.common.proto.ExitRunPb other = (io.littlehorse.common.proto.ExitRunPb) obj;
 
-    if (!getExternalEventDefName()
-        .equals(other.getExternalEventDefName())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -182,76 +129,74 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + EXTERNAL_EVENT_DEF_NAME_FIELD_NUMBER;
-    hash = (53 * hash) + getExternalEventDefName().hashCode();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
   }
 
-  public static io.littlehorse.common.proto.WaitForEvtOePb parseFrom(
+  public static io.littlehorse.common.proto.ExitRunPb parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.WaitForEvtOePb parseFrom(
+  public static io.littlehorse.common.proto.ExitRunPb parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.WaitForEvtOePb parseFrom(
+  public static io.littlehorse.common.proto.ExitRunPb parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.WaitForEvtOePb parseFrom(
+  public static io.littlehorse.common.proto.ExitRunPb parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.WaitForEvtOePb parseFrom(byte[] data)
+  public static io.littlehorse.common.proto.ExitRunPb parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.WaitForEvtOePb parseFrom(
+  public static io.littlehorse.common.proto.ExitRunPb parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.WaitForEvtOePb parseFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.ExitRunPb parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.WaitForEvtOePb parseFrom(
+  public static io.littlehorse.common.proto.ExitRunPb parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.WaitForEvtOePb parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.ExitRunPb parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.WaitForEvtOePb parseDelimitedFrom(
+  public static io.littlehorse.common.proto.ExitRunPb parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.WaitForEvtOePb parseFrom(
+  public static io.littlehorse.common.proto.ExitRunPb parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.WaitForEvtOePb parseFrom(
+  public static io.littlehorse.common.proto.ExitRunPb parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -264,7 +209,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.common.proto.WaitForEvtOePb prototype) {
+  public static Builder newBuilder(io.littlehorse.common.proto.ExitRunPb prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -280,26 +225,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.WaitForEvtOePb}
+   * Protobuf type {@code lh_proto.ExitRunPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.WaitForEvtOePb)
-      io.littlehorse.common.proto.WaitForEvtOePbOrBuilder {
+      // @@protoc_insertion_point(builder_implements:lh_proto.ExitRunPb)
+      io.littlehorse.common.proto.ExitRunPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_WaitForEvtOePb_descriptor;
+      return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_ExitRunPb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_WaitForEvtOePb_fieldAccessorTable
+      return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_ExitRunPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.common.proto.WaitForEvtOePb.class, io.littlehorse.common.proto.WaitForEvtOePb.Builder.class);
+              io.littlehorse.common.proto.ExitRunPb.class, io.littlehorse.common.proto.ExitRunPb.Builder.class);
     }
 
-    // Construct using io.littlehorse.common.proto.WaitForEvtOePb.newBuilder()
+    // Construct using io.littlehorse.common.proto.ExitRunPb.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -317,25 +262,23 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      externalEventDefName_ = "";
-
       return this;
     }
 
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_WaitForEvtOePb_descriptor;
+      return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_ExitRunPb_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.WaitForEvtOePb getDefaultInstanceForType() {
-      return io.littlehorse.common.proto.WaitForEvtOePb.getDefaultInstance();
+    public io.littlehorse.common.proto.ExitRunPb getDefaultInstanceForType() {
+      return io.littlehorse.common.proto.ExitRunPb.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.WaitForEvtOePb build() {
-      io.littlehorse.common.proto.WaitForEvtOePb result = buildPartial();
+    public io.littlehorse.common.proto.ExitRunPb build() {
+      io.littlehorse.common.proto.ExitRunPb result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -343,9 +286,8 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.WaitForEvtOePb buildPartial() {
-      io.littlehorse.common.proto.WaitForEvtOePb result = new io.littlehorse.common.proto.WaitForEvtOePb(this);
-      result.externalEventDefName_ = externalEventDefName_;
+    public io.littlehorse.common.proto.ExitRunPb buildPartial() {
+      io.littlehorse.common.proto.ExitRunPb result = new io.littlehorse.common.proto.ExitRunPb(this);
       onBuilt();
       return result;
     }
@@ -384,20 +326,16 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.common.proto.WaitForEvtOePb) {
-        return mergeFrom((io.littlehorse.common.proto.WaitForEvtOePb)other);
+      if (other instanceof io.littlehorse.common.proto.ExitRunPb) {
+        return mergeFrom((io.littlehorse.common.proto.ExitRunPb)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.common.proto.WaitForEvtOePb other) {
-      if (other == io.littlehorse.common.proto.WaitForEvtOePb.getDefaultInstance()) return this;
-      if (!other.getExternalEventDefName().isEmpty()) {
-        externalEventDefName_ = other.externalEventDefName_;
-        onChanged();
-      }
+    public Builder mergeFrom(io.littlehorse.common.proto.ExitRunPb other) {
+      if (other == io.littlehorse.common.proto.ExitRunPb.getDefaultInstance()) return this;
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
@@ -413,93 +351,17 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      io.littlehorse.common.proto.WaitForEvtOePb parsedMessage = null;
+      io.littlehorse.common.proto.ExitRunPb parsedMessage = null;
       try {
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (io.littlehorse.common.proto.WaitForEvtOePb) e.getUnfinishedMessage();
+        parsedMessage = (io.littlehorse.common.proto.ExitRunPb) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
           mergeFrom(parsedMessage);
         }
       }
-      return this;
-    }
-
-    private java.lang.Object externalEventDefName_ = "";
-    /**
-     * <code>string external_event_def_name = 1;</code>
-     * @return The externalEventDefName.
-     */
-    public java.lang.String getExternalEventDefName() {
-      java.lang.Object ref = externalEventDefName_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        externalEventDefName_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>string external_event_def_name = 1;</code>
-     * @return The bytes for externalEventDefName.
-     */
-    public com.google.protobuf.ByteString
-        getExternalEventDefNameBytes() {
-      java.lang.Object ref = externalEventDefName_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        externalEventDefName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string external_event_def_name = 1;</code>
-     * @param value The externalEventDefName to set.
-     * @return This builder for chaining.
-     */
-    public Builder setExternalEventDefName(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      externalEventDefName_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string external_event_def_name = 1;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearExternalEventDefName() {
-      
-      externalEventDefName_ = getDefaultInstance().getExternalEventDefName();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string external_event_def_name = 1;</code>
-     * @param value The bytes for externalEventDefName to set.
-     * @return This builder for chaining.
-     */
-    public Builder setExternalEventDefNameBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      externalEventDefName_ = value;
-      onChanged();
       return this;
     }
     @java.lang.Override
@@ -515,41 +377,41 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.WaitForEvtOePb)
+    // @@protoc_insertion_point(builder_scope:lh_proto.ExitRunPb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.WaitForEvtOePb)
-  private static final io.littlehorse.common.proto.WaitForEvtOePb DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:lh_proto.ExitRunPb)
+  private static final io.littlehorse.common.proto.ExitRunPb DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.common.proto.WaitForEvtOePb();
+    DEFAULT_INSTANCE = new io.littlehorse.common.proto.ExitRunPb();
   }
 
-  public static io.littlehorse.common.proto.WaitForEvtOePb getDefaultInstance() {
+  public static io.littlehorse.common.proto.ExitRunPb getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<WaitForEvtOePb>
-      PARSER = new com.google.protobuf.AbstractParser<WaitForEvtOePb>() {
+  private static final com.google.protobuf.Parser<ExitRunPb>
+      PARSER = new com.google.protobuf.AbstractParser<ExitRunPb>() {
     @java.lang.Override
-    public WaitForEvtOePb parsePartialFrom(
+    public ExitRunPb parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new WaitForEvtOePb(input, extensionRegistry);
+      return new ExitRunPb(input, extensionRegistry);
     }
   };
 
-  public static com.google.protobuf.Parser<WaitForEvtOePb> parser() {
+  public static com.google.protobuf.Parser<ExitRunPb> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<WaitForEvtOePb> getParserForType() {
+  public com.google.protobuf.Parser<ExitRunPb> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.common.proto.WaitForEvtOePb getDefaultInstanceForType() {
+  public io.littlehorse.common.proto.ExitRunPb getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

@@ -132,6 +132,11 @@ private static final long serialVersionUID = 0L;
             eventCase_ = 7;
             break;
           }
+          case 64: {
+            bitField0_ |= 0x00000002;
+            threadRunNumber_ = input.readInt32();
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -444,6 +449,25 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.ExternalEventPb.getDefaultInstance();
   }
 
+  public static final int THREAD_RUN_NUMBER_FIELD_NUMBER = 8;
+  private int threadRunNumber_;
+  /**
+   * <code>int32 thread_run_number = 8;</code>
+   * @return Whether the threadRunNumber field is set.
+   */
+  @java.lang.Override
+  public boolean hasThreadRunNumber() {
+    return ((bitField0_ & 0x00000002) != 0);
+  }
+  /**
+   * <code>int32 thread_run_number = 8;</code>
+   * @return The threadRunNumber.
+   */
+  @java.lang.Override
+  public int getThreadRunNumber() {
+    return threadRunNumber_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -478,6 +502,9 @@ private static final long serialVersionUID = 0L;
     }
     if (eventCase_ == 7) {
       output.writeMessage(7, (io.littlehorse.common.proto.ExternalEventPb) event_);
+    }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      output.writeInt32(8, threadRunNumber_);
     }
     unknownFields.writeTo(output);
   }
@@ -514,6 +541,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(7, (io.littlehorse.common.proto.ExternalEventPb) event_);
     }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(8, threadRunNumber_);
+    }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
@@ -540,6 +571,11 @@ private static final long serialVersionUID = 0L;
     if (hasTime()) {
       if (!getTime()
           .equals(other.getTime())) return false;
+    }
+    if (hasThreadRunNumber() != other.hasThreadRunNumber()) return false;
+    if (hasThreadRunNumber()) {
+      if (getThreadRunNumber()
+          != other.getThreadRunNumber()) return false;
     }
     if (!getEventCase().equals(other.getEventCase())) return false;
     switch (eventCase_) {
@@ -582,6 +618,10 @@ private static final long serialVersionUID = 0L;
     if (hasTime()) {
       hash = (37 * hash) + TIME_FIELD_NUMBER;
       hash = (53 * hash) + getTime().hashCode();
+    }
+    if (hasThreadRunNumber()) {
+      hash = (37 * hash) + THREAD_RUN_NUMBER_FIELD_NUMBER;
+      hash = (53 * hash) + getThreadRunNumber();
     }
     switch (eventCase_) {
       case 4:
@@ -746,6 +786,8 @@ private static final long serialVersionUID = 0L;
         time_ = null;
         timeBuilder_ = null;
       }
+      threadRunNumber_ = 0;
+      bitField0_ = (bitField0_ & ~0x00000002);
       eventCase_ = 0;
       event_ = null;
       return this;
@@ -814,6 +856,10 @@ private static final long serialVersionUID = 0L;
           result.event_ = externalEventBuilder_.build();
         }
       }
+      if (((from_bitField0_ & 0x00000002) != 0)) {
+        result.threadRunNumber_ = threadRunNumber_;
+        to_bitField0_ |= 0x00000002;
+      }
       result.bitField0_ = to_bitField0_;
       result.eventCase_ = eventCase_;
       onBuilt();
@@ -875,6 +921,9 @@ private static final long serialVersionUID = 0L;
       }
       if (other.hasTime()) {
         mergeTime(other.getTime());
+      }
+      if (other.hasThreadRunNumber()) {
+        setThreadRunNumber(other.getThreadRunNumber());
       }
       switch (other.getEventCase()) {
         case RUN_REQUEST: {
@@ -1782,6 +1831,45 @@ private static final long serialVersionUID = 0L;
       eventCase_ = 7;
       onChanged();;
       return externalEventBuilder_;
+    }
+
+    private int threadRunNumber_ ;
+    /**
+     * <code>int32 thread_run_number = 8;</code>
+     * @return Whether the threadRunNumber field is set.
+     */
+    @java.lang.Override
+    public boolean hasThreadRunNumber() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>int32 thread_run_number = 8;</code>
+     * @return The threadRunNumber.
+     */
+    @java.lang.Override
+    public int getThreadRunNumber() {
+      return threadRunNumber_;
+    }
+    /**
+     * <code>int32 thread_run_number = 8;</code>
+     * @param value The threadRunNumber to set.
+     * @return This builder for chaining.
+     */
+    public Builder setThreadRunNumber(int value) {
+      bitField0_ |= 0x00000002;
+      threadRunNumber_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 thread_run_number = 8;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearThreadRunNumber() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      threadRunNumber_ = 0;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

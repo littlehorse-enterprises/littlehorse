@@ -7,12 +7,8 @@ import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.GlobalPOSTable;
 import io.littlehorse.common.model.POSTable;
-import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.WfRunEvent;
-import io.littlehorse.common.model.observability.ObservabilityEvent;
-import io.littlehorse.common.model.observability.RunStartOe;
 import io.littlehorse.common.model.server.Tag;
-import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.NodePb.NodeCase;
@@ -266,25 +262,16 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
         return out;
     }
 
-    public WfRun startNewRun(
-        WfRunEvent e,
-        List<TaskScheduleRequest> tasksToSchedule,
-        List<LHTimer> timersToSchedule,
-        WfRunStoreAccess wsa
-    ) {
+    public WfRun startNewRun(WfRunEvent e, WfRunStoreAccess wsa) {
         WfRun out = new WfRun();
         out.stores = wsa;
         out.id = e.runRequest.wfRunId;
-        out.oEvents.wfRunId = out.id;
 
         out.wfSpec = this;
-        out.tasksToSchedule = tasksToSchedule;
-        out.timersToSchedule = timersToSchedule;
         out.wfSpecId = id;
         out.wfSpecName = name;
         out.startTime = e.time;
         out.status = LHStatusPb.RUNNING;
-        out.oEvents.add(new ObservabilityEvent(new RunStartOe(id, name), e.time));
 
         out.startThread(entrypointThreadName, e.time, null, e.runRequest.variables);
 

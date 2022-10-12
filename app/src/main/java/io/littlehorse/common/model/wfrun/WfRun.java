@@ -4,17 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.GETable;
-import io.littlehorse.common.model.event.TaskResultEvent;
-import io.littlehorse.common.model.event.TaskScheduleRequest;
-import io.littlehorse.common.model.event.TaskStartedEvent;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.ThreadSpec;
 import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.model.observability.ObservabilityEvent;
-import io.littlehorse.common.model.observability.ObservabilityEvents;
-import io.littlehorse.common.model.observability.ThreadStartOe;
-import io.littlehorse.common.model.observability.WfRunStatusChangeOe;
 import io.littlehorse.common.model.server.Tag;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.TaskResultCodePb;
@@ -43,7 +36,6 @@ public class WfRun extends GETable<WfRunPb> {
 
     public WfRun() {
         threadRuns = new ArrayList<>();
-        oEvents = new ObservabilityEvents();
     }
 
     @JsonIgnore
@@ -69,8 +61,6 @@ public class WfRun extends GETable<WfRunPb> {
             thr.wfRun = this;
             threadRuns.add(thr);
         }
-
-        oEvents.wfRunId = id;
     }
 
     @JsonIgnore
@@ -132,16 +122,7 @@ public class WfRun extends GETable<WfRunPb> {
     public WfSpec wfSpec;
 
     @JsonIgnore
-    public List<TaskScheduleRequest> tasksToSchedule;
-
-    @JsonIgnore
     public WfRunStoreAccess stores;
-
-    @JsonIgnore
-    public ObservabilityEvents oEvents;
-
-    @JsonIgnore
-    public List<LHTimer> timersToSchedule;
 
     public void startThread(
         String threadName,
@@ -154,13 +135,6 @@ public class WfRun extends GETable<WfRunPb> {
             throw new RuntimeException("Invalid thread name, should be impossible");
         }
 
-        oEvents.add(
-            new ObservabilityEvent(
-                new ThreadStartOe(threadRuns.size(), threadName),
-                new Date()
-            )
-        );
-
         ThreadRun thread = new ThreadRun();
         thread.wfRunId = id;
         thread.number = threadRuns.size();
@@ -168,7 +142,7 @@ public class WfRun extends GETable<WfRunPb> {
         thread.status = LHStatusPb.RUNNING;
         thread.wfSpecId = wfSpecId;
         thread.threadSpecName = threadName;
-        thread.numSteps = 0;
+        thread.currentNodePosition = -1; // this gets bumped when we start the thread
 
         thread.startTime = new Date();
 
@@ -180,10 +154,10 @@ public class WfRun extends GETable<WfRunPb> {
         } catch (LHValidationError exn) {
             LHUtil.log("Invalid variables received");
             // Now we gotta figure out how to fail a workflow
-            thread.setStatus(
-                LHStatusPb.ERROR,
+            thread.fail(
+                TaskResultCodePb.VAR_MUTATION_ERROR,
                 "Failed validating variables on start: " + exn.getMessage(),
-                TaskResultCodePb.VAR_MUTATION_ERROR
+                thread.startTime
             );
             return;
         }
@@ -204,31 +178,17 @@ public class WfRun extends GETable<WfRunPb> {
 
             thread.putLocalVariable(varName, val);
         }
+        thread.activateNode(thread.getCurrentNode());
         thread.advance(start);
     }
 
-    public void processEvent(
-        WfRunEvent e,
-        List<TaskScheduleRequest> tasksToSchedule,
-        List<LHTimer> timersToSchedule
-    ) {
-        this.timersToSchedule = timersToSchedule;
-        this.tasksToSchedule = tasksToSchedule;
+    public void processEvent(WfRunEvent e) {
+        for (ThreadRun thread : threadRuns) {
+            thread.processEvent(e);
+        }
 
-        switch (e.type) {
-            case RUN_REQUEST:
-                throw new RuntimeException("Shouldn't happen here.");
-            case TASK_RESULT:
-                handleTaskResult(e);
-                break;
-            case STARTED_EVENT:
-                handleStartedEvent(e);
-                break;
-            case EXTERNAL_EVENT:
-                handleExternalEvent(e);
-                break;
-            case EVENT_NOT_SET:
-                throw new RuntimeException("Impossible or Out of date scheduler.");
+        for (ThreadRun thread : threadRuns) {
+            thread.advance(e.time);
         }
     }
 
@@ -246,19 +206,32 @@ public class WfRun extends GETable<WfRunPb> {
         if (newStatus == LHStatusPb.COMPLETED) {
             endTime = time;
             status = LHStatusPb.COMPLETED;
-
-            oEvents.add(
-                new ObservabilityEvent(new WfRunStatusChangeOe(status), time)
-            );
         } else if (newStatus == LHStatusPb.ERROR) {
             endTime = time;
             status = LHStatusPb.ERROR;
-            oEvents.add(
-                new ObservabilityEvent(new WfRunStatusChangeOe(status), time)
-            );
         }
         // TODO: when there are multiple threads, we need to think about what happens when one thread
         // fails and others are still alive.
+    }
+}
+/*
+
+    public void oldProcessEvent(WfRunEvent e) {
+        switch (e.type) {
+            case RUN_REQUEST:
+                throw new RuntimeException("Shouldn't happen here.");
+            case TASK_RESULT:
+                handleTaskResult(e);
+                break;
+            case STARTED_EVENT:
+                handleStartedEvent(e);
+                break;
+            case EXTERNAL_EVENT:
+                handleExternalEvent(e);
+                break;
+            case EVENT_NOT_SET:
+                throw new RuntimeException("Impossible or Out of date scheduler.");
+        }
     }
 
     private void handleStartedEvent(WfRunEvent we) {
@@ -290,4 +263,5 @@ public class WfRun extends GETable<WfRunPb> {
             }
         }
     }
-}
+
+ */

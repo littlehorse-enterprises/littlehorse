@@ -21,7 +21,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=b'\n\033io.littlehorse.common.protoP\001Z\007.;model',
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0elh_proto.proto\x12\x08lh_proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x8f\x02\n\x0fVariableValuePb\x12&\n\x04type\x18\x01 \x01(\x0e\x32\x18.lh_proto.VariableTypePb\x12\x15\n\x08json_obj\x18\x02 \x01(\tH\x00\x88\x01\x01\x12\x15\n\x08json_arr\x18\x03 \x01(\tH\x01\x88\x01\x01\x12\x13\n\x06\x64ouble\x18\x04 \x01(\x01H\x02\x88\x01\x01\x12\x11\n\x04\x62ool\x18\x05 \x01(\x08H\x03\x88\x01\x01\x12\x10\n\x03str\x18\x06 \x01(\tH\x04\x88\x01\x01\x12\x10\n\x03int\x18\x07 \x01(\x03H\x05\x88\x01\x01\x12\x12\n\x05\x62ytes\x18\x08 \x01(\x0cH\x06\x88\x01\x01\x42\x0b\n\t_json_objB\x0b\n\t_json_arrB\t\n\x07_doubleB\x07\n\x05_boolB\x06\n\x04_strB\x06\n\x04_intB\x08\n\x06_bytes\"\x9c\x01\n\nVariablePb\x12(\n\x05value\x18\x01 \x01(\x0b\x32\x19.lh_proto.VariableValuePb\x12\x11\n\twf_run_id\x18\x02 \x01(\t\x12\x19\n\x11thread_run_number\x18\x03 \x01(\x05\x12\x0c\n\x04name\x18\x04 \x01(\t\x12(\n\x04\x64\x61te\x18\x05 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"8\n\x0cRunStartOePb\x12\x12\n\nwf_spec_id\x18\x01 \x01(\t\x12\x14\n\x0cwf_spec_name\x18\x02 \x01(\t\";\n\x0fThreadStartOePb\x12\x0e\n\x06number\x18\x01 \x01(\x05\x12\x18\n\x10thread_spec_name\x18\x02 \x01(\t\"\xe9\x01\n\x0fNodeReachedOePb\x12\x11\n\twf_run_id\x18\x01 \x01(\t\x12\x19\n\x11thread_run_number\x18\x02 \x01(\x05\x12\x19\n\x11node_run_position\x18\x03 \x01(\x05\x12\x17\n\x0fnode_run_number\x18\x04 \x01(\x05\x12\x11\n\tnode_name\x18\x05 \x01(\t\x12\'\n\x03\x65vt\x18\x06 \x01(\x0b\x32\x18.lh_proto.WaitForEvtOePbH\x00\x12+\n\x04task\x18\x07 \x01(\x0b\x32\x1b.lh_proto.TaskScheduledOePbH\x00\x42\x0b\n\tnode_type\"\xd5\x01\n\x11TaskScheduledOePb\x12\x13\n\x0btask_def_id\x18\x01 \x01(\t\x12\x1f\n\x17task_run_attempt_number\x18\x02 \x01(\x05\x12=\n\tvariables\x18\x03 \x03(\x0b\x32*.lh_proto.TaskScheduledOePb.VariablesEntry\x1aK\n\x0eVariablesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12(\n\x05value\x18\x02 \x01(\x0b\x32\x19.lh_proto.VariableValuePb:\x02\x38\x01\"1\n\x0eWaitForEvtOePb\x12\x1f\n\x17\x65xternal_event_def_name\x18\x01 \x01(\t\"q\n\rTaskStartOePb\x12\x19\n\x11thread_run_number\x18\x01 \x01(\x05\x12\x17\n\x0ftask_run_number\x18\x02 \x01(\x05\x12\x19\n\x11task_run_position\x18\x03 \x01(\x05\x12\x11\n\tnode_name\x18\x04 \x01(\t\"\xb2\x02\n\x0eNodeResultOePb\x12\x19\n\x11thread_run_number\x18\x01 \x01(\x05\x12\x17\n\x0ftask_run_number\x18\x02 \x01(\x05\x12\x19\n\x11task_run_position\x18\x03 \x01(\x05\x12/\n\x0bresult_code\x18\x04 \x01(\x0e\x32\x1a.lh_proto.TaskResultCodePb\x12\x1a\n\rerror_message\x18\x05 \x01(\tH\x01\x88\x01\x01\x12;\n\x0e\x65xternal_event\x18\x06 \x01(\x0b\x32!.lh_proto.ExternalEventResultOePbH\x00\x12(\n\x04task\x18\x07 \x01(\x0b\x32\x18.lh_proto.TaskResultOePbH\x00\x42\x0b\n\tnode_typeB\x10\n\x0e_error_message\"S\n\x17\x45xternalEventResultOePb\x12 \n\x13\x63orrelated_event_id\x18\x01 \x01(\tH\x00\x88\x01\x01\x42\x16\n\x14_correlated_event_id\"s\n\x0eTaskResultOePb\x12.\n\x06result\x18\x01 \x01(\x0b\x32\x19.lh_proto.VariableValuePbH\x00\x88\x01\x01\x12\x17\n\nlog_output\x18\x02 \x01(\x0cH\x01\x88\x01\x01\x42\t\n\x07_resultB\r\n\x0b_log_output\"Y\n\x16ThreadStatusChangeOePb\x12\x19\n\x11thread_run_number\x18\x01 \x01(\x05\x12$\n\x06status\x18\x02 \x01(\x0e\x32\x14.lh_proto.LHStatusPb\"=\n\x15WfRunStatusChangeOePb\x12$\n\x06status\x18\x01 \x01(\x0e\x32\x14.lh_proto.LHStatusPb\"\xb1\x03\n\x14ObservabilityEventPb\x12(\n\x04time\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x38\n\rwf_run_status\x18\x02 \x01(\x0b\x32\x1f.lh_proto.WfRunStatusChangeOePbH\x00\x12+\n\trun_start\x18\x03 \x01(\x0b\x32\x16.lh_proto.RunStartOePbH\x00\x12\x31\n\x0cthread_start\x18\x04 \x01(\x0b\x32\x19.lh_proto.ThreadStartOePbH\x00\x12\x31\n\x0cnode_reached\x18\x05 \x01(\x0b\x32\x19.lh_proto.NodeReachedOePbH\x00\x12-\n\ntask_start\x18\x06 \x01(\x0b\x32\x17.lh_proto.TaskStartOePbH\x00\x12/\n\x0btask_result\x18\x07 \x01(\x0b\x32\x18.lh_proto.NodeResultOePbH\x00\x12\x39\n\rthread_status\x18\x08 \x01(\x0b\x32 .lh_proto.ThreadStatusChangeOePbH\x00\x42\x07\n\x05\x65vent\"Z\n\x15ObservabilityEventsPb\x12\x11\n\twf_run_id\x18\x01 \x01(\t\x12.\n\x06\x65vents\x18\x02 \x03(\x0b\x32\x1e.lh_proto.ObservabilityEventPb\"\x9a\x01\n\x0f\x45\x64geConditionPb\x12*\n\ncomparator\x18\x01 \x01(\x0e\x32\x16.lh_proto.ComparatorPb\x12,\n\x04left\x18\x02 \x01(\x0b\x32\x1e.lh_proto.VariableAssignmentPb\x12-\n\x05right\x18\x03 \x01(\x0b\x32\x1e.lh_proto.VariableAssignmentPb\"a\n\x06\x45\x64gePb\x12\x16\n\x0esink_node_name\x18\x01 \x01(\t\x12\x31\n\tcondition\x18\x02 \x01(\x0b\x32\x19.lh_proto.EdgeConditionPbH\x00\x88\x01\x01\x42\x0c\n\n_condition\"\xdc\x01\n\x14VariableAssignmentPb\x12\x16\n\tjson_path\x18\x01 \x01(\tH\x01\x88\x01\x01\x12\x35\n\rdefault_value\x18\x02 \x01(\x0b\x32\x19.lh_proto.VariableValuePbH\x02\x88\x01\x01\x12\x17\n\rvariable_name\x18\x03 \x01(\tH\x00\x12\x32\n\rliteral_value\x18\x04 \x01(\x0b\x32\x19.lh_proto.VariableValuePbH\x00\x42\x08\n\x06sourceB\x0c\n\n_json_pathB\x10\n\x0e_default_value\"\xca\x02\n\x12VariableMutationPb\x12\x10\n\x08lhs_name\x18\x01 \x01(\t\x12\x1a\n\rlhs_json_path\x18\x02 \x01(\tH\x01\x88\x01\x01\x12\x33\n\toperation\x18\x03 \x01(\x0e\x32 .lh_proto.VariableMutationTypePb\x12\x39\n\x0fsource_variable\x18\x04 \x01(\x0b\x32\x1e.lh_proto.VariableAssignmentPbH\x00\x12\x32\n\rliteral_value\x18\x05 \x01(\x0b\x32\x19.lh_proto.VariableValuePbH\x00\x12\x15\n\x0bnode_output\x18\x06 \x01(\x08H\x00\x12\x1a\n\rrhs_json_path\x18\x07 \x01(\tH\x02\x88\x01\x01\x42\x0b\n\trhs_valueB\x10\n\x0e_lhs_json_pathB\x10\n\x0e_rhs_json_path\"\x95\x03\n\x06NodePb\x12(\n\x0eoutgoing_edges\x18\x01 \x03(\x0b\x32\x10.lh_proto.EdgePb\x12\x38\n\x12variable_mutations\x18\x02 \x03(\x0b\x32\x1c.lh_proto.VariableMutationPb\x12/\n\routput_schema\x18\x03 \x01(\x0b\x32\x18.lh_proto.OutputSchemaPb\x12\x37\n\x0ftimeout_seconds\x18\x04 \x01(\x0b\x32\x1e.lh_proto.VariableAssignmentPb\x12\x30\n\nentrypoint\x18\x05 \x01(\x0b\x32\x1a.lh_proto.EntrypointNodePbH\x00\x12$\n\x04\x65xit\x18\x06 \x01(\x0b\x32\x14.lh_proto.ExitNodePbH\x00\x12$\n\x04task\x18\x07 \x01(\x0b\x32\x14.lh_proto.TaskNodePbH\x00\x12\x37\n\x0e\x65xternal_event\x18\x08 \x01(\x0b\x32\x1d.lh_proto.ExternalEventNodePbH\x00\x42\x06\n\x04node\"\xbe\x01\n\nTaskNodePb\x12\x15\n\rtask_def_name\x18\x01 \x01(\t\x12\x0f\n\x07retries\x18\x03 \x01(\x05\x12\x36\n\tvariables\x18\x04 \x03(\x0b\x32#.lh_proto.TaskNodePb.VariablesEntry\x1aP\n\x0eVariablesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12-\n\x05value\x18\x02 \x01(\x0b\x32\x1e.lh_proto.VariableAssignmentPb:\x02\x38\x01\"6\n\x13\x45xternalEventNodePb\x12\x1f\n\x17\x65xternal_event_def_name\x18\x01 \x01(\t\"\x12\n\x10\x45ntrypointNodePb\"\x0c\n\nExitNodePb\"\x8e\x01\n\rVariableDefPb\x12&\n\x04type\x18\x01 \x01(\x0e\x32\x18.lh_proto.VariableTypePb\x12\x33\n\x0b\x64\x65\x66\x61ult_val\x18\x02 \x01(\x0b\x32\x19.lh_proto.VariableValuePbH\x00\x88\x01\x01\x12\x10\n\x08required\x18\x03 \x01(\x08\x42\x0e\n\x0c_default_val\"\x8f\x02\n\x0cThreadSpecPb\x12\x30\n\x05nodes\x18\x01 \x03(\x0b\x32!.lh_proto.ThreadSpecPb.NodesEntry\x12?\n\rvariable_defs\x18\x02 \x03(\x0b\x32(.lh_proto.ThreadSpecPb.VariableDefsEntry\x1a>\n\nNodesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x1f\n\x05value\x18\x02 \x01(\x0b\x32\x10.lh_proto.NodePb:\x02\x38\x01\x1aL\n\x11VariableDefsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12&\n\x05value\x18\x02 \x01(\x0b\x32\x17.lh_proto.VariableDefPb:\x02\x38\x01\"\xee\x02\n\x08WfSpecPb\x12\n\n\x02id\x18\x01 \x01(\t\x12.\n\ncreated_at\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12.\n\nupdated_at\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x39\n\x0cthread_specs\x18\x04 \x03(\x0b\x32#.lh_proto.WfSpecPb.ThreadSpecsEntry\x12\x1e\n\x16\x65ntrypoint_thread_name\x18\x05 \x01(\t\x12$\n\x06status\x18\x06 \x01(\x0e\x32\x14.lh_proto.LHStatusPb\x12\x0c\n\x04name\x18\x07 \x01(\t\x12\x1b\n\x13last_updated_offset\x18\x08 \x01(\x03\x1aJ\n\x10ThreadSpecsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12%\n\x05value\x18\x02 \x01(\x0b\x32\x16.lh_proto.ThreadSpecPb:\x02\x38\x01\"?\n\x0eOutputSchemaPb\x12-\n\x0boutput_type\x18\x01 \x01(\x0e\x32\x18.lh_proto.VariableTypePb\"\x86\x02\n\tTaskDefPb\x12\x0c\n\x04name\x18\x01 \x01(\t\x12.\n\ncreated_at\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12/\n\routput_schema\x18\x03 \x01(\x0b\x32\x18.lh_proto.OutputSchemaPb\x12<\n\rrequired_vars\x18\x04 \x03(\x0b\x32%.lh_proto.TaskDefPb.RequiredVarsEntry\x1aL\n\x11RequiredVarsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12&\n\x05value\x18\x02 \x01(\x0b\x32\x17.lh_proto.VariableDefPb:\x02\x38\x01\"R\n\x12\x45xternalEventDefPb\x12\x0c\n\x04name\x18\x01 \x01(\t\x12.\n\ncreated_at\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"\x9d\x02\n\x07WfRunPb\x12\n\n\x02id\x18\x01 \x01(\t\x12\x12\n\nwf_spec_id\x18\x02 \x01(\t\x12\x14\n\x0cwf_spec_name\x18\x03 \x01(\t\x12$\n\x06status\x18\x04 \x01(\x0e\x32\x14.lh_proto.LHStatusPb\x12\x1a\n\x12last_update_offset\x18\x05 \x01(\x03\x12.\n\nstart_time\x18\x06 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\x08\x65nd_time\x18\x07 \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x00\x88\x01\x01\x12*\n\x0bthread_runs\x18\x08 \x03(\x0b\x32\x15.lh_proto.ThreadRunPbB\x0b\n\t_end_time\"\xaf\x03\n\x0bThreadRunPb\x12\x11\n\twf_run_id\x18\x01 \x01(\t\x12\x0e\n\x06number\x18\x02 \x01(\x05\x12$\n\x06status\x18\x03 \x01(\x0e\x32\x14.lh_proto.LHStatusPb\x12\x12\n\nwf_spec_id\x18\x04 \x01(\t\x12\x18\n\x10thread_spec_name\x18\x05 \x01(\t\x12\x11\n\tnum_steps\x18\x06 \x01(\x05\x12.\n\nstart_time\x18\x07 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\x08\x65nd_time\x18\x08 \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x00\x88\x01\x01\x12\x32\n\x10\x63urrent_node_run\x18\t \x01(\x0b\x32\x18.lh_proto.NodeRunStatePb\x12\x1a\n\rerror_message\x18\n \x01(\tH\x01\x88\x01\x01\x12\x34\n\x0bresult_code\x18\x0b \x01(\x0e\x32\x1a.lh_proto.TaskResultCodePbH\x02\x88\x01\x01\x42\x0b\n\t_end_timeB\x10\n\x0e_error_messageB\x0e\n\x0c_result_code\"\x92\x04\n\tNodeRunPb\x12\x11\n\twf_run_id\x18\x01 \x01(\t\x12\x19\n\x11thread_run_number\x18\x02 \x01(\x05\x12\x10\n\x08position\x18\x03 \x01(\x05\x12\x0e\n\x06number\x18\x04 \x01(\x05\x12$\n\x06status\x18\x05 \x01(\x0e\x32\x14.lh_proto.LHStatusPb\x12\x30\n\x0c\x61rrival_time\x18\x06 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\x08\x65nd_time\x18\x07 \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x01\x88\x01\x01\x12\x12\n\nwf_spec_id\x18\x08 \x01(\t\x12\x18\n\x10thread_spec_name\x18\t \x01(\t\x12\x11\n\tnode_name\x18\n \x01(\t\x12\x34\n\x0bresult_code\x18\x0b \x01(\x0e\x32\x1a.lh_proto.TaskResultCodePbH\x02\x88\x01\x01\x12\x1a\n\rerror_message\x18\x0c \x01(\tH\x03\x88\x01\x01\x12#\n\x04task\x18\r \x01(\x0b\x32\x13.lh_proto.TaskRunPbH\x00\x12\x36\n\x0e\x65xternal_event\x18\x0e \x01(\x0b\x32\x1c.lh_proto.ExternalEventRunPbH\x00\x42\x0b\n\tnode_typeB\x0b\n\t_end_timeB\x0e\n\x0c_result_codeB\x10\n\x0e_error_message\"\xdf\x01\n\tTaskRunPb\x12\x16\n\x0e\x61ttempt_number\x18\x01 \x01(\x05\x12.\n\x06output\x18\x02 \x01(\x0b\x32\x19.lh_proto.VariableValuePbH\x00\x88\x01\x01\x12\x17\n\nlog_output\x18\x03 \x01(\x0cH\x01\x88\x01\x01\x12\x33\n\nstart_time\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x02\x88\x01\x01\x12\x13\n\x0btask_def_id\x18\x05 \x01(\tB\t\n\x07_outputB\r\n\x0b_log_outputB\r\n\x0b_start_time\"y\n\x12\x45xternalEventRunPb\x12\x1f\n\x17\x65xternal_event_def_name\x18\x01 \x01(\t\x12\x33\n\nevent_time\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x00\x88\x01\x01\x42\r\n\x0b_event_time\"\xac\x02\n\x0f\x45xternalEventPb\x12\x11\n\twf_run_id\x18\x01 \x01(\t\x12\x1f\n\x17\x65xternal_event_def_name\x18\x02 \x01(\t\x12\x0c\n\x04guid\x18\x03 \x01(\t\x12.\n\ncreated_at\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12*\n\x07\x63ontent\x18\x05 \x01(\x0b\x32\x19.lh_proto.VariableValuePb\x12\x1e\n\x11thread_run_number\x18\x06 \x01(\x05H\x00\x88\x01\x01\x12\x1e\n\x11task_run_position\x18\x07 \x01(\x05H\x01\x88\x01\x01\x12\x0f\n\x07\x63laimed\x18\x08 \x01(\x08\x42\x14\n\x12_thread_run_numberB\x14\n\x12_task_run_position\"\xf7\x01\n\x0eNodeRunStatePb\x12\x11\n\tnode_name\x18\x01 \x01(\t\x12\x16\n\x0e\x61ttempt_number\x18\x02 \x01(\x05\x12\x10\n\x08position\x18\x03 \x01(\x05\x12\x0e\n\x06number\x18\x04 \x01(\x05\x12$\n\x06status\x18\x05 \x01(\x0e\x32\x14.lh_proto.LHStatusPb\x12\x34\n\x0bresult_code\x18\x06 \x01(\x0e\x32\x1a.lh_proto.TaskResultCodePbH\x00\x88\x01\x01\x12\x1a\n\rerror_message\x18\x07 \x01(\tH\x01\x88\x01\x01\x42\x0e\n\x0c_result_codeB\x10\n\x0e_error_message\"\xd3\x01\n\x0eWfRunRequestPb\x12\x16\n\twf_run_id\x18\x01 \x01(\tH\x00\x88\x01\x01\x12\x12\n\nwf_spec_id\x18\x02 \x01(\t\x12:\n\tvariables\x18\x03 \x03(\x0b\x32\'.lh_proto.WfRunRequestPb.VariablesEntry\x1aK\n\x0eVariablesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12(\n\x05value\x18\x02 \x01(\x0b\x32\x19.lh_proto.VariableValuePb:\x02\x38\x01\x42\x0c\n\n_wf_run_id\"\x8f\x03\n\x15TaskScheduleRequestPb\x12\x13\n\x0btask_def_id\x18\x01 \x01(\t\x12\x15\n\rtask_def_name\x18\x02 \x01(\t\x12\x19\n\x11thread_run_number\x18\x04 \x01(\x05\x12\x17\n\x0ftask_run_number\x18\x05 \x01(\x05\x12\x19\n\x11task_run_position\x18\x06 \x01(\x05\x12\x11\n\twf_run_id\x18\x07 \x01(\t\x12\x19\n\x11reply_kafka_topic\x18\x08 \x01(\t\x12\x12\n\nwf_spec_id\x18\t \x01(\t\x12\x16\n\x0e\x61ttempt_number\x18\n \x01(\x05\x12\x11\n\tnode_name\x18\x0b \x01(\t\x12\x41\n\tvariables\x18\x0c \x03(\x0b\x32..lh_proto.TaskScheduleRequestPb.VariablesEntry\x1aK\n\x0eVariablesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12(\n\x05value\x18\x02 \x01(\x0b\x32\x19.lh_proto.VariableValuePb:\x02\x38\x01\"\x8d\x01\n\x12TaskStartedEventPb\x12\x19\n\x11thread_run_number\x18\x01 \x01(\x05\x12\x17\n\x0ftask_run_number\x18\x02 \x01(\x05\x12\x19\n\x11task_run_position\x18\x03 \x01(\x05\x12(\n\x04time\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"\xa0\x02\n\x11TaskResultEventPb\x12\x19\n\x11thread_run_number\x18\x01 \x01(\x05\x12\x17\n\x0ftask_run_number\x18\x02 \x01(\x05\x12\x19\n\x11task_run_position\x18\x03 \x01(\x05\x12(\n\x04time\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12/\n\x0bresult_code\x18\x05 \x01(\x0e\x32\x1a.lh_proto.TaskResultCodePb\x12.\n\x06output\x18\x06 \x01(\x0b\x32\x19.lh_proto.VariableValuePbH\x00\x88\x01\x01\x12\x17\n\nlog_output\x18\x07 \x01(\x0cH\x01\x88\x01\x01\x42\t\n\x07_outputB\r\n\x0b_log_output\"\xcd\x02\n\x0cWfRunEventPb\x12\x11\n\twf_run_id\x18\x01 \x01(\t\x12\x17\n\nwf_spec_id\x18\x02 \x01(\tH\x01\x88\x01\x01\x12(\n\x04time\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12/\n\x0brun_request\x18\x04 \x01(\x0b\x32\x18.lh_proto.WfRunRequestPbH\x00\x12\x35\n\rstarted_event\x18\x05 \x01(\x0b\x32\x1c.lh_proto.TaskStartedEventPbH\x00\x12\x32\n\x0btask_result\x18\x06 \x01(\x0b\x32\x1b.lh_proto.TaskResultEventPbH\x00\x12\x33\n\x0e\x65xternal_event\x18\x07 \x01(\x0b\x32\x19.lh_proto.ExternalEventPbH\x00\x42\x07\n\x05\x65ventB\r\n\x0b_wf_spec_id\"\x97\x01\n\tLHTimerPb\x12\x33\n\x0fmaturation_time\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0b\n\x03key\x18\x02 \x01(\t\x12\r\n\x05topic\x18\x03 \x01(\t\x12.\n\x0cwf_run_event\x18\x04 \x01(\x0b\x32\x16.lh_proto.WfRunEventPbH\x00\x42\t\n\x07payload\"\xbe\x01\n\x0cLHResponsePb\x12(\n\x04\x63ode\x18\x01 \x01(\x0e\x32\x1a.lh_proto.LHResponseCodePb\x12\x0f\n\x02id\x18\x02 \x01(\tH\x00\x88\x01\x01\x12\x14\n\x07message\x18\x03 \x01(\tH\x01\x88\x01\x01\x12\x13\n\x06result\x18\x04 \x01(\x0cH\x02\x88\x01\x01\x12\x19\n\x0cresult_class\x18\x05 \x01(\tH\x03\x88\x01\x01\x42\x05\n\x03_idB\n\n\x08_messageB\t\n\x07_resultB\x0f\n\r_result_class\"\x83\x01\n\x11POSTableRequestPb\x12%\n\x04type\x18\x01 \x01(\x0e\x32\x17.lh_proto.RequestTypePb\x12\x11\n\tstore_key\x18\x02 \x01(\t\x12\x12\n\nrequest_id\x18\x03 \x01(\t\x12\x14\n\x07payload\x18\x04 \x01(\x0cH\x00\x88\x01\x01\x42\n\n\x08_payload\"<\n\x0fRangeResponsePb\x12\x0b\n\x03ids\x18\x01 \x03(\t\x12\x12\n\x05token\x18\x02 \x01(\tH\x00\x88\x01\x01\x42\x08\n\x06_token\"\'\n\x0b\x41ttributePb\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0b\n\x03val\x18\x02 \x01(\t\"\x90\x01\n\nIndexKeyPb\x12)\n\nattributes\x18\x01 \x03(\x0b\x32\x15.lh_proto.AttributePb\x12*\n\x04type\x18\x02 \x01(\x0e\x32\x1c.lh_proto.GETableClassEnumPb\x12+\n\x07\x63reated\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"!\n\x0cIndexValuePb\x12\x11\n\tstore_key\x18\x01 \x03(\t\"=\n\x05TagPb\x12!\n\x03key\x18\x01 \x01(\x0b\x32\x14.lh_proto.IndexKeyPb\x12\x11\n\tstore_key\x18\x02 \x01(\t\"X\n\x0bTagActionPb\x12\x1e\n\x05\x65ntry\x18\x01 \x01(\x0b\x32\x0f.lh_proto.TagPb\x12)\n\x06\x61\x63tion\x18\x02 \x01(\x0e\x32\x19.lh_proto.IndexActionEnum\"O\n\x0eGETableEntryPb\x12\r\n\x05\x65ntry\x18\x01 \x01(\x0c\x12\x11\n\tpartition\x18\x02 \x01(\x05\x12\x1b\n\x13last_updated_offset\x18\x03 \x01(\x03\"*\n\x06TagsPb\x12 \n\x07\x65ntries\x18\x01 \x03(\x0b\x32\x0f.lh_proto.TagPb\"\x87\x01\n\x1aRemoteStoreQueryResponsePb\x12\x30\n\x04\x63ode\x18\x01 \x01(\x0e\x32\".lh_proto.RemoteStoreQueryStatusPb\x12\x13\n\x06result\x18\x02 \x01(\x0cH\x00\x88\x01\x01\x12\x17\n\x0f\x61pproximate_lag\x18\x03 \x01(\x03\x42\t\n\x07_result*Z\n\nLHStatusPb\x12\x0c\n\x08STARTING\x10\x00\x12\x0b\n\x07RUNNING\x10\x01\x12\r\n\tCOMPLETED\x10\x02\x12\x0b\n\x07HALTING\x10\x03\x12\n\n\x06HALTED\x10\x04\x12\t\n\x05\x45RROR\x10\x05*i\n\x0eVariableTypePb\x12\x0c\n\x08JSON_OBJ\x10\x00\x12\x0c\n\x08JSON_ARR\x10\x01\x12\n\n\x06\x44OUBLE\x10\x02\x12\x08\n\x04\x42OOL\x10\x03\x12\x07\n\x03STR\x10\x04\x12\x07\n\x03INT\x10\x05\x12\t\n\x05\x42YTES\x10\x06\x12\x08\n\x04VOID\x10\x07*c\n\x10TaskResultCodePb\x12\x0b\n\x07SUCCESS\x10\x00\x12\x0b\n\x07TIMEOUT\x10\x01\x12\n\n\x06\x46\x41ILED\x10\x02\x12\x11\n\rVAR_SUB_ERROR\x10\x03\x12\x16\n\x12VAR_MUTATION_ERROR\x10\x04*\x86\x01\n\x0c\x43omparatorPb\x12\r\n\tLESS_THAN\x10\x00\x12\x10\n\x0cGREATER_THAN\x10\x01\x12\x10\n\x0cLESS_THAN_EQ\x10\x02\x12\x13\n\x0fGREATER_THAN_EQ\x10\x03\x12\n\n\x06\x45QUALS\x10\x04\x12\x0e\n\nNOT_EQUALS\x10\x05\x12\x06\n\x02IN\x10\x06\x12\n\n\x06NOT_IN\x10\x07*\x9a\x01\n\x16VariableMutationTypePb\x12\n\n\x06\x41SSIGN\x10\x00\x12\x07\n\x03\x41\x44\x44\x10\x01\x12\n\n\x06\x45XTEND\x10\x02\x12\x0c\n\x08SUBTRACT\x10\x03\x12\x0c\n\x08MULTIPLY\x10\x04\x12\n\n\x06\x44IVIDE\x10\x05\x12\x15\n\x11REMOVE_IF_PRESENT\x10\x06\x12\x10\n\x0cREMOVE_INDEX\x10\x07\x12\x0e\n\nREMOVE_KEY\x10\x08*r\n\x10LHResponseCodePb\x12\x06\n\x02OK\x10\x00\x12\x14\n\x10\x43ONNECTION_ERROR\x10\x01\x12\x13\n\x0fNOT_FOUND_ERROR\x10\x02\x12\x15\n\x11\x42\x41\x44_REQUEST_ERROR\x10\x03\x12\x14\n\x10VALIDATION_ERROR\x10\x04*%\n\rRequestTypePb\x12\x08\n\x04POST\x10\x00\x12\n\n\x06\x44\x45LETE\x10\x01*\x7f\n\x12GETableClassEnumPb\x12\x0c\n\x08TASK_DEF\x10\x00\x12\x0b\n\x07WF_SPEC\x10\x01\x12\n\n\x06WF_RUN\x10\x02\x12\x0e\n\nTHREAD_RUN\x10\x03\x12\x0c\n\x08TASK_RUN\x10\x04\x12\x0c\n\x08VARIABLE\x10\x05\x12\x16\n\x12\x45XTERNAL_EVENT_DEF\x10\x06*=\n\x0fIndexActionEnum\x12\x14\n\x10\x43REATE_IDX_ENTRY\x10\x00\x12\x14\n\x10\x44\x45LETE_IDX_ENTRY\x10\x01*b\n\x18RemoteStoreQueryStatusPb\x12\n\n\x06RSQ_OK\x10\x00\x12\x11\n\rRSQ_NOT_FOUND\x10\x01\x12\x10\n\x0cRSQ_MIGRATED\x10\x02\x12\x15\n\x11RSQ_NOT_AVAILABLE\x10\x03\x42(\n\x1bio.littlehorse.common.protoP\x01Z\x07.;modelb\x06proto3'
+  serialized_pb=b'\n\x0elh_proto.proto\x12\x08lh_proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x8f\x02\n\x0fVariableValuePb\x12&\n\x04type\x18\x01 \x01(\x0e\x32\x18.lh_proto.VariableTypePb\x12\x15\n\x08json_obj\x18\x02 \x01(\tH\x00\x88\x01\x01\x12\x15\n\x08json_arr\x18\x03 \x01(\tH\x01\x88\x01\x01\x12\x13\n\x06\x64ouble\x18\x04 \x01(\x01H\x02\x88\x01\x01\x12\x11\n\x04\x62ool\x18\x05 \x01(\x08H\x03\x88\x01\x01\x12\x10\n\x03str\x18\x06 \x01(\tH\x04\x88\x01\x01\x12\x10\n\x03int\x18\x07 \x01(\x03H\x05\x88\x01\x01\x12\x12\n\x05\x62ytes\x18\x08 \x01(\x0cH\x06\x88\x01\x01\x42\x0b\n\t_json_objB\x0b\n\t_json_arrB\t\n\x07_doubleB\x07\n\x05_boolB\x06\n\x04_strB\x06\n\x04_intB\x08\n\x06_bytes\"\x9c\x01\n\nVariablePb\x12(\n\x05value\x18\x01 \x01(\x0b\x32\x19.lh_proto.VariableValuePb\x12\x11\n\twf_run_id\x18\x02 \x01(\t\x12\x19\n\x11thread_run_number\x18\x03 \x01(\x05\x12\x0c\n\x04name\x18\x04 \x01(\t\x12(\n\x04\x64\x61te\x18\x05 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"\x9a\x01\n\x0f\x45\x64geConditionPb\x12*\n\ncomparator\x18\x01 \x01(\x0e\x32\x16.lh_proto.ComparatorPb\x12,\n\x04left\x18\x02 \x01(\x0b\x32\x1e.lh_proto.VariableAssignmentPb\x12-\n\x05right\x18\x03 \x01(\x0b\x32\x1e.lh_proto.VariableAssignmentPb\"a\n\x06\x45\x64gePb\x12\x16\n\x0esink_node_name\x18\x01 \x01(\t\x12\x31\n\tcondition\x18\x02 \x01(\x0b\x32\x19.lh_proto.EdgeConditionPbH\x00\x88\x01\x01\x42\x0c\n\n_condition\"\xdc\x01\n\x14VariableAssignmentPb\x12\x16\n\tjson_path\x18\x01 \x01(\tH\x01\x88\x01\x01\x12\x35\n\rdefault_value\x18\x02 \x01(\x0b\x32\x19.lh_proto.VariableValuePbH\x02\x88\x01\x01\x12\x17\n\rvariable_name\x18\x03 \x01(\tH\x00\x12\x32\n\rliteral_value\x18\x04 \x01(\x0b\x32\x19.lh_proto.VariableValuePbH\x00\x42\x08\n\x06sourceB\x0c\n\n_json_pathB\x10\n\x0e_default_value\"\xca\x02\n\x12VariableMutationPb\x12\x10\n\x08lhs_name\x18\x01 \x01(\t\x12\x1a\n\rlhs_json_path\x18\x02 \x01(\tH\x01\x88\x01\x01\x12\x33\n\toperation\x18\x03 \x01(\x0e\x32 .lh_proto.VariableMutationTypePb\x12\x39\n\x0fsource_variable\x18\x04 \x01(\x0b\x32\x1e.lh_proto.VariableAssignmentPbH\x00\x12\x32\n\rliteral_value\x18\x05 \x01(\x0b\x32\x19.lh_proto.VariableValuePbH\x00\x12\x15\n\x0bnode_output\x18\x06 \x01(\x08H\x00\x12\x1a\n\rrhs_json_path\x18\x07 \x01(\tH\x02\x88\x01\x01\x42\x0b\n\trhs_valueB\x10\n\x0e_lhs_json_pathB\x10\n\x0e_rhs_json_path\"\xdc\x02\n\x06NodePb\x12(\n\x0eoutgoing_edges\x18\x01 \x03(\x0b\x32\x10.lh_proto.EdgePb\x12\x38\n\x12variable_mutations\x18\x02 \x03(\x0b\x32\x1c.lh_proto.VariableMutationPb\x12/\n\routput_schema\x18\x03 \x01(\x0b\x32\x18.lh_proto.OutputSchemaPb\x12\x30\n\nentrypoint\x18\x05 \x01(\x0b\x32\x1a.lh_proto.EntrypointNodePbH\x00\x12$\n\x04\x65xit\x18\x06 \x01(\x0b\x32\x14.lh_proto.ExitNodePbH\x00\x12$\n\x04task\x18\x07 \x01(\x0b\x32\x14.lh_proto.TaskNodePbH\x00\x12\x37\n\x0e\x65xternal_event\x18\x08 \x01(\x0b\x32\x1d.lh_proto.ExternalEventNodePbH\x00\x42\x06\n\x04node\"\xf7\x01\n\nTaskNodePb\x12\x15\n\rtask_def_name\x18\x01 \x01(\t\x12\x37\n\x0ftimeout_seconds\x18\x02 \x01(\x0b\x32\x1e.lh_proto.VariableAssignmentPb\x12\x0f\n\x07retries\x18\x03 \x01(\x05\x12\x36\n\tvariables\x18\x04 \x03(\x0b\x32#.lh_proto.TaskNodePb.VariablesEntry\x1aP\n\x0eVariablesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12-\n\x05value\x18\x02 \x01(\x0b\x32\x1e.lh_proto.VariableAssignmentPb:\x02\x38\x01\"6\n\x13\x45xternalEventNodePb\x12\x1f\n\x17\x65xternal_event_def_name\x18\x01 \x01(\t\"\x12\n\x10\x45ntrypointNodePb\"\x0c\n\nExitNodePb\"\x8e\x01\n\rVariableDefPb\x12&\n\x04type\x18\x01 \x01(\x0e\x32\x18.lh_proto.VariableTypePb\x12\x33\n\x0b\x64\x65\x66\x61ult_val\x18\x02 \x01(\x0b\x32\x19.lh_proto.VariableValuePbH\x00\x88\x01\x01\x12\x10\n\x08required\x18\x03 \x01(\x08\x42\x0e\n\x0c_default_val\"\x8f\x02\n\x0cThreadSpecPb\x12\x30\n\x05nodes\x18\x01 \x03(\x0b\x32!.lh_proto.ThreadSpecPb.NodesEntry\x12?\n\rvariable_defs\x18\x02 \x03(\x0b\x32(.lh_proto.ThreadSpecPb.VariableDefsEntry\x1a>\n\nNodesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x1f\n\x05value\x18\x02 \x01(\x0b\x32\x10.lh_proto.NodePb:\x02\x38\x01\x1aL\n\x11VariableDefsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12&\n\x05value\x18\x02 \x01(\x0b\x32\x17.lh_proto.VariableDefPb:\x02\x38\x01\"\xee\x02\n\x08WfSpecPb\x12\n\n\x02id\x18\x01 \x01(\t\x12.\n\ncreated_at\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12.\n\nupdated_at\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x39\n\x0cthread_specs\x18\x04 \x03(\x0b\x32#.lh_proto.WfSpecPb.ThreadSpecsEntry\x12\x1e\n\x16\x65ntrypoint_thread_name\x18\x05 \x01(\t\x12$\n\x06status\x18\x06 \x01(\x0e\x32\x14.lh_proto.LHStatusPb\x12\x0c\n\x04name\x18\x07 \x01(\t\x12\x1b\n\x13last_updated_offset\x18\x08 \x01(\x03\x1aJ\n\x10ThreadSpecsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12%\n\x05value\x18\x02 \x01(\x0b\x32\x16.lh_proto.ThreadSpecPb:\x02\x38\x01\"?\n\x0eOutputSchemaPb\x12-\n\x0boutput_type\x18\x01 \x01(\x0e\x32\x18.lh_proto.VariableTypePb\"\x86\x02\n\tTaskDefPb\x12\x0c\n\x04name\x18\x01 \x01(\t\x12.\n\ncreated_at\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12/\n\routput_schema\x18\x03 \x01(\x0b\x32\x18.lh_proto.OutputSchemaPb\x12<\n\rrequired_vars\x18\x04 \x03(\x0b\x32%.lh_proto.TaskDefPb.RequiredVarsEntry\x1aL\n\x11RequiredVarsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12&\n\x05value\x18\x02 \x01(\x0b\x32\x17.lh_proto.VariableDefPb:\x02\x38\x01\"R\n\x12\x45xternalEventDefPb\x12\x0c\n\x04name\x18\x01 \x01(\t\x12.\n\ncreated_at\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"\x9d\x02\n\x07WfRunPb\x12\n\n\x02id\x18\x01 \x01(\t\x12\x12\n\nwf_spec_id\x18\x02 \x01(\t\x12\x14\n\x0cwf_spec_name\x18\x03 \x01(\t\x12$\n\x06status\x18\x04 \x01(\x0e\x32\x14.lh_proto.LHStatusPb\x12\x1a\n\x12last_update_offset\x18\x05 \x01(\x03\x12.\n\nstart_time\x18\x06 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\x08\x65nd_time\x18\x07 \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x00\x88\x01\x01\x12*\n\x0bthread_runs\x18\x08 \x03(\x0b\x32\x15.lh_proto.ThreadRunPbB\x0b\n\t_end_time\"\x87\x03\n\x0bThreadRunPb\x12\x11\n\twf_run_id\x18\x01 \x01(\t\x12\x0e\n\x06number\x18\x02 \x01(\x05\x12$\n\x06status\x18\x03 \x01(\x0e\x32\x14.lh_proto.LHStatusPb\x12\x12\n\nwf_spec_id\x18\x04 \x01(\t\x12\x18\n\x10thread_spec_name\x18\x05 \x01(\t\x12.\n\nstart_time\x18\x06 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\x08\x65nd_time\x18\x07 \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x00\x88\x01\x01\x12\x1d\n\x15\x63urrent_node_position\x18\x08 \x01(\x05\x12\x1a\n\rerror_message\x18\t \x01(\tH\x01\x88\x01\x01\x12\x34\n\x0bresult_code\x18\n \x01(\x0e\x32\x1a.lh_proto.TaskResultCodePbH\x02\x88\x01\x01\x42\x0b\n\t_end_timeB\x10\n\x0e_error_messageB\x0e\n\x0c_result_code\"\x80\x05\n\tNodeRunPb\x12\x11\n\twf_run_id\x18\x01 \x01(\t\x12\x19\n\x11thread_run_number\x18\x02 \x01(\x05\x12\x10\n\x08position\x18\x03 \x01(\x05\x12\x16\n\x0e\x61ttempt_number\x18\x04 \x01(\x05\x12\x0e\n\x06number\x18\x05 \x01(\x05\x12$\n\x06status\x18\x06 \x01(\x0e\x32\x14.lh_proto.LHStatusPb\x12\x30\n\x0c\x61rrival_time\x18\x07 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\x08\x65nd_time\x18\x08 \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x01\x88\x01\x01\x12\x12\n\nwf_spec_id\x18\t \x01(\t\x12\x18\n\x10thread_spec_name\x18\n \x01(\t\x12\x11\n\tnode_name\x18\x0b \x01(\t\x12\x34\n\x0bresult_code\x18\x0c \x01(\x0e\x32\x1a.lh_proto.TaskResultCodePbH\x02\x88\x01\x01\x12\x1a\n\rerror_message\x18\r \x01(\tH\x03\x88\x01\x01\x12#\n\x04task\x18\x0e \x01(\x0b\x32\x13.lh_proto.TaskRunPbH\x00\x12\x36\n\x0e\x65xternal_event\x18\x0f \x01(\x0b\x32\x1c.lh_proto.ExternalEventRunPbH\x00\x12/\n\nentrypoint\x18\x10 \x01(\x0b\x32\x19.lh_proto.EntrypointRunPbH\x00\x12#\n\x04\x65xit\x18\x11 \x01(\x0b\x32\x13.lh_proto.ExitRunPbH\x00\x42\x0b\n\tnode_typeB\x0b\n\t_end_timeB\x0e\n\x0c_result_codeB\x10\n\x0e_error_message\"\xdf\x01\n\tTaskRunPb\x12\x16\n\x0e\x61ttempt_number\x18\x01 \x01(\x05\x12.\n\x06output\x18\x02 \x01(\x0b\x32\x19.lh_proto.VariableValuePbH\x00\x88\x01\x01\x12\x17\n\nlog_output\x18\x03 \x01(\x0cH\x01\x88\x01\x01\x12\x33\n\nstart_time\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x02\x88\x01\x01\x12\x13\n\x0btask_def_id\x18\x05 \x01(\tB\t\n\x07_outputB\r\n\x0b_log_outputB\r\n\x0b_start_time\"\x11\n\x0f\x45ntrypointRunPb\"\x0b\n\tExitRunPb\"\xaf\x01\n\x12\x45xternalEventRunPb\x12\x1f\n\x17\x65xternal_event_def_name\x18\x01 \x01(\t\x12\x33\n\nevent_time\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x00\x88\x01\x01\x12\x1e\n\x11\x65xternal_event_id\x18\x03 \x01(\tH\x01\x88\x01\x01\x42\r\n\x0b_event_timeB\x14\n\x12_external_event_id\"\xac\x02\n\x0f\x45xternalEventPb\x12\x11\n\twf_run_id\x18\x01 \x01(\t\x12\x1f\n\x17\x65xternal_event_def_name\x18\x02 \x01(\t\x12\x0c\n\x04guid\x18\x03 \x01(\t\x12.\n\ncreated_at\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12*\n\x07\x63ontent\x18\x05 \x01(\x0b\x32\x19.lh_proto.VariableValuePb\x12\x1e\n\x11thread_run_number\x18\x06 \x01(\x05H\x00\x88\x01\x01\x12\x1e\n\x11task_run_position\x18\x07 \x01(\x05H\x01\x88\x01\x01\x12\x0f\n\x07\x63laimed\x18\x08 \x01(\x08\x42\x14\n\x12_thread_run_numberB\x14\n\x12_task_run_position\"\xf7\x01\n\x0eNodeRunStatePb\x12\x11\n\tnode_name\x18\x01 \x01(\t\x12\x16\n\x0e\x61ttempt_number\x18\x02 \x01(\x05\x12\x10\n\x08position\x18\x03 \x01(\x05\x12\x0e\n\x06number\x18\x04 \x01(\x05\x12$\n\x06status\x18\x05 \x01(\x0e\x32\x14.lh_proto.LHStatusPb\x12\x34\n\x0bresult_code\x18\x06 \x01(\x0e\x32\x1a.lh_proto.TaskResultCodePbH\x00\x88\x01\x01\x12\x1a\n\rerror_message\x18\x07 \x01(\tH\x01\x88\x01\x01\x42\x0e\n\x0c_result_codeB\x10\n\x0e_error_message\"\xd3\x01\n\x0eWfRunRequestPb\x12\x16\n\twf_run_id\x18\x01 \x01(\tH\x00\x88\x01\x01\x12\x12\n\nwf_spec_id\x18\x02 \x01(\t\x12:\n\tvariables\x18\x03 \x03(\x0b\x32\'.lh_proto.WfRunRequestPb.VariablesEntry\x1aK\n\x0eVariablesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12(\n\x05value\x18\x02 \x01(\x0b\x32\x19.lh_proto.VariableValuePb:\x02\x38\x01\x42\x0c\n\n_wf_run_id\"\x8f\x03\n\x15TaskScheduleRequestPb\x12\x13\n\x0btask_def_id\x18\x01 \x01(\t\x12\x15\n\rtask_def_name\x18\x02 \x01(\t\x12\x19\n\x11thread_run_number\x18\x04 \x01(\x05\x12\x17\n\x0ftask_run_number\x18\x05 \x01(\x05\x12\x19\n\x11task_run_position\x18\x06 \x01(\x05\x12\x11\n\twf_run_id\x18\x07 \x01(\t\x12\x19\n\x11reply_kafka_topic\x18\x08 \x01(\t\x12\x12\n\nwf_spec_id\x18\t \x01(\t\x12\x16\n\x0e\x61ttempt_number\x18\n \x01(\x05\x12\x11\n\tnode_name\x18\x0b \x01(\t\x12\x41\n\tvariables\x18\x0c \x03(\x0b\x32..lh_proto.TaskScheduleRequestPb.VariablesEntry\x1aK\n\x0eVariablesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12(\n\x05value\x18\x02 \x01(\x0b\x32\x19.lh_proto.VariableValuePb:\x02\x38\x01\"\x8d\x01\n\x12TaskStartedEventPb\x12\x19\n\x11thread_run_number\x18\x01 \x01(\x05\x12\x17\n\x0ftask_run_number\x18\x02 \x01(\x05\x12\x19\n\x11task_run_position\x18\x03 \x01(\x05\x12(\n\x04time\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"\xa0\x02\n\x11TaskResultEventPb\x12\x19\n\x11thread_run_number\x18\x01 \x01(\x05\x12\x17\n\x0ftask_run_number\x18\x02 \x01(\x05\x12\x19\n\x11task_run_position\x18\x03 \x01(\x05\x12(\n\x04time\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12/\n\x0bresult_code\x18\x05 \x01(\x0e\x32\x1a.lh_proto.TaskResultCodePb\x12.\n\x06output\x18\x06 \x01(\x0b\x32\x19.lh_proto.VariableValuePbH\x00\x88\x01\x01\x12\x17\n\nlog_output\x18\x07 \x01(\x0cH\x01\x88\x01\x01\x42\t\n\x07_outputB\r\n\x0b_log_output\"\x83\x03\n\x0cWfRunEventPb\x12\x11\n\twf_run_id\x18\x01 \x01(\t\x12\x17\n\nwf_spec_id\x18\x02 \x01(\tH\x01\x88\x01\x01\x12(\n\x04time\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12/\n\x0brun_request\x18\x04 \x01(\x0b\x32\x18.lh_proto.WfRunRequestPbH\x00\x12\x35\n\rstarted_event\x18\x05 \x01(\x0b\x32\x1c.lh_proto.TaskStartedEventPbH\x00\x12\x32\n\x0btask_result\x18\x06 \x01(\x0b\x32\x1b.lh_proto.TaskResultEventPbH\x00\x12\x33\n\x0e\x65xternal_event\x18\x07 \x01(\x0b\x32\x19.lh_proto.ExternalEventPbH\x00\x12\x1e\n\x11thread_run_number\x18\x08 \x01(\x05H\x02\x88\x01\x01\x42\x07\n\x05\x65ventB\r\n\x0b_wf_spec_idB\x14\n\x12_thread_run_number\"\x97\x01\n\tLHTimerPb\x12\x33\n\x0fmaturation_time\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0b\n\x03key\x18\x02 \x01(\t\x12\r\n\x05topic\x18\x03 \x01(\t\x12.\n\x0cwf_run_event\x18\x04 \x01(\x0b\x32\x16.lh_proto.WfRunEventPbH\x00\x42\t\n\x07payload\"\xbe\x01\n\x0cLHResponsePb\x12(\n\x04\x63ode\x18\x01 \x01(\x0e\x32\x1a.lh_proto.LHResponseCodePb\x12\x0f\n\x02id\x18\x02 \x01(\tH\x00\x88\x01\x01\x12\x14\n\x07message\x18\x03 \x01(\tH\x01\x88\x01\x01\x12\x13\n\x06result\x18\x04 \x01(\x0cH\x02\x88\x01\x01\x12\x19\n\x0cresult_class\x18\x05 \x01(\tH\x03\x88\x01\x01\x42\x05\n\x03_idB\n\n\x08_messageB\t\n\x07_resultB\x0f\n\r_result_class\"\x83\x01\n\x11POSTableRequestPb\x12%\n\x04type\x18\x01 \x01(\x0e\x32\x17.lh_proto.RequestTypePb\x12\x11\n\tstore_key\x18\x02 \x01(\t\x12\x12\n\nrequest_id\x18\x03 \x01(\t\x12\x14\n\x07payload\x18\x04 \x01(\x0cH\x00\x88\x01\x01\x42\n\n\x08_payload\"<\n\x0fRangeResponsePb\x12\x0b\n\x03ids\x18\x01 \x03(\t\x12\x12\n\x05token\x18\x02 \x01(\tH\x00\x88\x01\x01\x42\x08\n\x06_token\"\'\n\x0b\x41ttributePb\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0b\n\x03val\x18\x02 \x01(\t\"\x90\x01\n\nIndexKeyPb\x12)\n\nattributes\x18\x01 \x03(\x0b\x32\x15.lh_proto.AttributePb\x12*\n\x04type\x18\x02 \x01(\x0e\x32\x1c.lh_proto.GETableClassEnumPb\x12+\n\x07\x63reated\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"!\n\x0cIndexValuePb\x12\x11\n\tstore_key\x18\x01 \x03(\t\"=\n\x05TagPb\x12!\n\x03key\x18\x01 \x01(\x0b\x32\x14.lh_proto.IndexKeyPb\x12\x11\n\tstore_key\x18\x02 \x01(\t\"X\n\x0bTagActionPb\x12\x1e\n\x05\x65ntry\x18\x01 \x01(\x0b\x32\x0f.lh_proto.TagPb\x12)\n\x06\x61\x63tion\x18\x02 \x01(\x0e\x32\x19.lh_proto.IndexActionEnum\"O\n\x0eGETableEntryPb\x12\r\n\x05\x65ntry\x18\x01 \x01(\x0c\x12\x11\n\tpartition\x18\x02 \x01(\x05\x12\x1b\n\x13last_updated_offset\x18\x03 \x01(\x03\"*\n\x06TagsPb\x12 \n\x07\x65ntries\x18\x01 \x03(\x0b\x32\x0f.lh_proto.TagPb\"\x87\x01\n\x1aRemoteStoreQueryResponsePb\x12\x30\n\x04\x63ode\x18\x01 \x01(\x0e\x32\".lh_proto.RemoteStoreQueryStatusPb\x12\x13\n\x06result\x18\x02 \x01(\x0cH\x00\x88\x01\x01\x12\x17\n\x0f\x61pproximate_lag\x18\x03 \x01(\x03\x42\t\n\x07_result*Z\n\nLHStatusPb\x12\x0c\n\x08STARTING\x10\x00\x12\x0b\n\x07RUNNING\x10\x01\x12\r\n\tCOMPLETED\x10\x02\x12\x0b\n\x07HALTING\x10\x03\x12\n\n\x06HALTED\x10\x04\x12\t\n\x05\x45RROR\x10\x05*i\n\x0eVariableTypePb\x12\x0c\n\x08JSON_OBJ\x10\x00\x12\x0c\n\x08JSON_ARR\x10\x01\x12\n\n\x06\x44OUBLE\x10\x02\x12\x08\n\x04\x42OOL\x10\x03\x12\x07\n\x03STR\x10\x04\x12\x07\n\x03INT\x10\x05\x12\t\n\x05\x42YTES\x10\x06\x12\x08\n\x04VOID\x10\x07*c\n\x10TaskResultCodePb\x12\x0b\n\x07SUCCESS\x10\x00\x12\x0b\n\x07TIMEOUT\x10\x01\x12\n\n\x06\x46\x41ILED\x10\x02\x12\x11\n\rVAR_SUB_ERROR\x10\x03\x12\x16\n\x12VAR_MUTATION_ERROR\x10\x04*\x86\x01\n\x0c\x43omparatorPb\x12\r\n\tLESS_THAN\x10\x00\x12\x10\n\x0cGREATER_THAN\x10\x01\x12\x10\n\x0cLESS_THAN_EQ\x10\x02\x12\x13\n\x0fGREATER_THAN_EQ\x10\x03\x12\n\n\x06\x45QUALS\x10\x04\x12\x0e\n\nNOT_EQUALS\x10\x05\x12\x06\n\x02IN\x10\x06\x12\n\n\x06NOT_IN\x10\x07*\x9a\x01\n\x16VariableMutationTypePb\x12\n\n\x06\x41SSIGN\x10\x00\x12\x07\n\x03\x41\x44\x44\x10\x01\x12\n\n\x06\x45XTEND\x10\x02\x12\x0c\n\x08SUBTRACT\x10\x03\x12\x0c\n\x08MULTIPLY\x10\x04\x12\n\n\x06\x44IVIDE\x10\x05\x12\x15\n\x11REMOVE_IF_PRESENT\x10\x06\x12\x10\n\x0cREMOVE_INDEX\x10\x07\x12\x0e\n\nREMOVE_KEY\x10\x08*r\n\x10LHResponseCodePb\x12\x06\n\x02OK\x10\x00\x12\x14\n\x10\x43ONNECTION_ERROR\x10\x01\x12\x13\n\x0fNOT_FOUND_ERROR\x10\x02\x12\x15\n\x11\x42\x41\x44_REQUEST_ERROR\x10\x03\x12\x14\n\x10VALIDATION_ERROR\x10\x04*%\n\rRequestTypePb\x12\x08\n\x04POST\x10\x00\x12\n\n\x06\x44\x45LETE\x10\x01*\x7f\n\x12GETableClassEnumPb\x12\x0c\n\x08TASK_DEF\x10\x00\x12\x0b\n\x07WF_SPEC\x10\x01\x12\n\n\x06WF_RUN\x10\x02\x12\x0e\n\nTHREAD_RUN\x10\x03\x12\x0c\n\x08TASK_RUN\x10\x04\x12\x0c\n\x08VARIABLE\x10\x05\x12\x16\n\x12\x45XTERNAL_EVENT_DEF\x10\x06*=\n\x0fIndexActionEnum\x12\x14\n\x10\x43REATE_IDX_ENTRY\x10\x00\x12\x14\n\x10\x44\x45LETE_IDX_ENTRY\x10\x01*b\n\x18RemoteStoreQueryStatusPb\x12\n\n\x06RSQ_OK\x10\x00\x12\x11\n\rRSQ_NOT_FOUND\x10\x01\x12\x10\n\x0cRSQ_MIGRATED\x10\x02\x12\x15\n\x11RSQ_NOT_AVAILABLE\x10\x03\x42(\n\x1bio.littlehorse.common.protoP\x01Z\x07.;modelb\x06proto3'
   ,
   dependencies=[google_dot_protobuf_dot_timestamp__pb2.DESCRIPTOR,])
 
@@ -65,8 +65,8 @@ _LHSTATUSPB = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=9855,
-  serialized_end=9945,
+  serialized_start=8136,
+  serialized_end=8226,
 )
 _sym_db.RegisterEnumDescriptor(_LHSTATUSPB)
 
@@ -121,8 +121,8 @@ _VARIABLETYPEPB = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=9947,
-  serialized_end=10052,
+  serialized_start=8228,
+  serialized_end=8333,
 )
 _sym_db.RegisterEnumDescriptor(_VARIABLETYPEPB)
 
@@ -162,8 +162,8 @@ _TASKRESULTCODEPB = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=10054,
-  serialized_end=10153,
+  serialized_start=8335,
+  serialized_end=8434,
 )
 _sym_db.RegisterEnumDescriptor(_TASKRESULTCODEPB)
 
@@ -218,8 +218,8 @@ _COMPARATORPB = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=10156,
-  serialized_end=10290,
+  serialized_start=8437,
+  serialized_end=8571,
 )
 _sym_db.RegisterEnumDescriptor(_COMPARATORPB)
 
@@ -279,8 +279,8 @@ _VARIABLEMUTATIONTYPEPB = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=10293,
-  serialized_end=10447,
+  serialized_start=8574,
+  serialized_end=8728,
 )
 _sym_db.RegisterEnumDescriptor(_VARIABLEMUTATIONTYPEPB)
 
@@ -320,8 +320,8 @@ _LHRESPONSECODEPB = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=10449,
-  serialized_end=10563,
+  serialized_start=8730,
+  serialized_end=8844,
 )
 _sym_db.RegisterEnumDescriptor(_LHRESPONSECODEPB)
 
@@ -346,8 +346,8 @@ _REQUESTTYPEPB = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=10565,
-  serialized_end=10602,
+  serialized_start=8846,
+  serialized_end=8883,
 )
 _sym_db.RegisterEnumDescriptor(_REQUESTTYPEPB)
 
@@ -397,8 +397,8 @@ _GETABLECLASSENUMPB = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=10604,
-  serialized_end=10731,
+  serialized_start=8885,
+  serialized_end=9012,
 )
 _sym_db.RegisterEnumDescriptor(_GETABLECLASSENUMPB)
 
@@ -423,8 +423,8 @@ _INDEXACTIONENUM = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=10733,
-  serialized_end=10794,
+  serialized_start=9014,
+  serialized_end=9075,
 )
 _sym_db.RegisterEnumDescriptor(_INDEXACTIONENUM)
 
@@ -459,8 +459,8 @@ _REMOTESTOREQUERYSTATUSPB = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=10796,
-  serialized_end=10894,
+  serialized_start=9077,
+  serialized_end=9175,
 )
 _sym_db.RegisterEnumDescriptor(_REMOTESTOREQUERYSTATUSPB)
 
@@ -700,698 +700,6 @@ _VARIABLEPB = _descriptor.Descriptor(
 )
 
 
-_RUNSTARTOEPB = _descriptor.Descriptor(
-  name='RunStartOePb',
-  full_name='lh_proto.RunStartOePb',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='wf_spec_id', full_name='lh_proto.RunStartOePb.wf_spec_id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='wf_spec_name', full_name='lh_proto.RunStartOePb.wf_spec_name', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=494,
-  serialized_end=550,
-)
-
-
-_THREADSTARTOEPB = _descriptor.Descriptor(
-  name='ThreadStartOePb',
-  full_name='lh_proto.ThreadStartOePb',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='number', full_name='lh_proto.ThreadStartOePb.number', index=0,
-      number=1, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='thread_spec_name', full_name='lh_proto.ThreadStartOePb.thread_spec_name', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=552,
-  serialized_end=611,
-)
-
-
-_NODEREACHEDOEPB = _descriptor.Descriptor(
-  name='NodeReachedOePb',
-  full_name='lh_proto.NodeReachedOePb',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='wf_run_id', full_name='lh_proto.NodeReachedOePb.wf_run_id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='thread_run_number', full_name='lh_proto.NodeReachedOePb.thread_run_number', index=1,
-      number=2, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='node_run_position', full_name='lh_proto.NodeReachedOePb.node_run_position', index=2,
-      number=3, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='node_run_number', full_name='lh_proto.NodeReachedOePb.node_run_number', index=3,
-      number=4, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='node_name', full_name='lh_proto.NodeReachedOePb.node_name', index=4,
-      number=5, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='evt', full_name='lh_proto.NodeReachedOePb.evt', index=5,
-      number=6, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='task', full_name='lh_proto.NodeReachedOePb.task', index=6,
-      number=7, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-    _descriptor.OneofDescriptor(
-      name='node_type', full_name='lh_proto.NodeReachedOePb.node_type',
-      index=0, containing_type=None,
-      create_key=_descriptor._internal_create_key,
-    fields=[]),
-  ],
-  serialized_start=614,
-  serialized_end=847,
-)
-
-
-_TASKSCHEDULEDOEPB_VARIABLESENTRY = _descriptor.Descriptor(
-  name='VariablesEntry',
-  full_name='lh_proto.TaskScheduledOePb.VariablesEntry',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='key', full_name='lh_proto.TaskScheduledOePb.VariablesEntry.key', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='value', full_name='lh_proto.TaskScheduledOePb.VariablesEntry.value', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=b'8\001',
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=988,
-  serialized_end=1063,
-)
-
-_TASKSCHEDULEDOEPB = _descriptor.Descriptor(
-  name='TaskScheduledOePb',
-  full_name='lh_proto.TaskScheduledOePb',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='task_def_id', full_name='lh_proto.TaskScheduledOePb.task_def_id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='task_run_attempt_number', full_name='lh_proto.TaskScheduledOePb.task_run_attempt_number', index=1,
-      number=2, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='variables', full_name='lh_proto.TaskScheduledOePb.variables', index=2,
-      number=3, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_TASKSCHEDULEDOEPB_VARIABLESENTRY, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=850,
-  serialized_end=1063,
-)
-
-
-_WAITFOREVTOEPB = _descriptor.Descriptor(
-  name='WaitForEvtOePb',
-  full_name='lh_proto.WaitForEvtOePb',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='external_event_def_name', full_name='lh_proto.WaitForEvtOePb.external_event_def_name', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1065,
-  serialized_end=1114,
-)
-
-
-_TASKSTARTOEPB = _descriptor.Descriptor(
-  name='TaskStartOePb',
-  full_name='lh_proto.TaskStartOePb',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='thread_run_number', full_name='lh_proto.TaskStartOePb.thread_run_number', index=0,
-      number=1, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='task_run_number', full_name='lh_proto.TaskStartOePb.task_run_number', index=1,
-      number=2, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='task_run_position', full_name='lh_proto.TaskStartOePb.task_run_position', index=2,
-      number=3, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='node_name', full_name='lh_proto.TaskStartOePb.node_name', index=3,
-      number=4, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1116,
-  serialized_end=1229,
-)
-
-
-_NODERESULTOEPB = _descriptor.Descriptor(
-  name='NodeResultOePb',
-  full_name='lh_proto.NodeResultOePb',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='thread_run_number', full_name='lh_proto.NodeResultOePb.thread_run_number', index=0,
-      number=1, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='task_run_number', full_name='lh_proto.NodeResultOePb.task_run_number', index=1,
-      number=2, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='task_run_position', full_name='lh_proto.NodeResultOePb.task_run_position', index=2,
-      number=3, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='result_code', full_name='lh_proto.NodeResultOePb.result_code', index=3,
-      number=4, type=14, cpp_type=8, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='error_message', full_name='lh_proto.NodeResultOePb.error_message', index=4,
-      number=5, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='external_event', full_name='lh_proto.NodeResultOePb.external_event', index=5,
-      number=6, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='task', full_name='lh_proto.NodeResultOePb.task', index=6,
-      number=7, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-    _descriptor.OneofDescriptor(
-      name='node_type', full_name='lh_proto.NodeResultOePb.node_type',
-      index=0, containing_type=None,
-      create_key=_descriptor._internal_create_key,
-    fields=[]),
-    _descriptor.OneofDescriptor(
-      name='_error_message', full_name='lh_proto.NodeResultOePb._error_message',
-      index=1, containing_type=None,
-      create_key=_descriptor._internal_create_key,
-    fields=[]),
-  ],
-  serialized_start=1232,
-  serialized_end=1538,
-)
-
-
-_EXTERNALEVENTRESULTOEPB = _descriptor.Descriptor(
-  name='ExternalEventResultOePb',
-  full_name='lh_proto.ExternalEventResultOePb',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='correlated_event_id', full_name='lh_proto.ExternalEventResultOePb.correlated_event_id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-    _descriptor.OneofDescriptor(
-      name='_correlated_event_id', full_name='lh_proto.ExternalEventResultOePb._correlated_event_id',
-      index=0, containing_type=None,
-      create_key=_descriptor._internal_create_key,
-    fields=[]),
-  ],
-  serialized_start=1540,
-  serialized_end=1623,
-)
-
-
-_TASKRESULTOEPB = _descriptor.Descriptor(
-  name='TaskResultOePb',
-  full_name='lh_proto.TaskResultOePb',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='result', full_name='lh_proto.TaskResultOePb.result', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='log_output', full_name='lh_proto.TaskResultOePb.log_output', index=1,
-      number=2, type=12, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"",
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-    _descriptor.OneofDescriptor(
-      name='_result', full_name='lh_proto.TaskResultOePb._result',
-      index=0, containing_type=None,
-      create_key=_descriptor._internal_create_key,
-    fields=[]),
-    _descriptor.OneofDescriptor(
-      name='_log_output', full_name='lh_proto.TaskResultOePb._log_output',
-      index=1, containing_type=None,
-      create_key=_descriptor._internal_create_key,
-    fields=[]),
-  ],
-  serialized_start=1625,
-  serialized_end=1740,
-)
-
-
-_THREADSTATUSCHANGEOEPB = _descriptor.Descriptor(
-  name='ThreadStatusChangeOePb',
-  full_name='lh_proto.ThreadStatusChangeOePb',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='thread_run_number', full_name='lh_proto.ThreadStatusChangeOePb.thread_run_number', index=0,
-      number=1, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='status', full_name='lh_proto.ThreadStatusChangeOePb.status', index=1,
-      number=2, type=14, cpp_type=8, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1742,
-  serialized_end=1831,
-)
-
-
-_WFRUNSTATUSCHANGEOEPB = _descriptor.Descriptor(
-  name='WfRunStatusChangeOePb',
-  full_name='lh_proto.WfRunStatusChangeOePb',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='status', full_name='lh_proto.WfRunStatusChangeOePb.status', index=0,
-      number=1, type=14, cpp_type=8, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1833,
-  serialized_end=1894,
-)
-
-
-_OBSERVABILITYEVENTPB = _descriptor.Descriptor(
-  name='ObservabilityEventPb',
-  full_name='lh_proto.ObservabilityEventPb',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='time', full_name='lh_proto.ObservabilityEventPb.time', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='wf_run_status', full_name='lh_proto.ObservabilityEventPb.wf_run_status', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='run_start', full_name='lh_proto.ObservabilityEventPb.run_start', index=2,
-      number=3, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='thread_start', full_name='lh_proto.ObservabilityEventPb.thread_start', index=3,
-      number=4, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='node_reached', full_name='lh_proto.ObservabilityEventPb.node_reached', index=4,
-      number=5, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='task_start', full_name='lh_proto.ObservabilityEventPb.task_start', index=5,
-      number=6, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='task_result', full_name='lh_proto.ObservabilityEventPb.task_result', index=6,
-      number=7, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='thread_status', full_name='lh_proto.ObservabilityEventPb.thread_status', index=7,
-      number=8, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-    _descriptor.OneofDescriptor(
-      name='event', full_name='lh_proto.ObservabilityEventPb.event',
-      index=0, containing_type=None,
-      create_key=_descriptor._internal_create_key,
-    fields=[]),
-  ],
-  serialized_start=1897,
-  serialized_end=2330,
-)
-
-
-_OBSERVABILITYEVENTSPB = _descriptor.Descriptor(
-  name='ObservabilityEventsPb',
-  full_name='lh_proto.ObservabilityEventsPb',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='wf_run_id', full_name='lh_proto.ObservabilityEventsPb.wf_run_id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='events', full_name='lh_proto.ObservabilityEventsPb.events', index=1,
-      number=2, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=2332,
-  serialized_end=2422,
-)
-
-
 _EDGECONDITIONPB = _descriptor.Descriptor(
   name='EdgeConditionPb',
   full_name='lh_proto.EdgeConditionPb',
@@ -1433,8 +741,8 @@ _EDGECONDITIONPB = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2425,
-  serialized_end=2579,
+  serialized_start=495,
+  serialized_end=649,
 )
 
 
@@ -1477,8 +785,8 @@ _EDGEPB = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=2581,
-  serialized_end=2678,
+  serialized_start=651,
+  serialized_end=748,
 )
 
 
@@ -1545,8 +853,8 @@ _VARIABLEASSIGNMENTPB = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=2681,
-  serialized_end=2901,
+  serialized_start=751,
+  serialized_end=971,
 )
 
 
@@ -1634,8 +942,8 @@ _VARIABLEMUTATIONPB = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=2904,
-  serialized_end=3234,
+  serialized_start=974,
+  serialized_end=1304,
 )
 
 
@@ -1669,35 +977,28 @@ _NODEPB = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='timeout_seconds', full_name='lh_proto.NodePb.timeout_seconds', index=3,
-      number=4, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='entrypoint', full_name='lh_proto.NodePb.entrypoint', index=4,
+      name='entrypoint', full_name='lh_proto.NodePb.entrypoint', index=3,
       number=5, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='exit', full_name='lh_proto.NodePb.exit', index=5,
+      name='exit', full_name='lh_proto.NodePb.exit', index=4,
       number=6, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='task', full_name='lh_proto.NodePb.task', index=6,
+      name='task', full_name='lh_proto.NodePb.task', index=5,
       number=7, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='external_event', full_name='lh_proto.NodePb.external_event', index=7,
+      name='external_event', full_name='lh_proto.NodePb.external_event', index=6,
       number=8, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -1720,8 +1021,8 @@ _NODEPB = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=3237,
-  serialized_end=3642,
+  serialized_start=1307,
+  serialized_end=1655,
 )
 
 
@@ -1759,8 +1060,8 @@ _TASKNODEPB_VARIABLESENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3755,
-  serialized_end=3835,
+  serialized_start=1825,
+  serialized_end=1905,
 )
 
 _TASKNODEPB = _descriptor.Descriptor(
@@ -1779,14 +1080,21 @@ _TASKNODEPB = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='retries', full_name='lh_proto.TaskNodePb.retries', index=1,
+      name='timeout_seconds', full_name='lh_proto.TaskNodePb.timeout_seconds', index=1,
+      number=2, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='retries', full_name='lh_proto.TaskNodePb.retries', index=2,
       number=3, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='variables', full_name='lh_proto.TaskNodePb.variables', index=2,
+      name='variables', full_name='lh_proto.TaskNodePb.variables', index=3,
       number=4, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -1804,8 +1112,8 @@ _TASKNODEPB = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3645,
-  serialized_end=3835,
+  serialized_start=1658,
+  serialized_end=1905,
 )
 
 
@@ -1836,8 +1144,8 @@ _EXTERNALEVENTNODEPB = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3837,
-  serialized_end=3891,
+  serialized_start=1907,
+  serialized_end=1961,
 )
 
 
@@ -1861,8 +1169,8 @@ _ENTRYPOINTNODEPB = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3893,
-  serialized_end=3911,
+  serialized_start=1963,
+  serialized_end=1981,
 )
 
 
@@ -1886,8 +1194,8 @@ _EXITNODEPB = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3913,
-  serialized_end=3925,
+  serialized_start=1983,
+  serialized_end=1995,
 )
 
 
@@ -1937,8 +1245,8 @@ _VARIABLEDEFPB = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=3928,
-  serialized_end=4070,
+  serialized_start=1998,
+  serialized_end=2140,
 )
 
 
@@ -1976,8 +1284,8 @@ _THREADSPECPB_NODESENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4204,
-  serialized_end=4266,
+  serialized_start=2274,
+  serialized_end=2336,
 )
 
 _THREADSPECPB_VARIABLEDEFSENTRY = _descriptor.Descriptor(
@@ -2014,8 +1322,8 @@ _THREADSPECPB_VARIABLEDEFSENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4268,
-  serialized_end=4344,
+  serialized_start=2338,
+  serialized_end=2414,
 )
 
 _THREADSPECPB = _descriptor.Descriptor(
@@ -2052,8 +1360,8 @@ _THREADSPECPB = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4073,
-  serialized_end=4344,
+  serialized_start=2143,
+  serialized_end=2414,
 )
 
 
@@ -2091,8 +1399,8 @@ _WFSPECPB_THREADSPECSENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4639,
-  serialized_end=4713,
+  serialized_start=2709,
+  serialized_end=2783,
 )
 
 _WFSPECPB = _descriptor.Descriptor(
@@ -2171,8 +1479,8 @@ _WFSPECPB = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4347,
-  serialized_end=4713,
+  serialized_start=2417,
+  serialized_end=2783,
 )
 
 
@@ -2203,8 +1511,8 @@ _OUTPUTSCHEMAPB = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4715,
-  serialized_end=4778,
+  serialized_start=2785,
+  serialized_end=2848,
 )
 
 
@@ -2242,8 +1550,8 @@ _TASKDEFPB_REQUIREDVARSENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4967,
-  serialized_end=5043,
+  serialized_start=3037,
+  serialized_end=3113,
 )
 
 _TASKDEFPB = _descriptor.Descriptor(
@@ -2294,8 +1602,8 @@ _TASKDEFPB = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4781,
-  serialized_end=5043,
+  serialized_start=2851,
+  serialized_end=3113,
 )
 
 
@@ -2333,8 +1641,8 @@ _EXTERNALEVENTDEFPB = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5045,
-  serialized_end=5127,
+  serialized_start=3115,
+  serialized_end=3197,
 )
 
 
@@ -2419,8 +1727,8 @@ _WFRUNPB = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=5130,
-  serialized_end=5415,
+  serialized_start=3200,
+  serialized_end=3485,
 )
 
 
@@ -2468,43 +1776,36 @@ _THREADRUNPB = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='num_steps', full_name='lh_proto.ThreadRunPb.num_steps', index=5,
-      number=6, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
+      name='start_time', full_name='lh_proto.ThreadRunPb.start_time', index=5,
+      number=6, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='start_time', full_name='lh_proto.ThreadRunPb.start_time', index=6,
+      name='end_time', full_name='lh_proto.ThreadRunPb.end_time', index=6,
       number=7, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='end_time', full_name='lh_proto.ThreadRunPb.end_time', index=7,
-      number=8, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
+      name='current_node_position', full_name='lh_proto.ThreadRunPb.current_node_position', index=7,
+      number=8, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='current_node_run', full_name='lh_proto.ThreadRunPb.current_node_run', index=8,
-      number=9, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='error_message', full_name='lh_proto.ThreadRunPb.error_message', index=9,
-      number=10, type=9, cpp_type=9, label=1,
+      name='error_message', full_name='lh_proto.ThreadRunPb.error_message', index=8,
+      number=9, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='result_code', full_name='lh_proto.ThreadRunPb.result_code', index=10,
-      number=11, type=14, cpp_type=8, label=1,
+      name='result_code', full_name='lh_proto.ThreadRunPb.result_code', index=9,
+      number=10, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -2536,8 +1837,8 @@ _THREADRUNPB = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=5418,
-  serialized_end=5849,
+  serialized_start=3488,
+  serialized_end=3879,
 )
 
 
@@ -2571,78 +1872,99 @@ _NODERUNPB = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='number', full_name='lh_proto.NodeRunPb.number', index=3,
+      name='attempt_number', full_name='lh_proto.NodeRunPb.attempt_number', index=3,
       number=4, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='status', full_name='lh_proto.NodeRunPb.status', index=4,
-      number=5, type=14, cpp_type=8, label=1,
+      name='number', full_name='lh_proto.NodeRunPb.number', index=4,
+      number=5, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='arrival_time', full_name='lh_proto.NodeRunPb.arrival_time', index=5,
-      number=6, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
+      name='status', full_name='lh_proto.NodeRunPb.status', index=5,
+      number=6, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='end_time', full_name='lh_proto.NodeRunPb.end_time', index=6,
+      name='arrival_time', full_name='lh_proto.NodeRunPb.arrival_time', index=6,
       number=7, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='wf_spec_id', full_name='lh_proto.NodeRunPb.wf_spec_id', index=7,
-      number=8, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
+      name='end_time', full_name='lh_proto.NodeRunPb.end_time', index=7,
+      number=8, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='thread_spec_name', full_name='lh_proto.NodeRunPb.thread_spec_name', index=8,
+      name='wf_spec_id', full_name='lh_proto.NodeRunPb.wf_spec_id', index=8,
       number=9, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='node_name', full_name='lh_proto.NodeRunPb.node_name', index=9,
+      name='thread_spec_name', full_name='lh_proto.NodeRunPb.thread_spec_name', index=9,
       number=10, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='result_code', full_name='lh_proto.NodeRunPb.result_code', index=10,
-      number=11, type=14, cpp_type=8, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='error_message', full_name='lh_proto.NodeRunPb.error_message', index=11,
-      number=12, type=9, cpp_type=9, label=1,
+      name='node_name', full_name='lh_proto.NodeRunPb.node_name', index=10,
+      number=11, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='task', full_name='lh_proto.NodeRunPb.task', index=12,
-      number=13, type=11, cpp_type=10, label=1,
+      name='result_code', full_name='lh_proto.NodeRunPb.result_code', index=11,
+      number=12, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='error_message', full_name='lh_proto.NodeRunPb.error_message', index=12,
+      number=13, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='task', full_name='lh_proto.NodeRunPb.task', index=13,
+      number=14, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='external_event', full_name='lh_proto.NodeRunPb.external_event', index=13,
-      number=14, type=11, cpp_type=10, label=1,
+      name='external_event', full_name='lh_proto.NodeRunPb.external_event', index=14,
+      number=15, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='entrypoint', full_name='lh_proto.NodeRunPb.entrypoint', index=15,
+      number=16, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='exit', full_name='lh_proto.NodeRunPb.exit', index=16,
+      number=17, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -2679,8 +2001,8 @@ _NODERUNPB = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=5852,
-  serialized_end=6382,
+  serialized_start=3882,
+  serialized_end=4522,
 )
 
 
@@ -2754,8 +2076,58 @@ _TASKRUNPB = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=6385,
-  serialized_end=6608,
+  serialized_start=4525,
+  serialized_end=4748,
+)
+
+
+_ENTRYPOINTRUNPB = _descriptor.Descriptor(
+  name='EntrypointRunPb',
+  full_name='lh_proto.EntrypointRunPb',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=4750,
+  serialized_end=4767,
+)
+
+
+_EXITRUNPB = _descriptor.Descriptor(
+  name='ExitRunPb',
+  full_name='lh_proto.ExitRunPb',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=4769,
+  serialized_end=4780,
 )
 
 
@@ -2781,6 +2153,13 @@ _EXTERNALEVENTRUNPB = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='external_event_id', full_name='lh_proto.ExternalEventRunPb.external_event_id', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -2797,9 +2176,14 @@ _EXTERNALEVENTRUNPB = _descriptor.Descriptor(
       index=0, containing_type=None,
       create_key=_descriptor._internal_create_key,
     fields=[]),
+    _descriptor.OneofDescriptor(
+      name='_external_event_id', full_name='lh_proto.ExternalEventRunPb._external_event_id',
+      index=1, containing_type=None,
+      create_key=_descriptor._internal_create_key,
+    fields=[]),
   ],
-  serialized_start=6610,
-  serialized_end=6731,
+  serialized_start=4783,
+  serialized_end=4958,
 )
 
 
@@ -2889,8 +2273,8 @@ _EXTERNALEVENTPB = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=6734,
-  serialized_end=7034,
+  serialized_start=4961,
+  serialized_end=5261,
 )
 
 
@@ -2973,8 +2357,8 @@ _NODERUNSTATEPB = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=7037,
-  serialized_end=7284,
+  serialized_start=5264,
+  serialized_end=5511,
 )
 
 
@@ -3012,8 +2396,8 @@ _WFRUNREQUESTPB_VARIABLESENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=988,
-  serialized_end=1063,
+  serialized_start=5636,
+  serialized_end=5711,
 )
 
 _WFRUNREQUESTPB = _descriptor.Descriptor(
@@ -3062,8 +2446,8 @@ _WFRUNREQUESTPB = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=7287,
-  serialized_end=7498,
+  serialized_start=5514,
+  serialized_end=5725,
 )
 
 
@@ -3101,8 +2485,8 @@ _TASKSCHEDULEREQUESTPB_VARIABLESENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=988,
-  serialized_end=1063,
+  serialized_start=5636,
+  serialized_end=5711,
 )
 
 _TASKSCHEDULEREQUESTPB = _descriptor.Descriptor(
@@ -3202,8 +2586,8 @@ _TASKSCHEDULEREQUESTPB = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7501,
-  serialized_end=7900,
+  serialized_start=5728,
+  serialized_end=6127,
 )
 
 
@@ -3255,8 +2639,8 @@ _TASKSTARTEDEVENTPB = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7903,
-  serialized_end=8044,
+  serialized_start=6130,
+  serialized_end=6271,
 )
 
 
@@ -3339,8 +2723,8 @@ _TASKRESULTEVENTPB = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=8047,
-  serialized_end=8335,
+  serialized_start=6274,
+  serialized_end=6562,
 )
 
 
@@ -3401,6 +2785,13 @@ _WFRUNEVENTPB = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='thread_run_number', full_name='lh_proto.WfRunEventPb.thread_run_number', index=7,
+      number=8, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -3422,9 +2813,14 @@ _WFRUNEVENTPB = _descriptor.Descriptor(
       index=1, containing_type=None,
       create_key=_descriptor._internal_create_key,
     fields=[]),
+    _descriptor.OneofDescriptor(
+      name='_thread_run_number', full_name='lh_proto.WfRunEventPb._thread_run_number',
+      index=2, containing_type=None,
+      create_key=_descriptor._internal_create_key,
+    fields=[]),
   ],
-  serialized_start=8338,
-  serialized_end=8671,
+  serialized_start=6565,
+  serialized_end=6952,
 )
 
 
@@ -3481,8 +2877,8 @@ _LHTIMERPB = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=8674,
-  serialized_end=8825,
+  serialized_start=6955,
+  serialized_end=7106,
 )
 
 
@@ -3561,8 +2957,8 @@ _LHRESPONSEPB = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=8828,
-  serialized_end=9018,
+  serialized_start=7109,
+  serialized_end=7299,
 )
 
 
@@ -3619,8 +3015,8 @@ _POSTABLEREQUESTPB = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=9021,
-  serialized_end=9152,
+  serialized_start=7302,
+  serialized_end=7433,
 )
 
 
@@ -3663,8 +3059,8 @@ _RANGERESPONSEPB = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=9154,
-  serialized_end=9214,
+  serialized_start=7435,
+  serialized_end=7495,
 )
 
 
@@ -3702,8 +3098,8 @@ _ATTRIBUTEPB = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=9216,
-  serialized_end=9255,
+  serialized_start=7497,
+  serialized_end=7536,
 )
 
 
@@ -3748,8 +3144,8 @@ _INDEXKEYPB = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=9258,
-  serialized_end=9402,
+  serialized_start=7539,
+  serialized_end=7683,
 )
 
 
@@ -3780,8 +3176,8 @@ _INDEXVALUEPB = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=9404,
-  serialized_end=9437,
+  serialized_start=7685,
+  serialized_end=7718,
 )
 
 
@@ -3819,8 +3215,8 @@ _TAGPB = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=9439,
-  serialized_end=9500,
+  serialized_start=7720,
+  serialized_end=7781,
 )
 
 
@@ -3858,8 +3254,8 @@ _TAGACTIONPB = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=9502,
-  serialized_end=9590,
+  serialized_start=7783,
+  serialized_end=7871,
 )
 
 
@@ -3904,8 +3300,8 @@ _GETABLEENTRYPB = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=9592,
-  serialized_end=9671,
+  serialized_start=7873,
+  serialized_end=7952,
 )
 
 
@@ -3936,8 +3332,8 @@ _TAGSPB = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=9673,
-  serialized_end=9715,
+  serialized_start=7954,
+  serialized_end=7996,
 )
 
 
@@ -3987,8 +3383,8 @@ _REMOTESTOREQUERYRESPONSEPB = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=9718,
-  serialized_end=9853,
+  serialized_start=7999,
+  serialized_end=8134,
 )
 
 _VARIABLEVALUEPB.fields_by_name['type'].enum_type = _VARIABLETYPEPB
@@ -4015,71 +3411,6 @@ _VARIABLEVALUEPB.oneofs_by_name['_bytes'].fields.append(
 _VARIABLEVALUEPB.fields_by_name['bytes'].containing_oneof = _VARIABLEVALUEPB.oneofs_by_name['_bytes']
 _VARIABLEPB.fields_by_name['value'].message_type = _VARIABLEVALUEPB
 _VARIABLEPB.fields_by_name['date'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
-_NODEREACHEDOEPB.fields_by_name['evt'].message_type = _WAITFOREVTOEPB
-_NODEREACHEDOEPB.fields_by_name['task'].message_type = _TASKSCHEDULEDOEPB
-_NODEREACHEDOEPB.oneofs_by_name['node_type'].fields.append(
-  _NODEREACHEDOEPB.fields_by_name['evt'])
-_NODEREACHEDOEPB.fields_by_name['evt'].containing_oneof = _NODEREACHEDOEPB.oneofs_by_name['node_type']
-_NODEREACHEDOEPB.oneofs_by_name['node_type'].fields.append(
-  _NODEREACHEDOEPB.fields_by_name['task'])
-_NODEREACHEDOEPB.fields_by_name['task'].containing_oneof = _NODEREACHEDOEPB.oneofs_by_name['node_type']
-_TASKSCHEDULEDOEPB_VARIABLESENTRY.fields_by_name['value'].message_type = _VARIABLEVALUEPB
-_TASKSCHEDULEDOEPB_VARIABLESENTRY.containing_type = _TASKSCHEDULEDOEPB
-_TASKSCHEDULEDOEPB.fields_by_name['variables'].message_type = _TASKSCHEDULEDOEPB_VARIABLESENTRY
-_NODERESULTOEPB.fields_by_name['result_code'].enum_type = _TASKRESULTCODEPB
-_NODERESULTOEPB.fields_by_name['external_event'].message_type = _EXTERNALEVENTRESULTOEPB
-_NODERESULTOEPB.fields_by_name['task'].message_type = _TASKRESULTOEPB
-_NODERESULTOEPB.oneofs_by_name['node_type'].fields.append(
-  _NODERESULTOEPB.fields_by_name['external_event'])
-_NODERESULTOEPB.fields_by_name['external_event'].containing_oneof = _NODERESULTOEPB.oneofs_by_name['node_type']
-_NODERESULTOEPB.oneofs_by_name['node_type'].fields.append(
-  _NODERESULTOEPB.fields_by_name['task'])
-_NODERESULTOEPB.fields_by_name['task'].containing_oneof = _NODERESULTOEPB.oneofs_by_name['node_type']
-_NODERESULTOEPB.oneofs_by_name['_error_message'].fields.append(
-  _NODERESULTOEPB.fields_by_name['error_message'])
-_NODERESULTOEPB.fields_by_name['error_message'].containing_oneof = _NODERESULTOEPB.oneofs_by_name['_error_message']
-_EXTERNALEVENTRESULTOEPB.oneofs_by_name['_correlated_event_id'].fields.append(
-  _EXTERNALEVENTRESULTOEPB.fields_by_name['correlated_event_id'])
-_EXTERNALEVENTRESULTOEPB.fields_by_name['correlated_event_id'].containing_oneof = _EXTERNALEVENTRESULTOEPB.oneofs_by_name['_correlated_event_id']
-_TASKRESULTOEPB.fields_by_name['result'].message_type = _VARIABLEVALUEPB
-_TASKRESULTOEPB.oneofs_by_name['_result'].fields.append(
-  _TASKRESULTOEPB.fields_by_name['result'])
-_TASKRESULTOEPB.fields_by_name['result'].containing_oneof = _TASKRESULTOEPB.oneofs_by_name['_result']
-_TASKRESULTOEPB.oneofs_by_name['_log_output'].fields.append(
-  _TASKRESULTOEPB.fields_by_name['log_output'])
-_TASKRESULTOEPB.fields_by_name['log_output'].containing_oneof = _TASKRESULTOEPB.oneofs_by_name['_log_output']
-_THREADSTATUSCHANGEOEPB.fields_by_name['status'].enum_type = _LHSTATUSPB
-_WFRUNSTATUSCHANGEOEPB.fields_by_name['status'].enum_type = _LHSTATUSPB
-_OBSERVABILITYEVENTPB.fields_by_name['time'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
-_OBSERVABILITYEVENTPB.fields_by_name['wf_run_status'].message_type = _WFRUNSTATUSCHANGEOEPB
-_OBSERVABILITYEVENTPB.fields_by_name['run_start'].message_type = _RUNSTARTOEPB
-_OBSERVABILITYEVENTPB.fields_by_name['thread_start'].message_type = _THREADSTARTOEPB
-_OBSERVABILITYEVENTPB.fields_by_name['node_reached'].message_type = _NODEREACHEDOEPB
-_OBSERVABILITYEVENTPB.fields_by_name['task_start'].message_type = _TASKSTARTOEPB
-_OBSERVABILITYEVENTPB.fields_by_name['task_result'].message_type = _NODERESULTOEPB
-_OBSERVABILITYEVENTPB.fields_by_name['thread_status'].message_type = _THREADSTATUSCHANGEOEPB
-_OBSERVABILITYEVENTPB.oneofs_by_name['event'].fields.append(
-  _OBSERVABILITYEVENTPB.fields_by_name['wf_run_status'])
-_OBSERVABILITYEVENTPB.fields_by_name['wf_run_status'].containing_oneof = _OBSERVABILITYEVENTPB.oneofs_by_name['event']
-_OBSERVABILITYEVENTPB.oneofs_by_name['event'].fields.append(
-  _OBSERVABILITYEVENTPB.fields_by_name['run_start'])
-_OBSERVABILITYEVENTPB.fields_by_name['run_start'].containing_oneof = _OBSERVABILITYEVENTPB.oneofs_by_name['event']
-_OBSERVABILITYEVENTPB.oneofs_by_name['event'].fields.append(
-  _OBSERVABILITYEVENTPB.fields_by_name['thread_start'])
-_OBSERVABILITYEVENTPB.fields_by_name['thread_start'].containing_oneof = _OBSERVABILITYEVENTPB.oneofs_by_name['event']
-_OBSERVABILITYEVENTPB.oneofs_by_name['event'].fields.append(
-  _OBSERVABILITYEVENTPB.fields_by_name['node_reached'])
-_OBSERVABILITYEVENTPB.fields_by_name['node_reached'].containing_oneof = _OBSERVABILITYEVENTPB.oneofs_by_name['event']
-_OBSERVABILITYEVENTPB.oneofs_by_name['event'].fields.append(
-  _OBSERVABILITYEVENTPB.fields_by_name['task_start'])
-_OBSERVABILITYEVENTPB.fields_by_name['task_start'].containing_oneof = _OBSERVABILITYEVENTPB.oneofs_by_name['event']
-_OBSERVABILITYEVENTPB.oneofs_by_name['event'].fields.append(
-  _OBSERVABILITYEVENTPB.fields_by_name['task_result'])
-_OBSERVABILITYEVENTPB.fields_by_name['task_result'].containing_oneof = _OBSERVABILITYEVENTPB.oneofs_by_name['event']
-_OBSERVABILITYEVENTPB.oneofs_by_name['event'].fields.append(
-  _OBSERVABILITYEVENTPB.fields_by_name['thread_status'])
-_OBSERVABILITYEVENTPB.fields_by_name['thread_status'].containing_oneof = _OBSERVABILITYEVENTPB.oneofs_by_name['event']
-_OBSERVABILITYEVENTSPB.fields_by_name['events'].message_type = _OBSERVABILITYEVENTPB
 _EDGECONDITIONPB.fields_by_name['comparator'].enum_type = _COMPARATORPB
 _EDGECONDITIONPB.fields_by_name['left'].message_type = _VARIABLEASSIGNMENTPB
 _EDGECONDITIONPB.fields_by_name['right'].message_type = _VARIABLEASSIGNMENTPB
@@ -4122,7 +3453,6 @@ _VARIABLEMUTATIONPB.fields_by_name['rhs_json_path'].containing_oneof = _VARIABLE
 _NODEPB.fields_by_name['outgoing_edges'].message_type = _EDGEPB
 _NODEPB.fields_by_name['variable_mutations'].message_type = _VARIABLEMUTATIONPB
 _NODEPB.fields_by_name['output_schema'].message_type = _OUTPUTSCHEMAPB
-_NODEPB.fields_by_name['timeout_seconds'].message_type = _VARIABLEASSIGNMENTPB
 _NODEPB.fields_by_name['entrypoint'].message_type = _ENTRYPOINTNODEPB
 _NODEPB.fields_by_name['exit'].message_type = _EXITNODEPB
 _NODEPB.fields_by_name['task'].message_type = _TASKNODEPB
@@ -4141,6 +3471,7 @@ _NODEPB.oneofs_by_name['node'].fields.append(
 _NODEPB.fields_by_name['external_event'].containing_oneof = _NODEPB.oneofs_by_name['node']
 _TASKNODEPB_VARIABLESENTRY.fields_by_name['value'].message_type = _VARIABLEASSIGNMENTPB
 _TASKNODEPB_VARIABLESENTRY.containing_type = _TASKNODEPB
+_TASKNODEPB.fields_by_name['timeout_seconds'].message_type = _VARIABLEASSIGNMENTPB
 _TASKNODEPB.fields_by_name['variables'].message_type = _TASKNODEPB_VARIABLESENTRY
 _VARIABLEDEFPB.fields_by_name['type'].enum_type = _VARIABLETYPEPB
 _VARIABLEDEFPB.fields_by_name['default_val'].message_type = _VARIABLEVALUEPB
@@ -4176,7 +3507,6 @@ _WFRUNPB.fields_by_name['end_time'].containing_oneof = _WFRUNPB.oneofs_by_name['
 _THREADRUNPB.fields_by_name['status'].enum_type = _LHSTATUSPB
 _THREADRUNPB.fields_by_name['start_time'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
 _THREADRUNPB.fields_by_name['end_time'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
-_THREADRUNPB.fields_by_name['current_node_run'].message_type = _NODERUNSTATEPB
 _THREADRUNPB.fields_by_name['result_code'].enum_type = _TASKRESULTCODEPB
 _THREADRUNPB.oneofs_by_name['_end_time'].fields.append(
   _THREADRUNPB.fields_by_name['end_time'])
@@ -4193,12 +3523,20 @@ _NODERUNPB.fields_by_name['end_time'].message_type = google_dot_protobuf_dot_tim
 _NODERUNPB.fields_by_name['result_code'].enum_type = _TASKRESULTCODEPB
 _NODERUNPB.fields_by_name['task'].message_type = _TASKRUNPB
 _NODERUNPB.fields_by_name['external_event'].message_type = _EXTERNALEVENTRUNPB
+_NODERUNPB.fields_by_name['entrypoint'].message_type = _ENTRYPOINTRUNPB
+_NODERUNPB.fields_by_name['exit'].message_type = _EXITRUNPB
 _NODERUNPB.oneofs_by_name['node_type'].fields.append(
   _NODERUNPB.fields_by_name['task'])
 _NODERUNPB.fields_by_name['task'].containing_oneof = _NODERUNPB.oneofs_by_name['node_type']
 _NODERUNPB.oneofs_by_name['node_type'].fields.append(
   _NODERUNPB.fields_by_name['external_event'])
 _NODERUNPB.fields_by_name['external_event'].containing_oneof = _NODERUNPB.oneofs_by_name['node_type']
+_NODERUNPB.oneofs_by_name['node_type'].fields.append(
+  _NODERUNPB.fields_by_name['entrypoint'])
+_NODERUNPB.fields_by_name['entrypoint'].containing_oneof = _NODERUNPB.oneofs_by_name['node_type']
+_NODERUNPB.oneofs_by_name['node_type'].fields.append(
+  _NODERUNPB.fields_by_name['exit'])
+_NODERUNPB.fields_by_name['exit'].containing_oneof = _NODERUNPB.oneofs_by_name['node_type']
 _NODERUNPB.oneofs_by_name['_end_time'].fields.append(
   _NODERUNPB.fields_by_name['end_time'])
 _NODERUNPB.fields_by_name['end_time'].containing_oneof = _NODERUNPB.oneofs_by_name['_end_time']
@@ -4223,6 +3561,9 @@ _EXTERNALEVENTRUNPB.fields_by_name['event_time'].message_type = google_dot_proto
 _EXTERNALEVENTRUNPB.oneofs_by_name['_event_time'].fields.append(
   _EXTERNALEVENTRUNPB.fields_by_name['event_time'])
 _EXTERNALEVENTRUNPB.fields_by_name['event_time'].containing_oneof = _EXTERNALEVENTRUNPB.oneofs_by_name['_event_time']
+_EXTERNALEVENTRUNPB.oneofs_by_name['_external_event_id'].fields.append(
+  _EXTERNALEVENTRUNPB.fields_by_name['external_event_id'])
+_EXTERNALEVENTRUNPB.fields_by_name['external_event_id'].containing_oneof = _EXTERNALEVENTRUNPB.oneofs_by_name['_external_event_id']
 _EXTERNALEVENTPB.fields_by_name['created_at'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
 _EXTERNALEVENTPB.fields_by_name['content'].message_type = _VARIABLEVALUEPB
 _EXTERNALEVENTPB.oneofs_by_name['_thread_run_number'].fields.append(
@@ -4278,6 +3619,9 @@ _WFRUNEVENTPB.fields_by_name['external_event'].containing_oneof = _WFRUNEVENTPB.
 _WFRUNEVENTPB.oneofs_by_name['_wf_spec_id'].fields.append(
   _WFRUNEVENTPB.fields_by_name['wf_spec_id'])
 _WFRUNEVENTPB.fields_by_name['wf_spec_id'].containing_oneof = _WFRUNEVENTPB.oneofs_by_name['_wf_spec_id']
+_WFRUNEVENTPB.oneofs_by_name['_thread_run_number'].fields.append(
+  _WFRUNEVENTPB.fields_by_name['thread_run_number'])
+_WFRUNEVENTPB.fields_by_name['thread_run_number'].containing_oneof = _WFRUNEVENTPB.oneofs_by_name['_thread_run_number']
 _LHTIMERPB.fields_by_name['maturation_time'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
 _LHTIMERPB.fields_by_name['wf_run_event'].message_type = _WFRUNEVENTPB
 _LHTIMERPB.oneofs_by_name['payload'].fields.append(
@@ -4316,19 +3660,6 @@ _REMOTESTOREQUERYRESPONSEPB.oneofs_by_name['_result'].fields.append(
 _REMOTESTOREQUERYRESPONSEPB.fields_by_name['result'].containing_oneof = _REMOTESTOREQUERYRESPONSEPB.oneofs_by_name['_result']
 DESCRIPTOR.message_types_by_name['VariableValuePb'] = _VARIABLEVALUEPB
 DESCRIPTOR.message_types_by_name['VariablePb'] = _VARIABLEPB
-DESCRIPTOR.message_types_by_name['RunStartOePb'] = _RUNSTARTOEPB
-DESCRIPTOR.message_types_by_name['ThreadStartOePb'] = _THREADSTARTOEPB
-DESCRIPTOR.message_types_by_name['NodeReachedOePb'] = _NODEREACHEDOEPB
-DESCRIPTOR.message_types_by_name['TaskScheduledOePb'] = _TASKSCHEDULEDOEPB
-DESCRIPTOR.message_types_by_name['WaitForEvtOePb'] = _WAITFOREVTOEPB
-DESCRIPTOR.message_types_by_name['TaskStartOePb'] = _TASKSTARTOEPB
-DESCRIPTOR.message_types_by_name['NodeResultOePb'] = _NODERESULTOEPB
-DESCRIPTOR.message_types_by_name['ExternalEventResultOePb'] = _EXTERNALEVENTRESULTOEPB
-DESCRIPTOR.message_types_by_name['TaskResultOePb'] = _TASKRESULTOEPB
-DESCRIPTOR.message_types_by_name['ThreadStatusChangeOePb'] = _THREADSTATUSCHANGEOEPB
-DESCRIPTOR.message_types_by_name['WfRunStatusChangeOePb'] = _WFRUNSTATUSCHANGEOEPB
-DESCRIPTOR.message_types_by_name['ObservabilityEventPb'] = _OBSERVABILITYEVENTPB
-DESCRIPTOR.message_types_by_name['ObservabilityEventsPb'] = _OBSERVABILITYEVENTSPB
 DESCRIPTOR.message_types_by_name['EdgeConditionPb'] = _EDGECONDITIONPB
 DESCRIPTOR.message_types_by_name['EdgePb'] = _EDGEPB
 DESCRIPTOR.message_types_by_name['VariableAssignmentPb'] = _VARIABLEASSIGNMENTPB
@@ -4348,6 +3679,8 @@ DESCRIPTOR.message_types_by_name['WfRunPb'] = _WFRUNPB
 DESCRIPTOR.message_types_by_name['ThreadRunPb'] = _THREADRUNPB
 DESCRIPTOR.message_types_by_name['NodeRunPb'] = _NODERUNPB
 DESCRIPTOR.message_types_by_name['TaskRunPb'] = _TASKRUNPB
+DESCRIPTOR.message_types_by_name['EntrypointRunPb'] = _ENTRYPOINTRUNPB
+DESCRIPTOR.message_types_by_name['ExitRunPb'] = _EXITRUNPB
 DESCRIPTOR.message_types_by_name['ExternalEventRunPb'] = _EXTERNALEVENTRUNPB
 DESCRIPTOR.message_types_by_name['ExternalEventPb'] = _EXTERNALEVENTPB
 DESCRIPTOR.message_types_by_name['NodeRunStatePb'] = _NODERUNSTATEPB
@@ -4393,105 +3726,6 @@ VariablePb = _reflection.GeneratedProtocolMessageType('VariablePb', (_message.Me
   # @@protoc_insertion_point(class_scope:lh_proto.VariablePb)
   })
 _sym_db.RegisterMessage(VariablePb)
-
-RunStartOePb = _reflection.GeneratedProtocolMessageType('RunStartOePb', (_message.Message,), {
-  'DESCRIPTOR' : _RUNSTARTOEPB,
-  '__module__' : 'lh_proto_pb2'
-  # @@protoc_insertion_point(class_scope:lh_proto.RunStartOePb)
-  })
-_sym_db.RegisterMessage(RunStartOePb)
-
-ThreadStartOePb = _reflection.GeneratedProtocolMessageType('ThreadStartOePb', (_message.Message,), {
-  'DESCRIPTOR' : _THREADSTARTOEPB,
-  '__module__' : 'lh_proto_pb2'
-  # @@protoc_insertion_point(class_scope:lh_proto.ThreadStartOePb)
-  })
-_sym_db.RegisterMessage(ThreadStartOePb)
-
-NodeReachedOePb = _reflection.GeneratedProtocolMessageType('NodeReachedOePb', (_message.Message,), {
-  'DESCRIPTOR' : _NODEREACHEDOEPB,
-  '__module__' : 'lh_proto_pb2'
-  # @@protoc_insertion_point(class_scope:lh_proto.NodeReachedOePb)
-  })
-_sym_db.RegisterMessage(NodeReachedOePb)
-
-TaskScheduledOePb = _reflection.GeneratedProtocolMessageType('TaskScheduledOePb', (_message.Message,), {
-
-  'VariablesEntry' : _reflection.GeneratedProtocolMessageType('VariablesEntry', (_message.Message,), {
-    'DESCRIPTOR' : _TASKSCHEDULEDOEPB_VARIABLESENTRY,
-    '__module__' : 'lh_proto_pb2'
-    # @@protoc_insertion_point(class_scope:lh_proto.TaskScheduledOePb.VariablesEntry)
-    })
-  ,
-  'DESCRIPTOR' : _TASKSCHEDULEDOEPB,
-  '__module__' : 'lh_proto_pb2'
-  # @@protoc_insertion_point(class_scope:lh_proto.TaskScheduledOePb)
-  })
-_sym_db.RegisterMessage(TaskScheduledOePb)
-_sym_db.RegisterMessage(TaskScheduledOePb.VariablesEntry)
-
-WaitForEvtOePb = _reflection.GeneratedProtocolMessageType('WaitForEvtOePb', (_message.Message,), {
-  'DESCRIPTOR' : _WAITFOREVTOEPB,
-  '__module__' : 'lh_proto_pb2'
-  # @@protoc_insertion_point(class_scope:lh_proto.WaitForEvtOePb)
-  })
-_sym_db.RegisterMessage(WaitForEvtOePb)
-
-TaskStartOePb = _reflection.GeneratedProtocolMessageType('TaskStartOePb', (_message.Message,), {
-  'DESCRIPTOR' : _TASKSTARTOEPB,
-  '__module__' : 'lh_proto_pb2'
-  # @@protoc_insertion_point(class_scope:lh_proto.TaskStartOePb)
-  })
-_sym_db.RegisterMessage(TaskStartOePb)
-
-NodeResultOePb = _reflection.GeneratedProtocolMessageType('NodeResultOePb', (_message.Message,), {
-  'DESCRIPTOR' : _NODERESULTOEPB,
-  '__module__' : 'lh_proto_pb2'
-  # @@protoc_insertion_point(class_scope:lh_proto.NodeResultOePb)
-  })
-_sym_db.RegisterMessage(NodeResultOePb)
-
-ExternalEventResultOePb = _reflection.GeneratedProtocolMessageType('ExternalEventResultOePb', (_message.Message,), {
-  'DESCRIPTOR' : _EXTERNALEVENTRESULTOEPB,
-  '__module__' : 'lh_proto_pb2'
-  # @@protoc_insertion_point(class_scope:lh_proto.ExternalEventResultOePb)
-  })
-_sym_db.RegisterMessage(ExternalEventResultOePb)
-
-TaskResultOePb = _reflection.GeneratedProtocolMessageType('TaskResultOePb', (_message.Message,), {
-  'DESCRIPTOR' : _TASKRESULTOEPB,
-  '__module__' : 'lh_proto_pb2'
-  # @@protoc_insertion_point(class_scope:lh_proto.TaskResultOePb)
-  })
-_sym_db.RegisterMessage(TaskResultOePb)
-
-ThreadStatusChangeOePb = _reflection.GeneratedProtocolMessageType('ThreadStatusChangeOePb', (_message.Message,), {
-  'DESCRIPTOR' : _THREADSTATUSCHANGEOEPB,
-  '__module__' : 'lh_proto_pb2'
-  # @@protoc_insertion_point(class_scope:lh_proto.ThreadStatusChangeOePb)
-  })
-_sym_db.RegisterMessage(ThreadStatusChangeOePb)
-
-WfRunStatusChangeOePb = _reflection.GeneratedProtocolMessageType('WfRunStatusChangeOePb', (_message.Message,), {
-  'DESCRIPTOR' : _WFRUNSTATUSCHANGEOEPB,
-  '__module__' : 'lh_proto_pb2'
-  # @@protoc_insertion_point(class_scope:lh_proto.WfRunStatusChangeOePb)
-  })
-_sym_db.RegisterMessage(WfRunStatusChangeOePb)
-
-ObservabilityEventPb = _reflection.GeneratedProtocolMessageType('ObservabilityEventPb', (_message.Message,), {
-  'DESCRIPTOR' : _OBSERVABILITYEVENTPB,
-  '__module__' : 'lh_proto_pb2'
-  # @@protoc_insertion_point(class_scope:lh_proto.ObservabilityEventPb)
-  })
-_sym_db.RegisterMessage(ObservabilityEventPb)
-
-ObservabilityEventsPb = _reflection.GeneratedProtocolMessageType('ObservabilityEventsPb', (_message.Message,), {
-  'DESCRIPTOR' : _OBSERVABILITYEVENTSPB,
-  '__module__' : 'lh_proto_pb2'
-  # @@protoc_insertion_point(class_scope:lh_proto.ObservabilityEventsPb)
-  })
-_sym_db.RegisterMessage(ObservabilityEventsPb)
 
 EdgeConditionPb = _reflection.GeneratedProtocolMessageType('EdgeConditionPb', (_message.Message,), {
   'DESCRIPTOR' : _EDGECONDITIONPB,
@@ -4666,6 +3900,20 @@ TaskRunPb = _reflection.GeneratedProtocolMessageType('TaskRunPb', (_message.Mess
   })
 _sym_db.RegisterMessage(TaskRunPb)
 
+EntrypointRunPb = _reflection.GeneratedProtocolMessageType('EntrypointRunPb', (_message.Message,), {
+  'DESCRIPTOR' : _ENTRYPOINTRUNPB,
+  '__module__' : 'lh_proto_pb2'
+  # @@protoc_insertion_point(class_scope:lh_proto.EntrypointRunPb)
+  })
+_sym_db.RegisterMessage(EntrypointRunPb)
+
+ExitRunPb = _reflection.GeneratedProtocolMessageType('ExitRunPb', (_message.Message,), {
+  'DESCRIPTOR' : _EXITRUNPB,
+  '__module__' : 'lh_proto_pb2'
+  # @@protoc_insertion_point(class_scope:lh_proto.ExitRunPb)
+  })
+_sym_db.RegisterMessage(ExitRunPb)
+
 ExternalEventRunPb = _reflection.GeneratedProtocolMessageType('ExternalEventRunPb', (_message.Message,), {
   'DESCRIPTOR' : _EXTERNALEVENTRUNPB,
   '__module__' : 'lh_proto_pb2'
@@ -4824,7 +4072,6 @@ _sym_db.RegisterMessage(RemoteStoreQueryResponsePb)
 
 
 DESCRIPTOR._options = None
-_TASKSCHEDULEDOEPB_VARIABLESENTRY._options = None
 _TASKNODEPB_VARIABLESENTRY._options = None
 _THREADSPECPB_NODESENTRY._options = None
 _THREADSPECPB_VARIABLEDEFSENTRY._options = None

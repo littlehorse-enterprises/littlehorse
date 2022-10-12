@@ -61,85 +61,70 @@ public interface ThreadRunPbOrBuilder extends
       getThreadSpecNameBytes();
 
   /**
-   * <code>int32 num_steps = 6;</code>
-   * @return The numSteps.
-   */
-  int getNumSteps();
-
-  /**
-   * <code>.google.protobuf.Timestamp start_time = 7;</code>
+   * <code>.google.protobuf.Timestamp start_time = 6;</code>
    * @return Whether the startTime field is set.
    */
   boolean hasStartTime();
   /**
-   * <code>.google.protobuf.Timestamp start_time = 7;</code>
+   * <code>.google.protobuf.Timestamp start_time = 6;</code>
    * @return The startTime.
    */
   com.google.protobuf.Timestamp getStartTime();
   /**
-   * <code>.google.protobuf.Timestamp start_time = 7;</code>
+   * <code>.google.protobuf.Timestamp start_time = 6;</code>
    */
   com.google.protobuf.TimestampOrBuilder getStartTimeOrBuilder();
 
   /**
-   * <code>.google.protobuf.Timestamp end_time = 8;</code>
+   * <code>.google.protobuf.Timestamp end_time = 7;</code>
    * @return Whether the endTime field is set.
    */
   boolean hasEndTime();
   /**
-   * <code>.google.protobuf.Timestamp end_time = 8;</code>
+   * <code>.google.protobuf.Timestamp end_time = 7;</code>
    * @return The endTime.
    */
   com.google.protobuf.Timestamp getEndTime();
   /**
-   * <code>.google.protobuf.Timestamp end_time = 8;</code>
+   * <code>.google.protobuf.Timestamp end_time = 7;</code>
    */
   com.google.protobuf.TimestampOrBuilder getEndTimeOrBuilder();
 
   /**
-   * <code>.lh_proto.NodeRunStatePb current_node_run = 9;</code>
-   * @return Whether the currentNodeRun field is set.
+   * <code>int32 current_node_position = 8;</code>
+   * @return The currentNodePosition.
    */
-  boolean hasCurrentNodeRun();
-  /**
-   * <code>.lh_proto.NodeRunStatePb current_node_run = 9;</code>
-   * @return The currentNodeRun.
-   */
-  io.littlehorse.common.proto.NodeRunStatePb getCurrentNodeRun();
-  /**
-   * <code>.lh_proto.NodeRunStatePb current_node_run = 9;</code>
-   */
-  io.littlehorse.common.proto.NodeRunStatePbOrBuilder getCurrentNodeRunOrBuilder();
+  int getCurrentNodePosition();
 
   /**
-   * <code>string error_message = 10;</code>
+   * <code>string error_message = 9;</code>
    * @return Whether the errorMessage field is set.
    */
   boolean hasErrorMessage();
   /**
-   * <code>string error_message = 10;</code>
+   * <code>string error_message = 9;</code>
    * @return The errorMessage.
    */
   java.lang.String getErrorMessage();
   /**
-   * <code>string error_message = 10;</code>
+   * <code>string error_message = 9;</code>
    * @return The bytes for errorMessage.
    */
   com.google.protobuf.ByteString
       getErrorMessageBytes();
 
   /**
-   * <code>.lh_proto.TaskResultCodePb result_code = 11;</code>
+   * <code>.lh_proto.TaskResultCodePb result_code = 10;</code>
    * @return Whether the resultCode field is set.
    */
   boolean hasResultCode();
   /**
-   * <code>.lh_proto.TaskResultCodePb result_code = 11;</code>
+   * <code>.lh_proto.TaskResultCodePb result_code = 10;</code>
    * @return The enum numeric value on the wire for resultCode.
    */
   int getResultCodeValue();
   /**
-   * <code>.lh_proto.TaskResultCodePb result_code = 11;</code>
+   * <code>.lh_proto.TaskResultCodePb result_code = 10;</code>
    * @return The resultCode.
    */
   io.littlehorse.common.proto.TaskResultCodePb getResultCode();
