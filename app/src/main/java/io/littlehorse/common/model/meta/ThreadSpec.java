@@ -127,6 +127,28 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
         return null;
     }
 
+    // Returns all the external event def names used for **interrupts**
+    @JsonIgnore
+    public Set<String> getInterruptExternalEventDefs() {
+        Set<String> out = new HashSet<>();
+        for (InterruptDef idef : interruptDefs) {
+            out.add(idef.externalEventDefName);
+        }
+        return out;
+    }
+
+    // Returns all the external event def names used for **EXTERNAL_EVENT nodes**
+    @JsonIgnore
+    public Set<String> getNodeExternalEventDefs() {
+        Set<String> out = new HashSet<>();
+        for (Node n : nodes.values()) {
+            if (n.type == NodeCase.EXTERNAL_EVENT) {
+                out.add(n.externalEventNode.externalEventDefName);
+            }
+        }
+        return out;
+    }
+
     public Set<String> getChildThreadNames() {
         Set<String> out = new HashSet<>();
         for (Node node : nodes.values()) {
@@ -191,6 +213,46 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
             } catch (LHValidationError exn) {
                 exn.addPrefix("Interrupt Def for " + idef.externalEventDefName);
                 throw exn;
+            }
+        }
+        validateExternalEventDefUse();
+    }
+
+    /*
+     * Rules for ExternalEventDef usage:
+     * 1. An ExternalEventDef may only be used for an EXTERNAL_EVENT node OR
+     *    as an Interrupt trigger, but NOT both.
+     * 2. An ExternalEventDef CAN be used as an Interrupt trigger in more
+     *    than one ThreadSpec.
+     * 3. An ExternalEventDef CAN be used for multiple EXTERNAL_EVENT nodes in
+     *    multiple ThreadSpecs.
+     * 4. An ExternalEventDef CAN be used for multiple EXTERNAL_EVENT nodes in
+     *    the *same* ThreadSpec.
+     *
+     * If an ExternalEvent comes in and multiple live threads have
+     */
+    private void validateExternalEventDefUse() throws LHValidationError {
+        // Check that interrupts aren't used anywhere else
+        for (InterruptDef idef : interruptDefs) {
+            String eedn = idef.externalEventDefName;
+            if (wfSpec.getNodeExternalEventDefs().contains(eedn)) {
+                throw new LHValidationError(
+                    null,
+                    "ExternalEventDef " + eedn + " used for Node and Interrupt!"
+                );
+            }
+
+            for (ThreadSpec tspec : wfSpec.threadSpecs.values()) {
+                if (tspec.name.equals(name)) continue;
+
+                if (tspec.getInterruptExternalEventDefs().contains(eedn)) {
+                    throw new LHValidationError(
+                        null,
+                        "ExternalEventDef " +
+                        eedn +
+                        " used by multiple threads as interrupt!"
+                    );
+                }
             }
         }
     }

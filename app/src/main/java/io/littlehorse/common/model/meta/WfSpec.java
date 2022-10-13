@@ -173,6 +173,15 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
         }
     }
 
+    // TODO: Do some caching here cuz this could be slow for large workflows.
+    public Set<String> getNodeExternalEventDefs() {
+        Set<String> out = new HashSet<>();
+        for (ThreadSpec tspec : threadSpecs.values()) {
+            out.addAll(tspec.getNodeExternalEventDefs());
+        }
+        return out;
+    }
+
     @JsonIgnore
     public Map<String, VariableDef> getRequiredVariables() {
         return threadSpecs.get(entrypointThreadName).getRequiredVariables();

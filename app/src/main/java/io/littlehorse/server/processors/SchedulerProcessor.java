@@ -254,3 +254,12 @@ public class SchedulerProcessor
         }
     }
 }
+/*
+ * Things to test for Interrupts:
+ * 1. Simple test, one thread, lifecycle works.
+ * 2. Interrupting Parent thread causes child thread to stop.
+ * 3. One interrupt event correctly interrupts two threads which are each
+ *    sensitive to that ExternalEventDef, creating two child interrupt threads.
+ * 4. A thread that has is already COMPLETED or ERROR is not interrupted.
+ * 5. Interrupting child does not affect the parent.
+ */

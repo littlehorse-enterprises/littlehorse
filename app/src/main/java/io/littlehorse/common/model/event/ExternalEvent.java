@@ -1,6 +1,7 @@
 package io.littlehorse.common.model.event;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.server.Tag;
@@ -81,7 +82,8 @@ public class ExternalEvent extends GETable<ExternalEventPb> implements WfRunSubE
     }
 
     // Just for Jackson
-    public String getId() {
+    @JsonProperty("objectId")
+    public String getIdForJackson() {
         return getObjectId();
     }
 
