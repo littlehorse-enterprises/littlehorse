@@ -39,5 +39,6 @@ public class LHConstants {
     public static final Duration TICKER_INTERVAL = Duration.ofSeconds(4);
 
     public static final String OBJECT_ID_HEADER = "STORE_KEY";
+    public static final String EXT_EVT_HANDLER_VAR = "INPUT";
 }
 // NOTE: Use m6a.4xlarge

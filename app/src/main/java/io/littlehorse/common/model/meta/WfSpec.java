@@ -162,7 +162,12 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
 
         for (Map.Entry<String, ThreadSpec> e : threadSpecs.entrySet()) {
             ThreadSpec ts = e.getValue();
-            ts.validate(dbClient, config);
+            try {
+                ts.validate(dbClient, config);
+            } catch (LHValidationError exn) {
+                exn.addPrefix("Thread " + ts.name);
+                throw exn;
+            }
 
             allVarDefs.put(ts.name, ts.variableDefs);
         }

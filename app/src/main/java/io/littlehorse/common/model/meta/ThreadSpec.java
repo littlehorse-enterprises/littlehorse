@@ -7,6 +7,7 @@ import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.wfrun.VariableValue;
+import io.littlehorse.common.proto.InterruptDefPb;
 import io.littlehorse.common.proto.NodePb;
 import io.littlehorse.common.proto.NodePb.NodeCase;
 import io.littlehorse.common.proto.ThreadSpecPb;
@@ -15,8 +16,10 @@ import io.littlehorse.common.proto.VariableAssignmentPb.SourceCase;
 import io.littlehorse.common.proto.VariableDefPb;
 import io.littlehorse.common.proto.VariableTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
@@ -27,10 +30,12 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
 
     public Map<String, Node> nodes;
     public Map<String, VariableDef> variableDefs;
+    public List<InterruptDef> interruptDefs;
 
     public ThreadSpec() {
         nodes = new HashMap<>();
         variableDefs = new HashMap<>();
+        interruptDefs = new ArrayList<>();
     }
 
     @JsonIgnore
@@ -48,6 +53,9 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
         }
         for (Map.Entry<String, VariableDef> e : variableDefs.entrySet()) {
             out.putVariableDefs(e.getKey(), e.getValue().toProto().build());
+        }
+        for (InterruptDef idef : interruptDefs) {
+            out.addInterruptDefs(idef.toProto());
         }
         return out;
     }
@@ -73,6 +81,12 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
             v.name = p.getKey();
             v.threadSpec = this;
             variableDefs.put(p.getKey(), v);
+        }
+
+        for (InterruptDefPb idefpb : proto.getInterruptDefsList()) {
+            InterruptDef idef = InterruptDef.fromProto(idefpb);
+            idef.ownerThreadSpec = this;
+            interruptDefs.add(idef);
         }
     }
 
@@ -140,10 +154,7 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
     public void validate(LHGlobalMetaStores dbClient, LHConfig config)
         throws LHValidationError {
         if (entrypointNodeName == null) {
-            throw new LHValidationError(
-                null,
-                "thread " + name + " missing ENTRYPOITNT node!"
-            );
+            throw new LHValidationError(null, "missing ENTRYPOITNT node!");
         }
 
         boolean seenEntrypoint = false;
@@ -153,8 +164,6 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
                 if (result == null) {
                     throw new LHValidationError(
                         null,
-                        "Thread " +
-                        name +
                         " node " +
                         node.name +
                         " refers to unknown or out-of-scope variable " +
@@ -164,14 +173,25 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
             }
             if (node.type == NodeCase.ENTRYPOINT) {
                 if (seenEntrypoint) {
-                    throw new LHValidationError(
-                        null,
-                        "Thread " + name + " has multiple ENTRYPOINT nodes!"
-                    );
+                    throw new LHValidationError(null, "Multiple ENTRYPOINT nodes!");
                 }
                 seenEntrypoint = true;
             }
-            node.validate(dbClient, config);
+            try {
+                node.validate(dbClient, config);
+            } catch (LHValidationError exn) {
+                exn.addPrefix("Node " + node.name);
+                throw exn;
+            }
+        }
+
+        for (InterruptDef idef : interruptDefs) {
+            try {
+                idef.validate(dbClient, config);
+            } catch (LHValidationError exn) {
+                exn.addPrefix("Interrupt Def for " + idef.externalEventDefName);
+                throw exn;
+            }
         }
     }
 

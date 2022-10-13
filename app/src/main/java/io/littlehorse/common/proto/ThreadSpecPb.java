@@ -16,6 +16,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private ThreadSpecPb() {
+    interruptDefs_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -75,6 +76,15 @@ private static final long serialVersionUID = 0L;
                 variableDefs__.getKey(), variableDefs__.getValue());
             break;
           }
+          case 26: {
+            if (!((mutable_bitField0_ & 0x00000004) != 0)) {
+              interruptDefs_ = new java.util.ArrayList<io.littlehorse.common.proto.InterruptDefPb>();
+              mutable_bitField0_ |= 0x00000004;
+            }
+            interruptDefs_.add(
+                input.readMessage(io.littlehorse.common.proto.InterruptDefPb.parser(), extensionRegistry));
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -90,6 +100,9 @@ private static final long serialVersionUID = 0L;
       throw new com.google.protobuf.InvalidProtocolBufferException(
           e).setUnfinishedMessage(this);
     } finally {
+      if (((mutable_bitField0_ & 0x00000004) != 0)) {
+        interruptDefs_ = java.util.Collections.unmodifiableList(interruptDefs_);
+      }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
@@ -283,6 +296,46 @@ private static final long serialVersionUID = 0L;
     return map.get(key);
   }
 
+  public static final int INTERRUPT_DEFS_FIELD_NUMBER = 3;
+  private java.util.List<io.littlehorse.common.proto.InterruptDefPb> interruptDefs_;
+  /**
+   * <code>repeated .lh_proto.InterruptDefPb interrupt_defs = 3;</code>
+   */
+  @java.lang.Override
+  public java.util.List<io.littlehorse.common.proto.InterruptDefPb> getInterruptDefsList() {
+    return interruptDefs_;
+  }
+  /**
+   * <code>repeated .lh_proto.InterruptDefPb interrupt_defs = 3;</code>
+   */
+  @java.lang.Override
+  public java.util.List<? extends io.littlehorse.common.proto.InterruptDefPbOrBuilder> 
+      getInterruptDefsOrBuilderList() {
+    return interruptDefs_;
+  }
+  /**
+   * <code>repeated .lh_proto.InterruptDefPb interrupt_defs = 3;</code>
+   */
+  @java.lang.Override
+  public int getInterruptDefsCount() {
+    return interruptDefs_.size();
+  }
+  /**
+   * <code>repeated .lh_proto.InterruptDefPb interrupt_defs = 3;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.InterruptDefPb getInterruptDefs(int index) {
+    return interruptDefs_.get(index);
+  }
+  /**
+   * <code>repeated .lh_proto.InterruptDefPb interrupt_defs = 3;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.InterruptDefPbOrBuilder getInterruptDefsOrBuilder(
+      int index) {
+    return interruptDefs_.get(index);
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -309,6 +362,9 @@ private static final long serialVersionUID = 0L;
         internalGetVariableDefs(),
         VariableDefsDefaultEntryHolder.defaultEntry,
         2);
+    for (int i = 0; i < interruptDefs_.size(); i++) {
+      output.writeMessage(3, interruptDefs_.get(i));
+    }
     unknownFields.writeTo(output);
   }
 
@@ -338,6 +394,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, variableDefs__);
     }
+    for (int i = 0; i < interruptDefs_.size(); i++) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, interruptDefs_.get(i));
+    }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
@@ -357,6 +417,8 @@ private static final long serialVersionUID = 0L;
         other.internalGetNodes())) return false;
     if (!internalGetVariableDefs().equals(
         other.internalGetVariableDefs())) return false;
+    if (!getInterruptDefsList()
+        .equals(other.getInterruptDefsList())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -375,6 +437,10 @@ private static final long serialVersionUID = 0L;
     if (!internalGetVariableDefs().getMap().isEmpty()) {
       hash = (37 * hash) + VARIABLE_DEFS_FIELD_NUMBER;
       hash = (53 * hash) + internalGetVariableDefs().hashCode();
+    }
+    if (getInterruptDefsCount() > 0) {
+      hash = (37 * hash) + INTERRUPT_DEFS_FIELD_NUMBER;
+      hash = (53 * hash) + getInterruptDefsList().hashCode();
     }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
@@ -530,6 +596,7 @@ private static final long serialVersionUID = 0L;
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
+        getInterruptDefsFieldBuilder();
       }
     }
     @java.lang.Override
@@ -537,6 +604,12 @@ private static final long serialVersionUID = 0L;
       super.clear();
       internalGetMutableNodes().clear();
       internalGetMutableVariableDefs().clear();
+      if (interruptDefsBuilder_ == null) {
+        interruptDefs_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000004);
+      } else {
+        interruptDefsBuilder_.clear();
+      }
       return this;
     }
 
@@ -568,6 +641,15 @@ private static final long serialVersionUID = 0L;
       result.nodes_.makeImmutable();
       result.variableDefs_ = internalGetVariableDefs();
       result.variableDefs_.makeImmutable();
+      if (interruptDefsBuilder_ == null) {
+        if (((bitField0_ & 0x00000004) != 0)) {
+          interruptDefs_ = java.util.Collections.unmodifiableList(interruptDefs_);
+          bitField0_ = (bitField0_ & ~0x00000004);
+        }
+        result.interruptDefs_ = interruptDefs_;
+      } else {
+        result.interruptDefs_ = interruptDefsBuilder_.build();
+      }
       onBuilt();
       return result;
     }
@@ -620,6 +702,32 @@ private static final long serialVersionUID = 0L;
           other.internalGetNodes());
       internalGetMutableVariableDefs().mergeFrom(
           other.internalGetVariableDefs());
+      if (interruptDefsBuilder_ == null) {
+        if (!other.interruptDefs_.isEmpty()) {
+          if (interruptDefs_.isEmpty()) {
+            interruptDefs_ = other.interruptDefs_;
+            bitField0_ = (bitField0_ & ~0x00000004);
+          } else {
+            ensureInterruptDefsIsMutable();
+            interruptDefs_.addAll(other.interruptDefs_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.interruptDefs_.isEmpty()) {
+          if (interruptDefsBuilder_.isEmpty()) {
+            interruptDefsBuilder_.dispose();
+            interruptDefsBuilder_ = null;
+            interruptDefs_ = other.interruptDefs_;
+            bitField0_ = (bitField0_ & ~0x00000004);
+            interruptDefsBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getInterruptDefsFieldBuilder() : null;
+          } else {
+            interruptDefsBuilder_.addAllMessages(other.interruptDefs_);
+          }
+        }
+      }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
@@ -904,6 +1012,246 @@ private static final long serialVersionUID = 0L;
       internalGetMutableVariableDefs().getMutableMap()
           .putAll(values);
       return this;
+    }
+
+    private java.util.List<io.littlehorse.common.proto.InterruptDefPb> interruptDefs_ =
+      java.util.Collections.emptyList();
+    private void ensureInterruptDefsIsMutable() {
+      if (!((bitField0_ & 0x00000004) != 0)) {
+        interruptDefs_ = new java.util.ArrayList<io.littlehorse.common.proto.InterruptDefPb>(interruptDefs_);
+        bitField0_ |= 0x00000004;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.common.proto.InterruptDefPb, io.littlehorse.common.proto.InterruptDefPb.Builder, io.littlehorse.common.proto.InterruptDefPbOrBuilder> interruptDefsBuilder_;
+
+    /**
+     * <code>repeated .lh_proto.InterruptDefPb interrupt_defs = 3;</code>
+     */
+    public java.util.List<io.littlehorse.common.proto.InterruptDefPb> getInterruptDefsList() {
+      if (interruptDefsBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(interruptDefs_);
+      } else {
+        return interruptDefsBuilder_.getMessageList();
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.InterruptDefPb interrupt_defs = 3;</code>
+     */
+    public int getInterruptDefsCount() {
+      if (interruptDefsBuilder_ == null) {
+        return interruptDefs_.size();
+      } else {
+        return interruptDefsBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.InterruptDefPb interrupt_defs = 3;</code>
+     */
+    public io.littlehorse.common.proto.InterruptDefPb getInterruptDefs(int index) {
+      if (interruptDefsBuilder_ == null) {
+        return interruptDefs_.get(index);
+      } else {
+        return interruptDefsBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.InterruptDefPb interrupt_defs = 3;</code>
+     */
+    public Builder setInterruptDefs(
+        int index, io.littlehorse.common.proto.InterruptDefPb value) {
+      if (interruptDefsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureInterruptDefsIsMutable();
+        interruptDefs_.set(index, value);
+        onChanged();
+      } else {
+        interruptDefsBuilder_.setMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.InterruptDefPb interrupt_defs = 3;</code>
+     */
+    public Builder setInterruptDefs(
+        int index, io.littlehorse.common.proto.InterruptDefPb.Builder builderForValue) {
+      if (interruptDefsBuilder_ == null) {
+        ensureInterruptDefsIsMutable();
+        interruptDefs_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        interruptDefsBuilder_.setMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.InterruptDefPb interrupt_defs = 3;</code>
+     */
+    public Builder addInterruptDefs(io.littlehorse.common.proto.InterruptDefPb value) {
+      if (interruptDefsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureInterruptDefsIsMutable();
+        interruptDefs_.add(value);
+        onChanged();
+      } else {
+        interruptDefsBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.InterruptDefPb interrupt_defs = 3;</code>
+     */
+    public Builder addInterruptDefs(
+        int index, io.littlehorse.common.proto.InterruptDefPb value) {
+      if (interruptDefsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureInterruptDefsIsMutable();
+        interruptDefs_.add(index, value);
+        onChanged();
+      } else {
+        interruptDefsBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.InterruptDefPb interrupt_defs = 3;</code>
+     */
+    public Builder addInterruptDefs(
+        io.littlehorse.common.proto.InterruptDefPb.Builder builderForValue) {
+      if (interruptDefsBuilder_ == null) {
+        ensureInterruptDefsIsMutable();
+        interruptDefs_.add(builderForValue.build());
+        onChanged();
+      } else {
+        interruptDefsBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.InterruptDefPb interrupt_defs = 3;</code>
+     */
+    public Builder addInterruptDefs(
+        int index, io.littlehorse.common.proto.InterruptDefPb.Builder builderForValue) {
+      if (interruptDefsBuilder_ == null) {
+        ensureInterruptDefsIsMutable();
+        interruptDefs_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        interruptDefsBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.InterruptDefPb interrupt_defs = 3;</code>
+     */
+    public Builder addAllInterruptDefs(
+        java.lang.Iterable<? extends io.littlehorse.common.proto.InterruptDefPb> values) {
+      if (interruptDefsBuilder_ == null) {
+        ensureInterruptDefsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, interruptDefs_);
+        onChanged();
+      } else {
+        interruptDefsBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.InterruptDefPb interrupt_defs = 3;</code>
+     */
+    public Builder clearInterruptDefs() {
+      if (interruptDefsBuilder_ == null) {
+        interruptDefs_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+      } else {
+        interruptDefsBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.InterruptDefPb interrupt_defs = 3;</code>
+     */
+    public Builder removeInterruptDefs(int index) {
+      if (interruptDefsBuilder_ == null) {
+        ensureInterruptDefsIsMutable();
+        interruptDefs_.remove(index);
+        onChanged();
+      } else {
+        interruptDefsBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.InterruptDefPb interrupt_defs = 3;</code>
+     */
+    public io.littlehorse.common.proto.InterruptDefPb.Builder getInterruptDefsBuilder(
+        int index) {
+      return getInterruptDefsFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .lh_proto.InterruptDefPb interrupt_defs = 3;</code>
+     */
+    public io.littlehorse.common.proto.InterruptDefPbOrBuilder getInterruptDefsOrBuilder(
+        int index) {
+      if (interruptDefsBuilder_ == null) {
+        return interruptDefs_.get(index);  } else {
+        return interruptDefsBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.InterruptDefPb interrupt_defs = 3;</code>
+     */
+    public java.util.List<? extends io.littlehorse.common.proto.InterruptDefPbOrBuilder> 
+         getInterruptDefsOrBuilderList() {
+      if (interruptDefsBuilder_ != null) {
+        return interruptDefsBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(interruptDefs_);
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.InterruptDefPb interrupt_defs = 3;</code>
+     */
+    public io.littlehorse.common.proto.InterruptDefPb.Builder addInterruptDefsBuilder() {
+      return getInterruptDefsFieldBuilder().addBuilder(
+          io.littlehorse.common.proto.InterruptDefPb.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .lh_proto.InterruptDefPb interrupt_defs = 3;</code>
+     */
+    public io.littlehorse.common.proto.InterruptDefPb.Builder addInterruptDefsBuilder(
+        int index) {
+      return getInterruptDefsFieldBuilder().addBuilder(
+          index, io.littlehorse.common.proto.InterruptDefPb.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .lh_proto.InterruptDefPb interrupt_defs = 3;</code>
+     */
+    public java.util.List<io.littlehorse.common.proto.InterruptDefPb.Builder> 
+         getInterruptDefsBuilderList() {
+      return getInterruptDefsFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.common.proto.InterruptDefPb, io.littlehorse.common.proto.InterruptDefPb.Builder, io.littlehorse.common.proto.InterruptDefPbOrBuilder> 
+        getInterruptDefsFieldBuilder() {
+      if (interruptDefsBuilder_ == null) {
+        interruptDefsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            io.littlehorse.common.proto.InterruptDefPb, io.littlehorse.common.proto.InterruptDefPb.Builder, io.littlehorse.common.proto.InterruptDefPbOrBuilder>(
+                interruptDefs_,
+                ((bitField0_ & 0x00000004) != 0),
+                getParentForChildren(),
+                isClean());
+        interruptDefs_ = null;
+      }
+      return interruptDefsBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

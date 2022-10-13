@@ -74,4 +74,28 @@ public interface ThreadSpecPbOrBuilder extends
 
   io.littlehorse.common.proto.VariableDefPb getVariableDefsOrThrow(
       java.lang.String key);
+
+  /**
+   * <code>repeated .lh_proto.InterruptDefPb interrupt_defs = 3;</code>
+   */
+  java.util.List<io.littlehorse.common.proto.InterruptDefPb> 
+      getInterruptDefsList();
+  /**
+   * <code>repeated .lh_proto.InterruptDefPb interrupt_defs = 3;</code>
+   */
+  io.littlehorse.common.proto.InterruptDefPb getInterruptDefs(int index);
+  /**
+   * <code>repeated .lh_proto.InterruptDefPb interrupt_defs = 3;</code>
+   */
+  int getInterruptDefsCount();
+  /**
+   * <code>repeated .lh_proto.InterruptDefPb interrupt_defs = 3;</code>
+   */
+  java.util.List<? extends io.littlehorse.common.proto.InterruptDefPbOrBuilder> 
+      getInterruptDefsOrBuilderList();
+  /**
+   * <code>repeated .lh_proto.InterruptDefPb interrupt_defs = 3;</code>
+   */
+  io.littlehorse.common.proto.InterruptDefPbOrBuilder getInterruptDefsOrBuilder(
+      int index);
 }

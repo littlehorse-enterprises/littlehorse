@@ -161,9 +161,15 @@ message VariableDefPb {
     bool required = 3;
 }
 
+message InterruptDefPb {
+    string external_event_def_name = 1;
+    string handler_spec_name = 2;
+}
+
 message ThreadSpecPb {
     map<string, NodePb> nodes = 1;
     map<string, VariableDefPb> variable_defs = 2;
+    repeated InterruptDefPb interrupt_defs = 3;
 }
 
 message WfSpecPb {

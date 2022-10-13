@@ -168,10 +168,7 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
         throws LHValidationError {
         for (Edge e : outgoingEdges) {
             if (e.sinkNodeName.equals(name)) {
-                throw new LHValidationError(
-                    null,
-                    "Node " + name + " thread " + threadSpec.name + " self loops!"
-                );
+                throw new LHValidationError(null, "Self loop not allowed!");
             }
 
             Node sink = threadSpec.nodes.get(e.sinkNodeName);
@@ -179,9 +176,7 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
                 throw new LHValidationError(
                     null,
                     String.format(
-                        "Node %s on thread %s has edge referring to missing node %s!",
-                        name,
-                        threadSpec.name,
+                        "Outgoing edge referring to missing node %s!",
                         e.sinkNodeName
                     )
                 );
@@ -191,7 +186,7 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
                 throw new LHValidationError(
                     null,
                     String.format(
-                        "Thread %s has entrypoint node with incoming edge from node %s.",
+                        "Entrypoint node has incoming edge from node %s.",
                         threadSpec.name,
                         name
                     )
@@ -207,11 +202,7 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
             if (last.condition != null) {
                 throw new LHValidationError(
                     null,
-                    "Node " +
-                    name +
-                    " on thread " +
-                    threadSpec.name +
-                    " last edge has non-null condition!"
+                    "Last outgoing edge has non-null condition!"
                 );
             }
         }
@@ -220,7 +211,7 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
             getSubNode().validate(client, config);
         } catch (LHValidationError exn) {
             // Decorate the exception with contextual info
-            exn.addPrefix("Thread " + threadSpec.name + " node " + name);
+            exn.addPrefix("Sub Node");
             throw exn;
         }
     }
