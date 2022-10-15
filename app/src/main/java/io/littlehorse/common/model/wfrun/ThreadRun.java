@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.event.ExternalEvent;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.Edge;
+import io.littlehorse.common.model.meta.InterruptDef;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.ThreadSpec;
@@ -13,10 +15,16 @@ import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.meta.VariableMutation;
 import io.littlehorse.common.model.meta.subnode.TaskNode;
+import io.littlehorse.common.model.wfrun.haltreason.Interrupted;
+import io.littlehorse.common.model.wfrun.haltreason.ParentHalted;
+import io.littlehorse.common.model.wfrun.haltreason.PendingInterruptHaltReason;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.TaskResultCodePb;
+import io.littlehorse.common.proto.ThreadHaltReasonPb;
+import io.littlehorse.common.proto.ThreadHaltReasonPb.ReasonCase;
 import io.littlehorse.common.proto.ThreadRunPb;
 import io.littlehorse.common.proto.VariableTypePb;
+import io.littlehorse.common.proto.WfRunEventPb.EventCase;
 import io.littlehorse.common.util.LHUtil;
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,9 +52,13 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     public List<Integer> childThreadIds;
     public Integer parentThreadId;
 
+    public List<ThreadHaltReason> haltReasons;
+    public String interruptTriggerId;
+
     public ThreadRun() {
         variables = new HashMap<>();
         childThreadIds = new ArrayList<>();
+        haltReasons = new ArrayList<>();
     }
 
     public void initFrom(MessageOrBuilder p) {
@@ -69,6 +81,16 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         }
         if (proto.hasParentThreadId()) parentThreadId = proto.getParentThreadId();
         childThreadIds = proto.getChildThreadIdsList();
+
+        if (proto.hasInterruptTriggerId()) {
+            interruptTriggerId = proto.getInterruptTriggerId();
+        }
+
+        for (ThreadHaltReasonPb thrpb : proto.getHaltReasonsList()) {
+            ThreadHaltReason thr = ThreadHaltReason.fromProto(thrpb);
+            thr.threadRun = this;
+            haltReasons.add(thr);
+        }
     }
 
     public ThreadRunPb.Builder toProto() {
@@ -98,6 +120,12 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         }
         out.addAllChildThreadIds(childThreadIds);
 
+        for (ThreadHaltReason thr : haltReasons) {
+            out.addHaltReasons(thr.toProto());
+        }
+        if (interruptTriggerId != null) {
+            out.setInterruptTriggerId(interruptTriggerId);
+        }
         return out;
     }
 
@@ -146,45 +174,213 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     }
 
     public void processEvent(WfRunEvent e) {
-        if (e.getThreadRunNumber() == null || e.getThreadRunNumber() != number) {
-            LHUtil.log("Ignoring event for different thread");
+        // External Events get a little bit of special handling since they may not
+        // already have information about the node...and they can have impact at the
+        // ThreadRun level (eg. interrupts) rather than just the node level.
+        if (e.type == EventCase.EXTERNAL_EVENT) {
+            registerExternalEvent(e);
             return;
         }
 
-        /*
-         * WfRunEvents can be any of the following:
-         * - WF_RUN_REQUEST
-         * - TASK_STARTED
-         * - TASK_RESULT
-         * - EXTERNAL_EVENT
-         */
+        if (e.getThreadRunNumber() == null || e.getThreadRunNumber() != number) {
+            return;
+        }
 
         Integer nrpos = e.getNodeRunPosition();
         if (nrpos != null) {
             if (nrpos > currentNodePosition) {
-                LHUtil.log("Got event for unknown future node. Skipping.");
+                // Got event for unknown future node. Skipping.
                 return;
             }
             getNodeRun(nrpos).processEvent(e);
         } else {
             // In the future, we may have things like Interrupts or STOP_REQUEST
             // in which it's assigned to a Thread but not a Node.
-            LHUtil.log("Got an event without assigned to node. Skipping.");
+
+            // Got an event without assigned to node. Skipping.
         }
     }
 
+    public void acknowledgeInterruptStarted(
+        PendingInterrupt pi,
+        int handlerThreadId
+    ) {
+        boolean foundIt = false;
+        for (int i = haltReasons.size() - 1; i >= 0; i--) {
+            ThreadHaltReason hr = haltReasons.get(i);
+            if (hr.type != ReasonCase.PENDING_INTERRUPT) {
+                continue;
+            }
+            if (hr.pendingInterrupt.externalEventId.equals(pi.externalEventId)) {
+                foundIt = true;
+                haltReasons.remove(i);
+            }
+        }
+        if (!foundIt) {
+            throw new RuntimeException("Not possible");
+        }
+
+        ThreadHaltReason thr = new ThreadHaltReason();
+        thr.threadRun = this;
+        thr.type = ReasonCase.INTERRUPTED;
+        thr.interrupted = new Interrupted();
+        thr.interrupted.interruptThreadId = handlerThreadId;
+
+        childThreadIds.add(handlerThreadId);
+
+        haltReasons.add(thr);
+    }
+
+    /*
+     * Note on how ExternalEvents are handled:
+     * 1. First, the ExternalEvent is saved to the data store. This is handled
+     *    in the SchedulerProcessor::processHelper() function.
+     * 2. If the ExternalEvent isn't an Interrupt trigger, then if any nodes
+     *    in any ThreadRuns need to react to it, they will look it up in the store
+     *    and react appropriately if it's present. That is done by the methods
+     *    SubNodeRun::advanceIfPossible() and SubNodeRun::arrive().
+     * 3. If it's an Interrupt trigger, then we need to trigger the interrupt here.
+     */
+    private void registerExternalEvent(WfRunEvent e) {
+        if (e.type != EventCase.EXTERNAL_EVENT) {
+            throw new RuntimeException("Not possible");
+        }
+
+        String extEvtName = e.externalEvent.externalEventDefName;
+        InterruptDef idef = getThreadSpec().getInterruptDefFor(extEvtName);
+        if (idef != null) {
+            // trigger interrupt
+            initializeInterrupt(e.externalEvent, idef);
+        }
+    }
+
+    private void initializeInterrupt(ExternalEvent trigger, InterruptDef idef) {
+        // First, stop all child threads.
+        ThreadHaltReason haltReason = new ThreadHaltReason();
+        haltReason.type = ReasonCase.PENDING_INTERRUPT;
+        haltReason.pendingInterrupt = new PendingInterruptHaltReason();
+        haltReason.pendingInterrupt.externalEventId = trigger.getObjectId();
+
+        // This also stops the children
+        halt(haltReason);
+
+        // Now make sure that the parent WfRun has the info necessary to launch the
+        // interrupt on the next call to advance
+        PendingInterrupt pi = new PendingInterrupt();
+        pi.externalEventId = trigger.getObjectId();
+        pi.interruptedThreadId = number;
+        pi.handlerSpecName = idef.handlerSpecName;
+
+        wfRun.pendingInterrupts.add(pi);
+    }
+
+    public void halt(ThreadHaltReason reason) {
+        reason.threadRun = this;
+        switch (status) {
+            case COMPLETED:
+            case ERROR:
+                // Already terminated, ignoring halt
+                return;
+            case STARTING:
+            case RUNNING:
+            case HALTING:
+                status = LHStatusPb.HALTING;
+                break;
+            case HALTED:
+                status = LHStatusPb.HALTED;
+                break;
+            case UNRECOGNIZED:
+                throw new RuntimeException("Not possible");
+        }
+
+        // if we got this far, then we know that we are still running. Add the
+        // halt reason.
+        haltReasons.add(reason);
+
+        // Now need to halt all the children.
+        ThreadHaltReason childHaltReason = new ThreadHaltReason();
+        childHaltReason.type = ReasonCase.PARENT_HALTED;
+        childHaltReason.parentHalted = new ParentHalted();
+        childHaltReason.parentHalted.parentThreadId = number;
+
+        for (int childId : childThreadIds) {
+            wfRun.threadRuns.get(childId).halt(childHaltReason);
+        }
+    }
+
+    /*
+     * Checks if the status can be changed. Returns true if status did change.
+     */
+    public boolean updateStatus() {
+        if (status == LHStatusPb.COMPLETED || status == LHStatusPb.ERROR) {
+            return false;
+        } else if (status == LHStatusPb.RUNNING) {
+            return false;
+        } else if (status == LHStatusPb.HALTED) {
+            // determine if halt reasons are resolved or not.
+            for (int i = haltReasons.size() - 1; i >= 0; i--) {
+                ThreadHaltReason hr = haltReasons.get(i);
+                if (hr.isResolved()) {
+                    haltReasons.remove(i);
+                }
+            }
+            if (haltReasons.isEmpty()) {
+                status = LHStatusPb.RUNNING;
+                return true;
+            } else {
+                return false;
+            }
+        } else if (status == LHStatusPb.HALTING) {
+            if (!getCurrentNodeRun().isInProgress()) {
+                status = LHStatusPb.HALTED;
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    /*
+     * Returns true if we can move this Thread from HALTING to HALTED status.
+     */
     @JsonIgnore
-    public void advance(Date eventTime) {
+    public boolean isDoneHalting() {
+        if (getCurrentNodeRun().isInProgress()) return false;
+
+        for (int childId : childThreadIds) {
+            if (wfRun.threadRuns.get(childId).isRunning()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /*
+     * Returns true if this thread is in a dynamic (running) state.
+     */
+    @JsonIgnore
+    public boolean isRunning() {
+        return (
+            status == LHStatusPb.RUNNING ||
+            status == LHStatusPb.STARTING ||
+            status == LHStatusPb.HALTING
+        );
+    }
+
+    @JsonIgnore
+    public boolean advance(Date eventTime) {
         NodeRun currentNodeRun = getCurrentNodeRun();
 
         if (status == LHStatusPb.RUNNING) {
             // Just advance the node. Not fancy.
-            currentNodeRun.advanceIfPossible(eventTime);
+            return currentNodeRun.advanceIfPossible(eventTime);
         } else if (status == LHStatusPb.HALTED) {
             // This means we just need to wait until advance() is called again
             // after Thread Resumption
 
             LHUtil.log("Tried to advance HALTED thread. Doing nothing.");
+            return false;
         } else if (status == LHStatusPb.HALTING) {
             // TODO: Decide whether we want to pull this out into a method
             // like `ThreadRun::updateStatus()` or keep it here
@@ -194,15 +390,21 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             if (!currentNodeRun.isInProgress()) {
                 status = LHStatusPb.HALTED;
                 LHUtil.log("Moving thread to HALTED");
+                return true;
+            } else {
+                return false;
             }
         } else if (status == LHStatusPb.COMPLETED) {
             // Nothing to do, this is likely an innocuous event.
+            return false;
         } else if (status == LHStatusPb.ERROR) {
             // This is innocuous. Occurs when a timeout event comes in after
             // a thread fails or completes. Nothing to do.
+
+            return false;
         } else if (status == LHStatusPb.STARTING) {
             status = LHStatusPb.RUNNING;
-            currentNodeRun.advanceIfPossible(eventTime);
+            return currentNodeRun.advanceIfPossible(eventTime);
         } else {
             throw new RuntimeException("Unrecognized status: " + status);
         }
@@ -214,7 +416,27 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         status = LHStatusPb.ERROR;
         this.endTime = time;
 
+        for (int childId : childThreadIds) {
+            ThreadRun child = wfRun.threadRuns.get(childId);
+            ThreadHaltReason hr = new ThreadHaltReason();
+            hr.type = ReasonCase.PARENT_HALTED;
+            hr.parentHalted = new ParentHalted();
+            hr.parentHalted.parentThreadId = number;
+            child.halt(hr);
+        }
+
         wfRun.handleThreadStatus(number, new Date(), status);
+
+        if (interruptTriggerId != null) {
+            // then we're an interrupt thread and need to fail the parent.
+
+            getParent() // guaranteed not to be null in this case
+                .fail(
+                    TaskResultCodePb.CHILD_FALIED,
+                    "Interrupt thread with id " + number + " failed!",
+                    time
+                );
+        }
     }
 
     public void complete(Date time) {
@@ -242,8 +464,10 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             return;
         }
 
-        // If we got here, then we're good.
-        advanceFrom(getCurrentNode());
+        if (status == LHStatusPb.RUNNING) {
+            // If we got here, then we're good.
+            advanceFrom(getCurrentNode());
+        }
     }
 
     public void advanceFrom(Node curNode) {

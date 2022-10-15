@@ -116,7 +116,11 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
         }
     }
 
-    public void advanceIfPossible(Date time) {}
+    public boolean advanceIfPossible(Date time) {
+        // The task currently only cares about the input from the workers, not the
+        // other threads.
+        return false;
+    }
 
     public void arrive(Date time) {
         Node node = nodeRun.getNode();
@@ -197,13 +201,18 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
 
     public void handleTaskResult(WfRunEvent we) {
         TaskResultEvent ce = we.taskResult;
-        if (nodeRun.status == LHStatusPb.COMPLETED) {
-            LHUtil.log("Ignoring old event for completed task.");
-            return;
-        }
-
-        if (nodeRun.status == LHStatusPb.ERROR) {
-            LHUtil.log("Ignoring old event for errored task");
+        if (
+            nodeRun.status == LHStatusPb.COMPLETED ||
+            nodeRun.status == LHStatusPb.ERROR
+        ) {
+            // Ignoring old event for completed task.
+            // Example:
+            // 1. Out-of-order TASK_START event.
+            // 2. Timer event coming to signify timeout on a task that successfully
+            //    completed already.
+            // 3. For ERROR tasks, it's possible the TASK_COMPLETED event was late.
+            //    Currently, we don't resurrect the workflow. However, in the future,
+            //    we may not want to lose that data.
             return;
         }
 
@@ -234,6 +243,7 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
             case VAR_SUB_ERROR:
                 // This shouldn't be possible.
                 throw new RuntimeException("Impossible TaskResultCodePb");
+            default:
             case UNRECOGNIZED:
                 throw new RuntimeException(
                     "Unrecognized TaskResultCode: " + ce.resultCode

@@ -2,15 +2,18 @@ package io.littlehorse.common.model.wfrun;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.event.ExternalEvent;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.ThreadSpec;
 import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.server.Tag;
 import io.littlehorse.common.proto.LHStatusPb;
+import io.littlehorse.common.proto.PendingInterruptPb;
 import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.proto.ThreadRunPb;
 import io.littlehorse.common.proto.WfRunPb;
@@ -20,8 +23,11 @@ import io.littlehorse.server.processors.util.WfRunStoreAccess;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class WfRun extends GETable<WfRunPb> {
@@ -34,9 +40,11 @@ public class WfRun extends GETable<WfRunPb> {
     public Date startTime;
     public Date endTime;
     public List<ThreadRun> threadRuns;
+    public List<PendingInterrupt> pendingInterrupts;
 
     public WfRun() {
         threadRuns = new ArrayList<>();
+        pendingInterrupts = new ArrayList<>();
     }
 
     @JsonIgnore
@@ -62,6 +70,19 @@ public class WfRun extends GETable<WfRunPb> {
             thr.wfRun = this;
             threadRuns.add(thr);
         }
+        for (PendingInterruptPb pipb : proto.getPendingInterruptsList()) {
+            pendingInterrupts.add(PendingInterrupt.fromProto(pipb));
+        }
+    }
+
+    /*
+     * Returns true if this WfRun is currently running. Due to the inheritance
+     * structure of threads, we can determine this by simply checking if the
+     * entrypoint thread is running.
+     */
+    @JsonIgnore
+    public boolean isRunning() {
+        return threadRuns.get(0).isRunning();
     }
 
     @JsonIgnore
@@ -81,6 +102,10 @@ public class WfRun extends GETable<WfRunPb> {
 
         for (ThreadRun threadRun : threadRuns) {
             out.addThreadRuns(threadRun.toProto());
+        }
+
+        for (PendingInterrupt pi : pendingInterrupts) {
+            out.addPendingInterrupts(pi.toProto());
         }
 
         return out;
@@ -189,13 +214,88 @@ public class WfRun extends GETable<WfRunPb> {
         return thread;
     }
 
+    private boolean startInterruptsIfNecessary(Date time) {
+        boolean somethingChanged = false;
+
+        List<PendingInterrupt> toHandleNow = new ArrayList<>();
+        // Can only send one interrupt at a time to a thread...they need to complete
+        // sequentially.
+        Set<Integer> threadsToHandleNow = new HashSet<>();
+
+        for (int i = pendingInterrupts.size() - 1; i >= 0; i--) {
+            PendingInterrupt pi = pendingInterrupts.get(i);
+            ThreadRun toInterrupt = threadRuns.get(pi.interruptedThreadId);
+            if (toInterrupt.isDoneHalting()) {
+                if (!threadsToHandleNow.contains(pi.interruptedThreadId)) {
+                    threadsToHandleNow.add(pi.interruptedThreadId);
+                    somethingChanged = true;
+                    toHandleNow.add(0, pi);
+                    pendingInterrupts.remove(i);
+                }
+            }
+        }
+
+        for (PendingInterrupt pi : toHandleNow) {
+            ThreadRun toInterrupt = threadRuns.get(pi.interruptedThreadId);
+            Map<String, VariableValue> vars;
+
+            ThreadSpec iSpec = wfSpec.threadSpecs.get(pi.handlerSpecName);
+            if (iSpec.variableDefs.size() > 0) {
+                vars = new HashMap<>();
+                ExternalEvent event = stores.getExternalEvent(pi.externalEventId);
+                vars.put(LHConstants.EXT_EVT_HANDLER_VAR, event.content);
+            } else {
+                vars = new HashMap<>();
+            }
+            ThreadRun interruptor = startThread(
+                pi.handlerSpecName,
+                time,
+                pi.interruptedThreadId,
+                vars
+            );
+            interruptor.interruptTriggerId = pi.externalEventId;
+
+            if (interruptor.status == LHStatusPb.ERROR) {
+                toInterrupt.fail(
+                    TaskResultCodePb.FAILED,
+                    "Failed launching interrupt thread with id: " +
+                    interruptor.number,
+                    time
+                );
+            } else {
+                toInterrupt.acknowledgeInterruptStarted(pi, interruptor.number);
+            }
+        }
+
+        return somethingChanged;
+    }
+
     public void processEvent(WfRunEvent e) {
+        startInterruptsIfNecessary(e.time);
+        boolean statusChanged = false;
+
         for (ThreadRun thread : threadRuns) {
             thread.processEvent(e);
         }
 
         for (ThreadRun thread : threadRuns) {
-            thread.advance(e.time);
+            statusChanged = thread.advance(e.time) || statusChanged;
+        }
+
+        for (ThreadRun thread : threadRuns) {
+            statusChanged = thread.updateStatus() || statusChanged;
+        }
+
+        while (statusChanged) {
+            statusChanged = false;
+            startInterruptsIfNecessary(e.time);
+            for (ThreadRun thread : threadRuns) {
+                statusChanged = thread.advance(e.time) || statusChanged;
+            }
+
+            for (ThreadRun thread : threadRuns) {
+                statusChanged = thread.updateStatus() || statusChanged;
+            }
         }
     }
 

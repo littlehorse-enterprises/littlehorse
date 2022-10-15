@@ -78,7 +78,7 @@ public class ExternalEventRun extends SubNodeRun<ExternalEventRunPb> {
         );
     }
 
-    public void advanceIfPossible(Date time) {
+    public boolean advanceIfPossible(Date time) {
         Node node = nodeRun.getNode();
         ExternalEventNode eNode = node.externalEventNode;
 
@@ -87,7 +87,7 @@ public class ExternalEventRun extends SubNodeRun<ExternalEventRunPb> {
         );
         if (evt == null) {
             // It hasn't come in yet.
-            return;
+            return false;
         }
 
         eventTime = evt.getCreatedAt();
@@ -97,6 +97,7 @@ public class ExternalEventRun extends SubNodeRun<ExternalEventRunPb> {
         evt.threadRunNumber = nodeRun.threadRunNumber;
 
         nodeRun.complete(evt.content, time);
+        return true;
     }
 
     public void arrive(Date time) {

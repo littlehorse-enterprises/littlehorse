@@ -1,0 +1,96 @@
+{
+    "name": "thread_child_dies",
+    "threadSpecs": {
+        "parent": {
+            "nodes": {
+                "entrypoint": {
+                    "outgoingEdges": [
+                        {
+                            "sinkNodeName": "t1"
+                        }
+                    ],
+                    "entrypoint": {}
+                },
+                "t1": {
+                    "startThread": {
+                        "threadSpecName": "child"
+                    },
+                    "outgoingEdges": [
+                        {
+                            "sinkNodeName": "t2"
+                        }
+                    ]
+                },
+                "t2": {
+                    "task": {
+                        "taskDefName": "task1",
+                        "retries": 3
+                    },
+                    "outgoingEdges": [
+                        {
+                            "sinkNodeName": "exit"
+                        }
+                    ]
+                },
+                "exit": {
+                    "exit": {}
+                }
+            }
+        },
+        "child": {
+            "variableDefs": {
+                "myJsonVar": {
+                    "type": "JSON_OBJ",
+                    "defaultVal": {
+                        "type": "JSON_OBJ",
+                        "jsonObj": "{\"foo\": \"bar\"}"
+                    },
+                    "required": false
+                },
+                "myInt": {
+                    "type": "INT",
+                    "defaultVal": {
+                        "type": "INT",
+                        "int": 12345
+                    },
+                    "required": false
+                }
+            },
+            "nodes": {
+                "entrypoint": {
+                    "outgoingEdges": [
+                        {
+                            "sinkNodeName": "t1"
+                        }
+                    ],
+                    "entrypoint": {}
+                },
+                "t1": {
+                    "task": {
+                        "taskDefName": "task1",
+                        "retries": 3
+                    },
+                    "outgoingEdges": [
+                        {
+                            "sinkNodeName": "exit"
+                        }
+                    ],
+                    "variableMutations": [
+                        {
+                            "lhsName": "myInt",
+                            "operation": "ASSIGN",
+                            "sourceVariable": {
+                                "variableName": "myJsonVar",
+                                "jsonPath": "$.foo"
+                            }
+                        }
+                    ]
+                },
+                "exit": {
+                    "exit": {}
+                }
+            }
+        }
+    },
+    "entrypointThreadName": "parent"
+}

@@ -130,6 +130,15 @@ public class WfRunStoreAccess {
         return out;
     }
 
+    public ExternalEvent getExternalEvent(String externalEventId) {
+        if (extEvtPuts.containsKey(externalEventId)) {
+            return extEvtPuts.get(externalEventId);
+        }
+        ExternalEvent out = extEvtStore.get(externalEventId);
+        if (out != null) extEvtPuts.put(externalEventId, out);
+        return out;
+    }
+
     public void saveExternalEvent(ExternalEvent evt) {
         extEvtPuts.put(evt.getObjectId(), evt);
     }

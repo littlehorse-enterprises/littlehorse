@@ -54,9 +54,9 @@ public class StartThreadRun extends SubNodeRun<StartThreadRunPb> {
         // I don't believe there's anything to do here.
     }
 
-    public void advanceIfPossible(Date time) {
+    public boolean advanceIfPossible(Date time) {
         // nothing to do
-        nodeRun.threadRun.advance(time);
+        return nodeRun.threadRun.advance(time);
     }
 
     public void arrive(Date time) {

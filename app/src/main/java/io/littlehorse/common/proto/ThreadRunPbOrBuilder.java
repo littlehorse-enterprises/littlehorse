@@ -156,4 +156,45 @@ public interface ThreadRunPbOrBuilder extends
    * @return The parentThreadId.
    */
   int getParentThreadId();
+
+  /**
+   * <code>repeated .lh_proto.ThreadHaltReasonPb halt_reasons = 13;</code>
+   */
+  java.util.List<io.littlehorse.common.proto.ThreadHaltReasonPb> 
+      getHaltReasonsList();
+  /**
+   * <code>repeated .lh_proto.ThreadHaltReasonPb halt_reasons = 13;</code>
+   */
+  io.littlehorse.common.proto.ThreadHaltReasonPb getHaltReasons(int index);
+  /**
+   * <code>repeated .lh_proto.ThreadHaltReasonPb halt_reasons = 13;</code>
+   */
+  int getHaltReasonsCount();
+  /**
+   * <code>repeated .lh_proto.ThreadHaltReasonPb halt_reasons = 13;</code>
+   */
+  java.util.List<? extends io.littlehorse.common.proto.ThreadHaltReasonPbOrBuilder> 
+      getHaltReasonsOrBuilderList();
+  /**
+   * <code>repeated .lh_proto.ThreadHaltReasonPb halt_reasons = 13;</code>
+   */
+  io.littlehorse.common.proto.ThreadHaltReasonPbOrBuilder getHaltReasonsOrBuilder(
+      int index);
+
+  /**
+   * <code>string interrupt_trigger_id = 14;</code>
+   * @return Whether the interruptTriggerId field is set.
+   */
+  boolean hasInterruptTriggerId();
+  /**
+   * <code>string interrupt_trigger_id = 14;</code>
+   * @return The interruptTriggerId.
+   */
+  java.lang.String getInterruptTriggerId();
+  /**
+   * <code>string interrupt_trigger_id = 14;</code>
+   * @return The bytes for interruptTriggerId.
+   */
+  com.google.protobuf.ByteString
+      getInterruptTriggerIdBytes();
 }

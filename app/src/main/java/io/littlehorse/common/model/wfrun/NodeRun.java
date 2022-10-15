@@ -1,6 +1,7 @@
 package io.littlehorse.common.model.wfrun;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.event.WfRunEvent;
@@ -21,6 +22,7 @@ import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.util.LHUtil;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -48,10 +50,31 @@ public class NodeRun extends GETable<NodeRunPb> {
 
     public TaskRun taskRun;
     public ExternalEventRun externalEventRun;
+
+    @JsonIgnore
     public ExitRun exitRun;
+
+    @JsonIgnore
     public EntrypointRun entrypointRun;
+
     public StartThreadRun startThreadRun;
     public WaitThreadRun waitThreadRun;
+
+    @JsonProperty("entrypointRun")
+    public Object getEntrypointRunForJacksonOnly() {
+        if (entrypointRun != null) {
+            return new HashMap<>();
+        }
+        return null;
+    }
+
+    @JsonProperty("exitRun")
+    public Object getExitRunForJacksonOnly() {
+        if (exitRun != null) {
+            return new HashMap<>();
+        }
+        return null;
+    }
 
     @JsonIgnore
     public ThreadRun threadRun;
@@ -269,8 +292,13 @@ public class NodeRun extends GETable<NodeRunPb> {
         getSubNodeRun().processEvent(e);
     }
 
-    public void advanceIfPossible(Date time) {
-        getSubNodeRun().advanceIfPossible(time);
+    public boolean advanceIfPossible(Date time) {
+        if (status == LHStatusPb.COMPLETED) {
+            threadRun.advanceFrom(getNode());
+            return true;
+        } else {
+            return getSubNodeRun().advanceIfPossible(time);
+        }
     }
 
     public void complete(VariableValue output, Date time) {

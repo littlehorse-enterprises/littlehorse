@@ -255,6 +255,11 @@ public class SchedulerProcessor
     }
 }
 /*
+ * Things to test/fix for Threads:
+ * 1. When parent thread fails, child thread should HALT.
+ * 2. When child thread fails, parent should continue until EXIT node is reached,
+ *    and then go to ERROR state with a message stating that child died.
+ *
  * Things to test for Interrupts:
  * 1. Simple test, one thread, lifecycle works.
  * 2. Interrupting Parent thread causes child thread to stop.
@@ -262,4 +267,8 @@ public class SchedulerProcessor
  *    sensitive to that ExternalEventDef, creating two child interrupt threads.
  * 4. A thread that has is already COMPLETED or ERROR is not interrupted.
  * 5. Interrupting child does not affect the parent.
+ * 6. Failure to start child interrupt thread causes parent to immediately die.
+ * 7. Child interrupt thread failing during execution causes parent to fail
+ *    immediately due to CHILD_FAILED.
+ * 8. Can interrupt a node that's waiting on a different external event.
  */

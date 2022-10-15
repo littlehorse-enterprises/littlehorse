@@ -1,0 +1,119 @@
+{
+    "name": "interrupt_handler_fails",
+    "threadSpecs": {
+        "parent": {
+            "variableDefs": {
+                "myJsonVar": {
+                    "type": "JSON_OBJ",
+                    "defaultVal": {
+                        "type": "JSON_OBJ",
+                        "jsonObj": "{\"foo\": \"bar\"}"
+                    },
+                    "required": false
+                },
+                "myInt": {
+                    "type": "INT",
+                    "defaultVal": {
+                        "type": "INT",
+                        "int": 12345
+                    },
+                    "required": false
+                }
+            },
+            "interruptDefs": [
+                {
+                    "externalEventDefName": "some-event",
+                    "handlerSpecName": "interruptHandler"
+                }
+            ],
+            "nodes": {
+                "entrypoint": {
+                    "outgoingEdges": [
+                        {
+                            "sinkNodeName": "t1"
+                        }
+                    ],
+                    "entrypoint": {}
+                },
+                "t1": {
+                    "task": {
+                        "taskDefName": "task1",
+                        "retries": 3,
+                        "variables": {
+                            "myTaskVar": {
+                                "literalValue": {
+                                    "type": "STR",
+                                    "str": "SLEEP_SHORT"
+                                }
+                            }
+                        }
+                    },
+                    "outgoingEdges": [
+                        {
+                            "sinkNodeName": "t2"
+                        }
+                    ]
+                },
+                "t2": {
+                    "task": {
+                        "taskDefName": "task1",
+                        "retries": 3,
+                        "variables": {
+                            "myTaskVar": {
+                                "literalValue": {
+                                    "type": "STR",
+                                    "str": "SLEEP_SHORT"
+                                }
+                            }
+                        }
+                    },
+                    "outgoingEdges": [
+                        {
+                            "sinkNodeName": "exit"
+                        }
+                    ]
+                },
+                "exit": {
+                    "exit": {}
+                }
+            }
+        },
+        "interruptHandler": {
+            "nodes": {
+                "entrypoint": {
+                    "outgoingEdges": [
+                        {
+                            "sinkNodeName": "t1"
+                        }
+                    ],
+                    "entrypoint": {}
+                },
+                "t1": {
+                    "task": {
+                        "taskDefName": "task1",
+                        "retries": 3
+                    },
+                    "outgoingEdges": [
+                        {
+                            "sinkNodeName": "exit"
+                        }
+                    ],
+                    "variableMutations": [
+                        {
+                            "lhsName": "myInt",
+                            "operation": "ASSIGN",
+                            "sourceVariable": {
+                                "variableName": "myJsonVar",
+                                "jsonPath": "$.foo"
+                            }
+                        }
+                    ]
+                },
+                "exit": {
+                    "exit": {}
+                }
+            }
+        }
+    },
+    "entrypointThreadName": "parent"
+}

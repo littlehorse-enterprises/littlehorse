@@ -23,6 +23,8 @@ private static final long serialVersionUID = 0L;
     errorMessage_ = "";
     resultCode_ = 0;
     childThreadIds_ = emptyIntList();
+    haltReasons_ = java.util.Collections.emptyList();
+    interruptTriggerId_ = "";
   }
 
   @java.lang.Override
@@ -154,6 +156,21 @@ private static final long serialVersionUID = 0L;
             parentThreadId_ = input.readInt32();
             break;
           }
+          case 106: {
+            if (!((mutable_bitField0_ & 0x00000020) != 0)) {
+              haltReasons_ = new java.util.ArrayList<io.littlehorse.common.proto.ThreadHaltReasonPb>();
+              mutable_bitField0_ |= 0x00000020;
+            }
+            haltReasons_.add(
+                input.readMessage(io.littlehorse.common.proto.ThreadHaltReasonPb.parser(), extensionRegistry));
+            break;
+          }
+          case 114: {
+            java.lang.String s = input.readStringRequireUtf8();
+            bitField0_ |= 0x00000010;
+            interruptTriggerId_ = s;
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -171,6 +188,9 @@ private static final long serialVersionUID = 0L;
     } finally {
       if (((mutable_bitField0_ & 0x00000008) != 0)) {
         childThreadIds_.makeImmutable(); // C
+      }
+      if (((mutable_bitField0_ & 0x00000020) != 0)) {
+        haltReasons_ = java.util.Collections.unmodifiableList(haltReasons_);
       }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
@@ -516,6 +536,92 @@ private static final long serialVersionUID = 0L;
     return parentThreadId_;
   }
 
+  public static final int HALT_REASONS_FIELD_NUMBER = 13;
+  private java.util.List<io.littlehorse.common.proto.ThreadHaltReasonPb> haltReasons_;
+  /**
+   * <code>repeated .lh_proto.ThreadHaltReasonPb halt_reasons = 13;</code>
+   */
+  @java.lang.Override
+  public java.util.List<io.littlehorse.common.proto.ThreadHaltReasonPb> getHaltReasonsList() {
+    return haltReasons_;
+  }
+  /**
+   * <code>repeated .lh_proto.ThreadHaltReasonPb halt_reasons = 13;</code>
+   */
+  @java.lang.Override
+  public java.util.List<? extends io.littlehorse.common.proto.ThreadHaltReasonPbOrBuilder> 
+      getHaltReasonsOrBuilderList() {
+    return haltReasons_;
+  }
+  /**
+   * <code>repeated .lh_proto.ThreadHaltReasonPb halt_reasons = 13;</code>
+   */
+  @java.lang.Override
+  public int getHaltReasonsCount() {
+    return haltReasons_.size();
+  }
+  /**
+   * <code>repeated .lh_proto.ThreadHaltReasonPb halt_reasons = 13;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.ThreadHaltReasonPb getHaltReasons(int index) {
+    return haltReasons_.get(index);
+  }
+  /**
+   * <code>repeated .lh_proto.ThreadHaltReasonPb halt_reasons = 13;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.ThreadHaltReasonPbOrBuilder getHaltReasonsOrBuilder(
+      int index) {
+    return haltReasons_.get(index);
+  }
+
+  public static final int INTERRUPT_TRIGGER_ID_FIELD_NUMBER = 14;
+  private volatile java.lang.Object interruptTriggerId_;
+  /**
+   * <code>string interrupt_trigger_id = 14;</code>
+   * @return Whether the interruptTriggerId field is set.
+   */
+  @java.lang.Override
+  public boolean hasInterruptTriggerId() {
+    return ((bitField0_ & 0x00000010) != 0);
+  }
+  /**
+   * <code>string interrupt_trigger_id = 14;</code>
+   * @return The interruptTriggerId.
+   */
+  @java.lang.Override
+  public java.lang.String getInterruptTriggerId() {
+    java.lang.Object ref = interruptTriggerId_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      interruptTriggerId_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string interrupt_trigger_id = 14;</code>
+   * @return The bytes for interruptTriggerId.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getInterruptTriggerIdBytes() {
+    java.lang.Object ref = interruptTriggerId_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      interruptTriggerId_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -570,6 +676,12 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000008) != 0)) {
       output.writeInt32(12, parentThreadId_);
+    }
+    for (int i = 0; i < haltReasons_.size(); i++) {
+      output.writeMessage(13, haltReasons_.get(i));
+    }
+    if (((bitField0_ & 0x00000010) != 0)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 14, interruptTriggerId_);
     }
     unknownFields.writeTo(output);
   }
@@ -634,6 +746,13 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(12, parentThreadId_);
     }
+    for (int i = 0; i < haltReasons_.size(); i++) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(13, haltReasons_.get(i));
+    }
+    if (((bitField0_ & 0x00000010) != 0)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(14, interruptTriggerId_);
+    }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
@@ -686,6 +805,13 @@ private static final long serialVersionUID = 0L;
       if (getParentThreadId()
           != other.getParentThreadId()) return false;
     }
+    if (!getHaltReasonsList()
+        .equals(other.getHaltReasonsList())) return false;
+    if (hasInterruptTriggerId() != other.hasInterruptTriggerId()) return false;
+    if (hasInterruptTriggerId()) {
+      if (!getInterruptTriggerId()
+          .equals(other.getInterruptTriggerId())) return false;
+    }
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -732,6 +858,14 @@ private static final long serialVersionUID = 0L;
     if (hasParentThreadId()) {
       hash = (37 * hash) + PARENT_THREAD_ID_FIELD_NUMBER;
       hash = (53 * hash) + getParentThreadId();
+    }
+    if (getHaltReasonsCount() > 0) {
+      hash = (37 * hash) + HALT_REASONS_FIELD_NUMBER;
+      hash = (53 * hash) + getHaltReasonsList().hashCode();
+    }
+    if (hasInterruptTriggerId()) {
+      hash = (37 * hash) + INTERRUPT_TRIGGER_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getInterruptTriggerId().hashCode();
     }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
@@ -862,6 +996,7 @@ private static final long serialVersionUID = 0L;
       if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
         getEndTimeFieldBuilder();
+        getHaltReasonsFieldBuilder();
       }
     }
     @java.lang.Override
@@ -899,6 +1034,14 @@ private static final long serialVersionUID = 0L;
       bitField0_ = (bitField0_ & ~0x00000008);
       parentThreadId_ = 0;
       bitField0_ = (bitField0_ & ~0x00000010);
+      if (haltReasonsBuilder_ == null) {
+        haltReasons_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000020);
+      } else {
+        haltReasonsBuilder_.clear();
+      }
+      interruptTriggerId_ = "";
+      bitField0_ = (bitField0_ & ~0x00000040);
       return this;
     }
 
@@ -963,6 +1106,19 @@ private static final long serialVersionUID = 0L;
         result.parentThreadId_ = parentThreadId_;
         to_bitField0_ |= 0x00000008;
       }
+      if (haltReasonsBuilder_ == null) {
+        if (((bitField0_ & 0x00000020) != 0)) {
+          haltReasons_ = java.util.Collections.unmodifiableList(haltReasons_);
+          bitField0_ = (bitField0_ & ~0x00000020);
+        }
+        result.haltReasons_ = haltReasons_;
+      } else {
+        result.haltReasons_ = haltReasonsBuilder_.build();
+      }
+      if (((from_bitField0_ & 0x00000040) != 0)) {
+        to_bitField0_ |= 0x00000010;
+      }
+      result.interruptTriggerId_ = interruptTriggerId_;
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -1059,6 +1215,37 @@ private static final long serialVersionUID = 0L;
       }
       if (other.hasParentThreadId()) {
         setParentThreadId(other.getParentThreadId());
+      }
+      if (haltReasonsBuilder_ == null) {
+        if (!other.haltReasons_.isEmpty()) {
+          if (haltReasons_.isEmpty()) {
+            haltReasons_ = other.haltReasons_;
+            bitField0_ = (bitField0_ & ~0x00000020);
+          } else {
+            ensureHaltReasonsIsMutable();
+            haltReasons_.addAll(other.haltReasons_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.haltReasons_.isEmpty()) {
+          if (haltReasonsBuilder_.isEmpty()) {
+            haltReasonsBuilder_.dispose();
+            haltReasonsBuilder_ = null;
+            haltReasons_ = other.haltReasons_;
+            bitField0_ = (bitField0_ & ~0x00000020);
+            haltReasonsBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getHaltReasonsFieldBuilder() : null;
+          } else {
+            haltReasonsBuilder_.addAllMessages(other.haltReasons_);
+          }
+        }
+      }
+      if (other.hasInterruptTriggerId()) {
+        bitField0_ |= 0x00000040;
+        interruptTriggerId_ = other.interruptTriggerId_;
+        onChanged();
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -1931,6 +2118,329 @@ private static final long serialVersionUID = 0L;
     public Builder clearParentThreadId() {
       bitField0_ = (bitField0_ & ~0x00000010);
       parentThreadId_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private java.util.List<io.littlehorse.common.proto.ThreadHaltReasonPb> haltReasons_ =
+      java.util.Collections.emptyList();
+    private void ensureHaltReasonsIsMutable() {
+      if (!((bitField0_ & 0x00000020) != 0)) {
+        haltReasons_ = new java.util.ArrayList<io.littlehorse.common.proto.ThreadHaltReasonPb>(haltReasons_);
+        bitField0_ |= 0x00000020;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.common.proto.ThreadHaltReasonPb, io.littlehorse.common.proto.ThreadHaltReasonPb.Builder, io.littlehorse.common.proto.ThreadHaltReasonPbOrBuilder> haltReasonsBuilder_;
+
+    /**
+     * <code>repeated .lh_proto.ThreadHaltReasonPb halt_reasons = 13;</code>
+     */
+    public java.util.List<io.littlehorse.common.proto.ThreadHaltReasonPb> getHaltReasonsList() {
+      if (haltReasonsBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(haltReasons_);
+      } else {
+        return haltReasonsBuilder_.getMessageList();
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.ThreadHaltReasonPb halt_reasons = 13;</code>
+     */
+    public int getHaltReasonsCount() {
+      if (haltReasonsBuilder_ == null) {
+        return haltReasons_.size();
+      } else {
+        return haltReasonsBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.ThreadHaltReasonPb halt_reasons = 13;</code>
+     */
+    public io.littlehorse.common.proto.ThreadHaltReasonPb getHaltReasons(int index) {
+      if (haltReasonsBuilder_ == null) {
+        return haltReasons_.get(index);
+      } else {
+        return haltReasonsBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.ThreadHaltReasonPb halt_reasons = 13;</code>
+     */
+    public Builder setHaltReasons(
+        int index, io.littlehorse.common.proto.ThreadHaltReasonPb value) {
+      if (haltReasonsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureHaltReasonsIsMutable();
+        haltReasons_.set(index, value);
+        onChanged();
+      } else {
+        haltReasonsBuilder_.setMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.ThreadHaltReasonPb halt_reasons = 13;</code>
+     */
+    public Builder setHaltReasons(
+        int index, io.littlehorse.common.proto.ThreadHaltReasonPb.Builder builderForValue) {
+      if (haltReasonsBuilder_ == null) {
+        ensureHaltReasonsIsMutable();
+        haltReasons_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        haltReasonsBuilder_.setMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.ThreadHaltReasonPb halt_reasons = 13;</code>
+     */
+    public Builder addHaltReasons(io.littlehorse.common.proto.ThreadHaltReasonPb value) {
+      if (haltReasonsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureHaltReasonsIsMutable();
+        haltReasons_.add(value);
+        onChanged();
+      } else {
+        haltReasonsBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.ThreadHaltReasonPb halt_reasons = 13;</code>
+     */
+    public Builder addHaltReasons(
+        int index, io.littlehorse.common.proto.ThreadHaltReasonPb value) {
+      if (haltReasonsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureHaltReasonsIsMutable();
+        haltReasons_.add(index, value);
+        onChanged();
+      } else {
+        haltReasonsBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.ThreadHaltReasonPb halt_reasons = 13;</code>
+     */
+    public Builder addHaltReasons(
+        io.littlehorse.common.proto.ThreadHaltReasonPb.Builder builderForValue) {
+      if (haltReasonsBuilder_ == null) {
+        ensureHaltReasonsIsMutable();
+        haltReasons_.add(builderForValue.build());
+        onChanged();
+      } else {
+        haltReasonsBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.ThreadHaltReasonPb halt_reasons = 13;</code>
+     */
+    public Builder addHaltReasons(
+        int index, io.littlehorse.common.proto.ThreadHaltReasonPb.Builder builderForValue) {
+      if (haltReasonsBuilder_ == null) {
+        ensureHaltReasonsIsMutable();
+        haltReasons_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        haltReasonsBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.ThreadHaltReasonPb halt_reasons = 13;</code>
+     */
+    public Builder addAllHaltReasons(
+        java.lang.Iterable<? extends io.littlehorse.common.proto.ThreadHaltReasonPb> values) {
+      if (haltReasonsBuilder_ == null) {
+        ensureHaltReasonsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, haltReasons_);
+        onChanged();
+      } else {
+        haltReasonsBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.ThreadHaltReasonPb halt_reasons = 13;</code>
+     */
+    public Builder clearHaltReasons() {
+      if (haltReasonsBuilder_ == null) {
+        haltReasons_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000020);
+        onChanged();
+      } else {
+        haltReasonsBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.ThreadHaltReasonPb halt_reasons = 13;</code>
+     */
+    public Builder removeHaltReasons(int index) {
+      if (haltReasonsBuilder_ == null) {
+        ensureHaltReasonsIsMutable();
+        haltReasons_.remove(index);
+        onChanged();
+      } else {
+        haltReasonsBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.ThreadHaltReasonPb halt_reasons = 13;</code>
+     */
+    public io.littlehorse.common.proto.ThreadHaltReasonPb.Builder getHaltReasonsBuilder(
+        int index) {
+      return getHaltReasonsFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .lh_proto.ThreadHaltReasonPb halt_reasons = 13;</code>
+     */
+    public io.littlehorse.common.proto.ThreadHaltReasonPbOrBuilder getHaltReasonsOrBuilder(
+        int index) {
+      if (haltReasonsBuilder_ == null) {
+        return haltReasons_.get(index);  } else {
+        return haltReasonsBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.ThreadHaltReasonPb halt_reasons = 13;</code>
+     */
+    public java.util.List<? extends io.littlehorse.common.proto.ThreadHaltReasonPbOrBuilder> 
+         getHaltReasonsOrBuilderList() {
+      if (haltReasonsBuilder_ != null) {
+        return haltReasonsBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(haltReasons_);
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.ThreadHaltReasonPb halt_reasons = 13;</code>
+     */
+    public io.littlehorse.common.proto.ThreadHaltReasonPb.Builder addHaltReasonsBuilder() {
+      return getHaltReasonsFieldBuilder().addBuilder(
+          io.littlehorse.common.proto.ThreadHaltReasonPb.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .lh_proto.ThreadHaltReasonPb halt_reasons = 13;</code>
+     */
+    public io.littlehorse.common.proto.ThreadHaltReasonPb.Builder addHaltReasonsBuilder(
+        int index) {
+      return getHaltReasonsFieldBuilder().addBuilder(
+          index, io.littlehorse.common.proto.ThreadHaltReasonPb.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .lh_proto.ThreadHaltReasonPb halt_reasons = 13;</code>
+     */
+    public java.util.List<io.littlehorse.common.proto.ThreadHaltReasonPb.Builder> 
+         getHaltReasonsBuilderList() {
+      return getHaltReasonsFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.common.proto.ThreadHaltReasonPb, io.littlehorse.common.proto.ThreadHaltReasonPb.Builder, io.littlehorse.common.proto.ThreadHaltReasonPbOrBuilder> 
+        getHaltReasonsFieldBuilder() {
+      if (haltReasonsBuilder_ == null) {
+        haltReasonsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            io.littlehorse.common.proto.ThreadHaltReasonPb, io.littlehorse.common.proto.ThreadHaltReasonPb.Builder, io.littlehorse.common.proto.ThreadHaltReasonPbOrBuilder>(
+                haltReasons_,
+                ((bitField0_ & 0x00000020) != 0),
+                getParentForChildren(),
+                isClean());
+        haltReasons_ = null;
+      }
+      return haltReasonsBuilder_;
+    }
+
+    private java.lang.Object interruptTriggerId_ = "";
+    /**
+     * <code>string interrupt_trigger_id = 14;</code>
+     * @return Whether the interruptTriggerId field is set.
+     */
+    public boolean hasInterruptTriggerId() {
+      return ((bitField0_ & 0x00000040) != 0);
+    }
+    /**
+     * <code>string interrupt_trigger_id = 14;</code>
+     * @return The interruptTriggerId.
+     */
+    public java.lang.String getInterruptTriggerId() {
+      java.lang.Object ref = interruptTriggerId_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        interruptTriggerId_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string interrupt_trigger_id = 14;</code>
+     * @return The bytes for interruptTriggerId.
+     */
+    public com.google.protobuf.ByteString
+        getInterruptTriggerIdBytes() {
+      java.lang.Object ref = interruptTriggerId_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        interruptTriggerId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string interrupt_trigger_id = 14;</code>
+     * @param value The interruptTriggerId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setInterruptTriggerId(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000040;
+      interruptTriggerId_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string interrupt_trigger_id = 14;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearInterruptTriggerId() {
+      bitField0_ = (bitField0_ & ~0x00000040);
+      interruptTriggerId_ = getDefaultInstance().getInterruptTriggerId();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string interrupt_trigger_id = 14;</code>
+     * @param value The bytes for interruptTriggerId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setInterruptTriggerIdBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      bitField0_ |= 0x00000040;
+      interruptTriggerId_ = value;
       onChanged();
       return this;
     }

@@ -69,7 +69,7 @@ public class WaitThreadRun extends SubNodeRun<WaitThreadRunPb> {
         // Nothing to do here until we enable timeouts.
     }
 
-    public void advanceIfPossible(Date time) {
+    public boolean advanceIfPossible(Date time) {
         ThreadRun toWait = getWfRun().threadRuns.get(threadRunNumber);
 
         threadStatus = toWait.status;
@@ -79,15 +79,18 @@ public class WaitThreadRun extends SubNodeRun<WaitThreadRunPb> {
             VariableValue out = new VariableValue();
             out.type = VariableTypePb.VOID;
             nodeRun.complete(out, time);
+            return true;
         } else if (toWait.status == LHStatusPb.ERROR) {
             nodeRun.fail(
-                TaskResultCodePb.FAILED,
+                TaskResultCodePb.CHILD_FALIED,
                 "Thread failed: " + toWait.errorMessage,
                 time
             );
+            return true;
         } else {
             // nothing to do.
             LHUtil.log("still waiting for thread");
+            return false;
         }
     }
 

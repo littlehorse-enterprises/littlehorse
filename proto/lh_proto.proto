@@ -218,6 +218,8 @@ message WfRunPb {
     google.protobuf.Timestamp start_time = 6;
     optional google.protobuf.Timestamp end_time = 7;
     repeated ThreadRunPb thread_runs = 8;
+
+    repeated PendingInterruptPb pending_interrupts = 14;
 }
 
 message ThreadRunPb {
@@ -238,6 +240,35 @@ message ThreadRunPb {
 
     repeated int32 child_thread_ids = 11;
     optional int32 parent_thread_id = 12;
+
+    repeated ThreadHaltReasonPb halt_reasons = 13;
+    optional string interrupt_trigger_id = 14;
+}
+
+message PendingInterruptPb {
+    string external_event_id = 1;
+    string handler_spec_name = 2;
+    int32 interrupted_thread_id = 3;
+}
+
+message PendingInterruptHaltReasonPb {
+    string external_event_id = 1;
+}
+
+message ParentHaltedPb {
+    int32 parent_thread_id = 1;
+}
+
+message InterruptedPb {
+    int32 interrupt_thread_id = 1;
+}
+
+message ThreadHaltReasonPb {
+    oneof reason {
+        ParentHaltedPb parent_halted = 1;
+        InterruptedPb interrupted = 2;
+        PendingInterruptHaltReasonPb pending_interrupt = 3;
+    }
 }
 
 message NodeRunPb {

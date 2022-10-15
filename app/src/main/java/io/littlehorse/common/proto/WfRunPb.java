@@ -21,6 +21,7 @@ private static final long serialVersionUID = 0L;
     wfSpecName_ = "";
     status_ = 0;
     threadRuns_ = java.util.Collections.emptyList();
+    pendingInterrupts_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -118,6 +119,15 @@ private static final long serialVersionUID = 0L;
                 input.readMessage(io.littlehorse.common.proto.ThreadRunPb.parser(), extensionRegistry));
             break;
           }
+          case 114: {
+            if (!((mutable_bitField0_ & 0x00000004) != 0)) {
+              pendingInterrupts_ = new java.util.ArrayList<io.littlehorse.common.proto.PendingInterruptPb>();
+              mutable_bitField0_ |= 0x00000004;
+            }
+            pendingInterrupts_.add(
+                input.readMessage(io.littlehorse.common.proto.PendingInterruptPb.parser(), extensionRegistry));
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -135,6 +145,9 @@ private static final long serialVersionUID = 0L;
     } finally {
       if (((mutable_bitField0_ & 0x00000002) != 0)) {
         threadRuns_ = java.util.Collections.unmodifiableList(threadRuns_);
+      }
+      if (((mutable_bitField0_ & 0x00000004) != 0)) {
+        pendingInterrupts_ = java.util.Collections.unmodifiableList(pendingInterrupts_);
       }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
@@ -398,6 +411,46 @@ private static final long serialVersionUID = 0L;
     return threadRuns_.get(index);
   }
 
+  public static final int PENDING_INTERRUPTS_FIELD_NUMBER = 14;
+  private java.util.List<io.littlehorse.common.proto.PendingInterruptPb> pendingInterrupts_;
+  /**
+   * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+   */
+  @java.lang.Override
+  public java.util.List<io.littlehorse.common.proto.PendingInterruptPb> getPendingInterruptsList() {
+    return pendingInterrupts_;
+  }
+  /**
+   * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+   */
+  @java.lang.Override
+  public java.util.List<? extends io.littlehorse.common.proto.PendingInterruptPbOrBuilder> 
+      getPendingInterruptsOrBuilderList() {
+    return pendingInterrupts_;
+  }
+  /**
+   * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+   */
+  @java.lang.Override
+  public int getPendingInterruptsCount() {
+    return pendingInterrupts_.size();
+  }
+  /**
+   * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.PendingInterruptPb getPendingInterrupts(int index) {
+    return pendingInterrupts_.get(index);
+  }
+  /**
+   * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.PendingInterruptPbOrBuilder getPendingInterruptsOrBuilder(
+      int index) {
+    return pendingInterrupts_.get(index);
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -435,6 +488,9 @@ private static final long serialVersionUID = 0L;
     }
     for (int i = 0; i < threadRuns_.size(); i++) {
       output.writeMessage(8, threadRuns_.get(i));
+    }
+    for (int i = 0; i < pendingInterrupts_.size(); i++) {
+      output.writeMessage(14, pendingInterrupts_.get(i));
     }
     unknownFields.writeTo(output);
   }
@@ -474,6 +530,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(8, threadRuns_.get(i));
     }
+    for (int i = 0; i < pendingInterrupts_.size(); i++) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(14, pendingInterrupts_.get(i));
+    }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
@@ -510,6 +570,8 @@ private static final long serialVersionUID = 0L;
     }
     if (!getThreadRunsList()
         .equals(other.getThreadRunsList())) return false;
+    if (!getPendingInterruptsList()
+        .equals(other.getPendingInterruptsList())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -543,6 +605,10 @@ private static final long serialVersionUID = 0L;
     if (getThreadRunsCount() > 0) {
       hash = (37 * hash) + THREAD_RUNS_FIELD_NUMBER;
       hash = (53 * hash) + getThreadRunsList().hashCode();
+    }
+    if (getPendingInterruptsCount() > 0) {
+      hash = (37 * hash) + PENDING_INTERRUPTS_FIELD_NUMBER;
+      hash = (53 * hash) + getPendingInterruptsList().hashCode();
     }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
@@ -674,6 +740,7 @@ private static final long serialVersionUID = 0L;
               .alwaysUseFieldBuilders) {
         getEndTimeFieldBuilder();
         getThreadRunsFieldBuilder();
+        getPendingInterruptsFieldBuilder();
       }
     }
     @java.lang.Override
@@ -706,6 +773,12 @@ private static final long serialVersionUID = 0L;
         bitField0_ = (bitField0_ & ~0x00000002);
       } else {
         threadRunsBuilder_.clear();
+      }
+      if (pendingInterruptsBuilder_ == null) {
+        pendingInterrupts_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000004);
+      } else {
+        pendingInterruptsBuilder_.clear();
       }
       return this;
     }
@@ -761,6 +834,15 @@ private static final long serialVersionUID = 0L;
         result.threadRuns_ = threadRuns_;
       } else {
         result.threadRuns_ = threadRunsBuilder_.build();
+      }
+      if (pendingInterruptsBuilder_ == null) {
+        if (((bitField0_ & 0x00000004) != 0)) {
+          pendingInterrupts_ = java.util.Collections.unmodifiableList(pendingInterrupts_);
+          bitField0_ = (bitField0_ & ~0x00000004);
+        }
+        result.pendingInterrupts_ = pendingInterrupts_;
+      } else {
+        result.pendingInterrupts_ = pendingInterruptsBuilder_.build();
       }
       result.bitField0_ = to_bitField0_;
       onBuilt();
@@ -858,6 +940,32 @@ private static final long serialVersionUID = 0L;
                  getThreadRunsFieldBuilder() : null;
           } else {
             threadRunsBuilder_.addAllMessages(other.threadRuns_);
+          }
+        }
+      }
+      if (pendingInterruptsBuilder_ == null) {
+        if (!other.pendingInterrupts_.isEmpty()) {
+          if (pendingInterrupts_.isEmpty()) {
+            pendingInterrupts_ = other.pendingInterrupts_;
+            bitField0_ = (bitField0_ & ~0x00000004);
+          } else {
+            ensurePendingInterruptsIsMutable();
+            pendingInterrupts_.addAll(other.pendingInterrupts_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.pendingInterrupts_.isEmpty()) {
+          if (pendingInterruptsBuilder_.isEmpty()) {
+            pendingInterruptsBuilder_.dispose();
+            pendingInterruptsBuilder_ = null;
+            pendingInterrupts_ = other.pendingInterrupts_;
+            bitField0_ = (bitField0_ & ~0x00000004);
+            pendingInterruptsBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getPendingInterruptsFieldBuilder() : null;
+          } else {
+            pendingInterruptsBuilder_.addAllMessages(other.pendingInterrupts_);
           }
         }
       }
@@ -1701,6 +1809,246 @@ private static final long serialVersionUID = 0L;
         threadRuns_ = null;
       }
       return threadRunsBuilder_;
+    }
+
+    private java.util.List<io.littlehorse.common.proto.PendingInterruptPb> pendingInterrupts_ =
+      java.util.Collections.emptyList();
+    private void ensurePendingInterruptsIsMutable() {
+      if (!((bitField0_ & 0x00000004) != 0)) {
+        pendingInterrupts_ = new java.util.ArrayList<io.littlehorse.common.proto.PendingInterruptPb>(pendingInterrupts_);
+        bitField0_ |= 0x00000004;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.common.proto.PendingInterruptPb, io.littlehorse.common.proto.PendingInterruptPb.Builder, io.littlehorse.common.proto.PendingInterruptPbOrBuilder> pendingInterruptsBuilder_;
+
+    /**
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     */
+    public java.util.List<io.littlehorse.common.proto.PendingInterruptPb> getPendingInterruptsList() {
+      if (pendingInterruptsBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(pendingInterrupts_);
+      } else {
+        return pendingInterruptsBuilder_.getMessageList();
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     */
+    public int getPendingInterruptsCount() {
+      if (pendingInterruptsBuilder_ == null) {
+        return pendingInterrupts_.size();
+      } else {
+        return pendingInterruptsBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     */
+    public io.littlehorse.common.proto.PendingInterruptPb getPendingInterrupts(int index) {
+      if (pendingInterruptsBuilder_ == null) {
+        return pendingInterrupts_.get(index);
+      } else {
+        return pendingInterruptsBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     */
+    public Builder setPendingInterrupts(
+        int index, io.littlehorse.common.proto.PendingInterruptPb value) {
+      if (pendingInterruptsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensurePendingInterruptsIsMutable();
+        pendingInterrupts_.set(index, value);
+        onChanged();
+      } else {
+        pendingInterruptsBuilder_.setMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     */
+    public Builder setPendingInterrupts(
+        int index, io.littlehorse.common.proto.PendingInterruptPb.Builder builderForValue) {
+      if (pendingInterruptsBuilder_ == null) {
+        ensurePendingInterruptsIsMutable();
+        pendingInterrupts_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        pendingInterruptsBuilder_.setMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     */
+    public Builder addPendingInterrupts(io.littlehorse.common.proto.PendingInterruptPb value) {
+      if (pendingInterruptsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensurePendingInterruptsIsMutable();
+        pendingInterrupts_.add(value);
+        onChanged();
+      } else {
+        pendingInterruptsBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     */
+    public Builder addPendingInterrupts(
+        int index, io.littlehorse.common.proto.PendingInterruptPb value) {
+      if (pendingInterruptsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensurePendingInterruptsIsMutable();
+        pendingInterrupts_.add(index, value);
+        onChanged();
+      } else {
+        pendingInterruptsBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     */
+    public Builder addPendingInterrupts(
+        io.littlehorse.common.proto.PendingInterruptPb.Builder builderForValue) {
+      if (pendingInterruptsBuilder_ == null) {
+        ensurePendingInterruptsIsMutable();
+        pendingInterrupts_.add(builderForValue.build());
+        onChanged();
+      } else {
+        pendingInterruptsBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     */
+    public Builder addPendingInterrupts(
+        int index, io.littlehorse.common.proto.PendingInterruptPb.Builder builderForValue) {
+      if (pendingInterruptsBuilder_ == null) {
+        ensurePendingInterruptsIsMutable();
+        pendingInterrupts_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        pendingInterruptsBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     */
+    public Builder addAllPendingInterrupts(
+        java.lang.Iterable<? extends io.littlehorse.common.proto.PendingInterruptPb> values) {
+      if (pendingInterruptsBuilder_ == null) {
+        ensurePendingInterruptsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, pendingInterrupts_);
+        onChanged();
+      } else {
+        pendingInterruptsBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     */
+    public Builder clearPendingInterrupts() {
+      if (pendingInterruptsBuilder_ == null) {
+        pendingInterrupts_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+      } else {
+        pendingInterruptsBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     */
+    public Builder removePendingInterrupts(int index) {
+      if (pendingInterruptsBuilder_ == null) {
+        ensurePendingInterruptsIsMutable();
+        pendingInterrupts_.remove(index);
+        onChanged();
+      } else {
+        pendingInterruptsBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     */
+    public io.littlehorse.common.proto.PendingInterruptPb.Builder getPendingInterruptsBuilder(
+        int index) {
+      return getPendingInterruptsFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     */
+    public io.littlehorse.common.proto.PendingInterruptPbOrBuilder getPendingInterruptsOrBuilder(
+        int index) {
+      if (pendingInterruptsBuilder_ == null) {
+        return pendingInterrupts_.get(index);  } else {
+        return pendingInterruptsBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     */
+    public java.util.List<? extends io.littlehorse.common.proto.PendingInterruptPbOrBuilder> 
+         getPendingInterruptsOrBuilderList() {
+      if (pendingInterruptsBuilder_ != null) {
+        return pendingInterruptsBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(pendingInterrupts_);
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     */
+    public io.littlehorse.common.proto.PendingInterruptPb.Builder addPendingInterruptsBuilder() {
+      return getPendingInterruptsFieldBuilder().addBuilder(
+          io.littlehorse.common.proto.PendingInterruptPb.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     */
+    public io.littlehorse.common.proto.PendingInterruptPb.Builder addPendingInterruptsBuilder(
+        int index) {
+      return getPendingInterruptsFieldBuilder().addBuilder(
+          index, io.littlehorse.common.proto.PendingInterruptPb.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     */
+    public java.util.List<io.littlehorse.common.proto.PendingInterruptPb.Builder> 
+         getPendingInterruptsBuilderList() {
+      return getPendingInterruptsFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.common.proto.PendingInterruptPb, io.littlehorse.common.proto.PendingInterruptPb.Builder, io.littlehorse.common.proto.PendingInterruptPbOrBuilder> 
+        getPendingInterruptsFieldBuilder() {
+      if (pendingInterruptsBuilder_ == null) {
+        pendingInterruptsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            io.littlehorse.common.proto.PendingInterruptPb, io.littlehorse.common.proto.PendingInterruptPb.Builder, io.littlehorse.common.proto.PendingInterruptPbOrBuilder>(
+                pendingInterrupts_,
+                ((bitField0_ & 0x00000004) != 0),
+                getParentForChildren(),
+                isClean());
+        pendingInterrupts_ = null;
+      }
+      return pendingInterruptsBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

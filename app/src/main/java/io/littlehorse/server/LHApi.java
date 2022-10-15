@@ -592,7 +592,7 @@ public class LHApi {
                 ExternalEvent.class,
                 config
             );
-            if (req.guid == null) {
+            if (req.guid == null || req.guid.equals("")) {
                 req.guid = LHUtil.generateGuid();
             }
 

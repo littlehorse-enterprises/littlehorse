@@ -121,4 +121,28 @@ public interface WfRunPbOrBuilder extends
    */
   io.littlehorse.common.proto.ThreadRunPbOrBuilder getThreadRunsOrBuilder(
       int index);
+
+  /**
+   * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+   */
+  java.util.List<io.littlehorse.common.proto.PendingInterruptPb> 
+      getPendingInterruptsList();
+  /**
+   * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+   */
+  io.littlehorse.common.proto.PendingInterruptPb getPendingInterrupts(int index);
+  /**
+   * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+   */
+  int getPendingInterruptsCount();
+  /**
+   * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+   */
+  java.util.List<? extends io.littlehorse.common.proto.PendingInterruptPbOrBuilder> 
+      getPendingInterruptsOrBuilderList();
+  /**
+   * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+   */
+  io.littlehorse.common.proto.PendingInterruptPbOrBuilder getPendingInterruptsOrBuilder(
+      int index);
 }

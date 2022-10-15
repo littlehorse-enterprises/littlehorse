@@ -16,7 +16,7 @@ public abstract class SubNodeRun<T extends MessageOrBuilder>
 
     public abstract void processEvent(WfRunEvent event);
 
-    public abstract void advanceIfPossible(Date time);
+    public abstract boolean advanceIfPossible(Date time);
 
     public abstract void arrive(Date time);
 

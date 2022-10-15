@@ -170,8 +170,19 @@ public class TestWorker {
         VariableValue varVal = tsr.variables.get("myTaskVar");
         String stdoutStr = "Got: " + varVal.strVal;
 
+        // Useful for testing interrupts etc
+        if (varVal.strVal.equals("SLEEP_LONG")) {
+            Thread.sleep(1000 * 20);
+        }
+
+        if (varVal.strVal.equals("SLEEP_SHORT")) {
+            System.out.println("Sleeping");
+            Thread.sleep(1000 * 5);
+            System.out.println("Done");
+        }
+
         ce.stdout.strVal = stdoutStr;
-        LHUtil.log(tsr.wfRunId, tsr.taskRunPosition, stdoutStr);
+        LHUtil.log(tsr.wfRunId, tsr.threadRunNumber, tsr.taskRunPosition, stdoutStr);
 
         WfRunEvent event = new WfRunEvent();
         event.wfRunId = tsr.wfRunId;

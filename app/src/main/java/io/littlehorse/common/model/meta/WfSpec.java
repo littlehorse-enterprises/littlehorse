@@ -39,6 +39,12 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
     public String entrypointThreadName;
     public LHStatusPb status;
 
+    @JsonIgnore
+    private Map<String, String> varToThreadSpec;
+
+    @JsonIgnore
+    private boolean initializedVarToThreadSpec;
+
     public String getName() {
         return name;
     }
@@ -60,6 +66,8 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
 
     public WfSpec() {
         threadSpecs = new HashMap<>();
+        varToThreadSpec = new HashMap<>();
+        initializedVarToThreadSpec = false;
     }
 
     public long getLastUpdatedOffset() {
@@ -141,24 +149,35 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
         validate(dbClient, config);
     }
 
+    private void initializeVarToThreadSpec() {
+        initializedVarToThreadSpec = true;
+        for (ThreadSpec tspec : threadSpecs.values()) {
+            for (String varName : tspec.variableDefs.keySet()) {
+                varToThreadSpec.put(varName, tspec.name);
+            }
+        }
+    }
+
+    public Pair<String, VariableDef> lookupVarDef(String name) {
+        if (!initializedVarToThreadSpec) {
+            initializeVarToThreadSpec();
+        }
+        String tspecName = varToThreadSpec.get(name);
+        if (tspecName == null) return null;
+        VariableDef out = threadSpecs.get(tspecName).variableDefs.get(name);
+        if (out == null) return null;
+        return Pair.of(tspecName, out);
+    }
+
     private void validate(LHGlobalMetaStores dbClient, LHConfig config)
         throws LHValidationError {
         if (threadSpecs.get(entrypointThreadName) == null) {
             throw new LHValidationError(null, "Unknown entrypoint thread");
         }
 
-        Map<String, Map<String, VariableDef>> allVarDefs = new HashMap<>();
-
         // Validate the variable definitions.
-        ensureNoDuplicateVarNames(allVarDefs);
-        HashSet<String> seenThreads = new HashSet<String>();
-        HashMap<String, String> visibleVariables = new HashMap<>();
         // This will get tricky with interrupts, but...
-        validateVariablesHelper(
-            seenThreads,
-            visibleVariables,
-            this.entrypointThreadName
-        );
+        validateVariablesHelper();
 
         for (Map.Entry<String, ThreadSpec> e : threadSpecs.entrySet()) {
             ThreadSpec ts = e.getValue();
@@ -168,8 +187,6 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
                 exn.addPrefix("Thread " + ts.name);
                 throw exn;
             }
-
-            allVarDefs.put(ts.name, ts.variableDefs);
         }
     }
 
@@ -184,86 +201,53 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
 
     @JsonIgnore
     public Map<String, VariableDef> getRequiredVariables() {
-        return threadSpecs.get(entrypointThreadName).getRequiredVariables();
+        return threadSpecs.get(entrypointThreadName).getRequiredInputVariables();
     }
 
-    private void validateVariablesHelper(
-        Set<String> seenThreads,
-        Map<String, String> seenVars,
-        String threadName
-    ) throws LHValidationError {
-        if (seenThreads.contains(threadName)) {
-            return;
-        }
+    /*
+     * For now, the only validation we do for variables is to make sure that:
+     * 1. No variable name is defined twice (this will be useful for future features).
+     * 2. Every variable name that is referenced by a VariableAssignment or
+     *    VariableMutation is defined by *some* thread *somewhere* in the WfSpec.
+     *
+     * Future work may entail:
+     * 1. Validating variable scope across threads (including Exception handlers,
+     *    Interrupt Handlers, and child threads).
+     * 2. Validating variable types for mutations, assignments, and task input.
+     * 3. Incorporation of JsonSchema or Protobuf Schema for further validation.
+     */
+    private void validateVariablesHelper() throws LHValidationError {
+        varToThreadSpec = new HashMap<>();
+        for (ThreadSpec tspec : threadSpecs.values()) {
+            for (Map.Entry<String, VariableDef> e : tspec.variableDefs.entrySet()) {
+                String varName = e.getKey();
 
-        ThreadSpec thread = this.threadSpecs.get(threadName);
-        for (String varName : thread.variableDefs.keySet()) {
-            if (seenVars.containsKey(varName)) {
-                throw new LHValidationError(
-                    null,
-                    "Variable " +
-                    varName +
-                    " defined again in child thread " +
-                    threadName +
-                    " after being defined in thread " +
-                    seenVars.get(varName)
-                );
-            }
-            seenVars.put(varName, threadName);
-        }
-
-        // Now iterate through all of the tasks in this thread and see if the
-        // variables are defined.
-        for (Node node : thread.nodes.values()) {
-            for (String varName : node.neededVariableNames()) {
-                if (!seenVars.containsKey(varName)) {
+                if (varToThreadSpec.containsKey(varName)) {
                     throw new LHValidationError(
                         null,
-                        "Node " +
-                        node.name +
-                        " refers to wfRunVariable named " +
+                        "Var name " +
                         varName +
-                        ", which is either not defined or not in scope for thread " +
-                        thread.name
+                        " defined in threads " +
+                        name +
+                        " and " +
+                        varToThreadSpec.get(varName)
                     );
                 }
+                varToThreadSpec.put(varName, name);
             }
         }
 
-        // // Now process every potential child thread.
-        // for (Node node: thread.nodes.values()) {
-        //     if (node.nodeType == NodeType.SPAWN_THREAD) {
-        //         String nextThreadName = node.threadSpawnThreadSpecName;
-        //         validateVariablesHelper(seenThreads, seenVars, nextThreadName);
-        //     }
-        //     if (node.baseExceptionhandler != null) {
-        //         String threadSpec = node.baseExceptionhandler.handlerThreadSpecName;
-        //         if (threadSpec != null) {
-        //             validateVariablesHelper(seenThreads, seenVars, threadSpec);
-        //         }
-        //     }
-        // }
+        // Seen Vars is now loaded.
+        initializeVarToThreadSpec();
 
-        // Due to recursive backtracking, we need to remove the elements we added.
-        for (String varName : thread.variableDefs.keySet()) {
-            seenVars.remove(varName);
-        }
-        seenThreads.remove(threadName);
-    }
-
-    private void ensureNoDuplicateVarNames(
-        Map<String, Map<String, VariableDef>> allVarDefs
-    ) throws LHValidationError {
-        HashSet<String> seen = new HashSet<String>();
-        for (Map.Entry<String, Map<String, VariableDef>> e : allVarDefs.entrySet()) {
-            for (String varName : e.getValue().keySet()) {
-                if (seen.contains(varName)) {
+        for (ThreadSpec tspec : threadSpecs.values()) {
+            for (String varName : tspec.getRequiredVariableNames()) {
+                if (!varToThreadSpec.containsKey(varName)) {
                     throw new LHValidationError(
                         null,
-                        "Variable " + varName + " defined twice! No bueno."
+                        "Thread " + tspec.name + " refers to missing var " + varName
                     );
                 }
-                seen.add(varName);
             }
         }
     }

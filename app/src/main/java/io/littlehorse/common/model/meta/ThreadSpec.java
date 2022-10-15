@@ -97,8 +97,12 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
     @JsonIgnore
     public WfSpec wfSpec;
 
+    /*
+     * Returns a Map containing info for all of the variables required as parameters
+     * to *start* this thread.
+     */
     @JsonIgnore
-    public Map<String, VariableDef> getRequiredVariables() {
+    public Map<String, VariableDef> getRequiredInputVariables() {
         HashMap<String, VariableDef> out = new HashMap<>();
         for (Map.Entry<String, VariableDef> entry : variableDefs.entrySet()) {
             if (entry.getValue().required) {
@@ -106,6 +110,17 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
             }
         }
 
+        return out;
+    }
+
+    /*
+     * Returns a set of all variable names *used* during thread execution.
+     */
+    public Set<String> getRequiredVariableNames() {
+        HashSet<String> out = new HashSet<>();
+        for (Node n : nodes.values()) {
+            out.addAll(n.getRequiredVariableNames());
+        }
         return out;
     }
 
@@ -129,12 +144,19 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
 
     // Returns all the external event def names used for **interrupts**
     @JsonIgnore
+    private Set<String> interruptExternalEventDefs;
+
+    @JsonIgnore
     public Set<String> getInterruptExternalEventDefs() {
-        Set<String> out = new HashSet<>();
-        for (InterruptDef idef : interruptDefs) {
-            out.add(idef.externalEventDefName);
+        if (interruptExternalEventDefs != null) {
+            return interruptExternalEventDefs;
         }
-        return out;
+
+        interruptExternalEventDefs = new HashSet<>();
+        for (InterruptDef idef : interruptDefs) {
+            interruptExternalEventDefs.add(idef.externalEventDefName);
+        }
+        return interruptExternalEventDefs;
     }
 
     // Returns all the external event def names used for **EXTERNAL_EVENT nodes**
@@ -166,11 +188,7 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
             return Pair.of(name, varDef);
         }
 
-        if (getParentThread() != null) {
-            return getParentThread().lookupVarDef(name);
-        }
-
-        return null;
+        return wfSpec.lookupVarDef(name);
     }
 
     public void validate(LHGlobalMetaStores dbClient, LHConfig config)
@@ -259,7 +277,7 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
 
     public void validateStartVariables(Map<String, VariableValue> vars)
         throws LHValidationError {
-        Map<String, VariableDef> required = getRequiredVariables();
+        Map<String, VariableDef> required = getRequiredInputVariables();
 
         for (Map.Entry<String, VariableDef> e : required.entrySet()) {
             VariableValue val = vars.get(e.getKey());
@@ -324,7 +342,7 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
 
     public void validateStartVariablesByType(Map<String, VariableAssignment> vars)
         throws LHValidationError {
-        Map<String, VariableDef> required = getRequiredVariables();
+        Map<String, VariableDef> required = getRequiredInputVariables();
 
         for (Map.Entry<String, VariableDef> e : required.entrySet()) {
             VariableAssignment assn = vars.get(e.getKey());
@@ -354,6 +372,15 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
                 );
             }
         }
+    }
+
+    public InterruptDef getInterruptDefFor(String externalEventDefName) {
+        for (InterruptDef idef : interruptDefs) {
+            if (idef.externalEventDefName.equals(externalEventDefName)) {
+                return idef;
+            }
+        }
+        return null;
     }
 
     public VariableDef getVarDef(String varName) {

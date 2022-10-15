@@ -1,5 +1,6 @@
 package io.littlehorse.common.model.wfrun.subnoderun;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
@@ -12,12 +13,21 @@ import java.util.Date;
 
 public class ExitRun extends SubNodeRun<ExitRunPb> {
 
+    // @JsonIgnore
+    private boolean alreadyNoticed;
+
+    public ExitRun() {
+        alreadyNoticed = false;
+    }
+
+    @JsonIgnore
     public Class<ExitRunPb> getProtoBaseClass() {
         return ExitRunPb.class;
     }
 
     public void initFrom(MessageOrBuilder p) {}
 
+    @JsonIgnore
     public ExitRunPb.Builder toProto() {
         return ExitRunPb.newBuilder();
     }
@@ -32,8 +42,22 @@ public class ExitRun extends SubNodeRun<ExitRunPb> {
         // I don't believe there's anything to do here.
     }
 
-    public void advanceIfPossible(Date time) {
+    public boolean advanceIfPossible(Date time) {
+        boolean out;
         // nothing to do
+        if (nodeRun.isInProgress()) {
+            arrive(time);
+            // Return true if the status changed
+            out = !(nodeRun.threadRun.isRunning());
+        } else {
+            if (alreadyNoticed) {
+                out = false;
+            } else {
+                alreadyNoticed = true;
+                out = true;
+            }
+        }
+        return out;
     }
 
     public void arrive(Date time) {
@@ -66,11 +90,3 @@ public class ExitRun extends SubNodeRun<ExitRunPb> {
         }
     }
 }
-/*
- * Things to test:
- * - Verify that the parent thread actually waits for the children.
- * - Verify that when the child thread isn't started properly, the StartThreadNode
- *   halts.
- * - Verify that when we call nodeRun.complete() from the arrive(), things don't
- *   break.
- */
