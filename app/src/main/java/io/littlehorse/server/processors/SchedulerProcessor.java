@@ -118,6 +118,7 @@ public class SchedulerProcessor
         if (evt.type == EventCase.EXTERNAL_EVENT) {
             ExternalEvent extEvt = evt.externalEvent;
             wsa.saveExternalEvent(extEvt);
+            flushChanges(wfRun, wsa, timestamp);
 
             if (wfRun == null) {
                 // Then it's a potential future WfRun. Current implementation saves
@@ -201,8 +202,10 @@ public class SchedulerProcessor
         }
 
         // The WfRun
-        wfRunStore.put(wfRun.id, wfRun);
-        forwardforTagging(wfRun, timestamp);
+        if (wfRun != null) {
+            wfRunStore.put(wfRun.id, wfRun);
+            forwardforTagging(wfRun, timestamp);
+        }
     }
 
     @SuppressWarnings("unchecked")

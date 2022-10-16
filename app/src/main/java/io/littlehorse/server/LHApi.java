@@ -102,6 +102,10 @@ public class LHApi {
                 "search/Variable/wfRunId/{wfRunId}",
                 ctx -> handle(this::getVariablesByWfRun, ctx)
             );
+        this.app.get(
+                "/ExternalEvent/{wfRunId}/{externalEventDefName}/{guid}",
+                ctx -> handle(this::getExternalEvent, ctx)
+            );
 
         this.app.get(
                 "/search/WfRun/wfSpecId/{id}",
@@ -229,6 +233,16 @@ public class LHApi {
     public void getWfSpec(Context ctx) {
         String id = ctx.pathParam("id");
         returnLookup(id, id, WfSpec.class, ctx);
+    }
+
+    public void getExternalEvent(Context ctx) {
+        String wfRunId = ctx.pathParam("wfRunId");
+        String eedId = ctx.pathParam("externalEventDefName");
+        String guid = ctx.pathParam("guid");
+
+        String partitionKey = wfRunId;
+        String objectId = ExternalEvent.getObjectId(wfRunId, eedId, guid);
+        returnLookup(partitionKey, objectId, ExternalEvent.class, ctx);
     }
 
     public void getWfRun(Context ctx) {
@@ -614,8 +628,11 @@ public class LHApi {
                 ctx.json(resp);
                 return;
             } else {
+                resp.id = ExternalEvent.getObjectId(req.wfRunId, eed.name, req.guid);
+
                 // TODO: When we add schemas to ExternalEventDef, we will need to
                 // do validation here.
+
                 WfRunEvent evt = new WfRunEvent();
                 evt.wfRunId = req.wfRunId;
                 evt.time = new Date();

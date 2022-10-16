@@ -78,7 +78,7 @@ public class ExternalEvent extends GETable<ExternalEventPb> implements WfRunSubE
         String externalEventDefName,
         String guid
     ) {
-        return getStorePrefix(wfRunId, externalEventDefName) + "-" + guid;
+        return getStorePrefix(wfRunId, externalEventDefName) + "/" + guid;
     }
 
     // Just for Jackson
@@ -117,7 +117,7 @@ public class ExternalEvent extends GETable<ExternalEventPb> implements WfRunSubE
     }
 
     public static String getStorePrefix(String wfRunId, String externalEventDefId) {
-        return wfRunId + "-" + externalEventDefId;
+        return wfRunId + "/" + externalEventDefId;
     }
 
     public Integer getThreadRunNumber() {

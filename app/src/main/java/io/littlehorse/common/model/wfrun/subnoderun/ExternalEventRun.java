@@ -10,6 +10,7 @@ import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
 import io.littlehorse.common.proto.ExternalEventRunPb;
 import io.littlehorse.common.proto.ExternalEventRunPbOrBuilder;
+import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.util.LHUtil;
 import java.util.ArrayList;
 import java.util.Date;
@@ -100,7 +101,19 @@ public class ExternalEventRun extends SubNodeRun<ExternalEventRunPb> {
         return true;
     }
 
+    /*
+     * Need to override this for ExternalEventRun because it's technically in the
+     * "RUNNING" status when waiting for the Event, and while waiting it's
+     * perfectly fine (in fact, the *most expected*) time for the interrupt to
+     * happen.
+     */
+    @Override
+    public boolean canBeInterrupted() {
+        return true;
+    }
+
     public void arrive(Date time) {
         // Nothing to do
+        nodeRun.status = LHStatusPb.RUNNING;
     }
 }

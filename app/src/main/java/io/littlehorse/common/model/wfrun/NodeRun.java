@@ -292,6 +292,16 @@ public class NodeRun extends GETable<NodeRunPb> {
         getSubNodeRun().processEvent(e);
     }
 
+    /*
+     * Returns whether it's currently safe to start an interrupt thread on this
+     * NodeRun. The default answer is, "Is the node currently Running? If so, then
+     * nope, else yes". However,
+     */
+    @JsonIgnore
+    public boolean canBeInterrupted() {
+        return getSubNodeRun().canBeInterrupted();
+    }
+
     public boolean advanceIfPossible(Date time) {
         if (status == LHStatusPb.COMPLETED) {
             threadRun.advanceFrom(getNode());

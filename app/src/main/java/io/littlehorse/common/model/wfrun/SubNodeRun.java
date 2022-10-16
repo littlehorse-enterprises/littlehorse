@@ -12,13 +12,23 @@ public abstract class SubNodeRun<T extends MessageOrBuilder>
     extends LHSerializable<T> {
 
     @JsonIgnore
-    protected NodeRun nodeRun;
+    public NodeRun nodeRun;
 
     public abstract void processEvent(WfRunEvent event);
 
     public abstract boolean advanceIfPossible(Date time);
 
     public abstract void arrive(Date time);
+
+    /*
+     * The default is that we can't interrupt a node that's making active progress,
+     * the clearest example being that when a Task Worker is working on a TaskRun
+     * we have to wait for the response to come back before it's safe to initialize
+     * an interrupt thread.
+     */
+    public boolean canBeInterrupted() {
+        return !nodeRun.isInProgress();
+    }
 
     @JsonIgnore
     public void setNodeRun(NodeRun nodeRun) {

@@ -80,7 +80,9 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             resultCode = proto.getResultCode();
         }
         if (proto.hasParentThreadId()) parentThreadId = proto.getParentThreadId();
-        childThreadIds = proto.getChildThreadIdsList();
+        for (Integer childId : proto.getChildThreadIdsList()) {
+            childThreadIds.add(childId);
+        }
 
         if (proto.hasInterruptTriggerId()) {
             interruptTriggerId = proto.getInterruptTriggerId();
@@ -226,7 +228,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         thr.interrupted = new Interrupted();
         thr.interrupted.interruptThreadId = handlerThreadId;
 
-        childThreadIds.add(handlerThreadId);
+        childThreadIds.add((Integer) handlerThreadId);
 
         haltReasons.add(thr);
     }
@@ -331,7 +333,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
                 return false;
             }
         } else if (status == LHStatusPb.HALTING) {
-            if (!getCurrentNodeRun().isInProgress()) {
+            if (getCurrentNodeRun().canBeInterrupted()) {
                 status = LHStatusPb.HALTED;
                 return true;
             } else {
@@ -345,8 +347,8 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
      * Returns true if we can move this Thread from HALTING to HALTED status.
      */
     @JsonIgnore
-    public boolean isDoneHalting() {
-        if (getCurrentNodeRun().isInProgress()) return false;
+    public boolean canBeInterrupted() {
+        if (getCurrentNodeRun().canBeInterrupted()) return true;
 
         for (int childId : childThreadIds) {
             if (wfRun.threadRuns.get(childId).isRunning()) {
@@ -387,7 +389,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
 
             LHUtil.log("Tried to advance HALTING thread, checking if halted yet.");
 
-            if (!currentNodeRun.isInProgress()) {
+            if (currentNodeRun.canBeInterrupted()) {
                 status = LHStatusPb.HALTED;
                 LHUtil.log("Moving thread to HALTED");
                 return true;

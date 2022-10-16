@@ -225,7 +225,8 @@ public class WfRun extends GETable<WfRunPb> {
         for (int i = pendingInterrupts.size() - 1; i >= 0; i--) {
             PendingInterrupt pi = pendingInterrupts.get(i);
             ThreadRun toInterrupt = threadRuns.get(pi.interruptedThreadId);
-            if (toInterrupt.isDoneHalting()) {
+
+            if (toInterrupt.canBeInterrupted()) {
                 if (!threadsToHandleNow.contains(pi.interruptedThreadId)) {
                     threadsToHandleNow.add(pi.interruptedThreadId);
                     somethingChanged = true;
@@ -270,25 +271,34 @@ public class WfRun extends GETable<WfRunPb> {
         return somethingChanged;
     }
 
+    /*
+     * TODO: This is kind of a mess and I haven't logically gone through to determine
+     * how many of the loops are necessary. All we know is that "the tests pass"...
+     * there may be some missing holes if our tests aren't complete; or there may
+     * be some unnecessary computation. Need to go through and do a logical analysis.
+     */
     public void processEvent(WfRunEvent e) {
-        startInterruptsIfNecessary(e.time);
-        boolean statusChanged = false;
-
+        // Any structural changes to the threadruns
         for (ThreadRun thread : threadRuns) {
             thread.processEvent(e);
         }
-
+        boolean statusChanged = false;
+        // Update status and then advance
+        for (ThreadRun thread : threadRuns) {
+            statusChanged = thread.updateStatus() || statusChanged;
+        }
+        statusChanged = startInterruptsIfNecessary(e.time) || statusChanged;
         for (ThreadRun thread : threadRuns) {
             statusChanged = thread.advance(e.time) || statusChanged;
         }
-
         for (ThreadRun thread : threadRuns) {
             statusChanged = thread.updateStatus() || statusChanged;
         }
 
         while (statusChanged) {
+            System.out.println("looping");
+            statusChanged = startInterruptsIfNecessary(e.time) || statusChanged;
             statusChanged = false;
-            startInterruptsIfNecessary(e.time);
             for (ThreadRun thread : threadRuns) {
                 statusChanged = thread.advance(e.time) || statusChanged;
             }
