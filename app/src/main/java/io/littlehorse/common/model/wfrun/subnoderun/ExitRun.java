@@ -80,7 +80,15 @@ public class ExitRun extends SubNodeRun<ExitRunPb> {
         }
 
         if (allComplete) {
-            nodeRun.threadRun.complete(time);
+            if (getNode().exitNode.wfFailureMessage == null) {
+                nodeRun.threadRun.complete(time);
+            } else {
+                nodeRun.fail(
+                    TaskResultCodePb.FAILED,
+                    getNode().exitNode.wfFailureMessage,
+                    time
+                );
+            }
         } else {
             nodeRun.threadRun.fail(
                 TaskResultCodePb.CHILD_FALIED,

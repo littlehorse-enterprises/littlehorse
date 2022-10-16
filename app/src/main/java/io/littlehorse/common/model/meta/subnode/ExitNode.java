@@ -6,20 +6,28 @@ import io.littlehorse.common.model.meta.OutputSchema;
 import io.littlehorse.common.model.meta.SubNode;
 import io.littlehorse.common.model.wfrun.subnoderun.ExitRun;
 import io.littlehorse.common.proto.ExitNodePb;
+import io.littlehorse.common.proto.ExitNodePbOrBuilder;
 import io.littlehorse.common.proto.VariableTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import java.util.Date;
 
 public class ExitNode extends SubNode<ExitNodePb> {
 
+    public String wfFailureMessage;
+
     public Class<ExitNodePb> getProtoBaseClass() {
         return ExitNodePb.class;
     }
 
-    public void initFrom(MessageOrBuilder proto) {}
+    public void initFrom(MessageOrBuilder proto) {
+        ExitNodePbOrBuilder p = (ExitNodePbOrBuilder) proto;
+        if (p.hasWfFailureMessage()) wfFailureMessage = p.getWfFailureMessage();
+    }
 
     public ExitNodePb.Builder toProto() {
-        return ExitNodePb.newBuilder();
+        ExitNodePb.Builder out = ExitNodePb.newBuilder();
+        if (wfFailureMessage != null) out.setWfFailureMessage(wfFailureMessage);
+        return out;
     }
 
     public void validate(LHGlobalMetaStores stores, LHConfig config) {

@@ -16,6 +16,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private ExitNodePb() {
+    wfFailureMessage_ = "";
   }
 
   @java.lang.Override
@@ -38,6 +39,7 @@ private static final long serialVersionUID = 0L;
     if (extensionRegistry == null) {
       throw new java.lang.NullPointerException();
     }
+    int mutable_bitField0_ = 0;
     com.google.protobuf.UnknownFieldSet.Builder unknownFields =
         com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
@@ -48,6 +50,12 @@ private static final long serialVersionUID = 0L;
           case 0:
             done = true;
             break;
+          case 10: {
+            java.lang.String s = input.readStringRequireUtf8();
+            bitField0_ |= 0x00000001;
+            wfFailureMessage_ = s;
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -80,6 +88,53 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.common.proto.ExitNodePb.class, io.littlehorse.common.proto.ExitNodePb.Builder.class);
   }
 
+  private int bitField0_;
+  public static final int WF_FAILURE_MESSAGE_FIELD_NUMBER = 1;
+  private volatile java.lang.Object wfFailureMessage_;
+  /**
+   * <code>string wf_failure_message = 1;</code>
+   * @return Whether the wfFailureMessage field is set.
+   */
+  @java.lang.Override
+  public boolean hasWfFailureMessage() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <code>string wf_failure_message = 1;</code>
+   * @return The wfFailureMessage.
+   */
+  @java.lang.Override
+  public java.lang.String getWfFailureMessage() {
+    java.lang.Object ref = wfFailureMessage_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      wfFailureMessage_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string wf_failure_message = 1;</code>
+   * @return The bytes for wfFailureMessage.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getWfFailureMessageBytes() {
+    java.lang.Object ref = wfFailureMessage_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      wfFailureMessage_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -94,6 +149,9 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
+    if (((bitField0_ & 0x00000001) != 0)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, wfFailureMessage_);
+    }
     unknownFields.writeTo(output);
   }
 
@@ -103,6 +161,9 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
+    if (((bitField0_ & 0x00000001) != 0)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, wfFailureMessage_);
+    }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
@@ -118,6 +179,11 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.common.proto.ExitNodePb other = (io.littlehorse.common.proto.ExitNodePb) obj;
 
+    if (hasWfFailureMessage() != other.hasWfFailureMessage()) return false;
+    if (hasWfFailureMessage()) {
+      if (!getWfFailureMessage()
+          .equals(other.getWfFailureMessage())) return false;
+    }
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -129,6 +195,10 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
+    if (hasWfFailureMessage()) {
+      hash = (37 * hash) + WF_FAILURE_MESSAGE_FIELD_NUMBER;
+      hash = (53 * hash) + getWfFailureMessage().hashCode();
+    }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -262,6 +332,8 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
+      wfFailureMessage_ = "";
+      bitField0_ = (bitField0_ & ~0x00000001);
       return this;
     }
 
@@ -288,6 +360,13 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.common.proto.ExitNodePb buildPartial() {
       io.littlehorse.common.proto.ExitNodePb result = new io.littlehorse.common.proto.ExitNodePb(this);
+      int from_bitField0_ = bitField0_;
+      int to_bitField0_ = 0;
+      if (((from_bitField0_ & 0x00000001) != 0)) {
+        to_bitField0_ |= 0x00000001;
+      }
+      result.wfFailureMessage_ = wfFailureMessage_;
+      result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
     }
@@ -336,6 +415,11 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.common.proto.ExitNodePb other) {
       if (other == io.littlehorse.common.proto.ExitNodePb.getDefaultInstance()) return this;
+      if (other.hasWfFailureMessage()) {
+        bitField0_ |= 0x00000001;
+        wfFailureMessage_ = other.wfFailureMessage_;
+        onChanged();
+      }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
@@ -362,6 +446,90 @@ private static final long serialVersionUID = 0L;
           mergeFrom(parsedMessage);
         }
       }
+      return this;
+    }
+    private int bitField0_;
+
+    private java.lang.Object wfFailureMessage_ = "";
+    /**
+     * <code>string wf_failure_message = 1;</code>
+     * @return Whether the wfFailureMessage field is set.
+     */
+    public boolean hasWfFailureMessage() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>string wf_failure_message = 1;</code>
+     * @return The wfFailureMessage.
+     */
+    public java.lang.String getWfFailureMessage() {
+      java.lang.Object ref = wfFailureMessage_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        wfFailureMessage_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string wf_failure_message = 1;</code>
+     * @return The bytes for wfFailureMessage.
+     */
+    public com.google.protobuf.ByteString
+        getWfFailureMessageBytes() {
+      java.lang.Object ref = wfFailureMessage_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        wfFailureMessage_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string wf_failure_message = 1;</code>
+     * @param value The wfFailureMessage to set.
+     * @return This builder for chaining.
+     */
+    public Builder setWfFailureMessage(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+      wfFailureMessage_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string wf_failure_message = 1;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearWfFailureMessage() {
+      bitField0_ = (bitField0_ & ~0x00000001);
+      wfFailureMessage_ = getDefaultInstance().getWfFailureMessage();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string wf_failure_message = 1;</code>
+     * @param value The bytes for wfFailureMessage to set.
+     * @return This builder for chaining.
+     */
+    public Builder setWfFailureMessageBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      bitField0_ |= 0x00000001;
+      wfFailureMessage_ = value;
+      onChanged();
       return this;
     }
     @java.lang.Override

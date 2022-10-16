@@ -152,7 +152,7 @@ message EntrypointNodePb {
 }
 
 message ExitNodePb {
-
+    optional string wf_failure_message = 1;
 }
 
 message VariableDefPb {

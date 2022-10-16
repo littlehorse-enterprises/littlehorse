@@ -6,4 +6,21 @@ package io.littlehorse.common.proto;
 public interface ExitNodePbOrBuilder extends
     // @@protoc_insertion_point(interface_extends:lh_proto.ExitNodePb)
     com.google.protobuf.MessageOrBuilder {
+
+  /**
+   * <code>string wf_failure_message = 1;</code>
+   * @return Whether the wfFailureMessage field is set.
+   */
+  boolean hasWfFailureMessage();
+  /**
+   * <code>string wf_failure_message = 1;</code>
+   * @return The wfFailureMessage.
+   */
+  java.lang.String getWfFailureMessage();
+  /**
+   * <code>string wf_failure_message = 1;</code>
+   * @return The bytes for wfFailureMessage.
+   */
+  com.google.protobuf.ByteString
+      getWfFailureMessageBytes();
 }

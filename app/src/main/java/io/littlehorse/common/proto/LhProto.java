@@ -388,221 +388,223 @@ public final class LhProto {
       "Entry\022\013\n\003key\030\001 \001(\t\022-\n\005value\030\002 \001(\0132\036.lh_p" +
       "roto.VariableAssignmentPb:\0028\001\"6\n\023Externa" +
       "lEventNodePb\022\037\n\027external_event_def_name\030" +
-      "\001 \001(\t\"\022\n\020EntrypointNodePb\"\014\n\nExitNodePb\"" +
-      "\216\001\n\rVariableDefPb\022&\n\004type\030\001 \001(\0162\030.lh_pro" +
-      "to.VariableTypePb\0223\n\013default_val\030\002 \001(\0132\031" +
-      ".lh_proto.VariableValuePbH\000\210\001\001\022\020\n\010requir" +
-      "ed\030\003 \001(\010B\016\n\014_default_val\"L\n\016InterruptDef" +
-      "Pb\022\037\n\027external_event_def_name\030\001 \001(\t\022\031\n\021h" +
-      "andler_spec_name\030\002 \001(\t\"\301\002\n\014ThreadSpecPb\022" +
-      "0\n\005nodes\030\001 \003(\0132!.lh_proto.ThreadSpecPb.N" +
-      "odesEntry\022?\n\rvariable_defs\030\002 \003(\0132(.lh_pr" +
-      "oto.ThreadSpecPb.VariableDefsEntry\0220\n\016in" +
-      "terrupt_defs\030\003 \003(\0132\030.lh_proto.InterruptD" +
-      "efPb\032>\n\nNodesEntry\022\013\n\003key\030\001 \001(\t\022\037\n\005value" +
-      "\030\002 \001(\0132\020.lh_proto.NodePb:\0028\001\032L\n\021Variable" +
-      "DefsEntry\022\013\n\003key\030\001 \001(\t\022&\n\005value\030\002 \001(\0132\027." +
-      "lh_proto.VariableDefPb:\0028\001\"\356\002\n\010WfSpecPb\022" +
-      "\n\n\002id\030\001 \001(\t\022.\n\ncreated_at\030\002 \001(\0132\032.google" +
-      ".protobuf.Timestamp\022.\n\nupdated_at\030\003 \001(\0132" +
-      "\032.google.protobuf.Timestamp\0229\n\014thread_sp" +
-      "ecs\030\004 \003(\0132#.lh_proto.WfSpecPb.ThreadSpec" +
-      "sEntry\022\036\n\026entrypoint_thread_name\030\005 \001(\t\022$" +
-      "\n\006status\030\006 \001(\0162\024.lh_proto.LHStatusPb\022\014\n\004" +
-      "name\030\007 \001(\t\022\033\n\023last_updated_offset\030\010 \001(\003\032" +
-      "J\n\020ThreadSpecsEntry\022\013\n\003key\030\001 \001(\t\022%\n\005valu" +
-      "e\030\002 \001(\0132\026.lh_proto.ThreadSpecPb:\0028\001\"?\n\016O" +
-      "utputSchemaPb\022-\n\013output_type\030\001 \001(\0162\030.lh_" +
-      "proto.VariableTypePb\"\206\002\n\tTaskDefPb\022\014\n\004na" +
-      "me\030\001 \001(\t\022.\n\ncreated_at\030\002 \001(\0132\032.google.pr" +
-      "otobuf.Timestamp\022/\n\routput_schema\030\003 \001(\0132" +
-      "\030.lh_proto.OutputSchemaPb\022<\n\rrequired_va" +
-      "rs\030\004 \003(\0132%.lh_proto.TaskDefPb.RequiredVa" +
-      "rsEntry\032L\n\021RequiredVarsEntry\022\013\n\003key\030\001 \001(" +
-      "\t\022&\n\005value\030\002 \001(\0132\027.lh_proto.VariableDefP" +
-      "b:\0028\001\"R\n\022ExternalEventDefPb\022\014\n\004name\030\001 \001(" +
-      "\t\022.\n\ncreated_at\030\002 \001(\0132\032.google.protobuf." +
-      "Timestamp\"\327\002\n\007WfRunPb\022\n\n\002id\030\001 \001(\t\022\022\n\nwf_" +
-      "spec_id\030\002 \001(\t\022\024\n\014wf_spec_name\030\003 \001(\t\022$\n\006s" +
-      "tatus\030\004 \001(\0162\024.lh_proto.LHStatusPb\022\032\n\022las" +
-      "t_update_offset\030\005 \001(\003\022.\n\nstart_time\030\006 \001(" +
-      "\0132\032.google.protobuf.Timestamp\0221\n\010end_tim" +
-      "e\030\007 \001(\0132\032.google.protobuf.TimestampH\000\210\001\001" +
-      "\022*\n\013thread_runs\030\010 \003(\0132\025.lh_proto.ThreadR" +
-      "unPb\0228\n\022pending_interrupts\030\016 \003(\0132\034.lh_pr" +
-      "oto.PendingInterruptPbB\013\n\t_end_time\"\305\004\n\013" +
-      "ThreadRunPb\022\021\n\twf_run_id\030\001 \001(\t\022\016\n\006number" +
-      "\030\002 \001(\005\022$\n\006status\030\003 \001(\0162\024.lh_proto.LHStat" +
-      "usPb\022\022\n\nwf_spec_id\030\004 \001(\t\022\030\n\020thread_spec_" +
-      "name\030\005 \001(\t\022.\n\nstart_time\030\006 \001(\0132\032.google." +
-      "protobuf.Timestamp\0221\n\010end_time\030\007 \001(\0132\032.g" +
-      "oogle.protobuf.TimestampH\000\210\001\001\022\035\n\025current" +
-      "_node_position\030\010 \001(\005\022\032\n\rerror_message\030\t " +
-      "\001(\tH\001\210\001\001\0224\n\013result_code\030\n \001(\0162\032.lh_proto" +
-      ".TaskResultCodePbH\002\210\001\001\022\030\n\020child_thread_i" +
-      "ds\030\013 \003(\005\022\035\n\020parent_thread_id\030\014 \001(\005H\003\210\001\001\022" +
-      "2\n\014halt_reasons\030\r \003(\0132\034.lh_proto.ThreadH" +
-      "altReasonPb\022!\n\024interrupt_trigger_id\030\016 \001(" +
-      "\tH\004\210\001\001B\013\n\t_end_timeB\020\n\016_error_messageB\016\n" +
-      "\014_result_codeB\023\n\021_parent_thread_idB\027\n\025_i" +
-      "nterrupt_trigger_id\"i\n\022PendingInterruptP" +
-      "b\022\031\n\021external_event_id\030\001 \001(\t\022\031\n\021handler_" +
-      "spec_name\030\002 \001(\t\022\035\n\025interrupted_thread_id" +
-      "\030\003 \001(\005\"9\n\034PendingInterruptHaltReasonPb\022\031" +
-      "\n\021external_event_id\030\001 \001(\t\"*\n\016ParentHalte" +
-      "dPb\022\030\n\020parent_thread_id\030\001 \001(\005\",\n\rInterru" +
-      "ptedPb\022\033\n\023interrupt_thread_id\030\001 \001(\005\"\306\001\n\022" +
-      "ThreadHaltReasonPb\0221\n\rparent_halted\030\001 \001(" +
-      "\0132\030.lh_proto.ParentHaltedPbH\000\022.\n\013interru" +
-      "pted\030\002 \001(\0132\027.lh_proto.InterruptedPbH\000\022C\n" +
-      "\021pending_interrupt\030\003 \001(\0132&.lh_proto.Pend" +
-      "ingInterruptHaltReasonPbH\000B\010\n\006reason\"\346\005\n" +
-      "\tNodeRunPb\022\021\n\twf_run_id\030\001 \001(\t\022\031\n\021thread_" +
-      "run_number\030\002 \001(\005\022\020\n\010position\030\003 \001(\005\022\026\n\016at" +
-      "tempt_number\030\004 \001(\005\022\016\n\006number\030\005 \001(\005\022$\n\006st" +
-      "atus\030\006 \001(\0162\024.lh_proto.LHStatusPb\0220\n\014arri" +
-      "val_time\030\007 \001(\0132\032.google.protobuf.Timesta" +
-      "mp\0221\n\010end_time\030\010 \001(\0132\032.google.protobuf.T" +
-      "imestampH\001\210\001\001\022\022\n\nwf_spec_id\030\t \001(\t\022\030\n\020thr" +
-      "ead_spec_name\030\n \001(\t\022\021\n\tnode_name\030\013 \001(\t\0224" +
-      "\n\013result_code\030\014 \001(\0162\032.lh_proto.TaskResul" +
-      "tCodePbH\002\210\001\001\022\032\n\rerror_message\030\r \001(\tH\003\210\001\001" +
-      "\022#\n\004task\030\016 \001(\0132\023.lh_proto.TaskRunPbH\000\0226\n" +
-      "\016external_event\030\017 \001(\0132\034.lh_proto.Externa" +
-      "lEventRunPbH\000\022/\n\nentrypoint\030\020 \001(\0132\031.lh_p" +
-      "roto.EntrypointRunPbH\000\022#\n\004exit\030\021 \001(\0132\023.l" +
-      "h_proto.ExitRunPbH\000\0222\n\014start_thread\030\022 \001(" +
-      "\0132\032.lh_proto.StartThreadRunPbH\000\0220\n\013wait_" +
-      "thread\030\023 \001(\0132\031.lh_proto.WaitThreadRunPbH" +
-      "\000B\013\n\tnode_typeB\013\n\t_end_timeB\016\n\014_result_c" +
-      "odeB\020\n\016_error_message\"\337\001\n\tTaskRunPb\022\026\n\016a" +
-      "ttempt_number\030\001 \001(\005\022.\n\006output\030\002 \001(\0132\031.lh" +
-      "_proto.VariableValuePbH\000\210\001\001\022\027\n\nlog_outpu" +
-      "t\030\003 \001(\014H\001\210\001\001\0223\n\nstart_time\030\004 \001(\0132\032.googl" +
-      "e.protobuf.TimestampH\002\210\001\001\022\023\n\013task_def_id" +
-      "\030\005 \001(\tB\t\n\007_outputB\r\n\013_log_outputB\r\n\013_sta" +
-      "rt_time\"\021\n\017EntrypointRunPb\"\013\n\tExitRunPb\"" +
-      "^\n\020StartThreadRunPb\022\034\n\017child_thread_id\030\001" +
-      " \001(\005H\000\210\001\001\022\030\n\020thread_spec_name\030\002 \001(\tB\022\n\020_" +
-      "child_thread_id\"\222\002\n\017WaitThreadRunPb\0228\n\017t" +
-      "hread_end_time\030\001 \001(\0132\032.google.protobuf.T" +
-      "imestampH\000\210\001\001\0220\n\rthread_status\030\002 \001(\0162\024.l" +
-      "h_proto.LHStatusPbH\001\210\001\001\022;\n\022thread_result" +
-      "_code\030\003 \001(\0162\032.lh_proto.TaskResultCodePbH" +
-      "\002\210\001\001\022\031\n\021thread_run_number\030\004 \001(\005B\022\n\020_thre" +
-      "ad_end_timeB\020\n\016_thread_statusB\025\n\023_thread" +
-      "_result_code\"\257\001\n\022ExternalEventRunPb\022\037\n\027e" +
-      "xternal_event_def_name\030\001 \001(\t\0223\n\nevent_ti" +
-      "me\030\002 \001(\0132\032.google.protobuf.TimestampH\000\210\001" +
-      "\001\022\036\n\021external_event_id\030\003 \001(\tH\001\210\001\001B\r\n\013_ev" +
-      "ent_timeB\024\n\022_external_event_id\"\254\002\n\017Exter" +
-      "nalEventPb\022\021\n\twf_run_id\030\001 \001(\t\022\037\n\027externa" +
-      "l_event_def_name\030\002 \001(\t\022\014\n\004guid\030\003 \001(\t\022.\n\n" +
-      "created_at\030\004 \001(\0132\032.google.protobuf.Times" +
-      "tamp\022*\n\007content\030\005 \001(\0132\031.lh_proto.Variabl" +
-      "eValuePb\022\036\n\021thread_run_number\030\006 \001(\005H\000\210\001\001" +
-      "\022\036\n\021task_run_position\030\007 \001(\005H\001\210\001\001\022\017\n\007clai" +
-      "med\030\010 \001(\010B\024\n\022_thread_run_numberB\024\n\022_task" +
-      "_run_position\"\367\001\n\016NodeRunStatePb\022\021\n\tnode" +
-      "_name\030\001 \001(\t\022\026\n\016attempt_number\030\002 \001(\005\022\020\n\010p" +
-      "osition\030\003 \001(\005\022\016\n\006number\030\004 \001(\005\022$\n\006status\030" +
-      "\005 \001(\0162\024.lh_proto.LHStatusPb\0224\n\013result_co" +
-      "de\030\006 \001(\0162\032.lh_proto.TaskResultCodePbH\000\210\001" +
-      "\001\022\032\n\rerror_message\030\007 \001(\tH\001\210\001\001B\016\n\014_result" +
-      "_codeB\020\n\016_error_message\"\323\001\n\016WfRunRequest" +
-      "Pb\022\026\n\twf_run_id\030\001 \001(\tH\000\210\001\001\022\022\n\nwf_spec_id" +
-      "\030\002 \001(\t\022:\n\tvariables\030\003 \003(\0132\'.lh_proto.WfR" +
-      "unRequestPb.VariablesEntry\032K\n\016VariablesE" +
-      "ntry\022\013\n\003key\030\001 \001(\t\022(\n\005value\030\002 \001(\0132\031.lh_pr" +
-      "oto.VariableValuePb:\0028\001B\014\n\n_wf_run_id\"\220\003" +
-      "\n\025TaskScheduleRequestPb\022\023\n\013task_def_id\030\001" +
-      " \001(\t\022\025\n\rtask_def_name\030\002 \001(\t\022\031\n\021thread_ru" +
-      "n_number\030\004 \001(\005\022\027\n\017task_run_number\030\005 \001(\005\022" +
-      "\031\n\021task_run_position\030\006 \001(\005\022\021\n\twf_run_id\030" +
-      "\007 \001(\t\022\032\n\022wf_run_event_queue\030\010 \001(\t\022\022\n\nwf_" +
-      "spec_id\030\t \001(\t\022\026\n\016attempt_number\030\n \001(\005\022\021\n" +
-      "\tnode_name\030\013 \001(\t\022A\n\tvariables\030\014 \003(\0132..lh" +
-      "_proto.TaskScheduleRequestPb.VariablesEn" +
-      "try\032K\n\016VariablesEntry\022\013\n\003key\030\001 \001(\t\022(\n\005va" +
-      "lue\030\002 \001(\0132\031.lh_proto.VariableValuePb:\0028\001" +
-      "\"\215\001\n\022TaskStartedEventPb\022\031\n\021thread_run_nu" +
-      "mber\030\001 \001(\005\022\027\n\017task_run_number\030\002 \001(\005\022\031\n\021t" +
-      "ask_run_position\030\003 \001(\005\022(\n\004time\030\004 \001(\0132\032.g" +
-      "oogle.protobuf.Timestamp\"\240\002\n\021TaskResultE" +
-      "ventPb\022\031\n\021thread_run_number\030\001 \001(\005\022\027\n\017tas" +
-      "k_run_number\030\002 \001(\005\022\031\n\021task_run_position\030" +
-      "\003 \001(\005\022(\n\004time\030\004 \001(\0132\032.google.protobuf.Ti" +
-      "mestamp\022/\n\013result_code\030\005 \001(\0162\032.lh_proto." +
-      "TaskResultCodePb\022.\n\006output\030\006 \001(\0132\031.lh_pr" +
-      "oto.VariableValuePbH\000\210\001\001\022\027\n\nlog_output\030\007" +
-      " \001(\014H\001\210\001\001B\t\n\007_outputB\r\n\013_log_output\"\203\003\n\014" +
-      "WfRunEventPb\022\021\n\twf_run_id\030\001 \001(\t\022\027\n\nwf_sp" +
-      "ec_id\030\002 \001(\tH\001\210\001\001\022(\n\004time\030\003 \001(\0132\032.google." +
-      "protobuf.Timestamp\022/\n\013run_request\030\004 \001(\0132" +
-      "\030.lh_proto.WfRunRequestPbH\000\0225\n\rstarted_e" +
-      "vent\030\005 \001(\0132\034.lh_proto.TaskStartedEventPb" +
-      "H\000\0222\n\013task_result\030\006 \001(\0132\033.lh_proto.TaskR" +
-      "esultEventPbH\000\0223\n\016external_event\030\007 \001(\0132\031" +
-      ".lh_proto.ExternalEventPbH\000\022\036\n\021thread_ru" +
-      "n_number\030\010 \001(\005H\002\210\001\001B\007\n\005eventB\r\n\013_wf_spec" +
-      "_idB\024\n\022_thread_run_number\"\227\001\n\tLHTimerPb\022" +
-      "3\n\017maturation_time\030\001 \001(\0132\032.google.protob" +
-      "uf.Timestamp\022\013\n\003key\030\002 \001(\t\022\r\n\005topic\030\003 \001(\t" +
-      "\022.\n\014wf_run_event\030\004 \001(\0132\026.lh_proto.WfRunE" +
-      "ventPbH\000B\t\n\007payload\"\276\001\n\014LHResponsePb\022(\n\004" +
-      "code\030\001 \001(\0162\032.lh_proto.LHResponseCodePb\022\017" +
-      "\n\002id\030\002 \001(\tH\000\210\001\001\022\024\n\007message\030\003 \001(\tH\001\210\001\001\022\023\n" +
-      "\006result\030\004 \001(\014H\002\210\001\001\022\031\n\014result_class\030\005 \001(\t" +
-      "H\003\210\001\001B\005\n\003_idB\n\n\010_messageB\t\n\007_resultB\017\n\r_" +
-      "result_class\"\203\001\n\021POSTableRequestPb\022%\n\004ty" +
-      "pe\030\001 \001(\0162\027.lh_proto.RequestTypePb\022\021\n\tsto" +
-      "re_key\030\002 \001(\t\022\022\n\nrequest_id\030\003 \001(\t\022\024\n\007payl" +
-      "oad\030\004 \001(\014H\000\210\001\001B\n\n\010_payload\"<\n\017RangeRespo" +
-      "nsePb\022\013\n\003ids\030\001 \003(\t\022\022\n\005token\030\002 \001(\tH\000\210\001\001B\010" +
-      "\n\006_token\"\'\n\013AttributePb\022\013\n\003key\030\001 \001(\t\022\013\n\003" +
-      "val\030\002 \001(\t\"\220\001\n\nIndexKeyPb\022)\n\nattributes\030\001" +
-      " \003(\0132\025.lh_proto.AttributePb\022*\n\004type\030\002 \001(" +
-      "\0162\034.lh_proto.GETableClassEnumPb\022+\n\007creat" +
-      "ed\030\003 \001(\0132\032.google.protobuf.Timestamp\"!\n\014" +
-      "IndexValuePb\022\021\n\tstore_key\030\001 \003(\t\"=\n\005TagPb" +
-      "\022!\n\003key\030\001 \001(\0132\024.lh_proto.IndexKeyPb\022\021\n\ts" +
-      "tore_key\030\002 \001(\t\"X\n\013TagActionPb\022\036\n\005entry\030\001" +
-      " \001(\0132\017.lh_proto.TagPb\022)\n\006action\030\002 \001(\0162\031." +
-      "lh_proto.IndexActionEnum\"O\n\016GETableEntry" +
-      "Pb\022\r\n\005entry\030\001 \001(\014\022\021\n\tpartition\030\002 \001(\005\022\033\n\023" +
-      "last_updated_offset\030\003 \001(\003\"*\n\006TagsPb\022 \n\007e" +
-      "ntries\030\001 \003(\0132\017.lh_proto.TagPb\"\207\001\n\032Remote" +
-      "StoreQueryResponsePb\0220\n\004code\030\001 \001(\0162\".lh_" +
-      "proto.RemoteStoreQueryStatusPb\022\023\n\006result" +
-      "\030\002 \001(\014H\000\210\001\001\022\027\n\017approximate_lag\030\003 \001(\003B\t\n\007" +
-      "_result*Z\n\nLHStatusPb\022\014\n\010STARTING\020\000\022\013\n\007R" +
-      "UNNING\020\001\022\r\n\tCOMPLETED\020\002\022\013\n\007HALTING\020\003\022\n\n\006" +
-      "HALTED\020\004\022\t\n\005ERROR\020\005*i\n\016VariableTypePb\022\014\n" +
-      "\010JSON_OBJ\020\000\022\014\n\010JSON_ARR\020\001\022\n\n\006DOUBLE\020\002\022\010\n" +
-      "\004BOOL\020\003\022\007\n\003STR\020\004\022\007\n\003INT\020\005\022\t\n\005BYTES\020\006\022\010\n\004" +
-      "VOID\020\007*u\n\020TaskResultCodePb\022\013\n\007SUCCESS\020\000\022" +
-      "\013\n\007TIMEOUT\020\001\022\n\n\006FAILED\020\002\022\021\n\rVAR_SUB_ERRO" +
-      "R\020\003\022\026\n\022VAR_MUTATION_ERROR\020\004\022\020\n\014CHILD_FAL" +
-      "IED\020\005*\206\001\n\014ComparatorPb\022\r\n\tLESS_THAN\020\000\022\020\n" +
-      "\014GREATER_THAN\020\001\022\020\n\014LESS_THAN_EQ\020\002\022\023\n\017GRE" +
-      "ATER_THAN_EQ\020\003\022\n\n\006EQUALS\020\004\022\016\n\nNOT_EQUALS" +
-      "\020\005\022\006\n\002IN\020\006\022\n\n\006NOT_IN\020\007*\232\001\n\026VariableMutat" +
-      "ionTypePb\022\n\n\006ASSIGN\020\000\022\007\n\003ADD\020\001\022\n\n\006EXTEND" +
-      "\020\002\022\014\n\010SUBTRACT\020\003\022\014\n\010MULTIPLY\020\004\022\n\n\006DIVIDE" +
-      "\020\005\022\025\n\021REMOVE_IF_PRESENT\020\006\022\020\n\014REMOVE_INDE" +
-      "X\020\007\022\016\n\nREMOVE_KEY\020\010*r\n\020LHResponseCodePb\022" +
-      "\006\n\002OK\020\000\022\024\n\020CONNECTION_ERROR\020\001\022\023\n\017NOT_FOU" +
-      "ND_ERROR\020\002\022\025\n\021BAD_REQUEST_ERROR\020\003\022\024\n\020VAL" +
-      "IDATION_ERROR\020\004*%\n\rRequestTypePb\022\010\n\004POST" +
-      "\020\000\022\n\n\006DELETE\020\001*\177\n\022GETableClassEnumPb\022\014\n\010" +
-      "TASK_DEF\020\000\022\013\n\007WF_SPEC\020\001\022\n\n\006WF_RUN\020\002\022\016\n\nT" +
-      "HREAD_RUN\020\003\022\014\n\010TASK_RUN\020\004\022\014\n\010VARIABLE\020\005\022" +
-      "\026\n\022EXTERNAL_EVENT_DEF\020\006*=\n\017IndexActionEn" +
-      "um\022\024\n\020CREATE_IDX_ENTRY\020\000\022\024\n\020DELETE_IDX_E" +
-      "NTRY\020\001*b\n\030RemoteStoreQueryStatusPb\022\n\n\006RS" +
-      "Q_OK\020\000\022\021\n\rRSQ_NOT_FOUND\020\001\022\020\n\014RSQ_MIGRATE" +
-      "D\020\002\022\025\n\021RSQ_NOT_AVAILABLE\020\003B(\n\033io.littleh" +
-      "orse.common.protoP\001Z\007.;modelb\006proto3"
+      "\001 \001(\t\"\022\n\020EntrypointNodePb\"D\n\nExitNodePb\022" +
+      "\037\n\022wf_failure_message\030\001 \001(\tH\000\210\001\001B\025\n\023_wf_" +
+      "failure_message\"\216\001\n\rVariableDefPb\022&\n\004typ" +
+      "e\030\001 \001(\0162\030.lh_proto.VariableTypePb\0223\n\013def" +
+      "ault_val\030\002 \001(\0132\031.lh_proto.VariableValueP" +
+      "bH\000\210\001\001\022\020\n\010required\030\003 \001(\010B\016\n\014_default_val" +
+      "\"L\n\016InterruptDefPb\022\037\n\027external_event_def" +
+      "_name\030\001 \001(\t\022\031\n\021handler_spec_name\030\002 \001(\t\"\301" +
+      "\002\n\014ThreadSpecPb\0220\n\005nodes\030\001 \003(\0132!.lh_prot" +
+      "o.ThreadSpecPb.NodesEntry\022?\n\rvariable_de" +
+      "fs\030\002 \003(\0132(.lh_proto.ThreadSpecPb.Variabl" +
+      "eDefsEntry\0220\n\016interrupt_defs\030\003 \003(\0132\030.lh_" +
+      "proto.InterruptDefPb\032>\n\nNodesEntry\022\013\n\003ke" +
+      "y\030\001 \001(\t\022\037\n\005value\030\002 \001(\0132\020.lh_proto.NodePb" +
+      ":\0028\001\032L\n\021VariableDefsEntry\022\013\n\003key\030\001 \001(\t\022&" +
+      "\n\005value\030\002 \001(\0132\027.lh_proto.VariableDefPb:\002" +
+      "8\001\"\356\002\n\010WfSpecPb\022\n\n\002id\030\001 \001(\t\022.\n\ncreated_a" +
+      "t\030\002 \001(\0132\032.google.protobuf.Timestamp\022.\n\nu" +
+      "pdated_at\030\003 \001(\0132\032.google.protobuf.Timest" +
+      "amp\0229\n\014thread_specs\030\004 \003(\0132#.lh_proto.WfS" +
+      "pecPb.ThreadSpecsEntry\022\036\n\026entrypoint_thr" +
+      "ead_name\030\005 \001(\t\022$\n\006status\030\006 \001(\0162\024.lh_prot" +
+      "o.LHStatusPb\022\014\n\004name\030\007 \001(\t\022\033\n\023last_updat" +
+      "ed_offset\030\010 \001(\003\032J\n\020ThreadSpecsEntry\022\013\n\003k" +
+      "ey\030\001 \001(\t\022%\n\005value\030\002 \001(\0132\026.lh_proto.Threa" +
+      "dSpecPb:\0028\001\"?\n\016OutputSchemaPb\022-\n\013output_" +
+      "type\030\001 \001(\0162\030.lh_proto.VariableTypePb\"\206\002\n" +
+      "\tTaskDefPb\022\014\n\004name\030\001 \001(\t\022.\n\ncreated_at\030\002" +
+      " \001(\0132\032.google.protobuf.Timestamp\022/\n\routp" +
+      "ut_schema\030\003 \001(\0132\030.lh_proto.OutputSchemaP" +
+      "b\022<\n\rrequired_vars\030\004 \003(\0132%.lh_proto.Task" +
+      "DefPb.RequiredVarsEntry\032L\n\021RequiredVarsE" +
+      "ntry\022\013\n\003key\030\001 \001(\t\022&\n\005value\030\002 \001(\0132\027.lh_pr" +
+      "oto.VariableDefPb:\0028\001\"R\n\022ExternalEventDe" +
+      "fPb\022\014\n\004name\030\001 \001(\t\022.\n\ncreated_at\030\002 \001(\0132\032." +
+      "google.protobuf.Timestamp\"\327\002\n\007WfRunPb\022\n\n" +
+      "\002id\030\001 \001(\t\022\022\n\nwf_spec_id\030\002 \001(\t\022\024\n\014wf_spec" +
+      "_name\030\003 \001(\t\022$\n\006status\030\004 \001(\0162\024.lh_proto.L" +
+      "HStatusPb\022\032\n\022last_update_offset\030\005 \001(\003\022.\n" +
+      "\nstart_time\030\006 \001(\0132\032.google.protobuf.Time" +
+      "stamp\0221\n\010end_time\030\007 \001(\0132\032.google.protobu" +
+      "f.TimestampH\000\210\001\001\022*\n\013thread_runs\030\010 \003(\0132\025." +
+      "lh_proto.ThreadRunPb\0228\n\022pending_interrup" +
+      "ts\030\016 \003(\0132\034.lh_proto.PendingInterruptPbB\013" +
+      "\n\t_end_time\"\305\004\n\013ThreadRunPb\022\021\n\twf_run_id" +
+      "\030\001 \001(\t\022\016\n\006number\030\002 \001(\005\022$\n\006status\030\003 \001(\0162\024" +
+      ".lh_proto.LHStatusPb\022\022\n\nwf_spec_id\030\004 \001(\t" +
+      "\022\030\n\020thread_spec_name\030\005 \001(\t\022.\n\nstart_time" +
+      "\030\006 \001(\0132\032.google.protobuf.Timestamp\0221\n\010en" +
+      "d_time\030\007 \001(\0132\032.google.protobuf.Timestamp" +
+      "H\000\210\001\001\022\035\n\025current_node_position\030\010 \001(\005\022\032\n\r" +
+      "error_message\030\t \001(\tH\001\210\001\001\0224\n\013result_code\030" +
+      "\n \001(\0162\032.lh_proto.TaskResultCodePbH\002\210\001\001\022\030" +
+      "\n\020child_thread_ids\030\013 \003(\005\022\035\n\020parent_threa" +
+      "d_id\030\014 \001(\005H\003\210\001\001\0222\n\014halt_reasons\030\r \003(\0132\034." +
+      "lh_proto.ThreadHaltReasonPb\022!\n\024interrupt" +
+      "_trigger_id\030\016 \001(\tH\004\210\001\001B\013\n\t_end_timeB\020\n\016_" +
+      "error_messageB\016\n\014_result_codeB\023\n\021_parent" +
+      "_thread_idB\027\n\025_interrupt_trigger_id\"i\n\022P" +
+      "endingInterruptPb\022\031\n\021external_event_id\030\001" +
+      " \001(\t\022\031\n\021handler_spec_name\030\002 \001(\t\022\035\n\025inter" +
+      "rupted_thread_id\030\003 \001(\005\"9\n\034PendingInterru" +
+      "ptHaltReasonPb\022\031\n\021external_event_id\030\001 \001(" +
+      "\t\"*\n\016ParentHaltedPb\022\030\n\020parent_thread_id\030" +
+      "\001 \001(\005\",\n\rInterruptedPb\022\033\n\023interrupt_thre" +
+      "ad_id\030\001 \001(\005\"\306\001\n\022ThreadHaltReasonPb\0221\n\rpa" +
+      "rent_halted\030\001 \001(\0132\030.lh_proto.ParentHalte" +
+      "dPbH\000\022.\n\013interrupted\030\002 \001(\0132\027.lh_proto.In" +
+      "terruptedPbH\000\022C\n\021pending_interrupt\030\003 \001(\013" +
+      "2&.lh_proto.PendingInterruptHaltReasonPb" +
+      "H\000B\010\n\006reason\"\346\005\n\tNodeRunPb\022\021\n\twf_run_id\030" +
+      "\001 \001(\t\022\031\n\021thread_run_number\030\002 \001(\005\022\020\n\010posi" +
+      "tion\030\003 \001(\005\022\026\n\016attempt_number\030\004 \001(\005\022\016\n\006nu" +
+      "mber\030\005 \001(\005\022$\n\006status\030\006 \001(\0162\024.lh_proto.LH" +
+      "StatusPb\0220\n\014arrival_time\030\007 \001(\0132\032.google." +
+      "protobuf.Timestamp\0221\n\010end_time\030\010 \001(\0132\032.g" +
+      "oogle.protobuf.TimestampH\001\210\001\001\022\022\n\nwf_spec" +
+      "_id\030\t \001(\t\022\030\n\020thread_spec_name\030\n \001(\t\022\021\n\tn" +
+      "ode_name\030\013 \001(\t\0224\n\013result_code\030\014 \001(\0162\032.lh" +
+      "_proto.TaskResultCodePbH\002\210\001\001\022\032\n\rerror_me" +
+      "ssage\030\r \001(\tH\003\210\001\001\022#\n\004task\030\016 \001(\0132\023.lh_prot" +
+      "o.TaskRunPbH\000\0226\n\016external_event\030\017 \001(\0132\034." +
+      "lh_proto.ExternalEventRunPbH\000\022/\n\nentrypo" +
+      "int\030\020 \001(\0132\031.lh_proto.EntrypointRunPbH\000\022#" +
+      "\n\004exit\030\021 \001(\0132\023.lh_proto.ExitRunPbH\000\0222\n\014s" +
+      "tart_thread\030\022 \001(\0132\032.lh_proto.StartThread" +
+      "RunPbH\000\0220\n\013wait_thread\030\023 \001(\0132\031.lh_proto." +
+      "WaitThreadRunPbH\000B\013\n\tnode_typeB\013\n\t_end_t" +
+      "imeB\016\n\014_result_codeB\020\n\016_error_message\"\337\001" +
+      "\n\tTaskRunPb\022\026\n\016attempt_number\030\001 \001(\005\022.\n\006o" +
+      "utput\030\002 \001(\0132\031.lh_proto.VariableValuePbH\000" +
+      "\210\001\001\022\027\n\nlog_output\030\003 \001(\014H\001\210\001\001\0223\n\nstart_ti" +
+      "me\030\004 \001(\0132\032.google.protobuf.TimestampH\002\210\001" +
+      "\001\022\023\n\013task_def_id\030\005 \001(\tB\t\n\007_outputB\r\n\013_lo" +
+      "g_outputB\r\n\013_start_time\"\021\n\017EntrypointRun" +
+      "Pb\"\013\n\tExitRunPb\"^\n\020StartThreadRunPb\022\034\n\017c" +
+      "hild_thread_id\030\001 \001(\005H\000\210\001\001\022\030\n\020thread_spec" +
+      "_name\030\002 \001(\tB\022\n\020_child_thread_id\"\222\002\n\017Wait" +
+      "ThreadRunPb\0228\n\017thread_end_time\030\001 \001(\0132\032.g" +
+      "oogle.protobuf.TimestampH\000\210\001\001\0220\n\rthread_" +
+      "status\030\002 \001(\0162\024.lh_proto.LHStatusPbH\001\210\001\001\022" +
+      ";\n\022thread_result_code\030\003 \001(\0162\032.lh_proto.T" +
+      "askResultCodePbH\002\210\001\001\022\031\n\021thread_run_numbe" +
+      "r\030\004 \001(\005B\022\n\020_thread_end_timeB\020\n\016_thread_s" +
+      "tatusB\025\n\023_thread_result_code\"\257\001\n\022Externa" +
+      "lEventRunPb\022\037\n\027external_event_def_name\030\001" +
+      " \001(\t\0223\n\nevent_time\030\002 \001(\0132\032.google.protob" +
+      "uf.TimestampH\000\210\001\001\022\036\n\021external_event_id\030\003" +
+      " \001(\tH\001\210\001\001B\r\n\013_event_timeB\024\n\022_external_ev" +
+      "ent_id\"\254\002\n\017ExternalEventPb\022\021\n\twf_run_id\030" +
+      "\001 \001(\t\022\037\n\027external_event_def_name\030\002 \001(\t\022\014" +
+      "\n\004guid\030\003 \001(\t\022.\n\ncreated_at\030\004 \001(\0132\032.googl" +
+      "e.protobuf.Timestamp\022*\n\007content\030\005 \001(\0132\031." +
+      "lh_proto.VariableValuePb\022\036\n\021thread_run_n" +
+      "umber\030\006 \001(\005H\000\210\001\001\022\036\n\021task_run_position\030\007 " +
+      "\001(\005H\001\210\001\001\022\017\n\007claimed\030\010 \001(\010B\024\n\022_thread_run" +
+      "_numberB\024\n\022_task_run_position\"\367\001\n\016NodeRu" +
+      "nStatePb\022\021\n\tnode_name\030\001 \001(\t\022\026\n\016attempt_n" +
+      "umber\030\002 \001(\005\022\020\n\010position\030\003 \001(\005\022\016\n\006number\030" +
+      "\004 \001(\005\022$\n\006status\030\005 \001(\0162\024.lh_proto.LHStatu" +
+      "sPb\0224\n\013result_code\030\006 \001(\0162\032.lh_proto.Task" +
+      "ResultCodePbH\000\210\001\001\022\032\n\rerror_message\030\007 \001(\t" +
+      "H\001\210\001\001B\016\n\014_result_codeB\020\n\016_error_message\"" +
+      "\323\001\n\016WfRunRequestPb\022\026\n\twf_run_id\030\001 \001(\tH\000\210" +
+      "\001\001\022\022\n\nwf_spec_id\030\002 \001(\t\022:\n\tvariables\030\003 \003(" +
+      "\0132\'.lh_proto.WfRunRequestPb.VariablesEnt" +
+      "ry\032K\n\016VariablesEntry\022\013\n\003key\030\001 \001(\t\022(\n\005val" +
+      "ue\030\002 \001(\0132\031.lh_proto.VariableValuePb:\0028\001B" +
+      "\014\n\n_wf_run_id\"\220\003\n\025TaskScheduleRequestPb\022" +
+      "\023\n\013task_def_id\030\001 \001(\t\022\025\n\rtask_def_name\030\002 " +
+      "\001(\t\022\031\n\021thread_run_number\030\004 \001(\005\022\027\n\017task_r" +
+      "un_number\030\005 \001(\005\022\031\n\021task_run_position\030\006 \001" +
+      "(\005\022\021\n\twf_run_id\030\007 \001(\t\022\032\n\022wf_run_event_qu" +
+      "eue\030\010 \001(\t\022\022\n\nwf_spec_id\030\t \001(\t\022\026\n\016attempt" +
+      "_number\030\n \001(\005\022\021\n\tnode_name\030\013 \001(\t\022A\n\tvari" +
+      "ables\030\014 \003(\0132..lh_proto.TaskScheduleReque" +
+      "stPb.VariablesEntry\032K\n\016VariablesEntry\022\013\n" +
+      "\003key\030\001 \001(\t\022(\n\005value\030\002 \001(\0132\031.lh_proto.Var" +
+      "iableValuePb:\0028\001\"\215\001\n\022TaskStartedEventPb\022" +
+      "\031\n\021thread_run_number\030\001 \001(\005\022\027\n\017task_run_n" +
+      "umber\030\002 \001(\005\022\031\n\021task_run_position\030\003 \001(\005\022(" +
+      "\n\004time\030\004 \001(\0132\032.google.protobuf.Timestamp" +
+      "\"\240\002\n\021TaskResultEventPb\022\031\n\021thread_run_num" +
+      "ber\030\001 \001(\005\022\027\n\017task_run_number\030\002 \001(\005\022\031\n\021ta" +
+      "sk_run_position\030\003 \001(\005\022(\n\004time\030\004 \001(\0132\032.go" +
+      "ogle.protobuf.Timestamp\022/\n\013result_code\030\005" +
+      " \001(\0162\032.lh_proto.TaskResultCodePb\022.\n\006outp" +
+      "ut\030\006 \001(\0132\031.lh_proto.VariableValuePbH\000\210\001\001" +
+      "\022\027\n\nlog_output\030\007 \001(\014H\001\210\001\001B\t\n\007_outputB\r\n\013" +
+      "_log_output\"\203\003\n\014WfRunEventPb\022\021\n\twf_run_i" +
+      "d\030\001 \001(\t\022\027\n\nwf_spec_id\030\002 \001(\tH\001\210\001\001\022(\n\004time" +
+      "\030\003 \001(\0132\032.google.protobuf.Timestamp\022/\n\013ru" +
+      "n_request\030\004 \001(\0132\030.lh_proto.WfRunRequestP" +
+      "bH\000\0225\n\rstarted_event\030\005 \001(\0132\034.lh_proto.Ta" +
+      "skStartedEventPbH\000\0222\n\013task_result\030\006 \001(\0132" +
+      "\033.lh_proto.TaskResultEventPbH\000\0223\n\016extern" +
+      "al_event\030\007 \001(\0132\031.lh_proto.ExternalEventP" +
+      "bH\000\022\036\n\021thread_run_number\030\010 \001(\005H\002\210\001\001B\007\n\005e" +
+      "ventB\r\n\013_wf_spec_idB\024\n\022_thread_run_numbe" +
+      "r\"\227\001\n\tLHTimerPb\0223\n\017maturation_time\030\001 \001(\013" +
+      "2\032.google.protobuf.Timestamp\022\013\n\003key\030\002 \001(" +
+      "\t\022\r\n\005topic\030\003 \001(\t\022.\n\014wf_run_event\030\004 \001(\0132\026" +
+      ".lh_proto.WfRunEventPbH\000B\t\n\007payload\"\276\001\n\014" +
+      "LHResponsePb\022(\n\004code\030\001 \001(\0162\032.lh_proto.LH" +
+      "ResponseCodePb\022\017\n\002id\030\002 \001(\tH\000\210\001\001\022\024\n\007messa" +
+      "ge\030\003 \001(\tH\001\210\001\001\022\023\n\006result\030\004 \001(\014H\002\210\001\001\022\031\n\014re" +
+      "sult_class\030\005 \001(\tH\003\210\001\001B\005\n\003_idB\n\n\010_message" +
+      "B\t\n\007_resultB\017\n\r_result_class\"\203\001\n\021POSTabl" +
+      "eRequestPb\022%\n\004type\030\001 \001(\0162\027.lh_proto.Requ" +
+      "estTypePb\022\021\n\tstore_key\030\002 \001(\t\022\022\n\nrequest_" +
+      "id\030\003 \001(\t\022\024\n\007payload\030\004 \001(\014H\000\210\001\001B\n\n\010_paylo" +
+      "ad\"<\n\017RangeResponsePb\022\013\n\003ids\030\001 \003(\t\022\022\n\005to" +
+      "ken\030\002 \001(\tH\000\210\001\001B\010\n\006_token\"\'\n\013AttributePb\022" +
+      "\013\n\003key\030\001 \001(\t\022\013\n\003val\030\002 \001(\t\"\220\001\n\nIndexKeyPb" +
+      "\022)\n\nattributes\030\001 \003(\0132\025.lh_proto.Attribut" +
+      "ePb\022*\n\004type\030\002 \001(\0162\034.lh_proto.GETableClas" +
+      "sEnumPb\022+\n\007created\030\003 \001(\0132\032.google.protob" +
+      "uf.Timestamp\"!\n\014IndexValuePb\022\021\n\tstore_ke" +
+      "y\030\001 \003(\t\"=\n\005TagPb\022!\n\003key\030\001 \001(\0132\024.lh_proto" +
+      ".IndexKeyPb\022\021\n\tstore_key\030\002 \001(\t\"X\n\013TagAct" +
+      "ionPb\022\036\n\005entry\030\001 \001(\0132\017.lh_proto.TagPb\022)\n" +
+      "\006action\030\002 \001(\0162\031.lh_proto.IndexActionEnum" +
+      "\"O\n\016GETableEntryPb\022\r\n\005entry\030\001 \001(\014\022\021\n\tpar" +
+      "tition\030\002 \001(\005\022\033\n\023last_updated_offset\030\003 \001(" +
+      "\003\"*\n\006TagsPb\022 \n\007entries\030\001 \003(\0132\017.lh_proto." +
+      "TagPb\"\207\001\n\032RemoteStoreQueryResponsePb\0220\n\004" +
+      "code\030\001 \001(\0162\".lh_proto.RemoteStoreQuerySt" +
+      "atusPb\022\023\n\006result\030\002 \001(\014H\000\210\001\001\022\027\n\017approxima" +
+      "te_lag\030\003 \001(\003B\t\n\007_result*Z\n\nLHStatusPb\022\014\n" +
+      "\010STARTING\020\000\022\013\n\007RUNNING\020\001\022\r\n\tCOMPLETED\020\002\022" +
+      "\013\n\007HALTING\020\003\022\n\n\006HALTED\020\004\022\t\n\005ERROR\020\005*i\n\016V" +
+      "ariableTypePb\022\014\n\010JSON_OBJ\020\000\022\014\n\010JSON_ARR\020" +
+      "\001\022\n\n\006DOUBLE\020\002\022\010\n\004BOOL\020\003\022\007\n\003STR\020\004\022\007\n\003INT\020" +
+      "\005\022\t\n\005BYTES\020\006\022\010\n\004VOID\020\007*u\n\020TaskResultCode" +
+      "Pb\022\013\n\007SUCCESS\020\000\022\013\n\007TIMEOUT\020\001\022\n\n\006FAILED\020\002" +
+      "\022\021\n\rVAR_SUB_ERROR\020\003\022\026\n\022VAR_MUTATION_ERRO" +
+      "R\020\004\022\020\n\014CHILD_FALIED\020\005*\206\001\n\014ComparatorPb\022\r" +
+      "\n\tLESS_THAN\020\000\022\020\n\014GREATER_THAN\020\001\022\020\n\014LESS_" +
+      "THAN_EQ\020\002\022\023\n\017GREATER_THAN_EQ\020\003\022\n\n\006EQUALS" +
+      "\020\004\022\016\n\nNOT_EQUALS\020\005\022\006\n\002IN\020\006\022\n\n\006NOT_IN\020\007*\232" +
+      "\001\n\026VariableMutationTypePb\022\n\n\006ASSIGN\020\000\022\007\n" +
+      "\003ADD\020\001\022\n\n\006EXTEND\020\002\022\014\n\010SUBTRACT\020\003\022\014\n\010MULT" +
+      "IPLY\020\004\022\n\n\006DIVIDE\020\005\022\025\n\021REMOVE_IF_PRESENT\020" +
+      "\006\022\020\n\014REMOVE_INDEX\020\007\022\016\n\nREMOVE_KEY\020\010*r\n\020L" +
+      "HResponseCodePb\022\006\n\002OK\020\000\022\024\n\020CONNECTION_ER" +
+      "ROR\020\001\022\023\n\017NOT_FOUND_ERROR\020\002\022\025\n\021BAD_REQUES" +
+      "T_ERROR\020\003\022\024\n\020VALIDATION_ERROR\020\004*%\n\rReque" +
+      "stTypePb\022\010\n\004POST\020\000\022\n\n\006DELETE\020\001*\177\n\022GETabl" +
+      "eClassEnumPb\022\014\n\010TASK_DEF\020\000\022\013\n\007WF_SPEC\020\001\022" +
+      "\n\n\006WF_RUN\020\002\022\016\n\nTHREAD_RUN\020\003\022\014\n\010TASK_RUN\020" +
+      "\004\022\014\n\010VARIABLE\020\005\022\026\n\022EXTERNAL_EVENT_DEF\020\006*" +
+      "=\n\017IndexActionEnum\022\024\n\020CREATE_IDX_ENTRY\020\000" +
+      "\022\024\n\020DELETE_IDX_ENTRY\020\001*b\n\030RemoteStoreQue" +
+      "ryStatusPb\022\n\n\006RSQ_OK\020\000\022\021\n\rRSQ_NOT_FOUND\020" +
+      "\001\022\020\n\014RSQ_MIGRATED\020\002\022\025\n\021RSQ_NOT_AVAILABLE" +
+      "\020\003B(\n\033io.littlehorse.common.protoP\001Z\007.;m" +
+      "odelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -698,7 +700,7 @@ public final class LhProto {
     internal_static_lh_proto_ExitNodePb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_ExitNodePb_descriptor,
-        new java.lang.String[] { });
+        new java.lang.String[] { "WfFailureMessage", "WfFailureMessage", });
     internal_static_lh_proto_VariableDefPb_descriptor =
       getDescriptor().getMessageTypes().get(13);
     internal_static_lh_proto_VariableDefPb_fieldAccessorTable = new
