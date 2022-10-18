@@ -80,6 +80,12 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
         if (p.hasRhsJsonPath()) rhsJsonPath = p.getRhsJsonPath();
     }
 
+    public static VariableMutation fromProto(VariableMutationPbOrBuilder p) {
+        VariableMutation out = new VariableMutation();
+        out.initFrom(p);
+        return out;
+    }
+
     public VariableValue getLhsValue(
         ThreadRun thread,
         Map<String, VariableValue> txnCache

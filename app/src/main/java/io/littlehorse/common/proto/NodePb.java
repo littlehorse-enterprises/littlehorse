@@ -18,6 +18,7 @@ private static final long serialVersionUID = 0L;
   private NodePb() {
     outgoingEdges_ = java.util.Collections.emptyList();
     variableMutations_ = java.util.Collections.emptyList();
+    exceptionHandlers_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -166,6 +167,15 @@ private static final long serialVersionUID = 0L;
             nodeCase_ = 10;
             break;
           }
+          case 90: {
+            if (!((mutable_bitField0_ & 0x00000004) != 0)) {
+              exceptionHandlers_ = new java.util.ArrayList<io.littlehorse.common.proto.ExceptionHandlerPb>();
+              mutable_bitField0_ |= 0x00000004;
+            }
+            exceptionHandlers_.add(
+                input.readMessage(io.littlehorse.common.proto.ExceptionHandlerPb.parser(), extensionRegistry));
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -186,6 +196,9 @@ private static final long serialVersionUID = 0L;
       }
       if (((mutable_bitField0_ & 0x00000002) != 0)) {
         variableMutations_ = java.util.Collections.unmodifiableList(variableMutations_);
+      }
+      if (((mutable_bitField0_ & 0x00000004) != 0)) {
+        exceptionHandlers_ = java.util.Collections.unmodifiableList(exceptionHandlers_);
       }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
@@ -545,6 +558,46 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.WaitForThreadNodePb.getDefaultInstance();
   }
 
+  public static final int EXCEPTION_HANDLERS_FIELD_NUMBER = 11;
+  private java.util.List<io.littlehorse.common.proto.ExceptionHandlerPb> exceptionHandlers_;
+  /**
+   * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+   */
+  @java.lang.Override
+  public java.util.List<io.littlehorse.common.proto.ExceptionHandlerPb> getExceptionHandlersList() {
+    return exceptionHandlers_;
+  }
+  /**
+   * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+   */
+  @java.lang.Override
+  public java.util.List<? extends io.littlehorse.common.proto.ExceptionHandlerPbOrBuilder> 
+      getExceptionHandlersOrBuilderList() {
+    return exceptionHandlers_;
+  }
+  /**
+   * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+   */
+  @java.lang.Override
+  public int getExceptionHandlersCount() {
+    return exceptionHandlers_.size();
+  }
+  /**
+   * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.ExceptionHandlerPb getExceptionHandlers(int index) {
+    return exceptionHandlers_.get(index);
+  }
+  /**
+   * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.ExceptionHandlerPbOrBuilder getExceptionHandlersOrBuilder(
+      int index) {
+    return exceptionHandlers_.get(index);
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -585,6 +638,9 @@ private static final long serialVersionUID = 0L;
     }
     if (nodeCase_ == 10) {
       output.writeMessage(10, (io.littlehorse.common.proto.WaitForThreadNodePb) node_);
+    }
+    for (int i = 0; i < exceptionHandlers_.size(); i++) {
+      output.writeMessage(11, exceptionHandlers_.get(i));
     }
     unknownFields.writeTo(output);
   }
@@ -631,6 +687,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(10, (io.littlehorse.common.proto.WaitForThreadNodePb) node_);
     }
+    for (int i = 0; i < exceptionHandlers_.size(); i++) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(11, exceptionHandlers_.get(i));
+    }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
@@ -655,6 +715,8 @@ private static final long serialVersionUID = 0L;
       if (!getOutputSchema()
           .equals(other.getOutputSchema())) return false;
     }
+    if (!getExceptionHandlersList()
+        .equals(other.getExceptionHandlersList())) return false;
     if (!getNodeCase().equals(other.getNodeCase())) return false;
     switch (nodeCase_) {
       case 5:
@@ -706,6 +768,10 @@ private static final long serialVersionUID = 0L;
     if (hasOutputSchema()) {
       hash = (37 * hash) + OUTPUT_SCHEMA_FIELD_NUMBER;
       hash = (53 * hash) + getOutputSchema().hashCode();
+    }
+    if (getExceptionHandlersCount() > 0) {
+      hash = (37 * hash) + EXCEPTION_HANDLERS_FIELD_NUMBER;
+      hash = (53 * hash) + getExceptionHandlersList().hashCode();
     }
     switch (nodeCase_) {
       case 5:
@@ -865,6 +931,7 @@ private static final long serialVersionUID = 0L;
               .alwaysUseFieldBuilders) {
         getOutgoingEdgesFieldBuilder();
         getVariableMutationsFieldBuilder();
+        getExceptionHandlersFieldBuilder();
       }
     }
     @java.lang.Override
@@ -887,6 +954,12 @@ private static final long serialVersionUID = 0L;
       } else {
         outputSchema_ = null;
         outputSchemaBuilder_ = null;
+      }
+      if (exceptionHandlersBuilder_ == null) {
+        exceptionHandlers_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000004);
+      } else {
+        exceptionHandlersBuilder_.clear();
       }
       nodeCase_ = 0;
       node_ = null;
@@ -981,6 +1054,15 @@ private static final long serialVersionUID = 0L;
         } else {
           result.node_ = waitForThreadBuilder_.build();
         }
+      }
+      if (exceptionHandlersBuilder_ == null) {
+        if (((bitField0_ & 0x00000004) != 0)) {
+          exceptionHandlers_ = java.util.Collections.unmodifiableList(exceptionHandlers_);
+          bitField0_ = (bitField0_ & ~0x00000004);
+        }
+        result.exceptionHandlers_ = exceptionHandlers_;
+      } else {
+        result.exceptionHandlers_ = exceptionHandlersBuilder_.build();
       }
       result.nodeCase_ = nodeCase_;
       onBuilt();
@@ -1085,6 +1167,32 @@ private static final long serialVersionUID = 0L;
       }
       if (other.hasOutputSchema()) {
         mergeOutputSchema(other.getOutputSchema());
+      }
+      if (exceptionHandlersBuilder_ == null) {
+        if (!other.exceptionHandlers_.isEmpty()) {
+          if (exceptionHandlers_.isEmpty()) {
+            exceptionHandlers_ = other.exceptionHandlers_;
+            bitField0_ = (bitField0_ & ~0x00000004);
+          } else {
+            ensureExceptionHandlersIsMutable();
+            exceptionHandlers_.addAll(other.exceptionHandlers_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.exceptionHandlers_.isEmpty()) {
+          if (exceptionHandlersBuilder_.isEmpty()) {
+            exceptionHandlersBuilder_.dispose();
+            exceptionHandlersBuilder_ = null;
+            exceptionHandlers_ = other.exceptionHandlers_;
+            bitField0_ = (bitField0_ & ~0x00000004);
+            exceptionHandlersBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getExceptionHandlersFieldBuilder() : null;
+          } else {
+            exceptionHandlersBuilder_.addAllMessages(other.exceptionHandlers_);
+          }
+        }
       }
       switch (other.getNodeCase()) {
         case ENTRYPOINT: {
@@ -2603,6 +2711,246 @@ private static final long serialVersionUID = 0L;
       nodeCase_ = 10;
       onChanged();;
       return waitForThreadBuilder_;
+    }
+
+    private java.util.List<io.littlehorse.common.proto.ExceptionHandlerPb> exceptionHandlers_ =
+      java.util.Collections.emptyList();
+    private void ensureExceptionHandlersIsMutable() {
+      if (!((bitField0_ & 0x00000004) != 0)) {
+        exceptionHandlers_ = new java.util.ArrayList<io.littlehorse.common.proto.ExceptionHandlerPb>(exceptionHandlers_);
+        bitField0_ |= 0x00000004;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.common.proto.ExceptionHandlerPb, io.littlehorse.common.proto.ExceptionHandlerPb.Builder, io.littlehorse.common.proto.ExceptionHandlerPbOrBuilder> exceptionHandlersBuilder_;
+
+    /**
+     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     */
+    public java.util.List<io.littlehorse.common.proto.ExceptionHandlerPb> getExceptionHandlersList() {
+      if (exceptionHandlersBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(exceptionHandlers_);
+      } else {
+        return exceptionHandlersBuilder_.getMessageList();
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     */
+    public int getExceptionHandlersCount() {
+      if (exceptionHandlersBuilder_ == null) {
+        return exceptionHandlers_.size();
+      } else {
+        return exceptionHandlersBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     */
+    public io.littlehorse.common.proto.ExceptionHandlerPb getExceptionHandlers(int index) {
+      if (exceptionHandlersBuilder_ == null) {
+        return exceptionHandlers_.get(index);
+      } else {
+        return exceptionHandlersBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     */
+    public Builder setExceptionHandlers(
+        int index, io.littlehorse.common.proto.ExceptionHandlerPb value) {
+      if (exceptionHandlersBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureExceptionHandlersIsMutable();
+        exceptionHandlers_.set(index, value);
+        onChanged();
+      } else {
+        exceptionHandlersBuilder_.setMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     */
+    public Builder setExceptionHandlers(
+        int index, io.littlehorse.common.proto.ExceptionHandlerPb.Builder builderForValue) {
+      if (exceptionHandlersBuilder_ == null) {
+        ensureExceptionHandlersIsMutable();
+        exceptionHandlers_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        exceptionHandlersBuilder_.setMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     */
+    public Builder addExceptionHandlers(io.littlehorse.common.proto.ExceptionHandlerPb value) {
+      if (exceptionHandlersBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureExceptionHandlersIsMutable();
+        exceptionHandlers_.add(value);
+        onChanged();
+      } else {
+        exceptionHandlersBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     */
+    public Builder addExceptionHandlers(
+        int index, io.littlehorse.common.proto.ExceptionHandlerPb value) {
+      if (exceptionHandlersBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureExceptionHandlersIsMutable();
+        exceptionHandlers_.add(index, value);
+        onChanged();
+      } else {
+        exceptionHandlersBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     */
+    public Builder addExceptionHandlers(
+        io.littlehorse.common.proto.ExceptionHandlerPb.Builder builderForValue) {
+      if (exceptionHandlersBuilder_ == null) {
+        ensureExceptionHandlersIsMutable();
+        exceptionHandlers_.add(builderForValue.build());
+        onChanged();
+      } else {
+        exceptionHandlersBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     */
+    public Builder addExceptionHandlers(
+        int index, io.littlehorse.common.proto.ExceptionHandlerPb.Builder builderForValue) {
+      if (exceptionHandlersBuilder_ == null) {
+        ensureExceptionHandlersIsMutable();
+        exceptionHandlers_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        exceptionHandlersBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     */
+    public Builder addAllExceptionHandlers(
+        java.lang.Iterable<? extends io.littlehorse.common.proto.ExceptionHandlerPb> values) {
+      if (exceptionHandlersBuilder_ == null) {
+        ensureExceptionHandlersIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, exceptionHandlers_);
+        onChanged();
+      } else {
+        exceptionHandlersBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     */
+    public Builder clearExceptionHandlers() {
+      if (exceptionHandlersBuilder_ == null) {
+        exceptionHandlers_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+      } else {
+        exceptionHandlersBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     */
+    public Builder removeExceptionHandlers(int index) {
+      if (exceptionHandlersBuilder_ == null) {
+        ensureExceptionHandlersIsMutable();
+        exceptionHandlers_.remove(index);
+        onChanged();
+      } else {
+        exceptionHandlersBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     */
+    public io.littlehorse.common.proto.ExceptionHandlerPb.Builder getExceptionHandlersBuilder(
+        int index) {
+      return getExceptionHandlersFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     */
+    public io.littlehorse.common.proto.ExceptionHandlerPbOrBuilder getExceptionHandlersOrBuilder(
+        int index) {
+      if (exceptionHandlersBuilder_ == null) {
+        return exceptionHandlers_.get(index);  } else {
+        return exceptionHandlersBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     */
+    public java.util.List<? extends io.littlehorse.common.proto.ExceptionHandlerPbOrBuilder> 
+         getExceptionHandlersOrBuilderList() {
+      if (exceptionHandlersBuilder_ != null) {
+        return exceptionHandlersBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(exceptionHandlers_);
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     */
+    public io.littlehorse.common.proto.ExceptionHandlerPb.Builder addExceptionHandlersBuilder() {
+      return getExceptionHandlersFieldBuilder().addBuilder(
+          io.littlehorse.common.proto.ExceptionHandlerPb.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     */
+    public io.littlehorse.common.proto.ExceptionHandlerPb.Builder addExceptionHandlersBuilder(
+        int index) {
+      return getExceptionHandlersFieldBuilder().addBuilder(
+          index, io.littlehorse.common.proto.ExceptionHandlerPb.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     */
+    public java.util.List<io.littlehorse.common.proto.ExceptionHandlerPb.Builder> 
+         getExceptionHandlersBuilderList() {
+      return getExceptionHandlersFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.common.proto.ExceptionHandlerPb, io.littlehorse.common.proto.ExceptionHandlerPb.Builder, io.littlehorse.common.proto.ExceptionHandlerPbOrBuilder> 
+        getExceptionHandlersFieldBuilder() {
+      if (exceptionHandlersBuilder_ == null) {
+        exceptionHandlersBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            io.littlehorse.common.proto.ExceptionHandlerPb, io.littlehorse.common.proto.ExceptionHandlerPb.Builder, io.littlehorse.common.proto.ExceptionHandlerPbOrBuilder>(
+                exceptionHandlers_,
+                ((bitField0_ & 0x00000004) != 0),
+                getParentForChildren(),
+                isClean());
+        exceptionHandlers_ = null;
+      }
+      return exceptionHandlersBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

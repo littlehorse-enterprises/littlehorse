@@ -160,5 +160,29 @@ public interface NodePbOrBuilder extends
    */
   io.littlehorse.common.proto.WaitForThreadNodePbOrBuilder getWaitForThreadOrBuilder();
 
+  /**
+   * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+   */
+  java.util.List<io.littlehorse.common.proto.ExceptionHandlerPb> 
+      getExceptionHandlersList();
+  /**
+   * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+   */
+  io.littlehorse.common.proto.ExceptionHandlerPb getExceptionHandlers(int index);
+  /**
+   * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+   */
+  int getExceptionHandlersCount();
+  /**
+   * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+   */
+  java.util.List<? extends io.littlehorse.common.proto.ExceptionHandlerPbOrBuilder> 
+      getExceptionHandlersOrBuilderList();
+  /**
+   * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+   */
+  io.littlehorse.common.proto.ExceptionHandlerPbOrBuilder getExceptionHandlersOrBuilder(
+      int index);
+
   public io.littlehorse.common.proto.NodePb.NodeCase getNodeCase();
 }
