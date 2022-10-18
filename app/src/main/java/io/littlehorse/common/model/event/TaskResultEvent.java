@@ -1,6 +1,5 @@
 package io.littlehorse.common.model.event;
 
-import com.google.protobuf.ByteString;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.wfrun.VariableValue;
@@ -19,7 +18,7 @@ public class TaskResultEvent
     public int taskRunPosition;
     public Date time;
     public VariableValue stdout;
-    public byte[] stderr;
+    public VariableValue stderr;
     public TaskResultCodePb resultCode;
 
     public Class<TaskResultEventPb> getProtoBaseClass() {
@@ -44,7 +43,7 @@ public class TaskResultEvent
             .setResultCode(resultCode);
 
         if (stdout != null) b.setOutput(stdout.toProto());
-        if (stderr != null) b.setLogOutput(ByteString.copyFrom(stderr));
+        if (stderr != null) b.setLogOutput(stderr.toProto());
 
         return b;
     }
@@ -61,7 +60,7 @@ public class TaskResultEvent
             this.stdout = VariableValue.fromProto(proto.getOutputOrBuilder());
         }
         if (proto.hasLogOutput()) {
-            this.stderr = proto.getLogOutput().toByteArray();
+            this.stderr = VariableValue.fromProto(proto.getLogOutput());
         }
     }
 

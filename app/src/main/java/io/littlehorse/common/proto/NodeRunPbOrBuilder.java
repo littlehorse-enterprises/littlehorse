@@ -243,5 +243,20 @@ public interface NodeRunPbOrBuilder extends
    */
   io.littlehorse.common.proto.WaitThreadRunPbOrBuilder getWaitThreadOrBuilder();
 
+  /**
+   * <code>.lh_proto.FailurePb failure = 20;</code>
+   * @return Whether the failure field is set.
+   */
+  boolean hasFailure();
+  /**
+   * <code>.lh_proto.FailurePb failure = 20;</code>
+   * @return The failure.
+   */
+  io.littlehorse.common.proto.FailurePb getFailure();
+  /**
+   * <code>.lh_proto.FailurePb failure = 20;</code>
+   */
+  io.littlehorse.common.proto.FailurePbOrBuilder getFailureOrBuilder();
+
   public io.littlehorse.common.proto.NodeRunPb.NodeTypeCase getNodeTypeCase();
 }

@@ -80,12 +80,14 @@ public class ExitRun extends SubNodeRun<ExitRunPb> {
         }
 
         if (allComplete) {
-            if (getNode().exitNode.wfFailureMessage == null) {
+            if (getNode().exitNode.failureDef == null) {
+                // Then this is just a regular "yay we're done!" node.
                 nodeRun.threadRun.complete(time);
             } else {
+                // then this is a "yikes Throw Exception" node.
+
                 nodeRun.fail(
-                    TaskResultCodePb.FAILED,
-                    getNode().exitNode.wfFailureMessage,
+                    getNode().exitNode.failureDef.getFailure(nodeRun.threadRun),
                     time
                 );
             }

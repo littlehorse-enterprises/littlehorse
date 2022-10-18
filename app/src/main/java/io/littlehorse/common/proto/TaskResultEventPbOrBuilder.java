@@ -67,13 +67,17 @@ public interface TaskResultEventPbOrBuilder extends
   io.littlehorse.common.proto.VariableValuePbOrBuilder getOutputOrBuilder();
 
   /**
-   * <code>bytes log_output = 7;</code>
+   * <code>.lh_proto.VariableValuePb log_output = 7;</code>
    * @return Whether the logOutput field is set.
    */
   boolean hasLogOutput();
   /**
-   * <code>bytes log_output = 7;</code>
+   * <code>.lh_proto.VariableValuePb log_output = 7;</code>
    * @return The logOutput.
    */
-  com.google.protobuf.ByteString getLogOutput();
+  io.littlehorse.common.proto.VariableValuePb getLogOutput();
+  /**
+   * <code>.lh_proto.VariableValuePb log_output = 7;</code>
+   */
+  io.littlehorse.common.proto.VariableValuePbOrBuilder getLogOutputOrBuilder();
 }

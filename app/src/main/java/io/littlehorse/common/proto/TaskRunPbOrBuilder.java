@@ -33,15 +33,19 @@ public interface TaskRunPbOrBuilder extends
   io.littlehorse.common.proto.VariableValuePbOrBuilder getOutputOrBuilder();
 
   /**
-   * <code>bytes log_output = 3;</code>
+   * <code>.lh_proto.VariableValuePb log_output = 3;</code>
    * @return Whether the logOutput field is set.
    */
   boolean hasLogOutput();
   /**
-   * <code>bytes log_output = 3;</code>
+   * <code>.lh_proto.VariableValuePb log_output = 3;</code>
    * @return The logOutput.
    */
-  com.google.protobuf.ByteString getLogOutput();
+  io.littlehorse.common.proto.VariableValuePb getLogOutput();
+  /**
+   * <code>.lh_proto.VariableValuePb log_output = 3;</code>
+   */
+  io.littlehorse.common.proto.VariableValuePbOrBuilder getLogOutputOrBuilder();
 
   /**
    * <code>.google.protobuf.Timestamp start_time = 4;</code>

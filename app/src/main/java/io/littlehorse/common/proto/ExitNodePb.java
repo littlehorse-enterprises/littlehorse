@@ -16,7 +16,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private ExitNodePb() {
-    wfFailureMessage_ = "";
   }
 
   @java.lang.Override
@@ -51,9 +50,16 @@ private static final long serialVersionUID = 0L;
             done = true;
             break;
           case 10: {
-            java.lang.String s = input.readStringRequireUtf8();
+            io.littlehorse.common.proto.FailureDefPb.Builder subBuilder = null;
+            if (((bitField0_ & 0x00000001) != 0)) {
+              subBuilder = failureDef_.toBuilder();
+            }
+            failureDef_ = input.readMessage(io.littlehorse.common.proto.FailureDefPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom(failureDef_);
+              failureDef_ = subBuilder.buildPartial();
+            }
             bitField0_ |= 0x00000001;
-            wfFailureMessage_ = s;
             break;
           }
           default: {
@@ -89,50 +95,30 @@ private static final long serialVersionUID = 0L;
   }
 
   private int bitField0_;
-  public static final int WF_FAILURE_MESSAGE_FIELD_NUMBER = 1;
-  private volatile java.lang.Object wfFailureMessage_;
+  public static final int FAILURE_DEF_FIELD_NUMBER = 1;
+  private io.littlehorse.common.proto.FailureDefPb failureDef_;
   /**
-   * <code>string wf_failure_message = 1;</code>
-   * @return Whether the wfFailureMessage field is set.
+   * <code>.lh_proto.FailureDefPb failure_def = 1;</code>
+   * @return Whether the failureDef field is set.
    */
   @java.lang.Override
-  public boolean hasWfFailureMessage() {
+  public boolean hasFailureDef() {
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>string wf_failure_message = 1;</code>
-   * @return The wfFailureMessage.
+   * <code>.lh_proto.FailureDefPb failure_def = 1;</code>
+   * @return The failureDef.
    */
   @java.lang.Override
-  public java.lang.String getWfFailureMessage() {
-    java.lang.Object ref = wfFailureMessage_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      wfFailureMessage_ = s;
-      return s;
-    }
+  public io.littlehorse.common.proto.FailureDefPb getFailureDef() {
+    return failureDef_ == null ? io.littlehorse.common.proto.FailureDefPb.getDefaultInstance() : failureDef_;
   }
   /**
-   * <code>string wf_failure_message = 1;</code>
-   * @return The bytes for wfFailureMessage.
+   * <code>.lh_proto.FailureDefPb failure_def = 1;</code>
    */
   @java.lang.Override
-  public com.google.protobuf.ByteString
-      getWfFailureMessageBytes() {
-    java.lang.Object ref = wfFailureMessage_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      wfFailureMessage_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public io.littlehorse.common.proto.FailureDefPbOrBuilder getFailureDefOrBuilder() {
+    return failureDef_ == null ? io.littlehorse.common.proto.FailureDefPb.getDefaultInstance() : failureDef_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -150,7 +136,7 @@ private static final long serialVersionUID = 0L;
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (((bitField0_ & 0x00000001) != 0)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, wfFailureMessage_);
+      output.writeMessage(1, getFailureDef());
     }
     unknownFields.writeTo(output);
   }
@@ -162,7 +148,8 @@ private static final long serialVersionUID = 0L;
 
     size = 0;
     if (((bitField0_ & 0x00000001) != 0)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, wfFailureMessage_);
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(1, getFailureDef());
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -179,10 +166,10 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.common.proto.ExitNodePb other = (io.littlehorse.common.proto.ExitNodePb) obj;
 
-    if (hasWfFailureMessage() != other.hasWfFailureMessage()) return false;
-    if (hasWfFailureMessage()) {
-      if (!getWfFailureMessage()
-          .equals(other.getWfFailureMessage())) return false;
+    if (hasFailureDef() != other.hasFailureDef()) return false;
+    if (hasFailureDef()) {
+      if (!getFailureDef()
+          .equals(other.getFailureDef())) return false;
     }
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
@@ -195,9 +182,9 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (hasWfFailureMessage()) {
-      hash = (37 * hash) + WF_FAILURE_MESSAGE_FIELD_NUMBER;
-      hash = (53 * hash) + getWfFailureMessage().hashCode();
+    if (hasFailureDef()) {
+      hash = (37 * hash) + FAILURE_DEF_FIELD_NUMBER;
+      hash = (53 * hash) + getFailureDef().hashCode();
     }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
@@ -327,12 +314,17 @@ private static final long serialVersionUID = 0L;
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
+        getFailureDefFieldBuilder();
       }
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      wfFailureMessage_ = "";
+      if (failureDefBuilder_ == null) {
+        failureDef_ = null;
+      } else {
+        failureDefBuilder_.clear();
+      }
       bitField0_ = (bitField0_ & ~0x00000001);
       return this;
     }
@@ -363,9 +355,13 @@ private static final long serialVersionUID = 0L;
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000001) != 0)) {
+        if (failureDefBuilder_ == null) {
+          result.failureDef_ = failureDef_;
+        } else {
+          result.failureDef_ = failureDefBuilder_.build();
+        }
         to_bitField0_ |= 0x00000001;
       }
-      result.wfFailureMessage_ = wfFailureMessage_;
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -415,10 +411,8 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.common.proto.ExitNodePb other) {
       if (other == io.littlehorse.common.proto.ExitNodePb.getDefaultInstance()) return this;
-      if (other.hasWfFailureMessage()) {
-        bitField0_ |= 0x00000001;
-        wfFailureMessage_ = other.wfFailureMessage_;
-        onChanged();
+      if (other.hasFailureDef()) {
+        mergeFailureDef(other.getFailureDef());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -450,87 +444,124 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private java.lang.Object wfFailureMessage_ = "";
+    private io.littlehorse.common.proto.FailureDefPb failureDef_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.FailureDefPb, io.littlehorse.common.proto.FailureDefPb.Builder, io.littlehorse.common.proto.FailureDefPbOrBuilder> failureDefBuilder_;
     /**
-     * <code>string wf_failure_message = 1;</code>
-     * @return Whether the wfFailureMessage field is set.
+     * <code>.lh_proto.FailureDefPb failure_def = 1;</code>
+     * @return Whether the failureDef field is set.
      */
-    public boolean hasWfFailureMessage() {
+    public boolean hasFailureDef() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>string wf_failure_message = 1;</code>
-     * @return The wfFailureMessage.
+     * <code>.lh_proto.FailureDefPb failure_def = 1;</code>
+     * @return The failureDef.
      */
-    public java.lang.String getWfFailureMessage() {
-      java.lang.Object ref = wfFailureMessage_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        wfFailureMessage_ = s;
-        return s;
+    public io.littlehorse.common.proto.FailureDefPb getFailureDef() {
+      if (failureDefBuilder_ == null) {
+        return failureDef_ == null ? io.littlehorse.common.proto.FailureDefPb.getDefaultInstance() : failureDef_;
       } else {
-        return (java.lang.String) ref;
+        return failureDefBuilder_.getMessage();
       }
     }
     /**
-     * <code>string wf_failure_message = 1;</code>
-     * @return The bytes for wfFailureMessage.
+     * <code>.lh_proto.FailureDefPb failure_def = 1;</code>
      */
-    public com.google.protobuf.ByteString
-        getWfFailureMessageBytes() {
-      java.lang.Object ref = wfFailureMessage_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        wfFailureMessage_ = b;
-        return b;
+    public Builder setFailureDef(io.littlehorse.common.proto.FailureDefPb value) {
+      if (failureDefBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        failureDef_ = value;
+        onChanged();
       } else {
-        return (com.google.protobuf.ByteString) ref;
+        failureDefBuilder_.setMessage(value);
       }
-    }
-    /**
-     * <code>string wf_failure_message = 1;</code>
-     * @param value The wfFailureMessage to set.
-     * @return This builder for chaining.
-     */
-    public Builder setWfFailureMessage(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-      wfFailureMessage_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string wf_failure_message = 1;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearWfFailureMessage() {
-      bitField0_ = (bitField0_ & ~0x00000001);
-      wfFailureMessage_ = getDefaultInstance().getWfFailureMessage();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string wf_failure_message = 1;</code>
-     * @param value The bytes for wfFailureMessage to set.
-     * @return This builder for chaining.
-     */
-    public Builder setWfFailureMessageBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
       bitField0_ |= 0x00000001;
-      wfFailureMessage_ = value;
-      onChanged();
       return this;
+    }
+    /**
+     * <code>.lh_proto.FailureDefPb failure_def = 1;</code>
+     */
+    public Builder setFailureDef(
+        io.littlehorse.common.proto.FailureDefPb.Builder builderForValue) {
+      if (failureDefBuilder_ == null) {
+        failureDef_ = builderForValue.build();
+        onChanged();
+      } else {
+        failureDefBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000001;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.FailureDefPb failure_def = 1;</code>
+     */
+    public Builder mergeFailureDef(io.littlehorse.common.proto.FailureDefPb value) {
+      if (failureDefBuilder_ == null) {
+        if (((bitField0_ & 0x00000001) != 0) &&
+            failureDef_ != null &&
+            failureDef_ != io.littlehorse.common.proto.FailureDefPb.getDefaultInstance()) {
+          failureDef_ =
+            io.littlehorse.common.proto.FailureDefPb.newBuilder(failureDef_).mergeFrom(value).buildPartial();
+        } else {
+          failureDef_ = value;
+        }
+        onChanged();
+      } else {
+        failureDefBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000001;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.FailureDefPb failure_def = 1;</code>
+     */
+    public Builder clearFailureDef() {
+      if (failureDefBuilder_ == null) {
+        failureDef_ = null;
+        onChanged();
+      } else {
+        failureDefBuilder_.clear();
+      }
+      bitField0_ = (bitField0_ & ~0x00000001);
+      return this;
+    }
+    /**
+     * <code>.lh_proto.FailureDefPb failure_def = 1;</code>
+     */
+    public io.littlehorse.common.proto.FailureDefPb.Builder getFailureDefBuilder() {
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return getFailureDefFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.FailureDefPb failure_def = 1;</code>
+     */
+    public io.littlehorse.common.proto.FailureDefPbOrBuilder getFailureDefOrBuilder() {
+      if (failureDefBuilder_ != null) {
+        return failureDefBuilder_.getMessageOrBuilder();
+      } else {
+        return failureDef_ == null ?
+            io.littlehorse.common.proto.FailureDefPb.getDefaultInstance() : failureDef_;
+      }
+    }
+    /**
+     * <code>.lh_proto.FailureDefPb failure_def = 1;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.FailureDefPb, io.littlehorse.common.proto.FailureDefPb.Builder, io.littlehorse.common.proto.FailureDefPbOrBuilder> 
+        getFailureDefFieldBuilder() {
+      if (failureDefBuilder_ == null) {
+        failureDefBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.FailureDefPb, io.littlehorse.common.proto.FailureDefPb.Builder, io.littlehorse.common.proto.FailureDefPbOrBuilder>(
+                getFailureDef(),
+                getParentForChildren(),
+                isClean());
+        failureDef_ = null;
+      }
+      return failureDefBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

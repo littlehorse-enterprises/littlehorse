@@ -152,7 +152,14 @@ message EntrypointNodePb {
 }
 
 message ExitNodePb {
-    optional string wf_failure_message = 1;
+    optional FailureDefPb failure_def = 1;
+}
+
+message FailureDefPb {
+    string failure_name = 1;
+    TaskResultCodePb failure_code = 2;
+    string message = 3;
+    optional VariableAssignmentPb content = 4;
 }
 
 message VariableDefPb {
@@ -220,6 +227,25 @@ message WfRunPb {
     repeated ThreadRunPb thread_runs = 8;
 
     repeated PendingInterruptPb pending_interrupts = 14;
+}
+
+/*
+Ideally, we would put all the info about the thread result in the ExitRun.
+However, we need to account for the fact that an Exception can be thrown, or
+we can reach some unexpected failure (eg. TASK_FAILURE, VAR_SUB_ERROR, etc) in
+the middle of the TreadRun, so we can't necessarily put the thread result in
+the ExitRun.
+
+We want exception handlers to be able to figure out the reason that a ThreadRun
+failed in order to be able to do appropriate interaction. What we need:
+ - Determine the type of failure
+   - Technical failure of Business failure?
+   - Task failure or Timeout?
+   - Variable substitution logic failure?
+ - Pass any other necessary information needed, such as 
+*/
+message ThreadResultPb {
+
 }
 
 message ThreadRunPb {
@@ -297,12 +323,21 @@ message NodeRunPb {
         StartThreadRunPb start_thread = 18;
         WaitThreadRunPb wait_thread = 19;
     }
+
+    optional FailurePb failure = 20;
+}
+
+message FailurePb {
+    string failure_name = 1;
+    TaskResultCodePb failure_code = 2;
+    string message = 3;
+    optional VariableValuePb content = 4;
 }
 
 message TaskRunPb {
     int32 attempt_number = 1; // Task only
     optional VariableValuePb output = 2;
-    optional bytes log_output = 3;
+    optional VariableValuePb log_output = 3;
 
     optional google.protobuf.Timestamp start_time = 4;
     string task_def_id = 5;
@@ -387,7 +422,7 @@ message TaskResultEventPb {
 
     TaskResultCodePb result_code = 5;
     optional VariableValuePb output = 6;
-    optional bytes log_output = 7;
+    optional VariableValuePb log_output = 7;
 }
 
 message WfRunEventPb {

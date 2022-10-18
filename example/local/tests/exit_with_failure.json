@@ -46,7 +46,17 @@
                 },
                 "exit": {
                     "exit": {
-                        "wfFailureMessage": "orz it failed."
+                        "failureDef": {
+                            "failureName": "big-orzdash",
+                            "message": "We had an orzdash...",
+                            "failureCode": "FAILED",
+                            "content": {
+                                "literalValue": {
+                                    "type": "STR",
+                                    "str": "YIKERZ"
+                                }
+                            }
+                        }
                     }
                 }
             }

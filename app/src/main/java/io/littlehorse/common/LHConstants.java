@@ -1,6 +1,9 @@
 package io.littlehorse.common;
 
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class LHConstants {
 
@@ -40,5 +43,25 @@ public class LHConstants {
 
     public static final String OBJECT_ID_HEADER = "STORE_KEY";
     public static final String EXT_EVT_HANDLER_VAR = "INPUT";
+
+    // For FailureReasons
+    public static final String CHILD_FAILURE = "CHILD_FAILURE";
+    public static final String VAR_SUB_ERROR = "VAR_SUB_ERROR";
+    public static final String VAR_MUTATION_ERROR = "VAR_MUTATION_ERROR";
+    public static final String TIMEOUT = "TIMEOUT";
+    public static final String TASK_FAILURE = "TASK_FAILURE";
+    public static final String VAR_ERROR = "VAR_ERROR";
+    public static final String TASK_ERROR = "TASK_ERROR";
+    public static final Set<String> RESERVED_EXCEPTION_NAMES = new HashSet<>(
+        Arrays.asList(
+            CHILD_FAILURE,
+            VAR_SUB_ERROR,
+            VAR_MUTATION_ERROR,
+            TASK_FAILURE,
+            TIMEOUT,
+            VAR_ERROR,
+            TASK_ERROR
+        )
+    );
 }
 // NOTE: Use m6a.4xlarge

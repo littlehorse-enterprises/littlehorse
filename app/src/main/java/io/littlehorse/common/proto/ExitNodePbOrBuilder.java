@@ -8,19 +8,17 @@ public interface ExitNodePbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string wf_failure_message = 1;</code>
-   * @return Whether the wfFailureMessage field is set.
+   * <code>.lh_proto.FailureDefPb failure_def = 1;</code>
+   * @return Whether the failureDef field is set.
    */
-  boolean hasWfFailureMessage();
+  boolean hasFailureDef();
   /**
-   * <code>string wf_failure_message = 1;</code>
-   * @return The wfFailureMessage.
+   * <code>.lh_proto.FailureDefPb failure_def = 1;</code>
+   * @return The failureDef.
    */
-  java.lang.String getWfFailureMessage();
+  io.littlehorse.common.proto.FailureDefPb getFailureDef();
   /**
-   * <code>string wf_failure_message = 1;</code>
-   * @return The bytes for wfFailureMessage.
+   * <code>.lh_proto.FailureDefPb failure_def = 1;</code>
    */
-  com.google.protobuf.ByteString
-      getWfFailureMessageBytes();
+  io.littlehorse.common.proto.FailureDefPbOrBuilder getFailureDefOrBuilder();
 }

@@ -1,8 +1,10 @@
 package io.littlehorse.common.model.wfrun.subnoderun;
 
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.event.WfRunEvent;
+import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
 import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.VariableValue;
@@ -82,8 +84,11 @@ public class WaitThreadRun extends SubNodeRun<WaitThreadRunPb> {
             return true;
         } else if (toWait.status == LHStatusPb.ERROR) {
             nodeRun.fail(
-                TaskResultCodePb.CHILD_FALIED,
-                "Thread failed: " + toWait.errorMessage,
+                new Failure(
+                    TaskResultCodePb.CHILD_FALIED,
+                    "Thread failed: " + toWait.errorMessage,
+                    LHConstants.CHILD_FAILURE
+                ),
                 time
             );
             return true;
@@ -103,16 +108,22 @@ public class WaitThreadRun extends SubNodeRun<WaitThreadRunPb> {
                     .intVal.intValue();
         } catch (LHVarSubError exn) {
             nodeRun.fail(
-                TaskResultCodePb.VAR_SUB_ERROR,
-                "Failed determining thread run number: " + exn.getMessage(),
+                new Failure(
+                    TaskResultCodePb.VAR_SUB_ERROR,
+                    "Failed determining thread run number: " + exn.getMessage(),
+                    LHConstants.VAR_SUB_ERROR
+                ),
                 time
             );
         }
 
         if (threadRunNumber >= getWfRun().threadRuns.size() || threadRunNumber < 0) {
             nodeRun.fail(
-                TaskResultCodePb.VAR_SUB_ERROR,
-                "Determined threadrunnumber " + threadRunNumber + " is invalid",
+                new Failure(
+                    TaskResultCodePb.VAR_SUB_ERROR,
+                    "Determined threadrunnumber " + threadRunNumber + " is invalid",
+                    LHConstants.VAR_SUB_ERROR
+                ),
                 time
             );
         }
@@ -125,8 +136,13 @@ public class WaitThreadRun extends SubNodeRun<WaitThreadRunPb> {
         while (potentialParent != null) {
             if (potentialParent.number == toWait.number) {
                 nodeRun.fail(
-                    TaskResultCodePb.VAR_SUB_ERROR,
-                    "Determined threadrunnumber " + threadRunNumber + " is a parent!",
+                    new Failure(
+                        TaskResultCodePb.VAR_SUB_ERROR,
+                        "Determined threadrunnumber " +
+                        threadRunNumber +
+                        " is a parent!",
+                        LHConstants.VAR_SUB_ERROR
+                    ),
                     time
                 );
             }

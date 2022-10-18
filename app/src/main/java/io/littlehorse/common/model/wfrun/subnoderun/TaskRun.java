@@ -1,6 +1,5 @@
 package io.littlehorse.common.model.wfrun.subnoderun;
 
-import com.google.protobuf.ByteString;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
@@ -10,6 +9,7 @@ import io.littlehorse.common.model.event.TaskStartedEvent;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.server.Tag;
+import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
@@ -31,7 +31,7 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
 
     public int attemptNumber;
     public VariableValue output;
-    public byte[] logOutput;
+    public VariableValue logOutput;
 
     public Date startTime;
     public String taskDefName;
@@ -47,7 +47,7 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
             output = VariableValue.fromProto(p.getOutputOrBuilder());
         }
         if (p.hasLogOutput()) {
-            logOutput = p.getLogOutput().toByteArray();
+            logOutput = VariableValue.fromProto(p.getLogOutput());
         }
 
         if (p.hasStartTime()) {
@@ -66,7 +66,7 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
             out.setOutput(output.toProto());
         }
         if (logOutput != null) {
-            out.setLogOutput(ByteString.copyFrom(logOutput));
+            out.setLogOutput(logOutput.toProto());
         }
         if (startTime != null) {
             out.setStartTime(LHUtil.fromDate(startTime));
@@ -133,8 +133,11 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
         } catch (LHVarSubError exn) {
             // make a call to `ThreadRun::fail()`
             nodeRun.fail(
-                TaskResultCodePb.VAR_MUTATION_ERROR,
-                "Failed mutating variables upon completion: " + exn.getMessage(),
+                new Failure(
+                    TaskResultCodePb.VAR_MUTATION_ERROR,
+                    "Failed mutating variables upon completion: " + exn.getMessage(),
+                    LHConstants.VAR_MUTATION_ERROR
+                ),
                 time
             );
             return;
@@ -228,13 +231,30 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
 
                 break;
             case TIMEOUT:
+                if (shouldRetry()) {
+                    nodeRun.doRetry(ce.resultCode, ce.resultCode.toString(), ce.time);
+                } else {
+                    nodeRun.fail(
+                        new Failure(
+                            TaskResultCodePb.TIMEOUT,
+                            "Task Timed Out: " + ce.resultCode,
+                            LHConstants.TIMEOUT
+                        ),
+                        ce.time
+                    );
+                }
+                break;
             case FAILED:
                 if (shouldRetry()) {
                     nodeRun.doRetry(ce.resultCode, ce.resultCode.toString(), ce.time);
                 } else {
                     nodeRun.fail(
-                        ce.resultCode,
-                        "Node failed: " + ce.resultCode,
+                        new Failure(
+                            TaskResultCodePb.TIMEOUT,
+                            "Task Failed: " + ce.resultCode,
+                            LHConstants.TIMEOUT,
+                            ce.stderr
+                        ),
                         ce.time
                     );
                 }

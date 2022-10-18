@@ -51,6 +51,8 @@ public class NodeRun extends GETable<NodeRunPb> {
     public TaskRun taskRun;
     public ExternalEventRun externalEventRun;
 
+    public Failure failure;
+
     @JsonIgnore
     public ExitRun exitRun;
 
@@ -150,6 +152,10 @@ public class NodeRun extends GETable<NodeRunPb> {
                 throw new RuntimeException("Not possible");
         }
 
+        if (proto.hasFailure()) {
+            failure = Failure.fromProto(proto.getFailureOrBuilder());
+        }
+
         getSubNodeRun().setNodeRun(this);
     }
 
@@ -245,6 +251,10 @@ public class NodeRun extends GETable<NodeRunPb> {
                 throw new RuntimeException("Not possible");
         }
 
+        if (failure != null) {
+            out.setFailure(failure.toProto());
+        }
+
         return out;
     }
 
@@ -317,11 +327,19 @@ public class NodeRun extends GETable<NodeRunPb> {
         threadRun.completeCurrentNode(output, time);
     }
 
-    public void fail(TaskResultCodePb resultCode, String message, Date time) {
+    // public void fail(TaskResultCodePb resultCode, String message, Date time) {
+    //     endTime = time;
+    //     this.resultCode = resultCode;
+    //     this.errorMessage = message;
+    //     threadRun.fail(resultCode, message, time);
+    // }
+
+    public void fail(Failure failure, Date time) {
+        this.failure = failure;
         endTime = time;
-        this.resultCode = resultCode;
-        this.errorMessage = message;
-        threadRun.fail(resultCode, message, time);
+        resultCode = failure.failureCode;
+        errorMessage = failure.message;
+        threadRun.fail(failure.failureCode, failure.message, time);
     }
 
     public void doRetry(TaskResultCodePb resultCode, String message, Date time) {
