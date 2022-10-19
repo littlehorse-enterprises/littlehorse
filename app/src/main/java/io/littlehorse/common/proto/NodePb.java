@@ -18,7 +18,7 @@ private static final long serialVersionUID = 0L;
   private NodePb() {
     outgoingEdges_ = java.util.Collections.emptyList();
     variableMutations_ = java.util.Collections.emptyList();
-    exceptionHandlers_ = java.util.Collections.emptyList();
+    failureHandlers_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -169,11 +169,11 @@ private static final long serialVersionUID = 0L;
           }
           case 90: {
             if (!((mutable_bitField0_ & 0x00000004) != 0)) {
-              exceptionHandlers_ = new java.util.ArrayList<io.littlehorse.common.proto.ExceptionHandlerPb>();
+              failureHandlers_ = new java.util.ArrayList<io.littlehorse.common.proto.FailureHandlerDefPb>();
               mutable_bitField0_ |= 0x00000004;
             }
-            exceptionHandlers_.add(
-                input.readMessage(io.littlehorse.common.proto.ExceptionHandlerPb.parser(), extensionRegistry));
+            failureHandlers_.add(
+                input.readMessage(io.littlehorse.common.proto.FailureHandlerDefPb.parser(), extensionRegistry));
             break;
           }
           default: {
@@ -198,7 +198,7 @@ private static final long serialVersionUID = 0L;
         variableMutations_ = java.util.Collections.unmodifiableList(variableMutations_);
       }
       if (((mutable_bitField0_ & 0x00000004) != 0)) {
-        exceptionHandlers_ = java.util.Collections.unmodifiableList(exceptionHandlers_);
+        failureHandlers_ = java.util.Collections.unmodifiableList(failureHandlers_);
       }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
@@ -558,44 +558,44 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.WaitForThreadNodePb.getDefaultInstance();
   }
 
-  public static final int EXCEPTION_HANDLERS_FIELD_NUMBER = 11;
-  private java.util.List<io.littlehorse.common.proto.ExceptionHandlerPb> exceptionHandlers_;
+  public static final int FAILURE_HANDLERS_FIELD_NUMBER = 11;
+  private java.util.List<io.littlehorse.common.proto.FailureHandlerDefPb> failureHandlers_;
   /**
-   * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
    */
   @java.lang.Override
-  public java.util.List<io.littlehorse.common.proto.ExceptionHandlerPb> getExceptionHandlersList() {
-    return exceptionHandlers_;
+  public java.util.List<io.littlehorse.common.proto.FailureHandlerDefPb> getFailureHandlersList() {
+    return failureHandlers_;
   }
   /**
-   * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
    */
   @java.lang.Override
-  public java.util.List<? extends io.littlehorse.common.proto.ExceptionHandlerPbOrBuilder> 
-      getExceptionHandlersOrBuilderList() {
-    return exceptionHandlers_;
+  public java.util.List<? extends io.littlehorse.common.proto.FailureHandlerDefPbOrBuilder> 
+      getFailureHandlersOrBuilderList() {
+    return failureHandlers_;
   }
   /**
-   * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
    */
   @java.lang.Override
-  public int getExceptionHandlersCount() {
-    return exceptionHandlers_.size();
+  public int getFailureHandlersCount() {
+    return failureHandlers_.size();
   }
   /**
-   * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.ExceptionHandlerPb getExceptionHandlers(int index) {
-    return exceptionHandlers_.get(index);
+  public io.littlehorse.common.proto.FailureHandlerDefPb getFailureHandlers(int index) {
+    return failureHandlers_.get(index);
   }
   /**
-   * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.ExceptionHandlerPbOrBuilder getExceptionHandlersOrBuilder(
+  public io.littlehorse.common.proto.FailureHandlerDefPbOrBuilder getFailureHandlersOrBuilder(
       int index) {
-    return exceptionHandlers_.get(index);
+    return failureHandlers_.get(index);
   }
 
   private byte memoizedIsInitialized = -1;
@@ -639,8 +639,8 @@ private static final long serialVersionUID = 0L;
     if (nodeCase_ == 10) {
       output.writeMessage(10, (io.littlehorse.common.proto.WaitForThreadNodePb) node_);
     }
-    for (int i = 0; i < exceptionHandlers_.size(); i++) {
-      output.writeMessage(11, exceptionHandlers_.get(i));
+    for (int i = 0; i < failureHandlers_.size(); i++) {
+      output.writeMessage(11, failureHandlers_.get(i));
     }
     unknownFields.writeTo(output);
   }
@@ -687,9 +687,9 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(10, (io.littlehorse.common.proto.WaitForThreadNodePb) node_);
     }
-    for (int i = 0; i < exceptionHandlers_.size(); i++) {
+    for (int i = 0; i < failureHandlers_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(11, exceptionHandlers_.get(i));
+        .computeMessageSize(11, failureHandlers_.get(i));
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -715,8 +715,8 @@ private static final long serialVersionUID = 0L;
       if (!getOutputSchema()
           .equals(other.getOutputSchema())) return false;
     }
-    if (!getExceptionHandlersList()
-        .equals(other.getExceptionHandlersList())) return false;
+    if (!getFailureHandlersList()
+        .equals(other.getFailureHandlersList())) return false;
     if (!getNodeCase().equals(other.getNodeCase())) return false;
     switch (nodeCase_) {
       case 5:
@@ -769,9 +769,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + OUTPUT_SCHEMA_FIELD_NUMBER;
       hash = (53 * hash) + getOutputSchema().hashCode();
     }
-    if (getExceptionHandlersCount() > 0) {
-      hash = (37 * hash) + EXCEPTION_HANDLERS_FIELD_NUMBER;
-      hash = (53 * hash) + getExceptionHandlersList().hashCode();
+    if (getFailureHandlersCount() > 0) {
+      hash = (37 * hash) + FAILURE_HANDLERS_FIELD_NUMBER;
+      hash = (53 * hash) + getFailureHandlersList().hashCode();
     }
     switch (nodeCase_) {
       case 5:
@@ -931,7 +931,7 @@ private static final long serialVersionUID = 0L;
               .alwaysUseFieldBuilders) {
         getOutgoingEdgesFieldBuilder();
         getVariableMutationsFieldBuilder();
-        getExceptionHandlersFieldBuilder();
+        getFailureHandlersFieldBuilder();
       }
     }
     @java.lang.Override
@@ -955,11 +955,11 @@ private static final long serialVersionUID = 0L;
         outputSchema_ = null;
         outputSchemaBuilder_ = null;
       }
-      if (exceptionHandlersBuilder_ == null) {
-        exceptionHandlers_ = java.util.Collections.emptyList();
+      if (failureHandlersBuilder_ == null) {
+        failureHandlers_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000004);
       } else {
-        exceptionHandlersBuilder_.clear();
+        failureHandlersBuilder_.clear();
       }
       nodeCase_ = 0;
       node_ = null;
@@ -1055,14 +1055,14 @@ private static final long serialVersionUID = 0L;
           result.node_ = waitForThreadBuilder_.build();
         }
       }
-      if (exceptionHandlersBuilder_ == null) {
+      if (failureHandlersBuilder_ == null) {
         if (((bitField0_ & 0x00000004) != 0)) {
-          exceptionHandlers_ = java.util.Collections.unmodifiableList(exceptionHandlers_);
+          failureHandlers_ = java.util.Collections.unmodifiableList(failureHandlers_);
           bitField0_ = (bitField0_ & ~0x00000004);
         }
-        result.exceptionHandlers_ = exceptionHandlers_;
+        result.failureHandlers_ = failureHandlers_;
       } else {
-        result.exceptionHandlers_ = exceptionHandlersBuilder_.build();
+        result.failureHandlers_ = failureHandlersBuilder_.build();
       }
       result.nodeCase_ = nodeCase_;
       onBuilt();
@@ -1168,29 +1168,29 @@ private static final long serialVersionUID = 0L;
       if (other.hasOutputSchema()) {
         mergeOutputSchema(other.getOutputSchema());
       }
-      if (exceptionHandlersBuilder_ == null) {
-        if (!other.exceptionHandlers_.isEmpty()) {
-          if (exceptionHandlers_.isEmpty()) {
-            exceptionHandlers_ = other.exceptionHandlers_;
+      if (failureHandlersBuilder_ == null) {
+        if (!other.failureHandlers_.isEmpty()) {
+          if (failureHandlers_.isEmpty()) {
+            failureHandlers_ = other.failureHandlers_;
             bitField0_ = (bitField0_ & ~0x00000004);
           } else {
-            ensureExceptionHandlersIsMutable();
-            exceptionHandlers_.addAll(other.exceptionHandlers_);
+            ensureFailureHandlersIsMutable();
+            failureHandlers_.addAll(other.failureHandlers_);
           }
           onChanged();
         }
       } else {
-        if (!other.exceptionHandlers_.isEmpty()) {
-          if (exceptionHandlersBuilder_.isEmpty()) {
-            exceptionHandlersBuilder_.dispose();
-            exceptionHandlersBuilder_ = null;
-            exceptionHandlers_ = other.exceptionHandlers_;
+        if (!other.failureHandlers_.isEmpty()) {
+          if (failureHandlersBuilder_.isEmpty()) {
+            failureHandlersBuilder_.dispose();
+            failureHandlersBuilder_ = null;
+            failureHandlers_ = other.failureHandlers_;
             bitField0_ = (bitField0_ & ~0x00000004);
-            exceptionHandlersBuilder_ = 
+            failureHandlersBuilder_ = 
               com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                 getExceptionHandlersFieldBuilder() : null;
+                 getFailureHandlersFieldBuilder() : null;
           } else {
-            exceptionHandlersBuilder_.addAllMessages(other.exceptionHandlers_);
+            failureHandlersBuilder_.addAllMessages(other.failureHandlers_);
           }
         }
       }
@@ -2713,244 +2713,244 @@ private static final long serialVersionUID = 0L;
       return waitForThreadBuilder_;
     }
 
-    private java.util.List<io.littlehorse.common.proto.ExceptionHandlerPb> exceptionHandlers_ =
+    private java.util.List<io.littlehorse.common.proto.FailureHandlerDefPb> failureHandlers_ =
       java.util.Collections.emptyList();
-    private void ensureExceptionHandlersIsMutable() {
+    private void ensureFailureHandlersIsMutable() {
       if (!((bitField0_ & 0x00000004) != 0)) {
-        exceptionHandlers_ = new java.util.ArrayList<io.littlehorse.common.proto.ExceptionHandlerPb>(exceptionHandlers_);
+        failureHandlers_ = new java.util.ArrayList<io.littlehorse.common.proto.FailureHandlerDefPb>(failureHandlers_);
         bitField0_ |= 0x00000004;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.common.proto.ExceptionHandlerPb, io.littlehorse.common.proto.ExceptionHandlerPb.Builder, io.littlehorse.common.proto.ExceptionHandlerPbOrBuilder> exceptionHandlersBuilder_;
+        io.littlehorse.common.proto.FailureHandlerDefPb, io.littlehorse.common.proto.FailureHandlerDefPb.Builder, io.littlehorse.common.proto.FailureHandlerDefPbOrBuilder> failureHandlersBuilder_;
 
     /**
-     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
      */
-    public java.util.List<io.littlehorse.common.proto.ExceptionHandlerPb> getExceptionHandlersList() {
-      if (exceptionHandlersBuilder_ == null) {
-        return java.util.Collections.unmodifiableList(exceptionHandlers_);
+    public java.util.List<io.littlehorse.common.proto.FailureHandlerDefPb> getFailureHandlersList() {
+      if (failureHandlersBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(failureHandlers_);
       } else {
-        return exceptionHandlersBuilder_.getMessageList();
+        return failureHandlersBuilder_.getMessageList();
       }
     }
     /**
-     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
      */
-    public int getExceptionHandlersCount() {
-      if (exceptionHandlersBuilder_ == null) {
-        return exceptionHandlers_.size();
+    public int getFailureHandlersCount() {
+      if (failureHandlersBuilder_ == null) {
+        return failureHandlers_.size();
       } else {
-        return exceptionHandlersBuilder_.getCount();
+        return failureHandlersBuilder_.getCount();
       }
     }
     /**
-     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
      */
-    public io.littlehorse.common.proto.ExceptionHandlerPb getExceptionHandlers(int index) {
-      if (exceptionHandlersBuilder_ == null) {
-        return exceptionHandlers_.get(index);
+    public io.littlehorse.common.proto.FailureHandlerDefPb getFailureHandlers(int index) {
+      if (failureHandlersBuilder_ == null) {
+        return failureHandlers_.get(index);
       } else {
-        return exceptionHandlersBuilder_.getMessage(index);
+        return failureHandlersBuilder_.getMessage(index);
       }
     }
     /**
-     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
      */
-    public Builder setExceptionHandlers(
-        int index, io.littlehorse.common.proto.ExceptionHandlerPb value) {
-      if (exceptionHandlersBuilder_ == null) {
+    public Builder setFailureHandlers(
+        int index, io.littlehorse.common.proto.FailureHandlerDefPb value) {
+      if (failureHandlersBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        ensureExceptionHandlersIsMutable();
-        exceptionHandlers_.set(index, value);
+        ensureFailureHandlersIsMutable();
+        failureHandlers_.set(index, value);
         onChanged();
       } else {
-        exceptionHandlersBuilder_.setMessage(index, value);
+        failureHandlersBuilder_.setMessage(index, value);
       }
       return this;
     }
     /**
-     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
      */
-    public Builder setExceptionHandlers(
-        int index, io.littlehorse.common.proto.ExceptionHandlerPb.Builder builderForValue) {
-      if (exceptionHandlersBuilder_ == null) {
-        ensureExceptionHandlersIsMutable();
-        exceptionHandlers_.set(index, builderForValue.build());
+    public Builder setFailureHandlers(
+        int index, io.littlehorse.common.proto.FailureHandlerDefPb.Builder builderForValue) {
+      if (failureHandlersBuilder_ == null) {
+        ensureFailureHandlersIsMutable();
+        failureHandlers_.set(index, builderForValue.build());
         onChanged();
       } else {
-        exceptionHandlersBuilder_.setMessage(index, builderForValue.build());
+        failureHandlersBuilder_.setMessage(index, builderForValue.build());
       }
       return this;
     }
     /**
-     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
      */
-    public Builder addExceptionHandlers(io.littlehorse.common.proto.ExceptionHandlerPb value) {
-      if (exceptionHandlersBuilder_ == null) {
+    public Builder addFailureHandlers(io.littlehorse.common.proto.FailureHandlerDefPb value) {
+      if (failureHandlersBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        ensureExceptionHandlersIsMutable();
-        exceptionHandlers_.add(value);
+        ensureFailureHandlersIsMutable();
+        failureHandlers_.add(value);
         onChanged();
       } else {
-        exceptionHandlersBuilder_.addMessage(value);
+        failureHandlersBuilder_.addMessage(value);
       }
       return this;
     }
     /**
-     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
      */
-    public Builder addExceptionHandlers(
-        int index, io.littlehorse.common.proto.ExceptionHandlerPb value) {
-      if (exceptionHandlersBuilder_ == null) {
+    public Builder addFailureHandlers(
+        int index, io.littlehorse.common.proto.FailureHandlerDefPb value) {
+      if (failureHandlersBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        ensureExceptionHandlersIsMutable();
-        exceptionHandlers_.add(index, value);
+        ensureFailureHandlersIsMutable();
+        failureHandlers_.add(index, value);
         onChanged();
       } else {
-        exceptionHandlersBuilder_.addMessage(index, value);
+        failureHandlersBuilder_.addMessage(index, value);
       }
       return this;
     }
     /**
-     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
      */
-    public Builder addExceptionHandlers(
-        io.littlehorse.common.proto.ExceptionHandlerPb.Builder builderForValue) {
-      if (exceptionHandlersBuilder_ == null) {
-        ensureExceptionHandlersIsMutable();
-        exceptionHandlers_.add(builderForValue.build());
+    public Builder addFailureHandlers(
+        io.littlehorse.common.proto.FailureHandlerDefPb.Builder builderForValue) {
+      if (failureHandlersBuilder_ == null) {
+        ensureFailureHandlersIsMutable();
+        failureHandlers_.add(builderForValue.build());
         onChanged();
       } else {
-        exceptionHandlersBuilder_.addMessage(builderForValue.build());
+        failureHandlersBuilder_.addMessage(builderForValue.build());
       }
       return this;
     }
     /**
-     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
      */
-    public Builder addExceptionHandlers(
-        int index, io.littlehorse.common.proto.ExceptionHandlerPb.Builder builderForValue) {
-      if (exceptionHandlersBuilder_ == null) {
-        ensureExceptionHandlersIsMutable();
-        exceptionHandlers_.add(index, builderForValue.build());
+    public Builder addFailureHandlers(
+        int index, io.littlehorse.common.proto.FailureHandlerDefPb.Builder builderForValue) {
+      if (failureHandlersBuilder_ == null) {
+        ensureFailureHandlersIsMutable();
+        failureHandlers_.add(index, builderForValue.build());
         onChanged();
       } else {
-        exceptionHandlersBuilder_.addMessage(index, builderForValue.build());
+        failureHandlersBuilder_.addMessage(index, builderForValue.build());
       }
       return this;
     }
     /**
-     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
      */
-    public Builder addAllExceptionHandlers(
-        java.lang.Iterable<? extends io.littlehorse.common.proto.ExceptionHandlerPb> values) {
-      if (exceptionHandlersBuilder_ == null) {
-        ensureExceptionHandlersIsMutable();
+    public Builder addAllFailureHandlers(
+        java.lang.Iterable<? extends io.littlehorse.common.proto.FailureHandlerDefPb> values) {
+      if (failureHandlersBuilder_ == null) {
+        ensureFailureHandlersIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, exceptionHandlers_);
+            values, failureHandlers_);
         onChanged();
       } else {
-        exceptionHandlersBuilder_.addAllMessages(values);
+        failureHandlersBuilder_.addAllMessages(values);
       }
       return this;
     }
     /**
-     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
      */
-    public Builder clearExceptionHandlers() {
-      if (exceptionHandlersBuilder_ == null) {
-        exceptionHandlers_ = java.util.Collections.emptyList();
+    public Builder clearFailureHandlers() {
+      if (failureHandlersBuilder_ == null) {
+        failureHandlers_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000004);
         onChanged();
       } else {
-        exceptionHandlersBuilder_.clear();
+        failureHandlersBuilder_.clear();
       }
       return this;
     }
     /**
-     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
      */
-    public Builder removeExceptionHandlers(int index) {
-      if (exceptionHandlersBuilder_ == null) {
-        ensureExceptionHandlersIsMutable();
-        exceptionHandlers_.remove(index);
+    public Builder removeFailureHandlers(int index) {
+      if (failureHandlersBuilder_ == null) {
+        ensureFailureHandlersIsMutable();
+        failureHandlers_.remove(index);
         onChanged();
       } else {
-        exceptionHandlersBuilder_.remove(index);
+        failureHandlersBuilder_.remove(index);
       }
       return this;
     }
     /**
-     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
      */
-    public io.littlehorse.common.proto.ExceptionHandlerPb.Builder getExceptionHandlersBuilder(
+    public io.littlehorse.common.proto.FailureHandlerDefPb.Builder getFailureHandlersBuilder(
         int index) {
-      return getExceptionHandlersFieldBuilder().getBuilder(index);
+      return getFailureHandlersFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
      */
-    public io.littlehorse.common.proto.ExceptionHandlerPbOrBuilder getExceptionHandlersOrBuilder(
+    public io.littlehorse.common.proto.FailureHandlerDefPbOrBuilder getFailureHandlersOrBuilder(
         int index) {
-      if (exceptionHandlersBuilder_ == null) {
-        return exceptionHandlers_.get(index);  } else {
-        return exceptionHandlersBuilder_.getMessageOrBuilder(index);
+      if (failureHandlersBuilder_ == null) {
+        return failureHandlers_.get(index);  } else {
+        return failureHandlersBuilder_.getMessageOrBuilder(index);
       }
     }
     /**
-     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
      */
-    public java.util.List<? extends io.littlehorse.common.proto.ExceptionHandlerPbOrBuilder> 
-         getExceptionHandlersOrBuilderList() {
-      if (exceptionHandlersBuilder_ != null) {
-        return exceptionHandlersBuilder_.getMessageOrBuilderList();
+    public java.util.List<? extends io.littlehorse.common.proto.FailureHandlerDefPbOrBuilder> 
+         getFailureHandlersOrBuilderList() {
+      if (failureHandlersBuilder_ != null) {
+        return failureHandlersBuilder_.getMessageOrBuilderList();
       } else {
-        return java.util.Collections.unmodifiableList(exceptionHandlers_);
+        return java.util.Collections.unmodifiableList(failureHandlers_);
       }
     }
     /**
-     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
      */
-    public io.littlehorse.common.proto.ExceptionHandlerPb.Builder addExceptionHandlersBuilder() {
-      return getExceptionHandlersFieldBuilder().addBuilder(
-          io.littlehorse.common.proto.ExceptionHandlerPb.getDefaultInstance());
+    public io.littlehorse.common.proto.FailureHandlerDefPb.Builder addFailureHandlersBuilder() {
+      return getFailureHandlersFieldBuilder().addBuilder(
+          io.littlehorse.common.proto.FailureHandlerDefPb.getDefaultInstance());
     }
     /**
-     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
      */
-    public io.littlehorse.common.proto.ExceptionHandlerPb.Builder addExceptionHandlersBuilder(
+    public io.littlehorse.common.proto.FailureHandlerDefPb.Builder addFailureHandlersBuilder(
         int index) {
-      return getExceptionHandlersFieldBuilder().addBuilder(
-          index, io.littlehorse.common.proto.ExceptionHandlerPb.getDefaultInstance());
+      return getFailureHandlersFieldBuilder().addBuilder(
+          index, io.littlehorse.common.proto.FailureHandlerDefPb.getDefaultInstance());
     }
     /**
-     * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
      */
-    public java.util.List<io.littlehorse.common.proto.ExceptionHandlerPb.Builder> 
-         getExceptionHandlersBuilderList() {
-      return getExceptionHandlersFieldBuilder().getBuilderList();
+    public java.util.List<io.littlehorse.common.proto.FailureHandlerDefPb.Builder> 
+         getFailureHandlersBuilderList() {
+      return getFailureHandlersFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.common.proto.ExceptionHandlerPb, io.littlehorse.common.proto.ExceptionHandlerPb.Builder, io.littlehorse.common.proto.ExceptionHandlerPbOrBuilder> 
-        getExceptionHandlersFieldBuilder() {
-      if (exceptionHandlersBuilder_ == null) {
-        exceptionHandlersBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            io.littlehorse.common.proto.ExceptionHandlerPb, io.littlehorse.common.proto.ExceptionHandlerPb.Builder, io.littlehorse.common.proto.ExceptionHandlerPbOrBuilder>(
-                exceptionHandlers_,
+        io.littlehorse.common.proto.FailureHandlerDefPb, io.littlehorse.common.proto.FailureHandlerDefPb.Builder, io.littlehorse.common.proto.FailureHandlerDefPbOrBuilder> 
+        getFailureHandlersFieldBuilder() {
+      if (failureHandlersBuilder_ == null) {
+        failureHandlersBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            io.littlehorse.common.proto.FailureHandlerDefPb, io.littlehorse.common.proto.FailureHandlerDefPb.Builder, io.littlehorse.common.proto.FailureHandlerDefPbOrBuilder>(
+                failureHandlers_,
                 ((bitField0_ & 0x00000004) != 0),
                 getParentForChildren(),
                 isClean());
-        exceptionHandlers_ = null;
+        failureHandlers_ = null;
       }
-      return exceptionHandlersBuilder_;
+      return failureHandlersBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

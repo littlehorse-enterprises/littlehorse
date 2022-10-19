@@ -2,7 +2,9 @@ package io.littlehorse.common.model.wfrun.subnoderun;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.event.WfRunEvent;
+import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
 import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.proto.ExitRunPb;
@@ -93,8 +95,11 @@ public class ExitRun extends SubNodeRun<ExitRunPb> {
             }
         } else {
             nodeRun.threadRun.fail(
-                TaskResultCodePb.CHILD_FALIED,
-                "Child thread (or threads) failed:" + failedChildren,
+                new Failure(
+                    TaskResultCodePb.CHILD_FALIED,
+                    "Child thread (or threads) failed:" + failedChildren,
+                    LHConstants.CHILD_FAILURE
+                ),
                 time
             );
         }

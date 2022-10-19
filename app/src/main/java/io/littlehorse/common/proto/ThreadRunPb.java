@@ -171,6 +171,19 @@ private static final long serialVersionUID = 0L;
             interruptTriggerId_ = s;
             break;
           }
+          case 122: {
+            io.littlehorse.common.proto.FailureBeingHandledPb.Builder subBuilder = null;
+            if (((bitField0_ & 0x00000020) != 0)) {
+              subBuilder = failureBeingHandled_.toBuilder();
+            }
+            failureBeingHandled_ = input.readMessage(io.littlehorse.common.proto.FailureBeingHandledPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom(failureBeingHandled_);
+              failureBeingHandled_ = subBuilder.buildPartial();
+            }
+            bitField0_ |= 0x00000020;
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -622,6 +635,32 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int FAILURE_BEING_HANDLED_FIELD_NUMBER = 15;
+  private io.littlehorse.common.proto.FailureBeingHandledPb failureBeingHandled_;
+  /**
+   * <code>.lh_proto.FailureBeingHandledPb failure_being_handled = 15;</code>
+   * @return Whether the failureBeingHandled field is set.
+   */
+  @java.lang.Override
+  public boolean hasFailureBeingHandled() {
+    return ((bitField0_ & 0x00000020) != 0);
+  }
+  /**
+   * <code>.lh_proto.FailureBeingHandledPb failure_being_handled = 15;</code>
+   * @return The failureBeingHandled.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.FailureBeingHandledPb getFailureBeingHandled() {
+    return failureBeingHandled_ == null ? io.littlehorse.common.proto.FailureBeingHandledPb.getDefaultInstance() : failureBeingHandled_;
+  }
+  /**
+   * <code>.lh_proto.FailureBeingHandledPb failure_being_handled = 15;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.FailureBeingHandledPbOrBuilder getFailureBeingHandledOrBuilder() {
+    return failureBeingHandled_ == null ? io.littlehorse.common.proto.FailureBeingHandledPb.getDefaultInstance() : failureBeingHandled_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -682,6 +721,9 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000010) != 0)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 14, interruptTriggerId_);
+    }
+    if (((bitField0_ & 0x00000020) != 0)) {
+      output.writeMessage(15, getFailureBeingHandled());
     }
     unknownFields.writeTo(output);
   }
@@ -753,6 +795,10 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000010) != 0)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(14, interruptTriggerId_);
     }
+    if (((bitField0_ & 0x00000020) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(15, getFailureBeingHandled());
+    }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
@@ -812,6 +858,11 @@ private static final long serialVersionUID = 0L;
       if (!getInterruptTriggerId()
           .equals(other.getInterruptTriggerId())) return false;
     }
+    if (hasFailureBeingHandled() != other.hasFailureBeingHandled()) return false;
+    if (hasFailureBeingHandled()) {
+      if (!getFailureBeingHandled()
+          .equals(other.getFailureBeingHandled())) return false;
+    }
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -866,6 +917,10 @@ private static final long serialVersionUID = 0L;
     if (hasInterruptTriggerId()) {
       hash = (37 * hash) + INTERRUPT_TRIGGER_ID_FIELD_NUMBER;
       hash = (53 * hash) + getInterruptTriggerId().hashCode();
+    }
+    if (hasFailureBeingHandled()) {
+      hash = (37 * hash) + FAILURE_BEING_HANDLED_FIELD_NUMBER;
+      hash = (53 * hash) + getFailureBeingHandled().hashCode();
     }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
@@ -997,6 +1052,7 @@ private static final long serialVersionUID = 0L;
               .alwaysUseFieldBuilders) {
         getEndTimeFieldBuilder();
         getHaltReasonsFieldBuilder();
+        getFailureBeingHandledFieldBuilder();
       }
     }
     @java.lang.Override
@@ -1042,6 +1098,12 @@ private static final long serialVersionUID = 0L;
       }
       interruptTriggerId_ = "";
       bitField0_ = (bitField0_ & ~0x00000040);
+      if (failureBeingHandledBuilder_ == null) {
+        failureBeingHandled_ = null;
+      } else {
+        failureBeingHandledBuilder_.clear();
+      }
+      bitField0_ = (bitField0_ & ~0x00000080);
       return this;
     }
 
@@ -1119,6 +1181,14 @@ private static final long serialVersionUID = 0L;
         to_bitField0_ |= 0x00000010;
       }
       result.interruptTriggerId_ = interruptTriggerId_;
+      if (((from_bitField0_ & 0x00000080) != 0)) {
+        if (failureBeingHandledBuilder_ == null) {
+          result.failureBeingHandled_ = failureBeingHandled_;
+        } else {
+          result.failureBeingHandled_ = failureBeingHandledBuilder_.build();
+        }
+        to_bitField0_ |= 0x00000020;
+      }
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -1246,6 +1316,9 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000040;
         interruptTriggerId_ = other.interruptTriggerId_;
         onChanged();
+      }
+      if (other.hasFailureBeingHandled()) {
+        mergeFailureBeingHandled(other.getFailureBeingHandled());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -2443,6 +2516,126 @@ private static final long serialVersionUID = 0L;
       interruptTriggerId_ = value;
       onChanged();
       return this;
+    }
+
+    private io.littlehorse.common.proto.FailureBeingHandledPb failureBeingHandled_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.FailureBeingHandledPb, io.littlehorse.common.proto.FailureBeingHandledPb.Builder, io.littlehorse.common.proto.FailureBeingHandledPbOrBuilder> failureBeingHandledBuilder_;
+    /**
+     * <code>.lh_proto.FailureBeingHandledPb failure_being_handled = 15;</code>
+     * @return Whether the failureBeingHandled field is set.
+     */
+    public boolean hasFailureBeingHandled() {
+      return ((bitField0_ & 0x00000080) != 0);
+    }
+    /**
+     * <code>.lh_proto.FailureBeingHandledPb failure_being_handled = 15;</code>
+     * @return The failureBeingHandled.
+     */
+    public io.littlehorse.common.proto.FailureBeingHandledPb getFailureBeingHandled() {
+      if (failureBeingHandledBuilder_ == null) {
+        return failureBeingHandled_ == null ? io.littlehorse.common.proto.FailureBeingHandledPb.getDefaultInstance() : failureBeingHandled_;
+      } else {
+        return failureBeingHandledBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.lh_proto.FailureBeingHandledPb failure_being_handled = 15;</code>
+     */
+    public Builder setFailureBeingHandled(io.littlehorse.common.proto.FailureBeingHandledPb value) {
+      if (failureBeingHandledBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        failureBeingHandled_ = value;
+        onChanged();
+      } else {
+        failureBeingHandledBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000080;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.FailureBeingHandledPb failure_being_handled = 15;</code>
+     */
+    public Builder setFailureBeingHandled(
+        io.littlehorse.common.proto.FailureBeingHandledPb.Builder builderForValue) {
+      if (failureBeingHandledBuilder_ == null) {
+        failureBeingHandled_ = builderForValue.build();
+        onChanged();
+      } else {
+        failureBeingHandledBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000080;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.FailureBeingHandledPb failure_being_handled = 15;</code>
+     */
+    public Builder mergeFailureBeingHandled(io.littlehorse.common.proto.FailureBeingHandledPb value) {
+      if (failureBeingHandledBuilder_ == null) {
+        if (((bitField0_ & 0x00000080) != 0) &&
+            failureBeingHandled_ != null &&
+            failureBeingHandled_ != io.littlehorse.common.proto.FailureBeingHandledPb.getDefaultInstance()) {
+          failureBeingHandled_ =
+            io.littlehorse.common.proto.FailureBeingHandledPb.newBuilder(failureBeingHandled_).mergeFrom(value).buildPartial();
+        } else {
+          failureBeingHandled_ = value;
+        }
+        onChanged();
+      } else {
+        failureBeingHandledBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000080;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.FailureBeingHandledPb failure_being_handled = 15;</code>
+     */
+    public Builder clearFailureBeingHandled() {
+      if (failureBeingHandledBuilder_ == null) {
+        failureBeingHandled_ = null;
+        onChanged();
+      } else {
+        failureBeingHandledBuilder_.clear();
+      }
+      bitField0_ = (bitField0_ & ~0x00000080);
+      return this;
+    }
+    /**
+     * <code>.lh_proto.FailureBeingHandledPb failure_being_handled = 15;</code>
+     */
+    public io.littlehorse.common.proto.FailureBeingHandledPb.Builder getFailureBeingHandledBuilder() {
+      bitField0_ |= 0x00000080;
+      onChanged();
+      return getFailureBeingHandledFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.FailureBeingHandledPb failure_being_handled = 15;</code>
+     */
+    public io.littlehorse.common.proto.FailureBeingHandledPbOrBuilder getFailureBeingHandledOrBuilder() {
+      if (failureBeingHandledBuilder_ != null) {
+        return failureBeingHandledBuilder_.getMessageOrBuilder();
+      } else {
+        return failureBeingHandled_ == null ?
+            io.littlehorse.common.proto.FailureBeingHandledPb.getDefaultInstance() : failureBeingHandled_;
+      }
+    }
+    /**
+     * <code>.lh_proto.FailureBeingHandledPb failure_being_handled = 15;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.FailureBeingHandledPb, io.littlehorse.common.proto.FailureBeingHandledPb.Builder, io.littlehorse.common.proto.FailureBeingHandledPbOrBuilder> 
+        getFailureBeingHandledFieldBuilder() {
+      if (failureBeingHandledBuilder_ == null) {
+        failureBeingHandledBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.FailureBeingHandledPb, io.littlehorse.common.proto.FailureBeingHandledPb.Builder, io.littlehorse.common.proto.FailureBeingHandledPbOrBuilder>(
+                getFailureBeingHandled(),
+                getParentForChildren(),
+                isClean());
+        failureBeingHandled_ = null;
+      }
+      return failureBeingHandledBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

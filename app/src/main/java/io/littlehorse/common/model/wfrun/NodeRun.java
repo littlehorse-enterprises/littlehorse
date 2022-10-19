@@ -13,6 +13,7 @@ import io.littlehorse.common.model.wfrun.subnoderun.ExternalEventRun;
 import io.littlehorse.common.model.wfrun.subnoderun.StartThreadRun;
 import io.littlehorse.common.model.wfrun.subnoderun.TaskRun;
 import io.littlehorse.common.model.wfrun.subnoderun.WaitThreadRun;
+import io.littlehorse.common.proto.FailurePb;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.NodePb.NodeCase;
 import io.littlehorse.common.proto.NodeRunPb;
@@ -51,9 +52,8 @@ public class NodeRun extends GETable<NodeRunPb> {
     public TaskRun taskRun;
     public ExternalEventRun externalEventRun;
 
-    public Failure failure;
+    public List<Failure> failures;
 
-    @JsonIgnore
     public ExitRun exitRun;
 
     @JsonIgnore
@@ -61,6 +61,10 @@ public class NodeRun extends GETable<NodeRunPb> {
 
     public StartThreadRun startThreadRun;
     public WaitThreadRun waitThreadRun;
+
+    public NodeRun() {
+        failures = new ArrayList<>();
+    }
 
     @JsonProperty("entrypointRun")
     public Object getEntrypointRunForJacksonOnly() {
@@ -70,16 +74,14 @@ public class NodeRun extends GETable<NodeRunPb> {
         return null;
     }
 
-    @JsonProperty("exitRun")
-    public Object getExitRunForJacksonOnly() {
-        if (exitRun != null) {
-            return new HashMap<>();
-        }
-        return null;
-    }
-
     @JsonIgnore
     public ThreadRun threadRun;
+
+    @JsonIgnore
+    public Failure getLatestFailure() {
+        if (failures.size() == 0) return null;
+        return failures.get(failures.size() - 1);
+    }
 
     public String getObjectId() {
         return NodeRun.getStoreKey(wfRunId, threadRunNumber, position);
@@ -152,8 +154,8 @@ public class NodeRun extends GETable<NodeRunPb> {
                 throw new RuntimeException("Not possible");
         }
 
-        if (proto.hasFailure()) {
-            failure = Failure.fromProto(proto.getFailureOrBuilder());
+        for (FailurePb failure : proto.getFailuresList()) {
+            failures.add(Failure.fromProto(failure));
         }
 
         getSubNodeRun().setNodeRun(this);
@@ -251,8 +253,8 @@ public class NodeRun extends GETable<NodeRunPb> {
                 throw new RuntimeException("Not possible");
         }
 
-        if (failure != null) {
-            out.setFailure(failure.toProto());
+        for (Failure failure : failures) {
+            out.addFailures(failure.toProto());
         }
 
         return out;
@@ -335,11 +337,11 @@ public class NodeRun extends GETable<NodeRunPb> {
     // }
 
     public void fail(Failure failure, Date time) {
-        this.failure = failure;
+        this.failures.add(failure);
         endTime = time;
         resultCode = failure.failureCode;
         errorMessage = failure.message;
-        threadRun.fail(failure.failureCode, failure.message, time);
+        threadRun.fail(failure, time);
     }
 
     public void doRetry(TaskResultCodePb resultCode, String message, Date time) {

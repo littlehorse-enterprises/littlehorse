@@ -52,5 +52,35 @@ public interface ThreadHaltReasonPbOrBuilder extends
    */
   io.littlehorse.common.proto.PendingInterruptHaltReasonPbOrBuilder getPendingInterruptOrBuilder();
 
+  /**
+   * <code>.lh_proto.PendingFailureHandlerHaltReasonPb pending_failure = 4;</code>
+   * @return Whether the pendingFailure field is set.
+   */
+  boolean hasPendingFailure();
+  /**
+   * <code>.lh_proto.PendingFailureHandlerHaltReasonPb pending_failure = 4;</code>
+   * @return The pendingFailure.
+   */
+  io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb getPendingFailure();
+  /**
+   * <code>.lh_proto.PendingFailureHandlerHaltReasonPb pending_failure = 4;</code>
+   */
+  io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPbOrBuilder getPendingFailureOrBuilder();
+
+  /**
+   * <code>.lh_proto.HandlingFailureHaltReasonPb handling_failure = 5;</code>
+   * @return Whether the handlingFailure field is set.
+   */
+  boolean hasHandlingFailure();
+  /**
+   * <code>.lh_proto.HandlingFailureHaltReasonPb handling_failure = 5;</code>
+   * @return The handlingFailure.
+   */
+  io.littlehorse.common.proto.HandlingFailureHaltReasonPb getHandlingFailure();
+  /**
+   * <code>.lh_proto.HandlingFailureHaltReasonPb handling_failure = 5;</code>
+   */
+  io.littlehorse.common.proto.HandlingFailureHaltReasonPbOrBuilder getHandlingFailureOrBuilder();
+
   public io.littlehorse.common.proto.ThreadHaltReasonPb.ReasonCase getReasonCase();
 }

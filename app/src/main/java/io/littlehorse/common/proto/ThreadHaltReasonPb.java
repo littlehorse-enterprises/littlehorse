@@ -90,6 +90,34 @@ private static final long serialVersionUID = 0L;
             reasonCase_ = 3;
             break;
           }
+          case 34: {
+            io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb.Builder subBuilder = null;
+            if (reasonCase_ == 4) {
+              subBuilder = ((io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb) reason_).toBuilder();
+            }
+            reason_ =
+                input.readMessage(io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb) reason_);
+              reason_ = subBuilder.buildPartial();
+            }
+            reasonCase_ = 4;
+            break;
+          }
+          case 42: {
+            io.littlehorse.common.proto.HandlingFailureHaltReasonPb.Builder subBuilder = null;
+            if (reasonCase_ == 5) {
+              subBuilder = ((io.littlehorse.common.proto.HandlingFailureHaltReasonPb) reason_).toBuilder();
+            }
+            reason_ =
+                input.readMessage(io.littlehorse.common.proto.HandlingFailureHaltReasonPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.common.proto.HandlingFailureHaltReasonPb) reason_);
+              reason_ = subBuilder.buildPartial();
+            }
+            reasonCase_ = 5;
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -130,6 +158,8 @@ private static final long serialVersionUID = 0L;
     PARENT_HALTED(1),
     INTERRUPTED(2),
     PENDING_INTERRUPT(3),
+    PENDING_FAILURE(4),
+    HANDLING_FAILURE(5),
     REASON_NOT_SET(0);
     private final int value;
     private ReasonCase(int value) {
@@ -150,6 +180,8 @@ private static final long serialVersionUID = 0L;
         case 1: return PARENT_HALTED;
         case 2: return INTERRUPTED;
         case 3: return PENDING_INTERRUPT;
+        case 4: return PENDING_FAILURE;
+        case 5: return HANDLING_FAILURE;
         case 0: return REASON_NOT_SET;
         default: return null;
       }
@@ -258,6 +290,68 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.PendingInterruptHaltReasonPb.getDefaultInstance();
   }
 
+  public static final int PENDING_FAILURE_FIELD_NUMBER = 4;
+  /**
+   * <code>.lh_proto.PendingFailureHandlerHaltReasonPb pending_failure = 4;</code>
+   * @return Whether the pendingFailure field is set.
+   */
+  @java.lang.Override
+  public boolean hasPendingFailure() {
+    return reasonCase_ == 4;
+  }
+  /**
+   * <code>.lh_proto.PendingFailureHandlerHaltReasonPb pending_failure = 4;</code>
+   * @return The pendingFailure.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb getPendingFailure() {
+    if (reasonCase_ == 4) {
+       return (io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb) reason_;
+    }
+    return io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb.getDefaultInstance();
+  }
+  /**
+   * <code>.lh_proto.PendingFailureHandlerHaltReasonPb pending_failure = 4;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPbOrBuilder getPendingFailureOrBuilder() {
+    if (reasonCase_ == 4) {
+       return (io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb) reason_;
+    }
+    return io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb.getDefaultInstance();
+  }
+
+  public static final int HANDLING_FAILURE_FIELD_NUMBER = 5;
+  /**
+   * <code>.lh_proto.HandlingFailureHaltReasonPb handling_failure = 5;</code>
+   * @return Whether the handlingFailure field is set.
+   */
+  @java.lang.Override
+  public boolean hasHandlingFailure() {
+    return reasonCase_ == 5;
+  }
+  /**
+   * <code>.lh_proto.HandlingFailureHaltReasonPb handling_failure = 5;</code>
+   * @return The handlingFailure.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.HandlingFailureHaltReasonPb getHandlingFailure() {
+    if (reasonCase_ == 5) {
+       return (io.littlehorse.common.proto.HandlingFailureHaltReasonPb) reason_;
+    }
+    return io.littlehorse.common.proto.HandlingFailureHaltReasonPb.getDefaultInstance();
+  }
+  /**
+   * <code>.lh_proto.HandlingFailureHaltReasonPb handling_failure = 5;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.HandlingFailureHaltReasonPbOrBuilder getHandlingFailureOrBuilder() {
+    if (reasonCase_ == 5) {
+       return (io.littlehorse.common.proto.HandlingFailureHaltReasonPb) reason_;
+    }
+    return io.littlehorse.common.proto.HandlingFailureHaltReasonPb.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -281,6 +375,12 @@ private static final long serialVersionUID = 0L;
     if (reasonCase_ == 3) {
       output.writeMessage(3, (io.littlehorse.common.proto.PendingInterruptHaltReasonPb) reason_);
     }
+    if (reasonCase_ == 4) {
+      output.writeMessage(4, (io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb) reason_);
+    }
+    if (reasonCase_ == 5) {
+      output.writeMessage(5, (io.littlehorse.common.proto.HandlingFailureHaltReasonPb) reason_);
+    }
     unknownFields.writeTo(output);
   }
 
@@ -301,6 +401,14 @@ private static final long serialVersionUID = 0L;
     if (reasonCase_ == 3) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, (io.littlehorse.common.proto.PendingInterruptHaltReasonPb) reason_);
+    }
+    if (reasonCase_ == 4) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(4, (io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb) reason_);
+    }
+    if (reasonCase_ == 5) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(5, (io.littlehorse.common.proto.HandlingFailureHaltReasonPb) reason_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -331,6 +439,14 @@ private static final long serialVersionUID = 0L;
         if (!getPendingInterrupt()
             .equals(other.getPendingInterrupt())) return false;
         break;
+      case 4:
+        if (!getPendingFailure()
+            .equals(other.getPendingFailure())) return false;
+        break;
+      case 5:
+        if (!getHandlingFailure()
+            .equals(other.getHandlingFailure())) return false;
+        break;
       case 0:
       default:
     }
@@ -357,6 +473,14 @@ private static final long serialVersionUID = 0L;
       case 3:
         hash = (37 * hash) + PENDING_INTERRUPT_FIELD_NUMBER;
         hash = (53 * hash) + getPendingInterrupt().hashCode();
+        break;
+      case 4:
+        hash = (37 * hash) + PENDING_FAILURE_FIELD_NUMBER;
+        hash = (53 * hash) + getPendingFailure().hashCode();
+        break;
+      case 5:
+        hash = (37 * hash) + HANDLING_FAILURE_FIELD_NUMBER;
+        hash = (53 * hash) + getHandlingFailure().hashCode();
         break;
       case 0:
       default:
@@ -543,6 +667,20 @@ private static final long serialVersionUID = 0L;
           result.reason_ = pendingInterruptBuilder_.build();
         }
       }
+      if (reasonCase_ == 4) {
+        if (pendingFailureBuilder_ == null) {
+          result.reason_ = reason_;
+        } else {
+          result.reason_ = pendingFailureBuilder_.build();
+        }
+      }
+      if (reasonCase_ == 5) {
+        if (handlingFailureBuilder_ == null) {
+          result.reason_ = reason_;
+        } else {
+          result.reason_ = handlingFailureBuilder_.build();
+        }
+      }
       result.reasonCase_ = reasonCase_;
       onBuilt();
       return result;
@@ -603,6 +741,14 @@ private static final long serialVersionUID = 0L;
         }
         case PENDING_INTERRUPT: {
           mergePendingInterrupt(other.getPendingInterrupt());
+          break;
+        }
+        case PENDING_FAILURE: {
+          mergePendingFailure(other.getPendingFailure());
+          break;
+        }
+        case HANDLING_FAILURE: {
+          mergeHandlingFailure(other.getHandlingFailure());
           break;
         }
         case REASON_NOT_SET: {
@@ -1074,6 +1220,288 @@ private static final long serialVersionUID = 0L;
       reasonCase_ = 3;
       onChanged();;
       return pendingInterruptBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb, io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb.Builder, io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPbOrBuilder> pendingFailureBuilder_;
+    /**
+     * <code>.lh_proto.PendingFailureHandlerHaltReasonPb pending_failure = 4;</code>
+     * @return Whether the pendingFailure field is set.
+     */
+    @java.lang.Override
+    public boolean hasPendingFailure() {
+      return reasonCase_ == 4;
+    }
+    /**
+     * <code>.lh_proto.PendingFailureHandlerHaltReasonPb pending_failure = 4;</code>
+     * @return The pendingFailure.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb getPendingFailure() {
+      if (pendingFailureBuilder_ == null) {
+        if (reasonCase_ == 4) {
+          return (io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb) reason_;
+        }
+        return io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb.getDefaultInstance();
+      } else {
+        if (reasonCase_ == 4) {
+          return pendingFailureBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.PendingFailureHandlerHaltReasonPb pending_failure = 4;</code>
+     */
+    public Builder setPendingFailure(io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb value) {
+      if (pendingFailureBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        reason_ = value;
+        onChanged();
+      } else {
+        pendingFailureBuilder_.setMessage(value);
+      }
+      reasonCase_ = 4;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.PendingFailureHandlerHaltReasonPb pending_failure = 4;</code>
+     */
+    public Builder setPendingFailure(
+        io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb.Builder builderForValue) {
+      if (pendingFailureBuilder_ == null) {
+        reason_ = builderForValue.build();
+        onChanged();
+      } else {
+        pendingFailureBuilder_.setMessage(builderForValue.build());
+      }
+      reasonCase_ = 4;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.PendingFailureHandlerHaltReasonPb pending_failure = 4;</code>
+     */
+    public Builder mergePendingFailure(io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb value) {
+      if (pendingFailureBuilder_ == null) {
+        if (reasonCase_ == 4 &&
+            reason_ != io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb.getDefaultInstance()) {
+          reason_ = io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb.newBuilder((io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb) reason_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          reason_ = value;
+        }
+        onChanged();
+      } else {
+        if (reasonCase_ == 4) {
+          pendingFailureBuilder_.mergeFrom(value);
+        }
+        pendingFailureBuilder_.setMessage(value);
+      }
+      reasonCase_ = 4;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.PendingFailureHandlerHaltReasonPb pending_failure = 4;</code>
+     */
+    public Builder clearPendingFailure() {
+      if (pendingFailureBuilder_ == null) {
+        if (reasonCase_ == 4) {
+          reasonCase_ = 0;
+          reason_ = null;
+          onChanged();
+        }
+      } else {
+        if (reasonCase_ == 4) {
+          reasonCase_ = 0;
+          reason_ = null;
+        }
+        pendingFailureBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.lh_proto.PendingFailureHandlerHaltReasonPb pending_failure = 4;</code>
+     */
+    public io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb.Builder getPendingFailureBuilder() {
+      return getPendingFailureFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.PendingFailureHandlerHaltReasonPb pending_failure = 4;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPbOrBuilder getPendingFailureOrBuilder() {
+      if ((reasonCase_ == 4) && (pendingFailureBuilder_ != null)) {
+        return pendingFailureBuilder_.getMessageOrBuilder();
+      } else {
+        if (reasonCase_ == 4) {
+          return (io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb) reason_;
+        }
+        return io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.PendingFailureHandlerHaltReasonPb pending_failure = 4;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb, io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb.Builder, io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPbOrBuilder> 
+        getPendingFailureFieldBuilder() {
+      if (pendingFailureBuilder_ == null) {
+        if (!(reasonCase_ == 4)) {
+          reason_ = io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb.getDefaultInstance();
+        }
+        pendingFailureBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb, io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb.Builder, io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPbOrBuilder>(
+                (io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb) reason_,
+                getParentForChildren(),
+                isClean());
+        reason_ = null;
+      }
+      reasonCase_ = 4;
+      onChanged();;
+      return pendingFailureBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.HandlingFailureHaltReasonPb, io.littlehorse.common.proto.HandlingFailureHaltReasonPb.Builder, io.littlehorse.common.proto.HandlingFailureHaltReasonPbOrBuilder> handlingFailureBuilder_;
+    /**
+     * <code>.lh_proto.HandlingFailureHaltReasonPb handling_failure = 5;</code>
+     * @return Whether the handlingFailure field is set.
+     */
+    @java.lang.Override
+    public boolean hasHandlingFailure() {
+      return reasonCase_ == 5;
+    }
+    /**
+     * <code>.lh_proto.HandlingFailureHaltReasonPb handling_failure = 5;</code>
+     * @return The handlingFailure.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.HandlingFailureHaltReasonPb getHandlingFailure() {
+      if (handlingFailureBuilder_ == null) {
+        if (reasonCase_ == 5) {
+          return (io.littlehorse.common.proto.HandlingFailureHaltReasonPb) reason_;
+        }
+        return io.littlehorse.common.proto.HandlingFailureHaltReasonPb.getDefaultInstance();
+      } else {
+        if (reasonCase_ == 5) {
+          return handlingFailureBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.HandlingFailureHaltReasonPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.HandlingFailureHaltReasonPb handling_failure = 5;</code>
+     */
+    public Builder setHandlingFailure(io.littlehorse.common.proto.HandlingFailureHaltReasonPb value) {
+      if (handlingFailureBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        reason_ = value;
+        onChanged();
+      } else {
+        handlingFailureBuilder_.setMessage(value);
+      }
+      reasonCase_ = 5;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.HandlingFailureHaltReasonPb handling_failure = 5;</code>
+     */
+    public Builder setHandlingFailure(
+        io.littlehorse.common.proto.HandlingFailureHaltReasonPb.Builder builderForValue) {
+      if (handlingFailureBuilder_ == null) {
+        reason_ = builderForValue.build();
+        onChanged();
+      } else {
+        handlingFailureBuilder_.setMessage(builderForValue.build());
+      }
+      reasonCase_ = 5;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.HandlingFailureHaltReasonPb handling_failure = 5;</code>
+     */
+    public Builder mergeHandlingFailure(io.littlehorse.common.proto.HandlingFailureHaltReasonPb value) {
+      if (handlingFailureBuilder_ == null) {
+        if (reasonCase_ == 5 &&
+            reason_ != io.littlehorse.common.proto.HandlingFailureHaltReasonPb.getDefaultInstance()) {
+          reason_ = io.littlehorse.common.proto.HandlingFailureHaltReasonPb.newBuilder((io.littlehorse.common.proto.HandlingFailureHaltReasonPb) reason_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          reason_ = value;
+        }
+        onChanged();
+      } else {
+        if (reasonCase_ == 5) {
+          handlingFailureBuilder_.mergeFrom(value);
+        }
+        handlingFailureBuilder_.setMessage(value);
+      }
+      reasonCase_ = 5;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.HandlingFailureHaltReasonPb handling_failure = 5;</code>
+     */
+    public Builder clearHandlingFailure() {
+      if (handlingFailureBuilder_ == null) {
+        if (reasonCase_ == 5) {
+          reasonCase_ = 0;
+          reason_ = null;
+          onChanged();
+        }
+      } else {
+        if (reasonCase_ == 5) {
+          reasonCase_ = 0;
+          reason_ = null;
+        }
+        handlingFailureBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.lh_proto.HandlingFailureHaltReasonPb handling_failure = 5;</code>
+     */
+    public io.littlehorse.common.proto.HandlingFailureHaltReasonPb.Builder getHandlingFailureBuilder() {
+      return getHandlingFailureFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.HandlingFailureHaltReasonPb handling_failure = 5;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.HandlingFailureHaltReasonPbOrBuilder getHandlingFailureOrBuilder() {
+      if ((reasonCase_ == 5) && (handlingFailureBuilder_ != null)) {
+        return handlingFailureBuilder_.getMessageOrBuilder();
+      } else {
+        if (reasonCase_ == 5) {
+          return (io.littlehorse.common.proto.HandlingFailureHaltReasonPb) reason_;
+        }
+        return io.littlehorse.common.proto.HandlingFailureHaltReasonPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.HandlingFailureHaltReasonPb handling_failure = 5;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.HandlingFailureHaltReasonPb, io.littlehorse.common.proto.HandlingFailureHaltReasonPb.Builder, io.littlehorse.common.proto.HandlingFailureHaltReasonPbOrBuilder> 
+        getHandlingFailureFieldBuilder() {
+      if (handlingFailureBuilder_ == null) {
+        if (!(reasonCase_ == 5)) {
+          reason_ = io.littlehorse.common.proto.HandlingFailureHaltReasonPb.getDefaultInstance();
+        }
+        handlingFailureBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.HandlingFailureHaltReasonPb, io.littlehorse.common.proto.HandlingFailureHaltReasonPb.Builder, io.littlehorse.common.proto.HandlingFailureHaltReasonPbOrBuilder>(
+                (io.littlehorse.common.proto.HandlingFailureHaltReasonPb) reason_,
+                getParentForChildren(),
+                isClean());
+        reason_ = null;
+      }
+      reasonCase_ = 5;
+      onChanged();;
+      return handlingFailureBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

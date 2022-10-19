@@ -22,6 +22,7 @@ private static final long serialVersionUID = 0L;
     status_ = 0;
     threadRuns_ = java.util.Collections.emptyList();
     pendingInterrupts_ = java.util.Collections.emptyList();
+    pendingFailures_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -119,13 +120,22 @@ private static final long serialVersionUID = 0L;
                 input.readMessage(io.littlehorse.common.proto.ThreadRunPb.parser(), extensionRegistry));
             break;
           }
-          case 114: {
+          case 74: {
             if (!((mutable_bitField0_ & 0x00000004) != 0)) {
               pendingInterrupts_ = new java.util.ArrayList<io.littlehorse.common.proto.PendingInterruptPb>();
               mutable_bitField0_ |= 0x00000004;
             }
             pendingInterrupts_.add(
                 input.readMessage(io.littlehorse.common.proto.PendingInterruptPb.parser(), extensionRegistry));
+            break;
+          }
+          case 82: {
+            if (!((mutable_bitField0_ & 0x00000008) != 0)) {
+              pendingFailures_ = new java.util.ArrayList<io.littlehorse.common.proto.PendingFailureHandlerPb>();
+              mutable_bitField0_ |= 0x00000008;
+            }
+            pendingFailures_.add(
+                input.readMessage(io.littlehorse.common.proto.PendingFailureHandlerPb.parser(), extensionRegistry));
             break;
           }
           default: {
@@ -148,6 +158,9 @@ private static final long serialVersionUID = 0L;
       }
       if (((mutable_bitField0_ & 0x00000004) != 0)) {
         pendingInterrupts_ = java.util.Collections.unmodifiableList(pendingInterrupts_);
+      }
+      if (((mutable_bitField0_ & 0x00000008) != 0)) {
+        pendingFailures_ = java.util.Collections.unmodifiableList(pendingFailures_);
       }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
@@ -411,17 +424,17 @@ private static final long serialVersionUID = 0L;
     return threadRuns_.get(index);
   }
 
-  public static final int PENDING_INTERRUPTS_FIELD_NUMBER = 14;
+  public static final int PENDING_INTERRUPTS_FIELD_NUMBER = 9;
   private java.util.List<io.littlehorse.common.proto.PendingInterruptPb> pendingInterrupts_;
   /**
-   * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+   * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 9;</code>
    */
   @java.lang.Override
   public java.util.List<io.littlehorse.common.proto.PendingInterruptPb> getPendingInterruptsList() {
     return pendingInterrupts_;
   }
   /**
-   * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+   * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 9;</code>
    */
   @java.lang.Override
   public java.util.List<? extends io.littlehorse.common.proto.PendingInterruptPbOrBuilder> 
@@ -429,26 +442,66 @@ private static final long serialVersionUID = 0L;
     return pendingInterrupts_;
   }
   /**
-   * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+   * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 9;</code>
    */
   @java.lang.Override
   public int getPendingInterruptsCount() {
     return pendingInterrupts_.size();
   }
   /**
-   * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+   * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 9;</code>
    */
   @java.lang.Override
   public io.littlehorse.common.proto.PendingInterruptPb getPendingInterrupts(int index) {
     return pendingInterrupts_.get(index);
   }
   /**
-   * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+   * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 9;</code>
    */
   @java.lang.Override
   public io.littlehorse.common.proto.PendingInterruptPbOrBuilder getPendingInterruptsOrBuilder(
       int index) {
     return pendingInterrupts_.get(index);
+  }
+
+  public static final int PENDING_FAILURES_FIELD_NUMBER = 10;
+  private java.util.List<io.littlehorse.common.proto.PendingFailureHandlerPb> pendingFailures_;
+  /**
+   * <code>repeated .lh_proto.PendingFailureHandlerPb pending_failures = 10;</code>
+   */
+  @java.lang.Override
+  public java.util.List<io.littlehorse.common.proto.PendingFailureHandlerPb> getPendingFailuresList() {
+    return pendingFailures_;
+  }
+  /**
+   * <code>repeated .lh_proto.PendingFailureHandlerPb pending_failures = 10;</code>
+   */
+  @java.lang.Override
+  public java.util.List<? extends io.littlehorse.common.proto.PendingFailureHandlerPbOrBuilder> 
+      getPendingFailuresOrBuilderList() {
+    return pendingFailures_;
+  }
+  /**
+   * <code>repeated .lh_proto.PendingFailureHandlerPb pending_failures = 10;</code>
+   */
+  @java.lang.Override
+  public int getPendingFailuresCount() {
+    return pendingFailures_.size();
+  }
+  /**
+   * <code>repeated .lh_proto.PendingFailureHandlerPb pending_failures = 10;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.PendingFailureHandlerPb getPendingFailures(int index) {
+    return pendingFailures_.get(index);
+  }
+  /**
+   * <code>repeated .lh_proto.PendingFailureHandlerPb pending_failures = 10;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.PendingFailureHandlerPbOrBuilder getPendingFailuresOrBuilder(
+      int index) {
+    return pendingFailures_.get(index);
   }
 
   private byte memoizedIsInitialized = -1;
@@ -490,7 +543,10 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(8, threadRuns_.get(i));
     }
     for (int i = 0; i < pendingInterrupts_.size(); i++) {
-      output.writeMessage(14, pendingInterrupts_.get(i));
+      output.writeMessage(9, pendingInterrupts_.get(i));
+    }
+    for (int i = 0; i < pendingFailures_.size(); i++) {
+      output.writeMessage(10, pendingFailures_.get(i));
     }
     unknownFields.writeTo(output);
   }
@@ -532,7 +588,11 @@ private static final long serialVersionUID = 0L;
     }
     for (int i = 0; i < pendingInterrupts_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(14, pendingInterrupts_.get(i));
+        .computeMessageSize(9, pendingInterrupts_.get(i));
+    }
+    for (int i = 0; i < pendingFailures_.size(); i++) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(10, pendingFailures_.get(i));
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -572,6 +632,8 @@ private static final long serialVersionUID = 0L;
         .equals(other.getThreadRunsList())) return false;
     if (!getPendingInterruptsList()
         .equals(other.getPendingInterruptsList())) return false;
+    if (!getPendingFailuresList()
+        .equals(other.getPendingFailuresList())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -609,6 +671,10 @@ private static final long serialVersionUID = 0L;
     if (getPendingInterruptsCount() > 0) {
       hash = (37 * hash) + PENDING_INTERRUPTS_FIELD_NUMBER;
       hash = (53 * hash) + getPendingInterruptsList().hashCode();
+    }
+    if (getPendingFailuresCount() > 0) {
+      hash = (37 * hash) + PENDING_FAILURES_FIELD_NUMBER;
+      hash = (53 * hash) + getPendingFailuresList().hashCode();
     }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
@@ -741,6 +807,7 @@ private static final long serialVersionUID = 0L;
         getEndTimeFieldBuilder();
         getThreadRunsFieldBuilder();
         getPendingInterruptsFieldBuilder();
+        getPendingFailuresFieldBuilder();
       }
     }
     @java.lang.Override
@@ -779,6 +846,12 @@ private static final long serialVersionUID = 0L;
         bitField0_ = (bitField0_ & ~0x00000004);
       } else {
         pendingInterruptsBuilder_.clear();
+      }
+      if (pendingFailuresBuilder_ == null) {
+        pendingFailures_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000008);
+      } else {
+        pendingFailuresBuilder_.clear();
       }
       return this;
     }
@@ -843,6 +916,15 @@ private static final long serialVersionUID = 0L;
         result.pendingInterrupts_ = pendingInterrupts_;
       } else {
         result.pendingInterrupts_ = pendingInterruptsBuilder_.build();
+      }
+      if (pendingFailuresBuilder_ == null) {
+        if (((bitField0_ & 0x00000008) != 0)) {
+          pendingFailures_ = java.util.Collections.unmodifiableList(pendingFailures_);
+          bitField0_ = (bitField0_ & ~0x00000008);
+        }
+        result.pendingFailures_ = pendingFailures_;
+      } else {
+        result.pendingFailures_ = pendingFailuresBuilder_.build();
       }
       result.bitField0_ = to_bitField0_;
       onBuilt();
@@ -966,6 +1048,32 @@ private static final long serialVersionUID = 0L;
                  getPendingInterruptsFieldBuilder() : null;
           } else {
             pendingInterruptsBuilder_.addAllMessages(other.pendingInterrupts_);
+          }
+        }
+      }
+      if (pendingFailuresBuilder_ == null) {
+        if (!other.pendingFailures_.isEmpty()) {
+          if (pendingFailures_.isEmpty()) {
+            pendingFailures_ = other.pendingFailures_;
+            bitField0_ = (bitField0_ & ~0x00000008);
+          } else {
+            ensurePendingFailuresIsMutable();
+            pendingFailures_.addAll(other.pendingFailures_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.pendingFailures_.isEmpty()) {
+          if (pendingFailuresBuilder_.isEmpty()) {
+            pendingFailuresBuilder_.dispose();
+            pendingFailuresBuilder_ = null;
+            pendingFailures_ = other.pendingFailures_;
+            bitField0_ = (bitField0_ & ~0x00000008);
+            pendingFailuresBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getPendingFailuresFieldBuilder() : null;
+          } else {
+            pendingFailuresBuilder_.addAllMessages(other.pendingFailures_);
           }
         }
       }
@@ -1824,7 +1932,7 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.common.proto.PendingInterruptPb, io.littlehorse.common.proto.PendingInterruptPb.Builder, io.littlehorse.common.proto.PendingInterruptPbOrBuilder> pendingInterruptsBuilder_;
 
     /**
-     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 9;</code>
      */
     public java.util.List<io.littlehorse.common.proto.PendingInterruptPb> getPendingInterruptsList() {
       if (pendingInterruptsBuilder_ == null) {
@@ -1834,7 +1942,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 9;</code>
      */
     public int getPendingInterruptsCount() {
       if (pendingInterruptsBuilder_ == null) {
@@ -1844,7 +1952,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 9;</code>
      */
     public io.littlehorse.common.proto.PendingInterruptPb getPendingInterrupts(int index) {
       if (pendingInterruptsBuilder_ == null) {
@@ -1854,7 +1962,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 9;</code>
      */
     public Builder setPendingInterrupts(
         int index, io.littlehorse.common.proto.PendingInterruptPb value) {
@@ -1871,7 +1979,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 9;</code>
      */
     public Builder setPendingInterrupts(
         int index, io.littlehorse.common.proto.PendingInterruptPb.Builder builderForValue) {
@@ -1885,7 +1993,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 9;</code>
      */
     public Builder addPendingInterrupts(io.littlehorse.common.proto.PendingInterruptPb value) {
       if (pendingInterruptsBuilder_ == null) {
@@ -1901,7 +2009,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 9;</code>
      */
     public Builder addPendingInterrupts(
         int index, io.littlehorse.common.proto.PendingInterruptPb value) {
@@ -1918,7 +2026,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 9;</code>
      */
     public Builder addPendingInterrupts(
         io.littlehorse.common.proto.PendingInterruptPb.Builder builderForValue) {
@@ -1932,7 +2040,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 9;</code>
      */
     public Builder addPendingInterrupts(
         int index, io.littlehorse.common.proto.PendingInterruptPb.Builder builderForValue) {
@@ -1946,7 +2054,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 9;</code>
      */
     public Builder addAllPendingInterrupts(
         java.lang.Iterable<? extends io.littlehorse.common.proto.PendingInterruptPb> values) {
@@ -1961,7 +2069,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 9;</code>
      */
     public Builder clearPendingInterrupts() {
       if (pendingInterruptsBuilder_ == null) {
@@ -1974,7 +2082,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 9;</code>
      */
     public Builder removePendingInterrupts(int index) {
       if (pendingInterruptsBuilder_ == null) {
@@ -1987,14 +2095,14 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 9;</code>
      */
     public io.littlehorse.common.proto.PendingInterruptPb.Builder getPendingInterruptsBuilder(
         int index) {
       return getPendingInterruptsFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 9;</code>
      */
     public io.littlehorse.common.proto.PendingInterruptPbOrBuilder getPendingInterruptsOrBuilder(
         int index) {
@@ -2004,7 +2112,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 9;</code>
      */
     public java.util.List<? extends io.littlehorse.common.proto.PendingInterruptPbOrBuilder> 
          getPendingInterruptsOrBuilderList() {
@@ -2015,14 +2123,14 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 9;</code>
      */
     public io.littlehorse.common.proto.PendingInterruptPb.Builder addPendingInterruptsBuilder() {
       return getPendingInterruptsFieldBuilder().addBuilder(
           io.littlehorse.common.proto.PendingInterruptPb.getDefaultInstance());
     }
     /**
-     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 9;</code>
      */
     public io.littlehorse.common.proto.PendingInterruptPb.Builder addPendingInterruptsBuilder(
         int index) {
@@ -2030,7 +2138,7 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.common.proto.PendingInterruptPb.getDefaultInstance());
     }
     /**
-     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 14;</code>
+     * <code>repeated .lh_proto.PendingInterruptPb pending_interrupts = 9;</code>
      */
     public java.util.List<io.littlehorse.common.proto.PendingInterruptPb.Builder> 
          getPendingInterruptsBuilderList() {
@@ -2049,6 +2157,246 @@ private static final long serialVersionUID = 0L;
         pendingInterrupts_ = null;
       }
       return pendingInterruptsBuilder_;
+    }
+
+    private java.util.List<io.littlehorse.common.proto.PendingFailureHandlerPb> pendingFailures_ =
+      java.util.Collections.emptyList();
+    private void ensurePendingFailuresIsMutable() {
+      if (!((bitField0_ & 0x00000008) != 0)) {
+        pendingFailures_ = new java.util.ArrayList<io.littlehorse.common.proto.PendingFailureHandlerPb>(pendingFailures_);
+        bitField0_ |= 0x00000008;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.common.proto.PendingFailureHandlerPb, io.littlehorse.common.proto.PendingFailureHandlerPb.Builder, io.littlehorse.common.proto.PendingFailureHandlerPbOrBuilder> pendingFailuresBuilder_;
+
+    /**
+     * <code>repeated .lh_proto.PendingFailureHandlerPb pending_failures = 10;</code>
+     */
+    public java.util.List<io.littlehorse.common.proto.PendingFailureHandlerPb> getPendingFailuresList() {
+      if (pendingFailuresBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(pendingFailures_);
+      } else {
+        return pendingFailuresBuilder_.getMessageList();
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.PendingFailureHandlerPb pending_failures = 10;</code>
+     */
+    public int getPendingFailuresCount() {
+      if (pendingFailuresBuilder_ == null) {
+        return pendingFailures_.size();
+      } else {
+        return pendingFailuresBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.PendingFailureHandlerPb pending_failures = 10;</code>
+     */
+    public io.littlehorse.common.proto.PendingFailureHandlerPb getPendingFailures(int index) {
+      if (pendingFailuresBuilder_ == null) {
+        return pendingFailures_.get(index);
+      } else {
+        return pendingFailuresBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.PendingFailureHandlerPb pending_failures = 10;</code>
+     */
+    public Builder setPendingFailures(
+        int index, io.littlehorse.common.proto.PendingFailureHandlerPb value) {
+      if (pendingFailuresBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensurePendingFailuresIsMutable();
+        pendingFailures_.set(index, value);
+        onChanged();
+      } else {
+        pendingFailuresBuilder_.setMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.PendingFailureHandlerPb pending_failures = 10;</code>
+     */
+    public Builder setPendingFailures(
+        int index, io.littlehorse.common.proto.PendingFailureHandlerPb.Builder builderForValue) {
+      if (pendingFailuresBuilder_ == null) {
+        ensurePendingFailuresIsMutable();
+        pendingFailures_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        pendingFailuresBuilder_.setMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.PendingFailureHandlerPb pending_failures = 10;</code>
+     */
+    public Builder addPendingFailures(io.littlehorse.common.proto.PendingFailureHandlerPb value) {
+      if (pendingFailuresBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensurePendingFailuresIsMutable();
+        pendingFailures_.add(value);
+        onChanged();
+      } else {
+        pendingFailuresBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.PendingFailureHandlerPb pending_failures = 10;</code>
+     */
+    public Builder addPendingFailures(
+        int index, io.littlehorse.common.proto.PendingFailureHandlerPb value) {
+      if (pendingFailuresBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensurePendingFailuresIsMutable();
+        pendingFailures_.add(index, value);
+        onChanged();
+      } else {
+        pendingFailuresBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.PendingFailureHandlerPb pending_failures = 10;</code>
+     */
+    public Builder addPendingFailures(
+        io.littlehorse.common.proto.PendingFailureHandlerPb.Builder builderForValue) {
+      if (pendingFailuresBuilder_ == null) {
+        ensurePendingFailuresIsMutable();
+        pendingFailures_.add(builderForValue.build());
+        onChanged();
+      } else {
+        pendingFailuresBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.PendingFailureHandlerPb pending_failures = 10;</code>
+     */
+    public Builder addPendingFailures(
+        int index, io.littlehorse.common.proto.PendingFailureHandlerPb.Builder builderForValue) {
+      if (pendingFailuresBuilder_ == null) {
+        ensurePendingFailuresIsMutable();
+        pendingFailures_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        pendingFailuresBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.PendingFailureHandlerPb pending_failures = 10;</code>
+     */
+    public Builder addAllPendingFailures(
+        java.lang.Iterable<? extends io.littlehorse.common.proto.PendingFailureHandlerPb> values) {
+      if (pendingFailuresBuilder_ == null) {
+        ensurePendingFailuresIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, pendingFailures_);
+        onChanged();
+      } else {
+        pendingFailuresBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.PendingFailureHandlerPb pending_failures = 10;</code>
+     */
+    public Builder clearPendingFailures() {
+      if (pendingFailuresBuilder_ == null) {
+        pendingFailures_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+      } else {
+        pendingFailuresBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.PendingFailureHandlerPb pending_failures = 10;</code>
+     */
+    public Builder removePendingFailures(int index) {
+      if (pendingFailuresBuilder_ == null) {
+        ensurePendingFailuresIsMutable();
+        pendingFailures_.remove(index);
+        onChanged();
+      } else {
+        pendingFailuresBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.PendingFailureHandlerPb pending_failures = 10;</code>
+     */
+    public io.littlehorse.common.proto.PendingFailureHandlerPb.Builder getPendingFailuresBuilder(
+        int index) {
+      return getPendingFailuresFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .lh_proto.PendingFailureHandlerPb pending_failures = 10;</code>
+     */
+    public io.littlehorse.common.proto.PendingFailureHandlerPbOrBuilder getPendingFailuresOrBuilder(
+        int index) {
+      if (pendingFailuresBuilder_ == null) {
+        return pendingFailures_.get(index);  } else {
+        return pendingFailuresBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.PendingFailureHandlerPb pending_failures = 10;</code>
+     */
+    public java.util.List<? extends io.littlehorse.common.proto.PendingFailureHandlerPbOrBuilder> 
+         getPendingFailuresOrBuilderList() {
+      if (pendingFailuresBuilder_ != null) {
+        return pendingFailuresBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(pendingFailures_);
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.PendingFailureHandlerPb pending_failures = 10;</code>
+     */
+    public io.littlehorse.common.proto.PendingFailureHandlerPb.Builder addPendingFailuresBuilder() {
+      return getPendingFailuresFieldBuilder().addBuilder(
+          io.littlehorse.common.proto.PendingFailureHandlerPb.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .lh_proto.PendingFailureHandlerPb pending_failures = 10;</code>
+     */
+    public io.littlehorse.common.proto.PendingFailureHandlerPb.Builder addPendingFailuresBuilder(
+        int index) {
+      return getPendingFailuresFieldBuilder().addBuilder(
+          index, io.littlehorse.common.proto.PendingFailureHandlerPb.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .lh_proto.PendingFailureHandlerPb pending_failures = 10;</code>
+     */
+    public java.util.List<io.littlehorse.common.proto.PendingFailureHandlerPb.Builder> 
+         getPendingFailuresBuilderList() {
+      return getPendingFailuresFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.common.proto.PendingFailureHandlerPb, io.littlehorse.common.proto.PendingFailureHandlerPb.Builder, io.littlehorse.common.proto.PendingFailureHandlerPbOrBuilder> 
+        getPendingFailuresFieldBuilder() {
+      if (pendingFailuresBuilder_ == null) {
+        pendingFailuresBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            io.littlehorse.common.proto.PendingFailureHandlerPb, io.littlehorse.common.proto.PendingFailureHandlerPb.Builder, io.littlehorse.common.proto.PendingFailureHandlerPbOrBuilder>(
+                pendingFailures_,
+                ((bitField0_ & 0x00000008) != 0),
+                getParentForChildren(),
+                isClean());
+        pendingFailures_ = null;
+      }
+      return pendingFailuresBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

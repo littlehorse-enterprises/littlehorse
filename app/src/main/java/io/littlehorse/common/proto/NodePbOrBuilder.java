@@ -161,27 +161,27 @@ public interface NodePbOrBuilder extends
   io.littlehorse.common.proto.WaitForThreadNodePbOrBuilder getWaitForThreadOrBuilder();
 
   /**
-   * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
    */
-  java.util.List<io.littlehorse.common.proto.ExceptionHandlerPb> 
-      getExceptionHandlersList();
+  java.util.List<io.littlehorse.common.proto.FailureHandlerDefPb> 
+      getFailureHandlersList();
   /**
-   * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
    */
-  io.littlehorse.common.proto.ExceptionHandlerPb getExceptionHandlers(int index);
+  io.littlehorse.common.proto.FailureHandlerDefPb getFailureHandlers(int index);
   /**
-   * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
    */
-  int getExceptionHandlersCount();
+  int getFailureHandlersCount();
   /**
-   * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
    */
-  java.util.List<? extends io.littlehorse.common.proto.ExceptionHandlerPbOrBuilder> 
-      getExceptionHandlersOrBuilderList();
+  java.util.List<? extends io.littlehorse.common.proto.FailureHandlerDefPbOrBuilder> 
+      getFailureHandlersOrBuilderList();
   /**
-   * <code>repeated .lh_proto.ExceptionHandlerPb exception_handlers = 11;</code>
+   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
    */
-  io.littlehorse.common.proto.ExceptionHandlerPbOrBuilder getExceptionHandlersOrBuilder(
+  io.littlehorse.common.proto.FailureHandlerDefPbOrBuilder getFailureHandlersOrBuilder(
       int index);
 
   public io.littlehorse.common.proto.NodePb.NodeCase getNodeCase();

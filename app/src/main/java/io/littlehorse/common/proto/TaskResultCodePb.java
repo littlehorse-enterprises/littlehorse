@@ -32,6 +32,14 @@ public enum TaskResultCodePb
    * <code>CHILD_FALIED = 5;</code>
    */
   CHILD_FALIED(5),
+  /**
+   * <code>INTERRUPT_HANDLER_FAILED = 6;</code>
+   */
+  INTERRUPT_HANDLER_FAILED(6),
+  /**
+   * <code>EXCEPTION_HANDLER_FAILED = 7;</code>
+   */
+  EXCEPTION_HANDLER_FAILED(7),
   UNRECOGNIZED(-1),
   ;
 
@@ -59,6 +67,14 @@ public enum TaskResultCodePb
    * <code>CHILD_FALIED = 5;</code>
    */
   public static final int CHILD_FALIED_VALUE = 5;
+  /**
+   * <code>INTERRUPT_HANDLER_FAILED = 6;</code>
+   */
+  public static final int INTERRUPT_HANDLER_FAILED_VALUE = 6;
+  /**
+   * <code>EXCEPTION_HANDLER_FAILED = 7;</code>
+   */
+  public static final int EXCEPTION_HANDLER_FAILED_VALUE = 7;
 
 
   public final int getNumber() {
@@ -91,6 +107,8 @@ public enum TaskResultCodePb
       case 3: return VAR_SUB_ERROR;
       case 4: return VAR_MUTATION_ERROR;
       case 5: return CHILD_FALIED;
+      case 6: return INTERRUPT_HANDLER_FAILED;
+      case 7: return EXCEPTION_HANDLER_FAILED;
       default: return null;
     }
   }

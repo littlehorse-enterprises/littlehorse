@@ -34,6 +34,8 @@ enum TaskResultCodePb {
     VAR_SUB_ERROR = 3;
     VAR_MUTATION_ERROR = 4;
     CHILD_FALIED = 5;
+    INTERRUPT_HANDLER_FAILED = 6;
+    EXCEPTION_HANDLER_FAILED = 7;
 }
 
 message VariableValuePb {
@@ -124,7 +126,7 @@ message NodePb {
         StartThreadNodePb start_thread = 9;
         WaitForThreadNodePb wait_for_thread = 10;
     }
-    repeated ExceptionHandlerPb exception_handlers = 11;
+    repeated FailureHandlerDefPb failure_handlers = 11;
 }
 
 message StartThreadNodePb {
@@ -132,11 +134,9 @@ message StartThreadNodePb {
     map<string, VariableAssignmentPb> variables = 2;
 }
 
-message ExceptionHandlerPb {
-    optional string specific_exception = 1;
+message FailureHandlerDefPb {
+    optional string specific_failure = 1;
     string handler_spec_name = 2;
-    bool resume_execution = 3;
-    repeated VariableMutationPb variable_mutations = 4;
 }
 
 message WaitForThreadNodePb {
@@ -234,7 +234,8 @@ message WfRunPb {
     optional google.protobuf.Timestamp end_time = 7;
     repeated ThreadRunPb thread_runs = 8;
 
-    repeated PendingInterruptPb pending_interrupts = 14;
+    repeated PendingInterruptPb pending_interrupts = 9;
+    repeated PendingFailureHandlerPb pending_failures = 10;
 }
 
 /*
@@ -277,6 +278,13 @@ message ThreadRunPb {
 
     repeated ThreadHaltReasonPb halt_reasons = 13;
     optional string interrupt_trigger_id = 14;
+    optional FailureBeingHandledPb failure_being_handled = 15;
+}
+
+message FailureBeingHandledPb {
+    int32 thread_run_number = 1;
+    int32 node_run_position = 2;
+    int32 failure_number = 3;
 }
 
 message PendingInterruptPb {
@@ -285,8 +293,21 @@ message PendingInterruptPb {
     int32 interrupted_thread_id = 3;
 }
 
+message PendingFailureHandlerPb {
+    int32 failed_thread_run = 1;
+    string handler_spec_name = 2;
+}
+
 message PendingInterruptHaltReasonPb {
     string external_event_id = 1;
+}
+
+message PendingFailureHandlerHaltReasonPb {
+    int32 node_run_position = 1;
+}
+
+message HandlingFailureHaltReasonPb {
+    int32 handler_thread_id = 1;
 }
 
 message ParentHaltedPb {
@@ -302,6 +323,8 @@ message ThreadHaltReasonPb {
         ParentHaltedPb parent_halted = 1;
         InterruptedPb interrupted = 2;
         PendingInterruptHaltReasonPb pending_interrupt = 3;
+        PendingFailureHandlerHaltReasonPb pending_failure = 4;
+        HandlingFailureHaltReasonPb handling_failure = 5;
     }
 }
 
@@ -332,7 +355,7 @@ message NodeRunPb {
         WaitThreadRunPb wait_thread = 19;
     }
 
-    optional FailurePb failure = 20;
+    repeated FailurePb failures = 20;
 }
 
 message FailurePb {

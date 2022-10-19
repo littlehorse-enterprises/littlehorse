@@ -13,6 +13,7 @@ import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.server.Tag;
 import io.littlehorse.common.proto.LHStatusPb;
+import io.littlehorse.common.proto.PendingFailureHandlerPb;
 import io.littlehorse.common.proto.PendingInterruptPb;
 import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.proto.ThreadRunPb;
@@ -41,10 +42,12 @@ public class WfRun extends GETable<WfRunPb> {
     public Date endTime;
     public List<ThreadRun> threadRuns;
     public List<PendingInterrupt> pendingInterrupts;
+    public List<PendingFailureHandler> pendingFailures;
 
     public WfRun() {
         threadRuns = new ArrayList<>();
         pendingInterrupts = new ArrayList<>();
+        pendingFailures = new ArrayList<>();
     }
 
     @JsonIgnore
@@ -72,6 +75,9 @@ public class WfRun extends GETable<WfRunPb> {
         }
         for (PendingInterruptPb pipb : proto.getPendingInterruptsList()) {
             pendingInterrupts.add(PendingInterrupt.fromProto(pipb));
+        }
+        for (PendingFailureHandlerPb pfhpb : proto.getPendingFailuresList()) {
+            pendingFailures.add(PendingFailureHandler.fromProto(pfhpb));
         }
     }
 
@@ -106,6 +112,10 @@ public class WfRun extends GETable<WfRunPb> {
 
         for (PendingInterrupt pi : pendingInterrupts) {
             out.addPendingInterrupts(pi.toProto());
+        }
+
+        for (PendingFailureHandler pfh : pendingFailures) {
+            out.addPendingFailures(pfh.toProto());
         }
 
         return out;
@@ -182,8 +192,11 @@ public class WfRun extends GETable<WfRunPb> {
             LHUtil.log("Invalid variables received");
             // Now we gotta figure out how to fail a workflow
             thread.fail(
-                TaskResultCodePb.VAR_MUTATION_ERROR,
-                "Failed validating variables on start: " + exn.getMessage(),
+                new Failure(
+                    TaskResultCodePb.VAR_MUTATION_ERROR,
+                    "Failed validating variables on start: " + exn.getMessage(),
+                    LHConstants.VAR_MUTATION_ERROR
+                ),
                 thread.startTime
             );
             return thread;
@@ -214,9 +227,15 @@ public class WfRun extends GETable<WfRunPb> {
         return thread;
     }
 
-    private boolean startInterruptsIfNecessary(Date time) {
+    private boolean startXnHandlersAndInterrupts(Date time) {
         boolean somethingChanged = false;
+        somethingChanged = startInterrupts(time) || somethingChanged;
+        somethingChanged = startXnHandlers(time) || somethingChanged;
+        return somethingChanged;
+    }
 
+    private boolean startInterrupts(Date time) {
+        boolean somethingChanged = false;
         List<PendingInterrupt> toHandleNow = new ArrayList<>();
         // Can only send one interrupt at a time to a thread...they need to complete
         // sequentially.
@@ -258,13 +277,69 @@ public class WfRun extends GETable<WfRunPb> {
 
             if (interruptor.status == LHStatusPb.ERROR) {
                 toInterrupt.fail(
-                    TaskResultCodePb.FAILED,
-                    "Failed launching interrupt thread with id: " +
-                    interruptor.number,
+                    new Failure(
+                        TaskResultCodePb.FAILED,
+                        "Failed launching interrupt thread with id: " +
+                        interruptor.number,
+                        LHConstants.CHILD_FAILURE
+                    ),
                     time
                 );
             } else {
                 toInterrupt.acknowledgeInterruptStarted(pi, interruptor.number);
+            }
+        }
+
+        return somethingChanged;
+    }
+
+    private boolean startXnHandlers(Date time) {
+        boolean somethingChanged = false;
+
+        for (int i = pendingFailures.size() - 1; i >= 0; i--) {
+            PendingFailureHandler pfh = pendingFailures.get(i);
+            ThreadRun failedThr = threadRuns.get(pfh.failedThreadRun);
+
+            if (!failedThr.canBeInterrupted()) {
+                continue;
+            }
+            somethingChanged = true;
+            pendingFailures.remove(i);
+            Map<String, VariableValue> vars;
+
+            ThreadSpec iSpec = wfSpec.threadSpecs.get(pfh.handlerSpecName);
+            if (iSpec.variableDefs.size() > 0) {
+                vars = new HashMap<>();
+                Failure failure = failedThr.getCurrentNodeRun().getLatestFailure();
+                vars.put(LHConstants.EXT_EVT_HANDLER_VAR, failure.content);
+            } else {
+                vars = new HashMap<>();
+            }
+
+            ThreadRun fh = startThread(
+                pfh.handlerSpecName,
+                time,
+                pfh.failedThreadRun,
+                vars
+            );
+
+            fh.failureBeingHandled = new FailureBeingHandled();
+            fh.failureBeingHandled.failureNumber =
+                failedThr.getCurrentNodeRun().failures.size() - 1;
+            fh.failureBeingHandled.nodeRunPosition = failedThr.currentNodePosition;
+            fh.failureBeingHandled.threadRunNumber = pfh.failedThreadRun;
+
+            if (fh.status == LHStatusPb.ERROR) {
+                fh.fail(
+                    new Failure(
+                        TaskResultCodePb.FAILED,
+                        "Failed launching interrupt thread with id: " + fh.number,
+                        LHConstants.CHILD_FAILURE
+                    ),
+                    time
+                );
+            } else {
+                failedThr.acknowledgeXnHandlerStarted(pfh, fh.number);
             }
         }
 
@@ -287,7 +362,7 @@ public class WfRun extends GETable<WfRunPb> {
         for (ThreadRun thread : threadRuns) {
             statusChanged = thread.updateStatus() || statusChanged;
         }
-        statusChanged = startInterruptsIfNecessary(e.time) || statusChanged;
+        statusChanged = startXnHandlersAndInterrupts(e.time) || statusChanged;
         for (ThreadRun thread : threadRuns) {
             statusChanged = thread.advance(e.time) || statusChanged;
         }
@@ -297,7 +372,7 @@ public class WfRun extends GETable<WfRunPb> {
 
         while (statusChanged) {
             System.out.println("looping");
-            statusChanged = startInterruptsIfNecessary(e.time) || statusChanged;
+            statusChanged = startXnHandlersAndInterrupts(e.time) || statusChanged;
             statusChanged = false;
             for (ThreadRun thread : threadRuns) {
                 statusChanged = thread.advance(e.time) || statusChanged;

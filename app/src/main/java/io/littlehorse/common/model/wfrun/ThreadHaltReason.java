@@ -3,8 +3,10 @@ package io.littlehorse.common.model.wfrun;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.wfrun.haltreason.HandlingFailureHaltReason;
 import io.littlehorse.common.model.wfrun.haltreason.Interrupted;
 import io.littlehorse.common.model.wfrun.haltreason.ParentHalted;
+import io.littlehorse.common.model.wfrun.haltreason.PendingFailureHandlerHaltReason;
 import io.littlehorse.common.model.wfrun.haltreason.PendingInterruptHaltReason;
 import io.littlehorse.common.model.wfrun.haltreason.SubHaltReason;
 import io.littlehorse.common.proto.ThreadHaltReasonPb;
@@ -16,6 +18,8 @@ public class ThreadHaltReason extends LHSerializable<ThreadHaltReasonPb> {
     public ParentHalted parentHalted;
     public Interrupted interrupted;
     public PendingInterruptHaltReason pendingInterrupt;
+    public HandlingFailureHaltReason handlingFailure;
+    public PendingFailureHandlerHaltReason pendingFailure;
 
     public ReasonCase type;
 
@@ -37,6 +41,10 @@ public class ThreadHaltReason extends LHSerializable<ThreadHaltReasonPb> {
                 return interrupted;
             case PENDING_INTERRUPT:
                 return pendingInterrupt;
+            case PENDING_FAILURE:
+                return pendingFailure;
+            case HANDLING_FAILURE:
+                return handlingFailure;
             case REASON_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -61,6 +69,12 @@ public class ThreadHaltReason extends LHSerializable<ThreadHaltReasonPb> {
             case PENDING_INTERRUPT:
                 out.setPendingInterrupt(pendingInterrupt.toProto());
                 break;
+            case PENDING_FAILURE:
+                out.setPendingFailure(pendingFailure.toProto());
+                break;
+            case HANDLING_FAILURE:
+                out.setHandlingFailure(handlingFailure.toProto());
+                break;
             case REASON_NOT_SET:
                 throw new RuntimeException("not possible");
         }
@@ -83,6 +97,18 @@ public class ThreadHaltReason extends LHSerializable<ThreadHaltReasonPb> {
                 pendingInterrupt =
                     PendingInterruptHaltReason.fromProto(
                         p.getPendingInterruptOrBuilder()
+                    );
+                break;
+            case HANDLING_FAILURE:
+                handlingFailure =
+                    HandlingFailureHaltReason.fromProto(
+                        p.getHandlingFailureOrBuilder()
+                    );
+                break;
+            case PENDING_FAILURE:
+                pendingFailure =
+                    PendingFailureHandlerHaltReason.fromProto(
+                        p.getPendingFailureOrBuilder()
                     );
                 break;
             case REASON_NOT_SET:

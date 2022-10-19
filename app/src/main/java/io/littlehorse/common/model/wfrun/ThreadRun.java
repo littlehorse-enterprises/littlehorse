@@ -2,11 +2,13 @@ package io.littlehorse.common.model.wfrun;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.event.ExternalEvent;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.Edge;
+import io.littlehorse.common.model.meta.FailureHandlerDef;
 import io.littlehorse.common.model.meta.InterruptDef;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.meta.TaskDef;
@@ -15,8 +17,10 @@ import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.meta.VariableMutation;
 import io.littlehorse.common.model.meta.subnode.TaskNode;
+import io.littlehorse.common.model.wfrun.haltreason.HandlingFailureHaltReason;
 import io.littlehorse.common.model.wfrun.haltreason.Interrupted;
 import io.littlehorse.common.model.wfrun.haltreason.ParentHalted;
+import io.littlehorse.common.model.wfrun.haltreason.PendingFailureHandlerHaltReason;
 import io.littlehorse.common.model.wfrun.haltreason.PendingInterruptHaltReason;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.TaskResultCodePb;
@@ -54,6 +58,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
 
     public List<ThreadHaltReason> haltReasons;
     public String interruptTriggerId;
+    public FailureBeingHandled failureBeingHandled;
 
     public ThreadRun() {
         variables = new HashMap<>();
@@ -93,6 +98,13 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             thr.threadRun = this;
             haltReasons.add(thr);
         }
+
+        if (proto.hasFailureBeingHandled()) {
+            failureBeingHandled =
+                FailureBeingHandled.fromProto(
+                    proto.getFailureBeingHandledOrBuilder()
+                );
+        }
     }
 
     public ThreadRunPb.Builder toProto() {
@@ -127,6 +139,9 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         }
         if (interruptTriggerId != null) {
             out.setInterruptTriggerId(interruptTriggerId);
+        }
+        if (failureBeingHandled != null) {
+            out.setFailureBeingHandled(failureBeingHandled.toProto());
         }
         return out;
     }
@@ -286,7 +301,11 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             case STARTING:
             case RUNNING:
             case HALTING:
-                status = LHStatusPb.HALTING;
+                if (canBeInterrupted()) {
+                    status = LHStatusPb.HALTED;
+                } else {
+                    status = LHStatusPb.HALTING;
+                }
                 break;
             case HALTED:
                 status = LHStatusPb.HALTED;
@@ -412,9 +431,74 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         }
     }
 
-    public void fail(TaskResultCodePb resultCode, String msg, Date time) {
-        this.resultCode = resultCode;
-        this.errorMessage = msg;
+    public void fail(Failure failure, Date time) {
+        // First determine if the node that was failed has a relevant exception
+        // handler attached.
+
+        System.out.println("hi there");
+
+        Node curNode = getCurrentNode();
+        FailureHandlerDef handler = null;
+        for (FailureHandlerDef candidate : curNode.failureHandlers) {
+            if (candidate.doesHandle(failure.failureName)) {
+                handler = candidate;
+                break;
+            }
+        }
+
+        if (handler == null) {
+            dieForReal(failure, time);
+        } else {
+            handleFailure(failure, handler);
+        }
+    }
+
+    private void handleFailure(Failure failure, FailureHandlerDef handler) {
+        PendingFailureHandler pfh = new PendingFailureHandler();
+        pfh.failedThreadRun = this.number;
+        pfh.handlerSpecName = handler.handlerSpecName;
+
+        wfRun.pendingFailures.add(pfh);
+
+        ThreadHaltReason haltReason = new ThreadHaltReason();
+        haltReason.type = ReasonCase.PENDING_FAILURE;
+        haltReason.pendingFailure = new PendingFailureHandlerHaltReason();
+        haltReason.pendingFailure.nodeRunPosition = currentNodePosition;
+
+        // This also stops the children
+        halt(haltReason);
+    }
+
+    public void acknowledgeXnHandlerStarted(
+        PendingFailureHandler pfh,
+        int handlerThreadNumber
+    ) {
+        boolean foundIt = false;
+        for (int i = haltReasons.size() - 1; i >= 0; i--) {
+            ThreadHaltReason hr = haltReasons.get(i);
+            if (hr.type != ReasonCase.PENDING_FAILURE) {
+                continue;
+            }
+            foundIt = true;
+            haltReasons.remove(i);
+        }
+        if (!foundIt) {
+            throw new RuntimeException("Not possible");
+        }
+
+        ThreadHaltReason thr = new ThreadHaltReason();
+        thr.threadRun = this;
+        thr.type = ReasonCase.HANDLING_FAILURE;
+        thr.handlingFailure = new HandlingFailureHaltReason();
+        thr.handlingFailure.handlerThreadId = handlerThreadNumber;
+
+        childThreadIds.add((Integer) handlerThreadNumber);
+        haltReasons.add(thr);
+    }
+
+    public void dieForReal(Failure failure, Date time) {
+        this.resultCode = failure.failureCode;
+        this.errorMessage = failure.message;
         status = LHStatusPb.ERROR;
         this.endTime = time;
 
@@ -433,12 +517,29 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             // then we're an interrupt thread and need to fail the parent.
 
             getParent() // guaranteed not to be null in this case
-                .fail(
-                    TaskResultCodePb.CHILD_FALIED,
-                    "Interrupt thread with id " + number + " failed!",
+                .failWithoutGrace(
+                    new Failure(
+                        TaskResultCodePb.INTERRUPT_HANDLER_FAILED,
+                        "Interrupt thread with id " + number + " failed!",
+                        failure.failureName
+                    ),
+                    time
+                );
+        } else if (failureBeingHandled != null) {
+            getParent()
+                .failWithoutGrace(
+                    new Failure(
+                        TaskResultCodePb.EXCEPTION_HANDLER_FAILED,
+                        "Interrupt thread with id " + number + " failed!",
+                        failure.failureName
+                    ),
                     time
                 );
         }
+    }
+
+    public void failWithoutGrace(Failure failure, Date time) {
+        dieForReal(failure, time);
     }
 
     public void complete(Date time) {
@@ -458,11 +559,13 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             mutateVariables(output);
         } catch (LHVarSubError exn) {
             fail(
-                TaskResultCodePb.VAR_MUTATION_ERROR,
-                "Failed mutating variables: " + exn.getMessage(),
+                new Failure(
+                    TaskResultCodePb.VAR_MUTATION_ERROR,
+                    "Failed mutating variables: " + exn.getMessage(),
+                    LHConstants.VAR_MUTATION_ERROR
+                ),
                 eventTime
             );
-            // TODO: Maybe explicitly call `failThread()` here
             return;
         }
 
@@ -487,8 +590,11 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
                     currentNodePosition
                 );
                 fail(
-                    TaskResultCodePb.VAR_MUTATION_ERROR,
-                    "Failed evaluating outgoing edge: " + exn.getMessage(),
+                    new Failure(
+                        TaskResultCodePb.VAR_MUTATION_ERROR,
+                        "Failed evaluating outgoing edge: " + exn.getMessage(),
+                        LHConstants.VAR_MUTATION_ERROR
+                    ),
                     new Date()
                 );
                 return;

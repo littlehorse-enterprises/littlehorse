@@ -197,4 +197,19 @@ public interface ThreadRunPbOrBuilder extends
    */
   com.google.protobuf.ByteString
       getInterruptTriggerIdBytes();
+
+  /**
+   * <code>.lh_proto.FailureBeingHandledPb failure_being_handled = 15;</code>
+   * @return Whether the failureBeingHandled field is set.
+   */
+  boolean hasFailureBeingHandled();
+  /**
+   * <code>.lh_proto.FailureBeingHandledPb failure_being_handled = 15;</code>
+   * @return The failureBeingHandled.
+   */
+  io.littlehorse.common.proto.FailureBeingHandledPb getFailureBeingHandled();
+  /**
+   * <code>.lh_proto.FailureBeingHandledPb failure_being_handled = 15;</code>
+   */
+  io.littlehorse.common.proto.FailureBeingHandledPbOrBuilder getFailureBeingHandledOrBuilder();
 }

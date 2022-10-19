@@ -13,7 +13,7 @@ import io.littlehorse.common.model.meta.subnode.StartThreadNode;
 import io.littlehorse.common.model.meta.subnode.TaskNode;
 import io.littlehorse.common.model.meta.subnode.WaitForThreadNode;
 import io.littlehorse.common.proto.EdgePb;
-import io.littlehorse.common.proto.ExceptionHandlerPb;
+import io.littlehorse.common.proto.FailureHandlerDefPb;
 import io.littlehorse.common.proto.NodePb;
 import io.littlehorse.common.proto.NodePb.NodeCase;
 import io.littlehorse.common.proto.NodePbOrBuilder;
@@ -37,7 +37,7 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
     public List<VariableMutation> variableMutations;
     public OutputSchema outputSchema;
 
-    public List<ExceptionHandler> exceptionHandlers;
+    public List<FailureHandlerDef> failureHandlers;
 
     @JsonIgnore
     public Class<NodePb> getProtoBaseClass() {
@@ -58,8 +58,8 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
             out.addVariableMutations(v.toProto());
         }
 
-        for (ExceptionHandler eh : exceptionHandlers) {
-            out.addExceptionHandlers(eh.toProto());
+        for (FailureHandlerDef eh : failureHandlers) {
+            out.addFailureHandlers(eh.toProto());
         }
 
         switch (type) {
@@ -105,8 +105,8 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
             variableMutations.add(vm);
         }
 
-        for (ExceptionHandlerPb ehpb : proto.getExceptionHandlersList()) {
-            exceptionHandlers.add(ExceptionHandler.fromProto(ehpb));
+        for (FailureHandlerDefPb ehpb : proto.getFailureHandlersList()) {
+            failureHandlers.add(FailureHandlerDef.fromProto(ehpb));
         }
 
         switch (type) {
@@ -149,7 +149,7 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
         outgoingEdges = new ArrayList<>();
         variableMutations = new ArrayList<>();
         outputSchema = new OutputSchema();
-        exceptionHandlers = new ArrayList<>();
+        failureHandlers = new ArrayList<>();
     }
 
     public List<Edge> outgoingEdges;

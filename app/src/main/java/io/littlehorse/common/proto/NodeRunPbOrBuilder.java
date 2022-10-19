@@ -244,19 +244,28 @@ public interface NodeRunPbOrBuilder extends
   io.littlehorse.common.proto.WaitThreadRunPbOrBuilder getWaitThreadOrBuilder();
 
   /**
-   * <code>.lh_proto.FailurePb failure = 20;</code>
-   * @return Whether the failure field is set.
+   * <code>repeated .lh_proto.FailurePb failures = 20;</code>
    */
-  boolean hasFailure();
+  java.util.List<io.littlehorse.common.proto.FailurePb> 
+      getFailuresList();
   /**
-   * <code>.lh_proto.FailurePb failure = 20;</code>
-   * @return The failure.
+   * <code>repeated .lh_proto.FailurePb failures = 20;</code>
    */
-  io.littlehorse.common.proto.FailurePb getFailure();
+  io.littlehorse.common.proto.FailurePb getFailures(int index);
   /**
-   * <code>.lh_proto.FailurePb failure = 20;</code>
+   * <code>repeated .lh_proto.FailurePb failures = 20;</code>
    */
-  io.littlehorse.common.proto.FailurePbOrBuilder getFailureOrBuilder();
+  int getFailuresCount();
+  /**
+   * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+   */
+  java.util.List<? extends io.littlehorse.common.proto.FailurePbOrBuilder> 
+      getFailuresOrBuilderList();
+  /**
+   * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+   */
+  io.littlehorse.common.proto.FailurePbOrBuilder getFailuresOrBuilder(
+      int index);
 
   public io.littlehorse.common.proto.NodeRunPb.NodeTypeCase getNodeTypeCase();
 }

@@ -23,6 +23,7 @@ private static final long serialVersionUID = 0L;
     nodeName_ = "";
     resultCode_ = 0;
     errorMessage_ = "";
+    failures_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -229,16 +230,12 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 162: {
-            io.littlehorse.common.proto.FailurePb.Builder subBuilder = null;
-            if (((bitField0_ & 0x00000008) != 0)) {
-              subBuilder = failure_.toBuilder();
+            if (!((mutable_bitField0_ & 0x00000008) != 0)) {
+              failures_ = new java.util.ArrayList<io.littlehorse.common.proto.FailurePb>();
+              mutable_bitField0_ |= 0x00000008;
             }
-            failure_ = input.readMessage(io.littlehorse.common.proto.FailurePb.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom(failure_);
-              failure_ = subBuilder.buildPartial();
-            }
-            bitField0_ |= 0x00000008;
+            failures_.add(
+                input.readMessage(io.littlehorse.common.proto.FailurePb.parser(), extensionRegistry));
             break;
           }
           default: {
@@ -256,6 +253,9 @@ private static final long serialVersionUID = 0L;
       throw new com.google.protobuf.InvalidProtocolBufferException(
           e).setUnfinishedMessage(this);
     } finally {
+      if (((mutable_bitField0_ & 0x00000008) != 0)) {
+        failures_ = java.util.Collections.unmodifiableList(failures_);
+      }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
@@ -848,30 +848,44 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.WaitThreadRunPb.getDefaultInstance();
   }
 
-  public static final int FAILURE_FIELD_NUMBER = 20;
-  private io.littlehorse.common.proto.FailurePb failure_;
+  public static final int FAILURES_FIELD_NUMBER = 20;
+  private java.util.List<io.littlehorse.common.proto.FailurePb> failures_;
   /**
-   * <code>.lh_proto.FailurePb failure = 20;</code>
-   * @return Whether the failure field is set.
+   * <code>repeated .lh_proto.FailurePb failures = 20;</code>
    */
   @java.lang.Override
-  public boolean hasFailure() {
-    return ((bitField0_ & 0x00000008) != 0);
+  public java.util.List<io.littlehorse.common.proto.FailurePb> getFailuresList() {
+    return failures_;
   }
   /**
-   * <code>.lh_proto.FailurePb failure = 20;</code>
-   * @return The failure.
+   * <code>repeated .lh_proto.FailurePb failures = 20;</code>
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.FailurePb getFailure() {
-    return failure_ == null ? io.littlehorse.common.proto.FailurePb.getDefaultInstance() : failure_;
+  public java.util.List<? extends io.littlehorse.common.proto.FailurePbOrBuilder> 
+      getFailuresOrBuilderList() {
+    return failures_;
   }
   /**
-   * <code>.lh_proto.FailurePb failure = 20;</code>
+   * <code>repeated .lh_proto.FailurePb failures = 20;</code>
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.FailurePbOrBuilder getFailureOrBuilder() {
-    return failure_ == null ? io.littlehorse.common.proto.FailurePb.getDefaultInstance() : failure_;
+  public int getFailuresCount() {
+    return failures_.size();
+  }
+  /**
+   * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.FailurePb getFailures(int index) {
+    return failures_.get(index);
+  }
+  /**
+   * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.FailurePbOrBuilder getFailuresOrBuilder(
+      int index) {
+    return failures_.get(index);
   }
 
   private byte memoizedIsInitialized = -1;
@@ -945,8 +959,8 @@ private static final long serialVersionUID = 0L;
     if (nodeTypeCase_ == 19) {
       output.writeMessage(19, (io.littlehorse.common.proto.WaitThreadRunPb) nodeType_);
     }
-    if (((bitField0_ & 0x00000008) != 0)) {
-      output.writeMessage(20, getFailure());
+    for (int i = 0; i < failures_.size(); i++) {
+      output.writeMessage(20, failures_.get(i));
     }
     unknownFields.writeTo(output);
   }
@@ -1028,9 +1042,9 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(19, (io.littlehorse.common.proto.WaitThreadRunPb) nodeType_);
     }
-    if (((bitField0_ & 0x00000008) != 0)) {
+    for (int i = 0; i < failures_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(20, getFailure());
+        .computeMessageSize(20, failures_.get(i));
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -1083,11 +1097,8 @@ private static final long serialVersionUID = 0L;
       if (!getErrorMessage()
           .equals(other.getErrorMessage())) return false;
     }
-    if (hasFailure() != other.hasFailure()) return false;
-    if (hasFailure()) {
-      if (!getFailure()
-          .equals(other.getFailure())) return false;
-    }
+    if (!getFailuresList()
+        .equals(other.getFailuresList())) return false;
     if (!getNodeTypeCase().equals(other.getNodeTypeCase())) return false;
     switch (nodeTypeCase_) {
       case 14:
@@ -1162,9 +1173,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + ERROR_MESSAGE_FIELD_NUMBER;
       hash = (53 * hash) + getErrorMessage().hashCode();
     }
-    if (hasFailure()) {
-      hash = (37 * hash) + FAILURE_FIELD_NUMBER;
-      hash = (53 * hash) + getFailure().hashCode();
+    if (getFailuresCount() > 0) {
+      hash = (37 * hash) + FAILURES_FIELD_NUMBER;
+      hash = (53 * hash) + getFailuresList().hashCode();
     }
     switch (nodeTypeCase_) {
       case 14:
@@ -1323,7 +1334,7 @@ private static final long serialVersionUID = 0L;
       if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
         getEndTimeFieldBuilder();
-        getFailureFieldBuilder();
+        getFailuresFieldBuilder();
       }
     }
     @java.lang.Override
@@ -1363,12 +1374,12 @@ private static final long serialVersionUID = 0L;
       bitField0_ = (bitField0_ & ~0x00000002);
       errorMessage_ = "";
       bitField0_ = (bitField0_ & ~0x00000004);
-      if (failureBuilder_ == null) {
-        failure_ = null;
+      if (failuresBuilder_ == null) {
+        failures_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000008);
       } else {
-        failureBuilder_.clear();
+        failuresBuilder_.clear();
       }
-      bitField0_ = (bitField0_ & ~0x00000008);
       nodeTypeCase_ = 0;
       nodeType_ = null;
       return this;
@@ -1471,13 +1482,14 @@ private static final long serialVersionUID = 0L;
           result.nodeType_ = waitThreadBuilder_.build();
         }
       }
-      if (((from_bitField0_ & 0x00000008) != 0)) {
-        if (failureBuilder_ == null) {
-          result.failure_ = failure_;
-        } else {
-          result.failure_ = failureBuilder_.build();
+      if (failuresBuilder_ == null) {
+        if (((bitField0_ & 0x00000008) != 0)) {
+          failures_ = java.util.Collections.unmodifiableList(failures_);
+          bitField0_ = (bitField0_ & ~0x00000008);
         }
-        to_bitField0_ |= 0x00000008;
+        result.failures_ = failures_;
+      } else {
+        result.failures_ = failuresBuilder_.build();
       }
       result.bitField0_ = to_bitField0_;
       result.nodeTypeCase_ = nodeTypeCase_;
@@ -1574,8 +1586,31 @@ private static final long serialVersionUID = 0L;
         errorMessage_ = other.errorMessage_;
         onChanged();
       }
-      if (other.hasFailure()) {
-        mergeFailure(other.getFailure());
+      if (failuresBuilder_ == null) {
+        if (!other.failures_.isEmpty()) {
+          if (failures_.isEmpty()) {
+            failures_ = other.failures_;
+            bitField0_ = (bitField0_ & ~0x00000008);
+          } else {
+            ensureFailuresIsMutable();
+            failures_.addAll(other.failures_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.failures_.isEmpty()) {
+          if (failuresBuilder_.isEmpty()) {
+            failuresBuilder_.dispose();
+            failuresBuilder_ = null;
+            failures_ = other.failures_;
+            bitField0_ = (bitField0_ & ~0x00000008);
+            failuresBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getFailuresFieldBuilder() : null;
+          } else {
+            failuresBuilder_.addAllMessages(other.failures_);
+          }
+        }
       }
       switch (other.getNodeTypeCase()) {
         case TASK: {
@@ -3362,124 +3397,244 @@ private static final long serialVersionUID = 0L;
       return waitThreadBuilder_;
     }
 
-    private io.littlehorse.common.proto.FailurePb failure_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.FailurePb, io.littlehorse.common.proto.FailurePb.Builder, io.littlehorse.common.proto.FailurePbOrBuilder> failureBuilder_;
-    /**
-     * <code>.lh_proto.FailurePb failure = 20;</code>
-     * @return Whether the failure field is set.
-     */
-    public boolean hasFailure() {
-      return ((bitField0_ & 0x00000008) != 0);
+    private java.util.List<io.littlehorse.common.proto.FailurePb> failures_ =
+      java.util.Collections.emptyList();
+    private void ensureFailuresIsMutable() {
+      if (!((bitField0_ & 0x00000008) != 0)) {
+        failures_ = new java.util.ArrayList<io.littlehorse.common.proto.FailurePb>(failures_);
+        bitField0_ |= 0x00000008;
+       }
     }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.common.proto.FailurePb, io.littlehorse.common.proto.FailurePb.Builder, io.littlehorse.common.proto.FailurePbOrBuilder> failuresBuilder_;
+
     /**
-     * <code>.lh_proto.FailurePb failure = 20;</code>
-     * @return The failure.
+     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
      */
-    public io.littlehorse.common.proto.FailurePb getFailure() {
-      if (failureBuilder_ == null) {
-        return failure_ == null ? io.littlehorse.common.proto.FailurePb.getDefaultInstance() : failure_;
+    public java.util.List<io.littlehorse.common.proto.FailurePb> getFailuresList() {
+      if (failuresBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(failures_);
       } else {
-        return failureBuilder_.getMessage();
+        return failuresBuilder_.getMessageList();
       }
     }
     /**
-     * <code>.lh_proto.FailurePb failure = 20;</code>
+     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
      */
-    public Builder setFailure(io.littlehorse.common.proto.FailurePb value) {
-      if (failureBuilder_ == null) {
+    public int getFailuresCount() {
+      if (failuresBuilder_ == null) {
+        return failures_.size();
+      } else {
+        return failuresBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+     */
+    public io.littlehorse.common.proto.FailurePb getFailures(int index) {
+      if (failuresBuilder_ == null) {
+        return failures_.get(index);
+      } else {
+        return failuresBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+     */
+    public Builder setFailures(
+        int index, io.littlehorse.common.proto.FailurePb value) {
+      if (failuresBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        failure_ = value;
+        ensureFailuresIsMutable();
+        failures_.set(index, value);
         onChanged();
       } else {
-        failureBuilder_.setMessage(value);
+        failuresBuilder_.setMessage(index, value);
       }
-      bitField0_ |= 0x00000008;
       return this;
     }
     /**
-     * <code>.lh_proto.FailurePb failure = 20;</code>
+     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
      */
-    public Builder setFailure(
-        io.littlehorse.common.proto.FailurePb.Builder builderForValue) {
-      if (failureBuilder_ == null) {
-        failure_ = builderForValue.build();
+    public Builder setFailures(
+        int index, io.littlehorse.common.proto.FailurePb.Builder builderForValue) {
+      if (failuresBuilder_ == null) {
+        ensureFailuresIsMutable();
+        failures_.set(index, builderForValue.build());
         onChanged();
       } else {
-        failureBuilder_.setMessage(builderForValue.build());
+        failuresBuilder_.setMessage(index, builderForValue.build());
       }
-      bitField0_ |= 0x00000008;
       return this;
     }
     /**
-     * <code>.lh_proto.FailurePb failure = 20;</code>
+     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
      */
-    public Builder mergeFailure(io.littlehorse.common.proto.FailurePb value) {
-      if (failureBuilder_ == null) {
-        if (((bitField0_ & 0x00000008) != 0) &&
-            failure_ != null &&
-            failure_ != io.littlehorse.common.proto.FailurePb.getDefaultInstance()) {
-          failure_ =
-            io.littlehorse.common.proto.FailurePb.newBuilder(failure_).mergeFrom(value).buildPartial();
-        } else {
-          failure_ = value;
+    public Builder addFailures(io.littlehorse.common.proto.FailurePb value) {
+      if (failuresBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
         }
+        ensureFailuresIsMutable();
+        failures_.add(value);
         onChanged();
       } else {
-        failureBuilder_.mergeFrom(value);
+        failuresBuilder_.addMessage(value);
       }
-      bitField0_ |= 0x00000008;
       return this;
     }
     /**
-     * <code>.lh_proto.FailurePb failure = 20;</code>
+     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
      */
-    public Builder clearFailure() {
-      if (failureBuilder_ == null) {
-        failure_ = null;
+    public Builder addFailures(
+        int index, io.littlehorse.common.proto.FailurePb value) {
+      if (failuresBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureFailuresIsMutable();
+        failures_.add(index, value);
         onChanged();
       } else {
-        failureBuilder_.clear();
+        failuresBuilder_.addMessage(index, value);
       }
-      bitField0_ = (bitField0_ & ~0x00000008);
       return this;
     }
     /**
-     * <code>.lh_proto.FailurePb failure = 20;</code>
+     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
      */
-    public io.littlehorse.common.proto.FailurePb.Builder getFailureBuilder() {
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return getFailureFieldBuilder().getBuilder();
+    public Builder addFailures(
+        io.littlehorse.common.proto.FailurePb.Builder builderForValue) {
+      if (failuresBuilder_ == null) {
+        ensureFailuresIsMutable();
+        failures_.add(builderForValue.build());
+        onChanged();
+      } else {
+        failuresBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
     }
     /**
-     * <code>.lh_proto.FailurePb failure = 20;</code>
+     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
      */
-    public io.littlehorse.common.proto.FailurePbOrBuilder getFailureOrBuilder() {
-      if (failureBuilder_ != null) {
-        return failureBuilder_.getMessageOrBuilder();
+    public Builder addFailures(
+        int index, io.littlehorse.common.proto.FailurePb.Builder builderForValue) {
+      if (failuresBuilder_ == null) {
+        ensureFailuresIsMutable();
+        failures_.add(index, builderForValue.build());
+        onChanged();
       } else {
-        return failure_ == null ?
-            io.littlehorse.common.proto.FailurePb.getDefaultInstance() : failure_;
+        failuresBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+     */
+    public Builder addAllFailures(
+        java.lang.Iterable<? extends io.littlehorse.common.proto.FailurePb> values) {
+      if (failuresBuilder_ == null) {
+        ensureFailuresIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, failures_);
+        onChanged();
+      } else {
+        failuresBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+     */
+    public Builder clearFailures() {
+      if (failuresBuilder_ == null) {
+        failures_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+      } else {
+        failuresBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+     */
+    public Builder removeFailures(int index) {
+      if (failuresBuilder_ == null) {
+        ensureFailuresIsMutable();
+        failures_.remove(index);
+        onChanged();
+      } else {
+        failuresBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+     */
+    public io.littlehorse.common.proto.FailurePb.Builder getFailuresBuilder(
+        int index) {
+      return getFailuresFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+     */
+    public io.littlehorse.common.proto.FailurePbOrBuilder getFailuresOrBuilder(
+        int index) {
+      if (failuresBuilder_ == null) {
+        return failures_.get(index);  } else {
+        return failuresBuilder_.getMessageOrBuilder(index);
       }
     }
     /**
-     * <code>.lh_proto.FailurePb failure = 20;</code>
+     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
      */
-    private com.google.protobuf.SingleFieldBuilderV3<
+    public java.util.List<? extends io.littlehorse.common.proto.FailurePbOrBuilder> 
+         getFailuresOrBuilderList() {
+      if (failuresBuilder_ != null) {
+        return failuresBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(failures_);
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+     */
+    public io.littlehorse.common.proto.FailurePb.Builder addFailuresBuilder() {
+      return getFailuresFieldBuilder().addBuilder(
+          io.littlehorse.common.proto.FailurePb.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+     */
+    public io.littlehorse.common.proto.FailurePb.Builder addFailuresBuilder(
+        int index) {
+      return getFailuresFieldBuilder().addBuilder(
+          index, io.littlehorse.common.proto.FailurePb.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+     */
+    public java.util.List<io.littlehorse.common.proto.FailurePb.Builder> 
+         getFailuresBuilderList() {
+      return getFailuresFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
         io.littlehorse.common.proto.FailurePb, io.littlehorse.common.proto.FailurePb.Builder, io.littlehorse.common.proto.FailurePbOrBuilder> 
-        getFailureFieldBuilder() {
-      if (failureBuilder_ == null) {
-        failureBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+        getFailuresFieldBuilder() {
+      if (failuresBuilder_ == null) {
+        failuresBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             io.littlehorse.common.proto.FailurePb, io.littlehorse.common.proto.FailurePb.Builder, io.littlehorse.common.proto.FailurePbOrBuilder>(
-                getFailure(),
+                failures_,
+                ((bitField0_ & 0x00000008) != 0),
                 getParentForChildren(),
                 isClean());
-        failure_ = null;
+        failures_ = null;
       }
-      return failureBuilder_;
+      return failuresBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
