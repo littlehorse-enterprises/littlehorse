@@ -8,7 +8,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.Server;
-import io.littlehorse.worker.TestWorker;
+import io.littlehorse.testworker.TestWorker;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import org.apache.kafka.clients.admin.NewTopic;

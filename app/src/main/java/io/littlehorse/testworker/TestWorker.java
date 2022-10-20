@@ -1,4 +1,4 @@
-package io.littlehorse.worker;
+package io.littlehorse.testworker;
 
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHSerdeError;
