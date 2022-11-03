@@ -435,8 +435,6 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         // First determine if the node that was failed has a relevant exception
         // handler attached.
 
-        System.out.println("hi there");
-
         Node curNode = getCurrentNode();
         FailureHandlerDef handler = null;
         for (FailureHandlerDef candidate : curNode.failureHandlers) {

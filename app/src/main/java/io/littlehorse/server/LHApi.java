@@ -194,8 +194,16 @@ public class LHApi {
         Class<T> cls
     ) throws LHSerdeError { // should never throw it though
         LHResponse resp = new LHResponse(config);
+        boolean asProto = ctx
+            .queryParamAsClass("asProto", Boolean.class)
+            .getOrDefault(false);
         try {
-            T t = LHSerializable.fromJson(ctx.body(), cls, config);
+            T t;
+            if (asProto) {
+                t = LHSerializable.fromBytes(ctx.bodyAsBytes(), cls, config);
+            } else {
+                t = LHSerializable.fromJson(ctx.body(), cls, config);
+            }
             byte[] rawResponse = streams.post(t, cls);
             resp = LHSerializable.fromBytes(rawResponse, LHResponse.class, config);
         } catch (LHSerdeError exn) {
@@ -280,14 +288,25 @@ public class LHApi {
         boolean async = ctx
             .queryParamAsClass("async", Boolean.class)
             .getOrDefault(false);
+        boolean asProto = ctx
+            .queryParamAsClass("asProto", Boolean.class)
+            .getOrDefault(false);
+
         LHResponse resp = new LHResponse(config);
         resp.code = LHResponseCodePb.OK;
         try {
-            WfRunRequest req = LHSerializable.fromJson(
-                ctx.body(),
-                WfRunRequest.class,
-                config
-            );
+            WfRunRequest req;
+            if (asProto) {
+                req =
+                    LHSerializable.fromBytes(
+                        ctx.bodyAsBytes(),
+                        WfRunRequest.class,
+                        config
+                    );
+            } else {
+                req = LHSerializable.fromJson(ctx.body(), WfRunRequest.class, config);
+            }
+
             if (req.wfRunId == null) {
                 req.wfRunId = LHUtil.generateGuid();
             }
@@ -336,7 +355,11 @@ public class LHApi {
             resp.message = "Problem sending Kafka Record: " + exn.getMessage();
         }
         ctx.status(resp.getStatus());
-        ctx.json(resp);
+        if (asProto) {
+            ctx.result(resp.toBytes(config));
+        } else {
+            ctx.json(resp);
+        }
     }
 
     public void postManyWfRuns(Context ctx) throws Exception {
@@ -345,11 +368,22 @@ public class LHApi {
             .getOrDefault(1000);
         LHResponse resp = new LHResponse(config);
         resp.code = LHResponseCodePb.OK;
-        WfRunRequest req = LHSerializable.fromJson(
-            ctx.body(),
-            WfRunRequest.class,
-            config
-        );
+        boolean asProto = ctx
+            .queryParamAsClass("asProto", Boolean.class)
+            .getOrDefault(false);
+
+        WfRunRequest req;
+        if (asProto) {
+            req =
+                LHSerializable.fromBytes(
+                    ctx.bodyAsBytes(),
+                    WfRunRequest.class,
+                    config
+                );
+        } else {
+            req = LHSerializable.fromJson(ctx.body(), WfRunRequest.class, config);
+        }
+
         String guid = req.wfRunId == null ? LHUtil.generateGuid() : req.wfRunId;
 
         WfSpec spec = globalStores.getWfSpec(req.wfSpecId);
@@ -372,7 +406,11 @@ public class LHApi {
             }
         }
         ctx.status(resp.getStatus());
-        ctx.json(resp);
+        if (asProto) {
+            ctx.result(resp.toBytes(config));
+        } else {
+            ctx.json(resp);
+        }
     }
 
     public void getWfSpecByName(Context ctx) {
@@ -597,15 +635,26 @@ public class LHApi {
         boolean async = ctx
             .queryParamAsClass("async", Boolean.class)
             .getOrDefault(false);
+        boolean asProto = ctx
+            .queryParamAsClass("asProto", Boolean.class)
+            .getOrDefault(false);
 
         LHResponse resp = new LHResponse(config);
         resp.code = LHResponseCodePb.OK;
         try {
-            ExternalEvent req = LHSerializable.fromJson(
-                ctx.body(),
-                ExternalEvent.class,
-                config
-            );
+            ExternalEvent req;
+
+            if (asProto) {
+                req =
+                    LHSerializable.fromBytes(
+                        ctx.bodyAsBytes(),
+                        ExternalEvent.class,
+                        config
+                    );
+            } else {
+                req =
+                    LHSerializable.fromJson(ctx.body(), ExternalEvent.class, config);
+            }
             if (req.guid == null || req.guid.equals("")) {
                 req.guid = LHUtil.generateGuid();
             }
