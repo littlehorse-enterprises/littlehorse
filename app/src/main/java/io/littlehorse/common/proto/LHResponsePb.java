@@ -19,7 +19,6 @@ private static final long serialVersionUID = 0L;
     code_ = 0;
     id_ = "";
     message_ = "";
-    result_ = com.google.protobuf.ByteString.EMPTY;
     resultClass_ = "";
   }
 
@@ -73,8 +72,16 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 34: {
+            com.google.protobuf.Any.Builder subBuilder = null;
+            if (((bitField0_ & 0x00000004) != 0)) {
+              subBuilder = result_.toBuilder();
+            }
+            result_ = input.readMessage(com.google.protobuf.Any.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom(result_);
+              result_ = subBuilder.buildPartial();
+            }
             bitField0_ |= 0x00000004;
-            result_ = input.readBytes();
             break;
           }
           case 42: {
@@ -228,9 +235,13 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int RESULT_FIELD_NUMBER = 4;
-  private com.google.protobuf.ByteString result_;
+  private com.google.protobuf.Any result_;
   /**
-   * <code>bytes result = 4;</code>
+   * <pre>
+   * optional bytes result = 4;
+   * </pre>
+   *
+   * <code>.google.protobuf.Any result = 4;</code>
    * @return Whether the result field is set.
    */
   @java.lang.Override
@@ -238,12 +249,27 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000004) != 0);
   }
   /**
-   * <code>bytes result = 4;</code>
+   * <pre>
+   * optional bytes result = 4;
+   * </pre>
+   *
+   * <code>.google.protobuf.Any result = 4;</code>
    * @return The result.
    */
   @java.lang.Override
-  public com.google.protobuf.ByteString getResult() {
-    return result_;
+  public com.google.protobuf.Any getResult() {
+    return result_ == null ? com.google.protobuf.Any.getDefaultInstance() : result_;
+  }
+  /**
+   * <pre>
+   * optional bytes result = 4;
+   * </pre>
+   *
+   * <code>.google.protobuf.Any result = 4;</code>
+   */
+  @java.lang.Override
+  public com.google.protobuf.AnyOrBuilder getResultOrBuilder() {
+    return result_ == null ? com.google.protobuf.Any.getDefaultInstance() : result_;
   }
 
   public static final int RESULT_CLASS_FIELD_NUMBER = 5;
@@ -316,7 +342,7 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.GeneratedMessageV3.writeString(output, 3, message_);
     }
     if (((bitField0_ & 0x00000004) != 0)) {
-      output.writeBytes(4, result_);
+      output.writeMessage(4, getResult());
     }
     if (((bitField0_ & 0x00000008) != 0)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 5, resultClass_);
@@ -342,7 +368,7 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000004) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(4, result_);
+        .computeMessageSize(4, getResult());
     }
     if (((bitField0_ & 0x00000008) != 0)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, resultClass_);
@@ -540,6 +566,7 @@ private static final long serialVersionUID = 0L;
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
+        getResultFieldBuilder();
       }
     }
     @java.lang.Override
@@ -551,7 +578,11 @@ private static final long serialVersionUID = 0L;
       bitField0_ = (bitField0_ & ~0x00000001);
       message_ = "";
       bitField0_ = (bitField0_ & ~0x00000002);
-      result_ = com.google.protobuf.ByteString.EMPTY;
+      if (resultBuilder_ == null) {
+        result_ = null;
+      } else {
+        resultBuilder_.clear();
+      }
       bitField0_ = (bitField0_ & ~0x00000004);
       resultClass_ = "";
       bitField0_ = (bitField0_ & ~0x00000008);
@@ -593,9 +624,13 @@ private static final long serialVersionUID = 0L;
       }
       result.message_ = message_;
       if (((from_bitField0_ & 0x00000004) != 0)) {
+        if (resultBuilder_ == null) {
+          result.result_ = result_;
+        } else {
+          result.result_ = resultBuilder_.build();
+        }
         to_bitField0_ |= 0x00000004;
       }
-      result.result_ = result_;
       if (((from_bitField0_ & 0x00000008) != 0)) {
         to_bitField0_ |= 0x00000008;
       }
@@ -663,7 +698,7 @@ private static final long serialVersionUID = 0L;
         onChanged();
       }
       if (other.hasResult()) {
-        setResult(other.getResult());
+        mergeResult(other.getResult());
       }
       if (other.hasResultClass()) {
         bitField0_ |= 0x00000008;
@@ -920,46 +955,160 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private com.google.protobuf.ByteString result_ = com.google.protobuf.ByteString.EMPTY;
+    private com.google.protobuf.Any result_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Any, com.google.protobuf.Any.Builder, com.google.protobuf.AnyOrBuilder> resultBuilder_;
     /**
-     * <code>bytes result = 4;</code>
+     * <pre>
+     * optional bytes result = 4;
+     * </pre>
+     *
+     * <code>.google.protobuf.Any result = 4;</code>
      * @return Whether the result field is set.
      */
-    @java.lang.Override
     public boolean hasResult() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>bytes result = 4;</code>
+     * <pre>
+     * optional bytes result = 4;
+     * </pre>
+     *
+     * <code>.google.protobuf.Any result = 4;</code>
      * @return The result.
      */
-    @java.lang.Override
-    public com.google.protobuf.ByteString getResult() {
-      return result_;
+    public com.google.protobuf.Any getResult() {
+      if (resultBuilder_ == null) {
+        return result_ == null ? com.google.protobuf.Any.getDefaultInstance() : result_;
+      } else {
+        return resultBuilder_.getMessage();
+      }
     }
     /**
-     * <code>bytes result = 4;</code>
-     * @param value The result to set.
-     * @return This builder for chaining.
+     * <pre>
+     * optional bytes result = 4;
+     * </pre>
+     *
+     * <code>.google.protobuf.Any result = 4;</code>
      */
-    public Builder setResult(com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000004;
-      result_ = value;
-      onChanged();
+    public Builder setResult(com.google.protobuf.Any value) {
+      if (resultBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        result_ = value;
+        onChanged();
+      } else {
+        resultBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000004;
       return this;
     }
     /**
-     * <code>bytes result = 4;</code>
-     * @return This builder for chaining.
+     * <pre>
+     * optional bytes result = 4;
+     * </pre>
+     *
+     * <code>.google.protobuf.Any result = 4;</code>
+     */
+    public Builder setResult(
+        com.google.protobuf.Any.Builder builderForValue) {
+      if (resultBuilder_ == null) {
+        result_ = builderForValue.build();
+        onChanged();
+      } else {
+        resultBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000004;
+      return this;
+    }
+    /**
+     * <pre>
+     * optional bytes result = 4;
+     * </pre>
+     *
+     * <code>.google.protobuf.Any result = 4;</code>
+     */
+    public Builder mergeResult(com.google.protobuf.Any value) {
+      if (resultBuilder_ == null) {
+        if (((bitField0_ & 0x00000004) != 0) &&
+            result_ != null &&
+            result_ != com.google.protobuf.Any.getDefaultInstance()) {
+          result_ =
+            com.google.protobuf.Any.newBuilder(result_).mergeFrom(value).buildPartial();
+        } else {
+          result_ = value;
+        }
+        onChanged();
+      } else {
+        resultBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000004;
+      return this;
+    }
+    /**
+     * <pre>
+     * optional bytes result = 4;
+     * </pre>
+     *
+     * <code>.google.protobuf.Any result = 4;</code>
      */
     public Builder clearResult() {
+      if (resultBuilder_ == null) {
+        result_ = null;
+        onChanged();
+      } else {
+        resultBuilder_.clear();
+      }
       bitField0_ = (bitField0_ & ~0x00000004);
-      result_ = getDefaultInstance().getResult();
-      onChanged();
       return this;
+    }
+    /**
+     * <pre>
+     * optional bytes result = 4;
+     * </pre>
+     *
+     * <code>.google.protobuf.Any result = 4;</code>
+     */
+    public com.google.protobuf.Any.Builder getResultBuilder() {
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return getResultFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * optional bytes result = 4;
+     * </pre>
+     *
+     * <code>.google.protobuf.Any result = 4;</code>
+     */
+    public com.google.protobuf.AnyOrBuilder getResultOrBuilder() {
+      if (resultBuilder_ != null) {
+        return resultBuilder_.getMessageOrBuilder();
+      } else {
+        return result_ == null ?
+            com.google.protobuf.Any.getDefaultInstance() : result_;
+      }
+    }
+    /**
+     * <pre>
+     * optional bytes result = 4;
+     * </pre>
+     *
+     * <code>.google.protobuf.Any result = 4;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Any, com.google.protobuf.Any.Builder, com.google.protobuf.AnyOrBuilder> 
+        getResultFieldBuilder() {
+      if (resultBuilder_ == null) {
+        resultBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            com.google.protobuf.Any, com.google.protobuf.Any.Builder, com.google.protobuf.AnyOrBuilder>(
+                getResult(),
+                getParentForChildren(),
+                isClean());
+        result_ = null;
+      }
+      return resultBuilder_;
     }
 
     private java.lang.Object resultClass_ = "";

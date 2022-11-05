@@ -53,15 +53,31 @@ public interface LHResponsePbOrBuilder extends
       getMessageBytes();
 
   /**
-   * <code>bytes result = 4;</code>
+   * <pre>
+   * optional bytes result = 4;
+   * </pre>
+   *
+   * <code>.google.protobuf.Any result = 4;</code>
    * @return Whether the result field is set.
    */
   boolean hasResult();
   /**
-   * <code>bytes result = 4;</code>
+   * <pre>
+   * optional bytes result = 4;
+   * </pre>
+   *
+   * <code>.google.protobuf.Any result = 4;</code>
    * @return The result.
    */
-  com.google.protobuf.ByteString getResult();
+  com.google.protobuf.Any getResult();
+  /**
+   * <pre>
+   * optional bytes result = 4;
+   * </pre>
+   *
+   * <code>.google.protobuf.Any result = 4;</code>
+   */
+  com.google.protobuf.AnyOrBuilder getResultOrBuilder();
 
   /**
    * <code>string result_class = 5;</code>

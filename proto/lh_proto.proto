@@ -6,6 +6,7 @@ option java_multiple_files = true;
 option java_package = "io.littlehorse.common.proto";
 
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/any.proto";
 
 enum LHStatusPb {
     STARTING = 0;
@@ -494,7 +495,8 @@ message LHResponsePb {
     LHResponseCodePb code = 1;
     optional string id = 2;
     optional string message = 3;
-    optional bytes result = 4;
+    // optional bytes result = 4;
+    optional google.protobuf.Any result = 4;
     optional string result_class = 5;
 }
 

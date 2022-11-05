@@ -1,7 +1,7 @@
 package io.littlehorse.common.model.server;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.protobuf.ByteString;
+import com.google.protobuf.Any;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHSerdeError;
@@ -54,7 +54,12 @@ public class LHResponse extends LHSerializable<LHResponsePb> {
         if (id != null) out.setId(id);
         if (result != null) {
             // This is jank i know
-            out.setResult(ByteString.copyFrom(result.toBytes(config)));
+            out.setResult(
+                Any
+                    .newBuilder()
+                    .setValue(result.toProto().build().toByteString())
+                    .setTypeUrl("unknownoops")
+            );
             out.setResultClass(result.getClass().getCanonicalName());
         }
         return out;
@@ -70,7 +75,7 @@ public class LHResponse extends LHSerializable<LHResponsePb> {
             try {
                 result =
                     LHSerializable.fromBytes(
-                        proto.getResult().toByteArray(),
+                        proto.getResult().getValue().toByteArray(),
                         (Class<LHSerializable<?>>) Class.forName(
                             proto.getResultClass()
                         ),
