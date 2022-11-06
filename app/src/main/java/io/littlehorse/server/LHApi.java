@@ -217,7 +217,11 @@ public class LHApi {
         }
 
         ctx.status(resp.getStatus());
-        ctx.json(resp);
+        if (asProto) {
+            ctx.result(resp.toBytes(config));
+        } else {
+            ctx.json(resp);
+        }
     }
 
     public void getNodeRun(Context ctx) {
