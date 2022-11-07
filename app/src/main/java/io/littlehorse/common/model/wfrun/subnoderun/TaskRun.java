@@ -86,8 +86,8 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
         out.add(
             new Tag(
                 parent,
-                Pair.of("type", "TASK"),
-                Pair.of("taskDefName", taskDefName)
+                Pair.of("taskDefId", taskDefName),
+                Pair.of("status", parent.status.toString())
             )
         );
 

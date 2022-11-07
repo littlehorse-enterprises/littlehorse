@@ -97,6 +97,8 @@ public class ExternalEventRun extends SubNodeRun<ExternalEventRunPb> {
         evt.taskRunPosition = nodeRun.position;
         evt.threadRunNumber = nodeRun.threadRunNumber;
 
+        externalEventId = evt.getObjectId();
+
         nodeRun.complete(evt.content, time);
         return true;
     }

@@ -709,7 +709,12 @@ public class LHApi {
             resp.message = "Problem sending Kafka Record: " + exn.getMessage();
         }
         ctx.status(resp.getStatus());
-        ctx.json(resp);
+
+        if (asProto) {
+            ctx.result(resp.toBytes(config));
+        } else {
+            ctx.json(resp);
+        }
     }
 
     public void countNodeRuns(Context ctx) throws LHConnectionError {
