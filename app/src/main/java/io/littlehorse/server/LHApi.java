@@ -108,12 +108,12 @@ public class LHApi {
             );
 
         this.app.get(
-                "/search/WfRun/wfSpecId/{id}",
+                "/search/WfRun/wfSpecId/{id}/status/{status}",
                 ctx -> handle(this::getRunBySpecId, ctx)
             );
 
         this.app.get(
-                "/search/WfRun/wfSpecName/{name}",
+                "/search/WfRun/wfSpecName/{name}/status/{status}",
                 ctx -> handle(this::getRunBySpecName, ctx)
             );
         this.app.get(
@@ -424,7 +424,12 @@ public class LHApi {
 
     public void getRunBySpecId(Context ctx) {
         String id = ctx.pathParam("id");
-        keyedPrefixIdxScan(Arrays.asList(Pair.of("wfSpecId", id)), WfRun.class, ctx);
+        String status = ctx.pathParam("status");
+        keyedPrefixIdxScan(
+            Arrays.asList(Pair.of("wfSpecId", id), Pair.of("status", status)),
+            WfRun.class,
+            ctx
+        );
     }
 
     public void getNodeRunsByWfRun(Context ctx) {
@@ -434,8 +439,9 @@ public class LHApi {
 
     public void getRunBySpecName(Context ctx) {
         String name = ctx.pathParam("name");
+        String status = ctx.pathParam("status");
         keyedPrefixIdxScan(
-            Arrays.asList(Pair.of("wfSpecName", name)),
+            Arrays.asList(Pair.of("wfSpecName", name), Pair.of("status", status)),
             WfRun.class,
             ctx
         );

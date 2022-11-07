@@ -141,7 +141,11 @@ public class WfRun extends GETable<WfRunPb> {
     @JsonIgnore
     public List<Tag> getTags() {
         List<Tag> out = Arrays.asList(
-            new Tag(this, Pair.of("wfSpecName", wfSpecName)),
+            new Tag(
+                this,
+                Pair.of("wfSpecName", wfSpecName),
+                Pair.of("status", status.toString())
+            ),
             new Tag(
                 this,
                 Pair.of("wfSpecId", wfSpecId),
