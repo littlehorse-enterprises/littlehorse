@@ -22,7 +22,7 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
     public RhsValueCase rhsValueType;
     public VariableAssignment rhsSourceVariable;
     public VariableValue rhsLiteralValue;
-    public String rhsJsonPath;
+    public NodeOutputSource nodeOutputSource;
 
     public Class<VariableMutationPb> getProtoBaseClass() {
         return VariableMutationPb.class;
@@ -44,13 +44,11 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
                 out.setSourceVariable(rhsSourceVariable.toProto());
                 break;
             case NODE_OUTPUT:
-                out.setNodeOutput(true); // just set the flag
+                out.setNodeOutput(nodeOutputSource.toProto()); // just set the flag
                 break;
             case RHSVALUE_NOT_SET:
             // not possible
         }
-
-        if (rhsJsonPath != null) out.setRhsJsonPath(rhsJsonPath);
 
         return out;
     }
@@ -72,12 +70,12 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
                     VariableAssignment.fromProto(p.getSourceVariable());
                 break;
             case NODE_OUTPUT:
-                // nothing to do
+                nodeOutputSource =
+                    NodeOutputSource.fromProto(p.getNodeOutputOrBuilder());
                 break;
             case RHSVALUE_NOT_SET:
             // not possible
         }
-        if (p.hasRhsJsonPath()) rhsJsonPath = p.getRhsJsonPath();
     }
 
     public static VariableMutation fromProto(VariableMutationPbOrBuilder p) {
@@ -121,12 +119,11 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
             out = thread.assignVariable(rhsSourceVariable, txnCache);
         } else if (rhsValueType == RhsValueCase.NODE_OUTPUT) {
             out = nodeOutput;
+            if (nodeOutputSource.jsonPath != null) {
+                out = out.jsonPath(nodeOutputSource.jsonPath);
+            }
         } else {
             throw new RuntimeException("Unsupported RHS Value type: " + rhsValueType);
-        }
-
-        if (rhsJsonPath != null) {
-            out = out.jsonPath(rhsJsonPath);
         }
         return out;
     }

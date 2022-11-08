@@ -19,7 +19,6 @@ private static final long serialVersionUID = 0L;
     lhsName_ = "";
     lhsJsonPath_ = "";
     operation_ = 0;
-    rhsJsonPath_ = "";
   }
 
   @java.lang.Override
@@ -99,15 +98,18 @@ private static final long serialVersionUID = 0L;
             rhsValueCase_ = 5;
             break;
           }
-          case 48: {
+          case 50: {
+            io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb.Builder subBuilder = null;
+            if (rhsValueCase_ == 6) {
+              subBuilder = ((io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb) rhsValue_).toBuilder();
+            }
+            rhsValue_ =
+                input.readMessage(io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb) rhsValue_);
+              rhsValue_ = subBuilder.buildPartial();
+            }
             rhsValueCase_ = 6;
-            rhsValue_ = input.readBool();
-            break;
-          }
-          case 58: {
-            java.lang.String s = input.readStringRequireUtf8();
-            bitField0_ |= 0x00000002;
-            rhsJsonPath_ = s;
             break;
           }
           default: {
@@ -140,6 +142,609 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_VariableMutationPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.common.proto.VariableMutationPb.class, io.littlehorse.common.proto.VariableMutationPb.Builder.class);
+  }
+
+  public interface NodeOutputSourcePbOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:lh_proto.VariableMutationPb.NodeOutputSourcePb)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string jsonpath = 10;</code>
+     * @return Whether the jsonpath field is set.
+     */
+    boolean hasJsonpath();
+    /**
+     * <code>string jsonpath = 10;</code>
+     * @return The jsonpath.
+     */
+    java.lang.String getJsonpath();
+    /**
+     * <code>string jsonpath = 10;</code>
+     * @return The bytes for jsonpath.
+     */
+    com.google.protobuf.ByteString
+        getJsonpathBytes();
+  }
+  /**
+   * Protobuf type {@code lh_proto.VariableMutationPb.NodeOutputSourcePb}
+   */
+  public static final class NodeOutputSourcePb extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:lh_proto.VariableMutationPb.NodeOutputSourcePb)
+      NodeOutputSourcePbOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use NodeOutputSourcePb.newBuilder() to construct.
+    private NodeOutputSourcePb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private NodeOutputSourcePb() {
+      jsonpath_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new NodeOutputSourcePb();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private NodeOutputSourcePb(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 82: {
+              java.lang.String s = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000001;
+              jsonpath_ = s;
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_VariableMutationPb_NodeOutputSourcePb_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_VariableMutationPb_NodeOutputSourcePb_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb.class, io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int JSONPATH_FIELD_NUMBER = 10;
+    private volatile java.lang.Object jsonpath_;
+    /**
+     * <code>string jsonpath = 10;</code>
+     * @return Whether the jsonpath field is set.
+     */
+    @java.lang.Override
+    public boolean hasJsonpath() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>string jsonpath = 10;</code>
+     * @return The jsonpath.
+     */
+    @java.lang.Override
+    public java.lang.String getJsonpath() {
+      java.lang.Object ref = jsonpath_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        jsonpath_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string jsonpath = 10;</code>
+     * @return The bytes for jsonpath.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getJsonpathBytes() {
+      java.lang.Object ref = jsonpath_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        jsonpath_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) != 0)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 10, jsonpath_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(10, jsonpath_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb)) {
+        return super.equals(obj);
+      }
+      io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb other = (io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb) obj;
+
+      if (hasJsonpath() != other.hasJsonpath()) return false;
+      if (hasJsonpath()) {
+        if (!getJsonpath()
+            .equals(other.getJsonpath())) return false;
+      }
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasJsonpath()) {
+        hash = (37 * hash) + JSONPATH_FIELD_NUMBER;
+        hash = (53 * hash) + getJsonpath().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code lh_proto.VariableMutationPb.NodeOutputSourcePb}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:lh_proto.VariableMutationPb.NodeOutputSourcePb)
+        io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePbOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_VariableMutationPb_NodeOutputSourcePb_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_VariableMutationPb_NodeOutputSourcePb_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb.class, io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb.Builder.class);
+      }
+
+      // Construct using io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        jsonpath_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.littlehorse.common.proto.LhProto.internal_static_lh_proto_VariableMutationPb_NodeOutputSourcePb_descriptor;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb getDefaultInstanceForType() {
+        return io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb build() {
+        io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb buildPartial() {
+        io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb result = new io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.jsonpath_ = jsonpath_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb) {
+          return mergeFrom((io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb other) {
+        if (other == io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb.getDefaultInstance()) return this;
+        if (other.hasJsonpath()) {
+          bitField0_ |= 0x00000001;
+          jsonpath_ = other.jsonpath_;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object jsonpath_ = "";
+      /**
+       * <code>string jsonpath = 10;</code>
+       * @return Whether the jsonpath field is set.
+       */
+      public boolean hasJsonpath() {
+        return ((bitField0_ & 0x00000001) != 0);
+      }
+      /**
+       * <code>string jsonpath = 10;</code>
+       * @return The jsonpath.
+       */
+      public java.lang.String getJsonpath() {
+        java.lang.Object ref = jsonpath_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          jsonpath_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string jsonpath = 10;</code>
+       * @return The bytes for jsonpath.
+       */
+      public com.google.protobuf.ByteString
+          getJsonpathBytes() {
+        java.lang.Object ref = jsonpath_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          jsonpath_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string jsonpath = 10;</code>
+       * @param value The jsonpath to set.
+       * @return This builder for chaining.
+       */
+      public Builder setJsonpath(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        jsonpath_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string jsonpath = 10;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearJsonpath() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        jsonpath_ = getDefaultInstance().getJsonpath();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string jsonpath = 10;</code>
+       * @param value The bytes for jsonpath to set.
+       * @return This builder for chaining.
+       */
+      public Builder setJsonpathBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        bitField0_ |= 0x00000001;
+        jsonpath_ = value;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:lh_proto.VariableMutationPb.NodeOutputSourcePb)
+    }
+
+    // @@protoc_insertion_point(class_scope:lh_proto.VariableMutationPb.NodeOutputSourcePb)
+    private static final io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb();
+    }
+
+    public static io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<NodeOutputSourcePb>
+        PARSER = new com.google.protobuf.AbstractParser<NodeOutputSourcePb>() {
+      @java.lang.Override
+      public NodeOutputSourcePb parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new NodeOutputSourcePb(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<NodeOutputSourcePb> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<NodeOutputSourcePb> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
   }
 
   private int bitField0_;
@@ -353,65 +958,33 @@ private static final long serialVersionUID = 0L;
 
   public static final int NODE_OUTPUT_FIELD_NUMBER = 6;
   /**
-   * <pre>
-   * Dummy protobuf syntax hack, only care about the enum val
-   * </pre>
-   *
-   * <code>bool node_output = 6;</code>
+   * <code>.lh_proto.VariableMutationPb.NodeOutputSourcePb node_output = 6;</code>
+   * @return Whether the nodeOutput field is set.
+   */
+  @java.lang.Override
+  public boolean hasNodeOutput() {
+    return rhsValueCase_ == 6;
+  }
+  /**
+   * <code>.lh_proto.VariableMutationPb.NodeOutputSourcePb node_output = 6;</code>
    * @return The nodeOutput.
    */
   @java.lang.Override
-  public boolean getNodeOutput() {
+  public io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb getNodeOutput() {
     if (rhsValueCase_ == 6) {
-      return (java.lang.Boolean) rhsValue_;
+       return (io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb) rhsValue_;
     }
-    return false;
-  }
-
-  public static final int RHS_JSON_PATH_FIELD_NUMBER = 7;
-  private volatile java.lang.Object rhsJsonPath_;
-  /**
-   * <code>string rhs_json_path = 7;</code>
-   * @return Whether the rhsJsonPath field is set.
-   */
-  @java.lang.Override
-  public boolean hasRhsJsonPath() {
-    return ((bitField0_ & 0x00000002) != 0);
+    return io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb.getDefaultInstance();
   }
   /**
-   * <code>string rhs_json_path = 7;</code>
-   * @return The rhsJsonPath.
+   * <code>.lh_proto.VariableMutationPb.NodeOutputSourcePb node_output = 6;</code>
    */
   @java.lang.Override
-  public java.lang.String getRhsJsonPath() {
-    java.lang.Object ref = rhsJsonPath_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      rhsJsonPath_ = s;
-      return s;
+  public io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePbOrBuilder getNodeOutputOrBuilder() {
+    if (rhsValueCase_ == 6) {
+       return (io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb) rhsValue_;
     }
-  }
-  /**
-   * <code>string rhs_json_path = 7;</code>
-   * @return The bytes for rhsJsonPath.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getRhsJsonPathBytes() {
-    java.lang.Object ref = rhsJsonPath_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      rhsJsonPath_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+    return io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -444,11 +1017,7 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(5, (io.littlehorse.common.proto.VariableValuePb) rhsValue_);
     }
     if (rhsValueCase_ == 6) {
-      output.writeBool(
-          6, (boolean)((java.lang.Boolean) rhsValue_));
-    }
-    if (((bitField0_ & 0x00000002) != 0)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 7, rhsJsonPath_);
+      output.writeMessage(6, (io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb) rhsValue_);
     }
     unknownFields.writeTo(output);
   }
@@ -479,11 +1048,7 @@ private static final long serialVersionUID = 0L;
     }
     if (rhsValueCase_ == 6) {
       size += com.google.protobuf.CodedOutputStream
-        .computeBoolSize(
-            6, (boolean)((java.lang.Boolean) rhsValue_));
-    }
-    if (((bitField0_ & 0x00000002) != 0)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, rhsJsonPath_);
+        .computeMessageSize(6, (io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb) rhsValue_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -508,11 +1073,6 @@ private static final long serialVersionUID = 0L;
           .equals(other.getLhsJsonPath())) return false;
     }
     if (operation_ != other.operation_) return false;
-    if (hasRhsJsonPath() != other.hasRhsJsonPath()) return false;
-    if (hasRhsJsonPath()) {
-      if (!getRhsJsonPath()
-          .equals(other.getRhsJsonPath())) return false;
-    }
     if (!getRhsValueCase().equals(other.getRhsValueCase())) return false;
     switch (rhsValueCase_) {
       case 4:
@@ -524,8 +1084,8 @@ private static final long serialVersionUID = 0L;
             .equals(other.getLiteralValue())) return false;
         break;
       case 6:
-        if (getNodeOutput()
-            != other.getNodeOutput()) return false;
+        if (!getNodeOutput()
+            .equals(other.getNodeOutput())) return false;
         break;
       case 0:
       default:
@@ -549,10 +1109,6 @@ private static final long serialVersionUID = 0L;
     }
     hash = (37 * hash) + OPERATION_FIELD_NUMBER;
     hash = (53 * hash) + operation_;
-    if (hasRhsJsonPath()) {
-      hash = (37 * hash) + RHS_JSON_PATH_FIELD_NUMBER;
-      hash = (53 * hash) + getRhsJsonPath().hashCode();
-    }
     switch (rhsValueCase_) {
       case 4:
         hash = (37 * hash) + SOURCE_VARIABLE_FIELD_NUMBER;
@@ -564,8 +1120,7 @@ private static final long serialVersionUID = 0L;
         break;
       case 6:
         hash = (37 * hash) + NODE_OUTPUT_FIELD_NUMBER;
-        hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-            getNodeOutput());
+        hash = (53 * hash) + getNodeOutput().hashCode();
         break;
       case 0:
       default:
@@ -709,8 +1264,6 @@ private static final long serialVersionUID = 0L;
       bitField0_ = (bitField0_ & ~0x00000001);
       operation_ = 0;
 
-      rhsJsonPath_ = "";
-      bitField0_ = (bitField0_ & ~0x00000002);
       rhsValueCase_ = 0;
       rhsValue_ = null;
       return this;
@@ -762,12 +1315,12 @@ private static final long serialVersionUID = 0L;
         }
       }
       if (rhsValueCase_ == 6) {
-        result.rhsValue_ = rhsValue_;
+        if (nodeOutputBuilder_ == null) {
+          result.rhsValue_ = rhsValue_;
+        } else {
+          result.rhsValue_ = nodeOutputBuilder_.build();
+        }
       }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        to_bitField0_ |= 0x00000002;
-      }
-      result.rhsJsonPath_ = rhsJsonPath_;
       result.bitField0_ = to_bitField0_;
       result.rhsValueCase_ = rhsValueCase_;
       onBuilt();
@@ -830,11 +1383,6 @@ private static final long serialVersionUID = 0L;
       if (other.operation_ != 0) {
         setOperationValue(other.getOperationValue());
       }
-      if (other.hasRhsJsonPath()) {
-        bitField0_ |= 0x00000002;
-        rhsJsonPath_ = other.rhsJsonPath_;
-        onChanged();
-      }
       switch (other.getRhsValueCase()) {
         case SOURCE_VARIABLE: {
           mergeSourceVariable(other.getSourceVariable());
@@ -845,7 +1393,7 @@ private static final long serialVersionUID = 0L;
           break;
         }
         case NODE_OUTPUT: {
-          setNodeOutput(other.getNodeOutput());
+          mergeNodeOutput(other.getNodeOutput());
           break;
         }
         case RHSVALUE_NOT_SET: {
@@ -1392,133 +1940,145 @@ private static final long serialVersionUID = 0L;
       return literalValueBuilder_;
     }
 
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb, io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb.Builder, io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePbOrBuilder> nodeOutputBuilder_;
     /**
-     * <pre>
-     * Dummy protobuf syntax hack, only care about the enum val
-     * </pre>
-     *
-     * <code>bool node_output = 6;</code>
+     * <code>.lh_proto.VariableMutationPb.NodeOutputSourcePb node_output = 6;</code>
+     * @return Whether the nodeOutput field is set.
+     */
+    @java.lang.Override
+    public boolean hasNodeOutput() {
+      return rhsValueCase_ == 6;
+    }
+    /**
+     * <code>.lh_proto.VariableMutationPb.NodeOutputSourcePb node_output = 6;</code>
      * @return The nodeOutput.
      */
-    public boolean getNodeOutput() {
-      if (rhsValueCase_ == 6) {
-        return (java.lang.Boolean) rhsValue_;
+    @java.lang.Override
+    public io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb getNodeOutput() {
+      if (nodeOutputBuilder_ == null) {
+        if (rhsValueCase_ == 6) {
+          return (io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb) rhsValue_;
+        }
+        return io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb.getDefaultInstance();
+      } else {
+        if (rhsValueCase_ == 6) {
+          return nodeOutputBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb.getDefaultInstance();
       }
-      return false;
     }
     /**
-     * <pre>
-     * Dummy protobuf syntax hack, only care about the enum val
-     * </pre>
-     *
-     * <code>bool node_output = 6;</code>
-     * @param value The nodeOutput to set.
-     * @return This builder for chaining.
+     * <code>.lh_proto.VariableMutationPb.NodeOutputSourcePb node_output = 6;</code>
      */
-    public Builder setNodeOutput(boolean value) {
+    public Builder setNodeOutput(io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb value) {
+      if (nodeOutputBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        rhsValue_ = value;
+        onChanged();
+      } else {
+        nodeOutputBuilder_.setMessage(value);
+      }
       rhsValueCase_ = 6;
-      rhsValue_ = value;
-      onChanged();
       return this;
     }
     /**
-     * <pre>
-     * Dummy protobuf syntax hack, only care about the enum val
-     * </pre>
-     *
-     * <code>bool node_output = 6;</code>
-     * @return This builder for chaining.
+     * <code>.lh_proto.VariableMutationPb.NodeOutputSourcePb node_output = 6;</code>
+     */
+    public Builder setNodeOutput(
+        io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb.Builder builderForValue) {
+      if (nodeOutputBuilder_ == null) {
+        rhsValue_ = builderForValue.build();
+        onChanged();
+      } else {
+        nodeOutputBuilder_.setMessage(builderForValue.build());
+      }
+      rhsValueCase_ = 6;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.VariableMutationPb.NodeOutputSourcePb node_output = 6;</code>
+     */
+    public Builder mergeNodeOutput(io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb value) {
+      if (nodeOutputBuilder_ == null) {
+        if (rhsValueCase_ == 6 &&
+            rhsValue_ != io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb.getDefaultInstance()) {
+          rhsValue_ = io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb.newBuilder((io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb) rhsValue_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          rhsValue_ = value;
+        }
+        onChanged();
+      } else {
+        if (rhsValueCase_ == 6) {
+          nodeOutputBuilder_.mergeFrom(value);
+        }
+        nodeOutputBuilder_.setMessage(value);
+      }
+      rhsValueCase_ = 6;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.VariableMutationPb.NodeOutputSourcePb node_output = 6;</code>
      */
     public Builder clearNodeOutput() {
-      if (rhsValueCase_ == 6) {
-        rhsValueCase_ = 0;
+      if (nodeOutputBuilder_ == null) {
+        if (rhsValueCase_ == 6) {
+          rhsValueCase_ = 0;
+          rhsValue_ = null;
+          onChanged();
+        }
+      } else {
+        if (rhsValueCase_ == 6) {
+          rhsValueCase_ = 0;
+          rhsValue_ = null;
+        }
+        nodeOutputBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.lh_proto.VariableMutationPb.NodeOutputSourcePb node_output = 6;</code>
+     */
+    public io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb.Builder getNodeOutputBuilder() {
+      return getNodeOutputFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.VariableMutationPb.NodeOutputSourcePb node_output = 6;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePbOrBuilder getNodeOutputOrBuilder() {
+      if ((rhsValueCase_ == 6) && (nodeOutputBuilder_ != null)) {
+        return nodeOutputBuilder_.getMessageOrBuilder();
+      } else {
+        if (rhsValueCase_ == 6) {
+          return (io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb) rhsValue_;
+        }
+        return io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.VariableMutationPb.NodeOutputSourcePb node_output = 6;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb, io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb.Builder, io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePbOrBuilder> 
+        getNodeOutputFieldBuilder() {
+      if (nodeOutputBuilder_ == null) {
+        if (!(rhsValueCase_ == 6)) {
+          rhsValue_ = io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb.getDefaultInstance();
+        }
+        nodeOutputBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb, io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb.Builder, io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePbOrBuilder>(
+                (io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb) rhsValue_,
+                getParentForChildren(),
+                isClean());
         rhsValue_ = null;
-        onChanged();
       }
-      return this;
-    }
-
-    private java.lang.Object rhsJsonPath_ = "";
-    /**
-     * <code>string rhs_json_path = 7;</code>
-     * @return Whether the rhsJsonPath field is set.
-     */
-    public boolean hasRhsJsonPath() {
-      return ((bitField0_ & 0x00000002) != 0);
-    }
-    /**
-     * <code>string rhs_json_path = 7;</code>
-     * @return The rhsJsonPath.
-     */
-    public java.lang.String getRhsJsonPath() {
-      java.lang.Object ref = rhsJsonPath_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        rhsJsonPath_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>string rhs_json_path = 7;</code>
-     * @return The bytes for rhsJsonPath.
-     */
-    public com.google.protobuf.ByteString
-        getRhsJsonPathBytes() {
-      java.lang.Object ref = rhsJsonPath_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        rhsJsonPath_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string rhs_json_path = 7;</code>
-     * @param value The rhsJsonPath to set.
-     * @return This builder for chaining.
-     */
-    public Builder setRhsJsonPath(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-      rhsJsonPath_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string rhs_json_path = 7;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearRhsJsonPath() {
-      bitField0_ = (bitField0_ & ~0x00000002);
-      rhsJsonPath_ = getDefaultInstance().getRhsJsonPath();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string rhs_json_path = 7;</code>
-     * @param value The bytes for rhsJsonPath to set.
-     * @return This builder for chaining.
-     */
-    public Builder setRhsJsonPathBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      bitField0_ |= 0x00000002;
-      rhsJsonPath_ = value;
-      onChanged();
-      return this;
+      rhsValueCase_ = 6;
+      onChanged();;
+      return nodeOutputBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

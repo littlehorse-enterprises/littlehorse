@@ -104,15 +104,17 @@ message VariableAssignmentPb {
 }
 
 message VariableMutationPb {
+    message NodeOutputSourcePb {
+        optional string jsonpath = 10;
+    }
     string lhs_name = 1;
     optional string lhs_json_path = 2;
     VariableMutationTypePb operation = 3;
     oneof rhs_value {
         VariableAssignmentPb source_variable = 4;
         VariableValuePb literal_value = 5;
-        bool node_output = 6; // Dummy protobuf syntax hack, only care about the enum val
+        NodeOutputSourcePb node_output = 6;
     }
-    optional string rhs_json_path = 7;
 }
 
 message NodePb {

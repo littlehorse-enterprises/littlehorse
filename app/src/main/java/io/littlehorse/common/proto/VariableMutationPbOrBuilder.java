@@ -78,31 +78,19 @@ public interface VariableMutationPbOrBuilder extends
   io.littlehorse.common.proto.VariableValuePbOrBuilder getLiteralValueOrBuilder();
 
   /**
-   * <pre>
-   * Dummy protobuf syntax hack, only care about the enum val
-   * </pre>
-   *
-   * <code>bool node_output = 6;</code>
+   * <code>.lh_proto.VariableMutationPb.NodeOutputSourcePb node_output = 6;</code>
+   * @return Whether the nodeOutput field is set.
+   */
+  boolean hasNodeOutput();
+  /**
+   * <code>.lh_proto.VariableMutationPb.NodeOutputSourcePb node_output = 6;</code>
    * @return The nodeOutput.
    */
-  boolean getNodeOutput();
-
+  io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb getNodeOutput();
   /**
-   * <code>string rhs_json_path = 7;</code>
-   * @return Whether the rhsJsonPath field is set.
+   * <code>.lh_proto.VariableMutationPb.NodeOutputSourcePb node_output = 6;</code>
    */
-  boolean hasRhsJsonPath();
-  /**
-   * <code>string rhs_json_path = 7;</code>
-   * @return The rhsJsonPath.
-   */
-  java.lang.String getRhsJsonPath();
-  /**
-   * <code>string rhs_json_path = 7;</code>
-   * @return The bytes for rhsJsonPath.
-   */
-  com.google.protobuf.ByteString
-      getRhsJsonPathBytes();
+  io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePbOrBuilder getNodeOutputOrBuilder();
 
   public io.littlehorse.common.proto.VariableMutationPb.RhsValueCase getRhsValueCase();
 }
