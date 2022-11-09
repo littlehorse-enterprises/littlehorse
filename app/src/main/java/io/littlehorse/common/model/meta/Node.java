@@ -9,6 +9,7 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.meta.subnode.EntrypointNode;
 import io.littlehorse.common.model.meta.subnode.ExitNode;
 import io.littlehorse.common.model.meta.subnode.ExternalEventNode;
+import io.littlehorse.common.model.meta.subnode.NopNode;
 import io.littlehorse.common.model.meta.subnode.StartThreadNode;
 import io.littlehorse.common.model.meta.subnode.TaskNode;
 import io.littlehorse.common.model.meta.subnode.WaitForThreadNode;
@@ -17,6 +18,7 @@ import io.littlehorse.common.proto.FailureHandlerDefPb;
 import io.littlehorse.common.proto.NodePb;
 import io.littlehorse.common.proto.NodePb.NodeCase;
 import io.littlehorse.common.proto.NodePbOrBuilder;
+import io.littlehorse.common.proto.NopNodePb;
 import io.littlehorse.common.proto.VariableMutationPb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import java.util.ArrayList;
@@ -33,6 +35,7 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
     public ExitNode exitNode;
     public StartThreadNode startThreadNode;
     public WaitForThreadNode waitForThreadNode;
+    public NopNode nop;
 
     public List<VariableMutation> variableMutations;
     public OutputSchema outputSchema;
@@ -80,6 +83,9 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
                 break;
             case WAIT_FOR_THREAD:
                 out.setWaitForThread(waitForThreadNode.toProto());
+                break;
+            case NOP:
+                out.setNop(NopNodePb.newBuilder());
                 break;
             case NODE_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -133,6 +139,9 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
             case WAIT_FOR_THREAD:
                 waitForThreadNode = new WaitForThreadNode();
                 waitForThreadNode.initFrom(proto.getWaitForThread());
+                break;
+            case NOP:
+                nop = new NopNode();
                 break;
             case NODE_NOT_SET:
                 throw new LHSerdeError(

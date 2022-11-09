@@ -168,6 +168,20 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 90: {
+            io.littlehorse.common.proto.NopNodePb.Builder subBuilder = null;
+            if (nodeCase_ == 11) {
+              subBuilder = ((io.littlehorse.common.proto.NopNodePb) node_).toBuilder();
+            }
+            node_ =
+                input.readMessage(io.littlehorse.common.proto.NopNodePb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.common.proto.NopNodePb) node_);
+              node_ = subBuilder.buildPartial();
+            }
+            nodeCase_ = 11;
+            break;
+          }
+          case 98: {
             if (!((mutable_bitField0_ & 0x00000004) != 0)) {
               failureHandlers_ = new java.util.ArrayList<io.littlehorse.common.proto.FailureHandlerDefPb>();
               mutable_bitField0_ |= 0x00000004;
@@ -228,6 +242,7 @@ private static final long serialVersionUID = 0L;
     EXTERNAL_EVENT(8),
     START_THREAD(9),
     WAIT_FOR_THREAD(10),
+    NOP(11),
     NODE_NOT_SET(0);
     private final int value;
     private NodeCase(int value) {
@@ -251,6 +266,7 @@ private static final long serialVersionUID = 0L;
         case 8: return EXTERNAL_EVENT;
         case 9: return START_THREAD;
         case 10: return WAIT_FOR_THREAD;
+        case 11: return NOP;
         case 0: return NODE_NOT_SET;
         default: return null;
       }
@@ -558,17 +574,48 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.WaitForThreadNodePb.getDefaultInstance();
   }
 
-  public static final int FAILURE_HANDLERS_FIELD_NUMBER = 11;
+  public static final int NOP_FIELD_NUMBER = 11;
+  /**
+   * <code>.lh_proto.NopNodePb nop = 11;</code>
+   * @return Whether the nop field is set.
+   */
+  @java.lang.Override
+  public boolean hasNop() {
+    return nodeCase_ == 11;
+  }
+  /**
+   * <code>.lh_proto.NopNodePb nop = 11;</code>
+   * @return The nop.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.NopNodePb getNop() {
+    if (nodeCase_ == 11) {
+       return (io.littlehorse.common.proto.NopNodePb) node_;
+    }
+    return io.littlehorse.common.proto.NopNodePb.getDefaultInstance();
+  }
+  /**
+   * <code>.lh_proto.NopNodePb nop = 11;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.NopNodePbOrBuilder getNopOrBuilder() {
+    if (nodeCase_ == 11) {
+       return (io.littlehorse.common.proto.NopNodePb) node_;
+    }
+    return io.littlehorse.common.proto.NopNodePb.getDefaultInstance();
+  }
+
+  public static final int FAILURE_HANDLERS_FIELD_NUMBER = 12;
   private java.util.List<io.littlehorse.common.proto.FailureHandlerDefPb> failureHandlers_;
   /**
-   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
+   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
    */
   @java.lang.Override
   public java.util.List<io.littlehorse.common.proto.FailureHandlerDefPb> getFailureHandlersList() {
     return failureHandlers_;
   }
   /**
-   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
+   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
    */
   @java.lang.Override
   public java.util.List<? extends io.littlehorse.common.proto.FailureHandlerDefPbOrBuilder> 
@@ -576,21 +623,21 @@ private static final long serialVersionUID = 0L;
     return failureHandlers_;
   }
   /**
-   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
+   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
    */
   @java.lang.Override
   public int getFailureHandlersCount() {
     return failureHandlers_.size();
   }
   /**
-   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
+   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
    */
   @java.lang.Override
   public io.littlehorse.common.proto.FailureHandlerDefPb getFailureHandlers(int index) {
     return failureHandlers_.get(index);
   }
   /**
-   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
+   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
    */
   @java.lang.Override
   public io.littlehorse.common.proto.FailureHandlerDefPbOrBuilder getFailureHandlersOrBuilder(
@@ -639,8 +686,11 @@ private static final long serialVersionUID = 0L;
     if (nodeCase_ == 10) {
       output.writeMessage(10, (io.littlehorse.common.proto.WaitForThreadNodePb) node_);
     }
+    if (nodeCase_ == 11) {
+      output.writeMessage(11, (io.littlehorse.common.proto.NopNodePb) node_);
+    }
     for (int i = 0; i < failureHandlers_.size(); i++) {
-      output.writeMessage(11, failureHandlers_.get(i));
+      output.writeMessage(12, failureHandlers_.get(i));
     }
     unknownFields.writeTo(output);
   }
@@ -687,9 +737,13 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(10, (io.littlehorse.common.proto.WaitForThreadNodePb) node_);
     }
+    if (nodeCase_ == 11) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(11, (io.littlehorse.common.proto.NopNodePb) node_);
+    }
     for (int i = 0; i < failureHandlers_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(11, failureHandlers_.get(i));
+        .computeMessageSize(12, failureHandlers_.get(i));
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -742,6 +796,10 @@ private static final long serialVersionUID = 0L;
       case 10:
         if (!getWaitForThread()
             .equals(other.getWaitForThread())) return false;
+        break;
+      case 11:
+        if (!getNop()
+            .equals(other.getNop())) return false;
         break;
       case 0:
       default:
@@ -797,6 +855,10 @@ private static final long serialVersionUID = 0L;
       case 10:
         hash = (37 * hash) + WAIT_FOR_THREAD_FIELD_NUMBER;
         hash = (53 * hash) + getWaitForThread().hashCode();
+        break;
+      case 11:
+        hash = (37 * hash) + NOP_FIELD_NUMBER;
+        hash = (53 * hash) + getNop().hashCode();
         break;
       case 0:
       default:
@@ -1055,6 +1117,13 @@ private static final long serialVersionUID = 0L;
           result.node_ = waitForThreadBuilder_.build();
         }
       }
+      if (nodeCase_ == 11) {
+        if (nopBuilder_ == null) {
+          result.node_ = node_;
+        } else {
+          result.node_ = nopBuilder_.build();
+        }
+      }
       if (failureHandlersBuilder_ == null) {
         if (((bitField0_ & 0x00000004) != 0)) {
           failureHandlers_ = java.util.Collections.unmodifiableList(failureHandlers_);
@@ -1217,6 +1286,10 @@ private static final long serialVersionUID = 0L;
         }
         case WAIT_FOR_THREAD: {
           mergeWaitForThread(other.getWaitForThread());
+          break;
+        }
+        case NOP: {
+          mergeNop(other.getNop());
           break;
         }
         case NODE_NOT_SET: {
@@ -2713,6 +2786,147 @@ private static final long serialVersionUID = 0L;
       return waitForThreadBuilder_;
     }
 
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.NopNodePb, io.littlehorse.common.proto.NopNodePb.Builder, io.littlehorse.common.proto.NopNodePbOrBuilder> nopBuilder_;
+    /**
+     * <code>.lh_proto.NopNodePb nop = 11;</code>
+     * @return Whether the nop field is set.
+     */
+    @java.lang.Override
+    public boolean hasNop() {
+      return nodeCase_ == 11;
+    }
+    /**
+     * <code>.lh_proto.NopNodePb nop = 11;</code>
+     * @return The nop.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.NopNodePb getNop() {
+      if (nopBuilder_ == null) {
+        if (nodeCase_ == 11) {
+          return (io.littlehorse.common.proto.NopNodePb) node_;
+        }
+        return io.littlehorse.common.proto.NopNodePb.getDefaultInstance();
+      } else {
+        if (nodeCase_ == 11) {
+          return nopBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.NopNodePb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.NopNodePb nop = 11;</code>
+     */
+    public Builder setNop(io.littlehorse.common.proto.NopNodePb value) {
+      if (nopBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        node_ = value;
+        onChanged();
+      } else {
+        nopBuilder_.setMessage(value);
+      }
+      nodeCase_ = 11;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.NopNodePb nop = 11;</code>
+     */
+    public Builder setNop(
+        io.littlehorse.common.proto.NopNodePb.Builder builderForValue) {
+      if (nopBuilder_ == null) {
+        node_ = builderForValue.build();
+        onChanged();
+      } else {
+        nopBuilder_.setMessage(builderForValue.build());
+      }
+      nodeCase_ = 11;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.NopNodePb nop = 11;</code>
+     */
+    public Builder mergeNop(io.littlehorse.common.proto.NopNodePb value) {
+      if (nopBuilder_ == null) {
+        if (nodeCase_ == 11 &&
+            node_ != io.littlehorse.common.proto.NopNodePb.getDefaultInstance()) {
+          node_ = io.littlehorse.common.proto.NopNodePb.newBuilder((io.littlehorse.common.proto.NopNodePb) node_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          node_ = value;
+        }
+        onChanged();
+      } else {
+        if (nodeCase_ == 11) {
+          nopBuilder_.mergeFrom(value);
+        }
+        nopBuilder_.setMessage(value);
+      }
+      nodeCase_ = 11;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.NopNodePb nop = 11;</code>
+     */
+    public Builder clearNop() {
+      if (nopBuilder_ == null) {
+        if (nodeCase_ == 11) {
+          nodeCase_ = 0;
+          node_ = null;
+          onChanged();
+        }
+      } else {
+        if (nodeCase_ == 11) {
+          nodeCase_ = 0;
+          node_ = null;
+        }
+        nopBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.lh_proto.NopNodePb nop = 11;</code>
+     */
+    public io.littlehorse.common.proto.NopNodePb.Builder getNopBuilder() {
+      return getNopFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.NopNodePb nop = 11;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.NopNodePbOrBuilder getNopOrBuilder() {
+      if ((nodeCase_ == 11) && (nopBuilder_ != null)) {
+        return nopBuilder_.getMessageOrBuilder();
+      } else {
+        if (nodeCase_ == 11) {
+          return (io.littlehorse.common.proto.NopNodePb) node_;
+        }
+        return io.littlehorse.common.proto.NopNodePb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.NopNodePb nop = 11;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.NopNodePb, io.littlehorse.common.proto.NopNodePb.Builder, io.littlehorse.common.proto.NopNodePbOrBuilder> 
+        getNopFieldBuilder() {
+      if (nopBuilder_ == null) {
+        if (!(nodeCase_ == 11)) {
+          node_ = io.littlehorse.common.proto.NopNodePb.getDefaultInstance();
+        }
+        nopBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.NopNodePb, io.littlehorse.common.proto.NopNodePb.Builder, io.littlehorse.common.proto.NopNodePbOrBuilder>(
+                (io.littlehorse.common.proto.NopNodePb) node_,
+                getParentForChildren(),
+                isClean());
+        node_ = null;
+      }
+      nodeCase_ = 11;
+      onChanged();;
+      return nopBuilder_;
+    }
+
     private java.util.List<io.littlehorse.common.proto.FailureHandlerDefPb> failureHandlers_ =
       java.util.Collections.emptyList();
     private void ensureFailureHandlersIsMutable() {
@@ -2726,7 +2940,7 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.common.proto.FailureHandlerDefPb, io.littlehorse.common.proto.FailureHandlerDefPb.Builder, io.littlehorse.common.proto.FailureHandlerDefPbOrBuilder> failureHandlersBuilder_;
 
     /**
-     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
      */
     public java.util.List<io.littlehorse.common.proto.FailureHandlerDefPb> getFailureHandlersList() {
       if (failureHandlersBuilder_ == null) {
@@ -2736,7 +2950,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
      */
     public int getFailureHandlersCount() {
       if (failureHandlersBuilder_ == null) {
@@ -2746,7 +2960,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
      */
     public io.littlehorse.common.proto.FailureHandlerDefPb getFailureHandlers(int index) {
       if (failureHandlersBuilder_ == null) {
@@ -2756,7 +2970,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
      */
     public Builder setFailureHandlers(
         int index, io.littlehorse.common.proto.FailureHandlerDefPb value) {
@@ -2773,7 +2987,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
      */
     public Builder setFailureHandlers(
         int index, io.littlehorse.common.proto.FailureHandlerDefPb.Builder builderForValue) {
@@ -2787,7 +3001,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
      */
     public Builder addFailureHandlers(io.littlehorse.common.proto.FailureHandlerDefPb value) {
       if (failureHandlersBuilder_ == null) {
@@ -2803,7 +3017,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
      */
     public Builder addFailureHandlers(
         int index, io.littlehorse.common.proto.FailureHandlerDefPb value) {
@@ -2820,7 +3034,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
      */
     public Builder addFailureHandlers(
         io.littlehorse.common.proto.FailureHandlerDefPb.Builder builderForValue) {
@@ -2834,7 +3048,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
      */
     public Builder addFailureHandlers(
         int index, io.littlehorse.common.proto.FailureHandlerDefPb.Builder builderForValue) {
@@ -2848,7 +3062,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
      */
     public Builder addAllFailureHandlers(
         java.lang.Iterable<? extends io.littlehorse.common.proto.FailureHandlerDefPb> values) {
@@ -2863,7 +3077,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
      */
     public Builder clearFailureHandlers() {
       if (failureHandlersBuilder_ == null) {
@@ -2876,7 +3090,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
      */
     public Builder removeFailureHandlers(int index) {
       if (failureHandlersBuilder_ == null) {
@@ -2889,14 +3103,14 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
      */
     public io.littlehorse.common.proto.FailureHandlerDefPb.Builder getFailureHandlersBuilder(
         int index) {
       return getFailureHandlersFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
      */
     public io.littlehorse.common.proto.FailureHandlerDefPbOrBuilder getFailureHandlersOrBuilder(
         int index) {
@@ -2906,7 +3120,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
      */
     public java.util.List<? extends io.littlehorse.common.proto.FailureHandlerDefPbOrBuilder> 
          getFailureHandlersOrBuilderList() {
@@ -2917,14 +3131,14 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
      */
     public io.littlehorse.common.proto.FailureHandlerDefPb.Builder addFailureHandlersBuilder() {
       return getFailureHandlersFieldBuilder().addBuilder(
           io.littlehorse.common.proto.FailureHandlerDefPb.getDefaultInstance());
     }
     /**
-     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
      */
     public io.littlehorse.common.proto.FailureHandlerDefPb.Builder addFailureHandlersBuilder(
         int index) {
@@ -2932,7 +3146,7 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.common.proto.FailureHandlerDefPb.getDefaultInstance());
     }
     /**
-     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
+     * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
      */
     public java.util.List<io.littlehorse.common.proto.FailureHandlerDefPb.Builder> 
          getFailureHandlersBuilderList() {

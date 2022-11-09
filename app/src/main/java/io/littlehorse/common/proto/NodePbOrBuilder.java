@@ -161,25 +161,40 @@ public interface NodePbOrBuilder extends
   io.littlehorse.common.proto.WaitForThreadNodePbOrBuilder getWaitForThreadOrBuilder();
 
   /**
-   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
+   * <code>.lh_proto.NopNodePb nop = 11;</code>
+   * @return Whether the nop field is set.
+   */
+  boolean hasNop();
+  /**
+   * <code>.lh_proto.NopNodePb nop = 11;</code>
+   * @return The nop.
+   */
+  io.littlehorse.common.proto.NopNodePb getNop();
+  /**
+   * <code>.lh_proto.NopNodePb nop = 11;</code>
+   */
+  io.littlehorse.common.proto.NopNodePbOrBuilder getNopOrBuilder();
+
+  /**
+   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
    */
   java.util.List<io.littlehorse.common.proto.FailureHandlerDefPb> 
       getFailureHandlersList();
   /**
-   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
+   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
    */
   io.littlehorse.common.proto.FailureHandlerDefPb getFailureHandlers(int index);
   /**
-   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
+   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
    */
   int getFailureHandlersCount();
   /**
-   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
+   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
    */
   java.util.List<? extends io.littlehorse.common.proto.FailureHandlerDefPbOrBuilder> 
       getFailureHandlersOrBuilderList();
   /**
-   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 11;</code>
+   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
    */
   io.littlehorse.common.proto.FailureHandlerDefPbOrBuilder getFailureHandlersOrBuilder(
       int index);

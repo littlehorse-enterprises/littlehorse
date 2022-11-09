@@ -117,6 +117,8 @@ message VariableMutationPb {
     }
 }
 
+message NopNodePb {}
+
 message NodePb {
     repeated EdgePb outgoing_edges = 1;
     repeated VariableMutationPb variable_mutations = 2;
@@ -128,8 +130,9 @@ message NodePb {
         ExternalEventNodePb external_event = 8;
         StartThreadNodePb start_thread = 9;
         WaitForThreadNodePb wait_for_thread = 10;
+        NopNodePb nop = 11;
     }
-    repeated FailureHandlerDefPb failure_handlers = 11;
+    repeated FailureHandlerDefPb failure_handlers = 12;
 }
 
 message StartThreadNodePb {
