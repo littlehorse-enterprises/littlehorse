@@ -132,7 +132,26 @@ public class LHUtil {
     @SuppressWarnings("all")
     public static boolean deepEquals(Object left, Object right) {
         if (left == null && right == null) return true;
-        if (left != null || right != null) return false;
+        if (left == null || right == null) return false;
+
+        if (left.getClass() == Long.class) {
+            left = Double.valueOf((Long) left);
+        }
+        if (right.getClass() == Long.class) {
+            right = Double.valueOf((Long) right);
+        }
+        if (left.getClass() == Integer.class) {
+            left = Double.valueOf((Integer) left);
+        }
+        if (right.getClass() == Integer.class) {
+            right = Double.valueOf((Integer) right);
+        }
+        if (right.getClass() == Float.class) {
+            right = Double.valueOf((Float) right);
+        }
+        if (left.getClass() == Float.class) {
+            left = Double.valueOf((Float) left);
+        }
 
         if (!left.getClass().equals(right.getClass())) {
             return false;

@@ -670,9 +670,9 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             case GREATER_THAN_EQ:
                 return Comparer.compare(lhs, rhs) >= 0;
             case EQUALS:
-                return lhs != null && lhs.equals(rhs);
+                return lhs != null && Comparer.compare(lhs, rhs) == 0;
             case NOT_EQUALS:
-                return lhs != null && !lhs.equals(rhs);
+                return lhs != null && Comparer.compare(lhs, rhs) != 0;
             case IN:
                 return Comparer.contains(rhs, lhs);
             case NOT_IN:

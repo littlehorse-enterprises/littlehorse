@@ -250,6 +250,8 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
             return startThreadNode;
         } else if (type == NodeCase.WAIT_FOR_THREAD) {
             return waitForThreadNode;
+        } else if (type == NodeCase.NOP) {
+            return nop;
         } else {
             throw new RuntimeException("Unhandled node type " + type);
         }
