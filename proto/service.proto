@@ -1,0 +1,180 @@
+syntax = "proto3";
+
+package lh_proto;
+
+option go_package = ".;model";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.common.proto";
+
+import "wf_spec.proto";
+import "wf_run.proto";
+import "variable.proto";
+import "external_event.proto";
+import "command.proto";
+
+enum LHResponseCodePb {
+    OK = 0;
+    CONNECTION_ERROR = 1;
+    NOT_FOUND_ERROR = 2;
+    BAD_REQUEST_ERROR = 3;
+    VALIDATION_ERROR = 4;
+    ALREADY_EXISTS_ERROR = 5;
+}
+
+message GetWfSpecPb {
+    string name = 1;
+    optional int32 version = 2;
+}
+
+message GetWfSpecReplyPb {
+    LHResponseCodePb code = 1;
+    optional string message = 2;
+    optional WfSpecPb result = 3;
+}
+
+message PutWfSpecReplyPb {
+    LHResponseCodePb code = 1;
+    optional string message = 2;
+    optional WfSpecPb result = 3;
+}
+
+message GetTaskDefPb {
+    string name = 1;
+    optional int32 version = 2;
+}
+
+message GetTaskDefReplyPb {
+    LHResponseCodePb code = 1;
+    optional string message = 2;
+    optional TaskDefPb result = 3;
+}
+
+message PutTaskDefReplyPb {
+    LHResponseCodePb code = 1;
+    optional string message = 2;
+    optional TaskDefPb result = 3;
+}
+
+message PutExternalEventDefReplyPb {
+    LHResponseCodePb code = 1;
+    optional string message = 2;
+    optional ExternalEventDefPb result = 3;    
+}
+
+message GetExternalEventDefPb {
+    string name = 1;
+    optional int32 version = 2;
+}
+
+message GetExternalEventDefReplyPb {
+    LHResponseCodePb code = 1;
+    optional string message = 2;
+    optional ExternalEventDefPb result = 3;    
+}
+
+message GetWfRunPb {
+    string id = 1;
+}
+
+message GetWfRunReplyPb {
+    LHResponseCodePb code = 1;
+    optional string message = 2;
+    optional NodeRunPb result = 3;
+}
+
+message GetNodeRunPb {
+    string wf_run_id = 1;
+    int32 thread_run_number = 2;
+    int32 position = 3;
+}
+
+message GetNodeRunReplyPb {
+    LHResponseCodePb code = 1;
+    optional string message = 2;
+    optional NodeRunPb result = 3;
+}
+
+message GetVariablePb {
+    string wf_run_id = 1;
+    string var_name = 2;
+    int32 thread_run_number = 3;
+}
+
+message GetVariableReplyPb {
+    LHResponseCodePb code = 1;
+    optional string message = 2;
+    optional VariablePb result = 3;
+}
+
+message GetExternalEventPb {
+    string wf_run_id = 1;
+    string external_event_def_name = 2;
+    string guid = 3;
+}
+
+message GetExternalEventReplyPb {
+    LHResponseCodePb code = 1;
+    optional string message = 2;
+    optional ExternalEventPb result = 3;
+}
+
+message PutExternalEventPb {
+    ExternalEventPb payload = 1;
+}
+
+message PutExternalEventReplyPb {
+    LHResponseCodePb code = 1;
+    optional string message = 2;
+    optional ExternalEventPb result = 3;
+}
+
+message RunWfPb {
+    string wf_spec_name = 1;
+    optional int32 version = 2;
+    map<string, VariableValuePb> variables = 3;
+    optional string id = 4;
+}
+
+message RunWfReplyPb {
+    LHResponseCodePb code = 1;
+    optional string message = 2;
+    optional int32 wf_spec_version = 3;
+    optional string wf_run_id = 4;
+}
+
+// Healthcheck stuff
+message HealthCheckRequest {
+    string service = 1;
+}
+  
+message HealthCheckResponse {
+    enum ServingStatus {
+        UNKNOWN = 0;
+        SERVING = 1;
+        NOT_SERVING = 2;
+    }
+    ServingStatus status = 1;
+}
+
+service LHPublicApi {
+    rpc PutTaskDef(PutTaskDefPb) returns (PutTaskDefReplyPb) {}
+    rpc GetTaskDef(GetTaskDefPb) returns (GetTaskDefReplyPb) {}
+
+    rpc PutExternalEventDef(PutExternalEventDefPb) returns (PutExternalEventDefReplyPb) {}
+    rpc GetExternalEventDef(GetExternalEventDefPb) returns (GetExternalEventDefReplyPb) {}
+
+    rpc PutWfSpec(PutWfSpecPb) returns (PutWfSpecReplyPb) {}
+    rpc GetWfSpec(GetWfSpecPb) returns (GetWfSpecReplyPb) {}
+
+    rpc RunWf(RunWfPb) returns (RunWfReplyPb) {}
+    rpc GetWfRun(GetWfRunPb) returns (GetWfRunReplyPb) {}
+
+    rpc GetNodeRun(GetNodeRunPb) returns (GetNodeRunReplyPb) {}
+
+    rpc GetVariable(GetVariablePb) returns (GetVariableReplyPb) {}
+
+    rpc PutExternalEvent(PutExternalEventPb) returns (PutExternalEventReplyPb) {}
+    rpc GetExternalEvent(GetExternalEventPb) returns (GetExternalEventReplyPb) {}
+
+    // TODO: Add the "search" functionality later.
+}

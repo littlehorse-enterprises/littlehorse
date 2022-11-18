@@ -49,7 +49,7 @@ public class ApiStreamsContext {
 
     public ApiStreamsContext(LHConfig config, KafkaStreams streams) {
         this.streams = streams;
-        this.thisHost = config.getHostInfo();
+        this.thisHost = config.getInternalHostInfo();
         this.client = config.getRpcClient();
         this.producer = config.getProducer();
         this.config = config;

@@ -7,7 +7,7 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.Server;
+import io.littlehorse.server.LHServer;
 import io.littlehorse.testworker.TestWorker;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -100,7 +100,7 @@ public class App {
         if (arg.equals("worker")) {
             TestWorker.doMain(config);
         } else if (arg.equals("server")) {
-            Server.doMain(config);
+            LHServer.doMain(config);
         }
     }
 

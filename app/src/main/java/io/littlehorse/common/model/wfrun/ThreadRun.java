@@ -5,7 +5,7 @@ import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.event.ExternalEvent;
+import io.littlehorse.common.model.command.subcommand.ExternalEvent;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.Edge;
 import io.littlehorse.common.model.meta.FailureHandlerDef;

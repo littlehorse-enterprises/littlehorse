@@ -1,0 +1,27 @@
+syntax = "proto3";
+package lh_proto;
+
+option go_package = ".;model";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.common.proto";
+
+enum LHStatusPb {
+    STARTING = 0;
+    RUNNING = 1;
+    COMPLETED = 2;
+    HALTING = 3;
+    HALTED = 4;
+    ERROR = 5;
+}
+
+
+enum TaskResultCodePb {
+    SUCCESS = 0;
+    TIMEOUT = 1;
+    FAILED = 2;
+    VAR_SUB_ERROR = 3;
+    VAR_MUTATION_ERROR = 4;
+    CHILD_FALIED = 5;
+    INTERRUPT_HANDLER_FAILED = 6;
+    EXCEPTION_HANDLER_FAILED = 7;
+}

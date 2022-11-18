@@ -2,6 +2,9 @@ package io.littlehorse.common.model.event;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.command.subcommand.ExternalEvent;
+import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
+import io.littlehorse.common.model.command.subcommand.WfRunRequest;
 import io.littlehorse.common.proto.WfRunEventPb;
 import io.littlehorse.common.proto.WfRunEventPb.EventCase;
 import io.littlehorse.common.util.LHUtil;
@@ -19,8 +22,6 @@ public class WfRunEvent extends LHSerializable<WfRunEventPb> {
     public WfRunRequest runRequest;
     public ExternalEvent externalEvent;
 
-    public Integer threadRunNumber;
-
     public WfRunEventPb.Builder toProto() {
         WfRunEventPb.Builder b = WfRunEventPb
             .newBuilder()
@@ -29,9 +30,6 @@ public class WfRunEvent extends LHSerializable<WfRunEventPb> {
 
         if (wfSpecId != null) {
             b.setWfSpecId(wfSpecId);
-        }
-        if (threadRunNumber != null) {
-            b.setThreadRunNumber(threadRunNumber);
         }
         b.clearEvent();
 
@@ -63,8 +61,6 @@ public class WfRunEvent extends LHSerializable<WfRunEventPb> {
         this.wfRunId = proto.getWfRunId();
         if (proto.hasWfSpecId()) this.wfSpecId = proto.getWfSpecId();
         this.time = LHUtil.fromProtoTs(proto.getTime());
-
-        if (proto.hasThreadRunNumber()) threadRunNumber = proto.getThreadRunNumber();
 
         this.type = proto.getEventCase();
 

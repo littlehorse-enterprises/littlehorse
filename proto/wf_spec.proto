@@ -1,0 +1,177 @@
+syntax = "proto3";
+package lh_proto;
+
+option go_package = ".;model";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.common.proto";
+
+import "status.proto";
+import "variable.proto";
+import "google/protobuf/timestamp.proto";
+
+// WfSpec stuff
+
+enum ComparatorPb {
+    LESS_THAN = 0;
+    GREATER_THAN = 1;
+    LESS_THAN_EQ = 2;
+    GREATER_THAN_EQ = 3;
+    EQUALS = 4;
+    NOT_EQUALS = 5;
+    IN = 6;
+    NOT_IN = 7;
+}
+
+message EdgeConditionPb {
+    ComparatorPb comparator = 1;
+    VariableAssignmentPb left = 2;
+    VariableAssignmentPb right = 3;
+}
+
+message EdgePb {
+    string sink_node_name = 1;
+    optional EdgeConditionPb condition = 2;
+}
+
+enum VariableMutationTypePb {
+    ASSIGN = 0;
+    ADD = 1;
+    EXTEND = 2;
+    SUBTRACT = 3;
+    MULTIPLY = 4;
+    DIVIDE = 5;
+    REMOVE_IF_PRESENT = 6;
+    REMOVE_INDEX = 7;
+    REMOVE_KEY = 8;
+}
+
+message VariableAssignmentPb {
+    optional string json_path = 1;
+    optional VariableValuePb default_value = 2;
+    oneof source {
+        string variable_name = 3;
+        VariableValuePb literal_value = 4;
+    }
+}
+
+message VariableMutationPb {
+    message NodeOutputSourcePb {
+        optional string jsonpath = 10;
+    }
+    string lhs_name = 1;
+    optional string lhs_json_path = 2;
+    VariableMutationTypePb operation = 3;
+    oneof rhs_value {
+        VariableAssignmentPb source_variable = 4;
+        VariableValuePb literal_value = 5;
+        NodeOutputSourcePb node_output = 6;
+    }
+}
+
+message NopNodePb {}
+
+message NodePb {
+    repeated EdgePb outgoing_edges = 1;
+    repeated VariableMutationPb variable_mutations = 2;
+    OutputSchemaPb output_schema = 3;
+    oneof node {
+        EntrypointNodePb entrypoint = 5;
+        ExitNodePb exit = 6;
+        TaskNodePb task = 7;
+        ExternalEventNodePb external_event = 8;
+        StartThreadNodePb start_thread = 9;
+        WaitForThreadNodePb wait_for_thread = 10;
+        NopNodePb nop = 11;
+    }
+    repeated FailureHandlerDefPb failure_handlers = 12;
+}
+
+message StartThreadNodePb {
+    string thread_spec_name = 1;
+    map<string, VariableAssignmentPb> variables = 2;
+}
+
+message FailureHandlerDefPb {
+    optional string specific_failure = 1;
+    string handler_spec_name = 2;
+}
+
+message WaitForThreadNodePb {
+    VariableAssignmentPb thread_run_number = 1;
+    VariableAssignmentPb timeout_seconds = 2;
+}
+
+message TaskNodePb {
+    string task_def_name = 1;
+    VariableAssignmentPb timeout_seconds = 2;
+    int32 retries = 3;
+    map<string, VariableAssignmentPb> variables = 4;
+}
+
+message ExternalEventNodePb {
+    string external_event_def_name = 1;
+}
+
+message EntrypointNodePb {
+
+}
+
+message ExitNodePb {
+    optional FailureDefPb failure_def = 1;
+}
+
+message FailureDefPb {
+    string failure_name = 1;
+    TaskResultCodePb failure_code = 2;
+    string message = 3;
+    optional VariableAssignmentPb content = 4;
+}
+
+message VariableDefPb {
+    VariableTypePb type = 1;
+    optional VariableValuePb default_val = 2;
+    bool required = 3;
+}
+
+message InterruptDefPb {
+    string external_event_def_name = 1;
+    string handler_spec_name = 2;
+}
+
+message ThreadSpecPb {
+    map<string, NodePb> nodes = 1;
+    map<string, VariableDefPb> variable_defs = 2;
+    repeated InterruptDefPb interrupt_defs = 3;
+}
+
+message WfSpecPb {
+    string id = 1;
+    google.protobuf.Timestamp created_at = 2;
+    google.protobuf.Timestamp updated_at = 3;
+
+    map<string, ThreadSpecPb> thread_specs = 4;
+    string entrypoint_thread_name = 5;
+
+    LHStatusPb status = 6;
+    string name = 7;
+
+    int64 last_updated_offset = 8;
+}
+
+message OutputSchemaPb {
+    VariableTypePb output_type = 1;
+}
+
+message TaskDefPb {
+    string name = 1;
+    google.protobuf.Timestamp created_at = 2;
+    OutputSchemaPb output_schema = 3;
+    map<string, VariableDefPb> required_vars = 4;
+}
+
+message ExternalEventDefPb {
+    string name = 1;
+    google.protobuf.Timestamp created_at = 2;
+    // TODO: In the future, maybe add schema? Maybe add correlations?
+    // Unclear until we have some customer feedback.
+}

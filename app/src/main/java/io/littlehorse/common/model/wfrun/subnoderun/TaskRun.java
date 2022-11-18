@@ -3,7 +3,7 @@ package io.littlehorse.common.model.wfrun.subnoderun;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
-import io.littlehorse.common.model.event.TaskResultEvent;
+import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.TaskStartedEvent;
 import io.littlehorse.common.model.event.WfRunEvent;

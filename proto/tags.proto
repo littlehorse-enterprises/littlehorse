@@ -1,0 +1,60 @@
+// Timer-related stuff
+syntax = "proto3";
+package lh_proto;
+
+option go_package = ".;model";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.common.proto";
+
+import "google/protobuf/timestamp.proto";
+
+// This section defines internal data structures used for data stores.
+enum GETableClassEnumPb {
+    TASK_DEF = 0;
+    WF_SPEC = 1;
+    WF_RUN = 2;
+    THREAD_RUN = 3;
+    TASK_RUN = 4;
+    VARIABLE = 5;
+    EXTERNAL_EVENT_DEF = 6;
+}
+
+message AttributePb {
+    string key = 1;
+    string val = 2;
+}
+
+message IndexKeyPb {
+    repeated AttributePb attributes = 1;
+    GETableClassEnumPb type = 2;
+    google.protobuf.Timestamp created = 3;
+}
+
+message IndexValuePb {
+    repeated string store_key = 1;
+}
+
+message TagPb {
+    IndexKeyPb key = 1;
+    string store_key = 2;
+}
+
+enum IndexActionEnum {
+    CREATE_IDX_ENTRY = 0;
+    DELETE_IDX_ENTRY = 1;
+}
+
+message TagActionPb {
+    TagPb entry = 1;
+    IndexActionEnum action = 2;
+}
+
+message GETableEntryPb {
+    bytes entry = 1;
+    int32 partition = 2;
+    int64 last_updated_offset = 3;
+}
+
+message TagsPb {
+    repeated TagPb entries = 1;
+}

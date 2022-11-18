@@ -16,7 +16,7 @@ import io.littlehorse.common.proto.WfSpecPb;
 import io.littlehorse.common.proto.WfSpecPbOrBuilder;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.processors.util.WfRunStoreAccess;
+import io.littlehorse.server.oldprocessors.util.WfRunStoreAccess;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;

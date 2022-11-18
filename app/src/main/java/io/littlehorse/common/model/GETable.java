@@ -23,18 +23,6 @@ public abstract class GETable<T extends MessageOrBuilder> extends LHSerializable
 
     public abstract List<Tag> getTags();
 
-    public static String getBaseStoreName(Class<? extends GETable<?>> cls) {
-        return cls.getSimpleName() + "_BaseStore";
-    }
-
-    public static String getTagStoreName(Class<? extends GETable<?>> cls) {
-        return cls.getSimpleName() + "_TagCache";
-    }
-
-    public static String getTaggingProcessorName(Class<? extends GETable<?>> cls) {
-        return cls.getSimpleName() + "_TaggingProcessor";
-    }
-
     public static GETableClassEnumPb getTypeEnum(Class<? extends GETable<?>> cls) {
         if (cls.equals(WfRun.class)) {
             return GETableClassEnumPb.WF_RUN;
@@ -80,9 +68,7 @@ public abstract class GETable<T extends MessageOrBuilder> extends LHSerializable
  * - each GETable has a partition key and an ID. They may be different.
  * - For example, we want TaskRun's for a WfRun to end up on the same host
  * - VariableValue's for a ThreadRun will end up on the same node as each other
- * - Will we query VariableValue's from the Scheduler topology or from the
- *   API topology?
  *
  * Will we make it possible to deploy the Scheduler separately from the API?
- *   - yes we will.
+ *   - currently no.
  */

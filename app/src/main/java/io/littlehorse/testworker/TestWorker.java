@@ -3,7 +3,7 @@ package io.littlehorse.testworker;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.event.TaskResultEvent;
+import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.TaskStartedEvent;
 import io.littlehorse.common.model.event.WfRunEvent;

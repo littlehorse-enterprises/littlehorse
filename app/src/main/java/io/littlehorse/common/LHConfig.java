@@ -38,6 +38,24 @@ public class LHConfig {
     private LHProducer txnProducer;
     private KafkaConsumer<String, Bytes> kafkaConsumer;
 
+    public String getKafkaTopicPrefix() {
+        return getOrSetDefault(LHConstants.KAFKA_TOPIC_PREFIX_KEY, "");
+    }
+
+    public String getCoreCmdTopicName() {
+        return getKafkaTopicPrefix() + "core-cmd";
+    }
+
+    public String getGlobalMetadataCLTopicName() {
+        return getKafkaTopicPrefix() + "global-metadata-cl";
+    }
+
+    public String getTagCmdTopic() {
+        return getKafkaTopicPrefix() + "tag-cmds";
+    }
+
+    // TODO: Determine how and where to set the topic names for TaskDef queues
+
     public String getBootstrapServers() {
         return getOrSetDefault(LHConstants.KAFKA_BOOTSTRAP_KEY, "localhost:9092");
     }
@@ -66,12 +84,6 @@ public class LHConfig {
         );
     }
 
-    public int getWorkerThreads() {
-        return Integer.valueOf(
-            getOrSetDefault(LHConstants.NUM_WORKER_THREADS_KEY, "2")
-        );
-    }
-
     public String getKafkaGroupId(String component) {
         return getKafkaGroupId() + "-" + component;
     }
@@ -95,12 +107,12 @@ public class LHConfig {
         return getOrSetDefault(LHConstants.ADVERTISED_PROTOCOL_KEY, "http");
     }
 
-    public String getAdvertisedUrl() {
+    public String getApiAdvertisedUrl() {
         return String.format(
             "%s://%s:%d",
             getAdvertisedProto(),
             this.getAdvertisedHost(),
-            getAdvertisedPort()
+            getApiAdvertisedPort()
         );
     }
 
@@ -108,36 +120,48 @@ public class LHConfig {
         return getOrSetDefault(LHConstants.ADVERTISED_HOST_KEY, "localhost");
     }
 
-    public int getAdvertisedPort() {
+    // If INTERNAL_ADVERTISED_PORT isn't set, we return INTERNAL_BIND_PORT.
+    public int getInternalAdvertisedPort() {
         return Integer.valueOf(
-            getOrSetDefault(LHConstants.ADVERTISED_PORT_KEY, "5000")
+            getOrSetDefault(
+                LHConstants.INTERNAL_ADVERTISED_PORT_KEY,
+                Integer.valueOf(getInternalBindPort()).toString()
+            )
         );
     }
 
-    public int getExposedPort() {
-        return Integer.valueOf(getOrSetDefault(LHConstants.EXPOSED_PORT_KEY, "5000"));
+    // If API_ADVERTISED_PORT isn't set, we return API_BIND_PORT.
+    public int getApiAdvertisedPort() {
+        return Integer.valueOf(
+            getOrSetDefault(
+                LHConstants.API_ADVERTISED_PORT_KEY,
+                Integer.valueOf(getApiBindPort()).toString()
+            )
+        );
     }
 
-    public HostInfo getHostInfo() {
-        return new HostInfo(getAdvertisedHost(), getAdvertisedPort());
+    public int getApiBindPort() {
+        return Integer.valueOf(
+            getOrSetDefault(LHConstants.API_BIND_PORT_KEY, "5000")
+        );
     }
 
-    public HostInfo getApiHostInfo() {
-        return new HostInfo(getApiHost(), getApiPort());
+    // If INTERNAL_BIND_PORT isn't set, we just return API_BIND_PORT + 1.
+    public int getInternalBindPort() {
+        return Integer.valueOf(
+            getOrSetDefault(
+                LHConstants.INTERNAL_ADVERTISED_PORT_KEY,
+                Integer.valueOf(getApiAdvertisedPort() + 1).toString()
+            )
+        );
     }
 
-    public String getApiHost() {
-        return getOrSetDefault(LHConstants.API_HOST_KEY, "localhost");
+    public HostInfo getInternalHostInfo() {
+        return new HostInfo(getAdvertisedHost(), getInternalAdvertisedPort());
     }
 
     public LHApiClient getApiClient() {
         return new LHApiClient(this);
-    }
-
-    public int getApiPort() {
-        // return Integer.valueOf(getOrSetDefault(LHConstants.API_PORT_KEY, "5000"));
-
-        return Integer.valueOf(getOrSetDefault(LHConstants.EXPOSED_PORT_KEY, "5000"));
     }
 
     public void cleanup() {
@@ -218,9 +242,6 @@ public class LHConfig {
         );
         conf.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
 
-        // TODO: Make this more graceful
-        conf.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, getWorkerThreads());
-
         kafkaConsumer = new KafkaConsumer<>(conf);
         kafkaConsumer.subscribe(topics);
         return kafkaConsumer;
@@ -230,7 +251,7 @@ public class LHConfig {
         Properties props = new Properties();
         props.put(
             StreamsConfig.APPLICATION_SERVER_CONFIG,
-            this.getAdvertisedHost() + ":" + this.getAdvertisedPort()
+            this.getAdvertisedHost() + ":" + this.getInternalAdvertisedPort()
         );
         props.put(
             StreamsConfig.APPLICATION_ID_CONFIG,
@@ -384,6 +405,9 @@ public class LHConfig {
         }
     }
 
+    /*
+     * TODO: Figure out how to do this over grpc
+     */
     public Javalin createAppWithHealth(LHKStreamsListener listener) {
         Javalin app = Javalin.create(javalinConf -> {
             javalinConf.prefer405over404 = true;

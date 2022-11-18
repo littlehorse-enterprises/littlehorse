@@ -1,7 +1,7 @@
 package io.littlehorse.common.model.wfrun.subnoderun;
 
 import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.model.event.ExternalEvent;
+import io.littlehorse.common.model.command.subcommand.ExternalEvent;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.meta.subnode.ExternalEventNode;

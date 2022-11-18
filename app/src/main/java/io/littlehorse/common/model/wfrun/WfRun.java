@@ -6,7 +6,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.GETable;
-import io.littlehorse.common.model.event.ExternalEvent;
+import io.littlehorse.common.model.command.subcommand.ExternalEvent;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.ThreadSpec;
 import io.littlehorse.common.model.meta.VariableDef;
@@ -20,7 +20,7 @@ import io.littlehorse.common.proto.ThreadRunPb;
 import io.littlehorse.common.proto.WfRunPb;
 import io.littlehorse.common.proto.WfRunPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.processors.util.WfRunStoreAccess;
+import io.littlehorse.server.oldprocessors.util.WfRunStoreAccess;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -375,7 +375,6 @@ public class WfRun extends GETable<WfRunPb> {
         }
 
         while (statusChanged) {
-            System.out.println("looping");
             statusChanged = startXnHandlersAndInterrupts(e.time) || statusChanged;
             statusChanged = false;
             for (ThreadRun thread : threadRuns) {
