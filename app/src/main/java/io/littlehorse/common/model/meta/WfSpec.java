@@ -16,7 +16,7 @@ import io.littlehorse.common.proto.WfSpecPb;
 import io.littlehorse.common.proto.WfSpecPbOrBuilder;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.oldprocessors.util.WfRunStoreAccess;
+import io.littlehorse.server.CommandProcessorDao;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -258,7 +258,7 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
         return out;
     }
 
-    public WfRun startNewRun(WfRunEvent e, WfRunStoreAccess wsa) {
+    public WfRun startNewRun(WfRunEvent e, CommandProcessorDao wsa) {
         WfRun out = new WfRun();
         out.stores = wsa;
         out.id = e.runRequest.wfRunId;

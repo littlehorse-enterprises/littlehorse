@@ -76,8 +76,12 @@ message PutWfSpecPb {
 }
 
 message PutTaskDefPb {
-    TaskDefPb spec = 1;
+    string name = 1;
+    google.protobuf.Timestamp created_at = 2;
+    OutputSchemaPb output_schema = 3;
+    map<string, VariableDefPb> required_vars = 4;
 }
+
 
 message PutExternalEventDefPb {
     ExternalEventDefPb spec = 1;
@@ -89,7 +93,7 @@ message CommandPb {
     optional string command_id = 2;
     oneof payload {
         TaskResultEventPb task_result_event = 3;
-        TaskStartedEventPb task_start_event = 4;
+        TaskStartedEventPb task_started_event = 4;
         ExternalEventPb external_event = 5;
         PutWfSpecPb put_wf_spec = 6;
         PutTaskDefPb put_task_def = 7;

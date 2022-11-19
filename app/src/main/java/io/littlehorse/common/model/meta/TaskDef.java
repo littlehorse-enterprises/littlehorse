@@ -26,6 +26,9 @@ public class TaskDef extends GlobalPOSTable<TaskDefPbOrBuilder> {
     public OutputSchema outputSchema;
     public Map<String, VariableDef> requiredVars;
 
+    public String queueName;
+    public String consumerGroupName;
+
     public TaskDef() {
         requiredVars = new HashMap<>();
     }
@@ -56,7 +59,9 @@ public class TaskDef extends GlobalPOSTable<TaskDefPbOrBuilder> {
             .newBuilder()
             .setName(name)
             .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
-            .setOutputSchema(outputSchema.toProto());
+            .setOutputSchema(outputSchema.toProto())
+            .setConsumerGroupName(consumerGroupName)
+            .setQueueName(queueName);
 
         for (Map.Entry<String, VariableDef> entry : requiredVars.entrySet()) {
             b.putRequiredVars(entry.getKey(), entry.getValue().toProto().build());
@@ -70,6 +75,16 @@ public class TaskDef extends GlobalPOSTable<TaskDefPbOrBuilder> {
         name = proto.getName();
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
         outputSchema = OutputSchema.fromProto(proto.getOutputSchemaOrBuilder());
+        queueName = proto.getQueueName();
+        consumerGroupName = proto.getConsumerGroupName();
+
+        // TODO: should this validation be done here...?
+        if (queueName.equals("")) {
+            queueName = name;
+        }
+        if (consumerGroupName.equals("")) {
+            consumerGroupName = "lh-task-worker-" + name;
+        }
 
         for (Map.Entry<String, VariableDefPb> entry : proto
             .getRequiredVarsMap()

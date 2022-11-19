@@ -84,6 +84,7 @@ public class ExternalEventRun extends SubNodeRun<ExternalEventRunPb> {
         ExternalEventNode eNode = node.externalEventNode;
 
         ExternalEvent evt = nodeRun.threadRun.wfRun.stores.getUnclaimedEvent(
+            nodeRun.threadRun.wfRunId,
             eNode.externalEventDefName
         );
         if (evt == null) {

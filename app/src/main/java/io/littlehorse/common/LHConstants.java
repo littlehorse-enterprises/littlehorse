@@ -37,14 +37,10 @@ public class LHConstants {
         "LHORSE_INTERNAL_ADVERTISED_PORT";
     public static final String INTERNAL_BIND_PORT_KEY = "LHORSE_INTERNAL_BIND_PORT";
 
-    // Topic and Store Names (Constants used internally by code)
-    public static final String WF_RUN_EVENT_TOPIC = "WFRun_Event";
-    public static final String TIMER_TOPIC_NAME = "Timer";
-    public static final String OBSERVABILITY_TOPIC = "Observability";
-
-    public static final String TIMER_STORE_NAME = "Timer_Store";
-    public static final String INDEX_STORE_NAME = "Core_Server_Index_Store";
-    public static final String TAG_TOPIC_NAME = "Tag_Topics";
+    // Store Names (Constants used internally by code)
+    public static final String CORE_DATA_STORE_NAME = "core-data-store";
+    public static final String TIMER_STORE_NAME = "timer-store";
+    public static final String INDEX_STORE_NAME = "tags-store";
 
     public static final Duration PUNCTUATOR_INERVAL = Duration.ofSeconds(4);
     public static final Duration TICKER_INTERVAL = Duration.ofSeconds(4);

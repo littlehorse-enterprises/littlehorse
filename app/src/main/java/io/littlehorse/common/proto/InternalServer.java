@@ -55,25 +55,25 @@ public final class InternalServer {
       "sult\030\003 \001(\014\"\177\n\030CentralStoreQueryReplyPb\022*" +
       "\n\004code\030\001 \001(\0162\034.lh_proto.StoreQueryStatus" +
       "Pb\022\023\n\006result\030\002 \001(\014H\000\210\001\001\022\027\n\017approximate_l" +
-      "ag\030\003 \001(\003B\t\n\007_result\"n\n\023CentralStoreQuery" +
-      "Pb\022\022\n\nstore_name\030\001 \001(\t\022\013\n\003key\030\002 \001(\t\022\037\n\022s" +
-      "pecific_partition\030\003 \001(\005H\000\210\001\001B\025\n\023_specifi" +
-      "c_partition\"H\n\026WaitForCommandResultPb\022\022\n" +
-      "\ncommand_id\030\001 \001(\005\022\032\n\022specific_partition\030" +
-      "\002 \001(\005\"\246\001\n\033WaitForCommandResultReplyPb\022*\n" +
-      "\004code\030\001 \001(\0162\034.lh_proto.StoreQueryStatusP" +
-      "b\022.\n\006result\030\002 \001(\0132\031.lh_proto.CommandResu" +
-      "ltPbH\000\210\001\001\022\024\n\007message\030\003 \001(\tH\001\210\001\001B\t\n\007_resu" +
-      "ltB\n\n\010_message*\\\n\022StoreQueryStatusPb\022\n\n\006" +
-      "RSQ_OK\020\000\022\021\n\rRSQ_NOT_FOUND\020\001\022\020\n\014RSQ_MIGRA" +
-      "TED\020\002\022\025\n\021RSQ_NOT_AVAILABLE\020\0032\312\001\n\013LHInter" +
-      "nals\022X\n\021CentralStoreQuery\022\035.lh_proto.Cen" +
-      "tralStoreQueryPb\032\".lh_proto.CentralStore" +
-      "QueryReplyPb\"\000\022a\n\024WaitForCommandResult\022 " +
-      ".lh_proto.WaitForCommandResultPb\032%.lh_pr" +
-      "oto.WaitForCommandResultReplyPb\"\000B(\n\033io." +
-      "littlehorse.common.protoP\001Z\007.;modelb\006pro" +
-      "to3"
+      "ag\030\003 \001(\003B\t\n\007_result\"\213\001\n\023CentralStoreQuer" +
+      "yPb\022\022\n\nstore_name\030\001 \001(\t\022\013\n\003key\030\002 \001(\t\022\037\n\022" +
+      "specific_partition\030\003 \001(\005H\000\210\001\001\022\033\n\023enable_" +
+      "stale_stores\030\004 \001(\010B\025\n\023_specific_partitio" +
+      "n\"H\n\026WaitForCommandResultPb\022\022\n\ncommand_i" +
+      "d\030\001 \001(\t\022\032\n\022specific_partition\030\002 \001(\005\"\246\001\n\033" +
+      "WaitForCommandResultReplyPb\022*\n\004code\030\001 \001(" +
+      "\0162\034.lh_proto.StoreQueryStatusPb\022.\n\006resul" +
+      "t\030\002 \001(\0132\031.lh_proto.CommandResultPbH\000\210\001\001\022" +
+      "\024\n\007message\030\003 \001(\tH\001\210\001\001B\t\n\007_resultB\n\n\010_mes" +
+      "sage*\\\n\022StoreQueryStatusPb\022\n\n\006RSQ_OK\020\000\022\021" +
+      "\n\rRSQ_NOT_FOUND\020\001\022\020\n\014RSQ_MIGRATED\020\002\022\025\n\021R" +
+      "SQ_NOT_AVAILABLE\020\0032\312\001\n\013LHInternals\022X\n\021Ce" +
+      "ntralStoreQuery\022\035.lh_proto.CentralStoreQ" +
+      "ueryPb\032\".lh_proto.CentralStoreQueryReply" +
+      "Pb\"\000\022a\n\024WaitForCommandResult\022 .lh_proto." +
+      "WaitForCommandResultPb\032%.lh_proto.WaitFo" +
+      "rCommandResultReplyPb\"\000B(\n\033io.littlehors" +
+      "e.common.protoP\001Z\007.;modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -97,7 +97,7 @@ public final class InternalServer {
     internal_static_lh_proto_CentralStoreQueryPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_CentralStoreQueryPb_descriptor,
-        new java.lang.String[] { "StoreName", "Key", "SpecificPartition", "SpecificPartition", });
+        new java.lang.String[] { "StoreName", "Key", "SpecificPartition", "EnableStaleStores", "SpecificPartition", });
     internal_static_lh_proto_WaitForCommandResultPb_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_lh_proto_WaitForCommandResultPb_fieldAccessorTable = new

@@ -82,4 +82,42 @@ public interface TaskDefPbOrBuilder extends
 
   io.littlehorse.common.proto.VariableDefPb getRequiredVarsOrThrow(
       java.lang.String key);
+
+  /**
+   * <code>string queue_name = 5;</code>
+   * @return The queueName.
+   */
+  java.lang.String getQueueName();
+  /**
+   * <code>string queue_name = 5;</code>
+   * @return The bytes for queueName.
+   */
+  com.google.protobuf.ByteString
+      getQueueNameBytes();
+
+  /**
+   * <pre>
+   * This is the ID of the consumer group that should be used for any Task Worker
+   * instances for this task def.
+   * It is also regrettably a kafka implementation detail that leaks through
+   * the abstraction.
+   * </pre>
+   *
+   * <code>string consumer_group_name = 6;</code>
+   * @return The consumerGroupName.
+   */
+  java.lang.String getConsumerGroupName();
+  /**
+   * <pre>
+   * This is the ID of the consumer group that should be used for any Task Worker
+   * instances for this task def.
+   * It is also regrettably a kafka implementation detail that leaks through
+   * the abstraction.
+   * </pre>
+   *
+   * <code>string consumer_group_name = 6;</code>
+   * @return The bytes for consumerGroupName.
+   */
+  com.google.protobuf.ByteString
+      getConsumerGroupNameBytes();
 }

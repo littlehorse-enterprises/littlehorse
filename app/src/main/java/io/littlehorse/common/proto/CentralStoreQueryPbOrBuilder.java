@@ -41,4 +41,10 @@ public interface CentralStoreQueryPbOrBuilder extends
    * @return The specificPartition.
    */
   int getSpecificPartition();
+
+  /**
+   * <code>bool enable_stale_stores = 4;</code>
+   * @return The enableStaleStores.
+   */
+  boolean getEnableStaleStores();
 }

@@ -13,7 +13,7 @@ import io.littlehorse.common.proto.GETableClassEnumPb;
 import java.util.Date;
 import java.util.List;
 
-public abstract class GETable<T extends MessageOrBuilder> extends LHSerializable<T> {
+public abstract class GETable<T extends MessageOrBuilder> extends Storeable<T> {
 
     public abstract Date getCreatedAt();
 
@@ -22,6 +22,10 @@ public abstract class GETable<T extends MessageOrBuilder> extends LHSerializable
     public abstract String getObjectId();
 
     public abstract List<Tag> getTags();
+
+    public String getStoreSubKey() {
+        return getObjectId();
+    }
 
     public static GETableClassEnumPb getTypeEnum(Class<? extends GETable<?>> cls) {
         if (cls.equals(WfRun.class)) {

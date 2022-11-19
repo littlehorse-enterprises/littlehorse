@@ -8,8 +8,10 @@ import io.littlehorse.common.util.serde.LHDeserializer;
 import io.littlehorse.common.util.serde.LHSerde;
 import io.littlehorse.server.oldprocessors.TimerProcessor;
 import io.littlehorse.server.streamsbackend.coreserver.CoreServerProcessor;
+import io.littlehorse.server.streamsbackend.coreserver.CoreServerProcessorOutput;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.StoreBuilder;
@@ -25,6 +27,7 @@ public class ServerTopology {
     public static String coreSource = "core-source";
     public static String coreStore = "core-store";
     public static String coreProcessor = "core-processor";
+    public static String coreSink = "core-sink";
 
     public static Topology initCoreTopology(LHConfig config) {
         Topology topo = new Topology();
@@ -39,11 +42,29 @@ public class ServerTopology {
         topo.addProcessor(
             coreProcessor,
             () -> {
-                return new CoreServerProcessor();
+                return new CoreServerProcessor(config);
             },
             coreSource
         );
 
+        topo.addSink(
+            coreSink,
+            (key, coreServerOutput, ctx) -> {
+                return ((CoreServerProcessorOutput) coreServerOutput).topic;
+            }, // topic extractor
+            Serdes.String().serializer(), // key serializer
+            (topic, output) -> {
+                return ((CoreServerProcessorOutput) output).payload.toBytes(config);
+            }, // value serializer
+            coreProcessor // parent name
+        );
+
+        StoreBuilder<KeyValueStore<String, Bytes>> builder = Stores.keyValueStoreBuilder(
+            Stores.persistentKeyValueStore(LHConstants.CORE_DATA_STORE_NAME),
+            Serdes.String(),
+            Serdes.Bytes()
+        );
+        topo.addStateStore(builder, coreProcessor);
         return topo;
     }
 
@@ -67,7 +88,7 @@ public class ServerTopology {
             timerSource,
             Serdes.String().deserializer(),
             timerSerde.deserializer(),
-            LHConstants.TIMER_TOPIC_NAME
+            config.getTimerTopic()
         );
 
         topo.addProcessor(

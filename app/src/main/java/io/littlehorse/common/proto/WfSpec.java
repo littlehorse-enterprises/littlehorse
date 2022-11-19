@@ -251,24 +251,25 @@ public final class WfSpec {
       "ry\022\013\n\003key\030\001 \001(\t\022%\n\005value\030\002 \001(\0132\026.lh_prot" +
       "o.ThreadSpecPb:\0028\001\"?\n\016OutputSchemaPb\022-\n\013" +
       "output_type\030\001 \001(\0162\030.lh_proto.VariableTyp" +
-      "ePb\"\206\002\n\tTaskDefPb\022\014\n\004name\030\001 \001(\t\022.\n\ncreat" +
+      "ePb\"\267\002\n\tTaskDefPb\022\014\n\004name\030\001 \001(\t\022.\n\ncreat" +
       "ed_at\030\002 \001(\0132\032.google.protobuf.Timestamp\022" +
       "/\n\routput_schema\030\003 \001(\0132\030.lh_proto.Output" +
       "SchemaPb\022<\n\rrequired_vars\030\004 \003(\0132%.lh_pro" +
-      "to.TaskDefPb.RequiredVarsEntry\032L\n\021Requir" +
-      "edVarsEntry\022\013\n\003key\030\001 \001(\t\022&\n\005value\030\002 \001(\0132" +
-      "\027.lh_proto.VariableDefPb:\0028\001\"R\n\022External" +
-      "EventDefPb\022\014\n\004name\030\001 \001(\t\022.\n\ncreated_at\030\002" +
-      " \001(\0132\032.google.protobuf.Timestamp*\206\001\n\014Com" +
-      "paratorPb\022\r\n\tLESS_THAN\020\000\022\020\n\014GREATER_THAN" +
-      "\020\001\022\020\n\014LESS_THAN_EQ\020\002\022\023\n\017GREATER_THAN_EQ\020" +
-      "\003\022\n\n\006EQUALS\020\004\022\016\n\nNOT_EQUALS\020\005\022\006\n\002IN\020\006\022\n\n" +
-      "\006NOT_IN\020\007*\232\001\n\026VariableMutationTypePb\022\n\n\006" +
-      "ASSIGN\020\000\022\007\n\003ADD\020\001\022\n\n\006EXTEND\020\002\022\014\n\010SUBTRAC" +
-      "T\020\003\022\014\n\010MULTIPLY\020\004\022\n\n\006DIVIDE\020\005\022\025\n\021REMOVE_" +
-      "IF_PRESENT\020\006\022\020\n\014REMOVE_INDEX\020\007\022\016\n\nREMOVE" +
-      "_KEY\020\010B(\n\033io.littlehorse.common.protoP\001Z" +
-      "\007.;modelb\006proto3"
+      "to.TaskDefPb.RequiredVarsEntry\022\022\n\nqueue_" +
+      "name\030\005 \001(\t\022\033\n\023consumer_group_name\030\006 \001(\t\032" +
+      "L\n\021RequiredVarsEntry\022\013\n\003key\030\001 \001(\t\022&\n\005val" +
+      "ue\030\002 \001(\0132\027.lh_proto.VariableDefPb:\0028\001\"R\n" +
+      "\022ExternalEventDefPb\022\014\n\004name\030\001 \001(\t\022.\n\ncre" +
+      "ated_at\030\002 \001(\0132\032.google.protobuf.Timestam" +
+      "p*\206\001\n\014ComparatorPb\022\r\n\tLESS_THAN\020\000\022\020\n\014GRE" +
+      "ATER_THAN\020\001\022\020\n\014LESS_THAN_EQ\020\002\022\023\n\017GREATER" +
+      "_THAN_EQ\020\003\022\n\n\006EQUALS\020\004\022\016\n\nNOT_EQUALS\020\005\022\006" +
+      "\n\002IN\020\006\022\n\n\006NOT_IN\020\007*\232\001\n\026VariableMutationT" +
+      "ypePb\022\n\n\006ASSIGN\020\000\022\007\n\003ADD\020\001\022\n\n\006EXTEND\020\002\022\014" +
+      "\n\010SUBTRACT\020\003\022\014\n\010MULTIPLY\020\004\022\n\n\006DIVIDE\020\005\022\025" +
+      "\n\021REMOVE_IF_PRESENT\020\006\022\020\n\014REMOVE_INDEX\020\007\022" +
+      "\016\n\nREMOVE_KEY\020\010B(\n\033io.littlehorse.common" +
+      ".protoP\001Z\007.;modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -432,7 +433,7 @@ public final class WfSpec {
     internal_static_lh_proto_TaskDefPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_TaskDefPb_descriptor,
-        new java.lang.String[] { "Name", "CreatedAt", "OutputSchema", "RequiredVars", });
+        new java.lang.String[] { "Name", "CreatedAt", "OutputSchema", "RequiredVars", "QueueName", "ConsumerGroupName", });
     internal_static_lh_proto_TaskDefPb_RequiredVarsEntry_descriptor =
       internal_static_lh_proto_TaskDefPb_descriptor.getNestedTypes().get(0);
     internal_static_lh_proto_TaskDefPb_RequiredVarsEntry_fieldAccessorTable = new

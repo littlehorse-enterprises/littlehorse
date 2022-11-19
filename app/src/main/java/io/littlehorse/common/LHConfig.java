@@ -54,6 +54,10 @@ public class LHConfig {
         return getKafkaTopicPrefix() + "tag-cmds";
     }
 
+    public String getTimerTopic() {
+        return getKafkaTopicPrefix() + "timers";
+    }
+
     // TODO: Determine how and where to set the topic names for TaskDef queues
 
     public String getBootstrapServers() {

@@ -6,6 +6,8 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.proto.LHPublicApiGrpc.LHPublicApiImplBase;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.ServerTopology;
+import io.littlehorse.server.streamsbackend.storeinternals.LHKafkaStoreInternalCommServer;
+import java.io.IOException;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KafkaStreams.State;
 import org.apache.kafka.streams.KafkaStreams.StateListener;
@@ -16,6 +18,8 @@ public class KafkaStreamsBackend extends LHPublicApiImplBase {
     private KafkaStreams coreStreams;
     private KafkaStreams timerStreams;
     private KafkaStreams tagStreams;
+
+    private LHKafkaStoreInternalCommServer backendInternalComms;
 
     public void init(LHConfig config, HealthStatusManager grpcHealthCheckThingy) {
         Topology coreTopo = ServerTopology.initCoreTopology(config);
@@ -35,18 +39,23 @@ public class KafkaStreamsBackend extends LHPublicApiImplBase {
         tagStreams.setStateListener(
             new LHBackendStateListener("tag", grpcHealthCheckThingy)
         );
+
+        backendInternalComms =
+            new LHKafkaStoreInternalCommServer(config, coreStreams);
     }
 
-    public void start() {
+    public void start() throws IOException {
         coreStreams.start();
         timerStreams.start();
         tagStreams.start();
+        backendInternalComms.start();
     }
 
     public void close() {
         coreStreams.close();
         timerStreams.close();
         tagStreams.close();
+        backendInternalComms.close();
     }
 }
 

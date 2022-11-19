@@ -1,4 +1,4 @@
-package io.littlehorse.server;
+package io.littlehorse.server.oldprocessors;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.javalin.Javalin;

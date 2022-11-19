@@ -4,7 +4,7 @@ import io.littlehorse.common.model.GlobalPOSTable;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.server.ApiStreamsContext;
+import io.littlehorse.server.oldprocessors.ApiStreamsContext;
 import io.littlehorse.server.oldprocessors.util.GenericOutput;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;

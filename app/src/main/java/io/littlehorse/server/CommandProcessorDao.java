@@ -1,12 +1,15 @@
-package io.littlehorse.server.oldprocessors.util;
+package io.littlehorse.server;
 
 import io.littlehorse.common.model.command.subcommand.ExternalEvent;
 import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.Variable;
+import io.littlehorse.common.model.wfrun.WfRun;
 
-public interface WfRunStoreAccess {
+public interface CommandProcessorDao {
+    public String getWfRunEventQueue();
+
     public void putNodeRun(NodeRun nr);
 
     public NodeRun getNodeRun(String wfRunId, int threadNum, int position);
@@ -28,5 +31,17 @@ public interface WfRunStoreAccess {
 
     public void scheduleTimer(LHTimer timer);
 
+    public void saveWfRun(WfRun wfRun);
+
+    public WfRun getWfRun(String id);
+
+    /*
+     * Clear any dirty cache if necessary
+     */
+    public void abortChanges();
+
+    /*
+     * Commit changes to the backing store.
+     */
     public void commitChanges();
 }

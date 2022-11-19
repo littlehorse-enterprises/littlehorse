@@ -210,7 +210,7 @@ private static final long serialVersionUID = 0L;
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
     TASK_RESULT_EVENT(3),
-    TASK_START_EVENT(4),
+    TASK_STARTED_EVENT(4),
     EXTERNAL_EVENT(5),
     PUT_WF_SPEC(6),
     PUT_TASK_DEF(7),
@@ -234,7 +234,7 @@ private static final long serialVersionUID = 0L;
     public static PayloadCase forNumber(int value) {
       switch (value) {
         case 3: return TASK_RESULT_EVENT;
-        case 4: return TASK_START_EVENT;
+        case 4: return TASK_STARTED_EVENT;
         case 5: return EXTERNAL_EVENT;
         case 6: return PUT_WF_SPEC;
         case 7: return PUT_TASK_DEF;
@@ -358,31 +358,31 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.TaskResultEventPb.getDefaultInstance();
   }
 
-  public static final int TASK_START_EVENT_FIELD_NUMBER = 4;
+  public static final int TASK_STARTED_EVENT_FIELD_NUMBER = 4;
   /**
-   * <code>.lh_proto.TaskStartedEventPb task_start_event = 4;</code>
-   * @return Whether the taskStartEvent field is set.
+   * <code>.lh_proto.TaskStartedEventPb task_started_event = 4;</code>
+   * @return Whether the taskStartedEvent field is set.
    */
   @java.lang.Override
-  public boolean hasTaskStartEvent() {
+  public boolean hasTaskStartedEvent() {
     return payloadCase_ == 4;
   }
   /**
-   * <code>.lh_proto.TaskStartedEventPb task_start_event = 4;</code>
-   * @return The taskStartEvent.
+   * <code>.lh_proto.TaskStartedEventPb task_started_event = 4;</code>
+   * @return The taskStartedEvent.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.TaskStartedEventPb getTaskStartEvent() {
+  public io.littlehorse.common.proto.TaskStartedEventPb getTaskStartedEvent() {
     if (payloadCase_ == 4) {
        return (io.littlehorse.common.proto.TaskStartedEventPb) payload_;
     }
     return io.littlehorse.common.proto.TaskStartedEventPb.getDefaultInstance();
   }
   /**
-   * <code>.lh_proto.TaskStartedEventPb task_start_event = 4;</code>
+   * <code>.lh_proto.TaskStartedEventPb task_started_event = 4;</code>
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.TaskStartedEventPbOrBuilder getTaskStartEventOrBuilder() {
+  public io.littlehorse.common.proto.TaskStartedEventPbOrBuilder getTaskStartedEventOrBuilder() {
     if (payloadCase_ == 4) {
        return (io.littlehorse.common.proto.TaskStartedEventPb) payload_;
     }
@@ -661,8 +661,8 @@ private static final long serialVersionUID = 0L;
             .equals(other.getTaskResultEvent())) return false;
         break;
       case 4:
-        if (!getTaskStartEvent()
-            .equals(other.getTaskStartEvent())) return false;
+        if (!getTaskStartedEvent()
+            .equals(other.getTaskStartedEvent())) return false;
         break;
       case 5:
         if (!getExternalEvent()
@@ -712,8 +712,8 @@ private static final long serialVersionUID = 0L;
         hash = (53 * hash) + getTaskResultEvent().hashCode();
         break;
       case 4:
-        hash = (37 * hash) + TASK_START_EVENT_FIELD_NUMBER;
-        hash = (53 * hash) + getTaskStartEvent().hashCode();
+        hash = (37 * hash) + TASK_STARTED_EVENT_FIELD_NUMBER;
+        hash = (53 * hash) + getTaskStartedEvent().hashCode();
         break;
       case 5:
         hash = (37 * hash) + EXTERNAL_EVENT_FIELD_NUMBER;
@@ -930,10 +930,10 @@ private static final long serialVersionUID = 0L;
         }
       }
       if (payloadCase_ == 4) {
-        if (taskStartEventBuilder_ == null) {
+        if (taskStartedEventBuilder_ == null) {
           result.payload_ = payload_;
         } else {
-          result.payload_ = taskStartEventBuilder_.build();
+          result.payload_ = taskStartedEventBuilder_.build();
         }
       }
       if (payloadCase_ == 5) {
@@ -1034,8 +1034,8 @@ private static final long serialVersionUID = 0L;
           mergeTaskResultEvent(other.getTaskResultEvent());
           break;
         }
-        case TASK_START_EVENT: {
-          mergeTaskStartEvent(other.getTaskStartEvent());
+        case TASK_STARTED_EVENT: {
+          mergeTaskStartedEvent(other.getTaskStartedEvent());
           break;
         }
         case EXTERNAL_EVENT: {
@@ -1451,68 +1451,68 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.TaskStartedEventPb, io.littlehorse.common.proto.TaskStartedEventPb.Builder, io.littlehorse.common.proto.TaskStartedEventPbOrBuilder> taskStartEventBuilder_;
+        io.littlehorse.common.proto.TaskStartedEventPb, io.littlehorse.common.proto.TaskStartedEventPb.Builder, io.littlehorse.common.proto.TaskStartedEventPbOrBuilder> taskStartedEventBuilder_;
     /**
-     * <code>.lh_proto.TaskStartedEventPb task_start_event = 4;</code>
-     * @return Whether the taskStartEvent field is set.
+     * <code>.lh_proto.TaskStartedEventPb task_started_event = 4;</code>
+     * @return Whether the taskStartedEvent field is set.
      */
     @java.lang.Override
-    public boolean hasTaskStartEvent() {
+    public boolean hasTaskStartedEvent() {
       return payloadCase_ == 4;
     }
     /**
-     * <code>.lh_proto.TaskStartedEventPb task_start_event = 4;</code>
-     * @return The taskStartEvent.
+     * <code>.lh_proto.TaskStartedEventPb task_started_event = 4;</code>
+     * @return The taskStartedEvent.
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.TaskStartedEventPb getTaskStartEvent() {
-      if (taskStartEventBuilder_ == null) {
+    public io.littlehorse.common.proto.TaskStartedEventPb getTaskStartedEvent() {
+      if (taskStartedEventBuilder_ == null) {
         if (payloadCase_ == 4) {
           return (io.littlehorse.common.proto.TaskStartedEventPb) payload_;
         }
         return io.littlehorse.common.proto.TaskStartedEventPb.getDefaultInstance();
       } else {
         if (payloadCase_ == 4) {
-          return taskStartEventBuilder_.getMessage();
+          return taskStartedEventBuilder_.getMessage();
         }
         return io.littlehorse.common.proto.TaskStartedEventPb.getDefaultInstance();
       }
     }
     /**
-     * <code>.lh_proto.TaskStartedEventPb task_start_event = 4;</code>
+     * <code>.lh_proto.TaskStartedEventPb task_started_event = 4;</code>
      */
-    public Builder setTaskStartEvent(io.littlehorse.common.proto.TaskStartedEventPb value) {
-      if (taskStartEventBuilder_ == null) {
+    public Builder setTaskStartedEvent(io.littlehorse.common.proto.TaskStartedEventPb value) {
+      if (taskStartedEventBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
         payload_ = value;
         onChanged();
       } else {
-        taskStartEventBuilder_.setMessage(value);
+        taskStartedEventBuilder_.setMessage(value);
       }
       payloadCase_ = 4;
       return this;
     }
     /**
-     * <code>.lh_proto.TaskStartedEventPb task_start_event = 4;</code>
+     * <code>.lh_proto.TaskStartedEventPb task_started_event = 4;</code>
      */
-    public Builder setTaskStartEvent(
+    public Builder setTaskStartedEvent(
         io.littlehorse.common.proto.TaskStartedEventPb.Builder builderForValue) {
-      if (taskStartEventBuilder_ == null) {
+      if (taskStartedEventBuilder_ == null) {
         payload_ = builderForValue.build();
         onChanged();
       } else {
-        taskStartEventBuilder_.setMessage(builderForValue.build());
+        taskStartedEventBuilder_.setMessage(builderForValue.build());
       }
       payloadCase_ = 4;
       return this;
     }
     /**
-     * <code>.lh_proto.TaskStartedEventPb task_start_event = 4;</code>
+     * <code>.lh_proto.TaskStartedEventPb task_started_event = 4;</code>
      */
-    public Builder mergeTaskStartEvent(io.littlehorse.common.proto.TaskStartedEventPb value) {
-      if (taskStartEventBuilder_ == null) {
+    public Builder mergeTaskStartedEvent(io.littlehorse.common.proto.TaskStartedEventPb value) {
+      if (taskStartedEventBuilder_ == null) {
         if (payloadCase_ == 4 &&
             payload_ != io.littlehorse.common.proto.TaskStartedEventPb.getDefaultInstance()) {
           payload_ = io.littlehorse.common.proto.TaskStartedEventPb.newBuilder((io.littlehorse.common.proto.TaskStartedEventPb) payload_)
@@ -1523,18 +1523,18 @@ private static final long serialVersionUID = 0L;
         onChanged();
       } else {
         if (payloadCase_ == 4) {
-          taskStartEventBuilder_.mergeFrom(value);
+          taskStartedEventBuilder_.mergeFrom(value);
         }
-        taskStartEventBuilder_.setMessage(value);
+        taskStartedEventBuilder_.setMessage(value);
       }
       payloadCase_ = 4;
       return this;
     }
     /**
-     * <code>.lh_proto.TaskStartedEventPb task_start_event = 4;</code>
+     * <code>.lh_proto.TaskStartedEventPb task_started_event = 4;</code>
      */
-    public Builder clearTaskStartEvent() {
-      if (taskStartEventBuilder_ == null) {
+    public Builder clearTaskStartedEvent() {
+      if (taskStartedEventBuilder_ == null) {
         if (payloadCase_ == 4) {
           payloadCase_ = 0;
           payload_ = null;
@@ -1545,23 +1545,23 @@ private static final long serialVersionUID = 0L;
           payloadCase_ = 0;
           payload_ = null;
         }
-        taskStartEventBuilder_.clear();
+        taskStartedEventBuilder_.clear();
       }
       return this;
     }
     /**
-     * <code>.lh_proto.TaskStartedEventPb task_start_event = 4;</code>
+     * <code>.lh_proto.TaskStartedEventPb task_started_event = 4;</code>
      */
-    public io.littlehorse.common.proto.TaskStartedEventPb.Builder getTaskStartEventBuilder() {
-      return getTaskStartEventFieldBuilder().getBuilder();
+    public io.littlehorse.common.proto.TaskStartedEventPb.Builder getTaskStartedEventBuilder() {
+      return getTaskStartedEventFieldBuilder().getBuilder();
     }
     /**
-     * <code>.lh_proto.TaskStartedEventPb task_start_event = 4;</code>
+     * <code>.lh_proto.TaskStartedEventPb task_started_event = 4;</code>
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.TaskStartedEventPbOrBuilder getTaskStartEventOrBuilder() {
-      if ((payloadCase_ == 4) && (taskStartEventBuilder_ != null)) {
-        return taskStartEventBuilder_.getMessageOrBuilder();
+    public io.littlehorse.common.proto.TaskStartedEventPbOrBuilder getTaskStartedEventOrBuilder() {
+      if ((payloadCase_ == 4) && (taskStartedEventBuilder_ != null)) {
+        return taskStartedEventBuilder_.getMessageOrBuilder();
       } else {
         if (payloadCase_ == 4) {
           return (io.littlehorse.common.proto.TaskStartedEventPb) payload_;
@@ -1570,16 +1570,16 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.lh_proto.TaskStartedEventPb task_start_event = 4;</code>
+     * <code>.lh_proto.TaskStartedEventPb task_started_event = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.TaskStartedEventPb, io.littlehorse.common.proto.TaskStartedEventPb.Builder, io.littlehorse.common.proto.TaskStartedEventPbOrBuilder> 
-        getTaskStartEventFieldBuilder() {
-      if (taskStartEventBuilder_ == null) {
+        getTaskStartedEventFieldBuilder() {
+      if (taskStartedEventBuilder_ == null) {
         if (!(payloadCase_ == 4)) {
           payload_ = io.littlehorse.common.proto.TaskStartedEventPb.getDefaultInstance();
         }
-        taskStartEventBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+        taskStartedEventBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
             io.littlehorse.common.proto.TaskStartedEventPb, io.littlehorse.common.proto.TaskStartedEventPb.Builder, io.littlehorse.common.proto.TaskStartedEventPbOrBuilder>(
                 (io.littlehorse.common.proto.TaskStartedEventPb) payload_,
                 getParentForChildren(),
@@ -1588,7 +1588,7 @@ private static final long serialVersionUID = 0L;
       }
       payloadCase_ = 4;
       onChanged();;
-      return taskStartEventBuilder_;
+      return taskStartedEventBuilder_;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<

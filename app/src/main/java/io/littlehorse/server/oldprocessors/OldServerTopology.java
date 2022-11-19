@@ -1,4 +1,4 @@
-package io.littlehorse.server;
+package io.littlehorse.server.oldprocessors;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
@@ -23,11 +23,6 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.common.util.serde.LHDeserializer;
 import io.littlehorse.common.util.serde.LHSerde;
 import io.littlehorse.common.util.serde.LHSerializer;
-import io.littlehorse.server.oldprocessors.IndexProcessor;
-import io.littlehorse.server.oldprocessors.POSTableProcessor;
-import io.littlehorse.server.oldprocessors.SchedulerProcessor;
-import io.littlehorse.server.oldprocessors.TaggingProcessor;
-import io.littlehorse.server.oldprocessors.TimerProcessor;
 import io.littlehorse.server.oldprocessors.util.GenericOutput;
 import java.util.Arrays;
 import org.apache.kafka.common.serialization.Serde;

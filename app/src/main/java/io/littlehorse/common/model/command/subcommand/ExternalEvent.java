@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.GETable;
-import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.event.WfRunSubEvent;
 import io.littlehorse.common.model.server.Tag;
 import io.littlehorse.common.model.wfrun.VariableValue;
@@ -15,9 +14,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class ExternalEvent
-    extends SubCommand<ExternalEventPb>
-    implements WfRunSubEvent {
+public class ExternalEvent extends GETable<ExternalEventPb> implements WfRunSubEvent {
 
     @JsonIgnore // We want Jackson to show  the full ID, not this.
     public String guid;

@@ -20,9 +20,8 @@ import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.NodePb.NodeCase;
 import io.littlehorse.common.proto.WfRunEventPb.EventCase;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.OldServerTopology;
+import io.littlehorse.server.CommandProcessorDao;
 import io.littlehorse.server.oldprocessors.util.GenericOutput;
-import io.littlehorse.server.oldprocessors.util.WfRunStoreAccess;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.kafka.streams.processor.api.Processor;
@@ -109,7 +108,7 @@ public class SchedulerProcessor
         // `wfRun` is null if it's a WfRunRequest or an ExternalEvent that comes
         //   before the associated WfRun.
 
-        WfRunStoreAccess wsa = new WfRunStoreAccess(
+        CommandProcessorDao wsa = new CommandProcessorDao(
             nodeRunStore,
             variableStore,
             extEvtStore,
@@ -160,7 +159,7 @@ public class SchedulerProcessor
         flushChanges(wfRun, wsa, timestamp);
     }
 
-    private void flushChanges(WfRun wfRun, WfRunStoreAccess wsa, long timestamp) {
+    private void flushChanges(WfRun wfRun, CommandProcessorDao wsa, long timestamp) {
         // Schedule tasks
         for (TaskScheduleRequest r : wsa.tasksToSchedule) {
             GenericOutput taskOutput = new GenericOutput();

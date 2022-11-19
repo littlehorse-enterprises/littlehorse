@@ -16,6 +16,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private PutTaskDefPb() {
+    name_ = "";
   }
 
   @java.lang.Override
@@ -38,6 +39,7 @@ private static final long serialVersionUID = 0L;
     if (extensionRegistry == null) {
       throw new java.lang.NullPointerException();
     }
+    int mutable_bitField0_ = 0;
     com.google.protobuf.UnknownFieldSet.Builder unknownFields =
         com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
@@ -49,16 +51,48 @@ private static final long serialVersionUID = 0L;
             done = true;
             break;
           case 10: {
-            io.littlehorse.common.proto.TaskDefPb.Builder subBuilder = null;
-            if (spec_ != null) {
-              subBuilder = spec_.toBuilder();
+            java.lang.String s = input.readStringRequireUtf8();
+
+            name_ = s;
+            break;
+          }
+          case 18: {
+            com.google.protobuf.Timestamp.Builder subBuilder = null;
+            if (createdAt_ != null) {
+              subBuilder = createdAt_.toBuilder();
             }
-            spec_ = input.readMessage(io.littlehorse.common.proto.TaskDefPb.parser(), extensionRegistry);
+            createdAt_ = input.readMessage(com.google.protobuf.Timestamp.parser(), extensionRegistry);
             if (subBuilder != null) {
-              subBuilder.mergeFrom(spec_);
-              spec_ = subBuilder.buildPartial();
+              subBuilder.mergeFrom(createdAt_);
+              createdAt_ = subBuilder.buildPartial();
             }
 
+            break;
+          }
+          case 26: {
+            io.littlehorse.common.proto.OutputSchemaPb.Builder subBuilder = null;
+            if (outputSchema_ != null) {
+              subBuilder = outputSchema_.toBuilder();
+            }
+            outputSchema_ = input.readMessage(io.littlehorse.common.proto.OutputSchemaPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom(outputSchema_);
+              outputSchema_ = subBuilder.buildPartial();
+            }
+
+            break;
+          }
+          case 34: {
+            if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+              requiredVars_ = com.google.protobuf.MapField.newMapField(
+                  RequiredVarsDefaultEntryHolder.defaultEntry);
+              mutable_bitField0_ |= 0x00000001;
+            }
+            com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.common.proto.VariableDefPb>
+            requiredVars__ = input.readMessage(
+                RequiredVarsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+            requiredVars_.getMutableMap().put(
+                requiredVars__.getKey(), requiredVars__.getValue());
             break;
           }
           default: {
@@ -85,6 +119,18 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.Command.internal_static_lh_proto_PutTaskDefPb_descriptor;
   }
 
+  @SuppressWarnings({"rawtypes"})
+  @java.lang.Override
+  protected com.google.protobuf.MapField internalGetMapField(
+      int number) {
+    switch (number) {
+      case 4:
+        return internalGetRequiredVars();
+      default:
+        throw new RuntimeException(
+            "Invalid map field number: " + number);
+    }
+  }
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
@@ -93,30 +139,175 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.common.proto.PutTaskDefPb.class, io.littlehorse.common.proto.PutTaskDefPb.Builder.class);
   }
 
-  public static final int SPEC_FIELD_NUMBER = 1;
-  private io.littlehorse.common.proto.TaskDefPb spec_;
+  public static final int NAME_FIELD_NUMBER = 1;
+  private volatile java.lang.Object name_;
   /**
-   * <code>.lh_proto.TaskDefPb spec = 1;</code>
-   * @return Whether the spec field is set.
+   * <code>string name = 1;</code>
+   * @return The name.
    */
   @java.lang.Override
-  public boolean hasSpec() {
-    return spec_ != null;
+  public java.lang.String getName() {
+    java.lang.Object ref = name_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      name_ = s;
+      return s;
+    }
   }
   /**
-   * <code>.lh_proto.TaskDefPb spec = 1;</code>
-   * @return The spec.
+   * <code>string name = 1;</code>
+   * @return The bytes for name.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.TaskDefPb getSpec() {
-    return spec_ == null ? io.littlehorse.common.proto.TaskDefPb.getDefaultInstance() : spec_;
+  public com.google.protobuf.ByteString
+      getNameBytes() {
+    java.lang.Object ref = name_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      name_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int CREATED_AT_FIELD_NUMBER = 2;
+  private com.google.protobuf.Timestamp createdAt_;
+  /**
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
+   * @return Whether the createdAt field is set.
+   */
+  @java.lang.Override
+  public boolean hasCreatedAt() {
+    return createdAt_ != null;
   }
   /**
-   * <code>.lh_proto.TaskDefPb spec = 1;</code>
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
+   * @return The createdAt.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.TaskDefPbOrBuilder getSpecOrBuilder() {
-    return getSpec();
+  public com.google.protobuf.Timestamp getCreatedAt() {
+    return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
+  }
+  /**
+   * <code>.google.protobuf.Timestamp created_at = 2;</code>
+   */
+  @java.lang.Override
+  public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
+    return getCreatedAt();
+  }
+
+  public static final int OUTPUT_SCHEMA_FIELD_NUMBER = 3;
+  private io.littlehorse.common.proto.OutputSchemaPb outputSchema_;
+  /**
+   * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
+   * @return Whether the outputSchema field is set.
+   */
+  @java.lang.Override
+  public boolean hasOutputSchema() {
+    return outputSchema_ != null;
+  }
+  /**
+   * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
+   * @return The outputSchema.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.OutputSchemaPb getOutputSchema() {
+    return outputSchema_ == null ? io.littlehorse.common.proto.OutputSchemaPb.getDefaultInstance() : outputSchema_;
+  }
+  /**
+   * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.OutputSchemaPbOrBuilder getOutputSchemaOrBuilder() {
+    return getOutputSchema();
+  }
+
+  public static final int REQUIRED_VARS_FIELD_NUMBER = 4;
+  private static final class RequiredVarsDefaultEntryHolder {
+    static final com.google.protobuf.MapEntry<
+        java.lang.String, io.littlehorse.common.proto.VariableDefPb> defaultEntry =
+            com.google.protobuf.MapEntry
+            .<java.lang.String, io.littlehorse.common.proto.VariableDefPb>newDefaultInstance(
+                io.littlehorse.common.proto.Command.internal_static_lh_proto_PutTaskDefPb_RequiredVarsEntry_descriptor, 
+                com.google.protobuf.WireFormat.FieldType.STRING,
+                "",
+                com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                io.littlehorse.common.proto.VariableDefPb.getDefaultInstance());
+  }
+  private com.google.protobuf.MapField<
+      java.lang.String, io.littlehorse.common.proto.VariableDefPb> requiredVars_;
+  private com.google.protobuf.MapField<java.lang.String, io.littlehorse.common.proto.VariableDefPb>
+  internalGetRequiredVars() {
+    if (requiredVars_ == null) {
+      return com.google.protobuf.MapField.emptyMapField(
+          RequiredVarsDefaultEntryHolder.defaultEntry);
+    }
+    return requiredVars_;
+  }
+
+  public int getRequiredVarsCount() {
+    return internalGetRequiredVars().getMap().size();
+  }
+  /**
+   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; required_vars = 4;</code>
+   */
+
+  @java.lang.Override
+  public boolean containsRequiredVars(
+      java.lang.String key) {
+    if (key == null) { throw new java.lang.NullPointerException(); }
+    return internalGetRequiredVars().getMap().containsKey(key);
+  }
+  /**
+   * Use {@link #getRequiredVarsMap()} instead.
+   */
+  @java.lang.Override
+  @java.lang.Deprecated
+  public java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableDefPb> getRequiredVars() {
+    return getRequiredVarsMap();
+  }
+  /**
+   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; required_vars = 4;</code>
+   */
+  @java.lang.Override
+
+  public java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableDefPb> getRequiredVarsMap() {
+    return internalGetRequiredVars().getMap();
+  }
+  /**
+   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; required_vars = 4;</code>
+   */
+  @java.lang.Override
+
+  public io.littlehorse.common.proto.VariableDefPb getRequiredVarsOrDefault(
+      java.lang.String key,
+      io.littlehorse.common.proto.VariableDefPb defaultValue) {
+    if (key == null) { throw new java.lang.NullPointerException(); }
+    java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableDefPb> map =
+        internalGetRequiredVars().getMap();
+    return map.containsKey(key) ? map.get(key) : defaultValue;
+  }
+  /**
+   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; required_vars = 4;</code>
+   */
+  @java.lang.Override
+
+  public io.littlehorse.common.proto.VariableDefPb getRequiredVarsOrThrow(
+      java.lang.String key) {
+    if (key == null) { throw new java.lang.NullPointerException(); }
+    java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableDefPb> map =
+        internalGetRequiredVars().getMap();
+    if (!map.containsKey(key)) {
+      throw new java.lang.IllegalArgumentException();
+    }
+    return map.get(key);
   }
 
   private byte memoizedIsInitialized = -1;
@@ -133,9 +324,21 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (spec_ != null) {
-      output.writeMessage(1, getSpec());
+    if (!getNameBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
     }
+    if (createdAt_ != null) {
+      output.writeMessage(2, getCreatedAt());
+    }
+    if (outputSchema_ != null) {
+      output.writeMessage(3, getOutputSchema());
+    }
+    com.google.protobuf.GeneratedMessageV3
+      .serializeStringMapTo(
+        output,
+        internalGetRequiredVars(),
+        RequiredVarsDefaultEntryHolder.defaultEntry,
+        4);
     unknownFields.writeTo(output);
   }
 
@@ -145,9 +348,26 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (spec_ != null) {
+    if (!getNameBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
+    }
+    if (createdAt_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, getSpec());
+        .computeMessageSize(2, getCreatedAt());
+    }
+    if (outputSchema_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, getOutputSchema());
+    }
+    for (java.util.Map.Entry<java.lang.String, io.littlehorse.common.proto.VariableDefPb> entry
+         : internalGetRequiredVars().getMap().entrySet()) {
+      com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.common.proto.VariableDefPb>
+      requiredVars__ = RequiredVarsDefaultEntryHolder.defaultEntry.newBuilderForType()
+          .setKey(entry.getKey())
+          .setValue(entry.getValue())
+          .build();
+      size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(4, requiredVars__);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -164,11 +384,20 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.common.proto.PutTaskDefPb other = (io.littlehorse.common.proto.PutTaskDefPb) obj;
 
-    if (hasSpec() != other.hasSpec()) return false;
-    if (hasSpec()) {
-      if (!getSpec()
-          .equals(other.getSpec())) return false;
+    if (!getName()
+        .equals(other.getName())) return false;
+    if (hasCreatedAt() != other.hasCreatedAt()) return false;
+    if (hasCreatedAt()) {
+      if (!getCreatedAt()
+          .equals(other.getCreatedAt())) return false;
     }
+    if (hasOutputSchema() != other.hasOutputSchema()) return false;
+    if (hasOutputSchema()) {
+      if (!getOutputSchema()
+          .equals(other.getOutputSchema())) return false;
+    }
+    if (!internalGetRequiredVars().equals(
+        other.internalGetRequiredVars())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -180,9 +409,19 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (hasSpec()) {
-      hash = (37 * hash) + SPEC_FIELD_NUMBER;
-      hash = (53 * hash) + getSpec().hashCode();
+    hash = (37 * hash) + NAME_FIELD_NUMBER;
+    hash = (53 * hash) + getName().hashCode();
+    if (hasCreatedAt()) {
+      hash = (37 * hash) + CREATED_AT_FIELD_NUMBER;
+      hash = (53 * hash) + getCreatedAt().hashCode();
+    }
+    if (hasOutputSchema()) {
+      hash = (37 * hash) + OUTPUT_SCHEMA_FIELD_NUMBER;
+      hash = (53 * hash) + getOutputSchema().hashCode();
+    }
+    if (!internalGetRequiredVars().getMap().isEmpty()) {
+      hash = (37 * hash) + REQUIRED_VARS_FIELD_NUMBER;
+      hash = (53 * hash) + internalGetRequiredVars().hashCode();
     }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
@@ -291,6 +530,28 @@ private static final long serialVersionUID = 0L;
       return io.littlehorse.common.proto.Command.internal_static_lh_proto_PutTaskDefPb_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 4:
+          return internalGetRequiredVars();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapField internalGetMutableMapField(
+        int number) {
+      switch (number) {
+        case 4:
+          return internalGetMutableRequiredVars();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -317,12 +578,21 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      if (specBuilder_ == null) {
-        spec_ = null;
+      name_ = "";
+
+      if (createdAtBuilder_ == null) {
+        createdAt_ = null;
       } else {
-        spec_ = null;
-        specBuilder_ = null;
+        createdAt_ = null;
+        createdAtBuilder_ = null;
       }
+      if (outputSchemaBuilder_ == null) {
+        outputSchema_ = null;
+      } else {
+        outputSchema_ = null;
+        outputSchemaBuilder_ = null;
+      }
+      internalGetMutableRequiredVars().clear();
       return this;
     }
 
@@ -349,11 +619,20 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.common.proto.PutTaskDefPb buildPartial() {
       io.littlehorse.common.proto.PutTaskDefPb result = new io.littlehorse.common.proto.PutTaskDefPb(this);
-      if (specBuilder_ == null) {
-        result.spec_ = spec_;
+      int from_bitField0_ = bitField0_;
+      result.name_ = name_;
+      if (createdAtBuilder_ == null) {
+        result.createdAt_ = createdAt_;
       } else {
-        result.spec_ = specBuilder_.build();
+        result.createdAt_ = createdAtBuilder_.build();
       }
+      if (outputSchemaBuilder_ == null) {
+        result.outputSchema_ = outputSchema_;
+      } else {
+        result.outputSchema_ = outputSchemaBuilder_.build();
+      }
+      result.requiredVars_ = internalGetRequiredVars();
+      result.requiredVars_.makeImmutable();
       onBuilt();
       return result;
     }
@@ -402,9 +681,18 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.common.proto.PutTaskDefPb other) {
       if (other == io.littlehorse.common.proto.PutTaskDefPb.getDefaultInstance()) return this;
-      if (other.hasSpec()) {
-        mergeSpec(other.getSpec());
+      if (!other.getName().isEmpty()) {
+        name_ = other.name_;
+        onChanged();
       }
+      if (other.hasCreatedAt()) {
+        mergeCreatedAt(other.getCreatedAt());
+      }
+      if (other.hasOutputSchema()) {
+        mergeOutputSchema(other.getOutputSchema());
+      }
+      internalGetMutableRequiredVars().mergeFrom(
+          other.internalGetRequiredVars());
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
@@ -433,124 +721,448 @@ private static final long serialVersionUID = 0L;
       }
       return this;
     }
+    private int bitField0_;
 
-    private io.littlehorse.common.proto.TaskDefPb spec_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.TaskDefPb, io.littlehorse.common.proto.TaskDefPb.Builder, io.littlehorse.common.proto.TaskDefPbOrBuilder> specBuilder_;
+    private java.lang.Object name_ = "";
     /**
-     * <code>.lh_proto.TaskDefPb spec = 1;</code>
-     * @return Whether the spec field is set.
+     * <code>string name = 1;</code>
+     * @return The name.
      */
-    public boolean hasSpec() {
-      return specBuilder_ != null || spec_ != null;
-    }
-    /**
-     * <code>.lh_proto.TaskDefPb spec = 1;</code>
-     * @return The spec.
-     */
-    public io.littlehorse.common.proto.TaskDefPb getSpec() {
-      if (specBuilder_ == null) {
-        return spec_ == null ? io.littlehorse.common.proto.TaskDefPb.getDefaultInstance() : spec_;
+    public java.lang.String getName() {
+      java.lang.Object ref = name_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        name_ = s;
+        return s;
       } else {
-        return specBuilder_.getMessage();
+        return (java.lang.String) ref;
       }
     }
     /**
-     * <code>.lh_proto.TaskDefPb spec = 1;</code>
+     * <code>string name = 1;</code>
+     * @return The bytes for name.
      */
-    public Builder setSpec(io.littlehorse.common.proto.TaskDefPb value) {
-      if (specBuilder_ == null) {
+    public com.google.protobuf.ByteString
+        getNameBytes() {
+      java.lang.Object ref = name_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        name_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string name = 1;</code>
+     * @param value The name to set.
+     * @return This builder for chaining.
+     */
+    public Builder setName(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      name_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string name = 1;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearName() {
+      
+      name_ = getDefaultInstance().getName();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string name = 1;</code>
+     * @param value The bytes for name to set.
+     * @return This builder for chaining.
+     */
+    public Builder setNameBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      name_ = value;
+      onChanged();
+      return this;
+    }
+
+    private com.google.protobuf.Timestamp createdAt_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> createdAtBuilder_;
+    /**
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
+     * @return Whether the createdAt field is set.
+     */
+    public boolean hasCreatedAt() {
+      return createdAtBuilder_ != null || createdAt_ != null;
+    }
+    /**
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
+     * @return The createdAt.
+     */
+    public com.google.protobuf.Timestamp getCreatedAt() {
+      if (createdAtBuilder_ == null) {
+        return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
+      } else {
+        return createdAtBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
+     */
+    public Builder setCreatedAt(com.google.protobuf.Timestamp value) {
+      if (createdAtBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        spec_ = value;
+        createdAt_ = value;
         onChanged();
       } else {
-        specBuilder_.setMessage(value);
+        createdAtBuilder_.setMessage(value);
       }
 
       return this;
     }
     /**
-     * <code>.lh_proto.TaskDefPb spec = 1;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
-    public Builder setSpec(
-        io.littlehorse.common.proto.TaskDefPb.Builder builderForValue) {
-      if (specBuilder_ == null) {
-        spec_ = builderForValue.build();
+    public Builder setCreatedAt(
+        com.google.protobuf.Timestamp.Builder builderForValue) {
+      if (createdAtBuilder_ == null) {
+        createdAt_ = builderForValue.build();
         onChanged();
       } else {
-        specBuilder_.setMessage(builderForValue.build());
+        createdAtBuilder_.setMessage(builderForValue.build());
       }
 
       return this;
     }
     /**
-     * <code>.lh_proto.TaskDefPb spec = 1;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
-    public Builder mergeSpec(io.littlehorse.common.proto.TaskDefPb value) {
-      if (specBuilder_ == null) {
-        if (spec_ != null) {
-          spec_ =
-            io.littlehorse.common.proto.TaskDefPb.newBuilder(spec_).mergeFrom(value).buildPartial();
+    public Builder mergeCreatedAt(com.google.protobuf.Timestamp value) {
+      if (createdAtBuilder_ == null) {
+        if (createdAt_ != null) {
+          createdAt_ =
+            com.google.protobuf.Timestamp.newBuilder(createdAt_).mergeFrom(value).buildPartial();
         } else {
-          spec_ = value;
+          createdAt_ = value;
         }
         onChanged();
       } else {
-        specBuilder_.mergeFrom(value);
+        createdAtBuilder_.mergeFrom(value);
       }
 
       return this;
     }
     /**
-     * <code>.lh_proto.TaskDefPb spec = 1;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
-    public Builder clearSpec() {
-      if (specBuilder_ == null) {
-        spec_ = null;
+    public Builder clearCreatedAt() {
+      if (createdAtBuilder_ == null) {
+        createdAt_ = null;
         onChanged();
       } else {
-        spec_ = null;
-        specBuilder_ = null;
+        createdAt_ = null;
+        createdAtBuilder_ = null;
       }
 
       return this;
     }
     /**
-     * <code>.lh_proto.TaskDefPb spec = 1;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
-    public io.littlehorse.common.proto.TaskDefPb.Builder getSpecBuilder() {
+    public com.google.protobuf.Timestamp.Builder getCreatedAtBuilder() {
       
       onChanged();
-      return getSpecFieldBuilder().getBuilder();
+      return getCreatedAtFieldBuilder().getBuilder();
     }
     /**
-     * <code>.lh_proto.TaskDefPb spec = 1;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
-    public io.littlehorse.common.proto.TaskDefPbOrBuilder getSpecOrBuilder() {
-      if (specBuilder_ != null) {
-        return specBuilder_.getMessageOrBuilder();
+    public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
+      if (createdAtBuilder_ != null) {
+        return createdAtBuilder_.getMessageOrBuilder();
       } else {
-        return spec_ == null ?
-            io.littlehorse.common.proto.TaskDefPb.getDefaultInstance() : spec_;
+        return createdAt_ == null ?
+            com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
       }
     }
     /**
-     * <code>.lh_proto.TaskDefPb spec = 1;</code>
+     * <code>.google.protobuf.Timestamp created_at = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.TaskDefPb, io.littlehorse.common.proto.TaskDefPb.Builder, io.littlehorse.common.proto.TaskDefPbOrBuilder> 
-        getSpecFieldBuilder() {
-      if (specBuilder_ == null) {
-        specBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.TaskDefPb, io.littlehorse.common.proto.TaskDefPb.Builder, io.littlehorse.common.proto.TaskDefPbOrBuilder>(
-                getSpec(),
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
+        getCreatedAtFieldBuilder() {
+      if (createdAtBuilder_ == null) {
+        createdAtBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
+                getCreatedAt(),
                 getParentForChildren(),
                 isClean());
-        spec_ = null;
+        createdAt_ = null;
       }
-      return specBuilder_;
+      return createdAtBuilder_;
+    }
+
+    private io.littlehorse.common.proto.OutputSchemaPb outputSchema_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.OutputSchemaPb, io.littlehorse.common.proto.OutputSchemaPb.Builder, io.littlehorse.common.proto.OutputSchemaPbOrBuilder> outputSchemaBuilder_;
+    /**
+     * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
+     * @return Whether the outputSchema field is set.
+     */
+    public boolean hasOutputSchema() {
+      return outputSchemaBuilder_ != null || outputSchema_ != null;
+    }
+    /**
+     * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
+     * @return The outputSchema.
+     */
+    public io.littlehorse.common.proto.OutputSchemaPb getOutputSchema() {
+      if (outputSchemaBuilder_ == null) {
+        return outputSchema_ == null ? io.littlehorse.common.proto.OutputSchemaPb.getDefaultInstance() : outputSchema_;
+      } else {
+        return outputSchemaBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
+     */
+    public Builder setOutputSchema(io.littlehorse.common.proto.OutputSchemaPb value) {
+      if (outputSchemaBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        outputSchema_ = value;
+        onChanged();
+      } else {
+        outputSchemaBuilder_.setMessage(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
+     */
+    public Builder setOutputSchema(
+        io.littlehorse.common.proto.OutputSchemaPb.Builder builderForValue) {
+      if (outputSchemaBuilder_ == null) {
+        outputSchema_ = builderForValue.build();
+        onChanged();
+      } else {
+        outputSchemaBuilder_.setMessage(builderForValue.build());
+      }
+
+      return this;
+    }
+    /**
+     * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
+     */
+    public Builder mergeOutputSchema(io.littlehorse.common.proto.OutputSchemaPb value) {
+      if (outputSchemaBuilder_ == null) {
+        if (outputSchema_ != null) {
+          outputSchema_ =
+            io.littlehorse.common.proto.OutputSchemaPb.newBuilder(outputSchema_).mergeFrom(value).buildPartial();
+        } else {
+          outputSchema_ = value;
+        }
+        onChanged();
+      } else {
+        outputSchemaBuilder_.mergeFrom(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
+     */
+    public Builder clearOutputSchema() {
+      if (outputSchemaBuilder_ == null) {
+        outputSchema_ = null;
+        onChanged();
+      } else {
+        outputSchema_ = null;
+        outputSchemaBuilder_ = null;
+      }
+
+      return this;
+    }
+    /**
+     * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
+     */
+    public io.littlehorse.common.proto.OutputSchemaPb.Builder getOutputSchemaBuilder() {
+      
+      onChanged();
+      return getOutputSchemaFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
+     */
+    public io.littlehorse.common.proto.OutputSchemaPbOrBuilder getOutputSchemaOrBuilder() {
+      if (outputSchemaBuilder_ != null) {
+        return outputSchemaBuilder_.getMessageOrBuilder();
+      } else {
+        return outputSchema_ == null ?
+            io.littlehorse.common.proto.OutputSchemaPb.getDefaultInstance() : outputSchema_;
+      }
+    }
+    /**
+     * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.OutputSchemaPb, io.littlehorse.common.proto.OutputSchemaPb.Builder, io.littlehorse.common.proto.OutputSchemaPbOrBuilder> 
+        getOutputSchemaFieldBuilder() {
+      if (outputSchemaBuilder_ == null) {
+        outputSchemaBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.OutputSchemaPb, io.littlehorse.common.proto.OutputSchemaPb.Builder, io.littlehorse.common.proto.OutputSchemaPbOrBuilder>(
+                getOutputSchema(),
+                getParentForChildren(),
+                isClean());
+        outputSchema_ = null;
+      }
+      return outputSchemaBuilder_;
+    }
+
+    private com.google.protobuf.MapField<
+        java.lang.String, io.littlehorse.common.proto.VariableDefPb> requiredVars_;
+    private com.google.protobuf.MapField<java.lang.String, io.littlehorse.common.proto.VariableDefPb>
+    internalGetRequiredVars() {
+      if (requiredVars_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            RequiredVarsDefaultEntryHolder.defaultEntry);
+      }
+      return requiredVars_;
+    }
+    private com.google.protobuf.MapField<java.lang.String, io.littlehorse.common.proto.VariableDefPb>
+    internalGetMutableRequiredVars() {
+      onChanged();;
+      if (requiredVars_ == null) {
+        requiredVars_ = com.google.protobuf.MapField.newMapField(
+            RequiredVarsDefaultEntryHolder.defaultEntry);
+      }
+      if (!requiredVars_.isMutable()) {
+        requiredVars_ = requiredVars_.copy();
+      }
+      return requiredVars_;
+    }
+
+    public int getRequiredVarsCount() {
+      return internalGetRequiredVars().getMap().size();
+    }
+    /**
+     * <code>map&lt;string, .lh_proto.VariableDefPb&gt; required_vars = 4;</code>
+     */
+
+    @java.lang.Override
+    public boolean containsRequiredVars(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      return internalGetRequiredVars().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getRequiredVarsMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableDefPb> getRequiredVars() {
+      return getRequiredVarsMap();
+    }
+    /**
+     * <code>map&lt;string, .lh_proto.VariableDefPb&gt; required_vars = 4;</code>
+     */
+    @java.lang.Override
+
+    public java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableDefPb> getRequiredVarsMap() {
+      return internalGetRequiredVars().getMap();
+    }
+    /**
+     * <code>map&lt;string, .lh_proto.VariableDefPb&gt; required_vars = 4;</code>
+     */
+    @java.lang.Override
+
+    public io.littlehorse.common.proto.VariableDefPb getRequiredVarsOrDefault(
+        java.lang.String key,
+        io.littlehorse.common.proto.VariableDefPb defaultValue) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableDefPb> map =
+          internalGetRequiredVars().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <code>map&lt;string, .lh_proto.VariableDefPb&gt; required_vars = 4;</code>
+     */
+    @java.lang.Override
+
+    public io.littlehorse.common.proto.VariableDefPb getRequiredVarsOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableDefPb> map =
+          internalGetRequiredVars().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+
+    public Builder clearRequiredVars() {
+      internalGetMutableRequiredVars().getMutableMap()
+          .clear();
+      return this;
+    }
+    /**
+     * <code>map&lt;string, .lh_proto.VariableDefPb&gt; required_vars = 4;</code>
+     */
+
+    public Builder removeRequiredVars(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      internalGetMutableRequiredVars().getMutableMap()
+          .remove(key);
+      return this;
+    }
+    /**
+     * Use alternate mutation accessors instead.
+     */
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableDefPb>
+    getMutableRequiredVars() {
+      return internalGetMutableRequiredVars().getMutableMap();
+    }
+    /**
+     * <code>map&lt;string, .lh_proto.VariableDefPb&gt; required_vars = 4;</code>
+     */
+    public Builder putRequiredVars(
+        java.lang.String key,
+        io.littlehorse.common.proto.VariableDefPb value) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      if (value == null) { throw new java.lang.NullPointerException(); }
+      internalGetMutableRequiredVars().getMutableMap()
+          .put(key, value);
+      return this;
+    }
+    /**
+     * <code>map&lt;string, .lh_proto.VariableDefPb&gt; required_vars = 4;</code>
+     */
+
+    public Builder putAllRequiredVars(
+        java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableDefPb> values) {
+      internalGetMutableRequiredVars().getMutableMap()
+          .putAll(values);
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

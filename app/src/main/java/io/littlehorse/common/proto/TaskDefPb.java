@@ -17,6 +17,8 @@ private static final long serialVersionUID = 0L;
   }
   private TaskDefPb() {
     name_ = "";
+    queueName_ = "";
+    consumerGroupName_ = "";
   }
 
   @java.lang.Override
@@ -93,6 +95,18 @@ private static final long serialVersionUID = 0L;
                 RequiredVarsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
             requiredVars_.getMutableMap().put(
                 requiredVars__.getKey(), requiredVars__.getValue());
+            break;
+          }
+          case 42: {
+            java.lang.String s = input.readStringRequireUtf8();
+
+            queueName_ = s;
+            break;
+          }
+          case 50: {
+            java.lang.String s = input.readStringRequireUtf8();
+
+            consumerGroupName_ = s;
             break;
           }
           default: {
@@ -310,6 +324,96 @@ private static final long serialVersionUID = 0L;
     return map.get(key);
   }
 
+  public static final int QUEUE_NAME_FIELD_NUMBER = 5;
+  private volatile java.lang.Object queueName_;
+  /**
+   * <code>string queue_name = 5;</code>
+   * @return The queueName.
+   */
+  @java.lang.Override
+  public java.lang.String getQueueName() {
+    java.lang.Object ref = queueName_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      queueName_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string queue_name = 5;</code>
+   * @return The bytes for queueName.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getQueueNameBytes() {
+    java.lang.Object ref = queueName_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      queueName_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int CONSUMER_GROUP_NAME_FIELD_NUMBER = 6;
+  private volatile java.lang.Object consumerGroupName_;
+  /**
+   * <pre>
+   * This is the ID of the consumer group that should be used for any Task Worker
+   * instances for this task def.
+   * It is also regrettably a kafka implementation detail that leaks through
+   * the abstraction.
+   * </pre>
+   *
+   * <code>string consumer_group_name = 6;</code>
+   * @return The consumerGroupName.
+   */
+  @java.lang.Override
+  public java.lang.String getConsumerGroupName() {
+    java.lang.Object ref = consumerGroupName_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      consumerGroupName_ = s;
+      return s;
+    }
+  }
+  /**
+   * <pre>
+   * This is the ID of the consumer group that should be used for any Task Worker
+   * instances for this task def.
+   * It is also regrettably a kafka implementation detail that leaks through
+   * the abstraction.
+   * </pre>
+   *
+   * <code>string consumer_group_name = 6;</code>
+   * @return The bytes for consumerGroupName.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getConsumerGroupNameBytes() {
+    java.lang.Object ref = consumerGroupName_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      consumerGroupName_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -339,6 +443,12 @@ private static final long serialVersionUID = 0L;
         internalGetRequiredVars(),
         RequiredVarsDefaultEntryHolder.defaultEntry,
         4);
+    if (!getQueueNameBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, queueName_);
+    }
+    if (!getConsumerGroupNameBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 6, consumerGroupName_);
+    }
     unknownFields.writeTo(output);
   }
 
@@ -369,6 +479,12 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(4, requiredVars__);
     }
+    if (!getQueueNameBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, queueName_);
+    }
+    if (!getConsumerGroupNameBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, consumerGroupName_);
+    }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
@@ -398,6 +514,10 @@ private static final long serialVersionUID = 0L;
     }
     if (!internalGetRequiredVars().equals(
         other.internalGetRequiredVars())) return false;
+    if (!getQueueName()
+        .equals(other.getQueueName())) return false;
+    if (!getConsumerGroupName()
+        .equals(other.getConsumerGroupName())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -423,6 +543,10 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + REQUIRED_VARS_FIELD_NUMBER;
       hash = (53 * hash) + internalGetRequiredVars().hashCode();
     }
+    hash = (37 * hash) + QUEUE_NAME_FIELD_NUMBER;
+    hash = (53 * hash) + getQueueName().hashCode();
+    hash = (37 * hash) + CONSUMER_GROUP_NAME_FIELD_NUMBER;
+    hash = (53 * hash) + getConsumerGroupName().hashCode();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -593,6 +717,10 @@ private static final long serialVersionUID = 0L;
         outputSchemaBuilder_ = null;
       }
       internalGetMutableRequiredVars().clear();
+      queueName_ = "";
+
+      consumerGroupName_ = "";
+
       return this;
     }
 
@@ -633,6 +761,8 @@ private static final long serialVersionUID = 0L;
       }
       result.requiredVars_ = internalGetRequiredVars();
       result.requiredVars_.makeImmutable();
+      result.queueName_ = queueName_;
+      result.consumerGroupName_ = consumerGroupName_;
       onBuilt();
       return result;
     }
@@ -693,6 +823,14 @@ private static final long serialVersionUID = 0L;
       }
       internalGetMutableRequiredVars().mergeFrom(
           other.internalGetRequiredVars());
+      if (!other.getQueueName().isEmpty()) {
+        queueName_ = other.queueName_;
+        onChanged();
+      }
+      if (!other.getConsumerGroupName().isEmpty()) {
+        consumerGroupName_ = other.consumerGroupName_;
+        onChanged();
+      }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
@@ -1162,6 +1300,193 @@ private static final long serialVersionUID = 0L;
         java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableDefPb> values) {
       internalGetMutableRequiredVars().getMutableMap()
           .putAll(values);
+      return this;
+    }
+
+    private java.lang.Object queueName_ = "";
+    /**
+     * <code>string queue_name = 5;</code>
+     * @return The queueName.
+     */
+    public java.lang.String getQueueName() {
+      java.lang.Object ref = queueName_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        queueName_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string queue_name = 5;</code>
+     * @return The bytes for queueName.
+     */
+    public com.google.protobuf.ByteString
+        getQueueNameBytes() {
+      java.lang.Object ref = queueName_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        queueName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string queue_name = 5;</code>
+     * @param value The queueName to set.
+     * @return This builder for chaining.
+     */
+    public Builder setQueueName(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      queueName_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string queue_name = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearQueueName() {
+      
+      queueName_ = getDefaultInstance().getQueueName();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string queue_name = 5;</code>
+     * @param value The bytes for queueName to set.
+     * @return This builder for chaining.
+     */
+    public Builder setQueueNameBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      queueName_ = value;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object consumerGroupName_ = "";
+    /**
+     * <pre>
+     * This is the ID of the consumer group that should be used for any Task Worker
+     * instances for this task def.
+     * It is also regrettably a kafka implementation detail that leaks through
+     * the abstraction.
+     * </pre>
+     *
+     * <code>string consumer_group_name = 6;</code>
+     * @return The consumerGroupName.
+     */
+    public java.lang.String getConsumerGroupName() {
+      java.lang.Object ref = consumerGroupName_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        consumerGroupName_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <pre>
+     * This is the ID of the consumer group that should be used for any Task Worker
+     * instances for this task def.
+     * It is also regrettably a kafka implementation detail that leaks through
+     * the abstraction.
+     * </pre>
+     *
+     * <code>string consumer_group_name = 6;</code>
+     * @return The bytes for consumerGroupName.
+     */
+    public com.google.protobuf.ByteString
+        getConsumerGroupNameBytes() {
+      java.lang.Object ref = consumerGroupName_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        consumerGroupName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <pre>
+     * This is the ID of the consumer group that should be used for any Task Worker
+     * instances for this task def.
+     * It is also regrettably a kafka implementation detail that leaks through
+     * the abstraction.
+     * </pre>
+     *
+     * <code>string consumer_group_name = 6;</code>
+     * @param value The consumerGroupName to set.
+     * @return This builder for chaining.
+     */
+    public Builder setConsumerGroupName(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      consumerGroupName_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * This is the ID of the consumer group that should be used for any Task Worker
+     * instances for this task def.
+     * It is also regrettably a kafka implementation detail that leaks through
+     * the abstraction.
+     * </pre>
+     *
+     * <code>string consumer_group_name = 6;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearConsumerGroupName() {
+      
+      consumerGroupName_ = getDefaultInstance().getConsumerGroupName();
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * This is the ID of the consumer group that should be used for any Task Worker
+     * instances for this task def.
+     * It is also regrettably a kafka implementation detail that leaks through
+     * the abstraction.
+     * </pre>
+     *
+     * <code>string consumer_group_name = 6;</code>
+     * @param value The bytes for consumerGroupName to set.
+     * @return This builder for chaining.
+     */
+    public Builder setConsumerGroupNameBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      consumerGroupName_ = value;
+      onChanged();
       return this;
     }
     @java.lang.Override

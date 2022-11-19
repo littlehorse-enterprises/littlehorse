@@ -143,7 +143,7 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
             return;
         }
 
-        tsr.wfRunEventQueue = LHConstants.WF_RUN_EVENT_TOPIC;
+        tsr.wfRunEventQueue = nodeRun.threadRun.wfRun.stores.getWfRunEventQueue();
         tsr.taskDefId = node.taskNode.taskDefName;
         tsr.taskDefName = node.taskNode.taskDefName;
         tsr.taskRunNumber = nodeRun.number;

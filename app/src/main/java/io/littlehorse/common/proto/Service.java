@@ -124,16 +124,6 @@ public final class Service {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_lh_proto_RunWfReplyPb_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_lh_proto_HealthCheckRequest_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_lh_proto_HealthCheckRequest_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_lh_proto_HealthCheckResponse_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_lh_proto_HealthCheckResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -212,39 +202,34 @@ public final class Service {
       "CodePb\022\024\n\007message\030\002 \001(\tH\000\210\001\001\022\034\n\017wf_spec_" +
       "version\030\003 \001(\005H\001\210\001\001\022\026\n\twf_run_id\030\004 \001(\tH\002\210" +
       "\001\001B\n\n\010_messageB\022\n\020_wf_spec_versionB\014\n\n_w" +
-      "f_run_id\"%\n\022HealthCheckRequest\022\017\n\007servic" +
-      "e\030\001 \001(\t\"\216\001\n\023HealthCheckResponse\022;\n\006statu" +
-      "s\030\001 \001(\0162+.lh_proto.HealthCheckResponse.S" +
-      "ervingStatus\":\n\rServingStatus\022\013\n\007UNKNOWN" +
-      "\020\000\022\013\n\007SERVING\020\001\022\017\n\013NOT_SERVING\020\002*\214\001\n\020LHR" +
-      "esponseCodePb\022\006\n\002OK\020\000\022\024\n\020CONNECTION_ERRO" +
-      "R\020\001\022\023\n\017NOT_FOUND_ERROR\020\002\022\025\n\021BAD_REQUEST_" +
-      "ERROR\020\003\022\024\n\020VALIDATION_ERROR\020\004\022\030\n\024ALREADY" +
-      "_EXISTS_ERROR\020\0052\213\007\n\013LHPublicApi\022C\n\nPutTa" +
-      "skDef\022\026.lh_proto.PutTaskDefPb\032\033.lh_proto" +
-      ".PutTaskDefReplyPb\"\000\022C\n\nGetTaskDef\022\026.lh_" +
-      "proto.GetTaskDefPb\032\033.lh_proto.GetTaskDef" +
-      "ReplyPb\"\000\022^\n\023PutExternalEventDef\022\037.lh_pr" +
-      "oto.PutExternalEventDefPb\032$.lh_proto.Put" +
-      "ExternalEventDefReplyPb\"\000\022^\n\023GetExternal" +
-      "EventDef\022\037.lh_proto.GetExternalEventDefP" +
-      "b\032$.lh_proto.GetExternalEventDefReplyPb\"" +
-      "\000\022@\n\tPutWfSpec\022\025.lh_proto.PutWfSpecPb\032\032." +
-      "lh_proto.PutWfSpecReplyPb\"\000\022@\n\tGetWfSpec" +
-      "\022\025.lh_proto.GetWfSpecPb\032\032.lh_proto.GetWf" +
-      "SpecReplyPb\"\000\0224\n\005RunWf\022\021.lh_proto.RunWfP" +
-      "b\032\026.lh_proto.RunWfReplyPb\"\000\022=\n\010GetWfRun\022" +
-      "\024.lh_proto.GetWfRunPb\032\031.lh_proto.GetWfRu" +
-      "nReplyPb\"\000\022C\n\nGetNodeRun\022\026.lh_proto.GetN" +
-      "odeRunPb\032\033.lh_proto.GetNodeRunReplyPb\"\000\022" +
-      "F\n\013GetVariable\022\027.lh_proto.GetVariablePb\032" +
-      "\034.lh_proto.GetVariableReplyPb\"\000\022U\n\020PutEx" +
-      "ternalEvent\022\034.lh_proto.PutExternalEventP" +
-      "b\032!.lh_proto.PutExternalEventReplyPb\"\000\022U" +
-      "\n\020GetExternalEvent\022\034.lh_proto.GetExterna" +
-      "lEventPb\032!.lh_proto.GetExternalEventRepl" +
-      "yPb\"\000B(\n\033io.littlehorse.common.protoP\001Z\007" +
-      ".;modelb\006proto3"
+      "f_run_id*\214\001\n\020LHResponseCodePb\022\006\n\002OK\020\000\022\024\n" +
+      "\020CONNECTION_ERROR\020\001\022\023\n\017NOT_FOUND_ERROR\020\002" +
+      "\022\025\n\021BAD_REQUEST_ERROR\020\003\022\024\n\020VALIDATION_ER" +
+      "ROR\020\004\022\030\n\024ALREADY_EXISTS_ERROR\020\0052\213\007\n\013LHPu" +
+      "blicApi\022C\n\nPutTaskDef\022\026.lh_proto.PutTask" +
+      "DefPb\032\033.lh_proto.PutTaskDefReplyPb\"\000\022C\n\n" +
+      "GetTaskDef\022\026.lh_proto.GetTaskDefPb\032\033.lh_" +
+      "proto.GetTaskDefReplyPb\"\000\022^\n\023PutExternal" +
+      "EventDef\022\037.lh_proto.PutExternalEventDefP" +
+      "b\032$.lh_proto.PutExternalEventDefReplyPb\"" +
+      "\000\022^\n\023GetExternalEventDef\022\037.lh_proto.GetE" +
+      "xternalEventDefPb\032$.lh_proto.GetExternal" +
+      "EventDefReplyPb\"\000\022@\n\tPutWfSpec\022\025.lh_prot" +
+      "o.PutWfSpecPb\032\032.lh_proto.PutWfSpecReplyP" +
+      "b\"\000\022@\n\tGetWfSpec\022\025.lh_proto.GetWfSpecPb\032" +
+      "\032.lh_proto.GetWfSpecReplyPb\"\000\0224\n\005RunWf\022\021" +
+      ".lh_proto.RunWfPb\032\026.lh_proto.RunWfReplyP" +
+      "b\"\000\022=\n\010GetWfRun\022\024.lh_proto.GetWfRunPb\032\031." +
+      "lh_proto.GetWfRunReplyPb\"\000\022C\n\nGetNodeRun" +
+      "\022\026.lh_proto.GetNodeRunPb\032\033.lh_proto.GetN" +
+      "odeRunReplyPb\"\000\022F\n\013GetVariable\022\027.lh_prot" +
+      "o.GetVariablePb\032\034.lh_proto.GetVariableRe" +
+      "plyPb\"\000\022U\n\020PutExternalEvent\022\034.lh_proto.P" +
+      "utExternalEventPb\032!.lh_proto.PutExternal" +
+      "EventReplyPb\"\000\022U\n\020GetExternalEvent\022\034.lh_" +
+      "proto.GetExternalEventPb\032!.lh_proto.GetE" +
+      "xternalEventReplyPb\"\000B(\n\033io.littlehorse." +
+      "common.protoP\001Z\007.;modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -387,18 +372,6 @@ public final class Service {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_RunWfReplyPb_descriptor,
         new java.lang.String[] { "Code", "Message", "WfSpecVersion", "WfRunId", "Message", "WfSpecVersion", "WfRunId", });
-    internal_static_lh_proto_HealthCheckRequest_descriptor =
-      getDescriptor().getMessageTypes().get(21);
-    internal_static_lh_proto_HealthCheckRequest_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_lh_proto_HealthCheckRequest_descriptor,
-        new java.lang.String[] { "Service", });
-    internal_static_lh_proto_HealthCheckResponse_descriptor =
-      getDescriptor().getMessageTypes().get(22);
-    internal_static_lh_proto_HealthCheckResponse_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_lh_proto_HealthCheckResponse_descriptor,
-        new java.lang.String[] { "Status", });
     io.littlehorse.common.proto.WfSpec.getDescriptor();
     io.littlehorse.common.proto.WfRun.getDescriptor();
     io.littlehorse.common.proto.Variable.getDescriptor();

@@ -16,6 +16,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private WaitForCommandResultPb() {
+    commandId_ = "";
   }
 
   @java.lang.Override
@@ -48,9 +49,10 @@ private static final long serialVersionUID = 0L;
           case 0:
             done = true;
             break;
-          case 8: {
+          case 10: {
+            java.lang.String s = input.readStringRequireUtf8();
 
-            commandId_ = input.readInt32();
+            commandId_ = s;
             break;
           }
           case 16: {
@@ -91,14 +93,41 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int COMMAND_ID_FIELD_NUMBER = 1;
-  private int commandId_;
+  private volatile java.lang.Object commandId_;
   /**
-   * <code>int32 command_id = 1;</code>
+   * <code>string command_id = 1;</code>
    * @return The commandId.
    */
   @java.lang.Override
-  public int getCommandId() {
-    return commandId_;
+  public java.lang.String getCommandId() {
+    java.lang.Object ref = commandId_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      commandId_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string command_id = 1;</code>
+   * @return The bytes for commandId.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getCommandIdBytes() {
+    java.lang.Object ref = commandId_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      commandId_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
   }
 
   public static final int SPECIFIC_PARTITION_FIELD_NUMBER = 2;
@@ -126,8 +155,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (commandId_ != 0) {
-      output.writeInt32(1, commandId_);
+    if (!getCommandIdBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, commandId_);
     }
     if (specificPartition_ != 0) {
       output.writeInt32(2, specificPartition_);
@@ -141,9 +170,8 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (commandId_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(1, commandId_);
+    if (!getCommandIdBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, commandId_);
     }
     if (specificPartition_ != 0) {
       size += com.google.protobuf.CodedOutputStream
@@ -164,8 +192,8 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.common.proto.WaitForCommandResultPb other = (io.littlehorse.common.proto.WaitForCommandResultPb) obj;
 
-    if (getCommandId()
-        != other.getCommandId()) return false;
+    if (!getCommandId()
+        .equals(other.getCommandId())) return false;
     if (getSpecificPartition()
         != other.getSpecificPartition()) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
@@ -180,7 +208,7 @@ private static final long serialVersionUID = 0L;
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + COMMAND_ID_FIELD_NUMBER;
-    hash = (53 * hash) + getCommandId();
+    hash = (53 * hash) + getCommandId().hashCode();
     hash = (37 * hash) + SPECIFIC_PARTITION_FIELD_NUMBER;
     hash = (53 * hash) + getSpecificPartition();
     hash = (29 * hash) + unknownFields.hashCode();
@@ -316,7 +344,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      commandId_ = 0;
+      commandId_ = "";
 
       specificPartition_ = 0;
 
@@ -396,8 +424,9 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.common.proto.WaitForCommandResultPb other) {
       if (other == io.littlehorse.common.proto.WaitForCommandResultPb.getDefaultInstance()) return this;
-      if (other.getCommandId() != 0) {
-        setCommandId(other.getCommandId());
+      if (!other.getCommandId().isEmpty()) {
+        commandId_ = other.commandId_;
+        onChanged();
       }
       if (other.getSpecificPartition() != 0) {
         setSpecificPartition(other.getSpecificPartition());
@@ -431,33 +460,78 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int commandId_ ;
+    private java.lang.Object commandId_ = "";
     /**
-     * <code>int32 command_id = 1;</code>
+     * <code>string command_id = 1;</code>
      * @return The commandId.
      */
-    @java.lang.Override
-    public int getCommandId() {
-      return commandId_;
+    public java.lang.String getCommandId() {
+      java.lang.Object ref = commandId_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        commandId_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
     }
     /**
-     * <code>int32 command_id = 1;</code>
+     * <code>string command_id = 1;</code>
+     * @return The bytes for commandId.
+     */
+    public com.google.protobuf.ByteString
+        getCommandIdBytes() {
+      java.lang.Object ref = commandId_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        commandId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string command_id = 1;</code>
      * @param value The commandId to set.
      * @return This builder for chaining.
      */
-    public Builder setCommandId(int value) {
-      
+    public Builder setCommandId(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
       commandId_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>int32 command_id = 1;</code>
+     * <code>string command_id = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearCommandId() {
       
-      commandId_ = 0;
+      commandId_ = getDefaultInstance().getCommandId();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string command_id = 1;</code>
+     * @param value The bytes for commandId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setCommandIdBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      commandId_ = value;
       onChanged();
       return this;
     }

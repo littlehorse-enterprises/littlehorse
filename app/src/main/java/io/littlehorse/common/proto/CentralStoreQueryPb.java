@@ -68,6 +68,11 @@ private static final long serialVersionUID = 0L;
             specificPartition_ = input.readInt32();
             break;
           }
+          case 32: {
+
+            enableStaleStores_ = input.readBool();
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -196,6 +201,17 @@ private static final long serialVersionUID = 0L;
     return specificPartition_;
   }
 
+  public static final int ENABLE_STALE_STORES_FIELD_NUMBER = 4;
+  private boolean enableStaleStores_;
+  /**
+   * <code>bool enable_stale_stores = 4;</code>
+   * @return The enableStaleStores.
+   */
+  @java.lang.Override
+  public boolean getEnableStaleStores() {
+    return enableStaleStores_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -219,6 +235,9 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeInt32(3, specificPartition_);
     }
+    if (enableStaleStores_ != false) {
+      output.writeBool(4, enableStaleStores_);
+    }
     unknownFields.writeTo(output);
   }
 
@@ -237,6 +256,10 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(3, specificPartition_);
+    }
+    if (enableStaleStores_ != false) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(4, enableStaleStores_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -262,6 +285,8 @@ private static final long serialVersionUID = 0L;
       if (getSpecificPartition()
           != other.getSpecificPartition()) return false;
     }
+    if (getEnableStaleStores()
+        != other.getEnableStaleStores()) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -281,6 +306,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + SPECIFIC_PARTITION_FIELD_NUMBER;
       hash = (53 * hash) + getSpecificPartition();
     }
+    hash = (37 * hash) + ENABLE_STALE_STORES_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+        getEnableStaleStores());
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -420,6 +448,8 @@ private static final long serialVersionUID = 0L;
 
       specificPartition_ = 0;
       bitField0_ = (bitField0_ & ~0x00000001);
+      enableStaleStores_ = false;
+
       return this;
     }
 
@@ -454,6 +484,7 @@ private static final long serialVersionUID = 0L;
         result.specificPartition_ = specificPartition_;
         to_bitField0_ |= 0x00000001;
       }
+      result.enableStaleStores_ = enableStaleStores_;
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -513,6 +544,9 @@ private static final long serialVersionUID = 0L;
       }
       if (other.hasSpecificPartition()) {
         setSpecificPartition(other.getSpecificPartition());
+      }
+      if (other.getEnableStaleStores() != false) {
+        setEnableStaleStores(other.getEnableStaleStores());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -731,6 +765,37 @@ private static final long serialVersionUID = 0L;
     public Builder clearSpecificPartition() {
       bitField0_ = (bitField0_ & ~0x00000001);
       specificPartition_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private boolean enableStaleStores_ ;
+    /**
+     * <code>bool enable_stale_stores = 4;</code>
+     * @return The enableStaleStores.
+     */
+    @java.lang.Override
+    public boolean getEnableStaleStores() {
+      return enableStaleStores_;
+    }
+    /**
+     * <code>bool enable_stale_stores = 4;</code>
+     * @param value The enableStaleStores to set.
+     * @return This builder for chaining.
+     */
+    public Builder setEnableStaleStores(boolean value) {
+      
+      enableStaleStores_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>bool enable_stale_stores = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearEnableStaleStores() {
+      
+      enableStaleStores_ = false;
       onChanged();
       return this;
     }

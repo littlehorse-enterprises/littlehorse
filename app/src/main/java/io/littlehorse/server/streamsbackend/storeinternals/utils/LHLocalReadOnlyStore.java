@@ -1,10 +1,11 @@
-package io.littlehorse.server.streamsbackend.storeinternals;
+package io.littlehorse.server.streamsbackend.storeinternals.utils;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHSerdeError;
-import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.Storeable;
+import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
@@ -23,12 +24,12 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
  * of consolidating into one state store far outweigh the extra code written
  * in this directory.
  */
-public class LocalReadOnlyStore {
+public class LHLocalReadOnlyStore {
 
     protected ReadOnlyKeyValueStore<String, Bytes> store;
     protected LHConfig config;
 
-    public LocalReadOnlyStore(
+    public LHLocalReadOnlyStore(
         ReadOnlyKeyValueStore<String, Bytes> store,
         LHConfig config
     ) {
@@ -36,7 +37,7 @@ public class LocalReadOnlyStore {
         this.config = config;
     }
 
-    public <U extends MessageOrBuilder, T extends GETable<U>> T get(
+    public <U extends MessageOrBuilder, T extends Storeable<U>> T get(
         String objectId,
         Class<T> cls
     ) {
@@ -52,5 +53,20 @@ public class LocalReadOnlyStore {
                 "Not possible to have this happen, indicates corrupted store."
             );
         }
+    }
+
+    /*
+     * Make sure to `.close()` the result!
+     */
+    public <T extends Storeable<?>> LHKeyValueIterator<T> prefixScan(
+        String prefix,
+        Class<T> cls
+    ) {
+        String compositePrefix = StoreUtils.getStoreKey(prefix, cls);
+        return new LHKeyValueIterator<>(
+            store.prefixScan(compositePrefix, Serdes.String().serializer()),
+            cls,
+            config
+        );
     }
 }

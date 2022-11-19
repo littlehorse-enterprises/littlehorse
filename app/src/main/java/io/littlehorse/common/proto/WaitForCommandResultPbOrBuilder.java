@@ -8,10 +8,16 @@ public interface WaitForCommandResultPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>int32 command_id = 1;</code>
+   * <code>string command_id = 1;</code>
    * @return The commandId.
    */
-  int getCommandId();
+  java.lang.String getCommandId();
+  /**
+   * <code>string command_id = 1;</code>
+   * @return The bytes for commandId.
+   */
+  com.google.protobuf.ByteString
+      getCommandIdBytes();
 
   /**
    * <code>int32 specific_partition = 2;</code>

@@ -167,6 +167,14 @@ message TaskDefPb {
     google.protobuf.Timestamp created_at = 2;
     OutputSchemaPb output_schema = 3;
     map<string, VariableDefPb> required_vars = 4;
+    string queue_name = 5;
+
+    // This is the ID of the consumer group that should be used for any Task Worker
+    // instances for this task def.
+    //
+    // It is also regrettably a kafka implementation detail that leaks through
+    // the abstraction.
+    string consumer_group_name = 6;
 }
 
 message ExternalEventDefPb {

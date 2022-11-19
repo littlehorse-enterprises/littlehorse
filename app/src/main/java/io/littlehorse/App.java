@@ -4,11 +4,10 @@
 package io.littlehorse;
 
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.model.POSTable;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.LHServer;
 import io.littlehorse.testworker.TestWorker;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import org.apache.kafka.clients.admin.NewTopic;
@@ -20,7 +19,7 @@ public class App {
         LHUtil.log("Creating topics!!");
 
         ArrayList<NewTopic> topics = new ArrayList<>();
-        for (int i = 1; i < 11; i++) {
+        for (int i = 1; i <= 3; i++) {
             topics.add(
                 new NewTopic(
                     "task" + i,
@@ -30,27 +29,9 @@ public class App {
             );
         }
 
-        for (Class<? extends POSTable<?>> cls : POSTable.POSTables) {
-            topics.add(
-                new NewTopic(
-                    POSTable.getRequestTopicName(cls),
-                    3,
-                    config.getReplicationFactor()
-                )
-            );
-
-            topics.add(
-                new NewTopic(
-                    POSTable.getEntityTopicName(cls),
-                    3,
-                    config.getReplicationFactor()
-                )
-            );
-        }
-
         topics.add(
             new NewTopic(
-                LHConstants.TAG_TOPIC_NAME,
+                config.getCoreCmdTopicName(),
                 config.getClusterPartitions(),
                 config.getReplicationFactor()
             )
@@ -58,7 +39,7 @@ public class App {
 
         topics.add(
             new NewTopic(
-                LHConstants.TIMER_TOPIC_NAME,
+                config.getTimerTopic(),
                 config.getClusterPartitions(),
                 config.getReplicationFactor()
             )
@@ -66,15 +47,7 @@ public class App {
 
         topics.add(
             new NewTopic(
-                LHConstants.OBSERVABILITY_TOPIC,
-                config.getClusterPartitions(),
-                config.getReplicationFactor()
-            )
-        );
-
-        topics.add(
-            new NewTopic(
-                LHConstants.WF_RUN_EVENT_TOPIC,
+                config.getTagCmdTopic(),
                 config.getClusterPartitions(),
                 config.getReplicationFactor()
             )
@@ -87,7 +60,7 @@ public class App {
     }
 
     public static void main(String[] args)
-        throws InterruptedException, ExecutionException {
+        throws InterruptedException, ExecutionException, IOException {
         String arg = args[0];
         if (arg.equals("tester")) {
             tester();
@@ -105,7 +78,6 @@ public class App {
     }
 
     public static void tester() {
-        double f = 0.0;
-        double b = 5 / f;
+        System.out.println("TODO: experiment a bit");
     }
 }

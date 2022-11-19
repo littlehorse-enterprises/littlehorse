@@ -20,7 +20,7 @@ import io.littlehorse.common.proto.ThreadRunPb;
 import io.littlehorse.common.proto.WfRunPb;
 import io.littlehorse.common.proto.WfRunPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.oldprocessors.util.WfRunStoreAccess;
+import io.littlehorse.server.CommandProcessorDao;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -162,7 +162,7 @@ public class WfRun extends GETable<WfRunPb> {
     public WfSpec wfSpec;
 
     @JsonIgnore
-    public WfRunStoreAccess stores;
+    public CommandProcessorDao stores;
 
     public ThreadRun startThread(
         String threadName,
