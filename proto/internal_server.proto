@@ -25,10 +25,8 @@ message CommandResultPb {
 
 // The section below contains the protocol for inter-broker communication
 enum StoreQueryStatusPb {
-    RSQ_OK = 0;
-    RSQ_NOT_FOUND = 1; // Successfully queried the store and got no result
-    RSQ_MIGRATED = 2; // No longer owner of that partition
-    RSQ_NOT_AVAILABLE = 3; // Can't query store, eg. during a rebalance
+    RSQ_OK = 0; // If OK and bytes is empty, means that the key is not found.
+    RSQ_NOT_AVAILABLE = 2; // Can't query store, eg. during a rebalance or if migrated.
 }
 
 message CentralStoreQueryReplyPb {
@@ -38,10 +36,9 @@ message CentralStoreQueryReplyPb {
 }
 
 message CentralStoreQueryPb {
-    string store_name = 1;
-    string key = 2;
+    bool enable_stale_stores = 1;
+    string full_key = 2;
     optional int32 specific_partition = 3;
-    bool enable_stale_stores = 4;
 }
 
 message WaitForCommandResultPb {

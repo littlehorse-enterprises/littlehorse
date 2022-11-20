@@ -45,8 +45,14 @@ public class LHConstants {
     public static final Duration PUNCTUATOR_INERVAL = Duration.ofSeconds(4);
     public static final Duration TICKER_INTERVAL = Duration.ofSeconds(4);
 
+    // Other various constants used by code
     public static final String OBJECT_ID_HEADER = "STORE_KEY";
     public static final String EXT_EVT_HANDLER_VAR = "INPUT";
+
+    // Make all global metadata use the same partition key so that they're processed
+    // on the same node. This guarantees ordering. Note that metadata is low
+    // throughput and low volume so partitioning is not needed.
+    public static final String META_PARTITION_KEY = "METADATA";
 
     // Reserved `FailureDef` names
     public static final String CHILD_FAILURE = "CHILD_FAILURE";

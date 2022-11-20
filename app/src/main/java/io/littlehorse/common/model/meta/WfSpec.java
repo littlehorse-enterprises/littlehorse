@@ -3,7 +3,7 @@ package io.littlehorse.common.model.meta;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.exceptions.LHSerdeError;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.GlobalPOSTable;
 import io.littlehorse.common.model.POSTable;
@@ -28,8 +28,8 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
 
-    public String id;
     public String name;
+    public int version;
     public Date createdAt;
     public Date updatedAt;
     public long lastOffset;
@@ -50,10 +50,7 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
     }
 
     public String getObjectId() {
-        if (id.equals("")) {
-            id = LHUtil.generateGuid();
-        }
-        return id;
+        return name + "/" + version;
     }
 
     public Date getCreatedAt() {
@@ -61,7 +58,7 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
     }
 
     public String getPartitionKey() {
-        return getObjectId();
+        return LHConstants.META_PARTITION_KEY;
     }
 
     public WfSpec() {
@@ -81,13 +78,12 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
     public WfSpecPb.Builder toProto() {
         WfSpecPb.Builder out = WfSpecPb
             .newBuilder()
-            .setId(id)
+            .setVersion(version)
             .setCreatedAt(LHUtil.fromDate(createdAt))
             .setUpdatedAt(LHUtil.fromDate(updatedAt))
             .setEntrypointThreadName(entrypointThreadName)
             .setStatus(status)
-            .setName(name)
-            .setLastUpdatedOffset(lastOffset);
+            .setName(name);
 
         if (threadSpecs != null) {
             for (Map.Entry<String, ThreadSpec> p : threadSpecs.entrySet()) {
@@ -98,15 +94,14 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder pr) throws LHSerdeError {
+    public void initFrom(MessageOrBuilder pr) {
         WfSpecPbOrBuilder proto = (WfSpecPbOrBuilder) pr;
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
-        id = proto.getId();
+        version = proto.getVersion();
         updatedAt = LHUtil.fromProtoTs(proto.getUpdatedAt());
         entrypointThreadName = proto.getEntrypointThreadName();
         status = proto.getStatus();
         name = proto.getName();
-        lastOffset = proto.getLastUpdatedOffset();
 
         for (Map.Entry<String, ThreadSpecPb> e : proto
             .getThreadSpecsMap()
@@ -124,7 +119,7 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
         return WfSpecPb.class;
     }
 
-    public static WfSpec fromProto(WfSpecPbOrBuilder proto) throws LHSerdeError {
+    public static WfSpec fromProto(WfSpecPbOrBuilder proto) {
         WfSpec out = new WfSpec();
         out.initFrom(proto);
         return out;

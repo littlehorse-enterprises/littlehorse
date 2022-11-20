@@ -43,7 +43,8 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     public int number;
 
     public LHStatusPb status;
-    public String wfSpecId;
+    public String wfSpecName;
+    public int wfSpecVersion;
     public String threadSpecName;
     public int currentNodePosition;
 
@@ -71,7 +72,8 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         wfRunId = proto.getWfRunId();
         number = proto.getNumber();
         status = proto.getStatus();
-        wfSpecId = proto.getWfSpecId();
+        wfSpecName = proto.getWfSpecName();
+        wfSpecVersion = proto.getWfSpecVersion();
         threadSpecName = proto.getThreadSpecName();
         currentNodePosition = proto.getCurrentNodePosition();
         startTime = LHUtil.fromProtoTs(proto.getStartTime());
@@ -113,7 +115,8 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             .setWfRunId(wfRunId)
             .setNumber(number)
             .setStatus(status)
-            .setWfSpecId(wfSpecId)
+            .setWfSpecName(wfSpecName)
+            .setWfSpecVersion(wfSpecVersion)
             .setThreadSpecName(threadSpecName)
             .setCurrentNodePosition(currentNodePosition)
             .setStartTime(LHUtil.fromDate(startTime));
@@ -625,7 +628,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         cnr.threadSpecName = threadSpecName;
 
         cnr.arrivalTime = arrivalTime;
-        cnr.wfSpecId = wfSpecId;
+        cnr.wfSpecId = wfSpecName;
         cnr.nodeName = node.name;
 
         cnr.position = currentNodePosition;
@@ -797,7 +800,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     }
 
     public NodeRun getNodeRun(int position) {
-        NodeRun out = wfRun.stores.getNodeRun(number, position);
+        NodeRun out = wfRun.stores.getNodeRun(wfRun.id, number, position);
         if (out != null) {
             out.threadRun = this;
         }
@@ -811,7 +814,12 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
 
     public void putVariable(String varName, VariableValue var) throws LHVarSubError {
         if (getLocallyDefinedVarNames().contains(varName)) {
-            wfRun.stores.putVariable(varName, var, number);
+            Variable toPut = new Variable();
+            toPut.wfRunId = wfRunId;
+            toPut.name = varName;
+            toPut.value = var;
+            toPut.threadRunNumber = this.number;
+            wfRun.stores.putVariable(toPut);
         } else {
             if (getParent() != null) {
                 getParent().putVariable(varName, var);
@@ -827,7 +835,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     public Variable getVariable(String varName) {
         // For now, just do the local one
         // Once we have threads, this will do a backtrack up the thread tree.
-        Variable out = wfRun.stores.getVariable(varName, this.number);
+        Variable out = wfRun.stores.getVariable(wfRunId, varName, this.number);
         if (out != null) {
             return out;
         }

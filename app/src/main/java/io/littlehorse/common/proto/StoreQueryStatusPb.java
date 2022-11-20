@@ -13,64 +13,40 @@ package io.littlehorse.common.proto;
 public enum StoreQueryStatusPb
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
+   * <pre>
+   * If OK and bytes is empty, means that the key is not found.
+   * </pre>
+   *
    * <code>RSQ_OK = 0;</code>
    */
   RSQ_OK(0),
   /**
    * <pre>
-   * Successfully queried the store and got no result
+   * Can't query store, eg. during a rebalance or if migrated.
    * </pre>
    *
-   * <code>RSQ_NOT_FOUND = 1;</code>
+   * <code>RSQ_NOT_AVAILABLE = 2;</code>
    */
-  RSQ_NOT_FOUND(1),
-  /**
-   * <pre>
-   * No longer owner of that partition
-   * </pre>
-   *
-   * <code>RSQ_MIGRATED = 2;</code>
-   */
-  RSQ_MIGRATED(2),
-  /**
-   * <pre>
-   * Can't query store, eg. during a rebalance
-   * </pre>
-   *
-   * <code>RSQ_NOT_AVAILABLE = 3;</code>
-   */
-  RSQ_NOT_AVAILABLE(3),
+  RSQ_NOT_AVAILABLE(2),
   UNRECOGNIZED(-1),
   ;
 
   /**
+   * <pre>
+   * If OK and bytes is empty, means that the key is not found.
+   * </pre>
+   *
    * <code>RSQ_OK = 0;</code>
    */
   public static final int RSQ_OK_VALUE = 0;
   /**
    * <pre>
-   * Successfully queried the store and got no result
+   * Can't query store, eg. during a rebalance or if migrated.
    * </pre>
    *
-   * <code>RSQ_NOT_FOUND = 1;</code>
+   * <code>RSQ_NOT_AVAILABLE = 2;</code>
    */
-  public static final int RSQ_NOT_FOUND_VALUE = 1;
-  /**
-   * <pre>
-   * No longer owner of that partition
-   * </pre>
-   *
-   * <code>RSQ_MIGRATED = 2;</code>
-   */
-  public static final int RSQ_MIGRATED_VALUE = 2;
-  /**
-   * <pre>
-   * Can't query store, eg. during a rebalance
-   * </pre>
-   *
-   * <code>RSQ_NOT_AVAILABLE = 3;</code>
-   */
-  public static final int RSQ_NOT_AVAILABLE_VALUE = 3;
+  public static final int RSQ_NOT_AVAILABLE_VALUE = 2;
 
 
   public final int getNumber() {
@@ -98,9 +74,7 @@ public enum StoreQueryStatusPb
   public static StoreQueryStatusPb forNumber(int value) {
     switch (value) {
       case 0: return RSQ_OK;
-      case 1: return RSQ_NOT_FOUND;
-      case 2: return RSQ_MIGRATED;
-      case 3: return RSQ_NOT_AVAILABLE;
+      case 2: return RSQ_NOT_AVAILABLE;
       default: return null;
     }
   }

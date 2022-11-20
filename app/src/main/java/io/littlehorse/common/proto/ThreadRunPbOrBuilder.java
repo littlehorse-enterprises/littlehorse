@@ -37,64 +37,64 @@ public interface ThreadRunPbOrBuilder extends
   io.littlehorse.common.proto.LHStatusPb getStatus();
 
   /**
-   * <code>string wf_spec_id = 4;</code>
-   * @return The wfSpecId.
+   * <code>string wf_spec_name = 4;</code>
+   * @return The wfSpecName.
    */
-  java.lang.String getWfSpecId();
+  java.lang.String getWfSpecName();
   /**
-   * <code>string wf_spec_id = 4;</code>
-   * @return The bytes for wfSpecId.
+   * <code>string wf_spec_name = 4;</code>
+   * @return The bytes for wfSpecName.
    */
   com.google.protobuf.ByteString
-      getWfSpecIdBytes();
+      getWfSpecNameBytes();
 
   /**
-   * <code>string thread_spec_name = 5;</code>
+   * <code>int32 wf_spec_version = 5;</code>
+   * @return The wfSpecVersion.
+   */
+  int getWfSpecVersion();
+
+  /**
+   * <code>string thread_spec_name = 6;</code>
    * @return The threadSpecName.
    */
   java.lang.String getThreadSpecName();
   /**
-   * <code>string thread_spec_name = 5;</code>
+   * <code>string thread_spec_name = 6;</code>
    * @return The bytes for threadSpecName.
    */
   com.google.protobuf.ByteString
       getThreadSpecNameBytes();
 
   /**
-   * <code>.google.protobuf.Timestamp start_time = 6;</code>
+   * <code>.google.protobuf.Timestamp start_time = 7;</code>
    * @return Whether the startTime field is set.
    */
   boolean hasStartTime();
   /**
-   * <code>.google.protobuf.Timestamp start_time = 6;</code>
+   * <code>.google.protobuf.Timestamp start_time = 7;</code>
    * @return The startTime.
    */
   com.google.protobuf.Timestamp getStartTime();
   /**
-   * <code>.google.protobuf.Timestamp start_time = 6;</code>
+   * <code>.google.protobuf.Timestamp start_time = 7;</code>
    */
   com.google.protobuf.TimestampOrBuilder getStartTimeOrBuilder();
 
   /**
-   * <code>.google.protobuf.Timestamp end_time = 7;</code>
+   * <code>.google.protobuf.Timestamp end_time = 8;</code>
    * @return Whether the endTime field is set.
    */
   boolean hasEndTime();
   /**
-   * <code>.google.protobuf.Timestamp end_time = 7;</code>
+   * <code>.google.protobuf.Timestamp end_time = 8;</code>
    * @return The endTime.
    */
   com.google.protobuf.Timestamp getEndTime();
   /**
-   * <code>.google.protobuf.Timestamp end_time = 7;</code>
+   * <code>.google.protobuf.Timestamp end_time = 8;</code>
    */
   com.google.protobuf.TimestampOrBuilder getEndTimeOrBuilder();
-
-  /**
-   * <code>int32 current_node_position = 8;</code>
-   * @return The currentNodePosition.
-   */
-  int getCurrentNodePosition();
 
   /**
    * <code>string error_message = 9;</code>
@@ -212,4 +212,10 @@ public interface ThreadRunPbOrBuilder extends
    * <code>.lh_proto.FailureBeingHandledPb failure_being_handled = 15;</code>
    */
   io.littlehorse.common.proto.FailureBeingHandledPbOrBuilder getFailureBeingHandledOrBuilder();
+
+  /**
+   * <code>int32 current_node_position = 16;</code>
+   * @return The currentNodePosition.
+   */
+  int getCurrentNodePosition();
 }

@@ -8,28 +8,22 @@ public interface CentralStoreQueryPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string store_name = 1;</code>
-   * @return The storeName.
+   * <code>bool enable_stale_stores = 1;</code>
+   * @return The enableStaleStores.
    */
-  java.lang.String getStoreName();
-  /**
-   * <code>string store_name = 1;</code>
-   * @return The bytes for storeName.
-   */
-  com.google.protobuf.ByteString
-      getStoreNameBytes();
+  boolean getEnableStaleStores();
 
   /**
-   * <code>string key = 2;</code>
-   * @return The key.
+   * <code>string full_key = 2;</code>
+   * @return The fullKey.
    */
-  java.lang.String getKey();
+  java.lang.String getFullKey();
   /**
-   * <code>string key = 2;</code>
-   * @return The bytes for key.
+   * <code>string full_key = 2;</code>
+   * @return The bytes for fullKey.
    */
   com.google.protobuf.ByteString
-      getKeyBytes();
+      getFullKeyBytes();
 
   /**
    * <code>int32 specific_partition = 3;</code>
@@ -41,10 +35,4 @@ public interface CentralStoreQueryPbOrBuilder extends
    * @return The specificPartition.
    */
   int getSpecificPartition();
-
-  /**
-   * <code>bool enable_stale_stores = 4;</code>
-   * @return The enableStaleStores.
-   */
-  boolean getEnableStaleStores();
 }

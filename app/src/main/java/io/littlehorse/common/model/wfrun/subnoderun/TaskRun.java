@@ -150,7 +150,7 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
         tsr.taskRunPosition = nodeRun.position;
         tsr.threadRunNumber = nodeRun.threadRunNumber;
         tsr.wfRunId = nodeRun.threadRun.wfRunId;
-        tsr.wfSpecId = nodeRun.threadRun.wfSpecId;
+        tsr.wfSpecId = nodeRun.threadRun.wfSpecName;
         tsr.nodeName = node.name;
         tsr.variables = varVals;
 
@@ -171,7 +171,7 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
         // set timer for TimeOut
         WfRunEvent timerEvt = new WfRunEvent();
         timerEvt.wfRunId = thread.wfRun.id;
-        timerEvt.wfSpecId = thread.wfSpecId;
+        timerEvt.wfSpecId = thread.wfSpecName;
         Node node = nodeRun.getNode();
 
         timerEvt.type = EventCase.TASK_RESULT;

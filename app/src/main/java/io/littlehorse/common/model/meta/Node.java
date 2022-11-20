@@ -3,7 +3,6 @@ package io.littlehorse.common.model.meta;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.meta.subnode.EntrypointNode;
@@ -94,7 +93,7 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder p) throws LHSerdeError {
+    public void initFrom(MessageOrBuilder p) {
         NodePbOrBuilder proto = (NodePbOrBuilder) p;
         type = proto.getNodeCase();
         outputSchema = OutputSchema.fromProto(proto.getOutputSchemaOrBuilder());
@@ -144,8 +143,7 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
                 nop = new NopNode();
                 break;
             case NODE_NOT_SET:
-                throw new LHSerdeError(
-                    null,
+                throw new RuntimeException(
                     "Node " + name + " on thread " + threadSpec.name + " is unset!"
                 );
         }

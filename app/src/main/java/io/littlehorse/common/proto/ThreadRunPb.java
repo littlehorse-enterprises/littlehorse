@@ -18,7 +18,7 @@ private static final long serialVersionUID = 0L;
   private ThreadRunPb() {
     wfRunId_ = "";
     status_ = 0;
-    wfSpecId_ = "";
+    wfSpecName_ = "";
     threadSpecName_ = "";
     errorMessage_ = "";
     resultCode_ = 0;
@@ -78,16 +78,21 @@ private static final long serialVersionUID = 0L;
           case 34: {
             java.lang.String s = input.readStringRequireUtf8();
 
-            wfSpecId_ = s;
+            wfSpecName_ = s;
             break;
           }
-          case 42: {
+          case 40: {
+
+            wfSpecVersion_ = input.readInt32();
+            break;
+          }
+          case 50: {
             java.lang.String s = input.readStringRequireUtf8();
 
             threadSpecName_ = s;
             break;
           }
-          case 50: {
+          case 58: {
             com.google.protobuf.Timestamp.Builder subBuilder = null;
             if (startTime_ != null) {
               subBuilder = startTime_.toBuilder();
@@ -100,7 +105,7 @@ private static final long serialVersionUID = 0L;
 
             break;
           }
-          case 58: {
+          case 66: {
             com.google.protobuf.Timestamp.Builder subBuilder = null;
             if (((bitField0_ & 0x00000001) != 0)) {
               subBuilder = endTime_.toBuilder();
@@ -111,11 +116,6 @@ private static final long serialVersionUID = 0L;
               endTime_ = subBuilder.buildPartial();
             }
             bitField0_ |= 0x00000001;
-            break;
-          }
-          case 64: {
-
-            currentNodePosition_ = input.readInt32();
             break;
           }
           case 74: {
@@ -182,6 +182,11 @@ private static final long serialVersionUID = 0L;
               failureBeingHandled_ = subBuilder.buildPartial();
             }
             bitField0_ |= 0x00000020;
+            break;
+          }
+          case 128: {
+
+            currentNodePosition_ = input.readInt32();
             break;
           }
           default: {
@@ -291,48 +296,59 @@ private static final long serialVersionUID = 0L;
     return result == null ? io.littlehorse.common.proto.LHStatusPb.UNRECOGNIZED : result;
   }
 
-  public static final int WF_SPEC_ID_FIELD_NUMBER = 4;
-  private volatile java.lang.Object wfSpecId_;
+  public static final int WF_SPEC_NAME_FIELD_NUMBER = 4;
+  private volatile java.lang.Object wfSpecName_;
   /**
-   * <code>string wf_spec_id = 4;</code>
-   * @return The wfSpecId.
+   * <code>string wf_spec_name = 4;</code>
+   * @return The wfSpecName.
    */
   @java.lang.Override
-  public java.lang.String getWfSpecId() {
-    java.lang.Object ref = wfSpecId_;
+  public java.lang.String getWfSpecName() {
+    java.lang.Object ref = wfSpecName_;
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      wfSpecId_ = s;
+      wfSpecName_ = s;
       return s;
     }
   }
   /**
-   * <code>string wf_spec_id = 4;</code>
-   * @return The bytes for wfSpecId.
+   * <code>string wf_spec_name = 4;</code>
+   * @return The bytes for wfSpecName.
    */
   @java.lang.Override
   public com.google.protobuf.ByteString
-      getWfSpecIdBytes() {
-    java.lang.Object ref = wfSpecId_;
+      getWfSpecNameBytes() {
+    java.lang.Object ref = wfSpecName_;
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      wfSpecId_ = b;
+      wfSpecName_ = b;
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
     }
   }
 
-  public static final int THREAD_SPEC_NAME_FIELD_NUMBER = 5;
+  public static final int WF_SPEC_VERSION_FIELD_NUMBER = 5;
+  private int wfSpecVersion_;
+  /**
+   * <code>int32 wf_spec_version = 5;</code>
+   * @return The wfSpecVersion.
+   */
+  @java.lang.Override
+  public int getWfSpecVersion() {
+    return wfSpecVersion_;
+  }
+
+  public static final int THREAD_SPEC_NAME_FIELD_NUMBER = 6;
   private volatile java.lang.Object threadSpecName_;
   /**
-   * <code>string thread_spec_name = 5;</code>
+   * <code>string thread_spec_name = 6;</code>
    * @return The threadSpecName.
    */
   @java.lang.Override
@@ -349,7 +365,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>string thread_spec_name = 5;</code>
+   * <code>string thread_spec_name = 6;</code>
    * @return The bytes for threadSpecName.
    */
   @java.lang.Override
@@ -367,10 +383,10 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int START_TIME_FIELD_NUMBER = 6;
+  public static final int START_TIME_FIELD_NUMBER = 7;
   private com.google.protobuf.Timestamp startTime_;
   /**
-   * <code>.google.protobuf.Timestamp start_time = 6;</code>
+   * <code>.google.protobuf.Timestamp start_time = 7;</code>
    * @return Whether the startTime field is set.
    */
   @java.lang.Override
@@ -378,7 +394,7 @@ private static final long serialVersionUID = 0L;
     return startTime_ != null;
   }
   /**
-   * <code>.google.protobuf.Timestamp start_time = 6;</code>
+   * <code>.google.protobuf.Timestamp start_time = 7;</code>
    * @return The startTime.
    */
   @java.lang.Override
@@ -386,17 +402,17 @@ private static final long serialVersionUID = 0L;
     return startTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : startTime_;
   }
   /**
-   * <code>.google.protobuf.Timestamp start_time = 6;</code>
+   * <code>.google.protobuf.Timestamp start_time = 7;</code>
    */
   @java.lang.Override
   public com.google.protobuf.TimestampOrBuilder getStartTimeOrBuilder() {
     return getStartTime();
   }
 
-  public static final int END_TIME_FIELD_NUMBER = 7;
+  public static final int END_TIME_FIELD_NUMBER = 8;
   private com.google.protobuf.Timestamp endTime_;
   /**
-   * <code>.google.protobuf.Timestamp end_time = 7;</code>
+   * <code>.google.protobuf.Timestamp end_time = 8;</code>
    * @return Whether the endTime field is set.
    */
   @java.lang.Override
@@ -404,7 +420,7 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>.google.protobuf.Timestamp end_time = 7;</code>
+   * <code>.google.protobuf.Timestamp end_time = 8;</code>
    * @return The endTime.
    */
   @java.lang.Override
@@ -412,22 +428,11 @@ private static final long serialVersionUID = 0L;
     return endTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : endTime_;
   }
   /**
-   * <code>.google.protobuf.Timestamp end_time = 7;</code>
+   * <code>.google.protobuf.Timestamp end_time = 8;</code>
    */
   @java.lang.Override
   public com.google.protobuf.TimestampOrBuilder getEndTimeOrBuilder() {
     return endTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : endTime_;
-  }
-
-  public static final int CURRENT_NODE_POSITION_FIELD_NUMBER = 8;
-  private int currentNodePosition_;
-  /**
-   * <code>int32 current_node_position = 8;</code>
-   * @return The currentNodePosition.
-   */
-  @java.lang.Override
-  public int getCurrentNodePosition() {
-    return currentNodePosition_;
   }
 
   public static final int ERROR_MESSAGE_FIELD_NUMBER = 9;
@@ -661,6 +666,17 @@ private static final long serialVersionUID = 0L;
     return failureBeingHandled_ == null ? io.littlehorse.common.proto.FailureBeingHandledPb.getDefaultInstance() : failureBeingHandled_;
   }
 
+  public static final int CURRENT_NODE_POSITION_FIELD_NUMBER = 16;
+  private int currentNodePosition_;
+  /**
+   * <code>int32 current_node_position = 16;</code>
+   * @return The currentNodePosition.
+   */
+  @java.lang.Override
+  public int getCurrentNodePosition() {
+    return currentNodePosition_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -685,20 +701,20 @@ private static final long serialVersionUID = 0L;
     if (status_ != io.littlehorse.common.proto.LHStatusPb.STARTING.getNumber()) {
       output.writeEnum(3, status_);
     }
-    if (!getWfSpecIdBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 4, wfSpecId_);
+    if (!getWfSpecNameBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 4, wfSpecName_);
+    }
+    if (wfSpecVersion_ != 0) {
+      output.writeInt32(5, wfSpecVersion_);
     }
     if (!getThreadSpecNameBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, threadSpecName_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 6, threadSpecName_);
     }
     if (startTime_ != null) {
-      output.writeMessage(6, getStartTime());
+      output.writeMessage(7, getStartTime());
     }
     if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeMessage(7, getEndTime());
-    }
-    if (currentNodePosition_ != 0) {
-      output.writeInt32(8, currentNodePosition_);
+      output.writeMessage(8, getEndTime());
     }
     if (((bitField0_ & 0x00000002) != 0)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 9, errorMessage_);
@@ -725,6 +741,9 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000020) != 0)) {
       output.writeMessage(15, getFailureBeingHandled());
     }
+    if (currentNodePosition_ != 0) {
+      output.writeInt32(16, currentNodePosition_);
+    }
     unknownFields.writeTo(output);
   }
 
@@ -745,23 +764,23 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(3, status_);
     }
-    if (!getWfSpecIdBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, wfSpecId_);
+    if (!getWfSpecNameBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, wfSpecName_);
+    }
+    if (wfSpecVersion_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(5, wfSpecVersion_);
     }
     if (!getThreadSpecNameBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, threadSpecName_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, threadSpecName_);
     }
     if (startTime_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(6, getStartTime());
+        .computeMessageSize(7, getStartTime());
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(7, getEndTime());
-    }
-    if (currentNodePosition_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(8, currentNodePosition_);
+        .computeMessageSize(8, getEndTime());
     }
     if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(9, errorMessage_);
@@ -799,6 +818,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(15, getFailureBeingHandled());
     }
+    if (currentNodePosition_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(16, currentNodePosition_);
+    }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
@@ -819,8 +842,10 @@ private static final long serialVersionUID = 0L;
     if (getNumber()
         != other.getNumber()) return false;
     if (status_ != other.status_) return false;
-    if (!getWfSpecId()
-        .equals(other.getWfSpecId())) return false;
+    if (!getWfSpecName()
+        .equals(other.getWfSpecName())) return false;
+    if (getWfSpecVersion()
+        != other.getWfSpecVersion()) return false;
     if (!getThreadSpecName()
         .equals(other.getThreadSpecName())) return false;
     if (hasStartTime() != other.hasStartTime()) return false;
@@ -833,8 +858,6 @@ private static final long serialVersionUID = 0L;
       if (!getEndTime()
           .equals(other.getEndTime())) return false;
     }
-    if (getCurrentNodePosition()
-        != other.getCurrentNodePosition()) return false;
     if (hasErrorMessage() != other.hasErrorMessage()) return false;
     if (hasErrorMessage()) {
       if (!getErrorMessage()
@@ -863,6 +886,8 @@ private static final long serialVersionUID = 0L;
       if (!getFailureBeingHandled()
           .equals(other.getFailureBeingHandled())) return false;
     }
+    if (getCurrentNodePosition()
+        != other.getCurrentNodePosition()) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -880,8 +905,10 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getNumber();
     hash = (37 * hash) + STATUS_FIELD_NUMBER;
     hash = (53 * hash) + status_;
-    hash = (37 * hash) + WF_SPEC_ID_FIELD_NUMBER;
-    hash = (53 * hash) + getWfSpecId().hashCode();
+    hash = (37 * hash) + WF_SPEC_NAME_FIELD_NUMBER;
+    hash = (53 * hash) + getWfSpecName().hashCode();
+    hash = (37 * hash) + WF_SPEC_VERSION_FIELD_NUMBER;
+    hash = (53 * hash) + getWfSpecVersion();
     hash = (37 * hash) + THREAD_SPEC_NAME_FIELD_NUMBER;
     hash = (53 * hash) + getThreadSpecName().hashCode();
     if (hasStartTime()) {
@@ -892,8 +919,6 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + END_TIME_FIELD_NUMBER;
       hash = (53 * hash) + getEndTime().hashCode();
     }
-    hash = (37 * hash) + CURRENT_NODE_POSITION_FIELD_NUMBER;
-    hash = (53 * hash) + getCurrentNodePosition();
     if (hasErrorMessage()) {
       hash = (37 * hash) + ERROR_MESSAGE_FIELD_NUMBER;
       hash = (53 * hash) + getErrorMessage().hashCode();
@@ -922,6 +947,8 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + FAILURE_BEING_HANDLED_FIELD_NUMBER;
       hash = (53 * hash) + getFailureBeingHandled().hashCode();
     }
+    hash = (37 * hash) + CURRENT_NODE_POSITION_FIELD_NUMBER;
+    hash = (53 * hash) + getCurrentNodePosition();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -1064,7 +1091,9 @@ private static final long serialVersionUID = 0L;
 
       status_ = 0;
 
-      wfSpecId_ = "";
+      wfSpecName_ = "";
+
+      wfSpecVersion_ = 0;
 
       threadSpecName_ = "";
 
@@ -1080,8 +1109,6 @@ private static final long serialVersionUID = 0L;
         endTimeBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000001);
-      currentNodePosition_ = 0;
-
       errorMessage_ = "";
       bitField0_ = (bitField0_ & ~0x00000002);
       resultCode_ = 0;
@@ -1104,6 +1131,8 @@ private static final long serialVersionUID = 0L;
         failureBeingHandledBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000080);
+      currentNodePosition_ = 0;
+
       return this;
     }
 
@@ -1135,7 +1164,8 @@ private static final long serialVersionUID = 0L;
       result.wfRunId_ = wfRunId_;
       result.number_ = number_;
       result.status_ = status_;
-      result.wfSpecId_ = wfSpecId_;
+      result.wfSpecName_ = wfSpecName_;
+      result.wfSpecVersion_ = wfSpecVersion_;
       result.threadSpecName_ = threadSpecName_;
       if (startTimeBuilder_ == null) {
         result.startTime_ = startTime_;
@@ -1150,7 +1180,6 @@ private static final long serialVersionUID = 0L;
         }
         to_bitField0_ |= 0x00000001;
       }
-      result.currentNodePosition_ = currentNodePosition_;
       if (((from_bitField0_ & 0x00000002) != 0)) {
         to_bitField0_ |= 0x00000002;
       }
@@ -1189,6 +1218,7 @@ private static final long serialVersionUID = 0L;
         }
         to_bitField0_ |= 0x00000020;
       }
+      result.currentNodePosition_ = currentNodePosition_;
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -1248,9 +1278,12 @@ private static final long serialVersionUID = 0L;
       if (other.status_ != 0) {
         setStatusValue(other.getStatusValue());
       }
-      if (!other.getWfSpecId().isEmpty()) {
-        wfSpecId_ = other.wfSpecId_;
+      if (!other.getWfSpecName().isEmpty()) {
+        wfSpecName_ = other.wfSpecName_;
         onChanged();
+      }
+      if (other.getWfSpecVersion() != 0) {
+        setWfSpecVersion(other.getWfSpecVersion());
       }
       if (!other.getThreadSpecName().isEmpty()) {
         threadSpecName_ = other.threadSpecName_;
@@ -1261,9 +1294,6 @@ private static final long serialVersionUID = 0L;
       }
       if (other.hasEndTime()) {
         mergeEndTime(other.getEndTime());
-      }
-      if (other.getCurrentNodePosition() != 0) {
-        setCurrentNodePosition(other.getCurrentNodePosition());
       }
       if (other.hasErrorMessage()) {
         bitField0_ |= 0x00000002;
@@ -1319,6 +1349,9 @@ private static final long serialVersionUID = 0L;
       }
       if (other.hasFailureBeingHandled()) {
         mergeFailureBeingHandled(other.getFailureBeingHandled());
+      }
+      if (other.getCurrentNodePosition() != 0) {
+        setCurrentNodePosition(other.getCurrentNodePosition());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -1511,85 +1544,116 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.lang.Object wfSpecId_ = "";
+    private java.lang.Object wfSpecName_ = "";
     /**
-     * <code>string wf_spec_id = 4;</code>
-     * @return The wfSpecId.
+     * <code>string wf_spec_name = 4;</code>
+     * @return The wfSpecName.
      */
-    public java.lang.String getWfSpecId() {
-      java.lang.Object ref = wfSpecId_;
+    public java.lang.String getWfSpecName() {
+      java.lang.Object ref = wfSpecName_;
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        wfSpecId_ = s;
+        wfSpecName_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
       }
     }
     /**
-     * <code>string wf_spec_id = 4;</code>
-     * @return The bytes for wfSpecId.
+     * <code>string wf_spec_name = 4;</code>
+     * @return The bytes for wfSpecName.
      */
     public com.google.protobuf.ByteString
-        getWfSpecIdBytes() {
-      java.lang.Object ref = wfSpecId_;
+        getWfSpecNameBytes() {
+      java.lang.Object ref = wfSpecName_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        wfSpecId_ = b;
+        wfSpecName_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
     /**
-     * <code>string wf_spec_id = 4;</code>
-     * @param value The wfSpecId to set.
+     * <code>string wf_spec_name = 4;</code>
+     * @param value The wfSpecName to set.
      * @return This builder for chaining.
      */
-    public Builder setWfSpecId(
+    public Builder setWfSpecName(
         java.lang.String value) {
       if (value == null) {
     throw new NullPointerException();
   }
   
-      wfSpecId_ = value;
+      wfSpecName_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>string wf_spec_id = 4;</code>
+     * <code>string wf_spec_name = 4;</code>
      * @return This builder for chaining.
      */
-    public Builder clearWfSpecId() {
+    public Builder clearWfSpecName() {
       
-      wfSpecId_ = getDefaultInstance().getWfSpecId();
+      wfSpecName_ = getDefaultInstance().getWfSpecName();
       onChanged();
       return this;
     }
     /**
-     * <code>string wf_spec_id = 4;</code>
-     * @param value The bytes for wfSpecId to set.
+     * <code>string wf_spec_name = 4;</code>
+     * @param value The bytes for wfSpecName to set.
      * @return This builder for chaining.
      */
-    public Builder setWfSpecIdBytes(
+    public Builder setWfSpecNameBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
       
-      wfSpecId_ = value;
+      wfSpecName_ = value;
+      onChanged();
+      return this;
+    }
+
+    private int wfSpecVersion_ ;
+    /**
+     * <code>int32 wf_spec_version = 5;</code>
+     * @return The wfSpecVersion.
+     */
+    @java.lang.Override
+    public int getWfSpecVersion() {
+      return wfSpecVersion_;
+    }
+    /**
+     * <code>int32 wf_spec_version = 5;</code>
+     * @param value The wfSpecVersion to set.
+     * @return This builder for chaining.
+     */
+    public Builder setWfSpecVersion(int value) {
+      
+      wfSpecVersion_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 wf_spec_version = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearWfSpecVersion() {
+      
+      wfSpecVersion_ = 0;
       onChanged();
       return this;
     }
 
     private java.lang.Object threadSpecName_ = "";
     /**
-     * <code>string thread_spec_name = 5;</code>
+     * <code>string thread_spec_name = 6;</code>
      * @return The threadSpecName.
      */
     public java.lang.String getThreadSpecName() {
@@ -1605,7 +1669,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string thread_spec_name = 5;</code>
+     * <code>string thread_spec_name = 6;</code>
      * @return The bytes for threadSpecName.
      */
     public com.google.protobuf.ByteString
@@ -1622,7 +1686,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string thread_spec_name = 5;</code>
+     * <code>string thread_spec_name = 6;</code>
      * @param value The threadSpecName to set.
      * @return This builder for chaining.
      */
@@ -1637,7 +1701,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string thread_spec_name = 5;</code>
+     * <code>string thread_spec_name = 6;</code>
      * @return This builder for chaining.
      */
     public Builder clearThreadSpecName() {
@@ -1647,7 +1711,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string thread_spec_name = 5;</code>
+     * <code>string thread_spec_name = 6;</code>
      * @param value The bytes for threadSpecName to set.
      * @return This builder for chaining.
      */
@@ -1667,14 +1731,14 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> startTimeBuilder_;
     /**
-     * <code>.google.protobuf.Timestamp start_time = 6;</code>
+     * <code>.google.protobuf.Timestamp start_time = 7;</code>
      * @return Whether the startTime field is set.
      */
     public boolean hasStartTime() {
       return startTimeBuilder_ != null || startTime_ != null;
     }
     /**
-     * <code>.google.protobuf.Timestamp start_time = 6;</code>
+     * <code>.google.protobuf.Timestamp start_time = 7;</code>
      * @return The startTime.
      */
     public com.google.protobuf.Timestamp getStartTime() {
@@ -1685,7 +1749,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp start_time = 6;</code>
+     * <code>.google.protobuf.Timestamp start_time = 7;</code>
      */
     public Builder setStartTime(com.google.protobuf.Timestamp value) {
       if (startTimeBuilder_ == null) {
@@ -1701,7 +1765,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp start_time = 6;</code>
+     * <code>.google.protobuf.Timestamp start_time = 7;</code>
      */
     public Builder setStartTime(
         com.google.protobuf.Timestamp.Builder builderForValue) {
@@ -1715,7 +1779,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp start_time = 6;</code>
+     * <code>.google.protobuf.Timestamp start_time = 7;</code>
      */
     public Builder mergeStartTime(com.google.protobuf.Timestamp value) {
       if (startTimeBuilder_ == null) {
@@ -1733,7 +1797,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp start_time = 6;</code>
+     * <code>.google.protobuf.Timestamp start_time = 7;</code>
      */
     public Builder clearStartTime() {
       if (startTimeBuilder_ == null) {
@@ -1747,7 +1811,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp start_time = 6;</code>
+     * <code>.google.protobuf.Timestamp start_time = 7;</code>
      */
     public com.google.protobuf.Timestamp.Builder getStartTimeBuilder() {
       
@@ -1755,7 +1819,7 @@ private static final long serialVersionUID = 0L;
       return getStartTimeFieldBuilder().getBuilder();
     }
     /**
-     * <code>.google.protobuf.Timestamp start_time = 6;</code>
+     * <code>.google.protobuf.Timestamp start_time = 7;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getStartTimeOrBuilder() {
       if (startTimeBuilder_ != null) {
@@ -1766,7 +1830,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp start_time = 6;</code>
+     * <code>.google.protobuf.Timestamp start_time = 7;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
@@ -1786,14 +1850,14 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> endTimeBuilder_;
     /**
-     * <code>.google.protobuf.Timestamp end_time = 7;</code>
+     * <code>.google.protobuf.Timestamp end_time = 8;</code>
      * @return Whether the endTime field is set.
      */
     public boolean hasEndTime() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>.google.protobuf.Timestamp end_time = 7;</code>
+     * <code>.google.protobuf.Timestamp end_time = 8;</code>
      * @return The endTime.
      */
     public com.google.protobuf.Timestamp getEndTime() {
@@ -1804,7 +1868,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp end_time = 7;</code>
+     * <code>.google.protobuf.Timestamp end_time = 8;</code>
      */
     public Builder setEndTime(com.google.protobuf.Timestamp value) {
       if (endTimeBuilder_ == null) {
@@ -1820,7 +1884,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp end_time = 7;</code>
+     * <code>.google.protobuf.Timestamp end_time = 8;</code>
      */
     public Builder setEndTime(
         com.google.protobuf.Timestamp.Builder builderForValue) {
@@ -1834,7 +1898,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp end_time = 7;</code>
+     * <code>.google.protobuf.Timestamp end_time = 8;</code>
      */
     public Builder mergeEndTime(com.google.protobuf.Timestamp value) {
       if (endTimeBuilder_ == null) {
@@ -1854,7 +1918,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp end_time = 7;</code>
+     * <code>.google.protobuf.Timestamp end_time = 8;</code>
      */
     public Builder clearEndTime() {
       if (endTimeBuilder_ == null) {
@@ -1867,7 +1931,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp end_time = 7;</code>
+     * <code>.google.protobuf.Timestamp end_time = 8;</code>
      */
     public com.google.protobuf.Timestamp.Builder getEndTimeBuilder() {
       bitField0_ |= 0x00000001;
@@ -1875,7 +1939,7 @@ private static final long serialVersionUID = 0L;
       return getEndTimeFieldBuilder().getBuilder();
     }
     /**
-     * <code>.google.protobuf.Timestamp end_time = 7;</code>
+     * <code>.google.protobuf.Timestamp end_time = 8;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getEndTimeOrBuilder() {
       if (endTimeBuilder_ != null) {
@@ -1886,7 +1950,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.google.protobuf.Timestamp end_time = 7;</code>
+     * <code>.google.protobuf.Timestamp end_time = 8;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
@@ -1900,37 +1964,6 @@ private static final long serialVersionUID = 0L;
         endTime_ = null;
       }
       return endTimeBuilder_;
-    }
-
-    private int currentNodePosition_ ;
-    /**
-     * <code>int32 current_node_position = 8;</code>
-     * @return The currentNodePosition.
-     */
-    @java.lang.Override
-    public int getCurrentNodePosition() {
-      return currentNodePosition_;
-    }
-    /**
-     * <code>int32 current_node_position = 8;</code>
-     * @param value The currentNodePosition to set.
-     * @return This builder for chaining.
-     */
-    public Builder setCurrentNodePosition(int value) {
-      
-      currentNodePosition_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>int32 current_node_position = 8;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearCurrentNodePosition() {
-      
-      currentNodePosition_ = 0;
-      onChanged();
-      return this;
     }
 
     private java.lang.Object errorMessage_ = "";
@@ -2636,6 +2669,37 @@ private static final long serialVersionUID = 0L;
         failureBeingHandled_ = null;
       }
       return failureBeingHandledBuilder_;
+    }
+
+    private int currentNodePosition_ ;
+    /**
+     * <code>int32 current_node_position = 16;</code>
+     * @return The currentNodePosition.
+     */
+    @java.lang.Override
+    public int getCurrentNodePosition() {
+      return currentNodePosition_;
+    }
+    /**
+     * <code>int32 current_node_position = 16;</code>
+     * @param value The currentNodePosition to set.
+     * @return This builder for chaining.
+     */
+    public Builder setCurrentNodePosition(int value) {
+      
+      currentNodePosition_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 current_node_position = 16;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearCurrentNodePosition() {
+      
+      currentNodePosition_ = 0;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

@@ -8,17 +8,60 @@ public interface PutWfSpecPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.lh_proto.WfSpecPb spec = 1;</code>
-   * @return Whether the spec field is set.
+   * <code>string name = 1;</code>
+   * @return The name.
    */
-  boolean hasSpec();
+  java.lang.String getName();
   /**
-   * <code>.lh_proto.WfSpecPb spec = 1;</code>
-   * @return The spec.
+   * <code>string name = 1;</code>
+   * @return The bytes for name.
    */
-  io.littlehorse.common.proto.WfSpecPb getSpec();
+  com.google.protobuf.ByteString
+      getNameBytes();
+
   /**
-   * <code>.lh_proto.WfSpecPb spec = 1;</code>
+   * <code>map&lt;string, .lh_proto.ThreadSpecPb&gt; thread_specs = 5;</code>
    */
-  io.littlehorse.common.proto.WfSpecPbOrBuilder getSpecOrBuilder();
+  int getThreadSpecsCount();
+  /**
+   * <code>map&lt;string, .lh_proto.ThreadSpecPb&gt; thread_specs = 5;</code>
+   */
+  boolean containsThreadSpecs(
+      java.lang.String key);
+  /**
+   * Use {@link #getThreadSpecsMap()} instead.
+   */
+  @java.lang.Deprecated
+  java.util.Map<java.lang.String, io.littlehorse.common.proto.ThreadSpecPb>
+  getThreadSpecs();
+  /**
+   * <code>map&lt;string, .lh_proto.ThreadSpecPb&gt; thread_specs = 5;</code>
+   */
+  java.util.Map<java.lang.String, io.littlehorse.common.proto.ThreadSpecPb>
+  getThreadSpecsMap();
+  /**
+   * <code>map&lt;string, .lh_proto.ThreadSpecPb&gt; thread_specs = 5;</code>
+   */
+
+  io.littlehorse.common.proto.ThreadSpecPb getThreadSpecsOrDefault(
+      java.lang.String key,
+      io.littlehorse.common.proto.ThreadSpecPb defaultValue);
+  /**
+   * <code>map&lt;string, .lh_proto.ThreadSpecPb&gt; thread_specs = 5;</code>
+   */
+
+  io.littlehorse.common.proto.ThreadSpecPb getThreadSpecsOrThrow(
+      java.lang.String key);
+
+  /**
+   * <code>string entrypoint_thread_name = 6;</code>
+   * @return The entrypointThreadName.
+   */
+  java.lang.String getEntrypointThreadName();
+  /**
+   * <code>string entrypoint_thread_name = 6;</code>
+   * @return The bytes for entrypointThreadName.
+   */
+  com.google.protobuf.ByteString
+      getEntrypointThreadNameBytes();
 }

@@ -16,8 +16,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private CentralStoreQueryPb() {
-    storeName_ = "";
-    key_ = "";
+    fullKey_ = "";
   }
 
   @java.lang.Override
@@ -51,26 +50,20 @@ private static final long serialVersionUID = 0L;
           case 0:
             done = true;
             break;
-          case 10: {
-            java.lang.String s = input.readStringRequireUtf8();
+          case 8: {
 
-            storeName_ = s;
+            enableStaleStores_ = input.readBool();
             break;
           }
           case 18: {
             java.lang.String s = input.readStringRequireUtf8();
 
-            key_ = s;
+            fullKey_ = s;
             break;
           }
           case 24: {
             bitField0_ |= 0x00000001;
             specificPartition_ = input.readInt32();
-            break;
-          }
-          case 32: {
-
-            enableStaleStores_ = input.readBool();
             break;
           }
           default: {
@@ -106,76 +99,49 @@ private static final long serialVersionUID = 0L;
   }
 
   private int bitField0_;
-  public static final int STORE_NAME_FIELD_NUMBER = 1;
-  private volatile java.lang.Object storeName_;
+  public static final int ENABLE_STALE_STORES_FIELD_NUMBER = 1;
+  private boolean enableStaleStores_;
   /**
-   * <code>string store_name = 1;</code>
-   * @return The storeName.
+   * <code>bool enable_stale_stores = 1;</code>
+   * @return The enableStaleStores.
    */
   @java.lang.Override
-  public java.lang.String getStoreName() {
-    java.lang.Object ref = storeName_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      storeName_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string store_name = 1;</code>
-   * @return The bytes for storeName.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getStoreNameBytes() {
-    java.lang.Object ref = storeName_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      storeName_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public boolean getEnableStaleStores() {
+    return enableStaleStores_;
   }
 
-  public static final int KEY_FIELD_NUMBER = 2;
-  private volatile java.lang.Object key_;
+  public static final int FULL_KEY_FIELD_NUMBER = 2;
+  private volatile java.lang.Object fullKey_;
   /**
-   * <code>string key = 2;</code>
-   * @return The key.
+   * <code>string full_key = 2;</code>
+   * @return The fullKey.
    */
   @java.lang.Override
-  public java.lang.String getKey() {
-    java.lang.Object ref = key_;
+  public java.lang.String getFullKey() {
+    java.lang.Object ref = fullKey_;
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      key_ = s;
+      fullKey_ = s;
       return s;
     }
   }
   /**
-   * <code>string key = 2;</code>
-   * @return The bytes for key.
+   * <code>string full_key = 2;</code>
+   * @return The bytes for fullKey.
    */
   @java.lang.Override
   public com.google.protobuf.ByteString
-      getKeyBytes() {
-    java.lang.Object ref = key_;
+      getFullKeyBytes() {
+    java.lang.Object ref = fullKey_;
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      key_ = b;
+      fullKey_ = b;
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
@@ -201,17 +167,6 @@ private static final long serialVersionUID = 0L;
     return specificPartition_;
   }
 
-  public static final int ENABLE_STALE_STORES_FIELD_NUMBER = 4;
-  private boolean enableStaleStores_;
-  /**
-   * <code>bool enable_stale_stores = 4;</code>
-   * @return The enableStaleStores.
-   */
-  @java.lang.Override
-  public boolean getEnableStaleStores() {
-    return enableStaleStores_;
-  }
-
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -226,17 +181,14 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!getStoreNameBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, storeName_);
+    if (enableStaleStores_ != false) {
+      output.writeBool(1, enableStaleStores_);
     }
-    if (!getKeyBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, key_);
+    if (!getFullKeyBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, fullKey_);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeInt32(3, specificPartition_);
-    }
-    if (enableStaleStores_ != false) {
-      output.writeBool(4, enableStaleStores_);
     }
     unknownFields.writeTo(output);
   }
@@ -247,19 +199,16 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (!getStoreNameBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, storeName_);
+    if (enableStaleStores_ != false) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(1, enableStaleStores_);
     }
-    if (!getKeyBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, key_);
+    if (!getFullKeyBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, fullKey_);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(3, specificPartition_);
-    }
-    if (enableStaleStores_ != false) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBoolSize(4, enableStaleStores_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -276,17 +225,15 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.common.proto.CentralStoreQueryPb other = (io.littlehorse.common.proto.CentralStoreQueryPb) obj;
 
-    if (!getStoreName()
-        .equals(other.getStoreName())) return false;
-    if (!getKey()
-        .equals(other.getKey())) return false;
+    if (getEnableStaleStores()
+        != other.getEnableStaleStores()) return false;
+    if (!getFullKey()
+        .equals(other.getFullKey())) return false;
     if (hasSpecificPartition() != other.hasSpecificPartition()) return false;
     if (hasSpecificPartition()) {
       if (getSpecificPartition()
           != other.getSpecificPartition()) return false;
     }
-    if (getEnableStaleStores()
-        != other.getEnableStaleStores()) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -298,17 +245,15 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + STORE_NAME_FIELD_NUMBER;
-    hash = (53 * hash) + getStoreName().hashCode();
-    hash = (37 * hash) + KEY_FIELD_NUMBER;
-    hash = (53 * hash) + getKey().hashCode();
+    hash = (37 * hash) + ENABLE_STALE_STORES_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+        getEnableStaleStores());
+    hash = (37 * hash) + FULL_KEY_FIELD_NUMBER;
+    hash = (53 * hash) + getFullKey().hashCode();
     if (hasSpecificPartition()) {
       hash = (37 * hash) + SPECIFIC_PARTITION_FIELD_NUMBER;
       hash = (53 * hash) + getSpecificPartition();
     }
-    hash = (37 * hash) + ENABLE_STALE_STORES_FIELD_NUMBER;
-    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-        getEnableStaleStores());
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -442,14 +387,12 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      storeName_ = "";
+      enableStaleStores_ = false;
 
-      key_ = "";
+      fullKey_ = "";
 
       specificPartition_ = 0;
       bitField0_ = (bitField0_ & ~0x00000001);
-      enableStaleStores_ = false;
-
       return this;
     }
 
@@ -478,13 +421,12 @@ private static final long serialVersionUID = 0L;
       io.littlehorse.common.proto.CentralStoreQueryPb result = new io.littlehorse.common.proto.CentralStoreQueryPb(this);
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
-      result.storeName_ = storeName_;
-      result.key_ = key_;
+      result.enableStaleStores_ = enableStaleStores_;
+      result.fullKey_ = fullKey_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.specificPartition_ = specificPartition_;
         to_bitField0_ |= 0x00000001;
       }
-      result.enableStaleStores_ = enableStaleStores_;
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -534,19 +476,15 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.common.proto.CentralStoreQueryPb other) {
       if (other == io.littlehorse.common.proto.CentralStoreQueryPb.getDefaultInstance()) return this;
-      if (!other.getStoreName().isEmpty()) {
-        storeName_ = other.storeName_;
-        onChanged();
+      if (other.getEnableStaleStores() != false) {
+        setEnableStaleStores(other.getEnableStaleStores());
       }
-      if (!other.getKey().isEmpty()) {
-        key_ = other.key_;
+      if (!other.getFullKey().isEmpty()) {
+        fullKey_ = other.fullKey_;
         onChanged();
       }
       if (other.hasSpecificPartition()) {
         setSpecificPartition(other.getSpecificPartition());
-      }
-      if (other.getEnableStaleStores() != false) {
-        setEnableStaleStores(other.getEnableStaleStores());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -578,154 +516,109 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private java.lang.Object storeName_ = "";
+    private boolean enableStaleStores_ ;
     /**
-     * <code>string store_name = 1;</code>
-     * @return The storeName.
+     * <code>bool enable_stale_stores = 1;</code>
+     * @return The enableStaleStores.
      */
-    public java.lang.String getStoreName() {
-      java.lang.Object ref = storeName_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        storeName_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
+    @java.lang.Override
+    public boolean getEnableStaleStores() {
+      return enableStaleStores_;
     }
     /**
-     * <code>string store_name = 1;</code>
-     * @return The bytes for storeName.
-     */
-    public com.google.protobuf.ByteString
-        getStoreNameBytes() {
-      java.lang.Object ref = storeName_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        storeName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string store_name = 1;</code>
-     * @param value The storeName to set.
+     * <code>bool enable_stale_stores = 1;</code>
+     * @param value The enableStaleStores to set.
      * @return This builder for chaining.
      */
-    public Builder setStoreName(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      storeName_ = value;
+    public Builder setEnableStaleStores(boolean value) {
+      
+      enableStaleStores_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>string store_name = 1;</code>
+     * <code>bool enable_stale_stores = 1;</code>
      * @return This builder for chaining.
      */
-    public Builder clearStoreName() {
+    public Builder clearEnableStaleStores() {
       
-      storeName_ = getDefaultInstance().getStoreName();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string store_name = 1;</code>
-     * @param value The bytes for storeName to set.
-     * @return This builder for chaining.
-     */
-    public Builder setStoreNameBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      storeName_ = value;
+      enableStaleStores_ = false;
       onChanged();
       return this;
     }
 
-    private java.lang.Object key_ = "";
+    private java.lang.Object fullKey_ = "";
     /**
-     * <code>string key = 2;</code>
-     * @return The key.
+     * <code>string full_key = 2;</code>
+     * @return The fullKey.
      */
-    public java.lang.String getKey() {
-      java.lang.Object ref = key_;
+    public java.lang.String getFullKey() {
+      java.lang.Object ref = fullKey_;
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        key_ = s;
+        fullKey_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
       }
     }
     /**
-     * <code>string key = 2;</code>
-     * @return The bytes for key.
+     * <code>string full_key = 2;</code>
+     * @return The bytes for fullKey.
      */
     public com.google.protobuf.ByteString
-        getKeyBytes() {
-      java.lang.Object ref = key_;
+        getFullKeyBytes() {
+      java.lang.Object ref = fullKey_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        key_ = b;
+        fullKey_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
     /**
-     * <code>string key = 2;</code>
-     * @param value The key to set.
+     * <code>string full_key = 2;</code>
+     * @param value The fullKey to set.
      * @return This builder for chaining.
      */
-    public Builder setKey(
+    public Builder setFullKey(
         java.lang.String value) {
       if (value == null) {
     throw new NullPointerException();
   }
   
-      key_ = value;
+      fullKey_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>string key = 2;</code>
+     * <code>string full_key = 2;</code>
      * @return This builder for chaining.
      */
-    public Builder clearKey() {
+    public Builder clearFullKey() {
       
-      key_ = getDefaultInstance().getKey();
+      fullKey_ = getDefaultInstance().getFullKey();
       onChanged();
       return this;
     }
     /**
-     * <code>string key = 2;</code>
-     * @param value The bytes for key to set.
+     * <code>string full_key = 2;</code>
+     * @param value The bytes for fullKey to set.
      * @return This builder for chaining.
      */
-    public Builder setKeyBytes(
+    public Builder setFullKeyBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
       
-      key_ = value;
+      fullKey_ = value;
       onChanged();
       return this;
     }
@@ -765,37 +658,6 @@ private static final long serialVersionUID = 0L;
     public Builder clearSpecificPartition() {
       bitField0_ = (bitField0_ & ~0x00000001);
       specificPartition_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private boolean enableStaleStores_ ;
-    /**
-     * <code>bool enable_stale_stores = 4;</code>
-     * @return The enableStaleStores.
-     */
-    @java.lang.Override
-    public boolean getEnableStaleStores() {
-      return enableStaleStores_;
-    }
-    /**
-     * <code>bool enable_stale_stores = 4;</code>
-     * @param value The enableStaleStores to set.
-     * @return This builder for chaining.
-     */
-    public Builder setEnableStaleStores(boolean value) {
-      
-      enableStaleStores_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>bool enable_stale_stores = 4;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearEnableStaleStores() {
-      
-      enableStaleStores_ = false;
       onChanged();
       return this;
     }

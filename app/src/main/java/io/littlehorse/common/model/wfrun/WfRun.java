@@ -34,8 +34,8 @@ import org.apache.commons.lang3.tuple.Pair;
 public class WfRun extends GETable<WfRunPb> {
 
     public String id;
-    public String wfSpecId;
     public String wfSpecName;
+    public int wfSpecVersion;
     public LHStatusPb status;
     public long lastUpdateOffset;
     public Date startTime;
@@ -58,8 +58,8 @@ public class WfRun extends GETable<WfRunPb> {
     public void initFrom(MessageOrBuilder p) {
         WfRunPbOrBuilder proto = (WfRunPbOrBuilder) p;
         id = proto.getId();
-        wfSpecId = proto.getWfSpecId();
         wfSpecName = proto.getWfSpecName();
+        wfSpecVersion = proto.getWfSpecVersion();
         status = proto.getStatus();
         lastUpdateOffset = proto.getLastUpdateOffset();
         startTime = LHUtil.fromProtoTs(proto.getStartTime());
@@ -96,8 +96,8 @@ public class WfRun extends GETable<WfRunPb> {
         WfRunPb.Builder out = WfRunPb
             .newBuilder()
             .setId(id)
-            .setWfSpecId(wfSpecId)
             .setWfSpecName(wfSpecName)
+            .setWfSpecVersion(wfSpecVersion)
             .setStatus(status)
             .setLastUpdateOffset(lastUpdateOffset)
             .setStartTime(LHUtil.fromDate(startTime));
@@ -145,11 +145,6 @@ public class WfRun extends GETable<WfRunPb> {
                 this,
                 Pair.of("wfSpecName", wfSpecName),
                 Pair.of("status", status.toString())
-            ),
-            new Tag(
-                this,
-                Pair.of("wfSpecId", wfSpecId),
-                Pair.of("status", status.toString())
             )
         );
 
@@ -181,7 +176,8 @@ public class WfRun extends GETable<WfRunPb> {
         thread.parentThreadId = parentThreadId;
 
         thread.status = LHStatusPb.RUNNING;
-        thread.wfSpecId = wfSpecId;
+        thread.wfSpecName = wfSpecName;
+        thread.wfSpecVersion = wfSpecVersion;
         thread.threadSpecName = threadName;
         thread.currentNodePosition = -1; // this gets bumped when we start the thread
 

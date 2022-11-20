@@ -6,6 +6,7 @@ import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.util.LHGlobalMetaStores;
 
 public interface CommandProcessorDao {
     public String getWfRunEventQueue();
@@ -44,4 +45,6 @@ public interface CommandProcessorDao {
      * Commit changes to the backing store.
      */
     public void commitChanges();
+
+    public LHGlobalMetaStores getGlobalMetaStores();
 }

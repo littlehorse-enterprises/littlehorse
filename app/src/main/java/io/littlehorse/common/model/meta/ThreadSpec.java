@@ -3,7 +3,6 @@ package io.littlehorse.common.model.meta;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.wfrun.VariableValue;
@@ -60,7 +59,7 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder pr) throws LHSerdeError {
+    public void initFrom(MessageOrBuilder pr) {
         ThreadSpecPbOrBuilder proto = (ThreadSpecPbOrBuilder) pr;
         for (Map.Entry<String, NodePb> p : proto.getNodesMap().entrySet()) {
             Node n = new Node();

@@ -2,7 +2,10 @@ package io.littlehorse.server.streamsbackend;
 
 import io.grpc.health.v1.HealthCheckResponse.ServingStatus;
 import io.grpc.protobuf.services.HealthStatusManager;
+import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.proto.GetWfSpecPb;
+import io.littlehorse.common.proto.GetWfSpecReplyPb;
 import io.littlehorse.common.proto.LHPublicApiGrpc.LHPublicApiImplBase;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.ServerTopology;
@@ -56,6 +59,21 @@ public class KafkaStreamsBackend extends LHPublicApiImplBase {
         timerStreams.close();
         tagStreams.close();
         backendInternalComms.close();
+    }
+
+    @Override
+    public void getWfSpec(GetWfSpecPb req, StreamObserver<GetWfSpecReplyPb> ctx) {
+        GetWfSpecReplyPb.Builder out = GetWfSpecReplyPb.newBuilder();
+        try {
+            // TODO: first we need to fill out the commands so we know where
+            // to go to look for the wfspecs.
+            System.out.println("hi");
+        } catch (Exception exn) {
+            // TODO;
+        }
+
+        ctx.onNext(out.build());
+        ctx.onCompleted();
     }
 }
 

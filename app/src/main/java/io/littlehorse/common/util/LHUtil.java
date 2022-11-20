@@ -4,13 +4,16 @@ import static com.google.protobuf.util.Timestamps.fromMillis;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.hash.Hashing;
 import com.google.protobuf.Timestamp;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import org.apache.commons.lang3.StringUtils;
 
 public class LHUtil {
 
@@ -72,6 +75,58 @@ public class LHUtil {
 
     public static String toLhDbFormat(Boolean val) {
         return val == null ? "null" : val.toString();
+    }
+
+    /**
+     * @precondition every input string is a valid LHName.
+     */
+    public static String getCompositeId(String... components) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < components.length; i++) {
+            builder.append(components[i]);
+            if (i + 1 < components.length) {
+                builder.append('/');
+            }
+        }
+        return builder.toString();
+    }
+
+    public static boolean isValidLHName(String name) {
+        return name.matches("[a-z0-9]([-a-z0-9]*[a-z0-9])?");
+    }
+
+    public static String digestify(String str) {
+        return fullDigestify(str).substring(0, 8);
+    }
+
+    public static String fullDigestify(String str) {
+        return Hashing
+            .sha256()
+            .hashString(str, StandardCharsets.UTF_8)
+            .toString()
+            .substring(0, 18);
+    }
+
+    /*
+     * The regex with which this is compliant is the same as the regex for
+     * kubernetes hostnames.
+     */
+    public static String toLHName(String oldStr) {
+        String str = new String(oldStr);
+        str = str.toLowerCase();
+
+        str = str.replaceAll("[. _\n]", "-");
+        str = str.replaceAll("[^0-9a-z-]", "");
+        str = str.replaceAll("-[-]+", "-");
+        str = StringUtils.stripStart(str, "-");
+        str = StringUtils.stripEnd(str, "-");
+        if (str.length() >= 63) {
+            str = str.substring(0, 54) + "-" + digestify(str);
+        }
+        if (!LHUtil.isValidLHName(str)) {
+            throw new RuntimeException("Stupid programmer error.");
+        }
+        return str;
     }
 
     /**

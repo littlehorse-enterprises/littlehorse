@@ -4,6 +4,10 @@
 package io.littlehorse.common.proto;
 
 /**
+ * <pre>
+ * This section contains commands for metadata management
+ * </pre>
+ *
  * Protobuf type {@code lh_proto.PutWfSpecPb}
  */
 public final class PutWfSpecPb extends
@@ -16,6 +20,8 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private PutWfSpecPb() {
+    name_ = "";
+    entrypointThreadName_ = "";
   }
 
   @java.lang.Override
@@ -38,6 +44,7 @@ private static final long serialVersionUID = 0L;
     if (extensionRegistry == null) {
       throw new java.lang.NullPointerException();
     }
+    int mutable_bitField0_ = 0;
     com.google.protobuf.UnknownFieldSet.Builder unknownFields =
         com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
@@ -49,16 +56,28 @@ private static final long serialVersionUID = 0L;
             done = true;
             break;
           case 10: {
-            io.littlehorse.common.proto.WfSpecPb.Builder subBuilder = null;
-            if (spec_ != null) {
-              subBuilder = spec_.toBuilder();
-            }
-            spec_ = input.readMessage(io.littlehorse.common.proto.WfSpecPb.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom(spec_);
-              spec_ = subBuilder.buildPartial();
-            }
+            java.lang.String s = input.readStringRequireUtf8();
 
+            name_ = s;
+            break;
+          }
+          case 42: {
+            if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+              threadSpecs_ = com.google.protobuf.MapField.newMapField(
+                  ThreadSpecsDefaultEntryHolder.defaultEntry);
+              mutable_bitField0_ |= 0x00000001;
+            }
+            com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.common.proto.ThreadSpecPb>
+            threadSpecs__ = input.readMessage(
+                ThreadSpecsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+            threadSpecs_.getMutableMap().put(
+                threadSpecs__.getKey(), threadSpecs__.getValue());
+            break;
+          }
+          case 50: {
+            java.lang.String s = input.readStringRequireUtf8();
+
+            entrypointThreadName_ = s;
             break;
           }
           default: {
@@ -85,6 +104,18 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.Command.internal_static_lh_proto_PutWfSpecPb_descriptor;
   }
 
+  @SuppressWarnings({"rawtypes"})
+  @java.lang.Override
+  protected com.google.protobuf.MapField internalGetMapField(
+      int number) {
+    switch (number) {
+      case 5:
+        return internalGetThreadSpecs();
+      default:
+        throw new RuntimeException(
+            "Invalid map field number: " + number);
+    }
+  }
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
@@ -93,30 +124,161 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.common.proto.PutWfSpecPb.class, io.littlehorse.common.proto.PutWfSpecPb.Builder.class);
   }
 
-  public static final int SPEC_FIELD_NUMBER = 1;
-  private io.littlehorse.common.proto.WfSpecPb spec_;
+  public static final int NAME_FIELD_NUMBER = 1;
+  private volatile java.lang.Object name_;
   /**
-   * <code>.lh_proto.WfSpecPb spec = 1;</code>
-   * @return Whether the spec field is set.
+   * <code>string name = 1;</code>
+   * @return The name.
    */
   @java.lang.Override
-  public boolean hasSpec() {
-    return spec_ != null;
+  public java.lang.String getName() {
+    java.lang.Object ref = name_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      name_ = s;
+      return s;
+    }
   }
   /**
-   * <code>.lh_proto.WfSpecPb spec = 1;</code>
-   * @return The spec.
+   * <code>string name = 1;</code>
+   * @return The bytes for name.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.WfSpecPb getSpec() {
-    return spec_ == null ? io.littlehorse.common.proto.WfSpecPb.getDefaultInstance() : spec_;
+  public com.google.protobuf.ByteString
+      getNameBytes() {
+    java.lang.Object ref = name_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      name_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int THREAD_SPECS_FIELD_NUMBER = 5;
+  private static final class ThreadSpecsDefaultEntryHolder {
+    static final com.google.protobuf.MapEntry<
+        java.lang.String, io.littlehorse.common.proto.ThreadSpecPb> defaultEntry =
+            com.google.protobuf.MapEntry
+            .<java.lang.String, io.littlehorse.common.proto.ThreadSpecPb>newDefaultInstance(
+                io.littlehorse.common.proto.Command.internal_static_lh_proto_PutWfSpecPb_ThreadSpecsEntry_descriptor, 
+                com.google.protobuf.WireFormat.FieldType.STRING,
+                "",
+                com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                io.littlehorse.common.proto.ThreadSpecPb.getDefaultInstance());
+  }
+  private com.google.protobuf.MapField<
+      java.lang.String, io.littlehorse.common.proto.ThreadSpecPb> threadSpecs_;
+  private com.google.protobuf.MapField<java.lang.String, io.littlehorse.common.proto.ThreadSpecPb>
+  internalGetThreadSpecs() {
+    if (threadSpecs_ == null) {
+      return com.google.protobuf.MapField.emptyMapField(
+          ThreadSpecsDefaultEntryHolder.defaultEntry);
+    }
+    return threadSpecs_;
+  }
+
+  public int getThreadSpecsCount() {
+    return internalGetThreadSpecs().getMap().size();
   }
   /**
-   * <code>.lh_proto.WfSpecPb spec = 1;</code>
+   * <code>map&lt;string, .lh_proto.ThreadSpecPb&gt; thread_specs = 5;</code>
+   */
+
+  @java.lang.Override
+  public boolean containsThreadSpecs(
+      java.lang.String key) {
+    if (key == null) { throw new java.lang.NullPointerException(); }
+    return internalGetThreadSpecs().getMap().containsKey(key);
+  }
+  /**
+   * Use {@link #getThreadSpecsMap()} instead.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.WfSpecPbOrBuilder getSpecOrBuilder() {
-    return getSpec();
+  @java.lang.Deprecated
+  public java.util.Map<java.lang.String, io.littlehorse.common.proto.ThreadSpecPb> getThreadSpecs() {
+    return getThreadSpecsMap();
+  }
+  /**
+   * <code>map&lt;string, .lh_proto.ThreadSpecPb&gt; thread_specs = 5;</code>
+   */
+  @java.lang.Override
+
+  public java.util.Map<java.lang.String, io.littlehorse.common.proto.ThreadSpecPb> getThreadSpecsMap() {
+    return internalGetThreadSpecs().getMap();
+  }
+  /**
+   * <code>map&lt;string, .lh_proto.ThreadSpecPb&gt; thread_specs = 5;</code>
+   */
+  @java.lang.Override
+
+  public io.littlehorse.common.proto.ThreadSpecPb getThreadSpecsOrDefault(
+      java.lang.String key,
+      io.littlehorse.common.proto.ThreadSpecPb defaultValue) {
+    if (key == null) { throw new java.lang.NullPointerException(); }
+    java.util.Map<java.lang.String, io.littlehorse.common.proto.ThreadSpecPb> map =
+        internalGetThreadSpecs().getMap();
+    return map.containsKey(key) ? map.get(key) : defaultValue;
+  }
+  /**
+   * <code>map&lt;string, .lh_proto.ThreadSpecPb&gt; thread_specs = 5;</code>
+   */
+  @java.lang.Override
+
+  public io.littlehorse.common.proto.ThreadSpecPb getThreadSpecsOrThrow(
+      java.lang.String key) {
+    if (key == null) { throw new java.lang.NullPointerException(); }
+    java.util.Map<java.lang.String, io.littlehorse.common.proto.ThreadSpecPb> map =
+        internalGetThreadSpecs().getMap();
+    if (!map.containsKey(key)) {
+      throw new java.lang.IllegalArgumentException();
+    }
+    return map.get(key);
+  }
+
+  public static final int ENTRYPOINT_THREAD_NAME_FIELD_NUMBER = 6;
+  private volatile java.lang.Object entrypointThreadName_;
+  /**
+   * <code>string entrypoint_thread_name = 6;</code>
+   * @return The entrypointThreadName.
+   */
+  @java.lang.Override
+  public java.lang.String getEntrypointThreadName() {
+    java.lang.Object ref = entrypointThreadName_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      entrypointThreadName_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string entrypoint_thread_name = 6;</code>
+   * @return The bytes for entrypointThreadName.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getEntrypointThreadNameBytes() {
+    java.lang.Object ref = entrypointThreadName_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      entrypointThreadName_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
   }
 
   private byte memoizedIsInitialized = -1;
@@ -133,8 +295,17 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (spec_ != null) {
-      output.writeMessage(1, getSpec());
+    if (!getNameBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
+    }
+    com.google.protobuf.GeneratedMessageV3
+      .serializeStringMapTo(
+        output,
+        internalGetThreadSpecs(),
+        ThreadSpecsDefaultEntryHolder.defaultEntry,
+        5);
+    if (!getEntrypointThreadNameBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 6, entrypointThreadName_);
     }
     unknownFields.writeTo(output);
   }
@@ -145,9 +316,21 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (spec_ != null) {
+    if (!getNameBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
+    }
+    for (java.util.Map.Entry<java.lang.String, io.littlehorse.common.proto.ThreadSpecPb> entry
+         : internalGetThreadSpecs().getMap().entrySet()) {
+      com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.common.proto.ThreadSpecPb>
+      threadSpecs__ = ThreadSpecsDefaultEntryHolder.defaultEntry.newBuilderForType()
+          .setKey(entry.getKey())
+          .setValue(entry.getValue())
+          .build();
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, getSpec());
+          .computeMessageSize(5, threadSpecs__);
+    }
+    if (!getEntrypointThreadNameBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, entrypointThreadName_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -164,11 +347,12 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.common.proto.PutWfSpecPb other = (io.littlehorse.common.proto.PutWfSpecPb) obj;
 
-    if (hasSpec() != other.hasSpec()) return false;
-    if (hasSpec()) {
-      if (!getSpec()
-          .equals(other.getSpec())) return false;
-    }
+    if (!getName()
+        .equals(other.getName())) return false;
+    if (!internalGetThreadSpecs().equals(
+        other.internalGetThreadSpecs())) return false;
+    if (!getEntrypointThreadName()
+        .equals(other.getEntrypointThreadName())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -180,10 +364,14 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (hasSpec()) {
-      hash = (37 * hash) + SPEC_FIELD_NUMBER;
-      hash = (53 * hash) + getSpec().hashCode();
+    hash = (37 * hash) + NAME_FIELD_NUMBER;
+    hash = (53 * hash) + getName().hashCode();
+    if (!internalGetThreadSpecs().getMap().isEmpty()) {
+      hash = (37 * hash) + THREAD_SPECS_FIELD_NUMBER;
+      hash = (53 * hash) + internalGetThreadSpecs().hashCode();
     }
+    hash = (37 * hash) + ENTRYPOINT_THREAD_NAME_FIELD_NUMBER;
+    hash = (53 * hash) + getEntrypointThreadName().hashCode();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -280,6 +468,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * This section contains commands for metadata management
+   * </pre>
+   *
    * Protobuf type {@code lh_proto.PutWfSpecPb}
    */
   public static final class Builder extends
@@ -291,6 +483,28 @@ private static final long serialVersionUID = 0L;
       return io.littlehorse.common.proto.Command.internal_static_lh_proto_PutWfSpecPb_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 5:
+          return internalGetThreadSpecs();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapField internalGetMutableMapField(
+        int number) {
+      switch (number) {
+        case 5:
+          return internalGetMutableThreadSpecs();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -317,12 +531,11 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      if (specBuilder_ == null) {
-        spec_ = null;
-      } else {
-        spec_ = null;
-        specBuilder_ = null;
-      }
+      name_ = "";
+
+      internalGetMutableThreadSpecs().clear();
+      entrypointThreadName_ = "";
+
       return this;
     }
 
@@ -349,11 +562,11 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.common.proto.PutWfSpecPb buildPartial() {
       io.littlehorse.common.proto.PutWfSpecPb result = new io.littlehorse.common.proto.PutWfSpecPb(this);
-      if (specBuilder_ == null) {
-        result.spec_ = spec_;
-      } else {
-        result.spec_ = specBuilder_.build();
-      }
+      int from_bitField0_ = bitField0_;
+      result.name_ = name_;
+      result.threadSpecs_ = internalGetThreadSpecs();
+      result.threadSpecs_.makeImmutable();
+      result.entrypointThreadName_ = entrypointThreadName_;
       onBuilt();
       return result;
     }
@@ -402,8 +615,15 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.common.proto.PutWfSpecPb other) {
       if (other == io.littlehorse.common.proto.PutWfSpecPb.getDefaultInstance()) return this;
-      if (other.hasSpec()) {
-        mergeSpec(other.getSpec());
+      if (!other.getName().isEmpty()) {
+        name_ = other.name_;
+        onChanged();
+      }
+      internalGetMutableThreadSpecs().mergeFrom(
+          other.internalGetThreadSpecs());
+      if (!other.getEntrypointThreadName().isEmpty()) {
+        entrypointThreadName_ = other.entrypointThreadName_;
+        onChanged();
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -433,124 +653,286 @@ private static final long serialVersionUID = 0L;
       }
       return this;
     }
+    private int bitField0_;
 
-    private io.littlehorse.common.proto.WfSpecPb spec_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.WfSpecPb, io.littlehorse.common.proto.WfSpecPb.Builder, io.littlehorse.common.proto.WfSpecPbOrBuilder> specBuilder_;
+    private java.lang.Object name_ = "";
     /**
-     * <code>.lh_proto.WfSpecPb spec = 1;</code>
-     * @return Whether the spec field is set.
+     * <code>string name = 1;</code>
+     * @return The name.
      */
-    public boolean hasSpec() {
-      return specBuilder_ != null || spec_ != null;
-    }
-    /**
-     * <code>.lh_proto.WfSpecPb spec = 1;</code>
-     * @return The spec.
-     */
-    public io.littlehorse.common.proto.WfSpecPb getSpec() {
-      if (specBuilder_ == null) {
-        return spec_ == null ? io.littlehorse.common.proto.WfSpecPb.getDefaultInstance() : spec_;
+    public java.lang.String getName() {
+      java.lang.Object ref = name_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        name_ = s;
+        return s;
       } else {
-        return specBuilder_.getMessage();
+        return (java.lang.String) ref;
       }
     }
     /**
-     * <code>.lh_proto.WfSpecPb spec = 1;</code>
+     * <code>string name = 1;</code>
+     * @return The bytes for name.
      */
-    public Builder setSpec(io.littlehorse.common.proto.WfSpecPb value) {
-      if (specBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        spec_ = value;
-        onChanged();
+    public com.google.protobuf.ByteString
+        getNameBytes() {
+      java.lang.Object ref = name_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        name_ = b;
+        return b;
       } else {
-        specBuilder_.setMessage(value);
+        return (com.google.protobuf.ByteString) ref;
       }
-
-      return this;
     }
     /**
-     * <code>.lh_proto.WfSpecPb spec = 1;</code>
+     * <code>string name = 1;</code>
+     * @param value The name to set.
+     * @return This builder for chaining.
      */
-    public Builder setSpec(
-        io.littlehorse.common.proto.WfSpecPb.Builder builderForValue) {
-      if (specBuilder_ == null) {
-        spec_ = builderForValue.build();
-        onChanged();
-      } else {
-        specBuilder_.setMessage(builderForValue.build());
-      }
-
-      return this;
-    }
-    /**
-     * <code>.lh_proto.WfSpecPb spec = 1;</code>
-     */
-    public Builder mergeSpec(io.littlehorse.common.proto.WfSpecPb value) {
-      if (specBuilder_ == null) {
-        if (spec_ != null) {
-          spec_ =
-            io.littlehorse.common.proto.WfSpecPb.newBuilder(spec_).mergeFrom(value).buildPartial();
-        } else {
-          spec_ = value;
-        }
-        onChanged();
-      } else {
-        specBuilder_.mergeFrom(value);
-      }
-
-      return this;
-    }
-    /**
-     * <code>.lh_proto.WfSpecPb spec = 1;</code>
-     */
-    public Builder clearSpec() {
-      if (specBuilder_ == null) {
-        spec_ = null;
-        onChanged();
-      } else {
-        spec_ = null;
-        specBuilder_ = null;
-      }
-
-      return this;
-    }
-    /**
-     * <code>.lh_proto.WfSpecPb spec = 1;</code>
-     */
-    public io.littlehorse.common.proto.WfSpecPb.Builder getSpecBuilder() {
-      
+    public Builder setName(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      name_ = value;
       onChanged();
-      return getSpecFieldBuilder().getBuilder();
+      return this;
     }
     /**
-     * <code>.lh_proto.WfSpecPb spec = 1;</code>
+     * <code>string name = 1;</code>
+     * @return This builder for chaining.
      */
-    public io.littlehorse.common.proto.WfSpecPbOrBuilder getSpecOrBuilder() {
-      if (specBuilder_ != null) {
-        return specBuilder_.getMessageOrBuilder();
+    public Builder clearName() {
+      
+      name_ = getDefaultInstance().getName();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string name = 1;</code>
+     * @param value The bytes for name to set.
+     * @return This builder for chaining.
+     */
+    public Builder setNameBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      name_ = value;
+      onChanged();
+      return this;
+    }
+
+    private com.google.protobuf.MapField<
+        java.lang.String, io.littlehorse.common.proto.ThreadSpecPb> threadSpecs_;
+    private com.google.protobuf.MapField<java.lang.String, io.littlehorse.common.proto.ThreadSpecPb>
+    internalGetThreadSpecs() {
+      if (threadSpecs_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            ThreadSpecsDefaultEntryHolder.defaultEntry);
+      }
+      return threadSpecs_;
+    }
+    private com.google.protobuf.MapField<java.lang.String, io.littlehorse.common.proto.ThreadSpecPb>
+    internalGetMutableThreadSpecs() {
+      onChanged();;
+      if (threadSpecs_ == null) {
+        threadSpecs_ = com.google.protobuf.MapField.newMapField(
+            ThreadSpecsDefaultEntryHolder.defaultEntry);
+      }
+      if (!threadSpecs_.isMutable()) {
+        threadSpecs_ = threadSpecs_.copy();
+      }
+      return threadSpecs_;
+    }
+
+    public int getThreadSpecsCount() {
+      return internalGetThreadSpecs().getMap().size();
+    }
+    /**
+     * <code>map&lt;string, .lh_proto.ThreadSpecPb&gt; thread_specs = 5;</code>
+     */
+
+    @java.lang.Override
+    public boolean containsThreadSpecs(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      return internalGetThreadSpecs().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getThreadSpecsMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, io.littlehorse.common.proto.ThreadSpecPb> getThreadSpecs() {
+      return getThreadSpecsMap();
+    }
+    /**
+     * <code>map&lt;string, .lh_proto.ThreadSpecPb&gt; thread_specs = 5;</code>
+     */
+    @java.lang.Override
+
+    public java.util.Map<java.lang.String, io.littlehorse.common.proto.ThreadSpecPb> getThreadSpecsMap() {
+      return internalGetThreadSpecs().getMap();
+    }
+    /**
+     * <code>map&lt;string, .lh_proto.ThreadSpecPb&gt; thread_specs = 5;</code>
+     */
+    @java.lang.Override
+
+    public io.littlehorse.common.proto.ThreadSpecPb getThreadSpecsOrDefault(
+        java.lang.String key,
+        io.littlehorse.common.proto.ThreadSpecPb defaultValue) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, io.littlehorse.common.proto.ThreadSpecPb> map =
+          internalGetThreadSpecs().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <code>map&lt;string, .lh_proto.ThreadSpecPb&gt; thread_specs = 5;</code>
+     */
+    @java.lang.Override
+
+    public io.littlehorse.common.proto.ThreadSpecPb getThreadSpecsOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, io.littlehorse.common.proto.ThreadSpecPb> map =
+          internalGetThreadSpecs().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+
+    public Builder clearThreadSpecs() {
+      internalGetMutableThreadSpecs().getMutableMap()
+          .clear();
+      return this;
+    }
+    /**
+     * <code>map&lt;string, .lh_proto.ThreadSpecPb&gt; thread_specs = 5;</code>
+     */
+
+    public Builder removeThreadSpecs(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      internalGetMutableThreadSpecs().getMutableMap()
+          .remove(key);
+      return this;
+    }
+    /**
+     * Use alternate mutation accessors instead.
+     */
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, io.littlehorse.common.proto.ThreadSpecPb>
+    getMutableThreadSpecs() {
+      return internalGetMutableThreadSpecs().getMutableMap();
+    }
+    /**
+     * <code>map&lt;string, .lh_proto.ThreadSpecPb&gt; thread_specs = 5;</code>
+     */
+    public Builder putThreadSpecs(
+        java.lang.String key,
+        io.littlehorse.common.proto.ThreadSpecPb value) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      if (value == null) { throw new java.lang.NullPointerException(); }
+      internalGetMutableThreadSpecs().getMutableMap()
+          .put(key, value);
+      return this;
+    }
+    /**
+     * <code>map&lt;string, .lh_proto.ThreadSpecPb&gt; thread_specs = 5;</code>
+     */
+
+    public Builder putAllThreadSpecs(
+        java.util.Map<java.lang.String, io.littlehorse.common.proto.ThreadSpecPb> values) {
+      internalGetMutableThreadSpecs().getMutableMap()
+          .putAll(values);
+      return this;
+    }
+
+    private java.lang.Object entrypointThreadName_ = "";
+    /**
+     * <code>string entrypoint_thread_name = 6;</code>
+     * @return The entrypointThreadName.
+     */
+    public java.lang.String getEntrypointThreadName() {
+      java.lang.Object ref = entrypointThreadName_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        entrypointThreadName_ = s;
+        return s;
       } else {
-        return spec_ == null ?
-            io.littlehorse.common.proto.WfSpecPb.getDefaultInstance() : spec_;
+        return (java.lang.String) ref;
       }
     }
     /**
-     * <code>.lh_proto.WfSpecPb spec = 1;</code>
+     * <code>string entrypoint_thread_name = 6;</code>
+     * @return The bytes for entrypointThreadName.
      */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.WfSpecPb, io.littlehorse.common.proto.WfSpecPb.Builder, io.littlehorse.common.proto.WfSpecPbOrBuilder> 
-        getSpecFieldBuilder() {
-      if (specBuilder_ == null) {
-        specBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.WfSpecPb, io.littlehorse.common.proto.WfSpecPb.Builder, io.littlehorse.common.proto.WfSpecPbOrBuilder>(
-                getSpec(),
-                getParentForChildren(),
-                isClean());
-        spec_ = null;
+    public com.google.protobuf.ByteString
+        getEntrypointThreadNameBytes() {
+      java.lang.Object ref = entrypointThreadName_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        entrypointThreadName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
       }
-      return specBuilder_;
+    }
+    /**
+     * <code>string entrypoint_thread_name = 6;</code>
+     * @param value The entrypointThreadName to set.
+     * @return This builder for chaining.
+     */
+    public Builder setEntrypointThreadName(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      entrypointThreadName_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string entrypoint_thread_name = 6;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearEntrypointThreadName() {
+      
+      entrypointThreadName_ = getDefaultInstance().getEntrypointThreadName();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string entrypoint_thread_name = 6;</code>
+     * @param value The bytes for entrypointThreadName to set.
+     * @return This builder for chaining.
+     */
+    public Builder setEntrypointThreadNameBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      entrypointThreadName_ = value;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

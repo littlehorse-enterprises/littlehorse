@@ -28,28 +28,22 @@ public interface WfRunPbOrBuilder extends
       getIdBytes();
 
   /**
-   * <code>string wf_spec_id = 2;</code>
-   * @return The wfSpecId.
-   */
-  java.lang.String getWfSpecId();
-  /**
-   * <code>string wf_spec_id = 2;</code>
-   * @return The bytes for wfSpecId.
-   */
-  com.google.protobuf.ByteString
-      getWfSpecIdBytes();
-
-  /**
-   * <code>string wf_spec_name = 3;</code>
+   * <code>string wf_spec_name = 2;</code>
    * @return The wfSpecName.
    */
   java.lang.String getWfSpecName();
   /**
-   * <code>string wf_spec_name = 3;</code>
+   * <code>string wf_spec_name = 2;</code>
    * @return The bytes for wfSpecName.
    */
   com.google.protobuf.ByteString
       getWfSpecNameBytes();
+
+  /**
+   * <code>int32 wf_spec_version = 3;</code>
+   * @return The wfSpecVersion.
+   */
+  int getWfSpecVersion();
 
   /**
    * <code>.lh_proto.LHStatusPb status = 4;</code>

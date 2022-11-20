@@ -145,17 +145,15 @@ message ThreadSpecPb {
 }
 
 message WfSpecPb {
-    string id = 1;
-    google.protobuf.Timestamp created_at = 2;
-    google.protobuf.Timestamp updated_at = 3;
+    string name = 1;
+    int32 version = 2;
+    google.protobuf.Timestamp created_at = 3;
+    google.protobuf.Timestamp updated_at = 4;
 
-    map<string, ThreadSpecPb> thread_specs = 4;
-    string entrypoint_thread_name = 5;
+    map<string, ThreadSpecPb> thread_specs = 5;
+    string entrypoint_thread_name = 6;
 
-    LHStatusPb status = 6;
-    string name = 7;
-
-    int64 last_updated_offset = 8;
+    LHStatusPb status = 7;
 }
 
 message OutputSchemaPb {

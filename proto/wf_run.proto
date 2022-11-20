@@ -13,8 +13,8 @@ import "google/protobuf/timestamp.proto";
 message WfRunPb {
     // Yeah ok it's similar to WfRunStatePb but hear me out
     string id = 1;
-    string wf_spec_id = 2;
-    string wf_spec_name = 3;
+    string wf_spec_name = 2;
+    int32 wf_spec_version = 3;
     LHStatusPb status = 4;
 
     int64 last_update_offset = 5;
@@ -51,13 +51,12 @@ message ThreadRunPb {
     int32 number = 2;
 
     LHStatusPb status = 3;
-    string wf_spec_id = 4;
-    string thread_spec_name = 5;
+    string wf_spec_name = 4;
+    int32 wf_spec_version = 5;
+    string thread_spec_name = 6;
 
-    google.protobuf.Timestamp start_time = 6;
-    optional google.protobuf.Timestamp end_time = 7;
-
-    int32 current_node_position = 8;
+    google.protobuf.Timestamp start_time = 7;
+    optional google.protobuf.Timestamp end_time = 8;
 
     optional string error_message = 9;
     optional TaskResultCodePb result_code = 10;
@@ -68,6 +67,8 @@ message ThreadRunPb {
     repeated ThreadHaltReasonPb halt_reasons = 13;
     optional string interrupt_trigger_id = 14;
     optional FailureBeingHandledPb failure_being_handled = 15;
+
+    int32 current_node_position = 16;
 }
 
 message FailureBeingHandledPb {
