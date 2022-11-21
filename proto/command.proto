@@ -36,24 +36,21 @@ message WfRunRequestPb {
 }
 
 message TaskStartedEventPb {
-    int32 thread_run_number = 1;
-    int32 task_run_number = 2;
-    int32 task_run_position = 3;
-    google.protobuf.Timestamp time = 4;
-    string wf_run_id = 5;
+    string wf_run_id = 1;
+    int32 thread_run_number = 2;
+    int32 task_run_number = 3;
+    int32 task_run_position = 4;
+    google.protobuf.Timestamp time = 5;
 }
 
 message TaskResultEventPb {
-    int32 thread_run_number = 1;
-    int32 task_run_number = 2;
+    string wf_run_id = 1;
+    int32 thread_run_number = 2;
     int32 task_run_position = 3;
     google.protobuf.Timestamp time = 4;
-
     TaskResultCodePb result_code = 5;
     optional VariableValuePb output = 6;
     optional VariableValuePb log_output = 7;
-
-    string wf_run_id = 8;
 }
 
 message WfRunEventPb {
@@ -69,7 +66,8 @@ message WfRunEventPb {
     optional int32 thread_run_number = 8;
 }
 
-// This section contains commands for metadata management
+// This section contains commands that originate from the gRPC api. Perhaps they
+// could also go in service.proto...?
 message PutWfSpecPb {
     string name = 1;
     reserved 2, 3, 4, 7;
@@ -79,14 +77,31 @@ message PutWfSpecPb {
 
 message PutTaskDefPb {
     string name = 1;
-    google.protobuf.Timestamp created_at = 2;
+    reserved 2;
     OutputSchemaPb output_schema = 3;
-    map<string, VariableDefPb> required_vars = 4;
+    map<string, VariableDefPb> input_vars = 4;
 }
 
-
 message PutExternalEventDefPb {
-    ExternalEventDefPb spec = 1;
+    string name = 1;
+}
+
+message PutExternalEventPb {
+    string wf_run_id = 1;
+    string external_event_def_name = 2;
+    optional string guid = 3;
+    VariableValuePb content = 5;
+    optional int32 thread_run_number = 6;
+    optional int32 task_run_position = 7;
+
+    reserved 4, 8;
+}
+
+message RunWfPb {
+    string wf_spec_name = 1;
+    optional int32 wf_spec_version = 2;
+    map<string, VariableValuePb> variables = 3;
+    optional string id = 4;
 }
 
 // This is the schema of everything that flows through the Central Command topic.

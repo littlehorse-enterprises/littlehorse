@@ -3,6 +3,7 @@ package io.littlehorse.common.model.meta;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.GlobalPOSTable;
 import io.littlehorse.common.model.POSTable;
@@ -19,6 +20,7 @@ import org.apache.commons.lang3.tuple.Pair;
 public class ExternalEventDef extends GlobalPOSTable<ExternalEventDefPbOrBuilder> {
 
     public String name;
+    public int version;
     public Date createdAt;
 
     public ExternalEventDef() {}
@@ -33,11 +35,11 @@ public class ExternalEventDef extends GlobalPOSTable<ExternalEventDefPbOrBuilder
     }
 
     public String getObjectId() {
-        return name;
+        return LHUtil.getCompositeId(name, String.valueOf(version));
     }
 
     public String getPartitionKey() {
-        return name;
+        return LHConstants.META_PARTITION_KEY;
     }
 
     public Class<ExternalEventDefPb> getProtoBaseClass() {
@@ -83,5 +85,11 @@ public class ExternalEventDef extends GlobalPOSTable<ExternalEventDefPbOrBuilder
     @JsonIgnore
     public List<Tag> getTags() {
         return Arrays.asList(new Tag(this, Pair.of("name", name)));
+    }
+
+    public static ExternalEventDef fromProto(ExternalEventDefPbOrBuilder p) {
+        ExternalEventDef out = new ExternalEventDef();
+        out.initFrom(p);
+        return out;
     }
 }

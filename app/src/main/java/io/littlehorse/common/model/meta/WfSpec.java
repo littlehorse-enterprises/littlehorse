@@ -164,7 +164,7 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
         return Pair.of(tspecName, out);
     }
 
-    private void validate(LHGlobalMetaStores dbClient, LHConfig config)
+    public void validate(LHGlobalMetaStores dbClient, LHConfig config)
         throws LHValidationError {
         if (threadSpecs.get(entrypointThreadName) == null) {
             throw new LHValidationError(null, "Unknown entrypoint thread");
@@ -259,7 +259,7 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
         out.id = e.runRequest.wfRunId;
 
         out.wfSpec = this;
-        out.wfSpecId = id;
+        out.wfSpecVersion = version;
         out.wfSpecName = name;
         out.startTime = e.time;
         out.status = LHStatusPb.RUNNING;

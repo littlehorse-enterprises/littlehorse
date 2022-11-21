@@ -118,21 +118,10 @@ message GetExternalEventReplyPb {
     optional ExternalEventPb result = 3;
 }
 
-message PutExternalEventPb {
-    ExternalEventPb payload = 1;
-}
-
 message PutExternalEventReplyPb {
     LHResponseCodePb code = 1;
     optional string message = 2;
     optional ExternalEventPb result = 3;
-}
-
-message RunWfPb {
-    string wf_spec_name = 1;
-    optional int32 version = 2;
-    map<string, VariableValuePb> variables = 3;
-    optional string id = 4;
 }
 
 message RunWfReplyPb {

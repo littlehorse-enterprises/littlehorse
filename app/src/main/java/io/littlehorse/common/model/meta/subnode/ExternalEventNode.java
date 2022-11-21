@@ -39,7 +39,10 @@ public class ExternalEventNode extends SubNode<ExternalEventNodePb> {
 
     public void validate(LHGlobalMetaStores stores, LHConfig config)
         throws LHValidationError {
-        ExternalEventDef eed = stores.getExternalEventDef(externalEventDefName);
+        // Want to be able to release new versions of ExternalEventDef's and have old
+        // workflows automatically use the new version. We will enforce schema
+        // compatibility rules on the EED to ensure that this isn't an issue.
+        ExternalEventDef eed = stores.getExternalEventDef(externalEventDefName, null);
 
         if (eed == null) {
             throw new LHValidationError(

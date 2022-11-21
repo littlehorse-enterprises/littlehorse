@@ -16,6 +16,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private PutExternalEventDefPb() {
+    name_ = "";
   }
 
   @java.lang.Override
@@ -49,16 +50,9 @@ private static final long serialVersionUID = 0L;
             done = true;
             break;
           case 10: {
-            io.littlehorse.common.proto.ExternalEventDefPb.Builder subBuilder = null;
-            if (spec_ != null) {
-              subBuilder = spec_.toBuilder();
-            }
-            spec_ = input.readMessage(io.littlehorse.common.proto.ExternalEventDefPb.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom(spec_);
-              spec_ = subBuilder.buildPartial();
-            }
+            java.lang.String s = input.readStringRequireUtf8();
 
+            name_ = s;
             break;
           }
           default: {
@@ -93,30 +87,42 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.common.proto.PutExternalEventDefPb.class, io.littlehorse.common.proto.PutExternalEventDefPb.Builder.class);
   }
 
-  public static final int SPEC_FIELD_NUMBER = 1;
-  private io.littlehorse.common.proto.ExternalEventDefPb spec_;
+  public static final int NAME_FIELD_NUMBER = 1;
+  private volatile java.lang.Object name_;
   /**
-   * <code>.lh_proto.ExternalEventDefPb spec = 1;</code>
-   * @return Whether the spec field is set.
+   * <code>string name = 1;</code>
+   * @return The name.
    */
   @java.lang.Override
-  public boolean hasSpec() {
-    return spec_ != null;
+  public java.lang.String getName() {
+    java.lang.Object ref = name_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      name_ = s;
+      return s;
+    }
   }
   /**
-   * <code>.lh_proto.ExternalEventDefPb spec = 1;</code>
-   * @return The spec.
+   * <code>string name = 1;</code>
+   * @return The bytes for name.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.ExternalEventDefPb getSpec() {
-    return spec_ == null ? io.littlehorse.common.proto.ExternalEventDefPb.getDefaultInstance() : spec_;
-  }
-  /**
-   * <code>.lh_proto.ExternalEventDefPb spec = 1;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.ExternalEventDefPbOrBuilder getSpecOrBuilder() {
-    return getSpec();
+  public com.google.protobuf.ByteString
+      getNameBytes() {
+    java.lang.Object ref = name_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      name_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
   }
 
   private byte memoizedIsInitialized = -1;
@@ -133,8 +139,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (spec_ != null) {
-      output.writeMessage(1, getSpec());
+    if (!getNameBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
     }
     unknownFields.writeTo(output);
   }
@@ -145,9 +151,8 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (spec_ != null) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, getSpec());
+    if (!getNameBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -164,11 +169,8 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.common.proto.PutExternalEventDefPb other = (io.littlehorse.common.proto.PutExternalEventDefPb) obj;
 
-    if (hasSpec() != other.hasSpec()) return false;
-    if (hasSpec()) {
-      if (!getSpec()
-          .equals(other.getSpec())) return false;
-    }
+    if (!getName()
+        .equals(other.getName())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -180,10 +182,8 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (hasSpec()) {
-      hash = (37 * hash) + SPEC_FIELD_NUMBER;
-      hash = (53 * hash) + getSpec().hashCode();
-    }
+    hash = (37 * hash) + NAME_FIELD_NUMBER;
+    hash = (53 * hash) + getName().hashCode();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -317,12 +317,8 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      if (specBuilder_ == null) {
-        spec_ = null;
-      } else {
-        spec_ = null;
-        specBuilder_ = null;
-      }
+      name_ = "";
+
       return this;
     }
 
@@ -349,11 +345,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.common.proto.PutExternalEventDefPb buildPartial() {
       io.littlehorse.common.proto.PutExternalEventDefPb result = new io.littlehorse.common.proto.PutExternalEventDefPb(this);
-      if (specBuilder_ == null) {
-        result.spec_ = spec_;
-      } else {
-        result.spec_ = specBuilder_.build();
-      }
+      result.name_ = name_;
       onBuilt();
       return result;
     }
@@ -402,8 +394,9 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.common.proto.PutExternalEventDefPb other) {
       if (other == io.littlehorse.common.proto.PutExternalEventDefPb.getDefaultInstance()) return this;
-      if (other.hasSpec()) {
-        mergeSpec(other.getSpec());
+      if (!other.getName().isEmpty()) {
+        name_ = other.name_;
+        onChanged();
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -434,123 +427,80 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private io.littlehorse.common.proto.ExternalEventDefPb spec_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.ExternalEventDefPb, io.littlehorse.common.proto.ExternalEventDefPb.Builder, io.littlehorse.common.proto.ExternalEventDefPbOrBuilder> specBuilder_;
+    private java.lang.Object name_ = "";
     /**
-     * <code>.lh_proto.ExternalEventDefPb spec = 1;</code>
-     * @return Whether the spec field is set.
+     * <code>string name = 1;</code>
+     * @return The name.
      */
-    public boolean hasSpec() {
-      return specBuilder_ != null || spec_ != null;
-    }
-    /**
-     * <code>.lh_proto.ExternalEventDefPb spec = 1;</code>
-     * @return The spec.
-     */
-    public io.littlehorse.common.proto.ExternalEventDefPb getSpec() {
-      if (specBuilder_ == null) {
-        return spec_ == null ? io.littlehorse.common.proto.ExternalEventDefPb.getDefaultInstance() : spec_;
+    public java.lang.String getName() {
+      java.lang.Object ref = name_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        name_ = s;
+        return s;
       } else {
-        return specBuilder_.getMessage();
+        return (java.lang.String) ref;
       }
     }
     /**
-     * <code>.lh_proto.ExternalEventDefPb spec = 1;</code>
+     * <code>string name = 1;</code>
+     * @return The bytes for name.
      */
-    public Builder setSpec(io.littlehorse.common.proto.ExternalEventDefPb value) {
-      if (specBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        spec_ = value;
-        onChanged();
+    public com.google.protobuf.ByteString
+        getNameBytes() {
+      java.lang.Object ref = name_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        name_ = b;
+        return b;
       } else {
-        specBuilder_.setMessage(value);
+        return (com.google.protobuf.ByteString) ref;
       }
-
-      return this;
     }
     /**
-     * <code>.lh_proto.ExternalEventDefPb spec = 1;</code>
+     * <code>string name = 1;</code>
+     * @param value The name to set.
+     * @return This builder for chaining.
      */
-    public Builder setSpec(
-        io.littlehorse.common.proto.ExternalEventDefPb.Builder builderForValue) {
-      if (specBuilder_ == null) {
-        spec_ = builderForValue.build();
-        onChanged();
-      } else {
-        specBuilder_.setMessage(builderForValue.build());
-      }
-
-      return this;
-    }
-    /**
-     * <code>.lh_proto.ExternalEventDefPb spec = 1;</code>
-     */
-    public Builder mergeSpec(io.littlehorse.common.proto.ExternalEventDefPb value) {
-      if (specBuilder_ == null) {
-        if (spec_ != null) {
-          spec_ =
-            io.littlehorse.common.proto.ExternalEventDefPb.newBuilder(spec_).mergeFrom(value).buildPartial();
-        } else {
-          spec_ = value;
-        }
-        onChanged();
-      } else {
-        specBuilder_.mergeFrom(value);
-      }
-
-      return this;
-    }
-    /**
-     * <code>.lh_proto.ExternalEventDefPb spec = 1;</code>
-     */
-    public Builder clearSpec() {
-      if (specBuilder_ == null) {
-        spec_ = null;
-        onChanged();
-      } else {
-        spec_ = null;
-        specBuilder_ = null;
-      }
-
-      return this;
-    }
-    /**
-     * <code>.lh_proto.ExternalEventDefPb spec = 1;</code>
-     */
-    public io.littlehorse.common.proto.ExternalEventDefPb.Builder getSpecBuilder() {
-      
+    public Builder setName(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      name_ = value;
       onChanged();
-      return getSpecFieldBuilder().getBuilder();
+      return this;
     }
     /**
-     * <code>.lh_proto.ExternalEventDefPb spec = 1;</code>
+     * <code>string name = 1;</code>
+     * @return This builder for chaining.
      */
-    public io.littlehorse.common.proto.ExternalEventDefPbOrBuilder getSpecOrBuilder() {
-      if (specBuilder_ != null) {
-        return specBuilder_.getMessageOrBuilder();
-      } else {
-        return spec_ == null ?
-            io.littlehorse.common.proto.ExternalEventDefPb.getDefaultInstance() : spec_;
-      }
+    public Builder clearName() {
+      
+      name_ = getDefaultInstance().getName();
+      onChanged();
+      return this;
     }
     /**
-     * <code>.lh_proto.ExternalEventDefPb spec = 1;</code>
+     * <code>string name = 1;</code>
+     * @param value The bytes for name to set.
+     * @return This builder for chaining.
      */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.ExternalEventDefPb, io.littlehorse.common.proto.ExternalEventDefPb.Builder, io.littlehorse.common.proto.ExternalEventDefPbOrBuilder> 
-        getSpecFieldBuilder() {
-      if (specBuilder_ == null) {
-        specBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.ExternalEventDefPb, io.littlehorse.common.proto.ExternalEventDefPb.Builder, io.littlehorse.common.proto.ExternalEventDefPbOrBuilder>(
-                getSpec(),
-                getParentForChildren(),
-                isClean());
-        spec_ = null;
-      }
-      return specBuilder_;
+    public Builder setNameBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      name_ = value;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

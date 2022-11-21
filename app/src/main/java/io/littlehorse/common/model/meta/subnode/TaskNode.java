@@ -83,7 +83,10 @@ public class TaskNode extends SubNode<TaskNodePb> {
 
     public void validate(LHGlobalMetaStores stores, LHConfig config)
         throws LHValidationError {
-        TaskDef taskDef = stores.getTaskDef(taskDefName);
+        // Want to be able to release new versions of taskdef's and have old
+        // workflows automatically use the new version. We will enforce schema
+        // compatibility rules on the taskdef to ensure that this isn't an issue.
+        TaskDef taskDef = stores.getTaskDef(taskDefName, null);
         if (taskDef == null) {
             throw new LHValidationError(
                 null,
@@ -95,7 +98,7 @@ public class TaskNode extends SubNode<TaskNodePb> {
         }
 
         // Now need to validate that all of the variables are provided.
-        for (Map.Entry<String, VariableDef> e : taskDef.requiredVars.entrySet()) {
+        for (Map.Entry<String, VariableDef> e : taskDef.inputVars.entrySet()) {
             VariableDef varDef = e.getValue();
             if (varDef.defaultValue == null) {
                 // Then we NEED the value.

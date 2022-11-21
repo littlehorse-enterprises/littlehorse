@@ -20,21 +20,6 @@ public interface PutTaskDefPbOrBuilder extends
       getNameBytes();
 
   /**
-   * <code>.google.protobuf.Timestamp created_at = 2;</code>
-   * @return Whether the createdAt field is set.
-   */
-  boolean hasCreatedAt();
-  /**
-   * <code>.google.protobuf.Timestamp created_at = 2;</code>
-   * @return The createdAt.
-   */
-  com.google.protobuf.Timestamp getCreatedAt();
-  /**
-   * <code>.google.protobuf.Timestamp created_at = 2;</code>
-   */
-  com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
-
-  /**
    * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
    * @return Whether the outputSchema field is set.
    */
@@ -50,36 +35,36 @@ public interface PutTaskDefPbOrBuilder extends
   io.littlehorse.common.proto.OutputSchemaPbOrBuilder getOutputSchemaOrBuilder();
 
   /**
-   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; required_vars = 4;</code>
+   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; input_vars = 4;</code>
    */
-  int getRequiredVarsCount();
+  int getInputVarsCount();
   /**
-   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; required_vars = 4;</code>
+   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; input_vars = 4;</code>
    */
-  boolean containsRequiredVars(
+  boolean containsInputVars(
       java.lang.String key);
   /**
-   * Use {@link #getRequiredVarsMap()} instead.
+   * Use {@link #getInputVarsMap()} instead.
    */
   @java.lang.Deprecated
   java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableDefPb>
-  getRequiredVars();
+  getInputVars();
   /**
-   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; required_vars = 4;</code>
+   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; input_vars = 4;</code>
    */
   java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableDefPb>
-  getRequiredVarsMap();
+  getInputVarsMap();
   /**
-   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; required_vars = 4;</code>
+   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; input_vars = 4;</code>
    */
 
-  io.littlehorse.common.proto.VariableDefPb getRequiredVarsOrDefault(
+  io.littlehorse.common.proto.VariableDefPb getInputVarsOrDefault(
       java.lang.String key,
       io.littlehorse.common.proto.VariableDefPb defaultValue);
   /**
-   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; required_vars = 4;</code>
+   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; input_vars = 4;</code>
    */
 
-  io.littlehorse.common.proto.VariableDefPb getRequiredVarsOrThrow(
+  io.littlehorse.common.proto.VariableDefPb getInputVarsOrThrow(
       java.lang.String key);
 }

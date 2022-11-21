@@ -55,7 +55,12 @@ private static final long serialVersionUID = 0L;
             name_ = s;
             break;
           }
-          case 18: {
+          case 16: {
+
+            version_ = input.readInt32();
+            break;
+          }
+          case 26: {
             com.google.protobuf.Timestamp.Builder subBuilder = null;
             if (createdAt_ != null) {
               subBuilder = createdAt_.toBuilder();
@@ -138,7 +143,18 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int CREATED_AT_FIELD_NUMBER = 2;
+  public static final int VERSION_FIELD_NUMBER = 2;
+  private int version_;
+  /**
+   * <code>int32 version = 2;</code>
+   * @return The version.
+   */
+  @java.lang.Override
+  public int getVersion() {
+    return version_;
+  }
+
+  public static final int CREATED_AT_FIELD_NUMBER = 3;
   private com.google.protobuf.Timestamp createdAt_;
   /**
    * <pre>
@@ -146,7 +162,7 @@ private static final long serialVersionUID = 0L;
    * Unclear until we have some customer feedback.
    * </pre>
    *
-   * <code>.google.protobuf.Timestamp created_at = 2;</code>
+   * <code>.google.protobuf.Timestamp created_at = 3;</code>
    * @return Whether the createdAt field is set.
    */
   @java.lang.Override
@@ -159,7 +175,7 @@ private static final long serialVersionUID = 0L;
    * Unclear until we have some customer feedback.
    * </pre>
    *
-   * <code>.google.protobuf.Timestamp created_at = 2;</code>
+   * <code>.google.protobuf.Timestamp created_at = 3;</code>
    * @return The createdAt.
    */
   @java.lang.Override
@@ -172,7 +188,7 @@ private static final long serialVersionUID = 0L;
    * Unclear until we have some customer feedback.
    * </pre>
    *
-   * <code>.google.protobuf.Timestamp created_at = 2;</code>
+   * <code>.google.protobuf.Timestamp created_at = 3;</code>
    */
   @java.lang.Override
   public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
@@ -196,8 +212,11 @@ private static final long serialVersionUID = 0L;
     if (!getNameBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
     }
+    if (version_ != 0) {
+      output.writeInt32(2, version_);
+    }
     if (createdAt_ != null) {
-      output.writeMessage(2, getCreatedAt());
+      output.writeMessage(3, getCreatedAt());
     }
     unknownFields.writeTo(output);
   }
@@ -211,9 +230,13 @@ private static final long serialVersionUID = 0L;
     if (!getNameBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
     }
+    if (version_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(2, version_);
+    }
     if (createdAt_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, getCreatedAt());
+        .computeMessageSize(3, getCreatedAt());
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -232,6 +255,8 @@ private static final long serialVersionUID = 0L;
 
     if (!getName()
         .equals(other.getName())) return false;
+    if (getVersion()
+        != other.getVersion()) return false;
     if (hasCreatedAt() != other.hasCreatedAt()) return false;
     if (hasCreatedAt()) {
       if (!getCreatedAt()
@@ -250,6 +275,8 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + NAME_FIELD_NUMBER;
     hash = (53 * hash) + getName().hashCode();
+    hash = (37 * hash) + VERSION_FIELD_NUMBER;
+    hash = (53 * hash) + getVersion();
     if (hasCreatedAt()) {
       hash = (37 * hash) + CREATED_AT_FIELD_NUMBER;
       hash = (53 * hash) + getCreatedAt().hashCode();
@@ -389,6 +416,8 @@ private static final long serialVersionUID = 0L;
       super.clear();
       name_ = "";
 
+      version_ = 0;
+
       if (createdAtBuilder_ == null) {
         createdAt_ = null;
       } else {
@@ -422,6 +451,7 @@ private static final long serialVersionUID = 0L;
     public io.littlehorse.common.proto.ExternalEventDefPb buildPartial() {
       io.littlehorse.common.proto.ExternalEventDefPb result = new io.littlehorse.common.proto.ExternalEventDefPb(this);
       result.name_ = name_;
+      result.version_ = version_;
       if (createdAtBuilder_ == null) {
         result.createdAt_ = createdAt_;
       } else {
@@ -478,6 +508,9 @@ private static final long serialVersionUID = 0L;
       if (!other.getName().isEmpty()) {
         name_ = other.name_;
         onChanged();
+      }
+      if (other.getVersion() != 0) {
+        setVersion(other.getVersion());
       }
       if (other.hasCreatedAt()) {
         mergeCreatedAt(other.getCreatedAt());
@@ -587,6 +620,37 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
+    private int version_ ;
+    /**
+     * <code>int32 version = 2;</code>
+     * @return The version.
+     */
+    @java.lang.Override
+    public int getVersion() {
+      return version_;
+    }
+    /**
+     * <code>int32 version = 2;</code>
+     * @param value The version to set.
+     * @return This builder for chaining.
+     */
+    public Builder setVersion(int value) {
+      
+      version_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 version = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearVersion() {
+      
+      version_ = 0;
+      onChanged();
+      return this;
+    }
+
     private com.google.protobuf.Timestamp createdAt_;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> createdAtBuilder_;
@@ -596,7 +660,7 @@ private static final long serialVersionUID = 0L;
      * Unclear until we have some customer feedback.
      * </pre>
      *
-     * <code>.google.protobuf.Timestamp created_at = 2;</code>
+     * <code>.google.protobuf.Timestamp created_at = 3;</code>
      * @return Whether the createdAt field is set.
      */
     public boolean hasCreatedAt() {
@@ -608,7 +672,7 @@ private static final long serialVersionUID = 0L;
      * Unclear until we have some customer feedback.
      * </pre>
      *
-     * <code>.google.protobuf.Timestamp created_at = 2;</code>
+     * <code>.google.protobuf.Timestamp created_at = 3;</code>
      * @return The createdAt.
      */
     public com.google.protobuf.Timestamp getCreatedAt() {
@@ -624,7 +688,7 @@ private static final long serialVersionUID = 0L;
      * Unclear until we have some customer feedback.
      * </pre>
      *
-     * <code>.google.protobuf.Timestamp created_at = 2;</code>
+     * <code>.google.protobuf.Timestamp created_at = 3;</code>
      */
     public Builder setCreatedAt(com.google.protobuf.Timestamp value) {
       if (createdAtBuilder_ == null) {
@@ -645,7 +709,7 @@ private static final long serialVersionUID = 0L;
      * Unclear until we have some customer feedback.
      * </pre>
      *
-     * <code>.google.protobuf.Timestamp created_at = 2;</code>
+     * <code>.google.protobuf.Timestamp created_at = 3;</code>
      */
     public Builder setCreatedAt(
         com.google.protobuf.Timestamp.Builder builderForValue) {
@@ -664,7 +728,7 @@ private static final long serialVersionUID = 0L;
      * Unclear until we have some customer feedback.
      * </pre>
      *
-     * <code>.google.protobuf.Timestamp created_at = 2;</code>
+     * <code>.google.protobuf.Timestamp created_at = 3;</code>
      */
     public Builder mergeCreatedAt(com.google.protobuf.Timestamp value) {
       if (createdAtBuilder_ == null) {
@@ -687,7 +751,7 @@ private static final long serialVersionUID = 0L;
      * Unclear until we have some customer feedback.
      * </pre>
      *
-     * <code>.google.protobuf.Timestamp created_at = 2;</code>
+     * <code>.google.protobuf.Timestamp created_at = 3;</code>
      */
     public Builder clearCreatedAt() {
       if (createdAtBuilder_ == null) {
@@ -706,7 +770,7 @@ private static final long serialVersionUID = 0L;
      * Unclear until we have some customer feedback.
      * </pre>
      *
-     * <code>.google.protobuf.Timestamp created_at = 2;</code>
+     * <code>.google.protobuf.Timestamp created_at = 3;</code>
      */
     public com.google.protobuf.Timestamp.Builder getCreatedAtBuilder() {
       
@@ -719,7 +783,7 @@ private static final long serialVersionUID = 0L;
      * Unclear until we have some customer feedback.
      * </pre>
      *
-     * <code>.google.protobuf.Timestamp created_at = 2;</code>
+     * <code>.google.protobuf.Timestamp created_at = 3;</code>
      */
     public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
       if (createdAtBuilder_ != null) {
@@ -735,7 +799,7 @@ private static final long serialVersionUID = 0L;
      * Unclear until we have some customer feedback.
      * </pre>
      *
-     * <code>.google.protobuf.Timestamp created_at = 2;</code>
+     * <code>.google.protobuf.Timestamp created_at = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 

@@ -65,15 +65,30 @@ public final class Command {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_lh_proto_PutTaskDefPb_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_lh_proto_PutTaskDefPb_RequiredVarsEntry_descriptor;
+    internal_static_lh_proto_PutTaskDefPb_InputVarsEntry_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_lh_proto_PutTaskDefPb_RequiredVarsEntry_fieldAccessorTable;
+      internal_static_lh_proto_PutTaskDefPb_InputVarsEntry_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_lh_proto_PutExternalEventDefPb_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_lh_proto_PutExternalEventDefPb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_lh_proto_PutExternalEventPb_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_lh_proto_PutExternalEventPb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_lh_proto_RunWfPb_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_lh_proto_RunWfPb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_lh_proto_RunWfPb_VariablesEntry_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_lh_proto_RunWfPb_VariablesEntry_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_lh_proto_CommandPb_descriptor;
   static final 
@@ -107,56 +122,66 @@ public final class Command {
       "iablesEntry\032K\n\016VariablesEntry\022\013\n\003key\030\001 \001" +
       "(\t\022(\n\005value\030\002 \001(\0132\031.lh_proto.VariableVal" +
       "uePb:\0028\001B\014\n\n_wf_run_id\"\240\001\n\022TaskStartedEv" +
-      "entPb\022\031\n\021thread_run_number\030\001 \001(\005\022\027\n\017task" +
-      "_run_number\030\002 \001(\005\022\031\n\021task_run_position\030\003" +
-      " \001(\005\022(\n\004time\030\004 \001(\0132\032.google.protobuf.Tim" +
-      "estamp\022\021\n\twf_run_id\030\005 \001(\t\"\316\002\n\021TaskResult" +
-      "EventPb\022\031\n\021thread_run_number\030\001 \001(\005\022\027\n\017ta" +
-      "sk_run_number\030\002 \001(\005\022\031\n\021task_run_position" +
-      "\030\003 \001(\005\022(\n\004time\030\004 \001(\0132\032.google.protobuf.T" +
-      "imestamp\022/\n\013result_code\030\005 \001(\0162\032.lh_proto" +
-      ".TaskResultCodePb\022.\n\006output\030\006 \001(\0132\031.lh_p" +
-      "roto.VariableValuePbH\000\210\001\001\0222\n\nlog_output\030" +
-      "\007 \001(\0132\031.lh_proto.VariableValuePbH\001\210\001\001\022\021\n" +
-      "\twf_run_id\030\010 \001(\tB\t\n\007_outputB\r\n\013_log_outp" +
-      "ut\"\203\003\n\014WfRunEventPb\022\021\n\twf_run_id\030\001 \001(\t\022\027" +
-      "\n\nwf_spec_id\030\002 \001(\tH\001\210\001\001\022(\n\004time\030\003 \001(\0132\032." +
-      "google.protobuf.Timestamp\022/\n\013run_request" +
-      "\030\004 \001(\0132\030.lh_proto.WfRunRequestPbH\000\0225\n\rst" +
-      "arted_event\030\005 \001(\0132\034.lh_proto.TaskStarted" +
-      "EventPbH\000\0222\n\013task_result\030\006 \001(\0132\033.lh_prot" +
-      "o.TaskResultEventPbH\000\0223\n\016external_event\030" +
-      "\007 \001(\0132\031.lh_proto.ExternalEventPbH\000\022\036\n\021th" +
-      "read_run_number\030\010 \001(\005H\002\210\001\001B\007\n\005eventB\r\n\013_" +
-      "wf_spec_idB\024\n\022_thread_run_number\"\335\001\n\013Put" +
-      "WfSpecPb\022\014\n\004name\030\001 \001(\t\022<\n\014thread_specs\030\005" +
-      " \003(\0132&.lh_proto.PutWfSpecPb.ThreadSpecsE" +
-      "ntry\022\036\n\026entrypoint_thread_name\030\006 \001(\t\032J\n\020" +
-      "ThreadSpecsEntry\022\013\n\003key\030\001 \001(\t\022%\n\005value\030\002" +
-      " \001(\0132\026.lh_proto.ThreadSpecPb:\0028\001J\004\010\002\020\003J\004" +
-      "\010\003\020\004J\004\010\004\020\005J\004\010\007\020\010\"\214\002\n\014PutTaskDefPb\022\014\n\004nam" +
-      "e\030\001 \001(\t\022.\n\ncreated_at\030\002 \001(\0132\032.google.pro" +
-      "tobuf.Timestamp\022/\n\routput_schema\030\003 \001(\0132\030" +
-      ".lh_proto.OutputSchemaPb\022?\n\rrequired_var" +
-      "s\030\004 \003(\0132(.lh_proto.PutTaskDefPb.Required" +
-      "VarsEntry\032L\n\021RequiredVarsEntry\022\013\n\003key\030\001 " +
-      "\001(\t\022&\n\005value\030\002 \001(\0132\027.lh_proto.VariableDe" +
-      "fPb:\0028\001\"C\n\025PutExternalEventDefPb\022*\n\004spec" +
-      "\030\001 \001(\0132\034.lh_proto.ExternalEventDefPb\"\344\003\n" +
-      "\tCommandPb\022(\n\004time\030\001 \001(\0132\032.google.protob" +
-      "uf.Timestamp\022\027\n\ncommand_id\030\002 \001(\tH\001\210\001\001\0228\n" +
-      "\021task_result_event\030\003 \001(\0132\033.lh_proto.Task" +
-      "ResultEventPbH\000\022:\n\022task_started_event\030\004 " +
-      "\001(\0132\034.lh_proto.TaskStartedEventPbH\000\0223\n\016e" +
-      "xternal_event\030\005 \001(\0132\031.lh_proto.ExternalE" +
-      "ventPbH\000\022,\n\013put_wf_spec\030\006 \001(\0132\025.lh_proto" +
-      ".PutWfSpecPbH\000\022.\n\014put_task_def\030\007 \001(\0132\026.l" +
-      "h_proto.PutTaskDefPbH\000\022=\n\022put_external_e" +
-      "vent\030\010 \001(\0132\037.lh_proto.PutExternalEventDe" +
-      "fPbH\000\0222\n\016wf_run_request\030\t \001(\0132\030.lh_proto" +
-      ".WfRunRequestPbH\000B\t\n\007payloadB\r\n\013_command" +
-      "_idB(\n\033io.littlehorse.common.protoP\001Z\007.;" +
-      "modelb\006proto3"
+      "entPb\022\021\n\twf_run_id\030\001 \001(\t\022\031\n\021thread_run_n" +
+      "umber\030\002 \001(\005\022\027\n\017task_run_number\030\003 \001(\005\022\031\n\021" +
+      "task_run_position\030\004 \001(\005\022(\n\004time\030\005 \001(\0132\032." +
+      "google.protobuf.Timestamp\"\265\002\n\021TaskResult" +
+      "EventPb\022\021\n\twf_run_id\030\001 \001(\t\022\031\n\021thread_run" +
+      "_number\030\002 \001(\005\022\031\n\021task_run_position\030\003 \001(\005" +
+      "\022(\n\004time\030\004 \001(\0132\032.google.protobuf.Timesta" +
+      "mp\022/\n\013result_code\030\005 \001(\0162\032.lh_proto.TaskR" +
+      "esultCodePb\022.\n\006output\030\006 \001(\0132\031.lh_proto.V" +
+      "ariableValuePbH\000\210\001\001\0222\n\nlog_output\030\007 \001(\0132" +
+      "\031.lh_proto.VariableValuePbH\001\210\001\001B\t\n\007_outp" +
+      "utB\r\n\013_log_output\"\203\003\n\014WfRunEventPb\022\021\n\twf" +
+      "_run_id\030\001 \001(\t\022\027\n\nwf_spec_id\030\002 \001(\tH\001\210\001\001\022(" +
+      "\n\004time\030\003 \001(\0132\032.google.protobuf.Timestamp" +
+      "\022/\n\013run_request\030\004 \001(\0132\030.lh_proto.WfRunRe" +
+      "questPbH\000\0225\n\rstarted_event\030\005 \001(\0132\034.lh_pr" +
+      "oto.TaskStartedEventPbH\000\0222\n\013task_result\030" +
+      "\006 \001(\0132\033.lh_proto.TaskResultEventPbH\000\0223\n\016" +
+      "external_event\030\007 \001(\0132\031.lh_proto.External" +
+      "EventPbH\000\022\036\n\021thread_run_number\030\010 \001(\005H\002\210\001" +
+      "\001B\007\n\005eventB\r\n\013_wf_spec_idB\024\n\022_thread_run" +
+      "_number\"\335\001\n\013PutWfSpecPb\022\014\n\004name\030\001 \001(\t\022<\n" +
+      "\014thread_specs\030\005 \003(\0132&.lh_proto.PutWfSpec" +
+      "Pb.ThreadSpecsEntry\022\036\n\026entrypoint_thread" +
+      "_name\030\006 \001(\t\032J\n\020ThreadSpecsEntry\022\013\n\003key\030\001" +
+      " \001(\t\022%\n\005value\030\002 \001(\0132\026.lh_proto.ThreadSpe" +
+      "cPb:\0028\001J\004\010\002\020\003J\004\010\003\020\004J\004\010\004\020\005J\004\010\007\020\010\"\331\001\n\014PutT" +
+      "askDefPb\022\014\n\004name\030\001 \001(\t\022/\n\routput_schema\030" +
+      "\003 \001(\0132\030.lh_proto.OutputSchemaPb\0229\n\ninput" +
+      "_vars\030\004 \003(\0132%.lh_proto.PutTaskDefPb.Inpu" +
+      "tVarsEntry\032I\n\016InputVarsEntry\022\013\n\003key\030\001 \001(" +
+      "\t\022&\n\005value\030\002 \001(\0132\027.lh_proto.VariableDefP" +
+      "b:\0028\001J\004\010\002\020\003\"%\n\025PutExternalEventDefPb\022\014\n\004" +
+      "name\030\001 \001(\t\"\210\002\n\022PutExternalEventPb\022\021\n\twf_" +
+      "run_id\030\001 \001(\t\022\037\n\027external_event_def_name\030" +
+      "\002 \001(\t\022\021\n\004guid\030\003 \001(\tH\000\210\001\001\022*\n\007content\030\005 \001(" +
+      "\0132\031.lh_proto.VariableValuePb\022\036\n\021thread_r" +
+      "un_number\030\006 \001(\005H\001\210\001\001\022\036\n\021task_run_positio" +
+      "n\030\007 \001(\005H\002\210\001\001B\007\n\005_guidB\024\n\022_thread_run_num" +
+      "berB\024\n\022_task_run_positionJ\004\010\004\020\005J\004\010\010\020\t\"\353\001" +
+      "\n\007RunWfPb\022\024\n\014wf_spec_name\030\001 \001(\t\022\034\n\017wf_sp" +
+      "ec_version\030\002 \001(\005H\000\210\001\001\0223\n\tvariables\030\003 \003(\013" +
+      "2 .lh_proto.RunWfPb.VariablesEntry\022\017\n\002id" +
+      "\030\004 \001(\tH\001\210\001\001\032K\n\016VariablesEntry\022\013\n\003key\030\001 \001" +
+      "(\t\022(\n\005value\030\002 \001(\0132\031.lh_proto.VariableVal" +
+      "uePb:\0028\001B\022\n\020_wf_spec_versionB\005\n\003_id\"\344\003\n\t" +
+      "CommandPb\022(\n\004time\030\001 \001(\0132\032.google.protobu" +
+      "f.Timestamp\022\027\n\ncommand_id\030\002 \001(\tH\001\210\001\001\0228\n\021" +
+      "task_result_event\030\003 \001(\0132\033.lh_proto.TaskR" +
+      "esultEventPbH\000\022:\n\022task_started_event\030\004 \001" +
+      "(\0132\034.lh_proto.TaskStartedEventPbH\000\0223\n\016ex" +
+      "ternal_event\030\005 \001(\0132\031.lh_proto.ExternalEv" +
+      "entPbH\000\022,\n\013put_wf_spec\030\006 \001(\0132\025.lh_proto." +
+      "PutWfSpecPbH\000\022.\n\014put_task_def\030\007 \001(\0132\026.lh" +
+      "_proto.PutTaskDefPbH\000\022=\n\022put_external_ev" +
+      "ent\030\010 \001(\0132\037.lh_proto.PutExternalEventDef" +
+      "PbH\000\0222\n\016wf_run_request\030\t \001(\0132\030.lh_proto." +
+      "WfRunRequestPbH\000B\t\n\007payloadB\r\n\013_command_" +
+      "idB(\n\033io.littlehorse.common.protoP\001Z\007.;m" +
+      "odelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -196,13 +221,13 @@ public final class Command {
     internal_static_lh_proto_TaskStartedEventPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_TaskStartedEventPb_descriptor,
-        new java.lang.String[] { "ThreadRunNumber", "TaskRunNumber", "TaskRunPosition", "Time", "WfRunId", });
+        new java.lang.String[] { "WfRunId", "ThreadRunNumber", "TaskRunNumber", "TaskRunPosition", "Time", });
     internal_static_lh_proto_TaskResultEventPb_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_lh_proto_TaskResultEventPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_TaskResultEventPb_descriptor,
-        new java.lang.String[] { "ThreadRunNumber", "TaskRunNumber", "TaskRunPosition", "Time", "ResultCode", "Output", "LogOutput", "WfRunId", "Output", "LogOutput", });
+        new java.lang.String[] { "WfRunId", "ThreadRunNumber", "TaskRunPosition", "Time", "ResultCode", "Output", "LogOutput", "Output", "LogOutput", });
     internal_static_lh_proto_WfRunEventPb_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_lh_proto_WfRunEventPb_fieldAccessorTable = new
@@ -226,21 +251,39 @@ public final class Command {
     internal_static_lh_proto_PutTaskDefPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_PutTaskDefPb_descriptor,
-        new java.lang.String[] { "Name", "CreatedAt", "OutputSchema", "RequiredVars", });
-    internal_static_lh_proto_PutTaskDefPb_RequiredVarsEntry_descriptor =
+        new java.lang.String[] { "Name", "OutputSchema", "InputVars", });
+    internal_static_lh_proto_PutTaskDefPb_InputVarsEntry_descriptor =
       internal_static_lh_proto_PutTaskDefPb_descriptor.getNestedTypes().get(0);
-    internal_static_lh_proto_PutTaskDefPb_RequiredVarsEntry_fieldAccessorTable = new
+    internal_static_lh_proto_PutTaskDefPb_InputVarsEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_lh_proto_PutTaskDefPb_RequiredVarsEntry_descriptor,
+        internal_static_lh_proto_PutTaskDefPb_InputVarsEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_lh_proto_PutExternalEventDefPb_descriptor =
       getDescriptor().getMessageTypes().get(7);
     internal_static_lh_proto_PutExternalEventDefPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_PutExternalEventDefPb_descriptor,
-        new java.lang.String[] { "Spec", });
-    internal_static_lh_proto_CommandPb_descriptor =
+        new java.lang.String[] { "Name", });
+    internal_static_lh_proto_PutExternalEventPb_descriptor =
       getDescriptor().getMessageTypes().get(8);
+    internal_static_lh_proto_PutExternalEventPb_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_lh_proto_PutExternalEventPb_descriptor,
+        new java.lang.String[] { "WfRunId", "ExternalEventDefName", "Guid", "Content", "ThreadRunNumber", "TaskRunPosition", "Guid", "ThreadRunNumber", "TaskRunPosition", });
+    internal_static_lh_proto_RunWfPb_descriptor =
+      getDescriptor().getMessageTypes().get(9);
+    internal_static_lh_proto_RunWfPb_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_lh_proto_RunWfPb_descriptor,
+        new java.lang.String[] { "WfSpecName", "WfSpecVersion", "Variables", "Id", "WfSpecVersion", "Id", });
+    internal_static_lh_proto_RunWfPb_VariablesEntry_descriptor =
+      internal_static_lh_proto_RunWfPb_descriptor.getNestedTypes().get(0);
+    internal_static_lh_proto_RunWfPb_VariablesEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_lh_proto_RunWfPb_VariablesEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
+    internal_static_lh_proto_CommandPb_descriptor =
+      getDescriptor().getMessageTypes().get(10);
     internal_static_lh_proto_CommandPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_CommandPb_descriptor,

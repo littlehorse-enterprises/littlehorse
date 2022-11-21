@@ -346,6 +346,33 @@ public class WfRun extends GETable<WfRunPb> {
         return somethingChanged;
     }
 
+    public void advance(Date time) {
+        boolean statusChanged = false;
+        // Update status and then advance
+        for (ThreadRun thread : threadRuns) {
+            statusChanged = thread.updateStatus() || statusChanged;
+        }
+        statusChanged = startXnHandlersAndInterrupts(time) || statusChanged;
+        for (ThreadRun thread : threadRuns) {
+            statusChanged = thread.advance(time) || statusChanged;
+        }
+        for (ThreadRun thread : threadRuns) {
+            statusChanged = thread.updateStatus() || statusChanged;
+        }
+
+        while (statusChanged) {
+            statusChanged = startXnHandlersAndInterrupts(time) || statusChanged;
+            statusChanged = false;
+            for (ThreadRun thread : threadRuns) {
+                statusChanged = thread.advance(time) || statusChanged;
+            }
+
+            for (ThreadRun thread : threadRuns) {
+                statusChanged = thread.updateStatus() || statusChanged;
+            }
+        }
+    }
+
     /*
      * TODO: This is kind of a mess and I haven't logically gone through to determine
      * how many of the loops are necessary. All we know is that "the tests pass"...
@@ -357,30 +384,7 @@ public class WfRun extends GETable<WfRunPb> {
         for (ThreadRun thread : threadRuns) {
             thread.processEvent(e);
         }
-        boolean statusChanged = false;
-        // Update status and then advance
-        for (ThreadRun thread : threadRuns) {
-            statusChanged = thread.updateStatus() || statusChanged;
-        }
-        statusChanged = startXnHandlersAndInterrupts(e.time) || statusChanged;
-        for (ThreadRun thread : threadRuns) {
-            statusChanged = thread.advance(e.time) || statusChanged;
-        }
-        for (ThreadRun thread : threadRuns) {
-            statusChanged = thread.updateStatus() || statusChanged;
-        }
-
-        while (statusChanged) {
-            statusChanged = startXnHandlersAndInterrupts(e.time) || statusChanged;
-            statusChanged = false;
-            for (ThreadRun thread : threadRuns) {
-                statusChanged = thread.advance(e.time) || statusChanged;
-            }
-
-            for (ThreadRun thread : threadRuns) {
-                statusChanged = thread.updateStatus() || statusChanged;
-            }
-        }
+        advance(e.time);
     }
 
     // As a precondition, the status of the calling thread must already be updated to complete.

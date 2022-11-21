@@ -5,7 +5,8 @@ package io.littlehorse.common.proto;
 
 /**
  * <pre>
- * This section contains commands for metadata management
+ * This section contains commands that originate from the gRPC api. Perhaps they
+ * could also go in service.proto...?
  * </pre>
  *
  * Protobuf type {@code lh_proto.PutWfSpecPb}
@@ -469,7 +470,8 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * This section contains commands for metadata management
+   * This section contains commands that originate from the gRPC api. Perhaps they
+   * could also go in service.proto...?
    * </pre>
    *
    * Protobuf type {@code lh_proto.PutWfSpecPb}

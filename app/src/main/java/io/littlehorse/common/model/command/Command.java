@@ -1,8 +1,12 @@
 package io.littlehorse.common.model.command;
 
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.subcommand.ExternalEvent;
+import io.littlehorse.common.model.command.subcommand.PutExternalEventDef;
+import io.littlehorse.common.model.command.subcommand.PutTaskDef;
+import io.littlehorse.common.model.command.subcommand.PutWfSpec;
 import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
 import io.littlehorse.common.model.event.TaskStartedEvent;
 import io.littlehorse.common.proto.CommandPb;
@@ -21,7 +25,7 @@ public class Command extends LHSerializable<CommandPb> {
     public ExternalEvent externalEvent;
     public PutWfSpec putWfSpec;
     public PutTaskDef putTaskDef;
-    public PutExternalEventDef PutExternalEventDef;
+    public PutExternalEventDef putExternalEventDef;
     public RunWf runWf;
 
     public Class<CommandPb> getProtoBaseClass() {
@@ -55,7 +59,10 @@ public class Command extends LHSerializable<CommandPb> {
         return getSubCommand().hasResponse();
     }
 
-    public LHSerializable<?> process(CoreServerProcessorDaoImpl dao) {
-        return getSubCommand().process(dao);
+    public LHSerializable<?> process(
+        CoreServerProcessorDaoImpl dao,
+        LHConfig config
+    ) {
+        return getSubCommand().process(dao, config);
     }
 }

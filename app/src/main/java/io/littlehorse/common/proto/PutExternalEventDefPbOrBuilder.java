@@ -8,17 +8,14 @@ public interface PutExternalEventDefPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.lh_proto.ExternalEventDefPb spec = 1;</code>
-   * @return Whether the spec field is set.
+   * <code>string name = 1;</code>
+   * @return The name.
    */
-  boolean hasSpec();
+  java.lang.String getName();
   /**
-   * <code>.lh_proto.ExternalEventDefPb spec = 1;</code>
-   * @return The spec.
+   * <code>string name = 1;</code>
+   * @return The bytes for name.
    */
-  io.littlehorse.common.proto.ExternalEventDefPb getSpec();
-  /**
-   * <code>.lh_proto.ExternalEventDefPb spec = 1;</code>
-   */
-  io.littlehorse.common.proto.ExternalEventDefPbOrBuilder getSpecOrBuilder();
+  com.google.protobuf.ByteString
+      getNameBytes();
 }

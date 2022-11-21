@@ -394,4 +394,10 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
 
         return null;
     }
+
+    public static ThreadSpec fromProto(ThreadSpecPbOrBuilder p) {
+        ThreadSpec out = new ThreadSpec();
+        out.initFrom(p);
+        return out;
+    }
 }

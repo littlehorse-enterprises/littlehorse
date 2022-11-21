@@ -3,6 +3,7 @@ package io.littlehorse.common.model.meta;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.GlobalPOSTable;
 import io.littlehorse.common.model.POSTable;
@@ -22,15 +23,16 @@ import org.apache.commons.lang3.tuple.Pair;
 public class TaskDef extends GlobalPOSTable<TaskDefPbOrBuilder> {
 
     public String name;
+    public int version;
     public Date createdAt;
     public OutputSchema outputSchema;
-    public Map<String, VariableDef> requiredVars;
+    public Map<String, VariableDef> inputVars;
 
     public String queueName;
     public String consumerGroupName;
 
     public TaskDef() {
-        requiredVars = new HashMap<>();
+        inputVars = new HashMap<>();
     }
 
     public Date getCreatedAt() {
@@ -43,11 +45,11 @@ public class TaskDef extends GlobalPOSTable<TaskDefPbOrBuilder> {
     }
 
     public String getObjectId() {
-        return name;
+        return LHUtil.getCompositeId(name, String.valueOf(version));
     }
 
     public String getPartitionKey() {
-        return name;
+        return LHConstants.META_PARTITION_KEY;
     }
 
     public Class<TaskDefPb> getProtoBaseClass() {
@@ -63,8 +65,8 @@ public class TaskDef extends GlobalPOSTable<TaskDefPbOrBuilder> {
             .setConsumerGroupName(consumerGroupName)
             .setQueueName(queueName);
 
-        for (Map.Entry<String, VariableDef> entry : requiredVars.entrySet()) {
-            b.putRequiredVars(entry.getKey(), entry.getValue().toProto().build());
+        for (Map.Entry<String, VariableDef> entry : inputVars.entrySet()) {
+            b.putInputVars(entry.getKey(), entry.getValue().toProto().build());
         }
 
         return b;
@@ -87,9 +89,9 @@ public class TaskDef extends GlobalPOSTable<TaskDefPbOrBuilder> {
         }
 
         for (Map.Entry<String, VariableDefPb> entry : proto
-            .getRequiredVarsMap()
+            .getInputVarsMap()
             .entrySet()) {
-            requiredVars.put(entry.getKey(), VariableDef.fromProto(entry.getValue()));
+            inputVars.put(entry.getKey(), VariableDef.fromProto(entry.getValue()));
         }
     }
 
@@ -114,5 +116,11 @@ public class TaskDef extends GlobalPOSTable<TaskDefPbOrBuilder> {
     @JsonIgnore
     public List<Tag> getTags() {
         return Arrays.asList(new Tag(this, Pair.of("name", name)));
+    }
+
+    public static TaskDef fromProto(TaskDefPbOrBuilder p) {
+        TaskDef out = new TaskDef();
+        out.initFrom(p);
+        return out;
     }
 }

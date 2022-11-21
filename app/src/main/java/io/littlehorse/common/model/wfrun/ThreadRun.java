@@ -6,6 +6,8 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.subcommand.ExternalEvent;
+import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
+import io.littlehorse.common.model.event.TaskStartedEvent;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.Edge;
 import io.littlehorse.common.model.meta.FailureHandlerDef;
@@ -193,6 +195,29 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         return getNodeRun(currentNodePosition);
     }
 
+    /*
+     * Note on how ExternalEvents are handled:
+     * 1. First, the ExternalEvent is saved to the data store. This is handled
+     *    in the SchedulerProcessor::processHelper() function.
+     * 2. If the ExternalEvent isn't an Interrupt trigger, then if any nodes
+     *    in any ThreadRuns need to react to it, they will look it up in the store
+     *    and react appropriately if it's present. That is done by the methods
+     *    SubNodeRun::advanceIfPossible() and SubNodeRun::arrive().
+     * 3. If it's an Interrupt trigger, then we need to trigger the interrupt here.
+     */
+    public void processExternalEvent(ExternalEvent e) {
+        String extEvtName = e.externalEventDefName;
+        InterruptDef idef = getThreadSpec().getInterruptDefFor(extEvtName);
+        if (idef != null) {
+            // trigger interrupt
+            initializeInterrupt(e, idef);
+        }
+    }
+
+    public void processTaskStartedEvent(TaskStartedEvent e) {}
+
+    public void processTaskResultEvent(TaskResultEvent e) {}
+
     public void processEvent(WfRunEvent e) {
         // External Events get a little bit of special handling since they may not
         // already have information about the node...and they can have impact at the
@@ -251,16 +276,6 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         haltReasons.add(thr);
     }
 
-    /*
-     * Note on how ExternalEvents are handled:
-     * 1. First, the ExternalEvent is saved to the data store. This is handled
-     *    in the SchedulerProcessor::processHelper() function.
-     * 2. If the ExternalEvent isn't an Interrupt trigger, then if any nodes
-     *    in any ThreadRuns need to react to it, they will look it up in the store
-     *    and react appropriately if it's present. That is done by the methods
-     *    SubNodeRun::advanceIfPossible() and SubNodeRun::arrive().
-     * 3. If it's an Interrupt trigger, then we need to trigger the interrupt here.
-     */
     private void registerExternalEvent(WfRunEvent e) {
         if (e.type != EventCase.EXTERNAL_EVENT) {
             throw new RuntimeException("Not possible");
@@ -699,7 +714,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         Map<String, VariableValue> out = new HashMap<>();
         TaskDef taskDef = node.taskDef;
 
-        for (Map.Entry<String, VariableDef> entry : taskDef.requiredVars.entrySet()) {
+        for (Map.Entry<String, VariableDef> entry : taskDef.inputVars.entrySet()) {
             String varName = entry.getKey();
             VariableDef requiredVarDef = entry.getValue();
             VariableAssignment assn = node.variables.get(varName);
