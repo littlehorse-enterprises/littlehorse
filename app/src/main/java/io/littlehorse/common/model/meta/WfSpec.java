@@ -49,7 +49,7 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
         return name;
     }
 
-    public String getObjectId() {
+    public String getSubKey() {
         return name + "/" + version;
     }
 

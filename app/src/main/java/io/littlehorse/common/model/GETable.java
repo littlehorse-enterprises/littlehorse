@@ -19,13 +19,7 @@ public abstract class GETable<T extends MessageOrBuilder> extends Storeable<T> {
 
     public abstract String getPartitionKey();
 
-    public abstract String getObjectId();
-
     public abstract List<Tag> getTags();
-
-    public String getStoreSubKey() {
-        return getObjectId();
-    }
 
     public static GETableClassEnumPb getTypeEnum(Class<? extends GETable<?>> cls) {
         if (cls.equals(WfRun.class)) {

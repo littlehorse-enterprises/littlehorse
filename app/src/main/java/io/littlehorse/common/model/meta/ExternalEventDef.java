@@ -34,7 +34,7 @@ public class ExternalEventDef extends GlobalPOSTable<ExternalEventDefPbOrBuilder
         return name;
     }
 
-    public String getObjectId() {
+    public String getSubKey() {
         return LHUtil.getCompositeId(name, String.valueOf(version));
     }
 

@@ -1,4 +1,4 @@
-package io.littlehorse.server.streamsbackend.storeinternals.utils;
+package io.littlehorse.server.streamsbackend.storeinternals;
 
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHSerdeError;
@@ -6,10 +6,11 @@ import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
 import io.littlehorse.common.model.server.Tags;
+import io.littlehorse.server.streamsbackend.storeinternals.utils.StoreUtils;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueStore;
 
-public class LHLocalStore extends LHLocalReadOnlyStore {
+public class LHLocalStore extends LHPartitionedReadOnlyStore {
 
     private KeyValueStore<String, Bytes> store;
 

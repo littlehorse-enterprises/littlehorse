@@ -29,6 +29,8 @@ public class ServerTopology {
     public static String coreProcessor = "core-processor";
     public static String coreSink = "core-sink";
 
+    public static String globalStore = "global-store";
+
     public static Topology initCoreTopology(LHConfig config) {
         Topology topo = new Topology();
 
@@ -59,12 +61,18 @@ public class ServerTopology {
             coreProcessor // parent name
         );
 
-        StoreBuilder<KeyValueStore<String, Bytes>> builder = Stores.keyValueStoreBuilder(
+        StoreBuilder<KeyValueStore<String, Bytes>> partitionedStoreBuilder = Stores.keyValueStoreBuilder(
             Stores.persistentKeyValueStore(LHConstants.CORE_DATA_STORE_NAME),
             Serdes.String(),
             Serdes.Bytes()
         );
-        topo.addStateStore(builder, coreProcessor);
+        topo.addStateStore(partitionedStoreBuilder, coreProcessor);
+
+        StoreBuilder<KeyValueStore<String, Bytes>> globalStoreBuilder = Stores.keyValueStoreBuilder(
+            Stores.persistentKeyValueStore(globalStore),
+            Serdes.String(),
+            Serdes.Bytes()
+        );
         return topo;
     }
 

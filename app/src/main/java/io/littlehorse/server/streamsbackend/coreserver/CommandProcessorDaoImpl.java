@@ -6,6 +6,7 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.CommandResult;
 import io.littlehorse.common.model.meta.TaskDef;
+import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.server.IndexEntryAction;
 import io.littlehorse.common.model.server.Tag;
 import io.littlehorse.common.model.server.Tags;
@@ -18,9 +19,9 @@ import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.IndexActionEnum;
 import io.littlehorse.server.CommandProcessorDao;
 import io.littlehorse.server.ServerTopology;
+import io.littlehorse.server.streamsbackend.storeinternals.LHLocalStore;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.LHIterKeyValue;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.LHKeyValueIterator;
-import io.littlehorse.server.streamsbackend.storeinternals.utils.LHLocalStore;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,9 +38,35 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
     private Map<String, Variable> variablePuts;
     private Map<String, ExternalEvent> extEvtPuts;
     private Map<String, WfRun> wfRunPuts;
+    private Map<String, WfSpec> wfSpecPuts;
     private List<TaskScheduleRequest> tasksToSchedule;
     private List<LHTimer> timersToSchedule;
     private CommandResult responseToSave;
+    private Command command;
+
+    /*
+     * Certain metadata objects (eg. WfSpec, TaskDef, ExternalEventDef) are "global"
+     * in nature. This means three things:
+     * 1) Changes to them are low-throughput and infrequent
+     * 2) There are a relatively small number of them
+     * 3) Other resources (eg. WfRun) need to constantly consult them in order to run.
+     *
+     * Items 1) and 2) imply that these metadata objects can be stored on one node.
+     * Item 3) implies that we *need* every node to have a local copy of these
+     * objects.
+     *
+     * Furthermore, WfSpec's and TaskDef's depend on each other, and we want
+     * strongly consistent processing (so that we can't accidentally delete a TaskDef
+     * while processing a WfSpec that uses it, for example). Therefore, we want
+     * all of the processing to be linearized, and therefore it needs to occur on
+     * the same partition.
+     *
+     * So what do we do? We use the same getParttionKey() for all of the global
+     * metadata.
+     *
+     * The boolean below here is true when this processor owns the "hot" partition.
+     */
+    private boolean isHotMetadataPartition;
 
     private LHLocalStore store;
     private ProcessorContext<String, CommandProcessorOutput> ctx;
@@ -53,6 +80,10 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
         variablePuts = new HashMap<>();
         extEvtPuts = new HashMap<>();
         wfRunPuts = new HashMap<>();
+        wfSpecPuts = new HashMap<>();
+
+        isHotMetadataPartition =
+            ctx.taskId().partition() == config.getHotMetadataPartition();
 
         KeyValueStore<String, Bytes> rawStore = ctx.getStateStore(
             ServerTopology.coreStore
@@ -67,7 +98,7 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
 
     @Override
     public void putNodeRun(NodeRun nr) {
-        nodeRunPuts.put(nr.getObjectId(), nr);
+        nodeRunPuts.put(nr.getSubKey(), nr);
     }
 
     @Override
@@ -83,8 +114,40 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
     }
 
     @Override
+    public void setCommand(Command command) {
+        this.command = command;
+    }
+
+    @Override
+    public Command getCommand() {
+        return this.command;
+    }
+
+    @Override
+    public void putWfSpec(WfSpec spec) {
+        wfSpecPuts.put(spec.getSubKey(), spec);
+    }
+
+    @Override
+    public WfSpec getWfSpec(String name, Integer version) {
+        /*
+         * Lots of things could happen here.
+         * - provide specific version
+         *   - First check for wfRunPuts of specific version
+         *   - Then check the store (local if on hot partition else global)
+         * - don't provide specific version
+         *   - Need to keep a cache that the global store processor populates
+         *   - It orders the things by name.
+         *   - But what about the hot partition?
+         *     - Probably should just go through the pain of looking through the
+         *       store.
+         */
+        return null;
+    }
+
+    @Override
     public void putVariable(Variable var) {
-        variablePuts.put(var.getStoreSubKey(), var);
+        variablePuts.put(var.getSubKey(), var);
     }
 
     @Override
@@ -158,7 +221,7 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
 
     @Override
     public void saveExternalEvent(ExternalEvent evt) {
-        extEvtPuts.put(evt.getObjectId(), evt);
+        extEvtPuts.put(evt.getSubKey(), evt);
     }
 
     @Override
@@ -184,7 +247,7 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
 
     @Override
     public void saveWfRun(WfRun wfRun) {
-        wfRunPuts.put(wfRun.getObjectId(), wfRun);
+        wfRunPuts.put(wfRun.getSubKey(), wfRun);
     }
 
     @Override

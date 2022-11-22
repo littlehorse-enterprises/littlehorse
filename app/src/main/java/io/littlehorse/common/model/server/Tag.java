@@ -32,7 +32,7 @@ public class Tag extends LHSerializable<TagPb> {
         this.type =
             GETable.getTypeEnum((Class<? extends GETable<?>>) getable.getClass());
         createdAt = getable.getCreatedAt();
-        resultObjectId = getable.getObjectId();
+        resultObjectId = getable.getSubKey();
 
         attributes = new ArrayList<>();
         for (Pair<String, String> p : atts) {

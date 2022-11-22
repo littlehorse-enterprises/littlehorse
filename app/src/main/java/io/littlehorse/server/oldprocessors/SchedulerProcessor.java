@@ -217,7 +217,7 @@ public class SchedulerProcessor
             varOutput,
             timestamp
         );
-        rec.headers().add(LHConstants.OBJECT_ID_HEADER, out.getObjectId().getBytes());
+        rec.headers().add(LHConstants.OBJECT_ID_HEADER, out.getSubKey().getBytes());
 
         context.forward(
             rec,

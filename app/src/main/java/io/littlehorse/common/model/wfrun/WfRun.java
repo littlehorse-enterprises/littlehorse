@@ -128,7 +128,7 @@ public class WfRun extends GETable<WfRunPb> {
 
     @JsonIgnore
     @Override
-    public String getObjectId() {
+    public String getSubKey() {
         return id;
     }
 

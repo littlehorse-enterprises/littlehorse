@@ -50,7 +50,7 @@ public class WfRunStoreAccessOld {
     }
 
     public void putNodeRun(NodeRun nr) {
-        nodeRunPuts.put(nr.getObjectId(), nr);
+        nodeRunPuts.put(nr.getSubKey(), nr);
     }
 
     public NodeRun getNodeRun(int threadNum, int position) {
@@ -76,7 +76,7 @@ public class WfRunStoreAccessOld {
     }
 
     public void putVariable(Variable var) {
-        variablePuts.put(var.getObjectId(), var);
+        variablePuts.put(var.getSubKey(), var);
     }
 
     public Variable getVariable(String name, int threadNum) {
@@ -140,7 +140,7 @@ public class WfRunStoreAccessOld {
     }
 
     public void saveExternalEvent(ExternalEvent evt) {
-        extEvtPuts.put(evt.getObjectId(), evt);
+        extEvtPuts.put(evt.getSubKey(), evt);
     }
 
     public void scheduleTask(TaskScheduleRequest tsr) {

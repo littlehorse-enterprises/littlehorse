@@ -1,5 +1,6 @@
 package io.littlehorse.server;
 
+import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
@@ -19,7 +20,13 @@ import java.util.Date;
 public interface CommandProcessorDao {
     public String getWfRunEventQueue();
 
-    public Date getEventTime();
+    public void setCommand(Command command);
+
+    public Command getCommand();
+
+    public default Date getEventTime() {
+        return getCommand().time;
+    }
 
     public void putNodeRun(NodeRun nr);
 

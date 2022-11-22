@@ -25,6 +25,7 @@ import org.apache.kafka.common.KafkaFuture;
 import org.apache.kafka.common.errors.TopicExistsException;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
+import org.apache.kafka.common.utils.Utils;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.state.HostInfo;
@@ -36,6 +37,15 @@ public class LHConfig {
     private LHProducer producer;
     private LHProducer txnProducer;
     private KafkaConsumer<String, Bytes> kafkaConsumer;
+
+    public int getHotMetadataPartition() {
+        return (
+            Utils.toPositive(
+                Utils.murmur2(LHConstants.META_PARTITION_KEY.getBytes())
+            ) %
+            getClusterPartitions()
+        );
+    }
 
     public String getKafkaTopicPrefix() {
         return getOrSetDefault(LHConstants.KAFKA_TOPIC_PREFIX_KEY, "");

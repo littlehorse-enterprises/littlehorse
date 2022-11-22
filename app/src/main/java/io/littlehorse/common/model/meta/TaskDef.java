@@ -44,7 +44,7 @@ public class TaskDef extends GlobalPOSTable<TaskDefPbOrBuilder> {
         return name;
     }
 
-    public String getObjectId() {
+    public String getSubKey() {
         return LHUtil.getCompositeId(name, String.valueOf(version));
     }
 

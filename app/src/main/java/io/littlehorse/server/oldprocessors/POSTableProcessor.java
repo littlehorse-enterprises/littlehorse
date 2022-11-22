@@ -73,7 +73,7 @@ public class POSTableProcessor<U extends MessageOrBuilder, T extends POSTable<U>
             );
             newRec
                 .headers()
-                .add(LHConstants.OBJECT_ID_HEADER, newT.getObjectId().getBytes());
+                .add(LHConstants.OBJECT_ID_HEADER, newT.getSubKey().getBytes());
 
             context.forward(newRec);
 

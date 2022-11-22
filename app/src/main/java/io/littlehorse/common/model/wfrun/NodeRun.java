@@ -82,7 +82,7 @@ public class NodeRun extends GETable<NodeRunPb> {
         return failures.get(failures.size() - 1);
     }
 
-    public String getObjectId() {
+    public String getSubKey() {
         return NodeRun.getStoreKey(wfRunId, threadRunNumber, position);
     }
 

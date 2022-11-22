@@ -72,7 +72,7 @@ public class ExternalEvent extends GETable<ExternalEventPb> {
 
     @JsonIgnore
     @Override
-    public String getObjectId() {
+    public String getSubKey() {
         return getObjectId(wfRunId, externalEventDefName, guid);
     }
 
@@ -87,7 +87,7 @@ public class ExternalEvent extends GETable<ExternalEventPb> {
     // Just for Jackson
     @JsonProperty("objectId")
     public String getIdForJackson() {
-        return getObjectId();
+        return getSubKey();
     }
 
     @JsonIgnore

@@ -17,7 +17,6 @@ import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsImplBase;
 import io.littlehorse.common.proto.StoreQueryStatusPb;
 import io.littlehorse.common.proto.WaitForCommandResultPb;
 import io.littlehorse.common.proto.WaitForCommandResultReplyPb;
-import io.littlehorse.server.streamsbackend.storeinternals.utils.LHLocalReadOnlyStore;
 import java.io.Closeable;
 import java.io.IOException;
 import org.apache.kafka.common.serialization.Serdes;
@@ -73,7 +72,7 @@ public class LHKafkaStoreInternalCommServer implements Closeable {
         return coreStreams.store(params);
     }
 
-    private LHLocalReadOnlyStore getLocalStore(
+    private LHPartitionedReadOnlyStore getLocalStore(
         Integer specificPartition,
         boolean enableStaleStores
     ) {
@@ -81,7 +80,7 @@ public class LHKafkaStoreInternalCommServer implements Closeable {
             specificPartition,
             enableStaleStores
         );
-        return new LHLocalReadOnlyStore(rawStore, config);
+        return new LHPartitionedReadOnlyStore(rawStore, config);
     }
 
     public void start() throws IOException {
@@ -237,7 +236,7 @@ public class LHKafkaStoreInternalCommServer implements Closeable {
             WaitForCommandResultPb req,
             StreamObserver<WaitForCommandResultReplyPb> ctx
         ) {
-            LHLocalReadOnlyStore store;
+            LHPartitionedReadOnlyStore store;
             try {
                 store = getLocalStore(req.getSpecificPartition(), false);
             } catch (Exception exn) {

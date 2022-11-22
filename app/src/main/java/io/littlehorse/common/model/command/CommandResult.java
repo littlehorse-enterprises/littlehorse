@@ -35,7 +35,7 @@ public class CommandResult extends Storeable<CommandResultPb> {
         result = p.getResult().toByteArray();
     }
 
-    public String getStoreSubKey() {
+    public String getSubKey() {
         return commandId;
     }
 }

@@ -336,8 +336,8 @@ public class LHApi {
                     event.runRequest = req;
                     event.time = new Date();
                     event.wfRunId = req.wfRunId;
-                    event.wfSpecId = spec.getObjectId();
-                    req.wfSpecId = spec.getObjectId();
+                    event.wfSpecId = spec.getSubKey();
+                    req.wfSpecId = spec.getSubKey();
                     resp.id = req.wfRunId;
                     Future<RecordMetadata> future = producer.send(
                         req.wfRunId,
@@ -402,8 +402,8 @@ public class LHApi {
                 event.type = EventCase.RUN_REQUEST;
                 event.runRequest = req;
                 event.time = new Date();
-                event.wfSpecId = spec.getObjectId();
-                req.wfSpecId = spec.getObjectId();
+                event.wfSpecId = spec.getSubKey();
+                req.wfSpecId = spec.getSubKey();
                 event.wfRunId = req.wfRunId;
                 resp.id = event.wfRunId;
                 producer.send(event.wfRunId, event, LHConstants.WF_RUN_EVENT_TOPIC);
@@ -623,7 +623,7 @@ public class LHApi {
             } else {
                 resp.result = out;
                 resp.code = LHResponseCodePb.OK;
-                resp.id = out.getObjectId();
+                resp.id = out.getSubKey();
             }
         } catch (LHConnectionError exn) {
             resp.code = LHResponseCodePb.CONNECTION_ERROR;

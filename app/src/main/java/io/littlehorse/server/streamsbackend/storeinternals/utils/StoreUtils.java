@@ -6,7 +6,7 @@ import io.littlehorse.common.model.Storeable;
 public class StoreUtils {
 
     public static String getStoreKey(Storeable<?> thing) {
-        return thing.getClass().getSimpleName() + "/" + thing.getStoreSubKey();
+        return thing.getClass().getSimpleName() + "/" + thing.getSubKey();
     }
 
     public static String getStoreKey(
@@ -28,6 +28,6 @@ public class StoreUtils {
     }
 
     public static String getTagsCacheKey(GETable<?> thing) {
-        return "TagCache-" + thing.getClass() + "/" + thing.getStoreSubKey();
+        return "TagCache-" + thing.getClass() + "/" + thing.getSubKey();
     }
 }

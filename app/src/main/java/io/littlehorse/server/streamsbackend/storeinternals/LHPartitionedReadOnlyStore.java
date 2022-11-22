@@ -1,10 +1,12 @@
-package io.littlehorse.server.streamsbackend.storeinternals.utils;
+package io.littlehorse.server.streamsbackend.storeinternals;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
+import io.littlehorse.server.streamsbackend.storeinternals.utils.LHKeyValueIterator;
+import io.littlehorse.server.streamsbackend.storeinternals.utils.StoreUtils;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
@@ -24,16 +26,19 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
  * of consolidating into one state store far outweigh the extra code written
  * in this directory.
  */
-public class LHLocalReadOnlyStore {
+public class LHPartitionedReadOnlyStore {
 
-    protected ReadOnlyKeyValueStore<String, Bytes> store;
+    protected ReadOnlyKeyValueStore<String, Bytes> localStore;
+    protected ReadOnlyKeyValueStore<String, Bytes> globalStore;
     protected LHConfig config;
 
-    public LHLocalReadOnlyStore(
+    public LHPartitionedReadOnlyStore(
         ReadOnlyKeyValueStore<String, Bytes> store,
+        ReadOnlyKeyValueStore<String, Bytes> globalStore,
         LHConfig config
     ) {
-        this.store = store;
+        this.localStore = store;
+        this.globalStore = globalStore;
         this.config = config;
     }
 
@@ -41,7 +46,7 @@ public class LHLocalReadOnlyStore {
         String objectId,
         Class<T> cls
     ) {
-        Bytes raw = store.get(StoreUtils.getStoreKey(objectId, cls));
+        Bytes raw = localStore.get(StoreUtils.getStoreKey(objectId, cls));
         if (raw == null) {
             return null;
         }
@@ -64,7 +69,26 @@ public class LHLocalReadOnlyStore {
     ) {
         String compositePrefix = StoreUtils.getStoreKey(prefix, cls);
         return new LHKeyValueIterator<>(
-            store.prefixScan(compositePrefix, Serdes.String().serializer()),
+            localStore.prefixScan(compositePrefix, Serdes.String().serializer()),
+            cls,
+            config
+        );
+    }
+
+    public <T extends Storeable<?>> LHKeyValueIterator<T> reversePrefixScan(
+        String prefix,
+        Class<T> cls
+    ) {
+        String start = StoreUtils.getStoreKey(prefix, cls);
+        // The Streams ReadOnlyKeyValueStore doesn't have a reverse prefix scan.
+        // However, they do have a reverse range scan. So we take the prefix and
+        // then we use the fact that we know the next character after the prefix is
+        // one of [a-bA-B0-9\/], so we just need to append an Ascii character
+        // greater than Z. We'll go with the '~', which is the greatest Ascii
+        // character.
+        String end = start + '~';
+        return new LHKeyValueIterator<>(
+            localStore.reverseRange(end, start),
             cls,
             config
         );

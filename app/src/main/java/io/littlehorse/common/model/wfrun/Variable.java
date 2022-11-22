@@ -97,7 +97,7 @@ public class Variable extends GETable<VariablePb> {
     }
 
     @JsonIgnore
-    public String getObjectId() {
+    public String getSubKey() {
         return getObjectId(wfRunId, threadRunNumber, name);
     }
 

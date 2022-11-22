@@ -130,7 +130,7 @@ public class ApiStreamsContext {
 
         POSTableRequest request = new POSTableRequest();
         request.type = RequestTypePb.POST;
-        request.storeKey = toSave.getObjectId();
+        request.storeKey = toSave.getSubKey();
         String requestId = LHUtil.generateGuid();
         request.requestId = requestId;
         request.payload = toSave.toBytes(config);
@@ -139,7 +139,7 @@ public class ApiStreamsContext {
                 partitionKey,
                 request,
                 topic,
-                Map.of(LHConstants.OBJECT_ID_HEADER, toSave.getObjectId().getBytes())
+                Map.of(LHConstants.OBJECT_ID_HEADER, toSave.getSubKey().getBytes())
             );
 
         boolean checkLocalResponseStoreOnly = false;
