@@ -7,8 +7,8 @@ import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.util.serde.LHDeserializer;
 import io.littlehorse.common.util.serde.LHSerde;
 import io.littlehorse.server.oldprocessors.TimerProcessor;
-import io.littlehorse.server.streamsbackend.coreserver.CoreServerProcessor;
-import io.littlehorse.server.streamsbackend.coreserver.CoreServerProcessorOutput;
+import io.littlehorse.server.streamsbackend.coreserver.CommandProcessor;
+import io.littlehorse.server.streamsbackend.coreserver.CommandProcessorOutput;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -42,7 +42,7 @@ public class ServerTopology {
         topo.addProcessor(
             coreProcessor,
             () -> {
-                return new CoreServerProcessor(config);
+                return new CommandProcessor(config);
             },
             coreSource
         );
@@ -50,11 +50,11 @@ public class ServerTopology {
         topo.addSink(
             coreSink,
             (key, coreServerOutput, ctx) -> {
-                return ((CoreServerProcessorOutput) coreServerOutput).topic;
+                return ((CommandProcessorOutput) coreServerOutput).topic;
             }, // topic extractor
             Serdes.String().serializer(), // key serializer
             (topic, output) -> {
-                return ((CoreServerProcessorOutput) output).payload.toBytes(config);
+                return ((CommandProcessorOutput) output).payload.toBytes(config);
             }, // value serializer
             coreProcessor // parent name
         );

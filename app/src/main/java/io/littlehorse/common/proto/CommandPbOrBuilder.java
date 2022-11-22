@@ -70,21 +70,6 @@ public interface CommandPbOrBuilder extends
   io.littlehorse.common.proto.TaskStartedEventPbOrBuilder getTaskStartedEventOrBuilder();
 
   /**
-   * <code>.lh_proto.ExternalEventPb external_event = 5;</code>
-   * @return Whether the externalEvent field is set.
-   */
-  boolean hasExternalEvent();
-  /**
-   * <code>.lh_proto.ExternalEventPb external_event = 5;</code>
-   * @return The externalEvent.
-   */
-  io.littlehorse.common.proto.ExternalEventPb getExternalEvent();
-  /**
-   * <code>.lh_proto.ExternalEventPb external_event = 5;</code>
-   */
-  io.littlehorse.common.proto.ExternalEventPbOrBuilder getExternalEventOrBuilder();
-
-  /**
    * <code>.lh_proto.PutWfSpecPb put_wf_spec = 6;</code>
    * @return Whether the putWfSpec field is set.
    */
@@ -115,34 +100,49 @@ public interface CommandPbOrBuilder extends
   io.littlehorse.common.proto.PutTaskDefPbOrBuilder getPutTaskDefOrBuilder();
 
   /**
-   * <code>.lh_proto.PutExternalEventDefPb put_external_event = 8;</code>
+   * <code>.lh_proto.PutExternalEventDefPb put_external_event_def = 8;</code>
+   * @return Whether the putExternalEventDef field is set.
+   */
+  boolean hasPutExternalEventDef();
+  /**
+   * <code>.lh_proto.PutExternalEventDefPb put_external_event_def = 8;</code>
+   * @return The putExternalEventDef.
+   */
+  io.littlehorse.common.proto.PutExternalEventDefPb getPutExternalEventDef();
+  /**
+   * <code>.lh_proto.PutExternalEventDefPb put_external_event_def = 8;</code>
+   */
+  io.littlehorse.common.proto.PutExternalEventDefPbOrBuilder getPutExternalEventDefOrBuilder();
+
+  /**
+   * <code>.lh_proto.RunWfPb run_wf = 9;</code>
+   * @return Whether the runWf field is set.
+   */
+  boolean hasRunWf();
+  /**
+   * <code>.lh_proto.RunWfPb run_wf = 9;</code>
+   * @return The runWf.
+   */
+  io.littlehorse.common.proto.RunWfPb getRunWf();
+  /**
+   * <code>.lh_proto.RunWfPb run_wf = 9;</code>
+   */
+  io.littlehorse.common.proto.RunWfPbOrBuilder getRunWfOrBuilder();
+
+  /**
+   * <code>.lh_proto.PutExternalEventPb put_external_event = 10;</code>
    * @return Whether the putExternalEvent field is set.
    */
   boolean hasPutExternalEvent();
   /**
-   * <code>.lh_proto.PutExternalEventDefPb put_external_event = 8;</code>
+   * <code>.lh_proto.PutExternalEventPb put_external_event = 10;</code>
    * @return The putExternalEvent.
    */
-  io.littlehorse.common.proto.PutExternalEventDefPb getPutExternalEvent();
+  io.littlehorse.common.proto.PutExternalEventPb getPutExternalEvent();
   /**
-   * <code>.lh_proto.PutExternalEventDefPb put_external_event = 8;</code>
+   * <code>.lh_proto.PutExternalEventPb put_external_event = 10;</code>
    */
-  io.littlehorse.common.proto.PutExternalEventDefPbOrBuilder getPutExternalEventOrBuilder();
+  io.littlehorse.common.proto.PutExternalEventPbOrBuilder getPutExternalEventOrBuilder();
 
-  /**
-   * <code>.lh_proto.WfRunRequestPb wf_run_request = 9;</code>
-   * @return Whether the wfRunRequest field is set.
-   */
-  boolean hasWfRunRequest();
-  /**
-   * <code>.lh_proto.WfRunRequestPb wf_run_request = 9;</code>
-   * @return The wfRunRequest.
-   */
-  io.littlehorse.common.proto.WfRunRequestPb getWfRunRequest();
-  /**
-   * <code>.lh_proto.WfRunRequestPb wf_run_request = 9;</code>
-   */
-  io.littlehorse.common.proto.WfRunRequestPbOrBuilder getWfRunRequestOrBuilder();
-
-  public io.littlehorse.common.proto.CommandPb.PayloadCase getPayloadCase();
+  public io.littlehorse.common.proto.CommandPb.CommandCase getCommandCase();
 }

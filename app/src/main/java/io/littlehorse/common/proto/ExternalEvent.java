@@ -35,9 +35,9 @@ public final class ExternalEvent {
       "d\030\003 \001(\t\022.\n\ncreated_at\030\004 \001(\0132\032.google.pro" +
       "tobuf.Timestamp\022*\n\007content\030\005 \001(\0132\031.lh_pr" +
       "oto.VariableValuePb\022\036\n\021thread_run_number" +
-      "\030\006 \001(\005H\000\210\001\001\022\036\n\021task_run_position\030\007 \001(\005H\001" +
+      "\030\006 \001(\005H\000\210\001\001\022\036\n\021node_run_position\030\007 \001(\005H\001" +
       "\210\001\001\022\017\n\007claimed\030\010 \001(\010B\024\n\022_thread_run_numb" +
-      "erB\024\n\022_task_run_positionB(\n\033io.littlehor" +
+      "erB\024\n\022_node_run_positionB(\n\033io.littlehor" +
       "se.common.protoP\001Z\007.;modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
@@ -51,7 +51,7 @@ public final class ExternalEvent {
     internal_static_lh_proto_ExternalEventPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_ExternalEventPb_descriptor,
-        new java.lang.String[] { "WfRunId", "ExternalEventDefName", "Guid", "CreatedAt", "Content", "ThreadRunNumber", "TaskRunPosition", "Claimed", "ThreadRunNumber", "TaskRunPosition", });
+        new java.lang.String[] { "WfRunId", "ExternalEventDefName", "Guid", "CreatedAt", "Content", "ThreadRunNumber", "NodeRunPosition", "Claimed", "ThreadRunNumber", "NodeRunPosition", });
     io.littlehorse.common.proto.Variable.getDescriptor();
     com.google.protobuf.TimestampProto.getDescriptor();
   }

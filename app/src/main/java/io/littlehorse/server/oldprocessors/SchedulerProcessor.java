@@ -4,16 +4,16 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.GlobalPOSTable;
-import io.littlehorse.common.model.command.subcommand.ExternalEvent;
-import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.ThreadSpec;
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.NodeRun;
+import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.LHStatusPb;
@@ -153,7 +153,7 @@ public class SchedulerProcessor
         }
 
         wfRun.wfSpec = spec;
-        wfRun.stores = wsa;
+        wfRun.cmdDao = wsa;
         wfRun.processEvent(evt);
 
         flushChanges(wfRun, wsa, timestamp);

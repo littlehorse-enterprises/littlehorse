@@ -1,8 +1,7 @@
-package io.littlehorse.common.model.event;
+package io.littlehorse.common.model.wfrun;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.proto.TaskScheduleRequestPb;
 import io.littlehorse.common.proto.TaskScheduleRequestPbOrBuilder;
 import io.littlehorse.common.proto.VariableValuePb;

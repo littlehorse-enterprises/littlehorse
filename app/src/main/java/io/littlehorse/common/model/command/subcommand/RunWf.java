@@ -6,10 +6,12 @@ import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.RunWfReply;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.wfrun.VariableValue;
+import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.LHResponseCodePb;
 import io.littlehorse.common.proto.RunWfPb;
 import io.littlehorse.common.proto.RunWfPbOrBuilder;
 import io.littlehorse.common.proto.VariableValuePb;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.CommandProcessorDao;
 import java.util.HashMap;
 import java.util.Map;
@@ -64,9 +66,29 @@ public class RunWf extends SubCommand<RunWfPb> {
             out.message = "Could not find specified WfSpec.";
             return out;
         }
-
         out.wfSpecVersion = spec.version;
 
+        if (id == null) id = LHUtil.generateGuid();
+        out.wfRunId = id;
+
+        WfRun oldWfRun = dao.getWfRun(id);
+        if (oldWfRun != null) {
+            out.code = LHResponseCodePb.ALREADY_EXISTS_ERROR;
+            out.message = "WfRun with id " + id + " already exists!";
+            return out;
+        }
+
+        WfRun newRun = spec.startNewRun(null, dao);
+        newRun.advance(dao.getEventTime());
+        dao.saveWfRun(newRun);
+
+        out.code = LHResponseCodePb.OK;
+        return out;
+    }
+
+    public static RunWf fromProto(RunWfPbOrBuilder p) {
+        RunWf out = new RunWf();
+        out.initFrom(p);
         return out;
     }
 }

@@ -1,11 +1,10 @@
 package io.littlehorse.common.model.wfrun.subnoderun;
 
 import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.model.command.subcommand.ExternalEvent;
-import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.meta.subnode.ExternalEventNode;
 import io.littlehorse.common.model.server.Tag;
+import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
 import io.littlehorse.common.proto.ExternalEventRunPb;
@@ -73,17 +72,11 @@ public class ExternalEventRun extends SubNodeRun<ExternalEventRunPb> {
         return out;
     }
 
-    public void processEvent(WfRunEvent event) {
-        LHUtil.log(
-            "Got an event but not doing anything with it from ExternalEventRun"
-        );
-    }
-
     public boolean advanceIfPossible(Date time) {
         Node node = nodeRun.getNode();
         ExternalEventNode eNode = node.externalEventNode;
 
-        ExternalEvent evt = nodeRun.threadRun.wfRun.stores.getUnclaimedEvent(
+        ExternalEvent evt = nodeRun.threadRun.wfRun.cmdDao.getUnclaimedEvent(
             nodeRun.threadRun.wfRunId,
             eNode.externalEventDefName
         );
@@ -95,7 +88,7 @@ public class ExternalEventRun extends SubNodeRun<ExternalEventRunPb> {
         eventTime = evt.getCreatedAt();
 
         evt.claimed = true;
-        evt.taskRunPosition = nodeRun.position;
+        evt.nodeRunPosition = nodeRun.position;
         evt.threadRunNumber = nodeRun.threadRunNumber;
 
         externalEventId = evt.getObjectId();

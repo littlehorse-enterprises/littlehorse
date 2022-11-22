@@ -16,7 +16,7 @@ message ExternalEventPb {
     google.protobuf.Timestamp created_at = 4;
     VariableValuePb content = 5;
     optional int32 thread_run_number = 6;
-    optional int32 task_run_position = 7;
+    optional int32 node_run_position = 7;
     bool claimed = 8;
 }
 

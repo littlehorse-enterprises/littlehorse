@@ -18,6 +18,7 @@ private static final long serialVersionUID = 0L;
   private LHTimerPb() {
     key_ = "";
     topic_ = "";
+    payload_ = com.google.protobuf.ByteString.EMPTY;
   }
 
   @java.lang.Override
@@ -76,17 +77,8 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 34: {
-            io.littlehorse.common.proto.WfRunEventPb.Builder subBuilder = null;
-            if (payloadCase_ == 4) {
-              subBuilder = ((io.littlehorse.common.proto.WfRunEventPb) payload_).toBuilder();
-            }
-            payload_ =
-                input.readMessage(io.littlehorse.common.proto.WfRunEventPb.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom((io.littlehorse.common.proto.WfRunEventPb) payload_);
-              payload_ = subBuilder.buildPartial();
-            }
-            payloadCase_ = 4;
+
+            payload_ = input.readBytes();
             break;
           }
           default: {
@@ -119,45 +111,6 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.Timer.internal_static_lh_proto_LHTimerPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.common.proto.LHTimerPb.class, io.littlehorse.common.proto.LHTimerPb.Builder.class);
-  }
-
-  private int payloadCase_ = 0;
-  private java.lang.Object payload_;
-  public enum PayloadCase
-      implements com.google.protobuf.Internal.EnumLite,
-          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    WF_RUN_EVENT(4),
-    PAYLOAD_NOT_SET(0);
-    private final int value;
-    private PayloadCase(int value) {
-      this.value = value;
-    }
-    /**
-     * @param value The number of the enum to look for.
-     * @return The enum associated with the given number.
-     * @deprecated Use {@link #forNumber(int)} instead.
-     */
-    @java.lang.Deprecated
-    public static PayloadCase valueOf(int value) {
-      return forNumber(value);
-    }
-
-    public static PayloadCase forNumber(int value) {
-      switch (value) {
-        case 4: return WF_RUN_EVENT;
-        case 0: return PAYLOAD_NOT_SET;
-        default: return null;
-      }
-    }
-    public int getNumber() {
-      return this.value;
-    }
-  };
-
-  public PayloadCase
-  getPayloadCase() {
-    return PayloadCase.forNumber(
-        payloadCase_);
   }
 
   public static final int MATURATION_TIME_FIELD_NUMBER = 1;
@@ -262,35 +215,15 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int WF_RUN_EVENT_FIELD_NUMBER = 4;
+  public static final int PAYLOAD_FIELD_NUMBER = 4;
+  private com.google.protobuf.ByteString payload_;
   /**
-   * <code>.lh_proto.WfRunEventPb wf_run_event = 4;</code>
-   * @return Whether the wfRunEvent field is set.
+   * <code>bytes payload = 4;</code>
+   * @return The payload.
    */
   @java.lang.Override
-  public boolean hasWfRunEvent() {
-    return payloadCase_ == 4;
-  }
-  /**
-   * <code>.lh_proto.WfRunEventPb wf_run_event = 4;</code>
-   * @return The wfRunEvent.
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.WfRunEventPb getWfRunEvent() {
-    if (payloadCase_ == 4) {
-       return (io.littlehorse.common.proto.WfRunEventPb) payload_;
-    }
-    return io.littlehorse.common.proto.WfRunEventPb.getDefaultInstance();
-  }
-  /**
-   * <code>.lh_proto.WfRunEventPb wf_run_event = 4;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.WfRunEventPbOrBuilder getWfRunEventOrBuilder() {
-    if (payloadCase_ == 4) {
-       return (io.littlehorse.common.proto.WfRunEventPb) payload_;
-    }
-    return io.littlehorse.common.proto.WfRunEventPb.getDefaultInstance();
+  public com.google.protobuf.ByteString getPayload() {
+    return payload_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -316,8 +249,8 @@ private static final long serialVersionUID = 0L;
     if (!getTopicBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 3, topic_);
     }
-    if (payloadCase_ == 4) {
-      output.writeMessage(4, (io.littlehorse.common.proto.WfRunEventPb) payload_);
+    if (!payload_.isEmpty()) {
+      output.writeBytes(4, payload_);
     }
     unknownFields.writeTo(output);
   }
@@ -338,9 +271,9 @@ private static final long serialVersionUID = 0L;
     if (!getTopicBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, topic_);
     }
-    if (payloadCase_ == 4) {
+    if (!payload_.isEmpty()) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, (io.littlehorse.common.proto.WfRunEventPb) payload_);
+        .computeBytesSize(4, payload_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -366,15 +299,8 @@ private static final long serialVersionUID = 0L;
         .equals(other.getKey())) return false;
     if (!getTopic()
         .equals(other.getTopic())) return false;
-    if (!getPayloadCase().equals(other.getPayloadCase())) return false;
-    switch (payloadCase_) {
-      case 4:
-        if (!getWfRunEvent()
-            .equals(other.getWfRunEvent())) return false;
-        break;
-      case 0:
-      default:
-    }
+    if (!getPayload()
+        .equals(other.getPayload())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -394,14 +320,8 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getKey().hashCode();
     hash = (37 * hash) + TOPIC_FIELD_NUMBER;
     hash = (53 * hash) + getTopic().hashCode();
-    switch (payloadCase_) {
-      case 4:
-        hash = (37 * hash) + WF_RUN_EVENT_FIELD_NUMBER;
-        hash = (53 * hash) + getWfRunEvent().hashCode();
-        break;
-      case 0:
-      default:
-    }
+    hash = (37 * hash) + PAYLOAD_FIELD_NUMBER;
+    hash = (53 * hash) + getPayload().hashCode();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -545,8 +465,8 @@ private static final long serialVersionUID = 0L;
 
       topic_ = "";
 
-      payloadCase_ = 0;
-      payload_ = null;
+      payload_ = com.google.protobuf.ByteString.EMPTY;
+
       return this;
     }
 
@@ -580,14 +500,7 @@ private static final long serialVersionUID = 0L;
       }
       result.key_ = key_;
       result.topic_ = topic_;
-      if (payloadCase_ == 4) {
-        if (wfRunEventBuilder_ == null) {
-          result.payload_ = payload_;
-        } else {
-          result.payload_ = wfRunEventBuilder_.build();
-        }
-      }
-      result.payloadCase_ = payloadCase_;
+      result.payload_ = payload_;
       onBuilt();
       return result;
     }
@@ -647,14 +560,8 @@ private static final long serialVersionUID = 0L;
         topic_ = other.topic_;
         onChanged();
       }
-      switch (other.getPayloadCase()) {
-        case WF_RUN_EVENT: {
-          mergeWfRunEvent(other.getWfRunEvent());
-          break;
-        }
-        case PAYLOAD_NOT_SET: {
-          break;
-        }
+      if (other.getPayload() != com.google.protobuf.ByteString.EMPTY) {
+        setPayload(other.getPayload());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -684,21 +591,6 @@ private static final long serialVersionUID = 0L;
       }
       return this;
     }
-    private int payloadCase_ = 0;
-    private java.lang.Object payload_;
-    public PayloadCase
-        getPayloadCase() {
-      return PayloadCase.forNumber(
-          payloadCase_);
-    }
-
-    public Builder clearPayload() {
-      payloadCase_ = 0;
-      payload_ = null;
-      onChanged();
-      return this;
-    }
-
 
     private com.google.protobuf.Timestamp maturationTime_;
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -971,145 +863,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.WfRunEventPb, io.littlehorse.common.proto.WfRunEventPb.Builder, io.littlehorse.common.proto.WfRunEventPbOrBuilder> wfRunEventBuilder_;
+    private com.google.protobuf.ByteString payload_ = com.google.protobuf.ByteString.EMPTY;
     /**
-     * <code>.lh_proto.WfRunEventPb wf_run_event = 4;</code>
-     * @return Whether the wfRunEvent field is set.
+     * <code>bytes payload = 4;</code>
+     * @return The payload.
      */
     @java.lang.Override
-    public boolean hasWfRunEvent() {
-      return payloadCase_ == 4;
+    public com.google.protobuf.ByteString getPayload() {
+      return payload_;
     }
     /**
-     * <code>.lh_proto.WfRunEventPb wf_run_event = 4;</code>
-     * @return The wfRunEvent.
+     * <code>bytes payload = 4;</code>
+     * @param value The payload to set.
+     * @return This builder for chaining.
      */
-    @java.lang.Override
-    public io.littlehorse.common.proto.WfRunEventPb getWfRunEvent() {
-      if (wfRunEventBuilder_ == null) {
-        if (payloadCase_ == 4) {
-          return (io.littlehorse.common.proto.WfRunEventPb) payload_;
-        }
-        return io.littlehorse.common.proto.WfRunEventPb.getDefaultInstance();
-      } else {
-        if (payloadCase_ == 4) {
-          return wfRunEventBuilder_.getMessage();
-        }
-        return io.littlehorse.common.proto.WfRunEventPb.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.lh_proto.WfRunEventPb wf_run_event = 4;</code>
-     */
-    public Builder setWfRunEvent(io.littlehorse.common.proto.WfRunEventPb value) {
-      if (wfRunEventBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        payload_ = value;
-        onChanged();
-      } else {
-        wfRunEventBuilder_.setMessage(value);
-      }
-      payloadCase_ = 4;
+    public Builder setPayload(com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      payload_ = value;
+      onChanged();
       return this;
     }
     /**
-     * <code>.lh_proto.WfRunEventPb wf_run_event = 4;</code>
+     * <code>bytes payload = 4;</code>
+     * @return This builder for chaining.
      */
-    public Builder setWfRunEvent(
-        io.littlehorse.common.proto.WfRunEventPb.Builder builderForValue) {
-      if (wfRunEventBuilder_ == null) {
-        payload_ = builderForValue.build();
-        onChanged();
-      } else {
-        wfRunEventBuilder_.setMessage(builderForValue.build());
-      }
-      payloadCase_ = 4;
+    public Builder clearPayload() {
+      
+      payload_ = getDefaultInstance().getPayload();
+      onChanged();
       return this;
-    }
-    /**
-     * <code>.lh_proto.WfRunEventPb wf_run_event = 4;</code>
-     */
-    public Builder mergeWfRunEvent(io.littlehorse.common.proto.WfRunEventPb value) {
-      if (wfRunEventBuilder_ == null) {
-        if (payloadCase_ == 4 &&
-            payload_ != io.littlehorse.common.proto.WfRunEventPb.getDefaultInstance()) {
-          payload_ = io.littlehorse.common.proto.WfRunEventPb.newBuilder((io.littlehorse.common.proto.WfRunEventPb) payload_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          payload_ = value;
-        }
-        onChanged();
-      } else {
-        if (payloadCase_ == 4) {
-          wfRunEventBuilder_.mergeFrom(value);
-        }
-        wfRunEventBuilder_.setMessage(value);
-      }
-      payloadCase_ = 4;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.WfRunEventPb wf_run_event = 4;</code>
-     */
-    public Builder clearWfRunEvent() {
-      if (wfRunEventBuilder_ == null) {
-        if (payloadCase_ == 4) {
-          payloadCase_ = 0;
-          payload_ = null;
-          onChanged();
-        }
-      } else {
-        if (payloadCase_ == 4) {
-          payloadCase_ = 0;
-          payload_ = null;
-        }
-        wfRunEventBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>.lh_proto.WfRunEventPb wf_run_event = 4;</code>
-     */
-    public io.littlehorse.common.proto.WfRunEventPb.Builder getWfRunEventBuilder() {
-      return getWfRunEventFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.lh_proto.WfRunEventPb wf_run_event = 4;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.WfRunEventPbOrBuilder getWfRunEventOrBuilder() {
-      if ((payloadCase_ == 4) && (wfRunEventBuilder_ != null)) {
-        return wfRunEventBuilder_.getMessageOrBuilder();
-      } else {
-        if (payloadCase_ == 4) {
-          return (io.littlehorse.common.proto.WfRunEventPb) payload_;
-        }
-        return io.littlehorse.common.proto.WfRunEventPb.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.lh_proto.WfRunEventPb wf_run_event = 4;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.WfRunEventPb, io.littlehorse.common.proto.WfRunEventPb.Builder, io.littlehorse.common.proto.WfRunEventPbOrBuilder> 
-        getWfRunEventFieldBuilder() {
-      if (wfRunEventBuilder_ == null) {
-        if (!(payloadCase_ == 4)) {
-          payload_ = io.littlehorse.common.proto.WfRunEventPb.getDefaultInstance();
-        }
-        wfRunEventBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.WfRunEventPb, io.littlehorse.common.proto.WfRunEventPb.Builder, io.littlehorse.common.proto.WfRunEventPbOrBuilder>(
-                (io.littlehorse.common.proto.WfRunEventPb) payload_,
-                getParentForChildren(),
-                isClean());
-        payload_ = null;
-      }
-      payloadCase_ = 4;
-      onChanged();;
-      return wfRunEventBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

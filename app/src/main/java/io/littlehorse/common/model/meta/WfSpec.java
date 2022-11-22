@@ -7,7 +7,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.GlobalPOSTable;
 import io.littlehorse.common.model.POSTable;
-import io.littlehorse.common.model.event.WfRunEvent;
+import io.littlehorse.common.model.command.subcommand.RunWf;
 import io.littlehorse.common.model.server.Tag;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.LHStatusPb;
@@ -253,18 +253,25 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
         return out;
     }
 
-    public WfRun startNewRun(WfRunEvent e, CommandProcessorDao wsa) {
+    public WfRun startNewRun(RunWf evt, CommandProcessorDao dao) {
         WfRun out = new WfRun();
-        out.stores = wsa;
-        out.id = e.runRequest.wfRunId;
+        out.cmdDao = dao;
+        out.id = evt.id;
 
         out.wfSpec = this;
         out.wfSpecVersion = version;
         out.wfSpecName = name;
-        out.startTime = e.time;
+        out.startTime = dao.getEventTime();
         out.status = LHStatusPb.RUNNING;
 
-        out.startThread(entrypointThreadName, e.time, null, e.runRequest.variables);
+        out.startThread(
+            entrypointThreadName,
+            dao.getEventTime(),
+            null,
+            evt.variables
+        );
+
+        dao.saveWfRun(out);
 
         return out;
     }

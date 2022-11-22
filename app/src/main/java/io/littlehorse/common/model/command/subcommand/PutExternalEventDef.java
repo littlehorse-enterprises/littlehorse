@@ -62,4 +62,10 @@ public class PutExternalEventDef extends SubCommand<PutExternalEventDefPb> {
         dao.putExternalEventDef(spec);
         return out;
     }
+
+    public static PutExternalEventDef fromProto(PutExternalEventDefPbOrBuilder p) {
+        PutExternalEventDef out = new PutExternalEventDef();
+        out.initFrom(p);
+        return out;
+    }
 }

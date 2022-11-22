@@ -3,7 +3,6 @@ package io.littlehorse.common.model.wfrun.subnoderun;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
-import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
 import io.littlehorse.common.model.wfrun.ThreadRun;
@@ -65,10 +64,6 @@ public class WaitThreadRun extends SubNodeRun<WaitThreadRunPb> {
         WaitThreadRun out = new WaitThreadRun();
         out.initFrom(p);
         return out;
-    }
-
-    public void processEvent(WfRunEvent event) {
-        // Nothing to do here until we enable timeouts.
     }
 
     public boolean advanceIfPossible(Date time) {

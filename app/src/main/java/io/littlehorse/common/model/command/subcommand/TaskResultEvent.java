@@ -1,19 +1,22 @@
 package io.littlehorse.common.model.command.subcommand;
 
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.event.WfRunSubEvent;
+import io.littlehorse.common.model.command.SubCommand;
+import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.wfrun.VariableValue;
+import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.proto.TaskResultEventPb;
 import io.littlehorse.common.proto.TaskResultEventPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.server.CommandProcessorDao;
 import java.util.Date;
 
-public class TaskResultEvent
-    extends LHSerializable<TaskResultEventPb>
-    implements WfRunSubEvent {
+public class TaskResultEvent extends SubCommand<TaskResultEventPb> {
 
+    public String wfRunId;
     public int threadRunNumber;
     public int taskRunNumber;
     public int taskRunPosition;
@@ -34,11 +37,39 @@ public class TaskResultEvent
         return taskRunPosition;
     }
 
+    public boolean hasResponse() {
+        return false;
+    }
+
+    public LHSerializable<?> process(CommandProcessorDao dao, LHConfig config) {
+        // First, get the WfRun
+        WfRun wfRun = dao.getWfRun(wfRunId);
+        if (wfRun == null) {
+            LHUtil.log("WARN: Got taskResult for non-existent wfRun", wfRunId);
+            return null;
+        }
+
+        WfSpec wfSpec = dao.getWfSpec(wfRun.wfSpecName, wfRun.wfSpecVersion);
+        if (wfSpec == null) {
+            LHUtil.log(
+                "WARN: Got WfRun with missing WfSpec, should be impossible: ",
+                wfRunId
+            );
+            return null;
+        }
+
+        wfRun.wfSpec = wfSpec;
+        wfRun.cmdDao = dao;
+        wfRun.processTaskResult(this);
+
+        return null;
+    }
+
     public TaskResultEventPb.Builder toProto() {
         TaskResultEventPb.Builder b = TaskResultEventPb
             .newBuilder()
+            .setWfRunId(wfRunId)
             .setThreadRunNumber(threadRunNumber)
-            .setTaskRunNumber(taskRunNumber)
             .setTaskRunPosition(taskRunPosition)
             .setTime(LHUtil.fromDate(time))
             .setResultCode(resultCode);
@@ -51,8 +82,8 @@ public class TaskResultEvent
 
     public void initFrom(MessageOrBuilder p) {
         TaskResultEventPbOrBuilder proto = (TaskResultEventPbOrBuilder) p;
+        this.wfRunId = proto.getWfRunId();
         this.threadRunNumber = proto.getThreadRunNumber();
-        this.taskRunNumber = proto.getTaskRunNumber();
         this.taskRunPosition = proto.getTaskRunPosition();
         this.time = LHUtil.fromProtoTs(proto.getTime());
         this.resultCode = proto.getResultCode();

@@ -87,4 +87,10 @@ public class PutWfSpec extends SubCommand<PutWfSpecPb> {
 
         return out;
     }
+
+    public static PutWfSpec fromProto(PutWfSpecPbOrBuilder p) {
+        PutWfSpec out = new PutWfSpec();
+        out.initFrom(p);
+        return out;
+    }
 }

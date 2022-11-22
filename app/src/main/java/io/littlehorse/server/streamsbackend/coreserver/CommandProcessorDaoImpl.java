@@ -5,14 +5,14 @@ import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.CommandResult;
-import io.littlehorse.common.model.command.subcommand.ExternalEvent;
-import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.server.IndexEntryAction;
 import io.littlehorse.common.model.server.Tag;
 import io.littlehorse.common.model.server.Tags;
+import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.NodeRun;
+import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.IndexActionEnum;
@@ -31,7 +31,7 @@ import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 
-public class CoreServerProcessorDaoImpl implements CommandProcessorDao {
+public class CommandProcessorDaoImpl implements CommandProcessorDao {
 
     private Map<String, NodeRun> nodeRunPuts;
     private Map<String, Variable> variablePuts;
@@ -42,11 +42,11 @@ public class CoreServerProcessorDaoImpl implements CommandProcessorDao {
     private CommandResult responseToSave;
 
     private LHLocalStore store;
-    private ProcessorContext<String, CoreServerProcessorOutput> ctx;
+    private ProcessorContext<String, CommandProcessorOutput> ctx;
     private LHConfig config;
 
-    public CoreServerProcessorDaoImpl(
-        final ProcessorContext<String, CoreServerProcessorOutput> ctx,
+    public CommandProcessorDaoImpl(
+        final ProcessorContext<String, CommandProcessorOutput> ctx,
         LHConfig config
     ) {
         nodeRunPuts = new HashMap<>();
@@ -242,13 +242,13 @@ public class CoreServerProcessorDaoImpl implements CommandProcessorDao {
 
     private void forwardTask(TaskScheduleRequest tsr) {
         TaskDef taskDef = store.get(tsr.taskDefId, TaskDef.class);
-        CoreServerProcessorOutput output = new CoreServerProcessorOutput(
+        CommandProcessorOutput output = new CommandProcessorOutput(
             taskDef.queueName,
             tsr,
             tsr.wfRunId
         );
         ctx.forward(
-            new Record<String, CoreServerProcessorOutput>(
+            new Record<String, CommandProcessorOutput>(
                 tsr.wfRunId,
                 output,
                 System.currentTimeMillis()
@@ -257,13 +257,13 @@ public class CoreServerProcessorDaoImpl implements CommandProcessorDao {
     }
 
     private void forwardTimer(LHTimer timer) {
-        CoreServerProcessorOutput output = new CoreServerProcessorOutput(
+        CommandProcessorOutput output = new CommandProcessorOutput(
             config.getTimerTopic(),
             timer,
             timer.key
         );
         ctx.forward(
-            new Record<String, CoreServerProcessorOutput>(
+            new Record<String, CommandProcessorOutput>(
                 timer.key,
                 output,
                 System.currentTimeMillis()
@@ -291,13 +291,13 @@ public class CoreServerProcessorDaoImpl implements CommandProcessorDao {
                 IndexEntryAction action = new IndexEntryAction();
                 action.action = IndexActionEnum.CREATE_IDX_ENTRY;
                 action.indexEntry = newTag;
-                CoreServerProcessorOutput output = new CoreServerProcessorOutput(
+                CommandProcessorOutput output = new CommandProcessorOutput(
                     config.getTagCmdTopic(),
                     action,
                     newTag.getPartitionKey()
                 );
 
-                Record<String, CoreServerProcessorOutput> rec = new Record<>(
+                Record<String, CommandProcessorOutput> rec = new Record<>(
                     newTag.getPartitionKey(),
                     output,
                     newTag.createdAt.getTime()
@@ -311,7 +311,7 @@ public class CoreServerProcessorDaoImpl implements CommandProcessorDao {
                 action.action = IndexActionEnum.DELETE_IDX_ENTRY;
                 action.indexEntry = oldTag;
 
-                CoreServerProcessorOutput output = new CoreServerProcessorOutput(
+                CommandProcessorOutput output = new CommandProcessorOutput(
                     config.getTagCmdTopic(),
                     action,
                     oldTag.getPartitionKey()

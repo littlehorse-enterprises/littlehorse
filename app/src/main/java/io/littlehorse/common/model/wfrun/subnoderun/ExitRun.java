@@ -3,7 +3,6 @@ package io.littlehorse.common.model.wfrun.subnoderun;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
 import io.littlehorse.common.model.wfrun.ThreadRun;
@@ -38,10 +37,6 @@ public class ExitRun extends SubNodeRun<ExitRunPb> {
         ExitRun out = new ExitRun();
         out.initFrom(p);
         return out;
-    }
-
-    public void processEvent(WfRunEvent event) {
-        // I don't believe there's anything to do here.
     }
 
     public boolean advanceIfPossible(Date time) {

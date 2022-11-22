@@ -47,19 +47,8 @@ public interface LHTimerPbOrBuilder extends
       getTopicBytes();
 
   /**
-   * <code>.lh_proto.WfRunEventPb wf_run_event = 4;</code>
-   * @return Whether the wfRunEvent field is set.
+   * <code>bytes payload = 4;</code>
+   * @return The payload.
    */
-  boolean hasWfRunEvent();
-  /**
-   * <code>.lh_proto.WfRunEventPb wf_run_event = 4;</code>
-   * @return The wfRunEvent.
-   */
-  io.littlehorse.common.proto.WfRunEventPb getWfRunEvent();
-  /**
-   * <code>.lh_proto.WfRunEventPb wf_run_event = 4;</code>
-   */
-  io.littlehorse.common.proto.WfRunEventPbOrBuilder getWfRunEventOrBuilder();
-
-  public io.littlehorse.common.proto.LHTimerPb.PayloadCase getPayloadCase();
+  com.google.protobuf.ByteString getPayload();
 }

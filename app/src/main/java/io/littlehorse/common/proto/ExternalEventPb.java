@@ -103,7 +103,7 @@ private static final long serialVersionUID = 0L;
           }
           case 56: {
             bitField0_ |= 0x00000002;
-            taskRunPosition_ = input.readInt32();
+            nodeRunPosition_ = input.readInt32();
             break;
           }
           case 64: {
@@ -329,23 +329,23 @@ private static final long serialVersionUID = 0L;
     return threadRunNumber_;
   }
 
-  public static final int TASK_RUN_POSITION_FIELD_NUMBER = 7;
-  private int taskRunPosition_;
+  public static final int NODE_RUN_POSITION_FIELD_NUMBER = 7;
+  private int nodeRunPosition_;
   /**
-   * <code>int32 task_run_position = 7;</code>
-   * @return Whether the taskRunPosition field is set.
+   * <code>int32 node_run_position = 7;</code>
+   * @return Whether the nodeRunPosition field is set.
    */
   @java.lang.Override
-  public boolean hasTaskRunPosition() {
+  public boolean hasNodeRunPosition() {
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
-   * <code>int32 task_run_position = 7;</code>
-   * @return The taskRunPosition.
+   * <code>int32 node_run_position = 7;</code>
+   * @return The nodeRunPosition.
    */
   @java.lang.Override
-  public int getTaskRunPosition() {
-    return taskRunPosition_;
+  public int getNodeRunPosition() {
+    return nodeRunPosition_;
   }
 
   public static final int CLAIMED_FIELD_NUMBER = 8;
@@ -392,7 +392,7 @@ private static final long serialVersionUID = 0L;
       output.writeInt32(6, threadRunNumber_);
     }
     if (((bitField0_ & 0x00000002) != 0)) {
-      output.writeInt32(7, taskRunPosition_);
+      output.writeInt32(7, nodeRunPosition_);
     }
     if (claimed_ != false) {
       output.writeBool(8, claimed_);
@@ -429,7 +429,7 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(7, taskRunPosition_);
+        .computeInt32Size(7, nodeRunPosition_);
     }
     if (claimed_ != false) {
       size += com.google.protobuf.CodedOutputStream
@@ -471,10 +471,10 @@ private static final long serialVersionUID = 0L;
       if (getThreadRunNumber()
           != other.getThreadRunNumber()) return false;
     }
-    if (hasTaskRunPosition() != other.hasTaskRunPosition()) return false;
-    if (hasTaskRunPosition()) {
-      if (getTaskRunPosition()
-          != other.getTaskRunPosition()) return false;
+    if (hasNodeRunPosition() != other.hasNodeRunPosition()) return false;
+    if (hasNodeRunPosition()) {
+      if (getNodeRunPosition()
+          != other.getNodeRunPosition()) return false;
     }
     if (getClaimed()
         != other.getClaimed()) return false;
@@ -507,9 +507,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + THREAD_RUN_NUMBER_FIELD_NUMBER;
       hash = (53 * hash) + getThreadRunNumber();
     }
-    if (hasTaskRunPosition()) {
-      hash = (37 * hash) + TASK_RUN_POSITION_FIELD_NUMBER;
-      hash = (53 * hash) + getTaskRunPosition();
+    if (hasNodeRunPosition()) {
+      hash = (37 * hash) + NODE_RUN_POSITION_FIELD_NUMBER;
+      hash = (53 * hash) + getNodeRunPosition();
     }
     hash = (37 * hash) + CLAIMED_FIELD_NUMBER;
     hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
@@ -667,7 +667,7 @@ private static final long serialVersionUID = 0L;
       }
       threadRunNumber_ = 0;
       bitField0_ = (bitField0_ & ~0x00000001);
-      taskRunPosition_ = 0;
+      nodeRunPosition_ = 0;
       bitField0_ = (bitField0_ & ~0x00000002);
       claimed_ = false;
 
@@ -717,7 +717,7 @@ private static final long serialVersionUID = 0L;
         to_bitField0_ |= 0x00000001;
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.taskRunPosition_ = taskRunPosition_;
+        result.nodeRunPosition_ = nodeRunPosition_;
         to_bitField0_ |= 0x00000002;
       }
       result.claimed_ = claimed_;
@@ -791,8 +791,8 @@ private static final long serialVersionUID = 0L;
       if (other.hasThreadRunNumber()) {
         setThreadRunNumber(other.getThreadRunNumber());
       }
-      if (other.hasTaskRunPosition()) {
-        setTaskRunPosition(other.getTaskRunPosition());
+      if (other.hasNodeRunPosition()) {
+        setNodeRunPosition(other.getNodeRunPosition());
       }
       if (other.getClaimed() != false) {
         setClaimed(other.getClaimed());
@@ -1332,41 +1332,41 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int taskRunPosition_ ;
+    private int nodeRunPosition_ ;
     /**
-     * <code>int32 task_run_position = 7;</code>
-     * @return Whether the taskRunPosition field is set.
+     * <code>int32 node_run_position = 7;</code>
+     * @return Whether the nodeRunPosition field is set.
      */
     @java.lang.Override
-    public boolean hasTaskRunPosition() {
+    public boolean hasNodeRunPosition() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>int32 task_run_position = 7;</code>
-     * @return The taskRunPosition.
+     * <code>int32 node_run_position = 7;</code>
+     * @return The nodeRunPosition.
      */
     @java.lang.Override
-    public int getTaskRunPosition() {
-      return taskRunPosition_;
+    public int getNodeRunPosition() {
+      return nodeRunPosition_;
     }
     /**
-     * <code>int32 task_run_position = 7;</code>
-     * @param value The taskRunPosition to set.
+     * <code>int32 node_run_position = 7;</code>
+     * @param value The nodeRunPosition to set.
      * @return This builder for chaining.
      */
-    public Builder setTaskRunPosition(int value) {
+    public Builder setNodeRunPosition(int value) {
       bitField0_ |= 0x00000002;
-      taskRunPosition_ = value;
+      nodeRunPosition_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>int32 task_run_position = 7;</code>
+     * <code>int32 node_run_position = 7;</code>
      * @return This builder for chaining.
      */
-    public Builder clearTaskRunPosition() {
+    public Builder clearNodeRunPosition() {
       bitField0_ = (bitField0_ & ~0x00000002);
-      taskRunPosition_ = 0;
+      nodeRunPosition_ = 0;
       onChanged();
       return this;
     }

@@ -83,4 +83,10 @@ public class PutTaskDef extends SubCommand<PutTaskDefPb> {
         dao.putTaskDef(spec);
         return out;
     }
+
+    public static PutTaskDef fromProto(PutTaskDefPbOrBuilder p) {
+        PutTaskDef out = new PutTaskDef();
+        out.initFrom(p);
+        return out;
+    }
 }

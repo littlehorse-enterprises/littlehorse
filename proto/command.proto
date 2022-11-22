@@ -8,7 +8,6 @@ option java_package = "io.littlehorse.common.proto";
 import "status.proto";
 import "variable.proto";
 import "wf_spec.proto";
-import "external_event.proto";
 import "google/protobuf/timestamp.proto";
 
 // This is not quite a command, but rather an output from the scheduler
@@ -53,18 +52,6 @@ message TaskResultEventPb {
     optional VariableValuePb log_output = 7;
 }
 
-message WfRunEventPb {
-    string wf_run_id = 1;
-    optional string wf_spec_id = 2;
-    google.protobuf.Timestamp time = 3;
-    oneof event {
-        WfRunRequestPb run_request = 4;
-        TaskStartedEventPb started_event = 5;
-        TaskResultEventPb task_result = 6;
-        ExternalEventPb external_event = 7;
-    }
-    optional int32 thread_run_number = 8;
-}
 
 // This section contains commands that originate from the gRPC api. Perhaps they
 // could also go in service.proto...?
@@ -92,7 +79,7 @@ message PutExternalEventPb {
     optional string guid = 3;
     VariableValuePb content = 5;
     optional int32 thread_run_number = 6;
-    optional int32 task_run_position = 7;
+    optional int32 node_run_position = 7;
 
     reserved 4, 8;
 }
@@ -108,13 +95,13 @@ message RunWfPb {
 message CommandPb {
     google.protobuf.Timestamp time = 1;
     optional string command_id = 2;
-    oneof payload {
+    oneof command {
         TaskResultEventPb task_result_event = 3;
         TaskStartedEventPb task_started_event = 4;
-        ExternalEventPb external_event = 5;
         PutWfSpecPb put_wf_spec = 6;
         PutTaskDefPb put_task_def = 7;
-        PutExternalEventDefPb put_external_event = 8;
-        WfRunRequestPb wf_run_request = 9;
+        PutExternalEventDefPb put_external_event_def = 8;
+        RunWfPb run_wf = 9;
+        PutExternalEventPb put_external_event = 10;
     }
 }

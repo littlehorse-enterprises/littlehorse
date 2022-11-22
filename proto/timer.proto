@@ -6,7 +6,6 @@ option go_package = ".;model";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.common.proto";
 
-import "command.proto";
 import "google/protobuf/timestamp.proto";
 
 
@@ -14,7 +13,5 @@ message LHTimerPb {
     google.protobuf.Timestamp maturation_time = 1;
     string key = 2;
     string topic = 3;
-    oneof payload {
-        WfRunEventPb wf_run_event = 4;
-    };
+    bytes payload = 4;
 }

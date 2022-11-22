@@ -2,15 +2,15 @@ package io.littlehorse.server.streamsbackend.coreserver;
 
 import io.littlehorse.common.model.LHSerializable;
 
-public class CoreServerProcessorOutput {
+public class CommandProcessorOutput {
 
     public String topic;
     public LHSerializable<?> payload;
     public String partitionKey;
 
-    public CoreServerProcessorOutput() {}
+    public CommandProcessorOutput() {}
 
-    public CoreServerProcessorOutput(
+    public CommandProcessorOutput(
         String topic,
         LHSerializable<?> payload,
         String partitionKey

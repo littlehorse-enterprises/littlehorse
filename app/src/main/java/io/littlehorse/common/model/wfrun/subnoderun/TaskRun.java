@@ -4,22 +4,20 @@ import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
-import io.littlehorse.common.model.event.TaskScheduleRequest;
-import io.littlehorse.common.model.event.TaskStartedEvent;
-import io.littlehorse.common.model.event.WfRunEvent;
+import io.littlehorse.common.model.command.subcommand.TaskStartedEvent;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.server.Tag;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
+import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
 import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.proto.TaskRunPb;
 import io.littlehorse.common.proto.TaskRunPbOrBuilder;
-import io.littlehorse.common.proto.WfRunEventPb.EventCase;
 import io.littlehorse.common.util.LHUtil;
 import java.util.ArrayList;
 import java.util.Date;
@@ -106,16 +104,6 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
         return nodeRun.attemptNumber < nodeRun.getNode().taskNode.retries;
     }
 
-    public void processEvent(WfRunEvent event) {
-        if (event.type == EventCase.STARTED_EVENT) {
-            processStartedEvent(event);
-        } else if (event.type == EventCase.TASK_RESULT) {
-            handleTaskResult(event);
-        } else {
-            LHUtil.log("Nothing to do for TaskRun with event of type", event.type);
-        }
-    }
-
     public boolean advanceIfPossible(Date time) {
         // The task currently only cares about the input from the workers, not the
         // other threads.
@@ -143,7 +131,7 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
             return;
         }
 
-        tsr.wfRunEventQueue = nodeRun.threadRun.wfRun.stores.getWfRunEventQueue();
+        tsr.wfRunEventQueue = nodeRun.threadRun.wfRun.cmdDao.getWfRunEventQueue();
         tsr.taskDefId = node.taskNode.taskDefName;
         tsr.taskDefName = node.taskNode.taskDefName;
         tsr.taskRunNumber = nodeRun.number;
@@ -154,11 +142,10 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
         tsr.nodeName = node.name;
         tsr.variables = varVals;
 
-        nodeRun.threadRun.wfRun.stores.scheduleTask(tsr);
+        nodeRun.threadRun.wfRun.cmdDao.scheduleTask(tsr);
     }
 
-    private void processStartedEvent(WfRunEvent we) {
-        TaskStartedEvent se = we.startedEvent;
+    public void processStartedEvent(TaskStartedEvent se) {
         ThreadRun thread = nodeRun.threadRun;
 
         if (nodeRun.position != se.taskRunPosition) {
@@ -167,43 +154,45 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
             return;
         }
         nodeRun.status = LHStatusPb.RUNNING;
-
-        // set timer for TimeOut
-        WfRunEvent timerEvt = new WfRunEvent();
-        timerEvt.wfRunId = thread.wfRun.id;
-        timerEvt.wfSpecId = thread.wfSpecName;
         Node node = nodeRun.getNode();
 
-        timerEvt.type = EventCase.TASK_RESULT;
-        timerEvt.taskResult = new TaskResultEvent();
-        timerEvt.taskResult.resultCode = TaskResultCodePb.TIMEOUT;
-        timerEvt.taskResult.taskRunNumber = nodeRun.number;
-        timerEvt.taskResult.taskRunPosition = nodeRun.position;
-        timerEvt.taskResult.threadRunNumber = nodeRun.threadRunNumber;
+        TaskResultEvent taskResult = new TaskResultEvent();
+        taskResult.resultCode = TaskResultCodePb.TIMEOUT;
+        taskResult.taskRunNumber = nodeRun.number;
+        taskResult.taskRunPosition = nodeRun.position;
+        taskResult.threadRunNumber = nodeRun.threadRunNumber;
 
         try {
-            timerEvt.time =
+            taskResult.time =
                 new Date(
                     new Date().getTime() +
                     (
                         1000 *
-                        thread.assignVariable(node.taskNode.timeoutSeconds).intVal
+                        thread
+                            .assignVariable(node.taskNode.timeoutSeconds)
+                            .asInt()
+                            .intVal
                     )
                 );
         } catch (LHVarSubError exn) {
             // This should be impossible.
             throw new RuntimeException(exn);
         }
-        timerEvt.taskResult.time = timerEvt.time;
 
-        thread.wfRun.stores.scheduleTimer(new LHTimer(timerEvt, timerEvt.time));
+        LHTimer timer = new LHTimer();
+        timer.topic = nodeRun.threadRun.wfRun.cmdDao.getWfRunEventQueue();
+        timer.key = nodeRun.wfRunId;
+        timer.maturationTime = taskResult.time;
 
-        startTime = we.time;
+        // TODO: This evades encryption...
+        timer.payload = taskResult.toProto().build().toByteArray();
+        thread.wfRun.cmdDao.scheduleTimer(timer);
+
+        startTime = se.time;
         nodeRun.status = LHStatusPb.RUNNING;
     }
 
-    public void handleTaskResult(WfRunEvent we) {
-        TaskResultEvent ce = we.taskResult;
+    public void processTaskResult(TaskResultEvent ce) {
         if (
             nodeRun.status == LHStatusPb.COMPLETED ||
             nodeRun.status == LHStatusPb.ERROR
@@ -227,7 +216,7 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
 
         switch (ce.resultCode) {
             case SUCCESS:
-                nodeRun.complete(output, we.time);
+                nodeRun.complete(output, ce.time);
 
                 break;
             case TIMEOUT:

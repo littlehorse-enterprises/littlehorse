@@ -4,7 +4,6 @@ import io.javalin.Javalin;
 import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.proto.VariableAssignmentPb.SourceCase;
-import io.littlehorse.common.util.LHApiClient;
 import io.littlehorse.common.util.LHKStreamsListener;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHRpcClient;
@@ -162,10 +161,6 @@ public class LHConfig {
 
     public HostInfo getInternalHostInfo() {
         return new HostInfo(getAdvertisedHost(), getInternalAdvertisedPort());
-    }
-
-    public LHApiClient getApiClient() {
-        return new LHApiClient(this);
     }
 
     public void cleanup() {

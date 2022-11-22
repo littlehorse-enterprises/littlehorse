@@ -5,10 +5,8 @@ import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.command.subcommand.ExternalEvent;
 import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
-import io.littlehorse.common.model.event.TaskStartedEvent;
-import io.littlehorse.common.model.event.WfRunEvent;
+import io.littlehorse.common.model.command.subcommand.TaskStartedEvent;
 import io.littlehorse.common.model.meta.Edge;
 import io.littlehorse.common.model.meta.FailureHandlerDef;
 import io.littlehorse.common.model.meta.InterruptDef;
@@ -25,12 +23,12 @@ import io.littlehorse.common.model.wfrun.haltreason.ParentHalted;
 import io.littlehorse.common.model.wfrun.haltreason.PendingFailureHandlerHaltReason;
 import io.littlehorse.common.model.wfrun.haltreason.PendingInterruptHaltReason;
 import io.littlehorse.common.proto.LHStatusPb;
+import io.littlehorse.common.proto.NodeRunPb.NodeTypeCase;
 import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.proto.ThreadHaltReasonPb;
 import io.littlehorse.common.proto.ThreadHaltReasonPb.ReasonCase;
 import io.littlehorse.common.proto.ThreadRunPb;
 import io.littlehorse.common.proto.VariableTypePb;
-import io.littlehorse.common.proto.WfRunEventPb.EventCase;
 import io.littlehorse.common.util.LHUtil;
 import java.util.ArrayList;
 import java.util.Date;
@@ -214,36 +212,22 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         }
     }
 
-    public void processTaskStartedEvent(TaskStartedEvent e) {}
-
-    public void processTaskResultEvent(TaskResultEvent e) {}
-
-    public void processEvent(WfRunEvent e) {
-        // External Events get a little bit of special handling since they may not
-        // already have information about the node...and they can have impact at the
-        // ThreadRun level (eg. interrupts) rather than just the node level.
-        if (e.type == EventCase.EXTERNAL_EVENT) {
-            registerExternalEvent(e);
+    public void processTaskStartedEvent(TaskStartedEvent e) {
+        NodeRun nr = getNodeRun(e.getNodeRunPosition());
+        if (nr.type != NodeTypeCase.TASK) {
+            LHUtil.log("Impossible, got a bad event. TASK_START on non-task node.");
             return;
         }
+        nr.taskRun.processStartedEvent(e);
+    }
 
-        if (e.getThreadRunNumber() == null || e.getThreadRunNumber() != number) {
+    public void processTaskResultEvent(TaskResultEvent e) {
+        NodeRun nr = getNodeRun(e.getNodeRunPosition());
+        if (nr.type != NodeTypeCase.TASK) {
+            LHUtil.log("Impossible, got a bad event. TASK_START on non-task node.");
             return;
         }
-
-        Integer nrpos = e.getNodeRunPosition();
-        if (nrpos != null) {
-            if (nrpos > currentNodePosition) {
-                // Got event for unknown future node. Skipping.
-                return;
-            }
-            getNodeRun(nrpos).processEvent(e);
-        } else {
-            // In the future, we may have things like Interrupts or STOP_REQUEST
-            // in which it's assigned to a Thread but not a Node.
-
-            // Got an event without assigned to node. Skipping.
-        }
+        nr.taskRun.processTaskResult(e);
     }
 
     public void acknowledgeInterruptStarted(
@@ -274,19 +258,6 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         childThreadIds.add((Integer) handlerThreadId);
 
         haltReasons.add(thr);
-    }
-
-    private void registerExternalEvent(WfRunEvent e) {
-        if (e.type != EventCase.EXTERNAL_EVENT) {
-            throw new RuntimeException("Not possible");
-        }
-
-        String extEvtName = e.externalEvent.externalEventDefName;
-        InterruptDef idef = getThreadSpec().getInterruptDefFor(extEvtName);
-        if (idef != null) {
-            // trigger interrupt
-            initializeInterrupt(e.externalEvent, idef);
-        }
     }
 
     private void initializeInterrupt(ExternalEvent trigger, InterruptDef idef) {
@@ -811,11 +782,11 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     }
 
     public void putNodeRun(NodeRun task) {
-        wfRun.stores.putNodeRun(task);
+        wfRun.cmdDao.putNodeRun(task);
     }
 
     public NodeRun getNodeRun(int position) {
-        NodeRun out = wfRun.stores.getNodeRun(wfRun.id, number, position);
+        NodeRun out = wfRun.cmdDao.getNodeRun(wfRun.id, number, position);
         if (out != null) {
             out.threadRun = this;
         }
@@ -834,7 +805,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             toPut.name = varName;
             toPut.value = var;
             toPut.threadRunNumber = this.number;
-            wfRun.stores.putVariable(toPut);
+            wfRun.cmdDao.putVariable(toPut);
         } else {
             if (getParent() != null) {
                 getParent().putVariable(varName, var);
@@ -850,7 +821,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     public Variable getVariable(String varName) {
         // For now, just do the local one
         // Once we have threads, this will do a backtrack up the thread tree.
-        Variable out = wfRun.stores.getVariable(wfRunId, varName, this.number);
+        Variable out = wfRun.cmdDao.getVariable(wfRunId, varName, this.number);
         if (out != null) {
             return out;
         }

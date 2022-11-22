@@ -75,13 +75,13 @@ public interface PutExternalEventPbOrBuilder extends
   int getThreadRunNumber();
 
   /**
-   * <code>int32 task_run_position = 7;</code>
-   * @return Whether the taskRunPosition field is set.
+   * <code>int32 node_run_position = 7;</code>
+   * @return Whether the nodeRunPosition field is set.
    */
-  boolean hasTaskRunPosition();
+  boolean hasNodeRunPosition();
   /**
-   * <code>int32 task_run_position = 7;</code>
-   * @return The taskRunPosition.
+   * <code>int32 node_run_position = 7;</code>
+   * @return The nodeRunPosition.
    */
-  int getTaskRunPosition();
+  int getNodeRunPosition();
 }

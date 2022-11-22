@@ -3,7 +3,6 @@ package io.littlehorse.common.model.wfrun.subnoderun;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
-import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.common.model.meta.subnode.StartThreadNode;
 import io.littlehorse.common.model.wfrun.Failure;
@@ -50,10 +49,6 @@ public class StartThreadRun extends SubNodeRun<StartThreadRunPb> {
         StartThreadRun out = new StartThreadRun();
         out.initFrom(p);
         return out;
-    }
-
-    public void processEvent(WfRunEvent event) {
-        // I don't believe there's anything to do here.
     }
 
     public boolean advanceIfPossible(Date time) {

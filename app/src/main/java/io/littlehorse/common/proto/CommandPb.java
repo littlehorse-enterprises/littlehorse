@@ -75,100 +75,100 @@ private static final long serialVersionUID = 0L;
           }
           case 26: {
             io.littlehorse.common.proto.TaskResultEventPb.Builder subBuilder = null;
-            if (payloadCase_ == 3) {
-              subBuilder = ((io.littlehorse.common.proto.TaskResultEventPb) payload_).toBuilder();
+            if (commandCase_ == 3) {
+              subBuilder = ((io.littlehorse.common.proto.TaskResultEventPb) command_).toBuilder();
             }
-            payload_ =
+            command_ =
                 input.readMessage(io.littlehorse.common.proto.TaskResultEventPb.parser(), extensionRegistry);
             if (subBuilder != null) {
-              subBuilder.mergeFrom((io.littlehorse.common.proto.TaskResultEventPb) payload_);
-              payload_ = subBuilder.buildPartial();
+              subBuilder.mergeFrom((io.littlehorse.common.proto.TaskResultEventPb) command_);
+              command_ = subBuilder.buildPartial();
             }
-            payloadCase_ = 3;
+            commandCase_ = 3;
             break;
           }
           case 34: {
             io.littlehorse.common.proto.TaskStartedEventPb.Builder subBuilder = null;
-            if (payloadCase_ == 4) {
-              subBuilder = ((io.littlehorse.common.proto.TaskStartedEventPb) payload_).toBuilder();
+            if (commandCase_ == 4) {
+              subBuilder = ((io.littlehorse.common.proto.TaskStartedEventPb) command_).toBuilder();
             }
-            payload_ =
+            command_ =
                 input.readMessage(io.littlehorse.common.proto.TaskStartedEventPb.parser(), extensionRegistry);
             if (subBuilder != null) {
-              subBuilder.mergeFrom((io.littlehorse.common.proto.TaskStartedEventPb) payload_);
-              payload_ = subBuilder.buildPartial();
+              subBuilder.mergeFrom((io.littlehorse.common.proto.TaskStartedEventPb) command_);
+              command_ = subBuilder.buildPartial();
             }
-            payloadCase_ = 4;
-            break;
-          }
-          case 42: {
-            io.littlehorse.common.proto.ExternalEventPb.Builder subBuilder = null;
-            if (payloadCase_ == 5) {
-              subBuilder = ((io.littlehorse.common.proto.ExternalEventPb) payload_).toBuilder();
-            }
-            payload_ =
-                input.readMessage(io.littlehorse.common.proto.ExternalEventPb.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom((io.littlehorse.common.proto.ExternalEventPb) payload_);
-              payload_ = subBuilder.buildPartial();
-            }
-            payloadCase_ = 5;
+            commandCase_ = 4;
             break;
           }
           case 50: {
             io.littlehorse.common.proto.PutWfSpecPb.Builder subBuilder = null;
-            if (payloadCase_ == 6) {
-              subBuilder = ((io.littlehorse.common.proto.PutWfSpecPb) payload_).toBuilder();
+            if (commandCase_ == 6) {
+              subBuilder = ((io.littlehorse.common.proto.PutWfSpecPb) command_).toBuilder();
             }
-            payload_ =
+            command_ =
                 input.readMessage(io.littlehorse.common.proto.PutWfSpecPb.parser(), extensionRegistry);
             if (subBuilder != null) {
-              subBuilder.mergeFrom((io.littlehorse.common.proto.PutWfSpecPb) payload_);
-              payload_ = subBuilder.buildPartial();
+              subBuilder.mergeFrom((io.littlehorse.common.proto.PutWfSpecPb) command_);
+              command_ = subBuilder.buildPartial();
             }
-            payloadCase_ = 6;
+            commandCase_ = 6;
             break;
           }
           case 58: {
             io.littlehorse.common.proto.PutTaskDefPb.Builder subBuilder = null;
-            if (payloadCase_ == 7) {
-              subBuilder = ((io.littlehorse.common.proto.PutTaskDefPb) payload_).toBuilder();
+            if (commandCase_ == 7) {
+              subBuilder = ((io.littlehorse.common.proto.PutTaskDefPb) command_).toBuilder();
             }
-            payload_ =
+            command_ =
                 input.readMessage(io.littlehorse.common.proto.PutTaskDefPb.parser(), extensionRegistry);
             if (subBuilder != null) {
-              subBuilder.mergeFrom((io.littlehorse.common.proto.PutTaskDefPb) payload_);
-              payload_ = subBuilder.buildPartial();
+              subBuilder.mergeFrom((io.littlehorse.common.proto.PutTaskDefPb) command_);
+              command_ = subBuilder.buildPartial();
             }
-            payloadCase_ = 7;
+            commandCase_ = 7;
             break;
           }
           case 66: {
             io.littlehorse.common.proto.PutExternalEventDefPb.Builder subBuilder = null;
-            if (payloadCase_ == 8) {
-              subBuilder = ((io.littlehorse.common.proto.PutExternalEventDefPb) payload_).toBuilder();
+            if (commandCase_ == 8) {
+              subBuilder = ((io.littlehorse.common.proto.PutExternalEventDefPb) command_).toBuilder();
             }
-            payload_ =
+            command_ =
                 input.readMessage(io.littlehorse.common.proto.PutExternalEventDefPb.parser(), extensionRegistry);
             if (subBuilder != null) {
-              subBuilder.mergeFrom((io.littlehorse.common.proto.PutExternalEventDefPb) payload_);
-              payload_ = subBuilder.buildPartial();
+              subBuilder.mergeFrom((io.littlehorse.common.proto.PutExternalEventDefPb) command_);
+              command_ = subBuilder.buildPartial();
             }
-            payloadCase_ = 8;
+            commandCase_ = 8;
             break;
           }
           case 74: {
-            io.littlehorse.common.proto.WfRunRequestPb.Builder subBuilder = null;
-            if (payloadCase_ == 9) {
-              subBuilder = ((io.littlehorse.common.proto.WfRunRequestPb) payload_).toBuilder();
+            io.littlehorse.common.proto.RunWfPb.Builder subBuilder = null;
+            if (commandCase_ == 9) {
+              subBuilder = ((io.littlehorse.common.proto.RunWfPb) command_).toBuilder();
             }
-            payload_ =
-                input.readMessage(io.littlehorse.common.proto.WfRunRequestPb.parser(), extensionRegistry);
+            command_ =
+                input.readMessage(io.littlehorse.common.proto.RunWfPb.parser(), extensionRegistry);
             if (subBuilder != null) {
-              subBuilder.mergeFrom((io.littlehorse.common.proto.WfRunRequestPb) payload_);
-              payload_ = subBuilder.buildPartial();
+              subBuilder.mergeFrom((io.littlehorse.common.proto.RunWfPb) command_);
+              command_ = subBuilder.buildPartial();
             }
-            payloadCase_ = 9;
+            commandCase_ = 9;
+            break;
+          }
+          case 82: {
+            io.littlehorse.common.proto.PutExternalEventPb.Builder subBuilder = null;
+            if (commandCase_ == 10) {
+              subBuilder = ((io.littlehorse.common.proto.PutExternalEventPb) command_).toBuilder();
+            }
+            command_ =
+                input.readMessage(io.littlehorse.common.proto.PutExternalEventPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.common.proto.PutExternalEventPb) command_);
+              command_ = subBuilder.buildPartial();
+            }
+            commandCase_ = 10;
             break;
           }
           default: {
@@ -204,21 +204,21 @@ private static final long serialVersionUID = 0L;
   }
 
   private int bitField0_;
-  private int payloadCase_ = 0;
-  private java.lang.Object payload_;
-  public enum PayloadCase
+  private int commandCase_ = 0;
+  private java.lang.Object command_;
+  public enum CommandCase
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
     TASK_RESULT_EVENT(3),
     TASK_STARTED_EVENT(4),
-    EXTERNAL_EVENT(5),
     PUT_WF_SPEC(6),
     PUT_TASK_DEF(7),
-    PUT_EXTERNAL_EVENT(8),
-    WF_RUN_REQUEST(9),
-    PAYLOAD_NOT_SET(0);
+    PUT_EXTERNAL_EVENT_DEF(8),
+    RUN_WF(9),
+    PUT_EXTERNAL_EVENT(10),
+    COMMAND_NOT_SET(0);
     private final int value;
-    private PayloadCase(int value) {
+    private CommandCase(int value) {
       this.value = value;
     }
     /**
@@ -227,20 +227,20 @@ private static final long serialVersionUID = 0L;
      * @deprecated Use {@link #forNumber(int)} instead.
      */
     @java.lang.Deprecated
-    public static PayloadCase valueOf(int value) {
+    public static CommandCase valueOf(int value) {
       return forNumber(value);
     }
 
-    public static PayloadCase forNumber(int value) {
+    public static CommandCase forNumber(int value) {
       switch (value) {
         case 3: return TASK_RESULT_EVENT;
         case 4: return TASK_STARTED_EVENT;
-        case 5: return EXTERNAL_EVENT;
         case 6: return PUT_WF_SPEC;
         case 7: return PUT_TASK_DEF;
-        case 8: return PUT_EXTERNAL_EVENT;
-        case 9: return WF_RUN_REQUEST;
-        case 0: return PAYLOAD_NOT_SET;
+        case 8: return PUT_EXTERNAL_EVENT_DEF;
+        case 9: return RUN_WF;
+        case 10: return PUT_EXTERNAL_EVENT;
+        case 0: return COMMAND_NOT_SET;
         default: return null;
       }
     }
@@ -249,10 +249,10 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public PayloadCase
-  getPayloadCase() {
-    return PayloadCase.forNumber(
-        payloadCase_);
+  public CommandCase
+  getCommandCase() {
+    return CommandCase.forNumber(
+        commandCase_);
   }
 
   public static final int TIME_FIELD_NUMBER = 1;
@@ -334,7 +334,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasTaskResultEvent() {
-    return payloadCase_ == 3;
+    return commandCase_ == 3;
   }
   /**
    * <code>.lh_proto.TaskResultEventPb task_result_event = 3;</code>
@@ -342,8 +342,8 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public io.littlehorse.common.proto.TaskResultEventPb getTaskResultEvent() {
-    if (payloadCase_ == 3) {
-       return (io.littlehorse.common.proto.TaskResultEventPb) payload_;
+    if (commandCase_ == 3) {
+       return (io.littlehorse.common.proto.TaskResultEventPb) command_;
     }
     return io.littlehorse.common.proto.TaskResultEventPb.getDefaultInstance();
   }
@@ -352,8 +352,8 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public io.littlehorse.common.proto.TaskResultEventPbOrBuilder getTaskResultEventOrBuilder() {
-    if (payloadCase_ == 3) {
-       return (io.littlehorse.common.proto.TaskResultEventPb) payload_;
+    if (commandCase_ == 3) {
+       return (io.littlehorse.common.proto.TaskResultEventPb) command_;
     }
     return io.littlehorse.common.proto.TaskResultEventPb.getDefaultInstance();
   }
@@ -365,7 +365,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasTaskStartedEvent() {
-    return payloadCase_ == 4;
+    return commandCase_ == 4;
   }
   /**
    * <code>.lh_proto.TaskStartedEventPb task_started_event = 4;</code>
@@ -373,8 +373,8 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public io.littlehorse.common.proto.TaskStartedEventPb getTaskStartedEvent() {
-    if (payloadCase_ == 4) {
-       return (io.littlehorse.common.proto.TaskStartedEventPb) payload_;
+    if (commandCase_ == 4) {
+       return (io.littlehorse.common.proto.TaskStartedEventPb) command_;
     }
     return io.littlehorse.common.proto.TaskStartedEventPb.getDefaultInstance();
   }
@@ -383,41 +383,10 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public io.littlehorse.common.proto.TaskStartedEventPbOrBuilder getTaskStartedEventOrBuilder() {
-    if (payloadCase_ == 4) {
-       return (io.littlehorse.common.proto.TaskStartedEventPb) payload_;
+    if (commandCase_ == 4) {
+       return (io.littlehorse.common.proto.TaskStartedEventPb) command_;
     }
     return io.littlehorse.common.proto.TaskStartedEventPb.getDefaultInstance();
-  }
-
-  public static final int EXTERNAL_EVENT_FIELD_NUMBER = 5;
-  /**
-   * <code>.lh_proto.ExternalEventPb external_event = 5;</code>
-   * @return Whether the externalEvent field is set.
-   */
-  @java.lang.Override
-  public boolean hasExternalEvent() {
-    return payloadCase_ == 5;
-  }
-  /**
-   * <code>.lh_proto.ExternalEventPb external_event = 5;</code>
-   * @return The externalEvent.
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.ExternalEventPb getExternalEvent() {
-    if (payloadCase_ == 5) {
-       return (io.littlehorse.common.proto.ExternalEventPb) payload_;
-    }
-    return io.littlehorse.common.proto.ExternalEventPb.getDefaultInstance();
-  }
-  /**
-   * <code>.lh_proto.ExternalEventPb external_event = 5;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.ExternalEventPbOrBuilder getExternalEventOrBuilder() {
-    if (payloadCase_ == 5) {
-       return (io.littlehorse.common.proto.ExternalEventPb) payload_;
-    }
-    return io.littlehorse.common.proto.ExternalEventPb.getDefaultInstance();
   }
 
   public static final int PUT_WF_SPEC_FIELD_NUMBER = 6;
@@ -427,7 +396,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasPutWfSpec() {
-    return payloadCase_ == 6;
+    return commandCase_ == 6;
   }
   /**
    * <code>.lh_proto.PutWfSpecPb put_wf_spec = 6;</code>
@@ -435,8 +404,8 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public io.littlehorse.common.proto.PutWfSpecPb getPutWfSpec() {
-    if (payloadCase_ == 6) {
-       return (io.littlehorse.common.proto.PutWfSpecPb) payload_;
+    if (commandCase_ == 6) {
+       return (io.littlehorse.common.proto.PutWfSpecPb) command_;
     }
     return io.littlehorse.common.proto.PutWfSpecPb.getDefaultInstance();
   }
@@ -445,8 +414,8 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public io.littlehorse.common.proto.PutWfSpecPbOrBuilder getPutWfSpecOrBuilder() {
-    if (payloadCase_ == 6) {
-       return (io.littlehorse.common.proto.PutWfSpecPb) payload_;
+    if (commandCase_ == 6) {
+       return (io.littlehorse.common.proto.PutWfSpecPb) command_;
     }
     return io.littlehorse.common.proto.PutWfSpecPb.getDefaultInstance();
   }
@@ -458,7 +427,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasPutTaskDef() {
-    return payloadCase_ == 7;
+    return commandCase_ == 7;
   }
   /**
    * <code>.lh_proto.PutTaskDefPb put_task_def = 7;</code>
@@ -466,8 +435,8 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public io.littlehorse.common.proto.PutTaskDefPb getPutTaskDef() {
-    if (payloadCase_ == 7) {
-       return (io.littlehorse.common.proto.PutTaskDefPb) payload_;
+    if (commandCase_ == 7) {
+       return (io.littlehorse.common.proto.PutTaskDefPb) command_;
     }
     return io.littlehorse.common.proto.PutTaskDefPb.getDefaultInstance();
   }
@@ -476,72 +445,103 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public io.littlehorse.common.proto.PutTaskDefPbOrBuilder getPutTaskDefOrBuilder() {
-    if (payloadCase_ == 7) {
-       return (io.littlehorse.common.proto.PutTaskDefPb) payload_;
+    if (commandCase_ == 7) {
+       return (io.littlehorse.common.proto.PutTaskDefPb) command_;
     }
     return io.littlehorse.common.proto.PutTaskDefPb.getDefaultInstance();
   }
 
-  public static final int PUT_EXTERNAL_EVENT_FIELD_NUMBER = 8;
+  public static final int PUT_EXTERNAL_EVENT_DEF_FIELD_NUMBER = 8;
   /**
-   * <code>.lh_proto.PutExternalEventDefPb put_external_event = 8;</code>
-   * @return Whether the putExternalEvent field is set.
+   * <code>.lh_proto.PutExternalEventDefPb put_external_event_def = 8;</code>
+   * @return Whether the putExternalEventDef field is set.
    */
   @java.lang.Override
-  public boolean hasPutExternalEvent() {
-    return payloadCase_ == 8;
+  public boolean hasPutExternalEventDef() {
+    return commandCase_ == 8;
   }
   /**
-   * <code>.lh_proto.PutExternalEventDefPb put_external_event = 8;</code>
-   * @return The putExternalEvent.
+   * <code>.lh_proto.PutExternalEventDefPb put_external_event_def = 8;</code>
+   * @return The putExternalEventDef.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.PutExternalEventDefPb getPutExternalEvent() {
-    if (payloadCase_ == 8) {
-       return (io.littlehorse.common.proto.PutExternalEventDefPb) payload_;
+  public io.littlehorse.common.proto.PutExternalEventDefPb getPutExternalEventDef() {
+    if (commandCase_ == 8) {
+       return (io.littlehorse.common.proto.PutExternalEventDefPb) command_;
     }
     return io.littlehorse.common.proto.PutExternalEventDefPb.getDefaultInstance();
   }
   /**
-   * <code>.lh_proto.PutExternalEventDefPb put_external_event = 8;</code>
+   * <code>.lh_proto.PutExternalEventDefPb put_external_event_def = 8;</code>
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.PutExternalEventDefPbOrBuilder getPutExternalEventOrBuilder() {
-    if (payloadCase_ == 8) {
-       return (io.littlehorse.common.proto.PutExternalEventDefPb) payload_;
+  public io.littlehorse.common.proto.PutExternalEventDefPbOrBuilder getPutExternalEventDefOrBuilder() {
+    if (commandCase_ == 8) {
+       return (io.littlehorse.common.proto.PutExternalEventDefPb) command_;
     }
     return io.littlehorse.common.proto.PutExternalEventDefPb.getDefaultInstance();
   }
 
-  public static final int WF_RUN_REQUEST_FIELD_NUMBER = 9;
+  public static final int RUN_WF_FIELD_NUMBER = 9;
   /**
-   * <code>.lh_proto.WfRunRequestPb wf_run_request = 9;</code>
-   * @return Whether the wfRunRequest field is set.
+   * <code>.lh_proto.RunWfPb run_wf = 9;</code>
+   * @return Whether the runWf field is set.
    */
   @java.lang.Override
-  public boolean hasWfRunRequest() {
-    return payloadCase_ == 9;
+  public boolean hasRunWf() {
+    return commandCase_ == 9;
   }
   /**
-   * <code>.lh_proto.WfRunRequestPb wf_run_request = 9;</code>
-   * @return The wfRunRequest.
+   * <code>.lh_proto.RunWfPb run_wf = 9;</code>
+   * @return The runWf.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.WfRunRequestPb getWfRunRequest() {
-    if (payloadCase_ == 9) {
-       return (io.littlehorse.common.proto.WfRunRequestPb) payload_;
+  public io.littlehorse.common.proto.RunWfPb getRunWf() {
+    if (commandCase_ == 9) {
+       return (io.littlehorse.common.proto.RunWfPb) command_;
     }
-    return io.littlehorse.common.proto.WfRunRequestPb.getDefaultInstance();
+    return io.littlehorse.common.proto.RunWfPb.getDefaultInstance();
   }
   /**
-   * <code>.lh_proto.WfRunRequestPb wf_run_request = 9;</code>
+   * <code>.lh_proto.RunWfPb run_wf = 9;</code>
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.WfRunRequestPbOrBuilder getWfRunRequestOrBuilder() {
-    if (payloadCase_ == 9) {
-       return (io.littlehorse.common.proto.WfRunRequestPb) payload_;
+  public io.littlehorse.common.proto.RunWfPbOrBuilder getRunWfOrBuilder() {
+    if (commandCase_ == 9) {
+       return (io.littlehorse.common.proto.RunWfPb) command_;
     }
-    return io.littlehorse.common.proto.WfRunRequestPb.getDefaultInstance();
+    return io.littlehorse.common.proto.RunWfPb.getDefaultInstance();
+  }
+
+  public static final int PUT_EXTERNAL_EVENT_FIELD_NUMBER = 10;
+  /**
+   * <code>.lh_proto.PutExternalEventPb put_external_event = 10;</code>
+   * @return Whether the putExternalEvent field is set.
+   */
+  @java.lang.Override
+  public boolean hasPutExternalEvent() {
+    return commandCase_ == 10;
+  }
+  /**
+   * <code>.lh_proto.PutExternalEventPb put_external_event = 10;</code>
+   * @return The putExternalEvent.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.PutExternalEventPb getPutExternalEvent() {
+    if (commandCase_ == 10) {
+       return (io.littlehorse.common.proto.PutExternalEventPb) command_;
+    }
+    return io.littlehorse.common.proto.PutExternalEventPb.getDefaultInstance();
+  }
+  /**
+   * <code>.lh_proto.PutExternalEventPb put_external_event = 10;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.PutExternalEventPbOrBuilder getPutExternalEventOrBuilder() {
+    if (commandCase_ == 10) {
+       return (io.littlehorse.common.proto.PutExternalEventPb) command_;
+    }
+    return io.littlehorse.common.proto.PutExternalEventPb.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -564,26 +564,26 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, commandId_);
     }
-    if (payloadCase_ == 3) {
-      output.writeMessage(3, (io.littlehorse.common.proto.TaskResultEventPb) payload_);
+    if (commandCase_ == 3) {
+      output.writeMessage(3, (io.littlehorse.common.proto.TaskResultEventPb) command_);
     }
-    if (payloadCase_ == 4) {
-      output.writeMessage(4, (io.littlehorse.common.proto.TaskStartedEventPb) payload_);
+    if (commandCase_ == 4) {
+      output.writeMessage(4, (io.littlehorse.common.proto.TaskStartedEventPb) command_);
     }
-    if (payloadCase_ == 5) {
-      output.writeMessage(5, (io.littlehorse.common.proto.ExternalEventPb) payload_);
+    if (commandCase_ == 6) {
+      output.writeMessage(6, (io.littlehorse.common.proto.PutWfSpecPb) command_);
     }
-    if (payloadCase_ == 6) {
-      output.writeMessage(6, (io.littlehorse.common.proto.PutWfSpecPb) payload_);
+    if (commandCase_ == 7) {
+      output.writeMessage(7, (io.littlehorse.common.proto.PutTaskDefPb) command_);
     }
-    if (payloadCase_ == 7) {
-      output.writeMessage(7, (io.littlehorse.common.proto.PutTaskDefPb) payload_);
+    if (commandCase_ == 8) {
+      output.writeMessage(8, (io.littlehorse.common.proto.PutExternalEventDefPb) command_);
     }
-    if (payloadCase_ == 8) {
-      output.writeMessage(8, (io.littlehorse.common.proto.PutExternalEventDefPb) payload_);
+    if (commandCase_ == 9) {
+      output.writeMessage(9, (io.littlehorse.common.proto.RunWfPb) command_);
     }
-    if (payloadCase_ == 9) {
-      output.writeMessage(9, (io.littlehorse.common.proto.WfRunRequestPb) payload_);
+    if (commandCase_ == 10) {
+      output.writeMessage(10, (io.littlehorse.common.proto.PutExternalEventPb) command_);
     }
     unknownFields.writeTo(output);
   }
@@ -601,33 +601,33 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, commandId_);
     }
-    if (payloadCase_ == 3) {
+    if (commandCase_ == 3) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, (io.littlehorse.common.proto.TaskResultEventPb) payload_);
+        .computeMessageSize(3, (io.littlehorse.common.proto.TaskResultEventPb) command_);
     }
-    if (payloadCase_ == 4) {
+    if (commandCase_ == 4) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, (io.littlehorse.common.proto.TaskStartedEventPb) payload_);
+        .computeMessageSize(4, (io.littlehorse.common.proto.TaskStartedEventPb) command_);
     }
-    if (payloadCase_ == 5) {
+    if (commandCase_ == 6) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(5, (io.littlehorse.common.proto.ExternalEventPb) payload_);
+        .computeMessageSize(6, (io.littlehorse.common.proto.PutWfSpecPb) command_);
     }
-    if (payloadCase_ == 6) {
+    if (commandCase_ == 7) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(6, (io.littlehorse.common.proto.PutWfSpecPb) payload_);
+        .computeMessageSize(7, (io.littlehorse.common.proto.PutTaskDefPb) command_);
     }
-    if (payloadCase_ == 7) {
+    if (commandCase_ == 8) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(7, (io.littlehorse.common.proto.PutTaskDefPb) payload_);
+        .computeMessageSize(8, (io.littlehorse.common.proto.PutExternalEventDefPb) command_);
     }
-    if (payloadCase_ == 8) {
+    if (commandCase_ == 9) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(8, (io.littlehorse.common.proto.PutExternalEventDefPb) payload_);
+        .computeMessageSize(9, (io.littlehorse.common.proto.RunWfPb) command_);
     }
-    if (payloadCase_ == 9) {
+    if (commandCase_ == 10) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(9, (io.littlehorse.common.proto.WfRunRequestPb) payload_);
+        .computeMessageSize(10, (io.littlehorse.common.proto.PutExternalEventPb) command_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -654,8 +654,8 @@ private static final long serialVersionUID = 0L;
       if (!getCommandId()
           .equals(other.getCommandId())) return false;
     }
-    if (!getPayloadCase().equals(other.getPayloadCase())) return false;
-    switch (payloadCase_) {
+    if (!getCommandCase().equals(other.getCommandCase())) return false;
+    switch (commandCase_) {
       case 3:
         if (!getTaskResultEvent()
             .equals(other.getTaskResultEvent())) return false;
@@ -663,10 +663,6 @@ private static final long serialVersionUID = 0L;
       case 4:
         if (!getTaskStartedEvent()
             .equals(other.getTaskStartedEvent())) return false;
-        break;
-      case 5:
-        if (!getExternalEvent()
-            .equals(other.getExternalEvent())) return false;
         break;
       case 6:
         if (!getPutWfSpec()
@@ -677,12 +673,16 @@ private static final long serialVersionUID = 0L;
             .equals(other.getPutTaskDef())) return false;
         break;
       case 8:
-        if (!getPutExternalEvent()
-            .equals(other.getPutExternalEvent())) return false;
+        if (!getPutExternalEventDef()
+            .equals(other.getPutExternalEventDef())) return false;
         break;
       case 9:
-        if (!getWfRunRequest()
-            .equals(other.getWfRunRequest())) return false;
+        if (!getRunWf()
+            .equals(other.getRunWf())) return false;
+        break;
+      case 10:
+        if (!getPutExternalEvent()
+            .equals(other.getPutExternalEvent())) return false;
         break;
       case 0:
       default:
@@ -706,7 +706,7 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + COMMAND_ID_FIELD_NUMBER;
       hash = (53 * hash) + getCommandId().hashCode();
     }
-    switch (payloadCase_) {
+    switch (commandCase_) {
       case 3:
         hash = (37 * hash) + TASK_RESULT_EVENT_FIELD_NUMBER;
         hash = (53 * hash) + getTaskResultEvent().hashCode();
@@ -714,10 +714,6 @@ private static final long serialVersionUID = 0L;
       case 4:
         hash = (37 * hash) + TASK_STARTED_EVENT_FIELD_NUMBER;
         hash = (53 * hash) + getTaskStartedEvent().hashCode();
-        break;
-      case 5:
-        hash = (37 * hash) + EXTERNAL_EVENT_FIELD_NUMBER;
-        hash = (53 * hash) + getExternalEvent().hashCode();
         break;
       case 6:
         hash = (37 * hash) + PUT_WF_SPEC_FIELD_NUMBER;
@@ -728,12 +724,16 @@ private static final long serialVersionUID = 0L;
         hash = (53 * hash) + getPutTaskDef().hashCode();
         break;
       case 8:
-        hash = (37 * hash) + PUT_EXTERNAL_EVENT_FIELD_NUMBER;
-        hash = (53 * hash) + getPutExternalEvent().hashCode();
+        hash = (37 * hash) + PUT_EXTERNAL_EVENT_DEF_FIELD_NUMBER;
+        hash = (53 * hash) + getPutExternalEventDef().hashCode();
         break;
       case 9:
-        hash = (37 * hash) + WF_RUN_REQUEST_FIELD_NUMBER;
-        hash = (53 * hash) + getWfRunRequest().hashCode();
+        hash = (37 * hash) + RUN_WF_FIELD_NUMBER;
+        hash = (53 * hash) + getRunWf().hashCode();
+        break;
+      case 10:
+        hash = (37 * hash) + PUT_EXTERNAL_EVENT_FIELD_NUMBER;
+        hash = (53 * hash) + getPutExternalEvent().hashCode();
         break;
       case 0:
       default:
@@ -883,8 +883,8 @@ private static final long serialVersionUID = 0L;
       }
       commandId_ = "";
       bitField0_ = (bitField0_ & ~0x00000001);
-      payloadCase_ = 0;
-      payload_ = null;
+      commandCase_ = 0;
+      command_ = null;
       return this;
     }
 
@@ -922,57 +922,57 @@ private static final long serialVersionUID = 0L;
         to_bitField0_ |= 0x00000001;
       }
       result.commandId_ = commandId_;
-      if (payloadCase_ == 3) {
+      if (commandCase_ == 3) {
         if (taskResultEventBuilder_ == null) {
-          result.payload_ = payload_;
+          result.command_ = command_;
         } else {
-          result.payload_ = taskResultEventBuilder_.build();
+          result.command_ = taskResultEventBuilder_.build();
         }
       }
-      if (payloadCase_ == 4) {
+      if (commandCase_ == 4) {
         if (taskStartedEventBuilder_ == null) {
-          result.payload_ = payload_;
+          result.command_ = command_;
         } else {
-          result.payload_ = taskStartedEventBuilder_.build();
+          result.command_ = taskStartedEventBuilder_.build();
         }
       }
-      if (payloadCase_ == 5) {
-        if (externalEventBuilder_ == null) {
-          result.payload_ = payload_;
-        } else {
-          result.payload_ = externalEventBuilder_.build();
-        }
-      }
-      if (payloadCase_ == 6) {
+      if (commandCase_ == 6) {
         if (putWfSpecBuilder_ == null) {
-          result.payload_ = payload_;
+          result.command_ = command_;
         } else {
-          result.payload_ = putWfSpecBuilder_.build();
+          result.command_ = putWfSpecBuilder_.build();
         }
       }
-      if (payloadCase_ == 7) {
+      if (commandCase_ == 7) {
         if (putTaskDefBuilder_ == null) {
-          result.payload_ = payload_;
+          result.command_ = command_;
         } else {
-          result.payload_ = putTaskDefBuilder_.build();
+          result.command_ = putTaskDefBuilder_.build();
         }
       }
-      if (payloadCase_ == 8) {
+      if (commandCase_ == 8) {
+        if (putExternalEventDefBuilder_ == null) {
+          result.command_ = command_;
+        } else {
+          result.command_ = putExternalEventDefBuilder_.build();
+        }
+      }
+      if (commandCase_ == 9) {
+        if (runWfBuilder_ == null) {
+          result.command_ = command_;
+        } else {
+          result.command_ = runWfBuilder_.build();
+        }
+      }
+      if (commandCase_ == 10) {
         if (putExternalEventBuilder_ == null) {
-          result.payload_ = payload_;
+          result.command_ = command_;
         } else {
-          result.payload_ = putExternalEventBuilder_.build();
-        }
-      }
-      if (payloadCase_ == 9) {
-        if (wfRunRequestBuilder_ == null) {
-          result.payload_ = payload_;
-        } else {
-          result.payload_ = wfRunRequestBuilder_.build();
+          result.command_ = putExternalEventBuilder_.build();
         }
       }
       result.bitField0_ = to_bitField0_;
-      result.payloadCase_ = payloadCase_;
+      result.commandCase_ = commandCase_;
       onBuilt();
       return result;
     }
@@ -1029,17 +1029,13 @@ private static final long serialVersionUID = 0L;
         commandId_ = other.commandId_;
         onChanged();
       }
-      switch (other.getPayloadCase()) {
+      switch (other.getCommandCase()) {
         case TASK_RESULT_EVENT: {
           mergeTaskResultEvent(other.getTaskResultEvent());
           break;
         }
         case TASK_STARTED_EVENT: {
           mergeTaskStartedEvent(other.getTaskStartedEvent());
-          break;
-        }
-        case EXTERNAL_EVENT: {
-          mergeExternalEvent(other.getExternalEvent());
           break;
         }
         case PUT_WF_SPEC: {
@@ -1050,15 +1046,19 @@ private static final long serialVersionUID = 0L;
           mergePutTaskDef(other.getPutTaskDef());
           break;
         }
+        case PUT_EXTERNAL_EVENT_DEF: {
+          mergePutExternalEventDef(other.getPutExternalEventDef());
+          break;
+        }
+        case RUN_WF: {
+          mergeRunWf(other.getRunWf());
+          break;
+        }
         case PUT_EXTERNAL_EVENT: {
           mergePutExternalEvent(other.getPutExternalEvent());
           break;
         }
-        case WF_RUN_REQUEST: {
-          mergeWfRunRequest(other.getWfRunRequest());
-          break;
-        }
-        case PAYLOAD_NOT_SET: {
+        case COMMAND_NOT_SET: {
           break;
         }
       }
@@ -1090,17 +1090,17 @@ private static final long serialVersionUID = 0L;
       }
       return this;
     }
-    private int payloadCase_ = 0;
-    private java.lang.Object payload_;
-    public PayloadCase
-        getPayloadCase() {
-      return PayloadCase.forNumber(
-          payloadCase_);
+    private int commandCase_ = 0;
+    private java.lang.Object command_;
+    public CommandCase
+        getCommandCase() {
+      return CommandCase.forNumber(
+          commandCase_);
     }
 
-    public Builder clearPayload() {
-      payloadCase_ = 0;
-      payload_ = null;
+    public Builder clearCommand() {
+      commandCase_ = 0;
+      command_ = null;
       onChanged();
       return this;
     }
@@ -1317,7 +1317,7 @@ private static final long serialVersionUID = 0L;
      */
     @java.lang.Override
     public boolean hasTaskResultEvent() {
-      return payloadCase_ == 3;
+      return commandCase_ == 3;
     }
     /**
      * <code>.lh_proto.TaskResultEventPb task_result_event = 3;</code>
@@ -1326,12 +1326,12 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.common.proto.TaskResultEventPb getTaskResultEvent() {
       if (taskResultEventBuilder_ == null) {
-        if (payloadCase_ == 3) {
-          return (io.littlehorse.common.proto.TaskResultEventPb) payload_;
+        if (commandCase_ == 3) {
+          return (io.littlehorse.common.proto.TaskResultEventPb) command_;
         }
         return io.littlehorse.common.proto.TaskResultEventPb.getDefaultInstance();
       } else {
-        if (payloadCase_ == 3) {
+        if (commandCase_ == 3) {
           return taskResultEventBuilder_.getMessage();
         }
         return io.littlehorse.common.proto.TaskResultEventPb.getDefaultInstance();
@@ -1345,12 +1345,12 @@ private static final long serialVersionUID = 0L;
         if (value == null) {
           throw new NullPointerException();
         }
-        payload_ = value;
+        command_ = value;
         onChanged();
       } else {
         taskResultEventBuilder_.setMessage(value);
       }
-      payloadCase_ = 3;
+      commandCase_ = 3;
       return this;
     }
     /**
@@ -1359,12 +1359,12 @@ private static final long serialVersionUID = 0L;
     public Builder setTaskResultEvent(
         io.littlehorse.common.proto.TaskResultEventPb.Builder builderForValue) {
       if (taskResultEventBuilder_ == null) {
-        payload_ = builderForValue.build();
+        command_ = builderForValue.build();
         onChanged();
       } else {
         taskResultEventBuilder_.setMessage(builderForValue.build());
       }
-      payloadCase_ = 3;
+      commandCase_ = 3;
       return this;
     }
     /**
@@ -1372,21 +1372,21 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeTaskResultEvent(io.littlehorse.common.proto.TaskResultEventPb value) {
       if (taskResultEventBuilder_ == null) {
-        if (payloadCase_ == 3 &&
-            payload_ != io.littlehorse.common.proto.TaskResultEventPb.getDefaultInstance()) {
-          payload_ = io.littlehorse.common.proto.TaskResultEventPb.newBuilder((io.littlehorse.common.proto.TaskResultEventPb) payload_)
+        if (commandCase_ == 3 &&
+            command_ != io.littlehorse.common.proto.TaskResultEventPb.getDefaultInstance()) {
+          command_ = io.littlehorse.common.proto.TaskResultEventPb.newBuilder((io.littlehorse.common.proto.TaskResultEventPb) command_)
               .mergeFrom(value).buildPartial();
         } else {
-          payload_ = value;
+          command_ = value;
         }
         onChanged();
       } else {
-        if (payloadCase_ == 3) {
+        if (commandCase_ == 3) {
           taskResultEventBuilder_.mergeFrom(value);
         }
         taskResultEventBuilder_.setMessage(value);
       }
-      payloadCase_ = 3;
+      commandCase_ = 3;
       return this;
     }
     /**
@@ -1394,15 +1394,15 @@ private static final long serialVersionUID = 0L;
      */
     public Builder clearTaskResultEvent() {
       if (taskResultEventBuilder_ == null) {
-        if (payloadCase_ == 3) {
-          payloadCase_ = 0;
-          payload_ = null;
+        if (commandCase_ == 3) {
+          commandCase_ = 0;
+          command_ = null;
           onChanged();
         }
       } else {
-        if (payloadCase_ == 3) {
-          payloadCase_ = 0;
-          payload_ = null;
+        if (commandCase_ == 3) {
+          commandCase_ = 0;
+          command_ = null;
         }
         taskResultEventBuilder_.clear();
       }
@@ -1419,11 +1419,11 @@ private static final long serialVersionUID = 0L;
      */
     @java.lang.Override
     public io.littlehorse.common.proto.TaskResultEventPbOrBuilder getTaskResultEventOrBuilder() {
-      if ((payloadCase_ == 3) && (taskResultEventBuilder_ != null)) {
+      if ((commandCase_ == 3) && (taskResultEventBuilder_ != null)) {
         return taskResultEventBuilder_.getMessageOrBuilder();
       } else {
-        if (payloadCase_ == 3) {
-          return (io.littlehorse.common.proto.TaskResultEventPb) payload_;
+        if (commandCase_ == 3) {
+          return (io.littlehorse.common.proto.TaskResultEventPb) command_;
         }
         return io.littlehorse.common.proto.TaskResultEventPb.getDefaultInstance();
       }
@@ -1435,17 +1435,17 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.common.proto.TaskResultEventPb, io.littlehorse.common.proto.TaskResultEventPb.Builder, io.littlehorse.common.proto.TaskResultEventPbOrBuilder> 
         getTaskResultEventFieldBuilder() {
       if (taskResultEventBuilder_ == null) {
-        if (!(payloadCase_ == 3)) {
-          payload_ = io.littlehorse.common.proto.TaskResultEventPb.getDefaultInstance();
+        if (!(commandCase_ == 3)) {
+          command_ = io.littlehorse.common.proto.TaskResultEventPb.getDefaultInstance();
         }
         taskResultEventBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
             io.littlehorse.common.proto.TaskResultEventPb, io.littlehorse.common.proto.TaskResultEventPb.Builder, io.littlehorse.common.proto.TaskResultEventPbOrBuilder>(
-                (io.littlehorse.common.proto.TaskResultEventPb) payload_,
+                (io.littlehorse.common.proto.TaskResultEventPb) command_,
                 getParentForChildren(),
                 isClean());
-        payload_ = null;
+        command_ = null;
       }
-      payloadCase_ = 3;
+      commandCase_ = 3;
       onChanged();;
       return taskResultEventBuilder_;
     }
@@ -1458,7 +1458,7 @@ private static final long serialVersionUID = 0L;
      */
     @java.lang.Override
     public boolean hasTaskStartedEvent() {
-      return payloadCase_ == 4;
+      return commandCase_ == 4;
     }
     /**
      * <code>.lh_proto.TaskStartedEventPb task_started_event = 4;</code>
@@ -1467,12 +1467,12 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.common.proto.TaskStartedEventPb getTaskStartedEvent() {
       if (taskStartedEventBuilder_ == null) {
-        if (payloadCase_ == 4) {
-          return (io.littlehorse.common.proto.TaskStartedEventPb) payload_;
+        if (commandCase_ == 4) {
+          return (io.littlehorse.common.proto.TaskStartedEventPb) command_;
         }
         return io.littlehorse.common.proto.TaskStartedEventPb.getDefaultInstance();
       } else {
-        if (payloadCase_ == 4) {
+        if (commandCase_ == 4) {
           return taskStartedEventBuilder_.getMessage();
         }
         return io.littlehorse.common.proto.TaskStartedEventPb.getDefaultInstance();
@@ -1486,12 +1486,12 @@ private static final long serialVersionUID = 0L;
         if (value == null) {
           throw new NullPointerException();
         }
-        payload_ = value;
+        command_ = value;
         onChanged();
       } else {
         taskStartedEventBuilder_.setMessage(value);
       }
-      payloadCase_ = 4;
+      commandCase_ = 4;
       return this;
     }
     /**
@@ -1500,12 +1500,12 @@ private static final long serialVersionUID = 0L;
     public Builder setTaskStartedEvent(
         io.littlehorse.common.proto.TaskStartedEventPb.Builder builderForValue) {
       if (taskStartedEventBuilder_ == null) {
-        payload_ = builderForValue.build();
+        command_ = builderForValue.build();
         onChanged();
       } else {
         taskStartedEventBuilder_.setMessage(builderForValue.build());
       }
-      payloadCase_ = 4;
+      commandCase_ = 4;
       return this;
     }
     /**
@@ -1513,21 +1513,21 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeTaskStartedEvent(io.littlehorse.common.proto.TaskStartedEventPb value) {
       if (taskStartedEventBuilder_ == null) {
-        if (payloadCase_ == 4 &&
-            payload_ != io.littlehorse.common.proto.TaskStartedEventPb.getDefaultInstance()) {
-          payload_ = io.littlehorse.common.proto.TaskStartedEventPb.newBuilder((io.littlehorse.common.proto.TaskStartedEventPb) payload_)
+        if (commandCase_ == 4 &&
+            command_ != io.littlehorse.common.proto.TaskStartedEventPb.getDefaultInstance()) {
+          command_ = io.littlehorse.common.proto.TaskStartedEventPb.newBuilder((io.littlehorse.common.proto.TaskStartedEventPb) command_)
               .mergeFrom(value).buildPartial();
         } else {
-          payload_ = value;
+          command_ = value;
         }
         onChanged();
       } else {
-        if (payloadCase_ == 4) {
+        if (commandCase_ == 4) {
           taskStartedEventBuilder_.mergeFrom(value);
         }
         taskStartedEventBuilder_.setMessage(value);
       }
-      payloadCase_ = 4;
+      commandCase_ = 4;
       return this;
     }
     /**
@@ -1535,15 +1535,15 @@ private static final long serialVersionUID = 0L;
      */
     public Builder clearTaskStartedEvent() {
       if (taskStartedEventBuilder_ == null) {
-        if (payloadCase_ == 4) {
-          payloadCase_ = 0;
-          payload_ = null;
+        if (commandCase_ == 4) {
+          commandCase_ = 0;
+          command_ = null;
           onChanged();
         }
       } else {
-        if (payloadCase_ == 4) {
-          payloadCase_ = 0;
-          payload_ = null;
+        if (commandCase_ == 4) {
+          commandCase_ = 0;
+          command_ = null;
         }
         taskStartedEventBuilder_.clear();
       }
@@ -1560,11 +1560,11 @@ private static final long serialVersionUID = 0L;
      */
     @java.lang.Override
     public io.littlehorse.common.proto.TaskStartedEventPbOrBuilder getTaskStartedEventOrBuilder() {
-      if ((payloadCase_ == 4) && (taskStartedEventBuilder_ != null)) {
+      if ((commandCase_ == 4) && (taskStartedEventBuilder_ != null)) {
         return taskStartedEventBuilder_.getMessageOrBuilder();
       } else {
-        if (payloadCase_ == 4) {
-          return (io.littlehorse.common.proto.TaskStartedEventPb) payload_;
+        if (commandCase_ == 4) {
+          return (io.littlehorse.common.proto.TaskStartedEventPb) command_;
         }
         return io.littlehorse.common.proto.TaskStartedEventPb.getDefaultInstance();
       }
@@ -1576,160 +1576,19 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.common.proto.TaskStartedEventPb, io.littlehorse.common.proto.TaskStartedEventPb.Builder, io.littlehorse.common.proto.TaskStartedEventPbOrBuilder> 
         getTaskStartedEventFieldBuilder() {
       if (taskStartedEventBuilder_ == null) {
-        if (!(payloadCase_ == 4)) {
-          payload_ = io.littlehorse.common.proto.TaskStartedEventPb.getDefaultInstance();
+        if (!(commandCase_ == 4)) {
+          command_ = io.littlehorse.common.proto.TaskStartedEventPb.getDefaultInstance();
         }
         taskStartedEventBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
             io.littlehorse.common.proto.TaskStartedEventPb, io.littlehorse.common.proto.TaskStartedEventPb.Builder, io.littlehorse.common.proto.TaskStartedEventPbOrBuilder>(
-                (io.littlehorse.common.proto.TaskStartedEventPb) payload_,
+                (io.littlehorse.common.proto.TaskStartedEventPb) command_,
                 getParentForChildren(),
                 isClean());
-        payload_ = null;
+        command_ = null;
       }
-      payloadCase_ = 4;
+      commandCase_ = 4;
       onChanged();;
       return taskStartedEventBuilder_;
-    }
-
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.ExternalEventPb, io.littlehorse.common.proto.ExternalEventPb.Builder, io.littlehorse.common.proto.ExternalEventPbOrBuilder> externalEventBuilder_;
-    /**
-     * <code>.lh_proto.ExternalEventPb external_event = 5;</code>
-     * @return Whether the externalEvent field is set.
-     */
-    @java.lang.Override
-    public boolean hasExternalEvent() {
-      return payloadCase_ == 5;
-    }
-    /**
-     * <code>.lh_proto.ExternalEventPb external_event = 5;</code>
-     * @return The externalEvent.
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.ExternalEventPb getExternalEvent() {
-      if (externalEventBuilder_ == null) {
-        if (payloadCase_ == 5) {
-          return (io.littlehorse.common.proto.ExternalEventPb) payload_;
-        }
-        return io.littlehorse.common.proto.ExternalEventPb.getDefaultInstance();
-      } else {
-        if (payloadCase_ == 5) {
-          return externalEventBuilder_.getMessage();
-        }
-        return io.littlehorse.common.proto.ExternalEventPb.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.lh_proto.ExternalEventPb external_event = 5;</code>
-     */
-    public Builder setExternalEvent(io.littlehorse.common.proto.ExternalEventPb value) {
-      if (externalEventBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        payload_ = value;
-        onChanged();
-      } else {
-        externalEventBuilder_.setMessage(value);
-      }
-      payloadCase_ = 5;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.ExternalEventPb external_event = 5;</code>
-     */
-    public Builder setExternalEvent(
-        io.littlehorse.common.proto.ExternalEventPb.Builder builderForValue) {
-      if (externalEventBuilder_ == null) {
-        payload_ = builderForValue.build();
-        onChanged();
-      } else {
-        externalEventBuilder_.setMessage(builderForValue.build());
-      }
-      payloadCase_ = 5;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.ExternalEventPb external_event = 5;</code>
-     */
-    public Builder mergeExternalEvent(io.littlehorse.common.proto.ExternalEventPb value) {
-      if (externalEventBuilder_ == null) {
-        if (payloadCase_ == 5 &&
-            payload_ != io.littlehorse.common.proto.ExternalEventPb.getDefaultInstance()) {
-          payload_ = io.littlehorse.common.proto.ExternalEventPb.newBuilder((io.littlehorse.common.proto.ExternalEventPb) payload_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          payload_ = value;
-        }
-        onChanged();
-      } else {
-        if (payloadCase_ == 5) {
-          externalEventBuilder_.mergeFrom(value);
-        }
-        externalEventBuilder_.setMessage(value);
-      }
-      payloadCase_ = 5;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.ExternalEventPb external_event = 5;</code>
-     */
-    public Builder clearExternalEvent() {
-      if (externalEventBuilder_ == null) {
-        if (payloadCase_ == 5) {
-          payloadCase_ = 0;
-          payload_ = null;
-          onChanged();
-        }
-      } else {
-        if (payloadCase_ == 5) {
-          payloadCase_ = 0;
-          payload_ = null;
-        }
-        externalEventBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>.lh_proto.ExternalEventPb external_event = 5;</code>
-     */
-    public io.littlehorse.common.proto.ExternalEventPb.Builder getExternalEventBuilder() {
-      return getExternalEventFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.lh_proto.ExternalEventPb external_event = 5;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.ExternalEventPbOrBuilder getExternalEventOrBuilder() {
-      if ((payloadCase_ == 5) && (externalEventBuilder_ != null)) {
-        return externalEventBuilder_.getMessageOrBuilder();
-      } else {
-        if (payloadCase_ == 5) {
-          return (io.littlehorse.common.proto.ExternalEventPb) payload_;
-        }
-        return io.littlehorse.common.proto.ExternalEventPb.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.lh_proto.ExternalEventPb external_event = 5;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.ExternalEventPb, io.littlehorse.common.proto.ExternalEventPb.Builder, io.littlehorse.common.proto.ExternalEventPbOrBuilder> 
-        getExternalEventFieldBuilder() {
-      if (externalEventBuilder_ == null) {
-        if (!(payloadCase_ == 5)) {
-          payload_ = io.littlehorse.common.proto.ExternalEventPb.getDefaultInstance();
-        }
-        externalEventBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.ExternalEventPb, io.littlehorse.common.proto.ExternalEventPb.Builder, io.littlehorse.common.proto.ExternalEventPbOrBuilder>(
-                (io.littlehorse.common.proto.ExternalEventPb) payload_,
-                getParentForChildren(),
-                isClean());
-        payload_ = null;
-      }
-      payloadCase_ = 5;
-      onChanged();;
-      return externalEventBuilder_;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1740,7 +1599,7 @@ private static final long serialVersionUID = 0L;
      */
     @java.lang.Override
     public boolean hasPutWfSpec() {
-      return payloadCase_ == 6;
+      return commandCase_ == 6;
     }
     /**
      * <code>.lh_proto.PutWfSpecPb put_wf_spec = 6;</code>
@@ -1749,12 +1608,12 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.common.proto.PutWfSpecPb getPutWfSpec() {
       if (putWfSpecBuilder_ == null) {
-        if (payloadCase_ == 6) {
-          return (io.littlehorse.common.proto.PutWfSpecPb) payload_;
+        if (commandCase_ == 6) {
+          return (io.littlehorse.common.proto.PutWfSpecPb) command_;
         }
         return io.littlehorse.common.proto.PutWfSpecPb.getDefaultInstance();
       } else {
-        if (payloadCase_ == 6) {
+        if (commandCase_ == 6) {
           return putWfSpecBuilder_.getMessage();
         }
         return io.littlehorse.common.proto.PutWfSpecPb.getDefaultInstance();
@@ -1768,12 +1627,12 @@ private static final long serialVersionUID = 0L;
         if (value == null) {
           throw new NullPointerException();
         }
-        payload_ = value;
+        command_ = value;
         onChanged();
       } else {
         putWfSpecBuilder_.setMessage(value);
       }
-      payloadCase_ = 6;
+      commandCase_ = 6;
       return this;
     }
     /**
@@ -1782,12 +1641,12 @@ private static final long serialVersionUID = 0L;
     public Builder setPutWfSpec(
         io.littlehorse.common.proto.PutWfSpecPb.Builder builderForValue) {
       if (putWfSpecBuilder_ == null) {
-        payload_ = builderForValue.build();
+        command_ = builderForValue.build();
         onChanged();
       } else {
         putWfSpecBuilder_.setMessage(builderForValue.build());
       }
-      payloadCase_ = 6;
+      commandCase_ = 6;
       return this;
     }
     /**
@@ -1795,21 +1654,21 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergePutWfSpec(io.littlehorse.common.proto.PutWfSpecPb value) {
       if (putWfSpecBuilder_ == null) {
-        if (payloadCase_ == 6 &&
-            payload_ != io.littlehorse.common.proto.PutWfSpecPb.getDefaultInstance()) {
-          payload_ = io.littlehorse.common.proto.PutWfSpecPb.newBuilder((io.littlehorse.common.proto.PutWfSpecPb) payload_)
+        if (commandCase_ == 6 &&
+            command_ != io.littlehorse.common.proto.PutWfSpecPb.getDefaultInstance()) {
+          command_ = io.littlehorse.common.proto.PutWfSpecPb.newBuilder((io.littlehorse.common.proto.PutWfSpecPb) command_)
               .mergeFrom(value).buildPartial();
         } else {
-          payload_ = value;
+          command_ = value;
         }
         onChanged();
       } else {
-        if (payloadCase_ == 6) {
+        if (commandCase_ == 6) {
           putWfSpecBuilder_.mergeFrom(value);
         }
         putWfSpecBuilder_.setMessage(value);
       }
-      payloadCase_ = 6;
+      commandCase_ = 6;
       return this;
     }
     /**
@@ -1817,15 +1676,15 @@ private static final long serialVersionUID = 0L;
      */
     public Builder clearPutWfSpec() {
       if (putWfSpecBuilder_ == null) {
-        if (payloadCase_ == 6) {
-          payloadCase_ = 0;
-          payload_ = null;
+        if (commandCase_ == 6) {
+          commandCase_ = 0;
+          command_ = null;
           onChanged();
         }
       } else {
-        if (payloadCase_ == 6) {
-          payloadCase_ = 0;
-          payload_ = null;
+        if (commandCase_ == 6) {
+          commandCase_ = 0;
+          command_ = null;
         }
         putWfSpecBuilder_.clear();
       }
@@ -1842,11 +1701,11 @@ private static final long serialVersionUID = 0L;
      */
     @java.lang.Override
     public io.littlehorse.common.proto.PutWfSpecPbOrBuilder getPutWfSpecOrBuilder() {
-      if ((payloadCase_ == 6) && (putWfSpecBuilder_ != null)) {
+      if ((commandCase_ == 6) && (putWfSpecBuilder_ != null)) {
         return putWfSpecBuilder_.getMessageOrBuilder();
       } else {
-        if (payloadCase_ == 6) {
-          return (io.littlehorse.common.proto.PutWfSpecPb) payload_;
+        if (commandCase_ == 6) {
+          return (io.littlehorse.common.proto.PutWfSpecPb) command_;
         }
         return io.littlehorse.common.proto.PutWfSpecPb.getDefaultInstance();
       }
@@ -1858,17 +1717,17 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.common.proto.PutWfSpecPb, io.littlehorse.common.proto.PutWfSpecPb.Builder, io.littlehorse.common.proto.PutWfSpecPbOrBuilder> 
         getPutWfSpecFieldBuilder() {
       if (putWfSpecBuilder_ == null) {
-        if (!(payloadCase_ == 6)) {
-          payload_ = io.littlehorse.common.proto.PutWfSpecPb.getDefaultInstance();
+        if (!(commandCase_ == 6)) {
+          command_ = io.littlehorse.common.proto.PutWfSpecPb.getDefaultInstance();
         }
         putWfSpecBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
             io.littlehorse.common.proto.PutWfSpecPb, io.littlehorse.common.proto.PutWfSpecPb.Builder, io.littlehorse.common.proto.PutWfSpecPbOrBuilder>(
-                (io.littlehorse.common.proto.PutWfSpecPb) payload_,
+                (io.littlehorse.common.proto.PutWfSpecPb) command_,
                 getParentForChildren(),
                 isClean());
-        payload_ = null;
+        command_ = null;
       }
-      payloadCase_ = 6;
+      commandCase_ = 6;
       onChanged();;
       return putWfSpecBuilder_;
     }
@@ -1881,7 +1740,7 @@ private static final long serialVersionUID = 0L;
      */
     @java.lang.Override
     public boolean hasPutTaskDef() {
-      return payloadCase_ == 7;
+      return commandCase_ == 7;
     }
     /**
      * <code>.lh_proto.PutTaskDefPb put_task_def = 7;</code>
@@ -1890,12 +1749,12 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.common.proto.PutTaskDefPb getPutTaskDef() {
       if (putTaskDefBuilder_ == null) {
-        if (payloadCase_ == 7) {
-          return (io.littlehorse.common.proto.PutTaskDefPb) payload_;
+        if (commandCase_ == 7) {
+          return (io.littlehorse.common.proto.PutTaskDefPb) command_;
         }
         return io.littlehorse.common.proto.PutTaskDefPb.getDefaultInstance();
       } else {
-        if (payloadCase_ == 7) {
+        if (commandCase_ == 7) {
           return putTaskDefBuilder_.getMessage();
         }
         return io.littlehorse.common.proto.PutTaskDefPb.getDefaultInstance();
@@ -1909,12 +1768,12 @@ private static final long serialVersionUID = 0L;
         if (value == null) {
           throw new NullPointerException();
         }
-        payload_ = value;
+        command_ = value;
         onChanged();
       } else {
         putTaskDefBuilder_.setMessage(value);
       }
-      payloadCase_ = 7;
+      commandCase_ = 7;
       return this;
     }
     /**
@@ -1923,12 +1782,12 @@ private static final long serialVersionUID = 0L;
     public Builder setPutTaskDef(
         io.littlehorse.common.proto.PutTaskDefPb.Builder builderForValue) {
       if (putTaskDefBuilder_ == null) {
-        payload_ = builderForValue.build();
+        command_ = builderForValue.build();
         onChanged();
       } else {
         putTaskDefBuilder_.setMessage(builderForValue.build());
       }
-      payloadCase_ = 7;
+      commandCase_ = 7;
       return this;
     }
     /**
@@ -1936,21 +1795,21 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergePutTaskDef(io.littlehorse.common.proto.PutTaskDefPb value) {
       if (putTaskDefBuilder_ == null) {
-        if (payloadCase_ == 7 &&
-            payload_ != io.littlehorse.common.proto.PutTaskDefPb.getDefaultInstance()) {
-          payload_ = io.littlehorse.common.proto.PutTaskDefPb.newBuilder((io.littlehorse.common.proto.PutTaskDefPb) payload_)
+        if (commandCase_ == 7 &&
+            command_ != io.littlehorse.common.proto.PutTaskDefPb.getDefaultInstance()) {
+          command_ = io.littlehorse.common.proto.PutTaskDefPb.newBuilder((io.littlehorse.common.proto.PutTaskDefPb) command_)
               .mergeFrom(value).buildPartial();
         } else {
-          payload_ = value;
+          command_ = value;
         }
         onChanged();
       } else {
-        if (payloadCase_ == 7) {
+        if (commandCase_ == 7) {
           putTaskDefBuilder_.mergeFrom(value);
         }
         putTaskDefBuilder_.setMessage(value);
       }
-      payloadCase_ = 7;
+      commandCase_ = 7;
       return this;
     }
     /**
@@ -1958,15 +1817,15 @@ private static final long serialVersionUID = 0L;
      */
     public Builder clearPutTaskDef() {
       if (putTaskDefBuilder_ == null) {
-        if (payloadCase_ == 7) {
-          payloadCase_ = 0;
-          payload_ = null;
+        if (commandCase_ == 7) {
+          commandCase_ = 0;
+          command_ = null;
           onChanged();
         }
       } else {
-        if (payloadCase_ == 7) {
-          payloadCase_ = 0;
-          payload_ = null;
+        if (commandCase_ == 7) {
+          commandCase_ = 0;
+          command_ = null;
         }
         putTaskDefBuilder_.clear();
       }
@@ -1983,11 +1842,11 @@ private static final long serialVersionUID = 0L;
      */
     @java.lang.Override
     public io.littlehorse.common.proto.PutTaskDefPbOrBuilder getPutTaskDefOrBuilder() {
-      if ((payloadCase_ == 7) && (putTaskDefBuilder_ != null)) {
+      if ((commandCase_ == 7) && (putTaskDefBuilder_ != null)) {
         return putTaskDefBuilder_.getMessageOrBuilder();
       } else {
-        if (payloadCase_ == 7) {
-          return (io.littlehorse.common.proto.PutTaskDefPb) payload_;
+        if (commandCase_ == 7) {
+          return (io.littlehorse.common.proto.PutTaskDefPb) command_;
         }
         return io.littlehorse.common.proto.PutTaskDefPb.getDefaultInstance();
       }
@@ -1999,301 +1858,442 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.common.proto.PutTaskDefPb, io.littlehorse.common.proto.PutTaskDefPb.Builder, io.littlehorse.common.proto.PutTaskDefPbOrBuilder> 
         getPutTaskDefFieldBuilder() {
       if (putTaskDefBuilder_ == null) {
-        if (!(payloadCase_ == 7)) {
-          payload_ = io.littlehorse.common.proto.PutTaskDefPb.getDefaultInstance();
+        if (!(commandCase_ == 7)) {
+          command_ = io.littlehorse.common.proto.PutTaskDefPb.getDefaultInstance();
         }
         putTaskDefBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
             io.littlehorse.common.proto.PutTaskDefPb, io.littlehorse.common.proto.PutTaskDefPb.Builder, io.littlehorse.common.proto.PutTaskDefPbOrBuilder>(
-                (io.littlehorse.common.proto.PutTaskDefPb) payload_,
+                (io.littlehorse.common.proto.PutTaskDefPb) command_,
                 getParentForChildren(),
                 isClean());
-        payload_ = null;
+        command_ = null;
       }
-      payloadCase_ = 7;
+      commandCase_ = 7;
       onChanged();;
       return putTaskDefBuilder_;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.PutExternalEventDefPb, io.littlehorse.common.proto.PutExternalEventDefPb.Builder, io.littlehorse.common.proto.PutExternalEventDefPbOrBuilder> putExternalEventBuilder_;
+        io.littlehorse.common.proto.PutExternalEventDefPb, io.littlehorse.common.proto.PutExternalEventDefPb.Builder, io.littlehorse.common.proto.PutExternalEventDefPbOrBuilder> putExternalEventDefBuilder_;
     /**
-     * <code>.lh_proto.PutExternalEventDefPb put_external_event = 8;</code>
+     * <code>.lh_proto.PutExternalEventDefPb put_external_event_def = 8;</code>
+     * @return Whether the putExternalEventDef field is set.
+     */
+    @java.lang.Override
+    public boolean hasPutExternalEventDef() {
+      return commandCase_ == 8;
+    }
+    /**
+     * <code>.lh_proto.PutExternalEventDefPb put_external_event_def = 8;</code>
+     * @return The putExternalEventDef.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.PutExternalEventDefPb getPutExternalEventDef() {
+      if (putExternalEventDefBuilder_ == null) {
+        if (commandCase_ == 8) {
+          return (io.littlehorse.common.proto.PutExternalEventDefPb) command_;
+        }
+        return io.littlehorse.common.proto.PutExternalEventDefPb.getDefaultInstance();
+      } else {
+        if (commandCase_ == 8) {
+          return putExternalEventDefBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.PutExternalEventDefPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.PutExternalEventDefPb put_external_event_def = 8;</code>
+     */
+    public Builder setPutExternalEventDef(io.littlehorse.common.proto.PutExternalEventDefPb value) {
+      if (putExternalEventDefBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+        onChanged();
+      } else {
+        putExternalEventDefBuilder_.setMessage(value);
+      }
+      commandCase_ = 8;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.PutExternalEventDefPb put_external_event_def = 8;</code>
+     */
+    public Builder setPutExternalEventDef(
+        io.littlehorse.common.proto.PutExternalEventDefPb.Builder builderForValue) {
+      if (putExternalEventDefBuilder_ == null) {
+        command_ = builderForValue.build();
+        onChanged();
+      } else {
+        putExternalEventDefBuilder_.setMessage(builderForValue.build());
+      }
+      commandCase_ = 8;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.PutExternalEventDefPb put_external_event_def = 8;</code>
+     */
+    public Builder mergePutExternalEventDef(io.littlehorse.common.proto.PutExternalEventDefPb value) {
+      if (putExternalEventDefBuilder_ == null) {
+        if (commandCase_ == 8 &&
+            command_ != io.littlehorse.common.proto.PutExternalEventDefPb.getDefaultInstance()) {
+          command_ = io.littlehorse.common.proto.PutExternalEventDefPb.newBuilder((io.littlehorse.common.proto.PutExternalEventDefPb) command_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          command_ = value;
+        }
+        onChanged();
+      } else {
+        if (commandCase_ == 8) {
+          putExternalEventDefBuilder_.mergeFrom(value);
+        }
+        putExternalEventDefBuilder_.setMessage(value);
+      }
+      commandCase_ = 8;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.PutExternalEventDefPb put_external_event_def = 8;</code>
+     */
+    public Builder clearPutExternalEventDef() {
+      if (putExternalEventDefBuilder_ == null) {
+        if (commandCase_ == 8) {
+          commandCase_ = 0;
+          command_ = null;
+          onChanged();
+        }
+      } else {
+        if (commandCase_ == 8) {
+          commandCase_ = 0;
+          command_ = null;
+        }
+        putExternalEventDefBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.lh_proto.PutExternalEventDefPb put_external_event_def = 8;</code>
+     */
+    public io.littlehorse.common.proto.PutExternalEventDefPb.Builder getPutExternalEventDefBuilder() {
+      return getPutExternalEventDefFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.PutExternalEventDefPb put_external_event_def = 8;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.PutExternalEventDefPbOrBuilder getPutExternalEventDefOrBuilder() {
+      if ((commandCase_ == 8) && (putExternalEventDefBuilder_ != null)) {
+        return putExternalEventDefBuilder_.getMessageOrBuilder();
+      } else {
+        if (commandCase_ == 8) {
+          return (io.littlehorse.common.proto.PutExternalEventDefPb) command_;
+        }
+        return io.littlehorse.common.proto.PutExternalEventDefPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.PutExternalEventDefPb put_external_event_def = 8;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.PutExternalEventDefPb, io.littlehorse.common.proto.PutExternalEventDefPb.Builder, io.littlehorse.common.proto.PutExternalEventDefPbOrBuilder> 
+        getPutExternalEventDefFieldBuilder() {
+      if (putExternalEventDefBuilder_ == null) {
+        if (!(commandCase_ == 8)) {
+          command_ = io.littlehorse.common.proto.PutExternalEventDefPb.getDefaultInstance();
+        }
+        putExternalEventDefBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.PutExternalEventDefPb, io.littlehorse.common.proto.PutExternalEventDefPb.Builder, io.littlehorse.common.proto.PutExternalEventDefPbOrBuilder>(
+                (io.littlehorse.common.proto.PutExternalEventDefPb) command_,
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      commandCase_ = 8;
+      onChanged();;
+      return putExternalEventDefBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.RunWfPb, io.littlehorse.common.proto.RunWfPb.Builder, io.littlehorse.common.proto.RunWfPbOrBuilder> runWfBuilder_;
+    /**
+     * <code>.lh_proto.RunWfPb run_wf = 9;</code>
+     * @return Whether the runWf field is set.
+     */
+    @java.lang.Override
+    public boolean hasRunWf() {
+      return commandCase_ == 9;
+    }
+    /**
+     * <code>.lh_proto.RunWfPb run_wf = 9;</code>
+     * @return The runWf.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.RunWfPb getRunWf() {
+      if (runWfBuilder_ == null) {
+        if (commandCase_ == 9) {
+          return (io.littlehorse.common.proto.RunWfPb) command_;
+        }
+        return io.littlehorse.common.proto.RunWfPb.getDefaultInstance();
+      } else {
+        if (commandCase_ == 9) {
+          return runWfBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.RunWfPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.RunWfPb run_wf = 9;</code>
+     */
+    public Builder setRunWf(io.littlehorse.common.proto.RunWfPb value) {
+      if (runWfBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+        onChanged();
+      } else {
+        runWfBuilder_.setMessage(value);
+      }
+      commandCase_ = 9;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.RunWfPb run_wf = 9;</code>
+     */
+    public Builder setRunWf(
+        io.littlehorse.common.proto.RunWfPb.Builder builderForValue) {
+      if (runWfBuilder_ == null) {
+        command_ = builderForValue.build();
+        onChanged();
+      } else {
+        runWfBuilder_.setMessage(builderForValue.build());
+      }
+      commandCase_ = 9;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.RunWfPb run_wf = 9;</code>
+     */
+    public Builder mergeRunWf(io.littlehorse.common.proto.RunWfPb value) {
+      if (runWfBuilder_ == null) {
+        if (commandCase_ == 9 &&
+            command_ != io.littlehorse.common.proto.RunWfPb.getDefaultInstance()) {
+          command_ = io.littlehorse.common.proto.RunWfPb.newBuilder((io.littlehorse.common.proto.RunWfPb) command_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          command_ = value;
+        }
+        onChanged();
+      } else {
+        if (commandCase_ == 9) {
+          runWfBuilder_.mergeFrom(value);
+        }
+        runWfBuilder_.setMessage(value);
+      }
+      commandCase_ = 9;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.RunWfPb run_wf = 9;</code>
+     */
+    public Builder clearRunWf() {
+      if (runWfBuilder_ == null) {
+        if (commandCase_ == 9) {
+          commandCase_ = 0;
+          command_ = null;
+          onChanged();
+        }
+      } else {
+        if (commandCase_ == 9) {
+          commandCase_ = 0;
+          command_ = null;
+        }
+        runWfBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.lh_proto.RunWfPb run_wf = 9;</code>
+     */
+    public io.littlehorse.common.proto.RunWfPb.Builder getRunWfBuilder() {
+      return getRunWfFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.RunWfPb run_wf = 9;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.RunWfPbOrBuilder getRunWfOrBuilder() {
+      if ((commandCase_ == 9) && (runWfBuilder_ != null)) {
+        return runWfBuilder_.getMessageOrBuilder();
+      } else {
+        if (commandCase_ == 9) {
+          return (io.littlehorse.common.proto.RunWfPb) command_;
+        }
+        return io.littlehorse.common.proto.RunWfPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.RunWfPb run_wf = 9;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.RunWfPb, io.littlehorse.common.proto.RunWfPb.Builder, io.littlehorse.common.proto.RunWfPbOrBuilder> 
+        getRunWfFieldBuilder() {
+      if (runWfBuilder_ == null) {
+        if (!(commandCase_ == 9)) {
+          command_ = io.littlehorse.common.proto.RunWfPb.getDefaultInstance();
+        }
+        runWfBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.RunWfPb, io.littlehorse.common.proto.RunWfPb.Builder, io.littlehorse.common.proto.RunWfPbOrBuilder>(
+                (io.littlehorse.common.proto.RunWfPb) command_,
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      commandCase_ = 9;
+      onChanged();;
+      return runWfBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.PutExternalEventPb, io.littlehorse.common.proto.PutExternalEventPb.Builder, io.littlehorse.common.proto.PutExternalEventPbOrBuilder> putExternalEventBuilder_;
+    /**
+     * <code>.lh_proto.PutExternalEventPb put_external_event = 10;</code>
      * @return Whether the putExternalEvent field is set.
      */
     @java.lang.Override
     public boolean hasPutExternalEvent() {
-      return payloadCase_ == 8;
+      return commandCase_ == 10;
     }
     /**
-     * <code>.lh_proto.PutExternalEventDefPb put_external_event = 8;</code>
+     * <code>.lh_proto.PutExternalEventPb put_external_event = 10;</code>
      * @return The putExternalEvent.
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.PutExternalEventDefPb getPutExternalEvent() {
+    public io.littlehorse.common.proto.PutExternalEventPb getPutExternalEvent() {
       if (putExternalEventBuilder_ == null) {
-        if (payloadCase_ == 8) {
-          return (io.littlehorse.common.proto.PutExternalEventDefPb) payload_;
+        if (commandCase_ == 10) {
+          return (io.littlehorse.common.proto.PutExternalEventPb) command_;
         }
-        return io.littlehorse.common.proto.PutExternalEventDefPb.getDefaultInstance();
+        return io.littlehorse.common.proto.PutExternalEventPb.getDefaultInstance();
       } else {
-        if (payloadCase_ == 8) {
+        if (commandCase_ == 10) {
           return putExternalEventBuilder_.getMessage();
         }
-        return io.littlehorse.common.proto.PutExternalEventDefPb.getDefaultInstance();
+        return io.littlehorse.common.proto.PutExternalEventPb.getDefaultInstance();
       }
     }
     /**
-     * <code>.lh_proto.PutExternalEventDefPb put_external_event = 8;</code>
+     * <code>.lh_proto.PutExternalEventPb put_external_event = 10;</code>
      */
-    public Builder setPutExternalEvent(io.littlehorse.common.proto.PutExternalEventDefPb value) {
+    public Builder setPutExternalEvent(io.littlehorse.common.proto.PutExternalEventPb value) {
       if (putExternalEventBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        payload_ = value;
+        command_ = value;
         onChanged();
       } else {
         putExternalEventBuilder_.setMessage(value);
       }
-      payloadCase_ = 8;
+      commandCase_ = 10;
       return this;
     }
     /**
-     * <code>.lh_proto.PutExternalEventDefPb put_external_event = 8;</code>
+     * <code>.lh_proto.PutExternalEventPb put_external_event = 10;</code>
      */
     public Builder setPutExternalEvent(
-        io.littlehorse.common.proto.PutExternalEventDefPb.Builder builderForValue) {
+        io.littlehorse.common.proto.PutExternalEventPb.Builder builderForValue) {
       if (putExternalEventBuilder_ == null) {
-        payload_ = builderForValue.build();
+        command_ = builderForValue.build();
         onChanged();
       } else {
         putExternalEventBuilder_.setMessage(builderForValue.build());
       }
-      payloadCase_ = 8;
+      commandCase_ = 10;
       return this;
     }
     /**
-     * <code>.lh_proto.PutExternalEventDefPb put_external_event = 8;</code>
+     * <code>.lh_proto.PutExternalEventPb put_external_event = 10;</code>
      */
-    public Builder mergePutExternalEvent(io.littlehorse.common.proto.PutExternalEventDefPb value) {
+    public Builder mergePutExternalEvent(io.littlehorse.common.proto.PutExternalEventPb value) {
       if (putExternalEventBuilder_ == null) {
-        if (payloadCase_ == 8 &&
-            payload_ != io.littlehorse.common.proto.PutExternalEventDefPb.getDefaultInstance()) {
-          payload_ = io.littlehorse.common.proto.PutExternalEventDefPb.newBuilder((io.littlehorse.common.proto.PutExternalEventDefPb) payload_)
+        if (commandCase_ == 10 &&
+            command_ != io.littlehorse.common.proto.PutExternalEventPb.getDefaultInstance()) {
+          command_ = io.littlehorse.common.proto.PutExternalEventPb.newBuilder((io.littlehorse.common.proto.PutExternalEventPb) command_)
               .mergeFrom(value).buildPartial();
         } else {
-          payload_ = value;
+          command_ = value;
         }
         onChanged();
       } else {
-        if (payloadCase_ == 8) {
+        if (commandCase_ == 10) {
           putExternalEventBuilder_.mergeFrom(value);
         }
         putExternalEventBuilder_.setMessage(value);
       }
-      payloadCase_ = 8;
+      commandCase_ = 10;
       return this;
     }
     /**
-     * <code>.lh_proto.PutExternalEventDefPb put_external_event = 8;</code>
+     * <code>.lh_proto.PutExternalEventPb put_external_event = 10;</code>
      */
     public Builder clearPutExternalEvent() {
       if (putExternalEventBuilder_ == null) {
-        if (payloadCase_ == 8) {
-          payloadCase_ = 0;
-          payload_ = null;
+        if (commandCase_ == 10) {
+          commandCase_ = 0;
+          command_ = null;
           onChanged();
         }
       } else {
-        if (payloadCase_ == 8) {
-          payloadCase_ = 0;
-          payload_ = null;
+        if (commandCase_ == 10) {
+          commandCase_ = 0;
+          command_ = null;
         }
         putExternalEventBuilder_.clear();
       }
       return this;
     }
     /**
-     * <code>.lh_proto.PutExternalEventDefPb put_external_event = 8;</code>
+     * <code>.lh_proto.PutExternalEventPb put_external_event = 10;</code>
      */
-    public io.littlehorse.common.proto.PutExternalEventDefPb.Builder getPutExternalEventBuilder() {
+    public io.littlehorse.common.proto.PutExternalEventPb.Builder getPutExternalEventBuilder() {
       return getPutExternalEventFieldBuilder().getBuilder();
     }
     /**
-     * <code>.lh_proto.PutExternalEventDefPb put_external_event = 8;</code>
+     * <code>.lh_proto.PutExternalEventPb put_external_event = 10;</code>
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.PutExternalEventDefPbOrBuilder getPutExternalEventOrBuilder() {
-      if ((payloadCase_ == 8) && (putExternalEventBuilder_ != null)) {
+    public io.littlehorse.common.proto.PutExternalEventPbOrBuilder getPutExternalEventOrBuilder() {
+      if ((commandCase_ == 10) && (putExternalEventBuilder_ != null)) {
         return putExternalEventBuilder_.getMessageOrBuilder();
       } else {
-        if (payloadCase_ == 8) {
-          return (io.littlehorse.common.proto.PutExternalEventDefPb) payload_;
+        if (commandCase_ == 10) {
+          return (io.littlehorse.common.proto.PutExternalEventPb) command_;
         }
-        return io.littlehorse.common.proto.PutExternalEventDefPb.getDefaultInstance();
+        return io.littlehorse.common.proto.PutExternalEventPb.getDefaultInstance();
       }
     }
     /**
-     * <code>.lh_proto.PutExternalEventDefPb put_external_event = 8;</code>
+     * <code>.lh_proto.PutExternalEventPb put_external_event = 10;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.PutExternalEventDefPb, io.littlehorse.common.proto.PutExternalEventDefPb.Builder, io.littlehorse.common.proto.PutExternalEventDefPbOrBuilder> 
+        io.littlehorse.common.proto.PutExternalEventPb, io.littlehorse.common.proto.PutExternalEventPb.Builder, io.littlehorse.common.proto.PutExternalEventPbOrBuilder> 
         getPutExternalEventFieldBuilder() {
       if (putExternalEventBuilder_ == null) {
-        if (!(payloadCase_ == 8)) {
-          payload_ = io.littlehorse.common.proto.PutExternalEventDefPb.getDefaultInstance();
+        if (!(commandCase_ == 10)) {
+          command_ = io.littlehorse.common.proto.PutExternalEventPb.getDefaultInstance();
         }
         putExternalEventBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.PutExternalEventDefPb, io.littlehorse.common.proto.PutExternalEventDefPb.Builder, io.littlehorse.common.proto.PutExternalEventDefPbOrBuilder>(
-                (io.littlehorse.common.proto.PutExternalEventDefPb) payload_,
+            io.littlehorse.common.proto.PutExternalEventPb, io.littlehorse.common.proto.PutExternalEventPb.Builder, io.littlehorse.common.proto.PutExternalEventPbOrBuilder>(
+                (io.littlehorse.common.proto.PutExternalEventPb) command_,
                 getParentForChildren(),
                 isClean());
-        payload_ = null;
+        command_ = null;
       }
-      payloadCase_ = 8;
+      commandCase_ = 10;
       onChanged();;
       return putExternalEventBuilder_;
-    }
-
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.WfRunRequestPb, io.littlehorse.common.proto.WfRunRequestPb.Builder, io.littlehorse.common.proto.WfRunRequestPbOrBuilder> wfRunRequestBuilder_;
-    /**
-     * <code>.lh_proto.WfRunRequestPb wf_run_request = 9;</code>
-     * @return Whether the wfRunRequest field is set.
-     */
-    @java.lang.Override
-    public boolean hasWfRunRequest() {
-      return payloadCase_ == 9;
-    }
-    /**
-     * <code>.lh_proto.WfRunRequestPb wf_run_request = 9;</code>
-     * @return The wfRunRequest.
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.WfRunRequestPb getWfRunRequest() {
-      if (wfRunRequestBuilder_ == null) {
-        if (payloadCase_ == 9) {
-          return (io.littlehorse.common.proto.WfRunRequestPb) payload_;
-        }
-        return io.littlehorse.common.proto.WfRunRequestPb.getDefaultInstance();
-      } else {
-        if (payloadCase_ == 9) {
-          return wfRunRequestBuilder_.getMessage();
-        }
-        return io.littlehorse.common.proto.WfRunRequestPb.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.lh_proto.WfRunRequestPb wf_run_request = 9;</code>
-     */
-    public Builder setWfRunRequest(io.littlehorse.common.proto.WfRunRequestPb value) {
-      if (wfRunRequestBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        payload_ = value;
-        onChanged();
-      } else {
-        wfRunRequestBuilder_.setMessage(value);
-      }
-      payloadCase_ = 9;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.WfRunRequestPb wf_run_request = 9;</code>
-     */
-    public Builder setWfRunRequest(
-        io.littlehorse.common.proto.WfRunRequestPb.Builder builderForValue) {
-      if (wfRunRequestBuilder_ == null) {
-        payload_ = builderForValue.build();
-        onChanged();
-      } else {
-        wfRunRequestBuilder_.setMessage(builderForValue.build());
-      }
-      payloadCase_ = 9;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.WfRunRequestPb wf_run_request = 9;</code>
-     */
-    public Builder mergeWfRunRequest(io.littlehorse.common.proto.WfRunRequestPb value) {
-      if (wfRunRequestBuilder_ == null) {
-        if (payloadCase_ == 9 &&
-            payload_ != io.littlehorse.common.proto.WfRunRequestPb.getDefaultInstance()) {
-          payload_ = io.littlehorse.common.proto.WfRunRequestPb.newBuilder((io.littlehorse.common.proto.WfRunRequestPb) payload_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          payload_ = value;
-        }
-        onChanged();
-      } else {
-        if (payloadCase_ == 9) {
-          wfRunRequestBuilder_.mergeFrom(value);
-        }
-        wfRunRequestBuilder_.setMessage(value);
-      }
-      payloadCase_ = 9;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.WfRunRequestPb wf_run_request = 9;</code>
-     */
-    public Builder clearWfRunRequest() {
-      if (wfRunRequestBuilder_ == null) {
-        if (payloadCase_ == 9) {
-          payloadCase_ = 0;
-          payload_ = null;
-          onChanged();
-        }
-      } else {
-        if (payloadCase_ == 9) {
-          payloadCase_ = 0;
-          payload_ = null;
-        }
-        wfRunRequestBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>.lh_proto.WfRunRequestPb wf_run_request = 9;</code>
-     */
-    public io.littlehorse.common.proto.WfRunRequestPb.Builder getWfRunRequestBuilder() {
-      return getWfRunRequestFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.lh_proto.WfRunRequestPb wf_run_request = 9;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.WfRunRequestPbOrBuilder getWfRunRequestOrBuilder() {
-      if ((payloadCase_ == 9) && (wfRunRequestBuilder_ != null)) {
-        return wfRunRequestBuilder_.getMessageOrBuilder();
-      } else {
-        if (payloadCase_ == 9) {
-          return (io.littlehorse.common.proto.WfRunRequestPb) payload_;
-        }
-        return io.littlehorse.common.proto.WfRunRequestPb.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.lh_proto.WfRunRequestPb wf_run_request = 9;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.WfRunRequestPb, io.littlehorse.common.proto.WfRunRequestPb.Builder, io.littlehorse.common.proto.WfRunRequestPbOrBuilder> 
-        getWfRunRequestFieldBuilder() {
-      if (wfRunRequestBuilder_ == null) {
-        if (!(payloadCase_ == 9)) {
-          payload_ = io.littlehorse.common.proto.WfRunRequestPb.getDefaultInstance();
-        }
-        wfRunRequestBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.WfRunRequestPb, io.littlehorse.common.proto.WfRunRequestPb.Builder, io.littlehorse.common.proto.WfRunRequestPbOrBuilder>(
-                (io.littlehorse.common.proto.WfRunRequestPb) payload_,
-                getParentForChildren(),
-                isClean());
-        payload_ = null;
-      }
-      payloadCase_ = 9;
-      onChanged();;
-      return wfRunRequestBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

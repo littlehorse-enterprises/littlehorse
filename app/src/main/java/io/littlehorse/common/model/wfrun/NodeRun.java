@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.GETable;
-import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.server.Tag;
 import io.littlehorse.common.model.wfrun.subnoderun.EntrypointRun;
@@ -298,10 +297,6 @@ public class NodeRun extends GETable<NodeRunPb> {
     @JsonIgnore
     public NodeCase getNodeType() {
         return getNode().type;
-    }
-
-    public void processEvent(WfRunEvent e) {
-        getSubNodeRun().processEvent(e);
     }
 
     /*

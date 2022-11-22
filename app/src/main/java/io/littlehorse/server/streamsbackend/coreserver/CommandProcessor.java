@@ -7,28 +7,28 @@ import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 
-public class CoreServerProcessor
-    implements Processor<String, Command, String, CoreServerProcessorOutput> {
+public class CommandProcessor
+    implements Processor<String, Command, String, CommandProcessorOutput> {
 
-    private ProcessorContext<String, CoreServerProcessorOutput> ctx;
-    private CoreServerProcessorDaoImpl backend;
+    private ProcessorContext<String, CommandProcessorOutput> ctx;
+    private CommandProcessorDaoImpl backend;
     private LHConfig config;
 
-    public CoreServerProcessor(LHConfig config) {
+    public CommandProcessor(LHConfig config) {
         this.config = config;
     }
 
     @Override
-    public void init(final ProcessorContext<String, CoreServerProcessorOutput> ctx) {
+    public void init(final ProcessorContext<String, CommandProcessorOutput> ctx) {
         this.ctx = ctx;
-        backend = new CoreServerProcessorDaoImpl(this.ctx, config);
+        backend = new CommandProcessorDaoImpl(this.ctx, config);
     }
 
     @Override
     public void process(final Record<String, Command> commandRecord) {
         try {
             Command command = commandRecord.value();
-            LHSerializable<?> response = command.process(backend);
+            LHSerializable<?> response = command.process(backend, config);
             if (command.hasResponse()) {
                 // TOOD: save the response
                 backend.saveResponse(response, command);

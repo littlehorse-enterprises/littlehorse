@@ -6,8 +6,8 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.GETable;
-import io.littlehorse.common.model.command.subcommand.ExternalEvent;
-import io.littlehorse.common.model.event.WfRunEvent;
+import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
+import io.littlehorse.common.model.command.subcommand.TaskStartedEvent;
 import io.littlehorse.common.model.meta.ThreadSpec;
 import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.meta.WfSpec;
@@ -157,7 +157,7 @@ public class WfRun extends GETable<WfRunPb> {
     public WfSpec wfSpec;
 
     @JsonIgnore
-    public CommandProcessorDao stores;
+    public CommandProcessorDao cmdDao;
 
     public ThreadRun startThread(
         String threadName,
@@ -262,7 +262,7 @@ public class WfRun extends GETable<WfRunPb> {
             ThreadSpec iSpec = wfSpec.threadSpecs.get(pi.handlerSpecName);
             if (iSpec.variableDefs.size() > 0) {
                 vars = new HashMap<>();
-                ExternalEvent event = stores.getExternalEvent(pi.externalEventId);
+                ExternalEvent event = cmdDao.getExternalEvent(pi.externalEventId);
                 vars.put(LHConstants.EXT_EVT_HANDLER_VAR, event.content);
             } else {
                 vars = new HashMap<>();
@@ -373,18 +373,23 @@ public class WfRun extends GETable<WfRunPb> {
         }
     }
 
-    /*
-     * TODO: This is kind of a mess and I haven't logically gone through to determine
-     * how many of the loops are necessary. All we know is that "the tests pass"...
-     * there may be some missing holes if our tests aren't complete; or there may
-     * be some unnecessary computation. Need to go through and do a logical analysis.
-     */
-    public void processEvent(WfRunEvent e) {
-        // Any structural changes to the threadruns
+    public void processTaskResult(TaskResultEvent event) {
+        ThreadRun handler = threadRuns.get(event.threadRunNumber);
+        handler.processTaskResultEvent(event);
+        advance(event.time);
+    }
+
+    public void processTaskStart(TaskStartedEvent event) {
+        ThreadRun handler = threadRuns.get(event.threadRunNumber);
+        handler.processTaskStartedEvent(event);
+        advance(event.time);
+    }
+
+    public void processExternalEvent(ExternalEvent event) {
         for (ThreadRun thread : threadRuns) {
-            thread.processEvent(e);
+            thread.processExternalEvent(event);
         }
-        advance(e.time);
+        advance(event.getCreatedAt());
     }
 
     // As a precondition, the status of the calling thread must already be updated to complete.

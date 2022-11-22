@@ -1,9 +1,9 @@
 package io.littlehorse.server.oldprocessors.util;
 
-import io.littlehorse.common.model.command.subcommand.ExternalEvent;
-import io.littlehorse.common.model.event.TaskScheduleRequest;
+import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.NodeRun;
+import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import java.util.ArrayList;

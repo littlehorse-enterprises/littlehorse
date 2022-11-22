@@ -1,15 +1,16 @@
 package io.littlehorse.server;
 
-import io.littlehorse.common.model.command.subcommand.ExternalEvent;
-import io.littlehorse.common.model.event.TaskScheduleRequest;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.NodeRun;
+import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
+import java.util.Date;
 
 /*
  * All PUT() commands throw errors if the processing partition does not match
@@ -17,6 +18,8 @@ import io.littlehorse.common.util.LHGlobalMetaStores;
  */
 public interface CommandProcessorDao {
     public String getWfRunEventQueue();
+
+    public Date getEventTime();
 
     public void putNodeRun(NodeRun nr);
 

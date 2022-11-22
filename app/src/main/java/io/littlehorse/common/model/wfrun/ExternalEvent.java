@@ -1,12 +1,10 @@
-package io.littlehorse.common.model.command.subcommand;
+package io.littlehorse.common.model.wfrun;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.GETable;
-import io.littlehorse.common.model.event.WfRunSubEvent;
 import io.littlehorse.common.model.server.Tag;
-import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.proto.ExternalEventPb;
 import io.littlehorse.common.proto.ExternalEventPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
@@ -14,7 +12,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class ExternalEvent extends GETable<ExternalEventPb> implements WfRunSubEvent {
+public class ExternalEvent extends GETable<ExternalEventPb> {
 
     @JsonIgnore // We want Jackson to show  the full ID, not this.
     public String guid;
@@ -24,7 +22,7 @@ public class ExternalEvent extends GETable<ExternalEventPb> implements WfRunSubE
     public Date createdAt;
     public VariableValue content;
     public Integer threadRunNumber;
-    public Integer taskRunPosition;
+    public Integer nodeRunPosition;
     public boolean claimed;
 
     public boolean hasResponse() {
@@ -47,8 +45,8 @@ public class ExternalEvent extends GETable<ExternalEventPb> implements WfRunSubE
         if (p.hasThreadRunNumber()) {
             threadRunNumber = p.getThreadRunNumber();
         }
-        if (p.hasTaskRunPosition()) {
-            taskRunPosition = p.getTaskRunPosition();
+        if (p.hasNodeRunPosition()) {
+            nodeRunPosition = p.getNodeRunPosition();
         }
     }
 
@@ -65,8 +63,8 @@ public class ExternalEvent extends GETable<ExternalEventPb> implements WfRunSubE
         if (threadRunNumber != null) {
             out.setThreadRunNumber(threadRunNumber);
         }
-        if (taskRunPosition != null) {
-            out.setTaskRunPosition(taskRunPosition);
+        if (nodeRunPosition != null) {
+            out.setNodeRunPosition(nodeRunPosition);
         }
 
         return out;
@@ -130,6 +128,6 @@ public class ExternalEvent extends GETable<ExternalEventPb> implements WfRunSubE
     }
 
     public Integer getNodeRunPosition() {
-        return taskRunPosition;
+        return nodeRunPosition;
     }
 }
