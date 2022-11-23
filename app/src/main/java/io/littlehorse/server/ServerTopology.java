@@ -3,12 +3,14 @@ package io.littlehorse.server;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.command.Command;
+import io.littlehorse.common.model.command.MetadataCmd;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.util.serde.LHDeserializer;
 import io.littlehorse.common.util.serde.LHSerde;
 import io.littlehorse.server.oldprocessors.TimerProcessor;
 import io.littlehorse.server.streamsbackend.coreserver.CommandProcessor;
 import io.littlehorse.server.streamsbackend.coreserver.CommandProcessorOutput;
+import io.littlehorse.server.streamsbackend.coreserver.GlobalMetadataProcessor;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -29,7 +31,9 @@ public class ServerTopology {
     public static String coreProcessor = "core-processor";
     public static String coreSink = "core-sink";
 
-    public static String globalStore = "global-store";
+    public static String globalMetaSource = "global-metadata-cl-source";
+    public static String globalStore = "global-metadata-store";
+    public static String globalMetaProcessor = "global-metadata-processor";
 
     public static Topology initCoreTopology(LHConfig config) {
         Topology topo = new Topology();
@@ -68,10 +72,29 @@ public class ServerTopology {
         );
         topo.addStateStore(partitionedStoreBuilder, coreProcessor);
 
+        // There's a topic for global communication, which is used for two things:
+        // 1. broadcasting global metadata to all instances
+        // 2. (LATER) communicating about how many items are in each queue for
+        //    each partition.
+        // This topic is config.getGlobalMetadatCLTopicName()
+        // topo.addSource(globalMetaSource, Serdes.String().deserializer(), new LHDeserializer<>(), config))
+
         StoreBuilder<KeyValueStore<String, Bytes>> globalStoreBuilder = Stores.keyValueStoreBuilder(
             Stores.persistentKeyValueStore(globalStore),
             Serdes.String(),
             Serdes.Bytes()
+        );
+        topo.addGlobalStore(
+            globalStoreBuilder,
+            globalMetaSource,
+            Serdes.String().deserializer(),
+            new LHDeserializer<MetadataCmd>(MetadataCmd.class, config),
+            config.getGlobalMetadataCLTopicName(),
+            globalMetaProcessor,
+            () -> {
+                return new GlobalMetadataProcessor();
+            }
+            // add lambda to return the processor
         );
         return topo;
     }

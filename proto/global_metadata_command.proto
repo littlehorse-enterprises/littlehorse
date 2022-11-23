@@ -5,10 +5,7 @@ option go_package = ".;model";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.common.proto";
 
-import "status.proto";
-import "variable.proto";
 import "wf_spec.proto";
-import "google/protobuf/timestamp.proto";
 
 /*
 Certain metadata objects (eg. WfSpec, TaskDef, ExternalEventDef) are "global"
@@ -50,8 +47,8 @@ Therefore, we should key things by their full store keys.
 
 message MetadataCmdPb {
     oneof metadata_cmd {
-        WfSpec wf_spec_created = 1;
-        TaskDef task_def_created = 2;
-        ExternalEventDef external_event_def_created = 3;
+        WfSpecPb wf_spec_created = 1;
+        TaskDefPb task_def_created = 2;
+        ExternalEventDefPb external_event_def_created = 3;
     }
 }

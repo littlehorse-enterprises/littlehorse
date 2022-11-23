@@ -5,6 +5,7 @@ import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.CommandResult;
+import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.server.IndexEntryAction;
@@ -39,6 +40,8 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
     private Map<String, ExternalEvent> extEvtPuts;
     private Map<String, WfRun> wfRunPuts;
     private Map<String, WfSpec> wfSpecPuts;
+    private Map<String, TaskDef> taskDefPuts;
+    private Map<String, ExternalEventDef> extEvtDefPuts;
     private List<TaskScheduleRequest> tasksToSchedule;
     private List<LHTimer> timersToSchedule;
     private CommandResult responseToSave;
@@ -81,6 +84,11 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
         extEvtPuts = new HashMap<>();
         wfRunPuts = new HashMap<>();
         wfSpecPuts = new HashMap<>();
+        extEvtDefPuts = new HashMap<>();
+        taskDefPuts = new HashMap<>();
+
+        // TODO: Here is where we want to eventually add some cacheing for GET to
+        // the WfSpec and TaskDef etc.
 
         isHotMetadataPartition =
             ctx.taskId().partition() == config.getHotMetadataPartition();
@@ -88,7 +96,10 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
         KeyValueStore<String, Bytes> rawStore = ctx.getStateStore(
             ServerTopology.coreStore
         );
-        store = new LHLocalStore(rawStore, config);
+        KeyValueStore<String, Bytes> globalStore = ctx.getStateStore(
+            ServerTopology.globalStore
+        );
+        store = new LHLocalStore(rawStore, globalStore, config);
         this.ctx = ctx;
         this.config = config;
 
@@ -142,7 +153,11 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
          *     - Probably should just go through the pain of looking through the
          *       store.
          */
-        return null;
+        if (version == null) {
+            return store.getNewestWfSpec(name, isHotMetadataPartition);
+        } else {
+            return store.getWfSpec(name, version, isHotMetadataPartition);
+        }
     }
 
     @Override
@@ -400,6 +415,9 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
         tasksToSchedule.clear();
         timersToSchedule.clear();
         wfRunPuts.clear();
+        wfSpecPuts.clear();
+        taskDefPuts.clear();
+        extEvtDefPuts.clear();
         responseToSave = null;
     }
 

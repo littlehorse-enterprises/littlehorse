@@ -5,6 +5,7 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
+import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.LHKeyValueIterator;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.StoreUtils;
 import org.apache.kafka.common.serialization.Serdes;
@@ -26,13 +27,13 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
  * of consolidating into one state store far outweigh the extra code written
  * in this directory.
  */
-public class LHPartitionedReadOnlyStore {
+public class LHLocalROStore {
 
     protected ReadOnlyKeyValueStore<String, Bytes> localStore;
     protected ReadOnlyKeyValueStore<String, Bytes> globalStore;
     protected LHConfig config;
 
-    public LHPartitionedReadOnlyStore(
+    public LHLocalROStore(
         ReadOnlyKeyValueStore<String, Bytes> store,
         ReadOnlyKeyValueStore<String, Bytes> globalStore,
         LHConfig config
@@ -92,5 +93,13 @@ public class LHPartitionedReadOnlyStore {
             cls,
             config
         );
+    }
+
+    public WfSpec getNewestWfSpec(String name, boolean isHotMetaPartition) {
+        return null;
+    }
+
+    public WfSpec getWfSpec(String name, int version, boolean isHotMetaPartition) {
+        return null;
     }
 }
