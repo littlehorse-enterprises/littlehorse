@@ -18,9 +18,11 @@ import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.IndexActionEnum;
+import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.server.CommandProcessorDao;
 import io.littlehorse.server.ServerTopology;
-import io.littlehorse.server.streamsbackend.storeinternals.LHLocalStore;
+import io.littlehorse.server.streamsbackend.storeinternals.LHROStoreWrapper;
+import io.littlehorse.server.streamsbackend.storeinternals.LHStoreWrapper;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.LHIterKeyValue;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.LHKeyValueIterator;
 import java.util.ArrayList;
@@ -32,6 +34,7 @@ import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
+import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
 public class CommandProcessorDaoImpl implements CommandProcessorDao {
 
@@ -71,7 +74,8 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
      */
     private boolean isHotMetadataPartition;
 
-    private LHLocalStore store;
+    private LHStoreWrapper localStore;
+    private LHROStoreWrapper globalStore;
     private ProcessorContext<String, CommandProcessorOutput> ctx;
     private LHConfig config;
 
@@ -93,13 +97,14 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
         isHotMetadataPartition =
             ctx.taskId().partition() == config.getHotMetadataPartition();
 
-        KeyValueStore<String, Bytes> rawStore = ctx.getStateStore(
+        KeyValueStore<String, Bytes> rawLocalStore = ctx.getStateStore(
             ServerTopology.coreStore
         );
-        KeyValueStore<String, Bytes> globalStore = ctx.getStateStore(
+        ReadOnlyKeyValueStore<String, Bytes> rawGlobalStore = ctx.getStateStore(
             ServerTopology.globalStore
         );
-        store = new LHLocalStore(rawStore, globalStore, config);
+        localStore = new LHStoreWrapper(rawLocalStore, config);
+        globalStore = new LHROStoreWrapper(rawGlobalStore, config);
         this.ctx = ctx;
         this.config = config;
 
@@ -117,7 +122,7 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
         String key = NodeRun.getStoreKey(wfRunId, threadNum, position);
         NodeRun out = nodeRunPuts.get(key);
         if (out == null) {
-            out = store.get(key, NodeRun.class);
+            out = localStore.get(key, NodeRun.class);
             // Little trick so that if it gets modified it is automatically saved
             if (out != null) nodeRunPuts.put(key, out);
         }
@@ -136,28 +141,63 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
 
     @Override
     public void putWfSpec(WfSpec spec) {
+        if (!isHotMetadataPartition) {
+            throw new RuntimeException(
+                "Tried to put metadata despite being on the wrong partition!"
+            );
+        }
         wfSpecPuts.put(spec.getSubKey(), spec);
     }
 
     @Override
-    public WfSpec getWfSpec(String name, Integer version) {
-        /*
-         * Lots of things could happen here.
-         * - provide specific version
-         *   - First check for wfRunPuts of specific version
-         *   - Then check the store (local if on hot partition else global)
-         * - don't provide specific version
-         *   - Need to keep a cache that the global store processor populates
-         *   - It orders the things by name.
-         *   - But what about the hot partition?
-         *     - Probably should just go through the pain of looking through the
-         *       store.
-         */
-        if (version == null) {
-            return store.getNewestWfSpec(name, isHotMetadataPartition);
-        } else {
-            return store.getWfSpec(name, version, isHotMetadataPartition);
+    public void putExternalEventDef(ExternalEventDef spec) {
+        if (!isHotMetadataPartition) {
+            throw new RuntimeException(
+                "Tried to put metadata despite being on the wrong partition!"
+            );
         }
+        extEvtDefPuts.put(spec.getSubKey(), spec);
+    }
+
+    @Override
+    public void putTaskDef(TaskDef spec) {
+        if (!isHotMetadataPartition) {
+            throw new RuntimeException(
+                "Tried to put metadata despite being on the wrong partition!"
+            );
+        }
+        taskDefPuts.put(spec.getSubKey(), spec);
+    }
+
+    @Override
+    public WfSpec getWfSpec(String name, Integer version) {
+        if (isHotMetadataPartition) {
+            return localStore.getWfSpec(name, version);
+        } else {
+            return globalStore.getWfSpec(name, version);
+        }
+    }
+
+    @Override
+    public TaskDef getTaskDef(String name, Integer version) {
+        if (isHotMetadataPartition) {
+            return localStore.getTaskDef(name, version);
+        } else {
+            return globalStore.getTaskDef(name, version);
+        }
+    }
+
+    @Override
+    public ExternalEventDef getExternalEventDef(String name, Integer version) {
+        if (isHotMetadataPartition) {
+            return localStore.getExternalEventDef(name, version);
+        } else {
+            return globalStore.getExternalEventDef(name, version);
+        }
+    }
+
+    public LHGlobalMetaStores getGlobalMetaStores() {
+        return this;
     }
 
     @Override
@@ -170,7 +210,7 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
         String key = Variable.getObjectId(wfRunId, threadNum, name);
         Variable out = variablePuts.get(key);
         if (out == null) {
-            out = store.get(key, Variable.class);
+            out = localStore.get(key, Variable.class);
         }
         return out;
     }
@@ -193,7 +233,7 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
         // so then it could take seconds, which holds up the entire scheduling).
         ExternalEvent out = null;
         try (
-            LHKeyValueIterator<ExternalEvent> iter = store.prefixScan(
+            LHKeyValueIterator<ExternalEvent> iter = localStore.prefixScan(
                 extEvtPrefix,
                 ExternalEvent.class
             )
@@ -229,7 +269,7 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
         if (extEvtPuts.containsKey(externalEventId)) {
             return extEvtPuts.get(externalEventId);
         }
-        ExternalEvent out = store.get(externalEventId, ExternalEvent.class);
+        ExternalEvent out = localStore.get(externalEventId, ExternalEvent.class);
         if (out != null) extEvtPuts.put(externalEventId, out);
         return out;
     }
@@ -255,7 +295,7 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
         if (out != null) {
             return out;
         }
-        out = store.get(id, WfRun.class);
+        out = localStore.get(id, WfRun.class);
         wfRunPuts.put(id, out);
         return out;
     }
@@ -293,7 +333,7 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
     private void flush() {
         if (responseToSave != null) {
             // TODO: Add a timer to delete the Response in 30 seconds
-            store.put(responseToSave);
+            localStore.put(responseToSave);
         }
 
         for (NodeRun nodeRun : nodeRunPuts.values()) {
@@ -319,7 +359,7 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
     }
 
     private void forwardTask(TaskScheduleRequest tsr) {
-        TaskDef taskDef = store.get(tsr.taskDefId, TaskDef.class);
+        TaskDef taskDef = localStore.get(tsr.taskDefId, TaskDef.class);
         CommandProcessorOutput output = new CommandProcessorOutput(
             taskDef.queueName,
             tsr,
@@ -350,7 +390,7 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
     }
 
     private void saveAndIndexGETable(GETable<?> thing) {
-        store.put(thing);
+        localStore.put(thing);
 
         // We keep a local copy of all of the Tags for the entity.
         // If the tags for an entity change (eg. remove the "STATUS: RUNNING" tag
@@ -358,7 +398,7 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
         // ones. Therefore, we need to keep a record of what they were so we can
         // send "delete tag" requests.
 
-        Tags oldEntriesObj = store.getTagsCache(thing);
+        Tags oldEntriesObj = localStore.getTagsCache(thing);
 
         List<Tag> oldIdx =
             (oldEntriesObj == null ? new ArrayList<>() : oldEntriesObj.entries);
@@ -405,7 +445,7 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
             }
         }
 
-        store.putTagsCache(thing);
+        localStore.putTagsCache(thing);
     }
 
     private void clearThingsToWrite() {

@@ -17,7 +17,7 @@ import java.util.Date;
  * All PUT() commands throw errors if the processing partition does not match
  * the partition of the resource being PUT.
  */
-public interface CommandProcessorDao {
+public interface CommandProcessorDao extends LHGlobalMetaStores {
     public String getWfRunEventQueue();
 
     public void setCommand(Command command);

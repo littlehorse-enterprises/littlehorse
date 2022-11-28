@@ -49,8 +49,21 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
         return name;
     }
 
+    /*
+     * This determines ordering. In order to ensure quick lookups for the WfSpec with
+     * a given name and the newest version, we need the versions to be ordered
+     * **lexicographically**, not just numerically.
+     */
     public String getSubKey() {
-        return name + "/" + version;
+        return getSubKey(name, version);
+    }
+
+    public static String getSubKey(String name, int version) {
+        return name + "/" + LHUtil.toLHDbVersionFormat(version);
+    }
+
+    public static Pair<String, Integer> parseSubKey(String subKey) {
+        return Pair.of(subKey.split("/")[0], Integer.valueOf(subKey.split("/")[1]));
     }
 
     public Date getCreatedAt() {

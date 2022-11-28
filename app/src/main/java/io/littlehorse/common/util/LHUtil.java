@@ -69,6 +69,10 @@ public class LHUtil {
         return date == null ? "null" : String.format("%012d", date.getTime());
     }
 
+    public static String toLHDbVersionFormat(int version) {
+        return String.format("%05d", version);
+    }
+
     public static String toLhDbFormat(Long val) {
         return val == null ? "null" : String.format("%012d", val);
     }

@@ -10,29 +10,23 @@ import io.littlehorse.server.streamsbackend.storeinternals.utils.StoreUtils;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueStore;
 
-public class LHLocalStore extends LHLocalROStore {
+public class LHStoreWrapper extends LHROStoreWrapper {
 
-    private KeyValueStore<String, Bytes> localStore;
+    private KeyValueStore<String, Bytes> store;
 
-    // private KeyValueStore<String, Bytes> globalStore;
-
-    public LHLocalStore(
-        KeyValueStore<String, Bytes> localStore,
-        KeyValueStore<String, Bytes> globalStore,
-        LHConfig config
-    ) {
-        super(localStore, globalStore, config);
-        this.localStore = localStore;
+    public LHStoreWrapper(KeyValueStore<String, Bytes> store, LHConfig config) {
+        super(store, config);
+        this.store = store;
     }
 
     public void put(Storeable<?> thing) {
         String storeKey = StoreUtils.getStoreKey(thing);
-        localStore.put(storeKey, new Bytes(thing.toBytes(config)));
+        store.put(storeKey, new Bytes(thing.toBytes(config)));
     }
 
     public Tags getTagsCache(GETable<?> thing) {
         String tagCacheKey = StoreUtils.getTagsCacheKey(thing);
-        Bytes raw = localStore.get(tagCacheKey);
+        Bytes raw = store.get(tagCacheKey);
         if (raw == null) {
             return null;
         }
@@ -51,6 +45,6 @@ public class LHLocalStore extends LHLocalROStore {
         Tags newTagsCache = new Tags();
         newTagsCache.entries = thing.getTags();
 
-        localStore.put(tagCacheKey, new Bytes(newTagsCache.toBytes(config)));
+        store.put(tagCacheKey, new Bytes(newTagsCache.toBytes(config)));
     }
 }

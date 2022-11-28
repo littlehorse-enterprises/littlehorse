@@ -5,6 +5,8 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
+import io.littlehorse.common.model.meta.ExternalEventDef;
+import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.LHKeyValueIterator;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.StoreUtils;
@@ -27,19 +29,16 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
  * of consolidating into one state store far outweigh the extra code written
  * in this directory.
  */
-public class LHLocalROStore {
+public class LHROStoreWrapper {
 
-    protected ReadOnlyKeyValueStore<String, Bytes> localStore;
-    protected ReadOnlyKeyValueStore<String, Bytes> globalStore;
+    protected ReadOnlyKeyValueStore<String, Bytes> store;
     protected LHConfig config;
 
-    public LHLocalROStore(
+    public LHROStoreWrapper(
         ReadOnlyKeyValueStore<String, Bytes> store,
-        ReadOnlyKeyValueStore<String, Bytes> globalStore,
         LHConfig config
     ) {
-        this.localStore = store;
-        this.globalStore = globalStore;
+        this.store = store;
         this.config = config;
     }
 
@@ -47,7 +46,7 @@ public class LHLocalROStore {
         String objectId,
         Class<T> cls
     ) {
-        Bytes raw = localStore.get(StoreUtils.getStoreKey(objectId, cls));
+        Bytes raw = store.get(StoreUtils.getStoreKey(objectId, cls));
         if (raw == null) {
             return null;
         }
@@ -70,7 +69,7 @@ public class LHLocalROStore {
     ) {
         String compositePrefix = StoreUtils.getStoreKey(prefix, cls);
         return new LHKeyValueIterator<>(
-            localStore.prefixScan(compositePrefix, Serdes.String().serializer()),
+            store.prefixScan(compositePrefix, Serdes.String().serializer()),
             cls,
             config
         );
@@ -88,18 +87,75 @@ public class LHLocalROStore {
         // greater than Z. We'll go with the '~', which is the greatest Ascii
         // character.
         String end = start + '~';
-        return new LHKeyValueIterator<>(
-            localStore.reverseRange(end, start),
-            cls,
-            config
-        );
+        return new LHKeyValueIterator<>(store.reverseRange(end, start), cls, config);
     }
 
-    public WfSpec getNewestWfSpec(String name, boolean isHotMetaPartition) {
-        return null;
+    public WfSpec getWfSpec(String name, Integer version) {
+        if (version == null) {
+            // The WfSpec's are ordered according to their version in ascending order.
+            // Therefore, we need to do a reverse prefix scan over the subKey
+            // f"WfSpec/{name}/" and take the first one.
+            LHKeyValueIterator<WfSpec> iterator = null;
+            try {
+                iterator = reversePrefixScan(name + "/", WfSpec.class);
+                if (iterator.hasNext()) {
+                    return iterator.next().getValue();
+                } else {
+                    return null;
+                }
+            } finally {
+                if (iterator != null) {
+                    iterator.close();
+                }
+            }
+        } else {
+            return get(WfSpec.getSubKey(name, version), WfSpec.class);
+        }
     }
 
-    public WfSpec getWfSpec(String name, int version, boolean isHotMetaPartition) {
-        return null;
+    public TaskDef getTaskDef(String name, Integer version) {
+        if (version == null) {
+            // The TaskDefs are ordered according to their version in ascending order.
+            // Therefore, we need to do a reverse prefix scan over the subKey
+            // f"TaskDef/{name}/" and take the first one.
+            LHKeyValueIterator<TaskDef> iterator = null;
+            try {
+                iterator = reversePrefixScan(name + "/", TaskDef.class);
+                if (iterator.hasNext()) {
+                    return iterator.next().getValue();
+                } else {
+                    return null;
+                }
+            } finally {
+                if (iterator != null) {
+                    iterator.close();
+                }
+            }
+        } else {
+            return get(WfSpec.getSubKey(name, version), TaskDef.class);
+        }
+    }
+
+    public ExternalEventDef getExternalEventDef(String name, Integer version) {
+        if (version == null) {
+            // The ExternalEventDefs are ordered according to their version in ascending order.
+            // Therefore, we need to do a reverse prefix scan over the subKey
+            // f"ExternalEventDef/{name}/" and take the first one.
+            LHKeyValueIterator<ExternalEventDef> iterator = null;
+            try {
+                iterator = reversePrefixScan(name + "/", ExternalEventDef.class);
+                if (iterator.hasNext()) {
+                    return iterator.next().getValue();
+                } else {
+                    return null;
+                }
+            } finally {
+                if (iterator != null) {
+                    iterator.close();
+                }
+            }
+        } else {
+            return get(WfSpec.getSubKey(name, version), ExternalEventDef.class);
+        }
     }
 }

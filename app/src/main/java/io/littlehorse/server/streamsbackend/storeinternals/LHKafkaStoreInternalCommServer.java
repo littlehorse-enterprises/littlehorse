@@ -73,15 +73,17 @@ public class LHKafkaStoreInternalCommServer implements Closeable {
         return coreStreams.store(params);
     }
 
-    private ReadOnlyKeyValueStore<String, Bytes> getGlobalStore() {
-        StoreQueryParameters<ReadOnlyKeyValueStore<String, Bytes>> params = StoreQueryParameters.fromNameAndType(
-            ServerTopology.globalStore,
-            QueryableStoreTypes.keyValueStore()
-        );
-        return coreStreams.store(params);
-    }
+    // // Unclear if this is necessary yet.
+    // private LHROStoreWrapper getGlobalStore() {
+    //     StoreQueryParameters<ReadOnlyKeyValueStore<String, Bytes>> params = StoreQueryParameters.fromNameAndType(
+    //         ServerTopology.globalStore,
+    //         QueryableStoreTypes.keyValueStore()
+    //     );
+    //     ReadOnlyKeyValueStore<String, Bytes> rawGStore = coreStreams.store(params);
+    //     return new LHROStoreWrapper(rawGStore, config);
+    // }
 
-    private LHLocalROStore getLocalStore(
+    private LHROStoreWrapper getLocalStore(
         Integer specificPartition,
         boolean enableStaleStores
     ) {
@@ -89,8 +91,7 @@ public class LHKafkaStoreInternalCommServer implements Closeable {
             specificPartition,
             enableStaleStores
         );
-        ReadOnlyKeyValueStore<String, Bytes> globalStore = getGlobalStore();
-        return new LHLocalROStore(rawStore, globalStore, config);
+        return new LHROStoreWrapper(rawStore, config);
     }
 
     public void start() throws IOException {
@@ -246,7 +247,7 @@ public class LHKafkaStoreInternalCommServer implements Closeable {
             WaitForCommandResultPb req,
             StreamObserver<WaitForCommandResultReplyPb> ctx
         ) {
-            LHLocalROStore store;
+            LHROStoreWrapper store;
             try {
                 store = getLocalStore(req.getSpecificPartition(), false);
             } catch (Exception exn) {
