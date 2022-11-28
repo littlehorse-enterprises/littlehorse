@@ -1,44 +1,34 @@
 package io.littlehorse.server.streamsbackend.coreserver;
 
-import io.littlehorse.common.model.command.MetadataCmd;
-import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.streamsbackend.KafkaStreamsBackend;
+import io.littlehorse.server.ServerTopology;
+import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
+import org.apache.kafka.streams.state.KeyValueStore;
 
-public class GlobalMetadataProcessor
-    implements Processor<String, MetadataCmd, Void, Void> {
+public class GlobalMetadataProcessor implements Processor<String, Bytes, Void, Void> {
 
-    private boolean isHotPartition;
-    private KafkaStreamsBackend backend;
-
-    public static String WF_SPEC_PREFIX = "WF_SPEC";
-    public static String TASK_DEF_PREFIX = "TASK_DEF";
-    public static String EXTERNAL_EVENT_DEF_PREFIX = "EXTERNAL_EVENT_DEF";
+    private KeyValueStore<String, Bytes> store;
 
     public void init(final ProcessorContext<Void, Void> ctx) {
-        // TODO: Maybe do something here...?
+        store = ctx.getStateStore(ServerTopology.globalStore);
     }
 
-    public void process(final Record<String, MetadataCmd> record) {
+    /*
+     * All of the difficult processing (i.e. figuring out store keys etc) has
+     * been done beforehand in the CommandProcessorDaoImpl::flush() method.
+     *
+     * We just need to do a simple thing.
+     */
+    public void process(final Record<String, Bytes> record) {
         String key = record.key();
-        String prefix = key.substring(0, key.indexOf("/"));
+        Bytes value = record.value();
 
-        if (prefix.equals(WF_SPEC_PREFIX)) {
-            processWfSpec(record.value());
-        } else if (prefix.equals(TASK_DEF_PREFIX)) {
-            processTaskDef(record.value());
-        } else if (prefix.equals(EXTERNAL_EVENT_DEF_PREFIX)) {
-            processExternalEventDef(record.value());
+        if (value == null) {
+            store.delete(key);
         } else {
-            LHUtil.log("Invalid key: " + key);
+            store.put(key, value);
         }
     }
-
-    private void processWfSpec(MetadataCmd cmd) {}
-
-    private void processExternalEventDef(MetadataCmd cmd) {}
-
-    private void processTaskDef(MetadataCmd cmd) {}
 }

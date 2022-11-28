@@ -25,6 +25,7 @@ import io.littlehorse.server.streamsbackend.storeinternals.LHROStoreWrapper;
 import io.littlehorse.server.streamsbackend.storeinternals.LHStoreWrapper;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.LHIterKeyValue;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.LHKeyValueIterator;
+import io.littlehorse.server.streamsbackend.storeinternals.utils.StoreUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -349,6 +350,19 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
             saveAndIndexGETable(w);
         }
 
+        for (ExternalEventDef eed : extEvtDefPuts.values()) {
+            saveAndIndexGETable(eed);
+            forwardGlobalMeta(eed);
+        }
+        for (WfSpec ws : wfSpecPuts.values()) {
+            saveAndIndexGETable(ws);
+            forwardGlobalMeta(ws);
+        }
+        for (TaskDef td : taskDefPuts.values()) {
+            saveAndIndexGETable(td);
+            forwardGlobalMeta(td);
+        }
+
         for (LHTimer timer : timersToSchedule) {
             forwardTimer(timer);
         }
@@ -383,6 +397,21 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
         ctx.forward(
             new Record<String, CommandProcessorOutput>(
                 timer.key,
+                output,
+                System.currentTimeMillis()
+            )
+        );
+    }
+
+    private void forwardGlobalMeta(GETable<?> thing) {
+        CommandProcessorOutput output = new CommandProcessorOutput(
+            config.getGlobalMetadataCLTopicName(),
+            thing,
+            StoreUtils.getStoreKey(thing)
+        );
+        ctx.forward(
+            new Record<String, CommandProcessorOutput>(
+                StoreUtils.getStoreKey(thing),
                 output,
                 System.currentTimeMillis()
             )

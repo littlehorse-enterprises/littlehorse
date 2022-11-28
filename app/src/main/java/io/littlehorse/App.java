@@ -137,5 +137,8 @@ has how many pending tasks in what queue.
 We want to make the input topic a compacted topic in order to reduce rebalance time.
 Therefore, we should key things by their full store keys.
 
+We also want to reduce copying/deserializing if necessary. Therefore, we'll ensure that
+the data input to the topic is just the raw bytes that gets stored.
+
 *******
 */

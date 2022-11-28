@@ -3,14 +3,14 @@ package io.littlehorse.testworker;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
 import io.littlehorse.common.model.command.subcommand.TaskStartedEvent;
-import io.littlehorse.common.model.event.WfRunEvent;
 import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
 import io.littlehorse.common.model.wfrun.VariableValue;
+import io.littlehorse.common.proto.CommandPb.CommandCase;
 import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.proto.VariableTypePb;
-import io.littlehorse.common.proto.WfRunEventPb.EventCase;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import java.time.Duration;
@@ -46,6 +46,8 @@ public class TestWorker {
     private List<TaskScheduleRequest> acknowledgedTasks;
     private Map<TopicPartition, OffsetAndMetadata> offsetMap;
 
+    public static final int NUMM_WORKER_THREADS = 12;
+
     public TestWorker(LHConfig config) {
         this.prod = config.getProducer();
         this.txnProd = config.getTxnProducer();
@@ -56,10 +58,10 @@ public class TestWorker {
                 )
             );
         this.config = config;
-        this.threadPool = Executors.newFixedThreadPool(config.getWorkerThreads());
+        this.threadPool = Executors.newFixedThreadPool(NUMM_WORKER_THREADS);
         acknowledgedTasks = new ArrayList<>();
         offsetMap = new HashMap<>();
-        availThreadsSemaphore = new Semaphore(config.getWorkerThreads());
+        availThreadsSemaphore = new Semaphore(NUMM_WORKER_THREADS);
 
         Runtime
             .getRuntime()
@@ -122,16 +124,15 @@ public class TestWorker {
         se.taskRunNumber = tsr.taskRunNumber;
         se.taskRunPosition = tsr.taskRunPosition;
         se.threadRunNumber = tsr.threadRunNumber;
+        se.wfRunId = tsr.wfRunId;
         se.time = new Date();
 
-        WfRunEvent event = new WfRunEvent();
-        event.wfRunId = tsr.wfRunId;
-        event.wfSpecId = tsr.wfSpecId;
-        event.time = se.time;
-        event.startedEvent = se;
-        event.type = EventCase.STARTED_EVENT;
+        Command cmd = new Command();
+        cmd.type = CommandCase.TASK_STARTED_EVENT;
+        cmd.taskStartedEvent = se;
+        cmd.time = se.time;
 
-        txnProd.send(tsr.wfRunId, event, tsr.wfRunEventQueue);
+        txnProd.send(tsr.wfRunId, cmd, tsr.wfRunEventQueue);
         acknowledgedTasks.add(tsr);
 
         TopicPartition partition = new TopicPartition(r.topic(), r.partition());
@@ -157,6 +158,7 @@ public class TestWorker {
 
     private void executeHelper(TaskScheduleRequest tsr) throws Exception {
         TaskResultEvent ce = new TaskResultEvent();
+        ce.wfRunId = tsr.wfRunId;
         ce.taskRunNumber = tsr.taskRunNumber;
         ce.taskRunPosition = tsr.taskRunPosition;
         ce.threadRunNumber = tsr.threadRunNumber;
@@ -184,14 +186,12 @@ public class TestWorker {
         ce.stdout.strVal = stdoutStr;
         LHUtil.log(tsr.wfRunId, tsr.threadRunNumber, tsr.taskRunPosition, stdoutStr);
 
-        WfRunEvent event = new WfRunEvent();
-        event.wfRunId = tsr.wfRunId;
-        event.wfSpecId = tsr.wfSpecId;
-        event.time = ce.time;
-        event.taskResult = ce;
-        event.type = EventCase.TASK_RESULT;
+        Command cmd = new Command();
+        cmd.type = CommandCase.TASK_RESULT_EVENT;
+        cmd.taskResultEvent = ce;
+        cmd.time = ce.time;
 
-        prod.send(tsr.wfRunId, event, tsr.wfRunEventQueue).get();
+        prod.send(tsr.wfRunId, cmd, tsr.wfRunEventQueue).get();
         availThreadsSemaphore.release();
     }
 

@@ -3,14 +3,13 @@ package io.littlehorse.server;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.command.Command;
-import io.littlehorse.common.model.command.MetadataCmd;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.util.serde.LHDeserializer;
 import io.littlehorse.common.util.serde.LHSerde;
-import io.littlehorse.server.oldprocessors.TimerProcessor;
 import io.littlehorse.server.streamsbackend.coreserver.CommandProcessor;
 import io.littlehorse.server.streamsbackend.coreserver.CommandProcessorOutput;
 import io.littlehorse.server.streamsbackend.coreserver.GlobalMetadataProcessor;
+import io.littlehorse.server.streamsbackend.tagging.TimerProcessor;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -88,7 +87,7 @@ public class ServerTopology {
             globalStoreBuilder,
             globalMetaSource,
             Serdes.String().deserializer(),
-            new LHDeserializer<MetadataCmd>(MetadataCmd.class, config),
+            Serdes.Bytes().deserializer(),
             config.getGlobalMetadataCLTopicName(),
             globalMetaProcessor,
             () -> {
