@@ -10,6 +10,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.model.command.CommandResult;
 import io.littlehorse.common.proto.CentralStoreQueryPb;
+import io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb;
 import io.littlehorse.common.proto.CentralStoreQueryReplyPb;
 import io.littlehorse.common.proto.LHInternalsGrpc;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsBlockingStub;
@@ -113,30 +114,51 @@ public class LHKafkaStoreInternalCommServer implements Closeable {
         if (meta.activeHost().equals(thisHost)) {
             return getRawStore(null, false).get(fullStoreKey);
         } else {
-            return queryRemoteBytes(meta, fullStoreKey, partitionKey);
+            return queryRemote(
+                meta,
+                CentralStoreSubQueryPb.newBuilder().setKey(fullStoreKey).build()
+            );
         }
     }
 
-    private Bytes queryRemoteBytes(
-        KeyQueryMetadata meta,
-        String fullStoreKey,
-        String partitionKey
-    ) throws LHConnectionError {
+    public Bytes getLastFromPrefix(String prefix, String partitionKey)
+        throws LHConnectionError {
+        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
+            LHConstants.CORE_DATA_STORE_NAME,
+            partitionKey,
+            Serdes.String().serializer()
+        );
+
+        if (meta.activeHost().equals(thisHost)) {
+            return new LHROStoreWrapper(getRawStore(null, false), config)
+                .getLastBytesFromFullPrefix(prefix);
+        } else {
+            return queryRemote(
+                meta,
+                CentralStoreSubQueryPb.newBuilder().setLastFromPrefix(prefix).build()
+            );
+        }
+    }
+
+    private Bytes queryRemote(KeyQueryMetadata meta, CentralStoreSubQueryPb subQuery)
+        throws LHConnectionError {
         LHInternalsBlockingStub client = getInternalClient(meta.activeHost());
         Exception caught = null;
 
         try {
-            CentralStoreQueryReplyPb activeHostReply = client.centralStoreQuery(
+            CentralStoreQueryReplyPb resp = client.centralStoreQuery(
                 CentralStoreQueryPb
                     .newBuilder()
                     .setEnableStaleStores(false)
                     .setSpecificPartition(meta.partition())
-                    .setFullKey(partitionKey)
+                    .setQuery(subQuery)
                     .build()
             );
 
-            if (activeHostReply.getCode() == StoreQueryStatusPb.RSQ_OK) {
-                return new Bytes(activeHostReply.getResult().toByteArray());
+            if (resp.getCode() == StoreQueryStatusPb.RSQ_OK) {
+                return new Bytes(resp.getResult().toByteArray());
+            } else if (resp.getCode() == StoreQueryStatusPb.RSQ_NOT_AVAILABLE) {
+                caught = new LHConnectionError(null, "Could not access store.");
             }
         } catch (Exception exn) {
             // It's probably a runtime exception. TODO: investigate grpc error
@@ -153,7 +175,7 @@ public class LHKafkaStoreInternalCommServer implements Closeable {
                         .newBuilder()
                         .setEnableStaleStores(true)
                         .setSpecificPartition(meta.partition())
-                        .setFullKey(partitionKey)
+                        .setQuery(subQuery)
                         .build()
                 );
 
@@ -230,8 +252,23 @@ public class LHKafkaStoreInternalCommServer implements Closeable {
                 );
                 return;
             }
+            Bytes result = null;
 
-            Bytes result = rawStore.get(req.getFullKey());
+            switch (req.getQuery().getQueryCase()) {
+                case KEY:
+                    result = rawStore.get(req.getQuery().getKey());
+                    break;
+                case LAST_FROM_PREFIX:
+                    result =
+                        new LHROStoreWrapper(rawStore, config)
+                            .getLastBytesFromFullPrefix(
+                                req.getQuery().getLastFromPrefix()
+                            );
+                    break;
+                case QUERY_NOT_SET:
+                default:
+                    throw new RuntimeException("Not possible");
+            }
 
             out.setCode(StoreQueryStatusPb.RSQ_OK);
             if (result != null) {
@@ -260,7 +297,7 @@ public class LHKafkaStoreInternalCommServer implements Closeable {
 
             int iterations = 0;
             CommandResult result = null;
-            while (iterations++ < 500) {
+            while (iterations++ < 500) { // lol
                 result = store.get(req.getCommandId(), CommandResult.class);
                 if (result == null) {
                     try {

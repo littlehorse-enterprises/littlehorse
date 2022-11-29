@@ -36,9 +36,15 @@ message CentralStoreQueryReplyPb {
 }
 
 message CentralStoreQueryPb {
+    message CentralStoreSubQueryPb {
+        oneof query {
+            string key = 1;
+            string last_from_prefix = 2;
+        }
+    }
     bool enable_stale_stores = 1;
-    string full_key = 2;
-    optional int32 specific_partition = 3;
+    optional int32 specific_partition = 2;
+    CentralStoreSubQueryPb query = 3;
 }
 
 message WaitForCommandResultPb {

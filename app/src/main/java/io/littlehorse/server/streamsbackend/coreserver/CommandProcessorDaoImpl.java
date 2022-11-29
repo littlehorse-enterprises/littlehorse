@@ -172,31 +172,38 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
 
     @Override
     public WfSpec getWfSpec(String name, Integer version) {
-        if (isHotMetadataPartition) {
-            return localStore.getWfSpec(name, version);
+        LHROStoreWrapper store = isHotMetadataPartition ? localStore : globalStore;
+        if (version != null) {
+            return store.get(WfSpec.getSubKey(name, version), WfSpec.class);
         } else {
-            return globalStore.getWfSpec(name, version);
+            return store.getLastFromPrefix(name, WfSpec.class);
         }
     }
 
     @Override
     public TaskDef getTaskDef(String name, Integer version) {
-        if (isHotMetadataPartition) {
-            return localStore.getTaskDef(name, version);
+        LHROStoreWrapper store = isHotMetadataPartition ? localStore : globalStore;
+        if (version != null) {
+            return store.get(TaskDef.getSubKey(name, version), TaskDef.class);
         } else {
-            return globalStore.getTaskDef(name, version);
+            return store.getLastFromPrefix(name, TaskDef.class);
         }
     }
 
     @Override
     public ExternalEventDef getExternalEventDef(String name, Integer version) {
-        if (isHotMetadataPartition) {
-            return localStore.getExternalEventDef(name, version);
+        LHROStoreWrapper store = isHotMetadataPartition ? localStore : globalStore;
+        if (version != null) {
+            return store.get(
+                ExternalEventDef.getSubKey(name, version),
+                ExternalEventDef.class
+            );
         } else {
-            return globalStore.getExternalEventDef(name, version);
+            return store.getLastFromPrefix(name, ExternalEventDef.class);
         }
     }
 
+    @Override
     public LHGlobalMetaStores getGlobalMetaStores() {
         return this;
     }

@@ -2,25 +2,30 @@ package io.littlehorse.server.streamsbackend;
 
 import io.grpc.health.v1.HealthCheckResponse.ServingStatus;
 import io.grpc.protobuf.services.HealthStatusManager;
-import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.proto.GetWfSpecPb;
-import io.littlehorse.common.proto.GetWfSpecReplyPb;
-import io.littlehorse.common.proto.LHPublicApiGrpc.LHPublicApiImplBase;
+import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.exceptions.LHConnectionError;
+import io.littlehorse.common.exceptions.LHSerdeError;
+import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.meta.ExternalEventDef;
+import io.littlehorse.common.model.meta.TaskDef;
+import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.ServerTopology;
 import io.littlehorse.server.streamsbackend.storeinternals.LHKafkaStoreInternalCommServer;
 import java.io.IOException;
+import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KafkaStreams.State;
 import org.apache.kafka.streams.KafkaStreams.StateListener;
 import org.apache.kafka.streams.Topology;
 
-public class KafkaStreamsBackend extends LHPublicApiImplBase {
+public class KafkaStreamsBackend {
 
     private KafkaStreams coreStreams;
     private KafkaStreams timerStreams;
     private KafkaStreams tagStreams;
+    private LHConfig config;
 
     private LHKafkaStoreInternalCommServer backendInternalComms;
 
@@ -43,8 +48,116 @@ public class KafkaStreamsBackend extends LHPublicApiImplBase {
             new LHBackendStateListener("tag", grpcHealthCheckThingy)
         );
 
+        this.config = config;
+
         backendInternalComms =
             new LHKafkaStoreInternalCommServer(config, coreStreams);
+    }
+
+    public WfSpec getWfSpec(String name, Integer version) throws LHConnectionError {
+        Bytes specBytes = null;
+        String partitionKey = LHConstants.META_PARTITION_KEY;
+        if (version == null) {
+            specBytes =
+                backendInternalComms.getLastFromPrefix(
+                    WfSpec.getPrefixByName(name),
+                    partitionKey
+                );
+        } else {
+            specBytes =
+                backendInternalComms.getBytes(
+                    WfSpec.getFullKey(name, version),
+                    partitionKey
+                );
+        }
+
+        if (specBytes == null) {
+            return null;
+        } else {
+            try {
+                return LHSerializable.fromBytes(
+                    specBytes.get(),
+                    WfSpec.class,
+                    config
+                );
+            } catch (LHSerdeError exn) {
+                throw new LHConnectionError(
+                    exn,
+                    "Unexpected failure to read response"
+                );
+            }
+        }
+    }
+
+    public TaskDef getTaskDef(String name, Integer version) throws LHConnectionError {
+        Bytes specBytes = null;
+        String partitionKey = LHConstants.META_PARTITION_KEY;
+        if (version == null) {
+            specBytes =
+                backendInternalComms.getLastFromPrefix(
+                    TaskDef.getPrefixByName(name),
+                    partitionKey
+                );
+        } else {
+            specBytes =
+                backendInternalComms.getBytes(
+                    TaskDef.getFullKey(name, version),
+                    partitionKey
+                );
+        }
+
+        if (specBytes == null) {
+            return null;
+        } else {
+            try {
+                return LHSerializable.fromBytes(
+                    specBytes.get(),
+                    TaskDef.class,
+                    config
+                );
+            } catch (LHSerdeError exn) {
+                throw new LHConnectionError(
+                    exn,
+                    "Unexpected failure to read response"
+                );
+            }
+        }
+    }
+
+    public ExternalEventDef getExternalEventDef(String name, Integer version)
+        throws LHConnectionError {
+        Bytes specBytes = null;
+        String partitionKey = LHConstants.META_PARTITION_KEY;
+        if (version == null) {
+            specBytes =
+                backendInternalComms.getLastFromPrefix(
+                    ExternalEventDef.getPrefixByName(name),
+                    partitionKey
+                );
+        } else {
+            specBytes =
+                backendInternalComms.getBytes(
+                    ExternalEventDef.getFullKey(name, version),
+                    partitionKey
+                );
+        }
+
+        if (specBytes == null) {
+            return null;
+        } else {
+            try {
+                return LHSerializable.fromBytes(
+                    specBytes.get(),
+                    ExternalEventDef.class,
+                    config
+                );
+            } catch (LHSerdeError exn) {
+                throw new LHConnectionError(
+                    exn,
+                    "Unexpected failure to read response"
+                );
+            }
+        }
     }
 
     public void start() throws IOException {
@@ -59,21 +172,6 @@ public class KafkaStreamsBackend extends LHPublicApiImplBase {
         timerStreams.close();
         tagStreams.close();
         backendInternalComms.close();
-    }
-
-    @Override
-    public void getWfSpec(GetWfSpecPb req, StreamObserver<GetWfSpecReplyPb> ctx) {
-        GetWfSpecReplyPb.Builder out = GetWfSpecReplyPb.newBuilder();
-        try {
-            // TODO: first we need to fill out the commands so we know where
-            // to go to look for the wfspecs.
-            System.out.println("hi");
-        } catch (Exception exn) {
-            // TODO;
-        }
-
-        ctx.onNext(out.build());
-        ctx.onCompleted();
     }
 }
 

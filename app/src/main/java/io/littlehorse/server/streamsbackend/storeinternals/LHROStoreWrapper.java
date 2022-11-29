@@ -5,13 +5,11 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
-import io.littlehorse.common.model.meta.ExternalEventDef;
-import io.littlehorse.common.model.meta.TaskDef;
-import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.LHKeyValueIterator;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.StoreUtils;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
+import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
 /*
@@ -75,6 +73,39 @@ public class LHROStoreWrapper {
         );
     }
 
+    public <U extends MessageOrBuilder, T extends Storeable<U>> T getLastFromPrefix(
+        String prefix,
+        Class<T> cls
+    ) {
+        LHKeyValueIterator<T> iterator = null;
+        try {
+            iterator = reversePrefixScan(prefix + "/", cls);
+            if (iterator.hasNext()) {
+                return iterator.next().getValue();
+            } else {
+                return null;
+            }
+        } finally {
+            if (iterator != null) {
+                iterator.close();
+            }
+        }
+    }
+
+    public Bytes getLastBytesFromFullPrefix(String fullPrefix) {
+        KeyValueIterator<String, Bytes> rawIter = null;
+        try {
+            rawIter = store.reverseRange(fullPrefix + "~", fullPrefix);
+            if (rawIter.hasNext()) {
+                return rawIter.next().value;
+            } else {
+                return null;
+            }
+        } finally {
+            if (rawIter != null) rawIter.close();
+        }
+    }
+
     public <T extends Storeable<?>> LHKeyValueIterator<T> reversePrefixScan(
         String prefix,
         Class<T> cls
@@ -88,74 +119,5 @@ public class LHROStoreWrapper {
         // character.
         String end = start + '~';
         return new LHKeyValueIterator<>(store.reverseRange(end, start), cls, config);
-    }
-
-    public WfSpec getWfSpec(String name, Integer version) {
-        if (version == null) {
-            // The WfSpec's are ordered according to their version in ascending order.
-            // Therefore, we need to do a reverse prefix scan over the subKey
-            // f"WfSpec/{name}/" and take the first one.
-            LHKeyValueIterator<WfSpec> iterator = null;
-            try {
-                iterator = reversePrefixScan(name + "/", WfSpec.class);
-                if (iterator.hasNext()) {
-                    return iterator.next().getValue();
-                } else {
-                    return null;
-                }
-            } finally {
-                if (iterator != null) {
-                    iterator.close();
-                }
-            }
-        } else {
-            return get(WfSpec.getSubKey(name, version), WfSpec.class);
-        }
-    }
-
-    public TaskDef getTaskDef(String name, Integer version) {
-        if (version == null) {
-            // The TaskDefs are ordered according to their version in ascending order.
-            // Therefore, we need to do a reverse prefix scan over the subKey
-            // f"TaskDef/{name}/" and take the first one.
-            LHKeyValueIterator<TaskDef> iterator = null;
-            try {
-                iterator = reversePrefixScan(name + "/", TaskDef.class);
-                if (iterator.hasNext()) {
-                    return iterator.next().getValue();
-                } else {
-                    return null;
-                }
-            } finally {
-                if (iterator != null) {
-                    iterator.close();
-                }
-            }
-        } else {
-            return get(WfSpec.getSubKey(name, version), TaskDef.class);
-        }
-    }
-
-    public ExternalEventDef getExternalEventDef(String name, Integer version) {
-        if (version == null) {
-            // The ExternalEventDefs are ordered according to their version in ascending order.
-            // Therefore, we need to do a reverse prefix scan over the subKey
-            // f"ExternalEventDef/{name}/" and take the first one.
-            LHKeyValueIterator<ExternalEventDef> iterator = null;
-            try {
-                iterator = reversePrefixScan(name + "/", ExternalEventDef.class);
-                if (iterator.hasNext()) {
-                    return iterator.next().getValue();
-                } else {
-                    return null;
-                }
-            } finally {
-                if (iterator != null) {
-                    iterator.close();
-                }
-            }
-        } else {
-            return get(WfSpec.getSubKey(name, version), ExternalEventDef.class);
-        }
     }
 }

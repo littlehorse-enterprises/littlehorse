@@ -14,25 +14,28 @@ public interface CentralStoreQueryPbOrBuilder extends
   boolean getEnableStaleStores();
 
   /**
-   * <code>string full_key = 2;</code>
-   * @return The fullKey.
-   */
-  java.lang.String getFullKey();
-  /**
-   * <code>string full_key = 2;</code>
-   * @return The bytes for fullKey.
-   */
-  com.google.protobuf.ByteString
-      getFullKeyBytes();
-
-  /**
-   * <code>int32 specific_partition = 3;</code>
+   * <code>int32 specific_partition = 2;</code>
    * @return Whether the specificPartition field is set.
    */
   boolean hasSpecificPartition();
   /**
-   * <code>int32 specific_partition = 3;</code>
+   * <code>int32 specific_partition = 2;</code>
    * @return The specificPartition.
    */
   int getSpecificPartition();
+
+  /**
+   * <code>.lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
+   * @return Whether the query field is set.
+   */
+  boolean hasQuery();
+  /**
+   * <code>.lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
+   * @return The query.
+   */
+  io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb getQuery();
+  /**
+   * <code>.lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
+   */
+  io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPbOrBuilder getQueryOrBuilder();
 }

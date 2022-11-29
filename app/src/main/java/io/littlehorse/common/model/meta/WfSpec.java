@@ -17,6 +17,7 @@ import io.littlehorse.common.proto.WfSpecPbOrBuilder;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.CommandProcessorDao;
+import io.littlehorse.server.streamsbackend.storeinternals.utils.StoreUtils;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -64,6 +65,14 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
 
     public static Pair<String, Integer> parseSubKey(String subKey) {
         return Pair.of(subKey.split("/")[0], Integer.valueOf(subKey.split("/")[1]));
+    }
+
+    public static String getFullKey(String name, int version) {
+        return StoreUtils.getStoreKey(getSubKey(name, version), WfSpec.class);
+    }
+
+    public static String getPrefixByName(String name) {
+        return StoreUtils.getStoreKey(name + "/", WfSpec.class);
     }
 
     public Date getCreatedAt() {

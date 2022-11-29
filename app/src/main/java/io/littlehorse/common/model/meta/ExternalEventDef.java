@@ -12,6 +12,7 @@ import io.littlehorse.common.proto.ExternalEventDefPb;
 import io.littlehorse.common.proto.ExternalEventDefPbOrBuilder;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.server.streamsbackend.storeinternals.utils.StoreUtils;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -35,6 +36,18 @@ public class ExternalEventDef extends GlobalPOSTable<ExternalEventDefPbOrBuilder
     }
 
     public String getSubKey() {
+        return ExternalEventDef.getSubKey(name, version);
+    }
+
+    public static String getPrefixByName(String name) {
+        return StoreUtils.getStoreKey(name + "/", ExternalEventDef.class);
+    }
+
+    public static String getFullKey(String name, int version) {
+        return StoreUtils.getStoreKey(name + "/", ExternalEventDef.class);
+    }
+
+    public static String getSubKey(String name, int version) {
         return LHUtil.getCompositeId(name, String.valueOf(version));
     }
 

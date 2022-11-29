@@ -13,6 +13,7 @@ import io.littlehorse.common.proto.TaskDefPbOrBuilder;
 import io.littlehorse.common.proto.VariableDefPb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.server.streamsbackend.storeinternals.utils.StoreUtils;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -45,7 +46,19 @@ public class TaskDef extends GlobalPOSTable<TaskDefPbOrBuilder> {
     }
 
     public String getSubKey() {
+        return TaskDef.getSubKey(name, version);
+    }
+
+    public static String getSubKey(String name, int version) {
         return LHUtil.getCompositeId(name, String.valueOf(version));
+    }
+
+    public static String getPrefixByName(String name) {
+        return StoreUtils.getStoreKey(name + "/", TaskDef.class);
+    }
+
+    public static String getFullKey(String name, int version) {
+        return StoreUtils.getStoreKey(getSubKey(name, version), TaskDef.class);
     }
 
     public String getPartitionKey() {

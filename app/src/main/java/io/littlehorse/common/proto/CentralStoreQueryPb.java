@@ -16,7 +16,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private CentralStoreQueryPb() {
-    fullKey_ = "";
   }
 
   @java.lang.Override
@@ -55,15 +54,22 @@ private static final long serialVersionUID = 0L;
             enableStaleStores_ = input.readBool();
             break;
           }
-          case 18: {
-            java.lang.String s = input.readStringRequireUtf8();
-
-            fullKey_ = s;
-            break;
-          }
-          case 24: {
+          case 16: {
             bitField0_ |= 0x00000001;
             specificPartition_ = input.readInt32();
+            break;
+          }
+          case 26: {
+            io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.Builder subBuilder = null;
+            if (query_ != null) {
+              subBuilder = query_.toBuilder();
+            }
+            query_ = input.readMessage(io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom(query_);
+              query_ = subBuilder.buildPartial();
+            }
+
             break;
           }
           default: {
@@ -98,6 +104,849 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.common.proto.CentralStoreQueryPb.class, io.littlehorse.common.proto.CentralStoreQueryPb.Builder.class);
   }
 
+  public interface CentralStoreSubQueryPbOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string key = 1;</code>
+     * @return The key.
+     */
+    java.lang.String getKey();
+    /**
+     * <code>string key = 1;</code>
+     * @return The bytes for key.
+     */
+    com.google.protobuf.ByteString
+        getKeyBytes();
+
+    /**
+     * <code>string last_from_prefix = 2;</code>
+     * @return The lastFromPrefix.
+     */
+    java.lang.String getLastFromPrefix();
+    /**
+     * <code>string last_from_prefix = 2;</code>
+     * @return The bytes for lastFromPrefix.
+     */
+    com.google.protobuf.ByteString
+        getLastFromPrefixBytes();
+
+    public io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.QueryCase getQueryCase();
+  }
+  /**
+   * Protobuf type {@code lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb}
+   */
+  public static final class CentralStoreSubQueryPb extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb)
+      CentralStoreSubQueryPbOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use CentralStoreSubQueryPb.newBuilder() to construct.
+    private CentralStoreSubQueryPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private CentralStoreSubQueryPb() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new CentralStoreSubQueryPb();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private CentralStoreSubQueryPb(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+              queryCase_ = 1;
+              query_ = s;
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+              queryCase_ = 2;
+              query_ = s;
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_CentralStoreQueryPb_CentralStoreSubQueryPb_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_CentralStoreQueryPb_CentralStoreSubQueryPb_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.class, io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.Builder.class);
+    }
+
+    private int queryCase_ = 0;
+    private java.lang.Object query_;
+    public enum QueryCase
+        implements com.google.protobuf.Internal.EnumLite,
+            com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+      KEY(1),
+      LAST_FROM_PREFIX(2),
+      QUERY_NOT_SET(0);
+      private final int value;
+      private QueryCase(int value) {
+        this.value = value;
+      }
+      /**
+       * @param value The number of the enum to look for.
+       * @return The enum associated with the given number.
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
+      public static QueryCase valueOf(int value) {
+        return forNumber(value);
+      }
+
+      public static QueryCase forNumber(int value) {
+        switch (value) {
+          case 1: return KEY;
+          case 2: return LAST_FROM_PREFIX;
+          case 0: return QUERY_NOT_SET;
+          default: return null;
+        }
+      }
+      public int getNumber() {
+        return this.value;
+      }
+    };
+
+    public QueryCase
+    getQueryCase() {
+      return QueryCase.forNumber(
+          queryCase_);
+    }
+
+    public static final int KEY_FIELD_NUMBER = 1;
+    /**
+     * <code>string key = 1;</code>
+     * @return The key.
+     */
+    public java.lang.String getKey() {
+      java.lang.Object ref = "";
+      if (queryCase_ == 1) {
+        ref = query_;
+      }
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (queryCase_ == 1) {
+          query_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>string key = 1;</code>
+     * @return The bytes for key.
+     */
+    public com.google.protobuf.ByteString
+        getKeyBytes() {
+      java.lang.Object ref = "";
+      if (queryCase_ == 1) {
+        ref = query_;
+      }
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        if (queryCase_ == 1) {
+          query_ = b;
+        }
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int LAST_FROM_PREFIX_FIELD_NUMBER = 2;
+    /**
+     * <code>string last_from_prefix = 2;</code>
+     * @return The lastFromPrefix.
+     */
+    public java.lang.String getLastFromPrefix() {
+      java.lang.Object ref = "";
+      if (queryCase_ == 2) {
+        ref = query_;
+      }
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (queryCase_ == 2) {
+          query_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>string last_from_prefix = 2;</code>
+     * @return The bytes for lastFromPrefix.
+     */
+    public com.google.protobuf.ByteString
+        getLastFromPrefixBytes() {
+      java.lang.Object ref = "";
+      if (queryCase_ == 2) {
+        ref = query_;
+      }
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        if (queryCase_ == 2) {
+          query_ = b;
+        }
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (queryCase_ == 1) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, query_);
+      }
+      if (queryCase_ == 2) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, query_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (queryCase_ == 1) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, query_);
+      }
+      if (queryCase_ == 2) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, query_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb)) {
+        return super.equals(obj);
+      }
+      io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb other = (io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb) obj;
+
+      if (!getQueryCase().equals(other.getQueryCase())) return false;
+      switch (queryCase_) {
+        case 1:
+          if (!getKey()
+              .equals(other.getKey())) return false;
+          break;
+        case 2:
+          if (!getLastFromPrefix()
+              .equals(other.getLastFromPrefix())) return false;
+          break;
+        case 0:
+        default:
+      }
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      switch (queryCase_) {
+        case 1:
+          hash = (37 * hash) + KEY_FIELD_NUMBER;
+          hash = (53 * hash) + getKey().hashCode();
+          break;
+        case 2:
+          hash = (37 * hash) + LAST_FROM_PREFIX_FIELD_NUMBER;
+          hash = (53 * hash) + getLastFromPrefix().hashCode();
+          break;
+        case 0:
+        default:
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb)
+        io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPbOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_CentralStoreQueryPb_CentralStoreSubQueryPb_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_CentralStoreQueryPb_CentralStoreSubQueryPb_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.class, io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.Builder.class);
+      }
+
+      // Construct using io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        queryCase_ = 0;
+        query_ = null;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_CentralStoreQueryPb_CentralStoreSubQueryPb_descriptor;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb getDefaultInstanceForType() {
+        return io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb build() {
+        io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb buildPartial() {
+        io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb result = new io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb(this);
+        if (queryCase_ == 1) {
+          result.query_ = query_;
+        }
+        if (queryCase_ == 2) {
+          result.query_ = query_;
+        }
+        result.queryCase_ = queryCase_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb) {
+          return mergeFrom((io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb other) {
+        if (other == io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.getDefaultInstance()) return this;
+        switch (other.getQueryCase()) {
+          case KEY: {
+            queryCase_ = 1;
+            query_ = other.query_;
+            onChanged();
+            break;
+          }
+          case LAST_FROM_PREFIX: {
+            queryCase_ = 2;
+            query_ = other.query_;
+            onChanged();
+            break;
+          }
+          case QUERY_NOT_SET: {
+            break;
+          }
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int queryCase_ = 0;
+      private java.lang.Object query_;
+      public QueryCase
+          getQueryCase() {
+        return QueryCase.forNumber(
+            queryCase_);
+      }
+
+      public Builder clearQuery() {
+        queryCase_ = 0;
+        query_ = null;
+        onChanged();
+        return this;
+      }
+
+
+      /**
+       * <code>string key = 1;</code>
+       * @return The key.
+       */
+      @java.lang.Override
+      public java.lang.String getKey() {
+        java.lang.Object ref = "";
+        if (queryCase_ == 1) {
+          ref = query_;
+        }
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (queryCase_ == 1) {
+            query_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string key = 1;</code>
+       * @return The bytes for key.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString
+          getKeyBytes() {
+        java.lang.Object ref = "";
+        if (queryCase_ == 1) {
+          ref = query_;
+        }
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          if (queryCase_ == 1) {
+            query_ = b;
+          }
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string key = 1;</code>
+       * @param value The key to set.
+       * @return This builder for chaining.
+       */
+      public Builder setKey(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  queryCase_ = 1;
+        query_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string key = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearKey() {
+        if (queryCase_ == 1) {
+          queryCase_ = 0;
+          query_ = null;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>string key = 1;</code>
+       * @param value The bytes for key to set.
+       * @return This builder for chaining.
+       */
+      public Builder setKeyBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        queryCase_ = 1;
+        query_ = value;
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>string last_from_prefix = 2;</code>
+       * @return The lastFromPrefix.
+       */
+      @java.lang.Override
+      public java.lang.String getLastFromPrefix() {
+        java.lang.Object ref = "";
+        if (queryCase_ == 2) {
+          ref = query_;
+        }
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (queryCase_ == 2) {
+            query_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string last_from_prefix = 2;</code>
+       * @return The bytes for lastFromPrefix.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString
+          getLastFromPrefixBytes() {
+        java.lang.Object ref = "";
+        if (queryCase_ == 2) {
+          ref = query_;
+        }
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          if (queryCase_ == 2) {
+            query_ = b;
+          }
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string last_from_prefix = 2;</code>
+       * @param value The lastFromPrefix to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLastFromPrefix(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  queryCase_ = 2;
+        query_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string last_from_prefix = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearLastFromPrefix() {
+        if (queryCase_ == 2) {
+          queryCase_ = 0;
+          query_ = null;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>string last_from_prefix = 2;</code>
+       * @param value The bytes for lastFromPrefix to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLastFromPrefixBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        queryCase_ = 2;
+        query_ = value;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb)
+    }
+
+    // @@protoc_insertion_point(class_scope:lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb)
+    private static final io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb();
+    }
+
+    public static io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<CentralStoreSubQueryPb>
+        PARSER = new com.google.protobuf.AbstractParser<CentralStoreSubQueryPb>() {
+      @java.lang.Override
+      public CentralStoreSubQueryPb parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new CentralStoreSubQueryPb(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<CentralStoreSubQueryPb> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<CentralStoreSubQueryPb> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private int bitField0_;
   public static final int ENABLE_STALE_STORES_FIELD_NUMBER = 1;
   private boolean enableStaleStores_;
@@ -110,48 +959,10 @@ private static final long serialVersionUID = 0L;
     return enableStaleStores_;
   }
 
-  public static final int FULL_KEY_FIELD_NUMBER = 2;
-  private volatile java.lang.Object fullKey_;
-  /**
-   * <code>string full_key = 2;</code>
-   * @return The fullKey.
-   */
-  @java.lang.Override
-  public java.lang.String getFullKey() {
-    java.lang.Object ref = fullKey_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      fullKey_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string full_key = 2;</code>
-   * @return The bytes for fullKey.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getFullKeyBytes() {
-    java.lang.Object ref = fullKey_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      fullKey_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
-  public static final int SPECIFIC_PARTITION_FIELD_NUMBER = 3;
+  public static final int SPECIFIC_PARTITION_FIELD_NUMBER = 2;
   private int specificPartition_;
   /**
-   * <code>int32 specific_partition = 3;</code>
+   * <code>int32 specific_partition = 2;</code>
    * @return Whether the specificPartition field is set.
    */
   @java.lang.Override
@@ -159,12 +970,38 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>int32 specific_partition = 3;</code>
+   * <code>int32 specific_partition = 2;</code>
    * @return The specificPartition.
    */
   @java.lang.Override
   public int getSpecificPartition() {
     return specificPartition_;
+  }
+
+  public static final int QUERY_FIELD_NUMBER = 3;
+  private io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb query_;
+  /**
+   * <code>.lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
+   * @return Whether the query field is set.
+   */
+  @java.lang.Override
+  public boolean hasQuery() {
+    return query_ != null;
+  }
+  /**
+   * <code>.lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
+   * @return The query.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb getQuery() {
+    return query_ == null ? io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.getDefaultInstance() : query_;
+  }
+  /**
+   * <code>.lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPbOrBuilder getQueryOrBuilder() {
+    return getQuery();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -184,11 +1021,11 @@ private static final long serialVersionUID = 0L;
     if (enableStaleStores_ != false) {
       output.writeBool(1, enableStaleStores_);
     }
-    if (!getFullKeyBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, fullKey_);
-    }
     if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeInt32(3, specificPartition_);
+      output.writeInt32(2, specificPartition_);
+    }
+    if (query_ != null) {
+      output.writeMessage(3, getQuery());
     }
     unknownFields.writeTo(output);
   }
@@ -203,12 +1040,13 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeBoolSize(1, enableStaleStores_);
     }
-    if (!getFullKeyBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, fullKey_);
-    }
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(3, specificPartition_);
+        .computeInt32Size(2, specificPartition_);
+    }
+    if (query_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, getQuery());
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -227,12 +1065,15 @@ private static final long serialVersionUID = 0L;
 
     if (getEnableStaleStores()
         != other.getEnableStaleStores()) return false;
-    if (!getFullKey()
-        .equals(other.getFullKey())) return false;
     if (hasSpecificPartition() != other.hasSpecificPartition()) return false;
     if (hasSpecificPartition()) {
       if (getSpecificPartition()
           != other.getSpecificPartition()) return false;
+    }
+    if (hasQuery() != other.hasQuery()) return false;
+    if (hasQuery()) {
+      if (!getQuery()
+          .equals(other.getQuery())) return false;
     }
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
@@ -248,11 +1089,13 @@ private static final long serialVersionUID = 0L;
     hash = (37 * hash) + ENABLE_STALE_STORES_FIELD_NUMBER;
     hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
         getEnableStaleStores());
-    hash = (37 * hash) + FULL_KEY_FIELD_NUMBER;
-    hash = (53 * hash) + getFullKey().hashCode();
     if (hasSpecificPartition()) {
       hash = (37 * hash) + SPECIFIC_PARTITION_FIELD_NUMBER;
       hash = (53 * hash) + getSpecificPartition();
+    }
+    if (hasQuery()) {
+      hash = (37 * hash) + QUERY_FIELD_NUMBER;
+      hash = (53 * hash) + getQuery().hashCode();
     }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
@@ -389,10 +1232,14 @@ private static final long serialVersionUID = 0L;
       super.clear();
       enableStaleStores_ = false;
 
-      fullKey_ = "";
-
       specificPartition_ = 0;
       bitField0_ = (bitField0_ & ~0x00000001);
+      if (queryBuilder_ == null) {
+        query_ = null;
+      } else {
+        query_ = null;
+        queryBuilder_ = null;
+      }
       return this;
     }
 
@@ -422,10 +1269,14 @@ private static final long serialVersionUID = 0L;
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
       result.enableStaleStores_ = enableStaleStores_;
-      result.fullKey_ = fullKey_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.specificPartition_ = specificPartition_;
         to_bitField0_ |= 0x00000001;
+      }
+      if (queryBuilder_ == null) {
+        result.query_ = query_;
+      } else {
+        result.query_ = queryBuilder_.build();
       }
       result.bitField0_ = to_bitField0_;
       onBuilt();
@@ -479,12 +1330,11 @@ private static final long serialVersionUID = 0L;
       if (other.getEnableStaleStores() != false) {
         setEnableStaleStores(other.getEnableStaleStores());
       }
-      if (!other.getFullKey().isEmpty()) {
-        fullKey_ = other.fullKey_;
-        onChanged();
-      }
       if (other.hasSpecificPartition()) {
         setSpecificPartition(other.getSpecificPartition());
+      }
+      if (other.hasQuery()) {
+        mergeQuery(other.getQuery());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -547,85 +1397,9 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.lang.Object fullKey_ = "";
-    /**
-     * <code>string full_key = 2;</code>
-     * @return The fullKey.
-     */
-    public java.lang.String getFullKey() {
-      java.lang.Object ref = fullKey_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        fullKey_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>string full_key = 2;</code>
-     * @return The bytes for fullKey.
-     */
-    public com.google.protobuf.ByteString
-        getFullKeyBytes() {
-      java.lang.Object ref = fullKey_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        fullKey_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string full_key = 2;</code>
-     * @param value The fullKey to set.
-     * @return This builder for chaining.
-     */
-    public Builder setFullKey(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      fullKey_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string full_key = 2;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearFullKey() {
-      
-      fullKey_ = getDefaultInstance().getFullKey();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string full_key = 2;</code>
-     * @param value The bytes for fullKey to set.
-     * @return This builder for chaining.
-     */
-    public Builder setFullKeyBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      fullKey_ = value;
-      onChanged();
-      return this;
-    }
-
     private int specificPartition_ ;
     /**
-     * <code>int32 specific_partition = 3;</code>
+     * <code>int32 specific_partition = 2;</code>
      * @return Whether the specificPartition field is set.
      */
     @java.lang.Override
@@ -633,7 +1407,7 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>int32 specific_partition = 3;</code>
+     * <code>int32 specific_partition = 2;</code>
      * @return The specificPartition.
      */
     @java.lang.Override
@@ -641,7 +1415,7 @@ private static final long serialVersionUID = 0L;
       return specificPartition_;
     }
     /**
-     * <code>int32 specific_partition = 3;</code>
+     * <code>int32 specific_partition = 2;</code>
      * @param value The specificPartition to set.
      * @return This builder for chaining.
      */
@@ -652,7 +1426,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>int32 specific_partition = 3;</code>
+     * <code>int32 specific_partition = 2;</code>
      * @return This builder for chaining.
      */
     public Builder clearSpecificPartition() {
@@ -660,6 +1434,125 @@ private static final long serialVersionUID = 0L;
       specificPartition_ = 0;
       onChanged();
       return this;
+    }
+
+    private io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb query_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb, io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.Builder, io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPbOrBuilder> queryBuilder_;
+    /**
+     * <code>.lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
+     * @return Whether the query field is set.
+     */
+    public boolean hasQuery() {
+      return queryBuilder_ != null || query_ != null;
+    }
+    /**
+     * <code>.lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
+     * @return The query.
+     */
+    public io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb getQuery() {
+      if (queryBuilder_ == null) {
+        return query_ == null ? io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.getDefaultInstance() : query_;
+      } else {
+        return queryBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
+     */
+    public Builder setQuery(io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb value) {
+      if (queryBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        query_ = value;
+        onChanged();
+      } else {
+        queryBuilder_.setMessage(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
+     */
+    public Builder setQuery(
+        io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.Builder builderForValue) {
+      if (queryBuilder_ == null) {
+        query_ = builderForValue.build();
+        onChanged();
+      } else {
+        queryBuilder_.setMessage(builderForValue.build());
+      }
+
+      return this;
+    }
+    /**
+     * <code>.lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
+     */
+    public Builder mergeQuery(io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb value) {
+      if (queryBuilder_ == null) {
+        if (query_ != null) {
+          query_ =
+            io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.newBuilder(query_).mergeFrom(value).buildPartial();
+        } else {
+          query_ = value;
+        }
+        onChanged();
+      } else {
+        queryBuilder_.mergeFrom(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
+     */
+    public Builder clearQuery() {
+      if (queryBuilder_ == null) {
+        query_ = null;
+        onChanged();
+      } else {
+        query_ = null;
+        queryBuilder_ = null;
+      }
+
+      return this;
+    }
+    /**
+     * <code>.lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
+     */
+    public io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.Builder getQueryBuilder() {
+      
+      onChanged();
+      return getQueryFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
+     */
+    public io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPbOrBuilder getQueryOrBuilder() {
+      if (queryBuilder_ != null) {
+        return queryBuilder_.getMessageOrBuilder();
+      } else {
+        return query_ == null ?
+            io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.getDefaultInstance() : query_;
+      }
+    }
+    /**
+     * <code>.lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb, io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.Builder, io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPbOrBuilder> 
+        getQueryFieldBuilder() {
+      if (queryBuilder_ == null) {
+        queryBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb, io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.Builder, io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPbOrBuilder>(
+                getQuery(),
+                getParentForChildren(),
+                isClean());
+        query_ = null;
+      }
+      return queryBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
