@@ -41,22 +41,22 @@ public class KafkaStreamsBackend {
 
     public void init(LHConfig config, HealthStatusManager grpcHealthCheckThingy) {
         Topology coreTopo = ServerTopology.initCoreTopology(config);
-        Topology timerTopo = ServerTopology.initTimerTopology(config);
-        Topology taggingTopo = ServerTopology.initTaggingTopology(config);
+        // Topology timerTopo = ServerTopology.initTimerTopology(config);
+        // Topology taggingTopo = ServerTopology.initTaggingTopology(config);
 
         coreStreams = new KafkaStreams(coreTopo, config.getStreamsConfig("core"));
-        timerStreams = new KafkaStreams(timerTopo, config.getStreamsConfig("timer"));
-        tagStreams = new KafkaStreams(taggingTopo, config.getStreamsConfig("tag"));
+        // timerStreams = new KafkaStreams(timerTopo, config.getStreamsConfig("timer"));
+        // tagStreams = new KafkaStreams(taggingTopo, config.getStreamsConfig("tag"));
 
         coreStreams.setStateListener(
             new LHBackendStateListener("core", grpcHealthCheckThingy)
         );
-        timerStreams.setStateListener(
-            new LHBackendStateListener("timer", grpcHealthCheckThingy)
-        );
-        tagStreams.setStateListener(
-            new LHBackendStateListener("tag", grpcHealthCheckThingy)
-        );
+        // timerStreams.setStateListener(
+        //     new LHBackendStateListener("timer", grpcHealthCheckThingy)
+        // );
+        // tagStreams.setStateListener(
+        //     new LHBackendStateListener("tag", grpcHealthCheckThingy)
+        // );
 
         this.config = config;
         this.producer = new LHProducer(config, false);
@@ -237,8 +237,8 @@ public class KafkaStreamsBackend {
 
     public void start() throws IOException {
         coreStreams.start();
-        timerStreams.start();
-        tagStreams.start();
+        // timerStreams.start();
+        // tagStreams.start();
         backendInternalComms.start();
     }
 
@@ -264,7 +264,7 @@ class LHBackendStateListener implements StateListener {
     }
 
     public void onChange(State newState, State oldState) {
-        LHUtil.log("New state for", componentName, ":", newState);
+        LHUtil.log(new Date(), "New state for", componentName + ":", newState);
         if (newState == State.RUNNING) {
             grpcHealthCheckThingy.setStatus(componentName, ServingStatus.SERVING);
         } else {

@@ -162,8 +162,8 @@ message OutputSchemaPb {
 
 message TaskDefPb {
     string name = 1;
-    google.protobuf.Timestamp created_at = 2;
-    OutputSchemaPb output_schema = 3;
+    int32 version = 2;
+    google.protobuf.Timestamp created_at = 3;
     map<string, VariableDefPb> input_vars = 4;
     string queue_name = 5;
 
@@ -171,8 +171,10 @@ message TaskDefPb {
     // instances for this task def.
     //
     // It is also regrettably a kafka implementation detail that leaks through
-    // the abstraction.
+    // the abstraction. 
     string consumer_group_name = 6;
+
+    optional OutputSchemaPb output_schema = 7;
 }
 
 message ExternalEventDefPb {

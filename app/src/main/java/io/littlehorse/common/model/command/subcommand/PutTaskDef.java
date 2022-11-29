@@ -75,6 +75,8 @@ public class PutTaskDef extends SubCommand<PutTaskDefPb> {
         spec.name = name;
         spec.outputSchema = outputSchema;
         spec.inputVars = inputVars;
+        spec.consumerGroupName = config.getKafkaTopicPrefix() + spec.name + "-worker";
+        spec.queueName = config.getKafkaTopicPrefix() + spec.name;
 
         TaskDef oldVersion = dao.getTaskDef(name, null);
         if (oldVersion != null) {

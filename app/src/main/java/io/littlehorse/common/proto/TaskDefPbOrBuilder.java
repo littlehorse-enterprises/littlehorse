@@ -20,34 +20,25 @@ public interface TaskDefPbOrBuilder extends
       getNameBytes();
 
   /**
-   * <code>.google.protobuf.Timestamp created_at = 2;</code>
+   * <code>int32 version = 2;</code>
+   * @return The version.
+   */
+  int getVersion();
+
+  /**
+   * <code>.google.protobuf.Timestamp created_at = 3;</code>
    * @return Whether the createdAt field is set.
    */
   boolean hasCreatedAt();
   /**
-   * <code>.google.protobuf.Timestamp created_at = 2;</code>
+   * <code>.google.protobuf.Timestamp created_at = 3;</code>
    * @return The createdAt.
    */
   com.google.protobuf.Timestamp getCreatedAt();
   /**
-   * <code>.google.protobuf.Timestamp created_at = 2;</code>
+   * <code>.google.protobuf.Timestamp created_at = 3;</code>
    */
   com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
-
-  /**
-   * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
-   * @return Whether the outputSchema field is set.
-   */
-  boolean hasOutputSchema();
-  /**
-   * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
-   * @return The outputSchema.
-   */
-  io.littlehorse.common.proto.OutputSchemaPb getOutputSchema();
-  /**
-   * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
-   */
-  io.littlehorse.common.proto.OutputSchemaPbOrBuilder getOutputSchemaOrBuilder();
 
   /**
    * <code>map&lt;string, .lh_proto.VariableDefPb&gt; input_vars = 4;</code>
@@ -100,7 +91,7 @@ public interface TaskDefPbOrBuilder extends
    * This is the ID of the consumer group that should be used for any Task Worker
    * instances for this task def.
    * It is also regrettably a kafka implementation detail that leaks through
-   * the abstraction.
+   * the abstraction. 
    * </pre>
    *
    * <code>string consumer_group_name = 6;</code>
@@ -112,7 +103,7 @@ public interface TaskDefPbOrBuilder extends
    * This is the ID of the consumer group that should be used for any Task Worker
    * instances for this task def.
    * It is also regrettably a kafka implementation detail that leaks through
-   * the abstraction.
+   * the abstraction. 
    * </pre>
    *
    * <code>string consumer_group_name = 6;</code>
@@ -120,4 +111,19 @@ public interface TaskDefPbOrBuilder extends
    */
   com.google.protobuf.ByteString
       getConsumerGroupNameBytes();
+
+  /**
+   * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
+   * @return Whether the outputSchema field is set.
+   */
+  boolean hasOutputSchema();
+  /**
+   * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
+   * @return The outputSchema.
+   */
+  io.littlehorse.common.proto.OutputSchemaPb getOutputSchema();
+  /**
+   * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
+   */
+  io.littlehorse.common.proto.OutputSchemaPbOrBuilder getOutputSchemaOrBuilder();
 }

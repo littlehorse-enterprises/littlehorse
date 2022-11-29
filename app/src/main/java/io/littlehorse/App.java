@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.common.config.TopicConfig;
+import org.apache.kafka.streams.state.HostInfo;
 
 public class App {
 
@@ -97,7 +98,8 @@ public class App {
     }
 
     public static void tester() {
-        System.out.println("TODO: experiment a bit");
+        HostInfo test = new HostInfo("hello", 5000);
+        System.out.println(test.toString());
     }
 }
 /*

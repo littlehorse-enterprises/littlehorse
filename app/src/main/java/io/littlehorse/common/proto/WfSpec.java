@@ -250,15 +250,16 @@ public final class WfSpec {
       "\n\020ThreadSpecsEntry\022\013\n\003key\030\001 \001(\t\022%\n\005value" +
       "\030\002 \001(\0132\026.lh_proto.ThreadSpecPb:\0028\001\"?\n\016Ou" +
       "tputSchemaPb\022-\n\013output_type\030\001 \001(\0162\030.lh_p" +
-      "roto.VariableTypePb\"\256\002\n\tTaskDefPb\022\014\n\004nam" +
-      "e\030\001 \001(\t\022.\n\ncreated_at\030\002 \001(\0132\032.google.pro" +
-      "tobuf.Timestamp\022/\n\routput_schema\030\003 \001(\0132\030" +
-      ".lh_proto.OutputSchemaPb\0226\n\ninput_vars\030\004" +
-      " \003(\0132\".lh_proto.TaskDefPb.InputVarsEntry" +
-      "\022\022\n\nqueue_name\030\005 \001(\t\022\033\n\023consumer_group_n" +
-      "ame\030\006 \001(\t\032I\n\016InputVarsEntry\022\013\n\003key\030\001 \001(\t" +
-      "\022&\n\005value\030\002 \001(\0132\027.lh_proto.VariableDefPb" +
-      ":\0028\001\"c\n\022ExternalEventDefPb\022\014\n\004name\030\001 \001(\t" +
+      "roto.VariableTypePb\"\326\002\n\tTaskDefPb\022\014\n\004nam" +
+      "e\030\001 \001(\t\022\017\n\007version\030\002 \001(\005\022.\n\ncreated_at\030\003" +
+      " \001(\0132\032.google.protobuf.Timestamp\0226\n\ninpu" +
+      "t_vars\030\004 \003(\0132\".lh_proto.TaskDefPb.InputV" +
+      "arsEntry\022\022\n\nqueue_name\030\005 \001(\t\022\033\n\023consumer" +
+      "_group_name\030\006 \001(\t\0224\n\routput_schema\030\007 \001(\013" +
+      "2\030.lh_proto.OutputSchemaPbH\000\210\001\001\032I\n\016Input" +
+      "VarsEntry\022\013\n\003key\030\001 \001(\t\022&\n\005value\030\002 \001(\0132\027." +
+      "lh_proto.VariableDefPb:\0028\001B\020\n\016_output_sc" +
+      "hema\"c\n\022ExternalEventDefPb\022\014\n\004name\030\001 \001(\t" +
       "\022\017\n\007version\030\002 \001(\005\022.\n\ncreated_at\030\003 \001(\0132\032." +
       "google.protobuf.Timestamp*\206\001\n\014Comparator" +
       "Pb\022\r\n\tLESS_THAN\020\000\022\020\n\014GREATER_THAN\020\001\022\020\n\014L" +
@@ -433,7 +434,7 @@ public final class WfSpec {
     internal_static_lh_proto_TaskDefPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_TaskDefPb_descriptor,
-        new java.lang.String[] { "Name", "CreatedAt", "OutputSchema", "InputVars", "QueueName", "ConsumerGroupName", });
+        new java.lang.String[] { "Name", "Version", "CreatedAt", "InputVars", "QueueName", "ConsumerGroupName", "OutputSchema", "OutputSchema", });
     internal_static_lh_proto_TaskDefPb_InputVarsEntry_descriptor =
       internal_static_lh_proto_TaskDefPb_descriptor.getNestedTypes().get(0);
     internal_static_lh_proto_TaskDefPb_InputVarsEntry_fieldAccessorTable = new

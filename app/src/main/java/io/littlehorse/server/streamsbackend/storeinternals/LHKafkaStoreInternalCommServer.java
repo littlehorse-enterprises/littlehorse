@@ -1,6 +1,7 @@
 package io.littlehorse.server.streamsbackend.storeinternals;
 
 import com.google.protobuf.ByteString;
+import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
@@ -21,6 +22,8 @@ import io.littlehorse.common.proto.WaitForCommandResultReplyPb;
 import io.littlehorse.server.ServerTopology;
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KafkaStreams;
@@ -37,9 +40,12 @@ public class LHKafkaStoreInternalCommServer implements Closeable {
     private KafkaStreams coreStreams;
     private HostInfo thisHost;
 
+    private Map<String, ManagedChannel> channels;
+
     public LHKafkaStoreInternalCommServer(LHConfig config, KafkaStreams coreStreams) {
         this.config = config;
         this.coreStreams = coreStreams;
+        this.channels = new HashMap<>();
 
         this.internalGrpcServer =
             ServerBuilder
@@ -60,6 +66,9 @@ public class LHKafkaStoreInternalCommServer implements Closeable {
 
     public void close() {
         internalGrpcServer.shutdown();
+        for (ManagedChannel channel : channels.values()) {
+            channel.shutdown();
+        }
     }
 
     public Bytes getBytes(String fullStoreKey, String partitionKey)
@@ -252,15 +261,22 @@ public class LHKafkaStoreInternalCommServer implements Closeable {
         }
     }
 
-    // TODO: We need to keep and re-use channels so that we don't open a bazillion
-    // connections.
     private LHInternalsBlockingStub getInternalClient(HostInfo host) {
-        return LHInternalsGrpc.newBlockingStub(
-            ManagedChannelBuilder
-                .forAddress(host.host(), host.port())
-                .usePlaintext()
-                .build()
-        );
+        return LHInternalsGrpc.newBlockingStub(getChannel(host));
+    }
+
+    private ManagedChannel getChannel(HostInfo host) {
+        String key = host.host() + ":" + host.port();
+        ManagedChannel channel = channels.get(key);
+        if (channel == null) {
+            channel =
+                ManagedChannelBuilder
+                    .forAddress(host.host(), host.port())
+                    .usePlaintext()
+                    .build();
+            channels.put(key, channel);
+        }
+        return channel;
     }
 
     /*

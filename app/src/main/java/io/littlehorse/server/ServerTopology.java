@@ -78,11 +78,13 @@ public class ServerTopology {
         // This topic is config.getGlobalMetadatCLTopicName()
         // topo.addSource(globalMetaSource, Serdes.String().deserializer(), new LHDeserializer<>(), config))
 
-        StoreBuilder<KeyValueStore<String, Bytes>> globalStoreBuilder = Stores.keyValueStoreBuilder(
-            Stores.persistentKeyValueStore(GLOBAL_STORE),
-            Serdes.String(),
-            Serdes.Bytes()
-        );
+        StoreBuilder<KeyValueStore<String, Bytes>> globalStoreBuilder = Stores
+            .keyValueStoreBuilder(
+                Stores.persistentKeyValueStore(GLOBAL_STORE),
+                Serdes.String(),
+                Serdes.Bytes()
+            )
+            .withLoggingDisabled();
         topo.addGlobalStore(
             globalStoreBuilder,
             GLOBAL_META_SOURCE,

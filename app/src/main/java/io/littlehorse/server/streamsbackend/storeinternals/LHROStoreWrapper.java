@@ -95,7 +95,7 @@ public class LHROStoreWrapper {
     public Bytes getLastBytesFromFullPrefix(String fullPrefix) {
         KeyValueIterator<String, Bytes> rawIter = null;
         try {
-            rawIter = store.reverseRange(fullPrefix + "~", fullPrefix);
+            rawIter = store.reverseRange(fullPrefix, fullPrefix + "~");
             if (rawIter.hasNext()) {
                 return rawIter.next().value;
             } else {
@@ -118,6 +118,6 @@ public class LHROStoreWrapper {
         // greater than Z. We'll go with the '~', which is the greatest Ascii
         // character.
         String end = start + '~';
-        return new LHKeyValueIterator<>(store.reverseRange(end, start), cls, config);
+        return new LHKeyValueIterator<>(store.reverseRange(start, end), cls, config);
     }
 }

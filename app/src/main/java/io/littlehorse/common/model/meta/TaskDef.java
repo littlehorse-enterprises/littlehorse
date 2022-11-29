@@ -74,10 +74,13 @@ public class TaskDef extends GlobalPOSTable<TaskDefPbOrBuilder> {
             .newBuilder()
             .setName(name)
             .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
-            .setOutputSchema(outputSchema.toProto())
             .setConsumerGroupName(consumerGroupName)
-            .setQueueName(queueName);
+            .setQueueName(queueName)
+            .setVersion(version);
 
+        if (outputSchema != null) {
+            b.setOutputSchema(outputSchema.toProto());
+        }
         for (Map.Entry<String, VariableDef> entry : inputVars.entrySet()) {
             b.putInputVars(entry.getKey(), entry.getValue().toProto().build());
         }
@@ -89,9 +92,12 @@ public class TaskDef extends GlobalPOSTable<TaskDefPbOrBuilder> {
         TaskDefPbOrBuilder proto = (TaskDefPbOrBuilder) p;
         name = proto.getName();
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
-        outputSchema = OutputSchema.fromProto(proto.getOutputSchemaOrBuilder());
+        if (proto.hasOutputSchema()) {
+            outputSchema = OutputSchema.fromProto(proto.getOutputSchemaOrBuilder());
+        }
         queueName = proto.getQueueName();
         consumerGroupName = proto.getConsumerGroupName();
+        version = proto.getVersion();
 
         // TODO: should this validation be done here...?
         if (queueName.equals("")) {

@@ -6,7 +6,7 @@ kill -9 $(ps aux | grep io.littlehorse | grep -v 'grep' | cut -d ' ' -f3)
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $SCRIPT_DIR
 
-docker exec broker bash -c '
+docker exec lh-kafka bash -c '
 export TOPICS=$(/bin/kafka-topics --bootstrap-server localhost:9092 --list)
 if [ -z "$TOPICS" ]
 then

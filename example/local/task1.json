@@ -1,1 +1,9 @@
-{"name":"task1", "requiredVars": {"myTaskVar": {"type": "STR", "defaultVal": {"type": "STR", "str": "Hello, there!"}}}}
+{
+    "name": "task1",
+    "inputVars": {
+        "myTaskVar": {
+            "type": "STR",
+            "defaultVal": { "type": "STR", "str": "Hello, there!" }
+        }
+    }
+}
