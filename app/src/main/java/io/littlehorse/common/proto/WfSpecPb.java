@@ -17,8 +17,8 @@ private static final long serialVersionUID = 0L;
   }
   private WfSpecPb() {
     name_ = "";
-    entrypointThreadName_ = "";
     status_ = 0;
+    entrypointThreadName_ = "";
   }
 
   @java.lang.Override
@@ -76,17 +76,10 @@ private static final long serialVersionUID = 0L;
 
             break;
           }
-          case 34: {
-            com.google.protobuf.Timestamp.Builder subBuilder = null;
-            if (updatedAt_ != null) {
-              subBuilder = updatedAt_.toBuilder();
-            }
-            updatedAt_ = input.readMessage(com.google.protobuf.Timestamp.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom(updatedAt_);
-              updatedAt_ = subBuilder.buildPartial();
-            }
+          case 32: {
+            int rawValue = input.readEnum();
 
+            status_ = rawValue;
             break;
           }
           case 42: {
@@ -106,12 +99,6 @@ private static final long serialVersionUID = 0L;
             java.lang.String s = input.readStringRequireUtf8();
 
             entrypointThreadName_ = s;
-            break;
-          }
-          case 56: {
-            int rawValue = input.readEnum();
-
-            status_ = rawValue;
             break;
           }
           default: {
@@ -233,30 +220,23 @@ private static final long serialVersionUID = 0L;
     return getCreatedAt();
   }
 
-  public static final int UPDATED_AT_FIELD_NUMBER = 4;
-  private com.google.protobuf.Timestamp updatedAt_;
+  public static final int STATUS_FIELD_NUMBER = 4;
+  private int status_;
   /**
-   * <code>.google.protobuf.Timestamp updated_at = 4;</code>
-   * @return Whether the updatedAt field is set.
+   * <code>.lh_proto.LHStatusPb status = 4;</code>
+   * @return The enum numeric value on the wire for status.
    */
-  @java.lang.Override
-  public boolean hasUpdatedAt() {
-    return updatedAt_ != null;
+  @java.lang.Override public int getStatusValue() {
+    return status_;
   }
   /**
-   * <code>.google.protobuf.Timestamp updated_at = 4;</code>
-   * @return The updatedAt.
+   * <code>.lh_proto.LHStatusPb status = 4;</code>
+   * @return The status.
    */
-  @java.lang.Override
-  public com.google.protobuf.Timestamp getUpdatedAt() {
-    return updatedAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : updatedAt_;
-  }
-  /**
-   * <code>.google.protobuf.Timestamp updated_at = 4;</code>
-   */
-  @java.lang.Override
-  public com.google.protobuf.TimestampOrBuilder getUpdatedAtOrBuilder() {
-    return getUpdatedAt();
+  @java.lang.Override public io.littlehorse.common.proto.LHStatusPb getStatus() {
+    @SuppressWarnings("deprecation")
+    io.littlehorse.common.proto.LHStatusPb result = io.littlehorse.common.proto.LHStatusPb.valueOf(status_);
+    return result == null ? io.littlehorse.common.proto.LHStatusPb.UNRECOGNIZED : result;
   }
 
   public static final int THREAD_SPECS_FIELD_NUMBER = 5;
@@ -378,25 +358,6 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int STATUS_FIELD_NUMBER = 7;
-  private int status_;
-  /**
-   * <code>.lh_proto.LHStatusPb status = 7;</code>
-   * @return The enum numeric value on the wire for status.
-   */
-  @java.lang.Override public int getStatusValue() {
-    return status_;
-  }
-  /**
-   * <code>.lh_proto.LHStatusPb status = 7;</code>
-   * @return The status.
-   */
-  @java.lang.Override public io.littlehorse.common.proto.LHStatusPb getStatus() {
-    @SuppressWarnings("deprecation")
-    io.littlehorse.common.proto.LHStatusPb result = io.littlehorse.common.proto.LHStatusPb.valueOf(status_);
-    return result == null ? io.littlehorse.common.proto.LHStatusPb.UNRECOGNIZED : result;
-  }
-
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -420,8 +381,8 @@ private static final long serialVersionUID = 0L;
     if (createdAt_ != null) {
       output.writeMessage(3, getCreatedAt());
     }
-    if (updatedAt_ != null) {
-      output.writeMessage(4, getUpdatedAt());
+    if (status_ != io.littlehorse.common.proto.LHStatusPb.STARTING.getNumber()) {
+      output.writeEnum(4, status_);
     }
     com.google.protobuf.GeneratedMessageV3
       .serializeStringMapTo(
@@ -431,9 +392,6 @@ private static final long serialVersionUID = 0L;
         5);
     if (!getEntrypointThreadNameBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 6, entrypointThreadName_);
-    }
-    if (status_ != io.littlehorse.common.proto.LHStatusPb.STARTING.getNumber()) {
-      output.writeEnum(7, status_);
     }
     unknownFields.writeTo(output);
   }
@@ -455,9 +413,9 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getCreatedAt());
     }
-    if (updatedAt_ != null) {
+    if (status_ != io.littlehorse.common.proto.LHStatusPb.STARTING.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, getUpdatedAt());
+        .computeEnumSize(4, status_);
     }
     for (java.util.Map.Entry<java.lang.String, io.littlehorse.common.proto.ThreadSpecPb> entry
          : internalGetThreadSpecs().getMap().entrySet()) {
@@ -471,10 +429,6 @@ private static final long serialVersionUID = 0L;
     }
     if (!getEntrypointThreadNameBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, entrypointThreadName_);
-    }
-    if (status_ != io.littlehorse.common.proto.LHStatusPb.STARTING.getNumber()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(7, status_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -500,16 +454,11 @@ private static final long serialVersionUID = 0L;
       if (!getCreatedAt()
           .equals(other.getCreatedAt())) return false;
     }
-    if (hasUpdatedAt() != other.hasUpdatedAt()) return false;
-    if (hasUpdatedAt()) {
-      if (!getUpdatedAt()
-          .equals(other.getUpdatedAt())) return false;
-    }
+    if (status_ != other.status_) return false;
     if (!internalGetThreadSpecs().equals(
         other.internalGetThreadSpecs())) return false;
     if (!getEntrypointThreadName()
         .equals(other.getEntrypointThreadName())) return false;
-    if (status_ != other.status_) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -529,18 +478,14 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + CREATED_AT_FIELD_NUMBER;
       hash = (53 * hash) + getCreatedAt().hashCode();
     }
-    if (hasUpdatedAt()) {
-      hash = (37 * hash) + UPDATED_AT_FIELD_NUMBER;
-      hash = (53 * hash) + getUpdatedAt().hashCode();
-    }
+    hash = (37 * hash) + STATUS_FIELD_NUMBER;
+    hash = (53 * hash) + status_;
     if (!internalGetThreadSpecs().getMap().isEmpty()) {
       hash = (37 * hash) + THREAD_SPECS_FIELD_NUMBER;
       hash = (53 * hash) + internalGetThreadSpecs().hashCode();
     }
     hash = (37 * hash) + ENTRYPOINT_THREAD_NAME_FIELD_NUMBER;
     hash = (53 * hash) + getEntrypointThreadName().hashCode();
-    hash = (37 * hash) + STATUS_FIELD_NUMBER;
-    hash = (53 * hash) + status_;
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -706,16 +651,10 @@ private static final long serialVersionUID = 0L;
         createdAt_ = null;
         createdAtBuilder_ = null;
       }
-      if (updatedAtBuilder_ == null) {
-        updatedAt_ = null;
-      } else {
-        updatedAt_ = null;
-        updatedAtBuilder_ = null;
-      }
+      status_ = 0;
+
       internalGetMutableThreadSpecs().clear();
       entrypointThreadName_ = "";
-
-      status_ = 0;
 
       return this;
     }
@@ -751,15 +690,10 @@ private static final long serialVersionUID = 0L;
       } else {
         result.createdAt_ = createdAtBuilder_.build();
       }
-      if (updatedAtBuilder_ == null) {
-        result.updatedAt_ = updatedAt_;
-      } else {
-        result.updatedAt_ = updatedAtBuilder_.build();
-      }
+      result.status_ = status_;
       result.threadSpecs_ = internalGetThreadSpecs();
       result.threadSpecs_.makeImmutable();
       result.entrypointThreadName_ = entrypointThreadName_;
-      result.status_ = status_;
       onBuilt();
       return result;
     }
@@ -818,17 +752,14 @@ private static final long serialVersionUID = 0L;
       if (other.hasCreatedAt()) {
         mergeCreatedAt(other.getCreatedAt());
       }
-      if (other.hasUpdatedAt()) {
-        mergeUpdatedAt(other.getUpdatedAt());
+      if (other.status_ != 0) {
+        setStatusValue(other.getStatusValue());
       }
       internalGetMutableThreadSpecs().mergeFrom(
           other.internalGetThreadSpecs());
       if (!other.getEntrypointThreadName().isEmpty()) {
         entrypointThreadName_ = other.entrypointThreadName_;
         onChanged();
-      }
-      if (other.status_ != 0) {
-        setStatusValue(other.getStatusValue());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -1086,123 +1017,58 @@ private static final long serialVersionUID = 0L;
       return createdAtBuilder_;
     }
 
-    private com.google.protobuf.Timestamp updatedAt_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> updatedAtBuilder_;
+    private int status_ = 0;
     /**
-     * <code>.google.protobuf.Timestamp updated_at = 4;</code>
-     * @return Whether the updatedAt field is set.
+     * <code>.lh_proto.LHStatusPb status = 4;</code>
+     * @return The enum numeric value on the wire for status.
      */
-    public boolean hasUpdatedAt() {
-      return updatedAtBuilder_ != null || updatedAt_ != null;
+    @java.lang.Override public int getStatusValue() {
+      return status_;
     }
     /**
-     * <code>.google.protobuf.Timestamp updated_at = 4;</code>
-     * @return The updatedAt.
+     * <code>.lh_proto.LHStatusPb status = 4;</code>
+     * @param value The enum numeric value on the wire for status to set.
+     * @return This builder for chaining.
      */
-    public com.google.protobuf.Timestamp getUpdatedAt() {
-      if (updatedAtBuilder_ == null) {
-        return updatedAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : updatedAt_;
-      } else {
-        return updatedAtBuilder_.getMessage();
-      }
-    }
-    /**
-     * <code>.google.protobuf.Timestamp updated_at = 4;</code>
-     */
-    public Builder setUpdatedAt(com.google.protobuf.Timestamp value) {
-      if (updatedAtBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        updatedAt_ = value;
-        onChanged();
-      } else {
-        updatedAtBuilder_.setMessage(value);
-      }
-
-      return this;
-    }
-    /**
-     * <code>.google.protobuf.Timestamp updated_at = 4;</code>
-     */
-    public Builder setUpdatedAt(
-        com.google.protobuf.Timestamp.Builder builderForValue) {
-      if (updatedAtBuilder_ == null) {
-        updatedAt_ = builderForValue.build();
-        onChanged();
-      } else {
-        updatedAtBuilder_.setMessage(builderForValue.build());
-      }
-
-      return this;
-    }
-    /**
-     * <code>.google.protobuf.Timestamp updated_at = 4;</code>
-     */
-    public Builder mergeUpdatedAt(com.google.protobuf.Timestamp value) {
-      if (updatedAtBuilder_ == null) {
-        if (updatedAt_ != null) {
-          updatedAt_ =
-            com.google.protobuf.Timestamp.newBuilder(updatedAt_).mergeFrom(value).buildPartial();
-        } else {
-          updatedAt_ = value;
-        }
-        onChanged();
-      } else {
-        updatedAtBuilder_.mergeFrom(value);
-      }
-
-      return this;
-    }
-    /**
-     * <code>.google.protobuf.Timestamp updated_at = 4;</code>
-     */
-    public Builder clearUpdatedAt() {
-      if (updatedAtBuilder_ == null) {
-        updatedAt_ = null;
-        onChanged();
-      } else {
-        updatedAt_ = null;
-        updatedAtBuilder_ = null;
-      }
-
-      return this;
-    }
-    /**
-     * <code>.google.protobuf.Timestamp updated_at = 4;</code>
-     */
-    public com.google.protobuf.Timestamp.Builder getUpdatedAtBuilder() {
+    public Builder setStatusValue(int value) {
       
+      status_ = value;
       onChanged();
-      return getUpdatedAtFieldBuilder().getBuilder();
+      return this;
     }
     /**
-     * <code>.google.protobuf.Timestamp updated_at = 4;</code>
+     * <code>.lh_proto.LHStatusPb status = 4;</code>
+     * @return The status.
      */
-    public com.google.protobuf.TimestampOrBuilder getUpdatedAtOrBuilder() {
-      if (updatedAtBuilder_ != null) {
-        return updatedAtBuilder_.getMessageOrBuilder();
-      } else {
-        return updatedAt_ == null ?
-            com.google.protobuf.Timestamp.getDefaultInstance() : updatedAt_;
-      }
+    @java.lang.Override
+    public io.littlehorse.common.proto.LHStatusPb getStatus() {
+      @SuppressWarnings("deprecation")
+      io.littlehorse.common.proto.LHStatusPb result = io.littlehorse.common.proto.LHStatusPb.valueOf(status_);
+      return result == null ? io.littlehorse.common.proto.LHStatusPb.UNRECOGNIZED : result;
     }
     /**
-     * <code>.google.protobuf.Timestamp updated_at = 4;</code>
+     * <code>.lh_proto.LHStatusPb status = 4;</code>
+     * @param value The status to set.
+     * @return This builder for chaining.
      */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
-        getUpdatedAtFieldBuilder() {
-      if (updatedAtBuilder_ == null) {
-        updatedAtBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
-                getUpdatedAt(),
-                getParentForChildren(),
-                isClean());
-        updatedAt_ = null;
+    public Builder setStatus(io.littlehorse.common.proto.LHStatusPb value) {
+      if (value == null) {
+        throw new NullPointerException();
       }
-      return updatedAtBuilder_;
+      
+      status_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.lh_proto.LHStatusPb status = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearStatus() {
+      
+      status_ = 0;
+      onChanged();
+      return this;
     }
 
     private com.google.protobuf.MapField<
@@ -1405,60 +1271,6 @@ private static final long serialVersionUID = 0L;
   checkByteStringIsUtf8(value);
       
       entrypointThreadName_ = value;
-      onChanged();
-      return this;
-    }
-
-    private int status_ = 0;
-    /**
-     * <code>.lh_proto.LHStatusPb status = 7;</code>
-     * @return The enum numeric value on the wire for status.
-     */
-    @java.lang.Override public int getStatusValue() {
-      return status_;
-    }
-    /**
-     * <code>.lh_proto.LHStatusPb status = 7;</code>
-     * @param value The enum numeric value on the wire for status to set.
-     * @return This builder for chaining.
-     */
-    public Builder setStatusValue(int value) {
-      
-      status_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.lh_proto.LHStatusPb status = 7;</code>
-     * @return The status.
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.LHStatusPb getStatus() {
-      @SuppressWarnings("deprecation")
-      io.littlehorse.common.proto.LHStatusPb result = io.littlehorse.common.proto.LHStatusPb.valueOf(status_);
-      return result == null ? io.littlehorse.common.proto.LHStatusPb.UNRECOGNIZED : result;
-    }
-    /**
-     * <code>.lh_proto.LHStatusPb status = 7;</code>
-     * @param value The status to set.
-     * @return This builder for chaining.
-     */
-    public Builder setStatus(io.littlehorse.common.proto.LHStatusPb value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      
-      status_ = value.getNumber();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.lh_proto.LHStatusPb status = 7;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearStatus() {
-      
-      status_ = 0;
       onChanged();
       return this;
     }

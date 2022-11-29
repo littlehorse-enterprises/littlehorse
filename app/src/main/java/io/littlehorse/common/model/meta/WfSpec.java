@@ -32,7 +32,6 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
     public String name;
     public int version;
     public Date createdAt;
-    public Date updatedAt;
     public long lastOffset;
 
     public Map<String, ThreadSpec> threadSpecs;
@@ -89,10 +88,6 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
         initializedVarToThreadSpec = false;
     }
 
-    public long getLastUpdatedOffset() {
-        return lastOffset;
-    }
-
     public void setLastUpdatedOffset(long newOffset) {
         lastOffset = newOffset;
     }
@@ -102,7 +97,6 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
             .newBuilder()
             .setVersion(version)
             .setCreatedAt(LHUtil.fromDate(createdAt))
-            .setUpdatedAt(LHUtil.fromDate(updatedAt))
             .setEntrypointThreadName(entrypointThreadName)
             .setStatus(status)
             .setName(name);
@@ -120,7 +114,6 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
         WfSpecPbOrBuilder proto = (WfSpecPbOrBuilder) pr;
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
         version = proto.getVersion();
-        updatedAt = LHUtil.fromProtoTs(proto.getUpdatedAt());
         entrypointThreadName = proto.getEntrypointThreadName();
         status = proto.getStatus();
         name = proto.getName();

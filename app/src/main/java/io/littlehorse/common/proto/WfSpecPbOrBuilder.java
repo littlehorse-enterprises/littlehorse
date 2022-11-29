@@ -41,19 +41,15 @@ public interface WfSpecPbOrBuilder extends
   com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
 
   /**
-   * <code>.google.protobuf.Timestamp updated_at = 4;</code>
-   * @return Whether the updatedAt field is set.
+   * <code>.lh_proto.LHStatusPb status = 4;</code>
+   * @return The enum numeric value on the wire for status.
    */
-  boolean hasUpdatedAt();
+  int getStatusValue();
   /**
-   * <code>.google.protobuf.Timestamp updated_at = 4;</code>
-   * @return The updatedAt.
+   * <code>.lh_proto.LHStatusPb status = 4;</code>
+   * @return The status.
    */
-  com.google.protobuf.Timestamp getUpdatedAt();
-  /**
-   * <code>.google.protobuf.Timestamp updated_at = 4;</code>
-   */
-  com.google.protobuf.TimestampOrBuilder getUpdatedAtOrBuilder();
+  io.littlehorse.common.proto.LHStatusPb getStatus();
 
   /**
    * <code>map&lt;string, .lh_proto.ThreadSpecPb&gt; thread_specs = 5;</code>
@@ -100,15 +96,4 @@ public interface WfSpecPbOrBuilder extends
    */
   com.google.protobuf.ByteString
       getEntrypointThreadNameBytes();
-
-  /**
-   * <code>.lh_proto.LHStatusPb status = 7;</code>
-   * @return The enum numeric value on the wire for status.
-   */
-  int getStatusValue();
-  /**
-   * <code>.lh_proto.LHStatusPb status = 7;</code>
-   * @return The status.
-   */
-  io.littlehorse.common.proto.LHStatusPb getStatus();
 }

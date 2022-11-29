@@ -1,5 +1,5 @@
 {
-  "name": "simple_wf",
+  "name": "simple-wf",
   "threadSpecs": {
     "simple_wf": {
       "nodes": {

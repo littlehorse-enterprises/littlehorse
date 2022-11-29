@@ -6,8 +6,12 @@ import io.grpc.protobuf.services.HealthStatusManager;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHConnectionError;
+import io.littlehorse.common.model.command.subcommand.PutExternalEventDef;
 import io.littlehorse.common.model.command.subcommand.PutTaskDef;
+import io.littlehorse.common.model.command.subcommand.PutWfSpec;
+import io.littlehorse.common.model.command.subcommandresponse.PutExternalEventDefReply;
 import io.littlehorse.common.model.command.subcommandresponse.PutTaskDefReply;
+import io.littlehorse.common.model.command.subcommandresponse.PutWfSpecReply;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
@@ -19,8 +23,12 @@ import io.littlehorse.common.proto.GetWfSpecPb;
 import io.littlehorse.common.proto.GetWfSpecReplyPb;
 import io.littlehorse.common.proto.LHPublicApiGrpc.LHPublicApiImplBase;
 import io.littlehorse.common.proto.LHResponseCodePb;
+import io.littlehorse.common.proto.PutExternalEventDefPb;
+import io.littlehorse.common.proto.PutExternalEventDefReplyPb;
 import io.littlehorse.common.proto.PutTaskDefPb;
 import io.littlehorse.common.proto.PutTaskDefReplyPb;
+import io.littlehorse.common.proto.PutWfSpecPb;
+import io.littlehorse.common.proto.PutWfSpecReplyPb;
 import io.littlehorse.server.streamsbackend.KafkaStreamsBackend;
 import java.io.IOException;
 
@@ -130,6 +138,28 @@ public class LHServer extends LHPublicApiImplBase {
     public void putTaskDef(PutTaskDefPb req, StreamObserver<PutTaskDefReplyPb> ctx) {
         PutTaskDef ptd = PutTaskDef.fromProto(req);
         PutTaskDefReply response = backend.process(ptd, PutTaskDefReply.class);
+        ctx.onNext(response.toProto().build());
+        ctx.onCompleted();
+    }
+
+    @Override
+    public void putExternalEventDef(
+        PutExternalEventDefPb req,
+        StreamObserver<PutExternalEventDefReplyPb> ctx
+    ) {
+        PutExternalEventDef peed = PutExternalEventDef.fromProto(req);
+        PutExternalEventDefReply response = backend.process(
+            peed,
+            PutExternalEventDefReply.class
+        );
+        ctx.onNext(response.toProto().build());
+        ctx.onCompleted();
+    }
+
+    @Override
+    public void putWfSpec(PutWfSpecPb req, StreamObserver<PutWfSpecReplyPb> ctx) {
+        PutWfSpec ptd = PutWfSpec.fromProto(req);
+        PutWfSpecReply response = backend.process(ptd, PutWfSpecReply.class);
         ctx.onNext(response.toProto().build());
         ctx.onCompleted();
     }

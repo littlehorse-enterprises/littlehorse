@@ -9,11 +9,13 @@ import io.littlehorse.common.model.command.subcommandresponse.PutWfSpecReply;
 import io.littlehorse.common.model.meta.ThreadSpec;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.proto.LHResponseCodePb;
+import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.PutWfSpecPb;
 import io.littlehorse.common.proto.PutWfSpecPbOrBuilder;
 import io.littlehorse.common.proto.ThreadSpecPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.CommandProcessorDao;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -73,6 +75,8 @@ public class PutWfSpec extends SubCommand<PutWfSpecPb> {
         spec.name = name;
         spec.entrypointThreadName = entrypointThreadName;
         spec.threadSpecs = threadSpecs;
+        spec.createdAt = new Date();
+        spec.status = LHStatusPb.RUNNING;
 
         try {
             WfSpec oldVersion = dao.getWfSpec(name, null);
