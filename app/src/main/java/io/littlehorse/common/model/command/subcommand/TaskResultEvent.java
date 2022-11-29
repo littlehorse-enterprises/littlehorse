@@ -25,6 +25,10 @@ public class TaskResultEvent extends SubCommand<TaskResultEventPb> {
     public VariableValue stderr;
     public TaskResultCodePb resultCode;
 
+    public String getPartitionKey() {
+        return wfRunId;
+    }
+
     public Class<TaskResultEventPb> getProtoBaseClass() {
         return TaskResultEventPb.class;
     }

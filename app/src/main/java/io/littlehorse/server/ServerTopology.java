@@ -1,7 +1,6 @@
 package io.littlehorse.server;
 
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.util.serde.LHDeserializer;
@@ -20,40 +19,41 @@ import org.apache.kafka.streams.state.Stores;
 
 public class ServerTopology {
 
-    public static String timerSource = "timer-source";
-    public static String timerProcessor = "timer-processor";
-    public static String newTimerSink = "new-timer-sink";
-    public static String maturedTimerSink = "matured-timer-sink";
+    public static String TIMER_SOURCE = "timer-source";
+    public static String TIMER_PROCESSOR = "timer-processor";
+    public static String NEW_TIMER_SINK = "new-timer-sink";
+    public static String MATURED_TIMER_SINK = "matured-timer-sink";
+    public static String TIMER_STORE = "timer-store";
 
-    public static String coreSource = "core-source";
-    public static String coreStore = "core-store";
-    public static String coreProcessor = "core-processor";
-    public static String coreSink = "core-sink";
+    public static String CORE_SOURCE = "core-source";
+    public static String CORE_STORE = "core-store";
+    public static String CORE_PROCESSOR = "core-processor";
+    public static String CORE_SINK = "core-sink";
 
-    public static String globalMetaSource = "global-metadata-cl-source";
-    public static String globalStore = "global-metadata-store";
-    public static String globalMetaProcessor = "global-metadata-processor";
+    public static String GLOBAL_META_SOURCE = "global-metadata-cl-source";
+    public static String GLOBAL_STORE = "global-metadata-store";
+    public static String GLOBAL_META_PROCESSOR = "global-metadata-processor";
 
     public static Topology initCoreTopology(LHConfig config) {
         Topology topo = new Topology();
 
         topo.addSource(
-            coreSource, // source name
+            CORE_SOURCE, // source name
             Serdes.String().deserializer(), // key deserializer
             new LHDeserializer<>(Command.class, config), // value deserializer
             config.getCoreCmdTopicName() // source topic
         );
 
         topo.addProcessor(
-            coreProcessor,
+            CORE_PROCESSOR,
             () -> {
                 return new CommandProcessor(config);
             },
-            coreSource
+            CORE_SOURCE
         );
 
         topo.addSink(
-            coreSink,
+            CORE_SINK,
             (key, coreServerOutput, ctx) -> {
                 return ((CommandProcessorOutput) coreServerOutput).topic;
             }, // topic extractor
@@ -61,15 +61,15 @@ public class ServerTopology {
             (topic, output) -> {
                 return ((CommandProcessorOutput) output).payload.toBytes(config);
             }, // value serializer
-            coreProcessor // parent name
+            CORE_PROCESSOR // parent name
         );
 
         StoreBuilder<KeyValueStore<String, Bytes>> partitionedStoreBuilder = Stores.keyValueStoreBuilder(
-            Stores.persistentKeyValueStore(LHConstants.CORE_DATA_STORE_NAME),
+            Stores.persistentKeyValueStore(CORE_STORE),
             Serdes.String(),
             Serdes.Bytes()
         );
-        topo.addStateStore(partitionedStoreBuilder, coreProcessor);
+        topo.addStateStore(partitionedStoreBuilder, CORE_PROCESSOR);
 
         // There's a topic for global communication, which is used for two things:
         // 1. broadcasting global metadata to all instances
@@ -79,17 +79,17 @@ public class ServerTopology {
         // topo.addSource(globalMetaSource, Serdes.String().deserializer(), new LHDeserializer<>(), config))
 
         StoreBuilder<KeyValueStore<String, Bytes>> globalStoreBuilder = Stores.keyValueStoreBuilder(
-            Stores.persistentKeyValueStore(globalStore),
+            Stores.persistentKeyValueStore(GLOBAL_STORE),
             Serdes.String(),
             Serdes.Bytes()
         );
         topo.addGlobalStore(
             globalStoreBuilder,
-            globalMetaSource,
+            GLOBAL_META_SOURCE,
             Serdes.String().deserializer(),
             Serdes.Bytes().deserializer(),
             config.getGlobalMetadataCLTopicName(),
-            globalMetaProcessor,
+            GLOBAL_META_PROCESSOR,
             () -> {
                 return new GlobalMetadataProcessor();
             }
@@ -115,22 +115,22 @@ public class ServerTopology {
             );
 
         topo.addSource(
-            timerSource,
+            TIMER_SOURCE,
             Serdes.String().deserializer(),
             timerSerde.deserializer(),
             config.getTimerTopic()
         );
 
         topo.addProcessor(
-            timerProcessor,
+            TIMER_PROCESSOR,
             () -> {
                 return new TimerProcessor();
             },
-            timerSource
+            TIMER_SOURCE
         );
 
         topo.addSink(
-            maturedTimerSink,
+            MATURED_TIMER_SINK,
             (key, lhTimer, ctx) -> {
                 return ((LHTimer) lhTimer).topic;
             },
@@ -138,16 +138,16 @@ public class ServerTopology {
             (topic, lhTimer) -> {
                 return ((LHTimer) lhTimer).getPayload(config);
             },
-            timerProcessor
+            TIMER_PROCESSOR
         );
 
         // Add state store
         StoreBuilder<KeyValueStore<String, LHTimer>> timerStoreBuilder = Stores.keyValueStoreBuilder(
-            Stores.persistentKeyValueStore(LHConstants.TIMER_STORE_NAME),
+            Stores.persistentKeyValueStore(TIMER_STORE),
             Serdes.String(),
             timerSerde
         );
-        topo.addStateStore(timerStoreBuilder, timerProcessor);
+        topo.addStateStore(timerStoreBuilder, TIMER_PROCESSOR);
 
         return topo;
     }

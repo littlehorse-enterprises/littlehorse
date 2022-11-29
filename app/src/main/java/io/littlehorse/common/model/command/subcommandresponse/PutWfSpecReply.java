@@ -1,16 +1,13 @@
 package io.littlehorse.common.model.command.subcommandresponse;
 
 import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.command.SubCommandResponse;
 import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.proto.LHResponseCodePb;
 import io.littlehorse.common.proto.PutWfSpecReplyPb;
 import io.littlehorse.common.proto.PutWfSpecReplyPbOrBuilder;
 
-public class PutWfSpecReply extends LHSerializable<PutWfSpecReplyPb> {
+public class PutWfSpecReply extends SubCommandResponse<PutWfSpecReplyPb> {
 
-    public LHResponseCodePb code;
-    public String message;
     public WfSpec result;
 
     public Class<PutWfSpecReplyPb> getProtoBaseClass() {

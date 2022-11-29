@@ -1,15 +1,12 @@
 package io.littlehorse.common.model.command.subcommandresponse;
 
 import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.proto.LHResponseCodePb;
+import io.littlehorse.common.model.command.SubCommandResponse;
 import io.littlehorse.common.proto.RunWfReplyPb;
 import io.littlehorse.common.proto.RunWfReplyPbOrBuilder;
 
-public class RunWfReply extends LHSerializable<RunWfReplyPb> {
+public class RunWfReply extends SubCommandResponse<RunWfReplyPb> {
 
-    public LHResponseCodePb code;
-    public String message;
     public Integer wfSpecVersion;
     public String wfRunId;
 

@@ -2,6 +2,7 @@ package io.littlehorse.common.model.command.subcommand;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.PutWfSpecReply;
@@ -21,6 +22,10 @@ public class PutWfSpec extends SubCommand<PutWfSpecPb> {
     public String name;
     public Map<String, ThreadSpec> threadSpecs;
     public String entrypointThreadName;
+
+    public String getPartitionKey() {
+        return LHConstants.META_PARTITION_KEY;
+    }
 
     public Class<PutWfSpecPb> getProtoBaseClass() {
         return PutWfSpecPb.class;

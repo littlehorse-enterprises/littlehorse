@@ -2,6 +2,7 @@ package io.littlehorse.common.model.command.subcommand;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.PutExternalEventDefReply;
 import io.littlehorse.common.model.meta.ExternalEventDef;
@@ -14,6 +15,10 @@ import io.littlehorse.server.CommandProcessorDao;
 public class PutExternalEventDef extends SubCommand<PutExternalEventDefPb> {
 
     public String name;
+
+    public String getPartitionKey() {
+        return LHConstants.META_PARTITION_KEY;
+    }
 
     public Class<PutExternalEventDefPb> getProtoBaseClass() {
         return PutExternalEventDefPb.class;

@@ -11,7 +11,7 @@ public class CommandProcessor
     implements Processor<String, Command, String, CommandProcessorOutput> {
 
     private ProcessorContext<String, CommandProcessorOutput> ctx;
-    private CommandProcessorDaoImpl backend;
+    private CommandProcessorDaoImpl dao;
     private LHConfig config;
 
     public CommandProcessor(LHConfig config) {
@@ -21,22 +21,21 @@ public class CommandProcessor
     @Override
     public void init(final ProcessorContext<String, CommandProcessorOutput> ctx) {
         this.ctx = ctx;
-        backend = new CommandProcessorDaoImpl(this.ctx, config);
+        dao = new CommandProcessorDaoImpl(this.ctx, config);
     }
 
     @Override
     public void process(final Record<String, Command> commandRecord) {
         try {
             Command command = commandRecord.value();
-            LHSerializable<?> response = command.process(backend, config);
+            LHSerializable<?> response = command.process(dao, config);
             if (command.hasResponse()) {
-                // TOOD: save the response
-                backend.saveResponse(response, command);
+                dao.saveResponse(response, command);
             }
-            backend.commitChanges();
+            dao.commitChanges();
         } catch (Exception exn) {
             exn.printStackTrace();
-            backend.abortChanges();
+            dao.abortChanges();
             // Should we have a DLQ? I don't think that makes sense...the internals
             // of a database like Postgres don't have a DQL for their WAL.
         }

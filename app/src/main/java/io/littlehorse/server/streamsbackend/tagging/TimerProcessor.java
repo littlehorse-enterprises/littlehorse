@@ -3,6 +3,7 @@ package io.littlehorse.server.streamsbackend.tagging;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.server.ServerTopology;
 import java.util.Date;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.processor.Cancellable;
@@ -21,7 +22,7 @@ public class TimerProcessor implements Processor<String, LHTimer, String, LHTime
 
     public void init(final ProcessorContext<String, LHTimer> context) {
         this.context = context;
-        timerStore = context.getStateStore(LHConstants.TIMER_STORE_NAME);
+        timerStore = context.getStateStore(ServerTopology.TIMER_STORE);
         this.punctuator =
             context.schedule(
                 LHConstants.PUNCTUATOR_INERVAL,

@@ -23,6 +23,10 @@ public class RunWf extends SubCommand<RunWfPb> {
     public Map<String, VariableValue> variables;
     public String id;
 
+    public String getPartitionKey() {
+        return id;
+    }
+
     public Class<RunWfPb> getProtoBaseClass() {
         return RunWfPb.class;
     }

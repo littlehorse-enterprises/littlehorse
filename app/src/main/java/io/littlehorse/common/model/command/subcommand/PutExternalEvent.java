@@ -23,6 +23,10 @@ public class PutExternalEvent extends SubCommand<PutExternalEventPb> {
     public Integer threadRunNumber;
     public Integer nodeRunPosition;
 
+    public String getPartitionKey() {
+        return wfRunId;
+    }
+
     public Class<PutExternalEventPb> getProtoBaseClass() {
         return PutExternalEventPb.class;
     }

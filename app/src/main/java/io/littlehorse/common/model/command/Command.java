@@ -133,6 +133,38 @@ public class Command extends LHSerializable<CommandPb> {
         throw new RuntimeException("Not possible");
     }
 
+    public void setSubCommand(SubCommand<?> cmd) {
+        Class<?> cls = cmd.getClass();
+        if (cls.equals(PutTaskDef.class)) {
+            type = CommandCase.PUT_TASK_DEF;
+            putTaskDef = (PutTaskDef) cmd;
+        } else if (cls.equals(PutExternalEventDef.class)) {
+            type = CommandCase.PUT_EXTERNAL_EVENT_DEF;
+            putExternalEventDef = (PutExternalEventDef) cmd;
+        } else if (cls.equals(PutWfSpec.class)) {
+            type = CommandCase.PUT_WF_SPEC;
+            putWfSpec = (PutWfSpec) cmd;
+        } else if (cls.equals(RunWf.class)) {
+            type = CommandCase.RUN_WF;
+            runWf = (RunWf) cmd;
+        } else if (cls.equals(PutExternalEvent.class)) {
+            type = CommandCase.PUT_EXTERNAL_EVENT;
+            putExternalEvent = (PutExternalEvent) cmd;
+        } else if (cls.equals(TaskResultEvent.class)) {
+            type = CommandCase.TASK_RESULT_EVENT;
+            taskResultEvent = (TaskResultEvent) cmd;
+        } else if (cls.equals(TaskStartedEvent.class)) {
+            type = CommandCase.TASK_STARTED_EVENT;
+            taskStartedEvent = (TaskStartedEvent) cmd;
+        } else {
+            throw new RuntimeException("Unrecognized class: " + cls.getName());
+        }
+    }
+
+    public String getPartitionKey() {
+        return getSubCommand().getPartitionKey();
+    }
+
     public boolean hasResponse() {
         return getSubCommand().hasResponse();
     }

@@ -1,17 +1,14 @@
 package io.littlehorse.common.model.command.subcommandresponse;
 
 import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.command.SubCommandResponse;
 import io.littlehorse.common.model.meta.ExternalEventDef;
-import io.littlehorse.common.proto.LHResponseCodePb;
 import io.littlehorse.common.proto.PutExternalEventDefReplyPb;
 import io.littlehorse.common.proto.PutExternalEventDefReplyPbOrBuilder;
 
 public class PutExternalEventDefReply
-    extends LHSerializable<PutExternalEventDefReplyPb> {
+    extends SubCommandResponse<PutExternalEventDefReplyPb> {
 
-    public LHResponseCodePb code;
-    public String message;
     public ExternalEventDef result;
 
     public Class<PutExternalEventDefReplyPb> getProtoBaseClass() {

@@ -24,6 +24,10 @@ public class TaskStartedEvent extends SubCommand<TaskStartedEventPb> {
         return TaskStartedEventPb.class;
     }
 
+    public String getPartitionKey() {
+        return wfRunId;
+    }
+
     public TaskStartedEventPb.Builder toProto() {
         TaskStartedEventPb.Builder b = TaskStartedEventPb
             .newBuilder()

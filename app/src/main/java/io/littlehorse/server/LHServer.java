@@ -6,6 +6,8 @@ import io.grpc.protobuf.services.HealthStatusManager;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHConnectionError;
+import io.littlehorse.common.model.command.subcommand.PutTaskDef;
+import io.littlehorse.common.model.command.subcommandresponse.PutTaskDefReply;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
@@ -17,6 +19,8 @@ import io.littlehorse.common.proto.GetWfSpecPb;
 import io.littlehorse.common.proto.GetWfSpecReplyPb;
 import io.littlehorse.common.proto.LHPublicApiGrpc.LHPublicApiImplBase;
 import io.littlehorse.common.proto.LHResponseCodePb;
+import io.littlehorse.common.proto.PutTaskDefPb;
+import io.littlehorse.common.proto.PutTaskDefReplyPb;
 import io.littlehorse.server.streamsbackend.KafkaStreamsBackend;
 import java.io.IOException;
 
@@ -119,6 +123,14 @@ public class LHServer extends LHPublicApiImplBase {
         }
 
         ctx.onNext(out.build());
+        ctx.onCompleted();
+    }
+
+    @Override
+    public void putTaskDef(PutTaskDefPb req, StreamObserver<PutTaskDefReplyPb> ctx) {
+        PutTaskDef ptd = PutTaskDef.fromProto(req);
+        PutTaskDefReply response = backend.process(ptd, PutTaskDefReply.class);
+        ctx.onNext(response.toProto().build());
         ctx.onCompleted();
     }
 

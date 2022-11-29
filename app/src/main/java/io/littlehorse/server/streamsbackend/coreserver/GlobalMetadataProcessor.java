@@ -12,7 +12,7 @@ public class GlobalMetadataProcessor implements Processor<String, Bytes, Void, V
     private KeyValueStore<String, Bytes> store;
 
     public void init(final ProcessorContext<Void, Void> ctx) {
-        store = ctx.getStateStore(ServerTopology.globalStore);
+        store = ctx.getStateStore(ServerTopology.GLOBAL_STORE);
     }
 
     /*

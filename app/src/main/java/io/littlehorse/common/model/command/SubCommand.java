@@ -14,4 +14,6 @@ public abstract class SubCommand<T extends MessageOrBuilder>
     );
 
     public abstract boolean hasResponse();
+
+    public abstract String getPartitionKey();
 }

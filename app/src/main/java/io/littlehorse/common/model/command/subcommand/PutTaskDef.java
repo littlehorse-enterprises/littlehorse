@@ -2,6 +2,7 @@ package io.littlehorse.common.model.command.subcommand;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.PutTaskDefReply;
 import io.littlehorse.common.model.meta.OutputSchema;
@@ -21,6 +22,10 @@ public class PutTaskDef extends SubCommand<PutTaskDefPb> {
     public String name;
     public OutputSchema outputSchema;
     public Map<String, VariableDef> inputVars;
+
+    public String getPartitionKey() {
+        return LHConstants.META_PARTITION_KEY;
+    }
 
     public PutTaskDef() {
         inputVars = new HashMap<>();

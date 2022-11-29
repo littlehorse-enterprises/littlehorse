@@ -37,15 +37,9 @@ public class LHConstants {
         "LHORSE_INTERNAL_ADVERTISED_PORT";
     public static final String INTERNAL_BIND_PORT_KEY = "LHORSE_INTERNAL_BIND_PORT";
 
-    // Store Names (Constants used internally by code)
-    public static final String CORE_DATA_STORE_NAME = "core-data-store";
-    public static final String TIMER_STORE_NAME = "timer-store";
-    public static final String INDEX_STORE_NAME = "tags-store";
-
+    // Other various constants used by code
     public static final Duration PUNCTUATOR_INERVAL = Duration.ofSeconds(4);
     public static final Duration TICKER_INTERVAL = Duration.ofSeconds(4);
-
-    // Other various constants used by code
     public static final String OBJECT_ID_HEADER = "STORE_KEY";
     public static final String EXT_EVT_HANDLER_VAR = "INPUT";
 

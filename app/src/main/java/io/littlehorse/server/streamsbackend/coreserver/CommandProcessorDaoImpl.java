@@ -99,10 +99,10 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
             ctx.taskId().partition() == config.getHotMetadataPartition();
 
         KeyValueStore<String, Bytes> rawLocalStore = ctx.getStateStore(
-            ServerTopology.coreStore
+            ServerTopology.CORE_STORE
         );
         ReadOnlyKeyValueStore<String, Bytes> rawGlobalStore = ctx.getStateStore(
-            ServerTopology.globalStore
+            ServerTopology.GLOBAL_STORE
         );
         localStore = new LHStoreWrapper(rawLocalStore, config);
         globalStore = new LHROStoreWrapper(rawGlobalStore, config);

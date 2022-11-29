@@ -1,16 +1,13 @@
 package io.littlehorse.common.model.command.subcommandresponse;
 
 import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.command.SubCommandResponse;
 import io.littlehorse.common.model.meta.TaskDef;
-import io.littlehorse.common.proto.LHResponseCodePb;
 import io.littlehorse.common.proto.PutTaskDefReplyPb;
 import io.littlehorse.common.proto.PutTaskDefReplyPbOrBuilder;
 
-public class PutTaskDefReply extends LHSerializable<PutTaskDefReplyPb> {
+public class PutTaskDefReply extends SubCommandResponse<PutTaskDefReplyPb> {
 
-    public LHResponseCodePb code;
-    public String message;
     public TaskDef result;
 
     public Class<PutTaskDefReplyPb> getProtoBaseClass() {

@@ -6,8 +6,8 @@ import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHConnectionError;
+import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.CommandResult;
 import io.littlehorse.common.proto.CentralStoreQueryPb;
 import io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb;
@@ -54,12 +54,102 @@ public class LHKafkaStoreInternalCommServer implements Closeable {
             );
     }
 
+    public void start() throws IOException {
+        internalGrpcServer.start();
+    }
+
+    public void close() {
+        internalGrpcServer.shutdown();
+    }
+
+    public Bytes getBytes(String fullStoreKey, String partitionKey)
+        throws LHConnectionError {
+        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
+            ServerTopology.CORE_STORE,
+            partitionKey,
+            Serdes.String().serializer()
+        );
+
+        if (meta.activeHost().equals(thisHost)) {
+            return getRawStore(null, false).get(fullStoreKey);
+        } else {
+            return queryRemote(
+                meta,
+                CentralStoreSubQueryPb.newBuilder().setKey(fullStoreKey).build()
+            );
+        }
+    }
+
+    public Bytes getLastFromPrefix(String prefix, String partitionKey)
+        throws LHConnectionError {
+        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
+            ServerTopology.CORE_STORE,
+            partitionKey,
+            Serdes.String().serializer()
+        );
+
+        if (meta.activeHost().equals(thisHost)) {
+            return new LHROStoreWrapper(getRawStore(null, false), config)
+                .getLastBytesFromFullPrefix(prefix);
+        } else {
+            return queryRemote(
+                meta,
+                CentralStoreSubQueryPb.newBuilder().setLastFromPrefix(prefix).build()
+            );
+        }
+    }
+
+    public Bytes waitForProcessing(Command command) throws LHConnectionError {
+        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
+            ServerTopology.CORE_STORE,
+            command.getPartitionKey(),
+            Serdes.String().serializer()
+        );
+
+        LHInternalsBlockingStub client = getInternalClient(meta.activeHost());
+
+        WaitForCommandResultReplyPb resp;
+        try {
+            resp =
+                client.waitForCommandResult(
+                    WaitForCommandResultPb
+                        .newBuilder()
+                        .setCommandId(command.commandId)
+                        .setSpecificPartition(meta.partition())
+                        .build()
+                );
+        } catch (Exception exn) {
+            throw new LHConnectionError(
+                exn,
+                "Could not connect to required LH broker."
+            );
+        }
+
+        switch (resp.getCode()) {
+            case RSQ_OK:
+                if (resp.hasResult()) {
+                    // lol why did I design the CommandResultPb this way
+                    return new Bytes(resp.getResult().getResult().toByteArray());
+                } else {
+                    return null;
+                }
+            case RSQ_NOT_AVAILABLE:
+                throw new LHConnectionError(
+                    null,
+                    "Network error: " + resp.getMessage()
+                );
+            case UNRECOGNIZED:
+            default:
+                throw new RuntimeException("Not possible.");
+        }
+    }
+
     private ReadOnlyKeyValueStore<String, Bytes> getRawStore(
         Integer specificPartition,
         boolean enableStaleStores
     ) {
         StoreQueryParameters<ReadOnlyKeyValueStore<String, Bytes>> params = StoreQueryParameters.fromNameAndType(
-            ServerTopology.coreStore,
+            ServerTopology.CORE_STORE,
             QueryableStoreTypes.keyValueStore()
         );
 
@@ -93,51 +183,6 @@ public class LHKafkaStoreInternalCommServer implements Closeable {
             enableStaleStores
         );
         return new LHROStoreWrapper(rawStore, config);
-    }
-
-    public void start() throws IOException {
-        internalGrpcServer.start();
-    }
-
-    public void close() {
-        internalGrpcServer.shutdown();
-    }
-
-    public Bytes getBytes(String fullStoreKey, String partitionKey)
-        throws LHConnectionError {
-        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
-            LHConstants.CORE_DATA_STORE_NAME,
-            partitionKey,
-            Serdes.String().serializer()
-        );
-
-        if (meta.activeHost().equals(thisHost)) {
-            return getRawStore(null, false).get(fullStoreKey);
-        } else {
-            return queryRemote(
-                meta,
-                CentralStoreSubQueryPb.newBuilder().setKey(fullStoreKey).build()
-            );
-        }
-    }
-
-    public Bytes getLastFromPrefix(String prefix, String partitionKey)
-        throws LHConnectionError {
-        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
-            LHConstants.CORE_DATA_STORE_NAME,
-            partitionKey,
-            Serdes.String().serializer()
-        );
-
-        if (meta.activeHost().equals(thisHost)) {
-            return new LHROStoreWrapper(getRawStore(null, false), config)
-                .getLastBytesFromFullPrefix(prefix);
-        } else {
-            return queryRemote(
-                meta,
-                CentralStoreSubQueryPb.newBuilder().setLastFromPrefix(prefix).build()
-            );
-        }
     }
 
     private Bytes queryRemote(KeyQueryMetadata meta, CentralStoreSubQueryPb subQuery)
@@ -207,6 +252,8 @@ public class LHKafkaStoreInternalCommServer implements Closeable {
         }
     }
 
+    // TODO: We need to keep and re-use channels so that we don't open a bazillion
+    // connections.
     private LHInternalsBlockingStub getInternalClient(HostInfo host) {
         return LHInternalsGrpc.newBlockingStub(
             ManagedChannelBuilder

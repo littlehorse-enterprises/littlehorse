@@ -1,5 +1,6 @@
 package io.littlehorse.server.streamsbackend;
 
+import com.google.protobuf.MessageOrBuilder;
 import io.grpc.health.v1.HealthCheckResponse.ServingStatus;
 import io.grpc.protobuf.services.HealthStatusManager;
 import io.littlehorse.common.LHConfig;
@@ -7,13 +8,21 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.command.Command;
+import io.littlehorse.common.model.command.SubCommand;
+import io.littlehorse.common.model.command.SubCommandResponse;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.proto.LHResponseCodePb;
+import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.ServerTopology;
 import io.littlehorse.server.streamsbackend.storeinternals.LHKafkaStoreInternalCommServer;
 import java.io.IOException;
+import java.util.Date;
+import java.util.concurrent.Future;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KafkaStreams.State;
@@ -28,6 +37,7 @@ public class KafkaStreamsBackend {
     private LHConfig config;
 
     private LHKafkaStoreInternalCommServer backendInternalComms;
+    private LHProducer producer;
 
     public void init(LHConfig config, HealthStatusManager grpcHealthCheckThingy) {
         Topology coreTopo = ServerTopology.initCoreTopology(config);
@@ -49,6 +59,7 @@ public class KafkaStreamsBackend {
         );
 
         this.config = config;
+        this.producer = new LHProducer(config, false);
 
         backendInternalComms =
             new LHKafkaStoreInternalCommServer(config, coreStreams);
@@ -158,6 +169,70 @@ public class KafkaStreamsBackend {
                 );
             }
         }
+    }
+
+    public <U extends MessageOrBuilder, T extends SubCommandResponse<U>> T process(
+        SubCommand<?> subCmd,
+        Class<T> cls
+    ) {
+        if (!subCmd.hasResponse()) {
+            throw new RuntimeException(
+                "Not possible; expected only respondable commands."
+            );
+        }
+
+        T out;
+        try {
+            out = cls.getDeclaredConstructor().newInstance();
+        } catch (Exception exn) {
+            // Not possible
+            exn.printStackTrace();
+            throw new RuntimeException(exn);
+        }
+
+        Command command = new Command();
+        command.time = new Date();
+        command.setSubCommand(subCmd);
+
+        // TODO: allow client to set this on request to enable idempotent retries.
+        command.commandId = LHUtil.generateGuid();
+
+        // Now we need to record the command and wait for the processing.
+        Future<RecordMetadata> rec = producer.send(
+            command.getPartitionKey(), // partition key
+            command, // payload
+            config.getCoreCmdTopicName() // topic name
+        );
+
+        // Wait for the record to commit to kafka
+        try {
+            rec.get();
+        } catch (Exception exn) {
+            out.code = LHResponseCodePb.CONNECTION_ERROR;
+            out.message = "May have failed recording event: " + exn.getMessage();
+            return out;
+        }
+
+        // Now we make the call to wait for the processing on the correct node.
+        try {
+            Bytes raw = backendInternalComms.waitForProcessing(command);
+            if (raw == null) {
+                return null;
+            } else {
+                try {
+                    // This is if everything goes according to plan.
+                    LHUtil.log("Everything worked!");
+                    return LHSerializable.fromBytes(raw.get(), cls, config);
+                } catch (LHSerdeError exn) {
+                    out.code = LHResponseCodePb.CONNECTION_ERROR;
+                    out.message = "Got an unreadable response: " + exn.getMessage();
+                }
+            }
+        } catch (LHConnectionError exn) {
+            out.code = LHResponseCodePb.CONNECTION_ERROR;
+            out.message = "Request status pending: " + exn.getMessage();
+        }
+        return out;
     }
 
     public void start() throws IOException {
