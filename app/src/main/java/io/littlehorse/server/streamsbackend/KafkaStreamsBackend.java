@@ -14,7 +14,16 @@ import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.wfrun.ExternalEvent;
+import io.littlehorse.common.model.wfrun.NodeRun;
+import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.proto.GetExternalEventPb;
+import io.littlehorse.common.proto.GetExternalEventReplyPb;
+import io.littlehorse.common.proto.GetNodeRunPb;
+import io.littlehorse.common.proto.GetNodeRunReplyPb;
+import io.littlehorse.common.proto.GetVariablePb;
+import io.littlehorse.common.proto.GetVariableReplyPb;
 import io.littlehorse.common.proto.GetWfRunPb;
 import io.littlehorse.common.proto.GetWfRunReplyPb;
 import io.littlehorse.common.proto.LHResponseCodePb;
@@ -241,7 +250,7 @@ public class KafkaStreamsBackend {
 
     public GetWfRunReplyPb getWfRun(GetWfRunPb req) {
         String partitionKey = req.getId();
-        String storeKey = StoreUtils.getStoreKey(req.getId(), WfRun.class);
+        String storeKey = StoreUtils.getFullStoreKey(req.getId(), WfRun.class);
 
         GetWfRunReplyPb.Builder out = GetWfRunReplyPb.newBuilder();
         try {
@@ -253,6 +262,117 @@ public class KafkaStreamsBackend {
                 out.setResult(
                     LHSerializable
                         .fromBytes(resp.get(), WfRun.class, config)
+                        .toProto()
+                );
+            }
+        } catch (LHConnectionError exn) {
+            out.setCode(LHResponseCodePb.CONNECTION_ERROR);
+            out.setMessage("Failed connecting to backend: " + exn.getMessage());
+        } catch (LHSerdeError exn) {
+            out.setCode(LHResponseCodePb.CONNECTION_ERROR);
+            out.setMessage(
+                "Got an invalid response from backend: " + exn.getMessage()
+            );
+        }
+
+        return out.build();
+    }
+
+    public GetNodeRunReplyPb getNodeRun(GetNodeRunPb req) {
+        String partitionKey = req.getWfRunId();
+        String fullStoreKey = StoreUtils.getFullStoreKey(
+            NodeRun.getStoreKey(
+                req.getWfRunId(),
+                req.getThreadRunNumber(),
+                req.getPosition()
+            ),
+            NodeRun.class
+        );
+
+        GetNodeRunReplyPb.Builder out = GetNodeRunReplyPb.newBuilder();
+        try {
+            Bytes resp = backendInternalComms.getBytes(fullStoreKey, partitionKey);
+            if (resp == null) {
+                out.setCode(LHResponseCodePb.NOT_FOUND_ERROR);
+            } else {
+                out.setCode(LHResponseCodePb.OK);
+                out.setResult(
+                    LHSerializable
+                        .fromBytes(resp.get(), NodeRun.class, config)
+                        .toProto()
+                );
+            }
+        } catch (LHConnectionError exn) {
+            out.setCode(LHResponseCodePb.CONNECTION_ERROR);
+            out.setMessage("Failed connecting to backend: " + exn.getMessage());
+        } catch (LHSerdeError exn) {
+            out.setCode(LHResponseCodePb.CONNECTION_ERROR);
+            out.setMessage(
+                "Got an invalid response from backend: " + exn.getMessage()
+            );
+        }
+
+        return out.build();
+    }
+
+    public GetVariableReplyPb getVariable(GetVariablePb req) {
+        String partitionKey = req.getWfRunId();
+        String fullStoreKey = StoreUtils.getFullStoreKey(
+            Variable.getStoreKey(
+                req.getWfRunId(),
+                req.getThreadRunNumber(),
+                req.getVarName()
+            ),
+            Variable.class
+        );
+
+        GetVariableReplyPb.Builder out = GetVariableReplyPb.newBuilder();
+        try {
+            Bytes resp = backendInternalComms.getBytes(fullStoreKey, partitionKey);
+            if (resp == null) {
+                out.setCode(LHResponseCodePb.NOT_FOUND_ERROR);
+            } else {
+                out.setCode(LHResponseCodePb.OK);
+                out.setResult(
+                    LHSerializable
+                        .fromBytes(resp.get(), Variable.class, config)
+                        .toProto()
+                );
+            }
+        } catch (LHConnectionError exn) {
+            out.setCode(LHResponseCodePb.CONNECTION_ERROR);
+            out.setMessage("Failed connecting to backend: " + exn.getMessage());
+        } catch (LHSerdeError exn) {
+            out.setCode(LHResponseCodePb.CONNECTION_ERROR);
+            out.setMessage(
+                "Got an invalid response from backend: " + exn.getMessage()
+            );
+        }
+
+        return out.build();
+    }
+
+    public GetExternalEventReplyPb getExternalEvent(GetExternalEventPb req) {
+        String partitionKey = req.getWfRunId();
+        String fullStoreKey = StoreUtils.getFullStoreKey(
+            ExternalEvent.getStoreKey(
+                req.getWfRunId(),
+                req.getExternalEventDefName(),
+                req.getGuid()
+            ),
+            Variable.class
+        );
+
+        GetExternalEventReplyPb.Builder out = GetExternalEventReplyPb.newBuilder();
+        try {
+            Bytes resp = backendInternalComms.getBytes(fullStoreKey, partitionKey);
+            if (resp == null) {
+                out.setCode(LHResponseCodePb.NOT_FOUND_ERROR);
+            } else {
+                out.setCode(LHResponseCodePb.OK);
+                out.setResult(
+                    LHSerializable
+                        .fromBytes(resp.get(), ExternalEvent.class, config)
                         .toProto()
                 );
             }

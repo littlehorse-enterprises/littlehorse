@@ -6,11 +6,13 @@ import io.grpc.protobuf.services.HealthStatusManager;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHConnectionError;
+import io.littlehorse.common.model.command.subcommand.PutExternalEvent;
 import io.littlehorse.common.model.command.subcommand.PutExternalEventDef;
 import io.littlehorse.common.model.command.subcommand.PutTaskDef;
 import io.littlehorse.common.model.command.subcommand.PutWfSpec;
 import io.littlehorse.common.model.command.subcommand.RunWf;
 import io.littlehorse.common.model.command.subcommandresponse.PutExternalEventDefReply;
+import io.littlehorse.common.model.command.subcommandresponse.PutExternalEventReply;
 import io.littlehorse.common.model.command.subcommandresponse.PutTaskDefReply;
 import io.littlehorse.common.model.command.subcommandresponse.PutWfSpecReply;
 import io.littlehorse.common.model.command.subcommandresponse.RunWfReply;
@@ -19,8 +21,14 @@ import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.proto.GetExternalEventDefPb;
 import io.littlehorse.common.proto.GetExternalEventDefReplyPb;
+import io.littlehorse.common.proto.GetExternalEventPb;
+import io.littlehorse.common.proto.GetExternalEventReplyPb;
+import io.littlehorse.common.proto.GetNodeRunPb;
+import io.littlehorse.common.proto.GetNodeRunReplyPb;
 import io.littlehorse.common.proto.GetTaskDefPb;
 import io.littlehorse.common.proto.GetTaskDefReplyPb;
+import io.littlehorse.common.proto.GetVariablePb;
+import io.littlehorse.common.proto.GetVariableReplyPb;
 import io.littlehorse.common.proto.GetWfRunPb;
 import io.littlehorse.common.proto.GetWfRunReplyPb;
 import io.littlehorse.common.proto.GetWfSpecPb;
@@ -29,6 +37,8 @@ import io.littlehorse.common.proto.LHPublicApiGrpc.LHPublicApiImplBase;
 import io.littlehorse.common.proto.LHResponseCodePb;
 import io.littlehorse.common.proto.PutExternalEventDefPb;
 import io.littlehorse.common.proto.PutExternalEventDefReplyPb;
+import io.littlehorse.common.proto.PutExternalEventPb;
+import io.littlehorse.common.proto.PutExternalEventReplyPb;
 import io.littlehorse.common.proto.PutTaskDefPb;
 import io.littlehorse.common.proto.PutTaskDefReplyPb;
 import io.littlehorse.common.proto.PutWfSpecPb;
@@ -149,6 +159,20 @@ public class LHServer extends LHPublicApiImplBase {
     }
 
     @Override
+    public void putExternalEvent(
+        PutExternalEventPb req,
+        StreamObserver<PutExternalEventReplyPb> ctx
+    ) {
+        PutExternalEvent peed = PutExternalEvent.fromProto(req);
+        PutExternalEventReply response = backend.process(
+            peed,
+            PutExternalEventReply.class
+        );
+        ctx.onNext(response.toProto().build());
+        ctx.onCompleted();
+    }
+
+    @Override
     public void putExternalEventDef(
         PutExternalEventDefPb req,
         StreamObserver<PutExternalEventDefReplyPb> ctx
@@ -181,6 +205,30 @@ public class LHServer extends LHPublicApiImplBase {
     @Override
     public void getWfRun(GetWfRunPb req, StreamObserver<GetWfRunReplyPb> ctx) {
         ctx.onNext(backend.getWfRun(req));
+        ctx.onCompleted();
+    }
+
+    @Override
+    public void getNodeRun(GetNodeRunPb req, StreamObserver<GetNodeRunReplyPb> ctx) {
+        ctx.onNext(backend.getNodeRun(req));
+        ctx.onCompleted();
+    }
+
+    @Override
+    public void getVariable(
+        GetVariablePb req,
+        StreamObserver<GetVariableReplyPb> ctx
+    ) {
+        ctx.onNext(backend.getVariable(req));
+        ctx.onCompleted();
+    }
+
+    @Override
+    public void getExternalEvent(
+        GetExternalEventPb req,
+        StreamObserver<GetExternalEventReplyPb> ctx
+    ) {
+        ctx.onNext(backend.getExternalEvent(req));
         ctx.onCompleted();
     }
 

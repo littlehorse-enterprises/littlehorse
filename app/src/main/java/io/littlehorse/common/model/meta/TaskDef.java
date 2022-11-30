@@ -50,11 +50,11 @@ public class TaskDef extends GETable<TaskDefPbOrBuilder> {
     }
 
     public static String getPrefixByName(String name) {
-        return StoreUtils.getStoreKey(name + "/", TaskDef.class);
+        return StoreUtils.getFullStoreKey(name + "/", TaskDef.class);
     }
 
     public static String getFullKey(String name, int version) {
-        return StoreUtils.getStoreKey(getSubKey(name, version), TaskDef.class);
+        return StoreUtils.getFullStoreKey(getSubKey(name, version), TaskDef.class);
     }
 
     public String getPartitionKey() {

@@ -9,7 +9,7 @@ public class StoreUtils {
         return thing.getClass().getSimpleName() + "/" + thing.getSubKey();
     }
 
-    public static String getStoreKey(
+    public static String getFullStoreKey(
         String objectId,
         Class<? extends Storeable<?>> cls
     ) {

@@ -44,7 +44,7 @@ public class LHROStoreWrapper {
         String objectId,
         Class<T> cls
     ) {
-        Bytes raw = store.get(StoreUtils.getStoreKey(objectId, cls));
+        Bytes raw = store.get(StoreUtils.getFullStoreKey(objectId, cls));
         if (raw == null) {
             return null;
         }
@@ -65,7 +65,7 @@ public class LHROStoreWrapper {
         String prefix,
         Class<T> cls
     ) {
-        String compositePrefix = StoreUtils.getStoreKey(prefix, cls);
+        String compositePrefix = StoreUtils.getFullStoreKey(prefix, cls);
         return new LHKeyValueIterator<>(
             store.prefixScan(compositePrefix, Serdes.String().serializer()),
             cls,
@@ -110,7 +110,7 @@ public class LHROStoreWrapper {
         String prefix,
         Class<T> cls
     ) {
-        String start = StoreUtils.getStoreKey(prefix, cls);
+        String start = StoreUtils.getFullStoreKey(prefix, cls);
         // The Streams ReadOnlyKeyValueStore doesn't have a reverse prefix scan.
         // However, they do have a reverse range scan. So we take the prefix and
         // then we use the fact that we know the next character after the prefix is

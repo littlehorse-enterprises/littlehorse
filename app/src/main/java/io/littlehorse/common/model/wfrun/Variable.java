@@ -98,11 +98,11 @@ public class Variable extends GETable<VariablePb> {
 
     @JsonIgnore
     public String getSubKey() {
-        return getObjectId(wfRunId, threadRunNumber, name);
+        return getStoreKey(wfRunId, threadRunNumber, name);
     }
 
     @JsonIgnore
-    public static String getObjectId(String wfRunId, int threadNum, String name) {
+    public static String getStoreKey(String wfRunId, int threadNum, String name) {
         return wfRunId + "-" + threadNum + "-" + name;
     }
 

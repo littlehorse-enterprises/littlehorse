@@ -215,7 +215,7 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
 
     @Override
     public Variable getVariable(String wfRunId, String name, int threadNum) {
-        String key = Variable.getObjectId(wfRunId, threadNum, name);
+        String key = Variable.getStoreKey(wfRunId, threadNum, name);
         Variable out = variablePuts.get(key);
         if (out == null) {
             out = localStore.get(key, Variable.class);

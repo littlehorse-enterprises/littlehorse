@@ -66,11 +66,11 @@ public class WfSpec extends GETable<WfSpecPbOrBuilder> {
     }
 
     public static String getFullKey(String name, int version) {
-        return StoreUtils.getStoreKey(getSubKey(name, version), WfSpec.class);
+        return StoreUtils.getFullStoreKey(getSubKey(name, version), WfSpec.class);
     }
 
     public static String getPrefixByName(String name) {
-        return StoreUtils.getStoreKey(name + "/", WfSpec.class);
+        return StoreUtils.getFullStoreKey(name + "/", WfSpec.class);
     }
 
     public Date getCreatedAt() {

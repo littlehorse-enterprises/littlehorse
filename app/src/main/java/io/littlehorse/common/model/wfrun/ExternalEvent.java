@@ -73,10 +73,10 @@ public class ExternalEvent extends GETable<ExternalEventPb> {
     @JsonIgnore
     @Override
     public String getSubKey() {
-        return getObjectId(wfRunId, externalEventDefName, guid);
+        return getStoreKey(wfRunId, externalEventDefName, guid);
     }
 
-    public static String getObjectId(
+    public static String getStoreKey(
         String wfRunId,
         String externalEventDefName,
         String guid
