@@ -36,17 +36,17 @@ public interface GetWfRunReplyPbOrBuilder extends
       getMessageBytes();
 
   /**
-   * <code>.lh_proto.NodeRunPb result = 3;</code>
+   * <code>.lh_proto.WfRunPb result = 3;</code>
    * @return Whether the result field is set.
    */
   boolean hasResult();
   /**
-   * <code>.lh_proto.NodeRunPb result = 3;</code>
+   * <code>.lh_proto.WfRunPb result = 3;</code>
    * @return The result.
    */
-  io.littlehorse.common.proto.NodeRunPb getResult();
+  io.littlehorse.common.proto.WfRunPb getResult();
   /**
-   * <code>.lh_proto.NodeRunPb result = 3;</code>
+   * <code>.lh_proto.WfRunPb result = 3;</code>
    */
-  io.littlehorse.common.proto.NodeRunPbOrBuilder getResultOrBuilder();
+  io.littlehorse.common.proto.WfRunPbOrBuilder getResultOrBuilder();
 }

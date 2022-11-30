@@ -79,7 +79,7 @@ message GetWfRunPb {
 message GetWfRunReplyPb {
     LHResponseCodePb code = 1;
     optional string message = 2;
-    optional NodeRunPb result = 3;
+    optional WfRunPb result = 3;
 }
 
 message GetNodeRunPb {

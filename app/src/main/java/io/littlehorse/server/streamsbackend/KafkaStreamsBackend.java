@@ -8,17 +8,21 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.SubCommand;
-import io.littlehorse.common.model.command.SubCommandResponse;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.proto.GetWfRunPb;
+import io.littlehorse.common.proto.GetWfRunReplyPb;
 import io.littlehorse.common.proto.LHResponseCodePb;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.ServerTopology;
 import io.littlehorse.server.streamsbackend.storeinternals.LHKafkaStoreInternalCommServer;
+import io.littlehorse.server.streamsbackend.storeinternals.utils.StoreUtils;
 import java.io.IOException;
 import java.util.Date;
 import java.util.concurrent.Future;
@@ -171,7 +175,7 @@ public class KafkaStreamsBackend {
         }
     }
 
-    public <U extends MessageOrBuilder, T extends SubCommandResponse<U>> T process(
+    public <U extends MessageOrBuilder, T extends AbstractResponse<U>> T process(
         SubCommand<?> subCmd,
         Class<T> cls
     ) {
@@ -233,6 +237,36 @@ public class KafkaStreamsBackend {
             out.message = "Request status pending: " + exn.getMessage();
         }
         return out;
+    }
+
+    public GetWfRunReplyPb getWfRun(GetWfRunPb req) {
+        String partitionKey = req.getId();
+        String storeKey = StoreUtils.getStoreKey(req.getId(), WfRun.class);
+
+        GetWfRunReplyPb.Builder out = GetWfRunReplyPb.newBuilder();
+        try {
+            Bytes resp = backendInternalComms.getBytes(storeKey, partitionKey);
+            if (resp == null) {
+                out.setCode(LHResponseCodePb.NOT_FOUND_ERROR);
+            } else {
+                out.setCode(LHResponseCodePb.OK);
+                out.setResult(
+                    LHSerializable
+                        .fromBytes(resp.get(), WfRun.class, config)
+                        .toProto()
+                );
+            }
+        } catch (LHConnectionError exn) {
+            out.setCode(LHResponseCodePb.CONNECTION_ERROR);
+            out.setMessage("Failed connecting to backend: " + exn.getMessage());
+        } catch (LHSerdeError exn) {
+            out.setCode(LHResponseCodePb.CONNECTION_ERROR);
+            out.setMessage(
+                "Got an invalid response from backend: " + exn.getMessage()
+            );
+        }
+
+        return out.build();
     }
 
     public void start() throws IOException {

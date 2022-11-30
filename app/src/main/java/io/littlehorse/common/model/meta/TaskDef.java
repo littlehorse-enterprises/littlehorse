@@ -2,16 +2,12 @@ package io.littlehorse.common.model.meta;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.GlobalPOSTable;
-import io.littlehorse.common.model.POSTable;
+import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.server.Tag;
 import io.littlehorse.common.proto.TaskDefPb;
 import io.littlehorse.common.proto.TaskDefPbOrBuilder;
 import io.littlehorse.common.proto.VariableDefPb;
-import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.StoreUtils;
 import java.util.Arrays;
@@ -21,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class TaskDef extends GlobalPOSTable<TaskDefPbOrBuilder> {
+public class TaskDef extends GETable<TaskDefPbOrBuilder> {
 
     public String name;
     public int version;
@@ -112,24 +108,6 @@ public class TaskDef extends GlobalPOSTable<TaskDefPbOrBuilder> {
             .entrySet()) {
             inputVars.put(entry.getKey(), VariableDef.fromProto(entry.getValue()));
         }
-    }
-
-    public void handlePost(
-        POSTable<TaskDefPbOrBuilder> old,
-        LHGlobalMetaStores c,
-        LHConfig config
-    ) throws LHValidationError {
-        if (!(old == null || old instanceof TaskDef)) {
-            throw new RuntimeException("Bad method call.");
-        }
-        TaskDef oldTd = old == null ? null : (TaskDef) old;
-        if (oldTd != null) {
-            throw new LHValidationError(null, "Conflict: Cannot mutate taskdef");
-        }
-    }
-
-    public boolean handleDelete() {
-        return true;
     }
 
     @JsonIgnore

@@ -21,6 +21,8 @@ import io.littlehorse.common.proto.GetExternalEventDefPb;
 import io.littlehorse.common.proto.GetExternalEventDefReplyPb;
 import io.littlehorse.common.proto.GetTaskDefPb;
 import io.littlehorse.common.proto.GetTaskDefReplyPb;
+import io.littlehorse.common.proto.GetWfRunPb;
+import io.littlehorse.common.proto.GetWfRunReplyPb;
 import io.littlehorse.common.proto.GetWfSpecPb;
 import io.littlehorse.common.proto.GetWfSpecReplyPb;
 import io.littlehorse.common.proto.LHPublicApiGrpc.LHPublicApiImplBase;
@@ -173,6 +175,12 @@ public class LHServer extends LHPublicApiImplBase {
         RunWf rwf = RunWf.fromProto(req);
         RunWfReply response = backend.process(rwf, RunWfReply.class);
         ctx.onNext(response.toProto().build());
+        ctx.onCompleted();
+    }
+
+    @Override
+    public void getWfRun(GetWfRunPb req, StreamObserver<GetWfRunReplyPb> ctx) {
+        ctx.onNext(backend.getWfRun(req));
         ctx.onCompleted();
     }
 

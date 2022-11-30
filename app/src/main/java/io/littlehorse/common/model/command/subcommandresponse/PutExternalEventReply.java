@@ -1,13 +1,12 @@
 package io.littlehorse.common.model.command.subcommandresponse;
 
 import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.model.command.SubCommandResponse;
+import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.proto.PutExternalEventReplyPb;
 import io.littlehorse.common.proto.PutExternalEventReplyPbOrBuilder;
 
-public class PutExternalEventReply
-    extends SubCommandResponse<PutExternalEventReplyPb> {
+public class PutExternalEventReply extends AbstractResponse<PutExternalEventReplyPb> {
 
     public ExternalEvent result;
 

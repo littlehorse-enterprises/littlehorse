@@ -2,15 +2,11 @@ package io.littlehorse.common.model.meta;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.GlobalPOSTable;
-import io.littlehorse.common.model.POSTable;
+import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.server.Tag;
 import io.littlehorse.common.proto.ExternalEventDefPb;
 import io.littlehorse.common.proto.ExternalEventDefPbOrBuilder;
-import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.StoreUtils;
 import java.util.Arrays;
@@ -18,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class ExternalEventDef extends GlobalPOSTable<ExternalEventDefPbOrBuilder> {
+public class ExternalEventDef extends GETable<ExternalEventDefPbOrBuilder> {
 
     public String name;
     public int version;
@@ -72,27 +68,6 @@ public class ExternalEventDef extends GlobalPOSTable<ExternalEventDefPbOrBuilder
         ExternalEventDefPbOrBuilder proto = (ExternalEventDefPbOrBuilder) p;
         name = proto.getName();
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
-    }
-
-    public void handlePost(
-        POSTable<ExternalEventDefPbOrBuilder> old,
-        LHGlobalMetaStores c,
-        LHConfig config
-    ) throws LHValidationError {
-        if (!(old == null || old instanceof ExternalEventDef)) {
-            throw new RuntimeException("Bad method call.");
-        }
-        ExternalEventDef oldTd = old == null ? null : (ExternalEventDef) old;
-        if (oldTd != null) {
-            throw new LHValidationError(
-                null,
-                "Conflict: Cannot mutate ExternalEventDef"
-            );
-        }
-    }
-
-    public boolean handleDelete() {
-        return true;
     }
 
     @JsonIgnore

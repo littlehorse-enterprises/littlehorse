@@ -64,11 +64,11 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 26: {
-            io.littlehorse.common.proto.NodeRunPb.Builder subBuilder = null;
+            io.littlehorse.common.proto.WfRunPb.Builder subBuilder = null;
             if (((bitField0_ & 0x00000002) != 0)) {
               subBuilder = result_.toBuilder();
             }
-            result_ = input.readMessage(io.littlehorse.common.proto.NodeRunPb.parser(), extensionRegistry);
+            result_ = input.readMessage(io.littlehorse.common.proto.WfRunPb.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(result_);
               result_ = subBuilder.buildPartial();
@@ -175,9 +175,9 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int RESULT_FIELD_NUMBER = 3;
-  private io.littlehorse.common.proto.NodeRunPb result_;
+  private io.littlehorse.common.proto.WfRunPb result_;
   /**
-   * <code>.lh_proto.NodeRunPb result = 3;</code>
+   * <code>.lh_proto.WfRunPb result = 3;</code>
    * @return Whether the result field is set.
    */
   @java.lang.Override
@@ -185,19 +185,19 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
-   * <code>.lh_proto.NodeRunPb result = 3;</code>
+   * <code>.lh_proto.WfRunPb result = 3;</code>
    * @return The result.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.NodeRunPb getResult() {
-    return result_ == null ? io.littlehorse.common.proto.NodeRunPb.getDefaultInstance() : result_;
+  public io.littlehorse.common.proto.WfRunPb getResult() {
+    return result_ == null ? io.littlehorse.common.proto.WfRunPb.getDefaultInstance() : result_;
   }
   /**
-   * <code>.lh_proto.NodeRunPb result = 3;</code>
+   * <code>.lh_proto.WfRunPb result = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.NodeRunPbOrBuilder getResultOrBuilder() {
-    return result_ == null ? io.littlehorse.common.proto.NodeRunPb.getDefaultInstance() : result_;
+  public io.littlehorse.common.proto.WfRunPbOrBuilder getResultOrBuilder() {
+    return result_ == null ? io.littlehorse.common.proto.WfRunPb.getDefaultInstance() : result_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -702,31 +702,31 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private io.littlehorse.common.proto.NodeRunPb result_;
+    private io.littlehorse.common.proto.WfRunPb result_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.NodeRunPb, io.littlehorse.common.proto.NodeRunPb.Builder, io.littlehorse.common.proto.NodeRunPbOrBuilder> resultBuilder_;
+        io.littlehorse.common.proto.WfRunPb, io.littlehorse.common.proto.WfRunPb.Builder, io.littlehorse.common.proto.WfRunPbOrBuilder> resultBuilder_;
     /**
-     * <code>.lh_proto.NodeRunPb result = 3;</code>
+     * <code>.lh_proto.WfRunPb result = 3;</code>
      * @return Whether the result field is set.
      */
     public boolean hasResult() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>.lh_proto.NodeRunPb result = 3;</code>
+     * <code>.lh_proto.WfRunPb result = 3;</code>
      * @return The result.
      */
-    public io.littlehorse.common.proto.NodeRunPb getResult() {
+    public io.littlehorse.common.proto.WfRunPb getResult() {
       if (resultBuilder_ == null) {
-        return result_ == null ? io.littlehorse.common.proto.NodeRunPb.getDefaultInstance() : result_;
+        return result_ == null ? io.littlehorse.common.proto.WfRunPb.getDefaultInstance() : result_;
       } else {
         return resultBuilder_.getMessage();
       }
     }
     /**
-     * <code>.lh_proto.NodeRunPb result = 3;</code>
+     * <code>.lh_proto.WfRunPb result = 3;</code>
      */
-    public Builder setResult(io.littlehorse.common.proto.NodeRunPb value) {
+    public Builder setResult(io.littlehorse.common.proto.WfRunPb value) {
       if (resultBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -740,10 +740,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.NodeRunPb result = 3;</code>
+     * <code>.lh_proto.WfRunPb result = 3;</code>
      */
     public Builder setResult(
-        io.littlehorse.common.proto.NodeRunPb.Builder builderForValue) {
+        io.littlehorse.common.proto.WfRunPb.Builder builderForValue) {
       if (resultBuilder_ == null) {
         result_ = builderForValue.build();
         onChanged();
@@ -754,15 +754,15 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.NodeRunPb result = 3;</code>
+     * <code>.lh_proto.WfRunPb result = 3;</code>
      */
-    public Builder mergeResult(io.littlehorse.common.proto.NodeRunPb value) {
+    public Builder mergeResult(io.littlehorse.common.proto.WfRunPb value) {
       if (resultBuilder_ == null) {
         if (((bitField0_ & 0x00000002) != 0) &&
             result_ != null &&
-            result_ != io.littlehorse.common.proto.NodeRunPb.getDefaultInstance()) {
+            result_ != io.littlehorse.common.proto.WfRunPb.getDefaultInstance()) {
           result_ =
-            io.littlehorse.common.proto.NodeRunPb.newBuilder(result_).mergeFrom(value).buildPartial();
+            io.littlehorse.common.proto.WfRunPb.newBuilder(result_).mergeFrom(value).buildPartial();
         } else {
           result_ = value;
         }
@@ -774,7 +774,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.NodeRunPb result = 3;</code>
+     * <code>.lh_proto.WfRunPb result = 3;</code>
      */
     public Builder clearResult() {
       if (resultBuilder_ == null) {
@@ -787,33 +787,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.NodeRunPb result = 3;</code>
+     * <code>.lh_proto.WfRunPb result = 3;</code>
      */
-    public io.littlehorse.common.proto.NodeRunPb.Builder getResultBuilder() {
+    public io.littlehorse.common.proto.WfRunPb.Builder getResultBuilder() {
       bitField0_ |= 0x00000002;
       onChanged();
       return getResultFieldBuilder().getBuilder();
     }
     /**
-     * <code>.lh_proto.NodeRunPb result = 3;</code>
+     * <code>.lh_proto.WfRunPb result = 3;</code>
      */
-    public io.littlehorse.common.proto.NodeRunPbOrBuilder getResultOrBuilder() {
+    public io.littlehorse.common.proto.WfRunPbOrBuilder getResultOrBuilder() {
       if (resultBuilder_ != null) {
         return resultBuilder_.getMessageOrBuilder();
       } else {
         return result_ == null ?
-            io.littlehorse.common.proto.NodeRunPb.getDefaultInstance() : result_;
+            io.littlehorse.common.proto.WfRunPb.getDefaultInstance() : result_;
       }
     }
     /**
-     * <code>.lh_proto.NodeRunPb result = 3;</code>
+     * <code>.lh_proto.WfRunPb result = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.NodeRunPb, io.littlehorse.common.proto.NodeRunPb.Builder, io.littlehorse.common.proto.NodeRunPbOrBuilder> 
+        io.littlehorse.common.proto.WfRunPb, io.littlehorse.common.proto.WfRunPb.Builder, io.littlehorse.common.proto.WfRunPbOrBuilder> 
         getResultFieldBuilder() {
       if (resultBuilder_ == null) {
         resultBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.NodeRunPb, io.littlehorse.common.proto.NodeRunPb.Builder, io.littlehorse.common.proto.NodeRunPbOrBuilder>(
+            io.littlehorse.common.proto.WfRunPb, io.littlehorse.common.proto.WfRunPb.Builder, io.littlehorse.common.proto.WfRunPbOrBuilder>(
                 getResult(),
                 getParentForChildren(),
                 isClean());

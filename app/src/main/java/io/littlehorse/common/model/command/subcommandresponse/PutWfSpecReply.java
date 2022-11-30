@@ -1,12 +1,12 @@
 package io.littlehorse.common.model.command.subcommandresponse;
 
 import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.model.command.SubCommandResponse;
+import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.proto.PutWfSpecReplyPb;
 import io.littlehorse.common.proto.PutWfSpecReplyPbOrBuilder;
 
-public class PutWfSpecReply extends SubCommandResponse<PutWfSpecReplyPb> {
+public class PutWfSpecReply extends AbstractResponse<PutWfSpecReplyPb> {
 
     public WfSpec result;
 

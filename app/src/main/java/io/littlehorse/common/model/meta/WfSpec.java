@@ -5,8 +5,7 @@ import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.GlobalPOSTable;
-import io.littlehorse.common.model.POSTable;
+import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.command.subcommand.RunWf;
 import io.littlehorse.common.model.server.Tag;
 import io.littlehorse.common.model.wfrun.WfRun;
@@ -27,7 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
+public class WfSpec extends GETable<WfSpecPbOrBuilder> {
 
     public String name;
     public int version;
@@ -138,25 +137,6 @@ public class WfSpec extends GlobalPOSTable<WfSpecPbOrBuilder> {
         WfSpec out = new WfSpec();
         out.initFrom(proto);
         return out;
-    }
-
-    @JsonIgnore
-    public boolean handleDelete() {
-        return true;
-    }
-
-    @JsonIgnore
-    public void handlePost(
-        POSTable<WfSpecPbOrBuilder> old,
-        LHGlobalMetaStores dbClient,
-        LHConfig config
-    ) throws LHValidationError {
-        // This does a lot of validation; therefore, it's quite complicated.
-        if (old != null) {
-            throw new LHValidationError(null, "Mutating WfSpec not yet supported");
-        }
-
-        validate(dbClient, config);
     }
 
     private void initializeVarToThreadSpec() {
