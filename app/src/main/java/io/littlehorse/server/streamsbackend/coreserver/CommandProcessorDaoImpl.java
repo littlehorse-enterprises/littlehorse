@@ -335,7 +335,7 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
 
     @Override
     public String getWfRunEventQueue() {
-        return config.getTagCmdTopic();
+        return config.getCoreCmdTopicName();
     }
 
     private void flush() {
@@ -380,7 +380,7 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
     }
 
     private void forwardTask(TaskScheduleRequest tsr) {
-        TaskDef taskDef = localStore.get(tsr.taskDefId, TaskDef.class);
+        TaskDef taskDef = getTaskDef(tsr.taskDefName, null);
         CommandProcessorOutput output = new CommandProcessorOutput(
             taskDef.queueName,
             tsr,

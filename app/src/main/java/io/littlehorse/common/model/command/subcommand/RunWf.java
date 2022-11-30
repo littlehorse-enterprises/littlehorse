@@ -24,6 +24,9 @@ public class RunWf extends SubCommand<RunWfPb> {
     public String id;
 
     public String getPartitionKey() {
+        if (id == null) {
+            id = LHUtil.generateGuid();
+        }
         return id;
     }
 
@@ -82,7 +85,7 @@ public class RunWf extends SubCommand<RunWfPb> {
             return out;
         }
 
-        WfRun newRun = spec.startNewRun(null, dao);
+        WfRun newRun = spec.startNewRun(this, dao);
         newRun.advance(dao.getEventTime());
         dao.saveWfRun(newRun);
 

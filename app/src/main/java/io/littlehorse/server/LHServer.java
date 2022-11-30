@@ -9,9 +9,11 @@ import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.model.command.subcommand.PutExternalEventDef;
 import io.littlehorse.common.model.command.subcommand.PutTaskDef;
 import io.littlehorse.common.model.command.subcommand.PutWfSpec;
+import io.littlehorse.common.model.command.subcommand.RunWf;
 import io.littlehorse.common.model.command.subcommandresponse.PutExternalEventDefReply;
 import io.littlehorse.common.model.command.subcommandresponse.PutTaskDefReply;
 import io.littlehorse.common.model.command.subcommandresponse.PutWfSpecReply;
+import io.littlehorse.common.model.command.subcommandresponse.RunWfReply;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
@@ -29,6 +31,8 @@ import io.littlehorse.common.proto.PutTaskDefPb;
 import io.littlehorse.common.proto.PutTaskDefReplyPb;
 import io.littlehorse.common.proto.PutWfSpecPb;
 import io.littlehorse.common.proto.PutWfSpecReplyPb;
+import io.littlehorse.common.proto.RunWfPb;
+import io.littlehorse.common.proto.RunWfReplyPb;
 import io.littlehorse.server.streamsbackend.KafkaStreamsBackend;
 import java.io.IOException;
 
@@ -160,6 +164,14 @@ public class LHServer extends LHPublicApiImplBase {
     public void putWfSpec(PutWfSpecPb req, StreamObserver<PutWfSpecReplyPb> ctx) {
         PutWfSpec ptd = PutWfSpec.fromProto(req);
         PutWfSpecReply response = backend.process(ptd, PutWfSpecReply.class);
+        ctx.onNext(response.toProto().build());
+        ctx.onCompleted();
+    }
+
+    @Override
+    public void runWf(RunWfPb req, StreamObserver<RunWfReplyPb> ctx) {
+        RunWf rwf = RunWf.fromProto(req);
+        RunWfReply response = backend.process(rwf, RunWfReply.class);
         ctx.onNext(response.toProto().build());
         ctx.onCompleted();
     }

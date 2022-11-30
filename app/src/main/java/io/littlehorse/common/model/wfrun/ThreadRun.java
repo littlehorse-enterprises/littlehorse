@@ -683,7 +683,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     public Map<String, VariableValue> assignVarsForNode(TaskNode node)
         throws LHVarSubError {
         Map<String, VariableValue> out = new HashMap<>();
-        TaskDef taskDef = node.taskDef;
+        TaskDef taskDef = node.getTaskDef(wfRun.cmdDao);
 
         for (Map.Entry<String, VariableDef> entry : taskDef.inputVars.entrySet()) {
             String varName = entry.getKey();

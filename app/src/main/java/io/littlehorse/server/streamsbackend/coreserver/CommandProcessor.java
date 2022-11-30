@@ -28,6 +28,8 @@ public class CommandProcessor
     public void process(final Record<String, Command> commandRecord) {
         try {
             Command command = commandRecord.value();
+            System.out.println(command.toJson());
+            dao.setCommand(command);
             LHSerializable<?> response = command.process(dao, config);
             if (command.hasResponse()) {
                 dao.saveResponse(response, command);

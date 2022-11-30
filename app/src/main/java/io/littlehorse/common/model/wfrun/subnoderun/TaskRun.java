@@ -161,6 +161,7 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
         taskResult.taskRunNumber = nodeRun.number;
         taskResult.taskRunPosition = nodeRun.position;
         taskResult.threadRunNumber = nodeRun.threadRunNumber;
+        taskResult.wfRunId = nodeRun.wfRunId;
 
         try {
             taskResult.time =

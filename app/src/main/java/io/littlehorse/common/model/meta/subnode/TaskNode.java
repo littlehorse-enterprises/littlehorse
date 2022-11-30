@@ -15,6 +15,7 @@ import io.littlehorse.common.proto.TaskNodePbOrBuilder;
 import io.littlehorse.common.proto.VariableAssignmentPb;
 import io.littlehorse.common.proto.VariableAssignmentPb.SourceCase;
 import io.littlehorse.common.util.LHGlobalMetaStores;
+import io.littlehorse.server.CommandProcessorDao;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,7 +30,15 @@ public class TaskNode extends SubNode<TaskNodePb> {
     public VariableAssignment timeoutSeconds;
 
     @JsonIgnore
-    public TaskDef taskDef;
+    private TaskDef taskDef;
+
+    @JsonIgnore
+    public TaskDef getTaskDef(CommandProcessorDao dao) {
+        if (taskDef == null) {
+            taskDef = dao.getTaskDef(taskDefName, null);
+        }
+        return taskDef;
+    }
 
     @JsonIgnore
     private Node node;
