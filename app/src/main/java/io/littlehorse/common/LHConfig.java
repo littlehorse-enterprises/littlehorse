@@ -84,7 +84,7 @@ public class LHConfig {
     public int getTaskPartitions() {
         return Integer.valueOf(
             String.class.cast(
-                    props.getOrDefault(LHConstants.TASK_PARTITIONS_KEY, "12")
+                    props.getOrDefault(LHConstants.TASK_PARTITIONS_KEY, "72")
                 )
         );
     }
@@ -92,7 +92,7 @@ public class LHConfig {
     public int getClusterPartitions() {
         return Integer.valueOf(
             String.class.cast(
-                    props.getOrDefault(LHConstants.CLUSTER_PARTITIONS_KEY, "12")
+                    props.getOrDefault(LHConstants.CLUSTER_PARTITIONS_KEY, "72")
                 )
         );
     }
