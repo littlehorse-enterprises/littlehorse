@@ -59,6 +59,8 @@ public class ServerTopology {
             }, // topic extractor
             Serdes.String().serializer(), // key serializer
             (topic, output) -> {
+                if (output == null) return null;
+
                 return ((CommandProcessorOutput) output).payload.toBytes(config);
             }, // value serializer
             CORE_PROCESSOR // parent name

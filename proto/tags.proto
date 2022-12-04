@@ -8,15 +8,14 @@ option java_package = "io.littlehorse.common.proto";
 
 import "google/protobuf/timestamp.proto";
 
-// This section defines internal data structures used for data stores.
 enum GETableClassEnumPb {
     TASK_DEF = 0;
-    WF_SPEC = 1;
-    WF_RUN = 2;
-    THREAD_RUN = 3;
-    TASK_RUN = 4;
+    EXTERNAL_EVENT_DEF = 1;
+    WF_SPEC = 2;
+    WF_RUN = 3;
+    NODE_RUN = 4;
     VARIABLE = 5;
-    EXTERNAL_EVENT_DEF = 6;
+    EXTERNAL_EVENT = 6;
 }
 
 message AttributePb {
@@ -24,37 +23,90 @@ message AttributePb {
     string val = 2;
 }
 
-message IndexKeyPb {
-    repeated AttributePb attributes = 1;
-    GETableClassEnumPb type = 2;
-    google.protobuf.Timestamp created = 3;
-}
-
-message IndexValuePb {
-    repeated string store_key = 1;
-}
-
 message TagPb {
-    IndexKeyPb key = 1;
-    string store_key = 2;
+    // The following info is also stored in the key of the Tag in the store.
+    GETableClassEnumPb type = 1;
+    repeated AttributePb attributes = 2;
+    string described_object_id = 3;
+    google.protobuf.Timestamp created = 4;
+
+    // The following is not stored in the key.
+    repeated string counter_keys = 5;
+
+    // Observation: it's possible that we could optimize by removing fields 1-4
+    // and only relying upon the store key. However, that would complicate
+    // the code a bit and may just be premature optimization.
 }
 
-enum IndexActionEnum {
-    CREATE_IDX_ENTRY = 0;
-    DELETE_IDX_ENTRY = 1;
+message TagsCachePb {
+    repeated string tag_ids = 1;
 }
 
-message TagActionPb {
-    TagPb entry = 1;
-    IndexActionEnum action = 2;
+message DiscreteTagLocalCounterPb {
+    int64 local_count = 1;
+    string tag_attributes = 2;
+    int32 partition = 3;
 }
 
-message GETableEntryPb {
-    bytes entry = 1;
+message TagChangesToBroadcastPb {
+    map<string, DiscreteTagLocalCounterPb> changelog = 1;
     int32 partition = 2;
-    int64 last_updated_offset = 3;
 }
 
-message TagsPb {
-    repeated TagPb entries = 1;
-}
+/*
+For certain discrete tags, eg. "Node Run Status", there may be objects scattered
+across different partitions which satisfy the tag.
+
+Sometimes we want to find all of those objects, or find a count of them. For example,
+we may be interested in finding all SCHEDULED (but not started) NodeRun's, or we
+may want to know how many total failed NodeRun's there are.
+
+We could implement that by repartitioning tags according to the tag value, and then
+storing tags in their own separate store. That way, all of the tag entries for
+the tag that means "This NodeRun is scheduled but not started" end up on the same
+node.
+
+However, this implementation causes a problem: there will be hot partitions. For
+high-traffic TaskDef's, there will be too many tag updates to be kept up with on
+that processor.
+
+What's the other option? We store tags locally on the same partition that their
+parent object lives. But now we need a way to know which partition has how many tags
+of each type. What do I mean by this?
+
+Well, let's say we're looking for SCHEDULED NodeRun's, and there's 2 instances, each
+with one partition (for simplicity). Instance 1 has partition 1, Instance 2 has
+partition 2. Consider the following scenario:
+- There's only one SCHEDULED NodeRun, and it lives on Instance 2.
+- Instance 1 receives a PollTaskRequest.
+- Instance 1 sees that it has no SCHEDULED NodeRun's.
+- However, if Instance 1 could know that Partition 2 has 1 scheduled NodeRun, then
+  it could just refer the request to Instance 2, and we'd get what we need.
+
+The way we broadcast that information to all instances is through a Global State
+Store.
+
+The entries in that state store are simple:
+KEY: f"{counter name}_{partition_number}"
+VAL: Number of objects that satisfy that counter on the partition number.
+
+Naively, we might want to send an update to the global state store every time a
+counter changes. However, that would again mean that every tag gets processed on
+a single node (actually, each tag gets processed on all nodes, which is worse).
+
+So what we do is suppress the updates and have a punctuator send them on a periodic
+interval (eg. probably going to start with 100ms).
+
+
+Lastly, a note on what the TagsCachePb is:
+When we update or delete a GETable object, the tags for that object may change.
+Some may be deleted (eg. when a NodeRun's status changes to RUNNING, we want to
+remove the "SCHEDULED" tag), and some may be added (eg. add the "RUNNING" tag).
+
+We need the TagsCachePb to keep track of the tags associated with the Object *before*
+the update, so that we can delete any tags that are no longer valid.
+*/
+
+// TODO: Some of the stuff in these proto's can be inferred from the store keys.
+// I left them in the proto's because it's easier to understand and to implement,
+// but we may want to optimize that for performance later on.

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.GETable;
-import io.littlehorse.common.model.server.Tag;
+import io.littlehorse.common.model.index.Tag;
 import io.littlehorse.common.proto.ExternalEventPb;
 import io.littlehorse.common.proto.ExternalEventPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
@@ -72,7 +72,7 @@ public class ExternalEvent extends GETable<ExternalEventPb> {
 
     @JsonIgnore
     @Override
-    public String getSubKey() {
+    public String getObjectId() {
         return getStoreKey(wfRunId, externalEventDefName, guid);
     }
 
@@ -87,7 +87,7 @@ public class ExternalEvent extends GETable<ExternalEventPb> {
     // Just for Jackson
     @JsonProperty("objectId")
     public String getIdForJackson() {
-        return getSubKey();
+        return getObjectId();
     }
 
     @JsonIgnore

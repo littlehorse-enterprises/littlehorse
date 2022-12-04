@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.index.Tag;
 import io.littlehorse.common.model.meta.Node;
-import io.littlehorse.common.model.server.Tag;
 import io.littlehorse.common.model.wfrun.subnoderun.EntrypointRun;
 import io.littlehorse.common.model.wfrun.subnoderun.ExitRun;
 import io.littlehorse.common.model.wfrun.subnoderun.ExternalEventRun;
@@ -82,7 +82,7 @@ public class NodeRun extends GETable<NodeRunPb> {
         return failures.get(failures.size() - 1);
     }
 
-    public String getSubKey() {
+    public String getObjectId() {
         return NodeRun.getStoreKey(wfRunId, threadRunNumber, position);
     }
 

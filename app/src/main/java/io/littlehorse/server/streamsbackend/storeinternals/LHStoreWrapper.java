@@ -5,7 +5,8 @@ import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
-import io.littlehorse.common.model.server.Tags;
+import io.littlehorse.common.model.index.Tag;
+import io.littlehorse.common.model.index.TagsCache;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.StoreUtils;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueStore;
@@ -20,11 +21,31 @@ public class LHStoreWrapper extends LHROStoreWrapper {
     }
 
     public void put(Storeable<?> thing) {
-        String storeKey = StoreUtils.getStoreKey(thing);
+        String storeKey = StoreUtils.getFullStoreKey(thing);
         store.put(storeKey, new Bytes(thing.toBytes(config)));
     }
 
-    public Tags getTagsCache(GETable<?> thing) {
+    public void delete(Storeable<?> thing) {
+        store.delete(StoreUtils.getFullStoreKey(thing));
+    }
+
+    public void delete(String fullStoreKey) {
+        store.delete(fullStoreKey);
+    }
+
+    public Bytes getRaw(String rawKey) {
+        return store.get(rawKey);
+    }
+
+    public void putRaw(String rawKey, Bytes rawVal) {
+        store.put(rawKey, rawVal);
+    }
+
+    public void deleteRaw(String rawKey) {
+        store.delete(rawKey);
+    }
+
+    public TagsCache getTagsCache(GETable<?> thing) {
         String tagCacheKey = StoreUtils.getTagsCacheKey(thing);
         Bytes raw = store.get(tagCacheKey);
         if (raw == null) {
@@ -32,7 +53,7 @@ public class LHStoreWrapper extends LHROStoreWrapper {
         }
 
         try {
-            return LHSerializable.fromBytes(raw.get(), Tags.class, config);
+            return LHSerializable.fromBytes(raw.get(), TagsCache.class, config);
         } catch (LHSerdeError exn) {
             // Not possible unless bug in LittleHorse
             throw new RuntimeException(exn);
@@ -42,8 +63,10 @@ public class LHStoreWrapper extends LHROStoreWrapper {
     public void putTagsCache(GETable<?> thing) {
         String tagCacheKey = StoreUtils.getTagsCacheKey(thing);
 
-        Tags newTagsCache = new Tags();
-        newTagsCache.entries = thing.getTags();
+        TagsCache newTagsCache = new TagsCache();
+        for (Tag tag : thing.getTags()) {
+            newTagsCache.tagIds.add(StoreUtils.getFullStoreKey(tag));
+        }
 
         store.put(tagCacheKey, new Bytes(newTagsCache.toBytes(config)));
     }

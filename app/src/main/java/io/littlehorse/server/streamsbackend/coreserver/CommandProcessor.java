@@ -3,6 +3,8 @@ package io.littlehorse.server.streamsbackend.coreserver;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.Command;
+import java.time.Duration;
+import org.apache.kafka.streams.processor.PunctuationType;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
@@ -22,6 +24,11 @@ public class CommandProcessor
     public void init(final ProcessorContext<String, CommandProcessorOutput> ctx) {
         this.ctx = ctx;
         dao = new CommandProcessorDaoImpl(this.ctx, config);
+        ctx.schedule(
+            Duration.ofMillis(100),
+            PunctuationType.WALL_CLOCK_TIME,
+            dao::broadcastChanges
+        );
     }
 
     @Override

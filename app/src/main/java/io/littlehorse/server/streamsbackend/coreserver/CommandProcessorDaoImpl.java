@@ -1,23 +1,24 @@
 package io.littlehorse.server.streamsbackend.coreserver;
 
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.CommandResult;
+import io.littlehorse.common.model.index.DiscreteTagLocalCounter;
+import io.littlehorse.common.model.index.Tag;
+import io.littlehorse.common.model.index.TagChangesToBroadcast;
+import io.littlehorse.common.model.index.TagsCache;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.model.server.IndexEntryAction;
-import io.littlehorse.common.model.server.Tag;
-import io.littlehorse.common.model.server.Tags;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
-import io.littlehorse.common.proto.IndexActionEnum;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.server.CommandProcessorDao;
 import io.littlehorse.server.ServerTopology;
@@ -50,6 +51,9 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
     private List<LHTimer> timersToSchedule;
     private CommandResult responseToSave;
     private Command command;
+    private int partition;
+
+    private static final String OUTGOING_CHANGELOG_KEY = "OUTGOING_CHANGELOG";
 
     /*
      * Certain metadata objects (eg. WfSpec, TaskDef, ExternalEventDef) are "global"
@@ -109,13 +113,15 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
         this.ctx = ctx;
         this.config = config;
 
+        partition = ctx.taskId().partition();
+
         tasksToSchedule = new ArrayList<>();
         timersToSchedule = new ArrayList<>();
     }
 
     @Override
     public void putNodeRun(NodeRun nr) {
-        nodeRunPuts.put(nr.getSubKey(), nr);
+        nodeRunPuts.put(nr.getObjectId(), nr);
     }
 
     @Override
@@ -147,7 +153,7 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
                 "Tried to put metadata despite being on the wrong partition!"
             );
         }
-        wfSpecPuts.put(spec.getSubKey(), spec);
+        wfSpecPuts.put(spec.getObjectId(), spec);
     }
 
     @Override
@@ -157,7 +163,7 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
                 "Tried to put metadata despite being on the wrong partition!"
             );
         }
-        extEvtDefPuts.put(spec.getSubKey(), spec);
+        extEvtDefPuts.put(spec.getObjectId(), spec);
     }
 
     @Override
@@ -167,7 +173,7 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
                 "Tried to put metadata despite being on the wrong partition!"
             );
         }
-        taskDefPuts.put(spec.getSubKey(), spec);
+        taskDefPuts.put(spec.getObjectId(), spec);
     }
 
     @Override
@@ -210,7 +216,7 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
 
     @Override
     public void putVariable(Variable var) {
-        variablePuts.put(var.getSubKey(), var);
+        variablePuts.put(var.getObjectId(), var);
     }
 
     @Override
@@ -284,7 +290,7 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
 
     @Override
     public void saveExternalEvent(ExternalEvent evt) {
-        extEvtPuts.put(evt.getSubKey(), evt);
+        extEvtPuts.put(evt.getObjectId(), evt);
     }
 
     @Override
@@ -310,7 +316,7 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
 
     @Override
     public void saveWfRun(WfRun wfRun) {
-        wfRunPuts.put(wfRun.getSubKey(), wfRun);
+        wfRunPuts.put(wfRun.getObjectId(), wfRun);
     }
 
     @Override
@@ -336,6 +342,29 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
     @Override
     public String getWfRunEventQueue() {
         return config.getCoreCmdTopicName();
+    }
+
+    public void broadcastChanges(long time) {
+        TagChangesToBroadcast changes = getTagChangesToBroadcast();
+
+        for (Map.Entry<String, DiscreteTagLocalCounter> e : changes.changelog.entrySet()) {
+            DiscreteTagLocalCounter c = e.getValue();
+            CommandProcessorOutput output = new CommandProcessorOutput();
+            output.partitionKey = e.getKey();
+            output.topic = config.getGlobalMetadataCLTopicName();
+
+            if (c.localCount > 0) {
+                output.payload = e.getValue();
+            } else {
+                // tombstone
+                output.payload = null;
+            }
+
+            ctx.forward(new Record<>(output.partitionKey, output, time));
+        }
+
+        // reset the changes; next time tags are put, they will be updated.
+        localStore.deleteRaw(OUTGOING_CHANGELOG_KEY);
     }
 
     private void flush() {
@@ -414,11 +443,11 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
         CommandProcessorOutput output = new CommandProcessorOutput(
             config.getGlobalMetadataCLTopicName(),
             thing,
-            StoreUtils.getStoreKey(thing)
+            StoreUtils.getFullStoreKey(thing)
         );
         ctx.forward(
             new Record<String, CommandProcessorOutput>(
-                StoreUtils.getStoreKey(thing),
+                StoreUtils.getFullStoreKey(thing),
                 output,
                 System.currentTimeMillis()
             )
@@ -428,60 +457,75 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
     private void saveAndIndexGETable(GETable<?> thing) {
         localStore.put(thing);
 
-        // We keep a local copy of all of the Tags for the entity.
-        // If the tags for an entity change (eg. remove the "STATUS: RUNNING" tag
-        // from a WfRun when it completes), we want to be able to delete the old
-        // ones. Therefore, we need to keep a record of what they were so we can
-        // send "delete tag" requests.
+        // See `proto/tags.proto` for a detailed description of how tags work.
+        TagsCache oldEntriesObj = localStore.getTagsCache(thing);
 
-        Tags oldEntriesObj = localStore.getTagsCache(thing);
+        List<String> oldTagIds =
+            (oldEntriesObj == null ? new ArrayList<>() : oldEntriesObj.tagIds);
+        List<String> newTagIds = new ArrayList<>();
 
-        List<Tag> oldIdx =
-            (oldEntriesObj == null ? new ArrayList<>() : oldEntriesObj.entries);
-        List<Tag> newIdx = thing.getTags();
-
-        for (Tag newTag : newIdx) {
-            if (!oldIdx.contains(newTag)) {
-                IndexEntryAction action = new IndexEntryAction();
-                action.action = IndexActionEnum.CREATE_IDX_ENTRY;
-                action.indexEntry = newTag;
-                CommandProcessorOutput output = new CommandProcessorOutput(
-                    config.getTagCmdTopic(),
-                    action,
-                    newTag.getPartitionKey()
-                );
-
-                Record<String, CommandProcessorOutput> rec = new Record<>(
-                    newTag.getPartitionKey(),
-                    output,
-                    newTag.createdAt.getTime()
-                );
-                ctx.forward(rec);
+        for (Tag newTag : thing.getTags()) {
+            if (!oldTagIds.contains(newTag.getObjectId())) {
+                putTag(newTag);
             }
+            newTagIds.add(newTag.getObjectId());
         }
-        for (Tag oldTag : oldIdx) {
-            if (!newIdx.contains(oldTag)) {
-                IndexEntryAction action = new IndexEntryAction();
-                action.action = IndexActionEnum.DELETE_IDX_ENTRY;
-                action.indexEntry = oldTag;
-
-                CommandProcessorOutput output = new CommandProcessorOutput(
-                    config.getTagCmdTopic(),
-                    action,
-                    oldTag.getPartitionKey()
-                );
-
-                ctx.forward(
-                    new Record<>(
-                        oldTag.getPartitionKey(),
-                        output,
-                        oldTag.createdAt.getTime()
-                    )
-                );
+        for (String oldTagId : oldTagIds) {
+            if (!newTagIds.contains(oldTagId)) {
+                deleteTag(oldTagId);
             }
         }
 
         localStore.putTagsCache(thing);
+    }
+
+    private void putTag(Tag tag) {
+        localStore.put(tag);
+        TagChangesToBroadcast tctb = getTagChangesToBroadcast();
+
+        DiscreteTagLocalCounter counter = tctb.getCounter(tag.getTagAttributes());
+        counter.localCount++;
+
+        localStore.put(counter);
+        localStore.putRaw(OUTGOING_CHANGELOG_KEY, new Bytes(tctb.toBytes(config)));
+    }
+
+    private void deleteTag(String tagId) {
+        Tag tag = localStore.get(tagId, Tag.class);
+        localStore.delete(tag);
+        TagChangesToBroadcast tctb = getTagChangesToBroadcast();
+
+        DiscreteTagLocalCounter counter = tctb.getCounter(tag.getTagAttributes());
+        counter.localCount--;
+
+        if (counter.localCount >= 0) {
+            localStore.put(counter);
+        } else {
+            localStore.delete(counter);
+        }
+
+        localStore.putRaw(OUTGOING_CHANGELOG_KEY, new Bytes(tctb.toBytes(config)));
+    }
+
+    private TagChangesToBroadcast getTagChangesToBroadcast() {
+        Bytes b = localStore.getRaw(OUTGOING_CHANGELOG_KEY);
+        if (b == null) {
+            TagChangesToBroadcast out = new TagChangesToBroadcast();
+            out.partition = this.partition;
+            return out;
+        }
+        try {
+            TagChangesToBroadcast out = LHSerializable.fromBytes(
+                b.get(),
+                TagChangesToBroadcast.class,
+                config
+            );
+            out.partition = this.partition;
+            return out;
+        } catch (LHSerdeError exn) {
+            // Not Possible unless bug in LittleHorse
+            throw new RuntimeException(exn);
+        }
     }
 
     private void clearThingsToWrite() {

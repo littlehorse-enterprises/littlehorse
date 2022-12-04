@@ -16,7 +16,10 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private TagPb() {
-    storeKey_ = "";
+    type_ = 0;
+    attributes_ = java.util.Collections.emptyList();
+    describedObjectId_ = "";
+    counterKeys_ = com.google.protobuf.LazyStringArrayList.EMPTY;
   }
 
   @java.lang.Override
@@ -39,6 +42,7 @@ private static final long serialVersionUID = 0L;
     if (extensionRegistry == null) {
       throw new java.lang.NullPointerException();
     }
+    int mutable_bitField0_ = 0;
     com.google.protobuf.UnknownFieldSet.Builder unknownFields =
         com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
@@ -49,23 +53,47 @@ private static final long serialVersionUID = 0L;
           case 0:
             done = true;
             break;
-          case 10: {
-            io.littlehorse.common.proto.IndexKeyPb.Builder subBuilder = null;
-            if (key_ != null) {
-              subBuilder = key_.toBuilder();
+          case 8: {
+            int rawValue = input.readEnum();
+
+            type_ = rawValue;
+            break;
+          }
+          case 18: {
+            if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+              attributes_ = new java.util.ArrayList<io.littlehorse.common.proto.AttributePb>();
+              mutable_bitField0_ |= 0x00000001;
             }
-            key_ = input.readMessage(io.littlehorse.common.proto.IndexKeyPb.parser(), extensionRegistry);
+            attributes_.add(
+                input.readMessage(io.littlehorse.common.proto.AttributePb.parser(), extensionRegistry));
+            break;
+          }
+          case 26: {
+            java.lang.String s = input.readStringRequireUtf8();
+
+            describedObjectId_ = s;
+            break;
+          }
+          case 34: {
+            com.google.protobuf.Timestamp.Builder subBuilder = null;
+            if (created_ != null) {
+              subBuilder = created_.toBuilder();
+            }
+            created_ = input.readMessage(com.google.protobuf.Timestamp.parser(), extensionRegistry);
             if (subBuilder != null) {
-              subBuilder.mergeFrom(key_);
-              key_ = subBuilder.buildPartial();
+              subBuilder.mergeFrom(created_);
+              created_ = subBuilder.buildPartial();
             }
 
             break;
           }
-          case 18: {
+          case 42: {
             java.lang.String s = input.readStringRequireUtf8();
-
-            storeKey_ = s;
+            if (!((mutable_bitField0_ & 0x00000002) != 0)) {
+              counterKeys_ = new com.google.protobuf.LazyStringArrayList();
+              mutable_bitField0_ |= 0x00000002;
+            }
+            counterKeys_.add(s);
             break;
           }
           default: {
@@ -83,6 +111,12 @@ private static final long serialVersionUID = 0L;
       throw new com.google.protobuf.InvalidProtocolBufferException(
           e).setUnfinishedMessage(this);
     } finally {
+      if (((mutable_bitField0_ & 0x00000001) != 0)) {
+        attributes_ = java.util.Collections.unmodifiableList(attributes_);
+      }
+      if (((mutable_bitField0_ & 0x00000002) != 0)) {
+        counterKeys_ = counterKeys_.getUnmodifiableView();
+      }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
@@ -100,68 +134,186 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.common.proto.TagPb.class, io.littlehorse.common.proto.TagPb.Builder.class);
   }
 
-  public static final int KEY_FIELD_NUMBER = 1;
-  private io.littlehorse.common.proto.IndexKeyPb key_;
+  public static final int TYPE_FIELD_NUMBER = 1;
+  private int type_;
   /**
-   * <code>.lh_proto.IndexKeyPb key = 1;</code>
-   * @return Whether the key field is set.
+   * <pre>
+   * The following info is also stored in the key of the Tag in the store.
+   * </pre>
+   *
+   * <code>.lh_proto.GETableClassEnumPb type = 1;</code>
+   * @return The enum numeric value on the wire for type.
    */
-  @java.lang.Override
-  public boolean hasKey() {
-    return key_ != null;
+  @java.lang.Override public int getTypeValue() {
+    return type_;
   }
   /**
-   * <code>.lh_proto.IndexKeyPb key = 1;</code>
-   * @return The key.
+   * <pre>
+   * The following info is also stored in the key of the Tag in the store.
+   * </pre>
+   *
+   * <code>.lh_proto.GETableClassEnumPb type = 1;</code>
+   * @return The type.
    */
-  @java.lang.Override
-  public io.littlehorse.common.proto.IndexKeyPb getKey() {
-    return key_ == null ? io.littlehorse.common.proto.IndexKeyPb.getDefaultInstance() : key_;
-  }
-  /**
-   * <code>.lh_proto.IndexKeyPb key = 1;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.IndexKeyPbOrBuilder getKeyOrBuilder() {
-    return getKey();
+  @java.lang.Override public io.littlehorse.common.proto.GETableClassEnumPb getType() {
+    @SuppressWarnings("deprecation")
+    io.littlehorse.common.proto.GETableClassEnumPb result = io.littlehorse.common.proto.GETableClassEnumPb.valueOf(type_);
+    return result == null ? io.littlehorse.common.proto.GETableClassEnumPb.UNRECOGNIZED : result;
   }
 
-  public static final int STORE_KEY_FIELD_NUMBER = 2;
-  private volatile java.lang.Object storeKey_;
+  public static final int ATTRIBUTES_FIELD_NUMBER = 2;
+  private java.util.List<io.littlehorse.common.proto.AttributePb> attributes_;
   /**
-   * <code>string store_key = 2;</code>
-   * @return The storeKey.
+   * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
    */
   @java.lang.Override
-  public java.lang.String getStoreKey() {
-    java.lang.Object ref = storeKey_;
+  public java.util.List<io.littlehorse.common.proto.AttributePb> getAttributesList() {
+    return attributes_;
+  }
+  /**
+   * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+   */
+  @java.lang.Override
+  public java.util.List<? extends io.littlehorse.common.proto.AttributePbOrBuilder> 
+      getAttributesOrBuilderList() {
+    return attributes_;
+  }
+  /**
+   * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+   */
+  @java.lang.Override
+  public int getAttributesCount() {
+    return attributes_.size();
+  }
+  /**
+   * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.AttributePb getAttributes(int index) {
+    return attributes_.get(index);
+  }
+  /**
+   * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.AttributePbOrBuilder getAttributesOrBuilder(
+      int index) {
+    return attributes_.get(index);
+  }
+
+  public static final int DESCRIBED_OBJECT_ID_FIELD_NUMBER = 3;
+  private volatile java.lang.Object describedObjectId_;
+  /**
+   * <code>string described_object_id = 3;</code>
+   * @return The describedObjectId.
+   */
+  @java.lang.Override
+  public java.lang.String getDescribedObjectId() {
+    java.lang.Object ref = describedObjectId_;
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      storeKey_ = s;
+      describedObjectId_ = s;
       return s;
     }
   }
   /**
-   * <code>string store_key = 2;</code>
-   * @return The bytes for storeKey.
+   * <code>string described_object_id = 3;</code>
+   * @return The bytes for describedObjectId.
    */
   @java.lang.Override
   public com.google.protobuf.ByteString
-      getStoreKeyBytes() {
-    java.lang.Object ref = storeKey_;
+      getDescribedObjectIdBytes() {
+    java.lang.Object ref = describedObjectId_;
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      storeKey_ = b;
+      describedObjectId_ = b;
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
     }
+  }
+
+  public static final int CREATED_FIELD_NUMBER = 4;
+  private com.google.protobuf.Timestamp created_;
+  /**
+   * <code>.google.protobuf.Timestamp created = 4;</code>
+   * @return Whether the created field is set.
+   */
+  @java.lang.Override
+  public boolean hasCreated() {
+    return created_ != null;
+  }
+  /**
+   * <code>.google.protobuf.Timestamp created = 4;</code>
+   * @return The created.
+   */
+  @java.lang.Override
+  public com.google.protobuf.Timestamp getCreated() {
+    return created_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : created_;
+  }
+  /**
+   * <code>.google.protobuf.Timestamp created = 4;</code>
+   */
+  @java.lang.Override
+  public com.google.protobuf.TimestampOrBuilder getCreatedOrBuilder() {
+    return getCreated();
+  }
+
+  public static final int COUNTER_KEYS_FIELD_NUMBER = 5;
+  private com.google.protobuf.LazyStringList counterKeys_;
+  /**
+   * <pre>
+   * The following is not stored in the key.
+   * </pre>
+   *
+   * <code>repeated string counter_keys = 5;</code>
+   * @return A list containing the counterKeys.
+   */
+  public com.google.protobuf.ProtocolStringList
+      getCounterKeysList() {
+    return counterKeys_;
+  }
+  /**
+   * <pre>
+   * The following is not stored in the key.
+   * </pre>
+   *
+   * <code>repeated string counter_keys = 5;</code>
+   * @return The count of counterKeys.
+   */
+  public int getCounterKeysCount() {
+    return counterKeys_.size();
+  }
+  /**
+   * <pre>
+   * The following is not stored in the key.
+   * </pre>
+   *
+   * <code>repeated string counter_keys = 5;</code>
+   * @param index The index of the element to return.
+   * @return The counterKeys at the given index.
+   */
+  public java.lang.String getCounterKeys(int index) {
+    return counterKeys_.get(index);
+  }
+  /**
+   * <pre>
+   * The following is not stored in the key.
+   * </pre>
+   *
+   * <code>repeated string counter_keys = 5;</code>
+   * @param index The index of the value to return.
+   * @return The bytes of the counterKeys at the given index.
+   */
+  public com.google.protobuf.ByteString
+      getCounterKeysBytes(int index) {
+    return counterKeys_.getByteString(index);
   }
 
   private byte memoizedIsInitialized = -1;
@@ -178,11 +330,20 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (key_ != null) {
-      output.writeMessage(1, getKey());
+    if (type_ != io.littlehorse.common.proto.GETableClassEnumPb.TASK_DEF.getNumber()) {
+      output.writeEnum(1, type_);
     }
-    if (!getStoreKeyBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, storeKey_);
+    for (int i = 0; i < attributes_.size(); i++) {
+      output.writeMessage(2, attributes_.get(i));
+    }
+    if (!getDescribedObjectIdBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, describedObjectId_);
+    }
+    if (created_ != null) {
+      output.writeMessage(4, getCreated());
+    }
+    for (int i = 0; i < counterKeys_.size(); i++) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, counterKeys_.getRaw(i));
     }
     unknownFields.writeTo(output);
   }
@@ -193,12 +354,28 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (key_ != null) {
+    if (type_ != io.littlehorse.common.proto.GETableClassEnumPb.TASK_DEF.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, getKey());
+        .computeEnumSize(1, type_);
     }
-    if (!getStoreKeyBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, storeKey_);
+    for (int i = 0; i < attributes_.size(); i++) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(2, attributes_.get(i));
+    }
+    if (!getDescribedObjectIdBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, describedObjectId_);
+    }
+    if (created_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(4, getCreated());
+    }
+    {
+      int dataSize = 0;
+      for (int i = 0; i < counterKeys_.size(); i++) {
+        dataSize += computeStringSizeNoTag(counterKeys_.getRaw(i));
+      }
+      size += dataSize;
+      size += 1 * getCounterKeysList().size();
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -215,13 +392,18 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.common.proto.TagPb other = (io.littlehorse.common.proto.TagPb) obj;
 
-    if (hasKey() != other.hasKey()) return false;
-    if (hasKey()) {
-      if (!getKey()
-          .equals(other.getKey())) return false;
+    if (type_ != other.type_) return false;
+    if (!getAttributesList()
+        .equals(other.getAttributesList())) return false;
+    if (!getDescribedObjectId()
+        .equals(other.getDescribedObjectId())) return false;
+    if (hasCreated() != other.hasCreated()) return false;
+    if (hasCreated()) {
+      if (!getCreated()
+          .equals(other.getCreated())) return false;
     }
-    if (!getStoreKey()
-        .equals(other.getStoreKey())) return false;
+    if (!getCounterKeysList()
+        .equals(other.getCounterKeysList())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -233,12 +415,22 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (hasKey()) {
-      hash = (37 * hash) + KEY_FIELD_NUMBER;
-      hash = (53 * hash) + getKey().hashCode();
+    hash = (37 * hash) + TYPE_FIELD_NUMBER;
+    hash = (53 * hash) + type_;
+    if (getAttributesCount() > 0) {
+      hash = (37 * hash) + ATTRIBUTES_FIELD_NUMBER;
+      hash = (53 * hash) + getAttributesList().hashCode();
     }
-    hash = (37 * hash) + STORE_KEY_FIELD_NUMBER;
-    hash = (53 * hash) + getStoreKey().hashCode();
+    hash = (37 * hash) + DESCRIBED_OBJECT_ID_FIELD_NUMBER;
+    hash = (53 * hash) + getDescribedObjectId().hashCode();
+    if (hasCreated()) {
+      hash = (37 * hash) + CREATED_FIELD_NUMBER;
+      hash = (53 * hash) + getCreated().hashCode();
+    }
+    if (getCounterKeysCount() > 0) {
+      hash = (37 * hash) + COUNTER_KEYS_FIELD_NUMBER;
+      hash = (53 * hash) + getCounterKeysList().hashCode();
+    }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -367,19 +559,30 @@ private static final long serialVersionUID = 0L;
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
+        getAttributesFieldBuilder();
       }
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      if (keyBuilder_ == null) {
-        key_ = null;
-      } else {
-        key_ = null;
-        keyBuilder_ = null;
-      }
-      storeKey_ = "";
+      type_ = 0;
 
+      if (attributesBuilder_ == null) {
+        attributes_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+      } else {
+        attributesBuilder_.clear();
+      }
+      describedObjectId_ = "";
+
+      if (createdBuilder_ == null) {
+        created_ = null;
+      } else {
+        created_ = null;
+        createdBuilder_ = null;
+      }
+      counterKeys_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      bitField0_ = (bitField0_ & ~0x00000002);
       return this;
     }
 
@@ -406,12 +609,28 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.common.proto.TagPb buildPartial() {
       io.littlehorse.common.proto.TagPb result = new io.littlehorse.common.proto.TagPb(this);
-      if (keyBuilder_ == null) {
-        result.key_ = key_;
+      int from_bitField0_ = bitField0_;
+      result.type_ = type_;
+      if (attributesBuilder_ == null) {
+        if (((bitField0_ & 0x00000001) != 0)) {
+          attributes_ = java.util.Collections.unmodifiableList(attributes_);
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
+        result.attributes_ = attributes_;
       } else {
-        result.key_ = keyBuilder_.build();
+        result.attributes_ = attributesBuilder_.build();
       }
-      result.storeKey_ = storeKey_;
+      result.describedObjectId_ = describedObjectId_;
+      if (createdBuilder_ == null) {
+        result.created_ = created_;
+      } else {
+        result.created_ = createdBuilder_.build();
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        counterKeys_ = counterKeys_.getUnmodifiableView();
+        bitField0_ = (bitField0_ & ~0x00000002);
+      }
+      result.counterKeys_ = counterKeys_;
       onBuilt();
       return result;
     }
@@ -460,11 +679,50 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.common.proto.TagPb other) {
       if (other == io.littlehorse.common.proto.TagPb.getDefaultInstance()) return this;
-      if (other.hasKey()) {
-        mergeKey(other.getKey());
+      if (other.type_ != 0) {
+        setTypeValue(other.getTypeValue());
       }
-      if (!other.getStoreKey().isEmpty()) {
-        storeKey_ = other.storeKey_;
+      if (attributesBuilder_ == null) {
+        if (!other.attributes_.isEmpty()) {
+          if (attributes_.isEmpty()) {
+            attributes_ = other.attributes_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureAttributesIsMutable();
+            attributes_.addAll(other.attributes_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.attributes_.isEmpty()) {
+          if (attributesBuilder_.isEmpty()) {
+            attributesBuilder_.dispose();
+            attributesBuilder_ = null;
+            attributes_ = other.attributes_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+            attributesBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getAttributesFieldBuilder() : null;
+          } else {
+            attributesBuilder_.addAllMessages(other.attributes_);
+          }
+        }
+      }
+      if (!other.getDescribedObjectId().isEmpty()) {
+        describedObjectId_ = other.describedObjectId_;
+        onChanged();
+      }
+      if (other.hasCreated()) {
+        mergeCreated(other.getCreated());
+      }
+      if (!other.counterKeys_.isEmpty()) {
+        if (counterKeys_.isEmpty()) {
+          counterKeys_ = other.counterKeys_;
+          bitField0_ = (bitField0_ & ~0x00000002);
+        } else {
+          ensureCounterKeysIsMutable();
+          counterKeys_.addAll(other.counterKeys_);
+        }
         onChanged();
       }
       this.mergeUnknownFields(other.unknownFields);
@@ -495,198 +753,659 @@ private static final long serialVersionUID = 0L;
       }
       return this;
     }
+    private int bitField0_;
 
-    private io.littlehorse.common.proto.IndexKeyPb key_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.IndexKeyPb, io.littlehorse.common.proto.IndexKeyPb.Builder, io.littlehorse.common.proto.IndexKeyPbOrBuilder> keyBuilder_;
+    private int type_ = 0;
     /**
-     * <code>.lh_proto.IndexKeyPb key = 1;</code>
-     * @return Whether the key field is set.
+     * <pre>
+     * The following info is also stored in the key of the Tag in the store.
+     * </pre>
+     *
+     * <code>.lh_proto.GETableClassEnumPb type = 1;</code>
+     * @return The enum numeric value on the wire for type.
      */
-    public boolean hasKey() {
-      return keyBuilder_ != null || key_ != null;
+    @java.lang.Override public int getTypeValue() {
+      return type_;
     }
     /**
-     * <code>.lh_proto.IndexKeyPb key = 1;</code>
-     * @return The key.
+     * <pre>
+     * The following info is also stored in the key of the Tag in the store.
+     * </pre>
+     *
+     * <code>.lh_proto.GETableClassEnumPb type = 1;</code>
+     * @param value The enum numeric value on the wire for type to set.
+     * @return This builder for chaining.
      */
-    public io.littlehorse.common.proto.IndexKeyPb getKey() {
-      if (keyBuilder_ == null) {
-        return key_ == null ? io.littlehorse.common.proto.IndexKeyPb.getDefaultInstance() : key_;
+    public Builder setTypeValue(int value) {
+      
+      type_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The following info is also stored in the key of the Tag in the store.
+     * </pre>
+     *
+     * <code>.lh_proto.GETableClassEnumPb type = 1;</code>
+     * @return The type.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.GETableClassEnumPb getType() {
+      @SuppressWarnings("deprecation")
+      io.littlehorse.common.proto.GETableClassEnumPb result = io.littlehorse.common.proto.GETableClassEnumPb.valueOf(type_);
+      return result == null ? io.littlehorse.common.proto.GETableClassEnumPb.UNRECOGNIZED : result;
+    }
+    /**
+     * <pre>
+     * The following info is also stored in the key of the Tag in the store.
+     * </pre>
+     *
+     * <code>.lh_proto.GETableClassEnumPb type = 1;</code>
+     * @param value The type to set.
+     * @return This builder for chaining.
+     */
+    public Builder setType(io.littlehorse.common.proto.GETableClassEnumPb value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      
+      type_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The following info is also stored in the key of the Tag in the store.
+     * </pre>
+     *
+     * <code>.lh_proto.GETableClassEnumPb type = 1;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearType() {
+      
+      type_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private java.util.List<io.littlehorse.common.proto.AttributePb> attributes_ =
+      java.util.Collections.emptyList();
+    private void ensureAttributesIsMutable() {
+      if (!((bitField0_ & 0x00000001) != 0)) {
+        attributes_ = new java.util.ArrayList<io.littlehorse.common.proto.AttributePb>(attributes_);
+        bitField0_ |= 0x00000001;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.common.proto.AttributePb, io.littlehorse.common.proto.AttributePb.Builder, io.littlehorse.common.proto.AttributePbOrBuilder> attributesBuilder_;
+
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     */
+    public java.util.List<io.littlehorse.common.proto.AttributePb> getAttributesList() {
+      if (attributesBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(attributes_);
       } else {
-        return keyBuilder_.getMessage();
+        return attributesBuilder_.getMessageList();
       }
     }
     /**
-     * <code>.lh_proto.IndexKeyPb key = 1;</code>
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
      */
-    public Builder setKey(io.littlehorse.common.proto.IndexKeyPb value) {
-      if (keyBuilder_ == null) {
+    public int getAttributesCount() {
+      if (attributesBuilder_ == null) {
+        return attributes_.size();
+      } else {
+        return attributesBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     */
+    public io.littlehorse.common.proto.AttributePb getAttributes(int index) {
+      if (attributesBuilder_ == null) {
+        return attributes_.get(index);
+      } else {
+        return attributesBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     */
+    public Builder setAttributes(
+        int index, io.littlehorse.common.proto.AttributePb value) {
+      if (attributesBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        key_ = value;
+        ensureAttributesIsMutable();
+        attributes_.set(index, value);
         onChanged();
       } else {
-        keyBuilder_.setMessage(value);
+        attributesBuilder_.setMessage(index, value);
       }
-
       return this;
     }
     /**
-     * <code>.lh_proto.IndexKeyPb key = 1;</code>
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
      */
-    public Builder setKey(
-        io.littlehorse.common.proto.IndexKeyPb.Builder builderForValue) {
-      if (keyBuilder_ == null) {
-        key_ = builderForValue.build();
+    public Builder setAttributes(
+        int index, io.littlehorse.common.proto.AttributePb.Builder builderForValue) {
+      if (attributesBuilder_ == null) {
+        ensureAttributesIsMutable();
+        attributes_.set(index, builderForValue.build());
         onChanged();
       } else {
-        keyBuilder_.setMessage(builderForValue.build());
+        attributesBuilder_.setMessage(index, builderForValue.build());
       }
-
       return this;
     }
     /**
-     * <code>.lh_proto.IndexKeyPb key = 1;</code>
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
      */
-    public Builder mergeKey(io.littlehorse.common.proto.IndexKeyPb value) {
-      if (keyBuilder_ == null) {
-        if (key_ != null) {
-          key_ =
-            io.littlehorse.common.proto.IndexKeyPb.newBuilder(key_).mergeFrom(value).buildPartial();
-        } else {
-          key_ = value;
+    public Builder addAttributes(io.littlehorse.common.proto.AttributePb value) {
+      if (attributesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
         }
+        ensureAttributesIsMutable();
+        attributes_.add(value);
         onChanged();
       } else {
-        keyBuilder_.mergeFrom(value);
+        attributesBuilder_.addMessage(value);
       }
-
       return this;
     }
     /**
-     * <code>.lh_proto.IndexKeyPb key = 1;</code>
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
      */
-    public Builder clearKey() {
-      if (keyBuilder_ == null) {
-        key_ = null;
+    public Builder addAttributes(
+        int index, io.littlehorse.common.proto.AttributePb value) {
+      if (attributesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureAttributesIsMutable();
+        attributes_.add(index, value);
         onChanged();
       } else {
-        key_ = null;
-        keyBuilder_ = null;
+        attributesBuilder_.addMessage(index, value);
       }
-
       return this;
     }
     /**
-     * <code>.lh_proto.IndexKeyPb key = 1;</code>
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
      */
-    public io.littlehorse.common.proto.IndexKeyPb.Builder getKeyBuilder() {
-      
-      onChanged();
-      return getKeyFieldBuilder().getBuilder();
+    public Builder addAttributes(
+        io.littlehorse.common.proto.AttributePb.Builder builderForValue) {
+      if (attributesBuilder_ == null) {
+        ensureAttributesIsMutable();
+        attributes_.add(builderForValue.build());
+        onChanged();
+      } else {
+        attributesBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
     }
     /**
-     * <code>.lh_proto.IndexKeyPb key = 1;</code>
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
      */
-    public io.littlehorse.common.proto.IndexKeyPbOrBuilder getKeyOrBuilder() {
-      if (keyBuilder_ != null) {
-        return keyBuilder_.getMessageOrBuilder();
+    public Builder addAttributes(
+        int index, io.littlehorse.common.proto.AttributePb.Builder builderForValue) {
+      if (attributesBuilder_ == null) {
+        ensureAttributesIsMutable();
+        attributes_.add(index, builderForValue.build());
+        onChanged();
       } else {
-        return key_ == null ?
-            io.littlehorse.common.proto.IndexKeyPb.getDefaultInstance() : key_;
+        attributesBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     */
+    public Builder addAllAttributes(
+        java.lang.Iterable<? extends io.littlehorse.common.proto.AttributePb> values) {
+      if (attributesBuilder_ == null) {
+        ensureAttributesIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, attributes_);
+        onChanged();
+      } else {
+        attributesBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     */
+    public Builder clearAttributes() {
+      if (attributesBuilder_ == null) {
+        attributes_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+      } else {
+        attributesBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     */
+    public Builder removeAttributes(int index) {
+      if (attributesBuilder_ == null) {
+        ensureAttributesIsMutable();
+        attributes_.remove(index);
+        onChanged();
+      } else {
+        attributesBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     */
+    public io.littlehorse.common.proto.AttributePb.Builder getAttributesBuilder(
+        int index) {
+      return getAttributesFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     */
+    public io.littlehorse.common.proto.AttributePbOrBuilder getAttributesOrBuilder(
+        int index) {
+      if (attributesBuilder_ == null) {
+        return attributes_.get(index);  } else {
+        return attributesBuilder_.getMessageOrBuilder(index);
       }
     }
     /**
-     * <code>.lh_proto.IndexKeyPb key = 1;</code>
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
      */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.IndexKeyPb, io.littlehorse.common.proto.IndexKeyPb.Builder, io.littlehorse.common.proto.IndexKeyPbOrBuilder> 
-        getKeyFieldBuilder() {
-      if (keyBuilder_ == null) {
-        keyBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.IndexKeyPb, io.littlehorse.common.proto.IndexKeyPb.Builder, io.littlehorse.common.proto.IndexKeyPbOrBuilder>(
-                getKey(),
+    public java.util.List<? extends io.littlehorse.common.proto.AttributePbOrBuilder> 
+         getAttributesOrBuilderList() {
+      if (attributesBuilder_ != null) {
+        return attributesBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(attributes_);
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     */
+    public io.littlehorse.common.proto.AttributePb.Builder addAttributesBuilder() {
+      return getAttributesFieldBuilder().addBuilder(
+          io.littlehorse.common.proto.AttributePb.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     */
+    public io.littlehorse.common.proto.AttributePb.Builder addAttributesBuilder(
+        int index) {
+      return getAttributesFieldBuilder().addBuilder(
+          index, io.littlehorse.common.proto.AttributePb.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     */
+    public java.util.List<io.littlehorse.common.proto.AttributePb.Builder> 
+         getAttributesBuilderList() {
+      return getAttributesFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.common.proto.AttributePb, io.littlehorse.common.proto.AttributePb.Builder, io.littlehorse.common.proto.AttributePbOrBuilder> 
+        getAttributesFieldBuilder() {
+      if (attributesBuilder_ == null) {
+        attributesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            io.littlehorse.common.proto.AttributePb, io.littlehorse.common.proto.AttributePb.Builder, io.littlehorse.common.proto.AttributePbOrBuilder>(
+                attributes_,
+                ((bitField0_ & 0x00000001) != 0),
                 getParentForChildren(),
                 isClean());
-        key_ = null;
+        attributes_ = null;
       }
-      return keyBuilder_;
+      return attributesBuilder_;
     }
 
-    private java.lang.Object storeKey_ = "";
+    private java.lang.Object describedObjectId_ = "";
     /**
-     * <code>string store_key = 2;</code>
-     * @return The storeKey.
+     * <code>string described_object_id = 3;</code>
+     * @return The describedObjectId.
      */
-    public java.lang.String getStoreKey() {
-      java.lang.Object ref = storeKey_;
+    public java.lang.String getDescribedObjectId() {
+      java.lang.Object ref = describedObjectId_;
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        storeKey_ = s;
+        describedObjectId_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
       }
     }
     /**
-     * <code>string store_key = 2;</code>
-     * @return The bytes for storeKey.
+     * <code>string described_object_id = 3;</code>
+     * @return The bytes for describedObjectId.
      */
     public com.google.protobuf.ByteString
-        getStoreKeyBytes() {
-      java.lang.Object ref = storeKey_;
+        getDescribedObjectIdBytes() {
+      java.lang.Object ref = describedObjectId_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        storeKey_ = b;
+        describedObjectId_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
     /**
-     * <code>string store_key = 2;</code>
-     * @param value The storeKey to set.
+     * <code>string described_object_id = 3;</code>
+     * @param value The describedObjectId to set.
      * @return This builder for chaining.
      */
-    public Builder setStoreKey(
+    public Builder setDescribedObjectId(
         java.lang.String value) {
       if (value == null) {
     throw new NullPointerException();
   }
   
-      storeKey_ = value;
+      describedObjectId_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>string store_key = 2;</code>
+     * <code>string described_object_id = 3;</code>
      * @return This builder for chaining.
      */
-    public Builder clearStoreKey() {
+    public Builder clearDescribedObjectId() {
       
-      storeKey_ = getDefaultInstance().getStoreKey();
+      describedObjectId_ = getDefaultInstance().getDescribedObjectId();
       onChanged();
       return this;
     }
     /**
-     * <code>string store_key = 2;</code>
-     * @param value The bytes for storeKey to set.
+     * <code>string described_object_id = 3;</code>
+     * @param value The bytes for describedObjectId to set.
      * @return This builder for chaining.
      */
-    public Builder setStoreKeyBytes(
+    public Builder setDescribedObjectIdBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
       
-      storeKey_ = value;
+      describedObjectId_ = value;
+      onChanged();
+      return this;
+    }
+
+    private com.google.protobuf.Timestamp created_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> createdBuilder_;
+    /**
+     * <code>.google.protobuf.Timestamp created = 4;</code>
+     * @return Whether the created field is set.
+     */
+    public boolean hasCreated() {
+      return createdBuilder_ != null || created_ != null;
+    }
+    /**
+     * <code>.google.protobuf.Timestamp created = 4;</code>
+     * @return The created.
+     */
+    public com.google.protobuf.Timestamp getCreated() {
+      if (createdBuilder_ == null) {
+        return created_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : created_;
+      } else {
+        return createdBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.google.protobuf.Timestamp created = 4;</code>
+     */
+    public Builder setCreated(com.google.protobuf.Timestamp value) {
+      if (createdBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        created_ = value;
+        onChanged();
+      } else {
+        createdBuilder_.setMessage(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.google.protobuf.Timestamp created = 4;</code>
+     */
+    public Builder setCreated(
+        com.google.protobuf.Timestamp.Builder builderForValue) {
+      if (createdBuilder_ == null) {
+        created_ = builderForValue.build();
+        onChanged();
+      } else {
+        createdBuilder_.setMessage(builderForValue.build());
+      }
+
+      return this;
+    }
+    /**
+     * <code>.google.protobuf.Timestamp created = 4;</code>
+     */
+    public Builder mergeCreated(com.google.protobuf.Timestamp value) {
+      if (createdBuilder_ == null) {
+        if (created_ != null) {
+          created_ =
+            com.google.protobuf.Timestamp.newBuilder(created_).mergeFrom(value).buildPartial();
+        } else {
+          created_ = value;
+        }
+        onChanged();
+      } else {
+        createdBuilder_.mergeFrom(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.google.protobuf.Timestamp created = 4;</code>
+     */
+    public Builder clearCreated() {
+      if (createdBuilder_ == null) {
+        created_ = null;
+        onChanged();
+      } else {
+        created_ = null;
+        createdBuilder_ = null;
+      }
+
+      return this;
+    }
+    /**
+     * <code>.google.protobuf.Timestamp created = 4;</code>
+     */
+    public com.google.protobuf.Timestamp.Builder getCreatedBuilder() {
+      
+      onChanged();
+      return getCreatedFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.google.protobuf.Timestamp created = 4;</code>
+     */
+    public com.google.protobuf.TimestampOrBuilder getCreatedOrBuilder() {
+      if (createdBuilder_ != null) {
+        return createdBuilder_.getMessageOrBuilder();
+      } else {
+        return created_ == null ?
+            com.google.protobuf.Timestamp.getDefaultInstance() : created_;
+      }
+    }
+    /**
+     * <code>.google.protobuf.Timestamp created = 4;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
+        getCreatedFieldBuilder() {
+      if (createdBuilder_ == null) {
+        createdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
+                getCreated(),
+                getParentForChildren(),
+                isClean());
+        created_ = null;
+      }
+      return createdBuilder_;
+    }
+
+    private com.google.protobuf.LazyStringList counterKeys_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+    private void ensureCounterKeysIsMutable() {
+      if (!((bitField0_ & 0x00000002) != 0)) {
+        counterKeys_ = new com.google.protobuf.LazyStringArrayList(counterKeys_);
+        bitField0_ |= 0x00000002;
+       }
+    }
+    /**
+     * <pre>
+     * The following is not stored in the key.
+     * </pre>
+     *
+     * <code>repeated string counter_keys = 5;</code>
+     * @return A list containing the counterKeys.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getCounterKeysList() {
+      return counterKeys_.getUnmodifiableView();
+    }
+    /**
+     * <pre>
+     * The following is not stored in the key.
+     * </pre>
+     *
+     * <code>repeated string counter_keys = 5;</code>
+     * @return The count of counterKeys.
+     */
+    public int getCounterKeysCount() {
+      return counterKeys_.size();
+    }
+    /**
+     * <pre>
+     * The following is not stored in the key.
+     * </pre>
+     *
+     * <code>repeated string counter_keys = 5;</code>
+     * @param index The index of the element to return.
+     * @return The counterKeys at the given index.
+     */
+    public java.lang.String getCounterKeys(int index) {
+      return counterKeys_.get(index);
+    }
+    /**
+     * <pre>
+     * The following is not stored in the key.
+     * </pre>
+     *
+     * <code>repeated string counter_keys = 5;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the counterKeys at the given index.
+     */
+    public com.google.protobuf.ByteString
+        getCounterKeysBytes(int index) {
+      return counterKeys_.getByteString(index);
+    }
+    /**
+     * <pre>
+     * The following is not stored in the key.
+     * </pre>
+     *
+     * <code>repeated string counter_keys = 5;</code>
+     * @param index The index to set the value at.
+     * @param value The counterKeys to set.
+     * @return This builder for chaining.
+     */
+    public Builder setCounterKeys(
+        int index, java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureCounterKeysIsMutable();
+      counterKeys_.set(index, value);
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The following is not stored in the key.
+     * </pre>
+     *
+     * <code>repeated string counter_keys = 5;</code>
+     * @param value The counterKeys to add.
+     * @return This builder for chaining.
+     */
+    public Builder addCounterKeys(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureCounterKeysIsMutable();
+      counterKeys_.add(value);
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The following is not stored in the key.
+     * </pre>
+     *
+     * <code>repeated string counter_keys = 5;</code>
+     * @param values The counterKeys to add.
+     * @return This builder for chaining.
+     */
+    public Builder addAllCounterKeys(
+        java.lang.Iterable<java.lang.String> values) {
+      ensureCounterKeysIsMutable();
+      com.google.protobuf.AbstractMessageLite.Builder.addAll(
+          values, counterKeys_);
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The following is not stored in the key.
+     * </pre>
+     *
+     * <code>repeated string counter_keys = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearCounterKeys() {
+      counterKeys_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      bitField0_ = (bitField0_ & ~0x00000002);
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The following is not stored in the key.
+     * </pre>
+     *
+     * <code>repeated string counter_keys = 5;</code>
+     * @param value The bytes of the counterKeys to add.
+     * @return This builder for chaining.
+     */
+    public Builder addCounterKeysBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      ensureCounterKeysIsMutable();
+      counterKeys_.add(value);
       onChanged();
       return this;
     }

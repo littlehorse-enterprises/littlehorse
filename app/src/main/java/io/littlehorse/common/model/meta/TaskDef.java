@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.GETable;
-import io.littlehorse.common.model.server.Tag;
+import io.littlehorse.common.model.index.Tag;
 import io.littlehorse.common.proto.TaskDefPb;
 import io.littlehorse.common.proto.TaskDefPbOrBuilder;
 import io.littlehorse.common.proto.VariableDefPb;
@@ -41,7 +41,7 @@ public class TaskDef extends GETable<TaskDefPbOrBuilder> {
         return name;
     }
 
-    public String getSubKey() {
+    public String getObjectId() {
         return TaskDef.getSubKey(name, version);
     }
 

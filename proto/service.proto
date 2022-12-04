@@ -150,6 +150,108 @@ service LHPublicApi {
 
     rpc PutExternalEvent(PutExternalEventPb) returns (PutExternalEventReplyPb) {}
     rpc GetExternalEvent(GetExternalEventPb) returns (GetExternalEventReplyPb) {}
-
-    // TODO: Add the "search" functionality later.
 }
+
+
+/*
+
+What's the difference between a TaskDef and a TaskQueue?
+- TaskDef has a Task Queue?
+- But the relationship is 1:1
+- TaskDef is a metadata spec
+- TaskRun is a run object
+- TaskQueue is a collection of TaskRun's with:
+  * the same TaskDef AND
+  * in the SCHEDULED state
+
+Perhaps we should rename TaskQueue to reflect that it's more of an analytics thing?
+
+Add indexing to the TaskRun so that the PopTaskRequest just does a search
+
+Indexing for TaskRun must be *partially consistent* with the updating of the TaskRun.
+ - That means that there can be no repartition events between setting TaskRun
+   status and the index.
+
+What is in the index entry Key:
+
+ - Index/
+ - Resource Type (eg TaskRun)
+ - Resource Tag (list of attributes, eg. "TaskDef: foo", "Status: Pending")
+ - Resource Order thing
+    - Can be set via interface? Default is to return createdAt()
+    - Can (maybe) also include priority (eg. for priority queues)
+      - Hard to enforce priority across all instances.
+      - When request comes to server A, how do we know that Server B doesn't have a
+        higher priority task to execute?
+ - Resource Object Id 
+
+What are the key things?
+fullStoreKey():
+  - Should be internal to the LHStoreWrapper
+  - f"{resource_type}/{resource_object_id}"
+
+objectId():
+   - All Storeable's must implement this
+   - Should it be a string? Or a list?
+   - Should it be an interface/subclass?
+   - enforce that each component is k8s compliant
+   - Want to use it to enable subqueries:
+     - eg. find TaskRun's by WfRun
+
+Can we create an "Index" object?
+
+How we find crap:
+
+- By full object id (point lookup)
+- Prefix scan on object id (eg. get NodeRun's for WfRun)
+- By Alias lookup (distributed alias)
+- By Alias lookup (global alias)
+
+interface IndexTag {
+
+    // An example of what this is used for is that a TaskRun may have an
+    // IndexTag which stores {taskDefName, status}.
+
+    public List<Pair<String, String>> getTags() {
+        return {{"taskDefName", taskDefName}, {"status", status}}
+    }
+
+    public 
+}
+
+interface DistributedIndexDef<T extends Storable<?>, U extends IndexTag> {
+
+    public IndexTag getTag(T thingToIndex) {
+        // This is similar to the getTags() method on GETable...
+    }
+
+    public 
+}
+
+Types of index:
+- Discrete/Hot index
+- Even index (eg. some STRING VariableValue's)
+- Range index (eg. some INT VariableValue's)
+
+If it lives at the DAO level (not the DAO-Impl level), do we distinguish between
+the types of index?
+ - Postgres, for example, could just do a lookup
+ - Kafka Streams needs to distinguish between the types
+
+Where would we want this Index definition to live?
+
+One idea is to define a "Query" class.
+ - All GET requests are just Query's
+ - The DAO needs to be able to return a result for each Query
+ - This could help remove some copy-pasta from the grpc server
+
+Query Types:
+ - Point Lookup
+ - Prefix Lookup
+ - Evenly Partitioned Index Lookup
+ - Hot Index Lookup
+ - (Later) Range Lookup
+
+One could argue that "Tags" are an implementation detail for the DAO, not
+really a thing.
+*/

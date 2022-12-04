@@ -4,10 +4,6 @@
 package io.littlehorse.common.proto;
 
 /**
- * <pre>
- * This section defines internal data structures used for data stores.
- * </pre>
- *
  * Protobuf enum {@code lh_proto.GETableClassEnumPb}
  */
 public enum GETableClassEnumPb
@@ -17,29 +13,29 @@ public enum GETableClassEnumPb
    */
   TASK_DEF(0),
   /**
-   * <code>WF_SPEC = 1;</code>
+   * <code>EXTERNAL_EVENT_DEF = 1;</code>
    */
-  WF_SPEC(1),
+  EXTERNAL_EVENT_DEF(1),
   /**
-   * <code>WF_RUN = 2;</code>
+   * <code>WF_SPEC = 2;</code>
    */
-  WF_RUN(2),
+  WF_SPEC(2),
   /**
-   * <code>THREAD_RUN = 3;</code>
+   * <code>WF_RUN = 3;</code>
    */
-  THREAD_RUN(3),
+  WF_RUN(3),
   /**
-   * <code>TASK_RUN = 4;</code>
+   * <code>NODE_RUN = 4;</code>
    */
-  TASK_RUN(4),
+  NODE_RUN(4),
   /**
    * <code>VARIABLE = 5;</code>
    */
   VARIABLE(5),
   /**
-   * <code>EXTERNAL_EVENT_DEF = 6;</code>
+   * <code>EXTERNAL_EVENT = 6;</code>
    */
-  EXTERNAL_EVENT_DEF(6),
+  EXTERNAL_EVENT(6),
   UNRECOGNIZED(-1),
   ;
 
@@ -48,29 +44,29 @@ public enum GETableClassEnumPb
    */
   public static final int TASK_DEF_VALUE = 0;
   /**
-   * <code>WF_SPEC = 1;</code>
+   * <code>EXTERNAL_EVENT_DEF = 1;</code>
    */
-  public static final int WF_SPEC_VALUE = 1;
+  public static final int EXTERNAL_EVENT_DEF_VALUE = 1;
   /**
-   * <code>WF_RUN = 2;</code>
+   * <code>WF_SPEC = 2;</code>
    */
-  public static final int WF_RUN_VALUE = 2;
+  public static final int WF_SPEC_VALUE = 2;
   /**
-   * <code>THREAD_RUN = 3;</code>
+   * <code>WF_RUN = 3;</code>
    */
-  public static final int THREAD_RUN_VALUE = 3;
+  public static final int WF_RUN_VALUE = 3;
   /**
-   * <code>TASK_RUN = 4;</code>
+   * <code>NODE_RUN = 4;</code>
    */
-  public static final int TASK_RUN_VALUE = 4;
+  public static final int NODE_RUN_VALUE = 4;
   /**
    * <code>VARIABLE = 5;</code>
    */
   public static final int VARIABLE_VALUE = 5;
   /**
-   * <code>EXTERNAL_EVENT_DEF = 6;</code>
+   * <code>EXTERNAL_EVENT = 6;</code>
    */
-  public static final int EXTERNAL_EVENT_DEF_VALUE = 6;
+  public static final int EXTERNAL_EVENT_VALUE = 6;
 
 
   public final int getNumber() {
@@ -98,12 +94,12 @@ public enum GETableClassEnumPb
   public static GETableClassEnumPb forNumber(int value) {
     switch (value) {
       case 0: return TASK_DEF;
-      case 1: return WF_SPEC;
-      case 2: return WF_RUN;
-      case 3: return THREAD_RUN;
-      case 4: return TASK_RUN;
+      case 1: return EXTERNAL_EVENT_DEF;
+      case 2: return WF_SPEC;
+      case 3: return WF_RUN;
+      case 4: return NODE_RUN;
       case 5: return VARIABLE;
-      case 6: return EXTERNAL_EVENT_DEF;
+      case 6: return EXTERNAL_EVENT;
       default: return null;
     }
   }

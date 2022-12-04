@@ -265,7 +265,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         ThreadHaltReason haltReason = new ThreadHaltReason();
         haltReason.type = ReasonCase.PENDING_INTERRUPT;
         haltReason.pendingInterrupt = new PendingInterruptHaltReason();
-        haltReason.pendingInterrupt.externalEventId = trigger.getSubKey();
+        haltReason.pendingInterrupt.externalEventId = trigger.getObjectId();
 
         // This also stops the children
         halt(haltReason);
@@ -273,7 +273,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         // Now make sure that the parent WfRun has the info necessary to launch the
         // interrupt on the next call to advance
         PendingInterrupt pi = new PendingInterrupt();
-        pi.externalEventId = trigger.getSubKey();
+        pi.externalEventId = trigger.getObjectId();
         pi.interruptedThreadId = number;
         pi.handlerSpecName = idef.handlerSpecName;
 

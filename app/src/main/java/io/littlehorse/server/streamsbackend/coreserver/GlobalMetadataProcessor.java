@@ -19,12 +19,20 @@ public class GlobalMetadataProcessor implements Processor<String, Bytes, Void, V
      * All of the difficult processing (i.e. figuring out store keys etc) has
      * been done beforehand in the CommandProcessorDaoImpl::flush() method.
      *
-     * We just need to do a simple thing.
+     * Unfortunately, that's necessary because of the following JIRA:
+     * https://issues.apache.org/jira/browse/KAFKA-7663
+     *
+     * Basically, while we are required to give a ProcessorSupplier when
+     * building the global store, and the processor does actually process
+     * the bytes during normal processing, the Processor is completely
+     * bypassed during restoration and the input topic is simply treated
+     * as a changelog.
      */
     public void process(final Record<String, Bytes> record) {
         String key = record.key();
         Bytes value = record.value();
 
+        System.out.println((value == null ? "delete " : "put ") + key);
         if (value == null) {
             store.delete(key);
         } else {

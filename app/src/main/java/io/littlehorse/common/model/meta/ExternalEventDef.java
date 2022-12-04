@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.GETable;
-import io.littlehorse.common.model.server.Tag;
+import io.littlehorse.common.model.index.Tag;
 import io.littlehorse.common.proto.ExternalEventDefPb;
 import io.littlehorse.common.proto.ExternalEventDefPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
@@ -31,7 +31,7 @@ public class ExternalEventDef extends GETable<ExternalEventDefPbOrBuilder> {
         return name;
     }
 
-    public String getSubKey() {
+    public String getObjectId() {
         return ExternalEventDef.getSubKey(name, version);
     }
 

@@ -8,29 +8,113 @@ public interface TagPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.lh_proto.IndexKeyPb key = 1;</code>
-   * @return Whether the key field is set.
+   * <pre>
+   * The following info is also stored in the key of the Tag in the store.
+   * </pre>
+   *
+   * <code>.lh_proto.GETableClassEnumPb type = 1;</code>
+   * @return The enum numeric value on the wire for type.
    */
-  boolean hasKey();
+  int getTypeValue();
   /**
-   * <code>.lh_proto.IndexKeyPb key = 1;</code>
-   * @return The key.
+   * <pre>
+   * The following info is also stored in the key of the Tag in the store.
+   * </pre>
+   *
+   * <code>.lh_proto.GETableClassEnumPb type = 1;</code>
+   * @return The type.
    */
-  io.littlehorse.common.proto.IndexKeyPb getKey();
-  /**
-   * <code>.lh_proto.IndexKeyPb key = 1;</code>
-   */
-  io.littlehorse.common.proto.IndexKeyPbOrBuilder getKeyOrBuilder();
+  io.littlehorse.common.proto.GETableClassEnumPb getType();
 
   /**
-   * <code>string store_key = 2;</code>
-   * @return The storeKey.
+   * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
    */
-  java.lang.String getStoreKey();
+  java.util.List<io.littlehorse.common.proto.AttributePb> 
+      getAttributesList();
   /**
-   * <code>string store_key = 2;</code>
-   * @return The bytes for storeKey.
+   * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+   */
+  io.littlehorse.common.proto.AttributePb getAttributes(int index);
+  /**
+   * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+   */
+  int getAttributesCount();
+  /**
+   * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+   */
+  java.util.List<? extends io.littlehorse.common.proto.AttributePbOrBuilder> 
+      getAttributesOrBuilderList();
+  /**
+   * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+   */
+  io.littlehorse.common.proto.AttributePbOrBuilder getAttributesOrBuilder(
+      int index);
+
+  /**
+   * <code>string described_object_id = 3;</code>
+   * @return The describedObjectId.
+   */
+  java.lang.String getDescribedObjectId();
+  /**
+   * <code>string described_object_id = 3;</code>
+   * @return The bytes for describedObjectId.
    */
   com.google.protobuf.ByteString
-      getStoreKeyBytes();
+      getDescribedObjectIdBytes();
+
+  /**
+   * <code>.google.protobuf.Timestamp created = 4;</code>
+   * @return Whether the created field is set.
+   */
+  boolean hasCreated();
+  /**
+   * <code>.google.protobuf.Timestamp created = 4;</code>
+   * @return The created.
+   */
+  com.google.protobuf.Timestamp getCreated();
+  /**
+   * <code>.google.protobuf.Timestamp created = 4;</code>
+   */
+  com.google.protobuf.TimestampOrBuilder getCreatedOrBuilder();
+
+  /**
+   * <pre>
+   * The following is not stored in the key.
+   * </pre>
+   *
+   * <code>repeated string counter_keys = 5;</code>
+   * @return A list containing the counterKeys.
+   */
+  java.util.List<java.lang.String>
+      getCounterKeysList();
+  /**
+   * <pre>
+   * The following is not stored in the key.
+   * </pre>
+   *
+   * <code>repeated string counter_keys = 5;</code>
+   * @return The count of counterKeys.
+   */
+  int getCounterKeysCount();
+  /**
+   * <pre>
+   * The following is not stored in the key.
+   * </pre>
+   *
+   * <code>repeated string counter_keys = 5;</code>
+   * @param index The index of the element to return.
+   * @return The counterKeys at the given index.
+   */
+  java.lang.String getCounterKeys(int index);
+  /**
+   * <pre>
+   * The following is not stored in the key.
+   * </pre>
+   *
+   * <code>repeated string counter_keys = 5;</code>
+   * @param index The index of the value to return.
+   * @return The bytes of the counterKeys at the given index.
+   */
+  com.google.protobuf.ByteString
+      getCounterKeysBytes(int index);
 }

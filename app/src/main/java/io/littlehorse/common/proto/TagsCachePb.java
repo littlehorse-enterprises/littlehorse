@@ -4,26 +4,26 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf type {@code lh_proto.IndexValuePb}
+ * Protobuf type {@code lh_proto.TagsCachePb}
  */
-public final class IndexValuePb extends
+public final class TagsCachePb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.IndexValuePb)
-    IndexValuePbOrBuilder {
+    // @@protoc_insertion_point(message_implements:lh_proto.TagsCachePb)
+    TagsCachePbOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use IndexValuePb.newBuilder() to construct.
-  private IndexValuePb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use TagsCachePb.newBuilder() to construct.
+  private TagsCachePb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private IndexValuePb() {
-    storeKey_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+  private TagsCachePb() {
+    tagIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
   }
 
   @java.lang.Override
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new IndexValuePb();
+    return new TagsCachePb();
   }
 
   @java.lang.Override
@@ -31,7 +31,7 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
-  private IndexValuePb(
+  private TagsCachePb(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -53,10 +53,10 @@ private static final long serialVersionUID = 0L;
           case 10: {
             java.lang.String s = input.readStringRequireUtf8();
             if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-              storeKey_ = new com.google.protobuf.LazyStringArrayList();
+              tagIds_ = new com.google.protobuf.LazyStringArrayList();
               mutable_bitField0_ |= 0x00000001;
             }
-            storeKey_.add(s);
+            tagIds_.add(s);
             break;
           }
           default: {
@@ -75,7 +75,7 @@ private static final long serialVersionUID = 0L;
           e).setUnfinishedMessage(this);
     } finally {
       if (((mutable_bitField0_ & 0x00000001) != 0)) {
-        storeKey_ = storeKey_.getUnmodifiableView();
+        tagIds_ = tagIds_.getUnmodifiableView();
       }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
@@ -83,50 +83,50 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.Tags.internal_static_lh_proto_IndexValuePb_descriptor;
+    return io.littlehorse.common.proto.Tags.internal_static_lh_proto_TagsCachePb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.Tags.internal_static_lh_proto_IndexValuePb_fieldAccessorTable
+    return io.littlehorse.common.proto.Tags.internal_static_lh_proto_TagsCachePb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.common.proto.IndexValuePb.class, io.littlehorse.common.proto.IndexValuePb.Builder.class);
+            io.littlehorse.common.proto.TagsCachePb.class, io.littlehorse.common.proto.TagsCachePb.Builder.class);
   }
 
-  public static final int STORE_KEY_FIELD_NUMBER = 1;
-  private com.google.protobuf.LazyStringList storeKey_;
+  public static final int TAG_IDS_FIELD_NUMBER = 1;
+  private com.google.protobuf.LazyStringList tagIds_;
   /**
-   * <code>repeated string store_key = 1;</code>
-   * @return A list containing the storeKey.
+   * <code>repeated string tag_ids = 1;</code>
+   * @return A list containing the tagIds.
    */
   public com.google.protobuf.ProtocolStringList
-      getStoreKeyList() {
-    return storeKey_;
+      getTagIdsList() {
+    return tagIds_;
   }
   /**
-   * <code>repeated string store_key = 1;</code>
-   * @return The count of storeKey.
+   * <code>repeated string tag_ids = 1;</code>
+   * @return The count of tagIds.
    */
-  public int getStoreKeyCount() {
-    return storeKey_.size();
+  public int getTagIdsCount() {
+    return tagIds_.size();
   }
   /**
-   * <code>repeated string store_key = 1;</code>
+   * <code>repeated string tag_ids = 1;</code>
    * @param index The index of the element to return.
-   * @return The storeKey at the given index.
+   * @return The tagIds at the given index.
    */
-  public java.lang.String getStoreKey(int index) {
-    return storeKey_.get(index);
+  public java.lang.String getTagIds(int index) {
+    return tagIds_.get(index);
   }
   /**
-   * <code>repeated string store_key = 1;</code>
+   * <code>repeated string tag_ids = 1;</code>
    * @param index The index of the value to return.
-   * @return The bytes of the storeKey at the given index.
+   * @return The bytes of the tagIds at the given index.
    */
   public com.google.protobuf.ByteString
-      getStoreKeyBytes(int index) {
-    return storeKey_.getByteString(index);
+      getTagIdsBytes(int index) {
+    return tagIds_.getByteString(index);
   }
 
   private byte memoizedIsInitialized = -1;
@@ -143,8 +143,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    for (int i = 0; i < storeKey_.size(); i++) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, storeKey_.getRaw(i));
+    for (int i = 0; i < tagIds_.size(); i++) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, tagIds_.getRaw(i));
     }
     unknownFields.writeTo(output);
   }
@@ -157,11 +157,11 @@ private static final long serialVersionUID = 0L;
     size = 0;
     {
       int dataSize = 0;
-      for (int i = 0; i < storeKey_.size(); i++) {
-        dataSize += computeStringSizeNoTag(storeKey_.getRaw(i));
+      for (int i = 0; i < tagIds_.size(); i++) {
+        dataSize += computeStringSizeNoTag(tagIds_.getRaw(i));
       }
       size += dataSize;
-      size += 1 * getStoreKeyList().size();
+      size += 1 * getTagIdsList().size();
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -173,13 +173,13 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.common.proto.IndexValuePb)) {
+    if (!(obj instanceof io.littlehorse.common.proto.TagsCachePb)) {
       return super.equals(obj);
     }
-    io.littlehorse.common.proto.IndexValuePb other = (io.littlehorse.common.proto.IndexValuePb) obj;
+    io.littlehorse.common.proto.TagsCachePb other = (io.littlehorse.common.proto.TagsCachePb) obj;
 
-    if (!getStoreKeyList()
-        .equals(other.getStoreKeyList())) return false;
+    if (!getTagIdsList()
+        .equals(other.getTagIdsList())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -191,78 +191,78 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (getStoreKeyCount() > 0) {
-      hash = (37 * hash) + STORE_KEY_FIELD_NUMBER;
-      hash = (53 * hash) + getStoreKeyList().hashCode();
+    if (getTagIdsCount() > 0) {
+      hash = (37 * hash) + TAG_IDS_FIELD_NUMBER;
+      hash = (53 * hash) + getTagIdsList().hashCode();
     }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
   }
 
-  public static io.littlehorse.common.proto.IndexValuePb parseFrom(
+  public static io.littlehorse.common.proto.TagsCachePb parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.IndexValuePb parseFrom(
+  public static io.littlehorse.common.proto.TagsCachePb parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.IndexValuePb parseFrom(
+  public static io.littlehorse.common.proto.TagsCachePb parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.IndexValuePb parseFrom(
+  public static io.littlehorse.common.proto.TagsCachePb parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.IndexValuePb parseFrom(byte[] data)
+  public static io.littlehorse.common.proto.TagsCachePb parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.IndexValuePb parseFrom(
+  public static io.littlehorse.common.proto.TagsCachePb parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.IndexValuePb parseFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.TagsCachePb parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.IndexValuePb parseFrom(
+  public static io.littlehorse.common.proto.TagsCachePb parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.IndexValuePb parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.TagsCachePb parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.IndexValuePb parseDelimitedFrom(
+  public static io.littlehorse.common.proto.TagsCachePb parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.IndexValuePb parseFrom(
+  public static io.littlehorse.common.proto.TagsCachePb parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.IndexValuePb parseFrom(
+  public static io.littlehorse.common.proto.TagsCachePb parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -275,7 +275,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.common.proto.IndexValuePb prototype) {
+  public static Builder newBuilder(io.littlehorse.common.proto.TagsCachePb prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -291,26 +291,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.IndexValuePb}
+   * Protobuf type {@code lh_proto.TagsCachePb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.IndexValuePb)
-      io.littlehorse.common.proto.IndexValuePbOrBuilder {
+      // @@protoc_insertion_point(builder_implements:lh_proto.TagsCachePb)
+      io.littlehorse.common.proto.TagsCachePbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.Tags.internal_static_lh_proto_IndexValuePb_descriptor;
+      return io.littlehorse.common.proto.Tags.internal_static_lh_proto_TagsCachePb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.Tags.internal_static_lh_proto_IndexValuePb_fieldAccessorTable
+      return io.littlehorse.common.proto.Tags.internal_static_lh_proto_TagsCachePb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.common.proto.IndexValuePb.class, io.littlehorse.common.proto.IndexValuePb.Builder.class);
+              io.littlehorse.common.proto.TagsCachePb.class, io.littlehorse.common.proto.TagsCachePb.Builder.class);
     }
 
-    // Construct using io.littlehorse.common.proto.IndexValuePb.newBuilder()
+    // Construct using io.littlehorse.common.proto.TagsCachePb.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -328,7 +328,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      storeKey_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      tagIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       bitField0_ = (bitField0_ & ~0x00000001);
       return this;
     }
@@ -336,17 +336,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.Tags.internal_static_lh_proto_IndexValuePb_descriptor;
+      return io.littlehorse.common.proto.Tags.internal_static_lh_proto_TagsCachePb_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.IndexValuePb getDefaultInstanceForType() {
-      return io.littlehorse.common.proto.IndexValuePb.getDefaultInstance();
+    public io.littlehorse.common.proto.TagsCachePb getDefaultInstanceForType() {
+      return io.littlehorse.common.proto.TagsCachePb.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.IndexValuePb build() {
-      io.littlehorse.common.proto.IndexValuePb result = buildPartial();
+    public io.littlehorse.common.proto.TagsCachePb build() {
+      io.littlehorse.common.proto.TagsCachePb result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -354,14 +354,14 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.IndexValuePb buildPartial() {
-      io.littlehorse.common.proto.IndexValuePb result = new io.littlehorse.common.proto.IndexValuePb(this);
+    public io.littlehorse.common.proto.TagsCachePb buildPartial() {
+      io.littlehorse.common.proto.TagsCachePb result = new io.littlehorse.common.proto.TagsCachePb(this);
       int from_bitField0_ = bitField0_;
       if (((bitField0_ & 0x00000001) != 0)) {
-        storeKey_ = storeKey_.getUnmodifiableView();
+        tagIds_ = tagIds_.getUnmodifiableView();
         bitField0_ = (bitField0_ & ~0x00000001);
       }
-      result.storeKey_ = storeKey_;
+      result.tagIds_ = tagIds_;
       onBuilt();
       return result;
     }
@@ -400,23 +400,23 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.common.proto.IndexValuePb) {
-        return mergeFrom((io.littlehorse.common.proto.IndexValuePb)other);
+      if (other instanceof io.littlehorse.common.proto.TagsCachePb) {
+        return mergeFrom((io.littlehorse.common.proto.TagsCachePb)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.common.proto.IndexValuePb other) {
-      if (other == io.littlehorse.common.proto.IndexValuePb.getDefaultInstance()) return this;
-      if (!other.storeKey_.isEmpty()) {
-        if (storeKey_.isEmpty()) {
-          storeKey_ = other.storeKey_;
+    public Builder mergeFrom(io.littlehorse.common.proto.TagsCachePb other) {
+      if (other == io.littlehorse.common.proto.TagsCachePb.getDefaultInstance()) return this;
+      if (!other.tagIds_.isEmpty()) {
+        if (tagIds_.isEmpty()) {
+          tagIds_ = other.tagIds_;
           bitField0_ = (bitField0_ & ~0x00000001);
         } else {
-          ensureStoreKeyIsMutable();
-          storeKey_.addAll(other.storeKey_);
+          ensureTagIdsIsMutable();
+          tagIds_.addAll(other.tagIds_);
         }
         onChanged();
       }
@@ -435,11 +435,11 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      io.littlehorse.common.proto.IndexValuePb parsedMessage = null;
+      io.littlehorse.common.proto.TagsCachePb parsedMessage = null;
       try {
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (io.littlehorse.common.proto.IndexValuePb) e.getUnfinishedMessage();
+        parsedMessage = (io.littlehorse.common.proto.TagsCachePb) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
@@ -450,112 +450,112 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private com.google.protobuf.LazyStringList storeKey_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-    private void ensureStoreKeyIsMutable() {
+    private com.google.protobuf.LazyStringList tagIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+    private void ensureTagIdsIsMutable() {
       if (!((bitField0_ & 0x00000001) != 0)) {
-        storeKey_ = new com.google.protobuf.LazyStringArrayList(storeKey_);
+        tagIds_ = new com.google.protobuf.LazyStringArrayList(tagIds_);
         bitField0_ |= 0x00000001;
        }
     }
     /**
-     * <code>repeated string store_key = 1;</code>
-     * @return A list containing the storeKey.
+     * <code>repeated string tag_ids = 1;</code>
+     * @return A list containing the tagIds.
      */
     public com.google.protobuf.ProtocolStringList
-        getStoreKeyList() {
-      return storeKey_.getUnmodifiableView();
+        getTagIdsList() {
+      return tagIds_.getUnmodifiableView();
     }
     /**
-     * <code>repeated string store_key = 1;</code>
-     * @return The count of storeKey.
+     * <code>repeated string tag_ids = 1;</code>
+     * @return The count of tagIds.
      */
-    public int getStoreKeyCount() {
-      return storeKey_.size();
+    public int getTagIdsCount() {
+      return tagIds_.size();
     }
     /**
-     * <code>repeated string store_key = 1;</code>
+     * <code>repeated string tag_ids = 1;</code>
      * @param index The index of the element to return.
-     * @return The storeKey at the given index.
+     * @return The tagIds at the given index.
      */
-    public java.lang.String getStoreKey(int index) {
-      return storeKey_.get(index);
+    public java.lang.String getTagIds(int index) {
+      return tagIds_.get(index);
     }
     /**
-     * <code>repeated string store_key = 1;</code>
+     * <code>repeated string tag_ids = 1;</code>
      * @param index The index of the value to return.
-     * @return The bytes of the storeKey at the given index.
+     * @return The bytes of the tagIds at the given index.
      */
     public com.google.protobuf.ByteString
-        getStoreKeyBytes(int index) {
-      return storeKey_.getByteString(index);
+        getTagIdsBytes(int index) {
+      return tagIds_.getByteString(index);
     }
     /**
-     * <code>repeated string store_key = 1;</code>
+     * <code>repeated string tag_ids = 1;</code>
      * @param index The index to set the value at.
-     * @param value The storeKey to set.
+     * @param value The tagIds to set.
      * @return This builder for chaining.
      */
-    public Builder setStoreKey(
+    public Builder setTagIds(
         int index, java.lang.String value) {
       if (value == null) {
     throw new NullPointerException();
   }
-  ensureStoreKeyIsMutable();
-      storeKey_.set(index, value);
+  ensureTagIdsIsMutable();
+      tagIds_.set(index, value);
       onChanged();
       return this;
     }
     /**
-     * <code>repeated string store_key = 1;</code>
-     * @param value The storeKey to add.
+     * <code>repeated string tag_ids = 1;</code>
+     * @param value The tagIds to add.
      * @return This builder for chaining.
      */
-    public Builder addStoreKey(
+    public Builder addTagIds(
         java.lang.String value) {
       if (value == null) {
     throw new NullPointerException();
   }
-  ensureStoreKeyIsMutable();
-      storeKey_.add(value);
+  ensureTagIdsIsMutable();
+      tagIds_.add(value);
       onChanged();
       return this;
     }
     /**
-     * <code>repeated string store_key = 1;</code>
-     * @param values The storeKey to add.
+     * <code>repeated string tag_ids = 1;</code>
+     * @param values The tagIds to add.
      * @return This builder for chaining.
      */
-    public Builder addAllStoreKey(
+    public Builder addAllTagIds(
         java.lang.Iterable<java.lang.String> values) {
-      ensureStoreKeyIsMutable();
+      ensureTagIdsIsMutable();
       com.google.protobuf.AbstractMessageLite.Builder.addAll(
-          values, storeKey_);
+          values, tagIds_);
       onChanged();
       return this;
     }
     /**
-     * <code>repeated string store_key = 1;</code>
+     * <code>repeated string tag_ids = 1;</code>
      * @return This builder for chaining.
      */
-    public Builder clearStoreKey() {
-      storeKey_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+    public Builder clearTagIds() {
+      tagIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       bitField0_ = (bitField0_ & ~0x00000001);
       onChanged();
       return this;
     }
     /**
-     * <code>repeated string store_key = 1;</code>
-     * @param value The bytes of the storeKey to add.
+     * <code>repeated string tag_ids = 1;</code>
+     * @param value The bytes of the tagIds to add.
      * @return This builder for chaining.
      */
-    public Builder addStoreKeyBytes(
+    public Builder addTagIdsBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
-      ensureStoreKeyIsMutable();
-      storeKey_.add(value);
+      ensureTagIdsIsMutable();
+      tagIds_.add(value);
       onChanged();
       return this;
     }
@@ -572,41 +572,41 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.IndexValuePb)
+    // @@protoc_insertion_point(builder_scope:lh_proto.TagsCachePb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.IndexValuePb)
-  private static final io.littlehorse.common.proto.IndexValuePb DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:lh_proto.TagsCachePb)
+  private static final io.littlehorse.common.proto.TagsCachePb DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.common.proto.IndexValuePb();
+    DEFAULT_INSTANCE = new io.littlehorse.common.proto.TagsCachePb();
   }
 
-  public static io.littlehorse.common.proto.IndexValuePb getDefaultInstance() {
+  public static io.littlehorse.common.proto.TagsCachePb getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<IndexValuePb>
-      PARSER = new com.google.protobuf.AbstractParser<IndexValuePb>() {
+  private static final com.google.protobuf.Parser<TagsCachePb>
+      PARSER = new com.google.protobuf.AbstractParser<TagsCachePb>() {
     @java.lang.Override
-    public IndexValuePb parsePartialFrom(
+    public TagsCachePb parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new IndexValuePb(input, extensionRegistry);
+      return new TagsCachePb(input, extensionRegistry);
     }
   };
 
-  public static com.google.protobuf.Parser<IndexValuePb> parser() {
+  public static com.google.protobuf.Parser<TagsCachePb> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<IndexValuePb> getParserForType() {
+  public com.google.protobuf.Parser<TagsCachePb> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.common.proto.IndexValuePb getDefaultInstanceForType() {
+  public io.littlehorse.common.proto.TagsCachePb getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

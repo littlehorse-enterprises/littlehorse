@@ -1,9 +1,9 @@
 package io.littlehorse.common.model.wfrun.subnoderun;
 
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.model.index.Tag;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.meta.subnode.ExternalEventNode;
-import io.littlehorse.common.model.server.Tag;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
@@ -91,7 +91,7 @@ public class ExternalEventRun extends SubNodeRun<ExternalEventRunPb> {
         evt.nodeRunPosition = nodeRun.position;
         evt.threadRunNumber = nodeRun.threadRunNumber;
 
-        externalEventId = evt.getSubKey();
+        externalEventId = evt.getObjectId();
 
         nodeRun.complete(evt.content, time);
         return true;

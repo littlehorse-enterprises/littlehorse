@@ -7,7 +7,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.command.subcommand.RunWf;
-import io.littlehorse.common.model.server.Tag;
+import io.littlehorse.common.model.index.Tag;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.ThreadSpecPb;
@@ -53,7 +53,7 @@ public class WfSpec extends GETable<WfSpecPbOrBuilder> {
      * a given name and the newest version, we need the versions to be ordered
      * **lexicographically**, not just numerically.
      */
-    public String getSubKey() {
+    public String getObjectId() {
         return getSubKey(name, version);
     }
 

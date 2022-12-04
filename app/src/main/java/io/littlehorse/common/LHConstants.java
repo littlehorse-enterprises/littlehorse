@@ -30,17 +30,15 @@ public class LHConstants {
     public static final String BIND_HOST_KEY = "LHORSE_BIND_HOST";
     public static final String ADVERTISED_HOST_KEY = "LHORSE_ADVERTISED_HOST";
     public static final String ADVERTISED_PROTOCOL_KEY = "LHORSE_ADVERTISED_PROTOCOL";
-
     public static final String API_ADVERTISED_PORT_KEY = "LHORSE_API_ADVERTISED_PORT";
     public static final String API_BIND_PORT_KEY = "LHORSE_API_BIND_PORT";
+    public static final String INTERNAL_BIND_PORT_KEY = "LHORSE_INTERNAL_BIND_PORT";
     public static final String INTERNAL_ADVERTISED_PORT_KEY =
         "LHORSE_INTERNAL_ADVERTISED_PORT";
-    public static final String INTERNAL_BIND_PORT_KEY = "LHORSE_INTERNAL_BIND_PORT";
 
     // Other various constants used by code
     public static final Duration PUNCTUATOR_INERVAL = Duration.ofSeconds(4);
     public static final Duration TICKER_INTERVAL = Duration.ofSeconds(4);
-    public static final String OBJECT_ID_HEADER = "STORE_KEY";
     public static final String EXT_EVT_HANDLER_VAR = "INPUT";
 
     // Make all global metadata use the same partition key so that they're processed

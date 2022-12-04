@@ -1,12 +1,12 @@
 package io.littlehorse.common.model;
 
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.model.index.Tag;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.model.server.Tag;
+import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.NodeRun;
-import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.GETableClassEnumPb;
@@ -24,10 +24,8 @@ public abstract class GETable<T extends MessageOrBuilder> extends Storeable<T> {
     public static GETableClassEnumPb getTypeEnum(Class<? extends GETable<?>> cls) {
         if (cls.equals(WfRun.class)) {
             return GETableClassEnumPb.WF_RUN;
-        } else if (cls.equals(ThreadRun.class)) {
-            return GETableClassEnumPb.THREAD_RUN;
         } else if (cls.equals(NodeRun.class)) {
-            return GETableClassEnumPb.TASK_RUN;
+            return GETableClassEnumPb.NODE_RUN;
         } else if (cls.equals(WfSpec.class)) {
             return GETableClassEnumPb.WF_SPEC;
         } else if (cls.equals(TaskDef.class)) {
@@ -36,6 +34,8 @@ public abstract class GETable<T extends MessageOrBuilder> extends Storeable<T> {
             return GETableClassEnumPb.VARIABLE;
         } else if (cls.equals(ExternalEventDef.class)) {
             return GETableClassEnumPb.EXTERNAL_EVENT_DEF;
+        } else if (cls.equals(ExternalEvent.class)) {
+            return GETableClassEnumPb.EXTERNAL_EVENT;
         } else {
             throw new RuntimeException("Uh oh, unrecognized: " + cls.getName());
         }
@@ -45,7 +45,7 @@ public abstract class GETable<T extends MessageOrBuilder> extends Storeable<T> {
         switch (type) {
             case WF_RUN:
                 return WfRun.class;
-            case TASK_RUN:
+            case NODE_RUN:
                 return NodeRun.class;
             case WF_SPEC:
                 return WfSpec.class;
@@ -55,6 +55,8 @@ public abstract class GETable<T extends MessageOrBuilder> extends Storeable<T> {
                 return Variable.class;
             case EXTERNAL_EVENT_DEF:
                 return ExternalEventDef.class;
+            case EXTERNAL_EVENT:
+                return ExternalEvent.class;
             case UNRECOGNIZED:
             default:
                 throw new RuntimeException("Uh oh, unrecognized enum");

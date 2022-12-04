@@ -4,26 +4,26 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf type {@code lh_proto.GETableEntryPb}
+ * Protobuf type {@code lh_proto.DiscreteTagLocalCounterPb}
  */
-public final class GETableEntryPb extends
+public final class DiscreteTagLocalCounterPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.GETableEntryPb)
-    GETableEntryPbOrBuilder {
+    // @@protoc_insertion_point(message_implements:lh_proto.DiscreteTagLocalCounterPb)
+    DiscreteTagLocalCounterPbOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use GETableEntryPb.newBuilder() to construct.
-  private GETableEntryPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use DiscreteTagLocalCounterPb.newBuilder() to construct.
+  private DiscreteTagLocalCounterPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private GETableEntryPb() {
-    entry_ = com.google.protobuf.ByteString.EMPTY;
+  private DiscreteTagLocalCounterPb() {
+    tagAttributes_ = "";
   }
 
   @java.lang.Override
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new GETableEntryPb();
+    return new DiscreteTagLocalCounterPb();
   }
 
   @java.lang.Override
@@ -31,7 +31,7 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
-  private GETableEntryPb(
+  private DiscreteTagLocalCounterPb(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -49,19 +49,20 @@ private static final long serialVersionUID = 0L;
           case 0:
             done = true;
             break;
-          case 10: {
+          case 8: {
 
-            entry_ = input.readBytes();
+            localCount_ = input.readInt64();
             break;
           }
-          case 16: {
+          case 18: {
+            java.lang.String s = input.readStringRequireUtf8();
 
-            partition_ = input.readInt32();
+            tagAttributes_ = s;
             break;
           }
           case 24: {
 
-            lastUpdatedOffset_ = input.readInt64();
+            partition_ = input.readInt32();
             break;
           }
           default: {
@@ -85,48 +86,75 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.Tags.internal_static_lh_proto_GETableEntryPb_descriptor;
+    return io.littlehorse.common.proto.Tags.internal_static_lh_proto_DiscreteTagLocalCounterPb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.Tags.internal_static_lh_proto_GETableEntryPb_fieldAccessorTable
+    return io.littlehorse.common.proto.Tags.internal_static_lh_proto_DiscreteTagLocalCounterPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.common.proto.GETableEntryPb.class, io.littlehorse.common.proto.GETableEntryPb.Builder.class);
+            io.littlehorse.common.proto.DiscreteTagLocalCounterPb.class, io.littlehorse.common.proto.DiscreteTagLocalCounterPb.Builder.class);
   }
 
-  public static final int ENTRY_FIELD_NUMBER = 1;
-  private com.google.protobuf.ByteString entry_;
+  public static final int LOCAL_COUNT_FIELD_NUMBER = 1;
+  private long localCount_;
   /**
-   * <code>bytes entry = 1;</code>
-   * @return The entry.
+   * <code>int64 local_count = 1;</code>
+   * @return The localCount.
    */
   @java.lang.Override
-  public com.google.protobuf.ByteString getEntry() {
-    return entry_;
+  public long getLocalCount() {
+    return localCount_;
   }
 
-  public static final int PARTITION_FIELD_NUMBER = 2;
+  public static final int TAG_ATTRIBUTES_FIELD_NUMBER = 2;
+  private volatile java.lang.Object tagAttributes_;
+  /**
+   * <code>string tag_attributes = 2;</code>
+   * @return The tagAttributes.
+   */
+  @java.lang.Override
+  public java.lang.String getTagAttributes() {
+    java.lang.Object ref = tagAttributes_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      tagAttributes_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string tag_attributes = 2;</code>
+   * @return The bytes for tagAttributes.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getTagAttributesBytes() {
+    java.lang.Object ref = tagAttributes_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      tagAttributes_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int PARTITION_FIELD_NUMBER = 3;
   private int partition_;
   /**
-   * <code>int32 partition = 2;</code>
+   * <code>int32 partition = 3;</code>
    * @return The partition.
    */
   @java.lang.Override
   public int getPartition() {
     return partition_;
-  }
-
-  public static final int LAST_UPDATED_OFFSET_FIELD_NUMBER = 3;
-  private long lastUpdatedOffset_;
-  /**
-   * <code>int64 last_updated_offset = 3;</code>
-   * @return The lastUpdatedOffset.
-   */
-  @java.lang.Override
-  public long getLastUpdatedOffset() {
-    return lastUpdatedOffset_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -143,14 +171,14 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!entry_.isEmpty()) {
-      output.writeBytes(1, entry_);
+    if (localCount_ != 0L) {
+      output.writeInt64(1, localCount_);
+    }
+    if (!getTagAttributesBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, tagAttributes_);
     }
     if (partition_ != 0) {
-      output.writeInt32(2, partition_);
-    }
-    if (lastUpdatedOffset_ != 0L) {
-      output.writeInt64(3, lastUpdatedOffset_);
+      output.writeInt32(3, partition_);
     }
     unknownFields.writeTo(output);
   }
@@ -161,17 +189,16 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (!entry_.isEmpty()) {
+    if (localCount_ != 0L) {
       size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(1, entry_);
+        .computeInt64Size(1, localCount_);
+    }
+    if (!getTagAttributesBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, tagAttributes_);
     }
     if (partition_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(2, partition_);
-    }
-    if (lastUpdatedOffset_ != 0L) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt64Size(3, lastUpdatedOffset_);
+        .computeInt32Size(3, partition_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -183,17 +210,17 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.common.proto.GETableEntryPb)) {
+    if (!(obj instanceof io.littlehorse.common.proto.DiscreteTagLocalCounterPb)) {
       return super.equals(obj);
     }
-    io.littlehorse.common.proto.GETableEntryPb other = (io.littlehorse.common.proto.GETableEntryPb) obj;
+    io.littlehorse.common.proto.DiscreteTagLocalCounterPb other = (io.littlehorse.common.proto.DiscreteTagLocalCounterPb) obj;
 
-    if (!getEntry()
-        .equals(other.getEntry())) return false;
+    if (getLocalCount()
+        != other.getLocalCount()) return false;
+    if (!getTagAttributes()
+        .equals(other.getTagAttributes())) return false;
     if (getPartition()
         != other.getPartition()) return false;
-    if (getLastUpdatedOffset()
-        != other.getLastUpdatedOffset()) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -205,81 +232,81 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + ENTRY_FIELD_NUMBER;
-    hash = (53 * hash) + getEntry().hashCode();
+    hash = (37 * hash) + LOCAL_COUNT_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        getLocalCount());
+    hash = (37 * hash) + TAG_ATTRIBUTES_FIELD_NUMBER;
+    hash = (53 * hash) + getTagAttributes().hashCode();
     hash = (37 * hash) + PARTITION_FIELD_NUMBER;
     hash = (53 * hash) + getPartition();
-    hash = (37 * hash) + LAST_UPDATED_OFFSET_FIELD_NUMBER;
-    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-        getLastUpdatedOffset());
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
   }
 
-  public static io.littlehorse.common.proto.GETableEntryPb parseFrom(
+  public static io.littlehorse.common.proto.DiscreteTagLocalCounterPb parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.GETableEntryPb parseFrom(
+  public static io.littlehorse.common.proto.DiscreteTagLocalCounterPb parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.GETableEntryPb parseFrom(
+  public static io.littlehorse.common.proto.DiscreteTagLocalCounterPb parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.GETableEntryPb parseFrom(
+  public static io.littlehorse.common.proto.DiscreteTagLocalCounterPb parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.GETableEntryPb parseFrom(byte[] data)
+  public static io.littlehorse.common.proto.DiscreteTagLocalCounterPb parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.GETableEntryPb parseFrom(
+  public static io.littlehorse.common.proto.DiscreteTagLocalCounterPb parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.GETableEntryPb parseFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.DiscreteTagLocalCounterPb parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.GETableEntryPb parseFrom(
+  public static io.littlehorse.common.proto.DiscreteTagLocalCounterPb parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.GETableEntryPb parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.DiscreteTagLocalCounterPb parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.GETableEntryPb parseDelimitedFrom(
+  public static io.littlehorse.common.proto.DiscreteTagLocalCounterPb parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.GETableEntryPb parseFrom(
+  public static io.littlehorse.common.proto.DiscreteTagLocalCounterPb parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.GETableEntryPb parseFrom(
+  public static io.littlehorse.common.proto.DiscreteTagLocalCounterPb parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -292,7 +319,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.common.proto.GETableEntryPb prototype) {
+  public static Builder newBuilder(io.littlehorse.common.proto.DiscreteTagLocalCounterPb prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -308,26 +335,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.GETableEntryPb}
+   * Protobuf type {@code lh_proto.DiscreteTagLocalCounterPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.GETableEntryPb)
-      io.littlehorse.common.proto.GETableEntryPbOrBuilder {
+      // @@protoc_insertion_point(builder_implements:lh_proto.DiscreteTagLocalCounterPb)
+      io.littlehorse.common.proto.DiscreteTagLocalCounterPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.Tags.internal_static_lh_proto_GETableEntryPb_descriptor;
+      return io.littlehorse.common.proto.Tags.internal_static_lh_proto_DiscreteTagLocalCounterPb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.Tags.internal_static_lh_proto_GETableEntryPb_fieldAccessorTable
+      return io.littlehorse.common.proto.Tags.internal_static_lh_proto_DiscreteTagLocalCounterPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.common.proto.GETableEntryPb.class, io.littlehorse.common.proto.GETableEntryPb.Builder.class);
+              io.littlehorse.common.proto.DiscreteTagLocalCounterPb.class, io.littlehorse.common.proto.DiscreteTagLocalCounterPb.Builder.class);
     }
 
-    // Construct using io.littlehorse.common.proto.GETableEntryPb.newBuilder()
+    // Construct using io.littlehorse.common.proto.DiscreteTagLocalCounterPb.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -345,11 +372,11 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      entry_ = com.google.protobuf.ByteString.EMPTY;
+      localCount_ = 0L;
+
+      tagAttributes_ = "";
 
       partition_ = 0;
-
-      lastUpdatedOffset_ = 0L;
 
       return this;
     }
@@ -357,17 +384,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.Tags.internal_static_lh_proto_GETableEntryPb_descriptor;
+      return io.littlehorse.common.proto.Tags.internal_static_lh_proto_DiscreteTagLocalCounterPb_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.GETableEntryPb getDefaultInstanceForType() {
-      return io.littlehorse.common.proto.GETableEntryPb.getDefaultInstance();
+    public io.littlehorse.common.proto.DiscreteTagLocalCounterPb getDefaultInstanceForType() {
+      return io.littlehorse.common.proto.DiscreteTagLocalCounterPb.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.GETableEntryPb build() {
-      io.littlehorse.common.proto.GETableEntryPb result = buildPartial();
+    public io.littlehorse.common.proto.DiscreteTagLocalCounterPb build() {
+      io.littlehorse.common.proto.DiscreteTagLocalCounterPb result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -375,11 +402,11 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.GETableEntryPb buildPartial() {
-      io.littlehorse.common.proto.GETableEntryPb result = new io.littlehorse.common.proto.GETableEntryPb(this);
-      result.entry_ = entry_;
+    public io.littlehorse.common.proto.DiscreteTagLocalCounterPb buildPartial() {
+      io.littlehorse.common.proto.DiscreteTagLocalCounterPb result = new io.littlehorse.common.proto.DiscreteTagLocalCounterPb(this);
+      result.localCount_ = localCount_;
+      result.tagAttributes_ = tagAttributes_;
       result.partition_ = partition_;
-      result.lastUpdatedOffset_ = lastUpdatedOffset_;
       onBuilt();
       return result;
     }
@@ -418,24 +445,25 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.common.proto.GETableEntryPb) {
-        return mergeFrom((io.littlehorse.common.proto.GETableEntryPb)other);
+      if (other instanceof io.littlehorse.common.proto.DiscreteTagLocalCounterPb) {
+        return mergeFrom((io.littlehorse.common.proto.DiscreteTagLocalCounterPb)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.common.proto.GETableEntryPb other) {
-      if (other == io.littlehorse.common.proto.GETableEntryPb.getDefaultInstance()) return this;
-      if (other.getEntry() != com.google.protobuf.ByteString.EMPTY) {
-        setEntry(other.getEntry());
+    public Builder mergeFrom(io.littlehorse.common.proto.DiscreteTagLocalCounterPb other) {
+      if (other == io.littlehorse.common.proto.DiscreteTagLocalCounterPb.getDefaultInstance()) return this;
+      if (other.getLocalCount() != 0L) {
+        setLocalCount(other.getLocalCount());
+      }
+      if (!other.getTagAttributes().isEmpty()) {
+        tagAttributes_ = other.tagAttributes_;
+        onChanged();
       }
       if (other.getPartition() != 0) {
         setPartition(other.getPartition());
-      }
-      if (other.getLastUpdatedOffset() != 0L) {
-        setLastUpdatedOffset(other.getLastUpdatedOffset());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -452,11 +480,11 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      io.littlehorse.common.proto.GETableEntryPb parsedMessage = null;
+      io.littlehorse.common.proto.DiscreteTagLocalCounterPb parsedMessage = null;
       try {
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (io.littlehorse.common.proto.GETableEntryPb) e.getUnfinishedMessage();
+        parsedMessage = (io.littlehorse.common.proto.DiscreteTagLocalCounterPb) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
@@ -466,43 +494,116 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private com.google.protobuf.ByteString entry_ = com.google.protobuf.ByteString.EMPTY;
+    private long localCount_ ;
     /**
-     * <code>bytes entry = 1;</code>
-     * @return The entry.
+     * <code>int64 local_count = 1;</code>
+     * @return The localCount.
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString getEntry() {
-      return entry_;
+    public long getLocalCount() {
+      return localCount_;
     }
     /**
-     * <code>bytes entry = 1;</code>
-     * @param value The entry to set.
+     * <code>int64 local_count = 1;</code>
+     * @param value The localCount to set.
      * @return This builder for chaining.
      */
-    public Builder setEntry(com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      entry_ = value;
+    public Builder setLocalCount(long value) {
+      
+      localCount_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>bytes entry = 1;</code>
+     * <code>int64 local_count = 1;</code>
      * @return This builder for chaining.
      */
-    public Builder clearEntry() {
+    public Builder clearLocalCount() {
       
-      entry_ = getDefaultInstance().getEntry();
+      localCount_ = 0L;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object tagAttributes_ = "";
+    /**
+     * <code>string tag_attributes = 2;</code>
+     * @return The tagAttributes.
+     */
+    public java.lang.String getTagAttributes() {
+      java.lang.Object ref = tagAttributes_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        tagAttributes_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string tag_attributes = 2;</code>
+     * @return The bytes for tagAttributes.
+     */
+    public com.google.protobuf.ByteString
+        getTagAttributesBytes() {
+      java.lang.Object ref = tagAttributes_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        tagAttributes_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string tag_attributes = 2;</code>
+     * @param value The tagAttributes to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTagAttributes(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      tagAttributes_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string tag_attributes = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearTagAttributes() {
+      
+      tagAttributes_ = getDefaultInstance().getTagAttributes();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string tag_attributes = 2;</code>
+     * @param value The bytes for tagAttributes to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTagAttributesBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      tagAttributes_ = value;
       onChanged();
       return this;
     }
 
     private int partition_ ;
     /**
-     * <code>int32 partition = 2;</code>
+     * <code>int32 partition = 3;</code>
      * @return The partition.
      */
     @java.lang.Override
@@ -510,7 +611,7 @@ private static final long serialVersionUID = 0L;
       return partition_;
     }
     /**
-     * <code>int32 partition = 2;</code>
+     * <code>int32 partition = 3;</code>
      * @param value The partition to set.
      * @return This builder for chaining.
      */
@@ -521,43 +622,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>int32 partition = 2;</code>
+     * <code>int32 partition = 3;</code>
      * @return This builder for chaining.
      */
     public Builder clearPartition() {
       
       partition_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private long lastUpdatedOffset_ ;
-    /**
-     * <code>int64 last_updated_offset = 3;</code>
-     * @return The lastUpdatedOffset.
-     */
-    @java.lang.Override
-    public long getLastUpdatedOffset() {
-      return lastUpdatedOffset_;
-    }
-    /**
-     * <code>int64 last_updated_offset = 3;</code>
-     * @param value The lastUpdatedOffset to set.
-     * @return This builder for chaining.
-     */
-    public Builder setLastUpdatedOffset(long value) {
-      
-      lastUpdatedOffset_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>int64 last_updated_offset = 3;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearLastUpdatedOffset() {
-      
-      lastUpdatedOffset_ = 0L;
       onChanged();
       return this;
     }
@@ -574,41 +644,41 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.GETableEntryPb)
+    // @@protoc_insertion_point(builder_scope:lh_proto.DiscreteTagLocalCounterPb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.GETableEntryPb)
-  private static final io.littlehorse.common.proto.GETableEntryPb DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:lh_proto.DiscreteTagLocalCounterPb)
+  private static final io.littlehorse.common.proto.DiscreteTagLocalCounterPb DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.common.proto.GETableEntryPb();
+    DEFAULT_INSTANCE = new io.littlehorse.common.proto.DiscreteTagLocalCounterPb();
   }
 
-  public static io.littlehorse.common.proto.GETableEntryPb getDefaultInstance() {
+  public static io.littlehorse.common.proto.DiscreteTagLocalCounterPb getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<GETableEntryPb>
-      PARSER = new com.google.protobuf.AbstractParser<GETableEntryPb>() {
+  private static final com.google.protobuf.Parser<DiscreteTagLocalCounterPb>
+      PARSER = new com.google.protobuf.AbstractParser<DiscreteTagLocalCounterPb>() {
     @java.lang.Override
-    public GETableEntryPb parsePartialFrom(
+    public DiscreteTagLocalCounterPb parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new GETableEntryPb(input, extensionRegistry);
+      return new DiscreteTagLocalCounterPb(input, extensionRegistry);
     }
   };
 
-  public static com.google.protobuf.Parser<GETableEntryPb> parser() {
+  public static com.google.protobuf.Parser<DiscreteTagLocalCounterPb> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<GETableEntryPb> getParserForType() {
+  public com.google.protobuf.Parser<DiscreteTagLocalCounterPb> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.common.proto.GETableEntryPb getDefaultInstanceForType() {
+  public io.littlehorse.common.proto.DiscreteTagLocalCounterPb getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

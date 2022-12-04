@@ -52,6 +52,9 @@ public class KafkaStreamsBackend {
     private LHKafkaStoreInternalCommServer backendInternalComms;
     private LHProducer producer;
 
+    public static final String DISCRETE_TAG_COUNT_PREFIX = "DiscreteTagCount/";
+    public static final String DISCRETE_TAG_UPDATES_KEY = "DiscreteTagUpdates";
+
     public void init(LHConfig config, HealthStatusManager grpcHealthCheckThingy) {
         Topology coreTopo = ServerTopology.initCoreTopology(config);
         // Topology timerTopo = ServerTopology.initTimerTopology(config);

@@ -8,10 +8,10 @@ import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
 import io.littlehorse.common.model.command.subcommand.TaskStartedEvent;
+import io.littlehorse.common.model.index.Tag;
 import io.littlehorse.common.model.meta.ThreadSpec;
 import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.model.server.Tag;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.PendingFailureHandlerPb;
 import io.littlehorse.common.proto.PendingInterruptPb;
@@ -128,7 +128,7 @@ public class WfRun extends GETable<WfRunPb> {
 
     @JsonIgnore
     @Override
-    public String getSubKey() {
+    public String getObjectId() {
         return id;
     }
 

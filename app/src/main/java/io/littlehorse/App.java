@@ -22,15 +22,6 @@ public class App {
         LHUtil.log("Creating topics!!");
 
         ArrayList<NewTopic> topics = new ArrayList<>();
-        for (int i = 1; i <= 3; i++) {
-            topics.add(
-                new NewTopic(
-                    "task" + i,
-                    config.getTaskPartitions(),
-                    config.getReplicationFactor()
-                )
-            );
-        }
 
         topics.add(
             new NewTopic(
@@ -48,30 +39,27 @@ public class App {
             )
         );
 
-        topics.add(
-            new NewTopic(
-                config.getTagCmdTopic(),
-                config.getClusterPartitions(),
-                config.getReplicationFactor()
-            )
-        );
+        // Inputs to global state store's are always treated
+        // as changelog topics. Therefore, we need it to be
+        // compacted. In order to minimize restore time, we
+        // also want the compaction to be quite aggressive.
+        HashMap<String, String> globalMetaCLConfig = new HashMap<String, String>() {
+            {
+                put(TopicConfig.MAX_COMPACTION_LAG_MS_CONFIG, "5000");
+                put(
+                    TopicConfig.CLEANUP_POLICY_CONFIG,
+                    TopicConfig.CLEANUP_POLICY_COMPACT
+                );
+            }
+        };
+
         topics.add(
             new NewTopic(
                 config.getGlobalMetadataCLTopicName(),
                 1,
                 config.getReplicationFactor()
             )
-                .configs(
-                    new HashMap<String, String>() {
-                        {
-                            // See note at end of file
-                            put(
-                                TopicConfig.CLEANUP_POLICY_CONFIG,
-                                TopicConfig.CLEANUP_POLICY_COMPACT
-                            );
-                        }
-                    }
-                )
+                .configs(globalMetaCLConfig)
         );
         for (NewTopic topic : topics) {
             config.createKafkaTopic(topic);
