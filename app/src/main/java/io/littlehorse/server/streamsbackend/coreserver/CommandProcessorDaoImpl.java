@@ -364,7 +364,9 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
         }
 
         // reset the changes; next time tags are put, they will be updated.
-        localStore.deleteRaw(OUTGOING_CHANGELOG_KEY);
+        if (!changes.changelog.isEmpty()) {
+            localStore.deleteRaw(OUTGOING_CHANGELOG_KEY);
+        }
     }
 
     private void flush() {

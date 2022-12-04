@@ -95,12 +95,12 @@ public class Tag extends Storeable<TagPb> {
     @SafeVarargs
     @SuppressWarnings("unchecked")
     public Tag(GETable<?> getable, Pair<String, String>... atts) {
+        this();
         this.type =
             GETable.getTypeEnum((Class<? extends GETable<?>>) getable.getClass());
         createdAt = getable.getCreatedAt();
         describedObjectId = getable.getObjectId();
 
-        attributes = new ArrayList<>();
         for (Pair<String, String> p : atts) {
             attributes.add(p);
         }
