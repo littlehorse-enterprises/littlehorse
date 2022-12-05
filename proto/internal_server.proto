@@ -8,6 +8,17 @@ option java_package = "io.littlehorse.common.proto";
 
 import "google/protobuf/timestamp.proto";
 
+// The following protobuf definitions are used for paginated responses.
+message PartitionBookmarkPb {
+    int32 parttion = 1;
+    optional string last_key = 2;
+}
+
+message BookmarkPb {
+    map<int32, PartitionBookmarkPb> in_progress_partitions = 1;
+    repeated int32 completed_partitions = 2;
+}
+
 // This section contains data structures used internally for sending the results of
 // processing Commands. As a refresher, we need to send the result of processing
 // over the network because, if Server A receives a request to idempotently run a
@@ -58,7 +69,20 @@ message WaitForCommandResultReplyPb {
     optional string message = 3;
 }
 
+message PaginatedTagQueryPb {
+    string full_tag_attributes = 1;
+    int32 limit = 2;
+    optional BookmarkPb bookmark = 3;
+}
+
+message PaginatedTagQueryReplyPb {
+    StoreQueryStatusPb code = 1;
+    repeated string object_ids = 2;
+    BookmarkPb updated_bookmark = 3;
+}
+
 service LHInternals {
     rpc CentralStoreQuery(CentralStoreQueryPb) returns (CentralStoreQueryReplyPb) {}
     rpc WaitForCommandResult(WaitForCommandResultPb) returns (WaitForCommandResultReplyPb) {}
+    rpc PaginatedTagQuery(PaginatedTagQueryPb) returns (PaginatedTagQueryReplyPb) {}
 }

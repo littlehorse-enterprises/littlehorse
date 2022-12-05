@@ -1,5 +1,6 @@
 package io.littlehorse.server.streamsbackend;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.MessageOrBuilder;
 import io.grpc.health.v1.HealthCheckResponse.ServingStatus;
 import io.grpc.protobuf.services.HealthStatusManager;
@@ -18,6 +19,7 @@ import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetExternalEventPb;
 import io.littlehorse.common.proto.GetExternalEventReplyPb;
 import io.littlehorse.common.proto.GetNodeRunPb;
@@ -27,6 +29,10 @@ import io.littlehorse.common.proto.GetVariableReplyPb;
 import io.littlehorse.common.proto.GetWfRunPb;
 import io.littlehorse.common.proto.GetWfRunReplyPb;
 import io.littlehorse.common.proto.LHResponseCodePb;
+import io.littlehorse.common.proto.PaginatedTagQueryPb;
+import io.littlehorse.common.proto.PaginatedTagQueryReplyPb;
+import io.littlehorse.common.proto.SearchWfRunPb;
+import io.littlehorse.common.proto.SearchWfRunReplyPb;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.ServerTopology;
@@ -390,6 +396,42 @@ public class KafkaStreamsBackend {
         }
 
         return out.build();
+    }
+
+    public SearchWfRunReplyPb searchWfRun(SearchWfRunPb req) {
+        SearchWfRunReplyPb.Builder out = SearchWfRunReplyPb.newBuilder();
+
+        BookmarkPb bookmark;
+        if (req.hasBookmark()) {
+            try {
+                bookmark = BookmarkPb.parseFrom(req.getBookmark());
+            } catch (InvalidProtocolBufferException exn) {
+                out.setCode(LHResponseCodePb.BAD_REQUEST_ERROR);
+                out.setMessage("Invalid bookmark provided: " + exn.getMessage());
+                return out.build();
+            }
+        } else {
+            bookmark = null;
+        }
+
+        // Now we need to fill out the actual result object ids. To do that,
+        // first see what results we have locally. Then if we need more results
+        // to hit the limit, we query another host.
+        // How do we know which host to query? Well, we find a partition which
+        // hasn't been completed yet (by consulting the Bookmark), and then
+        // query the owner of that partition.
+        int limit = req.hasLimit() ? req.getLimit() : LHConstants.DEFAULT_LIMIT;
+
+        PaginatedTagQueryPb internalQuery = PaginatedTagQueryPb
+            .newBuilder()
+            .setBookmark(bookmark)
+            .setLimit(limit)
+            .setFullTagAttributes() // TODO
+            .build();
+
+        PaginatedTagQueryReplyPb reply = backendInternalComms.localPaginatedTagQuery();
+
+        return null;
     }
 
     public void start() throws IOException {

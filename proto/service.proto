@@ -7,6 +7,7 @@ option java_multiple_files = true;
 option java_package = "io.littlehorse.common.proto";
 
 import "wf_spec.proto";
+import "status.proto";
 import "wf_run.proto";
 import "variable.proto";
 import "external_event.proto";
@@ -131,6 +132,34 @@ message RunWfReplyPb {
     optional string wf_run_id = 4;
 }
 
+message SearchWfRunPb {
+    optional bytes bookmark = 1;
+    optional int32 limit = 2;
+
+    message StatusAndSpecPb {
+        string wf_spec_name = 1;
+        LHStatusPb status = 2;
+    }
+    oneof criteria {
+        StatusAndSpecPb status_and_spec = 3;
+    }
+}
+
+message SearchWfRunReplyPb {
+    LHResponseCodePb code = 1;
+    optional string message = 2;
+    repeated string wf_run_ids = 3;
+
+    // This can optionally be set by whatever backend data store implementation
+    // is plugged in. Currently, the only backend implementation is the Kafka
+    // Streams backend. In this case, the bytes are a `BookmarkPb`.
+    // The client doesn't care what the bytes represent; they just need to provide
+    // the raw bytes back on the next request and the backend will take care of it
+    // transparently.
+    // If the bookmark is null, then it means all results have been returned.
+    optional bytes bookmark = 4;
+}
+
 service LHPublicApi {
     rpc PutTaskDef(PutTaskDefPb) returns (PutTaskDefReplyPb) {}
     rpc GetTaskDef(GetTaskDefPb) returns (GetTaskDefReplyPb) {}
@@ -150,6 +179,8 @@ service LHPublicApi {
 
     rpc PutExternalEvent(PutExternalEventPb) returns (PutExternalEventReplyPb) {}
     rpc GetExternalEvent(GetExternalEventPb) returns (GetExternalEventReplyPb) {}
+
+    rpc SearchWfRun(SearchWfRunPb) returns (SearchWfRunReplyPb) {}
 }
 
 

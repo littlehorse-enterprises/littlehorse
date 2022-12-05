@@ -45,6 +45,8 @@ import io.littlehorse.common.proto.PutWfSpecPb;
 import io.littlehorse.common.proto.PutWfSpecReplyPb;
 import io.littlehorse.common.proto.RunWfPb;
 import io.littlehorse.common.proto.RunWfReplyPb;
+import io.littlehorse.common.proto.SearchWfRunPb;
+import io.littlehorse.common.proto.SearchWfRunReplyPb;
 import io.littlehorse.server.streamsbackend.KafkaStreamsBackend;
 import java.io.IOException;
 
@@ -229,6 +231,15 @@ public class LHServer extends LHPublicApiImplBase {
         StreamObserver<GetExternalEventReplyPb> ctx
     ) {
         ctx.onNext(backend.getExternalEvent(req));
+        ctx.onCompleted();
+    }
+
+    @Override
+    public void searchWfRun(
+        SearchWfRunPb req,
+        StreamObserver<SearchWfRunReplyPb> ctx
+    ) {
+        ctx.onNext(backend.searchWfRun(req));
         ctx.onCompleted();
     }
 

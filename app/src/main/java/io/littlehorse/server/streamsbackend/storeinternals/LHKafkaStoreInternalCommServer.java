@@ -10,12 +10,16 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.CommandResult;
+import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.CentralStoreQueryPb;
 import io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb;
 import io.littlehorse.common.proto.CentralStoreQueryReplyPb;
 import io.littlehorse.common.proto.LHInternalsGrpc;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsBlockingStub;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsImplBase;
+import io.littlehorse.common.proto.PaginatedTagQueryPb;
+import io.littlehorse.common.proto.PaginatedTagQueryReplyPb;
+import io.littlehorse.common.proto.PartitionBookmarkPb;
 import io.littlehorse.common.proto.StoreQueryStatusPb;
 import io.littlehorse.common.proto.WaitForCommandResultPb;
 import io.littlehorse.common.proto.WaitForCommandResultReplyPb;
@@ -23,12 +27,18 @@ import io.littlehorse.server.ServerTopology;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyQueryMetadata;
 import org.apache.kafka.streams.StoreQueryParameters;
+import org.apache.kafka.streams.TaskMetadata;
+import org.apache.kafka.streams.ThreadMetadata;
 import org.apache.kafka.streams.state.HostInfo;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
@@ -380,5 +390,99 @@ public class LHKafkaStoreInternalCommServer implements Closeable {
             ctx.onNext(out.build());
             ctx.onCompleted();
         }
+
+        @Override
+        public void paginatedTagQuery(
+            PaginatedTagQueryPb req,
+            StreamObserver<PaginatedTagQueryReplyPb> ctx
+        ) {
+            ctx.onNext(localPaginatedTagQuery(req));
+            ctx.onCompleted();
+        }
+    }
+
+    public PaginatedTagQueryReplyPb localPaginatedTagQuery(PaginatedTagQueryPb req) {
+        int curLimit = req.getLimit();
+
+        BookmarkPb reqBookmark = req.hasBookmark()
+            ? req.getBookmark()
+            : BookmarkPb.newBuilder().build();
+
+        BookmarkPb.Builder outBookmark = reqBookmark.toBuilder();
+        PaginatedTagQueryReplyPb.Builder out = PaginatedTagQueryReplyPb.newBuilder();
+
+        // iterate through all active and standby local partitions
+        for (int partition : getLocalCommandProcessorPartitions()) {
+            LHROStoreWrapper partStore = getLocalStore(partition, false);
+            PartitionBookmarkPb partBookmark = null;
+            if (reqBookmark != null) {
+                partBookmark =
+                    reqBookmark.getInProgressPartitionsOrDefault(partition, null);
+            }
+
+            // Add all matching objects from that partition
+            Pair<Set<String>, PartitionBookmarkPb> result = partStore.localPaginatedTagScan(
+                req.getFullTagAttributes(),
+                partBookmark,
+                curLimit,
+                partition
+            );
+
+            curLimit -= result.getLeft().size();
+            out.addAllObjectIds(result.getLeft());
+            PartitionBookmarkPb thisPartionBookmark = result.getRight();
+            if (thisPartionBookmark == null) {
+                // then the partition is done
+                outBookmark.addCompletedPartitions(partition);
+                outBookmark.removeInProgressPartitions(partition);
+            } else {
+                outBookmark.putInProgressPartitions(partition, thisPartionBookmark);
+            }
+
+            if (curLimit == 0) {
+                break;
+            }
+            if (curLimit < 0) {
+                throw new RuntimeException("WTF?");
+            }
+        }
+
+        if (
+            outBookmark.getCompletedPartitionsCount() < config.getClusterPartitions()
+        ) {
+            out.setUpdatedBookmark(outBookmark);
+        } else {
+            // Then every partition has been scanned, so the paginated query is
+            // complete. That means we don't return a bookmark.
+        }
+        return out.build();
+    }
+
+    private Set<Integer> getLocalCommandProcessorPartitions() {
+        Set<Integer> out = new HashSet<>();
+
+        for (ThreadMetadata thread : coreStreams.metadataForLocalThreads()) {
+            for (TaskMetadata activeTask : thread.activeTasks()) {
+                // We only want to query
+                if (isCommandProcessor(activeTask, config)) {
+                    out.add(activeTask.taskId().partition());
+                }
+            }
+            for (TaskMetadata activeTask : thread.standbyTasks()) {
+                if (isCommandProcessor(activeTask, config)) {
+                    out.add(activeTask.taskId().partition());
+                }
+            }
+        }
+        return out;
+    }
+
+    private static boolean isCommandProcessor(TaskMetadata task, LHConfig config) {
+        for (TopicPartition tPart : task.topicPartitions()) {
+            if (tPart.topic().equals(config.getCoreCmdTopicName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -109,6 +109,21 @@ public final class Service {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_lh_proto_RunWfReplyPb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_lh_proto_SearchWfRunPb_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_lh_proto_SearchWfRunPb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_lh_proto_SearchWfRunPb_StatusAndSpecPb_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_lh_proto_SearchWfRunPb_StatusAndSpecPb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_lh_proto_SearchWfRunReplyPb_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_lh_proto_SearchWfRunReplyPb_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -119,100 +134,113 @@ public final class Service {
   static {
     java.lang.String[] descriptorData = {
       "\n\rservice.proto\022\010lh_proto\032\rwf_spec.proto" +
-      "\032\014wf_run.proto\032\016variable.proto\032\024external" +
-      "_event.proto\032\rcommand.proto\"=\n\013GetWfSpec" +
-      "Pb\022\014\n\004name\030\001 \001(\t\022\024\n\007version\030\002 \001(\005H\000\210\001\001B\n" +
-      "\n\010_version\"\222\001\n\020GetWfSpecReplyPb\022(\n\004code\030" +
-      "\001 \001(\0162\032.lh_proto.LHResponseCodePb\022\024\n\007mes" +
-      "sage\030\002 \001(\tH\000\210\001\001\022\'\n\006result\030\003 \001(\0132\022.lh_pro" +
-      "to.WfSpecPbH\001\210\001\001B\n\n\010_messageB\t\n\007_result\"" +
-      "\222\001\n\020PutWfSpecReplyPb\022(\n\004code\030\001 \001(\0162\032.lh_" +
-      "proto.LHResponseCodePb\022\024\n\007message\030\002 \001(\tH" +
-      "\000\210\001\001\022\'\n\006result\030\003 \001(\0132\022.lh_proto.WfSpecPb" +
-      "H\001\210\001\001B\n\n\010_messageB\t\n\007_result\">\n\014GetTaskD" +
-      "efPb\022\014\n\004name\030\001 \001(\t\022\024\n\007version\030\002 \001(\005H\000\210\001\001" +
-      "B\n\n\010_version\"\224\001\n\021GetTaskDefReplyPb\022(\n\004co" +
+      "\032\014status.proto\032\014wf_run.proto\032\016variable.p" +
+      "roto\032\024external_event.proto\032\rcommand.prot" +
+      "o\"=\n\013GetWfSpecPb\022\014\n\004name\030\001 \001(\t\022\024\n\007versio" +
+      "n\030\002 \001(\005H\000\210\001\001B\n\n\010_version\"\222\001\n\020GetWfSpecRe" +
+      "plyPb\022(\n\004code\030\001 \001(\0162\032.lh_proto.LHRespons" +
+      "eCodePb\022\024\n\007message\030\002 \001(\tH\000\210\001\001\022\'\n\006result\030" +
+      "\003 \001(\0132\022.lh_proto.WfSpecPbH\001\210\001\001B\n\n\010_messa" +
+      "geB\t\n\007_result\"\222\001\n\020PutWfSpecReplyPb\022(\n\004co" +
       "de\030\001 \001(\0162\032.lh_proto.LHResponseCodePb\022\024\n\007" +
-      "message\030\002 \001(\tH\000\210\001\001\022(\n\006result\030\003 \001(\0132\023.lh_" +
-      "proto.TaskDefPbH\001\210\001\001B\n\n\010_messageB\t\n\007_res" +
-      "ult\"\224\001\n\021PutTaskDefReplyPb\022(\n\004code\030\001 \001(\0162" +
-      "\032.lh_proto.LHResponseCodePb\022\024\n\007message\030\002" +
-      " \001(\tH\000\210\001\001\022(\n\006result\030\003 \001(\0132\023.lh_proto.Tas" +
-      "kDefPbH\001\210\001\001B\n\n\010_messageB\t\n\007_result\"\246\001\n\032P" +
-      "utExternalEventDefReplyPb\022(\n\004code\030\001 \001(\0162" +
-      "\032.lh_proto.LHResponseCodePb\022\024\n\007message\030\002" +
-      " \001(\tH\000\210\001\001\0221\n\006result\030\003 \001(\0132\034.lh_proto.Ext" +
-      "ernalEventDefPbH\001\210\001\001B\n\n\010_messageB\t\n\007_res" +
-      "ult\"G\n\025GetExternalEventDefPb\022\014\n\004name\030\001 \001" +
-      "(\t\022\024\n\007version\030\002 \001(\005H\000\210\001\001B\n\n\010_version\"\246\001\n" +
-      "\032GetExternalEventDefReplyPb\022(\n\004code\030\001 \001(" +
-      "\0162\032.lh_proto.LHResponseCodePb\022\024\n\007message" +
-      "\030\002 \001(\tH\000\210\001\001\0221\n\006result\030\003 \001(\0132\034.lh_proto.E" +
-      "xternalEventDefPbH\001\210\001\001B\n\n\010_messageB\t\n\007_r" +
-      "esult\"\030\n\nGetWfRunPb\022\n\n\002id\030\001 \001(\t\"\220\001\n\017GetW" +
-      "fRunReplyPb\022(\n\004code\030\001 \001(\0162\032.lh_proto.LHR" +
-      "esponseCodePb\022\024\n\007message\030\002 \001(\tH\000\210\001\001\022&\n\006r" +
-      "esult\030\003 \001(\0132\021.lh_proto.WfRunPbH\001\210\001\001B\n\n\010_" +
-      "messageB\t\n\007_result\"N\n\014GetNodeRunPb\022\021\n\twf" +
-      "_run_id\030\001 \001(\t\022\031\n\021thread_run_number\030\002 \001(\005" +
-      "\022\020\n\010position\030\003 \001(\005\"\224\001\n\021GetNodeRunReplyPb" +
-      "\022(\n\004code\030\001 \001(\0162\032.lh_proto.LHResponseCode" +
-      "Pb\022\024\n\007message\030\002 \001(\tH\000\210\001\001\022(\n\006result\030\003 \001(\013" +
-      "2\023.lh_proto.NodeRunPbH\001\210\001\001B\n\n\010_messageB\t" +
-      "\n\007_result\"O\n\rGetVariablePb\022\021\n\twf_run_id\030" +
-      "\001 \001(\t\022\020\n\010var_name\030\002 \001(\t\022\031\n\021thread_run_nu" +
-      "mber\030\003 \001(\005\"\226\001\n\022GetVariableReplyPb\022(\n\004cod" +
-      "e\030\001 \001(\0162\032.lh_proto.LHResponseCodePb\022\024\n\007m" +
-      "essage\030\002 \001(\tH\000\210\001\001\022)\n\006result\030\003 \001(\0132\024.lh_p" +
-      "roto.VariablePbH\001\210\001\001B\n\n\010_messageB\t\n\007_res" +
-      "ult\"V\n\022GetExternalEventPb\022\021\n\twf_run_id\030\001" +
-      " \001(\t\022\037\n\027external_event_def_name\030\002 \001(\t\022\014\n" +
-      "\004guid\030\003 \001(\t\"\240\001\n\027GetExternalEventReplyPb\022" +
+      "message\030\002 \001(\tH\000\210\001\001\022\'\n\006result\030\003 \001(\0132\022.lh_" +
+      "proto.WfSpecPbH\001\210\001\001B\n\n\010_messageB\t\n\007_resu" +
+      "lt\">\n\014GetTaskDefPb\022\014\n\004name\030\001 \001(\t\022\024\n\007vers" +
+      "ion\030\002 \001(\005H\000\210\001\001B\n\n\010_version\"\224\001\n\021GetTaskDe" +
+      "fReplyPb\022(\n\004code\030\001 \001(\0162\032.lh_proto.LHResp" +
+      "onseCodePb\022\024\n\007message\030\002 \001(\tH\000\210\001\001\022(\n\006resu" +
+      "lt\030\003 \001(\0132\023.lh_proto.TaskDefPbH\001\210\001\001B\n\n\010_m" +
+      "essageB\t\n\007_result\"\224\001\n\021PutTaskDefReplyPb\022" +
       "(\n\004code\030\001 \001(\0162\032.lh_proto.LHResponseCodeP" +
-      "b\022\024\n\007message\030\002 \001(\tH\000\210\001\001\022.\n\006result\030\003 \001(\0132" +
-      "\031.lh_proto.ExternalEventPbH\001\210\001\001B\n\n\010_mess" +
-      "ageB\t\n\007_result\"\240\001\n\027PutExternalEventReply" +
-      "Pb\022(\n\004code\030\001 \001(\0162\032.lh_proto.LHResponseCo" +
-      "dePb\022\024\n\007message\030\002 \001(\tH\000\210\001\001\022.\n\006result\030\003 \001" +
-      "(\0132\031.lh_proto.ExternalEventPbH\001\210\001\001B\n\n\010_m" +
-      "essageB\t\n\007_result\"\262\001\n\014RunWfReplyPb\022(\n\004co" +
-      "de\030\001 \001(\0162\032.lh_proto.LHResponseCodePb\022\024\n\007" +
-      "message\030\002 \001(\tH\000\210\001\001\022\034\n\017wf_spec_version\030\003 " +
-      "\001(\005H\001\210\001\001\022\026\n\twf_run_id\030\004 \001(\tH\002\210\001\001B\n\n\010_mes" +
-      "sageB\022\n\020_wf_spec_versionB\014\n\n_wf_run_id*\214" +
-      "\001\n\020LHResponseCodePb\022\006\n\002OK\020\000\022\024\n\020CONNECTIO" +
-      "N_ERROR\020\001\022\023\n\017NOT_FOUND_ERROR\020\002\022\025\n\021BAD_RE" +
-      "QUEST_ERROR\020\003\022\024\n\020VALIDATION_ERROR\020\004\022\030\n\024A" +
-      "LREADY_EXISTS_ERROR\020\0052\213\007\n\013LHPublicApi\022C\n" +
-      "\nPutTaskDef\022\026.lh_proto.PutTaskDefPb\032\033.lh" +
-      "_proto.PutTaskDefReplyPb\"\000\022C\n\nGetTaskDef" +
-      "\022\026.lh_proto.GetTaskDefPb\032\033.lh_proto.GetT" +
-      "askDefReplyPb\"\000\022^\n\023PutExternalEventDef\022\037" +
-      ".lh_proto.PutExternalEventDefPb\032$.lh_pro" +
-      "to.PutExternalEventDefReplyPb\"\000\022^\n\023GetEx" +
-      "ternalEventDef\022\037.lh_proto.GetExternalEve" +
-      "ntDefPb\032$.lh_proto.GetExternalEventDefRe" +
-      "plyPb\"\000\022@\n\tPutWfSpec\022\025.lh_proto.PutWfSpe" +
-      "cPb\032\032.lh_proto.PutWfSpecReplyPb\"\000\022@\n\tGet" +
-      "WfSpec\022\025.lh_proto.GetWfSpecPb\032\032.lh_proto" +
-      ".GetWfSpecReplyPb\"\000\0224\n\005RunWf\022\021.lh_proto." +
-      "RunWfPb\032\026.lh_proto.RunWfReplyPb\"\000\022=\n\010Get" +
-      "WfRun\022\024.lh_proto.GetWfRunPb\032\031.lh_proto.G" +
-      "etWfRunReplyPb\"\000\022C\n\nGetNodeRun\022\026.lh_prot" +
-      "o.GetNodeRunPb\032\033.lh_proto.GetNodeRunRepl" +
-      "yPb\"\000\022F\n\013GetVariable\022\027.lh_proto.GetVaria" +
-      "blePb\032\034.lh_proto.GetVariableReplyPb\"\000\022U\n" +
-      "\020PutExternalEvent\022\034.lh_proto.PutExternal" +
-      "EventPb\032!.lh_proto.PutExternalEventReply" +
-      "Pb\"\000\022U\n\020GetExternalEvent\022\034.lh_proto.GetE" +
-      "xternalEventPb\032!.lh_proto.GetExternalEve" +
-      "ntReplyPb\"\000B(\n\033io.littlehorse.common.pro" +
-      "toP\001Z\007.;modelb\006proto3"
+      "b\022\024\n\007message\030\002 \001(\tH\000\210\001\001\022(\n\006result\030\003 \001(\0132" +
+      "\023.lh_proto.TaskDefPbH\001\210\001\001B\n\n\010_messageB\t\n" +
+      "\007_result\"\246\001\n\032PutExternalEventDefReplyPb\022" +
+      "(\n\004code\030\001 \001(\0162\032.lh_proto.LHResponseCodeP" +
+      "b\022\024\n\007message\030\002 \001(\tH\000\210\001\001\0221\n\006result\030\003 \001(\0132" +
+      "\034.lh_proto.ExternalEventDefPbH\001\210\001\001B\n\n\010_m" +
+      "essageB\t\n\007_result\"G\n\025GetExternalEventDef" +
+      "Pb\022\014\n\004name\030\001 \001(\t\022\024\n\007version\030\002 \001(\005H\000\210\001\001B\n" +
+      "\n\010_version\"\246\001\n\032GetExternalEventDefReplyP" +
+      "b\022(\n\004code\030\001 \001(\0162\032.lh_proto.LHResponseCod" +
+      "ePb\022\024\n\007message\030\002 \001(\tH\000\210\001\001\0221\n\006result\030\003 \001(" +
+      "\0132\034.lh_proto.ExternalEventDefPbH\001\210\001\001B\n\n\010" +
+      "_messageB\t\n\007_result\"\030\n\nGetWfRunPb\022\n\n\002id\030" +
+      "\001 \001(\t\"\220\001\n\017GetWfRunReplyPb\022(\n\004code\030\001 \001(\0162" +
+      "\032.lh_proto.LHResponseCodePb\022\024\n\007message\030\002" +
+      " \001(\tH\000\210\001\001\022&\n\006result\030\003 \001(\0132\021.lh_proto.WfR" +
+      "unPbH\001\210\001\001B\n\n\010_messageB\t\n\007_result\"N\n\014GetN" +
+      "odeRunPb\022\021\n\twf_run_id\030\001 \001(\t\022\031\n\021thread_ru" +
+      "n_number\030\002 \001(\005\022\020\n\010position\030\003 \001(\005\"\224\001\n\021Get" +
+      "NodeRunReplyPb\022(\n\004code\030\001 \001(\0162\032.lh_proto." +
+      "LHResponseCodePb\022\024\n\007message\030\002 \001(\tH\000\210\001\001\022(" +
+      "\n\006result\030\003 \001(\0132\023.lh_proto.NodeRunPbH\001\210\001\001" +
+      "B\n\n\010_messageB\t\n\007_result\"O\n\rGetVariablePb" +
+      "\022\021\n\twf_run_id\030\001 \001(\t\022\020\n\010var_name\030\002 \001(\t\022\031\n" +
+      "\021thread_run_number\030\003 \001(\005\"\226\001\n\022GetVariable" +
+      "ReplyPb\022(\n\004code\030\001 \001(\0162\032.lh_proto.LHRespo" +
+      "nseCodePb\022\024\n\007message\030\002 \001(\tH\000\210\001\001\022)\n\006resul" +
+      "t\030\003 \001(\0132\024.lh_proto.VariablePbH\001\210\001\001B\n\n\010_m" +
+      "essageB\t\n\007_result\"V\n\022GetExternalEventPb\022" +
+      "\021\n\twf_run_id\030\001 \001(\t\022\037\n\027external_event_def" +
+      "_name\030\002 \001(\t\022\014\n\004guid\030\003 \001(\t\"\240\001\n\027GetExterna" +
+      "lEventReplyPb\022(\n\004code\030\001 \001(\0162\032.lh_proto.L" +
+      "HResponseCodePb\022\024\n\007message\030\002 \001(\tH\000\210\001\001\022.\n" +
+      "\006result\030\003 \001(\0132\031.lh_proto.ExternalEventPb" +
+      "H\001\210\001\001B\n\n\010_messageB\t\n\007_result\"\240\001\n\027PutExte" +
+      "rnalEventReplyPb\022(\n\004code\030\001 \001(\0162\032.lh_prot" +
+      "o.LHResponseCodePb\022\024\n\007message\030\002 \001(\tH\000\210\001\001" +
+      "\022.\n\006result\030\003 \001(\0132\031.lh_proto.ExternalEven" +
+      "tPbH\001\210\001\001B\n\n\010_messageB\t\n\007_result\"\262\001\n\014RunW" +
+      "fReplyPb\022(\n\004code\030\001 \001(\0162\032.lh_proto.LHResp" +
+      "onseCodePb\022\024\n\007message\030\002 \001(\tH\000\210\001\001\022\034\n\017wf_s" +
+      "pec_version\030\003 \001(\005H\001\210\001\001\022\026\n\twf_run_id\030\004 \001(" +
+      "\tH\002\210\001\001B\n\n\010_messageB\022\n\020_wf_spec_versionB\014" +
+      "\n\n_wf_run_id\"\360\001\n\rSearchWfRunPb\022\025\n\010bookma" +
+      "rk\030\001 \001(\014H\001\210\001\001\022\022\n\005limit\030\002 \001(\005H\002\210\001\001\022B\n\017sta" +
+      "tus_and_spec\030\003 \001(\0132\'.lh_proto.SearchWfRu" +
+      "nPb.StatusAndSpecPbH\000\032M\n\017StatusAndSpecPb" +
+      "\022\024\n\014wf_spec_name\030\001 \001(\t\022$\n\006status\030\002 \001(\0162\024" +
+      ".lh_proto.LHStatusPbB\n\n\010criteriaB\013\n\t_boo" +
+      "kmarkB\010\n\006_limit\"\230\001\n\022SearchWfRunReplyPb\022(" +
+      "\n\004code\030\001 \001(\0162\032.lh_proto.LHResponseCodePb" +
+      "\022\024\n\007message\030\002 \001(\tH\000\210\001\001\022\022\n\nwf_run_ids\030\003 \003" +
+      "(\t\022\025\n\010bookmark\030\004 \001(\014H\001\210\001\001B\n\n\010_messageB\013\n" +
+      "\t_bookmark*\214\001\n\020LHResponseCodePb\022\006\n\002OK\020\000\022" +
+      "\024\n\020CONNECTION_ERROR\020\001\022\023\n\017NOT_FOUND_ERROR" +
+      "\020\002\022\025\n\021BAD_REQUEST_ERROR\020\003\022\024\n\020VALIDATION_" +
+      "ERROR\020\004\022\030\n\024ALREADY_EXISTS_ERROR\020\0052\323\007\n\013LH" +
+      "PublicApi\022C\n\nPutTaskDef\022\026.lh_proto.PutTa" +
+      "skDefPb\032\033.lh_proto.PutTaskDefReplyPb\"\000\022C" +
+      "\n\nGetTaskDef\022\026.lh_proto.GetTaskDefPb\032\033.l" +
+      "h_proto.GetTaskDefReplyPb\"\000\022^\n\023PutExtern" +
+      "alEventDef\022\037.lh_proto.PutExternalEventDe" +
+      "fPb\032$.lh_proto.PutExternalEventDefReplyP" +
+      "b\"\000\022^\n\023GetExternalEventDef\022\037.lh_proto.Ge" +
+      "tExternalEventDefPb\032$.lh_proto.GetExtern" +
+      "alEventDefReplyPb\"\000\022@\n\tPutWfSpec\022\025.lh_pr" +
+      "oto.PutWfSpecPb\032\032.lh_proto.PutWfSpecRepl" +
+      "yPb\"\000\022@\n\tGetWfSpec\022\025.lh_proto.GetWfSpecP" +
+      "b\032\032.lh_proto.GetWfSpecReplyPb\"\000\0224\n\005RunWf" +
+      "\022\021.lh_proto.RunWfPb\032\026.lh_proto.RunWfRepl" +
+      "yPb\"\000\022=\n\010GetWfRun\022\024.lh_proto.GetWfRunPb\032" +
+      "\031.lh_proto.GetWfRunReplyPb\"\000\022C\n\nGetNodeR" +
+      "un\022\026.lh_proto.GetNodeRunPb\032\033.lh_proto.Ge" +
+      "tNodeRunReplyPb\"\000\022F\n\013GetVariable\022\027.lh_pr" +
+      "oto.GetVariablePb\032\034.lh_proto.GetVariable" +
+      "ReplyPb\"\000\022U\n\020PutExternalEvent\022\034.lh_proto" +
+      ".PutExternalEventPb\032!.lh_proto.PutExtern" +
+      "alEventReplyPb\"\000\022U\n\020GetExternalEvent\022\034.l" +
+      "h_proto.GetExternalEventPb\032!.lh_proto.Ge" +
+      "tExternalEventReplyPb\"\000\022F\n\013SearchWfRun\022\027" +
+      ".lh_proto.SearchWfRunPb\032\034.lh_proto.Searc" +
+      "hWfRunReplyPb\"\000B(\n\033io.littlehorse.common" +
+      ".protoP\001Z\007.;modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           io.littlehorse.common.proto.WfSpec.getDescriptor(),
+          io.littlehorse.common.proto.Status.getDescriptor(),
           io.littlehorse.common.proto.WfRun.getDescriptor(),
           io.littlehorse.common.proto.Variable.getDescriptor(),
           io.littlehorse.common.proto.ExternalEvent.getDescriptor(),
@@ -332,7 +360,26 @@ public final class Service {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_RunWfReplyPb_descriptor,
         new java.lang.String[] { "Code", "Message", "WfSpecVersion", "WfRunId", "Message", "WfSpecVersion", "WfRunId", });
+    internal_static_lh_proto_SearchWfRunPb_descriptor =
+      getDescriptor().getMessageTypes().get(19);
+    internal_static_lh_proto_SearchWfRunPb_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_lh_proto_SearchWfRunPb_descriptor,
+        new java.lang.String[] { "Bookmark", "Limit", "StatusAndSpec", "Criteria", "Bookmark", "Limit", });
+    internal_static_lh_proto_SearchWfRunPb_StatusAndSpecPb_descriptor =
+      internal_static_lh_proto_SearchWfRunPb_descriptor.getNestedTypes().get(0);
+    internal_static_lh_proto_SearchWfRunPb_StatusAndSpecPb_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_lh_proto_SearchWfRunPb_StatusAndSpecPb_descriptor,
+        new java.lang.String[] { "WfSpecName", "Status", });
+    internal_static_lh_proto_SearchWfRunReplyPb_descriptor =
+      getDescriptor().getMessageTypes().get(20);
+    internal_static_lh_proto_SearchWfRunReplyPb_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_lh_proto_SearchWfRunReplyPb_descriptor,
+        new java.lang.String[] { "Code", "Message", "WfRunIds", "Bookmark", "Message", "Bookmark", });
     io.littlehorse.common.proto.WfSpec.getDescriptor();
+    io.littlehorse.common.proto.Status.getDescriptor();
     io.littlehorse.common.proto.WfRun.getDescriptor();
     io.littlehorse.common.proto.Variable.getDescriptor();
     io.littlehorse.common.proto.ExternalEvent.getDescriptor();

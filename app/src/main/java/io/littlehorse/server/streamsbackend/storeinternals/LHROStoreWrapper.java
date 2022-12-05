@@ -5,8 +5,14 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
+import io.littlehorse.common.model.index.Tag;
+import io.littlehorse.common.proto.PartitionBookmarkPb;
+import io.littlehorse.server.streamsbackend.storeinternals.utils.LHIterKeyValue;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.LHKeyValueIterator;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.StoreUtils;
+import java.util.HashSet;
+import java.util.Set;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueIterator;
@@ -119,5 +125,49 @@ public class LHROStoreWrapper {
         // character.
         String end = start + '~';
         return new LHKeyValueIterator<>(store.reverseRange(start, end), cls, config);
+    }
+
+    public Pair<Set<String>, PartitionBookmarkPb> localPaginatedTagScan(
+        String fullTagAttributes,
+        PartitionBookmarkPb bookmark,
+        int limit,
+        int partition
+    ) {
+        PartitionBookmarkPb bmOut = null;
+        Set<String> idsOut = new HashSet<>();
+
+        String endKey = fullTagAttributes + "~~~~~~~~~~~";
+        String startKey;
+        if (bookmark == null) {
+            startKey = fullTagAttributes;
+        } else {
+            startKey = bookmark.getLastKey();
+        }
+
+        try (
+            LHKeyValueIterator<Tag> iter = new LHKeyValueIterator<>(
+                store.range(startKey, endKey),
+                Tag.class,
+                config
+            )
+        ) {
+            while (iter.hasNext()) {
+                LHIterKeyValue<Tag> next = iter.next();
+                Tag tag = next.getValue();
+
+                if (--limit < 0) {
+                    bmOut =
+                        PartitionBookmarkPb
+                            .newBuilder()
+                            .setParttion(partition)
+                            .setLastKey(tag.getObjectId())
+                            .build();
+                    break;
+                }
+
+                idsOut.add(tag.describedObjectId);
+            }
+        }
+        return Pair.of(idsOut, bmOut);
     }
 }

@@ -77,6 +77,37 @@ public final class LHInternalsGrpc {
     return getWaitForCommandResultMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.PaginatedTagQueryPb,
+      io.littlehorse.common.proto.PaginatedTagQueryReplyPb> getPaginatedTagQueryMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "PaginatedTagQuery",
+      requestType = io.littlehorse.common.proto.PaginatedTagQueryPb.class,
+      responseType = io.littlehorse.common.proto.PaginatedTagQueryReplyPb.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.PaginatedTagQueryPb,
+      io.littlehorse.common.proto.PaginatedTagQueryReplyPb> getPaginatedTagQueryMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.common.proto.PaginatedTagQueryPb, io.littlehorse.common.proto.PaginatedTagQueryReplyPb> getPaginatedTagQueryMethod;
+    if ((getPaginatedTagQueryMethod = LHInternalsGrpc.getPaginatedTagQueryMethod) == null) {
+      synchronized (LHInternalsGrpc.class) {
+        if ((getPaginatedTagQueryMethod = LHInternalsGrpc.getPaginatedTagQueryMethod) == null) {
+          LHInternalsGrpc.getPaginatedTagQueryMethod = getPaginatedTagQueryMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.PaginatedTagQueryPb, io.littlehorse.common.proto.PaginatedTagQueryReplyPb>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "PaginatedTagQuery"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.PaginatedTagQueryPb.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.PaginatedTagQueryReplyPb.getDefaultInstance()))
+              .setSchemaDescriptor(new LHInternalsMethodDescriptorSupplier("PaginatedTagQuery"))
+              .build();
+        }
+      }
+    }
+    return getPaginatedTagQueryMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -139,6 +170,13 @@ public final class LHInternalsGrpc {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getWaitForCommandResultMethod(), responseObserver);
     }
 
+    /**
+     */
+    public void paginatedTagQuery(io.littlehorse.common.proto.PaginatedTagQueryPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.PaginatedTagQueryReplyPb> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getPaginatedTagQueryMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -155,6 +193,13 @@ public final class LHInternalsGrpc {
                 io.littlehorse.common.proto.WaitForCommandResultPb,
                 io.littlehorse.common.proto.WaitForCommandResultReplyPb>(
                   this, METHODID_WAIT_FOR_COMMAND_RESULT)))
+          .addMethod(
+            getPaginatedTagQueryMethod(),
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
+              new MethodHandlers<
+                io.littlehorse.common.proto.PaginatedTagQueryPb,
+                io.littlehorse.common.proto.PaginatedTagQueryReplyPb>(
+                  this, METHODID_PAGINATED_TAG_QUERY)))
           .build();
     }
   }
@@ -188,6 +233,14 @@ public final class LHInternalsGrpc {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getWaitForCommandResultMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void paginatedTagQuery(io.littlehorse.common.proto.PaginatedTagQueryPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.PaginatedTagQueryReplyPb> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getPaginatedTagQueryMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -216,6 +269,13 @@ public final class LHInternalsGrpc {
     public io.littlehorse.common.proto.WaitForCommandResultReplyPb waitForCommandResult(io.littlehorse.common.proto.WaitForCommandResultPb request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getWaitForCommandResultMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.common.proto.PaginatedTagQueryReplyPb paginatedTagQuery(io.littlehorse.common.proto.PaginatedTagQueryPb request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getPaginatedTagQueryMethod(), getCallOptions(), request);
     }
   }
 
@@ -248,10 +308,19 @@ public final class LHInternalsGrpc {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getWaitForCommandResultMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.PaginatedTagQueryReplyPb> paginatedTagQuery(
+        io.littlehorse.common.proto.PaginatedTagQueryPb request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getPaginatedTagQueryMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_CENTRAL_STORE_QUERY = 0;
   private static final int METHODID_WAIT_FOR_COMMAND_RESULT = 1;
+  private static final int METHODID_PAGINATED_TAG_QUERY = 2;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -277,6 +346,10 @@ public final class LHInternalsGrpc {
         case METHODID_WAIT_FOR_COMMAND_RESULT:
           serviceImpl.waitForCommandResult((io.littlehorse.common.proto.WaitForCommandResultPb) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.WaitForCommandResultReplyPb>) responseObserver);
+          break;
+        case METHODID_PAGINATED_TAG_QUERY:
+          serviceImpl.paginatedTagQuery((io.littlehorse.common.proto.PaginatedTagQueryPb) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.PaginatedTagQueryReplyPb>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -341,6 +414,7 @@ public final class LHInternalsGrpc {
               .setSchemaDescriptor(new LHInternalsFileDescriptorSupplier())
               .addMethod(getCentralStoreQueryMethod())
               .addMethod(getWaitForCommandResultMethod())
+              .addMethod(getPaginatedTagQueryMethod())
               .build();
         }
       }

@@ -65,5 +65,7 @@ public class LHConstants {
             TASK_ERROR
         )
     );
+
+    public static final int DEFAULT_LIMIT = 1000;
 }
 // NOTE: Use m6a.4xlarge

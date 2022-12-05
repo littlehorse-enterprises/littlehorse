@@ -387,6 +387,37 @@ public final class LHPublicApiGrpc {
     return getGetExternalEventMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.SearchWfRunPb,
+      io.littlehorse.common.proto.SearchWfRunReplyPb> getSearchWfRunMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "SearchWfRun",
+      requestType = io.littlehorse.common.proto.SearchWfRunPb.class,
+      responseType = io.littlehorse.common.proto.SearchWfRunReplyPb.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.SearchWfRunPb,
+      io.littlehorse.common.proto.SearchWfRunReplyPb> getSearchWfRunMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.common.proto.SearchWfRunPb, io.littlehorse.common.proto.SearchWfRunReplyPb> getSearchWfRunMethod;
+    if ((getSearchWfRunMethod = LHPublicApiGrpc.getSearchWfRunMethod) == null) {
+      synchronized (LHPublicApiGrpc.class) {
+        if ((getSearchWfRunMethod = LHPublicApiGrpc.getSearchWfRunMethod) == null) {
+          LHPublicApiGrpc.getSearchWfRunMethod = getSearchWfRunMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.SearchWfRunPb, io.littlehorse.common.proto.SearchWfRunReplyPb>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SearchWfRun"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.SearchWfRunPb.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.SearchWfRunReplyPb.getDefaultInstance()))
+              .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("SearchWfRun"))
+              .build();
+        }
+      }
+    }
+    return getSearchWfRunMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -519,6 +550,13 @@ public final class LHPublicApiGrpc {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetExternalEventMethod(), responseObserver);
     }
 
+    /**
+     */
+    public void searchWfRun(io.littlehorse.common.proto.SearchWfRunPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.SearchWfRunReplyPb> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSearchWfRunMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -605,6 +643,13 @@ public final class LHPublicApiGrpc {
                 io.littlehorse.common.proto.GetExternalEventPb,
                 io.littlehorse.common.proto.GetExternalEventReplyPb>(
                   this, METHODID_GET_EXTERNAL_EVENT)))
+          .addMethod(
+            getSearchWfRunMethod(),
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
+              new MethodHandlers<
+                io.littlehorse.common.proto.SearchWfRunPb,
+                io.littlehorse.common.proto.SearchWfRunReplyPb>(
+                  this, METHODID_SEARCH_WF_RUN)))
           .build();
     }
   }
@@ -718,6 +763,14 @@ public final class LHPublicApiGrpc {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetExternalEventMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void searchWfRun(io.littlehorse.common.proto.SearchWfRunPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.SearchWfRunReplyPb> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getSearchWfRunMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -816,6 +869,13 @@ public final class LHPublicApiGrpc {
     public io.littlehorse.common.proto.GetExternalEventReplyPb getExternalEvent(io.littlehorse.common.proto.GetExternalEventPb request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetExternalEventMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.common.proto.SearchWfRunReplyPb searchWfRun(io.littlehorse.common.proto.SearchWfRunPb request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchWfRunMethod(), getCallOptions(), request);
     }
   }
 
@@ -928,6 +988,14 @@ public final class LHPublicApiGrpc {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getGetExternalEventMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.SearchWfRunReplyPb> searchWfRun(
+        io.littlehorse.common.proto.SearchWfRunPb request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getSearchWfRunMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_PUT_TASK_DEF = 0;
@@ -942,6 +1010,7 @@ public final class LHPublicApiGrpc {
   private static final int METHODID_GET_VARIABLE = 9;
   private static final int METHODID_PUT_EXTERNAL_EVENT = 10;
   private static final int METHODID_GET_EXTERNAL_EVENT = 11;
+  private static final int METHODID_SEARCH_WF_RUN = 12;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -1007,6 +1076,10 @@ public final class LHPublicApiGrpc {
         case METHODID_GET_EXTERNAL_EVENT:
           serviceImpl.getExternalEvent((io.littlehorse.common.proto.GetExternalEventPb) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.GetExternalEventReplyPb>) responseObserver);
+          break;
+        case METHODID_SEARCH_WF_RUN:
+          serviceImpl.searchWfRun((io.littlehorse.common.proto.SearchWfRunPb) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.SearchWfRunReplyPb>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -1081,6 +1154,7 @@ public final class LHPublicApiGrpc {
               .addMethod(getGetVariableMethod())
               .addMethod(getPutExternalEventMethod())
               .addMethod(getGetExternalEventMethod())
+              .addMethod(getSearchWfRunMethod())
               .build();
         }
       }
