@@ -274,7 +274,6 @@ public class BackendInternalComms implements Closeable {
     }
 
     private LHInternalsBlockingStub getInternalClient(HostInfo host) {
-        System.out.println("getClient: " + host.host() + ":" + host.port());
         return LHInternalsGrpc.newBlockingStub(getChannel(host));
     }
 
@@ -323,9 +322,9 @@ public class BackendInternalComms implements Closeable {
                 rawStore = getRawStore(specificPartition, req.getEnableStaleStores());
             } catch (Exception exn) {
                 exn.printStackTrace();
-                System.out.println(
-                    "\n\nTODO: Figure out and handle the runtime error"
-                );
+                out.setCode(StoreQueryStatusPb.RSQ_NOT_AVAILABLE);
+                ctx.onNext(out.build());
+                ctx.onCompleted();
                 return;
             }
             Bytes result = null;
@@ -364,10 +363,14 @@ public class BackendInternalComms implements Closeable {
             try {
                 store = getLocalStore(req.getSpecificPartition(), false);
             } catch (Exception exn) {
-                exn.printStackTrace();
-                System.out.println(
-                    "\n\nTODO: Figure out and handle the runtime error"
+                ctx.onNext(
+                    WaitForCommandResultReplyPb
+                        .newBuilder()
+                        .setCode(StoreQueryStatusPb.RSQ_NOT_AVAILABLE)
+                        .setMessage("Failed contacting backend: " + exn.getMessage())
+                        .build()
                 );
+                ctx.onCompleted();
                 return;
             }
 
@@ -399,7 +402,6 @@ public class BackendInternalComms implements Closeable {
             PaginatedTagQueryPb req,
             StreamObserver<PaginatedTagQueryReplyPb> ctx
         ) {
-            System.out.println("hi");
             ctx.onNext(localPaginatedTagQuery(req));
             ctx.onCompleted();
         }
@@ -425,7 +427,6 @@ public class BackendInternalComms implements Closeable {
 
         // OK, now we need to figure out a host to query.
 
-        BookmarkPb bm = out.getUpdatedBookmark();
         // We *know* that if a partition is in the bookmark, then that partition
         // is still in progress. We can infer that the partition probably doesn't
         // live on this host, because otherwise the query would have either pulled
@@ -438,20 +439,25 @@ public class BackendInternalComms implements Closeable {
         // AREN'T in the BookmarkPb::getCompletedPartitionsList();
         while (out.hasUpdatedBookmark() && out.getObjectIdsCount() < req.getLimit()) {
             HostInfo otherHost = getHostForPartition(
-                getRandomUnfinishedPartition(bm)
+                getRandomUnfinishedPartition(out.getUpdatedBookmark())
             );
-            System.out.println(
-                "Calling other host: " + otherHost.host() + ":" + otherHost.port()
-            );
+            if (otherHost.equals(thisHost)) {
+                throw new RuntimeException("wtf, host the same");
+            }
             LHInternalsBlockingStub stub = getInternalClient(otherHost);
             PaginatedTagQueryPb newReq = PaginatedTagQueryPb
                 .newBuilder()
-                .setBookmark(bm)
+                .setBookmark(out.getUpdatedBookmark())
                 .setFullTagAttributes(req.getFullTagAttributes())
                 .setLimit(req.getLimit() - out.getObjectIdsCount())
                 .setType(req.getType())
                 .build();
-            PaginatedTagQueryReplyPb reply = stub.paginatedTagQuery(newReq);
+            PaginatedTagQueryReplyPb reply;
+            try {
+                reply = stub.paginatedTagQuery(newReq);
+            } catch (Exception exn) {
+                throw new LHConnectionError(exn, "Failed connecting to backend.");
+            }
             if (reply.getCode() != StoreQueryStatusPb.RSQ_OK) {
                 throw new LHConnectionError(null, "Failed connecting to backend.");
             }
@@ -479,6 +485,7 @@ public class BackendInternalComms implements Closeable {
         Collection<StreamsMetadata> all = coreStreams.metadataForAllStreamsClients();
         for (StreamsMetadata meta : all) {
             for (TopicPartition tp : meta.topicPartitions()) {
+                if (tp.partition() != partition) continue;
                 if (isCommandProcessor(tp, config)) {
                     return meta.hostInfo();
                 }
@@ -513,10 +520,6 @@ public class BackendInternalComms implements Closeable {
             : BookmarkPb.newBuilder().build();
 
         BookmarkPb.Builder outBookmark = reqBookmark.toBuilder();
-        System.out.println(
-            "Number of completed partitions: " +
-            outBookmark.getCompletedPartitionsCount()
-        );
         PaginatedTagQueryReplyPb.Builder out = PaginatedTagQueryReplyPb.newBuilder();
 
         // iterate through all active and standby local partitions
