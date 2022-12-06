@@ -35,8 +35,8 @@ import io.littlehorse.common.proto.SearchWfRunPb;
 import io.littlehorse.common.proto.SearchWfRunReplyPb;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.ServerTopology;
-import io.littlehorse.server.streamsbackend.storeinternals.LHKafkaStoreInternalCommServer;
+import io.littlehorse.server.streamsbackend.storeinternals.BackendInternalComms;
+import io.littlehorse.server.streamsbackend.storeinternals.index.Tag;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.StoreUtils;
 import java.io.IOException;
 import java.util.Date;
@@ -55,7 +55,7 @@ public class KafkaStreamsBackend {
     private KafkaStreams tagStreams;
     private LHConfig config;
 
-    private LHKafkaStoreInternalCommServer backendInternalComms;
+    private BackendInternalComms internalComms;
     private LHProducer producer;
 
     public static final String DISCRETE_TAG_COUNT_PREFIX = "DiscreteTagCount/";
@@ -83,8 +83,7 @@ public class KafkaStreamsBackend {
         this.config = config;
         this.producer = new LHProducer(config, false);
 
-        backendInternalComms =
-            new LHKafkaStoreInternalCommServer(config, coreStreams);
+        internalComms = new BackendInternalComms(config, coreStreams);
     }
 
     public WfSpec getWfSpec(String name, Integer version) throws LHConnectionError {
@@ -92,13 +91,13 @@ public class KafkaStreamsBackend {
         String partitionKey = LHConstants.META_PARTITION_KEY;
         if (version == null) {
             specBytes =
-                backendInternalComms.getLastFromPrefix(
+                internalComms.getLastFromPrefix(
                     WfSpec.getPrefixByName(name),
                     partitionKey
                 );
         } else {
             specBytes =
-                backendInternalComms.getBytes(
+                internalComms.getBytes(
                     WfSpec.getFullKey(name, version),
                     partitionKey
                 );
@@ -127,13 +126,13 @@ public class KafkaStreamsBackend {
         String partitionKey = LHConstants.META_PARTITION_KEY;
         if (version == null) {
             specBytes =
-                backendInternalComms.getLastFromPrefix(
+                internalComms.getLastFromPrefix(
                     TaskDef.getPrefixByName(name),
                     partitionKey
                 );
         } else {
             specBytes =
-                backendInternalComms.getBytes(
+                internalComms.getBytes(
                     TaskDef.getFullKey(name, version),
                     partitionKey
                 );
@@ -163,13 +162,13 @@ public class KafkaStreamsBackend {
         String partitionKey = LHConstants.META_PARTITION_KEY;
         if (version == null) {
             specBytes =
-                backendInternalComms.getLastFromPrefix(
+                internalComms.getLastFromPrefix(
                     ExternalEventDef.getPrefixByName(name),
                     partitionKey
                 );
         } else {
             specBytes =
-                backendInternalComms.getBytes(
+                internalComms.getBytes(
                     ExternalEventDef.getFullKey(name, version),
                     partitionKey
                 );
@@ -237,7 +236,7 @@ public class KafkaStreamsBackend {
 
         // Now we make the call to wait for the processing on the correct node.
         try {
-            Bytes raw = backendInternalComms.waitForProcessing(command);
+            Bytes raw = internalComms.waitForProcessing(command);
             if (raw == null) {
                 return null;
             } else {
@@ -263,7 +262,7 @@ public class KafkaStreamsBackend {
 
         GetWfRunReplyPb.Builder out = GetWfRunReplyPb.newBuilder();
         try {
-            Bytes resp = backendInternalComms.getBytes(storeKey, partitionKey);
+            Bytes resp = internalComms.getBytes(storeKey, partitionKey);
             if (resp == null) {
                 out.setCode(LHResponseCodePb.NOT_FOUND_ERROR);
             } else {
@@ -300,7 +299,7 @@ public class KafkaStreamsBackend {
 
         GetNodeRunReplyPb.Builder out = GetNodeRunReplyPb.newBuilder();
         try {
-            Bytes resp = backendInternalComms.getBytes(fullStoreKey, partitionKey);
+            Bytes resp = internalComms.getBytes(fullStoreKey, partitionKey);
             if (resp == null) {
                 out.setCode(LHResponseCodePb.NOT_FOUND_ERROR);
             } else {
@@ -337,7 +336,7 @@ public class KafkaStreamsBackend {
 
         GetVariableReplyPb.Builder out = GetVariableReplyPb.newBuilder();
         try {
-            Bytes resp = backendInternalComms.getBytes(fullStoreKey, partitionKey);
+            Bytes resp = internalComms.getBytes(fullStoreKey, partitionKey);
             if (resp == null) {
                 out.setCode(LHResponseCodePb.NOT_FOUND_ERROR);
             } else {
@@ -374,7 +373,7 @@ public class KafkaStreamsBackend {
 
         GetExternalEventReplyPb.Builder out = GetExternalEventReplyPb.newBuilder();
         try {
-            Bytes resp = backendInternalComms.getBytes(fullStoreKey, partitionKey);
+            Bytes resp = internalComms.getBytes(fullStoreKey, partitionKey);
             if (resp == null) {
                 out.setCode(LHResponseCodePb.NOT_FOUND_ERROR);
             } else {
@@ -414,38 +413,48 @@ public class KafkaStreamsBackend {
             bookmark = null;
         }
 
-        // Now we need to fill out the actual result object ids. To do that,
-        // first see what results we have locally. Then if we need more results
-        // to hit the limit, we query another host.
-        // How do we know which host to query? Well, we find a partition which
-        // hasn't been completed yet (by consulting the Bookmark), and then
-        // query the owner of that partition.
+        // Now we need to fill out the actual result object ids. Basically, we need
+        // to convert the incoming request to a PaginatedTagQuery.
         int limit = req.hasLimit() ? req.getLimit() : LHConstants.DEFAULT_LIMIT;
 
         PaginatedTagQueryPb internalQuery = PaginatedTagQueryPb
             .newBuilder()
             .setBookmark(bookmark)
             .setLimit(limit)
-            .setFullTagAttributes() // TODO
+            .setFullTagAttributes(Tag.getTagPrefix(req))
             .build();
 
-        PaginatedTagQueryReplyPb reply = backendInternalComms.localPaginatedTagQuery();
-
-        return null;
+        try {
+            PaginatedTagQueryReplyPb raw = internalComms.doPaginatedTagQuery(
+                internalQuery
+            );
+            out.setCode(LHResponseCodePb.OK);
+            if (raw.hasUpdatedBookmark()) {
+                out.setBookmark(raw.getUpdatedBookmark().toByteString());
+            }
+            for (String wfRunId : raw.getObjectIdsList()) {
+                out.addWfRunIds(wfRunId);
+            }
+        } catch (LHConnectionError exn) {
+            out
+                .setCode(LHResponseCodePb.CONNECTION_ERROR)
+                .setMessage("Failed connecting to backend: " + exn.getMessage());
+        }
+        return out.build();
     }
 
     public void start() throws IOException {
         coreStreams.start();
         // timerStreams.start();
         // tagStreams.start();
-        backendInternalComms.start();
+        internalComms.start();
     }
 
     public void close() {
         coreStreams.close();
         timerStreams.close();
         tagStreams.close();
-        backendInternalComms.close();
+        internalComms.close();
     }
 }
 

@@ -65,7 +65,7 @@ public class LHStoreWrapper extends LHROStoreWrapper {
         String tagCacheKey = StoreUtils.getTagsCacheKey(thing);
 
         TagsCache newTagsCache = new TagsCache();
-        for (Tag tag : TagUtils.doTag(thing)) {
+        for (Tag tag : TagUtils.tagThing(thing)) {
             newTagsCache.tagIds.add(StoreUtils.getFullStoreKey(tag));
         }
 

@@ -3,7 +3,7 @@ package io.littlehorse.server.streamsbackend.tagging;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.ServerTopology;
+import io.littlehorse.server.streamsbackend.ServerTopology;
 import java.util.Date;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.processor.Cancellable;

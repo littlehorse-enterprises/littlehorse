@@ -23,9 +23,10 @@ import io.littlehorse.common.proto.PartitionBookmarkPb;
 import io.littlehorse.common.proto.StoreQueryStatusPb;
 import io.littlehorse.common.proto.WaitForCommandResultPb;
 import io.littlehorse.common.proto.WaitForCommandResultReplyPb;
-import io.littlehorse.server.ServerTopology;
+import io.littlehorse.server.streamsbackend.ServerTopology;
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -37,13 +38,14 @@ import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyQueryMetadata;
 import org.apache.kafka.streams.StoreQueryParameters;
+import org.apache.kafka.streams.StreamsMetadata;
 import org.apache.kafka.streams.TaskMetadata;
 import org.apache.kafka.streams.ThreadMetadata;
 import org.apache.kafka.streams.state.HostInfo;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
-public class LHKafkaStoreInternalCommServer implements Closeable {
+public class BackendInternalComms implements Closeable {
 
     private LHConfig config;
     private Server internalGrpcServer;
@@ -52,7 +54,7 @@ public class LHKafkaStoreInternalCommServer implements Closeable {
 
     private Map<String, ManagedChannel> channels;
 
-    public LHKafkaStoreInternalCommServer(LHConfig config, KafkaStreams coreStreams) {
+    public BackendInternalComms(LHConfig config, KafkaStreams coreStreams) {
         this.config = config;
         this.coreStreams = coreStreams;
         this.channels = new HashMap<>();
@@ -401,7 +403,104 @@ public class LHKafkaStoreInternalCommServer implements Closeable {
         }
     }
 
-    public PaginatedTagQueryReplyPb localPaginatedTagQuery(PaginatedTagQueryPb req) {
+    public PaginatedTagQueryReplyPb doPaginatedTagQuery(PaginatedTagQueryPb req)
+        throws LHConnectionError {
+        // First, see what results we have locally. Then if we need more results
+        // to hit the limit, we query another host.
+        // How do we know which host to query? Well, we find a partition which
+        // hasn't been completed yet (by consulting the Bookmark), and then
+        // query the owner of that partition.
+
+        PaginatedTagQueryReplyPb out = localPaginatedTagQuery(req);
+        if (out.getObjectIdsCount() >= req.getLimit()) {
+            // Then we've gotten all the data the client asked for.
+            return out;
+        }
+        if (!out.hasUpdatedBookmark()) {
+            // Then we've gotten all the data there is.
+            return out;
+        }
+
+        // OK, now we need to figure out a host to query.
+
+        BookmarkPb bm = out.getUpdatedBookmark();
+        // We *know* that if a partition is in the bookmark, then that partition
+        // is still in progress. We can infer that the partition probably doesn't
+        // live on this host, because otherwise the query would have either pulled
+        // to the end of that partition or returned because it reached the limit.
+        // Note however, it's POSSIBLE that the partition lives on this host if
+        // there was a rebalance between the first request and the second request.
+        // That's quite unlikely.
+
+        // Basically, what we need to do is find the set of all partitions that
+        // AREN'T in the BookmarkPb::getCompletedPartitionsList();
+        while (out.hasUpdatedBookmark() && out.getObjectIdsCount() < req.getLimit()) {
+            HostInfo otherHost = getHostForPartition(
+                getRandomUnfinishedPartition(bm)
+            );
+            System.out.println(
+                "Calling other host: " + otherHost.host() + ":" + otherHost.port()
+            );
+            LHInternalsBlockingStub stub = getInternalClient(otherHost);
+            PaginatedTagQueryPb newReq = PaginatedTagQueryPb
+                .newBuilder()
+                .setBookmark(bm)
+                .setFullTagAttributes(req.getFullTagAttributes())
+                .setLimit(req.getLimit() - out.getObjectIdsCount())
+                .build();
+            PaginatedTagQueryReplyPb reply = stub.paginatedTagQuery(newReq);
+            if (reply.getCode() != StoreQueryStatusPb.RSQ_OK) {
+                throw new LHConnectionError(null, "Failed connecting to backend.");
+            }
+            PaginatedTagQueryReplyPb.Builder newOutBuilder = PaginatedTagQueryReplyPb
+                .newBuilder()
+                .addAllObjectIds(out.getObjectIdsList())
+                .addAllObjectIds(reply.getObjectIdsList());
+            if (reply.hasUpdatedBookmark()) {
+                newOutBuilder.setUpdatedBookmark(reply.getUpdatedBookmark());
+            }
+            out = newOutBuilder.build();
+        }
+
+        return out;
+    }
+
+    private HostInfo getHostForPartition(int partition) {
+        if (partition >= config.getClusterPartitions()) {
+            throw new RuntimeException("Colt you need to sleep more you moron");
+        }
+
+        // This is O(N) where N is # of partitions...not too great yikerz
+        Collection<StreamsMetadata> all = coreStreams.metadataForAllStreamsClients();
+        for (StreamsMetadata meta : all) {
+            for (TopicPartition tp : meta.topicPartitions()) {
+                if (isCommandProcessor(tp, config)) {
+                    return meta.hostInfo();
+                }
+            }
+        }
+        return null;
+    }
+
+    private Set<Integer> getUnfininshedPartitions(BookmarkPb bm) {
+        Set<Integer> out = new HashSet<>();
+        for (int i = 0; i < config.getClusterPartitions(); i++) {
+            out.add(i);
+        }
+        out.removeAll(bm.getCompletedPartitionsList());
+
+        return out;
+    }
+
+    private int getRandomUnfinishedPartition(BookmarkPb bm) {
+        Set<Integer> unfinished = getUnfininshedPartitions(bm);
+        for (int i : unfinished) {
+            return i;
+        }
+        throw new RuntimeException("Not possible");
+    }
+
+    private PaginatedTagQueryReplyPb localPaginatedTagQuery(PaginatedTagQueryPb req) {
         int curLimit = req.getLimit();
 
         BookmarkPb reqBookmark = req.hasBookmark()
@@ -414,6 +513,10 @@ public class LHKafkaStoreInternalCommServer implements Closeable {
         // iterate through all active and standby local partitions
         for (int partition : getLocalCommandProcessorPartitions()) {
             LHROStoreWrapper partStore = getLocalStore(partition, false);
+            if (reqBookmark.getCompletedPartitionsList().contains(partition)) {
+                // This partition has already been accounted for
+                continue;
+            }
             PartitionBookmarkPb partBookmark = null;
             if (reqBookmark != null) {
                 partBookmark =
@@ -479,10 +582,12 @@ public class LHKafkaStoreInternalCommServer implements Closeable {
 
     private static boolean isCommandProcessor(TaskMetadata task, LHConfig config) {
         for (TopicPartition tPart : task.topicPartitions()) {
-            if (tPart.topic().equals(config.getCoreCmdTopicName())) {
-                return true;
-            }
+            if (isCommandProcessor(tPart, config)) return true;
         }
         return false;
+    }
+
+    private static boolean isCommandProcessor(TopicPartition tPart, LHConfig config) {
+        return tPart.topic().equals(config.getCoreCmdTopicName());
     }
 }

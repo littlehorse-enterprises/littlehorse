@@ -17,7 +17,7 @@ import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.server.CommandProcessorDao;
-import io.littlehorse.server.ServerTopology;
+import io.littlehorse.server.streamsbackend.ServerTopology;
 import io.littlehorse.server.streamsbackend.storeinternals.LHROStoreWrapper;
 import io.littlehorse.server.streamsbackend.storeinternals.LHStoreWrapper;
 import io.littlehorse.server.streamsbackend.storeinternals.index.DiscreteTagLocalCounter;
@@ -467,7 +467,7 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
             (oldEntriesObj == null ? new ArrayList<>() : oldEntriesObj.tagIds);
         List<String> newTagIds = new ArrayList<>();
 
-        for (Tag newTag : TagUtils.doTag(thing)) {
+        for (Tag newTag : TagUtils.tagThing(thing)) {
             if (!oldTagIds.contains(newTag.getObjectId())) {
                 putTag(newTag);
             }

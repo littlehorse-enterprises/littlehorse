@@ -18,7 +18,7 @@ import org.apache.commons.lang3.tuple.Pair;
 public class TagUtils {
 
     @SuppressWarnings("unchecked")
-    public static List<Tag> doTag(GETable<?> thing) {
+    public static List<Tag> tagThing(GETable<?> thing) {
         switch (
             GETable.getTypeEnum((Class<? extends GETable<?>>) (thing.getClass()))
         ) {

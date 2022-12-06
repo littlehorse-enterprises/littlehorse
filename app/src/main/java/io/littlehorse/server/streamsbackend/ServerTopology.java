@@ -1,4 +1,4 @@
-package io.littlehorse.server;
+package io.littlehorse.server.streamsbackend;
 
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.command.Command;

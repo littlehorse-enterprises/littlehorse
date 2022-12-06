@@ -5,10 +5,12 @@ import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.Storeable;
 import io.littlehorse.common.proto.AttributePb;
 import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.SearchWfRunPb;
 import io.littlehorse.common.proto.TagPb;
 import io.littlehorse.common.proto.TagPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
@@ -74,13 +76,19 @@ public class Tag extends Storeable<TagPb> {
         builder.append(type.getNumber());
         builder.append("/");
 
+        builder.append(getTagAttributes(attributes));
+
+        return builder.toString();
+    }
+
+    public static String getTagAttributes(List<Pair<String, String>> attributes) {
+        StringBuilder builder = new StringBuilder();
         for (Pair<String, String> attr : attributes) {
             builder.append("__");
             builder.append(attr.getLeft());
             builder.append("_");
             builder.append(attr.getRight());
         }
-
         return builder.toString();
     }
 
@@ -122,5 +130,22 @@ public class Tag extends Storeable<TagPb> {
         if (!(o instanceof Tag)) return false;
         Tag oe = (Tag) o;
         return getObjectId().equals(oe.getObjectId());
+    }
+
+    public static String getTagPrefix(SearchWfRunPb req) {
+        switch (req.getCriteriaCase()) {
+            case STATUS_AND_SPEC:
+                return getTagAttributes(
+                    Arrays.asList(
+                        Pair.of("wfSpecName", req.getStatusAndSpec().getWfSpecName()),
+                        Pair.of(
+                            "status",
+                            req.getStatusAndSpec().getStatus().toString()
+                        )
+                    )
+                );
+            default:
+        }
+        throw new RuntimeException("Not possible");
     }
 }
