@@ -274,6 +274,7 @@ public class BackendInternalComms implements Closeable {
     }
 
     private LHInternalsBlockingStub getInternalClient(HostInfo host) {
+        System.out.println("getClient: " + host.host() + ":" + host.port());
         return LHInternalsGrpc.newBlockingStub(getChannel(host));
     }
 
@@ -398,6 +399,7 @@ public class BackendInternalComms implements Closeable {
             PaginatedTagQueryPb req,
             StreamObserver<PaginatedTagQueryReplyPb> ctx
         ) {
+            System.out.println("hi");
             ctx.onNext(localPaginatedTagQuery(req));
             ctx.onCompleted();
         }
@@ -459,6 +461,8 @@ public class BackendInternalComms implements Closeable {
                 .addAllObjectIds(reply.getObjectIdsList());
             if (reply.hasUpdatedBookmark()) {
                 newOutBuilder.setUpdatedBookmark(reply.getUpdatedBookmark());
+            } else {
+                newOutBuilder.clearUpdatedBookmark();
             }
             out = newOutBuilder.build();
         }
@@ -509,6 +513,10 @@ public class BackendInternalComms implements Closeable {
             : BookmarkPb.newBuilder().build();
 
         BookmarkPb.Builder outBookmark = reqBookmark.toBuilder();
+        System.out.println(
+            "Number of completed partitions: " +
+            outBookmark.getCompletedPartitionsCount()
+        );
         PaginatedTagQueryReplyPb.Builder out = PaginatedTagQueryReplyPb.newBuilder();
 
         // iterate through all active and standby local partitions
@@ -559,6 +567,7 @@ public class BackendInternalComms implements Closeable {
         } else {
             // Then every partition has been scanned, so the paginated query is
             // complete. That means we don't return a bookmark.
+            out.clearUpdatedBookmark();
         }
         return out.build();
     }
