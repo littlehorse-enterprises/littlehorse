@@ -73,7 +73,7 @@ public class Tag extends Storeable<TagPb> {
 
     public String getTagAttributes() {
         StringBuilder builder = new StringBuilder();
-        builder.append(type.getNumber());
+        builder.append(type.toString());
         builder.append("/");
 
         builder.append(getTagAttributes(attributes));
@@ -105,6 +105,13 @@ public class Tag extends Storeable<TagPb> {
     public Tag() {
         attributes = new ArrayList<>();
         counterKeys = new ArrayList<>();
+    }
+
+    public static String getRawStorePrefix(
+        String fullTagAttributes,
+        GETableClassEnumPb type
+    ) {
+        return "Tag/" + type.toString() + "/" + fullTagAttributes;
     }
 
     @SafeVarargs

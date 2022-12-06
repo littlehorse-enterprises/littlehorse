@@ -5,6 +5,7 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
+import io.littlehorse.common.proto.GETableClassEnumPb;
 import io.littlehorse.common.proto.PartitionBookmarkPb;
 import io.littlehorse.server.streamsbackend.storeinternals.index.Tag;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.LHIterKeyValue;
@@ -131,15 +132,17 @@ public class LHROStoreWrapper {
         String fullTagAttributes,
         PartitionBookmarkPb bookmark,
         int limit,
+        GETableClassEnumPb type,
         int partition
     ) {
         PartitionBookmarkPb bmOut = null;
         Set<String> idsOut = new HashSet<>();
 
-        String endKey = fullTagAttributes + "~~~~~~~~~~~";
+        String endKey =
+            Tag.getRawStorePrefix(fullTagAttributes, type) + "~~~~~~~~~~~";
         String startKey;
         if (bookmark == null) {
-            startKey = fullTagAttributes;
+            startKey = Tag.getRawStorePrefix(fullTagAttributes, type);
         } else {
             startKey = bookmark.getLastKey();
         }
@@ -151,10 +154,10 @@ public class LHROStoreWrapper {
                 config
             )
         ) {
+            boolean brokenBecauseOutOfData = true;
             while (iter.hasNext()) {
                 LHIterKeyValue<Tag> next = iter.next();
                 Tag tag = next.getValue();
-
                 if (--limit < 0) {
                     bmOut =
                         PartitionBookmarkPb
@@ -162,10 +165,17 @@ public class LHROStoreWrapper {
                             .setParttion(partition)
                             .setLastKey(tag.getObjectId())
                             .build();
+
+                    // broke loop because we filled up the limit
+                    brokenBecauseOutOfData = false;
                     break;
                 }
 
                 idsOut.add(tag.describedObjectId);
+            }
+
+            if (brokenBecauseOutOfData) {
+                bmOut = null;
             }
         }
         return Pair.of(idsOut, bmOut);

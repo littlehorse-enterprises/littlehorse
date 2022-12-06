@@ -39,4 +39,15 @@ public interface PaginatedTagQueryPbOrBuilder extends
    * <code>.lh_proto.BookmarkPb bookmark = 3;</code>
    */
   io.littlehorse.common.proto.BookmarkPbOrBuilder getBookmarkOrBuilder();
+
+  /**
+   * <code>.lh_proto.GETableClassEnumPb type = 4;</code>
+   * @return The enum numeric value on the wire for type.
+   */
+  int getTypeValue();
+  /**
+   * <code>.lh_proto.GETableClassEnumPb type = 4;</code>
+   * @return The type.
+   */
+  io.littlehorse.common.proto.GETableClassEnumPb getType();
 }

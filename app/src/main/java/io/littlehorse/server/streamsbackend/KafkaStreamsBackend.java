@@ -20,6 +20,7 @@ import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.BookmarkPb;
+import io.littlehorse.common.proto.GETableClassEnumPb;
 import io.littlehorse.common.proto.GetExternalEventPb;
 import io.littlehorse.common.proto.GetExternalEventReplyPb;
 import io.littlehorse.common.proto.GetNodeRunPb;
@@ -242,7 +243,6 @@ public class KafkaStreamsBackend {
             } else {
                 try {
                     // This is if everything goes according to plan.
-                    LHUtil.log("Everything worked!");
                     return LHSerializable.fromBytes(raw.get(), cls, config);
                 } catch (LHSerdeError exn) {
                     out.code = LHResponseCodePb.CONNECTION_ERROR;
@@ -422,6 +422,7 @@ public class KafkaStreamsBackend {
             .setBookmark(bookmark)
             .setLimit(limit)
             .setFullTagAttributes(Tag.getTagPrefix(req))
+            .setType(GETableClassEnumPb.WF_RUN)
             .build();
 
         try {

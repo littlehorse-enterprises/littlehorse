@@ -7,6 +7,7 @@ option java_multiple_files = true;
 option java_package = "io.littlehorse.common.proto";
 
 import "google/protobuf/timestamp.proto";
+import "tags.proto";
 
 // The following protobuf definitions are used for paginated responses.
 message PartitionBookmarkPb {
@@ -73,6 +74,7 @@ message PaginatedTagQueryPb {
     string full_tag_attributes = 1;
     int32 limit = 2;
     optional BookmarkPb bookmark = 3;
+    GETableClassEnumPb type = 4;
 }
 
 message PaginatedTagQueryReplyPb {

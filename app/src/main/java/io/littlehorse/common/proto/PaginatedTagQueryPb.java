@@ -17,6 +17,7 @@ private static final long serialVersionUID = 0L;
   }
   private PaginatedTagQueryPb() {
     fullTagAttributes_ = "";
+    type_ = 0;
   }
 
   @java.lang.Override
@@ -72,6 +73,12 @@ private static final long serialVersionUID = 0L;
               bookmark_ = subBuilder.buildPartial();
             }
             bitField0_ |= 0x00000001;
+            break;
+          }
+          case 32: {
+            int rawValue = input.readEnum();
+
+            type_ = rawValue;
             break;
           }
           default: {
@@ -182,6 +189,25 @@ private static final long serialVersionUID = 0L;
     return bookmark_ == null ? io.littlehorse.common.proto.BookmarkPb.getDefaultInstance() : bookmark_;
   }
 
+  public static final int TYPE_FIELD_NUMBER = 4;
+  private int type_;
+  /**
+   * <code>.lh_proto.GETableClassEnumPb type = 4;</code>
+   * @return The enum numeric value on the wire for type.
+   */
+  @java.lang.Override public int getTypeValue() {
+    return type_;
+  }
+  /**
+   * <code>.lh_proto.GETableClassEnumPb type = 4;</code>
+   * @return The type.
+   */
+  @java.lang.Override public io.littlehorse.common.proto.GETableClassEnumPb getType() {
+    @SuppressWarnings("deprecation")
+    io.littlehorse.common.proto.GETableClassEnumPb result = io.littlehorse.common.proto.GETableClassEnumPb.valueOf(type_);
+    return result == null ? io.littlehorse.common.proto.GETableClassEnumPb.UNRECOGNIZED : result;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -205,6 +231,9 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(3, getBookmark());
     }
+    if (type_ != io.littlehorse.common.proto.GETableClassEnumPb.TASK_DEF.getNumber()) {
+      output.writeEnum(4, type_);
+    }
     unknownFields.writeTo(output);
   }
 
@@ -224,6 +253,10 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getBookmark());
+    }
+    if (type_ != io.littlehorse.common.proto.GETableClassEnumPb.TASK_DEF.getNumber()) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeEnumSize(4, type_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -249,6 +282,7 @@ private static final long serialVersionUID = 0L;
       if (!getBookmark()
           .equals(other.getBookmark())) return false;
     }
+    if (type_ != other.type_) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -268,6 +302,8 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + BOOKMARK_FIELD_NUMBER;
       hash = (53 * hash) + getBookmark().hashCode();
     }
+    hash = (37 * hash) + TYPE_FIELD_NUMBER;
+    hash = (53 * hash) + type_;
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -412,6 +448,8 @@ private static final long serialVersionUID = 0L;
         bookmarkBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000001);
+      type_ = 0;
+
       return this;
     }
 
@@ -450,6 +488,7 @@ private static final long serialVersionUID = 0L;
         }
         to_bitField0_ |= 0x00000001;
       }
+      result.type_ = type_;
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -508,6 +547,9 @@ private static final long serialVersionUID = 0L;
       }
       if (other.hasBookmark()) {
         mergeBookmark(other.getBookmark());
+      }
+      if (other.type_ != 0) {
+        setTypeValue(other.getTypeValue());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -764,6 +806,60 @@ private static final long serialVersionUID = 0L;
         bookmark_ = null;
       }
       return bookmarkBuilder_;
+    }
+
+    private int type_ = 0;
+    /**
+     * <code>.lh_proto.GETableClassEnumPb type = 4;</code>
+     * @return The enum numeric value on the wire for type.
+     */
+    @java.lang.Override public int getTypeValue() {
+      return type_;
+    }
+    /**
+     * <code>.lh_proto.GETableClassEnumPb type = 4;</code>
+     * @param value The enum numeric value on the wire for type to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTypeValue(int value) {
+      
+      type_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.lh_proto.GETableClassEnumPb type = 4;</code>
+     * @return The type.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.GETableClassEnumPb getType() {
+      @SuppressWarnings("deprecation")
+      io.littlehorse.common.proto.GETableClassEnumPb result = io.littlehorse.common.proto.GETableClassEnumPb.valueOf(type_);
+      return result == null ? io.littlehorse.common.proto.GETableClassEnumPb.UNRECOGNIZED : result;
+    }
+    /**
+     * <code>.lh_proto.GETableClassEnumPb type = 4;</code>
+     * @param value The type to set.
+     * @return This builder for chaining.
+     */
+    public Builder setType(io.littlehorse.common.proto.GETableClassEnumPb value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      
+      type_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.lh_proto.GETableClassEnumPb type = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearType() {
+      
+      type_ = 0;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

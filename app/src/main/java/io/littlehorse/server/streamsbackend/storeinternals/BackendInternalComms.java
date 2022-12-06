@@ -447,6 +447,7 @@ public class BackendInternalComms implements Closeable {
                 .setBookmark(bm)
                 .setFullTagAttributes(req.getFullTagAttributes())
                 .setLimit(req.getLimit() - out.getObjectIdsCount())
+                .setType(req.getType())
                 .build();
             PaginatedTagQueryReplyPb reply = stub.paginatedTagQuery(newReq);
             if (reply.getCode() != StoreQueryStatusPb.RSQ_OK) {
@@ -528,6 +529,7 @@ public class BackendInternalComms implements Closeable {
                 req.getFullTagAttributes(),
                 partBookmark,
                 curLimit,
+                req.getType(),
                 partition
             );
 

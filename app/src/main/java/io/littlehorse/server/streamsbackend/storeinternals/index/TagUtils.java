@@ -83,7 +83,8 @@ public class TagUtils {
     }
 
     private static List<Tag> tag(NodeRun thing) {
-        List<Tag> out = Arrays.asList(
+        List<Tag> out = new ArrayList<>();
+        out.add(
             new Tag(
                 thing,
                 StorageType.DISCRETE,
