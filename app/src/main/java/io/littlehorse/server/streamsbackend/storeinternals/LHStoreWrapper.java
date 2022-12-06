@@ -5,8 +5,9 @@ import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
-import io.littlehorse.common.model.index.Tag;
-import io.littlehorse.common.model.index.TagsCache;
+import io.littlehorse.server.streamsbackend.storeinternals.index.Tag;
+import io.littlehorse.server.streamsbackend.storeinternals.index.TagUtils;
+import io.littlehorse.server.streamsbackend.storeinternals.index.TagsCache;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.StoreUtils;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueStore;
@@ -64,7 +65,7 @@ public class LHStoreWrapper extends LHROStoreWrapper {
         String tagCacheKey = StoreUtils.getTagsCacheKey(thing);
 
         TagsCache newTagsCache = new TagsCache();
-        for (Tag tag : thing.getTags()) {
+        for (Tag tag : TagUtils.doTag(thing)) {
             newTagsCache.tagIds.add(StoreUtils.getFullStoreKey(tag));
         }
 

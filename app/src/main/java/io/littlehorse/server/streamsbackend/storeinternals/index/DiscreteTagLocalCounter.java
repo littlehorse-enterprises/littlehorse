@@ -1,4 +1,4 @@
-package io.littlehorse.common.model.index;
+package io.littlehorse.server.streamsbackend.storeinternals.index;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.Storeable;

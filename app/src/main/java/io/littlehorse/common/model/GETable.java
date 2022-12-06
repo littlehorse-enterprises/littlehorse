@@ -1,7 +1,6 @@
 package io.littlehorse.common.model;
 
 import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.model.index.Tag;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
@@ -11,15 +10,12 @@ import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.GETableClassEnumPb;
 import java.util.Date;
-import java.util.List;
 
 public abstract class GETable<T extends MessageOrBuilder> extends Storeable<T> {
 
     public abstract Date getCreatedAt();
 
     public abstract String getPartitionKey();
-
-    public abstract List<Tag> getTags();
 
     public static GETableClassEnumPb getTypeEnum(Class<? extends GETable<?>> cls) {
         if (cls.equals(WfRun.class)) {

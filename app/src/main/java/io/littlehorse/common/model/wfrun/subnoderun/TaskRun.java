@@ -5,11 +5,9 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
 import io.littlehorse.common.model.command.subcommand.TaskStartedEvent;
-import io.littlehorse.common.model.index.Tag;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.LHTimer;
-import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
 import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
 import io.littlehorse.common.model.wfrun.ThreadRun;
@@ -19,11 +17,8 @@ import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.proto.TaskRunPb;
 import io.littlehorse.common.proto.TaskRunPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class TaskRun extends SubNodeRun<TaskRunPb> {
 
@@ -76,19 +71,6 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
     public static TaskRun fromProto(TaskRunPbOrBuilder proto) {
         TaskRun out = new TaskRun();
         out.initFrom(proto);
-        return out;
-    }
-
-    public List<Tag> getTags(NodeRun parent) {
-        List<Tag> out = new ArrayList<>();
-        out.add(
-            new Tag(
-                parent,
-                Pair.of("taskDefId", taskDefName),
-                Pair.of("status", parent.status.toString())
-            )
-        );
-
         return out;
     }
 

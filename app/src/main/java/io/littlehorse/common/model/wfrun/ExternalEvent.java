@@ -4,13 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.GETable;
-import io.littlehorse.common.model.index.Tag;
 import io.littlehorse.common.proto.ExternalEventPb;
 import io.littlehorse.common.proto.ExternalEventPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 public class ExternalEvent extends GETable<ExternalEventPb> {
 
@@ -94,17 +91,6 @@ public class ExternalEvent extends GETable<ExternalEventPb> {
     @Override
     public String getPartitionKey() {
         return wfRunId;
-    }
-
-    @JsonIgnore
-    @Override
-    public List<Tag> getTags() {
-        // For now, there's no secondary indexing on external events.
-        // We may extend the ExternalEventDef (perhaps with a schema) to allow for
-        // indexing based on event content.
-        List<Tag> out = Arrays.asList();
-
-        return out;
     }
 
     @JsonIgnore

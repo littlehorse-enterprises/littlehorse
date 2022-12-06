@@ -1,18 +1,13 @@
 package io.littlehorse.common.model.meta;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.GETable;
-import io.littlehorse.common.model.index.Tag;
 import io.littlehorse.common.proto.ExternalEventDefPb;
 import io.littlehorse.common.proto.ExternalEventDefPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.StoreUtils;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class ExternalEventDef extends GETable<ExternalEventDefPbOrBuilder> {
 
@@ -68,11 +63,6 @@ public class ExternalEventDef extends GETable<ExternalEventDefPbOrBuilder> {
         ExternalEventDefPbOrBuilder proto = (ExternalEventDefPbOrBuilder) p;
         name = proto.getName();
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
-    }
-
-    @JsonIgnore
-    public List<Tag> getTags() {
-        return Arrays.asList(new Tag(this, Pair.of("name", name)));
     }
 
     public static ExternalEventDef fromProto(ExternalEventDefPbOrBuilder p) {

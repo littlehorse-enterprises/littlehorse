@@ -8,7 +8,6 @@ import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
 import io.littlehorse.common.model.command.subcommand.TaskStartedEvent;
-import io.littlehorse.common.model.index.Tag;
 import io.littlehorse.common.model.meta.ThreadSpec;
 import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.meta.WfSpec;
@@ -22,14 +21,12 @@ import io.littlehorse.common.proto.WfRunPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.CommandProcessorDao;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class WfRun extends GETable<WfRunPb> {
 
@@ -136,19 +133,6 @@ public class WfRun extends GETable<WfRunPb> {
     @Override
     public String getPartitionKey() {
         return id;
-    }
-
-    @JsonIgnore
-    public List<Tag> getTags() {
-        List<Tag> out = Arrays.asList(
-            new Tag(
-                this,
-                Pair.of("wfSpecName", wfSpecName),
-                Pair.of("status", status.toString())
-            )
-        );
-
-        return out;
     }
 
     // Below is used by scheduler

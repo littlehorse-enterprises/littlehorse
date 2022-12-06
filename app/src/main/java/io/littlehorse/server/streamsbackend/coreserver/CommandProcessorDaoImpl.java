@@ -6,10 +6,6 @@ import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.CommandResult;
-import io.littlehorse.common.model.index.DiscreteTagLocalCounter;
-import io.littlehorse.common.model.index.Tag;
-import io.littlehorse.common.model.index.TagChangesToBroadcast;
-import io.littlehorse.common.model.index.TagsCache;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
@@ -24,6 +20,11 @@ import io.littlehorse.server.CommandProcessorDao;
 import io.littlehorse.server.ServerTopology;
 import io.littlehorse.server.streamsbackend.storeinternals.LHROStoreWrapper;
 import io.littlehorse.server.streamsbackend.storeinternals.LHStoreWrapper;
+import io.littlehorse.server.streamsbackend.storeinternals.index.DiscreteTagLocalCounter;
+import io.littlehorse.server.streamsbackend.storeinternals.index.Tag;
+import io.littlehorse.server.streamsbackend.storeinternals.index.TagChangesToBroadcast;
+import io.littlehorse.server.streamsbackend.storeinternals.index.TagUtils;
+import io.littlehorse.server.streamsbackend.storeinternals.index.TagsCache;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.LHIterKeyValue;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.LHKeyValueIterator;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.StoreUtils;
@@ -466,7 +467,7 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
             (oldEntriesObj == null ? new ArrayList<>() : oldEntriesObj.tagIds);
         List<String> newTagIds = new ArrayList<>();
 
-        for (Tag newTag : thing.getTags()) {
+        for (Tag newTag : TagUtils.doTag(thing)) {
             if (!oldTagIds.contains(newTag.getObjectId())) {
                 putTag(newTag);
             }

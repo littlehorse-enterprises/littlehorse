@@ -1,20 +1,15 @@
 package io.littlehorse.common.model.wfrun.subnoderun;
 
 import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.model.index.Tag;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.meta.subnode.ExternalEventNode;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
-import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
 import io.littlehorse.common.proto.ExternalEventRunPb;
 import io.littlehorse.common.proto.ExternalEventRunPbOrBuilder;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.util.LHUtil;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class ExternalEventRun extends SubNodeRun<ExternalEventRunPb> {
 
@@ -56,19 +51,6 @@ public class ExternalEventRun extends SubNodeRun<ExternalEventRunPb> {
     public static ExternalEventRun fromProto(ExternalEventRunPbOrBuilder p) {
         ExternalEventRun out = new ExternalEventRun();
         out.initFrom(p);
-        return out;
-    }
-
-    public List<Tag> getTags(NodeRun parent) {
-        List<Tag> out = new ArrayList<>();
-        out.add(
-            new Tag(
-                parent,
-                Pair.of("type", "EXTERNAL_EVENT"),
-                Pair.of("externalEventDefName", externalEventDefName)
-            )
-        );
-
         return out;
     }
 

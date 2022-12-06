@@ -1,4 +1,4 @@
-package io.littlehorse.common.model.index;
+package io.littlehorse.server.streamsbackend.storeinternals.index;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.GETable;
@@ -15,6 +15,13 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class Tag extends Storeable<TagPb> {
 
+    public enum StorageType {
+        DISCRETE,
+        RANGE,
+        HASH,
+    }
+
+    public StorageType storageType;
     public GETableClassEnumPb type;
     public List<Pair<String, String>> attributes;
     public Date createdAt;
@@ -94,7 +101,7 @@ public class Tag extends Storeable<TagPb> {
 
     @SafeVarargs
     @SuppressWarnings("unchecked")
-    public Tag(GETable<?> getable, Pair<String, String>... atts) {
+    public Tag(GETable<?> getable, StorageType type, Pair<String, String>... atts) {
         this();
         this.type =
             GETable.getTypeEnum((Class<? extends GETable<?>>) getable.getClass());

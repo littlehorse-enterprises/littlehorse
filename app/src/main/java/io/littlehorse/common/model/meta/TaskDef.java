@@ -1,21 +1,16 @@
 package io.littlehorse.common.model.meta;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.GETable;
-import io.littlehorse.common.model.index.Tag;
 import io.littlehorse.common.proto.TaskDefPb;
 import io.littlehorse.common.proto.TaskDefPbOrBuilder;
 import io.littlehorse.common.proto.VariableDefPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.StoreUtils;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class TaskDef extends GETable<TaskDefPbOrBuilder> {
 
@@ -108,11 +103,6 @@ public class TaskDef extends GETable<TaskDefPbOrBuilder> {
             .entrySet()) {
             inputVars.put(entry.getKey(), VariableDef.fromProto(entry.getValue()));
         }
-    }
-
-    @JsonIgnore
-    public List<Tag> getTags() {
-        return Arrays.asList(new Tag(this, Pair.of("name", name)));
     }
 
     public static TaskDef fromProto(TaskDefPbOrBuilder p) {

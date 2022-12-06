@@ -7,7 +7,6 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.command.subcommand.RunWf;
-import io.littlehorse.common.model.index.Tag;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.ThreadSpecPb;
@@ -17,11 +16,9 @@ import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.CommandProcessorDao;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.StoreUtils;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
@@ -240,12 +237,6 @@ public class WfSpec extends GETable<WfSpecPbOrBuilder> {
                 }
             }
         }
-    }
-
-    public List<Tag> getTags() {
-        List<Tag> out = Arrays.asList(new Tag(this, Pair.of("name", name)));
-
-        return out;
     }
 
     public WfRun startNewRun(RunWf evt, CommandProcessorDao dao) {

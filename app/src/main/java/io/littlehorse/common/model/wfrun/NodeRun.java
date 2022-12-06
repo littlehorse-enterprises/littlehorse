@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.GETable;
-import io.littlehorse.common.model.index.Tag;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.wfrun.subnoderun.EntrypointRun;
 import io.littlehorse.common.model.wfrun.subnoderun.ExitRun;
@@ -24,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class NodeRun extends GETable<NodeRunPb> {
 
@@ -254,27 +252,6 @@ public class NodeRun extends GETable<NodeRunPb> {
 
         for (Failure failure : failures) {
             out.addFailures(failure.toProto());
-        }
-
-        return out;
-    }
-
-    @JsonIgnore
-    public List<Tag> getTags() {
-        List<Tag> out = new ArrayList<>();
-
-        out.add(
-            new Tag(
-                this,
-                Pair.of("type", type.toString()),
-                Pair.of("status", status.toString())
-            )
-        );
-
-        if (type == NodeTypeCase.TASK) {
-            out.addAll(taskRun.getTags(this));
-        } else if (type == NodeTypeCase.EXTERNAL_EVENT) {
-            out.addAll(externalEventRun.getTags(this));
         }
 
         return out;
