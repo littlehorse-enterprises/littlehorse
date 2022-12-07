@@ -447,7 +447,15 @@ public class KafkaStreamsBackend {
     }
 
     public PollTaskReplyPb pollTask(PollTaskPb req) {
-        return null;
+        try {
+            return internalComms.pollTask(req);
+        } catch (LHConnectionError exn) {
+            return PollTaskReplyPb
+                .newBuilder()
+                .setCode(LHResponseCodePb.CONNECTION_ERROR)
+                .setMessage("Failed connecting to backend: " + exn.getMessage())
+                .build();
+        }
     }
 
     public void start() throws IOException {

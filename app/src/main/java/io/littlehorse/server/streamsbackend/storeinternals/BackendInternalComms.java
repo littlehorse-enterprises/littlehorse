@@ -14,12 +14,16 @@ import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.CentralStoreQueryPb;
 import io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb;
 import io.littlehorse.common.proto.CentralStoreQueryReplyPb;
+import io.littlehorse.common.proto.InternalPollTaskPb;
+import io.littlehorse.common.proto.InternalPollTaskReplyPb;
 import io.littlehorse.common.proto.LHInternalsGrpc;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsBlockingStub;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsImplBase;
 import io.littlehorse.common.proto.PaginatedTagQueryPb;
 import io.littlehorse.common.proto.PaginatedTagQueryReplyPb;
 import io.littlehorse.common.proto.PartitionBookmarkPb;
+import io.littlehorse.common.proto.PollTaskPb;
+import io.littlehorse.common.proto.PollTaskReplyPb;
 import io.littlehorse.common.proto.StoreQueryStatusPb;
 import io.littlehorse.common.proto.WaitForCommandResultPb;
 import io.littlehorse.common.proto.WaitForCommandResultReplyPb;
@@ -51,6 +55,7 @@ public class BackendInternalComms implements Closeable {
     private Server internalGrpcServer;
     private KafkaStreams coreStreams;
     private HostInfo thisHost;
+    private InflightList inflightList;
 
     private Map<String, ManagedChannel> channels;
 
@@ -58,6 +63,7 @@ public class BackendInternalComms implements Closeable {
         this.config = config;
         this.coreStreams = coreStreams;
         this.channels = new HashMap<>();
+        this.inflightList = new InflightList(config);
 
         this.internalGrpcServer =
             ServerBuilder
@@ -99,6 +105,15 @@ public class BackendInternalComms implements Closeable {
                 CentralStoreSubQueryPb.newBuilder().setKey(fullStoreKey).build()
             );
         }
+    }
+
+    public PollTaskReplyPb pollTask(PollTaskPb req) throws LHConnectionError {
+        // TODO
+        return null;
+    }
+
+    private PollTaskReplyPb pollTaskLocal(String taskDefId) {
+        return null;
     }
 
     public Bytes getLastFromPrefix(String prefix, String partitionKey)
@@ -405,6 +420,11 @@ public class BackendInternalComms implements Closeable {
             ctx.onNext(localPaginatedTagQuery(req));
             ctx.onCompleted();
         }
+
+        public void internalPollTask(
+            InternalPollTaskPb req,
+            StreamObserver<InternalPollTaskReplyPb> ctx
+        ) {}
     }
 
     public PaginatedTagQueryReplyPb doPaginatedTagQuery(PaginatedTagQueryPb req)
