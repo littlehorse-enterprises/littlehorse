@@ -11,10 +11,12 @@ import io.littlehorse.common.model.command.subcommand.PutExternalEventDef;
 import io.littlehorse.common.model.command.subcommand.PutTaskDef;
 import io.littlehorse.common.model.command.subcommand.PutWfSpec;
 import io.littlehorse.common.model.command.subcommand.RunWf;
+import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
 import io.littlehorse.common.model.command.subcommandresponse.PutExternalEventDefReply;
 import io.littlehorse.common.model.command.subcommandresponse.PutExternalEventReply;
 import io.littlehorse.common.model.command.subcommandresponse.PutTaskDefReply;
 import io.littlehorse.common.model.command.subcommandresponse.PutWfSpecReply;
+import io.littlehorse.common.model.command.subcommandresponse.ReportTaskReply;
 import io.littlehorse.common.model.command.subcommandresponse.RunWfReply;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
@@ -35,6 +37,8 @@ import io.littlehorse.common.proto.GetWfSpecPb;
 import io.littlehorse.common.proto.GetWfSpecReplyPb;
 import io.littlehorse.common.proto.LHPublicApiGrpc.LHPublicApiImplBase;
 import io.littlehorse.common.proto.LHResponseCodePb;
+import io.littlehorse.common.proto.PollTaskPb;
+import io.littlehorse.common.proto.PollTaskReplyPb;
 import io.littlehorse.common.proto.PutExternalEventDefPb;
 import io.littlehorse.common.proto.PutExternalEventDefReplyPb;
 import io.littlehorse.common.proto.PutExternalEventPb;
@@ -43,10 +47,12 @@ import io.littlehorse.common.proto.PutTaskDefPb;
 import io.littlehorse.common.proto.PutTaskDefReplyPb;
 import io.littlehorse.common.proto.PutWfSpecPb;
 import io.littlehorse.common.proto.PutWfSpecReplyPb;
+import io.littlehorse.common.proto.ReportTaskReplyPb;
 import io.littlehorse.common.proto.RunWfPb;
 import io.littlehorse.common.proto.RunWfReplyPb;
 import io.littlehorse.common.proto.SearchWfRunPb;
 import io.littlehorse.common.proto.SearchWfRunReplyPb;
+import io.littlehorse.common.proto.TaskResultEventPb;
 import io.littlehorse.server.streamsbackend.KafkaStreamsBackend;
 import java.io.IOException;
 
@@ -201,6 +207,23 @@ public class LHServer extends LHPublicApiImplBase {
         RunWf rwf = RunWf.fromProto(req);
         RunWfReply response = backend.process(rwf, RunWfReply.class);
         ctx.onNext(response.toProto().build());
+        ctx.onCompleted();
+    }
+
+    @Override
+    public void pollTask(PollTaskPb req, StreamObserver<PollTaskReplyPb> ctx) {
+        ctx.onNext(backend.pollTask(req));
+        ctx.onCompleted();
+    }
+
+    @Override
+    public void reportTask(
+        TaskResultEventPb req,
+        StreamObserver<ReportTaskReplyPb> ctx
+    ) {
+        TaskResultEvent tre = TaskResultEvent.fromProto(req);
+        ReportTaskReply rtr = backend.process(tre, ReportTaskReply.class);
+        ctx.onNext(rtr.toProto().build());
         ctx.onCompleted();
     }
 

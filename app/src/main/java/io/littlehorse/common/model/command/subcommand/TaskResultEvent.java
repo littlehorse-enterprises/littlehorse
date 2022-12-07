@@ -2,8 +2,8 @@ package io.littlehorse.common.model.command.subcommand;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.SubCommand;
+import io.littlehorse.common.model.command.subcommandresponse.ReportTaskReply;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.model.wfrun.WfRun;
@@ -42,10 +42,10 @@ public class TaskResultEvent extends SubCommand<TaskResultEventPb> {
     }
 
     public boolean hasResponse() {
-        return false;
+        return true;
     }
 
-    public LHSerializable<?> process(CommandProcessorDao dao, LHConfig config) {
+    public ReportTaskReply process(CommandProcessorDao dao, LHConfig config) {
         // First, get the WfRun
         WfRun wfRun = dao.getWfRun(wfRunId);
         if (wfRun == null) {
@@ -66,7 +66,7 @@ public class TaskResultEvent extends SubCommand<TaskResultEventPb> {
         wfRun.cmdDao = dao;
         wfRun.processTaskResult(this);
 
-        return null;
+        return new ReportTaskReply();
     }
 
     public TaskResultEventPb.Builder toProto() {

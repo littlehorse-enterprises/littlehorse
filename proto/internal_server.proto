@@ -7,6 +7,7 @@ option java_multiple_files = true;
 option java_package = "io.littlehorse.common.proto";
 
 import "google/protobuf/timestamp.proto";
+import "command.proto";
 import "tags.proto";
 
 // The following protobuf definitions are used for paginated responses.
@@ -83,8 +84,21 @@ message PaginatedTagQueryReplyPb {
     BookmarkPb updated_bookmark = 3;
 }
 
+// This section is for the internal implementation of the Task Queue.
+// It will be optimized and improved in future revisions.
+message InternalPollTaskPb {
+    string task_queue_name = 1;
+}
+
+message InternalPollTaskReplyPb {
+    StoreQueryStatusPb code = 1;
+    optional TaskScheduleRequestPb result = 2;
+}
+
 service LHInternals {
     rpc CentralStoreQuery(CentralStoreQueryPb) returns (CentralStoreQueryReplyPb) {}
     rpc WaitForCommandResult(WaitForCommandResultPb) returns (WaitForCommandResultReplyPb) {}
     rpc PaginatedTagQuery(PaginatedTagQueryPb) returns (PaginatedTagQueryReplyPb) {}
+
+    rpc InternalPollTask(InternalPollTaskPb) returns (InternalPollTaskReplyPb) {}
 }

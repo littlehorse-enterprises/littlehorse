@@ -418,6 +418,68 @@ public final class LHPublicApiGrpc {
     return getSearchWfRunMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.PollTaskPb,
+      io.littlehorse.common.proto.PollTaskReplyPb> getPollTaskMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "PollTask",
+      requestType = io.littlehorse.common.proto.PollTaskPb.class,
+      responseType = io.littlehorse.common.proto.PollTaskReplyPb.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.PollTaskPb,
+      io.littlehorse.common.proto.PollTaskReplyPb> getPollTaskMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.common.proto.PollTaskPb, io.littlehorse.common.proto.PollTaskReplyPb> getPollTaskMethod;
+    if ((getPollTaskMethod = LHPublicApiGrpc.getPollTaskMethod) == null) {
+      synchronized (LHPublicApiGrpc.class) {
+        if ((getPollTaskMethod = LHPublicApiGrpc.getPollTaskMethod) == null) {
+          LHPublicApiGrpc.getPollTaskMethod = getPollTaskMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.PollTaskPb, io.littlehorse.common.proto.PollTaskReplyPb>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "PollTask"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.PollTaskPb.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.PollTaskReplyPb.getDefaultInstance()))
+              .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("PollTask"))
+              .build();
+        }
+      }
+    }
+    return getPollTaskMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.TaskResultEventPb,
+      io.littlehorse.common.proto.ReportTaskReplyPb> getReportTaskMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "ReportTask",
+      requestType = io.littlehorse.common.proto.TaskResultEventPb.class,
+      responseType = io.littlehorse.common.proto.ReportTaskReplyPb.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.TaskResultEventPb,
+      io.littlehorse.common.proto.ReportTaskReplyPb> getReportTaskMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.common.proto.TaskResultEventPb, io.littlehorse.common.proto.ReportTaskReplyPb> getReportTaskMethod;
+    if ((getReportTaskMethod = LHPublicApiGrpc.getReportTaskMethod) == null) {
+      synchronized (LHPublicApiGrpc.class) {
+        if ((getReportTaskMethod = LHPublicApiGrpc.getReportTaskMethod) == null) {
+          LHPublicApiGrpc.getReportTaskMethod = getReportTaskMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.TaskResultEventPb, io.littlehorse.common.proto.ReportTaskReplyPb>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ReportTask"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.TaskResultEventPb.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.ReportTaskReplyPb.getDefaultInstance()))
+              .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("ReportTask"))
+              .build();
+        }
+      }
+    }
+    return getReportTaskMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -557,6 +619,20 @@ public final class LHPublicApiGrpc {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSearchWfRunMethod(), responseObserver);
     }
 
+    /**
+     */
+    public void pollTask(io.littlehorse.common.proto.PollTaskPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.PollTaskReplyPb> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getPollTaskMethod(), responseObserver);
+    }
+
+    /**
+     */
+    public void reportTask(io.littlehorse.common.proto.TaskResultEventPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.ReportTaskReplyPb> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getReportTaskMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -650,6 +726,20 @@ public final class LHPublicApiGrpc {
                 io.littlehorse.common.proto.SearchWfRunPb,
                 io.littlehorse.common.proto.SearchWfRunReplyPb>(
                   this, METHODID_SEARCH_WF_RUN)))
+          .addMethod(
+            getPollTaskMethod(),
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
+              new MethodHandlers<
+                io.littlehorse.common.proto.PollTaskPb,
+                io.littlehorse.common.proto.PollTaskReplyPb>(
+                  this, METHODID_POLL_TASK)))
+          .addMethod(
+            getReportTaskMethod(),
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
+              new MethodHandlers<
+                io.littlehorse.common.proto.TaskResultEventPb,
+                io.littlehorse.common.proto.ReportTaskReplyPb>(
+                  this, METHODID_REPORT_TASK)))
           .build();
     }
   }
@@ -771,6 +861,22 @@ public final class LHPublicApiGrpc {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getSearchWfRunMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void pollTask(io.littlehorse.common.proto.PollTaskPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.PollTaskReplyPb> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getPollTaskMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void reportTask(io.littlehorse.common.proto.TaskResultEventPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.ReportTaskReplyPb> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getReportTaskMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -876,6 +982,20 @@ public final class LHPublicApiGrpc {
     public io.littlehorse.common.proto.SearchWfRunReplyPb searchWfRun(io.littlehorse.common.proto.SearchWfRunPb request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getSearchWfRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.common.proto.PollTaskReplyPb pollTask(io.littlehorse.common.proto.PollTaskPb request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getPollTaskMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.common.proto.ReportTaskReplyPb reportTask(io.littlehorse.common.proto.TaskResultEventPb request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getReportTaskMethod(), getCallOptions(), request);
     }
   }
 
@@ -996,6 +1116,22 @@ public final class LHPublicApiGrpc {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getSearchWfRunMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.PollTaskReplyPb> pollTask(
+        io.littlehorse.common.proto.PollTaskPb request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getPollTaskMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.ReportTaskReplyPb> reportTask(
+        io.littlehorse.common.proto.TaskResultEventPb request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getReportTaskMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_PUT_TASK_DEF = 0;
@@ -1011,6 +1147,8 @@ public final class LHPublicApiGrpc {
   private static final int METHODID_PUT_EXTERNAL_EVENT = 10;
   private static final int METHODID_GET_EXTERNAL_EVENT = 11;
   private static final int METHODID_SEARCH_WF_RUN = 12;
+  private static final int METHODID_POLL_TASK = 13;
+  private static final int METHODID_REPORT_TASK = 14;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -1080,6 +1218,14 @@ public final class LHPublicApiGrpc {
         case METHODID_SEARCH_WF_RUN:
           serviceImpl.searchWfRun((io.littlehorse.common.proto.SearchWfRunPb) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.SearchWfRunReplyPb>) responseObserver);
+          break;
+        case METHODID_POLL_TASK:
+          serviceImpl.pollTask((io.littlehorse.common.proto.PollTaskPb) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.PollTaskReplyPb>) responseObserver);
+          break;
+        case METHODID_REPORT_TASK:
+          serviceImpl.reportTask((io.littlehorse.common.proto.TaskResultEventPb) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.ReportTaskReplyPb>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -1155,6 +1301,8 @@ public final class LHPublicApiGrpc {
               .addMethod(getPutExternalEventMethod())
               .addMethod(getGetExternalEventMethod())
               .addMethod(getSearchWfRunMethod())
+              .addMethod(getPollTaskMethod())
+              .addMethod(getReportTaskMethod())
               .build();
         }
       }

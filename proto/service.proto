@@ -160,6 +160,21 @@ message SearchWfRunReplyPb {
     optional bytes bookmark = 4;
 }
 
+message PollTaskPb {
+    string task_def_name = 1;
+}
+
+message PollTaskReplyPb {
+    LHResponseCodePb code = 1;
+    string message = 2;
+    optional TaskScheduleRequestPb result = 3;
+}
+
+message ReportTaskReplyPb {
+    LHResponseCodePb code = 1;
+    optional string message = 2;
+}
+
 service LHPublicApi {
     rpc PutTaskDef(PutTaskDefPb) returns (PutTaskDefReplyPb) {}
     rpc GetTaskDef(GetTaskDefPb) returns (GetTaskDefReplyPb) {}
@@ -181,6 +196,9 @@ service LHPublicApi {
     rpc GetExternalEvent(GetExternalEventPb) returns (GetExternalEventReplyPb) {}
 
     rpc SearchWfRun(SearchWfRunPb) returns (SearchWfRunReplyPb) {}
+
+    rpc PollTask(PollTaskPb) returns (PollTaskReplyPb) {}
+    rpc ReportTask(TaskResultEventPb) returns (ReportTaskReplyPb) {}
 }
 
 

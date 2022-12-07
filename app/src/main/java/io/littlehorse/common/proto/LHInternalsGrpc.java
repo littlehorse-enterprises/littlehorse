@@ -108,6 +108,37 @@ public final class LHInternalsGrpc {
     return getPaginatedTagQueryMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.InternalPollTaskPb,
+      io.littlehorse.common.proto.InternalPollTaskReplyPb> getInternalPollTaskMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "InternalPollTask",
+      requestType = io.littlehorse.common.proto.InternalPollTaskPb.class,
+      responseType = io.littlehorse.common.proto.InternalPollTaskReplyPb.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.InternalPollTaskPb,
+      io.littlehorse.common.proto.InternalPollTaskReplyPb> getInternalPollTaskMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.common.proto.InternalPollTaskPb, io.littlehorse.common.proto.InternalPollTaskReplyPb> getInternalPollTaskMethod;
+    if ((getInternalPollTaskMethod = LHInternalsGrpc.getInternalPollTaskMethod) == null) {
+      synchronized (LHInternalsGrpc.class) {
+        if ((getInternalPollTaskMethod = LHInternalsGrpc.getInternalPollTaskMethod) == null) {
+          LHInternalsGrpc.getInternalPollTaskMethod = getInternalPollTaskMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.InternalPollTaskPb, io.littlehorse.common.proto.InternalPollTaskReplyPb>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "InternalPollTask"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.InternalPollTaskPb.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.InternalPollTaskReplyPb.getDefaultInstance()))
+              .setSchemaDescriptor(new LHInternalsMethodDescriptorSupplier("InternalPollTask"))
+              .build();
+        }
+      }
+    }
+    return getInternalPollTaskMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -177,6 +208,13 @@ public final class LHInternalsGrpc {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getPaginatedTagQueryMethod(), responseObserver);
     }
 
+    /**
+     */
+    public void internalPollTask(io.littlehorse.common.proto.InternalPollTaskPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalPollTaskReplyPb> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getInternalPollTaskMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -200,6 +238,13 @@ public final class LHInternalsGrpc {
                 io.littlehorse.common.proto.PaginatedTagQueryPb,
                 io.littlehorse.common.proto.PaginatedTagQueryReplyPb>(
                   this, METHODID_PAGINATED_TAG_QUERY)))
+          .addMethod(
+            getInternalPollTaskMethod(),
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
+              new MethodHandlers<
+                io.littlehorse.common.proto.InternalPollTaskPb,
+                io.littlehorse.common.proto.InternalPollTaskReplyPb>(
+                  this, METHODID_INTERNAL_POLL_TASK)))
           .build();
     }
   }
@@ -241,6 +286,14 @@ public final class LHInternalsGrpc {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getPaginatedTagQueryMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void internalPollTask(io.littlehorse.common.proto.InternalPollTaskPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalPollTaskReplyPb> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getInternalPollTaskMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -276,6 +329,13 @@ public final class LHInternalsGrpc {
     public io.littlehorse.common.proto.PaginatedTagQueryReplyPb paginatedTagQuery(io.littlehorse.common.proto.PaginatedTagQueryPb request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getPaginatedTagQueryMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.common.proto.InternalPollTaskReplyPb internalPollTask(io.littlehorse.common.proto.InternalPollTaskPb request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getInternalPollTaskMethod(), getCallOptions(), request);
     }
   }
 
@@ -316,11 +376,20 @@ public final class LHInternalsGrpc {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getPaginatedTagQueryMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.InternalPollTaskReplyPb> internalPollTask(
+        io.littlehorse.common.proto.InternalPollTaskPb request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getInternalPollTaskMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_CENTRAL_STORE_QUERY = 0;
   private static final int METHODID_WAIT_FOR_COMMAND_RESULT = 1;
   private static final int METHODID_PAGINATED_TAG_QUERY = 2;
+  private static final int METHODID_INTERNAL_POLL_TASK = 3;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -350,6 +419,10 @@ public final class LHInternalsGrpc {
         case METHODID_PAGINATED_TAG_QUERY:
           serviceImpl.paginatedTagQuery((io.littlehorse.common.proto.PaginatedTagQueryPb) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.PaginatedTagQueryReplyPb>) responseObserver);
+          break;
+        case METHODID_INTERNAL_POLL_TASK:
+          serviceImpl.internalPollTask((io.littlehorse.common.proto.InternalPollTaskPb) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalPollTaskReplyPb>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -415,6 +488,7 @@ public final class LHInternalsGrpc {
               .addMethod(getCentralStoreQueryMethod())
               .addMethod(getWaitForCommandResultMethod())
               .addMethod(getPaginatedTagQueryMethod())
+              .addMethod(getInternalPollTaskMethod())
               .build();
         }
       }

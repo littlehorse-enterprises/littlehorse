@@ -32,6 +32,8 @@ import io.littlehorse.common.proto.GetWfRunReplyPb;
 import io.littlehorse.common.proto.LHResponseCodePb;
 import io.littlehorse.common.proto.PaginatedTagQueryPb;
 import io.littlehorse.common.proto.PaginatedTagQueryReplyPb;
+import io.littlehorse.common.proto.PollTaskPb;
+import io.littlehorse.common.proto.PollTaskReplyPb;
 import io.littlehorse.common.proto.SearchWfRunPb;
 import io.littlehorse.common.proto.SearchWfRunReplyPb;
 import io.littlehorse.common.util.LHProducer;
@@ -251,7 +253,7 @@ public class KafkaStreamsBackend {
             }
         } catch (LHConnectionError exn) {
             out.code = LHResponseCodePb.CONNECTION_ERROR;
-            out.message = "Request status pending: " + exn.getMessage();
+            out.message = "Request recorded, status pending: " + exn.getMessage();
         }
         return out;
     }
@@ -442,6 +444,10 @@ public class KafkaStreamsBackend {
                 .setMessage("Failed connecting to backend: " + exn.getMessage());
         }
         return out.build();
+    }
+
+    public PollTaskReplyPb pollTask(PollTaskPb req) {
+        return null;
     }
 
     public void start() throws IOException {
