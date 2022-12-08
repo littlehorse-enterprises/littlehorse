@@ -1,10 +1,7 @@
 package io.littlehorse.server.streamsbackend.storeinternals;
 
-import io.littlehorse.common.LHConfig;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
@@ -22,38 +19,10 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class InflightList {
 
-    private List<IFLPartition> partitions;
-
-    public InflightList(LHConfig config) {
-        partitions = new ArrayList<>();
-        for (int i = 0; i < config.getClusterPartitions(); i++) {
-            partitions.add(new IFLPartition());
-        }
-    }
-
-    private IFLPartition getPartition(int partition) {
-        return partitions.get(partition);
-    }
-
-    public boolean markInFlight(int partition, String taskDefName, String nodeRunId) {
-        IFLPartition part = getPartition(partition);
-        return part.markInFlight(taskDefName, nodeRunId);
-    }
-
-    public void markDone(int partition, String taskDefName, String nodeRunId) {
-        getPartition(partition).markDone(taskDefName, nodeRunId);
-    }
-}
-
-/*
- * This class is a collection of all queues on a partition.
- */
-class IFLPartition {
-
     private Map<String, IFLPQueue> queues;
     private ReadWriteLock rwl;
 
-    public IFLPartition() {
+    public InflightList() {
         queues = new HashMap<>();
         rwl = new ReentrantReadWriteLock();
     }

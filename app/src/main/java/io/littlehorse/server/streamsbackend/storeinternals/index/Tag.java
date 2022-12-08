@@ -155,4 +155,17 @@ public class Tag extends Storeable<TagPb> {
         }
         throw new RuntimeException("Not possible");
     }
+
+    public static String getTagPrefixForPendingTasks(String taskDefName) {
+        return (
+            GETableClassEnumPb.NODE_RUN.toString() +
+            "/" +
+            getTagAttributes(
+                Arrays.asList(
+                    Pair.of("taskDefName", taskDefName),
+                    Pair.of("status", "STARTING")
+                )
+            )
+        );
+    }
 }

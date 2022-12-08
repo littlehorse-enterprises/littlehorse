@@ -19,6 +19,7 @@ import io.littlehorse.common.proto.InternalPollTaskReplyPb;
 import io.littlehorse.common.proto.LHInternalsGrpc;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsBlockingStub;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsImplBase;
+import io.littlehorse.common.proto.LHResponseCodePb;
 import io.littlehorse.common.proto.PaginatedTagQueryPb;
 import io.littlehorse.common.proto.PaginatedTagQueryReplyPb;
 import io.littlehorse.common.proto.PartitionBookmarkPb;
@@ -56,6 +57,7 @@ public class BackendInternalComms implements Closeable {
     private KafkaStreams coreStreams;
     private HostInfo thisHost;
     private InflightList inflightList;
+    private LocalTaskQueueWrapper taskQueueWrapper;
 
     private Map<String, ManagedChannel> channels;
 
@@ -63,7 +65,9 @@ public class BackendInternalComms implements Closeable {
         this.config = config;
         this.coreStreams = coreStreams;
         this.channels = new HashMap<>();
-        this.inflightList = new InflightList(config);
+        this.inflightList = new InflightList();
+        this.taskQueueWrapper =
+            new LocalTaskQueueWrapper(coreStreams, config, inflightList);
 
         this.internalGrpcServer =
             ServerBuilder
@@ -112,8 +116,18 @@ public class BackendInternalComms implements Closeable {
         return null;
     }
 
-    private PollTaskReplyPb pollTaskLocal(String taskDefId) {
-        return null;
+    private PollTaskReplyPb pollTaskLocal(String taskDefName) {
+        // String nodeRunId = taskQueueWrapper.pollTask(taskDefName);
+        // if (nodeRunId != null) {
+        //     NodeRun nodeRun =
+        // }
+
+        //     PollTaskReplyPb.Builder out = PollTaskReplyPb.newBuilder();
+        // return out.setCode(LHResponseCodePb.OK).build();
+
+        // TODO: figure out where we store taskScheduleRequests.
+
+        throw new RuntimeException("implement me");
     }
 
     public Bytes getLastFromPrefix(String prefix, String partitionKey)

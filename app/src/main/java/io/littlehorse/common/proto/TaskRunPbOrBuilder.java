@@ -73,4 +73,38 @@ public interface TaskRunPbOrBuilder extends
    */
   com.google.protobuf.ByteString
       getTaskDefIdBytes();
+
+  /**
+   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; input_variables = 6;</code>
+   */
+  int getInputVariablesCount();
+  /**
+   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; input_variables = 6;</code>
+   */
+  boolean containsInputVariables(
+      java.lang.String key);
+  /**
+   * Use {@link #getInputVariablesMap()} instead.
+   */
+  @java.lang.Deprecated
+  java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableValuePb>
+  getInputVariables();
+  /**
+   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; input_variables = 6;</code>
+   */
+  java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableValuePb>
+  getInputVariablesMap();
+  /**
+   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; input_variables = 6;</code>
+   */
+
+  io.littlehorse.common.proto.VariableValuePb getInputVariablesOrDefault(
+      java.lang.String key,
+      io.littlehorse.common.proto.VariableValuePb defaultValue);
+  /**
+   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; input_variables = 6;</code>
+   */
+
+  io.littlehorse.common.proto.VariableValuePb getInputVariablesOrThrow(
+      java.lang.String key);
 }

@@ -100,6 +100,19 @@ private static final long serialVersionUID = 0L;
             taskDefId_ = s;
             break;
           }
+          case 50: {
+            if (!((mutable_bitField0_ & 0x00000008) != 0)) {
+              inputVariables_ = com.google.protobuf.MapField.newMapField(
+                  InputVariablesDefaultEntryHolder.defaultEntry);
+              mutable_bitField0_ |= 0x00000008;
+            }
+            com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.common.proto.VariableValuePb>
+            inputVariables__ = input.readMessage(
+                InputVariablesDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+            inputVariables_.getMutableMap().put(
+                inputVariables__.getKey(), inputVariables__.getValue());
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -124,6 +137,18 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.WfRun.internal_static_lh_proto_TaskRunPb_descriptor;
   }
 
+  @SuppressWarnings({"rawtypes"})
+  @java.lang.Override
+  protected com.google.protobuf.MapField internalGetMapField(
+      int number) {
+    switch (number) {
+      case 6:
+        return internalGetInputVariables();
+      default:
+        throw new RuntimeException(
+            "Invalid map field number: " + number);
+    }
+  }
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
@@ -264,6 +289,87 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int INPUT_VARIABLES_FIELD_NUMBER = 6;
+  private static final class InputVariablesDefaultEntryHolder {
+    static final com.google.protobuf.MapEntry<
+        java.lang.String, io.littlehorse.common.proto.VariableValuePb> defaultEntry =
+            com.google.protobuf.MapEntry
+            .<java.lang.String, io.littlehorse.common.proto.VariableValuePb>newDefaultInstance(
+                io.littlehorse.common.proto.WfRun.internal_static_lh_proto_TaskRunPb_InputVariablesEntry_descriptor, 
+                com.google.protobuf.WireFormat.FieldType.STRING,
+                "",
+                com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                io.littlehorse.common.proto.VariableValuePb.getDefaultInstance());
+  }
+  private com.google.protobuf.MapField<
+      java.lang.String, io.littlehorse.common.proto.VariableValuePb> inputVariables_;
+  private com.google.protobuf.MapField<java.lang.String, io.littlehorse.common.proto.VariableValuePb>
+  internalGetInputVariables() {
+    if (inputVariables_ == null) {
+      return com.google.protobuf.MapField.emptyMapField(
+          InputVariablesDefaultEntryHolder.defaultEntry);
+    }
+    return inputVariables_;
+  }
+
+  public int getInputVariablesCount() {
+    return internalGetInputVariables().getMap().size();
+  }
+  /**
+   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; input_variables = 6;</code>
+   */
+
+  @java.lang.Override
+  public boolean containsInputVariables(
+      java.lang.String key) {
+    if (key == null) { throw new java.lang.NullPointerException(); }
+    return internalGetInputVariables().getMap().containsKey(key);
+  }
+  /**
+   * Use {@link #getInputVariablesMap()} instead.
+   */
+  @java.lang.Override
+  @java.lang.Deprecated
+  public java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableValuePb> getInputVariables() {
+    return getInputVariablesMap();
+  }
+  /**
+   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; input_variables = 6;</code>
+   */
+  @java.lang.Override
+
+  public java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableValuePb> getInputVariablesMap() {
+    return internalGetInputVariables().getMap();
+  }
+  /**
+   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; input_variables = 6;</code>
+   */
+  @java.lang.Override
+
+  public io.littlehorse.common.proto.VariableValuePb getInputVariablesOrDefault(
+      java.lang.String key,
+      io.littlehorse.common.proto.VariableValuePb defaultValue) {
+    if (key == null) { throw new java.lang.NullPointerException(); }
+    java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableValuePb> map =
+        internalGetInputVariables().getMap();
+    return map.containsKey(key) ? map.get(key) : defaultValue;
+  }
+  /**
+   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; input_variables = 6;</code>
+   */
+  @java.lang.Override
+
+  public io.littlehorse.common.proto.VariableValuePb getInputVariablesOrThrow(
+      java.lang.String key) {
+    if (key == null) { throw new java.lang.NullPointerException(); }
+    java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableValuePb> map =
+        internalGetInputVariables().getMap();
+    if (!map.containsKey(key)) {
+      throw new java.lang.IllegalArgumentException();
+    }
+    return map.get(key);
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -293,6 +399,12 @@ private static final long serialVersionUID = 0L;
     if (!getTaskDefIdBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 5, taskDefId_);
     }
+    com.google.protobuf.GeneratedMessageV3
+      .serializeStringMapTo(
+        output,
+        internalGetInputVariables(),
+        InputVariablesDefaultEntryHolder.defaultEntry,
+        6);
     unknownFields.writeTo(output);
   }
 
@@ -320,6 +432,16 @@ private static final long serialVersionUID = 0L;
     }
     if (!getTaskDefIdBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, taskDefId_);
+    }
+    for (java.util.Map.Entry<java.lang.String, io.littlehorse.common.proto.VariableValuePb> entry
+         : internalGetInputVariables().getMap().entrySet()) {
+      com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.common.proto.VariableValuePb>
+      inputVariables__ = InputVariablesDefaultEntryHolder.defaultEntry.newBuilderForType()
+          .setKey(entry.getKey())
+          .setValue(entry.getValue())
+          .build();
+      size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(6, inputVariables__);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -355,6 +477,8 @@ private static final long serialVersionUID = 0L;
     }
     if (!getTaskDefId()
         .equals(other.getTaskDefId())) return false;
+    if (!internalGetInputVariables().equals(
+        other.internalGetInputVariables())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -382,6 +506,10 @@ private static final long serialVersionUID = 0L;
     }
     hash = (37 * hash) + TASK_DEF_ID_FIELD_NUMBER;
     hash = (53 * hash) + getTaskDefId().hashCode();
+    if (!internalGetInputVariables().getMap().isEmpty()) {
+      hash = (37 * hash) + INPUT_VARIABLES_FIELD_NUMBER;
+      hash = (53 * hash) + internalGetInputVariables().hashCode();
+    }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -489,6 +617,28 @@ private static final long serialVersionUID = 0L;
       return io.littlehorse.common.proto.WfRun.internal_static_lh_proto_TaskRunPb_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 6:
+          return internalGetInputVariables();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapField internalGetMutableMapField(
+        int number) {
+      switch (number) {
+        case 6:
+          return internalGetMutableInputVariables();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -540,6 +690,7 @@ private static final long serialVersionUID = 0L;
       bitField0_ = (bitField0_ & ~0x00000004);
       taskDefId_ = "";
 
+      internalGetMutableInputVariables().clear();
       return this;
     }
 
@@ -594,6 +745,8 @@ private static final long serialVersionUID = 0L;
         to_bitField0_ |= 0x00000004;
       }
       result.taskDefId_ = taskDefId_;
+      result.inputVariables_ = internalGetInputVariables();
+      result.inputVariables_.makeImmutable();
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -659,6 +812,8 @@ private static final long serialVersionUID = 0L;
         taskDefId_ = other.taskDefId_;
         onChanged();
       }
+      internalGetMutableInputVariables().mergeFrom(
+          other.internalGetInputVariables());
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
@@ -1165,6 +1320,134 @@ private static final long serialVersionUID = 0L;
       
       taskDefId_ = value;
       onChanged();
+      return this;
+    }
+
+    private com.google.protobuf.MapField<
+        java.lang.String, io.littlehorse.common.proto.VariableValuePb> inputVariables_;
+    private com.google.protobuf.MapField<java.lang.String, io.littlehorse.common.proto.VariableValuePb>
+    internalGetInputVariables() {
+      if (inputVariables_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            InputVariablesDefaultEntryHolder.defaultEntry);
+      }
+      return inputVariables_;
+    }
+    private com.google.protobuf.MapField<java.lang.String, io.littlehorse.common.proto.VariableValuePb>
+    internalGetMutableInputVariables() {
+      onChanged();;
+      if (inputVariables_ == null) {
+        inputVariables_ = com.google.protobuf.MapField.newMapField(
+            InputVariablesDefaultEntryHolder.defaultEntry);
+      }
+      if (!inputVariables_.isMutable()) {
+        inputVariables_ = inputVariables_.copy();
+      }
+      return inputVariables_;
+    }
+
+    public int getInputVariablesCount() {
+      return internalGetInputVariables().getMap().size();
+    }
+    /**
+     * <code>map&lt;string, .lh_proto.VariableValuePb&gt; input_variables = 6;</code>
+     */
+
+    @java.lang.Override
+    public boolean containsInputVariables(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      return internalGetInputVariables().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getInputVariablesMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableValuePb> getInputVariables() {
+      return getInputVariablesMap();
+    }
+    /**
+     * <code>map&lt;string, .lh_proto.VariableValuePb&gt; input_variables = 6;</code>
+     */
+    @java.lang.Override
+
+    public java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableValuePb> getInputVariablesMap() {
+      return internalGetInputVariables().getMap();
+    }
+    /**
+     * <code>map&lt;string, .lh_proto.VariableValuePb&gt; input_variables = 6;</code>
+     */
+    @java.lang.Override
+
+    public io.littlehorse.common.proto.VariableValuePb getInputVariablesOrDefault(
+        java.lang.String key,
+        io.littlehorse.common.proto.VariableValuePb defaultValue) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableValuePb> map =
+          internalGetInputVariables().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <code>map&lt;string, .lh_proto.VariableValuePb&gt; input_variables = 6;</code>
+     */
+    @java.lang.Override
+
+    public io.littlehorse.common.proto.VariableValuePb getInputVariablesOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableValuePb> map =
+          internalGetInputVariables().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+
+    public Builder clearInputVariables() {
+      internalGetMutableInputVariables().getMutableMap()
+          .clear();
+      return this;
+    }
+    /**
+     * <code>map&lt;string, .lh_proto.VariableValuePb&gt; input_variables = 6;</code>
+     */
+
+    public Builder removeInputVariables(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      internalGetMutableInputVariables().getMutableMap()
+          .remove(key);
+      return this;
+    }
+    /**
+     * Use alternate mutation accessors instead.
+     */
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableValuePb>
+    getMutableInputVariables() {
+      return internalGetMutableInputVariables().getMutableMap();
+    }
+    /**
+     * <code>map&lt;string, .lh_proto.VariableValuePb&gt; input_variables = 6;</code>
+     */
+    public Builder putInputVariables(
+        java.lang.String key,
+        io.littlehorse.common.proto.VariableValuePb value) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      if (value == null) { throw new java.lang.NullPointerException(); }
+      internalGetMutableInputVariables().getMutableMap()
+          .put(key, value);
+      return this;
+    }
+    /**
+     * <code>map&lt;string, .lh_proto.VariableValuePb&gt; input_variables = 6;</code>
+     */
+
+    public Builder putAllInputVariables(
+        java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableValuePb> values) {
+      internalGetMutableInputVariables().getMutableMap()
+          .putAll(values);
       return this;
     }
     @java.lang.Override

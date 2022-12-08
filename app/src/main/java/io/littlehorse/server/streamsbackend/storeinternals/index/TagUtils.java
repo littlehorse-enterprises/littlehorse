@@ -110,7 +110,7 @@ public class TagUtils {
                 new Tag(
                     thing,
                     StorageType.DISCRETE,
-                    Pair.of("taskDefId", thing.taskRun.taskDefName),
+                    Pair.of("taskDefName", thing.taskRun.taskDefName),
                     Pair.of("status", thing.status.toString())
                 )
             );

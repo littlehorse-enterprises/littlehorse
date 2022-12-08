@@ -412,19 +412,24 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
     }
 
     private void forwardTask(TaskScheduleRequest tsr) {
-        TaskDef taskDef = getTaskDef(tsr.taskDefName, null);
-        CommandProcessorOutput output = new CommandProcessorOutput(
-            taskDef.queueName,
-            tsr,
-            tsr.wfRunId
-        );
-        ctx.forward(
-            new Record<String, CommandProcessorOutput>(
-                tsr.wfRunId,
-                output,
-                System.currentTimeMillis()
-            )
-        );
+        // Currently, there's nothing to do here. Eventually we'll interrogate
+        // the TaskDef to see if we have the RPC or DIRECT_KAFKA task queue type.
+        // If RPC, then there's nothing to do; otherwise, we forward the task as
+        // commented out below.
+
+        // TaskDef taskDef = getTaskDef(tsr.taskDefName, null);
+        // CommandProcessorOutput output = new CommandProcessorOutput(
+        //     taskDef.queueName,
+        //     tsr,
+        //     tsr.wfRunId
+        // );
+        // ctx.forward(
+        //     new Record<String, CommandProcessorOutput>(
+        //         tsr.wfRunId,
+        //         output,
+        //         System.currentTimeMillis()
+        //     )
+        // );
     }
 
     private void forwardTimer(LHTimer timer) {

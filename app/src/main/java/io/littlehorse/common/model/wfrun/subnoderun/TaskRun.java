@@ -16,8 +16,10 @@ import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.proto.TaskRunPb;
 import io.littlehorse.common.proto.TaskRunPbOrBuilder;
+import io.littlehorse.common.proto.VariableValuePb;
 import io.littlehorse.common.util.LHUtil;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 public class TaskRun extends SubNodeRun<TaskRunPb> {
@@ -28,6 +30,11 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
 
     public Date startTime;
     public String taskDefName;
+    public Map<String, VariableValue> inputVariables;
+
+    public TaskRun() {
+        inputVariables = new HashMap<>();
+    }
 
     public Class<TaskRunPb> getProtoBaseClass() {
         return TaskRunPb.class;
@@ -47,6 +54,11 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
             startTime = LHUtil.fromProtoTs(p.getStartTime());
         }
         taskDefName = p.getTaskDefId();
+        for (Map.Entry<String, VariableValuePb> e : p
+            .getInputVariablesMap()
+            .entrySet()) {
+            inputVariables.put(e.getKey(), VariableValue.fromProto(e.getValue()));
+        }
     }
 
     public TaskRunPb.Builder toProto() {
@@ -63,6 +75,9 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
         }
         if (startTime != null) {
             out.setStartTime(LHUtil.fromDate(startTime));
+        }
+        for (Map.Entry<String, VariableValue> e : inputVariables.entrySet()) {
+            out.putInputVariables(e.getKey(), e.getValue().toProto().build());
         }
 
         return out;
@@ -97,9 +112,8 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
 
         TaskScheduleRequest tsr = new TaskScheduleRequest();
 
-        Map<String, VariableValue> varVals;
         try {
-            varVals = nodeRun.threadRun.assignVarsForNode(node.taskNode);
+            this.inputVariables = nodeRun.threadRun.assignVarsForNode(node.taskNode);
         } catch (LHVarSubError exn) {
             // make a call to `ThreadRun::fail()`
             nodeRun.fail(
@@ -122,7 +136,7 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
         tsr.wfRunId = nodeRun.threadRun.wfRunId;
         tsr.wfSpecId = nodeRun.threadRun.wfSpecName;
         tsr.nodeName = node.name;
-        tsr.variables = varVals;
+        tsr.variables = this.inputVariables;
 
         nodeRun.threadRun.wfRun.cmdDao.scheduleTask(tsr);
     }
