@@ -1,4 +1,4 @@
-package io.littlehorse.server.streamsbackend.coreserver;
+package io.littlehorse.server.streamsbackend.coreprocessors;
 
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHSerdeError;

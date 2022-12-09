@@ -14,7 +14,7 @@ import io.littlehorse.common.proto.CommandPb;
 import io.littlehorse.common.proto.CommandPb.CommandCase;
 import io.littlehorse.common.proto.CommandPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.streamsbackend.coreserver.CommandProcessorDaoImpl;
+import io.littlehorse.server.streamsbackend.coreprocessors.CommandProcessorDaoImpl;
 import java.util.Date;
 
 public class Command extends LHSerializable<CommandPb> {

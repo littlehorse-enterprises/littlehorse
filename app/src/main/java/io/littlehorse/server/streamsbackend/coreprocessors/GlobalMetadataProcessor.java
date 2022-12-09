@@ -1,4 +1,4 @@
-package io.littlehorse.server.streamsbackend.coreserver;
+package io.littlehorse.server.streamsbackend.coreprocessors;
 
 import io.littlehorse.server.streamsbackend.ServerTopology;
 import org.apache.kafka.common.utils.Bytes;

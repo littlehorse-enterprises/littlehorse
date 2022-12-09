@@ -181,3 +181,25 @@ public class LHROStoreWrapper {
         return Pair.of(idsOut, bmOut);
     }
 }
+/*
+
+Want to standardize the paginated lookups. Lookup patterns:
+
+* GET (type, object id)
+  - returns an object or null
+
+* Search (type, Tag)
+  - returns a paginated range response
+
+* Search (type, Prefix), eg. NodeRun by wfRunId
+  - returns a non-paginated list of ID's
+
+* Pop Task (taskDefName)
+  - returns an id or null
+  - requires coordination between requests
+
+
+I think it makes sense to just write all the code and have an employee sort through
+it later on.
+
+ */
