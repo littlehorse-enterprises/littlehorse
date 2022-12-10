@@ -116,31 +116,32 @@ public final class InternalServer {
       "h_proto.StoreQueryStatusPb\022.\n\006result\030\002 \001" +
       "(\0132\031.lh_proto.CommandResultPbH\000\210\001\001\022\024\n\007me" +
       "ssage\030\003 \001(\tH\001\210\001\001B\t\n\007_resultB\n\n\010_message\"" +
-      "\247\001\n\023PaginatedTagQueryPb\022\033\n\023full_tag_attr" +
-      "ibutes\030\001 \001(\t\022\r\n\005limit\030\002 \001(\005\022+\n\010bookmark\030" +
-      "\003 \001(\0132\024.lh_proto.BookmarkPbH\000\210\001\001\022*\n\004type" +
-      "\030\004 \001(\0162\034.lh_proto.GETableClassEnumPbB\013\n\t" +
-      "_bookmark\"\212\001\n\030PaginatedTagQueryReplyPb\022*" +
-      "\n\004code\030\001 \001(\0162\034.lh_proto.StoreQueryStatus" +
-      "Pb\022\022\n\nobject_ids\030\002 \003(\t\022.\n\020updated_bookma" +
-      "rk\030\003 \001(\0132\024.lh_proto.BookmarkPb\"-\n\022Intern" +
-      "alPollTaskPb\022\027\n\017task_queue_name\030\001 \001(\t\"\206\001" +
-      "\n\027InternalPollTaskReplyPb\022*\n\004code\030\001 \001(\0162" +
-      "\034.lh_proto.StoreQueryStatusPb\0224\n\006result\030" +
-      "\002 \001(\0132\037.lh_proto.TaskScheduleRequestPbH\000" +
-      "\210\001\001B\t\n\007_result*7\n\022StoreQueryStatusPb\022\n\n\006" +
-      "RSQ_OK\020\000\022\025\n\021RSQ_NOT_AVAILABLE\020\0022\373\002\n\013LHIn" +
-      "ternals\022X\n\021CentralStoreQuery\022\035.lh_proto." +
-      "CentralStoreQueryPb\032\".lh_proto.CentralSt" +
-      "oreQueryReplyPb\"\000\022a\n\024WaitForCommandResul" +
-      "t\022 .lh_proto.WaitForCommandResultPb\032%.lh" +
-      "_proto.WaitForCommandResultReplyPb\"\000\022X\n\021" +
-      "PaginatedTagQuery\022\035.lh_proto.PaginatedTa" +
-      "gQueryPb\032\".lh_proto.PaginatedTagQueryRep" +
-      "lyPb\"\000\022U\n\020InternalPollTask\022\034.lh_proto.In" +
-      "ternalPollTaskPb\032!.lh_proto.InternalPoll" +
-      "TaskReplyPb\"\000B(\n\033io.littlehorse.common.p" +
-      "rotoP\001Z\007.;modelb\006proto3"
+      "\274\001\n\023PaginatedTagQueryPb\0221\n\013object_type\030\001" +
+      " \001(\0162\034.lh_proto.GETableClassEnumPb\022)\n\nat" +
+      "tributes\030\002 \003(\0132\025.lh_proto.AttributePb\022+\n" +
+      "\010bookmark\030\003 \001(\0132\024.lh_proto.BookmarkPbH\000\210" +
+      "\001\001\022\r\n\005limit\030\004 \001(\005B\013\n\t_bookmark\"\212\001\n\030Pagin" +
+      "atedTagQueryReplyPb\022*\n\004code\030\001 \001(\0162\034.lh_p" +
+      "roto.StoreQueryStatusPb\022\022\n\nobject_ids\030\002 " +
+      "\003(\t\022.\n\020updated_bookmark\030\003 \001(\0132\024.lh_proto" +
+      ".BookmarkPb\"-\n\022InternalPollTaskPb\022\027\n\017tas" +
+      "k_queue_name\030\001 \001(\t\"\206\001\n\027InternalPollTaskR" +
+      "eplyPb\022*\n\004code\030\001 \001(\0162\034.lh_proto.StoreQue" +
+      "ryStatusPb\0224\n\006result\030\002 \001(\0132\037.lh_proto.Ta" +
+      "skScheduleRequestPbH\000\210\001\001B\t\n\007_result*7\n\022S" +
+      "toreQueryStatusPb\022\n\n\006RSQ_OK\020\000\022\025\n\021RSQ_NOT" +
+      "_AVAILABLE\020\0022\373\002\n\013LHInternals\022X\n\021CentralS" +
+      "toreQuery\022\035.lh_proto.CentralStoreQueryPb" +
+      "\032\".lh_proto.CentralStoreQueryReplyPb\"\000\022a" +
+      "\n\024WaitForCommandResult\022 .lh_proto.WaitFo" +
+      "rCommandResultPb\032%.lh_proto.WaitForComma" +
+      "ndResultReplyPb\"\000\022X\n\021PaginatedTagQuery\022\035" +
+      ".lh_proto.PaginatedTagQueryPb\032\".lh_proto" +
+      ".PaginatedTagQueryReplyPb\"\000\022U\n\020InternalP" +
+      "ollTask\022\034.lh_proto.InternalPollTaskPb\032!." +
+      "lh_proto.InternalPollTaskReplyPb\"\000B(\n\033io" +
+      ".littlehorse.common.protoP\001Z\007.;modelb\006pr" +
+      "oto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -208,7 +209,7 @@ public final class InternalServer {
     internal_static_lh_proto_PaginatedTagQueryPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_PaginatedTagQueryPb_descriptor,
-        new java.lang.String[] { "FullTagAttributes", "Limit", "Bookmark", "Type", "Bookmark", });
+        new java.lang.String[] { "ObjectType", "Attributes", "Bookmark", "Limit", "Bookmark", });
     internal_static_lh_proto_PaginatedTagQueryReplyPb_descriptor =
       getDescriptor().getMessageTypes().get(8);
     internal_static_lh_proto_PaginatedTagQueryReplyPb_fieldAccessorTable = new

@@ -16,8 +16,8 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private PaginatedTagQueryPb() {
-    fullTagAttributes_ = "";
-    type_ = 0;
+    objectType_ = 0;
+    attributes_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -51,15 +51,19 @@ private static final long serialVersionUID = 0L;
           case 0:
             done = true;
             break;
-          case 10: {
-            java.lang.String s = input.readStringRequireUtf8();
+          case 8: {
+            int rawValue = input.readEnum();
 
-            fullTagAttributes_ = s;
+            objectType_ = rawValue;
             break;
           }
-          case 16: {
-
-            limit_ = input.readInt32();
+          case 18: {
+            if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+              attributes_ = new java.util.ArrayList<io.littlehorse.common.proto.AttributePb>();
+              mutable_bitField0_ |= 0x00000001;
+            }
+            attributes_.add(
+                input.readMessage(io.littlehorse.common.proto.AttributePb.parser(), extensionRegistry));
             break;
           }
           case 26: {
@@ -76,9 +80,8 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 32: {
-            int rawValue = input.readEnum();
 
-            type_ = rawValue;
+            limit_ = input.readInt32();
             break;
           }
           default: {
@@ -96,6 +99,9 @@ private static final long serialVersionUID = 0L;
       throw new com.google.protobuf.InvalidProtocolBufferException(
           e).setUnfinishedMessage(this);
     } finally {
+      if (((mutable_bitField0_ & 0x00000001) != 0)) {
+        attributes_ = java.util.Collections.unmodifiableList(attributes_);
+      }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
@@ -114,53 +120,63 @@ private static final long serialVersionUID = 0L;
   }
 
   private int bitField0_;
-  public static final int FULL_TAG_ATTRIBUTES_FIELD_NUMBER = 1;
-  private volatile java.lang.Object fullTagAttributes_;
+  public static final int OBJECT_TYPE_FIELD_NUMBER = 1;
+  private int objectType_;
   /**
-   * <code>string full_tag_attributes = 1;</code>
-   * @return The fullTagAttributes.
+   * <code>.lh_proto.GETableClassEnumPb object_type = 1;</code>
+   * @return The enum numeric value on the wire for objectType.
    */
-  @java.lang.Override
-  public java.lang.String getFullTagAttributes() {
-    java.lang.Object ref = fullTagAttributes_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      fullTagAttributes_ = s;
-      return s;
-    }
+  @java.lang.Override public int getObjectTypeValue() {
+    return objectType_;
   }
   /**
-   * <code>string full_tag_attributes = 1;</code>
-   * @return The bytes for fullTagAttributes.
+   * <code>.lh_proto.GETableClassEnumPb object_type = 1;</code>
+   * @return The objectType.
    */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getFullTagAttributesBytes() {
-    java.lang.Object ref = fullTagAttributes_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      fullTagAttributes_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  @java.lang.Override public io.littlehorse.common.proto.GETableClassEnumPb getObjectType() {
+    @SuppressWarnings("deprecation")
+    io.littlehorse.common.proto.GETableClassEnumPb result = io.littlehorse.common.proto.GETableClassEnumPb.valueOf(objectType_);
+    return result == null ? io.littlehorse.common.proto.GETableClassEnumPb.UNRECOGNIZED : result;
   }
 
-  public static final int LIMIT_FIELD_NUMBER = 2;
-  private int limit_;
+  public static final int ATTRIBUTES_FIELD_NUMBER = 2;
+  private java.util.List<io.littlehorse.common.proto.AttributePb> attributes_;
   /**
-   * <code>int32 limit = 2;</code>
-   * @return The limit.
+   * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
    */
   @java.lang.Override
-  public int getLimit() {
-    return limit_;
+  public java.util.List<io.littlehorse.common.proto.AttributePb> getAttributesList() {
+    return attributes_;
+  }
+  /**
+   * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+   */
+  @java.lang.Override
+  public java.util.List<? extends io.littlehorse.common.proto.AttributePbOrBuilder> 
+      getAttributesOrBuilderList() {
+    return attributes_;
+  }
+  /**
+   * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+   */
+  @java.lang.Override
+  public int getAttributesCount() {
+    return attributes_.size();
+  }
+  /**
+   * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.AttributePb getAttributes(int index) {
+    return attributes_.get(index);
+  }
+  /**
+   * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.AttributePbOrBuilder getAttributesOrBuilder(
+      int index) {
+    return attributes_.get(index);
   }
 
   public static final int BOOKMARK_FIELD_NUMBER = 3;
@@ -189,23 +205,15 @@ private static final long serialVersionUID = 0L;
     return bookmark_ == null ? io.littlehorse.common.proto.BookmarkPb.getDefaultInstance() : bookmark_;
   }
 
-  public static final int TYPE_FIELD_NUMBER = 4;
-  private int type_;
+  public static final int LIMIT_FIELD_NUMBER = 4;
+  private int limit_;
   /**
-   * <code>.lh_proto.GETableClassEnumPb type = 4;</code>
-   * @return The enum numeric value on the wire for type.
+   * <code>int32 limit = 4;</code>
+   * @return The limit.
    */
-  @java.lang.Override public int getTypeValue() {
-    return type_;
-  }
-  /**
-   * <code>.lh_proto.GETableClassEnumPb type = 4;</code>
-   * @return The type.
-   */
-  @java.lang.Override public io.littlehorse.common.proto.GETableClassEnumPb getType() {
-    @SuppressWarnings("deprecation")
-    io.littlehorse.common.proto.GETableClassEnumPb result = io.littlehorse.common.proto.GETableClassEnumPb.valueOf(type_);
-    return result == null ? io.littlehorse.common.proto.GETableClassEnumPb.UNRECOGNIZED : result;
+  @java.lang.Override
+  public int getLimit() {
+    return limit_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -222,17 +230,17 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!getFullTagAttributesBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, fullTagAttributes_);
+    if (objectType_ != io.littlehorse.common.proto.GETableClassEnumPb.TASK_DEF.getNumber()) {
+      output.writeEnum(1, objectType_);
     }
-    if (limit_ != 0) {
-      output.writeInt32(2, limit_);
+    for (int i = 0; i < attributes_.size(); i++) {
+      output.writeMessage(2, attributes_.get(i));
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(3, getBookmark());
     }
-    if (type_ != io.littlehorse.common.proto.GETableClassEnumPb.TASK_DEF.getNumber()) {
-      output.writeEnum(4, type_);
+    if (limit_ != 0) {
+      output.writeInt32(4, limit_);
     }
     unknownFields.writeTo(output);
   }
@@ -243,20 +251,21 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (!getFullTagAttributesBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, fullTagAttributes_);
-    }
-    if (limit_ != 0) {
+    if (objectType_ != io.littlehorse.common.proto.GETableClassEnumPb.TASK_DEF.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(2, limit_);
+        .computeEnumSize(1, objectType_);
+    }
+    for (int i = 0; i < attributes_.size(); i++) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(2, attributes_.get(i));
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getBookmark());
     }
-    if (type_ != io.littlehorse.common.proto.GETableClassEnumPb.TASK_DEF.getNumber()) {
+    if (limit_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(4, type_);
+        .computeInt32Size(4, limit_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -273,16 +282,16 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.common.proto.PaginatedTagQueryPb other = (io.littlehorse.common.proto.PaginatedTagQueryPb) obj;
 
-    if (!getFullTagAttributes()
-        .equals(other.getFullTagAttributes())) return false;
-    if (getLimit()
-        != other.getLimit()) return false;
+    if (objectType_ != other.objectType_) return false;
+    if (!getAttributesList()
+        .equals(other.getAttributesList())) return false;
     if (hasBookmark() != other.hasBookmark()) return false;
     if (hasBookmark()) {
       if (!getBookmark()
           .equals(other.getBookmark())) return false;
     }
-    if (type_ != other.type_) return false;
+    if (getLimit()
+        != other.getLimit()) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -294,16 +303,18 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + FULL_TAG_ATTRIBUTES_FIELD_NUMBER;
-    hash = (53 * hash) + getFullTagAttributes().hashCode();
-    hash = (37 * hash) + LIMIT_FIELD_NUMBER;
-    hash = (53 * hash) + getLimit();
+    hash = (37 * hash) + OBJECT_TYPE_FIELD_NUMBER;
+    hash = (53 * hash) + objectType_;
+    if (getAttributesCount() > 0) {
+      hash = (37 * hash) + ATTRIBUTES_FIELD_NUMBER;
+      hash = (53 * hash) + getAttributesList().hashCode();
+    }
     if (hasBookmark()) {
       hash = (37 * hash) + BOOKMARK_FIELD_NUMBER;
       hash = (53 * hash) + getBookmark().hashCode();
     }
-    hash = (37 * hash) + TYPE_FIELD_NUMBER;
-    hash = (53 * hash) + type_;
+    hash = (37 * hash) + LIMIT_FIELD_NUMBER;
+    hash = (53 * hash) + getLimit();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -432,23 +443,28 @@ private static final long serialVersionUID = 0L;
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
+        getAttributesFieldBuilder();
         getBookmarkFieldBuilder();
       }
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      fullTagAttributes_ = "";
+      objectType_ = 0;
 
-      limit_ = 0;
-
+      if (attributesBuilder_ == null) {
+        attributes_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+      } else {
+        attributesBuilder_.clear();
+      }
       if (bookmarkBuilder_ == null) {
         bookmark_ = null;
       } else {
         bookmarkBuilder_.clear();
       }
-      bitField0_ = (bitField0_ & ~0x00000001);
-      type_ = 0;
+      bitField0_ = (bitField0_ & ~0x00000002);
+      limit_ = 0;
 
       return this;
     }
@@ -478,9 +494,17 @@ private static final long serialVersionUID = 0L;
       io.littlehorse.common.proto.PaginatedTagQueryPb result = new io.littlehorse.common.proto.PaginatedTagQueryPb(this);
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
-      result.fullTagAttributes_ = fullTagAttributes_;
-      result.limit_ = limit_;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
+      result.objectType_ = objectType_;
+      if (attributesBuilder_ == null) {
+        if (((bitField0_ & 0x00000001) != 0)) {
+          attributes_ = java.util.Collections.unmodifiableList(attributes_);
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
+        result.attributes_ = attributes_;
+      } else {
+        result.attributes_ = attributesBuilder_.build();
+      }
+      if (((from_bitField0_ & 0x00000002) != 0)) {
         if (bookmarkBuilder_ == null) {
           result.bookmark_ = bookmark_;
         } else {
@@ -488,7 +512,7 @@ private static final long serialVersionUID = 0L;
         }
         to_bitField0_ |= 0x00000001;
       }
-      result.type_ = type_;
+      result.limit_ = limit_;
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -538,18 +562,40 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.common.proto.PaginatedTagQueryPb other) {
       if (other == io.littlehorse.common.proto.PaginatedTagQueryPb.getDefaultInstance()) return this;
-      if (!other.getFullTagAttributes().isEmpty()) {
-        fullTagAttributes_ = other.fullTagAttributes_;
-        onChanged();
+      if (other.objectType_ != 0) {
+        setObjectTypeValue(other.getObjectTypeValue());
       }
-      if (other.getLimit() != 0) {
-        setLimit(other.getLimit());
+      if (attributesBuilder_ == null) {
+        if (!other.attributes_.isEmpty()) {
+          if (attributes_.isEmpty()) {
+            attributes_ = other.attributes_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureAttributesIsMutable();
+            attributes_.addAll(other.attributes_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.attributes_.isEmpty()) {
+          if (attributesBuilder_.isEmpty()) {
+            attributesBuilder_.dispose();
+            attributesBuilder_ = null;
+            attributes_ = other.attributes_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+            attributesBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getAttributesFieldBuilder() : null;
+          } else {
+            attributesBuilder_.addAllMessages(other.attributes_);
+          }
+        }
       }
       if (other.hasBookmark()) {
         mergeBookmark(other.getBookmark());
       }
-      if (other.type_ != 0) {
-        setTypeValue(other.getTypeValue());
+      if (other.getLimit() != 0) {
+        setLimit(other.getLimit());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -581,111 +627,298 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private java.lang.Object fullTagAttributes_ = "";
+    private int objectType_ = 0;
     /**
-     * <code>string full_tag_attributes = 1;</code>
-     * @return The fullTagAttributes.
+     * <code>.lh_proto.GETableClassEnumPb object_type = 1;</code>
+     * @return The enum numeric value on the wire for objectType.
      */
-    public java.lang.String getFullTagAttributes() {
-      java.lang.Object ref = fullTagAttributes_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        fullTagAttributes_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
+    @java.lang.Override public int getObjectTypeValue() {
+      return objectType_;
     }
     /**
-     * <code>string full_tag_attributes = 1;</code>
-     * @return The bytes for fullTagAttributes.
-     */
-    public com.google.protobuf.ByteString
-        getFullTagAttributesBytes() {
-      java.lang.Object ref = fullTagAttributes_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        fullTagAttributes_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string full_tag_attributes = 1;</code>
-     * @param value The fullTagAttributes to set.
+     * <code>.lh_proto.GETableClassEnumPb object_type = 1;</code>
+     * @param value The enum numeric value on the wire for objectType to set.
      * @return This builder for chaining.
      */
-    public Builder setFullTagAttributes(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      fullTagAttributes_ = value;
+    public Builder setObjectTypeValue(int value) {
+      
+      objectType_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>string full_tag_attributes = 1;</code>
+     * <code>.lh_proto.GETableClassEnumPb object_type = 1;</code>
+     * @return The objectType.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.GETableClassEnumPb getObjectType() {
+      @SuppressWarnings("deprecation")
+      io.littlehorse.common.proto.GETableClassEnumPb result = io.littlehorse.common.proto.GETableClassEnumPb.valueOf(objectType_);
+      return result == null ? io.littlehorse.common.proto.GETableClassEnumPb.UNRECOGNIZED : result;
+    }
+    /**
+     * <code>.lh_proto.GETableClassEnumPb object_type = 1;</code>
+     * @param value The objectType to set.
      * @return This builder for chaining.
      */
-    public Builder clearFullTagAttributes() {
+    public Builder setObjectType(io.littlehorse.common.proto.GETableClassEnumPb value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
       
-      fullTagAttributes_ = getDefaultInstance().getFullTagAttributes();
+      objectType_ = value.getNumber();
       onChanged();
       return this;
     }
     /**
-     * <code>string full_tag_attributes = 1;</code>
-     * @param value The bytes for fullTagAttributes to set.
+     * <code>.lh_proto.GETableClassEnumPb object_type = 1;</code>
      * @return This builder for chaining.
      */
-    public Builder setFullTagAttributesBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
+    public Builder clearObjectType() {
       
-      fullTagAttributes_ = value;
+      objectType_ = 0;
       onChanged();
       return this;
     }
 
-    private int limit_ ;
+    private java.util.List<io.littlehorse.common.proto.AttributePb> attributes_ =
+      java.util.Collections.emptyList();
+    private void ensureAttributesIsMutable() {
+      if (!((bitField0_ & 0x00000001) != 0)) {
+        attributes_ = new java.util.ArrayList<io.littlehorse.common.proto.AttributePb>(attributes_);
+        bitField0_ |= 0x00000001;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.common.proto.AttributePb, io.littlehorse.common.proto.AttributePb.Builder, io.littlehorse.common.proto.AttributePbOrBuilder> attributesBuilder_;
+
     /**
-     * <code>int32 limit = 2;</code>
-     * @return The limit.
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
      */
-    @java.lang.Override
-    public int getLimit() {
-      return limit_;
+    public java.util.List<io.littlehorse.common.proto.AttributePb> getAttributesList() {
+      if (attributesBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(attributes_);
+      } else {
+        return attributesBuilder_.getMessageList();
+      }
     }
     /**
-     * <code>int32 limit = 2;</code>
-     * @param value The limit to set.
-     * @return This builder for chaining.
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
      */
-    public Builder setLimit(int value) {
-      
-      limit_ = value;
-      onChanged();
+    public int getAttributesCount() {
+      if (attributesBuilder_ == null) {
+        return attributes_.size();
+      } else {
+        return attributesBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     */
+    public io.littlehorse.common.proto.AttributePb getAttributes(int index) {
+      if (attributesBuilder_ == null) {
+        return attributes_.get(index);
+      } else {
+        return attributesBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     */
+    public Builder setAttributes(
+        int index, io.littlehorse.common.proto.AttributePb value) {
+      if (attributesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureAttributesIsMutable();
+        attributes_.set(index, value);
+        onChanged();
+      } else {
+        attributesBuilder_.setMessage(index, value);
+      }
       return this;
     }
     /**
-     * <code>int32 limit = 2;</code>
-     * @return This builder for chaining.
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
      */
-    public Builder clearLimit() {
-      
-      limit_ = 0;
-      onChanged();
+    public Builder setAttributes(
+        int index, io.littlehorse.common.proto.AttributePb.Builder builderForValue) {
+      if (attributesBuilder_ == null) {
+        ensureAttributesIsMutable();
+        attributes_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        attributesBuilder_.setMessage(index, builderForValue.build());
+      }
       return this;
+    }
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     */
+    public Builder addAttributes(io.littlehorse.common.proto.AttributePb value) {
+      if (attributesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureAttributesIsMutable();
+        attributes_.add(value);
+        onChanged();
+      } else {
+        attributesBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     */
+    public Builder addAttributes(
+        int index, io.littlehorse.common.proto.AttributePb value) {
+      if (attributesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureAttributesIsMutable();
+        attributes_.add(index, value);
+        onChanged();
+      } else {
+        attributesBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     */
+    public Builder addAttributes(
+        io.littlehorse.common.proto.AttributePb.Builder builderForValue) {
+      if (attributesBuilder_ == null) {
+        ensureAttributesIsMutable();
+        attributes_.add(builderForValue.build());
+        onChanged();
+      } else {
+        attributesBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     */
+    public Builder addAttributes(
+        int index, io.littlehorse.common.proto.AttributePb.Builder builderForValue) {
+      if (attributesBuilder_ == null) {
+        ensureAttributesIsMutable();
+        attributes_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        attributesBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     */
+    public Builder addAllAttributes(
+        java.lang.Iterable<? extends io.littlehorse.common.proto.AttributePb> values) {
+      if (attributesBuilder_ == null) {
+        ensureAttributesIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, attributes_);
+        onChanged();
+      } else {
+        attributesBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     */
+    public Builder clearAttributes() {
+      if (attributesBuilder_ == null) {
+        attributes_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+      } else {
+        attributesBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     */
+    public Builder removeAttributes(int index) {
+      if (attributesBuilder_ == null) {
+        ensureAttributesIsMutable();
+        attributes_.remove(index);
+        onChanged();
+      } else {
+        attributesBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     */
+    public io.littlehorse.common.proto.AttributePb.Builder getAttributesBuilder(
+        int index) {
+      return getAttributesFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     */
+    public io.littlehorse.common.proto.AttributePbOrBuilder getAttributesOrBuilder(
+        int index) {
+      if (attributesBuilder_ == null) {
+        return attributes_.get(index);  } else {
+        return attributesBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     */
+    public java.util.List<? extends io.littlehorse.common.proto.AttributePbOrBuilder> 
+         getAttributesOrBuilderList() {
+      if (attributesBuilder_ != null) {
+        return attributesBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(attributes_);
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     */
+    public io.littlehorse.common.proto.AttributePb.Builder addAttributesBuilder() {
+      return getAttributesFieldBuilder().addBuilder(
+          io.littlehorse.common.proto.AttributePb.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     */
+    public io.littlehorse.common.proto.AttributePb.Builder addAttributesBuilder(
+        int index) {
+      return getAttributesFieldBuilder().addBuilder(
+          index, io.littlehorse.common.proto.AttributePb.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     */
+    public java.util.List<io.littlehorse.common.proto.AttributePb.Builder> 
+         getAttributesBuilderList() {
+      return getAttributesFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.common.proto.AttributePb, io.littlehorse.common.proto.AttributePb.Builder, io.littlehorse.common.proto.AttributePbOrBuilder> 
+        getAttributesFieldBuilder() {
+      if (attributesBuilder_ == null) {
+        attributesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            io.littlehorse.common.proto.AttributePb, io.littlehorse.common.proto.AttributePb.Builder, io.littlehorse.common.proto.AttributePbOrBuilder>(
+                attributes_,
+                ((bitField0_ & 0x00000001) != 0),
+                getParentForChildren(),
+                isClean());
+        attributes_ = null;
+      }
+      return attributesBuilder_;
     }
 
     private io.littlehorse.common.proto.BookmarkPb bookmark_;
@@ -696,7 +929,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the bookmark field is set.
      */
     public boolean hasBookmark() {
-      return ((bitField0_ & 0x00000001) != 0);
+      return ((bitField0_ & 0x00000002) != 0);
     }
     /**
      * <code>.lh_proto.BookmarkPb bookmark = 3;</code>
@@ -722,7 +955,7 @@ private static final long serialVersionUID = 0L;
       } else {
         bookmarkBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000001;
+      bitField0_ |= 0x00000002;
       return this;
     }
     /**
@@ -736,7 +969,7 @@ private static final long serialVersionUID = 0L;
       } else {
         bookmarkBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000001;
+      bitField0_ |= 0x00000002;
       return this;
     }
     /**
@@ -744,7 +977,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeBookmark(io.littlehorse.common.proto.BookmarkPb value) {
       if (bookmarkBuilder_ == null) {
-        if (((bitField0_ & 0x00000001) != 0) &&
+        if (((bitField0_ & 0x00000002) != 0) &&
             bookmark_ != null &&
             bookmark_ != io.littlehorse.common.proto.BookmarkPb.getDefaultInstance()) {
           bookmark_ =
@@ -756,7 +989,7 @@ private static final long serialVersionUID = 0L;
       } else {
         bookmarkBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000001;
+      bitField0_ |= 0x00000002;
       return this;
     }
     /**
@@ -769,14 +1002,14 @@ private static final long serialVersionUID = 0L;
       } else {
         bookmarkBuilder_.clear();
       }
-      bitField0_ = (bitField0_ & ~0x00000001);
+      bitField0_ = (bitField0_ & ~0x00000002);
       return this;
     }
     /**
      * <code>.lh_proto.BookmarkPb bookmark = 3;</code>
      */
     public io.littlehorse.common.proto.BookmarkPb.Builder getBookmarkBuilder() {
-      bitField0_ |= 0x00000001;
+      bitField0_ |= 0x00000002;
       onChanged();
       return getBookmarkFieldBuilder().getBuilder();
     }
@@ -808,56 +1041,33 @@ private static final long serialVersionUID = 0L;
       return bookmarkBuilder_;
     }
 
-    private int type_ = 0;
+    private int limit_ ;
     /**
-     * <code>.lh_proto.GETableClassEnumPb type = 4;</code>
-     * @return The enum numeric value on the wire for type.
-     */
-    @java.lang.Override public int getTypeValue() {
-      return type_;
-    }
-    /**
-     * <code>.lh_proto.GETableClassEnumPb type = 4;</code>
-     * @param value The enum numeric value on the wire for type to set.
-     * @return This builder for chaining.
-     */
-    public Builder setTypeValue(int value) {
-      
-      type_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.lh_proto.GETableClassEnumPb type = 4;</code>
-     * @return The type.
+     * <code>int32 limit = 4;</code>
+     * @return The limit.
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.GETableClassEnumPb getType() {
-      @SuppressWarnings("deprecation")
-      io.littlehorse.common.proto.GETableClassEnumPb result = io.littlehorse.common.proto.GETableClassEnumPb.valueOf(type_);
-      return result == null ? io.littlehorse.common.proto.GETableClassEnumPb.UNRECOGNIZED : result;
+    public int getLimit() {
+      return limit_;
     }
     /**
-     * <code>.lh_proto.GETableClassEnumPb type = 4;</code>
-     * @param value The type to set.
+     * <code>int32 limit = 4;</code>
+     * @param value The limit to set.
      * @return This builder for chaining.
      */
-    public Builder setType(io.littlehorse.common.proto.GETableClassEnumPb value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
+    public Builder setLimit(int value) {
       
-      type_ = value.getNumber();
+      limit_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>.lh_proto.GETableClassEnumPb type = 4;</code>
+     * <code>int32 limit = 4;</code>
      * @return This builder for chaining.
      */
-    public Builder clearType() {
+    public Builder clearLimit() {
       
-      type_ = 0;
+      limit_ = 0;
       onChanged();
       return this;
     }

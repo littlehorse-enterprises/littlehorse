@@ -8,22 +8,39 @@ public interface PaginatedTagQueryPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string full_tag_attributes = 1;</code>
-   * @return The fullTagAttributes.
+   * <code>.lh_proto.GETableClassEnumPb object_type = 1;</code>
+   * @return The enum numeric value on the wire for objectType.
    */
-  java.lang.String getFullTagAttributes();
+  int getObjectTypeValue();
   /**
-   * <code>string full_tag_attributes = 1;</code>
-   * @return The bytes for fullTagAttributes.
+   * <code>.lh_proto.GETableClassEnumPb object_type = 1;</code>
+   * @return The objectType.
    */
-  com.google.protobuf.ByteString
-      getFullTagAttributesBytes();
+  io.littlehorse.common.proto.GETableClassEnumPb getObjectType();
 
   /**
-   * <code>int32 limit = 2;</code>
-   * @return The limit.
+   * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
    */
-  int getLimit();
+  java.util.List<io.littlehorse.common.proto.AttributePb> 
+      getAttributesList();
+  /**
+   * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+   */
+  io.littlehorse.common.proto.AttributePb getAttributes(int index);
+  /**
+   * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+   */
+  int getAttributesCount();
+  /**
+   * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+   */
+  java.util.List<? extends io.littlehorse.common.proto.AttributePbOrBuilder> 
+      getAttributesOrBuilderList();
+  /**
+   * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+   */
+  io.littlehorse.common.proto.AttributePbOrBuilder getAttributesOrBuilder(
+      int index);
 
   /**
    * <code>.lh_proto.BookmarkPb bookmark = 3;</code>
@@ -41,13 +58,8 @@ public interface PaginatedTagQueryPbOrBuilder extends
   io.littlehorse.common.proto.BookmarkPbOrBuilder getBookmarkOrBuilder();
 
   /**
-   * <code>.lh_proto.GETableClassEnumPb type = 4;</code>
-   * @return The enum numeric value on the wire for type.
+   * <code>int32 limit = 4;</code>
+   * @return The limit.
    */
-  int getTypeValue();
-  /**
-   * <code>.lh_proto.GETableClassEnumPb type = 4;</code>
-   * @return The type.
-   */
-  io.littlehorse.common.proto.GETableClassEnumPb getType();
+  int getLimit();
 }

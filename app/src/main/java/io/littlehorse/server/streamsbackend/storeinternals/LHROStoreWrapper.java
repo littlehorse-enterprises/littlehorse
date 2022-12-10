@@ -5,15 +5,8 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
-import io.littlehorse.common.proto.GETableClassEnumPb;
-import io.littlehorse.common.proto.PartitionBookmarkPb;
-import io.littlehorse.server.streamsbackend.storeinternals.index.Tag;
-import io.littlehorse.server.streamsbackend.storeinternals.utils.LHIterKeyValue;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.LHKeyValueIterator;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.StoreUtils;
-import java.util.HashSet;
-import java.util.Set;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueIterator;
@@ -128,61 +121,15 @@ public class LHROStoreWrapper {
         return new LHKeyValueIterator<>(store.reverseRange(start, end), cls, config);
     }
 
-    public Pair<Set<String>, PartitionBookmarkPb> localPaginatedTagScan(
-        String fullTagAttributes,
-        PartitionBookmarkPb bookmark,
-        int limit,
-        GETableClassEnumPb type,
-        int partition
+    public <T extends Storeable<?>> LHKeyValueIterator<T> range(
+        String start,
+        String end,
+        Class<T> cls
     ) {
-        PartitionBookmarkPb bmOut = null;
-        Set<String> idsOut = new HashSet<>();
-
-        String endKey =
-            Tag.getRawStorePrefix(fullTagAttributes, type) + "~~~~~~~~~~~";
-        String startKey;
-        if (bookmark == null) {
-            startKey = Tag.getRawStorePrefix(fullTagAttributes, type);
-        } else {
-            startKey = bookmark.getLastKey();
-        }
-
-        try (
-            LHKeyValueIterator<Tag> iter = new LHKeyValueIterator<>(
-                store.range(startKey, endKey),
-                Tag.class,
-                config
-            )
-        ) {
-            boolean brokenBecauseOutOfData = true;
-            while (iter.hasNext()) {
-                LHIterKeyValue<Tag> next = iter.next();
-                Tag tag = next.getValue();
-                if (--limit < 0) {
-                    bmOut =
-                        PartitionBookmarkPb
-                            .newBuilder()
-                            .setParttion(partition)
-                            .setLastKey(tag.getObjectId())
-                            .build();
-
-                    // broke loop because we filled up the limit
-                    brokenBecauseOutOfData = false;
-                    break;
-                }
-
-                idsOut.add(tag.describedObjectId);
-            }
-
-            if (brokenBecauseOutOfData) {
-                bmOut = null;
-            }
-        }
-        return Pair.of(idsOut, bmOut);
+        return new LHKeyValueIterator<>(store.range(start, end), cls, config);
     }
 }
 /*
-
 Want to standardize the paginated lookups. Lookup patterns:
 
 * GET (type, object id)

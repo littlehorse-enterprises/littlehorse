@@ -4,6 +4,7 @@ import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.proto.TaskDefPb;
+import io.littlehorse.common.proto.TaskDefPb.QueueDetailsCase;
 import io.littlehorse.common.proto.TaskDefPbOrBuilder;
 import io.littlehorse.common.proto.VariableDefPb;
 import io.littlehorse.common.util.LHUtil;
@@ -20,8 +21,8 @@ public class TaskDef extends GETable<TaskDefPbOrBuilder> {
     public OutputSchema outputSchema;
     public Map<String, VariableDef> inputVars;
 
-    public String queueName;
-    public String consumerGroupName;
+    public QueueDetailsCase type;
+    public KafkaTaskQueueDetails kafkaTaskQueueDetails;
 
     public TaskDef() {
         inputVars = new HashMap<>();
@@ -65,9 +66,18 @@ public class TaskDef extends GETable<TaskDefPbOrBuilder> {
             .newBuilder()
             .setName(name)
             .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
-            .setConsumerGroupName(consumerGroupName)
-            .setQueueName(queueName)
             .setVersion(version);
+
+        switch (type) {
+            case KAFKA:
+                b.setKafka(kafkaTaskQueueDetails.toProto());
+                break;
+            case RPC:
+                b.setRpc(true);
+                break;
+            case QUEUEDETAILS_NOT_SET:
+                throw new RuntimeException("Not possible");
+        }
 
         if (outputSchema != null) {
             b.setOutputSchema(outputSchema.toProto());
@@ -86,17 +96,11 @@ public class TaskDef extends GETable<TaskDefPbOrBuilder> {
         if (proto.hasOutputSchema()) {
             outputSchema = OutputSchema.fromProto(proto.getOutputSchemaOrBuilder());
         }
-        queueName = proto.getQueueName();
-        consumerGroupName = proto.getConsumerGroupName();
         version = proto.getVersion();
 
         // TODO: should this validation be done here...?
-        if (queueName.equals("")) {
-            queueName = name;
-        }
-        if (consumerGroupName.equals("")) {
-            consumerGroupName = "lh-task-worker-" + name;
-        }
+        type = proto.getQueueDetailsCase();
+        if (type == QueueDetailsCase.KAFKA) {}
 
         for (Map.Entry<String, VariableDefPb> entry : proto
             .getInputVarsMap()

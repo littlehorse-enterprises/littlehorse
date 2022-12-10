@@ -491,7 +491,7 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
         localStore.put(tag);
         TagChangesToBroadcast tctb = getTagChangesToBroadcast();
 
-        DiscreteTagLocalCounter counter = tctb.getCounter(tag.getTagAttributes());
+        DiscreteTagLocalCounter counter = tctb.getCounter(tag.getAttributeString());
         counter.localCount++;
 
         localStore.put(counter);
@@ -503,7 +503,7 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
         localStore.delete(tag);
         TagChangesToBroadcast tctb = getTagChangesToBroadcast();
 
-        DiscreteTagLocalCounter counter = tctb.getCounter(tag.getTagAttributes());
+        DiscreteTagLocalCounter counter = tctb.getCounter(tag.getAttributeString());
         counter.localCount--;
 
         if (counter.localCount >= 0) {

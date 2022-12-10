@@ -1,6 +1,5 @@
 package io.littlehorse.server.streamsbackend;
 
-import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.MessageOrBuilder;
 import io.grpc.health.v1.HealthCheckResponse.ServingStatus;
 import io.grpc.protobuf.services.HealthStatusManager;
@@ -8,6 +7,7 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.exceptions.LHSerdeError;
+import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.command.Command;
@@ -19,8 +19,6 @@ import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
-import io.littlehorse.common.proto.BookmarkPb;
-import io.littlehorse.common.proto.GETableClassEnumPb;
 import io.littlehorse.common.proto.GetExternalEventPb;
 import io.littlehorse.common.proto.GetExternalEventReplyPb;
 import io.littlehorse.common.proto.GetNodeRunPb;
@@ -39,7 +37,7 @@ import io.littlehorse.common.proto.SearchWfRunReplyPb;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streamsbackend.storeinternals.BackendInternalComms;
-import io.littlehorse.server.streamsbackend.storeinternals.index.Tag;
+import io.littlehorse.server.streamsbackend.storeinternals.index.TagQueryUtils;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.StoreUtils;
 import java.io.IOException;
 import java.util.Date;
@@ -402,30 +400,14 @@ public class KafkaStreamsBackend {
     public SearchWfRunReplyPb searchWfRun(SearchWfRunPb req) {
         SearchWfRunReplyPb.Builder out = SearchWfRunReplyPb.newBuilder();
 
-        BookmarkPb bookmark;
-        if (req.hasBookmark()) {
-            try {
-                bookmark = BookmarkPb.parseFrom(req.getBookmark());
-            } catch (InvalidProtocolBufferException exn) {
-                out.setCode(LHResponseCodePb.BAD_REQUEST_ERROR);
-                out.setMessage("Invalid bookmark provided: " + exn.getMessage());
-                return out.build();
-            }
-        } else {
-            bookmark = null;
+        PaginatedTagQueryPb internalQuery;
+        try {
+            internalQuery = TagQueryUtils.translateSearchWfRun(req);
+        } catch (LHValidationError exn) {
+            out.setCode(LHResponseCodePb.VALIDATION_ERROR);
+            out.setMessage(exn.getMessage());
+            return out.build();
         }
-
-        // Now we need to fill out the actual result object ids. Basically, we need
-        // to convert the incoming request to a PaginatedTagQuery.
-        int limit = req.hasLimit() ? req.getLimit() : LHConstants.DEFAULT_LIMIT;
-
-        PaginatedTagQueryPb internalQuery = PaginatedTagQueryPb
-            .newBuilder()
-            .setBookmark(bookmark)
-            .setLimit(limit)
-            .setFullTagAttributes(Tag.getTagPrefix(req))
-            .setType(GETableClassEnumPb.WF_RUN)
-            .build();
 
         try {
             PaginatedTagQueryReplyPb raw = internalComms.doPaginatedTagQuery(

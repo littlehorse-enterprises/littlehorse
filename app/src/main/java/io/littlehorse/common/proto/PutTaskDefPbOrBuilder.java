@@ -67,4 +67,18 @@ public interface PutTaskDefPbOrBuilder extends
 
   io.littlehorse.common.proto.VariableDefPb getInputVarsOrThrow(
       java.lang.String key);
+
+  /**
+   * <code>bool rpc = 5;</code>
+   * @return The rpc.
+   */
+  boolean getRpc();
+
+  /**
+   * <code>bool kafka = 6;</code>
+   * @return The kafka.
+   */
+  boolean getKafka();
+
+  public io.littlehorse.common.proto.PutTaskDefPb.QueueTypeCase getQueueTypeCase();
 }

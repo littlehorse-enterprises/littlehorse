@@ -75,55 +75,40 @@ public interface TaskDefPbOrBuilder extends
       java.lang.String key);
 
   /**
-   * <code>string queue_name = 5;</code>
-   * @return The queueName.
-   */
-  java.lang.String getQueueName();
-  /**
-   * <code>string queue_name = 5;</code>
-   * @return The bytes for queueName.
-   */
-  com.google.protobuf.ByteString
-      getQueueNameBytes();
-
-  /**
-   * <pre>
-   * This is the ID of the consumer group that should be used for any Task Worker
-   * instances for this task def.
-   * It is also regrettably a kafka implementation detail that leaks through
-   * the abstraction. 
-   * </pre>
-   *
-   * <code>string consumer_group_name = 6;</code>
-   * @return The consumerGroupName.
-   */
-  java.lang.String getConsumerGroupName();
-  /**
-   * <pre>
-   * This is the ID of the consumer group that should be used for any Task Worker
-   * instances for this task def.
-   * It is also regrettably a kafka implementation detail that leaks through
-   * the abstraction. 
-   * </pre>
-   *
-   * <code>string consumer_group_name = 6;</code>
-   * @return The bytes for consumerGroupName.
-   */
-  com.google.protobuf.ByteString
-      getConsumerGroupNameBytes();
-
-  /**
-   * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
+   * <code>.lh_proto.OutputSchemaPb output_schema = 5;</code>
    * @return Whether the outputSchema field is set.
    */
   boolean hasOutputSchema();
   /**
-   * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
+   * <code>.lh_proto.OutputSchemaPb output_schema = 5;</code>
    * @return The outputSchema.
    */
   io.littlehorse.common.proto.OutputSchemaPb getOutputSchema();
   /**
-   * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
+   * <code>.lh_proto.OutputSchemaPb output_schema = 5;</code>
    */
   io.littlehorse.common.proto.OutputSchemaPbOrBuilder getOutputSchemaOrBuilder();
+
+  /**
+   * <code>.lh_proto.TaskDefPb.KafkaTaskQueueDetailsPb kafka = 6;</code>
+   * @return Whether the kafka field is set.
+   */
+  boolean hasKafka();
+  /**
+   * <code>.lh_proto.TaskDefPb.KafkaTaskQueueDetailsPb kafka = 6;</code>
+   * @return The kafka.
+   */
+  io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb getKafka();
+  /**
+   * <code>.lh_proto.TaskDefPb.KafkaTaskQueueDetailsPb kafka = 6;</code>
+   */
+  io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPbOrBuilder getKafkaOrBuilder();
+
+  /**
+   * <code>bool rpc = 7;</code>
+   * @return The rpc.
+   */
+  boolean getRpc();
+
+  public io.littlehorse.common.proto.TaskDefPb.QueueDetailsCase getQueueDetailsCase();
 }

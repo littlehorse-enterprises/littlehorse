@@ -12,19 +12,19 @@ public interface TagPbOrBuilder extends
    * The following info is also stored in the key of the Tag in the store.
    * </pre>
    *
-   * <code>.lh_proto.GETableClassEnumPb type = 1;</code>
-   * @return The enum numeric value on the wire for type.
+   * <code>.lh_proto.GETableClassEnumPb object_type = 1;</code>
+   * @return The enum numeric value on the wire for objectType.
    */
-  int getTypeValue();
+  int getObjectTypeValue();
   /**
    * <pre>
    * The following info is also stored in the key of the Tag in the store.
    * </pre>
    *
-   * <code>.lh_proto.GETableClassEnumPb type = 1;</code>
-   * @return The type.
+   * <code>.lh_proto.GETableClassEnumPb object_type = 1;</code>
+   * @return The objectType.
    */
-  io.littlehorse.common.proto.GETableClassEnumPb getType();
+  io.littlehorse.common.proto.GETableClassEnumPb getObjectType();
 
   /**
    * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
@@ -82,39 +82,17 @@ public interface TagPbOrBuilder extends
    * The following is not stored in the key.
    * </pre>
    *
-   * <code>repeated string counter_keys = 5;</code>
-   * @return A list containing the counterKeys.
+   * <code>.lh_proto.TagStorageTypePb tag_type = 5;</code>
+   * @return The enum numeric value on the wire for tagType.
    */
-  java.util.List<java.lang.String>
-      getCounterKeysList();
+  int getTagTypeValue();
   /**
    * <pre>
    * The following is not stored in the key.
    * </pre>
    *
-   * <code>repeated string counter_keys = 5;</code>
-   * @return The count of counterKeys.
+   * <code>.lh_proto.TagStorageTypePb tag_type = 5;</code>
+   * @return The tagType.
    */
-  int getCounterKeysCount();
-  /**
-   * <pre>
-   * The following is not stored in the key.
-   * </pre>
-   *
-   * <code>repeated string counter_keys = 5;</code>
-   * @param index The index of the element to return.
-   * @return The counterKeys at the given index.
-   */
-  java.lang.String getCounterKeys(int index);
-  /**
-   * <pre>
-   * The following is not stored in the key.
-   * </pre>
-   *
-   * <code>repeated string counter_keys = 5;</code>
-   * @param index The index of the value to return.
-   * @return The bytes of the counterKeys at the given index.
-   */
-  com.google.protobuf.ByteString
-      getCounterKeysBytes(int index);
+  io.littlehorse.common.proto.TagStorageTypePb getTagType();
 }

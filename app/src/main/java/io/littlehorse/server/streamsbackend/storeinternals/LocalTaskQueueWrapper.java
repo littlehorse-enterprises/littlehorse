@@ -37,21 +37,21 @@ public class LocalTaskQueueWrapper {
             ),
             config
         );
-        try (
-            LHKeyValueIterator<Tag> tagIter = store.prefixScan(
-                Tag.getTagPrefixForPendingTasks(taskDefName),
-                Tag.class
-            )
-        ) {
-            while (tagIter.hasNext()) {
-                LHIterKeyValue<Tag> next = tagIter.next();
-                Tag tag = next.getValue();
-                String taskRunId = tag.describedObjectId;
-                if (inflightList.markInFlight(taskDefName, taskRunId)) {
-                    return tag.describedObjectId;
-                }
-            }
-        }
+        // try (
+        //     LHKeyValueIterator<Tag> tagIter = store.prefixScan(
+        //         Tag.getTagPrefixForPendingTasks(taskDefName),
+        //         Tag.class
+        //     )
+        // ) {
+        //     while (tagIter.hasNext()) {
+        //         LHIterKeyValue<Tag> next = tagIter.next();
+        //         Tag tag = next.getValue();
+        //         String taskRunId = tag.describedObjectId;
+        //         if (inflightList.markInFlight(taskDefName, taskRunId)) {
+        //             return tag.describedObjectId;
+        //         }
+        //     }
+        // }
         return null;
     }
 }

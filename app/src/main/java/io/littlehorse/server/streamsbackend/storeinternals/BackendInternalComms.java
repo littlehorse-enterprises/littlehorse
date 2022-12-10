@@ -10,16 +10,17 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.CommandResult;
+import io.littlehorse.common.proto.AttributePb;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.CentralStoreQueryPb;
 import io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb;
 import io.littlehorse.common.proto.CentralStoreQueryReplyPb;
+import io.littlehorse.common.proto.GETableClassEnumPb;
 import io.littlehorse.common.proto.InternalPollTaskPb;
 import io.littlehorse.common.proto.InternalPollTaskReplyPb;
 import io.littlehorse.common.proto.LHInternalsGrpc;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsBlockingStub;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsImplBase;
-import io.littlehorse.common.proto.LHResponseCodePb;
 import io.littlehorse.common.proto.PaginatedTagQueryPb;
 import io.littlehorse.common.proto.PaginatedTagQueryReplyPb;
 import io.littlehorse.common.proto.PartitionBookmarkPb;
@@ -29,11 +30,17 @@ import io.littlehorse.common.proto.StoreQueryStatusPb;
 import io.littlehorse.common.proto.WaitForCommandResultPb;
 import io.littlehorse.common.proto.WaitForCommandResultReplyPb;
 import io.littlehorse.server.streamsbackend.ServerTopology;
+import io.littlehorse.server.streamsbackend.storeinternals.index.Attribute;
+import io.littlehorse.server.streamsbackend.storeinternals.index.Tag;
+import io.littlehorse.server.streamsbackend.storeinternals.utils.LHIterKeyValue;
+import io.littlehorse.server.streamsbackend.storeinternals.utils.LHKeyValueIterator;
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
@@ -482,9 +489,9 @@ public class BackendInternalComms implements Closeable {
             PaginatedTagQueryPb newReq = PaginatedTagQueryPb
                 .newBuilder()
                 .setBookmark(out.getUpdatedBookmark())
-                .setFullTagAttributes(req.getFullTagAttributes())
                 .setLimit(req.getLimit() - out.getObjectIdsCount())
-                .setType(req.getType())
+                .setObjectType(req.getObjectType())
+                .addAllAttributes(req.getAttributesList())
                 .build();
             PaginatedTagQueryReplyPb reply;
             try {
@@ -555,6 +562,10 @@ public class BackendInternalComms implements Closeable {
 
         BookmarkPb.Builder outBookmark = reqBookmark.toBuilder();
         PaginatedTagQueryReplyPb.Builder out = PaginatedTagQueryReplyPb.newBuilder();
+        List<Attribute> attrList = new ArrayList<>();
+        for (AttributePb atpb : req.getAttributesList()) {
+            attrList.add(Attribute.fromProto(atpb));
+        }
 
         // iterate through all active and standby local partitions
         for (int partition : getLocalCommandProcessorPartitions()) {
@@ -570,12 +581,13 @@ public class BackendInternalComms implements Closeable {
             }
 
             // Add all matching objects from that partition
-            Pair<Set<String>, PartitionBookmarkPb> result = partStore.localPaginatedTagScan(
-                req.getFullTagAttributes(),
+            Pair<Set<String>, PartitionBookmarkPb> result = onePartitionPaginatedTagScan(
+                attrList,
                 partBookmark,
                 curLimit,
-                req.getType(),
-                partition
+                req.getObjectType(),
+                partition,
+                partStore
             );
 
             curLimit -= result.getLeft().size();
@@ -607,6 +619,56 @@ public class BackendInternalComms implements Closeable {
             out.clearUpdatedBookmark();
         }
         return out.build();
+    }
+
+    private Pair<Set<String>, PartitionBookmarkPb> onePartitionPaginatedTagScan(
+        List<Attribute> attributes,
+        PartitionBookmarkPb bookmark,
+        int limit,
+        GETableClassEnumPb objectType,
+        int partition,
+        LHROStoreWrapper store
+    ) {
+        PartitionBookmarkPb bmOut = null;
+        Set<String> idsOut = new HashSet<>();
+
+        String endKey =
+            Tag.getAttributeString(objectType, attributes) + "~~~~~~~~~~~";
+        String startKey;
+        if (bookmark == null) {
+            startKey = Tag.getAttributeString(objectType, attributes);
+        } else {
+            startKey = bookmark.getLastKey();
+        }
+
+        try (
+            LHKeyValueIterator<Tag> iter = store.range(startKey, endKey, Tag.class)
+        ) {
+            boolean brokenBecauseOutOfData = true;
+            while (iter.hasNext()) {
+                LHIterKeyValue<Tag> next = iter.next();
+                Tag tag = next.getValue();
+                if (--limit < 0) {
+                    bmOut =
+                        PartitionBookmarkPb
+                            .newBuilder()
+                            .setParttion(partition)
+                            .setLastKey(tag.getObjectId())
+                            .build();
+
+                    // broke loop because we filled up the limit
+                    brokenBecauseOutOfData = false;
+                    break;
+                }
+
+                idsOut.add(tag.describedObjectId);
+            }
+
+            if (brokenBecauseOutOfData) {
+                bmOut = null;
+            }
+        }
+        return Pair.of(idsOut, bmOut);
     }
 
     private Set<Integer> getLocalCommandProcessorPartitions() {

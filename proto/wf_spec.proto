@@ -160,20 +160,22 @@ message OutputSchemaPb {
 }
 
 message TaskDefPb {
+
+    message KafkaTaskQueueDetailsPb {
+        string topic = 1;
+        string consumer_group_id = 2;
+    }
+
     string name = 1;
     int32 version = 2;
     google.protobuf.Timestamp created_at = 3;
     map<string, VariableDefPb> input_vars = 4;
-    string queue_name = 5;
+    optional OutputSchemaPb output_schema = 5;
 
-    // This is the ID of the consumer group that should be used for any Task Worker
-    // instances for this task def.
-    //
-    // It is also regrettably a kafka implementation detail that leaks through
-    // the abstraction. 
-    string consumer_group_name = 6;
-
-    optional OutputSchemaPb output_schema = 7;
+    oneof queue_details {
+        KafkaTaskQueueDetailsPb kafka = 6;
+        bool rpc = 7;
+    }
 }
 
 message ExternalEventDefPb {

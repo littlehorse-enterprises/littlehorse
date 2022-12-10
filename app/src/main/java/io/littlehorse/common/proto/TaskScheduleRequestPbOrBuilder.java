@@ -136,4 +136,19 @@ public interface TaskScheduleRequestPbOrBuilder extends
 
   io.littlehorse.common.proto.VariableValuePb getVariablesOrThrow(
       java.lang.String key);
+
+  /**
+   * <code>.google.protobuf.Timestamp created_at = 13;</code>
+   * @return Whether the createdAt field is set.
+   */
+  boolean hasCreatedAt();
+  /**
+   * <code>.google.protobuf.Timestamp created_at = 13;</code>
+   * @return The createdAt.
+   */
+  com.google.protobuf.Timestamp getCreatedAt();
+  /**
+   * <code>.google.protobuf.Timestamp created_at = 13;</code>
+   */
+  com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
 }

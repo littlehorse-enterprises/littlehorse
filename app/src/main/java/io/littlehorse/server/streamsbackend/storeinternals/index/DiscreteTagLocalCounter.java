@@ -32,8 +32,12 @@ public class DiscreteTagLocalCounter extends Storeable<DiscreteTagLocalCounterPb
         partition = p.getPartition();
     }
 
-    public String getObjectId() {
+    public static String getObjectId(String tagAttributes, int partition) {
         return tagAttributes + "_" + partition;
+    }
+
+    public String getObjectId() {
+        return getObjectId(tagAttributes, partition);
     }
 
     public static DiscreteTagLocalCounter fromProto(

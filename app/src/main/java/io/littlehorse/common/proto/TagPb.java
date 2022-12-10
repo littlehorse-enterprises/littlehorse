@@ -16,10 +16,10 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private TagPb() {
-    type_ = 0;
+    objectType_ = 0;
     attributes_ = java.util.Collections.emptyList();
     describedObjectId_ = "";
-    counterKeys_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+    tagType_ = 0;
   }
 
   @java.lang.Override
@@ -56,7 +56,7 @@ private static final long serialVersionUID = 0L;
           case 8: {
             int rawValue = input.readEnum();
 
-            type_ = rawValue;
+            objectType_ = rawValue;
             break;
           }
           case 18: {
@@ -87,13 +87,10 @@ private static final long serialVersionUID = 0L;
 
             break;
           }
-          case 42: {
-            java.lang.String s = input.readStringRequireUtf8();
-            if (!((mutable_bitField0_ & 0x00000002) != 0)) {
-              counterKeys_ = new com.google.protobuf.LazyStringArrayList();
-              mutable_bitField0_ |= 0x00000002;
-            }
-            counterKeys_.add(s);
+          case 40: {
+            int rawValue = input.readEnum();
+
+            tagType_ = rawValue;
             break;
           }
           default: {
@@ -114,9 +111,6 @@ private static final long serialVersionUID = 0L;
       if (((mutable_bitField0_ & 0x00000001) != 0)) {
         attributes_ = java.util.Collections.unmodifiableList(attributes_);
       }
-      if (((mutable_bitField0_ & 0x00000002) != 0)) {
-        counterKeys_ = counterKeys_.getUnmodifiableView();
-      }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
@@ -134,30 +128,30 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.common.proto.TagPb.class, io.littlehorse.common.proto.TagPb.Builder.class);
   }
 
-  public static final int TYPE_FIELD_NUMBER = 1;
-  private int type_;
+  public static final int OBJECT_TYPE_FIELD_NUMBER = 1;
+  private int objectType_;
   /**
    * <pre>
    * The following info is also stored in the key of the Tag in the store.
    * </pre>
    *
-   * <code>.lh_proto.GETableClassEnumPb type = 1;</code>
-   * @return The enum numeric value on the wire for type.
+   * <code>.lh_proto.GETableClassEnumPb object_type = 1;</code>
+   * @return The enum numeric value on the wire for objectType.
    */
-  @java.lang.Override public int getTypeValue() {
-    return type_;
+  @java.lang.Override public int getObjectTypeValue() {
+    return objectType_;
   }
   /**
    * <pre>
    * The following info is also stored in the key of the Tag in the store.
    * </pre>
    *
-   * <code>.lh_proto.GETableClassEnumPb type = 1;</code>
-   * @return The type.
+   * <code>.lh_proto.GETableClassEnumPb object_type = 1;</code>
+   * @return The objectType.
    */
-  @java.lang.Override public io.littlehorse.common.proto.GETableClassEnumPb getType() {
+  @java.lang.Override public io.littlehorse.common.proto.GETableClassEnumPb getObjectType() {
     @SuppressWarnings("deprecation")
-    io.littlehorse.common.proto.GETableClassEnumPb result = io.littlehorse.common.proto.GETableClassEnumPb.valueOf(type_);
+    io.littlehorse.common.proto.GETableClassEnumPb result = io.littlehorse.common.proto.GETableClassEnumPb.valueOf(objectType_);
     return result == null ? io.littlehorse.common.proto.GETableClassEnumPb.UNRECOGNIZED : result;
   }
 
@@ -265,55 +259,31 @@ private static final long serialVersionUID = 0L;
     return getCreated();
   }
 
-  public static final int COUNTER_KEYS_FIELD_NUMBER = 5;
-  private com.google.protobuf.LazyStringList counterKeys_;
+  public static final int TAG_TYPE_FIELD_NUMBER = 5;
+  private int tagType_;
   /**
    * <pre>
    * The following is not stored in the key.
    * </pre>
    *
-   * <code>repeated string counter_keys = 5;</code>
-   * @return A list containing the counterKeys.
+   * <code>.lh_proto.TagStorageTypePb tag_type = 5;</code>
+   * @return The enum numeric value on the wire for tagType.
    */
-  public com.google.protobuf.ProtocolStringList
-      getCounterKeysList() {
-    return counterKeys_;
+  @java.lang.Override public int getTagTypeValue() {
+    return tagType_;
   }
   /**
    * <pre>
    * The following is not stored in the key.
    * </pre>
    *
-   * <code>repeated string counter_keys = 5;</code>
-   * @return The count of counterKeys.
+   * <code>.lh_proto.TagStorageTypePb tag_type = 5;</code>
+   * @return The tagType.
    */
-  public int getCounterKeysCount() {
-    return counterKeys_.size();
-  }
-  /**
-   * <pre>
-   * The following is not stored in the key.
-   * </pre>
-   *
-   * <code>repeated string counter_keys = 5;</code>
-   * @param index The index of the element to return.
-   * @return The counterKeys at the given index.
-   */
-  public java.lang.String getCounterKeys(int index) {
-    return counterKeys_.get(index);
-  }
-  /**
-   * <pre>
-   * The following is not stored in the key.
-   * </pre>
-   *
-   * <code>repeated string counter_keys = 5;</code>
-   * @param index The index of the value to return.
-   * @return The bytes of the counterKeys at the given index.
-   */
-  public com.google.protobuf.ByteString
-      getCounterKeysBytes(int index) {
-    return counterKeys_.getByteString(index);
+  @java.lang.Override public io.littlehorse.common.proto.TagStorageTypePb getTagType() {
+    @SuppressWarnings("deprecation")
+    io.littlehorse.common.proto.TagStorageTypePb result = io.littlehorse.common.proto.TagStorageTypePb.valueOf(tagType_);
+    return result == null ? io.littlehorse.common.proto.TagStorageTypePb.UNRECOGNIZED : result;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -330,8 +300,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (type_ != io.littlehorse.common.proto.GETableClassEnumPb.TASK_DEF.getNumber()) {
-      output.writeEnum(1, type_);
+    if (objectType_ != io.littlehorse.common.proto.GETableClassEnumPb.TASK_DEF.getNumber()) {
+      output.writeEnum(1, objectType_);
     }
     for (int i = 0; i < attributes_.size(); i++) {
       output.writeMessage(2, attributes_.get(i));
@@ -342,8 +312,8 @@ private static final long serialVersionUID = 0L;
     if (created_ != null) {
       output.writeMessage(4, getCreated());
     }
-    for (int i = 0; i < counterKeys_.size(); i++) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, counterKeys_.getRaw(i));
+    if (tagType_ != io.littlehorse.common.proto.TagStorageTypePb.LOCAL_UNCOUNTED.getNumber()) {
+      output.writeEnum(5, tagType_);
     }
     unknownFields.writeTo(output);
   }
@@ -354,9 +324,9 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (type_ != io.littlehorse.common.proto.GETableClassEnumPb.TASK_DEF.getNumber()) {
+    if (objectType_ != io.littlehorse.common.proto.GETableClassEnumPb.TASK_DEF.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(1, type_);
+        .computeEnumSize(1, objectType_);
     }
     for (int i = 0; i < attributes_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
@@ -369,13 +339,9 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, getCreated());
     }
-    {
-      int dataSize = 0;
-      for (int i = 0; i < counterKeys_.size(); i++) {
-        dataSize += computeStringSizeNoTag(counterKeys_.getRaw(i));
-      }
-      size += dataSize;
-      size += 1 * getCounterKeysList().size();
+    if (tagType_ != io.littlehorse.common.proto.TagStorageTypePb.LOCAL_UNCOUNTED.getNumber()) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeEnumSize(5, tagType_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -392,7 +358,7 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.common.proto.TagPb other = (io.littlehorse.common.proto.TagPb) obj;
 
-    if (type_ != other.type_) return false;
+    if (objectType_ != other.objectType_) return false;
     if (!getAttributesList()
         .equals(other.getAttributesList())) return false;
     if (!getDescribedObjectId()
@@ -402,8 +368,7 @@ private static final long serialVersionUID = 0L;
       if (!getCreated()
           .equals(other.getCreated())) return false;
     }
-    if (!getCounterKeysList()
-        .equals(other.getCounterKeysList())) return false;
+    if (tagType_ != other.tagType_) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -415,8 +380,8 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + TYPE_FIELD_NUMBER;
-    hash = (53 * hash) + type_;
+    hash = (37 * hash) + OBJECT_TYPE_FIELD_NUMBER;
+    hash = (53 * hash) + objectType_;
     if (getAttributesCount() > 0) {
       hash = (37 * hash) + ATTRIBUTES_FIELD_NUMBER;
       hash = (53 * hash) + getAttributesList().hashCode();
@@ -427,10 +392,8 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + CREATED_FIELD_NUMBER;
       hash = (53 * hash) + getCreated().hashCode();
     }
-    if (getCounterKeysCount() > 0) {
-      hash = (37 * hash) + COUNTER_KEYS_FIELD_NUMBER;
-      hash = (53 * hash) + getCounterKeysList().hashCode();
-    }
+    hash = (37 * hash) + TAG_TYPE_FIELD_NUMBER;
+    hash = (53 * hash) + tagType_;
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -565,7 +528,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      type_ = 0;
+      objectType_ = 0;
 
       if (attributesBuilder_ == null) {
         attributes_ = java.util.Collections.emptyList();
@@ -581,8 +544,8 @@ private static final long serialVersionUID = 0L;
         created_ = null;
         createdBuilder_ = null;
       }
-      counterKeys_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-      bitField0_ = (bitField0_ & ~0x00000002);
+      tagType_ = 0;
+
       return this;
     }
 
@@ -610,7 +573,7 @@ private static final long serialVersionUID = 0L;
     public io.littlehorse.common.proto.TagPb buildPartial() {
       io.littlehorse.common.proto.TagPb result = new io.littlehorse.common.proto.TagPb(this);
       int from_bitField0_ = bitField0_;
-      result.type_ = type_;
+      result.objectType_ = objectType_;
       if (attributesBuilder_ == null) {
         if (((bitField0_ & 0x00000001) != 0)) {
           attributes_ = java.util.Collections.unmodifiableList(attributes_);
@@ -626,11 +589,7 @@ private static final long serialVersionUID = 0L;
       } else {
         result.created_ = createdBuilder_.build();
       }
-      if (((bitField0_ & 0x00000002) != 0)) {
-        counterKeys_ = counterKeys_.getUnmodifiableView();
-        bitField0_ = (bitField0_ & ~0x00000002);
-      }
-      result.counterKeys_ = counterKeys_;
+      result.tagType_ = tagType_;
       onBuilt();
       return result;
     }
@@ -679,8 +638,8 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.common.proto.TagPb other) {
       if (other == io.littlehorse.common.proto.TagPb.getDefaultInstance()) return this;
-      if (other.type_ != 0) {
-        setTypeValue(other.getTypeValue());
+      if (other.objectType_ != 0) {
+        setObjectTypeValue(other.getObjectTypeValue());
       }
       if (attributesBuilder_ == null) {
         if (!other.attributes_.isEmpty()) {
@@ -715,15 +674,8 @@ private static final long serialVersionUID = 0L;
       if (other.hasCreated()) {
         mergeCreated(other.getCreated());
       }
-      if (!other.counterKeys_.isEmpty()) {
-        if (counterKeys_.isEmpty()) {
-          counterKeys_ = other.counterKeys_;
-          bitField0_ = (bitField0_ & ~0x00000002);
-        } else {
-          ensureCounterKeysIsMutable();
-          counterKeys_.addAll(other.counterKeys_);
-        }
-        onChanged();
+      if (other.tagType_ != 0) {
+        setTagTypeValue(other.getTagTypeValue());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -755,30 +707,30 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private int type_ = 0;
+    private int objectType_ = 0;
     /**
      * <pre>
      * The following info is also stored in the key of the Tag in the store.
      * </pre>
      *
-     * <code>.lh_proto.GETableClassEnumPb type = 1;</code>
-     * @return The enum numeric value on the wire for type.
+     * <code>.lh_proto.GETableClassEnumPb object_type = 1;</code>
+     * @return The enum numeric value on the wire for objectType.
      */
-    @java.lang.Override public int getTypeValue() {
-      return type_;
+    @java.lang.Override public int getObjectTypeValue() {
+      return objectType_;
     }
     /**
      * <pre>
      * The following info is also stored in the key of the Tag in the store.
      * </pre>
      *
-     * <code>.lh_proto.GETableClassEnumPb type = 1;</code>
-     * @param value The enum numeric value on the wire for type to set.
+     * <code>.lh_proto.GETableClassEnumPb object_type = 1;</code>
+     * @param value The enum numeric value on the wire for objectType to set.
      * @return This builder for chaining.
      */
-    public Builder setTypeValue(int value) {
+    public Builder setObjectTypeValue(int value) {
       
-      type_ = value;
+      objectType_ = value;
       onChanged();
       return this;
     }
@@ -787,13 +739,13 @@ private static final long serialVersionUID = 0L;
      * The following info is also stored in the key of the Tag in the store.
      * </pre>
      *
-     * <code>.lh_proto.GETableClassEnumPb type = 1;</code>
-     * @return The type.
+     * <code>.lh_proto.GETableClassEnumPb object_type = 1;</code>
+     * @return The objectType.
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.GETableClassEnumPb getType() {
+    public io.littlehorse.common.proto.GETableClassEnumPb getObjectType() {
       @SuppressWarnings("deprecation")
-      io.littlehorse.common.proto.GETableClassEnumPb result = io.littlehorse.common.proto.GETableClassEnumPb.valueOf(type_);
+      io.littlehorse.common.proto.GETableClassEnumPb result = io.littlehorse.common.proto.GETableClassEnumPb.valueOf(objectType_);
       return result == null ? io.littlehorse.common.proto.GETableClassEnumPb.UNRECOGNIZED : result;
     }
     /**
@@ -801,16 +753,16 @@ private static final long serialVersionUID = 0L;
      * The following info is also stored in the key of the Tag in the store.
      * </pre>
      *
-     * <code>.lh_proto.GETableClassEnumPb type = 1;</code>
-     * @param value The type to set.
+     * <code>.lh_proto.GETableClassEnumPb object_type = 1;</code>
+     * @param value The objectType to set.
      * @return This builder for chaining.
      */
-    public Builder setType(io.littlehorse.common.proto.GETableClassEnumPb value) {
+    public Builder setObjectType(io.littlehorse.common.proto.GETableClassEnumPb value) {
       if (value == null) {
         throw new NullPointerException();
       }
       
-      type_ = value.getNumber();
+      objectType_ = value.getNumber();
       onChanged();
       return this;
     }
@@ -819,12 +771,12 @@ private static final long serialVersionUID = 0L;
      * The following info is also stored in the key of the Tag in the store.
      * </pre>
      *
-     * <code>.lh_proto.GETableClassEnumPb type = 1;</code>
+     * <code>.lh_proto.GETableClassEnumPb object_type = 1;</code>
      * @return This builder for chaining.
      */
-    public Builder clearType() {
+    public Builder clearObjectType() {
       
-      type_ = 0;
+      objectType_ = 0;
       onChanged();
       return this;
     }
@@ -1264,78 +1216,62 @@ private static final long serialVersionUID = 0L;
       return createdBuilder_;
     }
 
-    private com.google.protobuf.LazyStringList counterKeys_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-    private void ensureCounterKeysIsMutable() {
-      if (!((bitField0_ & 0x00000002) != 0)) {
-        counterKeys_ = new com.google.protobuf.LazyStringArrayList(counterKeys_);
-        bitField0_ |= 0x00000002;
-       }
-    }
+    private int tagType_ = 0;
     /**
      * <pre>
      * The following is not stored in the key.
      * </pre>
      *
-     * <code>repeated string counter_keys = 5;</code>
-     * @return A list containing the counterKeys.
+     * <code>.lh_proto.TagStorageTypePb tag_type = 5;</code>
+     * @return The enum numeric value on the wire for tagType.
      */
-    public com.google.protobuf.ProtocolStringList
-        getCounterKeysList() {
-      return counterKeys_.getUnmodifiableView();
+    @java.lang.Override public int getTagTypeValue() {
+      return tagType_;
     }
     /**
      * <pre>
      * The following is not stored in the key.
      * </pre>
      *
-     * <code>repeated string counter_keys = 5;</code>
-     * @return The count of counterKeys.
-     */
-    public int getCounterKeysCount() {
-      return counterKeys_.size();
-    }
-    /**
-     * <pre>
-     * The following is not stored in the key.
-     * </pre>
-     *
-     * <code>repeated string counter_keys = 5;</code>
-     * @param index The index of the element to return.
-     * @return The counterKeys at the given index.
-     */
-    public java.lang.String getCounterKeys(int index) {
-      return counterKeys_.get(index);
-    }
-    /**
-     * <pre>
-     * The following is not stored in the key.
-     * </pre>
-     *
-     * <code>repeated string counter_keys = 5;</code>
-     * @param index The index of the value to return.
-     * @return The bytes of the counterKeys at the given index.
-     */
-    public com.google.protobuf.ByteString
-        getCounterKeysBytes(int index) {
-      return counterKeys_.getByteString(index);
-    }
-    /**
-     * <pre>
-     * The following is not stored in the key.
-     * </pre>
-     *
-     * <code>repeated string counter_keys = 5;</code>
-     * @param index The index to set the value at.
-     * @param value The counterKeys to set.
+     * <code>.lh_proto.TagStorageTypePb tag_type = 5;</code>
+     * @param value The enum numeric value on the wire for tagType to set.
      * @return This builder for chaining.
      */
-    public Builder setCounterKeys(
-        int index, java.lang.String value) {
+    public Builder setTagTypeValue(int value) {
+      
+      tagType_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The following is not stored in the key.
+     * </pre>
+     *
+     * <code>.lh_proto.TagStorageTypePb tag_type = 5;</code>
+     * @return The tagType.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.TagStorageTypePb getTagType() {
+      @SuppressWarnings("deprecation")
+      io.littlehorse.common.proto.TagStorageTypePb result = io.littlehorse.common.proto.TagStorageTypePb.valueOf(tagType_);
+      return result == null ? io.littlehorse.common.proto.TagStorageTypePb.UNRECOGNIZED : result;
+    }
+    /**
+     * <pre>
+     * The following is not stored in the key.
+     * </pre>
+     *
+     * <code>.lh_proto.TagStorageTypePb tag_type = 5;</code>
+     * @param value The tagType to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTagType(io.littlehorse.common.proto.TagStorageTypePb value) {
       if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureCounterKeysIsMutable();
-      counterKeys_.set(index, value);
+        throw new NullPointerException();
+      }
+      
+      tagType_ = value.getNumber();
       onChanged();
       return this;
     }
@@ -1344,68 +1280,12 @@ private static final long serialVersionUID = 0L;
      * The following is not stored in the key.
      * </pre>
      *
-     * <code>repeated string counter_keys = 5;</code>
-     * @param value The counterKeys to add.
+     * <code>.lh_proto.TagStorageTypePb tag_type = 5;</code>
      * @return This builder for chaining.
      */
-    public Builder addCounterKeys(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureCounterKeysIsMutable();
-      counterKeys_.add(value);
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * The following is not stored in the key.
-     * </pre>
-     *
-     * <code>repeated string counter_keys = 5;</code>
-     * @param values The counterKeys to add.
-     * @return This builder for chaining.
-     */
-    public Builder addAllCounterKeys(
-        java.lang.Iterable<java.lang.String> values) {
-      ensureCounterKeysIsMutable();
-      com.google.protobuf.AbstractMessageLite.Builder.addAll(
-          values, counterKeys_);
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * The following is not stored in the key.
-     * </pre>
-     *
-     * <code>repeated string counter_keys = 5;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearCounterKeys() {
-      counterKeys_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-      bitField0_ = (bitField0_ & ~0x00000002);
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * The following is not stored in the key.
-     * </pre>
-     *
-     * <code>repeated string counter_keys = 5;</code>
-     * @param value The bytes of the counterKeys to add.
-     * @return This builder for chaining.
-     */
-    public Builder addCounterKeysBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      ensureCounterKeysIsMutable();
-      counterKeys_.add(value);
+    public Builder clearTagType() {
+      
+      tagType_ = 0;
       onChanged();
       return this;
     }

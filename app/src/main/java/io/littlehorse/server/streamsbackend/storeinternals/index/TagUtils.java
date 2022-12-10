@@ -6,10 +6,11 @@ import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.NodeRun;
+import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.NodeRunPb.NodeTypeCase;
-import io.littlehorse.server.streamsbackend.storeinternals.index.Tag.StorageType;
+import io.littlehorse.common.proto.TagStorageTypePb;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,6 +37,8 @@ public class TagUtils {
                 return tag((ExternalEvent) thing);
             case VARIABLE:
                 return tag((Variable) thing);
+            case TASK_SCHEDULE_REQUEST:
+                return tag((TaskScheduleRequest) thing);
             case UNRECOGNIZED:
             default:
                 throw new RuntimeException("Not possible");
@@ -44,19 +47,31 @@ public class TagUtils {
 
     private static List<Tag> tag(ExternalEventDef thing) {
         return Arrays.asList(
-            new Tag(thing, StorageType.DISCRETE, Pair.of("name", thing.name))
+            new Tag(
+                thing,
+                TagStorageTypePb.LOCAL_UNCOUNTED,
+                Pair.of("name", thing.name)
+            )
         );
     }
 
     private static List<Tag> tag(TaskDef thing) {
         return Arrays.asList(
-            new Tag(thing, StorageType.DISCRETE, Pair.of("name", thing.name))
+            new Tag(
+                thing,
+                TagStorageTypePb.LOCAL_UNCOUNTED,
+                Pair.of("name", thing.name)
+            )
         );
     }
 
     private static List<Tag> tag(WfSpec thing) {
         return Arrays.asList(
-            new Tag(thing, StorageType.DISCRETE, Pair.of("name", thing.name))
+            new Tag(
+                thing,
+                TagStorageTypePb.LOCAL_UNCOUNTED,
+                Pair.of("name", thing.name)
+            )
         );
     }
 
@@ -64,7 +79,7 @@ public class TagUtils {
         return Arrays.asList(
             new Tag(
                 thing,
-                StorageType.DISCRETE,
+                TagStorageTypePb.LOCAL_UNCOUNTED,
                 Pair.of("wfSpecName", thing.wfSpecName),
                 Pair.of("status", thing.status.toString())
             )
@@ -87,7 +102,7 @@ public class TagUtils {
         out.add(
             new Tag(
                 thing,
-                StorageType.DISCRETE,
+                TagStorageTypePb.LOCAL_UNCOUNTED,
                 Pair.of("type", thing.type.toString()),
                 Pair.of("status", thing.status.toString())
             )
@@ -97,7 +112,7 @@ public class TagUtils {
             out.add(
                 new Tag(
                     thing,
-                    StorageType.DISCRETE,
+                    TagStorageTypePb.LOCAL_UNCOUNTED,
                     Pair.of("type", "EXTERNAL_EVENT"),
                     Pair.of(
                         "externalEventDefName",
@@ -109,7 +124,7 @@ public class TagUtils {
             out.add(
                 new Tag(
                     thing,
-                    StorageType.DISCRETE,
+                    TagStorageTypePb.LOCAL_UNCOUNTED,
                     Pair.of("taskDefName", thing.taskRun.taskDefName),
                     Pair.of("status", thing.status.toString())
                 )
@@ -117,5 +132,20 @@ public class TagUtils {
         }
 
         return out;
+    }
+
+    private static List<Tag> tag(TaskScheduleRequest thing) {
+        return Arrays.asList(
+            new Tag(
+                thing,
+                TagStorageTypePb.LOCAL_COUNTED,
+                Pair.of("taskDefName", thing.taskDefName)
+            ),
+            new Tag(
+                thing,
+                TagStorageTypePb.LOCAL_HASH_UNCOUNTED,
+                Pair.of("wfRunId", thing.wfRunId)
+            )
+        );
     }
 }

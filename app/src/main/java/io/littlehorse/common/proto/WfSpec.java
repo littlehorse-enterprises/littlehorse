@@ -145,6 +145,11 @@ public final class WfSpec {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_lh_proto_TaskDefPb_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_lh_proto_TaskDefPb_KafkaTaskQueueDetailsPb_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_lh_proto_TaskDefPb_KafkaTaskQueueDetailsPb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_lh_proto_TaskDefPb_InputVarsEntry_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -249,27 +254,29 @@ public final class WfSpec {
       "SpecsEntry\022\013\n\003key\030\001 \001(\t\022%\n\005value\030\002 \001(\0132\026" +
       ".lh_proto.ThreadSpecPb:\0028\001\"?\n\016OutputSche" +
       "maPb\022-\n\013output_type\030\001 \001(\0162\030.lh_proto.Var" +
-      "iableTypePb\"\326\002\n\tTaskDefPb\022\014\n\004name\030\001 \001(\t\022" +
+      "iableTypePb\"\310\003\n\tTaskDefPb\022\014\n\004name\030\001 \001(\t\022" +
       "\017\n\007version\030\002 \001(\005\022.\n\ncreated_at\030\003 \001(\0132\032.g" +
       "oogle.protobuf.Timestamp\0226\n\ninput_vars\030\004" +
       " \003(\0132\".lh_proto.TaskDefPb.InputVarsEntry" +
-      "\022\022\n\nqueue_name\030\005 \001(\t\022\033\n\023consumer_group_n" +
-      "ame\030\006 \001(\t\0224\n\routput_schema\030\007 \001(\0132\030.lh_pr" +
-      "oto.OutputSchemaPbH\000\210\001\001\032I\n\016InputVarsEntr" +
-      "y\022\013\n\003key\030\001 \001(\t\022&\n\005value\030\002 \001(\0132\027.lh_proto" +
-      ".VariableDefPb:\0028\001B\020\n\016_output_schema\"c\n\022" +
-      "ExternalEventDefPb\022\014\n\004name\030\001 \001(\t\022\017\n\007vers" +
-      "ion\030\002 \001(\005\022.\n\ncreated_at\030\003 \001(\0132\032.google.p" +
-      "rotobuf.Timestamp*\206\001\n\014ComparatorPb\022\r\n\tLE" +
-      "SS_THAN\020\000\022\020\n\014GREATER_THAN\020\001\022\020\n\014LESS_THAN" +
-      "_EQ\020\002\022\023\n\017GREATER_THAN_EQ\020\003\022\n\n\006EQUALS\020\004\022\016" +
-      "\n\nNOT_EQUALS\020\005\022\006\n\002IN\020\006\022\n\n\006NOT_IN\020\007*\232\001\n\026V" +
-      "ariableMutationTypePb\022\n\n\006ASSIGN\020\000\022\007\n\003ADD" +
-      "\020\001\022\n\n\006EXTEND\020\002\022\014\n\010SUBTRACT\020\003\022\014\n\010MULTIPLY" +
-      "\020\004\022\n\n\006DIVIDE\020\005\022\025\n\021REMOVE_IF_PRESENT\020\006\022\020\n" +
-      "\014REMOVE_INDEX\020\007\022\016\n\nREMOVE_KEY\020\010B(\n\033io.li" +
-      "ttlehorse.common.protoP\001Z\007.;modelb\006proto" +
-      "3"
+      "\0224\n\routput_schema\030\005 \001(\0132\030.lh_proto.Outpu" +
+      "tSchemaPbH\001\210\001\001\022<\n\005kafka\030\006 \001(\0132+.lh_proto" +
+      ".TaskDefPb.KafkaTaskQueueDetailsPbH\000\022\r\n\003" +
+      "rpc\030\007 \001(\010H\000\032C\n\027KafkaTaskQueueDetailsPb\022\r" +
+      "\n\005topic\030\001 \001(\t\022\031\n\021consumer_group_id\030\002 \001(\t" +
+      "\032I\n\016InputVarsEntry\022\013\n\003key\030\001 \001(\t\022&\n\005value" +
+      "\030\002 \001(\0132\027.lh_proto.VariableDefPb:\0028\001B\017\n\rq" +
+      "ueue_detailsB\020\n\016_output_schema\"c\n\022Extern" +
+      "alEventDefPb\022\014\n\004name\030\001 \001(\t\022\017\n\007version\030\002 " +
+      "\001(\005\022.\n\ncreated_at\030\003 \001(\0132\032.google.protobu" +
+      "f.Timestamp*\206\001\n\014ComparatorPb\022\r\n\tLESS_THA" +
+      "N\020\000\022\020\n\014GREATER_THAN\020\001\022\020\n\014LESS_THAN_EQ\020\002\022" +
+      "\023\n\017GREATER_THAN_EQ\020\003\022\n\n\006EQUALS\020\004\022\016\n\nNOT_" +
+      "EQUALS\020\005\022\006\n\002IN\020\006\022\n\n\006NOT_IN\020\007*\232\001\n\026Variabl" +
+      "eMutationTypePb\022\n\n\006ASSIGN\020\000\022\007\n\003ADD\020\001\022\n\n\006" +
+      "EXTEND\020\002\022\014\n\010SUBTRACT\020\003\022\014\n\010MULTIPLY\020\004\022\n\n\006" +
+      "DIVIDE\020\005\022\025\n\021REMOVE_IF_PRESENT\020\006\022\020\n\014REMOV" +
+      "E_INDEX\020\007\022\016\n\nREMOVE_KEY\020\010B(\n\033io.littleho" +
+      "rse.common.protoP\001Z\007.;modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -433,9 +440,15 @@ public final class WfSpec {
     internal_static_lh_proto_TaskDefPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_TaskDefPb_descriptor,
-        new java.lang.String[] { "Name", "Version", "CreatedAt", "InputVars", "QueueName", "ConsumerGroupName", "OutputSchema", "OutputSchema", });
-    internal_static_lh_proto_TaskDefPb_InputVarsEntry_descriptor =
+        new java.lang.String[] { "Name", "Version", "CreatedAt", "InputVars", "OutputSchema", "Kafka", "Rpc", "QueueDetails", "OutputSchema", });
+    internal_static_lh_proto_TaskDefPb_KafkaTaskQueueDetailsPb_descriptor =
       internal_static_lh_proto_TaskDefPb_descriptor.getNestedTypes().get(0);
+    internal_static_lh_proto_TaskDefPb_KafkaTaskQueueDetailsPb_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_lh_proto_TaskDefPb_KafkaTaskQueueDetailsPb_descriptor,
+        new java.lang.String[] { "Topic", "ConsumerGroupId", });
+    internal_static_lh_proto_TaskDefPb_InputVarsEntry_descriptor =
+      internal_static_lh_proto_TaskDefPb_descriptor.getNestedTypes().get(1);
     internal_static_lh_proto_TaskDefPb_InputVarsEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_TaskDefPb_InputVarsEntry_descriptor,

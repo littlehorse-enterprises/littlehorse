@@ -1,14 +1,16 @@
 package io.littlehorse.common.model.wfrun;
 
 import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.proto.TaskScheduleRequestPb;
 import io.littlehorse.common.proto.TaskScheduleRequestPbOrBuilder;
 import io.littlehorse.common.proto.VariableValuePb;
+import io.littlehorse.common.util.LHUtil;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TaskScheduleRequest extends LHSerializable<TaskScheduleRequestPb> {
+public class TaskScheduleRequest extends GETable<TaskScheduleRequestPb> {
 
     public String taskDefId;
     public String taskDefName;
@@ -21,6 +23,22 @@ public class TaskScheduleRequest extends LHSerializable<TaskScheduleRequestPb> {
     public int attemptNumber;
     public String nodeName;
     public Map<String, VariableValue> variables;
+    public Date createdAt;
+
+    public String getPartitionKey() {
+        return wfRunId;
+    }
+
+    public String getObjectId() {
+        return NodeRun.getStoreKey(wfRunId, threadRunNumber, taskRunPosition);
+    }
+
+    public Date getCreatedAt() {
+        if (createdAt == null) {
+            createdAt = new Date();
+        }
+        return createdAt;
+    }
 
     public TaskScheduleRequest() {
         variables = new HashMap<>();
@@ -38,7 +56,8 @@ public class TaskScheduleRequest extends LHSerializable<TaskScheduleRequestPb> {
             .setWfRunEventQueue(wfRunEventQueue)
             .setWfSpecId(wfSpecId)
             .setAttemptNumber(attemptNumber)
-            .setNodeName(nodeName);
+            .setNodeName(nodeName)
+            .setCreatedAt(LHUtil.fromDate(getCreatedAt()));
 
         for (Map.Entry<String, VariableValue> e : variables.entrySet()) {
             out.putVariables(e.getKey(), e.getValue().toProto().build());
@@ -69,6 +88,11 @@ public class TaskScheduleRequest extends LHSerializable<TaskScheduleRequestPb> {
         this.wfSpecId = p.getWfSpecId();
         this.attemptNumber = p.getAttemptNumber();
         this.nodeName = p.getNodeName();
+        this.createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
+
+        if (this.createdAt.getTime() == 0) {
+            this.createdAt = new Date();
+        }
 
         for (Map.Entry<String, VariableValuePb> e : p.getVariablesMap().entrySet()) {
             variables.put(e.getKey(), VariableValue.fromProto(e.getValue()));

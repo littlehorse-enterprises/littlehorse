@@ -72,10 +72,10 @@ message WaitForCommandResultReplyPb {
 }
 
 message PaginatedTagQueryPb {
-    string full_tag_attributes = 1;
-    int32 limit = 2;
+    GETableClassEnumPb object_type = 1;
+    repeated AttributePb attributes = 2;
     optional BookmarkPb bookmark = 3;
-    GETableClassEnumPb type = 4;
+    int32 limit = 4;
 }
 
 message PaginatedTagQueryReplyPb {
@@ -94,6 +94,8 @@ message InternalPollTaskReplyPb {
     StoreQueryStatusPb code = 1;
     optional TaskScheduleRequestPb result = 2;
 }
+
+
 
 service LHInternals {
     rpc CentralStoreQuery(CentralStoreQueryPb) returns (CentralStoreQueryReplyPb) {}

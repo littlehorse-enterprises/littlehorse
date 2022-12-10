@@ -16,6 +16,7 @@ enum GETableClassEnumPb {
     NODE_RUN = 4;
     VARIABLE = 5;
     EXTERNAL_EVENT = 6;
+    TASK_SCHEDULE_REQUEST = 7;
 }
 
 message AttributePb {
@@ -23,15 +24,22 @@ message AttributePb {
     string val = 2;
 }
 
+enum TagStorageTypePb {
+    LOCAL_UNCOUNTED = 0;
+    LOCAL_COUNTED = 1;
+    LOCAL_HASH_UNCOUNTED = 2;
+    REMOTE_HASH_UNCOUNTED = 3;
+}
+
 message TagPb {
     // The following info is also stored in the key of the Tag in the store.
-    GETableClassEnumPb type = 1;
+    GETableClassEnumPb object_type = 1;
     repeated AttributePb attributes = 2;
     string described_object_id = 3;
     google.protobuf.Timestamp created = 4;
-
+    
     // The following is not stored in the key.
-    repeated string counter_keys = 5;
+    TagStorageTypePb tag_type = 5;
 
     // Observation: it's possible that we could optimize by removing fields 1-4
     // and only relying upon the store key. However, that would complicate

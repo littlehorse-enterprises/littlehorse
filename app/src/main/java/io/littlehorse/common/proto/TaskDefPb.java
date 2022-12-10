@@ -17,8 +17,6 @@ private static final long serialVersionUID = 0L;
   }
   private TaskDefPb() {
     name_ = "";
-    queueName_ = "";
-    consumerGroupName_ = "";
   }
 
   @java.lang.Override
@@ -90,18 +88,6 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 42: {
-            java.lang.String s = input.readStringRequireUtf8();
-
-            queueName_ = s;
-            break;
-          }
-          case 50: {
-            java.lang.String s = input.readStringRequireUtf8();
-
-            consumerGroupName_ = s;
-            break;
-          }
-          case 58: {
             io.littlehorse.common.proto.OutputSchemaPb.Builder subBuilder = null;
             if (((bitField0_ & 0x00000001) != 0)) {
               subBuilder = outputSchema_.toBuilder();
@@ -112,6 +98,25 @@ private static final long serialVersionUID = 0L;
               outputSchema_ = subBuilder.buildPartial();
             }
             bitField0_ |= 0x00000001;
+            break;
+          }
+          case 50: {
+            io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb.Builder subBuilder = null;
+            if (queueDetailsCase_ == 6) {
+              subBuilder = ((io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb) queueDetails_).toBuilder();
+            }
+            queueDetails_ =
+                input.readMessage(io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb) queueDetails_);
+              queueDetails_ = subBuilder.buildPartial();
+            }
+            queueDetailsCase_ = 6;
+            break;
+          }
+          case 56: {
+            queueDetailsCase_ = 7;
+            queueDetails_ = input.readBool();
             break;
           }
           default: {
@@ -158,7 +163,766 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.common.proto.TaskDefPb.class, io.littlehorse.common.proto.TaskDefPb.Builder.class);
   }
 
+  public interface KafkaTaskQueueDetailsPbOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:lh_proto.TaskDefPb.KafkaTaskQueueDetailsPb)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string topic = 1;</code>
+     * @return The topic.
+     */
+    java.lang.String getTopic();
+    /**
+     * <code>string topic = 1;</code>
+     * @return The bytes for topic.
+     */
+    com.google.protobuf.ByteString
+        getTopicBytes();
+
+    /**
+     * <code>string consumer_group_id = 2;</code>
+     * @return The consumerGroupId.
+     */
+    java.lang.String getConsumerGroupId();
+    /**
+     * <code>string consumer_group_id = 2;</code>
+     * @return The bytes for consumerGroupId.
+     */
+    com.google.protobuf.ByteString
+        getConsumerGroupIdBytes();
+  }
+  /**
+   * Protobuf type {@code lh_proto.TaskDefPb.KafkaTaskQueueDetailsPb}
+   */
+  public static final class KafkaTaskQueueDetailsPb extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:lh_proto.TaskDefPb.KafkaTaskQueueDetailsPb)
+      KafkaTaskQueueDetailsPbOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use KafkaTaskQueueDetailsPb.newBuilder() to construct.
+    private KafkaTaskQueueDetailsPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private KafkaTaskQueueDetailsPb() {
+      topic_ = "";
+      consumerGroupId_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new KafkaTaskQueueDetailsPb();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private KafkaTaskQueueDetailsPb(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              topic_ = s;
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              consumerGroupId_ = s;
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.littlehorse.common.proto.WfSpec.internal_static_lh_proto_TaskDefPb_KafkaTaskQueueDetailsPb_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.littlehorse.common.proto.WfSpec.internal_static_lh_proto_TaskDefPb_KafkaTaskQueueDetailsPb_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb.class, io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb.Builder.class);
+    }
+
+    public static final int TOPIC_FIELD_NUMBER = 1;
+    private volatile java.lang.Object topic_;
+    /**
+     * <code>string topic = 1;</code>
+     * @return The topic.
+     */
+    @java.lang.Override
+    public java.lang.String getTopic() {
+      java.lang.Object ref = topic_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        topic_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string topic = 1;</code>
+     * @return The bytes for topic.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getTopicBytes() {
+      java.lang.Object ref = topic_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        topic_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int CONSUMER_GROUP_ID_FIELD_NUMBER = 2;
+    private volatile java.lang.Object consumerGroupId_;
+    /**
+     * <code>string consumer_group_id = 2;</code>
+     * @return The consumerGroupId.
+     */
+    @java.lang.Override
+    public java.lang.String getConsumerGroupId() {
+      java.lang.Object ref = consumerGroupId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        consumerGroupId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string consumer_group_id = 2;</code>
+     * @return The bytes for consumerGroupId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getConsumerGroupIdBytes() {
+      java.lang.Object ref = consumerGroupId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        consumerGroupId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!getTopicBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, topic_);
+      }
+      if (!getConsumerGroupIdBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, consumerGroupId_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getTopicBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, topic_);
+      }
+      if (!getConsumerGroupIdBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, consumerGroupId_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb)) {
+        return super.equals(obj);
+      }
+      io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb other = (io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb) obj;
+
+      if (!getTopic()
+          .equals(other.getTopic())) return false;
+      if (!getConsumerGroupId()
+          .equals(other.getConsumerGroupId())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + TOPIC_FIELD_NUMBER;
+      hash = (53 * hash) + getTopic().hashCode();
+      hash = (37 * hash) + CONSUMER_GROUP_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getConsumerGroupId().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code lh_proto.TaskDefPb.KafkaTaskQueueDetailsPb}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:lh_proto.TaskDefPb.KafkaTaskQueueDetailsPb)
+        io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPbOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.littlehorse.common.proto.WfSpec.internal_static_lh_proto_TaskDefPb_KafkaTaskQueueDetailsPb_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.littlehorse.common.proto.WfSpec.internal_static_lh_proto_TaskDefPb_KafkaTaskQueueDetailsPb_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb.class, io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb.Builder.class);
+      }
+
+      // Construct using io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        topic_ = "";
+
+        consumerGroupId_ = "";
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.littlehorse.common.proto.WfSpec.internal_static_lh_proto_TaskDefPb_KafkaTaskQueueDetailsPb_descriptor;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb getDefaultInstanceForType() {
+        return io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb build() {
+        io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb buildPartial() {
+        io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb result = new io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb(this);
+        result.topic_ = topic_;
+        result.consumerGroupId_ = consumerGroupId_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb) {
+          return mergeFrom((io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb other) {
+        if (other == io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb.getDefaultInstance()) return this;
+        if (!other.getTopic().isEmpty()) {
+          topic_ = other.topic_;
+          onChanged();
+        }
+        if (!other.getConsumerGroupId().isEmpty()) {
+          consumerGroupId_ = other.consumerGroupId_;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private java.lang.Object topic_ = "";
+      /**
+       * <code>string topic = 1;</code>
+       * @return The topic.
+       */
+      public java.lang.String getTopic() {
+        java.lang.Object ref = topic_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          topic_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string topic = 1;</code>
+       * @return The bytes for topic.
+       */
+      public com.google.protobuf.ByteString
+          getTopicBytes() {
+        java.lang.Object ref = topic_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          topic_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string topic = 1;</code>
+       * @param value The topic to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTopic(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        topic_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string topic = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearTopic() {
+        
+        topic_ = getDefaultInstance().getTopic();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string topic = 1;</code>
+       * @param value The bytes for topic to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTopicBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        topic_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object consumerGroupId_ = "";
+      /**
+       * <code>string consumer_group_id = 2;</code>
+       * @return The consumerGroupId.
+       */
+      public java.lang.String getConsumerGroupId() {
+        java.lang.Object ref = consumerGroupId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          consumerGroupId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string consumer_group_id = 2;</code>
+       * @return The bytes for consumerGroupId.
+       */
+      public com.google.protobuf.ByteString
+          getConsumerGroupIdBytes() {
+        java.lang.Object ref = consumerGroupId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          consumerGroupId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string consumer_group_id = 2;</code>
+       * @param value The consumerGroupId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setConsumerGroupId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        consumerGroupId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string consumer_group_id = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearConsumerGroupId() {
+        
+        consumerGroupId_ = getDefaultInstance().getConsumerGroupId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string consumer_group_id = 2;</code>
+       * @param value The bytes for consumerGroupId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setConsumerGroupIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        consumerGroupId_ = value;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:lh_proto.TaskDefPb.KafkaTaskQueueDetailsPb)
+    }
+
+    // @@protoc_insertion_point(class_scope:lh_proto.TaskDefPb.KafkaTaskQueueDetailsPb)
+    private static final io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb();
+    }
+
+    public static io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<KafkaTaskQueueDetailsPb>
+        PARSER = new com.google.protobuf.AbstractParser<KafkaTaskQueueDetailsPb>() {
+      @java.lang.Override
+      public KafkaTaskQueueDetailsPb parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new KafkaTaskQueueDetailsPb(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<KafkaTaskQueueDetailsPb> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<KafkaTaskQueueDetailsPb> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private int bitField0_;
+  private int queueDetailsCase_ = 0;
+  private java.lang.Object queueDetails_;
+  public enum QueueDetailsCase
+      implements com.google.protobuf.Internal.EnumLite,
+          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+    KAFKA(6),
+    RPC(7),
+    QUEUEDETAILS_NOT_SET(0);
+    private final int value;
+    private QueueDetailsCase(int value) {
+      this.value = value;
+    }
+    /**
+     * @param value The number of the enum to look for.
+     * @return The enum associated with the given number.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static QueueDetailsCase valueOf(int value) {
+      return forNumber(value);
+    }
+
+    public static QueueDetailsCase forNumber(int value) {
+      switch (value) {
+        case 6: return KAFKA;
+        case 7: return RPC;
+        case 0: return QUEUEDETAILS_NOT_SET;
+        default: return null;
+      }
+    }
+    public int getNumber() {
+      return this.value;
+    }
+  };
+
+  public QueueDetailsCase
+  getQueueDetailsCase() {
+    return QueueDetailsCase.forNumber(
+        queueDetailsCase_);
+  }
+
   public static final int NAME_FIELD_NUMBER = 1;
   private volatile java.lang.Object name_;
   /**
@@ -315,100 +1079,10 @@ private static final long serialVersionUID = 0L;
     return map.get(key);
   }
 
-  public static final int QUEUE_NAME_FIELD_NUMBER = 5;
-  private volatile java.lang.Object queueName_;
-  /**
-   * <code>string queue_name = 5;</code>
-   * @return The queueName.
-   */
-  @java.lang.Override
-  public java.lang.String getQueueName() {
-    java.lang.Object ref = queueName_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      queueName_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string queue_name = 5;</code>
-   * @return The bytes for queueName.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getQueueNameBytes() {
-    java.lang.Object ref = queueName_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      queueName_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
-  public static final int CONSUMER_GROUP_NAME_FIELD_NUMBER = 6;
-  private volatile java.lang.Object consumerGroupName_;
-  /**
-   * <pre>
-   * This is the ID of the consumer group that should be used for any Task Worker
-   * instances for this task def.
-   * It is also regrettably a kafka implementation detail that leaks through
-   * the abstraction. 
-   * </pre>
-   *
-   * <code>string consumer_group_name = 6;</code>
-   * @return The consumerGroupName.
-   */
-  @java.lang.Override
-  public java.lang.String getConsumerGroupName() {
-    java.lang.Object ref = consumerGroupName_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      consumerGroupName_ = s;
-      return s;
-    }
-  }
-  /**
-   * <pre>
-   * This is the ID of the consumer group that should be used for any Task Worker
-   * instances for this task def.
-   * It is also regrettably a kafka implementation detail that leaks through
-   * the abstraction. 
-   * </pre>
-   *
-   * <code>string consumer_group_name = 6;</code>
-   * @return The bytes for consumerGroupName.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getConsumerGroupNameBytes() {
-    java.lang.Object ref = consumerGroupName_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      consumerGroupName_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
-  public static final int OUTPUT_SCHEMA_FIELD_NUMBER = 7;
+  public static final int OUTPUT_SCHEMA_FIELD_NUMBER = 5;
   private io.littlehorse.common.proto.OutputSchemaPb outputSchema_;
   /**
-   * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
+   * <code>.lh_proto.OutputSchemaPb output_schema = 5;</code>
    * @return Whether the outputSchema field is set.
    */
   @java.lang.Override
@@ -416,7 +1090,7 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
+   * <code>.lh_proto.OutputSchemaPb output_schema = 5;</code>
    * @return The outputSchema.
    */
   @java.lang.Override
@@ -424,11 +1098,55 @@ private static final long serialVersionUID = 0L;
     return outputSchema_ == null ? io.littlehorse.common.proto.OutputSchemaPb.getDefaultInstance() : outputSchema_;
   }
   /**
-   * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
+   * <code>.lh_proto.OutputSchemaPb output_schema = 5;</code>
    */
   @java.lang.Override
   public io.littlehorse.common.proto.OutputSchemaPbOrBuilder getOutputSchemaOrBuilder() {
     return outputSchema_ == null ? io.littlehorse.common.proto.OutputSchemaPb.getDefaultInstance() : outputSchema_;
+  }
+
+  public static final int KAFKA_FIELD_NUMBER = 6;
+  /**
+   * <code>.lh_proto.TaskDefPb.KafkaTaskQueueDetailsPb kafka = 6;</code>
+   * @return Whether the kafka field is set.
+   */
+  @java.lang.Override
+  public boolean hasKafka() {
+    return queueDetailsCase_ == 6;
+  }
+  /**
+   * <code>.lh_proto.TaskDefPb.KafkaTaskQueueDetailsPb kafka = 6;</code>
+   * @return The kafka.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb getKafka() {
+    if (queueDetailsCase_ == 6) {
+       return (io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb) queueDetails_;
+    }
+    return io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb.getDefaultInstance();
+  }
+  /**
+   * <code>.lh_proto.TaskDefPb.KafkaTaskQueueDetailsPb kafka = 6;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPbOrBuilder getKafkaOrBuilder() {
+    if (queueDetailsCase_ == 6) {
+       return (io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb) queueDetails_;
+    }
+    return io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb.getDefaultInstance();
+  }
+
+  public static final int RPC_FIELD_NUMBER = 7;
+  /**
+   * <code>bool rpc = 7;</code>
+   * @return The rpc.
+   */
+  @java.lang.Override
+  public boolean getRpc() {
+    if (queueDetailsCase_ == 7) {
+      return (java.lang.Boolean) queueDetails_;
+    }
+    return false;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -460,14 +1178,15 @@ private static final long serialVersionUID = 0L;
         internalGetInputVars(),
         InputVarsDefaultEntryHolder.defaultEntry,
         4);
-    if (!getQueueNameBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, queueName_);
-    }
-    if (!getConsumerGroupNameBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 6, consumerGroupName_);
-    }
     if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeMessage(7, getOutputSchema());
+      output.writeMessage(5, getOutputSchema());
+    }
+    if (queueDetailsCase_ == 6) {
+      output.writeMessage(6, (io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb) queueDetails_);
+    }
+    if (queueDetailsCase_ == 7) {
+      output.writeBool(
+          7, (boolean)((java.lang.Boolean) queueDetails_));
     }
     unknownFields.writeTo(output);
   }
@@ -499,15 +1218,18 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(4, inputVars__);
     }
-    if (!getQueueNameBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, queueName_);
-    }
-    if (!getConsumerGroupNameBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, consumerGroupName_);
-    }
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(7, getOutputSchema());
+        .computeMessageSize(5, getOutputSchema());
+    }
+    if (queueDetailsCase_ == 6) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(6, (io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb) queueDetails_);
+    }
+    if (queueDetailsCase_ == 7) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(
+            7, (boolean)((java.lang.Boolean) queueDetails_));
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -535,14 +1257,23 @@ private static final long serialVersionUID = 0L;
     }
     if (!internalGetInputVars().equals(
         other.internalGetInputVars())) return false;
-    if (!getQueueName()
-        .equals(other.getQueueName())) return false;
-    if (!getConsumerGroupName()
-        .equals(other.getConsumerGroupName())) return false;
     if (hasOutputSchema() != other.hasOutputSchema()) return false;
     if (hasOutputSchema()) {
       if (!getOutputSchema()
           .equals(other.getOutputSchema())) return false;
+    }
+    if (!getQueueDetailsCase().equals(other.getQueueDetailsCase())) return false;
+    switch (queueDetailsCase_) {
+      case 6:
+        if (!getKafka()
+            .equals(other.getKafka())) return false;
+        break;
+      case 7:
+        if (getRpc()
+            != other.getRpc()) return false;
+        break;
+      case 0:
+      default:
     }
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
@@ -567,13 +1298,22 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + INPUT_VARS_FIELD_NUMBER;
       hash = (53 * hash) + internalGetInputVars().hashCode();
     }
-    hash = (37 * hash) + QUEUE_NAME_FIELD_NUMBER;
-    hash = (53 * hash) + getQueueName().hashCode();
-    hash = (37 * hash) + CONSUMER_GROUP_NAME_FIELD_NUMBER;
-    hash = (53 * hash) + getConsumerGroupName().hashCode();
     if (hasOutputSchema()) {
       hash = (37 * hash) + OUTPUT_SCHEMA_FIELD_NUMBER;
       hash = (53 * hash) + getOutputSchema().hashCode();
+    }
+    switch (queueDetailsCase_) {
+      case 6:
+        hash = (37 * hash) + KAFKA_FIELD_NUMBER;
+        hash = (53 * hash) + getKafka().hashCode();
+        break;
+      case 7:
+        hash = (37 * hash) + RPC_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+            getRpc());
+        break;
+      case 0:
+      default:
     }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
@@ -742,16 +1482,14 @@ private static final long serialVersionUID = 0L;
         createdAtBuilder_ = null;
       }
       internalGetMutableInputVars().clear();
-      queueName_ = "";
-
-      consumerGroupName_ = "";
-
       if (outputSchemaBuilder_ == null) {
         outputSchema_ = null;
       } else {
         outputSchemaBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000002);
+      queueDetailsCase_ = 0;
+      queueDetails_ = null;
       return this;
     }
 
@@ -789,8 +1527,6 @@ private static final long serialVersionUID = 0L;
       }
       result.inputVars_ = internalGetInputVars();
       result.inputVars_.makeImmutable();
-      result.queueName_ = queueName_;
-      result.consumerGroupName_ = consumerGroupName_;
       if (((from_bitField0_ & 0x00000002) != 0)) {
         if (outputSchemaBuilder_ == null) {
           result.outputSchema_ = outputSchema_;
@@ -799,7 +1535,18 @@ private static final long serialVersionUID = 0L;
         }
         to_bitField0_ |= 0x00000001;
       }
+      if (queueDetailsCase_ == 6) {
+        if (kafkaBuilder_ == null) {
+          result.queueDetails_ = queueDetails_;
+        } else {
+          result.queueDetails_ = kafkaBuilder_.build();
+        }
+      }
+      if (queueDetailsCase_ == 7) {
+        result.queueDetails_ = queueDetails_;
+      }
       result.bitField0_ = to_bitField0_;
+      result.queueDetailsCase_ = queueDetailsCase_;
       onBuilt();
       return result;
     }
@@ -860,16 +1607,21 @@ private static final long serialVersionUID = 0L;
       }
       internalGetMutableInputVars().mergeFrom(
           other.internalGetInputVars());
-      if (!other.getQueueName().isEmpty()) {
-        queueName_ = other.queueName_;
-        onChanged();
-      }
-      if (!other.getConsumerGroupName().isEmpty()) {
-        consumerGroupName_ = other.consumerGroupName_;
-        onChanged();
-      }
       if (other.hasOutputSchema()) {
         mergeOutputSchema(other.getOutputSchema());
+      }
+      switch (other.getQueueDetailsCase()) {
+        case KAFKA: {
+          mergeKafka(other.getKafka());
+          break;
+        }
+        case RPC: {
+          setRpc(other.getRpc());
+          break;
+        }
+        case QUEUEDETAILS_NOT_SET: {
+          break;
+        }
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -899,6 +1651,21 @@ private static final long serialVersionUID = 0L;
       }
       return this;
     }
+    private int queueDetailsCase_ = 0;
+    private java.lang.Object queueDetails_;
+    public QueueDetailsCase
+        getQueueDetailsCase() {
+      return QueueDetailsCase.forNumber(
+          queueDetailsCase_);
+    }
+
+    public Builder clearQueueDetails() {
+      queueDetailsCase_ = 0;
+      queueDetails_ = null;
+      onChanged();
+      return this;
+    }
+
     private int bitField0_;
 
     private java.lang.Object name_ = "";
@@ -1255,205 +2022,18 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.lang.Object queueName_ = "";
-    /**
-     * <code>string queue_name = 5;</code>
-     * @return The queueName.
-     */
-    public java.lang.String getQueueName() {
-      java.lang.Object ref = queueName_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        queueName_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>string queue_name = 5;</code>
-     * @return The bytes for queueName.
-     */
-    public com.google.protobuf.ByteString
-        getQueueNameBytes() {
-      java.lang.Object ref = queueName_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        queueName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string queue_name = 5;</code>
-     * @param value The queueName to set.
-     * @return This builder for chaining.
-     */
-    public Builder setQueueName(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      queueName_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string queue_name = 5;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearQueueName() {
-      
-      queueName_ = getDefaultInstance().getQueueName();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string queue_name = 5;</code>
-     * @param value The bytes for queueName to set.
-     * @return This builder for chaining.
-     */
-    public Builder setQueueNameBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      queueName_ = value;
-      onChanged();
-      return this;
-    }
-
-    private java.lang.Object consumerGroupName_ = "";
-    /**
-     * <pre>
-     * This is the ID of the consumer group that should be used for any Task Worker
-     * instances for this task def.
-     * It is also regrettably a kafka implementation detail that leaks through
-     * the abstraction. 
-     * </pre>
-     *
-     * <code>string consumer_group_name = 6;</code>
-     * @return The consumerGroupName.
-     */
-    public java.lang.String getConsumerGroupName() {
-      java.lang.Object ref = consumerGroupName_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        consumerGroupName_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <pre>
-     * This is the ID of the consumer group that should be used for any Task Worker
-     * instances for this task def.
-     * It is also regrettably a kafka implementation detail that leaks through
-     * the abstraction. 
-     * </pre>
-     *
-     * <code>string consumer_group_name = 6;</code>
-     * @return The bytes for consumerGroupName.
-     */
-    public com.google.protobuf.ByteString
-        getConsumerGroupNameBytes() {
-      java.lang.Object ref = consumerGroupName_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        consumerGroupName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <pre>
-     * This is the ID of the consumer group that should be used for any Task Worker
-     * instances for this task def.
-     * It is also regrettably a kafka implementation detail that leaks through
-     * the abstraction. 
-     * </pre>
-     *
-     * <code>string consumer_group_name = 6;</code>
-     * @param value The consumerGroupName to set.
-     * @return This builder for chaining.
-     */
-    public Builder setConsumerGroupName(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      consumerGroupName_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * This is the ID of the consumer group that should be used for any Task Worker
-     * instances for this task def.
-     * It is also regrettably a kafka implementation detail that leaks through
-     * the abstraction. 
-     * </pre>
-     *
-     * <code>string consumer_group_name = 6;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearConsumerGroupName() {
-      
-      consumerGroupName_ = getDefaultInstance().getConsumerGroupName();
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * This is the ID of the consumer group that should be used for any Task Worker
-     * instances for this task def.
-     * It is also regrettably a kafka implementation detail that leaks through
-     * the abstraction. 
-     * </pre>
-     *
-     * <code>string consumer_group_name = 6;</code>
-     * @param value The bytes for consumerGroupName to set.
-     * @return This builder for chaining.
-     */
-    public Builder setConsumerGroupNameBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      consumerGroupName_ = value;
-      onChanged();
-      return this;
-    }
-
     private io.littlehorse.common.proto.OutputSchemaPb outputSchema_;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.OutputSchemaPb, io.littlehorse.common.proto.OutputSchemaPb.Builder, io.littlehorse.common.proto.OutputSchemaPbOrBuilder> outputSchemaBuilder_;
     /**
-     * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
+     * <code>.lh_proto.OutputSchemaPb output_schema = 5;</code>
      * @return Whether the outputSchema field is set.
      */
     public boolean hasOutputSchema() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
+     * <code>.lh_proto.OutputSchemaPb output_schema = 5;</code>
      * @return The outputSchema.
      */
     public io.littlehorse.common.proto.OutputSchemaPb getOutputSchema() {
@@ -1464,7 +2044,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
+     * <code>.lh_proto.OutputSchemaPb output_schema = 5;</code>
      */
     public Builder setOutputSchema(io.littlehorse.common.proto.OutputSchemaPb value) {
       if (outputSchemaBuilder_ == null) {
@@ -1480,7 +2060,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
+     * <code>.lh_proto.OutputSchemaPb output_schema = 5;</code>
      */
     public Builder setOutputSchema(
         io.littlehorse.common.proto.OutputSchemaPb.Builder builderForValue) {
@@ -1494,7 +2074,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
+     * <code>.lh_proto.OutputSchemaPb output_schema = 5;</code>
      */
     public Builder mergeOutputSchema(io.littlehorse.common.proto.OutputSchemaPb value) {
       if (outputSchemaBuilder_ == null) {
@@ -1514,7 +2094,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
+     * <code>.lh_proto.OutputSchemaPb output_schema = 5;</code>
      */
     public Builder clearOutputSchema() {
       if (outputSchemaBuilder_ == null) {
@@ -1527,7 +2107,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
+     * <code>.lh_proto.OutputSchemaPb output_schema = 5;</code>
      */
     public io.littlehorse.common.proto.OutputSchemaPb.Builder getOutputSchemaBuilder() {
       bitField0_ |= 0x00000002;
@@ -1535,7 +2115,7 @@ private static final long serialVersionUID = 0L;
       return getOutputSchemaFieldBuilder().getBuilder();
     }
     /**
-     * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
+     * <code>.lh_proto.OutputSchemaPb output_schema = 5;</code>
      */
     public io.littlehorse.common.proto.OutputSchemaPbOrBuilder getOutputSchemaOrBuilder() {
       if (outputSchemaBuilder_ != null) {
@@ -1546,7 +2126,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.lh_proto.OutputSchemaPb output_schema = 7;</code>
+     * <code>.lh_proto.OutputSchemaPb output_schema = 5;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.OutputSchemaPb, io.littlehorse.common.proto.OutputSchemaPb.Builder, io.littlehorse.common.proto.OutputSchemaPbOrBuilder> 
@@ -1560,6 +2140,181 @@ private static final long serialVersionUID = 0L;
         outputSchema_ = null;
       }
       return outputSchemaBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb, io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb.Builder, io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPbOrBuilder> kafkaBuilder_;
+    /**
+     * <code>.lh_proto.TaskDefPb.KafkaTaskQueueDetailsPb kafka = 6;</code>
+     * @return Whether the kafka field is set.
+     */
+    @java.lang.Override
+    public boolean hasKafka() {
+      return queueDetailsCase_ == 6;
+    }
+    /**
+     * <code>.lh_proto.TaskDefPb.KafkaTaskQueueDetailsPb kafka = 6;</code>
+     * @return The kafka.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb getKafka() {
+      if (kafkaBuilder_ == null) {
+        if (queueDetailsCase_ == 6) {
+          return (io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb) queueDetails_;
+        }
+        return io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb.getDefaultInstance();
+      } else {
+        if (queueDetailsCase_ == 6) {
+          return kafkaBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.TaskDefPb.KafkaTaskQueueDetailsPb kafka = 6;</code>
+     */
+    public Builder setKafka(io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb value) {
+      if (kafkaBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        queueDetails_ = value;
+        onChanged();
+      } else {
+        kafkaBuilder_.setMessage(value);
+      }
+      queueDetailsCase_ = 6;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.TaskDefPb.KafkaTaskQueueDetailsPb kafka = 6;</code>
+     */
+    public Builder setKafka(
+        io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb.Builder builderForValue) {
+      if (kafkaBuilder_ == null) {
+        queueDetails_ = builderForValue.build();
+        onChanged();
+      } else {
+        kafkaBuilder_.setMessage(builderForValue.build());
+      }
+      queueDetailsCase_ = 6;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.TaskDefPb.KafkaTaskQueueDetailsPb kafka = 6;</code>
+     */
+    public Builder mergeKafka(io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb value) {
+      if (kafkaBuilder_ == null) {
+        if (queueDetailsCase_ == 6 &&
+            queueDetails_ != io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb.getDefaultInstance()) {
+          queueDetails_ = io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb.newBuilder((io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb) queueDetails_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          queueDetails_ = value;
+        }
+        onChanged();
+      } else {
+        if (queueDetailsCase_ == 6) {
+          kafkaBuilder_.mergeFrom(value);
+        }
+        kafkaBuilder_.setMessage(value);
+      }
+      queueDetailsCase_ = 6;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.TaskDefPb.KafkaTaskQueueDetailsPb kafka = 6;</code>
+     */
+    public Builder clearKafka() {
+      if (kafkaBuilder_ == null) {
+        if (queueDetailsCase_ == 6) {
+          queueDetailsCase_ = 0;
+          queueDetails_ = null;
+          onChanged();
+        }
+      } else {
+        if (queueDetailsCase_ == 6) {
+          queueDetailsCase_ = 0;
+          queueDetails_ = null;
+        }
+        kafkaBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.lh_proto.TaskDefPb.KafkaTaskQueueDetailsPb kafka = 6;</code>
+     */
+    public io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb.Builder getKafkaBuilder() {
+      return getKafkaFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.TaskDefPb.KafkaTaskQueueDetailsPb kafka = 6;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPbOrBuilder getKafkaOrBuilder() {
+      if ((queueDetailsCase_ == 6) && (kafkaBuilder_ != null)) {
+        return kafkaBuilder_.getMessageOrBuilder();
+      } else {
+        if (queueDetailsCase_ == 6) {
+          return (io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb) queueDetails_;
+        }
+        return io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.TaskDefPb.KafkaTaskQueueDetailsPb kafka = 6;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb, io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb.Builder, io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPbOrBuilder> 
+        getKafkaFieldBuilder() {
+      if (kafkaBuilder_ == null) {
+        if (!(queueDetailsCase_ == 6)) {
+          queueDetails_ = io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb.getDefaultInstance();
+        }
+        kafkaBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb, io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb.Builder, io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPbOrBuilder>(
+                (io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb) queueDetails_,
+                getParentForChildren(),
+                isClean());
+        queueDetails_ = null;
+      }
+      queueDetailsCase_ = 6;
+      onChanged();;
+      return kafkaBuilder_;
+    }
+
+    /**
+     * <code>bool rpc = 7;</code>
+     * @return The rpc.
+     */
+    public boolean getRpc() {
+      if (queueDetailsCase_ == 7) {
+        return (java.lang.Boolean) queueDetails_;
+      }
+      return false;
+    }
+    /**
+     * <code>bool rpc = 7;</code>
+     * @param value The rpc to set.
+     * @return This builder for chaining.
+     */
+    public Builder setRpc(boolean value) {
+      queueDetailsCase_ = 7;
+      queueDetails_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>bool rpc = 7;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearRpc() {
+      if (queueDetailsCase_ == 7) {
+        queueDetailsCase_ = 0;
+        queueDetails_ = null;
+        onChanged();
+      }
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

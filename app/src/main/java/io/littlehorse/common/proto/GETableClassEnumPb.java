@@ -36,6 +36,10 @@ public enum GETableClassEnumPb
    * <code>EXTERNAL_EVENT = 6;</code>
    */
   EXTERNAL_EVENT(6),
+  /**
+   * <code>TASK_SCHEDULE_REQUEST = 7;</code>
+   */
+  TASK_SCHEDULE_REQUEST(7),
   UNRECOGNIZED(-1),
   ;
 
@@ -67,6 +71,10 @@ public enum GETableClassEnumPb
    * <code>EXTERNAL_EVENT = 6;</code>
    */
   public static final int EXTERNAL_EVENT_VALUE = 6;
+  /**
+   * <code>TASK_SCHEDULE_REQUEST = 7;</code>
+   */
+  public static final int TASK_SCHEDULE_REQUEST_VALUE = 7;
 
 
   public final int getNumber() {
@@ -100,6 +108,7 @@ public enum GETableClassEnumPb
       case 4: return NODE_RUN;
       case 5: return VARIABLE;
       case 6: return EXTERNAL_EVENT;
+      case 7: return TASK_SCHEDULE_REQUEST;
       default: return null;
     }
   }

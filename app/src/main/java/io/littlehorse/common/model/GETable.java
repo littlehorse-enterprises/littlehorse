@@ -6,6 +6,7 @@ import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.NodeRun;
+import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.GETableClassEnumPb;
@@ -32,6 +33,8 @@ public abstract class GETable<T extends MessageOrBuilder> extends Storeable<T> {
             return GETableClassEnumPb.EXTERNAL_EVENT_DEF;
         } else if (cls.equals(ExternalEvent.class)) {
             return GETableClassEnumPb.EXTERNAL_EVENT;
+        } else if (cls.equals(TaskScheduleRequest.class)) {
+            return GETableClassEnumPb.TASK_SCHEDULE_REQUEST;
         } else {
             throw new RuntimeException("Uh oh, unrecognized: " + cls.getName());
         }
@@ -53,6 +56,8 @@ public abstract class GETable<T extends MessageOrBuilder> extends Storeable<T> {
                 return ExternalEventDef.class;
             case EXTERNAL_EVENT:
                 return ExternalEvent.class;
+            case TASK_SCHEDULE_REQUEST:
+                return TaskScheduleRequest.class;
             case UNRECOGNIZED:
             default:
                 throw new RuntimeException("Uh oh, unrecognized enum");
