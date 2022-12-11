@@ -143,7 +143,7 @@ public class TagUtils {
             ),
             new Tag(
                 thing,
-                TagStorageTypePb.LOCAL_HASH_UNCOUNTED,
+                TagStorageTypePb.LOCAL_UNCOUNTED,
                 Pair.of("wfRunId", thing.wfRunId)
             )
         );

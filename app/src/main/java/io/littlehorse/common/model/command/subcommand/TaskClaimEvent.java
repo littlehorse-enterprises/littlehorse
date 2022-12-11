@@ -83,6 +83,7 @@ public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
         // will delete the task schedule request.
         out.result =
             dao.getTaskScheduleRequest(wfRunId, threadRunNumber, taskRunPosition);
+        out.code = LHResponseCodePb.OK;
 
         wfRun.wfSpec = wfSpec;
         wfRun.cmdDao = dao;

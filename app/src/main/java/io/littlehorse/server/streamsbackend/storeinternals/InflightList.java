@@ -31,26 +31,24 @@ public class InflightList {
      * Guarded get-or-create-if-not-exists
      */
     private IFLPQueue getQueue(String taskDefName) {
-        Lock l = null;
+        Lock l = rwl.readLock();
         try {
-            l = rwl.readLock();
+            l.lock();
             IFLPQueue out = queues.get(taskDefName);
             if (out != null) return out;
         } finally {
-            if (l != null) {
-                l.unlock();
-                l = null;
-            }
+            l.unlock();
         }
 
+        l = rwl.writeLock();
         try {
-            l = rwl.writeLock();
+            l.lock();
             if (!queues.containsKey(taskDefName)) {
                 queues.put(taskDefName, new IFLPQueue());
             }
             return queues.get(taskDefName);
         } finally {
-            if (l != null) l.unlock();
+            l.unlock();
         }
     }
 
@@ -77,26 +75,22 @@ class IFLPQueue {
     }
 
     public void markDone(String nodeRunId) {
-        Lock l = null;
+        Lock l = rwl.writeLock();
         try {
-            l = rwl.writeLock();
+            l.lock();
             inflightNodeRunIds.remove(nodeRunId);
         } finally {
-            if (l != null) {
-                l.unlock();
-            }
+            l.unlock();
         }
     }
 
     public boolean markInFlight(String nodeRunId) {
-        Lock l = null;
+        Lock l = rwl.writeLock();
         try {
-            l = rwl.writeLock();
+            l.lock();
             return inflightNodeRunIds.add(nodeRunId);
         } finally {
-            if (l != null) {
-                l.unlock();
-            }
+            l.unlock();
         }
     }
 }
