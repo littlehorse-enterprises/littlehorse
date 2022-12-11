@@ -55,19 +55,19 @@ public interface CommandPbOrBuilder extends
   io.littlehorse.common.proto.TaskResultEventPbOrBuilder getTaskResultEventOrBuilder();
 
   /**
-   * <code>.lh_proto.TaskStartedEventPb task_started_event = 4;</code>
-   * @return Whether the taskStartedEvent field is set.
+   * <code>.lh_proto.TaskClaimEventPb task_claim_event = 4;</code>
+   * @return Whether the taskClaimEvent field is set.
    */
-  boolean hasTaskStartedEvent();
+  boolean hasTaskClaimEvent();
   /**
-   * <code>.lh_proto.TaskStartedEventPb task_started_event = 4;</code>
-   * @return The taskStartedEvent.
+   * <code>.lh_proto.TaskClaimEventPb task_claim_event = 4;</code>
+   * @return The taskClaimEvent.
    */
-  io.littlehorse.common.proto.TaskStartedEventPb getTaskStartedEvent();
+  io.littlehorse.common.proto.TaskClaimEventPb getTaskClaimEvent();
   /**
-   * <code>.lh_proto.TaskStartedEventPb task_started_event = 4;</code>
+   * <code>.lh_proto.TaskClaimEventPb task_claim_event = 4;</code>
    */
-  io.littlehorse.common.proto.TaskStartedEventPbOrBuilder getTaskStartedEventOrBuilder();
+  io.littlehorse.common.proto.TaskClaimEventPbOrBuilder getTaskClaimEventOrBuilder();
 
   /**
    * <code>.lh_proto.PutWfSpecPb put_wf_spec = 6;</code>

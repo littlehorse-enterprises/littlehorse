@@ -5,8 +5,8 @@ import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
-import io.littlehorse.common.model.command.subcommand.TaskStartedEvent;
 import io.littlehorse.common.model.meta.Edge;
 import io.littlehorse.common.model.meta.FailureHandlerDef;
 import io.littlehorse.common.model.meta.InterruptDef;
@@ -212,7 +212,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         }
     }
 
-    public void processTaskStartedEvent(TaskStartedEvent e) {
+    public void processTaskStartedEvent(TaskClaimEvent e) {
         NodeRun nr = getNodeRun(e.getNodeRunPosition());
         if (nr.type != NodeTypeCase.TASK) {
             LHUtil.log("Impossible, got a bad event. TASK_START on non-task node.");

@@ -8,8 +8,8 @@ import io.littlehorse.common.model.command.subcommand.PutExternalEventDef;
 import io.littlehorse.common.model.command.subcommand.PutTaskDef;
 import io.littlehorse.common.model.command.subcommand.PutWfSpec;
 import io.littlehorse.common.model.command.subcommand.RunWf;
+import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
-import io.littlehorse.common.model.command.subcommand.TaskStartedEvent;
 import io.littlehorse.common.proto.CommandPb;
 import io.littlehorse.common.proto.CommandPb.CommandCase;
 import io.littlehorse.common.proto.CommandPbOrBuilder;
@@ -24,7 +24,7 @@ public class Command extends LHSerializable<CommandPb> {
 
     public CommandCase type;
     public TaskResultEvent taskResultEvent;
-    public TaskStartedEvent taskStartedEvent;
+    public TaskClaimEvent taskClaimEvent;
     public PutExternalEvent putExternalEvent;
     public PutWfSpec putWfSpec;
     public PutTaskDef putTaskDef;
@@ -47,8 +47,8 @@ public class Command extends LHSerializable<CommandPb> {
             case TASK_RESULT_EVENT:
                 out.setTaskResultEvent(taskResultEvent.toProto());
                 break;
-            case TASK_STARTED_EVENT:
-                out.setTaskStartedEvent(taskStartedEvent.toProto());
+            case TASK_CLAIM_EVENT:
+                out.setTaskClaimEvent(taskClaimEvent.toProto());
                 break;
             case PUT_EXTERNAL_EVENT:
                 out.setPutExternalEvent(putExternalEvent.toProto());
@@ -84,9 +84,9 @@ public class Command extends LHSerializable<CommandPb> {
             case TASK_RESULT_EVENT:
                 taskResultEvent = TaskResultEvent.fromProto(p.getTaskResultEvent());
                 break;
-            case TASK_STARTED_EVENT:
-                taskStartedEvent =
-                    TaskStartedEvent.fromProto(p.getTaskStartedEventOrBuilder());
+            case TASK_CLAIM_EVENT:
+                taskClaimEvent =
+                    TaskClaimEvent.fromProto(p.getTaskClaimEventOrBuilder());
                 break;
             case PUT_EXTERNAL_EVENT:
                 putExternalEvent =
@@ -116,8 +116,8 @@ public class Command extends LHSerializable<CommandPb> {
         switch (type) {
             case TASK_RESULT_EVENT:
                 return taskResultEvent;
-            case TASK_STARTED_EVENT:
-                return taskStartedEvent;
+            case TASK_CLAIM_EVENT:
+                return taskClaimEvent;
             case PUT_EXTERNAL_EVENT:
                 return putExternalEvent;
             case PUT_WF_SPEC:
@@ -153,9 +153,9 @@ public class Command extends LHSerializable<CommandPb> {
         } else if (cls.equals(TaskResultEvent.class)) {
             type = CommandCase.TASK_RESULT_EVENT;
             taskResultEvent = (TaskResultEvent) cmd;
-        } else if (cls.equals(TaskStartedEvent.class)) {
-            type = CommandCase.TASK_STARTED_EVENT;
-            taskStartedEvent = (TaskStartedEvent) cmd;
+        } else if (cls.equals(TaskClaimEvent.class)) {
+            type = CommandCase.TASK_CLAIM_EVENT;
+            taskClaimEvent = (TaskClaimEvent) cmd;
         } else {
             throw new RuntimeException("Unrecognized class: " + cls.getName());
         }

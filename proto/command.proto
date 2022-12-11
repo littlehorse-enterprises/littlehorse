@@ -35,7 +35,7 @@ message WfRunRequestPb {
     map<string, VariableValuePb> variables = 3;
 }
 
-message TaskStartedEventPb {
+message TaskClaimEventPb {
     string wf_run_id = 1;
     int32 thread_run_number = 2;
     int32 task_run_number = 3;
@@ -103,7 +103,7 @@ message CommandPb {
     optional string command_id = 2;
     oneof command {
         TaskResultEventPb task_result_event = 3;
-        TaskStartedEventPb task_started_event = 4;
+        TaskClaimEventPb task_claim_event = 4;
         PutWfSpecPb put_wf_spec = 6;
         PutTaskDefPb put_task_def = 7;
         PutExternalEventDefPb put_external_event_def = 8;

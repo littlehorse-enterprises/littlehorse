@@ -10,11 +10,15 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.CommandResult;
+import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
+import io.littlehorse.common.model.command.subcommandresponse.TaskClaimReply;
+import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
 import io.littlehorse.common.proto.AttributePb;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.CentralStoreQueryPb;
 import io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb;
 import io.littlehorse.common.proto.CentralStoreQueryReplyPb;
+import io.littlehorse.common.proto.CommandPb.CommandCase;
 import io.littlehorse.common.proto.GETableClassEnumPb;
 import io.littlehorse.common.proto.InternalPollTaskPb;
 import io.littlehorse.common.proto.InternalPollTaskReplyPb;
@@ -24,12 +28,10 @@ import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsImplBase;
 import io.littlehorse.common.proto.PaginatedTagQueryPb;
 import io.littlehorse.common.proto.PaginatedTagQueryReplyPb;
 import io.littlehorse.common.proto.PartitionBookmarkPb;
-import io.littlehorse.common.proto.PollTaskPb;
-import io.littlehorse.common.proto.PollTaskReplyPb;
 import io.littlehorse.common.proto.StoreQueryStatusPb;
 import io.littlehorse.common.proto.WaitForCommandResultPb;
 import io.littlehorse.common.proto.WaitForCommandResultReplyPb;
-import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.server.streamsbackend.KafkaStreamsBackend;
 import io.littlehorse.server.streamsbackend.ServerTopology;
 import io.littlehorse.server.streamsbackend.storeinternals.index.Attribute;
 import io.littlehorse.server.streamsbackend.storeinternals.index.Tag;
@@ -38,7 +40,9 @@ import io.littlehorse.server.streamsbackend.storeinternals.utils.LHKeyValueItera
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -65,17 +69,20 @@ public class BackendInternalComms implements Closeable {
     private KafkaStreams coreStreams;
     private HostInfo thisHost;
     private InflightList inflightList;
-    private LocalTaskQueueWrapper taskQueueWrapper;
+    private KafkaStreamsBackend upperLayer;
 
     private Map<String, ManagedChannel> channels;
 
-    public BackendInternalComms(LHConfig config, KafkaStreams coreStreams) {
+    public BackendInternalComms(
+        LHConfig config,
+        KafkaStreams coreStreams,
+        KafkaStreamsBackend upperLayer
+    ) {
         this.config = config;
         this.coreStreams = coreStreams;
         this.channels = new HashMap<>();
         this.inflightList = new InflightList();
-        this.taskQueueWrapper =
-            new LocalTaskQueueWrapper(coreStreams, config, inflightList);
+        this.upperLayer = upperLayer;
 
         this.internalGrpcServer =
             ServerBuilder
@@ -119,23 +126,74 @@ public class BackendInternalComms implements Closeable {
         }
     }
 
-    public PollTaskReplyPb pollTask(PollTaskPb req) throws LHConnectionError {
+    public TaskScheduleRequest pollTask(String taskDefName) throws LHConnectionError {
+        // First attempt: check our local active partitions
+        TaskScheduleRequest local = findTaskLocally(taskDefName);
+        if (local != null) {
+            return local;
+        }
+
+        // Now we gotta see if the other hosts have any pending tasks. To do that,
+        // we check the global store for the counters on the tags (since the
+        // TagStorageType for the relevant tag is LOCAL_COUNTED).
+
         // TODO
+
         return null;
     }
 
-    private PollTaskReplyPb pollTaskLocal(String taskDefName) {
-        // String nodeRunId = taskQueueWrapper.pollTask(taskDefName);
-        // if (nodeRunId != null) {
-        //     NodeRun nodeRun =
-        // }
+    private TaskScheduleRequest findTaskLocally(String taskDefName)
+        throws LHConnectionError {
+        LHROStoreWrapper allActivePartitions = getLocalStore(null, false);
+        try (
+            LHKeyValueIterator<Tag> tagIter = allActivePartitions.prefixScan(
+                Tag.getAttributeString(
+                    GETableClassEnumPb.TASK_SCHEDULE_REQUEST,
+                    Arrays.asList(new Attribute("taskDefName", taskDefName))
+                ),
+                Tag.class
+            )
+        ) {
+            while (tagIter.hasNext()) {
+                LHIterKeyValue<Tag> next = tagIter.next();
+                Tag tag = next.getValue();
+                String taskScheduleReqId = tag.describedObjectId;
+                if (inflightList.markInFlight(taskDefName, taskScheduleReqId)) {
+                    TaskScheduleRequest tsr = allActivePartitions.get(
+                        taskScheduleReqId,
+                        TaskScheduleRequest.class
+                    );
 
-        //     PollTaskReplyPb.Builder out = PollTaskReplyPb.newBuilder();
-        // return out.setCode(LHResponseCodePb.OK).build();
+                    // We're like 99% sure that we have it now; but still, we have
+                    // to wait for processing to ensure correctness in the case of
+                    // unclean shutdown + recovery. Otherwise, we would just
+                    // fire off the event and return the tsr.
+                    return claimLocalTask(tsr).result;
+                }
+            }
+        }
+        return null;
+    }
 
-        // TODO: figure out where we store taskScheduleRequests.
+    /*
+     * Returns true if the task is successfully claimed.
+     */
+    private TaskClaimReply claimLocalTask(TaskScheduleRequest req)
+        throws LHConnectionError {
+        // It's been marked on the inflight list, so we don't need to worry about
+        // that.
+        TaskClaimEvent tse = new TaskClaimEvent();
+        tse.wfRunId = req.wfRunId;
+        tse.threadRunNumber = req.threadRunNumber;
+        tse.taskRunPosition = req.taskRunPosition;
+        tse.taskRunNumber = req.taskRunNumber;
+        tse.time = new Date();
 
-        throw new RuntimeException("implement me");
+        Command taskClaimCommand = new Command();
+        taskClaimCommand.type = CommandCase.TASK_CLAIM_EVENT;
+        taskClaimCommand.taskClaimEvent = tse;
+
+        return upperLayer.process(tse, TaskClaimReply.class);
     }
 
     public Bytes getLastFromPrefix(String prefix, String partitionKey)
@@ -446,7 +504,20 @@ public class BackendInternalComms implements Closeable {
         public void internalPollTask(
             InternalPollTaskPb req,
             StreamObserver<InternalPollTaskReplyPb> ctx
-        ) {}
+        ) {
+            InternalPollTaskReplyPb.Builder out = InternalPollTaskReplyPb.newBuilder();
+            try {
+                TaskScheduleRequest tsr = findTaskLocally(req.getTaskQueueName());
+                if (tsr != null) {
+                    out.setResult(tsr.toProto());
+                }
+                out.setCode(StoreQueryStatusPb.RSQ_OK);
+            } catch (LHConnectionError exn) {
+                out.setCode(StoreQueryStatusPb.RSQ_NOT_AVAILABLE);
+            }
+            ctx.onNext(out.build());
+            ctx.onCompleted();
+        }
     }
 
     public PaginatedTagQueryReplyPb doPaginatedTagQuery(PaginatedTagQueryPb req)

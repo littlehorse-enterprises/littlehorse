@@ -306,6 +306,18 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
     }
 
     @Override
+    public TaskScheduleRequest getTaskScheduleRequest(
+        String wfRunId,
+        int threadRunNumber,
+        int taskRunPosition
+    ) {
+        return localStore.get(
+            NodeRun.getStoreKey(wfRunId, threadRunNumber, taskRunPosition),
+            TaskScheduleRequest.class
+        );
+    }
+
+    @Override
     public WfRun getWfRun(String id) {
         WfRun out = wfRunPuts.get(id);
         if (out != null) {
@@ -420,7 +432,7 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
 
         TaskDef taskDef = getTaskDef(tsr.taskDefName, null);
         if (taskDef.type == QueueDetailsCase.RPC) {
-            // TODO: put the taskScheduleRequest home.
+            saveAndIndexGETable(tsr);
         } else if (taskDef.type == QueueDetailsCase.KAFKA) {
             CommandProcessorOutput output = new CommandProcessorOutput(
                 taskDef.kafkaTaskQueueDetails.topic,

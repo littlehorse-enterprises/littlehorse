@@ -3,8 +3,8 @@
 
 package io.littlehorse.common.proto;
 
-public interface TaskStartedEventPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.TaskStartedEventPb)
+public interface TaskClaimEventPbOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:lh_proto.TaskClaimEventPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**

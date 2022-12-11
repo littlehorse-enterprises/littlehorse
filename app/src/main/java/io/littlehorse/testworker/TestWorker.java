@@ -4,8 +4,8 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.Command;
+import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
-import io.littlehorse.common.model.command.subcommand.TaskStartedEvent;
 import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.proto.CommandPb.CommandCase;
@@ -125,7 +125,7 @@ public class TestWorker {
             return;
         }
 
-        TaskStartedEvent se = new TaskStartedEvent();
+        TaskClaimEvent se = new TaskClaimEvent();
         se.taskRunNumber = tsr.taskRunNumber;
         se.taskRunPosition = tsr.taskRunPosition;
         se.threadRunNumber = tsr.threadRunNumber;
@@ -133,8 +133,8 @@ public class TestWorker {
         se.time = new Date();
 
         Command cmd = new Command();
-        cmd.type = CommandCase.TASK_STARTED_EVENT;
-        cmd.taskStartedEvent = se;
+        cmd.type = CommandCase.TASK_CLAIM_EVENT;
+        cmd.taskClaimEvent = se;
         cmd.time = se.time;
 
         txnProd.send(tsr.wfRunId, cmd, tsr.wfRunEventQueue);

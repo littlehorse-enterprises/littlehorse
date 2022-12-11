@@ -166,7 +166,7 @@ message PollTaskPb {
 
 message PollTaskReplyPb {
     LHResponseCodePb code = 1;
-    string message = 2;
+    optional string message = 2;
     optional TaskScheduleRequestPb result = 3;
 }
 

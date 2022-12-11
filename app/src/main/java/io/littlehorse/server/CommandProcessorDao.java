@@ -73,6 +73,12 @@ public interface CommandProcessorDao extends LHGlobalMetaStores {
 
     public ExternalEventDef getExternalEventDef(String name, Integer version);
 
+    public TaskScheduleRequest getTaskScheduleRequest(
+        String wfRunId,
+        int threadRunNumber,
+        int taskRunPosition
+    );
+
     public void putExternalEventDef(ExternalEventDef eed);
 
     /*

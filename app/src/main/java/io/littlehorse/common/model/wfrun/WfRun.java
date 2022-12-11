@@ -6,8 +6,8 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
-import io.littlehorse.common.model.command.subcommand.TaskStartedEvent;
 import io.littlehorse.common.model.meta.ThreadSpec;
 import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.meta.WfSpec;
@@ -363,7 +363,7 @@ public class WfRun extends GETable<WfRunPb> {
         advance(event.time);
     }
 
-    public void processTaskStart(TaskStartedEvent event) {
+    public void processTaskStart(TaskClaimEvent event) {
         ThreadRun handler = threadRuns.get(event.threadRunNumber);
         handler.processTaskStartedEvent(event);
         advance(event.time);

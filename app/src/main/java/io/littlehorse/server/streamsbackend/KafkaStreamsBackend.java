@@ -17,6 +17,7 @@ import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.NodeRun;
+import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.GetExternalEventPb;
@@ -84,7 +85,7 @@ public class KafkaStreamsBackend {
         this.config = config;
         this.producer = new LHProducer(config, false);
 
-        internalComms = new BackendInternalComms(config, coreStreams);
+        internalComms = new BackendInternalComms(config, coreStreams, this);
     }
 
     public WfSpec getWfSpec(String name, Integer version) throws LHConnectionError {
@@ -429,15 +430,19 @@ public class KafkaStreamsBackend {
     }
 
     public PollTaskReplyPb pollTask(PollTaskPb req) {
+        PollTaskReplyPb.Builder out = PollTaskReplyPb.newBuilder();
         try {
-            return internalComms.pollTask(req);
+            TaskScheduleRequest tsr = internalComms.pollTask(req.getTaskDefName());
+            if (tsr != null) {
+                out.setResult(tsr.toProto());
+            }
+            out.setCode(LHResponseCodePb.OK);
         } catch (LHConnectionError exn) {
-            return PollTaskReplyPb
-                .newBuilder()
-                .setCode(LHResponseCodePb.CONNECTION_ERROR)
-                .setMessage("Failed connecting to backend: " + exn.getMessage())
-                .build();
+            out.setCode(LHResponseCodePb.CONNECTION_ERROR);
+            out.setMessage("Failed connecting to backend: " + exn.getMessage());
         }
+
+        return out.build();
     }
 
     public void start() throws IOException {

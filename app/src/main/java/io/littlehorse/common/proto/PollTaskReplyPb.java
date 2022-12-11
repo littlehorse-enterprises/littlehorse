@@ -59,13 +59,13 @@ private static final long serialVersionUID = 0L;
           }
           case 18: {
             java.lang.String s = input.readStringRequireUtf8();
-
+            bitField0_ |= 0x00000001;
             message_ = s;
             break;
           }
           case 26: {
             io.littlehorse.common.proto.TaskScheduleRequestPb.Builder subBuilder = null;
-            if (((bitField0_ & 0x00000001) != 0)) {
+            if (((bitField0_ & 0x00000002) != 0)) {
               subBuilder = result_.toBuilder();
             }
             result_ = input.readMessage(io.littlehorse.common.proto.TaskScheduleRequestPb.parser(), extensionRegistry);
@@ -73,7 +73,7 @@ private static final long serialVersionUID = 0L;
               subBuilder.mergeFrom(result_);
               result_ = subBuilder.buildPartial();
             }
-            bitField0_ |= 0x00000001;
+            bitField0_ |= 0x00000002;
             break;
           }
           default: {
@@ -132,6 +132,14 @@ private static final long serialVersionUID = 0L;
   private volatile java.lang.Object message_;
   /**
    * <code>string message = 2;</code>
+   * @return Whether the message field is set.
+   */
+  @java.lang.Override
+  public boolean hasMessage() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <code>string message = 2;</code>
    * @return The message.
    */
   @java.lang.Override
@@ -174,7 +182,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasResult() {
-    return ((bitField0_ & 0x00000001) != 0);
+    return ((bitField0_ & 0x00000002) != 0);
   }
   /**
    * <code>.lh_proto.TaskScheduleRequestPb result = 3;</code>
@@ -209,10 +217,10 @@ private static final long serialVersionUID = 0L;
     if (code_ != io.littlehorse.common.proto.LHResponseCodePb.OK.getNumber()) {
       output.writeEnum(1, code_);
     }
-    if (!getMessageBytes().isEmpty()) {
+    if (((bitField0_ & 0x00000001) != 0)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, message_);
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
+    if (((bitField0_ & 0x00000002) != 0)) {
       output.writeMessage(3, getResult());
     }
     unknownFields.writeTo(output);
@@ -228,10 +236,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(1, code_);
     }
-    if (!getMessageBytes().isEmpty()) {
+    if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, message_);
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
+    if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getResult());
     }
@@ -251,8 +259,11 @@ private static final long serialVersionUID = 0L;
     io.littlehorse.common.proto.PollTaskReplyPb other = (io.littlehorse.common.proto.PollTaskReplyPb) obj;
 
     if (code_ != other.code_) return false;
-    if (!getMessage()
-        .equals(other.getMessage())) return false;
+    if (hasMessage() != other.hasMessage()) return false;
+    if (hasMessage()) {
+      if (!getMessage()
+          .equals(other.getMessage())) return false;
+    }
     if (hasResult() != other.hasResult()) return false;
     if (hasResult()) {
       if (!getResult()
@@ -271,8 +282,10 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + CODE_FIELD_NUMBER;
     hash = (53 * hash) + code_;
-    hash = (37 * hash) + MESSAGE_FIELD_NUMBER;
-    hash = (53 * hash) + getMessage().hashCode();
+    if (hasMessage()) {
+      hash = (37 * hash) + MESSAGE_FIELD_NUMBER;
+      hash = (53 * hash) + getMessage().hashCode();
+    }
     if (hasResult()) {
       hash = (37 * hash) + RESULT_FIELD_NUMBER;
       hash = (53 * hash) + getResult().hashCode();
@@ -414,13 +427,13 @@ private static final long serialVersionUID = 0L;
       code_ = 0;
 
       message_ = "";
-
+      bitField0_ = (bitField0_ & ~0x00000001);
       if (resultBuilder_ == null) {
         result_ = null;
       } else {
         resultBuilder_.clear();
       }
-      bitField0_ = (bitField0_ & ~0x00000001);
+      bitField0_ = (bitField0_ & ~0x00000002);
       return this;
     }
 
@@ -450,14 +463,17 @@ private static final long serialVersionUID = 0L;
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
       result.code_ = code_;
-      result.message_ = message_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
+        to_bitField0_ |= 0x00000001;
+      }
+      result.message_ = message_;
+      if (((from_bitField0_ & 0x00000002) != 0)) {
         if (resultBuilder_ == null) {
           result.result_ = result_;
         } else {
           result.result_ = resultBuilder_.build();
         }
-        to_bitField0_ |= 0x00000001;
+        to_bitField0_ |= 0x00000002;
       }
       result.bitField0_ = to_bitField0_;
       onBuilt();
@@ -511,7 +527,8 @@ private static final long serialVersionUID = 0L;
       if (other.code_ != 0) {
         setCodeValue(other.getCodeValue());
       }
-      if (!other.getMessage().isEmpty()) {
+      if (other.hasMessage()) {
+        bitField0_ |= 0x00000001;
         message_ = other.message_;
         onChanged();
       }
@@ -605,6 +622,13 @@ private static final long serialVersionUID = 0L;
     private java.lang.Object message_ = "";
     /**
      * <code>string message = 2;</code>
+     * @return Whether the message field is set.
+     */
+    public boolean hasMessage() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>string message = 2;</code>
      * @return The message.
      */
     public java.lang.String getMessage() {
@@ -646,7 +670,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) {
     throw new NullPointerException();
   }
-  
+  bitField0_ |= 0x00000001;
       message_ = value;
       onChanged();
       return this;
@@ -656,7 +680,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearMessage() {
-      
+      bitField0_ = (bitField0_ & ~0x00000001);
       message_ = getDefaultInstance().getMessage();
       onChanged();
       return this;
@@ -672,7 +696,7 @@ private static final long serialVersionUID = 0L;
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
-      
+      bitField0_ |= 0x00000001;
       message_ = value;
       onChanged();
       return this;
@@ -686,7 +710,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the result field is set.
      */
     public boolean hasResult() {
-      return ((bitField0_ & 0x00000001) != 0);
+      return ((bitField0_ & 0x00000002) != 0);
     }
     /**
      * <code>.lh_proto.TaskScheduleRequestPb result = 3;</code>
@@ -712,7 +736,7 @@ private static final long serialVersionUID = 0L;
       } else {
         resultBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000001;
+      bitField0_ |= 0x00000002;
       return this;
     }
     /**
@@ -726,7 +750,7 @@ private static final long serialVersionUID = 0L;
       } else {
         resultBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000001;
+      bitField0_ |= 0x00000002;
       return this;
     }
     /**
@@ -734,7 +758,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeResult(io.littlehorse.common.proto.TaskScheduleRequestPb value) {
       if (resultBuilder_ == null) {
-        if (((bitField0_ & 0x00000001) != 0) &&
+        if (((bitField0_ & 0x00000002) != 0) &&
             result_ != null &&
             result_ != io.littlehorse.common.proto.TaskScheduleRequestPb.getDefaultInstance()) {
           result_ =
@@ -746,7 +770,7 @@ private static final long serialVersionUID = 0L;
       } else {
         resultBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000001;
+      bitField0_ |= 0x00000002;
       return this;
     }
     /**
@@ -759,14 +783,14 @@ private static final long serialVersionUID = 0L;
       } else {
         resultBuilder_.clear();
       }
-      bitField0_ = (bitField0_ & ~0x00000001);
+      bitField0_ = (bitField0_ & ~0x00000002);
       return this;
     }
     /**
      * <code>.lh_proto.TaskScheduleRequestPb result = 3;</code>
      */
     public io.littlehorse.common.proto.TaskScheduleRequestPb.Builder getResultBuilder() {
-      bitField0_ |= 0x00000001;
+      bitField0_ |= 0x00000002;
       onChanged();
       return getResultFieldBuilder().getBuilder();
     }

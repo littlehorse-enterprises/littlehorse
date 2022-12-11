@@ -20,6 +20,11 @@ public interface PollTaskReplyPbOrBuilder extends
 
   /**
    * <code>string message = 2;</code>
+   * @return Whether the message field is set.
+   */
+  boolean hasMessage();
+  /**
+   * <code>string message = 2;</code>
    * @return The message.
    */
   java.lang.String getMessage();
