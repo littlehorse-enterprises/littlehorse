@@ -31,9 +31,11 @@ import io.littlehorse.common.proto.PartitionBookmarkPb;
 import io.littlehorse.common.proto.StoreQueryStatusPb;
 import io.littlehorse.common.proto.WaitForCommandResultPb;
 import io.littlehorse.common.proto.WaitForCommandResultReplyPb;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streamsbackend.KafkaStreamsBackend;
 import io.littlehorse.server.streamsbackend.ServerTopology;
 import io.littlehorse.server.streamsbackend.storeinternals.index.Attribute;
+import io.littlehorse.server.streamsbackend.storeinternals.index.DiscreteTagLocalCounter;
 import io.littlehorse.server.streamsbackend.storeinternals.index.Tag;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.LHIterKeyValue;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.LHKeyValueIterator;
@@ -136,10 +138,69 @@ public class BackendInternalComms implements Closeable {
         // Now we gotta see if the other hosts have any pending tasks. To do that,
         // we check the global store for the counters on the tags (since the
         // TagStorageType for the relevant tag is LOCAL_COUNTED).
+        Exception caught = null;
+        for (HostInfo other : findHostsWithPendingTask(taskDefName)) {
+            LHUtil.log("polling for task remotely: ", other.host(), other.port());
 
-        // TODO
+            LHInternalsBlockingStub client = getInternalClient(other);
+            try {
+                InternalPollTaskReplyPb resp = client.internalPollTask(
+                    InternalPollTaskPb
+                        .newBuilder()
+                        .setTaskQueueName(taskDefName)
+                        .build()
+                );
+                if (resp.hasResult()) {
+                    return TaskScheduleRequest.fromProto(resp.getResultOrBuilder());
+                }
+            } catch (Exception exn) {
+                caught = exn;
+            }
+        }
 
+        if (caught != null) {
+            throw new LHConnectionError(
+                caught,
+                "Failed contacting internal LH brokers."
+            );
+        }
         return null;
+    }
+
+    // OPTIMIZATION IDEA: in the future, we should cache this call and have it
+    // update every 500ms or so for each queue so that we don't have thousands of
+    // range scans going on all the time.
+    // Better yet, we could also have the global store processor send updates to
+    // the cache object (that is probably the reason why providing a processor
+    // is allowed in the first place).
+    private Set<HostInfo> findHostsWithPendingTask(String taskDefName) {
+        LHROStoreWrapper store = getGlobalStore();
+        String prefix = Tag.getAttributeString(
+            GETableClassEnumPb.TASK_SCHEDULE_REQUEST,
+            Arrays.asList(new Attribute("taskDefName", taskDefName))
+        );
+
+        Map<Integer, Long> partitionsToCounts = new HashMap<>();
+        try (
+            LHKeyValueIterator<DiscreteTagLocalCounter> iter = store.prefixScan(
+                prefix,
+                DiscreteTagLocalCounter.class
+            )
+        ) {
+            while (iter.hasNext()) {
+                LHIterKeyValue<DiscreteTagLocalCounter> next = iter.next();
+                DiscreteTagLocalCounter counter = next.getValue();
+                partitionsToCounts.put(counter.partition, counter.localCount);
+            }
+        }
+        // TODO: eventually we're gonna do something more intelligent regarding
+        // choosing hosts that have the most pending tasks on them.
+        Set<HostInfo> out = new HashSet<>();
+        for (Map.Entry<Integer, Long> entry : partitionsToCounts.entrySet()) {
+            out.add(getHostForPartition(entry.getKey()));
+        }
+        out.remove(thisHost);
+        return out;
     }
 
     private TaskScheduleRequest findTaskLocally(String taskDefName)
@@ -280,15 +341,14 @@ public class BackendInternalComms implements Closeable {
         return coreStreams.store(params);
     }
 
-    // // Unclear if this is necessary yet.
-    // private LHROStoreWrapper getGlobalStore() {
-    //     StoreQueryParameters<ReadOnlyKeyValueStore<String, Bytes>> params = StoreQueryParameters.fromNameAndType(
-    //         ServerTopology.globalStore,
-    //         QueryableStoreTypes.keyValueStore()
-    //     );
-    //     ReadOnlyKeyValueStore<String, Bytes> rawGStore = coreStreams.store(params);
-    //     return new LHROStoreWrapper(rawGStore, config);
-    // }
+    private LHROStoreWrapper getGlobalStore() {
+        StoreQueryParameters<ReadOnlyKeyValueStore<String, Bytes>> params = StoreQueryParameters.fromNameAndType(
+            ServerTopology.GLOBAL_STORE,
+            QueryableStoreTypes.keyValueStore()
+        );
+        ReadOnlyKeyValueStore<String, Bytes> rawGStore = coreStreams.store(params);
+        return new LHROStoreWrapper(rawGStore, config);
+    }
 
     private LHROStoreWrapper getLocalStore(
         Integer specificPartition,

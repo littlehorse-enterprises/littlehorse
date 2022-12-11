@@ -363,8 +363,9 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
 
         for (Map.Entry<String, DiscreteTagLocalCounter> e : changes.changelog.entrySet()) {
             DiscreteTagLocalCounter c = e.getValue();
+            String key = StoreUtils.getFullStoreKey(c);
             CommandProcessorOutput output = new CommandProcessorOutput();
-            output.partitionKey = e.getKey();
+            output.partitionKey = key;
             output.topic = config.getGlobalMetadataCLTopicName();
 
             if (c.localCount > 0) {
@@ -374,7 +375,7 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
                 output.payload = null;
             }
 
-            ctx.forward(new Record<>(output.partitionKey, output, time));
+            ctx.forward(new Record<>(key, output, time));
         }
 
         // reset the changes; next time tags are put, they will be updated.
