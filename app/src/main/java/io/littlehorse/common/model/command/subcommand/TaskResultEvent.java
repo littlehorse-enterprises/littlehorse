@@ -7,6 +7,7 @@ import io.littlehorse.common.model.command.subcommandresponse.ReportTaskReply;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.proto.LHResponseCodePb;
 import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.proto.TaskResultEventPb;
 import io.littlehorse.common.proto.TaskResultEventPbOrBuilder;
@@ -24,6 +25,7 @@ public class TaskResultEvent extends SubCommand<TaskResultEventPb> {
     public VariableValue stdout;
     public VariableValue stderr;
     public TaskResultCodePb resultCode;
+    public boolean fromRpc;
 
     public String getPartitionKey() {
         return wfRunId;
@@ -42,7 +44,7 @@ public class TaskResultEvent extends SubCommand<TaskResultEventPb> {
     }
 
     public boolean hasResponse() {
-        return true;
+        return fromRpc;
     }
 
     public ReportTaskReply process(CommandProcessorDao dao, LHConfig config) {
@@ -66,7 +68,9 @@ public class TaskResultEvent extends SubCommand<TaskResultEventPb> {
         wfRun.cmdDao = dao;
         wfRun.processTaskResult(this);
 
-        return new ReportTaskReply();
+        ReportTaskReply out = new ReportTaskReply();
+        out.code = LHResponseCodePb.OK;
+        return out;
     }
 
     public TaskResultEventPb.Builder toProto() {
@@ -76,7 +80,8 @@ public class TaskResultEvent extends SubCommand<TaskResultEventPb> {
             .setThreadRunNumber(threadRunNumber)
             .setTaskRunPosition(taskRunPosition)
             .setTime(LHUtil.fromDate(time))
-            .setResultCode(resultCode);
+            .setResultCode(resultCode)
+            .setFromRpc(fromRpc);
 
         if (stdout != null) b.setOutput(stdout.toProto());
         if (stderr != null) b.setLogOutput(stderr.toProto());
@@ -91,6 +96,7 @@ public class TaskResultEvent extends SubCommand<TaskResultEventPb> {
         this.taskRunPosition = proto.getTaskRunPosition();
         this.time = LHUtil.fromProtoTs(proto.getTime());
         this.resultCode = proto.getResultCode();
+        this.fromRpc = proto.getFromRpc();
 
         if (proto.hasOutput()) {
             this.stdout = VariableValue.fromProto(proto.getOutputOrBuilder());

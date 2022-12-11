@@ -86,4 +86,10 @@ public interface TaskResultEventPbOrBuilder extends
    * <code>.lh_proto.VariableValuePb log_output = 7;</code>
    */
   io.littlehorse.common.proto.VariableValuePbOrBuilder getLogOutputOrBuilder();
+
+  /**
+   * <code>bool from_rpc = 8;</code>
+   * @return The fromRpc.
+   */
+  boolean getFromRpc();
 }

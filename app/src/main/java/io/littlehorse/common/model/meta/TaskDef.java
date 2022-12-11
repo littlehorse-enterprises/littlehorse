@@ -98,10 +98,11 @@ public class TaskDef extends GETable<TaskDefPbOrBuilder> {
         }
         version = proto.getVersion();
 
-        // TODO: should this validation be done here...?
         type = proto.getQueueDetailsCase();
-        if (type == QueueDetailsCase.KAFKA) {}
-
+        if (type == QueueDetailsCase.KAFKA) {
+            kafkaTaskQueueDetails =
+                KafkaTaskQueueDetails.fromProto(proto.getKafkaOrBuilder());
+        }
         for (Map.Entry<String, VariableDefPb> entry : proto
             .getInputVarsMap()
             .entrySet()) {

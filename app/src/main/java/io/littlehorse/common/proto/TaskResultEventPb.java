@@ -112,6 +112,11 @@ private static final long serialVersionUID = 0L;
             bitField0_ |= 0x00000002;
             break;
           }
+          case 64: {
+
+            fromRpc_ = input.readBool();
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -302,6 +307,17 @@ private static final long serialVersionUID = 0L;
     return logOutput_ == null ? io.littlehorse.common.proto.VariableValuePb.getDefaultInstance() : logOutput_;
   }
 
+  public static final int FROM_RPC_FIELD_NUMBER = 8;
+  private boolean fromRpc_;
+  /**
+   * <code>bool from_rpc = 8;</code>
+   * @return The fromRpc.
+   */
+  @java.lang.Override
+  public boolean getFromRpc() {
+    return fromRpc_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -336,6 +352,9 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000002) != 0)) {
       output.writeMessage(7, getLogOutput());
+    }
+    if (fromRpc_ != false) {
+      output.writeBool(8, fromRpc_);
     }
     unknownFields.writeTo(output);
   }
@@ -372,6 +391,10 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(7, getLogOutput());
+    }
+    if (fromRpc_ != false) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(8, fromRpc_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -410,6 +433,8 @@ private static final long serialVersionUID = 0L;
       if (!getLogOutput()
           .equals(other.getLogOutput())) return false;
     }
+    if (getFromRpc()
+        != other.getFromRpc()) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -441,6 +466,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + LOG_OUTPUT_FIELD_NUMBER;
       hash = (53 * hash) + getLogOutput().hashCode();
     }
+    hash = (37 * hash) + FROM_RPC_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+        getFromRpc());
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -602,6 +630,8 @@ private static final long serialVersionUID = 0L;
         logOutputBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000002);
+      fromRpc_ = false;
+
       return this;
     }
 
@@ -655,6 +685,7 @@ private static final long serialVersionUID = 0L;
         }
         to_bitField0_ |= 0x00000002;
       }
+      result.fromRpc_ = fromRpc_;
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -725,6 +756,9 @@ private static final long serialVersionUID = 0L;
       }
       if (other.hasLogOutput()) {
         mergeLogOutput(other.getLogOutput());
+      }
+      if (other.getFromRpc() != false) {
+        setFromRpc(other.getFromRpc());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -1305,6 +1339,37 @@ private static final long serialVersionUID = 0L;
         logOutput_ = null;
       }
       return logOutputBuilder_;
+    }
+
+    private boolean fromRpc_ ;
+    /**
+     * <code>bool from_rpc = 8;</code>
+     * @return The fromRpc.
+     */
+    @java.lang.Override
+    public boolean getFromRpc() {
+      return fromRpc_;
+    }
+    /**
+     * <code>bool from_rpc = 8;</code>
+     * @param value The fromRpc to set.
+     * @return This builder for chaining.
+     */
+    public Builder setFromRpc(boolean value) {
+      
+      fromRpc_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>bool from_rpc = 8;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearFromRpc() {
+      
+      fromRpc_ = false;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

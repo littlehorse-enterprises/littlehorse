@@ -15,6 +15,7 @@ import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.proto.TaskDefPb.QueueDetailsCase;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.server.CommandProcessorDao;
 import io.littlehorse.server.streamsbackend.ServerTopology;
@@ -417,19 +418,23 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
         // If RPC, then there's nothing to do; otherwise, we forward the task as
         // commented out below.
 
-        // TaskDef taskDef = getTaskDef(tsr.taskDefName, null);
-        // CommandProcessorOutput output = new CommandProcessorOutput(
-        //     taskDef.queueName,
-        //     tsr,
-        //     tsr.wfRunId
-        // );
-        // ctx.forward(
-        //     new Record<String, CommandProcessorOutput>(
-        //         tsr.wfRunId,
-        //         output,
-        //         System.currentTimeMillis()
-        //     )
-        // );
+        TaskDef taskDef = getTaskDef(tsr.taskDefName, null);
+        if (taskDef.type == QueueDetailsCase.RPC) {
+            // TODO: put the taskScheduleRequest home.
+        } else if (taskDef.type == QueueDetailsCase.KAFKA) {
+            CommandProcessorOutput output = new CommandProcessorOutput(
+                taskDef.kafkaTaskQueueDetails.topic,
+                tsr,
+                tsr.wfRunId
+            );
+            ctx.forward(
+                new Record<String, CommandProcessorOutput>(
+                    tsr.wfRunId,
+                    output,
+                    System.currentTimeMillis()
+                )
+            );
+        }
     }
 
     private void forwardTimer(LHTimer timer) {
@@ -488,31 +493,55 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
     }
 
     private void putTag(Tag tag) {
-        localStore.put(tag);
-        TagChangesToBroadcast tctb = getTagChangesToBroadcast();
+        switch (tag.tagType) {
+            case REMOTE_HASH_UNCOUNTED:
+                throw new RuntimeException("Remote hash not implemented");
+            case LOCAL_HASH_UNCOUNTED:
+                throw new RuntimeException("Local hash not implemented");
+            case LOCAL_COUNTED:
+            case LOCAL_UNCOUNTED:
+                // Both of these involve storing the tag on the same partition
+                // as the described object.
+                localStore.put(tag);
+                TagChangesToBroadcast tctb = getTagChangesToBroadcast();
 
-        DiscreteTagLocalCounter counter = tctb.getCounter(tag.getAttributeString());
-        counter.localCount++;
-
-        localStore.put(counter);
-        localStore.putRaw(OUTGOING_CHANGELOG_KEY, new Bytes(tctb.toBytes(config)));
+                // If the counter is not null (i.e. LOCAL_COUNTED), then count.
+                if (tag.getCounterKey(partition) != null) {
+                    DiscreteTagLocalCounter counter = tctb.getCounter(tag);
+                    counter.localCount++;
+                    localStore.put(counter);
+                    localStore.putRaw(
+                        OUTGOING_CHANGELOG_KEY,
+                        new Bytes(tctb.toBytes(config))
+                    );
+                }
+                break;
+            case UNRECOGNIZED:
+                throw new RuntimeException("Not possible");
+        }
     }
 
     private void deleteTag(String tagId) {
+        // TODO: Handle the Remote and Hash types.
+
         Tag tag = localStore.get(tagId, Tag.class);
         localStore.delete(tag);
-        TagChangesToBroadcast tctb = getTagChangesToBroadcast();
 
-        DiscreteTagLocalCounter counter = tctb.getCounter(tag.getAttributeString());
-        counter.localCount--;
+        if (tag.getCounterKey(partition) != null) {
+            TagChangesToBroadcast tctb = getTagChangesToBroadcast();
+            DiscreteTagLocalCounter counter = tctb.getCounter(tag);
+            counter.localCount--;
 
-        if (counter.localCount >= 0) {
-            localStore.put(counter);
-        } else {
-            localStore.delete(counter);
+            if (counter.localCount >= 0) {
+                localStore.put(counter);
+            } else {
+                localStore.delete(counter);
+            }
+            localStore.putRaw(
+                OUTGOING_CHANGELOG_KEY,
+                new Bytes(tctb.toBytes(config))
+            );
         }
-
-        localStore.putRaw(OUTGOING_CHANGELOG_KEY, new Bytes(tctb.toBytes(config)));
     }
 
     private TagChangesToBroadcast getTagChangesToBroadcast() {

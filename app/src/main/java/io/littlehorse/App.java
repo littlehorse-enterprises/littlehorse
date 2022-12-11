@@ -39,6 +39,14 @@ public class App {
             )
         );
 
+        topics.add(
+            new NewTopic(
+                "task-queue-task1",
+                config.getClusterPartitions(),
+                config.getReplicationFactor()
+            )
+        );
+
         // Inputs to global state store's are always treated
         // as changelog topics. Therefore, we need it to be
         // compacted. In order to minimize restore time, we

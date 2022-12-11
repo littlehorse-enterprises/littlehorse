@@ -29,6 +29,7 @@ import io.littlehorse.common.proto.PollTaskReplyPb;
 import io.littlehorse.common.proto.StoreQueryStatusPb;
 import io.littlehorse.common.proto.WaitForCommandResultPb;
 import io.littlehorse.common.proto.WaitForCommandResultReplyPb;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streamsbackend.ServerTopology;
 import io.littlehorse.server.streamsbackend.storeinternals.index.Attribute;
 import io.littlehorse.server.streamsbackend.storeinternals.index.Tag;
@@ -636,7 +637,7 @@ public class BackendInternalComms implements Closeable {
             Tag.getAttributeString(objectType, attributes) + "~~~~~~~~~~~";
         String startKey;
         if (bookmark == null) {
-            startKey = Tag.getAttributeString(objectType, attributes);
+            startKey = Tag.getAttributeString(objectType, attributes) + "/";
         } else {
             startKey = bookmark.getLastKey();
         }

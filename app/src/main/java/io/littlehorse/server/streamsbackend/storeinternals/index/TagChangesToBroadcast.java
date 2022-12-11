@@ -51,7 +51,8 @@ public class TagChangesToBroadcast extends LHSerializable<TagChangesToBroadcastP
         return out;
     }
 
-    public DiscreteTagLocalCounter getCounter(String tagAttributes) {
+    public DiscreteTagLocalCounter getCounter(Tag tag) {
+        String tagAttributes = tag.getAttributeString();
         DiscreteTagLocalCounter out = changelog.get(tagAttributes);
         if (out != null) {
             if (out.partition != this.partition) {

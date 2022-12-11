@@ -49,6 +49,8 @@ public class Tag extends Storeable<TagPb> {
         for (AttributePb attr : p.getAttributesList()) {
             attributes.add(Attribute.fromProto(attr));
         }
+
+        tagType = p.getTagType();
     }
 
     public String getAttributeString() {
@@ -113,6 +115,7 @@ public class Tag extends Storeable<TagPb> {
             GETable.getTypeEnum((Class<? extends GETable<?>>) getable.getClass());
         createdAt = getable.getCreatedAt();
         describedObjectId = getable.getObjectId();
+        this.tagType = type;
 
         for (Pair<String, String> p : atts) {
             attributes.add(new Attribute(p.getLeft(), p.getRight()));

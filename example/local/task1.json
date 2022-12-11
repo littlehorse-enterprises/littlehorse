@@ -1,5 +1,6 @@
 {
     "name": "task1",
+    "kafka": true,
     "inputVars": {
         "myTaskVar": {
             "type": "STR",

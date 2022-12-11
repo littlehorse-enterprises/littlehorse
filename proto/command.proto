@@ -51,6 +51,7 @@ message TaskResultEventPb {
     TaskResultCodePb result_code = 5;
     optional VariableValuePb output = 6;
     optional VariableValuePb log_output = 7;
+    bool from_rpc = 8;
 }
 
 

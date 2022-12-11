@@ -126,7 +126,14 @@ public class LHROStoreWrapper {
         String end,
         Class<T> cls
     ) {
-        return new LHKeyValueIterator<>(store.range(start, end), cls, config);
+        return new LHKeyValueIterator<>(
+            store.range(
+                StoreUtils.getFullStoreKey(start, cls),
+                StoreUtils.getFullStoreKey(end, cls)
+            ),
+            cls,
+            config
+        );
     }
 }
 /*

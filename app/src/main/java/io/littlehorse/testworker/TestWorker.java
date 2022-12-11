@@ -51,10 +51,15 @@ public class TestWorker {
     public TestWorker(LHConfig config) {
         this.prod = config.getProducer();
         this.txnProd = config.getTxnProducer();
+
+        // TODO: should use the new API where we look up consumer group id and
+        // kafka topic name from the TaskDef.
         this.cons =
             config.getKafkaConsumer(
                 Arrays.asList(
-                    System.getenv().getOrDefault("LHORSE_TASK_DEF_ID", "task1")
+                    System
+                        .getenv()
+                        .getOrDefault("LHORSE_TASK_DEF_ID", "task-queue-task1")
                 )
             );
         this.config = config;
