@@ -5,11 +5,16 @@ import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
+import io.littlehorse.common.model.command.CommandResult;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streamsbackend.storeinternals.index.Tag;
 import io.littlehorse.server.streamsbackend.storeinternals.index.TagUtils;
 import io.littlehorse.server.streamsbackend.storeinternals.index.TagsCache;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.StoreUtils;
+import java.util.Date;
 import org.apache.kafka.common.utils.Bytes;
+import org.apache.kafka.streams.KeyValue;
+import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.KeyValueStore;
 
 public class LHStoreWrapper extends LHROStoreWrapper {
@@ -70,5 +75,38 @@ public class LHStoreWrapper extends LHROStoreWrapper {
         }
 
         store.put(tagCacheKey, new Bytes(newTagsCache.toBytes(config)));
+    }
+
+    public void deleteTagCache(GETable<?> thing) {
+        String tagCacheKey = StoreUtils.getTagsCacheKey(thing);
+        store.delete(tagCacheKey);
+    }
+
+    public void putResponseToDelete(String objId) {
+        String key = "responsekeys" + LHUtil.toLhDbFormat(new Date().getTime());
+        store.put(
+            key,
+            new Bytes(
+                StoreUtils.getFullStoreKey(objId, CommandResult.class).getBytes()
+            )
+        );
+    }
+
+    public void deleteResponsesUntil(long time) {
+        try (
+            KeyValueIterator<String, Bytes> iter = store.range(
+                "responsekeys",
+                "responsekeys" + LHUtil.toLhDbFormat(time)
+            )
+        ) {
+            while (iter.hasNext()) {
+                KeyValue<String, Bytes> kv = iter.next();
+                // delete the response
+                store.delete(new String(kv.value.get()));
+
+                // delete the response marker
+                store.delete(kv.key);
+            }
+        }
     }
 }

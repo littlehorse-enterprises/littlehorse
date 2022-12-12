@@ -3,6 +3,7 @@ package io.littlehorse.common.model.command;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.command.subcommand.DeleteWfRun;
 import io.littlehorse.common.model.command.subcommand.PutExternalEvent;
 import io.littlehorse.common.model.command.subcommand.PutExternalEventDef;
 import io.littlehorse.common.model.command.subcommand.PutTaskDef;
@@ -36,6 +37,7 @@ public class Command extends LHSerializable<CommandPb> {
     public StopWfRun stopWfRun;
     public ResumeWfRun resumeWfRun;
     public SleepNodeMatured sleepNodeMatured;
+    public DeleteWfRun deleteWfRun;
 
     public Class<CommandPb> getProtoBaseClass() {
         return CommandPb.class;
@@ -79,6 +81,9 @@ public class Command extends LHSerializable<CommandPb> {
                 break;
             case SLEEP_NODE_MATURED:
                 out.setSleepNodeMatured(sleepNodeMatured.toProto());
+                break;
+            case DELETE_WF_RUN:
+                out.setDeleteWfRun(deleteWfRun.toProto());
                 break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -132,6 +137,9 @@ public class Command extends LHSerializable<CommandPb> {
                 sleepNodeMatured =
                     SleepNodeMatured.fromProto(p.getSleepNodeMaturedOrBuilder());
                 break;
+            case DELETE_WF_RUN:
+                deleteWfRun = DeleteWfRun.fromProto(p.getDeleteWfRunOrBuilder());
+                break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -159,6 +167,8 @@ public class Command extends LHSerializable<CommandPb> {
                 return resumeWfRun;
             case SLEEP_NODE_MATURED:
                 return sleepNodeMatured;
+            case DELETE_WF_RUN:
+                return deleteWfRun;
             case COMMAND_NOT_SET:
         }
         throw new RuntimeException("Not possible");
@@ -196,6 +206,9 @@ public class Command extends LHSerializable<CommandPb> {
         } else if (cls.equals(SleepNodeMatured.class)) {
             type = CommandCase.SLEEP_NODE_MATURED;
             sleepNodeMatured = (SleepNodeMatured) cmd;
+        } else if (cls.equals(DeleteWfRun.class)) {
+            type = CommandCase.DELETE_WF_RUN;
+            deleteWfRun = (DeleteWfRun) cmd;
         } else {
             throw new RuntimeException("Unrecognized class: " + cls.getName());
         }

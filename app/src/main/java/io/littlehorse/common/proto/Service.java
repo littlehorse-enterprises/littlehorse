@@ -149,6 +149,11 @@ public final class Service {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_lh_proto_ResumeWfRunReplyPb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_lh_proto_DeleteWfRunReplyPb_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_lh_proto_DeleteWfRunReplyPb_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -242,43 +247,47 @@ public final class Service {
       "eCodePb\022\024\n\007message\030\002 \001(\tH\000\210\001\001B\n\n\010_messag" +
       "e\"`\n\022ResumeWfRunReplyPb\022(\n\004code\030\001 \001(\0162\032." +
       "lh_proto.LHResponseCodePb\022\024\n\007message\030\002 \001" +
-      "(\tH\000\210\001\001B\n\n\010_message*\214\001\n\020LHResponseCodePb" +
-      "\022\006\n\002OK\020\000\022\024\n\020CONNECTION_ERROR\020\001\022\023\n\017NOT_FO" +
-      "UND_ERROR\020\002\022\025\n\021BAD_REQUEST_ERROR\020\003\022\024\n\020VA" +
-      "LIDATION_ERROR\020\004\022\030\n\024ALREADY_EXISTS_ERROR" +
-      "\020\0052\346\t\n\013LHPublicApi\022C\n\nPutTaskDef\022\026.lh_pr" +
-      "oto.PutTaskDefPb\032\033.lh_proto.PutTaskDefRe" +
-      "plyPb\"\000\022C\n\nGetTaskDef\022\026.lh_proto.GetTask" +
-      "DefPb\032\033.lh_proto.GetTaskDefReplyPb\"\000\022^\n\023" +
-      "PutExternalEventDef\022\037.lh_proto.PutExtern" +
-      "alEventDefPb\032$.lh_proto.PutExternalEvent" +
-      "DefReplyPb\"\000\022^\n\023GetExternalEventDef\022\037.lh" +
-      "_proto.GetExternalEventDefPb\032$.lh_proto." +
-      "GetExternalEventDefReplyPb\"\000\022@\n\tPutWfSpe" +
-      "c\022\025.lh_proto.PutWfSpecPb\032\032.lh_proto.PutW" +
-      "fSpecReplyPb\"\000\022@\n\tGetWfSpec\022\025.lh_proto.G" +
-      "etWfSpecPb\032\032.lh_proto.GetWfSpecReplyPb\"\000" +
-      "\0224\n\005RunWf\022\021.lh_proto.RunWfPb\032\026.lh_proto." +
-      "RunWfReplyPb\"\000\022=\n\010GetWfRun\022\024.lh_proto.Ge" +
-      "tWfRunPb\032\031.lh_proto.GetWfRunReplyPb\"\000\022C\n" +
-      "\nGetNodeRun\022\026.lh_proto.GetNodeRunPb\032\033.lh" +
-      "_proto.GetNodeRunReplyPb\"\000\022F\n\013GetVariabl" +
-      "e\022\027.lh_proto.GetVariablePb\032\034.lh_proto.Ge" +
-      "tVariableReplyPb\"\000\022U\n\020PutExternalEvent\022\034" +
-      ".lh_proto.PutExternalEventPb\032!.lh_proto." +
-      "PutExternalEventReplyPb\"\000\022U\n\020GetExternal" +
-      "Event\022\034.lh_proto.GetExternalEventPb\032!.lh" +
-      "_proto.GetExternalEventReplyPb\"\000\022F\n\013Sear" +
-      "chWfRun\022\027.lh_proto.SearchWfRunPb\032\034.lh_pr" +
-      "oto.SearchWfRunReplyPb\"\000\022=\n\010PollTask\022\024.l" +
-      "h_proto.PollTaskPb\032\031.lh_proto.PollTaskRe" +
-      "plyPb\"\000\022H\n\nReportTask\022\033.lh_proto.TaskRes" +
-      "ultEventPb\032\033.lh_proto.ReportTaskReplyPb\"" +
-      "\000\022@\n\tStopWfRun\022\025.lh_proto.StopWfRunPb\032\032." +
-      "lh_proto.StopWfRunReplyPb\"\000\022F\n\013ResumeWfR" +
-      "un\022\027.lh_proto.ResumeWfRunPb\032\034.lh_proto.R" +
-      "esumeWfRunReplyPb\"\000B(\n\033io.littlehorse.co" +
-      "mmon.protoP\001Z\007.;modelb\006proto3"
+      "(\tH\000\210\001\001B\n\n\010_message\"`\n\022DeleteWfRunReplyP" +
+      "b\022(\n\004code\030\001 \001(\0162\032.lh_proto.LHResponseCod" +
+      "ePb\022\024\n\007message\030\002 \001(\tH\000\210\001\001B\n\n\010_message*\214\001" +
+      "\n\020LHResponseCodePb\022\006\n\002OK\020\000\022\024\n\020CONNECTION" +
+      "_ERROR\020\001\022\023\n\017NOT_FOUND_ERROR\020\002\022\025\n\021BAD_REQ" +
+      "UEST_ERROR\020\003\022\024\n\020VALIDATION_ERROR\020\004\022\030\n\024AL" +
+      "READY_EXISTS_ERROR\020\0052\256\n\n\013LHPublicApi\022C\n\n" +
+      "PutTaskDef\022\026.lh_proto.PutTaskDefPb\032\033.lh_" +
+      "proto.PutTaskDefReplyPb\"\000\022C\n\nGetTaskDef\022" +
+      "\026.lh_proto.GetTaskDefPb\032\033.lh_proto.GetTa" +
+      "skDefReplyPb\"\000\022^\n\023PutExternalEventDef\022\037." +
+      "lh_proto.PutExternalEventDefPb\032$.lh_prot" +
+      "o.PutExternalEventDefReplyPb\"\000\022^\n\023GetExt" +
+      "ernalEventDef\022\037.lh_proto.GetExternalEven" +
+      "tDefPb\032$.lh_proto.GetExternalEventDefRep" +
+      "lyPb\"\000\022@\n\tPutWfSpec\022\025.lh_proto.PutWfSpec" +
+      "Pb\032\032.lh_proto.PutWfSpecReplyPb\"\000\022@\n\tGetW" +
+      "fSpec\022\025.lh_proto.GetWfSpecPb\032\032.lh_proto." +
+      "GetWfSpecReplyPb\"\000\0224\n\005RunWf\022\021.lh_proto.R" +
+      "unWfPb\032\026.lh_proto.RunWfReplyPb\"\000\022=\n\010GetW" +
+      "fRun\022\024.lh_proto.GetWfRunPb\032\031.lh_proto.Ge" +
+      "tWfRunReplyPb\"\000\022C\n\nGetNodeRun\022\026.lh_proto" +
+      ".GetNodeRunPb\032\033.lh_proto.GetNodeRunReply" +
+      "Pb\"\000\022F\n\013GetVariable\022\027.lh_proto.GetVariab" +
+      "lePb\032\034.lh_proto.GetVariableReplyPb\"\000\022U\n\020" +
+      "PutExternalEvent\022\034.lh_proto.PutExternalE" +
+      "ventPb\032!.lh_proto.PutExternalEventReplyP" +
+      "b\"\000\022U\n\020GetExternalEvent\022\034.lh_proto.GetEx" +
+      "ternalEventPb\032!.lh_proto.GetExternalEven" +
+      "tReplyPb\"\000\022F\n\013SearchWfRun\022\027.lh_proto.Sea" +
+      "rchWfRunPb\032\034.lh_proto.SearchWfRunReplyPb" +
+      "\"\000\022=\n\010PollTask\022\024.lh_proto.PollTaskPb\032\031.l" +
+      "h_proto.PollTaskReplyPb\"\000\022H\n\nReportTask\022" +
+      "\033.lh_proto.TaskResultEventPb\032\033.lh_proto." +
+      "ReportTaskReplyPb\"\000\022@\n\tStopWfRun\022\025.lh_pr" +
+      "oto.StopWfRunPb\032\032.lh_proto.StopWfRunRepl" +
+      "yPb\"\000\022F\n\013ResumeWfRun\022\027.lh_proto.ResumeWf" +
+      "RunPb\032\034.lh_proto.ResumeWfRunReplyPb\"\000\022F\n" +
+      "\013DeleteWfRun\022\027.lh_proto.DeleteWfRunPb\032\034." +
+      "lh_proto.DeleteWfRunReplyPb\"\000B(\n\033io.litt" +
+      "lehorse.common.protoP\001Z\007.;modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -451,6 +460,12 @@ public final class Service {
     internal_static_lh_proto_ResumeWfRunReplyPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_ResumeWfRunReplyPb_descriptor,
+        new java.lang.String[] { "Code", "Message", "Message", });
+    internal_static_lh_proto_DeleteWfRunReplyPb_descriptor =
+      getDescriptor().getMessageTypes().get(26);
+    internal_static_lh_proto_DeleteWfRunReplyPb_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_lh_proto_DeleteWfRunReplyPb_descriptor,
         new java.lang.String[] { "Code", "Message", "Message", });
     io.littlehorse.common.proto.WfSpec.getDescriptor();
     io.littlehorse.common.proto.Status.getDescriptor();

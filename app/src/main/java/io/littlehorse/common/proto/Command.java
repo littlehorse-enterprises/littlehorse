@@ -100,6 +100,11 @@ public final class Command {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_lh_proto_SleepNodeMaturedPb_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_lh_proto_DeleteWfRunPb_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_lh_proto_DeleteWfRunPb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_lh_proto_CommandPb_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -175,24 +180,27 @@ public final class Command {
       "sumeWfRunPb\022\021\n\twf_run_id\030\001 \001(\t\022\031\n\021thread" +
       "_run_number\030\002 \001(\005\"]\n\022SleepNodeMaturedPb\022" +
       "\021\n\twf_run_id\030\001 \001(\t\022\031\n\021thread_run_number\030" +
-      "\002 \001(\005\022\031\n\021node_run_position\030\003 \001(\005\"\370\004\n\tCom" +
-      "mandPb\022(\n\004time\030\001 \001(\0132\032.google.protobuf.T" +
-      "imestamp\022\027\n\ncommand_id\030\002 \001(\tH\001\210\001\001\0228\n\021tas" +
-      "k_result_event\030\003 \001(\0132\033.lh_proto.TaskResu" +
-      "ltEventPbH\000\0226\n\020task_claim_event\030\004 \001(\0132\032." +
-      "lh_proto.TaskClaimEventPbH\000\022,\n\013put_wf_sp" +
-      "ec\030\006 \001(\0132\025.lh_proto.PutWfSpecPbH\000\022.\n\014put" +
-      "_task_def\030\007 \001(\0132\026.lh_proto.PutTaskDefPbH" +
-      "\000\022A\n\026put_external_event_def\030\010 \001(\0132\037.lh_p" +
-      "roto.PutExternalEventDefPbH\000\022#\n\006run_wf\030\t" +
-      " \001(\0132\021.lh_proto.RunWfPbH\000\022:\n\022put_externa" +
-      "l_event\030\n \001(\0132\034.lh_proto.PutExternalEven" +
-      "tPbH\000\022,\n\013stop_wf_run\030\013 \001(\0132\025.lh_proto.St" +
-      "opWfRunPbH\000\0220\n\rresume_wf_run\030\014 \001(\0132\027.lh_" +
-      "proto.ResumeWfRunPbH\000\022:\n\022sleep_node_matu" +
-      "red\030\r \001(\0132\034.lh_proto.SleepNodeMaturedPbH" +
-      "\000B\t\n\007commandB\r\n\013_command_idB(\n\033io.little" +
-      "horse.common.protoP\001Z\007.;modelb\006proto3"
+      "\002 \001(\005\022\031\n\021node_run_position\030\003 \001(\005\"\"\n\rDele" +
+      "teWfRunPb\022\021\n\twf_run_id\030\001 \001(\t\"\252\005\n\tCommand" +
+      "Pb\022(\n\004time\030\001 \001(\0132\032.google.protobuf.Times" +
+      "tamp\022\027\n\ncommand_id\030\002 \001(\tH\001\210\001\001\0228\n\021task_re" +
+      "sult_event\030\003 \001(\0132\033.lh_proto.TaskResultEv" +
+      "entPbH\000\0226\n\020task_claim_event\030\004 \001(\0132\032.lh_p" +
+      "roto.TaskClaimEventPbH\000\022,\n\013put_wf_spec\030\006" +
+      " \001(\0132\025.lh_proto.PutWfSpecPbH\000\022.\n\014put_tas" +
+      "k_def\030\007 \001(\0132\026.lh_proto.PutTaskDefPbH\000\022A\n" +
+      "\026put_external_event_def\030\010 \001(\0132\037.lh_proto" +
+      ".PutExternalEventDefPbH\000\022#\n\006run_wf\030\t \001(\013" +
+      "2\021.lh_proto.RunWfPbH\000\022:\n\022put_external_ev" +
+      "ent\030\n \001(\0132\034.lh_proto.PutExternalEventPbH" +
+      "\000\022,\n\013stop_wf_run\030\013 \001(\0132\025.lh_proto.StopWf" +
+      "RunPbH\000\0220\n\rresume_wf_run\030\014 \001(\0132\027.lh_prot" +
+      "o.ResumeWfRunPbH\000\022:\n\022sleep_node_matured\030" +
+      "\r \001(\0132\034.lh_proto.SleepNodeMaturedPbH\000\0220\n" +
+      "\rdelete_wf_run\030\016 \001(\0132\027.lh_proto.DeleteWf" +
+      "RunPbH\000B\t\n\007commandB\r\n\013_command_idB(\n\033io." +
+      "littlehorse.common.protoP\001Z\007.;modelb\006pro" +
+      "to3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -304,12 +312,18 @@ public final class Command {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_SleepNodeMaturedPb_descriptor,
         new java.lang.String[] { "WfRunId", "ThreadRunNumber", "NodeRunPosition", });
-    internal_static_lh_proto_CommandPb_descriptor =
+    internal_static_lh_proto_DeleteWfRunPb_descriptor =
       getDescriptor().getMessageTypes().get(12);
+    internal_static_lh_proto_DeleteWfRunPb_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_lh_proto_DeleteWfRunPb_descriptor,
+        new java.lang.String[] { "WfRunId", });
+    internal_static_lh_proto_CommandPb_descriptor =
+      getDescriptor().getMessageTypes().get(13);
     internal_static_lh_proto_CommandPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_CommandPb_descriptor,
-        new java.lang.String[] { "Time", "CommandId", "TaskResultEvent", "TaskClaimEvent", "PutWfSpec", "PutTaskDef", "PutExternalEventDef", "RunWf", "PutExternalEvent", "StopWfRun", "ResumeWfRun", "SleepNodeMatured", "Command", "CommandId", });
+        new java.lang.String[] { "Time", "CommandId", "TaskResultEvent", "TaskClaimEvent", "PutWfSpec", "PutTaskDef", "PutExternalEventDef", "RunWf", "PutExternalEvent", "StopWfRun", "ResumeWfRun", "SleepNodeMatured", "DeleteWfRun", "Command", "CommandId", });
     io.littlehorse.common.proto.Status.getDescriptor();
     io.littlehorse.common.proto.Variable.getDescriptor();
     io.littlehorse.common.proto.WfSpec.getDescriptor();

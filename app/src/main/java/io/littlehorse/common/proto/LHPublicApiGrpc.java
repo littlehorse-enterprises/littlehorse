@@ -542,6 +542,37 @@ public final class LHPublicApiGrpc {
     return getResumeWfRunMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.DeleteWfRunPb,
+      io.littlehorse.common.proto.DeleteWfRunReplyPb> getDeleteWfRunMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "DeleteWfRun",
+      requestType = io.littlehorse.common.proto.DeleteWfRunPb.class,
+      responseType = io.littlehorse.common.proto.DeleteWfRunReplyPb.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.DeleteWfRunPb,
+      io.littlehorse.common.proto.DeleteWfRunReplyPb> getDeleteWfRunMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.common.proto.DeleteWfRunPb, io.littlehorse.common.proto.DeleteWfRunReplyPb> getDeleteWfRunMethod;
+    if ((getDeleteWfRunMethod = LHPublicApiGrpc.getDeleteWfRunMethod) == null) {
+      synchronized (LHPublicApiGrpc.class) {
+        if ((getDeleteWfRunMethod = LHPublicApiGrpc.getDeleteWfRunMethod) == null) {
+          LHPublicApiGrpc.getDeleteWfRunMethod = getDeleteWfRunMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.DeleteWfRunPb, io.littlehorse.common.proto.DeleteWfRunReplyPb>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "DeleteWfRun"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.DeleteWfRunPb.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.DeleteWfRunReplyPb.getDefaultInstance()))
+              .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("DeleteWfRun"))
+              .build();
+        }
+      }
+    }
+    return getDeleteWfRunMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -709,6 +740,13 @@ public final class LHPublicApiGrpc {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getResumeWfRunMethod(), responseObserver);
     }
 
+    /**
+     */
+    public void deleteWfRun(io.littlehorse.common.proto.DeleteWfRunPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.DeleteWfRunReplyPb> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getDeleteWfRunMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -830,6 +868,13 @@ public final class LHPublicApiGrpc {
                 io.littlehorse.common.proto.ResumeWfRunPb,
                 io.littlehorse.common.proto.ResumeWfRunReplyPb>(
                   this, METHODID_RESUME_WF_RUN)))
+          .addMethod(
+            getDeleteWfRunMethod(),
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
+              new MethodHandlers<
+                io.littlehorse.common.proto.DeleteWfRunPb,
+                io.littlehorse.common.proto.DeleteWfRunReplyPb>(
+                  this, METHODID_DELETE_WF_RUN)))
           .build();
     }
   }
@@ -983,6 +1028,14 @@ public final class LHPublicApiGrpc {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getResumeWfRunMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void deleteWfRun(io.littlehorse.common.proto.DeleteWfRunPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.DeleteWfRunReplyPb> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getDeleteWfRunMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -1116,6 +1169,13 @@ public final class LHPublicApiGrpc {
     public io.littlehorse.common.proto.ResumeWfRunReplyPb resumeWfRun(io.littlehorse.common.proto.ResumeWfRunPb request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getResumeWfRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.common.proto.DeleteWfRunReplyPb deleteWfRun(io.littlehorse.common.proto.DeleteWfRunPb request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getDeleteWfRunMethod(), getCallOptions(), request);
     }
   }
 
@@ -1268,6 +1328,14 @@ public final class LHPublicApiGrpc {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getResumeWfRunMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.DeleteWfRunReplyPb> deleteWfRun(
+        io.littlehorse.common.proto.DeleteWfRunPb request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getDeleteWfRunMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_PUT_TASK_DEF = 0;
@@ -1287,6 +1355,7 @@ public final class LHPublicApiGrpc {
   private static final int METHODID_REPORT_TASK = 14;
   private static final int METHODID_STOP_WF_RUN = 15;
   private static final int METHODID_RESUME_WF_RUN = 16;
+  private static final int METHODID_DELETE_WF_RUN = 17;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -1373,6 +1442,10 @@ public final class LHPublicApiGrpc {
           serviceImpl.resumeWfRun((io.littlehorse.common.proto.ResumeWfRunPb) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.ResumeWfRunReplyPb>) responseObserver);
           break;
+        case METHODID_DELETE_WF_RUN:
+          serviceImpl.deleteWfRun((io.littlehorse.common.proto.DeleteWfRunPb) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.DeleteWfRunReplyPb>) responseObserver);
+          break;
         default:
           throw new AssertionError();
       }
@@ -1451,6 +1524,7 @@ public final class LHPublicApiGrpc {
               .addMethod(getReportTaskMethod())
               .addMethod(getStopWfRunMethod())
               .addMethod(getResumeWfRunMethod())
+              .addMethod(getDeleteWfRunMethod())
               .build();
         }
       }

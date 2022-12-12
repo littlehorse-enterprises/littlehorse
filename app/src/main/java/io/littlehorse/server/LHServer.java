@@ -6,6 +6,7 @@ import io.grpc.protobuf.services.HealthStatusManager;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHConnectionError;
+import io.littlehorse.common.model.command.subcommand.DeleteWfRun;
 import io.littlehorse.common.model.command.subcommand.PutExternalEvent;
 import io.littlehorse.common.model.command.subcommand.PutExternalEventDef;
 import io.littlehorse.common.model.command.subcommand.PutTaskDef;
@@ -14,6 +15,7 @@ import io.littlehorse.common.model.command.subcommand.ResumeWfRun;
 import io.littlehorse.common.model.command.subcommand.RunWf;
 import io.littlehorse.common.model.command.subcommand.StopWfRun;
 import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
+import io.littlehorse.common.model.command.subcommandresponse.DeleteWfRunReply;
 import io.littlehorse.common.model.command.subcommandresponse.PutExternalEventDefReply;
 import io.littlehorse.common.model.command.subcommandresponse.PutExternalEventReply;
 import io.littlehorse.common.model.command.subcommandresponse.PutTaskDefReply;
@@ -25,6 +27,8 @@ import io.littlehorse.common.model.command.subcommandresponse.StopWfRunReply;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.proto.DeleteWfRunPb;
+import io.littlehorse.common.proto.DeleteWfRunReplyPb;
 import io.littlehorse.common.proto.GetExternalEventDefPb;
 import io.littlehorse.common.proto.GetExternalEventDefReplyPb;
 import io.littlehorse.common.proto.GetExternalEventPb;
@@ -288,6 +292,16 @@ public class LHServer extends LHPublicApiImplBase {
     ) {
         ResumeWfRun rwr = ResumeWfRun.fromProto(req);
         ctx.onNext(backend.process(rwr, ResumeWfRunReply.class).toProto().build());
+        ctx.onCompleted();
+    }
+
+    @Override
+    public void deleteWfRun(
+        DeleteWfRunPb req,
+        StreamObserver<DeleteWfRunReplyPb> ctx
+    ) {
+        DeleteWfRun dwr = DeleteWfRun.fromProto(req);
+        ctx.onNext(backend.process(dwr, DeleteWfRunReply.class).toProto().build());
         ctx.onCompleted();
     }
 

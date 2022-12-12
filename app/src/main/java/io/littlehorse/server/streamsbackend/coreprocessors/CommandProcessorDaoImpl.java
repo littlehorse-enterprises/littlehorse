@@ -1,11 +1,13 @@
 package io.littlehorse.server.streamsbackend.coreprocessors;
 
+import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.CommandResult;
+import io.littlehorse.common.model.command.subcommandresponse.DeleteWfRunReply;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
@@ -15,8 +17,10 @@ import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.proto.LHResponseCodePb;
 import io.littlehorse.common.proto.TaskDefPb.QueueDetailsCase;
 import io.littlehorse.common.util.LHGlobalMetaStores;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.CommandProcessorDao;
 import io.littlehorse.server.streamsbackend.ServerTopology;
 import io.littlehorse.server.streamsbackend.storeinternals.LHROStoreWrapper;
@@ -129,12 +133,13 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
     @Override
     public NodeRun getNodeRun(String wfRunId, int threadNum, int position) {
         String key = NodeRun.getStoreKey(wfRunId, threadNum, position);
-        NodeRun out = nodeRunPuts.get(key);
-        if (out == null) {
-            out = localStore.get(key, NodeRun.class);
-            // Little trick so that if it gets modified it is automatically saved
-            if (out != null) nodeRunPuts.put(key, out);
+        if (nodeRunPuts.containsKey(key)) {
+            return nodeRunPuts.get(key);
         }
+        NodeRun out = localStore.get(key, NodeRun.class);
+
+        // Little trick so that if it gets modified it is automatically saved
+        if (out != null) nodeRunPuts.put(key, out);
         return out;
     }
 
@@ -224,9 +229,12 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
     @Override
     public Variable getVariable(String wfRunId, String name, int threadNum) {
         String key = Variable.getStoreKey(wfRunId, threadNum, name);
-        Variable out = variablePuts.get(key);
-        if (out == null) {
-            out = localStore.get(key, Variable.class);
+        if (variablePuts.containsKey(key)) {
+            return variablePuts.get(key);
+        }
+        Variable out = localStore.get(key, Variable.class);
+        if (out != null) {
+            variablePuts.put(key, out);
         }
         return out;
     }
@@ -319,11 +327,10 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
 
     @Override
     public WfRun getWfRun(String id) {
-        WfRun out = wfRunPuts.get(id);
-        if (out != null) {
-            return out;
+        if (wfRunPuts.containsKey(id)) {
+            return wfRunPuts.get(id);
         }
-        out = localStore.get(id, WfRun.class);
+        WfRun out = localStore.get(id, WfRun.class);
         wfRunPuts.put(id, out);
         return out;
     }
@@ -358,6 +365,71 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
         return config.getCoreCmdTopicName();
     }
 
+    @Override
+    public DeleteWfRunReply deleteWfRun(String wfRunId) {
+        DeleteWfRunReply out = new DeleteWfRunReply();
+        WfRun wfRun = getWfRun(wfRunId);
+        if (wfRun == null) {
+            out.code = LHResponseCodePb.NOT_FOUND_ERROR;
+            out.message = "Couldn't find wfRun with provided ID.";
+        } else {
+            if (wfRun.isRunning()) {
+                out.code = LHResponseCodePb.BAD_REQUEST_ERROR;
+                out.message = "Specified wfRun is still RUNNING!";
+            } else {
+                wfRunPuts.put(wfRunId, null);
+                deleteAllChildren(wfRun);
+                out.code = LHResponseCodePb.OK;
+            }
+        }
+        return out;
+    }
+
+    /*
+     * Delete the following things from the wfRun:
+     * - NodeRun
+     * - Variable
+     * - ExternalEvent
+     */
+    private void deleteAllChildren(WfRun wfRun) {
+        String prefix = wfRun.id;
+        try (
+            LHKeyValueIterator<NodeRun> iter = localStore.prefixScan(
+                prefix,
+                NodeRun.class
+            )
+        ) {
+            while (iter.hasNext()) {
+                LHIterKeyValue<NodeRun> next = iter.next();
+                deleteThingFlush(next.getKey(), NodeRun.class);
+            }
+        }
+
+        try (
+            LHKeyValueIterator<Variable> iter = localStore.prefixScan(
+                prefix,
+                Variable.class
+            )
+        ) {
+            while (iter.hasNext()) {
+                LHIterKeyValue<Variable> next = iter.next();
+                deleteThingFlush(next.getKey(), Variable.class);
+            }
+        }
+
+        try (
+            LHKeyValueIterator<ExternalEvent> iter = localStore.prefixScan(
+                prefix,
+                ExternalEvent.class
+            )
+        ) {
+            while (iter.hasNext()) {
+                LHIterKeyValue<ExternalEvent> next = iter.next();
+                deleteThingFlush(next.getKey(), ExternalEvent.class);
+            }
+        }
+    }
+
     public void broadcastChanges(long time) {
         TagChangesToBroadcast changes = getTagChangesToBroadcast();
 
@@ -388,32 +460,37 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
         if (responseToSave != null) {
             // TODO: Add a timer to delete the Response in 30 seconds
             localStore.put(responseToSave);
+            localStore.putResponseToDelete(responseToSave.getObjectId());
         }
 
-        for (NodeRun nodeRun : nodeRunPuts.values()) {
-            saveAndIndexGETable(nodeRun);
+        for (Map.Entry<String, NodeRun> e : nodeRunPuts.entrySet()) {
+            saveOrDeleteGETableFlush(e.getKey(), e.getValue(), NodeRun.class);
         }
-        for (ExternalEvent ee : extEvtPuts.values()) {
-            saveAndIndexGETable(ee);
+        for (Map.Entry<String, ExternalEvent> e : extEvtPuts.entrySet()) {
+            saveOrDeleteGETableFlush(e.getKey(), e.getValue(), ExternalEvent.class);
         }
-        for (Variable v : variablePuts.values()) {
-            saveAndIndexGETable(v);
+        for (Map.Entry<String, Variable> e : variablePuts.entrySet()) {
+            saveOrDeleteGETableFlush(e.getKey(), e.getValue(), Variable.class);
         }
-        for (WfRun w : wfRunPuts.values()) {
-            saveAndIndexGETable(w);
+        for (Map.Entry<String, WfRun> e : wfRunPuts.entrySet()) {
+            saveOrDeleteGETableFlush(e.getKey(), e.getValue(), WfRun.class);
         }
 
-        for (ExternalEventDef eed : extEvtDefPuts.values()) {
-            saveAndIndexGETable(eed);
-            forwardGlobalMeta(eed);
+        for (Map.Entry<String, ExternalEventDef> e : extEvtDefPuts.entrySet()) {
+            saveOrDeleteGETableFlush(
+                e.getKey(),
+                e.getValue(),
+                ExternalEventDef.class
+            );
+            forwardGlobalMeta(e.getKey(), e.getValue(), ExternalEventDef.class);
         }
-        for (WfSpec ws : wfSpecPuts.values()) {
-            saveAndIndexGETable(ws);
-            forwardGlobalMeta(ws);
+        for (Map.Entry<String, WfSpec> e : wfSpecPuts.entrySet()) {
+            saveOrDeleteGETableFlush(e.getKey(), e.getValue(), WfSpec.class);
+            forwardGlobalMeta(e.getKey(), e.getValue(), WfSpec.class);
         }
-        for (TaskDef td : taskDefPuts.values()) {
-            saveAndIndexGETable(td);
-            forwardGlobalMeta(td);
+        for (Map.Entry<String, TaskDef> e : taskDefPuts.entrySet()) {
+            saveOrDeleteGETableFlush(e.getKey(), e.getValue(), TaskDef.class);
+            forwardGlobalMeta(e.getKey(), e.getValue(), TaskDef.class);
         }
 
         for (LHTimer timer : timersToSchedule) {
@@ -433,7 +510,12 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
 
         TaskDef taskDef = getTaskDef(tsr.taskDefName, null);
         if (taskDef.type == QueueDetailsCase.RPC) {
-            saveAndIndexGETable(tsr);
+            // since tsr is not null, it will save
+            saveOrDeleteGETableFlush(
+                tsr.getObjectId(),
+                tsr,
+                TaskScheduleRequest.class
+            );
         } else if (taskDef.type == QueueDetailsCase.KAFKA) {
             CommandProcessorOutput output = new CommandProcessorOutput(
                 taskDef.kafkaTaskQueueDetails.topic,
@@ -465,22 +547,59 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
         );
     }
 
-    private void forwardGlobalMeta(GETable<?> thing) {
+    private <U extends MessageOrBuilder, T extends GETable<U>> void forwardGlobalMeta(
+        String objectId,
+        T val,
+        Class<T> cls
+    ) {
+        // The serializer provided in the sink will produce a tombstone if
+        // `val` is null.
         CommandProcessorOutput output = new CommandProcessorOutput(
             config.getGlobalMetadataCLTopicName(),
-            thing,
-            StoreUtils.getFullStoreKey(thing)
+            val,
+            StoreUtils.getFullStoreKey(objectId, cls)
         );
         ctx.forward(
             new Record<String, CommandProcessorOutput>(
-                StoreUtils.getFullStoreKey(thing),
+                StoreUtils.getFullStoreKey(objectId, cls),
                 output,
                 System.currentTimeMillis()
             )
         );
     }
 
-    private void saveAndIndexGETable(GETable<?> thing) {
+    private <
+        U extends MessageOrBuilder, T extends GETable<U>
+    > void saveOrDeleteGETableFlush(String key, T val, Class<T> cls) {
+        if (val != null) {
+            saveAndIndexFlush(val);
+        } else {
+            deleteThingFlush(key, cls);
+        }
+    }
+
+    private <U extends MessageOrBuilder, T extends GETable<U>> void deleteThingFlush(
+        String objectId,
+        Class<T> cls
+    ) {
+        T oldThing = localStore.get(objectId, cls);
+        if (oldThing != null) {
+            // Delete the old tag cache
+            TagsCache cache = localStore.getTagsCache(oldThing);
+            for (String tagId : cache.tagIds) {
+                deleteTag(tagId);
+            }
+
+            localStore.deleteTagCache(oldThing);
+            localStore.delete(oldThing);
+        } else {
+            // Then we know that the object was created and deleted within the same
+            // transaction, so we have nothing to do.
+            LHUtil.log("Warn: ", cls, objectId, "created and deleted in same txn.");
+        }
+    }
+
+    private void saveAndIndexFlush(GETable<?> thing) {
         localStore.put(thing);
 
         // See `proto/tags.proto` for a detailed description of how tags work.
@@ -596,5 +715,9 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
         responseToSave.resultTime = new Date();
         responseToSave.result = response.toBytes(config);
         responseToSave.commandId = command.commandId;
+    }
+
+    public void clearOldResponses(long time) {
+        localStore.deleteResponsesUntil(time - (1000 * 20));
     }
 }

@@ -1,6 +1,7 @@
 package io.littlehorse.server;
 
 import io.littlehorse.common.model.command.Command;
+import io.littlehorse.common.model.command.subcommandresponse.DeleteWfRunReply;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
@@ -80,6 +81,8 @@ public interface CommandProcessorDao extends LHGlobalMetaStores {
     );
 
     public void putExternalEventDef(ExternalEventDef eed);
+
+    public DeleteWfRunReply deleteWfRun(String wfRunId);
 
     /*
      * Clear any dirty cache if necessary

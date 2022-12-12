@@ -113,6 +113,10 @@ message SleepNodeMaturedPb {
     int32 node_run_position = 3;
 }
 
+message DeleteWfRunPb {
+    string wf_run_id = 1;
+}
+
 // This is the schema of everything that flows through the Central Command topic.
 message CommandPb {
     google.protobuf.Timestamp time = 1;
@@ -128,5 +132,6 @@ message CommandPb {
         StopWfRunPb stop_wf_run = 11;
         ResumeWfRunPb resume_wf_run = 12;
         SleepNodeMaturedPb sleep_node_matured = 13;
+        DeleteWfRunPb delete_wf_run = 14;
     }
 }

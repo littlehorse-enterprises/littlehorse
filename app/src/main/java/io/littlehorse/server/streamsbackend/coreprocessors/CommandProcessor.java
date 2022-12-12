@@ -29,6 +29,11 @@ public class CommandProcessor
             PunctuationType.WALL_CLOCK_TIME,
             dao::broadcastChanges
         );
+        ctx.schedule(
+            Duration.ofSeconds(60),
+            PunctuationType.WALL_CLOCK_TIME,
+            dao::clearOldResponses
+        );
     }
 
     @Override

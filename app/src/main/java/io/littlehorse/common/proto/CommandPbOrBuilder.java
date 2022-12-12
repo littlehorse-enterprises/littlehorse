@@ -189,5 +189,20 @@ public interface CommandPbOrBuilder extends
    */
   io.littlehorse.common.proto.SleepNodeMaturedPbOrBuilder getSleepNodeMaturedOrBuilder();
 
+  /**
+   * <code>.lh_proto.DeleteWfRunPb delete_wf_run = 14;</code>
+   * @return Whether the deleteWfRun field is set.
+   */
+  boolean hasDeleteWfRun();
+  /**
+   * <code>.lh_proto.DeleteWfRunPb delete_wf_run = 14;</code>
+   * @return The deleteWfRun.
+   */
+  io.littlehorse.common.proto.DeleteWfRunPb getDeleteWfRun();
+  /**
+   * <code>.lh_proto.DeleteWfRunPb delete_wf_run = 14;</code>
+   */
+  io.littlehorse.common.proto.DeleteWfRunPbOrBuilder getDeleteWfRunOrBuilder();
+
   public io.littlehorse.common.proto.CommandPb.CommandCase getCommandCase();
 }
