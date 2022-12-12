@@ -9,6 +9,7 @@ import io.littlehorse.common.model.meta.subnode.EntrypointNode;
 import io.littlehorse.common.model.meta.subnode.ExitNode;
 import io.littlehorse.common.model.meta.subnode.ExternalEventNode;
 import io.littlehorse.common.model.meta.subnode.NopNode;
+import io.littlehorse.common.model.meta.subnode.SleepNode;
 import io.littlehorse.common.model.meta.subnode.StartThreadNode;
 import io.littlehorse.common.model.meta.subnode.TaskNode;
 import io.littlehorse.common.model.meta.subnode.WaitForThreadNode;
@@ -35,6 +36,7 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
     public StartThreadNode startThreadNode;
     public WaitForThreadNode waitForThreadNode;
     public NopNode nop;
+    public SleepNode sleepNode;
 
     public List<VariableMutation> variableMutations;
     public OutputSchema outputSchema;
@@ -85,6 +87,9 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
                 break;
             case NOP:
                 out.setNop(NopNodePb.newBuilder());
+                break;
+            case SLEEP:
+                out.setSleep(sleepNode.toProto());
                 break;
             case NODE_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -141,6 +146,10 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
                 break;
             case NOP:
                 nop = new NopNode();
+                break;
+            case SLEEP:
+                sleepNode = new SleepNode();
+                sleepNode.initFrom(proto.getSleep());
                 break;
             case NODE_NOT_SET:
                 throw new RuntimeException(
@@ -250,6 +259,8 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
             return waitForThreadNode;
         } else if (type == NodeCase.NOP) {
             return nop;
+        } else if (type == NodeCase.SLEEP) {
+            return sleepNode;
         } else {
             throw new RuntimeException("Unhandled node type " + type);
         }

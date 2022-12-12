@@ -8,6 +8,7 @@ import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.wfrun.subnoderun.EntrypointRun;
 import io.littlehorse.common.model.wfrun.subnoderun.ExitRun;
 import io.littlehorse.common.model.wfrun.subnoderun.ExternalEventRun;
+import io.littlehorse.common.model.wfrun.subnoderun.SleepNodeRun;
 import io.littlehorse.common.model.wfrun.subnoderun.StartThreadRun;
 import io.littlehorse.common.model.wfrun.subnoderun.TaskRun;
 import io.littlehorse.common.model.wfrun.subnoderun.WaitThreadRun;
@@ -52,12 +53,10 @@ public class NodeRun extends GETable<NodeRunPb> {
     public List<Failure> failures;
 
     public ExitRun exitRun;
-
-    @JsonIgnore
     public EntrypointRun entrypointRun;
-
     public StartThreadRun startThreadRun;
     public WaitThreadRun waitThreadRun;
+    public SleepNodeRun sleepNodeRun;
 
     public NodeRun() {
         failures = new ArrayList<>();
@@ -146,8 +145,10 @@ public class NodeRun extends GETable<NodeRunPb> {
             case WAIT_THREAD:
                 waitThreadRun = WaitThreadRun.fromProto(proto.getWaitThread());
                 break;
+            case SLEEP:
+                sleepNodeRun = SleepNodeRun.fromProto(proto.getSleepOrBuilder());
+                break;
             case NODETYPE_NOT_SET:
-            default:
                 throw new RuntimeException("Not possible");
         }
 
@@ -173,10 +174,11 @@ public class NodeRun extends GETable<NodeRunPb> {
                 return waitThreadRun;
             case START_THREAD:
                 return startThreadRun;
+            case SLEEP:
+                return sleepNodeRun;
             case NODETYPE_NOT_SET:
-            default:
-                throw new RuntimeException("Not possible");
         }
+        throw new RuntimeException("Not possible");
     }
 
     public void setSubNodeRun(SubNodeRun<?> snr) {
@@ -199,6 +201,9 @@ public class NodeRun extends GETable<NodeRunPb> {
         } else if (cls.equals(WaitThreadRun.class)) {
             type = NodeTypeCase.WAIT_THREAD;
             waitThreadRun = (WaitThreadRun) snr;
+        } else if (cls.equals(SleepNodeRun.class)) {
+            type = NodeTypeCase.SLEEP;
+            sleepNodeRun = (SleepNodeRun) snr;
         } else {
             throw new RuntimeException("Didn't recognize " + snr.getClass());
         }
@@ -245,9 +250,10 @@ public class NodeRun extends GETable<NodeRunPb> {
             case WAIT_THREAD:
                 out.setWaitThread(waitThreadRun.toProto());
                 break;
+            case SLEEP:
+                out.setSleep(sleepNodeRun.toProto());
+                break;
             case NODETYPE_NOT_SET:
-            default:
-                throw new RuntimeException("Not possible");
         }
 
         for (Failure failure : failures) {

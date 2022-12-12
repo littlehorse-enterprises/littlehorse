@@ -23,17 +23,13 @@
                     ]
                 },
                 "t2": {
-                    "task": {
-                        "taskDefName": "task1",
-                        "variables": {
-                            "myTaskVar": {
-                                "literalValue": {
-                                    "type": "STR",
-                                    "str": "SLEEP_LONG"
-                                }
+                    "sleep": {
+                        "rawSeconds": {
+                            "literalValue": {
+                                "type": "INT",
+                                "int": 20
                             }
-                        },
-                        "retries": 3
+                        }
                     },
                     "outgoingEdges": [
                         {

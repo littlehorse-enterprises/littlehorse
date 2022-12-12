@@ -146,8 +146,17 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 114: {
+            if (!((mutable_bitField0_ & 0x00000008) != 0)) {
+              failures_ = new java.util.ArrayList<io.littlehorse.common.proto.FailurePb>();
+              mutable_bitField0_ |= 0x00000008;
+            }
+            failures_.add(
+                input.readMessage(io.littlehorse.common.proto.FailurePb.parser(), extensionRegistry));
+            break;
+          }
+          case 122: {
             io.littlehorse.common.proto.TaskRunPb.Builder subBuilder = null;
-            if (nodeTypeCase_ == 14) {
+            if (nodeTypeCase_ == 15) {
               subBuilder = ((io.littlehorse.common.proto.TaskRunPb) nodeType_).toBuilder();
             }
             nodeType_ =
@@ -156,12 +165,12 @@ private static final long serialVersionUID = 0L;
               subBuilder.mergeFrom((io.littlehorse.common.proto.TaskRunPb) nodeType_);
               nodeType_ = subBuilder.buildPartial();
             }
-            nodeTypeCase_ = 14;
+            nodeTypeCase_ = 15;
             break;
           }
-          case 122: {
+          case 130: {
             io.littlehorse.common.proto.ExternalEventRunPb.Builder subBuilder = null;
-            if (nodeTypeCase_ == 15) {
+            if (nodeTypeCase_ == 16) {
               subBuilder = ((io.littlehorse.common.proto.ExternalEventRunPb) nodeType_).toBuilder();
             }
             nodeType_ =
@@ -170,12 +179,12 @@ private static final long serialVersionUID = 0L;
               subBuilder.mergeFrom((io.littlehorse.common.proto.ExternalEventRunPb) nodeType_);
               nodeType_ = subBuilder.buildPartial();
             }
-            nodeTypeCase_ = 15;
+            nodeTypeCase_ = 16;
             break;
           }
-          case 130: {
+          case 138: {
             io.littlehorse.common.proto.EntrypointRunPb.Builder subBuilder = null;
-            if (nodeTypeCase_ == 16) {
+            if (nodeTypeCase_ == 17) {
               subBuilder = ((io.littlehorse.common.proto.EntrypointRunPb) nodeType_).toBuilder();
             }
             nodeType_ =
@@ -184,12 +193,12 @@ private static final long serialVersionUID = 0L;
               subBuilder.mergeFrom((io.littlehorse.common.proto.EntrypointRunPb) nodeType_);
               nodeType_ = subBuilder.buildPartial();
             }
-            nodeTypeCase_ = 16;
+            nodeTypeCase_ = 17;
             break;
           }
-          case 138: {
+          case 154: {
             io.littlehorse.common.proto.ExitRunPb.Builder subBuilder = null;
-            if (nodeTypeCase_ == 17) {
+            if (nodeTypeCase_ == 19) {
               subBuilder = ((io.littlehorse.common.proto.ExitRunPb) nodeType_).toBuilder();
             }
             nodeType_ =
@@ -198,12 +207,12 @@ private static final long serialVersionUID = 0L;
               subBuilder.mergeFrom((io.littlehorse.common.proto.ExitRunPb) nodeType_);
               nodeType_ = subBuilder.buildPartial();
             }
-            nodeTypeCase_ = 17;
+            nodeTypeCase_ = 19;
             break;
           }
-          case 146: {
+          case 162: {
             io.littlehorse.common.proto.StartThreadRunPb.Builder subBuilder = null;
-            if (nodeTypeCase_ == 18) {
+            if (nodeTypeCase_ == 20) {
               subBuilder = ((io.littlehorse.common.proto.StartThreadRunPb) nodeType_).toBuilder();
             }
             nodeType_ =
@@ -212,12 +221,12 @@ private static final long serialVersionUID = 0L;
               subBuilder.mergeFrom((io.littlehorse.common.proto.StartThreadRunPb) nodeType_);
               nodeType_ = subBuilder.buildPartial();
             }
-            nodeTypeCase_ = 18;
+            nodeTypeCase_ = 20;
             break;
           }
-          case 154: {
+          case 170: {
             io.littlehorse.common.proto.WaitThreadRunPb.Builder subBuilder = null;
-            if (nodeTypeCase_ == 19) {
+            if (nodeTypeCase_ == 21) {
               subBuilder = ((io.littlehorse.common.proto.WaitThreadRunPb) nodeType_).toBuilder();
             }
             nodeType_ =
@@ -226,16 +235,21 @@ private static final long serialVersionUID = 0L;
               subBuilder.mergeFrom((io.littlehorse.common.proto.WaitThreadRunPb) nodeType_);
               nodeType_ = subBuilder.buildPartial();
             }
-            nodeTypeCase_ = 19;
+            nodeTypeCase_ = 21;
             break;
           }
-          case 162: {
-            if (!((mutable_bitField0_ & 0x00000008) != 0)) {
-              failures_ = new java.util.ArrayList<io.littlehorse.common.proto.FailurePb>();
-              mutable_bitField0_ |= 0x00000008;
+          case 178: {
+            io.littlehorse.common.proto.SleepNodeRunPb.Builder subBuilder = null;
+            if (nodeTypeCase_ == 22) {
+              subBuilder = ((io.littlehorse.common.proto.SleepNodeRunPb) nodeType_).toBuilder();
             }
-            failures_.add(
-                input.readMessage(io.littlehorse.common.proto.FailurePb.parser(), extensionRegistry));
+            nodeType_ =
+                input.readMessage(io.littlehorse.common.proto.SleepNodeRunPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.common.proto.SleepNodeRunPb) nodeType_);
+              nodeType_ = subBuilder.buildPartial();
+            }
+            nodeTypeCase_ = 22;
             break;
           }
           default: {
@@ -279,12 +293,13 @@ private static final long serialVersionUID = 0L;
   public enum NodeTypeCase
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    TASK(14),
-    EXTERNAL_EVENT(15),
-    ENTRYPOINT(16),
-    EXIT(17),
-    START_THREAD(18),
-    WAIT_THREAD(19),
+    TASK(15),
+    EXTERNAL_EVENT(16),
+    ENTRYPOINT(17),
+    EXIT(19),
+    START_THREAD(20),
+    WAIT_THREAD(21),
+    SLEEP(22),
     NODETYPE_NOT_SET(0);
     private final int value;
     private NodeTypeCase(int value) {
@@ -302,12 +317,13 @@ private static final long serialVersionUID = 0L;
 
     public static NodeTypeCase forNumber(int value) {
       switch (value) {
-        case 14: return TASK;
-        case 15: return EXTERNAL_EVENT;
-        case 16: return ENTRYPOINT;
-        case 17: return EXIT;
-        case 18: return START_THREAD;
-        case 19: return WAIT_THREAD;
+        case 15: return TASK;
+        case 16: return EXTERNAL_EVENT;
+        case 17: return ENTRYPOINT;
+        case 19: return EXIT;
+        case 20: return START_THREAD;
+        case 21: return WAIT_THREAD;
+        case 22: return SLEEP;
         case 0: return NODETYPE_NOT_SET;
         default: return null;
       }
@@ -662,203 +678,17 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int TASK_FIELD_NUMBER = 14;
-  /**
-   * <code>.lh_proto.TaskRunPb task = 14;</code>
-   * @return Whether the task field is set.
-   */
-  @java.lang.Override
-  public boolean hasTask() {
-    return nodeTypeCase_ == 14;
-  }
-  /**
-   * <code>.lh_proto.TaskRunPb task = 14;</code>
-   * @return The task.
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.TaskRunPb getTask() {
-    if (nodeTypeCase_ == 14) {
-       return (io.littlehorse.common.proto.TaskRunPb) nodeType_;
-    }
-    return io.littlehorse.common.proto.TaskRunPb.getDefaultInstance();
-  }
-  /**
-   * <code>.lh_proto.TaskRunPb task = 14;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.TaskRunPbOrBuilder getTaskOrBuilder() {
-    if (nodeTypeCase_ == 14) {
-       return (io.littlehorse.common.proto.TaskRunPb) nodeType_;
-    }
-    return io.littlehorse.common.proto.TaskRunPb.getDefaultInstance();
-  }
-
-  public static final int EXTERNAL_EVENT_FIELD_NUMBER = 15;
-  /**
-   * <code>.lh_proto.ExternalEventRunPb external_event = 15;</code>
-   * @return Whether the externalEvent field is set.
-   */
-  @java.lang.Override
-  public boolean hasExternalEvent() {
-    return nodeTypeCase_ == 15;
-  }
-  /**
-   * <code>.lh_proto.ExternalEventRunPb external_event = 15;</code>
-   * @return The externalEvent.
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.ExternalEventRunPb getExternalEvent() {
-    if (nodeTypeCase_ == 15) {
-       return (io.littlehorse.common.proto.ExternalEventRunPb) nodeType_;
-    }
-    return io.littlehorse.common.proto.ExternalEventRunPb.getDefaultInstance();
-  }
-  /**
-   * <code>.lh_proto.ExternalEventRunPb external_event = 15;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.ExternalEventRunPbOrBuilder getExternalEventOrBuilder() {
-    if (nodeTypeCase_ == 15) {
-       return (io.littlehorse.common.proto.ExternalEventRunPb) nodeType_;
-    }
-    return io.littlehorse.common.proto.ExternalEventRunPb.getDefaultInstance();
-  }
-
-  public static final int ENTRYPOINT_FIELD_NUMBER = 16;
-  /**
-   * <code>.lh_proto.EntrypointRunPb entrypoint = 16;</code>
-   * @return Whether the entrypoint field is set.
-   */
-  @java.lang.Override
-  public boolean hasEntrypoint() {
-    return nodeTypeCase_ == 16;
-  }
-  /**
-   * <code>.lh_proto.EntrypointRunPb entrypoint = 16;</code>
-   * @return The entrypoint.
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.EntrypointRunPb getEntrypoint() {
-    if (nodeTypeCase_ == 16) {
-       return (io.littlehorse.common.proto.EntrypointRunPb) nodeType_;
-    }
-    return io.littlehorse.common.proto.EntrypointRunPb.getDefaultInstance();
-  }
-  /**
-   * <code>.lh_proto.EntrypointRunPb entrypoint = 16;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.EntrypointRunPbOrBuilder getEntrypointOrBuilder() {
-    if (nodeTypeCase_ == 16) {
-       return (io.littlehorse.common.proto.EntrypointRunPb) nodeType_;
-    }
-    return io.littlehorse.common.proto.EntrypointRunPb.getDefaultInstance();
-  }
-
-  public static final int EXIT_FIELD_NUMBER = 17;
-  /**
-   * <code>.lh_proto.ExitRunPb exit = 17;</code>
-   * @return Whether the exit field is set.
-   */
-  @java.lang.Override
-  public boolean hasExit() {
-    return nodeTypeCase_ == 17;
-  }
-  /**
-   * <code>.lh_proto.ExitRunPb exit = 17;</code>
-   * @return The exit.
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.ExitRunPb getExit() {
-    if (nodeTypeCase_ == 17) {
-       return (io.littlehorse.common.proto.ExitRunPb) nodeType_;
-    }
-    return io.littlehorse.common.proto.ExitRunPb.getDefaultInstance();
-  }
-  /**
-   * <code>.lh_proto.ExitRunPb exit = 17;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.ExitRunPbOrBuilder getExitOrBuilder() {
-    if (nodeTypeCase_ == 17) {
-       return (io.littlehorse.common.proto.ExitRunPb) nodeType_;
-    }
-    return io.littlehorse.common.proto.ExitRunPb.getDefaultInstance();
-  }
-
-  public static final int START_THREAD_FIELD_NUMBER = 18;
-  /**
-   * <code>.lh_proto.StartThreadRunPb start_thread = 18;</code>
-   * @return Whether the startThread field is set.
-   */
-  @java.lang.Override
-  public boolean hasStartThread() {
-    return nodeTypeCase_ == 18;
-  }
-  /**
-   * <code>.lh_proto.StartThreadRunPb start_thread = 18;</code>
-   * @return The startThread.
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.StartThreadRunPb getStartThread() {
-    if (nodeTypeCase_ == 18) {
-       return (io.littlehorse.common.proto.StartThreadRunPb) nodeType_;
-    }
-    return io.littlehorse.common.proto.StartThreadRunPb.getDefaultInstance();
-  }
-  /**
-   * <code>.lh_proto.StartThreadRunPb start_thread = 18;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.StartThreadRunPbOrBuilder getStartThreadOrBuilder() {
-    if (nodeTypeCase_ == 18) {
-       return (io.littlehorse.common.proto.StartThreadRunPb) nodeType_;
-    }
-    return io.littlehorse.common.proto.StartThreadRunPb.getDefaultInstance();
-  }
-
-  public static final int WAIT_THREAD_FIELD_NUMBER = 19;
-  /**
-   * <code>.lh_proto.WaitThreadRunPb wait_thread = 19;</code>
-   * @return Whether the waitThread field is set.
-   */
-  @java.lang.Override
-  public boolean hasWaitThread() {
-    return nodeTypeCase_ == 19;
-  }
-  /**
-   * <code>.lh_proto.WaitThreadRunPb wait_thread = 19;</code>
-   * @return The waitThread.
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.WaitThreadRunPb getWaitThread() {
-    if (nodeTypeCase_ == 19) {
-       return (io.littlehorse.common.proto.WaitThreadRunPb) nodeType_;
-    }
-    return io.littlehorse.common.proto.WaitThreadRunPb.getDefaultInstance();
-  }
-  /**
-   * <code>.lh_proto.WaitThreadRunPb wait_thread = 19;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.WaitThreadRunPbOrBuilder getWaitThreadOrBuilder() {
-    if (nodeTypeCase_ == 19) {
-       return (io.littlehorse.common.proto.WaitThreadRunPb) nodeType_;
-    }
-    return io.littlehorse.common.proto.WaitThreadRunPb.getDefaultInstance();
-  }
-
-  public static final int FAILURES_FIELD_NUMBER = 20;
+  public static final int FAILURES_FIELD_NUMBER = 14;
   private java.util.List<io.littlehorse.common.proto.FailurePb> failures_;
   /**
-   * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+   * <code>repeated .lh_proto.FailurePb failures = 14;</code>
    */
   @java.lang.Override
   public java.util.List<io.littlehorse.common.proto.FailurePb> getFailuresList() {
     return failures_;
   }
   /**
-   * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+   * <code>repeated .lh_proto.FailurePb failures = 14;</code>
    */
   @java.lang.Override
   public java.util.List<? extends io.littlehorse.common.proto.FailurePbOrBuilder> 
@@ -866,26 +696,243 @@ private static final long serialVersionUID = 0L;
     return failures_;
   }
   /**
-   * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+   * <code>repeated .lh_proto.FailurePb failures = 14;</code>
    */
   @java.lang.Override
   public int getFailuresCount() {
     return failures_.size();
   }
   /**
-   * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+   * <code>repeated .lh_proto.FailurePb failures = 14;</code>
    */
   @java.lang.Override
   public io.littlehorse.common.proto.FailurePb getFailures(int index) {
     return failures_.get(index);
   }
   /**
-   * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+   * <code>repeated .lh_proto.FailurePb failures = 14;</code>
    */
   @java.lang.Override
   public io.littlehorse.common.proto.FailurePbOrBuilder getFailuresOrBuilder(
       int index) {
     return failures_.get(index);
+  }
+
+  public static final int TASK_FIELD_NUMBER = 15;
+  /**
+   * <code>.lh_proto.TaskRunPb task = 15;</code>
+   * @return Whether the task field is set.
+   */
+  @java.lang.Override
+  public boolean hasTask() {
+    return nodeTypeCase_ == 15;
+  }
+  /**
+   * <code>.lh_proto.TaskRunPb task = 15;</code>
+   * @return The task.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.TaskRunPb getTask() {
+    if (nodeTypeCase_ == 15) {
+       return (io.littlehorse.common.proto.TaskRunPb) nodeType_;
+    }
+    return io.littlehorse.common.proto.TaskRunPb.getDefaultInstance();
+  }
+  /**
+   * <code>.lh_proto.TaskRunPb task = 15;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.TaskRunPbOrBuilder getTaskOrBuilder() {
+    if (nodeTypeCase_ == 15) {
+       return (io.littlehorse.common.proto.TaskRunPb) nodeType_;
+    }
+    return io.littlehorse.common.proto.TaskRunPb.getDefaultInstance();
+  }
+
+  public static final int EXTERNAL_EVENT_FIELD_NUMBER = 16;
+  /**
+   * <code>.lh_proto.ExternalEventRunPb external_event = 16;</code>
+   * @return Whether the externalEvent field is set.
+   */
+  @java.lang.Override
+  public boolean hasExternalEvent() {
+    return nodeTypeCase_ == 16;
+  }
+  /**
+   * <code>.lh_proto.ExternalEventRunPb external_event = 16;</code>
+   * @return The externalEvent.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.ExternalEventRunPb getExternalEvent() {
+    if (nodeTypeCase_ == 16) {
+       return (io.littlehorse.common.proto.ExternalEventRunPb) nodeType_;
+    }
+    return io.littlehorse.common.proto.ExternalEventRunPb.getDefaultInstance();
+  }
+  /**
+   * <code>.lh_proto.ExternalEventRunPb external_event = 16;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.ExternalEventRunPbOrBuilder getExternalEventOrBuilder() {
+    if (nodeTypeCase_ == 16) {
+       return (io.littlehorse.common.proto.ExternalEventRunPb) nodeType_;
+    }
+    return io.littlehorse.common.proto.ExternalEventRunPb.getDefaultInstance();
+  }
+
+  public static final int ENTRYPOINT_FIELD_NUMBER = 17;
+  /**
+   * <code>.lh_proto.EntrypointRunPb entrypoint = 17;</code>
+   * @return Whether the entrypoint field is set.
+   */
+  @java.lang.Override
+  public boolean hasEntrypoint() {
+    return nodeTypeCase_ == 17;
+  }
+  /**
+   * <code>.lh_proto.EntrypointRunPb entrypoint = 17;</code>
+   * @return The entrypoint.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.EntrypointRunPb getEntrypoint() {
+    if (nodeTypeCase_ == 17) {
+       return (io.littlehorse.common.proto.EntrypointRunPb) nodeType_;
+    }
+    return io.littlehorse.common.proto.EntrypointRunPb.getDefaultInstance();
+  }
+  /**
+   * <code>.lh_proto.EntrypointRunPb entrypoint = 17;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.EntrypointRunPbOrBuilder getEntrypointOrBuilder() {
+    if (nodeTypeCase_ == 17) {
+       return (io.littlehorse.common.proto.EntrypointRunPb) nodeType_;
+    }
+    return io.littlehorse.common.proto.EntrypointRunPb.getDefaultInstance();
+  }
+
+  public static final int EXIT_FIELD_NUMBER = 19;
+  /**
+   * <code>.lh_proto.ExitRunPb exit = 19;</code>
+   * @return Whether the exit field is set.
+   */
+  @java.lang.Override
+  public boolean hasExit() {
+    return nodeTypeCase_ == 19;
+  }
+  /**
+   * <code>.lh_proto.ExitRunPb exit = 19;</code>
+   * @return The exit.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.ExitRunPb getExit() {
+    if (nodeTypeCase_ == 19) {
+       return (io.littlehorse.common.proto.ExitRunPb) nodeType_;
+    }
+    return io.littlehorse.common.proto.ExitRunPb.getDefaultInstance();
+  }
+  /**
+   * <code>.lh_proto.ExitRunPb exit = 19;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.ExitRunPbOrBuilder getExitOrBuilder() {
+    if (nodeTypeCase_ == 19) {
+       return (io.littlehorse.common.proto.ExitRunPb) nodeType_;
+    }
+    return io.littlehorse.common.proto.ExitRunPb.getDefaultInstance();
+  }
+
+  public static final int START_THREAD_FIELD_NUMBER = 20;
+  /**
+   * <code>.lh_proto.StartThreadRunPb start_thread = 20;</code>
+   * @return Whether the startThread field is set.
+   */
+  @java.lang.Override
+  public boolean hasStartThread() {
+    return nodeTypeCase_ == 20;
+  }
+  /**
+   * <code>.lh_proto.StartThreadRunPb start_thread = 20;</code>
+   * @return The startThread.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.StartThreadRunPb getStartThread() {
+    if (nodeTypeCase_ == 20) {
+       return (io.littlehorse.common.proto.StartThreadRunPb) nodeType_;
+    }
+    return io.littlehorse.common.proto.StartThreadRunPb.getDefaultInstance();
+  }
+  /**
+   * <code>.lh_proto.StartThreadRunPb start_thread = 20;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.StartThreadRunPbOrBuilder getStartThreadOrBuilder() {
+    if (nodeTypeCase_ == 20) {
+       return (io.littlehorse.common.proto.StartThreadRunPb) nodeType_;
+    }
+    return io.littlehorse.common.proto.StartThreadRunPb.getDefaultInstance();
+  }
+
+  public static final int WAIT_THREAD_FIELD_NUMBER = 21;
+  /**
+   * <code>.lh_proto.WaitThreadRunPb wait_thread = 21;</code>
+   * @return Whether the waitThread field is set.
+   */
+  @java.lang.Override
+  public boolean hasWaitThread() {
+    return nodeTypeCase_ == 21;
+  }
+  /**
+   * <code>.lh_proto.WaitThreadRunPb wait_thread = 21;</code>
+   * @return The waitThread.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.WaitThreadRunPb getWaitThread() {
+    if (nodeTypeCase_ == 21) {
+       return (io.littlehorse.common.proto.WaitThreadRunPb) nodeType_;
+    }
+    return io.littlehorse.common.proto.WaitThreadRunPb.getDefaultInstance();
+  }
+  /**
+   * <code>.lh_proto.WaitThreadRunPb wait_thread = 21;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.WaitThreadRunPbOrBuilder getWaitThreadOrBuilder() {
+    if (nodeTypeCase_ == 21) {
+       return (io.littlehorse.common.proto.WaitThreadRunPb) nodeType_;
+    }
+    return io.littlehorse.common.proto.WaitThreadRunPb.getDefaultInstance();
+  }
+
+  public static final int SLEEP_FIELD_NUMBER = 22;
+  /**
+   * <code>.lh_proto.SleepNodeRunPb sleep = 22;</code>
+   * @return Whether the sleep field is set.
+   */
+  @java.lang.Override
+  public boolean hasSleep() {
+    return nodeTypeCase_ == 22;
+  }
+  /**
+   * <code>.lh_proto.SleepNodeRunPb sleep = 22;</code>
+   * @return The sleep.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.SleepNodeRunPb getSleep() {
+    if (nodeTypeCase_ == 22) {
+       return (io.littlehorse.common.proto.SleepNodeRunPb) nodeType_;
+    }
+    return io.littlehorse.common.proto.SleepNodeRunPb.getDefaultInstance();
+  }
+  /**
+   * <code>.lh_proto.SleepNodeRunPb sleep = 22;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.SleepNodeRunPbOrBuilder getSleepOrBuilder() {
+    if (nodeTypeCase_ == 22) {
+       return (io.littlehorse.common.proto.SleepNodeRunPb) nodeType_;
+    }
+    return io.littlehorse.common.proto.SleepNodeRunPb.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -941,26 +988,29 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000004) != 0)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 13, errorMessage_);
     }
-    if (nodeTypeCase_ == 14) {
-      output.writeMessage(14, (io.littlehorse.common.proto.TaskRunPb) nodeType_);
+    for (int i = 0; i < failures_.size(); i++) {
+      output.writeMessage(14, failures_.get(i));
     }
     if (nodeTypeCase_ == 15) {
-      output.writeMessage(15, (io.littlehorse.common.proto.ExternalEventRunPb) nodeType_);
+      output.writeMessage(15, (io.littlehorse.common.proto.TaskRunPb) nodeType_);
     }
     if (nodeTypeCase_ == 16) {
-      output.writeMessage(16, (io.littlehorse.common.proto.EntrypointRunPb) nodeType_);
+      output.writeMessage(16, (io.littlehorse.common.proto.ExternalEventRunPb) nodeType_);
     }
     if (nodeTypeCase_ == 17) {
-      output.writeMessage(17, (io.littlehorse.common.proto.ExitRunPb) nodeType_);
-    }
-    if (nodeTypeCase_ == 18) {
-      output.writeMessage(18, (io.littlehorse.common.proto.StartThreadRunPb) nodeType_);
+      output.writeMessage(17, (io.littlehorse.common.proto.EntrypointRunPb) nodeType_);
     }
     if (nodeTypeCase_ == 19) {
-      output.writeMessage(19, (io.littlehorse.common.proto.WaitThreadRunPb) nodeType_);
+      output.writeMessage(19, (io.littlehorse.common.proto.ExitRunPb) nodeType_);
     }
-    for (int i = 0; i < failures_.size(); i++) {
-      output.writeMessage(20, failures_.get(i));
+    if (nodeTypeCase_ == 20) {
+      output.writeMessage(20, (io.littlehorse.common.proto.StartThreadRunPb) nodeType_);
+    }
+    if (nodeTypeCase_ == 21) {
+      output.writeMessage(21, (io.littlehorse.common.proto.WaitThreadRunPb) nodeType_);
+    }
+    if (nodeTypeCase_ == 22) {
+      output.writeMessage(22, (io.littlehorse.common.proto.SleepNodeRunPb) nodeType_);
     }
     unknownFields.writeTo(output);
   }
@@ -1018,33 +1068,37 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000004) != 0)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(13, errorMessage_);
     }
-    if (nodeTypeCase_ == 14) {
+    for (int i = 0; i < failures_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(14, (io.littlehorse.common.proto.TaskRunPb) nodeType_);
+        .computeMessageSize(14, failures_.get(i));
     }
     if (nodeTypeCase_ == 15) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(15, (io.littlehorse.common.proto.ExternalEventRunPb) nodeType_);
+        .computeMessageSize(15, (io.littlehorse.common.proto.TaskRunPb) nodeType_);
     }
     if (nodeTypeCase_ == 16) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(16, (io.littlehorse.common.proto.EntrypointRunPb) nodeType_);
+        .computeMessageSize(16, (io.littlehorse.common.proto.ExternalEventRunPb) nodeType_);
     }
     if (nodeTypeCase_ == 17) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(17, (io.littlehorse.common.proto.ExitRunPb) nodeType_);
-    }
-    if (nodeTypeCase_ == 18) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(18, (io.littlehorse.common.proto.StartThreadRunPb) nodeType_);
+        .computeMessageSize(17, (io.littlehorse.common.proto.EntrypointRunPb) nodeType_);
     }
     if (nodeTypeCase_ == 19) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(19, (io.littlehorse.common.proto.WaitThreadRunPb) nodeType_);
+        .computeMessageSize(19, (io.littlehorse.common.proto.ExitRunPb) nodeType_);
     }
-    for (int i = 0; i < failures_.size(); i++) {
+    if (nodeTypeCase_ == 20) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(20, failures_.get(i));
+        .computeMessageSize(20, (io.littlehorse.common.proto.StartThreadRunPb) nodeType_);
+    }
+    if (nodeTypeCase_ == 21) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(21, (io.littlehorse.common.proto.WaitThreadRunPb) nodeType_);
+    }
+    if (nodeTypeCase_ == 22) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(22, (io.littlehorse.common.proto.SleepNodeRunPb) nodeType_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -1101,29 +1155,33 @@ private static final long serialVersionUID = 0L;
         .equals(other.getFailuresList())) return false;
     if (!getNodeTypeCase().equals(other.getNodeTypeCase())) return false;
     switch (nodeTypeCase_) {
-      case 14:
+      case 15:
         if (!getTask()
             .equals(other.getTask())) return false;
         break;
-      case 15:
+      case 16:
         if (!getExternalEvent()
             .equals(other.getExternalEvent())) return false;
         break;
-      case 16:
+      case 17:
         if (!getEntrypoint()
             .equals(other.getEntrypoint())) return false;
         break;
-      case 17:
+      case 19:
         if (!getExit()
             .equals(other.getExit())) return false;
         break;
-      case 18:
+      case 20:
         if (!getStartThread()
             .equals(other.getStartThread())) return false;
         break;
-      case 19:
+      case 21:
         if (!getWaitThread()
             .equals(other.getWaitThread())) return false;
+        break;
+      case 22:
+        if (!getSleep()
+            .equals(other.getSleep())) return false;
         break;
       case 0:
       default:
@@ -1178,29 +1236,33 @@ private static final long serialVersionUID = 0L;
       hash = (53 * hash) + getFailuresList().hashCode();
     }
     switch (nodeTypeCase_) {
-      case 14:
+      case 15:
         hash = (37 * hash) + TASK_FIELD_NUMBER;
         hash = (53 * hash) + getTask().hashCode();
         break;
-      case 15:
+      case 16:
         hash = (37 * hash) + EXTERNAL_EVENT_FIELD_NUMBER;
         hash = (53 * hash) + getExternalEvent().hashCode();
         break;
-      case 16:
+      case 17:
         hash = (37 * hash) + ENTRYPOINT_FIELD_NUMBER;
         hash = (53 * hash) + getEntrypoint().hashCode();
         break;
-      case 17:
+      case 19:
         hash = (37 * hash) + EXIT_FIELD_NUMBER;
         hash = (53 * hash) + getExit().hashCode();
         break;
-      case 18:
+      case 20:
         hash = (37 * hash) + START_THREAD_FIELD_NUMBER;
         hash = (53 * hash) + getStartThread().hashCode();
         break;
-      case 19:
+      case 21:
         hash = (37 * hash) + WAIT_THREAD_FIELD_NUMBER;
         hash = (53 * hash) + getWaitThread().hashCode();
+        break;
+      case 22:
+        hash = (37 * hash) + SLEEP_FIELD_NUMBER;
+        hash = (53 * hash) + getSleep().hashCode();
         break;
       case 0:
       default:
@@ -1440,48 +1502,6 @@ private static final long serialVersionUID = 0L;
         to_bitField0_ |= 0x00000004;
       }
       result.errorMessage_ = errorMessage_;
-      if (nodeTypeCase_ == 14) {
-        if (taskBuilder_ == null) {
-          result.nodeType_ = nodeType_;
-        } else {
-          result.nodeType_ = taskBuilder_.build();
-        }
-      }
-      if (nodeTypeCase_ == 15) {
-        if (externalEventBuilder_ == null) {
-          result.nodeType_ = nodeType_;
-        } else {
-          result.nodeType_ = externalEventBuilder_.build();
-        }
-      }
-      if (nodeTypeCase_ == 16) {
-        if (entrypointBuilder_ == null) {
-          result.nodeType_ = nodeType_;
-        } else {
-          result.nodeType_ = entrypointBuilder_.build();
-        }
-      }
-      if (nodeTypeCase_ == 17) {
-        if (exitBuilder_ == null) {
-          result.nodeType_ = nodeType_;
-        } else {
-          result.nodeType_ = exitBuilder_.build();
-        }
-      }
-      if (nodeTypeCase_ == 18) {
-        if (startThreadBuilder_ == null) {
-          result.nodeType_ = nodeType_;
-        } else {
-          result.nodeType_ = startThreadBuilder_.build();
-        }
-      }
-      if (nodeTypeCase_ == 19) {
-        if (waitThreadBuilder_ == null) {
-          result.nodeType_ = nodeType_;
-        } else {
-          result.nodeType_ = waitThreadBuilder_.build();
-        }
-      }
       if (failuresBuilder_ == null) {
         if (((bitField0_ & 0x00000008) != 0)) {
           failures_ = java.util.Collections.unmodifiableList(failures_);
@@ -1490,6 +1510,55 @@ private static final long serialVersionUID = 0L;
         result.failures_ = failures_;
       } else {
         result.failures_ = failuresBuilder_.build();
+      }
+      if (nodeTypeCase_ == 15) {
+        if (taskBuilder_ == null) {
+          result.nodeType_ = nodeType_;
+        } else {
+          result.nodeType_ = taskBuilder_.build();
+        }
+      }
+      if (nodeTypeCase_ == 16) {
+        if (externalEventBuilder_ == null) {
+          result.nodeType_ = nodeType_;
+        } else {
+          result.nodeType_ = externalEventBuilder_.build();
+        }
+      }
+      if (nodeTypeCase_ == 17) {
+        if (entrypointBuilder_ == null) {
+          result.nodeType_ = nodeType_;
+        } else {
+          result.nodeType_ = entrypointBuilder_.build();
+        }
+      }
+      if (nodeTypeCase_ == 19) {
+        if (exitBuilder_ == null) {
+          result.nodeType_ = nodeType_;
+        } else {
+          result.nodeType_ = exitBuilder_.build();
+        }
+      }
+      if (nodeTypeCase_ == 20) {
+        if (startThreadBuilder_ == null) {
+          result.nodeType_ = nodeType_;
+        } else {
+          result.nodeType_ = startThreadBuilder_.build();
+        }
+      }
+      if (nodeTypeCase_ == 21) {
+        if (waitThreadBuilder_ == null) {
+          result.nodeType_ = nodeType_;
+        } else {
+          result.nodeType_ = waitThreadBuilder_.build();
+        }
+      }
+      if (nodeTypeCase_ == 22) {
+        if (sleepBuilder_ == null) {
+          result.nodeType_ = nodeType_;
+        } else {
+          result.nodeType_ = sleepBuilder_.build();
+        }
       }
       result.bitField0_ = to_bitField0_;
       result.nodeTypeCase_ = nodeTypeCase_;
@@ -1635,6 +1704,10 @@ private static final long serialVersionUID = 0L;
         }
         case WAIT_THREAD: {
           mergeWaitThread(other.getWaitThread());
+          break;
+        }
+        case SLEEP: {
+          mergeSleep(other.getSleep());
           break;
         }
         case NODETYPE_NOT_SET: {
@@ -2551,852 +2624,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.TaskRunPb, io.littlehorse.common.proto.TaskRunPb.Builder, io.littlehorse.common.proto.TaskRunPbOrBuilder> taskBuilder_;
-    /**
-     * <code>.lh_proto.TaskRunPb task = 14;</code>
-     * @return Whether the task field is set.
-     */
-    @java.lang.Override
-    public boolean hasTask() {
-      return nodeTypeCase_ == 14;
-    }
-    /**
-     * <code>.lh_proto.TaskRunPb task = 14;</code>
-     * @return The task.
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.TaskRunPb getTask() {
-      if (taskBuilder_ == null) {
-        if (nodeTypeCase_ == 14) {
-          return (io.littlehorse.common.proto.TaskRunPb) nodeType_;
-        }
-        return io.littlehorse.common.proto.TaskRunPb.getDefaultInstance();
-      } else {
-        if (nodeTypeCase_ == 14) {
-          return taskBuilder_.getMessage();
-        }
-        return io.littlehorse.common.proto.TaskRunPb.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.lh_proto.TaskRunPb task = 14;</code>
-     */
-    public Builder setTask(io.littlehorse.common.proto.TaskRunPb value) {
-      if (taskBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        nodeType_ = value;
-        onChanged();
-      } else {
-        taskBuilder_.setMessage(value);
-      }
-      nodeTypeCase_ = 14;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.TaskRunPb task = 14;</code>
-     */
-    public Builder setTask(
-        io.littlehorse.common.proto.TaskRunPb.Builder builderForValue) {
-      if (taskBuilder_ == null) {
-        nodeType_ = builderForValue.build();
-        onChanged();
-      } else {
-        taskBuilder_.setMessage(builderForValue.build());
-      }
-      nodeTypeCase_ = 14;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.TaskRunPb task = 14;</code>
-     */
-    public Builder mergeTask(io.littlehorse.common.proto.TaskRunPb value) {
-      if (taskBuilder_ == null) {
-        if (nodeTypeCase_ == 14 &&
-            nodeType_ != io.littlehorse.common.proto.TaskRunPb.getDefaultInstance()) {
-          nodeType_ = io.littlehorse.common.proto.TaskRunPb.newBuilder((io.littlehorse.common.proto.TaskRunPb) nodeType_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          nodeType_ = value;
-        }
-        onChanged();
-      } else {
-        if (nodeTypeCase_ == 14) {
-          taskBuilder_.mergeFrom(value);
-        }
-        taskBuilder_.setMessage(value);
-      }
-      nodeTypeCase_ = 14;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.TaskRunPb task = 14;</code>
-     */
-    public Builder clearTask() {
-      if (taskBuilder_ == null) {
-        if (nodeTypeCase_ == 14) {
-          nodeTypeCase_ = 0;
-          nodeType_ = null;
-          onChanged();
-        }
-      } else {
-        if (nodeTypeCase_ == 14) {
-          nodeTypeCase_ = 0;
-          nodeType_ = null;
-        }
-        taskBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>.lh_proto.TaskRunPb task = 14;</code>
-     */
-    public io.littlehorse.common.proto.TaskRunPb.Builder getTaskBuilder() {
-      return getTaskFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.lh_proto.TaskRunPb task = 14;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.TaskRunPbOrBuilder getTaskOrBuilder() {
-      if ((nodeTypeCase_ == 14) && (taskBuilder_ != null)) {
-        return taskBuilder_.getMessageOrBuilder();
-      } else {
-        if (nodeTypeCase_ == 14) {
-          return (io.littlehorse.common.proto.TaskRunPb) nodeType_;
-        }
-        return io.littlehorse.common.proto.TaskRunPb.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.lh_proto.TaskRunPb task = 14;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.TaskRunPb, io.littlehorse.common.proto.TaskRunPb.Builder, io.littlehorse.common.proto.TaskRunPbOrBuilder> 
-        getTaskFieldBuilder() {
-      if (taskBuilder_ == null) {
-        if (!(nodeTypeCase_ == 14)) {
-          nodeType_ = io.littlehorse.common.proto.TaskRunPb.getDefaultInstance();
-        }
-        taskBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.TaskRunPb, io.littlehorse.common.proto.TaskRunPb.Builder, io.littlehorse.common.proto.TaskRunPbOrBuilder>(
-                (io.littlehorse.common.proto.TaskRunPb) nodeType_,
-                getParentForChildren(),
-                isClean());
-        nodeType_ = null;
-      }
-      nodeTypeCase_ = 14;
-      onChanged();;
-      return taskBuilder_;
-    }
-
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.ExternalEventRunPb, io.littlehorse.common.proto.ExternalEventRunPb.Builder, io.littlehorse.common.proto.ExternalEventRunPbOrBuilder> externalEventBuilder_;
-    /**
-     * <code>.lh_proto.ExternalEventRunPb external_event = 15;</code>
-     * @return Whether the externalEvent field is set.
-     */
-    @java.lang.Override
-    public boolean hasExternalEvent() {
-      return nodeTypeCase_ == 15;
-    }
-    /**
-     * <code>.lh_proto.ExternalEventRunPb external_event = 15;</code>
-     * @return The externalEvent.
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.ExternalEventRunPb getExternalEvent() {
-      if (externalEventBuilder_ == null) {
-        if (nodeTypeCase_ == 15) {
-          return (io.littlehorse.common.proto.ExternalEventRunPb) nodeType_;
-        }
-        return io.littlehorse.common.proto.ExternalEventRunPb.getDefaultInstance();
-      } else {
-        if (nodeTypeCase_ == 15) {
-          return externalEventBuilder_.getMessage();
-        }
-        return io.littlehorse.common.proto.ExternalEventRunPb.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.lh_proto.ExternalEventRunPb external_event = 15;</code>
-     */
-    public Builder setExternalEvent(io.littlehorse.common.proto.ExternalEventRunPb value) {
-      if (externalEventBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        nodeType_ = value;
-        onChanged();
-      } else {
-        externalEventBuilder_.setMessage(value);
-      }
-      nodeTypeCase_ = 15;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.ExternalEventRunPb external_event = 15;</code>
-     */
-    public Builder setExternalEvent(
-        io.littlehorse.common.proto.ExternalEventRunPb.Builder builderForValue) {
-      if (externalEventBuilder_ == null) {
-        nodeType_ = builderForValue.build();
-        onChanged();
-      } else {
-        externalEventBuilder_.setMessage(builderForValue.build());
-      }
-      nodeTypeCase_ = 15;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.ExternalEventRunPb external_event = 15;</code>
-     */
-    public Builder mergeExternalEvent(io.littlehorse.common.proto.ExternalEventRunPb value) {
-      if (externalEventBuilder_ == null) {
-        if (nodeTypeCase_ == 15 &&
-            nodeType_ != io.littlehorse.common.proto.ExternalEventRunPb.getDefaultInstance()) {
-          nodeType_ = io.littlehorse.common.proto.ExternalEventRunPb.newBuilder((io.littlehorse.common.proto.ExternalEventRunPb) nodeType_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          nodeType_ = value;
-        }
-        onChanged();
-      } else {
-        if (nodeTypeCase_ == 15) {
-          externalEventBuilder_.mergeFrom(value);
-        }
-        externalEventBuilder_.setMessage(value);
-      }
-      nodeTypeCase_ = 15;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.ExternalEventRunPb external_event = 15;</code>
-     */
-    public Builder clearExternalEvent() {
-      if (externalEventBuilder_ == null) {
-        if (nodeTypeCase_ == 15) {
-          nodeTypeCase_ = 0;
-          nodeType_ = null;
-          onChanged();
-        }
-      } else {
-        if (nodeTypeCase_ == 15) {
-          nodeTypeCase_ = 0;
-          nodeType_ = null;
-        }
-        externalEventBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>.lh_proto.ExternalEventRunPb external_event = 15;</code>
-     */
-    public io.littlehorse.common.proto.ExternalEventRunPb.Builder getExternalEventBuilder() {
-      return getExternalEventFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.lh_proto.ExternalEventRunPb external_event = 15;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.ExternalEventRunPbOrBuilder getExternalEventOrBuilder() {
-      if ((nodeTypeCase_ == 15) && (externalEventBuilder_ != null)) {
-        return externalEventBuilder_.getMessageOrBuilder();
-      } else {
-        if (nodeTypeCase_ == 15) {
-          return (io.littlehorse.common.proto.ExternalEventRunPb) nodeType_;
-        }
-        return io.littlehorse.common.proto.ExternalEventRunPb.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.lh_proto.ExternalEventRunPb external_event = 15;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.ExternalEventRunPb, io.littlehorse.common.proto.ExternalEventRunPb.Builder, io.littlehorse.common.proto.ExternalEventRunPbOrBuilder> 
-        getExternalEventFieldBuilder() {
-      if (externalEventBuilder_ == null) {
-        if (!(nodeTypeCase_ == 15)) {
-          nodeType_ = io.littlehorse.common.proto.ExternalEventRunPb.getDefaultInstance();
-        }
-        externalEventBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.ExternalEventRunPb, io.littlehorse.common.proto.ExternalEventRunPb.Builder, io.littlehorse.common.proto.ExternalEventRunPbOrBuilder>(
-                (io.littlehorse.common.proto.ExternalEventRunPb) nodeType_,
-                getParentForChildren(),
-                isClean());
-        nodeType_ = null;
-      }
-      nodeTypeCase_ = 15;
-      onChanged();;
-      return externalEventBuilder_;
-    }
-
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.EntrypointRunPb, io.littlehorse.common.proto.EntrypointRunPb.Builder, io.littlehorse.common.proto.EntrypointRunPbOrBuilder> entrypointBuilder_;
-    /**
-     * <code>.lh_proto.EntrypointRunPb entrypoint = 16;</code>
-     * @return Whether the entrypoint field is set.
-     */
-    @java.lang.Override
-    public boolean hasEntrypoint() {
-      return nodeTypeCase_ == 16;
-    }
-    /**
-     * <code>.lh_proto.EntrypointRunPb entrypoint = 16;</code>
-     * @return The entrypoint.
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.EntrypointRunPb getEntrypoint() {
-      if (entrypointBuilder_ == null) {
-        if (nodeTypeCase_ == 16) {
-          return (io.littlehorse.common.proto.EntrypointRunPb) nodeType_;
-        }
-        return io.littlehorse.common.proto.EntrypointRunPb.getDefaultInstance();
-      } else {
-        if (nodeTypeCase_ == 16) {
-          return entrypointBuilder_.getMessage();
-        }
-        return io.littlehorse.common.proto.EntrypointRunPb.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.lh_proto.EntrypointRunPb entrypoint = 16;</code>
-     */
-    public Builder setEntrypoint(io.littlehorse.common.proto.EntrypointRunPb value) {
-      if (entrypointBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        nodeType_ = value;
-        onChanged();
-      } else {
-        entrypointBuilder_.setMessage(value);
-      }
-      nodeTypeCase_ = 16;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.EntrypointRunPb entrypoint = 16;</code>
-     */
-    public Builder setEntrypoint(
-        io.littlehorse.common.proto.EntrypointRunPb.Builder builderForValue) {
-      if (entrypointBuilder_ == null) {
-        nodeType_ = builderForValue.build();
-        onChanged();
-      } else {
-        entrypointBuilder_.setMessage(builderForValue.build());
-      }
-      nodeTypeCase_ = 16;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.EntrypointRunPb entrypoint = 16;</code>
-     */
-    public Builder mergeEntrypoint(io.littlehorse.common.proto.EntrypointRunPb value) {
-      if (entrypointBuilder_ == null) {
-        if (nodeTypeCase_ == 16 &&
-            nodeType_ != io.littlehorse.common.proto.EntrypointRunPb.getDefaultInstance()) {
-          nodeType_ = io.littlehorse.common.proto.EntrypointRunPb.newBuilder((io.littlehorse.common.proto.EntrypointRunPb) nodeType_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          nodeType_ = value;
-        }
-        onChanged();
-      } else {
-        if (nodeTypeCase_ == 16) {
-          entrypointBuilder_.mergeFrom(value);
-        }
-        entrypointBuilder_.setMessage(value);
-      }
-      nodeTypeCase_ = 16;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.EntrypointRunPb entrypoint = 16;</code>
-     */
-    public Builder clearEntrypoint() {
-      if (entrypointBuilder_ == null) {
-        if (nodeTypeCase_ == 16) {
-          nodeTypeCase_ = 0;
-          nodeType_ = null;
-          onChanged();
-        }
-      } else {
-        if (nodeTypeCase_ == 16) {
-          nodeTypeCase_ = 0;
-          nodeType_ = null;
-        }
-        entrypointBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>.lh_proto.EntrypointRunPb entrypoint = 16;</code>
-     */
-    public io.littlehorse.common.proto.EntrypointRunPb.Builder getEntrypointBuilder() {
-      return getEntrypointFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.lh_proto.EntrypointRunPb entrypoint = 16;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.EntrypointRunPbOrBuilder getEntrypointOrBuilder() {
-      if ((nodeTypeCase_ == 16) && (entrypointBuilder_ != null)) {
-        return entrypointBuilder_.getMessageOrBuilder();
-      } else {
-        if (nodeTypeCase_ == 16) {
-          return (io.littlehorse.common.proto.EntrypointRunPb) nodeType_;
-        }
-        return io.littlehorse.common.proto.EntrypointRunPb.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.lh_proto.EntrypointRunPb entrypoint = 16;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.EntrypointRunPb, io.littlehorse.common.proto.EntrypointRunPb.Builder, io.littlehorse.common.proto.EntrypointRunPbOrBuilder> 
-        getEntrypointFieldBuilder() {
-      if (entrypointBuilder_ == null) {
-        if (!(nodeTypeCase_ == 16)) {
-          nodeType_ = io.littlehorse.common.proto.EntrypointRunPb.getDefaultInstance();
-        }
-        entrypointBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.EntrypointRunPb, io.littlehorse.common.proto.EntrypointRunPb.Builder, io.littlehorse.common.proto.EntrypointRunPbOrBuilder>(
-                (io.littlehorse.common.proto.EntrypointRunPb) nodeType_,
-                getParentForChildren(),
-                isClean());
-        nodeType_ = null;
-      }
-      nodeTypeCase_ = 16;
-      onChanged();;
-      return entrypointBuilder_;
-    }
-
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.ExitRunPb, io.littlehorse.common.proto.ExitRunPb.Builder, io.littlehorse.common.proto.ExitRunPbOrBuilder> exitBuilder_;
-    /**
-     * <code>.lh_proto.ExitRunPb exit = 17;</code>
-     * @return Whether the exit field is set.
-     */
-    @java.lang.Override
-    public boolean hasExit() {
-      return nodeTypeCase_ == 17;
-    }
-    /**
-     * <code>.lh_proto.ExitRunPb exit = 17;</code>
-     * @return The exit.
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.ExitRunPb getExit() {
-      if (exitBuilder_ == null) {
-        if (nodeTypeCase_ == 17) {
-          return (io.littlehorse.common.proto.ExitRunPb) nodeType_;
-        }
-        return io.littlehorse.common.proto.ExitRunPb.getDefaultInstance();
-      } else {
-        if (nodeTypeCase_ == 17) {
-          return exitBuilder_.getMessage();
-        }
-        return io.littlehorse.common.proto.ExitRunPb.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.lh_proto.ExitRunPb exit = 17;</code>
-     */
-    public Builder setExit(io.littlehorse.common.proto.ExitRunPb value) {
-      if (exitBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        nodeType_ = value;
-        onChanged();
-      } else {
-        exitBuilder_.setMessage(value);
-      }
-      nodeTypeCase_ = 17;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.ExitRunPb exit = 17;</code>
-     */
-    public Builder setExit(
-        io.littlehorse.common.proto.ExitRunPb.Builder builderForValue) {
-      if (exitBuilder_ == null) {
-        nodeType_ = builderForValue.build();
-        onChanged();
-      } else {
-        exitBuilder_.setMessage(builderForValue.build());
-      }
-      nodeTypeCase_ = 17;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.ExitRunPb exit = 17;</code>
-     */
-    public Builder mergeExit(io.littlehorse.common.proto.ExitRunPb value) {
-      if (exitBuilder_ == null) {
-        if (nodeTypeCase_ == 17 &&
-            nodeType_ != io.littlehorse.common.proto.ExitRunPb.getDefaultInstance()) {
-          nodeType_ = io.littlehorse.common.proto.ExitRunPb.newBuilder((io.littlehorse.common.proto.ExitRunPb) nodeType_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          nodeType_ = value;
-        }
-        onChanged();
-      } else {
-        if (nodeTypeCase_ == 17) {
-          exitBuilder_.mergeFrom(value);
-        }
-        exitBuilder_.setMessage(value);
-      }
-      nodeTypeCase_ = 17;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.ExitRunPb exit = 17;</code>
-     */
-    public Builder clearExit() {
-      if (exitBuilder_ == null) {
-        if (nodeTypeCase_ == 17) {
-          nodeTypeCase_ = 0;
-          nodeType_ = null;
-          onChanged();
-        }
-      } else {
-        if (nodeTypeCase_ == 17) {
-          nodeTypeCase_ = 0;
-          nodeType_ = null;
-        }
-        exitBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>.lh_proto.ExitRunPb exit = 17;</code>
-     */
-    public io.littlehorse.common.proto.ExitRunPb.Builder getExitBuilder() {
-      return getExitFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.lh_proto.ExitRunPb exit = 17;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.ExitRunPbOrBuilder getExitOrBuilder() {
-      if ((nodeTypeCase_ == 17) && (exitBuilder_ != null)) {
-        return exitBuilder_.getMessageOrBuilder();
-      } else {
-        if (nodeTypeCase_ == 17) {
-          return (io.littlehorse.common.proto.ExitRunPb) nodeType_;
-        }
-        return io.littlehorse.common.proto.ExitRunPb.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.lh_proto.ExitRunPb exit = 17;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.ExitRunPb, io.littlehorse.common.proto.ExitRunPb.Builder, io.littlehorse.common.proto.ExitRunPbOrBuilder> 
-        getExitFieldBuilder() {
-      if (exitBuilder_ == null) {
-        if (!(nodeTypeCase_ == 17)) {
-          nodeType_ = io.littlehorse.common.proto.ExitRunPb.getDefaultInstance();
-        }
-        exitBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.ExitRunPb, io.littlehorse.common.proto.ExitRunPb.Builder, io.littlehorse.common.proto.ExitRunPbOrBuilder>(
-                (io.littlehorse.common.proto.ExitRunPb) nodeType_,
-                getParentForChildren(),
-                isClean());
-        nodeType_ = null;
-      }
-      nodeTypeCase_ = 17;
-      onChanged();;
-      return exitBuilder_;
-    }
-
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.StartThreadRunPb, io.littlehorse.common.proto.StartThreadRunPb.Builder, io.littlehorse.common.proto.StartThreadRunPbOrBuilder> startThreadBuilder_;
-    /**
-     * <code>.lh_proto.StartThreadRunPb start_thread = 18;</code>
-     * @return Whether the startThread field is set.
-     */
-    @java.lang.Override
-    public boolean hasStartThread() {
-      return nodeTypeCase_ == 18;
-    }
-    /**
-     * <code>.lh_proto.StartThreadRunPb start_thread = 18;</code>
-     * @return The startThread.
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.StartThreadRunPb getStartThread() {
-      if (startThreadBuilder_ == null) {
-        if (nodeTypeCase_ == 18) {
-          return (io.littlehorse.common.proto.StartThreadRunPb) nodeType_;
-        }
-        return io.littlehorse.common.proto.StartThreadRunPb.getDefaultInstance();
-      } else {
-        if (nodeTypeCase_ == 18) {
-          return startThreadBuilder_.getMessage();
-        }
-        return io.littlehorse.common.proto.StartThreadRunPb.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.lh_proto.StartThreadRunPb start_thread = 18;</code>
-     */
-    public Builder setStartThread(io.littlehorse.common.proto.StartThreadRunPb value) {
-      if (startThreadBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        nodeType_ = value;
-        onChanged();
-      } else {
-        startThreadBuilder_.setMessage(value);
-      }
-      nodeTypeCase_ = 18;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.StartThreadRunPb start_thread = 18;</code>
-     */
-    public Builder setStartThread(
-        io.littlehorse.common.proto.StartThreadRunPb.Builder builderForValue) {
-      if (startThreadBuilder_ == null) {
-        nodeType_ = builderForValue.build();
-        onChanged();
-      } else {
-        startThreadBuilder_.setMessage(builderForValue.build());
-      }
-      nodeTypeCase_ = 18;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.StartThreadRunPb start_thread = 18;</code>
-     */
-    public Builder mergeStartThread(io.littlehorse.common.proto.StartThreadRunPb value) {
-      if (startThreadBuilder_ == null) {
-        if (nodeTypeCase_ == 18 &&
-            nodeType_ != io.littlehorse.common.proto.StartThreadRunPb.getDefaultInstance()) {
-          nodeType_ = io.littlehorse.common.proto.StartThreadRunPb.newBuilder((io.littlehorse.common.proto.StartThreadRunPb) nodeType_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          nodeType_ = value;
-        }
-        onChanged();
-      } else {
-        if (nodeTypeCase_ == 18) {
-          startThreadBuilder_.mergeFrom(value);
-        }
-        startThreadBuilder_.setMessage(value);
-      }
-      nodeTypeCase_ = 18;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.StartThreadRunPb start_thread = 18;</code>
-     */
-    public Builder clearStartThread() {
-      if (startThreadBuilder_ == null) {
-        if (nodeTypeCase_ == 18) {
-          nodeTypeCase_ = 0;
-          nodeType_ = null;
-          onChanged();
-        }
-      } else {
-        if (nodeTypeCase_ == 18) {
-          nodeTypeCase_ = 0;
-          nodeType_ = null;
-        }
-        startThreadBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>.lh_proto.StartThreadRunPb start_thread = 18;</code>
-     */
-    public io.littlehorse.common.proto.StartThreadRunPb.Builder getStartThreadBuilder() {
-      return getStartThreadFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.lh_proto.StartThreadRunPb start_thread = 18;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.StartThreadRunPbOrBuilder getStartThreadOrBuilder() {
-      if ((nodeTypeCase_ == 18) && (startThreadBuilder_ != null)) {
-        return startThreadBuilder_.getMessageOrBuilder();
-      } else {
-        if (nodeTypeCase_ == 18) {
-          return (io.littlehorse.common.proto.StartThreadRunPb) nodeType_;
-        }
-        return io.littlehorse.common.proto.StartThreadRunPb.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.lh_proto.StartThreadRunPb start_thread = 18;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.StartThreadRunPb, io.littlehorse.common.proto.StartThreadRunPb.Builder, io.littlehorse.common.proto.StartThreadRunPbOrBuilder> 
-        getStartThreadFieldBuilder() {
-      if (startThreadBuilder_ == null) {
-        if (!(nodeTypeCase_ == 18)) {
-          nodeType_ = io.littlehorse.common.proto.StartThreadRunPb.getDefaultInstance();
-        }
-        startThreadBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.StartThreadRunPb, io.littlehorse.common.proto.StartThreadRunPb.Builder, io.littlehorse.common.proto.StartThreadRunPbOrBuilder>(
-                (io.littlehorse.common.proto.StartThreadRunPb) nodeType_,
-                getParentForChildren(),
-                isClean());
-        nodeType_ = null;
-      }
-      nodeTypeCase_ = 18;
-      onChanged();;
-      return startThreadBuilder_;
-    }
-
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.WaitThreadRunPb, io.littlehorse.common.proto.WaitThreadRunPb.Builder, io.littlehorse.common.proto.WaitThreadRunPbOrBuilder> waitThreadBuilder_;
-    /**
-     * <code>.lh_proto.WaitThreadRunPb wait_thread = 19;</code>
-     * @return Whether the waitThread field is set.
-     */
-    @java.lang.Override
-    public boolean hasWaitThread() {
-      return nodeTypeCase_ == 19;
-    }
-    /**
-     * <code>.lh_proto.WaitThreadRunPb wait_thread = 19;</code>
-     * @return The waitThread.
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.WaitThreadRunPb getWaitThread() {
-      if (waitThreadBuilder_ == null) {
-        if (nodeTypeCase_ == 19) {
-          return (io.littlehorse.common.proto.WaitThreadRunPb) nodeType_;
-        }
-        return io.littlehorse.common.proto.WaitThreadRunPb.getDefaultInstance();
-      } else {
-        if (nodeTypeCase_ == 19) {
-          return waitThreadBuilder_.getMessage();
-        }
-        return io.littlehorse.common.proto.WaitThreadRunPb.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.lh_proto.WaitThreadRunPb wait_thread = 19;</code>
-     */
-    public Builder setWaitThread(io.littlehorse.common.proto.WaitThreadRunPb value) {
-      if (waitThreadBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        nodeType_ = value;
-        onChanged();
-      } else {
-        waitThreadBuilder_.setMessage(value);
-      }
-      nodeTypeCase_ = 19;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.WaitThreadRunPb wait_thread = 19;</code>
-     */
-    public Builder setWaitThread(
-        io.littlehorse.common.proto.WaitThreadRunPb.Builder builderForValue) {
-      if (waitThreadBuilder_ == null) {
-        nodeType_ = builderForValue.build();
-        onChanged();
-      } else {
-        waitThreadBuilder_.setMessage(builderForValue.build());
-      }
-      nodeTypeCase_ = 19;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.WaitThreadRunPb wait_thread = 19;</code>
-     */
-    public Builder mergeWaitThread(io.littlehorse.common.proto.WaitThreadRunPb value) {
-      if (waitThreadBuilder_ == null) {
-        if (nodeTypeCase_ == 19 &&
-            nodeType_ != io.littlehorse.common.proto.WaitThreadRunPb.getDefaultInstance()) {
-          nodeType_ = io.littlehorse.common.proto.WaitThreadRunPb.newBuilder((io.littlehorse.common.proto.WaitThreadRunPb) nodeType_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          nodeType_ = value;
-        }
-        onChanged();
-      } else {
-        if (nodeTypeCase_ == 19) {
-          waitThreadBuilder_.mergeFrom(value);
-        }
-        waitThreadBuilder_.setMessage(value);
-      }
-      nodeTypeCase_ = 19;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.WaitThreadRunPb wait_thread = 19;</code>
-     */
-    public Builder clearWaitThread() {
-      if (waitThreadBuilder_ == null) {
-        if (nodeTypeCase_ == 19) {
-          nodeTypeCase_ = 0;
-          nodeType_ = null;
-          onChanged();
-        }
-      } else {
-        if (nodeTypeCase_ == 19) {
-          nodeTypeCase_ = 0;
-          nodeType_ = null;
-        }
-        waitThreadBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>.lh_proto.WaitThreadRunPb wait_thread = 19;</code>
-     */
-    public io.littlehorse.common.proto.WaitThreadRunPb.Builder getWaitThreadBuilder() {
-      return getWaitThreadFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.lh_proto.WaitThreadRunPb wait_thread = 19;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.WaitThreadRunPbOrBuilder getWaitThreadOrBuilder() {
-      if ((nodeTypeCase_ == 19) && (waitThreadBuilder_ != null)) {
-        return waitThreadBuilder_.getMessageOrBuilder();
-      } else {
-        if (nodeTypeCase_ == 19) {
-          return (io.littlehorse.common.proto.WaitThreadRunPb) nodeType_;
-        }
-        return io.littlehorse.common.proto.WaitThreadRunPb.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.lh_proto.WaitThreadRunPb wait_thread = 19;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.WaitThreadRunPb, io.littlehorse.common.proto.WaitThreadRunPb.Builder, io.littlehorse.common.proto.WaitThreadRunPbOrBuilder> 
-        getWaitThreadFieldBuilder() {
-      if (waitThreadBuilder_ == null) {
-        if (!(nodeTypeCase_ == 19)) {
-          nodeType_ = io.littlehorse.common.proto.WaitThreadRunPb.getDefaultInstance();
-        }
-        waitThreadBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.WaitThreadRunPb, io.littlehorse.common.proto.WaitThreadRunPb.Builder, io.littlehorse.common.proto.WaitThreadRunPbOrBuilder>(
-                (io.littlehorse.common.proto.WaitThreadRunPb) nodeType_,
-                getParentForChildren(),
-                isClean());
-        nodeType_ = null;
-      }
-      nodeTypeCase_ = 19;
-      onChanged();;
-      return waitThreadBuilder_;
-    }
-
     private java.util.List<io.littlehorse.common.proto.FailurePb> failures_ =
       java.util.Collections.emptyList();
     private void ensureFailuresIsMutable() {
@@ -3410,7 +2637,7 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.common.proto.FailurePb, io.littlehorse.common.proto.FailurePb.Builder, io.littlehorse.common.proto.FailurePbOrBuilder> failuresBuilder_;
 
     /**
-     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+     * <code>repeated .lh_proto.FailurePb failures = 14;</code>
      */
     public java.util.List<io.littlehorse.common.proto.FailurePb> getFailuresList() {
       if (failuresBuilder_ == null) {
@@ -3420,7 +2647,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+     * <code>repeated .lh_proto.FailurePb failures = 14;</code>
      */
     public int getFailuresCount() {
       if (failuresBuilder_ == null) {
@@ -3430,7 +2657,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+     * <code>repeated .lh_proto.FailurePb failures = 14;</code>
      */
     public io.littlehorse.common.proto.FailurePb getFailures(int index) {
       if (failuresBuilder_ == null) {
@@ -3440,7 +2667,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+     * <code>repeated .lh_proto.FailurePb failures = 14;</code>
      */
     public Builder setFailures(
         int index, io.littlehorse.common.proto.FailurePb value) {
@@ -3457,7 +2684,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+     * <code>repeated .lh_proto.FailurePb failures = 14;</code>
      */
     public Builder setFailures(
         int index, io.littlehorse.common.proto.FailurePb.Builder builderForValue) {
@@ -3471,7 +2698,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+     * <code>repeated .lh_proto.FailurePb failures = 14;</code>
      */
     public Builder addFailures(io.littlehorse.common.proto.FailurePb value) {
       if (failuresBuilder_ == null) {
@@ -3487,7 +2714,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+     * <code>repeated .lh_proto.FailurePb failures = 14;</code>
      */
     public Builder addFailures(
         int index, io.littlehorse.common.proto.FailurePb value) {
@@ -3504,7 +2731,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+     * <code>repeated .lh_proto.FailurePb failures = 14;</code>
      */
     public Builder addFailures(
         io.littlehorse.common.proto.FailurePb.Builder builderForValue) {
@@ -3518,7 +2745,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+     * <code>repeated .lh_proto.FailurePb failures = 14;</code>
      */
     public Builder addFailures(
         int index, io.littlehorse.common.proto.FailurePb.Builder builderForValue) {
@@ -3532,7 +2759,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+     * <code>repeated .lh_proto.FailurePb failures = 14;</code>
      */
     public Builder addAllFailures(
         java.lang.Iterable<? extends io.littlehorse.common.proto.FailurePb> values) {
@@ -3547,7 +2774,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+     * <code>repeated .lh_proto.FailurePb failures = 14;</code>
      */
     public Builder clearFailures() {
       if (failuresBuilder_ == null) {
@@ -3560,7 +2787,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+     * <code>repeated .lh_proto.FailurePb failures = 14;</code>
      */
     public Builder removeFailures(int index) {
       if (failuresBuilder_ == null) {
@@ -3573,14 +2800,14 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+     * <code>repeated .lh_proto.FailurePb failures = 14;</code>
      */
     public io.littlehorse.common.proto.FailurePb.Builder getFailuresBuilder(
         int index) {
       return getFailuresFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+     * <code>repeated .lh_proto.FailurePb failures = 14;</code>
      */
     public io.littlehorse.common.proto.FailurePbOrBuilder getFailuresOrBuilder(
         int index) {
@@ -3590,7 +2817,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+     * <code>repeated .lh_proto.FailurePb failures = 14;</code>
      */
     public java.util.List<? extends io.littlehorse.common.proto.FailurePbOrBuilder> 
          getFailuresOrBuilderList() {
@@ -3601,14 +2828,14 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+     * <code>repeated .lh_proto.FailurePb failures = 14;</code>
      */
     public io.littlehorse.common.proto.FailurePb.Builder addFailuresBuilder() {
       return getFailuresFieldBuilder().addBuilder(
           io.littlehorse.common.proto.FailurePb.getDefaultInstance());
     }
     /**
-     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+     * <code>repeated .lh_proto.FailurePb failures = 14;</code>
      */
     public io.littlehorse.common.proto.FailurePb.Builder addFailuresBuilder(
         int index) {
@@ -3616,7 +2843,7 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.common.proto.FailurePb.getDefaultInstance());
     }
     /**
-     * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+     * <code>repeated .lh_proto.FailurePb failures = 14;</code>
      */
     public java.util.List<io.littlehorse.common.proto.FailurePb.Builder> 
          getFailuresBuilderList() {
@@ -3635,6 +2862,993 @@ private static final long serialVersionUID = 0L;
         failures_ = null;
       }
       return failuresBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.TaskRunPb, io.littlehorse.common.proto.TaskRunPb.Builder, io.littlehorse.common.proto.TaskRunPbOrBuilder> taskBuilder_;
+    /**
+     * <code>.lh_proto.TaskRunPb task = 15;</code>
+     * @return Whether the task field is set.
+     */
+    @java.lang.Override
+    public boolean hasTask() {
+      return nodeTypeCase_ == 15;
+    }
+    /**
+     * <code>.lh_proto.TaskRunPb task = 15;</code>
+     * @return The task.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.TaskRunPb getTask() {
+      if (taskBuilder_ == null) {
+        if (nodeTypeCase_ == 15) {
+          return (io.littlehorse.common.proto.TaskRunPb) nodeType_;
+        }
+        return io.littlehorse.common.proto.TaskRunPb.getDefaultInstance();
+      } else {
+        if (nodeTypeCase_ == 15) {
+          return taskBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.TaskRunPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.TaskRunPb task = 15;</code>
+     */
+    public Builder setTask(io.littlehorse.common.proto.TaskRunPb value) {
+      if (taskBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        nodeType_ = value;
+        onChanged();
+      } else {
+        taskBuilder_.setMessage(value);
+      }
+      nodeTypeCase_ = 15;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.TaskRunPb task = 15;</code>
+     */
+    public Builder setTask(
+        io.littlehorse.common.proto.TaskRunPb.Builder builderForValue) {
+      if (taskBuilder_ == null) {
+        nodeType_ = builderForValue.build();
+        onChanged();
+      } else {
+        taskBuilder_.setMessage(builderForValue.build());
+      }
+      nodeTypeCase_ = 15;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.TaskRunPb task = 15;</code>
+     */
+    public Builder mergeTask(io.littlehorse.common.proto.TaskRunPb value) {
+      if (taskBuilder_ == null) {
+        if (nodeTypeCase_ == 15 &&
+            nodeType_ != io.littlehorse.common.proto.TaskRunPb.getDefaultInstance()) {
+          nodeType_ = io.littlehorse.common.proto.TaskRunPb.newBuilder((io.littlehorse.common.proto.TaskRunPb) nodeType_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          nodeType_ = value;
+        }
+        onChanged();
+      } else {
+        if (nodeTypeCase_ == 15) {
+          taskBuilder_.mergeFrom(value);
+        }
+        taskBuilder_.setMessage(value);
+      }
+      nodeTypeCase_ = 15;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.TaskRunPb task = 15;</code>
+     */
+    public Builder clearTask() {
+      if (taskBuilder_ == null) {
+        if (nodeTypeCase_ == 15) {
+          nodeTypeCase_ = 0;
+          nodeType_ = null;
+          onChanged();
+        }
+      } else {
+        if (nodeTypeCase_ == 15) {
+          nodeTypeCase_ = 0;
+          nodeType_ = null;
+        }
+        taskBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.lh_proto.TaskRunPb task = 15;</code>
+     */
+    public io.littlehorse.common.proto.TaskRunPb.Builder getTaskBuilder() {
+      return getTaskFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.TaskRunPb task = 15;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.TaskRunPbOrBuilder getTaskOrBuilder() {
+      if ((nodeTypeCase_ == 15) && (taskBuilder_ != null)) {
+        return taskBuilder_.getMessageOrBuilder();
+      } else {
+        if (nodeTypeCase_ == 15) {
+          return (io.littlehorse.common.proto.TaskRunPb) nodeType_;
+        }
+        return io.littlehorse.common.proto.TaskRunPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.TaskRunPb task = 15;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.TaskRunPb, io.littlehorse.common.proto.TaskRunPb.Builder, io.littlehorse.common.proto.TaskRunPbOrBuilder> 
+        getTaskFieldBuilder() {
+      if (taskBuilder_ == null) {
+        if (!(nodeTypeCase_ == 15)) {
+          nodeType_ = io.littlehorse.common.proto.TaskRunPb.getDefaultInstance();
+        }
+        taskBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.TaskRunPb, io.littlehorse.common.proto.TaskRunPb.Builder, io.littlehorse.common.proto.TaskRunPbOrBuilder>(
+                (io.littlehorse.common.proto.TaskRunPb) nodeType_,
+                getParentForChildren(),
+                isClean());
+        nodeType_ = null;
+      }
+      nodeTypeCase_ = 15;
+      onChanged();;
+      return taskBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.ExternalEventRunPb, io.littlehorse.common.proto.ExternalEventRunPb.Builder, io.littlehorse.common.proto.ExternalEventRunPbOrBuilder> externalEventBuilder_;
+    /**
+     * <code>.lh_proto.ExternalEventRunPb external_event = 16;</code>
+     * @return Whether the externalEvent field is set.
+     */
+    @java.lang.Override
+    public boolean hasExternalEvent() {
+      return nodeTypeCase_ == 16;
+    }
+    /**
+     * <code>.lh_proto.ExternalEventRunPb external_event = 16;</code>
+     * @return The externalEvent.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.ExternalEventRunPb getExternalEvent() {
+      if (externalEventBuilder_ == null) {
+        if (nodeTypeCase_ == 16) {
+          return (io.littlehorse.common.proto.ExternalEventRunPb) nodeType_;
+        }
+        return io.littlehorse.common.proto.ExternalEventRunPb.getDefaultInstance();
+      } else {
+        if (nodeTypeCase_ == 16) {
+          return externalEventBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.ExternalEventRunPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.ExternalEventRunPb external_event = 16;</code>
+     */
+    public Builder setExternalEvent(io.littlehorse.common.proto.ExternalEventRunPb value) {
+      if (externalEventBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        nodeType_ = value;
+        onChanged();
+      } else {
+        externalEventBuilder_.setMessage(value);
+      }
+      nodeTypeCase_ = 16;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.ExternalEventRunPb external_event = 16;</code>
+     */
+    public Builder setExternalEvent(
+        io.littlehorse.common.proto.ExternalEventRunPb.Builder builderForValue) {
+      if (externalEventBuilder_ == null) {
+        nodeType_ = builderForValue.build();
+        onChanged();
+      } else {
+        externalEventBuilder_.setMessage(builderForValue.build());
+      }
+      nodeTypeCase_ = 16;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.ExternalEventRunPb external_event = 16;</code>
+     */
+    public Builder mergeExternalEvent(io.littlehorse.common.proto.ExternalEventRunPb value) {
+      if (externalEventBuilder_ == null) {
+        if (nodeTypeCase_ == 16 &&
+            nodeType_ != io.littlehorse.common.proto.ExternalEventRunPb.getDefaultInstance()) {
+          nodeType_ = io.littlehorse.common.proto.ExternalEventRunPb.newBuilder((io.littlehorse.common.proto.ExternalEventRunPb) nodeType_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          nodeType_ = value;
+        }
+        onChanged();
+      } else {
+        if (nodeTypeCase_ == 16) {
+          externalEventBuilder_.mergeFrom(value);
+        }
+        externalEventBuilder_.setMessage(value);
+      }
+      nodeTypeCase_ = 16;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.ExternalEventRunPb external_event = 16;</code>
+     */
+    public Builder clearExternalEvent() {
+      if (externalEventBuilder_ == null) {
+        if (nodeTypeCase_ == 16) {
+          nodeTypeCase_ = 0;
+          nodeType_ = null;
+          onChanged();
+        }
+      } else {
+        if (nodeTypeCase_ == 16) {
+          nodeTypeCase_ = 0;
+          nodeType_ = null;
+        }
+        externalEventBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.lh_proto.ExternalEventRunPb external_event = 16;</code>
+     */
+    public io.littlehorse.common.proto.ExternalEventRunPb.Builder getExternalEventBuilder() {
+      return getExternalEventFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.ExternalEventRunPb external_event = 16;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.ExternalEventRunPbOrBuilder getExternalEventOrBuilder() {
+      if ((nodeTypeCase_ == 16) && (externalEventBuilder_ != null)) {
+        return externalEventBuilder_.getMessageOrBuilder();
+      } else {
+        if (nodeTypeCase_ == 16) {
+          return (io.littlehorse.common.proto.ExternalEventRunPb) nodeType_;
+        }
+        return io.littlehorse.common.proto.ExternalEventRunPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.ExternalEventRunPb external_event = 16;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.ExternalEventRunPb, io.littlehorse.common.proto.ExternalEventRunPb.Builder, io.littlehorse.common.proto.ExternalEventRunPbOrBuilder> 
+        getExternalEventFieldBuilder() {
+      if (externalEventBuilder_ == null) {
+        if (!(nodeTypeCase_ == 16)) {
+          nodeType_ = io.littlehorse.common.proto.ExternalEventRunPb.getDefaultInstance();
+        }
+        externalEventBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.ExternalEventRunPb, io.littlehorse.common.proto.ExternalEventRunPb.Builder, io.littlehorse.common.proto.ExternalEventRunPbOrBuilder>(
+                (io.littlehorse.common.proto.ExternalEventRunPb) nodeType_,
+                getParentForChildren(),
+                isClean());
+        nodeType_ = null;
+      }
+      nodeTypeCase_ = 16;
+      onChanged();;
+      return externalEventBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.EntrypointRunPb, io.littlehorse.common.proto.EntrypointRunPb.Builder, io.littlehorse.common.proto.EntrypointRunPbOrBuilder> entrypointBuilder_;
+    /**
+     * <code>.lh_proto.EntrypointRunPb entrypoint = 17;</code>
+     * @return Whether the entrypoint field is set.
+     */
+    @java.lang.Override
+    public boolean hasEntrypoint() {
+      return nodeTypeCase_ == 17;
+    }
+    /**
+     * <code>.lh_proto.EntrypointRunPb entrypoint = 17;</code>
+     * @return The entrypoint.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.EntrypointRunPb getEntrypoint() {
+      if (entrypointBuilder_ == null) {
+        if (nodeTypeCase_ == 17) {
+          return (io.littlehorse.common.proto.EntrypointRunPb) nodeType_;
+        }
+        return io.littlehorse.common.proto.EntrypointRunPb.getDefaultInstance();
+      } else {
+        if (nodeTypeCase_ == 17) {
+          return entrypointBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.EntrypointRunPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.EntrypointRunPb entrypoint = 17;</code>
+     */
+    public Builder setEntrypoint(io.littlehorse.common.proto.EntrypointRunPb value) {
+      if (entrypointBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        nodeType_ = value;
+        onChanged();
+      } else {
+        entrypointBuilder_.setMessage(value);
+      }
+      nodeTypeCase_ = 17;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.EntrypointRunPb entrypoint = 17;</code>
+     */
+    public Builder setEntrypoint(
+        io.littlehorse.common.proto.EntrypointRunPb.Builder builderForValue) {
+      if (entrypointBuilder_ == null) {
+        nodeType_ = builderForValue.build();
+        onChanged();
+      } else {
+        entrypointBuilder_.setMessage(builderForValue.build());
+      }
+      nodeTypeCase_ = 17;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.EntrypointRunPb entrypoint = 17;</code>
+     */
+    public Builder mergeEntrypoint(io.littlehorse.common.proto.EntrypointRunPb value) {
+      if (entrypointBuilder_ == null) {
+        if (nodeTypeCase_ == 17 &&
+            nodeType_ != io.littlehorse.common.proto.EntrypointRunPb.getDefaultInstance()) {
+          nodeType_ = io.littlehorse.common.proto.EntrypointRunPb.newBuilder((io.littlehorse.common.proto.EntrypointRunPb) nodeType_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          nodeType_ = value;
+        }
+        onChanged();
+      } else {
+        if (nodeTypeCase_ == 17) {
+          entrypointBuilder_.mergeFrom(value);
+        }
+        entrypointBuilder_.setMessage(value);
+      }
+      nodeTypeCase_ = 17;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.EntrypointRunPb entrypoint = 17;</code>
+     */
+    public Builder clearEntrypoint() {
+      if (entrypointBuilder_ == null) {
+        if (nodeTypeCase_ == 17) {
+          nodeTypeCase_ = 0;
+          nodeType_ = null;
+          onChanged();
+        }
+      } else {
+        if (nodeTypeCase_ == 17) {
+          nodeTypeCase_ = 0;
+          nodeType_ = null;
+        }
+        entrypointBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.lh_proto.EntrypointRunPb entrypoint = 17;</code>
+     */
+    public io.littlehorse.common.proto.EntrypointRunPb.Builder getEntrypointBuilder() {
+      return getEntrypointFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.EntrypointRunPb entrypoint = 17;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.EntrypointRunPbOrBuilder getEntrypointOrBuilder() {
+      if ((nodeTypeCase_ == 17) && (entrypointBuilder_ != null)) {
+        return entrypointBuilder_.getMessageOrBuilder();
+      } else {
+        if (nodeTypeCase_ == 17) {
+          return (io.littlehorse.common.proto.EntrypointRunPb) nodeType_;
+        }
+        return io.littlehorse.common.proto.EntrypointRunPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.EntrypointRunPb entrypoint = 17;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.EntrypointRunPb, io.littlehorse.common.proto.EntrypointRunPb.Builder, io.littlehorse.common.proto.EntrypointRunPbOrBuilder> 
+        getEntrypointFieldBuilder() {
+      if (entrypointBuilder_ == null) {
+        if (!(nodeTypeCase_ == 17)) {
+          nodeType_ = io.littlehorse.common.proto.EntrypointRunPb.getDefaultInstance();
+        }
+        entrypointBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.EntrypointRunPb, io.littlehorse.common.proto.EntrypointRunPb.Builder, io.littlehorse.common.proto.EntrypointRunPbOrBuilder>(
+                (io.littlehorse.common.proto.EntrypointRunPb) nodeType_,
+                getParentForChildren(),
+                isClean());
+        nodeType_ = null;
+      }
+      nodeTypeCase_ = 17;
+      onChanged();;
+      return entrypointBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.ExitRunPb, io.littlehorse.common.proto.ExitRunPb.Builder, io.littlehorse.common.proto.ExitRunPbOrBuilder> exitBuilder_;
+    /**
+     * <code>.lh_proto.ExitRunPb exit = 19;</code>
+     * @return Whether the exit field is set.
+     */
+    @java.lang.Override
+    public boolean hasExit() {
+      return nodeTypeCase_ == 19;
+    }
+    /**
+     * <code>.lh_proto.ExitRunPb exit = 19;</code>
+     * @return The exit.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.ExitRunPb getExit() {
+      if (exitBuilder_ == null) {
+        if (nodeTypeCase_ == 19) {
+          return (io.littlehorse.common.proto.ExitRunPb) nodeType_;
+        }
+        return io.littlehorse.common.proto.ExitRunPb.getDefaultInstance();
+      } else {
+        if (nodeTypeCase_ == 19) {
+          return exitBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.ExitRunPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.ExitRunPb exit = 19;</code>
+     */
+    public Builder setExit(io.littlehorse.common.proto.ExitRunPb value) {
+      if (exitBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        nodeType_ = value;
+        onChanged();
+      } else {
+        exitBuilder_.setMessage(value);
+      }
+      nodeTypeCase_ = 19;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.ExitRunPb exit = 19;</code>
+     */
+    public Builder setExit(
+        io.littlehorse.common.proto.ExitRunPb.Builder builderForValue) {
+      if (exitBuilder_ == null) {
+        nodeType_ = builderForValue.build();
+        onChanged();
+      } else {
+        exitBuilder_.setMessage(builderForValue.build());
+      }
+      nodeTypeCase_ = 19;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.ExitRunPb exit = 19;</code>
+     */
+    public Builder mergeExit(io.littlehorse.common.proto.ExitRunPb value) {
+      if (exitBuilder_ == null) {
+        if (nodeTypeCase_ == 19 &&
+            nodeType_ != io.littlehorse.common.proto.ExitRunPb.getDefaultInstance()) {
+          nodeType_ = io.littlehorse.common.proto.ExitRunPb.newBuilder((io.littlehorse.common.proto.ExitRunPb) nodeType_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          nodeType_ = value;
+        }
+        onChanged();
+      } else {
+        if (nodeTypeCase_ == 19) {
+          exitBuilder_.mergeFrom(value);
+        }
+        exitBuilder_.setMessage(value);
+      }
+      nodeTypeCase_ = 19;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.ExitRunPb exit = 19;</code>
+     */
+    public Builder clearExit() {
+      if (exitBuilder_ == null) {
+        if (nodeTypeCase_ == 19) {
+          nodeTypeCase_ = 0;
+          nodeType_ = null;
+          onChanged();
+        }
+      } else {
+        if (nodeTypeCase_ == 19) {
+          nodeTypeCase_ = 0;
+          nodeType_ = null;
+        }
+        exitBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.lh_proto.ExitRunPb exit = 19;</code>
+     */
+    public io.littlehorse.common.proto.ExitRunPb.Builder getExitBuilder() {
+      return getExitFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.ExitRunPb exit = 19;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.ExitRunPbOrBuilder getExitOrBuilder() {
+      if ((nodeTypeCase_ == 19) && (exitBuilder_ != null)) {
+        return exitBuilder_.getMessageOrBuilder();
+      } else {
+        if (nodeTypeCase_ == 19) {
+          return (io.littlehorse.common.proto.ExitRunPb) nodeType_;
+        }
+        return io.littlehorse.common.proto.ExitRunPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.ExitRunPb exit = 19;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.ExitRunPb, io.littlehorse.common.proto.ExitRunPb.Builder, io.littlehorse.common.proto.ExitRunPbOrBuilder> 
+        getExitFieldBuilder() {
+      if (exitBuilder_ == null) {
+        if (!(nodeTypeCase_ == 19)) {
+          nodeType_ = io.littlehorse.common.proto.ExitRunPb.getDefaultInstance();
+        }
+        exitBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.ExitRunPb, io.littlehorse.common.proto.ExitRunPb.Builder, io.littlehorse.common.proto.ExitRunPbOrBuilder>(
+                (io.littlehorse.common.proto.ExitRunPb) nodeType_,
+                getParentForChildren(),
+                isClean());
+        nodeType_ = null;
+      }
+      nodeTypeCase_ = 19;
+      onChanged();;
+      return exitBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.StartThreadRunPb, io.littlehorse.common.proto.StartThreadRunPb.Builder, io.littlehorse.common.proto.StartThreadRunPbOrBuilder> startThreadBuilder_;
+    /**
+     * <code>.lh_proto.StartThreadRunPb start_thread = 20;</code>
+     * @return Whether the startThread field is set.
+     */
+    @java.lang.Override
+    public boolean hasStartThread() {
+      return nodeTypeCase_ == 20;
+    }
+    /**
+     * <code>.lh_proto.StartThreadRunPb start_thread = 20;</code>
+     * @return The startThread.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.StartThreadRunPb getStartThread() {
+      if (startThreadBuilder_ == null) {
+        if (nodeTypeCase_ == 20) {
+          return (io.littlehorse.common.proto.StartThreadRunPb) nodeType_;
+        }
+        return io.littlehorse.common.proto.StartThreadRunPb.getDefaultInstance();
+      } else {
+        if (nodeTypeCase_ == 20) {
+          return startThreadBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.StartThreadRunPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.StartThreadRunPb start_thread = 20;</code>
+     */
+    public Builder setStartThread(io.littlehorse.common.proto.StartThreadRunPb value) {
+      if (startThreadBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        nodeType_ = value;
+        onChanged();
+      } else {
+        startThreadBuilder_.setMessage(value);
+      }
+      nodeTypeCase_ = 20;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.StartThreadRunPb start_thread = 20;</code>
+     */
+    public Builder setStartThread(
+        io.littlehorse.common.proto.StartThreadRunPb.Builder builderForValue) {
+      if (startThreadBuilder_ == null) {
+        nodeType_ = builderForValue.build();
+        onChanged();
+      } else {
+        startThreadBuilder_.setMessage(builderForValue.build());
+      }
+      nodeTypeCase_ = 20;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.StartThreadRunPb start_thread = 20;</code>
+     */
+    public Builder mergeStartThread(io.littlehorse.common.proto.StartThreadRunPb value) {
+      if (startThreadBuilder_ == null) {
+        if (nodeTypeCase_ == 20 &&
+            nodeType_ != io.littlehorse.common.proto.StartThreadRunPb.getDefaultInstance()) {
+          nodeType_ = io.littlehorse.common.proto.StartThreadRunPb.newBuilder((io.littlehorse.common.proto.StartThreadRunPb) nodeType_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          nodeType_ = value;
+        }
+        onChanged();
+      } else {
+        if (nodeTypeCase_ == 20) {
+          startThreadBuilder_.mergeFrom(value);
+        }
+        startThreadBuilder_.setMessage(value);
+      }
+      nodeTypeCase_ = 20;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.StartThreadRunPb start_thread = 20;</code>
+     */
+    public Builder clearStartThread() {
+      if (startThreadBuilder_ == null) {
+        if (nodeTypeCase_ == 20) {
+          nodeTypeCase_ = 0;
+          nodeType_ = null;
+          onChanged();
+        }
+      } else {
+        if (nodeTypeCase_ == 20) {
+          nodeTypeCase_ = 0;
+          nodeType_ = null;
+        }
+        startThreadBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.lh_proto.StartThreadRunPb start_thread = 20;</code>
+     */
+    public io.littlehorse.common.proto.StartThreadRunPb.Builder getStartThreadBuilder() {
+      return getStartThreadFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.StartThreadRunPb start_thread = 20;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.StartThreadRunPbOrBuilder getStartThreadOrBuilder() {
+      if ((nodeTypeCase_ == 20) && (startThreadBuilder_ != null)) {
+        return startThreadBuilder_.getMessageOrBuilder();
+      } else {
+        if (nodeTypeCase_ == 20) {
+          return (io.littlehorse.common.proto.StartThreadRunPb) nodeType_;
+        }
+        return io.littlehorse.common.proto.StartThreadRunPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.StartThreadRunPb start_thread = 20;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.StartThreadRunPb, io.littlehorse.common.proto.StartThreadRunPb.Builder, io.littlehorse.common.proto.StartThreadRunPbOrBuilder> 
+        getStartThreadFieldBuilder() {
+      if (startThreadBuilder_ == null) {
+        if (!(nodeTypeCase_ == 20)) {
+          nodeType_ = io.littlehorse.common.proto.StartThreadRunPb.getDefaultInstance();
+        }
+        startThreadBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.StartThreadRunPb, io.littlehorse.common.proto.StartThreadRunPb.Builder, io.littlehorse.common.proto.StartThreadRunPbOrBuilder>(
+                (io.littlehorse.common.proto.StartThreadRunPb) nodeType_,
+                getParentForChildren(),
+                isClean());
+        nodeType_ = null;
+      }
+      nodeTypeCase_ = 20;
+      onChanged();;
+      return startThreadBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.WaitThreadRunPb, io.littlehorse.common.proto.WaitThreadRunPb.Builder, io.littlehorse.common.proto.WaitThreadRunPbOrBuilder> waitThreadBuilder_;
+    /**
+     * <code>.lh_proto.WaitThreadRunPb wait_thread = 21;</code>
+     * @return Whether the waitThread field is set.
+     */
+    @java.lang.Override
+    public boolean hasWaitThread() {
+      return nodeTypeCase_ == 21;
+    }
+    /**
+     * <code>.lh_proto.WaitThreadRunPb wait_thread = 21;</code>
+     * @return The waitThread.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.WaitThreadRunPb getWaitThread() {
+      if (waitThreadBuilder_ == null) {
+        if (nodeTypeCase_ == 21) {
+          return (io.littlehorse.common.proto.WaitThreadRunPb) nodeType_;
+        }
+        return io.littlehorse.common.proto.WaitThreadRunPb.getDefaultInstance();
+      } else {
+        if (nodeTypeCase_ == 21) {
+          return waitThreadBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.WaitThreadRunPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.WaitThreadRunPb wait_thread = 21;</code>
+     */
+    public Builder setWaitThread(io.littlehorse.common.proto.WaitThreadRunPb value) {
+      if (waitThreadBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        nodeType_ = value;
+        onChanged();
+      } else {
+        waitThreadBuilder_.setMessage(value);
+      }
+      nodeTypeCase_ = 21;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.WaitThreadRunPb wait_thread = 21;</code>
+     */
+    public Builder setWaitThread(
+        io.littlehorse.common.proto.WaitThreadRunPb.Builder builderForValue) {
+      if (waitThreadBuilder_ == null) {
+        nodeType_ = builderForValue.build();
+        onChanged();
+      } else {
+        waitThreadBuilder_.setMessage(builderForValue.build());
+      }
+      nodeTypeCase_ = 21;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.WaitThreadRunPb wait_thread = 21;</code>
+     */
+    public Builder mergeWaitThread(io.littlehorse.common.proto.WaitThreadRunPb value) {
+      if (waitThreadBuilder_ == null) {
+        if (nodeTypeCase_ == 21 &&
+            nodeType_ != io.littlehorse.common.proto.WaitThreadRunPb.getDefaultInstance()) {
+          nodeType_ = io.littlehorse.common.proto.WaitThreadRunPb.newBuilder((io.littlehorse.common.proto.WaitThreadRunPb) nodeType_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          nodeType_ = value;
+        }
+        onChanged();
+      } else {
+        if (nodeTypeCase_ == 21) {
+          waitThreadBuilder_.mergeFrom(value);
+        }
+        waitThreadBuilder_.setMessage(value);
+      }
+      nodeTypeCase_ = 21;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.WaitThreadRunPb wait_thread = 21;</code>
+     */
+    public Builder clearWaitThread() {
+      if (waitThreadBuilder_ == null) {
+        if (nodeTypeCase_ == 21) {
+          nodeTypeCase_ = 0;
+          nodeType_ = null;
+          onChanged();
+        }
+      } else {
+        if (nodeTypeCase_ == 21) {
+          nodeTypeCase_ = 0;
+          nodeType_ = null;
+        }
+        waitThreadBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.lh_proto.WaitThreadRunPb wait_thread = 21;</code>
+     */
+    public io.littlehorse.common.proto.WaitThreadRunPb.Builder getWaitThreadBuilder() {
+      return getWaitThreadFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.WaitThreadRunPb wait_thread = 21;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.WaitThreadRunPbOrBuilder getWaitThreadOrBuilder() {
+      if ((nodeTypeCase_ == 21) && (waitThreadBuilder_ != null)) {
+        return waitThreadBuilder_.getMessageOrBuilder();
+      } else {
+        if (nodeTypeCase_ == 21) {
+          return (io.littlehorse.common.proto.WaitThreadRunPb) nodeType_;
+        }
+        return io.littlehorse.common.proto.WaitThreadRunPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.WaitThreadRunPb wait_thread = 21;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.WaitThreadRunPb, io.littlehorse.common.proto.WaitThreadRunPb.Builder, io.littlehorse.common.proto.WaitThreadRunPbOrBuilder> 
+        getWaitThreadFieldBuilder() {
+      if (waitThreadBuilder_ == null) {
+        if (!(nodeTypeCase_ == 21)) {
+          nodeType_ = io.littlehorse.common.proto.WaitThreadRunPb.getDefaultInstance();
+        }
+        waitThreadBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.WaitThreadRunPb, io.littlehorse.common.proto.WaitThreadRunPb.Builder, io.littlehorse.common.proto.WaitThreadRunPbOrBuilder>(
+                (io.littlehorse.common.proto.WaitThreadRunPb) nodeType_,
+                getParentForChildren(),
+                isClean());
+        nodeType_ = null;
+      }
+      nodeTypeCase_ = 21;
+      onChanged();;
+      return waitThreadBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.SleepNodeRunPb, io.littlehorse.common.proto.SleepNodeRunPb.Builder, io.littlehorse.common.proto.SleepNodeRunPbOrBuilder> sleepBuilder_;
+    /**
+     * <code>.lh_proto.SleepNodeRunPb sleep = 22;</code>
+     * @return Whether the sleep field is set.
+     */
+    @java.lang.Override
+    public boolean hasSleep() {
+      return nodeTypeCase_ == 22;
+    }
+    /**
+     * <code>.lh_proto.SleepNodeRunPb sleep = 22;</code>
+     * @return The sleep.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.SleepNodeRunPb getSleep() {
+      if (sleepBuilder_ == null) {
+        if (nodeTypeCase_ == 22) {
+          return (io.littlehorse.common.proto.SleepNodeRunPb) nodeType_;
+        }
+        return io.littlehorse.common.proto.SleepNodeRunPb.getDefaultInstance();
+      } else {
+        if (nodeTypeCase_ == 22) {
+          return sleepBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.SleepNodeRunPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.SleepNodeRunPb sleep = 22;</code>
+     */
+    public Builder setSleep(io.littlehorse.common.proto.SleepNodeRunPb value) {
+      if (sleepBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        nodeType_ = value;
+        onChanged();
+      } else {
+        sleepBuilder_.setMessage(value);
+      }
+      nodeTypeCase_ = 22;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.SleepNodeRunPb sleep = 22;</code>
+     */
+    public Builder setSleep(
+        io.littlehorse.common.proto.SleepNodeRunPb.Builder builderForValue) {
+      if (sleepBuilder_ == null) {
+        nodeType_ = builderForValue.build();
+        onChanged();
+      } else {
+        sleepBuilder_.setMessage(builderForValue.build());
+      }
+      nodeTypeCase_ = 22;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.SleepNodeRunPb sleep = 22;</code>
+     */
+    public Builder mergeSleep(io.littlehorse.common.proto.SleepNodeRunPb value) {
+      if (sleepBuilder_ == null) {
+        if (nodeTypeCase_ == 22 &&
+            nodeType_ != io.littlehorse.common.proto.SleepNodeRunPb.getDefaultInstance()) {
+          nodeType_ = io.littlehorse.common.proto.SleepNodeRunPb.newBuilder((io.littlehorse.common.proto.SleepNodeRunPb) nodeType_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          nodeType_ = value;
+        }
+        onChanged();
+      } else {
+        if (nodeTypeCase_ == 22) {
+          sleepBuilder_.mergeFrom(value);
+        }
+        sleepBuilder_.setMessage(value);
+      }
+      nodeTypeCase_ = 22;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.SleepNodeRunPb sleep = 22;</code>
+     */
+    public Builder clearSleep() {
+      if (sleepBuilder_ == null) {
+        if (nodeTypeCase_ == 22) {
+          nodeTypeCase_ = 0;
+          nodeType_ = null;
+          onChanged();
+        }
+      } else {
+        if (nodeTypeCase_ == 22) {
+          nodeTypeCase_ = 0;
+          nodeType_ = null;
+        }
+        sleepBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.lh_proto.SleepNodeRunPb sleep = 22;</code>
+     */
+    public io.littlehorse.common.proto.SleepNodeRunPb.Builder getSleepBuilder() {
+      return getSleepFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.SleepNodeRunPb sleep = 22;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.SleepNodeRunPbOrBuilder getSleepOrBuilder() {
+      if ((nodeTypeCase_ == 22) && (sleepBuilder_ != null)) {
+        return sleepBuilder_.getMessageOrBuilder();
+      } else {
+        if (nodeTypeCase_ == 22) {
+          return (io.littlehorse.common.proto.SleepNodeRunPb) nodeType_;
+        }
+        return io.littlehorse.common.proto.SleepNodeRunPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.SleepNodeRunPb sleep = 22;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.SleepNodeRunPb, io.littlehorse.common.proto.SleepNodeRunPb.Builder, io.littlehorse.common.proto.SleepNodeRunPbOrBuilder> 
+        getSleepFieldBuilder() {
+      if (sleepBuilder_ == null) {
+        if (!(nodeTypeCase_ == 22)) {
+          nodeType_ = io.littlehorse.common.proto.SleepNodeRunPb.getDefaultInstance();
+        }
+        sleepBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.SleepNodeRunPb, io.littlehorse.common.proto.SleepNodeRunPb.Builder, io.littlehorse.common.proto.SleepNodeRunPbOrBuilder>(
+                (io.littlehorse.common.proto.SleepNodeRunPb) nodeType_,
+                getParentForChildren(),
+                isClean());
+        nodeType_ = null;
+      }
+      nodeTypeCase_ = 22;
+      onChanged();;
+      return sleepBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

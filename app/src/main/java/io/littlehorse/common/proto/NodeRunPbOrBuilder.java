@@ -154,118 +154,133 @@ public interface NodeRunPbOrBuilder extends
       getErrorMessageBytes();
 
   /**
-   * <code>.lh_proto.TaskRunPb task = 14;</code>
-   * @return Whether the task field is set.
-   */
-  boolean hasTask();
-  /**
-   * <code>.lh_proto.TaskRunPb task = 14;</code>
-   * @return The task.
-   */
-  io.littlehorse.common.proto.TaskRunPb getTask();
-  /**
-   * <code>.lh_proto.TaskRunPb task = 14;</code>
-   */
-  io.littlehorse.common.proto.TaskRunPbOrBuilder getTaskOrBuilder();
-
-  /**
-   * <code>.lh_proto.ExternalEventRunPb external_event = 15;</code>
-   * @return Whether the externalEvent field is set.
-   */
-  boolean hasExternalEvent();
-  /**
-   * <code>.lh_proto.ExternalEventRunPb external_event = 15;</code>
-   * @return The externalEvent.
-   */
-  io.littlehorse.common.proto.ExternalEventRunPb getExternalEvent();
-  /**
-   * <code>.lh_proto.ExternalEventRunPb external_event = 15;</code>
-   */
-  io.littlehorse.common.proto.ExternalEventRunPbOrBuilder getExternalEventOrBuilder();
-
-  /**
-   * <code>.lh_proto.EntrypointRunPb entrypoint = 16;</code>
-   * @return Whether the entrypoint field is set.
-   */
-  boolean hasEntrypoint();
-  /**
-   * <code>.lh_proto.EntrypointRunPb entrypoint = 16;</code>
-   * @return The entrypoint.
-   */
-  io.littlehorse.common.proto.EntrypointRunPb getEntrypoint();
-  /**
-   * <code>.lh_proto.EntrypointRunPb entrypoint = 16;</code>
-   */
-  io.littlehorse.common.proto.EntrypointRunPbOrBuilder getEntrypointOrBuilder();
-
-  /**
-   * <code>.lh_proto.ExitRunPb exit = 17;</code>
-   * @return Whether the exit field is set.
-   */
-  boolean hasExit();
-  /**
-   * <code>.lh_proto.ExitRunPb exit = 17;</code>
-   * @return The exit.
-   */
-  io.littlehorse.common.proto.ExitRunPb getExit();
-  /**
-   * <code>.lh_proto.ExitRunPb exit = 17;</code>
-   */
-  io.littlehorse.common.proto.ExitRunPbOrBuilder getExitOrBuilder();
-
-  /**
-   * <code>.lh_proto.StartThreadRunPb start_thread = 18;</code>
-   * @return Whether the startThread field is set.
-   */
-  boolean hasStartThread();
-  /**
-   * <code>.lh_proto.StartThreadRunPb start_thread = 18;</code>
-   * @return The startThread.
-   */
-  io.littlehorse.common.proto.StartThreadRunPb getStartThread();
-  /**
-   * <code>.lh_proto.StartThreadRunPb start_thread = 18;</code>
-   */
-  io.littlehorse.common.proto.StartThreadRunPbOrBuilder getStartThreadOrBuilder();
-
-  /**
-   * <code>.lh_proto.WaitThreadRunPb wait_thread = 19;</code>
-   * @return Whether the waitThread field is set.
-   */
-  boolean hasWaitThread();
-  /**
-   * <code>.lh_proto.WaitThreadRunPb wait_thread = 19;</code>
-   * @return The waitThread.
-   */
-  io.littlehorse.common.proto.WaitThreadRunPb getWaitThread();
-  /**
-   * <code>.lh_proto.WaitThreadRunPb wait_thread = 19;</code>
-   */
-  io.littlehorse.common.proto.WaitThreadRunPbOrBuilder getWaitThreadOrBuilder();
-
-  /**
-   * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+   * <code>repeated .lh_proto.FailurePb failures = 14;</code>
    */
   java.util.List<io.littlehorse.common.proto.FailurePb> 
       getFailuresList();
   /**
-   * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+   * <code>repeated .lh_proto.FailurePb failures = 14;</code>
    */
   io.littlehorse.common.proto.FailurePb getFailures(int index);
   /**
-   * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+   * <code>repeated .lh_proto.FailurePb failures = 14;</code>
    */
   int getFailuresCount();
   /**
-   * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+   * <code>repeated .lh_proto.FailurePb failures = 14;</code>
    */
   java.util.List<? extends io.littlehorse.common.proto.FailurePbOrBuilder> 
       getFailuresOrBuilderList();
   /**
-   * <code>repeated .lh_proto.FailurePb failures = 20;</code>
+   * <code>repeated .lh_proto.FailurePb failures = 14;</code>
    */
   io.littlehorse.common.proto.FailurePbOrBuilder getFailuresOrBuilder(
       int index);
+
+  /**
+   * <code>.lh_proto.TaskRunPb task = 15;</code>
+   * @return Whether the task field is set.
+   */
+  boolean hasTask();
+  /**
+   * <code>.lh_proto.TaskRunPb task = 15;</code>
+   * @return The task.
+   */
+  io.littlehorse.common.proto.TaskRunPb getTask();
+  /**
+   * <code>.lh_proto.TaskRunPb task = 15;</code>
+   */
+  io.littlehorse.common.proto.TaskRunPbOrBuilder getTaskOrBuilder();
+
+  /**
+   * <code>.lh_proto.ExternalEventRunPb external_event = 16;</code>
+   * @return Whether the externalEvent field is set.
+   */
+  boolean hasExternalEvent();
+  /**
+   * <code>.lh_proto.ExternalEventRunPb external_event = 16;</code>
+   * @return The externalEvent.
+   */
+  io.littlehorse.common.proto.ExternalEventRunPb getExternalEvent();
+  /**
+   * <code>.lh_proto.ExternalEventRunPb external_event = 16;</code>
+   */
+  io.littlehorse.common.proto.ExternalEventRunPbOrBuilder getExternalEventOrBuilder();
+
+  /**
+   * <code>.lh_proto.EntrypointRunPb entrypoint = 17;</code>
+   * @return Whether the entrypoint field is set.
+   */
+  boolean hasEntrypoint();
+  /**
+   * <code>.lh_proto.EntrypointRunPb entrypoint = 17;</code>
+   * @return The entrypoint.
+   */
+  io.littlehorse.common.proto.EntrypointRunPb getEntrypoint();
+  /**
+   * <code>.lh_proto.EntrypointRunPb entrypoint = 17;</code>
+   */
+  io.littlehorse.common.proto.EntrypointRunPbOrBuilder getEntrypointOrBuilder();
+
+  /**
+   * <code>.lh_proto.ExitRunPb exit = 19;</code>
+   * @return Whether the exit field is set.
+   */
+  boolean hasExit();
+  /**
+   * <code>.lh_proto.ExitRunPb exit = 19;</code>
+   * @return The exit.
+   */
+  io.littlehorse.common.proto.ExitRunPb getExit();
+  /**
+   * <code>.lh_proto.ExitRunPb exit = 19;</code>
+   */
+  io.littlehorse.common.proto.ExitRunPbOrBuilder getExitOrBuilder();
+
+  /**
+   * <code>.lh_proto.StartThreadRunPb start_thread = 20;</code>
+   * @return Whether the startThread field is set.
+   */
+  boolean hasStartThread();
+  /**
+   * <code>.lh_proto.StartThreadRunPb start_thread = 20;</code>
+   * @return The startThread.
+   */
+  io.littlehorse.common.proto.StartThreadRunPb getStartThread();
+  /**
+   * <code>.lh_proto.StartThreadRunPb start_thread = 20;</code>
+   */
+  io.littlehorse.common.proto.StartThreadRunPbOrBuilder getStartThreadOrBuilder();
+
+  /**
+   * <code>.lh_proto.WaitThreadRunPb wait_thread = 21;</code>
+   * @return Whether the waitThread field is set.
+   */
+  boolean hasWaitThread();
+  /**
+   * <code>.lh_proto.WaitThreadRunPb wait_thread = 21;</code>
+   * @return The waitThread.
+   */
+  io.littlehorse.common.proto.WaitThreadRunPb getWaitThread();
+  /**
+   * <code>.lh_proto.WaitThreadRunPb wait_thread = 21;</code>
+   */
+  io.littlehorse.common.proto.WaitThreadRunPbOrBuilder getWaitThreadOrBuilder();
+
+  /**
+   * <code>.lh_proto.SleepNodeRunPb sleep = 22;</code>
+   * @return Whether the sleep field is set.
+   */
+  boolean hasSleep();
+  /**
+   * <code>.lh_proto.SleepNodeRunPb sleep = 22;</code>
+   * @return The sleep.
+   */
+  io.littlehorse.common.proto.SleepNodeRunPb getSleep();
+  /**
+   * <code>.lh_proto.SleepNodeRunPb sleep = 22;</code>
+   */
+  io.littlehorse.common.proto.SleepNodeRunPbOrBuilder getSleepOrBuilder();
 
   public io.littlehorse.common.proto.NodeRunPb.NodeTypeCase getNodeTypeCase();
 }

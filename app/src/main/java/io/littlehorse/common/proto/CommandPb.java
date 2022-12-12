@@ -199,6 +199,20 @@ private static final long serialVersionUID = 0L;
             commandCase_ = 12;
             break;
           }
+          case 106: {
+            io.littlehorse.common.proto.SleepNodeMaturedPb.Builder subBuilder = null;
+            if (commandCase_ == 13) {
+              subBuilder = ((io.littlehorse.common.proto.SleepNodeMaturedPb) command_).toBuilder();
+            }
+            command_ =
+                input.readMessage(io.littlehorse.common.proto.SleepNodeMaturedPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.common.proto.SleepNodeMaturedPb) command_);
+              command_ = subBuilder.buildPartial();
+            }
+            commandCase_ = 13;
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -246,6 +260,7 @@ private static final long serialVersionUID = 0L;
     PUT_EXTERNAL_EVENT(10),
     STOP_WF_RUN(11),
     RESUME_WF_RUN(12),
+    SLEEP_NODE_MATURED(13),
     COMMAND_NOT_SET(0);
     private final int value;
     private CommandCase(int value) {
@@ -272,6 +287,7 @@ private static final long serialVersionUID = 0L;
         case 10: return PUT_EXTERNAL_EVENT;
         case 11: return STOP_WF_RUN;
         case 12: return RESUME_WF_RUN;
+        case 13: return SLEEP_NODE_MATURED;
         case 0: return COMMAND_NOT_SET;
         default: return null;
       }
@@ -638,6 +654,37 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.ResumeWfRunPb.getDefaultInstance();
   }
 
+  public static final int SLEEP_NODE_MATURED_FIELD_NUMBER = 13;
+  /**
+   * <code>.lh_proto.SleepNodeMaturedPb sleep_node_matured = 13;</code>
+   * @return Whether the sleepNodeMatured field is set.
+   */
+  @java.lang.Override
+  public boolean hasSleepNodeMatured() {
+    return commandCase_ == 13;
+  }
+  /**
+   * <code>.lh_proto.SleepNodeMaturedPb sleep_node_matured = 13;</code>
+   * @return The sleepNodeMatured.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.SleepNodeMaturedPb getSleepNodeMatured() {
+    if (commandCase_ == 13) {
+       return (io.littlehorse.common.proto.SleepNodeMaturedPb) command_;
+    }
+    return io.littlehorse.common.proto.SleepNodeMaturedPb.getDefaultInstance();
+  }
+  /**
+   * <code>.lh_proto.SleepNodeMaturedPb sleep_node_matured = 13;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.SleepNodeMaturedPbOrBuilder getSleepNodeMaturedOrBuilder() {
+    if (commandCase_ == 13) {
+       return (io.littlehorse.common.proto.SleepNodeMaturedPb) command_;
+    }
+    return io.littlehorse.common.proto.SleepNodeMaturedPb.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -684,6 +731,9 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 12) {
       output.writeMessage(12, (io.littlehorse.common.proto.ResumeWfRunPb) command_);
+    }
+    if (commandCase_ == 13) {
+      output.writeMessage(13, (io.littlehorse.common.proto.SleepNodeMaturedPb) command_);
     }
     unknownFields.writeTo(output);
   }
@@ -736,6 +786,10 @@ private static final long serialVersionUID = 0L;
     if (commandCase_ == 12) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(12, (io.littlehorse.common.proto.ResumeWfRunPb) command_);
+    }
+    if (commandCase_ == 13) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(13, (io.littlehorse.common.proto.SleepNodeMaturedPb) command_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -800,6 +854,10 @@ private static final long serialVersionUID = 0L;
         if (!getResumeWfRun()
             .equals(other.getResumeWfRun())) return false;
         break;
+      case 13:
+        if (!getSleepNodeMatured()
+            .equals(other.getSleepNodeMatured())) return false;
+        break;
       case 0:
       default:
     }
@@ -858,6 +916,10 @@ private static final long serialVersionUID = 0L;
       case 12:
         hash = (37 * hash) + RESUME_WF_RUN_FIELD_NUMBER;
         hash = (53 * hash) + getResumeWfRun().hashCode();
+        break;
+      case 13:
+        hash = (37 * hash) + SLEEP_NODE_MATURED_FIELD_NUMBER;
+        hash = (53 * hash) + getSleepNodeMatured().hashCode();
         break;
       case 0:
       default:
@@ -1109,6 +1171,13 @@ private static final long serialVersionUID = 0L;
           result.command_ = resumeWfRunBuilder_.build();
         }
       }
+      if (commandCase_ == 13) {
+        if (sleepNodeMaturedBuilder_ == null) {
+          result.command_ = command_;
+        } else {
+          result.command_ = sleepNodeMaturedBuilder_.build();
+        }
+      }
       result.bitField0_ = to_bitField0_;
       result.commandCase_ = commandCase_;
       onBuilt();
@@ -1202,6 +1271,10 @@ private static final long serialVersionUID = 0L;
         }
         case RESUME_WF_RUN: {
           mergeResumeWfRun(other.getResumeWfRun());
+          break;
+        }
+        case SLEEP_NODE_MATURED: {
+          mergeSleepNodeMatured(other.getSleepNodeMatured());
           break;
         }
         case COMMAND_NOT_SET: {
@@ -2722,6 +2795,147 @@ private static final long serialVersionUID = 0L;
       commandCase_ = 12;
       onChanged();;
       return resumeWfRunBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.SleepNodeMaturedPb, io.littlehorse.common.proto.SleepNodeMaturedPb.Builder, io.littlehorse.common.proto.SleepNodeMaturedPbOrBuilder> sleepNodeMaturedBuilder_;
+    /**
+     * <code>.lh_proto.SleepNodeMaturedPb sleep_node_matured = 13;</code>
+     * @return Whether the sleepNodeMatured field is set.
+     */
+    @java.lang.Override
+    public boolean hasSleepNodeMatured() {
+      return commandCase_ == 13;
+    }
+    /**
+     * <code>.lh_proto.SleepNodeMaturedPb sleep_node_matured = 13;</code>
+     * @return The sleepNodeMatured.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.SleepNodeMaturedPb getSleepNodeMatured() {
+      if (sleepNodeMaturedBuilder_ == null) {
+        if (commandCase_ == 13) {
+          return (io.littlehorse.common.proto.SleepNodeMaturedPb) command_;
+        }
+        return io.littlehorse.common.proto.SleepNodeMaturedPb.getDefaultInstance();
+      } else {
+        if (commandCase_ == 13) {
+          return sleepNodeMaturedBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.SleepNodeMaturedPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.SleepNodeMaturedPb sleep_node_matured = 13;</code>
+     */
+    public Builder setSleepNodeMatured(io.littlehorse.common.proto.SleepNodeMaturedPb value) {
+      if (sleepNodeMaturedBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+        onChanged();
+      } else {
+        sleepNodeMaturedBuilder_.setMessage(value);
+      }
+      commandCase_ = 13;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.SleepNodeMaturedPb sleep_node_matured = 13;</code>
+     */
+    public Builder setSleepNodeMatured(
+        io.littlehorse.common.proto.SleepNodeMaturedPb.Builder builderForValue) {
+      if (sleepNodeMaturedBuilder_ == null) {
+        command_ = builderForValue.build();
+        onChanged();
+      } else {
+        sleepNodeMaturedBuilder_.setMessage(builderForValue.build());
+      }
+      commandCase_ = 13;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.SleepNodeMaturedPb sleep_node_matured = 13;</code>
+     */
+    public Builder mergeSleepNodeMatured(io.littlehorse.common.proto.SleepNodeMaturedPb value) {
+      if (sleepNodeMaturedBuilder_ == null) {
+        if (commandCase_ == 13 &&
+            command_ != io.littlehorse.common.proto.SleepNodeMaturedPb.getDefaultInstance()) {
+          command_ = io.littlehorse.common.proto.SleepNodeMaturedPb.newBuilder((io.littlehorse.common.proto.SleepNodeMaturedPb) command_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          command_ = value;
+        }
+        onChanged();
+      } else {
+        if (commandCase_ == 13) {
+          sleepNodeMaturedBuilder_.mergeFrom(value);
+        }
+        sleepNodeMaturedBuilder_.setMessage(value);
+      }
+      commandCase_ = 13;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.SleepNodeMaturedPb sleep_node_matured = 13;</code>
+     */
+    public Builder clearSleepNodeMatured() {
+      if (sleepNodeMaturedBuilder_ == null) {
+        if (commandCase_ == 13) {
+          commandCase_ = 0;
+          command_ = null;
+          onChanged();
+        }
+      } else {
+        if (commandCase_ == 13) {
+          commandCase_ = 0;
+          command_ = null;
+        }
+        sleepNodeMaturedBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.lh_proto.SleepNodeMaturedPb sleep_node_matured = 13;</code>
+     */
+    public io.littlehorse.common.proto.SleepNodeMaturedPb.Builder getSleepNodeMaturedBuilder() {
+      return getSleepNodeMaturedFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.SleepNodeMaturedPb sleep_node_matured = 13;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.SleepNodeMaturedPbOrBuilder getSleepNodeMaturedOrBuilder() {
+      if ((commandCase_ == 13) && (sleepNodeMaturedBuilder_ != null)) {
+        return sleepNodeMaturedBuilder_.getMessageOrBuilder();
+      } else {
+        if (commandCase_ == 13) {
+          return (io.littlehorse.common.proto.SleepNodeMaturedPb) command_;
+        }
+        return io.littlehorse.common.proto.SleepNodeMaturedPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.SleepNodeMaturedPb sleep_node_matured = 13;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.SleepNodeMaturedPb, io.littlehorse.common.proto.SleepNodeMaturedPb.Builder, io.littlehorse.common.proto.SleepNodeMaturedPbOrBuilder> 
+        getSleepNodeMaturedFieldBuilder() {
+      if (sleepNodeMaturedBuilder_ == null) {
+        if (!(commandCase_ == 13)) {
+          command_ = io.littlehorse.common.proto.SleepNodeMaturedPb.getDefaultInstance();
+        }
+        sleepNodeMaturedBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.SleepNodeMaturedPb, io.littlehorse.common.proto.SleepNodeMaturedPb.Builder, io.littlehorse.common.proto.SleepNodeMaturedPbOrBuilder>(
+                (io.littlehorse.common.proto.SleepNodeMaturedPb) command_,
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      commandCase_ = 13;
+      onChanged();;
+      return sleepNodeMaturedBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

@@ -7,6 +7,7 @@ import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.command.subcommand.ResumeWfRun;
+import io.littlehorse.common.model.command.subcommand.SleepNodeMatured;
 import io.littlehorse.common.model.command.subcommand.StopWfRun;
 import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
@@ -421,6 +422,22 @@ public class WfRun extends GETable<WfRunPb> {
             }
         }
         this.advance(new Date());
+    }
+
+    public void processSleepNodeMatured(SleepNodeMatured req, Date time)
+        throws LHValidationError {
+        if (req.threadRunNumber >= threadRuns.size() || req.threadRunNumber < 0) {
+            throw new LHValidationError(null, "Reference to nonexistent thread.");
+        }
+
+        ThreadRun thread = threadRuns.get(req.threadRunNumber);
+
+        if (req.nodeRunPosition > thread.currentNodePosition) {
+            throw new LHValidationError(null, "Reference to nonexistent nodeRun");
+        }
+
+        thread.processSleepNodeMatured(req);
+        advance(time);
     }
 
     // As a precondition, the status of the calling thread must already be updated to complete.

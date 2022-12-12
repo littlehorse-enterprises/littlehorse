@@ -45,6 +45,11 @@ public final class WfSpec {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_lh_proto_NopNodePb_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_lh_proto_SleepNodePb_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_lh_proto_SleepNodePb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_lh_proto_NodePb_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -192,91 +197,97 @@ public final class WfSpec {
       "eMutationPb.NodeOutputSourcePbH\000\0328\n\022Node" +
       "OutputSourcePb\022\025\n\010jsonpath\030\n \001(\tH\000\210\001\001B\013\n" +
       "\t_jsonpathB\013\n\trhs_valueB\020\n\016_lhs_json_pat" +
-      "h\"\013\n\tNopNodePb\"\250\004\n\006NodePb\022(\n\016outgoing_ed" +
-      "ges\030\001 \003(\0132\020.lh_proto.EdgePb\0228\n\022variable_" +
-      "mutations\030\002 \003(\0132\034.lh_proto.VariableMutat" +
-      "ionPb\022/\n\routput_schema\030\003 \001(\0132\030.lh_proto." +
-      "OutputSchemaPb\0220\n\nentrypoint\030\005 \001(\0132\032.lh_" +
-      "proto.EntrypointNodePbH\000\022$\n\004exit\030\006 \001(\0132\024" +
-      ".lh_proto.ExitNodePbH\000\022$\n\004task\030\007 \001(\0132\024.l" +
-      "h_proto.TaskNodePbH\000\0227\n\016external_event\030\010" +
-      " \001(\0132\035.lh_proto.ExternalEventNodePbH\000\0223\n" +
-      "\014start_thread\030\t \001(\0132\033.lh_proto.StartThre" +
-      "adNodePbH\000\0228\n\017wait_for_thread\030\n \001(\0132\035.lh" +
-      "_proto.WaitForThreadNodePbH\000\022\"\n\003nop\030\013 \001(" +
-      "\0132\023.lh_proto.NopNodePbH\000\0227\n\020failure_hand" +
-      "lers\030\014 \003(\0132\035.lh_proto.FailureHandlerDefP" +
-      "bB\006\n\004node\"\276\001\n\021StartThreadNodePb\022\030\n\020threa" +
-      "d_spec_name\030\001 \001(\t\022=\n\tvariables\030\002 \003(\0132*.l" +
-      "h_proto.StartThreadNodePb.VariablesEntry" +
-      "\032P\n\016VariablesEntry\022\013\n\003key\030\001 \001(\t\022-\n\005value" +
-      "\030\002 \001(\0132\036.lh_proto.VariableAssignmentPb:\002" +
-      "8\001\"d\n\023FailureHandlerDefPb\022\035\n\020specific_fa" +
-      "ilure\030\001 \001(\tH\000\210\001\001\022\031\n\021handler_spec_name\030\002 " +
-      "\001(\tB\023\n\021_specific_failure\"\211\001\n\023WaitForThre" +
-      "adNodePb\0229\n\021thread_run_number\030\001 \001(\0132\036.lh" +
-      "_proto.VariableAssignmentPb\0227\n\017timeout_s" +
-      "econds\030\002 \001(\0132\036.lh_proto.VariableAssignme" +
-      "ntPb\"\367\001\n\nTaskNodePb\022\025\n\rtask_def_name\030\001 \001" +
-      "(\t\0227\n\017timeout_seconds\030\002 \001(\0132\036.lh_proto.V" +
-      "ariableAssignmentPb\022\017\n\007retries\030\003 \001(\005\0226\n\t" +
-      "variables\030\004 \003(\0132#.lh_proto.TaskNodePb.Va" +
-      "riablesEntry\032P\n\016VariablesEntry\022\013\n\003key\030\001 " +
-      "\001(\t\022-\n\005value\030\002 \001(\0132\036.lh_proto.VariableAs" +
-      "signmentPb:\0028\001\"6\n\023ExternalEventNodePb\022\037\n" +
-      "\027external_event_def_name\030\001 \001(\t\"\022\n\020Entryp" +
-      "ointNodePb\"N\n\nExitNodePb\0220\n\013failure_def\030" +
-      "\001 \001(\0132\026.lh_proto.FailureDefPbH\000\210\001\001B\016\n\014_f" +
-      "ailure_def\"\251\001\n\014FailureDefPb\022\024\n\014failure_n" +
-      "ame\030\001 \001(\t\0220\n\014failure_code\030\002 \001(\0162\032.lh_pro" +
-      "to.TaskResultCodePb\022\017\n\007message\030\003 \001(\t\0224\n\007" +
-      "content\030\004 \001(\0132\036.lh_proto.VariableAssignm" +
-      "entPbH\000\210\001\001B\n\n\010_content\"\216\001\n\rVariableDefPb" +
-      "\022&\n\004type\030\001 \001(\0162\030.lh_proto.VariableTypePb" +
-      "\0223\n\013default_val\030\002 \001(\0132\031.lh_proto.Variabl" +
-      "eValuePbH\000\210\001\001\022\020\n\010required\030\003 \001(\010B\016\n\014_defa" +
-      "ult_val\"L\n\016InterruptDefPb\022\037\n\027external_ev" +
-      "ent_def_name\030\001 \001(\t\022\031\n\021handler_spec_name\030" +
-      "\002 \001(\t\"\301\002\n\014ThreadSpecPb\0220\n\005nodes\030\001 \003(\0132!." +
-      "lh_proto.ThreadSpecPb.NodesEntry\022?\n\rvari" +
-      "able_defs\030\002 \003(\0132(.lh_proto.ThreadSpecPb." +
-      "VariableDefsEntry\0220\n\016interrupt_defs\030\003 \003(" +
-      "\0132\030.lh_proto.InterruptDefPb\032>\n\nNodesEntr" +
-      "y\022\013\n\003key\030\001 \001(\t\022\037\n\005value\030\002 \001(\0132\020.lh_proto" +
-      ".NodePb:\0028\001\032L\n\021VariableDefsEntry\022\013\n\003key\030" +
-      "\001 \001(\t\022&\n\005value\030\002 \001(\0132\027.lh_proto.Variable" +
-      "DefPb:\0028\001\"\246\002\n\010WfSpecPb\022\014\n\004name\030\001 \001(\t\022\017\n\007" +
-      "version\030\002 \001(\005\022.\n\ncreated_at\030\003 \001(\0132\032.goog" +
-      "le.protobuf.Timestamp\022$\n\006status\030\004 \001(\0162\024." +
-      "lh_proto.LHStatusPb\0229\n\014thread_specs\030\005 \003(" +
-      "\0132#.lh_proto.WfSpecPb.ThreadSpecsEntry\022\036" +
-      "\n\026entrypoint_thread_name\030\006 \001(\t\032J\n\020Thread" +
-      "SpecsEntry\022\013\n\003key\030\001 \001(\t\022%\n\005value\030\002 \001(\0132\026" +
-      ".lh_proto.ThreadSpecPb:\0028\001\"?\n\016OutputSche" +
-      "maPb\022-\n\013output_type\030\001 \001(\0162\030.lh_proto.Var" +
-      "iableTypePb\"\310\003\n\tTaskDefPb\022\014\n\004name\030\001 \001(\t\022" +
-      "\017\n\007version\030\002 \001(\005\022.\n\ncreated_at\030\003 \001(\0132\032.g" +
-      "oogle.protobuf.Timestamp\0226\n\ninput_vars\030\004" +
-      " \003(\0132\".lh_proto.TaskDefPb.InputVarsEntry" +
-      "\0224\n\routput_schema\030\005 \001(\0132\030.lh_proto.Outpu" +
-      "tSchemaPbH\001\210\001\001\022<\n\005kafka\030\006 \001(\0132+.lh_proto" +
-      ".TaskDefPb.KafkaTaskQueueDetailsPbH\000\022\r\n\003" +
-      "rpc\030\007 \001(\010H\000\032C\n\027KafkaTaskQueueDetailsPb\022\r" +
-      "\n\005topic\030\001 \001(\t\022\031\n\021consumer_group_id\030\002 \001(\t" +
-      "\032I\n\016InputVarsEntry\022\013\n\003key\030\001 \001(\t\022&\n\005value" +
-      "\030\002 \001(\0132\027.lh_proto.VariableDefPb:\0028\001B\017\n\rq" +
-      "ueue_detailsB\020\n\016_output_schema\"c\n\022Extern" +
-      "alEventDefPb\022\014\n\004name\030\001 \001(\t\022\017\n\007version\030\002 " +
-      "\001(\005\022.\n\ncreated_at\030\003 \001(\0132\032.google.protobu" +
-      "f.Timestamp*\206\001\n\014ComparatorPb\022\r\n\tLESS_THA" +
-      "N\020\000\022\020\n\014GREATER_THAN\020\001\022\020\n\014LESS_THAN_EQ\020\002\022" +
-      "\023\n\017GREATER_THAN_EQ\020\003\022\n\n\006EQUALS\020\004\022\016\n\nNOT_" +
-      "EQUALS\020\005\022\006\n\002IN\020\006\022\n\n\006NOT_IN\020\007*\232\001\n\026Variabl" +
-      "eMutationTypePb\022\n\n\006ASSIGN\020\000\022\007\n\003ADD\020\001\022\n\n\006" +
-      "EXTEND\020\002\022\014\n\010SUBTRACT\020\003\022\014\n\010MULTIPLY\020\004\022\n\n\006" +
-      "DIVIDE\020\005\022\025\n\021REMOVE_IF_PRESENT\020\006\022\020\n\014REMOV" +
-      "E_INDEX\020\007\022\016\n\nREMOVE_KEY\020\010B(\n\033io.littleho" +
-      "rse.common.protoP\001Z\007.;modelb\006proto3"
+      "h\"\013\n\tNopNodePb\"\275\001\n\013SleepNodePb\0225\n\013raw_se" +
+      "conds\030\001 \001(\0132\036.lh_proto.VariableAssignmen" +
+      "tPbH\000\0223\n\ttimestamp\030\002 \001(\0132\036.lh_proto.Vari" +
+      "ableAssignmentPbH\000\0222\n\010iso_date\030\003 \001(\0132\036.l" +
+      "h_proto.VariableAssignmentPbH\000B\016\n\014sleep_" +
+      "length\"\320\004\n\006NodePb\022(\n\016outgoing_edges\030\001 \003(" +
+      "\0132\020.lh_proto.EdgePb\0228\n\022variable_mutation" +
+      "s\030\002 \003(\0132\034.lh_proto.VariableMutationPb\022/\n" +
+      "\routput_schema\030\003 \001(\0132\030.lh_proto.OutputSc" +
+      "hemaPb\0227\n\020failure_handlers\030\004 \003(\0132\035.lh_pr" +
+      "oto.FailureHandlerDefPb\0220\n\nentrypoint\030\005 " +
+      "\001(\0132\032.lh_proto.EntrypointNodePbH\000\022$\n\004exi" +
+      "t\030\006 \001(\0132\024.lh_proto.ExitNodePbH\000\022$\n\004task\030" +
+      "\007 \001(\0132\024.lh_proto.TaskNodePbH\000\0227\n\016externa" +
+      "l_event\030\010 \001(\0132\035.lh_proto.ExternalEventNo" +
+      "dePbH\000\0223\n\014start_thread\030\t \001(\0132\033.lh_proto." +
+      "StartThreadNodePbH\000\0228\n\017wait_for_thread\030\n" +
+      " \001(\0132\035.lh_proto.WaitForThreadNodePbH\000\022\"\n" +
+      "\003nop\030\013 \001(\0132\023.lh_proto.NopNodePbH\000\022&\n\005sle" +
+      "ep\030\014 \001(\0132\025.lh_proto.SleepNodePbH\000B\006\n\004nod" +
+      "e\"\276\001\n\021StartThreadNodePb\022\030\n\020thread_spec_n" +
+      "ame\030\001 \001(\t\022=\n\tvariables\030\002 \003(\0132*.lh_proto." +
+      "StartThreadNodePb.VariablesEntry\032P\n\016Vari" +
+      "ablesEntry\022\013\n\003key\030\001 \001(\t\022-\n\005value\030\002 \001(\0132\036" +
+      ".lh_proto.VariableAssignmentPb:\0028\001\"d\n\023Fa" +
+      "ilureHandlerDefPb\022\035\n\020specific_failure\030\001 " +
+      "\001(\tH\000\210\001\001\022\031\n\021handler_spec_name\030\002 \001(\tB\023\n\021_" +
+      "specific_failure\"\211\001\n\023WaitForThreadNodePb" +
+      "\0229\n\021thread_run_number\030\001 \001(\0132\036.lh_proto.V" +
+      "ariableAssignmentPb\0227\n\017timeout_seconds\030\002" +
+      " \001(\0132\036.lh_proto.VariableAssignmentPb\"\367\001\n" +
+      "\nTaskNodePb\022\025\n\rtask_def_name\030\001 \001(\t\0227\n\017ti" +
+      "meout_seconds\030\002 \001(\0132\036.lh_proto.VariableA" +
+      "ssignmentPb\022\017\n\007retries\030\003 \001(\005\0226\n\tvariable" +
+      "s\030\004 \003(\0132#.lh_proto.TaskNodePb.VariablesE" +
+      "ntry\032P\n\016VariablesEntry\022\013\n\003key\030\001 \001(\t\022-\n\005v" +
+      "alue\030\002 \001(\0132\036.lh_proto.VariableAssignment" +
+      "Pb:\0028\001\"6\n\023ExternalEventNodePb\022\037\n\027externa" +
+      "l_event_def_name\030\001 \001(\t\"\022\n\020EntrypointNode" +
+      "Pb\"N\n\nExitNodePb\0220\n\013failure_def\030\001 \001(\0132\026." +
+      "lh_proto.FailureDefPbH\000\210\001\001B\016\n\014_failure_d" +
+      "ef\"\251\001\n\014FailureDefPb\022\024\n\014failure_name\030\001 \001(" +
+      "\t\0220\n\014failure_code\030\002 \001(\0162\032.lh_proto.TaskR" +
+      "esultCodePb\022\017\n\007message\030\003 \001(\t\0224\n\007content\030" +
+      "\004 \001(\0132\036.lh_proto.VariableAssignmentPbH\000\210" +
+      "\001\001B\n\n\010_content\"\216\001\n\rVariableDefPb\022&\n\004type" +
+      "\030\001 \001(\0162\030.lh_proto.VariableTypePb\0223\n\013defa" +
+      "ult_val\030\002 \001(\0132\031.lh_proto.VariableValuePb" +
+      "H\000\210\001\001\022\020\n\010required\030\003 \001(\010B\016\n\014_default_val\"" +
+      "L\n\016InterruptDefPb\022\037\n\027external_event_def_" +
+      "name\030\001 \001(\t\022\031\n\021handler_spec_name\030\002 \001(\t\"\301\002" +
+      "\n\014ThreadSpecPb\0220\n\005nodes\030\001 \003(\0132!.lh_proto" +
+      ".ThreadSpecPb.NodesEntry\022?\n\rvariable_def" +
+      "s\030\002 \003(\0132(.lh_proto.ThreadSpecPb.Variable" +
+      "DefsEntry\0220\n\016interrupt_defs\030\003 \003(\0132\030.lh_p" +
+      "roto.InterruptDefPb\032>\n\nNodesEntry\022\013\n\003key" +
+      "\030\001 \001(\t\022\037\n\005value\030\002 \001(\0132\020.lh_proto.NodePb:" +
+      "\0028\001\032L\n\021VariableDefsEntry\022\013\n\003key\030\001 \001(\t\022&\n" +
+      "\005value\030\002 \001(\0132\027.lh_proto.VariableDefPb:\0028" +
+      "\001\"\246\002\n\010WfSpecPb\022\014\n\004name\030\001 \001(\t\022\017\n\007version\030" +
+      "\002 \001(\005\022.\n\ncreated_at\030\003 \001(\0132\032.google.proto" +
+      "buf.Timestamp\022$\n\006status\030\004 \001(\0162\024.lh_proto" +
+      ".LHStatusPb\0229\n\014thread_specs\030\005 \003(\0132#.lh_p" +
+      "roto.WfSpecPb.ThreadSpecsEntry\022\036\n\026entryp" +
+      "oint_thread_name\030\006 \001(\t\032J\n\020ThreadSpecsEnt" +
+      "ry\022\013\n\003key\030\001 \001(\t\022%\n\005value\030\002 \001(\0132\026.lh_prot" +
+      "o.ThreadSpecPb:\0028\001\"?\n\016OutputSchemaPb\022-\n\013" +
+      "output_type\030\001 \001(\0162\030.lh_proto.VariableTyp" +
+      "ePb\"\310\003\n\tTaskDefPb\022\014\n\004name\030\001 \001(\t\022\017\n\007versi" +
+      "on\030\002 \001(\005\022.\n\ncreated_at\030\003 \001(\0132\032.google.pr" +
+      "otobuf.Timestamp\0226\n\ninput_vars\030\004 \003(\0132\".l" +
+      "h_proto.TaskDefPb.InputVarsEntry\0224\n\routp" +
+      "ut_schema\030\005 \001(\0132\030.lh_proto.OutputSchemaP" +
+      "bH\001\210\001\001\022<\n\005kafka\030\006 \001(\0132+.lh_proto.TaskDef" +
+      "Pb.KafkaTaskQueueDetailsPbH\000\022\r\n\003rpc\030\007 \001(" +
+      "\010H\000\032C\n\027KafkaTaskQueueDetailsPb\022\r\n\005topic\030" +
+      "\001 \001(\t\022\031\n\021consumer_group_id\030\002 \001(\t\032I\n\016Inpu" +
+      "tVarsEntry\022\013\n\003key\030\001 \001(\t\022&\n\005value\030\002 \001(\0132\027" +
+      ".lh_proto.VariableDefPb:\0028\001B\017\n\rqueue_det" +
+      "ailsB\020\n\016_output_schema\"c\n\022ExternalEventD" +
+      "efPb\022\014\n\004name\030\001 \001(\t\022\017\n\007version\030\002 \001(\005\022.\n\nc" +
+      "reated_at\030\003 \001(\0132\032.google.protobuf.Timest" +
+      "amp*\206\001\n\014ComparatorPb\022\r\n\tLESS_THAN\020\000\022\020\n\014G" +
+      "REATER_THAN\020\001\022\020\n\014LESS_THAN_EQ\020\002\022\023\n\017GREAT" +
+      "ER_THAN_EQ\020\003\022\n\n\006EQUALS\020\004\022\016\n\nNOT_EQUALS\020\005" +
+      "\022\006\n\002IN\020\006\022\n\n\006NOT_IN\020\007*\232\001\n\026VariableMutatio" +
+      "nTypePb\022\n\n\006ASSIGN\020\000\022\007\n\003ADD\020\001\022\n\n\006EXTEND\020\002" +
+      "\022\014\n\010SUBTRACT\020\003\022\014\n\010MULTIPLY\020\004\022\n\n\006DIVIDE\020\005" +
+      "\022\025\n\021REMOVE_IF_PRESENT\020\006\022\020\n\014REMOVE_INDEX\020" +
+      "\007\022\016\n\nREMOVE_KEY\020\010B(\n\033io.littlehorse.comm" +
+      "on.protoP\001Z\007.;modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -321,14 +332,20 @@ public final class WfSpec {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_NopNodePb_descriptor,
         new java.lang.String[] { });
-    internal_static_lh_proto_NodePb_descriptor =
+    internal_static_lh_proto_SleepNodePb_descriptor =
       getDescriptor().getMessageTypes().get(5);
+    internal_static_lh_proto_SleepNodePb_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_lh_proto_SleepNodePb_descriptor,
+        new java.lang.String[] { "RawSeconds", "Timestamp", "IsoDate", "SleepLength", });
+    internal_static_lh_proto_NodePb_descriptor =
+      getDescriptor().getMessageTypes().get(6);
     internal_static_lh_proto_NodePb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_NodePb_descriptor,
-        new java.lang.String[] { "OutgoingEdges", "VariableMutations", "OutputSchema", "Entrypoint", "Exit", "Task", "ExternalEvent", "StartThread", "WaitForThread", "Nop", "FailureHandlers", "Node", });
+        new java.lang.String[] { "OutgoingEdges", "VariableMutations", "OutputSchema", "FailureHandlers", "Entrypoint", "Exit", "Task", "ExternalEvent", "StartThread", "WaitForThread", "Nop", "Sleep", "Node", });
     internal_static_lh_proto_StartThreadNodePb_descriptor =
-      getDescriptor().getMessageTypes().get(6);
+      getDescriptor().getMessageTypes().get(7);
     internal_static_lh_proto_StartThreadNodePb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_StartThreadNodePb_descriptor,
@@ -340,19 +357,19 @@ public final class WfSpec {
         internal_static_lh_proto_StartThreadNodePb_VariablesEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_lh_proto_FailureHandlerDefPb_descriptor =
-      getDescriptor().getMessageTypes().get(7);
+      getDescriptor().getMessageTypes().get(8);
     internal_static_lh_proto_FailureHandlerDefPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_FailureHandlerDefPb_descriptor,
         new java.lang.String[] { "SpecificFailure", "HandlerSpecName", "SpecificFailure", });
     internal_static_lh_proto_WaitForThreadNodePb_descriptor =
-      getDescriptor().getMessageTypes().get(8);
+      getDescriptor().getMessageTypes().get(9);
     internal_static_lh_proto_WaitForThreadNodePb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_WaitForThreadNodePb_descriptor,
         new java.lang.String[] { "ThreadRunNumber", "TimeoutSeconds", });
     internal_static_lh_proto_TaskNodePb_descriptor =
-      getDescriptor().getMessageTypes().get(9);
+      getDescriptor().getMessageTypes().get(10);
     internal_static_lh_proto_TaskNodePb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_TaskNodePb_descriptor,
@@ -364,43 +381,43 @@ public final class WfSpec {
         internal_static_lh_proto_TaskNodePb_VariablesEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_lh_proto_ExternalEventNodePb_descriptor =
-      getDescriptor().getMessageTypes().get(10);
+      getDescriptor().getMessageTypes().get(11);
     internal_static_lh_proto_ExternalEventNodePb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_ExternalEventNodePb_descriptor,
         new java.lang.String[] { "ExternalEventDefName", });
     internal_static_lh_proto_EntrypointNodePb_descriptor =
-      getDescriptor().getMessageTypes().get(11);
+      getDescriptor().getMessageTypes().get(12);
     internal_static_lh_proto_EntrypointNodePb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_EntrypointNodePb_descriptor,
         new java.lang.String[] { });
     internal_static_lh_proto_ExitNodePb_descriptor =
-      getDescriptor().getMessageTypes().get(12);
+      getDescriptor().getMessageTypes().get(13);
     internal_static_lh_proto_ExitNodePb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_ExitNodePb_descriptor,
         new java.lang.String[] { "FailureDef", "FailureDef", });
     internal_static_lh_proto_FailureDefPb_descriptor =
-      getDescriptor().getMessageTypes().get(13);
+      getDescriptor().getMessageTypes().get(14);
     internal_static_lh_proto_FailureDefPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_FailureDefPb_descriptor,
         new java.lang.String[] { "FailureName", "FailureCode", "Message", "Content", "Content", });
     internal_static_lh_proto_VariableDefPb_descriptor =
-      getDescriptor().getMessageTypes().get(14);
+      getDescriptor().getMessageTypes().get(15);
     internal_static_lh_proto_VariableDefPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_VariableDefPb_descriptor,
         new java.lang.String[] { "Type", "DefaultVal", "Required", "DefaultVal", });
     internal_static_lh_proto_InterruptDefPb_descriptor =
-      getDescriptor().getMessageTypes().get(15);
+      getDescriptor().getMessageTypes().get(16);
     internal_static_lh_proto_InterruptDefPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_InterruptDefPb_descriptor,
         new java.lang.String[] { "ExternalEventDefName", "HandlerSpecName", });
     internal_static_lh_proto_ThreadSpecPb_descriptor =
-      getDescriptor().getMessageTypes().get(16);
+      getDescriptor().getMessageTypes().get(17);
     internal_static_lh_proto_ThreadSpecPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_ThreadSpecPb_descriptor,
@@ -418,7 +435,7 @@ public final class WfSpec {
         internal_static_lh_proto_ThreadSpecPb_VariableDefsEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_lh_proto_WfSpecPb_descriptor =
-      getDescriptor().getMessageTypes().get(17);
+      getDescriptor().getMessageTypes().get(18);
     internal_static_lh_proto_WfSpecPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_WfSpecPb_descriptor,
@@ -430,13 +447,13 @@ public final class WfSpec {
         internal_static_lh_proto_WfSpecPb_ThreadSpecsEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_lh_proto_OutputSchemaPb_descriptor =
-      getDescriptor().getMessageTypes().get(18);
+      getDescriptor().getMessageTypes().get(19);
     internal_static_lh_proto_OutputSchemaPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_OutputSchemaPb_descriptor,
         new java.lang.String[] { "OutputType", });
     internal_static_lh_proto_TaskDefPb_descriptor =
-      getDescriptor().getMessageTypes().get(19);
+      getDescriptor().getMessageTypes().get(20);
     internal_static_lh_proto_TaskDefPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_TaskDefPb_descriptor,
@@ -454,7 +471,7 @@ public final class WfSpec {
         internal_static_lh_proto_TaskDefPb_InputVarsEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_lh_proto_ExternalEventDefPb_descriptor =
-      getDescriptor().getMessageTypes().get(20);
+      getDescriptor().getMessageTypes().get(21);
     internal_static_lh_proto_ExternalEventDefPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_ExternalEventDefPb_descriptor,

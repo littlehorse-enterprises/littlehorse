@@ -142,16 +142,18 @@ message NodeRunPb {
     optional TaskResultCodePb result_code = 12;
     optional string error_message = 13;
 
+    repeated FailurePb failures = 14;
+
     oneof node_type {
-        TaskRunPb task = 14;
-        ExternalEventRunPb external_event = 15;
-        EntrypointRunPb entrypoint = 16;
-        ExitRunPb exit = 17;
-        StartThreadRunPb start_thread = 18;
-        WaitThreadRunPb wait_thread = 19;
+        TaskRunPb task = 15;
+        ExternalEventRunPb external_event = 16;
+        EntrypointRunPb entrypoint = 17;
+        ExitRunPb exit = 19;
+        StartThreadRunPb start_thread = 20;
+        WaitThreadRunPb wait_thread = 21;
+        SleepNodeRunPb sleep = 22;
     }
 
-    repeated FailurePb failures = 20;
 }
 
 message FailurePb {
@@ -193,12 +195,6 @@ message ExternalEventRunPb {
     optional string external_event_id = 3;    
 }
 
-message NodeRunStatePb {
-    string node_name = 1;
-    int32 attempt_number = 2;
-    int32 position = 3;
-    int32 number = 4;
-    LHStatusPb status = 5;
-    optional TaskResultCodePb result_code = 6;
-    optional string error_message = 7;
+message SleepNodeRunPb {
+    google.protobuf.Timestamp maturation_time = 1;
 }

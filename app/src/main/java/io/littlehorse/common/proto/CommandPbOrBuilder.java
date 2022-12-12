@@ -174,5 +174,20 @@ public interface CommandPbOrBuilder extends
    */
   io.littlehorse.common.proto.ResumeWfRunPbOrBuilder getResumeWfRunOrBuilder();
 
+  /**
+   * <code>.lh_proto.SleepNodeMaturedPb sleep_node_matured = 13;</code>
+   * @return Whether the sleepNodeMatured field is set.
+   */
+  boolean hasSleepNodeMatured();
+  /**
+   * <code>.lh_proto.SleepNodeMaturedPb sleep_node_matured = 13;</code>
+   * @return The sleepNodeMatured.
+   */
+  io.littlehorse.common.proto.SleepNodeMaturedPb getSleepNodeMatured();
+  /**
+   * <code>.lh_proto.SleepNodeMaturedPb sleep_node_matured = 13;</code>
+   */
+  io.littlehorse.common.proto.SleepNodeMaturedPbOrBuilder getSleepNodeMaturedOrBuilder();
+
   public io.littlehorse.common.proto.CommandPb.CommandCase getCommandCase();
 }

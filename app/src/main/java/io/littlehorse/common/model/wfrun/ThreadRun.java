@@ -5,6 +5,7 @@ import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.command.subcommand.SleepNodeMatured;
 import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
 import io.littlehorse.common.model.meta.Edge;
@@ -228,6 +229,17 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             return;
         }
         nr.taskRun.processTaskResult(e);
+    }
+
+    public void processSleepNodeMatured(SleepNodeMatured e) {
+        NodeRun nr = getNodeRun(e.nodeRunPosition);
+        if (nr.type != NodeTypeCase.SLEEP) {
+            LHUtil.log("Tried to mature on non-sleep node");
+            // TODO: how do we wanna handle exceptions?
+            return;
+        }
+
+        nr.sleepNodeRun.processSleepNodeMatured(e);
     }
 
     public void acknowledgeInterruptStarted(

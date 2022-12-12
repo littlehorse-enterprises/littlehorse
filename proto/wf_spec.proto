@@ -70,10 +70,19 @@ message VariableMutationPb {
 
 message NopNodePb {}
 
+message SleepNodePb {
+    oneof sleep_length {
+        VariableAssignmentPb raw_seconds = 1;
+        VariableAssignmentPb timestamp = 2;
+        VariableAssignmentPb iso_date = 3;
+    }
+}
+
 message NodePb {
     repeated EdgePb outgoing_edges = 1;
     repeated VariableMutationPb variable_mutations = 2;
     OutputSchemaPb output_schema = 3;
+    repeated FailureHandlerDefPb failure_handlers = 4;
     oneof node {
         EntrypointNodePb entrypoint = 5;
         ExitNodePb exit = 6;
@@ -82,8 +91,8 @@ message NodePb {
         StartThreadNodePb start_thread = 9;
         WaitForThreadNodePb wait_for_thread = 10;
         NopNodePb nop = 11;
+        SleepNodePb sleep = 12;
     }
-    repeated FailureHandlerDefPb failure_handlers = 12;
 }
 
 message StartThreadNodePb {

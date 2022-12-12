@@ -71,6 +71,30 @@ public interface NodePbOrBuilder extends
   io.littlehorse.common.proto.OutputSchemaPbOrBuilder getOutputSchemaOrBuilder();
 
   /**
+   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 4;</code>
+   */
+  java.util.List<io.littlehorse.common.proto.FailureHandlerDefPb> 
+      getFailureHandlersList();
+  /**
+   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 4;</code>
+   */
+  io.littlehorse.common.proto.FailureHandlerDefPb getFailureHandlers(int index);
+  /**
+   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 4;</code>
+   */
+  int getFailureHandlersCount();
+  /**
+   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 4;</code>
+   */
+  java.util.List<? extends io.littlehorse.common.proto.FailureHandlerDefPbOrBuilder> 
+      getFailureHandlersOrBuilderList();
+  /**
+   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 4;</code>
+   */
+  io.littlehorse.common.proto.FailureHandlerDefPbOrBuilder getFailureHandlersOrBuilder(
+      int index);
+
+  /**
    * <code>.lh_proto.EntrypointNodePb entrypoint = 5;</code>
    * @return Whether the entrypoint field is set.
    */
@@ -176,28 +200,19 @@ public interface NodePbOrBuilder extends
   io.littlehorse.common.proto.NopNodePbOrBuilder getNopOrBuilder();
 
   /**
-   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
+   * <code>.lh_proto.SleepNodePb sleep = 12;</code>
+   * @return Whether the sleep field is set.
    */
-  java.util.List<io.littlehorse.common.proto.FailureHandlerDefPb> 
-      getFailureHandlersList();
+  boolean hasSleep();
   /**
-   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
+   * <code>.lh_proto.SleepNodePb sleep = 12;</code>
+   * @return The sleep.
    */
-  io.littlehorse.common.proto.FailureHandlerDefPb getFailureHandlers(int index);
+  io.littlehorse.common.proto.SleepNodePb getSleep();
   /**
-   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
+   * <code>.lh_proto.SleepNodePb sleep = 12;</code>
    */
-  int getFailureHandlersCount();
-  /**
-   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
-   */
-  java.util.List<? extends io.littlehorse.common.proto.FailureHandlerDefPbOrBuilder> 
-      getFailureHandlersOrBuilderList();
-  /**
-   * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 12;</code>
-   */
-  io.littlehorse.common.proto.FailureHandlerDefPbOrBuilder getFailureHandlersOrBuilder(
-      int index);
+  io.littlehorse.common.proto.SleepNodePbOrBuilder getSleepOrBuilder();
 
   public io.littlehorse.common.proto.NodePb.NodeCase getNodeCase();
 }
