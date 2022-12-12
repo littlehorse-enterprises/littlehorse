@@ -1,0 +1,80 @@
+package io.littlehorse.common.model.command.subcommand;
+
+import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.model.command.SubCommand;
+import io.littlehorse.common.model.command.subcommandresponse.StopWfRunReply;
+import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.proto.LHResponseCodePb;
+import io.littlehorse.common.proto.StopWfRunPb;
+import io.littlehorse.common.proto.StopWfRunPbOrBuilder;
+import io.littlehorse.server.CommandProcessorDao;
+
+public class StopWfRun extends SubCommand<StopWfRunPb> {
+
+    public String wfRunId;
+    public int threadRunNumber;
+
+    public Class<StopWfRunPb> getProtoBaseClass() {
+        return StopWfRunPb.class;
+    }
+
+    public StopWfRunPb.Builder toProto() {
+        StopWfRunPb.Builder out = StopWfRunPb
+            .newBuilder()
+            .setWfRunId(wfRunId)
+            .setThreadRunNumber(threadRunNumber);
+        return out;
+    }
+
+    public void initFrom(MessageOrBuilder proto) {
+        StopWfRunPbOrBuilder p = (StopWfRunPbOrBuilder) proto;
+        wfRunId = p.getWfRunId();
+        threadRunNumber = p.getThreadRunNumber();
+    }
+
+    public String getPartitionKey() {
+        return wfRunId;
+    }
+
+    public StopWfRunReply process(CommandProcessorDao dao, LHConfig config) {
+        StopWfRunReply out = new StopWfRunReply();
+        WfRun wfRun = dao.getWfRun(wfRunId);
+        if (wfRun == null) {
+            out.code = LHResponseCodePb.BAD_REQUEST_ERROR;
+            out.message = "Provided invalid wfRunId";
+            return out;
+        }
+
+        WfSpec wfSpec = dao.getWfSpec(wfRun.wfSpecName, wfRun.wfSpecVersion);
+        if (wfSpec == null) {
+            out.code = LHResponseCodePb.BAD_REQUEST_ERROR;
+            out.message = "Somehow missing wfSpec for wfRun";
+            return out;
+        }
+
+        wfRun.wfSpec = wfSpec;
+        wfRun.cmdDao = dao;
+        try {
+            wfRun.processStopRequest(this);
+            out.code = LHResponseCodePb.OK;
+        } catch (LHValidationError exn) {
+            out.code = LHResponseCodePb.BAD_REQUEST_ERROR;
+            out.message = exn.getMessage();
+        }
+
+        return out;
+    }
+
+    public boolean hasResponse() {
+        return true;
+    }
+
+    public static StopWfRun fromProto(StopWfRunPbOrBuilder p) {
+        StopWfRun out = new StopWfRun();
+        out.initFrom(p);
+        return out;
+    }
+}

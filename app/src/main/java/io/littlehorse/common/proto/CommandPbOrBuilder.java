@@ -144,5 +144,35 @@ public interface CommandPbOrBuilder extends
    */
   io.littlehorse.common.proto.PutExternalEventPbOrBuilder getPutExternalEventOrBuilder();
 
+  /**
+   * <code>.lh_proto.StopWfRunPb stop_wf_run = 11;</code>
+   * @return Whether the stopWfRun field is set.
+   */
+  boolean hasStopWfRun();
+  /**
+   * <code>.lh_proto.StopWfRunPb stop_wf_run = 11;</code>
+   * @return The stopWfRun.
+   */
+  io.littlehorse.common.proto.StopWfRunPb getStopWfRun();
+  /**
+   * <code>.lh_proto.StopWfRunPb stop_wf_run = 11;</code>
+   */
+  io.littlehorse.common.proto.StopWfRunPbOrBuilder getStopWfRunOrBuilder();
+
+  /**
+   * <code>.lh_proto.ResumeWfRunPb resume_wf_run = 12;</code>
+   * @return Whether the resumeWfRun field is set.
+   */
+  boolean hasResumeWfRun();
+  /**
+   * <code>.lh_proto.ResumeWfRunPb resume_wf_run = 12;</code>
+   * @return The resumeWfRun.
+   */
+  io.littlehorse.common.proto.ResumeWfRunPb getResumeWfRun();
+  /**
+   * <code>.lh_proto.ResumeWfRunPb resume_wf_run = 12;</code>
+   */
+  io.littlehorse.common.proto.ResumeWfRunPbOrBuilder getResumeWfRunOrBuilder();
+
   public io.littlehorse.common.proto.CommandPb.CommandCase getCommandCase();
 }

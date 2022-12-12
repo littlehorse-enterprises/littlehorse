@@ -5,6 +5,7 @@ import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.wfrun.haltreason.HandlingFailureHaltReason;
 import io.littlehorse.common.model.wfrun.haltreason.Interrupted;
+import io.littlehorse.common.model.wfrun.haltreason.ManualHalt;
 import io.littlehorse.common.model.wfrun.haltreason.ParentHalted;
 import io.littlehorse.common.model.wfrun.haltreason.PendingFailureHandlerHaltReason;
 import io.littlehorse.common.model.wfrun.haltreason.PendingInterruptHaltReason;
@@ -20,6 +21,7 @@ public class ThreadHaltReason extends LHSerializable<ThreadHaltReasonPb> {
     public PendingInterruptHaltReason pendingInterrupt;
     public HandlingFailureHaltReason handlingFailure;
     public PendingFailureHandlerHaltReason pendingFailure;
+    public ManualHalt manualHalt;
 
     public ReasonCase type;
 
@@ -45,6 +47,8 @@ public class ThreadHaltReason extends LHSerializable<ThreadHaltReasonPb> {
                 return pendingFailure;
             case HANDLING_FAILURE:
                 return handlingFailure;
+            case MANUAL_HALT:
+                return manualHalt;
             case REASON_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -74,6 +78,9 @@ public class ThreadHaltReason extends LHSerializable<ThreadHaltReasonPb> {
                 break;
             case HANDLING_FAILURE:
                 out.setHandlingFailure(handlingFailure.toProto());
+                break;
+            case MANUAL_HALT:
+                out.setManualHalt(manualHalt.toProto());
                 break;
             case REASON_NOT_SET:
                 throw new RuntimeException("not possible");
@@ -110,6 +117,9 @@ public class ThreadHaltReason extends LHSerializable<ThreadHaltReasonPb> {
                     PendingFailureHandlerHaltReason.fromProto(
                         p.getPendingFailureOrBuilder()
                     );
+                break;
+            case MANUAL_HALT:
+                manualHalt = ManualHalt.fromProto(p.getManualHaltOrBuilder());
                 break;
             case REASON_NOT_SET:
                 throw new RuntimeException("not possible");

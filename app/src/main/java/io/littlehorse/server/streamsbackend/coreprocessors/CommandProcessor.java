@@ -37,7 +37,7 @@ public class CommandProcessor
             Command command = commandRecord.value();
             dao.setCommand(command);
             LHSerializable<?> response = command.process(dao, config);
-            if (command.hasResponse()) {
+            if (command.hasResponse() && command.commandId != null) {
                 dao.saveResponse(response, command);
             }
             dao.commitChanges();

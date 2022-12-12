@@ -50,25 +50,25 @@ public class TaskResultEvent extends SubCommand<TaskResultEventPb> {
     public ReportTaskReply process(CommandProcessorDao dao, LHConfig config) {
         // First, get the WfRun
         WfRun wfRun = dao.getWfRun(wfRunId);
+        ReportTaskReply out = new ReportTaskReply();
+
         if (wfRun == null) {
-            LHUtil.log("WARN: Got taskResult for non-existent wfRun", wfRunId);
-            return null;
+            out.code = LHResponseCodePb.BAD_REQUEST_ERROR;
+            out.message = "Provided invalid wfRunId";
+            return out;
         }
 
         WfSpec wfSpec = dao.getWfSpec(wfRun.wfSpecName, wfRun.wfSpecVersion);
         if (wfSpec == null) {
-            LHUtil.log(
-                "WARN: Got WfRun with missing WfSpec, should be impossible: ",
-                wfRunId
-            );
-            return null;
+            out.code = LHResponseCodePb.BAD_REQUEST_ERROR;
+            out.message = "Somehow missing wfSpec for wfRun";
+            return out;
         }
 
         wfRun.wfSpec = wfSpec;
         wfRun.cmdDao = dao;
         wfRun.processTaskResult(this);
 
-        ReportTaskReply out = new ReportTaskReply();
         out.code = LHResponseCodePb.OK;
         return out;
     }

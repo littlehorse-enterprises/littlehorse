@@ -118,6 +118,20 @@ private static final long serialVersionUID = 0L;
             reasonCase_ = 5;
             break;
           }
+          case 50: {
+            io.littlehorse.common.proto.ManualHaltPb.Builder subBuilder = null;
+            if (reasonCase_ == 6) {
+              subBuilder = ((io.littlehorse.common.proto.ManualHaltPb) reason_).toBuilder();
+            }
+            reason_ =
+                input.readMessage(io.littlehorse.common.proto.ManualHaltPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.common.proto.ManualHaltPb) reason_);
+              reason_ = subBuilder.buildPartial();
+            }
+            reasonCase_ = 6;
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -160,6 +174,7 @@ private static final long serialVersionUID = 0L;
     PENDING_INTERRUPT(3),
     PENDING_FAILURE(4),
     HANDLING_FAILURE(5),
+    MANUAL_HALT(6),
     REASON_NOT_SET(0);
     private final int value;
     private ReasonCase(int value) {
@@ -182,6 +197,7 @@ private static final long serialVersionUID = 0L;
         case 3: return PENDING_INTERRUPT;
         case 4: return PENDING_FAILURE;
         case 5: return HANDLING_FAILURE;
+        case 6: return MANUAL_HALT;
         case 0: return REASON_NOT_SET;
         default: return null;
       }
@@ -352,6 +368,37 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.HandlingFailureHaltReasonPb.getDefaultInstance();
   }
 
+  public static final int MANUAL_HALT_FIELD_NUMBER = 6;
+  /**
+   * <code>.lh_proto.ManualHaltPb manual_halt = 6;</code>
+   * @return Whether the manualHalt field is set.
+   */
+  @java.lang.Override
+  public boolean hasManualHalt() {
+    return reasonCase_ == 6;
+  }
+  /**
+   * <code>.lh_proto.ManualHaltPb manual_halt = 6;</code>
+   * @return The manualHalt.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.ManualHaltPb getManualHalt() {
+    if (reasonCase_ == 6) {
+       return (io.littlehorse.common.proto.ManualHaltPb) reason_;
+    }
+    return io.littlehorse.common.proto.ManualHaltPb.getDefaultInstance();
+  }
+  /**
+   * <code>.lh_proto.ManualHaltPb manual_halt = 6;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.ManualHaltPbOrBuilder getManualHaltOrBuilder() {
+    if (reasonCase_ == 6) {
+       return (io.littlehorse.common.proto.ManualHaltPb) reason_;
+    }
+    return io.littlehorse.common.proto.ManualHaltPb.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -381,6 +428,9 @@ private static final long serialVersionUID = 0L;
     if (reasonCase_ == 5) {
       output.writeMessage(5, (io.littlehorse.common.proto.HandlingFailureHaltReasonPb) reason_);
     }
+    if (reasonCase_ == 6) {
+      output.writeMessage(6, (io.littlehorse.common.proto.ManualHaltPb) reason_);
+    }
     unknownFields.writeTo(output);
   }
 
@@ -409,6 +459,10 @@ private static final long serialVersionUID = 0L;
     if (reasonCase_ == 5) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(5, (io.littlehorse.common.proto.HandlingFailureHaltReasonPb) reason_);
+    }
+    if (reasonCase_ == 6) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(6, (io.littlehorse.common.proto.ManualHaltPb) reason_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -447,6 +501,10 @@ private static final long serialVersionUID = 0L;
         if (!getHandlingFailure()
             .equals(other.getHandlingFailure())) return false;
         break;
+      case 6:
+        if (!getManualHalt()
+            .equals(other.getManualHalt())) return false;
+        break;
       case 0:
       default:
     }
@@ -481,6 +539,10 @@ private static final long serialVersionUID = 0L;
       case 5:
         hash = (37 * hash) + HANDLING_FAILURE_FIELD_NUMBER;
         hash = (53 * hash) + getHandlingFailure().hashCode();
+        break;
+      case 6:
+        hash = (37 * hash) + MANUAL_HALT_FIELD_NUMBER;
+        hash = (53 * hash) + getManualHalt().hashCode();
         break;
       case 0:
       default:
@@ -681,6 +743,13 @@ private static final long serialVersionUID = 0L;
           result.reason_ = handlingFailureBuilder_.build();
         }
       }
+      if (reasonCase_ == 6) {
+        if (manualHaltBuilder_ == null) {
+          result.reason_ = reason_;
+        } else {
+          result.reason_ = manualHaltBuilder_.build();
+        }
+      }
       result.reasonCase_ = reasonCase_;
       onBuilt();
       return result;
@@ -749,6 +818,10 @@ private static final long serialVersionUID = 0L;
         }
         case HANDLING_FAILURE: {
           mergeHandlingFailure(other.getHandlingFailure());
+          break;
+        }
+        case MANUAL_HALT: {
+          mergeManualHalt(other.getManualHalt());
           break;
         }
         case REASON_NOT_SET: {
@@ -1502,6 +1575,147 @@ private static final long serialVersionUID = 0L;
       reasonCase_ = 5;
       onChanged();;
       return handlingFailureBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.ManualHaltPb, io.littlehorse.common.proto.ManualHaltPb.Builder, io.littlehorse.common.proto.ManualHaltPbOrBuilder> manualHaltBuilder_;
+    /**
+     * <code>.lh_proto.ManualHaltPb manual_halt = 6;</code>
+     * @return Whether the manualHalt field is set.
+     */
+    @java.lang.Override
+    public boolean hasManualHalt() {
+      return reasonCase_ == 6;
+    }
+    /**
+     * <code>.lh_proto.ManualHaltPb manual_halt = 6;</code>
+     * @return The manualHalt.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.ManualHaltPb getManualHalt() {
+      if (manualHaltBuilder_ == null) {
+        if (reasonCase_ == 6) {
+          return (io.littlehorse.common.proto.ManualHaltPb) reason_;
+        }
+        return io.littlehorse.common.proto.ManualHaltPb.getDefaultInstance();
+      } else {
+        if (reasonCase_ == 6) {
+          return manualHaltBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.ManualHaltPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.ManualHaltPb manual_halt = 6;</code>
+     */
+    public Builder setManualHalt(io.littlehorse.common.proto.ManualHaltPb value) {
+      if (manualHaltBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        reason_ = value;
+        onChanged();
+      } else {
+        manualHaltBuilder_.setMessage(value);
+      }
+      reasonCase_ = 6;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.ManualHaltPb manual_halt = 6;</code>
+     */
+    public Builder setManualHalt(
+        io.littlehorse.common.proto.ManualHaltPb.Builder builderForValue) {
+      if (manualHaltBuilder_ == null) {
+        reason_ = builderForValue.build();
+        onChanged();
+      } else {
+        manualHaltBuilder_.setMessage(builderForValue.build());
+      }
+      reasonCase_ = 6;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.ManualHaltPb manual_halt = 6;</code>
+     */
+    public Builder mergeManualHalt(io.littlehorse.common.proto.ManualHaltPb value) {
+      if (manualHaltBuilder_ == null) {
+        if (reasonCase_ == 6 &&
+            reason_ != io.littlehorse.common.proto.ManualHaltPb.getDefaultInstance()) {
+          reason_ = io.littlehorse.common.proto.ManualHaltPb.newBuilder((io.littlehorse.common.proto.ManualHaltPb) reason_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          reason_ = value;
+        }
+        onChanged();
+      } else {
+        if (reasonCase_ == 6) {
+          manualHaltBuilder_.mergeFrom(value);
+        }
+        manualHaltBuilder_.setMessage(value);
+      }
+      reasonCase_ = 6;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.ManualHaltPb manual_halt = 6;</code>
+     */
+    public Builder clearManualHalt() {
+      if (manualHaltBuilder_ == null) {
+        if (reasonCase_ == 6) {
+          reasonCase_ = 0;
+          reason_ = null;
+          onChanged();
+        }
+      } else {
+        if (reasonCase_ == 6) {
+          reasonCase_ = 0;
+          reason_ = null;
+        }
+        manualHaltBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.lh_proto.ManualHaltPb manual_halt = 6;</code>
+     */
+    public io.littlehorse.common.proto.ManualHaltPb.Builder getManualHaltBuilder() {
+      return getManualHaltFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.ManualHaltPb manual_halt = 6;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.ManualHaltPbOrBuilder getManualHaltOrBuilder() {
+      if ((reasonCase_ == 6) && (manualHaltBuilder_ != null)) {
+        return manualHaltBuilder_.getMessageOrBuilder();
+      } else {
+        if (reasonCase_ == 6) {
+          return (io.littlehorse.common.proto.ManualHaltPb) reason_;
+        }
+        return io.littlehorse.common.proto.ManualHaltPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.ManualHaltPb manual_halt = 6;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.ManualHaltPb, io.littlehorse.common.proto.ManualHaltPb.Builder, io.littlehorse.common.proto.ManualHaltPbOrBuilder> 
+        getManualHaltFieldBuilder() {
+      if (manualHaltBuilder_ == null) {
+        if (!(reasonCase_ == 6)) {
+          reason_ = io.littlehorse.common.proto.ManualHaltPb.getDefaultInstance();
+        }
+        manualHaltBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.ManualHaltPb, io.littlehorse.common.proto.ManualHaltPb.Builder, io.littlehorse.common.proto.ManualHaltPbOrBuilder>(
+                (io.littlehorse.common.proto.ManualHaltPb) reason_,
+                getParentForChildren(),
+                isClean());
+        reason_ = null;
+      }
+      reasonCase_ = 6;
+      onChanged();;
+      return manualHaltBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

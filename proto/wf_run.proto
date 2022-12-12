@@ -108,6 +108,11 @@ message InterruptedPb {
     int32 interrupt_thread_id = 1;
 }
 
+message ManualHaltPb {
+    // Nothing to store.
+    bool meaning_of_life = 137;
+}
+
 message ThreadHaltReasonPb {
     oneof reason {
         ParentHaltedPb parent_halted = 1;
@@ -115,6 +120,7 @@ message ThreadHaltReasonPb {
         PendingInterruptHaltReasonPb pending_interrupt = 3;
         PendingFailureHandlerHaltReasonPb pending_failure = 4;
         HandlingFailureHaltReasonPb handling_failure = 5;
+        ManualHaltPb manual_halt = 6;
     }
 }
 

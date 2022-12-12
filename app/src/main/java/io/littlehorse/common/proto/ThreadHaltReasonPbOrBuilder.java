@@ -82,5 +82,20 @@ public interface ThreadHaltReasonPbOrBuilder extends
    */
   io.littlehorse.common.proto.HandlingFailureHaltReasonPbOrBuilder getHandlingFailureOrBuilder();
 
+  /**
+   * <code>.lh_proto.ManualHaltPb manual_halt = 6;</code>
+   * @return Whether the manualHalt field is set.
+   */
+  boolean hasManualHalt();
+  /**
+   * <code>.lh_proto.ManualHaltPb manual_halt = 6;</code>
+   * @return The manualHalt.
+   */
+  io.littlehorse.common.proto.ManualHaltPb getManualHalt();
+  /**
+   * <code>.lh_proto.ManualHaltPb manual_halt = 6;</code>
+   */
+  io.littlehorse.common.proto.ManualHaltPbOrBuilder getManualHaltOrBuilder();
+
   public io.littlehorse.common.proto.ThreadHaltReasonPb.ReasonCase getReasonCase();
 }

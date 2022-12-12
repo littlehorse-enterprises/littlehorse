@@ -97,6 +97,16 @@ message RunWfPb {
     optional string id = 4;
 }
 
+message StopWfRunPb {
+    string wf_run_id = 1;
+    int32 thread_run_number = 2;
+}
+
+message ResumeWfRunPb {
+    string wf_run_id = 1;
+    int32 thread_run_number = 2;
+}
+
 // This is the schema of everything that flows through the Central Command topic.
 message CommandPb {
     google.protobuf.Timestamp time = 1;
@@ -109,5 +119,7 @@ message CommandPb {
         PutExternalEventDefPb put_external_event_def = 8;
         RunWfPb run_wf = 9;
         PutExternalEventPb put_external_event = 10;
+        StopWfRunPb stop_wf_run = 11;
+        ResumeWfRunPb resume_wf_run = 12;
     }
 }

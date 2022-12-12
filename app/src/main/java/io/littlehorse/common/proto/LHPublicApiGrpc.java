@@ -480,6 +480,68 @@ public final class LHPublicApiGrpc {
     return getReportTaskMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.StopWfRunPb,
+      io.littlehorse.common.proto.StopWfRunReplyPb> getStopWfRunMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "StopWfRun",
+      requestType = io.littlehorse.common.proto.StopWfRunPb.class,
+      responseType = io.littlehorse.common.proto.StopWfRunReplyPb.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.StopWfRunPb,
+      io.littlehorse.common.proto.StopWfRunReplyPb> getStopWfRunMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.common.proto.StopWfRunPb, io.littlehorse.common.proto.StopWfRunReplyPb> getStopWfRunMethod;
+    if ((getStopWfRunMethod = LHPublicApiGrpc.getStopWfRunMethod) == null) {
+      synchronized (LHPublicApiGrpc.class) {
+        if ((getStopWfRunMethod = LHPublicApiGrpc.getStopWfRunMethod) == null) {
+          LHPublicApiGrpc.getStopWfRunMethod = getStopWfRunMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.StopWfRunPb, io.littlehorse.common.proto.StopWfRunReplyPb>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "StopWfRun"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.StopWfRunPb.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.StopWfRunReplyPb.getDefaultInstance()))
+              .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("StopWfRun"))
+              .build();
+        }
+      }
+    }
+    return getStopWfRunMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.ResumeWfRunPb,
+      io.littlehorse.common.proto.ResumeWfRunReplyPb> getResumeWfRunMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "ResumeWfRun",
+      requestType = io.littlehorse.common.proto.ResumeWfRunPb.class,
+      responseType = io.littlehorse.common.proto.ResumeWfRunReplyPb.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.ResumeWfRunPb,
+      io.littlehorse.common.proto.ResumeWfRunReplyPb> getResumeWfRunMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.common.proto.ResumeWfRunPb, io.littlehorse.common.proto.ResumeWfRunReplyPb> getResumeWfRunMethod;
+    if ((getResumeWfRunMethod = LHPublicApiGrpc.getResumeWfRunMethod) == null) {
+      synchronized (LHPublicApiGrpc.class) {
+        if ((getResumeWfRunMethod = LHPublicApiGrpc.getResumeWfRunMethod) == null) {
+          LHPublicApiGrpc.getResumeWfRunMethod = getResumeWfRunMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.ResumeWfRunPb, io.littlehorse.common.proto.ResumeWfRunReplyPb>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ResumeWfRun"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.ResumeWfRunPb.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.ResumeWfRunReplyPb.getDefaultInstance()))
+              .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("ResumeWfRun"))
+              .build();
+        }
+      }
+    }
+    return getResumeWfRunMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -633,6 +695,20 @@ public final class LHPublicApiGrpc {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getReportTaskMethod(), responseObserver);
     }
 
+    /**
+     */
+    public void stopWfRun(io.littlehorse.common.proto.StopWfRunPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.StopWfRunReplyPb> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getStopWfRunMethod(), responseObserver);
+    }
+
+    /**
+     */
+    public void resumeWfRun(io.littlehorse.common.proto.ResumeWfRunPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.ResumeWfRunReplyPb> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getResumeWfRunMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -740,6 +816,20 @@ public final class LHPublicApiGrpc {
                 io.littlehorse.common.proto.TaskResultEventPb,
                 io.littlehorse.common.proto.ReportTaskReplyPb>(
                   this, METHODID_REPORT_TASK)))
+          .addMethod(
+            getStopWfRunMethod(),
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
+              new MethodHandlers<
+                io.littlehorse.common.proto.StopWfRunPb,
+                io.littlehorse.common.proto.StopWfRunReplyPb>(
+                  this, METHODID_STOP_WF_RUN)))
+          .addMethod(
+            getResumeWfRunMethod(),
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
+              new MethodHandlers<
+                io.littlehorse.common.proto.ResumeWfRunPb,
+                io.littlehorse.common.proto.ResumeWfRunReplyPb>(
+                  this, METHODID_RESUME_WF_RUN)))
           .build();
     }
   }
@@ -877,6 +967,22 @@ public final class LHPublicApiGrpc {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getReportTaskMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void stopWfRun(io.littlehorse.common.proto.StopWfRunPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.StopWfRunReplyPb> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getStopWfRunMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void resumeWfRun(io.littlehorse.common.proto.ResumeWfRunPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.ResumeWfRunReplyPb> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getResumeWfRunMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -996,6 +1102,20 @@ public final class LHPublicApiGrpc {
     public io.littlehorse.common.proto.ReportTaskReplyPb reportTask(io.littlehorse.common.proto.TaskResultEventPb request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getReportTaskMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.common.proto.StopWfRunReplyPb stopWfRun(io.littlehorse.common.proto.StopWfRunPb request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getStopWfRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.common.proto.ResumeWfRunReplyPb resumeWfRun(io.littlehorse.common.proto.ResumeWfRunPb request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getResumeWfRunMethod(), getCallOptions(), request);
     }
   }
 
@@ -1132,6 +1252,22 @@ public final class LHPublicApiGrpc {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getReportTaskMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.StopWfRunReplyPb> stopWfRun(
+        io.littlehorse.common.proto.StopWfRunPb request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getStopWfRunMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.ResumeWfRunReplyPb> resumeWfRun(
+        io.littlehorse.common.proto.ResumeWfRunPb request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getResumeWfRunMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_PUT_TASK_DEF = 0;
@@ -1149,6 +1285,8 @@ public final class LHPublicApiGrpc {
   private static final int METHODID_SEARCH_WF_RUN = 12;
   private static final int METHODID_POLL_TASK = 13;
   private static final int METHODID_REPORT_TASK = 14;
+  private static final int METHODID_STOP_WF_RUN = 15;
+  private static final int METHODID_RESUME_WF_RUN = 16;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -1227,6 +1365,14 @@ public final class LHPublicApiGrpc {
           serviceImpl.reportTask((io.littlehorse.common.proto.TaskResultEventPb) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.ReportTaskReplyPb>) responseObserver);
           break;
+        case METHODID_STOP_WF_RUN:
+          serviceImpl.stopWfRun((io.littlehorse.common.proto.StopWfRunPb) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.StopWfRunReplyPb>) responseObserver);
+          break;
+        case METHODID_RESUME_WF_RUN:
+          serviceImpl.resumeWfRun((io.littlehorse.common.proto.ResumeWfRunPb) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.ResumeWfRunReplyPb>) responseObserver);
+          break;
         default:
           throw new AssertionError();
       }
@@ -1303,6 +1449,8 @@ public final class LHPublicApiGrpc {
               .addMethod(getSearchWfRunMethod())
               .addMethod(getPollTaskMethod())
               .addMethod(getReportTaskMethod())
+              .addMethod(getStopWfRunMethod())
+              .addMethod(getResumeWfRunMethod())
               .build();
         }
       }

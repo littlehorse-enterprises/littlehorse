@@ -175,6 +175,16 @@ message ReportTaskReplyPb {
     optional string message = 2;
 }
 
+message StopWfRunReplyPb {
+    LHResponseCodePb code = 1;
+    optional string message = 2;
+}
+
+message ResumeWfRunReplyPb {
+    LHResponseCodePb code = 1;
+    optional string message = 2;
+}
+
 service LHPublicApi {
     rpc PutTaskDef(PutTaskDefPb) returns (PutTaskDefReplyPb) {}
     rpc GetTaskDef(GetTaskDefPb) returns (GetTaskDefReplyPb) {}
@@ -199,6 +209,9 @@ service LHPublicApi {
 
     rpc PollTask(PollTaskPb) returns (PollTaskReplyPb) {}
     rpc ReportTask(TaskResultEventPb) returns (ReportTaskReplyPb) {}
+
+    rpc StopWfRun(StopWfRunPb) returns (StopWfRunReplyPb) {}
+    rpc ResumeWfRun(ResumeWfRunPb) returns (ResumeWfRunReplyPb) {}
 }
 
 

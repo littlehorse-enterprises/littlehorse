@@ -6,15 +6,19 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.command.subcommand.ResumeWfRun;
+import io.littlehorse.common.model.command.subcommand.StopWfRun;
 import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
 import io.littlehorse.common.model.meta.ThreadSpec;
 import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.wfrun.haltreason.ManualHalt;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.PendingFailureHandlerPb;
 import io.littlehorse.common.proto.PendingInterruptPb;
 import io.littlehorse.common.proto.TaskResultCodePb;
+import io.littlehorse.common.proto.ThreadHaltReasonPb.ReasonCase;
 import io.littlehorse.common.proto.ThreadRunPb;
 import io.littlehorse.common.proto.WfRunPb;
 import io.littlehorse.common.proto.WfRunPbOrBuilder;
@@ -374,6 +378,49 @@ public class WfRun extends GETable<WfRunPb> {
             thread.processExternalEvent(event);
         }
         advance(event.getCreatedAt());
+    }
+
+    public void processStopRequest(StopWfRun req) throws LHValidationError {
+        if (req.threadRunNumber >= threadRuns.size() || req.threadRunNumber < 0) {
+            throw new LHValidationError(
+                null,
+                "Tried to stop a non-existent thread id."
+            );
+        }
+
+        ThreadRun thread = threadRuns.get(req.threadRunNumber);
+
+        // need to see if thread already is halted. If so, don't double halt it.
+        for (ThreadHaltReason reason : thread.haltReasons) {
+            if (reason.type == ReasonCase.MANUAL_HALT) {
+                return;
+            }
+        }
+
+        ThreadHaltReason haltReason = new ThreadHaltReason();
+        haltReason.type = ReasonCase.MANUAL_HALT;
+        haltReason.manualHalt = new ManualHalt();
+        thread.halt(haltReason);
+        this.advance(new Date()); // Seems like a good idea, why not?
+    }
+
+    public void processResumeRequest(ResumeWfRun req) throws LHValidationError {
+        if (req.threadRunNumber >= threadRuns.size() || req.threadRunNumber < 0) {
+            throw new LHValidationError(
+                null,
+                "Tried to resume a non-existent thread id."
+            );
+        }
+
+        ThreadRun thread = threadRuns.get(req.threadRunNumber);
+
+        for (int i = thread.haltReasons.size() - 1; i >= 0; i--) {
+            ThreadHaltReason thr = thread.haltReasons.get(i);
+            if (thr.type == ReasonCase.MANUAL_HALT) {
+                thread.haltReasons.remove(i);
+            }
+        }
+        this.advance(new Date());
     }
 
     // As a precondition, the status of the calling thread must already be updated to complete.

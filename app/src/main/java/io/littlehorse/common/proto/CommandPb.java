@@ -171,6 +171,34 @@ private static final long serialVersionUID = 0L;
             commandCase_ = 10;
             break;
           }
+          case 90: {
+            io.littlehorse.common.proto.StopWfRunPb.Builder subBuilder = null;
+            if (commandCase_ == 11) {
+              subBuilder = ((io.littlehorse.common.proto.StopWfRunPb) command_).toBuilder();
+            }
+            command_ =
+                input.readMessage(io.littlehorse.common.proto.StopWfRunPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.common.proto.StopWfRunPb) command_);
+              command_ = subBuilder.buildPartial();
+            }
+            commandCase_ = 11;
+            break;
+          }
+          case 98: {
+            io.littlehorse.common.proto.ResumeWfRunPb.Builder subBuilder = null;
+            if (commandCase_ == 12) {
+              subBuilder = ((io.littlehorse.common.proto.ResumeWfRunPb) command_).toBuilder();
+            }
+            command_ =
+                input.readMessage(io.littlehorse.common.proto.ResumeWfRunPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.common.proto.ResumeWfRunPb) command_);
+              command_ = subBuilder.buildPartial();
+            }
+            commandCase_ = 12;
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -216,6 +244,8 @@ private static final long serialVersionUID = 0L;
     PUT_EXTERNAL_EVENT_DEF(8),
     RUN_WF(9),
     PUT_EXTERNAL_EVENT(10),
+    STOP_WF_RUN(11),
+    RESUME_WF_RUN(12),
     COMMAND_NOT_SET(0);
     private final int value;
     private CommandCase(int value) {
@@ -240,6 +270,8 @@ private static final long serialVersionUID = 0L;
         case 8: return PUT_EXTERNAL_EVENT_DEF;
         case 9: return RUN_WF;
         case 10: return PUT_EXTERNAL_EVENT;
+        case 11: return STOP_WF_RUN;
+        case 12: return RESUME_WF_RUN;
         case 0: return COMMAND_NOT_SET;
         default: return null;
       }
@@ -544,6 +576,68 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.PutExternalEventPb.getDefaultInstance();
   }
 
+  public static final int STOP_WF_RUN_FIELD_NUMBER = 11;
+  /**
+   * <code>.lh_proto.StopWfRunPb stop_wf_run = 11;</code>
+   * @return Whether the stopWfRun field is set.
+   */
+  @java.lang.Override
+  public boolean hasStopWfRun() {
+    return commandCase_ == 11;
+  }
+  /**
+   * <code>.lh_proto.StopWfRunPb stop_wf_run = 11;</code>
+   * @return The stopWfRun.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.StopWfRunPb getStopWfRun() {
+    if (commandCase_ == 11) {
+       return (io.littlehorse.common.proto.StopWfRunPb) command_;
+    }
+    return io.littlehorse.common.proto.StopWfRunPb.getDefaultInstance();
+  }
+  /**
+   * <code>.lh_proto.StopWfRunPb stop_wf_run = 11;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.StopWfRunPbOrBuilder getStopWfRunOrBuilder() {
+    if (commandCase_ == 11) {
+       return (io.littlehorse.common.proto.StopWfRunPb) command_;
+    }
+    return io.littlehorse.common.proto.StopWfRunPb.getDefaultInstance();
+  }
+
+  public static final int RESUME_WF_RUN_FIELD_NUMBER = 12;
+  /**
+   * <code>.lh_proto.ResumeWfRunPb resume_wf_run = 12;</code>
+   * @return Whether the resumeWfRun field is set.
+   */
+  @java.lang.Override
+  public boolean hasResumeWfRun() {
+    return commandCase_ == 12;
+  }
+  /**
+   * <code>.lh_proto.ResumeWfRunPb resume_wf_run = 12;</code>
+   * @return The resumeWfRun.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.ResumeWfRunPb getResumeWfRun() {
+    if (commandCase_ == 12) {
+       return (io.littlehorse.common.proto.ResumeWfRunPb) command_;
+    }
+    return io.littlehorse.common.proto.ResumeWfRunPb.getDefaultInstance();
+  }
+  /**
+   * <code>.lh_proto.ResumeWfRunPb resume_wf_run = 12;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.ResumeWfRunPbOrBuilder getResumeWfRunOrBuilder() {
+    if (commandCase_ == 12) {
+       return (io.littlehorse.common.proto.ResumeWfRunPb) command_;
+    }
+    return io.littlehorse.common.proto.ResumeWfRunPb.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -584,6 +678,12 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 10) {
       output.writeMessage(10, (io.littlehorse.common.proto.PutExternalEventPb) command_);
+    }
+    if (commandCase_ == 11) {
+      output.writeMessage(11, (io.littlehorse.common.proto.StopWfRunPb) command_);
+    }
+    if (commandCase_ == 12) {
+      output.writeMessage(12, (io.littlehorse.common.proto.ResumeWfRunPb) command_);
     }
     unknownFields.writeTo(output);
   }
@@ -628,6 +728,14 @@ private static final long serialVersionUID = 0L;
     if (commandCase_ == 10) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(10, (io.littlehorse.common.proto.PutExternalEventPb) command_);
+    }
+    if (commandCase_ == 11) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(11, (io.littlehorse.common.proto.StopWfRunPb) command_);
+    }
+    if (commandCase_ == 12) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(12, (io.littlehorse.common.proto.ResumeWfRunPb) command_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -684,6 +792,14 @@ private static final long serialVersionUID = 0L;
         if (!getPutExternalEvent()
             .equals(other.getPutExternalEvent())) return false;
         break;
+      case 11:
+        if (!getStopWfRun()
+            .equals(other.getStopWfRun())) return false;
+        break;
+      case 12:
+        if (!getResumeWfRun()
+            .equals(other.getResumeWfRun())) return false;
+        break;
       case 0:
       default:
     }
@@ -734,6 +850,14 @@ private static final long serialVersionUID = 0L;
       case 10:
         hash = (37 * hash) + PUT_EXTERNAL_EVENT_FIELD_NUMBER;
         hash = (53 * hash) + getPutExternalEvent().hashCode();
+        break;
+      case 11:
+        hash = (37 * hash) + STOP_WF_RUN_FIELD_NUMBER;
+        hash = (53 * hash) + getStopWfRun().hashCode();
+        break;
+      case 12:
+        hash = (37 * hash) + RESUME_WF_RUN_FIELD_NUMBER;
+        hash = (53 * hash) + getResumeWfRun().hashCode();
         break;
       case 0:
       default:
@@ -971,6 +1095,20 @@ private static final long serialVersionUID = 0L;
           result.command_ = putExternalEventBuilder_.build();
         }
       }
+      if (commandCase_ == 11) {
+        if (stopWfRunBuilder_ == null) {
+          result.command_ = command_;
+        } else {
+          result.command_ = stopWfRunBuilder_.build();
+        }
+      }
+      if (commandCase_ == 12) {
+        if (resumeWfRunBuilder_ == null) {
+          result.command_ = command_;
+        } else {
+          result.command_ = resumeWfRunBuilder_.build();
+        }
+      }
       result.bitField0_ = to_bitField0_;
       result.commandCase_ = commandCase_;
       onBuilt();
@@ -1056,6 +1194,14 @@ private static final long serialVersionUID = 0L;
         }
         case PUT_EXTERNAL_EVENT: {
           mergePutExternalEvent(other.getPutExternalEvent());
+          break;
+        }
+        case STOP_WF_RUN: {
+          mergeStopWfRun(other.getStopWfRun());
+          break;
+        }
+        case RESUME_WF_RUN: {
+          mergeResumeWfRun(other.getResumeWfRun());
           break;
         }
         case COMMAND_NOT_SET: {
@@ -2294,6 +2440,288 @@ private static final long serialVersionUID = 0L;
       commandCase_ = 10;
       onChanged();;
       return putExternalEventBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.StopWfRunPb, io.littlehorse.common.proto.StopWfRunPb.Builder, io.littlehorse.common.proto.StopWfRunPbOrBuilder> stopWfRunBuilder_;
+    /**
+     * <code>.lh_proto.StopWfRunPb stop_wf_run = 11;</code>
+     * @return Whether the stopWfRun field is set.
+     */
+    @java.lang.Override
+    public boolean hasStopWfRun() {
+      return commandCase_ == 11;
+    }
+    /**
+     * <code>.lh_proto.StopWfRunPb stop_wf_run = 11;</code>
+     * @return The stopWfRun.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.StopWfRunPb getStopWfRun() {
+      if (stopWfRunBuilder_ == null) {
+        if (commandCase_ == 11) {
+          return (io.littlehorse.common.proto.StopWfRunPb) command_;
+        }
+        return io.littlehorse.common.proto.StopWfRunPb.getDefaultInstance();
+      } else {
+        if (commandCase_ == 11) {
+          return stopWfRunBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.StopWfRunPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.StopWfRunPb stop_wf_run = 11;</code>
+     */
+    public Builder setStopWfRun(io.littlehorse.common.proto.StopWfRunPb value) {
+      if (stopWfRunBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+        onChanged();
+      } else {
+        stopWfRunBuilder_.setMessage(value);
+      }
+      commandCase_ = 11;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.StopWfRunPb stop_wf_run = 11;</code>
+     */
+    public Builder setStopWfRun(
+        io.littlehorse.common.proto.StopWfRunPb.Builder builderForValue) {
+      if (stopWfRunBuilder_ == null) {
+        command_ = builderForValue.build();
+        onChanged();
+      } else {
+        stopWfRunBuilder_.setMessage(builderForValue.build());
+      }
+      commandCase_ = 11;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.StopWfRunPb stop_wf_run = 11;</code>
+     */
+    public Builder mergeStopWfRun(io.littlehorse.common.proto.StopWfRunPb value) {
+      if (stopWfRunBuilder_ == null) {
+        if (commandCase_ == 11 &&
+            command_ != io.littlehorse.common.proto.StopWfRunPb.getDefaultInstance()) {
+          command_ = io.littlehorse.common.proto.StopWfRunPb.newBuilder((io.littlehorse.common.proto.StopWfRunPb) command_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          command_ = value;
+        }
+        onChanged();
+      } else {
+        if (commandCase_ == 11) {
+          stopWfRunBuilder_.mergeFrom(value);
+        }
+        stopWfRunBuilder_.setMessage(value);
+      }
+      commandCase_ = 11;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.StopWfRunPb stop_wf_run = 11;</code>
+     */
+    public Builder clearStopWfRun() {
+      if (stopWfRunBuilder_ == null) {
+        if (commandCase_ == 11) {
+          commandCase_ = 0;
+          command_ = null;
+          onChanged();
+        }
+      } else {
+        if (commandCase_ == 11) {
+          commandCase_ = 0;
+          command_ = null;
+        }
+        stopWfRunBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.lh_proto.StopWfRunPb stop_wf_run = 11;</code>
+     */
+    public io.littlehorse.common.proto.StopWfRunPb.Builder getStopWfRunBuilder() {
+      return getStopWfRunFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.StopWfRunPb stop_wf_run = 11;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.StopWfRunPbOrBuilder getStopWfRunOrBuilder() {
+      if ((commandCase_ == 11) && (stopWfRunBuilder_ != null)) {
+        return stopWfRunBuilder_.getMessageOrBuilder();
+      } else {
+        if (commandCase_ == 11) {
+          return (io.littlehorse.common.proto.StopWfRunPb) command_;
+        }
+        return io.littlehorse.common.proto.StopWfRunPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.StopWfRunPb stop_wf_run = 11;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.StopWfRunPb, io.littlehorse.common.proto.StopWfRunPb.Builder, io.littlehorse.common.proto.StopWfRunPbOrBuilder> 
+        getStopWfRunFieldBuilder() {
+      if (stopWfRunBuilder_ == null) {
+        if (!(commandCase_ == 11)) {
+          command_ = io.littlehorse.common.proto.StopWfRunPb.getDefaultInstance();
+        }
+        stopWfRunBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.StopWfRunPb, io.littlehorse.common.proto.StopWfRunPb.Builder, io.littlehorse.common.proto.StopWfRunPbOrBuilder>(
+                (io.littlehorse.common.proto.StopWfRunPb) command_,
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      commandCase_ = 11;
+      onChanged();;
+      return stopWfRunBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.ResumeWfRunPb, io.littlehorse.common.proto.ResumeWfRunPb.Builder, io.littlehorse.common.proto.ResumeWfRunPbOrBuilder> resumeWfRunBuilder_;
+    /**
+     * <code>.lh_proto.ResumeWfRunPb resume_wf_run = 12;</code>
+     * @return Whether the resumeWfRun field is set.
+     */
+    @java.lang.Override
+    public boolean hasResumeWfRun() {
+      return commandCase_ == 12;
+    }
+    /**
+     * <code>.lh_proto.ResumeWfRunPb resume_wf_run = 12;</code>
+     * @return The resumeWfRun.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.ResumeWfRunPb getResumeWfRun() {
+      if (resumeWfRunBuilder_ == null) {
+        if (commandCase_ == 12) {
+          return (io.littlehorse.common.proto.ResumeWfRunPb) command_;
+        }
+        return io.littlehorse.common.proto.ResumeWfRunPb.getDefaultInstance();
+      } else {
+        if (commandCase_ == 12) {
+          return resumeWfRunBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.ResumeWfRunPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.ResumeWfRunPb resume_wf_run = 12;</code>
+     */
+    public Builder setResumeWfRun(io.littlehorse.common.proto.ResumeWfRunPb value) {
+      if (resumeWfRunBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+        onChanged();
+      } else {
+        resumeWfRunBuilder_.setMessage(value);
+      }
+      commandCase_ = 12;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.ResumeWfRunPb resume_wf_run = 12;</code>
+     */
+    public Builder setResumeWfRun(
+        io.littlehorse.common.proto.ResumeWfRunPb.Builder builderForValue) {
+      if (resumeWfRunBuilder_ == null) {
+        command_ = builderForValue.build();
+        onChanged();
+      } else {
+        resumeWfRunBuilder_.setMessage(builderForValue.build());
+      }
+      commandCase_ = 12;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.ResumeWfRunPb resume_wf_run = 12;</code>
+     */
+    public Builder mergeResumeWfRun(io.littlehorse.common.proto.ResumeWfRunPb value) {
+      if (resumeWfRunBuilder_ == null) {
+        if (commandCase_ == 12 &&
+            command_ != io.littlehorse.common.proto.ResumeWfRunPb.getDefaultInstance()) {
+          command_ = io.littlehorse.common.proto.ResumeWfRunPb.newBuilder((io.littlehorse.common.proto.ResumeWfRunPb) command_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          command_ = value;
+        }
+        onChanged();
+      } else {
+        if (commandCase_ == 12) {
+          resumeWfRunBuilder_.mergeFrom(value);
+        }
+        resumeWfRunBuilder_.setMessage(value);
+      }
+      commandCase_ = 12;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.ResumeWfRunPb resume_wf_run = 12;</code>
+     */
+    public Builder clearResumeWfRun() {
+      if (resumeWfRunBuilder_ == null) {
+        if (commandCase_ == 12) {
+          commandCase_ = 0;
+          command_ = null;
+          onChanged();
+        }
+      } else {
+        if (commandCase_ == 12) {
+          commandCase_ = 0;
+          command_ = null;
+        }
+        resumeWfRunBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.lh_proto.ResumeWfRunPb resume_wf_run = 12;</code>
+     */
+    public io.littlehorse.common.proto.ResumeWfRunPb.Builder getResumeWfRunBuilder() {
+      return getResumeWfRunFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.ResumeWfRunPb resume_wf_run = 12;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.ResumeWfRunPbOrBuilder getResumeWfRunOrBuilder() {
+      if ((commandCase_ == 12) && (resumeWfRunBuilder_ != null)) {
+        return resumeWfRunBuilder_.getMessageOrBuilder();
+      } else {
+        if (commandCase_ == 12) {
+          return (io.littlehorse.common.proto.ResumeWfRunPb) command_;
+        }
+        return io.littlehorse.common.proto.ResumeWfRunPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.ResumeWfRunPb resume_wf_run = 12;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.ResumeWfRunPb, io.littlehorse.common.proto.ResumeWfRunPb.Builder, io.littlehorse.common.proto.ResumeWfRunPbOrBuilder> 
+        getResumeWfRunFieldBuilder() {
+      if (resumeWfRunBuilder_ == null) {
+        if (!(commandCase_ == 12)) {
+          command_ = io.littlehorse.common.proto.ResumeWfRunPb.getDefaultInstance();
+        }
+        resumeWfRunBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.ResumeWfRunPb, io.littlehorse.common.proto.ResumeWfRunPb.Builder, io.littlehorse.common.proto.ResumeWfRunPbOrBuilder>(
+                (io.littlehorse.common.proto.ResumeWfRunPb) command_,
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      commandCase_ = 12;
+      onChanged();;
+      return resumeWfRunBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

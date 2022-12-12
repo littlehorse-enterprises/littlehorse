@@ -7,7 +7,9 @@ import io.littlehorse.common.model.command.subcommand.PutExternalEvent;
 import io.littlehorse.common.model.command.subcommand.PutExternalEventDef;
 import io.littlehorse.common.model.command.subcommand.PutTaskDef;
 import io.littlehorse.common.model.command.subcommand.PutWfSpec;
+import io.littlehorse.common.model.command.subcommand.ResumeWfRun;
 import io.littlehorse.common.model.command.subcommand.RunWf;
+import io.littlehorse.common.model.command.subcommand.StopWfRun;
 import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
 import io.littlehorse.common.proto.CommandPb;
@@ -30,6 +32,8 @@ public class Command extends LHSerializable<CommandPb> {
     public PutTaskDef putTaskDef;
     public PutExternalEventDef putExternalEventDef;
     public RunWf runWf;
+    public StopWfRun stopWfRun;
+    public ResumeWfRun resumeWfRun;
 
     public Class<CommandPb> getProtoBaseClass() {
         return CommandPb.class;
@@ -64,6 +68,12 @@ public class Command extends LHSerializable<CommandPb> {
                 break;
             case RUN_WF:
                 out.setRunWf(runWf.toProto());
+                break;
+            case STOP_WF_RUN:
+                out.setStopWfRun(stopWfRun.toProto());
+                break;
+            case RESUME_WF_RUN:
+                out.setResumeWfRun(resumeWfRun.toProto());
                 break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -107,6 +117,12 @@ public class Command extends LHSerializable<CommandPb> {
             case RUN_WF:
                 runWf = RunWf.fromProto(p.getRunWfOrBuilder());
                 break;
+            case STOP_WF_RUN:
+                stopWfRun = StopWfRun.fromProto(p.getStopWfRunOrBuilder());
+                break;
+            case RESUME_WF_RUN:
+                resumeWfRun = ResumeWfRun.fromProto(p.getResumeWfRunOrBuilder());
+                break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -128,6 +144,10 @@ public class Command extends LHSerializable<CommandPb> {
                 return putExternalEventDef;
             case RUN_WF:
                 return runWf;
+            case STOP_WF_RUN:
+                return stopWfRun;
+            case RESUME_WF_RUN:
+                return resumeWfRun;
             case COMMAND_NOT_SET:
         }
         throw new RuntimeException("Not possible");
@@ -156,6 +176,12 @@ public class Command extends LHSerializable<CommandPb> {
         } else if (cls.equals(TaskClaimEvent.class)) {
             type = CommandCase.TASK_CLAIM_EVENT;
             taskClaimEvent = (TaskClaimEvent) cmd;
+        } else if (cls.equals(StopWfRun.class)) {
+            type = CommandCase.STOP_WF_RUN;
+            stopWfRun = (StopWfRun) cmd;
+        } else if (cls.equals(ResumeWfRun.class)) {
+            type = CommandCase.RESUME_WF_RUN;
+            resumeWfRun = (ResumeWfRun) cmd;
         } else {
             throw new RuntimeException("Unrecognized class: " + cls.getName());
         }

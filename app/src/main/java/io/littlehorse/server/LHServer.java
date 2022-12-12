@@ -10,14 +10,18 @@ import io.littlehorse.common.model.command.subcommand.PutExternalEvent;
 import io.littlehorse.common.model.command.subcommand.PutExternalEventDef;
 import io.littlehorse.common.model.command.subcommand.PutTaskDef;
 import io.littlehorse.common.model.command.subcommand.PutWfSpec;
+import io.littlehorse.common.model.command.subcommand.ResumeWfRun;
 import io.littlehorse.common.model.command.subcommand.RunWf;
+import io.littlehorse.common.model.command.subcommand.StopWfRun;
 import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
 import io.littlehorse.common.model.command.subcommandresponse.PutExternalEventDefReply;
 import io.littlehorse.common.model.command.subcommandresponse.PutExternalEventReply;
 import io.littlehorse.common.model.command.subcommandresponse.PutTaskDefReply;
 import io.littlehorse.common.model.command.subcommandresponse.PutWfSpecReply;
 import io.littlehorse.common.model.command.subcommandresponse.ReportTaskReply;
+import io.littlehorse.common.model.command.subcommandresponse.ResumeWfRunReply;
 import io.littlehorse.common.model.command.subcommandresponse.RunWfReply;
+import io.littlehorse.common.model.command.subcommandresponse.StopWfRunReply;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
@@ -48,10 +52,14 @@ import io.littlehorse.common.proto.PutTaskDefReplyPb;
 import io.littlehorse.common.proto.PutWfSpecPb;
 import io.littlehorse.common.proto.PutWfSpecReplyPb;
 import io.littlehorse.common.proto.ReportTaskReplyPb;
+import io.littlehorse.common.proto.ResumeWfRunPb;
+import io.littlehorse.common.proto.ResumeWfRunReplyPb;
 import io.littlehorse.common.proto.RunWfPb;
 import io.littlehorse.common.proto.RunWfReplyPb;
 import io.littlehorse.common.proto.SearchWfRunPb;
 import io.littlehorse.common.proto.SearchWfRunReplyPb;
+import io.littlehorse.common.proto.StopWfRunPb;
+import io.littlehorse.common.proto.StopWfRunReplyPb;
 import io.littlehorse.common.proto.TaskResultEventPb;
 import io.littlehorse.server.streamsbackend.KafkaStreamsBackend;
 import java.io.IOException;
@@ -263,6 +271,23 @@ public class LHServer extends LHPublicApiImplBase {
         StreamObserver<SearchWfRunReplyPb> ctx
     ) {
         ctx.onNext(backend.searchWfRun(req));
+        ctx.onCompleted();
+    }
+
+    @Override
+    public void stopWfRun(StopWfRunPb req, StreamObserver<StopWfRunReplyPb> ctx) {
+        StopWfRun swr = StopWfRun.fromProto(req);
+        ctx.onNext(backend.process(swr, StopWfRunReply.class).toProto().build());
+        ctx.onCompleted();
+    }
+
+    @Override
+    public void resumeWfRun(
+        ResumeWfRunPb req,
+        StreamObserver<ResumeWfRunReplyPb> ctx
+    ) {
+        ResumeWfRun rwr = ResumeWfRun.fromProto(req);
+        ctx.onNext(backend.process(rwr, ResumeWfRunReply.class).toProto().build());
         ctx.onCompleted();
     }
 
