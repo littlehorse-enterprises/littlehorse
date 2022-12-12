@@ -65,19 +65,19 @@ public class KafkaStreamsBackend {
 
     public void init(LHConfig config, HealthStatusManager grpcHealthCheckThingy) {
         Topology coreTopo = ServerTopology.initCoreTopology(config);
-        // Topology timerTopo = ServerTopology.initTimerTopology(config);
+        Topology timerTopo = ServerTopology.initTimerTopology(config);
         // Topology taggingTopo = ServerTopology.initTaggingTopology(config);
 
         coreStreams = new KafkaStreams(coreTopo, config.getStreamsConfig("core"));
-        // timerStreams = new KafkaStreams(timerTopo, config.getStreamsConfig("timer"));
+        timerStreams = new KafkaStreams(timerTopo, config.getStreamsConfig("timer"));
         // tagStreams = new KafkaStreams(taggingTopo, config.getStreamsConfig("tag"));
 
         coreStreams.setStateListener(
             new LHBackendStateListener("core", grpcHealthCheckThingy)
         );
-        // timerStreams.setStateListener(
-        //     new LHBackendStateListener("timer", grpcHealthCheckThingy)
-        // );
+        timerStreams.setStateListener(
+            new LHBackendStateListener("timer", grpcHealthCheckThingy)
+        );
         // tagStreams.setStateListener(
         //     new LHBackendStateListener("tag", grpcHealthCheckThingy)
         // );
@@ -447,7 +447,7 @@ public class KafkaStreamsBackend {
 
     public void start() throws IOException {
         coreStreams.start();
-        // timerStreams.start();
+        timerStreams.start();
         // tagStreams.start();
         internalComms.start();
     }

@@ -3,6 +3,7 @@ package io.littlehorse.common.model.wfrun.subnoderun;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
 import io.littlehorse.common.model.meta.Node;
@@ -182,7 +183,10 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
         timer.maturationTime = taskResult.time;
 
         // TODO: This evades encryption...
-        timer.payload = taskResult.toProto().build().toByteArray();
+        Command taskResultCmd = new Command();
+        taskResultCmd.setSubCommand(taskResult);
+        taskResultCmd.time = timer.maturationTime;
+        timer.payload = taskResultCmd.toProto().build().toByteArray();
         thread.wfRun.cmdDao.scheduleTimer(timer);
 
         startTime = se.time;

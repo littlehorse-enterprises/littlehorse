@@ -106,6 +106,8 @@ public class ServerTopology {
     }
 
     public static Topology initTaggingTopology(LHConfig config) {
+        // doesn't look like we need this until we implement the
+        // REMOTE_HASH_UNCOUNTED storage type.
         return null;
     }
 
