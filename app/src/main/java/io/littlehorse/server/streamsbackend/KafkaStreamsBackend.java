@@ -12,6 +12,7 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.SubCommand;
+import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
@@ -20,6 +21,7 @@ import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.proto.CommandPb.CommandCase;
 import io.littlehorse.common.proto.GetExternalEventPb;
 import io.littlehorse.common.proto.GetExternalEventReplyPb;
 import io.littlehorse.common.proto.GetNodeRunPb;
@@ -28,11 +30,14 @@ import io.littlehorse.common.proto.GetVariablePb;
 import io.littlehorse.common.proto.GetVariableReplyPb;
 import io.littlehorse.common.proto.GetWfRunPb;
 import io.littlehorse.common.proto.GetWfRunReplyPb;
+import io.littlehorse.common.proto.HostInfoPb;
 import io.littlehorse.common.proto.LHResponseCodePb;
 import io.littlehorse.common.proto.PaginatedTagQueryPb;
 import io.littlehorse.common.proto.PaginatedTagQueryReplyPb;
 import io.littlehorse.common.proto.PollTaskPb;
 import io.littlehorse.common.proto.PollTaskReplyPb;
+import io.littlehorse.common.proto.RegisterTaskWorkerPb;
+import io.littlehorse.common.proto.RegisterTaskWorkerReplyPb;
 import io.littlehorse.common.proto.SearchWfRunPb;
 import io.littlehorse.common.proto.SearchWfRunReplyPb;
 import io.littlehorse.common.util.LHProducer;
@@ -40,15 +45,24 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streamsbackend.storeinternals.BackendInternalComms;
 import io.littlehorse.server.streamsbackend.storeinternals.index.TagQueryUtils;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.StoreUtils;
+import io.littlehorse.server.streamsbackend.taskqueue.GodzillaTaskQueueManager;
+import io.littlehorse.server.streamsbackend.taskqueue.TaskQueueStreamObserver;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KafkaStreams.State;
 import org.apache.kafka.streams.KafkaStreams.StateListener;
+import org.apache.kafka.streams.StreamsMetadata;
 import org.apache.kafka.streams.Topology;
+import org.apache.kafka.streams.state.HostInfo;
 
 public class KafkaStreamsBackend {
 
@@ -56,6 +70,7 @@ public class KafkaStreamsBackend {
     private KafkaStreams timerStreams;
     private KafkaStreams tagStreams;
     private LHConfig config;
+    private ExecutorService executor;
 
     private BackendInternalComms internalComms;
     private LHProducer producer;
@@ -63,8 +78,12 @@ public class KafkaStreamsBackend {
     public static final String DISCRETE_TAG_COUNT_PREFIX = "DiscreteTagCount/";
     public static final String DISCRETE_TAG_UPDATES_KEY = "DiscreteTagUpdates";
 
-    public void init(LHConfig config, HealthStatusManager grpcHealthCheckThingy) {
-        Topology coreTopo = ServerTopology.initCoreTopology(config);
+    public KafkaStreamsBackend(
+        LHConfig config,
+        HealthStatusManager grpcHealthCheckThingy,
+        GodzillaTaskQueueManager godzilla
+    ) {
+        Topology coreTopo = ServerTopology.initCoreTopology(config, godzilla);
         Topology timerTopo = ServerTopology.initTimerTopology(config);
         // Topology taggingTopo = ServerTopology.initTaggingTopology(config);
 
@@ -84,6 +103,8 @@ public class KafkaStreamsBackend {
 
         this.config = config;
         this.producer = new LHProducer(config, false);
+
+        this.executor = Executors.newFixedThreadPool(16);
 
         internalComms = new BackendInternalComms(config, coreStreams, this);
     }
@@ -194,6 +215,25 @@ public class KafkaStreamsBackend {
         }
     }
 
+    private void recordCommand(Command command) throws LHConnectionError {
+        // Now we need to record the command and wait for the processing.
+        Future<RecordMetadata> rec = producer.send(
+            command.getPartitionKey(), // partition key
+            command, // payload
+            config.getCoreCmdTopicName() // topic name
+        );
+
+        // Wait for the record to commit to kafka
+        try {
+            rec.get();
+        } catch (Exception exn) {
+            throw new LHConnectionError(
+                exn,
+                "May have failed recording event: " + exn.getMessage()
+            );
+        }
+    }
+
     public <U extends MessageOrBuilder, T extends AbstractResponse<U>> T process(
         SubCommand<?> subCmd,
         Class<T> cls
@@ -220,19 +260,11 @@ public class KafkaStreamsBackend {
         // TODO: allow client to set this on request to enable idempotent retries.
         command.commandId = LHUtil.generateGuid();
 
-        // Now we need to record the command and wait for the processing.
-        Future<RecordMetadata> rec = producer.send(
-            command.getPartitionKey(), // partition key
-            command, // payload
-            config.getCoreCmdTopicName() // topic name
-        );
-
-        // Wait for the record to commit to kafka
         try {
-            rec.get();
-        } catch (Exception exn) {
+            recordCommand(command);
+        } catch (LHConnectionError exn) {
             out.code = LHResponseCodePb.CONNECTION_ERROR;
-            out.message = "May have failed recording event: " + exn.getMessage();
+            out.message = exn.getMessage();
             return out;
         }
 
@@ -427,6 +459,63 @@ public class KafkaStreamsBackend {
                 .setMessage("Failed connecting to backend: " + exn.getMessage());
         }
         return out.build();
+    }
+
+    public void returnTaskToClient(String taskId, TaskQueueStreamObserver client) {
+        // This needs to be a non-blocking call, so we submit it to a thread.
+        executor.submit(() -> {
+            returnTaskToCLient(taskId, client);
+        });
+    }
+
+    public RegisterTaskWorkerReplyPb registerTaskWorker(RegisterTaskWorkerPb req) {
+        Collection<StreamsMetadata> allMeta = coreStreams.metadataForAllStreamsClients();
+
+        // TODO: in more optimized future versions, we will communicate about which
+        // clients are assigned to which hosts in order to reduce
+        Set<HostInfo> hosts = new HashSet<>();
+
+        for (StreamsMetadata meta : allMeta) {
+            hosts.add(meta.hostInfo());
+        }
+
+        RegisterTaskWorkerReplyPb.Builder out = RegisterTaskWorkerReplyPb.newBuilder();
+        out.setCode(LHResponseCodePb.OK);
+        for (HostInfo host : hosts) {
+            out.addEndpoints(
+                HostInfoPb.newBuilder().setHost(host.host()).setPort(host.port())
+            );
+        }
+
+        return out.build();
+    }
+
+    private void returnTaskToCLient(String taskId, TaskQueueStreamObserver client) {
+        // First, create the TaskStartedEvent Command.
+        TaskScheduleRequest tsr = internalComms.getTsr(taskId);
+        TaskClaimEvent claimEvent = new TaskClaimEvent();
+        claimEvent.wfRunId = tsr.wfRunId;
+        claimEvent.threadRunNumber = tsr.threadRunNumber;
+        claimEvent.taskRunPosition = tsr.taskRunPosition;
+        claimEvent.taskRunNumber = tsr.taskRunNumber;
+        claimEvent.time = new Date();
+
+        Command taskClaimCommand = new Command();
+        taskClaimCommand.type = CommandCase.TASK_CLAIM_EVENT;
+        taskClaimCommand.taskClaimEvent = claimEvent;
+
+        PollTaskReplyPb.Builder out = PollTaskReplyPb.newBuilder();
+
+        try {
+            recordCommand(taskClaimCommand);
+            out.setCode(LHResponseCodePb.OK);
+            out.setResult(tsr.toProto());
+        } catch (LHConnectionError exn) {
+            out.setCode(LHResponseCodePb.CONNECTION_ERROR);
+            out.setMessage("Server encountered error: " + exn.getMessage());
+        }
+
+        client.getResponseObserver().onNext(out.build());
     }
 
     public PollTaskReplyPb pollTask(PollTaskPb req) {

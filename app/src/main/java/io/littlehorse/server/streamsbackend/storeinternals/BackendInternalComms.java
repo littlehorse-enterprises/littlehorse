@@ -257,6 +257,11 @@ public class BackendInternalComms implements Closeable {
         return upperLayer.process(tse, TaskClaimReply.class);
     }
 
+    public TaskScheduleRequest getTsr(String tsrId) {
+        return new LHROStoreWrapper(getRawStore(null, false), config)
+            .get(tsrId, TaskScheduleRequest.class);
+    }
+
     public Bytes getLastFromPrefix(String prefix, String partitionKey)
         throws LHConnectionError {
         KeyQueryMetadata meta = coreStreams.queryMetadataForKey(

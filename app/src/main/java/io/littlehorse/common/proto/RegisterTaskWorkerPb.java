@@ -4,27 +4,27 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf type {@code lh_proto.PollTaskPb}
+ * Protobuf type {@code lh_proto.RegisterTaskWorkerPb}
  */
-public final class PollTaskPb extends
+public final class RegisterTaskWorkerPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.PollTaskPb)
-    PollTaskPbOrBuilder {
+    // @@protoc_insertion_point(message_implements:lh_proto.RegisterTaskWorkerPb)
+    RegisterTaskWorkerPbOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use PollTaskPb.newBuilder() to construct.
-  private PollTaskPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use RegisterTaskWorkerPb.newBuilder() to construct.
+  private RegisterTaskWorkerPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private PollTaskPb() {
-    taskDefName_ = "";
+  private RegisterTaskWorkerPb() {
     clientId_ = "";
+    taskDefName_ = "";
   }
 
   @java.lang.Override
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new PollTaskPb();
+    return new RegisterTaskWorkerPb();
   }
 
   @java.lang.Override
@@ -32,7 +32,7 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
-  private PollTaskPb(
+  private RegisterTaskWorkerPb(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -53,13 +53,13 @@ private static final long serialVersionUID = 0L;
           case 10: {
             java.lang.String s = input.readStringRequireUtf8();
 
-            taskDefName_ = s;
+            clientId_ = s;
             break;
           }
           case 18: {
             java.lang.String s = input.readStringRequireUtf8();
 
-            clientId_ = s;
+            taskDefName_ = s;
             break;
           }
           default: {
@@ -83,59 +83,21 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.Service.internal_static_lh_proto_PollTaskPb_descriptor;
+    return io.littlehorse.common.proto.Service.internal_static_lh_proto_RegisterTaskWorkerPb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.Service.internal_static_lh_proto_PollTaskPb_fieldAccessorTable
+    return io.littlehorse.common.proto.Service.internal_static_lh_proto_RegisterTaskWorkerPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.common.proto.PollTaskPb.class, io.littlehorse.common.proto.PollTaskPb.Builder.class);
+            io.littlehorse.common.proto.RegisterTaskWorkerPb.class, io.littlehorse.common.proto.RegisterTaskWorkerPb.Builder.class);
   }
 
-  public static final int TASK_DEF_NAME_FIELD_NUMBER = 1;
-  private volatile java.lang.Object taskDefName_;
-  /**
-   * <code>string task_def_name = 1;</code>
-   * @return The taskDefName.
-   */
-  @java.lang.Override
-  public java.lang.String getTaskDefName() {
-    java.lang.Object ref = taskDefName_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      taskDefName_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string task_def_name = 1;</code>
-   * @return The bytes for taskDefName.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getTaskDefNameBytes() {
-    java.lang.Object ref = taskDefName_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      taskDefName_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
-  public static final int CLIENT_ID_FIELD_NUMBER = 2;
+  public static final int CLIENT_ID_FIELD_NUMBER = 1;
   private volatile java.lang.Object clientId_;
   /**
-   * <code>string client_id = 2;</code>
+   * <code>string client_id = 1;</code>
    * @return The clientId.
    */
   @java.lang.Override
@@ -152,7 +114,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>string client_id = 2;</code>
+   * <code>string client_id = 1;</code>
    * @return The bytes for clientId.
    */
   @java.lang.Override
@@ -164,6 +126,44 @@ private static final long serialVersionUID = 0L;
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
       clientId_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int TASK_DEF_NAME_FIELD_NUMBER = 2;
+  private volatile java.lang.Object taskDefName_;
+  /**
+   * <code>string task_def_name = 2;</code>
+   * @return The taskDefName.
+   */
+  @java.lang.Override
+  public java.lang.String getTaskDefName() {
+    java.lang.Object ref = taskDefName_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      taskDefName_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string task_def_name = 2;</code>
+   * @return The bytes for taskDefName.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getTaskDefNameBytes() {
+    java.lang.Object ref = taskDefName_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      taskDefName_ = b;
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
@@ -184,11 +184,11 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!getTaskDefNameBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, taskDefName_);
-    }
     if (!getClientIdBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, clientId_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, clientId_);
+    }
+    if (!getTaskDefNameBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, taskDefName_);
     }
     unknownFields.writeTo(output);
   }
@@ -199,11 +199,11 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (!getTaskDefNameBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, taskDefName_);
-    }
     if (!getClientIdBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, clientId_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, clientId_);
+    }
+    if (!getTaskDefNameBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, taskDefName_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -215,15 +215,15 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.common.proto.PollTaskPb)) {
+    if (!(obj instanceof io.littlehorse.common.proto.RegisterTaskWorkerPb)) {
       return super.equals(obj);
     }
-    io.littlehorse.common.proto.PollTaskPb other = (io.littlehorse.common.proto.PollTaskPb) obj;
+    io.littlehorse.common.proto.RegisterTaskWorkerPb other = (io.littlehorse.common.proto.RegisterTaskWorkerPb) obj;
 
-    if (!getTaskDefName()
-        .equals(other.getTaskDefName())) return false;
     if (!getClientId()
         .equals(other.getClientId())) return false;
+    if (!getTaskDefName()
+        .equals(other.getTaskDefName())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -235,78 +235,78 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + TASK_DEF_NAME_FIELD_NUMBER;
-    hash = (53 * hash) + getTaskDefName().hashCode();
     hash = (37 * hash) + CLIENT_ID_FIELD_NUMBER;
     hash = (53 * hash) + getClientId().hashCode();
+    hash = (37 * hash) + TASK_DEF_NAME_FIELD_NUMBER;
+    hash = (53 * hash) + getTaskDefName().hashCode();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
   }
 
-  public static io.littlehorse.common.proto.PollTaskPb parseFrom(
+  public static io.littlehorse.common.proto.RegisterTaskWorkerPb parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.PollTaskPb parseFrom(
+  public static io.littlehorse.common.proto.RegisterTaskWorkerPb parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.PollTaskPb parseFrom(
+  public static io.littlehorse.common.proto.RegisterTaskWorkerPb parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.PollTaskPb parseFrom(
+  public static io.littlehorse.common.proto.RegisterTaskWorkerPb parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.PollTaskPb parseFrom(byte[] data)
+  public static io.littlehorse.common.proto.RegisterTaskWorkerPb parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.PollTaskPb parseFrom(
+  public static io.littlehorse.common.proto.RegisterTaskWorkerPb parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.PollTaskPb parseFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.RegisterTaskWorkerPb parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.PollTaskPb parseFrom(
+  public static io.littlehorse.common.proto.RegisterTaskWorkerPb parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.PollTaskPb parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.RegisterTaskWorkerPb parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.PollTaskPb parseDelimitedFrom(
+  public static io.littlehorse.common.proto.RegisterTaskWorkerPb parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.PollTaskPb parseFrom(
+  public static io.littlehorse.common.proto.RegisterTaskWorkerPb parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.PollTaskPb parseFrom(
+  public static io.littlehorse.common.proto.RegisterTaskWorkerPb parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -319,7 +319,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.common.proto.PollTaskPb prototype) {
+  public static Builder newBuilder(io.littlehorse.common.proto.RegisterTaskWorkerPb prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -335,26 +335,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.PollTaskPb}
+   * Protobuf type {@code lh_proto.RegisterTaskWorkerPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.PollTaskPb)
-      io.littlehorse.common.proto.PollTaskPbOrBuilder {
+      // @@protoc_insertion_point(builder_implements:lh_proto.RegisterTaskWorkerPb)
+      io.littlehorse.common.proto.RegisterTaskWorkerPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.Service.internal_static_lh_proto_PollTaskPb_descriptor;
+      return io.littlehorse.common.proto.Service.internal_static_lh_proto_RegisterTaskWorkerPb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.Service.internal_static_lh_proto_PollTaskPb_fieldAccessorTable
+      return io.littlehorse.common.proto.Service.internal_static_lh_proto_RegisterTaskWorkerPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.common.proto.PollTaskPb.class, io.littlehorse.common.proto.PollTaskPb.Builder.class);
+              io.littlehorse.common.proto.RegisterTaskWorkerPb.class, io.littlehorse.common.proto.RegisterTaskWorkerPb.Builder.class);
     }
 
-    // Construct using io.littlehorse.common.proto.PollTaskPb.newBuilder()
+    // Construct using io.littlehorse.common.proto.RegisterTaskWorkerPb.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -372,9 +372,9 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      taskDefName_ = "";
-
       clientId_ = "";
+
+      taskDefName_ = "";
 
       return this;
     }
@@ -382,17 +382,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.Service.internal_static_lh_proto_PollTaskPb_descriptor;
+      return io.littlehorse.common.proto.Service.internal_static_lh_proto_RegisterTaskWorkerPb_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.PollTaskPb getDefaultInstanceForType() {
-      return io.littlehorse.common.proto.PollTaskPb.getDefaultInstance();
+    public io.littlehorse.common.proto.RegisterTaskWorkerPb getDefaultInstanceForType() {
+      return io.littlehorse.common.proto.RegisterTaskWorkerPb.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.PollTaskPb build() {
-      io.littlehorse.common.proto.PollTaskPb result = buildPartial();
+    public io.littlehorse.common.proto.RegisterTaskWorkerPb build() {
+      io.littlehorse.common.proto.RegisterTaskWorkerPb result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -400,10 +400,10 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.PollTaskPb buildPartial() {
-      io.littlehorse.common.proto.PollTaskPb result = new io.littlehorse.common.proto.PollTaskPb(this);
-      result.taskDefName_ = taskDefName_;
+    public io.littlehorse.common.proto.RegisterTaskWorkerPb buildPartial() {
+      io.littlehorse.common.proto.RegisterTaskWorkerPb result = new io.littlehorse.common.proto.RegisterTaskWorkerPb(this);
       result.clientId_ = clientId_;
+      result.taskDefName_ = taskDefName_;
       onBuilt();
       return result;
     }
@@ -442,22 +442,22 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.common.proto.PollTaskPb) {
-        return mergeFrom((io.littlehorse.common.proto.PollTaskPb)other);
+      if (other instanceof io.littlehorse.common.proto.RegisterTaskWorkerPb) {
+        return mergeFrom((io.littlehorse.common.proto.RegisterTaskWorkerPb)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.common.proto.PollTaskPb other) {
-      if (other == io.littlehorse.common.proto.PollTaskPb.getDefaultInstance()) return this;
-      if (!other.getTaskDefName().isEmpty()) {
-        taskDefName_ = other.taskDefName_;
-        onChanged();
-      }
+    public Builder mergeFrom(io.littlehorse.common.proto.RegisterTaskWorkerPb other) {
+      if (other == io.littlehorse.common.proto.RegisterTaskWorkerPb.getDefaultInstance()) return this;
       if (!other.getClientId().isEmpty()) {
         clientId_ = other.clientId_;
+        onChanged();
+      }
+      if (!other.getTaskDefName().isEmpty()) {
+        taskDefName_ = other.taskDefName_;
         onChanged();
       }
       this.mergeUnknownFields(other.unknownFields);
@@ -475,11 +475,11 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      io.littlehorse.common.proto.PollTaskPb parsedMessage = null;
+      io.littlehorse.common.proto.RegisterTaskWorkerPb parsedMessage = null;
       try {
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (io.littlehorse.common.proto.PollTaskPb) e.getUnfinishedMessage();
+        parsedMessage = (io.littlehorse.common.proto.RegisterTaskWorkerPb) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
@@ -489,85 +489,9 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.lang.Object taskDefName_ = "";
-    /**
-     * <code>string task_def_name = 1;</code>
-     * @return The taskDefName.
-     */
-    public java.lang.String getTaskDefName() {
-      java.lang.Object ref = taskDefName_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        taskDefName_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>string task_def_name = 1;</code>
-     * @return The bytes for taskDefName.
-     */
-    public com.google.protobuf.ByteString
-        getTaskDefNameBytes() {
-      java.lang.Object ref = taskDefName_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        taskDefName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string task_def_name = 1;</code>
-     * @param value The taskDefName to set.
-     * @return This builder for chaining.
-     */
-    public Builder setTaskDefName(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      taskDefName_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string task_def_name = 1;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearTaskDefName() {
-      
-      taskDefName_ = getDefaultInstance().getTaskDefName();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string task_def_name = 1;</code>
-     * @param value The bytes for taskDefName to set.
-     * @return This builder for chaining.
-     */
-    public Builder setTaskDefNameBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      taskDefName_ = value;
-      onChanged();
-      return this;
-    }
-
     private java.lang.Object clientId_ = "";
     /**
-     * <code>string client_id = 2;</code>
+     * <code>string client_id = 1;</code>
      * @return The clientId.
      */
     public java.lang.String getClientId() {
@@ -583,7 +507,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string client_id = 2;</code>
+     * <code>string client_id = 1;</code>
      * @return The bytes for clientId.
      */
     public com.google.protobuf.ByteString
@@ -600,7 +524,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string client_id = 2;</code>
+     * <code>string client_id = 1;</code>
      * @param value The clientId to set.
      * @return This builder for chaining.
      */
@@ -615,7 +539,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string client_id = 2;</code>
+     * <code>string client_id = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearClientId() {
@@ -625,7 +549,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string client_id = 2;</code>
+     * <code>string client_id = 1;</code>
      * @param value The bytes for clientId to set.
      * @return This builder for chaining.
      */
@@ -637,6 +561,82 @@ private static final long serialVersionUID = 0L;
   checkByteStringIsUtf8(value);
       
       clientId_ = value;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object taskDefName_ = "";
+    /**
+     * <code>string task_def_name = 2;</code>
+     * @return The taskDefName.
+     */
+    public java.lang.String getTaskDefName() {
+      java.lang.Object ref = taskDefName_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        taskDefName_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string task_def_name = 2;</code>
+     * @return The bytes for taskDefName.
+     */
+    public com.google.protobuf.ByteString
+        getTaskDefNameBytes() {
+      java.lang.Object ref = taskDefName_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        taskDefName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string task_def_name = 2;</code>
+     * @param value The taskDefName to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTaskDefName(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      taskDefName_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string task_def_name = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearTaskDefName() {
+      
+      taskDefName_ = getDefaultInstance().getTaskDefName();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string task_def_name = 2;</code>
+     * @param value The bytes for taskDefName to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTaskDefNameBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      taskDefName_ = value;
       onChanged();
       return this;
     }
@@ -653,41 +653,41 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.PollTaskPb)
+    // @@protoc_insertion_point(builder_scope:lh_proto.RegisterTaskWorkerPb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.PollTaskPb)
-  private static final io.littlehorse.common.proto.PollTaskPb DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:lh_proto.RegisterTaskWorkerPb)
+  private static final io.littlehorse.common.proto.RegisterTaskWorkerPb DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.common.proto.PollTaskPb();
+    DEFAULT_INSTANCE = new io.littlehorse.common.proto.RegisterTaskWorkerPb();
   }
 
-  public static io.littlehorse.common.proto.PollTaskPb getDefaultInstance() {
+  public static io.littlehorse.common.proto.RegisterTaskWorkerPb getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<PollTaskPb>
-      PARSER = new com.google.protobuf.AbstractParser<PollTaskPb>() {
+  private static final com.google.protobuf.Parser<RegisterTaskWorkerPb>
+      PARSER = new com.google.protobuf.AbstractParser<RegisterTaskWorkerPb>() {
     @java.lang.Override
-    public PollTaskPb parsePartialFrom(
+    public RegisterTaskWorkerPb parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new PollTaskPb(input, extensionRegistry);
+      return new RegisterTaskWorkerPb(input, extensionRegistry);
     }
   };
 
-  public static com.google.protobuf.Parser<PollTaskPb> parser() {
+  public static com.google.protobuf.Parser<RegisterTaskWorkerPb> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<PollTaskPb> getParserForType() {
+  public com.google.protobuf.Parser<RegisterTaskWorkerPb> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.common.proto.PollTaskPb getDefaultInstanceForType() {
+  public io.littlehorse.common.proto.RegisterTaskWorkerPb getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

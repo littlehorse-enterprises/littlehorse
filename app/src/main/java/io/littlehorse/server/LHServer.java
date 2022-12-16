@@ -55,6 +55,8 @@ import io.littlehorse.common.proto.PutTaskDefPb;
 import io.littlehorse.common.proto.PutTaskDefReplyPb;
 import io.littlehorse.common.proto.PutWfSpecPb;
 import io.littlehorse.common.proto.PutWfSpecReplyPb;
+import io.littlehorse.common.proto.RegisterTaskWorkerPb;
+import io.littlehorse.common.proto.RegisterTaskWorkerReplyPb;
 import io.littlehorse.common.proto.ReportTaskReplyPb;
 import io.littlehorse.common.proto.ResumeWfRunPb;
 import io.littlehorse.common.proto.ResumeWfRunReplyPb;
@@ -66,6 +68,8 @@ import io.littlehorse.common.proto.StopWfRunPb;
 import io.littlehorse.common.proto.StopWfRunReplyPb;
 import io.littlehorse.common.proto.TaskResultEventPb;
 import io.littlehorse.server.streamsbackend.KafkaStreamsBackend;
+import io.littlehorse.server.streamsbackend.taskqueue.GodzillaTaskQueueManager;
+import io.littlehorse.server.streamsbackend.taskqueue.TaskQueueStreamObserver;
 import java.io.IOException;
 
 public class LHServer extends LHPublicApiImplBase {
@@ -73,16 +77,18 @@ public class LHServer extends LHPublicApiImplBase {
     private LHConfig config;
     private KafkaStreamsBackend backend;
     private Server grpcServer;
+    private GodzillaTaskQueueManager godzilla;
 
     public LHServer(LHConfig config) {
         this.config = config;
 
         // Hypothetically we could implement different backends in the future...
         // perhaps a Pulsar/Cassandra/Yugabyte backend.
-        backend = new KafkaStreamsBackend();
-
         HealthStatusManager grpcHealthCheckThingy = new HealthStatusManager();
-        backend.init(this.config, grpcHealthCheckThingy);
+        this.godzilla = new GodzillaTaskQueueManager();
+        backend =
+            new KafkaStreamsBackend(this.config, grpcHealthCheckThingy, godzilla);
+        godzilla.setBackend(backend);
 
         this.grpcServer =
             ServerBuilder
@@ -223,9 +229,30 @@ public class LHServer extends LHPublicApiImplBase {
     }
 
     @Override
-    public void pollTask(PollTaskPb req, StreamObserver<PollTaskReplyPb> ctx) {
-        ctx.onNext(backend.pollTask(req));
-        ctx.onCompleted();
+    public StreamObserver<PollTaskPb> pollTask(StreamObserver<PollTaskReplyPb> ctx) {
+        return new TaskQueueStreamObserver(ctx, godzilla);
+    }
+
+    @Override
+    public StreamObserver<RegisterTaskWorkerPb> registerTaskWorker(
+        StreamObserver<RegisterTaskWorkerReplyPb> responseObserver
+    ) {
+        return new StreamObserver<RegisterTaskWorkerPb>() {
+            @Override
+            public void onCompleted() {
+                // Nothing to do
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                // Nothing to do
+            }
+
+            @Override
+            public void onNext(RegisterTaskWorkerPb request) {
+                responseObserver.onNext(backend.registerTaskWorker(request));
+            }
+        };
     }
 
     @Override

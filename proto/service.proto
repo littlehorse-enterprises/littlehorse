@@ -160,8 +160,25 @@ message SearchWfRunReplyPb {
     optional bytes bookmark = 4;
 }
 
+message RegisterTaskWorkerPb {
+    string client_id = 1;
+    string task_def_name = 2;
+}
+
+message HostInfoPb {
+    string host = 1;
+    int32 port = 2;
+}
+
+message RegisterTaskWorkerReplyPb {
+    LHResponseCodePb code = 1;
+    optional string message = 2;
+    repeated HostInfoPb endpoints = 3;
+}
+
 message PollTaskPb {
     string task_def_name = 1;
+    string client_id = 2;
 }
 
 message PollTaskReplyPb {
@@ -212,7 +229,8 @@ service LHPublicApi {
 
     rpc SearchWfRun(SearchWfRunPb) returns (SearchWfRunReplyPb) {}
 
-    rpc PollTask(PollTaskPb) returns (PollTaskReplyPb) {}
+    rpc RegisterTaskWorker(stream RegisterTaskWorkerPb) returns (stream RegisterTaskWorkerReplyPb) {}
+    rpc PollTask(stream PollTaskPb) returns (stream PollTaskReplyPb) {}
     rpc ReportTask(TaskResultEventPb) returns (ReportTaskReplyPb) {}
 
     rpc StopWfRun(StopWfRunPb) returns (StopWfRunReplyPb) {}

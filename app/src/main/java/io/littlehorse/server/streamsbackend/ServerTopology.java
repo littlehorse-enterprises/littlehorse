@@ -9,6 +9,7 @@ import io.littlehorse.server.streamsbackend.coreprocessors.CommandProcessor;
 import io.littlehorse.server.streamsbackend.coreprocessors.CommandProcessorOutput;
 import io.littlehorse.server.streamsbackend.coreprocessors.GlobalMetadataProcessor;
 import io.littlehorse.server.streamsbackend.tagging.TimerProcessor;
+import io.littlehorse.server.streamsbackend.taskqueue.GodzillaTaskQueueManager;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -34,7 +35,10 @@ public class ServerTopology {
     public static String GLOBAL_STORE = "global-metadata-store";
     public static String GLOBAL_META_PROCESSOR = "global-metadata-processor";
 
-    public static Topology initCoreTopology(LHConfig config) {
+    public static Topology initCoreTopology(
+        LHConfig config,
+        GodzillaTaskQueueManager godzilla
+    ) {
         Topology topo = new Topology();
 
         topo.addSource(
@@ -47,7 +51,7 @@ public class ServerTopology {
         topo.addProcessor(
             CORE_PROCESSOR,
             () -> {
-                return new CommandProcessor(config);
+                return new CommandProcessor(config, godzilla);
             },
             CORE_SOURCE
         );

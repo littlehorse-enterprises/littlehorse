@@ -18,4 +18,16 @@ public interface PollTaskPbOrBuilder extends
    */
   com.google.protobuf.ByteString
       getTaskDefNameBytes();
+
+  /**
+   * <code>string client_id = 2;</code>
+   * @return The clientId.
+   */
+  java.lang.String getClientId();
+  /**
+   * <code>string client_id = 2;</code>
+   * @return The bytes for clientId.
+   */
+  com.google.protobuf.ByteString
+      getClientIdBytes();
 }

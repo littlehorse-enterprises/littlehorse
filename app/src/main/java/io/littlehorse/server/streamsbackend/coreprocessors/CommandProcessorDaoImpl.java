@@ -33,6 +33,7 @@ import io.littlehorse.server.streamsbackend.storeinternals.index.TagsCache;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.LHIterKeyValue;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.LHKeyValueIterator;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.StoreUtils;
+import io.littlehorse.server.streamsbackend.taskqueue.GodzillaTaskQueueManager;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -58,6 +59,7 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
     private CommandResult responseToSave;
     private Command command;
     private int partition;
+    private GodzillaTaskQueueManager godzilla;
 
     private static final String OUTGOING_CHANGELOG_KEY = "OUTGOING_CHANGELOG";
 
@@ -92,8 +94,10 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
 
     public CommandProcessorDaoImpl(
         final ProcessorContext<String, CommandProcessorOutput> ctx,
-        LHConfig config
+        LHConfig config,
+        GodzillaTaskQueueManager godzilla
     ) {
+        this.godzilla = godzilla;
         nodeRunPuts = new HashMap<>();
         variablePuts = new HashMap<>();
         extEvtPuts = new HashMap<>();
@@ -516,6 +520,9 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
                 tsr,
                 TaskScheduleRequest.class
             );
+
+            // This is where the magic happens
+            godzilla.onTaskScheduled(tsr.taskDefName, tsr.getObjectId());
         } else if (taskDef.type == QueueDetailsCase.KAFKA) {
             CommandProcessorOutput output = new CommandProcessorOutput(
                 taskDef.kafkaTaskQueueDetails.topic,

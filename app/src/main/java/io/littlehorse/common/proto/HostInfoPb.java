@@ -4,27 +4,26 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf type {@code lh_proto.PollTaskPb}
+ * Protobuf type {@code lh_proto.HostInfoPb}
  */
-public final class PollTaskPb extends
+public final class HostInfoPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.PollTaskPb)
-    PollTaskPbOrBuilder {
+    // @@protoc_insertion_point(message_implements:lh_proto.HostInfoPb)
+    HostInfoPbOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use PollTaskPb.newBuilder() to construct.
-  private PollTaskPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use HostInfoPb.newBuilder() to construct.
+  private HostInfoPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private PollTaskPb() {
-    taskDefName_ = "";
-    clientId_ = "";
+  private HostInfoPb() {
+    host_ = "";
   }
 
   @java.lang.Override
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new PollTaskPb();
+    return new HostInfoPb();
   }
 
   @java.lang.Override
@@ -32,7 +31,7 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
-  private PollTaskPb(
+  private HostInfoPb(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -53,13 +52,12 @@ private static final long serialVersionUID = 0L;
           case 10: {
             java.lang.String s = input.readStringRequireUtf8();
 
-            taskDefName_ = s;
+            host_ = s;
             break;
           }
-          case 18: {
-            java.lang.String s = input.readStringRequireUtf8();
+          case 16: {
 
-            clientId_ = s;
+            port_ = input.readInt32();
             break;
           }
           default: {
@@ -83,91 +81,64 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.Service.internal_static_lh_proto_PollTaskPb_descriptor;
+    return io.littlehorse.common.proto.Service.internal_static_lh_proto_HostInfoPb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.Service.internal_static_lh_proto_PollTaskPb_fieldAccessorTable
+    return io.littlehorse.common.proto.Service.internal_static_lh_proto_HostInfoPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.common.proto.PollTaskPb.class, io.littlehorse.common.proto.PollTaskPb.Builder.class);
+            io.littlehorse.common.proto.HostInfoPb.class, io.littlehorse.common.proto.HostInfoPb.Builder.class);
   }
 
-  public static final int TASK_DEF_NAME_FIELD_NUMBER = 1;
-  private volatile java.lang.Object taskDefName_;
+  public static final int HOST_FIELD_NUMBER = 1;
+  private volatile java.lang.Object host_;
   /**
-   * <code>string task_def_name = 1;</code>
-   * @return The taskDefName.
+   * <code>string host = 1;</code>
+   * @return The host.
    */
   @java.lang.Override
-  public java.lang.String getTaskDefName() {
-    java.lang.Object ref = taskDefName_;
+  public java.lang.String getHost() {
+    java.lang.Object ref = host_;
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      taskDefName_ = s;
+      host_ = s;
       return s;
     }
   }
   /**
-   * <code>string task_def_name = 1;</code>
-   * @return The bytes for taskDefName.
+   * <code>string host = 1;</code>
+   * @return The bytes for host.
    */
   @java.lang.Override
   public com.google.protobuf.ByteString
-      getTaskDefNameBytes() {
-    java.lang.Object ref = taskDefName_;
+      getHostBytes() {
+    java.lang.Object ref = host_;
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      taskDefName_ = b;
+      host_ = b;
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
     }
   }
 
-  public static final int CLIENT_ID_FIELD_NUMBER = 2;
-  private volatile java.lang.Object clientId_;
+  public static final int PORT_FIELD_NUMBER = 2;
+  private int port_;
   /**
-   * <code>string client_id = 2;</code>
-   * @return The clientId.
+   * <code>int32 port = 2;</code>
+   * @return The port.
    */
   @java.lang.Override
-  public java.lang.String getClientId() {
-    java.lang.Object ref = clientId_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      clientId_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string client_id = 2;</code>
-   * @return The bytes for clientId.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getClientIdBytes() {
-    java.lang.Object ref = clientId_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      clientId_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public int getPort() {
+    return port_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -184,11 +155,11 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!getTaskDefNameBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, taskDefName_);
+    if (!getHostBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, host_);
     }
-    if (!getClientIdBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, clientId_);
+    if (port_ != 0) {
+      output.writeInt32(2, port_);
     }
     unknownFields.writeTo(output);
   }
@@ -199,11 +170,12 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (!getTaskDefNameBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, taskDefName_);
+    if (!getHostBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, host_);
     }
-    if (!getClientIdBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, clientId_);
+    if (port_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(2, port_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -215,15 +187,15 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.common.proto.PollTaskPb)) {
+    if (!(obj instanceof io.littlehorse.common.proto.HostInfoPb)) {
       return super.equals(obj);
     }
-    io.littlehorse.common.proto.PollTaskPb other = (io.littlehorse.common.proto.PollTaskPb) obj;
+    io.littlehorse.common.proto.HostInfoPb other = (io.littlehorse.common.proto.HostInfoPb) obj;
 
-    if (!getTaskDefName()
-        .equals(other.getTaskDefName())) return false;
-    if (!getClientId()
-        .equals(other.getClientId())) return false;
+    if (!getHost()
+        .equals(other.getHost())) return false;
+    if (getPort()
+        != other.getPort()) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -235,78 +207,78 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + TASK_DEF_NAME_FIELD_NUMBER;
-    hash = (53 * hash) + getTaskDefName().hashCode();
-    hash = (37 * hash) + CLIENT_ID_FIELD_NUMBER;
-    hash = (53 * hash) + getClientId().hashCode();
+    hash = (37 * hash) + HOST_FIELD_NUMBER;
+    hash = (53 * hash) + getHost().hashCode();
+    hash = (37 * hash) + PORT_FIELD_NUMBER;
+    hash = (53 * hash) + getPort();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
   }
 
-  public static io.littlehorse.common.proto.PollTaskPb parseFrom(
+  public static io.littlehorse.common.proto.HostInfoPb parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.PollTaskPb parseFrom(
+  public static io.littlehorse.common.proto.HostInfoPb parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.PollTaskPb parseFrom(
+  public static io.littlehorse.common.proto.HostInfoPb parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.PollTaskPb parseFrom(
+  public static io.littlehorse.common.proto.HostInfoPb parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.PollTaskPb parseFrom(byte[] data)
+  public static io.littlehorse.common.proto.HostInfoPb parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.PollTaskPb parseFrom(
+  public static io.littlehorse.common.proto.HostInfoPb parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.PollTaskPb parseFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.HostInfoPb parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.PollTaskPb parseFrom(
+  public static io.littlehorse.common.proto.HostInfoPb parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.PollTaskPb parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.HostInfoPb parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.PollTaskPb parseDelimitedFrom(
+  public static io.littlehorse.common.proto.HostInfoPb parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.PollTaskPb parseFrom(
+  public static io.littlehorse.common.proto.HostInfoPb parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.PollTaskPb parseFrom(
+  public static io.littlehorse.common.proto.HostInfoPb parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -319,7 +291,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.common.proto.PollTaskPb prototype) {
+  public static Builder newBuilder(io.littlehorse.common.proto.HostInfoPb prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -335,26 +307,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.PollTaskPb}
+   * Protobuf type {@code lh_proto.HostInfoPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.PollTaskPb)
-      io.littlehorse.common.proto.PollTaskPbOrBuilder {
+      // @@protoc_insertion_point(builder_implements:lh_proto.HostInfoPb)
+      io.littlehorse.common.proto.HostInfoPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.Service.internal_static_lh_proto_PollTaskPb_descriptor;
+      return io.littlehorse.common.proto.Service.internal_static_lh_proto_HostInfoPb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.Service.internal_static_lh_proto_PollTaskPb_fieldAccessorTable
+      return io.littlehorse.common.proto.Service.internal_static_lh_proto_HostInfoPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.common.proto.PollTaskPb.class, io.littlehorse.common.proto.PollTaskPb.Builder.class);
+              io.littlehorse.common.proto.HostInfoPb.class, io.littlehorse.common.proto.HostInfoPb.Builder.class);
     }
 
-    // Construct using io.littlehorse.common.proto.PollTaskPb.newBuilder()
+    // Construct using io.littlehorse.common.proto.HostInfoPb.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -372,9 +344,9 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      taskDefName_ = "";
+      host_ = "";
 
-      clientId_ = "";
+      port_ = 0;
 
       return this;
     }
@@ -382,17 +354,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.Service.internal_static_lh_proto_PollTaskPb_descriptor;
+      return io.littlehorse.common.proto.Service.internal_static_lh_proto_HostInfoPb_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.PollTaskPb getDefaultInstanceForType() {
-      return io.littlehorse.common.proto.PollTaskPb.getDefaultInstance();
+    public io.littlehorse.common.proto.HostInfoPb getDefaultInstanceForType() {
+      return io.littlehorse.common.proto.HostInfoPb.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.PollTaskPb build() {
-      io.littlehorse.common.proto.PollTaskPb result = buildPartial();
+    public io.littlehorse.common.proto.HostInfoPb build() {
+      io.littlehorse.common.proto.HostInfoPb result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -400,10 +372,10 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.PollTaskPb buildPartial() {
-      io.littlehorse.common.proto.PollTaskPb result = new io.littlehorse.common.proto.PollTaskPb(this);
-      result.taskDefName_ = taskDefName_;
-      result.clientId_ = clientId_;
+    public io.littlehorse.common.proto.HostInfoPb buildPartial() {
+      io.littlehorse.common.proto.HostInfoPb result = new io.littlehorse.common.proto.HostInfoPb(this);
+      result.host_ = host_;
+      result.port_ = port_;
       onBuilt();
       return result;
     }
@@ -442,23 +414,22 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.common.proto.PollTaskPb) {
-        return mergeFrom((io.littlehorse.common.proto.PollTaskPb)other);
+      if (other instanceof io.littlehorse.common.proto.HostInfoPb) {
+        return mergeFrom((io.littlehorse.common.proto.HostInfoPb)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.common.proto.PollTaskPb other) {
-      if (other == io.littlehorse.common.proto.PollTaskPb.getDefaultInstance()) return this;
-      if (!other.getTaskDefName().isEmpty()) {
-        taskDefName_ = other.taskDefName_;
+    public Builder mergeFrom(io.littlehorse.common.proto.HostInfoPb other) {
+      if (other == io.littlehorse.common.proto.HostInfoPb.getDefaultInstance()) return this;
+      if (!other.getHost().isEmpty()) {
+        host_ = other.host_;
         onChanged();
       }
-      if (!other.getClientId().isEmpty()) {
-        clientId_ = other.clientId_;
-        onChanged();
+      if (other.getPort() != 0) {
+        setPort(other.getPort());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -475,11 +446,11 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      io.littlehorse.common.proto.PollTaskPb parsedMessage = null;
+      io.littlehorse.common.proto.HostInfoPb parsedMessage = null;
       try {
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (io.littlehorse.common.proto.PollTaskPb) e.getUnfinishedMessage();
+        parsedMessage = (io.littlehorse.common.proto.HostInfoPb) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
@@ -489,154 +460,109 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.lang.Object taskDefName_ = "";
+    private java.lang.Object host_ = "";
     /**
-     * <code>string task_def_name = 1;</code>
-     * @return The taskDefName.
+     * <code>string host = 1;</code>
+     * @return The host.
      */
-    public java.lang.String getTaskDefName() {
-      java.lang.Object ref = taskDefName_;
+    public java.lang.String getHost() {
+      java.lang.Object ref = host_;
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        taskDefName_ = s;
+        host_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
       }
     }
     /**
-     * <code>string task_def_name = 1;</code>
-     * @return The bytes for taskDefName.
+     * <code>string host = 1;</code>
+     * @return The bytes for host.
      */
     public com.google.protobuf.ByteString
-        getTaskDefNameBytes() {
-      java.lang.Object ref = taskDefName_;
+        getHostBytes() {
+      java.lang.Object ref = host_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        taskDefName_ = b;
+        host_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
     /**
-     * <code>string task_def_name = 1;</code>
-     * @param value The taskDefName to set.
+     * <code>string host = 1;</code>
+     * @param value The host to set.
      * @return This builder for chaining.
      */
-    public Builder setTaskDefName(
+    public Builder setHost(
         java.lang.String value) {
       if (value == null) {
     throw new NullPointerException();
   }
   
-      taskDefName_ = value;
+      host_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>string task_def_name = 1;</code>
+     * <code>string host = 1;</code>
      * @return This builder for chaining.
      */
-    public Builder clearTaskDefName() {
+    public Builder clearHost() {
       
-      taskDefName_ = getDefaultInstance().getTaskDefName();
+      host_ = getDefaultInstance().getHost();
       onChanged();
       return this;
     }
     /**
-     * <code>string task_def_name = 1;</code>
-     * @param value The bytes for taskDefName to set.
+     * <code>string host = 1;</code>
+     * @param value The bytes for host to set.
      * @return This builder for chaining.
      */
-    public Builder setTaskDefNameBytes(
+    public Builder setHostBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
       
-      taskDefName_ = value;
+      host_ = value;
       onChanged();
       return this;
     }
 
-    private java.lang.Object clientId_ = "";
+    private int port_ ;
     /**
-     * <code>string client_id = 2;</code>
-     * @return The clientId.
+     * <code>int32 port = 2;</code>
+     * @return The port.
      */
-    public java.lang.String getClientId() {
-      java.lang.Object ref = clientId_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        clientId_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
+    @java.lang.Override
+    public int getPort() {
+      return port_;
     }
     /**
-     * <code>string client_id = 2;</code>
-     * @return The bytes for clientId.
-     */
-    public com.google.protobuf.ByteString
-        getClientIdBytes() {
-      java.lang.Object ref = clientId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        clientId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string client_id = 2;</code>
-     * @param value The clientId to set.
+     * <code>int32 port = 2;</code>
+     * @param value The port to set.
      * @return This builder for chaining.
      */
-    public Builder setClientId(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      clientId_ = value;
+    public Builder setPort(int value) {
+      
+      port_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>string client_id = 2;</code>
+     * <code>int32 port = 2;</code>
      * @return This builder for chaining.
      */
-    public Builder clearClientId() {
+    public Builder clearPort() {
       
-      clientId_ = getDefaultInstance().getClientId();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string client_id = 2;</code>
-     * @param value The bytes for clientId to set.
-     * @return This builder for chaining.
-     */
-    public Builder setClientIdBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      clientId_ = value;
+      port_ = 0;
       onChanged();
       return this;
     }
@@ -653,41 +579,41 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.PollTaskPb)
+    // @@protoc_insertion_point(builder_scope:lh_proto.HostInfoPb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.PollTaskPb)
-  private static final io.littlehorse.common.proto.PollTaskPb DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:lh_proto.HostInfoPb)
+  private static final io.littlehorse.common.proto.HostInfoPb DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.common.proto.PollTaskPb();
+    DEFAULT_INSTANCE = new io.littlehorse.common.proto.HostInfoPb();
   }
 
-  public static io.littlehorse.common.proto.PollTaskPb getDefaultInstance() {
+  public static io.littlehorse.common.proto.HostInfoPb getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<PollTaskPb>
-      PARSER = new com.google.protobuf.AbstractParser<PollTaskPb>() {
+  private static final com.google.protobuf.Parser<HostInfoPb>
+      PARSER = new com.google.protobuf.AbstractParser<HostInfoPb>() {
     @java.lang.Override
-    public PollTaskPb parsePartialFrom(
+    public HostInfoPb parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new PollTaskPb(input, extensionRegistry);
+      return new HostInfoPb(input, extensionRegistry);
     }
   };
 
-  public static com.google.protobuf.Parser<PollTaskPb> parser() {
+  public static com.google.protobuf.Parser<HostInfoPb> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<PollTaskPb> getParserForType() {
+  public com.google.protobuf.Parser<HostInfoPb> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.common.proto.PollTaskPb getDefaultInstanceForType() {
+  public io.littlehorse.common.proto.HostInfoPb getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

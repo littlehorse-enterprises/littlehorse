@@ -3,6 +3,7 @@ package io.littlehorse.server.streamsbackend.coreprocessors;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.Command;
+import io.littlehorse.server.streamsbackend.taskqueue.GodzillaTaskQueueManager;
 import java.time.Duration;
 import org.apache.kafka.streams.processor.PunctuationType;
 import org.apache.kafka.streams.processor.api.Processor;
@@ -15,15 +16,17 @@ public class CommandProcessor
     private ProcessorContext<String, CommandProcessorOutput> ctx;
     private CommandProcessorDaoImpl dao;
     private LHConfig config;
+    private GodzillaTaskQueueManager godzilla;
 
-    public CommandProcessor(LHConfig config) {
+    public CommandProcessor(LHConfig config, GodzillaTaskQueueManager godzilla) {
         this.config = config;
+        this.godzilla = godzilla;
     }
 
     @Override
     public void init(final ProcessorContext<String, CommandProcessorOutput> ctx) {
         this.ctx = ctx;
-        dao = new CommandProcessorDaoImpl(this.ctx, config);
+        dao = new CommandProcessorDaoImpl(this.ctx, config, godzilla);
         ctx.schedule(
             Duration.ofMillis(100),
             PunctuationType.WALL_CLOCK_TIME,
