@@ -45,7 +45,7 @@ public class TaskDef extends GETable<TaskDefPbOrBuilder> {
         return LHUtil.getCompositeId(name, String.valueOf(version));
     }
 
-    public static String getPrefixByName(String name) {
+    public static String getFullPrefixByName(String name) {
         return StoreUtils.getFullStoreKey(name + "/", TaskDef.class);
     }
 

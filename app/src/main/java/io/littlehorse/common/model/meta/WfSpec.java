@@ -66,7 +66,7 @@ public class WfSpec extends GETable<WfSpecPbOrBuilder> {
         return StoreUtils.getFullStoreKey(getSubKey(name, version), WfSpec.class);
     }
 
-    public static String getPrefixByName(String name) {
+    public static String getFullPrefixByName(String name) {
         return StoreUtils.getFullStoreKey(name + "/", WfSpec.class);
     }
 

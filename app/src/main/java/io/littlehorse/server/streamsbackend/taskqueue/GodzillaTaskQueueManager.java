@@ -1,5 +1,6 @@
 package io.littlehorse.server.streamsbackend.taskqueue;
 
+import io.littlehorse.server.LHServer;
 import io.littlehorse.server.streamsbackend.KafkaStreamsBackend;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,15 +12,12 @@ public class GodzillaTaskQueueManager {
 
     private Map<String, TaskQueueManager> taskQueues;
     private ReadWriteLock taskQueuesLock;
-    private KafkaStreamsBackend ksBackend;
+    private LHServer backend;
 
-    public GodzillaTaskQueueManager() {
+    public GodzillaTaskQueueManager(LHServer backend) {
         this.taskQueues = new HashMap<>();
         this.taskQueuesLock = new ReentrantReadWriteLock();
-    }
-
-    public void setBackend(KafkaStreamsBackend backend) {
-        this.ksBackend = backend;
+        this.backend = backend;
     }
 
     public void onPollRequest(TaskQueueStreamObserver listener) {
@@ -35,7 +33,7 @@ public class GodzillaTaskQueueManager {
     }
 
     public void itsAMatch(String tsrId, TaskQueueStreamObserver luckyClient) {
-        ksBackend.returnTaskToClient(tsrId, luckyClient);
+        backend.returnTaskToClient(tsrId, luckyClient);
     }
 
     private TaskQueueManager getSubQueueManager(String taskDefName) {

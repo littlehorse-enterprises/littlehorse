@@ -1,12 +1,18 @@
 package io.littlehorse.server;
 
+import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.MessageOrBuilder;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import io.grpc.health.v1.HealthCheckResponse.ServingStatus;
 import io.grpc.protobuf.services.HealthStatusManager;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHConnectionError;
+import io.littlehorse.common.exceptions.LHSerdeError;
+import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.Storeable;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.SubCommand;
@@ -31,6 +37,11 @@ import io.littlehorse.common.model.command.subcommandresponse.StopWfRunReply;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.wfrun.ExternalEvent;
+import io.littlehorse.common.model.wfrun.NodeRun;
+import io.littlehorse.common.model.wfrun.Variable;
+import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.proto.CentralStoreQueryReplyPb;
 import io.littlehorse.common.proto.DeleteWfRunPb;
 import io.littlehorse.common.proto.DeleteWfRunReplyPb;
 import io.littlehorse.common.proto.GetExternalEventDefPb;
@@ -73,8 +84,9 @@ import io.littlehorse.common.proto.StopWfRunReplyPb;
 import io.littlehorse.common.proto.TaskResultEventPb;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.streamsbackend.KafkaStreamsBackend;
-import io.littlehorse.server.streamsbackend.storeinternals.BackendInternalComms;
+import io.littlehorse.server.streamsbackend.BackendInternalComms;
+import io.littlehorse.server.streamsbackend.ServerTopology;
+import io.littlehorse.server.streamsbackend.storeinternals.utils.StoreUtils;
 import io.littlehorse.server.streamsbackend.taskqueue.GodzillaTaskQueueManager;
 import io.littlehorse.server.streamsbackend.taskqueue.TaskQueueStreamObserver;
 import io.littlehorse.server.streamsbackend.util.LHAsyncWaiter;
@@ -83,13 +95,19 @@ import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import org.apache.kafka.clients.producer.RecordMetadata;
+import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.KafkaStreams.State;
+import org.apache.kafka.streams.KafkaStreams.StateListener;
 
 public class LHServer extends LHPublicApiImplBase {
 
     private LHConfig config;
-    private KafkaStreamsBackend backend;
+    // private KafkaStreamsBackend backend;
     private Server grpcServer;
     private GodzillaTaskQueueManager godzilla;
+
+    private KafkaStreams coreStreams;
+    private KafkaStreams timerStreams;
 
     private BackendInternalComms internalComms;
     private LHProducer producer;
@@ -99,13 +117,19 @@ public class LHServer extends LHPublicApiImplBase {
     public LHServer(LHConfig config) {
         this.config = config;
 
-        // Hypothetically we could implement different backends in the future...
-        // perhaps a Pulsar/Cassandra/Yugabyte backend.
         HealthStatusManager grpcHealthCheckThingy = new HealthStatusManager();
-        this.godzilla = new GodzillaTaskQueueManager();
-        backend =
-            new KafkaStreamsBackend(this.config, grpcHealthCheckThingy, godzilla);
-        godzilla.setBackend(backend);
+        this.godzilla = new GodzillaTaskQueueManager(this);
+
+        coreStreams =
+            new KafkaStreams(
+                ServerTopology.initCoreTopology(config, godzilla),
+                config.getStreamsConfig("core")
+            );
+        timerStreams =
+            new KafkaStreams(
+                ServerTopology.initTimerTopology(config),
+                config.getStreamsConfig("timer")
+            );
 
         this.grpcServer =
             ServerBuilder
@@ -113,6 +137,13 @@ public class LHServer extends LHPublicApiImplBase {
                 .addService(this)
                 .addService(grpcHealthCheckThingy.getHealthService())
                 .build();
+        coreStreams.setStateListener(
+            new LHBackendStateListener("core", grpcHealthCheckThingy)
+        );
+        timerStreams.setStateListener(
+            new LHBackendStateListener("timer", grpcHealthCheckThingy)
+        );
+        internalComms = new BackendInternalComms(config, coreStreams);
 
         this.producer = new LHProducer(config, false);
         this.asyncWaiters = new ConcurrentHashMap<>();
@@ -120,52 +151,56 @@ public class LHServer extends LHPublicApiImplBase {
 
     @Override
     public void getWfSpec(GetWfSpecPb req, StreamObserver<GetWfSpecReplyPb> ctx) {
-        GetWfSpecReplyPb.Builder out = GetWfSpecReplyPb.newBuilder();
+        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
+            ctx,
+            WfSpec.class,
+            GetWfSpecReplyPb.class,
+            config
+        );
 
-        try {
-            WfSpec spec = backend.getWfSpec(
-                req.getName(),
-                req.hasVersion() ? req.getVersion() : null
+        if (req.hasVersion()) {
+            internalComms.getBytesAsync(
+                StoreUtils.getFullStoreKey(
+                    WfSpec.getSubKey(req.getName(), req.getVersion()),
+                    WfSpec.class
+                ),
+                LHConstants.META_PARTITION_KEY,
+                observer
             );
-            if (spec == null) {
-                out.setMessage("Couldn't find specified WfSpec.");
-                out.setCode(LHResponseCodePb.NOT_FOUND_ERROR);
-            } else {
-                out.setResult(spec.toProto());
-                out.setCode(LHResponseCodePb.OK);
-            }
-        } catch (LHConnectionError exn) {
-            out.setCode(LHResponseCodePb.CONNECTION_ERROR);
-            out.setMessage("Had an internal connection error: " + exn.getMessage());
+        } else {
+            internalComms.getBytesAsync(
+                WfSpec.getFullPrefixByName(req.getName()),
+                LHConstants.META_PARTITION_KEY,
+                observer
+            );
         }
-
-        ctx.onNext(out.build());
-        ctx.onCompleted();
     }
 
     @Override
     public void getTaskDef(GetTaskDefPb req, StreamObserver<GetTaskDefReplyPb> ctx) {
-        GetTaskDefReplyPb.Builder out = GetTaskDefReplyPb.newBuilder();
+        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
+            ctx,
+            TaskDef.class,
+            GetTaskDefReplyPb.class,
+            config
+        );
 
-        try {
-            TaskDef spec = backend.getTaskDef(
-                req.getName(),
-                req.hasVersion() ? req.getVersion() : null
+        if (req.hasVersion()) {
+            internalComms.getBytesAsync(
+                StoreUtils.getFullStoreKey(
+                    TaskDef.getSubKey(req.getName(), req.getVersion()),
+                    TaskDef.class
+                ),
+                LHConstants.META_PARTITION_KEY,
+                observer
             );
-            if (spec == null) {
-                out.setMessage("Couldn't find specified TaskDef.");
-                out.setCode(LHResponseCodePb.NOT_FOUND_ERROR);
-            } else {
-                out.setResult(spec.toProto());
-                out.setCode(LHResponseCodePb.OK);
-            }
-        } catch (LHConnectionError exn) {
-            out.setCode(LHResponseCodePb.CONNECTION_ERROR);
-            out.setMessage("Had an internal connection error: " + exn.getMessage());
+        } else {
+            internalComms.getBytesAsync(
+                TaskDef.getFullPrefixByName(req.getName()),
+                LHConstants.META_PARTITION_KEY,
+                observer
+            );
         }
-
-        ctx.onNext(out.build());
-        ctx.onCompleted();
     }
 
     @Override
@@ -173,27 +208,29 @@ public class LHServer extends LHPublicApiImplBase {
         GetExternalEventDefPb req,
         StreamObserver<GetExternalEventDefReplyPb> ctx
     ) {
-        GetExternalEventDefReplyPb.Builder out = GetExternalEventDefReplyPb.newBuilder();
+        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
+            ctx,
+            ExternalEventDef.class,
+            GetExternalEventDefReplyPb.class,
+            config
+        );
 
-        try {
-            ExternalEventDef spec = backend.getExternalEventDef(
-                req.getName(),
-                req.hasVersion() ? req.getVersion() : null
+        if (req.hasVersion()) {
+            internalComms.getBytesAsync(
+                StoreUtils.getFullStoreKey(
+                    ExternalEventDef.getSubKey(req.getName(), req.getVersion()),
+                    ExternalEventDef.class
+                ),
+                LHConstants.META_PARTITION_KEY,
+                observer
             );
-            if (spec == null) {
-                out.setMessage("Couldn't find specified ExternalEventDef.");
-                out.setCode(LHResponseCodePb.NOT_FOUND_ERROR);
-            } else {
-                out.setResult(spec.toProto());
-                out.setCode(LHResponseCodePb.OK);
-            }
-        } catch (LHConnectionError exn) {
-            out.setCode(LHResponseCodePb.CONNECTION_ERROR);
-            out.setMessage("Had an internal connection error: " + exn.getMessage());
+        } else {
+            internalComms.getBytesAsync(
+                ExternalEventDef.getFullPrefixByName(req.getName()),
+                LHConstants.META_PARTITION_KEY,
+                observer
+            );
         }
-
-        ctx.onNext(out.build());
-        ctx.onCompleted();
     }
 
     @Override
@@ -288,14 +325,41 @@ public class LHServer extends LHPublicApiImplBase {
 
     @Override
     public void getWfRun(GetWfRunPb req, StreamObserver<GetWfRunReplyPb> ctx) {
-        ctx.onNext(backend.getWfRun(req));
-        ctx.onCompleted();
+        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
+            ctx,
+            WfRun.class,
+            GetWfRunReplyPb.class,
+            config
+        );
+
+        internalComms.getBytesAsync(
+            StoreUtils.getFullStoreKey(req.getId(), WfRun.class),
+            req.getId(),
+            observer
+        );
     }
 
     @Override
     public void getNodeRun(GetNodeRunPb req, StreamObserver<GetNodeRunReplyPb> ctx) {
-        ctx.onNext(backend.getNodeRun(req));
-        ctx.onCompleted();
+        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
+            ctx,
+            NodeRun.class,
+            GetNodeRunReplyPb.class,
+            config
+        );
+
+        internalComms.getBytesAsync(
+            StoreUtils.getFullStoreKey(
+                NodeRun.getStoreKey(
+                    req.getWfRunId(),
+                    req.getThreadRunNumber(),
+                    req.getPosition()
+                ),
+                NodeRun.class
+            ),
+            req.getWfRunId(),
+            observer
+        );
     }
 
     @Override
@@ -303,8 +367,25 @@ public class LHServer extends LHPublicApiImplBase {
         GetVariablePb req,
         StreamObserver<GetVariableReplyPb> ctx
     ) {
-        ctx.onNext(backend.getVariable(req));
-        ctx.onCompleted();
+        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
+            ctx,
+            Variable.class,
+            GetVariableReplyPb.class,
+            config
+        );
+
+        internalComms.getBytesAsync(
+            StoreUtils.getFullStoreKey(
+                Variable.getStoreKey(
+                    req.getWfRunId(),
+                    req.getThreadRunNumber(),
+                    req.getVarName()
+                ),
+                Variable.class
+            ),
+            req.getWfRunId(),
+            observer
+        );
     }
 
     @Override
@@ -312,8 +393,25 @@ public class LHServer extends LHPublicApiImplBase {
         GetExternalEventPb req,
         StreamObserver<GetExternalEventReplyPb> ctx
     ) {
-        ctx.onNext(backend.getExternalEvent(req));
-        ctx.onCompleted();
+        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
+            ctx,
+            ExternalEvent.class,
+            GetExternalEventReplyPb.class,
+            config
+        );
+
+        internalComms.getBytesAsync(
+            StoreUtils.getFullStoreKey(
+                ExternalEvent.getStoreKey(
+                    req.getWfRunId(),
+                    req.getExternalEventDefName(),
+                    req.getGuid()
+                ),
+                ExternalEvent.class
+            ),
+            req.getWfRunId(),
+            observer
+        );
     }
 
     @Override
@@ -438,13 +536,17 @@ public class LHServer extends LHPublicApiImplBase {
     }
 
     public void start() throws IOException {
-        backend.start();
+        coreStreams.start();
+        timerStreams.start();
+        internalComms.start();
         grpcServer.start();
     }
 
     public void close() {
         grpcServer.shutdown();
-        backend.close();
+        timerStreams.close();
+        coreStreams.close();
+        internalComms.close();
     }
 
     public static void doMain(LHConfig config) throws IOException {
@@ -458,5 +560,131 @@ public class LHServer extends LHPublicApiImplBase {
                 })
             );
         server.start();
+    }
+}
+
+class LHBackendStateListener implements StateListener {
+
+    private String componentName;
+    private HealthStatusManager grpcHealthCheckThingy;
+
+    public LHBackendStateListener(
+        String componentName,
+        HealthStatusManager grpcHealthCheckThingy
+    ) {
+        this.componentName = componentName;
+        this.grpcHealthCheckThingy = grpcHealthCheckThingy;
+    }
+
+    public void onChange(State newState, State oldState) {
+        LHUtil.log(new Date(), "New state for", componentName + ":", newState);
+        if (newState == State.RUNNING) {
+            grpcHealthCheckThingy.setStatus(componentName, ServingStatus.SERVING);
+        } else {
+            grpcHealthCheckThingy.setStatus(componentName, ServingStatus.NOT_SERVING);
+        }
+    }
+}
+
+class IntermediateResp<
+    U extends MessageOrBuilder,
+    T extends LHSerializable<U>,
+    V extends MessageOrBuilder
+> {
+
+    public String message;
+    public LHResponseCodePb code;
+    public T result;
+
+    private Class<V> responseCls;
+
+    public IntermediateResp(Class<V> responseCls) {
+        this.responseCls = responseCls;
+    }
+
+    // EMPLOYEE_TODO: figure out why all my reflection is "unsafe" or "unchecked"
+    @SuppressWarnings("unchecked")
+    public V toProto() {
+        try {
+            GeneratedMessageV3.Builder<?> b = (GeneratedMessageV3.Builder<?>) responseCls
+                .getMethod("newBuilder")
+                .invoke(null);
+            if (message != null) {
+                responseCls.getMethod("setMessage", String.class).invoke(b, message);
+            }
+            responseCls.getMethod("setCode", LHResponseCodePb.class).invoke(b, code);
+            if (result != null) {
+                U resultProto = (U) result.toProto().build();
+                responseCls
+                    .getMethod("setResult", resultProto.getClass())
+                    .invoke(b, resultProto);
+            }
+            return (V) b.build();
+        } catch (Exception exn) {
+            exn.printStackTrace();
+            throw new RuntimeException("Yikerz, not possible");
+        }
+    }
+}
+
+class GETStreamObserver<
+    U extends MessageOrBuilder, T extends Storeable<U>, V extends MessageOrBuilder
+>
+    implements StreamObserver<CentralStoreQueryReplyPb> {
+
+    private StreamObserver<V> ctx;
+    private LHConfig config;
+    private Class<T> getableCls;
+
+    private IntermediateResp<U, T, V> out;
+
+    public GETStreamObserver(
+        StreamObserver<V> responseObserver,
+        Class<T> getableCls,
+        Class<V> responseCls,
+        LHConfig config
+    ) {
+        this.ctx = responseObserver;
+        this.getableCls = getableCls;
+        this.config = config;
+
+        this.out = new IntermediateResp<U, T, V>(responseCls);
+    }
+
+    public void onError(Throwable t) {
+        // TODO
+        out.code = LHResponseCodePb.CONNECTION_ERROR;
+        out.message = "Failed connecting to backend: " + t.getMessage();
+        ctx.onNext(out.toProto());
+        ctx.onCompleted();
+    }
+
+    public void onCompleted() {
+        LHUtil.log("Unexpected call to onCompleted()");
+    }
+
+    public void onNext(CentralStoreQueryReplyPb reply) {
+        // TODO
+        if (reply.hasResult()) {
+            out.code = LHResponseCodePb.OK;
+            try {
+                out.result =
+                    LHSerializable.fromBytes(
+                        reply.getResult().toByteArray(),
+                        getableCls,
+                        config
+                    );
+            } catch (LHSerdeError exn) {
+                out.code = LHResponseCodePb.CONNECTION_ERROR;
+                out.message =
+                    "Impossible: got unreadable response from backend: " +
+                    exn.getMessage();
+            }
+        } else {
+            out.code = LHResponseCodePb.NOT_FOUND_ERROR;
+        }
+
+        ctx.onNext(out.toProto());
+        ctx.onCompleted();
     }
 }

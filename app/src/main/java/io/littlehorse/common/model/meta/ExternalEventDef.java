@@ -30,7 +30,7 @@ public class ExternalEventDef extends GETable<ExternalEventDefPbOrBuilder> {
         return ExternalEventDef.getSubKey(name, version);
     }
 
-    public static String getPrefixByName(String name) {
+    public static String getFullPrefixByName(String name) {
         return StoreUtils.getFullStoreKey(name + "/", ExternalEventDef.class);
     }
 

@@ -1,4 +1,4 @@
-package io.littlehorse.server.streamsbackend.storeinternals;
+package io.littlehorse.server.streamsbackend;
 
 import com.google.protobuf.ByteString;
 import io.grpc.ManagedChannel;
@@ -10,41 +10,32 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.CommandResult;
-import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
-import io.littlehorse.common.model.command.subcommandresponse.TaskClaimReply;
 import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
 import io.littlehorse.common.proto.AttributePb;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.CentralStoreQueryPb;
 import io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb;
 import io.littlehorse.common.proto.CentralStoreQueryReplyPb;
-import io.littlehorse.common.proto.CommandPb.CommandCase;
 import io.littlehorse.common.proto.GETableClassEnumPb;
-import io.littlehorse.common.proto.InternalPollTaskPb;
-import io.littlehorse.common.proto.InternalPollTaskReplyPb;
 import io.littlehorse.common.proto.LHInternalsGrpc;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsBlockingStub;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsImplBase;
+import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsStub;
 import io.littlehorse.common.proto.PaginatedTagQueryPb;
 import io.littlehorse.common.proto.PaginatedTagQueryReplyPb;
 import io.littlehorse.common.proto.PartitionBookmarkPb;
 import io.littlehorse.common.proto.StoreQueryStatusPb;
 import io.littlehorse.common.proto.WaitForCommandResultPb;
 import io.littlehorse.common.proto.WaitForCommandResultReplyPb;
-import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.streamsbackend.KafkaStreamsBackend;
-import io.littlehorse.server.streamsbackend.ServerTopology;
+import io.littlehorse.server.streamsbackend.storeinternals.LHROStoreWrapper;
 import io.littlehorse.server.streamsbackend.storeinternals.index.Attribute;
-import io.littlehorse.server.streamsbackend.storeinternals.index.DiscreteTagLocalCounter;
 import io.littlehorse.server.streamsbackend.storeinternals.index.Tag;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.LHIterKeyValue;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.LHKeyValueIterator;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -70,21 +61,13 @@ public class BackendInternalComms implements Closeable {
     private Server internalGrpcServer;
     private KafkaStreams coreStreams;
     private HostInfo thisHost;
-    private InflightList inflightList;
-    private KafkaStreamsBackend upperLayer;
 
     private Map<String, ManagedChannel> channels;
 
-    public BackendInternalComms(
-        LHConfig config,
-        KafkaStreams coreStreams,
-        KafkaStreamsBackend upperLayer
-    ) {
+    public BackendInternalComms(LHConfig config, KafkaStreams coreStreams) {
         this.config = config;
         this.coreStreams = coreStreams;
         this.channels = new HashMap<>();
-        this.inflightList = new InflightList();
-        this.upperLayer = upperLayer;
 
         this.internalGrpcServer =
             ServerBuilder
@@ -110,8 +93,23 @@ public class BackendInternalComms implements Closeable {
         }
     }
 
-    public Bytes getBytes(String fullStoreKey, String partitionKey)
-        throws LHConnectionError {
+    /**
+     * Performs a distributed point query by hashing the partition key and querying
+     * the backing RocksDB store on the resulting host. This method is asynchronous;
+     * so you provide a StreamObserver (which is a handy interface by grpc) which is
+     * callback'ed once the data is available.
+     *
+     * Internally, this method uses the grpc async client.
+     *
+     * @param fullStoreKey is the FULL store key to query.
+     * @param partitionKey is the partition key.
+     * @param observer is the callback-able object.
+     */
+    public void getBytesAsync(
+        String fullStoreKey,
+        String partitionKey,
+        StreamObserver<CentralStoreQueryReplyPb> observer
+    ) {
         KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
             ServerTopology.CORE_STORE,
             partitionKey,
@@ -119,142 +117,29 @@ public class BackendInternalComms implements Closeable {
         );
 
         if (meta.activeHost().equals(thisHost)) {
-            return getRawStore(null, false).get(fullStoreKey);
+            localGetBytesAsync(fullStoreKey, observer);
         } else {
-            return queryRemote(
+            queryRemoteAsync(
                 meta,
-                CentralStoreSubQueryPb.newBuilder().setKey(fullStoreKey).build()
+                CentralStoreSubQueryPb.newBuilder().setKey(fullStoreKey).build(),
+                observer
             );
         }
     }
 
-    public TaskScheduleRequest pollTask(String taskDefName) throws LHConnectionError {
-        // First attempt: check our local active partitions
-        TaskScheduleRequest local = findTaskLocally(taskDefName);
-        if (local != null) {
-            return local;
-        }
+    private void localGetBytesAsync(
+        String fullStoreKey,
+        StreamObserver<CentralStoreQueryReplyPb> observer
+    ) {
+        ReadOnlyKeyValueStore<String, Bytes> store = getRawStore(null, false);
+        Bytes result = store.get(fullStoreKey);
 
-        // Now we gotta see if the other hosts have any pending tasks. To do that,
-        // we check the global store for the counters on the tags (since the
-        // TagStorageType for the relevant tag is LOCAL_COUNTED).
-        Exception caught = null;
-        for (HostInfo other : findHostsWithPendingTask(taskDefName)) {
-            LHUtil.log("polling for task remotely: ", other.host(), other.port());
+        CentralStoreQueryReplyPb.Builder out = CentralStoreQueryReplyPb
+            .newBuilder()
+            .setCode(StoreQueryStatusPb.RSQ_OK);
+        if (result != null) out.setResult(ByteString.copyFrom(result.get()));
 
-            LHInternalsBlockingStub client = getInternalClient(other);
-            try {
-                InternalPollTaskReplyPb resp = client.internalPollTask(
-                    InternalPollTaskPb
-                        .newBuilder()
-                        .setTaskQueueName(taskDefName)
-                        .build()
-                );
-                if (resp.hasResult()) {
-                    return TaskScheduleRequest.fromProto(resp.getResultOrBuilder());
-                }
-            } catch (Exception exn) {
-                caught = exn;
-            }
-        }
-
-        if (caught != null) {
-            throw new LHConnectionError(
-                caught,
-                "Failed contacting internal LH brokers."
-            );
-        }
-        return null;
-    }
-
-    // OPTIMIZATION IDEA: in the future, we should cache this call and have it
-    // update every 500ms or so for each queue so that we don't have thousands of
-    // range scans going on all the time.
-    // Better yet, we could also have the global store processor send updates to
-    // the cache object (that is probably the reason why providing a processor
-    // is allowed in the first place).
-    private Set<HostInfo> findHostsWithPendingTask(String taskDefName) {
-        LHROStoreWrapper store = getGlobalStore();
-        String prefix = Tag.getAttributeString(
-            GETableClassEnumPb.TASK_SCHEDULE_REQUEST,
-            Arrays.asList(new Attribute("taskDefName", taskDefName))
-        );
-
-        Map<Integer, Long> partitionsToCounts = new HashMap<>();
-        try (
-            LHKeyValueIterator<DiscreteTagLocalCounter> iter = store.prefixScan(
-                prefix,
-                DiscreteTagLocalCounter.class
-            )
-        ) {
-            while (iter.hasNext()) {
-                LHIterKeyValue<DiscreteTagLocalCounter> next = iter.next();
-                DiscreteTagLocalCounter counter = next.getValue();
-                partitionsToCounts.put(counter.partition, counter.localCount);
-            }
-        }
-        // TODO: eventually we're gonna do something more intelligent regarding
-        // choosing hosts that have the most pending tasks on them.
-        Set<HostInfo> out = new HashSet<>();
-        for (Map.Entry<Integer, Long> entry : partitionsToCounts.entrySet()) {
-            out.add(getHostForPartition(entry.getKey()));
-        }
-        out.remove(thisHost);
-        return out;
-    }
-
-    private TaskScheduleRequest findTaskLocally(String taskDefName)
-        throws LHConnectionError {
-        LHROStoreWrapper allActivePartitions = getLocalStore(null, false);
-        try (
-            LHKeyValueIterator<Tag> tagIter = allActivePartitions.prefixScan(
-                Tag.getAttributeString(
-                    GETableClassEnumPb.TASK_SCHEDULE_REQUEST,
-                    Arrays.asList(new Attribute("taskDefName", taskDefName))
-                ),
-                Tag.class
-            )
-        ) {
-            while (tagIter.hasNext()) {
-                LHIterKeyValue<Tag> next = tagIter.next();
-                Tag tag = next.getValue();
-                String taskScheduleReqId = tag.describedObjectId;
-                if (inflightList.markInFlight(taskDefName, taskScheduleReqId)) {
-                    TaskScheduleRequest tsr = allActivePartitions.get(
-                        taskScheduleReqId,
-                        TaskScheduleRequest.class
-                    );
-
-                    // We're like 99% sure that we have it now; but still, we have
-                    // to wait for processing to ensure correctness in the case of
-                    // unclean shutdown + recovery. Otherwise, we would just
-                    // fire off the event and return the tsr.
-                    return claimLocalTask(tsr).result;
-                }
-            }
-        }
-        return null;
-    }
-
-    /*
-     * Returns true if the task is successfully claimed.
-     */
-    private TaskClaimReply claimLocalTask(TaskScheduleRequest req)
-        throws LHConnectionError {
-        // It's been marked on the inflight list, so we don't need to worry about
-        // that.
-        TaskClaimEvent tse = new TaskClaimEvent();
-        tse.wfRunId = req.wfRunId;
-        tse.threadRunNumber = req.threadRunNumber;
-        tse.taskRunPosition = req.taskRunPosition;
-        tse.taskRunNumber = req.taskRunNumber;
-        tse.time = new Date();
-
-        Command taskClaimCommand = new Command();
-        taskClaimCommand.type = CommandCase.TASK_CLAIM_EVENT;
-        taskClaimCommand.taskClaimEvent = tse;
-
-        return upperLayer.process(tse, TaskClaimReply.class);
+        observer.onNext(out.build());
     }
 
     public TaskScheduleRequest getTsr(String tsrId) {
@@ -262,8 +147,11 @@ public class BackendInternalComms implements Closeable {
             .get(tsrId, TaskScheduleRequest.class);
     }
 
-    public Bytes getLastFromPrefix(String prefix, String partitionKey)
-        throws LHConnectionError {
+    public void getLastFromPrefixAsync(
+        String prefix,
+        String partitionKey,
+        StreamObserver<CentralStoreQueryReplyPb> observer
+    ) {
         KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
             ServerTopology.CORE_STORE,
             partitionKey,
@@ -271,12 +159,22 @@ public class BackendInternalComms implements Closeable {
         );
 
         if (meta.activeHost().equals(thisHost)) {
-            return new LHROStoreWrapper(getRawStore(null, false), config)
-                .getLastBytesFromFullPrefix(prefix);
+            LHROStoreWrapper wrapper = new LHROStoreWrapper(
+                getRawStore(null, false),
+                config
+            );
+            Bytes result = wrapper.getLastBytesFromFullPrefix(prefix);
+            CentralStoreQueryReplyPb.Builder out = CentralStoreQueryReplyPb.newBuilder();
+            out.setCode(StoreQueryStatusPb.RSQ_OK);
+            if (result != null) {
+                out.setResult(ByteString.copyFrom(result.get()));
+            }
+            observer.onNext(out.build());
         } else {
-            return queryRemote(
+            queryRemoteAsync(
                 meta,
-                CentralStoreSubQueryPb.newBuilder().setLastFromPrefix(prefix).build()
+                CentralStoreSubQueryPb.newBuilder().setLastFromPrefix(prefix).build(),
+                observer
             );
         }
     }
@@ -346,14 +244,14 @@ public class BackendInternalComms implements Closeable {
         return coreStreams.store(params);
     }
 
-    private LHROStoreWrapper getGlobalStore() {
-        StoreQueryParameters<ReadOnlyKeyValueStore<String, Bytes>> params = StoreQueryParameters.fromNameAndType(
-            ServerTopology.GLOBAL_STORE,
-            QueryableStoreTypes.keyValueStore()
-        );
-        ReadOnlyKeyValueStore<String, Bytes> rawGStore = coreStreams.store(params);
-        return new LHROStoreWrapper(rawGStore, config);
-    }
+    // private LHROStoreWrapper getGlobalStore() {
+    //     StoreQueryParameters<ReadOnlyKeyValueStore<String, Bytes>> params = StoreQueryParameters.fromNameAndType(
+    //         ServerTopology.GLOBAL_STORE,
+    //         QueryableStoreTypes.keyValueStore()
+    //     );
+    //     ReadOnlyKeyValueStore<String, Bytes> rawGStore = coreStreams.store(params);
+    //     return new LHROStoreWrapper(rawGStore, config);
+    // }
 
     private LHROStoreWrapper getLocalStore(
         Integer specificPartition,
@@ -366,75 +264,44 @@ public class BackendInternalComms implements Closeable {
         return new LHROStoreWrapper(rawStore, config);
     }
 
-    private Bytes queryRemote(KeyQueryMetadata meta, CentralStoreSubQueryPb subQuery)
-        throws LHConnectionError {
-        LHInternalsBlockingStub client = getInternalClient(meta.activeHost());
-        Exception caught = null;
-
-        try {
-            CentralStoreQueryReplyPb resp = client.centralStoreQuery(
-                CentralStoreQueryPb
-                    .newBuilder()
-                    .setEnableStaleStores(false)
-                    .setSpecificPartition(meta.partition())
-                    .setQuery(subQuery)
-                    .build()
-            );
-
-            if (resp.getCode() == StoreQueryStatusPb.RSQ_OK) {
-                return new Bytes(resp.getResult().toByteArray());
-            } else if (resp.getCode() == StoreQueryStatusPb.RSQ_NOT_AVAILABLE) {
-                caught = new LHConnectionError(null, "Could not access store.");
-            }
-        } catch (Exception exn) {
-            // It's probably a runtime exception. TODO: investigate grpc error
-            // throwing, cuz it's not cool dawg
-            caught = exn;
-        }
-
-        CentralStoreQueryReplyPb resp = null;
-        for (HostInfo standbyHost : meta.standbyHosts()) {
-            client = getInternalClient(standbyHost);
-            try {
-                CentralStoreQueryReplyPb standbyCandidate = client.centralStoreQuery(
-                    CentralStoreQueryPb
-                        .newBuilder()
-                        .setEnableStaleStores(true)
-                        .setSpecificPartition(meta.partition())
-                        .setQuery(subQuery)
-                        .build()
-                );
-
-                if (standbyCandidate.getCode() == StoreQueryStatusPb.RSQ_OK) {
-                    if (
-                        resp == null ||
-                        standbyCandidate.getApproximateLag() <
-                        resp.getApproximateLag()
-                    ) {
-                        resp = standbyCandidate;
-                    }
-                }
-            } catch (Exception exn) {
-                // If we fail to contact a standby host, just ignore it and
-                // proceed to the next standby. If all standby's failed, we still
-                // have saved the caught Exception from calling the active host.
-                // We will return that original error wrapped in an
-                // LHConnectionError.
-            }
-        }
-
-        if (resp != null) {
-            return new Bytes(resp.getResult().toByteArray());
-        } else {
-            throw new LHConnectionError(
-                caught,
-                "Failed to look up desired data from active or standby replicas."
-            );
-        }
+    /**
+     * Performs an RPC call to remotely query the host specified by the provided
+     * KeyQueryMetadata, and calls the callback provided in the StreamObserver
+     * upon completion of the call.
+     *
+     * This method uses the gRPC async client.
+     *
+     * The original version was synchronous and included rpc's to the standby hosts
+     * in the case that the active host was unavailable.
+     *
+     * EMPLOYEE_TODO: re-enable that functionality in the async environment.
+     * @param meta is the metadata for the partion-key that we're searching for.
+     * @param subQuery is the actual subquery we want to ask.
+     */
+    private void queryRemoteAsync(
+        KeyQueryMetadata meta,
+        CentralStoreSubQueryPb subQuery,
+        StreamObserver<CentralStoreQueryReplyPb> observer
+    ) {
+        // todo
+        LHInternalsStub client = getInternalAsyncClient(meta.activeHost());
+        client.centralStoreQuery(
+            CentralStoreQueryPb
+                .newBuilder()
+                .setEnableStaleStores(false)
+                .setSpecificPartition(meta.partition())
+                .setQuery(subQuery)
+                .build(),
+            observer
+        );
     }
 
     private LHInternalsBlockingStub getInternalClient(HostInfo host) {
         return LHInternalsGrpc.newBlockingStub(getChannel(host));
+    }
+
+    private LHInternalsStub getInternalAsyncClient(HostInfo host) {
+        return LHInternalsGrpc.newStub(getChannel(host));
     }
 
     private ManagedChannel getChannel(HostInfo host) {
@@ -563,24 +430,6 @@ public class BackendInternalComms implements Closeable {
             StreamObserver<PaginatedTagQueryReplyPb> ctx
         ) {
             ctx.onNext(localPaginatedTagQuery(req));
-            ctx.onCompleted();
-        }
-
-        public void internalPollTask(
-            InternalPollTaskPb req,
-            StreamObserver<InternalPollTaskReplyPb> ctx
-        ) {
-            InternalPollTaskReplyPb.Builder out = InternalPollTaskReplyPb.newBuilder();
-            try {
-                TaskScheduleRequest tsr = findTaskLocally(req.getTaskQueueName());
-                if (tsr != null) {
-                    out.setResult(tsr.toProto());
-                }
-                out.setCode(StoreQueryStatusPb.RSQ_OK);
-            } catch (LHConnectionError exn) {
-                out.setCode(StoreQueryStatusPb.RSQ_NOT_AVAILABLE);
-            }
-            ctx.onNext(out.build());
             ctx.onCompleted();
         }
     }
@@ -838,3 +687,140 @@ public class BackendInternalComms implements Closeable {
         return tPart.topic().equals(config.getCoreCmdTopicName());
     }
 }
+// // old task poll stuff
+//
+// public void internalPollTask(
+//     InternalPollTaskPb req,
+//     StreamObserver<InternalPollTaskReplyPb> ctx
+// ) {
+//     InternalPollTaskReplyPb.Builder out = InternalPollTaskReplyPb.newBuilder();
+//     try {
+//         TaskScheduleRequest tsr = findTaskLocally(req.getTaskQueueName());
+//         if (tsr != null) {
+//             out.setResult(tsr.toProto());
+//         }
+//         out.setCode(StoreQueryStatusPb.RSQ_OK);
+//     } catch (LHConnectionError exn) {
+//         out.setCode(StoreQueryStatusPb.RSQ_NOT_AVAILABLE);
+//     }
+//     ctx.onNext(out.build());
+//     ctx.onCompleted();
+// }
+// public TaskScheduleRequest pollTask(String taskDefName) throws LHConnectionError {
+//     // First attempt: check our local active partitions
+//     TaskScheduleRequest local = findTaskLocally(taskDefName);
+//     if (local != null) {
+//         return local;
+//     }
+//     // Now we gotta see if the other hosts have any pending tasks. To do that,
+//     // we check the global store for the counters on the tags (since the
+//     // TagStorageType for the relevant tag is LOCAL_COUNTED).
+//     Exception caught = null;
+//     for (HostInfo other : findHostsWithPendingTask(taskDefName)) {
+//         LHUtil.log("polling for task remotely: ", other.host(), other.port());
+//         LHInternalsBlockingStub client = getInternalClient(other);
+//         try {
+//             InternalPollTaskReplyPb resp = client.internalPollTask(
+//                 InternalPollTaskPb
+//                     .newBuilder()
+//                     .setTaskQueueName(taskDefName)
+//                     .build()
+//             );
+//             if (resp.hasResult()) {
+//                 return TaskScheduleRequest.fromProto(resp.getResultOrBuilder());
+//             }
+//         } catch (Exception exn) {
+//             caught = exn;
+//         }
+//     }
+//     if (caught != null) {
+//         throw new LHConnectionError(
+//             caught,
+//             "Failed contacting internal LH brokers."
+//         );
+//     }
+//     return null;
+// }
+// // OPTIMIZATION IDEA: in the future, we should cache this call and have it
+// // update every 500ms or so for each queue so that we don't have thousands of
+// // range scans going on all the time.
+// // Better yet, we could also have the global store processor send updates to
+// // the cache object (that is probably the reason why providing a processor
+// // is allowed in the first place).
+// private Set<HostInfo> findHostsWithPendingTask(String taskDefName) {
+//     LHROStoreWrapper store = getGlobalStore();
+//     String prefix = Tag.getAttributeString(
+//         GETableClassEnumPb.TASK_SCHEDULE_REQUEST,
+//         Arrays.asList(new Attribute("taskDefName", taskDefName))
+//     );
+//     Map<Integer, Long> partitionsToCounts = new HashMap<>();
+//     try (
+//         LHKeyValueIterator<DiscreteTagLocalCounter> iter = store.prefixScan(
+//             prefix,
+//             DiscreteTagLocalCounter.class
+//         )
+//     ) {
+//         while (iter.hasNext()) {
+//             LHIterKeyValue<DiscreteTagLocalCounter> next = iter.next();
+//             DiscreteTagLocalCounter counter = next.getValue();
+//             partitionsToCounts.put(counter.partition, counter.localCount);
+//         }
+//     }
+//     // TODO: eventually we're gonna do something more intelligent regarding
+//     // choosing hosts that have the most pending tasks on them.
+//     Set<HostInfo> out = new HashSet<>();
+//     for (Map.Entry<Integer, Long> entry : partitionsToCounts.entrySet()) {
+//         out.add(getHostForPartition(entry.getKey()));
+//     }
+//     out.remove(thisHost);
+//     return out;
+// }
+// private TaskScheduleRequest findTaskLocally(String taskDefName)
+//     throws LHConnectionError {
+//     LHROStoreWrapper allActivePartitions = getLocalStore(null, false);
+//     try (
+//         LHKeyValueIterator<Tag> tagIter = allActivePartitions.prefixScan(
+//             Tag.getAttributeString(
+//                 GETableClassEnumPb.TASK_SCHEDULE_REQUEST,
+//                 Arrays.asList(new Attribute("taskDefName", taskDefName))
+//             ),
+//             Tag.class
+//         )
+//     ) {
+//         while (tagIter.hasNext()) {
+//             LHIterKeyValue<Tag> next = tagIter.next();
+//             Tag tag = next.getValue();
+//             String taskScheduleReqId = tag.describedObjectId;
+//             if (inflightList.markInFlight(taskDefName, taskScheduleReqId)) {
+//                 TaskScheduleRequest tsr = allActivePartitions.get(
+//                     taskScheduleReqId,
+//                     TaskScheduleRequest.class
+//                 );
+//                 // We're like 99% sure that we have it now; but still, we have
+//                 // to wait for processing to ensure correctness in the case of
+//                 // unclean shutdown + recovery. Otherwise, we would just
+//                 // fire off the event and return the tsr.
+//                 return claimLocalTask(tsr).result;
+//             }
+//         }
+//     }
+//     return null;
+// }
+// /*
+//  * Returns true if the task is successfully claimed.
+//  */
+// private TaskClaimReply claimLocalTask(TaskScheduleRequest req)
+//     throws LHConnectionError {
+//     // It's been marked on the inflight list, so we don't need to worry about
+//     // that.
+//     TaskClaimEvent tse = new TaskClaimEvent();
+//     tse.wfRunId = req.wfRunId;
+//     tse.threadRunNumber = req.threadRunNumber;
+//     tse.taskRunPosition = req.taskRunPosition;
+//     tse.taskRunNumber = req.taskRunNumber;
+//     tse.time = new Date();
+//     Command taskClaimCommand = new Command();
+//     taskClaimCommand.type = CommandCase.TASK_CLAIM_EVENT;
+//     taskClaimCommand.taskClaimEvent = tse;
+//     return upperLayer.process(tse, TaskClaimReply.class);
+// }

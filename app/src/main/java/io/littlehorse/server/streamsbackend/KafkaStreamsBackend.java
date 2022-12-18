@@ -42,7 +42,6 @@ import io.littlehorse.common.proto.SearchWfRunPb;
 import io.littlehorse.common.proto.SearchWfRunReplyPb;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.streamsbackend.storeinternals.BackendInternalComms;
 import io.littlehorse.server.streamsbackend.storeinternals.index.TagQueryUtils;
 import io.littlehorse.server.streamsbackend.storeinternals.utils.StoreUtils;
 import io.littlehorse.server.streamsbackend.taskqueue.GodzillaTaskQueueManager;
@@ -107,112 +106,6 @@ public class KafkaStreamsBackend {
         this.executor = Executors.newFixedThreadPool(16);
 
         internalComms = new BackendInternalComms(config, coreStreams, this);
-    }
-
-    public WfSpec getWfSpec(String name, Integer version) throws LHConnectionError {
-        Bytes specBytes = null;
-        String partitionKey = LHConstants.META_PARTITION_KEY;
-        if (version == null) {
-            specBytes =
-                internalComms.getLastFromPrefix(
-                    WfSpec.getPrefixByName(name),
-                    partitionKey
-                );
-        } else {
-            specBytes =
-                internalComms.getBytes(
-                    WfSpec.getFullKey(name, version),
-                    partitionKey
-                );
-        }
-
-        if (specBytes == null) {
-            return null;
-        } else {
-            try {
-                return LHSerializable.fromBytes(
-                    specBytes.get(),
-                    WfSpec.class,
-                    config
-                );
-            } catch (LHSerdeError exn) {
-                throw new LHConnectionError(
-                    exn,
-                    "Unexpected failure to read response"
-                );
-            }
-        }
-    }
-
-    public TaskDef getTaskDef(String name, Integer version) throws LHConnectionError {
-        Bytes specBytes = null;
-        String partitionKey = LHConstants.META_PARTITION_KEY;
-        if (version == null) {
-            specBytes =
-                internalComms.getLastFromPrefix(
-                    TaskDef.getPrefixByName(name),
-                    partitionKey
-                );
-        } else {
-            specBytes =
-                internalComms.getBytes(
-                    TaskDef.getFullKey(name, version),
-                    partitionKey
-                );
-        }
-
-        if (specBytes == null) {
-            return null;
-        } else {
-            try {
-                return LHSerializable.fromBytes(
-                    specBytes.get(),
-                    TaskDef.class,
-                    config
-                );
-            } catch (LHSerdeError exn) {
-                throw new LHConnectionError(
-                    exn,
-                    "Unexpected failure to read response"
-                );
-            }
-        }
-    }
-
-    public ExternalEventDef getExternalEventDef(String name, Integer version)
-        throws LHConnectionError {
-        Bytes specBytes = null;
-        String partitionKey = LHConstants.META_PARTITION_KEY;
-        if (version == null) {
-            specBytes =
-                internalComms.getLastFromPrefix(
-                    ExternalEventDef.getPrefixByName(name),
-                    partitionKey
-                );
-        } else {
-            specBytes =
-                internalComms.getBytes(
-                    ExternalEventDef.getFullKey(name, version),
-                    partitionKey
-                );
-        }
-
-        if (specBytes == null) {
-            return null;
-        } else {
-            try {
-                return LHSerializable.fromBytes(
-                    specBytes.get(),
-                    ExternalEventDef.class,
-                    config
-                );
-            } catch (LHSerdeError exn) {
-                throw new LHConnectionError(
-                    exn,
-                    "Unexpected failure to read response"
-                );
-            }
-        }
     }
 
     private void recordCommand(Command command) throws LHConnectionError {
@@ -289,147 +182,6 @@ public class KafkaStreamsBackend {
         return out;
     }
 
-    public GetWfRunReplyPb getWfRun(GetWfRunPb req) {
-        String partitionKey = req.getId();
-        String storeKey = StoreUtils.getFullStoreKey(req.getId(), WfRun.class);
-
-        GetWfRunReplyPb.Builder out = GetWfRunReplyPb.newBuilder();
-        try {
-            Bytes resp = internalComms.getBytes(storeKey, partitionKey);
-            if (resp == null) {
-                out.setCode(LHResponseCodePb.NOT_FOUND_ERROR);
-            } else {
-                out.setCode(LHResponseCodePb.OK);
-                out.setResult(
-                    LHSerializable
-                        .fromBytes(resp.get(), WfRun.class, config)
-                        .toProto()
-                );
-            }
-        } catch (LHConnectionError exn) {
-            out.setCode(LHResponseCodePb.CONNECTION_ERROR);
-            out.setMessage("Failed connecting to backend: " + exn.getMessage());
-        } catch (LHSerdeError exn) {
-            out.setCode(LHResponseCodePb.CONNECTION_ERROR);
-            out.setMessage(
-                "Got an invalid response from backend: " + exn.getMessage()
-            );
-        }
-
-        return out.build();
-    }
-
-    public GetNodeRunReplyPb getNodeRun(GetNodeRunPb req) {
-        String partitionKey = req.getWfRunId();
-        String fullStoreKey = StoreUtils.getFullStoreKey(
-            NodeRun.getStoreKey(
-                req.getWfRunId(),
-                req.getThreadRunNumber(),
-                req.getPosition()
-            ),
-            NodeRun.class
-        );
-
-        GetNodeRunReplyPb.Builder out = GetNodeRunReplyPb.newBuilder();
-        try {
-            Bytes resp = internalComms.getBytes(fullStoreKey, partitionKey);
-            if (resp == null) {
-                out.setCode(LHResponseCodePb.NOT_FOUND_ERROR);
-            } else {
-                out.setCode(LHResponseCodePb.OK);
-                out.setResult(
-                    LHSerializable
-                        .fromBytes(resp.get(), NodeRun.class, config)
-                        .toProto()
-                );
-            }
-        } catch (LHConnectionError exn) {
-            out.setCode(LHResponseCodePb.CONNECTION_ERROR);
-            out.setMessage("Failed connecting to backend: " + exn.getMessage());
-        } catch (LHSerdeError exn) {
-            out.setCode(LHResponseCodePb.CONNECTION_ERROR);
-            out.setMessage(
-                "Got an invalid response from backend: " + exn.getMessage()
-            );
-        }
-
-        return out.build();
-    }
-
-    public GetVariableReplyPb getVariable(GetVariablePb req) {
-        String partitionKey = req.getWfRunId();
-        String fullStoreKey = StoreUtils.getFullStoreKey(
-            Variable.getStoreKey(
-                req.getWfRunId(),
-                req.getThreadRunNumber(),
-                req.getVarName()
-            ),
-            Variable.class
-        );
-
-        GetVariableReplyPb.Builder out = GetVariableReplyPb.newBuilder();
-        try {
-            Bytes resp = internalComms.getBytes(fullStoreKey, partitionKey);
-            if (resp == null) {
-                out.setCode(LHResponseCodePb.NOT_FOUND_ERROR);
-            } else {
-                out.setCode(LHResponseCodePb.OK);
-                out.setResult(
-                    LHSerializable
-                        .fromBytes(resp.get(), Variable.class, config)
-                        .toProto()
-                );
-            }
-        } catch (LHConnectionError exn) {
-            out.setCode(LHResponseCodePb.CONNECTION_ERROR);
-            out.setMessage("Failed connecting to backend: " + exn.getMessage());
-        } catch (LHSerdeError exn) {
-            out.setCode(LHResponseCodePb.CONNECTION_ERROR);
-            out.setMessage(
-                "Got an invalid response from backend: " + exn.getMessage()
-            );
-        }
-
-        return out.build();
-    }
-
-    public GetExternalEventReplyPb getExternalEvent(GetExternalEventPb req) {
-        String partitionKey = req.getWfRunId();
-        String fullStoreKey = StoreUtils.getFullStoreKey(
-            ExternalEvent.getStoreKey(
-                req.getWfRunId(),
-                req.getExternalEventDefName(),
-                req.getGuid()
-            ),
-            Variable.class
-        );
-
-        GetExternalEventReplyPb.Builder out = GetExternalEventReplyPb.newBuilder();
-        try {
-            Bytes resp = internalComms.getBytes(fullStoreKey, partitionKey);
-            if (resp == null) {
-                out.setCode(LHResponseCodePb.NOT_FOUND_ERROR);
-            } else {
-                out.setCode(LHResponseCodePb.OK);
-                out.setResult(
-                    LHSerializable
-                        .fromBytes(resp.get(), ExternalEvent.class, config)
-                        .toProto()
-                );
-            }
-        } catch (LHConnectionError exn) {
-            out.setCode(LHResponseCodePb.CONNECTION_ERROR);
-            out.setMessage("Failed connecting to backend: " + exn.getMessage());
-        } catch (LHSerdeError exn) {
-            out.setCode(LHResponseCodePb.CONNECTION_ERROR);
-            out.setMessage(
-                "Got an invalid response from backend: " + exn.getMessage()
-            );
-        }
-
-        return out.build();
-    }
-
     public SearchWfRunReplyPb searchWfRun(SearchWfRunPb req) {
         SearchWfRunReplyPb.Builder out = SearchWfRunReplyPb.newBuilder();
 
@@ -464,7 +216,7 @@ public class KafkaStreamsBackend {
     public void returnTaskToClient(String taskId, TaskQueueStreamObserver client) {
         // This needs to be a non-blocking call, so we submit it to a thread.
         executor.submit(() -> {
-            returnTaskToCLient(taskId, client);
+            returnTaskToClientImpl(taskId, client);
         });
     }
 
@@ -490,7 +242,10 @@ public class KafkaStreamsBackend {
         return out.build();
     }
 
-    private void returnTaskToCLient(String taskId, TaskQueueStreamObserver client) {
+    private void returnTaskToClientImpl(
+        String taskId,
+        TaskQueueStreamObserver client
+    ) {
         // First, create the TaskStartedEvent Command.
         TaskScheduleRequest tsr = internalComms.getTsr(taskId);
         TaskClaimEvent claimEvent = new TaskClaimEvent();
@@ -518,21 +273,21 @@ public class KafkaStreamsBackend {
         client.getResponseObserver().onNext(out.build());
     }
 
-    public PollTaskReplyPb pollTask(PollTaskPb req) {
-        PollTaskReplyPb.Builder out = PollTaskReplyPb.newBuilder();
-        try {
-            TaskScheduleRequest tsr = internalComms.pollTask(req.getTaskDefName());
-            if (tsr != null) {
-                out.setResult(tsr.toProto());
-            }
-            out.setCode(LHResponseCodePb.OK);
-        } catch (LHConnectionError exn) {
-            out.setCode(LHResponseCodePb.CONNECTION_ERROR);
-            out.setMessage("Failed connecting to backend: " + exn.getMessage());
-        }
+    // public PollTaskReplyPb pollTask(PollTaskPb req) {
+    //     PollTaskReplyPb.Builder out = PollTaskReplyPb.newBuilder();
+    //     try {
+    //         TaskScheduleRequest tsr = internalComms.pollTask(req.getTaskDefName());
+    //         if (tsr != null) {
+    //             out.setResult(tsr.toProto());
+    //         }
+    //         out.setCode(LHResponseCodePb.OK);
+    //     } catch (LHConnectionError exn) {
+    //         out.setCode(LHResponseCodePb.CONNECTION_ERROR);
+    //         out.setMessage("Failed connecting to backend: " + exn.getMessage());
+    //     }
 
-        return out.build();
-    }
+    //     return out.build();
+    // }
 
     public void start() throws IOException {
         coreStreams.start();
@@ -546,28 +301,5 @@ public class KafkaStreamsBackend {
         timerStreams.close();
         tagStreams.close();
         internalComms.close();
-    }
-}
-
-class LHBackendStateListener implements StateListener {
-
-    private String componentName;
-    private HealthStatusManager grpcHealthCheckThingy;
-
-    public LHBackendStateListener(
-        String componentName,
-        HealthStatusManager grpcHealthCheckThingy
-    ) {
-        this.componentName = componentName;
-        this.grpcHealthCheckThingy = grpcHealthCheckThingy;
-    }
-
-    public void onChange(State newState, State oldState) {
-        LHUtil.log(new Date(), "New state for", componentName + ":", newState);
-        if (newState == State.RUNNING) {
-            grpcHealthCheckThingy.setStatus(componentName, ServingStatus.SERVING);
-        } else {
-            grpcHealthCheckThingy.setStatus(componentName, ServingStatus.NOT_SERVING);
-        }
     }
 }
