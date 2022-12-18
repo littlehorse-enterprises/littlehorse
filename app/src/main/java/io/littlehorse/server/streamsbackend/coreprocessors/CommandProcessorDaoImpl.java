@@ -1,6 +1,7 @@
 package io.littlehorse.server.streamsbackend.coreprocessors;
 
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.CommandProcessorDao;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.GETable;
@@ -21,7 +22,7 @@ import io.littlehorse.common.proto.LHResponseCodePb;
 import io.littlehorse.common.proto.TaskDefPb.QueueDetailsCase;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.CommandProcessorDao;
+import io.littlehorse.server.LHServer;
 import io.littlehorse.server.streamsbackend.ServerTopology;
 import io.littlehorse.server.streamsbackend.storeinternals.LHROStoreWrapper;
 import io.littlehorse.server.streamsbackend.storeinternals.LHStoreWrapper;
@@ -59,7 +60,7 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
     private CommandResult responseToSave;
     private Command command;
     private int partition;
-    private GodzillaTaskQueueManager godzilla;
+    private LHServer server;
 
     private static final String OUTGOING_CHANGELOG_KEY = "OUTGOING_CHANGELOG";
 
@@ -95,9 +96,9 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
     public CommandProcessorDaoImpl(
         final ProcessorContext<String, CommandProcessorOutput> ctx,
         LHConfig config,
-        GodzillaTaskQueueManager godzilla
+        LHServer server
     ) {
-        this.godzilla = godzilla;
+        this.server = server;
         nodeRunPuts = new HashMap<>();
         variablePuts = new HashMap<>();
         extEvtPuts = new HashMap<>();
@@ -522,7 +523,7 @@ public class CommandProcessorDaoImpl implements CommandProcessorDao {
             );
 
             // This is where the magic happens
-            godzilla.onTaskScheduled(tsr.taskDefName, tsr.getObjectId());
+            server.onTaskScheduled(tsr.taskDefName, tsr.getObjectId());
         } else if (taskDef.type == QueueDetailsCase.KAFKA) {
             CommandProcessorOutput output = new CommandProcessorOutput(
                 taskDef.kafkaTaskQueueDetails.topic,

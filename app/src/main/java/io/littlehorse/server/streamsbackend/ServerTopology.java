@@ -8,7 +8,7 @@ import io.littlehorse.common.util.serde.LHSerde;
 import io.littlehorse.server.streamsbackend.coreprocessors.CommandProcessor;
 import io.littlehorse.server.streamsbackend.coreprocessors.CommandProcessorOutput;
 import io.littlehorse.server.streamsbackend.coreprocessors.GlobalMetadataProcessor;
-import io.littlehorse.server.streamsbackend.tagging.TimerProcessor;
+import io.littlehorse.server.streamsbackend.coreprocessors.TimerProcessor;
 import io.littlehorse.server.streamsbackend.taskqueue.GodzillaTaskQueueManager;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;

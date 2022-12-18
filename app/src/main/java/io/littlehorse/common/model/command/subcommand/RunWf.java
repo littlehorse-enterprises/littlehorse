@@ -1,6 +1,7 @@
 package io.littlehorse.common.model.command.subcommand;
 
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.CommandProcessorDao;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.RunWfReply;
@@ -12,7 +13,6 @@ import io.littlehorse.common.proto.RunWfPb;
 import io.littlehorse.common.proto.RunWfPbOrBuilder;
 import io.littlehorse.common.proto.VariableValuePb;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.CommandProcessorDao;
 import java.util.HashMap;
 import java.util.Map;
 

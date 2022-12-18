@@ -2,7 +2,9 @@ package io.littlehorse.server.streamsbackend.coreprocessors;
 
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.command.Command;
+import io.littlehorse.server.LHServer;
 import io.littlehorse.server.streamsbackend.taskqueue.GodzillaTaskQueueManager;
 import java.time.Duration;
 import org.apache.kafka.streams.processor.PunctuationType;
@@ -16,17 +18,17 @@ public class CommandProcessor
     private ProcessorContext<String, CommandProcessorOutput> ctx;
     private CommandProcessorDaoImpl dao;
     private LHConfig config;
-    private GodzillaTaskQueueManager godzilla;
+    private LHServer server;
 
-    public CommandProcessor(LHConfig config, GodzillaTaskQueueManager godzilla) {
+    public CommandProcessor(LHConfig config, LHServer server) {
         this.config = config;
-        this.godzilla = godzilla;
+        this.server = server;
     }
 
     @Override
     public void init(final ProcessorContext<String, CommandProcessorOutput> ctx) {
         this.ctx = ctx;
-        dao = new CommandProcessorDaoImpl(this.ctx, config, godzilla);
+        dao = new CommandProcessorDaoImpl(this.ctx, config, server);
         ctx.schedule(
             Duration.ofMillis(100),
             PunctuationType.WALL_CLOCK_TIME,
@@ -44,11 +46,11 @@ public class CommandProcessor
         try {
             Command command = commandRecord.value();
             dao.setCommand(command);
-            LHSerializable<?> response = command.process(dao, config);
-            if (command.hasResponse() && command.commandId != null) {
-                dao.saveResponse(response, command);
-            }
+            AbstractResponse<?> response = command.process(dao, config);
             dao.commitChanges();
+            if (command.hasResponse() && command.commandId != null) {
+                server.onResponseReceived(command.commandId, response);
+            }
         } catch (Exception exn) {
             exn.printStackTrace();
             dao.abortChanges();

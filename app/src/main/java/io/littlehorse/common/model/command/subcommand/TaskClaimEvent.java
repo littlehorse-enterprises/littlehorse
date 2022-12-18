@@ -1,6 +1,7 @@
 package io.littlehorse.common.model.command.subcommand;
 
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.CommandProcessorDao;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.TaskClaimReply;
@@ -12,7 +13,6 @@ import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.TaskClaimEventPb;
 import io.littlehorse.common.proto.TaskClaimEventPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.CommandProcessorDao;
 import java.util.Date;
 
 public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {

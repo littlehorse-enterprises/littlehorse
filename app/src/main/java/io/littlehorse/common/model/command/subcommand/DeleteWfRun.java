@@ -1,12 +1,12 @@
 package io.littlehorse.common.model.command.subcommand;
 
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.CommandProcessorDao;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.DeleteWfRunReply;
 import io.littlehorse.common.proto.DeleteWfRunPb;
 import io.littlehorse.common.proto.DeleteWfRunPbOrBuilder;
-import io.littlehorse.server.CommandProcessorDao;
 
 public class DeleteWfRun extends SubCommand<DeleteWfRunPb> {
 

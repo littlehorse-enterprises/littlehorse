@@ -2,6 +2,7 @@ package io.littlehorse.common.model.meta.subnode;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.CommandProcessorDao;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.meta.Node;
@@ -15,7 +16,6 @@ import io.littlehorse.common.proto.TaskNodePbOrBuilder;
 import io.littlehorse.common.proto.VariableAssignmentPb;
 import io.littlehorse.common.proto.VariableAssignmentPb.SourceCase;
 import io.littlehorse.common.util.LHGlobalMetaStores;
-import io.littlehorse.server.CommandProcessorDao;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;

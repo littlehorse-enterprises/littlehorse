@@ -1,4 +1,4 @@
-package io.littlehorse.server.streamsbackend.tagging;
+package io.littlehorse.server.streamsbackend.coreprocessors;
 
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.wfrun.LHTimer;

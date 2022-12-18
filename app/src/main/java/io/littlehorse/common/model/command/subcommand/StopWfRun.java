@@ -1,6 +1,7 @@
 package io.littlehorse.common.model.command.subcommand;
 
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.CommandProcessorDao;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.command.SubCommand;
@@ -10,7 +11,6 @@ import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.LHResponseCodePb;
 import io.littlehorse.common.proto.StopWfRunPb;
 import io.littlehorse.common.proto.StopWfRunPbOrBuilder;
-import io.littlehorse.server.CommandProcessorDao;
 
 public class StopWfRun extends SubCommand<StopWfRunPb> {
 

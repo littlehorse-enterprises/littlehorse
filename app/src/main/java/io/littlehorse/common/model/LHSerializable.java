@@ -7,6 +7,7 @@ import com.google.protobuf.MessageOrBuilder;
 import com.google.protobuf.util.JsonFormat;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHSerdeError;
+import io.littlehorse.common.util.LHUtil;
 import java.lang.reflect.InvocationTargetException;
 
 // `P` is the proto class used to serialize.
@@ -36,6 +37,19 @@ public abstract class LHSerializable<T extends MessageOrBuilder> {
         // Could just have a global static reference to an encryptor which we use
         // here and in the fromBytes() thing.
         return toProto().build().toByteArray();
+    }
+
+    public static <
+        U extends MessageOrBuilder, T extends LHSerializable<U>
+    > T fromProto(U proto, Class<T> cls) {
+        try {
+            T out = cls.getDeclaredConstructor().newInstance();
+            out.initFrom(proto);
+            return out;
+        } catch (Exception exn) {
+            LHUtil.log("this shouldn't be possible");
+            throw new RuntimeException(exn);
+        }
     }
 
     // Probably don't want to use reflection for everything, but hey we gotta

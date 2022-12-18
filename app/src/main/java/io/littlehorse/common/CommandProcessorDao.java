@@ -1,4 +1,4 @@
-package io.littlehorse.server;
+package io.littlehorse.common;
 
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.subcommandresponse.DeleteWfRunReply;

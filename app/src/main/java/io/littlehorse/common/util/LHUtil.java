@@ -5,7 +5,9 @@ import static com.google.protobuf.util.Timestamps.fromMillis;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.hash.Hashing;
+import com.google.protobuf.MessageOrBuilder;
 import com.google.protobuf.Timestamp;
+import io.littlehorse.common.model.LHSerializable;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Base64;
@@ -109,6 +111,18 @@ public class LHUtil {
             .hashString(str, StandardCharsets.UTF_8)
             .toString()
             .substring(0, 18);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <
+        U extends MessageOrBuilder, T extends LHSerializable<U>
+    > Class<U> getProtoBaseClass(Class<T> cls) {
+        try {
+            T t = cls.getDeclaredConstructor().newInstance();
+            return (Class<U>) t.getProtoBaseClass();
+        } catch (Exception exn) {
+            throw new RuntimeException(exn);
+        }
     }
 
     /*

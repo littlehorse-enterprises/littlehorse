@@ -1,6 +1,7 @@
 package io.littlehorse.common.model.command.subcommand;
 
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.CommandProcessorDao;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.command.SubCommand;
@@ -16,7 +17,6 @@ import io.littlehorse.common.proto.PutTaskDefPbOrBuilder;
 import io.littlehorse.common.proto.TaskDefPb.QueueDetailsCase;
 import io.littlehorse.common.proto.VariableDefPb;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.CommandProcessorDao;
 import java.util.HashMap;
 import java.util.Map;
 

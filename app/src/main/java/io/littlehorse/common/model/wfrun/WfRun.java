@@ -2,6 +2,7 @@ package io.littlehorse.common.model.wfrun;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.CommandProcessorDao;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.exceptions.LHVarSubError;
@@ -24,7 +25,6 @@ import io.littlehorse.common.proto.ThreadRunPb;
 import io.littlehorse.common.proto.WfRunPb;
 import io.littlehorse.common.proto.WfRunPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.CommandProcessorDao;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;

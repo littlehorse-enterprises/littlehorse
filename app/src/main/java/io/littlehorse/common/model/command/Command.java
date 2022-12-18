@@ -222,7 +222,7 @@ public class Command extends LHSerializable<CommandPb> {
         return getSubCommand().hasResponse();
     }
 
-    public LHSerializable<?> process(CommandProcessorDaoImpl dao, LHConfig config) {
+    public AbstractResponse<?> process(CommandProcessorDaoImpl dao, LHConfig config) {
         return getSubCommand().process(dao, config);
     }
 }
