@@ -1,8 +1,8 @@
 package io.littlehorse.common.model.command.subcommand;
 
 import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.CommandProcessorDao;
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.RunWfReply;
 import io.littlehorse.common.model.meta.WfSpec;
@@ -64,7 +64,7 @@ public class RunWf extends SubCommand<RunWfPb> {
         return true;
     }
 
-    public RunWfReply process(CommandProcessorDao dao, LHConfig config) {
+    public RunWfReply process(LHDAO dao, LHConfig config) {
         RunWfReply out = new RunWfReply();
 
         WfSpec spec = dao.getWfSpec(wfSpecName, wfSpecVersion);

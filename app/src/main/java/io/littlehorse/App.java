@@ -5,7 +5,7 @@ package io.littlehorse;
 
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.LHServer;
+import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.testworker.TestWorker;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -89,7 +89,7 @@ public class App {
         if (arg.equals("worker")) {
             TestWorker.doMain(config);
         } else if (arg.equals("server")) {
-            LHServer.doMain(config);
+            KafkaStreamsServerImpl.doMain(config);
         }
     }
 

@@ -60,12 +60,11 @@ message CentralStoreQueryPb {
     CentralStoreSubQueryPb query = 3;
 }
 
-message WaitForCommandResultPb {
-    string command_id = 1;
-    int32 specific_partition = 2;
+message ProcessCommandPb {
+    CommandPb command = 1;
 }
 
-message WaitForCommandResultReplyPb {
+message ProcessCommandReplyPb {
     StoreQueryStatusPb code = 1;
     optional CommandResultPb result = 2;
     optional string message = 3;
@@ -95,12 +94,10 @@ message InternalPollTaskReplyPb {
     optional TaskScheduleRequestPb result = 2;
 }
 
-
-
 service LHInternals {
     rpc CentralStoreQuery(CentralStoreQueryPb) returns (CentralStoreQueryReplyPb) {}
-    rpc WaitForCommandResult(WaitForCommandResultPb) returns (WaitForCommandResultReplyPb) {}
     rpc PaginatedTagQuery(PaginatedTagQueryPb) returns (PaginatedTagQueryReplyPb) {}
-
+    
+    rpc ProcessCommand(ProcessCommandPb) returns (ProcessCommandReplyPb) {}
     rpc InternalPollTask(InternalPollTaskPb) returns (InternalPollTaskReplyPb) {}
 }

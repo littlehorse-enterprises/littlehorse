@@ -308,8 +308,8 @@ public class LHConfig {
             StreamsConfig.COMMIT_INTERVAL_MS_CONFIG,
             getStreamsCommitInterval()
         );
-        props.put(StreamsConfig.RACK_AWARE_ASSIGNMENT_TAGS_CONFIG, "rack");
-        props.put(StreamsConfig.CLIENT_TAG_PREFIX + "rack", getRackId());
+        // props.put(StreamsConfig.RACK_AWARE_ASSIGNMENT_TAGS_CONFIG, "rack");
+        // props.put(StreamsConfig.CLIENT_TAG_PREFIX + "rack", getRackId());
 
         return props;
     }

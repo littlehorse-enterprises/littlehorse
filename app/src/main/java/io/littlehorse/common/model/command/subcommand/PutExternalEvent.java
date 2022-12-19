@@ -1,8 +1,8 @@
 package io.littlehorse.common.model.command.subcommand;
 
 import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.CommandProcessorDao;
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.PutExternalEventReply;
 import io.littlehorse.common.model.meta.ExternalEventDef;
@@ -49,7 +49,7 @@ public class PutExternalEvent extends SubCommand<PutExternalEventPb> {
         return true;
     }
 
-    public PutExternalEventReply process(CommandProcessorDao dao, LHConfig config) {
+    public PutExternalEventReply process(LHDAO dao, LHConfig config) {
         PutExternalEventReply out = new PutExternalEventReply();
 
         ExternalEventDef eed = dao.getExternalEventDef(externalEventDefName, null);

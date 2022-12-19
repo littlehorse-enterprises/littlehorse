@@ -18,7 +18,7 @@ import io.littlehorse.common.proto.CommandPb;
 import io.littlehorse.common.proto.CommandPb.CommandCase;
 import io.littlehorse.common.proto.CommandPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.streamsbackend.coreprocessors.CommandProcessorDaoImpl;
+import io.littlehorse.server.streamsimpl.coreprocessors.KafkaStreamsLHDAOImpl;
 import java.util.Date;
 
 public class Command extends LHSerializable<CommandPb> {
@@ -41,6 +41,14 @@ public class Command extends LHSerializable<CommandPb> {
 
     public Class<CommandPb> getProtoBaseClass() {
         return CommandPb.class;
+    }
+
+    public Command() {}
+
+    public Command(SubCommand<?> cmd) {
+        this.commandId = LHUtil.generateGuid();
+        this.time = new Date();
+        this.setSubCommand(cmd);
     }
 
     public CommandPb.Builder toProto() {
@@ -222,7 +230,7 @@ public class Command extends LHSerializable<CommandPb> {
         return getSubCommand().hasResponse();
     }
 
-    public AbstractResponse<?> process(CommandProcessorDaoImpl dao, LHConfig config) {
+    public AbstractResponse<?> process(KafkaStreamsLHDAOImpl dao, LHConfig config) {
         return getSubCommand().process(dao, config);
     }
 }

@@ -1,8 +1,8 @@
 package io.littlehorse.common.model.command.subcommand;
 
 import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.CommandProcessorDao;
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.ReportTaskReply;
 import io.littlehorse.common.model.meta.WfSpec;
@@ -47,7 +47,7 @@ public class TaskResultEvent extends SubCommand<TaskResultEventPb> {
         return fromRpc;
     }
 
-    public ReportTaskReply process(CommandProcessorDao dao, LHConfig config) {
+    public ReportTaskReply process(LHDAO dao, LHConfig config) {
         // First, get the WfRun
         WfRun wfRun = dao.getWfRun(wfRunId);
         ReportTaskReply out = new ReportTaskReply();

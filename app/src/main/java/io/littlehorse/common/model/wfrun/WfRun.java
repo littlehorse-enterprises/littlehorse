@@ -2,8 +2,8 @@ package io.littlehorse.common.model.wfrun;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.CommandProcessorDao;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.GETable;
@@ -146,7 +146,7 @@ public class WfRun extends GETable<WfRunPb> {
     public WfSpec wfSpec;
 
     @JsonIgnore
-    public CommandProcessorDao cmdDao;
+    public LHDAO cmdDao;
 
     public ThreadRun startThread(
         String threadName,

@@ -1,9 +1,9 @@
 package io.littlehorse.common.model.command.subcommand;
 
 import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.CommandProcessorDao;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.PutWfSpecReply;
@@ -62,7 +62,7 @@ public class PutWfSpec extends SubCommand<PutWfSpecPb> {
         return true;
     }
 
-    public PutWfSpecReply process(CommandProcessorDao dao, LHConfig config) {
+    public PutWfSpecReply process(LHDAO dao, LHConfig config) {
         PutWfSpecReply out = new PutWfSpecReply();
 
         if (!LHUtil.isValidLHName(name)) {

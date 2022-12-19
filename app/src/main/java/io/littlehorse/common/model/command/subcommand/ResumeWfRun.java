@@ -1,8 +1,8 @@
 package io.littlehorse.common.model.command.subcommand;
 
 import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.CommandProcessorDao;
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.ResumeWfRunReply;
@@ -38,7 +38,7 @@ public class ResumeWfRun extends SubCommand<ResumeWfRunPb> {
         return wfRunId;
     }
 
-    public ResumeWfRunReply process(CommandProcessorDao dao, LHConfig config) {
+    public ResumeWfRunReply process(LHDAO dao, LHConfig config) {
         ResumeWfRunReply out = new ResumeWfRunReply();
         WfRun wfRun = dao.getWfRun(wfRunId);
         if (wfRun == null) {

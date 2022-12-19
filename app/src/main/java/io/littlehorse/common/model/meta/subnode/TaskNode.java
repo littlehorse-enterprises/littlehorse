@@ -2,8 +2,8 @@ package io.littlehorse.common.model.meta.subnode;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.CommandProcessorDao;
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.meta.SubNode;
@@ -33,7 +33,7 @@ public class TaskNode extends SubNode<TaskNodePb> {
     private TaskDef taskDef;
 
     @JsonIgnore
-    public TaskDef getTaskDef(CommandProcessorDao dao) {
+    public TaskDef getTaskDef(LHDAO dao) {
         if (taskDef == null) {
             taskDef = dao.getTaskDef(taskDefName, null);
         }

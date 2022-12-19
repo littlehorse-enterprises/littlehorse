@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.Future;
 import org.apache.kafka.clients.consumer.ConsumerGroupMetadata;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
+import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
@@ -33,26 +34,21 @@ public class LHProducer implements Closeable {
     public Future<RecordMetadata> send(
         String key,
         LHSerializable<?> t,
-        String topic
+        String topic,
+        Callback cb
     ) {
-        return send(new ProducerRecord<>(topic, key, new Bytes(t.toBytes(config))));
+        return sendRecord(
+            new ProducerRecord<>(topic, key, new Bytes(t.toBytes(config))),
+            cb
+        );
     }
 
     public Future<RecordMetadata> send(
         String key,
         LHSerializable<?> t,
-        String topic,
-        Map<String, byte[]> headers
+        String topic
     ) {
-        ProducerRecord<String, Bytes> rec = new ProducerRecord<>(
-            topic,
-            key,
-            new Bytes(t.toBytes(config))
-        );
-        for (Map.Entry<String, byte[]> header : headers.entrySet()) {
-            rec.headers().add(header.getKey(), header.getValue());
-        }
-        return send(rec);
+        return this.send(key, t, topic, null);
     }
 
     public void beginTransaction() {
@@ -86,8 +82,11 @@ public class LHProducer implements Closeable {
         prod.sendOffsetsToTransaction(offsets, groupMetadata);
     }
 
-    private Future<RecordMetadata> send(ProducerRecord<String, Bytes> record) {
-        return prod.send(record);
+    private Future<RecordMetadata> sendRecord(
+        ProducerRecord<String, Bytes> record,
+        Callback cb
+    ) {
+        return (cb != null) ? prod.send(record, cb) : prod.send(record);
     }
 
     public void close() {

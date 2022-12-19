@@ -1,8 +1,8 @@
 package io.littlehorse.common.model.command.subcommand;
 
 import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.CommandProcessorDao;
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.StopWfRunReply;
@@ -39,7 +39,7 @@ public class StopWfRun extends SubCommand<StopWfRunPb> {
         return wfRunId;
     }
 
-    public StopWfRunReply process(CommandProcessorDao dao, LHConfig config) {
+    public StopWfRunReply process(LHDAO dao, LHConfig config) {
         StopWfRunReply out = new StopWfRunReply();
         WfRun wfRun = dao.getWfRun(wfRunId);
         if (wfRun == null) {

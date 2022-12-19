@@ -8,7 +8,7 @@ import io.littlehorse.common.proto.TaskDefPb.QueueDetailsCase;
 import io.littlehorse.common.proto.TaskDefPbOrBuilder;
 import io.littlehorse.common.proto.VariableDefPb;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.streamsbackend.storeinternals.utils.StoreUtils;
+import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;

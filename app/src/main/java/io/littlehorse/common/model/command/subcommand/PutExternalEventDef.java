@@ -1,9 +1,9 @@
 package io.littlehorse.common.model.command.subcommand;
 
 import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.CommandProcessorDao;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.PutExternalEventDefReply;
 import io.littlehorse.common.model.meta.ExternalEventDef;
@@ -40,10 +40,7 @@ public class PutExternalEventDef extends SubCommand<PutExternalEventDefPb> {
         return true;
     }
 
-    public PutExternalEventDefReply process(
-        CommandProcessorDao dao,
-        LHConfig config
-    ) {
+    public PutExternalEventDefReply process(LHDAO dao, LHConfig config) {
         PutExternalEventDefReply out = new PutExternalEventDefReply();
 
         if (!LHUtil.isValidLHName(name)) {

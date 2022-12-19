@@ -1,9 +1,9 @@
 package io.littlehorse.common.model.command.subcommand;
 
 import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.CommandProcessorDao;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.PutTaskDefReply;
 import io.littlehorse.common.model.meta.KafkaTaskQueueDetails;
@@ -79,7 +79,7 @@ public class PutTaskDef extends SubCommand<PutTaskDefPb> {
         return true;
     }
 
-    public PutTaskDefReply process(CommandProcessorDao dao, LHConfig config) {
+    public PutTaskDefReply process(LHDAO dao, LHConfig config) {
         PutTaskDefReply out = new PutTaskDefReply();
 
         if (!LHUtil.isValidLHName(name)) {

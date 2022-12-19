@@ -2,9 +2,9 @@ package io.littlehorse.common.model.meta;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.CommandProcessorDao;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.command.subcommand.RunWf;
@@ -15,7 +15,7 @@ import io.littlehorse.common.proto.WfSpecPb;
 import io.littlehorse.common.proto.WfSpecPbOrBuilder;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.streamsbackend.storeinternals.utils.StoreUtils;
+import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -239,7 +239,7 @@ public class WfSpec extends GETable<WfSpecPbOrBuilder> {
         }
     }
 
-    public WfRun startNewRun(RunWf evt, CommandProcessorDao dao) {
+    public WfRun startNewRun(RunWf evt, LHDAO dao) {
         WfRun out = new WfRun();
         out.cmdDao = dao;
         out.id = evt.id;

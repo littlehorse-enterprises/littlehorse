@@ -6,7 +6,7 @@ import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.proto.ExternalEventDefPb;
 import io.littlehorse.common.proto.ExternalEventDefPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.streamsbackend.storeinternals.utils.StoreUtils;
+import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import java.util.Date;
 
 public class ExternalEventDef extends GETable<ExternalEventDefPbOrBuilder> {

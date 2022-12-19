@@ -1,8 +1,8 @@
 package io.littlehorse.common.model.command.subcommand;
 
 import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.CommandProcessorDao;
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.TaskClaimReply;
 import io.littlehorse.common.model.meta.WfSpec;
@@ -48,7 +48,7 @@ public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
         return true;
     }
 
-    public TaskClaimReply process(CommandProcessorDao dao, LHConfig config) {
+    public TaskClaimReply process(LHDAO dao, LHConfig config) {
         TaskClaimReply out = new TaskClaimReply();
 
         WfRun wfRun = dao.getWfRun(wfRunId);
