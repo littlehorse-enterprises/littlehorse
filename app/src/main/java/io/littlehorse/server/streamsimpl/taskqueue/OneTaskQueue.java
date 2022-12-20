@@ -9,7 +9,7 @@ import java.util.concurrent.locks.ReentrantLock;
 // one specific TaskDef on one LH Server host.
 public class OneTaskQueue {
 
-    private LinkedList<TaskQueueStreamObserver> hungryClients;
+    private LinkedList<PollTaskRequestObserver> hungryClients;
     private Lock lock;
 
     private LinkedList<String> pendingTaskIds;
@@ -31,13 +31,13 @@ public class OneTaskQueue {
      * @param observer is the TaskQueueStreamObserver for the client whose connection
      * is now gone.
      */
-    public void onRequestDisconnected(TaskQueueStreamObserver toRemove) {
+    public void onRequestDisconnected(PollTaskRequestObserver disconnectedObserver) {
         // Remove the request listener when the gRPC stream is completed (i.e.
         // graceful shutdown) or when the connection is broken.
 
         try {
             lock.lock();
-            hungryClients.removeIf(thing -> thing.equals(toRemove));
+            hungryClients.removeIf(thing -> thing.equals(disconnectedObserver));
         } finally {
             lock.unlock();
         }
@@ -64,6 +64,7 @@ public class OneTaskQueue {
         // 2. There are no clients waiting for requests. In this case, we just
         //    add the task id to the taskid list.
 
+        PollTaskRequestObserver luckyClient = null;
         try {
             lock.lock();
             if (!hungryClients.isEmpty()) {
@@ -74,8 +75,7 @@ public class OneTaskQueue {
                     );
                 }
 
-                TaskQueueStreamObserver luckyClient = hungryClients.poll();
-                parent.itsAMatch(tsrId, luckyClient);
+                luckyClient = hungryClients.poll();
             } else {
                 // case 2
                 pendingTaskIds.push(tsrId);
@@ -83,22 +83,28 @@ public class OneTaskQueue {
         } finally {
             lock.unlock();
         }
+
+        // pull this outside of protected zone for performance.
+        if (luckyClient != null) {
+            parent.itsAMatch(tsrId, luckyClient);
+        }
     }
 
     /**
      * Called when a grpc client sends a new PollTaskPb.
-     * @param requestThing is the grpc StreamObserver thing.
+     * @param requestObserver is the grpc StreamObserver representing the channel that
+     * talks to the client who made the PollTaskRequest.
      */
-    public void onPollRequest(TaskQueueStreamObserver requestThing) {
+    public void onPollRequest(PollTaskRequestObserver requestObserver) {
         if (taskDefName == null) {
-            taskDefName = requestThing.getTaskDefName();
+            taskDefName = requestObserver.getTaskDefName();
         }
-        if (!taskDefName.equals(requestThing.getTaskDefName())) {
+        if (!taskDefName.equals(requestObserver.getTaskDefName())) {
             throw new RuntimeException("Not possible, got mismatched taskdef name");
         }
         LHUtil.log(
             "Enqueueing observer with id",
-            requestThing.getClientId(),
+            requestObserver.getClientId(),
             "taskDef",
             taskDefName
         );
@@ -109,6 +115,7 @@ public class OneTaskQueue {
         // 2. There are no pending Taskid's in the queue, in which case we simply
         //    push the request client observer thing onto the back of the
         //    `hungryClients` list.
+        String nextTaskId = null;
 
         try {
             lock.lock();
@@ -120,14 +127,17 @@ public class OneTaskQueue {
                     );
                 }
 
-                String nextTaskId = pendingTaskIds.poll();
-                parent.itsAMatch(nextTaskId, requestThing);
+                nextTaskId = pendingTaskIds.poll();
             } else {
                 // case 2
-                hungryClients.push(requestThing);
+                hungryClients.push(requestObserver);
             }
         } finally {
             lock.unlock();
+        }
+
+        if (nextTaskId != null) {
+            parent.itsAMatch(nextTaskId, requestObserver);
         }
     }
 }

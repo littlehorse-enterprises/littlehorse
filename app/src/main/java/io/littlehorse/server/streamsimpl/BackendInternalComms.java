@@ -237,8 +237,10 @@ public class BackendInternalComms implements Closeable {
         RegisterTaskWorkerReplyPb.Builder out = RegisterTaskWorkerReplyPb.newBuilder();
         out.setCode(LHResponseCodePb.OK);
         for (HostInfo host : hosts) {
+            int internalPort = host.port();
+            int externalPort = internalPort - 1;
             out.addEndpoints(
-                HostInfoPb.newBuilder().setHost(host.host()).setPort(host.port())
+                HostInfoPb.newBuilder().setHost(host.host()).setPort(externalPort)
             );
         }
 

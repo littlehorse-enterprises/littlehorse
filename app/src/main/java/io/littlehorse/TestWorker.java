@@ -198,12 +198,13 @@ public class TestWorker {
         cmd.taskResultEvent = ce;
         cmd.time = ce.time;
 
-        prod.send(tsr.wfRunId, cmd, tsr.wfRunEventQueue).get();
+        prod.send(tsr.wfRunId, cmd, tsr.wfRunEventQueue);
         availThreadsSemaphore.release();
     }
 
     public static void doMain(LHConfig config) {
         // TestWorker worker = new TestWorker(config);
+        // worker.run();
         TestWorkerGRPC worker = new TestWorkerGRPC(
             "hello",
             "localhost",

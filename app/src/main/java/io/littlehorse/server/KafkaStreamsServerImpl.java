@@ -81,8 +81,8 @@ import io.littlehorse.server.streamsimpl.BackendInternalComms;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.storeinternals.index.TagQueryUtils;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
+import io.littlehorse.server.streamsimpl.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streamsimpl.taskqueue.TaskQueueManager;
-import io.littlehorse.server.streamsimpl.taskqueue.TaskQueueStreamObserver;
 import io.littlehorse.server.streamsimpl.util.GETStreamObserver;
 import io.littlehorse.server.streamsimpl.util.POSTStreamObserver;
 import java.io.IOException;
@@ -261,7 +261,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public StreamObserver<PollTaskPb> pollTask(StreamObserver<PollTaskReplyPb> ctx) {
-        return new TaskQueueStreamObserver(ctx, taskQueueManager);
+        return new PollTaskRequestObserver(ctx, taskQueueManager);
     }
 
     @Override
@@ -448,7 +448,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         processCommand(req, ctx, DeleteWfRun.class, DeleteWfRunReplyPb.class);
     }
 
-    public void returnTaskToClient(String taskId, TaskQueueStreamObserver client) {
+    public void returnTaskToClient(String taskId, PollTaskRequestObserver client) {
         // First, create the TaskStartedEvent Command.
         TaskScheduleRequest tsr = internalComms.getTsr(taskId);
         TaskClaimEvent claimEvent = new TaskClaimEvent();

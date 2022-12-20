@@ -1,6 +1,5 @@
 package io.littlehorse.server.streamsimpl.taskqueue;
 
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,11 +19,11 @@ public class TaskQueueManager {
         this.backend = backend;
     }
 
-    public void onPollRequest(TaskQueueStreamObserver listener) {
+    public void onPollRequest(PollTaskRequestObserver listener) {
         getSubQueueManager(listener.getTaskDefName()).onPollRequest(listener);
     }
 
-    public void onRequestDisconnected(TaskQueueStreamObserver observer) {
+    public void onRequestDisconnected(PollTaskRequestObserver observer) {
         getSubQueueManager(observer.getTaskDefName()).onRequestDisconnected(observer);
     }
 
@@ -32,8 +31,7 @@ public class TaskQueueManager {
         getSubQueueManager(taskDefName).onTaskScheduled(taskScheduleRequestId);
     }
 
-    public void itsAMatch(String tsrId, TaskQueueStreamObserver luckyClient) {
-        LHUtil.log("Returning task to client", luckyClient.getClientId());
+    public void itsAMatch(String tsrId, PollTaskRequestObserver luckyClient) {
         backend.returnTaskToClient(tsrId, luckyClient);
     }
 

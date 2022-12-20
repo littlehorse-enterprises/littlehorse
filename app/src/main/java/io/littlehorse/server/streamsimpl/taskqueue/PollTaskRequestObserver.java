@@ -5,7 +5,7 @@ import io.littlehorse.common.proto.PollTaskPb;
 import io.littlehorse.common.proto.PollTaskReplyPb;
 import io.littlehorse.common.util.LHUtil;
 
-public class TaskQueueStreamObserver implements StreamObserver<PollTaskPb> {
+public class PollTaskRequestObserver implements StreamObserver<PollTaskPb> {
 
     private StreamObserver<PollTaskReplyPb> responseObserver;
     private TaskQueueManager taskQueueManager;
@@ -13,7 +13,7 @@ public class TaskQueueStreamObserver implements StreamObserver<PollTaskPb> {
     private String taskDefName;
     private String guid;
 
-    public TaskQueueStreamObserver(
+    public PollTaskRequestObserver(
         StreamObserver<PollTaskReplyPb> responseObserver,
         TaskQueueManager manager
     ) {

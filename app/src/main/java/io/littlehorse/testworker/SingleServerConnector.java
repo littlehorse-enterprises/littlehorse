@@ -4,10 +4,10 @@ import io.grpc.Channel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.proto.LHPublicApiGrpc;
-import io.littlehorse.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.common.proto.LHPublicApiGrpc.LHPublicApiStub;
 import io.littlehorse.common.proto.PollTaskPb;
 import io.littlehorse.common.proto.PollTaskReplyPb;
+import io.littlehorse.common.proto.ReportTaskReplyPb;
 import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.proto.TaskResultEventPb;
 import io.littlehorse.common.proto.TaskScheduleRequestPb;
@@ -24,7 +24,7 @@ public class SingleServerConnector implements StreamObserver<PollTaskReplyPb> {
     private boolean stillRunning;
     private TaskFunc func;
     private StreamObserver<PollTaskPb> pollClient;
-    private LHPublicApiBlockingStub blockingStub;
+    private LHPublicApiStub stub;
 
     public SingleServerConnector(
         TaskFunc func,
@@ -33,6 +33,7 @@ public class SingleServerConnector implements StreamObserver<PollTaskReplyPb> {
         String taskDefName,
         String clientId
     ) {
+        System.out.println("Constructor: " + host + ":" + port);
         this.func = func;
         this.host = host;
         this.port = port;
@@ -41,23 +42,24 @@ public class SingleServerConnector implements StreamObserver<PollTaskReplyPb> {
 
         stillRunning = true;
         Channel channel = ManagedChannelBuilder
-            .forAddress("localhost", 5000)
+            .forAddress(this.host, this.port)
             .usePlaintext()
             .build();
 
-        LHPublicApiStub stub = LHPublicApiGrpc.newStub(channel);
+        this.stub = LHPublicApiGrpc.newStub(channel);
         this.pollClient = stub.pollTask(this);
-        this.blockingStub = LHPublicApiGrpc.newBlockingStub(channel);
 
         System.out.println("Hi from constructor SSC");
         // kick off the party
-        pollClient.onNext(
-            PollTaskPb
-                .newBuilder()
-                .setClientId(clientId)
-                .setTaskDefName(taskDefName)
-                .build()
-        );
+        for (int i = 0; i < 5; i++) {
+            pollClient.onNext(
+                PollTaskPb
+                    .newBuilder()
+                    .setClientId(clientId)
+                    .setTaskDefName(taskDefName)
+                    .build()
+            );
+        }
         System.out.println("Got back from the first request async send");
     }
 
@@ -80,18 +82,31 @@ public class SingleServerConnector implements StreamObserver<PollTaskReplyPb> {
             TaskScheduleRequestPb tsr = taskToDo.getResult();
 
             VariableValuePb result = func.execute(tsr);
-            this.blockingStub.reportTask(
-                    TaskResultEventPb
-                        .newBuilder()
-                        .setWfRunId(tsr.getWfRunId())
-                        .setThreadRunNumber(tsr.getThreadRunNumber())
-                        .setTaskRunPosition(tsr.getTaskRunPosition())
-                        .setTime(LHUtil.fromDate(new Date()))
-                        .setResultCode(TaskResultCodePb.SUCCESS)
-                        .setOutput(result)
-                        .setFromRpc(true)
-                        .build()
-                );
+            stub.reportTask(
+                TaskResultEventPb
+                    .newBuilder()
+                    .setWfRunId(tsr.getWfRunId())
+                    .setThreadRunNumber(tsr.getThreadRunNumber())
+                    .setTaskRunPosition(tsr.getTaskRunPosition())
+                    .setTime(LHUtil.fromDate(new Date()))
+                    .setResultCode(TaskResultCodePb.SUCCESS)
+                    .setOutput(result)
+                    .setFromRpc(true)
+                    .build(),
+                new StreamObserver<ReportTaskReplyPb>() {
+                    @Override
+                    public void onError(Throwable t) {
+                        LHUtil.log("yikes, got an error:");
+                        t.printStackTrace();
+                    }
+
+                    @Override
+                    public void onCompleted() {}
+
+                    @Override
+                    public void onNext(ReportTaskReplyPb reply) {}
+                }
+            );
             System.out.println("Done replying");
         } else {
             LHUtil.log("hmmm", taskToDo.getCode().toString(), taskToDo.getMessage());
