@@ -20,6 +20,6 @@ fi
 # $SCRIPT_DIR/cleanup.sh
 # $SCRIPT_DIR/setup.sh
 
-rm -r /tmp/kafkaState
+rm -r /tmp/kafkaState /tmp/kafkaStateTwo
 
 wait
