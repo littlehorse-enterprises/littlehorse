@@ -47,7 +47,7 @@ public class LHUtil {
 
         builder.append("LHorse: ");
         builder.append(ste.getMethodName());
-        builder.append(" ");
+        builder.append("() ");
         builder.append(ste.getFileName());
         builder.append(": ");
         builder.append(ste.getLineNumber());

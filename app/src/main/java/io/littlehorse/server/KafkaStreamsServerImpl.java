@@ -464,9 +464,9 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
         processCommand(
             claimEvent.toProto().build(),
-            client,
+            client.getResponseObserver(),
             TaskClaimEvent.class,
-            PollTaskPb.class,
+            PollTaskReplyPb.class,
             false // it's a stream, so we don't want to complete it.
         );
     }

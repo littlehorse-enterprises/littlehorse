@@ -1,5 +1,6 @@
 package io.littlehorse.server.streamsimpl.taskqueue;
 
+import io.littlehorse.common.util.LHUtil;
 import java.util.LinkedList;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -95,6 +96,12 @@ public class OneTaskQueue {
         if (!taskDefName.equals(requestThing.getTaskDefName())) {
             throw new RuntimeException("Not possible, got mismatched taskdef name");
         }
+        LHUtil.log(
+            "Enqueueing observer with id",
+            requestThing.getClientId(),
+            "taskDef",
+            taskDefName
+        );
 
         // There's two cases here:
         // 1. There are pending Task Id's in the queue, which means that there

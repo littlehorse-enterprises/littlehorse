@@ -33,10 +33,13 @@ public class SingleServerConnector implements StreamObserver<PollTaskReplyPb> {
         String taskDefName,
         String clientId
     ) {
-        stillRunning = true;
+        this.func = func;
         this.host = host;
         this.port = port;
+        this.taskDefName = taskDefName;
         this.clientId = clientId;
+
+        stillRunning = true;
         Channel channel = ManagedChannelBuilder
             .forAddress("localhost", 5000)
             .usePlaintext()
@@ -55,6 +58,7 @@ public class SingleServerConnector implements StreamObserver<PollTaskReplyPb> {
                 .setTaskDefName(taskDefName)
                 .build()
         );
+        System.out.println("Got back from the first request async send");
     }
 
     public boolean matches(String host, int port) {
@@ -88,6 +92,7 @@ public class SingleServerConnector implements StreamObserver<PollTaskReplyPb> {
                         .setFromRpc(true)
                         .build()
                 );
+            System.out.println("Done replying");
         } else {
             LHUtil.log("hmmm", taskToDo.getCode().toString(), taskToDo.getMessage());
         }

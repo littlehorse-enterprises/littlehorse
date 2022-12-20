@@ -49,6 +49,7 @@ public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
     }
 
     public TaskClaimReply process(LHDAO dao, LHConfig config) {
+        LHUtil.log("Hello from the process call for taskclaimevent");
         TaskClaimReply out = new TaskClaimReply();
 
         WfRun wfRun = dao.getWfRun(wfRunId);

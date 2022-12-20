@@ -70,7 +70,7 @@ public class POSTStreamObserver<U extends MessageOrBuilder>
     }
 
     public void onCompleted() {
-        LHUtil.log("Unexpected call to onCompleted(), likely harmless");
+        // Nothing to do
     }
 
     public void onNext(ProcessCommandReplyPb reply) {

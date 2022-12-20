@@ -39,6 +39,7 @@ public class TestWorkerGRPC implements StreamObserver<RegisterTaskWorkerReplyPb>
         LHPublicApiStub stub = LHPublicApiGrpc.newStub(this.channel);
         this.registryClient = stub.registerTaskWorker(this);
         this.running = true;
+        this.func = func;
         this.taskDefName = taskDefName;
         runningWorkerThreads = new ArrayList<>();
     }
@@ -77,6 +78,9 @@ public class TestWorkerGRPC implements StreamObserver<RegisterTaskWorkerReplyPb>
         // Reconcile what's running
         for (HostInfoPb host : next.getEndpointsList()) {
             if (!isAlreadyRunning(host)) {
+                System.out.println(
+                    "Adding for host : " + host.getHost() + ":" + host.getPort()
+                );
                 runningWorkerThreads.add(
                     new SingleServerConnector(
                         func,

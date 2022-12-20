@@ -1,5 +1,6 @@
 package io.littlehorse.server.streamsimpl.taskqueue;
 
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +33,7 @@ public class TaskQueueManager {
     }
 
     public void itsAMatch(String tsrId, TaskQueueStreamObserver luckyClient) {
+        LHUtil.log("Returning task to client", luckyClient.getClientId());
         backend.returnTaskToClient(tsrId, luckyClient);
     }
 

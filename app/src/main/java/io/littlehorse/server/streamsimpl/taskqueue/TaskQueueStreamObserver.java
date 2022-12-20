@@ -1,6 +1,5 @@
 package io.littlehorse.server.streamsimpl.taskqueue;
 
-import com.google.rpc.context.AttributeContext.Request;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.proto.PollTaskPb;
 import io.littlehorse.common.proto.PollTaskReplyPb;
@@ -12,11 +11,13 @@ public class TaskQueueStreamObserver implements StreamObserver<PollTaskPb> {
     private TaskQueueManager taskQueueManager;
     private String clientId;
     private String taskDefName;
+    private String guid;
 
     public TaskQueueStreamObserver(
         StreamObserver<PollTaskReplyPb> responseObserver,
         TaskQueueManager manager
     ) {
+        this.guid = LHUtil.generateGuid();
         this.responseObserver = responseObserver;
         this.taskQueueManager = manager;
         this.clientId = null;
@@ -37,36 +38,39 @@ public class TaskQueueStreamObserver implements StreamObserver<PollTaskPb> {
     @Override
     public void onError(Throwable t) {
         taskQueueManager.onRequestDisconnected(this);
-        LHUtil.log("onError", clientId);
-        t.printStackTrace();
+        LHUtil.log("Client", clientId, ": disconnected.");
     }
 
     @Override
     public void onNext(PollTaskPb req) {
-        System.out.println("hello from onNext(PollTaskPb)");
+        LHUtil.log("Guid: ", guid);
+
         if (clientId == null) {
-            System.out.println("Setting clientId");
-            System.out.println(this);
             clientId = req.getClientId();
+            LHUtil.log("Just set clientId:", this.clientId);
         } else if (!clientId.equals(req.getClientId())) {
-            // should return a better response than just borking it
-            LHUtil.log("Old:", clientId, "requestId: ", req.getClientId(), "yikes");
+            LHUtil.log(
+                "Client Id not null: ",
+                clientId,
+                "but doesnt match " + req.getClientId()
+            );
         }
 
         if (taskDefName == null) {
-            System.out.println("Setting taskdefname");
-            System.out.println(this);
             taskDefName = req.getTaskDefName();
+            LHUtil.log("Just set taskDefName to " + taskDefName);
         } else if (!taskDefName.equals(req.getTaskDefName())) {
-            // should return a better response than just borking it
-            System.out.println("weird");
-            LHUtil.log("new tdn: ", req.getTaskDefName(), "Old tdn: ", taskDefName);
+            LHUtil.log(
+                "TaskDefName not null: ",
+                taskDefName,
+                "but doesnt match " + req.getTaskDefName()
+            );
         }
 
         taskDefName = req.getTaskDefName();
         clientId = req.getClientId();
 
-        LHUtil.log("onNext, enqueuing client with ID", clientId);
+        LHUtil.log("TaskQueue is now enqueueing observer with id: ", clientId);
         taskQueueManager.onPollRequest(this);
     }
 
