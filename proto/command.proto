@@ -54,7 +54,6 @@ message TaskResultEventPb {
     bool from_rpc = 8;
 }
 
-
 // This section contains commands that originate from the gRPC api. Perhaps they
 // could also go in service.proto...?
 message PutWfSpecPb {

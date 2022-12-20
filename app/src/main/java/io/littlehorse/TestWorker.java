@@ -1,4 +1,4 @@
-package io.littlehorse.testworker;
+package io.littlehorse;
 
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHSerdeError;
@@ -11,8 +11,10 @@ import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.proto.CommandPb.CommandCase;
 import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.proto.VariableTypePb;
+import io.littlehorse.common.proto.VariableValuePb;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.testworker.TestWorkerGRPC;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -201,7 +203,26 @@ public class TestWorker {
     }
 
     public static void doMain(LHConfig config) {
-        TestWorker worker = new TestWorker(config);
-        worker.run();
+        // TestWorker worker = new TestWorker(config);
+        TestWorkerGRPC worker = new TestWorkerGRPC(
+            "hello",
+            "localhost",
+            5000,
+            "task1",
+            tsr -> {
+                System.out.println("Hello from " + tsr.getWfRunId());
+                return VariableValuePb
+                    .newBuilder()
+                    .setStr("Hello there")
+                    .setType(VariableTypePb.STR)
+                    .build();
+            }
+        );
+        worker.start();
+        while (true) {
+            try {
+                Thread.sleep(1000);
+            } catch (Exception ignored) {}
+        }
     }
 }

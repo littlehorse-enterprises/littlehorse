@@ -6,7 +6,6 @@ package io.littlehorse;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.KafkaStreamsServerImpl;
-import io.littlehorse.testworker.TestWorker;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;

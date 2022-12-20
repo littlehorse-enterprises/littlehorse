@@ -81,7 +81,7 @@ import io.littlehorse.server.streamsimpl.BackendInternalComms;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.storeinternals.index.TagQueryUtils;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
-import io.littlehorse.server.streamsimpl.taskqueue.GodzillaTaskQueueManager;
+import io.littlehorse.server.streamsimpl.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streamsimpl.taskqueue.TaskQueueStreamObserver;
 import io.littlehorse.server.streamsimpl.util.GETStreamObserver;
 import io.littlehorse.server.streamsimpl.util.POSTStreamObserver;
@@ -95,7 +95,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     private LHConfig config;
     private Server grpcServer;
-    private GodzillaTaskQueueManager godzilla;
+    private TaskQueueManager taskQueueManager;
 
     private KafkaStreams coreStreams;
     private KafkaStreams timerStreams;
@@ -106,7 +106,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         this.config = config;
 
         HealthStatusManager grpcHealthCheckThingy = new HealthStatusManager();
-        this.godzilla = new GodzillaTaskQueueManager(this);
+        this.taskQueueManager = new TaskQueueManager(this);
 
         coreStreams =
             new KafkaStreams(
@@ -261,7 +261,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public StreamObserver<PollTaskPb> pollTask(StreamObserver<PollTaskReplyPb> ctx) {
-        return new TaskQueueStreamObserver(ctx, godzilla);
+        return new TaskQueueStreamObserver(ctx, taskQueueManager);
     }
 
     @Override
@@ -466,7 +466,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             claimEvent.toProto().build(),
             client,
             TaskClaimEvent.class,
-            PollTaskPb.class
+            PollTaskPb.class,
+            false // it's a stream, so we don't want to complete it.
         );
     }
 
@@ -484,17 +485,32 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         Class<T> subCmdCls,
         Class<V> responseCls
     ) {
+        processCommand(request, responseObserver, subCmdCls, responseCls, true);
+    }
+
+    private <
+        U extends MessageOrBuilder,
+        T extends SubCommand<U>,
+        V extends MessageOrBuilder
+    > void processCommand(
+        U request,
+        StreamObserver<V> responseObserver,
+        Class<T> subCmdCls,
+        Class<V> responseCls,
+        boolean shouldComplete
+    ) {
         T subCmd = LHSerializable.fromProto(request, subCmdCls);
         Command cmd = new Command(subCmd);
         StreamObserver<ProcessCommandReplyPb> observer = new POSTStreamObserver<>(
             responseObserver,
-            responseCls
+            responseCls,
+            shouldComplete
         );
         internalComms.processCommand(cmd, observer);
     }
 
     public void onTaskScheduled(String taskDefName, String tsrObjectId) {
-        // TODO: Use the GodzillaTaskQueueManager
+        taskQueueManager.onTaskScheduled(taskDefName, tsrObjectId);
     }
 
     public void start() throws IOException {

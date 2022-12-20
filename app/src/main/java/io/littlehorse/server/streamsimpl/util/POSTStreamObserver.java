@@ -14,13 +14,16 @@ public class POSTStreamObserver<U extends MessageOrBuilder>
 
     private StreamObserver<U> ctx;
     private Class<U> responseCls;
+    private boolean shouldComplete;
 
     public POSTStreamObserver(
         StreamObserver<U> responseObserver,
-        Class<U> responseCls
+        Class<U> responseCls,
+        boolean shouldComplete
     ) {
         this.ctx = responseObserver;
         this.responseCls = responseCls;
+        this.shouldComplete = shouldComplete;
     }
 
     public void onError(Throwable t) {
@@ -32,7 +35,7 @@ public class POSTStreamObserver<U extends MessageOrBuilder>
         );
 
         ctx.onNext(response);
-        ctx.onCompleted();
+        if (shouldComplete) ctx.onCompleted();
     }
 
     private U buildErrorResponse(LHResponseCodePb code, String msg) {
@@ -90,6 +93,6 @@ public class POSTStreamObserver<U extends MessageOrBuilder>
         }
 
         ctx.onNext(response);
-        ctx.onCompleted();
+        if (shouldComplete) ctx.onCompleted();
     }
 }
