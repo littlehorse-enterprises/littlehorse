@@ -54,7 +54,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     private Map<String, WfSpec> wfSpecPuts;
     private Map<String, TaskDef> taskDefPuts;
     private Map<String, ExternalEventDef> extEvtDefPuts;
-    private List<TaskScheduleRequest> tasksToSchedule;
+    private Map<String, TaskScheduleRequest> tsrPuts;
     private List<LHTimer> timersToSchedule;
     private CommandResult responseToSave;
     private Command command;
@@ -91,6 +91,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     private LHROStoreWrapper globalStore;
     private ProcessorContext<String, CommandProcessorOutput> ctx;
     private LHConfig config;
+    private boolean partitionIsClaimed;
 
     public KafkaStreamsLHDAOImpl(
         final ProcessorContext<String, CommandProcessorOutput> ctx,
@@ -98,6 +99,12 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         KafkaStreamsServerImpl server
     ) {
         this.server = server;
+        this.ctx = ctx;
+        this.config = config;
+
+        // At the start, we haven't claimed the partition until the claim event comes
+        this.partitionIsClaimed = false;
+
         nodeRunPuts = new HashMap<>();
         variablePuts = new HashMap<>();
         extEvtPuts = new HashMap<>();
@@ -120,12 +127,10 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         );
         localStore = new LHStoreWrapper(rawLocalStore, config);
         globalStore = new LHROStoreWrapper(rawGlobalStore, config);
-        this.ctx = ctx;
-        this.config = config;
 
         partition = ctx.taskId().partition();
 
-        tasksToSchedule = new ArrayList<>();
+        tsrPuts = new HashMap<>();
         timersToSchedule = new ArrayList<>();
     }
 
@@ -309,7 +314,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     @Override
     public void scheduleTask(TaskScheduleRequest tsr) {
-        tasksToSchedule.add(tsr);
+        tsrPuts.put(tsr.getObjectId(), tsr);
     }
 
     @Override
@@ -318,15 +323,20 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     }
 
     @Override
-    public TaskScheduleRequest getTaskScheduleRequest(
+    public TaskScheduleRequest markTaskAsScheduled(
         String wfRunId,
         int threadRunNumber,
         int taskRunPosition
     ) {
-        return localStore.get(
+        TaskScheduleRequest tsr = localStore.get(
             NodeRun.getStoreKey(wfRunId, threadRunNumber, taskRunPosition),
             TaskScheduleRequest.class
         );
+        LHUtil.log("deleting tsr", tsr.getObjectId());
+
+        tsrPuts.put(tsr.getObjectId(), null);
+
+        return tsr;
     }
 
     @Override
@@ -434,7 +444,28 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         }
     }
 
-    public void broadcastChanges(long time) {
+    public void onPartitionClaimed() {
+        if (partitionIsClaimed) {
+            throw new RuntimeException("Re-claiming partition! Yikes!");
+        }
+        partitionIsClaimed = true;
+
+        try (
+            LHKeyValueIterator<TaskScheduleRequest> iter = localStore.prefixScan(
+                "",
+                TaskScheduleRequest.class
+            )
+        ) {
+            while (iter.hasNext()) {
+                LHIterKeyValue<TaskScheduleRequest> next = iter.next();
+                TaskScheduleRequest tsr = next.getValue();
+                LHUtil.log("Rehydration: scheduling task:", tsr.getObjectId());
+                server.onTaskScheduled(tsr.taskDefName, tsr.getObjectId());
+            }
+        }
+    }
+
+    public void broadcastTagCounts(long time) {
         TagChangesToBroadcast changes = getTagChangesToBroadcast();
 
         for (Map.Entry<String, DiscreteTagLocalCounter> e : changes.changelog.entrySet()) {
@@ -501,8 +532,15 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
             forwardTimer(timer);
         }
 
-        for (TaskScheduleRequest tsr : tasksToSchedule) {
-            forwardTask(tsr);
+        for (Map.Entry<String, TaskScheduleRequest> entry : tsrPuts.entrySet()) {
+            String tsrId = entry.getKey();
+            TaskScheduleRequest tsr = entry.getValue();
+            if (tsr != null) {
+                forwardTask(tsr);
+            } else {
+                // It's time to delete the thing.
+                saveOrDeleteGETableFlush(tsrId, null, TaskScheduleRequest.class);
+            }
         }
     }
 
@@ -522,7 +560,11 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
             );
 
             // This is where the magic happens
-            server.onTaskScheduled(tsr.taskDefName, tsr.getObjectId());
+            if (partitionIsClaimed) {
+                server.onTaskScheduled(tsr.taskDefName, tsr.getObjectId());
+            } else {
+                LHUtil.log("haven't claimed partitions, deferring scheduling of tsr");
+            }
         } else if (taskDef.type == QueueDetailsCase.KAFKA) {
             CommandProcessorOutput output = new CommandProcessorOutput(
                 taskDef.kafkaTaskQueueDetails.topic,
@@ -708,7 +750,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         nodeRunPuts.clear();
         variablePuts.clear();
         extEvtPuts.clear();
-        tasksToSchedule.clear();
+        tsrPuts.clear();
         timersToSchedule.clear();
         wfRunPuts.clear();
         wfSpecPuts.clear();

@@ -82,11 +82,24 @@ public class LHProducer implements Closeable {
         prod.sendOffsetsToTransaction(offsets, groupMetadata);
     }
 
-    private Future<RecordMetadata> sendRecord(
+    public Future<RecordMetadata> sendRecord(
         ProducerRecord<String, Bytes> record,
         Callback cb
     ) {
         return (cb != null) ? prod.send(record, cb) : prod.send(record);
+    }
+
+    public Future<RecordMetadata> sendToPartition(
+        String key,
+        LHSerializable<?> val,
+        String topic,
+        int partition
+    ) {
+        Bytes valBytes = val == null ? null : new Bytes(val.toBytes(config));
+        return sendRecord(
+            new ProducerRecord<>(topic, partition, key, valBytes),
+            null
+        );
     }
 
     public void close() {

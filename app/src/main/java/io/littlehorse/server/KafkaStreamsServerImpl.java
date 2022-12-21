@@ -78,6 +78,7 @@ import io.littlehorse.common.proto.SearchWfRunReplyPb;
 import io.littlehorse.common.proto.StopWfRunPb;
 import io.littlehorse.common.proto.StopWfRunReplyPb;
 import io.littlehorse.common.proto.TaskResultEventPb;
+import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streamsimpl.BackendInternalComms;
 import io.littlehorse.server.streamsimpl.ServerTopology;
@@ -501,6 +502,10 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             tsr,
             client.getResponseObserver()
         );
+    }
+
+    public LHProducer getProducer() {
+        return internalComms.getProducer();
     }
 
     private void recordClaimEventAndReturnTask(

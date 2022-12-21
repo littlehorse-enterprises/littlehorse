@@ -74,7 +74,7 @@ public interface LHDAO extends LHGlobalMetaStores {
 
     public ExternalEventDef getExternalEventDef(String name, Integer version);
 
-    public TaskScheduleRequest getTaskScheduleRequest(
+    public TaskScheduleRequest markTaskAsScheduled(
         String wfRunId,
         int threadRunNumber,
         int taskRunPosition

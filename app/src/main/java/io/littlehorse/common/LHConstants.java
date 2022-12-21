@@ -45,6 +45,8 @@ public class LHConstants {
     // on the same node. This guarantees ordering. Note that metadata is low
     // throughput and low volume so partitioning is not needed.
     public static final String META_PARTITION_KEY = "METADATA";
+    public static final String PARTITION_CLAIM_KEY = "PARTITION_CLAIM";
+    public static final String PARTITION_CLAIM_GUID_HEADER = "PARTITION_CLAIM_GUID";
 
     // Reserved `FailureDef` names
     public static final String CHILD_FAILURE = "CHILD_FAILURE";

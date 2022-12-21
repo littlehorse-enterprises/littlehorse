@@ -49,6 +49,7 @@ public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
     }
 
     public TaskClaimReply process(LHDAO dao, LHConfig config) {
+        LHUtil.log("hi from the thing");
         TaskClaimReply out = new TaskClaimReply();
 
         WfRun wfRun = dao.getWfRun(wfRunId);
@@ -82,7 +83,7 @@ public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
         // Needs to be done before we process the event, since processing the event
         // will delete the task schedule request.
         out.result =
-            dao.getTaskScheduleRequest(wfRunId, threadRunNumber, taskRunPosition);
+            dao.markTaskAsScheduled(wfRunId, threadRunNumber, taskRunPosition);
         out.code = LHResponseCodePb.OK;
 
         wfRun.wfSpec = wfSpec;
