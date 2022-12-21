@@ -207,6 +207,12 @@ message DeleteWfRunReplyPb {
     optional string message = 2;
 }
 
+message GetMetricsRequestPb {}
+
+message GetMetricsReplyPb {
+    string metrics = 1;
+}
+
 service LHPublicApi {
     rpc PutTaskDef(PutTaskDefPb) returns (PutTaskDefReplyPb) {}
     rpc GetTaskDef(GetTaskDefPb) returns (GetTaskDefReplyPb) {}
@@ -236,6 +242,8 @@ service LHPublicApi {
     rpc StopWfRun(StopWfRunPb) returns (StopWfRunReplyPb) {}
     rpc ResumeWfRun(ResumeWfRunPb) returns (ResumeWfRunReplyPb) {}
     rpc DeleteWfRun(DeleteWfRunPb) returns (DeleteWfRunReplyPb) {}
+
+    rpc GetMetrics(GetMetricsRequestPb) returns (GetMetricsReplyPb) {}
 }
 
 

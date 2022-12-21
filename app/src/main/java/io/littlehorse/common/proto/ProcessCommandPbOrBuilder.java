@@ -21,10 +21,4 @@ public interface ProcessCommandPbOrBuilder extends
    * <code>.lh_proto.CommandPb command = 1;</code>
    */
   io.littlehorse.common.proto.CommandPbOrBuilder getCommandOrBuilder();
-
-  /**
-   * <code>int32 specific_partition = 2;</code>
-   * @return The specificPartition.
-   */
-  int getSpecificPartition();
 }

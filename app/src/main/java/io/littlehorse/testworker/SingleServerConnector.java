@@ -51,7 +51,7 @@ public class SingleServerConnector implements StreamObserver<PollTaskReplyPb> {
 
         System.out.println("Hi from constructor SSC");
         // kick off the party
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 2; i++) {
             pollClient.onNext(
                 PollTaskPb
                     .newBuilder()
@@ -128,6 +128,10 @@ public class SingleServerConnector implements StreamObserver<PollTaskReplyPb> {
     public void onError(Throwable t) {
         System.out.println("Unexpected error");
         t.printStackTrace();
+        if (t.getCause() != null) {
+            System.out.println("Cause: ");
+            t.getCause().printStackTrace();
+        }
         stillRunning = false;
     }
 }

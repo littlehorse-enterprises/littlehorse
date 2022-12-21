@@ -604,6 +604,37 @@ public final class LHPublicApiGrpc {
     return getDeleteWfRunMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.GetMetricsRequestPb,
+      io.littlehorse.common.proto.GetMetricsReplyPb> getGetMetricsMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetMetrics",
+      requestType = io.littlehorse.common.proto.GetMetricsRequestPb.class,
+      responseType = io.littlehorse.common.proto.GetMetricsReplyPb.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.GetMetricsRequestPb,
+      io.littlehorse.common.proto.GetMetricsReplyPb> getGetMetricsMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.common.proto.GetMetricsRequestPb, io.littlehorse.common.proto.GetMetricsReplyPb> getGetMetricsMethod;
+    if ((getGetMetricsMethod = LHPublicApiGrpc.getGetMetricsMethod) == null) {
+      synchronized (LHPublicApiGrpc.class) {
+        if ((getGetMetricsMethod = LHPublicApiGrpc.getGetMetricsMethod) == null) {
+          LHPublicApiGrpc.getGetMetricsMethod = getGetMetricsMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.GetMetricsRequestPb, io.littlehorse.common.proto.GetMetricsReplyPb>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetMetrics"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.GetMetricsRequestPb.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.GetMetricsReplyPb.getDefaultInstance()))
+              .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("GetMetrics"))
+              .build();
+        }
+      }
+    }
+    return getGetMetricsMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -785,6 +816,13 @@ public final class LHPublicApiGrpc {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getDeleteWfRunMethod(), responseObserver);
     }
 
+    /**
+     */
+    public void getMetrics(io.littlehorse.common.proto.GetMetricsRequestPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.GetMetricsReplyPb> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetMetricsMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -920,6 +958,13 @@ public final class LHPublicApiGrpc {
                 io.littlehorse.common.proto.DeleteWfRunPb,
                 io.littlehorse.common.proto.DeleteWfRunReplyPb>(
                   this, METHODID_DELETE_WF_RUN)))
+          .addMethod(
+            getGetMetricsMethod(),
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
+              new MethodHandlers<
+                io.littlehorse.common.proto.GetMetricsRequestPb,
+                io.littlehorse.common.proto.GetMetricsReplyPb>(
+                  this, METHODID_GET_METRICS)))
           .build();
     }
   }
@@ -1089,6 +1134,14 @@ public final class LHPublicApiGrpc {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getDeleteWfRunMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void getMetrics(io.littlehorse.common.proto.GetMetricsRequestPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.GetMetricsReplyPb> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getGetMetricsMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -1222,6 +1275,13 @@ public final class LHPublicApiGrpc {
     public io.littlehorse.common.proto.DeleteWfRunReplyPb deleteWfRun(io.littlehorse.common.proto.DeleteWfRunPb request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getDeleteWfRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.common.proto.GetMetricsReplyPb getMetrics(io.littlehorse.common.proto.GetMetricsRequestPb request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetMetricsMethod(), getCallOptions(), request);
     }
   }
 
@@ -1374,6 +1434,14 @@ public final class LHPublicApiGrpc {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getDeleteWfRunMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.GetMetricsReplyPb> getMetrics(
+        io.littlehorse.common.proto.GetMetricsRequestPb request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getGetMetricsMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_PUT_TASK_DEF = 0;
@@ -1393,8 +1461,9 @@ public final class LHPublicApiGrpc {
   private static final int METHODID_STOP_WF_RUN = 14;
   private static final int METHODID_RESUME_WF_RUN = 15;
   private static final int METHODID_DELETE_WF_RUN = 16;
-  private static final int METHODID_REGISTER_TASK_WORKER = 17;
-  private static final int METHODID_POLL_TASK = 18;
+  private static final int METHODID_GET_METRICS = 17;
+  private static final int METHODID_REGISTER_TASK_WORKER = 18;
+  private static final int METHODID_POLL_TASK = 19;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -1480,6 +1549,10 @@ public final class LHPublicApiGrpc {
         case METHODID_DELETE_WF_RUN:
           serviceImpl.deleteWfRun((io.littlehorse.common.proto.DeleteWfRunPb) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.DeleteWfRunReplyPb>) responseObserver);
+          break;
+        case METHODID_GET_METRICS:
+          serviceImpl.getMetrics((io.littlehorse.common.proto.GetMetricsRequestPb) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.GetMetricsReplyPb>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -1567,6 +1640,7 @@ public final class LHPublicApiGrpc {
               .addMethod(getStopWfRunMethod())
               .addMethod(getResumeWfRunMethod())
               .addMethod(getDeleteWfRunMethod())
+              .addMethod(getGetMetricsMethod())
               .build();
         }
       }

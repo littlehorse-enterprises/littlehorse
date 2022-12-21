@@ -32,7 +32,6 @@ import io.littlehorse.common.proto.RegisterTaskWorkerPb;
 import io.littlehorse.common.proto.RegisterTaskWorkerReplyPb;
 import io.littlehorse.common.proto.StoreQueryStatusPb;
 import io.littlehorse.common.util.LHProducer;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streamsimpl.storeinternals.LHROStoreWrapper;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
@@ -247,14 +246,15 @@ public class BackendInternalComms implements Closeable {
         return out.build();
     }
 
+    public LHProducer getProducer() {
+        return producer;
+    }
+
     public void onResponseReceived(String commandId, ProcessCommandReplyPb response) {
         StreamObserver<ProcessCommandReplyPb> observer = asyncWaiters.get(commandId);
         if (observer != null) {
-            LHUtil.log("Observing response for", commandId);
             observer.onNext(response);
             observer.onCompleted();
-        } else {
-            LHUtil.log("observed response for dangling command ", commandId);
         }
     }
 

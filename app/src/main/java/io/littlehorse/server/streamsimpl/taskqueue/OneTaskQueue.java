@@ -1,7 +1,7 @@
 package io.littlehorse.server.streamsimpl.taskqueue;
 
-import io.littlehorse.common.util.LHUtil;
 import java.util.LinkedList;
+import java.util.Queue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -9,7 +9,7 @@ import java.util.concurrent.locks.ReentrantLock;
 // one specific TaskDef on one LH Server host.
 public class OneTaskQueue {
 
-    private LinkedList<PollTaskRequestObserver> hungryClients;
+    private Queue<PollTaskRequestObserver> hungryClients;
     private Lock lock;
 
     private LinkedList<String> pendingTaskIds;
@@ -78,7 +78,7 @@ public class OneTaskQueue {
                 luckyClient = hungryClients.poll();
             } else {
                 // case 2
-                pendingTaskIds.push(tsrId);
+                pendingTaskIds.add(tsrId);
             }
         } finally {
             lock.unlock();
@@ -102,12 +102,6 @@ public class OneTaskQueue {
         if (!taskDefName.equals(requestObserver.getTaskDefName())) {
             throw new RuntimeException("Not possible, got mismatched taskdef name");
         }
-        LHUtil.log(
-            "Enqueueing observer with id",
-            requestObserver.getClientId(),
-            "taskDef",
-            taskDefName
-        );
 
         // There's two cases here:
         // 1. There are pending Task Id's in the queue, which means that there
@@ -130,7 +124,7 @@ public class OneTaskQueue {
                 nextTaskId = pendingTaskIds.poll();
             } else {
                 // case 2
-                hungryClients.push(requestObserver);
+                hungryClients.add(requestObserver);
             }
         } finally {
             lock.unlock();

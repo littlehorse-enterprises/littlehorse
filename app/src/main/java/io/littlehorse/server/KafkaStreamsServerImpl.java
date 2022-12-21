@@ -39,6 +39,8 @@ import io.littlehorse.common.proto.GetExternalEventDefPb;
 import io.littlehorse.common.proto.GetExternalEventDefReplyPb;
 import io.littlehorse.common.proto.GetExternalEventPb;
 import io.littlehorse.common.proto.GetExternalEventReplyPb;
+import io.littlehorse.common.proto.GetMetricsReplyPb;
+import io.littlehorse.common.proto.GetMetricsRequestPb;
 import io.littlehorse.common.proto.GetNodeRunPb;
 import io.littlehorse.common.proto.GetNodeRunReplyPb;
 import io.littlehorse.common.proto.GetTaskDefPb;
@@ -87,6 +89,9 @@ import io.littlehorse.server.streamsimpl.util.GETStreamObserver;
 import io.littlehorse.server.streamsimpl.util.POSTStreamObserver;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Map;
+import org.apache.kafka.common.Metric;
+import org.apache.kafka.common.MetricName;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KafkaStreams.State;
 import org.apache.kafka.streams.KafkaStreams.StateListener;
@@ -448,6 +453,26 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         processCommand(req, ctx, DeleteWfRun.class, DeleteWfRunReplyPb.class);
     }
 
+    @Override
+    public void getMetrics(
+        GetMetricsRequestPb req,
+        StreamObserver<GetMetricsReplyPb> ctx
+    ) {
+        Map<MetricName, ? extends Metric> metrics = coreStreams.metrics();
+
+        StringBuilder out = new StringBuilder();
+        for (Map.Entry<MetricName, ? extends Metric> entry : metrics.entrySet()) {
+            out.append(entry.getKey().group() + ".");
+            out.append(entry.getKey().name());
+            out.append(": ");
+            out.append(entry.getValue().metricValue().toString());
+            out.append("\n");
+        }
+
+        ctx.onNext(GetMetricsReplyPb.newBuilder().setMetrics(out.toString()).build());
+        ctx.onCompleted();
+    }
+
     public void returnTaskToClient(String taskId, PollTaskRequestObserver client) {
         // First, create the TaskStartedEvent Command.
         TaskScheduleRequest tsr = internalComms.getTsr(taskId);
@@ -461,14 +486,61 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         Command taskClaimCommand = new Command();
         taskClaimCommand.type = CommandCase.TASK_CLAIM_EVENT;
         taskClaimCommand.taskClaimEvent = claimEvent;
+        taskClaimCommand.time = new Date();
 
-        processCommand(
-            claimEvent.toProto().build(),
-            client.getResponseObserver(),
-            TaskClaimEvent.class,
-            PollTaskReplyPb.class,
-            false // it's a stream, so we don't want to complete it.
+        // // the old way which synchronously processes:
+        // processCommand(
+        //     claimEvent.toProto().build(),
+        //     client.getResponseObserver(),
+        //     TaskClaimEvent.class,
+        //     PollTaskReplyPb.class,
+        //     false // it's a stream, so we don't want to complete it.
+        // );
+        recordClaimEventAndReturnTask(
+            taskClaimCommand,
+            tsr,
+            client.getResponseObserver()
         );
+    }
+
+    private void recordClaimEventAndReturnTask(
+        Command taskClaimCommand,
+        TaskScheduleRequest tsr,
+        StreamObserver<PollTaskReplyPb> observer
+    ) {
+        internalComms
+            .getProducer()
+            .send(
+                taskClaimCommand.getPartitionKey(),
+                taskClaimCommand,
+                config.getCoreCmdTopicName(),
+                (recordMeta, exn) -> {
+                    if (exn != null) {
+                        // Then the command wasn't successfully claimed. Just return
+                        // an empty reply and get the client to try again later.
+                        observer.onNext(
+                            PollTaskReplyPb
+                                .newBuilder()
+                                .setCode(LHResponseCodePb.CONNECTION_ERROR)
+                                .setMessage(
+                                    "Unable to claim command, had a kafka error: " +
+                                    exn.getMessage()
+                                )
+                                .build()
+                        );
+                    } else {
+                        // Then the message has been accepted by Kafka. It's time to
+                        // finally return the task to client.
+                        observer.onNext(
+                            PollTaskReplyPb
+                                .newBuilder()
+                                .setCode(LHResponseCodePb.OK)
+                                .setResult(tsr.toProto())
+                                .build()
+                        );
+                    }
+                }
+            );
     }
 
     public void onResponseReceived(String commandId, ProcessCommandReplyPb response) {

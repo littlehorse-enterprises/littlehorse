@@ -522,7 +522,6 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
             );
 
             // This is where the magic happens
-            System.out.println("Scheduling task");
             server.onTaskScheduled(tsr.taskDefName, tsr.getObjectId());
         } else if (taskDef.type == QueueDetailsCase.KAFKA) {
             CommandProcessorOutput output = new CommandProcessorOutput(

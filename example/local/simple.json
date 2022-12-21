@@ -1,48 +1,87 @@
 {
-  "name": "simple-wf",
-  "threadSpecs": {
-    "simple_wf": {
-      "nodes": {
-        "entrypoint": {
-          "outgoingEdges": [
-            {
-              "sinkNodeName": "t1"
+    "name": "simple-wf",
+    "threadSpecs": {
+        "simple_wf": {
+            "nodes": {
+                "entrypoint": {
+                    "outgoingEdges": [
+                        {
+                            "sinkNodeName": "t1"
+                        }
+                    ],
+                    "entrypoint": {}
+                },
+                "t1": {
+                    "task": {
+                        "taskDefName": "task1",
+                        "retries": 3
+                    },
+                    "outgoingEdges": [
+                        {
+                            "sinkNodeName": "t2"
+                        }
+                    ]
+                },
+                "t2": {
+                    "task": {
+                        "taskDefName": "task1",
+                        "retries": 3
+                    },
+                    "outgoingEdges": [
+                        {
+                            "sinkNodeName": "t2a"
+                        }
+                    ]
+                },
+                "t2a": {
+                    "task": {
+                        "taskDefName": "task1",
+                        "retries": 3
+                    },
+                    "outgoingEdges": [
+                        {
+                            "sinkNodeName": "t2b"
+                        }
+                    ]
+                },
+                "t2b": {
+                    "task": {
+                        "taskDefName": "task1",
+                        "retries": 3
+                    },
+                    "outgoingEdges": [
+                        {
+                            "sinkNodeName": "t2c"
+                        }
+                    ]
+                },
+                "t2c": {
+                    "task": {
+                        "taskDefName": "task1",
+                        "retries": 3
+                    },
+                    "outgoingEdges": [
+                        {
+                            "sinkNodeName": "t3"
+                        }
+                    ]
+                },
+                "t3": {
+                    "task": {
+                        "taskDefName": "task1",
+                        "retries": 3
+                    },
+                    "outgoingEdges": [
+                        {
+                            "sinkNodeName": "exit"
+                        }
+                    ]
+                },
+                "exit": {
+                    "exit": {}
+                }
             }
-          ],
-          "entrypoint": {}
-        },
-        "t1": {
-          "task": {
-            "taskDefName": "task1",
-            "retries": 3
-          },
-          "outgoingEdges": [{
-            "sinkNodeName": "t2"
-          }]
-        },
-        "t2": {
-          "task": {
-            "taskDefName": "task1",
-            "retries": 3
-          },
-          "outgoingEdges": [{
-            "sinkNodeName": "t3"
-          }]
-        },
-        "t3": {
-          "task": {
-            "taskDefName": "task1",
-            "retries": 3
-          },
-          "outgoingEdges": [{
-            "sinkNodeName": "exit"
-          }]
-        },
-        "exit": {
-          "exit": {}
         }
-      }
-    }
-  },
-  "entrypointThreadName": "simple_wf"
+    },
+    "entrypointThreadName": "simple_wf"
 }

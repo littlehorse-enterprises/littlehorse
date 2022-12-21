@@ -11,13 +11,11 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskPb> {
     private TaskQueueManager taskQueueManager;
     private String clientId;
     private String taskDefName;
-    private String guid;
 
     public PollTaskRequestObserver(
         StreamObserver<PollTaskReplyPb> responseObserver,
         TaskQueueManager manager
     ) {
-        this.guid = LHUtil.generateGuid();
         this.responseObserver = responseObserver;
         this.taskQueueManager = manager;
         this.clientId = null;
@@ -43,22 +41,12 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskPb> {
 
     @Override
     public void onNext(PollTaskPb req) {
-        LHUtil.log("Guid: ", guid);
-
         if (clientId == null) {
             clientId = req.getClientId();
-            LHUtil.log("Just set clientId:", this.clientId);
-        } else if (!clientId.equals(req.getClientId())) {
-            LHUtil.log(
-                "Client Id not null: ",
-                clientId,
-                "but doesnt match " + req.getClientId()
-            );
         }
 
         if (taskDefName == null) {
             taskDefName = req.getTaskDefName();
-            LHUtil.log("Just set taskDefName to " + taskDefName);
         } else if (!taskDefName.equals(req.getTaskDefName())) {
             LHUtil.log(
                 "TaskDefName not null: ",
@@ -70,13 +58,11 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskPb> {
         taskDefName = req.getTaskDefName();
         clientId = req.getClientId();
 
-        LHUtil.log("TaskQueue is now enqueueing observer with id: ", clientId);
         taskQueueManager.onPollRequest(this);
     }
 
     @Override
     public void onCompleted() {
-        LHUtil.log("OnCompleted for", clientId);
         taskQueueManager.onRequestDisconnected(this);
     }
 }
