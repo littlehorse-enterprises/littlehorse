@@ -20,6 +20,7 @@ enum LHResponseCodePb {
     BAD_REQUEST_ERROR = 3;
     VALIDATION_ERROR = 4;
     ALREADY_EXISTS_ERROR = 5;
+    REPORTED_BUT_NOT_PROCESSED = 6;
 }
 
 message GetWfSpecPb {
@@ -235,7 +236,7 @@ service LHPublicApi {
 
     rpc SearchWfRun(SearchWfRunPb) returns (SearchWfRunReplyPb) {}
 
-    rpc RegisterTaskWorker(stream RegisterTaskWorkerPb) returns (stream RegisterTaskWorkerReplyPb) {}
+    rpc RegisterTaskWorker(RegisterTaskWorkerPb) returns (RegisterTaskWorkerReplyPb) {}
     rpc PollTask(stream PollTaskPb) returns (stream PollTaskReplyPb) {}
     rpc ReportTask(TaskResultEventPb) returns (ReportTaskReplyPb) {}
 

@@ -32,6 +32,10 @@ public enum LHResponseCodePb
    * <code>ALREADY_EXISTS_ERROR = 5;</code>
    */
   ALREADY_EXISTS_ERROR(5),
+  /**
+   * <code>REPORTED_BUT_NOT_PROCESSED = 6;</code>
+   */
+  REPORTED_BUT_NOT_PROCESSED(6),
   UNRECOGNIZED(-1),
   ;
 
@@ -59,6 +63,10 @@ public enum LHResponseCodePb
    * <code>ALREADY_EXISTS_ERROR = 5;</code>
    */
   public static final int ALREADY_EXISTS_ERROR_VALUE = 5;
+  /**
+   * <code>REPORTED_BUT_NOT_PROCESSED = 6;</code>
+   */
+  public static final int REPORTED_BUT_NOT_PROCESSED_VALUE = 6;
 
 
   public final int getNumber() {
@@ -91,6 +99,7 @@ public enum LHResponseCodePb
       case 3: return BAD_REQUEST_ERROR;
       case 4: return VALIDATION_ERROR;
       case 5: return ALREADY_EXISTS_ERROR;
+      case 6: return REPORTED_BUT_NOT_PROCESSED;
       default: return null;
     }
   }

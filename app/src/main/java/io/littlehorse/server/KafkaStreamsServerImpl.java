@@ -271,25 +271,12 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
-    public StreamObserver<RegisterTaskWorkerPb> registerTaskWorker(
+    public void registerTaskWorker(
+        RegisterTaskWorkerPb req,
         StreamObserver<RegisterTaskWorkerReplyPb> responseObserver
     ) {
-        return new StreamObserver<RegisterTaskWorkerPb>() {
-            @Override
-            public void onCompleted() {
-                // Nothing to do
-            }
-
-            @Override
-            public void onError(Throwable t) {
-                // Nothing to do
-            }
-
-            @Override
-            public void onNext(RegisterTaskWorkerPb request) {
-                responseObserver.onNext(internalComms.registerTaskWorker(request));
-            }
-        };
+        responseObserver.onNext(internalComms.registerTaskWorker(req));
+        responseObserver.onCompleted();
     }
 
     @Override
@@ -477,6 +464,24 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     public void returnTaskToClient(String taskId, PollTaskRequestObserver client) {
         // First, create the TaskStartedEvent Command.
         TaskScheduleRequest tsr = internalComms.getTsr(taskId);
+        if (tsr == null) {
+            LHUtil.log(
+                "Warning: it appears this TSR is missing.",
+                "Likely because Task migrated to another instance after scheduling.",
+                taskId
+            );
+            client
+                .getResponseObserver()
+                .onNext(
+                    PollTaskReplyPb
+                        .newBuilder()
+                        .setCode(LHResponseCodePb.NOT_FOUND_ERROR)
+                        .setMessage("Failed loading task; please try again.")
+                        .build()
+                );
+            return;
+        }
+
         TaskClaimEvent claimEvent = new TaskClaimEvent();
         claimEvent.wfRunId = tsr.wfRunId;
         claimEvent.threadRunNumber = tsr.threadRunNumber;
@@ -489,19 +494,19 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         taskClaimCommand.taskClaimEvent = claimEvent;
         taskClaimCommand.time = new Date();
 
-        // // the old way which synchronously processes:
-        // processCommand(
-        //     claimEvent.toProto().build(),
-        //     client.getResponseObserver(),
-        //     TaskClaimEvent.class,
-        //     PollTaskReplyPb.class,
-        //     false // it's a stream, so we don't want to complete it.
-        // );
-        recordClaimEventAndReturnTask(
-            taskClaimCommand,
-            tsr,
-            client.getResponseObserver()
+        // the old way which synchronously processes:
+        processCommand(
+            claimEvent.toProto().build(),
+            client.getResponseObserver(),
+            TaskClaimEvent.class,
+            PollTaskReplyPb.class,
+            false // it's a stream, so we don't want to complete it.
         );
+        // recordClaimEventAndReturnTask(
+        //     taskClaimCommand,
+        //     tsr,
+        //     client.getResponseObserver()
+        // );
     }
 
     public LHProducer getProducer() {
@@ -640,3 +645,15 @@ class LHBackendStateListener implements StateListener {
         }
     }
 }
+/*
+ * Things to test with the new Queue gRPC thing:
+ *
+ * - TaskScheduleRequest gets created on server A, then the StreamsTask migrates
+ *   to server B. The task should be returned exactly once, and it should be returned
+ *   to a server B client.
+ *
+ * - Client gets task from server B. Server B crashes. Client should report task to
+ *   Server A provided that it can connect to Server A.
+ *
+ * - TODO: Add more
+ */

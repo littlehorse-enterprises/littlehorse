@@ -37,7 +37,7 @@ public class TestWorkerGRPC implements StreamObserver<RegisterTaskWorkerReplyPb>
                 .build();
 
         LHPublicApiStub stub = LHPublicApiGrpc.newStub(this.channel);
-        this.registryClient = stub.registerTaskWorker(this);
+        // this.registryClient = stub.registerTaskWorker(this);
         this.running = true;
         this.func = func;
         this.taskDefName = taskDefName;

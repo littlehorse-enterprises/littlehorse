@@ -425,7 +425,7 @@ public final class LHPublicApiGrpc {
       fullMethodName = SERVICE_NAME + '/' + "RegisterTaskWorker",
       requestType = io.littlehorse.common.proto.RegisterTaskWorkerPb.class,
       responseType = io.littlehorse.common.proto.RegisterTaskWorkerReplyPb.class,
-      methodType = io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING)
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
   public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.RegisterTaskWorkerPb,
       io.littlehorse.common.proto.RegisterTaskWorkerReplyPb> getRegisterTaskWorkerMethod() {
     io.grpc.MethodDescriptor<io.littlehorse.common.proto.RegisterTaskWorkerPb, io.littlehorse.common.proto.RegisterTaskWorkerReplyPb> getRegisterTaskWorkerMethod;
@@ -434,7 +434,7 @@ public final class LHPublicApiGrpc {
         if ((getRegisterTaskWorkerMethod = LHPublicApiGrpc.getRegisterTaskWorkerMethod) == null) {
           LHPublicApiGrpc.getRegisterTaskWorkerMethod = getRegisterTaskWorkerMethod =
               io.grpc.MethodDescriptor.<io.littlehorse.common.proto.RegisterTaskWorkerPb, io.littlehorse.common.proto.RegisterTaskWorkerReplyPb>newBuilder()
-              .setType(io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING)
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "RegisterTaskWorker"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
@@ -776,9 +776,9 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    public io.grpc.stub.StreamObserver<io.littlehorse.common.proto.RegisterTaskWorkerPb> registerTaskWorker(
+    public void registerTaskWorker(io.littlehorse.common.proto.RegisterTaskWorkerPb request,
         io.grpc.stub.StreamObserver<io.littlehorse.common.proto.RegisterTaskWorkerReplyPb> responseObserver) {
-      return io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall(getRegisterTaskWorkerMethod(), responseObserver);
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getRegisterTaskWorkerMethod(), responseObserver);
     }
 
     /**
@@ -918,7 +918,7 @@ public final class LHPublicApiGrpc {
                   this, METHODID_SEARCH_WF_RUN)))
           .addMethod(
             getRegisterTaskWorkerMethod(),
-            io.grpc.stub.ServerCalls.asyncBidiStreamingCall(
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
               new MethodHandlers<
                 io.littlehorse.common.proto.RegisterTaskWorkerPb,
                 io.littlehorse.common.proto.RegisterTaskWorkerReplyPb>(
@@ -1089,10 +1089,10 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    public io.grpc.stub.StreamObserver<io.littlehorse.common.proto.RegisterTaskWorkerPb> registerTaskWorker(
+    public void registerTaskWorker(io.littlehorse.common.proto.RegisterTaskWorkerPb request,
         io.grpc.stub.StreamObserver<io.littlehorse.common.proto.RegisterTaskWorkerReplyPb> responseObserver) {
-      return io.grpc.stub.ClientCalls.asyncBidiStreamingCall(
-          getChannel().newCall(getRegisterTaskWorkerMethod(), getCallOptions()), responseObserver);
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getRegisterTaskWorkerMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -1251,6 +1251,13 @@ public final class LHPublicApiGrpc {
 
     /**
      */
+    public io.littlehorse.common.proto.RegisterTaskWorkerReplyPb registerTaskWorker(io.littlehorse.common.proto.RegisterTaskWorkerPb request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getRegisterTaskWorkerMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
     public io.littlehorse.common.proto.ReportTaskReplyPb reportTask(io.littlehorse.common.proto.TaskResultEventPb request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getReportTaskMethod(), getCallOptions(), request);
@@ -1405,6 +1412,14 @@ public final class LHPublicApiGrpc {
 
     /**
      */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.RegisterTaskWorkerReplyPb> registerTaskWorker(
+        io.littlehorse.common.proto.RegisterTaskWorkerPb request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getRegisterTaskWorkerMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.ReportTaskReplyPb> reportTask(
         io.littlehorse.common.proto.TaskResultEventPb request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
@@ -1457,12 +1472,12 @@ public final class LHPublicApiGrpc {
   private static final int METHODID_PUT_EXTERNAL_EVENT = 10;
   private static final int METHODID_GET_EXTERNAL_EVENT = 11;
   private static final int METHODID_SEARCH_WF_RUN = 12;
-  private static final int METHODID_REPORT_TASK = 13;
-  private static final int METHODID_STOP_WF_RUN = 14;
-  private static final int METHODID_RESUME_WF_RUN = 15;
-  private static final int METHODID_DELETE_WF_RUN = 16;
-  private static final int METHODID_GET_METRICS = 17;
-  private static final int METHODID_REGISTER_TASK_WORKER = 18;
+  private static final int METHODID_REGISTER_TASK_WORKER = 13;
+  private static final int METHODID_REPORT_TASK = 14;
+  private static final int METHODID_STOP_WF_RUN = 15;
+  private static final int METHODID_RESUME_WF_RUN = 16;
+  private static final int METHODID_DELETE_WF_RUN = 17;
+  private static final int METHODID_GET_METRICS = 18;
   private static final int METHODID_POLL_TASK = 19;
 
   private static final class MethodHandlers<Req, Resp> implements
@@ -1534,6 +1549,10 @@ public final class LHPublicApiGrpc {
           serviceImpl.searchWfRun((io.littlehorse.common.proto.SearchWfRunPb) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.SearchWfRunReplyPb>) responseObserver);
           break;
+        case METHODID_REGISTER_TASK_WORKER:
+          serviceImpl.registerTaskWorker((io.littlehorse.common.proto.RegisterTaskWorkerPb) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.RegisterTaskWorkerReplyPb>) responseObserver);
+          break;
         case METHODID_REPORT_TASK:
           serviceImpl.reportTask((io.littlehorse.common.proto.TaskResultEventPb) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.ReportTaskReplyPb>) responseObserver);
@@ -1564,9 +1583,6 @@ public final class LHPublicApiGrpc {
     public io.grpc.stub.StreamObserver<Req> invoke(
         io.grpc.stub.StreamObserver<Resp> responseObserver) {
       switch (methodId) {
-        case METHODID_REGISTER_TASK_WORKER:
-          return (io.grpc.stub.StreamObserver<Req>) serviceImpl.registerTaskWorker(
-              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.RegisterTaskWorkerReplyPb>) responseObserver);
         case METHODID_POLL_TASK:
           return (io.grpc.stub.StreamObserver<Req>) serviceImpl.pollTask(
               (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.PollTaskReplyPb>) responseObserver);

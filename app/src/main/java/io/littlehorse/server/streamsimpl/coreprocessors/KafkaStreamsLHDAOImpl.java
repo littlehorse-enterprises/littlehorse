@@ -332,7 +332,6 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
             NodeRun.getStoreKey(wfRunId, threadRunNumber, taskRunPosition),
             TaskScheduleRequest.class
         );
-        LHUtil.log("deleting tsr", tsr.getObjectId());
 
         tsrPuts.put(tsr.getObjectId(), null);
 

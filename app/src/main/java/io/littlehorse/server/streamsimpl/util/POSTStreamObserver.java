@@ -27,7 +27,11 @@ public class POSTStreamObserver<U extends MessageOrBuilder>
     }
 
     public void onError(Throwable t) {
-        LHUtil.log("Hmmm, got onError() from POSTStreamObserver: ", t.getMessage());
+        LHUtil.log(
+            "Hmmm, got onError() from POSTStreamObserver: ",
+            t.getMessage(),
+            responseCls
+        );
 
         U response = buildErrorResponse(
             LHResponseCodePb.CONNECTION_ERROR,

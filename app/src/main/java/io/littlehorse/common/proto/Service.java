@@ -283,49 +283,50 @@ public final class Service {
       "ode\030\001 \001(\0162\032.lh_proto.LHResponseCodePb\022\024\n" +
       "\007message\030\002 \001(\tH\000\210\001\001B\n\n\010_message\"\025\n\023GetMe" +
       "tricsRequestPb\"$\n\021GetMetricsReplyPb\022\017\n\007m" +
-      "etrics\030\001 \001(\t*\214\001\n\020LHResponseCodePb\022\006\n\002OK\020" +
+      "etrics\030\001 \001(\t*\254\001\n\020LHResponseCodePb\022\006\n\002OK\020" +
       "\000\022\024\n\020CONNECTION_ERROR\020\001\022\023\n\017NOT_FOUND_ERR" +
       "OR\020\002\022\025\n\021BAD_REQUEST_ERROR\020\003\022\024\n\020VALIDATIO" +
-      "N_ERROR\020\004\022\030\n\024ALREADY_EXISTS_ERROR\020\0052\337\013\n\013" +
-      "LHPublicApi\022C\n\nPutTaskDef\022\026.lh_proto.Put" +
-      "TaskDefPb\032\033.lh_proto.PutTaskDefReplyPb\"\000" +
-      "\022C\n\nGetTaskDef\022\026.lh_proto.GetTaskDefPb\032\033" +
-      ".lh_proto.GetTaskDefReplyPb\"\000\022^\n\023PutExte" +
-      "rnalEventDef\022\037.lh_proto.PutExternalEvent" +
-      "DefPb\032$.lh_proto.PutExternalEventDefRepl" +
-      "yPb\"\000\022^\n\023GetExternalEventDef\022\037.lh_proto." +
-      "GetExternalEventDefPb\032$.lh_proto.GetExte" +
-      "rnalEventDefReplyPb\"\000\022@\n\tPutWfSpec\022\025.lh_" +
-      "proto.PutWfSpecPb\032\032.lh_proto.PutWfSpecRe" +
-      "plyPb\"\000\022@\n\tGetWfSpec\022\025.lh_proto.GetWfSpe" +
-      "cPb\032\032.lh_proto.GetWfSpecReplyPb\"\000\0224\n\005Run" +
-      "Wf\022\021.lh_proto.RunWfPb\032\026.lh_proto.RunWfRe" +
-      "plyPb\"\000\022=\n\010GetWfRun\022\024.lh_proto.GetWfRunP" +
-      "b\032\031.lh_proto.GetWfRunReplyPb\"\000\022C\n\nGetNod" +
-      "eRun\022\026.lh_proto.GetNodeRunPb\032\033.lh_proto." +
-      "GetNodeRunReplyPb\"\000\022F\n\013GetVariable\022\027.lh_" +
-      "proto.GetVariablePb\032\034.lh_proto.GetVariab" +
-      "leReplyPb\"\000\022U\n\020PutExternalEvent\022\034.lh_pro" +
-      "to.PutExternalEventPb\032!.lh_proto.PutExte" +
-      "rnalEventReplyPb\"\000\022U\n\020GetExternalEvent\022\034" +
-      ".lh_proto.GetExternalEventPb\032!.lh_proto." +
-      "GetExternalEventReplyPb\"\000\022F\n\013SearchWfRun" +
-      "\022\027.lh_proto.SearchWfRunPb\032\034.lh_proto.Sea" +
-      "rchWfRunReplyPb\"\000\022_\n\022RegisterTaskWorker\022" +
-      "\036.lh_proto.RegisterTaskWorkerPb\032#.lh_pro" +
-      "to.RegisterTaskWorkerReplyPb\"\000(\0010\001\022A\n\010Po" +
-      "llTask\022\024.lh_proto.PollTaskPb\032\031.lh_proto." +
-      "PollTaskReplyPb\"\000(\0010\001\022H\n\nReportTask\022\033.lh" +
-      "_proto.TaskResultEventPb\032\033.lh_proto.Repo" +
-      "rtTaskReplyPb\"\000\022@\n\tStopWfRun\022\025.lh_proto." +
-      "StopWfRunPb\032\032.lh_proto.StopWfRunReplyPb\"" +
-      "\000\022F\n\013ResumeWfRun\022\027.lh_proto.ResumeWfRunP" +
-      "b\032\034.lh_proto.ResumeWfRunReplyPb\"\000\022F\n\013Del" +
-      "eteWfRun\022\027.lh_proto.DeleteWfRunPb\032\034.lh_p" +
-      "roto.DeleteWfRunReplyPb\"\000\022J\n\nGetMetrics\022" +
-      "\035.lh_proto.GetMetricsRequestPb\032\033.lh_prot" +
-      "o.GetMetricsReplyPb\"\000B(\n\033io.littlehorse." +
-      "common.protoP\001Z\007.;modelb\006proto3"
+      "N_ERROR\020\004\022\030\n\024ALREADY_EXISTS_ERROR\020\005\022\036\n\032R" +
+      "EPORTED_BUT_NOT_PROCESSED\020\0062\333\013\n\013LHPublic" +
+      "Api\022C\n\nPutTaskDef\022\026.lh_proto.PutTaskDefP" +
+      "b\032\033.lh_proto.PutTaskDefReplyPb\"\000\022C\n\nGetT" +
+      "askDef\022\026.lh_proto.GetTaskDefPb\032\033.lh_prot" +
+      "o.GetTaskDefReplyPb\"\000\022^\n\023PutExternalEven" +
+      "tDef\022\037.lh_proto.PutExternalEventDefPb\032$." +
+      "lh_proto.PutExternalEventDefReplyPb\"\000\022^\n" +
+      "\023GetExternalEventDef\022\037.lh_proto.GetExter" +
+      "nalEventDefPb\032$.lh_proto.GetExternalEven" +
+      "tDefReplyPb\"\000\022@\n\tPutWfSpec\022\025.lh_proto.Pu" +
+      "tWfSpecPb\032\032.lh_proto.PutWfSpecReplyPb\"\000\022" +
+      "@\n\tGetWfSpec\022\025.lh_proto.GetWfSpecPb\032\032.lh" +
+      "_proto.GetWfSpecReplyPb\"\000\0224\n\005RunWf\022\021.lh_" +
+      "proto.RunWfPb\032\026.lh_proto.RunWfReplyPb\"\000\022" +
+      "=\n\010GetWfRun\022\024.lh_proto.GetWfRunPb\032\031.lh_p" +
+      "roto.GetWfRunReplyPb\"\000\022C\n\nGetNodeRun\022\026.l" +
+      "h_proto.GetNodeRunPb\032\033.lh_proto.GetNodeR" +
+      "unReplyPb\"\000\022F\n\013GetVariable\022\027.lh_proto.Ge" +
+      "tVariablePb\032\034.lh_proto.GetVariableReplyP" +
+      "b\"\000\022U\n\020PutExternalEvent\022\034.lh_proto.PutEx" +
+      "ternalEventPb\032!.lh_proto.PutExternalEven" +
+      "tReplyPb\"\000\022U\n\020GetExternalEvent\022\034.lh_prot" +
+      "o.GetExternalEventPb\032!.lh_proto.GetExter" +
+      "nalEventReplyPb\"\000\022F\n\013SearchWfRun\022\027.lh_pr" +
+      "oto.SearchWfRunPb\032\034.lh_proto.SearchWfRun" +
+      "ReplyPb\"\000\022[\n\022RegisterTaskWorker\022\036.lh_pro" +
+      "to.RegisterTaskWorkerPb\032#.lh_proto.Regis" +
+      "terTaskWorkerReplyPb\"\000\022A\n\010PollTask\022\024.lh_" +
+      "proto.PollTaskPb\032\031.lh_proto.PollTaskRepl" +
+      "yPb\"\000(\0010\001\022H\n\nReportTask\022\033.lh_proto.TaskR" +
+      "esultEventPb\032\033.lh_proto.ReportTaskReplyP" +
+      "b\"\000\022@\n\tStopWfRun\022\025.lh_proto.StopWfRunPb\032" +
+      "\032.lh_proto.StopWfRunReplyPb\"\000\022F\n\013ResumeW" +
+      "fRun\022\027.lh_proto.ResumeWfRunPb\032\034.lh_proto" +
+      ".ResumeWfRunReplyPb\"\000\022F\n\013DeleteWfRun\022\027.l" +
+      "h_proto.DeleteWfRunPb\032\034.lh_proto.DeleteW" +
+      "fRunReplyPb\"\000\022J\n\nGetMetrics\022\035.lh_proto.G" +
+      "etMetricsRequestPb\032\033.lh_proto.GetMetrics" +
+      "ReplyPb\"\000B(\n\033io.littlehorse.common.proto" +
+      "P\001Z\007.;modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
