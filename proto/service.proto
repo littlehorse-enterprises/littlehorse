@@ -174,7 +174,8 @@ message HostInfoPb {
 message RegisterTaskWorkerReplyPb {
     LHResponseCodePb code = 1;
     optional string message = 2;
-    repeated HostInfoPb endpoints = 3;
+    repeated HostInfoPb all_endpoints = 3;
+    repeated HostInfoPb your_endpoints = 4;
 }
 
 message PollTaskPb {
@@ -349,4 +350,32 @@ Query Types:
 
 One could argue that "Tags" are an implementation detail for the DAO, not
 really a thing.
+
+*******************
+Who should record the command to Kafka?
+- If it's the owner of the partition, then the happy path is simple:
+  - send RPC including command to the owner
+  - owner sets a watcher and then pushes to kafka
+  - owner returns result to the caller
+- If owner is down, then the command never gets sent.
+  - Option: the original caller broker can send the message to Kafka himself
+  - This wouldn't work with the task queue pattern in which we pre-emptively declare
+    a task as "claimed", since that pattern probably involves a global lock on
+    who can produce to any partition...?
+- Why not have the original caller just send the command and then put a watcher?
+  - this causes a race condition between the command being processed and the
+    processor putting a watcher on the responseObserver. We need the watcher to be
+    put first, OR we could just store on a first-come basis.
+  - Putting it on a first-arrival basis now presents a garbage collection problem:
+    we need to remove things that have been there for more than 20 seconds.
+
+Proposal:
+* Use a protected LinkedHashMap so that it doesn't matter whether command or watcher
+  arrives first.
+* Clean the LinkedHashMap when it gets bigger than some size (eg. 10,000 elements)
+* The original handler sends the command to Kafka
+* Add "objectId" to the Abstract Response. This should be known before sending the
+  Command to Kafka. If the RPC fails, then the REPORTED_BUT_NOT_PROCESSED code is
+  returned.
+* Make the internal rpc processCommand() no longer push an event to Kafka.
 */

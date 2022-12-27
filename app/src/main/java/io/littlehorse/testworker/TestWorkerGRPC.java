@@ -76,7 +76,7 @@ public class TestWorkerGRPC implements StreamObserver<RegisterTaskWorkerReplyPb>
 
     public void onNext(RegisterTaskWorkerReplyPb next) {
         // Reconcile what's running
-        for (HostInfoPb host : next.getEndpointsList()) {
+        for (HostInfoPb host : next.getYourEndpointsList()) {
             if (!isAlreadyRunning(host)) {
                 System.out.println(
                     "Adding for host : " + host.getHost() + ":" + host.getPort()
@@ -95,7 +95,7 @@ public class TestWorkerGRPC implements StreamObserver<RegisterTaskWorkerReplyPb>
 
         for (int i = runningWorkerThreads.size() - 1; i >= 0; i--) {
             SingleServerConnector runningThread = runningWorkerThreads.get(i);
-            if (!shouldBeRunning(runningThread, next.getEndpointsList())) {
+            if (!shouldBeRunning(runningThread, next.getYourEndpointsList())) {
                 LHUtil.log("stopping thread");
                 runningThread.stop();
                 runningWorkerThreads.remove(i);

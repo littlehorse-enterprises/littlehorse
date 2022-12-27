@@ -238,7 +238,13 @@ public class BackendInternalComms implements Closeable {
         for (HostInfo host : hosts) {
             int internalPort = host.port();
             int externalPort = internalPort - 1;
-            out.addEndpoints(
+            out.addAllEndpoints(
+                HostInfoPb.newBuilder().setHost(host.host()).setPort(externalPort)
+            );
+
+            // EMPLOYEE_TODO: divide these up among the clients rather than
+            // having each client connect to all servers.
+            out.addYourEndpoints(
                 HostInfoPb.newBuilder().setHost(host.host()).setPort(externalPort)
             );
         }

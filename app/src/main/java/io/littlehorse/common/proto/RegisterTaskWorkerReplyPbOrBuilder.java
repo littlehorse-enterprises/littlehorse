@@ -36,26 +36,50 @@ public interface RegisterTaskWorkerReplyPbOrBuilder extends
       getMessageBytes();
 
   /**
-   * <code>repeated .lh_proto.HostInfoPb endpoints = 3;</code>
+   * <code>repeated .lh_proto.HostInfoPb all_endpoints = 3;</code>
    */
   java.util.List<io.littlehorse.common.proto.HostInfoPb> 
-      getEndpointsList();
+      getAllEndpointsList();
   /**
-   * <code>repeated .lh_proto.HostInfoPb endpoints = 3;</code>
+   * <code>repeated .lh_proto.HostInfoPb all_endpoints = 3;</code>
    */
-  io.littlehorse.common.proto.HostInfoPb getEndpoints(int index);
+  io.littlehorse.common.proto.HostInfoPb getAllEndpoints(int index);
   /**
-   * <code>repeated .lh_proto.HostInfoPb endpoints = 3;</code>
+   * <code>repeated .lh_proto.HostInfoPb all_endpoints = 3;</code>
    */
-  int getEndpointsCount();
+  int getAllEndpointsCount();
   /**
-   * <code>repeated .lh_proto.HostInfoPb endpoints = 3;</code>
+   * <code>repeated .lh_proto.HostInfoPb all_endpoints = 3;</code>
    */
   java.util.List<? extends io.littlehorse.common.proto.HostInfoPbOrBuilder> 
-      getEndpointsOrBuilderList();
+      getAllEndpointsOrBuilderList();
   /**
-   * <code>repeated .lh_proto.HostInfoPb endpoints = 3;</code>
+   * <code>repeated .lh_proto.HostInfoPb all_endpoints = 3;</code>
    */
-  io.littlehorse.common.proto.HostInfoPbOrBuilder getEndpointsOrBuilder(
+  io.littlehorse.common.proto.HostInfoPbOrBuilder getAllEndpointsOrBuilder(
+      int index);
+
+  /**
+   * <code>repeated .lh_proto.HostInfoPb your_endpoints = 4;</code>
+   */
+  java.util.List<io.littlehorse.common.proto.HostInfoPb> 
+      getYourEndpointsList();
+  /**
+   * <code>repeated .lh_proto.HostInfoPb your_endpoints = 4;</code>
+   */
+  io.littlehorse.common.proto.HostInfoPb getYourEndpoints(int index);
+  /**
+   * <code>repeated .lh_proto.HostInfoPb your_endpoints = 4;</code>
+   */
+  int getYourEndpointsCount();
+  /**
+   * <code>repeated .lh_proto.HostInfoPb your_endpoints = 4;</code>
+   */
+  java.util.List<? extends io.littlehorse.common.proto.HostInfoPbOrBuilder> 
+      getYourEndpointsOrBuilderList();
+  /**
+   * <code>repeated .lh_proto.HostInfoPb your_endpoints = 4;</code>
+   */
+  io.littlehorse.common.proto.HostInfoPbOrBuilder getYourEndpointsOrBuilder(
       int index);
 }
