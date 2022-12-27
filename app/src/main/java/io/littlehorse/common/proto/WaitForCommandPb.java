@@ -4,25 +4,26 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf type {@code lh_proto.ProcessCommandPb}
+ * Protobuf type {@code lh_proto.WaitForCommandPb}
  */
-public final class ProcessCommandPb extends
+public final class WaitForCommandPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.ProcessCommandPb)
-    ProcessCommandPbOrBuilder {
+    // @@protoc_insertion_point(message_implements:lh_proto.WaitForCommandPb)
+    WaitForCommandPbOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use ProcessCommandPb.newBuilder() to construct.
-  private ProcessCommandPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use WaitForCommandPb.newBuilder() to construct.
+  private WaitForCommandPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private ProcessCommandPb() {
+  private WaitForCommandPb() {
+    commandId_ = "";
   }
 
   @java.lang.Override
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new ProcessCommandPb();
+    return new WaitForCommandPb();
   }
 
   @java.lang.Override
@@ -30,7 +31,7 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
-  private ProcessCommandPb(
+  private WaitForCommandPb(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -49,16 +50,9 @@ private static final long serialVersionUID = 0L;
             done = true;
             break;
           case 10: {
-            io.littlehorse.common.proto.CommandPb.Builder subBuilder = null;
-            if (command_ != null) {
-              subBuilder = command_.toBuilder();
-            }
-            command_ = input.readMessage(io.littlehorse.common.proto.CommandPb.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom(command_);
-              command_ = subBuilder.buildPartial();
-            }
+            java.lang.String s = input.readStringRequireUtf8();
 
+            commandId_ = s;
             break;
           }
           default: {
@@ -82,41 +76,53 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_ProcessCommandPb_descriptor;
+    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_WaitForCommandPb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_ProcessCommandPb_fieldAccessorTable
+    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_WaitForCommandPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.common.proto.ProcessCommandPb.class, io.littlehorse.common.proto.ProcessCommandPb.Builder.class);
+            io.littlehorse.common.proto.WaitForCommandPb.class, io.littlehorse.common.proto.WaitForCommandPb.Builder.class);
   }
 
-  public static final int COMMAND_FIELD_NUMBER = 1;
-  private io.littlehorse.common.proto.CommandPb command_;
+  public static final int COMMAND_ID_FIELD_NUMBER = 1;
+  private volatile java.lang.Object commandId_;
   /**
-   * <code>.lh_proto.CommandPb command = 1;</code>
-   * @return Whether the command field is set.
+   * <code>string command_id = 1;</code>
+   * @return The commandId.
    */
   @java.lang.Override
-  public boolean hasCommand() {
-    return command_ != null;
+  public java.lang.String getCommandId() {
+    java.lang.Object ref = commandId_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      commandId_ = s;
+      return s;
+    }
   }
   /**
-   * <code>.lh_proto.CommandPb command = 1;</code>
-   * @return The command.
+   * <code>string command_id = 1;</code>
+   * @return The bytes for commandId.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.CommandPb getCommand() {
-    return command_ == null ? io.littlehorse.common.proto.CommandPb.getDefaultInstance() : command_;
-  }
-  /**
-   * <code>.lh_proto.CommandPb command = 1;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.CommandPbOrBuilder getCommandOrBuilder() {
-    return getCommand();
+  public com.google.protobuf.ByteString
+      getCommandIdBytes() {
+    java.lang.Object ref = commandId_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      commandId_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
   }
 
   private byte memoizedIsInitialized = -1;
@@ -133,8 +139,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (command_ != null) {
-      output.writeMessage(1, getCommand());
+    if (!getCommandIdBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, commandId_);
     }
     unknownFields.writeTo(output);
   }
@@ -145,9 +151,8 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (command_ != null) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, getCommand());
+    if (!getCommandIdBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, commandId_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -159,16 +164,13 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.common.proto.ProcessCommandPb)) {
+    if (!(obj instanceof io.littlehorse.common.proto.WaitForCommandPb)) {
       return super.equals(obj);
     }
-    io.littlehorse.common.proto.ProcessCommandPb other = (io.littlehorse.common.proto.ProcessCommandPb) obj;
+    io.littlehorse.common.proto.WaitForCommandPb other = (io.littlehorse.common.proto.WaitForCommandPb) obj;
 
-    if (hasCommand() != other.hasCommand()) return false;
-    if (hasCommand()) {
-      if (!getCommand()
-          .equals(other.getCommand())) return false;
-    }
+    if (!getCommandId()
+        .equals(other.getCommandId())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -180,78 +182,76 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (hasCommand()) {
-      hash = (37 * hash) + COMMAND_FIELD_NUMBER;
-      hash = (53 * hash) + getCommand().hashCode();
-    }
+    hash = (37 * hash) + COMMAND_ID_FIELD_NUMBER;
+    hash = (53 * hash) + getCommandId().hashCode();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
   }
 
-  public static io.littlehorse.common.proto.ProcessCommandPb parseFrom(
+  public static io.littlehorse.common.proto.WaitForCommandPb parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.ProcessCommandPb parseFrom(
+  public static io.littlehorse.common.proto.WaitForCommandPb parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.ProcessCommandPb parseFrom(
+  public static io.littlehorse.common.proto.WaitForCommandPb parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.ProcessCommandPb parseFrom(
+  public static io.littlehorse.common.proto.WaitForCommandPb parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.ProcessCommandPb parseFrom(byte[] data)
+  public static io.littlehorse.common.proto.WaitForCommandPb parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.ProcessCommandPb parseFrom(
+  public static io.littlehorse.common.proto.WaitForCommandPb parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.ProcessCommandPb parseFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.WaitForCommandPb parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.ProcessCommandPb parseFrom(
+  public static io.littlehorse.common.proto.WaitForCommandPb parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.ProcessCommandPb parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.WaitForCommandPb parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.ProcessCommandPb parseDelimitedFrom(
+  public static io.littlehorse.common.proto.WaitForCommandPb parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.ProcessCommandPb parseFrom(
+  public static io.littlehorse.common.proto.WaitForCommandPb parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.ProcessCommandPb parseFrom(
+  public static io.littlehorse.common.proto.WaitForCommandPb parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -264,7 +264,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.common.proto.ProcessCommandPb prototype) {
+  public static Builder newBuilder(io.littlehorse.common.proto.WaitForCommandPb prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -280,26 +280,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.ProcessCommandPb}
+   * Protobuf type {@code lh_proto.WaitForCommandPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.ProcessCommandPb)
-      io.littlehorse.common.proto.ProcessCommandPbOrBuilder {
+      // @@protoc_insertion_point(builder_implements:lh_proto.WaitForCommandPb)
+      io.littlehorse.common.proto.WaitForCommandPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_ProcessCommandPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_WaitForCommandPb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_ProcessCommandPb_fieldAccessorTable
+      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_WaitForCommandPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.common.proto.ProcessCommandPb.class, io.littlehorse.common.proto.ProcessCommandPb.Builder.class);
+              io.littlehorse.common.proto.WaitForCommandPb.class, io.littlehorse.common.proto.WaitForCommandPb.Builder.class);
     }
 
-    // Construct using io.littlehorse.common.proto.ProcessCommandPb.newBuilder()
+    // Construct using io.littlehorse.common.proto.WaitForCommandPb.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -317,29 +317,25 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      if (commandBuilder_ == null) {
-        command_ = null;
-      } else {
-        command_ = null;
-        commandBuilder_ = null;
-      }
+      commandId_ = "";
+
       return this;
     }
 
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_ProcessCommandPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_WaitForCommandPb_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.ProcessCommandPb getDefaultInstanceForType() {
-      return io.littlehorse.common.proto.ProcessCommandPb.getDefaultInstance();
+    public io.littlehorse.common.proto.WaitForCommandPb getDefaultInstanceForType() {
+      return io.littlehorse.common.proto.WaitForCommandPb.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.ProcessCommandPb build() {
-      io.littlehorse.common.proto.ProcessCommandPb result = buildPartial();
+    public io.littlehorse.common.proto.WaitForCommandPb build() {
+      io.littlehorse.common.proto.WaitForCommandPb result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -347,13 +343,9 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.ProcessCommandPb buildPartial() {
-      io.littlehorse.common.proto.ProcessCommandPb result = new io.littlehorse.common.proto.ProcessCommandPb(this);
-      if (commandBuilder_ == null) {
-        result.command_ = command_;
-      } else {
-        result.command_ = commandBuilder_.build();
-      }
+    public io.littlehorse.common.proto.WaitForCommandPb buildPartial() {
+      io.littlehorse.common.proto.WaitForCommandPb result = new io.littlehorse.common.proto.WaitForCommandPb(this);
+      result.commandId_ = commandId_;
       onBuilt();
       return result;
     }
@@ -392,18 +384,19 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.common.proto.ProcessCommandPb) {
-        return mergeFrom((io.littlehorse.common.proto.ProcessCommandPb)other);
+      if (other instanceof io.littlehorse.common.proto.WaitForCommandPb) {
+        return mergeFrom((io.littlehorse.common.proto.WaitForCommandPb)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.common.proto.ProcessCommandPb other) {
-      if (other == io.littlehorse.common.proto.ProcessCommandPb.getDefaultInstance()) return this;
-      if (other.hasCommand()) {
-        mergeCommand(other.getCommand());
+    public Builder mergeFrom(io.littlehorse.common.proto.WaitForCommandPb other) {
+      if (other == io.littlehorse.common.proto.WaitForCommandPb.getDefaultInstance()) return this;
+      if (!other.getCommandId().isEmpty()) {
+        commandId_ = other.commandId_;
+        onChanged();
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -420,11 +413,11 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      io.littlehorse.common.proto.ProcessCommandPb parsedMessage = null;
+      io.littlehorse.common.proto.WaitForCommandPb parsedMessage = null;
       try {
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (io.littlehorse.common.proto.ProcessCommandPb) e.getUnfinishedMessage();
+        parsedMessage = (io.littlehorse.common.proto.WaitForCommandPb) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
@@ -434,123 +427,80 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private io.littlehorse.common.proto.CommandPb command_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.CommandPb, io.littlehorse.common.proto.CommandPb.Builder, io.littlehorse.common.proto.CommandPbOrBuilder> commandBuilder_;
+    private java.lang.Object commandId_ = "";
     /**
-     * <code>.lh_proto.CommandPb command = 1;</code>
-     * @return Whether the command field is set.
+     * <code>string command_id = 1;</code>
+     * @return The commandId.
      */
-    public boolean hasCommand() {
-      return commandBuilder_ != null || command_ != null;
-    }
-    /**
-     * <code>.lh_proto.CommandPb command = 1;</code>
-     * @return The command.
-     */
-    public io.littlehorse.common.proto.CommandPb getCommand() {
-      if (commandBuilder_ == null) {
-        return command_ == null ? io.littlehorse.common.proto.CommandPb.getDefaultInstance() : command_;
+    public java.lang.String getCommandId() {
+      java.lang.Object ref = commandId_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        commandId_ = s;
+        return s;
       } else {
-        return commandBuilder_.getMessage();
+        return (java.lang.String) ref;
       }
     }
     /**
-     * <code>.lh_proto.CommandPb command = 1;</code>
+     * <code>string command_id = 1;</code>
+     * @return The bytes for commandId.
      */
-    public Builder setCommand(io.littlehorse.common.proto.CommandPb value) {
-      if (commandBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        command_ = value;
-        onChanged();
+    public com.google.protobuf.ByteString
+        getCommandIdBytes() {
+      java.lang.Object ref = commandId_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        commandId_ = b;
+        return b;
       } else {
-        commandBuilder_.setMessage(value);
+        return (com.google.protobuf.ByteString) ref;
       }
-
-      return this;
     }
     /**
-     * <code>.lh_proto.CommandPb command = 1;</code>
+     * <code>string command_id = 1;</code>
+     * @param value The commandId to set.
+     * @return This builder for chaining.
      */
-    public Builder setCommand(
-        io.littlehorse.common.proto.CommandPb.Builder builderForValue) {
-      if (commandBuilder_ == null) {
-        command_ = builderForValue.build();
-        onChanged();
-      } else {
-        commandBuilder_.setMessage(builderForValue.build());
-      }
-
-      return this;
-    }
-    /**
-     * <code>.lh_proto.CommandPb command = 1;</code>
-     */
-    public Builder mergeCommand(io.littlehorse.common.proto.CommandPb value) {
-      if (commandBuilder_ == null) {
-        if (command_ != null) {
-          command_ =
-            io.littlehorse.common.proto.CommandPb.newBuilder(command_).mergeFrom(value).buildPartial();
-        } else {
-          command_ = value;
-        }
-        onChanged();
-      } else {
-        commandBuilder_.mergeFrom(value);
-      }
-
-      return this;
-    }
-    /**
-     * <code>.lh_proto.CommandPb command = 1;</code>
-     */
-    public Builder clearCommand() {
-      if (commandBuilder_ == null) {
-        command_ = null;
-        onChanged();
-      } else {
-        command_ = null;
-        commandBuilder_ = null;
-      }
-
-      return this;
-    }
-    /**
-     * <code>.lh_proto.CommandPb command = 1;</code>
-     */
-    public io.littlehorse.common.proto.CommandPb.Builder getCommandBuilder() {
-      
+    public Builder setCommandId(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      commandId_ = value;
       onChanged();
-      return getCommandFieldBuilder().getBuilder();
+      return this;
     }
     /**
-     * <code>.lh_proto.CommandPb command = 1;</code>
+     * <code>string command_id = 1;</code>
+     * @return This builder for chaining.
      */
-    public io.littlehorse.common.proto.CommandPbOrBuilder getCommandOrBuilder() {
-      if (commandBuilder_ != null) {
-        return commandBuilder_.getMessageOrBuilder();
-      } else {
-        return command_ == null ?
-            io.littlehorse.common.proto.CommandPb.getDefaultInstance() : command_;
-      }
+    public Builder clearCommandId() {
+      
+      commandId_ = getDefaultInstance().getCommandId();
+      onChanged();
+      return this;
     }
     /**
-     * <code>.lh_proto.CommandPb command = 1;</code>
+     * <code>string command_id = 1;</code>
+     * @param value The bytes for commandId to set.
+     * @return This builder for chaining.
      */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.CommandPb, io.littlehorse.common.proto.CommandPb.Builder, io.littlehorse.common.proto.CommandPbOrBuilder> 
-        getCommandFieldBuilder() {
-      if (commandBuilder_ == null) {
-        commandBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.CommandPb, io.littlehorse.common.proto.CommandPb.Builder, io.littlehorse.common.proto.CommandPbOrBuilder>(
-                getCommand(),
-                getParentForChildren(),
-                isClean());
-        command_ = null;
-      }
-      return commandBuilder_;
+    public Builder setCommandIdBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      commandId_ = value;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
@@ -565,41 +515,41 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.ProcessCommandPb)
+    // @@protoc_insertion_point(builder_scope:lh_proto.WaitForCommandPb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.ProcessCommandPb)
-  private static final io.littlehorse.common.proto.ProcessCommandPb DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:lh_proto.WaitForCommandPb)
+  private static final io.littlehorse.common.proto.WaitForCommandPb DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.common.proto.ProcessCommandPb();
+    DEFAULT_INSTANCE = new io.littlehorse.common.proto.WaitForCommandPb();
   }
 
-  public static io.littlehorse.common.proto.ProcessCommandPb getDefaultInstance() {
+  public static io.littlehorse.common.proto.WaitForCommandPb getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<ProcessCommandPb>
-      PARSER = new com.google.protobuf.AbstractParser<ProcessCommandPb>() {
+  private static final com.google.protobuf.Parser<WaitForCommandPb>
+      PARSER = new com.google.protobuf.AbstractParser<WaitForCommandPb>() {
     @java.lang.Override
-    public ProcessCommandPb parsePartialFrom(
+    public WaitForCommandPb parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new ProcessCommandPb(input, extensionRegistry);
+      return new WaitForCommandPb(input, extensionRegistry);
     }
   };
 
-  public static com.google.protobuf.Parser<ProcessCommandPb> parser() {
+  public static com.google.protobuf.Parser<WaitForCommandPb> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<ProcessCommandPb> getParserForType() {
+  public com.google.protobuf.Parser<WaitForCommandPb> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.common.proto.ProcessCommandPb getDefaultInstanceForType() {
+  public io.littlehorse.common.proto.WaitForCommandPb getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

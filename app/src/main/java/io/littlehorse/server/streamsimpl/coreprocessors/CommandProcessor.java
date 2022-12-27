@@ -6,8 +6,8 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.proto.CommandResultPb;
-import io.littlehorse.common.proto.ProcessCommandReplyPb;
 import io.littlehorse.common.proto.StoreQueryStatusPb;
+import io.littlehorse.common.proto.WaitForCommandReplyPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import java.time.Duration;
@@ -82,7 +82,7 @@ public class CommandProcessor
             AbstractResponse<?> response = command.process(dao, config);
             dao.commitChanges();
             if (command.hasResponse() && command.commandId != null) {
-                ProcessCommandReplyPb cmdReply = ProcessCommandReplyPb
+                WaitForCommandReplyPb cmdReply = WaitForCommandReplyPb
                     .newBuilder()
                     .setCode(StoreQueryStatusPb.RSQ_OK)
                     .setResult(

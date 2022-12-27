@@ -8,7 +8,6 @@ import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHConnectionError;
-import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
 import io.littlehorse.common.proto.AttributePb;
@@ -26,12 +25,13 @@ import io.littlehorse.common.proto.LHResponseCodePb;
 import io.littlehorse.common.proto.PaginatedTagQueryPb;
 import io.littlehorse.common.proto.PaginatedTagQueryReplyPb;
 import io.littlehorse.common.proto.PartitionBookmarkPb;
-import io.littlehorse.common.proto.ProcessCommandPb;
-import io.littlehorse.common.proto.ProcessCommandReplyPb;
 import io.littlehorse.common.proto.RegisterTaskWorkerPb;
 import io.littlehorse.common.proto.RegisterTaskWorkerReplyPb;
 import io.littlehorse.common.proto.StoreQueryStatusPb;
+import io.littlehorse.common.proto.WaitForCommandPb;
+import io.littlehorse.common.proto.WaitForCommandReplyPb;
 import io.littlehorse.common.util.LHProducer;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streamsimpl.storeinternals.LHROStoreWrapper;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
@@ -70,7 +70,7 @@ public class BackendInternalComms implements Closeable {
     private LHProducer producer;
 
     private Map<String, ManagedChannel> channels;
-    private ConcurrentHashMap<String, StreamObserver<ProcessCommandReplyPb>> asyncWaiters;
+    private ConcurrentHashMap<String, StreamObserver<WaitForCommandReplyPb>> asyncWaiters;
 
     public BackendInternalComms(LHConfig config, KafkaStreams coreStreams) {
         this.config = config;
@@ -191,15 +191,18 @@ public class BackendInternalComms implements Closeable {
 
     // EMPLOYEE_TODO: determine if we can use generics here to provide some guards
     // against passing in a Command that's incompatible with the POSTStreamObserver.
-    public void processCommand(
+    public void waitForCommand(
         Command command,
-        StreamObserver<ProcessCommandReplyPb> observer
+        StreamObserver<WaitForCommandReplyPb> observer
     ) {
         KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
             ServerTopology.CORE_STORE,
             command.getPartitionKey(),
             Serdes.String().serializer()
         );
+        if (command.commandId == null) {
+            command.commandId = LHUtil.generateGuid();
+        }
 
         /*
          * Decided that everything is just simpler if we insist upon the server which
@@ -207,13 +210,13 @@ public class BackendInternalComms implements Closeable {
          * the command to Kafka. That's because we need to make sure that the
          */
         if (meta.activeHost().equals(thisHost)) {
-            localProcessCommand(command, observer);
+            localWaitForCommand(command.commandId, observer);
         } else {
             getInternalAsyncClient(meta.activeHost())
-                .processCommand(
-                    ProcessCommandPb
+                .waitForCommand(
+                    WaitForCommandPb
                         .newBuilder()
-                        .setCommand(command.toProto())
+                        .setCommandId(command.commandId)
                         .build(),
                     observer
                 );
@@ -256,54 +259,31 @@ public class BackendInternalComms implements Closeable {
         return producer;
     }
 
-    public void onResponseReceived(String commandId, ProcessCommandReplyPb response) {
-        StreamObserver<ProcessCommandReplyPb> observer = asyncWaiters.get(commandId);
+    public void onResponseReceived(String commandId, WaitForCommandReplyPb response) {
+        StreamObserver<WaitForCommandReplyPb> observer = asyncWaiters.get(commandId);
         if (observer != null) {
             observer.onNext(response);
             observer.onCompleted();
         }
     }
 
-    private void localProcessCommand(
-        Command command,
-        StreamObserver<ProcessCommandReplyPb> observer
+    private void localWaitForCommand(
+        String commandId,
+        StreamObserver<WaitForCommandReplyPb> observer
     ) {
-        // First, we need to put the result waiter in the asyncWaiters.
-        if (command.commandId != null) {
-            asyncWaiters.put(command.commandId, observer);
-        }
+        // // First, we need to put the result waiter in the asyncWaiters.
+        // if (command.commandId != null) {
+        //     asyncWaiters.put(command.commandId, observer);
+        // }
 
-        // Next we record the command.
-        producer.send(
-            command.getPartitionKey(), // partition key
-            command, // payload
-            config.getCoreCmdTopicName(), // topic name
-            (meta, exn) -> { // callback
-                if (exn != null) {
-                    asyncWaiters.remove(command.commandId);
-                    // Then we report back to the observer that we failed to record
-                    // the command.
-                    observer.onNext(
-                        ProcessCommandReplyPb
-                            .newBuilder()
-                            .setCode(StoreQueryStatusPb.RSQ_NOT_AVAILABLE)
-                            .setMessage(
-                                "Failed recording command to Kafka: " +
-                                exn.getMessage()
-                            )
-                            .build()
-                    );
-                    // EMPLOYEE_TODO: determine whether or not to use onError()
-                    // instead.
-                    observer.onCompleted();
-                } else {
-                    // Nothing to do here, the CommandProcessor() will do it.
-                }
-            }
-        );
+        asyncWaiters.put(commandId, observer);
         // Once the command has been recorded, we've got nothing to do: the
         // CommandProcessor will notify the StreamObserver once the command is
         // processed.
+    }
+
+    public void recordCommand(Command command) {
+        // Next we record the command.
     }
 
     private ReadOnlyKeyValueStore<String, Bytes> getRawStore(
@@ -464,12 +444,11 @@ public class BackendInternalComms implements Closeable {
         }
 
         @Override
-        public void processCommand(
-            ProcessCommandPb req,
-            StreamObserver<ProcessCommandReplyPb> ctx
+        public void waitForCommand(
+            WaitForCommandPb req,
+            StreamObserver<WaitForCommandReplyPb> ctx
         ) {
-            Command cmd = LHSerializable.fromProto(req.getCommand(), Command.class);
-            localProcessCommand(cmd, ctx);
+            localWaitForCommand(req.getCommandId(), ctx);
         }
     }
 

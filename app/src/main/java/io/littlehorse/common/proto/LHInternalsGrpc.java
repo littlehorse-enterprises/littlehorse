@@ -77,35 +77,35 @@ public final class LHInternalsGrpc {
     return getPaginatedTagQueryMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.ProcessCommandPb,
-      io.littlehorse.common.proto.ProcessCommandReplyPb> getProcessCommandMethod;
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.WaitForCommandPb,
+      io.littlehorse.common.proto.WaitForCommandReplyPb> getWaitForCommandMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "ProcessCommand",
-      requestType = io.littlehorse.common.proto.ProcessCommandPb.class,
-      responseType = io.littlehorse.common.proto.ProcessCommandReplyPb.class,
+      fullMethodName = SERVICE_NAME + '/' + "waitForCommand",
+      requestType = io.littlehorse.common.proto.WaitForCommandPb.class,
+      responseType = io.littlehorse.common.proto.WaitForCommandReplyPb.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.ProcessCommandPb,
-      io.littlehorse.common.proto.ProcessCommandReplyPb> getProcessCommandMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.common.proto.ProcessCommandPb, io.littlehorse.common.proto.ProcessCommandReplyPb> getProcessCommandMethod;
-    if ((getProcessCommandMethod = LHInternalsGrpc.getProcessCommandMethod) == null) {
+  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.WaitForCommandPb,
+      io.littlehorse.common.proto.WaitForCommandReplyPb> getWaitForCommandMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.common.proto.WaitForCommandPb, io.littlehorse.common.proto.WaitForCommandReplyPb> getWaitForCommandMethod;
+    if ((getWaitForCommandMethod = LHInternalsGrpc.getWaitForCommandMethod) == null) {
       synchronized (LHInternalsGrpc.class) {
-        if ((getProcessCommandMethod = LHInternalsGrpc.getProcessCommandMethod) == null) {
-          LHInternalsGrpc.getProcessCommandMethod = getProcessCommandMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.ProcessCommandPb, io.littlehorse.common.proto.ProcessCommandReplyPb>newBuilder()
+        if ((getWaitForCommandMethod = LHInternalsGrpc.getWaitForCommandMethod) == null) {
+          LHInternalsGrpc.getWaitForCommandMethod = getWaitForCommandMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.WaitForCommandPb, io.littlehorse.common.proto.WaitForCommandReplyPb>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ProcessCommand"))
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "waitForCommand"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.common.proto.ProcessCommandPb.getDefaultInstance()))
+                  io.littlehorse.common.proto.WaitForCommandPb.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.common.proto.ProcessCommandReplyPb.getDefaultInstance()))
-              .setSchemaDescriptor(new LHInternalsMethodDescriptorSupplier("ProcessCommand"))
+                  io.littlehorse.common.proto.WaitForCommandReplyPb.getDefaultInstance()))
+              .setSchemaDescriptor(new LHInternalsMethodDescriptorSupplier("waitForCommand"))
               .build();
         }
       }
     }
-    return getProcessCommandMethod;
+    return getWaitForCommandMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.InternalPollTaskPb,
@@ -203,9 +203,9 @@ public final class LHInternalsGrpc {
 
     /**
      */
-    public void processCommand(io.littlehorse.common.proto.ProcessCommandPb request,
-        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.ProcessCommandReplyPb> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getProcessCommandMethod(), responseObserver);
+    public void waitForCommand(io.littlehorse.common.proto.WaitForCommandPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.WaitForCommandReplyPb> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getWaitForCommandMethod(), responseObserver);
     }
 
     /**
@@ -232,12 +232,12 @@ public final class LHInternalsGrpc {
                 io.littlehorse.common.proto.PaginatedTagQueryReplyPb>(
                   this, METHODID_PAGINATED_TAG_QUERY)))
           .addMethod(
-            getProcessCommandMethod(),
+            getWaitForCommandMethod(),
             io.grpc.stub.ServerCalls.asyncUnaryCall(
               new MethodHandlers<
-                io.littlehorse.common.proto.ProcessCommandPb,
-                io.littlehorse.common.proto.ProcessCommandReplyPb>(
-                  this, METHODID_PROCESS_COMMAND)))
+                io.littlehorse.common.proto.WaitForCommandPb,
+                io.littlehorse.common.proto.WaitForCommandReplyPb>(
+                  this, METHODID_WAIT_FOR_COMMAND)))
           .addMethod(
             getInternalPollTaskMethod(),
             io.grpc.stub.ServerCalls.asyncUnaryCall(
@@ -281,10 +281,10 @@ public final class LHInternalsGrpc {
 
     /**
      */
-    public void processCommand(io.littlehorse.common.proto.ProcessCommandPb request,
-        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.ProcessCommandReplyPb> responseObserver) {
+    public void waitForCommand(io.littlehorse.common.proto.WaitForCommandPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.WaitForCommandReplyPb> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getProcessCommandMethod(), getCallOptions()), request, responseObserver);
+          getChannel().newCall(getWaitForCommandMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -326,9 +326,9 @@ public final class LHInternalsGrpc {
 
     /**
      */
-    public io.littlehorse.common.proto.ProcessCommandReplyPb processCommand(io.littlehorse.common.proto.ProcessCommandPb request) {
+    public io.littlehorse.common.proto.WaitForCommandReplyPb waitForCommand(io.littlehorse.common.proto.WaitForCommandPb request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getProcessCommandMethod(), getCallOptions(), request);
+          getChannel(), getWaitForCommandMethod(), getCallOptions(), request);
     }
 
     /**
@@ -371,10 +371,10 @@ public final class LHInternalsGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.ProcessCommandReplyPb> processCommand(
-        io.littlehorse.common.proto.ProcessCommandPb request) {
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.WaitForCommandReplyPb> waitForCommand(
+        io.littlehorse.common.proto.WaitForCommandPb request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getProcessCommandMethod(), getCallOptions()), request);
+          getChannel().newCall(getWaitForCommandMethod(), getCallOptions()), request);
     }
 
     /**
@@ -388,7 +388,7 @@ public final class LHInternalsGrpc {
 
   private static final int METHODID_CENTRAL_STORE_QUERY = 0;
   private static final int METHODID_PAGINATED_TAG_QUERY = 1;
-  private static final int METHODID_PROCESS_COMMAND = 2;
+  private static final int METHODID_WAIT_FOR_COMMAND = 2;
   private static final int METHODID_INTERNAL_POLL_TASK = 3;
 
   private static final class MethodHandlers<Req, Resp> implements
@@ -416,9 +416,9 @@ public final class LHInternalsGrpc {
           serviceImpl.paginatedTagQuery((io.littlehorse.common.proto.PaginatedTagQueryPb) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.PaginatedTagQueryReplyPb>) responseObserver);
           break;
-        case METHODID_PROCESS_COMMAND:
-          serviceImpl.processCommand((io.littlehorse.common.proto.ProcessCommandPb) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.ProcessCommandReplyPb>) responseObserver);
+        case METHODID_WAIT_FOR_COMMAND:
+          serviceImpl.waitForCommand((io.littlehorse.common.proto.WaitForCommandPb) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.WaitForCommandReplyPb>) responseObserver);
           break;
         case METHODID_INTERNAL_POLL_TASK:
           serviceImpl.internalPollTask((io.littlehorse.common.proto.InternalPollTaskPb) request,
@@ -487,7 +487,7 @@ public final class LHInternalsGrpc {
               .setSchemaDescriptor(new LHInternalsFileDescriptorSupplier())
               .addMethod(getCentralStoreQueryMethod())
               .addMethod(getPaginatedTagQueryMethod())
-              .addMethod(getProcessCommandMethod())
+              .addMethod(getWaitForCommandMethod())
               .addMethod(getInternalPollTaskMethod())
               .build();
         }

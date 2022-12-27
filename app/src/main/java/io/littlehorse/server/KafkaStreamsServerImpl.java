@@ -57,7 +57,6 @@ import io.littlehorse.common.proto.PaginatedTagQueryPb;
 import io.littlehorse.common.proto.PaginatedTagQueryReplyPb;
 import io.littlehorse.common.proto.PollTaskPb;
 import io.littlehorse.common.proto.PollTaskReplyPb;
-import io.littlehorse.common.proto.ProcessCommandReplyPb;
 import io.littlehorse.common.proto.PutExternalEventDefPb;
 import io.littlehorse.common.proto.PutExternalEventDefReplyPb;
 import io.littlehorse.common.proto.PutExternalEventPb;
@@ -77,7 +76,9 @@ import io.littlehorse.common.proto.SearchWfRunPb;
 import io.littlehorse.common.proto.SearchWfRunReplyPb;
 import io.littlehorse.common.proto.StopWfRunPb;
 import io.littlehorse.common.proto.StopWfRunReplyPb;
+import io.littlehorse.common.proto.StoreQueryStatusPb;
 import io.littlehorse.common.proto.TaskResultEventPb;
+import io.littlehorse.common.proto.WaitForCommandReplyPb;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streamsimpl.BackendInternalComms;
@@ -553,7 +554,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     //         );
     // }
 
-    public void onResponseReceived(String commandId, ProcessCommandReplyPb response) {
+    public void onResponseReceived(String commandId, WaitForCommandReplyPb response) {
         internalComms.onResponseReceived(commandId, response);
     }
 
@@ -582,13 +583,45 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         boolean shouldComplete
     ) {
         T subCmd = LHSerializable.fromProto(request, subCmdCls);
-        Command cmd = new Command(subCmd);
-        StreamObserver<ProcessCommandReplyPb> observer = new POSTStreamObserver<>(
+        Command command = new Command(subCmd);
+        command.commandId = LHUtil.generateGuid();
+        StreamObserver<WaitForCommandReplyPb> observer = new POSTStreamObserver<>(
             responseObserver,
             responseCls,
             shouldComplete
         );
-        internalComms.processCommand(cmd, observer);
+
+        // Now actually record the command.
+        internalComms
+            .getProducer()
+            .send(
+                command.getPartitionKey(), // partition key
+                command, // payload
+                config.getCoreCmdTopicName(), // topic name
+                (meta, exn) -> { // callback
+                    if (exn != null) {
+                        // Then we report back to the observer that we failed to record
+                        // the command.
+                        observer.onNext(
+                            WaitForCommandReplyPb
+                                .newBuilder()
+                                .setCode(StoreQueryStatusPb.RSQ_NOT_AVAILABLE)
+                                .setMessage(
+                                    "Failed recording command to Kafka: " +
+                                    exn.getMessage()
+                                )
+                                .build()
+                        );
+                        // EMPLOYEE_TODO: determine whether or not to use onError()
+                        // instead.
+                        observer.onCompleted();
+                    } else {
+                        // Now we wait for the processing
+                        System.out.println("Command recorded, now waiting");
+                        internalComms.waitForCommand(command, observer);
+                    }
+                }
+            );
     }
 
     public void onTaskScheduled(String taskDefName, String tsrObjectId) {

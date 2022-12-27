@@ -3,8 +3,8 @@
 
 package io.littlehorse.common.proto;
 
-public interface ProcessCommandReplyPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.ProcessCommandReplyPb)
+public interface WaitForCommandReplyPbOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:lh_proto.WaitForCommandReplyPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**
