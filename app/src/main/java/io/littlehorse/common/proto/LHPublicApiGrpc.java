@@ -604,6 +604,37 @@ public final class LHPublicApiGrpc {
     return getDeleteWfRunMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.HealthCheckPb,
+      io.littlehorse.common.proto.HealthCheckReplyPb> getHealthCheckMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "HealthCheck",
+      requestType = io.littlehorse.common.proto.HealthCheckPb.class,
+      responseType = io.littlehorse.common.proto.HealthCheckReplyPb.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.HealthCheckPb,
+      io.littlehorse.common.proto.HealthCheckReplyPb> getHealthCheckMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.common.proto.HealthCheckPb, io.littlehorse.common.proto.HealthCheckReplyPb> getHealthCheckMethod;
+    if ((getHealthCheckMethod = LHPublicApiGrpc.getHealthCheckMethod) == null) {
+      synchronized (LHPublicApiGrpc.class) {
+        if ((getHealthCheckMethod = LHPublicApiGrpc.getHealthCheckMethod) == null) {
+          LHPublicApiGrpc.getHealthCheckMethod = getHealthCheckMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.HealthCheckPb, io.littlehorse.common.proto.HealthCheckReplyPb>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "HealthCheck"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.HealthCheckPb.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.HealthCheckReplyPb.getDefaultInstance()))
+              .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("HealthCheck"))
+              .build();
+        }
+      }
+    }
+    return getHealthCheckMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.GetMetricsRequestPb,
       io.littlehorse.common.proto.GetMetricsReplyPb> getGetMetricsMethod;
 
@@ -818,6 +849,13 @@ public final class LHPublicApiGrpc {
 
     /**
      */
+    public void healthCheck(io.littlehorse.common.proto.HealthCheckPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.HealthCheckReplyPb> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getHealthCheckMethod(), responseObserver);
+    }
+
+    /**
+     */
     public void getMetrics(io.littlehorse.common.proto.GetMetricsRequestPb request,
         io.grpc.stub.StreamObserver<io.littlehorse.common.proto.GetMetricsReplyPb> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetMetricsMethod(), responseObserver);
@@ -958,6 +996,13 @@ public final class LHPublicApiGrpc {
                 io.littlehorse.common.proto.DeleteWfRunPb,
                 io.littlehorse.common.proto.DeleteWfRunReplyPb>(
                   this, METHODID_DELETE_WF_RUN)))
+          .addMethod(
+            getHealthCheckMethod(),
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
+              new MethodHandlers<
+                io.littlehorse.common.proto.HealthCheckPb,
+                io.littlehorse.common.proto.HealthCheckReplyPb>(
+                  this, METHODID_HEALTH_CHECK)))
           .addMethod(
             getGetMetricsMethod(),
             io.grpc.stub.ServerCalls.asyncUnaryCall(
@@ -1137,6 +1182,14 @@ public final class LHPublicApiGrpc {
 
     /**
      */
+    public void healthCheck(io.littlehorse.common.proto.HealthCheckPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.HealthCheckReplyPb> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getHealthCheckMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
     public void getMetrics(io.littlehorse.common.proto.GetMetricsRequestPb request,
         io.grpc.stub.StreamObserver<io.littlehorse.common.proto.GetMetricsReplyPb> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
@@ -1282,6 +1335,13 @@ public final class LHPublicApiGrpc {
     public io.littlehorse.common.proto.DeleteWfRunReplyPb deleteWfRun(io.littlehorse.common.proto.DeleteWfRunPb request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getDeleteWfRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.common.proto.HealthCheckReplyPb healthCheck(io.littlehorse.common.proto.HealthCheckPb request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getHealthCheckMethod(), getCallOptions(), request);
     }
 
     /**
@@ -1452,6 +1512,14 @@ public final class LHPublicApiGrpc {
 
     /**
      */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.HealthCheckReplyPb> healthCheck(
+        io.littlehorse.common.proto.HealthCheckPb request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getHealthCheckMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.GetMetricsReplyPb> getMetrics(
         io.littlehorse.common.proto.GetMetricsRequestPb request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
@@ -1477,8 +1545,9 @@ public final class LHPublicApiGrpc {
   private static final int METHODID_STOP_WF_RUN = 15;
   private static final int METHODID_RESUME_WF_RUN = 16;
   private static final int METHODID_DELETE_WF_RUN = 17;
-  private static final int METHODID_GET_METRICS = 18;
-  private static final int METHODID_POLL_TASK = 19;
+  private static final int METHODID_HEALTH_CHECK = 18;
+  private static final int METHODID_GET_METRICS = 19;
+  private static final int METHODID_POLL_TASK = 20;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -1569,6 +1638,10 @@ public final class LHPublicApiGrpc {
           serviceImpl.deleteWfRun((io.littlehorse.common.proto.DeleteWfRunPb) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.DeleteWfRunReplyPb>) responseObserver);
           break;
+        case METHODID_HEALTH_CHECK:
+          serviceImpl.healthCheck((io.littlehorse.common.proto.HealthCheckPb) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.HealthCheckReplyPb>) responseObserver);
+          break;
         case METHODID_GET_METRICS:
           serviceImpl.getMetrics((io.littlehorse.common.proto.GetMetricsRequestPb) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.GetMetricsReplyPb>) responseObserver);
@@ -1656,6 +1729,7 @@ public final class LHPublicApiGrpc {
               .addMethod(getStopWfRunMethod())
               .addMethod(getResumeWfRunMethod())
               .addMethod(getDeleteWfRunMethod())
+              .addMethod(getHealthCheckMethod())
               .addMethod(getGetMetricsMethod())
               .build();
         }

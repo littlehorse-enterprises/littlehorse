@@ -1,12 +1,15 @@
 {
-  "java.configuration.updateBuildConfiguration": "automatic",
-  "protoc": {
-    "options": ["-I=./proto/"]
-  },
-  "[java]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnSave": true
-  },
-  "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "protoc": {
+        "options": ["-I=./proto/"]
+    },
+    "[java]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+    },
+    "[yaml]": {
+        "editor.formatOnSave": false
+    },
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
 }

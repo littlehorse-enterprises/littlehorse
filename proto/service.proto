@@ -215,6 +215,19 @@ message GetMetricsReplyPb {
     string metrics = 1;
 }
 
+message HealthCheckPb {}
+
+enum LHHealthResultPb {
+    LH_HEALTH_RUNNING = 0;
+    LH_HEALTH_REBALANCING = 1;
+    LH_HEALTH_ERROR = 2;
+}
+
+message HealthCheckReplyPb {
+    LHHealthResultPb core_state = 1;
+    LHHealthResultPb timer_state = 2;
+}
+
 service LHPublicApi {
     rpc PutTaskDef(PutTaskDefPb) returns (PutTaskDefReplyPb) {}
     rpc GetTaskDef(GetTaskDefPb) returns (GetTaskDefReplyPb) {}
@@ -244,6 +257,8 @@ service LHPublicApi {
     rpc StopWfRun(StopWfRunPb) returns (StopWfRunReplyPb) {}
     rpc ResumeWfRun(ResumeWfRunPb) returns (ResumeWfRunReplyPb) {}
     rpc DeleteWfRun(DeleteWfRunPb) returns (DeleteWfRunReplyPb) {}
+
+    rpc HealthCheck(HealthCheckPb) returns (HealthCheckReplyPb) {}
 
     rpc GetMetrics(GetMetricsRequestPb) returns (GetMetricsReplyPb) {}
 }

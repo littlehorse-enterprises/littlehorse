@@ -3,8 +3,6 @@ package io.littlehorse.server;
 import com.google.protobuf.MessageOrBuilder;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
-import io.grpc.health.v1.HealthCheckResponse.ServingStatus;
-import io.grpc.protobuf.services.HealthStatusManager;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
@@ -51,6 +49,9 @@ import io.littlehorse.common.proto.GetWfRunPb;
 import io.littlehorse.common.proto.GetWfRunReplyPb;
 import io.littlehorse.common.proto.GetWfSpecPb;
 import io.littlehorse.common.proto.GetWfSpecReplyPb;
+import io.littlehorse.common.proto.HealthCheckPb;
+import io.littlehorse.common.proto.HealthCheckReplyPb;
+import io.littlehorse.common.proto.LHHealthResultPb;
 import io.littlehorse.common.proto.LHPublicApiGrpc.LHPublicApiImplBase;
 import io.littlehorse.common.proto.LHResponseCodePb;
 import io.littlehorse.common.proto.PaginatedTagQueryPb;
@@ -96,7 +97,6 @@ import org.apache.kafka.common.Metric;
 import org.apache.kafka.common.MetricName;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KafkaStreams.State;
-import org.apache.kafka.streams.KafkaStreams.StateListener;
 
 public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
@@ -107,12 +107,14 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     private KafkaStreams coreStreams;
     private KafkaStreams timerStreams;
 
+    private State coreState;
+    private State timerState;
+
     private BackendInternalComms internalComms;
 
     public KafkaStreamsServerImpl(LHConfig config) {
         this.config = config;
 
-        HealthStatusManager grpcHealthCheckThingy = new HealthStatusManager();
         this.taskQueueManager = new TaskQueueManager(this);
 
         coreStreams =
@@ -127,17 +129,18 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             );
 
         this.grpcServer =
-            ServerBuilder
-                .forPort(config.getApiBindPort())
-                .addService(this)
-                .addService(grpcHealthCheckThingy.getHealthService())
-                .build();
-        coreStreams.setStateListener(
-            new LHBackendStateListener("core", grpcHealthCheckThingy)
-        );
-        timerStreams.setStateListener(
-            new LHBackendStateListener("timer", grpcHealthCheckThingy)
-        );
+            ServerBuilder.forPort(config.getApiBindPort()).addService(this).build();
+
+        coreStreams.setStateListener((newState, oldState) -> {
+            coreState = newState;
+            LHUtil.log(new Date(), "New state for core:", coreState);
+        });
+
+        timerStreams.setStateListener((newState, oldState) -> {
+            timerState = newState;
+            LHUtil.log(new Date(), "New state for core:", timerState);
+        });
+
         internalComms = new BackendInternalComms(config, coreStreams);
     }
 
@@ -443,6 +446,38 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    public void healthCheck(
+        HealthCheckPb req,
+        StreamObserver<HealthCheckReplyPb> ctx
+    ) {
+        ctx.onNext(
+            HealthCheckReplyPb
+                .newBuilder()
+                .setCoreState(kafkaStateToLhHealthState(coreState))
+                .setTimerState(kafkaStateToLhHealthState(timerState))
+                .build()
+        );
+        ctx.onCompleted();
+    }
+
+    private LHHealthResultPb kafkaStateToLhHealthState(State kState) {
+        switch (kState) {
+            case CREATED:
+            case NOT_RUNNING:
+            case REBALANCING:
+                return LHHealthResultPb.LH_HEALTH_REBALANCING;
+            case RUNNING:
+                return LHHealthResultPb.LH_HEALTH_RUNNING;
+            case PENDING_ERROR:
+            case PENDING_SHUTDOWN:
+            case ERROR:
+                return LHHealthResultPb.LH_HEALTH_ERROR;
+            default:
+                throw new RuntimeException("Unknown health status");
+        }
+    }
+
+    @Override
     public void getMetrics(
         GetMetricsRequestPb req,
         StreamObserver<GetMetricsReplyPb> ctx
@@ -503,56 +538,11 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             PollTaskReplyPb.class,
             false // it's a stream, so we don't want to complete it.
         );
-        // recordClaimEventAndReturnTask(
-        //     taskClaimCommand,
-        //     tsr,
-        //     client.getResponseObserver()
-        // );
     }
 
     public LHProducer getProducer() {
         return internalComms.getProducer();
     }
-
-    // private void recordClaimEventAndReturnTask(
-    //     Command taskClaimCommand,
-    //     TaskScheduleRequest tsr,
-    //     StreamObserver<PollTaskReplyPb> observer
-    // ) {
-    //     internalComms
-    //         .getProducer()
-    //         .send(
-    //             taskClaimCommand.getPartitionKey(),
-    //             taskClaimCommand,
-    //             config.getCoreCmdTopicName(),
-    //             (recordMeta, exn) -> {
-    //                 if (exn != null) {
-    //                     // Then the command wasn't successfully claimed. Just return
-    //                     // an empty reply and get the client to try again later.
-    //                     observer.onNext(
-    //                         PollTaskReplyPb
-    //                             .newBuilder()
-    //                             .setCode(LHResponseCodePb.CONNECTION_ERROR)
-    //                             .setMessage(
-    //                                 "Unable to claim command, had a kafka error: " +
-    //                                 exn.getMessage()
-    //                             )
-    //                             .build()
-    //                     );
-    //                 } else {
-    //                     // Then the message has been accepted by Kafka. It's time to
-    //                     // finally return the task to client.
-    //                     observer.onNext(
-    //                         PollTaskReplyPb
-    //                             .newBuilder()
-    //                             .setCode(LHResponseCodePb.OK)
-    //                             .setResult(tsr.toProto())
-    //                             .build()
-    //                     );
-    //                 }
-    //             }
-    //         );
-    // }
 
     public void onResponseReceived(String commandId, WaitForCommandReplyPb response) {
         internalComms.onResponseReceived(commandId, response);
@@ -654,38 +644,3 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         server.start();
     }
 }
-
-class LHBackendStateListener implements StateListener {
-
-    private String componentName;
-    private HealthStatusManager grpcHealthCheckThingy;
-
-    public LHBackendStateListener(
-        String componentName,
-        HealthStatusManager grpcHealthCheckThingy
-    ) {
-        this.componentName = componentName;
-        this.grpcHealthCheckThingy = grpcHealthCheckThingy;
-    }
-
-    public void onChange(State newState, State oldState) {
-        LHUtil.log(new Date(), "New state for", componentName + ":", newState);
-        if (newState == State.RUNNING) {
-            grpcHealthCheckThingy.setStatus(componentName, ServingStatus.SERVING);
-        } else {
-            grpcHealthCheckThingy.setStatus(componentName, ServingStatus.NOT_SERVING);
-        }
-    }
-}
-/*
- * Things to test with the new Queue gRPC thing:
- *
- * - TaskScheduleRequest gets created on server A, then the StreamsTask migrates
- *   to server B. The task should be returned exactly once, and it should be returned
- *   to a server B client.
- *
- * - Client gets task from server B. Server B crashes. Client should report task to
- *   Server A provided that it can connect to Server A.
- *
- * - TODO: Add more
- */
