@@ -28,14 +28,14 @@ public class POSTStreamObserver<U extends MessageOrBuilder>
 
     public void onError(Throwable t) {
         LHUtil.log(
-            "Hmmm, got onError() from POSTStreamObserver: ",
+            "Got onError() from postObserver. Returning RECORDED_NOT_PROCESSED",
             t.getMessage(),
             responseCls
         );
 
         U response = buildErrorResponse(
-            LHResponseCodePb.CONNECTION_ERROR,
-            "Failed processing request: " + t.getMessage()
+            LHResponseCodePb.REPORTED_BUT_NOT_PROCESSED,
+            "Recorded request but processing not verified: " + t.getMessage()
         );
 
         ctx.onNext(response);
