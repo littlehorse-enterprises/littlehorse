@@ -2,7 +2,6 @@ FROM amazoncorretto:18
 
 RUN yum install -y procps
 
-COPY build/lhctl /
 COPY app/build/libs/app-all.jar /littleHorse.jar
 COPY build/entrypoints/* /
 

@@ -4,7 +4,7 @@ import subprocess
 import sys
 import time
 
-IMG = 'littlehorse:latest'
+IMG = 'lh-example-worker:latest'
 
 if len(sys.argv) > 1:
   IMG = sys.argv[1]
@@ -39,36 +39,28 @@ spec:
       - name: {name}
         image: {image}
         imagePullPolicy: IfNotPresent
-        command: ['/worker']
         env:
-        - name: "LHORSE_KAFKA_BOOTSTRAP"
-          value: "lh-kafka-kafka-bootstrap.kafka:9092"
-        - name: "LHORSE_KAFKA_GROUP_ID"
-          value: {name}-worker
-        - name: "LHORSE_KAFKA_GROUP_IID"
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.name
+        - name: "LHORSE_API_HOST"
+          value: "lh-server.default"
+        - name: "LHORSE_API_PORT"
+          value: "5000"
         - name: "LHORSE_TASK_DEF_ID"
           value: {name}
-        - name: "LHORSE_NUM_WOERKER_THREADS"
-          value: "64"
-        args:
-        - "worker"
+        - name: "LHORSE_NUM_WORKER_THREADS"
+          value: "2"
 '''
 
-# First, deploy tasks
-for i in range(1, 4):
-    name = f'task{i}'
-    tpost = {"name": name}
-    print(json.dumps(requests.post("http://localhost:5000/TaskDef", json=tpost).json()))
-    yaml = gen_task_yaml(name)
-    subprocess.run(
-        "kubectl apply -f -".split(), input=yaml.encode(),
-    )
+task_name = "task1"
 
-with open("simple_wf.json", 'r') as f:
-    wf = json.loads(f.read())
+# subprocess.run(
+#   "lhctl deploy taskDef task1.json".split()
+# )
 
-response = requests.post("http://localhost:5000/WfSpec", json=wf)
-print(response.json())
+yaml = gen_task_yaml(task_name)
+subprocess.run(
+    "kubectl apply -f -".split(), input=yaml.encode(),
+)
+
+# subprocess.run(
+#   "lhctl deploy wfSpec simple_wf.json".split()
+# )
