@@ -617,7 +617,6 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
                         observer.onCompleted();
                     } else {
                         // Now we wait for the processing
-                        System.out.println("Command recorded, now waiting");
                         internalComms.waitForCommand(command, observer);
                     }
                 }

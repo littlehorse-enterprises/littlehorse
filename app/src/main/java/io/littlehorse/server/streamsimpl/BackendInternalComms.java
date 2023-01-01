@@ -37,6 +37,7 @@ import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.LHIterKeyValue;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.LHKeyValueIterator;
+import io.littlehorse.server.streamsimpl.util.AsyncWaiters;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,7 +47,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.Serdes;
@@ -70,7 +70,8 @@ public class BackendInternalComms implements Closeable {
     private LHProducer producer;
 
     private Map<String, ManagedChannel> channels;
-    private ConcurrentHashMap<String, StreamObserver<WaitForCommandReplyPb>> asyncWaiters;
+    // private ConcurrentHashMap<String, StreamObserver<WaitForCommandReplyPb>> asyncWaiters;
+    private AsyncWaiters asyncWaiters;
 
     public BackendInternalComms(LHConfig config, KafkaStreams coreStreams) {
         this.config = config;
@@ -89,7 +90,7 @@ public class BackendInternalComms implements Closeable {
                 config.getInternalAdvertisedPort()
             );
         this.producer = new LHProducer(config, false);
-        this.asyncWaiters = new ConcurrentHashMap<>();
+        this.asyncWaiters = new AsyncWaiters();
     }
 
     public void start() throws IOException {
@@ -260,22 +261,13 @@ public class BackendInternalComms implements Closeable {
     }
 
     public void onResponseReceived(String commandId, WaitForCommandReplyPb response) {
-        StreamObserver<WaitForCommandReplyPb> observer = asyncWaiters.get(commandId);
-        if (observer != null) {
-            observer.onNext(response);
-            observer.onCompleted();
-        }
+        asyncWaiters.put(commandId, response);
     }
 
     private void localWaitForCommand(
         String commandId,
         StreamObserver<WaitForCommandReplyPb> observer
     ) {
-        // // First, we need to put the result waiter in the asyncWaiters.
-        // if (command.commandId != null) {
-        //     asyncWaiters.put(command.commandId, observer);
-        // }
-
         asyncWaiters.put(commandId, observer);
         // Once the command has been recorded, we've got nothing to do: the
         // CommandProcessor will notify the StreamObserver once the command is
