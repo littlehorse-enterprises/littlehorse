@@ -26,3 +26,7 @@ cloud-test/alembic/versions/*.py
 *pre-launch.sh*
 
 node_modules/
+
+# Don't put the lhctl binary in the git tree.
+# NOTE: need to put "download lhctl" as part of onboarding process.
+build/lhctl

@@ -9,6 +9,8 @@
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'java'
 }
 
 
@@ -68,6 +70,10 @@ application {
     // Define the main class for the application.
     mainClass = 'io.littlehorse.App'
     executableDir = 'custom_bin_dir'
+}
+
+shadowJar {
+  mergeServiceFiles()
 }
 
 task fatJar(type: Jar) {

@@ -104,19 +104,6 @@ public class LHConfig {
         return getOrSetDefault(LHConstants.KAFKA_STATE_DIR_KEY, "/tmp/kafkaState");
     }
 
-    public String getAdvertisedProto() {
-        return getOrSetDefault(LHConstants.ADVERTISED_PROTOCOL_KEY, "http");
-    }
-
-    public String getApiAdvertisedUrl() {
-        return String.format(
-            "%s://%s:%d",
-            getAdvertisedProto(),
-            this.getAdvertisedHost(),
-            getApiAdvertisedPort()
-        );
-    }
-
     public String getAdvertisedHost() {
         return getOrSetDefault(LHConstants.ADVERTISED_HOST_KEY, "localhost");
     }
