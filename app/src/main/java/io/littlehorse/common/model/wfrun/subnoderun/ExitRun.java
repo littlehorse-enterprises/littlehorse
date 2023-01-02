@@ -80,6 +80,7 @@ public class ExitRun extends SubNodeRun<ExitRunPb> {
             if (getNode().exitNode.failureDef == null) {
                 // Then this is just a regular "yay we're done!" node.
                 nodeRun.threadRun.complete(time);
+                nodeRun.complete(null, time);
             } else {
                 // then this is a "yikes Throw Exception" node.
 

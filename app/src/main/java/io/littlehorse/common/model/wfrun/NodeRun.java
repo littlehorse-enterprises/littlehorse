@@ -307,13 +307,6 @@ public class NodeRun extends GETable<NodeRunPb> {
         threadRun.completeCurrentNode(output, time);
     }
 
-    // public void fail(TaskResultCodePb resultCode, String message, Date time) {
-    //     endTime = time;
-    //     this.resultCode = resultCode;
-    //     this.errorMessage = message;
-    //     threadRun.fail(resultCode, message, time);
-    // }
-
     public void fail(Failure failure, Date time) {
         this.failures.add(failure);
         endTime = time;

@@ -456,6 +456,7 @@ public class WfRun extends GETable<WfRunPb> {
         if (newStatus == LHStatusPb.COMPLETED) {
             endTime = time;
             status = LHStatusPb.COMPLETED;
+            System.out.println("Completed " + id + " at " + new Date());
         } else if (newStatus == LHStatusPb.ERROR) {
             endTime = time;
             status = LHStatusPb.ERROR;

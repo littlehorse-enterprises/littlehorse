@@ -17,6 +17,7 @@ import io.littlehorse.common.model.meta.ThreadSpec;
 import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.meta.VariableMutation;
+import io.littlehorse.common.model.meta.subnode.ExitNode;
 import io.littlehorse.common.model.meta.subnode.TaskNode;
 import io.littlehorse.common.model.wfrun.haltreason.HandlingFailureHaltReason;
 import io.littlehorse.common.model.wfrun.haltreason.Interrupted;
@@ -575,6 +576,9 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     }
 
     public void advanceFrom(Node curNode) {
+        if (curNode.getSubNode().getClass().equals(ExitNode.class)) {
+            return;
+        }
         Node nextNode = null;
         for (Edge e : curNode.outgoingEdges) {
             try {
