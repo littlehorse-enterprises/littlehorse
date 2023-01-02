@@ -8,7 +8,6 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
 import io.littlehorse.common.proto.CentralStoreQueryReplyPb;
 import io.littlehorse.common.proto.LHResponseCodePb;
-import io.littlehorse.common.util.LHUtil;
 
 public class GETStreamObserver<
     U extends MessageOrBuilder, T extends Storeable<U>, V extends MessageOrBuilder
@@ -42,9 +41,7 @@ public class GETStreamObserver<
         ctx.onCompleted();
     }
 
-    public void onCompleted() {
-        LHUtil.log("Unexpected call to onCompleted()");
-    }
+    public void onCompleted() {}
 
     public void onNext(CentralStoreQueryReplyPb reply) {
         // TODO

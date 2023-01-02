@@ -52,15 +52,15 @@ spec:
 
 task_name = "task1"
 
-# subprocess.run(
-#   "lhctl deploy taskDef task1.json".split()
-# )
+subprocess.run(
+  "lhctl deploy taskDef task1.json".split()
+)
 
 yaml = gen_task_yaml(task_name)
 subprocess.run(
     "kubectl apply -f -".split(), input=yaml.encode(),
 )
 
-# subprocess.run(
-#   "lhctl deploy wfSpec simple_wf.json".split()
-# )
+subprocess.run(
+  "lhctl deploy wfSpec simple_wf.json".split()
+)

@@ -49,8 +49,12 @@ spec:
   selector:
     app: lh-server
   ports:
-    - name: http
+    - name: api
       protocol: TCP
       port: 5000
       targetPort: 5000
-  type: ClusterIP
+    - name: internal
+      protocol: TCP
+      port: 50001
+      targetPort: 5001
+  type: LoadBalancer

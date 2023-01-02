@@ -530,14 +530,60 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         taskClaimCommand.taskClaimEvent = claimEvent;
         taskClaimCommand.time = new Date();
 
-        // the old way which synchronously processes:
-        processCommand(
-            claimEvent.toProto().build(),
-            client.getResponseObserver(),
-            TaskClaimEvent.class,
-            PollTaskReplyPb.class,
-            false // it's a stream, so we don't want to complete it.
+        // // the old way which synchronously processes:
+        // processCommand(
+        //     claimEvent.toProto().build(),
+        //     client.getResponseObserver(),
+        //     TaskClaimEvent.class,
+        //     PollTaskReplyPb.class,
+        //     false // it's a stream, so we don't want to complete it.
+        // );
+
+        recordClaimEventAndReturnTask(
+            taskClaimCommand,
+            tsr,
+            client.getResponseObserver()
         );
+    }
+
+    private void recordClaimEventAndReturnTask(
+        Command taskClaimCommand,
+        TaskScheduleRequest tsr,
+        StreamObserver<PollTaskReplyPb> observer
+    ) {
+        internalComms
+            .getProducer()
+            .send(
+                taskClaimCommand.getPartitionKey(),
+                taskClaimCommand,
+                config.getCoreCmdTopicName(),
+                (recordMeta, exn) -> {
+                    if (exn != null) {
+                        // Then the command wasn't successfully claimed. Just return
+                        // an empty reply and get the client to try again later.
+                        observer.onNext(
+                            PollTaskReplyPb
+                                .newBuilder()
+                                .setCode(LHResponseCodePb.CONNECTION_ERROR)
+                                .setMessage(
+                                    "Unable to claim command, had a kafka error: " +
+                                    exn.getMessage()
+                                )
+                                .build()
+                        );
+                    } else {
+                        // Then the message has been accepted by Kafka. It's time to
+                        // finally return the task to client.
+                        observer.onNext(
+                            PollTaskReplyPb
+                                .newBuilder()
+                                .setCode(LHResponseCodePb.OK)
+                                .setResult(tsr.toProto())
+                                .build()
+                        );
+                    }
+                }
+            );
     }
 
     public LHProducer getProducer() {
