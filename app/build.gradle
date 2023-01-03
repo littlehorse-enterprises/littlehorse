@@ -17,6 +17,7 @@ plugins {
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
+    mavenLocal()
     maven {
         url = uri("https://packages.confluent.io/maven/")
     }
@@ -29,31 +30,22 @@ dependencies {
     // I think this was added by gradle init. No touchy touchy.
     implementation 'com.google.guava:guava:30.1.1-jre'
 
-    // Stuff for Javalin
-    implementation 'io.javalin:javalin:4.1.1'
+    // Stuff for JSON processing
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.4'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.4'
+    implementation 'com.jayway.jsonpath:json-path:2.6.0'
+
+    // Logging
     implementation 'org.slf4j:slf4j-api:1.7.31'
     implementation 'org.slf4j:slf4j-log4j12:1.7.31'
     implementation 'org.apache.logging.log4j:log4j-api:2.17.1'
 
     // Stuff for Kafka
-    implementation 'org.apache.kafka:kafka-clients:3.2.2'
-    implementation 'org.apache.kafka:kafka-streams:3.2.2'
-
-    // HTTP Client
-    implementation 'com.squareup.okhttp3:okhttp:4.9.0'
+    implementation 'org.apache.kafka:kafka-clients:3.5.0-SNAPSHOT'
+    implementation 'org.apache.kafka:kafka-streams:3.5.0-SNAPSHOT'
 
     // Utils
     implementation 'org.apache.commons:commons-lang3:3.12.0'
-
-    // JSONPath
-    implementation 'com.jayway.jsonpath:json-path:2.6.0'
-
-    // Docker compatibility.
-    // TODO: Do we want to make this optional since not everyone uses the docker
-    // deployer? It might be considered dead weight in that case.
-    implementation 'com.github.docker-java:docker-java:3.2.0-rc2'
 
     implementation 'com.google.protobuf:protobuf-java:3.21.2'
     implementation 'com.google.protobuf:protobuf-java-util:3.21.2'
@@ -62,7 +54,6 @@ dependencies {
     implementation 'io.grpc:grpc-services:1.50.2'
     implementation 'io.grpc:grpc-stub:1.50.2'
     implementation 'org.apache.tomcat:annotations-api:6.0.53'
-
 }
 
 

@@ -4,7 +4,6 @@ import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.proto.VariableAssignmentPb.SourceCase;
 import io.littlehorse.common.util.LHProducer;
-import io.littlehorse.common.util.LHRpcClient;
 import io.littlehorse.common.util.LHUtil;
 import java.util.Collections;
 import java.util.List;
@@ -152,10 +151,6 @@ public class LHConfig {
         if (this.kafkaAdmin != null) this.kafkaAdmin.close();
         if (this.producer != null) this.producer.close();
         if (this.txnProducer != null) this.txnProducer.close();
-    }
-
-    public LHRpcClient getRpcClient() {
-        return new LHRpcClient();
     }
 
     public LHProducer getProducer() {
