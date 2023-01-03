@@ -151,7 +151,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
         timerStreams.setStateListener((newState, oldState) -> {
             timerState = newState;
-            LHUtil.log(new Date(), "New state for core:", timerState);
+            LHUtil.log(new Date(), "New state for timer:", timerState);
         });
 
         internalComms = new BackendInternalComms(config, coreStreams);
@@ -668,27 +668,33 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     public void close() {
+        System.out.println("hi from close()");
         CountDownLatch latch = new CountDownLatch(3);
 
         new Thread(() -> {
+            LHUtil.log("Closing timer");
             timerStreams.close();
             latch.countDown();
         })
             .start();
 
         new Thread(() -> {
+            LHUtil.log("Closing core");
             coreStreams.close();
             latch.countDown();
         })
             .start();
 
         new Thread(() -> {
+            LHUtil.log("Closing internalComms");
             internalComms.close();
             latch.countDown();
         })
             .start();
 
         try {
+            LHUtil.log("Shutting down main server");
+            grpcServer.shutdownNow();
             grpcServer.awaitTermination();
         } catch (InterruptedException ignored) {}
 

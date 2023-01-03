@@ -98,9 +98,15 @@ public class BackendInternalComms implements Closeable {
     }
 
     public void close() {
-        internalGrpcServer.shutdown();
+        LHUtil.log("Closing backend internal comms");
         for (ManagedChannel channel : channels.values()) {
             channel.shutdown();
+        }
+        internalGrpcServer.shutdownNow();
+        try {
+            internalGrpcServer.awaitTermination();
+        } catch (InterruptedException exn) {
+            throw new RuntimeException(exn);
         }
     }
 

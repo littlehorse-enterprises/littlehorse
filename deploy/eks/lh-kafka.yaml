@@ -44,8 +44,8 @@ spec:
         type: persistent-claim
         size: 80Gi
         deleteClaim: true
-  # ZooKeeper is required when validating the CR spec. However it's ignored by the controller
-  # when UseKRaft is set.
+  # ZooKeeper is required when validating the CR spec. However it's ignored by the
+  # controller when UseKRaft is set.
   zookeeper: 
     template:
       pod:
