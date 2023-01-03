@@ -91,6 +91,17 @@ public class BackendInternalComms implements Closeable {
             );
         this.producer = new LHProducer(config, false);
         this.asyncWaiters = new AsyncWaiters();
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(20 * 1000);
+                    this.asyncWaiters.cleanupOldWaiters();
+                } catch (InterruptedException exn) {
+                    throw new RuntimeException(exn);
+                }
+            }
+        })
+            .start();
     }
 
     public void start() throws IOException {
