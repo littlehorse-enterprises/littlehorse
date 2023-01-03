@@ -52,15 +52,15 @@ public class CommandProcessor
         // server.getProducer().sendRecord(claimRecord, null);
 
         // temporary hack
-        dao.onPartitionClaimed();
 
         this.ctx = ctx;
         dao = new KafkaStreamsLHDAOImpl(this.ctx, config, server);
-        ctx.schedule(
-            Duration.ofMillis(100),
-            PunctuationType.WALL_CLOCK_TIME,
-            dao::broadcastTagCounts
-        );
+        // ctx.schedule(
+        //     Duration.ofMillis(100),
+        //     PunctuationType.WALL_CLOCK_TIME,
+        //     dao::broadcastTagCounts
+        // );
+        dao.onPartitionClaimed();
     }
 
     @Override

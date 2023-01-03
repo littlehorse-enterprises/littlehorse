@@ -459,7 +459,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
                 LHIterKeyValue<TaskScheduleRequest> next = iter.next();
                 TaskScheduleRequest tsr = next.getValue();
                 LHUtil.log("Rehydration: scheduling task:", tsr.getObjectId());
-                server.onTaskScheduled(tsr.taskDefName, tsr.getObjectId());
+                server.onTaskScheduled(tsr.taskDefName, tsr);
             }
         }
     }
@@ -560,7 +560,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
             // This is where the magic happens
             if (partitionIsClaimed) {
-                server.onTaskScheduled(tsr.taskDefName, tsr.getObjectId());
+                server.onTaskScheduled(tsr.taskDefName, tsr);
             } else {
                 LHUtil.log("haven't claimed partitions, deferring scheduling of tsr");
             }

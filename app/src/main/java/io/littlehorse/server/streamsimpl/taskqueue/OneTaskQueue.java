@@ -1,6 +1,7 @@
 package io.littlehorse.server.streamsimpl.taskqueue;
 
-import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
+// import io.littlehorse.common.util.LHUtil;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.locks.Lock;
@@ -13,14 +14,14 @@ public class OneTaskQueue {
     private Queue<PollTaskRequestObserver> hungryClients;
     private Lock lock;
 
-    private LinkedList<String> pendingTaskIds;
+    private LinkedList<TaskScheduleRequest> pendingTasks;
     private TaskQueueManager parent;
 
     private String taskDefName;
 
     public OneTaskQueue(String taskDefName, TaskQueueManager parent) {
         this.taskDefName = taskDefName;
-        this.pendingTaskIds = new LinkedList<>();
+        this.pendingTasks = new LinkedList<>();
         this.hungryClients = new LinkedList<>();
         this.lock = new ReentrantLock();
         this.parent = parent;
@@ -58,7 +59,7 @@ public class OneTaskQueue {
      * @param tsrId is the ::getObjectId() for the TaskScheduleRequest that was
      * just scheduled.
      */
-    public void onTaskScheduled(String tsrId) {
+    public void onTaskScheduled(TaskScheduleRequest tsrId) {
         // There's two cases here:
         // 1. There are clients waiting for requests, in which case we know that
         //    the pendingTaskIds queue/list must be empty.
@@ -72,7 +73,7 @@ public class OneTaskQueue {
             lock.lock();
             if (!hungryClients.isEmpty()) {
                 // This is case 1.
-                if (!pendingTaskIds.isEmpty()) {
+                if (!pendingTasks.isEmpty()) {
                     throw new RuntimeException(
                         "Can't have pending tasks and hungry clients"
                     );
@@ -81,7 +82,7 @@ public class OneTaskQueue {
                 luckyClient = hungryClients.poll();
             } else {
                 // case 2
-                pendingTaskIds.add(tsrId);
+                pendingTasks.add(tsrId);
             }
         } finally {
             lock.unlock();
@@ -119,14 +120,14 @@ public class OneTaskQueue {
         // 2. There are no pending Taskid's in the queue, in which case we simply
         //    push the request client observer thing onto the back of the
         //    `hungryClients` list.
-        String nextTaskId = null;
+        TaskScheduleRequest nextTask = null;
 
         // long result = 0;
         // long start = System.nanoTime();
         try {
             lock.lock();
 
-            if (!pendingTaskIds.isEmpty()) {
+            if (!pendingTasks.isEmpty()) {
                 // This is case 1.
                 if (!hungryClients.isEmpty()) {
                     throw new RuntimeException(
@@ -134,7 +135,7 @@ public class OneTaskQueue {
                     );
                 }
 
-                nextTaskId = pendingTaskIds.poll();
+                nextTask = pendingTasks.poll();
             } else {
                 // case 2
                 hungryClients.add(requestObserver);
@@ -150,8 +151,8 @@ public class OneTaskQueue {
             // }
         }
 
-        if (nextTaskId != null) {
-            parent.itsAMatch(nextTaskId, requestObserver);
+        if (nextTask != null) {
+            parent.itsAMatch(nextTask, requestObserver);
         }
     }
 }

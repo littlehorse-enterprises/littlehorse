@@ -34,9 +34,9 @@ public class TaskQueueManager {
         getSubQueueManager(observer.getTaskDefName()).onRequestDisconnected(observer);
     }
 
-    public void onTaskScheduled(String taskDefName, String taskScheduleRequestId) {
+    public void onTaskScheduled(String taskDefName, TaskScheduleRequest tsr) {
         // long start = System.nanoTime();
-        getSubQueueManager(taskDefName).onTaskScheduled(taskScheduleRequestId);
+        getSubQueueManager(taskDefName).onTaskScheduled(tsr);
         // long end = System.nanoTime();
         // long nanos = end - start;
         // double millis = nanos / 1000 / 1000;

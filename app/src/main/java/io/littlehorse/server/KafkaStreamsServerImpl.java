@@ -123,11 +123,15 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         coreStreams =
             new KafkaStreams(
                 ServerTopology.initCoreTopology(config, this),
+                // For now we have to do EOS here, so we just pray...
                 config.getStreamsConfig("core", true)
             );
         timerStreams =
             new KafkaStreams(
                 ServerTopology.initTimerTopology(config),
+                // Kafka Streams 3.4.0 should fix the issue with EOS and hanging
+                // transactions on punctionations, which means we can (hopefully)
+                // make the timer stream also EOS.
                 config.getStreamsConfig("timer", false)
             );
 
@@ -510,26 +514,6 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         TaskScheduleRequest tsr,
         PollTaskRequestObserver client
     ) {
-        // First, create the TaskStartedEvent Command.
-        TaskScheduleRequest tsr = internalComms.getTsr(taskId);
-        if (tsr == null) {
-            LHUtil.log(
-                "Warning: it appears this TSR is missing.",
-                "Likely because Task migrated to another instance after scheduling.",
-                taskId
-            );
-            client
-                .getResponseObserver()
-                .onNext(
-                    PollTaskReplyPb
-                        .newBuilder()
-                        .setCode(LHResponseCodePb.NOT_FOUND_ERROR)
-                        .setMessage("Failed loading task; please try again.")
-                        .build()
-                );
-            return;
-        }
-
         TaskClaimEvent claimEvent = new TaskClaimEvent();
         claimEvent.wfRunId = tsr.wfRunId;
         claimEvent.threadRunNumber = tsr.threadRunNumber;
@@ -672,8 +656,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             );
     }
 
-    public void onTaskScheduled(String taskDefName, String tsrObjectId) {
-        taskQueueManager.onTaskScheduled(taskDefName, tsrObjectId);
+    public void onTaskScheduled(String taskDefName, TaskScheduleRequest tsr) {
+        taskQueueManager.onTaskScheduled(taskDefName, tsr);
     }
 
     public void start() throws IOException {
