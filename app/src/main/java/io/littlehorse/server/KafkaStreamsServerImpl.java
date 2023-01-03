@@ -93,6 +93,9 @@ import io.littlehorse.server.streamsimpl.util.POSTStreamObserver;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import org.apache.kafka.common.Metric;
 import org.apache.kafka.common.MetricName;
 import org.apache.kafka.streams.KafkaStreams;
@@ -120,16 +123,22 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         coreStreams =
             new KafkaStreams(
                 ServerTopology.initCoreTopology(config, this),
-                config.getStreamsConfig("core")
+                config.getStreamsConfig("core", true)
             );
         timerStreams =
             new KafkaStreams(
                 ServerTopology.initTimerTopology(config),
-                config.getStreamsConfig("timer")
+                config.getStreamsConfig("timer", false)
             );
 
+        Executor executor = Executors.newFixedThreadPool(16);
+
         this.grpcServer =
-            ServerBuilder.forPort(config.getApiBindPort()).addService(this).build();
+            ServerBuilder
+                .forPort(config.getApiBindPort())
+                .addService(this)
+                .executor(executor)
+                .build();
 
         coreStreams.setStateListener((newState, oldState) -> {
             coreState = newState;
@@ -497,7 +506,10 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         ctx.onCompleted();
     }
 
-    public void returnTaskToClient(String taskId, PollTaskRequestObserver client) {
+    public void returnTaskToClient(
+        TaskScheduleRequest tsr,
+        PollTaskRequestObserver client
+    ) {
         // First, create the TaskStartedEvent Command.
         TaskScheduleRequest tsr = internalComms.getTsr(taskId);
         if (tsr == null) {
@@ -530,61 +542,62 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         taskClaimCommand.taskClaimEvent = claimEvent;
         taskClaimCommand.time = new Date();
 
-        // // the old way which synchronously processes:
-        // processCommand(
-        //     claimEvent.toProto().build(),
-        //     client.getResponseObserver(),
-        //     TaskClaimEvent.class,
-        //     PollTaskReplyPb.class,
-        //     false // it's a stream, so we don't want to complete it.
-        // );
-
-        recordClaimEventAndReturnTask(
-            taskClaimCommand,
-            tsr,
-            client.getResponseObserver()
+        // the old way which synchronously processes:
+        processCommand(
+            claimEvent.toProto().build(),
+            client.getResponseObserver(),
+            TaskClaimEvent.class,
+            PollTaskReplyPb.class,
+            false // it's a stream, so we don't want to complete it.
         );
+        // // // the new way which short-circuits the need to wait for processing.
+        // recordClaimEventAndReturnTask(
+        //     taskClaimCommand,
+        //     tsr,
+        //     client.getResponseObserver()
+        // );
     }
 
-    private void recordClaimEventAndReturnTask(
-        Command taskClaimCommand,
-        TaskScheduleRequest tsr,
-        StreamObserver<PollTaskReplyPb> observer
-    ) {
-        internalComms
-            .getProducer()
-            .send(
-                taskClaimCommand.getPartitionKey(),
-                taskClaimCommand,
-                config.getCoreCmdTopicName(),
-                (recordMeta, exn) -> {
-                    if (exn != null) {
-                        // Then the command wasn't successfully claimed. Just return
-                        // an empty reply and get the client to try again later.
-                        observer.onNext(
-                            PollTaskReplyPb
-                                .newBuilder()
-                                .setCode(LHResponseCodePb.CONNECTION_ERROR)
-                                .setMessage(
-                                    "Unable to claim command, had a kafka error: " +
-                                    exn.getMessage()
-                                )
-                                .build()
-                        );
-                    } else {
-                        // Then the message has been accepted by Kafka. It's time to
-                        // finally return the task to client.
-                        observer.onNext(
-                            PollTaskReplyPb
-                                .newBuilder()
-                                .setCode(LHResponseCodePb.OK)
-                                .setResult(tsr.toProto())
-                                .build()
-                        );
-                    }
-                }
-            );
-    }
+    // // DO NOT DELETE THIS
+    // private void recordClaimEventAndReturnTask(
+    //     Command taskClaimCommand,
+    //     TaskScheduleRequest tsr,
+    //     StreamObserver<PollTaskReplyPb> observer
+    // ) {
+    //     internalComms
+    //         .getProducer()
+    //         .send(
+    //             taskClaimCommand.getPartitionKey(),
+    //             taskClaimCommand,
+    //             config.getCoreCmdTopicName(),
+    //             (recordMeta, exn) -> {
+    //                 if (exn != null) {
+    //                     // Then the command wasn't successfully claimed. Just return
+    //                     // an empty reply and get the client to try again later.
+    //                     observer.onNext(
+    //                         PollTaskReplyPb
+    //                             .newBuilder()
+    //                             .setCode(LHResponseCodePb.CONNECTION_ERROR)
+    //                             .setMessage(
+    //                                 "Unable to claim command, had a kafka error: " +
+    //                                 exn.getMessage()
+    //                             )
+    //                             .build()
+    //                     );
+    //                 } else {
+    //                     // Then the message has been accepted by Kafka. It's time to
+    //                     // finally return the task to client.
+    //                     observer.onNext(
+    //                         PollTaskReplyPb
+    //                             .newBuilder()
+    //                             .setCode(LHResponseCodePb.OK)
+    //                             .setResult(tsr.toProto())
+    //                             .build()
+    //                     );
+    //                 }
+    //             }
+    //         );
+    // }
 
     public LHProducer getProducer() {
         return internalComms.getProducer();
@@ -671,22 +684,62 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     public void close() {
-        grpcServer.shutdown();
-        timerStreams.close();
-        coreStreams.close();
-        internalComms.close();
+        CountDownLatch latch = new CountDownLatch(3);
+
+        new Thread(() -> {
+            timerStreams.close();
+            latch.countDown();
+        })
+            .start();
+
+        new Thread(() -> {
+            coreStreams.close();
+            latch.countDown();
+        })
+            .start();
+
+        new Thread(() -> {
+            internalComms.close();
+            latch.countDown();
+        })
+            .start();
+
+        try {
+            grpcServer.awaitTermination();
+        } catch (InterruptedException ignored) {}
+
+        try {
+            latch.await();
+        } catch (Exception exn) {
+            throw new RuntimeException(exn);
+        }
     }
 
-    public static void doMain(LHConfig config) throws IOException {
+    public static void doMain(LHConfig config)
+        throws IOException, InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
         KafkaStreamsServerImpl server = new KafkaStreamsServerImpl(config);
         Runtime
             .getRuntime()
             .addShutdownHook(
                 new Thread(() -> {
+                    System.out.println("Closing now!");
                     server.close();
                     config.cleanup();
+                    latch.countDown();
                 })
             );
-        server.start();
+        new Thread(() -> {
+            try {
+                server.start();
+            } catch (IOException exn) {
+                throw new RuntimeException(exn);
+            }
+        })
+            .start();
+
+        System.out.println("Hello there!");
+        latch.await();
+        System.out.println("Done waiting for countdown latch");
     }
 }

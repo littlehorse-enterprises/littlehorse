@@ -1,5 +1,6 @@
 package io.littlehorse.server.streamsimpl.taskqueue;
 
+import io.littlehorse.common.util.LHUtil;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.locks.Lock;
@@ -65,6 +66,8 @@ public class OneTaskQueue {
         //    add the task id to the taskid list.
 
         PollTaskRequestObserver luckyClient = null;
+        // long result = 0;
+        // long start = System.nanoTime();
         try {
             lock.lock();
             if (!hungryClients.isEmpty()) {
@@ -82,6 +85,13 @@ public class OneTaskQueue {
             }
         } finally {
             lock.unlock();
+            // result = System.nanoTime() - start;
+            // if (result > 100) {
+            //     LHUtil.log("Took", result, "ns");
+            // }
+            // if (hungryClients.size() > 2) {
+            //     LHUtil.log("Hungry Clients size: " + hungryClients.size());
+            // }
         }
 
         // pull this outside of protected zone for performance.
@@ -111,8 +121,11 @@ public class OneTaskQueue {
         //    `hungryClients` list.
         String nextTaskId = null;
 
+        // long result = 0;
+        // long start = System.nanoTime();
         try {
             lock.lock();
+
             if (!pendingTaskIds.isEmpty()) {
                 // This is case 1.
                 if (!hungryClients.isEmpty()) {
@@ -128,6 +141,13 @@ public class OneTaskQueue {
             }
         } finally {
             lock.unlock();
+            // result = System.nanoTime() - start;
+            // if (result > 100) {
+            //     LHUtil.log("Took", result, "ns");
+            // }
+            // if (pendingTaskIds.size() > 2) {
+            //     LHUtil.log("Pending tasks size: " + pendingTaskIds.size());
+            // }
         }
 
         if (nextTaskId != null) {

@@ -180,6 +180,7 @@ public class LHConfig {
             ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
             Serdes.Bytes().serializer().getClass()
         );
+        // conf.put(ProducerConfig.LINGER_MS_CONFIG, 10);
         conf.put(
             ProducerConfig.CLIENT_ID_CONFIG,
             getKafkaGroupId() + "-" + getKafkaInstanceId()
@@ -231,7 +232,7 @@ public class LHConfig {
         return kafkaConsumer;
     }
 
-    public Properties getStreamsConfig(String component) {
+    public Properties getStreamsConfig(String component, boolean exactlyOnce) {
         Properties props = new Properties();
         props.put(
             StreamsConfig.APPLICATION_SERVER_CONFIG,
@@ -243,13 +244,29 @@ public class LHConfig {
         );
         props.put(ConsumerConfig.GROUP_INSTANCE_ID_CONFIG, this.getKafkaInstanceId());
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, this.getBootstrapServers());
-        props.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
         props.put(StreamsConfig.STATE_DIR_CONFIG, this.getStateDirectory());
-        // props.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, "at_least_once");
-        props.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, "exactly_once_v2");
+        if (exactlyOnce) {
+            props.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, "exactly_once_v2");
+        }
         props.put(StreamsConfig.TOPOLOGY_OPTIMIZATION_CONFIG, "all");
         props.put(StreamsConfig.REQUEST_TIMEOUT_MS_CONFIG, 30000);
+        props.put(
+            StreamsConfig.producerPrefix(ProducerConfig.TRANSACTION_TIMEOUT_CONFIG),
+            1000 * 15
+        );
         props.put(StreamsConfig.producerPrefix(ProducerConfig.ACKS_CONFIG), "all");
+
+        props.put(
+            StreamsConfig.consumerPrefix(ConsumerConfig.MAX_POLL_RECORDS_CONFIG),
+            10000 // 10,000 instead of 1,000 to improve throughput
+        );
+        props.put(
+            StreamsConfig.consumerPrefix(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG),
+            20
+        );
+        // props.put(
+        //     StreamsConfig.consumerPrefix(ConsumerConfig.FETCH_MIN_BYTES_CONFIG), )
+
         props.put(
             StreamsConfig.REPLICATION_FACTOR_CONFIG,
             (int) getReplicationFactor()
@@ -271,10 +288,10 @@ public class LHConfig {
             StreamsConfig.NUM_STREAM_THREADS_CONFIG,
             Integer.valueOf(getOrSetDefault(LHConstants.NUM_STREAM_THREADS_KEY, "1"))
         );
-        props.put(StreamsConfig.TASK_TIMEOUT_MS_CONFIG, 30 * 1000);
+        props.put(StreamsConfig.TASK_TIMEOUT_MS_CONFIG, 10 * 1000);
         props.put(
             StreamsConfig.producerPrefix(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG),
-            10000
+            10 * 1000
         );
         props.put(
             StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG,
@@ -292,6 +309,7 @@ public class LHConfig {
             StreamsConfig.COMMIT_INTERVAL_MS_CONFIG,
             getStreamsCommitInterval()
         );
+        props.put(StreamsConfig.PROBING_REBALANCE_INTERVAL_MS_CONFIG, 1000 * 60);
 
         // props.put(StreamsConfig.RACK_AWARE_ASSIGNMENT_TAGS_CONFIG, "rack");
         // props.put(StreamsConfig.CLIENT_TAG_PREFIX + "rack", getRackId());

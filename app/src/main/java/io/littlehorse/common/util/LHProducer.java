@@ -1,7 +1,7 @@
 package io.littlehorse.common.util;
 
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.command.Command;
 import java.io.Closeable;
 import java.util.Map;
 import java.util.concurrent.Future;
@@ -33,7 +33,7 @@ public class LHProducer implements Closeable {
 
     public Future<RecordMetadata> send(
         String key,
-        LHSerializable<?> t,
+        Command t,
         String topic,
         Callback cb
     ) {
@@ -43,11 +43,7 @@ public class LHProducer implements Closeable {
         );
     }
 
-    public Future<RecordMetadata> send(
-        String key,
-        LHSerializable<?> t,
-        String topic
-    ) {
+    public Future<RecordMetadata> send(String key, Command t, String topic) {
         return this.send(key, t, topic, null);
     }
 
@@ -91,7 +87,7 @@ public class LHProducer implements Closeable {
 
     public Future<RecordMetadata> sendToPartition(
         String key,
-        LHSerializable<?> val,
+        Command val,
         String topic,
         int partition
     ) {

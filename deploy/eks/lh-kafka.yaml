@@ -6,7 +6,7 @@ metadata:
 spec:
   kafka:
     version: 3.2.0
-    replicas: 6
+    replicas: 3
     template:
       pod:
         topologySpreadConstraints:

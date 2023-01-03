@@ -1,5 +1,7 @@
 package io.littlehorse.server.streamsimpl.taskqueue;
 
+import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +22,12 @@ public class TaskQueueManager {
     }
 
     public void onPollRequest(PollTaskRequestObserver listener) {
+        // long start = System.nanoTime();
         getSubQueueManager(listener.getTaskDefName()).onPollRequest(listener);
+        // long end = System.nanoTime();
+        // long nanos = end - start;
+        // double millis = nanos / 1000 / 1000;
+        // LHUtil.log("Millis to schedule: ", millis);
     }
 
     public void onRequestDisconnected(PollTaskRequestObserver observer) {
@@ -28,11 +35,19 @@ public class TaskQueueManager {
     }
 
     public void onTaskScheduled(String taskDefName, String taskScheduleRequestId) {
+        // long start = System.nanoTime();
         getSubQueueManager(taskDefName).onTaskScheduled(taskScheduleRequestId);
+        // long end = System.nanoTime();
+        // long nanos = end - start;
+        // double millis = nanos / 1000 / 1000;
+        // LHUtil.log("Millis to schedule: ", millis);
     }
 
-    public void itsAMatch(String tsrId, PollTaskRequestObserver luckyClient) {
-        backend.returnTaskToClient(tsrId, luckyClient);
+    public void itsAMatch(
+        TaskScheduleRequest tsr,
+        PollTaskRequestObserver luckyClient
+    ) {
+        backend.returnTaskToClient(tsr, luckyClient);
     }
 
     private OneTaskQueue getSubQueueManager(String taskDefName) {

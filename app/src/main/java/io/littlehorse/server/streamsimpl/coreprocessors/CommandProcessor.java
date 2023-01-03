@@ -27,28 +27,32 @@ public class CommandProcessor
     private KafkaStreamsLHDAOImpl dao;
     private LHConfig config;
     private KafkaStreamsServerImpl server;
-    private String claimGuid;
+
+    // private String claimGuid;
 
     public CommandProcessor(LHConfig config, KafkaStreamsServerImpl server) {
         this.config = config;
         this.server = server;
-        this.claimGuid = LHUtil.generateGuid();
+        // this.claimGuid = LHUtil.generateGuid();
     }
 
     @Override
     public void init(final ProcessorContext<String, CommandProcessorOutput> ctx) {
-        // claim the thing
-        ProducerRecord<String, Bytes> claimRecord = new ProducerRecord<String, Bytes>(
-            config.getCoreCmdTopicName(),
-            ctx.taskId().partition(),
-            LHConstants.PARTITION_CLAIM_KEY,
-            null
-        );
-        claimRecord
-            .headers()
-            .add(LHConstants.PARTITION_CLAIM_GUID_HEADER, claimGuid.getBytes());
+        // // claim the thing
+        // ProducerRecord<String, Bytes> claimRecord = new ProducerRecord<String, Bytes>(
+        //     config.getCoreCmdTopicName(),
+        //     ctx.taskId().partition(),
+        //     LHConstants.PARTITION_CLAIM_KEY,
+        //     null
+        // );
+        // claimRecord
+        //     .headers()
+        //     .add(LHConstants.PARTITION_CLAIM_GUID_HEADER, claimGuid.getBytes());
 
-        server.getProducer().sendRecord(claimRecord, null);
+        // server.getProducer().sendRecord(claimRecord, null);
+
+        // temporary hack
+        dao.onPartitionClaimed();
 
         this.ctx = ctx;
         dao = new KafkaStreamsLHDAOImpl(this.ctx, config, server);
@@ -61,20 +65,20 @@ public class CommandProcessor
 
     @Override
     public void process(final Record<String, Command> commandRecord) {
-        if (commandRecord.key().equals(LHConstants.PARTITION_CLAIM_KEY)) {
-            Iterable<Header> iter = commandRecord
-                .headers()
-                .headers(LHConstants.PARTITION_CLAIM_GUID_HEADER);
+        // if (commandRecord.key().equals(LHConstants.PARTITION_CLAIM_KEY)) {
+        //     Iterable<Header> iter = commandRecord
+        //         .headers()
+        //         .headers(LHConstants.PARTITION_CLAIM_GUID_HEADER);
 
-            Header h = iter.iterator().next();
+        //     Header h = iter.iterator().next();
 
-            if (new String(h.value()).equals(claimGuid)) {
-                dao.onPartitionClaimed();
-            } else {
-                LHUtil.log("Got a stale claim! Doing nothing.");
-            }
-            return;
-        }
+        //     if (new String(h.value()).equals(claimGuid)) {
+        //         dao.onPartitionClaimed();
+        //     } else {
+        //         LHUtil.log("Got a stale claim! Doing nothing.");
+        //     }
+        //     return;
+        // }
 
         try {
             Command command = commandRecord.value();

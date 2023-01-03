@@ -19,7 +19,7 @@ metadata:
     app: {name}
     io.littlehorse/deployedBy: "true"
 spec:
-  replicas: 3
+  replicas: 10
   selector:
     matchLabels:
       app: {name}
@@ -47,21 +47,22 @@ spec:
         - name: "LHORSE_TASK_DEF_ID"
           value: {name}
         - name: "LHORSE_NUM_WORKER_THREADS"
-          value: "2"
+          value: "8"
 '''
 
 # First, deploy tasks
-for i in range(1, 6):
+# for i in range(1, 6):
+for i in range(1, 2):
     name = f"task{i}"
-    # subprocess.run(
-    #     f"lhctl deploy taskDef {name}.json".split()
-    # )
+    subprocess.run(
+        f"lhctl deploy taskDef {name}.json".split()
+    )
 
     yaml = gen_task_yaml(name)
     subprocess.run(
         "kubectl apply -f -".split(), input=yaml.encode(),
     )
 
-# subprocess.run(
-#   "lhctl deploy wfSpec simple_wf.json".split()
-# )
+subprocess.run(
+  "lhctl deploy wfSpec simple_wf.json".split()
+)

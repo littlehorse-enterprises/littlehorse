@@ -45,7 +45,7 @@ spec:
             command:
             - /lhctl
             - k8sHealth
-          failureThreshold: 2
+          failureThreshold: 5
           periodSeconds: 3
 
         readinessProbe:
@@ -53,7 +53,7 @@ spec:
             command:
               - /lhctl
               - k8sHealth
-              - --readiness
+              # - --readiness
           failureThreshold: 1
           periodSeconds: 3
 
@@ -81,12 +81,11 @@ spec:
         - name: "LHORSE_NUM_STREAM_THREADS"
           value: "8"
         - name: "LHORSE_COMMIT_INTERVAL"
-          value: "50"
+          value: "5000"
         - name: "LHORSE_KAFKA_STREAMS_STATE_DIR"
           value: "/kafkaStateStores"
         - name: "LHORSE_NUM_STANDBY_REPLICAS"
           value: "2"
-
 
         - name: "LHORSE_DEFAULT_TIMEOUT"
           value: "15"
@@ -112,9 +111,11 @@ spec:
         command: ['/server']
         resources:
           limits:
-            cpu: "8"
+            cpu: "10"
+            memory: "16G"
           requests:
-            cpu: "8"
+            cpu: "10"
+            memory: "16G"
         volumeMounts:
         - name: streams-state
           mountPath: /kafkaStateStores
