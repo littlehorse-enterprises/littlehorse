@@ -6,7 +6,14 @@ metadata:
 spec:
   kafka:
     version: 3.2.0
-    replicas: 3
+    replicas: 6
+    resources:
+      requests:
+        memory: 16G
+        cpu: "4"
+      limits:
+        memory: 16G
+        cpu: "4"
     template:
       pod:
         topologySpreadConstraints:

@@ -13461,8 +13461,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: STRIMZI_FEATURE_GATES
-              # value: '+UseStrimziPodSets,+UseKRaft'
-              value: ""
+              value: '+UseStrimziPodSets,+UseKRaft'
               # value: '-UseStrimziPodSets'
               # value: ''
           livenessProbe:
