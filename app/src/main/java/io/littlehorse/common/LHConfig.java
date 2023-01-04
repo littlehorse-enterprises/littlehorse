@@ -296,6 +296,7 @@ public class LHConfig {
             StreamsConfig.NUM_STANDBY_REPLICAS_CONFIG,
             this.getStandbyReplicas()
         );
+        props.put(StreamsConfig.MAX_WARMUP_REPLICAS_CONFIG, this.getWarmupReplicas());
         props.put(
             StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG,
             Serdes.StringSerde.class.getName()
@@ -337,6 +338,12 @@ public class LHConfig {
     public int getStandbyReplicas() {
         return Integer.valueOf(
             getOrSetDefault(LHConstants.NUM_STANDBY_REPLICAS_KEY, "0")
+        );
+    }
+
+    public int getWarmupReplicas() {
+        return Integer.valueOf(
+            getOrSetDefault(LHConstants.NUM_WARMUP_REPLICAS_KEY, "12")
         );
     }
 

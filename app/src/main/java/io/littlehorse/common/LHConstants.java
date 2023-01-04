@@ -20,6 +20,7 @@ public class LHConstants {
     public static final String KAFKA_STATE_DIR_KEY = "LHORSE_KAFKA_STREAMS_STATE_DIR";
     public static final String NUM_STANDBY_REPLICAS_KEY =
         "LHORSE_NUM_STANDBY_REPLICAS";
+    public static final String NUM_WARMUP_REPLICAS_KEY = "LHORSE_NUM_WARMUP_REPLICAS";
 
     // General LittleHorse Runtime Behavior Config Env Vars
     public static final String DEFAULT_TIMEOUT_KEY = "LHORSE_DEFAULT_TIMEOUT";
