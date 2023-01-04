@@ -39,6 +39,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
@@ -93,6 +94,8 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     private LHConfig config;
     private boolean partitionIsClaimed;
 
+    private Map<String, Pair<Long, WfSpec>> wfSpecCache;
+
     public KafkaStreamsLHDAOImpl(
         final ProcessorContext<String, CommandProcessorOutput> ctx,
         LHConfig config,
@@ -132,6 +135,8 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
         tsrPuts = new HashMap<>();
         timersToSchedule = new ArrayList<>();
+
+        this.wfSpecCache = new HashMap<>();
     }
 
     @Override
@@ -194,12 +199,40 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     @Override
     public WfSpec getWfSpec(String name, Integer version) {
+        String mapKey = version == null ? name : WfSpec.getSubKey(name, version);
+        Pair<Long, WfSpec> pair = wfSpecCache.get(mapKey);
+
+        if (pair != null && isFreshEnough(pair.getKey())) {
+            return pair.getValue();
+        }
+
+        WfSpec spec = getWfSpecBreakCache(name, version);
+        if (spec != null) {
+            wfSpecCache.put(
+                spec.getObjectId(),
+                Pair.of(System.currentTimeMillis(), spec)
+            );
+
+            Pair<Long, WfSpec> oldOne = wfSpecCache.get(name);
+
+            if (oldOne == null || oldOne.getRight().version < spec.version) {
+                wfSpecCache.put(name, Pair.of(System.currentTimeMillis(), spec));
+            }
+        }
+        return spec;
+    }
+
+    private WfSpec getWfSpecBreakCache(String name, Integer version) {
         LHROStoreWrapper store = isHotMetadataPartition ? localStore : globalStore;
         if (version != null) {
             return store.get(WfSpec.getSubKey(name, version), WfSpec.class);
         } else {
             return store.getLastFromPrefix(name, WfSpec.class);
         }
+    }
+
+    private boolean isFreshEnough(Long time) {
+        return System.currentTimeMillis() - time < (1000 * 60);
     }
 
     @Override
