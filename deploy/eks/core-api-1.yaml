@@ -8,7 +8,7 @@ metadata:
     app: lh-server
     io.littlehorse/active: "true"
 spec:
-  replicas: 9
+  replicas: 3
   serviceName: lh-server
   podManagementPolicy: Parallel
   selector:
@@ -79,7 +79,7 @@ spec:
         - name: "LHORSE_REPLICATION_FACTOR"
           value: "3"
         - name: "LHORSE_NUM_STREAM_THREADS"
-          value: "8"
+          value: "12"
         - name: "LHORSE_COMMIT_INTERVAL"
           value: "5000"
         - name: "LHORSE_KAFKA_STREAMS_STATE_DIR"
@@ -111,11 +111,11 @@ spec:
         command: ['/server']
         resources:
           limits:
-            cpu: "6"
-            memory: "16G"
+            cpu: "12"
+            memory: "20G"
           requests:
-            cpu: "6"
-            memory: "16G"
+            cpu: "12"
+            memory: "20G"
         volumeMounts:
         - name: streams-state
           mountPath: /kafkaStateStores

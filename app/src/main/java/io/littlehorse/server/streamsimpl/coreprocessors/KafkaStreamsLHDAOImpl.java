@@ -95,6 +95,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     private boolean partitionIsClaimed;
 
     private Map<String, Pair<Long, WfSpec>> wfSpecCache;
+    private Map<String, Pair<Long, TaskDef>> taskDefCache;
 
     public KafkaStreamsLHDAOImpl(
         final ProcessorContext<String, CommandProcessorOutput> ctx,
@@ -137,6 +138,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         timersToSchedule = new ArrayList<>();
 
         this.wfSpecCache = new HashMap<>();
+        this.taskDefCache = new HashMap<>();
     }
 
     @Override
@@ -237,6 +239,30 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     @Override
     public TaskDef getTaskDef(String name, Integer version) {
+        String mapKey = version == null ? name : TaskDef.getSubKey(name, version);
+        Pair<Long, TaskDef> pair = taskDefCache.get(mapKey);
+
+        if (pair != null && isFreshEnough(pair.getKey())) {
+            return pair.getValue();
+        }
+
+        TaskDef spec = getTaskDefBreakCache(name, version);
+        if (spec != null) {
+            taskDefCache.put(
+                spec.getObjectId(),
+                Pair.of(System.currentTimeMillis(), spec)
+            );
+
+            Pair<Long, TaskDef> oldOne = taskDefCache.get(name);
+
+            if (oldOne == null || oldOne.getRight().version < spec.version) {
+                taskDefCache.put(name, Pair.of(System.currentTimeMillis(), spec));
+            }
+        }
+        return spec;
+    }
+
+    private TaskDef getTaskDefBreakCache(String name, Integer version) {
         LHROStoreWrapper store = isHotMetadataPartition ? localStore : globalStore;
         if (version != null) {
             return store.get(TaskDef.getSubKey(name, version), TaskDef.class);
