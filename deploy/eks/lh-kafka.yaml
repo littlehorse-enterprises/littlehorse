@@ -41,6 +41,7 @@ spec:
       min.insync.replicas: 2
       inter.broker.protocol.version: "3.2"
       auto.topics.create.enable: "false"
+      replica.lag.time.max.ms: 20000
     rack:
       topologyKey: topology.kubernetes.io/zone
     storage:
