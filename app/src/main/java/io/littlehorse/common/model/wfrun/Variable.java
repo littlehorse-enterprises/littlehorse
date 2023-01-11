@@ -46,7 +46,7 @@ public class Variable extends GETable<VariablePb> {
             .setName(name)
             .setThreadRunNumber(threadRunNumber)
             .setWfRunId(wfRunId)
-            .setDate(LHUtil.fromDate(date))
+            .setDate(LHUtil.fromDate(getCreatedAt()))
             .setValue(value.toProto());
 
         return out;
@@ -64,6 +64,9 @@ public class Variable extends GETable<VariablePb> {
 
     @JsonIgnore
     public Date getCreatedAt() {
+        if (date == null) {
+            date = new Date();
+        }
         return date;
     }
 
