@@ -164,6 +164,7 @@ message SearchWfRunReplyPb {
 message RegisterTaskWorkerPb {
     string client_id = 1;
     string task_def_name = 2;
+    string listener_name = 3;
 }
 
 message HostInfoPb {
@@ -171,11 +172,14 @@ message HostInfoPb {
     int32 port = 2;
 }
 
+message ListOfHostInfoPb {
+    repeated HostInfoPb hosts = 1;
+}
+
 message RegisterTaskWorkerReplyPb {
     LHResponseCodePb code = 1;
     optional string message = 2;
-    repeated HostInfoPb all_endpoints = 3;
-    repeated HostInfoPb your_endpoints = 4;
+    repeated HostInfoPb all_hosts = 3;
 }
 
 message PollTaskPb {

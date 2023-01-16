@@ -8,6 +8,7 @@ option java_package = "io.littlehorse.common.proto";
 
 import "google/protobuf/timestamp.proto";
 import "command.proto";
+import "service.proto";
 import "tags.proto";
 
 // The following protobuf definitions are used for paginated responses.
@@ -94,10 +95,18 @@ message InternalPollTaskReplyPb {
     optional TaskScheduleRequestPb result = 2;
 }
 
+message InternalGetAdvertisedHostsPb {}
+
+message InternalGetAdvertisedHostsReplyPb {
+    map<string, HostInfoPb> hosts = 1;
+}
+
 service LHInternals {
     rpc CentralStoreQuery(CentralStoreQueryPb) returns (CentralStoreQueryReplyPb) {}
     rpc PaginatedTagQuery(PaginatedTagQueryPb) returns (PaginatedTagQueryReplyPb) {}
     
     rpc waitForCommand(WaitForCommandPb) returns (WaitForCommandReplyPb) {}
     rpc InternalPollTask(InternalPollTaskPb) returns (InternalPollTaskReplyPb) {}
+
+    rpc GetAdvertisedHosts(InternalGetAdvertisedHostsPb) returns (InternalGetAdvertisedHostsReplyPb) {}
 }

@@ -2,10 +2,12 @@ package io.littlehorse.common;
 
 import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.common.model.wfrun.VariableValue;
+import io.littlehorse.common.proto.HostInfoPb;
 import io.littlehorse.common.proto.VariableAssignmentPb.SourceCase;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -103,8 +105,8 @@ public class LHConfig {
         return getOrSetDefault(LHConstants.KAFKA_STATE_DIR_KEY, "/tmp/kafkaState");
     }
 
-    public String getAdvertisedHost() {
-        return getOrSetDefault(LHConstants.ADVERTISED_HOST_KEY, "localhost");
+    public String getInternalAdvertisedHost() {
+        return getOrSetDefault(LHConstants.INTERNAL_ADVERTISED_HOST_KEY, "localhost");
     }
 
     // If INTERNAL_ADVERTISED_PORT isn't set, we return INTERNAL_BIND_PORT.
@@ -113,16 +115,6 @@ public class LHConfig {
             getOrSetDefault(
                 LHConstants.INTERNAL_ADVERTISED_PORT_KEY,
                 Integer.valueOf(getInternalBindPort()).toString()
-            )
-        );
-    }
-
-    // If API_ADVERTISED_PORT isn't set, we return API_BIND_PORT.
-    public int getApiAdvertisedPort() {
-        return Integer.valueOf(
-            getOrSetDefault(
-                LHConstants.API_ADVERTISED_PORT_KEY,
-                Integer.valueOf(getApiBindPort()).toString()
             )
         );
     }
@@ -137,14 +129,57 @@ public class LHConfig {
     public int getInternalBindPort() {
         return Integer.valueOf(
             getOrSetDefault(
-                LHConstants.INTERNAL_ADVERTISED_PORT_KEY,
-                Integer.valueOf(getApiAdvertisedPort() + 1).toString()
+                LHConstants.INTERNAL_BIND_PORT_KEY,
+                Integer.valueOf(getApiBindPort() + 1).toString()
             )
         );
     }
 
+    private Map<String, HostInfoPb> publicAdvertisedHostMap;
+
+    public Map<String, HostInfoPb> getPublicAdvertisedHostMap() {
+        if (publicAdvertisedHostMap != null) {
+            return publicAdvertisedHostMap;
+        }
+
+        publicAdvertisedHostMap = new HashMap<>();
+
+        String listenerNames = getOrSetDefault(
+            LHConstants.ADVERTISED_LISTENERS_KEY,
+            "LHORSE_PUBLIC_LISTENER"
+        );
+
+        for (String lister : listenerNames.split(",")) {
+            publicAdvertisedHostMap.put(lister, getHostForName(lister));
+        }
+
+        return publicAdvertisedHostMap;
+    }
+
+    private HostInfoPb getHostForName(String envVar) {
+        String fullHost = getOrSetDefault(envVar, "localhost:5000");
+
+        HostInfoPb.Builder out = HostInfoPb.newBuilder();
+        int colonIndex = fullHost.indexOf(":");
+        if (colonIndex == -1) {
+            throw new RuntimeException(
+                "Listener " + envVar + " set to invalid host " + fullHost
+            );
+        }
+
+        out.setHost(fullHost.substring(0, colonIndex));
+        try {
+            out.setPort(
+                Integer.valueOf(fullHost.substring(colonIndex + 1, fullHost.length()))
+            );
+        } catch (Exception exn) {
+            throw new RuntimeException(exn);
+        }
+        return out.build();
+    }
+
     public HostInfo getInternalHostInfo() {
-        return new HostInfo(getAdvertisedHost(), getInternalAdvertisedPort());
+        return new HostInfo(getInternalAdvertisedHost(), getInternalAdvertisedPort());
     }
 
     public void cleanup() {
@@ -231,7 +266,7 @@ public class LHConfig {
         Properties props = new Properties();
         props.put(
             StreamsConfig.APPLICATION_SERVER_CONFIG,
-            this.getAdvertisedHost() + ":" + this.getInternalAdvertisedPort()
+            this.getInternalAdvertisedHost() + ":" + this.getInternalAdvertisedPort()
         );
         props.put(
             StreamsConfig.APPLICATION_ID_CONFIG,

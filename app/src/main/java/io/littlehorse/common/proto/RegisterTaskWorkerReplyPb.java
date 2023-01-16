@@ -18,8 +18,7 @@ private static final long serialVersionUID = 0L;
   private RegisterTaskWorkerReplyPb() {
     code_ = 0;
     message_ = "";
-    allEndpoints_ = java.util.Collections.emptyList();
-    yourEndpoints_ = java.util.Collections.emptyList();
+    allHosts_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -67,19 +66,10 @@ private static final long serialVersionUID = 0L;
           }
           case 26: {
             if (!((mutable_bitField0_ & 0x00000002) != 0)) {
-              allEndpoints_ = new java.util.ArrayList<io.littlehorse.common.proto.HostInfoPb>();
+              allHosts_ = new java.util.ArrayList<io.littlehorse.common.proto.HostInfoPb>();
               mutable_bitField0_ |= 0x00000002;
             }
-            allEndpoints_.add(
-                input.readMessage(io.littlehorse.common.proto.HostInfoPb.parser(), extensionRegistry));
-            break;
-          }
-          case 34: {
-            if (!((mutable_bitField0_ & 0x00000004) != 0)) {
-              yourEndpoints_ = new java.util.ArrayList<io.littlehorse.common.proto.HostInfoPb>();
-              mutable_bitField0_ |= 0x00000004;
-            }
-            yourEndpoints_.add(
+            allHosts_.add(
                 input.readMessage(io.littlehorse.common.proto.HostInfoPb.parser(), extensionRegistry));
             break;
           }
@@ -99,10 +89,7 @@ private static final long serialVersionUID = 0L;
           e).setUnfinishedMessage(this);
     } finally {
       if (((mutable_bitField0_ & 0x00000002) != 0)) {
-        allEndpoints_ = java.util.Collections.unmodifiableList(allEndpoints_);
-      }
-      if (((mutable_bitField0_ & 0x00000004) != 0)) {
-        yourEndpoints_ = java.util.Collections.unmodifiableList(yourEndpoints_);
+        allHosts_ = java.util.Collections.unmodifiableList(allHosts_);
       }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
@@ -187,84 +174,44 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int ALL_ENDPOINTS_FIELD_NUMBER = 3;
-  private java.util.List<io.littlehorse.common.proto.HostInfoPb> allEndpoints_;
+  public static final int ALL_HOSTS_FIELD_NUMBER = 3;
+  private java.util.List<io.littlehorse.common.proto.HostInfoPb> allHosts_;
   /**
-   * <code>repeated .lh_proto.HostInfoPb all_endpoints = 3;</code>
+   * <code>repeated .lh_proto.HostInfoPb all_hosts = 3;</code>
    */
   @java.lang.Override
-  public java.util.List<io.littlehorse.common.proto.HostInfoPb> getAllEndpointsList() {
-    return allEndpoints_;
+  public java.util.List<io.littlehorse.common.proto.HostInfoPb> getAllHostsList() {
+    return allHosts_;
   }
   /**
-   * <code>repeated .lh_proto.HostInfoPb all_endpoints = 3;</code>
+   * <code>repeated .lh_proto.HostInfoPb all_hosts = 3;</code>
    */
   @java.lang.Override
   public java.util.List<? extends io.littlehorse.common.proto.HostInfoPbOrBuilder> 
-      getAllEndpointsOrBuilderList() {
-    return allEndpoints_;
+      getAllHostsOrBuilderList() {
+    return allHosts_;
   }
   /**
-   * <code>repeated .lh_proto.HostInfoPb all_endpoints = 3;</code>
+   * <code>repeated .lh_proto.HostInfoPb all_hosts = 3;</code>
    */
   @java.lang.Override
-  public int getAllEndpointsCount() {
-    return allEndpoints_.size();
+  public int getAllHostsCount() {
+    return allHosts_.size();
   }
   /**
-   * <code>repeated .lh_proto.HostInfoPb all_endpoints = 3;</code>
+   * <code>repeated .lh_proto.HostInfoPb all_hosts = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.HostInfoPb getAllEndpoints(int index) {
-    return allEndpoints_.get(index);
+  public io.littlehorse.common.proto.HostInfoPb getAllHosts(int index) {
+    return allHosts_.get(index);
   }
   /**
-   * <code>repeated .lh_proto.HostInfoPb all_endpoints = 3;</code>
+   * <code>repeated .lh_proto.HostInfoPb all_hosts = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.HostInfoPbOrBuilder getAllEndpointsOrBuilder(
+  public io.littlehorse.common.proto.HostInfoPbOrBuilder getAllHostsOrBuilder(
       int index) {
-    return allEndpoints_.get(index);
-  }
-
-  public static final int YOUR_ENDPOINTS_FIELD_NUMBER = 4;
-  private java.util.List<io.littlehorse.common.proto.HostInfoPb> yourEndpoints_;
-  /**
-   * <code>repeated .lh_proto.HostInfoPb your_endpoints = 4;</code>
-   */
-  @java.lang.Override
-  public java.util.List<io.littlehorse.common.proto.HostInfoPb> getYourEndpointsList() {
-    return yourEndpoints_;
-  }
-  /**
-   * <code>repeated .lh_proto.HostInfoPb your_endpoints = 4;</code>
-   */
-  @java.lang.Override
-  public java.util.List<? extends io.littlehorse.common.proto.HostInfoPbOrBuilder> 
-      getYourEndpointsOrBuilderList() {
-    return yourEndpoints_;
-  }
-  /**
-   * <code>repeated .lh_proto.HostInfoPb your_endpoints = 4;</code>
-   */
-  @java.lang.Override
-  public int getYourEndpointsCount() {
-    return yourEndpoints_.size();
-  }
-  /**
-   * <code>repeated .lh_proto.HostInfoPb your_endpoints = 4;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.HostInfoPb getYourEndpoints(int index) {
-    return yourEndpoints_.get(index);
-  }
-  /**
-   * <code>repeated .lh_proto.HostInfoPb your_endpoints = 4;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.HostInfoPbOrBuilder getYourEndpointsOrBuilder(
-      int index) {
-    return yourEndpoints_.get(index);
+    return allHosts_.get(index);
   }
 
   private byte memoizedIsInitialized = -1;
@@ -287,11 +234,8 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, message_);
     }
-    for (int i = 0; i < allEndpoints_.size(); i++) {
-      output.writeMessage(3, allEndpoints_.get(i));
-    }
-    for (int i = 0; i < yourEndpoints_.size(); i++) {
-      output.writeMessage(4, yourEndpoints_.get(i));
+    for (int i = 0; i < allHosts_.size(); i++) {
+      output.writeMessage(3, allHosts_.get(i));
     }
     unknownFields.writeTo(output);
   }
@@ -309,13 +253,9 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, message_);
     }
-    for (int i = 0; i < allEndpoints_.size(); i++) {
+    for (int i = 0; i < allHosts_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, allEndpoints_.get(i));
-    }
-    for (int i = 0; i < yourEndpoints_.size(); i++) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, yourEndpoints_.get(i));
+        .computeMessageSize(3, allHosts_.get(i));
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -338,10 +278,8 @@ private static final long serialVersionUID = 0L;
       if (!getMessage()
           .equals(other.getMessage())) return false;
     }
-    if (!getAllEndpointsList()
-        .equals(other.getAllEndpointsList())) return false;
-    if (!getYourEndpointsList()
-        .equals(other.getYourEndpointsList())) return false;
+    if (!getAllHostsList()
+        .equals(other.getAllHostsList())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -359,13 +297,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + MESSAGE_FIELD_NUMBER;
       hash = (53 * hash) + getMessage().hashCode();
     }
-    if (getAllEndpointsCount() > 0) {
-      hash = (37 * hash) + ALL_ENDPOINTS_FIELD_NUMBER;
-      hash = (53 * hash) + getAllEndpointsList().hashCode();
-    }
-    if (getYourEndpointsCount() > 0) {
-      hash = (37 * hash) + YOUR_ENDPOINTS_FIELD_NUMBER;
-      hash = (53 * hash) + getYourEndpointsList().hashCode();
+    if (getAllHostsCount() > 0) {
+      hash = (37 * hash) + ALL_HOSTS_FIELD_NUMBER;
+      hash = (53 * hash) + getAllHostsList().hashCode();
     }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
@@ -495,8 +429,7 @@ private static final long serialVersionUID = 0L;
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
-        getAllEndpointsFieldBuilder();
-        getYourEndpointsFieldBuilder();
+        getAllHostsFieldBuilder();
       }
     }
     @java.lang.Override
@@ -506,17 +439,11 @@ private static final long serialVersionUID = 0L;
 
       message_ = "";
       bitField0_ = (bitField0_ & ~0x00000001);
-      if (allEndpointsBuilder_ == null) {
-        allEndpoints_ = java.util.Collections.emptyList();
+      if (allHostsBuilder_ == null) {
+        allHosts_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000002);
       } else {
-        allEndpointsBuilder_.clear();
-      }
-      if (yourEndpointsBuilder_ == null) {
-        yourEndpoints_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000004);
-      } else {
-        yourEndpointsBuilder_.clear();
+        allHostsBuilder_.clear();
       }
       return this;
     }
@@ -551,23 +478,14 @@ private static final long serialVersionUID = 0L;
         to_bitField0_ |= 0x00000001;
       }
       result.message_ = message_;
-      if (allEndpointsBuilder_ == null) {
+      if (allHostsBuilder_ == null) {
         if (((bitField0_ & 0x00000002) != 0)) {
-          allEndpoints_ = java.util.Collections.unmodifiableList(allEndpoints_);
+          allHosts_ = java.util.Collections.unmodifiableList(allHosts_);
           bitField0_ = (bitField0_ & ~0x00000002);
         }
-        result.allEndpoints_ = allEndpoints_;
+        result.allHosts_ = allHosts_;
       } else {
-        result.allEndpoints_ = allEndpointsBuilder_.build();
-      }
-      if (yourEndpointsBuilder_ == null) {
-        if (((bitField0_ & 0x00000004) != 0)) {
-          yourEndpoints_ = java.util.Collections.unmodifiableList(yourEndpoints_);
-          bitField0_ = (bitField0_ & ~0x00000004);
-        }
-        result.yourEndpoints_ = yourEndpoints_;
-      } else {
-        result.yourEndpoints_ = yourEndpointsBuilder_.build();
+        result.allHosts_ = allHostsBuilder_.build();
       }
       result.bitField0_ = to_bitField0_;
       onBuilt();
@@ -626,55 +544,29 @@ private static final long serialVersionUID = 0L;
         message_ = other.message_;
         onChanged();
       }
-      if (allEndpointsBuilder_ == null) {
-        if (!other.allEndpoints_.isEmpty()) {
-          if (allEndpoints_.isEmpty()) {
-            allEndpoints_ = other.allEndpoints_;
+      if (allHostsBuilder_ == null) {
+        if (!other.allHosts_.isEmpty()) {
+          if (allHosts_.isEmpty()) {
+            allHosts_ = other.allHosts_;
             bitField0_ = (bitField0_ & ~0x00000002);
           } else {
-            ensureAllEndpointsIsMutable();
-            allEndpoints_.addAll(other.allEndpoints_);
+            ensureAllHostsIsMutable();
+            allHosts_.addAll(other.allHosts_);
           }
           onChanged();
         }
       } else {
-        if (!other.allEndpoints_.isEmpty()) {
-          if (allEndpointsBuilder_.isEmpty()) {
-            allEndpointsBuilder_.dispose();
-            allEndpointsBuilder_ = null;
-            allEndpoints_ = other.allEndpoints_;
+        if (!other.allHosts_.isEmpty()) {
+          if (allHostsBuilder_.isEmpty()) {
+            allHostsBuilder_.dispose();
+            allHostsBuilder_ = null;
+            allHosts_ = other.allHosts_;
             bitField0_ = (bitField0_ & ~0x00000002);
-            allEndpointsBuilder_ = 
+            allHostsBuilder_ = 
               com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                 getAllEndpointsFieldBuilder() : null;
+                 getAllHostsFieldBuilder() : null;
           } else {
-            allEndpointsBuilder_.addAllMessages(other.allEndpoints_);
-          }
-        }
-      }
-      if (yourEndpointsBuilder_ == null) {
-        if (!other.yourEndpoints_.isEmpty()) {
-          if (yourEndpoints_.isEmpty()) {
-            yourEndpoints_ = other.yourEndpoints_;
-            bitField0_ = (bitField0_ & ~0x00000004);
-          } else {
-            ensureYourEndpointsIsMutable();
-            yourEndpoints_.addAll(other.yourEndpoints_);
-          }
-          onChanged();
-        }
-      } else {
-        if (!other.yourEndpoints_.isEmpty()) {
-          if (yourEndpointsBuilder_.isEmpty()) {
-            yourEndpointsBuilder_.dispose();
-            yourEndpointsBuilder_ = null;
-            yourEndpoints_ = other.yourEndpoints_;
-            bitField0_ = (bitField0_ & ~0x00000004);
-            yourEndpointsBuilder_ = 
-              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                 getYourEndpointsFieldBuilder() : null;
-          } else {
-            yourEndpointsBuilder_.addAllMessages(other.yourEndpoints_);
+            allHostsBuilder_.addAllMessages(other.allHosts_);
           }
         }
       }
@@ -845,484 +737,244 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.util.List<io.littlehorse.common.proto.HostInfoPb> allEndpoints_ =
+    private java.util.List<io.littlehorse.common.proto.HostInfoPb> allHosts_ =
       java.util.Collections.emptyList();
-    private void ensureAllEndpointsIsMutable() {
+    private void ensureAllHostsIsMutable() {
       if (!((bitField0_ & 0x00000002) != 0)) {
-        allEndpoints_ = new java.util.ArrayList<io.littlehorse.common.proto.HostInfoPb>(allEndpoints_);
+        allHosts_ = new java.util.ArrayList<io.littlehorse.common.proto.HostInfoPb>(allHosts_);
         bitField0_ |= 0x00000002;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.common.proto.HostInfoPb, io.littlehorse.common.proto.HostInfoPb.Builder, io.littlehorse.common.proto.HostInfoPbOrBuilder> allEndpointsBuilder_;
+        io.littlehorse.common.proto.HostInfoPb, io.littlehorse.common.proto.HostInfoPb.Builder, io.littlehorse.common.proto.HostInfoPbOrBuilder> allHostsBuilder_;
 
     /**
-     * <code>repeated .lh_proto.HostInfoPb all_endpoints = 3;</code>
+     * <code>repeated .lh_proto.HostInfoPb all_hosts = 3;</code>
      */
-    public java.util.List<io.littlehorse.common.proto.HostInfoPb> getAllEndpointsList() {
-      if (allEndpointsBuilder_ == null) {
-        return java.util.Collections.unmodifiableList(allEndpoints_);
+    public java.util.List<io.littlehorse.common.proto.HostInfoPb> getAllHostsList() {
+      if (allHostsBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(allHosts_);
       } else {
-        return allEndpointsBuilder_.getMessageList();
+        return allHostsBuilder_.getMessageList();
       }
     }
     /**
-     * <code>repeated .lh_proto.HostInfoPb all_endpoints = 3;</code>
+     * <code>repeated .lh_proto.HostInfoPb all_hosts = 3;</code>
      */
-    public int getAllEndpointsCount() {
-      if (allEndpointsBuilder_ == null) {
-        return allEndpoints_.size();
+    public int getAllHostsCount() {
+      if (allHostsBuilder_ == null) {
+        return allHosts_.size();
       } else {
-        return allEndpointsBuilder_.getCount();
+        return allHostsBuilder_.getCount();
       }
     }
     /**
-     * <code>repeated .lh_proto.HostInfoPb all_endpoints = 3;</code>
+     * <code>repeated .lh_proto.HostInfoPb all_hosts = 3;</code>
      */
-    public io.littlehorse.common.proto.HostInfoPb getAllEndpoints(int index) {
-      if (allEndpointsBuilder_ == null) {
-        return allEndpoints_.get(index);
+    public io.littlehorse.common.proto.HostInfoPb getAllHosts(int index) {
+      if (allHostsBuilder_ == null) {
+        return allHosts_.get(index);
       } else {
-        return allEndpointsBuilder_.getMessage(index);
+        return allHostsBuilder_.getMessage(index);
       }
     }
     /**
-     * <code>repeated .lh_proto.HostInfoPb all_endpoints = 3;</code>
+     * <code>repeated .lh_proto.HostInfoPb all_hosts = 3;</code>
      */
-    public Builder setAllEndpoints(
+    public Builder setAllHosts(
         int index, io.littlehorse.common.proto.HostInfoPb value) {
-      if (allEndpointsBuilder_ == null) {
+      if (allHostsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        ensureAllEndpointsIsMutable();
-        allEndpoints_.set(index, value);
+        ensureAllHostsIsMutable();
+        allHosts_.set(index, value);
         onChanged();
       } else {
-        allEndpointsBuilder_.setMessage(index, value);
+        allHostsBuilder_.setMessage(index, value);
       }
       return this;
     }
     /**
-     * <code>repeated .lh_proto.HostInfoPb all_endpoints = 3;</code>
+     * <code>repeated .lh_proto.HostInfoPb all_hosts = 3;</code>
      */
-    public Builder setAllEndpoints(
+    public Builder setAllHosts(
         int index, io.littlehorse.common.proto.HostInfoPb.Builder builderForValue) {
-      if (allEndpointsBuilder_ == null) {
-        ensureAllEndpointsIsMutable();
-        allEndpoints_.set(index, builderForValue.build());
+      if (allHostsBuilder_ == null) {
+        ensureAllHostsIsMutable();
+        allHosts_.set(index, builderForValue.build());
         onChanged();
       } else {
-        allEndpointsBuilder_.setMessage(index, builderForValue.build());
+        allHostsBuilder_.setMessage(index, builderForValue.build());
       }
       return this;
     }
     /**
-     * <code>repeated .lh_proto.HostInfoPb all_endpoints = 3;</code>
+     * <code>repeated .lh_proto.HostInfoPb all_hosts = 3;</code>
      */
-    public Builder addAllEndpoints(io.littlehorse.common.proto.HostInfoPb value) {
-      if (allEndpointsBuilder_ == null) {
+    public Builder addAllHosts(io.littlehorse.common.proto.HostInfoPb value) {
+      if (allHostsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        ensureAllEndpointsIsMutable();
-        allEndpoints_.add(value);
+        ensureAllHostsIsMutable();
+        allHosts_.add(value);
         onChanged();
       } else {
-        allEndpointsBuilder_.addMessage(value);
+        allHostsBuilder_.addMessage(value);
       }
       return this;
     }
     /**
-     * <code>repeated .lh_proto.HostInfoPb all_endpoints = 3;</code>
+     * <code>repeated .lh_proto.HostInfoPb all_hosts = 3;</code>
      */
-    public Builder addAllEndpoints(
+    public Builder addAllHosts(
         int index, io.littlehorse.common.proto.HostInfoPb value) {
-      if (allEndpointsBuilder_ == null) {
+      if (allHostsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        ensureAllEndpointsIsMutable();
-        allEndpoints_.add(index, value);
+        ensureAllHostsIsMutable();
+        allHosts_.add(index, value);
         onChanged();
       } else {
-        allEndpointsBuilder_.addMessage(index, value);
+        allHostsBuilder_.addMessage(index, value);
       }
       return this;
     }
     /**
-     * <code>repeated .lh_proto.HostInfoPb all_endpoints = 3;</code>
+     * <code>repeated .lh_proto.HostInfoPb all_hosts = 3;</code>
      */
-    public Builder addAllEndpoints(
+    public Builder addAllHosts(
         io.littlehorse.common.proto.HostInfoPb.Builder builderForValue) {
-      if (allEndpointsBuilder_ == null) {
-        ensureAllEndpointsIsMutable();
-        allEndpoints_.add(builderForValue.build());
+      if (allHostsBuilder_ == null) {
+        ensureAllHostsIsMutable();
+        allHosts_.add(builderForValue.build());
         onChanged();
       } else {
-        allEndpointsBuilder_.addMessage(builderForValue.build());
+        allHostsBuilder_.addMessage(builderForValue.build());
       }
       return this;
     }
     /**
-     * <code>repeated .lh_proto.HostInfoPb all_endpoints = 3;</code>
+     * <code>repeated .lh_proto.HostInfoPb all_hosts = 3;</code>
      */
-    public Builder addAllEndpoints(
+    public Builder addAllHosts(
         int index, io.littlehorse.common.proto.HostInfoPb.Builder builderForValue) {
-      if (allEndpointsBuilder_ == null) {
-        ensureAllEndpointsIsMutable();
-        allEndpoints_.add(index, builderForValue.build());
+      if (allHostsBuilder_ == null) {
+        ensureAllHostsIsMutable();
+        allHosts_.add(index, builderForValue.build());
         onChanged();
       } else {
-        allEndpointsBuilder_.addMessage(index, builderForValue.build());
+        allHostsBuilder_.addMessage(index, builderForValue.build());
       }
       return this;
     }
     /**
-     * <code>repeated .lh_proto.HostInfoPb all_endpoints = 3;</code>
+     * <code>repeated .lh_proto.HostInfoPb all_hosts = 3;</code>
      */
-    public Builder addAllAllEndpoints(
+    public Builder addAllAllHosts(
         java.lang.Iterable<? extends io.littlehorse.common.proto.HostInfoPb> values) {
-      if (allEndpointsBuilder_ == null) {
-        ensureAllEndpointsIsMutable();
+      if (allHostsBuilder_ == null) {
+        ensureAllHostsIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, allEndpoints_);
+            values, allHosts_);
         onChanged();
       } else {
-        allEndpointsBuilder_.addAllMessages(values);
+        allHostsBuilder_.addAllMessages(values);
       }
       return this;
     }
     /**
-     * <code>repeated .lh_proto.HostInfoPb all_endpoints = 3;</code>
+     * <code>repeated .lh_proto.HostInfoPb all_hosts = 3;</code>
      */
-    public Builder clearAllEndpoints() {
-      if (allEndpointsBuilder_ == null) {
-        allEndpoints_ = java.util.Collections.emptyList();
+    public Builder clearAllHosts() {
+      if (allHostsBuilder_ == null) {
+        allHosts_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000002);
         onChanged();
       } else {
-        allEndpointsBuilder_.clear();
+        allHostsBuilder_.clear();
       }
       return this;
     }
     /**
-     * <code>repeated .lh_proto.HostInfoPb all_endpoints = 3;</code>
+     * <code>repeated .lh_proto.HostInfoPb all_hosts = 3;</code>
      */
-    public Builder removeAllEndpoints(int index) {
-      if (allEndpointsBuilder_ == null) {
-        ensureAllEndpointsIsMutable();
-        allEndpoints_.remove(index);
+    public Builder removeAllHosts(int index) {
+      if (allHostsBuilder_ == null) {
+        ensureAllHostsIsMutable();
+        allHosts_.remove(index);
         onChanged();
       } else {
-        allEndpointsBuilder_.remove(index);
+        allHostsBuilder_.remove(index);
       }
       return this;
     }
     /**
-     * <code>repeated .lh_proto.HostInfoPb all_endpoints = 3;</code>
+     * <code>repeated .lh_proto.HostInfoPb all_hosts = 3;</code>
      */
-    public io.littlehorse.common.proto.HostInfoPb.Builder getAllEndpointsBuilder(
+    public io.littlehorse.common.proto.HostInfoPb.Builder getAllHostsBuilder(
         int index) {
-      return getAllEndpointsFieldBuilder().getBuilder(index);
+      return getAllHostsFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .lh_proto.HostInfoPb all_endpoints = 3;</code>
+     * <code>repeated .lh_proto.HostInfoPb all_hosts = 3;</code>
      */
-    public io.littlehorse.common.proto.HostInfoPbOrBuilder getAllEndpointsOrBuilder(
+    public io.littlehorse.common.proto.HostInfoPbOrBuilder getAllHostsOrBuilder(
         int index) {
-      if (allEndpointsBuilder_ == null) {
-        return allEndpoints_.get(index);  } else {
-        return allEndpointsBuilder_.getMessageOrBuilder(index);
+      if (allHostsBuilder_ == null) {
+        return allHosts_.get(index);  } else {
+        return allHostsBuilder_.getMessageOrBuilder(index);
       }
     }
     /**
-     * <code>repeated .lh_proto.HostInfoPb all_endpoints = 3;</code>
+     * <code>repeated .lh_proto.HostInfoPb all_hosts = 3;</code>
      */
     public java.util.List<? extends io.littlehorse.common.proto.HostInfoPbOrBuilder> 
-         getAllEndpointsOrBuilderList() {
-      if (allEndpointsBuilder_ != null) {
-        return allEndpointsBuilder_.getMessageOrBuilderList();
+         getAllHostsOrBuilderList() {
+      if (allHostsBuilder_ != null) {
+        return allHostsBuilder_.getMessageOrBuilderList();
       } else {
-        return java.util.Collections.unmodifiableList(allEndpoints_);
+        return java.util.Collections.unmodifiableList(allHosts_);
       }
     }
     /**
-     * <code>repeated .lh_proto.HostInfoPb all_endpoints = 3;</code>
+     * <code>repeated .lh_proto.HostInfoPb all_hosts = 3;</code>
      */
-    public io.littlehorse.common.proto.HostInfoPb.Builder addAllEndpointsBuilder() {
-      return getAllEndpointsFieldBuilder().addBuilder(
+    public io.littlehorse.common.proto.HostInfoPb.Builder addAllHostsBuilder() {
+      return getAllHostsFieldBuilder().addBuilder(
           io.littlehorse.common.proto.HostInfoPb.getDefaultInstance());
     }
     /**
-     * <code>repeated .lh_proto.HostInfoPb all_endpoints = 3;</code>
+     * <code>repeated .lh_proto.HostInfoPb all_hosts = 3;</code>
      */
-    public io.littlehorse.common.proto.HostInfoPb.Builder addAllEndpointsBuilder(
+    public io.littlehorse.common.proto.HostInfoPb.Builder addAllHostsBuilder(
         int index) {
-      return getAllEndpointsFieldBuilder().addBuilder(
+      return getAllHostsFieldBuilder().addBuilder(
           index, io.littlehorse.common.proto.HostInfoPb.getDefaultInstance());
     }
     /**
-     * <code>repeated .lh_proto.HostInfoPb all_endpoints = 3;</code>
+     * <code>repeated .lh_proto.HostInfoPb all_hosts = 3;</code>
      */
     public java.util.List<io.littlehorse.common.proto.HostInfoPb.Builder> 
-         getAllEndpointsBuilderList() {
-      return getAllEndpointsFieldBuilder().getBuilderList();
+         getAllHostsBuilderList() {
+      return getAllHostsFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilderV3<
         io.littlehorse.common.proto.HostInfoPb, io.littlehorse.common.proto.HostInfoPb.Builder, io.littlehorse.common.proto.HostInfoPbOrBuilder> 
-        getAllEndpointsFieldBuilder() {
-      if (allEndpointsBuilder_ == null) {
-        allEndpointsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+        getAllHostsFieldBuilder() {
+      if (allHostsBuilder_ == null) {
+        allHostsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             io.littlehorse.common.proto.HostInfoPb, io.littlehorse.common.proto.HostInfoPb.Builder, io.littlehorse.common.proto.HostInfoPbOrBuilder>(
-                allEndpoints_,
+                allHosts_,
                 ((bitField0_ & 0x00000002) != 0),
                 getParentForChildren(),
                 isClean());
-        allEndpoints_ = null;
+        allHosts_ = null;
       }
-      return allEndpointsBuilder_;
-    }
-
-    private java.util.List<io.littlehorse.common.proto.HostInfoPb> yourEndpoints_ =
-      java.util.Collections.emptyList();
-    private void ensureYourEndpointsIsMutable() {
-      if (!((bitField0_ & 0x00000004) != 0)) {
-        yourEndpoints_ = new java.util.ArrayList<io.littlehorse.common.proto.HostInfoPb>(yourEndpoints_);
-        bitField0_ |= 0x00000004;
-       }
-    }
-
-    private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.common.proto.HostInfoPb, io.littlehorse.common.proto.HostInfoPb.Builder, io.littlehorse.common.proto.HostInfoPbOrBuilder> yourEndpointsBuilder_;
-
-    /**
-     * <code>repeated .lh_proto.HostInfoPb your_endpoints = 4;</code>
-     */
-    public java.util.List<io.littlehorse.common.proto.HostInfoPb> getYourEndpointsList() {
-      if (yourEndpointsBuilder_ == null) {
-        return java.util.Collections.unmodifiableList(yourEndpoints_);
-      } else {
-        return yourEndpointsBuilder_.getMessageList();
-      }
-    }
-    /**
-     * <code>repeated .lh_proto.HostInfoPb your_endpoints = 4;</code>
-     */
-    public int getYourEndpointsCount() {
-      if (yourEndpointsBuilder_ == null) {
-        return yourEndpoints_.size();
-      } else {
-        return yourEndpointsBuilder_.getCount();
-      }
-    }
-    /**
-     * <code>repeated .lh_proto.HostInfoPb your_endpoints = 4;</code>
-     */
-    public io.littlehorse.common.proto.HostInfoPb getYourEndpoints(int index) {
-      if (yourEndpointsBuilder_ == null) {
-        return yourEndpoints_.get(index);
-      } else {
-        return yourEndpointsBuilder_.getMessage(index);
-      }
-    }
-    /**
-     * <code>repeated .lh_proto.HostInfoPb your_endpoints = 4;</code>
-     */
-    public Builder setYourEndpoints(
-        int index, io.littlehorse.common.proto.HostInfoPb value) {
-      if (yourEndpointsBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureYourEndpointsIsMutable();
-        yourEndpoints_.set(index, value);
-        onChanged();
-      } else {
-        yourEndpointsBuilder_.setMessage(index, value);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .lh_proto.HostInfoPb your_endpoints = 4;</code>
-     */
-    public Builder setYourEndpoints(
-        int index, io.littlehorse.common.proto.HostInfoPb.Builder builderForValue) {
-      if (yourEndpointsBuilder_ == null) {
-        ensureYourEndpointsIsMutable();
-        yourEndpoints_.set(index, builderForValue.build());
-        onChanged();
-      } else {
-        yourEndpointsBuilder_.setMessage(index, builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .lh_proto.HostInfoPb your_endpoints = 4;</code>
-     */
-    public Builder addYourEndpoints(io.littlehorse.common.proto.HostInfoPb value) {
-      if (yourEndpointsBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureYourEndpointsIsMutable();
-        yourEndpoints_.add(value);
-        onChanged();
-      } else {
-        yourEndpointsBuilder_.addMessage(value);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .lh_proto.HostInfoPb your_endpoints = 4;</code>
-     */
-    public Builder addYourEndpoints(
-        int index, io.littlehorse.common.proto.HostInfoPb value) {
-      if (yourEndpointsBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureYourEndpointsIsMutable();
-        yourEndpoints_.add(index, value);
-        onChanged();
-      } else {
-        yourEndpointsBuilder_.addMessage(index, value);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .lh_proto.HostInfoPb your_endpoints = 4;</code>
-     */
-    public Builder addYourEndpoints(
-        io.littlehorse.common.proto.HostInfoPb.Builder builderForValue) {
-      if (yourEndpointsBuilder_ == null) {
-        ensureYourEndpointsIsMutable();
-        yourEndpoints_.add(builderForValue.build());
-        onChanged();
-      } else {
-        yourEndpointsBuilder_.addMessage(builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .lh_proto.HostInfoPb your_endpoints = 4;</code>
-     */
-    public Builder addYourEndpoints(
-        int index, io.littlehorse.common.proto.HostInfoPb.Builder builderForValue) {
-      if (yourEndpointsBuilder_ == null) {
-        ensureYourEndpointsIsMutable();
-        yourEndpoints_.add(index, builderForValue.build());
-        onChanged();
-      } else {
-        yourEndpointsBuilder_.addMessage(index, builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .lh_proto.HostInfoPb your_endpoints = 4;</code>
-     */
-    public Builder addAllYourEndpoints(
-        java.lang.Iterable<? extends io.littlehorse.common.proto.HostInfoPb> values) {
-      if (yourEndpointsBuilder_ == null) {
-        ensureYourEndpointsIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, yourEndpoints_);
-        onChanged();
-      } else {
-        yourEndpointsBuilder_.addAllMessages(values);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .lh_proto.HostInfoPb your_endpoints = 4;</code>
-     */
-    public Builder clearYourEndpoints() {
-      if (yourEndpointsBuilder_ == null) {
-        yourEndpoints_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000004);
-        onChanged();
-      } else {
-        yourEndpointsBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .lh_proto.HostInfoPb your_endpoints = 4;</code>
-     */
-    public Builder removeYourEndpoints(int index) {
-      if (yourEndpointsBuilder_ == null) {
-        ensureYourEndpointsIsMutable();
-        yourEndpoints_.remove(index);
-        onChanged();
-      } else {
-        yourEndpointsBuilder_.remove(index);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .lh_proto.HostInfoPb your_endpoints = 4;</code>
-     */
-    public io.littlehorse.common.proto.HostInfoPb.Builder getYourEndpointsBuilder(
-        int index) {
-      return getYourEndpointsFieldBuilder().getBuilder(index);
-    }
-    /**
-     * <code>repeated .lh_proto.HostInfoPb your_endpoints = 4;</code>
-     */
-    public io.littlehorse.common.proto.HostInfoPbOrBuilder getYourEndpointsOrBuilder(
-        int index) {
-      if (yourEndpointsBuilder_ == null) {
-        return yourEndpoints_.get(index);  } else {
-        return yourEndpointsBuilder_.getMessageOrBuilder(index);
-      }
-    }
-    /**
-     * <code>repeated .lh_proto.HostInfoPb your_endpoints = 4;</code>
-     */
-    public java.util.List<? extends io.littlehorse.common.proto.HostInfoPbOrBuilder> 
-         getYourEndpointsOrBuilderList() {
-      if (yourEndpointsBuilder_ != null) {
-        return yourEndpointsBuilder_.getMessageOrBuilderList();
-      } else {
-        return java.util.Collections.unmodifiableList(yourEndpoints_);
-      }
-    }
-    /**
-     * <code>repeated .lh_proto.HostInfoPb your_endpoints = 4;</code>
-     */
-    public io.littlehorse.common.proto.HostInfoPb.Builder addYourEndpointsBuilder() {
-      return getYourEndpointsFieldBuilder().addBuilder(
-          io.littlehorse.common.proto.HostInfoPb.getDefaultInstance());
-    }
-    /**
-     * <code>repeated .lh_proto.HostInfoPb your_endpoints = 4;</code>
-     */
-    public io.littlehorse.common.proto.HostInfoPb.Builder addYourEndpointsBuilder(
-        int index) {
-      return getYourEndpointsFieldBuilder().addBuilder(
-          index, io.littlehorse.common.proto.HostInfoPb.getDefaultInstance());
-    }
-    /**
-     * <code>repeated .lh_proto.HostInfoPb your_endpoints = 4;</code>
-     */
-    public java.util.List<io.littlehorse.common.proto.HostInfoPb.Builder> 
-         getYourEndpointsBuilderList() {
-      return getYourEndpointsFieldBuilder().getBuilderList();
-    }
-    private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.common.proto.HostInfoPb, io.littlehorse.common.proto.HostInfoPb.Builder, io.littlehorse.common.proto.HostInfoPbOrBuilder> 
-        getYourEndpointsFieldBuilder() {
-      if (yourEndpointsBuilder_ == null) {
-        yourEndpointsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            io.littlehorse.common.proto.HostInfoPb, io.littlehorse.common.proto.HostInfoPb.Builder, io.littlehorse.common.proto.HostInfoPbOrBuilder>(
-                yourEndpoints_,
-                ((bitField0_ & 0x00000004) != 0),
-                getParentForChildren(),
-                isClean());
-        yourEndpoints_ = null;
-      }
-      return yourEndpointsBuilder_;
+      return allHostsBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

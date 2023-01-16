@@ -79,6 +79,21 @@ public final class InternalServer {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_lh_proto_InternalPollTaskReplyPb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_lh_proto_InternalGetAdvertisedHostsPb_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_lh_proto_InternalGetAdvertisedHostsPb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_lh_proto_InternalGetAdvertisedHostsReplyPb_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_lh_proto_InternalGetAdvertisedHostsReplyPb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_lh_proto_InternalGetAdvertisedHostsReplyPb_HostsEntry_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_lh_proto_InternalGetAdvertisedHostsReplyPb_HostsEntry_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -90,62 +105,71 @@ public final class InternalServer {
     java.lang.String[] descriptorData = {
       "\n\025internal_server.proto\022\010lh_proto\032\037googl" +
       "e/protobuf/timestamp.proto\032\rcommand.prot" +
-      "o\032\ntags.proto\"K\n\023PartitionBookmarkPb\022\020\n\010" +
-      "parttion\030\001 \001(\005\022\025\n\010last_key\030\002 \001(\tH\000\210\001\001B\013\n" +
-      "\t_last_key\"\326\001\n\nBookmarkPb\022N\n\026in_progress" +
-      "_partitions\030\001 \003(\0132..lh_proto.BookmarkPb." +
-      "InProgressPartitionsEntry\022\034\n\024completed_p" +
-      "artitions\030\002 \003(\005\032Z\n\031InProgressPartitionsE" +
-      "ntry\022\013\n\003key\030\001 \001(\005\022,\n\005value\030\002 \001(\0132\035.lh_pr" +
-      "oto.PartitionBookmarkPb:\0028\001\"f\n\017CommandRe" +
-      "sultPb\022\022\n\ncommand_id\030\001 \001(\t\022/\n\013result_tim" +
-      "e\030\002 \001(\0132\032.google.protobuf.Timestamp\022\016\n\006r" +
-      "esult\030\003 \001(\014\"\177\n\030CentralStoreQueryReplyPb\022" +
-      "*\n\004code\030\001 \001(\0162\034.lh_proto.StoreQueryStatu" +
-      "sPb\022\023\n\006result\030\002 \001(\014H\000\210\001\001\022\027\n\017approximate_" +
-      "lag\030\003 \001(\003B\t\n\007_result\"\375\001\n\023CentralStoreQue" +
-      "ryPb\022\033\n\023enable_stale_stores\030\001 \001(\010\022\037\n\022spe" +
-      "cific_partition\030\002 \001(\005H\000\210\001\001\022C\n\005query\030\003 \001(" +
-      "\01324.lh_proto.CentralStoreQueryPb.Central" +
-      "StoreSubQueryPb\032L\n\026CentralStoreSubQueryP" +
-      "b\022\r\n\003key\030\001 \001(\tH\000\022\032\n\020last_from_prefix\030\002 \001" +
-      "(\tH\000B\007\n\005queryB\025\n\023_specific_partition\"&\n\020" +
-      "WaitForCommandPb\022\022\n\ncommand_id\030\001 \001(\t\"\240\001\n" +
-      "\025WaitForCommandReplyPb\022*\n\004code\030\001 \001(\0162\034.l" +
-      "h_proto.StoreQueryStatusPb\022.\n\006result\030\002 \001" +
-      "(\0132\031.lh_proto.CommandResultPbH\000\210\001\001\022\024\n\007me" +
-      "ssage\030\003 \001(\tH\001\210\001\001B\t\n\007_resultB\n\n\010_message\"" +
-      "\274\001\n\023PaginatedTagQueryPb\0221\n\013object_type\030\001" +
-      " \001(\0162\034.lh_proto.GETableClassEnumPb\022)\n\nat" +
-      "tributes\030\002 \003(\0132\025.lh_proto.AttributePb\022+\n" +
-      "\010bookmark\030\003 \001(\0132\024.lh_proto.BookmarkPbH\000\210" +
-      "\001\001\022\r\n\005limit\030\004 \001(\005B\013\n\t_bookmark\"\212\001\n\030Pagin" +
-      "atedTagQueryReplyPb\022*\n\004code\030\001 \001(\0162\034.lh_p" +
-      "roto.StoreQueryStatusPb\022\022\n\nobject_ids\030\002 " +
-      "\003(\t\022.\n\020updated_bookmark\030\003 \001(\0132\024.lh_proto" +
-      ".BookmarkPb\"-\n\022InternalPollTaskPb\022\027\n\017tas" +
-      "k_queue_name\030\001 \001(\t\"\206\001\n\027InternalPollTaskR" +
-      "eplyPb\022*\n\004code\030\001 \001(\0162\034.lh_proto.StoreQue" +
-      "ryStatusPb\0224\n\006result\030\002 \001(\0132\037.lh_proto.Ta" +
-      "skScheduleRequestPbH\000\210\001\001B\t\n\007_result*7\n\022S" +
-      "toreQueryStatusPb\022\n\n\006RSQ_OK\020\000\022\025\n\021RSQ_NOT" +
-      "_AVAILABLE\020\0022\351\002\n\013LHInternals\022X\n\021CentralS" +
-      "toreQuery\022\035.lh_proto.CentralStoreQueryPb" +
-      "\032\".lh_proto.CentralStoreQueryReplyPb\"\000\022X" +
-      "\n\021PaginatedTagQuery\022\035.lh_proto.Paginated" +
-      "TagQueryPb\032\".lh_proto.PaginatedTagQueryR" +
-      "eplyPb\"\000\022O\n\016waitForCommand\022\032.lh_proto.Wa" +
-      "itForCommandPb\032\037.lh_proto.WaitForCommand" +
-      "ReplyPb\"\000\022U\n\020InternalPollTask\022\034.lh_proto" +
-      ".InternalPollTaskPb\032!.lh_proto.InternalP" +
-      "ollTaskReplyPb\"\000B(\n\033io.littlehorse.commo" +
-      "n.protoP\001Z\007.;modelb\006proto3"
+      "o\032\rservice.proto\032\ntags.proto\"K\n\023Partitio" +
+      "nBookmarkPb\022\020\n\010parttion\030\001 \001(\005\022\025\n\010last_ke" +
+      "y\030\002 \001(\tH\000\210\001\001B\013\n\t_last_key\"\326\001\n\nBookmarkPb" +
+      "\022N\n\026in_progress_partitions\030\001 \003(\0132..lh_pr" +
+      "oto.BookmarkPb.InProgressPartitionsEntry" +
+      "\022\034\n\024completed_partitions\030\002 \003(\005\032Z\n\031InProg" +
+      "ressPartitionsEntry\022\013\n\003key\030\001 \001(\005\022,\n\005valu" +
+      "e\030\002 \001(\0132\035.lh_proto.PartitionBookmarkPb:\002" +
+      "8\001\"f\n\017CommandResultPb\022\022\n\ncommand_id\030\001 \001(" +
+      "\t\022/\n\013result_time\030\002 \001(\0132\032.google.protobuf" +
+      ".Timestamp\022\016\n\006result\030\003 \001(\014\"\177\n\030CentralSto" +
+      "reQueryReplyPb\022*\n\004code\030\001 \001(\0162\034.lh_proto." +
+      "StoreQueryStatusPb\022\023\n\006result\030\002 \001(\014H\000\210\001\001\022" +
+      "\027\n\017approximate_lag\030\003 \001(\003B\t\n\007_result\"\375\001\n\023" +
+      "CentralStoreQueryPb\022\033\n\023enable_stale_stor" +
+      "es\030\001 \001(\010\022\037\n\022specific_partition\030\002 \001(\005H\000\210\001" +
+      "\001\022C\n\005query\030\003 \001(\01324.lh_proto.CentralStore" +
+      "QueryPb.CentralStoreSubQueryPb\032L\n\026Centra" +
+      "lStoreSubQueryPb\022\r\n\003key\030\001 \001(\tH\000\022\032\n\020last_" +
+      "from_prefix\030\002 \001(\tH\000B\007\n\005queryB\025\n\023_specifi" +
+      "c_partition\"&\n\020WaitForCommandPb\022\022\n\ncomma" +
+      "nd_id\030\001 \001(\t\"\240\001\n\025WaitForCommandReplyPb\022*\n" +
+      "\004code\030\001 \001(\0162\034.lh_proto.StoreQueryStatusP" +
+      "b\022.\n\006result\030\002 \001(\0132\031.lh_proto.CommandResu" +
+      "ltPbH\000\210\001\001\022\024\n\007message\030\003 \001(\tH\001\210\001\001B\t\n\007_resu" +
+      "ltB\n\n\010_message\"\274\001\n\023PaginatedTagQueryPb\0221" +
+      "\n\013object_type\030\001 \001(\0162\034.lh_proto.GETableCl" +
+      "assEnumPb\022)\n\nattributes\030\002 \003(\0132\025.lh_proto" +
+      ".AttributePb\022+\n\010bookmark\030\003 \001(\0132\024.lh_prot" +
+      "o.BookmarkPbH\000\210\001\001\022\r\n\005limit\030\004 \001(\005B\013\n\t_boo" +
+      "kmark\"\212\001\n\030PaginatedTagQueryReplyPb\022*\n\004co" +
+      "de\030\001 \001(\0162\034.lh_proto.StoreQueryStatusPb\022\022" +
+      "\n\nobject_ids\030\002 \003(\t\022.\n\020updated_bookmark\030\003" +
+      " \001(\0132\024.lh_proto.BookmarkPb\"-\n\022InternalPo" +
+      "llTaskPb\022\027\n\017task_queue_name\030\001 \001(\t\"\206\001\n\027In" +
+      "ternalPollTaskReplyPb\022*\n\004code\030\001 \001(\0162\034.lh" +
+      "_proto.StoreQueryStatusPb\0224\n\006result\030\002 \001(" +
+      "\0132\037.lh_proto.TaskScheduleRequestPbH\000\210\001\001B" +
+      "\t\n\007_result\"\036\n\034InternalGetAdvertisedHosts" +
+      "Pb\"\256\001\n!InternalGetAdvertisedHostsReplyPb" +
+      "\022E\n\005hosts\030\001 \003(\01326.lh_proto.InternalGetAd" +
+      "vertisedHostsReplyPb.HostsEntry\032B\n\nHosts" +
+      "Entry\022\013\n\003key\030\001 \001(\t\022#\n\005value\030\002 \001(\0132\024.lh_p" +
+      "roto.HostInfoPb:\0028\001*7\n\022StoreQueryStatusP" +
+      "b\022\n\n\006RSQ_OK\020\000\022\025\n\021RSQ_NOT_AVAILABLE\020\0022\326\003\n" +
+      "\013LHInternals\022X\n\021CentralStoreQuery\022\035.lh_p" +
+      "roto.CentralStoreQueryPb\032\".lh_proto.Cent" +
+      "ralStoreQueryReplyPb\"\000\022X\n\021PaginatedTagQu" +
+      "ery\022\035.lh_proto.PaginatedTagQueryPb\032\".lh_" +
+      "proto.PaginatedTagQueryReplyPb\"\000\022O\n\016wait" +
+      "ForCommand\022\032.lh_proto.WaitForCommandPb\032\037" +
+      ".lh_proto.WaitForCommandReplyPb\"\000\022U\n\020Int" +
+      "ernalPollTask\022\034.lh_proto.InternalPollTas" +
+      "kPb\032!.lh_proto.InternalPollTaskReplyPb\"\000" +
+      "\022k\n\022GetAdvertisedHosts\022&.lh_proto.Intern" +
+      "alGetAdvertisedHostsPb\032+.lh_proto.Intern" +
+      "alGetAdvertisedHostsReplyPb\"\000B(\n\033io.litt" +
+      "lehorse.common.protoP\001Z\007.;modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.google.protobuf.TimestampProto.getDescriptor(),
           io.littlehorse.common.proto.Command.getDescriptor(),
+          io.littlehorse.common.proto.Service.getDescriptor(),
           io.littlehorse.common.proto.Tags.getDescriptor(),
         });
     internal_static_lh_proto_PartitionBookmarkPb_descriptor =
@@ -226,8 +250,27 @@ public final class InternalServer {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_InternalPollTaskReplyPb_descriptor,
         new java.lang.String[] { "Code", "Result", "Result", });
+    internal_static_lh_proto_InternalGetAdvertisedHostsPb_descriptor =
+      getDescriptor().getMessageTypes().get(11);
+    internal_static_lh_proto_InternalGetAdvertisedHostsPb_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_lh_proto_InternalGetAdvertisedHostsPb_descriptor,
+        new java.lang.String[] { });
+    internal_static_lh_proto_InternalGetAdvertisedHostsReplyPb_descriptor =
+      getDescriptor().getMessageTypes().get(12);
+    internal_static_lh_proto_InternalGetAdvertisedHostsReplyPb_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_lh_proto_InternalGetAdvertisedHostsReplyPb_descriptor,
+        new java.lang.String[] { "Hosts", });
+    internal_static_lh_proto_InternalGetAdvertisedHostsReplyPb_HostsEntry_descriptor =
+      internal_static_lh_proto_InternalGetAdvertisedHostsReplyPb_descriptor.getNestedTypes().get(0);
+    internal_static_lh_proto_InternalGetAdvertisedHostsReplyPb_HostsEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_lh_proto_InternalGetAdvertisedHostsReplyPb_HostsEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.common.proto.Command.getDescriptor();
+    io.littlehorse.common.proto.Service.getDescriptor();
     io.littlehorse.common.proto.Tags.getDescriptor();
   }
 

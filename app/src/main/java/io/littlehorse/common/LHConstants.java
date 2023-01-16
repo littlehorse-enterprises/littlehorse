@@ -27,10 +27,12 @@ public class LHConstants {
     public static final String KAFKA_TOPIC_PREFIX_KEY = "LHORSE_KAFKA_TOPIC_PREFIX";
 
     // Host and Port Configuration Env Vars
-    public static final String ADVERTISED_HOST_KEY = "LHORSE_ADVERTISED_HOST";
-    public static final String API_ADVERTISED_PORT_KEY = "LHORSE_API_ADVERTISED_PORT";
+    public static final String ADVERTISED_LISTENERS_KEY =
+        "LHORSE_ADVERTISED_LISTENERS";
     public static final String API_BIND_PORT_KEY = "LHORSE_API_BIND_PORT";
     public static final String INTERNAL_BIND_PORT_KEY = "LHORSE_INTERNAL_BIND_PORT";
+    public static final String INTERNAL_ADVERTISED_HOST_KEY =
+        "LHORSE_INTERNAL_ADVERTISED_HOST";
     public static final String INTERNAL_ADVERTISED_PORT_KEY =
         "LHORSE_INTERNAL_ADVERTISED_PORT";
 

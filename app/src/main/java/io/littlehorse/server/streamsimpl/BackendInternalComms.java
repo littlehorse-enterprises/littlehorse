@@ -17,6 +17,8 @@ import io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb;
 import io.littlehorse.common.proto.CentralStoreQueryReplyPb;
 import io.littlehorse.common.proto.GETableClassEnumPb;
 import io.littlehorse.common.proto.HostInfoPb;
+import io.littlehorse.common.proto.InternalGetAdvertisedHostsPb;
+import io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb;
 import io.littlehorse.common.proto.LHInternalsGrpc;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsBlockingStub;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsImplBase;
@@ -47,6 +49,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.Serdes;
@@ -72,11 +75,13 @@ public class BackendInternalComms implements Closeable {
     private Map<String, ManagedChannel> channels;
     // private ConcurrentHashMap<String, StreamObserver<WaitForCommandReplyPb>> asyncWaiters;
     private AsyncWaiters asyncWaiters;
+    private ConcurrentHashMap<HostInfo, InternalGetAdvertisedHostsReplyPb> otherHosts;
 
     public BackendInternalComms(LHConfig config, KafkaStreams coreStreams) {
         this.config = config;
         this.coreStreams = coreStreams;
         this.channels = new HashMap<>();
+        otherHosts = new ConcurrentHashMap<>();
 
         this.internalGrpcServer =
             ServerBuilder
@@ -86,7 +91,7 @@ public class BackendInternalComms implements Closeable {
 
         thisHost =
             new HostInfo(
-                config.getAdvertisedHost(),
+                config.getInternalAdvertisedHost(),
                 config.getInternalAdvertisedPort()
             );
         this.producer = new LHProducer(config, false);
@@ -247,7 +252,7 @@ public class BackendInternalComms implements Closeable {
         Collection<StreamsMetadata> allMeta = coreStreams.metadataForAllStreamsClients();
 
         // TODO: in more optimized future versions, we will communicate about which
-        // clients are assigned to which hosts in order to reduce
+        // clients are assigned to which hosts in order to be smarter and less dumb
         Set<HostInfo> hosts = new HashSet<>();
 
         for (StreamsMetadata meta : allMeta) {
@@ -256,21 +261,54 @@ public class BackendInternalComms implements Closeable {
 
         RegisterTaskWorkerReplyPb.Builder out = RegisterTaskWorkerReplyPb.newBuilder();
         out.setCode(LHResponseCodePb.OK);
-        for (HostInfo host : hosts) {
-            int internalPort = host.port();
-            int externalPort = internalPort - 1;
-            out.addAllEndpoints(
-                HostInfoPb.newBuilder().setHost(host.host()).setPort(externalPort)
-            );
 
-            // EMPLOYEE_TODO: divide these up among the clients rather than
-            // having each client connect to all servers.
-            out.addYourEndpoints(
-                HostInfoPb.newBuilder().setHost(host.host()).setPort(externalPort)
+        for (HostInfo host : hosts) {
+            InternalGetAdvertisedHostsReplyPb advertisedHostsForHost = getPublicListenersForHost(
+                host
             );
+            if (advertisedHostsForHost == null) {
+                LHUtil.log("Warn: host", host.host(), host.port(), "unreachable");
+                continue;
+            }
+
+            HostInfoPb desiredHost = advertisedHostsForHost.getHostsOrDefault(
+                req.getListenerName(),
+                null
+            );
+            if (desiredHost == null) {
+                out.setCode(LHResponseCodePb.BAD_REQUEST_ERROR);
+                out.setMessage(
+                    "Unknown listener name. Check LHORSE_ADVERTISED_LISTENERS on " +
+                    "LH Server and check the LISTENER_NAME config on task worker."
+                );
+                out.clearAllHosts();
+                return out.build();
+            }
+
+            out.addAllHosts(desiredHost);
         }
 
         return out.build();
+    }
+
+    private InternalGetAdvertisedHostsReplyPb getPublicListenersForHost(
+        HostInfo streamsHost
+    ) {
+        if (otherHosts.get(streamsHost) != null) {
+            return otherHosts.get(streamsHost);
+        }
+
+        try {
+            InternalGetAdvertisedHostsReplyPb info = getInternalClient(streamsHost)
+                .getAdvertisedHosts(
+                    InternalGetAdvertisedHostsPb.newBuilder().build()
+                );
+
+            otherHosts.put(streamsHost, info);
+            return info;
+        } catch (Exception exn) {
+            return null;
+        }
     }
 
     public LHProducer getProducer() {
@@ -458,6 +496,20 @@ public class BackendInternalComms implements Closeable {
             StreamObserver<WaitForCommandReplyPb> ctx
         ) {
             localWaitForCommand(req.getCommandId(), ctx);
+        }
+
+        @Override
+        public void getAdvertisedHosts(
+            InternalGetAdvertisedHostsPb req,
+            StreamObserver<InternalGetAdvertisedHostsReplyPb> ctx
+        ) {
+            Map<String, HostInfoPb> hosts = config.getPublicAdvertisedHostMap();
+            InternalGetAdvertisedHostsReplyPb.Builder out = InternalGetAdvertisedHostsReplyPb.newBuilder();
+
+            out.putAllHosts(hosts);
+
+            ctx.onNext(out.build());
+            ctx.onCompleted();
         }
     }
 

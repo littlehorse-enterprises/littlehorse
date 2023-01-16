@@ -139,6 +139,37 @@ public final class LHInternalsGrpc {
     return getInternalPollTaskMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.InternalGetAdvertisedHostsPb,
+      io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb> getGetAdvertisedHostsMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetAdvertisedHosts",
+      requestType = io.littlehorse.common.proto.InternalGetAdvertisedHostsPb.class,
+      responseType = io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.InternalGetAdvertisedHostsPb,
+      io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb> getGetAdvertisedHostsMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.common.proto.InternalGetAdvertisedHostsPb, io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb> getGetAdvertisedHostsMethod;
+    if ((getGetAdvertisedHostsMethod = LHInternalsGrpc.getGetAdvertisedHostsMethod) == null) {
+      synchronized (LHInternalsGrpc.class) {
+        if ((getGetAdvertisedHostsMethod = LHInternalsGrpc.getGetAdvertisedHostsMethod) == null) {
+          LHInternalsGrpc.getGetAdvertisedHostsMethod = getGetAdvertisedHostsMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.InternalGetAdvertisedHostsPb, io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetAdvertisedHosts"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.InternalGetAdvertisedHostsPb.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb.getDefaultInstance()))
+              .setSchemaDescriptor(new LHInternalsMethodDescriptorSupplier("GetAdvertisedHosts"))
+              .build();
+        }
+      }
+    }
+    return getGetAdvertisedHostsMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -215,6 +246,13 @@ public final class LHInternalsGrpc {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getInternalPollTaskMethod(), responseObserver);
     }
 
+    /**
+     */
+    public void getAdvertisedHosts(io.littlehorse.common.proto.InternalGetAdvertisedHostsPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetAdvertisedHostsMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -245,6 +283,13 @@ public final class LHInternalsGrpc {
                 io.littlehorse.common.proto.InternalPollTaskPb,
                 io.littlehorse.common.proto.InternalPollTaskReplyPb>(
                   this, METHODID_INTERNAL_POLL_TASK)))
+          .addMethod(
+            getGetAdvertisedHostsMethod(),
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
+              new MethodHandlers<
+                io.littlehorse.common.proto.InternalGetAdvertisedHostsPb,
+                io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb>(
+                  this, METHODID_GET_ADVERTISED_HOSTS)))
           .build();
     }
   }
@@ -294,6 +339,14 @@ public final class LHInternalsGrpc {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getInternalPollTaskMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void getAdvertisedHosts(io.littlehorse.common.proto.InternalGetAdvertisedHostsPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getGetAdvertisedHostsMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -336,6 +389,13 @@ public final class LHInternalsGrpc {
     public io.littlehorse.common.proto.InternalPollTaskReplyPb internalPollTask(io.littlehorse.common.proto.InternalPollTaskPb request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getInternalPollTaskMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb getAdvertisedHosts(io.littlehorse.common.proto.InternalGetAdvertisedHostsPb request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetAdvertisedHostsMethod(), getCallOptions(), request);
     }
   }
 
@@ -384,12 +444,21 @@ public final class LHInternalsGrpc {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getInternalPollTaskMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb> getAdvertisedHosts(
+        io.littlehorse.common.proto.InternalGetAdvertisedHostsPb request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getGetAdvertisedHostsMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_CENTRAL_STORE_QUERY = 0;
   private static final int METHODID_PAGINATED_TAG_QUERY = 1;
   private static final int METHODID_WAIT_FOR_COMMAND = 2;
   private static final int METHODID_INTERNAL_POLL_TASK = 3;
+  private static final int METHODID_GET_ADVERTISED_HOSTS = 4;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -423,6 +492,10 @@ public final class LHInternalsGrpc {
         case METHODID_INTERNAL_POLL_TASK:
           serviceImpl.internalPollTask((io.littlehorse.common.proto.InternalPollTaskPb) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalPollTaskReplyPb>) responseObserver);
+          break;
+        case METHODID_GET_ADVERTISED_HOSTS:
+          serviceImpl.getAdvertisedHosts((io.littlehorse.common.proto.InternalGetAdvertisedHostsPb) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -489,6 +562,7 @@ public final class LHInternalsGrpc {
               .addMethod(getPaginatedTagQueryMethod())
               .addMethod(getWaitForCommandMethod())
               .addMethod(getInternalPollTaskMethod())
+              .addMethod(getGetAdvertisedHostsMethod())
               .build();
         }
       }

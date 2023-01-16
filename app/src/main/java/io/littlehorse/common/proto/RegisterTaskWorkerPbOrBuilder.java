@@ -30,4 +30,16 @@ public interface RegisterTaskWorkerPbOrBuilder extends
    */
   com.google.protobuf.ByteString
       getTaskDefNameBytes();
+
+  /**
+   * <code>string listener_name = 3;</code>
+   * @return The listenerName.
+   */
+  java.lang.String getListenerName();
+  /**
+   * <code>string listener_name = 3;</code>
+   * @return The bytes for listenerName.
+   */
+  com.google.protobuf.ByteString
+      getListenerNameBytes();
 }
