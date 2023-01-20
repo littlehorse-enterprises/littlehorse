@@ -8,7 +8,11 @@ import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHConnectionError;
+import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.Command;
+import io.littlehorse.common.model.meta.ExternalEventDef;
+import io.littlehorse.common.model.meta.TaskDef;
+import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
 import io.littlehorse.common.proto.AttributePb;
 import io.littlehorse.common.proto.BookmarkPb;
@@ -19,21 +23,26 @@ import io.littlehorse.common.proto.GETableClassEnumPb;
 import io.littlehorse.common.proto.HostInfoPb;
 import io.littlehorse.common.proto.InternalGetAdvertisedHostsPb;
 import io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb;
+import io.littlehorse.common.proto.InternalSearchReplyPb;
+import io.littlehorse.common.proto.LHInternalSearchPb;
 import io.littlehorse.common.proto.LHInternalsGrpc;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsBlockingStub;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsImplBase;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsStub;
 import io.littlehorse.common.proto.LHResponseCodePb;
-import io.littlehorse.common.proto.PaginatedTagQueryPb;
-import io.littlehorse.common.proto.PaginatedTagQueryReplyPb;
+import io.littlehorse.common.proto.LocalTagScanPb;
 import io.littlehorse.common.proto.PartitionBookmarkPb;
 import io.littlehorse.common.proto.RegisterTaskWorkerPb;
 import io.littlehorse.common.proto.RegisterTaskWorkerReplyPb;
 import io.littlehorse.common.proto.StoreQueryStatusPb;
 import io.littlehorse.common.proto.WaitForCommandPb;
 import io.littlehorse.common.proto.WaitForCommandReplyPb;
+import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.server.streamsimpl.searchutils.LHInternalSearch;
+import io.littlehorse.server.streamsimpl.searchutils.LHInternalSubSearch;
+import io.littlehorse.server.streamsimpl.searchutils.internalsearches.LocalTagScan;
 import io.littlehorse.server.streamsimpl.storeinternals.LHROStoreWrapper;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
@@ -481,12 +490,38 @@ public class BackendInternalComms implements Closeable {
             ctx.onCompleted();
         }
 
+        // @Override
+        // public void paginatedTagQuery(
+        //     LocalTagScanPb req,
+        //     StreamObserver<InternalSearchReplyPb> ctx
+        // ) {
+        //     ctx.onNext(localPaginatedTagQuery(req));
+        //     ctx.onCompleted();
+        // }
+
         @Override
-        public void paginatedTagQuery(
-            PaginatedTagQueryPb req,
-            StreamObserver<PaginatedTagQueryReplyPb> ctx
+        public void lHSearch(
+            LHInternalSearchPb req,
+            StreamObserver<InternalSearchReplyPb> ctx
         ) {
-            ctx.onNext(localPaginatedTagQuery(req));
+            LHInternalSearch lhis = LHSerializable.fromProto(
+                req,
+                LHInternalSearch.class
+            );
+
+            try {
+                InternalSearchReplyPb reply = doSearch(lhis);
+                ctx.onNext(reply);
+            } catch (LHConnectionError exn) {
+                ctx.onNext(
+                    InternalSearchReplyPb
+                        .newBuilder()
+                        .setCode(StoreQueryStatusPb.RSQ_NOT_AVAILABLE)
+                        .setMessage("Internal connection error: " + exn.getMessage())
+                        .build()
+                );
+            }
+
             ctx.onCompleted();
         }
 
@@ -513,16 +548,45 @@ public class BackendInternalComms implements Closeable {
         }
     }
 
-    public PaginatedTagQueryReplyPb doPaginatedTagQuery(PaginatedTagQueryPb req)
+    public InternalSearchReplyPb doSearch(LHInternalSearch lhis)
         throws LHConnectionError {
+        InternalSearchReplyPb reply;
+
+        switch (lhis.type) {
+            case LOCAL_TAG:
+                reply = localTagScan(lhis);
+                break;
+            case HASHED_TAG:
+                reply = localHashedTagScan(lhis);
+                break;
+            case OBJECT_ID_PREFIX:
+                reply = localObjectIdPrefixScan(lhis);
+                break;
+            case SUBSEARCH_NOT_SET:
+            default:
+                throw new RuntimeException("Not possible");
+        }
+        return reply;
+    }
+
+    /*
+     * Scans over all local tags...note that this should be renamed a bit because
+     * it might involve scanning partitions that aren't local.
+     * EMPLOYEE_TODO: maybe figure out how to name this better.
+     */
+    private InternalSearchReplyPb localTagScan(LHInternalSearch search)
+        throws LHConnectionError {
+        LocalTagScan req = search.localTag;
+        int limit = search.limit;
+
         // First, see what results we have locally. Then if we need more results
         // to hit the limit, we query another host.
         // How do we know which host to query? Well, we find a partition which
         // hasn't been completed yet (by consulting the Bookmark), and then
         // query the owner of that partition.
 
-        PaginatedTagQueryReplyPb out = localPaginatedTagQuery(req);
-        if (out.getObjectIdsCount() >= req.getLimit()) {
+        InternalSearchReplyPb out = localPaginatedTagQuery(search);
+        if (out.getObjectIdsCount() >= limit) {
             // Then we've gotten all the data the client asked for.
             return out;
         }
@@ -543,7 +607,7 @@ public class BackendInternalComms implements Closeable {
 
         // Basically, what we need to do is find the set of all partitions that
         // AREN'T in the BookmarkPb::getCompletedPartitionsList();
-        while (out.hasUpdatedBookmark() && out.getObjectIdsCount() < req.getLimit()) {
+        while (out.hasUpdatedBookmark() && out.getObjectIdsCount() < search.limit) {
             HostInfo otherHost = getHostForPartition(
                 getRandomUnfinishedPartition(out.getUpdatedBookmark())
             );
@@ -551,14 +615,14 @@ public class BackendInternalComms implements Closeable {
                 throw new RuntimeException("wtf, host the same");
             }
             LHInternalsBlockingStub stub = getInternalClient(otherHost);
-            PaginatedTagQueryPb newReq = PaginatedTagQueryPb
+            LocalTagScanPb newReq = LocalTagScanPb
                 .newBuilder()
                 .setBookmark(out.getUpdatedBookmark())
                 .setLimit(req.getLimit() - out.getObjectIdsCount())
                 .setObjectType(req.getObjectType())
                 .addAllAttributes(req.getAttributesList())
                 .build();
-            PaginatedTagQueryReplyPb reply;
+            InternalSearchReplyPb reply;
             try {
                 reply = stub.paginatedTagQuery(newReq);
             } catch (Exception exn) {
@@ -567,7 +631,7 @@ public class BackendInternalComms implements Closeable {
             if (reply.getCode() != StoreQueryStatusPb.RSQ_OK) {
                 throw new LHConnectionError(null, "Failed connecting to backend.");
             }
-            PaginatedTagQueryReplyPb.Builder newOutBuilder = PaginatedTagQueryReplyPb
+            InternalSearchReplyPb.Builder newOutBuilder = InternalSearchReplyPb
                 .newBuilder()
                 .addAllObjectIds(out.getObjectIdsList())
                 .addAllObjectIds(reply.getObjectIdsList());
@@ -618,15 +682,20 @@ public class BackendInternalComms implements Closeable {
         throw new RuntimeException("Not possible");
     }
 
-    private PaginatedTagQueryReplyPb localPaginatedTagQuery(PaginatedTagQueryPb req) {
-        int curLimit = req.getLimit();
+    public LHGlobalMetaStores getGlobalStoreImpl() {
+        return new GlobalMetaStoresServerImpl(coreStreams, config);
+    }
 
-        BookmarkPb reqBookmark = req.hasBookmark()
-            ? req.getBookmark()
-            : BookmarkPb.newBuilder().build();
+    private InternalSearchReplyPb localPaginatedTagQuery(LHInternalSearch req) {
+        int curLimit = req.limit;
+
+        BookmarkPb reqBookmark = req.bookmark;
+        if (reqBookmark == null) {
+            reqBookmark = BookmarkPb.newBuilder().build();
+        }
 
         BookmarkPb.Builder outBookmark = reqBookmark.toBuilder();
-        PaginatedTagQueryReplyPb.Builder out = PaginatedTagQueryReplyPb.newBuilder();
+        InternalSearchReplyPb.Builder out = InternalSearchReplyPb.newBuilder();
         List<Attribute> attrList = new ArrayList<>();
         for (AttributePb atpb : req.getAttributesList()) {
             attrList.add(Attribute.fromProto(atpb));
@@ -764,5 +833,43 @@ public class BackendInternalComms implements Closeable {
 
     private static boolean isCommandProcessor(TopicPartition tPart, LHConfig config) {
         return tPart.topic().equals(config.getCoreCmdTopicName());
+    }
+}
+
+class GlobalMetaStoresServerImpl implements LHGlobalMetaStores {
+
+    private LHROStoreWrapper store;
+
+    public GlobalMetaStoresServerImpl(KafkaStreams coreStreams, LHConfig config) {
+        StoreQueryParameters<ReadOnlyKeyValueStore<String, Bytes>> params = StoreQueryParameters.fromNameAndType(
+            ServerTopology.GLOBAL_STORE,
+            QueryableStoreTypes.keyValueStore()
+        );
+
+        store = new LHROStoreWrapper(coreStreams.store(params), config);
+    }
+
+    public WfSpec getWfSpec(String name, Integer version) {
+        if (version != null) {
+            return store.get(WfSpec.getSubKey(name, version), WfSpec.class);
+        } else {
+            return store.getLastFromPrefix(name, WfSpec.class);
+        }
+    }
+
+    public TaskDef getTaskDef(String name, Integer version) {
+        if (version != null) {
+            return store.get(WfSpec.getSubKey(name, version), TaskDef.class);
+        } else {
+            return store.getLastFromPrefix(name, TaskDef.class);
+        }
+    }
+
+    public ExternalEventDef getExternalEventDef(String name, Integer version) {
+        if (version != null) {
+            return store.get(WfSpec.getSubKey(name, version), ExternalEventDef.class);
+        } else {
+            return store.getLastFromPrefix(name, ExternalEventDef.class);
+        }
     }
 }

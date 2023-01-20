@@ -71,17 +71,40 @@ message WaitForCommandReplyPb {
     optional string message = 3;
 }
 
-message PaginatedTagQueryPb {
-    GETableClassEnumPb object_type = 1;
-    repeated AttributePb attributes = 2;
-    optional BookmarkPb bookmark = 3;
-    int32 limit = 4;
+// This section defines the various ways in which we can search for a list of object
+// ids. They include:
+// - objectIdPrefixScan, eg. all nodeRuns for a wfRun
+// - localTagScan, eg. all nodeRuns with status of FAILED
+// - hashedTagScan, eg. all variables with string value "foobar"
+
+message LHInternalSearchPb {
+    optional BookmarkPb bookmark = 1;
+    int32 limit = 2;
+    GETableClassEnumPb object_type = 3;
+    oneof subsearch {
+        LocalTagScanPb local_tag = 4;
+        ObjectIdPrefixScanPb object_id_prefix = 5;
+        HashedTagScanPb hashed_tag = 6;
+    }
 }
 
-message PaginatedTagQueryReplyPb {
+message LocalTagScanPb {
+    repeated AttributePb attributes = 1;
+}
+
+message ObjectIdPrefixScanPb {
+    string object_id_prefix = 1;
+}
+
+message HashedTagScanPb {
+    repeated AttributePb attributes = 1;
+}
+
+message InternalSearchReplyPb { // all scans have the same output
     StoreQueryStatusPb code = 1;
     repeated string object_ids = 2;
     BookmarkPb updated_bookmark = 3;
+    optional string message = 4;
 }
 
 // This section is for the internal implementation of the Task Queue.
@@ -103,8 +126,8 @@ message InternalGetAdvertisedHostsReplyPb {
 
 service LHInternals {
     rpc CentralStoreQuery(CentralStoreQueryPb) returns (CentralStoreQueryReplyPb) {}
-    rpc PaginatedTagQuery(PaginatedTagQueryPb) returns (PaginatedTagQueryReplyPb) {}
-    
+    rpc LHSearch(LHInternalSearchPb) returns (InternalSearchReplyPb) {}
+
     rpc waitForCommand(WaitForCommandPb) returns (WaitForCommandReplyPb) {}
     rpc InternalPollTask(InternalPollTaskPb) returns (InternalPollTaskReplyPb) {}
 

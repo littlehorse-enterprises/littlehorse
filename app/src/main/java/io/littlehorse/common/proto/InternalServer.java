@@ -60,15 +60,30 @@ public final class InternalServer {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_lh_proto_WaitForCommandReplyPb_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_lh_proto_PaginatedTagQueryPb_descriptor;
+    internal_static_lh_proto_LHInternalSearchPb_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_lh_proto_PaginatedTagQueryPb_fieldAccessorTable;
+      internal_static_lh_proto_LHInternalSearchPb_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_lh_proto_PaginatedTagQueryReplyPb_descriptor;
+    internal_static_lh_proto_LocalTagScanPb_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_lh_proto_PaginatedTagQueryReplyPb_fieldAccessorTable;
+      internal_static_lh_proto_LocalTagScanPb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_lh_proto_ObjectIdPrefixScanPb_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_lh_proto_ObjectIdPrefixScanPb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_lh_proto_HashedTagScanPb_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_lh_proto_HashedTagScanPb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_lh_proto_InternalSearchReplyPb_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_lh_proto_InternalSearchReplyPb_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_lh_proto_InternalPollTaskPb_descriptor;
   static final 
@@ -130,39 +145,47 @@ public final class InternalServer {
       "\004code\030\001 \001(\0162\034.lh_proto.StoreQueryStatusP" +
       "b\022.\n\006result\030\002 \001(\0132\031.lh_proto.CommandResu" +
       "ltPbH\000\210\001\001\022\024\n\007message\030\003 \001(\tH\001\210\001\001B\t\n\007_resu" +
-      "ltB\n\n\010_message\"\274\001\n\023PaginatedTagQueryPb\0221" +
-      "\n\013object_type\030\001 \001(\0162\034.lh_proto.GETableCl" +
-      "assEnumPb\022)\n\nattributes\030\002 \003(\0132\025.lh_proto" +
-      ".AttributePb\022+\n\010bookmark\030\003 \001(\0132\024.lh_prot" +
-      "o.BookmarkPbH\000\210\001\001\022\r\n\005limit\030\004 \001(\005B\013\n\t_boo" +
-      "kmark\"\212\001\n\030PaginatedTagQueryReplyPb\022*\n\004co" +
-      "de\030\001 \001(\0162\034.lh_proto.StoreQueryStatusPb\022\022" +
-      "\n\nobject_ids\030\002 \003(\t\022.\n\020updated_bookmark\030\003" +
-      " \001(\0132\024.lh_proto.BookmarkPb\"-\n\022InternalPo" +
-      "llTaskPb\022\027\n\017task_queue_name\030\001 \001(\t\"\206\001\n\027In" +
-      "ternalPollTaskReplyPb\022*\n\004code\030\001 \001(\0162\034.lh" +
-      "_proto.StoreQueryStatusPb\0224\n\006result\030\002 \001(" +
-      "\0132\037.lh_proto.TaskScheduleRequestPbH\000\210\001\001B" +
-      "\t\n\007_result\"\036\n\034InternalGetAdvertisedHosts" +
-      "Pb\"\256\001\n!InternalGetAdvertisedHostsReplyPb" +
-      "\022E\n\005hosts\030\001 \003(\01326.lh_proto.InternalGetAd" +
-      "vertisedHostsReplyPb.HostsEntry\032B\n\nHosts" +
-      "Entry\022\013\n\003key\030\001 \001(\t\022#\n\005value\030\002 \001(\0132\024.lh_p" +
-      "roto.HostInfoPb:\0028\001*7\n\022StoreQueryStatusP" +
-      "b\022\n\n\006RSQ_OK\020\000\022\025\n\021RSQ_NOT_AVAILABLE\020\0022\326\003\n" +
-      "\013LHInternals\022X\n\021CentralStoreQuery\022\035.lh_p" +
-      "roto.CentralStoreQueryPb\032\".lh_proto.Cent" +
-      "ralStoreQueryReplyPb\"\000\022X\n\021PaginatedTagQu" +
-      "ery\022\035.lh_proto.PaginatedTagQueryPb\032\".lh_" +
-      "proto.PaginatedTagQueryReplyPb\"\000\022O\n\016wait" +
-      "ForCommand\022\032.lh_proto.WaitForCommandPb\032\037" +
-      ".lh_proto.WaitForCommandReplyPb\"\000\022U\n\020Int" +
-      "ernalPollTask\022\034.lh_proto.InternalPollTas" +
-      "kPb\032!.lh_proto.InternalPollTaskReplyPb\"\000" +
-      "\022k\n\022GetAdvertisedHosts\022&.lh_proto.Intern" +
-      "alGetAdvertisedHostsPb\032+.lh_proto.Intern" +
-      "alGetAdvertisedHostsReplyPb\"\000B(\n\033io.litt" +
-      "lehorse.common.protoP\001Z\007.;modelb\006proto3"
+      "ltB\n\n\010_message\"\271\002\n\022LHInternalSearchPb\022+\n" +
+      "\010bookmark\030\001 \001(\0132\024.lh_proto.BookmarkPbH\001\210" +
+      "\001\001\022\r\n\005limit\030\002 \001(\005\0221\n\013object_type\030\003 \001(\0162\034" +
+      ".lh_proto.GETableClassEnumPb\022-\n\tlocal_ta" +
+      "g\030\004 \001(\0132\030.lh_proto.LocalTagScanPbH\000\022:\n\020o" +
+      "bject_id_prefix\030\005 \001(\0132\036.lh_proto.ObjectI" +
+      "dPrefixScanPbH\000\022/\n\nhashed_tag\030\006 \001(\0132\031.lh" +
+      "_proto.HashedTagScanPbH\000B\013\n\tsubsearchB\013\n" +
+      "\t_bookmark\";\n\016LocalTagScanPb\022)\n\nattribut" +
+      "es\030\001 \003(\0132\025.lh_proto.AttributePb\"0\n\024Objec" +
+      "tIdPrefixScanPb\022\030\n\020object_id_prefix\030\001 \001(" +
+      "\t\"<\n\017HashedTagScanPb\022)\n\nattributes\030\001 \003(\013" +
+      "2\025.lh_proto.AttributePb\"\251\001\n\025InternalSear" +
+      "chReplyPb\022*\n\004code\030\001 \001(\0162\034.lh_proto.Store" +
+      "QueryStatusPb\022\022\n\nobject_ids\030\002 \003(\t\022.\n\020upd" +
+      "ated_bookmark\030\003 \001(\0132\024.lh_proto.BookmarkP" +
+      "b\022\024\n\007message\030\004 \001(\tH\000\210\001\001B\n\n\010_message\"-\n\022I" +
+      "nternalPollTaskPb\022\027\n\017task_queue_name\030\001 \001" +
+      "(\t\"\206\001\n\027InternalPollTaskReplyPb\022*\n\004code\030\001" +
+      " \001(\0162\034.lh_proto.StoreQueryStatusPb\0224\n\006re" +
+      "sult\030\002 \001(\0132\037.lh_proto.TaskScheduleReques" +
+      "tPbH\000\210\001\001B\t\n\007_result\"\036\n\034InternalGetAdvert" +
+      "isedHostsPb\"\256\001\n!InternalGetAdvertisedHos" +
+      "tsReplyPb\022E\n\005hosts\030\001 \003(\01326.lh_proto.Inte" +
+      "rnalGetAdvertisedHostsReplyPb.HostsEntry" +
+      "\032B\n\nHostsEntry\022\013\n\003key\030\001 \001(\t\022#\n\005value\030\002 \001" +
+      "(\0132\024.lh_proto.HostInfoPb:\0028\001*7\n\022StoreQue" +
+      "ryStatusPb\022\n\n\006RSQ_OK\020\000\022\025\n\021RSQ_NOT_AVAILA" +
+      "BLE\020\0022\311\003\n\013LHInternals\022X\n\021CentralStoreQue" +
+      "ry\022\035.lh_proto.CentralStoreQueryPb\032\".lh_p" +
+      "roto.CentralStoreQueryReplyPb\"\000\022K\n\010LHSea" +
+      "rch\022\034.lh_proto.LHInternalSearchPb\032\037.lh_p" +
+      "roto.InternalSearchReplyPb\"\000\022O\n\016waitForC" +
+      "ommand\022\032.lh_proto.WaitForCommandPb\032\037.lh_" +
+      "proto.WaitForCommandReplyPb\"\000\022U\n\020Interna" +
+      "lPollTask\022\034.lh_proto.InternalPollTaskPb\032" +
+      "!.lh_proto.InternalPollTaskReplyPb\"\000\022k\n\022" +
+      "GetAdvertisedHosts\022&.lh_proto.InternalGe" +
+      "tAdvertisedHostsPb\032+.lh_proto.InternalGe" +
+      "tAdvertisedHostsReplyPb\"\000B(\n\033io.littleho" +
+      "rse.common.protoP\001Z\007.;modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -226,38 +249,56 @@ public final class InternalServer {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_WaitForCommandReplyPb_descriptor,
         new java.lang.String[] { "Code", "Result", "Message", "Result", "Message", });
-    internal_static_lh_proto_PaginatedTagQueryPb_descriptor =
+    internal_static_lh_proto_LHInternalSearchPb_descriptor =
       getDescriptor().getMessageTypes().get(7);
-    internal_static_lh_proto_PaginatedTagQueryPb_fieldAccessorTable = new
+    internal_static_lh_proto_LHInternalSearchPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_lh_proto_PaginatedTagQueryPb_descriptor,
-        new java.lang.String[] { "ObjectType", "Attributes", "Bookmark", "Limit", "Bookmark", });
-    internal_static_lh_proto_PaginatedTagQueryReplyPb_descriptor =
+        internal_static_lh_proto_LHInternalSearchPb_descriptor,
+        new java.lang.String[] { "Bookmark", "Limit", "ObjectType", "LocalTag", "ObjectIdPrefix", "HashedTag", "Subsearch", "Bookmark", });
+    internal_static_lh_proto_LocalTagScanPb_descriptor =
       getDescriptor().getMessageTypes().get(8);
-    internal_static_lh_proto_PaginatedTagQueryReplyPb_fieldAccessorTable = new
+    internal_static_lh_proto_LocalTagScanPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_lh_proto_PaginatedTagQueryReplyPb_descriptor,
-        new java.lang.String[] { "Code", "ObjectIds", "UpdatedBookmark", });
-    internal_static_lh_proto_InternalPollTaskPb_descriptor =
+        internal_static_lh_proto_LocalTagScanPb_descriptor,
+        new java.lang.String[] { "Attributes", });
+    internal_static_lh_proto_ObjectIdPrefixScanPb_descriptor =
       getDescriptor().getMessageTypes().get(9);
+    internal_static_lh_proto_ObjectIdPrefixScanPb_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_lh_proto_ObjectIdPrefixScanPb_descriptor,
+        new java.lang.String[] { "ObjectIdPrefix", });
+    internal_static_lh_proto_HashedTagScanPb_descriptor =
+      getDescriptor().getMessageTypes().get(10);
+    internal_static_lh_proto_HashedTagScanPb_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_lh_proto_HashedTagScanPb_descriptor,
+        new java.lang.String[] { "Attributes", });
+    internal_static_lh_proto_InternalSearchReplyPb_descriptor =
+      getDescriptor().getMessageTypes().get(11);
+    internal_static_lh_proto_InternalSearchReplyPb_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_lh_proto_InternalSearchReplyPb_descriptor,
+        new java.lang.String[] { "Code", "ObjectIds", "UpdatedBookmark", "Message", "Message", });
+    internal_static_lh_proto_InternalPollTaskPb_descriptor =
+      getDescriptor().getMessageTypes().get(12);
     internal_static_lh_proto_InternalPollTaskPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_InternalPollTaskPb_descriptor,
         new java.lang.String[] { "TaskQueueName", });
     internal_static_lh_proto_InternalPollTaskReplyPb_descriptor =
-      getDescriptor().getMessageTypes().get(10);
+      getDescriptor().getMessageTypes().get(13);
     internal_static_lh_proto_InternalPollTaskReplyPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_InternalPollTaskReplyPb_descriptor,
         new java.lang.String[] { "Code", "Result", "Result", });
     internal_static_lh_proto_InternalGetAdvertisedHostsPb_descriptor =
-      getDescriptor().getMessageTypes().get(11);
+      getDescriptor().getMessageTypes().get(14);
     internal_static_lh_proto_InternalGetAdvertisedHostsPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_InternalGetAdvertisedHostsPb_descriptor,
         new java.lang.String[] { });
     internal_static_lh_proto_InternalGetAdvertisedHostsReplyPb_descriptor =
-      getDescriptor().getMessageTypes().get(12);
+      getDescriptor().getMessageTypes().get(15);
     internal_static_lh_proto_InternalGetAdvertisedHostsReplyPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_InternalGetAdvertisedHostsReplyPb_descriptor,

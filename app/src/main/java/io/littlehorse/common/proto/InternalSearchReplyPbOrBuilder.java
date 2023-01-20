@@ -3,8 +3,8 @@
 
 package io.littlehorse.common.proto;
 
-public interface PaginatedTagQueryReplyPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.PaginatedTagQueryReplyPb)
+public interface InternalSearchReplyPbOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:lh_proto.InternalSearchReplyPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**
@@ -57,4 +57,21 @@ public interface PaginatedTagQueryReplyPbOrBuilder extends
    * <code>.lh_proto.BookmarkPb updated_bookmark = 3;</code>
    */
   io.littlehorse.common.proto.BookmarkPbOrBuilder getUpdatedBookmarkOrBuilder();
+
+  /**
+   * <code>string message = 4;</code>
+   * @return Whether the message field is set.
+   */
+  boolean hasMessage();
+  /**
+   * <code>string message = 4;</code>
+   * @return The message.
+   */
+  java.lang.String getMessage();
+  /**
+   * <code>string message = 4;</code>
+   * @return The bytes for message.
+   */
+  com.google.protobuf.ByteString
+      getMessageBytes();
 }

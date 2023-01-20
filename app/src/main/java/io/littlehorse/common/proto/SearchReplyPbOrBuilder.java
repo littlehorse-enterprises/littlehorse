@@ -3,8 +3,8 @@
 
 package io.littlehorse.common.proto;
 
-public interface SearchWfRunReplyPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.SearchWfRunReplyPb)
+public interface SearchReplyPbOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:lh_proto.SearchReplyPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**
@@ -36,29 +36,29 @@ public interface SearchWfRunReplyPbOrBuilder extends
       getMessageBytes();
 
   /**
-   * <code>repeated string wf_run_ids = 3;</code>
-   * @return A list containing the wfRunIds.
+   * <code>repeated string object_ids = 3;</code>
+   * @return A list containing the objectIds.
    */
   java.util.List<java.lang.String>
-      getWfRunIdsList();
+      getObjectIdsList();
   /**
-   * <code>repeated string wf_run_ids = 3;</code>
-   * @return The count of wfRunIds.
+   * <code>repeated string object_ids = 3;</code>
+   * @return The count of objectIds.
    */
-  int getWfRunIdsCount();
+  int getObjectIdsCount();
   /**
-   * <code>repeated string wf_run_ids = 3;</code>
+   * <code>repeated string object_ids = 3;</code>
    * @param index The index of the element to return.
-   * @return The wfRunIds at the given index.
+   * @return The objectIds at the given index.
    */
-  java.lang.String getWfRunIds(int index);
+  java.lang.String getObjectIds(int index);
   /**
-   * <code>repeated string wf_run_ids = 3;</code>
+   * <code>repeated string object_ids = 3;</code>
    * @param index The index of the value to return.
-   * @return The bytes of the wfRunIds at the given index.
+   * @return The bytes of the objectIds at the given index.
    */
   com.google.protobuf.ByteString
-      getWfRunIdsBytes(int index);
+      getObjectIdsBytes(int index);
 
   /**
    * <pre>

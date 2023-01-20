@@ -141,15 +141,15 @@ message SearchWfRunPb {
         string wf_spec_name = 1;
         LHStatusPb status = 2;
     }
-    oneof criteria {
+    oneof wfrun_criteria {
         StatusAndSpecPb status_and_spec = 3;
     }
 }
 
-message SearchWfRunReplyPb {
+message SearchReplyPb {
     LHResponseCodePb code = 1;
     optional string message = 2;
-    repeated string wf_run_ids = 3;
+    repeated string object_ids = 3;
 
     // This can optionally be set by whatever backend data store implementation
     // is plugged in. Currently, the only backend implementation is the Kafka
@@ -159,6 +159,43 @@ message SearchWfRunReplyPb {
     // transparently.
     // If the bookmark is null, then it means all results have been returned.
     optional bytes bookmark = 4;
+}
+
+message SearchNodeRunPb {
+    optional bytes bookmark = 1;
+    optional int32 limit = 2;
+
+    message StatusAndTaskDefPb {
+        LHStatusPb status = 1;
+        string task_def_name = 2;
+    }
+
+    oneof noderun_criteria {
+        StatusAndTaskDefPb status_and_taskdef = 3;
+        string wf_run_id = 4;
+    }
+}
+
+message SearchVariablePb {
+    optional bytes bookmark = 1;
+    optional int32 limit = 2;
+
+    oneof variable_criteria {
+        string wf_run_id = 3;
+        VariableValuePb value = 4;
+    }
+}
+
+message SearchTaskDefPb {
+    optional bytes bookmark = 1;
+    optional int32 limit = 2;
+    optional string name = 3;
+}
+
+message SearchWfSpecPb {
+    optional bytes bookmark = 1;
+    optional int32 limit = 2;
+    optional string name = 3;
 }
 
 message RegisterTaskWorkerPb {
@@ -252,7 +289,11 @@ service LHPublicApi {
     rpc PutExternalEvent(PutExternalEventPb) returns (PutExternalEventReplyPb) {}
     rpc GetExternalEvent(GetExternalEventPb) returns (GetExternalEventReplyPb) {}
 
-    rpc SearchWfRun(SearchWfRunPb) returns (SearchWfRunReplyPb) {}
+    rpc SearchWfRun(SearchWfRunPb) returns (SearchReplyPb) {}
+    rpc SearchNodeRun(SearchNodeRunPb) returns (SearchReplyPb) {}
+    rpc SearchVariable(SearchVariablePb) returns (SearchReplyPb) {}
+    rpc SearchTaskDef(SearchTaskDefPb) returns (SearchReplyPb) {}
+    rpc SearchWfSpec(SearchWfSpecPb) returns (SearchReplyPb) {}
 
     rpc RegisterTaskWorker(RegisterTaskWorkerPb) returns (RegisterTaskWorkerReplyPb) {}
     rpc PollTask(stream PollTaskPb) returns (stream PollTaskReplyPb) {}
@@ -263,7 +304,6 @@ service LHPublicApi {
     rpc DeleteWfRun(DeleteWfRunPb) returns (DeleteWfRunReplyPb) {}
 
     rpc HealthCheck(HealthCheckPb) returns (HealthCheckReplyPb) {}
-
     rpc GetMetrics(GetMetricsRequestPb) returns (GetMetricsReplyPb) {}
 }
 

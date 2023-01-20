@@ -4,18 +4,18 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf type {@code lh_proto.SearchWfRunPb}
+ * Protobuf type {@code lh_proto.SearchNodeRunPb}
  */
-public final class SearchWfRunPb extends
+public final class SearchNodeRunPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.SearchWfRunPb)
-    SearchWfRunPbOrBuilder {
+    // @@protoc_insertion_point(message_implements:lh_proto.SearchNodeRunPb)
+    SearchNodeRunPbOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use SearchWfRunPb.newBuilder() to construct.
-  private SearchWfRunPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use SearchNodeRunPb.newBuilder() to construct.
+  private SearchNodeRunPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private SearchWfRunPb() {
+  private SearchNodeRunPb() {
     bookmark_ = com.google.protobuf.ByteString.EMPTY;
   }
 
@@ -23,7 +23,7 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new SearchWfRunPb();
+    return new SearchNodeRunPb();
   }
 
   @java.lang.Override
@@ -31,7 +31,7 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
-  private SearchWfRunPb(
+  private SearchNodeRunPb(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -61,17 +61,23 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 26: {
-            io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb.Builder subBuilder = null;
-            if (wfrunCriteriaCase_ == 3) {
-              subBuilder = ((io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb) wfrunCriteria_).toBuilder();
+            io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb.Builder subBuilder = null;
+            if (noderunCriteriaCase_ == 3) {
+              subBuilder = ((io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb) noderunCriteria_).toBuilder();
             }
-            wfrunCriteria_ =
-                input.readMessage(io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb.parser(), extensionRegistry);
+            noderunCriteria_ =
+                input.readMessage(io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb.parser(), extensionRegistry);
             if (subBuilder != null) {
-              subBuilder.mergeFrom((io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb) wfrunCriteria_);
-              wfrunCriteria_ = subBuilder.buildPartial();
+              subBuilder.mergeFrom((io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb) noderunCriteria_);
+              noderunCriteria_ = subBuilder.buildPartial();
             }
-            wfrunCriteriaCase_ = 3;
+            noderunCriteriaCase_ = 3;
+            break;
+          }
+          case 34: {
+            java.lang.String s = input.readStringRequireUtf8();
+            noderunCriteriaCase_ = 4;
+            noderunCriteria_ = s;
             break;
           }
           default: {
@@ -95,66 +101,66 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.Service.internal_static_lh_proto_SearchWfRunPb_descriptor;
+    return io.littlehorse.common.proto.Service.internal_static_lh_proto_SearchNodeRunPb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.Service.internal_static_lh_proto_SearchWfRunPb_fieldAccessorTable
+    return io.littlehorse.common.proto.Service.internal_static_lh_proto_SearchNodeRunPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.common.proto.SearchWfRunPb.class, io.littlehorse.common.proto.SearchWfRunPb.Builder.class);
+            io.littlehorse.common.proto.SearchNodeRunPb.class, io.littlehorse.common.proto.SearchNodeRunPb.Builder.class);
   }
 
-  public interface StatusAndSpecPbOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:lh_proto.SearchWfRunPb.StatusAndSpecPb)
+  public interface StatusAndTaskDefPbOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:lh_proto.SearchNodeRunPb.StatusAndTaskDefPb)
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>string wf_spec_name = 1;</code>
-     * @return The wfSpecName.
-     */
-    java.lang.String getWfSpecName();
-    /**
-     * <code>string wf_spec_name = 1;</code>
-     * @return The bytes for wfSpecName.
-     */
-    com.google.protobuf.ByteString
-        getWfSpecNameBytes();
-
-    /**
-     * <code>.lh_proto.LHStatusPb status = 2;</code>
+     * <code>.lh_proto.LHStatusPb status = 1;</code>
      * @return The enum numeric value on the wire for status.
      */
     int getStatusValue();
     /**
-     * <code>.lh_proto.LHStatusPb status = 2;</code>
+     * <code>.lh_proto.LHStatusPb status = 1;</code>
      * @return The status.
      */
     io.littlehorse.common.proto.LHStatusPb getStatus();
+
+    /**
+     * <code>string task_def_name = 2;</code>
+     * @return The taskDefName.
+     */
+    java.lang.String getTaskDefName();
+    /**
+     * <code>string task_def_name = 2;</code>
+     * @return The bytes for taskDefName.
+     */
+    com.google.protobuf.ByteString
+        getTaskDefNameBytes();
   }
   /**
-   * Protobuf type {@code lh_proto.SearchWfRunPb.StatusAndSpecPb}
+   * Protobuf type {@code lh_proto.SearchNodeRunPb.StatusAndTaskDefPb}
    */
-  public static final class StatusAndSpecPb extends
+  public static final class StatusAndTaskDefPb extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:lh_proto.SearchWfRunPb.StatusAndSpecPb)
-      StatusAndSpecPbOrBuilder {
+      // @@protoc_insertion_point(message_implements:lh_proto.SearchNodeRunPb.StatusAndTaskDefPb)
+      StatusAndTaskDefPbOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use StatusAndSpecPb.newBuilder() to construct.
-    private StatusAndSpecPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use StatusAndTaskDefPb.newBuilder() to construct.
+    private StatusAndTaskDefPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private StatusAndSpecPb() {
-      wfSpecName_ = "";
+    private StatusAndTaskDefPb() {
       status_ = 0;
+      taskDefName_ = "";
     }
 
     @java.lang.Override
     @SuppressWarnings({"unused"})
     protected java.lang.Object newInstance(
         UnusedPrivateParameter unused) {
-      return new StatusAndSpecPb();
+      return new StatusAndTaskDefPb();
     }
 
     @java.lang.Override
@@ -162,7 +168,7 @@ private static final long serialVersionUID = 0L;
     getUnknownFields() {
       return this.unknownFields;
     }
-    private StatusAndSpecPb(
+    private StatusAndTaskDefPb(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -180,16 +186,16 @@ private static final long serialVersionUID = 0L;
             case 0:
               done = true;
               break;
-            case 10: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              wfSpecName_ = s;
-              break;
-            }
-            case 16: {
+            case 8: {
               int rawValue = input.readEnum();
 
               status_ = rawValue;
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              taskDefName_ = s;
               break;
             }
             default: {
@@ -213,72 +219,72 @@ private static final long serialVersionUID = 0L;
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.Service.internal_static_lh_proto_SearchWfRunPb_StatusAndSpecPb_descriptor;
+      return io.littlehorse.common.proto.Service.internal_static_lh_proto_SearchNodeRunPb_StatusAndTaskDefPb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.Service.internal_static_lh_proto_SearchWfRunPb_StatusAndSpecPb_fieldAccessorTable
+      return io.littlehorse.common.proto.Service.internal_static_lh_proto_SearchNodeRunPb_StatusAndTaskDefPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb.class, io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb.Builder.class);
+              io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb.class, io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb.Builder.class);
     }
 
-    public static final int WF_SPEC_NAME_FIELD_NUMBER = 1;
-    private volatile java.lang.Object wfSpecName_;
-    /**
-     * <code>string wf_spec_name = 1;</code>
-     * @return The wfSpecName.
-     */
-    @java.lang.Override
-    public java.lang.String getWfSpecName() {
-      java.lang.Object ref = wfSpecName_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        wfSpecName_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string wf_spec_name = 1;</code>
-     * @return The bytes for wfSpecName.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getWfSpecNameBytes() {
-      java.lang.Object ref = wfSpecName_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        wfSpecName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int STATUS_FIELD_NUMBER = 2;
+    public static final int STATUS_FIELD_NUMBER = 1;
     private int status_;
     /**
-     * <code>.lh_proto.LHStatusPb status = 2;</code>
+     * <code>.lh_proto.LHStatusPb status = 1;</code>
      * @return The enum numeric value on the wire for status.
      */
     @java.lang.Override public int getStatusValue() {
       return status_;
     }
     /**
-     * <code>.lh_proto.LHStatusPb status = 2;</code>
+     * <code>.lh_proto.LHStatusPb status = 1;</code>
      * @return The status.
      */
     @java.lang.Override public io.littlehorse.common.proto.LHStatusPb getStatus() {
       @SuppressWarnings("deprecation")
       io.littlehorse.common.proto.LHStatusPb result = io.littlehorse.common.proto.LHStatusPb.valueOf(status_);
       return result == null ? io.littlehorse.common.proto.LHStatusPb.UNRECOGNIZED : result;
+    }
+
+    public static final int TASK_DEF_NAME_FIELD_NUMBER = 2;
+    private volatile java.lang.Object taskDefName_;
+    /**
+     * <code>string task_def_name = 2;</code>
+     * @return The taskDefName.
+     */
+    @java.lang.Override
+    public java.lang.String getTaskDefName() {
+      java.lang.Object ref = taskDefName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        taskDefName_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string task_def_name = 2;</code>
+     * @return The bytes for taskDefName.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getTaskDefNameBytes() {
+      java.lang.Object ref = taskDefName_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        taskDefName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     private byte memoizedIsInitialized = -1;
@@ -295,11 +301,11 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (!getWfSpecNameBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, wfSpecName_);
-      }
       if (status_ != io.littlehorse.common.proto.LHStatusPb.STARTING.getNumber()) {
-        output.writeEnum(2, status_);
+        output.writeEnum(1, status_);
+      }
+      if (!getTaskDefNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, taskDefName_);
       }
       unknownFields.writeTo(output);
     }
@@ -310,12 +316,12 @@ private static final long serialVersionUID = 0L;
       if (size != -1) return size;
 
       size = 0;
-      if (!getWfSpecNameBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, wfSpecName_);
-      }
       if (status_ != io.littlehorse.common.proto.LHStatusPb.STARTING.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(2, status_);
+          .computeEnumSize(1, status_);
+      }
+      if (!getTaskDefNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, taskDefName_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -327,14 +333,14 @@ private static final long serialVersionUID = 0L;
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb)) {
+      if (!(obj instanceof io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb)) {
         return super.equals(obj);
       }
-      io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb other = (io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb) obj;
+      io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb other = (io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb) obj;
 
-      if (!getWfSpecName()
-          .equals(other.getWfSpecName())) return false;
       if (status_ != other.status_) return false;
+      if (!getTaskDefName()
+          .equals(other.getTaskDefName())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -346,78 +352,78 @@ private static final long serialVersionUID = 0L;
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + WF_SPEC_NAME_FIELD_NUMBER;
-      hash = (53 * hash) + getWfSpecName().hashCode();
       hash = (37 * hash) + STATUS_FIELD_NUMBER;
       hash = (53 * hash) + status_;
+      hash = (37 * hash) + TASK_DEF_NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getTaskDefName().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
     }
 
-    public static io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb parseFrom(
+    public static io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb parseFrom(
+    public static io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb parseFrom(
+    public static io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb parseFrom(
+    public static io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb parseFrom(byte[] data)
+    public static io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb parseFrom(
+    public static io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb parseFrom(java.io.InputStream input)
+    public static io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb parseFrom(
+    public static io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb parseDelimitedFrom(java.io.InputStream input)
+    public static io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb parseDelimitedFrom(
+    public static io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb parseFrom(
+    public static io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb parseFrom(
+    public static io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -430,7 +436,7 @@ private static final long serialVersionUID = 0L;
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb prototype) {
+    public static Builder newBuilder(io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -446,26 +452,26 @@ private static final long serialVersionUID = 0L;
       return builder;
     }
     /**
-     * Protobuf type {@code lh_proto.SearchWfRunPb.StatusAndSpecPb}
+     * Protobuf type {@code lh_proto.SearchNodeRunPb.StatusAndTaskDefPb}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:lh_proto.SearchWfRunPb.StatusAndSpecPb)
-        io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPbOrBuilder {
+        // @@protoc_insertion_point(builder_implements:lh_proto.SearchNodeRunPb.StatusAndTaskDefPb)
+        io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPbOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return io.littlehorse.common.proto.Service.internal_static_lh_proto_SearchWfRunPb_StatusAndSpecPb_descriptor;
+        return io.littlehorse.common.proto.Service.internal_static_lh_proto_SearchNodeRunPb_StatusAndTaskDefPb_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return io.littlehorse.common.proto.Service.internal_static_lh_proto_SearchWfRunPb_StatusAndSpecPb_fieldAccessorTable
+        return io.littlehorse.common.proto.Service.internal_static_lh_proto_SearchNodeRunPb_StatusAndTaskDefPb_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb.class, io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb.Builder.class);
+                io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb.class, io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb.Builder.class);
       }
 
-      // Construct using io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb.newBuilder()
+      // Construct using io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -483,9 +489,9 @@ private static final long serialVersionUID = 0L;
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        wfSpecName_ = "";
-
         status_ = 0;
+
+        taskDefName_ = "";
 
         return this;
       }
@@ -493,17 +499,17 @@ private static final long serialVersionUID = 0L;
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return io.littlehorse.common.proto.Service.internal_static_lh_proto_SearchWfRunPb_StatusAndSpecPb_descriptor;
+        return io.littlehorse.common.proto.Service.internal_static_lh_proto_SearchNodeRunPb_StatusAndTaskDefPb_descriptor;
       }
 
       @java.lang.Override
-      public io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb getDefaultInstanceForType() {
-        return io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb.getDefaultInstance();
+      public io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb getDefaultInstanceForType() {
+        return io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb.getDefaultInstance();
       }
 
       @java.lang.Override
-      public io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb build() {
-        io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb result = buildPartial();
+      public io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb build() {
+        io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -511,10 +517,10 @@ private static final long serialVersionUID = 0L;
       }
 
       @java.lang.Override
-      public io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb buildPartial() {
-        io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb result = new io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb(this);
-        result.wfSpecName_ = wfSpecName_;
+      public io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb buildPartial() {
+        io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb result = new io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb(this);
         result.status_ = status_;
+        result.taskDefName_ = taskDefName_;
         onBuilt();
         return result;
       }
@@ -553,22 +559,22 @@ private static final long serialVersionUID = 0L;
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb) {
-          return mergeFrom((io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb)other);
+        if (other instanceof io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb) {
+          return mergeFrom((io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb other) {
-        if (other == io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb.getDefaultInstance()) return this;
-        if (!other.getWfSpecName().isEmpty()) {
-          wfSpecName_ = other.wfSpecName_;
-          onChanged();
-        }
+      public Builder mergeFrom(io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb other) {
+        if (other == io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb.getDefaultInstance()) return this;
         if (other.status_ != 0) {
           setStatusValue(other.getStatusValue());
+        }
+        if (!other.getTaskDefName().isEmpty()) {
+          taskDefName_ = other.taskDefName_;
+          onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -585,11 +591,11 @@ private static final long serialVersionUID = 0L;
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb parsedMessage = null;
+        io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb) e.getUnfinishedMessage();
+          parsedMessage = (io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -599,92 +605,16 @@ private static final long serialVersionUID = 0L;
         return this;
       }
 
-      private java.lang.Object wfSpecName_ = "";
-      /**
-       * <code>string wf_spec_name = 1;</code>
-       * @return The wfSpecName.
-       */
-      public java.lang.String getWfSpecName() {
-        java.lang.Object ref = wfSpecName_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          wfSpecName_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string wf_spec_name = 1;</code>
-       * @return The bytes for wfSpecName.
-       */
-      public com.google.protobuf.ByteString
-          getWfSpecNameBytes() {
-        java.lang.Object ref = wfSpecName_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          wfSpecName_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string wf_spec_name = 1;</code>
-       * @param value The wfSpecName to set.
-       * @return This builder for chaining.
-       */
-      public Builder setWfSpecName(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        wfSpecName_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string wf_spec_name = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearWfSpecName() {
-        
-        wfSpecName_ = getDefaultInstance().getWfSpecName();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string wf_spec_name = 1;</code>
-       * @param value The bytes for wfSpecName to set.
-       * @return This builder for chaining.
-       */
-      public Builder setWfSpecNameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        wfSpecName_ = value;
-        onChanged();
-        return this;
-      }
-
       private int status_ = 0;
       /**
-       * <code>.lh_proto.LHStatusPb status = 2;</code>
+       * <code>.lh_proto.LHStatusPb status = 1;</code>
        * @return The enum numeric value on the wire for status.
        */
       @java.lang.Override public int getStatusValue() {
         return status_;
       }
       /**
-       * <code>.lh_proto.LHStatusPb status = 2;</code>
+       * <code>.lh_proto.LHStatusPb status = 1;</code>
        * @param value The enum numeric value on the wire for status to set.
        * @return This builder for chaining.
        */
@@ -695,7 +625,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.lh_proto.LHStatusPb status = 2;</code>
+       * <code>.lh_proto.LHStatusPb status = 1;</code>
        * @return The status.
        */
       @java.lang.Override
@@ -705,7 +635,7 @@ private static final long serialVersionUID = 0L;
         return result == null ? io.littlehorse.common.proto.LHStatusPb.UNRECOGNIZED : result;
       }
       /**
-       * <code>.lh_proto.LHStatusPb status = 2;</code>
+       * <code>.lh_proto.LHStatusPb status = 1;</code>
        * @param value The status to set.
        * @return This builder for chaining.
        */
@@ -719,12 +649,88 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.lh_proto.LHStatusPb status = 2;</code>
+       * <code>.lh_proto.LHStatusPb status = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearStatus() {
         
         status_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object taskDefName_ = "";
+      /**
+       * <code>string task_def_name = 2;</code>
+       * @return The taskDefName.
+       */
+      public java.lang.String getTaskDefName() {
+        java.lang.Object ref = taskDefName_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          taskDefName_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string task_def_name = 2;</code>
+       * @return The bytes for taskDefName.
+       */
+      public com.google.protobuf.ByteString
+          getTaskDefNameBytes() {
+        java.lang.Object ref = taskDefName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          taskDefName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string task_def_name = 2;</code>
+       * @param value The taskDefName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTaskDefName(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        taskDefName_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string task_def_name = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearTaskDefName() {
+        
+        taskDefName_ = getDefaultInstance().getTaskDefName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string task_def_name = 2;</code>
+       * @param value The bytes for taskDefName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTaskDefNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        taskDefName_ = value;
         onChanged();
         return this;
       }
@@ -741,56 +747,57 @@ private static final long serialVersionUID = 0L;
       }
 
 
-      // @@protoc_insertion_point(builder_scope:lh_proto.SearchWfRunPb.StatusAndSpecPb)
+      // @@protoc_insertion_point(builder_scope:lh_proto.SearchNodeRunPb.StatusAndTaskDefPb)
     }
 
-    // @@protoc_insertion_point(class_scope:lh_proto.SearchWfRunPb.StatusAndSpecPb)
-    private static final io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:lh_proto.SearchNodeRunPb.StatusAndTaskDefPb)
+    private static final io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb();
+      DEFAULT_INSTANCE = new io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb();
     }
 
-    public static io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb getDefaultInstance() {
+    public static io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<StatusAndSpecPb>
-        PARSER = new com.google.protobuf.AbstractParser<StatusAndSpecPb>() {
+    private static final com.google.protobuf.Parser<StatusAndTaskDefPb>
+        PARSER = new com.google.protobuf.AbstractParser<StatusAndTaskDefPb>() {
       @java.lang.Override
-      public StatusAndSpecPb parsePartialFrom(
+      public StatusAndTaskDefPb parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new StatusAndSpecPb(input, extensionRegistry);
+        return new StatusAndTaskDefPb(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<StatusAndSpecPb> parser() {
+    public static com.google.protobuf.Parser<StatusAndTaskDefPb> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<StatusAndSpecPb> getParserForType() {
+    public com.google.protobuf.Parser<StatusAndTaskDefPb> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb getDefaultInstanceForType() {
+    public io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
   private int bitField0_;
-  private int wfrunCriteriaCase_ = 0;
-  private java.lang.Object wfrunCriteria_;
-  public enum WfrunCriteriaCase
+  private int noderunCriteriaCase_ = 0;
+  private java.lang.Object noderunCriteria_;
+  public enum NoderunCriteriaCase
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    STATUS_AND_SPEC(3),
-    WFRUNCRITERIA_NOT_SET(0);
+    STATUS_AND_TASKDEF(3),
+    WF_RUN_ID(4),
+    NODERUNCRITERIA_NOT_SET(0);
     private final int value;
-    private WfrunCriteriaCase(int value) {
+    private NoderunCriteriaCase(int value) {
       this.value = value;
     }
     /**
@@ -799,14 +806,15 @@ private static final long serialVersionUID = 0L;
      * @deprecated Use {@link #forNumber(int)} instead.
      */
     @java.lang.Deprecated
-    public static WfrunCriteriaCase valueOf(int value) {
+    public static NoderunCriteriaCase valueOf(int value) {
       return forNumber(value);
     }
 
-    public static WfrunCriteriaCase forNumber(int value) {
+    public static NoderunCriteriaCase forNumber(int value) {
       switch (value) {
-        case 3: return STATUS_AND_SPEC;
-        case 0: return WFRUNCRITERIA_NOT_SET;
+        case 3: return STATUS_AND_TASKDEF;
+        case 4: return WF_RUN_ID;
+        case 0: return NODERUNCRITERIA_NOT_SET;
         default: return null;
       }
     }
@@ -815,10 +823,10 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public WfrunCriteriaCase
-  getWfrunCriteriaCase() {
-    return WfrunCriteriaCase.forNumber(
-        wfrunCriteriaCase_);
+  public NoderunCriteriaCase
+  getNoderunCriteriaCase() {
+    return NoderunCriteriaCase.forNumber(
+        noderunCriteriaCase_);
   }
 
   public static final int BOOKMARK_FIELD_NUMBER = 1;
@@ -859,35 +867,80 @@ private static final long serialVersionUID = 0L;
     return limit_;
   }
 
-  public static final int STATUS_AND_SPEC_FIELD_NUMBER = 3;
+  public static final int STATUS_AND_TASKDEF_FIELD_NUMBER = 3;
   /**
-   * <code>.lh_proto.SearchWfRunPb.StatusAndSpecPb status_and_spec = 3;</code>
-   * @return Whether the statusAndSpec field is set.
+   * <code>.lh_proto.SearchNodeRunPb.StatusAndTaskDefPb status_and_taskdef = 3;</code>
+   * @return Whether the statusAndTaskdef field is set.
    */
   @java.lang.Override
-  public boolean hasStatusAndSpec() {
-    return wfrunCriteriaCase_ == 3;
+  public boolean hasStatusAndTaskdef() {
+    return noderunCriteriaCase_ == 3;
   }
   /**
-   * <code>.lh_proto.SearchWfRunPb.StatusAndSpecPb status_and_spec = 3;</code>
-   * @return The statusAndSpec.
+   * <code>.lh_proto.SearchNodeRunPb.StatusAndTaskDefPb status_and_taskdef = 3;</code>
+   * @return The statusAndTaskdef.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb getStatusAndSpec() {
-    if (wfrunCriteriaCase_ == 3) {
-       return (io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb) wfrunCriteria_;
+  public io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb getStatusAndTaskdef() {
+    if (noderunCriteriaCase_ == 3) {
+       return (io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb) noderunCriteria_;
     }
-    return io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb.getDefaultInstance();
+    return io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb.getDefaultInstance();
   }
   /**
-   * <code>.lh_proto.SearchWfRunPb.StatusAndSpecPb status_and_spec = 3;</code>
+   * <code>.lh_proto.SearchNodeRunPb.StatusAndTaskDefPb status_and_taskdef = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPbOrBuilder getStatusAndSpecOrBuilder() {
-    if (wfrunCriteriaCase_ == 3) {
-       return (io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb) wfrunCriteria_;
+  public io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPbOrBuilder getStatusAndTaskdefOrBuilder() {
+    if (noderunCriteriaCase_ == 3) {
+       return (io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb) noderunCriteria_;
     }
-    return io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb.getDefaultInstance();
+    return io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb.getDefaultInstance();
+  }
+
+  public static final int WF_RUN_ID_FIELD_NUMBER = 4;
+  /**
+   * <code>string wf_run_id = 4;</code>
+   * @return The wfRunId.
+   */
+  public java.lang.String getWfRunId() {
+    java.lang.Object ref = "";
+    if (noderunCriteriaCase_ == 4) {
+      ref = noderunCriteria_;
+    }
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      if (noderunCriteriaCase_ == 4) {
+        noderunCriteria_ = s;
+      }
+      return s;
+    }
+  }
+  /**
+   * <code>string wf_run_id = 4;</code>
+   * @return The bytes for wfRunId.
+   */
+  public com.google.protobuf.ByteString
+      getWfRunIdBytes() {
+    java.lang.Object ref = "";
+    if (noderunCriteriaCase_ == 4) {
+      ref = noderunCriteria_;
+    }
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      if (noderunCriteriaCase_ == 4) {
+        noderunCriteria_ = b;
+      }
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
   }
 
   private byte memoizedIsInitialized = -1;
@@ -910,8 +963,11 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000002) != 0)) {
       output.writeInt32(2, limit_);
     }
-    if (wfrunCriteriaCase_ == 3) {
-      output.writeMessage(3, (io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb) wfrunCriteria_);
+    if (noderunCriteriaCase_ == 3) {
+      output.writeMessage(3, (io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb) noderunCriteria_);
+    }
+    if (noderunCriteriaCase_ == 4) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 4, noderunCriteria_);
     }
     unknownFields.writeTo(output);
   }
@@ -930,9 +986,12 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(2, limit_);
     }
-    if (wfrunCriteriaCase_ == 3) {
+    if (noderunCriteriaCase_ == 3) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, (io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb) wfrunCriteria_);
+        .computeMessageSize(3, (io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb) noderunCriteria_);
+    }
+    if (noderunCriteriaCase_ == 4) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, noderunCriteria_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -944,10 +1003,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.common.proto.SearchWfRunPb)) {
+    if (!(obj instanceof io.littlehorse.common.proto.SearchNodeRunPb)) {
       return super.equals(obj);
     }
-    io.littlehorse.common.proto.SearchWfRunPb other = (io.littlehorse.common.proto.SearchWfRunPb) obj;
+    io.littlehorse.common.proto.SearchNodeRunPb other = (io.littlehorse.common.proto.SearchNodeRunPb) obj;
 
     if (hasBookmark() != other.hasBookmark()) return false;
     if (hasBookmark()) {
@@ -959,11 +1018,15 @@ private static final long serialVersionUID = 0L;
       if (getLimit()
           != other.getLimit()) return false;
     }
-    if (!getWfrunCriteriaCase().equals(other.getWfrunCriteriaCase())) return false;
-    switch (wfrunCriteriaCase_) {
+    if (!getNoderunCriteriaCase().equals(other.getNoderunCriteriaCase())) return false;
+    switch (noderunCriteriaCase_) {
       case 3:
-        if (!getStatusAndSpec()
-            .equals(other.getStatusAndSpec())) return false;
+        if (!getStatusAndTaskdef()
+            .equals(other.getStatusAndTaskdef())) return false;
+        break;
+      case 4:
+        if (!getWfRunId()
+            .equals(other.getWfRunId())) return false;
         break;
       case 0:
       default:
@@ -987,10 +1050,14 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + LIMIT_FIELD_NUMBER;
       hash = (53 * hash) + getLimit();
     }
-    switch (wfrunCriteriaCase_) {
+    switch (noderunCriteriaCase_) {
       case 3:
-        hash = (37 * hash) + STATUS_AND_SPEC_FIELD_NUMBER;
-        hash = (53 * hash) + getStatusAndSpec().hashCode();
+        hash = (37 * hash) + STATUS_AND_TASKDEF_FIELD_NUMBER;
+        hash = (53 * hash) + getStatusAndTaskdef().hashCode();
+        break;
+      case 4:
+        hash = (37 * hash) + WF_RUN_ID_FIELD_NUMBER;
+        hash = (53 * hash) + getWfRunId().hashCode();
         break;
       case 0:
       default:
@@ -1000,69 +1067,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static io.littlehorse.common.proto.SearchWfRunPb parseFrom(
+  public static io.littlehorse.common.proto.SearchNodeRunPb parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.SearchWfRunPb parseFrom(
+  public static io.littlehorse.common.proto.SearchNodeRunPb parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.SearchWfRunPb parseFrom(
+  public static io.littlehorse.common.proto.SearchNodeRunPb parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.SearchWfRunPb parseFrom(
+  public static io.littlehorse.common.proto.SearchNodeRunPb parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.SearchWfRunPb parseFrom(byte[] data)
+  public static io.littlehorse.common.proto.SearchNodeRunPb parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.SearchWfRunPb parseFrom(
+  public static io.littlehorse.common.proto.SearchNodeRunPb parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.SearchWfRunPb parseFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.SearchNodeRunPb parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.SearchWfRunPb parseFrom(
+  public static io.littlehorse.common.proto.SearchNodeRunPb parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.SearchWfRunPb parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.SearchNodeRunPb parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.SearchWfRunPb parseDelimitedFrom(
+  public static io.littlehorse.common.proto.SearchNodeRunPb parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.SearchWfRunPb parseFrom(
+  public static io.littlehorse.common.proto.SearchNodeRunPb parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.SearchWfRunPb parseFrom(
+  public static io.littlehorse.common.proto.SearchNodeRunPb parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -1075,7 +1142,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.common.proto.SearchWfRunPb prototype) {
+  public static Builder newBuilder(io.littlehorse.common.proto.SearchNodeRunPb prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -1091,26 +1158,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.SearchWfRunPb}
+   * Protobuf type {@code lh_proto.SearchNodeRunPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.SearchWfRunPb)
-      io.littlehorse.common.proto.SearchWfRunPbOrBuilder {
+      // @@protoc_insertion_point(builder_implements:lh_proto.SearchNodeRunPb)
+      io.littlehorse.common.proto.SearchNodeRunPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.Service.internal_static_lh_proto_SearchWfRunPb_descriptor;
+      return io.littlehorse.common.proto.Service.internal_static_lh_proto_SearchNodeRunPb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.Service.internal_static_lh_proto_SearchWfRunPb_fieldAccessorTable
+      return io.littlehorse.common.proto.Service.internal_static_lh_proto_SearchNodeRunPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.common.proto.SearchWfRunPb.class, io.littlehorse.common.proto.SearchWfRunPb.Builder.class);
+              io.littlehorse.common.proto.SearchNodeRunPb.class, io.littlehorse.common.proto.SearchNodeRunPb.Builder.class);
     }
 
-    // Construct using io.littlehorse.common.proto.SearchWfRunPb.newBuilder()
+    // Construct using io.littlehorse.common.proto.SearchNodeRunPb.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -1132,25 +1199,25 @@ private static final long serialVersionUID = 0L;
       bitField0_ = (bitField0_ & ~0x00000001);
       limit_ = 0;
       bitField0_ = (bitField0_ & ~0x00000002);
-      wfrunCriteriaCase_ = 0;
-      wfrunCriteria_ = null;
+      noderunCriteriaCase_ = 0;
+      noderunCriteria_ = null;
       return this;
     }
 
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.Service.internal_static_lh_proto_SearchWfRunPb_descriptor;
+      return io.littlehorse.common.proto.Service.internal_static_lh_proto_SearchNodeRunPb_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.SearchWfRunPb getDefaultInstanceForType() {
-      return io.littlehorse.common.proto.SearchWfRunPb.getDefaultInstance();
+    public io.littlehorse.common.proto.SearchNodeRunPb getDefaultInstanceForType() {
+      return io.littlehorse.common.proto.SearchNodeRunPb.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.SearchWfRunPb build() {
-      io.littlehorse.common.proto.SearchWfRunPb result = buildPartial();
+    public io.littlehorse.common.proto.SearchNodeRunPb build() {
+      io.littlehorse.common.proto.SearchNodeRunPb result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -1158,8 +1225,8 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.SearchWfRunPb buildPartial() {
-      io.littlehorse.common.proto.SearchWfRunPb result = new io.littlehorse.common.proto.SearchWfRunPb(this);
+    public io.littlehorse.common.proto.SearchNodeRunPb buildPartial() {
+      io.littlehorse.common.proto.SearchNodeRunPb result = new io.littlehorse.common.proto.SearchNodeRunPb(this);
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -1170,15 +1237,18 @@ private static final long serialVersionUID = 0L;
         result.limit_ = limit_;
         to_bitField0_ |= 0x00000002;
       }
-      if (wfrunCriteriaCase_ == 3) {
-        if (statusAndSpecBuilder_ == null) {
-          result.wfrunCriteria_ = wfrunCriteria_;
+      if (noderunCriteriaCase_ == 3) {
+        if (statusAndTaskdefBuilder_ == null) {
+          result.noderunCriteria_ = noderunCriteria_;
         } else {
-          result.wfrunCriteria_ = statusAndSpecBuilder_.build();
+          result.noderunCriteria_ = statusAndTaskdefBuilder_.build();
         }
       }
+      if (noderunCriteriaCase_ == 4) {
+        result.noderunCriteria_ = noderunCriteria_;
+      }
       result.bitField0_ = to_bitField0_;
-      result.wfrunCriteriaCase_ = wfrunCriteriaCase_;
+      result.noderunCriteriaCase_ = noderunCriteriaCase_;
       onBuilt();
       return result;
     }
@@ -1217,28 +1287,34 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.common.proto.SearchWfRunPb) {
-        return mergeFrom((io.littlehorse.common.proto.SearchWfRunPb)other);
+      if (other instanceof io.littlehorse.common.proto.SearchNodeRunPb) {
+        return mergeFrom((io.littlehorse.common.proto.SearchNodeRunPb)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.common.proto.SearchWfRunPb other) {
-      if (other == io.littlehorse.common.proto.SearchWfRunPb.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.common.proto.SearchNodeRunPb other) {
+      if (other == io.littlehorse.common.proto.SearchNodeRunPb.getDefaultInstance()) return this;
       if (other.hasBookmark()) {
         setBookmark(other.getBookmark());
       }
       if (other.hasLimit()) {
         setLimit(other.getLimit());
       }
-      switch (other.getWfrunCriteriaCase()) {
-        case STATUS_AND_SPEC: {
-          mergeStatusAndSpec(other.getStatusAndSpec());
+      switch (other.getNoderunCriteriaCase()) {
+        case STATUS_AND_TASKDEF: {
+          mergeStatusAndTaskdef(other.getStatusAndTaskdef());
           break;
         }
-        case WFRUNCRITERIA_NOT_SET: {
+        case WF_RUN_ID: {
+          noderunCriteriaCase_ = 4;
+          noderunCriteria_ = other.noderunCriteria_;
+          onChanged();
+          break;
+        }
+        case NODERUNCRITERIA_NOT_SET: {
           break;
         }
       }
@@ -1257,11 +1333,11 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      io.littlehorse.common.proto.SearchWfRunPb parsedMessage = null;
+      io.littlehorse.common.proto.SearchNodeRunPb parsedMessage = null;
       try {
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (io.littlehorse.common.proto.SearchWfRunPb) e.getUnfinishedMessage();
+        parsedMessage = (io.littlehorse.common.proto.SearchNodeRunPb) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
@@ -1270,17 +1346,17 @@ private static final long serialVersionUID = 0L;
       }
       return this;
     }
-    private int wfrunCriteriaCase_ = 0;
-    private java.lang.Object wfrunCriteria_;
-    public WfrunCriteriaCase
-        getWfrunCriteriaCase() {
-      return WfrunCriteriaCase.forNumber(
-          wfrunCriteriaCase_);
+    private int noderunCriteriaCase_ = 0;
+    private java.lang.Object noderunCriteria_;
+    public NoderunCriteriaCase
+        getNoderunCriteriaCase() {
+      return NoderunCriteriaCase.forNumber(
+          noderunCriteriaCase_);
     }
 
-    public Builder clearWfrunCriteria() {
-      wfrunCriteriaCase_ = 0;
-      wfrunCriteria_ = null;
+    public Builder clearNoderunCriteria() {
+      noderunCriteriaCase_ = 0;
+      noderunCriteria_ = null;
       onChanged();
       return this;
     }
@@ -1369,144 +1445,233 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb, io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb.Builder, io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPbOrBuilder> statusAndSpecBuilder_;
+        io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb, io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb.Builder, io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPbOrBuilder> statusAndTaskdefBuilder_;
     /**
-     * <code>.lh_proto.SearchWfRunPb.StatusAndSpecPb status_and_spec = 3;</code>
-     * @return Whether the statusAndSpec field is set.
+     * <code>.lh_proto.SearchNodeRunPb.StatusAndTaskDefPb status_and_taskdef = 3;</code>
+     * @return Whether the statusAndTaskdef field is set.
      */
     @java.lang.Override
-    public boolean hasStatusAndSpec() {
-      return wfrunCriteriaCase_ == 3;
+    public boolean hasStatusAndTaskdef() {
+      return noderunCriteriaCase_ == 3;
     }
     /**
-     * <code>.lh_proto.SearchWfRunPb.StatusAndSpecPb status_and_spec = 3;</code>
-     * @return The statusAndSpec.
+     * <code>.lh_proto.SearchNodeRunPb.StatusAndTaskDefPb status_and_taskdef = 3;</code>
+     * @return The statusAndTaskdef.
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb getStatusAndSpec() {
-      if (statusAndSpecBuilder_ == null) {
-        if (wfrunCriteriaCase_ == 3) {
-          return (io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb) wfrunCriteria_;
+    public io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb getStatusAndTaskdef() {
+      if (statusAndTaskdefBuilder_ == null) {
+        if (noderunCriteriaCase_ == 3) {
+          return (io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb) noderunCriteria_;
         }
-        return io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb.getDefaultInstance();
+        return io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb.getDefaultInstance();
       } else {
-        if (wfrunCriteriaCase_ == 3) {
-          return statusAndSpecBuilder_.getMessage();
+        if (noderunCriteriaCase_ == 3) {
+          return statusAndTaskdefBuilder_.getMessage();
         }
-        return io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb.getDefaultInstance();
+        return io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb.getDefaultInstance();
       }
     }
     /**
-     * <code>.lh_proto.SearchWfRunPb.StatusAndSpecPb status_and_spec = 3;</code>
+     * <code>.lh_proto.SearchNodeRunPb.StatusAndTaskDefPb status_and_taskdef = 3;</code>
      */
-    public Builder setStatusAndSpec(io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb value) {
-      if (statusAndSpecBuilder_ == null) {
+    public Builder setStatusAndTaskdef(io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb value) {
+      if (statusAndTaskdefBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        wfrunCriteria_ = value;
+        noderunCriteria_ = value;
         onChanged();
       } else {
-        statusAndSpecBuilder_.setMessage(value);
+        statusAndTaskdefBuilder_.setMessage(value);
       }
-      wfrunCriteriaCase_ = 3;
+      noderunCriteriaCase_ = 3;
       return this;
     }
     /**
-     * <code>.lh_proto.SearchWfRunPb.StatusAndSpecPb status_and_spec = 3;</code>
+     * <code>.lh_proto.SearchNodeRunPb.StatusAndTaskDefPb status_and_taskdef = 3;</code>
      */
-    public Builder setStatusAndSpec(
-        io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb.Builder builderForValue) {
-      if (statusAndSpecBuilder_ == null) {
-        wfrunCriteria_ = builderForValue.build();
+    public Builder setStatusAndTaskdef(
+        io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb.Builder builderForValue) {
+      if (statusAndTaskdefBuilder_ == null) {
+        noderunCriteria_ = builderForValue.build();
         onChanged();
       } else {
-        statusAndSpecBuilder_.setMessage(builderForValue.build());
+        statusAndTaskdefBuilder_.setMessage(builderForValue.build());
       }
-      wfrunCriteriaCase_ = 3;
+      noderunCriteriaCase_ = 3;
       return this;
     }
     /**
-     * <code>.lh_proto.SearchWfRunPb.StatusAndSpecPb status_and_spec = 3;</code>
+     * <code>.lh_proto.SearchNodeRunPb.StatusAndTaskDefPb status_and_taskdef = 3;</code>
      */
-    public Builder mergeStatusAndSpec(io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb value) {
-      if (statusAndSpecBuilder_ == null) {
-        if (wfrunCriteriaCase_ == 3 &&
-            wfrunCriteria_ != io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb.getDefaultInstance()) {
-          wfrunCriteria_ = io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb.newBuilder((io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb) wfrunCriteria_)
+    public Builder mergeStatusAndTaskdef(io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb value) {
+      if (statusAndTaskdefBuilder_ == null) {
+        if (noderunCriteriaCase_ == 3 &&
+            noderunCriteria_ != io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb.getDefaultInstance()) {
+          noderunCriteria_ = io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb.newBuilder((io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb) noderunCriteria_)
               .mergeFrom(value).buildPartial();
         } else {
-          wfrunCriteria_ = value;
+          noderunCriteria_ = value;
         }
         onChanged();
       } else {
-        if (wfrunCriteriaCase_ == 3) {
-          statusAndSpecBuilder_.mergeFrom(value);
+        if (noderunCriteriaCase_ == 3) {
+          statusAndTaskdefBuilder_.mergeFrom(value);
         }
-        statusAndSpecBuilder_.setMessage(value);
+        statusAndTaskdefBuilder_.setMessage(value);
       }
-      wfrunCriteriaCase_ = 3;
+      noderunCriteriaCase_ = 3;
       return this;
     }
     /**
-     * <code>.lh_proto.SearchWfRunPb.StatusAndSpecPb status_and_spec = 3;</code>
+     * <code>.lh_proto.SearchNodeRunPb.StatusAndTaskDefPb status_and_taskdef = 3;</code>
      */
-    public Builder clearStatusAndSpec() {
-      if (statusAndSpecBuilder_ == null) {
-        if (wfrunCriteriaCase_ == 3) {
-          wfrunCriteriaCase_ = 0;
-          wfrunCriteria_ = null;
+    public Builder clearStatusAndTaskdef() {
+      if (statusAndTaskdefBuilder_ == null) {
+        if (noderunCriteriaCase_ == 3) {
+          noderunCriteriaCase_ = 0;
+          noderunCriteria_ = null;
           onChanged();
         }
       } else {
-        if (wfrunCriteriaCase_ == 3) {
-          wfrunCriteriaCase_ = 0;
-          wfrunCriteria_ = null;
+        if (noderunCriteriaCase_ == 3) {
+          noderunCriteriaCase_ = 0;
+          noderunCriteria_ = null;
         }
-        statusAndSpecBuilder_.clear();
+        statusAndTaskdefBuilder_.clear();
       }
       return this;
     }
     /**
-     * <code>.lh_proto.SearchWfRunPb.StatusAndSpecPb status_and_spec = 3;</code>
+     * <code>.lh_proto.SearchNodeRunPb.StatusAndTaskDefPb status_and_taskdef = 3;</code>
      */
-    public io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb.Builder getStatusAndSpecBuilder() {
-      return getStatusAndSpecFieldBuilder().getBuilder();
+    public io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb.Builder getStatusAndTaskdefBuilder() {
+      return getStatusAndTaskdefFieldBuilder().getBuilder();
     }
     /**
-     * <code>.lh_proto.SearchWfRunPb.StatusAndSpecPb status_and_spec = 3;</code>
+     * <code>.lh_proto.SearchNodeRunPb.StatusAndTaskDefPb status_and_taskdef = 3;</code>
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPbOrBuilder getStatusAndSpecOrBuilder() {
-      if ((wfrunCriteriaCase_ == 3) && (statusAndSpecBuilder_ != null)) {
-        return statusAndSpecBuilder_.getMessageOrBuilder();
+    public io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPbOrBuilder getStatusAndTaskdefOrBuilder() {
+      if ((noderunCriteriaCase_ == 3) && (statusAndTaskdefBuilder_ != null)) {
+        return statusAndTaskdefBuilder_.getMessageOrBuilder();
       } else {
-        if (wfrunCriteriaCase_ == 3) {
-          return (io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb) wfrunCriteria_;
+        if (noderunCriteriaCase_ == 3) {
+          return (io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb) noderunCriteria_;
         }
-        return io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb.getDefaultInstance();
+        return io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb.getDefaultInstance();
       }
     }
     /**
-     * <code>.lh_proto.SearchWfRunPb.StatusAndSpecPb status_and_spec = 3;</code>
+     * <code>.lh_proto.SearchNodeRunPb.StatusAndTaskDefPb status_and_taskdef = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb, io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb.Builder, io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPbOrBuilder> 
-        getStatusAndSpecFieldBuilder() {
-      if (statusAndSpecBuilder_ == null) {
-        if (!(wfrunCriteriaCase_ == 3)) {
-          wfrunCriteria_ = io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb.getDefaultInstance();
+        io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb, io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb.Builder, io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPbOrBuilder> 
+        getStatusAndTaskdefFieldBuilder() {
+      if (statusAndTaskdefBuilder_ == null) {
+        if (!(noderunCriteriaCase_ == 3)) {
+          noderunCriteria_ = io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb.getDefaultInstance();
         }
-        statusAndSpecBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb, io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb.Builder, io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPbOrBuilder>(
-                (io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb) wfrunCriteria_,
+        statusAndTaskdefBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb, io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb.Builder, io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPbOrBuilder>(
+                (io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb) noderunCriteria_,
                 getParentForChildren(),
                 isClean());
-        wfrunCriteria_ = null;
+        noderunCriteria_ = null;
       }
-      wfrunCriteriaCase_ = 3;
+      noderunCriteriaCase_ = 3;
       onChanged();;
-      return statusAndSpecBuilder_;
+      return statusAndTaskdefBuilder_;
+    }
+
+    /**
+     * <code>string wf_run_id = 4;</code>
+     * @return The wfRunId.
+     */
+    @java.lang.Override
+    public java.lang.String getWfRunId() {
+      java.lang.Object ref = "";
+      if (noderunCriteriaCase_ == 4) {
+        ref = noderunCriteria_;
+      }
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (noderunCriteriaCase_ == 4) {
+          noderunCriteria_ = s;
+        }
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string wf_run_id = 4;</code>
+     * @return The bytes for wfRunId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getWfRunIdBytes() {
+      java.lang.Object ref = "";
+      if (noderunCriteriaCase_ == 4) {
+        ref = noderunCriteria_;
+      }
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        if (noderunCriteriaCase_ == 4) {
+          noderunCriteria_ = b;
+        }
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string wf_run_id = 4;</code>
+     * @param value The wfRunId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setWfRunId(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  noderunCriteriaCase_ = 4;
+      noderunCriteria_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string wf_run_id = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearWfRunId() {
+      if (noderunCriteriaCase_ == 4) {
+        noderunCriteriaCase_ = 0;
+        noderunCriteria_ = null;
+        onChanged();
+      }
+      return this;
+    }
+    /**
+     * <code>string wf_run_id = 4;</code>
+     * @param value The bytes for wfRunId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setWfRunIdBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      noderunCriteriaCase_ = 4;
+      noderunCriteria_ = value;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
@@ -1521,41 +1686,41 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.SearchWfRunPb)
+    // @@protoc_insertion_point(builder_scope:lh_proto.SearchNodeRunPb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.SearchWfRunPb)
-  private static final io.littlehorse.common.proto.SearchWfRunPb DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:lh_proto.SearchNodeRunPb)
+  private static final io.littlehorse.common.proto.SearchNodeRunPb DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.common.proto.SearchWfRunPb();
+    DEFAULT_INSTANCE = new io.littlehorse.common.proto.SearchNodeRunPb();
   }
 
-  public static io.littlehorse.common.proto.SearchWfRunPb getDefaultInstance() {
+  public static io.littlehorse.common.proto.SearchNodeRunPb getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<SearchWfRunPb>
-      PARSER = new com.google.protobuf.AbstractParser<SearchWfRunPb>() {
+  private static final com.google.protobuf.Parser<SearchNodeRunPb>
+      PARSER = new com.google.protobuf.AbstractParser<SearchNodeRunPb>() {
     @java.lang.Override
-    public SearchWfRunPb parsePartialFrom(
+    public SearchNodeRunPb parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new SearchWfRunPb(input, extensionRegistry);
+      return new SearchNodeRunPb(input, extensionRegistry);
     }
   };
 
-  public static com.google.protobuf.Parser<SearchWfRunPb> parser() {
+  public static com.google.protobuf.Parser<SearchNodeRunPb> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<SearchWfRunPb> getParserForType() {
+  public com.google.protobuf.Parser<SearchNodeRunPb> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.common.proto.SearchWfRunPb getDefaultInstanceForType() {
+  public io.littlehorse.common.proto.SearchNodeRunPb getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

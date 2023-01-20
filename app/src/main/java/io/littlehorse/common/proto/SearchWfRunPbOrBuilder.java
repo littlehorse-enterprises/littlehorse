@@ -44,5 +44,5 @@ public interface SearchWfRunPbOrBuilder extends
    */
   io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPbOrBuilder getStatusAndSpecOrBuilder();
 
-  public io.littlehorse.common.proto.SearchWfRunPb.CriteriaCase getCriteriaCase();
+  public io.littlehorse.common.proto.SearchWfRunPb.WfrunCriteriaCase getWfrunCriteriaCase();
 }

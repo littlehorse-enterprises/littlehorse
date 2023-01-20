@@ -388,34 +388,158 @@ public final class LHPublicApiGrpc {
   }
 
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.SearchWfRunPb,
-      io.littlehorse.common.proto.SearchWfRunReplyPb> getSearchWfRunMethod;
+      io.littlehorse.common.proto.SearchReplyPb> getSearchWfRunMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "SearchWfRun",
       requestType = io.littlehorse.common.proto.SearchWfRunPb.class,
-      responseType = io.littlehorse.common.proto.SearchWfRunReplyPb.class,
+      responseType = io.littlehorse.common.proto.SearchReplyPb.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
   public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.SearchWfRunPb,
-      io.littlehorse.common.proto.SearchWfRunReplyPb> getSearchWfRunMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.common.proto.SearchWfRunPb, io.littlehorse.common.proto.SearchWfRunReplyPb> getSearchWfRunMethod;
+      io.littlehorse.common.proto.SearchReplyPb> getSearchWfRunMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.common.proto.SearchWfRunPb, io.littlehorse.common.proto.SearchReplyPb> getSearchWfRunMethod;
     if ((getSearchWfRunMethod = LHPublicApiGrpc.getSearchWfRunMethod) == null) {
       synchronized (LHPublicApiGrpc.class) {
         if ((getSearchWfRunMethod = LHPublicApiGrpc.getSearchWfRunMethod) == null) {
           LHPublicApiGrpc.getSearchWfRunMethod = getSearchWfRunMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.SearchWfRunPb, io.littlehorse.common.proto.SearchWfRunReplyPb>newBuilder()
+              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.SearchWfRunPb, io.littlehorse.common.proto.SearchReplyPb>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SearchWfRun"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   io.littlehorse.common.proto.SearchWfRunPb.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.common.proto.SearchWfRunReplyPb.getDefaultInstance()))
+                  io.littlehorse.common.proto.SearchReplyPb.getDefaultInstance()))
               .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("SearchWfRun"))
               .build();
         }
       }
     }
     return getSearchWfRunMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.SearchNodeRunPb,
+      io.littlehorse.common.proto.SearchReplyPb> getSearchNodeRunMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "SearchNodeRun",
+      requestType = io.littlehorse.common.proto.SearchNodeRunPb.class,
+      responseType = io.littlehorse.common.proto.SearchReplyPb.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.SearchNodeRunPb,
+      io.littlehorse.common.proto.SearchReplyPb> getSearchNodeRunMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.common.proto.SearchNodeRunPb, io.littlehorse.common.proto.SearchReplyPb> getSearchNodeRunMethod;
+    if ((getSearchNodeRunMethod = LHPublicApiGrpc.getSearchNodeRunMethod) == null) {
+      synchronized (LHPublicApiGrpc.class) {
+        if ((getSearchNodeRunMethod = LHPublicApiGrpc.getSearchNodeRunMethod) == null) {
+          LHPublicApiGrpc.getSearchNodeRunMethod = getSearchNodeRunMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.SearchNodeRunPb, io.littlehorse.common.proto.SearchReplyPb>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SearchNodeRun"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.SearchNodeRunPb.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.SearchReplyPb.getDefaultInstance()))
+              .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("SearchNodeRun"))
+              .build();
+        }
+      }
+    }
+    return getSearchNodeRunMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.SearchVariablePb,
+      io.littlehorse.common.proto.SearchReplyPb> getSearchVariableMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "SearchVariable",
+      requestType = io.littlehorse.common.proto.SearchVariablePb.class,
+      responseType = io.littlehorse.common.proto.SearchReplyPb.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.SearchVariablePb,
+      io.littlehorse.common.proto.SearchReplyPb> getSearchVariableMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.common.proto.SearchVariablePb, io.littlehorse.common.proto.SearchReplyPb> getSearchVariableMethod;
+    if ((getSearchVariableMethod = LHPublicApiGrpc.getSearchVariableMethod) == null) {
+      synchronized (LHPublicApiGrpc.class) {
+        if ((getSearchVariableMethod = LHPublicApiGrpc.getSearchVariableMethod) == null) {
+          LHPublicApiGrpc.getSearchVariableMethod = getSearchVariableMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.SearchVariablePb, io.littlehorse.common.proto.SearchReplyPb>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SearchVariable"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.SearchVariablePb.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.SearchReplyPb.getDefaultInstance()))
+              .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("SearchVariable"))
+              .build();
+        }
+      }
+    }
+    return getSearchVariableMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.SearchTaskDefPb,
+      io.littlehorse.common.proto.SearchReplyPb> getSearchTaskDefMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "SearchTaskDef",
+      requestType = io.littlehorse.common.proto.SearchTaskDefPb.class,
+      responseType = io.littlehorse.common.proto.SearchReplyPb.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.SearchTaskDefPb,
+      io.littlehorse.common.proto.SearchReplyPb> getSearchTaskDefMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.common.proto.SearchTaskDefPb, io.littlehorse.common.proto.SearchReplyPb> getSearchTaskDefMethod;
+    if ((getSearchTaskDefMethod = LHPublicApiGrpc.getSearchTaskDefMethod) == null) {
+      synchronized (LHPublicApiGrpc.class) {
+        if ((getSearchTaskDefMethod = LHPublicApiGrpc.getSearchTaskDefMethod) == null) {
+          LHPublicApiGrpc.getSearchTaskDefMethod = getSearchTaskDefMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.SearchTaskDefPb, io.littlehorse.common.proto.SearchReplyPb>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SearchTaskDef"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.SearchTaskDefPb.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.SearchReplyPb.getDefaultInstance()))
+              .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("SearchTaskDef"))
+              .build();
+        }
+      }
+    }
+    return getSearchTaskDefMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.SearchWfSpecPb,
+      io.littlehorse.common.proto.SearchReplyPb> getSearchWfSpecMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "SearchWfSpec",
+      requestType = io.littlehorse.common.proto.SearchWfSpecPb.class,
+      responseType = io.littlehorse.common.proto.SearchReplyPb.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.SearchWfSpecPb,
+      io.littlehorse.common.proto.SearchReplyPb> getSearchWfSpecMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.common.proto.SearchWfSpecPb, io.littlehorse.common.proto.SearchReplyPb> getSearchWfSpecMethod;
+    if ((getSearchWfSpecMethod = LHPublicApiGrpc.getSearchWfSpecMethod) == null) {
+      synchronized (LHPublicApiGrpc.class) {
+        if ((getSearchWfSpecMethod = LHPublicApiGrpc.getSearchWfSpecMethod) == null) {
+          LHPublicApiGrpc.getSearchWfSpecMethod = getSearchWfSpecMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.SearchWfSpecPb, io.littlehorse.common.proto.SearchReplyPb>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SearchWfSpec"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.SearchWfSpecPb.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.SearchReplyPb.getDefaultInstance()))
+              .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("SearchWfSpec"))
+              .build();
+        }
+      }
+    }
+    return getSearchWfSpecMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.RegisterTaskWorkerPb,
@@ -801,8 +925,36 @@ public final class LHPublicApiGrpc {
     /**
      */
     public void searchWfRun(io.littlehorse.common.proto.SearchWfRunPb request,
-        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.SearchWfRunReplyPb> responseObserver) {
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.SearchReplyPb> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSearchWfRunMethod(), responseObserver);
+    }
+
+    /**
+     */
+    public void searchNodeRun(io.littlehorse.common.proto.SearchNodeRunPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.SearchReplyPb> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSearchNodeRunMethod(), responseObserver);
+    }
+
+    /**
+     */
+    public void searchVariable(io.littlehorse.common.proto.SearchVariablePb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.SearchReplyPb> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSearchVariableMethod(), responseObserver);
+    }
+
+    /**
+     */
+    public void searchTaskDef(io.littlehorse.common.proto.SearchTaskDefPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.SearchReplyPb> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSearchTaskDefMethod(), responseObserver);
+    }
+
+    /**
+     */
+    public void searchWfSpec(io.littlehorse.common.proto.SearchWfSpecPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.SearchReplyPb> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSearchWfSpecMethod(), responseObserver);
     }
 
     /**
@@ -952,8 +1104,36 @@ public final class LHPublicApiGrpc {
             io.grpc.stub.ServerCalls.asyncUnaryCall(
               new MethodHandlers<
                 io.littlehorse.common.proto.SearchWfRunPb,
-                io.littlehorse.common.proto.SearchWfRunReplyPb>(
+                io.littlehorse.common.proto.SearchReplyPb>(
                   this, METHODID_SEARCH_WF_RUN)))
+          .addMethod(
+            getSearchNodeRunMethod(),
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
+              new MethodHandlers<
+                io.littlehorse.common.proto.SearchNodeRunPb,
+                io.littlehorse.common.proto.SearchReplyPb>(
+                  this, METHODID_SEARCH_NODE_RUN)))
+          .addMethod(
+            getSearchVariableMethod(),
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
+              new MethodHandlers<
+                io.littlehorse.common.proto.SearchVariablePb,
+                io.littlehorse.common.proto.SearchReplyPb>(
+                  this, METHODID_SEARCH_VARIABLE)))
+          .addMethod(
+            getSearchTaskDefMethod(),
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
+              new MethodHandlers<
+                io.littlehorse.common.proto.SearchTaskDefPb,
+                io.littlehorse.common.proto.SearchReplyPb>(
+                  this, METHODID_SEARCH_TASK_DEF)))
+          .addMethod(
+            getSearchWfSpecMethod(),
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
+              new MethodHandlers<
+                io.littlehorse.common.proto.SearchWfSpecPb,
+                io.littlehorse.common.proto.SearchReplyPb>(
+                  this, METHODID_SEARCH_WF_SPEC)))
           .addMethod(
             getRegisterTaskWorkerMethod(),
             io.grpc.stub.ServerCalls.asyncUnaryCall(
@@ -1127,9 +1307,41 @@ public final class LHPublicApiGrpc {
     /**
      */
     public void searchWfRun(io.littlehorse.common.proto.SearchWfRunPb request,
-        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.SearchWfRunReplyPb> responseObserver) {
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.SearchReplyPb> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getSearchWfRunMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void searchNodeRun(io.littlehorse.common.proto.SearchNodeRunPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.SearchReplyPb> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getSearchNodeRunMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void searchVariable(io.littlehorse.common.proto.SearchVariablePb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.SearchReplyPb> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getSearchVariableMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void searchTaskDef(io.littlehorse.common.proto.SearchTaskDefPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.SearchReplyPb> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getSearchTaskDefMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void searchWfSpec(io.littlehorse.common.proto.SearchWfSpecPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.SearchReplyPb> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getSearchWfSpecMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -1297,9 +1509,37 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    public io.littlehorse.common.proto.SearchWfRunReplyPb searchWfRun(io.littlehorse.common.proto.SearchWfRunPb request) {
+    public io.littlehorse.common.proto.SearchReplyPb searchWfRun(io.littlehorse.common.proto.SearchWfRunPb request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getSearchWfRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.common.proto.SearchReplyPb searchNodeRun(io.littlehorse.common.proto.SearchNodeRunPb request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchNodeRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.common.proto.SearchReplyPb searchVariable(io.littlehorse.common.proto.SearchVariablePb request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchVariableMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.common.proto.SearchReplyPb searchTaskDef(io.littlehorse.common.proto.SearchTaskDefPb request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchTaskDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.common.proto.SearchReplyPb searchWfSpec(io.littlehorse.common.proto.SearchWfSpecPb request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchWfSpecMethod(), getCallOptions(), request);
     }
 
     /**
@@ -1464,10 +1704,42 @@ public final class LHPublicApiGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.SearchWfRunReplyPb> searchWfRun(
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.SearchReplyPb> searchWfRun(
         io.littlehorse.common.proto.SearchWfRunPb request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getSearchWfRunMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.SearchReplyPb> searchNodeRun(
+        io.littlehorse.common.proto.SearchNodeRunPb request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getSearchNodeRunMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.SearchReplyPb> searchVariable(
+        io.littlehorse.common.proto.SearchVariablePb request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getSearchVariableMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.SearchReplyPb> searchTaskDef(
+        io.littlehorse.common.proto.SearchTaskDefPb request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getSearchTaskDefMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.SearchReplyPb> searchWfSpec(
+        io.littlehorse.common.proto.SearchWfSpecPb request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getSearchWfSpecMethod(), getCallOptions()), request);
     }
 
     /**
@@ -1540,14 +1812,18 @@ public final class LHPublicApiGrpc {
   private static final int METHODID_PUT_EXTERNAL_EVENT = 10;
   private static final int METHODID_GET_EXTERNAL_EVENT = 11;
   private static final int METHODID_SEARCH_WF_RUN = 12;
-  private static final int METHODID_REGISTER_TASK_WORKER = 13;
-  private static final int METHODID_REPORT_TASK = 14;
-  private static final int METHODID_STOP_WF_RUN = 15;
-  private static final int METHODID_RESUME_WF_RUN = 16;
-  private static final int METHODID_DELETE_WF_RUN = 17;
-  private static final int METHODID_HEALTH_CHECK = 18;
-  private static final int METHODID_GET_METRICS = 19;
-  private static final int METHODID_POLL_TASK = 20;
+  private static final int METHODID_SEARCH_NODE_RUN = 13;
+  private static final int METHODID_SEARCH_VARIABLE = 14;
+  private static final int METHODID_SEARCH_TASK_DEF = 15;
+  private static final int METHODID_SEARCH_WF_SPEC = 16;
+  private static final int METHODID_REGISTER_TASK_WORKER = 17;
+  private static final int METHODID_REPORT_TASK = 18;
+  private static final int METHODID_STOP_WF_RUN = 19;
+  private static final int METHODID_RESUME_WF_RUN = 20;
+  private static final int METHODID_DELETE_WF_RUN = 21;
+  private static final int METHODID_HEALTH_CHECK = 22;
+  private static final int METHODID_GET_METRICS = 23;
+  private static final int METHODID_POLL_TASK = 24;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -1616,7 +1892,23 @@ public final class LHPublicApiGrpc {
           break;
         case METHODID_SEARCH_WF_RUN:
           serviceImpl.searchWfRun((io.littlehorse.common.proto.SearchWfRunPb) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.SearchWfRunReplyPb>) responseObserver);
+              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.SearchReplyPb>) responseObserver);
+          break;
+        case METHODID_SEARCH_NODE_RUN:
+          serviceImpl.searchNodeRun((io.littlehorse.common.proto.SearchNodeRunPb) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.SearchReplyPb>) responseObserver);
+          break;
+        case METHODID_SEARCH_VARIABLE:
+          serviceImpl.searchVariable((io.littlehorse.common.proto.SearchVariablePb) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.SearchReplyPb>) responseObserver);
+          break;
+        case METHODID_SEARCH_TASK_DEF:
+          serviceImpl.searchTaskDef((io.littlehorse.common.proto.SearchTaskDefPb) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.SearchReplyPb>) responseObserver);
+          break;
+        case METHODID_SEARCH_WF_SPEC:
+          serviceImpl.searchWfSpec((io.littlehorse.common.proto.SearchWfSpecPb) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.SearchReplyPb>) responseObserver);
           break;
         case METHODID_REGISTER_TASK_WORKER:
           serviceImpl.registerTaskWorker((io.littlehorse.common.proto.RegisterTaskWorkerPb) request,
@@ -1723,6 +2015,10 @@ public final class LHPublicApiGrpc {
               .addMethod(getPutExternalEventMethod())
               .addMethod(getGetExternalEventMethod())
               .addMethod(getSearchWfRunMethod())
+              .addMethod(getSearchNodeRunMethod())
+              .addMethod(getSearchVariableMethod())
+              .addMethod(getSearchTaskDefMethod())
+              .addMethod(getSearchWfSpecMethod())
               .addMethod(getRegisterTaskWorkerMethod())
               .addMethod(getPollTaskMethod())
               .addMethod(getReportTaskMethod())
