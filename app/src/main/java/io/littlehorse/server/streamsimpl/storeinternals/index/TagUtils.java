@@ -11,6 +11,7 @@ import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.NodeRunPb.NodeTypeCase;
 import io.littlehorse.common.proto.TagStorageTypePb;
+import io.littlehorse.common.util.LHUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -87,13 +88,29 @@ public class TagUtils {
     }
 
     private static List<Tag> tag(Variable thing) {
-        // TODO: Figure out a good way to tag Variables.
-        return new ArrayList<>();
+        Pair<String, String> valuePair = thing.value.getValueTagPair();
+
+        if (valuePair != null) {
+            // EMPLOYEE_TODO: allow the search to specify the WfSpecName. That
+            // will require passing in some info about the wfRun+wfSpec upon ceation
+            // of the Variable object. That will require editing the
+            // CommandProcessorDaoImpl.
+            return Arrays.asList(
+                new Tag(
+                    thing,
+                    TagStorageTypePb.LOCAL_UNCOUNTED,
+                    valuePair,
+                    Pair.of("name", thing.name)
+                )
+            );
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     private static List<Tag> tag(ExternalEvent thing) {
         // I don't think there's anything to do for ExternalEvent's yet.
-        // Perhaps once we add schemas, it will make sense.k
+        // Perhaps once we add schemas, it will make sense.
         return new ArrayList<>();
     }
 

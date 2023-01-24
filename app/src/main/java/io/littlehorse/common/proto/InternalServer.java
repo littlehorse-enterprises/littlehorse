@@ -65,20 +65,10 @@ public final class InternalServer {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_lh_proto_LHInternalSearchPb_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_lh_proto_LocalTagScanPb_descriptor;
+    internal_static_lh_proto_LHInternalSearchPb_RepeatedAttributePb_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_lh_proto_LocalTagScanPb_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_lh_proto_ObjectIdPrefixScanPb_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_lh_proto_ObjectIdPrefixScanPb_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_lh_proto_HashedTagScanPb_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_lh_proto_HashedTagScanPb_fieldAccessorTable;
+      internal_static_lh_proto_LHInternalSearchPb_RepeatedAttributePb_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_lh_proto_InternalSearchReplyPb_descriptor;
   static final 
@@ -145,19 +135,16 @@ public final class InternalServer {
       "\004code\030\001 \001(\0162\034.lh_proto.StoreQueryStatusP" +
       "b\022.\n\006result\030\002 \001(\0132\031.lh_proto.CommandResu" +
       "ltPbH\000\210\001\001\022\024\n\007message\030\003 \001(\tH\001\210\001\001B\t\n\007_resu" +
-      "ltB\n\n\010_message\"\271\002\n\022LHInternalSearchPb\022+\n" +
-      "\010bookmark\030\001 \001(\0132\024.lh_proto.BookmarkPbH\001\210" +
-      "\001\001\022\r\n\005limit\030\002 \001(\005\0221\n\013object_type\030\003 \001(\0162\034" +
-      ".lh_proto.GETableClassEnumPb\022-\n\tlocal_ta" +
-      "g\030\004 \001(\0132\030.lh_proto.LocalTagScanPbH\000\022:\n\020o" +
-      "bject_id_prefix\030\005 \001(\0132\036.lh_proto.ObjectI" +
-      "dPrefixScanPbH\000\022/\n\nhashed_tag\030\006 \001(\0132\031.lh" +
-      "_proto.HashedTagScanPbH\000B\013\n\tsubsearchB\013\n" +
-      "\t_bookmark\";\n\016LocalTagScanPb\022)\n\nattribut" +
-      "es\030\001 \003(\0132\025.lh_proto.AttributePb\"0\n\024Objec" +
-      "tIdPrefixScanPb\022\030\n\020object_id_prefix\030\001 \001(" +
-      "\t\"<\n\017HashedTagScanPb\022)\n\nattributes\030\001 \003(\013" +
-      "2\025.lh_proto.AttributePb\"\251\001\n\025InternalSear" +
+      "ltB\n\n\010_message\"\356\002\n\022LHInternalSearchPb\022\r\n" +
+      "\005limit\030\001 \001(\005\022+\n\010bookmark\030\002 \001(\0132\024.lh_prot" +
+      "o.BookmarkPbH\001\210\001\001\0221\n\013object_type\030\003 \001(\0162\034" +
+      ".lh_proto.GETableClassEnumPb\022\032\n\rpartitio" +
+      "n_key\030\004 \001(\tH\002\210\001\001\022\032\n\020object_id_prefix\030\005 \001" +
+      "(\tH\000\022F\n\ntag_prefix\030\006 \001(\01320.lh_proto.LHIn" +
+      "ternalSearchPb.RepeatedAttributePbH\000\032@\n\023" +
+      "RepeatedAttributePb\022)\n\nattributes\030\001 \003(\0132" +
+      "\025.lh_proto.AttributePbB\010\n\006prefixB\013\n\t_boo" +
+      "kmarkB\020\n\016_partition_key\"\251\001\n\025InternalSear" +
       "chReplyPb\022*\n\004code\030\001 \001(\0162\034.lh_proto.Store" +
       "QueryStatusPb\022\022\n\nobject_ids\030\002 \003(\t\022.\n\020upd" +
       "ated_bookmark\030\003 \001(\0132\024.lh_proto.BookmarkP" +
@@ -254,51 +241,39 @@ public final class InternalServer {
     internal_static_lh_proto_LHInternalSearchPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_LHInternalSearchPb_descriptor,
-        new java.lang.String[] { "Bookmark", "Limit", "ObjectType", "LocalTag", "ObjectIdPrefix", "HashedTag", "Subsearch", "Bookmark", });
-    internal_static_lh_proto_LocalTagScanPb_descriptor =
-      getDescriptor().getMessageTypes().get(8);
-    internal_static_lh_proto_LocalTagScanPb_fieldAccessorTable = new
+        new java.lang.String[] { "Limit", "Bookmark", "ObjectType", "PartitionKey", "ObjectIdPrefix", "TagPrefix", "Prefix", "Bookmark", "PartitionKey", });
+    internal_static_lh_proto_LHInternalSearchPb_RepeatedAttributePb_descriptor =
+      internal_static_lh_proto_LHInternalSearchPb_descriptor.getNestedTypes().get(0);
+    internal_static_lh_proto_LHInternalSearchPb_RepeatedAttributePb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_lh_proto_LocalTagScanPb_descriptor,
-        new java.lang.String[] { "Attributes", });
-    internal_static_lh_proto_ObjectIdPrefixScanPb_descriptor =
-      getDescriptor().getMessageTypes().get(9);
-    internal_static_lh_proto_ObjectIdPrefixScanPb_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_lh_proto_ObjectIdPrefixScanPb_descriptor,
-        new java.lang.String[] { "ObjectIdPrefix", });
-    internal_static_lh_proto_HashedTagScanPb_descriptor =
-      getDescriptor().getMessageTypes().get(10);
-    internal_static_lh_proto_HashedTagScanPb_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_lh_proto_HashedTagScanPb_descriptor,
+        internal_static_lh_proto_LHInternalSearchPb_RepeatedAttributePb_descriptor,
         new java.lang.String[] { "Attributes", });
     internal_static_lh_proto_InternalSearchReplyPb_descriptor =
-      getDescriptor().getMessageTypes().get(11);
+      getDescriptor().getMessageTypes().get(8);
     internal_static_lh_proto_InternalSearchReplyPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_InternalSearchReplyPb_descriptor,
         new java.lang.String[] { "Code", "ObjectIds", "UpdatedBookmark", "Message", "Message", });
     internal_static_lh_proto_InternalPollTaskPb_descriptor =
-      getDescriptor().getMessageTypes().get(12);
+      getDescriptor().getMessageTypes().get(9);
     internal_static_lh_proto_InternalPollTaskPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_InternalPollTaskPb_descriptor,
         new java.lang.String[] { "TaskQueueName", });
     internal_static_lh_proto_InternalPollTaskReplyPb_descriptor =
-      getDescriptor().getMessageTypes().get(13);
+      getDescriptor().getMessageTypes().get(10);
     internal_static_lh_proto_InternalPollTaskReplyPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_InternalPollTaskReplyPb_descriptor,
         new java.lang.String[] { "Code", "Result", "Result", });
     internal_static_lh_proto_InternalGetAdvertisedHostsPb_descriptor =
-      getDescriptor().getMessageTypes().get(14);
+      getDescriptor().getMessageTypes().get(11);
     internal_static_lh_proto_InternalGetAdvertisedHostsPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_InternalGetAdvertisedHostsPb_descriptor,
         new java.lang.String[] { });
     internal_static_lh_proto_InternalGetAdvertisedHostsReplyPb_descriptor =
-      getDescriptor().getMessageTypes().get(15);
+      getDescriptor().getMessageTypes().get(12);
     internal_static_lh_proto_InternalGetAdvertisedHostsReplyPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_InternalGetAdvertisedHostsReplyPb_descriptor,

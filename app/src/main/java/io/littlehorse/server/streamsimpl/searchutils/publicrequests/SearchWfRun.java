@@ -3,14 +3,16 @@ package io.littlehorse.server.streamsimpl.searchutils.publicrequests;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.LHInternalSearchPb.PrefixCase;
 import io.littlehorse.common.proto.SearchWfRunPb;
 import io.littlehorse.common.proto.SearchWfRunPb.StatusAndSpecPb;
 import io.littlehorse.common.proto.SearchWfRunPb.WfrunCriteriaCase;
 import io.littlehorse.common.proto.SearchWfRunPbOrBuilder;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.streamsimpl.searchutils.LHInternalSubSearch;
+import io.littlehorse.server.streamsimpl.searchutils.LHInternalSearch;
 import io.littlehorse.server.streamsimpl.searchutils.LHPublicSearch;
+import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
 
 public class SearchWfRun extends LHPublicSearch<SearchWfRunPb> {
 
@@ -72,8 +74,19 @@ public class SearchWfRun extends LHPublicSearch<SearchWfRunPb> {
         return out;
     }
 
-    public LHInternalSubSearch<?> getSubSearch(LHGlobalMetaStores stores) {
-        if (type == WfrunCriteriaCase.STATUS_AND_SPEC) {}
-        throw new RuntimeException("not possible");
+    public LHInternalSearch startInternalSearch(LHGlobalMetaStores stores) {
+        LHInternalSearch out = new LHInternalSearch();
+        if (type == WfrunCriteriaCase.STATUS_AND_SPEC) {
+            out.prefixType = PrefixCase.TAG_PREFIX;
+            out.tagPrefix.add(
+                new Attribute("wfSpecName", statusAndSpec.getWfSpecName())
+            );
+            out.tagPrefix.add(
+                new Attribute("status", statusAndSpec.getStatus().toString())
+            );
+        } else {
+            throw new RuntimeException("Not possible or unimplemented");
+        }
+        return out;
     }
 }

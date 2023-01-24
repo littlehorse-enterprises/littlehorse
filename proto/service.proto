@@ -180,9 +180,15 @@ message SearchVariablePb {
     optional bytes bookmark = 1;
     optional int32 limit = 2;
 
+    message NameAndValuePb {
+        VariableValuePb value = 1;
+        optional int32 wf_spec_version = 2;
+        string var_name = 3;
+    }
+
     oneof variable_criteria {
         string wf_run_id = 3;
-        VariableValuePb value = 4;
+        NameAndValuePb value = 4;
     }
 }
 

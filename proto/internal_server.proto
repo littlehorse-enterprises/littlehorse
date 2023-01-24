@@ -78,26 +78,18 @@ message WaitForCommandReplyPb {
 // - hashedTagScan, eg. all variables with string value "foobar"
 
 message LHInternalSearchPb {
-    optional BookmarkPb bookmark = 1;
-    int32 limit = 2;
-    GETableClassEnumPb object_type = 3;
-    oneof subsearch {
-        LocalTagScanPb local_tag = 4;
-        ObjectIdPrefixScanPb object_id_prefix = 5;
-        HashedTagScanPb hashed_tag = 6;
+    message RepeatedAttributePb {
+        repeated AttributePb attributes = 1;
     }
-}
+    int32 limit = 1;
+    optional BookmarkPb bookmark = 2;
+    GETableClassEnumPb object_type = 3;
+    optional string partition_key = 4;
 
-message LocalTagScanPb {
-    repeated AttributePb attributes = 1;
-}
-
-message ObjectIdPrefixScanPb {
-    string object_id_prefix = 1;
-}
-
-message HashedTagScanPb {
-    repeated AttributePb attributes = 1;
+    oneof prefix {
+        string object_id_prefix = 5;
+        RepeatedAttributePb tag_prefix = 6;
+    }
 }
 
 message InternalSearchReplyPb { // all scans have the same output

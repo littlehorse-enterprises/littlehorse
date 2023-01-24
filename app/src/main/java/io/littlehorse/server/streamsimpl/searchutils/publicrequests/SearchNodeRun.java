@@ -3,14 +3,16 @@ package io.littlehorse.server.streamsimpl.searchutils.publicrequests;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.LHInternalSearchPb.PrefixCase;
 import io.littlehorse.common.proto.SearchNodeRunPb;
 import io.littlehorse.common.proto.SearchNodeRunPb.NoderunCriteriaCase;
 import io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb;
 import io.littlehorse.common.proto.SearchNodeRunPbOrBuilder;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.server.streamsimpl.searchutils.LHInternalSubSearch;
+import io.littlehorse.server.streamsimpl.searchutils.LHInternalSearch;
 import io.littlehorse.server.streamsimpl.searchutils.LHPublicSearch;
+import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
 
 public class SearchNodeRun extends LHPublicSearch<SearchNodeRunPb> {
 
@@ -79,7 +81,24 @@ public class SearchNodeRun extends LHPublicSearch<SearchNodeRunPb> {
         return out;
     }
 
-    public LHInternalSubSearch<?> getSubSearch(LHGlobalMetaStores stores) {
-        throw new RuntimeException("not possible");
+    public LHInternalSearch startInternalSearch(LHGlobalMetaStores stores) {
+        LHInternalSearch out = new LHInternalSearch();
+
+        if (type == NoderunCriteriaCase.STATUS_AND_TASKDEF) {
+            out.prefixType = PrefixCase.TAG_PREFIX;
+            out.tagPrefix.add(
+                new Attribute("taskDefName", statusAndTaskDef.getTaskDefName())
+            );
+            out.tagPrefix.add(
+                new Attribute("status", statusAndTaskDef.getStatus().toString())
+            );
+        } else if (type == NoderunCriteriaCase.WF_RUN_ID) {
+            out.prefixType = PrefixCase.OBJECT_ID_PREFIX;
+            out.partitionKey = wfRunId;
+            out.objectIdPrefix = wfRunId;
+        } else {
+            throw new RuntimeException("Yikes, unimplemented type: " + type);
+        }
+        return out;
     }
 }

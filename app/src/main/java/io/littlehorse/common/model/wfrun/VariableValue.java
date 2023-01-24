@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class VariableValue extends LHSerializable<VariableValuePb> {
 
@@ -523,5 +524,42 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
     public VariableValue(boolean val) {
         type = VariableTypePb.BOOL;
         boolVal = val;
+    }
+
+    /*
+     * Returns a pair of String, String that can be used to find the Variable via
+     * a Tag Search. If not supported, returns null.
+     */
+    public Pair<String, String> getValueTagPair() {
+        // EMPLOYEE_TODO: provide a way in the WfSpec to distinguish between hot
+        // variables and non-hot variables.
+        // Non-hot variables should have special index entries which are partitioned
+        // according to the tags; hot variables should be of type LOCAL_COUNTED or
+        // LOCAL_UNCOUNTED.
+
+        Pair<String, String> valuePair;
+        switch (type) {
+            case INT:
+                valuePair = Pair.of("intVal", LHUtil.toLhDbFormat(intVal));
+                break;
+            case DOUBLE:
+                valuePair = Pair.of("doubleVal", LHUtil.toLhDbFormat(doubleVal));
+                break;
+            case STR:
+                // EMPLOYEE_TODO: probably want to hash the values here.
+                valuePair = Pair.of("strVal", strVal);
+                break;
+            case BOOL:
+                valuePair = Pair.of("boolVal", String.valueOf(boolVal));
+                break;
+            case BYTES:
+            case JSON_ARR:
+            case JSON_OBJ:
+            case UNRECOGNIZED:
+            case VOID:
+            default:
+                valuePair = null;
+        }
+        return valuePair;
     }
 }

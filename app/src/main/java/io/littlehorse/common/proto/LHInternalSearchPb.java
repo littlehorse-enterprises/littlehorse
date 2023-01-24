@@ -17,6 +17,7 @@ private static final long serialVersionUID = 0L;
   }
   private LHInternalSearchPb() {
     objectType_ = 0;
+    partitionKey_ = "";
   }
 
   @java.lang.Override
@@ -50,7 +51,12 @@ private static final long serialVersionUID = 0L;
           case 0:
             done = true;
             break;
-          case 10: {
+          case 8: {
+
+            limit_ = input.readInt32();
+            break;
+          }
+          case 18: {
             io.littlehorse.common.proto.BookmarkPb.Builder subBuilder = null;
             if (((bitField0_ & 0x00000001) != 0)) {
               subBuilder = bookmark_.toBuilder();
@@ -63,11 +69,6 @@ private static final long serialVersionUID = 0L;
             bitField0_ |= 0x00000001;
             break;
           }
-          case 16: {
-
-            limit_ = input.readInt32();
-            break;
-          }
           case 24: {
             int rawValue = input.readEnum();
 
@@ -75,45 +76,29 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 34: {
-            io.littlehorse.common.proto.LocalTagScanPb.Builder subBuilder = null;
-            if (subsearchCase_ == 4) {
-              subBuilder = ((io.littlehorse.common.proto.LocalTagScanPb) subsearch_).toBuilder();
-            }
-            subsearch_ =
-                input.readMessage(io.littlehorse.common.proto.LocalTagScanPb.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom((io.littlehorse.common.proto.LocalTagScanPb) subsearch_);
-              subsearch_ = subBuilder.buildPartial();
-            }
-            subsearchCase_ = 4;
+            java.lang.String s = input.readStringRequireUtf8();
+            bitField0_ |= 0x00000002;
+            partitionKey_ = s;
             break;
           }
           case 42: {
-            io.littlehorse.common.proto.ObjectIdPrefixScanPb.Builder subBuilder = null;
-            if (subsearchCase_ == 5) {
-              subBuilder = ((io.littlehorse.common.proto.ObjectIdPrefixScanPb) subsearch_).toBuilder();
-            }
-            subsearch_ =
-                input.readMessage(io.littlehorse.common.proto.ObjectIdPrefixScanPb.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom((io.littlehorse.common.proto.ObjectIdPrefixScanPb) subsearch_);
-              subsearch_ = subBuilder.buildPartial();
-            }
-            subsearchCase_ = 5;
+            java.lang.String s = input.readStringRequireUtf8();
+            prefixCase_ = 5;
+            prefix_ = s;
             break;
           }
           case 50: {
-            io.littlehorse.common.proto.HashedTagScanPb.Builder subBuilder = null;
-            if (subsearchCase_ == 6) {
-              subBuilder = ((io.littlehorse.common.proto.HashedTagScanPb) subsearch_).toBuilder();
+            io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb.Builder subBuilder = null;
+            if (prefixCase_ == 6) {
+              subBuilder = ((io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb) prefix_).toBuilder();
             }
-            subsearch_ =
-                input.readMessage(io.littlehorse.common.proto.HashedTagScanPb.parser(), extensionRegistry);
+            prefix_ =
+                input.readMessage(io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb.parser(), extensionRegistry);
             if (subBuilder != null) {
-              subBuilder.mergeFrom((io.littlehorse.common.proto.HashedTagScanPb) subsearch_);
-              subsearch_ = subBuilder.buildPartial();
+              subBuilder.mergeFrom((io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb) prefix_);
+              prefix_ = subBuilder.buildPartial();
             }
-            subsearchCase_ = 6;
+            prefixCase_ = 6;
             break;
           }
           default: {
@@ -148,18 +133,810 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.common.proto.LHInternalSearchPb.class, io.littlehorse.common.proto.LHInternalSearchPb.Builder.class);
   }
 
+  public interface RepeatedAttributePbOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:lh_proto.LHInternalSearchPb.RepeatedAttributePb)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 1;</code>
+     */
+    java.util.List<io.littlehorse.common.proto.AttributePb> 
+        getAttributesList();
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 1;</code>
+     */
+    io.littlehorse.common.proto.AttributePb getAttributes(int index);
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 1;</code>
+     */
+    int getAttributesCount();
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 1;</code>
+     */
+    java.util.List<? extends io.littlehorse.common.proto.AttributePbOrBuilder> 
+        getAttributesOrBuilderList();
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 1;</code>
+     */
+    io.littlehorse.common.proto.AttributePbOrBuilder getAttributesOrBuilder(
+        int index);
+  }
+  /**
+   * Protobuf type {@code lh_proto.LHInternalSearchPb.RepeatedAttributePb}
+   */
+  public static final class RepeatedAttributePb extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:lh_proto.LHInternalSearchPb.RepeatedAttributePb)
+      RepeatedAttributePbOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use RepeatedAttributePb.newBuilder() to construct.
+    private RepeatedAttributePb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private RepeatedAttributePb() {
+      attributes_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new RepeatedAttributePb();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private RepeatedAttributePb(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                attributes_ = new java.util.ArrayList<io.littlehorse.common.proto.AttributePb>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              attributes_.add(
+                  input.readMessage(io.littlehorse.common.proto.AttributePb.parser(), extensionRegistry));
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          attributes_ = java.util.Collections.unmodifiableList(attributes_);
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_LHInternalSearchPb_RepeatedAttributePb_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_LHInternalSearchPb_RepeatedAttributePb_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb.class, io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb.Builder.class);
+    }
+
+    public static final int ATTRIBUTES_FIELD_NUMBER = 1;
+    private java.util.List<io.littlehorse.common.proto.AttributePb> attributes_;
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 1;</code>
+     */
+    @java.lang.Override
+    public java.util.List<io.littlehorse.common.proto.AttributePb> getAttributesList() {
+      return attributes_;
+    }
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 1;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends io.littlehorse.common.proto.AttributePbOrBuilder> 
+        getAttributesOrBuilderList() {
+      return attributes_;
+    }
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 1;</code>
+     */
+    @java.lang.Override
+    public int getAttributesCount() {
+      return attributes_.size();
+    }
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 1;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.AttributePb getAttributes(int index) {
+      return attributes_.get(index);
+    }
+    /**
+     * <code>repeated .lh_proto.AttributePb attributes = 1;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.AttributePbOrBuilder getAttributesOrBuilder(
+        int index) {
+      return attributes_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < attributes_.size(); i++) {
+        output.writeMessage(1, attributes_.get(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      for (int i = 0; i < attributes_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, attributes_.get(i));
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb)) {
+        return super.equals(obj);
+      }
+      io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb other = (io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb) obj;
+
+      if (!getAttributesList()
+          .equals(other.getAttributesList())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getAttributesCount() > 0) {
+        hash = (37 * hash) + ATTRIBUTES_FIELD_NUMBER;
+        hash = (53 * hash) + getAttributesList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code lh_proto.LHInternalSearchPb.RepeatedAttributePb}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:lh_proto.LHInternalSearchPb.RepeatedAttributePb)
+        io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePbOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_LHInternalSearchPb_RepeatedAttributePb_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_LHInternalSearchPb_RepeatedAttributePb_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb.class, io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb.Builder.class);
+      }
+
+      // Construct using io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getAttributesFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        if (attributesBuilder_ == null) {
+          attributes_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          attributesBuilder_.clear();
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_LHInternalSearchPb_RepeatedAttributePb_descriptor;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb getDefaultInstanceForType() {
+        return io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb build() {
+        io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb buildPartial() {
+        io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb result = new io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb(this);
+        int from_bitField0_ = bitField0_;
+        if (attributesBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            attributes_ = java.util.Collections.unmodifiableList(attributes_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.attributes_ = attributes_;
+        } else {
+          result.attributes_ = attributesBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb) {
+          return mergeFrom((io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb other) {
+        if (other == io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb.getDefaultInstance()) return this;
+        if (attributesBuilder_ == null) {
+          if (!other.attributes_.isEmpty()) {
+            if (attributes_.isEmpty()) {
+              attributes_ = other.attributes_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureAttributesIsMutable();
+              attributes_.addAll(other.attributes_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.attributes_.isEmpty()) {
+            if (attributesBuilder_.isEmpty()) {
+              attributesBuilder_.dispose();
+              attributesBuilder_ = null;
+              attributes_ = other.attributes_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              attributesBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getAttributesFieldBuilder() : null;
+            } else {
+              attributesBuilder_.addAllMessages(other.attributes_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.util.List<io.littlehorse.common.proto.AttributePb> attributes_ =
+        java.util.Collections.emptyList();
+      private void ensureAttributesIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          attributes_ = new java.util.ArrayList<io.littlehorse.common.proto.AttributePb>(attributes_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          io.littlehorse.common.proto.AttributePb, io.littlehorse.common.proto.AttributePb.Builder, io.littlehorse.common.proto.AttributePbOrBuilder> attributesBuilder_;
+
+      /**
+       * <code>repeated .lh_proto.AttributePb attributes = 1;</code>
+       */
+      public java.util.List<io.littlehorse.common.proto.AttributePb> getAttributesList() {
+        if (attributesBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(attributes_);
+        } else {
+          return attributesBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .lh_proto.AttributePb attributes = 1;</code>
+       */
+      public int getAttributesCount() {
+        if (attributesBuilder_ == null) {
+          return attributes_.size();
+        } else {
+          return attributesBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .lh_proto.AttributePb attributes = 1;</code>
+       */
+      public io.littlehorse.common.proto.AttributePb getAttributes(int index) {
+        if (attributesBuilder_ == null) {
+          return attributes_.get(index);
+        } else {
+          return attributesBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .lh_proto.AttributePb attributes = 1;</code>
+       */
+      public Builder setAttributes(
+          int index, io.littlehorse.common.proto.AttributePb value) {
+        if (attributesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureAttributesIsMutable();
+          attributes_.set(index, value);
+          onChanged();
+        } else {
+          attributesBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .lh_proto.AttributePb attributes = 1;</code>
+       */
+      public Builder setAttributes(
+          int index, io.littlehorse.common.proto.AttributePb.Builder builderForValue) {
+        if (attributesBuilder_ == null) {
+          ensureAttributesIsMutable();
+          attributes_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          attributesBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .lh_proto.AttributePb attributes = 1;</code>
+       */
+      public Builder addAttributes(io.littlehorse.common.proto.AttributePb value) {
+        if (attributesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureAttributesIsMutable();
+          attributes_.add(value);
+          onChanged();
+        } else {
+          attributesBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .lh_proto.AttributePb attributes = 1;</code>
+       */
+      public Builder addAttributes(
+          int index, io.littlehorse.common.proto.AttributePb value) {
+        if (attributesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureAttributesIsMutable();
+          attributes_.add(index, value);
+          onChanged();
+        } else {
+          attributesBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .lh_proto.AttributePb attributes = 1;</code>
+       */
+      public Builder addAttributes(
+          io.littlehorse.common.proto.AttributePb.Builder builderForValue) {
+        if (attributesBuilder_ == null) {
+          ensureAttributesIsMutable();
+          attributes_.add(builderForValue.build());
+          onChanged();
+        } else {
+          attributesBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .lh_proto.AttributePb attributes = 1;</code>
+       */
+      public Builder addAttributes(
+          int index, io.littlehorse.common.proto.AttributePb.Builder builderForValue) {
+        if (attributesBuilder_ == null) {
+          ensureAttributesIsMutable();
+          attributes_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          attributesBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .lh_proto.AttributePb attributes = 1;</code>
+       */
+      public Builder addAllAttributes(
+          java.lang.Iterable<? extends io.littlehorse.common.proto.AttributePb> values) {
+        if (attributesBuilder_ == null) {
+          ensureAttributesIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, attributes_);
+          onChanged();
+        } else {
+          attributesBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .lh_proto.AttributePb attributes = 1;</code>
+       */
+      public Builder clearAttributes() {
+        if (attributesBuilder_ == null) {
+          attributes_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          attributesBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .lh_proto.AttributePb attributes = 1;</code>
+       */
+      public Builder removeAttributes(int index) {
+        if (attributesBuilder_ == null) {
+          ensureAttributesIsMutable();
+          attributes_.remove(index);
+          onChanged();
+        } else {
+          attributesBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .lh_proto.AttributePb attributes = 1;</code>
+       */
+      public io.littlehorse.common.proto.AttributePb.Builder getAttributesBuilder(
+          int index) {
+        return getAttributesFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .lh_proto.AttributePb attributes = 1;</code>
+       */
+      public io.littlehorse.common.proto.AttributePbOrBuilder getAttributesOrBuilder(
+          int index) {
+        if (attributesBuilder_ == null) {
+          return attributes_.get(index);  } else {
+          return attributesBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .lh_proto.AttributePb attributes = 1;</code>
+       */
+      public java.util.List<? extends io.littlehorse.common.proto.AttributePbOrBuilder> 
+           getAttributesOrBuilderList() {
+        if (attributesBuilder_ != null) {
+          return attributesBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(attributes_);
+        }
+      }
+      /**
+       * <code>repeated .lh_proto.AttributePb attributes = 1;</code>
+       */
+      public io.littlehorse.common.proto.AttributePb.Builder addAttributesBuilder() {
+        return getAttributesFieldBuilder().addBuilder(
+            io.littlehorse.common.proto.AttributePb.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .lh_proto.AttributePb attributes = 1;</code>
+       */
+      public io.littlehorse.common.proto.AttributePb.Builder addAttributesBuilder(
+          int index) {
+        return getAttributesFieldBuilder().addBuilder(
+            index, io.littlehorse.common.proto.AttributePb.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .lh_proto.AttributePb attributes = 1;</code>
+       */
+      public java.util.List<io.littlehorse.common.proto.AttributePb.Builder> 
+           getAttributesBuilderList() {
+        return getAttributesFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          io.littlehorse.common.proto.AttributePb, io.littlehorse.common.proto.AttributePb.Builder, io.littlehorse.common.proto.AttributePbOrBuilder> 
+          getAttributesFieldBuilder() {
+        if (attributesBuilder_ == null) {
+          attributesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              io.littlehorse.common.proto.AttributePb, io.littlehorse.common.proto.AttributePb.Builder, io.littlehorse.common.proto.AttributePbOrBuilder>(
+                  attributes_,
+                  ((bitField0_ & 0x00000001) != 0),
+                  getParentForChildren(),
+                  isClean());
+          attributes_ = null;
+        }
+        return attributesBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:lh_proto.LHInternalSearchPb.RepeatedAttributePb)
+    }
+
+    // @@protoc_insertion_point(class_scope:lh_proto.LHInternalSearchPb.RepeatedAttributePb)
+    private static final io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb();
+    }
+
+    public static io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<RepeatedAttributePb>
+        PARSER = new com.google.protobuf.AbstractParser<RepeatedAttributePb>() {
+      @java.lang.Override
+      public RepeatedAttributePb parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new RepeatedAttributePb(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<RepeatedAttributePb> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<RepeatedAttributePb> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private int bitField0_;
-  private int subsearchCase_ = 0;
-  private java.lang.Object subsearch_;
-  public enum SubsearchCase
+  private int prefixCase_ = 0;
+  private java.lang.Object prefix_;
+  public enum PrefixCase
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    LOCAL_TAG(4),
     OBJECT_ID_PREFIX(5),
-    HASHED_TAG(6),
-    SUBSEARCH_NOT_SET(0);
+    TAG_PREFIX(6),
+    PREFIX_NOT_SET(0);
     private final int value;
-    private SubsearchCase(int value) {
+    private PrefixCase(int value) {
       this.value = value;
     }
     /**
@@ -168,16 +945,15 @@ private static final long serialVersionUID = 0L;
      * @deprecated Use {@link #forNumber(int)} instead.
      */
     @java.lang.Deprecated
-    public static SubsearchCase valueOf(int value) {
+    public static PrefixCase valueOf(int value) {
       return forNumber(value);
     }
 
-    public static SubsearchCase forNumber(int value) {
+    public static PrefixCase forNumber(int value) {
       switch (value) {
-        case 4: return LOCAL_TAG;
         case 5: return OBJECT_ID_PREFIX;
-        case 6: return HASHED_TAG;
-        case 0: return SUBSEARCH_NOT_SET;
+        case 6: return TAG_PREFIX;
+        case 0: return PREFIX_NOT_SET;
         default: return null;
       }
     }
@@ -186,16 +962,27 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public SubsearchCase
-  getSubsearchCase() {
-    return SubsearchCase.forNumber(
-        subsearchCase_);
+  public PrefixCase
+  getPrefixCase() {
+    return PrefixCase.forNumber(
+        prefixCase_);
   }
 
-  public static final int BOOKMARK_FIELD_NUMBER = 1;
+  public static final int LIMIT_FIELD_NUMBER = 1;
+  private int limit_;
+  /**
+   * <code>int32 limit = 1;</code>
+   * @return The limit.
+   */
+  @java.lang.Override
+  public int getLimit() {
+    return limit_;
+  }
+
+  public static final int BOOKMARK_FIELD_NUMBER = 2;
   private io.littlehorse.common.proto.BookmarkPb bookmark_;
   /**
-   * <code>.lh_proto.BookmarkPb bookmark = 1;</code>
+   * <code>.lh_proto.BookmarkPb bookmark = 2;</code>
    * @return Whether the bookmark field is set.
    */
   @java.lang.Override
@@ -203,7 +990,7 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>.lh_proto.BookmarkPb bookmark = 1;</code>
+   * <code>.lh_proto.BookmarkPb bookmark = 2;</code>
    * @return The bookmark.
    */
   @java.lang.Override
@@ -211,22 +998,11 @@ private static final long serialVersionUID = 0L;
     return bookmark_ == null ? io.littlehorse.common.proto.BookmarkPb.getDefaultInstance() : bookmark_;
   }
   /**
-   * <code>.lh_proto.BookmarkPb bookmark = 1;</code>
+   * <code>.lh_proto.BookmarkPb bookmark = 2;</code>
    */
   @java.lang.Override
   public io.littlehorse.common.proto.BookmarkPbOrBuilder getBookmarkOrBuilder() {
     return bookmark_ == null ? io.littlehorse.common.proto.BookmarkPb.getDefaultInstance() : bookmark_;
-  }
-
-  public static final int LIMIT_FIELD_NUMBER = 2;
-  private int limit_;
-  /**
-   * <code>int32 limit = 2;</code>
-   * @return The limit.
-   */
-  @java.lang.Override
-  public int getLimit() {
-    return limit_;
   }
 
   public static final int OBJECT_TYPE_FIELD_NUMBER = 3;
@@ -248,97 +1024,126 @@ private static final long serialVersionUID = 0L;
     return result == null ? io.littlehorse.common.proto.GETableClassEnumPb.UNRECOGNIZED : result;
   }
 
-  public static final int LOCAL_TAG_FIELD_NUMBER = 4;
+  public static final int PARTITION_KEY_FIELD_NUMBER = 4;
+  private volatile java.lang.Object partitionKey_;
   /**
-   * <code>.lh_proto.LocalTagScanPb local_tag = 4;</code>
-   * @return Whether the localTag field is set.
+   * <code>string partition_key = 4;</code>
+   * @return Whether the partitionKey field is set.
    */
   @java.lang.Override
-  public boolean hasLocalTag() {
-    return subsearchCase_ == 4;
+  public boolean hasPartitionKey() {
+    return ((bitField0_ & 0x00000002) != 0);
   }
   /**
-   * <code>.lh_proto.LocalTagScanPb local_tag = 4;</code>
-   * @return The localTag.
+   * <code>string partition_key = 4;</code>
+   * @return The partitionKey.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.LocalTagScanPb getLocalTag() {
-    if (subsearchCase_ == 4) {
-       return (io.littlehorse.common.proto.LocalTagScanPb) subsearch_;
+  public java.lang.String getPartitionKey() {
+    java.lang.Object ref = partitionKey_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      partitionKey_ = s;
+      return s;
     }
-    return io.littlehorse.common.proto.LocalTagScanPb.getDefaultInstance();
   }
   /**
-   * <code>.lh_proto.LocalTagScanPb local_tag = 4;</code>
+   * <code>string partition_key = 4;</code>
+   * @return The bytes for partitionKey.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.LocalTagScanPbOrBuilder getLocalTagOrBuilder() {
-    if (subsearchCase_ == 4) {
-       return (io.littlehorse.common.proto.LocalTagScanPb) subsearch_;
+  public com.google.protobuf.ByteString
+      getPartitionKeyBytes() {
+    java.lang.Object ref = partitionKey_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      partitionKey_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
     }
-    return io.littlehorse.common.proto.LocalTagScanPb.getDefaultInstance();
   }
 
   public static final int OBJECT_ID_PREFIX_FIELD_NUMBER = 5;
   /**
-   * <code>.lh_proto.ObjectIdPrefixScanPb object_id_prefix = 5;</code>
-   * @return Whether the objectIdPrefix field is set.
-   */
-  @java.lang.Override
-  public boolean hasObjectIdPrefix() {
-    return subsearchCase_ == 5;
-  }
-  /**
-   * <code>.lh_proto.ObjectIdPrefixScanPb object_id_prefix = 5;</code>
+   * <code>string object_id_prefix = 5;</code>
    * @return The objectIdPrefix.
    */
-  @java.lang.Override
-  public io.littlehorse.common.proto.ObjectIdPrefixScanPb getObjectIdPrefix() {
-    if (subsearchCase_ == 5) {
-       return (io.littlehorse.common.proto.ObjectIdPrefixScanPb) subsearch_;
+  public java.lang.String getObjectIdPrefix() {
+    java.lang.Object ref = "";
+    if (prefixCase_ == 5) {
+      ref = prefix_;
     }
-    return io.littlehorse.common.proto.ObjectIdPrefixScanPb.getDefaultInstance();
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      if (prefixCase_ == 5) {
+        prefix_ = s;
+      }
+      return s;
+    }
   }
   /**
-   * <code>.lh_proto.ObjectIdPrefixScanPb object_id_prefix = 5;</code>
+   * <code>string object_id_prefix = 5;</code>
+   * @return The bytes for objectIdPrefix.
    */
-  @java.lang.Override
-  public io.littlehorse.common.proto.ObjectIdPrefixScanPbOrBuilder getObjectIdPrefixOrBuilder() {
-    if (subsearchCase_ == 5) {
-       return (io.littlehorse.common.proto.ObjectIdPrefixScanPb) subsearch_;
+  public com.google.protobuf.ByteString
+      getObjectIdPrefixBytes() {
+    java.lang.Object ref = "";
+    if (prefixCase_ == 5) {
+      ref = prefix_;
     }
-    return io.littlehorse.common.proto.ObjectIdPrefixScanPb.getDefaultInstance();
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      if (prefixCase_ == 5) {
+        prefix_ = b;
+      }
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
   }
 
-  public static final int HASHED_TAG_FIELD_NUMBER = 6;
+  public static final int TAG_PREFIX_FIELD_NUMBER = 6;
   /**
-   * <code>.lh_proto.HashedTagScanPb hashed_tag = 6;</code>
-   * @return Whether the hashedTag field is set.
+   * <code>.lh_proto.LHInternalSearchPb.RepeatedAttributePb tag_prefix = 6;</code>
+   * @return Whether the tagPrefix field is set.
    */
   @java.lang.Override
-  public boolean hasHashedTag() {
-    return subsearchCase_ == 6;
+  public boolean hasTagPrefix() {
+    return prefixCase_ == 6;
   }
   /**
-   * <code>.lh_proto.HashedTagScanPb hashed_tag = 6;</code>
-   * @return The hashedTag.
+   * <code>.lh_proto.LHInternalSearchPb.RepeatedAttributePb tag_prefix = 6;</code>
+   * @return The tagPrefix.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.HashedTagScanPb getHashedTag() {
-    if (subsearchCase_ == 6) {
-       return (io.littlehorse.common.proto.HashedTagScanPb) subsearch_;
+  public io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb getTagPrefix() {
+    if (prefixCase_ == 6) {
+       return (io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb) prefix_;
     }
-    return io.littlehorse.common.proto.HashedTagScanPb.getDefaultInstance();
+    return io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb.getDefaultInstance();
   }
   /**
-   * <code>.lh_proto.HashedTagScanPb hashed_tag = 6;</code>
+   * <code>.lh_proto.LHInternalSearchPb.RepeatedAttributePb tag_prefix = 6;</code>
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.HashedTagScanPbOrBuilder getHashedTagOrBuilder() {
-    if (subsearchCase_ == 6) {
-       return (io.littlehorse.common.proto.HashedTagScanPb) subsearch_;
+  public io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePbOrBuilder getTagPrefixOrBuilder() {
+    if (prefixCase_ == 6) {
+       return (io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb) prefix_;
     }
-    return io.littlehorse.common.proto.HashedTagScanPb.getDefaultInstance();
+    return io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -355,23 +1160,23 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeMessage(1, getBookmark());
-    }
     if (limit_ != 0) {
-      output.writeInt32(2, limit_);
+      output.writeInt32(1, limit_);
+    }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      output.writeMessage(2, getBookmark());
     }
     if (objectType_ != io.littlehorse.common.proto.GETableClassEnumPb.TASK_DEF.getNumber()) {
       output.writeEnum(3, objectType_);
     }
-    if (subsearchCase_ == 4) {
-      output.writeMessage(4, (io.littlehorse.common.proto.LocalTagScanPb) subsearch_);
+    if (((bitField0_ & 0x00000002) != 0)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 4, partitionKey_);
     }
-    if (subsearchCase_ == 5) {
-      output.writeMessage(5, (io.littlehorse.common.proto.ObjectIdPrefixScanPb) subsearch_);
+    if (prefixCase_ == 5) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, prefix_);
     }
-    if (subsearchCase_ == 6) {
-      output.writeMessage(6, (io.littlehorse.common.proto.HashedTagScanPb) subsearch_);
+    if (prefixCase_ == 6) {
+      output.writeMessage(6, (io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb) prefix_);
     }
     unknownFields.writeTo(output);
   }
@@ -382,29 +1187,27 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (((bitField0_ & 0x00000001) != 0)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, getBookmark());
-    }
     if (limit_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(2, limit_);
+        .computeInt32Size(1, limit_);
+    }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(2, getBookmark());
     }
     if (objectType_ != io.littlehorse.common.proto.GETableClassEnumPb.TASK_DEF.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(3, objectType_);
     }
-    if (subsearchCase_ == 4) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, (io.littlehorse.common.proto.LocalTagScanPb) subsearch_);
+    if (((bitField0_ & 0x00000002) != 0)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, partitionKey_);
     }
-    if (subsearchCase_ == 5) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(5, (io.littlehorse.common.proto.ObjectIdPrefixScanPb) subsearch_);
+    if (prefixCase_ == 5) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, prefix_);
     }
-    if (subsearchCase_ == 6) {
+    if (prefixCase_ == 6) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(6, (io.littlehorse.common.proto.HashedTagScanPb) subsearch_);
+        .computeMessageSize(6, (io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb) prefix_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -421,27 +1224,28 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.common.proto.LHInternalSearchPb other = (io.littlehorse.common.proto.LHInternalSearchPb) obj;
 
+    if (getLimit()
+        != other.getLimit()) return false;
     if (hasBookmark() != other.hasBookmark()) return false;
     if (hasBookmark()) {
       if (!getBookmark()
           .equals(other.getBookmark())) return false;
     }
-    if (getLimit()
-        != other.getLimit()) return false;
     if (objectType_ != other.objectType_) return false;
-    if (!getSubsearchCase().equals(other.getSubsearchCase())) return false;
-    switch (subsearchCase_) {
-      case 4:
-        if (!getLocalTag()
-            .equals(other.getLocalTag())) return false;
-        break;
+    if (hasPartitionKey() != other.hasPartitionKey()) return false;
+    if (hasPartitionKey()) {
+      if (!getPartitionKey()
+          .equals(other.getPartitionKey())) return false;
+    }
+    if (!getPrefixCase().equals(other.getPrefixCase())) return false;
+    switch (prefixCase_) {
       case 5:
         if (!getObjectIdPrefix()
             .equals(other.getObjectIdPrefix())) return false;
         break;
       case 6:
-        if (!getHashedTag()
-            .equals(other.getHashedTag())) return false;
+        if (!getTagPrefix()
+            .equals(other.getTagPrefix())) return false;
         break;
       case 0:
       default:
@@ -457,26 +1261,26 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
+    hash = (37 * hash) + LIMIT_FIELD_NUMBER;
+    hash = (53 * hash) + getLimit();
     if (hasBookmark()) {
       hash = (37 * hash) + BOOKMARK_FIELD_NUMBER;
       hash = (53 * hash) + getBookmark().hashCode();
     }
-    hash = (37 * hash) + LIMIT_FIELD_NUMBER;
-    hash = (53 * hash) + getLimit();
     hash = (37 * hash) + OBJECT_TYPE_FIELD_NUMBER;
     hash = (53 * hash) + objectType_;
-    switch (subsearchCase_) {
-      case 4:
-        hash = (37 * hash) + LOCAL_TAG_FIELD_NUMBER;
-        hash = (53 * hash) + getLocalTag().hashCode();
-        break;
+    if (hasPartitionKey()) {
+      hash = (37 * hash) + PARTITION_KEY_FIELD_NUMBER;
+      hash = (53 * hash) + getPartitionKey().hashCode();
+    }
+    switch (prefixCase_) {
       case 5:
         hash = (37 * hash) + OBJECT_ID_PREFIX_FIELD_NUMBER;
         hash = (53 * hash) + getObjectIdPrefix().hashCode();
         break;
       case 6:
-        hash = (37 * hash) + HASHED_TAG_FIELD_NUMBER;
-        hash = (53 * hash) + getHashedTag().hashCode();
+        hash = (37 * hash) + TAG_PREFIX_FIELD_NUMBER;
+        hash = (53 * hash) + getTagPrefix().hashCode();
         break;
       case 0:
       default:
@@ -615,18 +1419,20 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
+      limit_ = 0;
+
       if (bookmarkBuilder_ == null) {
         bookmark_ = null;
       } else {
         bookmarkBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000001);
-      limit_ = 0;
-
       objectType_ = 0;
 
-      subsearchCase_ = 0;
-      subsearch_ = null;
+      partitionKey_ = "";
+      bitField0_ = (bitField0_ & ~0x00000002);
+      prefixCase_ = 0;
+      prefix_ = null;
       return this;
     }
 
@@ -655,6 +1461,7 @@ private static final long serialVersionUID = 0L;
       io.littlehorse.common.proto.LHInternalSearchPb result = new io.littlehorse.common.proto.LHInternalSearchPb(this);
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
+      result.limit_ = limit_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         if (bookmarkBuilder_ == null) {
           result.bookmark_ = bookmark_;
@@ -663,31 +1470,23 @@ private static final long serialVersionUID = 0L;
         }
         to_bitField0_ |= 0x00000001;
       }
-      result.limit_ = limit_;
       result.objectType_ = objectType_;
-      if (subsearchCase_ == 4) {
-        if (localTagBuilder_ == null) {
-          result.subsearch_ = subsearch_;
-        } else {
-          result.subsearch_ = localTagBuilder_.build();
-        }
+      if (((from_bitField0_ & 0x00000002) != 0)) {
+        to_bitField0_ |= 0x00000002;
       }
-      if (subsearchCase_ == 5) {
-        if (objectIdPrefixBuilder_ == null) {
-          result.subsearch_ = subsearch_;
-        } else {
-          result.subsearch_ = objectIdPrefixBuilder_.build();
-        }
+      result.partitionKey_ = partitionKey_;
+      if (prefixCase_ == 5) {
+        result.prefix_ = prefix_;
       }
-      if (subsearchCase_ == 6) {
-        if (hashedTagBuilder_ == null) {
-          result.subsearch_ = subsearch_;
+      if (prefixCase_ == 6) {
+        if (tagPrefixBuilder_ == null) {
+          result.prefix_ = prefix_;
         } else {
-          result.subsearch_ = hashedTagBuilder_.build();
+          result.prefix_ = tagPrefixBuilder_.build();
         }
       }
       result.bitField0_ = to_bitField0_;
-      result.subsearchCase_ = subsearchCase_;
+      result.prefixCase_ = prefixCase_;
       onBuilt();
       return result;
     }
@@ -736,29 +1535,32 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.common.proto.LHInternalSearchPb other) {
       if (other == io.littlehorse.common.proto.LHInternalSearchPb.getDefaultInstance()) return this;
-      if (other.hasBookmark()) {
-        mergeBookmark(other.getBookmark());
-      }
       if (other.getLimit() != 0) {
         setLimit(other.getLimit());
+      }
+      if (other.hasBookmark()) {
+        mergeBookmark(other.getBookmark());
       }
       if (other.objectType_ != 0) {
         setObjectTypeValue(other.getObjectTypeValue());
       }
-      switch (other.getSubsearchCase()) {
-        case LOCAL_TAG: {
-          mergeLocalTag(other.getLocalTag());
-          break;
-        }
+      if (other.hasPartitionKey()) {
+        bitField0_ |= 0x00000002;
+        partitionKey_ = other.partitionKey_;
+        onChanged();
+      }
+      switch (other.getPrefixCase()) {
         case OBJECT_ID_PREFIX: {
-          mergeObjectIdPrefix(other.getObjectIdPrefix());
+          prefixCase_ = 5;
+          prefix_ = other.prefix_;
+          onChanged();
           break;
         }
-        case HASHED_TAG: {
-          mergeHashedTag(other.getHashedTag());
+        case TAG_PREFIX: {
+          mergeTagPrefix(other.getTagPrefix());
           break;
         }
-        case SUBSEARCH_NOT_SET: {
+        case PREFIX_NOT_SET: {
           break;
         }
       }
@@ -790,35 +1592,66 @@ private static final long serialVersionUID = 0L;
       }
       return this;
     }
-    private int subsearchCase_ = 0;
-    private java.lang.Object subsearch_;
-    public SubsearchCase
-        getSubsearchCase() {
-      return SubsearchCase.forNumber(
-          subsearchCase_);
+    private int prefixCase_ = 0;
+    private java.lang.Object prefix_;
+    public PrefixCase
+        getPrefixCase() {
+      return PrefixCase.forNumber(
+          prefixCase_);
     }
 
-    public Builder clearSubsearch() {
-      subsearchCase_ = 0;
-      subsearch_ = null;
+    public Builder clearPrefix() {
+      prefixCase_ = 0;
+      prefix_ = null;
       onChanged();
       return this;
     }
 
     private int bitField0_;
 
+    private int limit_ ;
+    /**
+     * <code>int32 limit = 1;</code>
+     * @return The limit.
+     */
+    @java.lang.Override
+    public int getLimit() {
+      return limit_;
+    }
+    /**
+     * <code>int32 limit = 1;</code>
+     * @param value The limit to set.
+     * @return This builder for chaining.
+     */
+    public Builder setLimit(int value) {
+      
+      limit_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 limit = 1;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearLimit() {
+      
+      limit_ = 0;
+      onChanged();
+      return this;
+    }
+
     private io.littlehorse.common.proto.BookmarkPb bookmark_;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.BookmarkPb, io.littlehorse.common.proto.BookmarkPb.Builder, io.littlehorse.common.proto.BookmarkPbOrBuilder> bookmarkBuilder_;
     /**
-     * <code>.lh_proto.BookmarkPb bookmark = 1;</code>
+     * <code>.lh_proto.BookmarkPb bookmark = 2;</code>
      * @return Whether the bookmark field is set.
      */
     public boolean hasBookmark() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>.lh_proto.BookmarkPb bookmark = 1;</code>
+     * <code>.lh_proto.BookmarkPb bookmark = 2;</code>
      * @return The bookmark.
      */
     public io.littlehorse.common.proto.BookmarkPb getBookmark() {
@@ -829,7 +1662,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.lh_proto.BookmarkPb bookmark = 1;</code>
+     * <code>.lh_proto.BookmarkPb bookmark = 2;</code>
      */
     public Builder setBookmark(io.littlehorse.common.proto.BookmarkPb value) {
       if (bookmarkBuilder_ == null) {
@@ -845,7 +1678,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.BookmarkPb bookmark = 1;</code>
+     * <code>.lh_proto.BookmarkPb bookmark = 2;</code>
      */
     public Builder setBookmark(
         io.littlehorse.common.proto.BookmarkPb.Builder builderForValue) {
@@ -859,7 +1692,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.BookmarkPb bookmark = 1;</code>
+     * <code>.lh_proto.BookmarkPb bookmark = 2;</code>
      */
     public Builder mergeBookmark(io.littlehorse.common.proto.BookmarkPb value) {
       if (bookmarkBuilder_ == null) {
@@ -879,7 +1712,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.BookmarkPb bookmark = 1;</code>
+     * <code>.lh_proto.BookmarkPb bookmark = 2;</code>
      */
     public Builder clearBookmark() {
       if (bookmarkBuilder_ == null) {
@@ -892,7 +1725,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.BookmarkPb bookmark = 1;</code>
+     * <code>.lh_proto.BookmarkPb bookmark = 2;</code>
      */
     public io.littlehorse.common.proto.BookmarkPb.Builder getBookmarkBuilder() {
       bitField0_ |= 0x00000001;
@@ -900,7 +1733,7 @@ private static final long serialVersionUID = 0L;
       return getBookmarkFieldBuilder().getBuilder();
     }
     /**
-     * <code>.lh_proto.BookmarkPb bookmark = 1;</code>
+     * <code>.lh_proto.BookmarkPb bookmark = 2;</code>
      */
     public io.littlehorse.common.proto.BookmarkPbOrBuilder getBookmarkOrBuilder() {
       if (bookmarkBuilder_ != null) {
@@ -911,7 +1744,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.lh_proto.BookmarkPb bookmark = 1;</code>
+     * <code>.lh_proto.BookmarkPb bookmark = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.BookmarkPb, io.littlehorse.common.proto.BookmarkPb.Builder, io.littlehorse.common.proto.BookmarkPbOrBuilder> 
@@ -925,37 +1758,6 @@ private static final long serialVersionUID = 0L;
         bookmark_ = null;
       }
       return bookmarkBuilder_;
-    }
-
-    private int limit_ ;
-    /**
-     * <code>int32 limit = 2;</code>
-     * @return The limit.
-     */
-    @java.lang.Override
-    public int getLimit() {
-      return limit_;
-    }
-    /**
-     * <code>int32 limit = 2;</code>
-     * @param value The limit to set.
-     * @return This builder for chaining.
-     */
-    public Builder setLimit(int value) {
-      
-      limit_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>int32 limit = 2;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearLimit() {
-      
-      limit_ = 0;
-      onChanged();
-      return this;
     }
 
     private int objectType_ = 0;
@@ -1012,427 +1814,317 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.LocalTagScanPb, io.littlehorse.common.proto.LocalTagScanPb.Builder, io.littlehorse.common.proto.LocalTagScanPbOrBuilder> localTagBuilder_;
+    private java.lang.Object partitionKey_ = "";
     /**
-     * <code>.lh_proto.LocalTagScanPb local_tag = 4;</code>
-     * @return Whether the localTag field is set.
+     * <code>string partition_key = 4;</code>
+     * @return Whether the partitionKey field is set.
      */
-    @java.lang.Override
-    public boolean hasLocalTag() {
-      return subsearchCase_ == 4;
+    public boolean hasPartitionKey() {
+      return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>.lh_proto.LocalTagScanPb local_tag = 4;</code>
-     * @return The localTag.
+     * <code>string partition_key = 4;</code>
+     * @return The partitionKey.
      */
-    @java.lang.Override
-    public io.littlehorse.common.proto.LocalTagScanPb getLocalTag() {
-      if (localTagBuilder_ == null) {
-        if (subsearchCase_ == 4) {
-          return (io.littlehorse.common.proto.LocalTagScanPb) subsearch_;
-        }
-        return io.littlehorse.common.proto.LocalTagScanPb.getDefaultInstance();
+    public java.lang.String getPartitionKey() {
+      java.lang.Object ref = partitionKey_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        partitionKey_ = s;
+        return s;
       } else {
-        if (subsearchCase_ == 4) {
-          return localTagBuilder_.getMessage();
-        }
-        return io.littlehorse.common.proto.LocalTagScanPb.getDefaultInstance();
+        return (java.lang.String) ref;
       }
     }
     /**
-     * <code>.lh_proto.LocalTagScanPb local_tag = 4;</code>
+     * <code>string partition_key = 4;</code>
+     * @return The bytes for partitionKey.
      */
-    public Builder setLocalTag(io.littlehorse.common.proto.LocalTagScanPb value) {
-      if (localTagBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        subsearch_ = value;
-        onChanged();
+    public com.google.protobuf.ByteString
+        getPartitionKeyBytes() {
+      java.lang.Object ref = partitionKey_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        partitionKey_ = b;
+        return b;
       } else {
-        localTagBuilder_.setMessage(value);
+        return (com.google.protobuf.ByteString) ref;
       }
-      subsearchCase_ = 4;
+    }
+    /**
+     * <code>string partition_key = 4;</code>
+     * @param value The partitionKey to set.
+     * @return This builder for chaining.
+     */
+    public Builder setPartitionKey(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+      partitionKey_ = value;
+      onChanged();
       return this;
     }
     /**
-     * <code>.lh_proto.LocalTagScanPb local_tag = 4;</code>
+     * <code>string partition_key = 4;</code>
+     * @return This builder for chaining.
      */
-    public Builder setLocalTag(
-        io.littlehorse.common.proto.LocalTagScanPb.Builder builderForValue) {
-      if (localTagBuilder_ == null) {
-        subsearch_ = builderForValue.build();
-        onChanged();
-      } else {
-        localTagBuilder_.setMessage(builderForValue.build());
-      }
-      subsearchCase_ = 4;
+    public Builder clearPartitionKey() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      partitionKey_ = getDefaultInstance().getPartitionKey();
+      onChanged();
       return this;
     }
     /**
-     * <code>.lh_proto.LocalTagScanPb local_tag = 4;</code>
+     * <code>string partition_key = 4;</code>
+     * @param value The bytes for partitionKey to set.
+     * @return This builder for chaining.
      */
-    public Builder mergeLocalTag(io.littlehorse.common.proto.LocalTagScanPb value) {
-      if (localTagBuilder_ == null) {
-        if (subsearchCase_ == 4 &&
-            subsearch_ != io.littlehorse.common.proto.LocalTagScanPb.getDefaultInstance()) {
-          subsearch_ = io.littlehorse.common.proto.LocalTagScanPb.newBuilder((io.littlehorse.common.proto.LocalTagScanPb) subsearch_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          subsearch_ = value;
-        }
-        onChanged();
-      } else {
-        if (subsearchCase_ == 4) {
-          localTagBuilder_.mergeFrom(value);
-        }
-        localTagBuilder_.setMessage(value);
-      }
-      subsearchCase_ = 4;
+    public Builder setPartitionKeyBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      bitField0_ |= 0x00000002;
+      partitionKey_ = value;
+      onChanged();
       return this;
-    }
-    /**
-     * <code>.lh_proto.LocalTagScanPb local_tag = 4;</code>
-     */
-    public Builder clearLocalTag() {
-      if (localTagBuilder_ == null) {
-        if (subsearchCase_ == 4) {
-          subsearchCase_ = 0;
-          subsearch_ = null;
-          onChanged();
-        }
-      } else {
-        if (subsearchCase_ == 4) {
-          subsearchCase_ = 0;
-          subsearch_ = null;
-        }
-        localTagBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>.lh_proto.LocalTagScanPb local_tag = 4;</code>
-     */
-    public io.littlehorse.common.proto.LocalTagScanPb.Builder getLocalTagBuilder() {
-      return getLocalTagFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.lh_proto.LocalTagScanPb local_tag = 4;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.LocalTagScanPbOrBuilder getLocalTagOrBuilder() {
-      if ((subsearchCase_ == 4) && (localTagBuilder_ != null)) {
-        return localTagBuilder_.getMessageOrBuilder();
-      } else {
-        if (subsearchCase_ == 4) {
-          return (io.littlehorse.common.proto.LocalTagScanPb) subsearch_;
-        }
-        return io.littlehorse.common.proto.LocalTagScanPb.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.lh_proto.LocalTagScanPb local_tag = 4;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.LocalTagScanPb, io.littlehorse.common.proto.LocalTagScanPb.Builder, io.littlehorse.common.proto.LocalTagScanPbOrBuilder> 
-        getLocalTagFieldBuilder() {
-      if (localTagBuilder_ == null) {
-        if (!(subsearchCase_ == 4)) {
-          subsearch_ = io.littlehorse.common.proto.LocalTagScanPb.getDefaultInstance();
-        }
-        localTagBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.LocalTagScanPb, io.littlehorse.common.proto.LocalTagScanPb.Builder, io.littlehorse.common.proto.LocalTagScanPbOrBuilder>(
-                (io.littlehorse.common.proto.LocalTagScanPb) subsearch_,
-                getParentForChildren(),
-                isClean());
-        subsearch_ = null;
-      }
-      subsearchCase_ = 4;
-      onChanged();;
-      return localTagBuilder_;
     }
 
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.ObjectIdPrefixScanPb, io.littlehorse.common.proto.ObjectIdPrefixScanPb.Builder, io.littlehorse.common.proto.ObjectIdPrefixScanPbOrBuilder> objectIdPrefixBuilder_;
     /**
-     * <code>.lh_proto.ObjectIdPrefixScanPb object_id_prefix = 5;</code>
-     * @return Whether the objectIdPrefix field is set.
-     */
-    @java.lang.Override
-    public boolean hasObjectIdPrefix() {
-      return subsearchCase_ == 5;
-    }
-    /**
-     * <code>.lh_proto.ObjectIdPrefixScanPb object_id_prefix = 5;</code>
+     * <code>string object_id_prefix = 5;</code>
      * @return The objectIdPrefix.
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.ObjectIdPrefixScanPb getObjectIdPrefix() {
-      if (objectIdPrefixBuilder_ == null) {
-        if (subsearchCase_ == 5) {
-          return (io.littlehorse.common.proto.ObjectIdPrefixScanPb) subsearch_;
+    public java.lang.String getObjectIdPrefix() {
+      java.lang.Object ref = "";
+      if (prefixCase_ == 5) {
+        ref = prefix_;
+      }
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (prefixCase_ == 5) {
+          prefix_ = s;
         }
-        return io.littlehorse.common.proto.ObjectIdPrefixScanPb.getDefaultInstance();
+        return s;
       } else {
-        if (subsearchCase_ == 5) {
-          return objectIdPrefixBuilder_.getMessage();
-        }
-        return io.littlehorse.common.proto.ObjectIdPrefixScanPb.getDefaultInstance();
+        return (java.lang.String) ref;
       }
     }
     /**
-     * <code>.lh_proto.ObjectIdPrefixScanPb object_id_prefix = 5;</code>
-     */
-    public Builder setObjectIdPrefix(io.littlehorse.common.proto.ObjectIdPrefixScanPb value) {
-      if (objectIdPrefixBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        subsearch_ = value;
-        onChanged();
-      } else {
-        objectIdPrefixBuilder_.setMessage(value);
-      }
-      subsearchCase_ = 5;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.ObjectIdPrefixScanPb object_id_prefix = 5;</code>
-     */
-    public Builder setObjectIdPrefix(
-        io.littlehorse.common.proto.ObjectIdPrefixScanPb.Builder builderForValue) {
-      if (objectIdPrefixBuilder_ == null) {
-        subsearch_ = builderForValue.build();
-        onChanged();
-      } else {
-        objectIdPrefixBuilder_.setMessage(builderForValue.build());
-      }
-      subsearchCase_ = 5;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.ObjectIdPrefixScanPb object_id_prefix = 5;</code>
-     */
-    public Builder mergeObjectIdPrefix(io.littlehorse.common.proto.ObjectIdPrefixScanPb value) {
-      if (objectIdPrefixBuilder_ == null) {
-        if (subsearchCase_ == 5 &&
-            subsearch_ != io.littlehorse.common.proto.ObjectIdPrefixScanPb.getDefaultInstance()) {
-          subsearch_ = io.littlehorse.common.proto.ObjectIdPrefixScanPb.newBuilder((io.littlehorse.common.proto.ObjectIdPrefixScanPb) subsearch_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          subsearch_ = value;
-        }
-        onChanged();
-      } else {
-        if (subsearchCase_ == 5) {
-          objectIdPrefixBuilder_.mergeFrom(value);
-        }
-        objectIdPrefixBuilder_.setMessage(value);
-      }
-      subsearchCase_ = 5;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.ObjectIdPrefixScanPb object_id_prefix = 5;</code>
-     */
-    public Builder clearObjectIdPrefix() {
-      if (objectIdPrefixBuilder_ == null) {
-        if (subsearchCase_ == 5) {
-          subsearchCase_ = 0;
-          subsearch_ = null;
-          onChanged();
-        }
-      } else {
-        if (subsearchCase_ == 5) {
-          subsearchCase_ = 0;
-          subsearch_ = null;
-        }
-        objectIdPrefixBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>.lh_proto.ObjectIdPrefixScanPb object_id_prefix = 5;</code>
-     */
-    public io.littlehorse.common.proto.ObjectIdPrefixScanPb.Builder getObjectIdPrefixBuilder() {
-      return getObjectIdPrefixFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.lh_proto.ObjectIdPrefixScanPb object_id_prefix = 5;</code>
+     * <code>string object_id_prefix = 5;</code>
+     * @return The bytes for objectIdPrefix.
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.ObjectIdPrefixScanPbOrBuilder getObjectIdPrefixOrBuilder() {
-      if ((subsearchCase_ == 5) && (objectIdPrefixBuilder_ != null)) {
-        return objectIdPrefixBuilder_.getMessageOrBuilder();
-      } else {
-        if (subsearchCase_ == 5) {
-          return (io.littlehorse.common.proto.ObjectIdPrefixScanPb) subsearch_;
+    public com.google.protobuf.ByteString
+        getObjectIdPrefixBytes() {
+      java.lang.Object ref = "";
+      if (prefixCase_ == 5) {
+        ref = prefix_;
+      }
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        if (prefixCase_ == 5) {
+          prefix_ = b;
         }
-        return io.littlehorse.common.proto.ObjectIdPrefixScanPb.getDefaultInstance();
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
       }
     }
     /**
-     * <code>.lh_proto.ObjectIdPrefixScanPb object_id_prefix = 5;</code>
+     * <code>string object_id_prefix = 5;</code>
+     * @param value The objectIdPrefix to set.
+     * @return This builder for chaining.
      */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.ObjectIdPrefixScanPb, io.littlehorse.common.proto.ObjectIdPrefixScanPb.Builder, io.littlehorse.common.proto.ObjectIdPrefixScanPbOrBuilder> 
-        getObjectIdPrefixFieldBuilder() {
-      if (objectIdPrefixBuilder_ == null) {
-        if (!(subsearchCase_ == 5)) {
-          subsearch_ = io.littlehorse.common.proto.ObjectIdPrefixScanPb.getDefaultInstance();
-        }
-        objectIdPrefixBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.ObjectIdPrefixScanPb, io.littlehorse.common.proto.ObjectIdPrefixScanPb.Builder, io.littlehorse.common.proto.ObjectIdPrefixScanPbOrBuilder>(
-                (io.littlehorse.common.proto.ObjectIdPrefixScanPb) subsearch_,
-                getParentForChildren(),
-                isClean());
-        subsearch_ = null;
+    public Builder setObjectIdPrefix(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  prefixCase_ = 5;
+      prefix_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string object_id_prefix = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearObjectIdPrefix() {
+      if (prefixCase_ == 5) {
+        prefixCase_ = 0;
+        prefix_ = null;
+        onChanged();
       }
-      subsearchCase_ = 5;
-      onChanged();;
-      return objectIdPrefixBuilder_;
+      return this;
+    }
+    /**
+     * <code>string object_id_prefix = 5;</code>
+     * @param value The bytes for objectIdPrefix to set.
+     * @return This builder for chaining.
+     */
+    public Builder setObjectIdPrefixBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      prefixCase_ = 5;
+      prefix_ = value;
+      onChanged();
+      return this;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.HashedTagScanPb, io.littlehorse.common.proto.HashedTagScanPb.Builder, io.littlehorse.common.proto.HashedTagScanPbOrBuilder> hashedTagBuilder_;
+        io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb, io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb.Builder, io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePbOrBuilder> tagPrefixBuilder_;
     /**
-     * <code>.lh_proto.HashedTagScanPb hashed_tag = 6;</code>
-     * @return Whether the hashedTag field is set.
+     * <code>.lh_proto.LHInternalSearchPb.RepeatedAttributePb tag_prefix = 6;</code>
+     * @return Whether the tagPrefix field is set.
      */
     @java.lang.Override
-    public boolean hasHashedTag() {
-      return subsearchCase_ == 6;
+    public boolean hasTagPrefix() {
+      return prefixCase_ == 6;
     }
     /**
-     * <code>.lh_proto.HashedTagScanPb hashed_tag = 6;</code>
-     * @return The hashedTag.
+     * <code>.lh_proto.LHInternalSearchPb.RepeatedAttributePb tag_prefix = 6;</code>
+     * @return The tagPrefix.
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.HashedTagScanPb getHashedTag() {
-      if (hashedTagBuilder_ == null) {
-        if (subsearchCase_ == 6) {
-          return (io.littlehorse.common.proto.HashedTagScanPb) subsearch_;
+    public io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb getTagPrefix() {
+      if (tagPrefixBuilder_ == null) {
+        if (prefixCase_ == 6) {
+          return (io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb) prefix_;
         }
-        return io.littlehorse.common.proto.HashedTagScanPb.getDefaultInstance();
+        return io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb.getDefaultInstance();
       } else {
-        if (subsearchCase_ == 6) {
-          return hashedTagBuilder_.getMessage();
+        if (prefixCase_ == 6) {
+          return tagPrefixBuilder_.getMessage();
         }
-        return io.littlehorse.common.proto.HashedTagScanPb.getDefaultInstance();
+        return io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb.getDefaultInstance();
       }
     }
     /**
-     * <code>.lh_proto.HashedTagScanPb hashed_tag = 6;</code>
+     * <code>.lh_proto.LHInternalSearchPb.RepeatedAttributePb tag_prefix = 6;</code>
      */
-    public Builder setHashedTag(io.littlehorse.common.proto.HashedTagScanPb value) {
-      if (hashedTagBuilder_ == null) {
+    public Builder setTagPrefix(io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb value) {
+      if (tagPrefixBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        subsearch_ = value;
+        prefix_ = value;
         onChanged();
       } else {
-        hashedTagBuilder_.setMessage(value);
+        tagPrefixBuilder_.setMessage(value);
       }
-      subsearchCase_ = 6;
+      prefixCase_ = 6;
       return this;
     }
     /**
-     * <code>.lh_proto.HashedTagScanPb hashed_tag = 6;</code>
+     * <code>.lh_proto.LHInternalSearchPb.RepeatedAttributePb tag_prefix = 6;</code>
      */
-    public Builder setHashedTag(
-        io.littlehorse.common.proto.HashedTagScanPb.Builder builderForValue) {
-      if (hashedTagBuilder_ == null) {
-        subsearch_ = builderForValue.build();
+    public Builder setTagPrefix(
+        io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb.Builder builderForValue) {
+      if (tagPrefixBuilder_ == null) {
+        prefix_ = builderForValue.build();
         onChanged();
       } else {
-        hashedTagBuilder_.setMessage(builderForValue.build());
+        tagPrefixBuilder_.setMessage(builderForValue.build());
       }
-      subsearchCase_ = 6;
+      prefixCase_ = 6;
       return this;
     }
     /**
-     * <code>.lh_proto.HashedTagScanPb hashed_tag = 6;</code>
+     * <code>.lh_proto.LHInternalSearchPb.RepeatedAttributePb tag_prefix = 6;</code>
      */
-    public Builder mergeHashedTag(io.littlehorse.common.proto.HashedTagScanPb value) {
-      if (hashedTagBuilder_ == null) {
-        if (subsearchCase_ == 6 &&
-            subsearch_ != io.littlehorse.common.proto.HashedTagScanPb.getDefaultInstance()) {
-          subsearch_ = io.littlehorse.common.proto.HashedTagScanPb.newBuilder((io.littlehorse.common.proto.HashedTagScanPb) subsearch_)
+    public Builder mergeTagPrefix(io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb value) {
+      if (tagPrefixBuilder_ == null) {
+        if (prefixCase_ == 6 &&
+            prefix_ != io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb.getDefaultInstance()) {
+          prefix_ = io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb.newBuilder((io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb) prefix_)
               .mergeFrom(value).buildPartial();
         } else {
-          subsearch_ = value;
+          prefix_ = value;
         }
         onChanged();
       } else {
-        if (subsearchCase_ == 6) {
-          hashedTagBuilder_.mergeFrom(value);
+        if (prefixCase_ == 6) {
+          tagPrefixBuilder_.mergeFrom(value);
         }
-        hashedTagBuilder_.setMessage(value);
+        tagPrefixBuilder_.setMessage(value);
       }
-      subsearchCase_ = 6;
+      prefixCase_ = 6;
       return this;
     }
     /**
-     * <code>.lh_proto.HashedTagScanPb hashed_tag = 6;</code>
+     * <code>.lh_proto.LHInternalSearchPb.RepeatedAttributePb tag_prefix = 6;</code>
      */
-    public Builder clearHashedTag() {
-      if (hashedTagBuilder_ == null) {
-        if (subsearchCase_ == 6) {
-          subsearchCase_ = 0;
-          subsearch_ = null;
+    public Builder clearTagPrefix() {
+      if (tagPrefixBuilder_ == null) {
+        if (prefixCase_ == 6) {
+          prefixCase_ = 0;
+          prefix_ = null;
           onChanged();
         }
       } else {
-        if (subsearchCase_ == 6) {
-          subsearchCase_ = 0;
-          subsearch_ = null;
+        if (prefixCase_ == 6) {
+          prefixCase_ = 0;
+          prefix_ = null;
         }
-        hashedTagBuilder_.clear();
+        tagPrefixBuilder_.clear();
       }
       return this;
     }
     /**
-     * <code>.lh_proto.HashedTagScanPb hashed_tag = 6;</code>
+     * <code>.lh_proto.LHInternalSearchPb.RepeatedAttributePb tag_prefix = 6;</code>
      */
-    public io.littlehorse.common.proto.HashedTagScanPb.Builder getHashedTagBuilder() {
-      return getHashedTagFieldBuilder().getBuilder();
+    public io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb.Builder getTagPrefixBuilder() {
+      return getTagPrefixFieldBuilder().getBuilder();
     }
     /**
-     * <code>.lh_proto.HashedTagScanPb hashed_tag = 6;</code>
+     * <code>.lh_proto.LHInternalSearchPb.RepeatedAttributePb tag_prefix = 6;</code>
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.HashedTagScanPbOrBuilder getHashedTagOrBuilder() {
-      if ((subsearchCase_ == 6) && (hashedTagBuilder_ != null)) {
-        return hashedTagBuilder_.getMessageOrBuilder();
+    public io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePbOrBuilder getTagPrefixOrBuilder() {
+      if ((prefixCase_ == 6) && (tagPrefixBuilder_ != null)) {
+        return tagPrefixBuilder_.getMessageOrBuilder();
       } else {
-        if (subsearchCase_ == 6) {
-          return (io.littlehorse.common.proto.HashedTagScanPb) subsearch_;
+        if (prefixCase_ == 6) {
+          return (io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb) prefix_;
         }
-        return io.littlehorse.common.proto.HashedTagScanPb.getDefaultInstance();
+        return io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb.getDefaultInstance();
       }
     }
     /**
-     * <code>.lh_proto.HashedTagScanPb hashed_tag = 6;</code>
+     * <code>.lh_proto.LHInternalSearchPb.RepeatedAttributePb tag_prefix = 6;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.HashedTagScanPb, io.littlehorse.common.proto.HashedTagScanPb.Builder, io.littlehorse.common.proto.HashedTagScanPbOrBuilder> 
-        getHashedTagFieldBuilder() {
-      if (hashedTagBuilder_ == null) {
-        if (!(subsearchCase_ == 6)) {
-          subsearch_ = io.littlehorse.common.proto.HashedTagScanPb.getDefaultInstance();
+        io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb, io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb.Builder, io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePbOrBuilder> 
+        getTagPrefixFieldBuilder() {
+      if (tagPrefixBuilder_ == null) {
+        if (!(prefixCase_ == 6)) {
+          prefix_ = io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb.getDefaultInstance();
         }
-        hashedTagBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.HashedTagScanPb, io.littlehorse.common.proto.HashedTagScanPb.Builder, io.littlehorse.common.proto.HashedTagScanPbOrBuilder>(
-                (io.littlehorse.common.proto.HashedTagScanPb) subsearch_,
+        tagPrefixBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb, io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb.Builder, io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePbOrBuilder>(
+                (io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb) prefix_,
                 getParentForChildren(),
                 isClean());
-        subsearch_ = null;
+        prefix_ = null;
       }
-      subsearchCase_ = 6;
+      prefixCase_ = 6;
       onChanged();;
-      return hashedTagBuilder_;
+      return tagPrefixBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

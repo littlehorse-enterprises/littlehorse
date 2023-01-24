@@ -8,25 +8,25 @@ public interface LHInternalSearchPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.lh_proto.BookmarkPb bookmark = 1;</code>
+   * <code>int32 limit = 1;</code>
+   * @return The limit.
+   */
+  int getLimit();
+
+  /**
+   * <code>.lh_proto.BookmarkPb bookmark = 2;</code>
    * @return Whether the bookmark field is set.
    */
   boolean hasBookmark();
   /**
-   * <code>.lh_proto.BookmarkPb bookmark = 1;</code>
+   * <code>.lh_proto.BookmarkPb bookmark = 2;</code>
    * @return The bookmark.
    */
   io.littlehorse.common.proto.BookmarkPb getBookmark();
   /**
-   * <code>.lh_proto.BookmarkPb bookmark = 1;</code>
+   * <code>.lh_proto.BookmarkPb bookmark = 2;</code>
    */
   io.littlehorse.common.proto.BookmarkPbOrBuilder getBookmarkOrBuilder();
-
-  /**
-   * <code>int32 limit = 2;</code>
-   * @return The limit.
-   */
-  int getLimit();
 
   /**
    * <code>.lh_proto.GETableClassEnumPb object_type = 3;</code>
@@ -40,49 +40,48 @@ public interface LHInternalSearchPbOrBuilder extends
   io.littlehorse.common.proto.GETableClassEnumPb getObjectType();
 
   /**
-   * <code>.lh_proto.LocalTagScanPb local_tag = 4;</code>
-   * @return Whether the localTag field is set.
+   * <code>string partition_key = 4;</code>
+   * @return Whether the partitionKey field is set.
    */
-  boolean hasLocalTag();
+  boolean hasPartitionKey();
   /**
-   * <code>.lh_proto.LocalTagScanPb local_tag = 4;</code>
-   * @return The localTag.
+   * <code>string partition_key = 4;</code>
+   * @return The partitionKey.
    */
-  io.littlehorse.common.proto.LocalTagScanPb getLocalTag();
+  java.lang.String getPartitionKey();
   /**
-   * <code>.lh_proto.LocalTagScanPb local_tag = 4;</code>
+   * <code>string partition_key = 4;</code>
+   * @return The bytes for partitionKey.
    */
-  io.littlehorse.common.proto.LocalTagScanPbOrBuilder getLocalTagOrBuilder();
+  com.google.protobuf.ByteString
+      getPartitionKeyBytes();
 
   /**
-   * <code>.lh_proto.ObjectIdPrefixScanPb object_id_prefix = 5;</code>
-   * @return Whether the objectIdPrefix field is set.
-   */
-  boolean hasObjectIdPrefix();
-  /**
-   * <code>.lh_proto.ObjectIdPrefixScanPb object_id_prefix = 5;</code>
+   * <code>string object_id_prefix = 5;</code>
    * @return The objectIdPrefix.
    */
-  io.littlehorse.common.proto.ObjectIdPrefixScanPb getObjectIdPrefix();
+  java.lang.String getObjectIdPrefix();
   /**
-   * <code>.lh_proto.ObjectIdPrefixScanPb object_id_prefix = 5;</code>
+   * <code>string object_id_prefix = 5;</code>
+   * @return The bytes for objectIdPrefix.
    */
-  io.littlehorse.common.proto.ObjectIdPrefixScanPbOrBuilder getObjectIdPrefixOrBuilder();
+  com.google.protobuf.ByteString
+      getObjectIdPrefixBytes();
 
   /**
-   * <code>.lh_proto.HashedTagScanPb hashed_tag = 6;</code>
-   * @return Whether the hashedTag field is set.
+   * <code>.lh_proto.LHInternalSearchPb.RepeatedAttributePb tag_prefix = 6;</code>
+   * @return Whether the tagPrefix field is set.
    */
-  boolean hasHashedTag();
+  boolean hasTagPrefix();
   /**
-   * <code>.lh_proto.HashedTagScanPb hashed_tag = 6;</code>
-   * @return The hashedTag.
+   * <code>.lh_proto.LHInternalSearchPb.RepeatedAttributePb tag_prefix = 6;</code>
+   * @return The tagPrefix.
    */
-  io.littlehorse.common.proto.HashedTagScanPb getHashedTag();
+  io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb getTagPrefix();
   /**
-   * <code>.lh_proto.HashedTagScanPb hashed_tag = 6;</code>
+   * <code>.lh_proto.LHInternalSearchPb.RepeatedAttributePb tag_prefix = 6;</code>
    */
-  io.littlehorse.common.proto.HashedTagScanPbOrBuilder getHashedTagOrBuilder();
+  io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePbOrBuilder getTagPrefixOrBuilder();
 
-  public io.littlehorse.common.proto.LHInternalSearchPb.SubsearchCase getSubsearchCase();
+  public io.littlehorse.common.proto.LHInternalSearchPb.PrefixCase getPrefixCase();
 }

@@ -42,19 +42,19 @@ public interface SearchVariablePbOrBuilder extends
       getWfRunIdBytes();
 
   /**
-   * <code>.lh_proto.VariableValuePb value = 4;</code>
+   * <code>.lh_proto.SearchVariablePb.NameAndValuePb value = 4;</code>
    * @return Whether the value field is set.
    */
   boolean hasValue();
   /**
-   * <code>.lh_proto.VariableValuePb value = 4;</code>
+   * <code>.lh_proto.SearchVariablePb.NameAndValuePb value = 4;</code>
    * @return The value.
    */
-  io.littlehorse.common.proto.VariableValuePb getValue();
+  io.littlehorse.common.proto.SearchVariablePb.NameAndValuePb getValue();
   /**
-   * <code>.lh_proto.VariableValuePb value = 4;</code>
+   * <code>.lh_proto.SearchVariablePb.NameAndValuePb value = 4;</code>
    */
-  io.littlehorse.common.proto.VariableValuePbOrBuilder getValueOrBuilder();
+  io.littlehorse.common.proto.SearchVariablePb.NameAndValuePbOrBuilder getValueOrBuilder();
 
   public io.littlehorse.common.proto.SearchVariablePb.VariableCriteriaCase getVariableCriteriaCase();
 }
