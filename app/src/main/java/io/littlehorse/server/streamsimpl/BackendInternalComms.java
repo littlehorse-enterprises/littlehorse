@@ -8,13 +8,13 @@ import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHConnectionError;
+import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
-import io.littlehorse.common.proto.AttributePb;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.CentralStoreQueryPb;
 import io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb;
@@ -25,12 +25,12 @@ import io.littlehorse.common.proto.InternalGetAdvertisedHostsPb;
 import io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb;
 import io.littlehorse.common.proto.InternalSearchReplyPb;
 import io.littlehorse.common.proto.LHInternalSearchPb;
+import io.littlehorse.common.proto.LHInternalSearchPb.PrefixCase;
 import io.littlehorse.common.proto.LHInternalsGrpc;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsBlockingStub;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsImplBase;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsStub;
 import io.littlehorse.common.proto.LHResponseCodePb;
-import io.littlehorse.common.proto.LocalTagScanPb;
 import io.littlehorse.common.proto.PartitionBookmarkPb;
 import io.littlehorse.common.proto.RegisterTaskWorkerPb;
 import io.littlehorse.common.proto.RegisterTaskWorkerReplyPb;
@@ -41,8 +41,6 @@ import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streamsimpl.searchutils.LHInternalSearch;
-import io.littlehorse.server.streamsimpl.searchutils.LHInternalSubSearch;
-import io.littlehorse.server.streamsimpl.searchutils.internalsearches.LocalTagScan;
 import io.littlehorse.server.streamsimpl.storeinternals.LHROStoreWrapper;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
@@ -51,7 +49,6 @@ import io.littlehorse.server.streamsimpl.storeinternals.utils.LHKeyValueIterator
 import io.littlehorse.server.streamsimpl.util.AsyncWaiters;
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -490,15 +487,6 @@ public class BackendInternalComms implements Closeable {
             ctx.onCompleted();
         }
 
-        // @Override
-        // public void paginatedTagQuery(
-        //     LocalTagScanPb req,
-        //     StreamObserver<InternalSearchReplyPb> ctx
-        // ) {
-        //     ctx.onNext(localPaginatedTagQuery(req));
-        //     ctx.onCompleted();
-        // }
-
         @Override
         public void lHSearch(
             LHInternalSearchPb req,
@@ -548,35 +536,132 @@ public class BackendInternalComms implements Closeable {
         }
     }
 
-    public InternalSearchReplyPb doSearch(LHInternalSearch lhis)
-        throws LHConnectionError {
-        InternalSearchReplyPb reply;
-
-        switch (lhis.type) {
-            case LOCAL_TAG:
-                reply = localTagScan(lhis);
-                break;
-            case HASHED_TAG:
-                reply = localHashedTagScan(lhis);
-                break;
-            case OBJECT_ID_PREFIX:
-                reply = localObjectIdPrefixScan(lhis);
-                break;
-            case SUBSEARCH_NOT_SET:
-            default:
-                throw new RuntimeException("Not possible");
-        }
-        return reply;
-    }
-
     /*
      * Scans over all local tags...note that this should be renamed a bit because
      * it might involve scanning partitions that aren't local.
      * EMPLOYEE_TODO: maybe figure out how to name this better.
      */
-    private InternalSearchReplyPb localTagScan(LHInternalSearch search)
+    public InternalSearchReplyPb doSearch(LHInternalSearch search)
         throws LHConnectionError {
-        LocalTagScan req = search.localTag;
+        if (
+            search.partitionKey != null &&
+            search.prefixType == PrefixCase.OBJECT_ID_PREFIX
+        ) {
+            return objectIdPrefixScan(search);
+        } else if (
+            search.partitionKey != null && search.prefixType == PrefixCase.TAG_PREFIX
+        ) {
+            throw new RuntimeException("Hashed Tag Scan not yet supported");
+        } else if (
+            search.partitionKey == null && search.prefixType == PrefixCase.TAG_PREFIX
+        ) {
+            return unhashedTagScan(search);
+        } else {
+            throw new RuntimeException("Impossible: Unrecognized search type");
+        }
+    }
+
+    private InternalSearchReplyPb objectIdPrefixScan(LHInternalSearch search)
+        throws LHConnectionError {
+        HostInfo correctHost = getHostForKey(search.partitionKey);
+        if (getHostForKey(search.partitionKey).equals(thisHost)) {
+            return objectIdPrefixScanOnThisHost(search);
+        } else {
+            try {
+                return getInternalClient(correctHost)
+                    .lHSearch(search.toProto().build());
+            } catch (Exception exn) {
+                // EMPLOYEE_TODO: make the caught exn specific to grpc
+                // EMPLOYEE_TODO: use standby hosts
+                return InternalSearchReplyPb
+                    .newBuilder()
+                    .setCode(StoreQueryStatusPb.RSQ_NOT_AVAILABLE)
+                    .setMessage("Failed contacting host: " + exn.getMessage())
+                    .build();
+            }
+        }
+    }
+
+    private InternalSearchReplyPb objectIdPrefixScanOnThisHost(LHInternalSearch req) {
+        int curLimit = req.limit;
+        BookmarkPb reqBookmark = req.bookmark;
+        if (reqBookmark == null) {
+            reqBookmark = BookmarkPb.newBuilder().build();
+        }
+        InternalSearchReplyPb.Builder out = InternalSearchReplyPb.newBuilder();
+
+        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
+            ServerTopology.CORE_STORE,
+            req.partitionKey,
+            Serdes.String().serializer()
+        );
+        int partition = meta.partition();
+
+        LHROStoreWrapper store = getLocalStore(partition, false);
+        PartitionBookmarkPb partBookmark = reqBookmark.getInProgressPartitionsOrDefault(
+            partition,
+            null
+        );
+
+        Set<String> objectIds = new HashSet<>(); // TODO
+
+        String endKey = req.objectIdPrefix + "~";
+        String startKey;
+        if (partBookmark == null) {
+            startKey = req.objectIdPrefix;
+        } else {
+            startKey = partBookmark.getLastKey();
+        }
+        String lastSeenKey = null;
+        boolean brokenBecauseLimitFull = false;
+
+        try (
+            LHKeyValueIterator<? extends GETable<?>> iter = store.range(
+                startKey,
+                endKey,
+                GETable.getCls(req.objectType)
+            )
+        ) {
+            while (iter.hasNext()) {
+                LHIterKeyValue<? extends GETable<?>> next = iter.next();
+                String key = next.getKey();
+                if (--curLimit < 0) {
+                    brokenBecauseLimitFull = true;
+                    break;
+                }
+                out.addObjectIds(key);
+                lastSeenKey = key;
+            }
+        }
+
+        if (brokenBecauseLimitFull) {
+            // Then we have more data for the next request, so we want to return
+            // a bookmark.
+
+            PartitionBookmarkPb nextBookmark = PartitionBookmarkPb
+                .newBuilder()
+                .setParttion(partition)
+                .setLastKey(lastSeenKey)
+                .build();
+
+            out.setUpdatedBookmark(
+                BookmarkPb
+                    .newBuilder()
+                    .putInProgressPartitions(partition, nextBookmark)
+            );
+        } else {
+            // Out of data, so we don't set bookmark on the response.
+            // Nothing to do here.
+        }
+
+        curLimit -= objectIds.size();
+        out.addAllObjectIds(objectIds);
+
+        return out.build();
+    }
+
+    private InternalSearchReplyPb unhashedTagScan(LHInternalSearch search)
+        throws LHConnectionError {
         int limit = search.limit;
 
         // First, see what results we have locally. Then if we need more results
@@ -585,7 +670,7 @@ public class BackendInternalComms implements Closeable {
         // hasn't been completed yet (by consulting the Bookmark), and then
         // query the owner of that partition.
 
-        InternalSearchReplyPb out = localPaginatedTagQuery(search);
+        InternalSearchReplyPb out = localUnhashedTagScan(search);
         if (out.getObjectIdsCount() >= limit) {
             // Then we've gotten all the data the client asked for.
             return out;
@@ -615,16 +700,17 @@ public class BackendInternalComms implements Closeable {
                 throw new RuntimeException("wtf, host the same");
             }
             LHInternalsBlockingStub stub = getInternalClient(otherHost);
-            LocalTagScanPb newReq = LocalTagScanPb
-                .newBuilder()
-                .setBookmark(out.getUpdatedBookmark())
-                .setLimit(req.getLimit() - out.getObjectIdsCount())
-                .setObjectType(req.getObjectType())
-                .addAllAttributes(req.getAttributesList())
-                .build();
+
+            LHInternalSearch newReq = new LHInternalSearch();
+            newReq.bookmark = out.getUpdatedBookmark();
+            newReq.limit = search.limit - out.getObjectIdsCount();
+            newReq.tagPrefix = search.tagPrefix;
+            newReq.prefixType = PrefixCase.TAG_PREFIX;
+            newReq.objectType = search.objectType;
+
             InternalSearchReplyPb reply;
             try {
-                reply = stub.paginatedTagQuery(newReq);
+                reply = stub.lHSearch(newReq.toProto().build());
             } catch (Exception exn) {
                 throw new LHConnectionError(exn, "Failed connecting to backend.");
             }
@@ -664,6 +750,19 @@ public class BackendInternalComms implements Closeable {
         return null;
     }
 
+    private HostInfo getHostForKey(String partitionKey) {
+        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
+            ServerTopology.CORE_STORE,
+            partitionKey,
+            Serdes.String().serializer()
+        );
+        return meta.activeHost();
+    }
+
+    /*
+     * Precondition: bm represents bookmark for uncompleted LOCAL search (not a
+     * REMOTE_HASH search).
+     */
     private Set<Integer> getUnfininshedPartitions(BookmarkPb bm) {
         Set<Integer> out = new HashSet<>();
         for (int i = 0; i < config.getClusterPartitions(); i++) {
@@ -686,7 +785,11 @@ public class BackendInternalComms implements Closeable {
         return new GlobalMetaStoresServerImpl(coreStreams, config);
     }
 
-    private InternalSearchReplyPb localPaginatedTagQuery(LHInternalSearch req) {
+    private InternalSearchReplyPb localUnhashedTagScan(LHInternalSearch req) {
+        if (req.partitionKey != null) {
+            throw new RuntimeException("Not possible you nincompoop");
+        }
+
         int curLimit = req.limit;
 
         BookmarkPb reqBookmark = req.bookmark;
@@ -696,10 +799,6 @@ public class BackendInternalComms implements Closeable {
 
         BookmarkPb.Builder outBookmark = reqBookmark.toBuilder();
         InternalSearchReplyPb.Builder out = InternalSearchReplyPb.newBuilder();
-        List<Attribute> attrList = new ArrayList<>();
-        for (AttributePb atpb : req.getAttributesList()) {
-            attrList.add(Attribute.fromProto(atpb));
-        }
 
         // iterate through all active and standby local partitions
         for (int partition : getLocalCommandProcessorPartitions()) {
@@ -716,10 +815,10 @@ public class BackendInternalComms implements Closeable {
 
             // Add all matching objects from that partition
             Pair<Set<String>, PartitionBookmarkPb> result = onePartitionPaginatedTagScan(
-                attrList,
+                req.tagPrefix,
                 partBookmark,
                 curLimit,
-                req.getObjectType(),
+                req.objectType,
                 partition,
                 partStore
             );

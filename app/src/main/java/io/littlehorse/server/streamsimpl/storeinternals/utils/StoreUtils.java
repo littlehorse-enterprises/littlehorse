@@ -2,6 +2,7 @@ package io.littlehorse.server.streamsimpl.storeinternals.utils;
 
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.Storeable;
+import io.littlehorse.common.proto.GETableClassEnumPb;
 
 public class StoreUtils {
 
@@ -14,6 +15,10 @@ public class StoreUtils {
         Class<? extends Storeable<?>> cls
     ) {
         return cls.getSimpleName() + "/" + objectId;
+    }
+
+    public static String getFullStoreKey(String objectId, GETableClassEnumPb type) {
+        return getFullStoreKey(objectId, GETable.getCls(type));
     }
 
     /*

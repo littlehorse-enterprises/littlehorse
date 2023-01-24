@@ -7,6 +7,7 @@ import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHConnectionError;
+import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.SubCommand;
@@ -460,9 +461,11 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
                 out.setBookmark(raw.getUpdatedBookmark().toByteString());
             }
         } catch (LHConnectionError exn) {
-            out
-                .setCode(LHResponseCodePb.CONNECTION_ERROR)
-                .setMessage("Failed connecting to backend: " + exn.getMessage());
+            out.setCode(LHResponseCodePb.CONNECTION_ERROR);
+            out.setMessage("Failed connecting to backend: " + exn.getMessage());
+        } catch (LHValidationError exn) {
+            out.setCode(LHResponseCodePb.VALIDATION_ERROR);
+            out.setMessage("Failed validating search request: " + exn.getMessage());
         }
 
         ctx.onNext(out.build());

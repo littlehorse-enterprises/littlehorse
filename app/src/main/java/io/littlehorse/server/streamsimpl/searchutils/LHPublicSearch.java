@@ -5,7 +5,6 @@ import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GETableClassEnumPb;
-import io.littlehorse.common.proto.LHInternalSearchPb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 
 public abstract class LHPublicSearch<T extends MessageOrBuilder>
@@ -27,12 +26,12 @@ public abstract class LHPublicSearch<T extends MessageOrBuilder>
         LHGlobalMetaStores stores
     ) throws LHValidationError;
 
-    public LHInternalSearchPb getInternalSearch(LHGlobalMetaStores stores)
+    public LHInternalSearch getInternalSearch(LHGlobalMetaStores stores)
         throws LHValidationError {
         LHInternalSearch out = startInternalSearch(stores);
         out.limit = getLimit();
         out.bookmark = bookmark;
         out.objectType = getObjectType();
-        return out.toProto().build();
+        return out;
     }
 }

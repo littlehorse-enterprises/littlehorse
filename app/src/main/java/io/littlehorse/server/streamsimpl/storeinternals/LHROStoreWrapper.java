@@ -121,6 +121,15 @@ public class LHROStoreWrapper {
         return new LHKeyValueIterator<>(store.reverseRange(start, end), cls, config);
     }
 
+    /**
+     * Does a range scan over the provided object id's (note: these are NOT full
+     * store keys.)
+     * @param <T> type of object
+     * @param start start object id
+     * @param end end object id
+     * @param cls type
+     * @return an iter
+     */
     public <T extends Storeable<?>> LHKeyValueIterator<T> range(
         String start,
         String end,
