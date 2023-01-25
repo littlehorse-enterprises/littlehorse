@@ -59,7 +59,7 @@ public class Variable extends GETable<VariablePb> {
 
     @JsonIgnore
     public static String getStoreKey(String wfRunId, int threadNum, String name) {
-        return wfRunId + "-" + threadNum + "-" + name;
+        return wfRunId + "/" + threadNum + "/" + name;
     }
 
     @JsonIgnore

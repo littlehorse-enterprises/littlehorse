@@ -460,6 +460,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             if (raw.hasUpdatedBookmark()) {
                 out.setBookmark(raw.getUpdatedBookmark().toByteString());
             }
+            out.addAllObjectIds(raw.getObjectIdsList());
         } catch (LHConnectionError exn) {
             out.setCode(LHResponseCodePb.CONNECTION_ERROR);
             out.setMessage("Failed connecting to backend: " + exn.getMessage());
@@ -703,7 +704,6 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     public void close() {
-        System.out.println("hi from close()");
         CountDownLatch latch = new CountDownLatch(3);
 
         new Thread(() -> {
