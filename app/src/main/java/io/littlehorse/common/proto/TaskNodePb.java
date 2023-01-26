@@ -17,6 +17,7 @@ private static final long serialVersionUID = 0L;
   }
   private TaskNodePb() {
     taskDefName_ = "";
+    variables_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -76,15 +77,11 @@ private static final long serialVersionUID = 0L;
           }
           case 34: {
             if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-              variables_ = com.google.protobuf.MapField.newMapField(
-                  VariablesDefaultEntryHolder.defaultEntry);
+              variables_ = new java.util.ArrayList<io.littlehorse.common.proto.VariableAssignmentPb>();
               mutable_bitField0_ |= 0x00000001;
             }
-            com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.common.proto.VariableAssignmentPb>
-            variables__ = input.readMessage(
-                VariablesDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
-            variables_.getMutableMap().put(
-                variables__.getKey(), variables__.getValue());
+            variables_.add(
+                input.readMessage(io.littlehorse.common.proto.VariableAssignmentPb.parser(), extensionRegistry));
             break;
           }
           default: {
@@ -102,6 +99,9 @@ private static final long serialVersionUID = 0L;
       throw new com.google.protobuf.InvalidProtocolBufferException(
           e).setUnfinishedMessage(this);
     } finally {
+      if (((mutable_bitField0_ & 0x00000001) != 0)) {
+        variables_ = java.util.Collections.unmodifiableList(variables_);
+      }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
@@ -111,18 +111,6 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.WfSpec.internal_static_lh_proto_TaskNodePb_descriptor;
   }
 
-  @SuppressWarnings({"rawtypes"})
-  @java.lang.Override
-  protected com.google.protobuf.MapField internalGetMapField(
-      int number) {
-    switch (number) {
-      case 4:
-        return internalGetVariables();
-      default:
-        throw new RuntimeException(
-            "Invalid map field number: " + number);
-    }
-  }
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
@@ -207,84 +195,43 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int VARIABLES_FIELD_NUMBER = 4;
-  private static final class VariablesDefaultEntryHolder {
-    static final com.google.protobuf.MapEntry<
-        java.lang.String, io.littlehorse.common.proto.VariableAssignmentPb> defaultEntry =
-            com.google.protobuf.MapEntry
-            .<java.lang.String, io.littlehorse.common.proto.VariableAssignmentPb>newDefaultInstance(
-                io.littlehorse.common.proto.WfSpec.internal_static_lh_proto_TaskNodePb_VariablesEntry_descriptor, 
-                com.google.protobuf.WireFormat.FieldType.STRING,
-                "",
-                com.google.protobuf.WireFormat.FieldType.MESSAGE,
-                io.littlehorse.common.proto.VariableAssignmentPb.getDefaultInstance());
-  }
-  private com.google.protobuf.MapField<
-      java.lang.String, io.littlehorse.common.proto.VariableAssignmentPb> variables_;
-  private com.google.protobuf.MapField<java.lang.String, io.littlehorse.common.proto.VariableAssignmentPb>
-  internalGetVariables() {
-    if (variables_ == null) {
-      return com.google.protobuf.MapField.emptyMapField(
-          VariablesDefaultEntryHolder.defaultEntry);
-    }
+  private java.util.List<io.littlehorse.common.proto.VariableAssignmentPb> variables_;
+  /**
+   * <code>repeated .lh_proto.VariableAssignmentPb variables = 4;</code>
+   */
+  @java.lang.Override
+  public java.util.List<io.littlehorse.common.proto.VariableAssignmentPb> getVariablesList() {
     return variables_;
   }
-
+  /**
+   * <code>repeated .lh_proto.VariableAssignmentPb variables = 4;</code>
+   */
+  @java.lang.Override
+  public java.util.List<? extends io.littlehorse.common.proto.VariableAssignmentPbOrBuilder> 
+      getVariablesOrBuilderList() {
+    return variables_;
+  }
+  /**
+   * <code>repeated .lh_proto.VariableAssignmentPb variables = 4;</code>
+   */
+  @java.lang.Override
   public int getVariablesCount() {
-    return internalGetVariables().getMap().size();
+    return variables_.size();
   }
   /**
-   * <code>map&lt;string, .lh_proto.VariableAssignmentPb&gt; variables = 4;</code>
+   * <code>repeated .lh_proto.VariableAssignmentPb variables = 4;</code>
    */
-
   @java.lang.Override
-  public boolean containsVariables(
-      java.lang.String key) {
-    if (key == null) { throw new java.lang.NullPointerException(); }
-    return internalGetVariables().getMap().containsKey(key);
+  public io.littlehorse.common.proto.VariableAssignmentPb getVariables(int index) {
+    return variables_.get(index);
   }
   /**
-   * Use {@link #getVariablesMap()} instead.
+   * <code>repeated .lh_proto.VariableAssignmentPb variables = 4;</code>
    */
   @java.lang.Override
-  @java.lang.Deprecated
-  public java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableAssignmentPb> getVariables() {
-    return getVariablesMap();
-  }
-  /**
-   * <code>map&lt;string, .lh_proto.VariableAssignmentPb&gt; variables = 4;</code>
-   */
-  @java.lang.Override
-
-  public java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableAssignmentPb> getVariablesMap() {
-    return internalGetVariables().getMap();
-  }
-  /**
-   * <code>map&lt;string, .lh_proto.VariableAssignmentPb&gt; variables = 4;</code>
-   */
-  @java.lang.Override
-
-  public io.littlehorse.common.proto.VariableAssignmentPb getVariablesOrDefault(
-      java.lang.String key,
-      io.littlehorse.common.proto.VariableAssignmentPb defaultValue) {
-    if (key == null) { throw new java.lang.NullPointerException(); }
-    java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableAssignmentPb> map =
-        internalGetVariables().getMap();
-    return map.containsKey(key) ? map.get(key) : defaultValue;
-  }
-  /**
-   * <code>map&lt;string, .lh_proto.VariableAssignmentPb&gt; variables = 4;</code>
-   */
-  @java.lang.Override
-
-  public io.littlehorse.common.proto.VariableAssignmentPb getVariablesOrThrow(
-      java.lang.String key) {
-    if (key == null) { throw new java.lang.NullPointerException(); }
-    java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableAssignmentPb> map =
-        internalGetVariables().getMap();
-    if (!map.containsKey(key)) {
-      throw new java.lang.IllegalArgumentException();
-    }
-    return map.get(key);
+  public io.littlehorse.common.proto.VariableAssignmentPbOrBuilder getVariablesOrBuilder(
+      int index) {
+    return variables_.get(index);
   }
 
   private byte memoizedIsInitialized = -1;
@@ -310,12 +257,9 @@ private static final long serialVersionUID = 0L;
     if (retries_ != 0) {
       output.writeInt32(3, retries_);
     }
-    com.google.protobuf.GeneratedMessageV3
-      .serializeStringMapTo(
-        output,
-        internalGetVariables(),
-        VariablesDefaultEntryHolder.defaultEntry,
-        4);
+    for (int i = 0; i < variables_.size(); i++) {
+      output.writeMessage(4, variables_.get(i));
+    }
     unknownFields.writeTo(output);
   }
 
@@ -336,15 +280,9 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(3, retries_);
     }
-    for (java.util.Map.Entry<java.lang.String, io.littlehorse.common.proto.VariableAssignmentPb> entry
-         : internalGetVariables().getMap().entrySet()) {
-      com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.common.proto.VariableAssignmentPb>
-      variables__ = VariablesDefaultEntryHolder.defaultEntry.newBuilderForType()
-          .setKey(entry.getKey())
-          .setValue(entry.getValue())
-          .build();
+    for (int i = 0; i < variables_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, variables__);
+        .computeMessageSize(4, variables_.get(i));
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -370,8 +308,8 @@ private static final long serialVersionUID = 0L;
     }
     if (getRetries()
         != other.getRetries()) return false;
-    if (!internalGetVariables().equals(
-        other.internalGetVariables())) return false;
+    if (!getVariablesList()
+        .equals(other.getVariablesList())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -391,9 +329,9 @@ private static final long serialVersionUID = 0L;
     }
     hash = (37 * hash) + RETRIES_FIELD_NUMBER;
     hash = (53 * hash) + getRetries();
-    if (!internalGetVariables().getMap().isEmpty()) {
+    if (getVariablesCount() > 0) {
       hash = (37 * hash) + VARIABLES_FIELD_NUMBER;
-      hash = (53 * hash) + internalGetVariables().hashCode();
+      hash = (53 * hash) + getVariablesList().hashCode();
     }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
@@ -502,28 +440,6 @@ private static final long serialVersionUID = 0L;
       return io.littlehorse.common.proto.WfSpec.internal_static_lh_proto_TaskNodePb_descriptor;
     }
 
-    @SuppressWarnings({"rawtypes"})
-    protected com.google.protobuf.MapField internalGetMapField(
-        int number) {
-      switch (number) {
-        case 4:
-          return internalGetVariables();
-        default:
-          throw new RuntimeException(
-              "Invalid map field number: " + number);
-      }
-    }
-    @SuppressWarnings({"rawtypes"})
-    protected com.google.protobuf.MapField internalGetMutableMapField(
-        int number) {
-      switch (number) {
-        case 4:
-          return internalGetMutableVariables();
-        default:
-          throw new RuntimeException(
-              "Invalid map field number: " + number);
-      }
-    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -545,6 +461,7 @@ private static final long serialVersionUID = 0L;
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
+        getVariablesFieldBuilder();
       }
     }
     @java.lang.Override
@@ -560,7 +477,12 @@ private static final long serialVersionUID = 0L;
       }
       retries_ = 0;
 
-      internalGetMutableVariables().clear();
+      if (variablesBuilder_ == null) {
+        variables_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+      } else {
+        variablesBuilder_.clear();
+      }
       return this;
     }
 
@@ -595,8 +517,15 @@ private static final long serialVersionUID = 0L;
         result.timeoutSeconds_ = timeoutSecondsBuilder_.build();
       }
       result.retries_ = retries_;
-      result.variables_ = internalGetVariables();
-      result.variables_.makeImmutable();
+      if (variablesBuilder_ == null) {
+        if (((bitField0_ & 0x00000001) != 0)) {
+          variables_ = java.util.Collections.unmodifiableList(variables_);
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
+        result.variables_ = variables_;
+      } else {
+        result.variables_ = variablesBuilder_.build();
+      }
       onBuilt();
       return result;
     }
@@ -655,8 +584,32 @@ private static final long serialVersionUID = 0L;
       if (other.getRetries() != 0) {
         setRetries(other.getRetries());
       }
-      internalGetMutableVariables().mergeFrom(
-          other.internalGetVariables());
+      if (variablesBuilder_ == null) {
+        if (!other.variables_.isEmpty()) {
+          if (variables_.isEmpty()) {
+            variables_ = other.variables_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureVariablesIsMutable();
+            variables_.addAll(other.variables_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.variables_.isEmpty()) {
+          if (variablesBuilder_.isEmpty()) {
+            variablesBuilder_.dispose();
+            variablesBuilder_ = null;
+            variables_ = other.variables_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+            variablesBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getVariablesFieldBuilder() : null;
+          } else {
+            variablesBuilder_.addAllMessages(other.variables_);
+          }
+        }
+      }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
@@ -913,132 +866,244 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private com.google.protobuf.MapField<
-        java.lang.String, io.littlehorse.common.proto.VariableAssignmentPb> variables_;
-    private com.google.protobuf.MapField<java.lang.String, io.littlehorse.common.proto.VariableAssignmentPb>
-    internalGetVariables() {
-      if (variables_ == null) {
-        return com.google.protobuf.MapField.emptyMapField(
-            VariablesDefaultEntryHolder.defaultEntry);
-      }
-      return variables_;
-    }
-    private com.google.protobuf.MapField<java.lang.String, io.littlehorse.common.proto.VariableAssignmentPb>
-    internalGetMutableVariables() {
-      onChanged();;
-      if (variables_ == null) {
-        variables_ = com.google.protobuf.MapField.newMapField(
-            VariablesDefaultEntryHolder.defaultEntry);
-      }
-      if (!variables_.isMutable()) {
-        variables_ = variables_.copy();
-      }
-      return variables_;
+    private java.util.List<io.littlehorse.common.proto.VariableAssignmentPb> variables_ =
+      java.util.Collections.emptyList();
+    private void ensureVariablesIsMutable() {
+      if (!((bitField0_ & 0x00000001) != 0)) {
+        variables_ = new java.util.ArrayList<io.littlehorse.common.proto.VariableAssignmentPb>(variables_);
+        bitField0_ |= 0x00000001;
+       }
     }
 
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.common.proto.VariableAssignmentPb, io.littlehorse.common.proto.VariableAssignmentPb.Builder, io.littlehorse.common.proto.VariableAssignmentPbOrBuilder> variablesBuilder_;
+
+    /**
+     * <code>repeated .lh_proto.VariableAssignmentPb variables = 4;</code>
+     */
+    public java.util.List<io.littlehorse.common.proto.VariableAssignmentPb> getVariablesList() {
+      if (variablesBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(variables_);
+      } else {
+        return variablesBuilder_.getMessageList();
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.VariableAssignmentPb variables = 4;</code>
+     */
     public int getVariablesCount() {
-      return internalGetVariables().getMap().size();
-    }
-    /**
-     * <code>map&lt;string, .lh_proto.VariableAssignmentPb&gt; variables = 4;</code>
-     */
-
-    @java.lang.Override
-    public boolean containsVariables(
-        java.lang.String key) {
-      if (key == null) { throw new java.lang.NullPointerException(); }
-      return internalGetVariables().getMap().containsKey(key);
-    }
-    /**
-     * Use {@link #getVariablesMap()} instead.
-     */
-    @java.lang.Override
-    @java.lang.Deprecated
-    public java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableAssignmentPb> getVariables() {
-      return getVariablesMap();
-    }
-    /**
-     * <code>map&lt;string, .lh_proto.VariableAssignmentPb&gt; variables = 4;</code>
-     */
-    @java.lang.Override
-
-    public java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableAssignmentPb> getVariablesMap() {
-      return internalGetVariables().getMap();
-    }
-    /**
-     * <code>map&lt;string, .lh_proto.VariableAssignmentPb&gt; variables = 4;</code>
-     */
-    @java.lang.Override
-
-    public io.littlehorse.common.proto.VariableAssignmentPb getVariablesOrDefault(
-        java.lang.String key,
-        io.littlehorse.common.proto.VariableAssignmentPb defaultValue) {
-      if (key == null) { throw new java.lang.NullPointerException(); }
-      java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableAssignmentPb> map =
-          internalGetVariables().getMap();
-      return map.containsKey(key) ? map.get(key) : defaultValue;
-    }
-    /**
-     * <code>map&lt;string, .lh_proto.VariableAssignmentPb&gt; variables = 4;</code>
-     */
-    @java.lang.Override
-
-    public io.littlehorse.common.proto.VariableAssignmentPb getVariablesOrThrow(
-        java.lang.String key) {
-      if (key == null) { throw new java.lang.NullPointerException(); }
-      java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableAssignmentPb> map =
-          internalGetVariables().getMap();
-      if (!map.containsKey(key)) {
-        throw new java.lang.IllegalArgumentException();
+      if (variablesBuilder_ == null) {
+        return variables_.size();
+      } else {
+        return variablesBuilder_.getCount();
       }
-      return map.get(key);
     }
-
+    /**
+     * <code>repeated .lh_proto.VariableAssignmentPb variables = 4;</code>
+     */
+    public io.littlehorse.common.proto.VariableAssignmentPb getVariables(int index) {
+      if (variablesBuilder_ == null) {
+        return variables_.get(index);
+      } else {
+        return variablesBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.VariableAssignmentPb variables = 4;</code>
+     */
+    public Builder setVariables(
+        int index, io.littlehorse.common.proto.VariableAssignmentPb value) {
+      if (variablesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureVariablesIsMutable();
+        variables_.set(index, value);
+        onChanged();
+      } else {
+        variablesBuilder_.setMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.VariableAssignmentPb variables = 4;</code>
+     */
+    public Builder setVariables(
+        int index, io.littlehorse.common.proto.VariableAssignmentPb.Builder builderForValue) {
+      if (variablesBuilder_ == null) {
+        ensureVariablesIsMutable();
+        variables_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        variablesBuilder_.setMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.VariableAssignmentPb variables = 4;</code>
+     */
+    public Builder addVariables(io.littlehorse.common.proto.VariableAssignmentPb value) {
+      if (variablesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureVariablesIsMutable();
+        variables_.add(value);
+        onChanged();
+      } else {
+        variablesBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.VariableAssignmentPb variables = 4;</code>
+     */
+    public Builder addVariables(
+        int index, io.littlehorse.common.proto.VariableAssignmentPb value) {
+      if (variablesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureVariablesIsMutable();
+        variables_.add(index, value);
+        onChanged();
+      } else {
+        variablesBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.VariableAssignmentPb variables = 4;</code>
+     */
+    public Builder addVariables(
+        io.littlehorse.common.proto.VariableAssignmentPb.Builder builderForValue) {
+      if (variablesBuilder_ == null) {
+        ensureVariablesIsMutable();
+        variables_.add(builderForValue.build());
+        onChanged();
+      } else {
+        variablesBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.VariableAssignmentPb variables = 4;</code>
+     */
+    public Builder addVariables(
+        int index, io.littlehorse.common.proto.VariableAssignmentPb.Builder builderForValue) {
+      if (variablesBuilder_ == null) {
+        ensureVariablesIsMutable();
+        variables_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        variablesBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.VariableAssignmentPb variables = 4;</code>
+     */
+    public Builder addAllVariables(
+        java.lang.Iterable<? extends io.littlehorse.common.proto.VariableAssignmentPb> values) {
+      if (variablesBuilder_ == null) {
+        ensureVariablesIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, variables_);
+        onChanged();
+      } else {
+        variablesBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .lh_proto.VariableAssignmentPb variables = 4;</code>
+     */
     public Builder clearVariables() {
-      internalGetMutableVariables().getMutableMap()
-          .clear();
+      if (variablesBuilder_ == null) {
+        variables_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+      } else {
+        variablesBuilder_.clear();
+      }
       return this;
     }
     /**
-     * <code>map&lt;string, .lh_proto.VariableAssignmentPb&gt; variables = 4;</code>
+     * <code>repeated .lh_proto.VariableAssignmentPb variables = 4;</code>
      */
-
-    public Builder removeVariables(
-        java.lang.String key) {
-      if (key == null) { throw new java.lang.NullPointerException(); }
-      internalGetMutableVariables().getMutableMap()
-          .remove(key);
+    public Builder removeVariables(int index) {
+      if (variablesBuilder_ == null) {
+        ensureVariablesIsMutable();
+        variables_.remove(index);
+        onChanged();
+      } else {
+        variablesBuilder_.remove(index);
+      }
       return this;
     }
     /**
-     * Use alternate mutation accessors instead.
+     * <code>repeated .lh_proto.VariableAssignmentPb variables = 4;</code>
      */
-    @java.lang.Deprecated
-    public java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableAssignmentPb>
-    getMutableVariables() {
-      return internalGetMutableVariables().getMutableMap();
+    public io.littlehorse.common.proto.VariableAssignmentPb.Builder getVariablesBuilder(
+        int index) {
+      return getVariablesFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>map&lt;string, .lh_proto.VariableAssignmentPb&gt; variables = 4;</code>
+     * <code>repeated .lh_proto.VariableAssignmentPb variables = 4;</code>
      */
-    public Builder putVariables(
-        java.lang.String key,
-        io.littlehorse.common.proto.VariableAssignmentPb value) {
-      if (key == null) { throw new java.lang.NullPointerException(); }
-      if (value == null) { throw new java.lang.NullPointerException(); }
-      internalGetMutableVariables().getMutableMap()
-          .put(key, value);
-      return this;
+    public io.littlehorse.common.proto.VariableAssignmentPbOrBuilder getVariablesOrBuilder(
+        int index) {
+      if (variablesBuilder_ == null) {
+        return variables_.get(index);  } else {
+        return variablesBuilder_.getMessageOrBuilder(index);
+      }
     }
     /**
-     * <code>map&lt;string, .lh_proto.VariableAssignmentPb&gt; variables = 4;</code>
+     * <code>repeated .lh_proto.VariableAssignmentPb variables = 4;</code>
      */
-
-    public Builder putAllVariables(
-        java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableAssignmentPb> values) {
-      internalGetMutableVariables().getMutableMap()
-          .putAll(values);
-      return this;
+    public java.util.List<? extends io.littlehorse.common.proto.VariableAssignmentPbOrBuilder> 
+         getVariablesOrBuilderList() {
+      if (variablesBuilder_ != null) {
+        return variablesBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(variables_);
+      }
+    }
+    /**
+     * <code>repeated .lh_proto.VariableAssignmentPb variables = 4;</code>
+     */
+    public io.littlehorse.common.proto.VariableAssignmentPb.Builder addVariablesBuilder() {
+      return getVariablesFieldBuilder().addBuilder(
+          io.littlehorse.common.proto.VariableAssignmentPb.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .lh_proto.VariableAssignmentPb variables = 4;</code>
+     */
+    public io.littlehorse.common.proto.VariableAssignmentPb.Builder addVariablesBuilder(
+        int index) {
+      return getVariablesFieldBuilder().addBuilder(
+          index, io.littlehorse.common.proto.VariableAssignmentPb.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .lh_proto.VariableAssignmentPb variables = 4;</code>
+     */
+    public java.util.List<io.littlehorse.common.proto.VariableAssignmentPb.Builder> 
+         getVariablesBuilderList() {
+      return getVariablesFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.common.proto.VariableAssignmentPb, io.littlehorse.common.proto.VariableAssignmentPb.Builder, io.littlehorse.common.proto.VariableAssignmentPbOrBuilder> 
+        getVariablesFieldBuilder() {
+      if (variablesBuilder_ == null) {
+        variablesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            io.littlehorse.common.proto.VariableAssignmentPb, io.littlehorse.common.proto.VariableAssignmentPb.Builder, io.littlehorse.common.proto.VariableAssignmentPbOrBuilder>(
+                variables_,
+                ((bitField0_ & 0x00000001) != 0),
+                getParentForChildren(),
+                isClean());
+        variables_ = null;
+      }
+      return variablesBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

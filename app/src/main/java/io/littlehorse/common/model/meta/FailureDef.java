@@ -60,7 +60,7 @@ public class FailureDef extends LHSerializable<FailureDefPb> {
     public Set<String> getNeededVariableNames() {
         Set<String> out = new HashSet<>();
         if (content != null) {
-            out.addAll(content.getRequiredVariableNames());
+            out.addAll(content.getRequiredWfRunVarNames());
         }
         return out;
     }

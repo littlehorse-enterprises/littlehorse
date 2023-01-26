@@ -2,13 +2,14 @@ package io.littlehorse.common.model.wfrun;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.TaskScheduleRequestPb;
 import io.littlehorse.common.proto.TaskScheduleRequestPbOrBuilder;
-import io.littlehorse.common.proto.VariableValuePb;
+import io.littlehorse.common.proto.VarNameAndValPb;
 import io.littlehorse.common.util.LHUtil;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 public class TaskScheduleRequest extends GETable<TaskScheduleRequestPb> {
 
@@ -22,7 +23,7 @@ public class TaskScheduleRequest extends GETable<TaskScheduleRequestPb> {
     public String wfSpecId;
     public int attemptNumber;
     public String nodeName;
-    public Map<String, VariableValue> variables;
+    public List<VarNameAndVal> variables;
     public Date createdAt;
 
     public String getPartitionKey() {
@@ -41,7 +42,7 @@ public class TaskScheduleRequest extends GETable<TaskScheduleRequestPb> {
     }
 
     public TaskScheduleRequest() {
-        variables = new HashMap<>();
+        variables = new ArrayList<>();
     }
 
     public TaskScheduleRequestPb.Builder toProto() {
@@ -59,8 +60,8 @@ public class TaskScheduleRequest extends GETable<TaskScheduleRequestPb> {
             .setNodeName(nodeName)
             .setCreatedAt(LHUtil.fromDate(getCreatedAt()));
 
-        for (Map.Entry<String, VariableValue> e : variables.entrySet()) {
-            out.putVariables(e.getKey(), e.getValue().toProto().build());
+        for (VarNameAndVal v : variables) {
+            out.addVariables(v.toProto());
         }
 
         return out;
@@ -94,8 +95,8 @@ public class TaskScheduleRequest extends GETable<TaskScheduleRequestPb> {
             this.createdAt = new Date();
         }
 
-        for (Map.Entry<String, VariableValuePb> e : p.getVariablesMap().entrySet()) {
-            variables.put(e.getKey(), VariableValue.fromProto(e.getValue()));
+        for (VarNameAndValPb v : p.getVariablesList()) {
+            variables.add(LHSerializable.fromProto(v, VarNameAndVal.class));
         }
     }
 }

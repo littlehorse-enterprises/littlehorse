@@ -114,7 +114,7 @@ message TaskNodePb {
     string task_def_name = 1;
     VariableAssignmentPb timeout_seconds = 2;
     int32 retries = 3;
-    map<string, VariableAssignmentPb> variables = 4;
+    repeated VariableAssignmentPb variables = 4;
 }
 
 message ExternalEventNodePb {
@@ -139,7 +139,7 @@ message FailureDefPb {
 message VariableDefPb {
     VariableTypePb type = 1;
     optional VariableValuePb default_val = 2;
-    bool required = 3;
+    string name = 3;
 }
 
 message InterruptDefPb {
@@ -149,7 +149,7 @@ message InterruptDefPb {
 
 message ThreadSpecPb {
     map<string, NodePb> nodes = 1;
-    map<string, VariableDefPb> variable_defs = 2;
+    repeated VariableDefPb variable_defs = 2;
     repeated InterruptDefPb interrupt_defs = 3;
 }
 
@@ -161,7 +161,6 @@ message WfSpecPb {
 
     map<string, ThreadSpecPb> thread_specs = 5;
     string entrypoint_thread_name = 6;
-
 }
 
 message OutputSchemaPb {
@@ -172,7 +171,8 @@ message TaskDefPb {
     string name = 1;
     int32 version = 2;
     google.protobuf.Timestamp created_at = 3;
-    map<string, VariableDefPb> input_vars = 4;
+    // map<string, VariableDefPb> input_vars = 4;
+    repeated VariableDefPb input_vars = 4;
     optional OutputSchemaPb output_schema = 5;
 }
 

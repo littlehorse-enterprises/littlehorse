@@ -35,36 +35,26 @@ public interface PutTaskDefPbOrBuilder extends
   io.littlehorse.common.proto.OutputSchemaPbOrBuilder getOutputSchemaOrBuilder();
 
   /**
-   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; input_vars = 4;</code>
+   * <code>repeated .lh_proto.VariableDefPb input_vars = 4;</code>
+   */
+  java.util.List<io.littlehorse.common.proto.VariableDefPb> 
+      getInputVarsList();
+  /**
+   * <code>repeated .lh_proto.VariableDefPb input_vars = 4;</code>
+   */
+  io.littlehorse.common.proto.VariableDefPb getInputVars(int index);
+  /**
+   * <code>repeated .lh_proto.VariableDefPb input_vars = 4;</code>
    */
   int getInputVarsCount();
   /**
-   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; input_vars = 4;</code>
+   * <code>repeated .lh_proto.VariableDefPb input_vars = 4;</code>
    */
-  boolean containsInputVars(
-      java.lang.String key);
+  java.util.List<? extends io.littlehorse.common.proto.VariableDefPbOrBuilder> 
+      getInputVarsOrBuilderList();
   /**
-   * Use {@link #getInputVarsMap()} instead.
+   * <code>repeated .lh_proto.VariableDefPb input_vars = 4;</code>
    */
-  @java.lang.Deprecated
-  java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableDefPb>
-  getInputVars();
-  /**
-   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; input_vars = 4;</code>
-   */
-  java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableDefPb>
-  getInputVarsMap();
-  /**
-   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; input_vars = 4;</code>
-   */
-
-  io.littlehorse.common.proto.VariableDefPb getInputVarsOrDefault(
-      java.lang.String key,
-      io.littlehorse.common.proto.VariableDefPb defaultValue);
-  /**
-   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; input_vars = 4;</code>
-   */
-
-  io.littlehorse.common.proto.VariableDefPb getInputVarsOrThrow(
-      java.lang.String key);
+  io.littlehorse.common.proto.VariableDefPbOrBuilder getInputVarsOrBuilder(
+      int index);
 }

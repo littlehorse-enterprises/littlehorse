@@ -14,21 +14,21 @@ import io.littlehorse.common.proto.PutTaskDefPb;
 import io.littlehorse.common.proto.PutTaskDefPbOrBuilder;
 import io.littlehorse.common.proto.VariableDefPb;
 import io.littlehorse.common.util.LHUtil;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PutTaskDef extends SubCommand<PutTaskDefPb> {
 
     public String name;
     public OutputSchema outputSchema;
-    public Map<String, VariableDef> inputVars;
+    public List<VariableDef> inputVars;
 
     public String getPartitionKey() {
         return LHConstants.META_PARTITION_KEY;
     }
 
     public PutTaskDef() {
-        inputVars = new HashMap<>();
+        inputVars = new ArrayList<>();
     }
 
     public Class<PutTaskDefPb> getProtoBaseClass() {
@@ -40,17 +40,18 @@ public class PutTaskDef extends SubCommand<PutTaskDefPb> {
         out.setName(name);
         if (outputSchema != null) out.setOutputSchema(outputSchema.toProto());
 
-        for (Map.Entry<String, VariableDef> e : inputVars.entrySet()) {
-            out.putInputVars(e.getKey(), e.getValue().toProto().build());
+        for (VariableDef entry : inputVars) {
+            out.addInputVars(entry.toProto());
         }
+
         return out;
     }
 
     public void initFrom(MessageOrBuilder proto) {
         PutTaskDefPbOrBuilder p = (PutTaskDefPbOrBuilder) proto;
         name = p.getName();
-        for (Map.Entry<String, VariableDefPb> e : p.getInputVarsMap().entrySet()) {
-            inputVars.put(e.getKey(), VariableDef.fromProto(e.getValue()));
+        for (VariableDefPb entry : p.getInputVarsList()) {
+            inputVars.add(VariableDef.fromProto(entry));
         }
         if (p.hasOutputSchema()) {
             outputSchema = OutputSchema.fromProto(p.getOutputSchema());

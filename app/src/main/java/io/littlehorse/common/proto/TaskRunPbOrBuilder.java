@@ -75,36 +75,26 @@ public interface TaskRunPbOrBuilder extends
       getTaskDefIdBytes();
 
   /**
-   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; input_variables = 6;</code>
+   * <code>repeated .lh_proto.VarNameAndValPb input_variables = 6;</code>
+   */
+  java.util.List<io.littlehorse.common.proto.VarNameAndValPb> 
+      getInputVariablesList();
+  /**
+   * <code>repeated .lh_proto.VarNameAndValPb input_variables = 6;</code>
+   */
+  io.littlehorse.common.proto.VarNameAndValPb getInputVariables(int index);
+  /**
+   * <code>repeated .lh_proto.VarNameAndValPb input_variables = 6;</code>
    */
   int getInputVariablesCount();
   /**
-   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; input_variables = 6;</code>
+   * <code>repeated .lh_proto.VarNameAndValPb input_variables = 6;</code>
    */
-  boolean containsInputVariables(
-      java.lang.String key);
+  java.util.List<? extends io.littlehorse.common.proto.VarNameAndValPbOrBuilder> 
+      getInputVariablesOrBuilderList();
   /**
-   * Use {@link #getInputVariablesMap()} instead.
+   * <code>repeated .lh_proto.VarNameAndValPb input_variables = 6;</code>
    */
-  @java.lang.Deprecated
-  java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableValuePb>
-  getInputVariables();
-  /**
-   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; input_variables = 6;</code>
-   */
-  java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableValuePb>
-  getInputVariablesMap();
-  /**
-   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; input_variables = 6;</code>
-   */
-
-  io.littlehorse.common.proto.VariableValuePb getInputVariablesOrDefault(
-      java.lang.String key,
-      io.littlehorse.common.proto.VariableValuePb defaultValue);
-  /**
-   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; input_variables = 6;</code>
-   */
-
-  io.littlehorse.common.proto.VariableValuePb getInputVariablesOrThrow(
-      java.lang.String key);
+  io.littlehorse.common.proto.VarNameAndValPbOrBuilder getInputVariablesOrBuilder(
+      int index);
 }

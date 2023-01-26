@@ -9,24 +9,23 @@ import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.meta.SubNode;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.VariableAssignment;
-import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.wfrun.subnoderun.TaskRun;
 import io.littlehorse.common.proto.TaskNodePb;
 import io.littlehorse.common.proto.TaskNodePbOrBuilder;
 import io.littlehorse.common.proto.VariableAssignmentPb;
 import io.littlehorse.common.proto.VariableAssignmentPb.SourceCase;
 import io.littlehorse.common.util.LHGlobalMetaStores;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
 public class TaskNode extends SubNode<TaskNodePb> {
 
     public String taskDefName;
     public int retries;
-    public Map<String, VariableAssignment> variables;
+    public List<VariableAssignment> variables;
     public VariableAssignment timeoutSeconds;
 
     @JsonIgnore
@@ -44,7 +43,7 @@ public class TaskNode extends SubNode<TaskNodePb> {
     private Node node;
 
     public TaskNode() {
-        variables = new HashMap<>();
+        variables = new ArrayList<>();
     }
 
     @JsonIgnore
@@ -65,13 +64,8 @@ public class TaskNode extends SubNode<TaskNodePb> {
             timeoutSeconds = VariableAssignment.fromProto(p.getTimeoutSeconds());
         }
 
-        for (Map.Entry<String, VariableAssignmentPb> entry : p
-            .getVariablesMap()
-            .entrySet()) {
-            variables.put(
-                entry.getKey(),
-                VariableAssignment.fromProto(entry.getValue())
-            );
+        for (VariableAssignmentPb assn : p.getVariablesList()) {
+            variables.add(VariableAssignment.fromProto(assn));
         }
     }
 
@@ -81,9 +75,10 @@ public class TaskNode extends SubNode<TaskNodePb> {
             .setTaskDefName(taskDefName)
             .setRetries(retries);
 
-        for (Map.Entry<String, VariableAssignment> entry : variables.entrySet()) {
-            out.putVariables(entry.getKey(), entry.getValue().toProto().build());
+        for (VariableAssignment va : variables) {
+            out.addVariables(va.toProto());
         }
+
         if (timeoutSeconds != null) {
             out.setTimeoutSeconds(timeoutSeconds.toProto());
         }
@@ -107,19 +102,22 @@ public class TaskNode extends SubNode<TaskNodePb> {
         }
 
         // Now need to validate that all of the variables are provided.
-        for (Map.Entry<String, VariableDef> e : taskDef.inputVars.entrySet()) {
-            VariableDef varDef = e.getValue();
-            if (varDef.defaultValue == null) {
-                // Then we NEED the value.
-                if (!variables.containsKey(e.getKey())) {
-                    throw new LHValidationError(
-                        null,
-                        "Missing required input variable " + e.getKey()
-                    );
-                }
-            }
-            // TODO: May want to do some validation of types.
+        if (variables.size() != taskDef.inputVars.size()) {
+            throw new LHValidationError(
+                null,
+                "For TaskDef " +
+                taskDef.name +
+                " we need " +
+                taskDef.inputVars.size() +
+                " input vars, but we have " +
+                variables.size()
+            );
         }
+
+        // EMPLOYEE_TODO: do some checking of types so that users can't shoot
+        // themselves in the foot with mismatched var types. As part of this large
+        // project, we will have to add schemas for JSON typed variables, and do
+        // some jsonpath processing as well.
 
         if (timeoutSeconds == null) {
             timeoutSeconds = config.getDefaultTaskTimeout();
@@ -138,8 +136,8 @@ public class TaskNode extends SubNode<TaskNodePb> {
             out.add(timeoutSeconds.rhsVariableName);
         }
 
-        for (Map.Entry<String, VariableAssignment> e : variables.entrySet()) {
-            out.addAll(e.getValue().getRequiredVariableNames());
+        for (VariableAssignment assn : variables) {
+            out.addAll(assn.getRequiredWfRunVarNames());
         }
         return out;
     }

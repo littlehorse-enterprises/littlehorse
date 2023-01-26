@@ -64,10 +64,10 @@ public class WaitForThreadNode extends SubNode<WaitForThreadNodePb> {
     public Set<String> getNeededVariableNames() {
         Set<String> out = new HashSet<>();
         if (timeoutSeconds != null) {
-            out.addAll(timeoutSeconds.getRequiredVariableNames());
+            out.addAll(timeoutSeconds.getRequiredWfRunVarNames());
         }
 
-        out.addAll(threadRunNumber.getRequiredVariableNames());
+        out.addAll(threadRunNumber.getRequiredWfRunVarNames());
 
         return out;
     }

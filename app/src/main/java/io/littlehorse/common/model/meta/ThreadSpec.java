@@ -28,12 +28,12 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
     public String name;
 
     public Map<String, Node> nodes;
-    public Map<String, VariableDef> variableDefs;
+    public List<VariableDef> variableDefs;
     public List<InterruptDef> interruptDefs;
 
     public ThreadSpec() {
         nodes = new HashMap<>();
-        variableDefs = new HashMap<>();
+        variableDefs = new ArrayList<>();
         interruptDefs = new ArrayList<>();
     }
 
@@ -50,8 +50,8 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
         for (Map.Entry<String, Node> e : nodes.entrySet()) {
             out.putNodes(e.getKey(), e.getValue().toProto().build());
         }
-        for (Map.Entry<String, VariableDef> e : variableDefs.entrySet()) {
-            out.putVariableDefs(e.getKey(), e.getValue().toProto().build());
+        for (VariableDef vd : variableDefs) {
+            out.addVariableDefs(vd.toProto());
         }
         for (InterruptDef idef : interruptDefs) {
             out.addInterruptDefs(idef.toProto());
@@ -72,14 +72,11 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
             }
         }
 
-        for (Map.Entry<String, VariableDefPb> p : proto
-            .getVariableDefsMap()
-            .entrySet()) {
+        for (VariableDefPb vd : proto.getVariableDefsList()) {
             VariableDef v = new VariableDef();
-            v.initFrom(p.getValue());
-            v.name = p.getKey();
+            v.initFrom(vd);
             v.threadSpec = this;
-            variableDefs.put(p.getKey(), v);
+            variableDefs.add(v);
         }
 
         for (InterruptDefPb idefpb : proto.getInterruptDefsList()) {
@@ -103,9 +100,9 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
     @JsonIgnore
     public Map<String, VariableDef> getRequiredInputVariables() {
         HashMap<String, VariableDef> out = new HashMap<>();
-        for (Map.Entry<String, VariableDef> entry : variableDefs.entrySet()) {
-            if (entry.getValue().required) {
-                out.put(entry.getKey(), entry.getValue());
+        for (VariableDef vd : variableDefs) {
+            if (vd.defaultValue == null) {
+                out.put(vd.name, vd);
             }
         }
 
@@ -181,8 +178,17 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
         return out;
     }
 
+    private VariableDef getVd(String name) {
+        for (VariableDef vd : variableDefs) {
+            if (vd.name.equals(name)) {
+                return vd;
+            }
+        }
+        return null;
+    }
+
     public Pair<String, VariableDef> lookupVarDef(String name) {
-        VariableDef varDef = variableDefs.get(name);
+        VariableDef varDef = getVd(name);
         if (varDef != null) {
             return Pair.of(name, varDef);
         }
@@ -301,7 +307,7 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
         }
 
         for (Map.Entry<String, VariableValue> e : vars.entrySet()) {
-            if (!variableDefs.containsKey(e.getKey())) {
+            if (getVd(e.getKey()) == null) {
                 throw new LHValidationError(
                     null,
                     "Var " +
@@ -361,7 +367,7 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
         }
 
         for (Map.Entry<String, VariableAssignment> e : vars.entrySet()) {
-            if (!variableDefs.containsKey(e.getKey())) {
+            if (localGetVarDef(e.getKey()) == null) {
                 throw new LHValidationError(
                     null,
                     "Var " +
@@ -382,9 +388,18 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
         return null;
     }
 
+    public VariableDef localGetVarDef(String name) {
+        for (VariableDef vd : variableDefs) {
+            if (vd.name.equals(name)) {
+                return vd;
+            }
+        }
+        return null;
+    }
+
     public VariableDef getVarDef(String varName) {
         // This is tricky...
-        VariableDef out = variableDefs.get(varName);
+        VariableDef out = localGetVarDef(varName);
         if (out != null) return out;
 
         ThreadSpec parent = getParentThread();

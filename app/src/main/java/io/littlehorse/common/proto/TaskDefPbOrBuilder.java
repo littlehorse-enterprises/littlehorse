@@ -41,38 +41,48 @@ public interface TaskDefPbOrBuilder extends
   com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
 
   /**
-   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; input_vars = 4;</code>
+   * <pre>
+   * map&lt;string, VariableDefPb&gt; input_vars = 4;
+   * </pre>
+   *
+   * <code>repeated .lh_proto.VariableDefPb input_vars = 4;</code>
+   */
+  java.util.List<io.littlehorse.common.proto.VariableDefPb> 
+      getInputVarsList();
+  /**
+   * <pre>
+   * map&lt;string, VariableDefPb&gt; input_vars = 4;
+   * </pre>
+   *
+   * <code>repeated .lh_proto.VariableDefPb input_vars = 4;</code>
+   */
+  io.littlehorse.common.proto.VariableDefPb getInputVars(int index);
+  /**
+   * <pre>
+   * map&lt;string, VariableDefPb&gt; input_vars = 4;
+   * </pre>
+   *
+   * <code>repeated .lh_proto.VariableDefPb input_vars = 4;</code>
    */
   int getInputVarsCount();
   /**
-   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; input_vars = 4;</code>
+   * <pre>
+   * map&lt;string, VariableDefPb&gt; input_vars = 4;
+   * </pre>
+   *
+   * <code>repeated .lh_proto.VariableDefPb input_vars = 4;</code>
    */
-  boolean containsInputVars(
-      java.lang.String key);
+  java.util.List<? extends io.littlehorse.common.proto.VariableDefPbOrBuilder> 
+      getInputVarsOrBuilderList();
   /**
-   * Use {@link #getInputVarsMap()} instead.
+   * <pre>
+   * map&lt;string, VariableDefPb&gt; input_vars = 4;
+   * </pre>
+   *
+   * <code>repeated .lh_proto.VariableDefPb input_vars = 4;</code>
    */
-  @java.lang.Deprecated
-  java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableDefPb>
-  getInputVars();
-  /**
-   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; input_vars = 4;</code>
-   */
-  java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableDefPb>
-  getInputVarsMap();
-  /**
-   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; input_vars = 4;</code>
-   */
-
-  io.littlehorse.common.proto.VariableDefPb getInputVarsOrDefault(
-      java.lang.String key,
-      io.littlehorse.common.proto.VariableDefPb defaultValue);
-  /**
-   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; input_vars = 4;</code>
-   */
-
-  io.littlehorse.common.proto.VariableDefPb getInputVarsOrThrow(
-      java.lang.String key);
+  io.littlehorse.common.proto.VariableDefPbOrBuilder getInputVarsOrBuilder(
+      int index);
 
   /**
    * <code>.lh_proto.OutputSchemaPb output_schema = 5;</code>

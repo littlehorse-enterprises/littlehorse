@@ -24,6 +24,11 @@ public final class Variable {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_lh_proto_VariablePb_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_lh_proto_VarNameAndValPb_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_lh_proto_VarNameAndValPb_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -45,11 +50,13 @@ public final class Variable {
       "\001(\0132\031.lh_proto.VariableValuePb\022\021\n\twf_run" +
       "_id\030\002 \001(\t\022\031\n\021thread_run_number\030\003 \001(\005\022\014\n\004" +
       "name\030\004 \001(\t\022(\n\004date\030\005 \001(\0132\032.google.protob" +
-      "uf.Timestamp*i\n\016VariableTypePb\022\014\n\010JSON_O" +
-      "BJ\020\000\022\014\n\010JSON_ARR\020\001\022\n\n\006DOUBLE\020\002\022\010\n\004BOOL\020\003" +
-      "\022\007\n\003STR\020\004\022\007\n\003INT\020\005\022\t\n\005BYTES\020\006\022\010\n\004VOID\020\007B" +
-      "(\n\033io.littlehorse.common.protoP\001Z\007.;mode" +
-      "lb\006proto3"
+      "uf.Timestamp\"M\n\017VarNameAndValPb\022\020\n\010var_n" +
+      "ame\030\001 \001(\t\022(\n\005value\030\002 \001(\0132\031.lh_proto.Vari" +
+      "ableValuePb*i\n\016VariableTypePb\022\014\n\010JSON_OB" +
+      "J\020\000\022\014\n\010JSON_ARR\020\001\022\n\n\006DOUBLE\020\002\022\010\n\004BOOL\020\003\022" +
+      "\007\n\003STR\020\004\022\007\n\003INT\020\005\022\t\n\005BYTES\020\006\022\010\n\004VOID\020\007B(" +
+      "\n\033io.littlehorse.common.protoP\001Z\007.;model" +
+      "b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -68,6 +75,12 @@ public final class Variable {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_VariablePb_descriptor,
         new java.lang.String[] { "Value", "WfRunId", "ThreadRunNumber", "Name", "Date", });
+    internal_static_lh_proto_VarNameAndValPb_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_lh_proto_VarNameAndValPb_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_lh_proto_VarNameAndValPb_descriptor,
+        new java.lang.String[] { "VarName", "Value", });
     com.google.protobuf.TimestampProto.getDescriptor();
   }
 

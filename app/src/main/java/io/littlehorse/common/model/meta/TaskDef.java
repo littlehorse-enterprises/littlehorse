@@ -8,9 +8,9 @@ import io.littlehorse.common.proto.TaskDefPbOrBuilder;
 import io.littlehorse.common.proto.VariableDefPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 public class TaskDef extends GETable<TaskDefPbOrBuilder> {
 
@@ -18,10 +18,10 @@ public class TaskDef extends GETable<TaskDefPbOrBuilder> {
     public int version;
     public Date createdAt;
     public OutputSchema outputSchema;
-    public Map<String, VariableDef> inputVars;
+    public List<VariableDef> inputVars;
 
     public TaskDef() {
-        inputVars = new HashMap<>();
+        inputVars = new ArrayList<>();
     }
 
     public Date getCreatedAt() {
@@ -67,8 +67,8 @@ public class TaskDef extends GETable<TaskDefPbOrBuilder> {
         if (outputSchema != null) {
             b.setOutputSchema(outputSchema.toProto());
         }
-        for (Map.Entry<String, VariableDef> entry : inputVars.entrySet()) {
-            b.putInputVars(entry.getKey(), entry.getValue().toProto().build());
+        for (VariableDef entry : inputVars) {
+            b.addInputVars(entry.toProto());
         }
 
         return b;
@@ -83,10 +83,8 @@ public class TaskDef extends GETable<TaskDefPbOrBuilder> {
         }
         version = proto.getVersion();
 
-        for (Map.Entry<String, VariableDefPb> entry : proto
-            .getInputVarsMap()
-            .entrySet()) {
-            inputVars.put(entry.getKey(), VariableDef.fromProto(entry.getValue()));
+        for (VariableDefPb entry : proto.getInputVarsList()) {
+            inputVars.add(VariableDef.fromProto(entry));
         }
     }
 

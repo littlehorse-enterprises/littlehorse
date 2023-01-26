@@ -76,7 +76,7 @@ public class StartThreadNode extends SubNode<StartThreadNodePb> {
     public Set<String> getNeededVariableNames() {
         Set<String> out = new HashSet<>();
         for (VariableAssignment assn : variables.values()) {
-            out.addAll(assn.getRequiredVariableNames());
+            out.addAll(assn.getRequiredWfRunVarNames());
         }
         return out;
     }

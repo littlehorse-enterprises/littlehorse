@@ -38,3 +38,8 @@ message VariablePb {
     string name = 4;
     google.protobuf.Timestamp date = 5;
 }
+
+message VarNameAndValPb {
+    string var_name = 1;
+    VariableValuePb value = 2;
+}

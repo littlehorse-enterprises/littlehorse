@@ -191,9 +191,8 @@ public class WfRun extends GETable<WfRunPb> {
             return thread;
         }
 
-        for (Map.Entry<String, VariableDef> entry : tspec.variableDefs.entrySet()) {
-            String varName = entry.getKey();
-            VariableDef varDef = entry.getValue();
+        for (VariableDef varDef : tspec.variableDefs) {
+            String varName = varDef.name;
             VariableValue val;
 
             if (variables.containsKey(varName)) {

@@ -1,6 +1,5 @@
 package io.littlehorse.common.model.meta;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.wfrun.VariableValue;
@@ -12,12 +11,8 @@ public class VariableDef extends LHSerializable<VariableDefPb> {
 
     public VariableTypePb type;
     public VariableValue defaultValue;
-    public boolean required;
-
-    @JsonIgnore
     public String name;
 
-    @JsonIgnore
     public ThreadSpec threadSpec;
 
     public Class<VariableDefPb> getProtoBaseClass() {
@@ -29,14 +24,14 @@ public class VariableDef extends LHSerializable<VariableDefPb> {
         if (p.hasDefaultVal()) defaultValue =
             VariableValue.fromProto(p.getDefaultVal());
         type = p.getType();
-        required = p.getRequired();
+        name = p.getName();
     }
 
     public VariableDefPb.Builder toProto() {
         VariableDefPb.Builder out = VariableDefPb
             .newBuilder()
             .setType(type)
-            .setRequired(required);
+            .setName(name);
 
         if (defaultValue != null) {
             out.setDefaultVal(defaultValue.toProto());

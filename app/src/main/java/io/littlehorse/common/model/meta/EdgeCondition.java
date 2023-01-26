@@ -51,8 +51,8 @@ public class EdgeCondition extends LHSerializable<EdgeConditionPb> {
 
     public Set<String> getRequiredVariableNames() {
         Set<String> out = new HashSet<>();
-        out.addAll(left.getRequiredVariableNames());
-        out.addAll(right.getRequiredVariableNames());
+        out.addAll(left.getRequiredWfRunVarNames());
+        out.addAll(right.getRequiredWfRunVarNames());
 
         return out;
     }

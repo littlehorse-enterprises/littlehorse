@@ -139,8 +139,8 @@ public class WfSpec extends GETable<WfSpecPbOrBuilder> {
     private void initializeVarToThreadSpec() {
         initializedVarToThreadSpec = true;
         for (ThreadSpec tspec : threadSpecs.values()) {
-            for (String varName : tspec.variableDefs.keySet()) {
-                varToThreadSpec.put(varName, tspec.name);
+            for (VariableDef vd : tspec.variableDefs) {
+                varToThreadSpec.put(vd.name, tspec.name);
             }
         }
     }
@@ -151,7 +151,7 @@ public class WfSpec extends GETable<WfSpecPbOrBuilder> {
         }
         String tspecName = varToThreadSpec.get(name);
         if (tspecName == null) return null;
-        VariableDef out = threadSpecs.get(tspecName).variableDefs.get(name);
+        VariableDef out = threadSpecs.get(tspecName).localGetVarDef(name);
         if (out == null) return null;
         return Pair.of(tspecName, out);
     }
@@ -206,8 +206,9 @@ public class WfSpec extends GETable<WfSpecPbOrBuilder> {
     private void validateVariablesHelper() throws LHValidationError {
         varToThreadSpec = new HashMap<>();
         for (ThreadSpec tspec : threadSpecs.values()) {
-            for (Map.Entry<String, VariableDef> e : tspec.variableDefs.entrySet()) {
-                String varName = e.getKey();
+            // for (Map.Entry<String, VariableDef> e : tspec.variableDefs.entrySet()) {
+            for (VariableDef vd : tspec.variableDefs) {
+                String varName = vd.name;
 
                 if (varToThreadSpec.containsKey(varName)) {
                     throw new LHValidationError(

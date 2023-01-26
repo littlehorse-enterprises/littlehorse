@@ -170,7 +170,7 @@ message TaskRunPb {
 
     optional google.protobuf.Timestamp start_time = 4;
     string task_def_id = 5;
-    map<string, VariableValuePb> input_variables = 6;
+    repeated VarNameAndValPb input_variables = 6;
 }
 
 message EntrypointRunPb {}

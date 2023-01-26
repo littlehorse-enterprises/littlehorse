@@ -3,6 +3,7 @@ package io.littlehorse.common.model.wfrun.subnoderun;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
@@ -12,16 +13,17 @@ import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
 import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
 import io.littlehorse.common.model.wfrun.ThreadRun;
+import io.littlehorse.common.model.wfrun.VarNameAndVal;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.proto.TaskRunPb;
 import io.littlehorse.common.proto.TaskRunPbOrBuilder;
-import io.littlehorse.common.proto.VariableValuePb;
+import io.littlehorse.common.proto.VarNameAndValPb;
 import io.littlehorse.common.util.LHUtil;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 public class TaskRun extends SubNodeRun<TaskRunPb> {
 
@@ -31,10 +33,10 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
 
     public Date startTime;
     public String taskDefName;
-    public Map<String, VariableValue> inputVariables;
+    public List<VarNameAndVal> inputVariables;
 
     public TaskRun() {
-        inputVariables = new HashMap<>();
+        inputVariables = new ArrayList<>();
     }
 
     public Class<TaskRunPb> getProtoBaseClass() {
@@ -55,10 +57,9 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
             startTime = LHUtil.fromProtoTs(p.getStartTime());
         }
         taskDefName = p.getTaskDefId();
-        for (Map.Entry<String, VariableValuePb> e : p
-            .getInputVariablesMap()
-            .entrySet()) {
-            inputVariables.put(e.getKey(), VariableValue.fromProto(e.getValue()));
+
+        for (VarNameAndValPb v : p.getInputVariablesList()) {
+            inputVariables.add(LHSerializable.fromProto(v, VarNameAndVal.class));
         }
     }
 
@@ -77,8 +78,8 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
         if (startTime != null) {
             out.setStartTime(LHUtil.fromDate(startTime));
         }
-        for (Map.Entry<String, VariableValue> e : inputVariables.entrySet()) {
-            out.putInputVariables(e.getKey(), e.getValue().toProto().build());
+        for (VarNameAndVal v : inputVariables) {
+            out.addInputVariables(v.toProto());
         }
 
         return out;

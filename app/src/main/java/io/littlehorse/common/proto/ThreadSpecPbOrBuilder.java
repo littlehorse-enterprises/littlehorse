@@ -42,38 +42,28 @@ public interface ThreadSpecPbOrBuilder extends
       java.lang.String key);
 
   /**
-   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; variable_defs = 2;</code>
+   * <code>repeated .lh_proto.VariableDefPb variable_defs = 2;</code>
+   */
+  java.util.List<io.littlehorse.common.proto.VariableDefPb> 
+      getVariableDefsList();
+  /**
+   * <code>repeated .lh_proto.VariableDefPb variable_defs = 2;</code>
+   */
+  io.littlehorse.common.proto.VariableDefPb getVariableDefs(int index);
+  /**
+   * <code>repeated .lh_proto.VariableDefPb variable_defs = 2;</code>
    */
   int getVariableDefsCount();
   /**
-   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; variable_defs = 2;</code>
+   * <code>repeated .lh_proto.VariableDefPb variable_defs = 2;</code>
    */
-  boolean containsVariableDefs(
-      java.lang.String key);
+  java.util.List<? extends io.littlehorse.common.proto.VariableDefPbOrBuilder> 
+      getVariableDefsOrBuilderList();
   /**
-   * Use {@link #getVariableDefsMap()} instead.
+   * <code>repeated .lh_proto.VariableDefPb variable_defs = 2;</code>
    */
-  @java.lang.Deprecated
-  java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableDefPb>
-  getVariableDefs();
-  /**
-   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; variable_defs = 2;</code>
-   */
-  java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableDefPb>
-  getVariableDefsMap();
-  /**
-   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; variable_defs = 2;</code>
-   */
-
-  io.littlehorse.common.proto.VariableDefPb getVariableDefsOrDefault(
-      java.lang.String key,
-      io.littlehorse.common.proto.VariableDefPb defaultValue);
-  /**
-   * <code>map&lt;string, .lh_proto.VariableDefPb&gt; variable_defs = 2;</code>
-   */
-
-  io.littlehorse.common.proto.VariableDefPb getVariableDefsOrThrow(
-      java.lang.String key);
+  io.littlehorse.common.proto.VariableDefPbOrBuilder getVariableDefsOrBuilder(
+      int index);
 
   /**
    * <code>repeated .lh_proto.InterruptDefPb interrupt_defs = 3;</code>

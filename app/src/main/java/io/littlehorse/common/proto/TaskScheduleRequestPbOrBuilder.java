@@ -104,38 +104,28 @@ public interface TaskScheduleRequestPbOrBuilder extends
       getNodeNameBytes();
 
   /**
-   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 12;</code>
+   * <code>repeated .lh_proto.VarNameAndValPb variables = 12;</code>
+   */
+  java.util.List<io.littlehorse.common.proto.VarNameAndValPb> 
+      getVariablesList();
+  /**
+   * <code>repeated .lh_proto.VarNameAndValPb variables = 12;</code>
+   */
+  io.littlehorse.common.proto.VarNameAndValPb getVariables(int index);
+  /**
+   * <code>repeated .lh_proto.VarNameAndValPb variables = 12;</code>
    */
   int getVariablesCount();
   /**
-   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 12;</code>
+   * <code>repeated .lh_proto.VarNameAndValPb variables = 12;</code>
    */
-  boolean containsVariables(
-      java.lang.String key);
+  java.util.List<? extends io.littlehorse.common.proto.VarNameAndValPbOrBuilder> 
+      getVariablesOrBuilderList();
   /**
-   * Use {@link #getVariablesMap()} instead.
+   * <code>repeated .lh_proto.VarNameAndValPb variables = 12;</code>
    */
-  @java.lang.Deprecated
-  java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableValuePb>
-  getVariables();
-  /**
-   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 12;</code>
-   */
-  java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableValuePb>
-  getVariablesMap();
-  /**
-   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 12;</code>
-   */
-
-  io.littlehorse.common.proto.VariableValuePb getVariablesOrDefault(
-      java.lang.String key,
-      io.littlehorse.common.proto.VariableValuePb defaultValue);
-  /**
-   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 12;</code>
-   */
-
-  io.littlehorse.common.proto.VariableValuePb getVariablesOrThrow(
-      java.lang.String key);
+  io.littlehorse.common.proto.VarNameAndValPbOrBuilder getVariablesOrBuilder(
+      int index);
 
   /**
    * <code>.google.protobuf.Timestamp created_at = 13;</code>

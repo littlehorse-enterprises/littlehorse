@@ -34,8 +34,14 @@ public interface VariableDefPbOrBuilder extends
   io.littlehorse.common.proto.VariableValuePbOrBuilder getDefaultValOrBuilder();
 
   /**
-   * <code>bool required = 3;</code>
-   * @return The required.
+   * <code>string name = 3;</code>
+   * @return The name.
    */
-  boolean getRequired();
+  java.lang.String getName();
+  /**
+   * <code>string name = 3;</code>
+   * @return The bytes for name.
+   */
+  com.google.protobuf.ByteString
+      getNameBytes();
 }

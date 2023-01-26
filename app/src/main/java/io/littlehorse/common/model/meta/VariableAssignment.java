@@ -69,7 +69,7 @@ public class VariableAssignment extends LHSerializable<VariableAssignmentPb> {
         return out;
     }
 
-    public Set<String> getRequiredVariableNames() {
+    public Set<String> getRequiredWfRunVarNames() {
         Set<String> out = new HashSet<>();
         if (rhsSourceType == SourceCase.VARIABLE_NAME) {
             out.add(rhsVariableName);

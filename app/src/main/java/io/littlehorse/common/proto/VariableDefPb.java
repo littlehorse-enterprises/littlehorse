@@ -17,6 +17,7 @@ private static final long serialVersionUID = 0L;
   }
   private VariableDefPb() {
     type_ = 0;
+    name_ = "";
   }
 
   @java.lang.Override
@@ -69,9 +70,10 @@ private static final long serialVersionUID = 0L;
             bitField0_ |= 0x00000001;
             break;
           }
-          case 24: {
+          case 26: {
+            java.lang.String s = input.readStringRequireUtf8();
 
-            required_ = input.readBool();
+            name_ = s;
             break;
           }
           default: {
@@ -152,15 +154,42 @@ private static final long serialVersionUID = 0L;
     return defaultVal_ == null ? io.littlehorse.common.proto.VariableValuePb.getDefaultInstance() : defaultVal_;
   }
 
-  public static final int REQUIRED_FIELD_NUMBER = 3;
-  private boolean required_;
+  public static final int NAME_FIELD_NUMBER = 3;
+  private volatile java.lang.Object name_;
   /**
-   * <code>bool required = 3;</code>
-   * @return The required.
+   * <code>string name = 3;</code>
+   * @return The name.
    */
   @java.lang.Override
-  public boolean getRequired() {
-    return required_;
+  public java.lang.String getName() {
+    java.lang.Object ref = name_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      name_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string name = 3;</code>
+   * @return The bytes for name.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getNameBytes() {
+    java.lang.Object ref = name_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      name_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
   }
 
   private byte memoizedIsInitialized = -1;
@@ -183,8 +212,8 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(2, getDefaultVal());
     }
-    if (required_ != false) {
-      output.writeBool(3, required_);
+    if (!getNameBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, name_);
     }
     unknownFields.writeTo(output);
   }
@@ -203,9 +232,8 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, getDefaultVal());
     }
-    if (required_ != false) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBoolSize(3, required_);
+    if (!getNameBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, name_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -228,8 +256,8 @@ private static final long serialVersionUID = 0L;
       if (!getDefaultVal()
           .equals(other.getDefaultVal())) return false;
     }
-    if (getRequired()
-        != other.getRequired()) return false;
+    if (!getName()
+        .equals(other.getName())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -247,9 +275,8 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + DEFAULT_VAL_FIELD_NUMBER;
       hash = (53 * hash) + getDefaultVal().hashCode();
     }
-    hash = (37 * hash) + REQUIRED_FIELD_NUMBER;
-    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-        getRequired());
+    hash = (37 * hash) + NAME_FIELD_NUMBER;
+    hash = (53 * hash) + getName().hashCode();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -392,7 +419,7 @@ private static final long serialVersionUID = 0L;
         defaultValBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000001);
-      required_ = false;
+      name_ = "";
 
       return this;
     }
@@ -431,7 +458,7 @@ private static final long serialVersionUID = 0L;
         }
         to_bitField0_ |= 0x00000001;
       }
-      result.required_ = required_;
+      result.name_ = name_;
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -487,8 +514,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasDefaultVal()) {
         mergeDefaultVal(other.getDefaultVal());
       }
-      if (other.getRequired() != false) {
-        setRequired(other.getRequired());
+      if (!other.getName().isEmpty()) {
+        name_ = other.name_;
+        onChanged();
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -694,33 +722,78 @@ private static final long serialVersionUID = 0L;
       return defaultValBuilder_;
     }
 
-    private boolean required_ ;
+    private java.lang.Object name_ = "";
     /**
-     * <code>bool required = 3;</code>
-     * @return The required.
+     * <code>string name = 3;</code>
+     * @return The name.
      */
-    @java.lang.Override
-    public boolean getRequired() {
-      return required_;
+    public java.lang.String getName() {
+      java.lang.Object ref = name_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        name_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
     }
     /**
-     * <code>bool required = 3;</code>
-     * @param value The required to set.
+     * <code>string name = 3;</code>
+     * @return The bytes for name.
+     */
+    public com.google.protobuf.ByteString
+        getNameBytes() {
+      java.lang.Object ref = name_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        name_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string name = 3;</code>
+     * @param value The name to set.
      * @return This builder for chaining.
      */
-    public Builder setRequired(boolean value) {
-      
-      required_ = value;
+    public Builder setName(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      name_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>bool required = 3;</code>
+     * <code>string name = 3;</code>
      * @return This builder for chaining.
      */
-    public Builder clearRequired() {
+    public Builder clearName() {
       
-      required_ = false;
+      name_ = getDefaultInstance().getName();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string name = 3;</code>
+     * @param value The bytes for name to set.
+     * @return This builder for chaining.
+     */
+    public Builder setNameBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      name_ = value;
       onChanged();
       return this;
     }

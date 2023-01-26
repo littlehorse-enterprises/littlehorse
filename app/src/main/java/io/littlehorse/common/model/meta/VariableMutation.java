@@ -152,7 +152,7 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
         Set<String> out = new HashSet<>();
         out.add(lhsName);
         if (rhsValueType == RhsValueCase.SOURCE_VARIABLE) {
-            out.addAll(rhsSourceVariable.getRequiredVariableNames());
+            out.addAll(rhsSourceVariable.getRequiredWfRunVarNames());
         }
         return out;
     }

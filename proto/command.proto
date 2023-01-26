@@ -24,7 +24,7 @@ message TaskScheduleRequestPb {
     string wf_spec_id = 9;
     int32 attempt_number = 10;
     string node_name = 11;
-    map<string, VariableValuePb> variables = 12;
+    repeated VarNameAndValPb variables = 12;
     google.protobuf.Timestamp created_at = 13;
 }
 
@@ -67,7 +67,7 @@ message PutTaskDefPb {
     string name = 1;
     reserved 2;
     OutputSchemaPb output_schema = 3;
-    map<string, VariableDefPb> input_vars = 4;
+    repeated VariableDefPb input_vars = 4;
 }
 
 message PutExternalEventDefPb {

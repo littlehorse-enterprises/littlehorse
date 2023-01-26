@@ -37,7 +37,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class ThreadRun extends LHSerializable<ThreadRunPb> {
 
@@ -695,16 +694,23 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         return wfRun.threadRuns.get(parentThreadId);
     }
 
-    // TODO: variable locking may have to consider this.
-    public Map<String, VariableValue> assignVarsForNode(TaskNode node)
-        throws LHVarSubError {
-        Map<String, VariableValue> out = new HashMap<>();
+    // EMPLOYEE_TODO: We are going to implement intelligent variable locking. It will
+    // have to consider what happens here.
+    public List<VarNameAndVal> assignVarsForNode(TaskNode node) throws LHVarSubError {
+        List<VarNameAndVal> out = new ArrayList<>();
         TaskDef taskDef = node.getTaskDef(wfRun.cmdDao);
 
-        for (Map.Entry<String, VariableDef> entry : taskDef.inputVars.entrySet()) {
-            String varName = entry.getKey();
-            VariableDef requiredVarDef = entry.getValue();
-            VariableAssignment assn = node.variables.get(varName);
+        if (taskDef.inputVars.size() != node.variables.size()) {
+            throw new LHVarSubError(
+                null,
+                "Impossible: got different number of taskdef vars and node input vars"
+            );
+        }
+
+        for (int i = 0; i < taskDef.inputVars.size(); i++) {
+            VariableDef requiredVarDef = taskDef.inputVars.get(i);
+            VariableAssignment assn = node.variables.get(i);
+            String varName = requiredVarDef.name;
             VariableValue val;
 
             if (assn != null) {
@@ -731,7 +737,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
                     val.type
                 );
             }
-            out.put(varName, val);
+            out.add(new VarNameAndVal(varName, val));
         }
         return out;
     }
@@ -809,13 +815,8 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         return out;
     }
 
-    @JsonIgnore
-    public Set<String> getLocallyDefinedVarNames() {
-        return getThreadSpec().variableDefs.keySet();
-    }
-
     public void putVariable(String varName, VariableValue var) throws LHVarSubError {
-        if (getLocallyDefinedVarNames().contains(varName)) {
+        if (getThreadSpec().localGetVarDef(varName) != null) {
             Variable toPut = new Variable();
             toPut.wfRunId = wfRunId;
             toPut.name = varName;

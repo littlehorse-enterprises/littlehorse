@@ -77,7 +77,8 @@ public class InterruptDef extends LHSerializable<InterruptDefPb> {
                 "Handler thread " + handler.name + " should only have 'INPUT' var."
             );
         } else if (handler.variableDefs.size() == 1) {
-            if (!handler.variableDefs.containsKey(LHConstants.EXT_EVT_HANDLER_VAR)) {
+            VariableDef theVarDef = handler.variableDefs.get(0);
+            if (!theVarDef.name.equals(LHConstants.EXT_EVT_HANDLER_VAR)) {
                 throw new LHValidationError(
                     null,
                     "Handler thread " +
