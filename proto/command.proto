@@ -68,10 +68,6 @@ message PutTaskDefPb {
     reserved 2;
     OutputSchemaPb output_schema = 3;
     map<string, VariableDefPb> input_vars = 4;
-    oneof queue_type {
-        bool rpc = 5;
-        bool kafka = 6;
-    }
 }
 
 message PutExternalEventDefPb {

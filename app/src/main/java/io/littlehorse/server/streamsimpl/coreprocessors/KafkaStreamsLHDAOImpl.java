@@ -19,7 +19,6 @@ import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.LHResponseCodePb;
-import io.littlehorse.common.proto.TaskDefPb.QueueDetailsCase;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.KafkaStreamsServerImpl;
@@ -603,39 +602,14 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     }
 
     private void forwardTask(TaskScheduleRequest tsr) {
-        // Currently, there's nothing to do here. Eventually we'll interrogate
-        // the TaskDef to see if we have the RPC or DIRECT_KAFKA task queue type.
-        // If RPC, then there's nothing to do; otherwise, we forward the task as
-        // commented out below.
+        // since tsr is not null, it will save
+        saveOrDeleteGETableFlush(tsr.getObjectId(), tsr, TaskScheduleRequest.class);
 
-        TaskDef taskDef = getTaskDef(tsr.taskDefName, null);
-        if (taskDef.type == QueueDetailsCase.RPC) {
-            // since tsr is not null, it will save
-            saveOrDeleteGETableFlush(
-                tsr.getObjectId(),
-                tsr,
-                TaskScheduleRequest.class
-            );
-
-            // This is where the magic happens
-            if (partitionIsClaimed) {
-                server.onTaskScheduled(tsr.taskDefName, tsr);
-            } else {
-                LHUtil.log("haven't claimed partitions, deferring scheduling of tsr");
-            }
-        } else if (taskDef.type == QueueDetailsCase.KAFKA) {
-            CommandProcessorOutput output = new CommandProcessorOutput(
-                taskDef.kafkaTaskQueueDetails.topic,
-                tsr,
-                tsr.wfRunId
-            );
-            ctx.forward(
-                new Record<String, CommandProcessorOutput>(
-                    tsr.wfRunId,
-                    output,
-                    System.currentTimeMillis()
-                )
-            );
+        // This is where the magic happens
+        if (partitionIsClaimed) {
+            server.onTaskScheduled(tsr.taskDefName, tsr);
+        } else {
+            LHUtil.log("haven't claimed partitions, deferring scheduling of tsr");
         }
     }
 

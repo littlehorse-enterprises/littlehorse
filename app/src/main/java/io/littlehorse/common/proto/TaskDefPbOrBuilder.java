@@ -88,27 +88,4 @@ public interface TaskDefPbOrBuilder extends
    * <code>.lh_proto.OutputSchemaPb output_schema = 5;</code>
    */
   io.littlehorse.common.proto.OutputSchemaPbOrBuilder getOutputSchemaOrBuilder();
-
-  /**
-   * <code>.lh_proto.TaskDefPb.KafkaTaskQueueDetailsPb kafka = 6;</code>
-   * @return Whether the kafka field is set.
-   */
-  boolean hasKafka();
-  /**
-   * <code>.lh_proto.TaskDefPb.KafkaTaskQueueDetailsPb kafka = 6;</code>
-   * @return The kafka.
-   */
-  io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPb getKafka();
-  /**
-   * <code>.lh_proto.TaskDefPb.KafkaTaskQueueDetailsPb kafka = 6;</code>
-   */
-  io.littlehorse.common.proto.TaskDefPb.KafkaTaskQueueDetailsPbOrBuilder getKafkaOrBuilder();
-
-  /**
-   * <code>bool rpc = 7;</code>
-   * @return The rpc.
-   */
-  boolean getRpc();
-
-  public io.littlehorse.common.proto.TaskDefPb.QueueDetailsCase getQueueDetailsCase();
 }

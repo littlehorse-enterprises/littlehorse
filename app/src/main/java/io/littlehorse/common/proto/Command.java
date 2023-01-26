@@ -155,52 +155,50 @@ public final class Command {
       "point_thread_name\030\006 \001(\t\032J\n\020ThreadSpecsEn" +
       "try\022\013\n\003key\030\001 \001(\t\022%\n\005value\030\002 \001(\0132\026.lh_pro" +
       "to.ThreadSpecPb:\0028\001J\004\010\002\020\003J\004\010\003\020\004J\004\010\004\020\005J\004\010" +
-      "\007\020\010\"\207\002\n\014PutTaskDefPb\022\014\n\004name\030\001 \001(\t\022/\n\rou" +
+      "\007\020\010\"\331\001\n\014PutTaskDefPb\022\014\n\004name\030\001 \001(\t\022/\n\rou" +
       "tput_schema\030\003 \001(\0132\030.lh_proto.OutputSchem" +
       "aPb\0229\n\ninput_vars\030\004 \003(\0132%.lh_proto.PutTa" +
-      "skDefPb.InputVarsEntry\022\r\n\003rpc\030\005 \001(\010H\000\022\017\n" +
-      "\005kafka\030\006 \001(\010H\000\032I\n\016InputVarsEntry\022\013\n\003key\030" +
-      "\001 \001(\t\022&\n\005value\030\002 \001(\0132\027.lh_proto.Variable" +
-      "DefPb:\0028\001B\014\n\nqueue_typeJ\004\010\002\020\003\"%\n\025PutExte" +
-      "rnalEventDefPb\022\014\n\004name\030\001 \001(\t\"\210\002\n\022PutExte" +
-      "rnalEventPb\022\021\n\twf_run_id\030\001 \001(\t\022\037\n\027extern" +
-      "al_event_def_name\030\002 \001(\t\022\021\n\004guid\030\003 \001(\tH\000\210" +
-      "\001\001\022*\n\007content\030\005 \001(\0132\031.lh_proto.VariableV" +
-      "aluePb\022\036\n\021thread_run_number\030\006 \001(\005H\001\210\001\001\022\036" +
-      "\n\021node_run_position\030\007 \001(\005H\002\210\001\001B\007\n\005_guidB" +
-      "\024\n\022_thread_run_numberB\024\n\022_node_run_posit" +
-      "ionJ\004\010\004\020\005J\004\010\010\020\t\"\353\001\n\007RunWfPb\022\024\n\014wf_spec_n" +
-      "ame\030\001 \001(\t\022\034\n\017wf_spec_version\030\002 \001(\005H\000\210\001\001\022" +
-      "3\n\tvariables\030\003 \003(\0132 .lh_proto.RunWfPb.Va" +
-      "riablesEntry\022\017\n\002id\030\004 \001(\tH\001\210\001\001\032K\n\016Variabl" +
-      "esEntry\022\013\n\003key\030\001 \001(\t\022(\n\005value\030\002 \001(\0132\031.lh" +
-      "_proto.VariableValuePb:\0028\001B\022\n\020_wf_spec_v" +
-      "ersionB\005\n\003_id\";\n\013StopWfRunPb\022\021\n\twf_run_i" +
-      "d\030\001 \001(\t\022\031\n\021thread_run_number\030\002 \001(\005\"=\n\rRe" +
-      "sumeWfRunPb\022\021\n\twf_run_id\030\001 \001(\t\022\031\n\021thread" +
-      "_run_number\030\002 \001(\005\"]\n\022SleepNodeMaturedPb\022" +
-      "\021\n\twf_run_id\030\001 \001(\t\022\031\n\021thread_run_number\030" +
-      "\002 \001(\005\022\031\n\021node_run_position\030\003 \001(\005\"\"\n\rDele" +
-      "teWfRunPb\022\021\n\twf_run_id\030\001 \001(\t\"\252\005\n\tCommand" +
-      "Pb\022(\n\004time\030\001 \001(\0132\032.google.protobuf.Times" +
-      "tamp\022\027\n\ncommand_id\030\002 \001(\tH\001\210\001\001\0228\n\021task_re" +
-      "sult_event\030\003 \001(\0132\033.lh_proto.TaskResultEv" +
-      "entPbH\000\0226\n\020task_claim_event\030\004 \001(\0132\032.lh_p" +
-      "roto.TaskClaimEventPbH\000\022,\n\013put_wf_spec\030\006" +
-      " \001(\0132\025.lh_proto.PutWfSpecPbH\000\022.\n\014put_tas" +
-      "k_def\030\007 \001(\0132\026.lh_proto.PutTaskDefPbH\000\022A\n" +
-      "\026put_external_event_def\030\010 \001(\0132\037.lh_proto" +
-      ".PutExternalEventDefPbH\000\022#\n\006run_wf\030\t \001(\013" +
-      "2\021.lh_proto.RunWfPbH\000\022:\n\022put_external_ev" +
-      "ent\030\n \001(\0132\034.lh_proto.PutExternalEventPbH" +
-      "\000\022,\n\013stop_wf_run\030\013 \001(\0132\025.lh_proto.StopWf" +
-      "RunPbH\000\0220\n\rresume_wf_run\030\014 \001(\0132\027.lh_prot" +
-      "o.ResumeWfRunPbH\000\022:\n\022sleep_node_matured\030" +
-      "\r \001(\0132\034.lh_proto.SleepNodeMaturedPbH\000\0220\n" +
-      "\rdelete_wf_run\030\016 \001(\0132\027.lh_proto.DeleteWf" +
-      "RunPbH\000B\t\n\007commandB\r\n\013_command_idB(\n\033io." +
-      "littlehorse.common.protoP\001Z\007.;modelb\006pro" +
-      "to3"
+      "skDefPb.InputVarsEntry\032I\n\016InputVarsEntry" +
+      "\022\013\n\003key\030\001 \001(\t\022&\n\005value\030\002 \001(\0132\027.lh_proto." +
+      "VariableDefPb:\0028\001J\004\010\002\020\003\"%\n\025PutExternalEv" +
+      "entDefPb\022\014\n\004name\030\001 \001(\t\"\210\002\n\022PutExternalEv" +
+      "entPb\022\021\n\twf_run_id\030\001 \001(\t\022\037\n\027external_eve" +
+      "nt_def_name\030\002 \001(\t\022\021\n\004guid\030\003 \001(\tH\000\210\001\001\022*\n\007" +
+      "content\030\005 \001(\0132\031.lh_proto.VariableValuePb" +
+      "\022\036\n\021thread_run_number\030\006 \001(\005H\001\210\001\001\022\036\n\021node" +
+      "_run_position\030\007 \001(\005H\002\210\001\001B\007\n\005_guidB\024\n\022_th" +
+      "read_run_numberB\024\n\022_node_run_positionJ\004\010" +
+      "\004\020\005J\004\010\010\020\t\"\353\001\n\007RunWfPb\022\024\n\014wf_spec_name\030\001 " +
+      "\001(\t\022\034\n\017wf_spec_version\030\002 \001(\005H\000\210\001\001\0223\n\tvar" +
+      "iables\030\003 \003(\0132 .lh_proto.RunWfPb.Variable" +
+      "sEntry\022\017\n\002id\030\004 \001(\tH\001\210\001\001\032K\n\016VariablesEntr" +
+      "y\022\013\n\003key\030\001 \001(\t\022(\n\005value\030\002 \001(\0132\031.lh_proto" +
+      ".VariableValuePb:\0028\001B\022\n\020_wf_spec_version" +
+      "B\005\n\003_id\";\n\013StopWfRunPb\022\021\n\twf_run_id\030\001 \001(" +
+      "\t\022\031\n\021thread_run_number\030\002 \001(\005\"=\n\rResumeWf" +
+      "RunPb\022\021\n\twf_run_id\030\001 \001(\t\022\031\n\021thread_run_n" +
+      "umber\030\002 \001(\005\"]\n\022SleepNodeMaturedPb\022\021\n\twf_" +
+      "run_id\030\001 \001(\t\022\031\n\021thread_run_number\030\002 \001(\005\022" +
+      "\031\n\021node_run_position\030\003 \001(\005\"\"\n\rDeleteWfRu" +
+      "nPb\022\021\n\twf_run_id\030\001 \001(\t\"\252\005\n\tCommandPb\022(\n\004" +
+      "time\030\001 \001(\0132\032.google.protobuf.Timestamp\022\027" +
+      "\n\ncommand_id\030\002 \001(\tH\001\210\001\001\0228\n\021task_result_e" +
+      "vent\030\003 \001(\0132\033.lh_proto.TaskResultEventPbH" +
+      "\000\0226\n\020task_claim_event\030\004 \001(\0132\032.lh_proto.T" +
+      "askClaimEventPbH\000\022,\n\013put_wf_spec\030\006 \001(\0132\025" +
+      ".lh_proto.PutWfSpecPbH\000\022.\n\014put_task_def\030" +
+      "\007 \001(\0132\026.lh_proto.PutTaskDefPbH\000\022A\n\026put_e" +
+      "xternal_event_def\030\010 \001(\0132\037.lh_proto.PutEx" +
+      "ternalEventDefPbH\000\022#\n\006run_wf\030\t \001(\0132\021.lh_" +
+      "proto.RunWfPbH\000\022:\n\022put_external_event\030\n " +
+      "\001(\0132\034.lh_proto.PutExternalEventPbH\000\022,\n\013s" +
+      "top_wf_run\030\013 \001(\0132\025.lh_proto.StopWfRunPbH" +
+      "\000\0220\n\rresume_wf_run\030\014 \001(\0132\027.lh_proto.Resu" +
+      "meWfRunPbH\000\022:\n\022sleep_node_matured\030\r \001(\0132" +
+      "\034.lh_proto.SleepNodeMaturedPbH\000\0220\n\rdelet" +
+      "e_wf_run\030\016 \001(\0132\027.lh_proto.DeleteWfRunPbH" +
+      "\000B\t\n\007commandB\r\n\013_command_idB(\n\033io.little" +
+      "horse.common.protoP\001Z\007.;modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -263,7 +261,7 @@ public final class Command {
     internal_static_lh_proto_PutTaskDefPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_PutTaskDefPb_descriptor,
-        new java.lang.String[] { "Name", "OutputSchema", "InputVars", "Rpc", "Kafka", "QueueType", });
+        new java.lang.String[] { "Name", "OutputSchema", "InputVars", });
     internal_static_lh_proto_PutTaskDefPb_InputVarsEntry_descriptor =
       internal_static_lh_proto_PutTaskDefPb_descriptor.getNestedTypes().get(0);
     internal_static_lh_proto_PutTaskDefPb_InputVarsEntry_fieldAccessorTable = new

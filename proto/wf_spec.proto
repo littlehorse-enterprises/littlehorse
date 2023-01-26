@@ -169,22 +169,11 @@ message OutputSchemaPb {
 }
 
 message TaskDefPb {
-
-    message KafkaTaskQueueDetailsPb {
-        string topic = 1;
-        string consumer_group_id = 2;
-    }
-
     string name = 1;
     int32 version = 2;
     google.protobuf.Timestamp created_at = 3;
     map<string, VariableDefPb> input_vars = 4;
     optional OutputSchemaPb output_schema = 5;
-
-    oneof queue_details {
-        KafkaTaskQueueDetailsPb kafka = 6;
-        bool rpc = 7;
-    }
 }
 
 message ExternalEventDefPb {

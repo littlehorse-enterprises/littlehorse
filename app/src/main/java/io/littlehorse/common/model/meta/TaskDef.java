@@ -4,7 +4,6 @@ import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.proto.TaskDefPb;
-import io.littlehorse.common.proto.TaskDefPb.QueueDetailsCase;
 import io.littlehorse.common.proto.TaskDefPbOrBuilder;
 import io.littlehorse.common.proto.VariableDefPb;
 import io.littlehorse.common.util.LHUtil;
@@ -20,9 +19,6 @@ public class TaskDef extends GETable<TaskDefPbOrBuilder> {
     public Date createdAt;
     public OutputSchema outputSchema;
     public Map<String, VariableDef> inputVars;
-
-    public QueueDetailsCase type;
-    public KafkaTaskQueueDetails kafkaTaskQueueDetails;
 
     public TaskDef() {
         inputVars = new HashMap<>();
@@ -68,17 +64,6 @@ public class TaskDef extends GETable<TaskDefPbOrBuilder> {
             .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
             .setVersion(version);
 
-        switch (type) {
-            case KAFKA:
-                b.setKafka(kafkaTaskQueueDetails.toProto());
-                break;
-            case RPC:
-                b.setRpc(true);
-                break;
-            case QUEUEDETAILS_NOT_SET:
-                throw new RuntimeException("Not possible");
-        }
-
         if (outputSchema != null) {
             b.setOutputSchema(outputSchema.toProto());
         }
@@ -98,11 +83,6 @@ public class TaskDef extends GETable<TaskDefPbOrBuilder> {
         }
         version = proto.getVersion();
 
-        type = proto.getQueueDetailsCase();
-        if (type == QueueDetailsCase.KAFKA) {
-            kafkaTaskQueueDetails =
-                KafkaTaskQueueDetails.fromProto(proto.getKafkaOrBuilder());
-        }
         for (Map.Entry<String, VariableDefPb> entry : proto
             .getInputVarsMap()
             .entrySet()) {

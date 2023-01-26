@@ -6,15 +6,12 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.PutTaskDefReply;
-import io.littlehorse.common.model.meta.KafkaTaskQueueDetails;
 import io.littlehorse.common.model.meta.OutputSchema;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.proto.LHResponseCodePb;
 import io.littlehorse.common.proto.PutTaskDefPb;
-import io.littlehorse.common.proto.PutTaskDefPb.QueueTypeCase;
 import io.littlehorse.common.proto.PutTaskDefPbOrBuilder;
-import io.littlehorse.common.proto.TaskDefPb.QueueDetailsCase;
 import io.littlehorse.common.proto.VariableDefPb;
 import io.littlehorse.common.util.LHUtil;
 import java.util.HashMap;
@@ -25,7 +22,6 @@ public class PutTaskDef extends SubCommand<PutTaskDefPb> {
     public String name;
     public OutputSchema outputSchema;
     public Map<String, VariableDef> inputVars;
-    public QueueTypeCase type;
 
     public String getPartitionKey() {
         return LHConstants.META_PARTITION_KEY;
@@ -47,19 +43,6 @@ public class PutTaskDef extends SubCommand<PutTaskDefPb> {
         for (Map.Entry<String, VariableDef> e : inputVars.entrySet()) {
             out.putInputVars(e.getKey(), e.getValue().toProto().build());
         }
-        switch (type) {
-            case KAFKA:
-                out.setKafka(true);
-                break;
-            case RPC:
-                out.setRpc(true);
-                break;
-            case QUEUETYPE_NOT_SET:
-                // we want default to be RPC queue.
-                out.setRpc(true);
-                break;
-        }
-
         return out;
     }
 
@@ -72,7 +55,6 @@ public class PutTaskDef extends SubCommand<PutTaskDefPb> {
         if (p.hasOutputSchema()) {
             outputSchema = OutputSchema.fromProto(p.getOutputSchema());
         }
-        type = p.getQueueTypeCase();
     }
 
     public boolean hasResponse() {
@@ -98,17 +80,6 @@ public class PutTaskDef extends SubCommand<PutTaskDefPb> {
             spec.version = oldVersion.version + 1;
         } else {
             spec.version = 0;
-        }
-        switch (type) {
-            case KAFKA:
-                spec.type = QueueDetailsCase.KAFKA;
-                spec.kafkaTaskQueueDetails = new KafkaTaskQueueDetails(spec, config);
-                break;
-            case RPC:
-                spec.type = QueueDetailsCase.RPC;
-                break;
-            case QUEUETYPE_NOT_SET:
-                throw new RuntimeException("not possible");
         }
 
         // TODO: Check for schema evolution here

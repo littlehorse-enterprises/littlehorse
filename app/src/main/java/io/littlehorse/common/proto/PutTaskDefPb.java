@@ -82,16 +82,6 @@ private static final long serialVersionUID = 0L;
                 inputVars__.getKey(), inputVars__.getValue());
             break;
           }
-          case 40: {
-            queueTypeCase_ = 5;
-            queueType_ = input.readBool();
-            break;
-          }
-          case 48: {
-            queueTypeCase_ = 6;
-            queueType_ = input.readBool();
-            break;
-          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -134,47 +124,6 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.Command.internal_static_lh_proto_PutTaskDefPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.common.proto.PutTaskDefPb.class, io.littlehorse.common.proto.PutTaskDefPb.Builder.class);
-  }
-
-  private int queueTypeCase_ = 0;
-  private java.lang.Object queueType_;
-  public enum QueueTypeCase
-      implements com.google.protobuf.Internal.EnumLite,
-          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    RPC(5),
-    KAFKA(6),
-    QUEUETYPE_NOT_SET(0);
-    private final int value;
-    private QueueTypeCase(int value) {
-      this.value = value;
-    }
-    /**
-     * @param value The number of the enum to look for.
-     * @return The enum associated with the given number.
-     * @deprecated Use {@link #forNumber(int)} instead.
-     */
-    @java.lang.Deprecated
-    public static QueueTypeCase valueOf(int value) {
-      return forNumber(value);
-    }
-
-    public static QueueTypeCase forNumber(int value) {
-      switch (value) {
-        case 5: return RPC;
-        case 6: return KAFKA;
-        case 0: return QUEUETYPE_NOT_SET;
-        default: return null;
-      }
-    }
-    public int getNumber() {
-      return this.value;
-    }
-  };
-
-  public QueueTypeCase
-  getQueueTypeCase() {
-    return QueueTypeCase.forNumber(
-        queueTypeCase_);
   }
 
   public static final int NAME_FIELD_NUMBER = 1;
@@ -322,32 +271,6 @@ private static final long serialVersionUID = 0L;
     return map.get(key);
   }
 
-  public static final int RPC_FIELD_NUMBER = 5;
-  /**
-   * <code>bool rpc = 5;</code>
-   * @return The rpc.
-   */
-  @java.lang.Override
-  public boolean getRpc() {
-    if (queueTypeCase_ == 5) {
-      return (java.lang.Boolean) queueType_;
-    }
-    return false;
-  }
-
-  public static final int KAFKA_FIELD_NUMBER = 6;
-  /**
-   * <code>bool kafka = 6;</code>
-   * @return The kafka.
-   */
-  @java.lang.Override
-  public boolean getKafka() {
-    if (queueTypeCase_ == 6) {
-      return (java.lang.Boolean) queueType_;
-    }
-    return false;
-  }
-
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -374,14 +297,6 @@ private static final long serialVersionUID = 0L;
         internalGetInputVars(),
         InputVarsDefaultEntryHolder.defaultEntry,
         4);
-    if (queueTypeCase_ == 5) {
-      output.writeBool(
-          5, (boolean)((java.lang.Boolean) queueType_));
-    }
-    if (queueTypeCase_ == 6) {
-      output.writeBool(
-          6, (boolean)((java.lang.Boolean) queueType_));
-    }
     unknownFields.writeTo(output);
   }
 
@@ -408,16 +323,6 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(4, inputVars__);
     }
-    if (queueTypeCase_ == 5) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBoolSize(
-            5, (boolean)((java.lang.Boolean) queueType_));
-    }
-    if (queueTypeCase_ == 6) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBoolSize(
-            6, (boolean)((java.lang.Boolean) queueType_));
-    }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
@@ -442,19 +347,6 @@ private static final long serialVersionUID = 0L;
     }
     if (!internalGetInputVars().equals(
         other.internalGetInputVars())) return false;
-    if (!getQueueTypeCase().equals(other.getQueueTypeCase())) return false;
-    switch (queueTypeCase_) {
-      case 5:
-        if (getRpc()
-            != other.getRpc()) return false;
-        break;
-      case 6:
-        if (getKafka()
-            != other.getKafka()) return false;
-        break;
-      case 0:
-      default:
-    }
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -475,20 +367,6 @@ private static final long serialVersionUID = 0L;
     if (!internalGetInputVars().getMap().isEmpty()) {
       hash = (37 * hash) + INPUT_VARS_FIELD_NUMBER;
       hash = (53 * hash) + internalGetInputVars().hashCode();
-    }
-    switch (queueTypeCase_) {
-      case 5:
-        hash = (37 * hash) + RPC_FIELD_NUMBER;
-        hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-            getRpc());
-        break;
-      case 6:
-        hash = (37 * hash) + KAFKA_FIELD_NUMBER;
-        hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-            getKafka());
-        break;
-      case 0:
-      default:
     }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
@@ -654,8 +532,6 @@ private static final long serialVersionUID = 0L;
         outputSchemaBuilder_ = null;
       }
       internalGetMutableInputVars().clear();
-      queueTypeCase_ = 0;
-      queueType_ = null;
       return this;
     }
 
@@ -691,13 +567,6 @@ private static final long serialVersionUID = 0L;
       }
       result.inputVars_ = internalGetInputVars();
       result.inputVars_.makeImmutable();
-      if (queueTypeCase_ == 5) {
-        result.queueType_ = queueType_;
-      }
-      if (queueTypeCase_ == 6) {
-        result.queueType_ = queueType_;
-      }
-      result.queueTypeCase_ = queueTypeCase_;
       onBuilt();
       return result;
     }
@@ -755,19 +624,6 @@ private static final long serialVersionUID = 0L;
       }
       internalGetMutableInputVars().mergeFrom(
           other.internalGetInputVars());
-      switch (other.getQueueTypeCase()) {
-        case RPC: {
-          setRpc(other.getRpc());
-          break;
-        }
-        case KAFKA: {
-          setKafka(other.getKafka());
-          break;
-        }
-        case QUEUETYPE_NOT_SET: {
-          break;
-        }
-      }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
@@ -796,21 +652,6 @@ private static final long serialVersionUID = 0L;
       }
       return this;
     }
-    private int queueTypeCase_ = 0;
-    private java.lang.Object queueType_;
-    public QueueTypeCase
-        getQueueTypeCase() {
-      return QueueTypeCase.forNumber(
-          queueTypeCase_);
-    }
-
-    public Builder clearQueueType() {
-      queueTypeCase_ = 0;
-      queueType_ = null;
-      onChanged();
-      return this;
-    }
-
     private int bitField0_;
 
     private java.lang.Object name_ = "";
@@ -1133,74 +974,6 @@ private static final long serialVersionUID = 0L;
         java.util.Map<java.lang.String, io.littlehorse.common.proto.VariableDefPb> values) {
       internalGetMutableInputVars().getMutableMap()
           .putAll(values);
-      return this;
-    }
-
-    /**
-     * <code>bool rpc = 5;</code>
-     * @return The rpc.
-     */
-    public boolean getRpc() {
-      if (queueTypeCase_ == 5) {
-        return (java.lang.Boolean) queueType_;
-      }
-      return false;
-    }
-    /**
-     * <code>bool rpc = 5;</code>
-     * @param value The rpc to set.
-     * @return This builder for chaining.
-     */
-    public Builder setRpc(boolean value) {
-      queueTypeCase_ = 5;
-      queueType_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>bool rpc = 5;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearRpc() {
-      if (queueTypeCase_ == 5) {
-        queueTypeCase_ = 0;
-        queueType_ = null;
-        onChanged();
-      }
-      return this;
-    }
-
-    /**
-     * <code>bool kafka = 6;</code>
-     * @return The kafka.
-     */
-    public boolean getKafka() {
-      if (queueTypeCase_ == 6) {
-        return (java.lang.Boolean) queueType_;
-      }
-      return false;
-    }
-    /**
-     * <code>bool kafka = 6;</code>
-     * @param value The kafka to set.
-     * @return This builder for chaining.
-     */
-    public Builder setKafka(boolean value) {
-      queueTypeCase_ = 6;
-      queueType_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>bool kafka = 6;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearKafka() {
-      if (queueTypeCase_ == 6) {
-        queueTypeCase_ = 0;
-        queueType_ = null;
-        onChanged();
-      }
       return this;
     }
     @java.lang.Override
