@@ -19,27 +19,12 @@ public interface VariableDefPbOrBuilder extends
   io.littlehorse.common.proto.VariableTypePb getType();
 
   /**
-   * <code>.lh_proto.VariableValuePb default_val = 2;</code>
-   * @return Whether the defaultVal field is set.
-   */
-  boolean hasDefaultVal();
-  /**
-   * <code>.lh_proto.VariableValuePb default_val = 2;</code>
-   * @return The defaultVal.
-   */
-  io.littlehorse.common.proto.VariableValuePb getDefaultVal();
-  /**
-   * <code>.lh_proto.VariableValuePb default_val = 2;</code>
-   */
-  io.littlehorse.common.proto.VariableValuePbOrBuilder getDefaultValOrBuilder();
-
-  /**
-   * <code>string name = 3;</code>
+   * <code>string name = 2;</code>
    * @return The name.
    */
   java.lang.String getName();
   /**
-   * <code>string name = 3;</code>
+   * <code>string name = 2;</code>
    * @return The bytes for name.
    */
   com.google.protobuf.ByteString

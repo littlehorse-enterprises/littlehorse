@@ -25,44 +25,29 @@ public interface VariableAssignmentPbOrBuilder extends
       getJsonPathBytes();
 
   /**
-   * <code>.lh_proto.VariableValuePb default_value = 2;</code>
-   * @return Whether the defaultValue field is set.
-   */
-  boolean hasDefaultValue();
-  /**
-   * <code>.lh_proto.VariableValuePb default_value = 2;</code>
-   * @return The defaultValue.
-   */
-  io.littlehorse.common.proto.VariableValuePb getDefaultValue();
-  /**
-   * <code>.lh_proto.VariableValuePb default_value = 2;</code>
-   */
-  io.littlehorse.common.proto.VariableValuePbOrBuilder getDefaultValueOrBuilder();
-
-  /**
-   * <code>string variable_name = 3;</code>
+   * <code>string variable_name = 2;</code>
    * @return The variableName.
    */
   java.lang.String getVariableName();
   /**
-   * <code>string variable_name = 3;</code>
+   * <code>string variable_name = 2;</code>
    * @return The bytes for variableName.
    */
   com.google.protobuf.ByteString
       getVariableNameBytes();
 
   /**
-   * <code>.lh_proto.VariableValuePb literal_value = 4;</code>
+   * <code>.lh_proto.VariableValuePb literal_value = 3;</code>
    * @return Whether the literalValue field is set.
    */
   boolean hasLiteralValue();
   /**
-   * <code>.lh_proto.VariableValuePb literal_value = 4;</code>
+   * <code>.lh_proto.VariableValuePb literal_value = 3;</code>
    * @return The literalValue.
    */
   io.littlehorse.common.proto.VariableValuePb getLiteralValue();
   /**
-   * <code>.lh_proto.VariableValuePb literal_value = 4;</code>
+   * <code>.lh_proto.VariableValuePb literal_value = 3;</code>
    */
   io.littlehorse.common.proto.VariableValuePbOrBuilder getLiteralValueOrBuilder();
 

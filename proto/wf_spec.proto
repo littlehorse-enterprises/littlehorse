@@ -47,10 +47,9 @@ enum VariableMutationTypePb {
 
 message VariableAssignmentPb {
     optional string json_path = 1;
-    optional VariableValuePb default_value = 2;
     oneof source {
-        string variable_name = 3;
-        VariableValuePb literal_value = 4;
+        string variable_name = 2;
+        VariableValuePb literal_value = 3;
     }
 }
 
@@ -138,8 +137,7 @@ message FailureDefPb {
 
 message VariableDefPb {
     VariableTypePb type = 1;
-    optional VariableValuePb default_val = 2;
-    string name = 3;
+    string name = 2;
 }
 
 message InterruptDefPb {

@@ -101,9 +101,7 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
     public Map<String, VariableDef> getRequiredInputVariables() {
         HashMap<String, VariableDef> out = new HashMap<>();
         for (VariableDef vd : variableDefs) {
-            if (vd.defaultValue == null) {
-                out.put(vd.name, vd);
-            }
+            out.put(vd.name, vd);
         }
 
         return out;

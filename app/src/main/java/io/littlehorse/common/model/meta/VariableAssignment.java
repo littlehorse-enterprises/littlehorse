@@ -13,7 +13,6 @@ import java.util.Set;
 public class VariableAssignment extends LHSerializable<VariableAssignmentPb> {
 
     public String jsonPath;
-    public VariableValue defaultValue;
 
     public SourceCase rhsSourceType;
     public String rhsVariableName;
@@ -26,9 +25,6 @@ public class VariableAssignment extends LHSerializable<VariableAssignmentPb> {
     public void initFrom(MessageOrBuilder proto) {
         VariableAssignmentPbOrBuilder p = (VariableAssignmentPbOrBuilder) proto;
         if (p.hasJsonPath()) jsonPath = p.getJsonPath();
-        if (p.hasDefaultValue()) {
-            defaultValue = VariableValue.fromProto(p.getDefaultValue());
-        }
 
         rhsSourceType = p.getSourceCase();
         switch (rhsSourceType) {
@@ -47,7 +43,6 @@ public class VariableAssignment extends LHSerializable<VariableAssignmentPb> {
         VariableAssignmentPb.Builder out = VariableAssignmentPb.newBuilder();
 
         if (jsonPath != null) out.setJsonPath(jsonPath);
-        if (defaultValue != null) out.setDefaultValue(defaultValue.toProto());
 
         switch (rhsSourceType) {
             case VARIABLE_NAME:

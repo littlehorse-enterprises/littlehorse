@@ -1,87 +1,79 @@
 {
-    "name": "simple-wf",
-    "threadSpecs": {
-        "simple_wf": {
-            "nodes": {
-                "entrypoint": {
-                    "outgoingEdges": [
-                        {
-                            "sinkNodeName": "t1"
-                        }
-                    ],
-                    "entrypoint": {}
-                },
-                "t1": {
-                    "task": {
-                        "taskDefName": "task1",
-                        "retries": 3
-                    },
-                    "outgoingEdges": [
-                        {
-                            "sinkNodeName": "t2"
-                        }
-                    ]
-                },
-                "t2": {
-                    "task": {
-                        "taskDefName": "task1",
-                        "retries": 3
-                    },
-                    "outgoingEdges": [
-                        {
-                            "sinkNodeName": "t2a"
-                        }
-                    ]
-                },
-                "t2a": {
-                    "task": {
-                        "taskDefName": "task1",
-                        "retries": 3
-                    },
-                    "outgoingEdges": [
-                        {
-                            "sinkNodeName": "t2b"
-                        }
-                    ]
-                },
-                "t2b": {
-                    "task": {
-                        "taskDefName": "task1",
-                        "retries": 3
-                    },
-                    "outgoingEdges": [
-                        {
-                            "sinkNodeName": "t2c"
-                        }
-                    ]
-                },
-                "t2c": {
-                    "task": {
-                        "taskDefName": "task1",
-                        "retries": 3
-                    },
-                    "outgoingEdges": [
-                        {
-                            "sinkNodeName": "t3"
-                        }
-                    ]
-                },
-                "t3": {
-                    "task": {
-                        "taskDefName": "task1",
-                        "retries": 3
-                    },
-                    "outgoingEdges": [
-                        {
-                            "sinkNodeName": "exit"
-                        }
-                    ]
-                },
-                "exit": {
-                    "exit": {}
-                }
-            }
+  "name": "my-workflow",
+  "threadSpecs": {
+    "entrypoint": {
+      "nodes": {
+        "entrypoint": {
+          "outgoingEdges": [{
+            "sinkNodeName": "1-task1-TASK"
+          }],
+          "variableMutations": [],
+          "failureHandlers": [],
+          "entrypoint": {
+          }
+        },
+        "1-task1-TASK": {
+          "outgoingEdges": [{
+            "sinkNodeName": "2-task1-TASK"
+          }],
+          "variableMutations": [],
+          "failureHandlers": [],
+          "task": {
+            "taskDefName": "task1",
+            "retries": 0,
+            "variables": [{
+              "literalValue": {
+                "type": "STR",
+                "str": "manual input"
+              }
+            }]
+          }
+        },
+        "2-task1-TASK": {
+          "outgoingEdges": [{
+            "sinkNodeName": "3-task1-TASK"
+          }],
+          "variableMutations": [],
+          "failureHandlers": [],
+          "task": {
+            "taskDefName": "task1",
+            "retries": 0,
+            "variables": [{
+              "literalValue": {
+                "type": "STR",
+                "str": "manual input 2"
+              }
+            }]
+          }
+        },
+        "3-task1-TASK": {
+          "outgoingEdges": [{
+            "sinkNodeName": "4-exit-EXIT"
+          }],
+          "variableMutations": [],
+          "failureHandlers": [],
+          "task": {
+            "taskDefName": "task1",
+            "retries": 0,
+            "variables": [{
+              "literalValue": {
+                "type": "STR",
+                "str": "manual input 3"
+              }
+            }]
+          }
+        },
+        "4-exit-EXIT": {
+          "outgoingEdges": [],
+          "variableMutations": [],
+          "failureHandlers": [],
+          "exit": {
+          }
         }
-    },
-    "entrypointThreadName": "simple_wf"
+      },
+      "variableDefs": [],
+      "interruptDefs": []
+    }
+  },
+  "entrypointThreadName": "entrypoint"
 }

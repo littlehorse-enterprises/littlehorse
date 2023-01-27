@@ -1,9 +1,10 @@
 {
     "name": "task1",
-    "inputVars": {
-        "myTaskVar": {
+    "inputVars": [
+        {
+            "name": "myTaskVar",
             "type": "STR",
             "defaultVal": { "type": "STR", "str": "Hello, there!" }
         }
-    }
+    ]
 }

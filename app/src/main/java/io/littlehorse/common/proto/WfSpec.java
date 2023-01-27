@@ -161,102 +161,99 @@ public final class WfSpec {
       "\n\005right\030\003 \001(\0132\036.lh_proto.VariableAssignm" +
       "entPb\"a\n\006EdgePb\022\026\n\016sink_node_name\030\001 \001(\t\022" +
       "1\n\tcondition\030\002 \001(\0132\031.lh_proto.EdgeCondit" +
-      "ionPbH\000\210\001\001B\014\n\n_condition\"\334\001\n\024VariableAss" +
-      "ignmentPb\022\026\n\tjson_path\030\001 \001(\tH\001\210\001\001\0225\n\rdef" +
-      "ault_value\030\002 \001(\0132\031.lh_proto.VariableValu" +
-      "ePbH\002\210\001\001\022\027\n\rvariable_name\030\003 \001(\tH\000\0222\n\rlit" +
-      "eral_value\030\004 \001(\0132\031.lh_proto.VariableValu" +
-      "ePbH\000B\010\n\006sourceB\014\n\n_json_pathB\020\n\016_defaul" +
-      "t_value\"\207\003\n\022VariableMutationPb\022\020\n\010lhs_na" +
-      "me\030\001 \001(\t\022\032\n\rlhs_json_path\030\002 \001(\tH\001\210\001\001\0223\n\t" +
-      "operation\030\003 \001(\0162 .lh_proto.VariableMutat" +
-      "ionTypePb\0229\n\017source_variable\030\004 \001(\0132\036.lh_" +
-      "proto.VariableAssignmentPbH\000\0222\n\rliteral_" +
-      "value\030\005 \001(\0132\031.lh_proto.VariableValuePbH\000" +
-      "\022F\n\013node_output\030\006 \001(\0132/.lh_proto.Variabl" +
-      "eMutationPb.NodeOutputSourcePbH\000\0328\n\022Node" +
-      "OutputSourcePb\022\025\n\010jsonpath\030\n \001(\tH\000\210\001\001B\013\n" +
-      "\t_jsonpathB\013\n\trhs_valueB\020\n\016_lhs_json_pat" +
-      "h\"\013\n\tNopNodePb\"\275\001\n\013SleepNodePb\0225\n\013raw_se" +
-      "conds\030\001 \001(\0132\036.lh_proto.VariableAssignmen" +
-      "tPbH\000\0223\n\ttimestamp\030\002 \001(\0132\036.lh_proto.Vari" +
-      "ableAssignmentPbH\000\0222\n\010iso_date\030\003 \001(\0132\036.l" +
-      "h_proto.VariableAssignmentPbH\000B\016\n\014sleep_" +
-      "length\"\320\004\n\006NodePb\022(\n\016outgoing_edges\030\001 \003(" +
-      "\0132\020.lh_proto.EdgePb\0228\n\022variable_mutation" +
-      "s\030\002 \003(\0132\034.lh_proto.VariableMutationPb\022/\n" +
-      "\routput_schema\030\003 \001(\0132\030.lh_proto.OutputSc" +
-      "hemaPb\0227\n\020failure_handlers\030\004 \003(\0132\035.lh_pr" +
-      "oto.FailureHandlerDefPb\0220\n\nentrypoint\030\005 " +
-      "\001(\0132\032.lh_proto.EntrypointNodePbH\000\022$\n\004exi" +
-      "t\030\006 \001(\0132\024.lh_proto.ExitNodePbH\000\022$\n\004task\030" +
-      "\007 \001(\0132\024.lh_proto.TaskNodePbH\000\0227\n\016externa" +
-      "l_event\030\010 \001(\0132\035.lh_proto.ExternalEventNo" +
-      "dePbH\000\0223\n\014start_thread\030\t \001(\0132\033.lh_proto." +
-      "StartThreadNodePbH\000\0228\n\017wait_for_thread\030\n" +
-      " \001(\0132\035.lh_proto.WaitForThreadNodePbH\000\022\"\n" +
-      "\003nop\030\013 \001(\0132\023.lh_proto.NopNodePbH\000\022&\n\005sle" +
-      "ep\030\014 \001(\0132\025.lh_proto.SleepNodePbH\000B\006\n\004nod" +
-      "e\"\276\001\n\021StartThreadNodePb\022\030\n\020thread_spec_n" +
-      "ame\030\001 \001(\t\022=\n\tvariables\030\002 \003(\0132*.lh_proto." +
-      "StartThreadNodePb.VariablesEntry\032P\n\016Vari" +
-      "ablesEntry\022\013\n\003key\030\001 \001(\t\022-\n\005value\030\002 \001(\0132\036" +
-      ".lh_proto.VariableAssignmentPb:\0028\001\"d\n\023Fa" +
-      "ilureHandlerDefPb\022\035\n\020specific_failure\030\001 " +
-      "\001(\tH\000\210\001\001\022\031\n\021handler_spec_name\030\002 \001(\tB\023\n\021_" +
-      "specific_failure\"\211\001\n\023WaitForThreadNodePb" +
-      "\0229\n\021thread_run_number\030\001 \001(\0132\036.lh_proto.V" +
-      "ariableAssignmentPb\0227\n\017timeout_seconds\030\002" +
-      " \001(\0132\036.lh_proto.VariableAssignmentPb\"\240\001\n" +
-      "\nTaskNodePb\022\025\n\rtask_def_name\030\001 \001(\t\0227\n\017ti" +
-      "meout_seconds\030\002 \001(\0132\036.lh_proto.VariableA" +
-      "ssignmentPb\022\017\n\007retries\030\003 \001(\005\0221\n\tvariable" +
-      "s\030\004 \003(\0132\036.lh_proto.VariableAssignmentPb\"" +
-      "6\n\023ExternalEventNodePb\022\037\n\027external_event" +
-      "_def_name\030\001 \001(\t\"\022\n\020EntrypointNodePb\"N\n\nE" +
-      "xitNodePb\0220\n\013failure_def\030\001 \001(\0132\026.lh_prot" +
-      "o.FailureDefPbH\000\210\001\001B\016\n\014_failure_def\"\251\001\n\014" +
-      "FailureDefPb\022\024\n\014failure_name\030\001 \001(\t\0220\n\014fa" +
-      "ilure_code\030\002 \001(\0162\032.lh_proto.TaskResultCo" +
-      "dePb\022\017\n\007message\030\003 \001(\t\0224\n\007content\030\004 \001(\0132\036" +
-      ".lh_proto.VariableAssignmentPbH\000\210\001\001B\n\n\010_" +
-      "content\"\212\001\n\rVariableDefPb\022&\n\004type\030\001 \001(\0162" +
-      "\030.lh_proto.VariableTypePb\0223\n\013default_val" +
-      "\030\002 \001(\0132\031.lh_proto.VariableValuePbH\000\210\001\001\022\014" +
-      "\n\004name\030\003 \001(\tB\016\n\014_default_val\"L\n\016Interrup" +
-      "tDefPb\022\037\n\027external_event_def_name\030\001 \001(\t\022" +
-      "\031\n\021handler_spec_name\030\002 \001(\t\"\342\001\n\014ThreadSpe" +
-      "cPb\0220\n\005nodes\030\001 \003(\0132!.lh_proto.ThreadSpec" +
-      "Pb.NodesEntry\022.\n\rvariable_defs\030\002 \003(\0132\027.l" +
-      "h_proto.VariableDefPb\0220\n\016interrupt_defs\030" +
-      "\003 \003(\0132\030.lh_proto.InterruptDefPb\032>\n\nNodes" +
-      "Entry\022\013\n\003key\030\001 \001(\t\022\037\n\005value\030\002 \001(\0132\020.lh_p" +
-      "roto.NodePb:\0028\001\"\246\002\n\010WfSpecPb\022\014\n\004name\030\001 \001" +
-      "(\t\022\017\n\007version\030\002 \001(\005\022.\n\ncreated_at\030\003 \001(\0132" +
-      "\032.google.protobuf.Timestamp\022$\n\006status\030\004 " +
-      "\001(\0162\024.lh_proto.LHStatusPb\0229\n\014thread_spec" +
-      "s\030\005 \003(\0132#.lh_proto.WfSpecPb.ThreadSpecsE" +
-      "ntry\022\036\n\026entrypoint_thread_name\030\006 \001(\t\032J\n\020" +
-      "ThreadSpecsEntry\022\013\n\003key\030\001 \001(\t\022%\n\005value\030\002" +
-      " \001(\0132\026.lh_proto.ThreadSpecPb:\0028\001\"?\n\016Outp" +
-      "utSchemaPb\022-\n\013output_type\030\001 \001(\0162\030.lh_pro" +
-      "to.VariableTypePb\"\317\001\n\tTaskDefPb\022\014\n\004name\030" +
-      "\001 \001(\t\022\017\n\007version\030\002 \001(\005\022.\n\ncreated_at\030\003 \001" +
-      "(\0132\032.google.protobuf.Timestamp\022+\n\ninput_" +
-      "vars\030\004 \003(\0132\027.lh_proto.VariableDefPb\0224\n\ro" +
-      "utput_schema\030\005 \001(\0132\030.lh_proto.OutputSche" +
-      "maPbH\000\210\001\001B\020\n\016_output_schema\"c\n\022ExternalE" +
-      "ventDefPb\022\014\n\004name\030\001 \001(\t\022\017\n\007version\030\002 \001(\005" +
-      "\022.\n\ncreated_at\030\003 \001(\0132\032.google.protobuf.T" +
-      "imestamp*\206\001\n\014ComparatorPb\022\r\n\tLESS_THAN\020\000" +
-      "\022\020\n\014GREATER_THAN\020\001\022\020\n\014LESS_THAN_EQ\020\002\022\023\n\017" +
-      "GREATER_THAN_EQ\020\003\022\n\n\006EQUALS\020\004\022\016\n\nNOT_EQU" +
-      "ALS\020\005\022\006\n\002IN\020\006\022\n\n\006NOT_IN\020\007*\232\001\n\026VariableMu" +
-      "tationTypePb\022\n\n\006ASSIGN\020\000\022\007\n\003ADD\020\001\022\n\n\006EXT" +
-      "END\020\002\022\014\n\010SUBTRACT\020\003\022\014\n\010MULTIPLY\020\004\022\n\n\006DIV" +
-      "IDE\020\005\022\025\n\021REMOVE_IF_PRESENT\020\006\022\020\n\014REMOVE_I" +
-      "NDEX\020\007\022\016\n\nREMOVE_KEY\020\010B(\n\033io.littlehorse" +
-      ".common.protoP\001Z\007.;modelb\006proto3"
+      "ionPbH\000\210\001\001B\014\n\n_condition\"\223\001\n\024VariableAss" +
+      "ignmentPb\022\026\n\tjson_path\030\001 \001(\tH\001\210\001\001\022\027\n\rvar" +
+      "iable_name\030\002 \001(\tH\000\0222\n\rliteral_value\030\003 \001(" +
+      "\0132\031.lh_proto.VariableValuePbH\000B\010\n\006source" +
+      "B\014\n\n_json_path\"\207\003\n\022VariableMutationPb\022\020\n" +
+      "\010lhs_name\030\001 \001(\t\022\032\n\rlhs_json_path\030\002 \001(\tH\001" +
+      "\210\001\001\0223\n\toperation\030\003 \001(\0162 .lh_proto.Variab" +
+      "leMutationTypePb\0229\n\017source_variable\030\004 \001(" +
+      "\0132\036.lh_proto.VariableAssignmentPbH\000\0222\n\rl" +
+      "iteral_value\030\005 \001(\0132\031.lh_proto.VariableVa" +
+      "luePbH\000\022F\n\013node_output\030\006 \001(\0132/.lh_proto." +
+      "VariableMutationPb.NodeOutputSourcePbH\000\032" +
+      "8\n\022NodeOutputSourcePb\022\025\n\010jsonpath\030\n \001(\tH" +
+      "\000\210\001\001B\013\n\t_jsonpathB\013\n\trhs_valueB\020\n\016_lhs_j" +
+      "son_path\"\013\n\tNopNodePb\"\275\001\n\013SleepNodePb\0225\n" +
+      "\013raw_seconds\030\001 \001(\0132\036.lh_proto.VariableAs" +
+      "signmentPbH\000\0223\n\ttimestamp\030\002 \001(\0132\036.lh_pro" +
+      "to.VariableAssignmentPbH\000\0222\n\010iso_date\030\003 " +
+      "\001(\0132\036.lh_proto.VariableAssignmentPbH\000B\016\n" +
+      "\014sleep_length\"\320\004\n\006NodePb\022(\n\016outgoing_edg" +
+      "es\030\001 \003(\0132\020.lh_proto.EdgePb\0228\n\022variable_m" +
+      "utations\030\002 \003(\0132\034.lh_proto.VariableMutati" +
+      "onPb\022/\n\routput_schema\030\003 \001(\0132\030.lh_proto.O" +
+      "utputSchemaPb\0227\n\020failure_handlers\030\004 \003(\0132" +
+      "\035.lh_proto.FailureHandlerDefPb\0220\n\nentryp" +
+      "oint\030\005 \001(\0132\032.lh_proto.EntrypointNodePbH\000" +
+      "\022$\n\004exit\030\006 \001(\0132\024.lh_proto.ExitNodePbH\000\022$" +
+      "\n\004task\030\007 \001(\0132\024.lh_proto.TaskNodePbH\000\0227\n\016" +
+      "external_event\030\010 \001(\0132\035.lh_proto.External" +
+      "EventNodePbH\000\0223\n\014start_thread\030\t \001(\0132\033.lh" +
+      "_proto.StartThreadNodePbH\000\0228\n\017wait_for_t" +
+      "hread\030\n \001(\0132\035.lh_proto.WaitForThreadNode" +
+      "PbH\000\022\"\n\003nop\030\013 \001(\0132\023.lh_proto.NopNodePbH\000" +
+      "\022&\n\005sleep\030\014 \001(\0132\025.lh_proto.SleepNodePbH\000" +
+      "B\006\n\004node\"\276\001\n\021StartThreadNodePb\022\030\n\020thread" +
+      "_spec_name\030\001 \001(\t\022=\n\tvariables\030\002 \003(\0132*.lh" +
+      "_proto.StartThreadNodePb.VariablesEntry\032" +
+      "P\n\016VariablesEntry\022\013\n\003key\030\001 \001(\t\022-\n\005value\030" +
+      "\002 \001(\0132\036.lh_proto.VariableAssignmentPb:\0028" +
+      "\001\"d\n\023FailureHandlerDefPb\022\035\n\020specific_fai" +
+      "lure\030\001 \001(\tH\000\210\001\001\022\031\n\021handler_spec_name\030\002 \001" +
+      "(\tB\023\n\021_specific_failure\"\211\001\n\023WaitForThrea" +
+      "dNodePb\0229\n\021thread_run_number\030\001 \001(\0132\036.lh_" +
+      "proto.VariableAssignmentPb\0227\n\017timeout_se" +
+      "conds\030\002 \001(\0132\036.lh_proto.VariableAssignmen" +
+      "tPb\"\240\001\n\nTaskNodePb\022\025\n\rtask_def_name\030\001 \001(" +
+      "\t\0227\n\017timeout_seconds\030\002 \001(\0132\036.lh_proto.Va" +
+      "riableAssignmentPb\022\017\n\007retries\030\003 \001(\005\0221\n\tv" +
+      "ariables\030\004 \003(\0132\036.lh_proto.VariableAssign" +
+      "mentPb\"6\n\023ExternalEventNodePb\022\037\n\027externa" +
+      "l_event_def_name\030\001 \001(\t\"\022\n\020EntrypointNode" +
+      "Pb\"N\n\nExitNodePb\0220\n\013failure_def\030\001 \001(\0132\026." +
+      "lh_proto.FailureDefPbH\000\210\001\001B\016\n\014_failure_d" +
+      "ef\"\251\001\n\014FailureDefPb\022\024\n\014failure_name\030\001 \001(" +
+      "\t\0220\n\014failure_code\030\002 \001(\0162\032.lh_proto.TaskR" +
+      "esultCodePb\022\017\n\007message\030\003 \001(\t\0224\n\007content\030" +
+      "\004 \001(\0132\036.lh_proto.VariableAssignmentPbH\000\210" +
+      "\001\001B\n\n\010_content\"E\n\rVariableDefPb\022&\n\004type\030" +
+      "\001 \001(\0162\030.lh_proto.VariableTypePb\022\014\n\004name\030" +
+      "\002 \001(\t\"L\n\016InterruptDefPb\022\037\n\027external_even" +
+      "t_def_name\030\001 \001(\t\022\031\n\021handler_spec_name\030\002 " +
+      "\001(\t\"\342\001\n\014ThreadSpecPb\0220\n\005nodes\030\001 \003(\0132!.lh" +
+      "_proto.ThreadSpecPb.NodesEntry\022.\n\rvariab" +
+      "le_defs\030\002 \003(\0132\027.lh_proto.VariableDefPb\0220" +
+      "\n\016interrupt_defs\030\003 \003(\0132\030.lh_proto.Interr" +
+      "uptDefPb\032>\n\nNodesEntry\022\013\n\003key\030\001 \001(\t\022\037\n\005v" +
+      "alue\030\002 \001(\0132\020.lh_proto.NodePb:\0028\001\"\246\002\n\010WfS" +
+      "pecPb\022\014\n\004name\030\001 \001(\t\022\017\n\007version\030\002 \001(\005\022.\n\n" +
+      "created_at\030\003 \001(\0132\032.google.protobuf.Times" +
+      "tamp\022$\n\006status\030\004 \001(\0162\024.lh_proto.LHStatus" +
+      "Pb\0229\n\014thread_specs\030\005 \003(\0132#.lh_proto.WfSp" +
+      "ecPb.ThreadSpecsEntry\022\036\n\026entrypoint_thre" +
+      "ad_name\030\006 \001(\t\032J\n\020ThreadSpecsEntry\022\013\n\003key" +
+      "\030\001 \001(\t\022%\n\005value\030\002 \001(\0132\026.lh_proto.ThreadS" +
+      "pecPb:\0028\001\"?\n\016OutputSchemaPb\022-\n\013output_ty" +
+      "pe\030\001 \001(\0162\030.lh_proto.VariableTypePb\"\317\001\n\tT" +
+      "askDefPb\022\014\n\004name\030\001 \001(\t\022\017\n\007version\030\002 \001(\005\022" +
+      ".\n\ncreated_at\030\003 \001(\0132\032.google.protobuf.Ti" +
+      "mestamp\022+\n\ninput_vars\030\004 \003(\0132\027.lh_proto.V" +
+      "ariableDefPb\0224\n\routput_schema\030\005 \001(\0132\030.lh" +
+      "_proto.OutputSchemaPbH\000\210\001\001B\020\n\016_output_sc" +
+      "hema\"c\n\022ExternalEventDefPb\022\014\n\004name\030\001 \001(\t" +
+      "\022\017\n\007version\030\002 \001(\005\022.\n\ncreated_at\030\003 \001(\0132\032." +
+      "google.protobuf.Timestamp*\206\001\n\014Comparator" +
+      "Pb\022\r\n\tLESS_THAN\020\000\022\020\n\014GREATER_THAN\020\001\022\020\n\014L" +
+      "ESS_THAN_EQ\020\002\022\023\n\017GREATER_THAN_EQ\020\003\022\n\n\006EQ" +
+      "UALS\020\004\022\016\n\nNOT_EQUALS\020\005\022\006\n\002IN\020\006\022\n\n\006NOT_IN" +
+      "\020\007*\232\001\n\026VariableMutationTypePb\022\n\n\006ASSIGN\020" +
+      "\000\022\007\n\003ADD\020\001\022\n\n\006EXTEND\020\002\022\014\n\010SUBTRACT\020\003\022\014\n\010" +
+      "MULTIPLY\020\004\022\n\n\006DIVIDE\020\005\022\025\n\021REMOVE_IF_PRES" +
+      "ENT\020\006\022\020\n\014REMOVE_INDEX\020\007\022\016\n\nREMOVE_KEY\020\010B" +
+      "(\n\033io.littlehorse.common.protoP\001Z\007.;mode" +
+      "lb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -282,7 +279,7 @@ public final class WfSpec {
     internal_static_lh_proto_VariableAssignmentPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_VariableAssignmentPb_descriptor,
-        new java.lang.String[] { "JsonPath", "DefaultValue", "VariableName", "LiteralValue", "Source", "JsonPath", "DefaultValue", });
+        new java.lang.String[] { "JsonPath", "VariableName", "LiteralValue", "Source", "JsonPath", });
     internal_static_lh_proto_VariableMutationPb_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_lh_proto_VariableMutationPb_fieldAccessorTable = new
@@ -372,7 +369,7 @@ public final class WfSpec {
     internal_static_lh_proto_VariableDefPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_VariableDefPb_descriptor,
-        new java.lang.String[] { "Type", "DefaultVal", "Name", "DefaultVal", });
+        new java.lang.String[] { "Type", "Name", });
     internal_static_lh_proto_InterruptDefPb_descriptor =
       getDescriptor().getMessageTypes().get(16);
     internal_static_lh_proto_InterruptDefPb_fieldAccessorTable = new

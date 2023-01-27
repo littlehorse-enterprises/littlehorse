@@ -57,27 +57,14 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 18: {
-            io.littlehorse.common.proto.VariableValuePb.Builder subBuilder = null;
-            if (((bitField0_ & 0x00000002) != 0)) {
-              subBuilder = defaultValue_.toBuilder();
-            }
-            defaultValue_ = input.readMessage(io.littlehorse.common.proto.VariableValuePb.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom(defaultValue_);
-              defaultValue_ = subBuilder.buildPartial();
-            }
-            bitField0_ |= 0x00000002;
-            break;
-          }
-          case 26: {
             java.lang.String s = input.readStringRequireUtf8();
-            sourceCase_ = 3;
+            sourceCase_ = 2;
             source_ = s;
             break;
           }
-          case 34: {
+          case 26: {
             io.littlehorse.common.proto.VariableValuePb.Builder subBuilder = null;
-            if (sourceCase_ == 4) {
+            if (sourceCase_ == 3) {
               subBuilder = ((io.littlehorse.common.proto.VariableValuePb) source_).toBuilder();
             }
             source_ =
@@ -86,7 +73,7 @@ private static final long serialVersionUID = 0L;
               subBuilder.mergeFrom((io.littlehorse.common.proto.VariableValuePb) source_);
               source_ = subBuilder.buildPartial();
             }
-            sourceCase_ = 4;
+            sourceCase_ = 3;
             break;
           }
           default: {
@@ -127,8 +114,8 @@ private static final long serialVersionUID = 0L;
   public enum SourceCase
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    VARIABLE_NAME(3),
-    LITERAL_VALUE(4),
+    VARIABLE_NAME(2),
+    LITERAL_VALUE(3),
     SOURCE_NOT_SET(0);
     private final int value;
     private SourceCase(int value) {
@@ -146,8 +133,8 @@ private static final long serialVersionUID = 0L;
 
     public static SourceCase forNumber(int value) {
       switch (value) {
-        case 3: return VARIABLE_NAME;
-        case 4: return LITERAL_VALUE;
+        case 2: return VARIABLE_NAME;
+        case 3: return LITERAL_VALUE;
         case 0: return SOURCE_NOT_SET;
         default: return null;
       }
@@ -209,40 +196,14 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int DEFAULT_VALUE_FIELD_NUMBER = 2;
-  private io.littlehorse.common.proto.VariableValuePb defaultValue_;
+  public static final int VARIABLE_NAME_FIELD_NUMBER = 2;
   /**
-   * <code>.lh_proto.VariableValuePb default_value = 2;</code>
-   * @return Whether the defaultValue field is set.
-   */
-  @java.lang.Override
-  public boolean hasDefaultValue() {
-    return ((bitField0_ & 0x00000002) != 0);
-  }
-  /**
-   * <code>.lh_proto.VariableValuePb default_value = 2;</code>
-   * @return The defaultValue.
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.VariableValuePb getDefaultValue() {
-    return defaultValue_ == null ? io.littlehorse.common.proto.VariableValuePb.getDefaultInstance() : defaultValue_;
-  }
-  /**
-   * <code>.lh_proto.VariableValuePb default_value = 2;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.VariableValuePbOrBuilder getDefaultValueOrBuilder() {
-    return defaultValue_ == null ? io.littlehorse.common.proto.VariableValuePb.getDefaultInstance() : defaultValue_;
-  }
-
-  public static final int VARIABLE_NAME_FIELD_NUMBER = 3;
-  /**
-   * <code>string variable_name = 3;</code>
+   * <code>string variable_name = 2;</code>
    * @return The variableName.
    */
   public java.lang.String getVariableName() {
     java.lang.Object ref = "";
-    if (sourceCase_ == 3) {
+    if (sourceCase_ == 2) {
       ref = source_;
     }
     if (ref instanceof java.lang.String) {
@@ -251,27 +212,27 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (sourceCase_ == 3) {
+      if (sourceCase_ == 2) {
         source_ = s;
       }
       return s;
     }
   }
   /**
-   * <code>string variable_name = 3;</code>
+   * <code>string variable_name = 2;</code>
    * @return The bytes for variableName.
    */
   public com.google.protobuf.ByteString
       getVariableNameBytes() {
     java.lang.Object ref = "";
-    if (sourceCase_ == 3) {
+    if (sourceCase_ == 2) {
       ref = source_;
     }
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      if (sourceCase_ == 3) {
+      if (sourceCase_ == 2) {
         source_ = b;
       }
       return b;
@@ -280,32 +241,32 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int LITERAL_VALUE_FIELD_NUMBER = 4;
+  public static final int LITERAL_VALUE_FIELD_NUMBER = 3;
   /**
-   * <code>.lh_proto.VariableValuePb literal_value = 4;</code>
+   * <code>.lh_proto.VariableValuePb literal_value = 3;</code>
    * @return Whether the literalValue field is set.
    */
   @java.lang.Override
   public boolean hasLiteralValue() {
-    return sourceCase_ == 4;
+    return sourceCase_ == 3;
   }
   /**
-   * <code>.lh_proto.VariableValuePb literal_value = 4;</code>
+   * <code>.lh_proto.VariableValuePb literal_value = 3;</code>
    * @return The literalValue.
    */
   @java.lang.Override
   public io.littlehorse.common.proto.VariableValuePb getLiteralValue() {
-    if (sourceCase_ == 4) {
+    if (sourceCase_ == 3) {
        return (io.littlehorse.common.proto.VariableValuePb) source_;
     }
     return io.littlehorse.common.proto.VariableValuePb.getDefaultInstance();
   }
   /**
-   * <code>.lh_proto.VariableValuePb literal_value = 4;</code>
+   * <code>.lh_proto.VariableValuePb literal_value = 3;</code>
    */
   @java.lang.Override
   public io.littlehorse.common.proto.VariableValuePbOrBuilder getLiteralValueOrBuilder() {
-    if (sourceCase_ == 4) {
+    if (sourceCase_ == 3) {
        return (io.littlehorse.common.proto.VariableValuePb) source_;
     }
     return io.littlehorse.common.proto.VariableValuePb.getDefaultInstance();
@@ -328,14 +289,11 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, jsonPath_);
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
-      output.writeMessage(2, getDefaultValue());
+    if (sourceCase_ == 2) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, source_);
     }
     if (sourceCase_ == 3) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, source_);
-    }
-    if (sourceCase_ == 4) {
-      output.writeMessage(4, (io.littlehorse.common.proto.VariableValuePb) source_);
+      output.writeMessage(3, (io.littlehorse.common.proto.VariableValuePb) source_);
     }
     unknownFields.writeTo(output);
   }
@@ -349,16 +307,12 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, jsonPath_);
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, getDefaultValue());
+    if (sourceCase_ == 2) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, source_);
     }
     if (sourceCase_ == 3) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, source_);
-    }
-    if (sourceCase_ == 4) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, (io.littlehorse.common.proto.VariableValuePb) source_);
+        .computeMessageSize(3, (io.littlehorse.common.proto.VariableValuePb) source_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -380,18 +334,13 @@ private static final long serialVersionUID = 0L;
       if (!getJsonPath()
           .equals(other.getJsonPath())) return false;
     }
-    if (hasDefaultValue() != other.hasDefaultValue()) return false;
-    if (hasDefaultValue()) {
-      if (!getDefaultValue()
-          .equals(other.getDefaultValue())) return false;
-    }
     if (!getSourceCase().equals(other.getSourceCase())) return false;
     switch (sourceCase_) {
-      case 3:
+      case 2:
         if (!getVariableName()
             .equals(other.getVariableName())) return false;
         break;
-      case 4:
+      case 3:
         if (!getLiteralValue()
             .equals(other.getLiteralValue())) return false;
         break;
@@ -413,16 +362,12 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + JSON_PATH_FIELD_NUMBER;
       hash = (53 * hash) + getJsonPath().hashCode();
     }
-    if (hasDefaultValue()) {
-      hash = (37 * hash) + DEFAULT_VALUE_FIELD_NUMBER;
-      hash = (53 * hash) + getDefaultValue().hashCode();
-    }
     switch (sourceCase_) {
-      case 3:
+      case 2:
         hash = (37 * hash) + VARIABLE_NAME_FIELD_NUMBER;
         hash = (53 * hash) + getVariableName().hashCode();
         break;
-      case 4:
+      case 3:
         hash = (37 * hash) + LITERAL_VALUE_FIELD_NUMBER;
         hash = (53 * hash) + getLiteralValue().hashCode();
         break;
@@ -557,7 +502,6 @@ private static final long serialVersionUID = 0L;
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
-        getDefaultValueFieldBuilder();
       }
     }
     @java.lang.Override
@@ -565,12 +509,6 @@ private static final long serialVersionUID = 0L;
       super.clear();
       jsonPath_ = "";
       bitField0_ = (bitField0_ & ~0x00000001);
-      if (defaultValueBuilder_ == null) {
-        defaultValue_ = null;
-      } else {
-        defaultValueBuilder_.clear();
-      }
-      bitField0_ = (bitField0_ & ~0x00000002);
       sourceCase_ = 0;
       source_ = null;
       return this;
@@ -605,18 +543,10 @@ private static final long serialVersionUID = 0L;
         to_bitField0_ |= 0x00000001;
       }
       result.jsonPath_ = jsonPath_;
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        if (defaultValueBuilder_ == null) {
-          result.defaultValue_ = defaultValue_;
-        } else {
-          result.defaultValue_ = defaultValueBuilder_.build();
-        }
-        to_bitField0_ |= 0x00000002;
-      }
-      if (sourceCase_ == 3) {
+      if (sourceCase_ == 2) {
         result.source_ = source_;
       }
-      if (sourceCase_ == 4) {
+      if (sourceCase_ == 3) {
         if (literalValueBuilder_ == null) {
           result.source_ = source_;
         } else {
@@ -678,12 +608,9 @@ private static final long serialVersionUID = 0L;
         jsonPath_ = other.jsonPath_;
         onChanged();
       }
-      if (other.hasDefaultValue()) {
-        mergeDefaultValue(other.getDefaultValue());
-      }
       switch (other.getSourceCase()) {
         case VARIABLE_NAME: {
-          sourceCase_ = 3;
+          sourceCase_ = 2;
           source_ = other.source_;
           onChanged();
           break;
@@ -824,141 +751,21 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private io.littlehorse.common.proto.VariableValuePb defaultValue_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.VariableValuePb, io.littlehorse.common.proto.VariableValuePb.Builder, io.littlehorse.common.proto.VariableValuePbOrBuilder> defaultValueBuilder_;
     /**
-     * <code>.lh_proto.VariableValuePb default_value = 2;</code>
-     * @return Whether the defaultValue field is set.
-     */
-    public boolean hasDefaultValue() {
-      return ((bitField0_ & 0x00000002) != 0);
-    }
-    /**
-     * <code>.lh_proto.VariableValuePb default_value = 2;</code>
-     * @return The defaultValue.
-     */
-    public io.littlehorse.common.proto.VariableValuePb getDefaultValue() {
-      if (defaultValueBuilder_ == null) {
-        return defaultValue_ == null ? io.littlehorse.common.proto.VariableValuePb.getDefaultInstance() : defaultValue_;
-      } else {
-        return defaultValueBuilder_.getMessage();
-      }
-    }
-    /**
-     * <code>.lh_proto.VariableValuePb default_value = 2;</code>
-     */
-    public Builder setDefaultValue(io.littlehorse.common.proto.VariableValuePb value) {
-      if (defaultValueBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        defaultValue_ = value;
-        onChanged();
-      } else {
-        defaultValueBuilder_.setMessage(value);
-      }
-      bitField0_ |= 0x00000002;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.VariableValuePb default_value = 2;</code>
-     */
-    public Builder setDefaultValue(
-        io.littlehorse.common.proto.VariableValuePb.Builder builderForValue) {
-      if (defaultValueBuilder_ == null) {
-        defaultValue_ = builderForValue.build();
-        onChanged();
-      } else {
-        defaultValueBuilder_.setMessage(builderForValue.build());
-      }
-      bitField0_ |= 0x00000002;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.VariableValuePb default_value = 2;</code>
-     */
-    public Builder mergeDefaultValue(io.littlehorse.common.proto.VariableValuePb value) {
-      if (defaultValueBuilder_ == null) {
-        if (((bitField0_ & 0x00000002) != 0) &&
-            defaultValue_ != null &&
-            defaultValue_ != io.littlehorse.common.proto.VariableValuePb.getDefaultInstance()) {
-          defaultValue_ =
-            io.littlehorse.common.proto.VariableValuePb.newBuilder(defaultValue_).mergeFrom(value).buildPartial();
-        } else {
-          defaultValue_ = value;
-        }
-        onChanged();
-      } else {
-        defaultValueBuilder_.mergeFrom(value);
-      }
-      bitField0_ |= 0x00000002;
-      return this;
-    }
-    /**
-     * <code>.lh_proto.VariableValuePb default_value = 2;</code>
-     */
-    public Builder clearDefaultValue() {
-      if (defaultValueBuilder_ == null) {
-        defaultValue_ = null;
-        onChanged();
-      } else {
-        defaultValueBuilder_.clear();
-      }
-      bitField0_ = (bitField0_ & ~0x00000002);
-      return this;
-    }
-    /**
-     * <code>.lh_proto.VariableValuePb default_value = 2;</code>
-     */
-    public io.littlehorse.common.proto.VariableValuePb.Builder getDefaultValueBuilder() {
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return getDefaultValueFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.lh_proto.VariableValuePb default_value = 2;</code>
-     */
-    public io.littlehorse.common.proto.VariableValuePbOrBuilder getDefaultValueOrBuilder() {
-      if (defaultValueBuilder_ != null) {
-        return defaultValueBuilder_.getMessageOrBuilder();
-      } else {
-        return defaultValue_ == null ?
-            io.littlehorse.common.proto.VariableValuePb.getDefaultInstance() : defaultValue_;
-      }
-    }
-    /**
-     * <code>.lh_proto.VariableValuePb default_value = 2;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.VariableValuePb, io.littlehorse.common.proto.VariableValuePb.Builder, io.littlehorse.common.proto.VariableValuePbOrBuilder> 
-        getDefaultValueFieldBuilder() {
-      if (defaultValueBuilder_ == null) {
-        defaultValueBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.VariableValuePb, io.littlehorse.common.proto.VariableValuePb.Builder, io.littlehorse.common.proto.VariableValuePbOrBuilder>(
-                getDefaultValue(),
-                getParentForChildren(),
-                isClean());
-        defaultValue_ = null;
-      }
-      return defaultValueBuilder_;
-    }
-
-    /**
-     * <code>string variable_name = 3;</code>
+     * <code>string variable_name = 2;</code>
      * @return The variableName.
      */
     @java.lang.Override
     public java.lang.String getVariableName() {
       java.lang.Object ref = "";
-      if (sourceCase_ == 3) {
+      if (sourceCase_ == 2) {
         ref = source_;
       }
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (sourceCase_ == 3) {
+        if (sourceCase_ == 2) {
           source_ = s;
         }
         return s;
@@ -967,21 +774,21 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string variable_name = 3;</code>
+     * <code>string variable_name = 2;</code>
      * @return The bytes for variableName.
      */
     @java.lang.Override
     public com.google.protobuf.ByteString
         getVariableNameBytes() {
       java.lang.Object ref = "";
-      if (sourceCase_ == 3) {
+      if (sourceCase_ == 2) {
         ref = source_;
       }
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        if (sourceCase_ == 3) {
+        if (sourceCase_ == 2) {
           source_ = b;
         }
         return b;
@@ -990,7 +797,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string variable_name = 3;</code>
+     * <code>string variable_name = 2;</code>
      * @param value The variableName to set.
      * @return This builder for chaining.
      */
@@ -999,17 +806,17 @@ private static final long serialVersionUID = 0L;
       if (value == null) {
     throw new NullPointerException();
   }
-  sourceCase_ = 3;
+  sourceCase_ = 2;
       source_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>string variable_name = 3;</code>
+     * <code>string variable_name = 2;</code>
      * @return This builder for chaining.
      */
     public Builder clearVariableName() {
-      if (sourceCase_ == 3) {
+      if (sourceCase_ == 2) {
         sourceCase_ = 0;
         source_ = null;
         onChanged();
@@ -1017,7 +824,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string variable_name = 3;</code>
+     * <code>string variable_name = 2;</code>
      * @param value The bytes for variableName to set.
      * @return This builder for chaining.
      */
@@ -1027,7 +834,7 @@ private static final long serialVersionUID = 0L;
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
-      sourceCase_ = 3;
+      sourceCase_ = 2;
       source_ = value;
       onChanged();
       return this;
@@ -1036,33 +843,33 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.VariableValuePb, io.littlehorse.common.proto.VariableValuePb.Builder, io.littlehorse.common.proto.VariableValuePbOrBuilder> literalValueBuilder_;
     /**
-     * <code>.lh_proto.VariableValuePb literal_value = 4;</code>
+     * <code>.lh_proto.VariableValuePb literal_value = 3;</code>
      * @return Whether the literalValue field is set.
      */
     @java.lang.Override
     public boolean hasLiteralValue() {
-      return sourceCase_ == 4;
+      return sourceCase_ == 3;
     }
     /**
-     * <code>.lh_proto.VariableValuePb literal_value = 4;</code>
+     * <code>.lh_proto.VariableValuePb literal_value = 3;</code>
      * @return The literalValue.
      */
     @java.lang.Override
     public io.littlehorse.common.proto.VariableValuePb getLiteralValue() {
       if (literalValueBuilder_ == null) {
-        if (sourceCase_ == 4) {
+        if (sourceCase_ == 3) {
           return (io.littlehorse.common.proto.VariableValuePb) source_;
         }
         return io.littlehorse.common.proto.VariableValuePb.getDefaultInstance();
       } else {
-        if (sourceCase_ == 4) {
+        if (sourceCase_ == 3) {
           return literalValueBuilder_.getMessage();
         }
         return io.littlehorse.common.proto.VariableValuePb.getDefaultInstance();
       }
     }
     /**
-     * <code>.lh_proto.VariableValuePb literal_value = 4;</code>
+     * <code>.lh_proto.VariableValuePb literal_value = 3;</code>
      */
     public Builder setLiteralValue(io.littlehorse.common.proto.VariableValuePb value) {
       if (literalValueBuilder_ == null) {
@@ -1074,11 +881,11 @@ private static final long serialVersionUID = 0L;
       } else {
         literalValueBuilder_.setMessage(value);
       }
-      sourceCase_ = 4;
+      sourceCase_ = 3;
       return this;
     }
     /**
-     * <code>.lh_proto.VariableValuePb literal_value = 4;</code>
+     * <code>.lh_proto.VariableValuePb literal_value = 3;</code>
      */
     public Builder setLiteralValue(
         io.littlehorse.common.proto.VariableValuePb.Builder builderForValue) {
@@ -1088,15 +895,15 @@ private static final long serialVersionUID = 0L;
       } else {
         literalValueBuilder_.setMessage(builderForValue.build());
       }
-      sourceCase_ = 4;
+      sourceCase_ = 3;
       return this;
     }
     /**
-     * <code>.lh_proto.VariableValuePb literal_value = 4;</code>
+     * <code>.lh_proto.VariableValuePb literal_value = 3;</code>
      */
     public Builder mergeLiteralValue(io.littlehorse.common.proto.VariableValuePb value) {
       if (literalValueBuilder_ == null) {
-        if (sourceCase_ == 4 &&
+        if (sourceCase_ == 3 &&
             source_ != io.littlehorse.common.proto.VariableValuePb.getDefaultInstance()) {
           source_ = io.littlehorse.common.proto.VariableValuePb.newBuilder((io.littlehorse.common.proto.VariableValuePb) source_)
               .mergeFrom(value).buildPartial();
@@ -1105,26 +912,26 @@ private static final long serialVersionUID = 0L;
         }
         onChanged();
       } else {
-        if (sourceCase_ == 4) {
+        if (sourceCase_ == 3) {
           literalValueBuilder_.mergeFrom(value);
         }
         literalValueBuilder_.setMessage(value);
       }
-      sourceCase_ = 4;
+      sourceCase_ = 3;
       return this;
     }
     /**
-     * <code>.lh_proto.VariableValuePb literal_value = 4;</code>
+     * <code>.lh_proto.VariableValuePb literal_value = 3;</code>
      */
     public Builder clearLiteralValue() {
       if (literalValueBuilder_ == null) {
-        if (sourceCase_ == 4) {
+        if (sourceCase_ == 3) {
           sourceCase_ = 0;
           source_ = null;
           onChanged();
         }
       } else {
-        if (sourceCase_ == 4) {
+        if (sourceCase_ == 3) {
           sourceCase_ = 0;
           source_ = null;
         }
@@ -1133,33 +940,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.VariableValuePb literal_value = 4;</code>
+     * <code>.lh_proto.VariableValuePb literal_value = 3;</code>
      */
     public io.littlehorse.common.proto.VariableValuePb.Builder getLiteralValueBuilder() {
       return getLiteralValueFieldBuilder().getBuilder();
     }
     /**
-     * <code>.lh_proto.VariableValuePb literal_value = 4;</code>
+     * <code>.lh_proto.VariableValuePb literal_value = 3;</code>
      */
     @java.lang.Override
     public io.littlehorse.common.proto.VariableValuePbOrBuilder getLiteralValueOrBuilder() {
-      if ((sourceCase_ == 4) && (literalValueBuilder_ != null)) {
+      if ((sourceCase_ == 3) && (literalValueBuilder_ != null)) {
         return literalValueBuilder_.getMessageOrBuilder();
       } else {
-        if (sourceCase_ == 4) {
+        if (sourceCase_ == 3) {
           return (io.littlehorse.common.proto.VariableValuePb) source_;
         }
         return io.littlehorse.common.proto.VariableValuePb.getDefaultInstance();
       }
     }
     /**
-     * <code>.lh_proto.VariableValuePb literal_value = 4;</code>
+     * <code>.lh_proto.VariableValuePb literal_value = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.VariableValuePb, io.littlehorse.common.proto.VariableValuePb.Builder, io.littlehorse.common.proto.VariableValuePbOrBuilder> 
         getLiteralValueFieldBuilder() {
       if (literalValueBuilder_ == null) {
-        if (!(sourceCase_ == 4)) {
+        if (!(sourceCase_ == 3)) {
           source_ = io.littlehorse.common.proto.VariableValuePb.getDefaultInstance();
         }
         literalValueBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
@@ -1169,7 +976,7 @@ private static final long serialVersionUID = 0L;
                 isClean());
         source_ = null;
       }
-      sourceCase_ = 4;
+      sourceCase_ = 3;
       onChanged();;
       return literalValueBuilder_;
     }

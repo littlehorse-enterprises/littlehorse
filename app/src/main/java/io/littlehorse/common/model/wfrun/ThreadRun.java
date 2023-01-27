@@ -716,15 +716,10 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             if (assn != null) {
                 val = assignVariable(assn);
             } else {
-                if (requiredVarDef.defaultValue == null) {
-                    throw new LHVarSubError(
-                        null,
-                        "Variable " +
-                        varName +
-                        " neither has default value nor assignment."
-                    );
-                }
-                val = requiredVarDef.defaultValue;
+                throw new LHVarSubError(
+                    null,
+                    "Variable " + varName + " is unassigned."
+                );
             }
             if (val.type != requiredVarDef.type) {
                 throw new LHVarSubError(
