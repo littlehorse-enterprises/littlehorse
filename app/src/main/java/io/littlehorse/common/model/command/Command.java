@@ -3,7 +3,10 @@ package io.littlehorse.common.model.command;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.command.subcommand.DeleteExternalEventDef;
+import io.littlehorse.common.model.command.subcommand.DeleteTaskDef;
 import io.littlehorse.common.model.command.subcommand.DeleteWfRun;
+import io.littlehorse.common.model.command.subcommand.DeleteWfSpec;
 import io.littlehorse.common.model.command.subcommand.PutExternalEvent;
 import io.littlehorse.common.model.command.subcommand.PutExternalEventDef;
 import io.littlehorse.common.model.command.subcommand.PutTaskDef;
@@ -38,6 +41,9 @@ public class Command extends LHSerializable<CommandPb> {
     public ResumeWfRun resumeWfRun;
     public SleepNodeMatured sleepNodeMatured;
     public DeleteWfRun deleteWfRun;
+    public DeleteWfSpec deleteWfSpec;
+    public DeleteTaskDef deleteTaskDef;
+    public DeleteExternalEventDef deleteExternalEventDef;
 
     public Class<CommandPb> getProtoBaseClass() {
         return CommandPb.class;
@@ -92,6 +98,15 @@ public class Command extends LHSerializable<CommandPb> {
                 break;
             case DELETE_WF_RUN:
                 out.setDeleteWfRun(deleteWfRun.toProto());
+                break;
+            case DELETE_EXTERNAL_EVENT_DEF:
+                out.setDeleteExternalEventDef(deleteExternalEventDef.toProto());
+                break;
+            case DELETE_TASK_DEF:
+                out.setDeleteTaskDef(deleteTaskDef.toProto());
+                break;
+            case DELETE_WF_SPEC:
+                out.setDeleteWfSpec(deleteWfSpec.toProto());
                 break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -148,7 +163,21 @@ public class Command extends LHSerializable<CommandPb> {
             case DELETE_WF_RUN:
                 deleteWfRun = DeleteWfRun.fromProto(p.getDeleteWfRunOrBuilder());
                 break;
+            case DELETE_EXTERNAL_EVENT_DEF:
+                deleteExternalEventDef =
+                    DeleteExternalEventDef.fromProto(
+                        p.getDeleteExternalEventDefOrBuilder()
+                    );
+                break;
+            case DELETE_TASK_DEF:
+                deleteTaskDef =
+                    DeleteTaskDef.fromProto(p.getDeleteTaskDefOrBuilder());
+                break;
+            case DELETE_WF_SPEC:
+                deleteWfSpec = DeleteWfSpec.fromProto(p.getDeleteWfSpecOrBuilder());
+                break;
             case COMMAND_NOT_SET:
+            default:
                 throw new RuntimeException("Not possible");
         }
     }
@@ -177,6 +206,12 @@ public class Command extends LHSerializable<CommandPb> {
                 return sleepNodeMatured;
             case DELETE_WF_RUN:
                 return deleteWfRun;
+            case DELETE_EXTERNAL_EVENT_DEF:
+                return deleteExternalEventDef;
+            case DELETE_TASK_DEF:
+                return deleteTaskDef;
+            case DELETE_WF_SPEC:
+                return deleteWfSpec;
             case COMMAND_NOT_SET:
         }
         throw new RuntimeException("Not possible");
@@ -217,6 +252,15 @@ public class Command extends LHSerializable<CommandPb> {
         } else if (cls.equals(DeleteWfRun.class)) {
             type = CommandCase.DELETE_WF_RUN;
             deleteWfRun = (DeleteWfRun) cmd;
+        } else if (cls.equals(DeleteExternalEventDef.class)) {
+            type = CommandCase.DELETE_EXTERNAL_EVENT_DEF;
+            deleteExternalEventDef = (DeleteExternalEventDef) cmd;
+        } else if (cls.equals(DeleteTaskDef.class)) {
+            type = CommandCase.DELETE_TASK_DEF;
+            deleteTaskDef = (DeleteTaskDef) cmd;
+        } else if (cls.equals(DeleteWfSpec.class)) {
+            type = CommandCase.DELETE_WF_SPEC;
+            deleteWfSpec = (DeleteWfSpec) cmd;
         } else {
             throw new RuntimeException("Unrecognized class: " + cls.getName());
         }

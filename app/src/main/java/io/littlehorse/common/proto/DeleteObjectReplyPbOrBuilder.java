@@ -3,8 +3,8 @@
 
 package io.littlehorse.common.proto;
 
-public interface DeleteWfRunReplyPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.DeleteWfRunReplyPb)
+public interface DeleteObjectReplyPbOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:lh_proto.DeleteObjectReplyPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**

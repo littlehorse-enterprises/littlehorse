@@ -1,7 +1,7 @@
 package io.littlehorse.common;
 
 import io.littlehorse.common.model.command.Command;
-import io.littlehorse.common.model.command.subcommandresponse.DeleteWfRunReply;
+import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
@@ -82,7 +82,13 @@ public interface LHDAO extends LHGlobalMetaStores {
 
     public void putExternalEventDef(ExternalEventDef eed);
 
-    public DeleteWfRunReply deleteWfRun(String wfRunId);
+    public DeleteObjectReply deleteWfRun(String wfRunId);
+
+    public DeleteObjectReply deleteTaskDef(String name, int version);
+
+    public DeleteObjectReply deleteWfSpec(String name, int version);
+
+    public DeleteObjectReply deleteExternalEventDef(String name, int version);
 
     /*
      * Clear any dirty cache if necessary

@@ -227,6 +227,48 @@ private static final long serialVersionUID = 0L;
             commandCase_ = 14;
             break;
           }
+          case 122: {
+            io.littlehorse.common.proto.DeleteWfSpecPb.Builder subBuilder = null;
+            if (commandCase_ == 15) {
+              subBuilder = ((io.littlehorse.common.proto.DeleteWfSpecPb) command_).toBuilder();
+            }
+            command_ =
+                input.readMessage(io.littlehorse.common.proto.DeleteWfSpecPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.common.proto.DeleteWfSpecPb) command_);
+              command_ = subBuilder.buildPartial();
+            }
+            commandCase_ = 15;
+            break;
+          }
+          case 130: {
+            io.littlehorse.common.proto.DeleteTaskDefPb.Builder subBuilder = null;
+            if (commandCase_ == 16) {
+              subBuilder = ((io.littlehorse.common.proto.DeleteTaskDefPb) command_).toBuilder();
+            }
+            command_ =
+                input.readMessage(io.littlehorse.common.proto.DeleteTaskDefPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.common.proto.DeleteTaskDefPb) command_);
+              command_ = subBuilder.buildPartial();
+            }
+            commandCase_ = 16;
+            break;
+          }
+          case 138: {
+            io.littlehorse.common.proto.DeleteExternalEventDefPb.Builder subBuilder = null;
+            if (commandCase_ == 17) {
+              subBuilder = ((io.littlehorse.common.proto.DeleteExternalEventDefPb) command_).toBuilder();
+            }
+            command_ =
+                input.readMessage(io.littlehorse.common.proto.DeleteExternalEventDefPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.common.proto.DeleteExternalEventDefPb) command_);
+              command_ = subBuilder.buildPartial();
+            }
+            commandCase_ = 17;
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -276,6 +318,9 @@ private static final long serialVersionUID = 0L;
     RESUME_WF_RUN(12),
     SLEEP_NODE_MATURED(13),
     DELETE_WF_RUN(14),
+    DELETE_WF_SPEC(15),
+    DELETE_TASK_DEF(16),
+    DELETE_EXTERNAL_EVENT_DEF(17),
     COMMAND_NOT_SET(0);
     private final int value;
     private CommandCase(int value) {
@@ -304,6 +349,9 @@ private static final long serialVersionUID = 0L;
         case 12: return RESUME_WF_RUN;
         case 13: return SLEEP_NODE_MATURED;
         case 14: return DELETE_WF_RUN;
+        case 15: return DELETE_WF_SPEC;
+        case 16: return DELETE_TASK_DEF;
+        case 17: return DELETE_EXTERNAL_EVENT_DEF;
         case 0: return COMMAND_NOT_SET;
         default: return null;
       }
@@ -732,6 +780,99 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.DeleteWfRunPb.getDefaultInstance();
   }
 
+  public static final int DELETE_WF_SPEC_FIELD_NUMBER = 15;
+  /**
+   * <code>.lh_proto.DeleteWfSpecPb delete_wf_spec = 15;</code>
+   * @return Whether the deleteWfSpec field is set.
+   */
+  @java.lang.Override
+  public boolean hasDeleteWfSpec() {
+    return commandCase_ == 15;
+  }
+  /**
+   * <code>.lh_proto.DeleteWfSpecPb delete_wf_spec = 15;</code>
+   * @return The deleteWfSpec.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.DeleteWfSpecPb getDeleteWfSpec() {
+    if (commandCase_ == 15) {
+       return (io.littlehorse.common.proto.DeleteWfSpecPb) command_;
+    }
+    return io.littlehorse.common.proto.DeleteWfSpecPb.getDefaultInstance();
+  }
+  /**
+   * <code>.lh_proto.DeleteWfSpecPb delete_wf_spec = 15;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.DeleteWfSpecPbOrBuilder getDeleteWfSpecOrBuilder() {
+    if (commandCase_ == 15) {
+       return (io.littlehorse.common.proto.DeleteWfSpecPb) command_;
+    }
+    return io.littlehorse.common.proto.DeleteWfSpecPb.getDefaultInstance();
+  }
+
+  public static final int DELETE_TASK_DEF_FIELD_NUMBER = 16;
+  /**
+   * <code>.lh_proto.DeleteTaskDefPb delete_task_def = 16;</code>
+   * @return Whether the deleteTaskDef field is set.
+   */
+  @java.lang.Override
+  public boolean hasDeleteTaskDef() {
+    return commandCase_ == 16;
+  }
+  /**
+   * <code>.lh_proto.DeleteTaskDefPb delete_task_def = 16;</code>
+   * @return The deleteTaskDef.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.DeleteTaskDefPb getDeleteTaskDef() {
+    if (commandCase_ == 16) {
+       return (io.littlehorse.common.proto.DeleteTaskDefPb) command_;
+    }
+    return io.littlehorse.common.proto.DeleteTaskDefPb.getDefaultInstance();
+  }
+  /**
+   * <code>.lh_proto.DeleteTaskDefPb delete_task_def = 16;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.DeleteTaskDefPbOrBuilder getDeleteTaskDefOrBuilder() {
+    if (commandCase_ == 16) {
+       return (io.littlehorse.common.proto.DeleteTaskDefPb) command_;
+    }
+    return io.littlehorse.common.proto.DeleteTaskDefPb.getDefaultInstance();
+  }
+
+  public static final int DELETE_EXTERNAL_EVENT_DEF_FIELD_NUMBER = 17;
+  /**
+   * <code>.lh_proto.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+   * @return Whether the deleteExternalEventDef field is set.
+   */
+  @java.lang.Override
+  public boolean hasDeleteExternalEventDef() {
+    return commandCase_ == 17;
+  }
+  /**
+   * <code>.lh_proto.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+   * @return The deleteExternalEventDef.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.DeleteExternalEventDefPb getDeleteExternalEventDef() {
+    if (commandCase_ == 17) {
+       return (io.littlehorse.common.proto.DeleteExternalEventDefPb) command_;
+    }
+    return io.littlehorse.common.proto.DeleteExternalEventDefPb.getDefaultInstance();
+  }
+  /**
+   * <code>.lh_proto.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.DeleteExternalEventDefPbOrBuilder getDeleteExternalEventDefOrBuilder() {
+    if (commandCase_ == 17) {
+       return (io.littlehorse.common.proto.DeleteExternalEventDefPb) command_;
+    }
+    return io.littlehorse.common.proto.DeleteExternalEventDefPb.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -784,6 +925,15 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 14) {
       output.writeMessage(14, (io.littlehorse.common.proto.DeleteWfRunPb) command_);
+    }
+    if (commandCase_ == 15) {
+      output.writeMessage(15, (io.littlehorse.common.proto.DeleteWfSpecPb) command_);
+    }
+    if (commandCase_ == 16) {
+      output.writeMessage(16, (io.littlehorse.common.proto.DeleteTaskDefPb) command_);
+    }
+    if (commandCase_ == 17) {
+      output.writeMessage(17, (io.littlehorse.common.proto.DeleteExternalEventDefPb) command_);
     }
     unknownFields.writeTo(output);
   }
@@ -844,6 +994,18 @@ private static final long serialVersionUID = 0L;
     if (commandCase_ == 14) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(14, (io.littlehorse.common.proto.DeleteWfRunPb) command_);
+    }
+    if (commandCase_ == 15) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(15, (io.littlehorse.common.proto.DeleteWfSpecPb) command_);
+    }
+    if (commandCase_ == 16) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(16, (io.littlehorse.common.proto.DeleteTaskDefPb) command_);
+    }
+    if (commandCase_ == 17) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(17, (io.littlehorse.common.proto.DeleteExternalEventDefPb) command_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -916,6 +1078,18 @@ private static final long serialVersionUID = 0L;
         if (!getDeleteWfRun()
             .equals(other.getDeleteWfRun())) return false;
         break;
+      case 15:
+        if (!getDeleteWfSpec()
+            .equals(other.getDeleteWfSpec())) return false;
+        break;
+      case 16:
+        if (!getDeleteTaskDef()
+            .equals(other.getDeleteTaskDef())) return false;
+        break;
+      case 17:
+        if (!getDeleteExternalEventDef()
+            .equals(other.getDeleteExternalEventDef())) return false;
+        break;
       case 0:
       default:
     }
@@ -982,6 +1156,18 @@ private static final long serialVersionUID = 0L;
       case 14:
         hash = (37 * hash) + DELETE_WF_RUN_FIELD_NUMBER;
         hash = (53 * hash) + getDeleteWfRun().hashCode();
+        break;
+      case 15:
+        hash = (37 * hash) + DELETE_WF_SPEC_FIELD_NUMBER;
+        hash = (53 * hash) + getDeleteWfSpec().hashCode();
+        break;
+      case 16:
+        hash = (37 * hash) + DELETE_TASK_DEF_FIELD_NUMBER;
+        hash = (53 * hash) + getDeleteTaskDef().hashCode();
+        break;
+      case 17:
+        hash = (37 * hash) + DELETE_EXTERNAL_EVENT_DEF_FIELD_NUMBER;
+        hash = (53 * hash) + getDeleteExternalEventDef().hashCode();
         break;
       case 0:
       default:
@@ -1247,6 +1433,27 @@ private static final long serialVersionUID = 0L;
           result.command_ = deleteWfRunBuilder_.build();
         }
       }
+      if (commandCase_ == 15) {
+        if (deleteWfSpecBuilder_ == null) {
+          result.command_ = command_;
+        } else {
+          result.command_ = deleteWfSpecBuilder_.build();
+        }
+      }
+      if (commandCase_ == 16) {
+        if (deleteTaskDefBuilder_ == null) {
+          result.command_ = command_;
+        } else {
+          result.command_ = deleteTaskDefBuilder_.build();
+        }
+      }
+      if (commandCase_ == 17) {
+        if (deleteExternalEventDefBuilder_ == null) {
+          result.command_ = command_;
+        } else {
+          result.command_ = deleteExternalEventDefBuilder_.build();
+        }
+      }
       result.bitField0_ = to_bitField0_;
       result.commandCase_ = commandCase_;
       onBuilt();
@@ -1348,6 +1555,18 @@ private static final long serialVersionUID = 0L;
         }
         case DELETE_WF_RUN: {
           mergeDeleteWfRun(other.getDeleteWfRun());
+          break;
+        }
+        case DELETE_WF_SPEC: {
+          mergeDeleteWfSpec(other.getDeleteWfSpec());
+          break;
+        }
+        case DELETE_TASK_DEF: {
+          mergeDeleteTaskDef(other.getDeleteTaskDef());
+          break;
+        }
+        case DELETE_EXTERNAL_EVENT_DEF: {
+          mergeDeleteExternalEventDef(other.getDeleteExternalEventDef());
           break;
         }
         case COMMAND_NOT_SET: {
@@ -3150,6 +3369,429 @@ private static final long serialVersionUID = 0L;
       commandCase_ = 14;
       onChanged();;
       return deleteWfRunBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.DeleteWfSpecPb, io.littlehorse.common.proto.DeleteWfSpecPb.Builder, io.littlehorse.common.proto.DeleteWfSpecPbOrBuilder> deleteWfSpecBuilder_;
+    /**
+     * <code>.lh_proto.DeleteWfSpecPb delete_wf_spec = 15;</code>
+     * @return Whether the deleteWfSpec field is set.
+     */
+    @java.lang.Override
+    public boolean hasDeleteWfSpec() {
+      return commandCase_ == 15;
+    }
+    /**
+     * <code>.lh_proto.DeleteWfSpecPb delete_wf_spec = 15;</code>
+     * @return The deleteWfSpec.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.DeleteWfSpecPb getDeleteWfSpec() {
+      if (deleteWfSpecBuilder_ == null) {
+        if (commandCase_ == 15) {
+          return (io.littlehorse.common.proto.DeleteWfSpecPb) command_;
+        }
+        return io.littlehorse.common.proto.DeleteWfSpecPb.getDefaultInstance();
+      } else {
+        if (commandCase_ == 15) {
+          return deleteWfSpecBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.DeleteWfSpecPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.DeleteWfSpecPb delete_wf_spec = 15;</code>
+     */
+    public Builder setDeleteWfSpec(io.littlehorse.common.proto.DeleteWfSpecPb value) {
+      if (deleteWfSpecBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+        onChanged();
+      } else {
+        deleteWfSpecBuilder_.setMessage(value);
+      }
+      commandCase_ = 15;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.DeleteWfSpecPb delete_wf_spec = 15;</code>
+     */
+    public Builder setDeleteWfSpec(
+        io.littlehorse.common.proto.DeleteWfSpecPb.Builder builderForValue) {
+      if (deleteWfSpecBuilder_ == null) {
+        command_ = builderForValue.build();
+        onChanged();
+      } else {
+        deleteWfSpecBuilder_.setMessage(builderForValue.build());
+      }
+      commandCase_ = 15;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.DeleteWfSpecPb delete_wf_spec = 15;</code>
+     */
+    public Builder mergeDeleteWfSpec(io.littlehorse.common.proto.DeleteWfSpecPb value) {
+      if (deleteWfSpecBuilder_ == null) {
+        if (commandCase_ == 15 &&
+            command_ != io.littlehorse.common.proto.DeleteWfSpecPb.getDefaultInstance()) {
+          command_ = io.littlehorse.common.proto.DeleteWfSpecPb.newBuilder((io.littlehorse.common.proto.DeleteWfSpecPb) command_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          command_ = value;
+        }
+        onChanged();
+      } else {
+        if (commandCase_ == 15) {
+          deleteWfSpecBuilder_.mergeFrom(value);
+        }
+        deleteWfSpecBuilder_.setMessage(value);
+      }
+      commandCase_ = 15;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.DeleteWfSpecPb delete_wf_spec = 15;</code>
+     */
+    public Builder clearDeleteWfSpec() {
+      if (deleteWfSpecBuilder_ == null) {
+        if (commandCase_ == 15) {
+          commandCase_ = 0;
+          command_ = null;
+          onChanged();
+        }
+      } else {
+        if (commandCase_ == 15) {
+          commandCase_ = 0;
+          command_ = null;
+        }
+        deleteWfSpecBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.lh_proto.DeleteWfSpecPb delete_wf_spec = 15;</code>
+     */
+    public io.littlehorse.common.proto.DeleteWfSpecPb.Builder getDeleteWfSpecBuilder() {
+      return getDeleteWfSpecFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.DeleteWfSpecPb delete_wf_spec = 15;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.DeleteWfSpecPbOrBuilder getDeleteWfSpecOrBuilder() {
+      if ((commandCase_ == 15) && (deleteWfSpecBuilder_ != null)) {
+        return deleteWfSpecBuilder_.getMessageOrBuilder();
+      } else {
+        if (commandCase_ == 15) {
+          return (io.littlehorse.common.proto.DeleteWfSpecPb) command_;
+        }
+        return io.littlehorse.common.proto.DeleteWfSpecPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.DeleteWfSpecPb delete_wf_spec = 15;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.DeleteWfSpecPb, io.littlehorse.common.proto.DeleteWfSpecPb.Builder, io.littlehorse.common.proto.DeleteWfSpecPbOrBuilder> 
+        getDeleteWfSpecFieldBuilder() {
+      if (deleteWfSpecBuilder_ == null) {
+        if (!(commandCase_ == 15)) {
+          command_ = io.littlehorse.common.proto.DeleteWfSpecPb.getDefaultInstance();
+        }
+        deleteWfSpecBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.DeleteWfSpecPb, io.littlehorse.common.proto.DeleteWfSpecPb.Builder, io.littlehorse.common.proto.DeleteWfSpecPbOrBuilder>(
+                (io.littlehorse.common.proto.DeleteWfSpecPb) command_,
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      commandCase_ = 15;
+      onChanged();;
+      return deleteWfSpecBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.DeleteTaskDefPb, io.littlehorse.common.proto.DeleteTaskDefPb.Builder, io.littlehorse.common.proto.DeleteTaskDefPbOrBuilder> deleteTaskDefBuilder_;
+    /**
+     * <code>.lh_proto.DeleteTaskDefPb delete_task_def = 16;</code>
+     * @return Whether the deleteTaskDef field is set.
+     */
+    @java.lang.Override
+    public boolean hasDeleteTaskDef() {
+      return commandCase_ == 16;
+    }
+    /**
+     * <code>.lh_proto.DeleteTaskDefPb delete_task_def = 16;</code>
+     * @return The deleteTaskDef.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.DeleteTaskDefPb getDeleteTaskDef() {
+      if (deleteTaskDefBuilder_ == null) {
+        if (commandCase_ == 16) {
+          return (io.littlehorse.common.proto.DeleteTaskDefPb) command_;
+        }
+        return io.littlehorse.common.proto.DeleteTaskDefPb.getDefaultInstance();
+      } else {
+        if (commandCase_ == 16) {
+          return deleteTaskDefBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.DeleteTaskDefPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.DeleteTaskDefPb delete_task_def = 16;</code>
+     */
+    public Builder setDeleteTaskDef(io.littlehorse.common.proto.DeleteTaskDefPb value) {
+      if (deleteTaskDefBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+        onChanged();
+      } else {
+        deleteTaskDefBuilder_.setMessage(value);
+      }
+      commandCase_ = 16;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.DeleteTaskDefPb delete_task_def = 16;</code>
+     */
+    public Builder setDeleteTaskDef(
+        io.littlehorse.common.proto.DeleteTaskDefPb.Builder builderForValue) {
+      if (deleteTaskDefBuilder_ == null) {
+        command_ = builderForValue.build();
+        onChanged();
+      } else {
+        deleteTaskDefBuilder_.setMessage(builderForValue.build());
+      }
+      commandCase_ = 16;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.DeleteTaskDefPb delete_task_def = 16;</code>
+     */
+    public Builder mergeDeleteTaskDef(io.littlehorse.common.proto.DeleteTaskDefPb value) {
+      if (deleteTaskDefBuilder_ == null) {
+        if (commandCase_ == 16 &&
+            command_ != io.littlehorse.common.proto.DeleteTaskDefPb.getDefaultInstance()) {
+          command_ = io.littlehorse.common.proto.DeleteTaskDefPb.newBuilder((io.littlehorse.common.proto.DeleteTaskDefPb) command_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          command_ = value;
+        }
+        onChanged();
+      } else {
+        if (commandCase_ == 16) {
+          deleteTaskDefBuilder_.mergeFrom(value);
+        }
+        deleteTaskDefBuilder_.setMessage(value);
+      }
+      commandCase_ = 16;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.DeleteTaskDefPb delete_task_def = 16;</code>
+     */
+    public Builder clearDeleteTaskDef() {
+      if (deleteTaskDefBuilder_ == null) {
+        if (commandCase_ == 16) {
+          commandCase_ = 0;
+          command_ = null;
+          onChanged();
+        }
+      } else {
+        if (commandCase_ == 16) {
+          commandCase_ = 0;
+          command_ = null;
+        }
+        deleteTaskDefBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.lh_proto.DeleteTaskDefPb delete_task_def = 16;</code>
+     */
+    public io.littlehorse.common.proto.DeleteTaskDefPb.Builder getDeleteTaskDefBuilder() {
+      return getDeleteTaskDefFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.DeleteTaskDefPb delete_task_def = 16;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.DeleteTaskDefPbOrBuilder getDeleteTaskDefOrBuilder() {
+      if ((commandCase_ == 16) && (deleteTaskDefBuilder_ != null)) {
+        return deleteTaskDefBuilder_.getMessageOrBuilder();
+      } else {
+        if (commandCase_ == 16) {
+          return (io.littlehorse.common.proto.DeleteTaskDefPb) command_;
+        }
+        return io.littlehorse.common.proto.DeleteTaskDefPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.DeleteTaskDefPb delete_task_def = 16;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.DeleteTaskDefPb, io.littlehorse.common.proto.DeleteTaskDefPb.Builder, io.littlehorse.common.proto.DeleteTaskDefPbOrBuilder> 
+        getDeleteTaskDefFieldBuilder() {
+      if (deleteTaskDefBuilder_ == null) {
+        if (!(commandCase_ == 16)) {
+          command_ = io.littlehorse.common.proto.DeleteTaskDefPb.getDefaultInstance();
+        }
+        deleteTaskDefBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.DeleteTaskDefPb, io.littlehorse.common.proto.DeleteTaskDefPb.Builder, io.littlehorse.common.proto.DeleteTaskDefPbOrBuilder>(
+                (io.littlehorse.common.proto.DeleteTaskDefPb) command_,
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      commandCase_ = 16;
+      onChanged();;
+      return deleteTaskDefBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.DeleteExternalEventDefPb, io.littlehorse.common.proto.DeleteExternalEventDefPb.Builder, io.littlehorse.common.proto.DeleteExternalEventDefPbOrBuilder> deleteExternalEventDefBuilder_;
+    /**
+     * <code>.lh_proto.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+     * @return Whether the deleteExternalEventDef field is set.
+     */
+    @java.lang.Override
+    public boolean hasDeleteExternalEventDef() {
+      return commandCase_ == 17;
+    }
+    /**
+     * <code>.lh_proto.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+     * @return The deleteExternalEventDef.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.DeleteExternalEventDefPb getDeleteExternalEventDef() {
+      if (deleteExternalEventDefBuilder_ == null) {
+        if (commandCase_ == 17) {
+          return (io.littlehorse.common.proto.DeleteExternalEventDefPb) command_;
+        }
+        return io.littlehorse.common.proto.DeleteExternalEventDefPb.getDefaultInstance();
+      } else {
+        if (commandCase_ == 17) {
+          return deleteExternalEventDefBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.DeleteExternalEventDefPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+     */
+    public Builder setDeleteExternalEventDef(io.littlehorse.common.proto.DeleteExternalEventDefPb value) {
+      if (deleteExternalEventDefBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+        onChanged();
+      } else {
+        deleteExternalEventDefBuilder_.setMessage(value);
+      }
+      commandCase_ = 17;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+     */
+    public Builder setDeleteExternalEventDef(
+        io.littlehorse.common.proto.DeleteExternalEventDefPb.Builder builderForValue) {
+      if (deleteExternalEventDefBuilder_ == null) {
+        command_ = builderForValue.build();
+        onChanged();
+      } else {
+        deleteExternalEventDefBuilder_.setMessage(builderForValue.build());
+      }
+      commandCase_ = 17;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+     */
+    public Builder mergeDeleteExternalEventDef(io.littlehorse.common.proto.DeleteExternalEventDefPb value) {
+      if (deleteExternalEventDefBuilder_ == null) {
+        if (commandCase_ == 17 &&
+            command_ != io.littlehorse.common.proto.DeleteExternalEventDefPb.getDefaultInstance()) {
+          command_ = io.littlehorse.common.proto.DeleteExternalEventDefPb.newBuilder((io.littlehorse.common.proto.DeleteExternalEventDefPb) command_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          command_ = value;
+        }
+        onChanged();
+      } else {
+        if (commandCase_ == 17) {
+          deleteExternalEventDefBuilder_.mergeFrom(value);
+        }
+        deleteExternalEventDefBuilder_.setMessage(value);
+      }
+      commandCase_ = 17;
+      return this;
+    }
+    /**
+     * <code>.lh_proto.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+     */
+    public Builder clearDeleteExternalEventDef() {
+      if (deleteExternalEventDefBuilder_ == null) {
+        if (commandCase_ == 17) {
+          commandCase_ = 0;
+          command_ = null;
+          onChanged();
+        }
+      } else {
+        if (commandCase_ == 17) {
+          commandCase_ = 0;
+          command_ = null;
+        }
+        deleteExternalEventDefBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.lh_proto.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+     */
+    public io.littlehorse.common.proto.DeleteExternalEventDefPb.Builder getDeleteExternalEventDefBuilder() {
+      return getDeleteExternalEventDefFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.lh_proto.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.DeleteExternalEventDefPbOrBuilder getDeleteExternalEventDefOrBuilder() {
+      if ((commandCase_ == 17) && (deleteExternalEventDefBuilder_ != null)) {
+        return deleteExternalEventDefBuilder_.getMessageOrBuilder();
+      } else {
+        if (commandCase_ == 17) {
+          return (io.littlehorse.common.proto.DeleteExternalEventDefPb) command_;
+        }
+        return io.littlehorse.common.proto.DeleteExternalEventDefPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.lh_proto.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.DeleteExternalEventDefPb, io.littlehorse.common.proto.DeleteExternalEventDefPb.Builder, io.littlehorse.common.proto.DeleteExternalEventDefPbOrBuilder> 
+        getDeleteExternalEventDefFieldBuilder() {
+      if (deleteExternalEventDefBuilder_ == null) {
+        if (!(commandCase_ == 17)) {
+          command_ = io.littlehorse.common.proto.DeleteExternalEventDefPb.getDefaultInstance();
+        }
+        deleteExternalEventDefBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.DeleteExternalEventDefPb, io.littlehorse.common.proto.DeleteExternalEventDefPb.Builder, io.littlehorse.common.proto.DeleteExternalEventDefPbOrBuilder>(
+                (io.littlehorse.common.proto.DeleteExternalEventDefPb) command_,
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      commandCase_ = 17;
+      onChanged();;
+      return deleteExternalEventDefBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

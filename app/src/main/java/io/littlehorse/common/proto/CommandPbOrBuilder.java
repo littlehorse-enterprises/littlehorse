@@ -204,5 +204,50 @@ public interface CommandPbOrBuilder extends
    */
   io.littlehorse.common.proto.DeleteWfRunPbOrBuilder getDeleteWfRunOrBuilder();
 
+  /**
+   * <code>.lh_proto.DeleteWfSpecPb delete_wf_spec = 15;</code>
+   * @return Whether the deleteWfSpec field is set.
+   */
+  boolean hasDeleteWfSpec();
+  /**
+   * <code>.lh_proto.DeleteWfSpecPb delete_wf_spec = 15;</code>
+   * @return The deleteWfSpec.
+   */
+  io.littlehorse.common.proto.DeleteWfSpecPb getDeleteWfSpec();
+  /**
+   * <code>.lh_proto.DeleteWfSpecPb delete_wf_spec = 15;</code>
+   */
+  io.littlehorse.common.proto.DeleteWfSpecPbOrBuilder getDeleteWfSpecOrBuilder();
+
+  /**
+   * <code>.lh_proto.DeleteTaskDefPb delete_task_def = 16;</code>
+   * @return Whether the deleteTaskDef field is set.
+   */
+  boolean hasDeleteTaskDef();
+  /**
+   * <code>.lh_proto.DeleteTaskDefPb delete_task_def = 16;</code>
+   * @return The deleteTaskDef.
+   */
+  io.littlehorse.common.proto.DeleteTaskDefPb getDeleteTaskDef();
+  /**
+   * <code>.lh_proto.DeleteTaskDefPb delete_task_def = 16;</code>
+   */
+  io.littlehorse.common.proto.DeleteTaskDefPbOrBuilder getDeleteTaskDefOrBuilder();
+
+  /**
+   * <code>.lh_proto.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+   * @return Whether the deleteExternalEventDef field is set.
+   */
+  boolean hasDeleteExternalEventDef();
+  /**
+   * <code>.lh_proto.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+   * @return The deleteExternalEventDef.
+   */
+  io.littlehorse.common.proto.DeleteExternalEventDefPb getDeleteExternalEventDef();
+  /**
+   * <code>.lh_proto.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+   */
+  io.littlehorse.common.proto.DeleteExternalEventDefPbOrBuilder getDeleteExternalEventDefOrBuilder();
+
   public io.littlehorse.common.proto.CommandPb.CommandCase getCommandCase();
 }

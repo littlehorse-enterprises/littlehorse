@@ -8,7 +8,7 @@ import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.CommandResult;
-import io.littlehorse.common.model.command.subcommandresponse.DeleteWfRunReply;
+import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
@@ -437,8 +437,8 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     }
 
     @Override
-    public DeleteWfRunReply deleteWfRun(String wfRunId) {
-        DeleteWfRunReply out = new DeleteWfRunReply();
+    public DeleteObjectReply deleteWfRun(String wfRunId) {
+        DeleteObjectReply out = new DeleteObjectReply();
         WfRun wfRun = getWfRun(wfRunId);
         if (wfRun == null) {
             out.code = LHResponseCodePb.NOT_FOUND_ERROR;
@@ -452,6 +452,48 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
                 deleteAllChildren(wfRun);
                 out.code = LHResponseCodePb.OK;
             }
+        }
+        return out;
+    }
+
+    @Override
+    public DeleteObjectReply deleteTaskDef(String name, int version) {
+        TaskDef toDelete = getTaskDef(name, version);
+        DeleteObjectReply out = new DeleteObjectReply();
+        if (toDelete == null) {
+            out.code = LHResponseCodePb.NOT_FOUND_ERROR;
+            out.message = "Couldn't find object with provided ID.";
+        } else {
+            taskDefPuts.put(toDelete.getObjectId(), null);
+            out.code = LHResponseCodePb.OK;
+        }
+        return out;
+    }
+
+    @Override
+    public DeleteObjectReply deleteWfSpec(String name, int version) {
+        WfSpec toDelete = getWfSpec(name, version);
+        DeleteObjectReply out = new DeleteObjectReply();
+        if (toDelete == null) {
+            out.code = LHResponseCodePb.NOT_FOUND_ERROR;
+            out.message = "Couldn't find object with provided ID.";
+        } else {
+            wfSpecPuts.put(toDelete.getObjectId(), null);
+            out.code = LHResponseCodePb.OK;
+        }
+        return out;
+    }
+
+    @Override
+    public DeleteObjectReply deleteExternalEventDef(String name, int version) {
+        ExternalEventDef toDelete = getExternalEventDef(name, version);
+        DeleteObjectReply out = new DeleteObjectReply();
+        if (toDelete == null) {
+            out.code = LHResponseCodePb.NOT_FOUND_ERROR;
+            out.message = "Couldn't find object with provided ID.";
+        } else {
+            extEvtDefPuts.put(toDelete.getObjectId(), null);
+            out.code = LHResponseCodePb.OK;
         }
         return out;
     }

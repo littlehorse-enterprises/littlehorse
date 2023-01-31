@@ -11,7 +11,10 @@ import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.SubCommand;
+import io.littlehorse.common.model.command.subcommand.DeleteExternalEventDef;
+import io.littlehorse.common.model.command.subcommand.DeleteTaskDef;
 import io.littlehorse.common.model.command.subcommand.DeleteWfRun;
+import io.littlehorse.common.model.command.subcommand.DeleteWfSpec;
 import io.littlehorse.common.model.command.subcommand.PutExternalEvent;
 import io.littlehorse.common.model.command.subcommand.PutExternalEventDef;
 import io.littlehorse.common.model.command.subcommand.PutTaskDef;
@@ -31,8 +34,11 @@ import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.CentralStoreQueryReplyPb;
 import io.littlehorse.common.proto.CommandPb.CommandCase;
+import io.littlehorse.common.proto.DeleteExternalEventDefPb;
+import io.littlehorse.common.proto.DeleteObjectReplyPb;
+import io.littlehorse.common.proto.DeleteTaskDefPb;
 import io.littlehorse.common.proto.DeleteWfRunPb;
-import io.littlehorse.common.proto.DeleteWfRunReplyPb;
+import io.littlehorse.common.proto.DeleteWfSpecPb;
 import io.littlehorse.common.proto.GetExternalEventDefPb;
 import io.littlehorse.common.proto.GetExternalEventDefReplyPb;
 import io.littlehorse.common.proto.GetExternalEventPb;
@@ -499,9 +505,38 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     @Override
     public void deleteWfRun(
         DeleteWfRunPb req,
-        StreamObserver<DeleteWfRunReplyPb> ctx
+        StreamObserver<DeleteObjectReplyPb> ctx
     ) {
-        processCommand(req, ctx, DeleteWfRun.class, DeleteWfRunReplyPb.class);
+        processCommand(req, ctx, DeleteWfRun.class, DeleteObjectReplyPb.class);
+    }
+
+    @Override
+    public void deleteWfSpec(
+        DeleteWfSpecPb req,
+        StreamObserver<DeleteObjectReplyPb> ctx
+    ) {
+        processCommand(req, ctx, DeleteWfSpec.class, DeleteObjectReplyPb.class);
+    }
+
+    @Override
+    public void deleteTaskDef(
+        DeleteTaskDefPb req,
+        StreamObserver<DeleteObjectReplyPb> ctx
+    ) {
+        processCommand(req, ctx, DeleteTaskDef.class, DeleteObjectReplyPb.class);
+    }
+
+    @Override
+    public void deleteExternalEventDef(
+        DeleteExternalEventDefPb req,
+        StreamObserver<DeleteObjectReplyPb> ctx
+    ) {
+        processCommand(
+            req,
+            ctx,
+            DeleteExternalEventDef.class,
+            DeleteObjectReplyPb.class
+        );
     }
 
     @Override

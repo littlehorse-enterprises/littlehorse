@@ -39,7 +39,7 @@ public class ExternalEventDef extends GETable<ExternalEventDefPbOrBuilder> {
     }
 
     public static String getSubKey(String name, int version) {
-        return LHUtil.getCompositeId(name, String.valueOf(version));
+        return LHUtil.getCompositeId(name, LHUtil.toLHDbVersionFormat(version));
     }
 
     public String getPartitionKey() {

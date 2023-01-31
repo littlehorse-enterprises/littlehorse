@@ -257,7 +257,7 @@ message ResumeWfRunReplyPb {
     optional string message = 2;
 }
 
-message DeleteWfRunReplyPb {
+message DeleteObjectReplyPb {
     LHResponseCodePb code = 1;
     optional string message = 2;
 }
@@ -314,7 +314,10 @@ service LHPublicApi {
 
     rpc StopWfRun(StopWfRunPb) returns (StopWfRunReplyPb) {}
     rpc ResumeWfRun(ResumeWfRunPb) returns (ResumeWfRunReplyPb) {}
-    rpc DeleteWfRun(DeleteWfRunPb) returns (DeleteWfRunReplyPb) {}
+    rpc DeleteWfRun(DeleteWfRunPb) returns (DeleteObjectReplyPb) {}
+    rpc DeleteTaskDef(DeleteTaskDefPb) returns (DeleteObjectReplyPb) {}
+    rpc DeleteWfSpec(DeleteWfSpecPb) returns (DeleteObjectReplyPb) {}
+    rpc DeleteExternalEventDef(DeleteExternalEventDefPb) returns (DeleteObjectReplyPb) {}
 
     rpc HealthCheck(HealthCheckPb) returns (HealthCheckReplyPb) {}
     rpc GetMetrics(GetMetricsRequestPb) returns (GetMetricsReplyPb) {}

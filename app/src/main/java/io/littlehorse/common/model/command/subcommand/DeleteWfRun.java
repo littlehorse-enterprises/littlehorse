@@ -4,7 +4,7 @@ import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
-import io.littlehorse.common.model.command.subcommandresponse.DeleteWfRunReply;
+import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
 import io.littlehorse.common.proto.DeleteWfRunPb;
 import io.littlehorse.common.proto.DeleteWfRunPbOrBuilder;
 
@@ -30,7 +30,7 @@ public class DeleteWfRun extends SubCommand<DeleteWfRunPb> {
         return wfRunId;
     }
 
-    public DeleteWfRunReply process(LHDAO dao, LHConfig config) {
+    public DeleteObjectReply process(LHDAO dao, LHConfig config) {
         return dao.deleteWfRun(wfRunId);
     }
 
