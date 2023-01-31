@@ -72,6 +72,7 @@ import io.littlehorse.common.proto.ResumeWfRunPb;
 import io.littlehorse.common.proto.ResumeWfRunReplyPb;
 import io.littlehorse.common.proto.RunWfPb;
 import io.littlehorse.common.proto.RunWfReplyPb;
+import io.littlehorse.common.proto.SearchExternalEventDefPb;
 import io.littlehorse.common.proto.SearchNodeRunPb;
 import io.littlehorse.common.proto.SearchReplyPb;
 import io.littlehorse.common.proto.SearchTaskDefPb;
@@ -88,6 +89,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streamsimpl.BackendInternalComms;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.searchutils.LHPublicSearch;
+import io.littlehorse.server.streamsimpl.searchutils.publicrequests.SearchExternalEventDef;
 import io.littlehorse.server.streamsimpl.searchutils.publicrequests.SearchNodeRun;
 import io.littlehorse.server.streamsimpl.searchutils.publicrequests.SearchTaskDef;
 import io.littlehorse.server.streamsimpl.searchutils.publicrequests.SearchVariable;
@@ -435,6 +437,14 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     @Override
     public void searchWfSpec(SearchWfSpecPb req, StreamObserver<SearchReplyPb> ctx) {
         handleSearch(SearchWfSpec.fromProto(req), ctx);
+    }
+
+    @Override
+    public void searchExternalEventDef(
+        SearchExternalEventDefPb req,
+        StreamObserver<SearchReplyPb> ctx
+    ) {
+        handleSearch(SearchExternalEventDef.fromProto(req), ctx);
     }
 
     // EMPLOYEE_TODO: this is a synchronous call. Make it asynchronous.

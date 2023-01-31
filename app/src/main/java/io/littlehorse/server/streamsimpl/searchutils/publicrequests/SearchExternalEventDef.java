@@ -5,27 +5,27 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GETableClassEnumPb;
 import io.littlehorse.common.proto.LHInternalSearchPb.PrefixCase;
-import io.littlehorse.common.proto.SearchTaskDefPb;
-import io.littlehorse.common.proto.SearchTaskDefPbOrBuilder;
+import io.littlehorse.common.proto.SearchExternalEventDefPb;
+import io.littlehorse.common.proto.SearchExternalEventDefPbOrBuilder;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streamsimpl.searchutils.LHInternalSearch;
 import io.littlehorse.server.streamsimpl.searchutils.LHPublicSearch;
 
-public class SearchTaskDef extends LHPublicSearch<SearchTaskDefPb> {
+public class SearchExternalEventDef extends LHPublicSearch<SearchExternalEventDefPb> {
 
     public String name;
 
-    public Class<SearchTaskDefPb> getProtoBaseClass() {
-        return SearchTaskDefPb.class;
+    public Class<SearchExternalEventDefPb> getProtoBaseClass() {
+        return SearchExternalEventDefPb.class;
     }
 
     public GETableClassEnumPb getObjectType() {
-        return GETableClassEnumPb.TASK_DEF;
+        return GETableClassEnumPb.EXTERNAL_EVENT_DEF;
     }
 
     public void initFrom(MessageOrBuilder proto) {
-        SearchTaskDefPbOrBuilder p = (SearchTaskDefPbOrBuilder) proto;
+        SearchExternalEventDefPbOrBuilder p = (SearchExternalEventDefPbOrBuilder) proto;
         if (p.hasLimit()) limit = p.getLimit();
         if (p.hasBookmark()) {
             try {
@@ -39,8 +39,8 @@ public class SearchTaskDef extends LHPublicSearch<SearchTaskDefPb> {
         name = p.getName();
     }
 
-    public SearchTaskDefPb.Builder toProto() {
-        SearchTaskDefPb.Builder out = SearchTaskDefPb.newBuilder();
+    public SearchExternalEventDefPb.Builder toProto() {
+        SearchExternalEventDefPb.Builder out = SearchExternalEventDefPb.newBuilder();
         if (bookmark != null) {
             out.setBookmark(bookmark.toByteString());
         }
@@ -52,8 +52,10 @@ public class SearchTaskDef extends LHPublicSearch<SearchTaskDefPb> {
         return out;
     }
 
-    public static SearchTaskDef fromProto(SearchTaskDefPbOrBuilder proto) {
-        SearchTaskDef out = new SearchTaskDef();
+    public static SearchExternalEventDef fromProto(
+        SearchExternalEventDefPbOrBuilder proto
+    ) {
+        SearchExternalEventDef out = new SearchExternalEventDef();
         out.initFrom(proto);
         return out;
     }
@@ -62,11 +64,11 @@ public class SearchTaskDef extends LHPublicSearch<SearchTaskDefPb> {
         LHInternalSearch out = new LHInternalSearch();
         out.prefixType = PrefixCase.OBJECT_ID_PREFIX;
         out.partitionKey = LHConstants.META_PARTITION_KEY;
+        System.out.print(name);
         if (name.equals("")) {
-            // Because we want to search all
+            // that means we want to search all ExternalEventDefs
             out.objectIdPrefix = "";
         } else {
-            // Want to make sure we only search if name matches.
             out.objectIdPrefix = name + "/";
         }
         return out;

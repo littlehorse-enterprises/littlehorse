@@ -55,7 +55,7 @@ public class WfSpec extends GETable<WfSpecPbOrBuilder> {
     }
 
     public static String getSubKey(String name, int version) {
-        return name + "/" + LHUtil.toLHDbVersionFormat(version);
+        return LHUtil.getCompositeId(name, LHUtil.toLHDbVersionFormat(version));
     }
 
     public static Pair<String, Integer> parseSubKey(String subKey) {

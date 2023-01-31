@@ -204,6 +204,12 @@ message SearchWfSpecPb {
     optional string name = 3;
 }
 
+message SearchExternalEventDefPb {
+    optional bytes bookmark = 1;
+    optional int32 limit = 2;
+    optional string name = 3;
+}
+
 message RegisterTaskWorkerPb {
     string client_id = 1;
     string task_def_name = 2;
@@ -300,6 +306,7 @@ service LHPublicApi {
     rpc SearchVariable(SearchVariablePb) returns (SearchReplyPb) {}
     rpc SearchTaskDef(SearchTaskDefPb) returns (SearchReplyPb) {}
     rpc SearchWfSpec(SearchWfSpecPb) returns (SearchReplyPb) {}
+    rpc SearchExternalEventDef(SearchExternalEventDefPb) returns (SearchReplyPb) {}
 
     rpc RegisterTaskWorker(RegisterTaskWorkerPb) returns (RegisterTaskWorkerReplyPb) {}
     rpc PollTask(stream PollTaskPb) returns (stream PollTaskReplyPb) {}

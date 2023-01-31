@@ -62,7 +62,13 @@ public class SearchWfSpec extends LHPublicSearch<SearchWfSpecPb> {
         LHInternalSearch out = new LHInternalSearch();
         out.prefixType = PrefixCase.OBJECT_ID_PREFIX;
         out.partitionKey = LHConstants.META_PARTITION_KEY;
-        out.objectIdPrefix = name + "/";
+        System.out.print(name);
+        if (name.equals("")) {
+            // that means we want to search all wfSpecs
+            out.objectIdPrefix = "";
+        } else {
+            out.objectIdPrefix = name + "/";
+        }
         return out;
     }
 }

@@ -38,7 +38,7 @@ public class TaskDef extends GETable<TaskDefPbOrBuilder> {
     }
 
     public static String getSubKey(String name, int version) {
-        return LHUtil.getCompositeId(name, String.valueOf(version));
+        return LHUtil.getCompositeId(name, LHUtil.toLHDbVersionFormat(version));
     }
 
     public static String getFullPrefixByName(String name) {

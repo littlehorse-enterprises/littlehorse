@@ -542,6 +542,37 @@ public final class LHPublicApiGrpc {
     return getSearchWfSpecMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.SearchExternalEventDefPb,
+      io.littlehorse.common.proto.SearchReplyPb> getSearchExternalEventDefMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "SearchExternalEventDef",
+      requestType = io.littlehorse.common.proto.SearchExternalEventDefPb.class,
+      responseType = io.littlehorse.common.proto.SearchReplyPb.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.SearchExternalEventDefPb,
+      io.littlehorse.common.proto.SearchReplyPb> getSearchExternalEventDefMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.common.proto.SearchExternalEventDefPb, io.littlehorse.common.proto.SearchReplyPb> getSearchExternalEventDefMethod;
+    if ((getSearchExternalEventDefMethod = LHPublicApiGrpc.getSearchExternalEventDefMethod) == null) {
+      synchronized (LHPublicApiGrpc.class) {
+        if ((getSearchExternalEventDefMethod = LHPublicApiGrpc.getSearchExternalEventDefMethod) == null) {
+          LHPublicApiGrpc.getSearchExternalEventDefMethod = getSearchExternalEventDefMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.SearchExternalEventDefPb, io.littlehorse.common.proto.SearchReplyPb>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SearchExternalEventDef"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.SearchExternalEventDefPb.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.common.proto.SearchReplyPb.getDefaultInstance()))
+              .setSchemaDescriptor(new LHPublicApiMethodDescriptorSupplier("SearchExternalEventDef"))
+              .build();
+        }
+      }
+    }
+    return getSearchExternalEventDefMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.RegisterTaskWorkerPb,
       io.littlehorse.common.proto.RegisterTaskWorkerReplyPb> getRegisterTaskWorkerMethod;
 
@@ -959,6 +990,13 @@ public final class LHPublicApiGrpc {
 
     /**
      */
+    public void searchExternalEventDef(io.littlehorse.common.proto.SearchExternalEventDefPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.SearchReplyPb> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSearchExternalEventDefMethod(), responseObserver);
+    }
+
+    /**
+     */
     public void registerTaskWorker(io.littlehorse.common.proto.RegisterTaskWorkerPb request,
         io.grpc.stub.StreamObserver<io.littlehorse.common.proto.RegisterTaskWorkerReplyPb> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getRegisterTaskWorkerMethod(), responseObserver);
@@ -1134,6 +1172,13 @@ public final class LHPublicApiGrpc {
                 io.littlehorse.common.proto.SearchWfSpecPb,
                 io.littlehorse.common.proto.SearchReplyPb>(
                   this, METHODID_SEARCH_WF_SPEC)))
+          .addMethod(
+            getSearchExternalEventDefMethod(),
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
+              new MethodHandlers<
+                io.littlehorse.common.proto.SearchExternalEventDefPb,
+                io.littlehorse.common.proto.SearchReplyPb>(
+                  this, METHODID_SEARCH_EXTERNAL_EVENT_DEF)))
           .addMethod(
             getRegisterTaskWorkerMethod(),
             io.grpc.stub.ServerCalls.asyncUnaryCall(
@@ -1346,6 +1391,14 @@ public final class LHPublicApiGrpc {
 
     /**
      */
+    public void searchExternalEventDef(io.littlehorse.common.proto.SearchExternalEventDefPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.SearchReplyPb> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getSearchExternalEventDefMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
     public void registerTaskWorker(io.littlehorse.common.proto.RegisterTaskWorkerPb request,
         io.grpc.stub.StreamObserver<io.littlehorse.common.proto.RegisterTaskWorkerReplyPb> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
@@ -1540,6 +1593,13 @@ public final class LHPublicApiGrpc {
     public io.littlehorse.common.proto.SearchReplyPb searchWfSpec(io.littlehorse.common.proto.SearchWfSpecPb request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getSearchWfSpecMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public io.littlehorse.common.proto.SearchReplyPb searchExternalEventDef(io.littlehorse.common.proto.SearchExternalEventDefPb request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchExternalEventDefMethod(), getCallOptions(), request);
     }
 
     /**
@@ -1744,6 +1804,14 @@ public final class LHPublicApiGrpc {
 
     /**
      */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.SearchReplyPb> searchExternalEventDef(
+        io.littlehorse.common.proto.SearchExternalEventDefPb request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getSearchExternalEventDefMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.RegisterTaskWorkerReplyPb> registerTaskWorker(
         io.littlehorse.common.proto.RegisterTaskWorkerPb request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
@@ -1816,14 +1884,15 @@ public final class LHPublicApiGrpc {
   private static final int METHODID_SEARCH_VARIABLE = 14;
   private static final int METHODID_SEARCH_TASK_DEF = 15;
   private static final int METHODID_SEARCH_WF_SPEC = 16;
-  private static final int METHODID_REGISTER_TASK_WORKER = 17;
-  private static final int METHODID_REPORT_TASK = 18;
-  private static final int METHODID_STOP_WF_RUN = 19;
-  private static final int METHODID_RESUME_WF_RUN = 20;
-  private static final int METHODID_DELETE_WF_RUN = 21;
-  private static final int METHODID_HEALTH_CHECK = 22;
-  private static final int METHODID_GET_METRICS = 23;
-  private static final int METHODID_POLL_TASK = 24;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 17;
+  private static final int METHODID_REGISTER_TASK_WORKER = 18;
+  private static final int METHODID_REPORT_TASK = 19;
+  private static final int METHODID_STOP_WF_RUN = 20;
+  private static final int METHODID_RESUME_WF_RUN = 21;
+  private static final int METHODID_DELETE_WF_RUN = 22;
+  private static final int METHODID_HEALTH_CHECK = 23;
+  private static final int METHODID_GET_METRICS = 24;
+  private static final int METHODID_POLL_TASK = 25;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -1908,6 +1977,10 @@ public final class LHPublicApiGrpc {
           break;
         case METHODID_SEARCH_WF_SPEC:
           serviceImpl.searchWfSpec((io.littlehorse.common.proto.SearchWfSpecPb) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.SearchReplyPb>) responseObserver);
+          break;
+        case METHODID_SEARCH_EXTERNAL_EVENT_DEF:
+          serviceImpl.searchExternalEventDef((io.littlehorse.common.proto.SearchExternalEventDefPb) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.SearchReplyPb>) responseObserver);
           break;
         case METHODID_REGISTER_TASK_WORKER:
@@ -2019,6 +2092,7 @@ public final class LHPublicApiGrpc {
               .addMethod(getSearchVariableMethod())
               .addMethod(getSearchTaskDefMethod())
               .addMethod(getSearchWfSpecMethod())
+              .addMethod(getSearchExternalEventDefMethod())
               .addMethod(getRegisterTaskWorkerMethod())
               .addMethod(getPollTaskMethod())
               .addMethod(getReportTaskMethod())
