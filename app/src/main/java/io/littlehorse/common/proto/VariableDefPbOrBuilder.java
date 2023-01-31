@@ -29,4 +29,10 @@ public interface VariableDefPbOrBuilder extends
    */
   com.google.protobuf.ByteString
       getNameBytes();
+
+  /**
+   * <code>bool required = 3;</code>
+   * @return The required.
+   */
+  boolean getRequired();
 }

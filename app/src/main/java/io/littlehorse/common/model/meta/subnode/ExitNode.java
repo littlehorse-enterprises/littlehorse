@@ -5,12 +5,10 @@ import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.meta.FailureDef;
-import io.littlehorse.common.model.meta.OutputSchema;
 import io.littlehorse.common.model.meta.SubNode;
 import io.littlehorse.common.model.wfrun.subnoderun.ExitRun;
 import io.littlehorse.common.proto.ExitNodePb;
 import io.littlehorse.common.proto.ExitNodePbOrBuilder;
-import io.littlehorse.common.proto.VariableTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import java.util.Date;
 import java.util.HashSet;
@@ -39,8 +37,6 @@ public class ExitNode extends SubNode<ExitNodePb> {
 
     public void validate(LHGlobalMetaStores stores, LHConfig config)
         throws LHValidationError {
-        node.outputSchema = new OutputSchema();
-        node.outputSchema.outputType = VariableTypePb.VOID;
         if (failureDef != null) failureDef.validate();
     }
 

@@ -39,7 +39,7 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
     public SleepNode sleepNode;
 
     public List<VariableMutation> variableMutations;
-    public OutputSchema outputSchema;
+    // public OutputSchema outputSchema;
 
     public List<FailureHandlerDef> failureHandlers;
 
@@ -50,9 +50,7 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
 
     @JsonIgnore
     public NodePb.Builder toProto() {
-        NodePb.Builder out = NodePb
-            .newBuilder()
-            .setOutputSchema(outputSchema.toProto());
+        NodePb.Builder out = NodePb.newBuilder();
 
         for (Edge o : outgoingEdges) {
             out.addOutgoingEdges(o.toProto());
@@ -101,7 +99,6 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
     public void initFrom(MessageOrBuilder p) {
         NodePbOrBuilder proto = (NodePbOrBuilder) p;
         type = proto.getNodeCase();
-        outputSchema = OutputSchema.fromProto(proto.getOutputSchemaOrBuilder());
 
         for (EdgePb epb : proto.getOutgoingEdgesList()) {
             Edge edge = Edge.fromProto(epb);
@@ -164,7 +161,6 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
     public Node() {
         outgoingEdges = new ArrayList<>();
         variableMutations = new ArrayList<>();
-        outputSchema = new OutputSchema();
         failureHandlers = new ArrayList<>();
     }
 

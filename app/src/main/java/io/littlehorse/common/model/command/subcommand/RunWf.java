@@ -9,6 +9,7 @@ import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.LHResponseCodePb;
+import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.proto.RunWfPb;
 import io.littlehorse.common.proto.RunWfPbOrBuilder;
 import io.littlehorse.common.proto.VariableValuePb;
@@ -89,7 +90,12 @@ public class RunWf extends SubCommand<RunWfPb> {
         newRun.advance(dao.getEventTime());
         dao.saveWfRun(newRun);
 
-        out.code = LHResponseCodePb.OK;
+        if (newRun.status == LHStatusPb.ERROR) {
+            out.code = LHResponseCodePb.BAD_REQUEST_ERROR;
+            out.message = newRun.threadRuns.get(0).errorMessage;
+        } else {
+            out.code = LHResponseCodePb.OK;
+        }
         return out;
     }
 

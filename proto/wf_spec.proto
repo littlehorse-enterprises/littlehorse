@@ -80,7 +80,6 @@ message SleepNodePb {
 message NodePb {
     repeated EdgePb outgoing_edges = 1;
     repeated VariableMutationPb variable_mutations = 2;
-    OutputSchemaPb output_schema = 3;
     repeated FailureHandlerDefPb failure_handlers = 4;
     oneof node {
         EntrypointNodePb entrypoint = 5;
@@ -138,6 +137,7 @@ message FailureDefPb {
 message VariableDefPb {
     VariableTypePb type = 1;
     string name = 2;
+    bool required = 3;
 }
 
 message InterruptDefPb {

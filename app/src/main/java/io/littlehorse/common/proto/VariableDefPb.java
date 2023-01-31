@@ -62,6 +62,11 @@ private static final long serialVersionUID = 0L;
             name_ = s;
             break;
           }
+          case 24: {
+
+            required_ = input.readBool();
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -151,6 +156,17 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int REQUIRED_FIELD_NUMBER = 3;
+  private boolean required_;
+  /**
+   * <code>bool required = 3;</code>
+   * @return The required.
+   */
+  @java.lang.Override
+  public boolean getRequired() {
+    return required_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -171,6 +187,9 @@ private static final long serialVersionUID = 0L;
     if (!getNameBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, name_);
     }
+    if (required_ != false) {
+      output.writeBool(3, required_);
+    }
     unknownFields.writeTo(output);
   }
 
@@ -186,6 +205,10 @@ private static final long serialVersionUID = 0L;
     }
     if (!getNameBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, name_);
+    }
+    if (required_ != false) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(3, required_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -205,6 +228,8 @@ private static final long serialVersionUID = 0L;
     if (type_ != other.type_) return false;
     if (!getName()
         .equals(other.getName())) return false;
+    if (getRequired()
+        != other.getRequired()) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -220,6 +245,9 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + type_;
     hash = (37 * hash) + NAME_FIELD_NUMBER;
     hash = (53 * hash) + getName().hashCode();
+    hash = (37 * hash) + REQUIRED_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+        getRequired());
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -357,6 +385,8 @@ private static final long serialVersionUID = 0L;
 
       name_ = "";
 
+      required_ = false;
+
       return this;
     }
 
@@ -385,6 +415,7 @@ private static final long serialVersionUID = 0L;
       io.littlehorse.common.proto.VariableDefPb result = new io.littlehorse.common.proto.VariableDefPb(this);
       result.type_ = type_;
       result.name_ = name_;
+      result.required_ = required_;
       onBuilt();
       return result;
     }
@@ -439,6 +470,9 @@ private static final long serialVersionUID = 0L;
       if (!other.getName().isEmpty()) {
         name_ = other.name_;
         onChanged();
+      }
+      if (other.getRequired() != false) {
+        setRequired(other.getRequired());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -595,6 +629,37 @@ private static final long serialVersionUID = 0L;
   checkByteStringIsUtf8(value);
       
       name_ = value;
+      onChanged();
+      return this;
+    }
+
+    private boolean required_ ;
+    /**
+     * <code>bool required = 3;</code>
+     * @return The required.
+     */
+    @java.lang.Override
+    public boolean getRequired() {
+      return required_;
+    }
+    /**
+     * <code>bool required = 3;</code>
+     * @param value The required to set.
+     * @return This builder for chaining.
+     */
+    public Builder setRequired(boolean value) {
+      
+      required_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>bool required = 3;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearRequired() {
+      
+      required_ = false;
       onChanged();
       return this;
     }

@@ -56,21 +56,6 @@ public interface NodePbOrBuilder extends
       int index);
 
   /**
-   * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
-   * @return Whether the outputSchema field is set.
-   */
-  boolean hasOutputSchema();
-  /**
-   * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
-   * @return The outputSchema.
-   */
-  io.littlehorse.common.proto.OutputSchemaPb getOutputSchema();
-  /**
-   * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
-   */
-  io.littlehorse.common.proto.OutputSchemaPbOrBuilder getOutputSchemaOrBuilder();
-
-  /**
    * <code>repeated .lh_proto.FailureHandlerDefPb failure_handlers = 4;</code>
    */
   java.util.List<io.littlehorse.common.proto.FailureHandlerDefPb> 

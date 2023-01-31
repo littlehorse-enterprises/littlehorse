@@ -70,19 +70,6 @@ private static final long serialVersionUID = 0L;
                 input.readMessage(io.littlehorse.common.proto.VariableMutationPb.parser(), extensionRegistry));
             break;
           }
-          case 26: {
-            io.littlehorse.common.proto.OutputSchemaPb.Builder subBuilder = null;
-            if (outputSchema_ != null) {
-              subBuilder = outputSchema_.toBuilder();
-            }
-            outputSchema_ = input.readMessage(io.littlehorse.common.proto.OutputSchemaPb.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom(outputSchema_);
-              outputSchema_ = subBuilder.buildPartial();
-            }
-
-            break;
-          }
           case 34: {
             if (!((mutable_bitField0_ & 0x00000004) != 0)) {
               failureHandlers_ = new java.util.ArrayList<io.littlehorse.common.proto.FailureHandlerDefPb>();
@@ -376,32 +363,6 @@ private static final long serialVersionUID = 0L;
   public io.littlehorse.common.proto.VariableMutationPbOrBuilder getVariableMutationsOrBuilder(
       int index) {
     return variableMutations_.get(index);
-  }
-
-  public static final int OUTPUT_SCHEMA_FIELD_NUMBER = 3;
-  private io.littlehorse.common.proto.OutputSchemaPb outputSchema_;
-  /**
-   * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
-   * @return Whether the outputSchema field is set.
-   */
-  @java.lang.Override
-  public boolean hasOutputSchema() {
-    return outputSchema_ != null;
-  }
-  /**
-   * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
-   * @return The outputSchema.
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.OutputSchemaPb getOutputSchema() {
-    return outputSchema_ == null ? io.littlehorse.common.proto.OutputSchemaPb.getDefaultInstance() : outputSchema_;
-  }
-  /**
-   * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.OutputSchemaPbOrBuilder getOutputSchemaOrBuilder() {
-    return getOutputSchema();
   }
 
   public static final int FAILURE_HANDLERS_FIELD_NUMBER = 4;
@@ -712,9 +673,6 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < variableMutations_.size(); i++) {
       output.writeMessage(2, variableMutations_.get(i));
     }
-    if (outputSchema_ != null) {
-      output.writeMessage(3, getOutputSchema());
-    }
     for (int i = 0; i < failureHandlers_.size(); i++) {
       output.writeMessage(4, failureHandlers_.get(i));
     }
@@ -758,10 +716,6 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < variableMutations_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, variableMutations_.get(i));
-    }
-    if (outputSchema_ != null) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, getOutputSchema());
     }
     for (int i = 0; i < failureHandlers_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
@@ -818,11 +772,6 @@ private static final long serialVersionUID = 0L;
         .equals(other.getOutgoingEdgesList())) return false;
     if (!getVariableMutationsList()
         .equals(other.getVariableMutationsList())) return false;
-    if (hasOutputSchema() != other.hasOutputSchema()) return false;
-    if (hasOutputSchema()) {
-      if (!getOutputSchema()
-          .equals(other.getOutputSchema())) return false;
-    }
     if (!getFailureHandlersList()
         .equals(other.getFailureHandlersList())) return false;
     if (!getNodeCase().equals(other.getNodeCase())) return false;
@@ -880,10 +829,6 @@ private static final long serialVersionUID = 0L;
     if (getVariableMutationsCount() > 0) {
       hash = (37 * hash) + VARIABLE_MUTATIONS_FIELD_NUMBER;
       hash = (53 * hash) + getVariableMutationsList().hashCode();
-    }
-    if (hasOutputSchema()) {
-      hash = (37 * hash) + OUTPUT_SCHEMA_FIELD_NUMBER;
-      hash = (53 * hash) + getOutputSchema().hashCode();
     }
     if (getFailureHandlersCount() > 0) {
       hash = (37 * hash) + FAILURE_HANDLERS_FIELD_NUMBER;
@@ -1073,12 +1018,6 @@ private static final long serialVersionUID = 0L;
       } else {
         variableMutationsBuilder_.clear();
       }
-      if (outputSchemaBuilder_ == null) {
-        outputSchema_ = null;
-      } else {
-        outputSchema_ = null;
-        outputSchemaBuilder_ = null;
-      }
       if (failureHandlersBuilder_ == null) {
         failureHandlers_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -1131,11 +1070,6 @@ private static final long serialVersionUID = 0L;
         result.variableMutations_ = variableMutations_;
       } else {
         result.variableMutations_ = variableMutationsBuilder_.build();
-      }
-      if (outputSchemaBuilder_ == null) {
-        result.outputSchema_ = outputSchema_;
-      } else {
-        result.outputSchema_ = outputSchemaBuilder_.build();
       }
       if (failureHandlersBuilder_ == null) {
         if (((bitField0_ & 0x00000004) != 0)) {
@@ -1302,9 +1236,6 @@ private static final long serialVersionUID = 0L;
             variableMutationsBuilder_.addAllMessages(other.variableMutations_);
           }
         }
-      }
-      if (other.hasOutputSchema()) {
-        mergeOutputSchema(other.getOutputSchema());
       }
       if (failureHandlersBuilder_ == null) {
         if (!other.failureHandlers_.isEmpty()) {
@@ -1892,125 +1823,6 @@ private static final long serialVersionUID = 0L;
         variableMutations_ = null;
       }
       return variableMutationsBuilder_;
-    }
-
-    private io.littlehorse.common.proto.OutputSchemaPb outputSchema_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.OutputSchemaPb, io.littlehorse.common.proto.OutputSchemaPb.Builder, io.littlehorse.common.proto.OutputSchemaPbOrBuilder> outputSchemaBuilder_;
-    /**
-     * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
-     * @return Whether the outputSchema field is set.
-     */
-    public boolean hasOutputSchema() {
-      return outputSchemaBuilder_ != null || outputSchema_ != null;
-    }
-    /**
-     * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
-     * @return The outputSchema.
-     */
-    public io.littlehorse.common.proto.OutputSchemaPb getOutputSchema() {
-      if (outputSchemaBuilder_ == null) {
-        return outputSchema_ == null ? io.littlehorse.common.proto.OutputSchemaPb.getDefaultInstance() : outputSchema_;
-      } else {
-        return outputSchemaBuilder_.getMessage();
-      }
-    }
-    /**
-     * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
-     */
-    public Builder setOutputSchema(io.littlehorse.common.proto.OutputSchemaPb value) {
-      if (outputSchemaBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        outputSchema_ = value;
-        onChanged();
-      } else {
-        outputSchemaBuilder_.setMessage(value);
-      }
-
-      return this;
-    }
-    /**
-     * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
-     */
-    public Builder setOutputSchema(
-        io.littlehorse.common.proto.OutputSchemaPb.Builder builderForValue) {
-      if (outputSchemaBuilder_ == null) {
-        outputSchema_ = builderForValue.build();
-        onChanged();
-      } else {
-        outputSchemaBuilder_.setMessage(builderForValue.build());
-      }
-
-      return this;
-    }
-    /**
-     * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
-     */
-    public Builder mergeOutputSchema(io.littlehorse.common.proto.OutputSchemaPb value) {
-      if (outputSchemaBuilder_ == null) {
-        if (outputSchema_ != null) {
-          outputSchema_ =
-            io.littlehorse.common.proto.OutputSchemaPb.newBuilder(outputSchema_).mergeFrom(value).buildPartial();
-        } else {
-          outputSchema_ = value;
-        }
-        onChanged();
-      } else {
-        outputSchemaBuilder_.mergeFrom(value);
-      }
-
-      return this;
-    }
-    /**
-     * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
-     */
-    public Builder clearOutputSchema() {
-      if (outputSchemaBuilder_ == null) {
-        outputSchema_ = null;
-        onChanged();
-      } else {
-        outputSchema_ = null;
-        outputSchemaBuilder_ = null;
-      }
-
-      return this;
-    }
-    /**
-     * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
-     */
-    public io.littlehorse.common.proto.OutputSchemaPb.Builder getOutputSchemaBuilder() {
-      
-      onChanged();
-      return getOutputSchemaFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
-     */
-    public io.littlehorse.common.proto.OutputSchemaPbOrBuilder getOutputSchemaOrBuilder() {
-      if (outputSchemaBuilder_ != null) {
-        return outputSchemaBuilder_.getMessageOrBuilder();
-      } else {
-        return outputSchema_ == null ?
-            io.littlehorse.common.proto.OutputSchemaPb.getDefaultInstance() : outputSchema_;
-      }
-    }
-    /**
-     * <code>.lh_proto.OutputSchemaPb output_schema = 3;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.OutputSchemaPb, io.littlehorse.common.proto.OutputSchemaPb.Builder, io.littlehorse.common.proto.OutputSchemaPbOrBuilder> 
-        getOutputSchemaFieldBuilder() {
-      if (outputSchemaBuilder_ == null) {
-        outputSchemaBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.OutputSchemaPb, io.littlehorse.common.proto.OutputSchemaPb.Builder, io.littlehorse.common.proto.OutputSchemaPbOrBuilder>(
-                getOutputSchema(),
-                getParentForChildren(),
-                isClean());
-        outputSchema_ = null;
-      }
-      return outputSchemaBuilder_;
     }
 
     private java.util.List<io.littlehorse.common.proto.FailureHandlerDefPb> failureHandlers_ =
