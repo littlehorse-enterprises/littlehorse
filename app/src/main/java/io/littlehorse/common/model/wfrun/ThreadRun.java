@@ -721,7 +721,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
                     "Variable " + varName + " is unassigned."
                 );
             }
-            if (val.type != requiredVarDef.type) {
+            if (val.type != requiredVarDef.type && val.type != VariableTypePb.NULL) {
                 throw new LHVarSubError(
                     null,
                     "Variable " +
@@ -787,7 +787,11 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
                 val = assn.rhsLiteralValue;
                 break;
             case VARIABLE_NAME:
-                val = getVariable(assn.rhsVariableName).value;
+                if (txnCache.containsKey(assn.rhsVariableName)) {
+                    val = txnCache.get(assn.rhsVariableName);
+                } else {
+                    val = getVariable(assn.rhsVariableName).value;
+                }
 
                 if (val == null) {
                     throw new LHVarSubError(

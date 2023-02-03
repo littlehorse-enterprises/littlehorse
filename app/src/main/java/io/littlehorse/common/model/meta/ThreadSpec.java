@@ -291,7 +291,7 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
                 );
             }
 
-            if (val.type != e.getValue().type) {
+            if (val.type != e.getValue().type && val.type != VariableTypePb.NULL) {
                 throw new LHValidationError(
                     null,
                     "Var " +

@@ -74,7 +74,7 @@ public class WaitThreadRun extends SubNodeRun<WaitThreadRunPb> {
 
         if (toWait.status == LHStatusPb.COMPLETED) {
             VariableValue out = new VariableValue();
-            out.type = VariableTypePb.VOID;
+            out.type = VariableTypePb.NULL;
             nodeRun.complete(out, time);
             return true;
         } else if (toWait.status == LHStatusPb.ERROR) {

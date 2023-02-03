@@ -81,7 +81,7 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
             case BYTES:
                 bytesVal = p.getBytes().toByteArray();
                 break;
-            case VOID:
+            case NULL:
                 // nothing to do
                 break;
             case UNRECOGNIZED:
@@ -160,7 +160,7 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
                     out.setBytes(ByteString.copyFrom(bytesVal));
                 }
                 break;
-            case VOID:
+            case NULL:
                 // nothing to do
                 break;
             case UNRECOGNIZED:
@@ -177,9 +177,26 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
         return out;
     }
 
-    public VariableValue operate(VariableMutationTypePb operation, VariableValue rhs)
-        throws LHVarSubError {
+    public VariableValue operate(
+        VariableMutationTypePb operation,
+        VariableValue rhs,
+        VariableTypePb thisType
+    ) throws LHVarSubError {
+        if (type != VariableTypePb.NULL) {
+            if (type != thisType) {
+                throw new LHVarSubError(
+                    null,
+                    "got unexpected variable type. Thought it was a " +
+                    thisType +
+                    " but is a " +
+                    type
+                );
+            }
+        }
+
         if (operation == VariableMutationTypePb.ASSIGN) {
+            if (type == VariableTypePb.NULL) return rhs.coerceToType(thisType);
+
             return rhs.coerceToType(type);
         } else if (operation == VariableMutationTypePb.ADD) {
             return add(rhs);
@@ -415,8 +432,8 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
     }
 
     public VariableValue coerceToType(VariableTypePb otherType) throws LHVarSubError {
-        if (type == VariableTypePb.VOID || otherType == VariableTypePb.VOID) {
-            throw new LHVarSubError(null, "Coercing to or from VOID not supported.");
+        if (type == VariableTypePb.NULL || otherType == VariableTypePb.NULL) {
+            throw new LHVarSubError(null, "Coercing to or from NULL not supported.");
         }
 
         if (otherType == VariableTypePb.INT) {
@@ -528,7 +545,7 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
     }
 
     public VariableValue() {
-        type = VariableTypePb.VOID;
+        type = VariableTypePb.NULL;
     }
 
     public VariableValue(long val) {
@@ -596,7 +613,7 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
             case JSON_ARR:
             case JSON_OBJ:
             case UNRECOGNIZED:
-            case VOID:
+            case NULL:
             default:
                 valuePair = null;
         }

@@ -17,7 +17,7 @@ enum VariableTypePb {
     STR = 4;
     INT = 5;
     BYTES = 6;
-    VOID = 7;
+    NULL = 7;
 }
 
 message VariableValuePb {

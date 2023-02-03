@@ -54,7 +54,7 @@ public final class Variable {
       "ame\030\001 \001(\t\022(\n\005value\030\002 \001(\0132\031.lh_proto.Vari" +
       "ableValuePb*i\n\016VariableTypePb\022\014\n\010JSON_OB" +
       "J\020\000\022\014\n\010JSON_ARR\020\001\022\n\n\006DOUBLE\020\002\022\010\n\004BOOL\020\003\022" +
-      "\007\n\003STR\020\004\022\007\n\003INT\020\005\022\t\n\005BYTES\020\006\022\010\n\004VOID\020\007B(" +
+      "\007\n\003STR\020\004\022\007\n\003INT\020\005\022\t\n\005BYTES\020\006\022\010\n\004NULL\020\007B(" +
       "\n\033io.littlehorse.common.protoP\001Z\007.;model" +
       "b\006proto3"
     };

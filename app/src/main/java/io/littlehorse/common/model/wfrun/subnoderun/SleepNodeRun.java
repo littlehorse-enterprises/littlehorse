@@ -90,7 +90,7 @@ public class SleepNodeRun extends SubNodeRun<SleepNodeRunPb> {
 
     public void processSleepNodeMatured(SleepNodeMatured evt) {
         VariableValue nullOutput = new VariableValue();
-        nullOutput.type = VariableTypePb.VOID;
+        nullOutput.type = VariableTypePb.NULL;
 
         // mark when we actually processed the completion, not when it was "supposed"
         // to come in. In cases where there's a large backlog of scheduler events,

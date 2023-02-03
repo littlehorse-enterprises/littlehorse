@@ -9,6 +9,7 @@ import io.littlehorse.common.proto.VariableMutationPb;
 import io.littlehorse.common.proto.VariableMutationPb.RhsValueCase;
 import io.littlehorse.common.proto.VariableMutationPbOrBuilder;
 import io.littlehorse.common.proto.VariableMutationTypePb;
+import io.littlehorse.common.proto.VariableTypePb;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -127,29 +128,30 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
 
     public void execute(
         ThreadRun thread,
-        Map<String, VariableValue> editedVars,
+        Map<String, VariableValue> txnCache,
         VariableValue nodeOutput
     ) throws LHVarSubError {
-        VariableValue lhsVal = getLhsValue(thread, editedVars);
-        VariableValue rhsVal = getRhsValue(thread, editedVars, nodeOutput);
+        VariableValue lhsVal = getLhsValue(thread, txnCache);
+        VariableValue rhsVal = getRhsValue(thread, txnCache, nodeOutput);
+        VariableTypePb lhsRealType = thread.getThreadSpec().getVarDef(lhsName).type;
 
         try {
             // NOTE Part 2: see below
             if (lhsJsonPath != null) {
                 VariableValue thingToPut = lhsVal
                     .jsonPath(lhsJsonPath)
-                    .operate(operation, rhsVal);
+                    .operate(operation, rhsVal, lhsRealType);
 
                 VariableValue currentLhs = getVarValFromThreadInTxn(
                     lhsName,
                     thread,
-                    editedVars
+                    txnCache
                 );
 
                 currentLhs.updateJsonViaJsonPath(lhsJsonPath, thingToPut.getVal());
-                editedVars.put(lhsName, currentLhs);
+                txnCache.put(lhsName, currentLhs);
             } else {
-                editedVars.put(lhsName, lhsVal.operate(operation, rhsVal));
+                txnCache.put(lhsName, lhsVal.operate(operation, rhsVal, lhsRealType));
             }
         } catch (LHVarSubError exn) {
             throw exn;
