@@ -96,6 +96,12 @@ public interface LHDAO extends LHGlobalMetaStores {
     public void abortChanges();
 
     /*
+     * Clear any dirty cache if necessary, BUT also mark any wfRun's that were
+     * in processing as ERROR and note an error message.
+     */
+    public void abortChangesAndMarkWfRunFailed(String message);
+
+    /*
      * Commit changes to the backing store.
      */
     public void commitChanges();

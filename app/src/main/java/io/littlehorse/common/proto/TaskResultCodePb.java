@@ -40,6 +40,10 @@ public enum TaskResultCodePb
    * <code>EXCEPTION_HANDLER_FAILED = 7;</code>
    */
   EXCEPTION_HANDLER_FAILED(7),
+  /**
+   * <code>INTERNAL_ERROR = 8;</code>
+   */
+  INTERNAL_ERROR(8),
   UNRECOGNIZED(-1),
   ;
 
@@ -75,6 +79,10 @@ public enum TaskResultCodePb
    * <code>EXCEPTION_HANDLER_FAILED = 7;</code>
    */
   public static final int EXCEPTION_HANDLER_FAILED_VALUE = 7;
+  /**
+   * <code>INTERNAL_ERROR = 8;</code>
+   */
+  public static final int INTERNAL_ERROR_VALUE = 8;
 
 
   public final int getNumber() {
@@ -109,6 +117,7 @@ public enum TaskResultCodePb
       case 5: return CHILD_FALIED;
       case 6: return INTERRUPT_HANDLER_FAILED;
       case 7: return EXCEPTION_HANDLER_FAILED;
+      case 8: return INTERNAL_ERROR;
       default: return null;
     }
   }

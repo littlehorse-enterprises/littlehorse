@@ -310,6 +310,7 @@ public class NodeRun extends GETable<NodeRunPb> {
     public void fail(Failure failure, Date time) {
         this.failures.add(failure);
         endTime = time;
+        status = LHStatusPb.ERROR;
         resultCode = failure.failureCode;
         errorMessage = failure.message;
         threadRun.fail(failure, time);

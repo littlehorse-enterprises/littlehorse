@@ -25,13 +25,14 @@ public final class Status {
     java.lang.String[] descriptorData = {
       "\n\014status.proto\022\010lh_proto*Z\n\nLHStatusPb\022\014" +
       "\n\010STARTING\020\000\022\013\n\007RUNNING\020\001\022\r\n\tCOMPLETED\020\002" +
-      "\022\013\n\007HALTING\020\003\022\n\n\006HALTED\020\004\022\t\n\005ERROR\020\005*\261\001\n" +
+      "\022\013\n\007HALTING\020\003\022\n\n\006HALTED\020\004\022\t\n\005ERROR\020\005*\305\001\n" +
       "\020TaskResultCodePb\022\013\n\007SUCCESS\020\000\022\013\n\007TIMEOU" +
       "T\020\001\022\n\n\006FAILED\020\002\022\021\n\rVAR_SUB_ERROR\020\003\022\026\n\022VA" +
       "R_MUTATION_ERROR\020\004\022\020\n\014CHILD_FALIED\020\005\022\034\n\030" +
       "INTERRUPT_HANDLER_FAILED\020\006\022\034\n\030EXCEPTION_" +
-      "HANDLER_FAILED\020\007B(\n\033io.littlehorse.commo" +
-      "n.protoP\001Z\007.;modelb\006proto3"
+      "HANDLER_FAILED\020\007\022\022\n\016INTERNAL_ERROR\020\010B(\n\033" +
+      "io.littlehorse.common.protoP\001Z\007.;modelb\006" +
+      "proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

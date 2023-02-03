@@ -2,6 +2,7 @@ package io.littlehorse.server.streamsimpl.coreprocessors;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.GETable;
@@ -13,12 +14,14 @@ import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
+import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.LHResponseCodePb;
+import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.KafkaStreamsServerImpl;
@@ -428,6 +431,29 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         // The contract for this is to cancel any changes. Nothing gets written
         // to rocksdb until commitChanges() successfully returns; therefore,
         // all we have to do is clear the things we were gonna write.
+        clearThingsToWrite();
+    }
+
+    @Override
+    public void abortChangesAndMarkWfRunFailed(String message) {
+        for (Map.Entry<String, WfRun> e : wfRunPuts.entrySet()) {
+            WfRun affected = e.getValue();
+            if (e != null) {
+                Failure failure = new Failure(
+                    TaskResultCodePb.INTERNAL_ERROR,
+                    "Unknown internal error while processing: " + message,
+                    LHConstants.INTERNAL_ERROR
+                );
+                NodeRun currentNodeRun = affected.threadRuns
+                    .get(0)
+                    .getCurrentNodeRun();
+                currentNodeRun.fail(failure, new Date());
+
+                saveOrDeleteGETableFlush(e.getKey(), affected, WfRun.class);
+                saveOrDeleteGETableFlush(e.getKey(), currentNodeRun, NodeRun.class);
+            }
+        }
+
         clearThingsToWrite();
     }
 

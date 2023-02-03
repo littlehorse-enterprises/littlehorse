@@ -56,6 +56,7 @@ public class LHConstants {
     public static final String TASK_FAILURE = "TASK_FAILURE";
     public static final String VAR_ERROR = "VAR_ERROR";
     public static final String TASK_ERROR = "TASK_ERROR";
+    public static final String INTERNAL_ERROR = "INTERNAL_ERROR";
     public static final Set<String> RESERVED_EXCEPTION_NAMES = new HashSet<>(
         Arrays.asList(
             CHILD_FAILURE,
@@ -64,7 +65,8 @@ public class LHConstants {
             TASK_FAILURE,
             TIMEOUT,
             VAR_ERROR,
-            TASK_ERROR
+            TASK_ERROR,
+            INTERNAL_ERROR
         )
     );
 

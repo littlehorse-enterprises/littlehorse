@@ -60,9 +60,9 @@ public class CommandProcessor
             }
         } catch (Exception exn) {
             exn.printStackTrace();
-            dao.abortChanges();
+            dao.abortChangesAndMarkWfRunFailed(exn.getMessage());
             // Should we have a DLQ? I don't think that makes sense...the internals
-            // of a database like Postgres don't have a DQL for their WAL.
+            // of a database like Postgres don't have a DLQ for their WAL.
         }
     }
 }

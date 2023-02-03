@@ -241,9 +241,9 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
                 } else {
                     nodeRun.fail(
                         new Failure(
-                            TaskResultCodePb.TIMEOUT,
+                            TaskResultCodePb.FAILED,
                             "Task Failed: " + ce.resultCode,
-                            LHConstants.TIMEOUT,
+                            LHConstants.TASK_FAILURE,
                             ce.stderr
                         ),
                         ce.time
