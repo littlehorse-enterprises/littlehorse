@@ -100,9 +100,6 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
         if (lhsVar == null) {
             lhsVar = thread.getVariable(this.lhsName).value;
         }
-        if (lhsJsonPath != null) {
-            throw new RuntimeException("JsonPath not supported yet");
-        }
         return lhsVar.getCopy();
     }
 
@@ -137,10 +134,27 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
         VariableValue rhsVal = getRhsValue(thread, editedVars, nodeOutput);
 
         try {
-            editedVars.put(lhsName, lhsVal.operate(operation, rhsVal));
+            // NOTE Part 2: see below
+            if (lhsJsonPath != null) {
+                VariableValue thingToPut = lhsVal
+                    .jsonPath(lhsJsonPath)
+                    .operate(operation, rhsVal);
+
+                VariableValue currentLhs = getVarValFromThreadInTxn(
+                    lhsName,
+                    thread,
+                    editedVars
+                );
+
+                currentLhs.updateJsonViaJsonPath(lhsJsonPath, thingToPut.getVal());
+                editedVars.put(lhsName, currentLhs);
+            } else {
+                editedVars.put(lhsName, lhsVal.operate(operation, rhsVal));
+            }
         } catch (LHVarSubError exn) {
             throw exn;
         } catch (Exception exn) {
+            exn.printStackTrace();
             throw new LHVarSubError(
                 exn,
                 "Caught unexpected error when mutating variables: " + exn.getMessage()

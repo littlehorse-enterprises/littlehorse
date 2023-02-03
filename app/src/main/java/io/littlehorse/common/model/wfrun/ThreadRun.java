@@ -746,7 +746,18 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         // then we flush the contents of the Map to the Variables.
         Map<String, VariableValue> varCache = new HashMap<>();
         for (VariableMutation mut : node.variableMutations) {
-            mut.execute(this, varCache, nodeOutput);
+            try {
+                mut.execute(this, varCache, nodeOutput);
+            } catch (LHVarSubError exn) {
+                exn.printStackTrace();
+                exn.addPrefix(
+                    "Mutating variable " +
+                    mut.lhsName +
+                    " with operation " +
+                    mut.operation
+                );
+                throw exn;
+            }
         }
 
         // If we got this far without a LHVarSubError, then we can safely save all

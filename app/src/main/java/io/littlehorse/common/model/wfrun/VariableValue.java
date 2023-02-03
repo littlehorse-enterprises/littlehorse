@@ -89,6 +89,46 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
         }
     }
 
+    private String getJsonString() throws LHVarSubError {
+        if (type == VariableTypePb.JSON_ARR) {
+            return toProto().getJsonArr();
+        } else if (type == VariableTypePb.JSON_OBJ) {
+            return toProto().getJsonObj();
+        } else {
+            throw new RuntimeException(
+                "This is a bug: Variable is of type " +
+                type +
+                " but asked for json str from that variable."
+            );
+        }
+    }
+
+    public void updateJsonViaJsonPath(String jsonPath, Object toPut)
+        throws LHVarSubError {
+        String jsonString = getJsonString();
+        String newJsonString;
+        try {
+            newJsonString =
+                JsonPath.parse(jsonString).set(jsonPath, toPut).jsonString();
+        } catch (Exception jsonExn) {
+            throw new LHVarSubError(
+                jsonExn,
+                "Failed updating jsonPath " +
+                jsonPath +
+                " on object " +
+                jsonString +
+                ": " +
+                jsonExn.getMessage()
+            );
+        }
+
+        if (type == VariableTypePb.JSON_ARR) {
+            jsonArrVal = LHUtil.strToJsonArr(newJsonString);
+        } else if (type == VariableTypePb.JSON_OBJ) {
+            jsonObjVal = LHUtil.strToJsonObj(newJsonString);
+        }
+    }
+
     public VariableValuePb.Builder toProto() {
         VariableValuePb.Builder out = VariableValuePb.newBuilder();
         out.setType(type);
