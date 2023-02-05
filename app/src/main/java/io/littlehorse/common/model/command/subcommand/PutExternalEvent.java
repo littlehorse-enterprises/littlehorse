@@ -2,17 +2,22 @@ package io.littlehorse.common.model.command.subcommand;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.PutExternalEventReply;
 import io.littlehorse.common.model.meta.ExternalEventDef;
+import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
+import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.LHResponseCodePb;
 import io.littlehorse.common.proto.PutExternalEventPb;
 import io.littlehorse.common.proto.PutExternalEventPbOrBuilder;
+import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.util.LHUtil;
+import java.util.Date;
 
 public class PutExternalEvent extends SubCommand<PutExternalEventPb> {
 
@@ -73,9 +78,31 @@ public class PutExternalEvent extends SubCommand<PutExternalEventPb> {
 
         WfRun wfRun = dao.getWfRun(wfRunId);
         if (wfRun != null) {
-            wfRun.processExternalEvent(evt);
+            WfSpec spec = dao.getWfSpec(wfRun.wfSpecName, wfRun.wfSpecVersion);
+            if (spec == null) {
+                wfRun.threadRuns
+                    .get(0)
+                    .fail(
+                        new Failure(
+                            TaskResultCodePb.INTERNAL_ERROR,
+                            "Appears wfSpec was deleted",
+                            LHConstants.INTERNAL_ERROR
+                        ),
+                        new Date()
+                    );
+                out.code = LHResponseCodePb.NOT_FOUND_ERROR;
+                out.message = "Apparently WfSpec was deleted!";
+            } else {
+                wfRun.wfSpec = spec;
+                wfRun.cmdDao = dao;
+                wfRun.processExternalEvent(evt);
+                out.code = LHResponseCodePb.OK;
+            }
             dao.saveWfRun(wfRun);
             dao.saveExternalEvent(evt);
+        } else {
+            // it's a pre-emptive event.
+            out.code = LHResponseCodePb.OK;
         }
 
         out.result = evt;

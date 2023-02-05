@@ -321,6 +321,12 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
             externalEventDefName
         );
 
+        for (String extEvtId : extEvtPuts.keySet()) {
+            if (extEvtId.startsWith(extEvtPrefix)) {
+                return extEvtPuts.get(extEvtId);
+            }
+        }
+
         // TODO: This is O(N) for number of events correlated with the WfRun.
         // Generally that will only be a small number, but there could be weird
         // use-cases where this could take a long time (if there's 1000 events or
@@ -405,7 +411,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
             return wfRunPuts.get(id);
         }
         WfRun out = localStore.get(id, WfRun.class);
-        wfRunPuts.put(id, out);
+        if (out != null) wfRunPuts.put(id, out);
         return out;
     }
 

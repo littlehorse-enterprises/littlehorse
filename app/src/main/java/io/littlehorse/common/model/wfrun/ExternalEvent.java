@@ -16,7 +16,7 @@ public class ExternalEvent extends GETable<ExternalEventPb> {
 
     public String wfRunId;
     public String externalEventDefName;
-    public Date createdAt;
+    private Date createdAt;
     public VariableValue content;
     public Integer threadRunNumber;
     public Integer nodeRunPosition;
@@ -35,7 +35,11 @@ public class ExternalEvent extends GETable<ExternalEventPb> {
         wfRunId = p.getWfRunId();
         externalEventDefName = p.getExternalEventDefName();
         guid = p.getGuid();
-        createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
+        if (p.hasCreatedAt()) {
+            createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
+        } else {
+            createdAt = new Date();
+        }
         content = VariableValue.fromProto(p.getContentOrBuilder());
         claimed = p.getClaimed();
 
@@ -53,7 +57,7 @@ public class ExternalEvent extends GETable<ExternalEventPb> {
             .setWfRunId(wfRunId)
             .setExternalEventDefName(externalEventDefName)
             .setGuid(guid)
-            .setCreatedAt(LHUtil.fromDate(createdAt))
+            .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
             .setContent(content.toProto())
             .setClaimed(claimed);
 
@@ -96,6 +100,9 @@ public class ExternalEvent extends GETable<ExternalEventPb> {
     @JsonIgnore
     @Override
     public Date getCreatedAt() {
+        if (createdAt == null) {
+            createdAt = new Date();
+        }
         return createdAt;
     }
 

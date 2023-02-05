@@ -2,10 +2,12 @@ package io.littlehorse.common.model.command.subcommand;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.ReportTaskReply;
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.LHResponseCodePb;
@@ -60,8 +62,18 @@ public class TaskResultEvent extends SubCommand<TaskResultEventPb> {
 
         WfSpec wfSpec = dao.getWfSpec(wfRun.wfSpecName, wfRun.wfSpecVersion);
         if (wfSpec == null) {
-            out.code = LHResponseCodePb.BAD_REQUEST_ERROR;
-            out.message = "Somehow missing wfSpec for wfRun";
+            wfRun.threadRuns
+                .get(0)
+                .fail(
+                    new Failure(
+                        TaskResultCodePb.INTERNAL_ERROR,
+                        "Appears wfSpec was deleted",
+                        LHConstants.INTERNAL_ERROR
+                    ),
+                    new Date()
+                );
+            out.code = LHResponseCodePb.NOT_FOUND_ERROR;
+            out.message = "Apparently WfSpec was deleted!";
             return out;
         }
 
