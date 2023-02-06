@@ -216,7 +216,7 @@ public class WfSpec extends GETable<WfSpecPbOrBuilder> {
                         "Var name " +
                         varName +
                         " defined in threads " +
-                        name +
+                        tspec.name +
                         " and " +
                         varToThreadSpec.get(varName)
                     );

@@ -77,6 +77,11 @@ public class PutWfSpec extends SubCommand<PutWfSpecPb> {
         spec.threadSpecs = threadSpecs;
         spec.createdAt = new Date();
         spec.status = LHStatusPb.RUNNING;
+        for (Map.Entry<String, ThreadSpec> entry : spec.threadSpecs.entrySet()) {
+            ThreadSpec tspec = entry.getValue();
+            tspec.wfSpec = spec;
+            tspec.name = entry.getKey();
+        }
 
         try {
             WfSpec oldVersion = dao.getWfSpec(name, null);

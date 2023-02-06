@@ -38,9 +38,9 @@ public class CommandProcessor
 
     @Override
     public void process(final Record<String, Command> commandRecord) {
+        Command command = commandRecord.value();
+        dao.setCommand(command);
         try {
-            Command command = commandRecord.value();
-            dao.setCommand(command);
             AbstractResponse<?> response = command.process(dao, config);
             dao.commitChanges();
             if (command.hasResponse() && command.commandId != null) {
@@ -61,6 +61,10 @@ public class CommandProcessor
         } catch (Exception exn) {
             exn.printStackTrace();
             dao.abortChangesAndMarkWfRunFailed(exn.getMessage());
+            // TODO: need to actually close off the response. Otherwise, the
+            // request will hang until the CleanupOldWaiters() thing fires and
+            // cleans stuff up.
+
             // Should we have a DLQ? I don't think that makes sense...the internals
             // of a database like Postgres don't have a DLQ for their WAL.
         }
