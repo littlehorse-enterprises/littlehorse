@@ -180,14 +180,14 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
     public VariableValue operate(
         VariableMutationTypePb operation,
         VariableValue rhs,
-        VariableTypePb thisType
+        VariableTypePb typeToCoerceTo
     ) throws LHVarSubError {
         if (type != VariableTypePb.NULL) {
-            if (type != thisType) {
+            if (type != typeToCoerceTo) {
                 throw new LHVarSubError(
                     null,
                     "got unexpected variable type. Thought it was a " +
-                    thisType +
+                    typeToCoerceTo +
                     " but is a " +
                     type
                 );
@@ -195,7 +195,7 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
         }
 
         if (operation == VariableMutationTypePb.ASSIGN) {
-            if (type == VariableTypePb.NULL) return rhs.coerceToType(thisType);
+            if (type == VariableTypePb.NULL) return rhs.coerceToType(typeToCoerceTo);
 
             return rhs.coerceToType(type);
         } else if (operation == VariableMutationTypePb.ADD) {

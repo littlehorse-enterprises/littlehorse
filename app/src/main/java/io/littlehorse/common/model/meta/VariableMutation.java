@@ -138,9 +138,13 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
         try {
             // NOTE Part 2: see below
             if (lhsJsonPath != null) {
-                VariableValue thingToPut = lhsVal
-                    .jsonPath(lhsJsonPath)
-                    .operate(operation, rhsVal, lhsRealType);
+                VariableValue lhsJsonPathed = lhsVal.jsonPath(lhsJsonPath);
+                VariableTypePb typeToCoerceTo = lhsJsonPathed.type;
+                VariableValue thingToPut = lhsJsonPathed.operate(
+                    operation,
+                    rhsVal,
+                    typeToCoerceTo
+                );
 
                 VariableValue currentLhs = getVarValFromThreadInTxn(
                     lhsName,
@@ -151,7 +155,11 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
                 currentLhs.updateJsonViaJsonPath(lhsJsonPath, thingToPut.getVal());
                 txnCache.put(lhsName, currentLhs);
             } else {
-                txnCache.put(lhsName, lhsVal.operate(operation, rhsVal, lhsRealType));
+                VariableTypePb typeToCoerceTo = lhsRealType;
+                txnCache.put(
+                    lhsName,
+                    lhsVal.operate(operation, rhsVal, typeToCoerceTo)
+                );
             }
         } catch (LHVarSubError exn) {
             throw exn;

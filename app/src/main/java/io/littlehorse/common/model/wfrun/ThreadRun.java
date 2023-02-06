@@ -603,12 +603,20 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             }
         }
         if (nextNode == null) {
-            throw new RuntimeException(
-                "Not possible to have a node with zero activated edges"
+            // TODO: Later versions should validate wfSpec's so that this is not
+            // possible
+            fail(
+                new Failure(
+                    TaskResultCodePb.INTERNAL_ERROR,
+                    "WfSpec was invalid. There were no activated outgoing edges" +
+                    " from a non-exit node.",
+                    LHConstants.INTERNAL_ERROR
+                ),
+                new Date()
             );
+        } else {
+            activateNode(nextNode);
         }
-
-        activateNode(nextNode);
     }
 
     public void activateNode(Node node) {
