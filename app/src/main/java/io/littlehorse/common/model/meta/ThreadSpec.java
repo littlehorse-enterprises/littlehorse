@@ -121,21 +121,6 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
     @JsonIgnore
     private ThreadSpec parentThread;
 
-    // This method has a problem--it's possible that a ThreadSpec may have
-    // multiple parents, but this only returns the first.
-    @JsonIgnore
-    public ThreadSpec getParentThread() {
-        if (parentThread != null) return parentThread;
-
-        for (ThreadSpec thread : wfSpec.threadSpecs.values()) {
-            if (thread.getChildThreadNames().contains(name)) {
-                parentThread = thread;
-                return thread;
-            }
-        }
-        return null;
-    }
-
     // Returns all the external event def names used for **interrupts**
     @JsonIgnore
     private Set<String> interruptExternalEventDefs;
@@ -400,12 +385,12 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
         VariableDef out = localGetVarDef(varName);
         if (out != null) return out;
 
-        ThreadSpec parent = getParentThread();
-        if (parent != null) {
-            return parent.getVarDef(varName);
+        Pair<String, VariableDef> result = wfSpec.lookupVarDef(varName);
+        if (result != null) {
+            return result.getRight();
+        } else {
+            return null;
         }
-
-        return null;
     }
 
     public static ThreadSpec fromProto(ThreadSpecPbOrBuilder p) {

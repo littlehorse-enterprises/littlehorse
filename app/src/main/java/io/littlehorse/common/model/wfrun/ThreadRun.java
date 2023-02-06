@@ -326,7 +326,26 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         childHaltReason.parentHalted.parentThreadId = number;
 
         for (int childId : childThreadIds) {
-            wfRun.threadRuns.get(childId).halt(childHaltReason);
+            ThreadRun child = wfRun.threadRuns.get(childId);
+
+            // In almost all cases, we want to stop all children.
+            // However, if the child is an interrupt thread, and the parent got
+            // interrupted again, we let the two interrupts continue side-by-side.
+            if (child.interruptTriggerId != null) {
+                if (
+                    reason.type != ReasonCase.PENDING_INTERRUPT &&
+                    reason.type != ReasonCase.INTERRUPTED
+                ) {
+                    child.halt(childHaltReason);
+                } else {
+                    LHUtil.log(
+                        "Not halting sibling interrupt thread! This will change",
+                        "in future release."
+                    );
+                }
+            } else {
+                child.halt(childHaltReason);
+            }
         }
     }
 
