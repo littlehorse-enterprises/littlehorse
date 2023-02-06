@@ -21,6 +21,7 @@ import io.littlehorse.common.proto.NodePbOrBuilder;
 import io.littlehorse.common.proto.NopNodePb;
 import io.littlehorse.common.proto.VariableMutationPb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
+import io.littlehorse.common.util.LHUtil;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -224,9 +225,14 @@ public class Node extends LHSerializable<NodePbOrBuilder> {
         if (!outgoingEdges.isEmpty()) {
             Edge last = outgoingEdges.get(outgoingEdges.size() - 1);
             if (last.condition != null) {
-                throw new LHValidationError(
-                    null,
-                    "Last outgoing edge has non-null condition!"
+                // throw new LHValidationError(
+                //     null,
+                //     "Last outgoing edge has non-null condition!"
+                // );
+
+                LHUtil.log(
+                    "WARN: there is no default edge, better know what you're doing!",
+                    "Future releases will validate that everything is ok."
                 );
             }
         }
