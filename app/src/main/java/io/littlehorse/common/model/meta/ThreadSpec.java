@@ -15,6 +15,7 @@ import io.littlehorse.common.proto.VariableAssignmentPb.SourceCase;
 import io.littlehorse.common.proto.VariableDefPb;
 import io.littlehorse.common.proto.VariableTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
+import io.littlehorse.common.util.LHUtil;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -270,10 +271,12 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
         for (Map.Entry<String, VariableDef> e : required.entrySet()) {
             VariableValue val = vars.get(e.getKey());
             if (val == null) {
-                throw new LHValidationError(
-                    null,
-                    "Thread " + name + " requires variable " + e.getKey()
+                LHUtil.log(
+                    "Variable",
+                    e.getKey(),
+                    "not provided, defaulting to null"
                 );
+                continue;
             }
 
             if (val.type != e.getValue().type && val.type != VariableTypePb.NULL) {

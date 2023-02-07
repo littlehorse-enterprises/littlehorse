@@ -22,6 +22,7 @@ import io.littlehorse.common.proto.PendingInterruptPb;
 import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.proto.ThreadHaltReasonPb.ReasonCase;
 import io.littlehorse.common.proto.ThreadRunPb;
+import io.littlehorse.common.proto.VariableTypePb;
 import io.littlehorse.common.proto.WfRunPb;
 import io.littlehorse.common.proto.WfRunPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
@@ -198,10 +199,12 @@ public class WfRun extends GETable<WfRunPb> {
             if (variables.containsKey(varName)) {
                 val = variables.get(varName);
             } else {
-                throw new RuntimeException(
-                    "Not possible: the call to validateStartVariables should" +
-                    " have caught this."
-                );
+                // throw new RuntimeException(
+                //     "Not possible: the call to validateStartVariables should" +
+                //     " have caught this."
+                // );
+                val = new VariableValue();
+                val.type = VariableTypePb.NULL;
             }
 
             try {
