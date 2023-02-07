@@ -211,15 +211,17 @@ public class WfSpec extends GETable<WfSpecPbOrBuilder> {
                 String varName = vd.name;
 
                 if (varToThreadSpec.containsKey(varName)) {
-                    throw new LHValidationError(
-                        null,
-                        "Var name " +
-                        varName +
-                        " defined in threads " +
-                        tspec.name +
-                        " and " +
-                        varToThreadSpec.get(varName)
-                    );
+                    if (!varName.equals(LHConstants.EXT_EVT_HANDLER_VAR)) {
+                        throw new LHValidationError(
+                            null,
+                            "Var name " +
+                            varName +
+                            " defined in threads " +
+                            tspec.name +
+                            " and " +
+                            varToThreadSpec.get(varName)
+                        );
+                    }
                 }
                 varToThreadSpec.put(varName, name);
             }

@@ -97,4 +97,9 @@ public class SleepNodeRun extends SubNodeRun<SleepNodeRunPb> {
         // this would be useful to help debug what's going on.
         nodeRun.complete(nullOutput, new Date());
     }
+
+    @Override
+    public boolean canBeInterrupted() {
+        return true;
+    }
 }
