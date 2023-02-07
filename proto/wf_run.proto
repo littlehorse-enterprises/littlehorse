@@ -69,6 +69,7 @@ message ThreadRunPb {
     optional FailureBeingHandledPb failure_being_handled = 15;
 
     int32 current_node_position = 16;
+    repeated int32 handled_failed_children = 17;
 }
 
 message FailureBeingHandledPb {

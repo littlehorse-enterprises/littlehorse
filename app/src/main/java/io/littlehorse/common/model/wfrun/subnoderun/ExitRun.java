@@ -69,10 +69,12 @@ public class ExitRun extends SubNodeRun<ExitRunPb> {
                 return;
             }
             if (child.status != LHStatusPb.COMPLETED) {
-                allComplete = false;
+                if (!nodeRun.threadRun.handledFailedChildren.contains(childId)) {
+                    allComplete = false;
 
-                // lolz this is silly but it works:
-                failedChildren += " " + child.number;
+                    // lolz this is silly but it works:
+                    failedChildren += " " + child.number;
+                }
             }
         }
 

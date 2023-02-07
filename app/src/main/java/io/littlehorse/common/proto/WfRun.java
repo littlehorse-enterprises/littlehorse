@@ -145,7 +145,7 @@ public final class WfRun {
       "adRunPb\0228\n\022pending_interrupts\030\t \003(\0132\034.lh" +
       "_proto.PendingInterruptPb\022;\n\020pending_fai" +
       "lures\030\n \003(\0132!.lh_proto.PendingFailureHan" +
-      "dlerPbB\013\n\t_end_time\"\020\n\016ThreadResultPb\"\277\005" +
+      "dlerPbB\013\n\t_end_time\"\020\n\016ThreadResultPb\"\340\005" +
       "\n\013ThreadRunPb\022\021\n\twf_run_id\030\001 \001(\t\022\016\n\006numb" +
       "er\030\002 \001(\005\022$\n\006status\030\003 \001(\0162\024.lh_proto.LHSt" +
       "atusPb\022\024\n\014wf_spec_name\030\004 \001(\t\022\027\n\017wf_spec_" +
@@ -160,86 +160,86 @@ public final class WfRun {
       "tReasonPb\022!\n\024interrupt_trigger_id\030\016 \001(\tH" +
       "\004\210\001\001\022C\n\025failure_being_handled\030\017 \001(\0132\037.lh" +
       "_proto.FailureBeingHandledPbH\005\210\001\001\022\035\n\025cur" +
-      "rent_node_position\030\020 \001(\005B\013\n\t_end_timeB\020\n" +
-      "\016_error_messageB\016\n\014_result_codeB\023\n\021_pare" +
-      "nt_thread_idB\027\n\025_interrupt_trigger_idB\030\n" +
-      "\026_failure_being_handled\"e\n\025FailureBeingH" +
-      "andledPb\022\031\n\021thread_run_number\030\001 \001(\005\022\031\n\021n" +
-      "ode_run_position\030\002 \001(\005\022\026\n\016failure_number" +
-      "\030\003 \001(\005\"i\n\022PendingInterruptPb\022\031\n\021external" +
-      "_event_id\030\001 \001(\t\022\031\n\021handler_spec_name\030\002 \001" +
-      "(\t\022\035\n\025interrupted_thread_id\030\003 \001(\005\"O\n\027Pen" +
-      "dingFailureHandlerPb\022\031\n\021failed_thread_ru" +
-      "n\030\001 \001(\005\022\031\n\021handler_spec_name\030\002 \001(\t\"9\n\034Pe" +
-      "ndingInterruptHaltReasonPb\022\031\n\021external_e" +
-      "vent_id\030\001 \001(\t\">\n!PendingFailureHandlerHa" +
-      "ltReasonPb\022\031\n\021node_run_position\030\001 \001(\005\"8\n" +
-      "\033HandlingFailureHaltReasonPb\022\031\n\021handler_" +
-      "thread_id\030\001 \001(\005\"*\n\016ParentHaltedPb\022\030\n\020par" +
-      "ent_thread_id\030\001 \001(\005\",\n\rInterruptedPb\022\033\n\023" +
-      "interrupt_thread_id\030\001 \001(\005\"(\n\014ManualHaltP" +
-      "b\022\030\n\017meaning_of_life\030\211\001 \001(\010\"\200\003\n\022ThreadHa" +
-      "ltReasonPb\0221\n\rparent_halted\030\001 \001(\0132\030.lh_p" +
-      "roto.ParentHaltedPbH\000\022.\n\013interrupted\030\002 \001" +
-      "(\0132\027.lh_proto.InterruptedPbH\000\022C\n\021pending" +
-      "_interrupt\030\003 \001(\0132&.lh_proto.PendingInter" +
-      "ruptHaltReasonPbH\000\022F\n\017pending_failure\030\004 " +
-      "\001(\0132+.lh_proto.PendingFailureHandlerHalt" +
-      "ReasonPbH\000\022A\n\020handling_failure\030\005 \001(\0132%.l" +
-      "h_proto.HandlingFailureHaltReasonPbH\000\022-\n" +
-      "\013manual_halt\030\006 \001(\0132\026.lh_proto.ManualHalt" +
-      "PbH\000B\010\n\006reason\"\325\006\n\tNodeRunPb\022\021\n\twf_run_i" +
-      "d\030\001 \001(\t\022\031\n\021thread_run_number\030\002 \001(\005\022\020\n\010po" +
-      "sition\030\003 \001(\005\022\026\n\016attempt_number\030\004 \001(\005\022\016\n\006" +
-      "number\030\005 \001(\005\022$\n\006status\030\006 \001(\0162\024.lh_proto." +
-      "LHStatusPb\0220\n\014arrival_time\030\007 \001(\0132\032.googl" +
-      "e.protobuf.Timestamp\0221\n\010end_time\030\010 \001(\0132\032" +
-      ".google.protobuf.TimestampH\001\210\001\001\022\022\n\nwf_sp" +
-      "ec_id\030\t \001(\t\022\030\n\020thread_spec_name\030\n \001(\t\022\021\n" +
-      "\tnode_name\030\013 \001(\t\0224\n\013result_code\030\014 \001(\0162\032." +
-      "lh_proto.TaskResultCodePbH\002\210\001\001\022\032\n\rerror_" +
-      "message\030\r \001(\tH\003\210\001\001\022%\n\010failures\030\016 \003(\0132\023.l" +
-      "h_proto.FailurePb\022#\n\004task\030\017 \001(\0132\023.lh_pro" +
-      "to.TaskRunPbH\000\0226\n\016external_event\030\020 \001(\0132\034" +
-      ".lh_proto.ExternalEventRunPbH\000\022/\n\nentryp" +
-      "oint\030\021 \001(\0132\031.lh_proto.EntrypointRunPbH\000\022" +
-      "#\n\004exit\030\023 \001(\0132\023.lh_proto.ExitRunPbH\000\0222\n\014" +
-      "start_thread\030\024 \001(\0132\032.lh_proto.StartThrea" +
-      "dRunPbH\000\0220\n\013wait_thread\030\025 \001(\0132\031.lh_proto" +
-      ".WaitThreadRunPbH\000\022)\n\005sleep\030\026 \001(\0132\030.lh_p" +
-      "roto.SleepNodeRunPbH\000\022\033\n\023failure_handler" +
-      "_ids\030\027 \003(\005B\013\n\tnode_typeB\013\n\t_end_timeB\016\n\014" +
-      "_result_codeB\020\n\016_error_message\"\241\001\n\tFailu" +
-      "rePb\022\024\n\014failure_name\030\001 \001(\t\0220\n\014failure_co" +
-      "de\030\002 \001(\0162\032.lh_proto.TaskResultCodePb\022\017\n\007" +
-      "message\030\003 \001(\t\022/\n\007content\030\004 \001(\0132\031.lh_prot" +
-      "o.VariableValuePbH\000\210\001\001B\n\n\010_content\"\256\002\n\tT" +
-      "askRunPb\022\026\n\016attempt_number\030\001 \001(\005\022.\n\006outp" +
-      "ut\030\002 \001(\0132\031.lh_proto.VariableValuePbH\000\210\001\001" +
-      "\0222\n\nlog_output\030\003 \001(\0132\031.lh_proto.Variable" +
-      "ValuePbH\001\210\001\001\0223\n\nstart_time\030\004 \001(\0132\032.googl" +
-      "e.protobuf.TimestampH\002\210\001\001\022\023\n\013task_def_id" +
-      "\030\005 \001(\t\0222\n\017input_variables\030\006 \003(\0132\031.lh_pro" +
-      "to.VarNameAndValPbB\t\n\007_outputB\r\n\013_log_ou" +
-      "tputB\r\n\013_start_time\"\021\n\017EntrypointRunPb\"\013" +
-      "\n\tExitRunPb\"^\n\020StartThreadRunPb\022\034\n\017child" +
-      "_thread_id\030\001 \001(\005H\000\210\001\001\022\030\n\020thread_spec_nam" +
-      "e\030\002 \001(\tB\022\n\020_child_thread_id\"\222\002\n\017WaitThre" +
-      "adRunPb\0228\n\017thread_end_time\030\001 \001(\0132\032.googl" +
-      "e.protobuf.TimestampH\000\210\001\001\0220\n\rthread_stat" +
-      "us\030\002 \001(\0162\024.lh_proto.LHStatusPbH\001\210\001\001\022;\n\022t" +
-      "hread_result_code\030\003 \001(\0162\032.lh_proto.TaskR" +
-      "esultCodePbH\002\210\001\001\022\031\n\021thread_run_number\030\004 " +
-      "\001(\005B\022\n\020_thread_end_timeB\020\n\016_thread_statu" +
-      "sB\025\n\023_thread_result_code\"\257\001\n\022ExternalEve" +
-      "ntRunPb\022\037\n\027external_event_def_name\030\001 \001(\t" +
-      "\0223\n\nevent_time\030\002 \001(\0132\032.google.protobuf.T" +
-      "imestampH\000\210\001\001\022\036\n\021external_event_id\030\003 \001(\t" +
-      "H\001\210\001\001B\r\n\013_event_timeB\024\n\022_external_event_" +
-      "id\"E\n\016SleepNodeRunPb\0223\n\017maturation_time\030" +
-      "\001 \001(\0132\032.google.protobuf.TimestampB(\n\033io." +
-      "littlehorse.common.protoP\001Z\007.;modelb\006pro" +
-      "to3"
+      "rent_node_position\030\020 \001(\005\022\037\n\027handled_fail" +
+      "ed_children\030\021 \003(\005B\013\n\t_end_timeB\020\n\016_error" +
+      "_messageB\016\n\014_result_codeB\023\n\021_parent_thre" +
+      "ad_idB\027\n\025_interrupt_trigger_idB\030\n\026_failu" +
+      "re_being_handled\"e\n\025FailureBeingHandledP" +
+      "b\022\031\n\021thread_run_number\030\001 \001(\005\022\031\n\021node_run" +
+      "_position\030\002 \001(\005\022\026\n\016failure_number\030\003 \001(\005\"" +
+      "i\n\022PendingInterruptPb\022\031\n\021external_event_" +
+      "id\030\001 \001(\t\022\031\n\021handler_spec_name\030\002 \001(\t\022\035\n\025i" +
+      "nterrupted_thread_id\030\003 \001(\005\"O\n\027PendingFai" +
+      "lureHandlerPb\022\031\n\021failed_thread_run\030\001 \001(\005" +
+      "\022\031\n\021handler_spec_name\030\002 \001(\t\"9\n\034PendingIn" +
+      "terruptHaltReasonPb\022\031\n\021external_event_id" +
+      "\030\001 \001(\t\">\n!PendingFailureHandlerHaltReaso" +
+      "nPb\022\031\n\021node_run_position\030\001 \001(\005\"8\n\033Handli" +
+      "ngFailureHaltReasonPb\022\031\n\021handler_thread_" +
+      "id\030\001 \001(\005\"*\n\016ParentHaltedPb\022\030\n\020parent_thr" +
+      "ead_id\030\001 \001(\005\",\n\rInterruptedPb\022\033\n\023interru" +
+      "pt_thread_id\030\001 \001(\005\"(\n\014ManualHaltPb\022\030\n\017me" +
+      "aning_of_life\030\211\001 \001(\010\"\200\003\n\022ThreadHaltReaso" +
+      "nPb\0221\n\rparent_halted\030\001 \001(\0132\030.lh_proto.Pa" +
+      "rentHaltedPbH\000\022.\n\013interrupted\030\002 \001(\0132\027.lh" +
+      "_proto.InterruptedPbH\000\022C\n\021pending_interr" +
+      "upt\030\003 \001(\0132&.lh_proto.PendingInterruptHal" +
+      "tReasonPbH\000\022F\n\017pending_failure\030\004 \001(\0132+.l" +
+      "h_proto.PendingFailureHandlerHaltReasonP" +
+      "bH\000\022A\n\020handling_failure\030\005 \001(\0132%.lh_proto" +
+      ".HandlingFailureHaltReasonPbH\000\022-\n\013manual" +
+      "_halt\030\006 \001(\0132\026.lh_proto.ManualHaltPbH\000B\010\n" +
+      "\006reason\"\325\006\n\tNodeRunPb\022\021\n\twf_run_id\030\001 \001(\t" +
+      "\022\031\n\021thread_run_number\030\002 \001(\005\022\020\n\010position\030" +
+      "\003 \001(\005\022\026\n\016attempt_number\030\004 \001(\005\022\016\n\006number\030" +
+      "\005 \001(\005\022$\n\006status\030\006 \001(\0162\024.lh_proto.LHStatu" +
+      "sPb\0220\n\014arrival_time\030\007 \001(\0132\032.google.proto" +
+      "buf.Timestamp\0221\n\010end_time\030\010 \001(\0132\032.google" +
+      ".protobuf.TimestampH\001\210\001\001\022\022\n\nwf_spec_id\030\t" +
+      " \001(\t\022\030\n\020thread_spec_name\030\n \001(\t\022\021\n\tnode_n" +
+      "ame\030\013 \001(\t\0224\n\013result_code\030\014 \001(\0162\032.lh_prot" +
+      "o.TaskResultCodePbH\002\210\001\001\022\032\n\rerror_message" +
+      "\030\r \001(\tH\003\210\001\001\022%\n\010failures\030\016 \003(\0132\023.lh_proto" +
+      ".FailurePb\022#\n\004task\030\017 \001(\0132\023.lh_proto.Task" +
+      "RunPbH\000\0226\n\016external_event\030\020 \001(\0132\034.lh_pro" +
+      "to.ExternalEventRunPbH\000\022/\n\nentrypoint\030\021 " +
+      "\001(\0132\031.lh_proto.EntrypointRunPbH\000\022#\n\004exit" +
+      "\030\023 \001(\0132\023.lh_proto.ExitRunPbH\000\0222\n\014start_t" +
+      "hread\030\024 \001(\0132\032.lh_proto.StartThreadRunPbH" +
+      "\000\0220\n\013wait_thread\030\025 \001(\0132\031.lh_proto.WaitTh" +
+      "readRunPbH\000\022)\n\005sleep\030\026 \001(\0132\030.lh_proto.Sl" +
+      "eepNodeRunPbH\000\022\033\n\023failure_handler_ids\030\027 " +
+      "\003(\005B\013\n\tnode_typeB\013\n\t_end_timeB\016\n\014_result" +
+      "_codeB\020\n\016_error_message\"\241\001\n\tFailurePb\022\024\n" +
+      "\014failure_name\030\001 \001(\t\0220\n\014failure_code\030\002 \001(" +
+      "\0162\032.lh_proto.TaskResultCodePb\022\017\n\007message" +
+      "\030\003 \001(\t\022/\n\007content\030\004 \001(\0132\031.lh_proto.Varia" +
+      "bleValuePbH\000\210\001\001B\n\n\010_content\"\256\002\n\tTaskRunP" +
+      "b\022\026\n\016attempt_number\030\001 \001(\005\022.\n\006output\030\002 \001(" +
+      "\0132\031.lh_proto.VariableValuePbH\000\210\001\001\0222\n\nlog" +
+      "_output\030\003 \001(\0132\031.lh_proto.VariableValuePb" +
+      "H\001\210\001\001\0223\n\nstart_time\030\004 \001(\0132\032.google.proto" +
+      "buf.TimestampH\002\210\001\001\022\023\n\013task_def_id\030\005 \001(\t\022" +
+      "2\n\017input_variables\030\006 \003(\0132\031.lh_proto.VarN" +
+      "ameAndValPbB\t\n\007_outputB\r\n\013_log_outputB\r\n" +
+      "\013_start_time\"\021\n\017EntrypointRunPb\"\013\n\tExitR" +
+      "unPb\"^\n\020StartThreadRunPb\022\034\n\017child_thread" +
+      "_id\030\001 \001(\005H\000\210\001\001\022\030\n\020thread_spec_name\030\002 \001(\t" +
+      "B\022\n\020_child_thread_id\"\222\002\n\017WaitThreadRunPb" +
+      "\0228\n\017thread_end_time\030\001 \001(\0132\032.google.proto" +
+      "buf.TimestampH\000\210\001\001\0220\n\rthread_status\030\002 \001(" +
+      "\0162\024.lh_proto.LHStatusPbH\001\210\001\001\022;\n\022thread_r" +
+      "esult_code\030\003 \001(\0162\032.lh_proto.TaskResultCo" +
+      "dePbH\002\210\001\001\022\031\n\021thread_run_number\030\004 \001(\005B\022\n\020" +
+      "_thread_end_timeB\020\n\016_thread_statusB\025\n\023_t" +
+      "hread_result_code\"\257\001\n\022ExternalEventRunPb" +
+      "\022\037\n\027external_event_def_name\030\001 \001(\t\0223\n\neve" +
+      "nt_time\030\002 \001(\0132\032.google.protobuf.Timestam" +
+      "pH\000\210\001\001\022\036\n\021external_event_id\030\003 \001(\tH\001\210\001\001B\r" +
+      "\n\013_event_timeB\024\n\022_external_event_id\"E\n\016S" +
+      "leepNodeRunPb\0223\n\017maturation_time\030\001 \001(\0132\032" +
+      ".google.protobuf.TimestampB(\n\033io.littleh" +
+      "orse.common.protoP\001Z\007.;modelb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -265,7 +265,7 @@ public final class WfRun {
     internal_static_lh_proto_ThreadRunPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_lh_proto_ThreadRunPb_descriptor,
-        new java.lang.String[] { "WfRunId", "Number", "Status", "WfSpecName", "WfSpecVersion", "ThreadSpecName", "StartTime", "EndTime", "ErrorMessage", "ResultCode", "ChildThreadIds", "ParentThreadId", "HaltReasons", "InterruptTriggerId", "FailureBeingHandled", "CurrentNodePosition", "EndTime", "ErrorMessage", "ResultCode", "ParentThreadId", "InterruptTriggerId", "FailureBeingHandled", });
+        new java.lang.String[] { "WfRunId", "Number", "Status", "WfSpecName", "WfSpecVersion", "ThreadSpecName", "StartTime", "EndTime", "ErrorMessage", "ResultCode", "ChildThreadIds", "ParentThreadId", "HaltReasons", "InterruptTriggerId", "FailureBeingHandled", "CurrentNodePosition", "HandledFailedChildren", "EndTime", "ErrorMessage", "ResultCode", "ParentThreadId", "InterruptTriggerId", "FailureBeingHandled", });
     internal_static_lh_proto_FailureBeingHandledPb_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_lh_proto_FailureBeingHandledPb_fieldAccessorTable = new

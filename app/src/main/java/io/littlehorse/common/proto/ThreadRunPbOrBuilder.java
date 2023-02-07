@@ -218,4 +218,21 @@ public interface ThreadRunPbOrBuilder extends
    * @return The currentNodePosition.
    */
   int getCurrentNodePosition();
+
+  /**
+   * <code>repeated int32 handled_failed_children = 17;</code>
+   * @return A list containing the handledFailedChildren.
+   */
+  java.util.List<java.lang.Integer> getHandledFailedChildrenList();
+  /**
+   * <code>repeated int32 handled_failed_children = 17;</code>
+   * @return The count of handledFailedChildren.
+   */
+  int getHandledFailedChildrenCount();
+  /**
+   * <code>repeated int32 handled_failed_children = 17;</code>
+   * @param index The index of the element to return.
+   * @return The handledFailedChildren at the given index.
+   */
+  int getHandledFailedChildren(int index);
 }

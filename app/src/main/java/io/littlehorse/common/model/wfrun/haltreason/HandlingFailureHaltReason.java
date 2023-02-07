@@ -3,11 +3,13 @@ package io.littlehorse.common.model.wfrun.haltreason;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.HandlingFailureHaltReasonPb;
 import io.littlehorse.common.proto.HandlingFailureHaltReasonPbOrBuilder;
 import io.littlehorse.common.proto.LHStatusPb;
+import io.littlehorse.common.proto.NodeRunPb.NodeTypeCase;
 
 public class HandlingFailureHaltReason
     extends LHSerializable<HandlingFailureHaltReasonPb>
@@ -18,7 +20,25 @@ public class HandlingFailureHaltReason
     @JsonIgnore
     public boolean isResolved(WfRun wfRun) {
         ThreadRun hThread = wfRun.threadRuns.get(handlerThreadId);
-        return (hThread.status == LHStatusPb.COMPLETED);
+        if (hThread.status == LHStatusPb.COMPLETED) {
+            // Need to figure out if the handler thread was handling another
+            // failed thread.
+            ThreadRun originalThatFailed = wfRun.threadRuns.get(
+                hThread.failureBeingHandled.threadRunNumber
+            );
+            NodeRun handledNode = originalThatFailed.getNodeRun(
+                hThread.failureBeingHandled.nodeRunPosition
+            );
+
+            if (handledNode.type == NodeTypeCase.WAIT_THREAD) {
+                originalThatFailed.handledFailedChildren.add(
+                    handledNode.waitThreadRun.threadRunNumber
+                );
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public Class<HandlingFailureHaltReasonPb> getProtoBaseClass() {

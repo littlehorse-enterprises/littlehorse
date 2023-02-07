@@ -61,11 +61,13 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     public List<ThreadHaltReason> haltReasons;
     public String interruptTriggerId;
     public FailureBeingHandled failureBeingHandled;
+    public List<Integer> handledFailedChildren;
 
     public ThreadRun() {
         variables = new HashMap<>();
         childThreadIds = new ArrayList<>();
         haltReasons = new ArrayList<>();
+        handledFailedChildren = new ArrayList<>();
     }
 
     public void initFrom(MessageOrBuilder p) {
@@ -108,6 +110,10 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
                     proto.getFailureBeingHandledOrBuilder()
                 );
         }
+
+        for (int handledFailedChildId : proto.getHandledFailedChildrenList()) {
+            handledFailedChildren.add(handledFailedChildId);
+        }
     }
 
     public ThreadRunPb.Builder toProto() {
@@ -146,6 +152,9 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         }
         if (failureBeingHandled != null) {
             out.setFailureBeingHandled(failureBeingHandled.toProto());
+        }
+        for (Integer handledFailedChildId : handledFailedChildren) {
+            out.addHandledFailedChildren(handledFailedChildId);
         }
         return out;
     }

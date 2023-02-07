@@ -25,6 +25,7 @@ private static final long serialVersionUID = 0L;
     childThreadIds_ = emptyIntList();
     haltReasons_ = java.util.Collections.emptyList();
     interruptTriggerId_ = "";
+    handledFailedChildren_ = emptyIntList();
   }
 
   @java.lang.Override
@@ -189,6 +190,27 @@ private static final long serialVersionUID = 0L;
             currentNodePosition_ = input.readInt32();
             break;
           }
+          case 136: {
+            if (!((mutable_bitField0_ & 0x00000100) != 0)) {
+              handledFailedChildren_ = newIntList();
+              mutable_bitField0_ |= 0x00000100;
+            }
+            handledFailedChildren_.addInt(input.readInt32());
+            break;
+          }
+          case 138: {
+            int length = input.readRawVarint32();
+            int limit = input.pushLimit(length);
+            if (!((mutable_bitField0_ & 0x00000100) != 0) && input.getBytesUntilLimit() > 0) {
+              handledFailedChildren_ = newIntList();
+              mutable_bitField0_ |= 0x00000100;
+            }
+            while (input.getBytesUntilLimit() > 0) {
+              handledFailedChildren_.addInt(input.readInt32());
+            }
+            input.popLimit(limit);
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -209,6 +231,9 @@ private static final long serialVersionUID = 0L;
       }
       if (((mutable_bitField0_ & 0x00000020) != 0)) {
         haltReasons_ = java.util.Collections.unmodifiableList(haltReasons_);
+      }
+      if (((mutable_bitField0_ & 0x00000100) != 0)) {
+        handledFailedChildren_.makeImmutable(); // C
       }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
@@ -677,6 +702,34 @@ private static final long serialVersionUID = 0L;
     return currentNodePosition_;
   }
 
+  public static final int HANDLED_FAILED_CHILDREN_FIELD_NUMBER = 17;
+  private com.google.protobuf.Internal.IntList handledFailedChildren_;
+  /**
+   * <code>repeated int32 handled_failed_children = 17;</code>
+   * @return A list containing the handledFailedChildren.
+   */
+  @java.lang.Override
+  public java.util.List<java.lang.Integer>
+      getHandledFailedChildrenList() {
+    return handledFailedChildren_;
+  }
+  /**
+   * <code>repeated int32 handled_failed_children = 17;</code>
+   * @return The count of handledFailedChildren.
+   */
+  public int getHandledFailedChildrenCount() {
+    return handledFailedChildren_.size();
+  }
+  /**
+   * <code>repeated int32 handled_failed_children = 17;</code>
+   * @param index The index of the element to return.
+   * @return The handledFailedChildren at the given index.
+   */
+  public int getHandledFailedChildren(int index) {
+    return handledFailedChildren_.getInt(index);
+  }
+  private int handledFailedChildrenMemoizedSerializedSize = -1;
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -743,6 +796,13 @@ private static final long serialVersionUID = 0L;
     }
     if (currentNodePosition_ != 0) {
       output.writeInt32(16, currentNodePosition_);
+    }
+    if (getHandledFailedChildrenList().size() > 0) {
+      output.writeUInt32NoTag(138);
+      output.writeUInt32NoTag(handledFailedChildrenMemoizedSerializedSize);
+    }
+    for (int i = 0; i < handledFailedChildren_.size(); i++) {
+      output.writeInt32NoTag(handledFailedChildren_.getInt(i));
     }
     unknownFields.writeTo(output);
   }
@@ -822,6 +882,20 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(16, currentNodePosition_);
     }
+    {
+      int dataSize = 0;
+      for (int i = 0; i < handledFailedChildren_.size(); i++) {
+        dataSize += com.google.protobuf.CodedOutputStream
+          .computeInt32SizeNoTag(handledFailedChildren_.getInt(i));
+      }
+      size += dataSize;
+      if (!getHandledFailedChildrenList().isEmpty()) {
+        size += 2;
+        size += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(dataSize);
+      }
+      handledFailedChildrenMemoizedSerializedSize = dataSize;
+    }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
@@ -888,6 +962,8 @@ private static final long serialVersionUID = 0L;
     }
     if (getCurrentNodePosition()
         != other.getCurrentNodePosition()) return false;
+    if (!getHandledFailedChildrenList()
+        .equals(other.getHandledFailedChildrenList())) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -949,6 +1025,10 @@ private static final long serialVersionUID = 0L;
     }
     hash = (37 * hash) + CURRENT_NODE_POSITION_FIELD_NUMBER;
     hash = (53 * hash) + getCurrentNodePosition();
+    if (getHandledFailedChildrenCount() > 0) {
+      hash = (37 * hash) + HANDLED_FAILED_CHILDREN_FIELD_NUMBER;
+      hash = (53 * hash) + getHandledFailedChildrenList().hashCode();
+    }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -1133,6 +1213,8 @@ private static final long serialVersionUID = 0L;
       bitField0_ = (bitField0_ & ~0x00000080);
       currentNodePosition_ = 0;
 
+      handledFailedChildren_ = emptyIntList();
+      bitField0_ = (bitField0_ & ~0x00000100);
       return this;
     }
 
@@ -1219,6 +1301,11 @@ private static final long serialVersionUID = 0L;
         to_bitField0_ |= 0x00000020;
       }
       result.currentNodePosition_ = currentNodePosition_;
+      if (((bitField0_ & 0x00000100) != 0)) {
+        handledFailedChildren_.makeImmutable();
+        bitField0_ = (bitField0_ & ~0x00000100);
+      }
+      result.handledFailedChildren_ = handledFailedChildren_;
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -1352,6 +1439,16 @@ private static final long serialVersionUID = 0L;
       }
       if (other.getCurrentNodePosition() != 0) {
         setCurrentNodePosition(other.getCurrentNodePosition());
+      }
+      if (!other.handledFailedChildren_.isEmpty()) {
+        if (handledFailedChildren_.isEmpty()) {
+          handledFailedChildren_ = other.handledFailedChildren_;
+          bitField0_ = (bitField0_ & ~0x00000100);
+        } else {
+          ensureHandledFailedChildrenIsMutable();
+          handledFailedChildren_.addAll(other.handledFailedChildren_);
+        }
+        onChanged();
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -2698,6 +2795,85 @@ private static final long serialVersionUID = 0L;
     public Builder clearCurrentNodePosition() {
       
       currentNodePosition_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private com.google.protobuf.Internal.IntList handledFailedChildren_ = emptyIntList();
+    private void ensureHandledFailedChildrenIsMutable() {
+      if (!((bitField0_ & 0x00000100) != 0)) {
+        handledFailedChildren_ = mutableCopy(handledFailedChildren_);
+        bitField0_ |= 0x00000100;
+       }
+    }
+    /**
+     * <code>repeated int32 handled_failed_children = 17;</code>
+     * @return A list containing the handledFailedChildren.
+     */
+    public java.util.List<java.lang.Integer>
+        getHandledFailedChildrenList() {
+      return ((bitField0_ & 0x00000100) != 0) ?
+               java.util.Collections.unmodifiableList(handledFailedChildren_) : handledFailedChildren_;
+    }
+    /**
+     * <code>repeated int32 handled_failed_children = 17;</code>
+     * @return The count of handledFailedChildren.
+     */
+    public int getHandledFailedChildrenCount() {
+      return handledFailedChildren_.size();
+    }
+    /**
+     * <code>repeated int32 handled_failed_children = 17;</code>
+     * @param index The index of the element to return.
+     * @return The handledFailedChildren at the given index.
+     */
+    public int getHandledFailedChildren(int index) {
+      return handledFailedChildren_.getInt(index);
+    }
+    /**
+     * <code>repeated int32 handled_failed_children = 17;</code>
+     * @param index The index to set the value at.
+     * @param value The handledFailedChildren to set.
+     * @return This builder for chaining.
+     */
+    public Builder setHandledFailedChildren(
+        int index, int value) {
+      ensureHandledFailedChildrenIsMutable();
+      handledFailedChildren_.setInt(index, value);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated int32 handled_failed_children = 17;</code>
+     * @param value The handledFailedChildren to add.
+     * @return This builder for chaining.
+     */
+    public Builder addHandledFailedChildren(int value) {
+      ensureHandledFailedChildrenIsMutable();
+      handledFailedChildren_.addInt(value);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated int32 handled_failed_children = 17;</code>
+     * @param values The handledFailedChildren to add.
+     * @return This builder for chaining.
+     */
+    public Builder addAllHandledFailedChildren(
+        java.lang.Iterable<? extends java.lang.Integer> values) {
+      ensureHandledFailedChildrenIsMutable();
+      com.google.protobuf.AbstractMessageLite.Builder.addAll(
+          values, handledFailedChildren_);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated int32 handled_failed_children = 17;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearHandledFailedChildren() {
+      handledFailedChildren_ = emptyIntList();
+      bitField0_ = (bitField0_ & ~0x00000100);
       onChanged();
       return this;
     }
