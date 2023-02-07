@@ -282,5 +282,22 @@ public interface NodeRunPbOrBuilder extends
    */
   io.littlehorse.common.proto.SleepNodeRunPbOrBuilder getSleepOrBuilder();
 
+  /**
+   * <code>repeated int32 failure_handler_ids = 23;</code>
+   * @return A list containing the failureHandlerIds.
+   */
+  java.util.List<java.lang.Integer> getFailureHandlerIdsList();
+  /**
+   * <code>repeated int32 failure_handler_ids = 23;</code>
+   * @return The count of failureHandlerIds.
+   */
+  int getFailureHandlerIdsCount();
+  /**
+   * <code>repeated int32 failure_handler_ids = 23;</code>
+   * @param index The index of the element to return.
+   * @return The failureHandlerIds at the given index.
+   */
+  int getFailureHandlerIds(int index);
+
   public io.littlehorse.common.proto.NodeRunPb.NodeTypeCase getNodeTypeCase();
 }

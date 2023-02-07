@@ -311,6 +311,8 @@ public class WfRun extends GETable<WfRunPb> {
                 vars
             );
 
+            failedThr.getCurrentNodeRun().failureHandlerIds.add(fh.number);
+
             fh.failureBeingHandled = new FailureBeingHandled();
             fh.failureBeingHandled.failureNumber =
                 failedThr.getCurrentNodeRun().failures.size() - 1;

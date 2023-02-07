@@ -24,6 +24,7 @@ private static final long serialVersionUID = 0L;
     resultCode_ = 0;
     errorMessage_ = "";
     failures_ = java.util.Collections.emptyList();
+    failureHandlerIds_ = emptyIntList();
   }
 
   @java.lang.Override
@@ -252,6 +253,27 @@ private static final long serialVersionUID = 0L;
             nodeTypeCase_ = 22;
             break;
           }
+          case 184: {
+            if (!((mutable_bitField0_ & 0x00000010) != 0)) {
+              failureHandlerIds_ = newIntList();
+              mutable_bitField0_ |= 0x00000010;
+            }
+            failureHandlerIds_.addInt(input.readInt32());
+            break;
+          }
+          case 186: {
+            int length = input.readRawVarint32();
+            int limit = input.pushLimit(length);
+            if (!((mutable_bitField0_ & 0x00000010) != 0) && input.getBytesUntilLimit() > 0) {
+              failureHandlerIds_ = newIntList();
+              mutable_bitField0_ |= 0x00000010;
+            }
+            while (input.getBytesUntilLimit() > 0) {
+              failureHandlerIds_.addInt(input.readInt32());
+            }
+            input.popLimit(limit);
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -269,6 +291,9 @@ private static final long serialVersionUID = 0L;
     } finally {
       if (((mutable_bitField0_ & 0x00000008) != 0)) {
         failures_ = java.util.Collections.unmodifiableList(failures_);
+      }
+      if (((mutable_bitField0_ & 0x00000010) != 0)) {
+        failureHandlerIds_.makeImmutable(); // C
       }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
@@ -935,6 +960,34 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.SleepNodeRunPb.getDefaultInstance();
   }
 
+  public static final int FAILURE_HANDLER_IDS_FIELD_NUMBER = 23;
+  private com.google.protobuf.Internal.IntList failureHandlerIds_;
+  /**
+   * <code>repeated int32 failure_handler_ids = 23;</code>
+   * @return A list containing the failureHandlerIds.
+   */
+  @java.lang.Override
+  public java.util.List<java.lang.Integer>
+      getFailureHandlerIdsList() {
+    return failureHandlerIds_;
+  }
+  /**
+   * <code>repeated int32 failure_handler_ids = 23;</code>
+   * @return The count of failureHandlerIds.
+   */
+  public int getFailureHandlerIdsCount() {
+    return failureHandlerIds_.size();
+  }
+  /**
+   * <code>repeated int32 failure_handler_ids = 23;</code>
+   * @param index The index of the element to return.
+   * @return The failureHandlerIds at the given index.
+   */
+  public int getFailureHandlerIds(int index) {
+    return failureHandlerIds_.getInt(index);
+  }
+  private int failureHandlerIdsMemoizedSerializedSize = -1;
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -949,6 +1002,7 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
+    getSerializedSize();
     if (!getWfRunIdBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, wfRunId_);
     }
@@ -1011,6 +1065,13 @@ private static final long serialVersionUID = 0L;
     }
     if (nodeTypeCase_ == 22) {
       output.writeMessage(22, (io.littlehorse.common.proto.SleepNodeRunPb) nodeType_);
+    }
+    if (getFailureHandlerIdsList().size() > 0) {
+      output.writeUInt32NoTag(186);
+      output.writeUInt32NoTag(failureHandlerIdsMemoizedSerializedSize);
+    }
+    for (int i = 0; i < failureHandlerIds_.size(); i++) {
+      output.writeInt32NoTag(failureHandlerIds_.getInt(i));
     }
     unknownFields.writeTo(output);
   }
@@ -1100,6 +1161,20 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(22, (io.littlehorse.common.proto.SleepNodeRunPb) nodeType_);
     }
+    {
+      int dataSize = 0;
+      for (int i = 0; i < failureHandlerIds_.size(); i++) {
+        dataSize += com.google.protobuf.CodedOutputStream
+          .computeInt32SizeNoTag(failureHandlerIds_.getInt(i));
+      }
+      size += dataSize;
+      if (!getFailureHandlerIdsList().isEmpty()) {
+        size += 2;
+        size += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(dataSize);
+      }
+      failureHandlerIdsMemoizedSerializedSize = dataSize;
+    }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
@@ -1153,6 +1228,8 @@ private static final long serialVersionUID = 0L;
     }
     if (!getFailuresList()
         .equals(other.getFailuresList())) return false;
+    if (!getFailureHandlerIdsList()
+        .equals(other.getFailureHandlerIdsList())) return false;
     if (!getNodeTypeCase().equals(other.getNodeTypeCase())) return false;
     switch (nodeTypeCase_) {
       case 15:
@@ -1234,6 +1311,10 @@ private static final long serialVersionUID = 0L;
     if (getFailuresCount() > 0) {
       hash = (37 * hash) + FAILURES_FIELD_NUMBER;
       hash = (53 * hash) + getFailuresList().hashCode();
+    }
+    if (getFailureHandlerIdsCount() > 0) {
+      hash = (37 * hash) + FAILURE_HANDLER_IDS_FIELD_NUMBER;
+      hash = (53 * hash) + getFailureHandlerIdsList().hashCode();
     }
     switch (nodeTypeCase_) {
       case 15:
@@ -1442,6 +1523,8 @@ private static final long serialVersionUID = 0L;
       } else {
         failuresBuilder_.clear();
       }
+      failureHandlerIds_ = emptyIntList();
+      bitField0_ = (bitField0_ & ~0x00000010);
       nodeTypeCase_ = 0;
       nodeType_ = null;
       return this;
@@ -1560,6 +1643,11 @@ private static final long serialVersionUID = 0L;
           result.nodeType_ = sleepBuilder_.build();
         }
       }
+      if (((bitField0_ & 0x00000010) != 0)) {
+        failureHandlerIds_.makeImmutable();
+        bitField0_ = (bitField0_ & ~0x00000010);
+      }
+      result.failureHandlerIds_ = failureHandlerIds_;
       result.bitField0_ = to_bitField0_;
       result.nodeTypeCase_ = nodeTypeCase_;
       onBuilt();
@@ -1680,6 +1768,16 @@ private static final long serialVersionUID = 0L;
             failuresBuilder_.addAllMessages(other.failures_);
           }
         }
+      }
+      if (!other.failureHandlerIds_.isEmpty()) {
+        if (failureHandlerIds_.isEmpty()) {
+          failureHandlerIds_ = other.failureHandlerIds_;
+          bitField0_ = (bitField0_ & ~0x00000010);
+        } else {
+          ensureFailureHandlerIdsIsMutable();
+          failureHandlerIds_.addAll(other.failureHandlerIds_);
+        }
+        onChanged();
       }
       switch (other.getNodeTypeCase()) {
         case TASK: {
@@ -3849,6 +3947,85 @@ private static final long serialVersionUID = 0L;
       nodeTypeCase_ = 22;
       onChanged();;
       return sleepBuilder_;
+    }
+
+    private com.google.protobuf.Internal.IntList failureHandlerIds_ = emptyIntList();
+    private void ensureFailureHandlerIdsIsMutable() {
+      if (!((bitField0_ & 0x00000010) != 0)) {
+        failureHandlerIds_ = mutableCopy(failureHandlerIds_);
+        bitField0_ |= 0x00000010;
+       }
+    }
+    /**
+     * <code>repeated int32 failure_handler_ids = 23;</code>
+     * @return A list containing the failureHandlerIds.
+     */
+    public java.util.List<java.lang.Integer>
+        getFailureHandlerIdsList() {
+      return ((bitField0_ & 0x00000010) != 0) ?
+               java.util.Collections.unmodifiableList(failureHandlerIds_) : failureHandlerIds_;
+    }
+    /**
+     * <code>repeated int32 failure_handler_ids = 23;</code>
+     * @return The count of failureHandlerIds.
+     */
+    public int getFailureHandlerIdsCount() {
+      return failureHandlerIds_.size();
+    }
+    /**
+     * <code>repeated int32 failure_handler_ids = 23;</code>
+     * @param index The index of the element to return.
+     * @return The failureHandlerIds at the given index.
+     */
+    public int getFailureHandlerIds(int index) {
+      return failureHandlerIds_.getInt(index);
+    }
+    /**
+     * <code>repeated int32 failure_handler_ids = 23;</code>
+     * @param index The index to set the value at.
+     * @param value The failureHandlerIds to set.
+     * @return This builder for chaining.
+     */
+    public Builder setFailureHandlerIds(
+        int index, int value) {
+      ensureFailureHandlerIdsIsMutable();
+      failureHandlerIds_.setInt(index, value);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated int32 failure_handler_ids = 23;</code>
+     * @param value The failureHandlerIds to add.
+     * @return This builder for chaining.
+     */
+    public Builder addFailureHandlerIds(int value) {
+      ensureFailureHandlerIdsIsMutable();
+      failureHandlerIds_.addInt(value);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated int32 failure_handler_ids = 23;</code>
+     * @param values The failureHandlerIds to add.
+     * @return This builder for chaining.
+     */
+    public Builder addAllFailureHandlerIds(
+        java.lang.Iterable<? extends java.lang.Integer> values) {
+      ensureFailureHandlerIdsIsMutable();
+      com.google.protobuf.AbstractMessageLite.Builder.addAll(
+          values, failureHandlerIds_);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated int32 failure_handler_ids = 23;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearFailureHandlerIds() {
+      failureHandlerIds_ = emptyIntList();
+      bitField0_ = (bitField0_ & ~0x00000010);
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

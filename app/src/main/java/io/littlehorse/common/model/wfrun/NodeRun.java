@@ -1,7 +1,5 @@
 package io.littlehorse.common.model.wfrun;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.meta.Node;
@@ -58,11 +56,13 @@ public class NodeRun extends GETable<NodeRunPb> {
     public WaitThreadRun waitThreadRun;
     public SleepNodeRun sleepNodeRun;
 
+    public List<Integer> failureHandlerIds;
+
     public NodeRun() {
         failures = new ArrayList<>();
+        failureHandlerIds = new ArrayList<>();
     }
 
-    @JsonProperty("entrypointRun")
     public Object getEntrypointRunForJacksonOnly() {
         if (entrypointRun != null) {
             return new HashMap<>();
@@ -70,10 +70,8 @@ public class NodeRun extends GETable<NodeRunPb> {
         return null;
     }
 
-    @JsonIgnore
     public ThreadRun threadRun;
 
-    @JsonIgnore
     public Failure getLatestFailure() {
         if (failures.size() == 0) return null;
         return failures.get(failures.size() - 1);
@@ -87,12 +85,10 @@ public class NodeRun extends GETable<NodeRunPb> {
         return wfRunId + "-" + threadNum + "-" + position;
     }
 
-    @JsonIgnore
     public String getPartitionKey() {
         return wfRunId;
     }
 
-    @JsonIgnore
     public Class<NodeRunPb> getProtoBaseClass() {
         return NodeRunPb.class;
     }
@@ -155,11 +151,13 @@ public class NodeRun extends GETable<NodeRunPb> {
         for (FailurePb failure : proto.getFailuresList()) {
             failures.add(Failure.fromProto(failure));
         }
+        for (int handlerId : proto.getFailureHandlerIdsList()) {
+            failureHandlerIds.add(handlerId);
+        }
 
         getSubNodeRun().setNodeRun(this);
     }
 
-    @JsonIgnore
     public SubNodeRun<?> getSubNodeRun() {
         switch (type) {
             case TASK:
@@ -259,11 +257,13 @@ public class NodeRun extends GETable<NodeRunPb> {
         for (Failure failure : failures) {
             out.addFailures(failure.toProto());
         }
+        for (Integer id : failureHandlerIds) {
+            out.addFailureHandlerIds(id);
+        }
 
         return out;
     }
 
-    @JsonIgnore
     public boolean isInProgress() {
         return (
             status != LHStatusPb.COMPLETED &&
@@ -272,12 +272,33 @@ public class NodeRun extends GETable<NodeRunPb> {
         );
     }
 
-    @JsonIgnore
+    public boolean isCompletedOrRecoveredFromFailure() {
+        if (status == LHStatusPb.COMPLETED) {
+            return true;
+        }
+
+        if (status == LHStatusPb.ERROR) {
+            if (failureHandlerIds.size() == failures.size()) {
+                if (failures.size() == 0) {
+                    LHUtil.log("WARN: somehow failed with no failures.");
+                    return false;
+                }
+                for (int handlerId : failureHandlerIds) {
+                    ThreadRun handler = threadRun.wfRun.threadRuns.get(handlerId);
+                    if (handler.status != LHStatusPb.COMPLETED) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
     public Node getNode() {
         return threadRun.getThreadSpec().nodes.get(nodeName);
     }
 
-    @JsonIgnore
     public NodeCase getNodeType() {
         return getNode().type;
     }
@@ -287,13 +308,12 @@ public class NodeRun extends GETable<NodeRunPb> {
      * NodeRun. The default answer is, "Is the node currently Running? If so, then
      * nope, else yes". However,
      */
-    @JsonIgnore
     public boolean canBeInterrupted() {
         return getSubNodeRun().canBeInterrupted();
     }
 
     public boolean advanceIfPossible(Date time) {
-        if (status == LHStatusPb.COMPLETED) {
+        if (isCompletedOrRecoveredFromFailure()) {
             threadRun.advanceFrom(getNode());
             return true;
         } else {

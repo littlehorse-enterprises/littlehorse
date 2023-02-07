@@ -153,6 +153,7 @@ message NodeRunPb {
         WaitThreadRunPb wait_thread = 21;
         SleepNodeRunPb sleep = 22;
     }
+    repeated int32 failure_handler_ids = 23;
 
 }
 
