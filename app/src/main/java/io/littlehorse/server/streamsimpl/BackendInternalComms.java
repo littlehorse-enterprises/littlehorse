@@ -284,10 +284,11 @@ public class BackendInternalComms implements Closeable {
             if (desiredHost == null) {
                 out.setCode(LHResponseCodePb.BAD_REQUEST_ERROR);
                 out.setMessage(
-                    "Unknown listener name. Check LHORSE_ADVERTISED_LISTENERS on " +
+                    "Unknown listener name " +
+                    req.getListenerName() +
+                    ". Check LHORSE_ADVERTISED_LISTENERS on " +
                     "LH Server and check the LISTENER_NAME config on task worker."
                 );
-                out.clearAllHosts();
                 return out.build();
             }
 
@@ -313,6 +314,7 @@ public class BackendInternalComms implements Closeable {
             otherHosts.put(streamsHost, info);
             return info;
         } catch (Exception exn) {
+            exn.printStackTrace();
             return null;
         }
     }

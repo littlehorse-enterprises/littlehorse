@@ -141,15 +141,19 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         coreStreams =
             new KafkaStreams(
                 ServerTopology.initCoreTopology(config, this),
-                // For now we have to do EOS here, so we just pray...
+                // Core topology must be EOS
                 config.getStreamsConfig("core", true)
             );
         timerStreams =
             new KafkaStreams(
                 ServerTopology.initTimerTopology(config),
-                // Kafka Streams 3.4.0 should fix the issue with EOS and hanging
-                // transactions on punctionations, which means we can (hopefully)
-                // make the timer stream also EOS.
+                // We don't want the Timer topology to be EOS. The reason for this
+                // has to do with the fact that:
+                // a) Timer is idempotent, so it doesn't really matter
+                // b) If it's EOS, then there will be transactional records on
+                //    the core command topic. With the EOS for the core topology,
+                //    that means processing will block until the commit() of the
+                //    timer, which means latency will jump from 15ms to >100ms
                 config.getStreamsConfig("timer", false)
             );
 

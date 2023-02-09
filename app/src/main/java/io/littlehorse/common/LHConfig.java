@@ -146,8 +146,9 @@ public class LHConfig {
 
         String listenerNames = getOrSetDefault(
             LHConstants.ADVERTISED_LISTENERS_KEY,
-            "LHORSE_PUBLIC_LISTENER"
+            LHConstants.DEFAULT_PUBLIC_LISTENER
         );
+        System.out.println("Listener names are " + listenerNames);
 
         for (String lister : listenerNames.split(",")) {
             publicAdvertisedHostMap.put(lister, getHostForName(lister));
@@ -156,14 +157,14 @@ public class LHConfig {
         return publicAdvertisedHostMap;
     }
 
-    private HostInfoPb getHostForName(String envVar) {
-        String fullHost = getOrSetDefault(envVar, "localhost:5000");
+    private HostInfoPb getHostForName(String listenerName) {
+        String fullHost = getOrSetDefault(listenerName, "localhost:5000");
 
         HostInfoPb.Builder out = HostInfoPb.newBuilder();
         int colonIndex = fullHost.indexOf(":");
         if (colonIndex == -1) {
             throw new RuntimeException(
-                "Listener " + envVar + " set to invalid host " + fullHost
+                "Listener " + listenerName + " set to invalid host " + fullHost
             );
         }
 
@@ -205,7 +206,7 @@ public class LHConfig {
     public Properties getKafkaProducerConfig() {
         Properties conf = new Properties();
         conf.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers());
-        conf.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");
+        conf.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
         conf.put(
             ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
             Serdes.Bytes().serializer().getClass()
@@ -294,8 +295,6 @@ public class LHConfig {
             StreamsConfig.consumerPrefix(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG),
             20
         );
-        // props.put(
-        //     StreamsConfig.consumerPrefix(ConsumerConfig.FETCH_MIN_BYTES_CONFIG), )
 
         props.put(
             StreamsConfig.REPLICATION_FACTOR_CONFIG,
@@ -401,12 +400,8 @@ public class LHConfig {
         }
     }
 
-    private void initialize(Properties overrides) {
-        Properties origDefaults = getEnvDefaults();
-        for (String k : overrides.stringPropertyNames()) {
-            origDefaults.setProperty(k, overrides.getProperty(k));
-        }
-        props = origDefaults;
+    public LHConfig(Properties props) {
+        this.props = props;
 
         Properties akProperties = new Properties();
         akProperties.put(
@@ -414,25 +409,6 @@ public class LHConfig {
             getBootstrapServers()
         );
         this.kafkaAdmin = Admin.create(akProperties);
-    }
-
-    public LHConfig() {
-        initialize(new Properties());
-    }
-
-    public LHConfig(Properties overrides) {
-        initialize(overrides);
-    }
-
-    private Properties getEnvDefaults() {
-        Properties props = new Properties();
-
-        for (Map.Entry<String, String> entry : System.getenv().entrySet()) {
-            if (entry.getKey().startsWith("LHORSE")) {
-                props.setProperty(entry.getKey(), entry.getValue());
-            }
-        }
-        return props;
     }
 
     private String getOrSetDefault(String key, String defaultVal) {

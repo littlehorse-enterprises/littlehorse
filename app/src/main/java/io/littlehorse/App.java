@@ -3,13 +3,17 @@ package io.littlehorse;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.KafkaStreamsServerImpl;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.common.config.TopicConfig;
-import org.apache.kafka.streams.state.HostInfo;
 
 public class App {
 
@@ -70,23 +74,34 @@ public class App {
 
     public static void main(String[] args)
         throws InterruptedException, ExecutionException, IOException {
+        Properties configProps = new Properties();
+
         if (args.length == 1) {
-            String arg = args[0];
-            if (arg.equals("tester")) {
-                tester();
-                System.exit(0);
+            System.out.println(
+                "Attempting to load config properties file from " + args[0]
+            );
+            Path configPath = Path.of(args[0]);
+            if (!Files.exists(configPath)) {
+                System.out.println("Couldn't find config file at " + args[0]);
+                System.exit(1);
             }
+
+            try {
+                configProps.load(
+                    new InputStreamReader(new FileInputStream(configPath.toFile()))
+                );
+            } catch (IOException exn) {
+                exn.printStackTrace();
+                System.out.println("Failed to load config file, using defaults");
+                System.exit(1);
+            }
+        } else {
+            System.out.println("WARNING: No config file provided, using defaults.");
         }
 
-        LHConfig config = new LHConfig();
+        LHConfig config = new LHConfig(configProps);
         doIdempotentSetup(config);
         KafkaStreamsServerImpl.doMain(config);
-    }
-
-    public static void tester() {
-        // put whatever quick test code you want in here
-        HostInfo test = new HostInfo("hello", 5000);
-        System.out.println(test.toString());
     }
 }
 /*

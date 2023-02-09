@@ -1,2 +1,6 @@
 #!/bin/bash
-LHORSE_KAFKA_GROUP_ID=server LHORSE_KAFKA_GROUP_IID=server2 LHORSE_PUBLIC_LISTENER='localhost:5002' LHORSE_API_BIND_PORT=5002 LHORSE_KAFKA_STREAMS_STATE_DIR=/tmp/kafkaStateTwo gradle run --args server
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+cd $SCRIPT_DIR
+cd ..
+
+gradle run --args "${SCRIPT_DIR}/server-2.config"
