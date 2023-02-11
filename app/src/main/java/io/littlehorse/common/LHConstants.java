@@ -8,7 +8,7 @@ import java.util.Set;
 public class LHConstants {
 
     // Kafka and Kafka Streams-Specific Configuration Env Vars
-    public static final String KAFKA_BOOTSTRAP_KEY = "LHORSE_KAKFA_BOOTSTRAP_SERVERS";
+    public static final String KAFKA_BOOTSTRAP_KEY = "LHORSE_KAFKA_BOOTSTRAP_SERVERS";
     public static final String KAFKA_GROUP_ID_KEY = "LHORSE_CLUSTER_ID";
     public static final String KAFKA_GROUP_IID_KEY = "LHORSE_INSTANCE_ID";
     public static final String RACK_ID_KEY = "LHORSE_RACK_ID";
@@ -17,7 +17,7 @@ public class LHConstants {
     public static final String CLUSTER_PARTITIONS_KEY = "LHORSE_CLUSTER_PARTITIONS";
     public static final String NUM_STREAM_THREADS_KEY = "LHORSE_STREAMS_NUM_THREADS";
     public static final String COMMIT_INTERVAL_KEY = "LHORSE_STREAMS_COMMIT_INTERVAL";
-    public static final String KAFKA_STATE_DIR_KEY = "LHORSE_STREAMS_STATE_DIR";
+    public static final String KAFKA_STATE_DIR_KEY = "LHORSE_STATE_DIR";
     public static final String NUM_WARMUP_REPLICAS_KEY =
         "LHORSE_STREAMS_NUM_WARMUP_REPLICAS";
     public static final String NUM_STANDBY_REPLICAS_KEY =

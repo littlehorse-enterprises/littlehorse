@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import org.apache.kafka.clients.admin.NewTopic;
@@ -98,6 +99,13 @@ public class App {
         } else {
             System.out.println("WARNING: No config file provided, using defaults.");
         }
+
+        for (Map.Entry<Object, Object> entry : configProps.entrySet()) {
+            System.out.println(
+                entry.getKey().toString() + ": " + entry.getValue().toString()
+            );
+        }
+        System.out.flush();
 
         LHConfig config = new LHConfig(configProps);
         doIdempotentSetup(config);

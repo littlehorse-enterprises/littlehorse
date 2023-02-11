@@ -29,7 +29,7 @@ public class IntermediateGETResp<
                 .getMethod("newBuilder")
                 .invoke(null);
             if (message != null) {
-                responseCls.getMethod("setMessage", String.class).invoke(b, message);
+                b.getClass().getMethod("setMessage", String.class).invoke(b, message);
             }
             b.getClass().getMethod("setCode", LHResponseCodePb.class).invoke(b, code);
             if (result != null) {

@@ -1,8 +1,3 @@
 #!/bin/bash
 
-java -cp /javaInclude:/littleHorse.jar io.littlehorse.App server &
-
-while true
-do
-  sleep 1000
-done
+java -cp /javaInclude:/littleHorse.jar io.littlehorse.App
