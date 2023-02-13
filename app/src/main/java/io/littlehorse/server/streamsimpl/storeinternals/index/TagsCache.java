@@ -2,8 +2,8 @@ package io.littlehorse.server.streamsimpl.storeinternals.index;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.proto.TagsCachePb;
-import io.littlehorse.common.proto.TagsCachePbOrBuilder;
+import io.littlehorse.jlib.common.proto.TagsCachePb;
+import io.littlehorse.jlib.common.proto.TagsCachePbOrBuilder;
 import java.util.ArrayList;
 import java.util.List;
 

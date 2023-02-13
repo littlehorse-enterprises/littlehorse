@@ -4,10 +4,10 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.MessageOrBuilder;
 import io.grpc.stub.StreamObserver;
-import io.littlehorse.common.proto.LHResponseCodePb;
-import io.littlehorse.common.proto.StoreQueryStatusPb;
-import io.littlehorse.common.proto.WaitForCommandReplyPb;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.jlib.common.proto.LHResponseCodePb;
+import io.littlehorse.jlib.common.proto.StoreQueryStatusPb;
+import io.littlehorse.jlib.common.proto.WaitForCommandReplyPb;
 
 public class POSTStreamObserver<U extends MessageOrBuilder>
     implements StreamObserver<WaitForCommandReplyPb> {

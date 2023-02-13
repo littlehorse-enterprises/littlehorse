@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.wfrun.WfRun;
-import io.littlehorse.common.proto.PendingInterruptHaltReasonPb;
-import io.littlehorse.common.proto.PendingInterruptHaltReasonPbOrBuilder;
+import io.littlehorse.jlib.common.proto.PendingInterruptHaltReasonPb;
+import io.littlehorse.jlib.common.proto.PendingInterruptHaltReasonPbOrBuilder;
 
 public class PendingInterruptHaltReason
     extends LHSerializable<PendingInterruptHaltReasonPb>

@@ -1,9 +1,9 @@
 package io.littlehorse.server.streamsimpl.taskqueue;
 
 import io.grpc.stub.StreamObserver;
-import io.littlehorse.common.proto.PollTaskPb;
-import io.littlehorse.common.proto.PollTaskReplyPb;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.jlib.common.proto.PollTaskPb;
+import io.littlehorse.jlib.common.proto.PollTaskReplyPb;
 
 public class PollTaskRequestObserver implements StreamObserver<PollTaskPb> {
 

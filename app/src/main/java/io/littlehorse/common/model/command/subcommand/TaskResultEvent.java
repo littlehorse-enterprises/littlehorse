@@ -10,11 +10,11 @@ import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.model.wfrun.WfRun;
-import io.littlehorse.common.proto.LHResponseCodePb;
-import io.littlehorse.common.proto.TaskResultCodePb;
-import io.littlehorse.common.proto.TaskResultEventPb;
-import io.littlehorse.common.proto.TaskResultEventPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.jlib.common.proto.LHResponseCodePb;
+import io.littlehorse.jlib.common.proto.TaskResultCodePb;
+import io.littlehorse.jlib.common.proto.TaskResultEventPb;
+import io.littlehorse.jlib.common.proto.TaskResultEventPbOrBuilder;
 import java.util.Date;
 
 public class TaskResultEvent extends SubCommand<TaskResultEventPb> {

@@ -2,8 +2,8 @@ package io.littlehorse.common.model.command.subcommandresponse;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.command.AbstractResponse;
-import io.littlehorse.common.proto.DeleteObjectReplyPb;
-import io.littlehorse.common.proto.DeleteObjectReplyPbOrBuilder;
+import io.littlehorse.jlib.common.proto.DeleteObjectReplyPb;
+import io.littlehorse.jlib.common.proto.DeleteObjectReplyPbOrBuilder;
 
 public class DeleteObjectReply extends AbstractResponse<DeleteObjectReplyPb> {
 

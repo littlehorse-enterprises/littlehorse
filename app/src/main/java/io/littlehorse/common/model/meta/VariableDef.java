@@ -2,9 +2,9 @@ package io.littlehorse.common.model.meta;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.proto.VariableDefPb;
-import io.littlehorse.common.proto.VariableDefPbOrBuilder;
-import io.littlehorse.common.proto.VariableTypePb;
+import io.littlehorse.jlib.common.proto.VariableDefPb;
+import io.littlehorse.jlib.common.proto.VariableDefPbOrBuilder;
+import io.littlehorse.jlib.common.proto.VariableTypePb;
 
 public class VariableDef extends LHSerializable<VariableDefPb> {
 

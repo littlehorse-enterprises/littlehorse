@@ -2,8 +2,8 @@ package io.littlehorse.common.model.command.subcommandresponse;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.command.AbstractResponse;
-import io.littlehorse.common.proto.ReportTaskReplyPb;
-import io.littlehorse.common.proto.ReportTaskReplyPbOrBuilder;
+import io.littlehorse.jlib.common.proto.ReportTaskReplyPb;
+import io.littlehorse.jlib.common.proto.ReportTaskReplyPbOrBuilder;
 
 public class ReportTaskReply extends AbstractResponse<ReportTaskReplyPb> {
 

@@ -2,8 +2,8 @@ package io.littlehorse.common.model.wfrun;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.proto.VarNameAndValPb;
-import io.littlehorse.common.proto.VarNameAndValPbOrBuilder;
+import io.littlehorse.jlib.common.proto.VarNameAndValPb;
+import io.littlehorse.jlib.common.proto.VarNameAndValPbOrBuilder;
 
 public class VarNameAndVal extends LHSerializable<VarNameAndValPb> {
 

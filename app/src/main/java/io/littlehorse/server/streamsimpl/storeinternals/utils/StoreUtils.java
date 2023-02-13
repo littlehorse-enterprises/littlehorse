@@ -2,7 +2,7 @@ package io.littlehorse.server.streamsimpl.storeinternals.utils;
 
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.Storeable;
-import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.jlib.common.proto.GETableClassEnumPb;
 
 public class StoreUtils {
 

@@ -47,14 +47,8 @@ dependencies {
     // Utils
     implementation 'org.apache.commons:commons-lang3:3.12.0'
 
-    // gRPC and Protobuf
-    implementation 'com.google.protobuf:protobuf-java:3.21.2'
-    implementation 'com.google.protobuf:protobuf-java-util:3.21.2'
-    implementation 'io.grpc:grpc-netty-shaded:1.50.2'
-    implementation 'io.grpc:grpc-protobuf:1.50.2'
-    implementation 'io.grpc:grpc-services:1.50.2'
-    implementation 'io.grpc:grpc-stub:1.50.2'
-    implementation 'org.apache.tomcat:annotations-api:6.0.53'
+    // gRPC and Protobuf now included in io-littlehorse-jlib
+    implementation 'io.littlehorse.jlib:littlehorse-jlib:0.0.0-ALPHA'
 }
 
 

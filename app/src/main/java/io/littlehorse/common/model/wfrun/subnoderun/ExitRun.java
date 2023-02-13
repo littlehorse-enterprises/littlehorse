@@ -6,10 +6,10 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
 import io.littlehorse.common.model.wfrun.ThreadRun;
-import io.littlehorse.common.proto.ExitRunPb;
-import io.littlehorse.common.proto.ExitRunPbOrBuilder;
-import io.littlehorse.common.proto.LHStatusPb;
-import io.littlehorse.common.proto.TaskResultCodePb;
+import io.littlehorse.jlib.common.proto.ExitRunPb;
+import io.littlehorse.jlib.common.proto.ExitRunPbOrBuilder;
+import io.littlehorse.jlib.common.proto.LHStatusPb;
+import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import java.util.Date;
 
 public class ExitRun extends SubNodeRun<ExitRunPb> {

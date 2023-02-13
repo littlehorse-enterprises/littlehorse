@@ -3,10 +3,10 @@ package io.littlehorse.common.model.meta;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.wfrun.VariableValue;
-import io.littlehorse.common.proto.VariableAssignmentPb;
-import io.littlehorse.common.proto.VariableAssignmentPb.SourceCase;
-import io.littlehorse.common.proto.VariableAssignmentPbOrBuilder;
-import io.littlehorse.common.proto.VariableTypePb;
+import io.littlehorse.jlib.common.proto.VariableAssignmentPb;
+import io.littlehorse.jlib.common.proto.VariableAssignmentPb.SourceCase;
+import io.littlehorse.jlib.common.proto.VariableAssignmentPbOrBuilder;
+import io.littlehorse.jlib.common.proto.VariableTypePb;
 import java.util.HashSet;
 import java.util.Set;
 

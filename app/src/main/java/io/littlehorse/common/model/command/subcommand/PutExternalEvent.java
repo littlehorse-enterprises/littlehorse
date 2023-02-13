@@ -12,11 +12,11 @@ import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.model.wfrun.WfRun;
-import io.littlehorse.common.proto.LHResponseCodePb;
-import io.littlehorse.common.proto.PutExternalEventPb;
-import io.littlehorse.common.proto.PutExternalEventPbOrBuilder;
-import io.littlehorse.common.proto.TaskResultCodePb;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.jlib.common.proto.LHResponseCodePb;
+import io.littlehorse.jlib.common.proto.PutExternalEventPb;
+import io.littlehorse.jlib.common.proto.PutExternalEventPbOrBuilder;
+import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import java.util.Date;
 
 public class PutExternalEvent extends SubCommand<PutExternalEventPb> {

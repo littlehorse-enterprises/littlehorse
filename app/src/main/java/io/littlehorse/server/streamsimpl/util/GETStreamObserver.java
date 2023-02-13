@@ -6,8 +6,8 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
-import io.littlehorse.common.proto.CentralStoreQueryReplyPb;
-import io.littlehorse.common.proto.LHResponseCodePb;
+import io.littlehorse.jlib.common.proto.CentralStoreQueryReplyPb;
+import io.littlehorse.jlib.common.proto.LHResponseCodePb;
 
 public class GETStreamObserver<
     U extends MessageOrBuilder, T extends Storeable<U>, V extends MessageOrBuilder

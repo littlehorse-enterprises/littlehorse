@@ -8,12 +8,12 @@ import io.littlehorse.common.model.command.subcommandresponse.RunWfReply;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.model.wfrun.WfRun;
-import io.littlehorse.common.proto.LHResponseCodePb;
-import io.littlehorse.common.proto.LHStatusPb;
-import io.littlehorse.common.proto.RunWfPb;
-import io.littlehorse.common.proto.RunWfPbOrBuilder;
-import io.littlehorse.common.proto.VariableValuePb;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.jlib.common.proto.LHResponseCodePb;
+import io.littlehorse.jlib.common.proto.LHStatusPb;
+import io.littlehorse.jlib.common.proto.RunWfPb;
+import io.littlehorse.jlib.common.proto.RunWfPbOrBuilder;
+import io.littlehorse.jlib.common.proto.VariableValuePb;
 import java.util.HashMap;
 import java.util.Map;
 

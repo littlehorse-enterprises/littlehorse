@@ -7,10 +7,10 @@ import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.PutExternalEventDefReply;
 import io.littlehorse.common.model.meta.ExternalEventDef;
-import io.littlehorse.common.proto.LHResponseCodePb;
-import io.littlehorse.common.proto.PutExternalEventDefPb;
-import io.littlehorse.common.proto.PutExternalEventDefPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.jlib.common.proto.LHResponseCodePb;
+import io.littlehorse.jlib.common.proto.PutExternalEventDefPb;
+import io.littlehorse.jlib.common.proto.PutExternalEventDefPbOrBuilder;
 
 public class PutExternalEventDef extends SubCommand<PutExternalEventDefPb> {
 

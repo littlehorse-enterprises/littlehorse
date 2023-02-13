@@ -9,11 +9,11 @@ import io.littlehorse.common.model.command.subcommandresponse.PutTaskDefReply;
 import io.littlehorse.common.model.meta.OutputSchema;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.VariableDef;
-import io.littlehorse.common.proto.LHResponseCodePb;
-import io.littlehorse.common.proto.PutTaskDefPb;
-import io.littlehorse.common.proto.PutTaskDefPbOrBuilder;
-import io.littlehorse.common.proto.VariableDefPb;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.jlib.common.proto.LHResponseCodePb;
+import io.littlehorse.jlib.common.proto.PutTaskDefPb;
+import io.littlehorse.jlib.common.proto.PutTaskDefPbOrBuilder;
+import io.littlehorse.jlib.common.proto.VariableDefPb;
 import java.util.ArrayList;
 import java.util.List;
 

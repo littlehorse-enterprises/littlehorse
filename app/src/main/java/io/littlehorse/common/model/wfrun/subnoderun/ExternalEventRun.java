@@ -5,10 +5,10 @@ import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.meta.subnode.ExternalEventNode;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
-import io.littlehorse.common.proto.ExternalEventRunPb;
-import io.littlehorse.common.proto.ExternalEventRunPbOrBuilder;
-import io.littlehorse.common.proto.LHStatusPb;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.jlib.common.proto.ExternalEventRunPb;
+import io.littlehorse.jlib.common.proto.ExternalEventRunPbOrBuilder;
+import io.littlehorse.jlib.common.proto.LHStatusPb;
 import java.util.Date;
 
 public class ExternalEventRun extends SubNodeRun<ExternalEventRunPb> {

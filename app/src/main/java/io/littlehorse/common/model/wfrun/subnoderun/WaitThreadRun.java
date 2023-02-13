@@ -7,12 +7,12 @@ import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
 import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.VariableValue;
-import io.littlehorse.common.proto.LHStatusPb;
-import io.littlehorse.common.proto.TaskResultCodePb;
-import io.littlehorse.common.proto.VariableTypePb;
-import io.littlehorse.common.proto.WaitThreadRunPb;
-import io.littlehorse.common.proto.WaitThreadRunPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.jlib.common.proto.LHStatusPb;
+import io.littlehorse.jlib.common.proto.TaskResultCodePb;
+import io.littlehorse.jlib.common.proto.VariableTypePb;
+import io.littlehorse.jlib.common.proto.WaitThreadRunPb;
+import io.littlehorse.jlib.common.proto.WaitThreadRunPbOrBuilder;
 import java.util.Date;
 
 public class WaitThreadRun extends SubNodeRun<WaitThreadRunPb> {

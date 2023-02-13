@@ -2,8 +2,8 @@ package io.littlehorse.common.model.wfrun;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.proto.PendingFailureHandlerPb;
-import io.littlehorse.common.proto.PendingFailureHandlerPbOrBuilder;
+import io.littlehorse.jlib.common.proto.PendingFailureHandlerPb;
+import io.littlehorse.jlib.common.proto.PendingFailureHandlerPbOrBuilder;
 
 public class PendingFailureHandler extends LHSerializable<PendingFailureHandlerPb> {
 

@@ -7,9 +7,9 @@ import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.SubNode;
 import io.littlehorse.common.model.wfrun.subnoderun.ExternalEventRun;
-import io.littlehorse.common.proto.ExternalEventNodePb;
-import io.littlehorse.common.proto.ExternalEventNodePbOrBuilder;
 import io.littlehorse.common.util.LHGlobalMetaStores;
+import io.littlehorse.jlib.common.proto.ExternalEventNodePb;
+import io.littlehorse.jlib.common.proto.ExternalEventNodePbOrBuilder;
 import java.util.Date;
 
 public class ExternalEventNode extends SubNode<ExternalEventNodePb> {

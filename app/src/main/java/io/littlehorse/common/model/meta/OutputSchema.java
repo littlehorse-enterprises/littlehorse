@@ -2,9 +2,9 @@ package io.littlehorse.common.model.meta;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.proto.OutputSchemaPb;
-import io.littlehorse.common.proto.OutputSchemaPbOrBuilder;
-import io.littlehorse.common.proto.VariableTypePb;
+import io.littlehorse.jlib.common.proto.OutputSchemaPb;
+import io.littlehorse.jlib.common.proto.OutputSchemaPbOrBuilder;
+import io.littlehorse.jlib.common.proto.VariableTypePb;
 
 public class OutputSchema extends LHSerializable<OutputSchemaPb> {
 

@@ -3,8 +3,8 @@ package io.littlehorse.common.model.meta;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.proto.EdgePb;
-import io.littlehorse.common.proto.EdgePbOrBuilder;
+import io.littlehorse.jlib.common.proto.EdgePb;
+import io.littlehorse.jlib.common.proto.EdgePbOrBuilder;
 import java.util.HashSet;
 import java.util.Set;
 

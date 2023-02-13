@@ -9,10 +9,10 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.VariableValue;
-import io.littlehorse.common.proto.FailureDefPb;
-import io.littlehorse.common.proto.FailureDefPbOrBuilder;
-import io.littlehorse.common.proto.TaskResultCodePb;
-import io.littlehorse.common.proto.VariableTypePb;
+import io.littlehorse.jlib.common.proto.FailureDefPb;
+import io.littlehorse.jlib.common.proto.FailureDefPbOrBuilder;
+import io.littlehorse.jlib.common.proto.TaskResultCodePb;
+import io.littlehorse.jlib.common.proto.VariableTypePb;
 import java.util.HashSet;
 import java.util.Set;
 

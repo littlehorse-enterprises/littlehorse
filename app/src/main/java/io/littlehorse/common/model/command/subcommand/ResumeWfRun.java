@@ -8,9 +8,9 @@ import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.ResumeWfRunReply;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.wfrun.WfRun;
-import io.littlehorse.common.proto.LHResponseCodePb;
-import io.littlehorse.common.proto.ResumeWfRunPb;
-import io.littlehorse.common.proto.ResumeWfRunPbOrBuilder;
+import io.littlehorse.jlib.common.proto.LHResponseCodePb;
+import io.littlehorse.jlib.common.proto.ResumeWfRunPb;
+import io.littlehorse.jlib.common.proto.ResumeWfRunPbOrBuilder;
 
 public class ResumeWfRun extends SubCommand<ResumeWfRunPb> {
 

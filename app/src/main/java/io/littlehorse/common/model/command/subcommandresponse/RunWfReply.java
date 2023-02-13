@@ -2,8 +2,8 @@ package io.littlehorse.common.model.command.subcommandresponse;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.command.AbstractResponse;
-import io.littlehorse.common.proto.RunWfReplyPb;
-import io.littlehorse.common.proto.RunWfReplyPbOrBuilder;
+import io.littlehorse.jlib.common.proto.RunWfReplyPb;
+import io.littlehorse.jlib.common.proto.RunWfReplyPbOrBuilder;
 
 public class RunWfReply extends AbstractResponse<RunWfReplyPb> {
 

@@ -3,8 +3,8 @@ package io.littlehorse.common.model.wfrun.haltreason;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.wfrun.WfRun;
-import io.littlehorse.common.proto.ManualHaltPb;
-import io.littlehorse.common.proto.ManualHaltPbOrBuilder;
+import io.littlehorse.jlib.common.proto.ManualHaltPb;
+import io.littlehorse.jlib.common.proto.ManualHaltPbOrBuilder;
 
 public class ManualHalt
     extends LHSerializable<ManualHaltPb>

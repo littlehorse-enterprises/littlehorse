@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.proto.ComparatorPb;
-import io.littlehorse.common.proto.EdgeConditionPb;
-import io.littlehorse.common.proto.EdgeConditionPbOrBuilder;
+import io.littlehorse.jlib.common.proto.ComparatorPb;
+import io.littlehorse.jlib.common.proto.EdgeConditionPb;
+import io.littlehorse.jlib.common.proto.EdgeConditionPbOrBuilder;
 import java.util.HashSet;
 import java.util.Set;
 

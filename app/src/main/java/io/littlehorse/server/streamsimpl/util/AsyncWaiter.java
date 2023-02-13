@@ -1,7 +1,7 @@
 package io.littlehorse.server.streamsimpl.util;
 
 import io.grpc.stub.StreamObserver;
-import io.littlehorse.common.proto.WaitForCommandReplyPb;
+import io.littlehorse.jlib.common.proto.WaitForCommandReplyPb;
 import java.util.Date;
 
 public class AsyncWaiter {

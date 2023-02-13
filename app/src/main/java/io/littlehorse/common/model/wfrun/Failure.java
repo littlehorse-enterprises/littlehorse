@@ -2,9 +2,9 @@ package io.littlehorse.common.model.wfrun;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.proto.FailurePb;
-import io.littlehorse.common.proto.FailurePbOrBuilder;
-import io.littlehorse.common.proto.TaskResultCodePb;
+import io.littlehorse.jlib.common.proto.FailurePb;
+import io.littlehorse.jlib.common.proto.FailurePbOrBuilder;
+import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 
 public class Failure extends LHSerializable<FailurePb> {
 

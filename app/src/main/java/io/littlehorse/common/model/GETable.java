@@ -9,7 +9,7 @@ import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
-import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.jlib.common.proto.GETableClassEnumPb;
 import java.util.Date;
 
 public abstract class GETable<T extends MessageOrBuilder> extends Storeable<T> {

@@ -3,8 +3,8 @@ package io.littlehorse.common.model.command.subcommandresponse;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.meta.TaskDef;
-import io.littlehorse.common.proto.PutTaskDefReplyPb;
-import io.littlehorse.common.proto.PutTaskDefReplyPbOrBuilder;
+import io.littlehorse.jlib.common.proto.PutTaskDefReplyPb;
+import io.littlehorse.jlib.common.proto.PutTaskDefReplyPbOrBuilder;
 
 public class PutTaskDefReply extends AbstractResponse<PutTaskDefReplyPb> {
 

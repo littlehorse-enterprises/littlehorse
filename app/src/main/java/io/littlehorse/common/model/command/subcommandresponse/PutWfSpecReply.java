@@ -3,8 +3,8 @@ package io.littlehorse.common.model.command.subcommandresponse;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.proto.PutWfSpecReplyPb;
-import io.littlehorse.common.proto.PutWfSpecReplyPbOrBuilder;
+import io.littlehorse.jlib.common.proto.PutWfSpecReplyPb;
+import io.littlehorse.jlib.common.proto.PutWfSpecReplyPbOrBuilder;
 
 public class PutWfSpecReply extends AbstractResponse<PutWfSpecReplyPb> {
 

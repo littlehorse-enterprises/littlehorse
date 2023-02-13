@@ -1,15 +1,15 @@
 package io.littlehorse.server.streamsimpl.searchutils.publicrequests;
 
 import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.proto.BookmarkPb;
-import io.littlehorse.common.proto.GETableClassEnumPb;
-import io.littlehorse.common.proto.LHInternalSearchPb.PrefixCase;
-import io.littlehorse.common.proto.SearchNodeRunPb;
-import io.littlehorse.common.proto.SearchNodeRunPb.NoderunCriteriaCase;
-import io.littlehorse.common.proto.SearchNodeRunPb.StatusAndTaskDefPb;
-import io.littlehorse.common.proto.SearchNodeRunPbOrBuilder;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.jlib.common.proto.BookmarkPb;
+import io.littlehorse.jlib.common.proto.GETableClassEnumPb;
+import io.littlehorse.jlib.common.proto.LHInternalSearchPb.PrefixCase;
+import io.littlehorse.jlib.common.proto.SearchNodeRunPb;
+import io.littlehorse.jlib.common.proto.SearchNodeRunPb.NoderunCriteriaCase;
+import io.littlehorse.jlib.common.proto.SearchNodeRunPb.StatusAndTaskDefPb;
+import io.littlehorse.jlib.common.proto.SearchNodeRunPbOrBuilder;
 import io.littlehorse.server.streamsimpl.searchutils.LHInternalSearch;
 import io.littlehorse.server.streamsimpl.searchutils.LHPublicSearch;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;

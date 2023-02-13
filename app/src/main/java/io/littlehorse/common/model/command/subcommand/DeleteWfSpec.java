@@ -6,8 +6,8 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
-import io.littlehorse.common.proto.DeleteWfSpecPb;
-import io.littlehorse.common.proto.DeleteWfSpecPbOrBuilder;
+import io.littlehorse.jlib.common.proto.DeleteWfSpecPb;
+import io.littlehorse.jlib.common.proto.DeleteWfSpecPbOrBuilder;
 
 public class DeleteWfSpec extends SubCommand<DeleteWfSpecPb> {
 

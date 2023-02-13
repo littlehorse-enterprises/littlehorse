@@ -3,8 +3,8 @@ package io.littlehorse.common.model.command.subcommandresponse;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.meta.ExternalEventDef;
-import io.littlehorse.common.proto.PutExternalEventDefReplyPb;
-import io.littlehorse.common.proto.PutExternalEventDefReplyPbOrBuilder;
+import io.littlehorse.jlib.common.proto.PutExternalEventDefReplyPb;
+import io.littlehorse.jlib.common.proto.PutExternalEventDefReplyPbOrBuilder;
 
 public class PutExternalEventDefReply
     extends AbstractResponse<PutExternalEventDefReplyPb> {

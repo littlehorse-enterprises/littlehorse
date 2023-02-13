@@ -2,10 +2,10 @@ package io.littlehorse.common;
 
 import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.common.model.wfrun.VariableValue;
-import io.littlehorse.common.proto.HostInfoPb;
-import io.littlehorse.common.proto.VariableAssignmentPb.SourceCase;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.jlib.common.proto.HostInfoPb;
+import io.littlehorse.jlib.common.proto.VariableAssignmentPb.SourceCase;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;

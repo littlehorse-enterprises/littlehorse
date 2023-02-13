@@ -5,9 +5,9 @@ import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.WfRun;
-import io.littlehorse.common.proto.LHStatusPb;
-import io.littlehorse.common.proto.ParentHaltedPb;
-import io.littlehorse.common.proto.ParentHaltedPbOrBuilder;
+import io.littlehorse.jlib.common.proto.LHStatusPb;
+import io.littlehorse.jlib.common.proto.ParentHaltedPb;
+import io.littlehorse.jlib.common.proto.ParentHaltedPbOrBuilder;
 
 public class ParentHalted
     extends LHSerializable<ParentHaltedPb>

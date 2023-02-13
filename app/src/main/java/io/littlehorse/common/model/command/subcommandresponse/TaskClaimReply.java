@@ -3,8 +3,8 @@ package io.littlehorse.common.model.command.subcommandresponse;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
-import io.littlehorse.common.proto.PollTaskReplyPb;
-import io.littlehorse.common.proto.PollTaskReplyPbOrBuilder;
+import io.littlehorse.jlib.common.proto.PollTaskReplyPb;
+import io.littlehorse.jlib.common.proto.PollTaskReplyPbOrBuilder;
 
 public class TaskClaimReply extends AbstractResponse<PollTaskReplyPb> {
 

@@ -3,9 +3,9 @@ package io.littlehorse.common.model.command;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.Storeable;
-import io.littlehorse.common.proto.CommandResultPb;
-import io.littlehorse.common.proto.CommandResultPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.jlib.common.proto.CommandResultPb;
+import io.littlehorse.jlib.common.proto.CommandResultPbOrBuilder;
 import java.util.Date;
 
 // TODO: May need to find a more appropriate directory for this file.

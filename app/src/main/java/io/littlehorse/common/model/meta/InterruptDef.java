@@ -6,9 +6,9 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.proto.InterruptDefPb;
-import io.littlehorse.common.proto.InterruptDefPbOrBuilder;
 import io.littlehorse.common.util.LHGlobalMetaStores;
+import io.littlehorse.jlib.common.proto.InterruptDefPb;
+import io.littlehorse.jlib.common.proto.InterruptDefPbOrBuilder;
 
 public class InterruptDef extends LHSerializable<InterruptDefPb> {
 

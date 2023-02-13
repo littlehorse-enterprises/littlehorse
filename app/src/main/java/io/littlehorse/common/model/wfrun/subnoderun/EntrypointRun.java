@@ -2,8 +2,8 @@ package io.littlehorse.common.model.wfrun.subnoderun;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
-import io.littlehorse.common.proto.EntrypointRunPb;
-import io.littlehorse.common.proto.EntrypointRunPbOrBuilder;
+import io.littlehorse.jlib.common.proto.EntrypointRunPb;
+import io.littlehorse.jlib.common.proto.EntrypointRunPbOrBuilder;
 import java.util.Date;
 
 public class EntrypointRun extends SubNodeRun<EntrypointRunPb> {

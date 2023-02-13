@@ -2,8 +2,8 @@ package io.littlehorse.common.model.meta;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePb;
-import io.littlehorse.common.proto.VariableMutationPb.NodeOutputSourcePbOrBuilder;
+import io.littlehorse.jlib.common.proto.VariableMutationPb.NodeOutputSourcePb;
+import io.littlehorse.jlib.common.proto.VariableMutationPb.NodeOutputSourcePbOrBuilder;
 
 public class NodeOutputSource extends LHSerializable<NodeOutputSourcePb> {
 

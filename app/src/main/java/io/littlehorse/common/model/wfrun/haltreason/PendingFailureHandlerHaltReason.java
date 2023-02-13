@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.wfrun.WfRun;
-import io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPb;
-import io.littlehorse.common.proto.PendingFailureHandlerHaltReasonPbOrBuilder;
+import io.littlehorse.jlib.common.proto.PendingFailureHandlerHaltReasonPb;
+import io.littlehorse.jlib.common.proto.PendingFailureHandlerHaltReasonPbOrBuilder;
 
 public class PendingFailureHandlerHaltReason
     extends LHSerializable<PendingFailureHandlerHaltReasonPb>

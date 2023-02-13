@@ -8,10 +8,10 @@ import io.littlehorse.common.model.meta.SubNode;
 import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.subnoderun.SleepNodeRun;
-import io.littlehorse.common.proto.SleepNodePb;
-import io.littlehorse.common.proto.SleepNodePb.SleepLengthCase;
-import io.littlehorse.common.proto.SleepNodePbOrBuilder;
 import io.littlehorse.common.util.LHGlobalMetaStores;
+import io.littlehorse.jlib.common.proto.SleepNodePb;
+import io.littlehorse.jlib.common.proto.SleepNodePb.SleepLengthCase;
+import io.littlehorse.jlib.common.proto.SleepNodePbOrBuilder;
 import java.time.Instant;
 import java.util.Date;
 

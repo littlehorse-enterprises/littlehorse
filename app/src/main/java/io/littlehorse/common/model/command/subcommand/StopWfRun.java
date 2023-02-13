@@ -8,9 +8,9 @@ import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.StopWfRunReply;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.wfrun.WfRun;
-import io.littlehorse.common.proto.LHResponseCodePb;
-import io.littlehorse.common.proto.StopWfRunPb;
-import io.littlehorse.common.proto.StopWfRunPbOrBuilder;
+import io.littlehorse.jlib.common.proto.LHResponseCodePb;
+import io.littlehorse.jlib.common.proto.StopWfRunPb;
+import io.littlehorse.jlib.common.proto.StopWfRunPbOrBuilder;
 
 public class StopWfRun extends SubCommand<StopWfRunPb> {
 

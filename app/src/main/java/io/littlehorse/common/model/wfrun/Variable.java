@@ -3,10 +3,10 @@ package io.littlehorse.common.model.wfrun;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.GETable;
-import io.littlehorse.common.proto.VariablePb;
-import io.littlehorse.common.proto.VariablePbOrBuilder;
-import io.littlehorse.common.proto.VariableTypePb;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.jlib.common.proto.VariablePb;
+import io.littlehorse.jlib.common.proto.VariablePbOrBuilder;
+import io.littlehorse.jlib.common.proto.VariableTypePb;
 import java.util.Date;
 
 public class Variable extends GETable<VariablePb> {

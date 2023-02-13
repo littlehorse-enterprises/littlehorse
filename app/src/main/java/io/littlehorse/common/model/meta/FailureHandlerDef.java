@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.proto.FailureHandlerDefPb;
-import io.littlehorse.common.proto.FailureHandlerDefPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.jlib.common.proto.FailureHandlerDefPb;
+import io.littlehorse.jlib.common.proto.FailureHandlerDefPbOrBuilder;
 
 public class FailureHandlerDef extends LHSerializable<FailureHandlerDefPb> {
 

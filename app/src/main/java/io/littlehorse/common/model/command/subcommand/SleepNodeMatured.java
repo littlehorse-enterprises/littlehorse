@@ -8,9 +8,9 @@ import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.wfrun.WfRun;
-import io.littlehorse.common.proto.SleepNodeMaturedPb;
-import io.littlehorse.common.proto.SleepNodeMaturedPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.jlib.common.proto.SleepNodeMaturedPb;
+import io.littlehorse.jlib.common.proto.SleepNodeMaturedPbOrBuilder;
 
 public class SleepNodeMatured extends SubCommand<SleepNodeMaturedPb> {
 
