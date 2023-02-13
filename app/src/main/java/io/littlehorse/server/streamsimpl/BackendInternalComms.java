@@ -803,7 +803,7 @@ public class BackendInternalComms implements Closeable {
         InternalSearchReplyPb.Builder out = InternalSearchReplyPb.newBuilder();
 
         // iterate through all active and standby local partitions
-        for (int partition : getLocalCommandProcessorPartitions()) {
+        for (int partition : getLocalActiveCommandProcessorPartitions()) {
             LHROStoreWrapper partStore = getLocalStore(partition, false);
             if (reqBookmark.getCompletedPartitionsList().contains(partition)) {
                 // This partition has already been accounted for
@@ -906,17 +906,14 @@ public class BackendInternalComms implements Closeable {
         return Pair.of(idsOut, bmOut);
     }
 
-    private Set<Integer> getLocalCommandProcessorPartitions() {
+    private Set<Integer> getLocalActiveCommandProcessorPartitions() {
         Set<Integer> out = new HashSet<>();
 
         for (ThreadMetadata thread : coreStreams.metadataForLocalThreads()) {
             for (TaskMetadata activeTask : thread.activeTasks()) {
-                // We only want to query
-                if (isCommandProcessor(activeTask, config)) {
-                    out.add(activeTask.taskId().partition());
-                }
-            }
-            for (TaskMetadata activeTask : thread.standbyTasks()) {
+                // We only want to query active partitions.
+                // Additionally, there may be many tasks...we only want the ones
+                // that are for the command processor.
                 if (isCommandProcessor(activeTask, config)) {
                     out.add(activeTask.taskId().partition());
                 }

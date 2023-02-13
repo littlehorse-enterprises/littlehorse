@@ -310,7 +310,7 @@ public class LHConfig {
         );
         props.put(
             StreamsConfig.consumerPrefix(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG),
-            10000
+            25 * 1000
         );
         props.put(StreamsConfig.METADATA_MAX_AGE_CONFIG, 1000 * 30);
         props.put(

@@ -42,6 +42,9 @@ public class LHInternalSearch extends LHSerializable<LHInternalSearchPb> {
             .setObjectType(objectType);
 
         if (bookmark != null) out.setBookmark(bookmark);
+        if (partitionKey != null) {
+            out.setPartitionKey(partitionKey);
+        }
 
         switch (prefixType) {
             case OBJECT_ID_PREFIX:
@@ -66,6 +69,7 @@ public class LHInternalSearch extends LHSerializable<LHInternalSearchPb> {
         limit = p.getLimit();
         objectType = p.getObjectType();
         if (p.hasBookmark()) bookmark = p.getBookmark();
+        if (p.hasPartitionKey()) partitionKey = p.getPartitionKey();
 
         prefixType = p.getPrefixCase();
         switch (prefixType) {
