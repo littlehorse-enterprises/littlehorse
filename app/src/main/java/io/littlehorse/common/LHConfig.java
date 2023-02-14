@@ -4,6 +4,7 @@ import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.jlib.common.config.LHServerConfig;
 import io.littlehorse.jlib.common.proto.HostInfoPb;
 import io.littlehorse.jlib.common.proto.VariableAssignmentPb.SourceCase;
 import java.util.Collections;
@@ -27,9 +28,8 @@ import org.apache.kafka.common.utils.Utils;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.state.HostInfo;
 
-public class LHConfig {
+public class LHConfig extends LHServerConfig {
 
-    private Properties props;
     private Admin kafkaAdmin;
     private LHProducer producer;
     private LHProducer txnProducer;
@@ -45,7 +45,7 @@ public class LHConfig {
     }
 
     public String getKafkaTopicPrefix() {
-        return getOrSetDefault(LHConstants.KAFKA_TOPIC_PREFIX_KEY, "");
+        return getOrSetDefault(LHServerConfig.KAFKA_TOPIC_PREFIX_KEY, "");
     }
 
     public String getCoreCmdTopicName() {
@@ -67,13 +67,13 @@ public class LHConfig {
     // TODO: Determine how and where to set the topic names for TaskDef queues
 
     public String getBootstrapServers() {
-        return getOrSetDefault(LHConstants.KAFKA_BOOTSTRAP_KEY, "localhost:9092");
+        return getOrSetDefault(LHServerConfig.KAFKA_BOOTSTRAP_KEY, "localhost:9092");
     }
 
     public short getReplicationFactor() {
         return Short.valueOf(
             String.class.cast(
-                    props.getOrDefault(LHConstants.REPLICATION_FACTOR_KEY, "1")
+                    props.getOrDefault(LHServerConfig.REPLICATION_FACTOR_KEY, "1")
                 )
         );
     }
@@ -81,7 +81,7 @@ public class LHConfig {
     public int getClusterPartitions() {
         return Integer.valueOf(
             String.class.cast(
-                    props.getOrDefault(LHConstants.CLUSTER_PARTITIONS_KEY, "72")
+                    props.getOrDefault(LHServerConfig.CLUSTER_PARTITIONS_KEY, "72")
                 )
         );
     }
@@ -91,29 +91,35 @@ public class LHConfig {
     }
 
     public String getKafkaGroupId() {
-        return getOrSetDefault(LHConstants.KAFKA_GROUP_ID_KEY, "unset-group-id-bad");
+        return getOrSetDefault(
+            LHServerConfig.KAFKA_GROUP_ID_KEY,
+            "unset-group-id-bad"
+        );
     }
 
     public String getKafkaInstanceId() {
         return getOrSetDefault(
-            LHConstants.KAFKA_GROUP_IID_KEY,
+            LHServerConfig.KAFKA_GROUP_IID_KEY,
             "Unset-group-iid-bad"
         );
     }
 
     public String getStateDirectory() {
-        return getOrSetDefault(LHConstants.KAFKA_STATE_DIR_KEY, "/tmp/kafkaState");
+        return getOrSetDefault(LHServerConfig.KAFKA_STATE_DIR_KEY, "/tmp/kafkaState");
     }
 
     public String getInternalAdvertisedHost() {
-        return getOrSetDefault(LHConstants.INTERNAL_ADVERTISED_HOST_KEY, "localhost");
+        return getOrSetDefault(
+            LHServerConfig.INTERNAL_ADVERTISED_HOST_KEY,
+            "localhost"
+        );
     }
 
     // If INTERNAL_ADVERTISED_PORT isn't set, we return INTERNAL_BIND_PORT.
     public int getInternalAdvertisedPort() {
         return Integer.valueOf(
             getOrSetDefault(
-                LHConstants.INTERNAL_ADVERTISED_PORT_KEY,
+                LHServerConfig.INTERNAL_ADVERTISED_PORT_KEY,
                 Integer.valueOf(getInternalBindPort()).toString()
             )
         );
@@ -121,7 +127,7 @@ public class LHConfig {
 
     public int getApiBindPort() {
         return Integer.valueOf(
-            getOrSetDefault(LHConstants.API_BIND_PORT_KEY, "5000")
+            getOrSetDefault(LHServerConfig.API_BIND_PORT_KEY, "5000")
         );
     }
 
@@ -129,7 +135,7 @@ public class LHConfig {
     public int getInternalBindPort() {
         return Integer.valueOf(
             getOrSetDefault(
-                LHConstants.INTERNAL_BIND_PORT_KEY,
+                LHServerConfig.INTERNAL_BIND_PORT_KEY,
                 Integer.valueOf(getApiBindPort() + 1).toString()
             )
         );
@@ -145,8 +151,8 @@ public class LHConfig {
         publicAdvertisedHostMap = new HashMap<>();
 
         String listenerNames = getOrSetDefault(
-            LHConstants.ADVERTISED_LISTENERS_KEY,
-            LHConstants.DEFAULT_PUBLIC_LISTENER
+            LHServerConfig.ADVERTISED_LISTENERS_KEY,
+            LHServerConfig.DEFAULT_PUBLIC_LISTENER
         );
         System.out.println("Listener names are " + listenerNames);
 
@@ -315,7 +321,9 @@ public class LHConfig {
         props.put(StreamsConfig.METADATA_MAX_AGE_CONFIG, 1000 * 30);
         props.put(
             StreamsConfig.NUM_STREAM_THREADS_CONFIG,
-            Integer.valueOf(getOrSetDefault(LHConstants.NUM_STREAM_THREADS_KEY, "1"))
+            Integer.valueOf(
+                getOrSetDefault(LHServerConfig.NUM_STREAM_THREADS_KEY, "1")
+            )
         );
         props.put(StreamsConfig.TASK_TIMEOUT_MS_CONFIG, 10 * 1000);
         props.put(
@@ -348,18 +356,18 @@ public class LHConfig {
     }
 
     public String getRackId() {
-        return getOrSetDefault(LHConstants.RACK_ID_KEY, "unset-rack-id-bad-bad");
+        return getOrSetDefault(LHServerConfig.RACK_ID_KEY, "unset-rack-id-bad-bad");
     }
 
     public int getStreamsCommitInterval() {
         return Integer.valueOf(
-            getOrSetDefault(LHConstants.COMMIT_INTERVAL_KEY, "100")
+            getOrSetDefault(LHServerConfig.COMMIT_INTERVAL_KEY, "100")
         );
     }
 
     public VariableAssignment getDefaultTaskTimeout() {
         int timeout = Integer.valueOf(
-            getOrSetDefault(LHConstants.DEFAULT_TIMEOUT_KEY, "10")
+            getOrSetDefault(LHServerConfig.DEFAULT_TIMEOUT_KEY, "10")
         );
 
         VariableValue val = new VariableValue(timeout);
@@ -371,13 +379,13 @@ public class LHConfig {
 
     public int getStandbyReplicas() {
         return Integer.valueOf(
-            getOrSetDefault(LHConstants.NUM_STANDBY_REPLICAS_KEY, "0")
+            getOrSetDefault(LHServerConfig.NUM_STANDBY_REPLICAS_KEY, "0")
         );
     }
 
     public int getWarmupReplicas() {
         return Integer.valueOf(
-            getOrSetDefault(LHConstants.NUM_WARMUP_REPLICAS_KEY, "12")
+            getOrSetDefault(LHServerConfig.NUM_WARMUP_REPLICAS_KEY, "12")
         );
     }
 
@@ -409,16 +417,5 @@ public class LHConfig {
             getBootstrapServers()
         );
         this.kafkaAdmin = Admin.create(akProperties);
-    }
-
-    private String getOrSetDefault(String key, String defaultVal) {
-        String result = String.class.cast(props.get(key));
-
-        if (result == null) {
-            props.setProperty(key, defaultVal);
-            return defaultVal;
-        } else {
-            return result;
-        }
     }
 }
