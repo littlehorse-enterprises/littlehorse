@@ -1,11 +1,13 @@
 package io.littlehorse.server.streamsimpl.taskqueue;
 
 import io.grpc.stub.StreamObserver;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.PollTaskPb;
 import io.littlehorse.jlib.common.proto.PollTaskReplyPb;
+import org.apache.log4j.Logger;
 
 public class PollTaskRequestObserver implements StreamObserver<PollTaskPb> {
+
+    private static final Logger log = Logger.getLogger(PollTaskRequestObserver.class);
 
     private StreamObserver<PollTaskReplyPb> responseObserver;
     private TaskQueueManager taskQueueManager;
@@ -35,8 +37,15 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskPb> {
 
     @Override
     public void onError(Throwable t) {
+        log.info(
+            "Instance " +
+            taskQueueManager.backend.getInstanceId() +
+            ": Client " +
+            clientId +
+            " disconnected from task queue " +
+            taskDefName
+        );
         taskQueueManager.onRequestDisconnected(this);
-        LHUtil.log("Client", clientId, ": disconnected.");
     }
 
     @Override
@@ -48,10 +57,11 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskPb> {
         if (taskDefName == null) {
             taskDefName = req.getTaskDefName();
         } else if (!taskDefName.equals(req.getTaskDefName())) {
-            LHUtil.log(
-                "TaskDefName not null: ",
-                taskDefName,
-                "but doesnt match " + req.getTaskDefName()
+            log.error(
+                "TaskDefName not null: " +
+                taskDefName +
+                " but doesnt match " +
+                req.getTaskDefName()
             );
         }
 

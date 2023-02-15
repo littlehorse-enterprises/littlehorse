@@ -13,6 +13,7 @@ import java.util.Date;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
+import org.apache.log4j.Logger;
 
 public class CommandProcessor
     implements Processor<String, Command, String, CommandProcessorOutput> {
@@ -21,6 +22,7 @@ public class CommandProcessor
     private KafkaStreamsLHDAOImpl dao;
     private LHConfig config;
     private KafkaStreamsServerImpl server;
+    private static final Logger log = Logger.getLogger(CommandProcessor.class);
 
     public CommandProcessor(LHConfig config, KafkaStreamsServerImpl server) {
         this.config = config;
@@ -40,6 +42,14 @@ public class CommandProcessor
     public void process(final Record<String, Command> commandRecord) {
         Command command = commandRecord.value();
         dao.setCommand(command);
+        log.debug(
+            String.format(
+                "%s Processing command of type %s with commandId %s on partition ",
+                config.getKafkaInstanceId(),
+                command.type,
+                command.getPartitionKey()
+            )
+        );
         try {
             AbstractResponse<?> response = command.process(dao, config);
             dao.commitChanges();

@@ -12,7 +12,7 @@ public class TaskQueueManager {
 
     private Map<String, OneTaskQueue> taskQueues;
     private ReadWriteLock taskQueuesLock;
-    private KafkaStreamsServerImpl backend;
+    public KafkaStreamsServerImpl backend;
 
     public TaskQueueManager(KafkaStreamsServerImpl backend) {
         this.taskQueues = new HashMap<>();

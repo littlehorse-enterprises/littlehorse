@@ -6,10 +6,13 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import org.apache.log4j.Logger;
 
 // One instance of this class is responsible for coordinating the grpc backend for
 // one specific TaskDef on one LH Server host.
 public class OneTaskQueue {
+
+    private final Logger log = Logger.getLogger(OneTaskQueue.class);
 
     private Queue<PollTaskRequestObserver> hungryClients;
     private Lock lock;
@@ -18,6 +21,7 @@ public class OneTaskQueue {
     private TaskQueueManager parent;
 
     private String taskDefName;
+    private String hostName;
 
     public OneTaskQueue(String taskDefName, TaskQueueManager parent) {
         this.taskDefName = taskDefName;
@@ -25,6 +29,7 @@ public class OneTaskQueue {
         this.hungryClients = new LinkedList<>();
         this.lock = new ReentrantLock();
         this.parent = parent;
+        hostName = parent.backend.getInstanceId();
     }
 
     /**
@@ -39,7 +44,19 @@ public class OneTaskQueue {
 
         try {
             lock.lock();
-            hungryClients.removeIf(thing -> thing.equals(disconnectedObserver));
+            hungryClients.removeIf(thing -> {
+                log.debug(
+                    "Instance " +
+                    parent.backend.getInstanceId() +
+                    ": Removing task queue observer for taskdef " +
+                    taskDefName +
+                    " with client id " +
+                    disconnectedObserver.getClientId() +
+                    ": " +
+                    disconnectedObserver
+                );
+                return thing.equals(disconnectedObserver);
+            });
         } finally {
             lock.unlock();
         }
@@ -66,6 +83,15 @@ public class OneTaskQueue {
         // 2. There are no clients waiting for requests. In this case, we just
         //    add the task id to the taskid list.
 
+        log.debug(
+            "Instance " +
+            hostName +
+            ": Task scheduled for wfRun " +
+            tsrId.wfRunId +
+            ", queue is empty? " +
+            hungryClients.isEmpty()
+        );
+
         PollTaskRequestObserver luckyClient = null;
         // long result = 0;
         // long start = System.nanoTime();
@@ -86,13 +112,6 @@ public class OneTaskQueue {
             }
         } finally {
             lock.unlock();
-            // result = System.nanoTime() - start;
-            // if (result > 100) {
-            //     LHUtil.log("Took", result, "ns");
-            // }
-            // if (hungryClients.size() > 2) {
-            //     LHUtil.log("Hungry Clients size: " + hungryClients.size());
-            // }
         }
 
         // pull this outside of protected zone for performance.
@@ -113,6 +132,13 @@ public class OneTaskQueue {
         if (!taskDefName.equals(requestObserver.getTaskDefName())) {
             throw new RuntimeException("Not possible, got mismatched taskdef name");
         }
+
+        log.debug(
+            "Instance " +
+            hostName +
+            ": Poll request received for taskDef " +
+            taskDefName
+        );
 
         // There's two cases here:
         // 1. There are pending Task Id's in the queue, which means that there

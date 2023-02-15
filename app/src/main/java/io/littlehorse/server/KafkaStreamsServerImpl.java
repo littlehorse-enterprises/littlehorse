@@ -114,13 +114,16 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import org.apache.kafka.common.Metric;
 import org.apache.kafka.common.MetricName;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KafkaStreams.State;
+import org.apache.log4j.Logger;
 
 public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
+    private static final Logger log = Logger.getLogger(KafkaStreamsServerImpl.class);
     private LHConfig config;
     private Server grpcServer;
     private TaskQueueManager taskQueueManager;
@@ -163,6 +166,10 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             ServerBuilder
                 .forPort(config.getApiBindPort())
                 .addService(this)
+                .keepAliveTime(10, TimeUnit.SECONDS)
+                .keepAliveTimeout(3, TimeUnit.SECONDS)
+                .permitKeepAliveTime(10, TimeUnit.SECONDS)
+                .permitKeepAliveWithoutCalls(true)
                 .executor(executor)
                 .build();
 
@@ -179,6 +186,10 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         internalComms = new BackendInternalComms(config, coreStreams);
     }
 
+    public String getInstanceId() {
+        return config.getKafkaInstanceId();
+    }
+
     @Override
     public void getWfSpec(GetWfSpecPb req, StreamObserver<GetWfSpecReplyPb> ctx) {
         StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
@@ -187,6 +198,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             GetWfSpecReplyPb.class,
             config
         );
+
+        log.info("Instance " + getInstanceId() + " received getWfSpec request");
 
         if (req.hasVersion()) {
             internalComms.getBytesAsync(
@@ -826,7 +839,6 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         })
             .start();
 
-        System.out.println("Hello there!");
         latch.await();
         System.out.println("Done waiting for countdown latch");
     }

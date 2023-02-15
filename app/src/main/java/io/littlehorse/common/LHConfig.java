@@ -92,14 +92,14 @@ public class LHConfig extends LHServerConfig {
 
     public String getKafkaGroupId() {
         return getOrSetDefault(
-            LHServerConfig.KAFKA_GROUP_ID_KEY,
+            LHServerConfig.LH_CLUSTER_ID_KEY,
             "unset-group-id-bad"
         );
     }
 
     public String getKafkaInstanceId() {
         return getOrSetDefault(
-            LHServerConfig.KAFKA_GROUP_IID_KEY,
+            LHServerConfig.LH_INSTANCE_ID_KEY,
             "Unset-group-iid-bad"
         );
     }
