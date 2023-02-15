@@ -1,5 +1,6 @@
 package io.littlehorse.common;
 
+import io.grpc.TlsServerCredentials;
 import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.util.LHProducer;
@@ -7,6 +8,8 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.config.LHServerConfig;
 import io.littlehorse.jlib.common.proto.HostInfoPb;
 import io.littlehorse.jlib.common.proto.VariableAssignmentPb.SourceCase;
+import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -27,8 +30,11 @@ import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.common.utils.Utils;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.state.HostInfo;
+import org.apache.log4j.Logger;
 
 public class LHConfig extends LHServerConfig {
+
+    private static final Logger log = Logger.getLogger(LHConfig.class);
 
     private Admin kafkaAdmin;
     private LHProducer producer;
@@ -417,5 +423,36 @@ public class LHConfig extends LHServerConfig {
             getBootstrapServers()
         );
         this.kafkaAdmin = Admin.create(akProperties);
+    }
+
+    public TlsServerCredentials.Builder getServerCreds() {
+        String caCertFile = getOrSetDefault(CA_CERT_KEY, null);
+        String serverCertFile = getOrSetDefault(SERVER_CERT_KEY, null);
+        String serverKeyFile = getOrSetDefault(SERVER_KEY_KEY, null);
+        if (caCertFile == null) {
+            log.info("No ca cert file found, deploying insecure!");
+            return null;
+        }
+
+        if (serverCertFile == null || serverKeyFile == null) {
+            throw new RuntimeException(
+                "CA cert file provided but missing cert or key"
+            );
+        }
+        File serverCert = new File(serverCertFile);
+        File serverKey = new File(serverKeyFile);
+        File rootCA = new File(caCertFile);
+
+        try {
+            TlsServerCredentials.Builder out = TlsServerCredentials
+                .newBuilder()
+                .keyManager(serverCert, serverKey)
+                .trustManager(rootCA)
+                .clientAuth(TlsServerCredentials.ClientAuth.REQUIRE);
+
+            return out;
+        } catch (IOException exn) {
+            throw new RuntimeException(exn);
+        }
     }
 }
