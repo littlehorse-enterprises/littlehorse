@@ -316,7 +316,9 @@ public class LHConfig extends LHServerConfig {
         );
         props.put(
             StreamsConfig.consumerPrefix(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG),
-            25 * 1000
+            Integer.valueOf(
+                getOrSetDefault(LHServerConfig.SESSION_TIMEOUT_KEY, "30000")
+            )
         );
         props.put(StreamsConfig.METADATA_MAX_AGE_CONFIG, 1000 * 30);
         props.put(
