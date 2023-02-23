@@ -52,6 +52,10 @@ public class LHConfig extends LHServerConfig {
         return getKafkaTopicPrefix() + "core-cmd";
     }
 
+    public String getObervabilityEventTopicName() {
+        return getKafkaTopicPrefix() + "observability";
+    }
+
     public String getGlobalMetadataCLTopicName() {
         return getKafkaTopicPrefix() + "global-metadata-cl";
     }

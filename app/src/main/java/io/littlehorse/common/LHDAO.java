@@ -5,6 +5,7 @@ import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.observabilityevent.ObservabilityEvent;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.NodeRun;
@@ -13,6 +14,7 @@ import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import java.util.Date;
+import java.util.List;
 
 /*
  * All PUT() commands throw errors if the processing partition does not match
@@ -104,7 +106,11 @@ public interface LHDAO extends LHGlobalMetaStores {
     /*
      * Commit changes to the backing store.
      */
-    public void commitChanges();
+    public List<ObservabilityEvent> commitChanges();
+
+    public List<ObservabilityEvent> getObservabilityEvents();
+
+    public void addObservabilityEvent(ObservabilityEvent evt);
 
     public LHGlobalMetaStores getGlobalMetaStores();
 }

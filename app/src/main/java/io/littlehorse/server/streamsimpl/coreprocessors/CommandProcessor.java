@@ -4,6 +4,7 @@ import com.google.protobuf.ByteString;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.command.Command;
+import io.littlehorse.common.model.observabilityevent.ObservabilityEvent;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.CommandResultPb;
 import io.littlehorse.jlib.common.proto.StoreQueryStatusPb;
@@ -67,6 +68,18 @@ public class CommandProcessor
                     .build();
 
                 server.onResponseReceived(command.commandId, cmdReply);
+            }
+            for (ObservabilityEvent evt : dao.getObservabilityEvents()) {
+                Record<String, CommandProcessorOutput> out = new Record<String, CommandProcessorOutput>(
+                    command.getPartitionKey(),
+                    new CommandProcessorOutput(
+                        config.getObervabilityEventTopicName(),
+                        evt,
+                        command.getPartitionKey()
+                    ),
+                    System.currentTimeMillis()
+                );
+                ctx.forward(out);
             }
         } catch (Exception exn) {
             exn.printStackTrace();
