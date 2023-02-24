@@ -3,6 +3,9 @@ package io.littlehorse.common.model.wfrun.subnoderun;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.meta.subnode.ExternalEventNode;
+import io.littlehorse.common.model.observabilityevent.ObservabilityEvent;
+import io.littlehorse.common.model.observabilityevent.events.ExtEvtMatchedOe;
+import io.littlehorse.common.model.observabilityevent.events.WaitingForExtEvtOe;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
 import io.littlehorse.common.util.LHUtil;
@@ -75,6 +78,15 @@ public class ExternalEventRun extends SubNodeRun<ExternalEventRunPb> {
 
         externalEventId = evt.getObjectId();
 
+        ExtEvtMatchedOe oe = new ExtEvtMatchedOe();
+        oe.extEvtDefName = externalEventDefName;
+        oe.extEvtGuid = evt.guid;
+        oe.nodeRunPosition = nodeRun.position;
+        oe.threadRunNumber = nodeRun.threadRunNumber;
+        nodeRun.threadRun.wfRun.cmdDao.addObservabilityEvent(
+            new ObservabilityEvent(nodeRun.wfRunId, oe)
+        );
+
         nodeRun.complete(evt.content, time);
         return true;
     }
@@ -93,5 +105,13 @@ public class ExternalEventRun extends SubNodeRun<ExternalEventRunPb> {
     public void arrive(Date time) {
         // Nothing to do
         nodeRun.status = LHStatusPb.RUNNING;
+
+        WaitingForExtEvtOe oe = new WaitingForExtEvtOe();
+        oe.extEvtDefName = externalEventDefName;
+        oe.nodeRunPosition = nodeRun.position;
+        oe.threadRunNumber = nodeRun.threadRunNumber;
+        nodeRun.threadRun.wfRun.cmdDao.addObservabilityEvent(
+            new ObservabilityEvent(nodeRun.wfRunId, oe)
+        );
     }
 }

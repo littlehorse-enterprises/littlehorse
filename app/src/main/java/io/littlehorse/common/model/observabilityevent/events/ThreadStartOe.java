@@ -5,6 +5,7 @@ import io.littlehorse.common.model.observabilityevent.SubEvent;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.jlib.common.proto.ThreadStartOePb;
 import io.littlehorse.jlib.common.proto.ThreadStartOePbOrBuilder;
+import io.littlehorse.jlib.common.proto.ThreadTypePb;
 import io.littlehorse.jlib.common.proto.VariableValuePb;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +15,7 @@ public class ThreadStartOe extends SubEvent<ThreadStartOePb> {
     public Map<String, VariableValue> variables;
     public int threadRunNumber;
     public String threadSpecName;
+    public ThreadTypePb type;
 
     public ThreadStartOe() {
         variables = new HashMap<>();
@@ -27,7 +29,8 @@ public class ThreadStartOe extends SubEvent<ThreadStartOePb> {
         ThreadStartOePb.Builder out = ThreadStartOePb
             .newBuilder()
             .setThreadRunNumber(threadRunNumber)
-            .setThreadSpecName(threadSpecName);
+            .setThreadSpecName(threadSpecName)
+            .setType(type);
 
         for (Map.Entry<String, VariableValue> entry : variables.entrySet()) {
             out.putVariables(entry.getKey(), entry.getValue().toProto().build());
@@ -40,6 +43,7 @@ public class ThreadStartOe extends SubEvent<ThreadStartOePb> {
         ThreadStartOePbOrBuilder p = (ThreadStartOePbOrBuilder) proto;
         threadRunNumber = p.getThreadRunNumber();
         threadSpecName = p.getThreadSpecName();
+        type = p.getType();
 
         for (Map.Entry<String, VariableValuePb> entry : p
             .getVariablesMap()

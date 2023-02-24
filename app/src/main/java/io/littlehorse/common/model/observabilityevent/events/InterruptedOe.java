@@ -10,7 +10,6 @@ public class InterruptedOe extends SubEvent<InterruptedOePb> {
     public String extEvtDefName;
     public String extEvtGuid;
     public int interruptedThread;
-    public int handlerThread;
 
     public Class<InterruptedOePb> getProtoBaseClass() {
         return InterruptedOePb.class;
@@ -19,7 +18,6 @@ public class InterruptedOe extends SubEvent<InterruptedOePb> {
     public InterruptedOePb.Builder toProto() {
         InterruptedOePb.Builder out = InterruptedOePb
             .newBuilder()
-            .setHandlerThread(handlerThread)
             .setInterruptedThread(interruptedThread)
             .setExtEvtDefName(extEvtDefName)
             .setExtEvtGuid(extEvtGuid);
@@ -31,6 +29,5 @@ public class InterruptedOe extends SubEvent<InterruptedOePb> {
         extEvtDefName = p.getExtEvtDefName();
         extEvtGuid = p.getExtEvtGuid();
         interruptedThread = p.getInterruptedThread();
-        handlerThread = p.getHandlerThread();
     }
 }

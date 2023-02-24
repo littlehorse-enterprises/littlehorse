@@ -6,6 +6,8 @@ import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.RunWfReply;
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.observabilityevent.ObservabilityEvent;
+import io.littlehorse.common.model.observabilityevent.events.WfRunStartOe;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.util.LHUtil;
@@ -85,6 +87,11 @@ public class RunWf extends SubCommand<RunWfPb> {
             out.message = "WfRun with id " + id + " already exists!";
             return out;
         }
+
+        WfRunStartOe oe = new WfRunStartOe();
+        oe.wfSpecName = spec.name;
+        oe.wfSpecVersion = spec.version;
+        dao.addObservabilityEvent(new ObservabilityEvent(id, oe));
 
         WfRun newRun = spec.startNewRun(this, dao);
         newRun.advance(dao.getEventTime());

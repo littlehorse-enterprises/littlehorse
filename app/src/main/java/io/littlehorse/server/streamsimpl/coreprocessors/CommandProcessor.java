@@ -11,6 +11,7 @@ import io.littlehorse.jlib.common.proto.StoreQueryStatusPb;
 import io.littlehorse.jlib.common.proto.WaitForCommandReplyPb;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import java.util.Date;
+import java.util.List;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
@@ -53,7 +54,7 @@ public class CommandProcessor
         );
         try {
             AbstractResponse<?> response = command.process(dao, config);
-            dao.commitChanges();
+            List<ObservabilityEvent> oEvents = dao.commitChanges();
             if (command.hasResponse() && command.commandId != null) {
                 WaitForCommandReplyPb cmdReply = WaitForCommandReplyPb
                     .newBuilder()
@@ -69,7 +70,7 @@ public class CommandProcessor
 
                 server.onResponseReceived(command.commandId, cmdReply);
             }
-            for (ObservabilityEvent evt : dao.getObservabilityEvents()) {
+            for (ObservabilityEvent evt : oEvents) {
                 Record<String, CommandProcessorOutput> out = new Record<String, CommandProcessorOutput>(
                     command.getPartitionKey(),
                     new CommandProcessorOutput(

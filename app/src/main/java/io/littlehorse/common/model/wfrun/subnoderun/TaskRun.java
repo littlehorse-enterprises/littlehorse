@@ -8,6 +8,9 @@ import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
 import io.littlehorse.common.model.meta.Node;
+import io.littlehorse.common.model.observabilityevent.ObservabilityEvent;
+import io.littlehorse.common.model.observabilityevent.events.TaskResultOe;
+import io.littlehorse.common.model.observabilityevent.events.TaskScheduledOe;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
@@ -141,6 +144,19 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
         tsr.variables = this.inputVariables;
 
         nodeRun.threadRun.wfRun.cmdDao.scheduleTask(tsr);
+
+        TaskScheduledOe oe = new TaskScheduledOe();
+        oe.attemptNumber = attemptNumber;
+        oe.nodeName = node.name;
+        oe.taskDefName = taskDefName;
+        oe.taskDefVersion = -1;
+        oe.taskRunPosition = nodeRun.position;
+        oe.variables = inputVariables;
+        oe.wfSpecName = nodeRun.threadRun.wfSpecName;
+        oe.wfSpecVersion = nodeRun.threadRun.wfSpecVersion;
+        nodeRun.threadRun.wfRun.cmdDao.addObservabilityEvent(
+            new ObservabilityEvent(nodeRun.wfRunId, oe)
+        );
     }
 
     public void processStartedEvent(TaskClaimEvent se) {
@@ -260,5 +276,15 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
                     "Unrecognized TaskResultCode: " + ce.resultCode
                 );
         }
+
+        TaskResultOe oe = new TaskResultOe();
+        oe.logOutput = ce.stderr;
+        oe.output = ce.stdout;
+        oe.taskRunPosition = nodeRun.position;
+        oe.threadRunNumber = nodeRun.threadRunNumber;
+        oe.resultCode = ce.resultCode;
+        nodeRun.threadRun.wfRun.cmdDao.addObservabilityEvent(
+            new ObservabilityEvent(ce.wfRunId, oe)
+        );
     }
 }

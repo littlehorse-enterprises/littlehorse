@@ -19,6 +19,9 @@ import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.meta.VariableMutation;
 import io.littlehorse.common.model.meta.subnode.ExitNode;
 import io.littlehorse.common.model.meta.subnode.TaskNode;
+import io.littlehorse.common.model.observabilityevent.ObservabilityEvent;
+import io.littlehorse.common.model.observabilityevent.events.InterruptedOe;
+import io.littlehorse.common.model.observabilityevent.events.ThreadStatusOe;
 import io.littlehorse.common.model.wfrun.haltreason.HandlingFailureHaltReason;
 import io.littlehorse.common.model.wfrun.haltreason.Interrupted;
 import io.littlehorse.common.model.wfrun.haltreason.ParentHalted;
@@ -31,6 +34,7 @@ import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import io.littlehorse.jlib.common.proto.ThreadHaltReasonPb;
 import io.littlehorse.jlib.common.proto.ThreadHaltReasonPb.ReasonCase;
 import io.littlehorse.jlib.common.proto.ThreadRunPb;
+import io.littlehorse.jlib.common.proto.ThreadTypePb;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
 import java.util.ArrayList;
 import java.util.Date;
@@ -62,6 +66,8 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     public String interruptTriggerId;
     public FailureBeingHandled failureBeingHandled;
     public List<Integer> handledFailedChildren;
+
+    public ThreadTypePb type;
 
     public ThreadRun() {
         variables = new HashMap<>();
@@ -114,6 +120,8 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         for (int handledFailedChildId : proto.getHandledFailedChildrenList()) {
             handledFailedChildren.add(handledFailedChildId);
         }
+
+        type = proto.getType();
     }
 
     public ThreadRunPb.Builder toProto() {
@@ -126,7 +134,8 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             .setWfSpecVersion(wfSpecVersion)
             .setThreadSpecName(threadSpecName)
             .setCurrentNodePosition(currentNodePosition)
-            .setStartTime(LHUtil.fromDate(startTime));
+            .setStartTime(LHUtil.fromDate(startTime))
+            .setType(type);
 
         if (resultCode != null) {
             out.setResultCode(resultCode);
@@ -288,6 +297,12 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         haltReason.pendingInterrupt = new PendingInterruptHaltReason();
         haltReason.pendingInterrupt.externalEventId = trigger.getObjectId();
 
+        InterruptedOe oe = new InterruptedOe();
+        oe.extEvtDefName = trigger.externalEventDefName;
+        oe.extEvtGuid = trigger.guid;
+        oe.interruptedThread = number;
+        wfRun.cmdDao.addObservabilityEvent(new ObservabilityEvent(wfRunId, oe));
+
         // This also stops the children
         halt(haltReason);
 
@@ -312,13 +327,13 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             case RUNNING:
             case HALTING:
                 if (canBeInterrupted()) {
-                    status = LHStatusPb.HALTED;
+                    setStatus(LHStatusPb.HALTED);
                 } else {
-                    status = LHStatusPb.HALTING;
+                    setStatus(LHStatusPb.HALTING);
                 }
                 break;
             case HALTED:
-                status = LHStatusPb.HALTED;
+                setStatus(LHStatusPb.HALTED);
                 break;
             case UNRECOGNIZED:
                 throw new RuntimeException("Not possible");
@@ -375,20 +390,28 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
                 }
             }
             if (haltReasons.isEmpty()) {
-                status = LHStatusPb.RUNNING;
+                setStatus(LHStatusPb.RUNNING);
                 return true;
             } else {
                 return false;
             }
         } else if (status == LHStatusPb.HALTING) {
             if (getCurrentNodeRun().canBeInterrupted()) {
-                status = LHStatusPb.HALTED;
+                setStatus(LHStatusPb.HALTED);
                 return true;
             } else {
                 return false;
             }
         }
         return false;
+    }
+
+    public void setStatus(LHStatusPb status) {
+        this.status = status;
+        ThreadStatusOe oe = new ThreadStatusOe();
+        oe.threadRunNumber = number;
+        oe.status = status;
+        wfRun.cmdDao.addObservabilityEvent(new ObservabilityEvent(wfRunId, oe));
     }
 
     /*
@@ -438,7 +461,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             LHUtil.log("Tried to advance HALTING thread, checking if halted yet.");
 
             if (currentNodeRun.canBeInterrupted()) {
-                status = LHStatusPb.HALTED;
+                setStatus(LHStatusPb.HALTED);
                 LHUtil.log("Moving thread to HALTED");
                 return true;
             } else {
@@ -453,7 +476,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
 
             return false;
         } else if (status == LHStatusPb.STARTING) {
-            status = LHStatusPb.RUNNING;
+            setStatus(LHStatusPb.RUNNING);
             return currentNodeRun.advanceIfPossible(eventTime);
         } else {
             throw new RuntimeException("Unrecognized status: " + status);
@@ -526,7 +549,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     public void dieForReal(Failure failure, Date time) {
         this.resultCode = failure.failureCode;
         this.errorMessage = failure.message;
-        status = LHStatusPb.ERROR;
+        setStatus(LHStatusPb.ERROR);
         this.endTime = time;
 
         for (int childId : childThreadIds) {
@@ -572,7 +595,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     public void complete(Date time) {
         this.resultCode = TaskResultCodePb.SUCCESS;
         this.errorMessage = null;
-        status = LHStatusPb.COMPLETED;
+        setStatus(LHStatusPb.COMPLETED);
         endTime = time;
 
         wfRun.handleThreadStatus(number, new Date(), status);

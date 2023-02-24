@@ -15,6 +15,9 @@ import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
 import io.littlehorse.common.model.meta.ThreadSpec;
 import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.observabilityevent.ObservabilityEvent;
+import io.littlehorse.common.model.observabilityevent.events.ThreadStartOe;
+import io.littlehorse.common.model.observabilityevent.events.WfRunStatusOe;
 import io.littlehorse.common.model.wfrun.haltreason.ManualHalt;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.LHStatusPb;
@@ -23,6 +26,7 @@ import io.littlehorse.jlib.common.proto.PendingInterruptPb;
 import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import io.littlehorse.jlib.common.proto.ThreadHaltReasonPb.ReasonCase;
 import io.littlehorse.jlib.common.proto.ThreadRunPb;
+import io.littlehorse.jlib.common.proto.ThreadTypePb;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
 import io.littlehorse.jlib.common.proto.WfRunPb;
 import io.littlehorse.jlib.common.proto.WfRunPbOrBuilder;
@@ -153,7 +157,8 @@ public class WfRun extends GETable<WfRunPb> {
         String threadName,
         Date start,
         Integer parentThreadId,
-        Map<String, VariableValue> variables
+        Map<String, VariableValue> variables,
+        ThreadTypePb type
     ) {
         ThreadSpec tspec = wfSpec.threadSpecs.get(threadName);
         if (tspec == null) {
@@ -174,13 +179,14 @@ public class WfRun extends GETable<WfRunPb> {
         thread.startTime = new Date();
 
         thread.wfRun = this;
+        thread.type = type;
         threadRuns.add(thread);
 
         try {
             tspec.validateStartVariables(variables);
         } catch (LHValidationError exn) {
             LHUtil.log("Invalid variables received");
-            // Now we gotta figure out how to fail a workflow
+            // TODO: determine how observability events should look like for this case.
             thread.fail(
                 new Failure(
                     TaskResultCodePb.VAR_MUTATION_ERROR,
@@ -191,6 +197,20 @@ public class WfRun extends GETable<WfRunPb> {
             );
             return thread;
         }
+
+        ThreadStartOe oe = new ThreadStartOe();
+        oe.threadRunNumber = thread.number;
+        oe.threadSpecName = thread.threadSpecName;
+        oe.variables = new HashMap<>();
+        oe.type = type;
+        // need a deepcopy
+        for (Map.Entry<String, VariableValue> e : variables.entrySet()) {
+            oe.variables.put(
+                e.getKey(),
+                VariableValue.fromProto(e.getValue().toProto())
+            );
+        }
+        cmdDao.addObservabilityEvent(new ObservabilityEvent(id, oe));
 
         for (VariableDef varDef : tspec.variableDefs) {
             String varName = varDef.name;
@@ -262,7 +282,8 @@ public class WfRun extends GETable<WfRunPb> {
                 pi.handlerSpecName,
                 time,
                 pi.interruptedThreadId,
-                vars
+                vars,
+                ThreadTypePb.INTERRUPT
             );
             interruptor.interruptTriggerId = pi.externalEventId;
 
@@ -311,7 +332,8 @@ public class WfRun extends GETable<WfRunPb> {
                 pfh.handlerSpecName,
                 time,
                 pfh.failedThreadRun,
-                vars
+                vars,
+                ThreadTypePb.FAILURE_HANDLER
             );
 
             failedThr.getCurrentNodeRun().failureHandlerIds.add(fh.number);
@@ -444,6 +466,13 @@ public class WfRun extends GETable<WfRunPb> {
         advance(time);
     }
 
+    private void setStatus(LHStatusPb status) {
+        this.status = status;
+        WfRunStatusOe oe = new WfRunStatusOe();
+        oe.status = status;
+        cmdDao.addObservabilityEvent(new ObservabilityEvent(id, oe));
+    }
+
     // As a precondition, the status of the calling thread must already be updated to complete.
     public void handleThreadStatus(
         int threadRunNumber,
@@ -459,11 +488,11 @@ public class WfRun extends GETable<WfRunPb> {
         // killing (or waiting for) any child threads. To be determined based on threading design.
         if (newStatus == LHStatusPb.COMPLETED) {
             endTime = time;
-            status = LHStatusPb.COMPLETED;
+            setStatus(LHStatusPb.COMPLETED);
             System.out.println("Completed " + id + " at " + new Date());
         } else if (newStatus == LHStatusPb.ERROR) {
             endTime = time;
-            status = LHStatusPb.ERROR;
+            setStatus(LHStatusPb.ERROR);
         }
         // TODO: when there are multiple threads, we need to think about what happens when one thread
         // fails and others are still alive.

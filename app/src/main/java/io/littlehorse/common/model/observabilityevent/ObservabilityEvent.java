@@ -37,6 +37,14 @@ public class ObservabilityEvent extends LHSerializable<ObservabilityEventPb> {
     public ThreadStatusOe threadStatus;
     public WfRunStatusOe wfRunStatus;
 
+    public ObservabilityEvent() {}
+
+    public ObservabilityEvent(String wfRunId, SubEvent<?> evt) {
+        this.wfRunId = wfRunId;
+        this.time = new Date();
+        setSubEvent(evt);
+    }
+
     public Class<ObservabilityEventPb> getProtoBaseClass() {
         return ObservabilityEventPb.class;
     }
@@ -51,6 +59,9 @@ public class ObservabilityEvent extends LHSerializable<ObservabilityEventPb> {
                 break;
             case THREAD_START:
                 out.setThreadStart(threadStart.toProto());
+                break;
+            case TASK_SCHEDULED:
+                out.setTaskScheduled(taskScheduled.toProto());
                 break;
             case TASK_START:
                 out.setTaskStart(taskStarted.toProto());
@@ -77,7 +88,7 @@ public class ObservabilityEvent extends LHSerializable<ObservabilityEventPb> {
                 out.setWfRunStatus(wfRunStatus.toProto());
                 break;
             case EVENT_NOT_SET:
-            default:
+                // default:
                 throw new RuntimeException("Not possible");
         }
         return out;
