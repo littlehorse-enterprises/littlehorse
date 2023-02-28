@@ -689,6 +689,20 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
                 saveOrDeleteGETableFlush(tsrId, null, TaskScheduleRequest.class);
             }
         }
+
+        // Forward observability events
+        for (ObservabilityEvent evt : oEvents) {
+            Record<String, CommandProcessorOutput> out = new Record<String, CommandProcessorOutput>(
+                command.getPartitionKey(),
+                new CommandProcessorOutput(
+                    config.getObervabilityEventTopicName(),
+                    evt,
+                    command.getPartitionKey()
+                ),
+                System.currentTimeMillis()
+            );
+            ctx.forward(out);
+        }
     }
 
     private void forwardTask(TaskScheduleRequest tsr) {

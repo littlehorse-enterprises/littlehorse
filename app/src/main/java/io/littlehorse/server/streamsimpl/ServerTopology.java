@@ -2,6 +2,7 @@ package io.littlehorse.server.streamsimpl;
 
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.command.Command;
+import io.littlehorse.common.model.observabilityevent.ObservabilityEvent;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.util.serde.LHDeserializer;
 import io.littlehorse.common.util.serde.LHSerde;
@@ -18,6 +19,35 @@ import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.StoreBuilder;
 import org.apache.kafka.streams.state.Stores;
 
+/*
+ * There are multiple topologies here:
+ * 1. Core topology.
+ * 2. Timer topology.
+ * 3. Metrics topology.
+ *
+ * It's important that all of them are separate toplogies because they need
+ * separate transactional guarantees. For example, it's imperative that
+ * all input messages into the Core Topology (i.e. the Core Command topic) are
+ * NOT part of Kafka Transactions, because consumers block until the transaction
+ * is committed. This would introduce significantly higher latency (100ms vs 20ms)
+ * between task executions.
+ *
+ * The Core Topology has to be exactly-once-semantics (even though inputs aren't
+ * transactional); the Timer Topology inputs into the Core Topology; therefore, if
+ * the Timer and Core were combined then there would be transactional messages in
+ * the Core Command topic (which means higher latency).
+ *
+ * The Timer Topology also doesn't need to be colocated with the Core Topology.
+ * Later versions of LH may separate that out in order to segregate compute or
+ * increase scalability.
+ *
+ * The Metrics topology is currently colocated with the Core Topology but does not
+ * need to be. It can be separated out into a separate server (which would mean a
+ * separte gRPC service) to improve horizonal scalability and separation of concerns.
+ *
+ * Eventually, the stuff in this file might get broken up into smaller files for
+ * clarity.
+ */
 public class ServerTopology {
 
     public static String TIMER_SOURCE = "timer-source";
@@ -162,6 +192,23 @@ public class ServerTopology {
         );
         topo.addStateStore(timerStoreBuilder, TIMER_PROCESSOR);
 
+        return topo;
+    }
+
+    public static Topology initMetricsTopology(LHConfig config) {
+        Topology topo = new Topology();
+        Serde<ObservabilityEvent> serde = new LHSerde<>(
+            ObservabilityEvent.class,
+            config
+        );
+
+        Runtime
+            .getRuntime()
+            .addShutdownHook(
+                new Thread(() -> {
+                    serde.close();
+                })
+            );
         return topo;
     }
 }

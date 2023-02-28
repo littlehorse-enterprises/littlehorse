@@ -4,14 +4,12 @@ import com.google.protobuf.ByteString;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.command.Command;
-import io.littlehorse.common.model.observabilityevent.ObservabilityEvent;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.CommandResultPb;
 import io.littlehorse.jlib.common.proto.StoreQueryStatusPb;
 import io.littlehorse.jlib.common.proto.WaitForCommandReplyPb;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import java.util.Date;
-import java.util.List;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
@@ -54,7 +52,7 @@ public class CommandProcessor
         );
         try {
             AbstractResponse<?> response = command.process(dao, config);
-            List<ObservabilityEvent> oEvents = dao.commitChanges();
+            dao.commitChanges();
             if (command.hasResponse() && command.commandId != null) {
                 WaitForCommandReplyPb cmdReply = WaitForCommandReplyPb
                     .newBuilder()
@@ -69,18 +67,6 @@ public class CommandProcessor
                     .build();
 
                 server.onResponseReceived(command.commandId, cmdReply);
-            }
-            for (ObservabilityEvent evt : oEvents) {
-                Record<String, CommandProcessorOutput> out = new Record<String, CommandProcessorOutput>(
-                    command.getPartitionKey(),
-                    new CommandProcessorOutput(
-                        config.getObervabilityEventTopicName(),
-                        evt,
-                        command.getPartitionKey()
-                    ),
-                    System.currentTimeMillis()
-                );
-                ctx.forward(out);
             }
         } catch (Exception exn) {
             exn.printStackTrace();
