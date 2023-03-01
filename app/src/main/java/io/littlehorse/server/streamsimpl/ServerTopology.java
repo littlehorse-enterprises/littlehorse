@@ -50,20 +50,28 @@ import org.apache.kafka.streams.state.Stores;
  */
 public class ServerTopology {
 
-    public static String TIMER_SOURCE = "timer-source";
-    public static String TIMER_PROCESSOR = "timer-processor";
-    public static String NEW_TIMER_SINK = "new-timer-sink";
-    public static String MATURED_TIMER_SINK = "matured-timer-sink";
-    public static String TIMER_STORE = "timer-store";
+    public static final String TIMER_SOURCE = "timer-source";
+    public static final String TIMER_PROCESSOR = "timer-processor";
+    public static final String NEW_TIMER_SINK = "new-timer-sink";
+    public static final String MATURED_TIMER_SINK = "matured-timer-sink";
+    public static final String TIMER_STORE = "timer-store";
 
-    public static String CORE_SOURCE = "core-source";
-    public static String CORE_STORE = "core-store";
-    public static String CORE_PROCESSOR = "core-processor";
-    public static String CORE_SINK = "core-sink";
+    public static final String CORE_SOURCE = "core-source";
+    public static final String CORE_STORE = "core-store";
+    public static final String CORE_PROCESSOR = "core-processor";
+    public static final String CORE_SINK = "core-sink";
 
-    public static String GLOBAL_META_SOURCE = "global-metadata-cl-source";
-    public static String GLOBAL_STORE = "global-metadata-store";
-    public static String GLOBAL_META_PROCESSOR = "global-metadata-processor";
+    public static final String METRICS_SOURCE = "metrics-source";
+    public static final String METRICS_LOCAL_PROCESSOR = "metrics-local-processor";
+    public static final String METRICS_LOCAL_STORE = "metrics-local-store";
+    public static final String METRICS_SINK = "metrics-sink";
+    public static final String METRICS_AGG_SOURCE = "metrics-agg-source";
+    public static final String METRICS_AGG_STORE = "metrics-agg-store";
+    public static final String METRICS_AGG_PROCESSOR = "metrics-aggregator";
+
+    public static final String GLOBAL_META_SOURCE = "global-metadata-cl-source";
+    public static final String GLOBAL_STORE = "global-metadata-store";
+    public static final String GLOBAL_META_PROCESSOR = "global-metadata-processor";
 
     public static Topology initCoreTopology(
         LHConfig config,
@@ -137,12 +145,6 @@ public class ServerTopology {
             // add lambda to return the processor
         );
         return topo;
-    }
-
-    public static Topology initTaggingTopology(LHConfig config) {
-        // doesn't look like we need this until we implement the
-        // REMOTE_HASH_UNCOUNTED storage type.
-        return null;
     }
 
     public static Topology initTimerTopology(LHConfig config) {
