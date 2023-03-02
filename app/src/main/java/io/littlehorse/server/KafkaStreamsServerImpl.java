@@ -654,7 +654,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
                 .newBuilder()
                 .setCoreState(kafkaStateToLhHealthState(coreState))
                 .setTimerState(kafkaStateToLhHealthState(timerState))
-                .setMetricsState(kafkaStateToLhHealthState(metricsState))
+                // TODO: Fix this when we add the metrics topo
+                .setMetricsState(kafkaStateToLhHealthState(timerState))
                 .build()
         );
         ctx.onCompleted();

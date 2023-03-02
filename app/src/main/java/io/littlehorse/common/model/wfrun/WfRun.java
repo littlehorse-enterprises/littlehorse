@@ -7,6 +7,7 @@ import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.command.subcommand.ExternalEventTimeout;
 import io.littlehorse.common.model.command.subcommand.ResumeWfRun;
 import io.littlehorse.common.model.command.subcommand.SleepNodeMatured;
 import io.littlehorse.common.model.command.subcommand.StopWfRun;
@@ -386,6 +387,12 @@ public class WfRun extends GETable<WfRunPb> {
                 statusChanged = thread.updateStatus() || statusChanged;
             }
         }
+    }
+
+    public void processExtEvtTimeout(ExternalEventTimeout timeout) {
+        ThreadRun handler = threadRuns.get(timeout.threadRunNumber);
+        handler.processExtEvtTimeout(timeout);
+        advance(timeout.time);
     }
 
     public void processTaskResult(TaskResultEvent event) {

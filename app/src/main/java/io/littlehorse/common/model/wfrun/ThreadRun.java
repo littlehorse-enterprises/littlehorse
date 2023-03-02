@@ -5,6 +5,7 @@ import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.command.subcommand.ExternalEventTimeout;
 import io.littlehorse.common.model.command.subcommand.SleepNodeMatured;
 import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
@@ -41,8 +42,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.log4j.Logger;
 
 public class ThreadRun extends LHSerializable<ThreadRunPb> {
+
+    private static final Logger log = Logger.getLogger(ThreadRun.class);
 
     public String wfRunId;
     public int number;
@@ -238,6 +242,18 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             return;
         }
         nr.taskRun.processStartedEvent(e);
+    }
+
+    public void processExtEvtTimeout(ExternalEventTimeout timeout) {
+        NodeRun nr = getNodeRun(timeout.nodeRunPosition);
+        if (nr.type != NodeTypeCase.EXTERNAL_EVENT) {
+            log.warn(
+                "Impossible: got a misconfigured external event timeout: " +
+                nr.toJson()
+            );
+            return;
+        }
+        nr.externalEventRun.processExternalEventTimeout(timeout);
     }
 
     public void processTaskResultEvent(TaskResultEvent e) {

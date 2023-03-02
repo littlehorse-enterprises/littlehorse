@@ -6,6 +6,7 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.SubNode;
+import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.common.model.wfrun.subnoderun.ExternalEventRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.jlib.common.proto.ExternalEventNodePb;
@@ -15,6 +16,7 @@ import java.util.Date;
 public class ExternalEventNode extends SubNode<ExternalEventNodePb> {
 
     public String externalEventDefName;
+    public VariableAssignment timeoutSeconds;
 
     @JsonIgnore
     public ExternalEventDef externalEventDef;
@@ -28,12 +30,17 @@ public class ExternalEventNode extends SubNode<ExternalEventNodePb> {
     public void initFrom(MessageOrBuilder proto) {
         ExternalEventNodePbOrBuilder p = (ExternalEventNodePbOrBuilder) proto;
         externalEventDefName = p.getExternalEventDefName();
+        if (p.hasTimeoutSeconds()) {
+            timeoutSeconds = VariableAssignment.fromProto(p.getTimeoutSeconds());
+        }
     }
 
     public ExternalEventNodePb.Builder toProto() {
         ExternalEventNodePb.Builder out = ExternalEventNodePb
             .newBuilder()
             .setExternalEventDefName(externalEventDefName);
+
+        if (timeoutSeconds != null) out.setTimeoutSeconds(timeoutSeconds.toProto());
         return out;
     }
 
@@ -43,6 +50,8 @@ public class ExternalEventNode extends SubNode<ExternalEventNodePb> {
         // workflows automatically use the new version. We will enforce schema
         // compatibility rules on the EED to ensure that this isn't an issue.
         ExternalEventDef eed = stores.getExternalEventDef(externalEventDefName, null);
+
+        // TODO: validate the timeout
 
         if (eed == null) {
             throw new LHValidationError(
