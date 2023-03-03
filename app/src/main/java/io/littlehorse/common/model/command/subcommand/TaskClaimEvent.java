@@ -6,6 +6,8 @@ import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.TaskClaimReply;
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.observabilityevent.ObservabilityEvent;
+import io.littlehorse.common.model.observabilityevent.events.TaskStartOe;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.util.LHUtil;
@@ -84,6 +86,12 @@ public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
         out.result =
             dao.markTaskAsScheduled(wfRunId, threadRunNumber, taskRunPosition);
         out.code = LHResponseCodePb.OK;
+
+        TaskStartOe oe = new TaskStartOe();
+        oe.taskRunPosition = taskRunPosition;
+        oe.threadRunNumber = threadRunNumber;
+        oe.workerId = "TODO: pass this to taskClaimEvent";
+        dao.addObservabilityEvent(new ObservabilityEvent(wfRunId, oe));
 
         wfRun.wfSpec = wfSpec;
         wfRun.cmdDao = dao;

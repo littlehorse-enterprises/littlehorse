@@ -13,6 +13,7 @@ import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.observabilityevent.ObservabilityEvent;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.LHTimer;
@@ -63,6 +64,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     private Command command;
     private int partition;
     private KafkaStreamsServerImpl server;
+    private List<ObservabilityEvent> oEvents;
 
     private static final String OUTGOING_CHANGELOG_KEY = "OUTGOING_CHANGELOG";
 
@@ -118,6 +120,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         wfSpecPuts = new HashMap<>();
         extEvtDefPuts = new HashMap<>();
         taskDefPuts = new HashMap<>();
+        oEvents = new ArrayList<>();
 
         // TODO: Here is where we want to eventually add some cacheing for GET to
         // the WfSpec and TaskDef etc.
@@ -421,8 +424,10 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     }
 
     @Override
-    public void commitChanges() {
+    public List<ObservabilityEvent> commitChanges() {
         flush();
+
+        List<ObservabilityEvent> out = oEvents;
 
         // Now, we clear the saved state. In the future we could have a two-tiered
         // approach in which we have a read cache which saves us from having to
@@ -430,6 +435,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         // Potentially one LRU cache for each "object type" would be a good
         // optimization.
         clearThingsToWrite();
+        return out;
     }
 
     @Override
@@ -528,6 +534,16 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
             out.code = LHResponseCodePb.OK;
         }
         return out;
+    }
+
+    @Override
+    public void addObservabilityEvent(ObservabilityEvent evt) {
+        oEvents.add(evt);
+    }
+
+    @Override
+    public List<ObservabilityEvent> getObservabilityEvents() {
+        return oEvents;
     }
 
     /*
@@ -672,6 +688,20 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
                 // It's time to delete the thing.
                 saveOrDeleteGETableFlush(tsrId, null, TaskScheduleRequest.class);
             }
+        }
+
+        // Forward observability events
+        for (ObservabilityEvent evt : oEvents) {
+            Record<String, CommandProcessorOutput> out = new Record<String, CommandProcessorOutput>(
+                command.getPartitionKey(),
+                new CommandProcessorOutput(
+                    config.getObervabilityEventTopicName(),
+                    evt,
+                    command.getPartitionKey()
+                ),
+                System.currentTimeMillis()
+            );
+            ctx.forward(out);
         }
     }
 
@@ -863,6 +893,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         taskDefPuts.clear();
         extEvtDefPuts.clear();
         responseToSave = null;
+        oEvents = new ArrayList<>();
     }
 
     public void saveResponse(LHSerializable<?> response, Command command) {

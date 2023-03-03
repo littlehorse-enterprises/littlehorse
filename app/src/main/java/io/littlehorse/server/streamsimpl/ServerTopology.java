@@ -2,6 +2,7 @@ package io.littlehorse.server.streamsimpl;
 
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.command.Command;
+import io.littlehorse.common.model.observabilityevent.ObservabilityEvent;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.util.serde.LHDeserializer;
 import io.littlehorse.common.util.serde.LHSerde;
@@ -18,22 +19,59 @@ import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.StoreBuilder;
 import org.apache.kafka.streams.state.Stores;
 
+/*
+ * There are multiple topologies here:
+ * 1. Core topology.
+ * 2. Timer topology.
+ * 3. Metrics topology.
+ *
+ * It's important that all of them are separate toplogies because they need
+ * separate transactional guarantees. For example, it's imperative that
+ * all input messages into the Core Topology (i.e. the Core Command topic) are
+ * NOT part of Kafka Transactions, because consumers block until the transaction
+ * is committed. This would introduce significantly higher latency (100ms vs 20ms)
+ * between task executions.
+ *
+ * The Core Topology has to be exactly-once-semantics (even though inputs aren't
+ * transactional); the Timer Topology inputs into the Core Topology; therefore, if
+ * the Timer and Core were combined then there would be transactional messages in
+ * the Core Command topic (which means higher latency).
+ *
+ * The Timer Topology also doesn't need to be colocated with the Core Topology.
+ * Later versions of LH may separate that out in order to segregate compute or
+ * increase scalability.
+ *
+ * The Metrics topology is currently colocated with the Core Topology but does not
+ * need to be. It can be separated out into a separate server (which would mean a
+ * separte gRPC service) to improve horizonal scalability and separation of concerns.
+ *
+ * Eventually, the stuff in this file might get broken up into smaller files for
+ * clarity.
+ */
 public class ServerTopology {
 
-    public static String TIMER_SOURCE = "timer-source";
-    public static String TIMER_PROCESSOR = "timer-processor";
-    public static String NEW_TIMER_SINK = "new-timer-sink";
-    public static String MATURED_TIMER_SINK = "matured-timer-sink";
-    public static String TIMER_STORE = "timer-store";
+    public static final String TIMER_SOURCE = "timer-source";
+    public static final String TIMER_PROCESSOR = "timer-processor";
+    public static final String NEW_TIMER_SINK = "new-timer-sink";
+    public static final String MATURED_TIMER_SINK = "matured-timer-sink";
+    public static final String TIMER_STORE = "timer-store";
 
-    public static String CORE_SOURCE = "core-source";
-    public static String CORE_STORE = "core-store";
-    public static String CORE_PROCESSOR = "core-processor";
-    public static String CORE_SINK = "core-sink";
+    public static final String CORE_SOURCE = "core-source";
+    public static final String CORE_STORE = "core-store";
+    public static final String CORE_PROCESSOR = "core-processor";
+    public static final String CORE_SINK = "core-sink";
 
-    public static String GLOBAL_META_SOURCE = "global-metadata-cl-source";
-    public static String GLOBAL_STORE = "global-metadata-store";
-    public static String GLOBAL_META_PROCESSOR = "global-metadata-processor";
+    public static final String METRICS_SOURCE = "metrics-source";
+    public static final String METRICS_LOCAL_PROCESSOR = "metrics-local-processor";
+    public static final String METRICS_LOCAL_STORE = "metrics-local-store";
+    public static final String METRICS_SINK = "metrics-sink";
+    public static final String METRICS_AGG_SOURCE = "metrics-agg-source";
+    public static final String METRICS_AGG_STORE = "metrics-agg-store";
+    public static final String METRICS_AGG_PROCESSOR = "metrics-aggregator";
+
+    public static final String GLOBAL_META_SOURCE = "global-metadata-cl-source";
+    public static final String GLOBAL_STORE = "global-metadata-store";
+    public static final String GLOBAL_META_PROCESSOR = "global-metadata-processor";
 
     public static Topology initCoreTopology(
         LHConfig config,
@@ -109,12 +147,6 @@ public class ServerTopology {
         return topo;
     }
 
-    public static Topology initTaggingTopology(LHConfig config) {
-        // doesn't look like we need this until we implement the
-        // REMOTE_HASH_UNCOUNTED storage type.
-        return null;
-    }
-
     public static Topology initTimerTopology(LHConfig config) {
         Topology topo = new Topology();
         Serde<LHTimer> timerSerde = new LHSerde<>(LHTimer.class, config);
@@ -162,6 +194,23 @@ public class ServerTopology {
         );
         topo.addStateStore(timerStoreBuilder, TIMER_PROCESSOR);
 
+        return topo;
+    }
+
+    public static Topology initMetricsTopology(LHConfig config) {
+        Topology topo = new Topology();
+        Serde<ObservabilityEvent> serde = new LHSerde<>(
+            ObservabilityEvent.class,
+            config
+        );
+
+        Runtime
+            .getRuntime()
+            .addShutdownHook(
+                new Thread(() -> {
+                    serde.close();
+                })
+            );
         return topo;
     }
 }

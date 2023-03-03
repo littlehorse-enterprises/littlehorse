@@ -29,6 +29,8 @@ import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.metrics.TaskDefMetrics;
+import io.littlehorse.common.model.metrics.WfSpecMetrics;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
@@ -93,8 +95,12 @@ import io.littlehorse.jlib.common.proto.SearchWfSpecPb;
 import io.littlehorse.jlib.common.proto.StopWfRunPb;
 import io.littlehorse.jlib.common.proto.StopWfRunReplyPb;
 import io.littlehorse.jlib.common.proto.StoreQueryStatusPb;
+import io.littlehorse.jlib.common.proto.TaskDefMetricsQueryPb;
+import io.littlehorse.jlib.common.proto.TaskDefMetricsReplyPb;
 import io.littlehorse.jlib.common.proto.TaskResultEventPb;
 import io.littlehorse.jlib.common.proto.WaitForCommandReplyPb;
+import io.littlehorse.jlib.common.proto.WfSpecMetricsQueryPb;
+import io.littlehorse.jlib.common.proto.WfSpecMetricsReplyPb;
 import io.littlehorse.server.streamsimpl.BackendInternalComms;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.searchutils.LHPublicSearch;
@@ -132,9 +138,11 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     private KafkaStreams coreStreams;
     private KafkaStreams timerStreams;
+    // private KafkaStreams metricsStreams;
 
     private State coreState;
     private State timerState;
+    private State metricsState;
 
     private BackendInternalComms internalComms;
 
@@ -163,6 +171,11 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             );
 
         ServerBuilder<?> builder;
+        // metricsStreams =
+        //     new KafkaStreams(
+        //         ServerTopology.initMetricsTopology(config),
+        //         config.getStreamsConfig("metrics", true)
+        //     );
 
         Executor executor = Executors.newFixedThreadPool(16);
         TlsServerCredentials.Builder security = config.getServerCreds();
@@ -188,15 +201,21 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
         coreStreams.setStateListener((newState, oldState) -> {
             coreState = newState;
-            LHUtil.log(new Date(), "New state for core:", coreState);
+            log.info("" + new Date() + " New state for core: " + coreState);
         });
 
         timerStreams.setStateListener((newState, oldState) -> {
             timerState = newState;
-            LHUtil.log(new Date(), "New state for timer:", timerState);
+            LHUtil.log("" + new Date() + " New state for timer: " + timerState);
         });
 
-        internalComms = new BackendInternalComms(config, coreStreams);
+        // metricsStreams.setStateListener((newState, oldState) -> {
+        //     metricsState = newState;
+        //     LHUtil.log("" + new Date() + " New state for metrics: " + metricsState);
+        // });
+
+        // internalComms = new BackendInternalComms(config, coreStreams, metricsStreams);
+        internalComms = new BackendInternalComms(config, coreStreams, null);
     }
 
     public String getInstanceId() {
@@ -212,10 +231,9 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             config
         );
 
-        log.info("Instance " + getInstanceId() + " received getWfSpec request");
-
         if (req.hasVersion()) {
-            internalComms.getBytesAsync(
+            internalComms.getStoreBytesAsync(
+                ServerTopology.CORE_STORE,
                 StoreUtils.getFullStoreKey(
                     WfSpec.getSubKey(req.getName(), req.getVersion()),
                     WfSpec.class
@@ -227,7 +245,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             internalComms.getLastFromPrefixAsync(
                 WfSpec.getFullPrefixByName(req.getName()),
                 LHConstants.META_PARTITION_KEY,
-                observer
+                observer,
+                ServerTopology.CORE_STORE
             );
         }
     }
@@ -242,7 +261,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         );
 
         if (req.hasVersion()) {
-            internalComms.getBytesAsync(
+            internalComms.getStoreBytesAsync(
+                ServerTopology.CORE_STORE,
                 StoreUtils.getFullStoreKey(
                     TaskDef.getSubKey(req.getName(), req.getVersion()),
                     TaskDef.class
@@ -254,7 +274,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             internalComms.getLastFromPrefixAsync(
                 TaskDef.getFullPrefixByName(req.getName()),
                 LHConstants.META_PARTITION_KEY,
-                observer
+                observer,
+                ServerTopology.CORE_STORE
             );
         }
     }
@@ -272,7 +293,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         );
 
         if (req.hasVersion()) {
-            internalComms.getBytesAsync(
+            internalComms.getStoreBytesAsync(
+                ServerTopology.CORE_STORE,
                 StoreUtils.getFullStoreKey(
                     ExternalEventDef.getSubKey(req.getName(), req.getVersion()),
                     ExternalEventDef.class
@@ -284,7 +306,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             internalComms.getLastFromPrefixAsync(
                 ExternalEventDef.getFullPrefixByName(req.getName()),
                 LHConstants.META_PARTITION_KEY,
-                observer
+                observer,
+                ServerTopology.CORE_STORE
             );
         }
     }
@@ -361,7 +384,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             config
         );
 
-        internalComms.getBytesAsync(
+        internalComms.getStoreBytesAsync(
+            ServerTopology.CORE_STORE,
             StoreUtils.getFullStoreKey(req.getId(), WfRun.class),
             req.getId(),
             observer
@@ -377,7 +401,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             config
         );
 
-        internalComms.getBytesAsync(
+        internalComms.getStoreBytesAsync(
+            ServerTopology.CORE_STORE,
             StoreUtils.getFullStoreKey(
                 NodeRun.getStoreKey(
                     req.getWfRunId(),
@@ -387,6 +412,52 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
                 NodeRun.class
             ),
             req.getWfRunId(),
+            observer
+        );
+    }
+
+    @Override
+    public void taskDefMetrics(
+        TaskDefMetricsQueryPb req,
+        StreamObserver<TaskDefMetricsReplyPb> ctx
+    ) {
+        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
+            ctx,
+            TaskDefMetrics.class,
+            TaskDefMetricsReplyPb.class,
+            config
+        );
+
+        internalComms.getStoreBytesAsync(
+            ServerTopology.METRICS_AGG_STORE,
+            StoreUtils.getFullStoreKey(
+                TaskDefMetrics.getObjectId(req),
+                TaskDefMetrics.class
+            ),
+            req.getTaskDefName(),
+            observer
+        );
+    }
+
+    @Override
+    public void wfSpecMetrics(
+        WfSpecMetricsQueryPb req,
+        StreamObserver<WfSpecMetricsReplyPb> ctx
+    ) {
+        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
+            ctx,
+            WfSpecMetrics.class,
+            WfSpecMetricsReplyPb.class,
+            config
+        );
+
+        internalComms.getStoreBytesAsync(
+            ServerTopology.METRICS_AGG_STORE,
+            StoreUtils.getFullStoreKey(
+                WfSpecMetrics.getObjectId(req),
+                WfSpecMetrics.class
+            ),
+            req.getWfSpecName(),
             observer
         );
     }
@@ -403,7 +474,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             config
         );
 
-        internalComms.getBytesAsync(
+        internalComms.getStoreBytesAsync(
+            ServerTopology.CORE_STORE,
             StoreUtils.getFullStoreKey(
                 Variable.getStoreKey(
                     req.getWfRunId(),
@@ -429,7 +501,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             config
         );
 
-        internalComms.getBytesAsync(
+        internalComms.getStoreBytesAsync(
+            ServerTopology.CORE_STORE,
             StoreUtils.getFullStoreKey(
                 ExternalEvent.getStoreKey(
                     req.getWfRunId(),
@@ -593,6 +666,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
                 .newBuilder()
                 .setCoreState(kafkaStateToLhHealthState(coreState))
                 .setTimerState(kafkaStateToLhHealthState(timerState))
+                // TODO: Fix this when we add the metrics topo
+                .setMetricsState(kafkaStateToLhHealthState(timerState))
                 .build()
         );
         ctx.onCompleted();
@@ -788,36 +863,44 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     public void start() throws IOException {
         coreStreams.start();
         timerStreams.start();
+        // metricsStreams.start();
         internalComms.start();
         grpcServer.start();
     }
 
     public void close() {
-        CountDownLatch latch = new CountDownLatch(3);
+        CountDownLatch latch = new CountDownLatch(4);
 
         new Thread(() -> {
-            LHUtil.log("Closing timer");
+            log.info("Closing timer");
             timerStreams.close();
             latch.countDown();
         })
             .start();
 
         new Thread(() -> {
-            LHUtil.log("Closing core");
+            log.info("Closing core");
             coreStreams.close();
             latch.countDown();
         })
             .start();
 
         new Thread(() -> {
-            LHUtil.log("Closing internalComms");
+            log.info("Closing metrics");
+            // metricsStreams.close();
+            latch.countDown();
+        })
+            .start();
+
+        new Thread(() -> {
+            log.info("Closing internalComms");
             internalComms.close();
             latch.countDown();
         })
             .start();
 
         try {
-            LHUtil.log("Shutting down main server");
+            log.info("Shutting down main server");
             grpcServer.shutdownNow();
             grpcServer.awaitTermination();
         } catch (InterruptedException ignored) {}

@@ -34,9 +34,10 @@ public class GETStreamObserver<
     }
 
     public void onError(Throwable t) {
-        // TODO
+        Throwable cause = t.getCause() != null ? t.getCause() : t;
+
         out.code = LHResponseCodePb.CONNECTION_ERROR;
-        out.message = "Failed connecting to backend: " + t.getMessage();
+        out.message = "Failed connecting to backend: " + cause.getMessage();
         ctx.onNext(out.toProto());
         ctx.onCompleted();
     }

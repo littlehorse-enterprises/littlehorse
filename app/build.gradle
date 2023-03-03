@@ -42,8 +42,8 @@ dependencies {
     implementation 'org.apache.logging.log4j:log4j-api:2.19.0'
 
     // Stuff for Kafka
-    implementation 'org.apache.kafka:kafka-clients:3.5.0-SNAPSHOT'
-    implementation 'org.apache.kafka:kafka-streams:3.5.0-SNAPSHOT'
+    implementation 'org.apache.kafka:kafka-clients:3.4.0'
+    implementation 'org.apache.kafka:kafka-streams:3.4.0'
 
     // Utils
     implementation 'org.apache.commons:commons-lang3:3.12.0'

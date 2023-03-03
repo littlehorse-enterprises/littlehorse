@@ -8,6 +8,8 @@ import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.PutExternalEventReply;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.observabilityevent.ObservabilityEvent;
+import io.littlehorse.common.model.observabilityevent.events.ExtEvtRegisteredOe;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.VariableValue;
@@ -75,6 +77,14 @@ public class PutExternalEvent extends SubCommand<PutExternalEventPb> {
         evt.claimed = false;
 
         dao.saveExternalEvent(evt);
+
+        ExtEvtRegisteredOe oe = new ExtEvtRegisteredOe();
+        oe.extEvtDefName = evt.externalEventDefName;
+        oe.guid = evt.guid;
+        oe.content = evt.content;
+        oe.threadRunNumber = evt.threadRunNumber;
+        oe.nodeRunPosition = evt.nodeRunPosition;
+        dao.addObservabilityEvent(new ObservabilityEvent(evt.wfRunId, oe));
 
         WfRun wfRun = dao.getWfRun(wfRunId);
         if (wfRun != null) {

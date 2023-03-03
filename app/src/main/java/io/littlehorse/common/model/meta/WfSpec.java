@@ -13,6 +13,7 @@ import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.LHStatusPb;
 import io.littlehorse.jlib.common.proto.ThreadSpecPb;
+import io.littlehorse.jlib.common.proto.ThreadTypePb;
 import io.littlehorse.jlib.common.proto.WfSpecPb;
 import io.littlehorse.jlib.common.proto.WfSpecPbOrBuilder;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
@@ -257,7 +258,8 @@ public class WfSpec extends GETable<WfSpecPbOrBuilder> {
             entrypointThreadName,
             dao.getEventTime(),
             null,
-            evt.variables
+            evt.variables,
+            ThreadTypePb.ENTRYPOINT
         );
 
         dao.saveWfRun(out);

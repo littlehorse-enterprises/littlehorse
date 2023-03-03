@@ -13,6 +13,7 @@ import io.littlehorse.jlib.common.proto.LHStatusPb;
 import io.littlehorse.jlib.common.proto.StartThreadRunPb;
 import io.littlehorse.jlib.common.proto.StartThreadRunPbOrBuilder;
 import io.littlehorse.jlib.common.proto.TaskResultCodePb;
+import io.littlehorse.jlib.common.proto.ThreadTypePb;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
 import java.util.Date;
 import java.util.HashMap;
@@ -82,7 +83,8 @@ public class StartThreadRun extends SubNodeRun<StartThreadRunPb> {
             nodeRun.getNode().startThreadNode.threadSpecName,
             time,
             nodeRun.threadRunNumber,
-            variables
+            variables,
+            ThreadTypePb.CHILD
         );
 
         nodeRun.threadRun.childThreadIds.add(child.number);

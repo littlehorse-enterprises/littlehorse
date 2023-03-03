@@ -75,6 +75,7 @@ public class BackendInternalComms implements Closeable {
     private LHConfig config;
     private Server internalGrpcServer;
     private KafkaStreams coreStreams;
+    private KafkaStreams metricsStreams;
     private HostInfo thisHost;
     private LHProducer producer;
 
@@ -83,9 +84,14 @@ public class BackendInternalComms implements Closeable {
     private AsyncWaiters asyncWaiters;
     private ConcurrentHashMap<HostInfo, InternalGetAdvertisedHostsReplyPb> otherHosts;
 
-    public BackendInternalComms(LHConfig config, KafkaStreams coreStreams) {
+    public BackendInternalComms(
+        LHConfig config,
+        KafkaStreams coreStreams,
+        KafkaStreams metricsStreams
+    ) {
         this.config = config;
         this.coreStreams = coreStreams;
+        this.metricsStreams = metricsStreams;
         this.channels = new HashMap<>();
         otherHosts = new ConcurrentHashMap<>();
 
@@ -144,33 +150,53 @@ public class BackendInternalComms implements Closeable {
      * @param partitionKey is the partition key.
      * @param observer is the callback-able object.
      */
-    public void getBytesAsync(
+    public void getStoreBytesAsync(
+        String storeName,
         String fullStoreKey,
         String partitionKey,
         StreamObserver<CentralStoreQueryReplyPb> observer
     ) {
-        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
-            ServerTopology.CORE_STORE,
+        // Metrics store is on a different topology than the core store
+        KafkaStreams relevantStreams;
+
+        if (storeName.equals(ServerTopology.CORE_STORE)) {
+            relevantStreams = coreStreams;
+        } else if (storeName.equals(ServerTopology.METRICS_AGG_STORE)) {
+            relevantStreams = metricsStreams;
+        } else {
+            throw new RuntimeException(
+                "Not possible: unsupported store name " + storeName
+            );
+        }
+
+        KeyQueryMetadata meta = relevantStreams.queryMetadataForKey(
+            storeName,
             partitionKey,
             Serdes.String().serializer()
         );
 
         if (meta.activeHost().equals(thisHost)) {
-            localGetBytesAsync(fullStoreKey, observer);
+            localGetBytesAsync(storeName, fullStoreKey, observer);
         } else {
             queryRemoteAsync(
                 meta,
                 CentralStoreSubQueryPb.newBuilder().setKey(fullStoreKey).build(),
-                observer
+                observer,
+                storeName
             );
         }
     }
 
     private void localGetBytesAsync(
+        String storeName,
         String fullStoreKey,
         StreamObserver<CentralStoreQueryReplyPb> observer
     ) {
-        ReadOnlyKeyValueStore<String, Bytes> store = getRawStore(null, false);
+        ReadOnlyKeyValueStore<String, Bytes> store = getRawStore(
+            null,
+            false,
+            storeName
+        );
         Bytes result = store.get(fullStoreKey);
 
         CentralStoreQueryReplyPb.Builder out = CentralStoreQueryReplyPb
@@ -182,24 +208,29 @@ public class BackendInternalComms implements Closeable {
     }
 
     public TaskScheduleRequest getTsr(String tsrId) {
-        return new LHROStoreWrapper(getRawStore(null, false), config)
+        return new LHROStoreWrapper(
+            getRawStore(null, false, ServerTopology.CORE_STORE),
+            config
+        )
             .get(tsrId, TaskScheduleRequest.class);
     }
 
     public void getLastFromPrefixAsync(
         String prefix,
         String partitionKey,
-        StreamObserver<CentralStoreQueryReplyPb> observer
+        StreamObserver<CentralStoreQueryReplyPb> observer,
+        String storeName
     ) {
-        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
-            ServerTopology.CORE_STORE,
-            partitionKey,
-            Serdes.String().serializer()
-        );
+        KeyQueryMetadata meta = getStreamsFor(storeName)
+            .queryMetadataForKey(
+                storeName,
+                partitionKey,
+                Serdes.String().serializer()
+            );
 
         if (meta.activeHost().equals(thisHost)) {
             LHROStoreWrapper wrapper = new LHROStoreWrapper(
-                getRawStore(null, false),
+                getRawStore(null, false, storeName),
                 config
             );
             Bytes result = wrapper.getLastBytesFromFullPrefix(prefix);
@@ -213,7 +244,8 @@ public class BackendInternalComms implements Closeable {
             queryRemoteAsync(
                 meta,
                 CentralStoreSubQueryPb.newBuilder().setLastFromPrefix(prefix).build(),
-                observer
+                observer,
+                storeName
             );
         }
     }
@@ -341,12 +373,25 @@ public class BackendInternalComms implements Closeable {
         // Next we record the command.
     }
 
+    private KafkaStreams getStreamsFor(String storeName) {
+        if (storeName.equals(ServerTopology.CORE_STORE)) {
+            return coreStreams;
+        }
+
+        if (storeName.equals(ServerTopology.METRICS_AGG_STORE)) {
+            return metricsStreams;
+        }
+
+        throw new RuntimeException("Buggy LH Code: tried to get invalid store");
+    }
+
     private ReadOnlyKeyValueStore<String, Bytes> getRawStore(
         Integer specificPartition,
-        boolean enableStaleStores
+        boolean enableStaleStores,
+        String storeName
     ) {
         StoreQueryParameters<ReadOnlyKeyValueStore<String, Bytes>> params = StoreQueryParameters.fromNameAndType(
-            ServerTopology.CORE_STORE,
+            storeName,
             QueryableStoreTypes.keyValueStore()
         );
 
@@ -358,16 +403,17 @@ public class BackendInternalComms implements Closeable {
             params = params.withPartition(specificPartition);
         }
 
-        return coreStreams.store(params);
+        return getStreamsFor(storeName).store(params);
     }
 
-    private LHROStoreWrapper getLocalStore(
+    private LHROStoreWrapper getCoreStore(
         Integer specificPartition,
         boolean enableStaleStores
     ) {
         ReadOnlyKeyValueStore<String, Bytes> rawStore = getRawStore(
             specificPartition,
-            enableStaleStores
+            enableStaleStores,
+            ServerTopology.CORE_STORE
         );
         return new LHROStoreWrapper(rawStore, config);
     }
@@ -389,7 +435,8 @@ public class BackendInternalComms implements Closeable {
     private void queryRemoteAsync(
         KeyQueryMetadata meta,
         CentralStoreSubQueryPb subQuery,
-        StreamObserver<CentralStoreQueryReplyPb> observer
+        StreamObserver<CentralStoreQueryReplyPb> observer,
+        String storeName
     ) {
         // todo
         LHInternalsStub client = getInternalAsyncClient(meta.activeHost());
@@ -399,6 +446,7 @@ public class BackendInternalComms implements Closeable {
                 .setEnableStaleStores(false)
                 .setSpecificPartition(meta.partition())
                 .setQuery(subQuery)
+                .setStore(storeName)
                 .build(),
             observer
         );
@@ -454,7 +502,12 @@ public class BackendInternalComms implements Closeable {
 
             ReadOnlyKeyValueStore<String, Bytes> rawStore;
             try {
-                rawStore = getRawStore(specificPartition, req.getEnableStaleStores());
+                rawStore =
+                    getRawStore(
+                        specificPartition,
+                        req.getEnableStaleStores(),
+                        req.getStore()
+                    );
             } catch (Exception exn) {
                 exn.printStackTrace();
                 out.setCode(StoreQueryStatusPb.RSQ_NOT_AVAILABLE);
@@ -599,7 +652,7 @@ public class BackendInternalComms implements Closeable {
         );
         int partition = meta.partition();
 
-        LHROStoreWrapper store = getLocalStore(partition, false);
+        LHROStoreWrapper store = getCoreStore(partition, false);
         PartitionBookmarkPb partBookmark = reqBookmark.getInProgressPartitionsOrDefault(
             partition,
             null
@@ -804,7 +857,7 @@ public class BackendInternalComms implements Closeable {
 
         // iterate through all active and standby local partitions
         for (int partition : getLocalActiveCommandProcessorPartitions()) {
-            LHROStoreWrapper partStore = getLocalStore(partition, false);
+            LHROStoreWrapper partStore = getCoreStore(partition, false);
             if (reqBookmark.getCompletedPartitionsList().contains(partition)) {
                 // This partition has already been accounted for
                 continue;
