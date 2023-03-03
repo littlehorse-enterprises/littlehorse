@@ -56,6 +56,10 @@ public class LHConfig extends LHServerConfig {
         return getKafkaTopicPrefix() + "observability";
     }
 
+    public String getMetricsRepartitionTopicName() {
+        return getKafkaTopicPrefix() + "metrics-repartition";
+    }
+
     public String getGlobalMetadataCLTopicName() {
         return getKafkaTopicPrefix() + "global-metadata-cl";
     }

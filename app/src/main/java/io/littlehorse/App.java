@@ -42,6 +42,14 @@ public class App {
 
         topics.add(
             new NewTopic(
+                config.getMetricsRepartitionTopicName(),
+                config.getClusterPartitions(),
+                config.getReplicationFactor()
+            )
+        );
+
+        topics.add(
+            new NewTopic(
                 config.getTimerTopic(),
                 config.getClusterPartitions(),
                 config.getReplicationFactor()
