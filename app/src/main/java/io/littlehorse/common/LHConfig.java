@@ -52,20 +52,16 @@ public class LHConfig extends LHServerConfig {
         return getKafkaTopicPrefix() + "core-cmd";
     }
 
+    public String getRepartitionTopicName() {
+        return getKafkaTopicPrefix() + "core-repartition";
+    }
+
     public String getObervabilityEventTopicName() {
         return getKafkaTopicPrefix() + "observability";
     }
 
-    public String getMetricsRepartitionTopicName() {
-        return getKafkaTopicPrefix() + "metrics-repartition";
-    }
-
     public String getGlobalMetadataCLTopicName() {
         return getKafkaTopicPrefix() + "global-metadata-cl";
-    }
-
-    public String getTagCmdTopic() {
-        return getKafkaTopicPrefix() + "tag-cmds";
     }
 
     public String getTimerTopic() {

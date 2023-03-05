@@ -42,7 +42,7 @@ public class App {
 
         topics.add(
             new NewTopic(
-                config.getMetricsRepartitionTopicName(),
+                config.getRepartitionTopicName(),
                 config.getClusterPartitions(),
                 config.getReplicationFactor()
             )

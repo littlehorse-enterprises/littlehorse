@@ -136,11 +136,9 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     private KafkaStreams coreStreams;
     private KafkaStreams timerStreams;
-    // private KafkaStreams metricsStreams;
 
     private State coreState;
     private State timerState;
-    private State metricsState;
 
     private BackendInternalComms internalComms;
 
@@ -167,12 +165,6 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
                 //    timer, which means latency will jump from 15ms to >100ms
                 config.getStreamsConfig("timer", false)
             );
-
-        // metricsStreams =
-        //     new KafkaStreams(
-        //         ServerTopology.initMetricsTopology(config),
-        //         config.getStreamsConfig("metrics", true)
-        //     );
 
         Executor executor = Executors.newFixedThreadPool(16);
 
@@ -202,8 +194,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         //     LHUtil.log("" + new Date() + " New state for metrics: " + metricsState);
         // });
 
-        // internalComms = new BackendInternalComms(config, coreStreams, metricsStreams);
-        internalComms = new BackendInternalComms(config, coreStreams, null);
+        internalComms = new BackendInternalComms(config, coreStreams);
     }
 
     public String getInstanceId() {
@@ -417,7 +408,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         );
 
         internalComms.getStoreBytesAsync(
-            ServerTopology.METRICS_AGG_STORE,
+            ServerTopology.CORE_REPARTITION_STORE,
             StoreUtils.getFullStoreKey(
                 TaskDefMetrics.getObjectId(req),
                 TaskDefMetrics.class
@@ -440,7 +431,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         );
 
         internalComms.getStoreBytesAsync(
-            ServerTopology.METRICS_AGG_STORE,
+            ServerTopology.CORE_REPARTITION_STORE,
             StoreUtils.getFullStoreKey(
                 WfSpecMetrics.getObjectId(req),
                 WfSpecMetrics.class

@@ -75,23 +75,16 @@ public class BackendInternalComms implements Closeable {
     private LHConfig config;
     private Server internalGrpcServer;
     private KafkaStreams coreStreams;
-    private KafkaStreams metricsStreams;
     private HostInfo thisHost;
     private LHProducer producer;
 
     private Map<String, ManagedChannel> channels;
-    // private ConcurrentHashMap<String, StreamObserver<WaitForCommandReplyPb>> asyncWaiters;
     private AsyncWaiters asyncWaiters;
     private ConcurrentHashMap<HostInfo, InternalGetAdvertisedHostsReplyPb> otherHosts;
 
-    public BackendInternalComms(
-        LHConfig config,
-        KafkaStreams coreStreams,
-        KafkaStreams metricsStreams
-    ) {
+    public BackendInternalComms(LHConfig config, KafkaStreams coreStreams) {
         this.config = config;
         this.coreStreams = coreStreams;
-        this.metricsStreams = metricsStreams;
         this.channels = new HashMap<>();
         otherHosts = new ConcurrentHashMap<>();
 
@@ -156,20 +149,7 @@ public class BackendInternalComms implements Closeable {
         String partitionKey,
         StreamObserver<CentralStoreQueryReplyPb> observer
     ) {
-        // Metrics store is on a different topology than the core store
-        KafkaStreams relevantStreams;
-
-        if (storeName.equals(ServerTopology.CORE_STORE)) {
-            relevantStreams = coreStreams;
-        } else if (storeName.equals(ServerTopology.METRICS_AGG_STORE)) {
-            relevantStreams = metricsStreams;
-        } else {
-            throw new RuntimeException(
-                "Not possible: unsupported store name " + storeName
-            );
-        }
-
-        KeyQueryMetadata meta = relevantStreams.queryMetadataForKey(
+        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
             storeName,
             partitionKey,
             Serdes.String().serializer()
@@ -207,26 +187,17 @@ public class BackendInternalComms implements Closeable {
         observer.onNext(out.build());
     }
 
-    public TaskScheduleRequest getTsr(String tsrId) {
-        return new LHROStoreWrapper(
-            getRawStore(null, false, ServerTopology.CORE_STORE),
-            config
-        )
-            .get(tsrId, TaskScheduleRequest.class);
-    }
-
     public void getLastFromPrefixAsync(
         String prefix,
         String partitionKey,
         StreamObserver<CentralStoreQueryReplyPb> observer,
         String storeName
     ) {
-        KeyQueryMetadata meta = getStreamsFor(storeName)
-            .queryMetadataForKey(
-                storeName,
-                partitionKey,
-                Serdes.String().serializer()
-            );
+        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
+            storeName,
+            partitionKey,
+            Serdes.String().serializer()
+        );
 
         if (meta.activeHost().equals(thisHost)) {
             LHROStoreWrapper wrapper = new LHROStoreWrapper(
@@ -373,18 +344,6 @@ public class BackendInternalComms implements Closeable {
         // Next we record the command.
     }
 
-    private KafkaStreams getStreamsFor(String storeName) {
-        if (storeName.equals(ServerTopology.CORE_STORE)) {
-            return coreStreams;
-        }
-
-        if (storeName.equals(ServerTopology.METRICS_AGG_STORE)) {
-            return metricsStreams;
-        }
-
-        throw new RuntimeException("Buggy LH Code: tried to get invalid store");
-    }
-
     private ReadOnlyKeyValueStore<String, Bytes> getRawStore(
         Integer specificPartition,
         boolean enableStaleStores,
@@ -403,7 +362,7 @@ public class BackendInternalComms implements Closeable {
             params = params.withPartition(specificPartition);
         }
 
-        return getStreamsFor(storeName).store(params);
+        return coreStreams.store(params);
     }
 
     private LHROStoreWrapper getCoreStore(

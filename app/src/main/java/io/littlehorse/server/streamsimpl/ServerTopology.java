@@ -2,7 +2,6 @@ package io.littlehorse.server.streamsimpl;
 
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.command.Command;
-import io.littlehorse.common.model.observabilityevent.ObservabilityEvent;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.util.serde.LHDeserializer;
 import io.littlehorse.common.util.serde.LHSerde;
@@ -10,7 +9,7 @@ import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessor;
 import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
 import io.littlehorse.server.streamsimpl.coreprocessors.GlobalMetadataProcessor;
-import io.littlehorse.server.streamsimpl.coreprocessors.TimerProcessor;
+import io.littlehorse.server.streamsimpl.timer.TimerProcessor;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -59,15 +58,11 @@ public class ServerTopology {
     public static final String CORE_SOURCE = "core-source";
     public static final String CORE_STORE = "core-store";
     public static final String CORE_PROCESSOR = "core-processor";
-    public static final String CORE_SINK = "core-sink";
-
-    public static final String METRICS_SOURCE = "metrics-source";
-    public static final String METRICS_LOCAL_PROCESSOR = "metrics-local-processor";
-    public static final String METRICS_LOCAL_STORE = "metrics-local-store";
-    public static final String METRICS_SINK = "metrics-sink";
-    public static final String METRICS_AGG_SOURCE = "metrics-agg-source";
-    public static final String METRICS_AGG_STORE = "metrics-agg-store";
-    public static final String METRICS_AGG_PROCESSOR = "metrics-aggregator";
+    public static final String CORE_REPARTITION_SINK = "core-repartition-sink";
+    public static final String CORE_REPARTITION_SOURCE = "core-repartition-source";
+    public static final String CORE_REPARTITION_STORE = "core-repartition-store";
+    public static final String CORE_REPARTITION_PROCESSOR =
+        "core-repartition-processor";
 
     public static final String GLOBAL_META_SOURCE = "global-metadata-cl-source";
     public static final String GLOBAL_STORE = "global-metadata-store";
@@ -95,7 +90,7 @@ public class ServerTopology {
         );
 
         topo.addSink(
-            CORE_SINK,
+            CORE_REPARTITION_SINK,
             (key, coreServerOutput, ctx) -> {
                 return ((CommandProcessorOutput) coreServerOutput).topic;
             }, // topic extractor
@@ -111,12 +106,20 @@ public class ServerTopology {
             CORE_PROCESSOR // parent name
         );
 
+        topo.addSource(CORE_REPARTITION_SOURCE, Serdes.String().deserializer(),
+            new LHDeserializer<>(null, config)
+         , null, null, null)
+
         StoreBuilder<KeyValueStore<String, Bytes>> partitionedStoreBuilder = Stores.keyValueStoreBuilder(
             Stores.persistentKeyValueStore(CORE_STORE),
             Serdes.String(),
             Serdes.Bytes()
         );
-        topo.addStateStore(partitionedStoreBuilder, CORE_PROCESSOR);
+        topo.addStateStore(
+            partitionedStoreBuilder,
+            CORE_PROCESSOR,
+            CORE_REPARTITION_PROCESSOR
+        );
 
         // There's a topic for global communication, which is used for two things:
         // 1. broadcasting global metadata to all instances
@@ -194,23 +197,6 @@ public class ServerTopology {
         );
         topo.addStateStore(timerStoreBuilder, TIMER_PROCESSOR);
 
-        return topo;
-    }
-
-    public static Topology initMetricsTopology(LHConfig config) {
-        Topology topo = new Topology();
-        Serde<ObservabilityEvent> serde = new LHSerde<>(
-            ObservabilityEvent.class,
-            config
-        );
-
-        Runtime
-            .getRuntime()
-            .addShutdownHook(
-                new Thread(() -> {
-                    serde.close();
-                })
-            );
         return topo;
     }
 }
