@@ -1,8 +1,10 @@
 package io.littlehorse.server;
 
 import com.google.protobuf.MessageOrBuilder;
+import io.grpc.Grpc;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import io.grpc.TlsServerCredentials;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
@@ -168,6 +170,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
                 config.getStreamsConfig("timer", false)
             );
 
+        ServerBuilder<?> builder;
         // metricsStreams =
         //     new KafkaStreams(
         //         ServerTopology.initMetricsTopology(config),
@@ -175,17 +178,26 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         //     );
 
         Executor executor = Executors.newFixedThreadPool(16);
+        TlsServerCredentials.Builder security = config.getServerCreds();
+        if (security == null) {
+            builder = ServerBuilder.forPort(config.getApiBindPort());
+        } else {
+            builder =
+                Grpc.newServerBuilderForPort(
+                    config.getApiBindPort(),
+                    security.build()
+                );
+        }
 
-        this.grpcServer =
-            ServerBuilder
-                .forPort(config.getApiBindPort())
-                .addService(this)
-                .keepAliveTime(10, TimeUnit.SECONDS)
-                .keepAliveTimeout(3, TimeUnit.SECONDS)
-                .permitKeepAliveTime(10, TimeUnit.SECONDS)
-                .permitKeepAliveWithoutCalls(true)
-                .executor(executor)
-                .build();
+        builder
+            .keepAliveTime(10, TimeUnit.SECONDS)
+            .keepAliveTimeout(3, TimeUnit.SECONDS)
+            .permitKeepAliveTime(10, TimeUnit.SECONDS)
+            .permitKeepAliveWithoutCalls(true)
+            .addService(this)
+            .executor(executor);
+
+        grpcServer = builder.build();
 
         coreStreams.setStateListener((newState, oldState) -> {
             coreState = newState;
