@@ -9,6 +9,7 @@
   - [Advanced](#advanced)
     - [Running Multiple LH Servers](#running-multiple-lh-servers)
     - [Debug Cycle](#debug-cycle)
+    - [Linting](#linting)
   - [Cleanup](#cleanup)
 
 This repository contains the code for the core LittleHorse Server. It has a dependency on the `io-littlehorse-jlib` repository's Java library.
@@ -41,10 +42,11 @@ This section describes how to run the LittleHorse server in a development enviro
 
 ## Prerequisities
 
-Your system need the following:
+Your system needs the following:
 * `openjdk`, preferably version 17 or later.
 * `gradle`, preferably version 7.4 or later.
 * `docker` and `docker-compose`
+* *OPTIONAL:* the linters require `npm`.
 
 Once you've set up your system, you *also* need to publish the `io-littlehorse-jlib` library to your local Maven repository. See the `README` on that repo for instructions.
 
@@ -118,6 +120,21 @@ To "reset" the LittleHorse cluster, you need to delete the data in Kafka and als
 1. Stop all LH Server processes.
 2. Run `./local-dev/refresh.sh`.
 3. Start the LH Servers again.
+
+### Linting
+Due to the horrendous Java ecosystem of linters, we are actually using Prettier from the JavaScript community. There is a [Prettier Java Plugin](https://github.com/jhipster/prettier-java) which adapts Prettier to the Java environment.
+
+Install the linters via:
+```
+npm install
+```
+
+Run the linters via:
+```
+npm run format
+```
+
+If you use VSCode, the `.vscode` directory I've checked in configures the linters to run upon every file save. Obviously, we will stop checking in IDE config files in the future, but this is just to get us started.
 
 ## Cleanup
 
