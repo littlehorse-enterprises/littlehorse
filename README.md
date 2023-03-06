@@ -1,4 +1,15 @@
 # LittleHorse Server
+- [LittleHorse Server](#littlehorse-server)
+  - [LH Repository Inventory](#lh-repository-inventory)
+- [Development](#development)
+  - [Prerequisities](#prerequisities)
+  - [Running LH](#running-lh)
+  - [Configuring Clients](#configuring-clients)
+  - [Building the Image](#building-the-image)
+  - [Advanced](#advanced)
+    - [Running Multiple LH Servers](#running-multiple-lh-servers)
+    - [Debug Cycle](#debug-cycle)
+  - [Cleanup](#cleanup)
 
 This repository contains the code for the core LittleHorse Server. It has a dependency on the `io-littlehorse-jlib` repository's Java library.
 
@@ -6,19 +17,23 @@ For a description of the architecture, see the [architecture docs](docs/ARCH.md)
 
 ## LH Repository Inventory
 The LittleHorse project currently has multiple repositories, described below:
-* `io-littlehorse`
+* [`io-littlehorse`](https://github.com/littlehorse-eng/io-littlehorse)
     *  Code for the LittleHorse Server.
-* `io-littlehorse-jlib` is a library that contains:
+* [`io-littlehorse-jlib`](https://github.com/littlehorse-eng/io-littlehorse-jlib)
     * Protocol Buffer definitions used by clients and the `io-littlehorse` repo.
     * Library for creating `WfSpec`'s in Java.
     * Library for executing `TaskRun`'s in Java.
     * Shared constants, including configuration constants used by the LH Server.
-* `io-littlehorse-golib`
+* [`io-littlehorse-golib`](https://github.com/littlehorse-eng/io-littlehorse-golib)
     * The `lhctl` command line interface.
     * Library for creating `WfSpec`'s in GoLang (under development).
     * Library for executing `TaskRun`'s in GoLang (under development).
-* `io-littlehorse-jtests`
+* [`io-littlehorse-jtests`](https://github.com/littlehorse-eng/io-littlehorse-jtests)
     * A series of system integration tests used to verify the cohesive behavior of the LH Server, Java Workflow SDK, and Java Task Library together.
+* [`io-littlehorse-operator`](https://github.com/littlehorse-eng/io-littlehorse-operator)
+    * Code for a K8s Init Container that sets up the LittleHorse config file based on the `topology.kubernetes.io/zone` and pod name.
+    * Scripts to deploy LittleHorse on KIND or EKS.
+    * (FUTURE) code for a LittleHorse Controller/Operator.
 
 # Development
 
@@ -66,6 +81,15 @@ When you run the LH Server according to the command above, the API Host is `loca
 Also note that mTLS will NOT be enabled; therefore, you should not have any client keys or certs configured in your `~/.config/littlehorse.config` if you wish to interact with the LH Server running in your terminal as per this README.
 
 At this point, you're ready to consult the `README` in the `io-littlehorse-jlib` repository for a tutorial on how to run your first workflow.
+
+## Building the Image
+
+To build the `littlehorse` docker image, run:
+
+```
+./build/build.sh
+```
+This step is needed to develop on KIND.
 
 ## Advanced
 This section covers more advanced topics that you'll need to know when modifying the actual LH Server code.
