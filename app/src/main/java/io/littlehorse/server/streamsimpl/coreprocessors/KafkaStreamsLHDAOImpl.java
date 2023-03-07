@@ -24,9 +24,12 @@ import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.LHResponseCodePb;
+import io.littlehorse.jlib.common.proto.MetricsWindowLengthPb;
 import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streamsimpl.ServerTopology;
+import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.TaskMetricUpdate;
+import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.WfMetricUpdate;
 import io.littlehorse.server.streamsimpl.storeinternals.LHROStoreWrapper;
 import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
 import io.littlehorse.server.streamsimpl.storeinternals.index.DiscreteTagLocalCounter;
@@ -65,6 +68,8 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     private int partition;
     private KafkaStreamsServerImpl server;
     private List<ObservabilityEvent> oEvents;
+    private Map<String, TaskMetricUpdate> taskMetricPuts;
+    private Map<String, WfMetricUpdate> wfMetricPuts;
 
     private static final String OUTGOING_CHANGELOG_KEY = "OUTGOING_CHANGELOG";
 
@@ -121,6 +126,8 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         extEvtDefPuts = new HashMap<>();
         taskDefPuts = new HashMap<>();
         oEvents = new ArrayList<>();
+        taskMetricPuts = new HashMap<>();
+        wfMetricPuts = new HashMap<>();
 
         // TODO: Here is where we want to eventually add some cacheing for GET to
         // the WfSpec and TaskDef etc.
@@ -703,6 +710,77 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
             );
             ctx.forward(out);
         }
+
+        processMetricsWithObservabilityEvents();
+    }
+
+    public List<WfMetricUpdate> getWfMetricWindows(String wfSpecName, Date time) {
+        List<WfMetricUpdate> out = new ArrayList<>();
+        out.add(getWmUpdate(time, MetricsWindowLengthPb.MINUTES_5, wfSpecName));
+        out.add(getWmUpdate(time, MetricsWindowLengthPb.HOURS_2, wfSpecName));
+        out.add(getWmUpdate(time, MetricsWindowLengthPb.DAYS_1, wfSpecName));
+        return out;
+    }
+
+    private WfMetricUpdate getWmUpdate(
+        Date windowStart,
+        MetricsWindowLengthPb type,
+        String taskDefName
+    ) {
+        String id = WfMetricUpdate.getObjectId(type, windowStart, taskDefName);
+        if (wfMetricPuts.containsKey(id)) {
+            return wfMetricPuts.get(id);
+        }
+
+        WfMetricUpdate out = localStore.get(id, WfMetricUpdate.class);
+        if (out == null) {
+            out = new WfMetricUpdate();
+            out.windowStart = windowStart;
+            out.type = type;
+            out.wfSpecName = taskDefName;
+        }
+
+        wfMetricPuts.put(id, out);
+        return out;
+    }
+
+    public List<TaskMetricUpdate> getTaskMetricWindows(
+        String taskDefName,
+        Date time
+    ) {
+        List<TaskMetricUpdate> out = new ArrayList<>();
+        out.add(getTmUpdate(time, MetricsWindowLengthPb.MINUTES_5, taskDefName));
+        out.add(getTmUpdate(time, MetricsWindowLengthPb.HOURS_2, taskDefName));
+        out.add(getTmUpdate(time, MetricsWindowLengthPb.DAYS_1, taskDefName));
+        return out;
+    }
+
+    private TaskMetricUpdate getTmUpdate(
+        Date windowStart,
+        MetricsWindowLengthPb type,
+        String taskDefName
+    ) {
+        String id = TaskMetricUpdate.getObjectId(type, windowStart, taskDefName);
+        if (taskMetricPuts.containsKey(id)) {
+            return taskMetricPuts.get(id);
+        }
+
+        TaskMetricUpdate out = localStore.get(id, TaskMetricUpdate.class);
+        if (out == null) {
+            out = new TaskMetricUpdate();
+            out.windowStart = windowStart;
+            out.type = type;
+            out.taskDefName = taskDefName;
+        }
+
+        taskMetricPuts.put(id, out);
+        return out;
+    }
+
+    private void processMetricsWithObservabilityEvents() {
+        for (ObservabilityEvent event : oEvents) {
+            event.updateMetrics(this);
+        }
     }
 
     private void forwardTask(TaskScheduleRequest tsr) {
@@ -894,6 +972,8 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         extEvtDefPuts.clear();
         responseToSave = null;
         oEvents = new ArrayList<>();
+        taskMetricPuts = new HashMap<>();
+        wfMetricPuts = new HashMap<>();
     }
 
     public void saveResponse(LHSerializable<?> response, Command command) {

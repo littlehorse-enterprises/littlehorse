@@ -8,6 +8,7 @@ import com.google.common.hash.Hashing;
 import com.google.protobuf.MessageOrBuilder;
 import com.google.protobuf.Timestamp;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.jlib.common.proto.MetricsWindowLengthPb;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Base64;
@@ -69,6 +70,24 @@ public class LHUtil {
 
     public static String toLhDbFormat(Date date) {
         return date == null ? "null" : String.format("%012d", date.getTime());
+    }
+
+    public static Date getWindowStart(Date time, MetricsWindowLengthPb type) {
+        long windowLength = getWindowLengthMillis(type);
+        return new Date((time.getTime() / windowLength) * windowLength);
+    }
+
+    public static long getWindowLengthMillis(MetricsWindowLengthPb type) {
+        switch (type) {
+            case MINUTES_5:
+                return 1000 * 60 * 5;
+            case HOURS_2:
+                return 1000 * 60 * 60 * 2;
+            case DAYS_1:
+                return 100 * 60 * 60 * 24;
+            default:
+                throw new RuntimeException("Invalid window!");
+        }
     }
 
     public static String toLHDbVersionFormat(int version) {

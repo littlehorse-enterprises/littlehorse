@@ -7,7 +7,9 @@ import io.littlehorse.jlib.common.LHLibUtil;
 import io.littlehorse.jlib.common.proto.MetricsWindowLengthPb;
 import io.littlehorse.jlib.common.proto.WfMetricUpdatePb;
 import io.littlehorse.jlib.common.proto.WfMetricUpdatePbOrBuilder;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class WfMetricUpdate extends Storeable<WfMetricUpdatePb> {
 
@@ -20,8 +22,12 @@ public class WfMetricUpdate extends Storeable<WfMetricUpdatePb> {
     public long totalErrored;
     public long totalStarted;
 
-    public int partition;
+    public List<Integer> seenPartitions;
     public String wfSpecName;
+
+    public WfMetricUpdate() {
+        seenPartitions = new ArrayList<>();
+    }
 
     public Class<WfMetricUpdatePb> getProtoBaseClass() {
         return WfMetricUpdatePb.class;
@@ -52,6 +58,34 @@ public class WfMetricUpdate extends Storeable<WfMetricUpdatePb> {
         totalStarted = p.getTotalStarted();
         startToCompleteTotal = p.getStartToCompleteTotal();
         startToCompleteMax = p.getStartToCompleteMax();
+    }
+
+    public void merge(WfMetricUpdate o) {
+        if (!o.windowStart.equals(windowStart)) {
+            throw new RuntimeException("Merging non-matched windows!");
+        }
+        if (!o.type.equals(type)) {
+            throw new RuntimeException("Merging non-matched windows!");
+        }
+
+        numEntries += o.numEntries;
+        if (o.startToCompleteMax > startToCompleteMax) {
+            startToCompleteMax = o.startToCompleteMax;
+        }
+        startToCompleteTotal += o.startToCompleteTotal;
+
+        if (o.startToCompleteMax > startToCompleteMax) {
+            startToCompleteMax = o.startToCompleteMax;
+        }
+        startToCompleteTotal += o.startToCompleteTotal;
+
+        totalCompleted += o.totalCompleted;
+        totalErrored += o.totalErrored;
+        totalStarted += o.totalStarted;
+
+        for (Integer seenPartition : o.seenPartitions) {
+            seenPartitions.add(seenPartition);
+        }
     }
 
     public static String getObjectId(

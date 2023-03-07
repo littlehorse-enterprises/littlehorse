@@ -1,6 +1,7 @@
 package io.littlehorse.common.model.observabilityevent;
 
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.observabilityevent.events.ExtEvtMatchedOe;
 import io.littlehorse.common.model.observabilityevent.events.ExtEvtRegisteredOe;
@@ -225,5 +226,9 @@ public class ObservabilityEvent extends LHSerializable<ObservabilityEventPb> {
         } else {
             throw new RuntimeException("not possible");
         }
+    }
+
+    public void updateMetrics(LHDAO dao) {
+        getSubEvent().updateMetrics(dao, time);
     }
 }

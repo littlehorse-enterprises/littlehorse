@@ -2,12 +2,15 @@ package io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repa
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.Storeable;
+import io.littlehorse.common.model.metrics.TaskDefMetrics;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.LHLibUtil;
 import io.littlehorse.jlib.common.proto.MetricsWindowLengthPb;
 import io.littlehorse.jlib.common.proto.TaskMetricUpdatePb;
 import io.littlehorse.jlib.common.proto.TaskMetricUpdatePbOrBuilder;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> {
 
@@ -22,8 +25,12 @@ public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> {
     public long totalErrored;
     public long totalStarted;
 
-    public int partition;
+    public List<Integer> seenPartitions;
     public String taskDefName;
+
+    public TaskMetricUpdate() {
+        seenPartitions = new ArrayList<>();
+    }
 
     public Class<TaskMetricUpdatePb> getProtoBaseClass() {
         return TaskMetricUpdatePb.class;
@@ -43,6 +50,10 @@ public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> {
             .setStartToCompleteTotal(startToCompleteTotal)
             .setStartToCompleteMax(startToCompleteMax);
 
+        for (Integer seen : seenPartitions) {
+            out.addSeenPartitions(seen);
+        }
+
         return out;
     }
 
@@ -58,6 +69,47 @@ public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> {
         scheduleToStartMax = p.getScheduleToStartMax();
         startToCompleteTotal = p.getStartToCompleteTotal();
         startToCompleteMax = p.getStartToCompleteMax();
+
+        for (int seenPartition : p.getSeenPartitionsList()) {
+            seenPartitions.add(seenPartition);
+        }
+    }
+
+    public void merge(TaskMetricUpdate o) {
+        if (!o.windowStart.equals(windowStart)) {
+            throw new RuntimeException("Merging non-matched windows!");
+        }
+        if (!o.type.equals(type)) {
+            throw new RuntimeException("Merging non-matched windows!");
+        }
+
+        numEntries += o.numEntries;
+        if (o.scheduleToStartMax > scheduleToStartMax) {
+            scheduleToStartMax = o.scheduleToStartMax;
+        }
+        scheduleToStartTotal += o.scheduleToStartTotal;
+
+        if (o.startToCompleteMax > startToCompleteMax) {
+            startToCompleteMax = o.startToCompleteMax;
+        }
+        startToCompleteTotal += o.startToCompleteTotal;
+
+        totalCompleted += o.totalCompleted;
+        totalErrored += o.totalErrored;
+        totalStarted += o.totalStarted;
+
+        for (Integer seenPartition : o.seenPartitions) {
+            seenPartitions.add(seenPartition);
+        }
+    }
+
+    public TaskDefMetrics toResponse() {
+        TaskDefMetrics out = new TaskDefMetrics();
+        out.scheduleToStartAvg = scheduleToStartTotal / numEntries;
+        out.scheduleToStartMax = scheduleToStartMax;
+        out.startToComplete
+
+        return out;
     }
 
     public static String getObjectId(

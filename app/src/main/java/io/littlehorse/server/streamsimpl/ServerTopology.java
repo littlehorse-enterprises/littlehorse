@@ -9,7 +9,9 @@ import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessor;
 import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
 import io.littlehorse.server.streamsimpl.coreprocessors.GlobalMetadataProcessor;
-import io.littlehorse.server.streamsimpl.timer.TimerProcessor;
+import io.littlehorse.server.streamsimpl.coreprocessors.RepartitionCommandProcessor;
+import io.littlehorse.server.streamsimpl.coreprocessors.TimerProcessor;
+import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionCommand;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -106,17 +108,28 @@ public class ServerTopology {
             CORE_PROCESSOR // parent name
         );
 
-        topo.addSource(CORE_REPARTITION_SOURCE, Serdes.String().deserializer(),
-            new LHDeserializer<>(null, config)
-         , null, null, null)
+        topo.addSource(
+            CORE_REPARTITION_SOURCE,
+            Serdes.String().deserializer(),
+            new LHDeserializer<>(RepartitionCommand.class, config),
+            config.getRepartitionTopicName()
+        );
 
-        StoreBuilder<KeyValueStore<String, Bytes>> partitionedStoreBuilder = Stores.keyValueStoreBuilder(
+        topo.addProcessor(
+            CORE_REPARTITION_PROCESSOR,
+            () -> {
+                return new RepartitionCommandProcessor();
+            },
+            CORE_REPARTITION_SOURCE
+        );
+
+        StoreBuilder<KeyValueStore<String, Bytes>> rePartitionedStoreBuilder = Stores.keyValueStoreBuilder(
             Stores.persistentKeyValueStore(CORE_STORE),
             Serdes.String(),
             Serdes.Bytes()
         );
         topo.addStateStore(
-            partitionedStoreBuilder,
+            rePartitionedStoreBuilder,
             CORE_PROCESSOR,
             CORE_REPARTITION_PROCESSOR
         );
