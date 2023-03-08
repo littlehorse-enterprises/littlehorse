@@ -1,9 +1,11 @@
 package io.littlehorse.common.model.observabilityevent.events;
 
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.observabilityevent.SubEvent;
 import io.littlehorse.jlib.common.proto.ExtEvtMatchedOePb;
 import io.littlehorse.jlib.common.proto.ExtEvtMatchedOePbOrBuilder;
+import java.util.Date;
 
 public class ExtEvtMatchedOe extends SubEvent<ExtEvtMatchedOePb> {
 
@@ -32,5 +34,9 @@ public class ExtEvtMatchedOe extends SubEvent<ExtEvtMatchedOePb> {
         threadRunNumber = p.getThreadRunNumber();
         nodeRunPosition = p.getNodeRunPosition();
         extEvtGuid = p.getExtEvtGuid();
+    }
+
+    public void updateMetrics(LHDAO dao, Date time, String wfRunId) {
+        // Nothing to do yet
     }
 }

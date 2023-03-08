@@ -13,6 +13,8 @@ import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
+import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.TaskMetricUpdate;
+import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.WfMetricUpdate;
 import java.util.Date;
 import java.util.List;
 
@@ -113,4 +115,8 @@ public interface LHDAO extends LHGlobalMetaStores {
     public void addObservabilityEvent(ObservabilityEvent evt);
 
     public LHGlobalMetaStores getGlobalMetaStores();
+
+    public List<TaskMetricUpdate> getTaskMetricWindows(String taskDefName, Date time);
+
+    public List<WfMetricUpdate> getWfMetricWindows(String wfSpecName, Date time);
 }

@@ -1,18 +1,23 @@
 package io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand;
 
 import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.model.Storeable;
+import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.metrics.TaskDefMetrics;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.LHLibUtil;
 import io.littlehorse.jlib.common.proto.MetricsWindowLengthPb;
 import io.littlehorse.jlib.common.proto.TaskMetricUpdatePb;
 import io.littlehorse.jlib.common.proto.TaskMetricUpdatePbOrBuilder;
+import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionSubCommand;
+import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.apache.kafka.streams.processor.api.ProcessorContext;
 
-public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> {
+public class TaskMetricUpdate
+    extends GETable<TaskMetricUpdatePb>
+    implements RepartitionSubCommand {
 
     public Date windowStart;
     public MetricsWindowLengthPb type;
@@ -48,7 +53,8 @@ public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> {
             .setScheduleToStartTotal(scheduleToStartTotal)
             .setScheduleToStartMax(scheduleToStartMax)
             .setStartToCompleteTotal(startToCompleteTotal)
-            .setStartToCompleteMax(startToCompleteMax);
+            .setStartToCompleteMax(startToCompleteMax)
+            .setNumEntries(numEntries);
 
         for (Integer seen : seenPartitions) {
             out.addSeenPartitions(seen);
@@ -69,6 +75,7 @@ public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> {
         scheduleToStartMax = p.getScheduleToStartMax();
         startToCompleteTotal = p.getStartToCompleteTotal();
         startToCompleteMax = p.getStartToCompleteMax();
+        numEntries = p.getNumEntries();
 
         for (int seenPartition : p.getSeenPartitionsList()) {
             seenPartitions.add(seenPartition);
@@ -105,11 +112,33 @@ public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> {
 
     public TaskDefMetrics toResponse() {
         TaskDefMetrics out = new TaskDefMetrics();
-        out.scheduleToStartAvg = scheduleToStartTotal / numEntries;
+        out.scheduleToStartAvg =
+            numEntries > 0 ? scheduleToStartTotal / numEntries : 0;
         out.scheduleToStartMax = scheduleToStartMax;
-        out.startToComplete
+        out.startToCompleteAvg =
+            numEntries > 0 ? startToCompleteTotal / numEntries : 0;
+        out.startToCompleteMax = startToCompleteMax;
+        out.taskDefName = taskDefName;
+        out.totalCompleted = totalCompleted;
+        out.totalStarted = totalStarted;
+        out.totalErrored = totalErrored;
+        out.windowStart = windowStart;
+        out.type = type;
 
         return out;
+    }
+
+    public static String getPrefix(MetricsWindowLengthPb type, Date windowStart) {
+        return type + "/" + LHUtil.toLhDbFormat(windowStart) + "/";
+    }
+
+    public void process(LHStoreWrapper store, ProcessorContext<Void, Void> ctx) {
+        TaskMetricUpdate previous = store.get(getObjectId(), getClass());
+        if (previous != null) {
+            merge(previous);
+        }
+        store.put(this);
+        store.put(toResponse());
     }
 
     public static String getObjectId(
@@ -122,5 +151,13 @@ public class TaskMetricUpdate extends Storeable<TaskMetricUpdatePb> {
 
     public String getObjectId() {
         return getObjectId(type, windowStart, taskDefName);
+    }
+
+    public String getPartitionKey() {
+        return taskDefName;
+    }
+
+    public Date getCreatedAt() {
+        return windowStart;
     }
 }

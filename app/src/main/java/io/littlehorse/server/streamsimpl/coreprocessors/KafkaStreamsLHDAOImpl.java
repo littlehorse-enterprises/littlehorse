@@ -28,6 +28,7 @@ import io.littlehorse.jlib.common.proto.MetricsWindowLengthPb;
 import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import io.littlehorse.server.streamsimpl.ServerTopology;
+import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionCommand;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.TaskMetricUpdate;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.WfMetricUpdate;
 import io.littlehorse.server.streamsimpl.storeinternals.LHROStoreWrapper;
@@ -709,9 +710,17 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
                 System.currentTimeMillis()
             );
             ctx.forward(out);
+
+            evt.updateMetrics(this);
         }
 
-        processMetricsWithObservabilityEvents();
+        for (TaskMetricUpdate tmu : taskMetricPuts.values()) {
+            localStore.put(tmu);
+        }
+
+        for (WfMetricUpdate wmu : wfMetricPuts.values()) {
+            localStore.put(wmu);
+        }
     }
 
     public List<WfMetricUpdate> getWfMetricWindows(String wfSpecName, Date time) {
@@ -727,6 +736,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         MetricsWindowLengthPb type,
         String taskDefName
     ) {
+        windowStart = LHUtil.getWindowStart(windowStart, type);
         String id = WfMetricUpdate.getObjectId(type, windowStart, taskDefName);
         if (wfMetricPuts.containsKey(id)) {
             return wfMetricPuts.get(id);
@@ -760,6 +770,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         MetricsWindowLengthPb type,
         String taskDefName
     ) {
+        windowStart = LHUtil.getWindowStart(windowStart, type);
         String id = TaskMetricUpdate.getObjectId(type, windowStart, taskDefName);
         if (taskMetricPuts.containsKey(id)) {
             return taskMetricPuts.get(id);
@@ -775,12 +786,6 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
         taskMetricPuts.put(id, out);
         return out;
-    }
-
-    private void processMetricsWithObservabilityEvents() {
-        for (ObservabilityEvent event : oEvents) {
-            event.updateMetrics(this);
-        }
     }
 
     private void forwardTask(TaskScheduleRequest tsr) {
@@ -981,5 +986,79 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         responseToSave.resultTime = new Date();
         responseToSave.result = response.toBytes(config);
         responseToSave.commandId = command.commandId;
+    }
+
+    private static final long GRACE_PERIOD = 1000 * 60;
+
+    public void forwardAndClearMetricsUpdatesUntil(long timestamp) {
+        // 5-minute window
+        clearMetrics(timestamp, MetricsWindowLengthPb.MINUTES_5);
+        clearMetrics(timestamp, MetricsWindowLengthPb.HOURS_2);
+        clearMetrics(timestamp, MetricsWindowLengthPb.DAYS_1);
+    }
+
+    private void clearMetrics(long punctuateTime, MetricsWindowLengthPb type) {
+        long endTime =
+            punctuateTime - GRACE_PERIOD - LHUtil.getWindowLengthMillis(type);
+
+        try (
+            LHKeyValueIterator<TaskMetricUpdate> iter = localStore.range(
+                "",
+                TaskMetricUpdate.getPrefix(
+                    MetricsWindowLengthPb.MINUTES_5,
+                    new Date(endTime)
+                ),
+                TaskMetricUpdate.class
+            );
+        ) {
+            while (iter.hasNext()) {
+                LHIterKeyValue<TaskMetricUpdate> next = iter.next();
+                localStore.delete(next.getKey());
+                CommandProcessorOutput cpo = new CommandProcessorOutput();
+                TaskMetricUpdate tmu = next.getValue();
+                cpo.partitionKey = tmu.getPartitionKey();
+                cpo.topic = config.getRepartitionTopicName();
+                cpo.payload =
+                    new RepartitionCommand(tmu, new Date(), tmu.getPartitionKey());
+                Record<String, CommandProcessorOutput> out = new Record<>(
+                    tmu.getPartitionKey(),
+                    cpo,
+                    System.currentTimeMillis()
+                );
+                ctx.forward(out);
+
+                localStore.delete(tmu);
+            }
+        }
+
+        try (
+            LHKeyValueIterator<WfMetricUpdate> iter = localStore.range(
+                "",
+                WfMetricUpdate.getPrefix(
+                    MetricsWindowLengthPb.MINUTES_5,
+                    new Date(endTime)
+                ),
+                WfMetricUpdate.class
+            );
+        ) {
+            while (iter.hasNext()) {
+                LHIterKeyValue<WfMetricUpdate> next = iter.next();
+                localStore.delete(next.getKey());
+                CommandProcessorOutput cpo = new CommandProcessorOutput();
+                WfMetricUpdate tmu = next.getValue();
+                cpo.partitionKey = tmu.getPartitionKey();
+                cpo.topic = config.getRepartitionTopicName();
+                cpo.payload =
+                    new RepartitionCommand(tmu, new Date(), tmu.getPartitionKey());
+                Record<String, CommandProcessorOutput> out = new Record<>(
+                    tmu.getPartitionKey(),
+                    cpo,
+                    System.currentTimeMillis()
+                );
+                ctx.forward(out);
+
+                localStore.delete(tmu);
+            }
+        }
     }
 }

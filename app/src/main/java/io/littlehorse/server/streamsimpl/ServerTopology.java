@@ -118,21 +118,24 @@ public class ServerTopology {
         topo.addProcessor(
             CORE_REPARTITION_PROCESSOR,
             () -> {
-                return new RepartitionCommandProcessor();
+                return new RepartitionCommandProcessor(config);
             },
             CORE_REPARTITION_SOURCE
         );
 
         StoreBuilder<KeyValueStore<String, Bytes>> rePartitionedStoreBuilder = Stores.keyValueStoreBuilder(
+            Stores.persistentKeyValueStore(CORE_REPARTITION_STORE),
+            Serdes.String(),
+            Serdes.Bytes()
+        );
+        topo.addStateStore(rePartitionedStoreBuilder, CORE_REPARTITION_PROCESSOR);
+
+        StoreBuilder<KeyValueStore<String, Bytes>> coreStoreBuilder = Stores.keyValueStoreBuilder(
             Stores.persistentKeyValueStore(CORE_STORE),
             Serdes.String(),
             Serdes.Bytes()
         );
-        topo.addStateStore(
-            rePartitionedStoreBuilder,
-            CORE_PROCESSOR,
-            CORE_REPARTITION_PROCESSOR
-        );
+        topo.addStateStore(coreStoreBuilder, CORE_PROCESSOR);
 
         // There's a topic for global communication, which is used for two things:
         // 1. broadcasting global metadata to all instances

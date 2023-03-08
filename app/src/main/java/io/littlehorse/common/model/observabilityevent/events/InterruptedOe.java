@@ -1,9 +1,11 @@
 package io.littlehorse.common.model.observabilityevent.events;
 
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.observabilityevent.SubEvent;
 import io.littlehorse.jlib.common.proto.InterruptedOePb;
 import io.littlehorse.jlib.common.proto.InterruptedOePbOrBuilder;
+import java.util.Date;
 
 public class InterruptedOe extends SubEvent<InterruptedOePb> {
 
@@ -29,5 +31,9 @@ public class InterruptedOe extends SubEvent<InterruptedOePb> {
         extEvtDefName = p.getExtEvtDefName();
         extEvtGuid = p.getExtEvtGuid();
         interruptedThread = p.getInterruptedThread();
+    }
+
+    public void updateMetrics(LHDAO dao, Date time, String wfRunId) {
+        // Nothing to do yet
     }
 }

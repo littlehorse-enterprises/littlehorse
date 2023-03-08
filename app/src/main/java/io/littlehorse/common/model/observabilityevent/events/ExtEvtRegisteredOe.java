@@ -1,10 +1,12 @@
 package io.littlehorse.common.model.observabilityevent.events;
 
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.observabilityevent.SubEvent;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.jlib.common.proto.ExtEvtRegisteredOePb;
 import io.littlehorse.jlib.common.proto.ExtEvtRegisteredOePbOrBuilder;
+import java.util.Date;
 
 public class ExtEvtRegisteredOe extends SubEvent<ExtEvtRegisteredOePb> {
 
@@ -36,5 +38,9 @@ public class ExtEvtRegisteredOe extends SubEvent<ExtEvtRegisteredOePb> {
         content = VariableValue.fromProto(p.getContentOrBuilder());
         if (p.hasThreadRunNumber()) threadRunNumber = p.getThreadRunNumber();
         if (p.hasNodeRunPosition()) nodeRunPosition = p.getNodeRunPosition();
+    }
+
+    public void updateMetrics(LHDAO dao, Date time, String wfRunId) {
+        // Nothing to do yet
     }
 }

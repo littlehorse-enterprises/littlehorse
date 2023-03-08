@@ -1,13 +1,16 @@
 package io.littlehorse.common.model.observabilityevent.events;
 
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.observabilityevent.SubEvent;
 import io.littlehorse.common.model.wfrun.VarNameAndVal;
 import io.littlehorse.jlib.common.proto.TaskScheduledOePb;
 import io.littlehorse.jlib.common.proto.TaskScheduledOePbOrBuilder;
 import io.littlehorse.jlib.common.proto.VarNameAndValPb;
+import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.TaskMetricUpdate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class TaskScheduledOe extends SubEvent<TaskScheduledOePb> {
@@ -63,6 +66,15 @@ public class TaskScheduledOe extends SubEvent<TaskScheduledOePb> {
 
         for (VarNameAndValPb vnav : p.getVariablesList()) {
             variables.add(LHSerializable.fromProto(vnav, VarNameAndVal.class));
+        }
+    }
+
+    public void updateMetrics(LHDAO dao, Date time, String wfRunId) {
+        List<TaskMetricUpdate> tmus = dao.getTaskMetricWindows(taskDefName, time);
+
+        for (TaskMetricUpdate tmu : tmus) {
+            tmu.numEntries++;
+            tmu.totalStarted++;
         }
     }
 }

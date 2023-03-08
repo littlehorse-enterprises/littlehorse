@@ -75,9 +75,13 @@ public class WfSpecMetrics extends GETable<WfSpecMetricsPb> {
     }
 
     public static String getObjectId(WfSpecMetricsQueryPb request) {
+        // Need to align the thing to the thing
         return getObjectId(
             request.getWindowType(),
-            LHLibUtil.fromProtoTs(request.getWindowStart()),
+            LHUtil.getWindowStart(
+                LHUtil.fromProtoTs(request.getWindowStart()),
+                request.getWindowType()
+            ),
             request.getWfSpecName()
         );
     }

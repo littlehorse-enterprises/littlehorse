@@ -9,7 +9,9 @@ import io.littlehorse.jlib.common.proto.CommandResultPb;
 import io.littlehorse.jlib.common.proto.StoreQueryStatusPb;
 import io.littlehorse.jlib.common.proto.WaitForCommandReplyPb;
 import io.littlehorse.server.KafkaStreamsServerImpl;
+import java.time.Duration;
 import java.util.Date;
+import org.apache.kafka.streams.processor.PunctuationType;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
@@ -36,6 +38,12 @@ public class CommandProcessor
         this.ctx = ctx;
         dao = new KafkaStreamsLHDAOImpl(this.ctx, config, server);
         dao.onPartitionClaimed();
+
+        ctx.schedule(
+            Duration.ofSeconds(5),
+            PunctuationType.WALL_CLOCK_TIME,
+            this::forwardMetricsUpdates
+        );
     }
 
     @Override
@@ -78,5 +86,9 @@ public class CommandProcessor
             // Should we have a DLQ? I don't think that makes sense...the internals
             // of a database like Postgres don't have a DLQ for their WAL.
         }
+    }
+
+    private void forwardMetricsUpdates(long timestamp) {
+        dao.forwardAndClearMetricsUpdatesUntil(timestamp);
     }
 }

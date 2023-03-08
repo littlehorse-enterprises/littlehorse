@@ -1,10 +1,11 @@
 package io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand;
 
-import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
+import org.apache.kafka.streams.processor.api.ProcessorContext;
 
-public abstract class RepartitionSubCommand<T extends MessageOrBuilder>
-    extends LHSerializable<T> {
-
-    public abstract void process();
+public interface RepartitionSubCommand {
+    public void process(
+        LHStoreWrapper repartitionedStore,
+        ProcessorContext<Void, Void> ctx
+    );
 }

@@ -1,9 +1,13 @@
 package io.littlehorse.common.model.observabilityevent.events;
 
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.observabilityevent.SubEvent;
 import io.littlehorse.jlib.common.proto.WfRunStartOePb;
 import io.littlehorse.jlib.common.proto.WfRunStartOePbOrBuilder;
+import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.WfMetricUpdate;
+import java.util.Date;
+import java.util.List;
 
 public class WfRunStartOe extends SubEvent<WfRunStartOePb> {
 
@@ -26,5 +30,14 @@ public class WfRunStartOe extends SubEvent<WfRunStartOePb> {
         WfRunStartOePbOrBuilder p = (WfRunStartOePbOrBuilder) proto;
         wfSpecName = p.getWfSpecName();
         wfSpecVersion = p.getWfSpecVersion();
+    }
+
+    public void updateMetrics(LHDAO dao, Date time, String wfRunId) {
+        List<WfMetricUpdate> wmus = dao.getWfMetricWindows(wfSpecName, time);
+
+        for (WfMetricUpdate wmu : wmus) {
+            wmu.numEntries++;
+            wmu.totalStarted++;
+        }
     }
 }

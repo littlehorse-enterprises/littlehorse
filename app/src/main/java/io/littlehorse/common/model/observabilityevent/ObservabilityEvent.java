@@ -229,6 +229,6 @@ public class ObservabilityEvent extends LHSerializable<ObservabilityEventPb> {
     }
 
     public void updateMetrics(LHDAO dao) {
-        getSubEvent().updateMetrics(dao, time);
+        getSubEvent().updateMetrics(dao, time, wfRunId);
     }
 }
