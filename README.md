@@ -45,7 +45,7 @@ This section describes how to run the LittleHorse server in a development enviro
 Your system needs the following:
 * `openjdk`, preferably version 17 or later.
 * `gradle`, preferably version 7.4 or later.
-* `docker` and `docker-compose`
+* `docker` and `docker-compose-plugin`
 * *OPTIONAL:* the linters require `npm`.
 
 Once you've set up your system, you *also* need to publish the `io-littlehorse-jlib` library to your local Maven repository. See the `README` on that repo for instructions.
@@ -54,7 +54,7 @@ Additionally, you'll eventually want to install `lhctl` as per the `io-littlehor
 
 ## Running LH
 
-The LH Server depends on Kafka as a backend database. To start Kafka using docker-compose, you can run:
+The LH Server depends on Kafka as a backend database. To start Kafka using docker compose, you can run:
 
 ```
 ./local-dev/setup.sh
