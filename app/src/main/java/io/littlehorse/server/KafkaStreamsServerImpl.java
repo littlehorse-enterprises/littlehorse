@@ -1,6 +1,21 @@
 package io.littlehorse.server;
 
+import java.io.IOException;
+import java.util.Date;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.kafka.common.Metric;
+import org.apache.kafka.common.MetricName;
+import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.KafkaStreams.State;
+import org.apache.log4j.Logger;
+
 import com.google.protobuf.MessageOrBuilder;
+
 import io.grpc.Grpc;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
@@ -116,18 +131,6 @@ import io.littlehorse.server.streamsimpl.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streamsimpl.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streamsimpl.util.GETStreamObserver;
 import io.littlehorse.server.streamsimpl.util.POSTStreamObserver;
-import java.io.IOException;
-import java.util.Date;
-import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import org.apache.kafka.common.Metric;
-import org.apache.kafka.common.MetricName;
-import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.KafkaStreams.State;
-import org.apache.log4j.Logger;
 
 public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
@@ -142,7 +145,6 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     private State coreState;
     private State timerState;
-    private State metricsState;
 
     private BackendInternalComms internalComms;
 
@@ -666,8 +668,6 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
                 .newBuilder()
                 .setCoreState(kafkaStateToLhHealthState(coreState))
                 .setTimerState(kafkaStateToLhHealthState(timerState))
-                // TODO: Fix this when we add the metrics topo
-                .setMetricsState(kafkaStateToLhHealthState(timerState))
                 .build()
         );
         ctx.onCompleted();
