@@ -214,6 +214,10 @@ public class LHConfig extends LHServerConfig {
         return producer;
     }
 
+    public boolean shouldCreateTopics() {
+        return Boolean.valueOf(getOrSetDefault(SHOULD_CREATE_TOPICS_KEY, "true"));
+    }
+
     public LHProducer getTxnProducer() {
         if (txnProducer == null) {
             txnProducer = new LHProducer(this, true);

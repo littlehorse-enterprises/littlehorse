@@ -124,7 +124,10 @@ public class App {
         System.out.flush();
 
         LHConfig config = new LHConfig(configProps);
-        doIdempotentSetup(config);
+        if (config.shouldCreateTopics()) {
+            doIdempotentSetup(config);
+        }
+
         KafkaStreamsServerImpl.doMain(config);
     }
 }
