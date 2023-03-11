@@ -85,8 +85,11 @@ Also note that mTLS will NOT be enabled; therefore, you should not have any clie
 At this point, you're ready to consult the `README` in the `io-littlehorse-jlib` repository for a tutorial on how to run your first workflow.
 
 ## Building the Image
+The LittleHorse docker image (for now) requires the `lhctl` command line client, which is used for Kubernetes Health Checks. (That's a longer story).
 
-To build the `littlehorse` docker image, run:
+Before you can build the image, you should compile the `lhctl` binary in the `io-littlehorse-golib` repository, and then `cp $(which lhctl) ./build/`.
+
+Now you can build the `littlehorse` docker image by running:
 
 ```
 ./build/build.sh
