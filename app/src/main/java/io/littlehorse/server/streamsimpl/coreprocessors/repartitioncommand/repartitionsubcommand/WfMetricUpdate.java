@@ -14,10 +14,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
+import org.apache.log4j.Logger;
 
 public class WfMetricUpdate
     extends GETable<WfMetricUpdatePb>
     implements RepartitionSubCommand {
+
+    private static final Logger log = Logger.getLogger(WfMetricUpdate.class);
 
     public Date windowStart;
     public MetricsWindowLengthPb type;
@@ -99,7 +102,7 @@ public class WfMetricUpdate
     public WfSpecMetrics toResponse() {
         WfSpecMetrics out = new WfSpecMetrics();
         out.startToCompleteAvg =
-            numEntries > 0 ? startToCompleteTotal / numEntries : 0;
+            totalStarted > 0 ? startToCompleteTotal / totalStarted : 0;
         out.startToCompleteMax = startToCompleteMax;
         out.wfSpecName = wfSpecName;
         out.totalCompleted = totalCompleted;
@@ -118,6 +121,7 @@ public class WfMetricUpdate
         }
         store.put(this);
         store.put(toResponse());
+        log.debug("Put WfMetric object for key " + toResponse().getObjectId());
     }
 
     public Date getCreatedAt() {

@@ -7,9 +7,14 @@ import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
+import org.apache.log4j.Logger;
 
 public class RepartitionCommandProcessor
     implements Processor<String, RepartitionCommand, Void, Void> {
+
+    private static final Logger log = Logger.getLogger(
+        RepartitionCommandProcessor.class
+    );
 
     private LHStoreWrapper store;
     private LHConfig config;
@@ -29,9 +34,8 @@ public class RepartitionCommandProcessor
     }
 
     public void process(final Record<String, RepartitionCommand> record) {
-        System.out.println("hello there");
         if (record.value() != null) {
-            System.out.println(record.value().toJson());
+            log.debug("Received a metric update!");
             record.value().process(store, ctx);
         }
     }

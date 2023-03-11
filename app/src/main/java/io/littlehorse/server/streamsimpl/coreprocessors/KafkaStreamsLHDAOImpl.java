@@ -52,8 +52,11 @@ import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
+import org.apache.log4j.Logger;
 
 public class KafkaStreamsLHDAOImpl implements LHDAO {
+
+    private static final Logger log = Logger.getLogger(KafkaStreamsLHDAOImpl.class);
 
     private Map<String, NodeRun> nodeRunPuts;
     private Map<String, Variable> variablePuts;
@@ -1013,6 +1016,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         ) {
             while (iter.hasNext()) {
                 LHIterKeyValue<TaskMetricUpdate> next = iter.next();
+                log.debug("Sending out metrics for " + next.getKey());
                 localStore.delete(next.getKey());
                 CommandProcessorOutput cpo = new CommandProcessorOutput();
                 TaskMetricUpdate tmu = next.getValue();

@@ -87,7 +87,10 @@ public class TaskDefMetrics extends GETable<TaskDefMetricsPb> {
     public static String getObjectId(TaskDefMetricsQueryPb request) {
         return getObjectId(
             request.getWindowType(),
-            LHLibUtil.fromProtoTs(request.getWindowStart()),
+            LHUtil.getWindowStart(
+                LHLibUtil.fromProtoTs(request.getWindowStart()),
+                request.getWindowType()
+            ),
             request.getTaskDefName()
         );
     }

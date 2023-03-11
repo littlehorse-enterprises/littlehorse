@@ -113,10 +113,10 @@ public class TaskMetricUpdate
     public TaskDefMetrics toResponse() {
         TaskDefMetrics out = new TaskDefMetrics();
         out.scheduleToStartAvg =
-            numEntries > 0 ? scheduleToStartTotal / numEntries : 0;
+            totalStarted > 0 ? scheduleToStartTotal / totalStarted : 0;
         out.scheduleToStartMax = scheduleToStartMax;
         out.startToCompleteAvg =
-            numEntries > 0 ? startToCompleteTotal / numEntries : 0;
+            totalCompleted > 0 ? startToCompleteTotal / totalCompleted : 0;
         out.startToCompleteMax = startToCompleteMax;
         out.taskDefName = taskDefName;
         out.totalCompleted = totalCompleted;
