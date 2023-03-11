@@ -1,10 +1,13 @@
 package io.littlehorse.server.streamsimpl;
 
 import com.google.protobuf.ByteString;
+import io.grpc.ChannelCredentials;
+import io.grpc.Grpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import io.grpc.TlsServerCredentials;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHConnectionError;
@@ -55,6 +58,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.Serdes;
@@ -77,6 +83,8 @@ public class BackendInternalComms implements Closeable {
     private HostInfo thisHost;
     private LHProducer producer;
 
+    private ChannelCredentials clientCreds;
+
     private Map<String, ManagedChannel> channels;
     private AsyncWaiters asyncWaiters;
     private ConcurrentHashMap<HostInfo, InternalGetAdvertisedHostsReplyPb> otherHosts;
@@ -87,11 +95,28 @@ public class BackendInternalComms implements Closeable {
         this.channels = new HashMap<>();
         otherHosts = new ConcurrentHashMap<>();
 
-        this.internalGrpcServer =
-            ServerBuilder
-                .forPort(this.config.getInternalBindPort())
-                .addService(new InterBrokerCommServer())
-                .build();
+        ServerBuilder<?> builder;
+        Executor executor = Executors.newFixedThreadPool(4);
+        clientCreds = config.getInternalServerClientCreds();
+        TlsServerCredentials.Builder security = config.getInternalServerCreds();
+        if (security == null) {
+            builder = ServerBuilder.forPort(config.getInternalBindPort());
+        } else {
+            builder =
+                Grpc.newServerBuilderForPort(
+                    config.getInternalAdvertisedPort(),
+                    security.build()
+                );
+        }
+
+        builder
+            .keepAliveTime(10, TimeUnit.SECONDS)
+            .keepAliveTimeout(3, TimeUnit.SECONDS)
+            .permitKeepAliveTime(10, TimeUnit.SECONDS)
+            .permitKeepAliveWithoutCalls(true)
+            .executor(executor)
+            .addService(new InterBrokerCommServer())
+            .build();
 
         thisHost =
             new HostInfo(
@@ -422,11 +447,22 @@ public class BackendInternalComms implements Closeable {
         String key = host.host() + ":" + host.port();
         ManagedChannel channel = channels.get(key);
         if (channel == null) {
-            channel =
-                ManagedChannelBuilder
-                    .forAddress(host.host(), host.port())
-                    .usePlaintext()
-                    .build();
+            if (clientCreds == null) {
+                channel =
+                    ManagedChannelBuilder
+                        .forAddress(host.host(), host.port())
+                        .usePlaintext()
+                        .build();
+            } else {
+                channel =
+                    Grpc
+                        .newChannelBuilderForAddress(
+                            host.host(),
+                            host.port(),
+                            clientCreds
+                        )
+                        .build();
+            }
             channels.put(key, channel);
         }
         return channel;

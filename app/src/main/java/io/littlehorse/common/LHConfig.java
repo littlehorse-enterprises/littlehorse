@@ -1,5 +1,7 @@
 package io.littlehorse.common;
 
+import io.grpc.ChannelCredentials;
+import io.grpc.TlsChannelCredentials;
 import io.grpc.TlsServerCredentials;
 import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.common.model.wfrun.VariableValue;
@@ -435,6 +437,50 @@ public class LHConfig extends LHServerConfig {
         String caCertFile = getOrSetDefault(CA_CERT_KEY, null);
         String serverCertFile = getOrSetDefault(SERVER_CERT_KEY, null);
         String serverKeyFile = getOrSetDefault(SERVER_KEY_KEY, null);
+        return getCreds(caCertFile, serverCertFile, serverKeyFile);
+    }
+
+    public TlsServerCredentials.Builder getInternalServerCreds() {
+        String caCertFile = getOrSetDefault(INTERNAL_CA_CERT_KEY, null);
+        String serverCertFile = getOrSetDefault(INTERNAL_SERVER_CERT_KEY, null);
+        String serverKeyFile = getOrSetDefault(INTERNAL_SERVER_KEY_KEY, null);
+        return getCreds(caCertFile, serverCertFile, serverKeyFile);
+    }
+
+    public ChannelCredentials getInternalServerClientCreds() {
+        String caCertFile = getOrSetDefault(INTERNAL_CA_CERT_KEY, null);
+        String serverCertFile = getOrSetDefault(INTERNAL_SERVER_CERT_KEY, null);
+        String serverKeyFile = getOrSetDefault(INTERNAL_SERVER_KEY_KEY, null);
+        if (caCertFile == null) {
+            log.info("No ca cert file, using plaintext internal client");
+            return null;
+        }
+        if (serverCertFile == null || serverKeyFile == null) {
+            throw new RuntimeException(
+                "CA cert file provided but missing cert or key"
+            );
+        }
+        File serverCert = new File(serverCertFile);
+        File serverKey = new File(serverKeyFile);
+        File rootCA = new File(caCertFile);
+
+        try {
+            TlsChannelCredentials.Builder out = TlsChannelCredentials
+                .newBuilder()
+                .keyManager(serverCert, serverKey)
+                .trustManager(rootCA);
+
+            return out.build();
+        } catch (IOException exn) {
+            throw new RuntimeException(exn);
+        }
+    }
+
+    private TlsServerCredentials.Builder getCreds(
+        String caCertFile,
+        String serverCertFile,
+        String serverKeyFile
+    ) {
         if (caCertFile == null) {
             log.info("No ca cert file found, deploying insecure!");
             return null;
