@@ -252,55 +252,54 @@ public class LHConfig extends LHServerConfig {
      * Either way, this all should be configurable.
      */
     private void initKafkaSecurity(Properties conf) {
-        if (getOrSetDefault(KAFKA_TLS_CA_CERT_KEY, null) == null) {
-            return;
-        }
-        String caCertLocation = getOrSetDefault(KAFKA_TLS_CA_CERT_KEY, null);
-        String keyLocation = getOrSetDefault(KAFKA_TLS_KEY_KEY, null);
-        String trustStoreLocation = getOrSetDefault(KAFKA_TLS_CERT_KEY, null);
-        String keystorePasswordLocation = getOrSetDefault(
-            KAFKA_TLS_PASSWORD_KEY,
+        String keystoreLoc = getOrSetDefault(KAFKA_KEYSTORE_KEY, null);
+        String keystorePassword = getOrSetDefault(KAFKA_KEYSTORE_PASSWORD_KEY, null);
+        String truststoreLoc = getOrSetDefault(KAFKA_TRUSTSTORE_KEY, null);
+        String truststorePassword = getOrSetDefault(
+            KAFKA_TRUSTSTORE_PASSWORD_KEY,
             null
         );
 
         if (
-            caCertLocation == null &&
-            keyLocation == null &&
-            trustStoreLocation == null
+            keystoreLoc == null &&
+            keystorePassword == null &&
+            truststoreLoc == null &&
+            truststorePassword == null
         ) {
             log.info("Using plaintext kafka access");
             return;
         }
 
-        if (keyLocation == null) {
+        if (
+            keystoreLoc == null ||
+            keystorePassword == null ||
+            truststoreLoc == null ||
+            truststorePassword == null
+        ) {
             throw new RuntimeException(
-                "Using Kafka security but did not set " + KAFKA_TLS_KEY_KEY
+                "Must provide all or none of the following configs: " +
+                KAFKA_KEYSTORE_KEY +
+                ", " +
+                KAFKA_KEYSTORE_PASSWORD_KEY +
+                ", " +
+                KAFKA_TRUSTSTORE_KEY +
+                ", " +
+                KAFKA_TRUSTSTORE_PASSWORD_KEY
             );
-        }
-
-        if (trustStoreLocation == null) {
-            throw new RuntimeException(
-                "Using Kafka security but did not set " + KAFKA_TLS_CERT_KEY
-            );
-        }
-
-        String tlsPassword;
-        try (FileInputStream is = new FileInputStream(keystorePasswordLocation)) {
-            tlsPassword = new String(is.readAllBytes());
-        } catch (IOException exn) {
-            throw new RuntimeException(exn);
         }
 
         conf.put("security.protocol", "SSL");
-        conf.put("ssl.keystore.type", "PKCS12");
-        conf.put("ssl.keystore.location", keyLocation);
-        conf.put("ssl.keystore.password", tlsPassword);
 
-        conf.put("ssl.truststore.type", "PEM");
-        conf.put("ssl.truststore.location", caCertLocation);
+        conf.put("ssl.keystore.type", "PKCS12");
+        conf.put("ssl.keystore.location", keystoreLoc);
+        conf.put("ssl.keystore.password", loadPasswordFrom(keystorePassword));
+
+        conf.put("ssl.truststore.type", "PKCS12");
+        conf.put("ssl.truststore.location", truststoreLoc);
+        conf.put("ssl.truststore.password", loadPasswordFrom(truststorePassword));
     }
 
-    private static String loadCert(String fileName) {
+    private static String loadPasswordFrom(String fileName) {
         try (FileInputStream is = new FileInputStream(new File(fileName));) {
             return new String(is.readAllBytes());
         } catch (IOException exn) {
