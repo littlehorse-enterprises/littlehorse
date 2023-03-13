@@ -11,6 +11,7 @@ import io.littlehorse.jlib.common.config.LHServerConfig;
 import io.littlehorse.jlib.common.proto.HostInfoPb;
 import io.littlehorse.jlib.common.proto.VariableAssignmentPb.SourceCase;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -209,20 +210,13 @@ public class LHConfig extends LHServerConfig {
 
     public LHProducer getProducer() {
         if (producer == null) {
-            producer = new LHProducer(this, false);
+            producer = new LHProducer(this);
         }
         return producer;
     }
 
     public boolean shouldCreateTopics() {
         return Boolean.valueOf(getOrSetDefault(SHOULD_CREATE_TOPICS_KEY, "true"));
-    }
-
-    public LHProducer getTxnProducer() {
-        if (txnProducer == null) {
-            txnProducer = new LHProducer(this, true);
-        }
-        return txnProducer;
     }
 
     public Properties getKafkaProducerConfig() {
@@ -243,20 +237,75 @@ public class LHConfig extends LHServerConfig {
             org.apache.kafka.common.serialization.StringSerializer.class
         );
         conf.put(ProducerConfig.ACKS_CONFIG, "all");
+        initKafkaSecurity(conf);
         return conf;
     }
 
-    public Properties getKafkaTxnProducerConfig() {
-        Properties conf = getKafkaProducerConfig();
-        conf.put(
-            ProducerConfig.TRANSACTIONAL_ID_CONFIG,
-            getKafkaGroupId() + "__" + getKafkaInstanceId() + "__transactional"
+    /*
+     * EMPLOYEE_TODO: right now, this only supports mtls auth. We want to:
+     * 1. Support other auth types, especially SCRAM-SHA-512
+     * 2. Clean up the code, because currently it's just kludgey.
+     *
+     * For part 2), we maybe want to factor out the Kafka configuration to
+     * its own class. Maybe. Or maybe not.
+     *
+     * Either way, this all should be configurable.
+     */
+    private void initKafkaSecurity(Properties conf) {
+        if (getOrSetDefault(KAFKA_TLS_CA_CERT_KEY, null) == null) {
+            return;
+        }
+        String caCertLocation = getOrSetDefault(KAFKA_TLS_CA_CERT_KEY, null);
+        String keyLocation = getOrSetDefault(KAFKA_TLS_KEY_KEY, null);
+        String trustStoreLocation = getOrSetDefault(KAFKA_TLS_CERT_KEY, null);
+        String keystorePasswordLocation = getOrSetDefault(
+            KAFKA_TLS_PASSWORD_KEY,
+            null
         );
-        conf.put(
-            ProducerConfig.CLIENT_ID_CONFIG,
-            getKafkaGroupId() + "-" + getKafkaInstanceId() + "__transactional"
-        );
-        return conf;
+
+        if (
+            caCertLocation == null &&
+            keyLocation == null &&
+            trustStoreLocation == null
+        ) {
+            log.info("Using plaintext kafka access");
+            return;
+        }
+
+        if (keyLocation == null) {
+            throw new RuntimeException(
+                "Using Kafka security but did not set " + KAFKA_TLS_KEY_KEY
+            );
+        }
+
+        if (trustStoreLocation == null) {
+            throw new RuntimeException(
+                "Using Kafka security but did not set " + KAFKA_TLS_CERT_KEY
+            );
+        }
+
+        String tlsPassword;
+        try (FileInputStream is = new FileInputStream(keystorePasswordLocation)) {
+            tlsPassword = new String(is.readAllBytes());
+        } catch (IOException exn) {
+            throw new RuntimeException(exn);
+        }
+
+        conf.put("security.protocol", "SSL");
+        conf.put("ssl.keystore.type", "PKCS12");
+        conf.put("ssl.keystore.location", keyLocation);
+        conf.put("ssl.keystore.password", tlsPassword);
+
+        conf.put("ssl.truststore.type", "PEM");
+        conf.put("ssl.truststore.location", caCertLocation);
+    }
+
+    private static String loadCert(String fileName) {
+        try (FileInputStream is = new FileInputStream(new File(fileName));) {
+            return new String(is.readAllBytes());
+        } catch (IOException exn) {
+            throw new RuntimeException(exn);
+        }
     }
 
     public KafkaConsumer<String, Bytes> getKafkaConsumer(List<String> topics) {
@@ -279,6 +328,8 @@ public class LHConfig extends LHServerConfig {
             org.apache.kafka.common.serialization.BytesDeserializer.class
         );
         conf.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
+
+        initKafkaSecurity(conf);
 
         kafkaConsumer = new KafkaConsumer<>(conf);
         kafkaConsumer.subscribe(topics);
@@ -370,6 +421,8 @@ public class LHConfig extends LHServerConfig {
         // props.put(StreamsConfig.RACK_AWARE_ASSIGNMENT_TAGS_CONFIG, "rack");
         // props.put(StreamsConfig.CLIENT_TAG_PREFIX + "rack", getRackId());
 
+        initKafkaSecurity(props);
+
         return props;
     }
 
@@ -434,6 +487,7 @@ public class LHConfig extends LHServerConfig {
             AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG,
             getBootstrapServers()
         );
+        initKafkaSecurity(akProperties);
         this.kafkaAdmin = Admin.create(akProperties);
     }
 

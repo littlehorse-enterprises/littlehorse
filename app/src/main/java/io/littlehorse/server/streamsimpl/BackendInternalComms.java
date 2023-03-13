@@ -123,7 +123,7 @@ public class BackendInternalComms implements Closeable {
                 config.getInternalAdvertisedHost(),
                 config.getInternalAdvertisedPort()
             );
-        this.producer = new LHProducer(config, false);
+        this.producer = config.getProducer();
         this.asyncWaiters = new AsyncWaiters();
         new Thread(() -> {
             while (true) {
