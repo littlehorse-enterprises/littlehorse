@@ -116,6 +116,7 @@ import io.littlehorse.server.streamsimpl.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streamsimpl.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streamsimpl.util.GETStreamObserver;
 import io.littlehorse.server.streamsimpl.util.POSTStreamObserver;
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
@@ -143,11 +144,13 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     private State timerState;
 
     private BackendInternalComms internalComms;
+    private boolean isHealthy;
 
     public KafkaStreamsServerImpl(LHConfig config) {
         this.config = config;
 
         this.taskQueueManager = new TaskQueueManager(this);
+        isHealthy = false;
 
         coreStreams =
             new KafkaStreams(
@@ -195,11 +198,13 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         coreStreams.setStateListener((newState, oldState) -> {
             coreState = newState;
             log.info("" + new Date() + " New state for core: " + coreState);
+            updateHealth();
         });
 
         timerStreams.setStateListener((newState, oldState) -> {
             timerState = newState;
             LHUtil.log("" + new Date() + " New state for timer: " + timerState);
+            updateHealth();
         });
 
         // metricsStreams.setStateListener((newState, oldState) -> {
@@ -208,6 +213,38 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         // });
 
         internalComms = new BackendInternalComms(config, coreStreams);
+    }
+
+    private void updateHealth() {
+        if (
+            (coreState == State.RUNNING || coreState == State.REBALANCING) &&
+            (timerState == State.RUNNING || timerState == State.REBALANCING)
+        ) {
+            if (!isHealthy) {
+                File f = new File("/tmp/lhHealth");
+                try {
+                    f.createNewFile();
+                } catch (IOException exn) {
+                    exn.printStackTrace();
+                }
+                isHealthy = true;
+            }
+        }
+
+        if (
+            coreState == State.ERROR ||
+            timerState == State.ERROR ||
+            coreState == State.NOT_RUNNING ||
+            timerState == State.NOT_RUNNING ||
+            coreState == State.PENDING_ERROR ||
+            timerState == State.PENDING_ERROR
+        ) {
+            if (isHealthy) {
+                File f = new File("/tmp/lhHealth");
+                f.delete();
+                isHealthy = false;
+            }
+        }
     }
 
     public String getInstanceId() {
