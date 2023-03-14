@@ -211,7 +211,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     public String getInstanceId() {
-        return config.getKafkaInstanceId();
+        return config.getLHInstanceId();
     }
 
     @Override

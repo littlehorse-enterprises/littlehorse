@@ -15,7 +15,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
@@ -24,12 +23,10 @@ import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.CreateTopicsResult;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.KafkaFuture;
 import org.apache.kafka.common.errors.TopicExistsException;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.common.utils.Utils;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.state.HostInfo;
@@ -42,7 +39,6 @@ public class LHConfig extends LHServerConfig {
     private Admin kafkaAdmin;
     private LHProducer producer;
     private LHProducer txnProducer;
-    private KafkaConsumer<String, Bytes> kafkaConsumer;
 
     public int getHotMetadataPartition() {
         return (
@@ -100,17 +96,17 @@ public class LHConfig extends LHServerConfig {
     }
 
     public String getKafkaGroupId(String component) {
-        return getKafkaGroupId() + "-" + component;
+        return getLHClusterId() + "-" + component;
     }
 
-    public String getKafkaGroupId() {
+    public String getLHClusterId() {
         return getOrSetDefault(
             LHServerConfig.LH_CLUSTER_ID_KEY,
             "unset-group-id-bad"
         );
     }
 
-    public String getKafkaInstanceId() {
+    public String getLHInstanceId() {
         return getOrSetDefault(
             LHServerConfig.LH_INSTANCE_ID_KEY,
             "Unset-group-iid-bad"
@@ -219,7 +215,7 @@ public class LHConfig extends LHServerConfig {
         return Boolean.valueOf(getOrSetDefault(SHOULD_CREATE_TOPICS_KEY, "true"));
     }
 
-    public Properties getKafkaProducerConfig() {
+    public Properties getKafkaProducerConfig(String component) {
         Properties conf = new Properties();
         conf.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers());
         conf.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
@@ -228,10 +224,7 @@ public class LHConfig extends LHServerConfig {
             Serdes.Bytes().serializer().getClass()
         );
         // conf.put(ProducerConfig.LINGER_MS_CONFIG, 10);
-        conf.put(
-            ProducerConfig.CLIENT_ID_CONFIG,
-            getKafkaGroupId() + "-" + getKafkaInstanceId()
-        );
+        conf.put(ProducerConfig.CLIENT_ID_CONFIG, getKafkaGroupId(component));
         conf.put(
             ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
             org.apache.kafka.common.serialization.StringSerializer.class
@@ -307,34 +300,6 @@ public class LHConfig extends LHServerConfig {
         }
     }
 
-    public KafkaConsumer<String, Bytes> getKafkaConsumer(List<String> topics) {
-        if (kafkaConsumer != null) {
-            throw new RuntimeException("Tried to initialize consumer twice!");
-        }
-
-        Properties conf = new Properties();
-        conf.put(ConsumerConfig.GROUP_ID_CONFIG, getKafkaGroupId());
-        conf.put(ConsumerConfig.GROUP_INSTANCE_ID_CONFIG, getKafkaInstanceId());
-        conf.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers());
-        conf.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed");
-        conf.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        conf.put(
-            ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
-            org.apache.kafka.common.serialization.StringDeserializer.class
-        );
-        conf.put(
-            ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
-            org.apache.kafka.common.serialization.BytesDeserializer.class
-        );
-        conf.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
-
-        initKafkaSecurity(conf);
-
-        kafkaConsumer = new KafkaConsumer<>(conf);
-        kafkaConsumer.subscribe(topics);
-        return kafkaConsumer;
-    }
-
     public Properties getStreamsConfig(String component, boolean exactlyOnce) {
         Properties props = new Properties();
         props.put(
@@ -345,7 +310,7 @@ public class LHConfig extends LHServerConfig {
             StreamsConfig.APPLICATION_ID_CONFIG,
             this.getKafkaGroupId(component)
         );
-        props.put(ConsumerConfig.GROUP_INSTANCE_ID_CONFIG, this.getKafkaInstanceId());
+        props.put(ConsumerConfig.GROUP_INSTANCE_ID_CONFIG, this.getLHInstanceId());
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, this.getBootstrapServers());
         props.put(StreamsConfig.STATE_DIR_CONFIG, this.getStateDirectory());
         if (exactlyOnce) {

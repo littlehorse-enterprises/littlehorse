@@ -53,7 +53,7 @@ public class CommandProcessor
         log.debug(
             String.format(
                 "%s Processing command of type %s with commandId %s on partition ",
-                config.getKafkaInstanceId(),
+                config.getLHInstanceId(),
                 command.type,
                 command.getPartitionKey()
             )

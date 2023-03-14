@@ -16,7 +16,10 @@ public class LHProducer implements Closeable {
     private LHConfig config;
 
     public LHProducer(LHConfig config) {
-        prod = new KafkaProducer<>(config.getKafkaProducerConfig());
+        prod =
+            new KafkaProducer<>(
+                config.getKafkaProducerConfig(config.getLHInstanceId())
+            );
         this.config = config;
     }
 
