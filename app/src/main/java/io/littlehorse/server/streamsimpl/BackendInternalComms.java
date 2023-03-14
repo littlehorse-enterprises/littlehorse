@@ -109,14 +109,15 @@ public class BackendInternalComms implements Closeable {
                 );
         }
 
-        builder
-            .keepAliveTime(10, TimeUnit.SECONDS)
-            .keepAliveTimeout(3, TimeUnit.SECONDS)
-            .permitKeepAliveTime(10, TimeUnit.SECONDS)
-            .permitKeepAliveWithoutCalls(true)
-            .executor(executor)
-            .addService(new InterBrokerCommServer())
-            .build();
+        internalGrpcServer =
+            builder
+                .keepAliveTime(10, TimeUnit.SECONDS)
+                .keepAliveTimeout(3, TimeUnit.SECONDS)
+                .permitKeepAliveTime(10, TimeUnit.SECONDS)
+                .permitKeepAliveWithoutCalls(true)
+                .executor(executor)
+                .addService(new InterBrokerCommServer())
+                .build();
 
         thisHost =
             new HostInfo(

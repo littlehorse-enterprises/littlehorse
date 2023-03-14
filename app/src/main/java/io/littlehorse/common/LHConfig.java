@@ -50,7 +50,10 @@ public class LHConfig extends LHServerConfig {
     }
 
     public String getKafkaTopicPrefix() {
-        return getOrSetDefault(LHServerConfig.KAFKA_TOPIC_PREFIX_KEY, "");
+        return getOrSetDefault(
+            LHServerConfig.KAFKA_TOPIC_PREFIX_KEY,
+            getLHClusterId() + "-"
+        );
     }
 
     public String getCoreCmdTopicName() {
@@ -100,10 +103,11 @@ public class LHConfig extends LHServerConfig {
     }
 
     public String getLHClusterId() {
-        return getOrSetDefault(
-            LHServerConfig.LH_CLUSTER_ID_KEY,
-            "unset-group-id-bad"
-        );
+        String clusterId = (String) props.get(LH_CLUSTER_ID_KEY);
+        if (clusterId == null) {
+            throw new RuntimeException("Must set LH_CLUSTER_ID!");
+        }
+        return clusterId;
     }
 
     public String getLHInstanceId() {
