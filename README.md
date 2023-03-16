@@ -19,22 +19,38 @@ For a description of the architecture, see the [architecture docs](docs/ARCH.md)
 ## LH Repository Inventory
 The LittleHorse project currently has multiple repositories, described below:
 * [`io-littlehorse`](https://github.com/littlehorse-eng/io-littlehorse)
+
     *  Code for the LittleHorse Server.
+
 * [`io-littlehorse-jlib`](https://github.com/littlehorse-eng/io-littlehorse-jlib)
+
     * Protocol Buffer definitions used by clients and the `io-littlehorse` repo.
+
     * Library for creating `WfSpec`'s in Java.
+
     * Library for executing `TaskRun`'s in Java.
+
     * Shared constants, including configuration constants used by the LH Server.
+
 * [`io-littlehorse-golib`](https://github.com/littlehorse-eng/io-littlehorse-golib)
+
     * The `lhctl` command line interface.
+
     * Library for creating `WfSpec`'s in GoLang (under development).
+
     * Library for executing `TaskRun`'s in GoLang (under development).
+
 * [`io-littlehorse-jtests`](https://github.com/littlehorse-eng/io-littlehorse-jtests)
-    * A series of system integration tests used to verify the cohesive behavior of the LH Server, Java Workflow SDK, and Java Task Library together.
+
+  * A series of system integration tests used to verify the cohesive behavior of the LH Server, Java Workflow SDK, and Java Task Library together.
+
 * [`io-littlehorse-operator`](https://github.com/littlehorse-eng/io-littlehorse-operator)
-    * Code for a K8s Init Container that sets up the LittleHorse config file based on the `topology.kubernetes.io/zone` and pod name.
-    * Scripts to deploy LittleHorse on KIND or EKS.
-    * (FUTURE) code for a LittleHorse Controller/Operator.
+
+   * Code for a K8s Init Container that sets up the LittleHorse config file based on the `topology.kubernetes.io/zone` and pod name.
+
+   * Scripts to deploy LittleHorse on KIND or EKS.
+
+   * (FUTURE) code for a LittleHorse Controller/Operator.
 
 # Development
 
@@ -44,8 +60,13 @@ This section describes how to run the LittleHorse server in a development enviro
 
 Your system needs the following:
 * `openjdk`, preferably version 17 or later.
+
 * `gradle`, preferably version 7.4 or later.
+
 * `docker` and `docker-compose-plugin`
+
+* `helm` v3
+
 * *OPTIONAL:* the linters require `npm`.
 
 Once you've set up your system, you *also* need to publish the `io-littlehorse-jlib` library to your local Maven repository. See the `README` on that repo for instructions.
