@@ -5,30 +5,42 @@ The main component of the LittleHorse system is the LH Server. All metadata is m
 
 # LH Server
 The LH Server comprises several logical parts:
+
 * A gRPC server with a public API that clients communicate with.
+
 * A central “Command” Kafka Topic.
+
 * A Kafka Streams topology which reads the Command topic, and performs all logic.
 
 The gRPC server’s API is quite simple and can be seen in `proto/service.proto` from the io-littlehorse-jlib repository.
 
 However, the implementation is quite complex. All state for the server is persisted in Kafka Streams topologies. Before reading further, I recommend gaining a primer on how Kafka Streams works. For example, the following links are good:
+
 * [Short Overview Blog Post](https://lucapette.me/writing/getting-started-with-kafka-streams/?utm_source=atom_feed) (Recommended)
+
 * [Long Read from Hevo Data](https://hevodata.com/learn/kafka-streams/)
+
 * [Kafka Streams Developer Guide](https://kafka.apache.org/33/documentation/streams/developer-guide/)
 
 ## Core Streams Topology
 The bulk of the LittleHorse system is built upon an event-sourcing architecture. Basically:
 Events are recorded to the Core Command Kafka Topic.
 Those events are processed in order** and the state of the system is updated accordingly.
+
 ** in order on each partition. No ordering guarantees are made across partitions.
 
 Such events are called “Commands” and are defined in `proto/command.proto`. As you would expect, all messages in the Core Command topic are just serialized Command protobuf’s.
 
 To give a more concrete idea of what the Commands do, they generally record:
+
 * Request to create/delete metadata such as WfSpec, TaskDef, ExternalEventDef
+
 * Request to run a WfRun
+
 * Registration of an ExternalEvent
+
 * Reporting the result of a TaskRun (completed, error, timed out, etc)
+
 * Request by a Task Worker to claim a scheduled Task (discussed in more detail later).
 
 ## Consistent, Synchronous POST Responses (Metadata)
@@ -45,6 +57,7 @@ At a high level:
 For more info on what a `StreamObserver` is, look up a tutorial for server-side gRPC in Java (both unary and streaming).
 
 How does this work in the code? 
+
 1. The [KafkaStreamsServerImpl](../app/src/main/java/io/littlehorse/server/KafkaStreamsServerImpl.java) class has a `processCommand()` method, which takes in a gRPC request (raw protobuf), the response `StreamObserver` handle, and the `Class` for the command and response (used for serializing and deserializing with reflection).
 2. The `processCommand()` method creates a [POSTStreamObserver](../app/src/main/java/io/littlehorse/server/streamsimpl/util/POSTStreamObserver.java) which wraps the response `StreamObserver` handle.
 3. Next, the `processCommand()` method records the `command` to the Command Kafka Topic.
@@ -56,8 +69,11 @@ There is a highly similar mechanism for the dispatching of tasks. While the conc
 
 In the above section, we discussed the synchronous request-response flow, in which all responses had one direct cause (the request from the client). However, in this section, there are a few distinctions:
 * Clients use gRPC long-polling (aka biderectional streaming) rather than unary calls.
+
 * Two conditions must be met before the response can be returned:
+
   * A `TaskRun` has been scheduled by the CommandProcessor.
+
   * One of the clients waiting to execute `TaskRun`'s of that type is ready to accept more work.
 
 The way this protocol works is:

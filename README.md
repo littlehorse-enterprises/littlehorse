@@ -18,6 +18,7 @@ For a description of the architecture, see the [architecture docs](docs/ARCH.md)
 
 ## LH Repository Inventory
 The LittleHorse project currently has multiple repositories, described below:
+
 * [`io-littlehorse`](https://github.com/littlehorse-eng/io-littlehorse)
 
     *  Code for the LittleHorse Server.
