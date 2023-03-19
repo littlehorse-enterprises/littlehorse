@@ -1,14 +1,12 @@
 package io.littlehorse.server.streamsimpl.util;
 
 import com.google.protobuf.GeneratedMessageV3;
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.jlib.common.proto.LHResponseCodePb;
 
 public class IntermediateGETResp<
-    U extends MessageOrBuilder,
-    T extends LHSerializable<U>,
-    V extends MessageOrBuilder
+    U extends Message, T extends LHSerializable<U>, V extends Message
 > {
 
     public String message;

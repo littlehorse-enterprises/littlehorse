@@ -4,6 +4,7 @@ import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.jlib.common.proto.TaskDefIdPb;
 import io.littlehorse.jlib.common.proto.TaskDefPb;
 import io.littlehorse.jlib.common.proto.TaskDefPbOrBuilder;
 import io.littlehorse.jlib.common.proto.VariableDefPb;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class TaskDef extends GETable<TaskDefPbOrBuilder> {
+public class TaskDef extends GETable<TaskDefPb> {
 
     public String name;
     public int version;
@@ -34,10 +35,10 @@ public class TaskDef extends GETable<TaskDefPbOrBuilder> {
     }
 
     public String getObjectId() {
-        return TaskDef.getSubKey(name, version);
+        return TaskDef.getObjectId(name, version);
     }
 
-    public static String getSubKey(String name, int version) {
+    public static String getObjectId(String name, int version) {
         return LHUtil.getCompositeId(name, LHUtil.toLHDbVersionFormat(version));
     }
 
@@ -45,9 +46,9 @@ public class TaskDef extends GETable<TaskDefPbOrBuilder> {
         return StoreUtils.getFullStoreKey(name + "/", TaskDef.class);
     }
 
-    public static String getFullKey(String name, int version) {
-        return StoreUtils.getFullStoreKey(getSubKey(name, version), TaskDef.class);
-    }
+    // public static String getFullKey(String name, int version) {
+    //     return StoreUtils.getFullStoreKey(getObjectId(name, version), TaskDef.class);
+    // }
 
     public String getPartitionKey() {
         return LHConstants.META_PARTITION_KEY;
@@ -92,5 +93,18 @@ public class TaskDef extends GETable<TaskDefPbOrBuilder> {
         TaskDef out = new TaskDef();
         out.initFrom(p);
         return out;
+    }
+
+    public static TaskDefIdPb parseId(String fullId) {
+        String[] split = fullId.split("/");
+        return TaskDefIdPb
+            .newBuilder()
+            .setName(split[0])
+            .setVersion(Integer.valueOf(split[1]))
+            .build();
+    }
+
+    public static String getObjectId(TaskDefIdPb id) {
+        return getObjectId(id.getName(), id.getVersion());
     }
 }

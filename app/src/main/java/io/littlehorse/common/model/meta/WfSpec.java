@@ -14,6 +14,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.LHStatusPb;
 import io.littlehorse.jlib.common.proto.ThreadSpecPb;
 import io.littlehorse.jlib.common.proto.ThreadTypePb;
+import io.littlehorse.jlib.common.proto.WfSpecIdPb;
 import io.littlehorse.jlib.common.proto.WfSpecPb;
 import io.littlehorse.jlib.common.proto.WfSpecPbOrBuilder;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
@@ -24,7 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class WfSpec extends GETable<WfSpecPbOrBuilder> {
+public class WfSpec extends GETable<WfSpecPb> {
 
     public String name;
     public int version;
@@ -52,19 +53,11 @@ public class WfSpec extends GETable<WfSpecPbOrBuilder> {
      * **lexicographically**, not just numerically.
      */
     public String getObjectId() {
-        return getSubKey(name, version);
+        return getObjectId(name, version);
     }
 
-    public static String getSubKey(String name, int version) {
+    public static String getObjectId(String name, int version) {
         return LHUtil.getCompositeId(name, LHUtil.toLHDbVersionFormat(version));
-    }
-
-    public static Pair<String, Integer> parseSubKey(String subKey) {
-        return Pair.of(subKey.split("/")[0], Integer.valueOf(subKey.split("/")[1]));
-    }
-
-    public static String getFullKey(String name, int version) {
-        return StoreUtils.getFullStoreKey(getSubKey(name, version), WfSpec.class);
     }
 
     public static String getFullPrefixByName(String name) {
@@ -265,5 +258,18 @@ public class WfSpec extends GETable<WfSpecPbOrBuilder> {
         dao.saveWfRun(out);
 
         return out;
+    }
+
+    public static WfSpecIdPb parseId(String fullId) {
+        String[] split = fullId.split("/");
+        return WfSpecIdPb
+            .newBuilder()
+            .setName(split[0])
+            .setVersion(Integer.valueOf(split[1]))
+            .build();
+    }
+
+    public static String getObjectId(WfSpecIdPb id) {
+        return getObjectId(id.getName(), id.getVersion());
     }
 }

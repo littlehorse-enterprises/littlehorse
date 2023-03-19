@@ -31,7 +31,7 @@ public class TaskScheduleRequest extends GETable<TaskScheduleRequestPb> {
     }
 
     public String getObjectId() {
-        return NodeRun.getStoreKey(wfRunId, threadRunNumber, taskRunPosition);
+        return NodeRun.getObjectId(wfRunId, threadRunNumber, taskRunPosition);
     }
 
     public Date getCreatedAt() {

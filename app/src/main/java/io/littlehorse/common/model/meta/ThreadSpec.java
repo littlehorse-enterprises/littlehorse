@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class ThreadSpec extends LHSerializable<ThreadSpecPbOrBuilder> {
+public class ThreadSpec extends LHSerializable<ThreadSpecPb> {
 
     public String name;
 

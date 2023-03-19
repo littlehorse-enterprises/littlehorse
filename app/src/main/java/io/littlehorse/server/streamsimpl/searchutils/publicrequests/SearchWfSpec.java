@@ -9,10 +9,13 @@ import io.littlehorse.jlib.common.proto.GETableClassEnumPb;
 import io.littlehorse.jlib.common.proto.LHInternalSearchPb.PrefixCase;
 import io.littlehorse.jlib.common.proto.SearchWfSpecPb;
 import io.littlehorse.jlib.common.proto.SearchWfSpecPbOrBuilder;
+import io.littlehorse.jlib.common.proto.SearchWfSpecReplyPb;
 import io.littlehorse.server.streamsimpl.searchutils.LHInternalSearch;
 import io.littlehorse.server.streamsimpl.searchutils.LHPublicSearch;
+import io.littlehorse.server.streamsimpl.searchutils.publicsearchreplies.SearchWfSpecReply;
 
-public class SearchWfSpec extends LHPublicSearch<SearchWfSpecPb> {
+public class SearchWfSpec
+    extends LHPublicSearch<SearchWfSpecPb, SearchWfSpecReplyPb, SearchWfSpecReply> {
 
     public String name;
 

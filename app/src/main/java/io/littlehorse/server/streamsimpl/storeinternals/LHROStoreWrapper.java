@@ -1,6 +1,6 @@
 package io.littlehorse.server.streamsimpl.storeinternals;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.LHSerializable;
@@ -40,7 +40,7 @@ public class LHROStoreWrapper {
         this.config = config;
     }
 
-    public <U extends MessageOrBuilder, T extends Storeable<U>> T get(
+    public <U extends Message, T extends Storeable<U>> T get(
         String objectId,
         Class<T> cls
     ) {
@@ -73,7 +73,7 @@ public class LHROStoreWrapper {
         );
     }
 
-    public <U extends MessageOrBuilder, T extends Storeable<U>> T getLastFromPrefix(
+    public <U extends Message, T extends Storeable<U>> T getLastFromPrefix(
         String prefix,
         Class<T> cls
     ) {

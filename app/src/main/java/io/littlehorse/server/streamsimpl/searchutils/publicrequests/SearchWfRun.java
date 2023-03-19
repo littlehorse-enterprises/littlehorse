@@ -10,11 +10,14 @@ import io.littlehorse.jlib.common.proto.SearchWfRunPb;
 import io.littlehorse.jlib.common.proto.SearchWfRunPb.StatusAndSpecPb;
 import io.littlehorse.jlib.common.proto.SearchWfRunPb.WfrunCriteriaCase;
 import io.littlehorse.jlib.common.proto.SearchWfRunPbOrBuilder;
+import io.littlehorse.jlib.common.proto.SearchWfRunReplyPb;
 import io.littlehorse.server.streamsimpl.searchutils.LHInternalSearch;
 import io.littlehorse.server.streamsimpl.searchutils.LHPublicSearch;
+import io.littlehorse.server.streamsimpl.searchutils.publicsearchreplies.SearchWfRunReply;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
 
-public class SearchWfRun extends LHPublicSearch<SearchWfRunPb> {
+public class SearchWfRun
+    extends LHPublicSearch<SearchWfRunPb, SearchWfRunReplyPb, SearchWfRunReply> {
 
     public WfrunCriteriaCase type;
     public StatusAndSpecPb statusAndSpec;

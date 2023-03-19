@@ -5,7 +5,7 @@ import static com.google.protobuf.util.Timestamps.fromMillis;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.hash.Hashing;
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.jlib.common.proto.MetricsWindowLengthPb;
@@ -134,7 +134,7 @@ public class LHUtil {
 
     @SuppressWarnings("unchecked")
     public static <
-        U extends MessageOrBuilder, T extends LHSerializable<U>
+        U extends Message, T extends LHSerializable<U>
     > Class<U> getProtoBaseClass(Class<T> cls) {
         try {
             T t = cls.getDeclaredConstructor().newInstance();

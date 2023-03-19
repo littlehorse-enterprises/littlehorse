@@ -1,6 +1,6 @@
 package io.littlehorse.server.streamsimpl.util;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHSerdeError;
@@ -10,7 +10,7 @@ import io.littlehorse.jlib.common.proto.CentralStoreQueryReplyPb;
 import io.littlehorse.jlib.common.proto.LHResponseCodePb;
 
 public class GETStreamObserver<
-    U extends MessageOrBuilder, T extends Storeable<U>, V extends MessageOrBuilder
+    U extends Message, T extends Storeable<U>, V extends Message
 >
     implements StreamObserver<CentralStoreQueryReplyPb> {
 

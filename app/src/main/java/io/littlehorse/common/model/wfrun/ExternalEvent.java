@@ -1,10 +1,10 @@
 package io.littlehorse.common.model.wfrun;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.jlib.common.proto.ExternalEventIdPb;
 import io.littlehorse.jlib.common.proto.ExternalEventPb;
 import io.littlehorse.jlib.common.proto.ExternalEventPbOrBuilder;
 import java.util.Date;
@@ -85,8 +85,6 @@ public class ExternalEvent extends GETable<ExternalEventPb> {
         return getStorePrefix(wfRunId, externalEventDefName) + "/" + guid;
     }
 
-    // Just for Jackson
-    @JsonProperty("objectId")
     public String getIdForJackson() {
         return getObjectId();
     }
@@ -122,5 +120,23 @@ public class ExternalEvent extends GETable<ExternalEventPb> {
 
     public Integer getNodeRunPosition() {
         return nodeRunPosition;
+    }
+
+    public static ExternalEventIdPb parseId(String fullId) {
+        String[] split = fullId.split("/");
+        return ExternalEventIdPb
+            .newBuilder()
+            .setWfRunId(split[0])
+            .setExternalEventDefName(split[1])
+            .setGuid(split[2])
+            .build();
+    }
+
+    public static String getObjectId(ExternalEventIdPb id) {
+        return getStoreKey(
+            id.getWfRunId(),
+            id.getExternalEventDefName(),
+            id.getGuid()
+        );
     }
 }

@@ -27,7 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class Node extends LHSerializable<NodePbOrBuilder> {
+public class Node extends LHSerializable<NodePb> {
 
     public NodeCase type;
     public TaskNode taskNode;

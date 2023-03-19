@@ -1,9 +1,8 @@
 package io.littlehorse.common.model;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 
-public abstract class Storeable<T extends MessageOrBuilder>
-    extends LHSerializable<T> {
+public abstract class Storeable<T extends Message> extends LHSerializable<T> {
 
     public abstract String getObjectId();
 }

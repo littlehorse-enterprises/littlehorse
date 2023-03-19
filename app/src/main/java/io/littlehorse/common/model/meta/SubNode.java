@@ -1,7 +1,7 @@
 package io.littlehorse.common.model.meta;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class SubNode<T extends MessageOrBuilder> extends LHSerializable<T> {
+public abstract class SubNode<T extends Message> extends LHSerializable<T> {
 
     public abstract SubNodeRun<?> createRun(Date time);
 

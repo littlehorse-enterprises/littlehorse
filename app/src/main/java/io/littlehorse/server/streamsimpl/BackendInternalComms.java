@@ -997,7 +997,7 @@ class GlobalMetaStoresServerImpl implements LHGlobalMetaStores {
 
     public WfSpec getWfSpec(String name, Integer version) {
         if (version != null) {
-            return store.get(WfSpec.getSubKey(name, version), WfSpec.class);
+            return store.get(WfSpec.getObjectId(name, version), WfSpec.class);
         } else {
             return store.getLastFromPrefix(name, WfSpec.class);
         }
@@ -1005,7 +1005,7 @@ class GlobalMetaStoresServerImpl implements LHGlobalMetaStores {
 
     public TaskDef getTaskDef(String name, Integer version) {
         if (version != null) {
-            return store.get(WfSpec.getSubKey(name, version), TaskDef.class);
+            return store.get(WfSpec.getObjectId(name, version), TaskDef.class);
         } else {
             return store.getLastFromPrefix(name, TaskDef.class);
         }
@@ -1013,7 +1013,10 @@ class GlobalMetaStoresServerImpl implements LHGlobalMetaStores {
 
     public ExternalEventDef getExternalEventDef(String name, Integer version) {
         if (version != null) {
-            return store.get(WfSpec.getSubKey(name, version), ExternalEventDef.class);
+            return store.get(
+                WfSpec.getObjectId(name, version),
+                ExternalEventDef.class
+            );
         } else {
             return store.getLastFromPrefix(name, ExternalEventDef.class);
         }
