@@ -1,6 +1,6 @@
 package io.littlehorse.server.streamsimpl.coreprocessors;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
@@ -164,7 +164,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     @Override
     public NodeRun getNodeRun(String wfRunId, int threadNum, int position) {
-        String key = NodeRun.getStoreKey(wfRunId, threadNum, position);
+        String key = NodeRun.getObjectId(wfRunId, threadNum, position);
         if (nodeRunPuts.containsKey(key)) {
             return nodeRunPuts.get(key);
         }
@@ -217,7 +217,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     @Override
     public WfSpec getWfSpec(String name, Integer version) {
-        String mapKey = version == null ? name : WfSpec.getSubKey(name, version);
+        String mapKey = version == null ? name : WfSpec.getObjectId(name, version);
         Pair<Long, WfSpec> pair = wfSpecCache.get(mapKey);
 
         if (pair != null && isFreshEnough(pair.getKey())) {
@@ -243,7 +243,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     private WfSpec getWfSpecBreakCache(String name, Integer version) {
         LHROStoreWrapper store = isHotMetadataPartition ? localStore : globalStore;
         if (version != null) {
-            return store.get(WfSpec.getSubKey(name, version), WfSpec.class);
+            return store.get(WfSpec.getObjectId(name, version), WfSpec.class);
         } else {
             return store.getLastFromPrefix(name, WfSpec.class);
         }
@@ -255,7 +255,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     @Override
     public TaskDef getTaskDef(String name, Integer version) {
-        String mapKey = version == null ? name : TaskDef.getSubKey(name, version);
+        String mapKey = version == null ? name : TaskDef.getObjectId(name, version);
         Pair<Long, TaskDef> pair = taskDefCache.get(mapKey);
 
         if (pair != null && isFreshEnough(pair.getKey())) {
@@ -281,7 +281,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     private TaskDef getTaskDefBreakCache(String name, Integer version) {
         LHROStoreWrapper store = isHotMetadataPartition ? localStore : globalStore;
         if (version != null) {
-            return store.get(TaskDef.getSubKey(name, version), TaskDef.class);
+            return store.get(TaskDef.getObjectId(name, version), TaskDef.class);
         } else {
             return store.getLastFromPrefix(name, TaskDef.class);
         }
@@ -292,7 +292,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         LHROStoreWrapper store = isHotMetadataPartition ? localStore : globalStore;
         if (version != null) {
             return store.get(
-                ExternalEventDef.getSubKey(name, version),
+                ExternalEventDef.getObjectId(name, version),
                 ExternalEventDef.class
             );
         } else {
@@ -312,7 +312,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     @Override
     public Variable getVariable(String wfRunId, String name, int threadNum) {
-        String key = Variable.getStoreKey(wfRunId, threadNum, name);
+        String key = Variable.getObjectId(wfRunId, threadNum, name);
         if (variablePuts.containsKey(key)) {
             return variablePuts.get(key);
         }
@@ -410,7 +410,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         int taskRunPosition
     ) {
         TaskScheduleRequest tsr = localStore.get(
-            NodeRun.getStoreKey(wfRunId, threadRunNumber, taskRunPosition),
+            NodeRun.getObjectId(wfRunId, threadRunNumber, taskRunPosition),
             TaskScheduleRequest.class
         );
 
@@ -818,7 +818,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         );
     }
 
-    private <U extends MessageOrBuilder, T extends GETable<U>> void forwardGlobalMeta(
+    private <U extends Message, T extends GETable<U>> void forwardGlobalMeta(
         String objectId,
         T val,
         Class<T> cls
@@ -839,9 +839,11 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         );
     }
 
-    private <
-        U extends MessageOrBuilder, T extends GETable<U>
-    > void saveOrDeleteGETableFlush(String key, T val, Class<T> cls) {
+    private <U extends Message, T extends GETable<U>> void saveOrDeleteGETableFlush(
+        String key,
+        T val,
+        Class<T> cls
+    ) {
         if (val != null) {
             saveAndIndexFlush(val);
         } else {
@@ -849,7 +851,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         }
     }
 
-    private <U extends MessageOrBuilder, T extends GETable<U>> void deleteThingFlush(
+    private <U extends Message, T extends GETable<U>> void deleteThingFlush(
         String objectId,
         Class<T> cls
     ) {

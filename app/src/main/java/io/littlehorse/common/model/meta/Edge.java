@@ -8,7 +8,7 @@ import io.littlehorse.jlib.common.proto.EdgePbOrBuilder;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Edge extends LHSerializable<EdgePbOrBuilder> {
+public class Edge extends LHSerializable<EdgePb> {
 
     public String sinkNodeName;
     public EdgeCondition condition;

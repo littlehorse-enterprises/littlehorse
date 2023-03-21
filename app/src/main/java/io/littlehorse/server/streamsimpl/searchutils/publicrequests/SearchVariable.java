@@ -12,12 +12,15 @@ import io.littlehorse.jlib.common.proto.SearchVariablePb;
 import io.littlehorse.jlib.common.proto.SearchVariablePb.NameAndValuePb;
 import io.littlehorse.jlib.common.proto.SearchVariablePb.VariableCriteriaCase;
 import io.littlehorse.jlib.common.proto.SearchVariablePbOrBuilder;
+import io.littlehorse.jlib.common.proto.SearchVariableReplyPb;
 import io.littlehorse.server.streamsimpl.searchutils.LHInternalSearch;
 import io.littlehorse.server.streamsimpl.searchutils.LHPublicSearch;
+import io.littlehorse.server.streamsimpl.searchutils.publicsearchreplies.SearchVariableReply;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class SearchVariable extends LHPublicSearch<SearchVariablePb> {
+public class SearchVariable
+    extends LHPublicSearch<SearchVariablePb, SearchVariableReplyPb, SearchVariableReply> {
 
     public VariableCriteriaCase type;
     public NameAndValuePb value;

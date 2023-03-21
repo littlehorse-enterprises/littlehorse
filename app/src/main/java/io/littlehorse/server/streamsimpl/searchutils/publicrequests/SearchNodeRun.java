@@ -10,11 +10,14 @@ import io.littlehorse.jlib.common.proto.SearchNodeRunPb;
 import io.littlehorse.jlib.common.proto.SearchNodeRunPb.NoderunCriteriaCase;
 import io.littlehorse.jlib.common.proto.SearchNodeRunPb.StatusAndTaskDefPb;
 import io.littlehorse.jlib.common.proto.SearchNodeRunPbOrBuilder;
+import io.littlehorse.jlib.common.proto.SearchNodeRunReplyPb;
 import io.littlehorse.server.streamsimpl.searchutils.LHInternalSearch;
 import io.littlehorse.server.streamsimpl.searchutils.LHPublicSearch;
+import io.littlehorse.server.streamsimpl.searchutils.publicsearchreplies.SearchNodeRunReply;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
 
-public class SearchNodeRun extends LHPublicSearch<SearchNodeRunPb> {
+public class SearchNodeRun
+    extends LHPublicSearch<SearchNodeRunPb, SearchNodeRunReplyPb, SearchNodeRunReply> {
 
     public NoderunCriteriaCase type;
     public StatusAndTaskDefPb statusAndTaskDef;

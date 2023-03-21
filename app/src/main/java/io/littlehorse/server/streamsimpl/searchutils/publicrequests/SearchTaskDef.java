@@ -9,10 +9,13 @@ import io.littlehorse.jlib.common.proto.GETableClassEnumPb;
 import io.littlehorse.jlib.common.proto.LHInternalSearchPb.PrefixCase;
 import io.littlehorse.jlib.common.proto.SearchTaskDefPb;
 import io.littlehorse.jlib.common.proto.SearchTaskDefPbOrBuilder;
+import io.littlehorse.jlib.common.proto.SearchTaskDefReplyPb;
 import io.littlehorse.server.streamsimpl.searchutils.LHInternalSearch;
 import io.littlehorse.server.streamsimpl.searchutils.LHPublicSearch;
+import io.littlehorse.server.streamsimpl.searchutils.publicsearchreplies.SearchTaskDefReply;
 
-public class SearchTaskDef extends LHPublicSearch<SearchTaskDefPb> {
+public class SearchTaskDef
+    extends LHPublicSearch<SearchTaskDefPb, SearchTaskDefReplyPb, SearchTaskDefReply> {
 
     public String name;
 

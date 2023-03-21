@@ -1,32 +1,21 @@
 package io.littlehorse.common.model.wfrun;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.jlib.common.proto.VariableIdPb;
 import io.littlehorse.jlib.common.proto.VariablePb;
 import io.littlehorse.jlib.common.proto.VariablePbOrBuilder;
-import io.littlehorse.jlib.common.proto.VariableTypePb;
 import java.util.Date;
 
 public class Variable extends GETable<VariablePb> {
 
-    @JsonIgnore
     public VariableValue value;
-
-    @JsonIgnore
     public String wfRunId;
-
-    @JsonIgnore
     public int threadRunNumber;
-
-    @JsonIgnore
     public String name;
-
-    @JsonIgnore
     public Date date;
 
-    @JsonIgnore
     public Class<VariablePb> getProtoBaseClass() {
         return VariablePb.class;
     }
@@ -52,17 +41,28 @@ public class Variable extends GETable<VariablePb> {
         return out;
     }
 
-    @JsonIgnore
     public String getObjectId() {
-        return getStoreKey(wfRunId, threadRunNumber, name);
+        return getObjectId(wfRunId, threadRunNumber, name);
     }
 
-    @JsonIgnore
-    public static String getStoreKey(String wfRunId, int threadNum, String name) {
-        return wfRunId + "/" + threadNum + "/" + name;
+    public static String getObjectId(String wfRunId, int threadNum, String name) {
+        return LHUtil.getCompositeId(wfRunId, String.valueOf(threadNum), name);
     }
 
-    @JsonIgnore
+    public static VariableIdPb parseId(String id) {
+        String[] split = id.split("/");
+        return VariableIdPb
+            .newBuilder()
+            .setWfRunId(split[0])
+            .setThreadRunNumber(Integer.valueOf(split[1]))
+            .setName(split[2])
+            .build();
+    }
+
+    public static String getObjectId(VariableIdPb id) {
+        return getObjectId(id.getWfRunId(), id.getThreadRunNumber(), id.getName());
+    }
+
     public Date getCreatedAt() {
         if (date == null) {
             date = new Date();
@@ -70,18 +70,7 @@ public class Variable extends GETable<VariablePb> {
         return date;
     }
 
-    @JsonIgnore
     public String getPartitionKey() {
         return wfRunId;
     }
-
-    // The below is just for Jackson
-    public VariableTypePb getType() {
-        return value.type;
-    }
-
-    public Object getVal() {
-        return value.getVal();
-    }
-    // End Jackson section
 }

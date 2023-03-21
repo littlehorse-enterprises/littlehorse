@@ -1,14 +1,13 @@
 package io.littlehorse.common.model.wfrun;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.meta.WfSpec;
 import java.util.Date;
 
-public abstract class SubNodeRun<T extends MessageOrBuilder>
-    extends LHSerializable<T> {
+public abstract class SubNodeRun<T extends Message> extends LHSerializable<T> {
 
     @JsonIgnore
     public NodeRun nodeRun;

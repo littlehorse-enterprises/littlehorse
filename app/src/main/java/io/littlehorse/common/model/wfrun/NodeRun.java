@@ -14,6 +14,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.FailurePb;
 import io.littlehorse.jlib.common.proto.LHStatusPb;
 import io.littlehorse.jlib.common.proto.NodePb.NodeCase;
+import io.littlehorse.jlib.common.proto.NodeRunIdPb;
 import io.littlehorse.jlib.common.proto.NodeRunPb;
 import io.littlehorse.jlib.common.proto.NodeRunPb.NodeTypeCase;
 import io.littlehorse.jlib.common.proto.NodeRunPbOrBuilder;
@@ -78,11 +79,33 @@ public class NodeRun extends GETable<NodeRunPb> {
     }
 
     public String getObjectId() {
-        return NodeRun.getStoreKey(wfRunId, threadRunNumber, position);
+        return NodeRun.getObjectId(wfRunId, threadRunNumber, position);
     }
 
-    public static String getStoreKey(String wfRunId, int threadNum, int position) {
-        return wfRunId + "-" + threadNum + "-" + position;
+    public static String getObjectId(String wfRunId, int threadNum, int position) {
+        return LHUtil.getCompositeId(
+            wfRunId,
+            String.valueOf(threadNum),
+            String.valueOf(position)
+        );
+    }
+
+    public static String getObjectId(NodeRunIdPb id) {
+        return getObjectId(
+            id.getWfRunId(),
+            id.getThreadRunNumber(),
+            id.getPosition()
+        );
+    }
+
+    public static NodeRunIdPb parseId(String id) {
+        String[] split = id.split("/");
+        return NodeRunIdPb
+            .newBuilder()
+            .setWfRunId(split[0])
+            .setThreadRunNumber(Integer.valueOf(split[1]))
+            .setPosition(Integer.valueOf(split[2]))
+            .build();
     }
 
     public String getPartitionKey() {

@@ -9,10 +9,13 @@ import io.littlehorse.jlib.common.proto.LHInternalSearchPb.PrefixCase;
 import io.littlehorse.jlib.common.proto.SearchExternalEventPb;
 import io.littlehorse.jlib.common.proto.SearchExternalEventPb.ExtEvtCriteriaCase;
 import io.littlehorse.jlib.common.proto.SearchExternalEventPbOrBuilder;
+import io.littlehorse.jlib.common.proto.SearchExternalEventReplyPb;
 import io.littlehorse.server.streamsimpl.searchutils.LHInternalSearch;
 import io.littlehorse.server.streamsimpl.searchutils.LHPublicSearch;
+import io.littlehorse.server.streamsimpl.searchutils.publicsearchreplies.SearchExternalEventReply;
 
-public class SearchExternalEvent extends LHPublicSearch<SearchExternalEventPb> {
+public class SearchExternalEvent
+    extends LHPublicSearch<SearchExternalEventPb, SearchExternalEventReplyPb, SearchExternalEventReply> {
 
     public ExtEvtCriteriaCase type;
     public String wfRunId;

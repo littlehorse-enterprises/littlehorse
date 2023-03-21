@@ -2,14 +2,14 @@ package io.littlehorse.server.streamsimpl.util;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.GeneratedMessageV3;
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.LHResponseCodePb;
 import io.littlehorse.jlib.common.proto.StoreQueryStatusPb;
 import io.littlehorse.jlib.common.proto.WaitForCommandReplyPb;
 
-public class POSTStreamObserver<U extends MessageOrBuilder>
+public class POSTStreamObserver<U extends Message>
     implements StreamObserver<WaitForCommandReplyPb> {
 
     private StreamObserver<U> ctx;

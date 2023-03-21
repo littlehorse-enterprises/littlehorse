@@ -1,6 +1,5 @@
 package io.littlehorse.common.model.wfrun;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
@@ -29,6 +28,7 @@ import io.littlehorse.jlib.common.proto.ThreadHaltReasonPb.ReasonCase;
 import io.littlehorse.jlib.common.proto.ThreadRunPb;
 import io.littlehorse.jlib.common.proto.ThreadTypePb;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
+import io.littlehorse.jlib.common.proto.WfRunIdPb;
 import io.littlehorse.jlib.common.proto.WfRunPb;
 import io.littlehorse.jlib.common.proto.WfRunPbOrBuilder;
 import java.util.ArrayList;
@@ -58,7 +58,6 @@ public class WfRun extends GETable<WfRunPb> {
         pendingFailures = new ArrayList<>();
     }
 
-    @JsonIgnore
     public Date getCreatedAt() {
         return startTime;
     }
@@ -94,12 +93,18 @@ public class WfRun extends GETable<WfRunPb> {
      * structure of threads, we can determine this by simply checking if the
      * entrypoint thread is running.
      */
-    @JsonIgnore
     public boolean isRunning() {
         return threadRuns.get(0).isRunning();
     }
 
-    @JsonIgnore
+    public static WfRunIdPb parseId(String id) {
+        return WfRunIdPb.newBuilder().setId(id).build();
+    }
+
+    public static String getObjectId(WfRunIdPb id) {
+        return id.getId();
+    }
+
     public WfRunPb.Builder toProto() {
         WfRunPb.Builder out = WfRunPb
             .newBuilder()
@@ -129,18 +134,15 @@ public class WfRun extends GETable<WfRunPb> {
         return out;
     }
 
-    @JsonIgnore
     public Class<WfRunPb> getProtoBaseClass() {
         return WfRunPb.class;
     }
 
-    @JsonIgnore
     @Override
     public String getObjectId() {
         return id;
     }
 
-    @JsonIgnore
     @Override
     public String getPartitionKey() {
         return id;
@@ -148,10 +150,8 @@ public class WfRun extends GETable<WfRunPb> {
 
     // Below is used by scheduler
 
-    @JsonIgnore
     public WfSpec wfSpec;
 
-    @JsonIgnore
     public LHDAO cmdDao;
 
     public ThreadRun startThread(

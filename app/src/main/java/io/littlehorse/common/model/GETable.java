@@ -1,6 +1,6 @@
 package io.littlehorse.common.model;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
@@ -12,7 +12,7 @@ import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.jlib.common.proto.GETableClassEnumPb;
 import java.util.Date;
 
-public abstract class GETable<T extends MessageOrBuilder> extends Storeable<T> {
+public abstract class GETable<T extends Message> extends Storeable<T> {
 
     public abstract Date getCreatedAt();
 
