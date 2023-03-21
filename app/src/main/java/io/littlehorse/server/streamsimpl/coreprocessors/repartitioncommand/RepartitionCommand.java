@@ -2,10 +2,10 @@ package io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.proto.RepartitionCommandPb;
+import io.littlehorse.common.proto.RepartitionCommandPb.RepartitionCommandCase;
+import io.littlehorse.common.proto.RepartitionCommandPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.jlib.common.proto.RepartitionCommandPb;
-import io.littlehorse.jlib.common.proto.RepartitionCommandPb.RepartitionCommandCase;
-import io.littlehorse.jlib.common.proto.RepartitionCommandPbOrBuilder;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.TaskMetricUpdate;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.WfMetricUpdate;
 import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;

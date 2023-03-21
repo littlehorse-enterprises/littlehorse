@@ -1,0 +1,345 @@
+// Timer-related stuff
+syntax = "proto3";
+package lh_proto;
+
+option java_multiple_files = true;
+option java_package = "io.littlehorse.common.proto";
+
+import "google/protobuf/timestamp.proto";
+import "variable.proto";
+import "service.proto";
+import "metrics.proto";
+
+// The following protobuf definitions are used for paginated responses.
+message PartitionBookmarkPb {
+    int32 parttion = 1;
+    optional string last_key = 2;
+}
+
+message BookmarkPb {
+    map<int32, PartitionBookmarkPb> in_progress_partitions = 1;
+    repeated int32 completed_partitions = 2;
+}
+
+// This section contains data structures used internally for sending the results of
+// processing Commands. As a refresher, we need to send the result of processing
+// over the network because, if Server A receives a request to idempotently run a
+// WfRun with id='foo', but id='foo' partition is assigned to Server B, we need
+// to do the processing on server B. Therefore, Server A sends the request over
+// Kafka to Server B's partition, and then waits for Server B to process the
+// request. Server B uses the data structures below to communicate that result
+// back to server A.
+
+message CommandResultPb {
+    string command_id = 1;
+    google.protobuf.Timestamp result_time = 2;
+    bytes result = 3;
+}
+
+// The section below contains the protocol for inter-broker communication
+enum StoreQueryStatusPb {
+    RSQ_OK = 0; // If OK and bytes is empty, means that the key is not found.
+    RSQ_NOT_AVAILABLE = 2; // Can't query store, eg. during a rebalance or if migrated.
+}
+
+message CentralStoreQueryReplyPb {
+    StoreQueryStatusPb code = 1;
+    optional bytes result = 2;
+    int64 approximate_lag = 3;
+}
+
+message CentralStoreQueryPb {
+    message CentralStoreSubQueryPb {
+        oneof query {
+            string key = 1;
+            string last_from_prefix = 2;
+        }
+    }
+    bool enable_stale_stores = 1;
+    optional int32 specific_partition = 2;
+    CentralStoreSubQueryPb query = 3;
+    string store = 4;
+}
+
+message WaitForCommandPb {
+    string command_id = 1;
+}
+
+message WaitForCommandReplyPb {
+    StoreQueryStatusPb code = 1;
+    optional CommandResultPb result = 2;
+    optional string message = 3;
+}
+
+// This section defines the various ways in which we can search for a list of object
+// ids. They include:
+// - objectIdPrefixScan, eg. all nodeRuns for a wfRun
+// - localTagScan, eg. all nodeRuns with status of FAILED
+// - hashedTagScan, eg. all variables with string value "foobar"
+
+message LHInternalSearchPb {
+    message RepeatedAttributePb {
+        repeated AttributePb attributes = 1;
+    }
+    int32 limit = 1;
+    optional BookmarkPb bookmark = 2;
+    GETableClassEnumPb object_type = 3;
+    optional string partition_key = 4;
+
+    oneof prefix {
+        string object_id_prefix = 5;
+        RepeatedAttributePb tag_prefix = 6;
+    }
+}
+
+message InternalSearchReplyPb { // all scans have the same output
+    StoreQueryStatusPb code = 1;
+    repeated string object_ids = 2;
+    BookmarkPb updated_bookmark = 3;
+    optional string message = 4;
+}
+
+// This section is for the internal implementation of the Task Queue.
+// It will be optimized and improved in future revisions.
+message InternalPollTaskPb {
+    string task_queue_name = 1;
+}
+
+message InternalPollTaskReplyPb {
+    StoreQueryStatusPb code = 1;
+    optional TaskScheduleRequestPb result = 2;
+}
+
+message InternalGetAdvertisedHostsPb {}
+
+message InternalGetAdvertisedHostsReplyPb {
+    map<string, HostInfoPb> hosts = 1;
+}
+
+service LHInternals {
+    rpc CentralStoreQuery(CentralStoreQueryPb) returns (CentralStoreQueryReplyPb) {}
+    rpc LHSearch(LHInternalSearchPb) returns (InternalSearchReplyPb) {}
+
+    rpc waitForCommand(WaitForCommandPb) returns (WaitForCommandReplyPb) {}
+    rpc InternalPollTask(InternalPollTaskPb) returns (InternalPollTaskReplyPb) {}
+
+    rpc GetAdvertisedHosts(InternalGetAdvertisedHostsPb) returns (InternalGetAdvertisedHostsReplyPb) {}
+}
+
+// Stuff for the metrics topology
+message TaskMetricUpdatePb {
+    google.protobuf.Timestamp window_start = 1;
+    MetricsWindowLengthPb type = 2;
+    int64 num_entries = 3;
+    int64 schedule_to_start_max = 4;
+    int64 schedule_to_start_total = 5;
+    int64 start_to_complete_max = 6;
+    int64 start_to_complete_total = 7;
+    int64 total_completed = 8;
+    int64 total_errored = 9;
+    int64 total_started = 10;
+
+    repeated int32 seen_partitions = 11;
+    string task_def_name = 12;
+}
+
+message WfMetricUpdatePb {
+    google.protobuf.Timestamp window_start = 1;
+    MetricsWindowLengthPb type = 2;
+    int64 num_entries = 3;
+    int64 start_to_complete_max = 6;
+    int64 start_to_complete_total = 7;
+    int64 total_completed = 8;
+    int64 total_errored = 9;
+    int64 total_started = 10;
+
+    repeated int32 seen_partitions = 11;
+    string wf_spec_name = 12;
+}
+
+message RepartitionCommandPb {
+    google.protobuf.Timestamp time = 1;
+    optional string command_id = 2;
+    oneof repartition_command {
+        TaskMetricUpdatePb task_metric_update = 3;
+        WfMetricUpdatePb wf_metric_update = 4;
+    }
+}
+
+// Stuff for Index (internal to the store)
+enum GETableClassEnumPb {
+    TASK_DEF = 0;
+    EXTERNAL_EVENT_DEF = 1;
+    WF_SPEC = 2;
+    WF_RUN = 3;
+    NODE_RUN = 4;
+    VARIABLE = 5;
+    EXTERNAL_EVENT = 6;
+    TASK_SCHEDULE_REQUEST = 7;
+}
+
+message AttributePb {
+    string key = 1;
+    string val = 2;
+}
+
+enum TagStorageTypePb {
+    LOCAL_UNCOUNTED = 0;
+    LOCAL_COUNTED = 1;
+    LOCAL_HASH_UNCOUNTED = 2;
+    REMOTE_HASH_UNCOUNTED = 3;
+}
+
+message TagPb {
+    // The following info is also stored in the key of the Tag in the store.
+    GETableClassEnumPb object_type = 1;
+    repeated AttributePb attributes = 2;
+    string described_object_id = 3;
+    google.protobuf.Timestamp created = 4;
+    
+    // The following is not stored in the key.
+    TagStorageTypePb tag_type = 5;
+
+    // Observation: it's possible that we could optimize by removing fields 1-4
+    // and only relying upon the store key. However, that would complicate
+    // the code a bit and may just be premature optimization.
+}
+
+message TagsCachePb {
+    repeated string tag_ids = 1;
+}
+
+message DiscreteTagLocalCounterPb {
+    int64 local_count = 1;
+    string tag_attributes = 2;
+    int32 partition = 3;
+}
+
+message TagChangesToBroadcastPb {
+    map<string, DiscreteTagLocalCounterPb> changelog = 1;
+    int32 partition = 2;
+}
+
+/*
+For certain discrete tags, eg. "Node Run Status", there may be objects scattered
+across different partitions which satisfy the tag.
+
+Sometimes we want to find all of those objects, or find a count of them. For example,
+we may be interested in finding all SCHEDULED (but not started) NodeRun's, or we
+may want to know how many total failed NodeRun's there are.
+
+We could implement that by repartitioning tags according to the tag value, and then
+storing tags in their own separate store. That way, all of the tag entries for
+the tag that means "This NodeRun is scheduled but not started" end up on the same
+node.
+
+However, this implementation causes a problem: there will be hot partitions. For
+high-traffic TaskDef's, there will be too many tag updates to be kept up with on
+that processor.
+
+What's the other option? We store tags locally on the same partition that their
+parent object lives. But now we need a way to know which partition has how many tags
+of each type. What do I mean by this?
+
+Well, let's say we're looking for SCHEDULED NodeRun's, and there's 2 instances, each
+with one partition (for simplicity). Instance 1 has partition 1, Instance 2 has
+partition 2. Consider the following scenario:
+- There's only one SCHEDULED NodeRun, and it lives on Instance 2.
+- Instance 1 receives a PollTaskRequest.
+- Instance 1 sees that it has no SCHEDULED NodeRun's.
+- However, if Instance 1 could know that Partition 2 has 1 scheduled NodeRun, then
+  it could just refer the request to Instance 2, and we'd get what we need.
+
+The way we broadcast that information to all instances is through a Global State
+Store.
+
+The entries in that state store are simple:
+KEY: f"{counter name}_{partition_number}"
+VAL: Number of objects that satisfy that counter on the partition number.
+
+Naively, we might want to send an update to the global state store every time a
+counter changes. However, that would again mean that every tag gets processed on
+a single node (actually, each tag gets processed on all nodes, which is worse).
+
+So what we do is suppress the updates and have a punctuator send them on a periodic
+interval (eg. probably going to start with 100ms).
+
+
+Lastly, a note on what the TagsCachePb is:
+When we update or delete a GETable object, the tags for that object may change.
+Some may be deleted (eg. when a NodeRun's status changes to RUNNING, we want to
+remove the "SCHEDULED" tag), and some may be added (eg. add the "RUNNING" tag).
+
+We need the TagsCachePb to keep track of the tags associated with the Object *before*
+the update, so that we can delete any tags that are no longer valid.
+*/
+
+// TODO: Some of the stuff in these proto's can be inferred from the store keys.
+// I left them in the proto's because it's easier to understand and to implement,
+// but we may want to optimize that for performance later on.
+
+
+
+// This section defines the "Command"
+message WfRunRequestPb {
+    optional string wf_run_id = 1;
+    string wf_spec_id = 2;
+    map<string, VariableValuePb> variables = 3;
+}
+
+message TaskClaimEventPb {
+    string wf_run_id = 1;
+    int32 thread_run_number = 2;
+    int32 task_run_number = 3;
+    int32 task_run_position = 4;
+    google.protobuf.Timestamp time = 5;
+}
+
+message ExternalEventNodeTimeoutPb {
+    string wf_run_id = 1;
+    int32 thread_run_number = 2;
+    int32 node_run_position = 3;
+    google.protobuf.Timestamp time = 4;
+}
+
+// This section contains commands that originate from the gRPC api. Perhaps they
+// could also go in service.proto...?
+
+message SleepNodeMaturedPb {
+    string wf_run_id = 1;
+    int32 thread_run_number = 2;
+    int32 node_run_position = 3;
+}
+
+// This is the schema of everything that flows through the Central Command topic.
+message CommandPb {
+    google.protobuf.Timestamp time = 1;
+    optional string command_id = 2;
+    oneof command {
+        TaskResultEventPb task_result_event = 3;
+        TaskClaimEventPb task_claim_event = 4;
+        PutWfSpecPb put_wf_spec = 6;
+        PutTaskDefPb put_task_def = 7;
+        PutExternalEventDefPb put_external_event_def = 8;
+        RunWfPb run_wf = 9;
+        PutExternalEventPb put_external_event = 10;
+        StopWfRunPb stop_wf_run = 11;
+        ResumeWfRunPb resume_wf_run = 12;
+        SleepNodeMaturedPb sleep_node_matured = 13;
+        DeleteWfRunPb delete_wf_run = 14;
+        DeleteWfSpecPb delete_wf_spec = 15;
+        DeleteTaskDefPb delete_task_def = 16;
+        DeleteExternalEventDefPb delete_external_event_def = 17;
+        ExternalEventNodeTimeoutPb external_event_timeout = 18;
+    }
+}
+
+
+// This is for LHTimers.
+
+message LHTimerPb {
+    google.protobuf.Timestamp maturation_time = 1;
+    string key = 2;
+    string topic = 3;
+    bytes payload = 4;
+}

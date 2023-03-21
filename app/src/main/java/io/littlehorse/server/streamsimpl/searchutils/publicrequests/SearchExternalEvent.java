@@ -1,11 +1,11 @@
 package io.littlehorse.server.streamsimpl.searchutils.publicrequests;
 
 import com.google.protobuf.MessageOrBuilder;
+import io.littlehorse.common.proto.BookmarkPb;
+import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.LHInternalSearchPb.PrefixCase;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.jlib.common.proto.BookmarkPb;
-import io.littlehorse.jlib.common.proto.GETableClassEnumPb;
-import io.littlehorse.jlib.common.proto.LHInternalSearchPb.PrefixCase;
 import io.littlehorse.jlib.common.proto.SearchExternalEventPb;
 import io.littlehorse.jlib.common.proto.SearchExternalEventPb.ExtEvtCriteriaCase;
 import io.littlehorse.jlib.common.proto.SearchExternalEventPbOrBuilder;

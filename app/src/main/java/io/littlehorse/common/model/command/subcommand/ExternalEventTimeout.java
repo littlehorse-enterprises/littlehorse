@@ -6,9 +6,9 @@ import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.proto.ExternalEventNodeTimeoutPb;
+import io.littlehorse.common.proto.ExternalEventNodeTimeoutPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.jlib.common.proto.ExternalEventNodeTimeoutPb;
-import io.littlehorse.jlib.common.proto.ExternalEventNodeTimeoutPbOrBuilder;
 import java.util.Date;
 import org.apache.log4j.Logger;
 

@@ -2,8 +2,8 @@ package io.littlehorse.server.streamsimpl.storeinternals.index;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.Storeable;
-import io.littlehorse.jlib.common.proto.DiscreteTagLocalCounterPb;
-import io.littlehorse.jlib.common.proto.DiscreteTagLocalCounterPbOrBuilder;
+import io.littlehorse.common.proto.DiscreteTagLocalCounterPb;
+import io.littlehorse.common.proto.DiscreteTagLocalCounterPbOrBuilder;
 
 public class DiscreteTagLocalCounter extends Storeable<DiscreteTagLocalCounterPb> {
 

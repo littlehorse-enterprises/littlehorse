@@ -18,10 +18,10 @@ import io.littlehorse.common.model.command.subcommand.SleepNodeMatured;
 import io.littlehorse.common.model.command.subcommand.StopWfRun;
 import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
+import io.littlehorse.common.proto.CommandPb;
+import io.littlehorse.common.proto.CommandPb.CommandCase;
+import io.littlehorse.common.proto.CommandPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.jlib.common.proto.CommandPb;
-import io.littlehorse.jlib.common.proto.CommandPb.CommandCase;
-import io.littlehorse.jlib.common.proto.CommandPbOrBuilder;
 import io.littlehorse.server.streamsimpl.coreprocessors.KafkaStreamsLHDAOImpl;
 import java.util.Date;
 

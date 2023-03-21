@@ -5,8 +5,8 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.proto.LHTimerPb;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.jlib.common.proto.LHTimerPb;
 import java.util.Date;
 
 public class LHTimer extends LHSerializable<LHTimerPb> {

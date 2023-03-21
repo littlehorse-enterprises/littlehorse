@@ -10,11 +10,11 @@ import io.littlehorse.common.model.observabilityevent.ObservabilityEvent;
 import io.littlehorse.common.model.observabilityevent.events.TaskStartOe;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.proto.TaskClaimEventPb;
+import io.littlehorse.common.proto.TaskClaimEventPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.LHResponseCodePb;
 import io.littlehorse.jlib.common.proto.LHStatusPb;
-import io.littlehorse.jlib.common.proto.TaskClaimEventPb;
-import io.littlehorse.jlib.common.proto.TaskClaimEventPbOrBuilder;
 import java.util.Date;
 
 public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {

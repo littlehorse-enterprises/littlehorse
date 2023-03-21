@@ -2,8 +2,8 @@ package io.littlehorse.server.streamsimpl.storeinternals.index;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.jlib.common.proto.AttributePb;
-import io.littlehorse.jlib.common.proto.AttributePbOrBuilder;
+import io.littlehorse.common.proto.AttributePb;
+import io.littlehorse.common.proto.AttributePbOrBuilder;
 
 public class Attribute extends LHSerializable<AttributePb> {
 

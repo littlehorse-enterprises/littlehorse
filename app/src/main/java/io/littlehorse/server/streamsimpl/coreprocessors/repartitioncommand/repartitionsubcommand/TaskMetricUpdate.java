@@ -3,11 +3,11 @@ package io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repa
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.metrics.TaskDefMetrics;
+import io.littlehorse.common.proto.TaskMetricUpdatePb;
+import io.littlehorse.common.proto.TaskMetricUpdatePbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.LHLibUtil;
 import io.littlehorse.jlib.common.proto.MetricsWindowLengthPb;
-import io.littlehorse.jlib.common.proto.TaskMetricUpdatePb;
-import io.littlehorse.jlib.common.proto.TaskMetricUpdatePbOrBuilder;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
 import java.util.ArrayList;

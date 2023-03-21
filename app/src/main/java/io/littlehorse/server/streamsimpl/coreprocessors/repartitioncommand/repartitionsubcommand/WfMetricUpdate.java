@@ -3,11 +3,11 @@ package io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repa
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.metrics.WfSpecMetrics;
+import io.littlehorse.common.proto.WfMetricUpdatePb;
+import io.littlehorse.common.proto.WfMetricUpdatePbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.LHLibUtil;
 import io.littlehorse.jlib.common.proto.MetricsWindowLengthPb;
-import io.littlehorse.jlib.common.proto.WfMetricUpdatePb;
-import io.littlehorse.jlib.common.proto.WfMetricUpdatePbOrBuilder;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
 import java.util.ArrayList;

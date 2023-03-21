@@ -1,8 +1,8 @@
 package io.littlehorse.server.streamsimpl.util;
 
 import io.grpc.stub.StreamObserver;
+import io.littlehorse.common.proto.WaitForCommandReplyPb;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.jlib.common.proto.WaitForCommandReplyPb;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;

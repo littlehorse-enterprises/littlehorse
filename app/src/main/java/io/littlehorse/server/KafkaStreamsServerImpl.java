@@ -36,10 +36,13 @@ import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.proto.CentralStoreQueryReplyPb;
+import io.littlehorse.common.proto.CommandPb.CommandCase;
+import io.littlehorse.common.proto.InternalSearchReplyPb;
+import io.littlehorse.common.proto.StoreQueryStatusPb;
+import io.littlehorse.common.proto.WaitForCommandReplyPb;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.jlib.common.proto.CentralStoreQueryReplyPb;
-import io.littlehorse.jlib.common.proto.CommandPb.CommandCase;
 import io.littlehorse.jlib.common.proto.DeleteExternalEventDefPb;
 import io.littlehorse.jlib.common.proto.DeleteObjectReplyPb;
 import io.littlehorse.jlib.common.proto.DeleteTaskDefPb;
@@ -49,8 +52,6 @@ import io.littlehorse.jlib.common.proto.ExternalEventIdPb;
 import io.littlehorse.jlib.common.proto.GetExternalEventDefPb;
 import io.littlehorse.jlib.common.proto.GetExternalEventDefReplyPb;
 import io.littlehorse.jlib.common.proto.GetExternalEventReplyPb;
-import io.littlehorse.jlib.common.proto.GetMetricsReplyPb;
-import io.littlehorse.jlib.common.proto.GetMetricsRequestPb;
 import io.littlehorse.jlib.common.proto.GetNodeRunReplyPb;
 import io.littlehorse.jlib.common.proto.GetTaskDefPb;
 import io.littlehorse.jlib.common.proto.GetTaskDefReplyPb;
@@ -60,7 +61,6 @@ import io.littlehorse.jlib.common.proto.GetWfSpecPb;
 import io.littlehorse.jlib.common.proto.GetWfSpecReplyPb;
 import io.littlehorse.jlib.common.proto.HealthCheckPb;
 import io.littlehorse.jlib.common.proto.HealthCheckReplyPb;
-import io.littlehorse.jlib.common.proto.InternalSearchReplyPb;
 import io.littlehorse.jlib.common.proto.LHHealthResultPb;
 import io.littlehorse.jlib.common.proto.LHPublicApiGrpc.LHPublicApiImplBase;
 import io.littlehorse.jlib.common.proto.LHResponseCodePb;
@@ -98,12 +98,10 @@ import io.littlehorse.jlib.common.proto.SearchWfSpecPb;
 import io.littlehorse.jlib.common.proto.SearchWfSpecReplyPb;
 import io.littlehorse.jlib.common.proto.StopWfRunPb;
 import io.littlehorse.jlib.common.proto.StopWfRunReplyPb;
-import io.littlehorse.jlib.common.proto.StoreQueryStatusPb;
 import io.littlehorse.jlib.common.proto.TaskDefMetricsQueryPb;
 import io.littlehorse.jlib.common.proto.TaskDefMetricsReplyPb;
 import io.littlehorse.jlib.common.proto.TaskResultEventPb;
 import io.littlehorse.jlib.common.proto.VariableIdPb;
-import io.littlehorse.jlib.common.proto.WaitForCommandReplyPb;
 import io.littlehorse.jlib.common.proto.WfRunIdPb;
 import io.littlehorse.jlib.common.proto.WfSpecMetricsQueryPb;
 import io.littlehorse.jlib.common.proto.WfSpecMetricsReplyPb;
@@ -134,13 +132,10 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
-import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import org.apache.kafka.common.Metric;
-import org.apache.kafka.common.MetricName;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KafkaStreams.State;
 import org.apache.log4j.Logger;
@@ -756,26 +751,6 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             default:
                 throw new RuntimeException("Unknown health status");
         }
-    }
-
-    @Override
-    public void getMetrics(
-        GetMetricsRequestPb req,
-        StreamObserver<GetMetricsReplyPb> ctx
-    ) {
-        Map<MetricName, ? extends Metric> metrics = coreStreams.metrics();
-
-        StringBuilder out = new StringBuilder();
-        for (Map.Entry<MetricName, ? extends Metric> entry : metrics.entrySet()) {
-            out.append(entry.getKey().group() + ".");
-            out.append(entry.getKey().name());
-            out.append(": ");
-            out.append(entry.getValue().metricValue().toString());
-            out.append("\n");
-        }
-
-        ctx.onNext(GetMetricsReplyPb.newBuilder().setMetrics(out.toString()).build());
-        ctx.onCompleted();
     }
 
     public void returnTaskToClient(

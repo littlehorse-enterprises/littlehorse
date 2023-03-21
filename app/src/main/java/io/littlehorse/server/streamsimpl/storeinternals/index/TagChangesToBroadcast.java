@@ -2,9 +2,9 @@ package io.littlehorse.server.streamsimpl.storeinternals.index;
 
 import com.google.protobuf.MessageOrBuilder;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.jlib.common.proto.DiscreteTagLocalCounterPb;
-import io.littlehorse.jlib.common.proto.TagChangesToBroadcastPb;
-import io.littlehorse.jlib.common.proto.TagChangesToBroadcastPbOrBuilder;
+import io.littlehorse.common.proto.DiscreteTagLocalCounterPb;
+import io.littlehorse.common.proto.TagChangesToBroadcastPb;
+import io.littlehorse.common.proto.TagChangesToBroadcastPbOrBuilder;
 import java.util.HashMap;
 import java.util.Map;
 

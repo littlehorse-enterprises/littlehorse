@@ -3,9 +3,9 @@ package io.littlehorse.server.streamsimpl.searchutils;
 import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.proto.BookmarkPb;
+import io.littlehorse.common.proto.GETableClassEnumPb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
-import io.littlehorse.jlib.common.proto.BookmarkPb;
-import io.littlehorse.jlib.common.proto.GETableClassEnumPb;
 
 public abstract class LHPublicSearch<
     T extends Message, // This is the actual incoming search proto
