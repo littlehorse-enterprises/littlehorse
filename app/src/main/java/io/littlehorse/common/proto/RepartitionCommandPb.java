@@ -4,11 +4,11 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf type {@code lh_proto.RepartitionCommandPb}
+ * Protobuf type {@code littlehorse.RepartitionCommandPb}
  */
 public final class RepartitionCommandPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.RepartitionCommandPb)
+    // @@protoc_insertion_point(message_implements:littlehorse.RepartitionCommandPb)
     RepartitionCommandPbOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use RepartitionCommandPb.newBuilder() to construct.
@@ -118,13 +118,13 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_RepartitionCommandPb_descriptor;
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_RepartitionCommandPb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_RepartitionCommandPb_fieldAccessorTable
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_RepartitionCommandPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.common.proto.RepartitionCommandPb.class, io.littlehorse.common.proto.RepartitionCommandPb.Builder.class);
   }
@@ -245,7 +245,7 @@ private static final long serialVersionUID = 0L;
 
   public static final int TASK_METRIC_UPDATE_FIELD_NUMBER = 3;
   /**
-   * <code>.lh_proto.TaskMetricUpdatePb task_metric_update = 3;</code>
+   * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
    * @return Whether the taskMetricUpdate field is set.
    */
   @java.lang.Override
@@ -253,7 +253,7 @@ private static final long serialVersionUID = 0L;
     return repartitionCommandCase_ == 3;
   }
   /**
-   * <code>.lh_proto.TaskMetricUpdatePb task_metric_update = 3;</code>
+   * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
    * @return The taskMetricUpdate.
    */
   @java.lang.Override
@@ -264,7 +264,7 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.TaskMetricUpdatePb.getDefaultInstance();
   }
   /**
-   * <code>.lh_proto.TaskMetricUpdatePb task_metric_update = 3;</code>
+   * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
    */
   @java.lang.Override
   public io.littlehorse.common.proto.TaskMetricUpdatePbOrBuilder getTaskMetricUpdateOrBuilder() {
@@ -276,7 +276,7 @@ private static final long serialVersionUID = 0L;
 
   public static final int WF_METRIC_UPDATE_FIELD_NUMBER = 4;
   /**
-   * <code>.lh_proto.WfMetricUpdatePb wf_metric_update = 4;</code>
+   * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
    * @return Whether the wfMetricUpdate field is set.
    */
   @java.lang.Override
@@ -284,7 +284,7 @@ private static final long serialVersionUID = 0L;
     return repartitionCommandCase_ == 4;
   }
   /**
-   * <code>.lh_proto.WfMetricUpdatePb wf_metric_update = 4;</code>
+   * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
    * @return The wfMetricUpdate.
    */
   @java.lang.Override
@@ -295,7 +295,7 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.WfMetricUpdatePb.getDefaultInstance();
   }
   /**
-   * <code>.lh_proto.WfMetricUpdatePb wf_metric_update = 4;</code>
+   * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
    */
   @java.lang.Override
   public io.littlehorse.common.proto.WfMetricUpdatePbOrBuilder getWfMetricUpdateOrBuilder() {
@@ -520,21 +520,21 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.RepartitionCommandPb}
+   * Protobuf type {@code littlehorse.RepartitionCommandPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.RepartitionCommandPb)
+      // @@protoc_insertion_point(builder_implements:littlehorse.RepartitionCommandPb)
       io.littlehorse.common.proto.RepartitionCommandPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_RepartitionCommandPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_RepartitionCommandPb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_RepartitionCommandPb_fieldAccessorTable
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_RepartitionCommandPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               io.littlehorse.common.proto.RepartitionCommandPb.class, io.littlehorse.common.proto.RepartitionCommandPb.Builder.class);
     }
@@ -573,7 +573,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_RepartitionCommandPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_RepartitionCommandPb_descriptor;
     }
 
     @java.lang.Override
@@ -939,7 +939,7 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.TaskMetricUpdatePb, io.littlehorse.common.proto.TaskMetricUpdatePb.Builder, io.littlehorse.common.proto.TaskMetricUpdatePbOrBuilder> taskMetricUpdateBuilder_;
     /**
-     * <code>.lh_proto.TaskMetricUpdatePb task_metric_update = 3;</code>
+     * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
      * @return Whether the taskMetricUpdate field is set.
      */
     @java.lang.Override
@@ -947,7 +947,7 @@ private static final long serialVersionUID = 0L;
       return repartitionCommandCase_ == 3;
     }
     /**
-     * <code>.lh_proto.TaskMetricUpdatePb task_metric_update = 3;</code>
+     * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
      * @return The taskMetricUpdate.
      */
     @java.lang.Override
@@ -965,7 +965,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.lh_proto.TaskMetricUpdatePb task_metric_update = 3;</code>
+     * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
      */
     public Builder setTaskMetricUpdate(io.littlehorse.common.proto.TaskMetricUpdatePb value) {
       if (taskMetricUpdateBuilder_ == null) {
@@ -981,7 +981,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.TaskMetricUpdatePb task_metric_update = 3;</code>
+     * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
      */
     public Builder setTaskMetricUpdate(
         io.littlehorse.common.proto.TaskMetricUpdatePb.Builder builderForValue) {
@@ -995,7 +995,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.TaskMetricUpdatePb task_metric_update = 3;</code>
+     * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
      */
     public Builder mergeTaskMetricUpdate(io.littlehorse.common.proto.TaskMetricUpdatePb value) {
       if (taskMetricUpdateBuilder_ == null) {
@@ -1017,7 +1017,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.TaskMetricUpdatePb task_metric_update = 3;</code>
+     * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
      */
     public Builder clearTaskMetricUpdate() {
       if (taskMetricUpdateBuilder_ == null) {
@@ -1036,13 +1036,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.TaskMetricUpdatePb task_metric_update = 3;</code>
+     * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
      */
     public io.littlehorse.common.proto.TaskMetricUpdatePb.Builder getTaskMetricUpdateBuilder() {
       return getTaskMetricUpdateFieldBuilder().getBuilder();
     }
     /**
-     * <code>.lh_proto.TaskMetricUpdatePb task_metric_update = 3;</code>
+     * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
      */
     @java.lang.Override
     public io.littlehorse.common.proto.TaskMetricUpdatePbOrBuilder getTaskMetricUpdateOrBuilder() {
@@ -1056,7 +1056,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.lh_proto.TaskMetricUpdatePb task_metric_update = 3;</code>
+     * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.TaskMetricUpdatePb, io.littlehorse.common.proto.TaskMetricUpdatePb.Builder, io.littlehorse.common.proto.TaskMetricUpdatePbOrBuilder> 
@@ -1080,7 +1080,7 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.WfMetricUpdatePb, io.littlehorse.common.proto.WfMetricUpdatePb.Builder, io.littlehorse.common.proto.WfMetricUpdatePbOrBuilder> wfMetricUpdateBuilder_;
     /**
-     * <code>.lh_proto.WfMetricUpdatePb wf_metric_update = 4;</code>
+     * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
      * @return Whether the wfMetricUpdate field is set.
      */
     @java.lang.Override
@@ -1088,7 +1088,7 @@ private static final long serialVersionUID = 0L;
       return repartitionCommandCase_ == 4;
     }
     /**
-     * <code>.lh_proto.WfMetricUpdatePb wf_metric_update = 4;</code>
+     * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
      * @return The wfMetricUpdate.
      */
     @java.lang.Override
@@ -1106,7 +1106,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.lh_proto.WfMetricUpdatePb wf_metric_update = 4;</code>
+     * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
      */
     public Builder setWfMetricUpdate(io.littlehorse.common.proto.WfMetricUpdatePb value) {
       if (wfMetricUpdateBuilder_ == null) {
@@ -1122,7 +1122,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.WfMetricUpdatePb wf_metric_update = 4;</code>
+     * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
      */
     public Builder setWfMetricUpdate(
         io.littlehorse.common.proto.WfMetricUpdatePb.Builder builderForValue) {
@@ -1136,7 +1136,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.WfMetricUpdatePb wf_metric_update = 4;</code>
+     * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
      */
     public Builder mergeWfMetricUpdate(io.littlehorse.common.proto.WfMetricUpdatePb value) {
       if (wfMetricUpdateBuilder_ == null) {
@@ -1158,7 +1158,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.WfMetricUpdatePb wf_metric_update = 4;</code>
+     * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
      */
     public Builder clearWfMetricUpdate() {
       if (wfMetricUpdateBuilder_ == null) {
@@ -1177,13 +1177,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.WfMetricUpdatePb wf_metric_update = 4;</code>
+     * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
      */
     public io.littlehorse.common.proto.WfMetricUpdatePb.Builder getWfMetricUpdateBuilder() {
       return getWfMetricUpdateFieldBuilder().getBuilder();
     }
     /**
-     * <code>.lh_proto.WfMetricUpdatePb wf_metric_update = 4;</code>
+     * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
      */
     @java.lang.Override
     public io.littlehorse.common.proto.WfMetricUpdatePbOrBuilder getWfMetricUpdateOrBuilder() {
@@ -1197,7 +1197,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.lh_proto.WfMetricUpdatePb wf_metric_update = 4;</code>
+     * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.WfMetricUpdatePb, io.littlehorse.common.proto.WfMetricUpdatePb.Builder, io.littlehorse.common.proto.WfMetricUpdatePbOrBuilder> 
@@ -1230,10 +1230,10 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.RepartitionCommandPb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.RepartitionCommandPb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.RepartitionCommandPb)
+  // @@protoc_insertion_point(class_scope:littlehorse.RepartitionCommandPb)
   private static final io.littlehorse.common.proto.RepartitionCommandPb DEFAULT_INSTANCE;
   static {
     DEFAULT_INSTANCE = new io.littlehorse.common.proto.RepartitionCommandPb();

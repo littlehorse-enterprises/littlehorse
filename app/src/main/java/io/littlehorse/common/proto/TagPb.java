@@ -4,11 +4,11 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf type {@code lh_proto.TagPb}
+ * Protobuf type {@code littlehorse.TagPb}
  */
 public final class TagPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.TagPb)
+    // @@protoc_insertion_point(message_implements:littlehorse.TagPb)
     TagPbOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use TagPb.newBuilder() to construct.
@@ -117,13 +117,13 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_TagPb_descriptor;
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_TagPb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_TagPb_fieldAccessorTable
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_TagPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.common.proto.TagPb.class, io.littlehorse.common.proto.TagPb.Builder.class);
   }
@@ -135,7 +135,7 @@ private static final long serialVersionUID = 0L;
    * The following info is also stored in the key of the Tag in the store.
    * </pre>
    *
-   * <code>.lh_proto.GETableClassEnumPb object_type = 1;</code>
+   * <code>.littlehorse.GETableClassEnumPb object_type = 1;</code>
    * @return The enum numeric value on the wire for objectType.
    */
   @java.lang.Override public int getObjectTypeValue() {
@@ -146,7 +146,7 @@ private static final long serialVersionUID = 0L;
    * The following info is also stored in the key of the Tag in the store.
    * </pre>
    *
-   * <code>.lh_proto.GETableClassEnumPb object_type = 1;</code>
+   * <code>.littlehorse.GETableClassEnumPb object_type = 1;</code>
    * @return The objectType.
    */
   @java.lang.Override public io.littlehorse.common.proto.GETableClassEnumPb getObjectType() {
@@ -158,14 +158,14 @@ private static final long serialVersionUID = 0L;
   public static final int ATTRIBUTES_FIELD_NUMBER = 2;
   private java.util.List<io.littlehorse.common.proto.AttributePb> attributes_;
   /**
-   * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+   * <code>repeated .littlehorse.AttributePb attributes = 2;</code>
    */
   @java.lang.Override
   public java.util.List<io.littlehorse.common.proto.AttributePb> getAttributesList() {
     return attributes_;
   }
   /**
-   * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+   * <code>repeated .littlehorse.AttributePb attributes = 2;</code>
    */
   @java.lang.Override
   public java.util.List<? extends io.littlehorse.common.proto.AttributePbOrBuilder> 
@@ -173,21 +173,21 @@ private static final long serialVersionUID = 0L;
     return attributes_;
   }
   /**
-   * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+   * <code>repeated .littlehorse.AttributePb attributes = 2;</code>
    */
   @java.lang.Override
   public int getAttributesCount() {
     return attributes_.size();
   }
   /**
-   * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+   * <code>repeated .littlehorse.AttributePb attributes = 2;</code>
    */
   @java.lang.Override
   public io.littlehorse.common.proto.AttributePb getAttributes(int index) {
     return attributes_.get(index);
   }
   /**
-   * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+   * <code>repeated .littlehorse.AttributePb attributes = 2;</code>
    */
   @java.lang.Override
   public io.littlehorse.common.proto.AttributePbOrBuilder getAttributesOrBuilder(
@@ -266,7 +266,7 @@ private static final long serialVersionUID = 0L;
    * The following is not stored in the key.
    * </pre>
    *
-   * <code>.lh_proto.TagStorageTypePb tag_type = 5;</code>
+   * <code>.littlehorse.TagStorageTypePb tag_type = 5;</code>
    * @return The enum numeric value on the wire for tagType.
    */
   @java.lang.Override public int getTagTypeValue() {
@@ -277,7 +277,7 @@ private static final long serialVersionUID = 0L;
    * The following is not stored in the key.
    * </pre>
    *
-   * <code>.lh_proto.TagStorageTypePb tag_type = 5;</code>
+   * <code>.littlehorse.TagStorageTypePb tag_type = 5;</code>
    * @return The tagType.
    */
   @java.lang.Override public io.littlehorse.common.proto.TagStorageTypePb getTagType() {
@@ -490,21 +490,21 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.TagPb}
+   * Protobuf type {@code littlehorse.TagPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.TagPb)
+      // @@protoc_insertion_point(builder_implements:littlehorse.TagPb)
       io.littlehorse.common.proto.TagPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_TagPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_TagPb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_TagPb_fieldAccessorTable
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_TagPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               io.littlehorse.common.proto.TagPb.class, io.littlehorse.common.proto.TagPb.Builder.class);
     }
@@ -552,7 +552,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_TagPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_TagPb_descriptor;
     }
 
     @java.lang.Override
@@ -713,7 +713,7 @@ private static final long serialVersionUID = 0L;
      * The following info is also stored in the key of the Tag in the store.
      * </pre>
      *
-     * <code>.lh_proto.GETableClassEnumPb object_type = 1;</code>
+     * <code>.littlehorse.GETableClassEnumPb object_type = 1;</code>
      * @return The enum numeric value on the wire for objectType.
      */
     @java.lang.Override public int getObjectTypeValue() {
@@ -724,7 +724,7 @@ private static final long serialVersionUID = 0L;
      * The following info is also stored in the key of the Tag in the store.
      * </pre>
      *
-     * <code>.lh_proto.GETableClassEnumPb object_type = 1;</code>
+     * <code>.littlehorse.GETableClassEnumPb object_type = 1;</code>
      * @param value The enum numeric value on the wire for objectType to set.
      * @return This builder for chaining.
      */
@@ -739,7 +739,7 @@ private static final long serialVersionUID = 0L;
      * The following info is also stored in the key of the Tag in the store.
      * </pre>
      *
-     * <code>.lh_proto.GETableClassEnumPb object_type = 1;</code>
+     * <code>.littlehorse.GETableClassEnumPb object_type = 1;</code>
      * @return The objectType.
      */
     @java.lang.Override
@@ -753,7 +753,7 @@ private static final long serialVersionUID = 0L;
      * The following info is also stored in the key of the Tag in the store.
      * </pre>
      *
-     * <code>.lh_proto.GETableClassEnumPb object_type = 1;</code>
+     * <code>.littlehorse.GETableClassEnumPb object_type = 1;</code>
      * @param value The objectType to set.
      * @return This builder for chaining.
      */
@@ -771,7 +771,7 @@ private static final long serialVersionUID = 0L;
      * The following info is also stored in the key of the Tag in the store.
      * </pre>
      *
-     * <code>.lh_proto.GETableClassEnumPb object_type = 1;</code>
+     * <code>.littlehorse.GETableClassEnumPb object_type = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearObjectType() {
@@ -794,7 +794,7 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.common.proto.AttributePb, io.littlehorse.common.proto.AttributePb.Builder, io.littlehorse.common.proto.AttributePbOrBuilder> attributesBuilder_;
 
     /**
-     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     * <code>repeated .littlehorse.AttributePb attributes = 2;</code>
      */
     public java.util.List<io.littlehorse.common.proto.AttributePb> getAttributesList() {
       if (attributesBuilder_ == null) {
@@ -804,7 +804,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     * <code>repeated .littlehorse.AttributePb attributes = 2;</code>
      */
     public int getAttributesCount() {
       if (attributesBuilder_ == null) {
@@ -814,7 +814,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     * <code>repeated .littlehorse.AttributePb attributes = 2;</code>
      */
     public io.littlehorse.common.proto.AttributePb getAttributes(int index) {
       if (attributesBuilder_ == null) {
@@ -824,7 +824,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     * <code>repeated .littlehorse.AttributePb attributes = 2;</code>
      */
     public Builder setAttributes(
         int index, io.littlehorse.common.proto.AttributePb value) {
@@ -841,7 +841,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     * <code>repeated .littlehorse.AttributePb attributes = 2;</code>
      */
     public Builder setAttributes(
         int index, io.littlehorse.common.proto.AttributePb.Builder builderForValue) {
@@ -855,7 +855,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     * <code>repeated .littlehorse.AttributePb attributes = 2;</code>
      */
     public Builder addAttributes(io.littlehorse.common.proto.AttributePb value) {
       if (attributesBuilder_ == null) {
@@ -871,7 +871,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     * <code>repeated .littlehorse.AttributePb attributes = 2;</code>
      */
     public Builder addAttributes(
         int index, io.littlehorse.common.proto.AttributePb value) {
@@ -888,7 +888,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     * <code>repeated .littlehorse.AttributePb attributes = 2;</code>
      */
     public Builder addAttributes(
         io.littlehorse.common.proto.AttributePb.Builder builderForValue) {
@@ -902,7 +902,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     * <code>repeated .littlehorse.AttributePb attributes = 2;</code>
      */
     public Builder addAttributes(
         int index, io.littlehorse.common.proto.AttributePb.Builder builderForValue) {
@@ -916,7 +916,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     * <code>repeated .littlehorse.AttributePb attributes = 2;</code>
      */
     public Builder addAllAttributes(
         java.lang.Iterable<? extends io.littlehorse.common.proto.AttributePb> values) {
@@ -931,7 +931,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     * <code>repeated .littlehorse.AttributePb attributes = 2;</code>
      */
     public Builder clearAttributes() {
       if (attributesBuilder_ == null) {
@@ -944,7 +944,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     * <code>repeated .littlehorse.AttributePb attributes = 2;</code>
      */
     public Builder removeAttributes(int index) {
       if (attributesBuilder_ == null) {
@@ -957,14 +957,14 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     * <code>repeated .littlehorse.AttributePb attributes = 2;</code>
      */
     public io.littlehorse.common.proto.AttributePb.Builder getAttributesBuilder(
         int index) {
       return getAttributesFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     * <code>repeated .littlehorse.AttributePb attributes = 2;</code>
      */
     public io.littlehorse.common.proto.AttributePbOrBuilder getAttributesOrBuilder(
         int index) {
@@ -974,7 +974,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     * <code>repeated .littlehorse.AttributePb attributes = 2;</code>
      */
     public java.util.List<? extends io.littlehorse.common.proto.AttributePbOrBuilder> 
          getAttributesOrBuilderList() {
@@ -985,14 +985,14 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     * <code>repeated .littlehorse.AttributePb attributes = 2;</code>
      */
     public io.littlehorse.common.proto.AttributePb.Builder addAttributesBuilder() {
       return getAttributesFieldBuilder().addBuilder(
           io.littlehorse.common.proto.AttributePb.getDefaultInstance());
     }
     /**
-     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     * <code>repeated .littlehorse.AttributePb attributes = 2;</code>
      */
     public io.littlehorse.common.proto.AttributePb.Builder addAttributesBuilder(
         int index) {
@@ -1000,7 +1000,7 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.common.proto.AttributePb.getDefaultInstance());
     }
     /**
-     * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+     * <code>repeated .littlehorse.AttributePb attributes = 2;</code>
      */
     public java.util.List<io.littlehorse.common.proto.AttributePb.Builder> 
          getAttributesBuilderList() {
@@ -1222,7 +1222,7 @@ private static final long serialVersionUID = 0L;
      * The following is not stored in the key.
      * </pre>
      *
-     * <code>.lh_proto.TagStorageTypePb tag_type = 5;</code>
+     * <code>.littlehorse.TagStorageTypePb tag_type = 5;</code>
      * @return The enum numeric value on the wire for tagType.
      */
     @java.lang.Override public int getTagTypeValue() {
@@ -1233,7 +1233,7 @@ private static final long serialVersionUID = 0L;
      * The following is not stored in the key.
      * </pre>
      *
-     * <code>.lh_proto.TagStorageTypePb tag_type = 5;</code>
+     * <code>.littlehorse.TagStorageTypePb tag_type = 5;</code>
      * @param value The enum numeric value on the wire for tagType to set.
      * @return This builder for chaining.
      */
@@ -1248,7 +1248,7 @@ private static final long serialVersionUID = 0L;
      * The following is not stored in the key.
      * </pre>
      *
-     * <code>.lh_proto.TagStorageTypePb tag_type = 5;</code>
+     * <code>.littlehorse.TagStorageTypePb tag_type = 5;</code>
      * @return The tagType.
      */
     @java.lang.Override
@@ -1262,7 +1262,7 @@ private static final long serialVersionUID = 0L;
      * The following is not stored in the key.
      * </pre>
      *
-     * <code>.lh_proto.TagStorageTypePb tag_type = 5;</code>
+     * <code>.littlehorse.TagStorageTypePb tag_type = 5;</code>
      * @param value The tagType to set.
      * @return This builder for chaining.
      */
@@ -1280,7 +1280,7 @@ private static final long serialVersionUID = 0L;
      * The following is not stored in the key.
      * </pre>
      *
-     * <code>.lh_proto.TagStorageTypePb tag_type = 5;</code>
+     * <code>.littlehorse.TagStorageTypePb tag_type = 5;</code>
      * @return This builder for chaining.
      */
     public Builder clearTagType() {
@@ -1302,10 +1302,10 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.TagPb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.TagPb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.TagPb)
+  // @@protoc_insertion_point(class_scope:littlehorse.TagPb)
   private static final io.littlehorse.common.proto.TagPb DEFAULT_INSTANCE;
   static {
     DEFAULT_INSTANCE = new io.littlehorse.common.proto.TagPb();

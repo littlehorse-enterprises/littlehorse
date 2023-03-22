@@ -4,7 +4,7 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf enum {@code lh_proto.TagStorageTypePb}
+ * Protobuf enum {@code littlehorse.TagStorageTypePb}
  */
 public enum TagStorageTypePb
     implements com.google.protobuf.ProtocolMessageEnum {
@@ -126,6 +126,6 @@ public enum TagStorageTypePb
     this.value = value;
   }
 
-  // @@protoc_insertion_point(enum_scope:lh_proto.TagStorageTypePb)
+  // @@protoc_insertion_point(enum_scope:littlehorse.TagStorageTypePb)
 }
 

@@ -4,11 +4,11 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf type {@code lh_proto.BookmarkPb}
+ * Protobuf type {@code littlehorse.BookmarkPb}
  */
 public final class BookmarkPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.BookmarkPb)
+    // @@protoc_insertion_point(message_implements:littlehorse.BookmarkPb)
     BookmarkPbOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use BookmarkPb.newBuilder() to construct.
@@ -108,7 +108,7 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_BookmarkPb_descriptor;
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_BookmarkPb_descriptor;
   }
 
   @SuppressWarnings({"rawtypes"})
@@ -126,7 +126,7 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_BookmarkPb_fieldAccessorTable
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_BookmarkPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.common.proto.BookmarkPb.class, io.littlehorse.common.proto.BookmarkPb.Builder.class);
   }
@@ -137,7 +137,7 @@ private static final long serialVersionUID = 0L;
         java.lang.Integer, io.littlehorse.common.proto.PartitionBookmarkPb> defaultEntry =
             com.google.protobuf.MapEntry
             .<java.lang.Integer, io.littlehorse.common.proto.PartitionBookmarkPb>newDefaultInstance(
-                io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_BookmarkPb_InProgressPartitionsEntry_descriptor, 
+                io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_BookmarkPb_InProgressPartitionsEntry_descriptor, 
                 com.google.protobuf.WireFormat.FieldType.INT32,
                 0,
                 com.google.protobuf.WireFormat.FieldType.MESSAGE,
@@ -158,7 +158,7 @@ private static final long serialVersionUID = 0L;
     return internalGetInProgressPartitions().getMap().size();
   }
   /**
-   * <code>map&lt;int32, .lh_proto.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
+   * <code>map&lt;int32, .littlehorse.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
    */
 
   @java.lang.Override
@@ -176,7 +176,7 @@ private static final long serialVersionUID = 0L;
     return getInProgressPartitionsMap();
   }
   /**
-   * <code>map&lt;int32, .lh_proto.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
+   * <code>map&lt;int32, .littlehorse.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
    */
   @java.lang.Override
 
@@ -184,7 +184,7 @@ private static final long serialVersionUID = 0L;
     return internalGetInProgressPartitions().getMap();
   }
   /**
-   * <code>map&lt;int32, .lh_proto.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
+   * <code>map&lt;int32, .littlehorse.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
    */
   @java.lang.Override
 
@@ -197,7 +197,7 @@ private static final long serialVersionUID = 0L;
     return map.containsKey(key) ? map.get(key) : defaultValue;
   }
   /**
-   * <code>map&lt;int32, .lh_proto.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
+   * <code>map&lt;int32, .littlehorse.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
    */
   @java.lang.Override
 
@@ -435,15 +435,15 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.BookmarkPb}
+   * Protobuf type {@code littlehorse.BookmarkPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.BookmarkPb)
+      // @@protoc_insertion_point(builder_implements:littlehorse.BookmarkPb)
       io.littlehorse.common.proto.BookmarkPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_BookmarkPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_BookmarkPb_descriptor;
     }
 
     @SuppressWarnings({"rawtypes"})
@@ -471,7 +471,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_BookmarkPb_fieldAccessorTable
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_BookmarkPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               io.littlehorse.common.proto.BookmarkPb.class, io.littlehorse.common.proto.BookmarkPb.Builder.class);
     }
@@ -503,7 +503,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_BookmarkPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_BookmarkPb_descriptor;
     }
 
     @java.lang.Override
@@ -648,7 +648,7 @@ private static final long serialVersionUID = 0L;
       return internalGetInProgressPartitions().getMap().size();
     }
     /**
-     * <code>map&lt;int32, .lh_proto.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
+     * <code>map&lt;int32, .littlehorse.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
      */
 
     @java.lang.Override
@@ -666,7 +666,7 @@ private static final long serialVersionUID = 0L;
       return getInProgressPartitionsMap();
     }
     /**
-     * <code>map&lt;int32, .lh_proto.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
+     * <code>map&lt;int32, .littlehorse.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
      */
     @java.lang.Override
 
@@ -674,7 +674,7 @@ private static final long serialVersionUID = 0L;
       return internalGetInProgressPartitions().getMap();
     }
     /**
-     * <code>map&lt;int32, .lh_proto.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
+     * <code>map&lt;int32, .littlehorse.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
      */
     @java.lang.Override
 
@@ -687,7 +687,7 @@ private static final long serialVersionUID = 0L;
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
-     * <code>map&lt;int32, .lh_proto.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
+     * <code>map&lt;int32, .littlehorse.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
      */
     @java.lang.Override
 
@@ -708,7 +708,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>map&lt;int32, .lh_proto.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
+     * <code>map&lt;int32, .littlehorse.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
      */
 
     public Builder removeInProgressPartitions(
@@ -727,7 +727,7 @@ private static final long serialVersionUID = 0L;
       return internalGetMutableInProgressPartitions().getMutableMap();
     }
     /**
-     * <code>map&lt;int32, .lh_proto.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
+     * <code>map&lt;int32, .littlehorse.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
      */
     public Builder putInProgressPartitions(
         int key,
@@ -739,7 +739,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>map&lt;int32, .lh_proto.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
+     * <code>map&lt;int32, .littlehorse.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
      */
 
     public Builder putAllInProgressPartitions(
@@ -840,10 +840,10 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.BookmarkPb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.BookmarkPb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.BookmarkPb)
+  // @@protoc_insertion_point(class_scope:littlehorse.BookmarkPb)
   private static final io.littlehorse.common.proto.BookmarkPb DEFAULT_INSTANCE;
   static {
     DEFAULT_INSTANCE = new io.littlehorse.common.proto.BookmarkPb();

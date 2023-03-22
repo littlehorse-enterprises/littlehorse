@@ -4,11 +4,11 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf type {@code lh_proto.InternalGetAdvertisedHostsReplyPb}
+ * Protobuf type {@code littlehorse.InternalGetAdvertisedHostsReplyPb}
  */
 public final class InternalGetAdvertisedHostsReplyPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.InternalGetAdvertisedHostsReplyPb)
+    // @@protoc_insertion_point(message_implements:littlehorse.InternalGetAdvertisedHostsReplyPb)
     InternalGetAdvertisedHostsReplyPbOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use InternalGetAdvertisedHostsReplyPb.newBuilder() to construct.
@@ -83,7 +83,7 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_InternalGetAdvertisedHostsReplyPb_descriptor;
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalGetAdvertisedHostsReplyPb_descriptor;
   }
 
   @SuppressWarnings({"rawtypes"})
@@ -101,7 +101,7 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_InternalGetAdvertisedHostsReplyPb_fieldAccessorTable
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalGetAdvertisedHostsReplyPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb.class, io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb.Builder.class);
   }
@@ -112,7 +112,7 @@ private static final long serialVersionUID = 0L;
         java.lang.String, io.littlehorse.jlib.common.proto.HostInfoPb> defaultEntry =
             com.google.protobuf.MapEntry
             .<java.lang.String, io.littlehorse.jlib.common.proto.HostInfoPb>newDefaultInstance(
-                io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_InternalGetAdvertisedHostsReplyPb_HostsEntry_descriptor, 
+                io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalGetAdvertisedHostsReplyPb_HostsEntry_descriptor, 
                 com.google.protobuf.WireFormat.FieldType.STRING,
                 "",
                 com.google.protobuf.WireFormat.FieldType.MESSAGE,
@@ -133,7 +133,7 @@ private static final long serialVersionUID = 0L;
     return internalGetHosts().getMap().size();
   }
   /**
-   * <code>map&lt;string, .lh_proto.HostInfoPb&gt; hosts = 1;</code>
+   * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
    */
 
   @java.lang.Override
@@ -151,7 +151,7 @@ private static final long serialVersionUID = 0L;
     return getHostsMap();
   }
   /**
-   * <code>map&lt;string, .lh_proto.HostInfoPb&gt; hosts = 1;</code>
+   * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
    */
   @java.lang.Override
 
@@ -159,7 +159,7 @@ private static final long serialVersionUID = 0L;
     return internalGetHosts().getMap();
   }
   /**
-   * <code>map&lt;string, .lh_proto.HostInfoPb&gt; hosts = 1;</code>
+   * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
    */
   @java.lang.Override
 
@@ -172,7 +172,7 @@ private static final long serialVersionUID = 0L;
     return map.containsKey(key) ? map.get(key) : defaultValue;
   }
   /**
-   * <code>map&lt;string, .lh_proto.HostInfoPb&gt; hosts = 1;</code>
+   * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
    */
   @java.lang.Override
 
@@ -354,15 +354,15 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.InternalGetAdvertisedHostsReplyPb}
+   * Protobuf type {@code littlehorse.InternalGetAdvertisedHostsReplyPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.InternalGetAdvertisedHostsReplyPb)
+      // @@protoc_insertion_point(builder_implements:littlehorse.InternalGetAdvertisedHostsReplyPb)
       io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_InternalGetAdvertisedHostsReplyPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalGetAdvertisedHostsReplyPb_descriptor;
     }
 
     @SuppressWarnings({"rawtypes"})
@@ -390,7 +390,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_InternalGetAdvertisedHostsReplyPb_fieldAccessorTable
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalGetAdvertisedHostsReplyPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb.class, io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb.Builder.class);
     }
@@ -420,7 +420,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_InternalGetAdvertisedHostsReplyPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalGetAdvertisedHostsReplyPb_descriptor;
     }
 
     @java.lang.Override
@@ -550,7 +550,7 @@ private static final long serialVersionUID = 0L;
       return internalGetHosts().getMap().size();
     }
     /**
-     * <code>map&lt;string, .lh_proto.HostInfoPb&gt; hosts = 1;</code>
+     * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
      */
 
     @java.lang.Override
@@ -568,7 +568,7 @@ private static final long serialVersionUID = 0L;
       return getHostsMap();
     }
     /**
-     * <code>map&lt;string, .lh_proto.HostInfoPb&gt; hosts = 1;</code>
+     * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
      */
     @java.lang.Override
 
@@ -576,7 +576,7 @@ private static final long serialVersionUID = 0L;
       return internalGetHosts().getMap();
     }
     /**
-     * <code>map&lt;string, .lh_proto.HostInfoPb&gt; hosts = 1;</code>
+     * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
      */
     @java.lang.Override
 
@@ -589,7 +589,7 @@ private static final long serialVersionUID = 0L;
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
-     * <code>map&lt;string, .lh_proto.HostInfoPb&gt; hosts = 1;</code>
+     * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
      */
     @java.lang.Override
 
@@ -610,7 +610,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>map&lt;string, .lh_proto.HostInfoPb&gt; hosts = 1;</code>
+     * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
      */
 
     public Builder removeHosts(
@@ -629,7 +629,7 @@ private static final long serialVersionUID = 0L;
       return internalGetMutableHosts().getMutableMap();
     }
     /**
-     * <code>map&lt;string, .lh_proto.HostInfoPb&gt; hosts = 1;</code>
+     * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
      */
     public Builder putHosts(
         java.lang.String key,
@@ -641,7 +641,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>map&lt;string, .lh_proto.HostInfoPb&gt; hosts = 1;</code>
+     * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
      */
 
     public Builder putAllHosts(
@@ -663,10 +663,10 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.InternalGetAdvertisedHostsReplyPb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.InternalGetAdvertisedHostsReplyPb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.InternalGetAdvertisedHostsReplyPb)
+  // @@protoc_insertion_point(class_scope:littlehorse.InternalGetAdvertisedHostsReplyPb)
   private static final io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb DEFAULT_INSTANCE;
   static {
     DEFAULT_INSTANCE = new io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb();

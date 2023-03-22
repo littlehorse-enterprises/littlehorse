@@ -4,7 +4,7 @@
 package io.littlehorse.common.proto;
 
 public interface CentralStoreQueryPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.CentralStoreQueryPb)
+    // @@protoc_insertion_point(interface_extends:littlehorse.CentralStoreQueryPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**
@@ -25,17 +25,17 @@ public interface CentralStoreQueryPbOrBuilder extends
   int getSpecificPartition();
 
   /**
-   * <code>.lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
+   * <code>.littlehorse.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
    * @return Whether the query field is set.
    */
   boolean hasQuery();
   /**
-   * <code>.lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
+   * <code>.littlehorse.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
    * @return The query.
    */
   io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb getQuery();
   /**
-   * <code>.lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
+   * <code>.littlehorse.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
    */
   io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPbOrBuilder getQueryOrBuilder();
 

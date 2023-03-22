@@ -4,11 +4,11 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf type {@code lh_proto.WaitForCommandPb}
+ * Protobuf type {@code littlehorse.WaitForCommandPb}
  */
 public final class WaitForCommandPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.WaitForCommandPb)
+    // @@protoc_insertion_point(message_implements:littlehorse.WaitForCommandPb)
     WaitForCommandPbOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use WaitForCommandPb.newBuilder() to construct.
@@ -76,13 +76,13 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_WaitForCommandPb_descriptor;
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_WaitForCommandPb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_WaitForCommandPb_fieldAccessorTable
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_WaitForCommandPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.common.proto.WaitForCommandPb.class, io.littlehorse.common.proto.WaitForCommandPb.Builder.class);
   }
@@ -280,21 +280,21 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.WaitForCommandPb}
+   * Protobuf type {@code littlehorse.WaitForCommandPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.WaitForCommandPb)
+      // @@protoc_insertion_point(builder_implements:littlehorse.WaitForCommandPb)
       io.littlehorse.common.proto.WaitForCommandPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_WaitForCommandPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_WaitForCommandPb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_WaitForCommandPb_fieldAccessorTable
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_WaitForCommandPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               io.littlehorse.common.proto.WaitForCommandPb.class, io.littlehorse.common.proto.WaitForCommandPb.Builder.class);
     }
@@ -325,7 +325,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_WaitForCommandPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_WaitForCommandPb_descriptor;
     }
 
     @java.lang.Override
@@ -515,10 +515,10 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.WaitForCommandPb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.WaitForCommandPb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.WaitForCommandPb)
+  // @@protoc_insertion_point(class_scope:littlehorse.WaitForCommandPb)
   private static final io.littlehorse.common.proto.WaitForCommandPb DEFAULT_INSTANCE;
   static {
     DEFAULT_INSTANCE = new io.littlehorse.common.proto.WaitForCommandPb();

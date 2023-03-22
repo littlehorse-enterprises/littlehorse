@@ -4,11 +4,11 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf type {@code lh_proto.SleepNodeMaturedPb}
+ * Protobuf type {@code littlehorse.SleepNodeMaturedPb}
  */
 public final class SleepNodeMaturedPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.SleepNodeMaturedPb)
+    // @@protoc_insertion_point(message_implements:littlehorse.SleepNodeMaturedPb)
     SleepNodeMaturedPbOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use SleepNodeMaturedPb.newBuilder() to construct.
@@ -86,13 +86,13 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_SleepNodeMaturedPb_descriptor;
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_SleepNodeMaturedPb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_SleepNodeMaturedPb_fieldAccessorTable
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_SleepNodeMaturedPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.common.proto.SleepNodeMaturedPb.class, io.littlehorse.common.proto.SleepNodeMaturedPb.Builder.class);
   }
@@ -334,21 +334,21 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.SleepNodeMaturedPb}
+   * Protobuf type {@code littlehorse.SleepNodeMaturedPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.SleepNodeMaturedPb)
+      // @@protoc_insertion_point(builder_implements:littlehorse.SleepNodeMaturedPb)
       io.littlehorse.common.proto.SleepNodeMaturedPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_SleepNodeMaturedPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_SleepNodeMaturedPb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_SleepNodeMaturedPb_fieldAccessorTable
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_SleepNodeMaturedPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               io.littlehorse.common.proto.SleepNodeMaturedPb.class, io.littlehorse.common.proto.SleepNodeMaturedPb.Builder.class);
     }
@@ -383,7 +383,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_SleepNodeMaturedPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_SleepNodeMaturedPb_descriptor;
     }
 
     @java.lang.Override
@@ -643,10 +643,10 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.SleepNodeMaturedPb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.SleepNodeMaturedPb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.SleepNodeMaturedPb)
+  // @@protoc_insertion_point(class_scope:littlehorse.SleepNodeMaturedPb)
   private static final io.littlehorse.common.proto.SleepNodeMaturedPb DEFAULT_INSTANCE;
   static {
     DEFAULT_INSTANCE = new io.littlehorse.common.proto.SleepNodeMaturedPb();

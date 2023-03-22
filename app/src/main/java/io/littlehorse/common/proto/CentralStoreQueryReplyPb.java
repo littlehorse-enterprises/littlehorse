@@ -4,11 +4,11 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf type {@code lh_proto.CentralStoreQueryReplyPb}
+ * Protobuf type {@code littlehorse.CentralStoreQueryReplyPb}
  */
 public final class CentralStoreQueryReplyPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.CentralStoreQueryReplyPb)
+    // @@protoc_insertion_point(message_implements:littlehorse.CentralStoreQueryReplyPb)
     CentralStoreQueryReplyPbOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use CentralStoreQueryReplyPb.newBuilder() to construct.
@@ -88,13 +88,13 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_CentralStoreQueryReplyPb_descriptor;
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_CentralStoreQueryReplyPb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_CentralStoreQueryReplyPb_fieldAccessorTable
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_CentralStoreQueryReplyPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.common.proto.CentralStoreQueryReplyPb.class, io.littlehorse.common.proto.CentralStoreQueryReplyPb.Builder.class);
   }
@@ -103,14 +103,14 @@ private static final long serialVersionUID = 0L;
   public static final int CODE_FIELD_NUMBER = 1;
   private int code_;
   /**
-   * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+   * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
    * @return The enum numeric value on the wire for code.
    */
   @java.lang.Override public int getCodeValue() {
     return code_;
   }
   /**
-   * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+   * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
    * @return The code.
    */
   @java.lang.Override public io.littlehorse.common.proto.StoreQueryStatusPb getCode() {
@@ -332,21 +332,21 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.CentralStoreQueryReplyPb}
+   * Protobuf type {@code littlehorse.CentralStoreQueryReplyPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.CentralStoreQueryReplyPb)
+      // @@protoc_insertion_point(builder_implements:littlehorse.CentralStoreQueryReplyPb)
       io.littlehorse.common.proto.CentralStoreQueryReplyPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_CentralStoreQueryReplyPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_CentralStoreQueryReplyPb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_CentralStoreQueryReplyPb_fieldAccessorTable
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_CentralStoreQueryReplyPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               io.littlehorse.common.proto.CentralStoreQueryReplyPb.class, io.littlehorse.common.proto.CentralStoreQueryReplyPb.Builder.class);
     }
@@ -381,7 +381,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_CentralStoreQueryReplyPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_CentralStoreQueryReplyPb_descriptor;
     }
 
     @java.lang.Override
@@ -499,14 +499,14 @@ private static final long serialVersionUID = 0L;
 
     private int code_ = 0;
     /**
-     * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+     * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
      * @return The enum numeric value on the wire for code.
      */
     @java.lang.Override public int getCodeValue() {
       return code_;
     }
     /**
-     * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+     * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
      * @param value The enum numeric value on the wire for code to set.
      * @return This builder for chaining.
      */
@@ -517,7 +517,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+     * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
      * @return The code.
      */
     @java.lang.Override
@@ -527,7 +527,7 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.common.proto.StoreQueryStatusPb.UNRECOGNIZED : result;
     }
     /**
-     * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+     * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
      * @param value The code to set.
      * @return This builder for chaining.
      */
@@ -541,7 +541,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+     * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearCode() {
@@ -636,10 +636,10 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.CentralStoreQueryReplyPb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.CentralStoreQueryReplyPb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.CentralStoreQueryReplyPb)
+  // @@protoc_insertion_point(class_scope:littlehorse.CentralStoreQueryReplyPb)
   private static final io.littlehorse.common.proto.CentralStoreQueryReplyPb DEFAULT_INSTANCE;
   static {
     DEFAULT_INSTANCE = new io.littlehorse.common.proto.CentralStoreQueryReplyPb();

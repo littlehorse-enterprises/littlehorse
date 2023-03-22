@@ -4,7 +4,7 @@
 package io.littlehorse.common.proto;
 
 public interface WaitForCommandPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.WaitForCommandPb)
+    // @@protoc_insertion_point(interface_extends:littlehorse.WaitForCommandPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**

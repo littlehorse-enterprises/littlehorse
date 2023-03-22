@@ -12,7 +12,7 @@ public final class LHInternalsGrpc {
 
   private LHInternalsGrpc() {}
 
-  public static final String SERVICE_NAME = "lh_proto.LHInternals";
+  public static final String SERVICE_NAME = "littlehorse.LHInternals";
 
   // Static method descriptors that strictly reflect the proto.
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.CentralStoreQueryPb,

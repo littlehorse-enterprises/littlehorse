@@ -4,11 +4,11 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf type {@code lh_proto.InternalPollTaskReplyPb}
+ * Protobuf type {@code littlehorse.InternalPollTaskReplyPb}
  */
 public final class InternalPollTaskReplyPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.InternalPollTaskReplyPb)
+    // @@protoc_insertion_point(message_implements:littlehorse.InternalPollTaskReplyPb)
     InternalPollTaskReplyPbOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use InternalPollTaskReplyPb.newBuilder() to construct.
@@ -90,13 +90,13 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_InternalPollTaskReplyPb_descriptor;
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalPollTaskReplyPb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_InternalPollTaskReplyPb_fieldAccessorTable
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalPollTaskReplyPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.common.proto.InternalPollTaskReplyPb.class, io.littlehorse.common.proto.InternalPollTaskReplyPb.Builder.class);
   }
@@ -105,14 +105,14 @@ private static final long serialVersionUID = 0L;
   public static final int CODE_FIELD_NUMBER = 1;
   private int code_;
   /**
-   * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+   * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
    * @return The enum numeric value on the wire for code.
    */
   @java.lang.Override public int getCodeValue() {
     return code_;
   }
   /**
-   * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+   * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
    * @return The code.
    */
   @java.lang.Override public io.littlehorse.common.proto.StoreQueryStatusPb getCode() {
@@ -124,7 +124,7 @@ private static final long serialVersionUID = 0L;
   public static final int RESULT_FIELD_NUMBER = 2;
   private io.littlehorse.jlib.common.proto.TaskScheduleRequestPb result_;
   /**
-   * <code>.lh_proto.TaskScheduleRequestPb result = 2;</code>
+   * <code>.littlehorse.TaskScheduleRequestPb result = 2;</code>
    * @return Whether the result field is set.
    */
   @java.lang.Override
@@ -132,7 +132,7 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>.lh_proto.TaskScheduleRequestPb result = 2;</code>
+   * <code>.littlehorse.TaskScheduleRequestPb result = 2;</code>
    * @return The result.
    */
   @java.lang.Override
@@ -140,7 +140,7 @@ private static final long serialVersionUID = 0L;
     return result_ == null ? io.littlehorse.jlib.common.proto.TaskScheduleRequestPb.getDefaultInstance() : result_;
   }
   /**
-   * <code>.lh_proto.TaskScheduleRequestPb result = 2;</code>
+   * <code>.littlehorse.TaskScheduleRequestPb result = 2;</code>
    */
   @java.lang.Override
   public io.littlehorse.jlib.common.proto.TaskScheduleRequestPbOrBuilder getResultOrBuilder() {
@@ -318,21 +318,21 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.InternalPollTaskReplyPb}
+   * Protobuf type {@code littlehorse.InternalPollTaskReplyPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.InternalPollTaskReplyPb)
+      // @@protoc_insertion_point(builder_implements:littlehorse.InternalPollTaskReplyPb)
       io.littlehorse.common.proto.InternalPollTaskReplyPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_InternalPollTaskReplyPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalPollTaskReplyPb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_InternalPollTaskReplyPb_fieldAccessorTable
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalPollTaskReplyPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               io.littlehorse.common.proto.InternalPollTaskReplyPb.class, io.littlehorse.common.proto.InternalPollTaskReplyPb.Builder.class);
     }
@@ -370,7 +370,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_InternalPollTaskReplyPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalPollTaskReplyPb_descriptor;
     }
 
     @java.lang.Override
@@ -488,14 +488,14 @@ private static final long serialVersionUID = 0L;
 
     private int code_ = 0;
     /**
-     * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+     * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
      * @return The enum numeric value on the wire for code.
      */
     @java.lang.Override public int getCodeValue() {
       return code_;
     }
     /**
-     * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+     * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
      * @param value The enum numeric value on the wire for code to set.
      * @return This builder for chaining.
      */
@@ -506,7 +506,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+     * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
      * @return The code.
      */
     @java.lang.Override
@@ -516,7 +516,7 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.common.proto.StoreQueryStatusPb.UNRECOGNIZED : result;
     }
     /**
-     * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+     * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
      * @param value The code to set.
      * @return This builder for chaining.
      */
@@ -530,7 +530,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+     * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearCode() {
@@ -544,14 +544,14 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.jlib.common.proto.TaskScheduleRequestPb, io.littlehorse.jlib.common.proto.TaskScheduleRequestPb.Builder, io.littlehorse.jlib.common.proto.TaskScheduleRequestPbOrBuilder> resultBuilder_;
     /**
-     * <code>.lh_proto.TaskScheduleRequestPb result = 2;</code>
+     * <code>.littlehorse.TaskScheduleRequestPb result = 2;</code>
      * @return Whether the result field is set.
      */
     public boolean hasResult() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>.lh_proto.TaskScheduleRequestPb result = 2;</code>
+     * <code>.littlehorse.TaskScheduleRequestPb result = 2;</code>
      * @return The result.
      */
     public io.littlehorse.jlib.common.proto.TaskScheduleRequestPb getResult() {
@@ -562,7 +562,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.lh_proto.TaskScheduleRequestPb result = 2;</code>
+     * <code>.littlehorse.TaskScheduleRequestPb result = 2;</code>
      */
     public Builder setResult(io.littlehorse.jlib.common.proto.TaskScheduleRequestPb value) {
       if (resultBuilder_ == null) {
@@ -578,7 +578,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.TaskScheduleRequestPb result = 2;</code>
+     * <code>.littlehorse.TaskScheduleRequestPb result = 2;</code>
      */
     public Builder setResult(
         io.littlehorse.jlib.common.proto.TaskScheduleRequestPb.Builder builderForValue) {
@@ -592,7 +592,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.TaskScheduleRequestPb result = 2;</code>
+     * <code>.littlehorse.TaskScheduleRequestPb result = 2;</code>
      */
     public Builder mergeResult(io.littlehorse.jlib.common.proto.TaskScheduleRequestPb value) {
       if (resultBuilder_ == null) {
@@ -612,7 +612,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.TaskScheduleRequestPb result = 2;</code>
+     * <code>.littlehorse.TaskScheduleRequestPb result = 2;</code>
      */
     public Builder clearResult() {
       if (resultBuilder_ == null) {
@@ -625,7 +625,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.TaskScheduleRequestPb result = 2;</code>
+     * <code>.littlehorse.TaskScheduleRequestPb result = 2;</code>
      */
     public io.littlehorse.jlib.common.proto.TaskScheduleRequestPb.Builder getResultBuilder() {
       bitField0_ |= 0x00000001;
@@ -633,7 +633,7 @@ private static final long serialVersionUID = 0L;
       return getResultFieldBuilder().getBuilder();
     }
     /**
-     * <code>.lh_proto.TaskScheduleRequestPb result = 2;</code>
+     * <code>.littlehorse.TaskScheduleRequestPb result = 2;</code>
      */
     public io.littlehorse.jlib.common.proto.TaskScheduleRequestPbOrBuilder getResultOrBuilder() {
       if (resultBuilder_ != null) {
@@ -644,7 +644,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.lh_proto.TaskScheduleRequestPb result = 2;</code>
+     * <code>.littlehorse.TaskScheduleRequestPb result = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.jlib.common.proto.TaskScheduleRequestPb, io.littlehorse.jlib.common.proto.TaskScheduleRequestPb.Builder, io.littlehorse.jlib.common.proto.TaskScheduleRequestPbOrBuilder> 
@@ -672,10 +672,10 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.InternalPollTaskReplyPb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.InternalPollTaskReplyPb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.InternalPollTaskReplyPb)
+  // @@protoc_insertion_point(class_scope:littlehorse.InternalPollTaskReplyPb)
   private static final io.littlehorse.common.proto.InternalPollTaskReplyPb DEFAULT_INSTANCE;
   static {
     DEFAULT_INSTANCE = new io.littlehorse.common.proto.InternalPollTaskReplyPb();

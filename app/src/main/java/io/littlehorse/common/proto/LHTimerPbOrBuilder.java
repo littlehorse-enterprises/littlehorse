@@ -4,7 +4,7 @@
 package io.littlehorse.common.proto;
 
 public interface LHTimerPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.LHTimerPb)
+    // @@protoc_insertion_point(interface_extends:littlehorse.LHTimerPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**

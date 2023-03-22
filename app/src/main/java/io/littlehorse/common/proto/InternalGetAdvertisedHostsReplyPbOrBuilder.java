@@ -4,15 +4,15 @@
 package io.littlehorse.common.proto;
 
 public interface InternalGetAdvertisedHostsReplyPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.InternalGetAdvertisedHostsReplyPb)
+    // @@protoc_insertion_point(interface_extends:littlehorse.InternalGetAdvertisedHostsReplyPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>map&lt;string, .lh_proto.HostInfoPb&gt; hosts = 1;</code>
+   * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
    */
   int getHostsCount();
   /**
-   * <code>map&lt;string, .lh_proto.HostInfoPb&gt; hosts = 1;</code>
+   * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
    */
   boolean containsHosts(
       java.lang.String key);
@@ -23,19 +23,19 @@ public interface InternalGetAdvertisedHostsReplyPbOrBuilder extends
   java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.HostInfoPb>
   getHosts();
   /**
-   * <code>map&lt;string, .lh_proto.HostInfoPb&gt; hosts = 1;</code>
+   * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
    */
   java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.HostInfoPb>
   getHostsMap();
   /**
-   * <code>map&lt;string, .lh_proto.HostInfoPb&gt; hosts = 1;</code>
+   * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
    */
 
   io.littlehorse.jlib.common.proto.HostInfoPb getHostsOrDefault(
       java.lang.String key,
       io.littlehorse.jlib.common.proto.HostInfoPb defaultValue);
   /**
-   * <code>map&lt;string, .lh_proto.HostInfoPb&gt; hosts = 1;</code>
+   * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
    */
 
   io.littlehorse.jlib.common.proto.HostInfoPb getHostsOrThrow(

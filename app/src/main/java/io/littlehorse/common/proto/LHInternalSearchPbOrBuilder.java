@@ -4,7 +4,7 @@
 package io.littlehorse.common.proto;
 
 public interface LHInternalSearchPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.LHInternalSearchPb)
+    // @@protoc_insertion_point(interface_extends:littlehorse.LHInternalSearchPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**
@@ -14,27 +14,27 @@ public interface LHInternalSearchPbOrBuilder extends
   int getLimit();
 
   /**
-   * <code>.lh_proto.BookmarkPb bookmark = 2;</code>
+   * <code>.littlehorse.BookmarkPb bookmark = 2;</code>
    * @return Whether the bookmark field is set.
    */
   boolean hasBookmark();
   /**
-   * <code>.lh_proto.BookmarkPb bookmark = 2;</code>
+   * <code>.littlehorse.BookmarkPb bookmark = 2;</code>
    * @return The bookmark.
    */
   io.littlehorse.common.proto.BookmarkPb getBookmark();
   /**
-   * <code>.lh_proto.BookmarkPb bookmark = 2;</code>
+   * <code>.littlehorse.BookmarkPb bookmark = 2;</code>
    */
   io.littlehorse.common.proto.BookmarkPbOrBuilder getBookmarkOrBuilder();
 
   /**
-   * <code>.lh_proto.GETableClassEnumPb object_type = 3;</code>
+   * <code>.littlehorse.GETableClassEnumPb object_type = 3;</code>
    * @return The enum numeric value on the wire for objectType.
    */
   int getObjectTypeValue();
   /**
-   * <code>.lh_proto.GETableClassEnumPb object_type = 3;</code>
+   * <code>.littlehorse.GETableClassEnumPb object_type = 3;</code>
    * @return The objectType.
    */
   io.littlehorse.common.proto.GETableClassEnumPb getObjectType();
@@ -69,17 +69,17 @@ public interface LHInternalSearchPbOrBuilder extends
       getObjectIdPrefixBytes();
 
   /**
-   * <code>.lh_proto.LHInternalSearchPb.RepeatedAttributePb tag_prefix = 6;</code>
+   * <code>.littlehorse.LHInternalSearchPb.RepeatedAttributePb tag_prefix = 6;</code>
    * @return Whether the tagPrefix field is set.
    */
   boolean hasTagPrefix();
   /**
-   * <code>.lh_proto.LHInternalSearchPb.RepeatedAttributePb tag_prefix = 6;</code>
+   * <code>.littlehorse.LHInternalSearchPb.RepeatedAttributePb tag_prefix = 6;</code>
    * @return The tagPrefix.
    */
   io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePb getTagPrefix();
   /**
-   * <code>.lh_proto.LHInternalSearchPb.RepeatedAttributePb tag_prefix = 6;</code>
+   * <code>.littlehorse.LHInternalSearchPb.RepeatedAttributePb tag_prefix = 6;</code>
    */
   io.littlehorse.common.proto.LHInternalSearchPb.RepeatedAttributePbOrBuilder getTagPrefixOrBuilder();
 

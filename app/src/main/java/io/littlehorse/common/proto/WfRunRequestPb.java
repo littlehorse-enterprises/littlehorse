@@ -8,11 +8,11 @@ package io.littlehorse.common.proto;
  * This section defines the "Command"
  * </pre>
  *
- * Protobuf type {@code lh_proto.WfRunRequestPb}
+ * Protobuf type {@code littlehorse.WfRunRequestPb}
  */
 public final class WfRunRequestPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.WfRunRequestPb)
+    // @@protoc_insertion_point(message_implements:littlehorse.WfRunRequestPb)
     WfRunRequestPbOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use WfRunRequestPb.newBuilder() to construct.
@@ -101,7 +101,7 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_WfRunRequestPb_descriptor;
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_WfRunRequestPb_descriptor;
   }
 
   @SuppressWarnings({"rawtypes"})
@@ -119,7 +119,7 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_WfRunRequestPb_fieldAccessorTable
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_WfRunRequestPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.common.proto.WfRunRequestPb.class, io.littlehorse.common.proto.WfRunRequestPb.Builder.class);
   }
@@ -215,7 +215,7 @@ private static final long serialVersionUID = 0L;
         java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb> defaultEntry =
             com.google.protobuf.MapEntry
             .<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb>newDefaultInstance(
-                io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_WfRunRequestPb_VariablesEntry_descriptor, 
+                io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_WfRunRequestPb_VariablesEntry_descriptor, 
                 com.google.protobuf.WireFormat.FieldType.STRING,
                 "",
                 com.google.protobuf.WireFormat.FieldType.MESSAGE,
@@ -236,7 +236,7 @@ private static final long serialVersionUID = 0L;
     return internalGetVariables().getMap().size();
   }
   /**
-   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 3;</code>
+   * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
    */
 
   @java.lang.Override
@@ -254,7 +254,7 @@ private static final long serialVersionUID = 0L;
     return getVariablesMap();
   }
   /**
-   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 3;</code>
+   * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
    */
   @java.lang.Override
 
@@ -262,7 +262,7 @@ private static final long serialVersionUID = 0L;
     return internalGetVariables().getMap();
   }
   /**
-   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 3;</code>
+   * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
    */
   @java.lang.Override
 
@@ -275,7 +275,7 @@ private static final long serialVersionUID = 0L;
     return map.containsKey(key) ? map.get(key) : defaultValue;
   }
   /**
-   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 3;</code>
+   * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
    */
   @java.lang.Override
 
@@ -486,15 +486,15 @@ private static final long serialVersionUID = 0L;
    * This section defines the "Command"
    * </pre>
    *
-   * Protobuf type {@code lh_proto.WfRunRequestPb}
+   * Protobuf type {@code littlehorse.WfRunRequestPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.WfRunRequestPb)
+      // @@protoc_insertion_point(builder_implements:littlehorse.WfRunRequestPb)
       io.littlehorse.common.proto.WfRunRequestPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_WfRunRequestPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_WfRunRequestPb_descriptor;
     }
 
     @SuppressWarnings({"rawtypes"})
@@ -522,7 +522,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_WfRunRequestPb_fieldAccessorTable
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_WfRunRequestPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               io.littlehorse.common.proto.WfRunRequestPb.class, io.littlehorse.common.proto.WfRunRequestPb.Builder.class);
     }
@@ -556,7 +556,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_WfRunRequestPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_WfRunRequestPb_descriptor;
     }
 
     @java.lang.Override
@@ -861,7 +861,7 @@ private static final long serialVersionUID = 0L;
       return internalGetVariables().getMap().size();
     }
     /**
-     * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 3;</code>
+     * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
      */
 
     @java.lang.Override
@@ -879,7 +879,7 @@ private static final long serialVersionUID = 0L;
       return getVariablesMap();
     }
     /**
-     * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 3;</code>
+     * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
      */
     @java.lang.Override
 
@@ -887,7 +887,7 @@ private static final long serialVersionUID = 0L;
       return internalGetVariables().getMap();
     }
     /**
-     * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 3;</code>
+     * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
      */
     @java.lang.Override
 
@@ -900,7 +900,7 @@ private static final long serialVersionUID = 0L;
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
-     * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 3;</code>
+     * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
      */
     @java.lang.Override
 
@@ -921,7 +921,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 3;</code>
+     * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
      */
 
     public Builder removeVariables(
@@ -940,7 +940,7 @@ private static final long serialVersionUID = 0L;
       return internalGetMutableVariables().getMutableMap();
     }
     /**
-     * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 3;</code>
+     * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
      */
     public Builder putVariables(
         java.lang.String key,
@@ -952,7 +952,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 3;</code>
+     * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
      */
 
     public Builder putAllVariables(
@@ -974,10 +974,10 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.WfRunRequestPb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.WfRunRequestPb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.WfRunRequestPb)
+  // @@protoc_insertion_point(class_scope:littlehorse.WfRunRequestPb)
   private static final io.littlehorse.common.proto.WfRunRequestPb DEFAULT_INSTANCE;
   static {
     DEFAULT_INSTANCE = new io.littlehorse.common.proto.WfRunRequestPb();

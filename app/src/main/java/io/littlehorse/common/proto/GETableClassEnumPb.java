@@ -8,7 +8,7 @@ package io.littlehorse.common.proto;
  * Stuff for Index (internal to the store)
  * </pre>
  *
- * Protobuf enum {@code lh_proto.GETableClassEnumPb}
+ * Protobuf enum {@code littlehorse.GETableClassEnumPb}
  */
 public enum GETableClassEnumPb
     implements com.google.protobuf.ProtocolMessageEnum {
@@ -166,6 +166,6 @@ public enum GETableClassEnumPb
     this.value = value;
   }
 
-  // @@protoc_insertion_point(enum_scope:lh_proto.GETableClassEnumPb)
+  // @@protoc_insertion_point(enum_scope:littlehorse.GETableClassEnumPb)
 }
 

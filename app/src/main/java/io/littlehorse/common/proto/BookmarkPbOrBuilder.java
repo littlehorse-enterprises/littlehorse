@@ -4,15 +4,15 @@
 package io.littlehorse.common.proto;
 
 public interface BookmarkPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.BookmarkPb)
+    // @@protoc_insertion_point(interface_extends:littlehorse.BookmarkPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>map&lt;int32, .lh_proto.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
+   * <code>map&lt;int32, .littlehorse.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
    */
   int getInProgressPartitionsCount();
   /**
-   * <code>map&lt;int32, .lh_proto.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
+   * <code>map&lt;int32, .littlehorse.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
    */
   boolean containsInProgressPartitions(
       int key);
@@ -23,19 +23,19 @@ public interface BookmarkPbOrBuilder extends
   java.util.Map<java.lang.Integer, io.littlehorse.common.proto.PartitionBookmarkPb>
   getInProgressPartitions();
   /**
-   * <code>map&lt;int32, .lh_proto.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
+   * <code>map&lt;int32, .littlehorse.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
    */
   java.util.Map<java.lang.Integer, io.littlehorse.common.proto.PartitionBookmarkPb>
   getInProgressPartitionsMap();
   /**
-   * <code>map&lt;int32, .lh_proto.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
+   * <code>map&lt;int32, .littlehorse.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
    */
 
   io.littlehorse.common.proto.PartitionBookmarkPb getInProgressPartitionsOrDefault(
       int key,
       io.littlehorse.common.proto.PartitionBookmarkPb defaultValue);
   /**
-   * <code>map&lt;int32, .lh_proto.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
+   * <code>map&lt;int32, .littlehorse.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
    */
 
   io.littlehorse.common.proto.PartitionBookmarkPb getInProgressPartitionsOrThrow(

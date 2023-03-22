@@ -4,32 +4,32 @@
 package io.littlehorse.common.proto;
 
 public interface InternalPollTaskReplyPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.InternalPollTaskReplyPb)
+    // @@protoc_insertion_point(interface_extends:littlehorse.InternalPollTaskReplyPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+   * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
    * @return The enum numeric value on the wire for code.
    */
   int getCodeValue();
   /**
-   * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+   * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
    * @return The code.
    */
   io.littlehorse.common.proto.StoreQueryStatusPb getCode();
 
   /**
-   * <code>.lh_proto.TaskScheduleRequestPb result = 2;</code>
+   * <code>.littlehorse.TaskScheduleRequestPb result = 2;</code>
    * @return Whether the result field is set.
    */
   boolean hasResult();
   /**
-   * <code>.lh_proto.TaskScheduleRequestPb result = 2;</code>
+   * <code>.littlehorse.TaskScheduleRequestPb result = 2;</code>
    * @return The result.
    */
   io.littlehorse.jlib.common.proto.TaskScheduleRequestPb getResult();
   /**
-   * <code>.lh_proto.TaskScheduleRequestPb result = 2;</code>
+   * <code>.littlehorse.TaskScheduleRequestPb result = 2;</code>
    */
   io.littlehorse.jlib.common.proto.TaskScheduleRequestPbOrBuilder getResultOrBuilder();
 }

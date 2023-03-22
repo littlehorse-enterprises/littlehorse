@@ -4,16 +4,16 @@
 package io.littlehorse.common.proto;
 
 public interface InternalSearchReplyPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.InternalSearchReplyPb)
+    // @@protoc_insertion_point(interface_extends:littlehorse.InternalSearchReplyPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+   * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
    * @return The enum numeric value on the wire for code.
    */
   int getCodeValue();
   /**
-   * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+   * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
    * @return The code.
    */
   io.littlehorse.common.proto.StoreQueryStatusPb getCode();
@@ -44,17 +44,17 @@ public interface InternalSearchReplyPbOrBuilder extends
       getObjectIdsBytes(int index);
 
   /**
-   * <code>.lh_proto.BookmarkPb updated_bookmark = 3;</code>
+   * <code>.littlehorse.BookmarkPb updated_bookmark = 3;</code>
    * @return Whether the updatedBookmark field is set.
    */
   boolean hasUpdatedBookmark();
   /**
-   * <code>.lh_proto.BookmarkPb updated_bookmark = 3;</code>
+   * <code>.littlehorse.BookmarkPb updated_bookmark = 3;</code>
    * @return The updatedBookmark.
    */
   io.littlehorse.common.proto.BookmarkPb getUpdatedBookmark();
   /**
-   * <code>.lh_proto.BookmarkPb updated_bookmark = 3;</code>
+   * <code>.littlehorse.BookmarkPb updated_bookmark = 3;</code>
    */
   io.littlehorse.common.proto.BookmarkPbOrBuilder getUpdatedBookmarkOrBuilder();
 

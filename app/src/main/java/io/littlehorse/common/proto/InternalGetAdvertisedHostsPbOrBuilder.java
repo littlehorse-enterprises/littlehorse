@@ -4,6 +4,6 @@
 package io.littlehorse.common.proto;
 
 public interface InternalGetAdvertisedHostsPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.InternalGetAdvertisedHostsPb)
+    // @@protoc_insertion_point(interface_extends:littlehorse.InternalGetAdvertisedHostsPb)
     com.google.protobuf.MessageOrBuilder {
 }

@@ -4,7 +4,7 @@
 package io.littlehorse.common.proto;
 
 public interface TagPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.TagPb)
+    // @@protoc_insertion_point(interface_extends:littlehorse.TagPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**
@@ -12,7 +12,7 @@ public interface TagPbOrBuilder extends
    * The following info is also stored in the key of the Tag in the store.
    * </pre>
    *
-   * <code>.lh_proto.GETableClassEnumPb object_type = 1;</code>
+   * <code>.littlehorse.GETableClassEnumPb object_type = 1;</code>
    * @return The enum numeric value on the wire for objectType.
    */
   int getObjectTypeValue();
@@ -21,31 +21,31 @@ public interface TagPbOrBuilder extends
    * The following info is also stored in the key of the Tag in the store.
    * </pre>
    *
-   * <code>.lh_proto.GETableClassEnumPb object_type = 1;</code>
+   * <code>.littlehorse.GETableClassEnumPb object_type = 1;</code>
    * @return The objectType.
    */
   io.littlehorse.common.proto.GETableClassEnumPb getObjectType();
 
   /**
-   * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+   * <code>repeated .littlehorse.AttributePb attributes = 2;</code>
    */
   java.util.List<io.littlehorse.common.proto.AttributePb> 
       getAttributesList();
   /**
-   * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+   * <code>repeated .littlehorse.AttributePb attributes = 2;</code>
    */
   io.littlehorse.common.proto.AttributePb getAttributes(int index);
   /**
-   * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+   * <code>repeated .littlehorse.AttributePb attributes = 2;</code>
    */
   int getAttributesCount();
   /**
-   * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+   * <code>repeated .littlehorse.AttributePb attributes = 2;</code>
    */
   java.util.List<? extends io.littlehorse.common.proto.AttributePbOrBuilder> 
       getAttributesOrBuilderList();
   /**
-   * <code>repeated .lh_proto.AttributePb attributes = 2;</code>
+   * <code>repeated .littlehorse.AttributePb attributes = 2;</code>
    */
   io.littlehorse.common.proto.AttributePbOrBuilder getAttributesOrBuilder(
       int index);
@@ -82,7 +82,7 @@ public interface TagPbOrBuilder extends
    * The following is not stored in the key.
    * </pre>
    *
-   * <code>.lh_proto.TagStorageTypePb tag_type = 5;</code>
+   * <code>.littlehorse.TagStorageTypePb tag_type = 5;</code>
    * @return The enum numeric value on the wire for tagType.
    */
   int getTagTypeValue();
@@ -91,7 +91,7 @@ public interface TagPbOrBuilder extends
    * The following is not stored in the key.
    * </pre>
    *
-   * <code>.lh_proto.TagStorageTypePb tag_type = 5;</code>
+   * <code>.littlehorse.TagStorageTypePb tag_type = 5;</code>
    * @return The tagType.
    */
   io.littlehorse.common.proto.TagStorageTypePb getTagType();

@@ -4,7 +4,7 @@
 package io.littlehorse.common.proto;
 
 public interface RepartitionCommandPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.RepartitionCommandPb)
+    // @@protoc_insertion_point(interface_extends:littlehorse.RepartitionCommandPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**
@@ -40,32 +40,32 @@ public interface RepartitionCommandPbOrBuilder extends
       getCommandIdBytes();
 
   /**
-   * <code>.lh_proto.TaskMetricUpdatePb task_metric_update = 3;</code>
+   * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
    * @return Whether the taskMetricUpdate field is set.
    */
   boolean hasTaskMetricUpdate();
   /**
-   * <code>.lh_proto.TaskMetricUpdatePb task_metric_update = 3;</code>
+   * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
    * @return The taskMetricUpdate.
    */
   io.littlehorse.common.proto.TaskMetricUpdatePb getTaskMetricUpdate();
   /**
-   * <code>.lh_proto.TaskMetricUpdatePb task_metric_update = 3;</code>
+   * <code>.littlehorse.TaskMetricUpdatePb task_metric_update = 3;</code>
    */
   io.littlehorse.common.proto.TaskMetricUpdatePbOrBuilder getTaskMetricUpdateOrBuilder();
 
   /**
-   * <code>.lh_proto.WfMetricUpdatePb wf_metric_update = 4;</code>
+   * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
    * @return Whether the wfMetricUpdate field is set.
    */
   boolean hasWfMetricUpdate();
   /**
-   * <code>.lh_proto.WfMetricUpdatePb wf_metric_update = 4;</code>
+   * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
    * @return The wfMetricUpdate.
    */
   io.littlehorse.common.proto.WfMetricUpdatePb getWfMetricUpdate();
   /**
-   * <code>.lh_proto.WfMetricUpdatePb wf_metric_update = 4;</code>
+   * <code>.littlehorse.WfMetricUpdatePb wf_metric_update = 4;</code>
    */
   io.littlehorse.common.proto.WfMetricUpdatePbOrBuilder getWfMetricUpdateOrBuilder();
 

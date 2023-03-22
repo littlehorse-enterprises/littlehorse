@@ -4,7 +4,7 @@
 package io.littlehorse.common.proto;
 
 public interface SleepNodeMaturedPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.SleepNodeMaturedPb)
+    // @@protoc_insertion_point(interface_extends:littlehorse.SleepNodeMaturedPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**

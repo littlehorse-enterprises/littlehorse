@@ -4,11 +4,11 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf type {@code lh_proto.WfMetricUpdatePb}
+ * Protobuf type {@code littlehorse.WfMetricUpdatePb}
  */
 public final class WfMetricUpdatePb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.WfMetricUpdatePb)
+    // @@protoc_insertion_point(message_implements:littlehorse.WfMetricUpdatePb)
     WfMetricUpdatePbOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use WfMetricUpdatePb.newBuilder() to construct.
@@ -152,13 +152,13 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_WfMetricUpdatePb_descriptor;
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_WfMetricUpdatePb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_WfMetricUpdatePb_fieldAccessorTable
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_WfMetricUpdatePb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.common.proto.WfMetricUpdatePb.class, io.littlehorse.common.proto.WfMetricUpdatePb.Builder.class);
   }
@@ -192,14 +192,14 @@ private static final long serialVersionUID = 0L;
   public static final int TYPE_FIELD_NUMBER = 2;
   private int type_;
   /**
-   * <code>.lh_proto.MetricsWindowLengthPb type = 2;</code>
+   * <code>.littlehorse.MetricsWindowLengthPb type = 2;</code>
    * @return The enum numeric value on the wire for type.
    */
   @java.lang.Override public int getTypeValue() {
     return type_;
   }
   /**
-   * <code>.lh_proto.MetricsWindowLengthPb type = 2;</code>
+   * <code>.littlehorse.MetricsWindowLengthPb type = 2;</code>
    * @return The type.
    */
   @java.lang.Override public io.littlehorse.jlib.common.proto.MetricsWindowLengthPb getType() {
@@ -621,21 +621,21 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.WfMetricUpdatePb}
+   * Protobuf type {@code littlehorse.WfMetricUpdatePb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.WfMetricUpdatePb)
+      // @@protoc_insertion_point(builder_implements:littlehorse.WfMetricUpdatePb)
       io.littlehorse.common.proto.WfMetricUpdatePbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_WfMetricUpdatePb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_WfMetricUpdatePb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_WfMetricUpdatePb_fieldAccessorTable
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_WfMetricUpdatePb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               io.littlehorse.common.proto.WfMetricUpdatePb.class, io.littlehorse.common.proto.WfMetricUpdatePb.Builder.class);
     }
@@ -688,7 +688,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_WfMetricUpdatePb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_WfMetricUpdatePb_descriptor;
     }
 
     @java.lang.Override
@@ -964,14 +964,14 @@ private static final long serialVersionUID = 0L;
 
     private int type_ = 0;
     /**
-     * <code>.lh_proto.MetricsWindowLengthPb type = 2;</code>
+     * <code>.littlehorse.MetricsWindowLengthPb type = 2;</code>
      * @return The enum numeric value on the wire for type.
      */
     @java.lang.Override public int getTypeValue() {
       return type_;
     }
     /**
-     * <code>.lh_proto.MetricsWindowLengthPb type = 2;</code>
+     * <code>.littlehorse.MetricsWindowLengthPb type = 2;</code>
      * @param value The enum numeric value on the wire for type to set.
      * @return This builder for chaining.
      */
@@ -982,7 +982,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.MetricsWindowLengthPb type = 2;</code>
+     * <code>.littlehorse.MetricsWindowLengthPb type = 2;</code>
      * @return The type.
      */
     @java.lang.Override
@@ -992,7 +992,7 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.jlib.common.proto.MetricsWindowLengthPb.UNRECOGNIZED : result;
     }
     /**
-     * <code>.lh_proto.MetricsWindowLengthPb type = 2;</code>
+     * <code>.littlehorse.MetricsWindowLengthPb type = 2;</code>
      * @param value The type to set.
      * @return This builder for chaining.
      */
@@ -1006,7 +1006,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.MetricsWindowLengthPb type = 2;</code>
+     * <code>.littlehorse.MetricsWindowLengthPb type = 2;</code>
      * @return This builder for chaining.
      */
     public Builder clearType() {
@@ -1369,10 +1369,10 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.WfMetricUpdatePb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.WfMetricUpdatePb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.WfMetricUpdatePb)
+  // @@protoc_insertion_point(class_scope:littlehorse.WfMetricUpdatePb)
   private static final io.littlehorse.common.proto.WfMetricUpdatePb DEFAULT_INSTANCE;
   static {
     DEFAULT_INSTANCE = new io.littlehorse.common.proto.WfMetricUpdatePb();

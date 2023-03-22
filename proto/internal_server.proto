@@ -1,14 +1,12 @@
 // Timer-related stuff
 syntax = "proto3";
-package lh_proto;
+package littlehorse;
 
 option java_multiple_files = true;
 option java_package = "io.littlehorse.common.proto";
 
 import "google/protobuf/timestamp.proto";
-import "variable.proto";
-import "service.proto";
-import "metrics.proto";
+import "io-littlehorse-proto/proto/service.proto";
 
 // The following protobuf definitions are used for paginated responses.
 message PartitionBookmarkPb {

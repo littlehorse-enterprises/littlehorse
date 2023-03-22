@@ -4,11 +4,11 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf type {@code lh_proto.DiscreteTagLocalCounterPb}
+ * Protobuf type {@code littlehorse.DiscreteTagLocalCounterPb}
  */
 public final class DiscreteTagLocalCounterPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.DiscreteTagLocalCounterPb)
+    // @@protoc_insertion_point(message_implements:littlehorse.DiscreteTagLocalCounterPb)
     DiscreteTagLocalCounterPbOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use DiscreteTagLocalCounterPb.newBuilder() to construct.
@@ -86,13 +86,13 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_DiscreteTagLocalCounterPb_descriptor;
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_DiscreteTagLocalCounterPb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_DiscreteTagLocalCounterPb_fieldAccessorTable
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_DiscreteTagLocalCounterPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.common.proto.DiscreteTagLocalCounterPb.class, io.littlehorse.common.proto.DiscreteTagLocalCounterPb.Builder.class);
   }
@@ -335,21 +335,21 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.DiscreteTagLocalCounterPb}
+   * Protobuf type {@code littlehorse.DiscreteTagLocalCounterPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.DiscreteTagLocalCounterPb)
+      // @@protoc_insertion_point(builder_implements:littlehorse.DiscreteTagLocalCounterPb)
       io.littlehorse.common.proto.DiscreteTagLocalCounterPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_DiscreteTagLocalCounterPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_DiscreteTagLocalCounterPb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_DiscreteTagLocalCounterPb_fieldAccessorTable
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_DiscreteTagLocalCounterPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               io.littlehorse.common.proto.DiscreteTagLocalCounterPb.class, io.littlehorse.common.proto.DiscreteTagLocalCounterPb.Builder.class);
     }
@@ -384,7 +384,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_DiscreteTagLocalCounterPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_DiscreteTagLocalCounterPb_descriptor;
     }
 
     @java.lang.Override
@@ -644,10 +644,10 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.DiscreteTagLocalCounterPb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.DiscreteTagLocalCounterPb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.DiscreteTagLocalCounterPb)
+  // @@protoc_insertion_point(class_scope:littlehorse.DiscreteTagLocalCounterPb)
   private static final io.littlehorse.common.proto.DiscreteTagLocalCounterPb DEFAULT_INSTANCE;
   static {
     DEFAULT_INSTANCE = new io.littlehorse.common.proto.DiscreteTagLocalCounterPb();

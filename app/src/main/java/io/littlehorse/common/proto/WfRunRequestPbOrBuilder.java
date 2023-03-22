@@ -4,7 +4,7 @@
 package io.littlehorse.common.proto;
 
 public interface WfRunRequestPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.WfRunRequestPb)
+    // @@protoc_insertion_point(interface_extends:littlehorse.WfRunRequestPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**
@@ -37,11 +37,11 @@ public interface WfRunRequestPbOrBuilder extends
       getWfSpecIdBytes();
 
   /**
-   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 3;</code>
+   * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
    */
   int getVariablesCount();
   /**
-   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 3;</code>
+   * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
    */
   boolean containsVariables(
       java.lang.String key);
@@ -52,19 +52,19 @@ public interface WfRunRequestPbOrBuilder extends
   java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb>
   getVariables();
   /**
-   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 3;</code>
+   * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
    */
   java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb>
   getVariablesMap();
   /**
-   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 3;</code>
+   * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
    */
 
   io.littlehorse.jlib.common.proto.VariableValuePb getVariablesOrDefault(
       java.lang.String key,
       io.littlehorse.jlib.common.proto.VariableValuePb defaultValue);
   /**
-   * <code>map&lt;string, .lh_proto.VariableValuePb&gt; variables = 3;</code>
+   * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
    */
 
   io.littlehorse.jlib.common.proto.VariableValuePb getVariablesOrThrow(

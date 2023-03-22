@@ -4,11 +4,11 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf type {@code lh_proto.InternalGetAdvertisedHostsPb}
+ * Protobuf type {@code littlehorse.InternalGetAdvertisedHostsPb}
  */
 public final class InternalGetAdvertisedHostsPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.InternalGetAdvertisedHostsPb)
+    // @@protoc_insertion_point(message_implements:littlehorse.InternalGetAdvertisedHostsPb)
     InternalGetAdvertisedHostsPbOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use InternalGetAdvertisedHostsPb.newBuilder() to construct.
@@ -69,13 +69,13 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_InternalGetAdvertisedHostsPb_descriptor;
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalGetAdvertisedHostsPb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_InternalGetAdvertisedHostsPb_fieldAccessorTable
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalGetAdvertisedHostsPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.common.proto.InternalGetAdvertisedHostsPb.class, io.littlehorse.common.proto.InternalGetAdvertisedHostsPb.Builder.class);
   }
@@ -225,21 +225,21 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.InternalGetAdvertisedHostsPb}
+   * Protobuf type {@code littlehorse.InternalGetAdvertisedHostsPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.InternalGetAdvertisedHostsPb)
+      // @@protoc_insertion_point(builder_implements:littlehorse.InternalGetAdvertisedHostsPb)
       io.littlehorse.common.proto.InternalGetAdvertisedHostsPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_InternalGetAdvertisedHostsPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalGetAdvertisedHostsPb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_InternalGetAdvertisedHostsPb_fieldAccessorTable
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalGetAdvertisedHostsPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               io.littlehorse.common.proto.InternalGetAdvertisedHostsPb.class, io.littlehorse.common.proto.InternalGetAdvertisedHostsPb.Builder.class);
     }
@@ -268,7 +268,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_InternalGetAdvertisedHostsPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalGetAdvertisedHostsPb_descriptor;
     }
 
     @java.lang.Override
@@ -377,10 +377,10 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.InternalGetAdvertisedHostsPb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.InternalGetAdvertisedHostsPb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.InternalGetAdvertisedHostsPb)
+  // @@protoc_insertion_point(class_scope:littlehorse.InternalGetAdvertisedHostsPb)
   private static final io.littlehorse.common.proto.InternalGetAdvertisedHostsPb DEFAULT_INSTANCE;
   static {
     DEFAULT_INSTANCE = new io.littlehorse.common.proto.InternalGetAdvertisedHostsPb();

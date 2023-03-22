@@ -4,11 +4,11 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf type {@code lh_proto.TagChangesToBroadcastPb}
+ * Protobuf type {@code littlehorse.TagChangesToBroadcastPb}
  */
 public final class TagChangesToBroadcastPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.TagChangesToBroadcastPb)
+    // @@protoc_insertion_point(message_implements:littlehorse.TagChangesToBroadcastPb)
     TagChangesToBroadcastPbOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use TagChangesToBroadcastPb.newBuilder() to construct.
@@ -88,7 +88,7 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_TagChangesToBroadcastPb_descriptor;
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_TagChangesToBroadcastPb_descriptor;
   }
 
   @SuppressWarnings({"rawtypes"})
@@ -106,7 +106,7 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_TagChangesToBroadcastPb_fieldAccessorTable
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_TagChangesToBroadcastPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.common.proto.TagChangesToBroadcastPb.class, io.littlehorse.common.proto.TagChangesToBroadcastPb.Builder.class);
   }
@@ -117,7 +117,7 @@ private static final long serialVersionUID = 0L;
         java.lang.String, io.littlehorse.common.proto.DiscreteTagLocalCounterPb> defaultEntry =
             com.google.protobuf.MapEntry
             .<java.lang.String, io.littlehorse.common.proto.DiscreteTagLocalCounterPb>newDefaultInstance(
-                io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_TagChangesToBroadcastPb_ChangelogEntry_descriptor, 
+                io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_TagChangesToBroadcastPb_ChangelogEntry_descriptor, 
                 com.google.protobuf.WireFormat.FieldType.STRING,
                 "",
                 com.google.protobuf.WireFormat.FieldType.MESSAGE,
@@ -138,7 +138,7 @@ private static final long serialVersionUID = 0L;
     return internalGetChangelog().getMap().size();
   }
   /**
-   * <code>map&lt;string, .lh_proto.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
+   * <code>map&lt;string, .littlehorse.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
    */
 
   @java.lang.Override
@@ -156,7 +156,7 @@ private static final long serialVersionUID = 0L;
     return getChangelogMap();
   }
   /**
-   * <code>map&lt;string, .lh_proto.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
+   * <code>map&lt;string, .littlehorse.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
    */
   @java.lang.Override
 
@@ -164,7 +164,7 @@ private static final long serialVersionUID = 0L;
     return internalGetChangelog().getMap();
   }
   /**
-   * <code>map&lt;string, .lh_proto.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
+   * <code>map&lt;string, .littlehorse.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
    */
   @java.lang.Override
 
@@ -177,7 +177,7 @@ private static final long serialVersionUID = 0L;
     return map.containsKey(key) ? map.get(key) : defaultValue;
   }
   /**
-   * <code>map&lt;string, .lh_proto.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
+   * <code>map&lt;string, .littlehorse.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
    */
   @java.lang.Override
 
@@ -381,15 +381,15 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.TagChangesToBroadcastPb}
+   * Protobuf type {@code littlehorse.TagChangesToBroadcastPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.TagChangesToBroadcastPb)
+      // @@protoc_insertion_point(builder_implements:littlehorse.TagChangesToBroadcastPb)
       io.littlehorse.common.proto.TagChangesToBroadcastPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_TagChangesToBroadcastPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_TagChangesToBroadcastPb_descriptor;
     }
 
     @SuppressWarnings({"rawtypes"})
@@ -417,7 +417,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_TagChangesToBroadcastPb_fieldAccessorTable
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_TagChangesToBroadcastPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               io.littlehorse.common.proto.TagChangesToBroadcastPb.class, io.littlehorse.common.proto.TagChangesToBroadcastPb.Builder.class);
     }
@@ -449,7 +449,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_TagChangesToBroadcastPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_TagChangesToBroadcastPb_descriptor;
     }
 
     @java.lang.Override
@@ -583,7 +583,7 @@ private static final long serialVersionUID = 0L;
       return internalGetChangelog().getMap().size();
     }
     /**
-     * <code>map&lt;string, .lh_proto.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
+     * <code>map&lt;string, .littlehorse.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
      */
 
     @java.lang.Override
@@ -601,7 +601,7 @@ private static final long serialVersionUID = 0L;
       return getChangelogMap();
     }
     /**
-     * <code>map&lt;string, .lh_proto.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
+     * <code>map&lt;string, .littlehorse.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
      */
     @java.lang.Override
 
@@ -609,7 +609,7 @@ private static final long serialVersionUID = 0L;
       return internalGetChangelog().getMap();
     }
     /**
-     * <code>map&lt;string, .lh_proto.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
+     * <code>map&lt;string, .littlehorse.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
      */
     @java.lang.Override
 
@@ -622,7 +622,7 @@ private static final long serialVersionUID = 0L;
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
-     * <code>map&lt;string, .lh_proto.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
+     * <code>map&lt;string, .littlehorse.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
      */
     @java.lang.Override
 
@@ -643,7 +643,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>map&lt;string, .lh_proto.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
+     * <code>map&lt;string, .littlehorse.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
      */
 
     public Builder removeChangelog(
@@ -662,7 +662,7 @@ private static final long serialVersionUID = 0L;
       return internalGetMutableChangelog().getMutableMap();
     }
     /**
-     * <code>map&lt;string, .lh_proto.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
+     * <code>map&lt;string, .littlehorse.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
      */
     public Builder putChangelog(
         java.lang.String key,
@@ -674,7 +674,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>map&lt;string, .lh_proto.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
+     * <code>map&lt;string, .littlehorse.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
      */
 
     public Builder putAllChangelog(
@@ -727,10 +727,10 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.TagChangesToBroadcastPb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.TagChangesToBroadcastPb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.TagChangesToBroadcastPb)
+  // @@protoc_insertion_point(class_scope:littlehorse.TagChangesToBroadcastPb)
   private static final io.littlehorse.common.proto.TagChangesToBroadcastPb DEFAULT_INSTANCE;
   static {
     DEFAULT_INSTANCE = new io.littlehorse.common.proto.TagChangesToBroadcastPb();

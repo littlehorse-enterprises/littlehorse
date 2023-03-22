@@ -4,7 +4,7 @@
 package io.littlehorse.common.proto;
 
 public interface DiscreteTagLocalCounterPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.DiscreteTagLocalCounterPb)
+    // @@protoc_insertion_point(interface_extends:littlehorse.DiscreteTagLocalCounterPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**

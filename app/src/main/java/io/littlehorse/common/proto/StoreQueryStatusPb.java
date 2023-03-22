@@ -8,7 +8,7 @@ package io.littlehorse.common.proto;
  * The section below contains the protocol for inter-broker communication
  * </pre>
  *
- * Protobuf enum {@code lh_proto.StoreQueryStatusPb}
+ * Protobuf enum {@code littlehorse.StoreQueryStatusPb}
  */
 public enum StoreQueryStatusPb
     implements com.google.protobuf.ProtocolMessageEnum {
@@ -128,6 +128,6 @@ public enum StoreQueryStatusPb
     this.value = value;
   }
 
-  // @@protoc_insertion_point(enum_scope:lh_proto.StoreQueryStatusPb)
+  // @@protoc_insertion_point(enum_scope:littlehorse.StoreQueryStatusPb)
 }
 

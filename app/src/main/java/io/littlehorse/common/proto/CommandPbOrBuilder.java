@@ -4,7 +4,7 @@
 package io.littlehorse.common.proto;
 
 public interface CommandPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.CommandPb)
+    // @@protoc_insertion_point(interface_extends:littlehorse.CommandPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**
@@ -40,227 +40,227 @@ public interface CommandPbOrBuilder extends
       getCommandIdBytes();
 
   /**
-   * <code>.lh_proto.TaskResultEventPb task_result_event = 3;</code>
+   * <code>.littlehorse.TaskResultEventPb task_result_event = 3;</code>
    * @return Whether the taskResultEvent field is set.
    */
   boolean hasTaskResultEvent();
   /**
-   * <code>.lh_proto.TaskResultEventPb task_result_event = 3;</code>
+   * <code>.littlehorse.TaskResultEventPb task_result_event = 3;</code>
    * @return The taskResultEvent.
    */
   io.littlehorse.jlib.common.proto.TaskResultEventPb getTaskResultEvent();
   /**
-   * <code>.lh_proto.TaskResultEventPb task_result_event = 3;</code>
+   * <code>.littlehorse.TaskResultEventPb task_result_event = 3;</code>
    */
   io.littlehorse.jlib.common.proto.TaskResultEventPbOrBuilder getTaskResultEventOrBuilder();
 
   /**
-   * <code>.lh_proto.TaskClaimEventPb task_claim_event = 4;</code>
+   * <code>.littlehorse.TaskClaimEventPb task_claim_event = 4;</code>
    * @return Whether the taskClaimEvent field is set.
    */
   boolean hasTaskClaimEvent();
   /**
-   * <code>.lh_proto.TaskClaimEventPb task_claim_event = 4;</code>
+   * <code>.littlehorse.TaskClaimEventPb task_claim_event = 4;</code>
    * @return The taskClaimEvent.
    */
   io.littlehorse.common.proto.TaskClaimEventPb getTaskClaimEvent();
   /**
-   * <code>.lh_proto.TaskClaimEventPb task_claim_event = 4;</code>
+   * <code>.littlehorse.TaskClaimEventPb task_claim_event = 4;</code>
    */
   io.littlehorse.common.proto.TaskClaimEventPbOrBuilder getTaskClaimEventOrBuilder();
 
   /**
-   * <code>.lh_proto.PutWfSpecPb put_wf_spec = 6;</code>
+   * <code>.littlehorse.PutWfSpecPb put_wf_spec = 6;</code>
    * @return Whether the putWfSpec field is set.
    */
   boolean hasPutWfSpec();
   /**
-   * <code>.lh_proto.PutWfSpecPb put_wf_spec = 6;</code>
+   * <code>.littlehorse.PutWfSpecPb put_wf_spec = 6;</code>
    * @return The putWfSpec.
    */
   io.littlehorse.jlib.common.proto.PutWfSpecPb getPutWfSpec();
   /**
-   * <code>.lh_proto.PutWfSpecPb put_wf_spec = 6;</code>
+   * <code>.littlehorse.PutWfSpecPb put_wf_spec = 6;</code>
    */
   io.littlehorse.jlib.common.proto.PutWfSpecPbOrBuilder getPutWfSpecOrBuilder();
 
   /**
-   * <code>.lh_proto.PutTaskDefPb put_task_def = 7;</code>
+   * <code>.littlehorse.PutTaskDefPb put_task_def = 7;</code>
    * @return Whether the putTaskDef field is set.
    */
   boolean hasPutTaskDef();
   /**
-   * <code>.lh_proto.PutTaskDefPb put_task_def = 7;</code>
+   * <code>.littlehorse.PutTaskDefPb put_task_def = 7;</code>
    * @return The putTaskDef.
    */
   io.littlehorse.jlib.common.proto.PutTaskDefPb getPutTaskDef();
   /**
-   * <code>.lh_proto.PutTaskDefPb put_task_def = 7;</code>
+   * <code>.littlehorse.PutTaskDefPb put_task_def = 7;</code>
    */
   io.littlehorse.jlib.common.proto.PutTaskDefPbOrBuilder getPutTaskDefOrBuilder();
 
   /**
-   * <code>.lh_proto.PutExternalEventDefPb put_external_event_def = 8;</code>
+   * <code>.littlehorse.PutExternalEventDefPb put_external_event_def = 8;</code>
    * @return Whether the putExternalEventDef field is set.
    */
   boolean hasPutExternalEventDef();
   /**
-   * <code>.lh_proto.PutExternalEventDefPb put_external_event_def = 8;</code>
+   * <code>.littlehorse.PutExternalEventDefPb put_external_event_def = 8;</code>
    * @return The putExternalEventDef.
    */
   io.littlehorse.jlib.common.proto.PutExternalEventDefPb getPutExternalEventDef();
   /**
-   * <code>.lh_proto.PutExternalEventDefPb put_external_event_def = 8;</code>
+   * <code>.littlehorse.PutExternalEventDefPb put_external_event_def = 8;</code>
    */
   io.littlehorse.jlib.common.proto.PutExternalEventDefPbOrBuilder getPutExternalEventDefOrBuilder();
 
   /**
-   * <code>.lh_proto.RunWfPb run_wf = 9;</code>
+   * <code>.littlehorse.RunWfPb run_wf = 9;</code>
    * @return Whether the runWf field is set.
    */
   boolean hasRunWf();
   /**
-   * <code>.lh_proto.RunWfPb run_wf = 9;</code>
+   * <code>.littlehorse.RunWfPb run_wf = 9;</code>
    * @return The runWf.
    */
   io.littlehorse.jlib.common.proto.RunWfPb getRunWf();
   /**
-   * <code>.lh_proto.RunWfPb run_wf = 9;</code>
+   * <code>.littlehorse.RunWfPb run_wf = 9;</code>
    */
   io.littlehorse.jlib.common.proto.RunWfPbOrBuilder getRunWfOrBuilder();
 
   /**
-   * <code>.lh_proto.PutExternalEventPb put_external_event = 10;</code>
+   * <code>.littlehorse.PutExternalEventPb put_external_event = 10;</code>
    * @return Whether the putExternalEvent field is set.
    */
   boolean hasPutExternalEvent();
   /**
-   * <code>.lh_proto.PutExternalEventPb put_external_event = 10;</code>
+   * <code>.littlehorse.PutExternalEventPb put_external_event = 10;</code>
    * @return The putExternalEvent.
    */
   io.littlehorse.jlib.common.proto.PutExternalEventPb getPutExternalEvent();
   /**
-   * <code>.lh_proto.PutExternalEventPb put_external_event = 10;</code>
+   * <code>.littlehorse.PutExternalEventPb put_external_event = 10;</code>
    */
   io.littlehorse.jlib.common.proto.PutExternalEventPbOrBuilder getPutExternalEventOrBuilder();
 
   /**
-   * <code>.lh_proto.StopWfRunPb stop_wf_run = 11;</code>
+   * <code>.littlehorse.StopWfRunPb stop_wf_run = 11;</code>
    * @return Whether the stopWfRun field is set.
    */
   boolean hasStopWfRun();
   /**
-   * <code>.lh_proto.StopWfRunPb stop_wf_run = 11;</code>
+   * <code>.littlehorse.StopWfRunPb stop_wf_run = 11;</code>
    * @return The stopWfRun.
    */
   io.littlehorse.jlib.common.proto.StopWfRunPb getStopWfRun();
   /**
-   * <code>.lh_proto.StopWfRunPb stop_wf_run = 11;</code>
+   * <code>.littlehorse.StopWfRunPb stop_wf_run = 11;</code>
    */
   io.littlehorse.jlib.common.proto.StopWfRunPbOrBuilder getStopWfRunOrBuilder();
 
   /**
-   * <code>.lh_proto.ResumeWfRunPb resume_wf_run = 12;</code>
+   * <code>.littlehorse.ResumeWfRunPb resume_wf_run = 12;</code>
    * @return Whether the resumeWfRun field is set.
    */
   boolean hasResumeWfRun();
   /**
-   * <code>.lh_proto.ResumeWfRunPb resume_wf_run = 12;</code>
+   * <code>.littlehorse.ResumeWfRunPb resume_wf_run = 12;</code>
    * @return The resumeWfRun.
    */
   io.littlehorse.jlib.common.proto.ResumeWfRunPb getResumeWfRun();
   /**
-   * <code>.lh_proto.ResumeWfRunPb resume_wf_run = 12;</code>
+   * <code>.littlehorse.ResumeWfRunPb resume_wf_run = 12;</code>
    */
   io.littlehorse.jlib.common.proto.ResumeWfRunPbOrBuilder getResumeWfRunOrBuilder();
 
   /**
-   * <code>.lh_proto.SleepNodeMaturedPb sleep_node_matured = 13;</code>
+   * <code>.littlehorse.SleepNodeMaturedPb sleep_node_matured = 13;</code>
    * @return Whether the sleepNodeMatured field is set.
    */
   boolean hasSleepNodeMatured();
   /**
-   * <code>.lh_proto.SleepNodeMaturedPb sleep_node_matured = 13;</code>
+   * <code>.littlehorse.SleepNodeMaturedPb sleep_node_matured = 13;</code>
    * @return The sleepNodeMatured.
    */
   io.littlehorse.common.proto.SleepNodeMaturedPb getSleepNodeMatured();
   /**
-   * <code>.lh_proto.SleepNodeMaturedPb sleep_node_matured = 13;</code>
+   * <code>.littlehorse.SleepNodeMaturedPb sleep_node_matured = 13;</code>
    */
   io.littlehorse.common.proto.SleepNodeMaturedPbOrBuilder getSleepNodeMaturedOrBuilder();
 
   /**
-   * <code>.lh_proto.DeleteWfRunPb delete_wf_run = 14;</code>
+   * <code>.littlehorse.DeleteWfRunPb delete_wf_run = 14;</code>
    * @return Whether the deleteWfRun field is set.
    */
   boolean hasDeleteWfRun();
   /**
-   * <code>.lh_proto.DeleteWfRunPb delete_wf_run = 14;</code>
+   * <code>.littlehorse.DeleteWfRunPb delete_wf_run = 14;</code>
    * @return The deleteWfRun.
    */
   io.littlehorse.jlib.common.proto.DeleteWfRunPb getDeleteWfRun();
   /**
-   * <code>.lh_proto.DeleteWfRunPb delete_wf_run = 14;</code>
+   * <code>.littlehorse.DeleteWfRunPb delete_wf_run = 14;</code>
    */
   io.littlehorse.jlib.common.proto.DeleteWfRunPbOrBuilder getDeleteWfRunOrBuilder();
 
   /**
-   * <code>.lh_proto.DeleteWfSpecPb delete_wf_spec = 15;</code>
+   * <code>.littlehorse.DeleteWfSpecPb delete_wf_spec = 15;</code>
    * @return Whether the deleteWfSpec field is set.
    */
   boolean hasDeleteWfSpec();
   /**
-   * <code>.lh_proto.DeleteWfSpecPb delete_wf_spec = 15;</code>
+   * <code>.littlehorse.DeleteWfSpecPb delete_wf_spec = 15;</code>
    * @return The deleteWfSpec.
    */
   io.littlehorse.jlib.common.proto.DeleteWfSpecPb getDeleteWfSpec();
   /**
-   * <code>.lh_proto.DeleteWfSpecPb delete_wf_spec = 15;</code>
+   * <code>.littlehorse.DeleteWfSpecPb delete_wf_spec = 15;</code>
    */
   io.littlehorse.jlib.common.proto.DeleteWfSpecPbOrBuilder getDeleteWfSpecOrBuilder();
 
   /**
-   * <code>.lh_proto.DeleteTaskDefPb delete_task_def = 16;</code>
+   * <code>.littlehorse.DeleteTaskDefPb delete_task_def = 16;</code>
    * @return Whether the deleteTaskDef field is set.
    */
   boolean hasDeleteTaskDef();
   /**
-   * <code>.lh_proto.DeleteTaskDefPb delete_task_def = 16;</code>
+   * <code>.littlehorse.DeleteTaskDefPb delete_task_def = 16;</code>
    * @return The deleteTaskDef.
    */
   io.littlehorse.jlib.common.proto.DeleteTaskDefPb getDeleteTaskDef();
   /**
-   * <code>.lh_proto.DeleteTaskDefPb delete_task_def = 16;</code>
+   * <code>.littlehorse.DeleteTaskDefPb delete_task_def = 16;</code>
    */
   io.littlehorse.jlib.common.proto.DeleteTaskDefPbOrBuilder getDeleteTaskDefOrBuilder();
 
   /**
-   * <code>.lh_proto.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+   * <code>.littlehorse.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
    * @return Whether the deleteExternalEventDef field is set.
    */
   boolean hasDeleteExternalEventDef();
   /**
-   * <code>.lh_proto.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+   * <code>.littlehorse.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
    * @return The deleteExternalEventDef.
    */
   io.littlehorse.jlib.common.proto.DeleteExternalEventDefPb getDeleteExternalEventDef();
   /**
-   * <code>.lh_proto.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
+   * <code>.littlehorse.DeleteExternalEventDefPb delete_external_event_def = 17;</code>
    */
   io.littlehorse.jlib.common.proto.DeleteExternalEventDefPbOrBuilder getDeleteExternalEventDefOrBuilder();
 
   /**
-   * <code>.lh_proto.ExternalEventNodeTimeoutPb external_event_timeout = 18;</code>
+   * <code>.littlehorse.ExternalEventNodeTimeoutPb external_event_timeout = 18;</code>
    * @return Whether the externalEventTimeout field is set.
    */
   boolean hasExternalEventTimeout();
   /**
-   * <code>.lh_proto.ExternalEventNodeTimeoutPb external_event_timeout = 18;</code>
+   * <code>.littlehorse.ExternalEventNodeTimeoutPb external_event_timeout = 18;</code>
    * @return The externalEventTimeout.
    */
   io.littlehorse.common.proto.ExternalEventNodeTimeoutPb getExternalEventTimeout();
   /**
-   * <code>.lh_proto.ExternalEventNodeTimeoutPb external_event_timeout = 18;</code>
+   * <code>.littlehorse.ExternalEventNodeTimeoutPb external_event_timeout = 18;</code>
    */
   io.littlehorse.common.proto.ExternalEventNodeTimeoutPbOrBuilder getExternalEventTimeoutOrBuilder();
 

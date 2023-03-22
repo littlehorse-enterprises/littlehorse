@@ -4,7 +4,7 @@
 package io.littlehorse.common.proto;
 
 public interface PartitionBookmarkPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.PartitionBookmarkPb)
+    // @@protoc_insertion_point(interface_extends:littlehorse.PartitionBookmarkPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**

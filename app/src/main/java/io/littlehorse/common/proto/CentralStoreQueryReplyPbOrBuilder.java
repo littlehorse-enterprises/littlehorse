@@ -4,16 +4,16 @@
 package io.littlehorse.common.proto;
 
 public interface CentralStoreQueryReplyPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.CentralStoreQueryReplyPb)
+    // @@protoc_insertion_point(interface_extends:littlehorse.CentralStoreQueryReplyPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+   * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
    * @return The enum numeric value on the wire for code.
    */
   int getCodeValue();
   /**
-   * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+   * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
    * @return The code.
    */
   io.littlehorse.common.proto.StoreQueryStatusPb getCode();

@@ -9,11 +9,11 @@ package io.littlehorse.common.proto;
  * It will be optimized and improved in future revisions.
  * </pre>
  *
- * Protobuf type {@code lh_proto.InternalPollTaskPb}
+ * Protobuf type {@code littlehorse.InternalPollTaskPb}
  */
 public final class InternalPollTaskPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.InternalPollTaskPb)
+    // @@protoc_insertion_point(message_implements:littlehorse.InternalPollTaskPb)
     InternalPollTaskPbOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use InternalPollTaskPb.newBuilder() to construct.
@@ -81,13 +81,13 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_InternalPollTaskPb_descriptor;
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalPollTaskPb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_InternalPollTaskPb_fieldAccessorTable
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalPollTaskPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.common.proto.InternalPollTaskPb.class, io.littlehorse.common.proto.InternalPollTaskPb.Builder.class);
   }
@@ -290,21 +290,21 @@ private static final long serialVersionUID = 0L;
    * It will be optimized and improved in future revisions.
    * </pre>
    *
-   * Protobuf type {@code lh_proto.InternalPollTaskPb}
+   * Protobuf type {@code littlehorse.InternalPollTaskPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.InternalPollTaskPb)
+      // @@protoc_insertion_point(builder_implements:littlehorse.InternalPollTaskPb)
       io.littlehorse.common.proto.InternalPollTaskPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_InternalPollTaskPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalPollTaskPb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_InternalPollTaskPb_fieldAccessorTable
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalPollTaskPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               io.littlehorse.common.proto.InternalPollTaskPb.class, io.littlehorse.common.proto.InternalPollTaskPb.Builder.class);
     }
@@ -335,7 +335,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_InternalPollTaskPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalPollTaskPb_descriptor;
     }
 
     @java.lang.Override
@@ -525,10 +525,10 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.InternalPollTaskPb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.InternalPollTaskPb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.InternalPollTaskPb)
+  // @@protoc_insertion_point(class_scope:littlehorse.InternalPollTaskPb)
   private static final io.littlehorse.common.proto.InternalPollTaskPb DEFAULT_INSTANCE;
   static {
     DEFAULT_INSTANCE = new io.littlehorse.common.proto.InternalPollTaskPb();

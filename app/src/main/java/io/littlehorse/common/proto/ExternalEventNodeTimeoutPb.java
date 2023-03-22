@@ -4,11 +4,11 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf type {@code lh_proto.ExternalEventNodeTimeoutPb}
+ * Protobuf type {@code littlehorse.ExternalEventNodeTimeoutPb}
  */
 public final class ExternalEventNodeTimeoutPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.ExternalEventNodeTimeoutPb)
+    // @@protoc_insertion_point(message_implements:littlehorse.ExternalEventNodeTimeoutPb)
     ExternalEventNodeTimeoutPbOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use ExternalEventNodeTimeoutPb.newBuilder() to construct.
@@ -99,13 +99,13 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_ExternalEventNodeTimeoutPb_descriptor;
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_ExternalEventNodeTimeoutPb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_ExternalEventNodeTimeoutPb_fieldAccessorTable
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_ExternalEventNodeTimeoutPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.common.proto.ExternalEventNodeTimeoutPb.class, io.littlehorse.common.proto.ExternalEventNodeTimeoutPb.Builder.class);
   }
@@ -389,21 +389,21 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.ExternalEventNodeTimeoutPb}
+   * Protobuf type {@code littlehorse.ExternalEventNodeTimeoutPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.ExternalEventNodeTimeoutPb)
+      // @@protoc_insertion_point(builder_implements:littlehorse.ExternalEventNodeTimeoutPb)
       io.littlehorse.common.proto.ExternalEventNodeTimeoutPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_ExternalEventNodeTimeoutPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_ExternalEventNodeTimeoutPb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_ExternalEventNodeTimeoutPb_fieldAccessorTable
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_ExternalEventNodeTimeoutPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               io.littlehorse.common.proto.ExternalEventNodeTimeoutPb.class, io.littlehorse.common.proto.ExternalEventNodeTimeoutPb.Builder.class);
     }
@@ -444,7 +444,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_ExternalEventNodeTimeoutPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_ExternalEventNodeTimeoutPb_descriptor;
     }
 
     @java.lang.Override
@@ -831,10 +831,10 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.ExternalEventNodeTimeoutPb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.ExternalEventNodeTimeoutPb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.ExternalEventNodeTimeoutPb)
+  // @@protoc_insertion_point(class_scope:littlehorse.ExternalEventNodeTimeoutPb)
   private static final io.littlehorse.common.proto.ExternalEventNodeTimeoutPb DEFAULT_INSTANCE;
   static {
     DEFAULT_INSTANCE = new io.littlehorse.common.proto.ExternalEventNodeTimeoutPb();

@@ -4,7 +4,7 @@
 package io.littlehorse.common.proto;
 
 public interface CommandResultPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.CommandResultPb)
+    // @@protoc_insertion_point(interface_extends:littlehorse.CommandResultPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**

@@ -4,15 +4,15 @@
 package io.littlehorse.common.proto;
 
 public interface TagChangesToBroadcastPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.TagChangesToBroadcastPb)
+    // @@protoc_insertion_point(interface_extends:littlehorse.TagChangesToBroadcastPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>map&lt;string, .lh_proto.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
+   * <code>map&lt;string, .littlehorse.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
    */
   int getChangelogCount();
   /**
-   * <code>map&lt;string, .lh_proto.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
+   * <code>map&lt;string, .littlehorse.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
    */
   boolean containsChangelog(
       java.lang.String key);
@@ -23,19 +23,19 @@ public interface TagChangesToBroadcastPbOrBuilder extends
   java.util.Map<java.lang.String, io.littlehorse.common.proto.DiscreteTagLocalCounterPb>
   getChangelog();
   /**
-   * <code>map&lt;string, .lh_proto.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
+   * <code>map&lt;string, .littlehorse.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
    */
   java.util.Map<java.lang.String, io.littlehorse.common.proto.DiscreteTagLocalCounterPb>
   getChangelogMap();
   /**
-   * <code>map&lt;string, .lh_proto.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
+   * <code>map&lt;string, .littlehorse.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
    */
 
   io.littlehorse.common.proto.DiscreteTagLocalCounterPb getChangelogOrDefault(
       java.lang.String key,
       io.littlehorse.common.proto.DiscreteTagLocalCounterPb defaultValue);
   /**
-   * <code>map&lt;string, .lh_proto.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
+   * <code>map&lt;string, .littlehorse.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
    */
 
   io.littlehorse.common.proto.DiscreteTagLocalCounterPb getChangelogOrThrow(

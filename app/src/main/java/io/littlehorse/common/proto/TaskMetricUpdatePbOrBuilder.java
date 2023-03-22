@@ -4,7 +4,7 @@
 package io.littlehorse.common.proto;
 
 public interface TaskMetricUpdatePbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.TaskMetricUpdatePb)
+    // @@protoc_insertion_point(interface_extends:littlehorse.TaskMetricUpdatePb)
     com.google.protobuf.MessageOrBuilder {
 
   /**
@@ -23,12 +23,12 @@ public interface TaskMetricUpdatePbOrBuilder extends
   com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder();
 
   /**
-   * <code>.lh_proto.MetricsWindowLengthPb type = 2;</code>
+   * <code>.littlehorse.MetricsWindowLengthPb type = 2;</code>
    * @return The enum numeric value on the wire for type.
    */
   int getTypeValue();
   /**
-   * <code>.lh_proto.MetricsWindowLengthPb type = 2;</code>
+   * <code>.littlehorse.MetricsWindowLengthPb type = 2;</code>
    * @return The type.
    */
   io.littlehorse.jlib.common.proto.MetricsWindowLengthPb getType();

@@ -4,11 +4,11 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf type {@code lh_proto.TagsCachePb}
+ * Protobuf type {@code littlehorse.TagsCachePb}
  */
 public final class TagsCachePb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.TagsCachePb)
+    // @@protoc_insertion_point(message_implements:littlehorse.TagsCachePb)
     TagsCachePbOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use TagsCachePb.newBuilder() to construct.
@@ -83,13 +83,13 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_TagsCachePb_descriptor;
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_TagsCachePb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_TagsCachePb_fieldAccessorTable
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_TagsCachePb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.common.proto.TagsCachePb.class, io.littlehorse.common.proto.TagsCachePb.Builder.class);
   }
@@ -291,21 +291,21 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.TagsCachePb}
+   * Protobuf type {@code littlehorse.TagsCachePb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.TagsCachePb)
+      // @@protoc_insertion_point(builder_implements:littlehorse.TagsCachePb)
       io.littlehorse.common.proto.TagsCachePbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_TagsCachePb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_TagsCachePb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_TagsCachePb_fieldAccessorTable
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_TagsCachePb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               io.littlehorse.common.proto.TagsCachePb.class, io.littlehorse.common.proto.TagsCachePb.Builder.class);
     }
@@ -336,7 +336,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_TagsCachePb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_TagsCachePb_descriptor;
     }
 
     @java.lang.Override
@@ -572,10 +572,10 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.TagsCachePb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.TagsCachePb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.TagsCachePb)
+  // @@protoc_insertion_point(class_scope:littlehorse.TagsCachePb)
   private static final io.littlehorse.common.proto.TagsCachePb DEFAULT_INSTANCE;
   static {
     DEFAULT_INSTANCE = new io.littlehorse.common.proto.TagsCachePb();

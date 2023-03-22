@@ -8,11 +8,11 @@ package io.littlehorse.common.proto;
  * all scans have the same output
  * </pre>
  *
- * Protobuf type {@code lh_proto.InternalSearchReplyPb}
+ * Protobuf type {@code littlehorse.InternalSearchReplyPb}
  */
 public final class InternalSearchReplyPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.InternalSearchReplyPb)
+    // @@protoc_insertion_point(message_implements:littlehorse.InternalSearchReplyPb)
     InternalSearchReplyPbOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use InternalSearchReplyPb.newBuilder() to construct.
@@ -114,13 +114,13 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_InternalSearchReplyPb_descriptor;
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalSearchReplyPb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_InternalSearchReplyPb_fieldAccessorTable
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalSearchReplyPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.common.proto.InternalSearchReplyPb.class, io.littlehorse.common.proto.InternalSearchReplyPb.Builder.class);
   }
@@ -129,14 +129,14 @@ private static final long serialVersionUID = 0L;
   public static final int CODE_FIELD_NUMBER = 1;
   private int code_;
   /**
-   * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+   * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
    * @return The enum numeric value on the wire for code.
    */
   @java.lang.Override public int getCodeValue() {
     return code_;
   }
   /**
-   * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+   * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
    * @return The code.
    */
   @java.lang.Override public io.littlehorse.common.proto.StoreQueryStatusPb getCode() {
@@ -183,7 +183,7 @@ private static final long serialVersionUID = 0L;
   public static final int UPDATED_BOOKMARK_FIELD_NUMBER = 3;
   private io.littlehorse.common.proto.BookmarkPb updatedBookmark_;
   /**
-   * <code>.lh_proto.BookmarkPb updated_bookmark = 3;</code>
+   * <code>.littlehorse.BookmarkPb updated_bookmark = 3;</code>
    * @return Whether the updatedBookmark field is set.
    */
   @java.lang.Override
@@ -191,7 +191,7 @@ private static final long serialVersionUID = 0L;
     return updatedBookmark_ != null;
   }
   /**
-   * <code>.lh_proto.BookmarkPb updated_bookmark = 3;</code>
+   * <code>.littlehorse.BookmarkPb updated_bookmark = 3;</code>
    * @return The updatedBookmark.
    */
   @java.lang.Override
@@ -199,7 +199,7 @@ private static final long serialVersionUID = 0L;
     return updatedBookmark_ == null ? io.littlehorse.common.proto.BookmarkPb.getDefaultInstance() : updatedBookmark_;
   }
   /**
-   * <code>.lh_proto.BookmarkPb updated_bookmark = 3;</code>
+   * <code>.littlehorse.BookmarkPb updated_bookmark = 3;</code>
    */
   @java.lang.Override
   public io.littlehorse.common.proto.BookmarkPbOrBuilder getUpdatedBookmarkOrBuilder() {
@@ -459,21 +459,21 @@ private static final long serialVersionUID = 0L;
    * all scans have the same output
    * </pre>
    *
-   * Protobuf type {@code lh_proto.InternalSearchReplyPb}
+   * Protobuf type {@code littlehorse.InternalSearchReplyPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.InternalSearchReplyPb)
+      // @@protoc_insertion_point(builder_implements:littlehorse.InternalSearchReplyPb)
       io.littlehorse.common.proto.InternalSearchReplyPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_InternalSearchReplyPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalSearchReplyPb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_InternalSearchReplyPb_fieldAccessorTable
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalSearchReplyPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               io.littlehorse.common.proto.InternalSearchReplyPb.class, io.littlehorse.common.proto.InternalSearchReplyPb.Builder.class);
     }
@@ -514,7 +514,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_InternalSearchReplyPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalSearchReplyPb_descriptor;
     }
 
     @java.lang.Override
@@ -653,14 +653,14 @@ private static final long serialVersionUID = 0L;
 
     private int code_ = 0;
     /**
-     * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+     * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
      * @return The enum numeric value on the wire for code.
      */
     @java.lang.Override public int getCodeValue() {
       return code_;
     }
     /**
-     * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+     * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
      * @param value The enum numeric value on the wire for code to set.
      * @return This builder for chaining.
      */
@@ -671,7 +671,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+     * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
      * @return The code.
      */
     @java.lang.Override
@@ -681,7 +681,7 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.common.proto.StoreQueryStatusPb.UNRECOGNIZED : result;
     }
     /**
-     * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+     * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
      * @param value The code to set.
      * @return This builder for chaining.
      */
@@ -695,7 +695,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+     * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearCode() {
@@ -819,14 +819,14 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.BookmarkPb, io.littlehorse.common.proto.BookmarkPb.Builder, io.littlehorse.common.proto.BookmarkPbOrBuilder> updatedBookmarkBuilder_;
     /**
-     * <code>.lh_proto.BookmarkPb updated_bookmark = 3;</code>
+     * <code>.littlehorse.BookmarkPb updated_bookmark = 3;</code>
      * @return Whether the updatedBookmark field is set.
      */
     public boolean hasUpdatedBookmark() {
       return updatedBookmarkBuilder_ != null || updatedBookmark_ != null;
     }
     /**
-     * <code>.lh_proto.BookmarkPb updated_bookmark = 3;</code>
+     * <code>.littlehorse.BookmarkPb updated_bookmark = 3;</code>
      * @return The updatedBookmark.
      */
     public io.littlehorse.common.proto.BookmarkPb getUpdatedBookmark() {
@@ -837,7 +837,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.lh_proto.BookmarkPb updated_bookmark = 3;</code>
+     * <code>.littlehorse.BookmarkPb updated_bookmark = 3;</code>
      */
     public Builder setUpdatedBookmark(io.littlehorse.common.proto.BookmarkPb value) {
       if (updatedBookmarkBuilder_ == null) {
@@ -853,7 +853,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.BookmarkPb updated_bookmark = 3;</code>
+     * <code>.littlehorse.BookmarkPb updated_bookmark = 3;</code>
      */
     public Builder setUpdatedBookmark(
         io.littlehorse.common.proto.BookmarkPb.Builder builderForValue) {
@@ -867,7 +867,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.BookmarkPb updated_bookmark = 3;</code>
+     * <code>.littlehorse.BookmarkPb updated_bookmark = 3;</code>
      */
     public Builder mergeUpdatedBookmark(io.littlehorse.common.proto.BookmarkPb value) {
       if (updatedBookmarkBuilder_ == null) {
@@ -885,7 +885,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.BookmarkPb updated_bookmark = 3;</code>
+     * <code>.littlehorse.BookmarkPb updated_bookmark = 3;</code>
      */
     public Builder clearUpdatedBookmark() {
       if (updatedBookmarkBuilder_ == null) {
@@ -899,7 +899,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.BookmarkPb updated_bookmark = 3;</code>
+     * <code>.littlehorse.BookmarkPb updated_bookmark = 3;</code>
      */
     public io.littlehorse.common.proto.BookmarkPb.Builder getUpdatedBookmarkBuilder() {
       
@@ -907,7 +907,7 @@ private static final long serialVersionUID = 0L;
       return getUpdatedBookmarkFieldBuilder().getBuilder();
     }
     /**
-     * <code>.lh_proto.BookmarkPb updated_bookmark = 3;</code>
+     * <code>.littlehorse.BookmarkPb updated_bookmark = 3;</code>
      */
     public io.littlehorse.common.proto.BookmarkPbOrBuilder getUpdatedBookmarkOrBuilder() {
       if (updatedBookmarkBuilder_ != null) {
@@ -918,7 +918,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.lh_proto.BookmarkPb updated_bookmark = 3;</code>
+     * <code>.littlehorse.BookmarkPb updated_bookmark = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.BookmarkPb, io.littlehorse.common.proto.BookmarkPb.Builder, io.littlehorse.common.proto.BookmarkPbOrBuilder> 
@@ -1029,10 +1029,10 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.InternalSearchReplyPb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.InternalSearchReplyPb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.InternalSearchReplyPb)
+  // @@protoc_insertion_point(class_scope:littlehorse.InternalSearchReplyPb)
   private static final io.littlehorse.common.proto.InternalSearchReplyPb DEFAULT_INSTANCE;
   static {
     DEFAULT_INSTANCE = new io.littlehorse.common.proto.InternalSearchReplyPb();

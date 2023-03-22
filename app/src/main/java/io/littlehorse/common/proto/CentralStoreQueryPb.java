@@ -4,11 +4,11 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf type {@code lh_proto.CentralStoreQueryPb}
+ * Protobuf type {@code littlehorse.CentralStoreQueryPb}
  */
 public final class CentralStoreQueryPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.CentralStoreQueryPb)
+    // @@protoc_insertion_point(message_implements:littlehorse.CentralStoreQueryPb)
     CentralStoreQueryPbOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use CentralStoreQueryPb.newBuilder() to construct.
@@ -100,19 +100,19 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_CentralStoreQueryPb_descriptor;
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_CentralStoreQueryPb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_CentralStoreQueryPb_fieldAccessorTable
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_CentralStoreQueryPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.common.proto.CentralStoreQueryPb.class, io.littlehorse.common.proto.CentralStoreQueryPb.Builder.class);
   }
 
   public interface CentralStoreSubQueryPbOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb)
+      // @@protoc_insertion_point(interface_extends:littlehorse.CentralStoreQueryPb.CentralStoreSubQueryPb)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -142,11 +142,11 @@ private static final long serialVersionUID = 0L;
     public io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.QueryCase getQueryCase();
   }
   /**
-   * Protobuf type {@code lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb}
+   * Protobuf type {@code littlehorse.CentralStoreQueryPb.CentralStoreSubQueryPb}
    */
   public static final class CentralStoreSubQueryPb extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb)
+      // @@protoc_insertion_point(message_implements:littlehorse.CentralStoreQueryPb.CentralStoreSubQueryPb)
       CentralStoreSubQueryPbOrBuilder {
   private static final long serialVersionUID = 0L;
     // Use CentralStoreSubQueryPb.newBuilder() to construct.
@@ -219,13 +219,13 @@ private static final long serialVersionUID = 0L;
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_CentralStoreQueryPb_CentralStoreSubQueryPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_CentralStoreQueryPb_CentralStoreSubQueryPb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_CentralStoreQueryPb_CentralStoreSubQueryPb_fieldAccessorTable
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_CentralStoreQueryPb_CentralStoreSubQueryPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.class, io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.Builder.class);
     }
@@ -543,21 +543,21 @@ private static final long serialVersionUID = 0L;
       return builder;
     }
     /**
-     * Protobuf type {@code lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb}
+     * Protobuf type {@code littlehorse.CentralStoreQueryPb.CentralStoreSubQueryPb}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb)
+        // @@protoc_insertion_point(builder_implements:littlehorse.CentralStoreQueryPb.CentralStoreSubQueryPb)
         io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPbOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_CentralStoreQueryPb_CentralStoreSubQueryPb_descriptor;
+        return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_CentralStoreQueryPb_CentralStoreSubQueryPb_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_CentralStoreQueryPb_CentralStoreSubQueryPb_fieldAccessorTable
+        return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_CentralStoreQueryPb_CentralStoreSubQueryPb_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.class, io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.Builder.class);
       }
@@ -588,7 +588,7 @@ private static final long serialVersionUID = 0L;
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_CentralStoreQueryPb_CentralStoreSubQueryPb_descriptor;
+        return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_CentralStoreQueryPb_CentralStoreSubQueryPb_descriptor;
       }
 
       @java.lang.Override
@@ -914,10 +914,10 @@ private static final long serialVersionUID = 0L;
       }
 
 
-      // @@protoc_insertion_point(builder_scope:lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb)
+      // @@protoc_insertion_point(builder_scope:littlehorse.CentralStoreQueryPb.CentralStoreSubQueryPb)
     }
 
-    // @@protoc_insertion_point(class_scope:lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb)
+    // @@protoc_insertion_point(class_scope:littlehorse.CentralStoreQueryPb.CentralStoreSubQueryPb)
     private static final io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb DEFAULT_INSTANCE;
     static {
       DEFAULT_INSTANCE = new io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb();
@@ -988,7 +988,7 @@ private static final long serialVersionUID = 0L;
   public static final int QUERY_FIELD_NUMBER = 3;
   private io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb query_;
   /**
-   * <code>.lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
+   * <code>.littlehorse.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
    * @return Whether the query field is set.
    */
   @java.lang.Override
@@ -996,7 +996,7 @@ private static final long serialVersionUID = 0L;
     return query_ != null;
   }
   /**
-   * <code>.lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
+   * <code>.littlehorse.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
    * @return The query.
    */
   @java.lang.Override
@@ -1004,7 +1004,7 @@ private static final long serialVersionUID = 0L;
     return query_ == null ? io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.getDefaultInstance() : query_;
   }
   /**
-   * <code>.lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
+   * <code>.littlehorse.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
    */
   @java.lang.Override
   public io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPbOrBuilder getQueryOrBuilder() {
@@ -1248,21 +1248,21 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.CentralStoreQueryPb}
+   * Protobuf type {@code littlehorse.CentralStoreQueryPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.CentralStoreQueryPb)
+      // @@protoc_insertion_point(builder_implements:littlehorse.CentralStoreQueryPb)
       io.littlehorse.common.proto.CentralStoreQueryPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_CentralStoreQueryPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_CentralStoreQueryPb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_CentralStoreQueryPb_fieldAccessorTable
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_CentralStoreQueryPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               io.littlehorse.common.proto.CentralStoreQueryPb.class, io.littlehorse.common.proto.CentralStoreQueryPb.Builder.class);
     }
@@ -1303,7 +1303,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_CentralStoreQueryPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_CentralStoreQueryPb_descriptor;
     }
 
     @java.lang.Override
@@ -1502,14 +1502,14 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb, io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.Builder, io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPbOrBuilder> queryBuilder_;
     /**
-     * <code>.lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
+     * <code>.littlehorse.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
      * @return Whether the query field is set.
      */
     public boolean hasQuery() {
       return queryBuilder_ != null || query_ != null;
     }
     /**
-     * <code>.lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
+     * <code>.littlehorse.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
      * @return The query.
      */
     public io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb getQuery() {
@@ -1520,7 +1520,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
+     * <code>.littlehorse.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
      */
     public Builder setQuery(io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb value) {
       if (queryBuilder_ == null) {
@@ -1536,7 +1536,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
+     * <code>.littlehorse.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
      */
     public Builder setQuery(
         io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.Builder builderForValue) {
@@ -1550,7 +1550,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
+     * <code>.littlehorse.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
      */
     public Builder mergeQuery(io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb value) {
       if (queryBuilder_ == null) {
@@ -1568,7 +1568,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
+     * <code>.littlehorse.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
      */
     public Builder clearQuery() {
       if (queryBuilder_ == null) {
@@ -1582,7 +1582,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
+     * <code>.littlehorse.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
      */
     public io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.Builder getQueryBuilder() {
       
@@ -1590,7 +1590,7 @@ private static final long serialVersionUID = 0L;
       return getQueryFieldBuilder().getBuilder();
     }
     /**
-     * <code>.lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
+     * <code>.littlehorse.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
      */
     public io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPbOrBuilder getQueryOrBuilder() {
       if (queryBuilder_ != null) {
@@ -1601,7 +1601,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.lh_proto.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
+     * <code>.littlehorse.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb, io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.Builder, io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPbOrBuilder> 
@@ -1705,10 +1705,10 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.CentralStoreQueryPb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.CentralStoreQueryPb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.CentralStoreQueryPb)
+  // @@protoc_insertion_point(class_scope:littlehorse.CentralStoreQueryPb)
   private static final io.littlehorse.common.proto.CentralStoreQueryPb DEFAULT_INSTANCE;
   static {
     DEFAULT_INSTANCE = new io.littlehorse.common.proto.CentralStoreQueryPb();

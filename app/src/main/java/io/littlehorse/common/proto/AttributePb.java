@@ -4,11 +4,11 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf type {@code lh_proto.AttributePb}
+ * Protobuf type {@code littlehorse.AttributePb}
  */
 public final class AttributePb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.AttributePb)
+    // @@protoc_insertion_point(message_implements:littlehorse.AttributePb)
     AttributePbOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use AttributePb.newBuilder() to construct.
@@ -83,13 +83,13 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_AttributePb_descriptor;
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_AttributePb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_AttributePb_fieldAccessorTable
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_AttributePb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.common.proto.AttributePb.class, io.littlehorse.common.proto.AttributePb.Builder.class);
   }
@@ -335,21 +335,21 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.AttributePb}
+   * Protobuf type {@code littlehorse.AttributePb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.AttributePb)
+      // @@protoc_insertion_point(builder_implements:littlehorse.AttributePb)
       io.littlehorse.common.proto.AttributePbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_AttributePb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_AttributePb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_AttributePb_fieldAccessorTable
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_AttributePb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               io.littlehorse.common.proto.AttributePb.class, io.littlehorse.common.proto.AttributePb.Builder.class);
     }
@@ -382,7 +382,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_AttributePb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_AttributePb_descriptor;
     }
 
     @java.lang.Override
@@ -653,10 +653,10 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.AttributePb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.AttributePb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.AttributePb)
+  // @@protoc_insertion_point(class_scope:littlehorse.AttributePb)
   private static final io.littlehorse.common.proto.AttributePb DEFAULT_INSTANCE;
   static {
     DEFAULT_INSTANCE = new io.littlehorse.common.proto.AttributePb();

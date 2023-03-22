@@ -4,7 +4,7 @@
 package io.littlehorse.common.proto;
 
 public interface TaskClaimEventPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.TaskClaimEventPb)
+    // @@protoc_insertion_point(interface_extends:littlehorse.TaskClaimEventPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**

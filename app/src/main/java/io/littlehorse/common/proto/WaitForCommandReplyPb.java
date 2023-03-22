@@ -4,11 +4,11 @@
 package io.littlehorse.common.proto;
 
 /**
- * Protobuf type {@code lh_proto.WaitForCommandReplyPb}
+ * Protobuf type {@code littlehorse.WaitForCommandReplyPb}
  */
 public final class WaitForCommandReplyPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.WaitForCommandReplyPb)
+    // @@protoc_insertion_point(message_implements:littlehorse.WaitForCommandReplyPb)
     WaitForCommandReplyPbOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use WaitForCommandReplyPb.newBuilder() to construct.
@@ -97,13 +97,13 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_WaitForCommandReplyPb_descriptor;
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_WaitForCommandReplyPb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_WaitForCommandReplyPb_fieldAccessorTable
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_WaitForCommandReplyPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.common.proto.WaitForCommandReplyPb.class, io.littlehorse.common.proto.WaitForCommandReplyPb.Builder.class);
   }
@@ -112,14 +112,14 @@ private static final long serialVersionUID = 0L;
   public static final int CODE_FIELD_NUMBER = 1;
   private int code_;
   /**
-   * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+   * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
    * @return The enum numeric value on the wire for code.
    */
   @java.lang.Override public int getCodeValue() {
     return code_;
   }
   /**
-   * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+   * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
    * @return The code.
    */
   @java.lang.Override public io.littlehorse.common.proto.StoreQueryStatusPb getCode() {
@@ -131,7 +131,7 @@ private static final long serialVersionUID = 0L;
   public static final int RESULT_FIELD_NUMBER = 2;
   private io.littlehorse.common.proto.CommandResultPb result_;
   /**
-   * <code>.lh_proto.CommandResultPb result = 2;</code>
+   * <code>.littlehorse.CommandResultPb result = 2;</code>
    * @return Whether the result field is set.
    */
   @java.lang.Override
@@ -139,7 +139,7 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>.lh_proto.CommandResultPb result = 2;</code>
+   * <code>.littlehorse.CommandResultPb result = 2;</code>
    * @return The result.
    */
   @java.lang.Override
@@ -147,7 +147,7 @@ private static final long serialVersionUID = 0L;
     return result_ == null ? io.littlehorse.common.proto.CommandResultPb.getDefaultInstance() : result_;
   }
   /**
-   * <code>.lh_proto.CommandResultPb result = 2;</code>
+   * <code>.littlehorse.CommandResultPb result = 2;</code>
    */
   @java.lang.Override
   public io.littlehorse.common.proto.CommandResultPbOrBuilder getResultOrBuilder() {
@@ -386,21 +386,21 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code lh_proto.WaitForCommandReplyPb}
+   * Protobuf type {@code littlehorse.WaitForCommandReplyPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.WaitForCommandReplyPb)
+      // @@protoc_insertion_point(builder_implements:littlehorse.WaitForCommandReplyPb)
       io.littlehorse.common.proto.WaitForCommandReplyPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_WaitForCommandReplyPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_WaitForCommandReplyPb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_WaitForCommandReplyPb_fieldAccessorTable
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_WaitForCommandReplyPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               io.littlehorse.common.proto.WaitForCommandReplyPb.class, io.littlehorse.common.proto.WaitForCommandReplyPb.Builder.class);
     }
@@ -440,7 +440,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_WaitForCommandReplyPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_WaitForCommandReplyPb_descriptor;
     }
 
     @java.lang.Override
@@ -567,14 +567,14 @@ private static final long serialVersionUID = 0L;
 
     private int code_ = 0;
     /**
-     * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+     * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
      * @return The enum numeric value on the wire for code.
      */
     @java.lang.Override public int getCodeValue() {
       return code_;
     }
     /**
-     * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+     * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
      * @param value The enum numeric value on the wire for code to set.
      * @return This builder for chaining.
      */
@@ -585,7 +585,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+     * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
      * @return The code.
      */
     @java.lang.Override
@@ -595,7 +595,7 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.common.proto.StoreQueryStatusPb.UNRECOGNIZED : result;
     }
     /**
-     * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+     * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
      * @param value The code to set.
      * @return This builder for chaining.
      */
@@ -609,7 +609,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+     * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearCode() {
@@ -623,14 +623,14 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.CommandResultPb, io.littlehorse.common.proto.CommandResultPb.Builder, io.littlehorse.common.proto.CommandResultPbOrBuilder> resultBuilder_;
     /**
-     * <code>.lh_proto.CommandResultPb result = 2;</code>
+     * <code>.littlehorse.CommandResultPb result = 2;</code>
      * @return Whether the result field is set.
      */
     public boolean hasResult() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>.lh_proto.CommandResultPb result = 2;</code>
+     * <code>.littlehorse.CommandResultPb result = 2;</code>
      * @return The result.
      */
     public io.littlehorse.common.proto.CommandResultPb getResult() {
@@ -641,7 +641,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.lh_proto.CommandResultPb result = 2;</code>
+     * <code>.littlehorse.CommandResultPb result = 2;</code>
      */
     public Builder setResult(io.littlehorse.common.proto.CommandResultPb value) {
       if (resultBuilder_ == null) {
@@ -657,7 +657,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.CommandResultPb result = 2;</code>
+     * <code>.littlehorse.CommandResultPb result = 2;</code>
      */
     public Builder setResult(
         io.littlehorse.common.proto.CommandResultPb.Builder builderForValue) {
@@ -671,7 +671,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.CommandResultPb result = 2;</code>
+     * <code>.littlehorse.CommandResultPb result = 2;</code>
      */
     public Builder mergeResult(io.littlehorse.common.proto.CommandResultPb value) {
       if (resultBuilder_ == null) {
@@ -691,7 +691,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.CommandResultPb result = 2;</code>
+     * <code>.littlehorse.CommandResultPb result = 2;</code>
      */
     public Builder clearResult() {
       if (resultBuilder_ == null) {
@@ -704,7 +704,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.lh_proto.CommandResultPb result = 2;</code>
+     * <code>.littlehorse.CommandResultPb result = 2;</code>
      */
     public io.littlehorse.common.proto.CommandResultPb.Builder getResultBuilder() {
       bitField0_ |= 0x00000001;
@@ -712,7 +712,7 @@ private static final long serialVersionUID = 0L;
       return getResultFieldBuilder().getBuilder();
     }
     /**
-     * <code>.lh_proto.CommandResultPb result = 2;</code>
+     * <code>.littlehorse.CommandResultPb result = 2;</code>
      */
     public io.littlehorse.common.proto.CommandResultPbOrBuilder getResultOrBuilder() {
       if (resultBuilder_ != null) {
@@ -723,7 +723,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>.lh_proto.CommandResultPb result = 2;</code>
+     * <code>.littlehorse.CommandResultPb result = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.CommandResultPb, io.littlehorse.common.proto.CommandResultPb.Builder, io.littlehorse.common.proto.CommandResultPbOrBuilder> 
@@ -834,10 +834,10 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.WaitForCommandReplyPb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.WaitForCommandReplyPb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.WaitForCommandReplyPb)
+  // @@protoc_insertion_point(class_scope:littlehorse.WaitForCommandReplyPb)
   private static final io.littlehorse.common.proto.WaitForCommandReplyPb DEFAULT_INSTANCE;
   static {
     DEFAULT_INSTANCE = new io.littlehorse.common.proto.WaitForCommandReplyPb();

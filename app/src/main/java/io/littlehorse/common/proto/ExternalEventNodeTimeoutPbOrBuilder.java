@@ -4,7 +4,7 @@
 package io.littlehorse.common.proto;
 
 public interface ExternalEventNodeTimeoutPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.ExternalEventNodeTimeoutPb)
+    // @@protoc_insertion_point(interface_extends:littlehorse.ExternalEventNodeTimeoutPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**

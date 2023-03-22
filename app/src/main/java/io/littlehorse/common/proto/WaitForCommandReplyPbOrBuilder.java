@@ -4,32 +4,32 @@
 package io.littlehorse.common.proto;
 
 public interface WaitForCommandReplyPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.WaitForCommandReplyPb)
+    // @@protoc_insertion_point(interface_extends:littlehorse.WaitForCommandReplyPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+   * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
    * @return The enum numeric value on the wire for code.
    */
   int getCodeValue();
   /**
-   * <code>.lh_proto.StoreQueryStatusPb code = 1;</code>
+   * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
    * @return The code.
    */
   io.littlehorse.common.proto.StoreQueryStatusPb getCode();
 
   /**
-   * <code>.lh_proto.CommandResultPb result = 2;</code>
+   * <code>.littlehorse.CommandResultPb result = 2;</code>
    * @return Whether the result field is set.
    */
   boolean hasResult();
   /**
-   * <code>.lh_proto.CommandResultPb result = 2;</code>
+   * <code>.littlehorse.CommandResultPb result = 2;</code>
    * @return The result.
    */
   io.littlehorse.common.proto.CommandResultPb getResult();
   /**
-   * <code>.lh_proto.CommandResultPb result = 2;</code>
+   * <code>.littlehorse.CommandResultPb result = 2;</code>
    */
   io.littlehorse.common.proto.CommandResultPbOrBuilder getResultOrBuilder();
 

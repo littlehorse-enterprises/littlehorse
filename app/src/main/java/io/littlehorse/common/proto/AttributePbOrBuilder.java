@@ -4,7 +4,7 @@
 package io.littlehorse.common.proto;
 
 public interface AttributePbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.AttributePb)
+    // @@protoc_insertion_point(interface_extends:littlehorse.AttributePb)
     com.google.protobuf.MessageOrBuilder {
 
   /**

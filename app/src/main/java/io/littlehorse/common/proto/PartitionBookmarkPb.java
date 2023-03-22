@@ -8,11 +8,11 @@ package io.littlehorse.common.proto;
  * The following protobuf definitions are used for paginated responses.
  * </pre>
  *
- * Protobuf type {@code lh_proto.PartitionBookmarkPb}
+ * Protobuf type {@code littlehorse.PartitionBookmarkPb}
  */
 public final class PartitionBookmarkPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:lh_proto.PartitionBookmarkPb)
+    // @@protoc_insertion_point(message_implements:littlehorse.PartitionBookmarkPb)
     PartitionBookmarkPbOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use PartitionBookmarkPb.newBuilder() to construct.
@@ -86,13 +86,13 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_PartitionBookmarkPb_descriptor;
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_PartitionBookmarkPb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_PartitionBookmarkPb_fieldAccessorTable
+    return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_PartitionBookmarkPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             io.littlehorse.common.proto.PartitionBookmarkPb.class, io.littlehorse.common.proto.PartitionBookmarkPb.Builder.class);
   }
@@ -330,21 +330,21 @@ private static final long serialVersionUID = 0L;
    * The following protobuf definitions are used for paginated responses.
    * </pre>
    *
-   * Protobuf type {@code lh_proto.PartitionBookmarkPb}
+   * Protobuf type {@code littlehorse.PartitionBookmarkPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:lh_proto.PartitionBookmarkPb)
+      // @@protoc_insertion_point(builder_implements:littlehorse.PartitionBookmarkPb)
       io.littlehorse.common.proto.PartitionBookmarkPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_PartitionBookmarkPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_PartitionBookmarkPb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_PartitionBookmarkPb_fieldAccessorTable
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_PartitionBookmarkPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               io.littlehorse.common.proto.PartitionBookmarkPb.class, io.littlehorse.common.proto.PartitionBookmarkPb.Builder.class);
     }
@@ -377,7 +377,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_lh_proto_PartitionBookmarkPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_PartitionBookmarkPb_descriptor;
     }
 
     @java.lang.Override
@@ -617,10 +617,10 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:lh_proto.PartitionBookmarkPb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.PartitionBookmarkPb)
   }
 
-  // @@protoc_insertion_point(class_scope:lh_proto.PartitionBookmarkPb)
+  // @@protoc_insertion_point(class_scope:littlehorse.PartitionBookmarkPb)
   private static final io.littlehorse.common.proto.PartitionBookmarkPb DEFAULT_INSTANCE;
   static {
     DEFAULT_INSTANCE = new io.littlehorse.common.proto.PartitionBookmarkPb();

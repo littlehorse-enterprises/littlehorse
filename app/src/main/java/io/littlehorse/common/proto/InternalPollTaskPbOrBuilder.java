@@ -4,7 +4,7 @@
 package io.littlehorse.common.proto;
 
 public interface InternalPollTaskPbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.InternalPollTaskPb)
+    // @@protoc_insertion_point(interface_extends:littlehorse.InternalPollTaskPb)
     com.google.protobuf.MessageOrBuilder {
 
   /**

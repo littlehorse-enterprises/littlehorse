@@ -4,7 +4,7 @@
 package io.littlehorse.common.proto;
 
 public interface TagsCachePbOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:lh_proto.TagsCachePb)
+    // @@protoc_insertion_point(interface_extends:littlehorse.TagsCachePb)
     com.google.protobuf.MessageOrBuilder {
 
   /**
