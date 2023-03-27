@@ -1,6 +1,6 @@
 package io.littlehorse.common.model.command.subcommand;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
@@ -14,7 +14,6 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.LHResponseCodePb;
 import io.littlehorse.jlib.common.proto.LHStatusPb;
 import io.littlehorse.jlib.common.proto.RunWfPb;
-import io.littlehorse.jlib.common.proto.RunWfPbOrBuilder;
 import io.littlehorse.jlib.common.proto.VariableValuePb;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,8 +51,8 @@ public class RunWf extends SubCommand<RunWfPb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        RunWfPbOrBuilder p = (RunWfPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        RunWfPb p = (RunWfPb) proto;
         wfSpecName = p.getWfSpecName();
         if (p.hasId()) id = p.getId();
         if (p.hasWfSpecVersion()) wfSpecVersion = p.getWfSpecVersion();
@@ -106,7 +105,7 @@ public class RunWf extends SubCommand<RunWfPb> {
         return out;
     }
 
-    public static RunWf fromProto(RunWfPbOrBuilder p) {
+    public static RunWf fromProto(RunWfPb p) {
         RunWf out = new RunWf();
         out.initFrom(p);
         return out;

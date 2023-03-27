@@ -1,10 +1,9 @@
 package io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.RepartitionCommandPb;
 import io.littlehorse.common.proto.RepartitionCommandPb.RepartitionCommandCase;
-import io.littlehorse.common.proto.RepartitionCommandPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.TaskMetricUpdate;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.WfMetricUpdate;
@@ -82,8 +81,8 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        RepartitionCommandPbOrBuilder p = (RepartitionCommandPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        RepartitionCommandPb p = (RepartitionCommandPb) proto;
 
         type = p.getRepartitionCommandCase();
         if (p.hasCommandId()) commandId = p.getCommandId();

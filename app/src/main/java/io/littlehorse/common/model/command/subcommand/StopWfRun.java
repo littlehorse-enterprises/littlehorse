@@ -1,6 +1,6 @@
 package io.littlehorse.common.model.command.subcommand;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHValidationError;
@@ -10,7 +10,6 @@ import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.jlib.common.proto.LHResponseCodePb;
 import io.littlehorse.jlib.common.proto.StopWfRunPb;
-import io.littlehorse.jlib.common.proto.StopWfRunPbOrBuilder;
 
 public class StopWfRun extends SubCommand<StopWfRunPb> {
 
@@ -29,8 +28,8 @@ public class StopWfRun extends SubCommand<StopWfRunPb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        StopWfRunPbOrBuilder p = (StopWfRunPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        StopWfRunPb p = (StopWfRunPb) proto;
         wfRunId = p.getWfRunId();
         threadRunNumber = p.getThreadRunNumber();
     }
@@ -72,7 +71,7 @@ public class StopWfRun extends SubCommand<StopWfRunPb> {
         return true;
     }
 
-    public static StopWfRun fromProto(StopWfRunPbOrBuilder p) {
+    public static StopWfRun fromProto(StopWfRunPb p) {
         StopWfRun out = new StopWfRun();
         out.initFrom(p);
         return out;

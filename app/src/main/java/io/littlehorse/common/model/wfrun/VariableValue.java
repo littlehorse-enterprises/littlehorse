@@ -1,9 +1,8 @@
 package io.littlehorse.common.model.wfrun;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.protobuf.ByteString;
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import com.jayway.jsonpath.JsonPath;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
@@ -11,7 +10,6 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.VariableMutationTypePb;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
 import io.littlehorse.jlib.common.proto.VariableValuePb;
-import io.littlehorse.jlib.common.proto.VariableValuePbOrBuilder;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,40 +22,32 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
 
     public VariableTypePb type;
 
-    @JsonIgnore
     public Map<String, Object> jsonObjVal;
 
-    @JsonIgnore
     public List<Object> jsonArrVal;
 
-    @JsonIgnore
     public Double doubleVal;
 
-    @JsonIgnore
     public Boolean boolVal;
 
-    @JsonIgnore
     public String strVal;
 
-    @JsonIgnore
     public Long intVal;
 
-    @JsonIgnore
     public byte[] bytesVal;
 
-    public static VariableValue fromProto(VariableValuePbOrBuilder proto) {
+    public static VariableValue fromProto(VariableValuePb proto) {
         VariableValue out = new VariableValue();
         out.initFrom(proto);
         return out;
     }
 
-    @JsonIgnore
     public Class<VariableValuePb> getProtoBaseClass() {
         return VariableValuePb.class;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        VariableValuePbOrBuilder p = (VariableValuePbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        VariableValuePb p = (VariableValuePb) proto;
         type = p.getType();
         switch (type) {
             case JSON_ARR:
@@ -170,10 +160,9 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
         return out;
     }
 
-    @JsonIgnore
     public VariableValue getCopy() {
         VariableValue out = new VariableValue();
-        out.initFrom(toProto());
+        out.initFrom(toProto().build());
         return out;
     }
 
@@ -408,7 +397,6 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
         }
     }
 
-    @JsonIgnore
     public Object getVal() {
         switch (type) {
             case INT:

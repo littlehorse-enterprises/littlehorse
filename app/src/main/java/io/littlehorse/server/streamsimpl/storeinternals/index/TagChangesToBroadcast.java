@@ -1,10 +1,9 @@
 package io.littlehorse.server.streamsimpl.storeinternals.index;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.DiscreteTagLocalCounterPb;
 import io.littlehorse.common.proto.TagChangesToBroadcastPb;
-import io.littlehorse.common.proto.TagChangesToBroadcastPbOrBuilder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,8 +29,8 @@ public class TagChangesToBroadcast extends LHSerializable<TagChangesToBroadcastP
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        TagChangesToBroadcastPbOrBuilder p = (TagChangesToBroadcastPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        TagChangesToBroadcastPb p = (TagChangesToBroadcastPb) proto;
         for (Map.Entry<String, DiscreteTagLocalCounterPb> e : p
             .getChangelogMap()
             .entrySet()) {
@@ -43,9 +42,7 @@ public class TagChangesToBroadcast extends LHSerializable<TagChangesToBroadcastP
         partition = p.getPartition();
     }
 
-    public static TagChangesToBroadcast fromProto(
-        TagChangesToBroadcastPbOrBuilder p
-    ) {
+    public static TagChangesToBroadcast fromProto(TagChangesToBroadcastPb p) {
         TagChangesToBroadcast out = new TagChangesToBroadcast();
         out.initFrom(p);
         return out;

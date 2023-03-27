@@ -1,39 +1,35 @@
 package io.littlehorse.common.model.wfrun.subnoderun;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
 import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.jlib.common.proto.ExitRunPb;
-import io.littlehorse.jlib.common.proto.ExitRunPbOrBuilder;
 import io.littlehorse.jlib.common.proto.LHStatusPb;
 import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import java.util.Date;
 
 public class ExitRun extends SubNodeRun<ExitRunPb> {
 
-    // @JsonIgnore
+    //
     private boolean alreadyNoticed;
 
     public ExitRun() {
         alreadyNoticed = false;
     }
 
-    @JsonIgnore
     public Class<ExitRunPb> getProtoBaseClass() {
         return ExitRunPb.class;
     }
 
-    public void initFrom(MessageOrBuilder p) {}
+    public void initFrom(Message p) {}
 
-    @JsonIgnore
     public ExitRunPb.Builder toProto() {
         return ExitRunPb.newBuilder();
     }
 
-    public static ExitRun fromProto(ExitRunPbOrBuilder p) {
+    public static ExitRun fromProto(ExitRunPb p) {
         ExitRun out = new ExitRun();
         out.initFrom(p);
         return out;

@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.wfrun.subnoderun;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.command.Command;
@@ -13,7 +12,6 @@ import io.littlehorse.common.model.wfrun.SubNodeRun;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.SleepNodeRunPb;
-import io.littlehorse.jlib.common.proto.SleepNodeRunPbOrBuilder;
 import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
 import java.util.Date;
@@ -24,24 +22,22 @@ public class SleepNodeRun extends SubNodeRun<SleepNodeRunPb> {
 
     public SleepNodeRun() {}
 
-    @JsonIgnore
     public Class<SleepNodeRunPb> getProtoBaseClass() {
         return SleepNodeRunPb.class;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        SleepNodeRunPbOrBuilder p = (SleepNodeRunPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        SleepNodeRunPb p = (SleepNodeRunPb) proto;
         maturationTime = LHUtil.fromProtoTs(p.getMaturationTime());
     }
 
-    @JsonIgnore
     public SleepNodeRunPb.Builder toProto() {
         return SleepNodeRunPb
             .newBuilder()
             .setMaturationTime(LHUtil.fromDate(maturationTime));
     }
 
-    public static SleepNodeRun fromProto(SleepNodeRunPbOrBuilder p) {
+    public static SleepNodeRun fromProto(SleepNodeRunPb p) {
         SleepNodeRun out = new SleepNodeRun();
         out.initFrom(p);
         return out;

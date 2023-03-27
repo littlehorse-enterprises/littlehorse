@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.wfrun;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.wfrun.haltreason.HandlingFailureHaltReason;
 import io.littlehorse.common.model.wfrun.haltreason.Interrupted;
@@ -12,7 +11,6 @@ import io.littlehorse.common.model.wfrun.haltreason.PendingInterruptHaltReason;
 import io.littlehorse.common.model.wfrun.haltreason.SubHaltReason;
 import io.littlehorse.jlib.common.proto.ThreadHaltReasonPb;
 import io.littlehorse.jlib.common.proto.ThreadHaltReasonPb.ReasonCase;
-import io.littlehorse.jlib.common.proto.ThreadHaltReasonPbOrBuilder;
 
 public class ThreadHaltReason extends LHSerializable<ThreadHaltReasonPb> {
 
@@ -25,10 +23,8 @@ public class ThreadHaltReason extends LHSerializable<ThreadHaltReasonPb> {
 
     public ReasonCase type;
 
-    @JsonIgnore
     public ThreadRun threadRun;
 
-    @JsonIgnore
     public WfRun wfRun;
 
     public Class<ThreadHaltReasonPb> getProtoBaseClass() {
@@ -55,7 +51,6 @@ public class ThreadHaltReason extends LHSerializable<ThreadHaltReasonPb> {
         throw new RuntimeException("Not possible to get here");
     }
 
-    @JsonIgnore
     public boolean isResolved() {
         return getSubHaltReason().isResolved(threadRun.wfRun);
     }
@@ -89,44 +84,38 @@ public class ThreadHaltReason extends LHSerializable<ThreadHaltReasonPb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        ThreadHaltReasonPbOrBuilder p = (ThreadHaltReasonPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        ThreadHaltReasonPb p = (ThreadHaltReasonPb) proto;
         type = p.getReasonCase();
 
         switch (type) {
             case PARENT_HALTED:
-                parentHalted = ParentHalted.fromProto(p.getParentHaltedOrBuilder());
+                parentHalted = ParentHalted.fromProto(p.getParentHalted());
                 break;
             case INTERRUPTED:
                 interrupted = Interrupted.fromProto(p.getInterrupted());
                 break;
             case PENDING_INTERRUPT:
                 pendingInterrupt =
-                    PendingInterruptHaltReason.fromProto(
-                        p.getPendingInterruptOrBuilder()
-                    );
+                    PendingInterruptHaltReason.fromProto(p.getPendingInterrupt());
                 break;
             case HANDLING_FAILURE:
                 handlingFailure =
-                    HandlingFailureHaltReason.fromProto(
-                        p.getHandlingFailureOrBuilder()
-                    );
+                    HandlingFailureHaltReason.fromProto(p.getHandlingFailure());
                 break;
             case PENDING_FAILURE:
                 pendingFailure =
-                    PendingFailureHandlerHaltReason.fromProto(
-                        p.getPendingFailureOrBuilder()
-                    );
+                    PendingFailureHandlerHaltReason.fromProto(p.getPendingFailure());
                 break;
             case MANUAL_HALT:
-                manualHalt = ManualHalt.fromProto(p.getManualHaltOrBuilder());
+                manualHalt = ManualHalt.fromProto(p.getManualHalt());
                 break;
             case REASON_NOT_SET:
                 throw new RuntimeException("not possible");
         }
     }
 
-    public static ThreadHaltReason fromProto(ThreadHaltReasonPbOrBuilder p) {
+    public static ThreadHaltReason fromProto(ThreadHaltReasonPb p) {
         ThreadHaltReason out = new ThreadHaltReason();
         out.initFrom(p);
         return out;

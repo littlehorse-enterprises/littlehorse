@@ -1,9 +1,8 @@
 package io.littlehorse.common.model.command.subcommandresponse;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.jlib.common.proto.StopWfRunReplyPb;
-import io.littlehorse.jlib.common.proto.StopWfRunReplyPbOrBuilder;
 
 public class StopWfRunReply extends AbstractResponse<StopWfRunReplyPb> {
 
@@ -20,13 +19,13 @@ public class StopWfRunReply extends AbstractResponse<StopWfRunReplyPb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        StopWfRunReplyPbOrBuilder p = (StopWfRunReplyPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        StopWfRunReplyPb p = (StopWfRunReplyPb) proto;
         code = p.getCode();
         if (p.hasMessage()) message = p.getMessage();
     }
 
-    public static StopWfRunReply fromProto(StopWfRunReplyPbOrBuilder p) {
+    public static StopWfRunReply fromProto(StopWfRunReplyPb p) {
         StopWfRunReply out = new StopWfRunReply();
         out.initFrom(p);
         return out;

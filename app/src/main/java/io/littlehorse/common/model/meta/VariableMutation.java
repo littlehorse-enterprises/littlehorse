@@ -1,13 +1,12 @@
 package io.littlehorse.common.model.meta;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.jlib.common.proto.VariableMutationPb;
 import io.littlehorse.jlib.common.proto.VariableMutationPb.RhsValueCase;
-import io.littlehorse.jlib.common.proto.VariableMutationPbOrBuilder;
 import io.littlehorse.jlib.common.proto.VariableMutationTypePb;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
 import java.util.HashSet;
@@ -54,8 +53,8 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        VariableMutationPbOrBuilder p = (VariableMutationPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        VariableMutationPb p = (VariableMutationPb) proto;
         lhsName = p.getLhsName();
         if (p.hasLhsJsonPath()) lhsJsonPath = p.getLhsJsonPath();
         operation = p.getOperation();
@@ -63,23 +62,21 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
         rhsValueType = p.getRhsValueCase();
         switch (rhsValueType) {
             case LITERAL_VALUE:
-                rhsLiteralValue =
-                    VariableValue.fromProto(p.getLiteralValueOrBuilder());
+                rhsLiteralValue = VariableValue.fromProto(p.getLiteralValue());
                 break;
             case SOURCE_VARIABLE:
                 rhsSourceVariable =
                     VariableAssignment.fromProto(p.getSourceVariable());
                 break;
             case NODE_OUTPUT:
-                nodeOutputSource =
-                    NodeOutputSource.fromProto(p.getNodeOutputOrBuilder());
+                nodeOutputSource = NodeOutputSource.fromProto(p.getNodeOutput());
                 break;
             case RHSVALUE_NOT_SET:
             // not possible
         }
     }
 
-    public static VariableMutation fromProto(VariableMutationPbOrBuilder p) {
+    public static VariableMutation fromProto(VariableMutationPb p) {
         VariableMutation out = new VariableMutation();
         out.initFrom(p);
         return out;

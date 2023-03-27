@@ -1,12 +1,11 @@
 package io.littlehorse.common.model.observabilityevent.events;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.observabilityevent.SubEvent;
 import io.littlehorse.common.model.wfrun.VarNameAndVal;
 import io.littlehorse.jlib.common.proto.TaskScheduledOePb;
-import io.littlehorse.jlib.common.proto.TaskScheduledOePbOrBuilder;
 import io.littlehorse.jlib.common.proto.VarNameAndValPb;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.TaskMetricUpdate;
 import java.util.ArrayList;
@@ -53,8 +52,8 @@ public class TaskScheduledOe extends SubEvent<TaskScheduledOePb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        TaskScheduledOePbOrBuilder p = (TaskScheduledOePbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        TaskScheduledOePb p = (TaskScheduledOePb) proto;
         taskDefName = p.getTaskDefName();
         taskDefVersion = p.getTaskDefVersion();
         taskRunNumber = p.getTaskRunNumber();

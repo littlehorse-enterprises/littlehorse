@@ -1,17 +1,15 @@
 package io.littlehorse.common.model.wfrun;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.objectId.ExternalEventId;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.jlib.common.proto.ExternalEventIdPb;
 import io.littlehorse.jlib.common.proto.ExternalEventPb;
-import io.littlehorse.jlib.common.proto.ExternalEventPbOrBuilder;
 import java.util.Date;
 
 public class ExternalEvent extends GETable<ExternalEventPb> {
 
-    @JsonIgnore // We want Jackson to show  the full ID, not this.
+    // We want Jackson to show  the full ID, not this.
     public String guid;
 
     public String wfRunId;
@@ -30,8 +28,8 @@ public class ExternalEvent extends GETable<ExternalEventPb> {
         return ExternalEventPb.class;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        ExternalEventPbOrBuilder p = (ExternalEventPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        ExternalEventPb p = (ExternalEventPb) proto;
         wfRunId = p.getWfRunId();
         externalEventDefName = p.getExternalEventDefName();
         guid = p.getGuid();
@@ -40,7 +38,7 @@ public class ExternalEvent extends GETable<ExternalEventPb> {
         } else {
             createdAt = new Date();
         }
-        content = VariableValue.fromProto(p.getContentOrBuilder());
+        content = VariableValue.fromProto(p.getContent());
         claimed = p.getClaimed();
 
         if (p.hasThreadRunNumber()) {
@@ -71,32 +69,6 @@ public class ExternalEvent extends GETable<ExternalEventPb> {
         return out;
     }
 
-    @JsonIgnore
-    @Override
-    public String getObjectId() {
-        return getStoreKey(wfRunId, externalEventDefName, guid);
-    }
-
-    public static String getStoreKey(
-        String wfRunId,
-        String externalEventDefName,
-        String guid
-    ) {
-        return getStorePrefix(wfRunId, externalEventDefName) + "/" + guid;
-    }
-
-    public String getIdForJackson() {
-        return getObjectId();
-    }
-
-    @JsonIgnore
-    @Override
-    public String getPartitionKey() {
-        return wfRunId;
-    }
-
-    @JsonIgnore
-    @Override
     public Date getCreatedAt() {
         if (createdAt == null) {
             createdAt = new Date();
@@ -104,7 +76,7 @@ public class ExternalEvent extends GETable<ExternalEventPb> {
         return createdAt;
     }
 
-    public static ExternalEvent fromProto(ExternalEventPbOrBuilder p) {
+    public static ExternalEvent fromProto(ExternalEventPb p) {
         ExternalEvent out = new ExternalEvent();
         out.initFrom(p);
         return out;
@@ -122,21 +94,7 @@ public class ExternalEvent extends GETable<ExternalEventPb> {
         return nodeRunPosition;
     }
 
-    public static ExternalEventIdPb parseId(String fullId) {
-        String[] split = fullId.split("/");
-        return ExternalEventIdPb
-            .newBuilder()
-            .setWfRunId(split[0])
-            .setExternalEventDefName(split[1])
-            .setGuid(split[2])
-            .build();
-    }
-
-    public static String getObjectId(ExternalEventIdPb id) {
-        return getStoreKey(
-            id.getWfRunId(),
-            id.getExternalEventDefName(),
-            id.getGuid()
-        );
+    public ExternalEventId getObjectId() {
+        return new ExternalEventId(wfRunId, externalEventDefName, guid);
     }
 }

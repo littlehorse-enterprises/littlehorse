@@ -4,6 +4,27 @@
 package io.littlehorse.common.proto;
 
 /**
+ * <pre>
+ * This is used to communicate about different available listeners. Kafka Streams
+ * provides a way to get info about the host for each other Streams instance.
+ * However, that Host:
+ * a) is internal to Kubernetes and
+ * b) points to the internal listener, not the public listener.
+ * When a Task Worker connects to one LH Server via the bootstrap url (i.e. the
+ * K8s service that points to all LH Servers), it needs to discover individual
+ * endpoints for each LH Server.
+ * Each LH Server has multiple advertised listeners for Task Workers. For example,
+ * the general configuration will have one external listener, which can be accessed
+ * over Ingress (eg. via Istio Ingressgateway and DNS), and one internal listener,
+ * which only works for clients in the same kubernetes cluster.
+ * Each listener (eg public/k8s-internal) has a name assigned to it. The Task Worker
+ * is configured to use a certain listener name based on which network it's in.
+ * The LHPublicApi grpc method 'registerTaskWorkerPb' takes in a Listener Name
+ * and returns listeners for all LH Servers.
+ * This endpoint is used to help the LHPublicApi get info about each of the LH
+ * Servers so that it can formulate the response described above.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.InternalGetAdvertisedHostsPb}
  */
 public final class InternalGetAdvertisedHostsPb extends
@@ -225,6 +246,27 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * This is used to communicate about different available listeners. Kafka Streams
+   * provides a way to get info about the host for each other Streams instance.
+   * However, that Host:
+   * a) is internal to Kubernetes and
+   * b) points to the internal listener, not the public listener.
+   * When a Task Worker connects to one LH Server via the bootstrap url (i.e. the
+   * K8s service that points to all LH Servers), it needs to discover individual
+   * endpoints for each LH Server.
+   * Each LH Server has multiple advertised listeners for Task Workers. For example,
+   * the general configuration will have one external listener, which can be accessed
+   * over Ingress (eg. via Istio Ingressgateway and DNS), and one internal listener,
+   * which only works for clients in the same kubernetes cluster.
+   * Each listener (eg public/k8s-internal) has a name assigned to it. The Task Worker
+   * is configured to use a certain listener name based on which network it's in.
+   * The LHPublicApi grpc method 'registerTaskWorkerPb' takes in a Listener Name
+   * and returns listeners for all LH Servers.
+   * This endpoint is used to help the LHPublicApi get info about each of the LH
+   * Servers so that it can formulate the response described above.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.InternalGetAdvertisedHostsPb}
    */
   public static final class Builder extends

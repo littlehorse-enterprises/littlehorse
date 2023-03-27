@@ -1,8 +1,9 @@
 package io.littlehorse.common.model.wfrun;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.meta.Node;
+import io.littlehorse.common.model.objectId.NodeRunId;
 import io.littlehorse.common.model.wfrun.subnoderun.EntrypointRun;
 import io.littlehorse.common.model.wfrun.subnoderun.ExitRun;
 import io.littlehorse.common.model.wfrun.subnoderun.ExternalEventRun;
@@ -14,10 +15,8 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.FailurePb;
 import io.littlehorse.jlib.common.proto.LHStatusPb;
 import io.littlehorse.jlib.common.proto.NodePb.NodeCase;
-import io.littlehorse.jlib.common.proto.NodeRunIdPb;
 import io.littlehorse.jlib.common.proto.NodeRunPb;
 import io.littlehorse.jlib.common.proto.NodeRunPb.NodeTypeCase;
-import io.littlehorse.jlib.common.proto.NodeRunPbOrBuilder;
 import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import java.util.ArrayList;
 import java.util.Date;
@@ -78,38 +77,8 @@ public class NodeRun extends GETable<NodeRunPb> {
         return failures.get(failures.size() - 1);
     }
 
-    public String getObjectId() {
-        return NodeRun.getObjectId(wfRunId, threadRunNumber, position);
-    }
-
-    public static String getObjectId(String wfRunId, int threadNum, int position) {
-        return LHUtil.getCompositeId(
-            wfRunId,
-            String.valueOf(threadNum),
-            String.valueOf(position)
-        );
-    }
-
-    public static String getObjectId(NodeRunIdPb id) {
-        return getObjectId(
-            id.getWfRunId(),
-            id.getThreadRunNumber(),
-            id.getPosition()
-        );
-    }
-
-    public static NodeRunIdPb parseId(String id) {
-        String[] split = id.split("/");
-        return NodeRunIdPb
-            .newBuilder()
-            .setWfRunId(split[0])
-            .setThreadRunNumber(Integer.valueOf(split[1]))
-            .setPosition(Integer.valueOf(split[2]))
-            .build();
-    }
-
-    public String getPartitionKey() {
-        return wfRunId;
+    public NodeRunId getObjectId() {
+        return new NodeRunId(wfRunId, threadRunNumber, position);
     }
 
     public Class<NodeRunPb> getProtoBaseClass() {
@@ -120,8 +89,8 @@ public class NodeRun extends GETable<NodeRunPb> {
         return arrivalTime;
     }
 
-    public void initFrom(MessageOrBuilder p) {
-        NodeRunPbOrBuilder proto = (NodeRunPbOrBuilder) p;
+    public void initFrom(Message p) {
+        NodeRunPb proto = (NodeRunPb) p;
         wfRunId = proto.getWfRunId();
         threadRunNumber = proto.getThreadRunNumber();
         position = proto.getPosition();
@@ -165,7 +134,7 @@ public class NodeRun extends GETable<NodeRunPb> {
                 waitThreadRun = WaitThreadRun.fromProto(proto.getWaitThread());
                 break;
             case SLEEP:
-                sleepNodeRun = SleepNodeRun.fromProto(proto.getSleepOrBuilder());
+                sleepNodeRun = SleepNodeRun.fromProto(proto.getSleep());
                 break;
             case NODETYPE_NOT_SET:
                 throw new RuntimeException("Not possible");

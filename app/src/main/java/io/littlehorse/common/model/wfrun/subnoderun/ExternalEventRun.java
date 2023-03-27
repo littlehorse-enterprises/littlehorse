@@ -1,12 +1,14 @@
 package io.littlehorse.common.model.wfrun.subnoderun;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.subcommand.ExternalEventTimeout;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.meta.subnode.ExternalEventNode;
+import io.littlehorse.common.model.objectId.ExternalEventId;
 import io.littlehorse.common.model.observabilityevent.ObservabilityEvent;
 import io.littlehorse.common.model.observabilityevent.events.ExtEvtMatchedOe;
 import io.littlehorse.common.model.observabilityevent.events.WaitingForExtEvtOe;
@@ -17,7 +19,6 @@ import io.littlehorse.common.model.wfrun.SubNodeRun;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.ExternalEventRunPb;
-import io.littlehorse.jlib.common.proto.ExternalEventRunPbOrBuilder;
 import io.littlehorse.jlib.common.proto.LHStatusPb;
 import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
@@ -30,19 +31,23 @@ public class ExternalEventRun extends SubNodeRun<ExternalEventRunPb> {
 
     public String externalEventDefName;
     public Date eventTime;
-    public String externalEventId;
+    public ExternalEventId externalEventId;
 
     public Class<ExternalEventRunPb> getProtoBaseClass() {
         return ExternalEventRunPb.class;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        ExternalEventRunPbOrBuilder p = (ExternalEventRunPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        ExternalEventRunPb p = (ExternalEventRunPb) proto;
         if (p.hasEventTime()) {
             eventTime = LHUtil.fromProtoTs(p.getEventTime());
         }
         if (p.hasExternalEventId()) {
-            externalEventId = p.getExternalEventId();
+            externalEventId =
+                LHSerializable.fromProto(
+                    p.getExternalEventId(),
+                    ExternalEventId.class
+                );
         }
         externalEventDefName = p.getExternalEventDefName();
     }
@@ -57,13 +62,13 @@ public class ExternalEventRun extends SubNodeRun<ExternalEventRunPb> {
         }
 
         if (externalEventId != null) {
-            out.setExternalEventId(externalEventId);
+            out.setExternalEventId(externalEventId.toProto());
         }
 
         return out;
     }
 
-    public static ExternalEventRun fromProto(ExternalEventRunPbOrBuilder p) {
+    public static ExternalEventRun fromProto(ExternalEventRunPb p) {
         ExternalEventRun out = new ExternalEventRun();
         out.initFrom(p);
         return out;

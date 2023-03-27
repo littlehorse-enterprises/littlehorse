@@ -1,6 +1,6 @@
 package io.littlehorse.common.model.command.subcommand;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
@@ -10,7 +10,6 @@ import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.LHResponseCodePb;
 import io.littlehorse.jlib.common.proto.PutExternalEventDefPb;
-import io.littlehorse.jlib.common.proto.PutExternalEventDefPbOrBuilder;
 
 public class PutExternalEventDef extends SubCommand<PutExternalEventDefPb> {
 
@@ -31,8 +30,8 @@ public class PutExternalEventDef extends SubCommand<PutExternalEventDefPb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        PutExternalEventDefPbOrBuilder p = (PutExternalEventDefPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        PutExternalEventDefPb p = (PutExternalEventDefPb) proto;
         name = p.getName();
     }
 
@@ -65,7 +64,7 @@ public class PutExternalEventDef extends SubCommand<PutExternalEventDefPb> {
         return out;
     }
 
-    public static PutExternalEventDef fromProto(PutExternalEventDefPbOrBuilder p) {
+    public static PutExternalEventDef fromProto(PutExternalEventDefPb p) {
         PutExternalEventDef out = new PutExternalEventDef();
         out.initFrom(p);
         return out;

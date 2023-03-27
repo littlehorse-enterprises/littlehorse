@@ -1,6 +1,6 @@
 package io.littlehorse.common.model.wfrun;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHValidationError;
@@ -15,6 +15,7 @@ import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
 import io.littlehorse.common.model.meta.ThreadSpec;
 import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.objectId.WfRunId;
 import io.littlehorse.common.model.observabilityevent.ObservabilityEvent;
 import io.littlehorse.common.model.observabilityevent.events.ThreadStartOe;
 import io.littlehorse.common.model.observabilityevent.events.WfRunStatusOe;
@@ -28,9 +29,7 @@ import io.littlehorse.jlib.common.proto.ThreadHaltReasonPb.ReasonCase;
 import io.littlehorse.jlib.common.proto.ThreadRunPb;
 import io.littlehorse.jlib.common.proto.ThreadTypePb;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
-import io.littlehorse.jlib.common.proto.WfRunIdPb;
 import io.littlehorse.jlib.common.proto.WfRunPb;
-import io.littlehorse.jlib.common.proto.WfRunPbOrBuilder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -62,8 +61,8 @@ public class WfRun extends GETable<WfRunPb> {
         return startTime;
     }
 
-    public void initFrom(MessageOrBuilder p) {
-        WfRunPbOrBuilder proto = (WfRunPbOrBuilder) p;
+    public void initFrom(Message p) {
+        WfRunPb proto = (WfRunPb) p;
         id = proto.getId();
         wfSpecName = proto.getWfSpecName();
         wfSpecVersion = proto.getWfSpecVersion();
@@ -88,6 +87,10 @@ public class WfRun extends GETable<WfRunPb> {
         }
     }
 
+    public WfRunId getObjectId() {
+        return new WfRunId(id);
+    }
+
     /*
      * Returns true if this WfRun is currently running. Due to the inheritance
      * structure of threads, we can determine this by simply checking if the
@@ -95,14 +98,6 @@ public class WfRun extends GETable<WfRunPb> {
      */
     public boolean isRunning() {
         return threadRuns.get(0).isRunning();
-    }
-
-    public static WfRunIdPb parseId(String id) {
-        return WfRunIdPb.newBuilder().setId(id).build();
-    }
-
-    public static String getObjectId(WfRunIdPb id) {
-        return id.getId();
     }
 
     public WfRunPb.Builder toProto() {
@@ -136,16 +131,6 @@ public class WfRun extends GETable<WfRunPb> {
 
     public Class<WfRunPb> getProtoBaseClass() {
         return WfRunPb.class;
-    }
-
-    @Override
-    public String getObjectId() {
-        return id;
-    }
-
-    @Override
-    public String getPartitionKey() {
-        return id;
     }
 
     // Below is used by scheduler
@@ -208,7 +193,7 @@ public class WfRun extends GETable<WfRunPb> {
         for (Map.Entry<String, VariableValue> e : variables.entrySet()) {
             oe.variables.put(
                 e.getKey(),
-                VariableValue.fromProto(e.getValue().toProto())
+                VariableValue.fromProto(e.getValue().toProto().build())
             );
         }
         cmdDao.addObservabilityEvent(new ObservabilityEvent(id, oe));
@@ -274,7 +259,9 @@ public class WfRun extends GETable<WfRunPb> {
             ThreadSpec iSpec = wfSpec.threadSpecs.get(pi.handlerSpecName);
             if (iSpec.variableDefs.size() > 0) {
                 vars = new HashMap<>();
-                ExternalEvent event = cmdDao.getExternalEvent(pi.externalEventId);
+                ExternalEvent event = cmdDao.getExternalEvent(
+                    pi.externalEventId.getStoreKey()
+                );
                 vars.put(LHConstants.EXT_EVT_HANDLER_VAR, event.content);
             } else {
                 vars = new HashMap<>();

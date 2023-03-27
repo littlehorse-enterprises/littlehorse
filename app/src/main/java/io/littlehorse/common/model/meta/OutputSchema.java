@@ -1,9 +1,8 @@
 package io.littlehorse.common.model.meta;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.jlib.common.proto.OutputSchemaPb;
-import io.littlehorse.jlib.common.proto.OutputSchemaPbOrBuilder;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
 
 public class OutputSchema extends LHSerializable<OutputSchemaPb> {
@@ -14,8 +13,8 @@ public class OutputSchema extends LHSerializable<OutputSchemaPb> {
         return OutputSchemaPb.class;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        OutputSchemaPbOrBuilder p = (OutputSchemaPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        OutputSchemaPb p = (OutputSchemaPb) proto;
         outputType = p.getOutputType();
     }
 
@@ -26,7 +25,7 @@ public class OutputSchema extends LHSerializable<OutputSchemaPb> {
         return out;
     }
 
-    public static OutputSchema fromProto(OutputSchemaPbOrBuilder proto) {
+    public static OutputSchema fromProto(OutputSchemaPb proto) {
         OutputSchema out = new OutputSchema();
         out.initFrom(proto);
         return out;

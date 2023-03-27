@@ -1,6 +1,6 @@
 package io.littlehorse.common.model.command.subcommand;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
@@ -17,7 +17,6 @@ import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.LHResponseCodePb;
 import io.littlehorse.jlib.common.proto.PutExternalEventPb;
-import io.littlehorse.jlib.common.proto.PutExternalEventPbOrBuilder;
 import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import java.util.Date;
 
@@ -120,18 +119,18 @@ public class PutExternalEvent extends SubCommand<PutExternalEventPb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        PutExternalEventPbOrBuilder p = (PutExternalEventPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        PutExternalEventPb p = (PutExternalEventPb) proto;
         wfRunId = p.getWfRunId();
         externalEventDefName = p.getExternalEventDefName();
-        content = VariableValue.fromProto(p.getContentOrBuilder());
+        content = VariableValue.fromProto(p.getContent());
 
         if (p.hasGuid()) guid = p.getGuid();
         if (p.hasThreadRunNumber()) threadRunNumber = p.getThreadRunNumber();
         if (p.hasNodeRunPosition()) nodeRunPosition = p.getNodeRunPosition();
     }
 
-    public static PutExternalEvent fromProto(PutExternalEventPbOrBuilder p) {
+    public static PutExternalEvent fromProto(PutExternalEventPb p) {
         PutExternalEvent out = new PutExternalEvent();
         out.initFrom(p);
         return out;

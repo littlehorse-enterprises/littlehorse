@@ -1,6 +1,6 @@
 package io.littlehorse.common.model.meta.subnode;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.meta.SubNode;
@@ -9,7 +9,6 @@ import io.littlehorse.common.model.wfrun.subnoderun.WaitThreadRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
 import io.littlehorse.jlib.common.proto.WaitForThreadNodePb;
-import io.littlehorse.jlib.common.proto.WaitForThreadNodePbOrBuilder;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,8 +22,8 @@ public class WaitForThreadNode extends SubNode<WaitForThreadNodePb> {
         return WaitForThreadNodePb.class;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        WaitForThreadNodePbOrBuilder p = (WaitForThreadNodePbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        WaitForThreadNodePb p = (WaitForThreadNodePb) proto;
         threadRunNumber = VariableAssignment.fromProto(p.getThreadRunNumber());
         if (p.hasTimeoutSeconds()) {
             timeoutSeconds = VariableAssignment.fromProto(p.getTimeoutSeconds());

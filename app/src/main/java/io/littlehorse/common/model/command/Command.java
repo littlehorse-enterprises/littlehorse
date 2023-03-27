@@ -1,6 +1,6 @@
 package io.littlehorse.common.model.command;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.subcommand.DeleteExternalEventDef;
@@ -20,7 +20,6 @@ import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
 import io.littlehorse.common.proto.CommandPb;
 import io.littlehorse.common.proto.CommandPb.CommandCase;
-import io.littlehorse.common.proto.CommandPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streamsimpl.coreprocessors.KafkaStreamsLHDAOImpl;
 import java.util.Date;
@@ -119,8 +118,8 @@ public class Command extends LHSerializable<CommandPb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        CommandPbOrBuilder p = (CommandPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        CommandPb p = (CommandPb) proto;
         time = LHUtil.fromProtoTs(p.getTime());
 
         if (p.hasCommandId()) {
@@ -133,59 +132,51 @@ public class Command extends LHSerializable<CommandPb> {
                 taskResultEvent = TaskResultEvent.fromProto(p.getTaskResultEvent());
                 break;
             case TASK_CLAIM_EVENT:
-                taskClaimEvent =
-                    TaskClaimEvent.fromProto(p.getTaskClaimEventOrBuilder());
+                taskClaimEvent = TaskClaimEvent.fromProto(p.getTaskClaimEvent());
                 break;
             case PUT_EXTERNAL_EVENT:
                 putExternalEvent =
-                    PutExternalEvent.fromProto(p.getPutExternalEventOrBuilder());
+                    PutExternalEvent.fromProto(p.getPutExternalEvent());
                 break;
             case PUT_WF_SPEC:
-                putWfSpec = PutWfSpec.fromProto(p.getPutWfSpecOrBuilder());
+                putWfSpec = PutWfSpec.fromProto(p.getPutWfSpec());
                 break;
             case PUT_TASK_DEF:
-                putTaskDef = PutTaskDef.fromProto(p.getPutTaskDefOrBuilder());
+                putTaskDef = PutTaskDef.fromProto(p.getPutTaskDef());
                 break;
             case PUT_EXTERNAL_EVENT_DEF:
                 putExternalEventDef =
-                    PutExternalEventDef.fromProto(
-                        p.getPutExternalEventDefOrBuilder()
-                    );
+                    PutExternalEventDef.fromProto(p.getPutExternalEventDef());
                 break;
             case RUN_WF:
-                runWf = RunWf.fromProto(p.getRunWfOrBuilder());
+                runWf = RunWf.fromProto(p.getRunWf());
                 break;
             case STOP_WF_RUN:
-                stopWfRun = StopWfRun.fromProto(p.getStopWfRunOrBuilder());
+                stopWfRun = StopWfRun.fromProto(p.getStopWfRun());
                 break;
             case RESUME_WF_RUN:
-                resumeWfRun = ResumeWfRun.fromProto(p.getResumeWfRunOrBuilder());
+                resumeWfRun = ResumeWfRun.fromProto(p.getResumeWfRun());
                 break;
             case SLEEP_NODE_MATURED:
                 sleepNodeMatured =
-                    SleepNodeMatured.fromProto(p.getSleepNodeMaturedOrBuilder());
+                    SleepNodeMatured.fromProto(p.getSleepNodeMatured());
                 break;
             case DELETE_WF_RUN:
-                deleteWfRun = DeleteWfRun.fromProto(p.getDeleteWfRunOrBuilder());
+                deleteWfRun = DeleteWfRun.fromProto(p.getDeleteWfRun());
                 break;
             case DELETE_EXTERNAL_EVENT_DEF:
                 deleteExternalEventDef =
-                    DeleteExternalEventDef.fromProto(
-                        p.getDeleteExternalEventDefOrBuilder()
-                    );
+                    DeleteExternalEventDef.fromProto(p.getDeleteExternalEventDef());
                 break;
             case DELETE_TASK_DEF:
-                deleteTaskDef =
-                    DeleteTaskDef.fromProto(p.getDeleteTaskDefOrBuilder());
+                deleteTaskDef = DeleteTaskDef.fromProto(p.getDeleteTaskDef());
                 break;
             case DELETE_WF_SPEC:
-                deleteWfSpec = DeleteWfSpec.fromProto(p.getDeleteWfSpecOrBuilder());
+                deleteWfSpec = DeleteWfSpec.fromProto(p.getDeleteWfSpec());
                 break;
             case EXTERNAL_EVENT_TIMEOUT:
                 externalEventTimeout =
-                    ExternalEventTimeout.fromProto(
-                        p.getExternalEventTimeoutOrBuilder()
-                    );
+                    ExternalEventTimeout.fromProto(p.getExternalEventTimeout());
                 break;
             case COMMAND_NOT_SET:
             default:

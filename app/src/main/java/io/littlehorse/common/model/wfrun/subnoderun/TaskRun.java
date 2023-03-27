@@ -1,6 +1,6 @@
 package io.littlehorse.common.model.wfrun.subnoderun;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
@@ -22,7 +22,6 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.LHStatusPb;
 import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import io.littlehorse.jlib.common.proto.TaskRunPb;
-import io.littlehorse.jlib.common.proto.TaskRunPbOrBuilder;
 import io.littlehorse.jlib.common.proto.VarNameAndValPb;
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,11 +45,11 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
         return TaskRunPb.class;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        TaskRunPbOrBuilder p = (TaskRunPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        TaskRunPb p = (TaskRunPb) proto;
         attemptNumber = p.getAttemptNumber();
         if (p.hasOutput()) {
-            output = VariableValue.fromProto(p.getOutputOrBuilder());
+            output = VariableValue.fromProto(p.getOutput());
         }
         if (p.hasLogOutput()) {
             logOutput = VariableValue.fromProto(p.getLogOutput());
@@ -88,7 +87,7 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
         return out;
     }
 
-    public static TaskRun fromProto(TaskRunPbOrBuilder proto) {
+    public static TaskRun fromProto(TaskRunPb proto) {
         TaskRun out = new TaskRun();
         out.initFrom(proto);
         return out;

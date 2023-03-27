@@ -8,4 +8,6 @@ public interface RepartitionSubCommand {
         LHStoreWrapper repartitionedStore,
         ProcessorContext<Void, Void> ctx
     );
+
+    public String getPartitionKey();
 }

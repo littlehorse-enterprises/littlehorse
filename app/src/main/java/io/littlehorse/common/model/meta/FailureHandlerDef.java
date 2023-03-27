@@ -1,19 +1,16 @@
 package io.littlehorse.common.model.meta;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.FailureHandlerDefPb;
-import io.littlehorse.jlib.common.proto.FailureHandlerDefPbOrBuilder;
 
 public class FailureHandlerDef extends LHSerializable<FailureHandlerDefPb> {
 
     public String specificFailure;
     public String handlerSpecName;
 
-    @JsonIgnore
     public Node node;
 
     public FailureHandlerDef() {}
@@ -32,13 +29,13 @@ public class FailureHandlerDef extends LHSerializable<FailureHandlerDefPb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        FailureHandlerDefPbOrBuilder p = (FailureHandlerDefPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        FailureHandlerDefPb p = (FailureHandlerDefPb) proto;
         if (p.hasSpecificFailure()) specificFailure = p.getSpecificFailure();
         handlerSpecName = p.getHandlerSpecName();
     }
 
-    public static FailureHandlerDef fromProto(FailureHandlerDefPbOrBuilder p) {
+    public static FailureHandlerDef fromProto(FailureHandlerDefPb p) {
         FailureHandlerDef out = new FailureHandlerDef();
         out.initFrom(p);
         return out;

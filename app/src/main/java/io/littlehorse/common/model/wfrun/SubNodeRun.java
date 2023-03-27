@@ -1,6 +1,5 @@
 package io.littlehorse.common.model.wfrun;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.meta.Node;
@@ -9,7 +8,6 @@ import java.util.Date;
 
 public abstract class SubNodeRun<T extends Message> extends LHSerializable<T> {
 
-    @JsonIgnore
     public NodeRun nodeRun;
 
     public abstract boolean advanceIfPossible(Date time);
@@ -26,22 +24,18 @@ public abstract class SubNodeRun<T extends Message> extends LHSerializable<T> {
         return !nodeRun.isInProgress();
     }
 
-    @JsonIgnore
     public void setNodeRun(NodeRun nodeRun) {
         this.nodeRun = nodeRun;
     }
 
-    @JsonIgnore
     public WfSpec getWfSpec() {
         return nodeRun.threadRun.wfRun.wfSpec;
     }
 
-    @JsonIgnore
     public WfRun getWfRun() {
         return nodeRun.threadRun.wfRun;
     }
 
-    @JsonIgnore
     public Node getNode() {
         return nodeRun.getNode();
     }

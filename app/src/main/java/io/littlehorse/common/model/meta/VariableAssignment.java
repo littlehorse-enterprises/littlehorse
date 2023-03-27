@@ -1,11 +1,10 @@
 package io.littlehorse.common.model.meta;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.jlib.common.proto.VariableAssignmentPb;
 import io.littlehorse.jlib.common.proto.VariableAssignmentPb.SourceCase;
-import io.littlehorse.jlib.common.proto.VariableAssignmentPbOrBuilder;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,8 +21,8 @@ public class VariableAssignment extends LHSerializable<VariableAssignmentPb> {
         return VariableAssignmentPb.class;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        VariableAssignmentPbOrBuilder p = (VariableAssignmentPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        VariableAssignmentPb p = (VariableAssignmentPb) proto;
         if (p.hasJsonPath()) jsonPath = p.getJsonPath();
 
         rhsSourceType = p.getSourceCase();
@@ -58,7 +57,7 @@ public class VariableAssignment extends LHSerializable<VariableAssignmentPb> {
         return out;
     }
 
-    public static VariableAssignment fromProto(VariableAssignmentPbOrBuilder proto) {
+    public static VariableAssignment fromProto(VariableAssignmentPb proto) {
         VariableAssignment out = new VariableAssignment();
         out.initFrom(proto);
         return out;

@@ -1,13 +1,12 @@
 package io.littlehorse.common.model.command.subcommand;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
 import io.littlehorse.jlib.common.proto.DeleteExternalEventDefPb;
-import io.littlehorse.jlib.common.proto.DeleteExternalEventDefPbOrBuilder;
 
 public class DeleteExternalEventDef extends SubCommand<DeleteExternalEventDefPb> {
 
@@ -26,8 +25,8 @@ public class DeleteExternalEventDef extends SubCommand<DeleteExternalEventDefPb>
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        DeleteExternalEventDefPbOrBuilder p = (DeleteExternalEventDefPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        DeleteExternalEventDefPb p = (DeleteExternalEventDefPb) proto;
         name = p.getName();
         version = p.getVersion();
     }
@@ -44,9 +43,7 @@ public class DeleteExternalEventDef extends SubCommand<DeleteExternalEventDefPb>
         return true;
     }
 
-    public static DeleteExternalEventDef fromProto(
-        DeleteExternalEventDefPbOrBuilder p
-    ) {
+    public static DeleteExternalEventDef fromProto(DeleteExternalEventDefPb p) {
         DeleteExternalEventDef out = new DeleteExternalEventDef();
         out.initFrom(p);
         return out;

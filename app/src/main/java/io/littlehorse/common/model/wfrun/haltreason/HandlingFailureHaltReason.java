@@ -1,13 +1,11 @@
 package io.littlehorse.common.model.wfrun.haltreason;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.jlib.common.proto.HandlingFailureHaltReasonPb;
-import io.littlehorse.jlib.common.proto.HandlingFailureHaltReasonPbOrBuilder;
 import io.littlehorse.jlib.common.proto.LHStatusPb;
 import io.littlehorse.jlib.common.proto.NodeRunPb.NodeTypeCase;
 
@@ -17,7 +15,6 @@ public class HandlingFailureHaltReason
 
     public int handlerThreadId;
 
-    @JsonIgnore
     public boolean isResolved(WfRun wfRun) {
         ThreadRun hThread = wfRun.threadRuns.get(handlerThreadId);
         if (hThread.status == LHStatusPb.COMPLETED) {
@@ -51,13 +48,13 @@ public class HandlingFailureHaltReason
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        HandlingFailureHaltReasonPbOrBuilder p = (HandlingFailureHaltReasonPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        HandlingFailureHaltReasonPb p = (HandlingFailureHaltReasonPb) proto;
         handlerThreadId = p.getHandlerThreadId();
     }
 
     public static HandlingFailureHaltReason fromProto(
-        HandlingFailureHaltReasonPbOrBuilder proto
+        HandlingFailureHaltReasonPb proto
     ) {
         HandlingFailureHaltReason out = new HandlingFailureHaltReason();
         out.initFrom(proto);

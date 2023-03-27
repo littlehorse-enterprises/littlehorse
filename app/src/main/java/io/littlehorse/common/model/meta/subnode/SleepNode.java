@@ -1,6 +1,6 @@
 package io.littlehorse.common.model.meta.subnode;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.exceptions.LHVarSubError;
@@ -11,7 +11,6 @@ import io.littlehorse.common.model.wfrun.subnoderun.SleepNodeRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.jlib.common.proto.SleepNodePb;
 import io.littlehorse.jlib.common.proto.SleepNodePb.SleepLengthCase;
-import io.littlehorse.jlib.common.proto.SleepNodePbOrBuilder;
 import java.time.Instant;
 import java.util.Date;
 
@@ -46,18 +45,18 @@ public class SleepNode extends SubNode<SleepNodePb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        SleepNodePbOrBuilder p = (SleepNodePbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        SleepNodePb p = (SleepNodePb) proto;
         type = p.getSleepLengthCase();
         switch (type) {
             case RAW_SECONDS:
-                rawSeconds = VariableAssignment.fromProto(p.getRawSecondsOrBuilder());
+                rawSeconds = VariableAssignment.fromProto(p.getRawSeconds());
                 break;
             case TIMESTAMP:
-                timestamp = VariableAssignment.fromProto(p.getTimestampOrBuilder());
+                timestamp = VariableAssignment.fromProto(p.getTimestamp());
                 break;
             case ISO_DATE:
-                isoDate = VariableAssignment.fromProto(p.getIsoDateOrBuilder());
+                isoDate = VariableAssignment.fromProto(p.getIsoDate());
                 break;
             case SLEEPLENGTH_NOT_SET:
                 throw new RuntimeException("Not possible");

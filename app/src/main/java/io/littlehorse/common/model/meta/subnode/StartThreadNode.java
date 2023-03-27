@@ -1,6 +1,6 @@
 package io.littlehorse.common.model.meta.subnode;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.meta.SubNode;
@@ -10,7 +10,6 @@ import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.wfrun.subnoderun.StartThreadRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.jlib.common.proto.StartThreadNodePb;
-import io.littlehorse.jlib.common.proto.StartThreadNodePbOrBuilder;
 import io.littlehorse.jlib.common.proto.VariableAssignmentPb;
 import java.util.Date;
 import java.util.HashMap;
@@ -31,8 +30,8 @@ public class StartThreadNode extends SubNode<StartThreadNodePb> {
         return StartThreadNodePb.class;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        StartThreadNodePbOrBuilder p = (StartThreadNodePbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        StartThreadNodePb p = (StartThreadNodePb) proto;
         threadSpecName = p.getThreadSpecName();
         for (Map.Entry<String, VariableAssignmentPb> e : p
             .getVariablesMap()

@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.meta;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
@@ -12,7 +11,6 @@ import io.littlehorse.jlib.common.proto.InterruptDefPb;
 import io.littlehorse.jlib.common.proto.NodePb;
 import io.littlehorse.jlib.common.proto.NodePb.NodeCase;
 import io.littlehorse.jlib.common.proto.ThreadSpecPb;
-import io.littlehorse.jlib.common.proto.ThreadSpecPbOrBuilder;
 import io.littlehorse.jlib.common.proto.VariableAssignmentPb.SourceCase;
 import io.littlehorse.jlib.common.proto.VariableDefPb;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
@@ -38,13 +36,12 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPb> {
         interruptDefs = new ArrayList<>();
     }
 
-    @JsonIgnore
     public Class<ThreadSpecPb> getProtoBaseClass() {
         return ThreadSpecPb.class;
     }
 
     // Below is Serde
-    @JsonIgnore
+
     public ThreadSpecPb.Builder toProto() {
         ThreadSpecPb.Builder out = ThreadSpecPb.newBuilder();
 
@@ -60,8 +57,8 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder pr) {
-        ThreadSpecPbOrBuilder proto = (ThreadSpecPbOrBuilder) pr;
+    public void initFrom(Message pr) {
+        ThreadSpecPb proto = (ThreadSpecPb) pr;
         for (Map.Entry<String, NodePb> p : proto.getNodesMap().entrySet()) {
             Node n = new Node();
             n.name = p.getKey();
@@ -88,17 +85,16 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPb> {
     }
 
     // Below is Implementation
-    @JsonIgnore
+
     public String entrypointNodeName;
 
-    @JsonIgnore
     public WfSpec wfSpec;
 
     /*
      * Returns a Map containing info for all of the variables required as parameters
      * to *start* this thread.
      */
-    @JsonIgnore
+
     public Map<String, VariableDef> getRequiredInputVariables() {
         HashMap<String, VariableDef> out = new HashMap<>();
         for (VariableDef vd : variableDefs) {
@@ -119,14 +115,10 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPb> {
         return out;
     }
 
-    @JsonIgnore
-    private ThreadSpec parentThread;
-
     // Returns all the external event def names used for **interrupts**
-    @JsonIgnore
+
     private Set<String> interruptExternalEventDefs;
 
-    @JsonIgnore
     public Set<String> getInterruptExternalEventDefs() {
         if (interruptExternalEventDefs != null) {
             return interruptExternalEventDefs;
@@ -140,7 +132,7 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPb> {
     }
 
     // Returns all the external event def names used for **EXTERNAL_EVENT nodes**
-    @JsonIgnore
+
     public Set<String> getNodeExternalEventDefs() {
         Set<String> out = new HashSet<>();
         for (Node n : nodes.values()) {
@@ -396,7 +388,7 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPb> {
         }
     }
 
-    public static ThreadSpec fromProto(ThreadSpecPbOrBuilder p) {
+    public static ThreadSpec fromProto(ThreadSpecPb p) {
         ThreadSpec out = new ThreadSpec();
         out.initFrom(p);
         return out;

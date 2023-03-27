@@ -1,13 +1,11 @@
 package io.littlehorse.common.model.wfrun.haltreason;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.jlib.common.proto.LHStatusPb;
 import io.littlehorse.jlib.common.proto.ParentHaltedPb;
-import io.littlehorse.jlib.common.proto.ParentHaltedPbOrBuilder;
 
 public class ParentHalted
     extends LHSerializable<ParentHaltedPb>
@@ -15,7 +13,6 @@ public class ParentHalted
 
     public int parentThreadId;
 
-    @JsonIgnore
     public boolean isResolved(WfRun wfRun) {
         ThreadRun parent = wfRun.threadRuns.get(parentThreadId);
         if (parent.status == LHStatusPb.COMPLETED) {
@@ -39,12 +36,12 @@ public class ParentHalted
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        ParentHaltedPbOrBuilder p = (ParentHaltedPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        ParentHaltedPb p = (ParentHaltedPb) proto;
         parentThreadId = p.getParentThreadId();
     }
 
-    public static ParentHalted fromProto(ParentHaltedPbOrBuilder proto) {
+    public static ParentHalted fromProto(ParentHaltedPb proto) {
         ParentHalted out = new ParentHalted();
         out.initFrom(proto);
         return out;

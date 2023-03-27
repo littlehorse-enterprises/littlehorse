@@ -1,6 +1,6 @@
 package io.littlehorse.common.model.command.subcommand;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
@@ -11,7 +11,6 @@ import io.littlehorse.common.model.observabilityevent.events.TaskStartOe;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.TaskClaimEventPb;
-import io.littlehorse.common.proto.TaskClaimEventPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.LHResponseCodePb;
 import io.littlehorse.jlib.common.proto.LHStatusPb;
@@ -99,14 +98,14 @@ public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
         return out;
     }
 
-    public static TaskClaimEvent fromProto(TaskClaimEventPbOrBuilder proto) {
+    public static TaskClaimEvent fromProto(TaskClaimEventPb proto) {
         TaskClaimEvent out = new TaskClaimEvent();
         out.initFrom(proto);
         return out;
     }
 
-    public void initFrom(MessageOrBuilder p) {
-        TaskClaimEventPbOrBuilder proto = (TaskClaimEventPbOrBuilder) p;
+    public void initFrom(Message p) {
+        TaskClaimEventPb proto = (TaskClaimEventPb) p;
         this.wfRunId = proto.getWfRunId();
         this.threadRunNumber = proto.getThreadRunNumber();
         this.taskRunNumber = proto.getTaskRunNumber();

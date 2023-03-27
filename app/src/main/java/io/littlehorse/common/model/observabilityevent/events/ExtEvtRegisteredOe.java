@@ -1,11 +1,10 @@
 package io.littlehorse.common.model.observabilityevent.events;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.observabilityevent.SubEvent;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.jlib.common.proto.ExtEvtRegisteredOePb;
-import io.littlehorse.jlib.common.proto.ExtEvtRegisteredOePbOrBuilder;
 import java.util.Date;
 
 public class ExtEvtRegisteredOe extends SubEvent<ExtEvtRegisteredOePb> {
@@ -31,11 +30,11 @@ public class ExtEvtRegisteredOe extends SubEvent<ExtEvtRegisteredOePb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        ExtEvtRegisteredOePbOrBuilder p = (ExtEvtRegisteredOePbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        ExtEvtRegisteredOePb p = (ExtEvtRegisteredOePb) proto;
         extEvtDefName = p.getExtEvtDefName();
         guid = p.getGuid();
-        content = VariableValue.fromProto(p.getContentOrBuilder());
+        content = VariableValue.fromProto(p.getContent());
         if (p.hasThreadRunNumber()) threadRunNumber = p.getThreadRunNumber();
         if (p.hasNodeRunPosition()) nodeRunPosition = p.getNodeRunPosition();
     }

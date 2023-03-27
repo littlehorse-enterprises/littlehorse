@@ -1,12 +1,12 @@
 package io.littlehorse.common.model.metrics;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.objectId.TaskDefMetricsId;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.LHLibUtil;
 import io.littlehorse.jlib.common.proto.MetricsWindowLengthPb;
 import io.littlehorse.jlib.common.proto.TaskDefMetricsPb;
-import io.littlehorse.jlib.common.proto.TaskDefMetricsPbOrBuilder;
 import io.littlehorse.jlib.common.proto.TaskDefMetricsQueryPb;
 import java.util.Date;
 
@@ -44,8 +44,8 @@ public class TaskDefMetrics extends GETable<TaskDefMetricsPb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        TaskDefMetricsPbOrBuilder p = (TaskDefMetricsPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        TaskDefMetricsPb p = (TaskDefMetricsPb) proto;
         windowStart = LHLibUtil.fromProtoTs(p.getWindowStart());
         type = p.getType();
         taskDefName = p.getTaskDefName();
@@ -62,12 +62,12 @@ public class TaskDefMetrics extends GETable<TaskDefMetricsPb> {
         return windowStart;
     }
 
-    public String getPartitionKey() {
-        return taskDefName;
-    }
-
-    public String getObjectId() {
-        return getObjectId(type, windowStart, taskDefName);
+    public TaskDefMetricsId getObjectId() {
+        TaskDefMetricsId out = new TaskDefMetricsId();
+        out.windowStart = windowStart;
+        out.windowType = type;
+        out.taskDefName = taskDefName;
+        return out;
     }
 
     public static String getObjectId(

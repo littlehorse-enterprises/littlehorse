@@ -1,9 +1,8 @@
 package io.littlehorse.server.streamsimpl.storeinternals.index;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.Storeable;
 import io.littlehorse.common.proto.DiscreteTagLocalCounterPb;
-import io.littlehorse.common.proto.DiscreteTagLocalCounterPbOrBuilder;
 
 public class DiscreteTagLocalCounter extends Storeable<DiscreteTagLocalCounterPb> {
 
@@ -25,8 +24,8 @@ public class DiscreteTagLocalCounter extends Storeable<DiscreteTagLocalCounterPb
             .setPartition(partition);
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        DiscreteTagLocalCounterPbOrBuilder p = (DiscreteTagLocalCounterPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        DiscreteTagLocalCounterPb p = (DiscreteTagLocalCounterPb) proto;
         localCount = p.getLocalCount();
         tagAttributes = p.getTagAttributes();
         partition = p.getPartition();
@@ -36,13 +35,11 @@ public class DiscreteTagLocalCounter extends Storeable<DiscreteTagLocalCounterPb
         return tagAttributes + "_" + partition;
     }
 
-    public String getObjectId() {
+    public String getStoreKey() {
         return getObjectId(tagAttributes, partition);
     }
 
-    public static DiscreteTagLocalCounter fromProto(
-        DiscreteTagLocalCounterPbOrBuilder p
-    ) {
+    public static DiscreteTagLocalCounter fromProto(DiscreteTagLocalCounterPb p) {
         DiscreteTagLocalCounter out = new DiscreteTagLocalCounter();
         out.initFrom(p);
         return out;

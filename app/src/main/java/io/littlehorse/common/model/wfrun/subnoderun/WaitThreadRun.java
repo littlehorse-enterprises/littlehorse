@@ -1,6 +1,6 @@
 package io.littlehorse.common.model.wfrun.subnoderun;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.wfrun.Failure;
@@ -12,7 +12,6 @@ import io.littlehorse.jlib.common.proto.LHStatusPb;
 import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
 import io.littlehorse.jlib.common.proto.WaitThreadRunPb;
-import io.littlehorse.jlib.common.proto.WaitThreadRunPbOrBuilder;
 import java.util.Date;
 
 public class WaitThreadRun extends SubNodeRun<WaitThreadRunPb> {
@@ -26,8 +25,8 @@ public class WaitThreadRun extends SubNodeRun<WaitThreadRunPb> {
         return WaitThreadRunPb.class;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        WaitThreadRunPbOrBuilder p = (WaitThreadRunPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        WaitThreadRunPb p = (WaitThreadRunPb) proto;
         threadRunNumber = p.getThreadRunNumber();
         if (p.hasThreadEndTime()) {
             threadEndTime = LHUtil.fromProtoTs(p.getThreadEndTime());
@@ -60,7 +59,7 @@ public class WaitThreadRun extends SubNodeRun<WaitThreadRunPb> {
         return out;
     }
 
-    public static WaitThreadRun fromProto(WaitThreadRunPbOrBuilder p) {
+    public static WaitThreadRun fromProto(WaitThreadRunPb p) {
         WaitThreadRun out = new WaitThreadRun();
         out.initFrom(p);
         return out;

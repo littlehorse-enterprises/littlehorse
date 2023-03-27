@@ -1,9 +1,8 @@
 package io.littlehorse.common.model.wfrun;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.jlib.common.proto.FailurePb;
-import io.littlehorse.jlib.common.proto.FailurePbOrBuilder;
 import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 
 public class Failure extends LHSerializable<FailurePb> {
@@ -29,18 +28,18 @@ public class Failure extends LHSerializable<FailurePb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        FailurePbOrBuilder p = (FailurePbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        FailurePb p = (FailurePb) proto;
         failureCode = p.getFailureCode();
         failureName = p.getFailureName();
         message = p.getMessage();
 
         if (p.hasContent()) {
-            content = VariableValue.fromProto(p.getContentOrBuilder());
+            content = VariableValue.fromProto(p.getContent());
         }
     }
 
-    public static Failure fromProto(FailurePbOrBuilder p) {
+    public static Failure fromProto(FailurePb p) {
         Failure out = new Failure();
         out.initFrom(p);
         return out;

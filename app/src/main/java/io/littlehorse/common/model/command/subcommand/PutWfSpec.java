@@ -1,6 +1,6 @@
 package io.littlehorse.common.model.command.subcommand;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
@@ -13,7 +13,6 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.LHResponseCodePb;
 import io.littlehorse.jlib.common.proto.LHStatusPb;
 import io.littlehorse.jlib.common.proto.PutWfSpecPb;
-import io.littlehorse.jlib.common.proto.PutWfSpecPbOrBuilder;
 import io.littlehorse.jlib.common.proto.ThreadSpecPb;
 import java.util.Date;
 import java.util.HashMap;
@@ -49,8 +48,8 @@ public class PutWfSpec extends SubCommand<PutWfSpecPb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        PutWfSpecPbOrBuilder p = (PutWfSpecPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        PutWfSpecPb p = (PutWfSpecPb) proto;
         name = p.getName();
         entrypointThreadName = p.getEntrypointThreadName();
         for (Map.Entry<String, ThreadSpecPb> e : p.getThreadSpecsMap().entrySet()) {
@@ -102,7 +101,7 @@ public class PutWfSpec extends SubCommand<PutWfSpecPb> {
         return out;
     }
 
-    public static PutWfSpec fromProto(PutWfSpecPbOrBuilder p) {
+    public static PutWfSpec fromProto(PutWfSpecPb p) {
         PutWfSpec out = new PutWfSpec();
         out.initFrom(p);
         return out;

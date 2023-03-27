@@ -1,10 +1,9 @@
 package io.littlehorse.common.model.command.subcommandresponse;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.jlib.common.proto.PutWfSpecReplyPb;
-import io.littlehorse.jlib.common.proto.PutWfSpecReplyPbOrBuilder;
 
 public class PutWfSpecReply extends AbstractResponse<PutWfSpecReplyPb> {
 
@@ -14,8 +13,8 @@ public class PutWfSpecReply extends AbstractResponse<PutWfSpecReplyPb> {
         return PutWfSpecReplyPb.class;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        PutWfSpecReplyPbOrBuilder p = (PutWfSpecReplyPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        PutWfSpecReplyPb p = (PutWfSpecReplyPb) proto;
 
         code = p.getCode();
         if (p.hasMessage()) message = p.getMessage();

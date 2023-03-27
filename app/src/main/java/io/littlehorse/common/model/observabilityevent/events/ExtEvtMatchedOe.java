@@ -1,10 +1,9 @@
 package io.littlehorse.common.model.observabilityevent.events;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.observabilityevent.SubEvent;
 import io.littlehorse.jlib.common.proto.ExtEvtMatchedOePb;
-import io.littlehorse.jlib.common.proto.ExtEvtMatchedOePbOrBuilder;
 import java.util.Date;
 
 public class ExtEvtMatchedOe extends SubEvent<ExtEvtMatchedOePb> {
@@ -28,8 +27,8 @@ public class ExtEvtMatchedOe extends SubEvent<ExtEvtMatchedOePb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        ExtEvtMatchedOePbOrBuilder p = (ExtEvtMatchedOePbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        ExtEvtMatchedOePb p = (ExtEvtMatchedOePb) proto;
         extEvtDefName = p.getExtEvtDefName();
         threadRunNumber = p.getThreadRunNumber();
         nodeRunPosition = p.getNodeRunPosition();

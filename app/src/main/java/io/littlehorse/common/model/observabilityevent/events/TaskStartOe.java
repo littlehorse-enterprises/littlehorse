@@ -1,11 +1,10 @@
 package io.littlehorse.common.model.observabilityevent.events;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.observabilityevent.SubEvent;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.jlib.common.proto.TaskStartOePb;
-import io.littlehorse.jlib.common.proto.TaskStartOePbOrBuilder;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.TaskMetricUpdate;
 import java.util.Date;
 import java.util.List;
@@ -29,8 +28,8 @@ public class TaskStartOe extends SubEvent<TaskStartOePb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        TaskStartOePbOrBuilder p = (TaskStartOePbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        TaskStartOePb p = (TaskStartOePb) proto;
         taskRunPosition = p.getTaskRunPosition();
         threadRunNumber = p.getThreadRunNumber();
         workerId = p.getWorkerId();

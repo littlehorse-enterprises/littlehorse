@@ -1,9 +1,8 @@
 package io.littlehorse.common.model.command.subcommandresponse;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.jlib.common.proto.RunWfReplyPb;
-import io.littlehorse.jlib.common.proto.RunWfReplyPbOrBuilder;
 
 public class RunWfReply extends AbstractResponse<RunWfReplyPb> {
 
@@ -22,8 +21,8 @@ public class RunWfReply extends AbstractResponse<RunWfReplyPb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        RunWfReplyPbOrBuilder p = (RunWfReplyPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        RunWfReplyPb p = (RunWfReplyPb) proto;
         code = p.getCode();
         if (p.hasMessage()) message = p.getMessage();
         if (p.hasWfSpecVersion()) wfSpecVersion = p.getWfSpecVersion();

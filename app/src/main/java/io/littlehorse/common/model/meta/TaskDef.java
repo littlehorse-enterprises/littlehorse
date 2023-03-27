@@ -1,12 +1,11 @@
 package io.littlehorse.common.model.meta;
 
-import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.LHConstants;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.objectId.TaskDefId;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.TaskDefIdPb;
 import io.littlehorse.jlib.common.proto.TaskDefPb;
-import io.littlehorse.jlib.common.proto.TaskDefPbOrBuilder;
 import io.littlehorse.jlib.common.proto.VariableDefPb;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import java.util.ArrayList;
@@ -34,24 +33,12 @@ public class TaskDef extends GETable<TaskDefPb> {
         return name;
     }
 
-    public String getObjectId() {
-        return TaskDef.getObjectId(name, version);
-    }
-
-    public static String getObjectId(String name, int version) {
-        return LHUtil.getCompositeId(name, LHUtil.toLHDbVersionFormat(version));
+    public TaskDefId getObjectId() {
+        return new TaskDefId(name, version);
     }
 
     public static String getFullPrefixByName(String name) {
         return StoreUtils.getFullStoreKey(name + "/", TaskDef.class);
-    }
-
-    // public static String getFullKey(String name, int version) {
-    //     return StoreUtils.getFullStoreKey(getObjectId(name, version), TaskDef.class);
-    // }
-
-    public String getPartitionKey() {
-        return LHConstants.META_PARTITION_KEY;
     }
 
     public Class<TaskDefPb> getProtoBaseClass() {
@@ -75,12 +62,12 @@ public class TaskDef extends GETable<TaskDefPb> {
         return b;
     }
 
-    public void initFrom(MessageOrBuilder p) {
-        TaskDefPbOrBuilder proto = (TaskDefPbOrBuilder) p;
+    public void initFrom(Message p) {
+        TaskDefPb proto = (TaskDefPb) p;
         name = proto.getName();
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
         if (proto.hasOutputSchema()) {
-            outputSchema = OutputSchema.fromProto(proto.getOutputSchemaOrBuilder());
+            outputSchema = OutputSchema.fromProto(proto.getOutputSchema());
         }
         version = proto.getVersion();
 
@@ -89,7 +76,7 @@ public class TaskDef extends GETable<TaskDefPb> {
         }
     }
 
-    public static TaskDef fromProto(TaskDefPbOrBuilder p) {
+    public static TaskDef fromProto(TaskDefPb p) {
         TaskDef out = new TaskDef();
         out.initFrom(p);
         return out;
@@ -102,9 +89,5 @@ public class TaskDef extends GETable<TaskDefPb> {
             .setName(split[0])
             .setVersion(Integer.valueOf(split[1]))
             .build();
-    }
-
-    public static String getObjectId(TaskDefIdPb id) {
-        return getObjectId(id.getName(), id.getVersion());
     }
 }

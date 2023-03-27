@@ -1,12 +1,12 @@
 package io.littlehorse.server.streamsimpl.storeinternals.index;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.Storeable;
 import io.littlehorse.common.proto.AttributePb;
 import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb;
 import io.littlehorse.common.proto.TagPb;
-import io.littlehorse.common.proto.TagPbOrBuilder;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHUtil;
 import java.util.ArrayList;
@@ -40,8 +40,8 @@ public class Tag extends Storeable<TagPb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        TagPbOrBuilder p = (TagPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        TagPb p = (TagPb) proto;
         objectType = p.getObjectType();
         describedObjectId = p.getDescribedObjectId();
         createdAt = LHUtil.fromProtoTs(p.getCreated());
@@ -55,6 +55,17 @@ public class Tag extends Storeable<TagPb> {
 
     public String getAttributeString() {
         return getAttributeString(objectType, attributes);
+    }
+
+    public static String getAttributeString(
+        GETableClassEnumPb objectType,
+        TagPrefixScanPb prefixScanSpec
+    ) {
+        List<Attribute> attrs = new ArrayList<>();
+        for (AttributePb apb : prefixScanSpec.getAttributesList()) {
+            attrs.add(Attribute.fromProto(apb));
+        }
+        return getAttributeString(objectType, attrs);
     }
 
     public static String getAttributeString(
@@ -73,7 +84,7 @@ public class Tag extends Storeable<TagPb> {
         return builder.toString();
     }
 
-    public String getObjectId() {
+    public String getStoreKey() {
         StringBuilder builder = new StringBuilder(getAttributeString());
 
         builder.append("/");
@@ -114,7 +125,7 @@ public class Tag extends Storeable<TagPb> {
         this.objectType =
             GETable.getTypeEnum((Class<? extends GETable<?>>) getable.getClass());
         createdAt = getable.getCreatedAt();
-        describedObjectId = getable.getObjectId();
+        describedObjectId = getable.getStoreKey();
         this.tagType = type;
 
         for (Pair<String, String> p : atts) {
@@ -123,13 +134,13 @@ public class Tag extends Storeable<TagPb> {
     }
 
     public int hashCode() {
-        return getObjectId().hashCode();
+        return getStoreKey().hashCode();
     }
 
     public boolean equals(Object o) {
         if (o == null) return false;
         if (!(o instanceof Tag)) return false;
         Tag oe = (Tag) o;
-        return getObjectId().equals(oe.getObjectId());
+        return getStoreKey().equals(oe.getStoreKey());
     }
 }

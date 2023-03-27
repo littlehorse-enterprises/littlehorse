@@ -1,12 +1,11 @@
 package io.littlehorse.common.model.command.subcommand;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
 import io.littlehorse.jlib.common.proto.DeleteWfRunPb;
-import io.littlehorse.jlib.common.proto.DeleteWfRunPbOrBuilder;
 
 public class DeleteWfRun extends SubCommand<DeleteWfRunPb> {
 
@@ -21,8 +20,8 @@ public class DeleteWfRun extends SubCommand<DeleteWfRunPb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        DeleteWfRunPbOrBuilder p = (DeleteWfRunPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        DeleteWfRunPb p = (DeleteWfRunPb) proto;
         wfRunId = p.getWfRunId();
     }
 
@@ -38,7 +37,7 @@ public class DeleteWfRun extends SubCommand<DeleteWfRunPb> {
         return true;
     }
 
-    public static DeleteWfRun fromProto(DeleteWfRunPbOrBuilder p) {
+    public static DeleteWfRun fromProto(DeleteWfRunPb p) {
         DeleteWfRun out = new DeleteWfRun();
         out.initFrom(p);
         return out;

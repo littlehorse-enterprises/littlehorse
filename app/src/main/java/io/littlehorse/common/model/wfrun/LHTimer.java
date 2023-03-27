@@ -1,8 +1,7 @@
 package io.littlehorse.common.model.wfrun;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.ByteString;
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.LHTimerPb;
@@ -18,7 +17,7 @@ public class LHTimer extends LHSerializable<LHTimerPb> {
 
     public LHTimer() {}
 
-    public void initFrom(MessageOrBuilder proto) {
+    public void initFrom(Message proto) {
         LHTimerPb p = (LHTimerPb) proto;
         maturationTime = LHUtil.fromProtoTs(p.getMaturationTime());
         topic = p.getTopic();
@@ -41,12 +40,10 @@ public class LHTimer extends LHSerializable<LHTimerPb> {
         return LHUtil.toLhDbFormat(maturationTime) + "_" + topic + "_" + key;
     }
 
-    @JsonIgnore
     public Class<LHTimerPb> getProtoBaseClass() {
         return LHTimerPb.class;
     }
 
-    @JsonIgnore
     public byte[] getPayload(LHConfig config) {
         return payload;
     }

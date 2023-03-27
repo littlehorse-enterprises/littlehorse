@@ -1,13 +1,12 @@
 package io.littlehorse.common.model.observabilityevent.events;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.observabilityevent.SubEvent;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import io.littlehorse.jlib.common.proto.TaskResultOePb;
-import io.littlehorse.jlib.common.proto.TaskResultOePbOrBuilder;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.TaskMetricUpdate;
 import java.util.Date;
 import java.util.List;
@@ -35,8 +34,8 @@ public class TaskResultOe extends SubEvent<TaskResultOePb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        TaskResultOePbOrBuilder p = (TaskResultOePbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        TaskResultOePb p = (TaskResultOePb) proto;
         resultCode = p.getResultCode();
         taskRunPosition = p.getTaskRunPosition();
         threadRunNumber = p.getThreadRunNumber();

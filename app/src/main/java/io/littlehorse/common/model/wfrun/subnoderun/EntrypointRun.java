@@ -1,9 +1,8 @@
 package io.littlehorse.common.model.wfrun.subnoderun;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
 import io.littlehorse.jlib.common.proto.EntrypointRunPb;
-import io.littlehorse.jlib.common.proto.EntrypointRunPbOrBuilder;
 import java.util.Date;
 
 public class EntrypointRun extends SubNodeRun<EntrypointRunPb> {
@@ -12,13 +11,13 @@ public class EntrypointRun extends SubNodeRun<EntrypointRunPb> {
         return EntrypointRunPb.class;
     }
 
-    public void initFrom(MessageOrBuilder p) {}
+    public void initFrom(Message p) {}
 
     public EntrypointRunPb.Builder toProto() {
         return EntrypointRunPb.newBuilder();
     }
 
-    public static EntrypointRun fromProto(EntrypointRunPbOrBuilder p) {
+    public static EntrypointRun fromProto(EntrypointRunPb p) {
         EntrypointRun out = new EntrypointRun();
         out.initFrom(p);
         return out;

@@ -1,9 +1,8 @@
 package io.littlehorse.common.model.command.subcommandresponse;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.jlib.common.proto.DeleteObjectReplyPb;
-import io.littlehorse.jlib.common.proto.DeleteObjectReplyPbOrBuilder;
 
 public class DeleteObjectReply extends AbstractResponse<DeleteObjectReplyPb> {
 
@@ -20,13 +19,13 @@ public class DeleteObjectReply extends AbstractResponse<DeleteObjectReplyPb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        DeleteObjectReplyPbOrBuilder p = (DeleteObjectReplyPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        DeleteObjectReplyPb p = (DeleteObjectReplyPb) proto;
         code = p.getCode();
         if (p.hasMessage()) message = p.getMessage();
     }
 
-    public static DeleteObjectReply fromProto(DeleteObjectReplyPbOrBuilder p) {
+    public static DeleteObjectReply fromProto(DeleteObjectReplyPb p) {
         DeleteObjectReply out = new DeleteObjectReply();
         out.initFrom(p);
         return out;

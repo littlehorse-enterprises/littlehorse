@@ -1,12 +1,10 @@
 package io.littlehorse.common.model.meta;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.jlib.common.proto.ComparatorPb;
 import io.littlehorse.jlib.common.proto.EdgeConditionPb;
-import io.littlehorse.jlib.common.proto.EdgeConditionPbOrBuilder;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,11 +18,11 @@ public class EdgeCondition extends LHSerializable<EdgeConditionPb> {
         return EdgeConditionPb.class;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        EdgeConditionPbOrBuilder p = (EdgeConditionPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        EdgeConditionPb p = (EdgeConditionPb) proto;
         comparator = p.getComparator();
-        left = VariableAssignment.fromProto(p.getLeftOrBuilder());
-        right = VariableAssignment.fromProto(p.getRightOrBuilder());
+        left = VariableAssignment.fromProto(p.getLeft());
+        right = VariableAssignment.fromProto(p.getRight());
     }
 
     public EdgeConditionPb.Builder toProto() {
@@ -36,13 +34,12 @@ public class EdgeCondition extends LHSerializable<EdgeConditionPb> {
         return out;
     }
 
-    public static EdgeCondition fromProto(EdgeConditionPbOrBuilder p) {
+    public static EdgeCondition fromProto(EdgeConditionPb p) {
         EdgeCondition out = new EdgeCondition();
         out.initFrom(p);
         return out;
     }
 
-    @JsonIgnore
     public Edge edge;
 
     public void validate() throws LHValidationError {

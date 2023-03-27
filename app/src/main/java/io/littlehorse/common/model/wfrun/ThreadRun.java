@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.wfrun;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
@@ -20,6 +19,7 @@ import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.meta.VariableMutation;
 import io.littlehorse.common.model.meta.subnode.ExitNode;
 import io.littlehorse.common.model.meta.subnode.TaskNode;
+import io.littlehorse.common.model.objectId.ExternalEventId;
 import io.littlehorse.common.model.observabilityevent.ObservabilityEvent;
 import io.littlehorse.common.model.observabilityevent.events.InterruptedOe;
 import io.littlehorse.common.model.observabilityevent.events.ThreadStatusOe;
@@ -67,7 +67,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     public Integer parentThreadId;
 
     public List<ThreadHaltReason> haltReasons;
-    public String interruptTriggerId;
+    public ExternalEventId interruptTriggerId;
     public FailureBeingHandled failureBeingHandled;
     public List<Integer> handledFailedChildren;
 
@@ -80,7 +80,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         handledFailedChildren = new ArrayList<>();
     }
 
-    public void initFrom(MessageOrBuilder p) {
+    public void initFrom(Message p) {
         ThreadRunPb proto = (ThreadRunPb) p;
         wfRunId = proto.getWfRunId();
         number = proto.getNumber();
@@ -105,7 +105,11 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         }
 
         if (proto.hasInterruptTriggerId()) {
-            interruptTriggerId = proto.getInterruptTriggerId();
+            interruptTriggerId =
+                LHSerializable.fromProto(
+                    proto.getInterruptTriggerId(),
+                    ExternalEventId.class
+                );
         }
 
         for (ThreadHaltReasonPb thrpb : proto.getHaltReasonsList()) {
@@ -116,9 +120,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
 
         if (proto.hasFailureBeingHandled()) {
             failureBeingHandled =
-                FailureBeingHandled.fromProto(
-                    proto.getFailureBeingHandledOrBuilder()
-                );
+                FailureBeingHandled.fromProto(proto.getFailureBeingHandled());
         }
 
         for (int handledFailedChildId : proto.getHandledFailedChildrenList()) {
@@ -161,7 +163,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             out.addHaltReasons(thr.toProto());
         }
         if (interruptTriggerId != null) {
-            out.setInterruptTriggerId(interruptTriggerId);
+            out.setInterruptTriggerId(interruptTriggerId.toProto());
         }
         if (failureBeingHandled != null) {
             out.setFailureBeingHandled(failureBeingHandled.toProto());
@@ -172,7 +174,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         return out;
     }
 
-    public static ThreadRun fromProto(MessageOrBuilder p) {
+    public static ThreadRun fromProto(Message p) {
         ThreadRun out = new ThreadRun();
         out.initFrom(p);
         return out;
@@ -183,16 +185,13 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     }
 
     // For Scheduler
-    @JsonIgnore
+
     public WfRun wfRun;
 
-    @JsonIgnore
     public Map<String, Variable> variables;
 
-    @JsonIgnore
     private ThreadSpec threadSpec;
 
-    @JsonIgnore
     public ThreadSpec getThreadSpec() {
         if (threadSpec == null) {
             threadSpec = wfRun.wfSpec.threadSpecs.get(threadSpecName);
@@ -200,7 +199,6 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         return threadSpec;
     }
 
-    @JsonIgnore
     public Node getCurrentNode() {
         NodeRun currRun = getCurrentNodeRun();
         ThreadSpec t = getThreadSpec();
@@ -211,7 +209,6 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         return t.nodes.get(currRun.nodeName);
     }
 
-    @JsonIgnore
     public NodeRun getCurrentNodeRun() {
         return getNodeRun(currentNodePosition);
     }
@@ -433,7 +430,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     /*
      * Returns true if we can move this Thread from HALTING to HALTED status.
      */
-    @JsonIgnore
+
     public boolean canBeInterrupted() {
         if (getCurrentNodeRun().canBeInterrupted()) return true;
 
@@ -448,7 +445,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     /*
      * Returns true if this thread is in a dynamic (running) state.
      */
-    @JsonIgnore
+
     public boolean isRunning() {
         return (
             status == LHStatusPb.RUNNING ||
@@ -457,7 +454,6 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         );
     }
 
-    @JsonIgnore
     public boolean advance(Date eventTime) {
         NodeRun currentNodeRun = getCurrentNodeRun();
 
@@ -763,7 +759,6 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         }
     }
 
-    @JsonIgnore
     public ThreadRun getParent() {
         if (parentThreadId == null) return null;
         return wfRun.threadRuns.get(parentThreadId);

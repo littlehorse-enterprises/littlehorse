@@ -1,6 +1,6 @@
 package io.littlehorse.common.model.wfrun.subnoderun;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.meta.VariableAssignment;
@@ -11,7 +11,6 @@ import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.jlib.common.proto.LHStatusPb;
 import io.littlehorse.jlib.common.proto.StartThreadRunPb;
-import io.littlehorse.jlib.common.proto.StartThreadRunPbOrBuilder;
 import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import io.littlehorse.jlib.common.proto.ThreadTypePb;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
@@ -28,8 +27,8 @@ public class StartThreadRun extends SubNodeRun<StartThreadRunPb> {
         return StartThreadRunPb.class;
     }
 
-    public void initFrom(MessageOrBuilder p) {
-        StartThreadRunPbOrBuilder proto = (StartThreadRunPbOrBuilder) p;
+    public void initFrom(Message p) {
+        StartThreadRunPb proto = (StartThreadRunPb) p;
         if (proto.hasChildThreadId()) childThreadId = proto.getChildThreadId();
         threadSpecName = proto.getThreadSpecName();
     }
@@ -46,7 +45,7 @@ public class StartThreadRun extends SubNodeRun<StartThreadRunPb> {
         return out;
     }
 
-    public static StartThreadRun fromProto(StartThreadRunPbOrBuilder p) {
+    public static StartThreadRun fromProto(StartThreadRunPb p) {
         StartThreadRun out = new StartThreadRun();
         out.initFrom(p);
         return out;

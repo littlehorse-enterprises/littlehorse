@@ -1,12 +1,11 @@
 package io.littlehorse.common.model.observabilityevent.events;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.observabilityevent.SubEvent;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.jlib.common.proto.LHStatusPb;
 import io.littlehorse.jlib.common.proto.WfRunStatusOePb;
-import io.littlehorse.jlib.common.proto.WfRunStatusOePbOrBuilder;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.WfMetricUpdate;
 import java.util.Date;
 import java.util.List;
@@ -25,8 +24,8 @@ public class WfRunStatusOe extends SubEvent<WfRunStatusOePb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        WfRunStatusOePbOrBuilder p = (WfRunStatusOePbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        WfRunStatusOePb p = (WfRunStatusOePb) proto;
         status = p.getStatus();
     }
 

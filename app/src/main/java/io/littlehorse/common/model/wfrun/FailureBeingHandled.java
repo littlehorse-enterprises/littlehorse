@@ -1,9 +1,8 @@
 package io.littlehorse.common.model.wfrun;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.jlib.common.proto.FailureBeingHandledPb;
-import io.littlehorse.jlib.common.proto.FailureBeingHandledPbOrBuilder;
 
 public class FailureBeingHandled extends LHSerializable<FailureBeingHandledPb> {
 
@@ -24,14 +23,14 @@ public class FailureBeingHandled extends LHSerializable<FailureBeingHandledPb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        FailureBeingHandledPbOrBuilder p = (FailureBeingHandledPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        FailureBeingHandledPb p = (FailureBeingHandledPb) proto;
         failureNumber = p.getFailureNumber();
         nodeRunPosition = p.getNodeRunPosition();
         threadRunNumber = p.getThreadRunNumber();
     }
 
-    public static FailureBeingHandled fromProto(FailureBeingHandledPbOrBuilder p) {
+    public static FailureBeingHandled fromProto(FailureBeingHandledPb p) {
         FailureBeingHandled out = new FailureBeingHandled();
         out.initFrom(p);
         return out;

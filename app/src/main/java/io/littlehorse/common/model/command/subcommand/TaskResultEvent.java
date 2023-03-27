@@ -1,6 +1,6 @@
 package io.littlehorse.common.model.command.subcommand;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
@@ -14,7 +14,6 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.LHResponseCodePb;
 import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import io.littlehorse.jlib.common.proto.TaskResultEventPb;
-import io.littlehorse.jlib.common.proto.TaskResultEventPbOrBuilder;
 import java.util.Date;
 
 public class TaskResultEvent extends SubCommand<TaskResultEventPb> {
@@ -101,8 +100,8 @@ public class TaskResultEvent extends SubCommand<TaskResultEventPb> {
         return b;
     }
 
-    public void initFrom(MessageOrBuilder p) {
-        TaskResultEventPbOrBuilder proto = (TaskResultEventPbOrBuilder) p;
+    public void initFrom(Message p) {
+        TaskResultEventPb proto = (TaskResultEventPb) p;
         this.wfRunId = proto.getWfRunId();
         this.threadRunNumber = proto.getThreadRunNumber();
         this.taskRunPosition = proto.getTaskRunPosition();
@@ -111,14 +110,14 @@ public class TaskResultEvent extends SubCommand<TaskResultEventPb> {
         this.fromRpc = proto.getFromRpc();
 
         if (proto.hasOutput()) {
-            this.stdout = VariableValue.fromProto(proto.getOutputOrBuilder());
+            this.stdout = VariableValue.fromProto(proto.getOutput());
         }
         if (proto.hasLogOutput()) {
             this.stderr = VariableValue.fromProto(proto.getLogOutput());
         }
     }
 
-    public static TaskResultEvent fromProto(TaskResultEventPbOrBuilder proto) {
+    public static TaskResultEvent fromProto(TaskResultEventPb proto) {
         TaskResultEvent out = new TaskResultEvent();
         out.initFrom(proto);
         return out;

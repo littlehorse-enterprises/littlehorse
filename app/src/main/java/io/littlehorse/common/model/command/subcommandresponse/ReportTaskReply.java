@@ -1,9 +1,8 @@
 package io.littlehorse.common.model.command.subcommandresponse;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.jlib.common.proto.ReportTaskReplyPb;
-import io.littlehorse.jlib.common.proto.ReportTaskReplyPbOrBuilder;
 
 public class ReportTaskReply extends AbstractResponse<ReportTaskReplyPb> {
 
@@ -11,8 +10,8 @@ public class ReportTaskReply extends AbstractResponse<ReportTaskReplyPb> {
         return ReportTaskReplyPb.class;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        ReportTaskReplyPbOrBuilder p = (ReportTaskReplyPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        ReportTaskReplyPb p = (ReportTaskReplyPb) proto;
         code = p.getCode();
         if (p.hasMessage()) {
             message = p.getMessage();

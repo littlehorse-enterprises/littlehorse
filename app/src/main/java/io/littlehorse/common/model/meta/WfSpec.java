@@ -1,13 +1,13 @@
 package io.littlehorse.common.model.meta;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.command.subcommand.RunWf;
+import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
@@ -16,7 +16,6 @@ import io.littlehorse.jlib.common.proto.ThreadSpecPb;
 import io.littlehorse.jlib.common.proto.ThreadTypePb;
 import io.littlehorse.jlib.common.proto.WfSpecIdPb;
 import io.littlehorse.jlib.common.proto.WfSpecPb;
-import io.littlehorse.jlib.common.proto.WfSpecPbOrBuilder;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,27 +36,16 @@ public class WfSpec extends GETable<WfSpecPb> {
     public String entrypointThreadName;
     public LHStatusPb status;
 
-    @JsonIgnore
     private Map<String, String> varToThreadSpec;
 
-    @JsonIgnore
     private boolean initializedVarToThreadSpec;
+
+    public WfSpecId getObjectId() {
+        return new WfSpecId(name, version);
+    }
 
     public String getName() {
         return name;
-    }
-
-    /*
-     * This determines ordering. In order to ensure quick lookups for the WfSpec with
-     * a given name and the newest version, we need the versions to be ordered
-     * **lexicographically**, not just numerically.
-     */
-    public String getObjectId() {
-        return getObjectId(name, version);
-    }
-
-    public static String getObjectId(String name, int version) {
-        return LHUtil.getCompositeId(name, LHUtil.toLHDbVersionFormat(version));
     }
 
     public static String getFullPrefixByName(String name) {
@@ -100,8 +88,8 @@ public class WfSpec extends GETable<WfSpecPb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder pr) {
-        WfSpecPbOrBuilder proto = (WfSpecPbOrBuilder) pr;
+    public void initFrom(Message pr) {
+        WfSpecPb proto = (WfSpecPb) pr;
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
         version = proto.getVersion();
         entrypointThreadName = proto.getEntrypointThreadName();
@@ -119,12 +107,11 @@ public class WfSpec extends GETable<WfSpecPb> {
         }
     }
 
-    @JsonIgnore
     public Class<WfSpecPb> getProtoBaseClass() {
         return WfSpecPb.class;
     }
 
-    public static WfSpec fromProto(WfSpecPbOrBuilder proto) {
+    public static WfSpec fromProto(WfSpecPb proto) {
         WfSpec out = new WfSpec();
         out.initFrom(proto);
         return out;
@@ -180,7 +167,6 @@ public class WfSpec extends GETable<WfSpecPb> {
         return out;
     }
 
-    @JsonIgnore
     public Map<String, VariableDef> getRequiredVariables() {
         return threadSpecs.get(entrypointThreadName).getRequiredInputVariables();
     }
@@ -267,9 +253,5 @@ public class WfSpec extends GETable<WfSpecPb> {
             .setName(split[0])
             .setVersion(Integer.valueOf(split[1]))
             .build();
-    }
-
-    public static String getObjectId(WfSpecIdPb id) {
-        return getObjectId(id.getName(), id.getVersion());
     }
 }

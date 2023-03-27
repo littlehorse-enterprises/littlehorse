@@ -46,35 +46,35 @@ public final class LHInternalsGrpc {
     return getCentralStoreQueryMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.LHInternalSearchPb,
-      io.littlehorse.common.proto.InternalSearchReplyPb> getLHSearchMethod;
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.InternalScanPb,
+      io.littlehorse.common.proto.InternalScanReplyPb> getInternalScanMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "LHSearch",
-      requestType = io.littlehorse.common.proto.LHInternalSearchPb.class,
-      responseType = io.littlehorse.common.proto.InternalSearchReplyPb.class,
+      fullMethodName = SERVICE_NAME + '/' + "InternalScan",
+      requestType = io.littlehorse.common.proto.InternalScanPb.class,
+      responseType = io.littlehorse.common.proto.InternalScanReplyPb.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.LHInternalSearchPb,
-      io.littlehorse.common.proto.InternalSearchReplyPb> getLHSearchMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.common.proto.LHInternalSearchPb, io.littlehorse.common.proto.InternalSearchReplyPb> getLHSearchMethod;
-    if ((getLHSearchMethod = LHInternalsGrpc.getLHSearchMethod) == null) {
+  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.InternalScanPb,
+      io.littlehorse.common.proto.InternalScanReplyPb> getInternalScanMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.common.proto.InternalScanPb, io.littlehorse.common.proto.InternalScanReplyPb> getInternalScanMethod;
+    if ((getInternalScanMethod = LHInternalsGrpc.getInternalScanMethod) == null) {
       synchronized (LHInternalsGrpc.class) {
-        if ((getLHSearchMethod = LHInternalsGrpc.getLHSearchMethod) == null) {
-          LHInternalsGrpc.getLHSearchMethod = getLHSearchMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.LHInternalSearchPb, io.littlehorse.common.proto.InternalSearchReplyPb>newBuilder()
+        if ((getInternalScanMethod = LHInternalsGrpc.getInternalScanMethod) == null) {
+          LHInternalsGrpc.getInternalScanMethod = getInternalScanMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.InternalScanPb, io.littlehorse.common.proto.InternalScanReplyPb>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "LHSearch"))
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "InternalScan"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.common.proto.LHInternalSearchPb.getDefaultInstance()))
+                  io.littlehorse.common.proto.InternalScanPb.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.common.proto.InternalSearchReplyPb.getDefaultInstance()))
-              .setSchemaDescriptor(new LHInternalsMethodDescriptorSupplier("LHSearch"))
+                  io.littlehorse.common.proto.InternalScanReplyPb.getDefaultInstance()))
+              .setSchemaDescriptor(new LHInternalsMethodDescriptorSupplier("InternalScan"))
               .build();
         }
       }
     }
-    return getLHSearchMethod;
+    return getInternalScanMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.WaitForCommandPb,
@@ -106,37 +106,6 @@ public final class LHInternalsGrpc {
       }
     }
     return getWaitForCommandMethod;
-  }
-
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.InternalPollTaskPb,
-      io.littlehorse.common.proto.InternalPollTaskReplyPb> getInternalPollTaskMethod;
-
-  @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "InternalPollTask",
-      requestType = io.littlehorse.common.proto.InternalPollTaskPb.class,
-      responseType = io.littlehorse.common.proto.InternalPollTaskReplyPb.class,
-      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.InternalPollTaskPb,
-      io.littlehorse.common.proto.InternalPollTaskReplyPb> getInternalPollTaskMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.common.proto.InternalPollTaskPb, io.littlehorse.common.proto.InternalPollTaskReplyPb> getInternalPollTaskMethod;
-    if ((getInternalPollTaskMethod = LHInternalsGrpc.getInternalPollTaskMethod) == null) {
-      synchronized (LHInternalsGrpc.class) {
-        if ((getInternalPollTaskMethod = LHInternalsGrpc.getInternalPollTaskMethod) == null) {
-          LHInternalsGrpc.getInternalPollTaskMethod = getInternalPollTaskMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.InternalPollTaskPb, io.littlehorse.common.proto.InternalPollTaskReplyPb>newBuilder()
-              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "InternalPollTask"))
-              .setSampledToLocalTracing(true)
-              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.common.proto.InternalPollTaskPb.getDefaultInstance()))
-              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.common.proto.InternalPollTaskReplyPb.getDefaultInstance()))
-              .setSchemaDescriptor(new LHInternalsMethodDescriptorSupplier("InternalPollTask"))
-              .build();
-        }
-      }
-    }
-    return getInternalPollTaskMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.InternalGetAdvertisedHostsPb,
@@ -227,9 +196,9 @@ public final class LHInternalsGrpc {
 
     /**
      */
-    public void lHSearch(io.littlehorse.common.proto.LHInternalSearchPb request,
-        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalSearchReplyPb> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getLHSearchMethod(), responseObserver);
+    public void internalScan(io.littlehorse.common.proto.InternalScanPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalScanReplyPb> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getInternalScanMethod(), responseObserver);
     }
 
     /**
@@ -237,13 +206,6 @@ public final class LHInternalsGrpc {
     public void waitForCommand(io.littlehorse.common.proto.WaitForCommandPb request,
         io.grpc.stub.StreamObserver<io.littlehorse.common.proto.WaitForCommandReplyPb> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getWaitForCommandMethod(), responseObserver);
-    }
-
-    /**
-     */
-    public void internalPollTask(io.littlehorse.common.proto.InternalPollTaskPb request,
-        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalPollTaskReplyPb> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getInternalPollTaskMethod(), responseObserver);
     }
 
     /**
@@ -263,12 +225,12 @@ public final class LHInternalsGrpc {
                 io.littlehorse.common.proto.CentralStoreQueryReplyPb>(
                   this, METHODID_CENTRAL_STORE_QUERY)))
           .addMethod(
-            getLHSearchMethod(),
+            getInternalScanMethod(),
             io.grpc.stub.ServerCalls.asyncUnaryCall(
               new MethodHandlers<
-                io.littlehorse.common.proto.LHInternalSearchPb,
-                io.littlehorse.common.proto.InternalSearchReplyPb>(
-                  this, METHODID_LHSEARCH)))
+                io.littlehorse.common.proto.InternalScanPb,
+                io.littlehorse.common.proto.InternalScanReplyPb>(
+                  this, METHODID_INTERNAL_SCAN)))
           .addMethod(
             getWaitForCommandMethod(),
             io.grpc.stub.ServerCalls.asyncUnaryCall(
@@ -276,13 +238,6 @@ public final class LHInternalsGrpc {
                 io.littlehorse.common.proto.WaitForCommandPb,
                 io.littlehorse.common.proto.WaitForCommandReplyPb>(
                   this, METHODID_WAIT_FOR_COMMAND)))
-          .addMethod(
-            getInternalPollTaskMethod(),
-            io.grpc.stub.ServerCalls.asyncUnaryCall(
-              new MethodHandlers<
-                io.littlehorse.common.proto.InternalPollTaskPb,
-                io.littlehorse.common.proto.InternalPollTaskReplyPb>(
-                  this, METHODID_INTERNAL_POLL_TASK)))
           .addMethod(
             getGetAdvertisedHostsMethod(),
             io.grpc.stub.ServerCalls.asyncUnaryCall(
@@ -318,10 +273,10 @@ public final class LHInternalsGrpc {
 
     /**
      */
-    public void lHSearch(io.littlehorse.common.proto.LHInternalSearchPb request,
-        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalSearchReplyPb> responseObserver) {
+    public void internalScan(io.littlehorse.common.proto.InternalScanPb request,
+        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalScanReplyPb> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getLHSearchMethod(), getCallOptions()), request, responseObserver);
+          getChannel().newCall(getInternalScanMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -330,14 +285,6 @@ public final class LHInternalsGrpc {
         io.grpc.stub.StreamObserver<io.littlehorse.common.proto.WaitForCommandReplyPb> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getWaitForCommandMethod(), getCallOptions()), request, responseObserver);
-    }
-
-    /**
-     */
-    public void internalPollTask(io.littlehorse.common.proto.InternalPollTaskPb request,
-        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalPollTaskReplyPb> responseObserver) {
-      io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getInternalPollTaskMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -372,9 +319,9 @@ public final class LHInternalsGrpc {
 
     /**
      */
-    public io.littlehorse.common.proto.InternalSearchReplyPb lHSearch(io.littlehorse.common.proto.LHInternalSearchPb request) {
+    public io.littlehorse.common.proto.InternalScanReplyPb internalScan(io.littlehorse.common.proto.InternalScanPb request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getLHSearchMethod(), getCallOptions(), request);
+          getChannel(), getInternalScanMethod(), getCallOptions(), request);
     }
 
     /**
@@ -382,13 +329,6 @@ public final class LHInternalsGrpc {
     public io.littlehorse.common.proto.WaitForCommandReplyPb waitForCommand(io.littlehorse.common.proto.WaitForCommandPb request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getWaitForCommandMethod(), getCallOptions(), request);
-    }
-
-    /**
-     */
-    public io.littlehorse.common.proto.InternalPollTaskReplyPb internalPollTask(io.littlehorse.common.proto.InternalPollTaskPb request) {
-      return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getInternalPollTaskMethod(), getCallOptions(), request);
     }
 
     /**
@@ -423,10 +363,10 @@ public final class LHInternalsGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.InternalSearchReplyPb> lHSearch(
-        io.littlehorse.common.proto.LHInternalSearchPb request) {
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.InternalScanReplyPb> internalScan(
+        io.littlehorse.common.proto.InternalScanPb request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getLHSearchMethod(), getCallOptions()), request);
+          getChannel().newCall(getInternalScanMethod(), getCallOptions()), request);
     }
 
     /**
@@ -439,14 +379,6 @@ public final class LHInternalsGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.InternalPollTaskReplyPb> internalPollTask(
-        io.littlehorse.common.proto.InternalPollTaskPb request) {
-      return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getInternalPollTaskMethod(), getCallOptions()), request);
-    }
-
-    /**
-     */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb> getAdvertisedHosts(
         io.littlehorse.common.proto.InternalGetAdvertisedHostsPb request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
@@ -455,10 +387,9 @@ public final class LHInternalsGrpc {
   }
 
   private static final int METHODID_CENTRAL_STORE_QUERY = 0;
-  private static final int METHODID_LHSEARCH = 1;
+  private static final int METHODID_INTERNAL_SCAN = 1;
   private static final int METHODID_WAIT_FOR_COMMAND = 2;
-  private static final int METHODID_INTERNAL_POLL_TASK = 3;
-  private static final int METHODID_GET_ADVERTISED_HOSTS = 4;
+  private static final int METHODID_GET_ADVERTISED_HOSTS = 3;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -481,17 +412,13 @@ public final class LHInternalsGrpc {
           serviceImpl.centralStoreQuery((io.littlehorse.common.proto.CentralStoreQueryPb) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.CentralStoreQueryReplyPb>) responseObserver);
           break;
-        case METHODID_LHSEARCH:
-          serviceImpl.lHSearch((io.littlehorse.common.proto.LHInternalSearchPb) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalSearchReplyPb>) responseObserver);
+        case METHODID_INTERNAL_SCAN:
+          serviceImpl.internalScan((io.littlehorse.common.proto.InternalScanPb) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalScanReplyPb>) responseObserver);
           break;
         case METHODID_WAIT_FOR_COMMAND:
           serviceImpl.waitForCommand((io.littlehorse.common.proto.WaitForCommandPb) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.WaitForCommandReplyPb>) responseObserver);
-          break;
-        case METHODID_INTERNAL_POLL_TASK:
-          serviceImpl.internalPollTask((io.littlehorse.common.proto.InternalPollTaskPb) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalPollTaskReplyPb>) responseObserver);
           break;
         case METHODID_GET_ADVERTISED_HOSTS:
           serviceImpl.getAdvertisedHosts((io.littlehorse.common.proto.InternalGetAdvertisedHostsPb) request,
@@ -559,9 +486,8 @@ public final class LHInternalsGrpc {
           serviceDescriptor = result = io.grpc.ServiceDescriptor.newBuilder(SERVICE_NAME)
               .setSchemaDescriptor(new LHInternalsFileDescriptorSupplier())
               .addMethod(getCentralStoreQueryMethod())
-              .addMethod(getLHSearchMethod())
+              .addMethod(getInternalScanMethod())
               .addMethod(getWaitForCommandMethod())
-              .addMethod(getInternalPollTaskMethod())
               .addMethod(getGetAdvertisedHostsMethod())
               .build();
         }

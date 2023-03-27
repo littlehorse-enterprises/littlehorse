@@ -1,6 +1,5 @@
 package io.littlehorse.common.model.meta;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHValidationError;
@@ -18,7 +17,6 @@ public abstract class SubNode<T extends Message> extends LHSerializable<T> {
     public abstract void validate(LHGlobalMetaStores stores, LHConfig config)
         throws LHValidationError;
 
-    @JsonIgnore
     protected Node node;
 
     public void setNode(Node node) {

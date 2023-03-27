@@ -1,13 +1,12 @@
 package io.littlehorse.common.model.command.subcommand;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.ExternalEventNodeTimeoutPb;
-import io.littlehorse.common.proto.ExternalEventNodeTimeoutPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
 import java.util.Date;
 import org.apache.log4j.Logger;
@@ -35,8 +34,8 @@ public class ExternalEventTimeout extends SubCommand<ExternalEventNodeTimeoutPb>
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        ExternalEventNodeTimeoutPbOrBuilder p = (ExternalEventNodeTimeoutPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        ExternalEventNodeTimeoutPb p = (ExternalEventNodeTimeoutPb) proto;
         wfRunId = p.getWfRunId();
         threadRunNumber = p.getThreadRunNumber();
         nodeRunPosition = p.getNodeRunPosition();
@@ -66,9 +65,7 @@ public class ExternalEventTimeout extends SubCommand<ExternalEventNodeTimeoutPb>
         return false;
     }
 
-    public static ExternalEventTimeout fromProto(
-        ExternalEventNodeTimeoutPbOrBuilder p
-    ) {
+    public static ExternalEventTimeout fromProto(ExternalEventNodeTimeoutPb p) {
         ExternalEventTimeout out = new ExternalEventTimeout();
         out.initFrom(p);
         return out;

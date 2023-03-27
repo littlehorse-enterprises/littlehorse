@@ -1,13 +1,12 @@
 package io.littlehorse.common.model.command.subcommand;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
 import io.littlehorse.jlib.common.proto.DeleteTaskDefPb;
-import io.littlehorse.jlib.common.proto.DeleteTaskDefPbOrBuilder;
 
 public class DeleteTaskDef extends SubCommand<DeleteTaskDefPb> {
 
@@ -26,8 +25,8 @@ public class DeleteTaskDef extends SubCommand<DeleteTaskDefPb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        DeleteTaskDefPbOrBuilder p = (DeleteTaskDefPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        DeleteTaskDefPb p = (DeleteTaskDefPb) proto;
         name = p.getName();
         version = p.getVersion();
     }
@@ -44,7 +43,7 @@ public class DeleteTaskDef extends SubCommand<DeleteTaskDefPb> {
         return true;
     }
 
-    public static DeleteTaskDef fromProto(DeleteTaskDefPbOrBuilder p) {
+    public static DeleteTaskDef fromProto(DeleteTaskDefPb p) {
         DeleteTaskDef out = new DeleteTaskDef();
         out.initFrom(p);
         return out;

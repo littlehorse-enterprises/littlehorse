@@ -1,12 +1,10 @@
 package io.littlehorse.common.model.wfrun.haltreason;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.jlib.common.proto.InterruptedPb;
-import io.littlehorse.jlib.common.proto.InterruptedPbOrBuilder;
 import io.littlehorse.jlib.common.proto.LHStatusPb;
 
 public class Interrupted
@@ -15,7 +13,6 @@ public class Interrupted
 
     public int interruptThreadId;
 
-    @JsonIgnore
     public boolean isResolved(WfRun wfRun) {
         ThreadRun iThread = wfRun.threadRuns.get(interruptThreadId);
         return iThread.status == LHStatusPb.COMPLETED;
@@ -31,12 +28,12 @@ public class Interrupted
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        InterruptedPbOrBuilder p = (InterruptedPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        InterruptedPb p = (InterruptedPb) proto;
         interruptThreadId = p.getInterruptThreadId();
     }
 
-    public static Interrupted fromProto(InterruptedPbOrBuilder proto) {
+    public static Interrupted fromProto(InterruptedPb proto) {
         Interrupted out = new Interrupted();
         out.initFrom(proto);
         return out;

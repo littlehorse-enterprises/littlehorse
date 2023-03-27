@@ -1,13 +1,12 @@
 package io.littlehorse.common.model.command.subcommand;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
 import io.littlehorse.jlib.common.proto.DeleteWfSpecPb;
-import io.littlehorse.jlib.common.proto.DeleteWfSpecPbOrBuilder;
 
 public class DeleteWfSpec extends SubCommand<DeleteWfSpecPb> {
 
@@ -26,8 +25,8 @@ public class DeleteWfSpec extends SubCommand<DeleteWfSpecPb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        DeleteWfSpecPbOrBuilder p = (DeleteWfSpecPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        DeleteWfSpecPb p = (DeleteWfSpecPb) proto;
         name = p.getName();
         version = p.getVersion();
     }
@@ -44,7 +43,7 @@ public class DeleteWfSpec extends SubCommand<DeleteWfSpecPb> {
         return true;
     }
 
-    public static DeleteWfSpec fromProto(DeleteWfSpecPbOrBuilder p) {
+    public static DeleteWfSpec fromProto(DeleteWfSpecPb p) {
         DeleteWfSpec out = new DeleteWfSpec();
         out.initFrom(p);
         return out;

@@ -1,6 +1,6 @@
 package io.littlehorse.common.model.command.subcommand;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHValidationError;
@@ -9,7 +9,6 @@ import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.SleepNodeMaturedPb;
-import io.littlehorse.common.proto.SleepNodeMaturedPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
 
 public class SleepNodeMatured extends SubCommand<SleepNodeMaturedPb> {
@@ -31,14 +30,14 @@ public class SleepNodeMatured extends SubCommand<SleepNodeMaturedPb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        SleepNodeMaturedPbOrBuilder p = (SleepNodeMaturedPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        SleepNodeMaturedPb p = (SleepNodeMaturedPb) proto;
         threadRunNumber = p.getThreadRunNumber();
         wfRunId = p.getWfRunId();
         nodeRunPosition = p.getNodeRunPosition();
     }
 
-    public static SleepNodeMatured fromProto(SleepNodeMaturedPbOrBuilder proto) {
+    public static SleepNodeMatured fromProto(SleepNodeMaturedPb proto) {
         SleepNodeMatured out = new SleepNodeMatured();
         out.initFrom(proto);
         return out;

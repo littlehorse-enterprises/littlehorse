@@ -1,6 +1,6 @@
 package io.littlehorse.common.model.command.subcommand;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
@@ -12,7 +12,6 @@ import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.LHResponseCodePb;
 import io.littlehorse.jlib.common.proto.PutTaskDefPb;
-import io.littlehorse.jlib.common.proto.PutTaskDefPbOrBuilder;
 import io.littlehorse.jlib.common.proto.VariableDefPb;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,8 +46,8 @@ public class PutTaskDef extends SubCommand<PutTaskDefPb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        PutTaskDefPbOrBuilder p = (PutTaskDefPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        PutTaskDefPb p = (PutTaskDefPb) proto;
         name = p.getName();
         for (VariableDefPb entry : p.getInputVarsList()) {
             inputVars.add(VariableDef.fromProto(entry));
@@ -91,7 +90,7 @@ public class PutTaskDef extends SubCommand<PutTaskDefPb> {
         return out;
     }
 
-    public static PutTaskDef fromProto(PutTaskDefPbOrBuilder p) {
+    public static PutTaskDef fromProto(PutTaskDefPb p) {
         PutTaskDef out = new PutTaskDef();
         out.initFrom(p);
         return out;

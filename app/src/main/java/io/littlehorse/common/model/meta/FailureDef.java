@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.meta;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.exceptions.LHVarSubError;
@@ -10,7 +9,6 @@ import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.jlib.common.proto.FailureDefPb;
-import io.littlehorse.jlib.common.proto.FailureDefPbOrBuilder;
 import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
 import java.util.HashSet;
@@ -40,18 +38,18 @@ public class FailureDef extends LHSerializable<FailureDefPb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        FailureDefPbOrBuilder p = (FailureDefPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        FailureDefPb p = (FailureDefPb) proto;
         failureName = p.getFailureName();
         message = p.getMessage();
         failureCode = p.getFailureCode();
 
         if (p.hasContent()) {
-            content = VariableAssignment.fromProto(p.getContentOrBuilder());
+            content = VariableAssignment.fromProto(p.getContent());
         }
     }
 
-    public static FailureDef fromProto(FailureDefPbOrBuilder proto) {
+    public static FailureDef fromProto(FailureDefPb proto) {
         FailureDef out = new FailureDef();
         out.initFrom(proto);
         return out;
@@ -74,7 +72,6 @@ public class FailureDef extends LHSerializable<FailureDefPb> {
         }
     }
 
-    @JsonIgnore
     public Failure getFailure(ThreadRun thread) {
         Failure out = new Failure();
         out.failureName = failureName;

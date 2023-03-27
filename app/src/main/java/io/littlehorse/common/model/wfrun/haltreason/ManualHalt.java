@@ -1,10 +1,9 @@
 package io.littlehorse.common.model.wfrun.haltreason;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.jlib.common.proto.ManualHaltPb;
-import io.littlehorse.jlib.common.proto.ManualHaltPbOrBuilder;
 
 public class ManualHalt
     extends LHSerializable<ManualHaltPb>
@@ -27,12 +26,12 @@ public class ManualHalt
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        ManualHaltPbOrBuilder p = (ManualHaltPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        ManualHaltPb p = (ManualHaltPb) proto;
         meaningOfLife = p.getMeaningOfLife();
     }
 
-    public static ManualHalt fromProto(ManualHaltPbOrBuilder proto) {
+    public static ManualHalt fromProto(ManualHaltPb proto) {
         ManualHalt out = new ManualHalt();
         out.initFrom(proto);
         return out;

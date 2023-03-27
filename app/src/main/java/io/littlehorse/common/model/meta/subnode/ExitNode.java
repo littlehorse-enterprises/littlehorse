@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.meta.subnode;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.meta.FailureDef;
@@ -9,7 +8,6 @@ import io.littlehorse.common.model.meta.SubNode;
 import io.littlehorse.common.model.wfrun.subnoderun.ExitRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.jlib.common.proto.ExitNodePb;
-import io.littlehorse.jlib.common.proto.ExitNodePbOrBuilder;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,8 +20,8 @@ public class ExitNode extends SubNode<ExitNodePb> {
         return ExitNodePb.class;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        ExitNodePbOrBuilder p = (ExitNodePbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        ExitNodePb p = (ExitNodePb) proto;
         if (p.hasFailureDef()) failureDef = FailureDef.fromProto(p.getFailureDef());
     }
 
@@ -45,7 +43,6 @@ public class ExitNode extends SubNode<ExitNodePb> {
     }
 
     @Override
-    @JsonIgnore
     public Set<String> getNeededVariableNames() {
         HashSet<String> out = new HashSet<>();
         if (failureDef != null) {

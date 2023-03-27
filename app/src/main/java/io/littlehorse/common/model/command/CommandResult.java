@@ -1,10 +1,9 @@
 package io.littlehorse.common.model.command;
 
 import com.google.protobuf.ByteString;
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.Storeable;
 import io.littlehorse.common.proto.CommandResultPb;
-import io.littlehorse.common.proto.CommandResultPbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
 import java.util.Date;
 
@@ -28,14 +27,14 @@ public class CommandResult extends Storeable<CommandResultPb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        CommandResultPbOrBuilder p = (CommandResultPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        CommandResultPb p = (CommandResultPb) proto;
         commandId = p.getCommandId();
         resultTime = LHUtil.fromProtoTs(p.getResultTime());
         result = p.getResult().toByteArray();
     }
 
-    public String getObjectId() {
+    public String getStoreKey() {
         return commandId;
     }
 }

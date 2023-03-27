@@ -1,10 +1,10 @@
 package io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand;
 
-import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.model.GETable;
+import com.google.protobuf.Message;
+import io.littlehorse.common.model.Storeable;
 import io.littlehorse.common.model.metrics.WfSpecMetrics;
+import io.littlehorse.common.model.objectId.WfSpecMetricsId;
 import io.littlehorse.common.proto.WfMetricUpdatePb;
-import io.littlehorse.common.proto.WfMetricUpdatePbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.LHLibUtil;
 import io.littlehorse.jlib.common.proto.MetricsWindowLengthPb;
@@ -17,7 +17,7 @@ import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.log4j.Logger;
 
 public class WfMetricUpdate
-    extends GETable<WfMetricUpdatePb>
+    extends Storeable<WfMetricUpdatePb>
     implements RepartitionSubCommand {
 
     private static final Logger log = Logger.getLogger(WfMetricUpdate.class);
@@ -58,8 +58,8 @@ public class WfMetricUpdate
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        WfMetricUpdatePbOrBuilder p = (WfMetricUpdatePbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        WfMetricUpdatePb p = (WfMetricUpdatePb) proto;
         windowStart = LHLibUtil.fromProtoTs(p.getWindowStart());
         type = p.getType();
         wfSpecName = p.getWfSpecName();
@@ -115,13 +115,13 @@ public class WfMetricUpdate
     }
 
     public void process(LHStoreWrapper store, ProcessorContext<Void, Void> ctx) {
-        WfMetricUpdate previous = store.get(getObjectId(), getClass());
+        WfMetricUpdate previous = store.get(getStoreKey(), getClass());
         if (previous != null) {
             merge(previous);
         }
         store.put(this);
         store.put(toResponse());
-        log.debug("Put WfMetric object for key " + toResponse().getObjectId());
+        log.debug("Put WfMetric object for key " + toResponse().getStoreKey());
     }
 
     public Date getCreatedAt() {
@@ -144,7 +144,15 @@ public class WfMetricUpdate
         return type + "/" + LHUtil.toLhDbFormat(windowStart) + "/" + wfSpecName;
     }
 
-    public String getObjectId() {
+    public static String getStoreKey(
+        MetricsWindowLengthPb type,
+        Date windowStart,
+        String wfSpecName
+    ) {
+        return new WfSpecMetricsId(windowStart, type, wfSpecName).getStoreKey();
+    }
+
+    public String getStoreKey() {
         return getObjectId(type, windowStart, wfSpecName);
     }
 }

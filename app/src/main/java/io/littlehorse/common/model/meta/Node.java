@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.meta;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
@@ -19,7 +18,6 @@ import io.littlehorse.jlib.common.proto.EdgePb;
 import io.littlehorse.jlib.common.proto.FailureHandlerDefPb;
 import io.littlehorse.jlib.common.proto.NodePb;
 import io.littlehorse.jlib.common.proto.NodePb.NodeCase;
-import io.littlehorse.jlib.common.proto.NodePbOrBuilder;
 import io.littlehorse.jlib.common.proto.NopNodePb;
 import io.littlehorse.jlib.common.proto.VariableMutationPb;
 import java.util.ArrayList;
@@ -44,12 +42,10 @@ public class Node extends LHSerializable<NodePb> {
 
     public List<FailureHandlerDef> failureHandlers;
 
-    @JsonIgnore
     public Class<NodePb> getProtoBaseClass() {
         return NodePb.class;
     }
 
-    @JsonIgnore
     public NodePb.Builder toProto() {
         NodePb.Builder out = NodePb.newBuilder();
 
@@ -97,8 +93,8 @@ public class Node extends LHSerializable<NodePb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder p) {
-        NodePbOrBuilder proto = (NodePbOrBuilder) p;
+    public void initFrom(Message p) {
+        NodePb proto = (NodePb) p;
         type = proto.getNodeCase();
 
         for (EdgePb epb : proto.getOutgoingEdgesList()) {
@@ -168,10 +164,8 @@ public class Node extends LHSerializable<NodePb> {
     public List<Edge> outgoingEdges;
     public String name;
 
-    @JsonIgnore
     public ThreadSpec threadSpec;
 
-    @JsonIgnore
     public Set<String> neededVariableNames() {
         Set<String> out = new HashSet<>();
 
@@ -272,7 +266,7 @@ public class Node extends LHSerializable<NodePb> {
      * Returns the set of all thread variable names referred to by this
      * Node. Used internally for validation of the WfSpec.
      */
-    @JsonIgnore
+
     public Set<String> getRequiredVariableNames() {
         Set<String> out = new HashSet<>();
         for (VariableMutation mut : variableMutations) {

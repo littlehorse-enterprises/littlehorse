@@ -1,10 +1,9 @@
 package io.littlehorse.common.model.observabilityevent.events;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.observabilityevent.SubEvent;
 import io.littlehorse.jlib.common.proto.WaitingForExtEvtOePb;
-import io.littlehorse.jlib.common.proto.WaitingForExtEvtOePbOrBuilder;
 import java.util.Date;
 
 public class WaitingForExtEvtOe extends SubEvent<WaitingForExtEvtOePb> {
@@ -26,8 +25,8 @@ public class WaitingForExtEvtOe extends SubEvent<WaitingForExtEvtOePb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        WaitingForExtEvtOePbOrBuilder p = (WaitingForExtEvtOePbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        WaitingForExtEvtOePb p = (WaitingForExtEvtOePb) proto;
         extEvtDefName = p.getExtEvtDefName();
         threadRunNumber = p.getThreadRunNumber();
         nodeRunPosition = p.getNodeRunPosition();

@@ -1,11 +1,9 @@
 package io.littlehorse.common.model.wfrun.haltreason;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.jlib.common.proto.PendingFailureHandlerHaltReasonPb;
-import io.littlehorse.jlib.common.proto.PendingFailureHandlerHaltReasonPbOrBuilder;
 
 public class PendingFailureHandlerHaltReason
     extends LHSerializable<PendingFailureHandlerHaltReasonPb>
@@ -13,7 +11,6 @@ public class PendingFailureHandlerHaltReason
 
     public int nodeRunPosition;
 
-    @JsonIgnore
     public boolean isResolved(WfRun wfRun) {
         // Should always return false because this HaltReason is manually
         // removed upon creation of the Failure Handler Thread
@@ -30,13 +27,13 @@ public class PendingFailureHandlerHaltReason
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        PendingFailureHandlerHaltReasonPbOrBuilder p = (PendingFailureHandlerHaltReasonPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        PendingFailureHandlerHaltReasonPb p = (PendingFailureHandlerHaltReasonPb) proto;
         nodeRunPosition = p.getNodeRunPosition();
     }
 
     public static PendingFailureHandlerHaltReason fromProto(
-        PendingFailureHandlerHaltReasonPbOrBuilder proto
+        PendingFailureHandlerHaltReasonPb proto
     ) {
         PendingFailureHandlerHaltReason out = new PendingFailureHandlerHaltReason();
         out.initFrom(proto);

@@ -8,16 +8,6 @@ option java_package = "io.littlehorse.common.proto";
 import "google/protobuf/timestamp.proto";
 import "io-littlehorse-proto/proto/service.proto";
 
-// The following protobuf definitions are used for paginated responses.
-message PartitionBookmarkPb {
-    int32 parttion = 1;
-    optional string last_key = 2;
-}
-
-message BookmarkPb {
-    map<int32, PartitionBookmarkPb> in_progress_partitions = 1;
-    repeated int32 completed_partitions = 2;
-}
 
 // This section contains data structures used internally for sending the results of
 // processing Commands. As a refresher, we need to send the result of processing
@@ -69,45 +59,87 @@ message WaitForCommandReplyPb {
     optional string message = 3;
 }
 
-// This section defines the various ways in which we can search for a list of object
-// ids. They include:
-// - objectIdPrefixScan, eg. all nodeRuns for a wfRun
-// - localTagScan, eg. all nodeRuns with status of FAILED
-// - hashedTagScan, eg. all variables with string value "foobar"
 
-message LHInternalSearchPb {
-    message RepeatedAttributePb {
+// This section defines structures used for paginated scan interactive queries. This
+// is useful when we want to do things like "Get all nodeRuns for a given wfRun" or
+// "find all Variable objects with type=STR, name='email', and value='foo@bar.com'"
+
+enum ScanResultTypePb {
+    // Just return the IDs of the objects.
+    OBJECT_ID = 0;
+
+    // Return the objects themselves. This can only be done for the object id prefix
+    // scan type.
+    OBJECT = 1;
+}
+
+message PartitionBookmarkPb { // used for paginated responses
+    int32 parttion = 1;
+    optional string last_key = 2;
+}
+
+message BookmarkPb { // Used for paginated responses
+    map<int32, PartitionBookmarkPb> in_progress_partitions = 1;
+    repeated int32 completed_partitions = 2;
+}
+
+message InternalScanPb {
+    message TagPrefixScanPb {
         repeated AttributePb attributes = 1;
+        // TODO: Add time-based filters here.
+        // Note that each Tag has a timestamp at the end of it--that's what
+        // we will utilize.
     }
-    int32 limit = 1;
-    optional BookmarkPb bookmark = 2;
-    GETableClassEnumPb object_type = 3;
-    optional string partition_key = 4;
 
-    oneof prefix {
-        string object_id_prefix = 5;
-        RepeatedAttributePb tag_prefix = 6;
+    ScanResultTypePb result_type = 1;
+    int32 limit = 2;
+    optional BookmarkPb bookmark = 3;
+    GETableClassEnumPb object_type = 4;
+    string store_name = 5;
+
+    optional string partition_key = 6;
+
+    oneof scan_boundary {
+        string object_id_prefix = 7;
+        TagPrefixScanPb local_tag_prefix_scan = 8;
     }
 }
 
-message InternalSearchReplyPb { // all scans have the same output
+message InternalScanReplyPb {
     StoreQueryStatusPb code = 1;
-    repeated string object_ids = 2;
+
+    // The type of 'result' depends on the query.
+    repeated bytes results = 2;
+
+    // If there are more results (i.e. we hit the limit), then updated_bookmark
+    // is set. Otherwise, it is null.
     BookmarkPb updated_bookmark = 3;
+
     optional string message = 4;
 }
 
-// This section is for the internal implementation of the Task Queue.
-// It will be optimized and improved in future revisions.
-message InternalPollTaskPb {
-    string task_queue_name = 1;
-}
-
-message InternalPollTaskReplyPb {
-    StoreQueryStatusPb code = 1;
-    optional TaskScheduleRequestPb result = 2;
-}
-
+// This is used to communicate about different available listeners. Kafka Streams
+// provides a way to get info about the host for each other Streams instance.
+// However, that Host:
+// a) is internal to Kubernetes and
+// b) points to the internal listener, not the public listener.
+//
+// When a Task Worker connects to one LH Server via the bootstrap url (i.e. the
+// K8s service that points to all LH Servers), it needs to discover individual
+// endpoints for each LH Server.
+//
+// Each LH Server has multiple advertised listeners for Task Workers. For example,
+// the general configuration will have one external listener, which can be accessed
+// over Ingress (eg. via Istio Ingressgateway and DNS), and one internal listener,
+// which only works for clients in the same kubernetes cluster.
+//
+// Each listener (eg public/k8s-internal) has a name assigned to it. The Task Worker
+// is configured to use a certain listener name based on which network it's in.
+// The LHPublicApi grpc method 'registerTaskWorkerPb' takes in a Listener Name
+// and returns listeners for all LH Servers.
+//
+// This endpoint is used to help the LHPublicApi get info about each of the LH
+// Servers so that it can formulate the response described above.
 message InternalGetAdvertisedHostsPb {}
 
 message InternalGetAdvertisedHostsReplyPb {
@@ -116,10 +148,9 @@ message InternalGetAdvertisedHostsReplyPb {
 
 service LHInternals {
     rpc CentralStoreQuery(CentralStoreQueryPb) returns (CentralStoreQueryReplyPb) {}
-    rpc LHSearch(LHInternalSearchPb) returns (InternalSearchReplyPb) {}
+    rpc InternalScan(InternalScanPb) returns (InternalScanReplyPb) {}
 
     rpc waitForCommand(WaitForCommandPb) returns (WaitForCommandReplyPb) {}
-    rpc InternalPollTask(InternalPollTaskPb) returns (InternalPollTaskReplyPb) {}
 
     rpc GetAdvertisedHosts(InternalGetAdvertisedHostsPb) returns (InternalGetAdvertisedHostsReplyPb) {}
 }
@@ -173,7 +204,8 @@ enum GETableClassEnumPb {
     NODE_RUN = 4;
     VARIABLE = 5;
     EXTERNAL_EVENT = 6;
-    TASK_SCHEDULE_REQUEST = 7;
+    TASK_DEF_METRICS = 7;
+    WF_SPEC_METRICS = 8;
 }
 
 message AttributePb {

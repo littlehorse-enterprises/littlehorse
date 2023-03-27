@@ -1,11 +1,10 @@
 package io.littlehorse.common.model.wfrun;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.objectId.VariableId;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.jlib.common.proto.VariableIdPb;
 import io.littlehorse.jlib.common.proto.VariablePb;
-import io.littlehorse.jlib.common.proto.VariablePbOrBuilder;
 import java.util.Date;
 
 public class Variable extends GETable<VariablePb> {
@@ -20,8 +19,8 @@ public class Variable extends GETable<VariablePb> {
         return VariablePb.class;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        VariablePbOrBuilder p = (VariablePbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        VariablePb p = (VariablePb) proto;
         value = VariableValue.fromProto(p.getValue());
         wfRunId = p.getWfRunId();
         name = p.getName();
@@ -41,26 +40,8 @@ public class Variable extends GETable<VariablePb> {
         return out;
     }
 
-    public String getObjectId() {
-        return getObjectId(wfRunId, threadRunNumber, name);
-    }
-
-    public static String getObjectId(String wfRunId, int threadNum, String name) {
-        return LHUtil.getCompositeId(wfRunId, String.valueOf(threadNum), name);
-    }
-
-    public static VariableIdPb parseId(String id) {
-        String[] split = id.split("/");
-        return VariableIdPb
-            .newBuilder()
-            .setWfRunId(split[0])
-            .setThreadRunNumber(Integer.valueOf(split[1]))
-            .setName(split[2])
-            .build();
-    }
-
-    public static String getObjectId(VariableIdPb id) {
-        return getObjectId(id.getWfRunId(), id.getThreadRunNumber(), id.getName());
+    public VariableId getObjectId() {
+        return new VariableId(wfRunId, threadRunNumber, name);
     }
 
     public Date getCreatedAt() {

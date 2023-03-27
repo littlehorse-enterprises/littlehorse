@@ -1,6 +1,6 @@
 package io.littlehorse.common.model.command.subcommand;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHValidationError;
@@ -10,7 +10,6 @@ import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.jlib.common.proto.LHResponseCodePb;
 import io.littlehorse.jlib.common.proto.ResumeWfRunPb;
-import io.littlehorse.jlib.common.proto.ResumeWfRunPbOrBuilder;
 
 public class ResumeWfRun extends SubCommand<ResumeWfRunPb> {
 
@@ -28,8 +27,8 @@ public class ResumeWfRun extends SubCommand<ResumeWfRunPb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        ResumeWfRunPbOrBuilder p = (ResumeWfRunPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        ResumeWfRunPb p = (ResumeWfRunPb) proto;
         wfRunId = p.getWfRunId();
         threadRunNumber = p.getThreadRunNumber();
     }
@@ -70,7 +69,7 @@ public class ResumeWfRun extends SubCommand<ResumeWfRunPb> {
         return true;
     }
 
-    public static ResumeWfRun fromProto(ResumeWfRunPbOrBuilder p) {
+    public static ResumeWfRun fromProto(ResumeWfRunPb p) {
         ResumeWfRun out = new ResumeWfRun();
         out.initFrom(p);
         return out;

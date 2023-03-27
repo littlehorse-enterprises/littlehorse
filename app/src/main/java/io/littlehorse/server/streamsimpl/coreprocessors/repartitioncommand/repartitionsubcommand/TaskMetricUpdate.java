@@ -1,10 +1,10 @@
 package io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand;
 
-import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.model.GETable;
+import com.google.protobuf.Message;
+import io.littlehorse.common.model.Storeable;
 import io.littlehorse.common.model.metrics.TaskDefMetrics;
+import io.littlehorse.common.model.objectId.TaskDefMetricsId;
 import io.littlehorse.common.proto.TaskMetricUpdatePb;
-import io.littlehorse.common.proto.TaskMetricUpdatePbOrBuilder;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.LHLibUtil;
 import io.littlehorse.jlib.common.proto.MetricsWindowLengthPb;
@@ -16,7 +16,7 @@ import java.util.List;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
 public class TaskMetricUpdate
-    extends GETable<TaskMetricUpdatePb>
+    extends Storeable<TaskMetricUpdatePb>
     implements RepartitionSubCommand {
 
     public Date windowStart;
@@ -63,8 +63,8 @@ public class TaskMetricUpdate
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        TaskMetricUpdatePbOrBuilder p = (TaskMetricUpdatePbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        TaskMetricUpdatePb p = (TaskMetricUpdatePb) proto;
         windowStart = LHLibUtil.fromProtoTs(p.getWindowStart());
         type = p.getType();
         taskDefName = p.getTaskDefName();
@@ -133,7 +133,7 @@ public class TaskMetricUpdate
     }
 
     public void process(LHStoreWrapper store, ProcessorContext<Void, Void> ctx) {
-        TaskMetricUpdate previous = store.get(getObjectId(), getClass());
+        TaskMetricUpdate previous = store.get(getStoreKey(), getClass());
         if (previous != null) {
             merge(previous);
         }
@@ -141,20 +141,20 @@ public class TaskMetricUpdate
         store.put(toResponse());
     }
 
-    public static String getObjectId(
+    public String getPartitionKey() {
+        return taskDefName;
+    }
+
+    public String getStoreKey() {
+        return new TaskDefMetricsId(windowStart, type, taskDefName).getStoreKey();
+    }
+
+    public static String getStoreKey(
         MetricsWindowLengthPb type,
         Date windowStart,
         String taskDefName
     ) {
-        return type + "/" + LHUtil.toLhDbFormat(windowStart) + "/" + taskDefName;
-    }
-
-    public String getObjectId() {
-        return getObjectId(type, windowStart, taskDefName);
-    }
-
-    public String getPartitionKey() {
-        return taskDefName;
+        return new TaskDefMetricsId(windowStart, type, taskDefName).getStoreKey();
     }
 
     public Date getCreatedAt() {

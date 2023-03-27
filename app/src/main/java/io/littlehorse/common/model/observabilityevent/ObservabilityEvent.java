@@ -1,6 +1,6 @@
 package io.littlehorse.common.model.observabilityevent;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.observabilityevent.events.ExtEvtMatchedOe;
@@ -17,7 +17,6 @@ import io.littlehorse.common.model.observabilityevent.events.WfRunStatusOe;
 import io.littlehorse.jlib.common.LHLibUtil;
 import io.littlehorse.jlib.common.proto.ObservabilityEventPb;
 import io.littlehorse.jlib.common.proto.ObservabilityEventPb.EventCase;
-import io.littlehorse.jlib.common.proto.ObservabilityEventPbOrBuilder;
 import java.util.Date;
 
 public class ObservabilityEvent extends LHSerializable<ObservabilityEventPb> {
@@ -95,8 +94,8 @@ public class ObservabilityEvent extends LHSerializable<ObservabilityEventPb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        ObservabilityEventPbOrBuilder p = (ObservabilityEventPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        ObservabilityEventPb p = (ObservabilityEventPb) proto;
         wfRunId = p.getWfRunId();
         type = p.getEventCase();
 

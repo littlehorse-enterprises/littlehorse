@@ -69,7 +69,7 @@ public class LHStoreWrapper extends LHROStoreWrapper {
 
         TagsCache newTagsCache = new TagsCache();
         for (Tag tag : TagUtils.tagThing(thing)) {
-            newTagsCache.tagIds.add(tag.getObjectId());
+            newTagsCache.tagIds.add(tag.getStoreKey());
         }
 
         store.put(tagCacheKey, new Bytes(newTagsCache.toBytes(config)));

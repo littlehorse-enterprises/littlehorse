@@ -1,9 +1,8 @@
 package io.littlehorse.common.model.meta;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.jlib.common.proto.VariableDefPb;
-import io.littlehorse.jlib.common.proto.VariableDefPbOrBuilder;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
 
 public class VariableDef extends LHSerializable<VariableDefPb> {
@@ -17,8 +16,8 @@ public class VariableDef extends LHSerializable<VariableDefPb> {
         return VariableDefPb.class;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        VariableDefPbOrBuilder p = (VariableDefPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        VariableDefPb p = (VariableDefPb) proto;
         type = p.getType();
         name = p.getName();
     }
@@ -32,7 +31,7 @@ public class VariableDef extends LHSerializable<VariableDefPb> {
         return out;
     }
 
-    public static VariableDef fromProto(VariableDefPbOrBuilder proto) {
+    public static VariableDef fromProto(VariableDefPb proto) {
         VariableDef o = new VariableDef();
         o.initFrom(proto);
         return o;

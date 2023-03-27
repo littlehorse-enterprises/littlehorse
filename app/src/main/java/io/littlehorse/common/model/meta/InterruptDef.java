@@ -1,27 +1,22 @@
 package io.littlehorse.common.model.meta;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.jlib.common.proto.InterruptDefPb;
-import io.littlehorse.jlib.common.proto.InterruptDefPbOrBuilder;
 
 public class InterruptDef extends LHSerializable<InterruptDefPb> {
 
     public String handlerSpecName;
     public String externalEventDefName;
 
-    @JsonIgnore
     public ThreadSpec ownerThreadSpec;
 
-    @JsonIgnore
     public ThreadSpec handler;
 
-    @JsonIgnore
     public ExternalEventDef eed;
 
     public Class<InterruptDefPb> getProtoBaseClass() {
@@ -36,13 +31,13 @@ public class InterruptDef extends LHSerializable<InterruptDefPb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        InterruptDefPbOrBuilder p = (InterruptDefPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        InterruptDefPb p = (InterruptDefPb) proto;
         handlerSpecName = p.getHandlerSpecName();
         externalEventDefName = p.getExternalEventDefName();
     }
 
-    public static InterruptDef fromProto(InterruptDefPbOrBuilder p) {
+    public static InterruptDef fromProto(InterruptDefPb p) {
         InterruptDef out = new InterruptDef();
         out.initFrom(p);
         return out;

@@ -1,12 +1,11 @@
 package io.littlehorse.common.model.meta;
 
-import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.LHConstants;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.objectId.ExternalEventDefId;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.ExternalEventDefIdPb;
 import io.littlehorse.jlib.common.proto.ExternalEventDefPb;
-import io.littlehorse.jlib.common.proto.ExternalEventDefPbOrBuilder;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import java.util.Date;
 
@@ -27,20 +26,8 @@ public class ExternalEventDef extends GETable<ExternalEventDefPb> {
         return name;
     }
 
-    public String getObjectId() {
-        return ExternalEventDef.getObjectId(name, version);
-    }
-
     public static String getFullPrefixByName(String name) {
         return StoreUtils.getFullStoreKey(name + "/", ExternalEventDef.class);
-    }
-
-    public static String getObjectId(String name, int version) {
-        return LHUtil.getCompositeId(name, LHUtil.toLHDbVersionFormat(version));
-    }
-
-    public String getPartitionKey() {
-        return LHConstants.META_PARTITION_KEY;
     }
 
     public Class<ExternalEventDefPb> getProtoBaseClass() {
@@ -56,13 +43,13 @@ public class ExternalEventDef extends GETable<ExternalEventDefPb> {
         return b;
     }
 
-    public void initFrom(MessageOrBuilder p) {
-        ExternalEventDefPbOrBuilder proto = (ExternalEventDefPbOrBuilder) p;
+    public void initFrom(Message p) {
+        ExternalEventDefPb proto = (ExternalEventDefPb) p;
         name = proto.getName();
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
     }
 
-    public static ExternalEventDef fromProto(ExternalEventDefPbOrBuilder p) {
+    public static ExternalEventDef fromProto(ExternalEventDefPb p) {
         ExternalEventDef out = new ExternalEventDef();
         out.initFrom(p);
         return out;
@@ -77,7 +64,7 @@ public class ExternalEventDef extends GETable<ExternalEventDefPb> {
             .build();
     }
 
-    public static String getObjectId(ExternalEventDefIdPb id) {
-        return getObjectId(id.getName(), id.getVersion());
+    public ExternalEventDefId getObjectId() {
+        return new ExternalEventDefId(name, version);
     }
 }

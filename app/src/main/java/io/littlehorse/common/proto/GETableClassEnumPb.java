@@ -41,9 +41,13 @@ public enum GETableClassEnumPb
    */
   EXTERNAL_EVENT(6),
   /**
-   * <code>TASK_SCHEDULE_REQUEST = 7;</code>
+   * <code>TASK_DEF_METRICS = 7;</code>
    */
-  TASK_SCHEDULE_REQUEST(7),
+  TASK_DEF_METRICS(7),
+  /**
+   * <code>WF_SPEC_METRICS = 8;</code>
+   */
+  WF_SPEC_METRICS(8),
   UNRECOGNIZED(-1),
   ;
 
@@ -76,9 +80,13 @@ public enum GETableClassEnumPb
    */
   public static final int EXTERNAL_EVENT_VALUE = 6;
   /**
-   * <code>TASK_SCHEDULE_REQUEST = 7;</code>
+   * <code>TASK_DEF_METRICS = 7;</code>
    */
-  public static final int TASK_SCHEDULE_REQUEST_VALUE = 7;
+  public static final int TASK_DEF_METRICS_VALUE = 7;
+  /**
+   * <code>WF_SPEC_METRICS = 8;</code>
+   */
+  public static final int WF_SPEC_METRICS_VALUE = 8;
 
 
   public final int getNumber() {
@@ -112,7 +120,8 @@ public enum GETableClassEnumPb
       case 4: return NODE_RUN;
       case 5: return VARIABLE;
       case 6: return EXTERNAL_EVENT;
-      case 7: return TASK_SCHEDULE_REQUEST;
+      case 7: return TASK_DEF_METRICS;
+      case 8: return WF_SPEC_METRICS;
       default: return null;
     }
   }
@@ -143,7 +152,7 @@ public enum GETableClassEnumPb
   }
   public static final com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.InternalServer.getDescriptor().getEnumTypes().get(1);
+    return io.littlehorse.common.proto.InternalServer.getDescriptor().getEnumTypes().get(2);
   }
 
   private static final GETableClassEnumPb[] VALUES = values();

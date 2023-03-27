@@ -1,19 +1,17 @@
 package io.littlehorse.common.model.wfrun.haltreason;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.objectId.ExternalEventId;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.jlib.common.proto.PendingInterruptHaltReasonPb;
-import io.littlehorse.jlib.common.proto.PendingInterruptHaltReasonPbOrBuilder;
 
 public class PendingInterruptHaltReason
     extends LHSerializable<PendingInterruptHaltReasonPb>
     implements SubHaltReason {
 
-    public String externalEventId;
+    public ExternalEventId externalEventId;
 
-    @JsonIgnore
     public boolean isResolved(WfRun wfRun) {
         // Should always return false because this HaltReason is manually
         // removed upon creation of the Interrupt Thread
@@ -26,17 +24,18 @@ public class PendingInterruptHaltReason
 
     public PendingInterruptHaltReasonPb.Builder toProto() {
         PendingInterruptHaltReasonPb.Builder out = PendingInterruptHaltReasonPb.newBuilder();
-        out.setExternalEventId(externalEventId);
+        out.setExternalEventId(externalEventId.toProto());
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        PendingInterruptHaltReasonPbOrBuilder p = (PendingInterruptHaltReasonPbOrBuilder) proto;
-        externalEventId = p.getExternalEventId();
+    public void initFrom(Message proto) {
+        PendingInterruptHaltReasonPb p = (PendingInterruptHaltReasonPb) proto;
+        externalEventId =
+            LHSerializable.fromProto(p.getExternalEventId(), ExternalEventId.class);
     }
 
     public static PendingInterruptHaltReason fromProto(
-        PendingInterruptHaltReasonPbOrBuilder proto
+        PendingInterruptHaltReasonPb proto
     ) {
         PendingInterruptHaltReason out = new PendingInterruptHaltReason();
         out.initFrom(proto);

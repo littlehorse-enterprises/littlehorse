@@ -1,10 +1,8 @@
 package io.littlehorse.common.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
-import com.google.protobuf.MessageOrBuilder;
 import com.google.protobuf.util.JsonFormat;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHSerdeError;
@@ -14,12 +12,10 @@ import java.lang.reflect.InvocationTargetException;
 // `P` is the proto class used to serialize.
 public abstract class LHSerializable<T extends Message> {
 
-    @JsonIgnore
     public abstract GeneratedMessageV3.Builder<?> toProto();
 
-    public abstract void initFrom(MessageOrBuilder proto) throws LHSerdeError;
+    public abstract void initFrom(Message proto) throws LHSerdeError;
 
-    @JsonIgnore
     public abstract Class<? extends GeneratedMessageV3> getProtoBaseClass();
 
     public String toJson() {

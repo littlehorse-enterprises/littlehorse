@@ -1,9 +1,8 @@
 package io.littlehorse.common.model.wfrun;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.jlib.common.proto.VarNameAndValPb;
-import io.littlehorse.jlib.common.proto.VarNameAndValPbOrBuilder;
 
 public class VarNameAndVal extends LHSerializable<VarNameAndValPb> {
 
@@ -29,9 +28,9 @@ public class VarNameAndVal extends LHSerializable<VarNameAndValPb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        VarNameAndValPbOrBuilder p = (VarNameAndValPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        VarNameAndValPb p = (VarNameAndValPb) proto;
         varName = p.getVarName();
-        value = VariableValue.fromProto(p.getValueOrBuilder());
+        value = VariableValue.fromProto(p.getValue());
     }
 }

@@ -1,11 +1,10 @@
 package io.littlehorse.common.model.observabilityevent.events;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.observabilityevent.SubEvent;
 import io.littlehorse.jlib.common.proto.LHStatusPb;
 import io.littlehorse.jlib.common.proto.ThreadStatusOePb;
-import io.littlehorse.jlib.common.proto.ThreadStatusOePbOrBuilder;
 import java.util.Date;
 
 public class ThreadStatusOe extends SubEvent<ThreadStatusOePb> {
@@ -26,8 +25,8 @@ public class ThreadStatusOe extends SubEvent<ThreadStatusOePb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        ThreadStatusOePbOrBuilder p = (ThreadStatusOePbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        ThreadStatusOePb p = (ThreadStatusOePb) proto;
         status = p.getStatus();
         threadRunNumber = p.getThreadRunNumber();
     }

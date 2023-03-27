@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.meta.subnode;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.meta.ExternalEventDef;
@@ -10,7 +9,6 @@ import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.common.model.wfrun.subnoderun.ExternalEventRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.jlib.common.proto.ExternalEventNodePb;
-import io.littlehorse.jlib.common.proto.ExternalEventNodePbOrBuilder;
 import java.util.Date;
 
 public class ExternalEventNode extends SubNode<ExternalEventNodePb> {
@@ -18,7 +16,6 @@ public class ExternalEventNode extends SubNode<ExternalEventNodePb> {
     public String externalEventDefName;
     public VariableAssignment timeoutSeconds;
 
-    @JsonIgnore
     public ExternalEventDef externalEventDef;
 
     public ExternalEventNode() {}
@@ -27,8 +24,8 @@ public class ExternalEventNode extends SubNode<ExternalEventNodePb> {
         return ExternalEventNodePb.class;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        ExternalEventNodePbOrBuilder p = (ExternalEventNodePbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        ExternalEventNodePb p = (ExternalEventNodePb) proto;
         externalEventDefName = p.getExternalEventDefName();
         if (p.hasTimeoutSeconds()) {
             timeoutSeconds = VariableAssignment.fromProto(p.getTimeoutSeconds());

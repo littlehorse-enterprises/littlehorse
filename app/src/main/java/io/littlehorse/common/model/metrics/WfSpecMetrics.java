@@ -1,12 +1,12 @@
 package io.littlehorse.common.model.metrics;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.objectId.WfSpecMetricsId;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.LHLibUtil;
 import io.littlehorse.jlib.common.proto.MetricsWindowLengthPb;
 import io.littlehorse.jlib.common.proto.WfSpecMetricsPb;
-import io.littlehorse.jlib.common.proto.WfSpecMetricsPbOrBuilder;
 import io.littlehorse.jlib.common.proto.WfSpecMetricsQueryPb;
 import java.util.Date;
 
@@ -40,8 +40,8 @@ public class WfSpecMetrics extends GETable<WfSpecMetricsPb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        WfSpecMetricsPbOrBuilder p = (WfSpecMetricsPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        WfSpecMetricsPb p = (WfSpecMetricsPb) proto;
         windowStart = LHLibUtil.fromProtoTs(p.getWindowStart());
         type = p.getType();
         wfSpecName = p.getWfSpecName();
@@ -60,7 +60,7 @@ public class WfSpecMetrics extends GETable<WfSpecMetricsPb> {
         return wfSpecName;
     }
 
-    public String getObjectId() {
+    public String getStoreKey() {
         return getObjectId(type, windowStart, wfSpecName);
     }
 
@@ -84,5 +84,9 @@ public class WfSpecMetrics extends GETable<WfSpecMetricsPb> {
             ),
             request.getWfSpecName()
         );
+    }
+
+    public WfSpecMetricsId getObjectId() {
+        return new WfSpecMetricsId(windowStart, type, wfSpecName);
     }
 }

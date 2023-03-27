@@ -1,11 +1,10 @@
 package io.littlehorse.common.model.observabilityevent.events;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.observabilityevent.SubEvent;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.jlib.common.proto.ThreadStartOePb;
-import io.littlehorse.jlib.common.proto.ThreadStartOePbOrBuilder;
 import io.littlehorse.jlib.common.proto.ThreadTypePb;
 import io.littlehorse.jlib.common.proto.VariableValuePb;
 import java.util.Date;
@@ -41,8 +40,8 @@ public class ThreadStartOe extends SubEvent<ThreadStartOePb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        ThreadStartOePbOrBuilder p = (ThreadStartOePbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        ThreadStartOePb p = (ThreadStartOePb) proto;
         threadRunNumber = p.getThreadRunNumber();
         threadSpecName = p.getThreadSpecName();
         type = p.getType();

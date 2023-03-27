@@ -1,17 +1,17 @@
 package io.littlehorse.common.model.wfrun;
 
-import com.google.protobuf.MessageOrBuilder;
-import io.littlehorse.common.model.GETable;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.Storeable;
+import io.littlehorse.common.model.objectId.NodeRunId;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.TaskScheduleRequestPb;
-import io.littlehorse.jlib.common.proto.TaskScheduleRequestPbOrBuilder;
 import io.littlehorse.jlib.common.proto.VarNameAndValPb;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class TaskScheduleRequest extends GETable<TaskScheduleRequestPb> {
+public class TaskScheduleRequest extends Storeable<TaskScheduleRequestPb> {
 
     public String taskDefId;
     public String taskDefName;
@@ -30,8 +30,10 @@ public class TaskScheduleRequest extends GETable<TaskScheduleRequestPb> {
         return wfRunId;
     }
 
-    public String getObjectId() {
-        return NodeRun.getObjectId(wfRunId, threadRunNumber, taskRunPosition);
+    // Each TaskScheduleRequest is assigned one NodeRun. So we can
+    // keep it simple by using the ID of the referenced NodeRun.
+    public String getStoreKey() {
+        return new NodeRunId(wfRunId, threadRunNumber, taskRunPosition).getStoreKey();
     }
 
     public Date getCreatedAt() {
@@ -71,14 +73,14 @@ public class TaskScheduleRequest extends GETable<TaskScheduleRequestPb> {
         return TaskScheduleRequestPb.class;
     }
 
-    public static TaskScheduleRequest fromProto(TaskScheduleRequestPbOrBuilder p) {
+    public static TaskScheduleRequest fromProto(TaskScheduleRequestPb p) {
         TaskScheduleRequest out = new TaskScheduleRequest();
         out.initFrom(p);
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        TaskScheduleRequestPbOrBuilder p = (TaskScheduleRequestPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        TaskScheduleRequestPb p = (TaskScheduleRequestPb) proto;
         this.taskDefId = p.getTaskDefId();
         this.taskDefName = p.getTaskDefName();
         this.threadRunNumber = p.getThreadRunNumber();

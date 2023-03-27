@@ -1,10 +1,9 @@
 package io.littlehorse.common.model.observabilityevent.events;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.observabilityevent.SubEvent;
 import io.littlehorse.jlib.common.proto.InterruptedOePb;
-import io.littlehorse.jlib.common.proto.InterruptedOePbOrBuilder;
 import java.util.Date;
 
 public class InterruptedOe extends SubEvent<InterruptedOePb> {
@@ -26,8 +25,8 @@ public class InterruptedOe extends SubEvent<InterruptedOePb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        InterruptedOePbOrBuilder p = (InterruptedOePbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        InterruptedOePb p = (InterruptedOePb) proto;
         extEvtDefName = p.getExtEvtDefName();
         extEvtGuid = p.getExtEvtGuid();
         interruptedThread = p.getInterruptedThread();

@@ -4,9 +4,19 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.metrics.TaskDefMetrics;
+import io.littlehorse.common.model.metrics.WfSpecMetrics;
+import io.littlehorse.common.model.objectId.ExternalEventDefId;
+import io.littlehorse.common.model.objectId.ExternalEventId;
+import io.littlehorse.common.model.objectId.NodeRunId;
+import io.littlehorse.common.model.objectId.TaskDefId;
+import io.littlehorse.common.model.objectId.TaskDefMetricsId;
+import io.littlehorse.common.model.objectId.VariableId;
+import io.littlehorse.common.model.objectId.WfRunId;
+import io.littlehorse.common.model.objectId.WfSpecId;
+import io.littlehorse.common.model.objectId.WfSpecMetricsId;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.NodeRun;
-import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.GETableClassEnumPb;
@@ -16,7 +26,9 @@ public abstract class GETable<T extends Message> extends Storeable<T> {
 
     public abstract Date getCreatedAt();
 
-    public abstract String getPartitionKey();
+    public String getPartitionKey() {
+        return getObjectId().getPartitionKey();
+    }
 
     public static GETableClassEnumPb getTypeEnum(Class<? extends GETable<?>> cls) {
         if (cls.equals(WfRun.class)) {
@@ -33,8 +45,10 @@ public abstract class GETable<T extends Message> extends Storeable<T> {
             return GETableClassEnumPb.EXTERNAL_EVENT_DEF;
         } else if (cls.equals(ExternalEvent.class)) {
             return GETableClassEnumPb.EXTERNAL_EVENT;
-        } else if (cls.equals(TaskScheduleRequest.class)) {
-            return GETableClassEnumPb.TASK_SCHEDULE_REQUEST;
+        } else if (cls.equals(TaskDefMetrics.class)) {
+            return GETableClassEnumPb.TASK_DEF_METRICS;
+        } else if (cls.equals(WfSpecMetrics.class)) {
+            return GETableClassEnumPb.WF_SPEC_METRICS;
         } else {
             throw new RuntimeException("Uh oh, unrecognized: " + cls.getName());
         }
@@ -56,12 +70,48 @@ public abstract class GETable<T extends Message> extends Storeable<T> {
                 return ExternalEventDef.class;
             case EXTERNAL_EVENT:
                 return ExternalEvent.class;
-            case TASK_SCHEDULE_REQUEST:
-                return TaskScheduleRequest.class;
+            case TASK_DEF_METRICS:
+                return TaskDefMetrics.class;
+            case WF_SPEC_METRICS:
+                return WfSpecMetrics.class;
             case UNRECOGNIZED:
             default:
                 throw new RuntimeException("Uh oh, unrecognized enum");
         }
+    }
+
+    public static Class<? extends ObjectId<?, ?, ?>> getIdCls(
+        GETableClassEnumPb type
+    ) {
+        switch (type) {
+            case WF_RUN:
+                return WfRunId.class;
+            case NODE_RUN:
+                return NodeRunId.class;
+            case WF_SPEC:
+                return WfSpecId.class;
+            case TASK_DEF:
+                return TaskDefId.class;
+            case VARIABLE:
+                return VariableId.class;
+            case EXTERNAL_EVENT_DEF:
+                return ExternalEventDefId.class;
+            case EXTERNAL_EVENT:
+                return ExternalEventId.class;
+            case TASK_DEF_METRICS:
+                return TaskDefMetricsId.class;
+            case WF_SPEC_METRICS:
+                return WfSpecMetricsId.class;
+            case UNRECOGNIZED:
+            default:
+                throw new RuntimeException("Uh oh, unrecognized enum");
+        }
+    }
+
+    public abstract ObjectId<?, T, ?> getObjectId();
+
+    public String getStoreKey() {
+        return getObjectId().getStoreKey();
     }
 }
 /*
@@ -71,5 +121,5 @@ public abstract class GETable<T extends Message> extends Storeable<T> {
  * - VariableValue's for a ThreadRun will end up on the same node as each other
  *
  * Will we make it possible to deploy the Scheduler separately from the API?
- *   - currently no.
+ *   - currently no. It would double the storage costs.
  */

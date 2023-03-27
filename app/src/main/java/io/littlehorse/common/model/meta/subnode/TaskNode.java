@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.meta.subnode;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHValidationError;
@@ -12,7 +11,6 @@ import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.common.model.wfrun.subnoderun.TaskRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.jlib.common.proto.TaskNodePb;
-import io.littlehorse.jlib.common.proto.TaskNodePbOrBuilder;
 import io.littlehorse.jlib.common.proto.VariableAssignmentPb;
 import io.littlehorse.jlib.common.proto.VariableAssignmentPb.SourceCase;
 import java.util.ArrayList;
@@ -28,10 +26,8 @@ public class TaskNode extends SubNode<TaskNodePb> {
     public List<VariableAssignment> variables;
     public VariableAssignment timeoutSeconds;
 
-    @JsonIgnore
     private TaskDef taskDef;
 
-    @JsonIgnore
     public TaskDef getTaskDef(LHDAO dao) {
         if (taskDef == null) {
             taskDef = dao.getTaskDef(taskDefName, null);
@@ -39,14 +35,12 @@ public class TaskNode extends SubNode<TaskNodePb> {
         return taskDef;
     }
 
-    @JsonIgnore
     private Node node;
 
     public TaskNode() {
         variables = new ArrayList<>();
     }
 
-    @JsonIgnore
     public void setNode(Node node) {
         this.node = node;
     }
@@ -55,8 +49,8 @@ public class TaskNode extends SubNode<TaskNodePb> {
         return TaskNodePb.class;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        TaskNodePbOrBuilder p = (TaskNodePbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        TaskNodePb p = (TaskNodePb) proto;
         taskDefName = p.getTaskDefName();
         retries = p.getRetries();
 

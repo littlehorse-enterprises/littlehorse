@@ -1,6 +1,6 @@
 package io.littlehorse.common.model.meta.subnode;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.meta.SubNode;
@@ -19,7 +19,7 @@ public class EntrypointNode extends SubNode<EntrypointNodePb> {
         return EntrypointNodePb.newBuilder();
     }
 
-    public void initFrom(MessageOrBuilder proto) {}
+    public void initFrom(Message proto) {}
 
     public void validate(LHGlobalMetaStores stores, LHConfig config)
         throws LHValidationError {}

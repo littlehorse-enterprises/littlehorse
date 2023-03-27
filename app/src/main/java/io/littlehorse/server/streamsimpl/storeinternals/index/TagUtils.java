@@ -6,7 +6,6 @@ import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.NodeRun;
-import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.TagStorageTypePb;
@@ -37,8 +36,10 @@ public class TagUtils {
                 return tag((ExternalEvent) thing);
             case VARIABLE:
                 return tag((Variable) thing);
-            case TASK_SCHEDULE_REQUEST:
-                return tag((TaskScheduleRequest) thing);
+            case TASK_DEF_METRICS:
+            case WF_SPEC_METRICS:
+                // No tags here
+                return new ArrayList<>();
             case UNRECOGNIZED:
             default:
                 throw new RuntimeException("Not possible");
@@ -148,20 +149,5 @@ public class TagUtils {
         }
 
         return out;
-    }
-
-    private static List<Tag> tag(TaskScheduleRequest thing) {
-        return Arrays.asList(
-            new Tag(
-                thing,
-                TagStorageTypePb.LOCAL_COUNTED,
-                Pair.of("taskDefName", thing.taskDefName)
-            ),
-            new Tag(
-                thing,
-                TagStorageTypePb.LOCAL_UNCOUNTED,
-                Pair.of("wfRunId", thing.wfRunId)
-            )
-        );
     }
 }

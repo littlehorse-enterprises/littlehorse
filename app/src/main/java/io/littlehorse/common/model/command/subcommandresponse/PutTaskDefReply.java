@@ -1,10 +1,9 @@
 package io.littlehorse.common.model.command.subcommandresponse;
 
-import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Message;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.jlib.common.proto.PutTaskDefReplyPb;
-import io.littlehorse.jlib.common.proto.PutTaskDefReplyPbOrBuilder;
 
 public class PutTaskDefReply extends AbstractResponse<PutTaskDefReplyPb> {
 
@@ -22,8 +21,8 @@ public class PutTaskDefReply extends AbstractResponse<PutTaskDefReplyPb> {
         return out;
     }
 
-    public void initFrom(MessageOrBuilder proto) {
-        PutTaskDefReplyPbOrBuilder p = (PutTaskDefReplyPbOrBuilder) proto;
+    public void initFrom(Message proto) {
+        PutTaskDefReplyPb p = (PutTaskDefReplyPb) proto;
         code = p.getCode();
         if (p.hasMessage()) message = p.getMessage();
         if (p.hasResult()) result = TaskDef.fromProto(p.getResult());

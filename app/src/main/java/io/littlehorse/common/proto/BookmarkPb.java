@@ -4,6 +4,10 @@
 package io.littlehorse.common.proto;
 
 /**
+ * <pre>
+ * Used for paginated responses
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.BookmarkPb}
  */
 public final class BookmarkPb extends
@@ -435,6 +439,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * Used for paginated responses
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.BookmarkPb}
    */
   public static final class Builder extends

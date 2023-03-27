@@ -5,7 +5,7 @@ package io.littlehorse.common.proto;
 
 /**
  * <pre>
- * The following protobuf definitions are used for paginated responses.
+ * used for paginated responses
  * </pre>
  *
  * Protobuf type {@code littlehorse.PartitionBookmarkPb}
@@ -327,7 +327,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * The following protobuf definitions are used for paginated responses.
+   * used for paginated responses
    * </pre>
    *
    * Protobuf type {@code littlehorse.PartitionBookmarkPb}
