@@ -653,7 +653,7 @@ public class BackendInternalComms implements Closeable {
     public InternalScanReplyPb doScan(InternalScan search) throws LHConnectionError {
         if (
             search.partitionKey != null &&
-            search.type == ScanBoundaryCase.OBJECT_ID_PREFIX
+            search.type == ScanBoundaryCase.BOUNDED_OBJECT_ID_SCAN
         ) {
             return objectIdPrefixScan(search);
         } else if (
@@ -720,10 +720,10 @@ public class BackendInternalComms implements Closeable {
             null
         );
 
-        String endKey = req.objectIdPrefix + "~";
+        String endKey = req.boundedObjectIdScan.getEndObjectId() + "~";
         String startKey;
         if (partBookmark == null) {
-            startKey = req.objectIdPrefix;
+            startKey = req.boundedObjectIdScan.getStartObjectId();
         } else {
             startKey = partBookmark.getLastKey();
         }

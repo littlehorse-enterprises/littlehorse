@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.model.objectId.NodeRunId;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb;
 import io.littlehorse.common.proto.ScanResultTypePb;
@@ -114,9 +115,13 @@ public class SearchNodeRun
                     )
                     .build();
         } else if (type == NoderunCriteriaCase.WF_RUN_ID) {
-            out.type = ScanBoundaryCase.OBJECT_ID_PREFIX;
+            out.type = ScanBoundaryCase.BOUNDED_OBJECT_ID_SCAN;
             out.partitionKey = wfRunId;
-            out.objectIdPrefix = wfRunId;
+            out.boundedObjectIdScan =
+                BoundedObjectIdScanPb
+                    .newBuilder()
+                    .setStartObjectId(wfRunId + "/")
+                    .build();
         } else {
             throw new RuntimeException("Yikes, unimplemented type: " + type);
         }

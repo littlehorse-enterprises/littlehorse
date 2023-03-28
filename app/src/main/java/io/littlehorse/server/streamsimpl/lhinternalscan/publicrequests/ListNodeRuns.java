@@ -3,6 +3,7 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
@@ -40,9 +41,13 @@ public class ListNodeRuns
         InternalScan out = new InternalScan();
         out.storeName = ServerTopology.CORE_STORE;
         out.resultType = ScanResultTypePb.OBJECT;
-        out.type = ScanBoundaryCase.OBJECT_ID_PREFIX;
+        out.type = ScanBoundaryCase.BOUNDED_OBJECT_ID_SCAN;
         out.partitionKey = wfRunId;
-        out.objectIdPrefix = wfRunId + "/";
+        out.boundedObjectIdScan =
+            BoundedObjectIdScanPb
+                .newBuilder()
+                .setStartObjectId(wfRunId + "/")
+                .build();
         return out;
     }
 }

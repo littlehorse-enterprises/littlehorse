@@ -96,9 +96,17 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 58: {
-            java.lang.String s = input.readStringRequireUtf8();
+            io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb.Builder subBuilder = null;
+            if (scanBoundaryCase_ == 7) {
+              subBuilder = ((io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb) scanBoundary_).toBuilder();
+            }
+            scanBoundary_ =
+                input.readMessage(io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb) scanBoundary_);
+              scanBoundary_ = subBuilder.buildPartial();
+            }
             scanBoundaryCase_ = 7;
-            scanBoundary_ = s;
             break;
           }
           case 66: {
@@ -1108,13 +1116,766 @@ private static final long serialVersionUID = 0L;
 
   }
 
+  public interface BoundedObjectIdScanPbOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:littlehorse.InternalScanPb.BoundedObjectIdScanPb)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string start_object_id = 1;</code>
+     * @return The startObjectId.
+     */
+    java.lang.String getStartObjectId();
+    /**
+     * <code>string start_object_id = 1;</code>
+     * @return The bytes for startObjectId.
+     */
+    com.google.protobuf.ByteString
+        getStartObjectIdBytes();
+
+    /**
+     * <code>string end_object_id = 2;</code>
+     * @return Whether the endObjectId field is set.
+     */
+    boolean hasEndObjectId();
+    /**
+     * <code>string end_object_id = 2;</code>
+     * @return The endObjectId.
+     */
+    java.lang.String getEndObjectId();
+    /**
+     * <code>string end_object_id = 2;</code>
+     * @return The bytes for endObjectId.
+     */
+    com.google.protobuf.ByteString
+        getEndObjectIdBytes();
+  }
+  /**
+   * Protobuf type {@code littlehorse.InternalScanPb.BoundedObjectIdScanPb}
+   */
+  public static final class BoundedObjectIdScanPb extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:littlehorse.InternalScanPb.BoundedObjectIdScanPb)
+      BoundedObjectIdScanPbOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use BoundedObjectIdScanPb.newBuilder() to construct.
+    private BoundedObjectIdScanPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private BoundedObjectIdScanPb() {
+      startObjectId_ = "";
+      endObjectId_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new BoundedObjectIdScanPb();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private BoundedObjectIdScanPb(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              startObjectId_ = s;
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000001;
+              endObjectId_ = s;
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalScanPb_BoundedObjectIdScanPb_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalScanPb_BoundedObjectIdScanPb_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb.class, io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int START_OBJECT_ID_FIELD_NUMBER = 1;
+    private volatile java.lang.Object startObjectId_;
+    /**
+     * <code>string start_object_id = 1;</code>
+     * @return The startObjectId.
+     */
+    @java.lang.Override
+    public java.lang.String getStartObjectId() {
+      java.lang.Object ref = startObjectId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        startObjectId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string start_object_id = 1;</code>
+     * @return The bytes for startObjectId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getStartObjectIdBytes() {
+      java.lang.Object ref = startObjectId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        startObjectId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int END_OBJECT_ID_FIELD_NUMBER = 2;
+    private volatile java.lang.Object endObjectId_;
+    /**
+     * <code>string end_object_id = 2;</code>
+     * @return Whether the endObjectId field is set.
+     */
+    @java.lang.Override
+    public boolean hasEndObjectId() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>string end_object_id = 2;</code>
+     * @return The endObjectId.
+     */
+    @java.lang.Override
+    public java.lang.String getEndObjectId() {
+      java.lang.Object ref = endObjectId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        endObjectId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string end_object_id = 2;</code>
+     * @return The bytes for endObjectId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getEndObjectIdBytes() {
+      java.lang.Object ref = endObjectId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        endObjectId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!getStartObjectIdBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, startObjectId_);
+      }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, endObjectId_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getStartObjectIdBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, startObjectId_);
+      }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, endObjectId_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb)) {
+        return super.equals(obj);
+      }
+      io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb other = (io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb) obj;
+
+      if (!getStartObjectId()
+          .equals(other.getStartObjectId())) return false;
+      if (hasEndObjectId() != other.hasEndObjectId()) return false;
+      if (hasEndObjectId()) {
+        if (!getEndObjectId()
+            .equals(other.getEndObjectId())) return false;
+      }
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + START_OBJECT_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getStartObjectId().hashCode();
+      if (hasEndObjectId()) {
+        hash = (37 * hash) + END_OBJECT_ID_FIELD_NUMBER;
+        hash = (53 * hash) + getEndObjectId().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code littlehorse.InternalScanPb.BoundedObjectIdScanPb}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:littlehorse.InternalScanPb.BoundedObjectIdScanPb)
+        io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPbOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalScanPb_BoundedObjectIdScanPb_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalScanPb_BoundedObjectIdScanPb_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb.class, io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb.Builder.class);
+      }
+
+      // Construct using io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        startObjectId_ = "";
+
+        endObjectId_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalScanPb_BoundedObjectIdScanPb_descriptor;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb getDefaultInstanceForType() {
+        return io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb build() {
+        io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb buildPartial() {
+        io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb result = new io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        result.startObjectId_ = startObjectId_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.endObjectId_ = endObjectId_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb) {
+          return mergeFrom((io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb other) {
+        if (other == io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb.getDefaultInstance()) return this;
+        if (!other.getStartObjectId().isEmpty()) {
+          startObjectId_ = other.startObjectId_;
+          onChanged();
+        }
+        if (other.hasEndObjectId()) {
+          bitField0_ |= 0x00000001;
+          endObjectId_ = other.endObjectId_;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object startObjectId_ = "";
+      /**
+       * <code>string start_object_id = 1;</code>
+       * @return The startObjectId.
+       */
+      public java.lang.String getStartObjectId() {
+        java.lang.Object ref = startObjectId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          startObjectId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string start_object_id = 1;</code>
+       * @return The bytes for startObjectId.
+       */
+      public com.google.protobuf.ByteString
+          getStartObjectIdBytes() {
+        java.lang.Object ref = startObjectId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          startObjectId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string start_object_id = 1;</code>
+       * @param value The startObjectId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setStartObjectId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        startObjectId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string start_object_id = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearStartObjectId() {
+        
+        startObjectId_ = getDefaultInstance().getStartObjectId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string start_object_id = 1;</code>
+       * @param value The bytes for startObjectId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setStartObjectIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        startObjectId_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object endObjectId_ = "";
+      /**
+       * <code>string end_object_id = 2;</code>
+       * @return Whether the endObjectId field is set.
+       */
+      public boolean hasEndObjectId() {
+        return ((bitField0_ & 0x00000001) != 0);
+      }
+      /**
+       * <code>string end_object_id = 2;</code>
+       * @return The endObjectId.
+       */
+      public java.lang.String getEndObjectId() {
+        java.lang.Object ref = endObjectId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          endObjectId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string end_object_id = 2;</code>
+       * @return The bytes for endObjectId.
+       */
+      public com.google.protobuf.ByteString
+          getEndObjectIdBytes() {
+        java.lang.Object ref = endObjectId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          endObjectId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string end_object_id = 2;</code>
+       * @param value The endObjectId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setEndObjectId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        endObjectId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string end_object_id = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearEndObjectId() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        endObjectId_ = getDefaultInstance().getEndObjectId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string end_object_id = 2;</code>
+       * @param value The bytes for endObjectId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setEndObjectIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        bitField0_ |= 0x00000001;
+        endObjectId_ = value;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:littlehorse.InternalScanPb.BoundedObjectIdScanPb)
+    }
+
+    // @@protoc_insertion_point(class_scope:littlehorse.InternalScanPb.BoundedObjectIdScanPb)
+    private static final io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb();
+    }
+
+    public static io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<BoundedObjectIdScanPb>
+        PARSER = new com.google.protobuf.AbstractParser<BoundedObjectIdScanPb>() {
+      @java.lang.Override
+      public BoundedObjectIdScanPb parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new BoundedObjectIdScanPb(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<BoundedObjectIdScanPb> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<BoundedObjectIdScanPb> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private int bitField0_;
   private int scanBoundaryCase_ = 0;
   private java.lang.Object scanBoundary_;
   public enum ScanBoundaryCase
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    OBJECT_ID_PREFIX(7),
+    BOUNDED_OBJECT_ID_SCAN(7),
     LOCAL_TAG_PREFIX_SCAN(8),
     SCANBOUNDARY_NOT_SET(0);
     private final int value;
@@ -1133,7 +1894,7 @@ private static final long serialVersionUID = 0L;
 
     public static ScanBoundaryCase forNumber(int value) {
       switch (value) {
-        case 7: return OBJECT_ID_PREFIX;
+        case 7: return BOUNDED_OBJECT_ID_SCAN;
         case 8: return LOCAL_TAG_PREFIX_SCAN;
         case 0: return SCANBOUNDARY_NOT_SET;
         default: return null;
@@ -1309,49 +2070,35 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int OBJECT_ID_PREFIX_FIELD_NUMBER = 7;
+  public static final int BOUNDED_OBJECT_ID_SCAN_FIELD_NUMBER = 7;
   /**
-   * <code>string object_id_prefix = 7;</code>
-   * @return The objectIdPrefix.
+   * <code>.littlehorse.InternalScanPb.BoundedObjectIdScanPb bounded_object_id_scan = 7;</code>
+   * @return Whether the boundedObjectIdScan field is set.
    */
-  public java.lang.String getObjectIdPrefix() {
-    java.lang.Object ref = "";
-    if (scanBoundaryCase_ == 7) {
-      ref = scanBoundary_;
-    }
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      if (scanBoundaryCase_ == 7) {
-        scanBoundary_ = s;
-      }
-      return s;
-    }
+  @java.lang.Override
+  public boolean hasBoundedObjectIdScan() {
+    return scanBoundaryCase_ == 7;
   }
   /**
-   * <code>string object_id_prefix = 7;</code>
-   * @return The bytes for objectIdPrefix.
+   * <code>.littlehorse.InternalScanPb.BoundedObjectIdScanPb bounded_object_id_scan = 7;</code>
+   * @return The boundedObjectIdScan.
    */
-  public com.google.protobuf.ByteString
-      getObjectIdPrefixBytes() {
-    java.lang.Object ref = "";
+  @java.lang.Override
+  public io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb getBoundedObjectIdScan() {
     if (scanBoundaryCase_ == 7) {
-      ref = scanBoundary_;
+       return (io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb) scanBoundary_;
     }
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      if (scanBoundaryCase_ == 7) {
-        scanBoundary_ = b;
-      }
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
+    return io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.InternalScanPb.BoundedObjectIdScanPb bounded_object_id_scan = 7;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPbOrBuilder getBoundedObjectIdScanOrBuilder() {
+    if (scanBoundaryCase_ == 7) {
+       return (io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb) scanBoundary_;
     }
+    return io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb.getDefaultInstance();
   }
 
   public static final int LOCAL_TAG_PREFIX_SCAN_FIELD_NUMBER = 8;
@@ -1418,7 +2165,7 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.GeneratedMessageV3.writeString(output, 6, partitionKey_);
     }
     if (scanBoundaryCase_ == 7) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 7, scanBoundary_);
+      output.writeMessage(7, (io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb) scanBoundary_);
     }
     if (scanBoundaryCase_ == 8) {
       output.writeMessage(8, (io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb) scanBoundary_);
@@ -1455,7 +2202,8 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, partitionKey_);
     }
     if (scanBoundaryCase_ == 7) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, scanBoundary_);
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(7, (io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb) scanBoundary_);
     }
     if (scanBoundaryCase_ == 8) {
       size += com.google.protobuf.CodedOutputStream
@@ -1495,8 +2243,8 @@ private static final long serialVersionUID = 0L;
     if (!getScanBoundaryCase().equals(other.getScanBoundaryCase())) return false;
     switch (scanBoundaryCase_) {
       case 7:
-        if (!getObjectIdPrefix()
-            .equals(other.getObjectIdPrefix())) return false;
+        if (!getBoundedObjectIdScan()
+            .equals(other.getBoundedObjectIdScan())) return false;
         break;
       case 8:
         if (!getLocalTagPrefixScan()
@@ -1534,8 +2282,8 @@ private static final long serialVersionUID = 0L;
     }
     switch (scanBoundaryCase_) {
       case 7:
-        hash = (37 * hash) + OBJECT_ID_PREFIX_FIELD_NUMBER;
-        hash = (53 * hash) + getObjectIdPrefix().hashCode();
+        hash = (37 * hash) + BOUNDED_OBJECT_ID_SCAN_FIELD_NUMBER;
+        hash = (53 * hash) + getBoundedObjectIdScan().hashCode();
         break;
       case 8:
         hash = (37 * hash) + LOCAL_TAG_PREFIX_SCAN_FIELD_NUMBER;
@@ -1741,7 +2489,11 @@ private static final long serialVersionUID = 0L;
       }
       result.partitionKey_ = partitionKey_;
       if (scanBoundaryCase_ == 7) {
-        result.scanBoundary_ = scanBoundary_;
+        if (boundedObjectIdScanBuilder_ == null) {
+          result.scanBoundary_ = scanBoundary_;
+        } else {
+          result.scanBoundary_ = boundedObjectIdScanBuilder_.build();
+        }
       }
       if (scanBoundaryCase_ == 8) {
         if (localTagPrefixScanBuilder_ == null) {
@@ -1822,10 +2574,8 @@ private static final long serialVersionUID = 0L;
         onChanged();
       }
       switch (other.getScanBoundaryCase()) {
-        case OBJECT_ID_PREFIX: {
-          scanBoundaryCase_ = 7;
-          scanBoundary_ = other.scanBoundary_;
-          onChanged();
+        case BOUNDED_OBJECT_ID_SCAN: {
+          mergeBoundedObjectIdScan(other.getBoundedObjectIdScan());
           break;
         }
         case LOCAL_TAG_PREFIX_SCAN: {
@@ -2299,93 +3049,145 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb, io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb.Builder, io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPbOrBuilder> boundedObjectIdScanBuilder_;
     /**
-     * <code>string object_id_prefix = 7;</code>
-     * @return The objectIdPrefix.
+     * <code>.littlehorse.InternalScanPb.BoundedObjectIdScanPb bounded_object_id_scan = 7;</code>
+     * @return Whether the boundedObjectIdScan field is set.
      */
     @java.lang.Override
-    public java.lang.String getObjectIdPrefix() {
-      java.lang.Object ref = "";
-      if (scanBoundaryCase_ == 7) {
-        ref = scanBoundary_;
-      }
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (scanBoundaryCase_ == 7) {
-          scanBoundary_ = s;
-        }
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
+    public boolean hasBoundedObjectIdScan() {
+      return scanBoundaryCase_ == 7;
     }
     /**
-     * <code>string object_id_prefix = 7;</code>
-     * @return The bytes for objectIdPrefix.
+     * <code>.littlehorse.InternalScanPb.BoundedObjectIdScanPb bounded_object_id_scan = 7;</code>
+     * @return The boundedObjectIdScan.
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getObjectIdPrefixBytes() {
-      java.lang.Object ref = "";
-      if (scanBoundaryCase_ == 7) {
-        ref = scanBoundary_;
-      }
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+    public io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb getBoundedObjectIdScan() {
+      if (boundedObjectIdScanBuilder_ == null) {
         if (scanBoundaryCase_ == 7) {
-          scanBoundary_ = b;
+          return (io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb) scanBoundary_;
         }
-        return b;
+        return io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb.getDefaultInstance();
       } else {
-        return (com.google.protobuf.ByteString) ref;
+        if (scanBoundaryCase_ == 7) {
+          return boundedObjectIdScanBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb.getDefaultInstance();
       }
     }
     /**
-     * <code>string object_id_prefix = 7;</code>
-     * @param value The objectIdPrefix to set.
-     * @return This builder for chaining.
+     * <code>.littlehorse.InternalScanPb.BoundedObjectIdScanPb bounded_object_id_scan = 7;</code>
      */
-    public Builder setObjectIdPrefix(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  scanBoundaryCase_ = 7;
-      scanBoundary_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string object_id_prefix = 7;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearObjectIdPrefix() {
-      if (scanBoundaryCase_ == 7) {
-        scanBoundaryCase_ = 0;
-        scanBoundary_ = null;
+    public Builder setBoundedObjectIdScan(io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb value) {
+      if (boundedObjectIdScanBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        scanBoundary_ = value;
         onChanged();
+      } else {
+        boundedObjectIdScanBuilder_.setMessage(value);
+      }
+      scanBoundaryCase_ = 7;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.InternalScanPb.BoundedObjectIdScanPb bounded_object_id_scan = 7;</code>
+     */
+    public Builder setBoundedObjectIdScan(
+        io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb.Builder builderForValue) {
+      if (boundedObjectIdScanBuilder_ == null) {
+        scanBoundary_ = builderForValue.build();
+        onChanged();
+      } else {
+        boundedObjectIdScanBuilder_.setMessage(builderForValue.build());
+      }
+      scanBoundaryCase_ = 7;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.InternalScanPb.BoundedObjectIdScanPb bounded_object_id_scan = 7;</code>
+     */
+    public Builder mergeBoundedObjectIdScan(io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb value) {
+      if (boundedObjectIdScanBuilder_ == null) {
+        if (scanBoundaryCase_ == 7 &&
+            scanBoundary_ != io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb.getDefaultInstance()) {
+          scanBoundary_ = io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb.newBuilder((io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb) scanBoundary_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          scanBoundary_ = value;
+        }
+        onChanged();
+      } else {
+        if (scanBoundaryCase_ == 7) {
+          boundedObjectIdScanBuilder_.mergeFrom(value);
+        }
+        boundedObjectIdScanBuilder_.setMessage(value);
+      }
+      scanBoundaryCase_ = 7;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.InternalScanPb.BoundedObjectIdScanPb bounded_object_id_scan = 7;</code>
+     */
+    public Builder clearBoundedObjectIdScan() {
+      if (boundedObjectIdScanBuilder_ == null) {
+        if (scanBoundaryCase_ == 7) {
+          scanBoundaryCase_ = 0;
+          scanBoundary_ = null;
+          onChanged();
+        }
+      } else {
+        if (scanBoundaryCase_ == 7) {
+          scanBoundaryCase_ = 0;
+          scanBoundary_ = null;
+        }
+        boundedObjectIdScanBuilder_.clear();
       }
       return this;
     }
     /**
-     * <code>string object_id_prefix = 7;</code>
-     * @param value The bytes for objectIdPrefix to set.
-     * @return This builder for chaining.
+     * <code>.littlehorse.InternalScanPb.BoundedObjectIdScanPb bounded_object_id_scan = 7;</code>
      */
-    public Builder setObjectIdPrefixBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
+    public io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb.Builder getBoundedObjectIdScanBuilder() {
+      return getBoundedObjectIdScanFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.InternalScanPb.BoundedObjectIdScanPb bounded_object_id_scan = 7;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPbOrBuilder getBoundedObjectIdScanOrBuilder() {
+      if ((scanBoundaryCase_ == 7) && (boundedObjectIdScanBuilder_ != null)) {
+        return boundedObjectIdScanBuilder_.getMessageOrBuilder();
+      } else {
+        if (scanBoundaryCase_ == 7) {
+          return (io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb) scanBoundary_;
+        }
+        return io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.InternalScanPb.BoundedObjectIdScanPb bounded_object_id_scan = 7;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb, io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb.Builder, io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPbOrBuilder> 
+        getBoundedObjectIdScanFieldBuilder() {
+      if (boundedObjectIdScanBuilder_ == null) {
+        if (!(scanBoundaryCase_ == 7)) {
+          scanBoundary_ = io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb.getDefaultInstance();
+        }
+        boundedObjectIdScanBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb, io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb.Builder, io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPbOrBuilder>(
+                (io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb) scanBoundary_,
+                getParentForChildren(),
+                isClean());
+        scanBoundary_ = null;
+      }
       scanBoundaryCase_ = 7;
-      scanBoundary_ = value;
-      onChanged();
-      return this;
+      onChanged();;
+      return boundedObjectIdScanBuilder_;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<

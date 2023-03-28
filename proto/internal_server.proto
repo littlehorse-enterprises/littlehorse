@@ -91,6 +91,11 @@ message InternalScanPb {
         // we will utilize.
     }
 
+    message BoundedObjectIdScanPb {
+        string start_object_id = 1;
+        optional string end_object_id = 2;
+    }
+
     ScanResultTypePb result_type = 1;
     int32 limit = 2;
     optional BookmarkPb bookmark = 3;
@@ -100,7 +105,7 @@ message InternalScanPb {
     optional string partition_key = 6;
 
     oneof scan_boundary {
-        string object_id_prefix = 7;
+        BoundedObjectIdScanPb bounded_object_id_scan = 7;
         TagPrefixScanPb local_tag_prefix_scan = 8;
     }
 }

@@ -75,8 +75,12 @@ import io.littlehorse.jlib.common.proto.ListExternalEventsPb;
 import io.littlehorse.jlib.common.proto.ListExternalEventsReplyPb;
 import io.littlehorse.jlib.common.proto.ListNodeRunsPb;
 import io.littlehorse.jlib.common.proto.ListNodeRunsReplyPb;
+import io.littlehorse.jlib.common.proto.ListTaskMetricsPb;
+import io.littlehorse.jlib.common.proto.ListTaskMetricsReplyPb;
 import io.littlehorse.jlib.common.proto.ListVariablesPb;
 import io.littlehorse.jlib.common.proto.ListVariablesReplyPb;
+import io.littlehorse.jlib.common.proto.ListWfMetricsPb;
+import io.littlehorse.jlib.common.proto.ListWfMetricsReplyPb;
 import io.littlehorse.jlib.common.proto.MetadataNamePb;
 import io.littlehorse.jlib.common.proto.NodeRunIdPb;
 import io.littlehorse.jlib.common.proto.PollTaskPb;
@@ -125,7 +129,11 @@ import io.littlehorse.server.streamsimpl.BackendInternalComms;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
+import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.ListExternalEvents;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.ListNodeRuns;
+import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.ListTaskMetrics;
+import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.ListVariables;
+import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.ListWfMetrics;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchExternalEvent;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchExternalEventDef;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchNodeRun;
@@ -133,7 +141,11 @@ import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchTas
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchVariable;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchWfRun;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchWfSpec;
+import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.ListExternalEventsReply;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.ListNodeRunsReply;
+import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.ListTaskMetricsReply;
+import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.ListVariablesReply;
+import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.ListWfMetricsReply;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchExternalEventDefReply;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchExternalEventReply;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchNodeRunReply;
@@ -745,7 +757,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         ListVariablesPb req,
         StreamObserver<ListVariablesReplyPb> ctx
     ) {
-        // TODO
+        ListVariables lv = LHSerializable.fromProto(req, ListVariables.class);
+        handleScan(lv, ctx, ListVariablesReply.class);
     }
 
     @Override
@@ -753,7 +766,29 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         ListExternalEventsPb req,
         StreamObserver<ListExternalEventsReplyPb> ctx
     ) {
-        // TODO
+        ListExternalEvents lv = LHSerializable.fromProto(
+            req,
+            ListExternalEvents.class
+        );
+        handleScan(lv, ctx, ListExternalEventsReply.class);
+    }
+
+    @Override
+    public void listTaskDefMetrics(
+        ListTaskMetricsPb req,
+        StreamObserver<ListTaskMetricsReplyPb> ctx
+    ) {
+        ListTaskMetrics ltm = LHSerializable.fromProto(req, ListTaskMetrics.class);
+        handleScan(ltm, ctx, ListTaskMetricsReply.class);
+    }
+
+    @Override
+    public void listWfSpecMetrics(
+        ListWfMetricsPb req,
+        StreamObserver<ListWfMetricsReplyPb> ctx
+    ) {
+        ListWfMetrics ltm = LHSerializable.fromProto(req, ListWfMetrics.class);
+        handleScan(ltm, ctx, ListWfMetricsReply.class);
     }
 
     @Override

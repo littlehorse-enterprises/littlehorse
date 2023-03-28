@@ -5,6 +5,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
@@ -68,13 +69,18 @@ public class SearchWfSpec
         InternalScan out = new InternalScan();
         out.storeName = ServerTopology.CORE_STORE;
         out.resultType = ScanResultTypePb.OBJECT_ID;
-        out.type = ScanBoundaryCase.OBJECT_ID_PREFIX;
+        out.type = ScanBoundaryCase.BOUNDED_OBJECT_ID_SCAN;
         out.partitionKey = LHConstants.META_PARTITION_KEY;
         if (name.equals("")) {
             // that means we want to search all wfSpecs
-            out.objectIdPrefix = "";
+            out.boundedObjectIdScan =
+                BoundedObjectIdScanPb.newBuilder().setStartObjectId("").build();
         } else {
-            out.objectIdPrefix = name + "/";
+            out.boundedObjectIdScan =
+                BoundedObjectIdScanPb
+                    .newBuilder()
+                    .setStartObjectId(name + "/")
+                    .build();
         }
         return out;
     }

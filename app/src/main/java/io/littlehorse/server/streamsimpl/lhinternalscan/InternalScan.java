@@ -6,6 +6,7 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GETableClassEnumPb;
 import io.littlehorse.common.proto.InternalScanPb;
+import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb;
 import io.littlehorse.common.proto.ScanResultTypePb;
@@ -23,8 +24,8 @@ public class InternalScan extends LHSerializable<InternalScanPb> {
     public String partitionKey;
 
     public ScanBoundaryCase type;
-    public String objectIdPrefix;
     public TagPrefixScanPb localTagPrefixScan;
+    public BoundedObjectIdScanPb boundedObjectIdScan;
 
     public Class<InternalScanPb> getProtoBaseClass() {
         return InternalScanPb.class;
@@ -42,11 +43,11 @@ public class InternalScan extends LHSerializable<InternalScanPb> {
         }
 
         switch (type) {
-            case OBJECT_ID_PREFIX:
-                out.setObjectIdPrefix(objectIdPrefix);
-                break;
             case LOCAL_TAG_PREFIX_SCAN:
                 out.setLocalTagPrefixScan(localTagPrefixScan);
+                break;
+            case BOUNDED_OBJECT_ID_SCAN:
+                out.setBoundedObjectIdScan(boundedObjectIdScan);
                 break;
             case SCANBOUNDARY_NOT_SET:
                 throw new RuntimeException("not possible");
@@ -67,11 +68,11 @@ public class InternalScan extends LHSerializable<InternalScanPb> {
 
         type = p.getScanBoundaryCase();
         switch (type) {
-            case OBJECT_ID_PREFIX:
-                objectIdPrefix = p.getObjectIdPrefix();
-                break;
             case LOCAL_TAG_PREFIX_SCAN:
                 localTagPrefixScan = p.getLocalTagPrefixScan();
+                break;
+            case BOUNDED_OBJECT_ID_SCAN:
+                boundedObjectIdScan = p.getBoundedObjectIdScan();
                 break;
             case SCANBOUNDARY_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -80,10 +81,10 @@ public class InternalScan extends LHSerializable<InternalScanPb> {
 
     public String getStartPrefix() {
         switch (type) {
-            case OBJECT_ID_PREFIX:
+            case BOUNDED_OBJECT_ID_SCAN:
                 return (
                     StoreUtils.getFullStoreKey(
-                        objectIdPrefix,
+                        boundedObjectIdScan.getStartObjectId(),
                         GETable.getCls(objectType)
                     ) +
                     "/"
@@ -104,7 +105,15 @@ public class InternalScan extends LHSerializable<InternalScanPb> {
 
     public String getEndPrefix() {
         switch (type) {
-            case OBJECT_ID_PREFIX:
+            case BOUNDED_OBJECT_ID_SCAN:
+                if (boundedObjectIdScan.hasEndObjectId()) {
+                    return StoreUtils.getFullStoreKey(
+                        boundedObjectIdScan.getEndObjectId(),
+                        GETable.getCls(objectType)
+                    );
+                } else {
+                    return getStartPrefix() + "~";
+                }
             case LOCAL_TAG_PREFIX_SCAN:
                 return getStartPrefix() + "~";
             case SCANBOUNDARY_NOT_SET:

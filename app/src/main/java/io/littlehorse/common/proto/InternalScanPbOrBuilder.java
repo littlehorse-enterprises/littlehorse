@@ -80,16 +80,19 @@ public interface InternalScanPbOrBuilder extends
       getPartitionKeyBytes();
 
   /**
-   * <code>string object_id_prefix = 7;</code>
-   * @return The objectIdPrefix.
+   * <code>.littlehorse.InternalScanPb.BoundedObjectIdScanPb bounded_object_id_scan = 7;</code>
+   * @return Whether the boundedObjectIdScan field is set.
    */
-  java.lang.String getObjectIdPrefix();
+  boolean hasBoundedObjectIdScan();
   /**
-   * <code>string object_id_prefix = 7;</code>
-   * @return The bytes for objectIdPrefix.
+   * <code>.littlehorse.InternalScanPb.BoundedObjectIdScanPb bounded_object_id_scan = 7;</code>
+   * @return The boundedObjectIdScan.
    */
-  com.google.protobuf.ByteString
-      getObjectIdPrefixBytes();
+  io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb getBoundedObjectIdScan();
+  /**
+   * <code>.littlehorse.InternalScanPb.BoundedObjectIdScanPb bounded_object_id_scan = 7;</code>
+   */
+  io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPbOrBuilder getBoundedObjectIdScanOrBuilder();
 
   /**
    * <code>.littlehorse.InternalScanPb.TagPrefixScanPb local_tag_prefix_scan = 8;</code>

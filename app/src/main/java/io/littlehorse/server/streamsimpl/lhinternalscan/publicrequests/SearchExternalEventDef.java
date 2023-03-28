@@ -5,6 +5,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.objectId.ExternalEventDefId;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
@@ -66,7 +67,7 @@ public class SearchExternalEventDef
 
     public InternalScan startInternalSearch(LHGlobalMetaStores stores) {
         InternalScan out = new InternalScan();
-        out.type = ScanBoundaryCase.OBJECT_ID_PREFIX;
+        out.type = ScanBoundaryCase.BOUNDED_OBJECT_ID_SCAN;
         out.partitionKey = LHConstants.META_PARTITION_KEY;
 
         out.storeName = ServerTopology.CORE_STORE;
@@ -75,9 +76,14 @@ public class SearchExternalEventDef
         System.out.print(name);
         if (name.equals("")) {
             // that means we want to search all ExternalEventDefs
-            out.objectIdPrefix = "";
+            out.boundedObjectIdScan =
+                BoundedObjectIdScanPb.newBuilder().setStartObjectId("").build();
         } else {
-            out.objectIdPrefix = name + "/";
+            out.boundedObjectIdScan =
+                BoundedObjectIdScanPb
+                    .newBuilder()
+                    .setStartObjectId(name + "/")
+                    .build();
         }
         return out;
     }

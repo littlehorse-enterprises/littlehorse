@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.model.objectId.ExternalEventId;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
@@ -79,9 +80,13 @@ public class SearchExternalEvent
         out.resultType = ScanResultTypePb.OBJECT_ID;
 
         if (type == ExtEvtCriteriaCase.WF_RUN_ID) {
-            out.type = ScanBoundaryCase.OBJECT_ID_PREFIX;
+            out.type = ScanBoundaryCase.BOUNDED_OBJECT_ID_SCAN;
             out.partitionKey = wfRunId;
-            out.objectIdPrefix = wfRunId;
+            out.boundedObjectIdScan =
+                BoundedObjectIdScanPb
+                    .newBuilder()
+                    .setStartObjectId(wfRunId + "/")
+                    .build();
         } else {
             throw new RuntimeException("Not possible or unimplemented");
         }

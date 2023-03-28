@@ -41,7 +41,7 @@ public abstract class PublicScanRequest<
     public InternalScan getInternalSearch(LHGlobalMetaStores stores)
         throws LHValidationError {
         InternalScan out = startInternalSearch(stores);
-        out.limit = getLimit();
+        if (out.limit == 0) out.limit = getLimit();
         out.bookmark = bookmark;
         out.objectType = getObjectType();
         return out;
