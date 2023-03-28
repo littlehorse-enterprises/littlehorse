@@ -22,6 +22,14 @@ public abstract class ObjectId<
         return getStoreKey();
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (other == null) return false;
+        if (!this.getClass().equals(other.getClass())) return false;
+
+        return getStoreKey().equals(((ObjectId<?, ?, ?>) other).getStoreKey());
+    }
+
     public static <
         T extends Message, U extends Message, V extends LHSerializable<U>
     > ObjectId<?, ?, ?> fromString(
