@@ -82,29 +82,12 @@ public interface TaskMetricUpdatePbOrBuilder extends
   long getTotalStarted();
 
   /**
-   * <code>repeated int32 seen_partitions = 11;</code>
-   * @return A list containing the seenPartitions.
-   */
-  java.util.List<java.lang.Integer> getSeenPartitionsList();
-  /**
-   * <code>repeated int32 seen_partitions = 11;</code>
-   * @return The count of seenPartitions.
-   */
-  int getSeenPartitionsCount();
-  /**
-   * <code>repeated int32 seen_partitions = 11;</code>
-   * @param index The index of the element to return.
-   * @return The seenPartitions at the given index.
-   */
-  int getSeenPartitions(int index);
-
-  /**
-   * <code>string task_def_name = 12;</code>
+   * <code>string task_def_name = 11;</code>
    * @return The taskDefName.
    */
   java.lang.String getTaskDefName();
   /**
-   * <code>string task_def_name = 12;</code>
+   * <code>string task_def_name = 11;</code>
    * @return The bytes for taskDefName.
    */
   com.google.protobuf.ByteString

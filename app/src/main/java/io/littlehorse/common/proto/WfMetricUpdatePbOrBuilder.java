@@ -70,31 +70,20 @@ public interface WfMetricUpdatePbOrBuilder extends
   long getTotalStarted();
 
   /**
-   * <code>repeated int32 seen_partitions = 11;</code>
-   * @return A list containing the seenPartitions.
-   */
-  java.util.List<java.lang.Integer> getSeenPartitionsList();
-  /**
-   * <code>repeated int32 seen_partitions = 11;</code>
-   * @return The count of seenPartitions.
-   */
-  int getSeenPartitionsCount();
-  /**
-   * <code>repeated int32 seen_partitions = 11;</code>
-   * @param index The index of the element to return.
-   * @return The seenPartitions at the given index.
-   */
-  int getSeenPartitions(int index);
-
-  /**
-   * <code>string wf_spec_name = 12;</code>
+   * <code>string wf_spec_name = 11;</code>
    * @return The wfSpecName.
    */
   java.lang.String getWfSpecName();
   /**
-   * <code>string wf_spec_name = 12;</code>
+   * <code>string wf_spec_name = 11;</code>
    * @return The bytes for wfSpecName.
    */
   com.google.protobuf.ByteString
       getWfSpecNameBytes();
+
+  /**
+   * <code>int32 wf_spec_version = 12;</code>
+   * @return The wfSpecVersion.
+   */
+  int getWfSpecVersion();
 }

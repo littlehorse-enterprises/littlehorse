@@ -22,7 +22,8 @@ public class ListWfMetrics
     extends PublicScanRequest<ListWfMetricsPb, ListWfMetricsReplyPb, WfSpecMetricsPb, WfSpecMetrics, ListWfMetricsReply> {
 
     public Date lastWindowStart;
-    public String WfSpecName;
+    public String wfSpecName;
+    public int wfSpecVersion;
     public int numWindows;
     public MetricsWindowLengthPb windowLength;
 
@@ -36,7 +37,8 @@ public class ListWfMetrics
             .setLastWindowStart(LHUtil.fromDate(lastWindowStart))
             .setNumWindows(numWindows)
             .setWindowLength(windowLength)
-            .setWfSpecName(WfSpecName);
+            .setWfSpecName(wfSpecName)
+            .setWfSpecVersion(wfSpecVersion);
 
         return out;
     }
@@ -46,7 +48,8 @@ public class ListWfMetrics
         lastWindowStart = LHUtil.fromProtoTs(p.getLastWindowStart());
         numWindows = p.getNumWindows();
         windowLength = p.getWindowLength();
-        WfSpecName = p.getWfSpecName();
+        wfSpecName = p.getWfSpecName();
+        wfSpecVersion = p.getWfSpecVersion();
     }
 
     public GETableClassEnumPb getObjectType() {
@@ -63,12 +66,13 @@ public class ListWfMetrics
         // TODO: Need to make WfSpecName a required field. When client wants to
         // search for all WfSpecs, then they need to provide a reserved WfSpec name
         // such as '__LH_ALL'
-        out.partitionKey = WfSpecName;
+        out.partitionKey = wfSpecName;
 
         String endKey = WfSpecMetrics.getObjectId(
             windowLength,
             lastWindowStart,
-            WfSpecName
+            wfSpecName,
+            wfSpecVersion
         );
         String startKey = WfSpecMetrics.getObjectId(
             windowLength,
@@ -76,7 +80,8 @@ public class ListWfMetrics
                 lastWindowStart.getTime() -
                 (LHUtil.getWindowLengthMillis(windowLength) * numWindows)
             ),
-            WfSpecName
+            wfSpecName,
+            wfSpecVersion
         );
         out.boundedObjectIdScan =
             BoundedObjectIdScanPb

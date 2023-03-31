@@ -16,6 +16,7 @@ public class WfSpecMetricsId
     public Date windowStart;
     public MetricsWindowLengthPb windowType;
     public String WfSpecName;
+    public int wfSpecVersion;
 
     public String getPartitionKey() {
         return WfSpecName;
@@ -30,11 +31,13 @@ public class WfSpecMetricsId
     public WfSpecMetricsId(
         Date windowStart,
         MetricsWindowLengthPb type,
-        String wfSpecName
+        String wfSpecName,
+        int wfSpecVersion
     ) {
         this.windowStart = windowStart;
         this.windowType = type;
         this.WfSpecName = wfSpecName;
+        this.wfSpecVersion = wfSpecVersion;
     }
 
     public void initFrom(Message proto) {
@@ -42,6 +45,7 @@ public class WfSpecMetricsId
         WfSpecName = p.getWfSpecName();
         windowType = p.getWindowType();
         windowStart = LHUtil.fromProtoTs(p.getWindowStart());
+        wfSpecVersion = p.getWfSpecVersion();
     }
 
     public WfSpecMetricsIdPb.Builder toProto() {
@@ -49,26 +53,29 @@ public class WfSpecMetricsId
             .newBuilder()
             .setWfSpecName(WfSpecName)
             .setWindowType(windowType)
-            .setWindowStart(LHUtil.fromDate(windowStart));
+            .setWindowStart(LHUtil.fromDate(windowStart))
+            .setWfSpecVersion(wfSpecVersion);
         return out;
     }
 
     public String getStoreKey() {
         return LHUtil.getCompositeId(
+            WfSpecName,
+            LHUtil.toLHDbVersionFormat(wfSpecVersion),
             windowType.toString(),
-            LHUtil.toLhDbFormat(windowStart),
-            WfSpecName
+            LHUtil.toLhDbFormat(windowStart)
         );
     }
 
     public void initFrom(String storeKey) {
         String[] split = storeKey.split("/");
-        windowType = MetricsWindowLengthPb.valueOf(split[0]);
-        windowStart = new Date(Long.valueOf(split[1]));
-        WfSpecName = split[2];
+        WfSpecName = split[0];
+        wfSpecVersion = Integer.valueOf(split[1]);
+        windowType = MetricsWindowLengthPb.valueOf(split[2]);
+        windowStart = new Date(Long.valueOf(split[3]));
     }
 
     public GETableClassEnumPb getType() {
-        return GETableClassEnumPb.TASK_DEF_METRICS;
+        return GETableClassEnumPb.WF_SPEC_METRICS;
     }
 }

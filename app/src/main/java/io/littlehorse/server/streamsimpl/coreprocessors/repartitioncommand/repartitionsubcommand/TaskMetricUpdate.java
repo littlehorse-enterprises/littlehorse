@@ -10,9 +10,7 @@ import io.littlehorse.jlib.common.LHLibUtil;
 import io.littlehorse.jlib.common.proto.MetricsWindowLengthPb;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
 public class TaskMetricUpdate
@@ -30,12 +28,9 @@ public class TaskMetricUpdate
     public long totalErrored;
     public long totalStarted;
 
-    public List<Integer> seenPartitions;
     public String taskDefName;
 
-    public TaskMetricUpdate() {
-        seenPartitions = new ArrayList<>();
-    }
+    public TaskMetricUpdate() {}
 
     public Class<TaskMetricUpdatePb> getProtoBaseClass() {
         return TaskMetricUpdatePb.class;
@@ -56,10 +51,6 @@ public class TaskMetricUpdate
             .setStartToCompleteMax(startToCompleteMax)
             .setNumEntries(numEntries);
 
-        for (Integer seen : seenPartitions) {
-            out.addSeenPartitions(seen);
-        }
-
         return out;
     }
 
@@ -76,10 +67,6 @@ public class TaskMetricUpdate
         startToCompleteTotal = p.getStartToCompleteTotal();
         startToCompleteMax = p.getStartToCompleteMax();
         numEntries = p.getNumEntries();
-
-        for (int seenPartition : p.getSeenPartitionsList()) {
-            seenPartitions.add(seenPartition);
-        }
     }
 
     public void merge(TaskMetricUpdate o) {
@@ -104,10 +91,6 @@ public class TaskMetricUpdate
         totalCompleted += o.totalCompleted;
         totalErrored += o.totalErrored;
         totalStarted += o.totalStarted;
-
-        for (Integer seenPartition : o.seenPartitions) {
-            seenPartitions.add(seenPartition);
-        }
     }
 
     public TaskDefMetrics toResponse() {

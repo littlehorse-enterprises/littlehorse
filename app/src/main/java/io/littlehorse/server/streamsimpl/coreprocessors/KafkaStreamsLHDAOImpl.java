@@ -736,21 +736,47 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         }
     }
 
-    public List<WfMetricUpdate> getWfMetricWindows(String wfSpecName, Date time) {
+    public List<WfMetricUpdate> getWfMetricWindows(
+        String wfSpecName,
+        int wfSpecVersion,
+        Date time
+    ) {
         List<WfMetricUpdate> out = new ArrayList<>();
-        out.add(getWmUpdate(time, MetricsWindowLengthPb.MINUTES_5, wfSpecName));
-        out.add(getWmUpdate(time, MetricsWindowLengthPb.HOURS_2, wfSpecName));
-        out.add(getWmUpdate(time, MetricsWindowLengthPb.DAYS_1, wfSpecName));
+        out.add(
+            getWmUpdate(
+                time,
+                MetricsWindowLengthPb.MINUTES_5,
+                wfSpecName,
+                wfSpecVersion
+            )
+        );
+        out.add(
+            getWmUpdate(
+                time,
+                MetricsWindowLengthPb.HOURS_2,
+                wfSpecName,
+                wfSpecVersion
+            )
+        );
+        out.add(
+            getWmUpdate(time, MetricsWindowLengthPb.DAYS_1, wfSpecName, wfSpecVersion)
+        );
         return out;
     }
 
     private WfMetricUpdate getWmUpdate(
         Date windowStart,
         MetricsWindowLengthPb type,
-        String taskDefName
+        String wfSpecName,
+        int wfSpecVersion
     ) {
         windowStart = LHUtil.getWindowStart(windowStart, type);
-        String id = WfMetricUpdate.getObjectId(type, windowStart, taskDefName);
+        String id = WfMetricUpdate.getObjectId(
+            type,
+            windowStart,
+            wfSpecName,
+            wfSpecVersion
+        );
         if (wfMetricPuts.containsKey(id)) {
             return wfMetricPuts.get(id);
         }
@@ -760,7 +786,8 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
             out = new WfMetricUpdate();
             out.windowStart = windowStart;
             out.type = type;
-            out.wfSpecName = taskDefName;
+            out.wfSpecName = wfSpecName;
+            out.wfSpecVersion = wfSpecVersion;
         }
 
         wfMetricPuts.put(id, out);
@@ -1018,26 +1045,26 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         responseToSave.commandId = command.commandId;
     }
 
-    private static final long GRACE_PERIOD = 1000 * 60;
-
     public void forwardAndClearMetricsUpdatesUntil(long timestamp) {
         // 5-minute window
-        clearMetrics(timestamp, MetricsWindowLengthPb.MINUTES_5);
-        clearMetrics(timestamp, MetricsWindowLengthPb.HOURS_2);
-        clearMetrics(timestamp, MetricsWindowLengthPb.DAYS_1);
+        clearMetrics(MetricsWindowLengthPb.MINUTES_5);
+        clearMetrics(MetricsWindowLengthPb.HOURS_2);
+        clearMetrics(MetricsWindowLengthPb.DAYS_1);
     }
 
-    private void clearMetrics(long punctuateTime, MetricsWindowLengthPb type) {
-        long endTime =
-            punctuateTime - GRACE_PERIOD - LHUtil.getWindowLengthMillis(type);
+    private void clearMetrics(MetricsWindowLengthPb type) {
+        /*
+         * NOTE: Past versions of this function used to hold the updates until they
+         * were "complete". Now, we just send them and we accept that current
+         * in-progress windows will have incomplete data. But that's better than
+         * having to wait a whole day + grace period to see how many events you've
+         * had today (for DAYS_1 window type, for example).
+         */
 
         try (
             LHKeyValueIterator<TaskMetricUpdate> iter = localStore.range(
                 "",
-                TaskMetricUpdate.getPrefix(
-                    MetricsWindowLengthPb.MINUTES_5,
-                    new Date(endTime)
-                ),
+                "~",
                 TaskMetricUpdate.class
             );
         ) {
@@ -1065,10 +1092,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         try (
             LHKeyValueIterator<WfMetricUpdate> iter = localStore.range(
                 "",
-                WfMetricUpdate.getPrefix(
-                    MetricsWindowLengthPb.MINUTES_5,
-                    new Date(endTime)
-                ),
+                "~",
                 WfMetricUpdate.class
             );
         ) {

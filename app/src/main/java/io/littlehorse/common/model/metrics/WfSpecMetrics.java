@@ -15,6 +15,7 @@ public class WfSpecMetrics extends GETable<WfSpecMetricsPb> {
     public Date windowStart;
     public MetricsWindowLengthPb type;
     public String wfSpecName;
+    public int wfSpecVersion;
     public long totalCompleted;
     public long totalErrored;
     public long totalStarted;
@@ -31,6 +32,7 @@ public class WfSpecMetrics extends GETable<WfSpecMetricsPb> {
             .setWindowStart(LHLibUtil.fromDate(windowStart))
             .setType(type)
             .setWfSpecName(wfSpecName)
+            .setWfSpecVersion(wfSpecVersion)
             .setTotalCompleted(totalCompleted)
             .setTotalErrored(totalErrored)
             .setTotalStarted(totalStarted)
@@ -45,6 +47,7 @@ public class WfSpecMetrics extends GETable<WfSpecMetricsPb> {
         windowStart = LHLibUtil.fromProtoTs(p.getWindowStart());
         type = p.getType();
         wfSpecName = p.getWfSpecName();
+        wfSpecVersion = p.getWfSpecVersion();
         totalCompleted = p.getTotalCompleted();
         totalErrored = p.getTotalErrored();
         totalStarted = p.getTotalStarted();
@@ -60,33 +63,30 @@ public class WfSpecMetrics extends GETable<WfSpecMetricsPb> {
         return wfSpecName;
     }
 
-    public String getStoreKey() {
-        return getObjectId(type, windowStart, wfSpecName);
-    }
-
     public static String getObjectId(
         MetricsWindowLengthPb windowType,
         Date time,
-        String wfSpecName
+        String wfSpecName,
+        int wfSpecVersion
     ) {
-        return (
-            windowType.toString() + "/" + LHUtil.toLhDbFormat(time) + "/" + wfSpecName
-        );
+        return new WfSpecMetricsId(time, windowType, wfSpecName, wfSpecVersion)
+            .getStoreKey();
     }
 
     public static String getObjectId(WfSpecMetricsQueryPb request) {
-        // Need to align the thing to the thing
-        return getObjectId(
-            request.getWindowType(),
+        return new WfSpecMetricsId(
             LHUtil.getWindowStart(
                 LHUtil.fromProtoTs(request.getWindowStart()),
                 request.getWindowType()
             ),
-            request.getWfSpecName()
-        );
+            request.getWindowType(),
+            request.getWfSpecName(),
+            request.getWfSpecVersion()
+        )
+            .getStoreKey();
     }
 
     public WfSpecMetricsId getObjectId() {
-        return new WfSpecMetricsId(windowStart, type, wfSpecName);
+        return new WfSpecMetricsId(windowStart, type, wfSpecName, wfSpecVersion);
     }
 }

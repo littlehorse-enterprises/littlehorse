@@ -10,9 +10,7 @@ import io.littlehorse.jlib.common.LHLibUtil;
 import io.littlehorse.jlib.common.proto.MetricsWindowLengthPb;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.log4j.Logger;
 
@@ -31,12 +29,10 @@ public class WfMetricUpdate
     public long totalErrored;
     public long totalStarted;
 
-    public List<Integer> seenPartitions;
     public String wfSpecName;
+    public int wfSpecVersion;
 
-    public WfMetricUpdate() {
-        seenPartitions = new ArrayList<>();
-    }
+    public WfMetricUpdate() {}
 
     public Class<WfMetricUpdatePb> getProtoBaseClass() {
         return WfMetricUpdatePb.class;
@@ -48,6 +44,7 @@ public class WfMetricUpdate
             .setWindowStart(LHLibUtil.fromDate(windowStart))
             .setType(type)
             .setWfSpecName(wfSpecName)
+            .setWfSpecVersion(wfSpecVersion)
             .setTotalCompleted(totalCompleted)
             .setTotalErrored(totalErrored)
             .setTotalStarted(totalStarted)
@@ -63,6 +60,7 @@ public class WfMetricUpdate
         windowStart = LHLibUtil.fromProtoTs(p.getWindowStart());
         type = p.getType();
         wfSpecName = p.getWfSpecName();
+        wfSpecVersion = p.getWfSpecVersion();
         totalCompleted = p.getTotalCompleted();
         totalErrored = p.getTotalErrored();
         totalStarted = p.getTotalStarted();
@@ -88,23 +86,19 @@ public class WfMetricUpdate
         if (o.startToCompleteMax > startToCompleteMax) {
             startToCompleteMax = o.startToCompleteMax;
         }
-        startToCompleteTotal += o.startToCompleteTotal;
 
         totalCompleted += o.totalCompleted;
         totalErrored += o.totalErrored;
         totalStarted += o.totalStarted;
-
-        for (Integer seenPartition : o.seenPartitions) {
-            seenPartitions.add(seenPartition);
-        }
     }
 
     public WfSpecMetrics toResponse() {
         WfSpecMetrics out = new WfSpecMetrics();
         out.startToCompleteAvg =
-            totalStarted > 0 ? startToCompleteTotal / totalStarted : 0;
+            totalCompleted > 0 ? startToCompleteTotal / totalCompleted : 0;
         out.startToCompleteMax = startToCompleteMax;
         out.wfSpecName = wfSpecName;
+        out.wfSpecVersion = wfSpecVersion;
         out.totalCompleted = totalCompleted;
         out.totalStarted = totalStarted;
         out.totalErrored = totalErrored;
@@ -139,20 +133,28 @@ public class WfMetricUpdate
     public static String getObjectId(
         MetricsWindowLengthPb type,
         Date windowStart,
-        String wfSpecName
+        String wfSpecName,
+        int wfSpecVersion
     ) {
-        return type + "/" + LHUtil.toLhDbFormat(windowStart) + "/" + wfSpecName;
+        return WfSpecMetrics.getObjectId(
+            type,
+            windowStart,
+            wfSpecName,
+            wfSpecVersion
+        );
     }
 
     public static String getStoreKey(
         MetricsWindowLengthPb type,
         Date windowStart,
-        String wfSpecName
+        String wfSpecName,
+        int wfSpecVersion
     ) {
-        return new WfSpecMetricsId(windowStart, type, wfSpecName).getStoreKey();
+        return new WfSpecMetricsId(windowStart, type, wfSpecName, wfSpecVersion)
+            .getStoreKey();
     }
 
     public String getStoreKey() {
-        return getObjectId(type, windowStart, wfSpecName);
+        return getObjectId(type, windowStart, wfSpecName, wfSpecVersion);
     }
 }

@@ -51,17 +51,17 @@ public class TaskDefMetricsId
 
     public String getStoreKey() {
         return LHUtil.getCompositeId(
+            taskDefName,
             windowType.toString(),
-            LHUtil.toLhDbFormat(windowStart),
-            taskDefName
+            LHUtil.toLhDbFormat(windowStart)
         );
     }
 
     public void initFrom(String storeKey) {
         String[] split = storeKey.split("/");
-        windowType = MetricsWindowLengthPb.valueOf(split[0]);
-        windowStart = new Date(Long.valueOf(split[1]));
-        taskDefName = split[2];
+        taskDefName = split[0];
+        windowType = MetricsWindowLengthPb.valueOf(split[1]);
+        windowStart = new Date(Long.valueOf(split[2]));
     }
 
     public GETableClassEnumPb getType() {

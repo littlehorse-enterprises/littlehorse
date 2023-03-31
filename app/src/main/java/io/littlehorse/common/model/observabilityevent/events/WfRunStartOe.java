@@ -32,7 +32,11 @@ public class WfRunStartOe extends SubEvent<WfRunStartOePb> {
     }
 
     public void updateMetrics(LHDAO dao, Date time, String wfRunId) {
-        List<WfMetricUpdate> wmus = dao.getWfMetricWindows(wfSpecName, time);
+        List<WfMetricUpdate> wmus = dao.getWfMetricWindows(
+            wfSpecName,
+            wfSpecVersion,
+            time
+        );
 
         for (WfMetricUpdate wmu : wmus) {
             wmu.numEntries++;

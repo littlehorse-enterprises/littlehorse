@@ -32,7 +32,11 @@ public class WfRunStatusOe extends SubEvent<WfRunStatusOePb> {
     public void updateMetrics(LHDAO dao, Date time, String wfRunId) {
         WfRun wr = dao.getWfRun(wfRunId);
 
-        List<WfMetricUpdate> wmus = dao.getWfMetricWindows(wr.wfSpecName, time);
+        List<WfMetricUpdate> wmus = dao.getWfMetricWindows(
+            wr.wfSpecName,
+            wr.wfSpecVersion,
+            time
+        );
 
         for (WfMetricUpdate wmu : wmus) {
             if (status == LHStatusPb.COMPLETED) {

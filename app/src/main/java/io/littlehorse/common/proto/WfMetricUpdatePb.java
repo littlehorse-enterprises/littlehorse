@@ -17,7 +17,6 @@ private static final long serialVersionUID = 0L;
   }
   private WfMetricUpdatePb() {
     type_ = 0;
-    seenPartitions_ = emptyIntList();
     wfSpecName_ = "";
   }
 
@@ -41,7 +40,6 @@ private static final long serialVersionUID = 0L;
     if (extensionRegistry == null) {
       throw new java.lang.NullPointerException();
     }
-    int mutable_bitField0_ = 0;
     com.google.protobuf.UnknownFieldSet.Builder unknownFields =
         com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
@@ -101,31 +99,15 @@ private static final long serialVersionUID = 0L;
             totalStarted_ = input.readInt64();
             break;
           }
-          case 88: {
-            if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-              seenPartitions_ = newIntList();
-              mutable_bitField0_ |= 0x00000001;
-            }
-            seenPartitions_.addInt(input.readInt32());
-            break;
-          }
           case 90: {
-            int length = input.readRawVarint32();
-            int limit = input.pushLimit(length);
-            if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
-              seenPartitions_ = newIntList();
-              mutable_bitField0_ |= 0x00000001;
-            }
-            while (input.getBytesUntilLimit() > 0) {
-              seenPartitions_.addInt(input.readInt32());
-            }
-            input.popLimit(limit);
-            break;
-          }
-          case 98: {
             java.lang.String s = input.readStringRequireUtf8();
 
             wfSpecName_ = s;
+            break;
+          }
+          case 96: {
+
+            wfSpecVersion_ = input.readInt32();
             break;
           }
           default: {
@@ -143,9 +125,6 @@ private static final long serialVersionUID = 0L;
       throw new com.google.protobuf.InvalidProtocolBufferException(
           e).setUnfinishedMessage(this);
     } finally {
-      if (((mutable_bitField0_ & 0x00000001) != 0)) {
-        seenPartitions_.makeImmutable(); // C
-      }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
@@ -274,38 +253,10 @@ private static final long serialVersionUID = 0L;
     return totalStarted_;
   }
 
-  public static final int SEEN_PARTITIONS_FIELD_NUMBER = 11;
-  private com.google.protobuf.Internal.IntList seenPartitions_;
-  /**
-   * <code>repeated int32 seen_partitions = 11;</code>
-   * @return A list containing the seenPartitions.
-   */
-  @java.lang.Override
-  public java.util.List<java.lang.Integer>
-      getSeenPartitionsList() {
-    return seenPartitions_;
-  }
-  /**
-   * <code>repeated int32 seen_partitions = 11;</code>
-   * @return The count of seenPartitions.
-   */
-  public int getSeenPartitionsCount() {
-    return seenPartitions_.size();
-  }
-  /**
-   * <code>repeated int32 seen_partitions = 11;</code>
-   * @param index The index of the element to return.
-   * @return The seenPartitions at the given index.
-   */
-  public int getSeenPartitions(int index) {
-    return seenPartitions_.getInt(index);
-  }
-  private int seenPartitionsMemoizedSerializedSize = -1;
-
-  public static final int WF_SPEC_NAME_FIELD_NUMBER = 12;
+  public static final int WF_SPEC_NAME_FIELD_NUMBER = 11;
   private volatile java.lang.Object wfSpecName_;
   /**
-   * <code>string wf_spec_name = 12;</code>
+   * <code>string wf_spec_name = 11;</code>
    * @return The wfSpecName.
    */
   @java.lang.Override
@@ -322,7 +273,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>string wf_spec_name = 12;</code>
+   * <code>string wf_spec_name = 11;</code>
    * @return The bytes for wfSpecName.
    */
   @java.lang.Override
@@ -340,6 +291,17 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int WF_SPEC_VERSION_FIELD_NUMBER = 12;
+  private int wfSpecVersion_;
+  /**
+   * <code>int32 wf_spec_version = 12;</code>
+   * @return The wfSpecVersion.
+   */
+  @java.lang.Override
+  public int getWfSpecVersion() {
+    return wfSpecVersion_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -354,7 +316,6 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (windowStart_ != null) {
       output.writeMessage(1, getWindowStart());
     }
@@ -379,15 +340,11 @@ private static final long serialVersionUID = 0L;
     if (totalStarted_ != 0L) {
       output.writeInt64(10, totalStarted_);
     }
-    if (getSeenPartitionsList().size() > 0) {
-      output.writeUInt32NoTag(90);
-      output.writeUInt32NoTag(seenPartitionsMemoizedSerializedSize);
-    }
-    for (int i = 0; i < seenPartitions_.size(); i++) {
-      output.writeInt32NoTag(seenPartitions_.getInt(i));
-    }
     if (!getWfSpecNameBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 12, wfSpecName_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 11, wfSpecName_);
+    }
+    if (wfSpecVersion_ != 0) {
+      output.writeInt32(12, wfSpecVersion_);
     }
     unknownFields.writeTo(output);
   }
@@ -430,22 +387,12 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt64Size(10, totalStarted_);
     }
-    {
-      int dataSize = 0;
-      for (int i = 0; i < seenPartitions_.size(); i++) {
-        dataSize += com.google.protobuf.CodedOutputStream
-          .computeInt32SizeNoTag(seenPartitions_.getInt(i));
-      }
-      size += dataSize;
-      if (!getSeenPartitionsList().isEmpty()) {
-        size += 1;
-        size += com.google.protobuf.CodedOutputStream
-            .computeInt32SizeNoTag(dataSize);
-      }
-      seenPartitionsMemoizedSerializedSize = dataSize;
-    }
     if (!getWfSpecNameBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(12, wfSpecName_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(11, wfSpecName_);
+    }
+    if (wfSpecVersion_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(12, wfSpecVersion_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -480,10 +427,10 @@ private static final long serialVersionUID = 0L;
         != other.getTotalErrored()) return false;
     if (getTotalStarted()
         != other.getTotalStarted()) return false;
-    if (!getSeenPartitionsList()
-        .equals(other.getSeenPartitionsList())) return false;
     if (!getWfSpecName()
         .equals(other.getWfSpecName())) return false;
+    if (getWfSpecVersion()
+        != other.getWfSpecVersion()) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -519,12 +466,10 @@ private static final long serialVersionUID = 0L;
     hash = (37 * hash) + TOTAL_STARTED_FIELD_NUMBER;
     hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
         getTotalStarted());
-    if (getSeenPartitionsCount() > 0) {
-      hash = (37 * hash) + SEEN_PARTITIONS_FIELD_NUMBER;
-      hash = (53 * hash) + getSeenPartitionsList().hashCode();
-    }
     hash = (37 * hash) + WF_SPEC_NAME_FIELD_NUMBER;
     hash = (53 * hash) + getWfSpecName().hashCode();
+    hash = (37 * hash) + WF_SPEC_VERSION_FIELD_NUMBER;
+    hash = (53 * hash) + getWfSpecVersion();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -678,9 +623,9 @@ private static final long serialVersionUID = 0L;
 
       totalStarted_ = 0L;
 
-      seenPartitions_ = emptyIntList();
-      bitField0_ = (bitField0_ & ~0x00000001);
       wfSpecName_ = "";
+
+      wfSpecVersion_ = 0;
 
       return this;
     }
@@ -708,7 +653,6 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.common.proto.WfMetricUpdatePb buildPartial() {
       io.littlehorse.common.proto.WfMetricUpdatePb result = new io.littlehorse.common.proto.WfMetricUpdatePb(this);
-      int from_bitField0_ = bitField0_;
       if (windowStartBuilder_ == null) {
         result.windowStart_ = windowStart_;
       } else {
@@ -721,12 +665,8 @@ private static final long serialVersionUID = 0L;
       result.totalCompleted_ = totalCompleted_;
       result.totalErrored_ = totalErrored_;
       result.totalStarted_ = totalStarted_;
-      if (((bitField0_ & 0x00000001) != 0)) {
-        seenPartitions_.makeImmutable();
-        bitField0_ = (bitField0_ & ~0x00000001);
-      }
-      result.seenPartitions_ = seenPartitions_;
       result.wfSpecName_ = wfSpecName_;
+      result.wfSpecVersion_ = wfSpecVersion_;
       onBuilt();
       return result;
     }
@@ -799,19 +739,12 @@ private static final long serialVersionUID = 0L;
       if (other.getTotalStarted() != 0L) {
         setTotalStarted(other.getTotalStarted());
       }
-      if (!other.seenPartitions_.isEmpty()) {
-        if (seenPartitions_.isEmpty()) {
-          seenPartitions_ = other.seenPartitions_;
-          bitField0_ = (bitField0_ & ~0x00000001);
-        } else {
-          ensureSeenPartitionsIsMutable();
-          seenPartitions_.addAll(other.seenPartitions_);
-        }
-        onChanged();
-      }
       if (!other.getWfSpecName().isEmpty()) {
         wfSpecName_ = other.wfSpecName_;
         onChanged();
+      }
+      if (other.getWfSpecVersion() != 0) {
+        setWfSpecVersion(other.getWfSpecVersion());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -841,7 +774,6 @@ private static final long serialVersionUID = 0L;
       }
       return this;
     }
-    private int bitField0_;
 
     private com.google.protobuf.Timestamp windowStart_;
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -1202,88 +1134,9 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private com.google.protobuf.Internal.IntList seenPartitions_ = emptyIntList();
-    private void ensureSeenPartitionsIsMutable() {
-      if (!((bitField0_ & 0x00000001) != 0)) {
-        seenPartitions_ = mutableCopy(seenPartitions_);
-        bitField0_ |= 0x00000001;
-       }
-    }
-    /**
-     * <code>repeated int32 seen_partitions = 11;</code>
-     * @return A list containing the seenPartitions.
-     */
-    public java.util.List<java.lang.Integer>
-        getSeenPartitionsList() {
-      return ((bitField0_ & 0x00000001) != 0) ?
-               java.util.Collections.unmodifiableList(seenPartitions_) : seenPartitions_;
-    }
-    /**
-     * <code>repeated int32 seen_partitions = 11;</code>
-     * @return The count of seenPartitions.
-     */
-    public int getSeenPartitionsCount() {
-      return seenPartitions_.size();
-    }
-    /**
-     * <code>repeated int32 seen_partitions = 11;</code>
-     * @param index The index of the element to return.
-     * @return The seenPartitions at the given index.
-     */
-    public int getSeenPartitions(int index) {
-      return seenPartitions_.getInt(index);
-    }
-    /**
-     * <code>repeated int32 seen_partitions = 11;</code>
-     * @param index The index to set the value at.
-     * @param value The seenPartitions to set.
-     * @return This builder for chaining.
-     */
-    public Builder setSeenPartitions(
-        int index, int value) {
-      ensureSeenPartitionsIsMutable();
-      seenPartitions_.setInt(index, value);
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>repeated int32 seen_partitions = 11;</code>
-     * @param value The seenPartitions to add.
-     * @return This builder for chaining.
-     */
-    public Builder addSeenPartitions(int value) {
-      ensureSeenPartitionsIsMutable();
-      seenPartitions_.addInt(value);
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>repeated int32 seen_partitions = 11;</code>
-     * @param values The seenPartitions to add.
-     * @return This builder for chaining.
-     */
-    public Builder addAllSeenPartitions(
-        java.lang.Iterable<? extends java.lang.Integer> values) {
-      ensureSeenPartitionsIsMutable();
-      com.google.protobuf.AbstractMessageLite.Builder.addAll(
-          values, seenPartitions_);
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>repeated int32 seen_partitions = 11;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearSeenPartitions() {
-      seenPartitions_ = emptyIntList();
-      bitField0_ = (bitField0_ & ~0x00000001);
-      onChanged();
-      return this;
-    }
-
     private java.lang.Object wfSpecName_ = "";
     /**
-     * <code>string wf_spec_name = 12;</code>
+     * <code>string wf_spec_name = 11;</code>
      * @return The wfSpecName.
      */
     public java.lang.String getWfSpecName() {
@@ -1299,7 +1152,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string wf_spec_name = 12;</code>
+     * <code>string wf_spec_name = 11;</code>
      * @return The bytes for wfSpecName.
      */
     public com.google.protobuf.ByteString
@@ -1316,7 +1169,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string wf_spec_name = 12;</code>
+     * <code>string wf_spec_name = 11;</code>
      * @param value The wfSpecName to set.
      * @return This builder for chaining.
      */
@@ -1331,7 +1184,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string wf_spec_name = 12;</code>
+     * <code>string wf_spec_name = 11;</code>
      * @return This builder for chaining.
      */
     public Builder clearWfSpecName() {
@@ -1341,7 +1194,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string wf_spec_name = 12;</code>
+     * <code>string wf_spec_name = 11;</code>
      * @param value The bytes for wfSpecName to set.
      * @return This builder for chaining.
      */
@@ -1353,6 +1206,37 @@ private static final long serialVersionUID = 0L;
   checkByteStringIsUtf8(value);
       
       wfSpecName_ = value;
+      onChanged();
+      return this;
+    }
+
+    private int wfSpecVersion_ ;
+    /**
+     * <code>int32 wf_spec_version = 12;</code>
+     * @return The wfSpecVersion.
+     */
+    @java.lang.Override
+    public int getWfSpecVersion() {
+      return wfSpecVersion_;
+    }
+    /**
+     * <code>int32 wf_spec_version = 12;</code>
+     * @param value The wfSpecVersion to set.
+     * @return This builder for chaining.
+     */
+    public Builder setWfSpecVersion(int value) {
+      
+      wfSpecVersion_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 wf_spec_version = 12;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearWfSpecVersion() {
+      
+      wfSpecVersion_ = 0;
       onChanged();
       return this;
     }

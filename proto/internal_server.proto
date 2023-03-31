@@ -173,8 +173,7 @@ message TaskMetricUpdatePb {
     int64 total_errored = 9;
     int64 total_started = 10;
 
-    repeated int32 seen_partitions = 11;
-    string task_def_name = 12;
+    string task_def_name = 11;
 }
 
 message WfMetricUpdatePb {
@@ -187,8 +186,8 @@ message WfMetricUpdatePb {
     int64 total_errored = 9;
     int64 total_started = 10;
 
-    repeated int32 seen_partitions = 11;
-    string wf_spec_name = 12;
+    string wf_spec_name = 11;
+    int32 wf_spec_version = 12;
 }
 
 message RepartitionCommandPb {

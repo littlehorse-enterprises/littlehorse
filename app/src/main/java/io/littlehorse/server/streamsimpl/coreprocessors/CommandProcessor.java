@@ -40,7 +40,7 @@ public class CommandProcessor
         dao.onPartitionClaimed();
 
         ctx.schedule(
-            Duration.ofSeconds(5),
+            Duration.ofSeconds(30),
             PunctuationType.WALL_CLOCK_TIME,
             this::forwardMetricsUpdates
         );

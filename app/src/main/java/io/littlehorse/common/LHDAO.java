@@ -118,5 +118,9 @@ public interface LHDAO extends LHGlobalMetaStores {
 
     public List<TaskMetricUpdate> getTaskMetricWindows(String taskDefName, Date time);
 
-    public List<WfMetricUpdate> getWfMetricWindows(String wfSpecName, Date time);
+    public List<WfMetricUpdate> getWfMetricWindows(
+        String wfSpecName,
+        int wfSpecVersion,
+        Date time
+    );
 }

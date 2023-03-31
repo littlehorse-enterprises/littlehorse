@@ -75,23 +75,18 @@ public class TaskDefMetrics extends GETable<TaskDefMetricsPb> {
         Date time,
         String taskDefName
     ) {
-        return (
-            windowType.toString() +
-            "/" +
-            LHUtil.toLhDbFormat(time) +
-            "/" +
-            taskDefName
-        );
+        return new TaskDefMetricsId(time, windowType, taskDefName).getStoreKey();
     }
 
     public static String getObjectId(TaskDefMetricsQueryPb request) {
-        return getObjectId(
-            request.getWindowType(),
+        return new TaskDefMetricsId(
             LHUtil.getWindowStart(
                 LHLibUtil.fromProtoTs(request.getWindowStart()),
                 request.getWindowType()
             ),
+            request.getWindowType(),
             request.getTaskDefName()
-        );
+        )
+            .getStoreKey();
     }
 }
