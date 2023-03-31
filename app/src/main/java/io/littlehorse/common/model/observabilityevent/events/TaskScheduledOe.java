@@ -15,7 +15,6 @@ import java.util.List;
 public class TaskScheduledOe extends SubEvent<TaskScheduledOePb> {
 
     public String taskDefName;
-    public int taskDefVersion;
     public int threadRunNumber;
     public int taskRunNumber;
     public int taskRunPosition;
@@ -37,7 +36,6 @@ public class TaskScheduledOe extends SubEvent<TaskScheduledOePb> {
         TaskScheduledOePb.Builder out = TaskScheduledOePb
             .newBuilder()
             .setTaskDefName(taskDefName)
-            .setTaskDefVersion(taskDefVersion)
             .setTaskRunNumber(taskRunNumber)
             .setTaskRunPosition(taskRunPosition)
             .setNodeName(nodeName)
@@ -55,7 +53,6 @@ public class TaskScheduledOe extends SubEvent<TaskScheduledOePb> {
     public void initFrom(Message proto) {
         TaskScheduledOePb p = (TaskScheduledOePb) proto;
         taskDefName = p.getTaskDefName();
-        taskDefVersion = p.getTaskDefVersion();
         taskRunNumber = p.getTaskRunNumber();
         taskRunPosition = p.getTaskRunPosition();
         nodeName = p.getNodeName();

@@ -5,7 +5,6 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.proto.GETableClassEnumPb;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.TaskDefIdPb;
 import io.littlehorse.jlib.common.proto.TaskDefPb;
 
@@ -13,13 +12,11 @@ import io.littlehorse.jlib.common.proto.TaskDefPb;
 public class TaskDefId extends ObjectId<TaskDefIdPb, TaskDefPb, TaskDef> {
 
     public String name;
-    public int version;
 
     public TaskDefId() {}
 
-    public TaskDefId(String name, int version) {
+    public TaskDefId(String name) {
         this.name = name;
-        this.version = version;
     }
 
     public Class<TaskDefIdPb> getProtoBaseClass() {
@@ -32,26 +29,20 @@ public class TaskDefId extends ObjectId<TaskDefIdPb, TaskDefPb, TaskDef> {
 
     public void initFrom(Message proto) {
         TaskDefIdPb p = (TaskDefIdPb) proto;
-        version = p.getVersion();
         name = p.getName();
     }
 
     public TaskDefIdPb.Builder toProto() {
-        TaskDefIdPb.Builder out = TaskDefIdPb
-            .newBuilder()
-            .setVersion(version)
-            .setName(name);
+        TaskDefIdPb.Builder out = TaskDefIdPb.newBuilder().setName(name);
         return out;
     }
 
     public String getStoreKey() {
-        return LHUtil.getCompositeId(name, LHUtil.toLHDbVersionFormat(version));
+        return name;
     }
 
     public void initFrom(String storeKey) {
-        String[] split = storeKey.split("/");
-        name = split[0];
-        version = Integer.valueOf(split[1]);
+        name = storeKey;
     }
 
     public GETableClassEnumPb getType() {

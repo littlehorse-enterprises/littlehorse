@@ -46,7 +46,7 @@ public class ExternalEventNode extends SubNode<ExternalEventNodePb> {
         // Want to be able to release new versions of ExternalEventDef's and have old
         // workflows automatically use the new version. We will enforce schema
         // compatibility rules on the EED to ensure that this isn't an issue.
-        ExternalEventDef eed = stores.getExternalEventDef(externalEventDefName, null);
+        ExternalEventDef eed = stores.getExternalEventDef(externalEventDefName);
 
         // TODO: validate the timeout
 

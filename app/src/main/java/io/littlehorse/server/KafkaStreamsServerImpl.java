@@ -61,6 +61,7 @@ import io.littlehorse.jlib.common.proto.ExternalEventDefIdPb;
 import io.littlehorse.jlib.common.proto.ExternalEventIdPb;
 import io.littlehorse.jlib.common.proto.GetExternalEventDefReplyPb;
 import io.littlehorse.jlib.common.proto.GetExternalEventReplyPb;
+import io.littlehorse.jlib.common.proto.GetLatestWfSpecPb;
 import io.littlehorse.jlib.common.proto.GetNodeRunReplyPb;
 import io.littlehorse.jlib.common.proto.GetTaskDefReplyPb;
 import io.littlehorse.jlib.common.proto.GetVariableReplyPb;
@@ -81,7 +82,6 @@ import io.littlehorse.jlib.common.proto.ListVariablesPb;
 import io.littlehorse.jlib.common.proto.ListVariablesReplyPb;
 import io.littlehorse.jlib.common.proto.ListWfMetricsPb;
 import io.littlehorse.jlib.common.proto.ListWfMetricsReplyPb;
-import io.littlehorse.jlib.common.proto.MetadataNamePb;
 import io.littlehorse.jlib.common.proto.NodeRunIdPb;
 import io.littlehorse.jlib.common.proto.PollTaskPb;
 import io.littlehorse.jlib.common.proto.PollTaskReplyPb;
@@ -312,7 +312,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void getLatestWfSpec(
-        MetadataNamePb req,
+        GetLatestWfSpecPb req,
         StreamObserver<GetWfSpecReplyPb> ctx
     ) {
         StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
@@ -340,31 +340,9 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
         internalComms.getStoreBytesAsync(
             ServerTopology.CORE_STORE,
-            StoreUtils.getFullStoreKey(
-                new TaskDefId(req.getName(), req.getVersion()),
-                TaskDef.class
-            ),
+            StoreUtils.getFullStoreKey(new TaskDefId(req.getName()), TaskDef.class),
             LHConstants.META_PARTITION_KEY,
             observer
-        );
-    }
-
-    @Override
-    public void getLatestTaskDef(
-        MetadataNamePb req,
-        StreamObserver<GetTaskDefReplyPb> ctx
-    ) {
-        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
-            ctx,
-            TaskDef.class,
-            GetTaskDefReplyPb.class,
-            config
-        );
-        internalComms.getLastFromPrefixAsync(
-            TaskDef.getFullPrefixByName(req.getName()),
-            LHConstants.META_PARTITION_KEY,
-            observer,
-            ServerTopology.CORE_STORE
         );
     }
 
@@ -383,30 +361,11 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         internalComms.getStoreBytesAsync(
             ServerTopology.CORE_STORE,
             StoreUtils.getFullStoreKey(
-                new ExternalEventDefId(req.getName(), req.getVersion()),
+                new ExternalEventDefId(req.getName()),
                 ExternalEventDef.class
             ),
             LHConstants.META_PARTITION_KEY,
             observer
-        );
-    }
-
-    @Override
-    public void getLatestExternalEventDef(
-        MetadataNamePb req,
-        StreamObserver<GetExternalEventDefReplyPb> ctx
-    ) {
-        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
-            ctx,
-            ExternalEventDef.class,
-            GetExternalEventDefReplyPb.class,
-            config
-        );
-        internalComms.getLastFromPrefixAsync(
-            ExternalEventDef.getFullPrefixByName(req.getName()),
-            LHConstants.META_PARTITION_KEY,
-            observer,
-            ServerTopology.CORE_STORE
         );
     }
 

@@ -58,7 +58,7 @@ public class PutExternalEvent extends SubCommand<PutExternalEventPb> {
     public PutExternalEventReply process(LHDAO dao, LHConfig config) {
         PutExternalEventReply out = new PutExternalEventReply();
 
-        ExternalEventDef eed = dao.getExternalEventDef(externalEventDefName, null);
+        ExternalEventDef eed = dao.getExternalEventDef(externalEventDefName);
         if (eed == null) {
             out.code = LHResponseCodePb.NOT_FOUND_ERROR;
             out.message = "No ExternalEventDef named " + externalEventDefName;

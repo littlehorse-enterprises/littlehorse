@@ -5,7 +5,6 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.proto.GETableClassEnumPb;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.ExternalEventDefIdPb;
 import io.littlehorse.jlib.common.proto.ExternalEventDefPb;
 
@@ -14,13 +13,11 @@ public class ExternalEventDefId
     extends ObjectId<ExternalEventDefIdPb, ExternalEventDefPb, ExternalEventDef> {
 
     public String name;
-    public int version;
 
     public ExternalEventDefId() {}
 
-    public ExternalEventDefId(String name, int version) {
+    public ExternalEventDefId(String name) {
         this.name = name;
-        this.version = version;
     }
 
     public Class<ExternalEventDefIdPb> getProtoBaseClass() {
@@ -33,26 +30,22 @@ public class ExternalEventDefId
 
     public void initFrom(Message proto) {
         ExternalEventDefIdPb p = (ExternalEventDefIdPb) proto;
-        version = p.getVersion();
         name = p.getName();
     }
 
     public ExternalEventDefIdPb.Builder toProto() {
         ExternalEventDefIdPb.Builder out = ExternalEventDefIdPb
             .newBuilder()
-            .setVersion(version)
             .setName(name);
         return out;
     }
 
     public String getStoreKey() {
-        return LHUtil.getCompositeId(name, LHUtil.toLHDbVersionFormat(version));
+        return name;
     }
 
     public void initFrom(String storeKey) {
-        String[] split = storeKey.split("/");
-        name = split[0];
-        version = Integer.valueOf(split[1]);
+        name = storeKey;
     }
 
     public GETableClassEnumPb getType() {

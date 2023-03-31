@@ -21,8 +21,6 @@ import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.Sear
 public class SearchExternalEventDef
     extends PublicScanRequest<SearchExternalEventDefPb, SearchExternalEventDefReplyPb, ExternalEventDefIdPb, ExternalEventDefId, SearchExternalEventDefReply> {
 
-    public String name;
-
     public Class<SearchExternalEventDefPb> getProtoBaseClass() {
         return SearchExternalEventDefPb.class;
     }
@@ -42,8 +40,6 @@ public class SearchExternalEventDef
                 exn.printStackTrace();
             }
         }
-
-        name = p.getName();
     }
 
     public SearchExternalEventDefPb.Builder toProto() {
@@ -54,7 +50,6 @@ public class SearchExternalEventDef
         if (limit != null) {
             out.setLimit(limit);
         }
-        out.setName(name);
 
         return out;
     }
@@ -73,18 +68,9 @@ public class SearchExternalEventDef
         out.storeName = ServerTopology.CORE_STORE;
         out.resultType = ScanResultTypePb.OBJECT_ID;
 
-        System.out.print(name);
-        if (name.equals("")) {
-            // that means we want to search all ExternalEventDefs
-            out.boundedObjectIdScan =
-                BoundedObjectIdScanPb.newBuilder().setStartObjectId("").build();
-        } else {
-            out.boundedObjectIdScan =
-                BoundedObjectIdScanPb
-                    .newBuilder()
-                    .setStartObjectId(name + "/")
-                    .build();
-        }
+        // Right now, the only search supported is just a scan of all object id's.
+        out.boundedObjectIdScan =
+            BoundedObjectIdScanPb.newBuilder().setStartObjectId("").build();
         return out;
     }
 }

@@ -12,7 +12,6 @@ import java.util.Date;
 public class ExternalEventDef extends GETable<ExternalEventDefPb> {
 
     public String name;
-    public int version;
     public Date createdAt;
 
     public ExternalEventDef() {}
@@ -56,15 +55,10 @@ public class ExternalEventDef extends GETable<ExternalEventDefPb> {
     }
 
     public static ExternalEventDefIdPb parseId(String fullId) {
-        String[] split = fullId.split("/");
-        return ExternalEventDefIdPb
-            .newBuilder()
-            .setName(split[0])
-            .setVersion(Integer.valueOf(split[1]))
-            .build();
+        return ExternalEventDefIdPb.newBuilder().setName(fullId).build();
     }
 
     public ExternalEventDefId getObjectId() {
-        return new ExternalEventDefId(name, version);
+        return new ExternalEventDefId(name);
     }
 }

@@ -148,7 +148,6 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
         oe.attemptNumber = attemptNumber;
         oe.nodeName = node.name;
         oe.taskDefName = taskDefName;
-        oe.taskDefVersion = -1;
         oe.taskRunPosition = nodeRun.position;
         oe.variables = inputVariables;
         oe.wfSpecName = nodeRun.threadRun.wfSpecName;

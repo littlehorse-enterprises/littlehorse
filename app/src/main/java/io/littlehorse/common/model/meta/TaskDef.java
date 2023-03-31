@@ -15,9 +15,7 @@ import java.util.List;
 public class TaskDef extends GETable<TaskDefPb> {
 
     public String name;
-    public int version;
     public Date createdAt;
-    public OutputSchema outputSchema;
     public List<VariableDef> inputVars;
 
     public TaskDef() {
@@ -34,7 +32,7 @@ public class TaskDef extends GETable<TaskDefPb> {
     }
 
     public TaskDefId getObjectId() {
-        return new TaskDefId(name, version);
+        return new TaskDefId(name);
     }
 
     public static String getFullPrefixByName(String name) {
@@ -49,12 +47,7 @@ public class TaskDef extends GETable<TaskDefPb> {
         TaskDefPb.Builder b = TaskDefPb
             .newBuilder()
             .setName(name)
-            .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
-            .setVersion(version);
-
-        if (outputSchema != null) {
-            b.setOutputSchema(outputSchema.toProto());
-        }
+            .setCreatedAt(LHUtil.fromDate(getCreatedAt()));
         for (VariableDef entry : inputVars) {
             b.addInputVars(entry.toProto());
         }
@@ -66,10 +59,6 @@ public class TaskDef extends GETable<TaskDefPb> {
         TaskDefPb proto = (TaskDefPb) p;
         name = proto.getName();
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
-        if (proto.hasOutputSchema()) {
-            outputSchema = OutputSchema.fromProto(proto.getOutputSchema());
-        }
-        version = proto.getVersion();
 
         for (VariableDefPb entry : proto.getInputVarsList()) {
             inputVars.add(VariableDef.fromProto(entry));
@@ -83,11 +72,6 @@ public class TaskDef extends GETable<TaskDefPb> {
     }
 
     public static TaskDefIdPb parseId(String fullId) {
-        String[] split = fullId.split("/");
-        return TaskDefIdPb
-            .newBuilder()
-            .setName(split[0])
-            .setVersion(Integer.valueOf(split[1]))
-            .build();
+        return TaskDefIdPb.newBuilder().setName(fullId).build();
     }
 }

@@ -11,7 +11,6 @@ import io.littlehorse.jlib.common.proto.DeleteExternalEventDefPb;
 public class DeleteExternalEventDef extends SubCommand<DeleteExternalEventDefPb> {
 
     public String name;
-    public int version;
 
     public Class<DeleteExternalEventDefPb> getProtoBaseClass() {
         return DeleteExternalEventDefPb.class;
@@ -20,15 +19,13 @@ public class DeleteExternalEventDef extends SubCommand<DeleteExternalEventDefPb>
     public DeleteExternalEventDefPb.Builder toProto() {
         DeleteExternalEventDefPb.Builder out = DeleteExternalEventDefPb
             .newBuilder()
-            .setName(name)
-            .setVersion(version);
+            .setName(name);
         return out;
     }
 
     public void initFrom(Message proto) {
         DeleteExternalEventDefPb p = (DeleteExternalEventDefPb) proto;
         name = p.getName();
-        version = p.getVersion();
     }
 
     public String getPartitionKey() {
@@ -36,7 +33,7 @@ public class DeleteExternalEventDef extends SubCommand<DeleteExternalEventDefPb>
     }
 
     public DeleteObjectReply process(LHDAO dao, LHConfig config) {
-        return dao.deleteExternalEventDef(name, version);
+        return dao.deleteExternalEventDef(name);
     }
 
     public boolean hasResponse() {

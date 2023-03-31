@@ -6,7 +6,6 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.PutTaskDefReply;
-import io.littlehorse.common.model.meta.OutputSchema;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.util.LHUtil;
@@ -19,7 +18,6 @@ import java.util.List;
 public class PutTaskDef extends SubCommand<PutTaskDefPb> {
 
     public String name;
-    public OutputSchema outputSchema;
     public List<VariableDef> inputVars;
 
     public String getPartitionKey() {
@@ -37,7 +35,6 @@ public class PutTaskDef extends SubCommand<PutTaskDefPb> {
     public PutTaskDefPb.Builder toProto() {
         PutTaskDefPb.Builder out = PutTaskDefPb.newBuilder();
         out.setName(name);
-        if (outputSchema != null) out.setOutputSchema(outputSchema.toProto());
 
         for (VariableDef entry : inputVars) {
             out.addInputVars(entry.toProto());
@@ -51,9 +48,6 @@ public class PutTaskDef extends SubCommand<PutTaskDefPb> {
         name = p.getName();
         for (VariableDefPb entry : p.getInputVarsList()) {
             inputVars.add(VariableDef.fromProto(entry));
-        }
-        if (p.hasOutputSchema()) {
-            outputSchema = OutputSchema.fromProto(p.getOutputSchema());
         }
     }
 
@@ -70,23 +64,20 @@ public class PutTaskDef extends SubCommand<PutTaskDefPb> {
             return out;
         }
 
-        TaskDef spec = new TaskDef();
-        spec.name = name;
-        spec.outputSchema = outputSchema;
-        spec.inputVars = inputVars;
-
-        TaskDef oldVersion = dao.getTaskDef(name, null);
+        TaskDef oldVersion = dao.getTaskDef(name);
         if (oldVersion != null) {
-            spec.version = oldVersion.version + 1;
+            out.code = LHResponseCodePb.ALREADY_EXISTS_ERROR;
+            out.message = "TaskDef already exists and is immutable.";
         } else {
-            spec.version = 0;
+            TaskDef spec = new TaskDef();
+            spec.name = name;
+            spec.inputVars = inputVars;
+            dao.putTaskDef(spec);
+
+            out.code = LHResponseCodePb.OK;
+            out.result = spec;
         }
 
-        // TODO: Check for schema evolution here
-        out.code = LHResponseCodePb.OK;
-        out.result = spec;
-
-        dao.putTaskDef(spec);
         return out;
     }
 

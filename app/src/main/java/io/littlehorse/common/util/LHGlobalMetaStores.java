@@ -7,7 +7,7 @@ import io.littlehorse.common.model.meta.WfSpec;
 public interface LHGlobalMetaStores {
     public WfSpec getWfSpec(String name, Integer version);
 
-    public TaskDef getTaskDef(String name, Integer version);
+    public TaskDef getTaskDef(String name);
 
-    public ExternalEventDef getExternalEventDef(String name, Integer version);
+    public ExternalEventDef getExternalEventDef(String name);
 }

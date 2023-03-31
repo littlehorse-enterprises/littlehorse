@@ -72,11 +72,11 @@ public interface LHDAO extends LHGlobalMetaStores {
 
     public void putWfSpec(WfSpec spec);
 
-    public TaskDef getTaskDef(String name, Integer version);
+    public TaskDef getTaskDef(String name);
 
     public void putTaskDef(TaskDef spec);
 
-    public ExternalEventDef getExternalEventDef(String name, Integer version);
+    public ExternalEventDef getExternalEventDef(String name);
 
     public TaskScheduleRequest markTaskAsScheduled(
         String wfRunId,
@@ -88,11 +88,11 @@ public interface LHDAO extends LHGlobalMetaStores {
 
     public DeleteObjectReply deleteWfRun(String wfRunId);
 
-    public DeleteObjectReply deleteTaskDef(String name, int version);
+    public DeleteObjectReply deleteTaskDef(String name);
 
     public DeleteObjectReply deleteWfSpec(String name, int version);
 
-    public DeleteObjectReply deleteExternalEventDef(String name, int version);
+    public DeleteObjectReply deleteExternalEventDef(String name);
 
     /*
      * Clear any dirty cache if necessary

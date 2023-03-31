@@ -48,19 +48,18 @@ public class PutExternalEventDef extends SubCommand<PutExternalEventDefPb> {
             return out;
         }
 
-        ExternalEventDef spec = new ExternalEventDef();
-        spec.name = name;
-
-        ExternalEventDef oldVersion = dao.getExternalEventDef(name, null);
+        ExternalEventDef oldVersion = dao.getExternalEventDef(name);
         if (oldVersion != null) {
-            spec.version = oldVersion.version + 1;
+            out.code = LHResponseCodePb.ALREADY_EXISTS_ERROR;
+            out.message = "ExternalEventDef already exists and is immutable.";
         } else {
-            spec.version = 0;
+            ExternalEventDef spec = new ExternalEventDef();
+            spec.name = name;
+            dao.putExternalEventDef(spec);
+
+            out.code = LHResponseCodePb.OK;
+            out.result = spec;
         }
-        // TODO: Check for schema evolution here
-        out.code = LHResponseCodePb.OK;
-        out.result = spec;
-        dao.putExternalEventDef(spec);
         return out;
     }
 

@@ -262,17 +262,14 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     }
 
     @Override
-    public TaskDef getTaskDef(String name, Integer version) {
-        String mapKey = version == null
-            ? name
-            : new TaskDefId(name, version).getStoreKey();
-        Pair<Long, TaskDef> pair = taskDefCache.get(mapKey);
+    public TaskDef getTaskDef(String name) {
+        Pair<Long, TaskDef> pair = taskDefCache.get(name);
 
         if (pair != null && isFreshEnough(pair.getKey())) {
             return pair.getValue();
         }
 
-        TaskDef spec = getTaskDefBreakCache(name, version);
+        TaskDef spec = getTaskDefBreakCache(name);
         if (spec != null) {
             taskDefCache.put(
                 spec.getStoreKey(),
@@ -281,36 +278,34 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
             Pair<Long, TaskDef> oldOne = taskDefCache.get(name);
 
-            if (oldOne == null || oldOne.getRight().version < spec.version) {
+            if (oldOne == null) {
                 taskDefCache.put(name, Pair.of(System.currentTimeMillis(), spec));
+            }
+        } else {
+            if (pair != null) {
+                log.debug(
+                    "TaskDef " +
+                    name +
+                    " was deleted by the API, now deleting from the cache as well"
+                );
+                taskDefCache.remove(name);
             }
         }
         return spec;
     }
 
-    private TaskDef getTaskDefBreakCache(String name, Integer version) {
+    private TaskDef getTaskDefBreakCache(String name) {
         LHROStoreWrapper store = isHotMetadataPartition ? localStore : globalStore;
-        if (version != null) {
-            return store.get(
-                new TaskDefId(name, version).getStoreKey(),
-                TaskDef.class
-            );
-        } else {
-            return store.getLastFromPrefix(name, TaskDef.class);
-        }
+        return store.get(new TaskDefId(name).getStoreKey(), TaskDef.class);
     }
 
     @Override
-    public ExternalEventDef getExternalEventDef(String name, Integer version) {
+    public ExternalEventDef getExternalEventDef(String name) {
         LHROStoreWrapper store = isHotMetadataPartition ? localStore : globalStore;
-        if (version != null) {
-            return store.get(
-                new ExternalEventDefId(name, version).getStoreKey(),
-                ExternalEventDef.class
-            );
-        } else {
-            return store.getLastFromPrefix(name, ExternalEventDef.class);
-        }
+        return store.get(
+            new ExternalEventDefId(name).getStoreKey(),
+            ExternalEventDef.class
+        );
     }
 
     @Override
@@ -519,8 +514,8 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     }
 
     @Override
-    public DeleteObjectReply deleteTaskDef(String name, int version) {
-        TaskDef toDelete = getTaskDef(name, version);
+    public DeleteObjectReply deleteTaskDef(String name) {
+        TaskDef toDelete = getTaskDef(name);
         DeleteObjectReply out = new DeleteObjectReply();
         if (toDelete == null) {
             out.code = LHResponseCodePb.NOT_FOUND_ERROR;
@@ -528,6 +523,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         } else {
             taskDefPuts.put(toDelete.getStoreKey(), null);
             out.code = LHResponseCodePb.OK;
+            taskDefCache.remove(name);
         }
         return out;
     }
@@ -547,8 +543,8 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     }
 
     @Override
-    public DeleteObjectReply deleteExternalEventDef(String name, int version) {
-        ExternalEventDef toDelete = getExternalEventDef(name, version);
+    public DeleteObjectReply deleteExternalEventDef(String name) {
+        ExternalEventDef toDelete = getExternalEventDef(name);
         DeleteObjectReply out = new DeleteObjectReply();
         if (toDelete == null) {
             out.code = LHResponseCodePb.NOT_FOUND_ERROR;
@@ -556,6 +552,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         } else {
             extEvtDefPuts.put(toDelete.getStoreKey(), null);
             out.code = LHResponseCodePb.OK;
+            taskDefCache.remove(name);
         }
         return out;
     }

@@ -45,7 +45,7 @@ public class InterruptDef extends LHSerializable<InterruptDefPb> {
 
     public void validate(LHGlobalMetaStores client, LHConfig config)
         throws LHValidationError {
-        eed = client.getExternalEventDef(externalEventDefName, null);
+        eed = client.getExternalEventDef(externalEventDefName);
 
         if (eed == null) {
             throw new LHValidationError(

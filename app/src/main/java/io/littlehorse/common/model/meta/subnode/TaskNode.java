@@ -30,7 +30,7 @@ public class TaskNode extends SubNode<TaskNodePb> {
 
     public TaskDef getTaskDef(LHDAO dao) {
         if (taskDef == null) {
-            taskDef = dao.getTaskDef(taskDefName, null);
+            taskDef = dao.getTaskDef(taskDefName);
         }
         return taskDef;
     }
@@ -84,7 +84,7 @@ public class TaskNode extends SubNode<TaskNodePb> {
         // Want to be able to release new versions of taskdef's and have old
         // workflows automatically use the new version. We will enforce schema
         // compatibility rules on the taskdef to ensure that this isn't an issue.
-        TaskDef taskDef = stores.getTaskDef(taskDefName, null);
+        TaskDef taskDef = stores.getTaskDef(taskDefName);
         if (taskDef == null) {
             throw new LHValidationError(
                 null,

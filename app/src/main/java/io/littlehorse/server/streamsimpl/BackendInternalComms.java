@@ -1111,22 +1111,14 @@ class GlobalMetaStoresServerImpl implements LHGlobalMetaStores {
         }
     }
 
-    public TaskDef getTaskDef(String name, Integer version) {
-        if (version != null) {
-            return store.get(new TaskDefId(name, version).toString(), TaskDef.class);
-        } else {
-            return store.getLastFromPrefix(name, TaskDef.class);
-        }
+    public TaskDef getTaskDef(String name) {
+        return store.get(new TaskDefId(name).toString(), TaskDef.class);
     }
 
-    public ExternalEventDef getExternalEventDef(String name, Integer version) {
-        if (version != null) {
-            return store.get(
-                new ExternalEventDefId(name, version).toString(),
-                ExternalEventDef.class
-            );
-        } else {
-            return store.getLastFromPrefix(name, ExternalEventDef.class);
-        }
+    public ExternalEventDef getExternalEventDef(String name) {
+        return store.get(
+            new ExternalEventDefId(name).toString(),
+            ExternalEventDef.class
+        );
     }
 }

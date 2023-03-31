@@ -18,17 +18,13 @@ public class DeleteTaskDef extends SubCommand<DeleteTaskDefPb> {
     }
 
     public DeleteTaskDefPb.Builder toProto() {
-        DeleteTaskDefPb.Builder out = DeleteTaskDefPb
-            .newBuilder()
-            .setName(name)
-            .setVersion(version);
+        DeleteTaskDefPb.Builder out = DeleteTaskDefPb.newBuilder().setName(name);
         return out;
     }
 
     public void initFrom(Message proto) {
         DeleteTaskDefPb p = (DeleteTaskDefPb) proto;
         name = p.getName();
-        version = p.getVersion();
     }
 
     public String getPartitionKey() {
@@ -36,7 +32,7 @@ public class DeleteTaskDef extends SubCommand<DeleteTaskDefPb> {
     }
 
     public DeleteObjectReply process(LHDAO dao, LHConfig config) {
-        return dao.deleteTaskDef(name, version);
+        return dao.deleteTaskDef(name);
     }
 
     public boolean hasResponse() {
