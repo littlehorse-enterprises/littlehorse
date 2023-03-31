@@ -9,6 +9,7 @@ import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.TagStorageTypePb;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.NodeRunPb.NodeTypeCase;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -82,6 +83,10 @@ public class TagUtils {
                 thing,
                 TagStorageTypePb.LOCAL_UNCOUNTED,
                 Pair.of("wfSpecName", thing.wfSpecName),
+                Pair.of(
+                    "wfSpecVersion",
+                    LHUtil.toLHDbVersionFormat(thing.wfSpecVersion)
+                ),
                 Pair.of("status", thing.status.toString())
             )
         );

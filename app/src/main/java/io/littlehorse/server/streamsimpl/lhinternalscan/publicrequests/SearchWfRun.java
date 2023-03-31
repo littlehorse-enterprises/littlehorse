@@ -96,6 +96,15 @@ public class SearchWfRun
                             .toProto()
                     )
                     .addAttributes(
+                        new Attribute(
+                            "wfSpecVersion",
+                            LHUtil.toLHDbVersionFormat(
+                                statusAndSpec.getWfSpecVersion()
+                            )
+                        )
+                            .toProto()
+                    )
+                    .addAttributes(
                         new Attribute("status", statusAndSpec.getStatus().toString())
                             .toProto()
                     )
