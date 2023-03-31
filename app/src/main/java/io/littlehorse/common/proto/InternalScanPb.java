@@ -160,58 +160,76 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <pre>
-     * TODO: Add time-based filters here.
-     * Note that each Tag has a timestamp at the end of it--that's what
-     * we will utilize.
-     * </pre>
-     *
      * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
      */
     java.util.List<io.littlehorse.common.proto.AttributePb> 
         getAttributesList();
     /**
-     * <pre>
-     * TODO: Add time-based filters here.
-     * Note that each Tag has a timestamp at the end of it--that's what
-     * we will utilize.
-     * </pre>
-     *
      * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
      */
     io.littlehorse.common.proto.AttributePb getAttributes(int index);
     /**
-     * <pre>
-     * TODO: Add time-based filters here.
-     * Note that each Tag has a timestamp at the end of it--that's what
-     * we will utilize.
-     * </pre>
-     *
      * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
      */
     int getAttributesCount();
     /**
-     * <pre>
-     * TODO: Add time-based filters here.
-     * Note that each Tag has a timestamp at the end of it--that's what
-     * we will utilize.
-     * </pre>
-     *
      * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
      */
     java.util.List<? extends io.littlehorse.common.proto.AttributePbOrBuilder> 
         getAttributesOrBuilderList();
     /**
+     * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
+     */
+    io.littlehorse.common.proto.AttributePbOrBuilder getAttributesOrBuilder(
+        int index);
+
+    /**
      * <pre>
      * TODO: Add time-based filters here.
      * Note that each Tag has a timestamp at the end of it--that's what
      * we will utilize.
      * </pre>
      *
-     * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
+     * <code>.google.protobuf.Timestamp earliest_create_time = 2;</code>
+     * @return Whether the earliestCreateTime field is set.
      */
-    io.littlehorse.common.proto.AttributePbOrBuilder getAttributesOrBuilder(
-        int index);
+    boolean hasEarliestCreateTime();
+    /**
+     * <pre>
+     * TODO: Add time-based filters here.
+     * Note that each Tag has a timestamp at the end of it--that's what
+     * we will utilize.
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp earliest_create_time = 2;</code>
+     * @return The earliestCreateTime.
+     */
+    com.google.protobuf.Timestamp getEarliestCreateTime();
+    /**
+     * <pre>
+     * TODO: Add time-based filters here.
+     * Note that each Tag has a timestamp at the end of it--that's what
+     * we will utilize.
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp earliest_create_time = 2;</code>
+     */
+    com.google.protobuf.TimestampOrBuilder getEarliestCreateTimeOrBuilder();
+
+    /**
+     * <code>.google.protobuf.Timestamp latest_create_time = 3;</code>
+     * @return Whether the latestCreateTime field is set.
+     */
+    boolean hasLatestCreateTime();
+    /**
+     * <code>.google.protobuf.Timestamp latest_create_time = 3;</code>
+     * @return The latestCreateTime.
+     */
+    com.google.protobuf.Timestamp getLatestCreateTime();
+    /**
+     * <code>.google.protobuf.Timestamp latest_create_time = 3;</code>
+     */
+    com.google.protobuf.TimestampOrBuilder getLatestCreateTimeOrBuilder();
   }
   /**
    * Protobuf type {@code littlehorse.InternalScanPb.TagPrefixScanPb}
@@ -269,6 +287,32 @@ private static final long serialVersionUID = 0L;
                   input.readMessage(io.littlehorse.common.proto.AttributePb.parser(), extensionRegistry));
               break;
             }
+            case 18: {
+              com.google.protobuf.Timestamp.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000001) != 0)) {
+                subBuilder = earliestCreateTime_.toBuilder();
+              }
+              earliestCreateTime_ = input.readMessage(com.google.protobuf.Timestamp.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(earliestCreateTime_);
+                earliestCreateTime_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000001;
+              break;
+            }
+            case 26: {
+              com.google.protobuf.Timestamp.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000002) != 0)) {
+                subBuilder = latestCreateTime_.toBuilder();
+              }
+              latestCreateTime_ = input.readMessage(com.google.protobuf.Timestamp.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(latestCreateTime_);
+                latestCreateTime_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000002;
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -304,15 +348,10 @@ private static final long serialVersionUID = 0L;
               io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb.class, io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb.Builder.class);
     }
 
+    private int bitField0_;
     public static final int ATTRIBUTES_FIELD_NUMBER = 1;
     private java.util.List<io.littlehorse.common.proto.AttributePb> attributes_;
     /**
-     * <pre>
-     * TODO: Add time-based filters here.
-     * Note that each Tag has a timestamp at the end of it--that's what
-     * we will utilize.
-     * </pre>
-     *
      * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
      */
     @java.lang.Override
@@ -320,12 +359,6 @@ private static final long serialVersionUID = 0L;
       return attributes_;
     }
     /**
-     * <pre>
-     * TODO: Add time-based filters here.
-     * Note that each Tag has a timestamp at the end of it--that's what
-     * we will utilize.
-     * </pre>
-     *
      * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
      */
     @java.lang.Override
@@ -334,12 +367,6 @@ private static final long serialVersionUID = 0L;
       return attributes_;
     }
     /**
-     * <pre>
-     * TODO: Add time-based filters here.
-     * Note that each Tag has a timestamp at the end of it--that's what
-     * we will utilize.
-     * </pre>
-     *
      * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
      */
     @java.lang.Override
@@ -347,17 +374,36 @@ private static final long serialVersionUID = 0L;
       return attributes_.size();
     }
     /**
+     * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.AttributePb getAttributes(int index) {
+      return attributes_.get(index);
+    }
+    /**
+     * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.AttributePbOrBuilder getAttributesOrBuilder(
+        int index) {
+      return attributes_.get(index);
+    }
+
+    public static final int EARLIEST_CREATE_TIME_FIELD_NUMBER = 2;
+    private com.google.protobuf.Timestamp earliestCreateTime_;
+    /**
      * <pre>
      * TODO: Add time-based filters here.
      * Note that each Tag has a timestamp at the end of it--that's what
      * we will utilize.
      * </pre>
      *
-     * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
+     * <code>.google.protobuf.Timestamp earliest_create_time = 2;</code>
+     * @return Whether the earliestCreateTime field is set.
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.AttributePb getAttributes(int index) {
-      return attributes_.get(index);
+    public boolean hasEarliestCreateTime() {
+      return ((bitField0_ & 0x00000001) != 0);
     }
     /**
      * <pre>
@@ -366,12 +412,51 @@ private static final long serialVersionUID = 0L;
      * we will utilize.
      * </pre>
      *
-     * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
+     * <code>.google.protobuf.Timestamp earliest_create_time = 2;</code>
+     * @return The earliestCreateTime.
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.AttributePbOrBuilder getAttributesOrBuilder(
-        int index) {
-      return attributes_.get(index);
+    public com.google.protobuf.Timestamp getEarliestCreateTime() {
+      return earliestCreateTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : earliestCreateTime_;
+    }
+    /**
+     * <pre>
+     * TODO: Add time-based filters here.
+     * Note that each Tag has a timestamp at the end of it--that's what
+     * we will utilize.
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp earliest_create_time = 2;</code>
+     */
+    @java.lang.Override
+    public com.google.protobuf.TimestampOrBuilder getEarliestCreateTimeOrBuilder() {
+      return earliestCreateTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : earliestCreateTime_;
+    }
+
+    public static final int LATEST_CREATE_TIME_FIELD_NUMBER = 3;
+    private com.google.protobuf.Timestamp latestCreateTime_;
+    /**
+     * <code>.google.protobuf.Timestamp latest_create_time = 3;</code>
+     * @return Whether the latestCreateTime field is set.
+     */
+    @java.lang.Override
+    public boolean hasLatestCreateTime() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>.google.protobuf.Timestamp latest_create_time = 3;</code>
+     * @return The latestCreateTime.
+     */
+    @java.lang.Override
+    public com.google.protobuf.Timestamp getLatestCreateTime() {
+      return latestCreateTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestCreateTime_;
+    }
+    /**
+     * <code>.google.protobuf.Timestamp latest_create_time = 3;</code>
+     */
+    @java.lang.Override
+    public com.google.protobuf.TimestampOrBuilder getLatestCreateTimeOrBuilder() {
+      return latestCreateTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestCreateTime_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -391,6 +476,12 @@ private static final long serialVersionUID = 0L;
       for (int i = 0; i < attributes_.size(); i++) {
         output.writeMessage(1, attributes_.get(i));
       }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeMessage(2, getEarliestCreateTime());
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        output.writeMessage(3, getLatestCreateTime());
+      }
       unknownFields.writeTo(output);
     }
 
@@ -403,6 +494,14 @@ private static final long serialVersionUID = 0L;
       for (int i = 0; i < attributes_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, attributes_.get(i));
+      }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, getEarliestCreateTime());
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, getLatestCreateTime());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -421,6 +520,16 @@ private static final long serialVersionUID = 0L;
 
       if (!getAttributesList()
           .equals(other.getAttributesList())) return false;
+      if (hasEarliestCreateTime() != other.hasEarliestCreateTime()) return false;
+      if (hasEarliestCreateTime()) {
+        if (!getEarliestCreateTime()
+            .equals(other.getEarliestCreateTime())) return false;
+      }
+      if (hasLatestCreateTime() != other.hasLatestCreateTime()) return false;
+      if (hasLatestCreateTime()) {
+        if (!getLatestCreateTime()
+            .equals(other.getLatestCreateTime())) return false;
+      }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -435,6 +544,14 @@ private static final long serialVersionUID = 0L;
       if (getAttributesCount() > 0) {
         hash = (37 * hash) + ATTRIBUTES_FIELD_NUMBER;
         hash = (53 * hash) + getAttributesList().hashCode();
+      }
+      if (hasEarliestCreateTime()) {
+        hash = (37 * hash) + EARLIEST_CREATE_TIME_FIELD_NUMBER;
+        hash = (53 * hash) + getEarliestCreateTime().hashCode();
+      }
+      if (hasLatestCreateTime()) {
+        hash = (37 * hash) + LATEST_CREATE_TIME_FIELD_NUMBER;
+        hash = (53 * hash) + getLatestCreateTime().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -565,6 +682,8 @@ private static final long serialVersionUID = 0L;
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
           getAttributesFieldBuilder();
+          getEarliestCreateTimeFieldBuilder();
+          getLatestCreateTimeFieldBuilder();
         }
       }
       @java.lang.Override
@@ -576,6 +695,18 @@ private static final long serialVersionUID = 0L;
         } else {
           attributesBuilder_.clear();
         }
+        if (earliestCreateTimeBuilder_ == null) {
+          earliestCreateTime_ = null;
+        } else {
+          earliestCreateTimeBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
+        if (latestCreateTimeBuilder_ == null) {
+          latestCreateTime_ = null;
+        } else {
+          latestCreateTimeBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -603,6 +734,7 @@ private static final long serialVersionUID = 0L;
       public io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb buildPartial() {
         io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb result = new io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb(this);
         int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
         if (attributesBuilder_ == null) {
           if (((bitField0_ & 0x00000001) != 0)) {
             attributes_ = java.util.Collections.unmodifiableList(attributes_);
@@ -612,6 +744,23 @@ private static final long serialVersionUID = 0L;
         } else {
           result.attributes_ = attributesBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          if (earliestCreateTimeBuilder_ == null) {
+            result.earliestCreateTime_ = earliestCreateTime_;
+          } else {
+            result.earliestCreateTime_ = earliestCreateTimeBuilder_.build();
+          }
+          to_bitField0_ |= 0x00000001;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          if (latestCreateTimeBuilder_ == null) {
+            result.latestCreateTime_ = latestCreateTime_;
+          } else {
+            result.latestCreateTime_ = latestCreateTimeBuilder_.build();
+          }
+          to_bitField0_ |= 0x00000002;
+        }
+        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
@@ -686,6 +835,12 @@ private static final long serialVersionUID = 0L;
             }
           }
         }
+        if (other.hasEarliestCreateTime()) {
+          mergeEarliestCreateTime(other.getEarliestCreateTime());
+        }
+        if (other.hasLatestCreateTime()) {
+          mergeLatestCreateTime(other.getLatestCreateTime());
+        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -729,12 +884,6 @@ private static final long serialVersionUID = 0L;
           io.littlehorse.common.proto.AttributePb, io.littlehorse.common.proto.AttributePb.Builder, io.littlehorse.common.proto.AttributePbOrBuilder> attributesBuilder_;
 
       /**
-       * <pre>
-       * TODO: Add time-based filters here.
-       * Note that each Tag has a timestamp at the end of it--that's what
-       * we will utilize.
-       * </pre>
-       *
        * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
        */
       public java.util.List<io.littlehorse.common.proto.AttributePb> getAttributesList() {
@@ -745,12 +894,6 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <pre>
-       * TODO: Add time-based filters here.
-       * Note that each Tag has a timestamp at the end of it--that's what
-       * we will utilize.
-       * </pre>
-       *
        * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
        */
       public int getAttributesCount() {
@@ -761,12 +904,6 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <pre>
-       * TODO: Add time-based filters here.
-       * Note that each Tag has a timestamp at the end of it--that's what
-       * we will utilize.
-       * </pre>
-       *
        * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
        */
       public io.littlehorse.common.proto.AttributePb getAttributes(int index) {
@@ -777,12 +914,6 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <pre>
-       * TODO: Add time-based filters here.
-       * Note that each Tag has a timestamp at the end of it--that's what
-       * we will utilize.
-       * </pre>
-       *
        * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
        */
       public Builder setAttributes(
@@ -800,12 +931,6 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <pre>
-       * TODO: Add time-based filters here.
-       * Note that each Tag has a timestamp at the end of it--that's what
-       * we will utilize.
-       * </pre>
-       *
        * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
        */
       public Builder setAttributes(
@@ -820,12 +945,6 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <pre>
-       * TODO: Add time-based filters here.
-       * Note that each Tag has a timestamp at the end of it--that's what
-       * we will utilize.
-       * </pre>
-       *
        * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
        */
       public Builder addAttributes(io.littlehorse.common.proto.AttributePb value) {
@@ -842,12 +961,6 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <pre>
-       * TODO: Add time-based filters here.
-       * Note that each Tag has a timestamp at the end of it--that's what
-       * we will utilize.
-       * </pre>
-       *
        * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
        */
       public Builder addAttributes(
@@ -865,12 +978,6 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <pre>
-       * TODO: Add time-based filters here.
-       * Note that each Tag has a timestamp at the end of it--that's what
-       * we will utilize.
-       * </pre>
-       *
        * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
        */
       public Builder addAttributes(
@@ -885,12 +992,6 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <pre>
-       * TODO: Add time-based filters here.
-       * Note that each Tag has a timestamp at the end of it--that's what
-       * we will utilize.
-       * </pre>
-       *
        * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
        */
       public Builder addAttributes(
@@ -905,12 +1006,6 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <pre>
-       * TODO: Add time-based filters here.
-       * Note that each Tag has a timestamp at the end of it--that's what
-       * we will utilize.
-       * </pre>
-       *
        * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
        */
       public Builder addAllAttributes(
@@ -926,12 +1021,6 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <pre>
-       * TODO: Add time-based filters here.
-       * Note that each Tag has a timestamp at the end of it--that's what
-       * we will utilize.
-       * </pre>
-       *
        * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
        */
       public Builder clearAttributes() {
@@ -945,12 +1034,6 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <pre>
-       * TODO: Add time-based filters here.
-       * Note that each Tag has a timestamp at the end of it--that's what
-       * we will utilize.
-       * </pre>
-       *
        * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
        */
       public Builder removeAttributes(int index) {
@@ -964,12 +1047,6 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <pre>
-       * TODO: Add time-based filters here.
-       * Note that each Tag has a timestamp at the end of it--that's what
-       * we will utilize.
-       * </pre>
-       *
        * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
        */
       public io.littlehorse.common.proto.AttributePb.Builder getAttributesBuilder(
@@ -977,12 +1054,6 @@ private static final long serialVersionUID = 0L;
         return getAttributesFieldBuilder().getBuilder(index);
       }
       /**
-       * <pre>
-       * TODO: Add time-based filters here.
-       * Note that each Tag has a timestamp at the end of it--that's what
-       * we will utilize.
-       * </pre>
-       *
        * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
        */
       public io.littlehorse.common.proto.AttributePbOrBuilder getAttributesOrBuilder(
@@ -993,12 +1064,6 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <pre>
-       * TODO: Add time-based filters here.
-       * Note that each Tag has a timestamp at the end of it--that's what
-       * we will utilize.
-       * </pre>
-       *
        * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
        */
       public java.util.List<? extends io.littlehorse.common.proto.AttributePbOrBuilder> 
@@ -1010,12 +1075,6 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <pre>
-       * TODO: Add time-based filters here.
-       * Note that each Tag has a timestamp at the end of it--that's what
-       * we will utilize.
-       * </pre>
-       *
        * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
        */
       public io.littlehorse.common.proto.AttributePb.Builder addAttributesBuilder() {
@@ -1023,12 +1082,6 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.common.proto.AttributePb.getDefaultInstance());
       }
       /**
-       * <pre>
-       * TODO: Add time-based filters here.
-       * Note that each Tag has a timestamp at the end of it--that's what
-       * we will utilize.
-       * </pre>
-       *
        * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
        */
       public io.littlehorse.common.proto.AttributePb.Builder addAttributesBuilder(
@@ -1037,12 +1090,6 @@ private static final long serialVersionUID = 0L;
             index, io.littlehorse.common.proto.AttributePb.getDefaultInstance());
       }
       /**
-       * <pre>
-       * TODO: Add time-based filters here.
-       * Note that each Tag has a timestamp at the end of it--that's what
-       * we will utilize.
-       * </pre>
-       *
        * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
        */
       public java.util.List<io.littlehorse.common.proto.AttributePb.Builder> 
@@ -1062,6 +1109,300 @@ private static final long serialVersionUID = 0L;
           attributes_ = null;
         }
         return attributesBuilder_;
+      }
+
+      private com.google.protobuf.Timestamp earliestCreateTime_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> earliestCreateTimeBuilder_;
+      /**
+       * <pre>
+       * TODO: Add time-based filters here.
+       * Note that each Tag has a timestamp at the end of it--that's what
+       * we will utilize.
+       * </pre>
+       *
+       * <code>.google.protobuf.Timestamp earliest_create_time = 2;</code>
+       * @return Whether the earliestCreateTime field is set.
+       */
+      public boolean hasEarliestCreateTime() {
+        return ((bitField0_ & 0x00000002) != 0);
+      }
+      /**
+       * <pre>
+       * TODO: Add time-based filters here.
+       * Note that each Tag has a timestamp at the end of it--that's what
+       * we will utilize.
+       * </pre>
+       *
+       * <code>.google.protobuf.Timestamp earliest_create_time = 2;</code>
+       * @return The earliestCreateTime.
+       */
+      public com.google.protobuf.Timestamp getEarliestCreateTime() {
+        if (earliestCreateTimeBuilder_ == null) {
+          return earliestCreateTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : earliestCreateTime_;
+        } else {
+          return earliestCreateTimeBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       * TODO: Add time-based filters here.
+       * Note that each Tag has a timestamp at the end of it--that's what
+       * we will utilize.
+       * </pre>
+       *
+       * <code>.google.protobuf.Timestamp earliest_create_time = 2;</code>
+       */
+      public Builder setEarliestCreateTime(com.google.protobuf.Timestamp value) {
+        if (earliestCreateTimeBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          earliestCreateTime_ = value;
+          onChanged();
+        } else {
+          earliestCreateTimeBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <pre>
+       * TODO: Add time-based filters here.
+       * Note that each Tag has a timestamp at the end of it--that's what
+       * we will utilize.
+       * </pre>
+       *
+       * <code>.google.protobuf.Timestamp earliest_create_time = 2;</code>
+       */
+      public Builder setEarliestCreateTime(
+          com.google.protobuf.Timestamp.Builder builderForValue) {
+        if (earliestCreateTimeBuilder_ == null) {
+          earliestCreateTime_ = builderForValue.build();
+          onChanged();
+        } else {
+          earliestCreateTimeBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <pre>
+       * TODO: Add time-based filters here.
+       * Note that each Tag has a timestamp at the end of it--that's what
+       * we will utilize.
+       * </pre>
+       *
+       * <code>.google.protobuf.Timestamp earliest_create_time = 2;</code>
+       */
+      public Builder mergeEarliestCreateTime(com.google.protobuf.Timestamp value) {
+        if (earliestCreateTimeBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) != 0) &&
+              earliestCreateTime_ != null &&
+              earliestCreateTime_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
+            earliestCreateTime_ =
+              com.google.protobuf.Timestamp.newBuilder(earliestCreateTime_).mergeFrom(value).buildPartial();
+          } else {
+            earliestCreateTime_ = value;
+          }
+          onChanged();
+        } else {
+          earliestCreateTimeBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <pre>
+       * TODO: Add time-based filters here.
+       * Note that each Tag has a timestamp at the end of it--that's what
+       * we will utilize.
+       * </pre>
+       *
+       * <code>.google.protobuf.Timestamp earliest_create_time = 2;</code>
+       */
+      public Builder clearEarliestCreateTime() {
+        if (earliestCreateTimeBuilder_ == null) {
+          earliestCreateTime_ = null;
+          onChanged();
+        } else {
+          earliestCreateTimeBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+      /**
+       * <pre>
+       * TODO: Add time-based filters here.
+       * Note that each Tag has a timestamp at the end of it--that's what
+       * we will utilize.
+       * </pre>
+       *
+       * <code>.google.protobuf.Timestamp earliest_create_time = 2;</code>
+       */
+      public com.google.protobuf.Timestamp.Builder getEarliestCreateTimeBuilder() {
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return getEarliestCreateTimeFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       * TODO: Add time-based filters here.
+       * Note that each Tag has a timestamp at the end of it--that's what
+       * we will utilize.
+       * </pre>
+       *
+       * <code>.google.protobuf.Timestamp earliest_create_time = 2;</code>
+       */
+      public com.google.protobuf.TimestampOrBuilder getEarliestCreateTimeOrBuilder() {
+        if (earliestCreateTimeBuilder_ != null) {
+          return earliestCreateTimeBuilder_.getMessageOrBuilder();
+        } else {
+          return earliestCreateTime_ == null ?
+              com.google.protobuf.Timestamp.getDefaultInstance() : earliestCreateTime_;
+        }
+      }
+      /**
+       * <pre>
+       * TODO: Add time-based filters here.
+       * Note that each Tag has a timestamp at the end of it--that's what
+       * we will utilize.
+       * </pre>
+       *
+       * <code>.google.protobuf.Timestamp earliest_create_time = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
+          getEarliestCreateTimeFieldBuilder() {
+        if (earliestCreateTimeBuilder_ == null) {
+          earliestCreateTimeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
+                  getEarliestCreateTime(),
+                  getParentForChildren(),
+                  isClean());
+          earliestCreateTime_ = null;
+        }
+        return earliestCreateTimeBuilder_;
+      }
+
+      private com.google.protobuf.Timestamp latestCreateTime_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> latestCreateTimeBuilder_;
+      /**
+       * <code>.google.protobuf.Timestamp latest_create_time = 3;</code>
+       * @return Whether the latestCreateTime field is set.
+       */
+      public boolean hasLatestCreateTime() {
+        return ((bitField0_ & 0x00000004) != 0);
+      }
+      /**
+       * <code>.google.protobuf.Timestamp latest_create_time = 3;</code>
+       * @return The latestCreateTime.
+       */
+      public com.google.protobuf.Timestamp getLatestCreateTime() {
+        if (latestCreateTimeBuilder_ == null) {
+          return latestCreateTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestCreateTime_;
+        } else {
+          return latestCreateTimeBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.google.protobuf.Timestamp latest_create_time = 3;</code>
+       */
+      public Builder setLatestCreateTime(com.google.protobuf.Timestamp value) {
+        if (latestCreateTimeBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          latestCreateTime_ = value;
+          onChanged();
+        } else {
+          latestCreateTimeBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      /**
+       * <code>.google.protobuf.Timestamp latest_create_time = 3;</code>
+       */
+      public Builder setLatestCreateTime(
+          com.google.protobuf.Timestamp.Builder builderForValue) {
+        if (latestCreateTimeBuilder_ == null) {
+          latestCreateTime_ = builderForValue.build();
+          onChanged();
+        } else {
+          latestCreateTimeBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      /**
+       * <code>.google.protobuf.Timestamp latest_create_time = 3;</code>
+       */
+      public Builder mergeLatestCreateTime(com.google.protobuf.Timestamp value) {
+        if (latestCreateTimeBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) != 0) &&
+              latestCreateTime_ != null &&
+              latestCreateTime_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
+            latestCreateTime_ =
+              com.google.protobuf.Timestamp.newBuilder(latestCreateTime_).mergeFrom(value).buildPartial();
+          } else {
+            latestCreateTime_ = value;
+          }
+          onChanged();
+        } else {
+          latestCreateTimeBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      /**
+       * <code>.google.protobuf.Timestamp latest_create_time = 3;</code>
+       */
+      public Builder clearLatestCreateTime() {
+        if (latestCreateTimeBuilder_ == null) {
+          latestCreateTime_ = null;
+          onChanged();
+        } else {
+          latestCreateTimeBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000004);
+        return this;
+      }
+      /**
+       * <code>.google.protobuf.Timestamp latest_create_time = 3;</code>
+       */
+      public com.google.protobuf.Timestamp.Builder getLatestCreateTimeBuilder() {
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return getLatestCreateTimeFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.google.protobuf.Timestamp latest_create_time = 3;</code>
+       */
+      public com.google.protobuf.TimestampOrBuilder getLatestCreateTimeOrBuilder() {
+        if (latestCreateTimeBuilder_ != null) {
+          return latestCreateTimeBuilder_.getMessageOrBuilder();
+        } else {
+          return latestCreateTime_ == null ?
+              com.google.protobuf.Timestamp.getDefaultInstance() : latestCreateTime_;
+        }
+      }
+      /**
+       * <code>.google.protobuf.Timestamp latest_create_time = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
+          getLatestCreateTimeFieldBuilder() {
+        if (latestCreateTimeBuilder_ == null) {
+          latestCreateTimeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
+                  getLatestCreateTime(),
+                  getParentForChildren(),
+                  isClean());
+          latestCreateTime_ = null;
+        }
+        return latestCreateTimeBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(

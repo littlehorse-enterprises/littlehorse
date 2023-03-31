@@ -88,27 +88,33 @@ public class SearchWfRun
 
         if (type == WfrunCriteriaCase.STATUS_AND_SPEC) {
             out.type = ScanBoundaryCase.LOCAL_TAG_PREFIX_SCAN;
-            out.localTagPrefixScan =
-                TagPrefixScanPb
-                    .newBuilder()
-                    .addAttributes(
-                        new Attribute("wfSpecName", statusAndSpec.getWfSpecName())
-                            .toProto()
+            TagPrefixScanPb.Builder prefixScanBuilder = TagPrefixScanPb
+                .newBuilder()
+                .addAttributes(
+                    new Attribute("wfSpecName", statusAndSpec.getWfSpecName())
+                        .toProto()
+                )
+                .addAttributes(
+                    new Attribute(
+                        "wfSpecVersion",
+                        LHUtil.toLHDbVersionFormat(statusAndSpec.getWfSpecVersion())
                     )
-                    .addAttributes(
-                        new Attribute(
-                            "wfSpecVersion",
-                            LHUtil.toLHDbVersionFormat(
-                                statusAndSpec.getWfSpecVersion()
-                            )
-                        )
-                            .toProto()
-                    )
-                    .addAttributes(
-                        new Attribute("status", statusAndSpec.getStatus().toString())
-                            .toProto()
-                    )
-                    .build();
+                        .toProto()
+                )
+                .addAttributes(
+                    new Attribute("status", statusAndSpec.getStatus().toString())
+                        .toProto()
+                );
+
+            if (statusAndSpec.hasEarliestStart()) {
+                prefixScanBuilder.setEarliestCreateTime(
+                    statusAndSpec.getEarliestStart()
+                );
+            }
+            if (statusAndSpec.hasLatestStart()) {
+                prefixScanBuilder.setLatestCreateTime(statusAndSpec.getLatestStart());
+            }
+            out.localTagPrefixScan = prefixScanBuilder.build();
         } else {
             throw new RuntimeException("Not possible or unimplemented");
         }

@@ -89,6 +89,8 @@ message InternalScanPb {
         // TODO: Add time-based filters here.
         // Note that each Tag has a timestamp at the end of it--that's what
         // we will utilize.
+        optional google.protobuf.Timestamp earliest_create_time = 2;
+        optional google.protobuf.Timestamp latest_create_time = 3;
     }
 
     message BoundedObjectIdScanPb {

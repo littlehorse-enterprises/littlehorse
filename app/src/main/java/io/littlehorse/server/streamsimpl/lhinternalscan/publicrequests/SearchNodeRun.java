@@ -96,24 +96,28 @@ public class SearchNodeRun
 
         if (type == NoderunCriteriaCase.STATUS_AND_TASKDEF) {
             out.type = ScanBoundaryCase.LOCAL_TAG_PREFIX_SCAN;
-            out.localTagPrefixScan =
-                TagPrefixScanPb
-                    .newBuilder()
-                    .addAttributes(
-                        new Attribute(
-                            "taskDefName",
-                            statusAndTaskDef.getTaskDefName()
-                        )
-                            .toProto()
-                    )
-                    .addAttributes(
-                        new Attribute(
-                            "status",
-                            statusAndTaskDef.getStatus().toString()
-                        )
-                            .toProto()
-                    )
-                    .build();
+            TagPrefixScanPb.Builder prefixScanBuilder = TagPrefixScanPb
+                .newBuilder()
+                .addAttributes(
+                    new Attribute("taskDefName", statusAndTaskDef.getTaskDefName())
+                        .toProto()
+                )
+                .addAttributes(
+                    new Attribute("status", statusAndTaskDef.getStatus().toString())
+                        .toProto()
+                );
+
+            if (statusAndTaskDef.hasEarliestStart()) {
+                prefixScanBuilder.setEarliestCreateTime(
+                    statusAndTaskDef.getEarliestStart()
+                );
+            }
+            if (statusAndTaskDef.hasLatestStart()) {
+                prefixScanBuilder.setLatestCreateTime(
+                    statusAndTaskDef.getLatestStart()
+                );
+            }
+            out.localTagPrefixScan = prefixScanBuilder.build();
         } else if (type == NoderunCriteriaCase.WF_RUN_ID) {
             out.type = ScanBoundaryCase.BOUNDED_OBJECT_ID_SCAN;
             out.partitionKey = wfRunId;

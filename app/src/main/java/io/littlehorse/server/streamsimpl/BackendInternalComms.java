@@ -1012,14 +1012,31 @@ public class BackendInternalComms implements Closeable {
         PartitionBookmarkPb bookmarkOut = null;
         List<ByteString> idsOut = new ArrayList<>();
 
-        String endKey =
-            Tag.getAttributeString(objectType, attributes) + "~~~~~~~~~~~";
         String startKey;
+        String endKey;
+
         if (bookmark == null) {
             startKey = Tag.getAttributeString(objectType, attributes) + "/";
+            if (tagPrefixScan.hasEarliestCreateTime()) {
+                startKey +=
+                    LHUtil.toLhDbFormat(
+                        LHUtil.fromProtoTs(tagPrefixScan.getEarliestCreateTime())
+                    ) +
+                    "/";
+            }
         } else {
             startKey = bookmark.getLastKey();
         }
+
+        endKey = Tag.getAttributeString(objectType, attributes) + "/";
+        if (tagPrefixScan.hasLatestCreateTime()) {
+            endKey +=
+                LHUtil.toLhDbFormat(
+                    LHUtil.fromProtoTs(tagPrefixScan.getLatestCreateTime())
+                ) +
+                "/";
+        }
+        endKey += "~";
 
         try (
             LHKeyValueIterator<Tag> iter = store.range(startKey, endKey, Tag.class)

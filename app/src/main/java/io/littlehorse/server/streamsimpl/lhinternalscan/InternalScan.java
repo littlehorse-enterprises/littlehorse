@@ -1,7 +1,6 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GETableClassEnumPb;
@@ -10,8 +9,6 @@ import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb;
 import io.littlehorse.common.proto.ScanResultTypePb;
-import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
-import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 
 public class InternalScan extends LHSerializable<InternalScanPb> {
 
@@ -76,49 +73,6 @@ public class InternalScan extends LHSerializable<InternalScanPb> {
                 break;
             case SCANBOUNDARY_NOT_SET:
                 throw new RuntimeException("Not possible");
-        }
-    }
-
-    public String getStartPrefix() {
-        switch (type) {
-            case BOUNDED_OBJECT_ID_SCAN:
-                return (
-                    StoreUtils.getFullStoreKey(
-                        boundedObjectIdScan.getStartObjectId(),
-                        GETable.getCls(objectType)
-                    ) +
-                    "/"
-                );
-            case LOCAL_TAG_PREFIX_SCAN:
-                return (
-                    StoreUtils.getFullStoreKey(
-                        Tag.getAttributeString(objectType, localTagPrefixScan),
-                        Tag.class
-                    ) +
-                    "/"
-                );
-            case SCANBOUNDARY_NOT_SET:
-            default:
-                throw new RuntimeException("not possible");
-        }
-    }
-
-    public String getEndPrefix() {
-        switch (type) {
-            case BOUNDED_OBJECT_ID_SCAN:
-                if (boundedObjectIdScan.hasEndObjectId()) {
-                    return StoreUtils.getFullStoreKey(
-                        boundedObjectIdScan.getEndObjectId(),
-                        GETable.getCls(objectType)
-                    );
-                } else {
-                    return getStartPrefix() + "~";
-                }
-            case LOCAL_TAG_PREFIX_SCAN:
-                return getStartPrefix() + "~";
-            case SCANBOUNDARY_NOT_SET:
-            default:
-                throw new RuntimeException("not possible");
         }
     }
 }
