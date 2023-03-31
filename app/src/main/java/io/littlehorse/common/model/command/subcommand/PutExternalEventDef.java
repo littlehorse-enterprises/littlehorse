@@ -52,6 +52,7 @@ public class PutExternalEventDef extends SubCommand<PutExternalEventDefPb> {
         if (oldVersion != null) {
             out.code = LHResponseCodePb.ALREADY_EXISTS_ERROR;
             out.message = "ExternalEventDef already exists and is immutable.";
+            out.result = oldVersion;
         } else {
             ExternalEventDef spec = new ExternalEventDef();
             spec.name = name;

@@ -68,6 +68,7 @@ public class PutTaskDef extends SubCommand<PutTaskDefPb> {
         if (oldVersion != null) {
             out.code = LHResponseCodePb.ALREADY_EXISTS_ERROR;
             out.message = "TaskDef already exists and is immutable.";
+            out.result = oldVersion;
         } else {
             TaskDef spec = new TaskDef();
             spec.name = name;
