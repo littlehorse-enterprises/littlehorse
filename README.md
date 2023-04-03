@@ -24,7 +24,7 @@ The LittleHorse project currently has multiple repositories, described below:
     * Code for a K8s Init Container that sets up the LittleHorse config file based on the `topology.kubernetes.io/zone` and pod name.
     * Scripts to deploy LittleHorse on KIND or EKS.
     * (FUTURE) code for a LittleHorse Controller/Operator.
-* ['io-littlehorse-proto'](https://bitbucket.org/littlehorse-core/io-littlehorse-proto/src/master)
+* [`io-littlehorse-proto`](https://bitbucket.org/littlehorse-core/io-littlehorse-proto/src/master)
     * The LittleHorse Protocol Buffer Specification.
     * It is mounted as a `git submodule` in this repo, and a few others.
 
@@ -34,20 +34,29 @@ This section describes how to run the LittleHorse server in a development enviro
 
 ## Prerequisities
 
-Your system needs the following:
+This repository requires the following system dependencies:
+
 * `openjdk`, preferably version 17 or later.
-
 * `gradle`, preferably version 7.4 or later.
-
 * `docker` and `docker-compose-plugin`
-
-* `helm` v3
-
-* *OPTIONAL:* the linters require `npm`.
+* `npm` (this is a dev dependency)
 
 Once you've set up your system, you *also* need to publish the `io-littlehorse-jlib` library to your local Maven repository. See the `README` on that repo for instructions.
 
 Additionally, you'll eventually want to install `lhctl` as per the `io-littlehorse-golib` repository.
+
+### Setting Up the Linters
+
+We have decided to use the [Prettier for Java](https://github.com/jhipster/prettier-java) linter. It is the same linter used by most Javascript projects but adapted for Java. Therefore, it requires Node.js as a prerequisite to run.
+
+To install the formatter, all you need to do is first install Node.js as per the website, and then run:
+
+```
+npm install  # This uses the package.json
+npm run format  # This runs the linters
+```
+
+This repository (and all other LittleHorse Java repo's) have the `.vscode` folder checked into source control. The `settings.json` file is configured properly to enable formatting on save, but you first need to install the `Prettier - Code formatter` extension by `esbenp` on VSCode.
 
 ### Git Submodule (For Protocol Bufers)
 
