@@ -8,43 +8,24 @@ For a description of the architecture, see the [architecture docs](docs/ARCH.md)
 The LittleHorse project currently has multiple repositories, described below:
 
 * [`io-littlehorse`](https://bitbucket.org/littlehorse-core/io-littlehorse)
-
     *  Code for the LittleHorse Server.
-
 * [`io-littlehorse-jlib`](https://bitbucket.org/littlehorse-core/io-littlehorse-jlib)
-
     * Protocol Buffer definitions used by clients and the `io-littlehorse` repo.
-
     * Library for creating `WfSpec`'s in Java.
-
     * Library for executing `TaskRun`'s in Java.
-
     * Shared constants, including configuration constants used by the LH Server.
-
 * [`io-littlehorse-golib`](https://bitbucket.org/littlehorse-core/io-littlehorse-golib)
-
     * The `lhctl` command line interface.
-
     * Library for creating `WfSpec`'s in GoLang (under development).
-
     * Library for executing `TaskRun`'s in GoLang (under development).
-
 * [`io-littlehorse-jtests`](https://bitbucket.org/littlehorse-core/io-littlehorse-jtests)
-
     * A series of system integration tests used to verify the cohesive behavior of the LH Server, Java Workflow SDK, and Java Task Library together.
-
 * [`io-littlehorse-operator`](https://bitbucket.org/littlehorse-core/io-littlehorse-operator)
-
     * Code for a K8s Init Container that sets up the LittleHorse config file based on the `topology.kubernetes.io/zone` and pod name.
-
     * Scripts to deploy LittleHorse on KIND or EKS.
-
     * (FUTURE) code for a LittleHorse Controller/Operator.
-
 * ['io-littlehorse-proto'](https://bitbucket.org/littlehorse-core/io-littlehorse-proto/src/master)
-
     * The LittleHorse Protocol Buffer Specification.
-
     * It is mounted as a `git submodule` in this repo, and a few others.
 
 # Development
