@@ -931,7 +931,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         StreamObserver<V> responseObserver,
         Class<T> subCmdCls,
         Class<V> responseCls,
-        boolean shouldComplete
+        boolean shouldComplete // TODO: Document this
     ) {
         T subCmd = LHSerializable.fromProto(request, subCmdCls);
         Command command = new Command(subCmd);

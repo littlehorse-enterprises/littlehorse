@@ -927,7 +927,6 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     private void saveAndIndexFlush(GETable<?> thing) {
         localStore.put(thing);
 
-        // See `proto/tags.proto` for a detailed description of how tags work.
         TagsCache oldEntriesObj = localStore.getTagsCache(thing);
 
         List<String> oldTagIds =

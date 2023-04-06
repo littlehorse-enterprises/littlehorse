@@ -269,9 +269,6 @@ public class BackendInternalComms implements Closeable {
             command.getPartitionKey(),
             Serdes.String().serializer()
         );
-        if (command.commandId == null) {
-            command.commandId = LHUtil.generateGuid();
-        }
 
         /*
          * As a prerequisite to this method being called, the command has already
