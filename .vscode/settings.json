@@ -15,5 +15,15 @@
         "editor.formatOnSave": false
     },
     "editor.formatOnSave": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "java.test.defaultConfig": "reflection-alowed",
+    "java.test.config": {
+        "name": "reflection-alowed",
+        "vmArgs": [
+            "--add-opens",
+            "java.base/java.lang=ALL-UNNAMED",
+            "--add-opens",
+            "java.base/java.util=ALL-UNNAMED"
+        ]
+    }
 }

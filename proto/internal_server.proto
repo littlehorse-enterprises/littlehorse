@@ -232,7 +232,7 @@ message TagPb {
     repeated AttributePb attributes = 2;
     string described_object_id = 3;
     google.protobuf.Timestamp created = 4;
-    
+
     // The following is not stored in the key.
     TagStorageTypePb tag_type = 5;
 
@@ -329,6 +329,7 @@ message TaskClaimEventPb {
     int32 task_run_number = 3;
     int32 task_run_position = 4;
     google.protobuf.Timestamp time = 5;
+    optional string task_worker_version = 6;
 }
 
 message ExternalEventNodeTimeoutPb {

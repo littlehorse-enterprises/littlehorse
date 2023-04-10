@@ -35,81 +35,6 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
-  private BookmarkPb(
-      com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    this();
-    if (extensionRegistry == null) {
-      throw new java.lang.NullPointerException();
-    }
-    int mutable_bitField0_ = 0;
-    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-        com.google.protobuf.UnknownFieldSet.newBuilder();
-    try {
-      boolean done = false;
-      while (!done) {
-        int tag = input.readTag();
-        switch (tag) {
-          case 0:
-            done = true;
-            break;
-          case 10: {
-            if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-              inProgressPartitions_ = com.google.protobuf.MapField.newMapField(
-                  InProgressPartitionsDefaultEntryHolder.defaultEntry);
-              mutable_bitField0_ |= 0x00000001;
-            }
-            com.google.protobuf.MapEntry<java.lang.Integer, io.littlehorse.common.proto.PartitionBookmarkPb>
-            inProgressPartitions__ = input.readMessage(
-                InProgressPartitionsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
-            inProgressPartitions_.getMutableMap().put(
-                inProgressPartitions__.getKey(), inProgressPartitions__.getValue());
-            break;
-          }
-          case 16: {
-            if (!((mutable_bitField0_ & 0x00000002) != 0)) {
-              completedPartitions_ = newIntList();
-              mutable_bitField0_ |= 0x00000002;
-            }
-            completedPartitions_.addInt(input.readInt32());
-            break;
-          }
-          case 18: {
-            int length = input.readRawVarint32();
-            int limit = input.pushLimit(length);
-            if (!((mutable_bitField0_ & 0x00000002) != 0) && input.getBytesUntilLimit() > 0) {
-              completedPartitions_ = newIntList();
-              mutable_bitField0_ |= 0x00000002;
-            }
-            while (input.getBytesUntilLimit() > 0) {
-              completedPartitions_.addInt(input.readInt32());
-            }
-            input.popLimit(limit);
-            break;
-          }
-          default: {
-            if (!parseUnknownField(
-                input, unknownFields, extensionRegistry, tag)) {
-              done = true;
-            }
-            break;
-          }
-        }
-      }
-    } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
-    } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e).setUnfinishedMessage(this);
-    } finally {
-      if (((mutable_bitField0_ & 0x00000002) != 0)) {
-        completedPartitions_.makeImmutable(); // C
-      }
-      this.unknownFields = unknownFields.build();
-      makeExtensionsImmutable();
-    }
-  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_BookmarkPb_descriptor;
@@ -147,6 +72,7 @@ private static final long serialVersionUID = 0L;
                 com.google.protobuf.WireFormat.FieldType.MESSAGE,
                 io.littlehorse.common.proto.PartitionBookmarkPb.getDefaultInstance());
   }
+  @SuppressWarnings("serial")
   private com.google.protobuf.MapField<
       java.lang.Integer, io.littlehorse.common.proto.PartitionBookmarkPb> inProgressPartitions_;
   private com.google.protobuf.MapField<java.lang.Integer, io.littlehorse.common.proto.PartitionBookmarkPb>
@@ -157,14 +83,12 @@ private static final long serialVersionUID = 0L;
     }
     return inProgressPartitions_;
   }
-
   public int getInProgressPartitionsCount() {
     return internalGetInProgressPartitions().getMap().size();
   }
   /**
    * <code>map&lt;int32, .littlehorse.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
    */
-
   @java.lang.Override
   public boolean containsInProgressPartitions(
       int key) {
@@ -183,7 +107,6 @@ private static final long serialVersionUID = 0L;
    * <code>map&lt;int32, .littlehorse.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
    */
   @java.lang.Override
-
   public java.util.Map<java.lang.Integer, io.littlehorse.common.proto.PartitionBookmarkPb> getInProgressPartitionsMap() {
     return internalGetInProgressPartitions().getMap();
   }
@@ -191,10 +114,11 @@ private static final long serialVersionUID = 0L;
    * <code>map&lt;int32, .littlehorse.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
    */
   @java.lang.Override
-
-  public io.littlehorse.common.proto.PartitionBookmarkPb getInProgressPartitionsOrDefault(
+  public /* nullable */
+io.littlehorse.common.proto.PartitionBookmarkPb getInProgressPartitionsOrDefault(
       int key,
-      io.littlehorse.common.proto.PartitionBookmarkPb defaultValue) {
+      /* nullable */
+io.littlehorse.common.proto.PartitionBookmarkPb defaultValue) {
     
     java.util.Map<java.lang.Integer, io.littlehorse.common.proto.PartitionBookmarkPb> map =
         internalGetInProgressPartitions().getMap();
@@ -204,7 +128,6 @@ private static final long serialVersionUID = 0L;
    * <code>map&lt;int32, .littlehorse.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
    */
   @java.lang.Override
-
   public io.littlehorse.common.proto.PartitionBookmarkPb getInProgressPartitionsOrThrow(
       int key) {
     
@@ -217,6 +140,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int COMPLETED_PARTITIONS_FIELD_NUMBER = 2;
+  @SuppressWarnings("serial")
   private com.google.protobuf.Internal.IntList completedPartitions_;
   /**
    * <code>repeated int32 completed_partitions = 2;</code>
@@ -272,7 +196,7 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < completedPartitions_.size(); i++) {
       output.writeInt32NoTag(completedPartitions_.getInt(i));
     }
-    unknownFields.writeTo(output);
+    getUnknownFields().writeTo(output);
   }
 
   @java.lang.Override
@@ -305,7 +229,7 @@ private static final long serialVersionUID = 0L;
       }
       completedPartitionsMemoizedSerializedSize = dataSize;
     }
-    size += unknownFields.getSerializedSize();
+    size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
   }
@@ -324,7 +248,7 @@ private static final long serialVersionUID = 0L;
         other.internalGetInProgressPartitions())) return false;
     if (!getCompletedPartitionsList()
         .equals(other.getCompletedPartitionsList())) return false;
-    if (!unknownFields.equals(other.unknownFields)) return false;
+    if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
 
@@ -343,7 +267,7 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + COMPLETED_PARTITIONS_FIELD_NUMBER;
       hash = (53 * hash) + getCompletedPartitionsList().hashCode();
     }
-    hash = (29 * hash) + unknownFields.hashCode();
+    hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
   }
@@ -486,25 +410,20 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.common.proto.BookmarkPb.newBuilder()
     private Builder() {
-      maybeForceBuilderInitialization();
+
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-      maybeForceBuilderInitialization();
-    }
-    private void maybeForceBuilderInitialization() {
-      if (com.google.protobuf.GeneratedMessageV3
-              .alwaysUseFieldBuilders) {
-      }
+
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
+      bitField0_ = 0;
       internalGetMutableInProgressPartitions().clear();
       completedPartitions_ = emptyIntList();
-      bitField0_ = (bitField0_ & ~0x00000002);
       return this;
     }
 
@@ -531,16 +450,26 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.common.proto.BookmarkPb buildPartial() {
       io.littlehorse.common.proto.BookmarkPb result = new io.littlehorse.common.proto.BookmarkPb(this);
-      int from_bitField0_ = bitField0_;
-      result.inProgressPartitions_ = internalGetInProgressPartitions();
-      result.inProgressPartitions_.makeImmutable();
+      buildPartialRepeatedFields(result);
+      if (bitField0_ != 0) { buildPartial0(result); }
+      onBuilt();
+      return result;
+    }
+
+    private void buildPartialRepeatedFields(io.littlehorse.common.proto.BookmarkPb result) {
       if (((bitField0_ & 0x00000002) != 0)) {
         completedPartitions_.makeImmutable();
         bitField0_ = (bitField0_ & ~0x00000002);
       }
       result.completedPartitions_ = completedPartitions_;
-      onBuilt();
-      return result;
+    }
+
+    private void buildPartial0(io.littlehorse.common.proto.BookmarkPb result) {
+      int from_bitField0_ = bitField0_;
+      if (((from_bitField0_ & 0x00000001) != 0)) {
+        result.inProgressPartitions_ = internalGetInProgressPartitions();
+        result.inProgressPartitions_.makeImmutable();
+      }
     }
 
     @java.lang.Override
@@ -589,6 +518,7 @@ private static final long serialVersionUID = 0L;
       if (other == io.littlehorse.common.proto.BookmarkPb.getDefaultInstance()) return this;
       internalGetMutableInProgressPartitions().mergeFrom(
           other.internalGetInProgressPartitions());
+      bitField0_ |= 0x00000001;
       if (!other.completedPartitions_.isEmpty()) {
         if (completedPartitions_.isEmpty()) {
           completedPartitions_ = other.completedPartitions_;
@@ -599,7 +529,7 @@ private static final long serialVersionUID = 0L;
         }
         onChanged();
       }
-      this.mergeUnknownFields(other.unknownFields);
+      this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
     }
@@ -614,17 +544,55 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      io.littlehorse.common.proto.BookmarkPb parsedMessage = null;
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
       try {
-        parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              com.google.protobuf.MapEntry<java.lang.Integer, io.littlehorse.common.proto.PartitionBookmarkPb>
+              inProgressPartitions__ = input.readMessage(
+                  InProgressPartitionsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              internalGetMutableInProgressPartitions().getMutableMap().put(
+                  inProgressPartitions__.getKey(), inProgressPartitions__.getValue());
+              bitField0_ |= 0x00000001;
+              break;
+            } // case 10
+            case 16: {
+              int v = input.readInt32();
+              ensureCompletedPartitionsIsMutable();
+              completedPartitions_.addInt(v);
+              break;
+            } // case 16
+            case 18: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              ensureCompletedPartitionsIsMutable();
+              while (input.getBytesUntilLimit() > 0) {
+                completedPartitions_.addInt(input.readInt32());
+              }
+              input.popLimit(limit);
+              break;
+            } // case 18
+            default: {
+              if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                done = true; // was an endgroup tag
+              }
+              break;
+            } // default:
+          } // switch (tag)
+        } // while (!done)
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (io.littlehorse.common.proto.BookmarkPb) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
-        if (parsedMessage != null) {
-          mergeFrom(parsedMessage);
-        }
-      }
+        onChanged();
+      } // finally
       return this;
     }
     private int bitField0_;
@@ -632,7 +600,7 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.MapField<
         java.lang.Integer, io.littlehorse.common.proto.PartitionBookmarkPb> inProgressPartitions_;
     private com.google.protobuf.MapField<java.lang.Integer, io.littlehorse.common.proto.PartitionBookmarkPb>
-    internalGetInProgressPartitions() {
+        internalGetInProgressPartitions() {
       if (inProgressPartitions_ == null) {
         return com.google.protobuf.MapField.emptyMapField(
             InProgressPartitionsDefaultEntryHolder.defaultEntry);
@@ -640,8 +608,7 @@ private static final long serialVersionUID = 0L;
       return inProgressPartitions_;
     }
     private com.google.protobuf.MapField<java.lang.Integer, io.littlehorse.common.proto.PartitionBookmarkPb>
-    internalGetMutableInProgressPartitions() {
-      onChanged();;
+        internalGetMutableInProgressPartitions() {
       if (inProgressPartitions_ == null) {
         inProgressPartitions_ = com.google.protobuf.MapField.newMapField(
             InProgressPartitionsDefaultEntryHolder.defaultEntry);
@@ -649,16 +616,16 @@ private static final long serialVersionUID = 0L;
       if (!inProgressPartitions_.isMutable()) {
         inProgressPartitions_ = inProgressPartitions_.copy();
       }
+      bitField0_ |= 0x00000001;
+      onChanged();
       return inProgressPartitions_;
     }
-
     public int getInProgressPartitionsCount() {
       return internalGetInProgressPartitions().getMap().size();
     }
     /**
      * <code>map&lt;int32, .littlehorse.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
      */
-
     @java.lang.Override
     public boolean containsInProgressPartitions(
         int key) {
@@ -677,7 +644,6 @@ private static final long serialVersionUID = 0L;
      * <code>map&lt;int32, .littlehorse.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
      */
     @java.lang.Override
-
     public java.util.Map<java.lang.Integer, io.littlehorse.common.proto.PartitionBookmarkPb> getInProgressPartitionsMap() {
       return internalGetInProgressPartitions().getMap();
     }
@@ -685,10 +651,11 @@ private static final long serialVersionUID = 0L;
      * <code>map&lt;int32, .littlehorse.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
      */
     @java.lang.Override
-
-    public io.littlehorse.common.proto.PartitionBookmarkPb getInProgressPartitionsOrDefault(
+    public /* nullable */
+io.littlehorse.common.proto.PartitionBookmarkPb getInProgressPartitionsOrDefault(
         int key,
-        io.littlehorse.common.proto.PartitionBookmarkPb defaultValue) {
+        /* nullable */
+io.littlehorse.common.proto.PartitionBookmarkPb defaultValue) {
       
       java.util.Map<java.lang.Integer, io.littlehorse.common.proto.PartitionBookmarkPb> map =
           internalGetInProgressPartitions().getMap();
@@ -698,7 +665,6 @@ private static final long serialVersionUID = 0L;
      * <code>map&lt;int32, .littlehorse.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
      */
     @java.lang.Override
-
     public io.littlehorse.common.proto.PartitionBookmarkPb getInProgressPartitionsOrThrow(
         int key) {
       
@@ -709,8 +675,8 @@ private static final long serialVersionUID = 0L;
       }
       return map.get(key);
     }
-
     public Builder clearInProgressPartitions() {
+      bitField0_ = (bitField0_ & ~0x00000001);
       internalGetMutableInProgressPartitions().getMutableMap()
           .clear();
       return this;
@@ -718,7 +684,6 @@ private static final long serialVersionUID = 0L;
     /**
      * <code>map&lt;int32, .littlehorse.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
      */
-
     public Builder removeInProgressPartitions(
         int key) {
       
@@ -731,7 +696,8 @@ private static final long serialVersionUID = 0L;
      */
     @java.lang.Deprecated
     public java.util.Map<java.lang.Integer, io.littlehorse.common.proto.PartitionBookmarkPb>
-    getMutableInProgressPartitions() {
+        getMutableInProgressPartitions() {
+      bitField0_ |= 0x00000001;
       return internalGetMutableInProgressPartitions().getMutableMap();
     }
     /**
@@ -741,19 +707,20 @@ private static final long serialVersionUID = 0L;
         int key,
         io.littlehorse.common.proto.PartitionBookmarkPb value) {
       
-      if (value == null) { throw new java.lang.NullPointerException(); }
+      if (value == null) { throw new NullPointerException("map value"); }
       internalGetMutableInProgressPartitions().getMutableMap()
           .put(key, value);
+      bitField0_ |= 0x00000001;
       return this;
     }
     /**
      * <code>map&lt;int32, .littlehorse.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
      */
-
     public Builder putAllInProgressPartitions(
         java.util.Map<java.lang.Integer, io.littlehorse.common.proto.PartitionBookmarkPb> values) {
       internalGetMutableInProgressPartitions().getMutableMap()
           .putAll(values);
+      bitField0_ |= 0x00000001;
       return this;
     }
 
@@ -762,7 +729,7 @@ private static final long serialVersionUID = 0L;
       if (!((bitField0_ & 0x00000002) != 0)) {
         completedPartitions_ = mutableCopy(completedPartitions_);
         bitField0_ |= 0x00000002;
-       }
+      }
     }
     /**
      * <code>repeated int32 completed_partitions = 2;</code>
@@ -796,6 +763,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setCompletedPartitions(
         int index, int value) {
+      
       ensureCompletedPartitionsIsMutable();
       completedPartitions_.setInt(index, value);
       onChanged();
@@ -807,6 +775,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder addCompletedPartitions(int value) {
+      
       ensureCompletedPartitionsIsMutable();
       completedPartitions_.addInt(value);
       onChanged();
@@ -868,7 +837,18 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new BookmarkPb(input, extensionRegistry);
+      Builder builder = newBuilder();
+      try {
+        builder.mergeFrom(input, extensionRegistry);
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(builder.buildPartial());
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(e)
+            .setUnfinishedMessage(builder.buildPartial());
+      }
+      return builder.buildPartial();
     }
   };
 

@@ -78,17 +78,17 @@ public interface InternalScanReplyPbOrBuilder extends
   io.littlehorse.common.proto.BookmarkPbOrBuilder getUpdatedBookmarkOrBuilder();
 
   /**
-   * <code>string message = 4;</code>
+   * <code>optional string message = 4;</code>
    * @return Whether the message field is set.
    */
   boolean hasMessage();
   /**
-   * <code>string message = 4;</code>
+   * <code>optional string message = 4;</code>
    * @return The message.
    */
   java.lang.String getMessage();
   /**
-   * <code>string message = 4;</code>
+   * <code>optional string message = 4;</code>
    * @return The bytes for message.
    */
   com.google.protobuf.ByteString

@@ -25,7 +25,11 @@ repositories {
 
 dependencies {
     // Use JUnit Jupiter for testing.
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
+    testImplementation 'org.assertj:assertj-core:3.24.2'
+    testImplementation 'org.junit-pioneer:junit-pioneer:2.0.0'
+    testImplementation 'org.mockito:mockito-core:5.2.0'
+    testImplementation 'com.github.javafaker:javafaker:1.0.2'
 
     // I think this was added by gradle init. No touchy touchy.
     implementation 'com.google.guava:guava:30.1.1-jre'
@@ -61,4 +65,13 @@ application {
 
 shadowJar {
   mergeServiceFiles()
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        exceptionFormat = 'full'
+    }
+    jvmArgs = ['--add-opens', 'java.base/java.lang=ALL-UNNAMED', '--add-opens', 'java.base/java.util=ALL-UNNAMED']
 }

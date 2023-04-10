@@ -34,7 +34,7 @@ public class App {
 
         topics.add(
             new NewTopic(
-                config.getObervabilityEventTopicName(),
+                config.getObservabilityEventTopicName(),
                 config.getClusterPartitions(),
                 config.getReplicationFactor()
             )

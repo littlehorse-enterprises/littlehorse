@@ -841,6 +841,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         claimEvent.threadRunNumber = tsr.threadRunNumber;
         claimEvent.taskRunPosition = tsr.taskRunPosition;
         claimEvent.taskRunNumber = tsr.taskRunNumber;
+        claimEvent.taskWorkerVersion = client.getTaskWorkerVersion();
         claimEvent.time = new Date();
 
         Command taskClaimCommand = new Command();

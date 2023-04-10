@@ -1,7 +1,10 @@
 {
-  "recommendations": [
-	"redhat.vscode-xml",
-	"esbenp.prettier-vscode", // the classic prettier extension
-	"shengchen.vscode-checkstyle",
-  ]
+    "recommendations": [
+        "esbenp.prettier-vscode",
+        "vscjava.vscode-java-pack",
+        "zxh404.vscode-proto3",
+        "streetsidesoftware.code-spell-checker",
+        "alefragnani.bookmarks",
+        "coenraads.bracket-pair-colorizer-2"
+    ]
 }

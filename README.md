@@ -5,43 +5,44 @@ This repository contains the code for the core LittleHorse Server. It has a depe
 For a description of the architecture, see the [architecture docs](docs/ARCH.md).
 
 ## LH Repository Inventory
+
 The LittleHorse project currently has multiple repositories, described below:
 
-* [`io-littlehorse`](https://bitbucket.org/littlehorse-core/io-littlehorse)
-    *  Code for the LittleHorse Server.
-* [`io-littlehorse-jlib`](https://bitbucket.org/littlehorse-core/io-littlehorse-jlib)
-    * Protocol Buffer definitions used by clients and the `io-littlehorse` repo.
-    * Library for creating `WfSpec`'s in Java.
-    * Library for executing `TaskRun`'s in Java.
-    * Shared constants, including configuration constants used by the LH Server.
-* [`io-littlehorse-golib`](https://bitbucket.org/littlehorse-core/io-littlehorse-golib)
-    * The `lhctl` command line interface.
-    * Library for creating `WfSpec`'s in GoLang (under development).
-    * Library for executing `TaskRun`'s in GoLang (under development).
-* [`io-littlehorse-jtests`](https://bitbucket.org/littlehorse-core/io-littlehorse-jtests)
-    * A series of system integration tests used to verify the cohesive behavior of the LH Server, Java Workflow SDK, and Java Task Library together.
-* [`io-littlehorse-operator`](https://bitbucket.org/littlehorse-core/io-littlehorse-operator)
-    * Code for a K8s Init Container that sets up the LittleHorse config file based on the `topology.kubernetes.io/zone` and pod name.
-    * Scripts to deploy LittleHorse on KIND or EKS.
-    * (FUTURE) code for a LittleHorse Controller/Operator.
-* [`io-littlehorse-proto`](https://bitbucket.org/littlehorse-core/io-littlehorse-proto/src/master)
-    * The LittleHorse Protocol Buffer Specification.
-    * It is mounted as a `git submodule` in this repo, and a few others.
+-   [`io-littlehorse`](https://bitbucket.org/littlehorse-core/io-littlehorse)
+    -   Code for the LittleHorse Server.
+-   [`io-littlehorse-jlib`](https://bitbucket.org/littlehorse-core/io-littlehorse-jlib)
+    -   Protocol Buffer definitions used by clients and the `io-littlehorse` repo.
+    -   Library for creating `WfSpec`'s in Java.
+    -   Library for executing `TaskRun`'s in Java.
+    -   Shared constants, including configuration constants used by the LH Server.
+-   [`io-littlehorse-golib`](https://bitbucket.org/littlehorse-core/io-littlehorse-golib)
+    -   The `lhctl` command line interface.
+    -   Library for creating `WfSpec`'s in GoLang (under development).
+    -   Library for executing `TaskRun`'s in GoLang (under development).
+-   [`io-littlehorse-jtests`](https://bitbucket.org/littlehorse-core/io-littlehorse-jtests)
+    -   A series of system integration tests used to verify the cohesive behavior of the LH Server, Java Workflow SDK, and Java Task Library together.
+-   [`io-littlehorse-operator`](https://bitbucket.org/littlehorse-core/io-littlehorse-operator)
+    -   Code for a K8s Init Container that sets up the LittleHorse config file based on the `topology.kubernetes.io/zone` and pod name.
+    -   Scripts to deploy LittleHorse on KIND or EKS.
+    -   (FUTURE) code for a LittleHorse Controller/Operator.
+-   [`io-littlehorse-proto`](https://bitbucket.org/littlehorse-core/io-littlehorse-proto/src/master)
+    -   The LittleHorse Protocol Buffer Specification.
+    -   It is mounted as a `git submodule` in this repo, and a few others.
 
 # Development
 
 This section describes how to run the LittleHorse server in a development environment.
 
-## Prerequisities
+## Prerequisites
 
 This repository requires the following system dependencies:
 
-* `openjdk`, preferably version 17 or later.
-* `gradle`, preferably version 7.4 or later.
-* `docker` and `docker-compose-plugin`
-* `npm` (this is a dev dependency)
+-   `openjdk`, preferably version 17 or later.
+-   `gradle`, preferably version 7.4 or later.
+-   `docker` and `docker-compose-plugin`
+-   `npm` (this is a dev dependency)
 
-Once you've set up your system, you *also* need to publish the `io-littlehorse-jlib` library to your local Maven repository. See the `README` on that repo for instructions.
+Once you've set up your system, you _also_ need to publish the `io-littlehorse-jlib` library to your local Maven repository. See the `README` on that repo for instructions.
 
 Additionally, you'll eventually want to install `lhctl` as per the `io-littlehorse-golib` repository.
 
@@ -58,7 +59,13 @@ npm run format  # This runs the linters
 
 This repository (and all other LittleHorse Java repo's) have the `.vscode` folder checked into source control. The `settings.json` file is configured properly to enable formatting on save, but you first need to install the `Prettier - Code formatter` extension by `esbenp` on VSCode.
 
-### Git Submodule (For Protocol Bufers)
+Install all the extensions:
+
+```bash
+jq ".recommendations[]" .vscode/extensions.json | xargs -L1 codium --install-extension
+```
+
+### Git Submodule (For Protocol Buffers)
 
 As mentioned before, there is a Git Submodule for the `io-littlehorse-proto` repo. The reason why we include that submodule in this repo is slightly complex--recall that the `io-littlehorse-jlib` repository contains compiled Java code for all of the protobuf in `io-littlehorse-proto`. What gives?
 
@@ -68,12 +75,14 @@ In order to compile the protocol buffers after making a change to `io-littlehors
 
 ```
 git submodule init
+git submodule update
 cd proto/io-littlehorse-proto
 git checkout master && git pull
 cd ../..
 ```
 
 Then, you can make changes to `io-littlehorse-proto/internal_server.proto`, and compile those as follows:
+
 ```
 ./compile_proto.sh
 ```
@@ -85,6 +94,12 @@ cd proto/io-littlehorse-proto
 git fetch && git checkout foo && git pull
 cd ../..
 ./compile_proto.sh
+```
+
+## Setup Pre-commit
+
+```bash
+pre-commit install
 ```
 
 ## Running LH
@@ -120,6 +135,7 @@ Also note that mTLS will NOT be enabled; therefore, you should not have any clie
 At this point, you're ready to consult the `README` in the `io-littlehorse-jlib` repository for a tutorial on how to run your first workflow.
 
 ## Building the Image
+
 The LittleHorse docker image (for now) requires the `lhctl` command line client, which is used for Kubernetes Health Checks. (That's a longer story).
 
 Before you can build the image, you should compile the `lhctl` binary in the `io-littlehorse-golib` repository, and then `cp $(which lhctl) ./build/`.
@@ -129,9 +145,11 @@ Now you can build the `littlehorse` docker image by running:
 ```
 ./build/build.sh
 ```
+
 This step is needed to develop on KIND.
 
 ## Advanced
+
 This section covers more advanced topics that you'll need to know when modifying the actual LH Server code.
 
 ### Running Multiple LH Servers
@@ -160,14 +178,17 @@ To "reset" the LittleHorse cluster, you need to delete the data in Kafka and als
 3. Start the LH Servers again.
 
 ### Linting
+
 Due to the horrendous Java ecosystem of linters, we are actually using Prettier from the JavaScript community. There is a [Prettier Java Plugin](https://github.com/jhipster/prettier-java) which adapts Prettier to the Java environment.
 
 Install the linters via:
+
 ```
 npm install
 ```
 
 Run the linters via:
+
 ```
 npm run format
 ```

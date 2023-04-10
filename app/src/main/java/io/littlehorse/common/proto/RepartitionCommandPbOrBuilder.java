@@ -23,17 +23,17 @@ public interface RepartitionCommandPbOrBuilder extends
   com.google.protobuf.TimestampOrBuilder getTimeOrBuilder();
 
   /**
-   * <code>string command_id = 2;</code>
+   * <code>optional string command_id = 2;</code>
    * @return Whether the commandId field is set.
    */
   boolean hasCommandId();
   /**
-   * <code>string command_id = 2;</code>
+   * <code>optional string command_id = 2;</code>
    * @return The commandId.
    */
   java.lang.String getCommandId();
   /**
-   * <code>string command_id = 2;</code>
+   * <code>optional string command_id = 2;</code>
    * @return The bytes for commandId.
    */
   com.google.protobuf.ByteString

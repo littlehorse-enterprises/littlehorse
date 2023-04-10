@@ -30,6 +30,7 @@ import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.LHResponseCodePb;
+import io.littlehorse.jlib.common.proto.LHStatusPb;
 import io.littlehorse.jlib.common.proto.MetricsWindowLengthPb;
 import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import io.littlehorse.server.KafkaStreamsServerImpl;
@@ -422,7 +423,9 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
             TaskScheduleRequest.class
         );
 
-        tsrPuts.put(tsr.getStoreKey(), null);
+        if (tsr != null) {
+            tsrPuts.put(tsr.getStoreKey(), null);
+        }
 
         return tsr;
     }
@@ -707,7 +710,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
                 forwardTask(tsr);
             } else {
                 // It's time to delete the thing.
-                saveOrDeleteStoreableFlush(tsrId, null, TaskScheduleRequest.class);
+                saveOrDeleteStorableFlush(tsrId, null, TaskScheduleRequest.class);
             }
         }
 
@@ -716,7 +719,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
             Record<String, CommandProcessorOutput> out = new Record<String, CommandProcessorOutput>(
                 command.getPartitionKey(),
                 new CommandProcessorOutput(
-                    config.getObervabilityEventTopicName(),
+                    config.getObservabilityEventTopicName(),
                     evt,
                     command.getPartitionKey()
                 ),
@@ -830,7 +833,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     private void forwardTask(TaskScheduleRequest tsr) {
         // since tsr is not null, it will save
-        saveOrDeleteStoreableFlush(tsr.getStoreKey(), tsr, TaskScheduleRequest.class);
+        saveOrDeleteStorableFlush(tsr.getStoreKey(), tsr, TaskScheduleRequest.class);
 
         // This is where the magic happens
         if (partitionIsClaimed) {
@@ -878,7 +881,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
     private <
         U extends Message, T extends Storeable<U>
-    > void saveOrDeleteStoreableFlush(String key, T val, Class<T> cls) {
+    > void saveOrDeleteStorableFlush(String key, T val, Class<T> cls) {
         if (val != null) {
             localStore.put(val);
         } else {

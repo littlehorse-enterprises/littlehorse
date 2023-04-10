@@ -19,32 +19,32 @@ public interface WaitForCommandReplyPbOrBuilder extends
   io.littlehorse.common.proto.StoreQueryStatusPb getCode();
 
   /**
-   * <code>.littlehorse.CommandResultPb result = 2;</code>
+   * <code>optional .littlehorse.CommandResultPb result = 2;</code>
    * @return Whether the result field is set.
    */
   boolean hasResult();
   /**
-   * <code>.littlehorse.CommandResultPb result = 2;</code>
+   * <code>optional .littlehorse.CommandResultPb result = 2;</code>
    * @return The result.
    */
   io.littlehorse.common.proto.CommandResultPb getResult();
   /**
-   * <code>.littlehorse.CommandResultPb result = 2;</code>
+   * <code>optional .littlehorse.CommandResultPb result = 2;</code>
    */
   io.littlehorse.common.proto.CommandResultPbOrBuilder getResultOrBuilder();
 
   /**
-   * <code>string message = 3;</code>
+   * <code>optional string message = 3;</code>
    * @return Whether the message field is set.
    */
   boolean hasMessage();
   /**
-   * <code>string message = 3;</code>
+   * <code>optional string message = 3;</code>
    * @return The message.
    */
   java.lang.String getMessage();
   /**
-   * <code>string message = 3;</code>
+   * <code>optional string message = 3;</code>
    * @return The bytes for message.
    */
   com.google.protobuf.ByteString

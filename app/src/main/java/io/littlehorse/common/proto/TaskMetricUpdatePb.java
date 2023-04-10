@@ -36,108 +36,6 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
-  private TaskMetricUpdatePb(
-      com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    this();
-    if (extensionRegistry == null) {
-      throw new java.lang.NullPointerException();
-    }
-    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-        com.google.protobuf.UnknownFieldSet.newBuilder();
-    try {
-      boolean done = false;
-      while (!done) {
-        int tag = input.readTag();
-        switch (tag) {
-          case 0:
-            done = true;
-            break;
-          case 10: {
-            com.google.protobuf.Timestamp.Builder subBuilder = null;
-            if (windowStart_ != null) {
-              subBuilder = windowStart_.toBuilder();
-            }
-            windowStart_ = input.readMessage(com.google.protobuf.Timestamp.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom(windowStart_);
-              windowStart_ = subBuilder.buildPartial();
-            }
-
-            break;
-          }
-          case 16: {
-            int rawValue = input.readEnum();
-
-            type_ = rawValue;
-            break;
-          }
-          case 24: {
-
-            numEntries_ = input.readInt64();
-            break;
-          }
-          case 32: {
-
-            scheduleToStartMax_ = input.readInt64();
-            break;
-          }
-          case 40: {
-
-            scheduleToStartTotal_ = input.readInt64();
-            break;
-          }
-          case 48: {
-
-            startToCompleteMax_ = input.readInt64();
-            break;
-          }
-          case 56: {
-
-            startToCompleteTotal_ = input.readInt64();
-            break;
-          }
-          case 64: {
-
-            totalCompleted_ = input.readInt64();
-            break;
-          }
-          case 72: {
-
-            totalErrored_ = input.readInt64();
-            break;
-          }
-          case 80: {
-
-            totalStarted_ = input.readInt64();
-            break;
-          }
-          case 90: {
-            java.lang.String s = input.readStringRequireUtf8();
-
-            taskDefName_ = s;
-            break;
-          }
-          default: {
-            if (!parseUnknownField(
-                input, unknownFields, extensionRegistry, tag)) {
-              done = true;
-            }
-            break;
-          }
-        }
-      }
-    } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
-    } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e).setUnfinishedMessage(this);
-    } finally {
-      this.unknownFields = unknownFields.build();
-      makeExtensionsImmutable();
-    }
-  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_TaskMetricUpdatePb_descriptor;
@@ -174,11 +72,11 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public com.google.protobuf.TimestampOrBuilder getWindowStartOrBuilder() {
-    return getWindowStart();
+    return windowStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : windowStart_;
   }
 
   public static final int TYPE_FIELD_NUMBER = 2;
-  private int type_;
+  private int type_ = 0;
   /**
    * <code>.littlehorse.MetricsWindowLengthPb type = 2;</code>
    * @return The enum numeric value on the wire for type.
@@ -191,13 +89,12 @@ private static final long serialVersionUID = 0L;
    * @return The type.
    */
   @java.lang.Override public io.littlehorse.jlib.common.proto.MetricsWindowLengthPb getType() {
-    @SuppressWarnings("deprecation")
-    io.littlehorse.jlib.common.proto.MetricsWindowLengthPb result = io.littlehorse.jlib.common.proto.MetricsWindowLengthPb.valueOf(type_);
+    io.littlehorse.jlib.common.proto.MetricsWindowLengthPb result = io.littlehorse.jlib.common.proto.MetricsWindowLengthPb.forNumber(type_);
     return result == null ? io.littlehorse.jlib.common.proto.MetricsWindowLengthPb.UNRECOGNIZED : result;
   }
 
   public static final int NUM_ENTRIES_FIELD_NUMBER = 3;
-  private long numEntries_;
+  private long numEntries_ = 0L;
   /**
    * <code>int64 num_entries = 3;</code>
    * @return The numEntries.
@@ -208,7 +105,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int SCHEDULE_TO_START_MAX_FIELD_NUMBER = 4;
-  private long scheduleToStartMax_;
+  private long scheduleToStartMax_ = 0L;
   /**
    * <code>int64 schedule_to_start_max = 4;</code>
    * @return The scheduleToStartMax.
@@ -219,7 +116,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int SCHEDULE_TO_START_TOTAL_FIELD_NUMBER = 5;
-  private long scheduleToStartTotal_;
+  private long scheduleToStartTotal_ = 0L;
   /**
    * <code>int64 schedule_to_start_total = 5;</code>
    * @return The scheduleToStartTotal.
@@ -230,7 +127,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int START_TO_COMPLETE_MAX_FIELD_NUMBER = 6;
-  private long startToCompleteMax_;
+  private long startToCompleteMax_ = 0L;
   /**
    * <code>int64 start_to_complete_max = 6;</code>
    * @return The startToCompleteMax.
@@ -241,7 +138,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int START_TO_COMPLETE_TOTAL_FIELD_NUMBER = 7;
-  private long startToCompleteTotal_;
+  private long startToCompleteTotal_ = 0L;
   /**
    * <code>int64 start_to_complete_total = 7;</code>
    * @return The startToCompleteTotal.
@@ -252,7 +149,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int TOTAL_COMPLETED_FIELD_NUMBER = 8;
-  private long totalCompleted_;
+  private long totalCompleted_ = 0L;
   /**
    * <code>int64 total_completed = 8;</code>
    * @return The totalCompleted.
@@ -263,7 +160,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int TOTAL_ERRORED_FIELD_NUMBER = 9;
-  private long totalErrored_;
+  private long totalErrored_ = 0L;
   /**
    * <code>int64 total_errored = 9;</code>
    * @return The totalErrored.
@@ -274,7 +171,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int TOTAL_STARTED_FIELD_NUMBER = 10;
-  private long totalStarted_;
+  private long totalStarted_ = 0L;
   /**
    * <code>int64 total_started = 10;</code>
    * @return The totalStarted.
@@ -285,7 +182,8 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int TASK_DEF_NAME_FIELD_NUMBER = 11;
-  private volatile java.lang.Object taskDefName_;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object taskDefName_ = "";
   /**
    * <code>string task_def_name = 11;</code>
    * @return The taskDefName.
@@ -366,10 +264,10 @@ private static final long serialVersionUID = 0L;
     if (totalStarted_ != 0L) {
       output.writeInt64(10, totalStarted_);
     }
-    if (!getTaskDefNameBytes().isEmpty()) {
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(taskDefName_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 11, taskDefName_);
     }
-    unknownFields.writeTo(output);
+    getUnknownFields().writeTo(output);
   }
 
   @java.lang.Override
@@ -418,10 +316,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt64Size(10, totalStarted_);
     }
-    if (!getTaskDefNameBytes().isEmpty()) {
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(taskDefName_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(11, taskDefName_);
     }
-    size += unknownFields.getSerializedSize();
+    size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
   }
@@ -460,7 +358,7 @@ private static final long serialVersionUID = 0L;
         != other.getTotalStarted()) return false;
     if (!getTaskDefName()
         .equals(other.getTaskDefName())) return false;
-    if (!unknownFields.equals(other.unknownFields)) return false;
+    if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
 
@@ -503,7 +401,7 @@ private static final long serialVersionUID = 0L;
         getTotalStarted());
     hash = (37 * hash) + TASK_DEF_NAME_FIELD_NUMBER;
     hash = (53 * hash) + getTaskDefName().hashCode();
-    hash = (29 * hash) + unknownFields.hashCode();
+    hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
   }
@@ -624,48 +522,33 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.common.proto.TaskMetricUpdatePb.newBuilder()
     private Builder() {
-      maybeForceBuilderInitialization();
+
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-      maybeForceBuilderInitialization();
-    }
-    private void maybeForceBuilderInitialization() {
-      if (com.google.protobuf.GeneratedMessageV3
-              .alwaysUseFieldBuilders) {
-      }
+
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      if (windowStartBuilder_ == null) {
-        windowStart_ = null;
-      } else {
-        windowStart_ = null;
+      bitField0_ = 0;
+      windowStart_ = null;
+      if (windowStartBuilder_ != null) {
+        windowStartBuilder_.dispose();
         windowStartBuilder_ = null;
       }
       type_ = 0;
-
       numEntries_ = 0L;
-
       scheduleToStartMax_ = 0L;
-
       scheduleToStartTotal_ = 0L;
-
       startToCompleteMax_ = 0L;
-
       startToCompleteTotal_ = 0L;
-
       totalCompleted_ = 0L;
-
       totalErrored_ = 0L;
-
       totalStarted_ = 0L;
-
       taskDefName_ = "";
-
       return this;
     }
 
@@ -692,23 +575,48 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.common.proto.TaskMetricUpdatePb buildPartial() {
       io.littlehorse.common.proto.TaskMetricUpdatePb result = new io.littlehorse.common.proto.TaskMetricUpdatePb(this);
-      if (windowStartBuilder_ == null) {
-        result.windowStart_ = windowStart_;
-      } else {
-        result.windowStart_ = windowStartBuilder_.build();
-      }
-      result.type_ = type_;
-      result.numEntries_ = numEntries_;
-      result.scheduleToStartMax_ = scheduleToStartMax_;
-      result.scheduleToStartTotal_ = scheduleToStartTotal_;
-      result.startToCompleteMax_ = startToCompleteMax_;
-      result.startToCompleteTotal_ = startToCompleteTotal_;
-      result.totalCompleted_ = totalCompleted_;
-      result.totalErrored_ = totalErrored_;
-      result.totalStarted_ = totalStarted_;
-      result.taskDefName_ = taskDefName_;
+      if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
+    }
+
+    private void buildPartial0(io.littlehorse.common.proto.TaskMetricUpdatePb result) {
+      int from_bitField0_ = bitField0_;
+      if (((from_bitField0_ & 0x00000001) != 0)) {
+        result.windowStart_ = windowStartBuilder_ == null
+            ? windowStart_
+            : windowStartBuilder_.build();
+      }
+      if (((from_bitField0_ & 0x00000002) != 0)) {
+        result.type_ = type_;
+      }
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.numEntries_ = numEntries_;
+      }
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.scheduleToStartMax_ = scheduleToStartMax_;
+      }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.scheduleToStartTotal_ = scheduleToStartTotal_;
+      }
+      if (((from_bitField0_ & 0x00000020) != 0)) {
+        result.startToCompleteMax_ = startToCompleteMax_;
+      }
+      if (((from_bitField0_ & 0x00000040) != 0)) {
+        result.startToCompleteTotal_ = startToCompleteTotal_;
+      }
+      if (((from_bitField0_ & 0x00000080) != 0)) {
+        result.totalCompleted_ = totalCompleted_;
+      }
+      if (((from_bitField0_ & 0x00000100) != 0)) {
+        result.totalErrored_ = totalErrored_;
+      }
+      if (((from_bitField0_ & 0x00000200) != 0)) {
+        result.totalStarted_ = totalStarted_;
+      }
+      if (((from_bitField0_ & 0x00000400) != 0)) {
+        result.taskDefName_ = taskDefName_;
+      }
     }
 
     @java.lang.Override
@@ -787,9 +695,10 @@ private static final long serialVersionUID = 0L;
       }
       if (!other.getTaskDefName().isEmpty()) {
         taskDefName_ = other.taskDefName_;
+        bitField0_ |= 0x00000400;
         onChanged();
       }
-      this.mergeUnknownFields(other.unknownFields);
+      this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
     }
@@ -804,19 +713,90 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      io.littlehorse.common.proto.TaskMetricUpdatePb parsedMessage = null;
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
       try {
-        parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              input.readMessage(
+                  getWindowStartFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000001;
+              break;
+            } // case 10
+            case 16: {
+              type_ = input.readEnum();
+              bitField0_ |= 0x00000002;
+              break;
+            } // case 16
+            case 24: {
+              numEntries_ = input.readInt64();
+              bitField0_ |= 0x00000004;
+              break;
+            } // case 24
+            case 32: {
+              scheduleToStartMax_ = input.readInt64();
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 32
+            case 40: {
+              scheduleToStartTotal_ = input.readInt64();
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 40
+            case 48: {
+              startToCompleteMax_ = input.readInt64();
+              bitField0_ |= 0x00000020;
+              break;
+            } // case 48
+            case 56: {
+              startToCompleteTotal_ = input.readInt64();
+              bitField0_ |= 0x00000040;
+              break;
+            } // case 56
+            case 64: {
+              totalCompleted_ = input.readInt64();
+              bitField0_ |= 0x00000080;
+              break;
+            } // case 64
+            case 72: {
+              totalErrored_ = input.readInt64();
+              bitField0_ |= 0x00000100;
+              break;
+            } // case 72
+            case 80: {
+              totalStarted_ = input.readInt64();
+              bitField0_ |= 0x00000200;
+              break;
+            } // case 80
+            case 90: {
+              taskDefName_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000400;
+              break;
+            } // case 90
+            default: {
+              if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                done = true; // was an endgroup tag
+              }
+              break;
+            } // default:
+          } // switch (tag)
+        } // while (!done)
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (io.littlehorse.common.proto.TaskMetricUpdatePb) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
-        if (parsedMessage != null) {
-          mergeFrom(parsedMessage);
-        }
-      }
+        onChanged();
+      } // finally
       return this;
     }
+    private int bitField0_;
 
     private com.google.protobuf.Timestamp windowStart_;
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -826,7 +806,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the windowStart field is set.
      */
     public boolean hasWindowStart() {
-      return windowStartBuilder_ != null || windowStart_ != null;
+      return ((bitField0_ & 0x00000001) != 0);
     }
     /**
      * <code>.google.protobuf.Timestamp window_start = 1;</code>
@@ -848,11 +828,11 @@ private static final long serialVersionUID = 0L;
           throw new NullPointerException();
         }
         windowStart_ = value;
-        onChanged();
       } else {
         windowStartBuilder_.setMessage(value);
       }
-
+      bitField0_ |= 0x00000001;
+      onChanged();
       return this;
     }
     /**
@@ -862,11 +842,11 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.Timestamp.Builder builderForValue) {
       if (windowStartBuilder_ == null) {
         windowStart_ = builderForValue.build();
-        onChanged();
       } else {
         windowStartBuilder_.setMessage(builderForValue.build());
       }
-
+      bitField0_ |= 0x00000001;
+      onChanged();
       return this;
     }
     /**
@@ -874,38 +854,38 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeWindowStart(com.google.protobuf.Timestamp value) {
       if (windowStartBuilder_ == null) {
-        if (windowStart_ != null) {
-          windowStart_ =
-            com.google.protobuf.Timestamp.newBuilder(windowStart_).mergeFrom(value).buildPartial();
+        if (((bitField0_ & 0x00000001) != 0) &&
+          windowStart_ != null &&
+          windowStart_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
+          getWindowStartBuilder().mergeFrom(value);
         } else {
           windowStart_ = value;
         }
-        onChanged();
       } else {
         windowStartBuilder_.mergeFrom(value);
       }
-
+      bitField0_ |= 0x00000001;
+      onChanged();
       return this;
     }
     /**
      * <code>.google.protobuf.Timestamp window_start = 1;</code>
      */
     public Builder clearWindowStart() {
-      if (windowStartBuilder_ == null) {
-        windowStart_ = null;
-        onChanged();
-      } else {
-        windowStart_ = null;
+      bitField0_ = (bitField0_ & ~0x00000001);
+      windowStart_ = null;
+      if (windowStartBuilder_ != null) {
+        windowStartBuilder_.dispose();
         windowStartBuilder_ = null;
       }
-
+      onChanged();
       return this;
     }
     /**
      * <code>.google.protobuf.Timestamp window_start = 1;</code>
      */
     public com.google.protobuf.Timestamp.Builder getWindowStartBuilder() {
-      
+      bitField0_ |= 0x00000001;
       onChanged();
       return getWindowStartFieldBuilder().getBuilder();
     }
@@ -951,8 +931,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setTypeValue(int value) {
-      
       type_ = value;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
@@ -962,8 +942,7 @@ private static final long serialVersionUID = 0L;
      */
     @java.lang.Override
     public io.littlehorse.jlib.common.proto.MetricsWindowLengthPb getType() {
-      @SuppressWarnings("deprecation")
-      io.littlehorse.jlib.common.proto.MetricsWindowLengthPb result = io.littlehorse.jlib.common.proto.MetricsWindowLengthPb.valueOf(type_);
+      io.littlehorse.jlib.common.proto.MetricsWindowLengthPb result = io.littlehorse.jlib.common.proto.MetricsWindowLengthPb.forNumber(type_);
       return result == null ? io.littlehorse.jlib.common.proto.MetricsWindowLengthPb.UNRECOGNIZED : result;
     }
     /**
@@ -975,7 +954,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) {
         throw new NullPointerException();
       }
-      
+      bitField0_ |= 0x00000002;
       type_ = value.getNumber();
       onChanged();
       return this;
@@ -985,7 +964,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearType() {
-      
+      bitField0_ = (bitField0_ & ~0x00000002);
       type_ = 0;
       onChanged();
       return this;
@@ -1008,6 +987,7 @@ private static final long serialVersionUID = 0L;
     public Builder setNumEntries(long value) {
       
       numEntries_ = value;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
@@ -1016,7 +996,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearNumEntries() {
-      
+      bitField0_ = (bitField0_ & ~0x00000004);
       numEntries_ = 0L;
       onChanged();
       return this;
@@ -1039,6 +1019,7 @@ private static final long serialVersionUID = 0L;
     public Builder setScheduleToStartMax(long value) {
       
       scheduleToStartMax_ = value;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -1047,7 +1028,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearScheduleToStartMax() {
-      
+      bitField0_ = (bitField0_ & ~0x00000008);
       scheduleToStartMax_ = 0L;
       onChanged();
       return this;
@@ -1070,6 +1051,7 @@ private static final long serialVersionUID = 0L;
     public Builder setScheduleToStartTotal(long value) {
       
       scheduleToStartTotal_ = value;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
@@ -1078,7 +1060,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearScheduleToStartTotal() {
-      
+      bitField0_ = (bitField0_ & ~0x00000010);
       scheduleToStartTotal_ = 0L;
       onChanged();
       return this;
@@ -1101,6 +1083,7 @@ private static final long serialVersionUID = 0L;
     public Builder setStartToCompleteMax(long value) {
       
       startToCompleteMax_ = value;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
@@ -1109,7 +1092,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearStartToCompleteMax() {
-      
+      bitField0_ = (bitField0_ & ~0x00000020);
       startToCompleteMax_ = 0L;
       onChanged();
       return this;
@@ -1132,6 +1115,7 @@ private static final long serialVersionUID = 0L;
     public Builder setStartToCompleteTotal(long value) {
       
       startToCompleteTotal_ = value;
+      bitField0_ |= 0x00000040;
       onChanged();
       return this;
     }
@@ -1140,7 +1124,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearStartToCompleteTotal() {
-      
+      bitField0_ = (bitField0_ & ~0x00000040);
       startToCompleteTotal_ = 0L;
       onChanged();
       return this;
@@ -1163,6 +1147,7 @@ private static final long serialVersionUID = 0L;
     public Builder setTotalCompleted(long value) {
       
       totalCompleted_ = value;
+      bitField0_ |= 0x00000080;
       onChanged();
       return this;
     }
@@ -1171,7 +1156,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearTotalCompleted() {
-      
+      bitField0_ = (bitField0_ & ~0x00000080);
       totalCompleted_ = 0L;
       onChanged();
       return this;
@@ -1194,6 +1179,7 @@ private static final long serialVersionUID = 0L;
     public Builder setTotalErrored(long value) {
       
       totalErrored_ = value;
+      bitField0_ |= 0x00000100;
       onChanged();
       return this;
     }
@@ -1202,7 +1188,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearTotalErrored() {
-      
+      bitField0_ = (bitField0_ & ~0x00000100);
       totalErrored_ = 0L;
       onChanged();
       return this;
@@ -1225,6 +1211,7 @@ private static final long serialVersionUID = 0L;
     public Builder setTotalStarted(long value) {
       
       totalStarted_ = value;
+      bitField0_ |= 0x00000200;
       onChanged();
       return this;
     }
@@ -1233,7 +1220,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearTotalStarted() {
-      
+      bitField0_ = (bitField0_ & ~0x00000200);
       totalStarted_ = 0L;
       onChanged();
       return this;
@@ -1280,11 +1267,9 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setTaskDefName(
         java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
+      if (value == null) { throw new NullPointerException(); }
       taskDefName_ = value;
+      bitField0_ |= 0x00000400;
       onChanged();
       return this;
     }
@@ -1293,8 +1278,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearTaskDefName() {
-      
       taskDefName_ = getDefaultInstance().getTaskDefName();
+      bitField0_ = (bitField0_ & ~0x00000400);
       onChanged();
       return this;
     }
@@ -1305,12 +1290,10 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setTaskDefNameBytes(
         com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
       taskDefName_ = value;
+      bitField0_ |= 0x00000400;
       onChanged();
       return this;
     }
@@ -1347,7 +1330,18 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new TaskMetricUpdatePb(input, extensionRegistry);
+      Builder builder = newBuilder();
+      try {
+        builder.mergeFrom(input, extensionRegistry);
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(builder.buildPartial());
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(e)
+            .setUnfinishedMessage(builder.buildPartial());
+      }
+      return builder.buildPartial();
     }
   };
 

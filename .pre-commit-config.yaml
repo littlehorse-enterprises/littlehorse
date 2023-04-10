@@ -1,0 +1,26 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+    - repo: https://github.com/pre-commit/pre-commit-hooks
+      rev: v4.4.0
+      hooks:
+          - id: trailing-whitespace
+            exclude: "app/src/main/java/io/littlehorse/common/proto/.*"
+          - id: end-of-file-fixer
+            exclude: "app/src/main/java/io/littlehorse/common/proto/.*"
+          - id: check-yaml
+          - id: check-added-large-files
+    - repo: local
+      hooks:
+          - id: prettier
+            name: Prettier
+            language: system
+            always_run: true
+            pass_filenames: false
+            entry: npm run format
+          - id: tests
+            name: Running Tests
+            language: system
+            always_run: true
+            pass_filenames: false
+            entry: ./gradlew test

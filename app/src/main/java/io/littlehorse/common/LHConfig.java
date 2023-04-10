@@ -64,7 +64,7 @@ public class LHConfig extends LHServerConfig {
         return getKafkaTopicPrefix() + "core-repartition";
     }
 
-    public String getObervabilityEventTopicName() {
+    public String getObservabilityEventTopicName() {
         return getKafkaTopicPrefix() + "observability";
     }
 

@@ -13,6 +13,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskPb> {
     private TaskQueueManager taskQueueManager;
     private String clientId;
     private String taskDefName;
+    private String taskWorkerVersion;
 
     public PollTaskRequestObserver(
         StreamObserver<PollTaskReplyPb> responseObserver,
@@ -21,6 +22,10 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskPb> {
         this.responseObserver = responseObserver;
         this.taskQueueManager = manager;
         this.clientId = null;
+    }
+
+    public String getTaskWorkerVersion() {
+        return taskWorkerVersion;
     }
 
     public String getTaskDefName() {
@@ -67,6 +72,7 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskPb> {
 
         taskDefName = req.getTaskDefName();
         clientId = req.getClientId();
+        taskWorkerVersion = req.getTaskWorkerVersion();
 
         taskQueueManager.onPollRequest(this);
     }

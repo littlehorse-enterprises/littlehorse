@@ -36,6 +36,7 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
     public Date startTime;
     public String taskDefName;
     public List<VarNameAndVal> inputVariables;
+    public String taskWorkerVersion;
 
     public TaskRun() {
         inputVariables = new ArrayList<>();
@@ -54,9 +55,11 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
         if (p.hasLogOutput()) {
             logOutput = VariableValue.fromProto(p.getLogOutput());
         }
-
         if (p.hasStartTime()) {
             startTime = LHUtil.fromProtoTs(p.getStartTime());
+        }
+        if (p.hasTaskWorkerVersion()) {
+            taskWorkerVersion = p.getTaskWorkerVersion();
         }
         taskDefName = p.getTaskDefId();
 
@@ -71,6 +74,9 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
             .setTaskDefId(taskDefName)
             .setAttemptNumber(attemptNumber);
 
+        if (taskWorkerVersion != null) {
+            out.setTaskWorkerVersion(taskWorkerVersion);
+        }
         if (output != null) {
             out.setOutput(output.toProto());
         }
@@ -165,9 +171,12 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
             // transactional producer and regular producer
             return;
         }
+
         nodeRun.status = LHStatusPb.RUNNING;
+        this.taskWorkerVersion = se.taskWorkerVersion;
         Node node = nodeRun.getNode();
 
+        // create a timer to mark the task is timeout if it does not finish
         TaskResultEvent taskResult = new TaskResultEvent();
         taskResult.resultCode = TaskResultCodePb.TIMEOUT;
         taskResult.taskRunNumber = nodeRun.number;

@@ -33,80 +33,6 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
-  private InternalScanReplyPb(
-      com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    this();
-    if (extensionRegistry == null) {
-      throw new java.lang.NullPointerException();
-    }
-    int mutable_bitField0_ = 0;
-    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-        com.google.protobuf.UnknownFieldSet.newBuilder();
-    try {
-      boolean done = false;
-      while (!done) {
-        int tag = input.readTag();
-        switch (tag) {
-          case 0:
-            done = true;
-            break;
-          case 8: {
-            int rawValue = input.readEnum();
-
-            code_ = rawValue;
-            break;
-          }
-          case 18: {
-            if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-              results_ = new java.util.ArrayList<com.google.protobuf.ByteString>();
-              mutable_bitField0_ |= 0x00000001;
-            }
-            results_.add(input.readBytes());
-            break;
-          }
-          case 26: {
-            io.littlehorse.common.proto.BookmarkPb.Builder subBuilder = null;
-            if (updatedBookmark_ != null) {
-              subBuilder = updatedBookmark_.toBuilder();
-            }
-            updatedBookmark_ = input.readMessage(io.littlehorse.common.proto.BookmarkPb.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom(updatedBookmark_);
-              updatedBookmark_ = subBuilder.buildPartial();
-            }
-
-            break;
-          }
-          case 34: {
-            java.lang.String s = input.readStringRequireUtf8();
-            bitField0_ |= 0x00000001;
-            message_ = s;
-            break;
-          }
-          default: {
-            if (!parseUnknownField(
-                input, unknownFields, extensionRegistry, tag)) {
-              done = true;
-            }
-            break;
-          }
-        }
-      }
-    } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
-    } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e).setUnfinishedMessage(this);
-    } finally {
-      if (((mutable_bitField0_ & 0x00000001) != 0)) {
-        results_ = java.util.Collections.unmodifiableList(results_); // C
-      }
-      this.unknownFields = unknownFields.build();
-      makeExtensionsImmutable();
-    }
-  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalScanReplyPb_descriptor;
@@ -122,7 +48,7 @@ private static final long serialVersionUID = 0L;
 
   private int bitField0_;
   public static final int CODE_FIELD_NUMBER = 1;
-  private int code_;
+  private int code_ = 0;
   /**
    * <code>.littlehorse.StoreQueryStatusPb code = 1;</code>
    * @return The enum numeric value on the wire for code.
@@ -135,12 +61,12 @@ private static final long serialVersionUID = 0L;
    * @return The code.
    */
   @java.lang.Override public io.littlehorse.common.proto.StoreQueryStatusPb getCode() {
-    @SuppressWarnings("deprecation")
-    io.littlehorse.common.proto.StoreQueryStatusPb result = io.littlehorse.common.proto.StoreQueryStatusPb.valueOf(code_);
+    io.littlehorse.common.proto.StoreQueryStatusPb result = io.littlehorse.common.proto.StoreQueryStatusPb.forNumber(code_);
     return result == null ? io.littlehorse.common.proto.StoreQueryStatusPb.UNRECOGNIZED : result;
   }
 
   public static final int RESULTS_FIELD_NUMBER = 2;
+  @SuppressWarnings("serial")
   private java.util.List<com.google.protobuf.ByteString> results_;
   /**
    * <pre>
@@ -217,13 +143,14 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public io.littlehorse.common.proto.BookmarkPbOrBuilder getUpdatedBookmarkOrBuilder() {
-    return getUpdatedBookmark();
+    return updatedBookmark_ == null ? io.littlehorse.common.proto.BookmarkPb.getDefaultInstance() : updatedBookmark_;
   }
 
   public static final int MESSAGE_FIELD_NUMBER = 4;
-  private volatile java.lang.Object message_;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object message_ = "";
   /**
-   * <code>string message = 4;</code>
+   * <code>optional string message = 4;</code>
    * @return Whether the message field is set.
    */
   @java.lang.Override
@@ -231,7 +158,7 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>string message = 4;</code>
+   * <code>optional string message = 4;</code>
    * @return The message.
    */
   @java.lang.Override
@@ -248,7 +175,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>string message = 4;</code>
+   * <code>optional string message = 4;</code>
    * @return The bytes for message.
    */
   @java.lang.Override
@@ -292,7 +219,7 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 4, message_);
     }
-    unknownFields.writeTo(output);
+    getUnknownFields().writeTo(output);
   }
 
   @java.lang.Override
@@ -321,7 +248,7 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, message_);
     }
-    size += unknownFields.getSerializedSize();
+    size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
   }
@@ -349,7 +276,7 @@ private static final long serialVersionUID = 0L;
       if (!getMessage()
           .equals(other.getMessage())) return false;
     }
-    if (!unknownFields.equals(other.unknownFields)) return false;
+    if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
 
@@ -374,7 +301,7 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + MESSAGE_FIELD_NUMBER;
       hash = (53 * hash) + getMessage().hashCode();
     }
-    hash = (29 * hash) + unknownFields.hashCode();
+    hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
   }
@@ -491,34 +418,26 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.common.proto.InternalScanReplyPb.newBuilder()
     private Builder() {
-      maybeForceBuilderInitialization();
+
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-      maybeForceBuilderInitialization();
-    }
-    private void maybeForceBuilderInitialization() {
-      if (com.google.protobuf.GeneratedMessageV3
-              .alwaysUseFieldBuilders) {
-      }
+
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
+      bitField0_ = 0;
       code_ = 0;
-
       results_ = java.util.Collections.emptyList();
-      bitField0_ = (bitField0_ & ~0x00000001);
-      if (updatedBookmarkBuilder_ == null) {
-        updatedBookmark_ = null;
-      } else {
-        updatedBookmark_ = null;
+      updatedBookmark_ = null;
+      if (updatedBookmarkBuilder_ != null) {
+        updatedBookmarkBuilder_.dispose();
         updatedBookmarkBuilder_ = null;
       }
       message_ = "";
-      bitField0_ = (bitField0_ & ~0x00000002);
       return this;
     }
 
@@ -545,26 +464,36 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.common.proto.InternalScanReplyPb buildPartial() {
       io.littlehorse.common.proto.InternalScanReplyPb result = new io.littlehorse.common.proto.InternalScanReplyPb(this);
-      int from_bitField0_ = bitField0_;
-      int to_bitField0_ = 0;
-      result.code_ = code_;
-      if (((bitField0_ & 0x00000001) != 0)) {
-        results_ = java.util.Collections.unmodifiableList(results_);
-        bitField0_ = (bitField0_ & ~0x00000001);
-      }
-      result.results_ = results_;
-      if (updatedBookmarkBuilder_ == null) {
-        result.updatedBookmark_ = updatedBookmark_;
-      } else {
-        result.updatedBookmark_ = updatedBookmarkBuilder_.build();
-      }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        to_bitField0_ |= 0x00000001;
-      }
-      result.message_ = message_;
-      result.bitField0_ = to_bitField0_;
+      buildPartialRepeatedFields(result);
+      if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
+    }
+
+    private void buildPartialRepeatedFields(io.littlehorse.common.proto.InternalScanReplyPb result) {
+      if (((bitField0_ & 0x00000002) != 0)) {
+        results_ = java.util.Collections.unmodifiableList(results_);
+        bitField0_ = (bitField0_ & ~0x00000002);
+      }
+      result.results_ = results_;
+    }
+
+    private void buildPartial0(io.littlehorse.common.proto.InternalScanReplyPb result) {
+      int from_bitField0_ = bitField0_;
+      if (((from_bitField0_ & 0x00000001) != 0)) {
+        result.code_ = code_;
+      }
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.updatedBookmark_ = updatedBookmarkBuilder_ == null
+            ? updatedBookmark_
+            : updatedBookmarkBuilder_.build();
+      }
+      int to_bitField0_ = 0;
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.message_ = message_;
+        to_bitField0_ |= 0x00000001;
+      }
+      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -617,7 +546,7 @@ private static final long serialVersionUID = 0L;
       if (!other.results_.isEmpty()) {
         if (results_.isEmpty()) {
           results_ = other.results_;
-          bitField0_ = (bitField0_ & ~0x00000001);
+          bitField0_ = (bitField0_ & ~0x00000002);
         } else {
           ensureResultsIsMutable();
           results_.addAll(other.results_);
@@ -628,11 +557,11 @@ private static final long serialVersionUID = 0L;
         mergeUpdatedBookmark(other.getUpdatedBookmark());
       }
       if (other.hasMessage()) {
-        bitField0_ |= 0x00000002;
         message_ = other.message_;
+        bitField0_ |= 0x00000008;
         onChanged();
       }
-      this.mergeUnknownFields(other.unknownFields);
+      this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
     }
@@ -647,17 +576,53 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      io.littlehorse.common.proto.InternalScanReplyPb parsedMessage = null;
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
       try {
-        parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+              code_ = input.readEnum();
+              bitField0_ |= 0x00000001;
+              break;
+            } // case 8
+            case 18: {
+              com.google.protobuf.ByteString v = input.readBytes();
+              ensureResultsIsMutable();
+              results_.add(v);
+              break;
+            } // case 18
+            case 26: {
+              input.readMessage(
+                  getUpdatedBookmarkFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000004;
+              break;
+            } // case 26
+            case 34: {
+              message_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 34
+            default: {
+              if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                done = true; // was an endgroup tag
+              }
+              break;
+            } // default:
+          } // switch (tag)
+        } // while (!done)
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (io.littlehorse.common.proto.InternalScanReplyPb) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
-        if (parsedMessage != null) {
-          mergeFrom(parsedMessage);
-        }
-      }
+        onChanged();
+      } // finally
       return this;
     }
     private int bitField0_;
@@ -676,8 +641,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setCodeValue(int value) {
-      
       code_ = value;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -687,8 +652,7 @@ private static final long serialVersionUID = 0L;
      */
     @java.lang.Override
     public io.littlehorse.common.proto.StoreQueryStatusPb getCode() {
-      @SuppressWarnings("deprecation")
-      io.littlehorse.common.proto.StoreQueryStatusPb result = io.littlehorse.common.proto.StoreQueryStatusPb.valueOf(code_);
+      io.littlehorse.common.proto.StoreQueryStatusPb result = io.littlehorse.common.proto.StoreQueryStatusPb.forNumber(code_);
       return result == null ? io.littlehorse.common.proto.StoreQueryStatusPb.UNRECOGNIZED : result;
     }
     /**
@@ -700,7 +664,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) {
         throw new NullPointerException();
       }
-      
+      bitField0_ |= 0x00000001;
       code_ = value.getNumber();
       onChanged();
       return this;
@@ -710,7 +674,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearCode() {
-      
+      bitField0_ = (bitField0_ & ~0x00000001);
       code_ = 0;
       onChanged();
       return this;
@@ -718,10 +682,10 @@ private static final long serialVersionUID = 0L;
 
     private java.util.List<com.google.protobuf.ByteString> results_ = java.util.Collections.emptyList();
     private void ensureResultsIsMutable() {
-      if (!((bitField0_ & 0x00000001) != 0)) {
+      if (!((bitField0_ & 0x00000002) != 0)) {
         results_ = new java.util.ArrayList<com.google.protobuf.ByteString>(results_);
-        bitField0_ |= 0x00000001;
-       }
+        bitField0_ |= 0x00000002;
+      }
     }
     /**
      * <pre>
@@ -733,7 +697,7 @@ private static final long serialVersionUID = 0L;
      */
     public java.util.List<com.google.protobuf.ByteString>
         getResultsList() {
-      return ((bitField0_ & 0x00000001) != 0) ?
+      return ((bitField0_ & 0x00000002) != 0) ?
                java.util.Collections.unmodifiableList(results_) : results_;
     }
     /**
@@ -771,10 +735,8 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setResults(
         int index, com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureResultsIsMutable();
+      if (value == null) { throw new NullPointerException(); }
+      ensureResultsIsMutable();
       results_.set(index, value);
       onChanged();
       return this;
@@ -789,10 +751,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder addResults(com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureResultsIsMutable();
+      if (value == null) { throw new NullPointerException(); }
+      ensureResultsIsMutable();
       results_.add(value);
       onChanged();
       return this;
@@ -824,7 +784,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder clearResults() {
       results_ = java.util.Collections.emptyList();
-      bitField0_ = (bitField0_ & ~0x00000001);
+      bitField0_ = (bitField0_ & ~0x00000002);
       onChanged();
       return this;
     }
@@ -842,7 +802,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the updatedBookmark field is set.
      */
     public boolean hasUpdatedBookmark() {
-      return updatedBookmarkBuilder_ != null || updatedBookmark_ != null;
+      return ((bitField0_ & 0x00000004) != 0);
     }
     /**
      * <pre>
@@ -874,11 +834,11 @@ private static final long serialVersionUID = 0L;
           throw new NullPointerException();
         }
         updatedBookmark_ = value;
-        onChanged();
       } else {
         updatedBookmarkBuilder_.setMessage(value);
       }
-
+      bitField0_ |= 0x00000004;
+      onChanged();
       return this;
     }
     /**
@@ -893,11 +853,11 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.common.proto.BookmarkPb.Builder builderForValue) {
       if (updatedBookmarkBuilder_ == null) {
         updatedBookmark_ = builderForValue.build();
-        onChanged();
       } else {
         updatedBookmarkBuilder_.setMessage(builderForValue.build());
       }
-
+      bitField0_ |= 0x00000004;
+      onChanged();
       return this;
     }
     /**
@@ -910,17 +870,18 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeUpdatedBookmark(io.littlehorse.common.proto.BookmarkPb value) {
       if (updatedBookmarkBuilder_ == null) {
-        if (updatedBookmark_ != null) {
-          updatedBookmark_ =
-            io.littlehorse.common.proto.BookmarkPb.newBuilder(updatedBookmark_).mergeFrom(value).buildPartial();
+        if (((bitField0_ & 0x00000004) != 0) &&
+          updatedBookmark_ != null &&
+          updatedBookmark_ != io.littlehorse.common.proto.BookmarkPb.getDefaultInstance()) {
+          getUpdatedBookmarkBuilder().mergeFrom(value);
         } else {
           updatedBookmark_ = value;
         }
-        onChanged();
       } else {
         updatedBookmarkBuilder_.mergeFrom(value);
       }
-
+      bitField0_ |= 0x00000004;
+      onChanged();
       return this;
     }
     /**
@@ -932,14 +893,13 @@ private static final long serialVersionUID = 0L;
      * <code>.littlehorse.BookmarkPb updated_bookmark = 3;</code>
      */
     public Builder clearUpdatedBookmark() {
-      if (updatedBookmarkBuilder_ == null) {
-        updatedBookmark_ = null;
-        onChanged();
-      } else {
-        updatedBookmark_ = null;
+      bitField0_ = (bitField0_ & ~0x00000004);
+      updatedBookmark_ = null;
+      if (updatedBookmarkBuilder_ != null) {
+        updatedBookmarkBuilder_.dispose();
         updatedBookmarkBuilder_ = null;
       }
-
+      onChanged();
       return this;
     }
     /**
@@ -951,7 +911,7 @@ private static final long serialVersionUID = 0L;
      * <code>.littlehorse.BookmarkPb updated_bookmark = 3;</code>
      */
     public io.littlehorse.common.proto.BookmarkPb.Builder getUpdatedBookmarkBuilder() {
-      
+      bitField0_ |= 0x00000004;
       onChanged();
       return getUpdatedBookmarkFieldBuilder().getBuilder();
     }
@@ -995,14 +955,14 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object message_ = "";
     /**
-     * <code>string message = 4;</code>
+     * <code>optional string message = 4;</code>
      * @return Whether the message field is set.
      */
     public boolean hasMessage() {
-      return ((bitField0_ & 0x00000002) != 0);
+      return ((bitField0_ & 0x00000008) != 0);
     }
     /**
-     * <code>string message = 4;</code>
+     * <code>optional string message = 4;</code>
      * @return The message.
      */
     public java.lang.String getMessage() {
@@ -1018,7 +978,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string message = 4;</code>
+     * <code>optional string message = 4;</code>
      * @return The bytes for message.
      */
     public com.google.protobuf.ByteString
@@ -1035,43 +995,39 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string message = 4;</code>
+     * <code>optional string message = 4;</code>
      * @param value The message to set.
      * @return This builder for chaining.
      */
     public Builder setMessage(
         java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
+      if (value == null) { throw new NullPointerException(); }
       message_ = value;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
     /**
-     * <code>string message = 4;</code>
+     * <code>optional string message = 4;</code>
      * @return This builder for chaining.
      */
     public Builder clearMessage() {
-      bitField0_ = (bitField0_ & ~0x00000002);
       message_ = getDefaultInstance().getMessage();
+      bitField0_ = (bitField0_ & ~0x00000008);
       onChanged();
       return this;
     }
     /**
-     * <code>string message = 4;</code>
+     * <code>optional string message = 4;</code>
      * @param value The bytes for message to set.
      * @return This builder for chaining.
      */
     public Builder setMessageBytes(
         com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      bitField0_ |= 0x00000002;
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
       message_ = value;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -1108,7 +1064,18 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new InternalScanReplyPb(input, extensionRegistry);
+      Builder builder = newBuilder();
+      try {
+        builder.mergeFrom(input, extensionRegistry);
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(builder.buildPartial());
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(e)
+            .setUnfinishedMessage(builder.buildPartial());
+      }
+      return builder.buildPartial();
     }
   };
 

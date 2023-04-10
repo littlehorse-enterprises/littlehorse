@@ -30,14 +30,14 @@ public interface InternalGetAdvertisedHostsReplyPbOrBuilder extends
   /**
    * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
    */
-
-  io.littlehorse.jlib.common.proto.HostInfoPb getHostsOrDefault(
+  /* nullable */
+io.littlehorse.jlib.common.proto.HostInfoPb getHostsOrDefault(
       java.lang.String key,
-      io.littlehorse.jlib.common.proto.HostInfoPb defaultValue);
+      /* nullable */
+io.littlehorse.jlib.common.proto.HostInfoPb defaultValue);
   /**
    * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
    */
-
   io.littlehorse.jlib.common.proto.HostInfoPb getHostsOrThrow(
       java.lang.String key);
 }

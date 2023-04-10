@@ -8,17 +8,17 @@ public interface WfRunRequestPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string wf_run_id = 1;</code>
+   * <code>optional string wf_run_id = 1;</code>
    * @return Whether the wfRunId field is set.
    */
   boolean hasWfRunId();
   /**
-   * <code>string wf_run_id = 1;</code>
+   * <code>optional string wf_run_id = 1;</code>
    * @return The wfRunId.
    */
   java.lang.String getWfRunId();
   /**
-   * <code>string wf_run_id = 1;</code>
+   * <code>optional string wf_run_id = 1;</code>
    * @return The bytes for wfRunId.
    */
   com.google.protobuf.ByteString
@@ -59,14 +59,14 @@ public interface WfRunRequestPbOrBuilder extends
   /**
    * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
    */
-
-  io.littlehorse.jlib.common.proto.VariableValuePb getVariablesOrDefault(
+  /* nullable */
+io.littlehorse.jlib.common.proto.VariableValuePb getVariablesOrDefault(
       java.lang.String key,
-      io.littlehorse.jlib.common.proto.VariableValuePb defaultValue);
+      /* nullable */
+io.littlehorse.jlib.common.proto.VariableValuePb defaultValue);
   /**
    * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
    */
-
   io.littlehorse.jlib.common.proto.VariableValuePb getVariablesOrThrow(
       java.lang.String key);
 }
