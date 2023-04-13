@@ -841,6 +841,7 @@ public class BackendInternalComms implements Closeable {
             newReq.localTagPrefixScan = search.localTagPrefixScan;
             newReq.type = ScanBoundaryCase.LOCAL_TAG_PREFIX_SCAN;
             newReq.objectType = search.objectType;
+            newReq.storeName = search.storeName;
             newReq.resultType = ScanResultTypePb.OBJECT_ID;
 
             InternalScanReplyPb reply;

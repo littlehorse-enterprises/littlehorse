@@ -691,6 +691,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
                 );
             }
         } catch (LHSerdeError | LHConnectionError exn) {
+            log.error("Error with interactive query between instances", exn);
             out.code = LHResponseCodePb.CONNECTION_ERROR;
             out.message = "Failed connecting to backend: " + exn.getMessage();
         } catch (LHValidationError exn) {

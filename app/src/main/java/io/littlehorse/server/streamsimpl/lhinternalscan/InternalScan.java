@@ -32,6 +32,7 @@ public class InternalScan extends LHSerializable<InternalScanPb> {
         InternalScanPb.Builder out = InternalScanPb
             .newBuilder()
             .setLimit(limit)
+            .setStoreName(storeName)
             .setObjectType(objectType);
 
         if (bookmark != null) out.setBookmark(bookmark);

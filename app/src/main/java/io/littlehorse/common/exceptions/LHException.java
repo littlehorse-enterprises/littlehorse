@@ -15,8 +15,9 @@ public class LHException extends Exception {
         return this.message + (parent == null ? "" : " " + parent.getMessage());
     }
 
-    public Exception parent() {
-        return this.parent;
+    @Override
+    public Throwable getCause() {
+        return parent;
     }
 
     public void addPrefix(String prefix) {
