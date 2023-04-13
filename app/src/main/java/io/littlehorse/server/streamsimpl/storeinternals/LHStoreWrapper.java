@@ -1,12 +1,12 @@
 package io.littlehorse.server.streamsimpl.storeinternals;
 
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
 import io.littlehorse.common.model.command.CommandResult;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.jlib.common.exception.LHSerdeError;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
 import io.littlehorse.server.streamsimpl.storeinternals.index.TagUtils;
 import io.littlehorse.server.streamsimpl.storeinternals.index.TagsCache;

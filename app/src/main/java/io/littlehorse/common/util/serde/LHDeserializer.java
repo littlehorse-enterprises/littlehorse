@@ -1,9 +1,9 @@
 package io.littlehorse.common.util.serde;
 
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.jlib.common.exception.LHSerdeError;
 import org.apache.kafka.common.serialization.Deserializer;
 
 public class LHDeserializer<T extends LHSerializable<?>> implements Deserializer<T> {

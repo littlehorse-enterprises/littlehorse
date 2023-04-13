@@ -1,9 +1,9 @@
 package io.littlehorse.server.streamsimpl.storeinternals.utils;
 
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
+import io.littlehorse.jlib.common.exception.LHSerdeError;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KeyValue;
 

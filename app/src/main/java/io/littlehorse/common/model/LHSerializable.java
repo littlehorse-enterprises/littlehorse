@@ -5,8 +5,8 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.jlib.common.exception.LHSerdeError;
 import java.lang.reflect.InvocationTargetException;
 
 // `P` is the proto class used to serialize.

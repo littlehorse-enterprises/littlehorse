@@ -3,10 +3,10 @@ package io.littlehorse.server.streamsimpl.util;
 import com.google.protobuf.Message;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.exceptions.LHSerdeError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
 import io.littlehorse.common.proto.CentralStoreQueryReplyPb;
+import io.littlehorse.jlib.common.exception.LHSerdeError;
 import io.littlehorse.jlib.common.proto.LHResponseCodePb;
 
 public class GETStreamObserver<
