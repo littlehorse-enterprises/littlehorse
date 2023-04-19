@@ -41,7 +41,7 @@ import io.littlehorse.common.model.objectId.WfRunId;
 import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.NodeRun;
-import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
+import io.littlehorse.common.model.wfrun.ScheduledTask;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.CentralStoreQueryReplyPb;
@@ -834,14 +834,14 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     public void returnTaskToClient(
-        TaskScheduleRequest tsr,
+        ScheduledTask scheduledTask,
         PollTaskRequestObserver client
     ) {
         TaskClaimEvent claimEvent = new TaskClaimEvent();
-        claimEvent.wfRunId = tsr.wfRunId;
-        claimEvent.threadRunNumber = tsr.threadRunNumber;
-        claimEvent.taskRunPosition = tsr.taskRunPosition;
-        claimEvent.taskRunNumber = tsr.taskRunNumber;
+        claimEvent.wfRunId = scheduledTask.wfRunId;
+        claimEvent.threadRunNumber = scheduledTask.threadRunNumber;
+        claimEvent.taskRunPosition = scheduledTask.taskRunPosition;
+        claimEvent.taskRunNumber = scheduledTask.taskRunNumber;
         claimEvent.taskWorkerVersion = client.getTaskWorkerVersion();
         claimEvent.time = new Date();
 
@@ -976,8 +976,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             );
     }
 
-    public void onTaskScheduled(String taskDefName, TaskScheduleRequest tsr) {
-        taskQueueManager.onTaskScheduled(taskDefName, tsr);
+    public void onTaskScheduled(String taskDefName, ScheduledTask scheduledTask) {
+        taskQueueManager.onTaskScheduled(taskDefName, scheduledTask);
     }
 
     public void start() throws IOException {

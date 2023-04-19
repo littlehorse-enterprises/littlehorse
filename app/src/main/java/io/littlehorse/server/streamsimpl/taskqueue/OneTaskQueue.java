@@ -1,6 +1,6 @@
 package io.littlehorse.server.streamsimpl.taskqueue;
 
-import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
+import io.littlehorse.common.model.wfrun.ScheduledTask;
 // import io.littlehorse.common.util.LHUtil;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -17,7 +17,7 @@ public class OneTaskQueue {
     private Queue<PollTaskRequestObserver> hungryClients;
     private Lock lock;
 
-    private LinkedList<TaskScheduleRequest> pendingTasks;
+    private LinkedList<ScheduledTask> pendingTasks;
     private TaskQueueManager parent;
 
     private String taskDefName;
@@ -73,10 +73,10 @@ public class OneTaskQueue {
      * Upon a restart or rebalance, we need to rebuild that state. During the
      * init() call, we iterate through all currently scheduled but not started tasks
      * in the state store.
-     * @param tsrId is the ::getObjectId() for the TaskScheduleRequest that was
+     * @param scheduledTaskId is the ::getObjectId() for the TaskScheduleRequest that was
      * just scheduled.
      */
-    public void onTaskScheduled(TaskScheduleRequest tsrId) {
+    public void onTaskScheduled(ScheduledTask scheduledTaskId) {
         // There's two cases here:
         // 1. There are clients waiting for requests, in which case we know that
         //    the pendingTaskIds queue/list must be empty.
@@ -87,7 +87,7 @@ public class OneTaskQueue {
             "Instance " +
             hostName +
             ": Task scheduled for wfRun " +
-            tsrId.wfRunId +
+            scheduledTaskId.wfRunId +
             ", queue is empty? " +
             hungryClients.isEmpty()
         );
@@ -108,7 +108,7 @@ public class OneTaskQueue {
                 luckyClient = hungryClients.poll();
             } else {
                 // case 2
-                pendingTasks.add(tsrId);
+                pendingTasks.add(scheduledTaskId);
             }
         } finally {
             lock.unlock();
@@ -116,7 +116,7 @@ public class OneTaskQueue {
 
         // pull this outside of protected zone for performance.
         if (luckyClient != null) {
-            parent.itsAMatch(tsrId, luckyClient);
+            parent.itsAMatch(scheduledTaskId, luckyClient);
         }
     }
 
@@ -146,7 +146,7 @@ public class OneTaskQueue {
         // 2. There are no pending Taskid's in the queue, in which case we simply
         //    push the request client observer thing onto the back of the
         //    `hungryClients` list.
-        TaskScheduleRequest nextTask = null;
+        ScheduledTask nextTask = null;
 
         // long result = 0;
         // long start = System.nanoTime();

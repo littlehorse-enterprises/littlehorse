@@ -5,13 +5,13 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
 import io.littlehorse.common.model.objectId.NodeRunId;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.jlib.common.proto.TaskScheduleRequestPb;
+import io.littlehorse.jlib.common.proto.ScheduledTaskPb;
 import io.littlehorse.jlib.common.proto.VarNameAndValPb;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class TaskScheduleRequest extends Storeable<TaskScheduleRequestPb> {
+public class ScheduledTask extends Storeable<ScheduledTaskPb> {
 
     public String taskDefId;
     public String taskDefName;
@@ -43,12 +43,12 @@ public class TaskScheduleRequest extends Storeable<TaskScheduleRequestPb> {
         return createdAt;
     }
 
-    public TaskScheduleRequest() {
+    public ScheduledTask() {
         variables = new ArrayList<>();
     }
 
-    public TaskScheduleRequestPb.Builder toProto() {
-        TaskScheduleRequestPb.Builder out = TaskScheduleRequestPb
+    public ScheduledTaskPb.Builder toProto() {
+        ScheduledTaskPb.Builder out = ScheduledTaskPb
             .newBuilder()
             .setTaskDefId(taskDefId)
             .setTaskDefName(taskDefName)
@@ -69,18 +69,18 @@ public class TaskScheduleRequest extends Storeable<TaskScheduleRequestPb> {
         return out;
     }
 
-    public Class<TaskScheduleRequestPb> getProtoBaseClass() {
-        return TaskScheduleRequestPb.class;
+    public Class<ScheduledTaskPb> getProtoBaseClass() {
+        return ScheduledTaskPb.class;
     }
 
-    public static TaskScheduleRequest fromProto(TaskScheduleRequestPb p) {
-        TaskScheduleRequest out = new TaskScheduleRequest();
+    public static ScheduledTask fromProto(ScheduledTaskPb p) {
+        ScheduledTask out = new ScheduledTask();
         out.initFrom(p);
         return out;
     }
 
     public void initFrom(Message proto) {
-        TaskScheduleRequestPb p = (TaskScheduleRequestPb) proto;
+        ScheduledTaskPb p = (ScheduledTaskPb) proto;
         this.taskDefId = p.getTaskDefId();
         this.taskDefName = p.getTaskDefName();
         this.threadRunNumber = p.getThreadRunNumber();

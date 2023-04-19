@@ -13,8 +13,8 @@ import io.littlehorse.common.model.observabilityevent.events.TaskResultOe;
 import io.littlehorse.common.model.observabilityevent.events.TaskScheduledOe;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.LHTimer;
+import io.littlehorse.common.model.wfrun.ScheduledTask;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
-import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
 import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.VarNameAndVal;
 import io.littlehorse.common.model.wfrun.VariableValue;
@@ -120,7 +120,7 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
     public void arrive(Date time) {
         Node node = nodeRun.getNode();
 
-        TaskScheduleRequest tsr = new TaskScheduleRequest();
+        ScheduledTask scheduledTask = new ScheduledTask();
 
         try {
             this.inputVariables = nodeRun.threadRun.assignVarsForNode(node.taskNode);
@@ -137,18 +137,19 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
             return;
         }
 
-        tsr.wfRunEventQueue = nodeRun.threadRun.wfRun.cmdDao.getWfRunEventQueue();
-        tsr.taskDefId = node.taskNode.taskDefName;
-        tsr.taskDefName = node.taskNode.taskDefName;
-        tsr.taskRunNumber = nodeRun.number;
-        tsr.taskRunPosition = nodeRun.position;
-        tsr.threadRunNumber = nodeRun.threadRunNumber;
-        tsr.wfRunId = nodeRun.threadRun.wfRunId;
-        tsr.wfSpecId = nodeRun.threadRun.wfSpecName;
-        tsr.nodeName = node.name;
-        tsr.variables = this.inputVariables;
+        scheduledTask.wfRunEventQueue =
+            nodeRun.threadRun.wfRun.cmdDao.getWfRunEventQueue();
+        scheduledTask.taskDefId = node.taskNode.taskDefName;
+        scheduledTask.taskDefName = node.taskNode.taskDefName;
+        scheduledTask.taskRunNumber = nodeRun.number;
+        scheduledTask.taskRunPosition = nodeRun.position;
+        scheduledTask.threadRunNumber = nodeRun.threadRunNumber;
+        scheduledTask.wfRunId = nodeRun.threadRun.wfRunId;
+        scheduledTask.wfSpecId = nodeRun.threadRun.wfSpecName;
+        scheduledTask.nodeName = node.name;
+        scheduledTask.variables = this.inputVariables;
 
-        nodeRun.threadRun.wfRun.cmdDao.scheduleTask(tsr);
+        nodeRun.threadRun.wfRun.cmdDao.scheduleTask(scheduledTask);
 
         TaskScheduledOe oe = new TaskScheduledOe();
         oe.attemptNumber = attemptNumber;

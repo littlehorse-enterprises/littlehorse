@@ -9,7 +9,7 @@ import io.littlehorse.common.model.observabilityevent.ObservabilityEvent;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.NodeRun;
-import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
+import io.littlehorse.common.model.wfrun.ScheduledTask;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
@@ -53,7 +53,7 @@ public interface LHDAO extends LHGlobalMetaStores {
 
     public void saveExternalEvent(ExternalEvent evt);
 
-    public void scheduleTask(TaskScheduleRequest tsr);
+    public void scheduleTask(ScheduledTask scheduledTask);
 
     public void scheduleTimer(LHTimer timer);
 
@@ -78,7 +78,7 @@ public interface LHDAO extends LHGlobalMetaStores {
 
     public ExternalEventDef getExternalEventDef(String name);
 
-    public TaskScheduleRequest markTaskAsScheduled(
+    public ScheduledTask markTaskAsScheduled(
         String wfRunId,
         int threadRunNumber,
         int taskRunPosition

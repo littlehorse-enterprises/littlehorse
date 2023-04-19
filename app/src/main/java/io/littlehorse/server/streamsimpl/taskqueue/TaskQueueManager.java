@@ -1,6 +1,6 @@
 package io.littlehorse.server.streamsimpl.taskqueue;
 
-import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
+import io.littlehorse.common.model.wfrun.ScheduledTask;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,15 +28,15 @@ public class TaskQueueManager {
         getSubQueue(observer.getTaskDefName()).onRequestDisconnected(observer);
     }
 
-    public void onTaskScheduled(String taskDefName, TaskScheduleRequest tsr) {
-        getSubQueue(taskDefName).onTaskScheduled(tsr);
+    public void onTaskScheduled(String taskDefName, ScheduledTask scheduledTask) {
+        getSubQueue(taskDefName).onTaskScheduled(scheduledTask);
     }
 
     public void itsAMatch(
-        TaskScheduleRequest tsr,
+        ScheduledTask scheduledTask,
         PollTaskRequestObserver luckyClient
     ) {
-        backend.returnTaskToClient(tsr, luckyClient);
+        backend.returnTaskToClient(scheduledTask, luckyClient);
     }
 
     private OneTaskQueue getSubQueue(String taskDefName) {

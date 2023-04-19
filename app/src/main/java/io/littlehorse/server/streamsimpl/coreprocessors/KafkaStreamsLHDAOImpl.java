@@ -23,7 +23,7 @@ import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.NodeRun;
-import io.littlehorse.common.model.wfrun.TaskScheduleRequest;
+import io.littlehorse.common.model.wfrun.ScheduledTask;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
@@ -72,7 +72,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     private Map<String, WfSpec> wfSpecPuts;
     private Map<String, TaskDef> taskDefPuts;
     private Map<String, ExternalEventDef> extEvtDefPuts;
-    private Map<String, TaskScheduleRequest> tsrPuts;
+    private Map<String, ScheduledTask> scheduledTaskPuts;
     private List<LHTimer> timersToSchedule;
     private CommandResult responseToSave;
     private Command command;
@@ -157,7 +157,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
         partition = ctx.taskId().partition();
 
-        tsrPuts = new HashMap<>();
+        scheduledTaskPuts = new HashMap<>();
         timersToSchedule = new ArrayList<>();
 
         this.wfSpecCache = new HashMap<>();
@@ -403,8 +403,8 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     }
 
     @Override
-    public void scheduleTask(TaskScheduleRequest tsr) {
-        tsrPuts.put(tsr.getStoreKey(), tsr);
+    public void scheduleTask(ScheduledTask scheduledTask) {
+        scheduledTaskPuts.put(scheduledTask.getStoreKey(), scheduledTask);
     }
 
     @Override
@@ -413,21 +413,21 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     }
 
     @Override
-    public TaskScheduleRequest markTaskAsScheduled(
+    public ScheduledTask markTaskAsScheduled(
         String wfRunId,
         int threadRunNumber,
         int taskRunPosition
     ) {
-        TaskScheduleRequest tsr = localStore.get(
+        ScheduledTask scheduledTask = localStore.get(
             new NodeRunId(wfRunId, threadRunNumber, taskRunPosition).getStoreKey(),
-            TaskScheduleRequest.class
+            ScheduledTask.class
         );
 
-        if (tsr != null) {
-            tsrPuts.put(tsr.getStoreKey(), null);
+        if (scheduledTask != null) {
+            scheduledTaskPuts.put(scheduledTask.getStoreKey(), null);
         }
 
-        return tsr;
+        return scheduledTask;
     }
 
     @Override
@@ -622,16 +622,19 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         partitionIsClaimed = true;
 
         try (
-            LHKeyValueIterator<TaskScheduleRequest> iter = localStore.prefixScan(
+            LHKeyValueIterator<ScheduledTask> iter = localStore.prefixScan(
                 "",
-                TaskScheduleRequest.class
+                ScheduledTask.class
             )
         ) {
             while (iter.hasNext()) {
-                LHIterKeyValue<TaskScheduleRequest> next = iter.next();
-                TaskScheduleRequest tsr = next.getValue();
-                LHUtil.log("Rehydration: scheduling task:", tsr.getStoreKey());
-                server.onTaskScheduled(tsr.taskDefName, tsr);
+                LHIterKeyValue<ScheduledTask> next = iter.next();
+                ScheduledTask scheduledTask = next.getValue();
+                LHUtil.log(
+                    "Rehydration: scheduling task:",
+                    scheduledTask.getStoreKey()
+                );
+                server.onTaskScheduled(scheduledTask.taskDefName, scheduledTask);
             }
         }
     }
@@ -703,14 +706,14 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
             forwardTimer(timer);
         }
 
-        for (Map.Entry<String, TaskScheduleRequest> entry : tsrPuts.entrySet()) {
-            String tsrId = entry.getKey();
-            TaskScheduleRequest tsr = entry.getValue();
-            if (tsr != null) {
-                forwardTask(tsr);
+        for (Map.Entry<String, ScheduledTask> entry : scheduledTaskPuts.entrySet()) {
+            String scheduledTaskId = entry.getKey();
+            ScheduledTask scheduledTask = entry.getValue();
+            if (scheduledTask != null) {
+                forwardTask(scheduledTask);
             } else {
                 // It's time to delete the thing.
-                saveOrDeleteStorableFlush(tsrId, null, TaskScheduleRequest.class);
+                saveOrDeleteStorableFlush(scheduledTaskId, null, ScheduledTask.class);
             }
         }
 
@@ -831,13 +834,17 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         return out;
     }
 
-    private void forwardTask(TaskScheduleRequest tsr) {
+    private void forwardTask(ScheduledTask scheduledTask) {
         // since tsr is not null, it will save
-        saveOrDeleteStorableFlush(tsr.getStoreKey(), tsr, TaskScheduleRequest.class);
+        saveOrDeleteStorableFlush(
+            scheduledTask.getStoreKey(),
+            scheduledTask,
+            ScheduledTask.class
+        );
 
         // This is where the magic happens
         if (partitionIsClaimed) {
-            server.onTaskScheduled(tsr.taskDefName, tsr);
+            server.onTaskScheduled(scheduledTask.taskDefName, scheduledTask);
         } else {
             LHUtil.log("haven't claimed partitions, deferring scheduling of tsr");
         }
@@ -1028,7 +1035,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         nodeRunPuts.clear();
         variablePuts.clear();
         extEvtPuts.clear();
-        tsrPuts.clear();
+        scheduledTaskPuts.clear();
         timersToSchedule.clear();
         wfRunPuts.clear();
         wfSpecPuts.clear();
