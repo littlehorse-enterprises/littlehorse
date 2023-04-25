@@ -84,7 +84,7 @@ cd ../..
 Then, you can make changes to `io-littlehorse-proto/internal_server.proto`, and compile those as follows:
 
 ```
-./compile_proto.sh
+./local-dev/compile-proto.sh
 ```
 
 When making changes to the upstream `io-littlehorse-proto` repository, it is recommended to push your changes on the protocol buffer repository to some branch (`foo`). Then, you can:
@@ -93,7 +93,7 @@ When making changes to the upstream `io-littlehorse-proto` repository, it is rec
 cd proto/io-littlehorse-proto
 git fetch && git checkout foo && git pull
 cd ../..
-./compile_proto.sh
+./local-dev/compile-proto.sh
 ```
 
 ## Setup Pre-commit
@@ -113,7 +113,7 @@ The LH Server depends on Kafka as a backend database. To start Kafka using docke
 Next, you can start the LH server itself. The server can be started in a single command:
 
 ```
-./local-dev/do-server
+./local-dev/do-server.sh
 ```
 
 You can confirm that the Server is running via:
@@ -143,7 +143,22 @@ Before you can build the image, you should compile the `lhctl` binary in the `io
 Now you can build the `littlehorse` docker image by running:
 
 ```
-./build/build.sh
+./local-dev/build.sh
+```
+
+Run server with docker (default config `local-dev/server-1.config`):
+
+```
+./local-dev/do-docker-server.sh
+```
+
+Run server with docker and specific config:
+
+```
+./local-dev/do-docker-server.sh <config-name>
+
+# Example
+./local-dev/do-docker-server.sh server-2
 ```
 
 This step is needed to develop on KIND.
@@ -162,12 +177,14 @@ However, you can start two Brokers in your terminal as follows:
 
 ```
 # The first server has an external API port of 5000
-./local-dev/do-server
+./local-dev/do-server.sh
 
 # <In another terminal>
 # The second server has an external API port of 5002
-./local-dev/do-server2
+./local-dev/do-server.sh server-2
 ```
+
+> ./local-dev/do-server.sh <config-name>
 
 ### Debug Cycle
 

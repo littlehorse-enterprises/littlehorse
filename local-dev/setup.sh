@@ -1,9 +1,14 @@
 #!/bin/bash
 
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-cd $SCRIPT_DIR
+set -e
 
-docker compose up -d
-# sleep 2
+SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
+WORK_DIR=$SCRIPT_DIR
 
-# psql postgresql://postgres:postgres@localhost:5432/postgres -f ${SCRIPT_DIR}/../sql/000_initial_schema.sql
+docker compose --file "$WORK_DIR/docker-compose.yml" \
+    --project-directory "$WORK_DIR" \
+    --project-name lh-server-local-dev \
+    up -d
+
+echo
+echo "Kafka port: 9092"

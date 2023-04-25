@@ -10,6 +10,14 @@ repos:
             exclude: "app/src/main/java/io/littlehorse/common/proto/.*"
           - id: check-yaml
           - id: check-added-large-files
+    - repo: https://github.com/shellcheck-py/shellcheck-py
+      rev: v0.9.0.2
+      hooks:
+        - id: shellcheck
+    - repo: https://github.com/hadolint/hadolint
+      rev: v2.12.1-beta
+      hooks:
+        - id: hadolint-docker
     - repo: local
       hooks:
           - id: prettier
@@ -23,7 +31,7 @@ repos:
             language: system
             always_run: true
             pass_filenames: false
-            entry: ./compile_proto.sh
+            entry: ./local-dev/compile-proto.sh
           - id: tests
             name: Running Tests
             language: system

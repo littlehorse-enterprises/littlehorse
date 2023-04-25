@@ -1,25 +1,20 @@
 #!/bin/bash
-set -x
 
-kill -9 $(ps aux | grep io.littlehorse | grep -v 'grep' | cut -d ' ' -f3)
+set -e
 
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-cd $SCRIPT_DIR
+SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
+WORK_DIR=$SCRIPT_DIR
 
-docker exec lh-kafka bash -c '
-export TOPICS=$(/opt/bitnami/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list)
-if [ -z "$TOPICS" ]
-then
-    echo "Nothing to do!"
-else
-    /opt/bitnami/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic $(echo $TOPICS | tr " " "|")
-    echo "Deleted topics!!"
+kafka_topics_sh="docker compose --file $WORK_DIR/docker-compose.yml
+    --project-directory $WORK_DIR
+    --project-name lh-server-local-dev
+    exec kafka bash /opt/bitnami/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092"
+
+TOPICS=$($kafka_topics_sh --list)
+
+if [ -n "$TOPICS" ]; then
+    echo "Topics to be deleted: $TOPICS"
+    $kafka_topics_sh --delete --topic ".*"
 fi
-' &
 
-# $SCRIPT_DIR/cleanup.sh
-# $SCRIPT_DIR/setup.sh
-
-rm -r /tmp/kafkaState /tmp/kafkaStateTwo
-
-wait
+rm -rf /tmp/kafkaState*
