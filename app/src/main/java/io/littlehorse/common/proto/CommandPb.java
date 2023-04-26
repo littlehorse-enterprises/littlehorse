@@ -35,6 +35,273 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
+  private CommandPb(
+      com.google.protobuf.CodedInputStream input,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    this();
+    if (extensionRegistry == null) {
+      throw new java.lang.NullPointerException();
+    }
+    int mutable_bitField0_ = 0;
+    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+        com.google.protobuf.UnknownFieldSet.newBuilder();
+    try {
+      boolean done = false;
+      while (!done) {
+        int tag = input.readTag();
+        switch (tag) {
+          case 0:
+            done = true;
+            break;
+          case 10: {
+            com.google.protobuf.Timestamp.Builder subBuilder = null;
+            if (time_ != null) {
+              subBuilder = time_.toBuilder();
+            }
+            time_ = input.readMessage(com.google.protobuf.Timestamp.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom(time_);
+              time_ = subBuilder.buildPartial();
+            }
+
+            break;
+          }
+          case 18: {
+            java.lang.String s = input.readStringRequireUtf8();
+            bitField0_ |= 0x00000001;
+            commandId_ = s;
+            break;
+          }
+          case 26: {
+            io.littlehorse.jlib.common.proto.TaskResultEventPb.Builder subBuilder = null;
+            if (commandCase_ == 3) {
+              subBuilder = ((io.littlehorse.jlib.common.proto.TaskResultEventPb) command_).toBuilder();
+            }
+            command_ =
+                input.readMessage(io.littlehorse.jlib.common.proto.TaskResultEventPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.jlib.common.proto.TaskResultEventPb) command_);
+              command_ = subBuilder.buildPartial();
+            }
+            commandCase_ = 3;
+            break;
+          }
+          case 34: {
+            io.littlehorse.common.proto.TaskClaimEventPb.Builder subBuilder = null;
+            if (commandCase_ == 4) {
+              subBuilder = ((io.littlehorse.common.proto.TaskClaimEventPb) command_).toBuilder();
+            }
+            command_ =
+                input.readMessage(io.littlehorse.common.proto.TaskClaimEventPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.common.proto.TaskClaimEventPb) command_);
+              command_ = subBuilder.buildPartial();
+            }
+            commandCase_ = 4;
+            break;
+          }
+          case 50: {
+            io.littlehorse.jlib.common.proto.PutWfSpecPb.Builder subBuilder = null;
+            if (commandCase_ == 6) {
+              subBuilder = ((io.littlehorse.jlib.common.proto.PutWfSpecPb) command_).toBuilder();
+            }
+            command_ =
+                input.readMessage(io.littlehorse.jlib.common.proto.PutWfSpecPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.jlib.common.proto.PutWfSpecPb) command_);
+              command_ = subBuilder.buildPartial();
+            }
+            commandCase_ = 6;
+            break;
+          }
+          case 58: {
+            io.littlehorse.jlib.common.proto.PutTaskDefPb.Builder subBuilder = null;
+            if (commandCase_ == 7) {
+              subBuilder = ((io.littlehorse.jlib.common.proto.PutTaskDefPb) command_).toBuilder();
+            }
+            command_ =
+                input.readMessage(io.littlehorse.jlib.common.proto.PutTaskDefPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.jlib.common.proto.PutTaskDefPb) command_);
+              command_ = subBuilder.buildPartial();
+            }
+            commandCase_ = 7;
+            break;
+          }
+          case 66: {
+            io.littlehorse.jlib.common.proto.PutExternalEventDefPb.Builder subBuilder = null;
+            if (commandCase_ == 8) {
+              subBuilder = ((io.littlehorse.jlib.common.proto.PutExternalEventDefPb) command_).toBuilder();
+            }
+            command_ =
+                input.readMessage(io.littlehorse.jlib.common.proto.PutExternalEventDefPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.jlib.common.proto.PutExternalEventDefPb) command_);
+              command_ = subBuilder.buildPartial();
+            }
+            commandCase_ = 8;
+            break;
+          }
+          case 74: {
+            io.littlehorse.jlib.common.proto.RunWfPb.Builder subBuilder = null;
+            if (commandCase_ == 9) {
+              subBuilder = ((io.littlehorse.jlib.common.proto.RunWfPb) command_).toBuilder();
+            }
+            command_ =
+                input.readMessage(io.littlehorse.jlib.common.proto.RunWfPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.jlib.common.proto.RunWfPb) command_);
+              command_ = subBuilder.buildPartial();
+            }
+            commandCase_ = 9;
+            break;
+          }
+          case 82: {
+            io.littlehorse.jlib.common.proto.PutExternalEventPb.Builder subBuilder = null;
+            if (commandCase_ == 10) {
+              subBuilder = ((io.littlehorse.jlib.common.proto.PutExternalEventPb) command_).toBuilder();
+            }
+            command_ =
+                input.readMessage(io.littlehorse.jlib.common.proto.PutExternalEventPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.jlib.common.proto.PutExternalEventPb) command_);
+              command_ = subBuilder.buildPartial();
+            }
+            commandCase_ = 10;
+            break;
+          }
+          case 90: {
+            io.littlehorse.jlib.common.proto.StopWfRunPb.Builder subBuilder = null;
+            if (commandCase_ == 11) {
+              subBuilder = ((io.littlehorse.jlib.common.proto.StopWfRunPb) command_).toBuilder();
+            }
+            command_ =
+                input.readMessage(io.littlehorse.jlib.common.proto.StopWfRunPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.jlib.common.proto.StopWfRunPb) command_);
+              command_ = subBuilder.buildPartial();
+            }
+            commandCase_ = 11;
+            break;
+          }
+          case 98: {
+            io.littlehorse.jlib.common.proto.ResumeWfRunPb.Builder subBuilder = null;
+            if (commandCase_ == 12) {
+              subBuilder = ((io.littlehorse.jlib.common.proto.ResumeWfRunPb) command_).toBuilder();
+            }
+            command_ =
+                input.readMessage(io.littlehorse.jlib.common.proto.ResumeWfRunPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.jlib.common.proto.ResumeWfRunPb) command_);
+              command_ = subBuilder.buildPartial();
+            }
+            commandCase_ = 12;
+            break;
+          }
+          case 106: {
+            io.littlehorse.common.proto.SleepNodeMaturedPb.Builder subBuilder = null;
+            if (commandCase_ == 13) {
+              subBuilder = ((io.littlehorse.common.proto.SleepNodeMaturedPb) command_).toBuilder();
+            }
+            command_ =
+                input.readMessage(io.littlehorse.common.proto.SleepNodeMaturedPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.common.proto.SleepNodeMaturedPb) command_);
+              command_ = subBuilder.buildPartial();
+            }
+            commandCase_ = 13;
+            break;
+          }
+          case 114: {
+            io.littlehorse.jlib.common.proto.DeleteWfRunPb.Builder subBuilder = null;
+            if (commandCase_ == 14) {
+              subBuilder = ((io.littlehorse.jlib.common.proto.DeleteWfRunPb) command_).toBuilder();
+            }
+            command_ =
+                input.readMessage(io.littlehorse.jlib.common.proto.DeleteWfRunPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.jlib.common.proto.DeleteWfRunPb) command_);
+              command_ = subBuilder.buildPartial();
+            }
+            commandCase_ = 14;
+            break;
+          }
+          case 122: {
+            io.littlehorse.jlib.common.proto.DeleteWfSpecPb.Builder subBuilder = null;
+            if (commandCase_ == 15) {
+              subBuilder = ((io.littlehorse.jlib.common.proto.DeleteWfSpecPb) command_).toBuilder();
+            }
+            command_ =
+                input.readMessage(io.littlehorse.jlib.common.proto.DeleteWfSpecPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.jlib.common.proto.DeleteWfSpecPb) command_);
+              command_ = subBuilder.buildPartial();
+            }
+            commandCase_ = 15;
+            break;
+          }
+          case 130: {
+            io.littlehorse.jlib.common.proto.DeleteTaskDefPb.Builder subBuilder = null;
+            if (commandCase_ == 16) {
+              subBuilder = ((io.littlehorse.jlib.common.proto.DeleteTaskDefPb) command_).toBuilder();
+            }
+            command_ =
+                input.readMessage(io.littlehorse.jlib.common.proto.DeleteTaskDefPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.jlib.common.proto.DeleteTaskDefPb) command_);
+              command_ = subBuilder.buildPartial();
+            }
+            commandCase_ = 16;
+            break;
+          }
+          case 138: {
+            io.littlehorse.jlib.common.proto.DeleteExternalEventDefPb.Builder subBuilder = null;
+            if (commandCase_ == 17) {
+              subBuilder = ((io.littlehorse.jlib.common.proto.DeleteExternalEventDefPb) command_).toBuilder();
+            }
+            command_ =
+                input.readMessage(io.littlehorse.jlib.common.proto.DeleteExternalEventDefPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.jlib.common.proto.DeleteExternalEventDefPb) command_);
+              command_ = subBuilder.buildPartial();
+            }
+            commandCase_ = 17;
+            break;
+          }
+          case 146: {
+            io.littlehorse.common.proto.ExternalEventNodeTimeoutPb.Builder subBuilder = null;
+            if (commandCase_ == 18) {
+              subBuilder = ((io.littlehorse.common.proto.ExternalEventNodeTimeoutPb) command_).toBuilder();
+            }
+            command_ =
+                input.readMessage(io.littlehorse.common.proto.ExternalEventNodeTimeoutPb.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom((io.littlehorse.common.proto.ExternalEventNodeTimeoutPb) command_);
+              command_ = subBuilder.buildPartial();
+            }
+            commandCase_ = 18;
+            break;
+          }
+          default: {
+            if (!parseUnknownField(
+                input, unknownFields, extensionRegistry, tag)) {
+              done = true;
+            }
+            break;
+          }
+        }
+      }
+    } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+      throw e.setUnfinishedMessage(this);
+    } catch (java.io.IOException e) {
+      throw new com.google.protobuf.InvalidProtocolBufferException(
+          e).setUnfinishedMessage(this);
+    } finally {
+      this.unknownFields = unknownFields.build();
+      makeExtensionsImmutable();
+    }
+  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_CommandPb_descriptor;
@@ -139,14 +406,13 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public com.google.protobuf.TimestampOrBuilder getTimeOrBuilder() {
-    return time_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : time_;
+    return getTime();
   }
 
   public static final int COMMAND_ID_FIELD_NUMBER = 2;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object commandId_ = "";
+  private volatile java.lang.Object commandId_;
   /**
-   * <code>optional string command_id = 2;</code>
+   * <code>string command_id = 2;</code>
    * @return Whether the commandId field is set.
    */
   @java.lang.Override
@@ -154,7 +420,7 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>optional string command_id = 2;</code>
+   * <code>string command_id = 2;</code>
    * @return The commandId.
    */
   @java.lang.Override
@@ -171,7 +437,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>optional string command_id = 2;</code>
+   * <code>string command_id = 2;</code>
    * @return The bytes for commandId.
    */
   @java.lang.Override
@@ -719,7 +985,7 @@ private static final long serialVersionUID = 0L;
     if (commandCase_ == 18) {
       output.writeMessage(18, (io.littlehorse.common.proto.ExternalEventNodeTimeoutPb) command_);
     }
-    getUnknownFields().writeTo(output);
+    unknownFields.writeTo(output);
   }
 
   @java.lang.Override
@@ -795,7 +1061,7 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(18, (io.littlehorse.common.proto.ExternalEventNodeTimeoutPb) command_);
     }
-    size += getUnknownFields().getSerializedSize();
+    size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
   }
@@ -885,7 +1151,7 @@ private static final long serialVersionUID = 0L;
       case 0:
       default:
     }
-    if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+    if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
 
@@ -968,7 +1234,7 @@ private static final long serialVersionUID = 0L;
       case 0:
       default:
     }
-    hash = (29 * hash) + getUnknownFields().hashCode();
+    hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
   }
@@ -1089,69 +1355,30 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.common.proto.CommandPb.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
+      }
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      bitField0_ = 0;
-      time_ = null;
-      if (timeBuilder_ != null) {
-        timeBuilder_.dispose();
+      if (timeBuilder_ == null) {
+        time_ = null;
+      } else {
+        time_ = null;
         timeBuilder_ = null;
       }
       commandId_ = "";
-      if (taskResultEventBuilder_ != null) {
-        taskResultEventBuilder_.clear();
-      }
-      if (taskClaimEventBuilder_ != null) {
-        taskClaimEventBuilder_.clear();
-      }
-      if (putWfSpecBuilder_ != null) {
-        putWfSpecBuilder_.clear();
-      }
-      if (putTaskDefBuilder_ != null) {
-        putTaskDefBuilder_.clear();
-      }
-      if (putExternalEventDefBuilder_ != null) {
-        putExternalEventDefBuilder_.clear();
-      }
-      if (runWfBuilder_ != null) {
-        runWfBuilder_.clear();
-      }
-      if (putExternalEventBuilder_ != null) {
-        putExternalEventBuilder_.clear();
-      }
-      if (stopWfRunBuilder_ != null) {
-        stopWfRunBuilder_.clear();
-      }
-      if (resumeWfRunBuilder_ != null) {
-        resumeWfRunBuilder_.clear();
-      }
-      if (sleepNodeMaturedBuilder_ != null) {
-        sleepNodeMaturedBuilder_.clear();
-      }
-      if (deleteWfRunBuilder_ != null) {
-        deleteWfRunBuilder_.clear();
-      }
-      if (deleteWfSpecBuilder_ != null) {
-        deleteWfSpecBuilder_.clear();
-      }
-      if (deleteTaskDefBuilder_ != null) {
-        deleteTaskDefBuilder_.clear();
-      }
-      if (deleteExternalEventDefBuilder_ != null) {
-        deleteExternalEventDefBuilder_.clear();
-      }
-      if (externalEventTimeoutBuilder_ != null) {
-        externalEventTimeoutBuilder_.clear();
-      }
+      bitField0_ = (bitField0_ & ~0x00000001);
       commandCase_ = 0;
       command_ = null;
       return this;
@@ -1180,90 +1407,126 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.common.proto.CommandPb buildPartial() {
       io.littlehorse.common.proto.CommandPb result = new io.littlehorse.common.proto.CommandPb(this);
-      if (bitField0_ != 0) { buildPartial0(result); }
-      buildPartialOneofs(result);
-      onBuilt();
-      return result;
-    }
-
-    private void buildPartial0(io.littlehorse.common.proto.CommandPb result) {
       int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.time_ = timeBuilder_ == null
-            ? time_
-            : timeBuilder_.build();
-      }
       int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.commandId_ = commandId_;
+      if (timeBuilder_ == null) {
+        result.time_ = time_;
+      } else {
+        result.time_ = timeBuilder_.build();
+      }
+      if (((from_bitField0_ & 0x00000001) != 0)) {
         to_bitField0_ |= 0x00000001;
       }
-      result.bitField0_ |= to_bitField0_;
-    }
-
-    private void buildPartialOneofs(io.littlehorse.common.proto.CommandPb result) {
+      result.commandId_ = commandId_;
+      if (commandCase_ == 3) {
+        if (taskResultEventBuilder_ == null) {
+          result.command_ = command_;
+        } else {
+          result.command_ = taskResultEventBuilder_.build();
+        }
+      }
+      if (commandCase_ == 4) {
+        if (taskClaimEventBuilder_ == null) {
+          result.command_ = command_;
+        } else {
+          result.command_ = taskClaimEventBuilder_.build();
+        }
+      }
+      if (commandCase_ == 6) {
+        if (putWfSpecBuilder_ == null) {
+          result.command_ = command_;
+        } else {
+          result.command_ = putWfSpecBuilder_.build();
+        }
+      }
+      if (commandCase_ == 7) {
+        if (putTaskDefBuilder_ == null) {
+          result.command_ = command_;
+        } else {
+          result.command_ = putTaskDefBuilder_.build();
+        }
+      }
+      if (commandCase_ == 8) {
+        if (putExternalEventDefBuilder_ == null) {
+          result.command_ = command_;
+        } else {
+          result.command_ = putExternalEventDefBuilder_.build();
+        }
+      }
+      if (commandCase_ == 9) {
+        if (runWfBuilder_ == null) {
+          result.command_ = command_;
+        } else {
+          result.command_ = runWfBuilder_.build();
+        }
+      }
+      if (commandCase_ == 10) {
+        if (putExternalEventBuilder_ == null) {
+          result.command_ = command_;
+        } else {
+          result.command_ = putExternalEventBuilder_.build();
+        }
+      }
+      if (commandCase_ == 11) {
+        if (stopWfRunBuilder_ == null) {
+          result.command_ = command_;
+        } else {
+          result.command_ = stopWfRunBuilder_.build();
+        }
+      }
+      if (commandCase_ == 12) {
+        if (resumeWfRunBuilder_ == null) {
+          result.command_ = command_;
+        } else {
+          result.command_ = resumeWfRunBuilder_.build();
+        }
+      }
+      if (commandCase_ == 13) {
+        if (sleepNodeMaturedBuilder_ == null) {
+          result.command_ = command_;
+        } else {
+          result.command_ = sleepNodeMaturedBuilder_.build();
+        }
+      }
+      if (commandCase_ == 14) {
+        if (deleteWfRunBuilder_ == null) {
+          result.command_ = command_;
+        } else {
+          result.command_ = deleteWfRunBuilder_.build();
+        }
+      }
+      if (commandCase_ == 15) {
+        if (deleteWfSpecBuilder_ == null) {
+          result.command_ = command_;
+        } else {
+          result.command_ = deleteWfSpecBuilder_.build();
+        }
+      }
+      if (commandCase_ == 16) {
+        if (deleteTaskDefBuilder_ == null) {
+          result.command_ = command_;
+        } else {
+          result.command_ = deleteTaskDefBuilder_.build();
+        }
+      }
+      if (commandCase_ == 17) {
+        if (deleteExternalEventDefBuilder_ == null) {
+          result.command_ = command_;
+        } else {
+          result.command_ = deleteExternalEventDefBuilder_.build();
+        }
+      }
+      if (commandCase_ == 18) {
+        if (externalEventTimeoutBuilder_ == null) {
+          result.command_ = command_;
+        } else {
+          result.command_ = externalEventTimeoutBuilder_.build();
+        }
+      }
+      result.bitField0_ = to_bitField0_;
       result.commandCase_ = commandCase_;
-      result.command_ = this.command_;
-      if (commandCase_ == 3 &&
-          taskResultEventBuilder_ != null) {
-        result.command_ = taskResultEventBuilder_.build();
-      }
-      if (commandCase_ == 4 &&
-          taskClaimEventBuilder_ != null) {
-        result.command_ = taskClaimEventBuilder_.build();
-      }
-      if (commandCase_ == 6 &&
-          putWfSpecBuilder_ != null) {
-        result.command_ = putWfSpecBuilder_.build();
-      }
-      if (commandCase_ == 7 &&
-          putTaskDefBuilder_ != null) {
-        result.command_ = putTaskDefBuilder_.build();
-      }
-      if (commandCase_ == 8 &&
-          putExternalEventDefBuilder_ != null) {
-        result.command_ = putExternalEventDefBuilder_.build();
-      }
-      if (commandCase_ == 9 &&
-          runWfBuilder_ != null) {
-        result.command_ = runWfBuilder_.build();
-      }
-      if (commandCase_ == 10 &&
-          putExternalEventBuilder_ != null) {
-        result.command_ = putExternalEventBuilder_.build();
-      }
-      if (commandCase_ == 11 &&
-          stopWfRunBuilder_ != null) {
-        result.command_ = stopWfRunBuilder_.build();
-      }
-      if (commandCase_ == 12 &&
-          resumeWfRunBuilder_ != null) {
-        result.command_ = resumeWfRunBuilder_.build();
-      }
-      if (commandCase_ == 13 &&
-          sleepNodeMaturedBuilder_ != null) {
-        result.command_ = sleepNodeMaturedBuilder_.build();
-      }
-      if (commandCase_ == 14 &&
-          deleteWfRunBuilder_ != null) {
-        result.command_ = deleteWfRunBuilder_.build();
-      }
-      if (commandCase_ == 15 &&
-          deleteWfSpecBuilder_ != null) {
-        result.command_ = deleteWfSpecBuilder_.build();
-      }
-      if (commandCase_ == 16 &&
-          deleteTaskDefBuilder_ != null) {
-        result.command_ = deleteTaskDefBuilder_.build();
-      }
-      if (commandCase_ == 17 &&
-          deleteExternalEventDefBuilder_ != null) {
-        result.command_ = deleteExternalEventDefBuilder_.build();
-      }
-      if (commandCase_ == 18 &&
-          externalEventTimeoutBuilder_ != null) {
-        result.command_ = externalEventTimeoutBuilder_.build();
-      }
+      onBuilt();
+      return result;
     }
 
     @java.lang.Override
@@ -1314,8 +1577,8 @@ private static final long serialVersionUID = 0L;
         mergeTime(other.getTime());
       }
       if (other.hasCommandId()) {
+        bitField0_ |= 0x00000001;
         commandId_ = other.commandId_;
-        bitField0_ |= 0x00000002;
         onChanged();
       }
       switch (other.getCommandCase()) {
@@ -1383,7 +1646,7 @@ private static final long serialVersionUID = 0L;
           break;
         }
       }
-      this.mergeUnknownFields(other.getUnknownFields());
+      this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
     }
@@ -1398,147 +1661,17 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
+      io.littlehorse.common.proto.CommandPb parsedMessage = null;
       try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            case 10: {
-              input.readMessage(
-                  getTimeFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              bitField0_ |= 0x00000001;
-              break;
-            } // case 10
-            case 18: {
-              commandId_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000002;
-              break;
-            } // case 18
-            case 26: {
-              input.readMessage(
-                  getTaskResultEventFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              commandCase_ = 3;
-              break;
-            } // case 26
-            case 34: {
-              input.readMessage(
-                  getTaskClaimEventFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              commandCase_ = 4;
-              break;
-            } // case 34
-            case 50: {
-              input.readMessage(
-                  getPutWfSpecFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              commandCase_ = 6;
-              break;
-            } // case 50
-            case 58: {
-              input.readMessage(
-                  getPutTaskDefFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              commandCase_ = 7;
-              break;
-            } // case 58
-            case 66: {
-              input.readMessage(
-                  getPutExternalEventDefFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              commandCase_ = 8;
-              break;
-            } // case 66
-            case 74: {
-              input.readMessage(
-                  getRunWfFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              commandCase_ = 9;
-              break;
-            } // case 74
-            case 82: {
-              input.readMessage(
-                  getPutExternalEventFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              commandCase_ = 10;
-              break;
-            } // case 82
-            case 90: {
-              input.readMessage(
-                  getStopWfRunFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              commandCase_ = 11;
-              break;
-            } // case 90
-            case 98: {
-              input.readMessage(
-                  getResumeWfRunFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              commandCase_ = 12;
-              break;
-            } // case 98
-            case 106: {
-              input.readMessage(
-                  getSleepNodeMaturedFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              commandCase_ = 13;
-              break;
-            } // case 106
-            case 114: {
-              input.readMessage(
-                  getDeleteWfRunFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              commandCase_ = 14;
-              break;
-            } // case 114
-            case 122: {
-              input.readMessage(
-                  getDeleteWfSpecFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              commandCase_ = 15;
-              break;
-            } // case 122
-            case 130: {
-              input.readMessage(
-                  getDeleteTaskDefFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              commandCase_ = 16;
-              break;
-            } // case 130
-            case 138: {
-              input.readMessage(
-                  getDeleteExternalEventDefFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              commandCase_ = 17;
-              break;
-            } // case 138
-            case 146: {
-              input.readMessage(
-                  getExternalEventTimeoutFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              commandCase_ = 18;
-              break;
-            } // case 146
-            default: {
-              if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                done = true; // was an endgroup tag
-              }
-              break;
-            } // default:
-          } // switch (tag)
-        } // while (!done)
+        parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        parsedMessage = (io.littlehorse.common.proto.CommandPb) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
-        onChanged();
-      } // finally
+        if (parsedMessage != null) {
+          mergeFrom(parsedMessage);
+        }
+      }
       return this;
     }
     private int commandCase_ = 0;
@@ -1566,7 +1699,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the time field is set.
      */
     public boolean hasTime() {
-      return ((bitField0_ & 0x00000001) != 0);
+      return timeBuilder_ != null || time_ != null;
     }
     /**
      * <code>.google.protobuf.Timestamp time = 1;</code>
@@ -1588,11 +1721,11 @@ private static final long serialVersionUID = 0L;
           throw new NullPointerException();
         }
         time_ = value;
+        onChanged();
       } else {
         timeBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000001;
-      onChanged();
+
       return this;
     }
     /**
@@ -1602,11 +1735,11 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.Timestamp.Builder builderForValue) {
       if (timeBuilder_ == null) {
         time_ = builderForValue.build();
+        onChanged();
       } else {
         timeBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000001;
-      onChanged();
+
       return this;
     }
     /**
@@ -1614,38 +1747,38 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeTime(com.google.protobuf.Timestamp value) {
       if (timeBuilder_ == null) {
-        if (((bitField0_ & 0x00000001) != 0) &&
-          time_ != null &&
-          time_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
-          getTimeBuilder().mergeFrom(value);
+        if (time_ != null) {
+          time_ =
+            com.google.protobuf.Timestamp.newBuilder(time_).mergeFrom(value).buildPartial();
         } else {
           time_ = value;
         }
+        onChanged();
       } else {
         timeBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000001;
-      onChanged();
+
       return this;
     }
     /**
      * <code>.google.protobuf.Timestamp time = 1;</code>
      */
     public Builder clearTime() {
-      bitField0_ = (bitField0_ & ~0x00000001);
-      time_ = null;
-      if (timeBuilder_ != null) {
-        timeBuilder_.dispose();
+      if (timeBuilder_ == null) {
+        time_ = null;
+        onChanged();
+      } else {
+        time_ = null;
         timeBuilder_ = null;
       }
-      onChanged();
+
       return this;
     }
     /**
      * <code>.google.protobuf.Timestamp time = 1;</code>
      */
     public com.google.protobuf.Timestamp.Builder getTimeBuilder() {
-      bitField0_ |= 0x00000001;
+      
       onChanged();
       return getTimeFieldBuilder().getBuilder();
     }
@@ -1679,14 +1812,14 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object commandId_ = "";
     /**
-     * <code>optional string command_id = 2;</code>
+     * <code>string command_id = 2;</code>
      * @return Whether the commandId field is set.
      */
     public boolean hasCommandId() {
-      return ((bitField0_ & 0x00000002) != 0);
+      return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>optional string command_id = 2;</code>
+     * <code>string command_id = 2;</code>
      * @return The commandId.
      */
     public java.lang.String getCommandId() {
@@ -1702,7 +1835,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>optional string command_id = 2;</code>
+     * <code>string command_id = 2;</code>
      * @return The bytes for commandId.
      */
     public com.google.protobuf.ByteString
@@ -1719,39 +1852,43 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>optional string command_id = 2;</code>
+     * <code>string command_id = 2;</code>
      * @param value The commandId to set.
      * @return This builder for chaining.
      */
     public Builder setCommandId(
         java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
       commandId_ = value;
-      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>optional string command_id = 2;</code>
+     * <code>string command_id = 2;</code>
      * @return This builder for chaining.
      */
     public Builder clearCommandId() {
+      bitField0_ = (bitField0_ & ~0x00000001);
       commandId_ = getDefaultInstance().getCommandId();
-      bitField0_ = (bitField0_ & ~0x00000002);
       onChanged();
       return this;
     }
     /**
-     * <code>optional string command_id = 2;</code>
+     * <code>string command_id = 2;</code>
      * @param value The bytes for commandId to set.
      * @return This builder for chaining.
      */
     public Builder setCommandIdBytes(
         com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      bitField0_ |= 0x00000001;
       commandId_ = value;
-      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
@@ -1830,9 +1967,8 @@ private static final long serialVersionUID = 0L;
       } else {
         if (commandCase_ == 3) {
           taskResultEventBuilder_.mergeFrom(value);
-        } else {
-          taskResultEventBuilder_.setMessage(value);
         }
+        taskResultEventBuilder_.setMessage(value);
       }
       commandCase_ = 3;
       return this;
@@ -1894,7 +2030,7 @@ private static final long serialVersionUID = 0L;
         command_ = null;
       }
       commandCase_ = 3;
-      onChanged();
+      onChanged();;
       return taskResultEventBuilder_;
     }
 
@@ -1972,9 +2108,8 @@ private static final long serialVersionUID = 0L;
       } else {
         if (commandCase_ == 4) {
           taskClaimEventBuilder_.mergeFrom(value);
-        } else {
-          taskClaimEventBuilder_.setMessage(value);
         }
+        taskClaimEventBuilder_.setMessage(value);
       }
       commandCase_ = 4;
       return this;
@@ -2036,7 +2171,7 @@ private static final long serialVersionUID = 0L;
         command_ = null;
       }
       commandCase_ = 4;
-      onChanged();
+      onChanged();;
       return taskClaimEventBuilder_;
     }
 
@@ -2114,9 +2249,8 @@ private static final long serialVersionUID = 0L;
       } else {
         if (commandCase_ == 6) {
           putWfSpecBuilder_.mergeFrom(value);
-        } else {
-          putWfSpecBuilder_.setMessage(value);
         }
+        putWfSpecBuilder_.setMessage(value);
       }
       commandCase_ = 6;
       return this;
@@ -2178,7 +2312,7 @@ private static final long serialVersionUID = 0L;
         command_ = null;
       }
       commandCase_ = 6;
-      onChanged();
+      onChanged();;
       return putWfSpecBuilder_;
     }
 
@@ -2256,9 +2390,8 @@ private static final long serialVersionUID = 0L;
       } else {
         if (commandCase_ == 7) {
           putTaskDefBuilder_.mergeFrom(value);
-        } else {
-          putTaskDefBuilder_.setMessage(value);
         }
+        putTaskDefBuilder_.setMessage(value);
       }
       commandCase_ = 7;
       return this;
@@ -2320,7 +2453,7 @@ private static final long serialVersionUID = 0L;
         command_ = null;
       }
       commandCase_ = 7;
-      onChanged();
+      onChanged();;
       return putTaskDefBuilder_;
     }
 
@@ -2398,9 +2531,8 @@ private static final long serialVersionUID = 0L;
       } else {
         if (commandCase_ == 8) {
           putExternalEventDefBuilder_.mergeFrom(value);
-        } else {
-          putExternalEventDefBuilder_.setMessage(value);
         }
+        putExternalEventDefBuilder_.setMessage(value);
       }
       commandCase_ = 8;
       return this;
@@ -2462,7 +2594,7 @@ private static final long serialVersionUID = 0L;
         command_ = null;
       }
       commandCase_ = 8;
-      onChanged();
+      onChanged();;
       return putExternalEventDefBuilder_;
     }
 
@@ -2540,9 +2672,8 @@ private static final long serialVersionUID = 0L;
       } else {
         if (commandCase_ == 9) {
           runWfBuilder_.mergeFrom(value);
-        } else {
-          runWfBuilder_.setMessage(value);
         }
+        runWfBuilder_.setMessage(value);
       }
       commandCase_ = 9;
       return this;
@@ -2604,7 +2735,7 @@ private static final long serialVersionUID = 0L;
         command_ = null;
       }
       commandCase_ = 9;
-      onChanged();
+      onChanged();;
       return runWfBuilder_;
     }
 
@@ -2682,9 +2813,8 @@ private static final long serialVersionUID = 0L;
       } else {
         if (commandCase_ == 10) {
           putExternalEventBuilder_.mergeFrom(value);
-        } else {
-          putExternalEventBuilder_.setMessage(value);
         }
+        putExternalEventBuilder_.setMessage(value);
       }
       commandCase_ = 10;
       return this;
@@ -2746,7 +2876,7 @@ private static final long serialVersionUID = 0L;
         command_ = null;
       }
       commandCase_ = 10;
-      onChanged();
+      onChanged();;
       return putExternalEventBuilder_;
     }
 
@@ -2824,9 +2954,8 @@ private static final long serialVersionUID = 0L;
       } else {
         if (commandCase_ == 11) {
           stopWfRunBuilder_.mergeFrom(value);
-        } else {
-          stopWfRunBuilder_.setMessage(value);
         }
+        stopWfRunBuilder_.setMessage(value);
       }
       commandCase_ = 11;
       return this;
@@ -2888,7 +3017,7 @@ private static final long serialVersionUID = 0L;
         command_ = null;
       }
       commandCase_ = 11;
-      onChanged();
+      onChanged();;
       return stopWfRunBuilder_;
     }
 
@@ -2966,9 +3095,8 @@ private static final long serialVersionUID = 0L;
       } else {
         if (commandCase_ == 12) {
           resumeWfRunBuilder_.mergeFrom(value);
-        } else {
-          resumeWfRunBuilder_.setMessage(value);
         }
+        resumeWfRunBuilder_.setMessage(value);
       }
       commandCase_ = 12;
       return this;
@@ -3030,7 +3158,7 @@ private static final long serialVersionUID = 0L;
         command_ = null;
       }
       commandCase_ = 12;
-      onChanged();
+      onChanged();;
       return resumeWfRunBuilder_;
     }
 
@@ -3108,9 +3236,8 @@ private static final long serialVersionUID = 0L;
       } else {
         if (commandCase_ == 13) {
           sleepNodeMaturedBuilder_.mergeFrom(value);
-        } else {
-          sleepNodeMaturedBuilder_.setMessage(value);
         }
+        sleepNodeMaturedBuilder_.setMessage(value);
       }
       commandCase_ = 13;
       return this;
@@ -3172,7 +3299,7 @@ private static final long serialVersionUID = 0L;
         command_ = null;
       }
       commandCase_ = 13;
-      onChanged();
+      onChanged();;
       return sleepNodeMaturedBuilder_;
     }
 
@@ -3250,9 +3377,8 @@ private static final long serialVersionUID = 0L;
       } else {
         if (commandCase_ == 14) {
           deleteWfRunBuilder_.mergeFrom(value);
-        } else {
-          deleteWfRunBuilder_.setMessage(value);
         }
+        deleteWfRunBuilder_.setMessage(value);
       }
       commandCase_ = 14;
       return this;
@@ -3314,7 +3440,7 @@ private static final long serialVersionUID = 0L;
         command_ = null;
       }
       commandCase_ = 14;
-      onChanged();
+      onChanged();;
       return deleteWfRunBuilder_;
     }
 
@@ -3392,9 +3518,8 @@ private static final long serialVersionUID = 0L;
       } else {
         if (commandCase_ == 15) {
           deleteWfSpecBuilder_.mergeFrom(value);
-        } else {
-          deleteWfSpecBuilder_.setMessage(value);
         }
+        deleteWfSpecBuilder_.setMessage(value);
       }
       commandCase_ = 15;
       return this;
@@ -3456,7 +3581,7 @@ private static final long serialVersionUID = 0L;
         command_ = null;
       }
       commandCase_ = 15;
-      onChanged();
+      onChanged();;
       return deleteWfSpecBuilder_;
     }
 
@@ -3534,9 +3659,8 @@ private static final long serialVersionUID = 0L;
       } else {
         if (commandCase_ == 16) {
           deleteTaskDefBuilder_.mergeFrom(value);
-        } else {
-          deleteTaskDefBuilder_.setMessage(value);
         }
+        deleteTaskDefBuilder_.setMessage(value);
       }
       commandCase_ = 16;
       return this;
@@ -3598,7 +3722,7 @@ private static final long serialVersionUID = 0L;
         command_ = null;
       }
       commandCase_ = 16;
-      onChanged();
+      onChanged();;
       return deleteTaskDefBuilder_;
     }
 
@@ -3676,9 +3800,8 @@ private static final long serialVersionUID = 0L;
       } else {
         if (commandCase_ == 17) {
           deleteExternalEventDefBuilder_.mergeFrom(value);
-        } else {
-          deleteExternalEventDefBuilder_.setMessage(value);
         }
+        deleteExternalEventDefBuilder_.setMessage(value);
       }
       commandCase_ = 17;
       return this;
@@ -3740,7 +3863,7 @@ private static final long serialVersionUID = 0L;
         command_ = null;
       }
       commandCase_ = 17;
-      onChanged();
+      onChanged();;
       return deleteExternalEventDefBuilder_;
     }
 
@@ -3818,9 +3941,8 @@ private static final long serialVersionUID = 0L;
       } else {
         if (commandCase_ == 18) {
           externalEventTimeoutBuilder_.mergeFrom(value);
-        } else {
-          externalEventTimeoutBuilder_.setMessage(value);
         }
+        externalEventTimeoutBuilder_.setMessage(value);
       }
       commandCase_ = 18;
       return this;
@@ -3882,7 +4004,7 @@ private static final long serialVersionUID = 0L;
         command_ = null;
       }
       commandCase_ = 18;
-      onChanged();
+      onChanged();;
       return externalEventTimeoutBuilder_;
     }
     @java.lang.Override
@@ -3918,18 +4040,7 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      Builder builder = newBuilder();
-      try {
-        builder.mergeFrom(input, extensionRegistry);
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(builder.buildPartial());
-      } catch (com.google.protobuf.UninitializedMessageException e) {
-        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(e)
-            .setUnfinishedMessage(builder.buildPartial());
-      }
-      return builder.buildPartial();
+      return new CommandPb(input, extensionRegistry);
     }
   };
 

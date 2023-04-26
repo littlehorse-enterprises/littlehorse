@@ -6,7 +6,7 @@ option java_multiple_files = true;
 option java_package = "io.littlehorse.common.proto";
 
 import "google/protobuf/timestamp.proto";
-import "io-littlehorse-proto/proto/service.proto";
+import "lh-proto/proto/service.proto";
 
 
 // This section contains data structures used internally for sending the results of

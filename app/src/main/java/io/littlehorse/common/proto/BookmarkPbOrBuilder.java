@@ -30,14 +30,14 @@ public interface BookmarkPbOrBuilder extends
   /**
    * <code>map&lt;int32, .littlehorse.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
    */
-  /* nullable */
-io.littlehorse.common.proto.PartitionBookmarkPb getInProgressPartitionsOrDefault(
+
+  io.littlehorse.common.proto.PartitionBookmarkPb getInProgressPartitionsOrDefault(
       int key,
-      /* nullable */
-io.littlehorse.common.proto.PartitionBookmarkPb defaultValue);
+      io.littlehorse.common.proto.PartitionBookmarkPb defaultValue);
   /**
    * <code>map&lt;int32, .littlehorse.PartitionBookmarkPb&gt; in_progress_partitions = 1;</code>
    */
+
   io.littlehorse.common.proto.PartitionBookmarkPb getInProgressPartitionsOrThrow(
       int key);
 

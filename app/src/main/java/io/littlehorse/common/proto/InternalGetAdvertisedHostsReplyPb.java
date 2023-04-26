@@ -30,6 +30,57 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
+  private InternalGetAdvertisedHostsReplyPb(
+      com.google.protobuf.CodedInputStream input,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    this();
+    if (extensionRegistry == null) {
+      throw new java.lang.NullPointerException();
+    }
+    int mutable_bitField0_ = 0;
+    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+        com.google.protobuf.UnknownFieldSet.newBuilder();
+    try {
+      boolean done = false;
+      while (!done) {
+        int tag = input.readTag();
+        switch (tag) {
+          case 0:
+            done = true;
+            break;
+          case 10: {
+            if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+              hosts_ = com.google.protobuf.MapField.newMapField(
+                  HostsDefaultEntryHolder.defaultEntry);
+              mutable_bitField0_ |= 0x00000001;
+            }
+            com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.jlib.common.proto.HostInfoPb>
+            hosts__ = input.readMessage(
+                HostsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+            hosts_.getMutableMap().put(
+                hosts__.getKey(), hosts__.getValue());
+            break;
+          }
+          default: {
+            if (!parseUnknownField(
+                input, unknownFields, extensionRegistry, tag)) {
+              done = true;
+            }
+            break;
+          }
+        }
+      }
+    } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+      throw e.setUnfinishedMessage(this);
+    } catch (java.io.IOException e) {
+      throw new com.google.protobuf.InvalidProtocolBufferException(
+          e).setUnfinishedMessage(this);
+    } finally {
+      this.unknownFields = unknownFields.build();
+      makeExtensionsImmutable();
+    }
+  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalGetAdvertisedHostsReplyPb_descriptor;
@@ -67,7 +118,6 @@ private static final long serialVersionUID = 0L;
                 com.google.protobuf.WireFormat.FieldType.MESSAGE,
                 io.littlehorse.jlib.common.proto.HostInfoPb.getDefaultInstance());
   }
-  @SuppressWarnings("serial")
   private com.google.protobuf.MapField<
       java.lang.String, io.littlehorse.jlib.common.proto.HostInfoPb> hosts_;
   private com.google.protobuf.MapField<java.lang.String, io.littlehorse.jlib.common.proto.HostInfoPb>
@@ -78,16 +128,18 @@ private static final long serialVersionUID = 0L;
     }
     return hosts_;
   }
+
   public int getHostsCount() {
     return internalGetHosts().getMap().size();
   }
   /**
    * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
    */
+
   @java.lang.Override
   public boolean containsHosts(
       java.lang.String key) {
-    if (key == null) { throw new NullPointerException("map key"); }
+    if (key == null) { throw new java.lang.NullPointerException(); }
     return internalGetHosts().getMap().containsKey(key);
   }
   /**
@@ -102,6 +154,7 @@ private static final long serialVersionUID = 0L;
    * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
    */
   @java.lang.Override
+
   public java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.HostInfoPb> getHostsMap() {
     return internalGetHosts().getMap();
   }
@@ -109,12 +162,11 @@ private static final long serialVersionUID = 0L;
    * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
    */
   @java.lang.Override
-  public /* nullable */
-io.littlehorse.jlib.common.proto.HostInfoPb getHostsOrDefault(
+
+  public io.littlehorse.jlib.common.proto.HostInfoPb getHostsOrDefault(
       java.lang.String key,
-      /* nullable */
-io.littlehorse.jlib.common.proto.HostInfoPb defaultValue) {
-    if (key == null) { throw new NullPointerException("map key"); }
+      io.littlehorse.jlib.common.proto.HostInfoPb defaultValue) {
+    if (key == null) { throw new java.lang.NullPointerException(); }
     java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.HostInfoPb> map =
         internalGetHosts().getMap();
     return map.containsKey(key) ? map.get(key) : defaultValue;
@@ -123,9 +175,10 @@ io.littlehorse.jlib.common.proto.HostInfoPb defaultValue) {
    * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
    */
   @java.lang.Override
+
   public io.littlehorse.jlib.common.proto.HostInfoPb getHostsOrThrow(
       java.lang.String key) {
-    if (key == null) { throw new NullPointerException("map key"); }
+    if (key == null) { throw new java.lang.NullPointerException(); }
     java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.HostInfoPb> map =
         internalGetHosts().getMap();
     if (!map.containsKey(key)) {
@@ -154,7 +207,7 @@ io.littlehorse.jlib.common.proto.HostInfoPb defaultValue) {
         internalGetHosts(),
         HostsDefaultEntryHolder.defaultEntry,
         1);
-    getUnknownFields().writeTo(output);
+    unknownFields.writeTo(output);
   }
 
   @java.lang.Override
@@ -173,7 +226,7 @@ io.littlehorse.jlib.common.proto.HostInfoPb defaultValue) {
       size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, hosts__);
     }
-    size += getUnknownFields().getSerializedSize();
+    size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
   }
@@ -190,7 +243,7 @@ io.littlehorse.jlib.common.proto.HostInfoPb defaultValue) {
 
     if (!internalGetHosts().equals(
         other.internalGetHosts())) return false;
-    if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+    if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
 
@@ -205,7 +258,7 @@ io.littlehorse.jlib.common.proto.HostInfoPb defaultValue) {
       hash = (37 * hash) + HOSTS_FIELD_NUMBER;
       hash = (53 * hash) + internalGetHosts().hashCode();
     }
-    hash = (29 * hash) + getUnknownFields().hashCode();
+    hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
   }
@@ -344,18 +397,22 @@ io.littlehorse.jlib.common.proto.HostInfoPb defaultValue) {
 
     // Construct using io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
+      }
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      bitField0_ = 0;
       internalGetMutableHosts().clear();
       return this;
     }
@@ -383,17 +440,11 @@ io.littlehorse.jlib.common.proto.HostInfoPb defaultValue) {
     @java.lang.Override
     public io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb buildPartial() {
       io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb result = new io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb(this);
-      if (bitField0_ != 0) { buildPartial0(result); }
+      int from_bitField0_ = bitField0_;
+      result.hosts_ = internalGetHosts();
+      result.hosts_.makeImmutable();
       onBuilt();
       return result;
-    }
-
-    private void buildPartial0(io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb result) {
-      int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.hosts_ = internalGetHosts();
-        result.hosts_.makeImmutable();
-      }
     }
 
     @java.lang.Override
@@ -442,8 +493,7 @@ io.littlehorse.jlib.common.proto.HostInfoPb defaultValue) {
       if (other == io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb.getDefaultInstance()) return this;
       internalGetMutableHosts().mergeFrom(
           other.internalGetHosts());
-      bitField0_ |= 0x00000001;
-      this.mergeUnknownFields(other.getUnknownFields());
+      this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
     }
@@ -458,39 +508,17 @@ io.littlehorse.jlib.common.proto.HostInfoPb defaultValue) {
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
+      io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb parsedMessage = null;
       try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            case 10: {
-              com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.jlib.common.proto.HostInfoPb>
-              hosts__ = input.readMessage(
-                  HostsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
-              internalGetMutableHosts().getMutableMap().put(
-                  hosts__.getKey(), hosts__.getValue());
-              bitField0_ |= 0x00000001;
-              break;
-            } // case 10
-            default: {
-              if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                done = true; // was an endgroup tag
-              }
-              break;
-            } // default:
-          } // switch (tag)
-        } // while (!done)
+        parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        parsedMessage = (io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
-        onChanged();
-      } // finally
+        if (parsedMessage != null) {
+          mergeFrom(parsedMessage);
+        }
+      }
       return this;
     }
     private int bitField0_;
@@ -498,7 +526,7 @@ io.littlehorse.jlib.common.proto.HostInfoPb defaultValue) {
     private com.google.protobuf.MapField<
         java.lang.String, io.littlehorse.jlib.common.proto.HostInfoPb> hosts_;
     private com.google.protobuf.MapField<java.lang.String, io.littlehorse.jlib.common.proto.HostInfoPb>
-        internalGetHosts() {
+    internalGetHosts() {
       if (hosts_ == null) {
         return com.google.protobuf.MapField.emptyMapField(
             HostsDefaultEntryHolder.defaultEntry);
@@ -506,7 +534,8 @@ io.littlehorse.jlib.common.proto.HostInfoPb defaultValue) {
       return hosts_;
     }
     private com.google.protobuf.MapField<java.lang.String, io.littlehorse.jlib.common.proto.HostInfoPb>
-        internalGetMutableHosts() {
+    internalGetMutableHosts() {
+      onChanged();;
       if (hosts_ == null) {
         hosts_ = com.google.protobuf.MapField.newMapField(
             HostsDefaultEntryHolder.defaultEntry);
@@ -514,20 +543,20 @@ io.littlehorse.jlib.common.proto.HostInfoPb defaultValue) {
       if (!hosts_.isMutable()) {
         hosts_ = hosts_.copy();
       }
-      bitField0_ |= 0x00000001;
-      onChanged();
       return hosts_;
     }
+
     public int getHostsCount() {
       return internalGetHosts().getMap().size();
     }
     /**
      * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
      */
+
     @java.lang.Override
     public boolean containsHosts(
         java.lang.String key) {
-      if (key == null) { throw new NullPointerException("map key"); }
+      if (key == null) { throw new java.lang.NullPointerException(); }
       return internalGetHosts().getMap().containsKey(key);
     }
     /**
@@ -542,6 +571,7 @@ io.littlehorse.jlib.common.proto.HostInfoPb defaultValue) {
      * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
      */
     @java.lang.Override
+
     public java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.HostInfoPb> getHostsMap() {
       return internalGetHosts().getMap();
     }
@@ -549,12 +579,11 @@ io.littlehorse.jlib.common.proto.HostInfoPb defaultValue) {
      * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
      */
     @java.lang.Override
-    public /* nullable */
-io.littlehorse.jlib.common.proto.HostInfoPb getHostsOrDefault(
+
+    public io.littlehorse.jlib.common.proto.HostInfoPb getHostsOrDefault(
         java.lang.String key,
-        /* nullable */
-io.littlehorse.jlib.common.proto.HostInfoPb defaultValue) {
-      if (key == null) { throw new NullPointerException("map key"); }
+        io.littlehorse.jlib.common.proto.HostInfoPb defaultValue) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
       java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.HostInfoPb> map =
           internalGetHosts().getMap();
       return map.containsKey(key) ? map.get(key) : defaultValue;
@@ -563,9 +592,10 @@ io.littlehorse.jlib.common.proto.HostInfoPb defaultValue) {
      * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
      */
     @java.lang.Override
+
     public io.littlehorse.jlib.common.proto.HostInfoPb getHostsOrThrow(
         java.lang.String key) {
-      if (key == null) { throw new NullPointerException("map key"); }
+      if (key == null) { throw new java.lang.NullPointerException(); }
       java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.HostInfoPb> map =
           internalGetHosts().getMap();
       if (!map.containsKey(key)) {
@@ -573,8 +603,8 @@ io.littlehorse.jlib.common.proto.HostInfoPb defaultValue) {
       }
       return map.get(key);
     }
+
     public Builder clearHosts() {
-      bitField0_ = (bitField0_ & ~0x00000001);
       internalGetMutableHosts().getMutableMap()
           .clear();
       return this;
@@ -582,9 +612,10 @@ io.littlehorse.jlib.common.proto.HostInfoPb defaultValue) {
     /**
      * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
      */
+
     public Builder removeHosts(
         java.lang.String key) {
-      if (key == null) { throw new NullPointerException("map key"); }
+      if (key == null) { throw new java.lang.NullPointerException(); }
       internalGetMutableHosts().getMutableMap()
           .remove(key);
       return this;
@@ -594,8 +625,7 @@ io.littlehorse.jlib.common.proto.HostInfoPb defaultValue) {
      */
     @java.lang.Deprecated
     public java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.HostInfoPb>
-        getMutableHosts() {
-      bitField0_ |= 0x00000001;
+    getMutableHosts() {
       return internalGetMutableHosts().getMutableMap();
     }
     /**
@@ -604,21 +634,20 @@ io.littlehorse.jlib.common.proto.HostInfoPb defaultValue) {
     public Builder putHosts(
         java.lang.String key,
         io.littlehorse.jlib.common.proto.HostInfoPb value) {
-      if (key == null) { throw new NullPointerException("map key"); }
-      if (value == null) { throw new NullPointerException("map value"); }
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      if (value == null) { throw new java.lang.NullPointerException(); }
       internalGetMutableHosts().getMutableMap()
           .put(key, value);
-      bitField0_ |= 0x00000001;
       return this;
     }
     /**
      * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
      */
+
     public Builder putAllHosts(
         java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.HostInfoPb> values) {
       internalGetMutableHosts().getMutableMap()
           .putAll(values);
-      bitField0_ |= 0x00000001;
       return this;
     }
     @java.lang.Override
@@ -654,18 +683,7 @@ io.littlehorse.jlib.common.proto.HostInfoPb defaultValue) {
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      Builder builder = newBuilder();
-      try {
-        builder.mergeFrom(input, extensionRegistry);
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(builder.buildPartial());
-      } catch (com.google.protobuf.UninitializedMessageException e) {
-        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(e)
-            .setUnfinishedMessage(builder.buildPartial());
-      }
-      return builder.buildPartial();
+      return new InternalGetAdvertisedHostsReplyPb(input, extensionRegistry);
     }
   };
 

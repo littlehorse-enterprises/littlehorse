@@ -1,5 +1,5 @@
 # LittleHorse Arch
-LittleHorse is a Microservice Orchestration Engine. For a description of the problem statement, see the LittleHorse Overview. It’s also recommended to read the `PROGRAMMING_MODEL.md` in the io-littlehorse-jlib repo to get a background for how Workflow logic works.
+LittleHorse is a Microservice Orchestration Engine. For a description of the problem statement, see the LittleHorse Overview. It’s also recommended to read the `PROGRAMMING_MODEL.md` in the lh-jlib repo to get a background for how Workflow logic works.
 
 The main component of the LittleHorse system is the LH Server. All metadata is managed through the LH Server, as are all workflow runs.
 
@@ -12,7 +12,7 @@ The LH Server comprises several logical parts:
 
 * A Kafka Streams topology which reads the Command topic, and performs all logic.
 
-The gRPC server’s API is quite simple and can be seen in `proto/service.proto` from the io-littlehorse-jlib repository.
+The gRPC server’s API is quite simple and can be seen in `proto/service.proto` from the lh-jlib repository.
 
 However, the implementation is quite complex. All state for the server is persisted in Kafka Streams topologies. Before reading further, I recommend gaining a primer on how Kafka Streams works. For example, the following links are good:
 

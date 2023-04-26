@@ -23,17 +23,17 @@ public interface CommandPbOrBuilder extends
   com.google.protobuf.TimestampOrBuilder getTimeOrBuilder();
 
   /**
-   * <code>optional string command_id = 2;</code>
+   * <code>string command_id = 2;</code>
    * @return Whether the commandId field is set.
    */
   boolean hasCommandId();
   /**
-   * <code>optional string command_id = 2;</code>
+   * <code>string command_id = 2;</code>
    * @return The commandId.
    */
   java.lang.String getCommandId();
   /**
-   * <code>optional string command_id = 2;</code>
+   * <code>string command_id = 2;</code>
    * @return The bytes for commandId.
    */
   com.google.protobuf.ByteString

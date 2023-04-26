@@ -31,6 +31,59 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
+  private DiscreteTagLocalCounterPb(
+      com.google.protobuf.CodedInputStream input,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    this();
+    if (extensionRegistry == null) {
+      throw new java.lang.NullPointerException();
+    }
+    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+        com.google.protobuf.UnknownFieldSet.newBuilder();
+    try {
+      boolean done = false;
+      while (!done) {
+        int tag = input.readTag();
+        switch (tag) {
+          case 0:
+            done = true;
+            break;
+          case 8: {
+
+            localCount_ = input.readInt64();
+            break;
+          }
+          case 18: {
+            java.lang.String s = input.readStringRequireUtf8();
+
+            tagAttributes_ = s;
+            break;
+          }
+          case 24: {
+
+            partition_ = input.readInt32();
+            break;
+          }
+          default: {
+            if (!parseUnknownField(
+                input, unknownFields, extensionRegistry, tag)) {
+              done = true;
+            }
+            break;
+          }
+        }
+      }
+    } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+      throw e.setUnfinishedMessage(this);
+    } catch (java.io.IOException e) {
+      throw new com.google.protobuf.InvalidProtocolBufferException(
+          e).setUnfinishedMessage(this);
+    } finally {
+      this.unknownFields = unknownFields.build();
+      makeExtensionsImmutable();
+    }
+  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_DiscreteTagLocalCounterPb_descriptor;
@@ -45,7 +98,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int LOCAL_COUNT_FIELD_NUMBER = 1;
-  private long localCount_ = 0L;
+  private long localCount_;
   /**
    * <code>int64 local_count = 1;</code>
    * @return The localCount.
@@ -56,8 +109,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int TAG_ATTRIBUTES_FIELD_NUMBER = 2;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object tagAttributes_ = "";
+  private volatile java.lang.Object tagAttributes_;
   /**
    * <code>string tag_attributes = 2;</code>
    * @return The tagAttributes.
@@ -95,7 +147,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int PARTITION_FIELD_NUMBER = 3;
-  private int partition_ = 0;
+  private int partition_;
   /**
    * <code>int32 partition = 3;</code>
    * @return The partition.
@@ -122,13 +174,13 @@ private static final long serialVersionUID = 0L;
     if (localCount_ != 0L) {
       output.writeInt64(1, localCount_);
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(tagAttributes_)) {
+    if (!getTagAttributesBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, tagAttributes_);
     }
     if (partition_ != 0) {
       output.writeInt32(3, partition_);
     }
-    getUnknownFields().writeTo(output);
+    unknownFields.writeTo(output);
   }
 
   @java.lang.Override
@@ -141,14 +193,14 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt64Size(1, localCount_);
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(tagAttributes_)) {
+    if (!getTagAttributesBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, tagAttributes_);
     }
     if (partition_ != 0) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(3, partition_);
     }
-    size += getUnknownFields().getSerializedSize();
+    size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
   }
@@ -169,7 +221,7 @@ private static final long serialVersionUID = 0L;
         .equals(other.getTagAttributes())) return false;
     if (getPartition()
         != other.getPartition()) return false;
-    if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+    if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
 
@@ -187,7 +239,7 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getTagAttributes().hashCode();
     hash = (37 * hash) + PARTITION_FIELD_NUMBER;
     hash = (53 * hash) + getPartition();
-    hash = (29 * hash) + getUnknownFields().hashCode();
+    hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
   }
@@ -304,21 +356,28 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.common.proto.DiscreteTagLocalCounterPb.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
+      }
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      bitField0_ = 0;
       localCount_ = 0L;
+
       tagAttributes_ = "";
+
       partition_ = 0;
+
       return this;
     }
 
@@ -345,22 +404,11 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.common.proto.DiscreteTagLocalCounterPb buildPartial() {
       io.littlehorse.common.proto.DiscreteTagLocalCounterPb result = new io.littlehorse.common.proto.DiscreteTagLocalCounterPb(this);
-      if (bitField0_ != 0) { buildPartial0(result); }
+      result.localCount_ = localCount_;
+      result.tagAttributes_ = tagAttributes_;
+      result.partition_ = partition_;
       onBuilt();
       return result;
-    }
-
-    private void buildPartial0(io.littlehorse.common.proto.DiscreteTagLocalCounterPb result) {
-      int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.localCount_ = localCount_;
-      }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.tagAttributes_ = tagAttributes_;
-      }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.partition_ = partition_;
-      }
     }
 
     @java.lang.Override
@@ -412,13 +460,12 @@ private static final long serialVersionUID = 0L;
       }
       if (!other.getTagAttributes().isEmpty()) {
         tagAttributes_ = other.tagAttributes_;
-        bitField0_ |= 0x00000002;
         onChanged();
       }
       if (other.getPartition() != 0) {
         setPartition(other.getPartition());
       }
-      this.mergeUnknownFields(other.getUnknownFields());
+      this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
     }
@@ -433,48 +480,19 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
+      io.littlehorse.common.proto.DiscreteTagLocalCounterPb parsedMessage = null;
       try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            case 8: {
-              localCount_ = input.readInt64();
-              bitField0_ |= 0x00000001;
-              break;
-            } // case 8
-            case 18: {
-              tagAttributes_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000002;
-              break;
-            } // case 18
-            case 24: {
-              partition_ = input.readInt32();
-              bitField0_ |= 0x00000004;
-              break;
-            } // case 24
-            default: {
-              if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                done = true; // was an endgroup tag
-              }
-              break;
-            } // default:
-          } // switch (tag)
-        } // while (!done)
+        parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        parsedMessage = (io.littlehorse.common.proto.DiscreteTagLocalCounterPb) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
-        onChanged();
-      } // finally
+        if (parsedMessage != null) {
+          mergeFrom(parsedMessage);
+        }
+      }
       return this;
     }
-    private int bitField0_;
 
     private long localCount_ ;
     /**
@@ -493,7 +511,6 @@ private static final long serialVersionUID = 0L;
     public Builder setLocalCount(long value) {
       
       localCount_ = value;
-      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -502,7 +519,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearLocalCount() {
-      bitField0_ = (bitField0_ & ~0x00000001);
+      
       localCount_ = 0L;
       onChanged();
       return this;
@@ -549,9 +566,11 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setTagAttributes(
         java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
       tagAttributes_ = value;
-      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
@@ -560,8 +579,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearTagAttributes() {
+      
       tagAttributes_ = getDefaultInstance().getTagAttributes();
-      bitField0_ = (bitField0_ & ~0x00000002);
       onChanged();
       return this;
     }
@@ -572,10 +591,12 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setTagAttributesBytes(
         com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
       tagAttributes_ = value;
-      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
@@ -597,7 +618,6 @@ private static final long serialVersionUID = 0L;
     public Builder setPartition(int value) {
       
       partition_ = value;
-      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
@@ -606,7 +626,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearPartition() {
-      bitField0_ = (bitField0_ & ~0x00000004);
+      
       partition_ = 0;
       onChanged();
       return this;
@@ -644,18 +664,7 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      Builder builder = newBuilder();
-      try {
-        builder.mergeFrom(input, extensionRegistry);
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(builder.buildPartial());
-      } catch (com.google.protobuf.UninitializedMessageException e) {
-        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(e)
-            .setUnfinishedMessage(builder.buildPartial());
-      }
-      return builder.buildPartial();
+      return new DiscreteTagLocalCounterPb(input, extensionRegistry);
     }
   };
 

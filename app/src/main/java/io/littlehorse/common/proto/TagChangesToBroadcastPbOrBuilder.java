@@ -30,14 +30,14 @@ public interface TagChangesToBroadcastPbOrBuilder extends
   /**
    * <code>map&lt;string, .littlehorse.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
    */
-  /* nullable */
-io.littlehorse.common.proto.DiscreteTagLocalCounterPb getChangelogOrDefault(
+
+  io.littlehorse.common.proto.DiscreteTagLocalCounterPb getChangelogOrDefault(
       java.lang.String key,
-      /* nullable */
-io.littlehorse.common.proto.DiscreteTagLocalCounterPb defaultValue);
+      io.littlehorse.common.proto.DiscreteTagLocalCounterPb defaultValue);
   /**
    * <code>map&lt;string, .littlehorse.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
    */
+
   io.littlehorse.common.proto.DiscreteTagLocalCounterPb getChangelogOrThrow(
       java.lang.String key);
 

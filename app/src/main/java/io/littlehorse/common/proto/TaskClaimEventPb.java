@@ -32,6 +32,84 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
+  private TaskClaimEventPb(
+      com.google.protobuf.CodedInputStream input,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    this();
+    if (extensionRegistry == null) {
+      throw new java.lang.NullPointerException();
+    }
+    int mutable_bitField0_ = 0;
+    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+        com.google.protobuf.UnknownFieldSet.newBuilder();
+    try {
+      boolean done = false;
+      while (!done) {
+        int tag = input.readTag();
+        switch (tag) {
+          case 0:
+            done = true;
+            break;
+          case 10: {
+            java.lang.String s = input.readStringRequireUtf8();
+
+            wfRunId_ = s;
+            break;
+          }
+          case 16: {
+
+            threadRunNumber_ = input.readInt32();
+            break;
+          }
+          case 24: {
+
+            taskRunNumber_ = input.readInt32();
+            break;
+          }
+          case 32: {
+
+            taskRunPosition_ = input.readInt32();
+            break;
+          }
+          case 42: {
+            com.google.protobuf.Timestamp.Builder subBuilder = null;
+            if (time_ != null) {
+              subBuilder = time_.toBuilder();
+            }
+            time_ = input.readMessage(com.google.protobuf.Timestamp.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom(time_);
+              time_ = subBuilder.buildPartial();
+            }
+
+            break;
+          }
+          case 50: {
+            java.lang.String s = input.readStringRequireUtf8();
+            bitField0_ |= 0x00000001;
+            taskWorkerVersion_ = s;
+            break;
+          }
+          default: {
+            if (!parseUnknownField(
+                input, unknownFields, extensionRegistry, tag)) {
+              done = true;
+            }
+            break;
+          }
+        }
+      }
+    } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+      throw e.setUnfinishedMessage(this);
+    } catch (java.io.IOException e) {
+      throw new com.google.protobuf.InvalidProtocolBufferException(
+          e).setUnfinishedMessage(this);
+    } finally {
+      this.unknownFields = unknownFields.build();
+      makeExtensionsImmutable();
+    }
+  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_TaskClaimEventPb_descriptor;
@@ -47,8 +125,7 @@ private static final long serialVersionUID = 0L;
 
   private int bitField0_;
   public static final int WF_RUN_ID_FIELD_NUMBER = 1;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object wfRunId_ = "";
+  private volatile java.lang.Object wfRunId_;
   /**
    * <code>string wf_run_id = 1;</code>
    * @return The wfRunId.
@@ -86,7 +163,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int THREAD_RUN_NUMBER_FIELD_NUMBER = 2;
-  private int threadRunNumber_ = 0;
+  private int threadRunNumber_;
   /**
    * <code>int32 thread_run_number = 2;</code>
    * @return The threadRunNumber.
@@ -97,7 +174,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int TASK_RUN_NUMBER_FIELD_NUMBER = 3;
-  private int taskRunNumber_ = 0;
+  private int taskRunNumber_;
   /**
    * <code>int32 task_run_number = 3;</code>
    * @return The taskRunNumber.
@@ -108,7 +185,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int TASK_RUN_POSITION_FIELD_NUMBER = 4;
-  private int taskRunPosition_ = 0;
+  private int taskRunPosition_;
   /**
    * <code>int32 task_run_position = 4;</code>
    * @return The taskRunPosition.
@@ -141,14 +218,13 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public com.google.protobuf.TimestampOrBuilder getTimeOrBuilder() {
-    return time_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : time_;
+    return getTime();
   }
 
   public static final int TASK_WORKER_VERSION_FIELD_NUMBER = 6;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object taskWorkerVersion_ = "";
+  private volatile java.lang.Object taskWorkerVersion_;
   /**
-   * <code>optional string task_worker_version = 6;</code>
+   * <code>string task_worker_version = 6;</code>
    * @return Whether the taskWorkerVersion field is set.
    */
   @java.lang.Override
@@ -156,7 +232,7 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>optional string task_worker_version = 6;</code>
+   * <code>string task_worker_version = 6;</code>
    * @return The taskWorkerVersion.
    */
   @java.lang.Override
@@ -173,7 +249,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>optional string task_worker_version = 6;</code>
+   * <code>string task_worker_version = 6;</code>
    * @return The bytes for taskWorkerVersion.
    */
   @java.lang.Override
@@ -205,7 +281,7 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(wfRunId_)) {
+    if (!getWfRunIdBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, wfRunId_);
     }
     if (threadRunNumber_ != 0) {
@@ -223,7 +299,7 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 6, taskWorkerVersion_);
     }
-    getUnknownFields().writeTo(output);
+    unknownFields.writeTo(output);
   }
 
   @java.lang.Override
@@ -232,7 +308,7 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(wfRunId_)) {
+    if (!getWfRunIdBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, wfRunId_);
     }
     if (threadRunNumber_ != 0) {
@@ -254,7 +330,7 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, taskWorkerVersion_);
     }
-    size += getUnknownFields().getSerializedSize();
+    size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
   }
@@ -287,7 +363,7 @@ private static final long serialVersionUID = 0L;
       if (!getTaskWorkerVersion()
           .equals(other.getTaskWorkerVersion())) return false;
     }
-    if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+    if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
 
@@ -314,7 +390,7 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + TASK_WORKER_VERSION_FIELD_NUMBER;
       hash = (53 * hash) + getTaskWorkerVersion().hashCode();
     }
-    hash = (29 * hash) + getUnknownFields().hashCode();
+    hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
   }
@@ -431,28 +507,38 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.common.proto.TaskClaimEventPb.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
+      }
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      bitField0_ = 0;
       wfRunId_ = "";
+
       threadRunNumber_ = 0;
+
       taskRunNumber_ = 0;
+
       taskRunPosition_ = 0;
-      time_ = null;
-      if (timeBuilder_ != null) {
-        timeBuilder_.dispose();
+
+      if (timeBuilder_ == null) {
+        time_ = null;
+      } else {
+        time_ = null;
         timeBuilder_ = null;
       }
       taskWorkerVersion_ = "";
+      bitField0_ = (bitField0_ & ~0x00000001);
       return this;
     }
 
@@ -479,36 +565,24 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.common.proto.TaskClaimEventPb buildPartial() {
       io.littlehorse.common.proto.TaskClaimEventPb result = new io.littlehorse.common.proto.TaskClaimEventPb(this);
-      if (bitField0_ != 0) { buildPartial0(result); }
-      onBuilt();
-      return result;
-    }
-
-    private void buildPartial0(io.littlehorse.common.proto.TaskClaimEventPb result) {
       int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.wfRunId_ = wfRunId_;
-      }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.threadRunNumber_ = threadRunNumber_;
-      }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.taskRunNumber_ = taskRunNumber_;
-      }
-      if (((from_bitField0_ & 0x00000008) != 0)) {
-        result.taskRunPosition_ = taskRunPosition_;
-      }
-      if (((from_bitField0_ & 0x00000010) != 0)) {
-        result.time_ = timeBuilder_ == null
-            ? time_
-            : timeBuilder_.build();
-      }
       int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000020) != 0)) {
-        result.taskWorkerVersion_ = taskWorkerVersion_;
+      result.wfRunId_ = wfRunId_;
+      result.threadRunNumber_ = threadRunNumber_;
+      result.taskRunNumber_ = taskRunNumber_;
+      result.taskRunPosition_ = taskRunPosition_;
+      if (timeBuilder_ == null) {
+        result.time_ = time_;
+      } else {
+        result.time_ = timeBuilder_.build();
+      }
+      if (((from_bitField0_ & 0x00000001) != 0)) {
         to_bitField0_ |= 0x00000001;
       }
-      result.bitField0_ |= to_bitField0_;
+      result.taskWorkerVersion_ = taskWorkerVersion_;
+      result.bitField0_ = to_bitField0_;
+      onBuilt();
+      return result;
     }
 
     @java.lang.Override
@@ -557,7 +631,6 @@ private static final long serialVersionUID = 0L;
       if (other == io.littlehorse.common.proto.TaskClaimEventPb.getDefaultInstance()) return this;
       if (!other.getWfRunId().isEmpty()) {
         wfRunId_ = other.wfRunId_;
-        bitField0_ |= 0x00000001;
         onChanged();
       }
       if (other.getThreadRunNumber() != 0) {
@@ -573,11 +646,11 @@ private static final long serialVersionUID = 0L;
         mergeTime(other.getTime());
       }
       if (other.hasTaskWorkerVersion()) {
+        bitField0_ |= 0x00000001;
         taskWorkerVersion_ = other.taskWorkerVersion_;
-        bitField0_ |= 0x00000020;
         onChanged();
       }
-      this.mergeUnknownFields(other.getUnknownFields());
+      this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
     }
@@ -592,62 +665,17 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
+      io.littlehorse.common.proto.TaskClaimEventPb parsedMessage = null;
       try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            case 10: {
-              wfRunId_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000001;
-              break;
-            } // case 10
-            case 16: {
-              threadRunNumber_ = input.readInt32();
-              bitField0_ |= 0x00000002;
-              break;
-            } // case 16
-            case 24: {
-              taskRunNumber_ = input.readInt32();
-              bitField0_ |= 0x00000004;
-              break;
-            } // case 24
-            case 32: {
-              taskRunPosition_ = input.readInt32();
-              bitField0_ |= 0x00000008;
-              break;
-            } // case 32
-            case 42: {
-              input.readMessage(
-                  getTimeFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              bitField0_ |= 0x00000010;
-              break;
-            } // case 42
-            case 50: {
-              taskWorkerVersion_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000020;
-              break;
-            } // case 50
-            default: {
-              if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                done = true; // was an endgroup tag
-              }
-              break;
-            } // default:
-          } // switch (tag)
-        } // while (!done)
+        parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        parsedMessage = (io.littlehorse.common.proto.TaskClaimEventPb) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
-        onChanged();
-      } // finally
+        if (parsedMessage != null) {
+          mergeFrom(parsedMessage);
+        }
+      }
       return this;
     }
     private int bitField0_;
@@ -693,9 +721,11 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setWfRunId(
         java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
       wfRunId_ = value;
-      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -704,8 +734,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearWfRunId() {
+      
       wfRunId_ = getDefaultInstance().getWfRunId();
-      bitField0_ = (bitField0_ & ~0x00000001);
       onChanged();
       return this;
     }
@@ -716,10 +746,12 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setWfRunIdBytes(
         com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
       wfRunId_ = value;
-      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -741,7 +773,6 @@ private static final long serialVersionUID = 0L;
     public Builder setThreadRunNumber(int value) {
       
       threadRunNumber_ = value;
-      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
@@ -750,7 +781,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearThreadRunNumber() {
-      bitField0_ = (bitField0_ & ~0x00000002);
+      
       threadRunNumber_ = 0;
       onChanged();
       return this;
@@ -773,7 +804,6 @@ private static final long serialVersionUID = 0L;
     public Builder setTaskRunNumber(int value) {
       
       taskRunNumber_ = value;
-      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
@@ -782,7 +812,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearTaskRunNumber() {
-      bitField0_ = (bitField0_ & ~0x00000004);
+      
       taskRunNumber_ = 0;
       onChanged();
       return this;
@@ -805,7 +835,6 @@ private static final long serialVersionUID = 0L;
     public Builder setTaskRunPosition(int value) {
       
       taskRunPosition_ = value;
-      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -814,7 +843,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearTaskRunPosition() {
-      bitField0_ = (bitField0_ & ~0x00000008);
+      
       taskRunPosition_ = 0;
       onChanged();
       return this;
@@ -828,7 +857,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the time field is set.
      */
     public boolean hasTime() {
-      return ((bitField0_ & 0x00000010) != 0);
+      return timeBuilder_ != null || time_ != null;
     }
     /**
      * <code>.google.protobuf.Timestamp time = 5;</code>
@@ -850,11 +879,11 @@ private static final long serialVersionUID = 0L;
           throw new NullPointerException();
         }
         time_ = value;
+        onChanged();
       } else {
         timeBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000010;
-      onChanged();
+
       return this;
     }
     /**
@@ -864,11 +893,11 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.Timestamp.Builder builderForValue) {
       if (timeBuilder_ == null) {
         time_ = builderForValue.build();
+        onChanged();
       } else {
         timeBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000010;
-      onChanged();
+
       return this;
     }
     /**
@@ -876,38 +905,38 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeTime(com.google.protobuf.Timestamp value) {
       if (timeBuilder_ == null) {
-        if (((bitField0_ & 0x00000010) != 0) &&
-          time_ != null &&
-          time_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
-          getTimeBuilder().mergeFrom(value);
+        if (time_ != null) {
+          time_ =
+            com.google.protobuf.Timestamp.newBuilder(time_).mergeFrom(value).buildPartial();
         } else {
           time_ = value;
         }
+        onChanged();
       } else {
         timeBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000010;
-      onChanged();
+
       return this;
     }
     /**
      * <code>.google.protobuf.Timestamp time = 5;</code>
      */
     public Builder clearTime() {
-      bitField0_ = (bitField0_ & ~0x00000010);
-      time_ = null;
-      if (timeBuilder_ != null) {
-        timeBuilder_.dispose();
+      if (timeBuilder_ == null) {
+        time_ = null;
+        onChanged();
+      } else {
+        time_ = null;
         timeBuilder_ = null;
       }
-      onChanged();
+
       return this;
     }
     /**
      * <code>.google.protobuf.Timestamp time = 5;</code>
      */
     public com.google.protobuf.Timestamp.Builder getTimeBuilder() {
-      bitField0_ |= 0x00000010;
+      
       onChanged();
       return getTimeFieldBuilder().getBuilder();
     }
@@ -941,14 +970,14 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object taskWorkerVersion_ = "";
     /**
-     * <code>optional string task_worker_version = 6;</code>
+     * <code>string task_worker_version = 6;</code>
      * @return Whether the taskWorkerVersion field is set.
      */
     public boolean hasTaskWorkerVersion() {
-      return ((bitField0_ & 0x00000020) != 0);
+      return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>optional string task_worker_version = 6;</code>
+     * <code>string task_worker_version = 6;</code>
      * @return The taskWorkerVersion.
      */
     public java.lang.String getTaskWorkerVersion() {
@@ -964,7 +993,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>optional string task_worker_version = 6;</code>
+     * <code>string task_worker_version = 6;</code>
      * @return The bytes for taskWorkerVersion.
      */
     public com.google.protobuf.ByteString
@@ -981,39 +1010,43 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>optional string task_worker_version = 6;</code>
+     * <code>string task_worker_version = 6;</code>
      * @param value The taskWorkerVersion to set.
      * @return This builder for chaining.
      */
     public Builder setTaskWorkerVersion(
         java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
       taskWorkerVersion_ = value;
-      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
     /**
-     * <code>optional string task_worker_version = 6;</code>
+     * <code>string task_worker_version = 6;</code>
      * @return This builder for chaining.
      */
     public Builder clearTaskWorkerVersion() {
+      bitField0_ = (bitField0_ & ~0x00000001);
       taskWorkerVersion_ = getDefaultInstance().getTaskWorkerVersion();
-      bitField0_ = (bitField0_ & ~0x00000020);
       onChanged();
       return this;
     }
     /**
-     * <code>optional string task_worker_version = 6;</code>
+     * <code>string task_worker_version = 6;</code>
      * @param value The bytes for taskWorkerVersion to set.
      * @return This builder for chaining.
      */
     public Builder setTaskWorkerVersionBytes(
         com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      bitField0_ |= 0x00000001;
       taskWorkerVersion_ = value;
-      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
@@ -1050,18 +1083,7 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      Builder builder = newBuilder();
-      try {
-        builder.mergeFrom(input, extensionRegistry);
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(builder.buildPartial());
-      } catch (com.google.protobuf.UninitializedMessageException e) {
-        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(e)
-            .setUnfinishedMessage(builder.buildPartial());
-      }
-      return builder.buildPartial();
+      return new TaskClaimEventPb(input, extensionRegistry);
     }
   };
 

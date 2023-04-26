@@ -14,12 +14,12 @@ public interface CentralStoreQueryPbOrBuilder extends
   boolean getEnableStaleStores();
 
   /**
-   * <code>optional int32 specific_partition = 2;</code>
+   * <code>int32 specific_partition = 2;</code>
    * @return Whether the specificPartition field is set.
    */
   boolean hasSpecificPartition();
   /**
-   * <code>optional int32 specific_partition = 2;</code>
+   * <code>int32 specific_partition = 2;</code>
    * @return The specificPartition.
    */
   int getSpecificPartition();

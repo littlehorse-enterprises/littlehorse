@@ -5,7 +5,7 @@ import static io.grpc.MethodDescriptor.generateFullMethodName;
 /**
  */
 @javax.annotation.Generated(
-    value = "by gRPC proto compiler (version 1.54.0)",
+    value = "by gRPC proto compiler (version 1.50.2)",
     comments = "Source: internal_server.proto")
 @io.grpc.stub.annotations.GrpcGenerated
 public final class LHInternalsGrpc {
@@ -185,53 +185,73 @@ public final class LHInternalsGrpc {
 
   /**
    */
-  public interface AsyncService {
+  public static abstract class LHInternalsImplBase implements io.grpc.BindableService {
 
     /**
      */
-    default void centralStoreQuery(io.littlehorse.common.proto.CentralStoreQueryPb request,
+    public void centralStoreQuery(io.littlehorse.common.proto.CentralStoreQueryPb request,
         io.grpc.stub.StreamObserver<io.littlehorse.common.proto.CentralStoreQueryReplyPb> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getCentralStoreQueryMethod(), responseObserver);
     }
 
     /**
      */
-    default void internalScan(io.littlehorse.common.proto.InternalScanPb request,
+    public void internalScan(io.littlehorse.common.proto.InternalScanPb request,
         io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalScanReplyPb> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getInternalScanMethod(), responseObserver);
     }
 
     /**
      */
-    default void waitForCommand(io.littlehorse.common.proto.WaitForCommandPb request,
+    public void waitForCommand(io.littlehorse.common.proto.WaitForCommandPb request,
         io.grpc.stub.StreamObserver<io.littlehorse.common.proto.WaitForCommandReplyPb> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getWaitForCommandMethod(), responseObserver);
     }
 
     /**
      */
-    default void getAdvertisedHosts(io.littlehorse.common.proto.InternalGetAdvertisedHostsPb request,
+    public void getAdvertisedHosts(io.littlehorse.common.proto.InternalGetAdvertisedHostsPb request,
         io.grpc.stub.StreamObserver<io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetAdvertisedHostsMethod(), responseObserver);
     }
-  }
-
-  /**
-   * Base class for the server implementation of the service LHInternals.
-   */
-  public static abstract class LHInternalsImplBase
-      implements io.grpc.BindableService, AsyncService {
 
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
-      return LHInternalsGrpc.bindService(this);
+      return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
+          .addMethod(
+            getCentralStoreQueryMethod(),
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
+              new MethodHandlers<
+                io.littlehorse.common.proto.CentralStoreQueryPb,
+                io.littlehorse.common.proto.CentralStoreQueryReplyPb>(
+                  this, METHODID_CENTRAL_STORE_QUERY)))
+          .addMethod(
+            getInternalScanMethod(),
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
+              new MethodHandlers<
+                io.littlehorse.common.proto.InternalScanPb,
+                io.littlehorse.common.proto.InternalScanReplyPb>(
+                  this, METHODID_INTERNAL_SCAN)))
+          .addMethod(
+            getWaitForCommandMethod(),
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
+              new MethodHandlers<
+                io.littlehorse.common.proto.WaitForCommandPb,
+                io.littlehorse.common.proto.WaitForCommandReplyPb>(
+                  this, METHODID_WAIT_FOR_COMMAND)))
+          .addMethod(
+            getGetAdvertisedHostsMethod(),
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
+              new MethodHandlers<
+                io.littlehorse.common.proto.InternalGetAdvertisedHostsPb,
+                io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb>(
+                  this, METHODID_GET_ADVERTISED_HOSTS)))
+          .build();
     }
   }
 
   /**
-   * A stub to allow clients to do asynchronous rpc calls to service LHInternals.
    */
-  public static final class LHInternalsStub
-      extends io.grpc.stub.AbstractAsyncStub<LHInternalsStub> {
+  public static final class LHInternalsStub extends io.grpc.stub.AbstractAsyncStub<LHInternalsStub> {
     private LHInternalsStub(
         io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       super(channel, callOptions);
@@ -277,10 +297,8 @@ public final class LHInternalsGrpc {
   }
 
   /**
-   * A stub to allow clients to do synchronous rpc calls to service LHInternals.
    */
-  public static final class LHInternalsBlockingStub
-      extends io.grpc.stub.AbstractBlockingStub<LHInternalsBlockingStub> {
+  public static final class LHInternalsBlockingStub extends io.grpc.stub.AbstractBlockingStub<LHInternalsBlockingStub> {
     private LHInternalsBlockingStub(
         io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       super(channel, callOptions);
@@ -322,10 +340,8 @@ public final class LHInternalsGrpc {
   }
 
   /**
-   * A stub to allow clients to do ListenableFuture-style rpc calls to service LHInternals.
    */
-  public static final class LHInternalsFutureStub
-      extends io.grpc.stub.AbstractFutureStub<LHInternalsFutureStub> {
+  public static final class LHInternalsFutureStub extends io.grpc.stub.AbstractFutureStub<LHInternalsFutureStub> {
     private LHInternalsFutureStub(
         io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       super(channel, callOptions);
@@ -380,10 +396,10 @@ public final class LHInternalsGrpc {
       io.grpc.stub.ServerCalls.ServerStreamingMethod<Req, Resp>,
       io.grpc.stub.ServerCalls.ClientStreamingMethod<Req, Resp>,
       io.grpc.stub.ServerCalls.BidiStreamingMethod<Req, Resp> {
-    private final AsyncService serviceImpl;
+    private final LHInternalsImplBase serviceImpl;
     private final int methodId;
 
-    MethodHandlers(AsyncService serviceImpl, int methodId) {
+    MethodHandlers(LHInternalsImplBase serviceImpl, int methodId) {
       this.serviceImpl = serviceImpl;
       this.methodId = methodId;
     }
@@ -422,39 +438,6 @@ public final class LHInternalsGrpc {
           throw new AssertionError();
       }
     }
-  }
-
-  public static final io.grpc.ServerServiceDefinition bindService(AsyncService service) {
-    return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
-        .addMethod(
-          getCentralStoreQueryMethod(),
-          io.grpc.stub.ServerCalls.asyncUnaryCall(
-            new MethodHandlers<
-              io.littlehorse.common.proto.CentralStoreQueryPb,
-              io.littlehorse.common.proto.CentralStoreQueryReplyPb>(
-                service, METHODID_CENTRAL_STORE_QUERY)))
-        .addMethod(
-          getInternalScanMethod(),
-          io.grpc.stub.ServerCalls.asyncUnaryCall(
-            new MethodHandlers<
-              io.littlehorse.common.proto.InternalScanPb,
-              io.littlehorse.common.proto.InternalScanReplyPb>(
-                service, METHODID_INTERNAL_SCAN)))
-        .addMethod(
-          getWaitForCommandMethod(),
-          io.grpc.stub.ServerCalls.asyncUnaryCall(
-            new MethodHandlers<
-              io.littlehorse.common.proto.WaitForCommandPb,
-              io.littlehorse.common.proto.WaitForCommandReplyPb>(
-                service, METHODID_WAIT_FOR_COMMAND)))
-        .addMethod(
-          getGetAdvertisedHostsMethod(),
-          io.grpc.stub.ServerCalls.asyncUnaryCall(
-            new MethodHandlers<
-              io.littlehorse.common.proto.InternalGetAdvertisedHostsPb,
-              io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb>(
-                service, METHODID_GET_ADVERTISED_HOSTS)))
-        .build();
   }
 
   private static abstract class LHInternalsBaseDescriptorSupplier

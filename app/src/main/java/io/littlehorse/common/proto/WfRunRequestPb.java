@@ -36,6 +36,69 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
+  private WfRunRequestPb(
+      com.google.protobuf.CodedInputStream input,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    this();
+    if (extensionRegistry == null) {
+      throw new java.lang.NullPointerException();
+    }
+    int mutable_bitField0_ = 0;
+    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+        com.google.protobuf.UnknownFieldSet.newBuilder();
+    try {
+      boolean done = false;
+      while (!done) {
+        int tag = input.readTag();
+        switch (tag) {
+          case 0:
+            done = true;
+            break;
+          case 10: {
+            java.lang.String s = input.readStringRequireUtf8();
+            bitField0_ |= 0x00000001;
+            wfRunId_ = s;
+            break;
+          }
+          case 18: {
+            java.lang.String s = input.readStringRequireUtf8();
+
+            wfSpecId_ = s;
+            break;
+          }
+          case 26: {
+            if (!((mutable_bitField0_ & 0x00000002) != 0)) {
+              variables_ = com.google.protobuf.MapField.newMapField(
+                  VariablesDefaultEntryHolder.defaultEntry);
+              mutable_bitField0_ |= 0x00000002;
+            }
+            com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb>
+            variables__ = input.readMessage(
+                VariablesDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+            variables_.getMutableMap().put(
+                variables__.getKey(), variables__.getValue());
+            break;
+          }
+          default: {
+            if (!parseUnknownField(
+                input, unknownFields, extensionRegistry, tag)) {
+              done = true;
+            }
+            break;
+          }
+        }
+      }
+    } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+      throw e.setUnfinishedMessage(this);
+    } catch (java.io.IOException e) {
+      throw new com.google.protobuf.InvalidProtocolBufferException(
+          e).setUnfinishedMessage(this);
+    } finally {
+      this.unknownFields = unknownFields.build();
+      makeExtensionsImmutable();
+    }
+  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_WfRunRequestPb_descriptor;
@@ -63,10 +126,9 @@ private static final long serialVersionUID = 0L;
 
   private int bitField0_;
   public static final int WF_RUN_ID_FIELD_NUMBER = 1;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object wfRunId_ = "";
+  private volatile java.lang.Object wfRunId_;
   /**
-   * <code>optional string wf_run_id = 1;</code>
+   * <code>string wf_run_id = 1;</code>
    * @return Whether the wfRunId field is set.
    */
   @java.lang.Override
@@ -74,7 +136,7 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>optional string wf_run_id = 1;</code>
+   * <code>string wf_run_id = 1;</code>
    * @return The wfRunId.
    */
   @java.lang.Override
@@ -91,7 +153,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>optional string wf_run_id = 1;</code>
+   * <code>string wf_run_id = 1;</code>
    * @return The bytes for wfRunId.
    */
   @java.lang.Override
@@ -110,8 +172,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int WF_SPEC_ID_FIELD_NUMBER = 2;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object wfSpecId_ = "";
+  private volatile java.lang.Object wfSpecId_;
   /**
    * <code>string wf_spec_id = 2;</code>
    * @return The wfSpecId.
@@ -160,7 +221,6 @@ private static final long serialVersionUID = 0L;
                 com.google.protobuf.WireFormat.FieldType.MESSAGE,
                 io.littlehorse.jlib.common.proto.VariableValuePb.getDefaultInstance());
   }
-  @SuppressWarnings("serial")
   private com.google.protobuf.MapField<
       java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb> variables_;
   private com.google.protobuf.MapField<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb>
@@ -171,16 +231,18 @@ private static final long serialVersionUID = 0L;
     }
     return variables_;
   }
+
   public int getVariablesCount() {
     return internalGetVariables().getMap().size();
   }
   /**
    * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
    */
+
   @java.lang.Override
   public boolean containsVariables(
       java.lang.String key) {
-    if (key == null) { throw new NullPointerException("map key"); }
+    if (key == null) { throw new java.lang.NullPointerException(); }
     return internalGetVariables().getMap().containsKey(key);
   }
   /**
@@ -195,6 +257,7 @@ private static final long serialVersionUID = 0L;
    * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
    */
   @java.lang.Override
+
   public java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb> getVariablesMap() {
     return internalGetVariables().getMap();
   }
@@ -202,12 +265,11 @@ private static final long serialVersionUID = 0L;
    * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
    */
   @java.lang.Override
-  public /* nullable */
-io.littlehorse.jlib.common.proto.VariableValuePb getVariablesOrDefault(
+
+  public io.littlehorse.jlib.common.proto.VariableValuePb getVariablesOrDefault(
       java.lang.String key,
-      /* nullable */
-io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
-    if (key == null) { throw new NullPointerException("map key"); }
+      io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
+    if (key == null) { throw new java.lang.NullPointerException(); }
     java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb> map =
         internalGetVariables().getMap();
     return map.containsKey(key) ? map.get(key) : defaultValue;
@@ -216,9 +278,10 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
    * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
    */
   @java.lang.Override
+
   public io.littlehorse.jlib.common.proto.VariableValuePb getVariablesOrThrow(
       java.lang.String key) {
-    if (key == null) { throw new NullPointerException("map key"); }
+    if (key == null) { throw new java.lang.NullPointerException(); }
     java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb> map =
         internalGetVariables().getMap();
     if (!map.containsKey(key)) {
@@ -244,7 +307,7 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
     if (((bitField0_ & 0x00000001) != 0)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, wfRunId_);
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(wfSpecId_)) {
+    if (!getWfSpecIdBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, wfSpecId_);
     }
     com.google.protobuf.GeneratedMessageV3
@@ -253,7 +316,7 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
         internalGetVariables(),
         VariablesDefaultEntryHolder.defaultEntry,
         3);
-    getUnknownFields().writeTo(output);
+    unknownFields.writeTo(output);
   }
 
   @java.lang.Override
@@ -265,7 +328,7 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, wfRunId_);
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(wfSpecId_)) {
+    if (!getWfSpecIdBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, wfSpecId_);
     }
     for (java.util.Map.Entry<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb> entry
@@ -278,7 +341,7 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
       size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(3, variables__);
     }
-    size += getUnknownFields().getSerializedSize();
+    size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
   }
@@ -302,7 +365,7 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
         .equals(other.getWfSpecId())) return false;
     if (!internalGetVariables().equals(
         other.internalGetVariables())) return false;
-    if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+    if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
 
@@ -323,7 +386,7 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
       hash = (37 * hash) + VARIABLES_FIELD_NUMBER;
       hash = (53 * hash) + internalGetVariables().hashCode();
     }
-    hash = (29 * hash) + getUnknownFields().hashCode();
+    hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
   }
@@ -466,20 +529,26 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
 
     // Construct using io.littlehorse.common.proto.WfRunRequestPb.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
+      }
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      bitField0_ = 0;
       wfRunId_ = "";
+      bitField0_ = (bitField0_ & ~0x00000001);
       wfSpecId_ = "";
+
       internalGetMutableVariables().clear();
       return this;
     }
@@ -507,26 +576,18 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
     @java.lang.Override
     public io.littlehorse.common.proto.WfRunRequestPb buildPartial() {
       io.littlehorse.common.proto.WfRunRequestPb result = new io.littlehorse.common.proto.WfRunRequestPb(this);
-      if (bitField0_ != 0) { buildPartial0(result); }
-      onBuilt();
-      return result;
-    }
-
-    private void buildPartial0(io.littlehorse.common.proto.WfRunRequestPb result) {
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.wfRunId_ = wfRunId_;
         to_bitField0_ |= 0x00000001;
       }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.wfSpecId_ = wfSpecId_;
-      }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.variables_ = internalGetVariables();
-        result.variables_.makeImmutable();
-      }
-      result.bitField0_ |= to_bitField0_;
+      result.wfRunId_ = wfRunId_;
+      result.wfSpecId_ = wfSpecId_;
+      result.variables_ = internalGetVariables();
+      result.variables_.makeImmutable();
+      result.bitField0_ = to_bitField0_;
+      onBuilt();
+      return result;
     }
 
     @java.lang.Override
@@ -574,19 +635,17 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
     public Builder mergeFrom(io.littlehorse.common.proto.WfRunRequestPb other) {
       if (other == io.littlehorse.common.proto.WfRunRequestPb.getDefaultInstance()) return this;
       if (other.hasWfRunId()) {
-        wfRunId_ = other.wfRunId_;
         bitField0_ |= 0x00000001;
+        wfRunId_ = other.wfRunId_;
         onChanged();
       }
       if (!other.getWfSpecId().isEmpty()) {
         wfSpecId_ = other.wfSpecId_;
-        bitField0_ |= 0x00000002;
         onChanged();
       }
       internalGetMutableVariables().mergeFrom(
           other.internalGetVariables());
-      bitField0_ |= 0x00000004;
-      this.mergeUnknownFields(other.getUnknownFields());
+      this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
     }
@@ -601,63 +660,31 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
+      io.littlehorse.common.proto.WfRunRequestPb parsedMessage = null;
       try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            case 10: {
-              wfRunId_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000001;
-              break;
-            } // case 10
-            case 18: {
-              wfSpecId_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000002;
-              break;
-            } // case 18
-            case 26: {
-              com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb>
-              variables__ = input.readMessage(
-                  VariablesDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
-              internalGetMutableVariables().getMutableMap().put(
-                  variables__.getKey(), variables__.getValue());
-              bitField0_ |= 0x00000004;
-              break;
-            } // case 26
-            default: {
-              if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                done = true; // was an endgroup tag
-              }
-              break;
-            } // default:
-          } // switch (tag)
-        } // while (!done)
+        parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        parsedMessage = (io.littlehorse.common.proto.WfRunRequestPb) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
-        onChanged();
-      } // finally
+        if (parsedMessage != null) {
+          mergeFrom(parsedMessage);
+        }
+      }
       return this;
     }
     private int bitField0_;
 
     private java.lang.Object wfRunId_ = "";
     /**
-     * <code>optional string wf_run_id = 1;</code>
+     * <code>string wf_run_id = 1;</code>
      * @return Whether the wfRunId field is set.
      */
     public boolean hasWfRunId() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>optional string wf_run_id = 1;</code>
+     * <code>string wf_run_id = 1;</code>
      * @return The wfRunId.
      */
     public java.lang.String getWfRunId() {
@@ -673,7 +700,7 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
       }
     }
     /**
-     * <code>optional string wf_run_id = 1;</code>
+     * <code>string wf_run_id = 1;</code>
      * @return The bytes for wfRunId.
      */
     public com.google.protobuf.ByteString
@@ -690,39 +717,43 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
       }
     }
     /**
-     * <code>optional string wf_run_id = 1;</code>
+     * <code>string wf_run_id = 1;</code>
      * @param value The wfRunId to set.
      * @return This builder for chaining.
      */
     public Builder setWfRunId(
         java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
       wfRunId_ = value;
-      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
-     * <code>optional string wf_run_id = 1;</code>
+     * <code>string wf_run_id = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearWfRunId() {
-      wfRunId_ = getDefaultInstance().getWfRunId();
       bitField0_ = (bitField0_ & ~0x00000001);
+      wfRunId_ = getDefaultInstance().getWfRunId();
       onChanged();
       return this;
     }
     /**
-     * <code>optional string wf_run_id = 1;</code>
+     * <code>string wf_run_id = 1;</code>
      * @param value The bytes for wfRunId to set.
      * @return This builder for chaining.
      */
     public Builder setWfRunIdBytes(
         com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      wfRunId_ = value;
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
       bitField0_ |= 0x00000001;
+      wfRunId_ = value;
       onChanged();
       return this;
     }
@@ -768,9 +799,11 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
      */
     public Builder setWfSpecId(
         java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
       wfSpecId_ = value;
-      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
@@ -779,8 +812,8 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
      * @return This builder for chaining.
      */
     public Builder clearWfSpecId() {
+      
       wfSpecId_ = getDefaultInstance().getWfSpecId();
-      bitField0_ = (bitField0_ & ~0x00000002);
       onChanged();
       return this;
     }
@@ -791,10 +824,12 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
      */
     public Builder setWfSpecIdBytes(
         com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
       wfSpecId_ = value;
-      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
@@ -802,7 +837,7 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
     private com.google.protobuf.MapField<
         java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb> variables_;
     private com.google.protobuf.MapField<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb>
-        internalGetVariables() {
+    internalGetVariables() {
       if (variables_ == null) {
         return com.google.protobuf.MapField.emptyMapField(
             VariablesDefaultEntryHolder.defaultEntry);
@@ -810,7 +845,8 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
       return variables_;
     }
     private com.google.protobuf.MapField<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb>
-        internalGetMutableVariables() {
+    internalGetMutableVariables() {
+      onChanged();;
       if (variables_ == null) {
         variables_ = com.google.protobuf.MapField.newMapField(
             VariablesDefaultEntryHolder.defaultEntry);
@@ -818,20 +854,20 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
       if (!variables_.isMutable()) {
         variables_ = variables_.copy();
       }
-      bitField0_ |= 0x00000004;
-      onChanged();
       return variables_;
     }
+
     public int getVariablesCount() {
       return internalGetVariables().getMap().size();
     }
     /**
      * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
      */
+
     @java.lang.Override
     public boolean containsVariables(
         java.lang.String key) {
-      if (key == null) { throw new NullPointerException("map key"); }
+      if (key == null) { throw new java.lang.NullPointerException(); }
       return internalGetVariables().getMap().containsKey(key);
     }
     /**
@@ -846,6 +882,7 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
      * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
      */
     @java.lang.Override
+
     public java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb> getVariablesMap() {
       return internalGetVariables().getMap();
     }
@@ -853,12 +890,11 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
      * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
      */
     @java.lang.Override
-    public /* nullable */
-io.littlehorse.jlib.common.proto.VariableValuePb getVariablesOrDefault(
+
+    public io.littlehorse.jlib.common.proto.VariableValuePb getVariablesOrDefault(
         java.lang.String key,
-        /* nullable */
-io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
-      if (key == null) { throw new NullPointerException("map key"); }
+        io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
       java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb> map =
           internalGetVariables().getMap();
       return map.containsKey(key) ? map.get(key) : defaultValue;
@@ -867,9 +903,10 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
      * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
      */
     @java.lang.Override
+
     public io.littlehorse.jlib.common.proto.VariableValuePb getVariablesOrThrow(
         java.lang.String key) {
-      if (key == null) { throw new NullPointerException("map key"); }
+      if (key == null) { throw new java.lang.NullPointerException(); }
       java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb> map =
           internalGetVariables().getMap();
       if (!map.containsKey(key)) {
@@ -877,8 +914,8 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
       }
       return map.get(key);
     }
+
     public Builder clearVariables() {
-      bitField0_ = (bitField0_ & ~0x00000004);
       internalGetMutableVariables().getMutableMap()
           .clear();
       return this;
@@ -886,9 +923,10 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
     /**
      * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
      */
+
     public Builder removeVariables(
         java.lang.String key) {
-      if (key == null) { throw new NullPointerException("map key"); }
+      if (key == null) { throw new java.lang.NullPointerException(); }
       internalGetMutableVariables().getMutableMap()
           .remove(key);
       return this;
@@ -898,8 +936,7 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
      */
     @java.lang.Deprecated
     public java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb>
-        getMutableVariables() {
-      bitField0_ |= 0x00000004;
+    getMutableVariables() {
       return internalGetMutableVariables().getMutableMap();
     }
     /**
@@ -908,21 +945,20 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
     public Builder putVariables(
         java.lang.String key,
         io.littlehorse.jlib.common.proto.VariableValuePb value) {
-      if (key == null) { throw new NullPointerException("map key"); }
-      if (value == null) { throw new NullPointerException("map value"); }
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      if (value == null) { throw new java.lang.NullPointerException(); }
       internalGetMutableVariables().getMutableMap()
           .put(key, value);
-      bitField0_ |= 0x00000004;
       return this;
     }
     /**
      * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
      */
+
     public Builder putAllVariables(
         java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb> values) {
       internalGetMutableVariables().getMutableMap()
           .putAll(values);
-      bitField0_ |= 0x00000004;
       return this;
     }
     @java.lang.Override
@@ -958,18 +994,7 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      Builder builder = newBuilder();
-      try {
-        builder.mergeFrom(input, extensionRegistry);
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(builder.buildPartial());
-      } catch (com.google.protobuf.UninitializedMessageException e) {
-        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(e)
-            .setUnfinishedMessage(builder.buildPartial());
-      }
-      return builder.buildPartial();
+      return new WfRunRequestPb(input, extensionRegistry);
     }
   };
 

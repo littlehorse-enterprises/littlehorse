@@ -30,6 +30,62 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
+  private TagChangesToBroadcastPb(
+      com.google.protobuf.CodedInputStream input,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    this();
+    if (extensionRegistry == null) {
+      throw new java.lang.NullPointerException();
+    }
+    int mutable_bitField0_ = 0;
+    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+        com.google.protobuf.UnknownFieldSet.newBuilder();
+    try {
+      boolean done = false;
+      while (!done) {
+        int tag = input.readTag();
+        switch (tag) {
+          case 0:
+            done = true;
+            break;
+          case 10: {
+            if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+              changelog_ = com.google.protobuf.MapField.newMapField(
+                  ChangelogDefaultEntryHolder.defaultEntry);
+              mutable_bitField0_ |= 0x00000001;
+            }
+            com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.common.proto.DiscreteTagLocalCounterPb>
+            changelog__ = input.readMessage(
+                ChangelogDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+            changelog_.getMutableMap().put(
+                changelog__.getKey(), changelog__.getValue());
+            break;
+          }
+          case 16: {
+
+            partition_ = input.readInt32();
+            break;
+          }
+          default: {
+            if (!parseUnknownField(
+                input, unknownFields, extensionRegistry, tag)) {
+              done = true;
+            }
+            break;
+          }
+        }
+      }
+    } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+      throw e.setUnfinishedMessage(this);
+    } catch (java.io.IOException e) {
+      throw new com.google.protobuf.InvalidProtocolBufferException(
+          e).setUnfinishedMessage(this);
+    } finally {
+      this.unknownFields = unknownFields.build();
+      makeExtensionsImmutable();
+    }
+  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_TagChangesToBroadcastPb_descriptor;
@@ -67,7 +123,6 @@ private static final long serialVersionUID = 0L;
                 com.google.protobuf.WireFormat.FieldType.MESSAGE,
                 io.littlehorse.common.proto.DiscreteTagLocalCounterPb.getDefaultInstance());
   }
-  @SuppressWarnings("serial")
   private com.google.protobuf.MapField<
       java.lang.String, io.littlehorse.common.proto.DiscreteTagLocalCounterPb> changelog_;
   private com.google.protobuf.MapField<java.lang.String, io.littlehorse.common.proto.DiscreteTagLocalCounterPb>
@@ -78,16 +133,18 @@ private static final long serialVersionUID = 0L;
     }
     return changelog_;
   }
+
   public int getChangelogCount() {
     return internalGetChangelog().getMap().size();
   }
   /**
    * <code>map&lt;string, .littlehorse.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
    */
+
   @java.lang.Override
   public boolean containsChangelog(
       java.lang.String key) {
-    if (key == null) { throw new NullPointerException("map key"); }
+    if (key == null) { throw new java.lang.NullPointerException(); }
     return internalGetChangelog().getMap().containsKey(key);
   }
   /**
@@ -102,6 +159,7 @@ private static final long serialVersionUID = 0L;
    * <code>map&lt;string, .littlehorse.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
    */
   @java.lang.Override
+
   public java.util.Map<java.lang.String, io.littlehorse.common.proto.DiscreteTagLocalCounterPb> getChangelogMap() {
     return internalGetChangelog().getMap();
   }
@@ -109,12 +167,11 @@ private static final long serialVersionUID = 0L;
    * <code>map&lt;string, .littlehorse.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
    */
   @java.lang.Override
-  public /* nullable */
-io.littlehorse.common.proto.DiscreteTagLocalCounterPb getChangelogOrDefault(
+
+  public io.littlehorse.common.proto.DiscreteTagLocalCounterPb getChangelogOrDefault(
       java.lang.String key,
-      /* nullable */
-io.littlehorse.common.proto.DiscreteTagLocalCounterPb defaultValue) {
-    if (key == null) { throw new NullPointerException("map key"); }
+      io.littlehorse.common.proto.DiscreteTagLocalCounterPb defaultValue) {
+    if (key == null) { throw new java.lang.NullPointerException(); }
     java.util.Map<java.lang.String, io.littlehorse.common.proto.DiscreteTagLocalCounterPb> map =
         internalGetChangelog().getMap();
     return map.containsKey(key) ? map.get(key) : defaultValue;
@@ -123,9 +180,10 @@ io.littlehorse.common.proto.DiscreteTagLocalCounterPb defaultValue) {
    * <code>map&lt;string, .littlehorse.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
    */
   @java.lang.Override
+
   public io.littlehorse.common.proto.DiscreteTagLocalCounterPb getChangelogOrThrow(
       java.lang.String key) {
-    if (key == null) { throw new NullPointerException("map key"); }
+    if (key == null) { throw new java.lang.NullPointerException(); }
     java.util.Map<java.lang.String, io.littlehorse.common.proto.DiscreteTagLocalCounterPb> map =
         internalGetChangelog().getMap();
     if (!map.containsKey(key)) {
@@ -135,7 +193,7 @@ io.littlehorse.common.proto.DiscreteTagLocalCounterPb defaultValue) {
   }
 
   public static final int PARTITION_FIELD_NUMBER = 2;
-  private int partition_ = 0;
+  private int partition_;
   /**
    * <code>int32 partition = 2;</code>
    * @return The partition.
@@ -168,7 +226,7 @@ io.littlehorse.common.proto.DiscreteTagLocalCounterPb defaultValue) {
     if (partition_ != 0) {
       output.writeInt32(2, partition_);
     }
-    getUnknownFields().writeTo(output);
+    unknownFields.writeTo(output);
   }
 
   @java.lang.Override
@@ -191,7 +249,7 @@ io.littlehorse.common.proto.DiscreteTagLocalCounterPb defaultValue) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(2, partition_);
     }
-    size += getUnknownFields().getSerializedSize();
+    size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
   }
@@ -210,7 +268,7 @@ io.littlehorse.common.proto.DiscreteTagLocalCounterPb defaultValue) {
         other.internalGetChangelog())) return false;
     if (getPartition()
         != other.getPartition()) return false;
-    if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+    if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
 
@@ -227,7 +285,7 @@ io.littlehorse.common.proto.DiscreteTagLocalCounterPb defaultValue) {
     }
     hash = (37 * hash) + PARTITION_FIELD_NUMBER;
     hash = (53 * hash) + getPartition();
-    hash = (29 * hash) + getUnknownFields().hashCode();
+    hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
   }
@@ -366,20 +424,25 @@ io.littlehorse.common.proto.DiscreteTagLocalCounterPb defaultValue) {
 
     // Construct using io.littlehorse.common.proto.TagChangesToBroadcastPb.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
+      }
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      bitField0_ = 0;
       internalGetMutableChangelog().clear();
       partition_ = 0;
+
       return this;
     }
 
@@ -406,20 +469,12 @@ io.littlehorse.common.proto.DiscreteTagLocalCounterPb defaultValue) {
     @java.lang.Override
     public io.littlehorse.common.proto.TagChangesToBroadcastPb buildPartial() {
       io.littlehorse.common.proto.TagChangesToBroadcastPb result = new io.littlehorse.common.proto.TagChangesToBroadcastPb(this);
-      if (bitField0_ != 0) { buildPartial0(result); }
+      int from_bitField0_ = bitField0_;
+      result.changelog_ = internalGetChangelog();
+      result.changelog_.makeImmutable();
+      result.partition_ = partition_;
       onBuilt();
       return result;
-    }
-
-    private void buildPartial0(io.littlehorse.common.proto.TagChangesToBroadcastPb result) {
-      int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.changelog_ = internalGetChangelog();
-        result.changelog_.makeImmutable();
-      }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.partition_ = partition_;
-      }
     }
 
     @java.lang.Override
@@ -468,11 +523,10 @@ io.littlehorse.common.proto.DiscreteTagLocalCounterPb defaultValue) {
       if (other == io.littlehorse.common.proto.TagChangesToBroadcastPb.getDefaultInstance()) return this;
       internalGetMutableChangelog().mergeFrom(
           other.internalGetChangelog());
-      bitField0_ |= 0x00000001;
       if (other.getPartition() != 0) {
         setPartition(other.getPartition());
       }
-      this.mergeUnknownFields(other.getUnknownFields());
+      this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
     }
@@ -487,44 +541,17 @@ io.littlehorse.common.proto.DiscreteTagLocalCounterPb defaultValue) {
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
+      io.littlehorse.common.proto.TagChangesToBroadcastPb parsedMessage = null;
       try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            case 10: {
-              com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.common.proto.DiscreteTagLocalCounterPb>
-              changelog__ = input.readMessage(
-                  ChangelogDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
-              internalGetMutableChangelog().getMutableMap().put(
-                  changelog__.getKey(), changelog__.getValue());
-              bitField0_ |= 0x00000001;
-              break;
-            } // case 10
-            case 16: {
-              partition_ = input.readInt32();
-              bitField0_ |= 0x00000002;
-              break;
-            } // case 16
-            default: {
-              if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                done = true; // was an endgroup tag
-              }
-              break;
-            } // default:
-          } // switch (tag)
-        } // while (!done)
+        parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        parsedMessage = (io.littlehorse.common.proto.TagChangesToBroadcastPb) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
-        onChanged();
-      } // finally
+        if (parsedMessage != null) {
+          mergeFrom(parsedMessage);
+        }
+      }
       return this;
     }
     private int bitField0_;
@@ -532,7 +559,7 @@ io.littlehorse.common.proto.DiscreteTagLocalCounterPb defaultValue) {
     private com.google.protobuf.MapField<
         java.lang.String, io.littlehorse.common.proto.DiscreteTagLocalCounterPb> changelog_;
     private com.google.protobuf.MapField<java.lang.String, io.littlehorse.common.proto.DiscreteTagLocalCounterPb>
-        internalGetChangelog() {
+    internalGetChangelog() {
       if (changelog_ == null) {
         return com.google.protobuf.MapField.emptyMapField(
             ChangelogDefaultEntryHolder.defaultEntry);
@@ -540,7 +567,8 @@ io.littlehorse.common.proto.DiscreteTagLocalCounterPb defaultValue) {
       return changelog_;
     }
     private com.google.protobuf.MapField<java.lang.String, io.littlehorse.common.proto.DiscreteTagLocalCounterPb>
-        internalGetMutableChangelog() {
+    internalGetMutableChangelog() {
+      onChanged();;
       if (changelog_ == null) {
         changelog_ = com.google.protobuf.MapField.newMapField(
             ChangelogDefaultEntryHolder.defaultEntry);
@@ -548,20 +576,20 @@ io.littlehorse.common.proto.DiscreteTagLocalCounterPb defaultValue) {
       if (!changelog_.isMutable()) {
         changelog_ = changelog_.copy();
       }
-      bitField0_ |= 0x00000001;
-      onChanged();
       return changelog_;
     }
+
     public int getChangelogCount() {
       return internalGetChangelog().getMap().size();
     }
     /**
      * <code>map&lt;string, .littlehorse.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
      */
+
     @java.lang.Override
     public boolean containsChangelog(
         java.lang.String key) {
-      if (key == null) { throw new NullPointerException("map key"); }
+      if (key == null) { throw new java.lang.NullPointerException(); }
       return internalGetChangelog().getMap().containsKey(key);
     }
     /**
@@ -576,6 +604,7 @@ io.littlehorse.common.proto.DiscreteTagLocalCounterPb defaultValue) {
      * <code>map&lt;string, .littlehorse.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
      */
     @java.lang.Override
+
     public java.util.Map<java.lang.String, io.littlehorse.common.proto.DiscreteTagLocalCounterPb> getChangelogMap() {
       return internalGetChangelog().getMap();
     }
@@ -583,12 +612,11 @@ io.littlehorse.common.proto.DiscreteTagLocalCounterPb defaultValue) {
      * <code>map&lt;string, .littlehorse.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
      */
     @java.lang.Override
-    public /* nullable */
-io.littlehorse.common.proto.DiscreteTagLocalCounterPb getChangelogOrDefault(
+
+    public io.littlehorse.common.proto.DiscreteTagLocalCounterPb getChangelogOrDefault(
         java.lang.String key,
-        /* nullable */
-io.littlehorse.common.proto.DiscreteTagLocalCounterPb defaultValue) {
-      if (key == null) { throw new NullPointerException("map key"); }
+        io.littlehorse.common.proto.DiscreteTagLocalCounterPb defaultValue) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
       java.util.Map<java.lang.String, io.littlehorse.common.proto.DiscreteTagLocalCounterPb> map =
           internalGetChangelog().getMap();
       return map.containsKey(key) ? map.get(key) : defaultValue;
@@ -597,9 +625,10 @@ io.littlehorse.common.proto.DiscreteTagLocalCounterPb defaultValue) {
      * <code>map&lt;string, .littlehorse.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
      */
     @java.lang.Override
+
     public io.littlehorse.common.proto.DiscreteTagLocalCounterPb getChangelogOrThrow(
         java.lang.String key) {
-      if (key == null) { throw new NullPointerException("map key"); }
+      if (key == null) { throw new java.lang.NullPointerException(); }
       java.util.Map<java.lang.String, io.littlehorse.common.proto.DiscreteTagLocalCounterPb> map =
           internalGetChangelog().getMap();
       if (!map.containsKey(key)) {
@@ -607,8 +636,8 @@ io.littlehorse.common.proto.DiscreteTagLocalCounterPb defaultValue) {
       }
       return map.get(key);
     }
+
     public Builder clearChangelog() {
-      bitField0_ = (bitField0_ & ~0x00000001);
       internalGetMutableChangelog().getMutableMap()
           .clear();
       return this;
@@ -616,9 +645,10 @@ io.littlehorse.common.proto.DiscreteTagLocalCounterPb defaultValue) {
     /**
      * <code>map&lt;string, .littlehorse.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
      */
+
     public Builder removeChangelog(
         java.lang.String key) {
-      if (key == null) { throw new NullPointerException("map key"); }
+      if (key == null) { throw new java.lang.NullPointerException(); }
       internalGetMutableChangelog().getMutableMap()
           .remove(key);
       return this;
@@ -628,8 +658,7 @@ io.littlehorse.common.proto.DiscreteTagLocalCounterPb defaultValue) {
      */
     @java.lang.Deprecated
     public java.util.Map<java.lang.String, io.littlehorse.common.proto.DiscreteTagLocalCounterPb>
-        getMutableChangelog() {
-      bitField0_ |= 0x00000001;
+    getMutableChangelog() {
       return internalGetMutableChangelog().getMutableMap();
     }
     /**
@@ -638,21 +667,20 @@ io.littlehorse.common.proto.DiscreteTagLocalCounterPb defaultValue) {
     public Builder putChangelog(
         java.lang.String key,
         io.littlehorse.common.proto.DiscreteTagLocalCounterPb value) {
-      if (key == null) { throw new NullPointerException("map key"); }
-      if (value == null) { throw new NullPointerException("map value"); }
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      if (value == null) { throw new java.lang.NullPointerException(); }
       internalGetMutableChangelog().getMutableMap()
           .put(key, value);
-      bitField0_ |= 0x00000001;
       return this;
     }
     /**
      * <code>map&lt;string, .littlehorse.DiscreteTagLocalCounterPb&gt; changelog = 1;</code>
      */
+
     public Builder putAllChangelog(
         java.util.Map<java.lang.String, io.littlehorse.common.proto.DiscreteTagLocalCounterPb> values) {
       internalGetMutableChangelog().getMutableMap()
           .putAll(values);
-      bitField0_ |= 0x00000001;
       return this;
     }
 
@@ -673,7 +701,6 @@ io.littlehorse.common.proto.DiscreteTagLocalCounterPb defaultValue) {
     public Builder setPartition(int value) {
       
       partition_ = value;
-      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
@@ -682,7 +709,7 @@ io.littlehorse.common.proto.DiscreteTagLocalCounterPb defaultValue) {
      * @return This builder for chaining.
      */
     public Builder clearPartition() {
-      bitField0_ = (bitField0_ & ~0x00000002);
+      
       partition_ = 0;
       onChanged();
       return this;
@@ -720,18 +747,7 @@ io.littlehorse.common.proto.DiscreteTagLocalCounterPb defaultValue) {
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      Builder builder = newBuilder();
-      try {
-        builder.mergeFrom(input, extensionRegistry);
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(builder.buildPartial());
-      } catch (com.google.protobuf.UninitializedMessageException e) {
-        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(e)
-            .setUnfinishedMessage(builder.buildPartial());
-      }
-      return builder.buildPartial();
+      return new TagChangesToBroadcastPb(input, extensionRegistry);
     }
   };
 
