@@ -7,7 +7,8 @@ import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.jlib.common.config.LHServerConfig;
+import io.littlehorse.jlib.common.config.ConfigBase;
+import io.littlehorse.jlib.common.config.LHWorkerConfig;
 import io.littlehorse.jlib.common.proto.HostInfoPb;
 import io.littlehorse.jlib.common.proto.VariableAssignmentPb.SourceCase;
 import java.io.File;
@@ -32,9 +33,64 @@ import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.state.HostInfo;
 import org.apache.log4j.Logger;
 
-public class LHConfig extends LHServerConfig {
+public class LHConfig extends ConfigBase {
 
     private static final Logger log = Logger.getLogger(LHConfig.class);
+
+    // Kafka and Kafka Streams-Specific Configuration Env Vars
+    public static final String KAFKA_BOOTSTRAP_KEY = "LHS_KAFKA_BOOTSTRAP_SERVERS";
+    public static final String LH_CLUSTER_ID_KEY = "LHS_CLUSTER_ID";
+    public static final String LH_INSTANCE_ID_KEY = "LHS_INSTANCE_ID";
+    public static final String RACK_ID_KEY = "LHS_RACK_ID";
+
+    public static final String REPLICATION_FACTOR_KEY = "LHS_REPLICATION_FACTOR";
+    public static final String CLUSTER_PARTITIONS_KEY = "LHS_CLUSTER_PARTITIONS";
+    public static final String NUM_STREAM_THREADS_KEY = "LHS_STREAMS_NUM_THREADS";
+    public static final String SESSION_TIMEOUT_KEY = "LHS_STREAMS_SESSION_TIMEOUT";
+    public static final String COMMIT_INTERVAL_KEY = "LHS_STREAMS_COMMIT_INTERVAL";
+    public static final String KAFKA_STATE_DIR_KEY = "LHS_STATE_DIR";
+    public static final String NUM_WARMUP_REPLICAS_KEY =
+        "LHS_STREAMS_NUM_WARMUP_REPLICAS";
+    public static final String NUM_STANDBY_REPLICAS_KEY =
+        "LHS_STREAMS_NUM_STANDBY_REPLICAS";
+
+    // General LittleHorse Runtime Behavior Config Env Vars
+    public static final String DEFAULT_TIMEOUT_KEY = "LHS_DEFAULT_TASK_TIMEOUT";
+    public static final String KAFKA_TOPIC_PREFIX_KEY = "LHS_KAFKA_PREFIX";
+
+    // Host and Port Configuration Env Vars
+    public static final String ADVERTISED_LISTENERS_KEY =
+        "LHS_ADVERTISED_LISTENER_NAMES";
+    public static final String API_BIND_PORT_KEY = "LHS_API_BIND_PORT";
+    public static final String INTERNAL_BIND_PORT_KEY = "LHS_INTERNAL_BIND_PORT";
+    public static final String INTERNAL_ADVERTISED_HOST_KEY =
+        "LHS_INTERNAL_ADVERTISED_HOST";
+    public static final String INTERNAL_ADVERTISED_PORT_KEY =
+        "LHS_INTERNAL_ADVERTISED_PORT";
+
+    public static final String CA_CERT_KEY = "LHS_CA_CERT";
+    public static final String SERVER_CERT_KEY = "LHS_SERVER_CERT";
+    public static final String SERVER_KEY_KEY = "LHS_SERVER_KEY";
+
+    public static final String INTERNAL_CA_CERT_KEY = "LHS_INTERNAL_CA_CERT";
+    public static final String INTERNAL_SERVER_CERT_KEY = "LHS_INTERNAL_SERVER_CERT";
+    public static final String INTERNAL_SERVER_KEY_KEY = "LHS_INTERNAL_SERVER_KEY";
+
+    public static final String KAFKA_TRUSTSTORE_KEY = "LHS_KAFKA_TRUSTSTORE";
+    public static final String KAFKA_TRUSTSTORE_PASSWORD_KEY =
+        "LHS_KAFKA_TRUSTSTORE_PASSWORD";
+    public static final String KAFKA_KEYSTORE_KEY = "LHS_KAFKA_KEYSTORE";
+    public static final String KAFKA_KEYSTORE_PASSWORD_KEY =
+        "LHS_KAFKA_KEYSTORE_PASSWORD";
+
+    public static final String SHOULD_CREATE_TOPICS_KEY = "LHS_SHOULD_CREATE_TOPICS";
+
+    public static final String DEFAULT_PUBLIC_LISTENER =
+        LHWorkerConfig.DEFAULT_PUBLIC_LISTENER;
+
+    protected String[] getEnvKeyPrefixes() {
+        return new String[] { "LHS_" };
+    }
 
     private Admin kafkaAdmin;
     private LHProducer producer;
@@ -51,7 +107,7 @@ public class LHConfig extends LHServerConfig {
 
     public String getKafkaTopicPrefix() {
         return getOrSetDefault(
-            LHServerConfig.KAFKA_TOPIC_PREFIX_KEY,
+            LHConfig.KAFKA_TOPIC_PREFIX_KEY,
             getLHClusterId() + "-"
         );
     }
@@ -79,13 +135,13 @@ public class LHConfig extends LHServerConfig {
     // TODO: Determine how and where to set the topic names for TaskDef queues
 
     public String getBootstrapServers() {
-        return getOrSetDefault(LHServerConfig.KAFKA_BOOTSTRAP_KEY, "localhost:9092");
+        return getOrSetDefault(LHConfig.KAFKA_BOOTSTRAP_KEY, "localhost:9092");
     }
 
     public short getReplicationFactor() {
         return Short.valueOf(
             String.class.cast(
-                    props.getOrDefault(LHServerConfig.REPLICATION_FACTOR_KEY, "1")
+                    props.getOrDefault(LHConfig.REPLICATION_FACTOR_KEY, "1")
                 )
         );
     }
@@ -93,7 +149,7 @@ public class LHConfig extends LHServerConfig {
     public int getClusterPartitions() {
         return Integer.valueOf(
             String.class.cast(
-                    props.getOrDefault(LHServerConfig.CLUSTER_PARTITIONS_KEY, "72")
+                    props.getOrDefault(LHConfig.CLUSTER_PARTITIONS_KEY, "72")
                 )
         );
     }
@@ -111,44 +167,36 @@ public class LHConfig extends LHServerConfig {
     }
 
     public String getLHInstanceId() {
-        return getOrSetDefault(
-            LHServerConfig.LH_INSTANCE_ID_KEY,
-            "Unset-group-iid-bad"
-        );
+        return getOrSetDefault(LHConfig.LH_INSTANCE_ID_KEY, "Unset-group-iid-bad");
     }
 
     public String getStateDirectory() {
-        return getOrSetDefault(LHServerConfig.KAFKA_STATE_DIR_KEY, "/tmp/kafkaState");
+        return getOrSetDefault(LHConfig.KAFKA_STATE_DIR_KEY, "/tmp/kafkaState");
     }
 
     public String getInternalAdvertisedHost() {
-        return getOrSetDefault(
-            LHServerConfig.INTERNAL_ADVERTISED_HOST_KEY,
-            "localhost"
-        );
+        return getOrSetDefault(LHConfig.INTERNAL_ADVERTISED_HOST_KEY, "localhost");
     }
 
     // If INTERNAL_ADVERTISED_PORT isn't set, we return INTERNAL_BIND_PORT.
     public int getInternalAdvertisedPort() {
         return Integer.valueOf(
             getOrSetDefault(
-                LHServerConfig.INTERNAL_ADVERTISED_PORT_KEY,
+                LHConfig.INTERNAL_ADVERTISED_PORT_KEY,
                 Integer.valueOf(getInternalBindPort()).toString()
             )
         );
     }
 
     public int getApiBindPort() {
-        return Integer.valueOf(
-            getOrSetDefault(LHServerConfig.API_BIND_PORT_KEY, "5000")
-        );
+        return Integer.valueOf(getOrSetDefault(LHConfig.API_BIND_PORT_KEY, "5000"));
     }
 
     // If INTERNAL_BIND_PORT isn't set, we just return API_BIND_PORT + 1.
     public int getInternalBindPort() {
         return Integer.valueOf(
             getOrSetDefault(
-                LHServerConfig.INTERNAL_BIND_PORT_KEY,
+                LHConfig.INTERNAL_BIND_PORT_KEY,
                 Integer.valueOf(getApiBindPort() + 1).toString()
             )
         );
@@ -164,8 +212,8 @@ public class LHConfig extends LHServerConfig {
         publicAdvertisedHostMap = new HashMap<>();
 
         String listenerNames = getOrSetDefault(
-            LHServerConfig.ADVERTISED_LISTENERS_KEY,
-            LHServerConfig.DEFAULT_PUBLIC_LISTENER
+            LHConfig.ADVERTISED_LISTENERS_KEY,
+            LHConfig.DEFAULT_PUBLIC_LISTENER
         );
         System.out.println("Listener names are " + listenerNames);
 
@@ -351,16 +399,12 @@ public class LHConfig extends LHServerConfig {
         );
         props.put(
             StreamsConfig.consumerPrefix(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG),
-            Integer.valueOf(
-                getOrSetDefault(LHServerConfig.SESSION_TIMEOUT_KEY, "30000")
-            )
+            Integer.valueOf(getOrSetDefault(LHConfig.SESSION_TIMEOUT_KEY, "30000"))
         );
         props.put(StreamsConfig.METADATA_MAX_AGE_CONFIG, 1000 * 30);
         props.put(
             StreamsConfig.NUM_STREAM_THREADS_CONFIG,
-            Integer.valueOf(
-                getOrSetDefault(LHServerConfig.NUM_STREAM_THREADS_KEY, "1")
-            )
+            Integer.valueOf(getOrSetDefault(LHConfig.NUM_STREAM_THREADS_KEY, "1"))
         );
         props.put(StreamsConfig.TASK_TIMEOUT_MS_CONFIG, 10 * 1000);
         props.put(
@@ -395,18 +439,16 @@ public class LHConfig extends LHServerConfig {
     }
 
     public String getRackId() {
-        return getOrSetDefault(LHServerConfig.RACK_ID_KEY, "unset-rack-id-bad-bad");
+        return getOrSetDefault(LHConfig.RACK_ID_KEY, "unset-rack-id-bad-bad");
     }
 
     public int getStreamsCommitInterval() {
-        return Integer.valueOf(
-            getOrSetDefault(LHServerConfig.COMMIT_INTERVAL_KEY, "100")
-        );
+        return Integer.valueOf(getOrSetDefault(LHConfig.COMMIT_INTERVAL_KEY, "100"));
     }
 
     public VariableAssignment getDefaultTaskTimeout() {
         int timeout = Integer.valueOf(
-            getOrSetDefault(LHServerConfig.DEFAULT_TIMEOUT_KEY, "10")
+            getOrSetDefault(LHConfig.DEFAULT_TIMEOUT_KEY, "10")
         );
 
         VariableValue val = new VariableValue(timeout);
@@ -418,13 +460,13 @@ public class LHConfig extends LHServerConfig {
 
     public int getStandbyReplicas() {
         return Integer.valueOf(
-            getOrSetDefault(LHServerConfig.NUM_STANDBY_REPLICAS_KEY, "0")
+            getOrSetDefault(LHConfig.NUM_STANDBY_REPLICAS_KEY, "0")
         );
     }
 
     public int getWarmupReplicas() {
         return Integer.valueOf(
-            getOrSetDefault(LHServerConfig.NUM_WARMUP_REPLICAS_KEY, "12")
+            getOrSetDefault(LHConfig.NUM_WARMUP_REPLICAS_KEY, "12")
         );
     }
 
