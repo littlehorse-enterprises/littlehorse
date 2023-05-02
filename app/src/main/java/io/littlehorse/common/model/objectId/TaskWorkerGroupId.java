@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.objectId;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.meta.TaskWorkerGroup;
 import io.littlehorse.common.proto.GETableClassEnumPb;
