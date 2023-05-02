@@ -48,6 +48,10 @@ public enum GETableClassEnumPb
    * <code>WF_SPEC_METRICS = 8;</code>
    */
   WF_SPEC_METRICS(8),
+  /**
+   * <code>TASK_WORKER_GROUP = 9;</code>
+   */
+  TASK_WORKER_GROUP(9),
   UNRECOGNIZED(-1),
   ;
 
@@ -87,6 +91,10 @@ public enum GETableClassEnumPb
    * <code>WF_SPEC_METRICS = 8;</code>
    */
   public static final int WF_SPEC_METRICS_VALUE = 8;
+  /**
+   * <code>TASK_WORKER_GROUP = 9;</code>
+   */
+  public static final int TASK_WORKER_GROUP_VALUE = 9;
 
 
   public final int getNumber() {
@@ -122,6 +130,7 @@ public enum GETableClassEnumPb
       case 6: return EXTERNAL_EVENT;
       case 7: return TASK_DEF_METRICS;
       case 8: return WF_SPEC_METRICS;
+      case 9: return TASK_WORKER_GROUP;
       default: return null;
     }
   }

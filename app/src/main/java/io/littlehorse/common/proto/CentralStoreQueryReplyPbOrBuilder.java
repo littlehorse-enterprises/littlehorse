@@ -19,12 +19,12 @@ public interface CentralStoreQueryReplyPbOrBuilder extends
   io.littlehorse.common.proto.StoreQueryStatusPb getCode();
 
   /**
-   * <code>bytes result = 2;</code>
+   * <code>optional bytes result = 2;</code>
    * @return Whether the result field is set.
    */
   boolean hasResult();
   /**
-   * <code>bytes result = 2;</code>
+   * <code>optional bytes result = 2;</code>
    * @return The result.
    */
   com.google.protobuf.ByteString getResult();

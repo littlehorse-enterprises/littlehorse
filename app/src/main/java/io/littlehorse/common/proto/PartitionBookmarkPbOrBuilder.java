@@ -14,17 +14,17 @@ public interface PartitionBookmarkPbOrBuilder extends
   int getParttion();
 
   /**
-   * <code>string last_key = 2;</code>
+   * <code>optional string last_key = 2;</code>
    * @return Whether the lastKey field is set.
    */
   boolean hasLastKey();
   /**
-   * <code>string last_key = 2;</code>
+   * <code>optional string last_key = 2;</code>
    * @return The lastKey.
    */
   java.lang.String getLastKey();
   /**
-   * <code>string last_key = 2;</code>
+   * <code>optional string last_key = 2;</code>
    * @return The bytes for lastKey.
    */
   com.google.protobuf.ByteString

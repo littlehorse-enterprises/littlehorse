@@ -212,6 +212,7 @@ enum GETableClassEnumPb {
     EXTERNAL_EVENT = 6;
     TASK_DEF_METRICS = 7;
     WF_SPEC_METRICS = 8;
+    TASK_WORKER_GROUP = 9;
 }
 
 message AttributePb {
@@ -329,7 +330,8 @@ message TaskClaimEventPb {
     int32 task_run_number = 3;
     int32 task_run_position = 4;
     google.protobuf.Timestamp time = 5;
-    optional string task_worker_version = 6;
+    string task_worker_id = 6;
+    optional string task_worker_version = 7;
 }
 
 message ExternalEventNodeTimeoutPb {
@@ -368,6 +370,7 @@ message CommandPb {
         DeleteTaskDefPb delete_task_def = 16;
         DeleteExternalEventDefPb delete_external_event_def = 17;
         ExternalEventNodeTimeoutPb external_event_timeout = 18;
+        TaskWorkerHeartBeatPb task_worker_heart_beat = 19;
     }
 }
 

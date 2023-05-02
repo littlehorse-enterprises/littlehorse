@@ -34,87 +34,6 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
-  private TagPb(
-      com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    this();
-    if (extensionRegistry == null) {
-      throw new java.lang.NullPointerException();
-    }
-    int mutable_bitField0_ = 0;
-    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-        com.google.protobuf.UnknownFieldSet.newBuilder();
-    try {
-      boolean done = false;
-      while (!done) {
-        int tag = input.readTag();
-        switch (tag) {
-          case 0:
-            done = true;
-            break;
-          case 8: {
-            int rawValue = input.readEnum();
-
-            objectType_ = rawValue;
-            break;
-          }
-          case 18: {
-            if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-              attributes_ = new java.util.ArrayList<io.littlehorse.common.proto.AttributePb>();
-              mutable_bitField0_ |= 0x00000001;
-            }
-            attributes_.add(
-                input.readMessage(io.littlehorse.common.proto.AttributePb.parser(), extensionRegistry));
-            break;
-          }
-          case 26: {
-            java.lang.String s = input.readStringRequireUtf8();
-
-            describedObjectId_ = s;
-            break;
-          }
-          case 34: {
-            com.google.protobuf.Timestamp.Builder subBuilder = null;
-            if (created_ != null) {
-              subBuilder = created_.toBuilder();
-            }
-            created_ = input.readMessage(com.google.protobuf.Timestamp.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom(created_);
-              created_ = subBuilder.buildPartial();
-            }
-
-            break;
-          }
-          case 40: {
-            int rawValue = input.readEnum();
-
-            tagType_ = rawValue;
-            break;
-          }
-          default: {
-            if (!parseUnknownField(
-                input, unknownFields, extensionRegistry, tag)) {
-              done = true;
-            }
-            break;
-          }
-        }
-      }
-    } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
-    } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e).setUnfinishedMessage(this);
-    } finally {
-      if (((mutable_bitField0_ & 0x00000001) != 0)) {
-        attributes_ = java.util.Collections.unmodifiableList(attributes_);
-      }
-      this.unknownFields = unknownFields.build();
-      makeExtensionsImmutable();
-    }
-  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_TagPb_descriptor;
@@ -129,7 +48,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int OBJECT_TYPE_FIELD_NUMBER = 1;
-  private int objectType_;
+  private int objectType_ = 0;
   /**
    * <pre>
    * The following info is also stored in the key of the Tag in the store.
@@ -150,12 +69,12 @@ private static final long serialVersionUID = 0L;
    * @return The objectType.
    */
   @java.lang.Override public io.littlehorse.common.proto.GETableClassEnumPb getObjectType() {
-    @SuppressWarnings("deprecation")
-    io.littlehorse.common.proto.GETableClassEnumPb result = io.littlehorse.common.proto.GETableClassEnumPb.valueOf(objectType_);
+    io.littlehorse.common.proto.GETableClassEnumPb result = io.littlehorse.common.proto.GETableClassEnumPb.forNumber(objectType_);
     return result == null ? io.littlehorse.common.proto.GETableClassEnumPb.UNRECOGNIZED : result;
   }
 
   public static final int ATTRIBUTES_FIELD_NUMBER = 2;
+  @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.common.proto.AttributePb> attributes_;
   /**
    * <code>repeated .littlehorse.AttributePb attributes = 2;</code>
@@ -196,7 +115,8 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int DESCRIBED_OBJECT_ID_FIELD_NUMBER = 3;
-  private volatile java.lang.Object describedObjectId_;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object describedObjectId_ = "";
   /**
    * <code>string described_object_id = 3;</code>
    * @return The describedObjectId.
@@ -256,11 +176,11 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public com.google.protobuf.TimestampOrBuilder getCreatedOrBuilder() {
-    return getCreated();
+    return created_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : created_;
   }
 
   public static final int TAG_TYPE_FIELD_NUMBER = 5;
-  private int tagType_;
+  private int tagType_ = 0;
   /**
    * <pre>
    * The following is not stored in the key.
@@ -281,8 +201,7 @@ private static final long serialVersionUID = 0L;
    * @return The tagType.
    */
   @java.lang.Override public io.littlehorse.common.proto.TagStorageTypePb getTagType() {
-    @SuppressWarnings("deprecation")
-    io.littlehorse.common.proto.TagStorageTypePb result = io.littlehorse.common.proto.TagStorageTypePb.valueOf(tagType_);
+    io.littlehorse.common.proto.TagStorageTypePb result = io.littlehorse.common.proto.TagStorageTypePb.forNumber(tagType_);
     return result == null ? io.littlehorse.common.proto.TagStorageTypePb.UNRECOGNIZED : result;
   }
 
@@ -306,7 +225,7 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < attributes_.size(); i++) {
       output.writeMessage(2, attributes_.get(i));
     }
-    if (!getDescribedObjectIdBytes().isEmpty()) {
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(describedObjectId_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 3, describedObjectId_);
     }
     if (created_ != null) {
@@ -315,7 +234,7 @@ private static final long serialVersionUID = 0L;
     if (tagType_ != io.littlehorse.common.proto.TagStorageTypePb.LOCAL_UNCOUNTED.getNumber()) {
       output.writeEnum(5, tagType_);
     }
-    unknownFields.writeTo(output);
+    getUnknownFields().writeTo(output);
   }
 
   @java.lang.Override
@@ -332,7 +251,7 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, attributes_.get(i));
     }
-    if (!getDescribedObjectIdBytes().isEmpty()) {
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(describedObjectId_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, describedObjectId_);
     }
     if (created_ != null) {
@@ -343,7 +262,7 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(5, tagType_);
     }
-    size += unknownFields.getSerializedSize();
+    size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
   }
@@ -369,7 +288,7 @@ private static final long serialVersionUID = 0L;
           .equals(other.getCreated())) return false;
     }
     if (tagType_ != other.tagType_) return false;
-    if (!unknownFields.equals(other.unknownFields)) return false;
+    if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
 
@@ -394,7 +313,7 @@ private static final long serialVersionUID = 0L;
     }
     hash = (37 * hash) + TAG_TYPE_FIELD_NUMBER;
     hash = (53 * hash) + tagType_;
-    hash = (29 * hash) + unknownFields.hashCode();
+    hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
   }
@@ -511,41 +430,33 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.common.proto.TagPb.newBuilder()
     private Builder() {
-      maybeForceBuilderInitialization();
+
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-      maybeForceBuilderInitialization();
-    }
-    private void maybeForceBuilderInitialization() {
-      if (com.google.protobuf.GeneratedMessageV3
-              .alwaysUseFieldBuilders) {
-        getAttributesFieldBuilder();
-      }
+
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
+      bitField0_ = 0;
       objectType_ = 0;
-
       if (attributesBuilder_ == null) {
         attributes_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000001);
       } else {
+        attributes_ = null;
         attributesBuilder_.clear();
       }
+      bitField0_ = (bitField0_ & ~0x00000002);
       describedObjectId_ = "";
-
-      if (createdBuilder_ == null) {
-        created_ = null;
-      } else {
-        created_ = null;
+      created_ = null;
+      if (createdBuilder_ != null) {
+        createdBuilder_.dispose();
         createdBuilder_ = null;
       }
       tagType_ = 0;
-
       return this;
     }
 
@@ -572,26 +483,40 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.common.proto.TagPb buildPartial() {
       io.littlehorse.common.proto.TagPb result = new io.littlehorse.common.proto.TagPb(this);
-      int from_bitField0_ = bitField0_;
-      result.objectType_ = objectType_;
+      buildPartialRepeatedFields(result);
+      if (bitField0_ != 0) { buildPartial0(result); }
+      onBuilt();
+      return result;
+    }
+
+    private void buildPartialRepeatedFields(io.littlehorse.common.proto.TagPb result) {
       if (attributesBuilder_ == null) {
-        if (((bitField0_ & 0x00000001) != 0)) {
+        if (((bitField0_ & 0x00000002) != 0)) {
           attributes_ = java.util.Collections.unmodifiableList(attributes_);
-          bitField0_ = (bitField0_ & ~0x00000001);
+          bitField0_ = (bitField0_ & ~0x00000002);
         }
         result.attributes_ = attributes_;
       } else {
         result.attributes_ = attributesBuilder_.build();
       }
-      result.describedObjectId_ = describedObjectId_;
-      if (createdBuilder_ == null) {
-        result.created_ = created_;
-      } else {
-        result.created_ = createdBuilder_.build();
+    }
+
+    private void buildPartial0(io.littlehorse.common.proto.TagPb result) {
+      int from_bitField0_ = bitField0_;
+      if (((from_bitField0_ & 0x00000001) != 0)) {
+        result.objectType_ = objectType_;
       }
-      result.tagType_ = tagType_;
-      onBuilt();
-      return result;
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.describedObjectId_ = describedObjectId_;
+      }
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.created_ = createdBuilder_ == null
+            ? created_
+            : createdBuilder_.build();
+      }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.tagType_ = tagType_;
+      }
     }
 
     @java.lang.Override
@@ -645,7 +570,7 @@ private static final long serialVersionUID = 0L;
         if (!other.attributes_.isEmpty()) {
           if (attributes_.isEmpty()) {
             attributes_ = other.attributes_;
-            bitField0_ = (bitField0_ & ~0x00000001);
+            bitField0_ = (bitField0_ & ~0x00000002);
           } else {
             ensureAttributesIsMutable();
             attributes_.addAll(other.attributes_);
@@ -658,7 +583,7 @@ private static final long serialVersionUID = 0L;
             attributesBuilder_.dispose();
             attributesBuilder_ = null;
             attributes_ = other.attributes_;
-            bitField0_ = (bitField0_ & ~0x00000001);
+            bitField0_ = (bitField0_ & ~0x00000002);
             attributesBuilder_ = 
               com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                  getAttributesFieldBuilder() : null;
@@ -669,6 +594,7 @@ private static final long serialVersionUID = 0L;
       }
       if (!other.getDescribedObjectId().isEmpty()) {
         describedObjectId_ = other.describedObjectId_;
+        bitField0_ |= 0x00000004;
         onChanged();
       }
       if (other.hasCreated()) {
@@ -677,7 +603,7 @@ private static final long serialVersionUID = 0L;
       if (other.tagType_ != 0) {
         setTagTypeValue(other.getTagTypeValue());
       }
-      this.mergeUnknownFields(other.unknownFields);
+      this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
     }
@@ -692,17 +618,65 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      io.littlehorse.common.proto.TagPb parsedMessage = null;
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
       try {
-        parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+              objectType_ = input.readEnum();
+              bitField0_ |= 0x00000001;
+              break;
+            } // case 8
+            case 18: {
+              io.littlehorse.common.proto.AttributePb m =
+                  input.readMessage(
+                      io.littlehorse.common.proto.AttributePb.parser(),
+                      extensionRegistry);
+              if (attributesBuilder_ == null) {
+                ensureAttributesIsMutable();
+                attributes_.add(m);
+              } else {
+                attributesBuilder_.addMessage(m);
+              }
+              break;
+            } // case 18
+            case 26: {
+              describedObjectId_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000004;
+              break;
+            } // case 26
+            case 34: {
+              input.readMessage(
+                  getCreatedFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 34
+            case 40: {
+              tagType_ = input.readEnum();
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 40
+            default: {
+              if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                done = true; // was an endgroup tag
+              }
+              break;
+            } // default:
+          } // switch (tag)
+        } // while (!done)
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (io.littlehorse.common.proto.TagPb) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
-        if (parsedMessage != null) {
-          mergeFrom(parsedMessage);
-        }
-      }
+        onChanged();
+      } // finally
       return this;
     }
     private int bitField0_;
@@ -729,8 +703,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setObjectTypeValue(int value) {
-      
       objectType_ = value;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -744,8 +718,7 @@ private static final long serialVersionUID = 0L;
      */
     @java.lang.Override
     public io.littlehorse.common.proto.GETableClassEnumPb getObjectType() {
-      @SuppressWarnings("deprecation")
-      io.littlehorse.common.proto.GETableClassEnumPb result = io.littlehorse.common.proto.GETableClassEnumPb.valueOf(objectType_);
+      io.littlehorse.common.proto.GETableClassEnumPb result = io.littlehorse.common.proto.GETableClassEnumPb.forNumber(objectType_);
       return result == null ? io.littlehorse.common.proto.GETableClassEnumPb.UNRECOGNIZED : result;
     }
     /**
@@ -761,7 +734,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) {
         throw new NullPointerException();
       }
-      
+      bitField0_ |= 0x00000001;
       objectType_ = value.getNumber();
       onChanged();
       return this;
@@ -775,7 +748,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearObjectType() {
-      
+      bitField0_ = (bitField0_ & ~0x00000001);
       objectType_ = 0;
       onChanged();
       return this;
@@ -784,9 +757,9 @@ private static final long serialVersionUID = 0L;
     private java.util.List<io.littlehorse.common.proto.AttributePb> attributes_ =
       java.util.Collections.emptyList();
     private void ensureAttributesIsMutable() {
-      if (!((bitField0_ & 0x00000001) != 0)) {
+      if (!((bitField0_ & 0x00000002) != 0)) {
         attributes_ = new java.util.ArrayList<io.littlehorse.common.proto.AttributePb>(attributes_);
-        bitField0_ |= 0x00000001;
+        bitField0_ |= 0x00000002;
        }
     }
 
@@ -936,7 +909,7 @@ private static final long serialVersionUID = 0L;
     public Builder clearAttributes() {
       if (attributesBuilder_ == null) {
         attributes_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000001);
+        bitField0_ = (bitField0_ & ~0x00000002);
         onChanged();
       } else {
         attributesBuilder_.clear();
@@ -1013,7 +986,7 @@ private static final long serialVersionUID = 0L;
         attributesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             io.littlehorse.common.proto.AttributePb, io.littlehorse.common.proto.AttributePb.Builder, io.littlehorse.common.proto.AttributePbOrBuilder>(
                 attributes_,
-                ((bitField0_ & 0x00000001) != 0),
+                ((bitField0_ & 0x00000002) != 0),
                 getParentForChildren(),
                 isClean());
         attributes_ = null;
@@ -1062,11 +1035,9 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setDescribedObjectId(
         java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
+      if (value == null) { throw new NullPointerException(); }
       describedObjectId_ = value;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
@@ -1075,8 +1046,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearDescribedObjectId() {
-      
       describedObjectId_ = getDefaultInstance().getDescribedObjectId();
+      bitField0_ = (bitField0_ & ~0x00000004);
       onChanged();
       return this;
     }
@@ -1087,12 +1058,10 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setDescribedObjectIdBytes(
         com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
       describedObjectId_ = value;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
@@ -1105,7 +1074,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the created field is set.
      */
     public boolean hasCreated() {
-      return createdBuilder_ != null || created_ != null;
+      return ((bitField0_ & 0x00000008) != 0);
     }
     /**
      * <code>.google.protobuf.Timestamp created = 4;</code>
@@ -1127,11 +1096,11 @@ private static final long serialVersionUID = 0L;
           throw new NullPointerException();
         }
         created_ = value;
-        onChanged();
       } else {
         createdBuilder_.setMessage(value);
       }
-
+      bitField0_ |= 0x00000008;
+      onChanged();
       return this;
     }
     /**
@@ -1141,11 +1110,11 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.Timestamp.Builder builderForValue) {
       if (createdBuilder_ == null) {
         created_ = builderForValue.build();
-        onChanged();
       } else {
         createdBuilder_.setMessage(builderForValue.build());
       }
-
+      bitField0_ |= 0x00000008;
+      onChanged();
       return this;
     }
     /**
@@ -1153,38 +1122,38 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeCreated(com.google.protobuf.Timestamp value) {
       if (createdBuilder_ == null) {
-        if (created_ != null) {
-          created_ =
-            com.google.protobuf.Timestamp.newBuilder(created_).mergeFrom(value).buildPartial();
+        if (((bitField0_ & 0x00000008) != 0) &&
+          created_ != null &&
+          created_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
+          getCreatedBuilder().mergeFrom(value);
         } else {
           created_ = value;
         }
-        onChanged();
       } else {
         createdBuilder_.mergeFrom(value);
       }
-
+      bitField0_ |= 0x00000008;
+      onChanged();
       return this;
     }
     /**
      * <code>.google.protobuf.Timestamp created = 4;</code>
      */
     public Builder clearCreated() {
-      if (createdBuilder_ == null) {
-        created_ = null;
-        onChanged();
-      } else {
-        created_ = null;
+      bitField0_ = (bitField0_ & ~0x00000008);
+      created_ = null;
+      if (createdBuilder_ != null) {
+        createdBuilder_.dispose();
         createdBuilder_ = null;
       }
-
+      onChanged();
       return this;
     }
     /**
      * <code>.google.protobuf.Timestamp created = 4;</code>
      */
     public com.google.protobuf.Timestamp.Builder getCreatedBuilder() {
-      
+      bitField0_ |= 0x00000008;
       onChanged();
       return getCreatedFieldBuilder().getBuilder();
     }
@@ -1238,8 +1207,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setTagTypeValue(int value) {
-      
       tagType_ = value;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
@@ -1253,8 +1222,7 @@ private static final long serialVersionUID = 0L;
      */
     @java.lang.Override
     public io.littlehorse.common.proto.TagStorageTypePb getTagType() {
-      @SuppressWarnings("deprecation")
-      io.littlehorse.common.proto.TagStorageTypePb result = io.littlehorse.common.proto.TagStorageTypePb.valueOf(tagType_);
+      io.littlehorse.common.proto.TagStorageTypePb result = io.littlehorse.common.proto.TagStorageTypePb.forNumber(tagType_);
       return result == null ? io.littlehorse.common.proto.TagStorageTypePb.UNRECOGNIZED : result;
     }
     /**
@@ -1270,7 +1238,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) {
         throw new NullPointerException();
       }
-      
+      bitField0_ |= 0x00000010;
       tagType_ = value.getNumber();
       onChanged();
       return this;
@@ -1284,7 +1252,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearTagType() {
-      
+      bitField0_ = (bitField0_ & ~0x00000010);
       tagType_ = 0;
       onChanged();
       return this;
@@ -1322,7 +1290,18 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new TagPb(input, extensionRegistry);
+      Builder builder = newBuilder();
+      try {
+        builder.mergeFrom(input, extensionRegistry);
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(builder.buildPartial());
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(e)
+            .setUnfinishedMessage(builder.buildPartial());
+      }
+      return builder.buildPartial();
     }
   };
 

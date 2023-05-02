@@ -25,17 +25,17 @@ public interface InternalScanPbOrBuilder extends
   int getLimit();
 
   /**
-   * <code>.littlehorse.BookmarkPb bookmark = 3;</code>
+   * <code>optional .littlehorse.BookmarkPb bookmark = 3;</code>
    * @return Whether the bookmark field is set.
    */
   boolean hasBookmark();
   /**
-   * <code>.littlehorse.BookmarkPb bookmark = 3;</code>
+   * <code>optional .littlehorse.BookmarkPb bookmark = 3;</code>
    * @return The bookmark.
    */
   io.littlehorse.common.proto.BookmarkPb getBookmark();
   /**
-   * <code>.littlehorse.BookmarkPb bookmark = 3;</code>
+   * <code>optional .littlehorse.BookmarkPb bookmark = 3;</code>
    */
   io.littlehorse.common.proto.BookmarkPbOrBuilder getBookmarkOrBuilder();
 
@@ -63,17 +63,17 @@ public interface InternalScanPbOrBuilder extends
       getStoreNameBytes();
 
   /**
-   * <code>string partition_key = 6;</code>
+   * <code>optional string partition_key = 6;</code>
    * @return Whether the partitionKey field is set.
    */
   boolean hasPartitionKey();
   /**
-   * <code>string partition_key = 6;</code>
+   * <code>optional string partition_key = 6;</code>
    * @return The partitionKey.
    */
   java.lang.String getPartitionKey();
   /**
-   * <code>string partition_key = 6;</code>
+   * <code>optional string partition_key = 6;</code>
    * @return The bytes for partitionKey.
    */
   com.google.protobuf.ByteString

@@ -25,5 +25,6 @@
             "--add-opens",
             "java.base/java.util=ALL-UNNAMED"
         ]
-    }
+    },
+    "java.compile.nullAnalysis.mode": "automatic"
 }

@@ -37,6 +37,7 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
     public String taskDefName;
     public List<VarNameAndVal> inputVariables;
     public String taskWorkerVersion;
+    public String taskWorkerId;
 
     public TaskRun() {
         inputVariables = new ArrayList<>();
@@ -61,6 +62,7 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
         if (p.hasTaskWorkerVersion()) {
             taskWorkerVersion = p.getTaskWorkerVersion();
         }
+        taskWorkerId = p.getTaskWorkerId();
         taskDefName = p.getTaskDefId();
 
         for (VarNameAndValPb v : p.getInputVariablesList()) {
@@ -74,6 +76,9 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
             .setTaskDefId(taskDefName)
             .setAttemptNumber(attemptNumber);
 
+        if (taskWorkerId != null) {
+            out.setTaskWorkerId(taskWorkerId);
+        }
         if (taskWorkerVersion != null) {
             out.setTaskWorkerVersion(taskWorkerVersion);
         }
@@ -175,6 +180,7 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
 
         nodeRun.status = LHStatusPb.RUNNING;
         this.taskWorkerVersion = se.taskWorkerVersion;
+        this.taskWorkerId = se.taskWorkerId;
         Node node = nodeRun.getNode();
 
         // create a timer to mark the task is timeout if it does not finish

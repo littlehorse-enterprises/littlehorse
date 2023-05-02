@@ -56,7 +56,7 @@ At a high level:
 
 For more info on what a `StreamObserver` is, look up a tutorial for server-side gRPC in Java (both unary and streaming).
 
-How does this work in the code? 
+How does this work in the code?
 
 1. The [KafkaStreamsServerImpl](../app/src/main/java/io/littlehorse/server/KafkaStreamsServerImpl.java) class has a `processCommand()` method, which takes in a gRPC request (raw protobuf), the response `StreamObserver` handle, and the `Class` for the command and response (used for serializing and deserializing with reflection).
 2. The `processCommand()` method creates a [POSTStreamObserver](../app/src/main/java/io/littlehorse/server/streamsimpl/util/POSTStreamObserver.java) which wraps the response `StreamObserver` handle.
@@ -116,7 +116,7 @@ However, the processing for these metadata items needs to happen in an actual pr
 Therefore, what we do is assign the same partition key for *all* global metadata objects, so that it all ends up on the same processor. Then, the resulting global metadata events are also forwarded to the `global-metadata` topic, which is a changelog for the `GlobalStore`.
 
 ### Secondary Index: "Tagging"
-The Interactive Queries doc referenced above does not contain good information about how to perform lookups on secondary indexes. 
+The Interactive Queries doc referenced above does not contain good information about how to perform lookups on secondary indexes.
 
 More info will be added here later.
 <!-- TODO -->

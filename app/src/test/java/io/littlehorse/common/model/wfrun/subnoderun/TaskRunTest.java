@@ -13,6 +13,7 @@ import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.model.wfrun.WfRun;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
 public class TaskRunTest {
@@ -20,7 +21,7 @@ public class TaskRunTest {
     private Faker faker = new Faker();
 
     @Test
-    void setTaskWorkerVersionToTaskRun() throws LHVarSubError {
+    void setTaskWorkerVersionAndIdToTaskRun() throws LHVarSubError {
         // arrange. Complex because all the dependencies needed
         TaskRun taskRun = new TaskRun();
         taskRun.nodeRun = mock(NodeRun.class);
@@ -45,6 +46,7 @@ public class TaskRunTest {
 
         TaskClaimEvent taskClaimEvent = new TaskClaimEvent();
         taskClaimEvent.taskWorkerVersion = faker.app().version();
+        taskClaimEvent.taskWorkerId = UUID.randomUUID().toString();
 
         // act
         taskRun.processStartedEvent(taskClaimEvent);
@@ -52,5 +54,6 @@ public class TaskRunTest {
         // assert
         assertThat(taskRun.taskWorkerVersion)
             .isEqualTo(taskClaimEvent.taskWorkerVersion);
+        assertThat(taskRun.taskWorkerId).isEqualTo(taskClaimEvent.taskWorkerId);
     }
 }

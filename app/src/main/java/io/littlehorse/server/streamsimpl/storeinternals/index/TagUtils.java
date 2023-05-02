@@ -37,6 +37,7 @@ public class TagUtils {
                 return tag((ExternalEvent) thing);
             case VARIABLE:
                 return tag((Variable) thing);
+            case TASK_WORKER_GROUP:
             case TASK_DEF_METRICS:
             case WF_SPEC_METRICS:
                 // No tags here

@@ -24,6 +24,7 @@ public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
     public int taskRunPosition;
     public Date time;
     public String taskWorkerVersion;
+    public String taskWorkerId;
 
     public Class<TaskClaimEventPb> getProtoBaseClass() {
         return TaskClaimEventPb.class;
@@ -41,6 +42,7 @@ public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
             .setTaskRunNumber(taskRunNumber)
             .setTaskRunPosition(taskRunPosition)
             .setTaskWorkerVersion(taskWorkerVersion)
+            .setTaskWorkerId(taskWorkerId)
             .setTime(LHUtil.fromDate(time));
         return b;
     }
@@ -113,6 +115,7 @@ public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
         this.taskRunNumber = proto.getTaskRunNumber();
         this.taskRunPosition = proto.getTaskRunPosition();
         this.taskWorkerVersion = proto.getTaskWorkerVersion();
+        this.taskWorkerId = proto.getTaskWorkerId();
         this.time = LHUtil.fromProtoTs(proto.getTime());
     }
 

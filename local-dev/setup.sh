@@ -11,4 +11,4 @@ docker compose --file "$WORK_DIR/docker-compose.yml" \
     up -d
 
 echo
-echo "Kafka port: 9092"
+echo "Kafka port: localhost:9092"

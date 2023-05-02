@@ -31,91 +31,6 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
-  private RepartitionCommandPb(
-      com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    this();
-    if (extensionRegistry == null) {
-      throw new java.lang.NullPointerException();
-    }
-    int mutable_bitField0_ = 0;
-    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-        com.google.protobuf.UnknownFieldSet.newBuilder();
-    try {
-      boolean done = false;
-      while (!done) {
-        int tag = input.readTag();
-        switch (tag) {
-          case 0:
-            done = true;
-            break;
-          case 10: {
-            com.google.protobuf.Timestamp.Builder subBuilder = null;
-            if (time_ != null) {
-              subBuilder = time_.toBuilder();
-            }
-            time_ = input.readMessage(com.google.protobuf.Timestamp.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom(time_);
-              time_ = subBuilder.buildPartial();
-            }
-
-            break;
-          }
-          case 18: {
-            java.lang.String s = input.readStringRequireUtf8();
-            bitField0_ |= 0x00000001;
-            commandId_ = s;
-            break;
-          }
-          case 26: {
-            io.littlehorse.common.proto.TaskMetricUpdatePb.Builder subBuilder = null;
-            if (repartitionCommandCase_ == 3) {
-              subBuilder = ((io.littlehorse.common.proto.TaskMetricUpdatePb) repartitionCommand_).toBuilder();
-            }
-            repartitionCommand_ =
-                input.readMessage(io.littlehorse.common.proto.TaskMetricUpdatePb.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom((io.littlehorse.common.proto.TaskMetricUpdatePb) repartitionCommand_);
-              repartitionCommand_ = subBuilder.buildPartial();
-            }
-            repartitionCommandCase_ = 3;
-            break;
-          }
-          case 34: {
-            io.littlehorse.common.proto.WfMetricUpdatePb.Builder subBuilder = null;
-            if (repartitionCommandCase_ == 4) {
-              subBuilder = ((io.littlehorse.common.proto.WfMetricUpdatePb) repartitionCommand_).toBuilder();
-            }
-            repartitionCommand_ =
-                input.readMessage(io.littlehorse.common.proto.WfMetricUpdatePb.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom((io.littlehorse.common.proto.WfMetricUpdatePb) repartitionCommand_);
-              repartitionCommand_ = subBuilder.buildPartial();
-            }
-            repartitionCommandCase_ = 4;
-            break;
-          }
-          default: {
-            if (!parseUnknownField(
-                input, unknownFields, extensionRegistry, tag)) {
-              done = true;
-            }
-            break;
-          }
-        }
-      }
-    } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
-    } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e).setUnfinishedMessage(this);
-    } finally {
-      this.unknownFields = unknownFields.build();
-      makeExtensionsImmutable();
-    }
-  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_RepartitionCommandPb_descriptor;
@@ -194,13 +109,14 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public com.google.protobuf.TimestampOrBuilder getTimeOrBuilder() {
-    return getTime();
+    return time_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : time_;
   }
 
   public static final int COMMAND_ID_FIELD_NUMBER = 2;
-  private volatile java.lang.Object commandId_;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object commandId_ = "";
   /**
-   * <code>string command_id = 2;</code>
+   * <code>optional string command_id = 2;</code>
    * @return Whether the commandId field is set.
    */
   @java.lang.Override
@@ -208,7 +124,7 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>string command_id = 2;</code>
+   * <code>optional string command_id = 2;</code>
    * @return The commandId.
    */
   @java.lang.Override
@@ -225,7 +141,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>string command_id = 2;</code>
+   * <code>optional string command_id = 2;</code>
    * @return The bytes for commandId.
    */
   @java.lang.Override
@@ -331,7 +247,7 @@ private static final long serialVersionUID = 0L;
     if (repartitionCommandCase_ == 4) {
       output.writeMessage(4, (io.littlehorse.common.proto.WfMetricUpdatePb) repartitionCommand_);
     }
-    unknownFields.writeTo(output);
+    getUnknownFields().writeTo(output);
   }
 
   @java.lang.Override
@@ -355,7 +271,7 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, (io.littlehorse.common.proto.WfMetricUpdatePb) repartitionCommand_);
     }
-    size += unknownFields.getSerializedSize();
+    size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
   }
@@ -393,7 +309,7 @@ private static final long serialVersionUID = 0L;
       case 0:
       default:
     }
-    if (!unknownFields.equals(other.unknownFields)) return false;
+    if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
 
@@ -424,7 +340,7 @@ private static final long serialVersionUID = 0L;
       case 0:
       default:
     }
-    hash = (29 * hash) + unknownFields.hashCode();
+    hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
   }
@@ -541,30 +457,30 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.common.proto.RepartitionCommandPb.newBuilder()
     private Builder() {
-      maybeForceBuilderInitialization();
+
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-      maybeForceBuilderInitialization();
-    }
-    private void maybeForceBuilderInitialization() {
-      if (com.google.protobuf.GeneratedMessageV3
-              .alwaysUseFieldBuilders) {
-      }
+
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      if (timeBuilder_ == null) {
-        time_ = null;
-      } else {
-        time_ = null;
+      bitField0_ = 0;
+      time_ = null;
+      if (timeBuilder_ != null) {
+        timeBuilder_.dispose();
         timeBuilder_ = null;
       }
       commandId_ = "";
-      bitField0_ = (bitField0_ & ~0x00000001);
+      if (taskMetricUpdateBuilder_ != null) {
+        taskMetricUpdateBuilder_.clear();
+      }
+      if (wfMetricUpdateBuilder_ != null) {
+        wfMetricUpdateBuilder_.clear();
+      }
       repartitionCommandCase_ = 0;
       repartitionCommand_ = null;
       return this;
@@ -593,35 +509,38 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.common.proto.RepartitionCommandPb buildPartial() {
       io.littlehorse.common.proto.RepartitionCommandPb result = new io.littlehorse.common.proto.RepartitionCommandPb(this);
-      int from_bitField0_ = bitField0_;
-      int to_bitField0_ = 0;
-      if (timeBuilder_ == null) {
-        result.time_ = time_;
-      } else {
-        result.time_ = timeBuilder_.build();
-      }
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        to_bitField0_ |= 0x00000001;
-      }
-      result.commandId_ = commandId_;
-      if (repartitionCommandCase_ == 3) {
-        if (taskMetricUpdateBuilder_ == null) {
-          result.repartitionCommand_ = repartitionCommand_;
-        } else {
-          result.repartitionCommand_ = taskMetricUpdateBuilder_.build();
-        }
-      }
-      if (repartitionCommandCase_ == 4) {
-        if (wfMetricUpdateBuilder_ == null) {
-          result.repartitionCommand_ = repartitionCommand_;
-        } else {
-          result.repartitionCommand_ = wfMetricUpdateBuilder_.build();
-        }
-      }
-      result.bitField0_ = to_bitField0_;
-      result.repartitionCommandCase_ = repartitionCommandCase_;
+      if (bitField0_ != 0) { buildPartial0(result); }
+      buildPartialOneofs(result);
       onBuilt();
       return result;
+    }
+
+    private void buildPartial0(io.littlehorse.common.proto.RepartitionCommandPb result) {
+      int from_bitField0_ = bitField0_;
+      if (((from_bitField0_ & 0x00000001) != 0)) {
+        result.time_ = timeBuilder_ == null
+            ? time_
+            : timeBuilder_.build();
+      }
+      int to_bitField0_ = 0;
+      if (((from_bitField0_ & 0x00000002) != 0)) {
+        result.commandId_ = commandId_;
+        to_bitField0_ |= 0x00000001;
+      }
+      result.bitField0_ |= to_bitField0_;
+    }
+
+    private void buildPartialOneofs(io.littlehorse.common.proto.RepartitionCommandPb result) {
+      result.repartitionCommandCase_ = repartitionCommandCase_;
+      result.repartitionCommand_ = this.repartitionCommand_;
+      if (repartitionCommandCase_ == 3 &&
+          taskMetricUpdateBuilder_ != null) {
+        result.repartitionCommand_ = taskMetricUpdateBuilder_.build();
+      }
+      if (repartitionCommandCase_ == 4 &&
+          wfMetricUpdateBuilder_ != null) {
+        result.repartitionCommand_ = wfMetricUpdateBuilder_.build();
+      }
     }
 
     @java.lang.Override
@@ -672,8 +591,8 @@ private static final long serialVersionUID = 0L;
         mergeTime(other.getTime());
       }
       if (other.hasCommandId()) {
-        bitField0_ |= 0x00000001;
         commandId_ = other.commandId_;
+        bitField0_ |= 0x00000002;
         onChanged();
       }
       switch (other.getRepartitionCommandCase()) {
@@ -689,7 +608,7 @@ private static final long serialVersionUID = 0L;
           break;
         }
       }
-      this.mergeUnknownFields(other.unknownFields);
+      this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
     }
@@ -704,17 +623,56 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      io.littlehorse.common.proto.RepartitionCommandPb parsedMessage = null;
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
       try {
-        parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              input.readMessage(
+                  getTimeFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000001;
+              break;
+            } // case 10
+            case 18: {
+              commandId_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000002;
+              break;
+            } // case 18
+            case 26: {
+              input.readMessage(
+                  getTaskMetricUpdateFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              repartitionCommandCase_ = 3;
+              break;
+            } // case 26
+            case 34: {
+              input.readMessage(
+                  getWfMetricUpdateFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              repartitionCommandCase_ = 4;
+              break;
+            } // case 34
+            default: {
+              if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                done = true; // was an endgroup tag
+              }
+              break;
+            } // default:
+          } // switch (tag)
+        } // while (!done)
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (io.littlehorse.common.proto.RepartitionCommandPb) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
-        if (parsedMessage != null) {
-          mergeFrom(parsedMessage);
-        }
-      }
+        onChanged();
+      } // finally
       return this;
     }
     private int repartitionCommandCase_ = 0;
@@ -742,7 +700,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the time field is set.
      */
     public boolean hasTime() {
-      return timeBuilder_ != null || time_ != null;
+      return ((bitField0_ & 0x00000001) != 0);
     }
     /**
      * <code>.google.protobuf.Timestamp time = 1;</code>
@@ -764,11 +722,11 @@ private static final long serialVersionUID = 0L;
           throw new NullPointerException();
         }
         time_ = value;
-        onChanged();
       } else {
         timeBuilder_.setMessage(value);
       }
-
+      bitField0_ |= 0x00000001;
+      onChanged();
       return this;
     }
     /**
@@ -778,11 +736,11 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.Timestamp.Builder builderForValue) {
       if (timeBuilder_ == null) {
         time_ = builderForValue.build();
-        onChanged();
       } else {
         timeBuilder_.setMessage(builderForValue.build());
       }
-
+      bitField0_ |= 0x00000001;
+      onChanged();
       return this;
     }
     /**
@@ -790,38 +748,38 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeTime(com.google.protobuf.Timestamp value) {
       if (timeBuilder_ == null) {
-        if (time_ != null) {
-          time_ =
-            com.google.protobuf.Timestamp.newBuilder(time_).mergeFrom(value).buildPartial();
+        if (((bitField0_ & 0x00000001) != 0) &&
+          time_ != null &&
+          time_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
+          getTimeBuilder().mergeFrom(value);
         } else {
           time_ = value;
         }
-        onChanged();
       } else {
         timeBuilder_.mergeFrom(value);
       }
-
+      bitField0_ |= 0x00000001;
+      onChanged();
       return this;
     }
     /**
      * <code>.google.protobuf.Timestamp time = 1;</code>
      */
     public Builder clearTime() {
-      if (timeBuilder_ == null) {
-        time_ = null;
-        onChanged();
-      } else {
-        time_ = null;
+      bitField0_ = (bitField0_ & ~0x00000001);
+      time_ = null;
+      if (timeBuilder_ != null) {
+        timeBuilder_.dispose();
         timeBuilder_ = null;
       }
-
+      onChanged();
       return this;
     }
     /**
      * <code>.google.protobuf.Timestamp time = 1;</code>
      */
     public com.google.protobuf.Timestamp.Builder getTimeBuilder() {
-      
+      bitField0_ |= 0x00000001;
       onChanged();
       return getTimeFieldBuilder().getBuilder();
     }
@@ -855,14 +813,14 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object commandId_ = "";
     /**
-     * <code>string command_id = 2;</code>
+     * <code>optional string command_id = 2;</code>
      * @return Whether the commandId field is set.
      */
     public boolean hasCommandId() {
-      return ((bitField0_ & 0x00000001) != 0);
+      return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>string command_id = 2;</code>
+     * <code>optional string command_id = 2;</code>
      * @return The commandId.
      */
     public java.lang.String getCommandId() {
@@ -878,7 +836,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string command_id = 2;</code>
+     * <code>optional string command_id = 2;</code>
      * @return The bytes for commandId.
      */
     public com.google.protobuf.ByteString
@@ -895,43 +853,39 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string command_id = 2;</code>
+     * <code>optional string command_id = 2;</code>
      * @param value The commandId to set.
      * @return This builder for chaining.
      */
     public Builder setCommandId(
         java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
+      if (value == null) { throw new NullPointerException(); }
       commandId_ = value;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>string command_id = 2;</code>
+     * <code>optional string command_id = 2;</code>
      * @return This builder for chaining.
      */
     public Builder clearCommandId() {
-      bitField0_ = (bitField0_ & ~0x00000001);
       commandId_ = getDefaultInstance().getCommandId();
+      bitField0_ = (bitField0_ & ~0x00000002);
       onChanged();
       return this;
     }
     /**
-     * <code>string command_id = 2;</code>
+     * <code>optional string command_id = 2;</code>
      * @param value The bytes for commandId to set.
      * @return This builder for chaining.
      */
     public Builder setCommandIdBytes(
         com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      bitField0_ |= 0x00000001;
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
       commandId_ = value;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
@@ -1010,8 +964,9 @@ private static final long serialVersionUID = 0L;
       } else {
         if (repartitionCommandCase_ == 3) {
           taskMetricUpdateBuilder_.mergeFrom(value);
+        } else {
+          taskMetricUpdateBuilder_.setMessage(value);
         }
-        taskMetricUpdateBuilder_.setMessage(value);
       }
       repartitionCommandCase_ = 3;
       return this;
@@ -1073,7 +1028,7 @@ private static final long serialVersionUID = 0L;
         repartitionCommand_ = null;
       }
       repartitionCommandCase_ = 3;
-      onChanged();;
+      onChanged();
       return taskMetricUpdateBuilder_;
     }
 
@@ -1151,8 +1106,9 @@ private static final long serialVersionUID = 0L;
       } else {
         if (repartitionCommandCase_ == 4) {
           wfMetricUpdateBuilder_.mergeFrom(value);
+        } else {
+          wfMetricUpdateBuilder_.setMessage(value);
         }
-        wfMetricUpdateBuilder_.setMessage(value);
       }
       repartitionCommandCase_ = 4;
       return this;
@@ -1214,7 +1170,7 @@ private static final long serialVersionUID = 0L;
         repartitionCommand_ = null;
       }
       repartitionCommandCase_ = 4;
-      onChanged();;
+      onChanged();
       return wfMetricUpdateBuilder_;
     }
     @java.lang.Override
@@ -1250,7 +1206,18 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new RepartitionCommandPb(input, extensionRegistry);
+      Builder builder = newBuilder();
+      try {
+        builder.mergeFrom(input, extensionRegistry);
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(builder.buildPartial());
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(e)
+            .setUnfinishedMessage(builder.buildPartial());
+      }
+      return builder.buildPartial();
     }
   };
 

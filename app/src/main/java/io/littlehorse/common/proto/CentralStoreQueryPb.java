@@ -31,73 +31,6 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
-  private CentralStoreQueryPb(
-      com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    this();
-    if (extensionRegistry == null) {
-      throw new java.lang.NullPointerException();
-    }
-    int mutable_bitField0_ = 0;
-    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-        com.google.protobuf.UnknownFieldSet.newBuilder();
-    try {
-      boolean done = false;
-      while (!done) {
-        int tag = input.readTag();
-        switch (tag) {
-          case 0:
-            done = true;
-            break;
-          case 8: {
-
-            enableStaleStores_ = input.readBool();
-            break;
-          }
-          case 16: {
-            bitField0_ |= 0x00000001;
-            specificPartition_ = input.readInt32();
-            break;
-          }
-          case 26: {
-            io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.Builder subBuilder = null;
-            if (query_ != null) {
-              subBuilder = query_.toBuilder();
-            }
-            query_ = input.readMessage(io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom(query_);
-              query_ = subBuilder.buildPartial();
-            }
-
-            break;
-          }
-          case 34: {
-            java.lang.String s = input.readStringRequireUtf8();
-
-            store_ = s;
-            break;
-          }
-          default: {
-            if (!parseUnknownField(
-                input, unknownFields, extensionRegistry, tag)) {
-              done = true;
-            }
-            break;
-          }
-        }
-      }
-    } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
-    } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e).setUnfinishedMessage(this);
-    } finally {
-      this.unknownFields = unknownFields.build();
-      makeExtensionsImmutable();
-    }
-  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_CentralStoreQueryPb_descriptor;
@@ -117,6 +50,11 @@ private static final long serialVersionUID = 0L;
 
     /**
      * <code>string key = 1;</code>
+     * @return Whether the key field is set.
+     */
+    boolean hasKey();
+    /**
+     * <code>string key = 1;</code>
      * @return The key.
      */
     java.lang.String getKey();
@@ -127,6 +65,11 @@ private static final long serialVersionUID = 0L;
     com.google.protobuf.ByteString
         getKeyBytes();
 
+    /**
+     * <code>string last_from_prefix = 2;</code>
+     * @return Whether the lastFromPrefix field is set.
+     */
+    boolean hasLastFromPrefix();
     /**
      * <code>string last_from_prefix = 2;</code>
      * @return The lastFromPrefix.
@@ -167,55 +110,6 @@ private static final long serialVersionUID = 0L;
     public final com.google.protobuf.UnknownFieldSet
     getUnknownFields() {
       return this.unknownFields;
-    }
-    private CentralStoreSubQueryPb(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            case 10: {
-              java.lang.String s = input.readStringRequireUtf8();
-              queryCase_ = 1;
-              query_ = s;
-              break;
-            }
-            case 18: {
-              java.lang.String s = input.readStringRequireUtf8();
-              queryCase_ = 2;
-              query_ = s;
-              break;
-            }
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
@@ -274,6 +168,13 @@ private static final long serialVersionUID = 0L;
     public static final int KEY_FIELD_NUMBER = 1;
     /**
      * <code>string key = 1;</code>
+     * @return Whether the key field is set.
+     */
+    public boolean hasKey() {
+      return queryCase_ == 1;
+    }
+    /**
+     * <code>string key = 1;</code>
      * @return The key.
      */
     public java.lang.String getKey() {
@@ -317,6 +218,13 @@ private static final long serialVersionUID = 0L;
     }
 
     public static final int LAST_FROM_PREFIX_FIELD_NUMBER = 2;
+    /**
+     * <code>string last_from_prefix = 2;</code>
+     * @return Whether the lastFromPrefix field is set.
+     */
+    public boolean hasLastFromPrefix() {
+      return queryCase_ == 2;
+    }
     /**
      * <code>string last_from_prefix = 2;</code>
      * @return The lastFromPrefix.
@@ -381,7 +289,7 @@ private static final long serialVersionUID = 0L;
       if (queryCase_ == 2) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, query_);
       }
-      unknownFields.writeTo(output);
+      getUnknownFields().writeTo(output);
     }
 
     @java.lang.Override
@@ -396,7 +304,7 @@ private static final long serialVersionUID = 0L;
       if (queryCase_ == 2) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, query_);
       }
-      size += unknownFields.getSerializedSize();
+      size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
       return size;
     }
@@ -424,7 +332,7 @@ private static final long serialVersionUID = 0L;
         case 0:
         default:
       }
-      if (!unknownFields.equals(other.unknownFields)) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
 
@@ -447,7 +355,7 @@ private static final long serialVersionUID = 0L;
         case 0:
         default:
       }
-      hash = (29 * hash) + unknownFields.hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
     }
@@ -564,22 +472,18 @@ private static final long serialVersionUID = 0L;
 
       // Construct using io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.newBuilder()
       private Builder() {
-        maybeForceBuilderInitialization();
+
       }
 
       private Builder(
           com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
+
       }
       @java.lang.Override
       public Builder clear() {
         super.clear();
+        bitField0_ = 0;
         queryCase_ = 0;
         query_ = null;
         return this;
@@ -608,15 +512,19 @@ private static final long serialVersionUID = 0L;
       @java.lang.Override
       public io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb buildPartial() {
         io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb result = new io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb(this);
-        if (queryCase_ == 1) {
-          result.query_ = query_;
-        }
-        if (queryCase_ == 2) {
-          result.query_ = query_;
-        }
-        result.queryCase_ = queryCase_;
+        if (bitField0_ != 0) { buildPartial0(result); }
+        buildPartialOneofs(result);
         onBuilt();
         return result;
+      }
+
+      private void buildPartial0(io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb result) {
+        int from_bitField0_ = bitField0_;
+      }
+
+      private void buildPartialOneofs(io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb result) {
+        result.queryCase_ = queryCase_;
+        result.query_ = this.query_;
       }
 
       @java.lang.Override
@@ -680,7 +588,7 @@ private static final long serialVersionUID = 0L;
             break;
           }
         }
-        this.mergeUnknownFields(other.unknownFields);
+        this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
       }
@@ -695,17 +603,42 @@ private static final long serialVersionUID = 0L;
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb parsedMessage = null;
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
         try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                java.lang.String s = input.readStringRequireUtf8();
+                queryCase_ = 1;
+                query_ = s;
+                break;
+              } // case 10
+              case 18: {
+                java.lang.String s = input.readStringRequireUtf8();
+                queryCase_ = 2;
+                query_ = s;
+                break;
+              } // case 18
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
+          onChanged();
+        } // finally
         return this;
       }
       private int queryCase_ = 0;
@@ -723,7 +656,16 @@ private static final long serialVersionUID = 0L;
         return this;
       }
 
+      private int bitField0_;
 
+      /**
+       * <code>string key = 1;</code>
+       * @return Whether the key field is set.
+       */
+      @java.lang.Override
+      public boolean hasKey() {
+        return queryCase_ == 1;
+      }
       /**
        * <code>string key = 1;</code>
        * @return The key.
@@ -776,10 +718,8 @@ private static final long serialVersionUID = 0L;
        */
       public Builder setKey(
           java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  queryCase_ = 1;
+        if (value == null) { throw new NullPointerException(); }
+        queryCase_ = 1;
         query_ = value;
         onChanged();
         return this;
@@ -803,16 +743,22 @@ private static final long serialVersionUID = 0L;
        */
       public Builder setKeyBytes(
           com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
         queryCase_ = 1;
         query_ = value;
         onChanged();
         return this;
       }
 
+      /**
+       * <code>string last_from_prefix = 2;</code>
+       * @return Whether the lastFromPrefix field is set.
+       */
+      @java.lang.Override
+      public boolean hasLastFromPrefix() {
+        return queryCase_ == 2;
+      }
       /**
        * <code>string last_from_prefix = 2;</code>
        * @return The lastFromPrefix.
@@ -865,10 +811,8 @@ private static final long serialVersionUID = 0L;
        */
       public Builder setLastFromPrefix(
           java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  queryCase_ = 2;
+        if (value == null) { throw new NullPointerException(); }
+        queryCase_ = 2;
         query_ = value;
         onChanged();
         return this;
@@ -892,10 +836,8 @@ private static final long serialVersionUID = 0L;
        */
       public Builder setLastFromPrefixBytes(
           com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
         queryCase_ = 2;
         query_ = value;
         onChanged();
@@ -934,7 +876,18 @@ private static final long serialVersionUID = 0L;
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new CentralStoreSubQueryPb(input, extensionRegistry);
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
       }
     };
 
@@ -956,7 +909,7 @@ private static final long serialVersionUID = 0L;
 
   private int bitField0_;
   public static final int ENABLE_STALE_STORES_FIELD_NUMBER = 1;
-  private boolean enableStaleStores_;
+  private boolean enableStaleStores_ = false;
   /**
    * <code>bool enable_stale_stores = 1;</code>
    * @return The enableStaleStores.
@@ -967,9 +920,9 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int SPECIFIC_PARTITION_FIELD_NUMBER = 2;
-  private int specificPartition_;
+  private int specificPartition_ = 0;
   /**
-   * <code>int32 specific_partition = 2;</code>
+   * <code>optional int32 specific_partition = 2;</code>
    * @return Whether the specificPartition field is set.
    */
   @java.lang.Override
@@ -977,7 +930,7 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>int32 specific_partition = 2;</code>
+   * <code>optional int32 specific_partition = 2;</code>
    * @return The specificPartition.
    */
   @java.lang.Override
@@ -1008,11 +961,12 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPbOrBuilder getQueryOrBuilder() {
-    return getQuery();
+    return query_ == null ? io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.getDefaultInstance() : query_;
   }
 
   public static final int STORE_FIELD_NUMBER = 4;
-  private volatile java.lang.Object store_;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object store_ = "";
   /**
    * <code>string store = 4;</code>
    * @return The store.
@@ -1072,10 +1026,10 @@ private static final long serialVersionUID = 0L;
     if (query_ != null) {
       output.writeMessage(3, getQuery());
     }
-    if (!getStoreBytes().isEmpty()) {
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(store_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 4, store_);
     }
-    unknownFields.writeTo(output);
+    getUnknownFields().writeTo(output);
   }
 
   @java.lang.Override
@@ -1096,10 +1050,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getQuery());
     }
-    if (!getStoreBytes().isEmpty()) {
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(store_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, store_);
     }
-    size += unknownFields.getSerializedSize();
+    size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
   }
@@ -1128,7 +1082,7 @@ private static final long serialVersionUID = 0L;
     }
     if (!getStore()
         .equals(other.getStore())) return false;
-    if (!unknownFields.equals(other.unknownFields)) return false;
+    if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
 
@@ -1152,7 +1106,7 @@ private static final long serialVersionUID = 0L;
     }
     hash = (37 * hash) + STORE_FIELD_NUMBER;
     hash = (53 * hash) + getStore().hashCode();
-    hash = (29 * hash) + unknownFields.hashCode();
+    hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
   }
@@ -1269,34 +1223,26 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.common.proto.CentralStoreQueryPb.newBuilder()
     private Builder() {
-      maybeForceBuilderInitialization();
+
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-      maybeForceBuilderInitialization();
-    }
-    private void maybeForceBuilderInitialization() {
-      if (com.google.protobuf.GeneratedMessageV3
-              .alwaysUseFieldBuilders) {
-      }
+
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
+      bitField0_ = 0;
       enableStaleStores_ = false;
-
       specificPartition_ = 0;
-      bitField0_ = (bitField0_ & ~0x00000001);
-      if (queryBuilder_ == null) {
-        query_ = null;
-      } else {
-        query_ = null;
+      query_ = null;
+      if (queryBuilder_ != null) {
+        queryBuilder_.dispose();
         queryBuilder_ = null;
       }
       store_ = "";
-
       return this;
     }
 
@@ -1323,22 +1269,30 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.common.proto.CentralStoreQueryPb buildPartial() {
       io.littlehorse.common.proto.CentralStoreQueryPb result = new io.littlehorse.common.proto.CentralStoreQueryPb(this);
+      if (bitField0_ != 0) { buildPartial0(result); }
+      onBuilt();
+      return result;
+    }
+
+    private void buildPartial0(io.littlehorse.common.proto.CentralStoreQueryPb result) {
       int from_bitField0_ = bitField0_;
-      int to_bitField0_ = 0;
-      result.enableStaleStores_ = enableStaleStores_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
+        result.enableStaleStores_ = enableStaleStores_;
+      }
+      int to_bitField0_ = 0;
+      if (((from_bitField0_ & 0x00000002) != 0)) {
         result.specificPartition_ = specificPartition_;
         to_bitField0_ |= 0x00000001;
       }
-      if (queryBuilder_ == null) {
-        result.query_ = query_;
-      } else {
-        result.query_ = queryBuilder_.build();
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.query_ = queryBuilder_ == null
+            ? query_
+            : queryBuilder_.build();
       }
-      result.store_ = store_;
-      result.bitField0_ = to_bitField0_;
-      onBuilt();
-      return result;
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.store_ = store_;
+      }
+      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -1396,9 +1350,10 @@ private static final long serialVersionUID = 0L;
       }
       if (!other.getStore().isEmpty()) {
         store_ = other.store_;
+        bitField0_ |= 0x00000008;
         onChanged();
       }
-      this.mergeUnknownFields(other.unknownFields);
+      this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
     }
@@ -1413,17 +1368,52 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      io.littlehorse.common.proto.CentralStoreQueryPb parsedMessage = null;
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
       try {
-        parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+              enableStaleStores_ = input.readBool();
+              bitField0_ |= 0x00000001;
+              break;
+            } // case 8
+            case 16: {
+              specificPartition_ = input.readInt32();
+              bitField0_ |= 0x00000002;
+              break;
+            } // case 16
+            case 26: {
+              input.readMessage(
+                  getQueryFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000004;
+              break;
+            } // case 26
+            case 34: {
+              store_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 34
+            default: {
+              if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                done = true; // was an endgroup tag
+              }
+              break;
+            } // default:
+          } // switch (tag)
+        } // while (!done)
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (io.littlehorse.common.proto.CentralStoreQueryPb) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
-        if (parsedMessage != null) {
-          mergeFrom(parsedMessage);
-        }
-      }
+        onChanged();
+      } // finally
       return this;
     }
     private int bitField0_;
@@ -1445,6 +1435,7 @@ private static final long serialVersionUID = 0L;
     public Builder setEnableStaleStores(boolean value) {
       
       enableStaleStores_ = value;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -1453,7 +1444,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearEnableStaleStores() {
-      
+      bitField0_ = (bitField0_ & ~0x00000001);
       enableStaleStores_ = false;
       onChanged();
       return this;
@@ -1461,15 +1452,15 @@ private static final long serialVersionUID = 0L;
 
     private int specificPartition_ ;
     /**
-     * <code>int32 specific_partition = 2;</code>
+     * <code>optional int32 specific_partition = 2;</code>
      * @return Whether the specificPartition field is set.
      */
     @java.lang.Override
     public boolean hasSpecificPartition() {
-      return ((bitField0_ & 0x00000001) != 0);
+      return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>int32 specific_partition = 2;</code>
+     * <code>optional int32 specific_partition = 2;</code>
      * @return The specificPartition.
      */
     @java.lang.Override
@@ -1477,22 +1468,23 @@ private static final long serialVersionUID = 0L;
       return specificPartition_;
     }
     /**
-     * <code>int32 specific_partition = 2;</code>
+     * <code>optional int32 specific_partition = 2;</code>
      * @param value The specificPartition to set.
      * @return This builder for chaining.
      */
     public Builder setSpecificPartition(int value) {
-      bitField0_ |= 0x00000001;
+      
       specificPartition_ = value;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>int32 specific_partition = 2;</code>
+     * <code>optional int32 specific_partition = 2;</code>
      * @return This builder for chaining.
      */
     public Builder clearSpecificPartition() {
-      bitField0_ = (bitField0_ & ~0x00000001);
+      bitField0_ = (bitField0_ & ~0x00000002);
       specificPartition_ = 0;
       onChanged();
       return this;
@@ -1506,7 +1498,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the query field is set.
      */
     public boolean hasQuery() {
-      return queryBuilder_ != null || query_ != null;
+      return ((bitField0_ & 0x00000004) != 0);
     }
     /**
      * <code>.littlehorse.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
@@ -1528,11 +1520,11 @@ private static final long serialVersionUID = 0L;
           throw new NullPointerException();
         }
         query_ = value;
-        onChanged();
       } else {
         queryBuilder_.setMessage(value);
       }
-
+      bitField0_ |= 0x00000004;
+      onChanged();
       return this;
     }
     /**
@@ -1542,11 +1534,11 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.Builder builderForValue) {
       if (queryBuilder_ == null) {
         query_ = builderForValue.build();
-        onChanged();
       } else {
         queryBuilder_.setMessage(builderForValue.build());
       }
-
+      bitField0_ |= 0x00000004;
+      onChanged();
       return this;
     }
     /**
@@ -1554,38 +1546,38 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeQuery(io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb value) {
       if (queryBuilder_ == null) {
-        if (query_ != null) {
-          query_ =
-            io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.newBuilder(query_).mergeFrom(value).buildPartial();
+        if (((bitField0_ & 0x00000004) != 0) &&
+          query_ != null &&
+          query_ != io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.getDefaultInstance()) {
+          getQueryBuilder().mergeFrom(value);
         } else {
           query_ = value;
         }
-        onChanged();
       } else {
         queryBuilder_.mergeFrom(value);
       }
-
+      bitField0_ |= 0x00000004;
+      onChanged();
       return this;
     }
     /**
      * <code>.littlehorse.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
      */
     public Builder clearQuery() {
-      if (queryBuilder_ == null) {
-        query_ = null;
-        onChanged();
-      } else {
-        query_ = null;
+      bitField0_ = (bitField0_ & ~0x00000004);
+      query_ = null;
+      if (queryBuilder_ != null) {
+        queryBuilder_.dispose();
         queryBuilder_ = null;
       }
-
+      onChanged();
       return this;
     }
     /**
      * <code>.littlehorse.CentralStoreQueryPb.CentralStoreSubQueryPb query = 3;</code>
      */
     public io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb.Builder getQueryBuilder() {
-      
+      bitField0_ |= 0x00000004;
       onChanged();
       return getQueryFieldBuilder().getBuilder();
     }
@@ -1658,11 +1650,9 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setStore(
         java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
+      if (value == null) { throw new NullPointerException(); }
       store_ = value;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -1671,8 +1661,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearStore() {
-      
       store_ = getDefaultInstance().getStore();
+      bitField0_ = (bitField0_ & ~0x00000008);
       onChanged();
       return this;
     }
@@ -1683,12 +1673,10 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setStoreBytes(
         com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
       store_ = value;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -1725,7 +1713,18 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new CentralStoreQueryPb(input, extensionRegistry);
+      Builder builder = newBuilder();
+      try {
+        builder.mergeFrom(input, extensionRegistry);
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(builder.buildPartial());
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(e)
+            .setUnfinishedMessage(builder.buildPartial());
+      }
+      return builder.buildPartial();
     }
   };
 

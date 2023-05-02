@@ -3,6 +3,7 @@ package io.littlehorse.common.model;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
+import io.littlehorse.common.model.meta.TaskWorkerGroup;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.metrics.TaskDefMetrics;
 import io.littlehorse.common.model.metrics.WfSpecMetrics;
@@ -11,6 +12,7 @@ import io.littlehorse.common.model.objectId.ExternalEventId;
 import io.littlehorse.common.model.objectId.NodeRunId;
 import io.littlehorse.common.model.objectId.TaskDefId;
 import io.littlehorse.common.model.objectId.TaskDefMetricsId;
+import io.littlehorse.common.model.objectId.TaskWorkerGroupId;
 import io.littlehorse.common.model.objectId.VariableId;
 import io.littlehorse.common.model.objectId.WfRunId;
 import io.littlehorse.common.model.objectId.WfSpecId;
@@ -49,6 +51,8 @@ public abstract class GETable<T extends Message> extends Storeable<T> {
             return GETableClassEnumPb.TASK_DEF_METRICS;
         } else if (cls.equals(WfSpecMetrics.class)) {
             return GETableClassEnumPb.WF_SPEC_METRICS;
+        } else if (cls.equals(TaskWorkerGroup.class)) {
+            return GETableClassEnumPb.TASK_WORKER_GROUP;
         } else {
             throw new RuntimeException("Uh oh, unrecognized: " + cls.getName());
         }
@@ -74,6 +78,8 @@ public abstract class GETable<T extends Message> extends Storeable<T> {
                 return TaskDefMetrics.class;
             case WF_SPEC_METRICS:
                 return WfSpecMetrics.class;
+            case TASK_WORKER_GROUP:
+                return TaskWorkerGroup.class;
             case UNRECOGNIZED:
             default:
                 throw new RuntimeException("Uh oh, unrecognized enum");
@@ -102,6 +108,8 @@ public abstract class GETable<T extends Message> extends Storeable<T> {
                 return TaskDefMetricsId.class;
             case WF_SPEC_METRICS:
                 return WfSpecMetricsId.class;
+            case TASK_WORKER_GROUP:
+                return TaskWorkerGroupId.class;
             case UNRECOGNIZED:
             default:
                 throw new RuntimeException("Uh oh, unrecognized enum");

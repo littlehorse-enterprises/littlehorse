@@ -53,17 +53,29 @@ public interface TaskClaimEventPbOrBuilder extends
   com.google.protobuf.TimestampOrBuilder getTimeOrBuilder();
 
   /**
-   * <code>string task_worker_version = 6;</code>
+   * <code>string task_worker_id = 6;</code>
+   * @return The taskWorkerId.
+   */
+  java.lang.String getTaskWorkerId();
+  /**
+   * <code>string task_worker_id = 6;</code>
+   * @return The bytes for taskWorkerId.
+   */
+  com.google.protobuf.ByteString
+      getTaskWorkerIdBytes();
+
+  /**
+   * <code>optional string task_worker_version = 7;</code>
    * @return Whether the taskWorkerVersion field is set.
    */
   boolean hasTaskWorkerVersion();
   /**
-   * <code>string task_worker_version = 6;</code>
+   * <code>optional string task_worker_version = 7;</code>
    * @return The taskWorkerVersion.
    */
   java.lang.String getTaskWorkerVersion();
   /**
-   * <code>string task_worker_version = 6;</code>
+   * <code>optional string task_worker_version = 7;</code>
    * @return The bytes for taskWorkerVersion.
    */
   com.google.protobuf.ByteString

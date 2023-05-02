@@ -1,9 +1,13 @@
 package io.littlehorse.common;
 
+import io.littlehorse.common.exceptions.LHBadRequestError;
+import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
 import io.littlehorse.common.model.meta.ExternalEventDef;
+import io.littlehorse.common.model.meta.Host;
 import io.littlehorse.common.model.meta.TaskDef;
+import io.littlehorse.common.model.meta.TaskWorkerGroup;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.observabilityevent.ObservabilityEvent;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
@@ -13,10 +17,12 @@ import io.littlehorse.common.model.wfrun.ScheduledTask;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
+import io.littlehorse.jlib.common.proto.HostInfoPb;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.TaskMetricUpdate;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.WfMetricUpdate;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /*
  * All PUT() commands throw errors if the processing partition does not match
@@ -123,4 +129,16 @@ public interface LHDAO extends LHGlobalMetaStores {
         int wfSpecVersion,
         Date time
     );
+
+    public List<HostInfoPb> getAllAdvertisedHosts(String listenerName)
+        throws LHBadRequestError;
+
+    public HostInfoPb getAdvertisedHost(Host host, String listenerName)
+        throws LHBadRequestError, LHConnectionError;
+
+    public Set<Host> getAllInternalHosts();
+
+    public TaskWorkerGroup getTaskWorkerGroup(String taskDefName);
+
+    public void putTaskWorkerGroup(TaskWorkerGroup taskWorkerGroup);
 }

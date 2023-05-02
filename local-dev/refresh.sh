@@ -13,7 +13,8 @@ kafka_topics_sh="docker compose --file $WORK_DIR/docker-compose.yml
 TOPICS=$($kafka_topics_sh --list)
 
 if [ -n "$TOPICS" ]; then
-    echo "Topics to be deleted: $TOPICS"
+    echo "Topics to be deleted:"
+    echo "$TOPICS"
     $kafka_topics_sh --delete --topic ".*"
 fi
 

@@ -10,6 +10,7 @@ import io.grpc.ServerBuilder;
 import io.grpc.TlsServerCredentials;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.exceptions.LHBadRequestError;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.LHSerializable;
@@ -17,6 +18,7 @@ import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.Storeable;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.meta.ExternalEventDef;
+import io.littlehorse.common.model.meta.Host;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.objectId.ExternalEventDefId;
@@ -47,9 +49,6 @@ import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.HostInfoPb;
-import io.littlehorse.jlib.common.proto.LHResponseCodePb;
-import io.littlehorse.jlib.common.proto.RegisterTaskWorkerPb;
-import io.littlehorse.jlib.common.proto.RegisterTaskWorkerReplyPb;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.storeinternals.LHROStoreWrapper;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
@@ -66,10 +65,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.Serdes;
@@ -83,8 +84,12 @@ import org.apache.kafka.streams.ThreadMetadata;
 import org.apache.kafka.streams.state.HostInfo;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BackendInternalComms implements Closeable {
+
+    private Logger log = LoggerFactory.getLogger(BackendInternalComms.class);
 
     private LHConfig config;
     private Server internalGrpcServer;
@@ -289,55 +294,64 @@ public class BackendInternalComms implements Closeable {
         }
     }
 
-    // EMPLOYEE_TODO: implement a mechanism whereby task worker groups split the
-    // LH Server instances among them.
-    public RegisterTaskWorkerReplyPb registerTaskWorker(RegisterTaskWorkerPb req) {
-        Collection<StreamsMetadata> allMeta = coreStreams.metadataForAllStreamsClients();
+    public Set<Host> getAllInternalHosts() {
+        // It returns a sorted collection always
+        return coreStreams
+            .metadataForAllStreamsClients()
+            .stream()
+            .map(meta -> meta.hostInfo())
+            .map(hostInfo -> new Host(hostInfo.host(), hostInfo.port()))
+            .collect(Collectors.toCollection(TreeSet::new));
+    }
 
-        // TODO: in more optimized future versions, we will communicate about which
-        // clients are assigned to which hosts in order to be smarter and less dumb
-        Set<HostInfo> hosts = new HashSet<>();
+    public HostInfoPb getAdvertisedHost(Host host, String listenerName)
+        throws LHBadRequestError, LHConnectionError {
+        InternalGetAdvertisedHostsReplyPb advertisedHostsForHost = getPublicListenersForHost(
+            new HostInfo(host.host, host.port)
+        );
 
-        for (StreamsMetadata meta : allMeta) {
-            hosts.add(meta.hostInfo());
+        HostInfoPb desiredHost = advertisedHostsForHost.getHostsOrDefault(
+            listenerName,
+            null
+        );
+        if (desiredHost == null) {
+            String message = String.format(
+                """
+                Unknown listener name %s. Check LHS_ADVERTISED_LISTENER_NAMES on
+                LH Server and check the LHW_CONNECT_LISTENER_NAME config on task worker.
+                """,
+                listenerName
+            );
+            throw new LHBadRequestError(message);
         }
 
-        RegisterTaskWorkerReplyPb.Builder out = RegisterTaskWorkerReplyPb.newBuilder();
-        out.setCode(LHResponseCodePb.OK);
+        return desiredHost;
+    }
 
-        for (HostInfo host : hosts) {
-            InternalGetAdvertisedHostsReplyPb advertisedHostsForHost = getPublicListenersForHost(
-                host
-            );
-            if (advertisedHostsForHost == null) {
-                LHUtil.log("Warn: host", host.host(), host.port(), "unreachable");
+    public List<HostInfoPb> getAllAdvertisedHosts(String listenerName)
+        throws LHBadRequestError {
+        Set<Host> hosts = getAllInternalHosts();
+
+        List<HostInfoPb> out = new ArrayList<>();
+
+        for (Host host : hosts) {
+            try {
+                out.add(getAdvertisedHost(host, listenerName));
+            } catch (LHConnectionError e) {
+                log.warn("Host '{}:{}' unreachable", host.host, host.port);
+                // The reason why we don't throw an Exception when the host is unreachable is that, when bootstrapping,
+                // other hosts could be in various states of degradation (rebalancing, crashed, running, starting up, etc).
+                // Just because one host is down doesn't mean that the entire call to discover the rest of the cluster
+                // should fail; the Task Worker should still be able to execute tasks for other LH Server Instances.
                 continue;
             }
-
-            HostInfoPb desiredHost = advertisedHostsForHost.getHostsOrDefault(
-                req.getListenerName(),
-                null
-            );
-            if (desiredHost == null) {
-                out.setCode(LHResponseCodePb.BAD_REQUEST_ERROR);
-                out.setMessage(
-                    "Unknown listener name " +
-                    req.getListenerName() +
-                    ". Check LHORSE_ADVERTISED_LISTENERS on " +
-                    "LH Server and check the LISTENER_NAME config on task worker."
-                );
-                return out.build();
-            }
-
-            out.addAllHosts(desiredHost);
         }
-
-        return out.build();
+        return out;
     }
 
     private InternalGetAdvertisedHostsReplyPb getPublicListenersForHost(
         HostInfo streamsHost
-    ) {
+    ) throws LHConnectionError {
         if (otherHosts.get(streamsHost) != null) {
             return otherHosts.get(streamsHost);
         }
@@ -351,8 +365,14 @@ public class BackendInternalComms implements Closeable {
             otherHosts.put(streamsHost, info);
             return info;
         } catch (Exception exn) {
-            exn.printStackTrace();
-            return null;
+            throw new LHConnectionError(
+                exn,
+                String.format(
+                    "Host '{}:{}' unreachable",
+                    streamsHost.host(),
+                    streamsHost.port()
+                )
+            );
         }
     }
 

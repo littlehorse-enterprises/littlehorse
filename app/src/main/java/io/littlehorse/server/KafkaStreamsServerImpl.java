@@ -9,6 +9,7 @@ import io.grpc.TlsServerCredentials;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.exceptions.LHBadRequestError;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
@@ -27,7 +28,9 @@ import io.littlehorse.common.model.command.subcommand.RunWf;
 import io.littlehorse.common.model.command.subcommand.StopWfRun;
 import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
+import io.littlehorse.common.model.command.subcommand.TaskWorkerHeartBeat;
 import io.littlehorse.common.model.meta.ExternalEventDef;
+import io.littlehorse.common.model.meta.Host;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.metrics.TaskDefMetrics;
@@ -69,6 +72,7 @@ import io.littlehorse.jlib.common.proto.GetWfRunReplyPb;
 import io.littlehorse.jlib.common.proto.GetWfSpecReplyPb;
 import io.littlehorse.jlib.common.proto.HealthCheckPb;
 import io.littlehorse.jlib.common.proto.HealthCheckReplyPb;
+import io.littlehorse.jlib.common.proto.HostInfoPb;
 import io.littlehorse.jlib.common.proto.LHHealthResultPb;
 import io.littlehorse.jlib.common.proto.LHPublicApiGrpc.LHPublicApiImplBase;
 import io.littlehorse.jlib.common.proto.LHResponseCodePb;
@@ -120,6 +124,7 @@ import io.littlehorse.jlib.common.proto.TaskDefIdPb;
 import io.littlehorse.jlib.common.proto.TaskDefMetricsQueryPb;
 import io.littlehorse.jlib.common.proto.TaskDefMetricsReplyPb;
 import io.littlehorse.jlib.common.proto.TaskResultEventPb;
+import io.littlehorse.jlib.common.proto.TaskWorkerHeartBeatPb;
 import io.littlehorse.jlib.common.proto.VariableIdPb;
 import io.littlehorse.jlib.common.proto.WfRunIdPb;
 import io.littlehorse.jlib.common.proto.WfSpecIdPb;
@@ -162,6 +167,8 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -420,8 +427,23 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         RegisterTaskWorkerPb req,
         StreamObserver<RegisterTaskWorkerReplyPb> responseObserver
     ) {
-        responseObserver.onNext(internalComms.registerTaskWorker(req));
-        responseObserver.onCompleted();
+        log.debug(
+            "Receiving RegisterTaskWorkerPb (heartbeat) from: " + req.getClientId()
+        );
+
+        TaskWorkerHeartBeatPb heartBeatPb = TaskWorkerHeartBeatPb
+            .newBuilder()
+            .setClientId(req.getClientId())
+            .setListenerName(req.getListenerName())
+            .setTaskDefName(req.getTaskDefName())
+            .build();
+
+        processCommand(
+            heartBeatPb,
+            responseObserver,
+            TaskWorkerHeartBeat.class,
+            RegisterTaskWorkerReplyPb.class
+        );
     }
 
     @Override
@@ -843,6 +865,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         claimEvent.taskRunPosition = scheduledTask.taskRunPosition;
         claimEvent.taskRunNumber = scheduledTask.taskRunNumber;
         claimEvent.taskWorkerVersion = client.getTaskWorkerVersion();
+        claimEvent.taskWorkerId = client.getClientId();
         claimEvent.time = new Date();
 
         Command taskClaimCommand = new Command();
@@ -1057,5 +1080,19 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
         latch.await();
         System.out.println("Done waiting for countdown latch");
+    }
+
+    public List<HostInfoPb> getAllAdvertisedHosts(String listenerName)
+        throws LHBadRequestError {
+        return internalComms.getAllAdvertisedHosts(listenerName);
+    }
+
+    public Set<Host> getAllInternalHosts() {
+        return internalComms.getAllInternalHosts();
+    }
+
+    public HostInfoPb getAdvertisedHost(Host host, String listenerName)
+        throws LHBadRequestError, LHConnectionError {
+        return internalComms.getAdvertisedHost(host, listenerName);
     }
 }

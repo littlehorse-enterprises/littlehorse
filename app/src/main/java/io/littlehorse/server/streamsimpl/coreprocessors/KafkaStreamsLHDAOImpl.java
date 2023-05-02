@@ -4,6 +4,8 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
+import io.littlehorse.common.exceptions.LHBadRequestError;
+import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
@@ -11,7 +13,9 @@ import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.CommandResult;
 import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
 import io.littlehorse.common.model.meta.ExternalEventDef;
+import io.littlehorse.common.model.meta.Host;
 import io.littlehorse.common.model.meta.TaskDef;
+import io.littlehorse.common.model.meta.TaskWorkerGroup;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.objectId.ExternalEventDefId;
 import io.littlehorse.common.model.objectId.NodeRunId;
@@ -29,8 +33,8 @@ import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.exception.LHSerdeError;
+import io.littlehorse.jlib.common.proto.HostInfoPb;
 import io.littlehorse.jlib.common.proto.LHResponseCodePb;
-import io.littlehorse.jlib.common.proto.LHStatusPb;
 import io.littlehorse.jlib.common.proto.MetricsWindowLengthPb;
 import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import io.littlehorse.server.KafkaStreamsServerImpl;
@@ -53,6 +57,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
@@ -73,6 +78,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     private Map<String, TaskDef> taskDefPuts;
     private Map<String, ExternalEventDef> extEvtDefPuts;
     private Map<String, ScheduledTask> scheduledTaskPuts;
+    private Map<String, TaskWorkerGroup> taskWorkerGroupPuts;
     private List<LHTimer> timersToSchedule;
     private CommandResult responseToSave;
     private Command command;
@@ -139,6 +145,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         oEvents = new ArrayList<>();
         taskMetricPuts = new HashMap<>();
         wfMetricPuts = new HashMap<>();
+        taskWorkerGroupPuts = new HashMap<>();
 
         // TODO: Here is where we want to eventually add some cacheing for GET to
         // the WfSpec and TaskDef etc.
@@ -685,6 +692,10 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
             saveOrDeleteGETableFlush(e.getKey(), e.getValue(), WfRun.class);
         }
 
+        for (Map.Entry<String, TaskWorkerGroup> e : taskWorkerGroupPuts.entrySet()) {
+            saveOrDeleteGETableFlush(e.getKey(), e.getValue(), TaskWorkerGroup.class);
+        }
+
         for (Map.Entry<String, ExternalEventDef> e : extEvtDefPuts.entrySet()) {
             saveOrDeleteGETableFlush(
                 e.getKey(),
@@ -1041,6 +1052,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         wfSpecPuts.clear();
         taskDefPuts.clear();
         extEvtDefPuts.clear();
+        taskWorkerGroupPuts.clear();
         responseToSave = null;
         oEvents = new ArrayList<>();
         taskMetricPuts = new HashMap<>();
@@ -1124,5 +1136,39 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
                 localStore.delete(tmu);
             }
         }
+    }
+
+    @Override
+    public List<HostInfoPb> getAllAdvertisedHosts(String listenerName)
+        throws LHBadRequestError {
+        return server.getAllAdvertisedHosts(listenerName);
+    }
+
+    @Override
+    public Set<Host> getAllInternalHosts() {
+        return server.getAllInternalHosts();
+    }
+
+    @Override
+    public HostInfoPb getAdvertisedHost(Host host, String listenerName)
+        throws LHBadRequestError, LHConnectionError {
+        return server.getAdvertisedHost(host, listenerName);
+    }
+
+    @Override
+    public TaskWorkerGroup getTaskWorkerGroup(String taskDefName) {
+        if (taskWorkerGroupPuts.containsKey(taskDefName)) {
+            return taskWorkerGroupPuts.get(taskDefName);
+        }
+        TaskWorkerGroup out = localStore.get(taskDefName, TaskWorkerGroup.class);
+        if (out != null) {
+            taskWorkerGroupPuts.put(taskDefName, out);
+        }
+        return out;
+    }
+
+    @Override
+    public void putTaskWorkerGroup(TaskWorkerGroup taskWorkerGroup) {
+        taskWorkerGroupPuts.put(taskWorkerGroup.getStoreKey(), taskWorkerGroup);
     }
 }

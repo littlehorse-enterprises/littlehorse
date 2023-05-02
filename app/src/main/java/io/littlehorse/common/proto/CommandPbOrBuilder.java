@@ -23,17 +23,17 @@ public interface CommandPbOrBuilder extends
   com.google.protobuf.TimestampOrBuilder getTimeOrBuilder();
 
   /**
-   * <code>string command_id = 2;</code>
+   * <code>optional string command_id = 2;</code>
    * @return Whether the commandId field is set.
    */
   boolean hasCommandId();
   /**
-   * <code>string command_id = 2;</code>
+   * <code>optional string command_id = 2;</code>
    * @return The commandId.
    */
   java.lang.String getCommandId();
   /**
-   * <code>string command_id = 2;</code>
+   * <code>optional string command_id = 2;</code>
    * @return The bytes for commandId.
    */
   com.google.protobuf.ByteString
@@ -263,6 +263,21 @@ public interface CommandPbOrBuilder extends
    * <code>.littlehorse.ExternalEventNodeTimeoutPb external_event_timeout = 18;</code>
    */
   io.littlehorse.common.proto.ExternalEventNodeTimeoutPbOrBuilder getExternalEventTimeoutOrBuilder();
+
+  /**
+   * <code>.littlehorse.TaskWorkerHeartBeatPb task_worker_heart_beat = 19;</code>
+   * @return Whether the taskWorkerHeartBeat field is set.
+   */
+  boolean hasTaskWorkerHeartBeat();
+  /**
+   * <code>.littlehorse.TaskWorkerHeartBeatPb task_worker_heart_beat = 19;</code>
+   * @return The taskWorkerHeartBeat.
+   */
+  io.littlehorse.jlib.common.proto.TaskWorkerHeartBeatPb getTaskWorkerHeartBeat();
+  /**
+   * <code>.littlehorse.TaskWorkerHeartBeatPb task_worker_heart_beat = 19;</code>
+   */
+  io.littlehorse.jlib.common.proto.TaskWorkerHeartBeatPbOrBuilder getTaskWorkerHeartBeatOrBuilder();
 
   public io.littlehorse.common.proto.CommandPb.CommandCase getCommandCase();
 }
