@@ -15,8 +15,7 @@ import io.littlehorse.common.model.meta.TaskWorkerMetadata;
 import io.littlehorse.jlib.common.proto.LHResponseCodePb;
 import io.littlehorse.jlib.common.proto.TaskWorkerHeartBeatPb;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.stream.Collectors;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,11 +31,6 @@ public class TaskWorkerHeartBeat extends SubCommand<TaskWorkerHeartBeatPb> {
     @Override
     public RegisterTaskWorkerReply process(LHDAO dao, LHConfig config) {
         log.debug("Processing a heartbeat");
-        // Get all internal servers (from kafka stream API), they are already sorted by Host::getKey.
-        LinkedList<Host> allServerHosts = dao
-            .getAllInternalHosts()
-            .stream()
-            .collect(Collectors.toCollection(LinkedList::new));
 
         // Get the group, a group contains all the task worker for that specific task
         TaskWorkerGroup taskWorkerGroup = dao.getTaskWorkerGroup(taskDefName);
@@ -56,6 +50,9 @@ public class TaskWorkerHeartBeat extends SubCommand<TaskWorkerHeartBeatPb> {
             taskWorker = new TaskWorkerMetadata();
             taskWorker.clientId = clientId;
             taskWorkerGroup.taskWorkers.put(clientId, taskWorker);
+
+            // Get all internal servers (from kafka stream API), they are already sorted by Host::getKey.
+            Set<Host> allServerHosts = dao.getAllInternalHosts();
 
             // As it is a new worker then we need to rebalance
             assignor.assign(allServerHosts, taskWorkerGroup.taskWorkers.values());
