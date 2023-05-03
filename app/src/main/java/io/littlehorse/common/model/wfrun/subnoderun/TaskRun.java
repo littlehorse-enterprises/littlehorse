@@ -281,9 +281,39 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
                 }
                 break;
             case VAR_MUTATION_ERROR:
+                // This means the Task Worker library failed to serialize outputs.
+                // NOT a retryable error.
+                String varMutMsg = "Failed serializing outputs of the task";
+                if (ce.stderr != null && ce.stderr.getVal() != null) {
+                    varMutMsg += ": " + ce.stderr.getVal().toString();
+                }
+                nodeRun.fail(
+                    new Failure(
+                        TaskResultCodePb.VAR_MUTATION_ERROR,
+                        varMutMsg,
+                        LHConstants.VAR_MUTATION_ERROR,
+                        ce.stderr
+                    ),
+                    ce.time
+                );
+                break;
             case VAR_SUB_ERROR:
-                // This shouldn't be possible.
-                throw new RuntimeException("Impossible TaskResultCodePb");
+                // This means the Task Worker library failed to deserialize inputs.
+                // NOT a retryable error.
+                String varSubMsg = "Failed deserializing inputs to task";
+                if (ce.stderr != null && ce.stderr.getVal() != null) {
+                    varSubMsg += ": " + ce.stderr.getVal().toString();
+                }
+                nodeRun.fail(
+                    new Failure(
+                        TaskResultCodePb.VAR_SUB_ERROR,
+                        varSubMsg,
+                        LHConstants.VAR_SUB_ERROR,
+                        ce.stderr
+                    ),
+                    ce.time
+                );
+                break;
             default:
             case UNRECOGNIZED:
                 throw new RuntimeException(
