@@ -1,5 +1,7 @@
 package io.littlehorse.common.model.command.subcommand.internals;
 
+import static io.littlehorse.common.LHConstants.MIN_WORKER_ASSIGNMENT_BY_SERVER;
+
 import com.google.common.collect.Iterables;
 import io.littlehorse.common.model.meta.Host;
 import io.littlehorse.common.model.meta.TaskWorkerMetadata;
@@ -10,8 +12,6 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 public class RoundRobinAssignor implements TaskWorkerAssignor {
-
-    private static final int MIN_WORKER_ASSIGNMENT_BY_SERVER = 2;
 
     @Override
     public void assign(
