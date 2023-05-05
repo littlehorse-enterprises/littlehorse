@@ -7,6 +7,7 @@ WORK_DIR=$(cd "$SCRIPT_DIR/../docker" && pwd)
 CONTEXT_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
 
 cd "$CONTEXT_DIR"
+./gradlew clean shadowJar
 ./gradlew shadowJar
 
 docker build --file "$WORK_DIR/Dockerfile" \
