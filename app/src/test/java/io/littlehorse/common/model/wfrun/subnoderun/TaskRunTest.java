@@ -3,7 +3,6 @@ package io.littlehorse.common.model.wfrun.subnoderun;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import com.github.javafaker.Faker;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
@@ -14,6 +13,7 @@ import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.model.wfrun.WfRun;
 import java.util.UUID;
+import net.datafaker.Faker;
 import org.junit.jupiter.api.Test;
 
 public class TaskRunTest {

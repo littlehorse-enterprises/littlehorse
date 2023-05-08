@@ -2,12 +2,12 @@ package io.littlehorse.common.model.command.subcommand.internals;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.github.javafaker.Faker;
 import io.littlehorse.common.model.meta.Host;
 import io.littlehorse.common.model.meta.TaskWorkerMetadata;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import net.datafaker.Faker;
 import org.junit.jupiter.api.Test;
 
 public class RoundRobinAssignorTest {
