@@ -68,6 +68,10 @@ application {
     executableDir = 'custom_bin_dir'
 }
 
+compileJava {
+    options.compilerArgs << '-parameters'
+}
+
 shadowJar {
   mergeServiceFiles()
 }

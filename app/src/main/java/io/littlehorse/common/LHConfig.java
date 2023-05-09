@@ -11,11 +11,15 @@ import io.littlehorse.jlib.common.config.ConfigBase;
 import io.littlehorse.jlib.common.config.LHWorkerConfig;
 import io.littlehorse.jlib.common.proto.HostInfoPb;
 import io.littlehorse.jlib.common.proto.VariableAssignmentPb.SourceCase;
+import io.littlehorse.server.streamsimpl.ServerTopology;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
@@ -26,6 +30,7 @@ import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.KafkaFuture;
+import org.apache.kafka.common.config.TopicConfig;
 import org.apache.kafka.common.errors.TopicExistsException;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Utils;
@@ -113,23 +118,149 @@ public class LHConfig extends ConfigBase {
     }
 
     public String getCoreCmdTopicName() {
-        return getKafkaTopicPrefix() + "core-cmd";
+        return getCoreCmdTopicName(getKafkaTopicPrefix());
+    }
+
+    public static String getCoreCmdTopicName(String kafkaTopicPrefix) {
+        return kafkaTopicPrefix + "core-cmd";
     }
 
     public String getRepartitionTopicName() {
-        return getKafkaTopicPrefix() + "core-repartition";
+        return getRepartitionTopicName(getKafkaTopicPrefix());
+    }
+
+    public static String getRepartitionTopicName(String kafkaTopicPrefix) {
+        return kafkaTopicPrefix + "core-repartition";
     }
 
     public String getObservabilityEventTopicName() {
-        return getKafkaTopicPrefix() + "observability";
+        return getObservabilityEventTopicName(getKafkaTopicPrefix());
+    }
+
+    public static String getObservabilityEventTopicName(String kafkaTopicPrefix) {
+        return kafkaTopicPrefix + "observability";
     }
 
     public String getGlobalMetadataCLTopicName() {
-        return getKafkaTopicPrefix() + "global-metadata-cl";
+        return getGlobalMetadataCLTopicName(getKafkaTopicPrefix());
+    }
+
+    public static String getGlobalMetadataCLTopicName(String kafkaTopicPrefix) {
+        return kafkaTopicPrefix + "global-metadata-cl";
     }
 
     public String getTimerTopic() {
-        return getKafkaTopicPrefix() + "timers";
+        return getTimerTopic(getKafkaTopicPrefix());
+    }
+
+    public static String getTimerTopic(String kafkaTopicPrefix) {
+        return kafkaTopicPrefix + "timers";
+    }
+
+    public static String getCoreStoreChangelogTopic(String kafkaTopicPrefix) {
+        return kafkaTopicPrefix + "core-" + ServerTopology.CORE_STORE + "-changelog";
+    }
+
+    public String getCoreStoreChangelogTopic() {
+        return getCoreStoreChangelogTopic(getKafkaTopicPrefix());
+    }
+
+    public static String getTimerStoreChangelogTopic(String kafkaTopicPrefix) {
+        return (
+            kafkaTopicPrefix + "timer-" + ServerTopology.TIMER_STORE + "-changelog"
+        );
+    }
+
+    public String getTimerStoreChangelogTopic() {
+        return getTimerStoreChangelogTopic(getKafkaTopicPrefix());
+    }
+
+    public static String getRepartitionStoreChangelogTopic(String kafkaTopicPrefix) {
+        return (
+            kafkaTopicPrefix +
+            "core-" +
+            ServerTopology.CORE_REPARTITION_STORE +
+            "-changelog"
+        );
+    }
+
+    public String getRepartitionStoreChangelogTopic() {
+        return getRepartitionStoreChangelogTopic(getKafkaTopicPrefix());
+    }
+
+    public List<NewTopic> getAllTopics() {
+        return getAllTopics(
+            getKafkaTopicPrefix(),
+            getLHClusterId(),
+            getReplicationFactor(),
+            getClusterPartitions()
+        );
+    }
+
+    public static List<NewTopic> getAllTopics(
+        String kafkaTopicPrefix,
+        String clusterId,
+        short replicationFactor,
+        int clusterPartitions
+    ) {
+        List<NewTopic> out = new ArrayList<>();
+
+        // These are non-compacted topics, partitioned with the cluster wide
+        // thing.
+        List<String> eventTopics = Arrays.asList(
+            getCoreCmdTopicName(kafkaTopicPrefix),
+            getRepartitionTopicName(kafkaTopicPrefix),
+            getObservabilityEventTopicName(kafkaTopicPrefix)
+        );
+        for (String name : eventTopics) {
+            // default config is normal retention policy (not compact)
+            out.add(new NewTopic(name, clusterPartitions, replicationFactor));
+        }
+
+        // These need to be compacted.
+        List<String> partitionedChangelogs = Arrays.asList(
+            getCoreStoreChangelogTopic(kafkaTopicPrefix),
+            getRepartitionStoreChangelogTopic(kafkaTopicPrefix),
+            getTimerStoreChangelogTopic(kafkaTopicPrefix)
+        );
+        HashMap<String, String> changelogConfig = new HashMap<String, String>() {
+            {
+                put(
+                    TopicConfig.CLEANUP_POLICY_CONFIG,
+                    TopicConfig.CLEANUP_POLICY_COMPACT
+                );
+            }
+        };
+        for (String name : partitionedChangelogs) {
+            out.add(
+                new NewTopic(name, clusterPartitions, replicationFactor)
+                    .configs(changelogConfig)
+            );
+        }
+
+        // Lastly, the global metadata changelog topic.
+        // Inputs to global state store's are always treated
+        // as changelog topics. Therefore, we need it to be
+        // compacted. In order to minimize restore time, we
+        // also want the compaction to be quite aggressive.
+        HashMap<String, String> globalMetaCLConfig = new HashMap<String, String>() {
+            {
+                put(
+                    TopicConfig.CLEANUP_POLICY_CONFIG,
+                    TopicConfig.CLEANUP_POLICY_COMPACT
+                );
+            }
+        };
+        out.add(
+            new NewTopic(
+                getGlobalMetadataCLTopicName(kafkaTopicPrefix),
+                clusterPartitions,
+                replicationFactor
+            )
+                .configs(globalMetaCLConfig)
+        );
+
+        return out;
     }
 
     // TODO: Determine how and where to set the topic names for TaskDef queues

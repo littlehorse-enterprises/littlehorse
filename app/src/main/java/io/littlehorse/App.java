@@ -8,13 +8,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import org.apache.kafka.clients.admin.NewTopic;
-import org.apache.kafka.common.config.TopicConfig;
 
 public class App {
 
@@ -22,62 +20,7 @@ public class App {
         throws InterruptedException, ExecutionException {
         LHUtil.log("Creating topics!!");
 
-        ArrayList<NewTopic> topics = new ArrayList<>();
-
-        topics.add(
-            new NewTopic(
-                config.getCoreCmdTopicName(),
-                config.getClusterPartitions(),
-                config.getReplicationFactor()
-            )
-        );
-
-        topics.add(
-            new NewTopic(
-                config.getObservabilityEventTopicName(),
-                config.getClusterPartitions(),
-                config.getReplicationFactor()
-            )
-        );
-
-        topics.add(
-            new NewTopic(
-                config.getRepartitionTopicName(),
-                config.getClusterPartitions(),
-                config.getReplicationFactor()
-            )
-        );
-
-        topics.add(
-            new NewTopic(
-                config.getTimerTopic(),
-                config.getClusterPartitions(),
-                config.getReplicationFactor()
-            )
-        );
-
-        // Inputs to global state store's are always treated
-        // as changelog topics. Therefore, we need it to be
-        // compacted. In order to minimize restore time, we
-        // also want the compaction to be quite aggressive.
-        HashMap<String, String> globalMetaCLConfig = new HashMap<String, String>() {
-            {
-                put(TopicConfig.MAX_COMPACTION_LAG_MS_CONFIG, "5000");
-                put(
-                    TopicConfig.CLEANUP_POLICY_CONFIG,
-                    TopicConfig.CLEANUP_POLICY_COMPACT
-                );
-            }
-        };
-
-        topics.add(
-            new NewTopic(
-                config.getGlobalMetadataCLTopicName(),
-                1,
-                config.getReplicationFactor()
-            )
-                .configs(globalMetaCLConfig)
-        );
+        List<NewTopic> topics = config.getAllTopics();
         for (NewTopic topic : topics) {
             config.createKafkaTopic(topic);
         }
