@@ -19,8 +19,11 @@ then
     exit 1
 fi
 
-echo "Config file: $CONFIG_PATH"
-
 cd "$WORK_DIR"
 
-./gradlew run --args "$CONFIG_PATH"
+echo "Building the shadowJar"
+./gradlew clean shadowJar -x test
+
+echo
+echo "Running using the shadowJar"
+java -jar app/build/libs/app-*.jar "$CONFIG_PATH"

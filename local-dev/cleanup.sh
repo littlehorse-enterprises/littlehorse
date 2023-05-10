@@ -11,3 +11,7 @@ docker compose --file "$WORK_DIR/docker-compose.yml" \
     down -v
 
 rm -rf /tmp/kafkaState*
+
+cd "$SCRIPT_DIR/.."
+
+./gradlew clean

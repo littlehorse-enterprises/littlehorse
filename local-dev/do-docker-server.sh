@@ -18,6 +18,6 @@ then
     exit 1
 fi
 
-echo "Config file: $CONFIG_PATH"
-
+"$SCRIPT_DIR/build.sh"
+echo "Host config file: $CONFIG_PATH"
 docker run --rm -it --network host --volume "$CONFIG_PATH":/lh/server.config littlehorse.io/littlehorse-server:latest
