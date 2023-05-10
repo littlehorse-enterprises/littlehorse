@@ -210,7 +210,8 @@ public class LHConfig extends ConfigBase {
         List<String> eventTopics = Arrays.asList(
             getCoreCmdTopicName(kafkaTopicPrefix),
             getRepartitionTopicName(kafkaTopicPrefix),
-            getObservabilityEventTopicName(kafkaTopicPrefix)
+            getObservabilityEventTopicName(kafkaTopicPrefix),
+            getTimerTopic(kafkaTopicPrefix)
         );
         for (String name : eventTopics) {
             // default config is normal retention policy (not compact)
