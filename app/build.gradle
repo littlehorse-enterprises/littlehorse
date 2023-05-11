@@ -63,7 +63,7 @@ dependencies {
 application {
     // Define the main class for the application.
     mainClass = 'io.littlehorse.App'
-    executableDir = 'custom_bin_dir'
+    executableDir = 'server'
 }
 
 compileJava {

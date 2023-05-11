@@ -21,9 +21,6 @@ fi
 
 cd "$WORK_DIR"
 
-echo "Building the shadowJar"
-./gradlew clean shadowJar -x test
+./gradlew clean installDist -x shadowJar -x test
 
-echo
-echo "Running using the shadowJar"
-java -jar app/build/libs/app-*.jar "$CONFIG_PATH"
+./app/build/install/app/server/app "$CONFIG_PATH"
