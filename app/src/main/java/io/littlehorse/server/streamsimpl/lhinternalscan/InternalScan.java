@@ -33,7 +33,8 @@ public class InternalScan extends LHSerializable<InternalScanPb> {
             .newBuilder()
             .setLimit(limit)
             .setStoreName(storeName)
-            .setObjectType(objectType);
+            .setObjectType(objectType)
+            .setResultType(resultType);
 
         if (bookmark != null) out.setBookmark(bookmark);
         if (partitionKey != null) {
