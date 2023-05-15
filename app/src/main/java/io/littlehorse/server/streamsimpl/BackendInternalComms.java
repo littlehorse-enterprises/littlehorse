@@ -713,6 +713,7 @@ public class BackendInternalComms implements Closeable {
     }
 
     private InternalScanReplyPb objectIdPrefixScanOnThisHost(InternalScan req) {
+        log.debug("objectid prefix scan on this host");
         /*
          * TODO: There's some things we need to verify here.
          * 1) It's a prerequisite that the request has a partition key set.
@@ -744,8 +745,8 @@ public class BackendInternalComms implements Closeable {
         } else {
             startKey = partBookmark.getLastKey();
         }
-        String lastSeenKey = null;
-        boolean brokenBecauseLimitFull = false;
+        String bookmarkKey = null;
+        boolean brokenBecauseOutOfData = true;
 
         try (
             LHKeyValueIterator<? extends Storeable<?>> iter = store.range(
@@ -757,7 +758,8 @@ public class BackendInternalComms implements Closeable {
             while (iter.hasNext()) {
                 LHIterKeyValue<? extends Storeable<?>> next = iter.next();
                 if (--curLimit < 0) {
-                    brokenBecauseLimitFull = true;
+                    bookmarkKey = next.getKey();
+                    brokenBecauseOutOfData = false;
                     break;
                 }
                 out.addResults(
@@ -767,18 +769,17 @@ public class BackendInternalComms implements Closeable {
                         req.objectType
                     )
                 );
-                lastSeenKey = next.getKey();
             }
         }
 
-        if (brokenBecauseLimitFull) {
+        if (!brokenBecauseOutOfData) {
             // Then we have more data for the next request, so we want to return
             // a bookmark.
 
             PartitionBookmarkPb nextBookmark = PartitionBookmarkPb
                 .newBuilder()
                 .setParttion(partition)
-                .setLastKey(lastSeenKey)
+                .setLastKey(bookmarkKey)
                 .build();
 
             out.setUpdatedBookmark(
@@ -787,8 +788,11 @@ public class BackendInternalComms implements Closeable {
                     .putInProgressPartitions(partition, nextBookmark)
             );
         } else {
-            // Out of data, so we don't set bookmark on the response.
-            // Nothing to do here.
+            // If we never set `bookmarkKey`, then we know that we read all of the
+            // data. So we don't set a bookmark on the response.
+            if (bookmarkKey != null) {
+                throw new RuntimeException("not possible");
+            }
         }
 
         curLimit -= out.getResultsCount();
@@ -943,6 +947,7 @@ public class BackendInternalComms implements Closeable {
     }
 
     private InternalScanReplyPb localUnhashedTagScan(InternalScan req) {
+        log.debug("Local Tag prefix scan");
         if (req.partitionKey != null) {
             throw new RuntimeException("Not possible you nincompoop");
         }
