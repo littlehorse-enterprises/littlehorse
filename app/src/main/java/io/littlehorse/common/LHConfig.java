@@ -255,7 +255,9 @@ public class LHConfig extends ConfigBase {
         out.add(
             new NewTopic(
                 getGlobalMetadataCLTopicName(kafkaTopicPrefix),
-                clusterPartitions,
+                // This topic is input to a global store. Therefore, it doesn't
+                // make sense to have any more than just one partition.
+                1,
                 replicationFactor
             )
                 .configs(globalMetaCLConfig)
