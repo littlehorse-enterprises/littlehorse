@@ -1,6 +1,7 @@
 package io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.Storeable;
 import io.littlehorse.common.model.metrics.WfSpecMetrics;
 import io.littlehorse.common.model.objectId.WfSpecMetricsId;
@@ -33,6 +34,18 @@ public class WfMetricUpdate
     public int wfSpecVersion;
 
     public WfMetricUpdate() {}
+
+    public WfMetricUpdate(
+        Date windowStart,
+        MetricsWindowLengthPb type,
+        String wfSpecName,
+        int wfSpecVersion
+    ) {
+        this.windowStart = windowStart;
+        this.type = type;
+        this.wfSpecName = wfSpecName;
+        this.wfSpecVersion = wfSpecVersion;
+    }
 
     public Class<WfMetricUpdatePb> getProtoBaseClass() {
         return WfMetricUpdatePb.class;
@@ -108,10 +121,20 @@ public class WfMetricUpdate
         return out;
     }
 
+    public String getClusterLevelWindow() {
+        return new WfSpecMetricsId(
+            windowStart,
+            type,
+            LHConstants.CLUSTER_LEVEL_METRIC,
+            0
+        )
+            .getStoreKey();
+    }
+
     public void process(LHStoreWrapper store, ProcessorContext<Void, Void> ctx) {
-        WfMetricUpdate previous = store.get(getStoreKey(), getClass());
-        if (previous != null) {
-            merge(previous);
+        WfMetricUpdate previousUpdate = store.get(getStoreKey(), getClass());
+        if (previousUpdate != null) {
+            merge(previousUpdate);
         }
         store.put(this);
         store.put(toResponse());

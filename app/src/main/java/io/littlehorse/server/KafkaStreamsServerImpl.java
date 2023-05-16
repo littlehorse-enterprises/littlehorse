@@ -507,7 +507,6 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             TaskDefMetricsReplyPb.class,
             config
         );
-        System.out.println(TaskDefMetrics.getObjectId(req));
 
         internalComms.getStoreBytesAsync(
             ServerTopology.CORE_REPARTITION_STORE,

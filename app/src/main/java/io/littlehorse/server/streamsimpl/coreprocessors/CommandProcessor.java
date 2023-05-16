@@ -89,6 +89,6 @@ public class CommandProcessor
     }
 
     private void forwardMetricsUpdates(long timestamp) {
-        dao.forwardAndClearMetricsUpdatesUntil(timestamp);
+        dao.forwardAndClearMetricsUpdatesUntil();
     }
 }
