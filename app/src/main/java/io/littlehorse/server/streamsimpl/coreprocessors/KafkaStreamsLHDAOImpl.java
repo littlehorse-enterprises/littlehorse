@@ -1066,21 +1066,8 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         responseToSave.commandId = command.commandId;
     }
 
-    public void forwardAndClearMetricsUpdatesUntil(long timestamp) {
-        // 5-minute window
-        clearMetrics(MetricsWindowLengthPb.MINUTES_5);
-        clearMetrics(MetricsWindowLengthPb.HOURS_2);
-        clearMetrics(MetricsWindowLengthPb.DAYS_1);
-    }
-
-    private void clearMetrics(MetricsWindowLengthPb type) {
-        /*
-         * NOTE: Past versions of this function used to hold the updates until they
-         * were "complete". Now, we just send them and we accept that current
-         * in-progress windows will have incomplete data. But that's better than
-         * having to wait a whole day + grace period to see how many events you've
-         * had today (for DAYS_1 window type, for example).
-         */
+    public void forwardAndClearMetricsUpdatesUntil() {
+        Map<String, TaskMetricUpdate> clusterTaskUpdates = new HashMap<>();
 
         try (
             LHKeyValueIterator<TaskMetricUpdate> iter = localStore.range(
@@ -1093,22 +1080,40 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
                 LHIterKeyValue<TaskMetricUpdate> next = iter.next();
                 log.debug("Sending out metrics for " + next.getKey());
                 localStore.delete(next.getKey());
-                CommandProcessorOutput cpo = new CommandProcessorOutput();
                 TaskMetricUpdate tmu = next.getValue();
-                cpo.partitionKey = tmu.getPartitionKey();
-                cpo.topic = config.getRepartitionTopicName();
-                cpo.payload =
-                    new RepartitionCommand(tmu, new Date(), tmu.getPartitionKey());
-                Record<String, CommandProcessorOutput> out = new Record<>(
-                    tmu.getPartitionKey(),
-                    cpo,
-                    System.currentTimeMillis()
-                );
-                ctx.forward(out);
+                forwardTaskMetricUpdate(tmu);
 
+                // Update the cluster-level metrics
+                String clusterTaskUpdateKey = TaskMetricUpdate.getStoreKey(
+                    tmu.type,
+                    tmu.windowStart,
+                    LHConstants.CLUSTER_LEVEL_METRIC
+                );
+                TaskMetricUpdate clusterTaskUpdate;
+                if (clusterTaskUpdates.containsKey(clusterTaskUpdateKey)) {
+                    clusterTaskUpdate = clusterTaskUpdates.get(clusterTaskUpdateKey);
+                } else {
+                    clusterTaskUpdate =
+                        new TaskMetricUpdate(
+                            tmu.windowStart,
+                            tmu.type,
+                            LHConstants.CLUSTER_LEVEL_METRIC
+                        );
+                }
+
+                clusterTaskUpdate.merge(tmu);
+                clusterTaskUpdates.put(clusterTaskUpdateKey, clusterTaskUpdate);
                 localStore.delete(tmu);
             }
         }
+
+        // Forward the cluster level task updates
+        for (TaskMetricUpdate tmu : clusterTaskUpdates.values()) {
+            forwardTaskMetricUpdate(tmu);
+        }
+
+        // get ready to update the cluster level WF Metrics
+        Map<String, WfMetricUpdate> clusterWfUpdates = new HashMap<>();
 
         try (
             LHKeyValueIterator<WfMetricUpdate> iter = localStore.range(
@@ -1119,23 +1124,65 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         ) {
             while (iter.hasNext()) {
                 LHIterKeyValue<WfMetricUpdate> next = iter.next();
-                localStore.delete(next.getKey());
-                CommandProcessorOutput cpo = new CommandProcessorOutput();
-                WfMetricUpdate tmu = next.getValue();
-                cpo.partitionKey = tmu.getPartitionKey();
-                cpo.topic = config.getRepartitionTopicName();
-                cpo.payload =
-                    new RepartitionCommand(tmu, new Date(), tmu.getPartitionKey());
-                Record<String, CommandProcessorOutput> out = new Record<>(
-                    tmu.getPartitionKey(),
-                    cpo,
-                    System.currentTimeMillis()
-                );
-                ctx.forward(out);
+                WfMetricUpdate wmu = next.getValue();
+                forwardWfMetricUpdate(wmu);
 
-                localStore.delete(tmu);
+                // Update the cluster-level metrics
+                String clusterWfUpdateKey = WfMetricUpdate.getStoreKey(
+                    wmu.type,
+                    wmu.windowStart,
+                    LHConstants.CLUSTER_LEVEL_METRIC,
+                    0
+                );
+                WfMetricUpdate clusterWfUpdate;
+                if (clusterWfUpdates.containsKey(clusterWfUpdateKey)) {
+                    clusterWfUpdate = clusterWfUpdates.get(clusterWfUpdateKey);
+                } else {
+                    clusterWfUpdate =
+                        new WfMetricUpdate(
+                            wmu.windowStart,
+                            wmu.type,
+                            LHConstants.CLUSTER_LEVEL_METRIC,
+                            0
+                        );
+                }
+                clusterWfUpdate.merge(wmu);
+                clusterWfUpdates.put(clusterWfUpdateKey, clusterWfUpdate);
+
+                localStore.delete(wmu);
             }
         }
+
+        // Forward the cluster level task updates
+        for (WfMetricUpdate wmu : clusterWfUpdates.values()) {
+            forwardWfMetricUpdate(wmu);
+        }
+    }
+
+    private void forwardTaskMetricUpdate(TaskMetricUpdate tmu) {
+        CommandProcessorOutput cpo = new CommandProcessorOutput();
+        cpo.partitionKey = tmu.getPartitionKey();
+        cpo.topic = config.getRepartitionTopicName();
+        cpo.payload = new RepartitionCommand(tmu, new Date(), tmu.getPartitionKey());
+        Record<String, CommandProcessorOutput> out = new Record<>(
+            tmu.getPartitionKey(),
+            cpo,
+            System.currentTimeMillis()
+        );
+        ctx.forward(out);
+    }
+
+    private void forwardWfMetricUpdate(WfMetricUpdate wmu) {
+        CommandProcessorOutput cpo = new CommandProcessorOutput();
+        cpo.partitionKey = wmu.getPartitionKey();
+        cpo.topic = config.getRepartitionTopicName();
+        cpo.payload = new RepartitionCommand(wmu, new Date(), wmu.getPartitionKey());
+        Record<String, CommandProcessorOutput> out = new Record<>(
+            wmu.getPartitionKey(),
+            cpo,
+            System.currentTimeMillis()
+        );
+        ctx.forward(out);
     }
 
     @Override

@@ -33,6 +33,16 @@ public class TaskMetricUpdate
 
     public TaskMetricUpdate() {}
 
+    public TaskMetricUpdate(
+        Date windowStart,
+        MetricsWindowLengthPb type,
+        String taskDefName
+    ) {
+        this.windowStart = windowStart;
+        this.type = type;
+        this.taskDefName = taskDefName;
+    }
+
     public Class<TaskMetricUpdatePb> getProtoBaseClass() {
         return TaskMetricUpdatePb.class;
     }
@@ -126,29 +136,10 @@ public class TaskMetricUpdate
     }
 
     public void process(LHStoreWrapper store, ProcessorContext<Void, Void> ctx) {
-        // Update Cluster-Level Metrics
-        TaskMetricUpdate clusterMetricUpdate = store.get(
-            getClusterLevelWindow(),
-            getClass()
-        );
-        if (clusterMetricUpdate == null) {
-            // initialize it to an empty window;
-            clusterMetricUpdate = new TaskMetricUpdate();
-            clusterMetricUpdate.windowStart = windowStart;
-            clusterMetricUpdate.taskDefName = LHConstants.CLUSTER_LEVEL_METRIC;
-            clusterMetricUpdate.type = type;
-        }
-        clusterMetricUpdate.merge(this);
-        store.put(clusterMetricUpdate);
-        store.put(clusterMetricUpdate.toResponse());
-
         // Update TaskDef-Level Metrics
-        TaskMetricUpdate previousTaskLevelUpdate = store.get(
-            getStoreKey(),
-            getClass()
-        );
-        if (previousTaskLevelUpdate != null) {
-            merge(previousTaskLevelUpdate);
+        TaskMetricUpdate previousUpdate = store.get(getStoreKey(), getClass());
+        if (previousUpdate != null) {
+            merge(previousUpdate);
         }
         store.put(this);
         store.put(toResponse());

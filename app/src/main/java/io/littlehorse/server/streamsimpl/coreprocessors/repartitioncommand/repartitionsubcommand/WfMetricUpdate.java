@@ -35,6 +35,18 @@ public class WfMetricUpdate
 
     public WfMetricUpdate() {}
 
+    public WfMetricUpdate(
+        Date windowStart,
+        MetricsWindowLengthPb type,
+        String wfSpecName,
+        int wfSpecVersion
+    ) {
+        this.windowStart = windowStart;
+        this.type = type;
+        this.wfSpecName = wfSpecName;
+        this.wfSpecVersion = wfSpecVersion;
+    }
+
     public Class<WfMetricUpdatePb> getProtoBaseClass() {
         return WfMetricUpdatePb.class;
     }
@@ -120,27 +132,9 @@ public class WfMetricUpdate
     }
 
     public void process(LHStoreWrapper store, ProcessorContext<Void, Void> ctx) {
-        // handle cluster-level first
-        WfMetricUpdate clusterLevelUpdate = store.get(
-            getClusterLevelWindow(),
-            getClass()
-        );
-        if (clusterLevelUpdate == null) {
-            // initialize it to an empty window;
-            clusterLevelUpdate = new WfMetricUpdate();
-            clusterLevelUpdate.windowStart = windowStart;
-            clusterLevelUpdate.wfSpecName = LHConstants.CLUSTER_LEVEL_METRIC;
-            clusterLevelUpdate.type = type;
-        }
-        clusterLevelUpdate.merge(this);
-        System.out.println("Merging cluster level metric");
-        System.out.println(clusterLevelUpdate.toJson());
-        store.put(clusterLevelUpdate);
-        store.put(clusterLevelUpdate.toResponse());
-
-        WfMetricUpdate PreviousWfLevelUpdate = store.get(getStoreKey(), getClass());
-        if (PreviousWfLevelUpdate != null) {
-            merge(PreviousWfLevelUpdate);
+        WfMetricUpdate previousUpdate = store.get(getStoreKey(), getClass());
+        if (previousUpdate != null) {
+            merge(previousUpdate);
         }
         store.put(this);
         store.put(toResponse());
