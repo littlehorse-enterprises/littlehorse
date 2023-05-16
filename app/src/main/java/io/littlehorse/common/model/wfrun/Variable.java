@@ -2,6 +2,7 @@ package io.littlehorse.common.model.wfrun;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.objectId.VariableId;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.VariablePb;
@@ -15,8 +16,18 @@ public class Variable extends GETable<VariablePb> {
     public String name;
     public Date date;
 
+    private WfSpec wfSpec;
+
     public Class<VariablePb> getProtoBaseClass() {
         return VariablePb.class;
+    }
+
+    public WfSpec getWfSpec() {
+        return wfSpec;
+    }
+
+    public void setWfSpec(WfSpec spec) {
+        this.wfSpec = spec;
     }
 
     public void initFrom(Message proto) {

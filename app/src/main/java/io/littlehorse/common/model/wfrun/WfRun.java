@@ -61,6 +61,14 @@ public class WfRun extends GETable<WfRunPb> {
         return startTime;
     }
 
+    public WfSpec getWfSpec() {
+        return wfSpec;
+    }
+
+    public void setWfSpec(WfSpec spec) {
+        this.wfSpec = spec;
+    }
+
     public void initFrom(Message p) {
         WfRunPb proto = (WfRunPb) p;
         id = proto.getId();

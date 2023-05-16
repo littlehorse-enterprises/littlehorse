@@ -335,6 +335,9 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         Variable out = localStore.get(key, Variable.class);
         if (out != null) {
             variablePuts.put(key, out);
+            // Need to get the WfSpec
+            WfRun wfRun = getWfRun(wfRunId);
+            out.setWfSpec(wfRun.getWfSpec());
         }
         return out;
     }
@@ -443,7 +446,10 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
             return wfRunPuts.get(id);
         }
         WfRun out = localStore.get(id, WfRun.class);
-        if (out != null) wfRunPuts.put(id, out);
+        if (out != null) {
+            wfRunPuts.put(id, out);
+            out.setWfSpec(getWfSpec(out.wfSpecName, out.wfSpecVersion));
+        }
         return out;
     }
 
@@ -685,11 +691,19 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         for (Map.Entry<String, ExternalEvent> e : extEvtPuts.entrySet()) {
             saveOrDeleteGETableFlush(e.getKey(), e.getValue(), ExternalEvent.class);
         }
-        for (Map.Entry<String, Variable> e : variablePuts.entrySet()) {
-            saveOrDeleteGETableFlush(e.getKey(), e.getValue(), Variable.class);
-        }
         for (Map.Entry<String, WfRun> e : wfRunPuts.entrySet()) {
             saveOrDeleteGETableFlush(e.getKey(), e.getValue(), WfRun.class);
+        }
+        // Turns out that we have to save the WfRun's before we save the Variable.
+        for (Map.Entry<String, Variable> e : variablePuts.entrySet()) {
+            Variable v = e.getValue();
+            if (v != null) {
+                if (v.getWfSpec() == null) {
+                    // that's because otherwise the getWfRun() call might be null
+                    v.setWfSpec(getWfRun(v.wfRunId).getWfSpec());
+                }
+            }
+            saveOrDeleteGETableFlush(e.getKey(), e.getValue(), Variable.class);
         }
 
         for (Map.Entry<String, TaskWorkerGroup> e : taskWorkerGroupPuts.entrySet()) {

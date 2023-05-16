@@ -2,6 +2,7 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.objectId.VariableId;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.proto.BookmarkPb;
@@ -119,6 +120,28 @@ public class SearchVariable
             // hot boolean variables may be LOCAL_UNCOUNTED
             out.partitionKey = null;
 
+            int wfSpecVersion;
+            if (value.hasWfSpecVersion()) {
+                wfSpecVersion = value.getWfSpecVersion();
+                WfSpec spec = stores.getWfSpec(value.getWfSpecName(), wfSpecVersion);
+                if (spec == null) {
+                    throw new LHValidationError(
+                        null,
+                        "Couldn't find specified wfSpec"
+                    );
+                }
+            } else {
+                WfSpec spec = stores.getWfSpec(value.getWfSpecName(), null);
+                if (spec == null) {
+                    throw new LHValidationError(
+                        null,
+                        "Search refers to missing WfSpec"
+                    );
+                } else {
+                    wfSpecVersion = spec.version;
+                }
+            }
+
             out.localTagPrefixScan =
                 TagPrefixScanPb
                     .newBuilder()
@@ -128,6 +151,16 @@ public class SearchVariable
                     )
                     .addAttributes(
                         new Attribute("name", value.getVarName()).toProto()
+                    )
+                    .addAttributes(
+                        new Attribute("wfSpecName", value.getWfSpecName()).toProto()
+                    )
+                    .addAttributes(
+                        new Attribute(
+                            "wfSpecVersion",
+                            LHUtil.toLHDbVersionFormat(wfSpecVersion)
+                        )
+                            .toProto()
                     )
                     .build();
         }

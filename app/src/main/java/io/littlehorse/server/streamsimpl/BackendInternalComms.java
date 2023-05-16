@@ -713,7 +713,6 @@ public class BackendInternalComms implements Closeable {
     }
 
     private InternalScanReplyPb objectIdPrefixScanOnThisHost(InternalScan req) {
-        log.debug("objectid prefix scan on this host");
         /*
          * TODO: There's some things we need to verify here.
          * 1) It's a prerequisite that the request has a partition key set.

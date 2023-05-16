@@ -97,16 +97,15 @@ public class TagUtils {
         Pair<String, String> valuePair = thing.value.getValueTagPair();
 
         if (valuePair != null) {
-            // EMPLOYEE_TODO: allow the search to specify the WfSpecName. That
-            // will require passing in some info about the wfRun+wfSpec upon ceation
-            // of the Variable object. That will require editing the
-            // CommandProcessorDaoImpl.
+            WfSpec spec = thing.getWfSpec();
             return Arrays.asList(
                 new Tag(
                     thing,
                     TagStorageTypePb.LOCAL_UNCOUNTED,
                     valuePair,
-                    Pair.of("name", thing.name)
+                    Pair.of("name", thing.name),
+                    Pair.of("wfSpecName", spec.name),
+                    Pair.of("wfSpecVersion", LHUtil.toLHDbVersionFormat(spec.version))
                 )
             );
         } else {
