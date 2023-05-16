@@ -1,6 +1,7 @@
 package io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.Storeable;
 import io.littlehorse.common.model.metrics.WfSpecMetrics;
 import io.littlehorse.common.model.objectId.WfSpecMetricsId;
@@ -108,10 +109,38 @@ public class WfMetricUpdate
         return out;
     }
 
+    public String getClusterLevelWindow() {
+        return new WfSpecMetricsId(
+            windowStart,
+            type,
+            LHConstants.CLUSTER_LEVEL_METRIC,
+            0
+        )
+            .getStoreKey();
+    }
+
     public void process(LHStoreWrapper store, ProcessorContext<Void, Void> ctx) {
-        WfMetricUpdate previous = store.get(getStoreKey(), getClass());
-        if (previous != null) {
-            merge(previous);
+        // handle cluster-level first
+        WfMetricUpdate clusterLevelUpdate = store.get(
+            getClusterLevelWindow(),
+            getClass()
+        );
+        if (clusterLevelUpdate == null) {
+            // initialize it to an empty window;
+            clusterLevelUpdate = new WfMetricUpdate();
+            clusterLevelUpdate.windowStart = windowStart;
+            clusterLevelUpdate.wfSpecName = LHConstants.CLUSTER_LEVEL_METRIC;
+            clusterLevelUpdate.type = type;
+        }
+        clusterLevelUpdate.merge(this);
+        System.out.println("Merging cluster level metric");
+        System.out.println(clusterLevelUpdate.toJson());
+        store.put(clusterLevelUpdate);
+        store.put(clusterLevelUpdate.toResponse());
+
+        WfMetricUpdate PreviousWfLevelUpdate = store.get(getStoreKey(), getClass());
+        if (PreviousWfLevelUpdate != null) {
+            merge(PreviousWfLevelUpdate);
         }
         store.put(this);
         store.put(toResponse());

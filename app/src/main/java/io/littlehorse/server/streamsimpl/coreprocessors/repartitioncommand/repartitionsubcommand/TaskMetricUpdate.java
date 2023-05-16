@@ -1,6 +1,7 @@
 package io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.Storeable;
 import io.littlehorse.common.model.metrics.TaskDefMetrics;
 import io.littlehorse.common.model.objectId.TaskDefMetricsId;
@@ -115,10 +116,39 @@ public class TaskMetricUpdate
         return type + "/" + LHUtil.toLhDbFormat(windowStart) + "/";
     }
 
+    public String getClusterLevelWindow() {
+        return new TaskDefMetricsId(
+            windowStart,
+            type,
+            LHConstants.CLUSTER_LEVEL_METRIC
+        )
+            .getStoreKey();
+    }
+
     public void process(LHStoreWrapper store, ProcessorContext<Void, Void> ctx) {
-        TaskMetricUpdate previous = store.get(getStoreKey(), getClass());
-        if (previous != null) {
-            merge(previous);
+        // Update Cluster-Level Metrics
+        TaskMetricUpdate clusterMetricUpdate = store.get(
+            getClusterLevelWindow(),
+            getClass()
+        );
+        if (clusterMetricUpdate == null) {
+            // initialize it to an empty window;
+            clusterMetricUpdate = new TaskMetricUpdate();
+            clusterMetricUpdate.windowStart = windowStart;
+            clusterMetricUpdate.taskDefName = LHConstants.CLUSTER_LEVEL_METRIC;
+            clusterMetricUpdate.type = type;
+        }
+        clusterMetricUpdate.merge(this);
+        store.put(clusterMetricUpdate);
+        store.put(clusterMetricUpdate.toResponse());
+
+        // Update TaskDef-Level Metrics
+        TaskMetricUpdate previousTaskLevelUpdate = store.get(
+            getStoreKey(),
+            getClass()
+        );
+        if (previousTaskLevelUpdate != null) {
+            merge(previousTaskLevelUpdate);
         }
         store.put(this);
         store.put(toResponse());
@@ -144,3 +174,60 @@ public class TaskMetricUpdate
         return windowStart;
     }
 }
+/*
+
+partition 1:
+// executes 2 tasks "greett"
+
+partition 2:
+// executes 1 task "greet"
+// executes 1 task "foo"
+
+
+Partition 1 sends:
+{
+    "windowStart": 5:00pm
+    "windowLength": MINUTES_5
+    taskDefName: greet
+    numTasks: 2
+}
+
+Partition 2 sends:
+{
+    "windowStart": 5:00pm
+    "windowLength": MINUTES_5
+    taskDefName: greet
+    numTasks: 1
+}
+{
+    "windowStart": 5:00pm
+    "windowLength": MINUTES_5
+    taskDefName: foo
+    numTasks: 1
+}
+
+
+
+repartition processor:
+{
+    "windowStart": 5:00pm
+    "windowLength": MINUTES_5
+    taskDefName: "ALL_TASKS"
+    numTasks: 4
+}
+
+{
+    "windowStart": 5:00pm
+    "windowLength": MINUTES_5
+    taskDefName: greet
+    numTasks: 3
+}
+{
+    "windowStart": 5:00pm
+    "windowLength": MINUTES_5
+    taskDefName: foo
+    numTasks: 1
+}
+
+
+ */
