@@ -80,6 +80,7 @@ public class SearchWfSpec
                 BoundedObjectIdScanPb
                     .newBuilder()
                     .setStartObjectId(name + "/")
+                    .setEndObjectId(name + "/~")
                     .build();
         }
         return out;
