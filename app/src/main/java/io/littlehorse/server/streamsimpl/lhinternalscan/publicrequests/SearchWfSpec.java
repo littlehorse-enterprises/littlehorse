@@ -22,6 +22,7 @@ public class SearchWfSpec
     extends PublicScanRequest<SearchWfSpecPb, SearchWfSpecReplyPb, WfSpecIdPb, WfSpecId, SearchWfSpecReply> {
 
     public String name;
+    public String prefix;
 
     public Class<SearchWfSpecPb> getProtoBaseClass() {
         return SearchWfSpecPb.class;
@@ -43,7 +44,8 @@ public class SearchWfSpec
             }
         }
 
-        name = p.getName();
+        if (p.hasName()) name = p.getName();
+        if (p.hasPrefix()) prefix = p.getPrefix();
     }
 
     public SearchWfSpecPb.Builder toProto() {
@@ -54,7 +56,8 @@ public class SearchWfSpec
         if (limit != null) {
             out.setLimit(limit);
         }
-        out.setName(name);
+        if (name != null) out.setName(name);
+        if (prefix != null) out.setPrefix(prefix);
 
         return out;
     }
@@ -71,18 +74,29 @@ public class SearchWfSpec
         out.resultType = ScanResultTypePb.OBJECT_ID;
         out.type = ScanBoundaryCase.BOUNDED_OBJECT_ID_SCAN;
         out.partitionKey = LHConstants.META_PARTITION_KEY;
-        if (name.equals("")) {
-            // that means we want to search all wfSpecs
-            out.boundedObjectIdScan =
-                BoundedObjectIdScanPb.newBuilder().setStartObjectId("").build();
-        } else {
+
+        if (name != null && !name.equals("")) {
+            // exact match on name
             out.boundedObjectIdScan =
                 BoundedObjectIdScanPb
                     .newBuilder()
                     .setStartObjectId(name + "/")
                     .setEndObjectId(name + "/~")
                     .build();
+        } else if (prefix != null && !prefix.equals("")) {
+            // Prefix scan on name
+            out.boundedObjectIdScan =
+                BoundedObjectIdScanPb
+                    .newBuilder()
+                    .setStartObjectId(prefix)
+                    .setEndObjectId(prefix + "~")
+                    .build();
+        } else {
+            // that means we want to search all wfSpecs
+            out.boundedObjectIdScan =
+                BoundedObjectIdScanPb.newBuilder().setStartObjectId("").build();
         }
+
         return out;
     }
 }

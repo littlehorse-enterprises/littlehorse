@@ -21,6 +21,8 @@ import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.Sear
 public class SearchTaskDef
     extends PublicScanRequest<SearchTaskDefPb, SearchTaskDefReplyPb, TaskDefIdPb, TaskDefId, SearchTaskDefReply> {
 
+    public String prefix;
+
     public Class<SearchTaskDefPb> getProtoBaseClass() {
         return SearchTaskDefPb.class;
     }
@@ -40,6 +42,7 @@ public class SearchTaskDef
                 exn.printStackTrace();
             }
         }
+        if (p.hasPrefix()) prefix = p.getPrefix();
     }
 
     public SearchTaskDefPb.Builder toProto() {
@@ -50,6 +53,7 @@ public class SearchTaskDef
         if (limit != null) {
             out.setLimit(limit);
         }
+        if (prefix != null) out.setPrefix(prefix);
 
         return out;
     }
@@ -67,9 +71,18 @@ public class SearchTaskDef
         out.resultType = ScanResultTypePb.OBJECT_ID;
         out.partitionKey = LHConstants.META_PARTITION_KEY;
 
-        // Right now, the only supported TaskDef search is all object id's.
-        out.boundedObjectIdScan =
-            BoundedObjectIdScanPb.newBuilder().setStartObjectId("").build();
+        if (prefix != null && !prefix.equals("")) {
+            // Prefix scan on name
+            out.boundedObjectIdScan =
+                BoundedObjectIdScanPb
+                    .newBuilder()
+                    .setStartObjectId(prefix)
+                    .setEndObjectId(prefix + "~")
+                    .build();
+        } else {
+            out.boundedObjectIdScan =
+                BoundedObjectIdScanPb.newBuilder().setStartObjectId("").build();
+        }
         return out;
     }
 }

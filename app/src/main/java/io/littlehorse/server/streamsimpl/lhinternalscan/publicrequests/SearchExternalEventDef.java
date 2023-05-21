@@ -21,6 +21,8 @@ import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.Sear
 public class SearchExternalEventDef
     extends PublicScanRequest<SearchExternalEventDefPb, SearchExternalEventDefReplyPb, ExternalEventDefIdPb, ExternalEventDefId, SearchExternalEventDefReply> {
 
+    public String prefix;
+
     public Class<SearchExternalEventDefPb> getProtoBaseClass() {
         return SearchExternalEventDefPb.class;
     }
@@ -40,6 +42,7 @@ public class SearchExternalEventDef
                 exn.printStackTrace();
             }
         }
+        if (p.hasPrefix()) prefix = p.getPrefix();
     }
 
     public SearchExternalEventDefPb.Builder toProto() {
@@ -50,6 +53,7 @@ public class SearchExternalEventDef
         if (limit != null) {
             out.setLimit(limit);
         }
+        if (prefix != null) out.setPrefix(prefix);
 
         return out;
     }
@@ -68,9 +72,19 @@ public class SearchExternalEventDef
         out.storeName = ServerTopology.CORE_STORE;
         out.resultType = ScanResultTypePb.OBJECT_ID;
 
-        // Right now, the only search supported is just a scan of all object id's.
-        out.boundedObjectIdScan =
-            BoundedObjectIdScanPb.newBuilder().setStartObjectId("").build();
+        if (prefix != null && !prefix.equals("")) {
+            // Prefix scan on name
+            out.boundedObjectIdScan =
+                BoundedObjectIdScanPb
+                    .newBuilder()
+                    .setStartObjectId(prefix)
+                    .setEndObjectId(prefix + "~")
+                    .build();
+        } else {
+            out.boundedObjectIdScan =
+                BoundedObjectIdScanPb.newBuilder().setStartObjectId("").build();
+        }
+
         return out;
     }
 }
