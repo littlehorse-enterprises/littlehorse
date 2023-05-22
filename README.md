@@ -219,3 +219,20 @@ You can clean up (i.e. stop Kafka and delete the data from the state directory) 
 ```
 ./local-dev/cleanup.sh
 ```
+
+## Release a new version
+
+Install semver command:
+
+```
+npm install
+```
+
+Upgrade to a new version:
+
+```bash
+./local-dev/bump.sh -i <major, minor, patch>
+./local-dev/bump.sh -i prerelease --preid <alpha, beta, rc>
+```
+
+> More information at https://github.com/npm/node-semver

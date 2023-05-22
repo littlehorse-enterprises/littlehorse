@@ -1,0 +1,43 @@
+image: gradle:8
+
+definitions:
+  steps:
+    - step: &build-test
+        name: Build and Test
+        caches:
+          - gradle
+        script:
+          - git clone git@bitbucket.org:littlehorse-core/lh-jlib.git
+          - cd lh-jlib && gradle publishToMavenLocal -x javadoc -x test && cd ..
+          - gradle test shadowJar
+        artifacts:
+          - app/build/libs/shadow.jar
+    - step: &build-docker-image
+        deployment: production
+        name: Build and Deploy Docker Image
+        services:
+          - docker
+        script:
+          - >-
+            export TAG="$([ ! -z "$BITBUCKET_BRANCH" ] && ([ "$BITBUCKET_BRANCH" = "master" ] && echo "master"
+            || echo "branch-${BITBUCKET_BRANCH/\//-}") || echo $BITBUCKET_TAG)"
+          - echo "Tag to be used:" $TAG
+          - export REPOSITORY_NAME=littlehorse-server
+          - docker build --file docker/Dockerfile -t $REPOSITORY_NAME:$TAG .
+          - pipe: atlassian/aws-ecr-push-image:2.0.0
+            variables:
+              AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+              AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+              AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+              IMAGE_NAME: "${REPOSITORY_NAME}"
+              TAGS: "${TAG}"
+
+pipelines:
+  tags:
+    "*":
+      - step: *build-test
+      - step: *build-docker-image
+
+  default:
+    - step: *build-test
+    - step: *build-docker-image

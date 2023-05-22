@@ -7,7 +7,7 @@ plugins {
 }
 
 group 'io.littlehorse'
-version '0.0.0-ALPHA'
+version "${version}"
 
 publishing {
     publications {
@@ -56,7 +56,7 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.12.0'
 
     // gRPC and Protobuf now included in lh-jlib
-    implementation 'io.littlehorse:littlehorse-jlib:0.0.0-ALPHA'
+    implementation 'io.littlehorse:littlehorse-jlib:0.1.0-alpha.1'
 }
 
 
@@ -71,7 +71,10 @@ compileJava {
 }
 
 shadowJar {
-  mergeServiceFiles()
+    mergeServiceFiles()
+    archiveBaseName.set('shadow')
+    archiveClassifier.set('')
+    archiveVersion.set('')
 }
 
 test {
