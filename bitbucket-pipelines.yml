@@ -40,4 +40,6 @@ pipelines:
 
   default:
     - step: *build-test
-    - step: *build-docker-image
+    - step:
+        <<: *build-docker-image
+        trigger: manual
