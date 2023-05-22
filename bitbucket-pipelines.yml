@@ -11,7 +11,7 @@ definitions:
           - cd lh-jlib && gradle publishToMavenLocal -x javadoc -x test && cd ..
           - gradle test shadowJar
         artifacts:
-          - app/build/libs/shadow.jar
+          - app/build/libs/app-*-all.jar
     - step: &build-docker-image
         deployment: production
         name: Build and Deploy Docker Image
