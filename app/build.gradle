@@ -72,9 +72,6 @@ compileJava {
 
 shadowJar {
     mergeServiceFiles()
-    archiveBaseName.set('shadow')
-    archiveClassifier.set('')
-    archiveVersion.set('')
 }
 
 test {
