@@ -62,6 +62,8 @@ public class LHConfig extends ConfigBase {
     // General LittleHorse Runtime Behavior Config Env Vars
     public static final String DEFAULT_TIMEOUT_KEY = "LHS_DEFAULT_TASK_TIMEOUT";
     public static final String KAFKA_TOPIC_PREFIX_KEY = "LHS_KAFKA_PREFIX";
+    public static final String DEFAULT_WFRUN_RETENTION_HOURS =
+        "LHS_DEFAULT_WFRUN_RETENTION_HOURS";
 
     // Host and Port Configuration Env Vars
     public static final String ADVERTISED_LISTENERS_KEY =
@@ -590,6 +592,13 @@ public class LHConfig extends ConfigBase {
         out.rhsSourceType = SourceCase.LITERAL_VALUE;
         out.rhsLiteralValue = val;
         return out;
+    }
+
+    public int getDefaultWfRunRetentionHours() {
+        int retentionPeriod = Integer.valueOf(
+            getOrSetDefault(LHConfig.DEFAULT_WFRUN_RETENTION_HOURS, "168")
+        );
+        return retentionPeriod;
     }
 
     public int getStandbyReplicas() {

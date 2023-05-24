@@ -30,6 +30,7 @@ public class WfSpec extends GETable<WfSpecPb> {
     public int version;
     public Date createdAt;
     public long lastOffset;
+    public int retentionHours;
 
     public Map<String, ThreadSpec> threadSpecs;
 
@@ -77,6 +78,7 @@ public class WfSpec extends GETable<WfSpecPb> {
             .setCreatedAt(LHUtil.fromDate(createdAt))
             .setEntrypointThreadName(entrypointThreadName)
             .setStatus(status)
+            .setRetentionHours(retentionHours)
             .setName(name);
 
         if (threadSpecs != null) {
@@ -94,6 +96,7 @@ public class WfSpec extends GETable<WfSpecPb> {
         version = proto.getVersion();
         entrypointThreadName = proto.getEntrypointThreadName();
         status = proto.getStatus();
+        retentionHours = proto.getRetentionHours();
         name = proto.getName();
 
         for (Map.Entry<String, ThreadSpecPb> e : proto

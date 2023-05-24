@@ -6,6 +6,8 @@ import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.command.Command;
+import io.littlehorse.common.model.command.subcommand.DeleteWfRun;
 import io.littlehorse.common.model.command.subcommand.ExternalEventTimeout;
 import io.littlehorse.common.model.command.subcommand.ResumeWfRun;
 import io.littlehorse.common.model.command.subcommand.SleepNodeMatured;
@@ -37,6 +39,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.commons.lang3.time.DateUtils;
 
 public class WfRun extends GETable<WfRunPb> {
 
@@ -473,6 +476,23 @@ public class WfRun extends GETable<WfRunPb> {
         WfRunStatusOe oe = new WfRunStatusOe();
         oe.status = status;
         cmdDao.addObservabilityEvent(new ObservabilityEvent(id, oe));
+
+        if (status.equals(LHStatusPb.COMPLETED) || status.equals(LHStatusPb.ERROR)) {
+            LHTimer timer = new LHTimer();
+            timer.topic = this.cmdDao.getWfRunEventQueue();
+            timer.key = id;
+            Date now = new Date();
+            timer.maturationTime =
+                DateUtils.addHours(now, this.wfSpec.retentionHours);
+            DeleteWfRun deleteWfRun = new DeleteWfRun();
+            deleteWfRun.wfRunId = id;
+
+            Command deleteWfRunCmd = new Command();
+            deleteWfRunCmd.setSubCommand(deleteWfRun);
+            deleteWfRunCmd.time = timer.maturationTime;
+            timer.payload = deleteWfRunCmd.toProto().build().toByteArray();
+            this.cmdDao.scheduleTimer(timer);
+        }
     }
 
     // As a precondition, the status of the calling thread must already be updated to complete.

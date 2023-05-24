@@ -23,6 +23,7 @@ public class PutWfSpec extends SubCommand<PutWfSpecPb> {
     public String name;
     public Map<String, ThreadSpec> threadSpecs;
     public String entrypointThreadName;
+    public Integer retentionHours;
 
     public String getPartitionKey() {
         return LHConstants.META_PARTITION_KEY;
@@ -41,6 +42,9 @@ public class PutWfSpec extends SubCommand<PutWfSpecPb> {
             .newBuilder()
             .setName(name)
             .setEntrypointThreadName(entrypointThreadName);
+        if (retentionHours != null) {
+            out.setRetentionHours(retentionHours);
+        }
 
         for (Map.Entry<String, ThreadSpec> e : threadSpecs.entrySet()) {
             out.putThreadSpecs(e.getKey(), e.getValue().toProto().build());
@@ -52,6 +56,9 @@ public class PutWfSpec extends SubCommand<PutWfSpecPb> {
         PutWfSpecPb p = (PutWfSpecPb) proto;
         name = p.getName();
         entrypointThreadName = p.getEntrypointThreadName();
+        if (!p.hasRetentionHours()) {
+            retentionHours = null;
+        }
         for (Map.Entry<String, ThreadSpecPb> e : p.getThreadSpecsMap().entrySet()) {
             threadSpecs.put(e.getKey(), ThreadSpec.fromProto(e.getValue()));
         }
@@ -75,6 +82,10 @@ public class PutWfSpec extends SubCommand<PutWfSpecPb> {
         spec.entrypointThreadName = entrypointThreadName;
         spec.threadSpecs = threadSpecs;
         spec.createdAt = new Date();
+        spec.retentionHours =
+            retentionHours == null
+                ? config.getDefaultWfRunRetentionHours()
+                : retentionHours;
         spec.status = LHStatusPb.RUNNING;
         for (Map.Entry<String, ThreadSpec> entry : spec.threadSpecs.entrySet()) {
             ThreadSpec tspec = entry.getValue();
