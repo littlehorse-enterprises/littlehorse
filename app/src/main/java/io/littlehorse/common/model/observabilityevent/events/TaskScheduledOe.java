@@ -70,7 +70,7 @@ public class TaskScheduledOe extends SubEvent<TaskScheduledOePb> {
 
         for (TaskMetricUpdate tmu : tmus) {
             tmu.numEntries++;
-            tmu.totalStarted++;
+            tmu.totalScheduled++;
         }
     }
 }

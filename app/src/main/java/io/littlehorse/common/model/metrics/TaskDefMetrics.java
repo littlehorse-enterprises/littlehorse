@@ -22,6 +22,7 @@ public class TaskDefMetrics extends GETable<TaskDefMetricsPb> {
     public long totalCompleted;
     public long totalErrored;
     public long totalStarted;
+    public long totalScheduled;
 
     public Class<TaskDefMetricsPb> getProtoBaseClass() {
         return TaskDefMetricsPb.class;
@@ -39,7 +40,8 @@ public class TaskDefMetrics extends GETable<TaskDefMetricsPb> {
             .setScheduleToStartAvg(scheduleToStartAvg)
             .setScheduleToStartMax(scheduleToStartMax)
             .setStartToCompleteAvg(startToCompleteAvg)
-            .setStartToCompleteMax(startToCompleteMax);
+            .setStartToCompleteMax(startToCompleteMax)
+            .setTotalScheduled(totalScheduled);
 
         return out;
     }
@@ -56,6 +58,7 @@ public class TaskDefMetrics extends GETable<TaskDefMetricsPb> {
         scheduleToStartMax = p.getScheduleToStartMax();
         startToCompleteAvg = p.getStartToCompleteAvg();
         startToCompleteMax = p.getStartToCompleteMax();
+        totalScheduled = p.getTotalScheduled();
     }
 
     public Date getCreatedAt() {

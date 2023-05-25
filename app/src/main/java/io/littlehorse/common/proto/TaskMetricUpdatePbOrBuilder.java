@@ -92,4 +92,10 @@ public interface TaskMetricUpdatePbOrBuilder extends
    */
   com.google.protobuf.ByteString
       getTaskDefNameBytes();
+
+  /**
+   * <code>int64 total_scheduled = 12;</code>
+   * @return The totalScheduled.
+   */
+  long getTotalScheduled();
 }

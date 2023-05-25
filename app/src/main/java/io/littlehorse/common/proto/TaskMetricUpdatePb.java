@@ -220,6 +220,17 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int TOTAL_SCHEDULED_FIELD_NUMBER = 12;
+  private long totalScheduled_ = 0L;
+  /**
+   * <code>int64 total_scheduled = 12;</code>
+   * @return The totalScheduled.
+   */
+  @java.lang.Override
+  public long getTotalScheduled() {
+    return totalScheduled_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -266,6 +277,9 @@ private static final long serialVersionUID = 0L;
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(taskDefName_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 11, taskDefName_);
+    }
+    if (totalScheduled_ != 0L) {
+      output.writeInt64(12, totalScheduled_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -319,6 +333,10 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(taskDefName_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(11, taskDefName_);
     }
+    if (totalScheduled_ != 0L) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt64Size(12, totalScheduled_);
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -358,6 +376,8 @@ private static final long serialVersionUID = 0L;
         != other.getTotalStarted()) return false;
     if (!getTaskDefName()
         .equals(other.getTaskDefName())) return false;
+    if (getTotalScheduled()
+        != other.getTotalScheduled()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -401,6 +421,9 @@ private static final long serialVersionUID = 0L;
         getTotalStarted());
     hash = (37 * hash) + TASK_DEF_NAME_FIELD_NUMBER;
     hash = (53 * hash) + getTaskDefName().hashCode();
+    hash = (37 * hash) + TOTAL_SCHEDULED_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        getTotalScheduled());
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -549,6 +572,7 @@ private static final long serialVersionUID = 0L;
       totalErrored_ = 0L;
       totalStarted_ = 0L;
       taskDefName_ = "";
+      totalScheduled_ = 0L;
       return this;
     }
 
@@ -616,6 +640,9 @@ private static final long serialVersionUID = 0L;
       }
       if (((from_bitField0_ & 0x00000400) != 0)) {
         result.taskDefName_ = taskDefName_;
+      }
+      if (((from_bitField0_ & 0x00000800) != 0)) {
+        result.totalScheduled_ = totalScheduled_;
       }
     }
 
@@ -697,6 +724,9 @@ private static final long serialVersionUID = 0L;
         taskDefName_ = other.taskDefName_;
         bitField0_ |= 0x00000400;
         onChanged();
+      }
+      if (other.getTotalScheduled() != 0L) {
+        setTotalScheduled(other.getTotalScheduled());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -781,6 +811,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000400;
               break;
             } // case 90
+            case 96: {
+              totalScheduled_ = input.readInt64();
+              bitField0_ |= 0x00000800;
+              break;
+            } // case 96
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1294,6 +1329,38 @@ private static final long serialVersionUID = 0L;
       checkByteStringIsUtf8(value);
       taskDefName_ = value;
       bitField0_ |= 0x00000400;
+      onChanged();
+      return this;
+    }
+
+    private long totalScheduled_ ;
+    /**
+     * <code>int64 total_scheduled = 12;</code>
+     * @return The totalScheduled.
+     */
+    @java.lang.Override
+    public long getTotalScheduled() {
+      return totalScheduled_;
+    }
+    /**
+     * <code>int64 total_scheduled = 12;</code>
+     * @param value The totalScheduled to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTotalScheduled(long value) {
+      
+      totalScheduled_ = value;
+      bitField0_ |= 0x00000800;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int64 total_scheduled = 12;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearTotalScheduled() {
+      bitField0_ = (bitField0_ & ~0x00000800);
+      totalScheduled_ = 0L;
       onChanged();
       return this;
     }

@@ -28,6 +28,7 @@ public class TaskMetricUpdate
     public long totalCompleted;
     public long totalErrored;
     public long totalStarted;
+    public long totalScheduled;
 
     public String taskDefName;
 
@@ -60,7 +61,8 @@ public class TaskMetricUpdate
             .setScheduleToStartMax(scheduleToStartMax)
             .setStartToCompleteTotal(startToCompleteTotal)
             .setStartToCompleteMax(startToCompleteMax)
-            .setNumEntries(numEntries);
+            .setNumEntries(numEntries)
+            .setTotalScheduled(totalScheduled);
 
         return out;
     }
@@ -78,6 +80,7 @@ public class TaskMetricUpdate
         startToCompleteTotal = p.getStartToCompleteTotal();
         startToCompleteMax = p.getStartToCompleteMax();
         numEntries = p.getNumEntries();
+        totalScheduled = p.getTotalScheduled();
     }
 
     public void merge(TaskMetricUpdate o) {
@@ -102,6 +105,7 @@ public class TaskMetricUpdate
         totalCompleted += o.totalCompleted;
         totalErrored += o.totalErrored;
         totalStarted += o.totalStarted;
+        totalScheduled += o.totalScheduled;
     }
 
     public TaskDefMetrics toResponse() {
@@ -117,6 +121,7 @@ public class TaskMetricUpdate
         out.totalStarted = totalStarted;
         out.totalErrored = totalErrored;
         out.windowStart = windowStart;
+        out.totalScheduled = totalScheduled;
         out.type = type;
 
         return out;

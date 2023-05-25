@@ -176,6 +176,7 @@ message TaskMetricUpdatePb {
     int64 total_started = 10;
 
     string task_def_name = 11;
+    int64 total_scheduled = 12;
 }
 
 message WfMetricUpdatePb {
