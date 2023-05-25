@@ -84,7 +84,7 @@ public class LHUtil {
             case HOURS_2:
                 return 1000 * 60 * 60 * 2;
             case DAYS_1:
-                return 100 * 60 * 60 * 24;
+                return 1000 * 60 * 60 * 24;
             default:
                 throw new RuntimeException("Invalid window!");
         }
