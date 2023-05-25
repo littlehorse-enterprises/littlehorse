@@ -70,6 +70,7 @@ private static final long serialVersionUID = 0L;
     DELETE_EXTERNAL_EVENT_DEF(17),
     EXTERNAL_EVENT_TIMEOUT(18),
     TASK_WORKER_HEART_BEAT(19),
+    DELETE_EXTERNAL_EVENT(20),
     COMMAND_NOT_SET(0);
     private final int value;
     private CommandCase(int value) {
@@ -103,6 +104,7 @@ private static final long serialVersionUID = 0L;
         case 17: return DELETE_EXTERNAL_EVENT_DEF;
         case 18: return EXTERNAL_EVENT_TIMEOUT;
         case 19: return TASK_WORKER_HEART_BEAT;
+        case 20: return DELETE_EXTERNAL_EVENT;
         case 0: return COMMAND_NOT_SET;
         default: return null;
       }
@@ -687,6 +689,37 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.jlib.common.proto.TaskWorkerHeartBeatPb.getDefaultInstance();
   }
 
+  public static final int DELETE_EXTERNAL_EVENT_FIELD_NUMBER = 20;
+  /**
+   * <code>.littlehorse.DeleteExternalEventPb delete_external_event = 20;</code>
+   * @return Whether the deleteExternalEvent field is set.
+   */
+  @java.lang.Override
+  public boolean hasDeleteExternalEvent() {
+    return commandCase_ == 20;
+  }
+  /**
+   * <code>.littlehorse.DeleteExternalEventPb delete_external_event = 20;</code>
+   * @return The deleteExternalEvent.
+   */
+  @java.lang.Override
+  public io.littlehorse.jlib.common.proto.DeleteExternalEventPb getDeleteExternalEvent() {
+    if (commandCase_ == 20) {
+       return (io.littlehorse.jlib.common.proto.DeleteExternalEventPb) command_;
+    }
+    return io.littlehorse.jlib.common.proto.DeleteExternalEventPb.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.DeleteExternalEventPb delete_external_event = 20;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.jlib.common.proto.DeleteExternalEventPbOrBuilder getDeleteExternalEventOrBuilder() {
+    if (commandCase_ == 20) {
+       return (io.littlehorse.jlib.common.proto.DeleteExternalEventPb) command_;
+    }
+    return io.littlehorse.jlib.common.proto.DeleteExternalEventPb.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -754,6 +787,9 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 19) {
       output.writeMessage(19, (io.littlehorse.jlib.common.proto.TaskWorkerHeartBeatPb) command_);
+    }
+    if (commandCase_ == 20) {
+      output.writeMessage(20, (io.littlehorse.jlib.common.proto.DeleteExternalEventPb) command_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -834,6 +870,10 @@ private static final long serialVersionUID = 0L;
     if (commandCase_ == 19) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(19, (io.littlehorse.jlib.common.proto.TaskWorkerHeartBeatPb) command_);
+    }
+    if (commandCase_ == 20) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(20, (io.littlehorse.jlib.common.proto.DeleteExternalEventPb) command_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -926,6 +966,10 @@ private static final long serialVersionUID = 0L;
         if (!getTaskWorkerHeartBeat()
             .equals(other.getTaskWorkerHeartBeat())) return false;
         break;
+      case 20:
+        if (!getDeleteExternalEvent()
+            .equals(other.getDeleteExternalEvent())) return false;
+        break;
       case 0:
       default:
     }
@@ -1012,6 +1056,10 @@ private static final long serialVersionUID = 0L;
       case 19:
         hash = (37 * hash) + TASK_WORKER_HEART_BEAT_FIELD_NUMBER;
         hash = (53 * hash) + getTaskWorkerHeartBeat().hashCode();
+        break;
+      case 20:
+        hash = (37 * hash) + DELETE_EXTERNAL_EVENT_FIELD_NUMBER;
+        hash = (53 * hash) + getDeleteExternalEvent().hashCode();
         break;
       case 0:
       default:
@@ -1203,6 +1251,9 @@ private static final long serialVersionUID = 0L;
       if (taskWorkerHeartBeatBuilder_ != null) {
         taskWorkerHeartBeatBuilder_.clear();
       }
+      if (deleteExternalEventBuilder_ != null) {
+        deleteExternalEventBuilder_.clear();
+      }
       commandCase_ = 0;
       command_ = null;
       return this;
@@ -1318,6 +1369,10 @@ private static final long serialVersionUID = 0L;
       if (commandCase_ == 19 &&
           taskWorkerHeartBeatBuilder_ != null) {
         result.command_ = taskWorkerHeartBeatBuilder_.build();
+      }
+      if (commandCase_ == 20 &&
+          deleteExternalEventBuilder_ != null) {
+        result.command_ = deleteExternalEventBuilder_.build();
       }
     }
 
@@ -1436,6 +1491,10 @@ private static final long serialVersionUID = 0L;
         }
         case TASK_WORKER_HEART_BEAT: {
           mergeTaskWorkerHeartBeat(other.getTaskWorkerHeartBeat());
+          break;
+        }
+        case DELETE_EXTERNAL_EVENT: {
+          mergeDeleteExternalEvent(other.getDeleteExternalEvent());
           break;
         }
         case COMMAND_NOT_SET: {
@@ -1592,6 +1651,13 @@ private static final long serialVersionUID = 0L;
               commandCase_ = 19;
               break;
             } // case 154
+            case 162: {
+              input.readMessage(
+                  getDeleteExternalEventFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              commandCase_ = 20;
+              break;
+            } // case 162
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -4092,6 +4158,148 @@ private static final long serialVersionUID = 0L;
       commandCase_ = 19;
       onChanged();
       return taskWorkerHeartBeatBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.jlib.common.proto.DeleteExternalEventPb, io.littlehorse.jlib.common.proto.DeleteExternalEventPb.Builder, io.littlehorse.jlib.common.proto.DeleteExternalEventPbOrBuilder> deleteExternalEventBuilder_;
+    /**
+     * <code>.littlehorse.DeleteExternalEventPb delete_external_event = 20;</code>
+     * @return Whether the deleteExternalEvent field is set.
+     */
+    @java.lang.Override
+    public boolean hasDeleteExternalEvent() {
+      return commandCase_ == 20;
+    }
+    /**
+     * <code>.littlehorse.DeleteExternalEventPb delete_external_event = 20;</code>
+     * @return The deleteExternalEvent.
+     */
+    @java.lang.Override
+    public io.littlehorse.jlib.common.proto.DeleteExternalEventPb getDeleteExternalEvent() {
+      if (deleteExternalEventBuilder_ == null) {
+        if (commandCase_ == 20) {
+          return (io.littlehorse.jlib.common.proto.DeleteExternalEventPb) command_;
+        }
+        return io.littlehorse.jlib.common.proto.DeleteExternalEventPb.getDefaultInstance();
+      } else {
+        if (commandCase_ == 20) {
+          return deleteExternalEventBuilder_.getMessage();
+        }
+        return io.littlehorse.jlib.common.proto.DeleteExternalEventPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.DeleteExternalEventPb delete_external_event = 20;</code>
+     */
+    public Builder setDeleteExternalEvent(io.littlehorse.jlib.common.proto.DeleteExternalEventPb value) {
+      if (deleteExternalEventBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+        onChanged();
+      } else {
+        deleteExternalEventBuilder_.setMessage(value);
+      }
+      commandCase_ = 20;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeleteExternalEventPb delete_external_event = 20;</code>
+     */
+    public Builder setDeleteExternalEvent(
+        io.littlehorse.jlib.common.proto.DeleteExternalEventPb.Builder builderForValue) {
+      if (deleteExternalEventBuilder_ == null) {
+        command_ = builderForValue.build();
+        onChanged();
+      } else {
+        deleteExternalEventBuilder_.setMessage(builderForValue.build());
+      }
+      commandCase_ = 20;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeleteExternalEventPb delete_external_event = 20;</code>
+     */
+    public Builder mergeDeleteExternalEvent(io.littlehorse.jlib.common.proto.DeleteExternalEventPb value) {
+      if (deleteExternalEventBuilder_ == null) {
+        if (commandCase_ == 20 &&
+            command_ != io.littlehorse.jlib.common.proto.DeleteExternalEventPb.getDefaultInstance()) {
+          command_ = io.littlehorse.jlib.common.proto.DeleteExternalEventPb.newBuilder((io.littlehorse.jlib.common.proto.DeleteExternalEventPb) command_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          command_ = value;
+        }
+        onChanged();
+      } else {
+        if (commandCase_ == 20) {
+          deleteExternalEventBuilder_.mergeFrom(value);
+        } else {
+          deleteExternalEventBuilder_.setMessage(value);
+        }
+      }
+      commandCase_ = 20;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeleteExternalEventPb delete_external_event = 20;</code>
+     */
+    public Builder clearDeleteExternalEvent() {
+      if (deleteExternalEventBuilder_ == null) {
+        if (commandCase_ == 20) {
+          commandCase_ = 0;
+          command_ = null;
+          onChanged();
+        }
+      } else {
+        if (commandCase_ == 20) {
+          commandCase_ = 0;
+          command_ = null;
+        }
+        deleteExternalEventBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeleteExternalEventPb delete_external_event = 20;</code>
+     */
+    public io.littlehorse.jlib.common.proto.DeleteExternalEventPb.Builder getDeleteExternalEventBuilder() {
+      return getDeleteExternalEventFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.DeleteExternalEventPb delete_external_event = 20;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.jlib.common.proto.DeleteExternalEventPbOrBuilder getDeleteExternalEventOrBuilder() {
+      if ((commandCase_ == 20) && (deleteExternalEventBuilder_ != null)) {
+        return deleteExternalEventBuilder_.getMessageOrBuilder();
+      } else {
+        if (commandCase_ == 20) {
+          return (io.littlehorse.jlib.common.proto.DeleteExternalEventPb) command_;
+        }
+        return io.littlehorse.jlib.common.proto.DeleteExternalEventPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.DeleteExternalEventPb delete_external_event = 20;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.jlib.common.proto.DeleteExternalEventPb, io.littlehorse.jlib.common.proto.DeleteExternalEventPb.Builder, io.littlehorse.jlib.common.proto.DeleteExternalEventPbOrBuilder> 
+        getDeleteExternalEventFieldBuilder() {
+      if (deleteExternalEventBuilder_ == null) {
+        if (!(commandCase_ == 20)) {
+          command_ = io.littlehorse.jlib.common.proto.DeleteExternalEventPb.getDefaultInstance();
+        }
+        deleteExternalEventBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.jlib.common.proto.DeleteExternalEventPb, io.littlehorse.jlib.common.proto.DeleteExternalEventPb.Builder, io.littlehorse.jlib.common.proto.DeleteExternalEventPbOrBuilder>(
+                (io.littlehorse.jlib.common.proto.DeleteExternalEventPb) command_,
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      commandCase_ = 20;
+      onChanged();
+      return deleteExternalEventBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

@@ -3,6 +3,7 @@ package io.littlehorse.common.model.command;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.command.subcommand.DeleteExternalEvent;
 import io.littlehorse.common.model.command.subcommand.DeleteExternalEventDef;
 import io.littlehorse.common.model.command.subcommand.DeleteTaskDef;
 import io.littlehorse.common.model.command.subcommand.DeleteWfRun;
@@ -47,6 +48,7 @@ public class Command extends LHSerializable<CommandPb> {
     public DeleteExternalEventDef deleteExternalEventDef;
     public ExternalEventTimeout externalEventTimeout;
     public TaskWorkerHeartBeat taskWorkerHeartBeat;
+    public DeleteExternalEvent deleteExternalEvent;
 
     public Class<CommandPb> getProtoBaseClass() {
         return CommandPb.class;
@@ -116,6 +118,9 @@ public class Command extends LHSerializable<CommandPb> {
                 break;
             case TASK_WORKER_HEART_BEAT:
                 out.setTaskWorkerHeartBeat(taskWorkerHeartBeat.toProto());
+                break;
+            case DELETE_EXTERNAL_EVENT:
+                out.setDeleteExternalEvent(deleteExternalEvent.toProto());
                 break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -187,6 +192,10 @@ public class Command extends LHSerializable<CommandPb> {
                 taskWorkerHeartBeat =
                     TaskWorkerHeartBeat.fromProto(p.getTaskWorkerHeartBeat());
                 break;
+            case DELETE_EXTERNAL_EVENT:
+                deleteExternalEvent =
+                    DeleteExternalEvent.fromProto(p.getDeleteExternalEvent());
+                break;
             case COMMAND_NOT_SET:
             default:
                 throw new RuntimeException("Not possible");
@@ -227,6 +236,8 @@ public class Command extends LHSerializable<CommandPb> {
                 return externalEventTimeout;
             case TASK_WORKER_HEART_BEAT:
                 return taskWorkerHeartBeat;
+            case DELETE_EXTERNAL_EVENT:
+                return deleteExternalEvent;
             case COMMAND_NOT_SET:
         }
         throw new RuntimeException("Not possible");
@@ -282,6 +293,9 @@ public class Command extends LHSerializable<CommandPb> {
         } else if (cls.equals(TaskWorkerHeartBeat.class)) {
             type = CommandCase.TASK_WORKER_HEART_BEAT;
             taskWorkerHeartBeat = (TaskWorkerHeartBeat) cmd;
+        } else if (cls.equals(DeleteExternalEvent.class)) {
+            type = CommandCase.DELETE_EXTERNAL_EVENT;
+            deleteExternalEvent = (DeleteExternalEvent) cmd;
         } else {
             throw new RuntimeException("Unrecognized class: " + cls.getName());
         }

@@ -372,6 +372,7 @@ message CommandPb {
         DeleteExternalEventDefPb delete_external_event_def = 17;
         ExternalEventNodeTimeoutPb external_event_timeout = 18;
         TaskWorkerHeartBeatPb task_worker_heart_beat = 19;
+        DeleteExternalEventPb delete_external_event = 20;
     }
 }
 

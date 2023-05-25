@@ -297,7 +297,7 @@ public final class InternalServer {
       " \001(\0132\032.google.protobuf.Timestamp\"]\n\022Slee" +
       "pNodeMaturedPb\022\021\n\twf_run_id\030\001 \001(\t\022\031\n\021thr" +
       "ead_run_number\030\002 \001(\005\022\031\n\021node_run_positio" +
-      "n\030\003 \001(\005\"\230\010\n\tCommandPb\022(\n\004time\030\001 \001(\0132\032.go" +
+      "n\030\003 \001(\005\"\335\010\n\tCommandPb\022(\n\004time\030\001 \001(\0132\032.go" +
       "ogle.protobuf.Timestamp\022\027\n\ncommand_id\030\002 " +
       "\001(\tH\001\210\001\001\022;\n\021task_result_event\030\003 \001(\0132\036.li" +
       "ttlehorse.TaskResultEventPbH\000\0229\n\020task_cl" +
@@ -322,32 +322,34 @@ public final class InternalServer {
       "DefPbH\000\022I\n\026external_event_timeout\030\022 \001(\0132" +
       "\'.littlehorse.ExternalEventNodeTimeoutPb" +
       "H\000\022D\n\026task_worker_heart_beat\030\023 \001(\0132\".lit" +
-      "tlehorse.TaskWorkerHeartBeatPbH\000B\t\n\007comm" +
-      "andB\r\n\013_command_id\"m\n\tLHTimerPb\0223\n\017matur" +
-      "ation_time\030\001 \001(\0132\032.google.protobuf.Times" +
-      "tamp\022\013\n\003key\030\002 \001(\t\022\r\n\005topic\030\003 \001(\t\022\017\n\007payl" +
-      "oad\030\004 \001(\014*7\n\022StoreQueryStatusPb\022\n\n\006RSQ_O" +
-      "K\020\000\022\025\n\021RSQ_NOT_AVAILABLE\020\002*-\n\020ScanResult" +
-      "TypePb\022\r\n\tOBJECT_ID\020\000\022\n\n\006OBJECT\020\001*\305\001\n\022GE" +
-      "TableClassEnumPb\022\014\n\010TASK_DEF\020\000\022\026\n\022EXTERN" +
-      "AL_EVENT_DEF\020\001\022\013\n\007WF_SPEC\020\002\022\n\n\006WF_RUN\020\003\022" +
-      "\014\n\010NODE_RUN\020\004\022\014\n\010VARIABLE\020\005\022\022\n\016EXTERNAL_" +
-      "EVENT\020\006\022\024\n\020TASK_DEF_METRICS\020\007\022\023\n\017WF_SPEC" +
-      "_METRICS\020\010\022\025\n\021TASK_WORKER_GROUP\020\t*o\n\020Tag" +
-      "StorageTypePb\022\023\n\017LOCAL_UNCOUNTED\020\000\022\021\n\rLO" +
-      "CAL_COUNTED\020\001\022\030\n\024LOCAL_HASH_UNCOUNTED\020\002\022" +
-      "\031\n\025REMOTE_HASH_UNCOUNTED\020\0032\210\003\n\013LHInterna" +
-      "ls\022^\n\021CentralStoreQuery\022 .littlehorse.Ce" +
-      "ntralStoreQueryPb\032%.littlehorse.CentralS" +
-      "toreQueryReplyPb\"\000\022O\n\014InternalScan\022\033.lit" +
-      "tlehorse.InternalScanPb\032 .littlehorse.In" +
-      "ternalScanReplyPb\"\000\022U\n\016waitForCommand\022\035." +
-      "littlehorse.WaitForCommandPb\032\".littlehor" +
-      "se.WaitForCommandReplyPb\"\000\022q\n\022GetAdverti" +
-      "sedHosts\022).littlehorse.InternalGetAdvert" +
-      "isedHostsPb\032..littlehorse.InternalGetAdv" +
-      "ertisedHostsReplyPb\"\000B\037\n\033io.littlehorse." +
-      "common.protoP\001b\006proto3"
+      "tlehorse.TaskWorkerHeartBeatPbH\000\022C\n\025dele" +
+      "te_external_event\030\024 \001(\0132\".littlehorse.De" +
+      "leteExternalEventPbH\000B\t\n\007commandB\r\n\013_com" +
+      "mand_id\"m\n\tLHTimerPb\0223\n\017maturation_time\030" +
+      "\001 \001(\0132\032.google.protobuf.Timestamp\022\013\n\003key" +
+      "\030\002 \001(\t\022\r\n\005topic\030\003 \001(\t\022\017\n\007payload\030\004 \001(\014*7" +
+      "\n\022StoreQueryStatusPb\022\n\n\006RSQ_OK\020\000\022\025\n\021RSQ_" +
+      "NOT_AVAILABLE\020\002*-\n\020ScanResultTypePb\022\r\n\tO" +
+      "BJECT_ID\020\000\022\n\n\006OBJECT\020\001*\305\001\n\022GETableClassE" +
+      "numPb\022\014\n\010TASK_DEF\020\000\022\026\n\022EXTERNAL_EVENT_DE" +
+      "F\020\001\022\013\n\007WF_SPEC\020\002\022\n\n\006WF_RUN\020\003\022\014\n\010NODE_RUN" +
+      "\020\004\022\014\n\010VARIABLE\020\005\022\022\n\016EXTERNAL_EVENT\020\006\022\024\n\020" +
+      "TASK_DEF_METRICS\020\007\022\023\n\017WF_SPEC_METRICS\020\010\022" +
+      "\025\n\021TASK_WORKER_GROUP\020\t*o\n\020TagStorageType" +
+      "Pb\022\023\n\017LOCAL_UNCOUNTED\020\000\022\021\n\rLOCAL_COUNTED" +
+      "\020\001\022\030\n\024LOCAL_HASH_UNCOUNTED\020\002\022\031\n\025REMOTE_H" +
+      "ASH_UNCOUNTED\020\0032\210\003\n\013LHInternals\022^\n\021Centr" +
+      "alStoreQuery\022 .littlehorse.CentralStoreQ" +
+      "ueryPb\032%.littlehorse.CentralStoreQueryRe" +
+      "plyPb\"\000\022O\n\014InternalScan\022\033.littlehorse.In" +
+      "ternalScanPb\032 .littlehorse.InternalScanR" +
+      "eplyPb\"\000\022U\n\016waitForCommand\022\035.littlehorse" +
+      ".WaitForCommandPb\032\".littlehorse.WaitForC" +
+      "ommandReplyPb\"\000\022q\n\022GetAdvertisedHosts\022)." +
+      "littlehorse.InternalGetAdvertisedHostsPb" +
+      "\032..littlehorse.InternalGetAdvertisedHost" +
+      "sReplyPb\"\000B\037\n\033io.littlehorse.common.prot" +
+      "oP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -540,7 +542,7 @@ public final class InternalServer {
     internal_static_littlehorse_CommandPb_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_littlehorse_CommandPb_descriptor,
-        new java.lang.String[] { "Time", "CommandId", "TaskResultEvent", "TaskClaimEvent", "PutWfSpec", "PutTaskDef", "PutExternalEventDef", "RunWf", "PutExternalEvent", "StopWfRun", "ResumeWfRun", "SleepNodeMatured", "DeleteWfRun", "DeleteWfSpec", "DeleteTaskDef", "DeleteExternalEventDef", "ExternalEventTimeout", "TaskWorkerHeartBeat", "Command", "CommandId", });
+        new java.lang.String[] { "Time", "CommandId", "TaskResultEvent", "TaskClaimEvent", "PutWfSpec", "PutTaskDef", "PutExternalEventDef", "RunWf", "PutExternalEvent", "StopWfRun", "ResumeWfRun", "SleepNodeMatured", "DeleteWfRun", "DeleteWfSpec", "DeleteTaskDef", "DeleteExternalEventDef", "ExternalEventTimeout", "TaskWorkerHeartBeat", "DeleteExternalEvent", "Command", "CommandId", });
     internal_static_littlehorse_LHTimerPb_descriptor =
       getDescriptor().getMessageTypes().get(24);
     internal_static_littlehorse_LHTimerPb_fieldAccessorTable = new

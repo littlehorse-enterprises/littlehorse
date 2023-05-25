@@ -279,5 +279,20 @@ public interface CommandPbOrBuilder extends
    */
   io.littlehorse.jlib.common.proto.TaskWorkerHeartBeatPbOrBuilder getTaskWorkerHeartBeatOrBuilder();
 
+  /**
+   * <code>.littlehorse.DeleteExternalEventPb delete_external_event = 20;</code>
+   * @return Whether the deleteExternalEvent field is set.
+   */
+  boolean hasDeleteExternalEvent();
+  /**
+   * <code>.littlehorse.DeleteExternalEventPb delete_external_event = 20;</code>
+   * @return The deleteExternalEvent.
+   */
+  io.littlehorse.jlib.common.proto.DeleteExternalEventPb getDeleteExternalEvent();
+  /**
+   * <code>.littlehorse.DeleteExternalEventPb delete_external_event = 20;</code>
+   */
+  io.littlehorse.jlib.common.proto.DeleteExternalEventPbOrBuilder getDeleteExternalEventOrBuilder();
+
   public io.littlehorse.common.proto.CommandPb.CommandCase getCommandCase();
 }

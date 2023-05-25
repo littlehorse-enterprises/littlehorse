@@ -14,6 +14,7 @@ import io.littlehorse.jlib.common.proto.PutExternalEventDefPb;
 public class PutExternalEventDef extends SubCommand<PutExternalEventDefPb> {
 
     public String name;
+    public Integer retentionHours;
 
     public String getPartitionKey() {
         return LHConstants.META_PARTITION_KEY;
@@ -27,12 +28,15 @@ public class PutExternalEventDef extends SubCommand<PutExternalEventDefPb> {
         PutExternalEventDefPb.Builder out = PutExternalEventDefPb.newBuilder();
         out.setName(name);
 
+        if (retentionHours != null) out.setRetentionHours(retentionHours);
+
         return out;
     }
 
     public void initFrom(Message proto) {
         PutExternalEventDefPb p = (PutExternalEventDefPb) proto;
         name = p.getName();
+        if (p.hasRetentionHours()) retentionHours = p.getRetentionHours();
     }
 
     public boolean hasResponse() {
@@ -56,6 +60,11 @@ public class PutExternalEventDef extends SubCommand<PutExternalEventDefPb> {
         } else {
             ExternalEventDef spec = new ExternalEventDef();
             spec.name = name;
+            spec.retentionHours =
+                retentionHours == null
+                    ? config.getDefaultExternalEventRetentionHours()
+                    : retentionHours;
+
             dao.putExternalEventDef(spec);
 
             out.code = LHResponseCodePb.OK;

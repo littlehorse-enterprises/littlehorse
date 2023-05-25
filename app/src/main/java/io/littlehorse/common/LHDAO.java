@@ -100,6 +100,8 @@ public interface LHDAO extends LHGlobalMetaStores {
 
     public DeleteObjectReply deleteExternalEventDef(String name);
 
+    public DeleteObjectReply deleteExternalEvent(String externalEventId);
+
     /*
      * Clear any dirty cache if necessary
      */

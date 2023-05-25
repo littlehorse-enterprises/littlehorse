@@ -64,6 +64,8 @@ public class LHConfig extends ConfigBase {
     public static final String KAFKA_TOPIC_PREFIX_KEY = "LHS_KAFKA_PREFIX";
     public static final String DEFAULT_WFRUN_RETENTION_HOURS =
         "LHS_DEFAULT_WFRUN_RETENTION_HOURS";
+    public static final String DEFAULT_EXTERNAL_EVENT_RETENTION_HOURS =
+        "LHS_DEFAULT_EXTERNAL_EVENT_RETENTION_HOURS";
 
     // Host and Port Configuration Env Vars
     public static final String ADVERTISED_LISTENERS_KEY =
@@ -595,10 +597,17 @@ public class LHConfig extends ConfigBase {
     }
 
     public int getDefaultWfRunRetentionHours() {
-        int retentionPeriod = Integer.valueOf(
+        int retentionHours = Integer.valueOf(
             getOrSetDefault(LHConfig.DEFAULT_WFRUN_RETENTION_HOURS, "168")
         );
-        return retentionPeriod;
+        return retentionHours;
+    }
+
+    public int getDefaultExternalEventRetentionHours() {
+        int retentionHours = Integer.valueOf(
+            getOrSetDefault(LHConfig.DEFAULT_EXTERNAL_EVENT_RETENTION_HOURS, "168")
+        );
+        return retentionHours;
     }
 
     public int getStandbyReplicas() {

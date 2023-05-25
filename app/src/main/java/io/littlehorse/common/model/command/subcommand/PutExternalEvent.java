@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
+import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.PutExternalEventReply;
 import io.littlehorse.common.model.meta.ExternalEventDef;
@@ -12,6 +13,7 @@ import io.littlehorse.common.model.observabilityevent.ObservabilityEvent;
 import io.littlehorse.common.model.observabilityevent.events.ExtEvtRegisteredOe;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.Failure;
+import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.util.LHUtil;
@@ -19,6 +21,7 @@ import io.littlehorse.jlib.common.proto.LHResponseCodePb;
 import io.littlehorse.jlib.common.proto.PutExternalEventPb;
 import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import java.util.Date;
+import org.apache.commons.lang3.time.DateUtils;
 
 public class PutExternalEvent extends SubCommand<PutExternalEventPb> {
 
@@ -84,6 +87,22 @@ public class PutExternalEvent extends SubCommand<PutExternalEventPb> {
         oe.threadRunNumber = evt.threadRunNumber;
         oe.nodeRunPosition = evt.nodeRunPosition;
         dao.addObservabilityEvent(new ObservabilityEvent(evt.wfRunId, oe));
+
+        LHTimer timer = new LHTimer();
+        timer.topic = dao.getWfRunEventQueue();
+        timer.key = this.wfRunId;
+        Date now = new Date();
+        timer.maturationTime = DateUtils.addHours(now, eed.retentionHours);
+        DeleteExternalEvent deleteExternalEvent = new DeleteExternalEvent();
+        deleteExternalEvent.externalEventDefName = this.externalEventDefName;
+        deleteExternalEvent.wfRunId = this.wfRunId;
+        deleteExternalEvent.guid = this.guid;
+
+        Command deleteExtEventCmd = new Command();
+        deleteExtEventCmd.setSubCommand(deleteExternalEvent);
+        deleteExtEventCmd.time = timer.maturationTime;
+        timer.payload = deleteExtEventCmd.toProto().build().toByteArray();
+        dao.scheduleTimer(timer);
 
         WfRun wfRun = dao.getWfRun(wfRunId);
         if (wfRun != null) {

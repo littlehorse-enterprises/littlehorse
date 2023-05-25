@@ -574,6 +574,20 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     }
 
     @Override
+    public DeleteObjectReply deleteExternalEvent(String externalEventId) {
+        ExternalEvent toDelete = getExternalEvent(externalEventId);
+        DeleteObjectReply out = new DeleteObjectReply();
+        if (toDelete == null) {
+            out.code = LHResponseCodePb.NOT_FOUND_ERROR;
+            out.message = "Couldn't find object with provided ID.";
+        } else {
+            extEvtPuts.put(toDelete.getStoreKey(), null);
+            out.code = LHResponseCodePb.OK;
+        }
+        return out;
+    }
+
+    @Override
     public void addObservabilityEvent(ObservabilityEvent evt) {
         oEvents.add(evt);
     }

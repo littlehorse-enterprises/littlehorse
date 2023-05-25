@@ -13,6 +13,7 @@ public class ExternalEventDef extends GETable<ExternalEventDefPb> {
 
     public String name;
     public Date createdAt;
+    public Integer retentionHours;
 
     public ExternalEventDef() {}
 
@@ -37,8 +38,8 @@ public class ExternalEventDef extends GETable<ExternalEventDefPb> {
         ExternalEventDefPb.Builder b = ExternalEventDefPb
             .newBuilder()
             .setName(name)
+            .setRetentionHours(retentionHours)
             .setCreatedAt(LHUtil.fromDate(getCreatedAt()));
-
         return b;
     }
 
@@ -46,6 +47,7 @@ public class ExternalEventDef extends GETable<ExternalEventDefPb> {
         ExternalEventDefPb proto = (ExternalEventDefPb) p;
         name = proto.getName();
         createdAt = LHUtil.fromProtoTs(proto.getCreatedAt());
+        retentionHours = proto.getRetentionHours();
     }
 
     public static ExternalEventDef fromProto(ExternalEventDefPb p) {

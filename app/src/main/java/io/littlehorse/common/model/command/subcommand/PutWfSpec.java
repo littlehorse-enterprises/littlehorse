@@ -56,9 +56,7 @@ public class PutWfSpec extends SubCommand<PutWfSpecPb> {
         PutWfSpecPb p = (PutWfSpecPb) proto;
         name = p.getName();
         entrypointThreadName = p.getEntrypointThreadName();
-        if (!p.hasRetentionHours()) {
-            retentionHours = null;
-        }
+        if (p.hasRetentionHours()) retentionHours = p.getRetentionHours();
         for (Map.Entry<String, ThreadSpecPb> e : p.getThreadSpecsMap().entrySet()) {
             threadSpecs.put(e.getKey(), ThreadSpec.fromProto(e.getValue()));
         }
