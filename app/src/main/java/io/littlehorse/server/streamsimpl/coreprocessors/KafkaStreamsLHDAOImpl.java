@@ -449,6 +449,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         if (out != null) {
             wfRunPuts.put(id, out);
             out.setWfSpec(getWfSpec(out.wfSpecName, out.wfSpecVersion));
+            out.cmdDao = this;
         }
         return out;
     }

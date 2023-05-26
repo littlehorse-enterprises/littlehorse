@@ -367,21 +367,25 @@ public class WfRun extends GETable<WfRunPb> {
             statusChanged = thread.updateStatus() || statusChanged;
         }
         statusChanged = startXnHandlersAndInterrupts(time) || statusChanged;
-        for (ThreadRun thread : threadRuns) {
+        for (int i = threadRuns.size() - 1; i >= 0; i--) {
+            ThreadRun thread = threadRuns.get(i);
             statusChanged = thread.advance(time) || statusChanged;
         }
-        for (ThreadRun thread : threadRuns) {
+        for (int i = threadRuns.size() - 1; i >= 0; i--) {
+            ThreadRun thread = threadRuns.get(i);
             statusChanged = thread.updateStatus() || statusChanged;
         }
 
         while (statusChanged) {
             statusChanged = startXnHandlersAndInterrupts(time) || statusChanged;
             statusChanged = false;
-            for (ThreadRun thread : threadRuns) {
+            for (int i = threadRuns.size() - 1; i >= 0; i--) {
+                ThreadRun thread = threadRuns.get(i);
                 statusChanged = thread.advance(time) || statusChanged;
             }
 
-            for (ThreadRun thread : threadRuns) {
+            for (int i = threadRuns.size() - 1; i >= 0; i--) {
+                ThreadRun thread = threadRuns.get(i);
                 statusChanged = thread.updateStatus() || statusChanged;
             }
         }

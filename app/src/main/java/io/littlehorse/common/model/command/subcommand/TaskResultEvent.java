@@ -58,6 +58,7 @@ public class TaskResultEvent extends SubCommand<TaskResultEventPb> {
             out.message = "Provided invalid wfRunId";
             return out;
         }
+        wfRun.cmdDao = dao;
 
         WfSpec wfSpec = dao.getWfSpec(wfRun.wfSpecName, wfRun.wfSpecVersion);
         if (wfSpec == null) {
@@ -77,7 +78,6 @@ public class TaskResultEvent extends SubCommand<TaskResultEventPb> {
         }
 
         wfRun.wfSpec = wfSpec;
-        wfRun.cmdDao = dao;
         wfRun.processTaskResult(this);
 
         out.code = LHResponseCodePb.OK;
