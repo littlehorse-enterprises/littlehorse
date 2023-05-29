@@ -10,7 +10,6 @@ import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
 import io.littlehorse.common.model.command.Command;
-import io.littlehorse.common.model.command.CommandResult;
 import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.Host;
@@ -80,7 +79,6 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     private Map<String, ScheduledTask> scheduledTaskPuts;
     private Map<String, TaskWorkerGroup> taskWorkerGroupPuts;
     private List<LHTimer> timersToSchedule;
-    private CommandResult responseToSave;
     private Command command;
     private int partition;
     private KafkaStreamsServerImpl server;
@@ -694,12 +692,6 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     }
 
     private void flush() {
-        if (responseToSave != null) {
-            // TODO: Add a timer to delete the Response in 30 seconds
-            localStore.put(responseToSave);
-            localStore.putResponseToDelete(responseToSave.getStoreKey());
-        }
-
         for (Map.Entry<String, NodeRun> e : nodeRunPuts.entrySet()) {
             saveOrDeleteGETableFlush(e.getKey(), e.getValue(), NodeRun.class);
         }
@@ -1082,17 +1074,9 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         taskDefPuts.clear();
         extEvtDefPuts.clear();
         taskWorkerGroupPuts.clear();
-        responseToSave = null;
         oEvents = new ArrayList<>();
         taskMetricPuts = new HashMap<>();
         wfMetricPuts = new HashMap<>();
-    }
-
-    public void saveResponse(LHSerializable<?> response, Command command) {
-        responseToSave = new CommandResult();
-        responseToSave.resultTime = new Date();
-        responseToSave.result = response.toBytes(config);
-        responseToSave.commandId = command.commandId;
     }
 
     public void forwardAndClearMetricsUpdatesUntil() {
