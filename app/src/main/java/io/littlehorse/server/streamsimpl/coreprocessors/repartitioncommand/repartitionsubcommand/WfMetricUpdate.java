@@ -149,10 +149,6 @@ public class WfMetricUpdate
         return wfSpecName;
     }
 
-    public static String getPrefix(MetricsWindowLengthPb type, Date time) {
-        return type + "/" + LHUtil.toLhDbFormat(time) + "/";
-    }
-
     public static String getObjectId(
         MetricsWindowLengthPb type,
         Date windowStart,
@@ -173,11 +169,20 @@ public class WfMetricUpdate
         String wfSpecName,
         int wfSpecVersion
     ) {
-        return new WfSpecMetricsId(windowStart, type, wfSpecName, wfSpecVersion)
-            .getStoreKey();
+        return LHUtil.getCompositeId(
+            LHUtil.toLhDbFormat(windowStart),
+            type.toString(),
+            wfSpecName,
+            LHUtil.toLHDbVersionFormat(wfSpecVersion)
+        );
     }
 
     public String getStoreKey() {
-        return getObjectId(type, windowStart, wfSpecName, wfSpecVersion);
+        return LHUtil.getCompositeId(
+            LHUtil.toLhDbFormat(windowStart),
+            type.toString(),
+            wfSpecName,
+            LHUtil.toLHDbVersionFormat(wfSpecVersion)
+        );
     }
 }

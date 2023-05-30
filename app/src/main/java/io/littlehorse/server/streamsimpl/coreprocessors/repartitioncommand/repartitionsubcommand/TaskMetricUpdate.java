@@ -127,10 +127,6 @@ public class TaskMetricUpdate
         return out;
     }
 
-    public static String getPrefix(MetricsWindowLengthPb type, Date windowStart) {
-        return type + "/" + LHUtil.toLhDbFormat(windowStart) + "/";
-    }
-
     public String getClusterLevelWindow() {
         return new TaskDefMetricsId(
             windowStart,
@@ -155,7 +151,11 @@ public class TaskMetricUpdate
     }
 
     public String getStoreKey() {
-        return new TaskDefMetricsId(windowStart, type, taskDefName).getStoreKey();
+        return LHUtil.getCompositeId(
+            LHUtil.toLhDbFormat(windowStart),
+            type.toString(),
+            taskDefName
+        );
     }
 
     public static String getStoreKey(
@@ -163,7 +163,11 @@ public class TaskMetricUpdate
         Date windowStart,
         String taskDefName
     ) {
-        return new TaskDefMetricsId(windowStart, type, taskDefName).getStoreKey();
+        return LHUtil.getCompositeId(
+            LHUtil.toLhDbFormat(windowStart),
+            type.toString(),
+            taskDefName
+        );
     }
 
     public Date getCreatedAt() {
