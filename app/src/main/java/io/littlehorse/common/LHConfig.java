@@ -97,6 +97,9 @@ public class LHConfig extends ConfigBase {
     public static final String DEFAULT_PUBLIC_LISTENER =
         LHWorkerConfig.DEFAULT_PUBLIC_LISTENER;
 
+    public static final String PROMETHEUS_EXPORTER_PORT_KEY =
+        "LHS_PROMETHEUS_EXPORTER_PORT";
+
     protected String[] getEnvKeyPrefixes() {
         return new String[] { "LHS_" };
     }
@@ -323,6 +326,12 @@ public class LHConfig extends ConfigBase {
                 LHConfig.INTERNAL_ADVERTISED_PORT_KEY,
                 Integer.valueOf(getInternalBindPort()).toString()
             )
+        );
+    }
+
+    public int getPrometheusExporterPort() {
+        return Integer.valueOf(
+            getOrSetDefault(LHConfig.PROMETHEUS_EXPORTER_PORT_KEY, "5555")
         );
     }
 

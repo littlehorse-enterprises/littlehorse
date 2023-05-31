@@ -57,6 +57,9 @@ dependencies {
 
     // gRPC and Protobuf now included in lh-jlib
     implementation 'io.littlehorse:littlehorse-jlib:0.1.0-alpha.1'
+
+    // Prometheus
+    implementation 'io.micrometer:micrometer-registry-prometheus:latest.release'
 }
 
 

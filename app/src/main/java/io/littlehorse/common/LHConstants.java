@@ -46,5 +46,6 @@ public class LHConstants {
     public static final long MAX_TASK_WORKER_INACTIVITY = 15L;
 
     public static final String CLUSTER_LEVEL_METRIC = "CLUSTER_LEVEL_METRIC";
+    public static final String PROMETHEUS_EXPORTER_PATH = "/prometheus";
 }
 // NOTE: Use m6a.4xlarge

@@ -131,6 +131,7 @@ import io.littlehorse.jlib.common.proto.WfSpecIdPb;
 import io.littlehorse.jlib.common.proto.WfSpecMetricsQueryPb;
 import io.littlehorse.jlib.common.proto.WfSpecMetricsReplyPb;
 import io.littlehorse.server.streamsimpl.BackendInternalComms;
+import io.littlehorse.server.streamsimpl.PrometheusMetricExporter;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
@@ -192,6 +193,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     private BackendInternalComms internalComms;
     private boolean isHealthy;
+    private PrometheusMetricExporter prometheusMetricExporter;
 
     public KafkaStreamsServerImpl(LHConfig config) {
         this.config = config;
@@ -254,12 +256,9 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             updateHealth();
         });
 
-        // metricsStreams.setStateListener((newState, oldState) -> {
-        //     metricsState = newState;
-        //     LHUtil.log("" + new Date() + " New state for metrics: " + metricsState);
-        // });
-
         internalComms = new BackendInternalComms(config, coreStreams);
+        prometheusMetricExporter =
+            new PrometheusMetricExporter(config, List.of(coreStreams, timerStreams));
     }
 
     private void updateHealth() {
@@ -1005,9 +1004,9 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     public void start() throws IOException {
         coreStreams.start();
         timerStreams.start();
-        // metricsStreams.start();
         internalComms.start();
         grpcServer.start();
+        prometheusMetricExporter.start();
     }
 
     public void close() {
@@ -1028,15 +1027,15 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             .start();
 
         new Thread(() -> {
-            log.info("Closing metrics");
-            // metricsStreams.close();
+            log.info("Closing internalComms");
+            internalComms.close();
             latch.countDown();
         })
             .start();
 
         new Thread(() -> {
-            log.info("Closing internalComms");
-            internalComms.close();
+            log.info("Closing prometheus exporter");
+            prometheusMetricExporter.close();
             latch.countDown();
         })
             .start();
