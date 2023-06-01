@@ -169,6 +169,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
@@ -258,7 +259,10 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
         internalComms = new BackendInternalComms(config, coreStreams);
         prometheusMetricExporter =
-            new PrometheusMetricExporter(config, List.of(coreStreams, timerStreams));
+            new PrometheusMetricExporter(
+                config,
+                Map.of("core", coreStreams, "timer", timerStreams)
+            );
     }
 
     private void updateHealth() {
