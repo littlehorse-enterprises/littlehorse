@@ -51,6 +51,7 @@ import io.littlehorse.server.streamsimpl.storeinternals.index.TagsCache;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.LHIterKeyValue;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.LHKeyValueIterator;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
+import io.littlehorse.server.streamsimpl.util.InternalHosts;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -85,6 +86,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     private List<ObservabilityEvent> oEvents;
     private Map<String, TaskMetricUpdate> taskMetricPuts;
     private Map<String, WfMetricUpdate> wfMetricPuts;
+    private Set<Host> currentHosts;
 
     private static final String OUTGOING_CHANGELOG_KEY = "OUTGOING_CHANGELOG";
 
@@ -1205,11 +1207,6 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     }
 
     @Override
-    public Set<Host> getAllInternalHosts() {
-        return server.getAllInternalHosts();
-    }
-
-    @Override
     public HostInfoPb getAdvertisedHost(Host host, String listenerName)
         throws LHBadRequestError, LHConnectionError {
         return server.getAdvertisedHost(host, listenerName);
@@ -1230,5 +1227,13 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     @Override
     public void putTaskWorkerGroup(TaskWorkerGroup taskWorkerGroup) {
         taskWorkerGroupPuts.put(taskWorkerGroup.getStoreKey(), taskWorkerGroup);
+    }
+
+    @Override
+    public InternalHosts getInternalHosts() {
+        Set<Host> newHost = server.getAllInternalHosts();
+        InternalHosts internalHosts = new InternalHosts(currentHosts, newHost);
+        currentHosts = newHost;
+        return internalHosts;
     }
 }

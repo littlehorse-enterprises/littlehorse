@@ -4,7 +4,6 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.metrics.TaskDefMetrics;
 import io.littlehorse.common.model.metrics.WfSpecMetrics;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.jlib.common.proto.MetricsWindowLengthPb;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionCommand;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.TaskMetricUpdate;

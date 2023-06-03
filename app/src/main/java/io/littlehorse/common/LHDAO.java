@@ -20,9 +20,9 @@ import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.jlib.common.proto.HostInfoPb;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.TaskMetricUpdate;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.WfMetricUpdate;
+import io.littlehorse.server.streamsimpl.util.InternalHosts;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 /*
  * All PUT() commands throw errors if the processing partition does not match
@@ -138,7 +138,7 @@ public interface LHDAO extends LHGlobalMetaStores {
     public HostInfoPb getAdvertisedHost(Host host, String listenerName)
         throws LHBadRequestError, LHConnectionError;
 
-    public Set<Host> getAllInternalHosts();
+    public InternalHosts getInternalHosts();
 
     public TaskWorkerGroup getTaskWorkerGroup(String taskDefName);
 

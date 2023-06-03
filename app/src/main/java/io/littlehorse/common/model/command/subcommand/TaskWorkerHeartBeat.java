@@ -16,6 +16,7 @@ import io.littlehorse.common.model.meta.TaskWorkerGroup;
 import io.littlehorse.common.model.meta.TaskWorkerMetadata;
 import io.littlehorse.jlib.common.proto.LHResponseCodePb;
 import io.littlehorse.jlib.common.proto.TaskWorkerHeartBeatPb;
+import io.littlehorse.server.streamsimpl.util.InternalHosts;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
@@ -33,6 +34,7 @@ public class TaskWorkerHeartBeat extends SubCommand<TaskWorkerHeartBeatPb> {
     public String taskDefName;
     public String listenerName;
     private TaskWorkerAssignor assignor;
+    private Set<Host> hosts;
 
     public TaskWorkerHeartBeat() {
         assignor = new RoundRobinAssignor();
@@ -60,8 +62,8 @@ public class TaskWorkerHeartBeat extends SubCommand<TaskWorkerHeartBeatPb> {
         boolean areInactiveWorkersRemoved = removeInactiveWorkers(taskWorkerGroup);
 
         // Get the specific worker, each worker is supposed to have a unique client id
-        TaskWorkerMetadata taskWorker = taskWorkerGroup.taskWorkers.get(clientId);
         boolean isANewTaskWorker = false;
+        TaskWorkerMetadata taskWorker = taskWorkerGroup.taskWorkers.get(clientId);
 
         // If it is null then create it and add it to the task worker group
         if (taskWorker == null) {
@@ -71,14 +73,15 @@ public class TaskWorkerHeartBeat extends SubCommand<TaskWorkerHeartBeatPb> {
             taskWorkerGroup.taskWorkers.put(clientId, taskWorker);
         }
 
-        // If we there are dead workers or new workers let's rebalance
-        if (areInactiveWorkersRemoved || isANewTaskWorker) {
+        // Verify there are no changes on the current servers
+        boolean thereAreNewHost = checkIfNewHostsHasChanges(dao);
+
+        // If there are dead workers or new workers or new hosts let's rebalance
+        if (areInactiveWorkersRemoved || isANewTaskWorker || thereAreNewHost) {
             // Get all internal servers (from kafka stream API), they are already sorted by Host::getKey.
             // As it is a new worker then we need to rebalance
-            assignor.assign(
-                dao.getAllInternalHosts(),
-                taskWorkerGroup.taskWorkers.values()
-            );
+            log.info("Triggering rebalance");
+            assignor.assign(hosts, taskWorkerGroup.taskWorkers.values());
         }
 
         // Update the latest heartbeat with the current timestamp
@@ -89,6 +92,12 @@ public class TaskWorkerHeartBeat extends SubCommand<TaskWorkerHeartBeatPb> {
 
         // Prepare the response with the assigned host for this specific task worker (taskWorker.hosts)
         return prepareReply(dao, taskWorker.hosts);
+    }
+
+    private boolean checkIfNewHostsHasChanges(LHDAO dao) {
+        InternalHosts internalHosts = dao.getInternalHosts();
+        hosts = internalHosts.getHosts();
+        return internalHosts.hasChanges();
     }
 
     private RegisterTaskWorkerReply prepareReply(LHDAO dao, Set<Host> hosts) {
