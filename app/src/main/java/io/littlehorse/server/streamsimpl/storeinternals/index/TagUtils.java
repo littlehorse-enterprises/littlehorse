@@ -89,6 +89,17 @@ public class TagUtils {
                     LHUtil.toLHDbVersionFormat(thing.wfSpecVersion)
                 ),
                 Pair.of("status", thing.status.toString())
+            ),
+            new Tag(
+                thing,
+                TagStorageTypePb.LOCAL_UNCOUNTED,
+                Pair.of("wfSpecName", thing.wfSpecName),
+                Pair.of("status", thing.status.toString())
+            ),
+            new Tag(
+                thing,
+                TagStorageTypePb.LOCAL_UNCOUNTED,
+                Pair.of("wfSpecName", thing.wfSpecName)
             )
         );
     }

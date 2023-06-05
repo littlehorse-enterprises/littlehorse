@@ -10,6 +10,8 @@ import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.SearchWfRunPb;
+import io.littlehorse.jlib.common.proto.SearchWfRunPb.NamePb;
+import io.littlehorse.jlib.common.proto.SearchWfRunPb.StatusAndNamePb;
 import io.littlehorse.jlib.common.proto.SearchWfRunPb.StatusAndSpecPb;
 import io.littlehorse.jlib.common.proto.SearchWfRunPb.WfrunCriteriaCase;
 import io.littlehorse.jlib.common.proto.SearchWfRunReplyPb;
@@ -25,6 +27,8 @@ public class SearchWfRun
 
     public WfrunCriteriaCase type;
     public StatusAndSpecPb statusAndSpec;
+    private NamePb namePb;
+    private StatusAndNamePb statusAndName;
 
     public GETableClassEnumPb getObjectType() {
         return GETableClassEnumPb.WF_RUN;
@@ -51,6 +55,12 @@ public class SearchWfRun
             case STATUS_AND_SPEC:
                 statusAndSpec = p.getStatusAndSpec();
                 break;
+            case NAME:
+                namePb = p.getName();
+                break;
+            case STATUS_AND_NAME:
+                statusAndName = p.getStatusAndName();
+                break;
             case WFRUNCRITERIA_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -67,6 +77,12 @@ public class SearchWfRun
         switch (type) {
             case STATUS_AND_SPEC:
                 out.setStatusAndSpec(statusAndSpec);
+                break;
+            case NAME:
+                out.setName(namePb);
+                break;
+            case STATUS_AND_NAME:
+                out.setStatusAndName(statusAndName);
                 break;
             case WFRUNCRITERIA_NOT_SET:
                 throw new RuntimeException("not possible");
@@ -114,6 +130,27 @@ public class SearchWfRun
             if (statusAndSpec.hasLatestStart()) {
                 prefixScanBuilder.setLatestCreateTime(statusAndSpec.getLatestStart());
             }
+            out.localTagPrefixScan = prefixScanBuilder.build();
+        } else if (type == WfrunCriteriaCase.NAME) {
+            out.type = ScanBoundaryCase.LOCAL_TAG_PREFIX_SCAN;
+            TagPrefixScanPb.Builder prefixScanBuilder = TagPrefixScanPb
+                .newBuilder()
+                .addAttributes(
+                    new Attribute("wfSpecName", namePb.getWfSpecName()).toProto()
+                );
+            out.localTagPrefixScan = prefixScanBuilder.build();
+        } else if (type == WfrunCriteriaCase.STATUS_AND_NAME) {
+            out.type = ScanBoundaryCase.LOCAL_TAG_PREFIX_SCAN;
+            TagPrefixScanPb.Builder prefixScanBuilder = TagPrefixScanPb
+                .newBuilder()
+                .addAttributes(
+                    new Attribute("wfSpecName", statusAndName.getWfSpecName())
+                        .toProto()
+                )
+                .addAttributes(
+                    new Attribute("status", statusAndName.getStatus().toString())
+                        .toProto()
+                );
             out.localTagPrefixScan = prefixScanBuilder.build();
         } else {
             throw new RuntimeException("Not possible or unimplemented");
