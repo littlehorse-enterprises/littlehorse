@@ -40,9 +40,17 @@ import io.littlehorse.common.proto.LHInternalsGrpc;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsBlockingStub;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsImplBase;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsStub;
+import io.littlehorse.common.proto.LocalTasksPb;
+import io.littlehorse.common.proto.LocalTasksReplyPb;
 import io.littlehorse.common.proto.PartitionBookmarkPb;
 import io.littlehorse.common.proto.ScanResultTypePb;
+import io.littlehorse.common.proto.ServerStatePb;
+import io.littlehorse.common.proto.ServerStatusPb;
+import io.littlehorse.common.proto.StandByTaskStatePb;
 import io.littlehorse.common.proto.StoreQueryStatusPb;
+import io.littlehorse.common.proto.TaskStatePb;
+import io.littlehorse.common.proto.TopologyInstanceStatePb;
+import io.littlehorse.common.proto.TopologyInstanceStateReplyPb;
 import io.littlehorse.common.proto.WaitForCommandPb;
 import io.littlehorse.common.proto.WaitForCommandReplyPb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
@@ -94,6 +102,7 @@ public class BackendInternalComms implements Closeable {
     private LHConfig config;
     private Server internalGrpcServer;
     private KafkaStreams coreStreams;
+    private KafkaStreams timerStreams;
     private HostInfo thisHost;
     private LHProducer producer;
 
@@ -103,9 +112,14 @@ public class BackendInternalComms implements Closeable {
     private AsyncWaiters asyncWaiters;
     private ConcurrentHashMap<HostInfo, InternalGetAdvertisedHostsReplyPb> otherHosts;
 
-    public BackendInternalComms(LHConfig config, KafkaStreams coreStreams) {
+    public BackendInternalComms(
+        LHConfig config,
+        KafkaStreams coreStreams,
+        KafkaStreams timerStreams
+    ) {
         this.config = config;
         this.coreStreams = coreStreams;
+        this.timerStreams = timerStreams;
         this.channels = new HashMap<>();
         otherHosts = new ConcurrentHashMap<>();
 
@@ -553,6 +567,179 @@ public class BackendInternalComms implements Closeable {
      * for communication between the LH servers to do distributed lookups etc.
      */
     private class InterBrokerCommServer extends LHInternalsImplBase {
+
+        @Override
+        public void topologyInstancesState(
+            TopologyInstanceStatePb request,
+            StreamObserver<TopologyInstanceStateReplyPb> ctx
+        ) {
+            var coreServerStates = buildServerStates(coreStreams, "core");
+            var timerServerStates = buildServerStates(timerStreams, "timer");
+
+            TopologyInstanceStateReplyPb response = TopologyInstanceStateReplyPb
+                .newBuilder()
+                .addAllServersCore(coreServerStates)
+                .addAllServersTimer(timerServerStates)
+                .build();
+
+            ctx.onNext(response);
+            ctx.onCompleted();
+        }
+
+        private List<ServerStatePb> buildServerStates(
+            KafkaStreams kafkaStreams,
+            String name
+        ) {
+            List<ServerStatePb> serverStates = new ArrayList<>();
+            kafkaStreams
+                .metadataForAllStreamsClients()
+                .forEach(streamsClient -> {
+                    var hostInfo = streamsClient.hostInfo();
+                    var internalClient = getInternalClient(hostInfo);
+
+                    try {
+                        LocalTasksReplyPb hostTask = internalClient.localTasks(
+                            LocalTasksPb.newBuilder().build()
+                        );
+                        ServerStatePb serverState = ServerStatePb
+                            .newBuilder()
+                            .addAllActiveTasks(hostTask.getActiveTasksList())
+                            .addAllStandbyTasks(hostTask.getStandbyTasksList())
+                            .setHost(hostInfo.host())
+                            .setPort(hostInfo.port())
+                            .setServerStatus(ServerStatusPb.HOST_UP)
+                            .setTopologyName(name)
+                            .build();
+
+                        serverStates.add(serverState);
+                    } catch (Exception e) {
+                        log.warn("Host {} not available to get info", hostInfo);
+                        ServerStatePb serverState = ServerStatePb
+                            .newBuilder()
+                            .addAllActiveTasks(List.of())
+                            .addAllStandbyTasks(List.of())
+                            .setHost(hostInfo.host())
+                            .setPort(hostInfo.port())
+                            .setServerStatus(ServerStatusPb.HOST_DOWN)
+                            .setTopologyName(name)
+                            .setErrorMessage(e.getMessage())
+                            .build();
+
+                        serverStates.add(serverState);
+                    }
+                });
+            return serverStates;
+        }
+
+        @Override
+        public void localTasks(
+            LocalTasksPb request,
+            StreamObserver<LocalTasksReplyPb> ctx
+        ) {
+            List<TaskStatePb> activeTasks = coreStreams
+                .metadataForLocalThreads()
+                .stream()
+                .flatMap(threadMetadata -> threadMetadata.activeTasks().stream())
+                .flatMap(taskMetadata ->
+                    this.buildActiveTasksStatePb(taskMetadata).stream()
+                )
+                .collect(Collectors.toList());
+
+            List<StandByTaskStatePb> standbyTasks = coreStreams
+                .metadataForLocalThreads()
+                .stream()
+                .flatMap(threadMetadata -> threadMetadata.standbyTasks().stream())
+                .flatMap(taskMetadata ->
+                    this.buildStandbyTasksStatePb(taskMetadata).stream()
+                )
+                .collect(Collectors.toList());
+
+            LocalTasksReplyPb response = LocalTasksReplyPb
+                .newBuilder()
+                .addAllActiveTasks(activeTasks)
+                .addAllStandbyTasks(standbyTasks)
+                .build();
+
+            ctx.onNext(response);
+            ctx.onCompleted();
+        }
+
+        private List<TaskStatePb> buildActiveTasksStatePb(TaskMetadata taskMetadata) {
+            return taskMetadata
+                .topicPartitions()
+                .stream()
+                .map(topicPartition -> {
+                    Long currentOffset = getCurrentOffset(
+                        taskMetadata,
+                        topicPartition
+                    );
+                    Long endOffset = getEndOffset(taskMetadata, topicPartition);
+                    return TaskStatePb
+                        .newBuilder()
+                        .setTaskId(taskMetadata.taskId().toString())
+                        .setTopic(topicPartition.topic())
+                        .setPartition(topicPartition.partition())
+                        .setHost(thisHost.host())
+                        .setPort(thisHost.port())
+                        .setCurrentOffset(currentOffset)
+                        .setLag(calculateLag(currentOffset, endOffset))
+                        .setRackId(config.getRackId())
+                        .build();
+                })
+                .collect(Collectors.toList());
+        }
+
+        private List<StandByTaskStatePb> buildStandbyTasksStatePb(
+            TaskMetadata taskMetadata
+        ) {
+            return taskMetadata
+                .topicPartitions()
+                .stream()
+                .map(topicPartition -> {
+                    Long currentOffset = getCurrentOffset(
+                        taskMetadata,
+                        topicPartition
+                    );
+
+                    Long endOffset = getEndOffset(taskMetadata, topicPartition);
+
+                    return StandByTaskStatePb
+                        .newBuilder()
+                        .setTaskId(taskMetadata.taskId().toString())
+                        .setHost(thisHost.host())
+                        .setPort(thisHost.port())
+                        .setCurrentOffset(currentOffset)
+                        .setLag(calculateLag(currentOffset, endOffset))
+                        .setRackId(config.getRackId())
+                        .build();
+                })
+                .collect(Collectors.toList());
+        }
+
+        private Long calculateLag(Long currentOffset, Long endOffset) {
+            if (currentOffset < 0) {
+                return endOffset + 1;
+            }
+            return endOffset - currentOffset;
+        }
+
+        private Long getCurrentOffset(
+            TaskMetadata taskMetadata,
+            TopicPartition topicPartition
+        ) {
+            return taskMetadata.committedOffsets().containsKey(topicPartition)
+                ? taskMetadata.committedOffsets().get(topicPartition)
+                : -1;
+        }
+
+        private Long getEndOffset(
+            TaskMetadata taskMetadata,
+            TopicPartition topicPartition
+        ) {
+            return taskMetadata.endOffsets().containsKey(topicPartition)
+                ? taskMetadata.endOffsets().get(topicPartition)
+                : -1;
+        }
 
         /*
          * Need to investigate:

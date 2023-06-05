@@ -257,7 +257,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             updateHealth();
         });
 
-        internalComms = new BackendInternalComms(config, coreStreams);
+        internalComms = new BackendInternalComms(config, coreStreams, timerStreams);
         prometheusMetricExporter =
             new PrometheusMetricExporter(
                 config,
