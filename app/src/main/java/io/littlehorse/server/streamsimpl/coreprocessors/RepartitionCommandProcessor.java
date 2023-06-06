@@ -59,7 +59,7 @@ public class RepartitionCommandProcessor
     }
 
     public void cleanOldMetrics(long timestamp) {
-        Date thirtyDaysAgo = DateUtils.addMinutes(new Date(), -5);
+        Date thirtyDaysAgo = DateUtils.addDays(new Date(), -30);
         cleanOldTaskMetrics(thirtyDaysAgo);
         cleanOldWfMetrics(thirtyDaysAgo);
     }
