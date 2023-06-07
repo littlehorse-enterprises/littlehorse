@@ -9,11 +9,10 @@ import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.ExternalEventNodeTimeoutPb;
 import io.littlehorse.common.util.LHUtil;
 import java.util.Date;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class ExternalEventTimeout extends SubCommand<ExternalEventNodeTimeoutPb> {
-
-    private static final Logger log = Logger.getLogger(ExternalEventTimeout.class);
 
     public String wfRunId;
     public int threadRunNumber;

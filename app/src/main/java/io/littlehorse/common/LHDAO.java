@@ -8,6 +8,7 @@ import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.Host;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.TaskWorkerGroup;
+import io.littlehorse.common.model.meta.UserTaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.observabilityevent.ObservabilityEvent;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
@@ -81,6 +82,10 @@ public interface LHDAO extends LHGlobalMetaStores {
     public TaskDef getTaskDef(String name);
 
     public void putTaskDef(TaskDef spec);
+
+    public UserTaskDef getUserTaskDef(String name, Integer version);
+
+    public void putUserTaskDef(UserTaskDef spec);
 
     public ExternalEventDef getExternalEventDef(String name);
 

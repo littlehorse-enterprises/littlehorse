@@ -15,10 +15,12 @@ import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.Host;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.TaskWorkerGroup;
+import io.littlehorse.common.model.meta.UserTaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.objectId.ExternalEventDefId;
 import io.littlehorse.common.model.objectId.NodeRunId;
 import io.littlehorse.common.model.objectId.TaskDefId;
+import io.littlehorse.common.model.objectId.UserTaskDefId;
 import io.littlehorse.common.model.objectId.VariableId;
 import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.model.observabilityevent.ObservabilityEvent;
@@ -58,7 +60,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
@@ -76,6 +77,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     private Map<String, WfRun> wfRunPuts;
     private Map<String, WfSpec> wfSpecPuts;
     private Map<String, TaskDef> taskDefPuts;
+    private Map<String, UserTaskDef> userTaskDefPuts;
     private Map<String, ExternalEventDef> extEvtDefPuts;
     private Map<String, ScheduledTask> scheduledTaskPuts;
     private Map<String, TaskWorkerGroup> taskWorkerGroupPuts;
@@ -120,9 +122,6 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     private LHConfig config;
     private boolean partitionIsClaimed;
 
-    private Map<String, Pair<Long, WfSpec>> wfSpecCache;
-    private Map<String, Pair<Long, TaskDef>> taskDefCache;
-
     public KafkaStreamsLHDAOImpl(
         final ProcessorContext<String, CommandProcessorOutput> ctx,
         LHConfig config,
@@ -142,6 +141,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         wfSpecPuts = new HashMap<>();
         extEvtDefPuts = new HashMap<>();
         taskDefPuts = new HashMap<>();
+        userTaskDefPuts = new HashMap<>();
         oEvents = new ArrayList<>();
         taskMetricPuts = new HashMap<>();
         wfMetricPuts = new HashMap<>();
@@ -166,9 +166,6 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
 
         scheduledTaskPuts = new HashMap<>();
         timersToSchedule = new ArrayList<>();
-
-        this.wfSpecCache = new HashMap<>();
-        this.taskDefCache = new HashMap<>();
     }
 
     @Override
@@ -229,34 +226,17 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         taskDefPuts.put(spec.getStoreKey(), spec);
     }
 
+    // TODO: Investigate whether there is a potential issue with
+    // Read-Your-Own-Writes if a process() method does:
+    //
+    //   dao.putWfSpec(foo)
+    //   dao.getWfSpec("foo", null)
+    //
+    // It would return the last wfSpec version before the one called by put().
+    // However, that doesn't happen in the code now; we should file a JIRA to
+    // take care of it for later.
     @Override
     public WfSpec getWfSpec(String name, Integer version) {
-        String mapKey = version == null
-            ? name
-            : new WfSpecId(name, version).getStoreKey();
-        Pair<Long, WfSpec> pair = wfSpecCache.get(mapKey);
-
-        if (pair != null && isFreshEnough(pair.getKey())) {
-            return pair.getValue();
-        }
-
-        WfSpec spec = getWfSpecBreakCache(name, version);
-        if (spec != null) {
-            wfSpecCache.put(
-                spec.getStoreKey(),
-                Pair.of(System.currentTimeMillis(), spec)
-            );
-
-            Pair<Long, WfSpec> oldOne = wfSpecCache.get(name);
-
-            if (oldOne == null || oldOne.getRight().version < spec.version) {
-                wfSpecCache.put(name, Pair.of(System.currentTimeMillis(), spec));
-            }
-        }
-        return spec;
-    }
-
-    private WfSpec getWfSpecBreakCache(String name, Integer version) {
         LHROStoreWrapper store = isHotMetadataPartition ? localStore : globalStore;
         if (version != null) {
             return store.get(new WfSpecId(name, version).getStoreKey(), WfSpec.class);
@@ -265,48 +245,51 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         }
     }
 
-    private boolean isFreshEnough(Long time) {
-        return System.currentTimeMillis() - time < (1000 * 60);
+    // TODO: Investigate whether there is a potential issue with
+    // Read-Your-Own-Writes if a process() method does:
+    //
+    //   dao.putUserTaskDef(foo)
+    //   dao.getUsertaskDef("foo", null)
+    //
+    // It would return the last UserTaskDef version before the one called by put().
+    // However, that doesn't happen in the code now; we should file a JIRA to
+    // take care of it for later.
+    @Override
+    public UserTaskDef getUserTaskDef(String name, Integer version) {
+        LHROStoreWrapper store = isHotMetadataPartition ? localStore : globalStore;
+        if (version != null) {
+            // First check the most recent puts
+            return store.get(
+                new UserTaskDefId(name, version).getStoreKey(),
+                UserTaskDef.class
+            );
+        } else {
+            return store.getLastFromPrefix(name, UserTaskDef.class);
+        }
     }
 
+    // Same R-Y-O-W Issue
+    @Override
+    public void putUserTaskDef(UserTaskDef spec) {
+        if (!isHotMetadataPartition) {
+            throw new RuntimeException(
+                "Tried to put metadata despite being on the wrong partition!"
+            );
+        }
+        userTaskDefPuts.put(spec.getStoreKey(), spec);
+    }
+
+    // Same R-Y-O-W issue
     @Override
     public TaskDef getTaskDef(String name) {
-        Pair<Long, TaskDef> pair = taskDefCache.get(name);
+        TaskDef out = taskDefPuts.get(name);
+        if (out != null) return out;
 
-        if (pair != null && isFreshEnough(pair.getKey())) {
-            return pair.getValue();
-        }
-
-        TaskDef spec = getTaskDefBreakCache(name);
-        if (spec != null) {
-            taskDefCache.put(
-                spec.getStoreKey(),
-                Pair.of(System.currentTimeMillis(), spec)
-            );
-
-            Pair<Long, TaskDef> oldOne = taskDefCache.get(name);
-
-            if (oldOne == null) {
-                taskDefCache.put(name, Pair.of(System.currentTimeMillis(), spec));
-            }
-        } else {
-            if (pair != null) {
-                log.debug(
-                    "TaskDef " +
-                    name +
-                    " was deleted by the API, now deleting from the cache as well"
-                );
-                taskDefCache.remove(name);
-            }
-        }
-        return spec;
-    }
-
-    private TaskDef getTaskDefBreakCache(String name) {
         LHROStoreWrapper store = isHotMetadataPartition ? localStore : globalStore;
         return store.get(new TaskDefId(name).getStoreKey(), TaskDef.class);
     }
 
+    // Same here, same R-Y-O-W issue
     @Override
     public ExternalEventDef getExternalEventDef(String name) {
         LHROStoreWrapper store = isHotMetadataPartition ? localStore : globalStore;
@@ -540,7 +523,6 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         } else {
             taskDefPuts.put(toDelete.getStoreKey(), null);
             out.code = LHResponseCodePb.OK;
-            taskDefCache.remove(name);
         }
         return out;
     }
@@ -569,7 +551,6 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         } else {
             extEvtDefPuts.put(toDelete.getStoreKey(), null);
             out.code = LHResponseCodePb.OK;
-            taskDefCache.remove(name);
         }
         return out;
     }
@@ -730,6 +711,10 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         for (Map.Entry<String, WfSpec> e : wfSpecPuts.entrySet()) {
             saveOrDeleteGETableFlush(e.getKey(), e.getValue(), WfSpec.class);
             forwardGlobalMeta(e.getKey(), e.getValue(), WfSpec.class);
+        }
+        for (Map.Entry<String, UserTaskDef> e : userTaskDefPuts.entrySet()) {
+            saveOrDeleteGETableFlush(e.getKey(), e.getValue(), UserTaskDef.class);
+            forwardGlobalMeta(e.getKey(), e.getValue(), UserTaskDef.class);
         }
         for (Map.Entry<String, TaskDef> e : taskDefPuts.entrySet()) {
             saveOrDeleteGETableFlush(e.getKey(), e.getValue(), TaskDef.class);
@@ -1074,6 +1059,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         wfRunPuts.clear();
         wfSpecPuts.clear();
         taskDefPuts.clear();
+        userTaskDefPuts.clear();
         extEvtDefPuts.clear();
         taskWorkerGroupPuts.clear();
         oEvents = new ArrayList<>();

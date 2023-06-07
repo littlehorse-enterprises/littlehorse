@@ -11,6 +11,7 @@ import io.littlehorse.common.model.meta.subnode.NopNode;
 import io.littlehorse.common.model.meta.subnode.SleepNode;
 import io.littlehorse.common.model.meta.subnode.StartThreadNode;
 import io.littlehorse.common.model.meta.subnode.TaskNode;
+import io.littlehorse.common.model.meta.subnode.UserTaskNode;
 import io.littlehorse.common.model.meta.subnode.WaitForThreadNode;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
@@ -36,6 +37,7 @@ public class Node extends LHSerializable<NodePb> {
     public WaitForThreadNode waitForThreadNode;
     public NopNode nop;
     public SleepNode sleepNode;
+    public UserTaskNode userTaskNode;
 
     public List<VariableMutation> variableMutations;
     // public OutputSchema outputSchema;
@@ -85,6 +87,9 @@ public class Node extends LHSerializable<NodePb> {
                 break;
             case SLEEP:
                 out.setSleep(sleepNode.toProto());
+                break;
+            case USER_TASK:
+                out.setUserTask(userTaskNode.toProto());
                 break;
             case NODE_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -144,6 +149,10 @@ public class Node extends LHSerializable<NodePb> {
             case SLEEP:
                 sleepNode = new SleepNode();
                 sleepNode.initFrom(proto.getSleep());
+                break;
+            case USER_TASK:
+                userTaskNode =
+                    LHSerializable.fromProto(proto.getUserTask(), UserTaskNode.class);
                 break;
             case NODE_NOT_SET:
                 throw new RuntimeException(
@@ -241,25 +250,28 @@ public class Node extends LHSerializable<NodePb> {
     }
 
     public SubNode<?> getSubNode() {
-        if (type == NodeCase.TASK) {
-            return taskNode;
-        } else if (type == NodeCase.ENTRYPOINT) {
-            return entrypointNode;
-        } else if (type == NodeCase.EXIT) {
-            return exitNode;
-        } else if (type == NodeCase.EXTERNAL_EVENT) {
-            return externalEventNode;
-        } else if (type == NodeCase.START_THREAD) {
-            return startThreadNode;
-        } else if (type == NodeCase.WAIT_FOR_THREAD) {
-            return waitForThreadNode;
-        } else if (type == NodeCase.NOP) {
-            return nop;
-        } else if (type == NodeCase.SLEEP) {
-            return sleepNode;
-        } else {
-            throw new RuntimeException("Unhandled node type " + type);
+        switch (type) {
+            case TASK:
+                return taskNode;
+            case ENTRYPOINT:
+                return entrypointNode;
+            case EXIT:
+                return exitNode;
+            case EXTERNAL_EVENT:
+                return externalEventNode;
+            case START_THREAD:
+                return startThreadNode;
+            case WAIT_FOR_THREAD:
+                return waitForThreadNode;
+            case NOP:
+                return nop;
+            case SLEEP:
+                return sleepNode;
+            case USER_TASK:
+                return userTaskNode;
+            case NODE_NOT_SET:
         }
+        throw new RuntimeException("incomplete switch statement");
     }
 
     /**

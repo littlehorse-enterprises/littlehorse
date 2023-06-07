@@ -52,6 +52,10 @@ public enum GETableClassEnumPb
    * <code>TASK_WORKER_GROUP = 9;</code>
    */
   TASK_WORKER_GROUP(9),
+  /**
+   * <code>USER_TASK_DEF = 10;</code>
+   */
+  USER_TASK_DEF(10),
   UNRECOGNIZED(-1),
   ;
 
@@ -95,6 +99,10 @@ public enum GETableClassEnumPb
    * <code>TASK_WORKER_GROUP = 9;</code>
    */
   public static final int TASK_WORKER_GROUP_VALUE = 9;
+  /**
+   * <code>USER_TASK_DEF = 10;</code>
+   */
+  public static final int USER_TASK_DEF_VALUE = 10;
 
 
   public final int getNumber() {
@@ -131,6 +139,7 @@ public enum GETableClassEnumPb
       case 7: return TASK_DEF_METRICS;
       case 8: return WF_SPEC_METRICS;
       case 9: return TASK_WORKER_GROUP;
+      case 10: return USER_TASK_DEF;
       default: return null;
     }
   }

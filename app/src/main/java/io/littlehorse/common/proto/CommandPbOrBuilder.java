@@ -294,5 +294,62 @@ public interface CommandPbOrBuilder extends
    */
   io.littlehorse.jlib.common.proto.DeleteExternalEventPbOrBuilder getDeleteExternalEventOrBuilder();
 
+  /**
+   * <code>.littlehorse.AssignUserTaskRunPb assign_user_task_run = 21;</code>
+   * @return Whether the assignUserTaskRun field is set.
+   */
+  boolean hasAssignUserTaskRun();
+  /**
+   * <code>.littlehorse.AssignUserTaskRunPb assign_user_task_run = 21;</code>
+   * @return The assignUserTaskRun.
+   */
+  io.littlehorse.jlib.common.proto.AssignUserTaskRunPb getAssignUserTaskRun();
+  /**
+   * <code>.littlehorse.AssignUserTaskRunPb assign_user_task_run = 21;</code>
+   */
+  io.littlehorse.jlib.common.proto.AssignUserTaskRunPbOrBuilder getAssignUserTaskRunOrBuilder();
+
+  /**
+   * <code>.littlehorse.CompleteUserTaskRunPb complete_user_task_run = 22;</code>
+   * @return Whether the completeUserTaskRun field is set.
+   */
+  boolean hasCompleteUserTaskRun();
+  /**
+   * <code>.littlehorse.CompleteUserTaskRunPb complete_user_task_run = 22;</code>
+   * @return The completeUserTaskRun.
+   */
+  io.littlehorse.jlib.common.proto.CompleteUserTaskRunPb getCompleteUserTaskRun();
+  /**
+   * <code>.littlehorse.CompleteUserTaskRunPb complete_user_task_run = 22;</code>
+   */
+  io.littlehorse.jlib.common.proto.CompleteUserTaskRunPbOrBuilder getCompleteUserTaskRunOrBuilder();
+
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.PutUserTaskDefPb put_user_task_def = 23;</code>
+   * @return Whether the putUserTaskDef field is set.
+   */
+  boolean hasPutUserTaskDef();
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.PutUserTaskDefPb put_user_task_def = 23;</code>
+   * @return The putUserTaskDef.
+   */
+  io.littlehorse.jlib.common.proto.PutUserTaskDefPb getPutUserTaskDef();
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.PutUserTaskDefPb put_user_task_def = 23;</code>
+   */
+  io.littlehorse.jlib.common.proto.PutUserTaskDefPbOrBuilder getPutUserTaskDefOrBuilder();
+
   public io.littlehorse.common.proto.CommandPb.CommandCase getCommandCase();
 }

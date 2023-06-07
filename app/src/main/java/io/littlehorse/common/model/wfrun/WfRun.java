@@ -7,6 +7,7 @@ import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.command.Command;
+import io.littlehorse.common.model.command.subcommand.CompleteUserTaskRun;
 import io.littlehorse.common.model.command.subcommand.DeleteWfRun;
 import io.littlehorse.common.model.command.subcommand.ExternalEventTimeout;
 import io.littlehorse.common.model.command.subcommand.ResumeWfRun;
@@ -409,11 +410,31 @@ public class WfRun extends GETable<WfRunPb> {
         advance(event.time);
     }
 
+    public void failDueToWfSpecDeletion() {
+        threadRuns
+            .get(0)
+            .fail(
+                new Failure(
+                    TaskResultCodePb.INTERNAL_ERROR,
+                    "Appears wfSpec was deleted",
+                    LHConstants.INTERNAL_ERROR
+                ),
+                new Date()
+            );
+    }
+
     public void processExternalEvent(ExternalEvent event) {
+        // TODO LH-303: maybe if the event has a `threadRunNumber` and
+        // `nodeRunPosition` set, it should do some validation here?
         for (ThreadRun thread : threadRuns) {
             thread.processExternalEvent(event);
         }
         advance(event.getCreatedAt());
+    }
+
+    public void processCompleteUserTaskRun(CompleteUserTaskRun event) {
+        ThreadRun thread = threadRuns.get(event.threadRunNumber);
+        thread.processCompleteUserTaskRun(event);
     }
 
     public void processStopRequest(StopWfRun req) throws LHValidationError {

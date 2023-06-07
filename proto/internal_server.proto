@@ -218,6 +218,7 @@ enum GETableClassEnumPb {
     TASK_DEF_METRICS = 7;
     WF_SPEC_METRICS = 8;
     TASK_WORKER_GROUP = 9;
+    USER_TASK_DEF = 10;
 }
 
 message AttributePb {
@@ -377,6 +378,10 @@ message CommandPb {
         ExternalEventNodeTimeoutPb external_event_timeout = 18;
         TaskWorkerHeartBeatPb task_worker_heart_beat = 19;
         DeleteExternalEventPb delete_external_event = 20;
+        AssignUserTaskRunPb assign_user_task_run = 21;
+        CompleteUserTaskRunPb complete_user_task_run = 22;
+        PutUserTaskDefPb put_user_task_def = 23;
+        // TODO: Add SaveUserTask
     }
 }
 

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.CreateTopicsResult;
@@ -36,11 +37,9 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Utils;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.state.HostInfo;
-import org.apache.log4j.Logger;
 
+@Slf4j
 public class LHConfig extends ConfigBase {
-
-    private static final Logger log = Logger.getLogger(LHConfig.class);
 
     // Kafka and Kafka Streams-Specific Configuration Env Vars
     public static final String KAFKA_BOOTSTRAP_KEY = "LHS_KAFKA_BOOTSTRAP_SERVERS";

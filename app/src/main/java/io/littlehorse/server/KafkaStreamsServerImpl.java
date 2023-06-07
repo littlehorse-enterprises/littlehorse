@@ -15,6 +15,8 @@ import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.SubCommand;
+import io.littlehorse.common.model.command.subcommand.AssignUserTaskRun;
+import io.littlehorse.common.model.command.subcommand.CompleteUserTaskRun;
 import io.littlehorse.common.model.command.subcommand.DeleteExternalEventDef;
 import io.littlehorse.common.model.command.subcommand.DeleteTaskDef;
 import io.littlehorse.common.model.command.subcommand.DeleteWfRun;
@@ -22,6 +24,7 @@ import io.littlehorse.common.model.command.subcommand.DeleteWfSpec;
 import io.littlehorse.common.model.command.subcommand.PutExternalEvent;
 import io.littlehorse.common.model.command.subcommand.PutExternalEventDef;
 import io.littlehorse.common.model.command.subcommand.PutTaskDef;
+import io.littlehorse.common.model.command.subcommand.PutUserTaskDef;
 import io.littlehorse.common.model.command.subcommand.PutWfSpec;
 import io.littlehorse.common.model.command.subcommand.ResumeWfRun;
 import io.littlehorse.common.model.command.subcommand.RunWf;
@@ -55,6 +58,10 @@ import io.littlehorse.common.proto.WaitForCommandReplyPb;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.exception.LHSerdeError;
+import io.littlehorse.jlib.common.proto.AssignUserTaskRunPb;
+import io.littlehorse.jlib.common.proto.AssignUserTaskRunReplyPb;
+import io.littlehorse.jlib.common.proto.CompleteUserTaskRunPb;
+import io.littlehorse.jlib.common.proto.CompleteUserTaskRunReplyPb;
 import io.littlehorse.jlib.common.proto.DeleteExternalEventDefPb;
 import io.littlehorse.jlib.common.proto.DeleteObjectReplyPb;
 import io.littlehorse.jlib.common.proto.DeleteTaskDefPb;
@@ -95,6 +102,8 @@ import io.littlehorse.jlib.common.proto.PutExternalEventPb;
 import io.littlehorse.jlib.common.proto.PutExternalEventReplyPb;
 import io.littlehorse.jlib.common.proto.PutTaskDefPb;
 import io.littlehorse.jlib.common.proto.PutTaskDefReplyPb;
+import io.littlehorse.jlib.common.proto.PutUserTaskDefPb;
+import io.littlehorse.jlib.common.proto.PutUserTaskDefReplyPb;
 import io.littlehorse.jlib.common.proto.PutWfSpecPb;
 import io.littlehorse.jlib.common.proto.PutWfSpecReplyPb;
 import io.littlehorse.jlib.common.proto.RegisterTaskWorkerPb;
@@ -416,6 +425,40 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             ctx,
             PutExternalEventDef.class,
             PutExternalEventDefReplyPb.class
+        );
+    }
+
+    @Override
+    public void putUserTaskDef(
+        PutUserTaskDefPb req,
+        StreamObserver<PutUserTaskDefReplyPb> ctx
+    ) {
+        processCommand(req, ctx, PutUserTaskDef.class, PutUserTaskDefReplyPb.class);
+    }
+
+    @Override
+    public void assignUserTaskRun(
+        AssignUserTaskRunPb req,
+        StreamObserver<AssignUserTaskRunReplyPb> ctx
+    ) {
+        processCommand(
+            req,
+            ctx,
+            AssignUserTaskRun.class,
+            AssignUserTaskRunReplyPb.class
+        );
+    }
+
+    @Override
+    public void completeUserTaskRun(
+        CompleteUserTaskRunPb req,
+        StreamObserver<CompleteUserTaskRunReplyPb> ctx
+    ) {
+        processCommand(
+            req,
+            ctx,
+            CompleteUserTaskRun.class,
+            CompleteUserTaskRunReplyPb.class
         );
     }
 

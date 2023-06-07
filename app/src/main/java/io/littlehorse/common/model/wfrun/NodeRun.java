@@ -2,6 +2,7 @@ package io.littlehorse.common.model.wfrun;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.objectId.NodeRunId;
 import io.littlehorse.common.model.wfrun.subnoderun.EntrypointRun;
@@ -10,6 +11,7 @@ import io.littlehorse.common.model.wfrun.subnoderun.ExternalEventRun;
 import io.littlehorse.common.model.wfrun.subnoderun.SleepNodeRun;
 import io.littlehorse.common.model.wfrun.subnoderun.StartThreadRun;
 import io.littlehorse.common.model.wfrun.subnoderun.TaskRun;
+import io.littlehorse.common.model.wfrun.subnoderun.UserTaskRun;
 import io.littlehorse.common.model.wfrun.subnoderun.WaitThreadRun;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.FailurePb;
@@ -55,6 +57,7 @@ public class NodeRun extends GETable<NodeRunPb> {
     public StartThreadRun startThreadRun;
     public WaitThreadRun waitThreadRun;
     public SleepNodeRun sleepNodeRun;
+    public UserTaskRun userTaskRun;
 
     public List<Integer> failureHandlerIds;
 
@@ -136,6 +139,10 @@ public class NodeRun extends GETable<NodeRunPb> {
             case SLEEP:
                 sleepNodeRun = SleepNodeRun.fromProto(proto.getSleep());
                 break;
+            case USER_TASK:
+                userTaskRun =
+                    LHSerializable.fromProto(proto.getUserTask(), UserTaskRun.class);
+                break;
             case NODETYPE_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -166,6 +173,8 @@ public class NodeRun extends GETable<NodeRunPb> {
                 return startThreadRun;
             case SLEEP:
                 return sleepNodeRun;
+            case USER_TASK:
+                return userTaskRun;
             case NODETYPE_NOT_SET:
         }
         throw new RuntimeException("Not possible");
@@ -194,6 +203,9 @@ public class NodeRun extends GETable<NodeRunPb> {
         } else if (cls.equals(SleepNodeRun.class)) {
             type = NodeTypeCase.SLEEP;
             sleepNodeRun = (SleepNodeRun) snr;
+        } else if (cls.equals(UserTaskRun.class)) {
+            type = NodeTypeCase.USER_TASK;
+            userTaskRun = (UserTaskRun) snr;
         } else {
             throw new RuntimeException("Didn't recognize " + snr.getClass());
         }
@@ -242,6 +254,9 @@ public class NodeRun extends GETable<NodeRunPb> {
                 break;
             case SLEEP:
                 out.setSleep(sleepNodeRun.toProto());
+                break;
+            case USER_TASK:
+                out.setUserTask(userTaskRun.toProto());
                 break;
             case NODETYPE_NOT_SET:
         }

@@ -40,12 +40,13 @@ public class TagUtils {
             case TASK_WORKER_GROUP:
             case TASK_DEF_METRICS:
             case WF_SPEC_METRICS:
-                // No tags here
+            case USER_TASK_DEF:
+                // No tags here...we might make it possible to do more fancy
+                // searches on metadata's in the future, but for now we don't.
                 return new ArrayList<>();
             case UNRECOGNIZED:
-            default:
-                throw new RuntimeException("Not possible");
         }
+        throw new RuntimeException("Not possible");
     }
 
     private static List<Tag> tag(ExternalEventDef thing) {
@@ -162,6 +163,8 @@ public class TagUtils {
                     Pair.of("status", thing.status.toString())
                 )
             );
+        } else if (thing.type == NodeTypeCase.USER_TASK) {
+            out.addAll(thing.userTaskRun.getTags());
         }
 
         return out;
