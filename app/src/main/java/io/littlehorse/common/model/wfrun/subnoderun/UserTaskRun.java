@@ -19,6 +19,7 @@ import io.littlehorse.jlib.common.proto.UserTaskEventPb;
 import io.littlehorse.jlib.common.proto.UserTaskFieldResultPb;
 import io.littlehorse.jlib.common.proto.UserTaskRunPb;
 import io.littlehorse.jlib.common.proto.UserTaskRunPb.AssignedToCase;
+import io.littlehorse.jlib.common.proto.UserTaskRunStatusPb;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
 import java.util.ArrayList;
@@ -43,6 +44,8 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
     public String userId;
     public List<UserTaskFieldResultPb> results;
 
+    public UserTaskRunStatusPb status;
+
     public UserTaskRun() {
         events = new ArrayList<>();
         results = new ArrayList<>();
@@ -55,7 +58,8 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
     public UserTaskRunPb.Builder toProto() {
         UserTaskRunPb.Builder out = UserTaskRunPb
             .newBuilder()
-            .setUserTaskDefName(userTaskDefName);
+            .setUserTaskDefName(userTaskDefName)
+            .setStatus(status);
 
         if (userId != null) out.setUserId(userId);
 
@@ -83,6 +87,7 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
     public void initFrom(Message proto) {
         UserTaskRunPb p = (UserTaskRunPb) proto;
         userTaskDefName = p.getUserTaskDefName();
+        status = p.getStatus();
 
         if (p.hasUserId()) userId = p.getUserId();
 
@@ -116,6 +121,7 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
     public void arrive(Date time) {
         Node node = nodeRun.getNode();
         nodeRun.status = LHStatusPb.RUNNING;
+        status = UserTaskRunStatusPb.UNASSIGNED;
 
         // Need to either assign to a user or to a group.
         try {
@@ -124,7 +130,7 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
             } else if (assignedToType == AssignedToCase.GROUPS) {
                 assignToGroup(node);
             } else {
-                // not possible
+                // not yet implemented--case when assigning
             }
 
             // I don't think there's anything to do other than schedule the timers for
@@ -160,8 +166,7 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
         }
 
         specificUserId = userIdVal.strVal;
-
-        // TODO: LH-311 update the UserTaskStatus
+        status = UserTaskRunStatusPb.CLAIMED;
         userId = specificUserId;
     }
 
