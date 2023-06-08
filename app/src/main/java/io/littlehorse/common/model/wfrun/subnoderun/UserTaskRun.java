@@ -194,100 +194,121 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
     public List<Tag> getTags() {
         List<Tag> out = new ArrayList<>();
 
-        // This will change as we add a UserTaskStatus enum; in particular, we will
-        // add a `status` field and make tasks searchable by that (see LH-311)
+        /*
+         * There are four possible fields in each tag:
+         * 1. status
+         * 2. userTaskDefName
+         * 3. userId
+         * 4. userGroup
+         *
+         * They are always in that order. 3) and 4) are mutually exclusive.
+         *
+         * When searching, it is valid to provide any combination of the three tags, but
+         * at least one must be set.
+         */
 
-        // Find all TODO's by User Id
-        if (userId != null && nodeRun.status == LHStatusPb.RUNNING) {
+        // Tag by status and User Task Def Name
+        out.add(
+            new Tag(
+                nodeRun,
+                TagStorageTypePb.LOCAL_UNCOUNTED,
+                Pair.of("userTaskDefName", userTaskDefName)
+            )
+        );
+        out.add(
+            new Tag(
+                nodeRun,
+                TagStorageTypePb.LOCAL_UNCOUNTED,
+                Pair.of("status", status.toString())
+            )
+        );
+        out.add(
+            new Tag(
+                nodeRun,
+                TagStorageTypePb.LOCAL_UNCOUNTED,
+                Pair.of("userTaskDefName", userTaskDefName),
+                Pair.of("status", status.toString())
+            )
+        );
+
+        // Tag by user if claimed.
+        // When REMOTE tags are supported, note that every tag here will be
+        // a REMOTE tag since a single user can only execute so many tasks...
+        if (userId != null) {
             out.add(
                 new Tag(
                     nodeRun,
                     TagStorageTypePb.LOCAL_UNCOUNTED,
-                    Pair.of("userId", userId),
-                    Pair.of("status", "TODO")
+                    Pair.of("status", status.toString()),
+                    Pair.of("userId", userId)
                 )
             );
-        }
-
-        // Find all TODO's by User Id and Task Type
-        if (userId != null && nodeRun.status == LHStatusPb.RUNNING) {
             out.add(
                 new Tag(
                     nodeRun,
                     TagStorageTypePb.LOCAL_UNCOUNTED,
-                    Pair.of("userId", userId),
+                    Pair.of("status", status.toString()),
                     Pair.of("userTaskDefName", userTaskDefName),
-                    Pair.of("status", "TODO")
+                    Pair.of("userId", userId)
                 )
             );
-        }
-
-        // Find all TODO's that are unclaimed
-        if (userId == null && nodeRun.status == LHStatusPb.RUNNING) {
             out.add(
                 new Tag(
                     nodeRun,
                     TagStorageTypePb.LOCAL_UNCOUNTED,
-                    Pair.of("unclaimed", "true"),
-                    Pair.of("status", "TODO")
-                )
-            );
-        }
-
-        // Find all TODO's that are unclaimed by Task Type
-        if (userId == null && nodeRun.status == LHStatusPb.RUNNING) {
-            out.add(
-                new Tag(
-                    nodeRun,
-                    TagStorageTypePb.LOCAL_UNCOUNTED,
-                    Pair.of("unclaimed", "true"),
                     Pair.of("userTaskDefName", userTaskDefName),
-                    Pair.of("status", "TODO")
+                    Pair.of("userId", userId)
                 )
             );
-        }
-
-        // Find COMPLETED by User Id
-        if (nodeRun.status == LHStatusPb.COMPLETED) {
             out.add(
                 new Tag(
                     nodeRun,
                     TagStorageTypePb.LOCAL_UNCOUNTED,
-                    Pair.of("completed", "true"),
                     Pair.of("userId", userId)
                 )
             );
         }
 
-        // Find COMPLETED by User Id and Task Type
-        if (nodeRun.status == LHStatusPb.COMPLETED) {
-            out.add(
-                new Tag(
-                    nodeRun,
-                    TagStorageTypePb.LOCAL_UNCOUNTED,
-                    Pair.of("completed", "true"),
-                    Pair.of("userId", userId),
-                    Pair.of("userTaskDefName", userTaskDefName)
-                )
-            );
+        // TODO: Make it configurable on a per-group basis whether
+        // a group is REMOTE or LOCAL tag? Some big groups should be LOCAL,
+        // but small groups should be REMOTE.
+        if (groups != null) {
+            for (String group : groups.getRolesList()) {
+                out.add(
+                    new Tag(
+                        nodeRun,
+                        TagStorageTypePb.LOCAL_UNCOUNTED,
+                        Pair.of("status", status.toString()),
+                        Pair.of("userGroup", group)
+                    )
+                );
+                out.add(
+                    new Tag(
+                        nodeRun,
+                        TagStorageTypePb.LOCAL_UNCOUNTED,
+                        Pair.of("status", status.toString()),
+                        Pair.of("userTaskDefName", userTaskDefName),
+                        Pair.of("userGroup", group)
+                    )
+                );
+                out.add(
+                    new Tag(
+                        nodeRun,
+                        TagStorageTypePb.LOCAL_UNCOUNTED,
+                        Pair.of("userTaskDefName", userTaskDefName),
+                        Pair.of("userGroup", group)
+                    )
+                );
+                out.add(
+                    new Tag(
+                        nodeRun,
+                        TagStorageTypePb.LOCAL_UNCOUNTED,
+                        Pair.of("userGroup", group)
+                    )
+                );
+            }
         }
-
-        // Find COMPLETED by Task Type
-        if (nodeRun.status == LHStatusPb.COMPLETED) {
-            out.add(
-                new Tag(
-                    nodeRun,
-                    TagStorageTypePb.LOCAL_UNCOUNTED,
-                    Pair.of("completed", "true"),
-                    Pair.of("userTaskDefName", userTaskDefName)
-                )
-            );
-        }
-
-        // TODO LH-317: Add support for searching by assigned group
-
-        // TODO LH-318: Add ability to find cancelled/timed out tasks
-
+        // TODO LH-317: Improve support for searching by assigned group
         return out;
     }
 
