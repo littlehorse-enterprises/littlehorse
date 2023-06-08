@@ -100,6 +100,9 @@ public class LHConfig extends ConfigBase {
     public static final String PROMETHEUS_EXPORTER_PORT_KEY =
         "LHS_PROMETHEUS_EXPORTER_PORT";
 
+    public static final String PROMETHEUS_EXPORTER_PATH_KEY =
+        "LHS_PROMETHEUS_EXPORTER_PATH";
+
     protected String[] getEnvKeyPrefixes() {
         return new String[] { "LHS_" };
     }
@@ -333,6 +336,10 @@ public class LHConfig extends ConfigBase {
         return Integer.valueOf(
             getOrSetDefault(LHConfig.PROMETHEUS_EXPORTER_PORT_KEY, "5555")
         );
+    }
+
+    public String getPrometheusExporterPath() {
+        return getOrSetDefault(LHConfig.PROMETHEUS_EXPORTER_PATH_KEY, "/metrics");
     }
 
     public int getApiBindPort() {

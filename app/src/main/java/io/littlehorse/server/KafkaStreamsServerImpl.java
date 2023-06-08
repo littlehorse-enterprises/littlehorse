@@ -130,8 +130,8 @@ import io.littlehorse.jlib.common.proto.WfRunIdPb;
 import io.littlehorse.jlib.common.proto.WfSpecIdPb;
 import io.littlehorse.jlib.common.proto.WfSpecMetricsQueryPb;
 import io.littlehorse.jlib.common.proto.WfSpecMetricsReplyPb;
+import io.littlehorse.server.metrics.PrometheusMetricExporter;
 import io.littlehorse.server.streamsimpl.BackendInternalComms;
-import io.littlehorse.server.streamsimpl.PrometheusMetricExporter;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
@@ -164,6 +164,7 @@ import io.littlehorse.server.streamsimpl.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streamsimpl.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streamsimpl.util.GETStreamObserver;
 import io.littlehorse.server.streamsimpl.util.POSTStreamObserver;
+import io.micrometer.core.instrument.binder.grpc.MetricCollectingServerInterceptor;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -243,8 +244,6 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             .addService(this)
             .executor(executor);
 
-        grpcServer = builder.build();
-
         coreStreams.setStateListener((newState, oldState) -> {
             coreState = newState;
             log.info("" + new Date() + " New state for core: " + coreState);
@@ -258,11 +257,21 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         });
 
         internalComms = new BackendInternalComms(config, coreStreams, timerStreams);
-        prometheusMetricExporter =
-            new PrometheusMetricExporter(
-                config,
-                Map.of("core", coreStreams, "timer", timerStreams)
-            );
+
+        prometheusMetricExporter = new PrometheusMetricExporter(config);
+
+        grpcServer =
+            builder
+                .intercept(
+                    new MetricCollectingServerInterceptor(
+                        prometheusMetricExporter.getRegistry()
+                    )
+                )
+                .build();
+
+        prometheusMetricExporter.bind(
+            Map.of("core", coreStreams, "timer", timerStreams)
+        );
     }
 
     private void updateHealth() {
