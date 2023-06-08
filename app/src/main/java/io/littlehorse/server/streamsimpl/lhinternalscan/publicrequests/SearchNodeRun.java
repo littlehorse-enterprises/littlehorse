@@ -125,6 +125,7 @@ public class SearchNodeRun
                 BoundedObjectIdScanPb
                     .newBuilder()
                     .setStartObjectId(wfRunId + "/")
+                    .setEndObjectId(wfRunId + "/~")
                     .build();
         } else {
             throw new RuntimeException("Yikes, unimplemented type: " + type);

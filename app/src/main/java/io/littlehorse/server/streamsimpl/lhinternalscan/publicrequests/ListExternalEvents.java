@@ -47,6 +47,7 @@ public class ListExternalEvents
             BoundedObjectIdScanPb
                 .newBuilder()
                 .setStartObjectId(wfRunId + "/")
+                .setEndObjectId(wfRunId + "/~")
                 .build();
         return out;
     }

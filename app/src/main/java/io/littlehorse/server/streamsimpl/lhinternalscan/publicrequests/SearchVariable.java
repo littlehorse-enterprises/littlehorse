@@ -106,6 +106,7 @@ public class SearchVariable
                 BoundedObjectIdScanPb
                     .newBuilder()
                     .setStartObjectId(wfRunId + "/")
+                    .setEndObjectId(wfRunId + "/~")
                     .build();
         } else if (type == VariableCriteriaCase.VALUE) {
             out.type = ScanBoundaryCase.LOCAL_TAG_PREFIX_SCAN;

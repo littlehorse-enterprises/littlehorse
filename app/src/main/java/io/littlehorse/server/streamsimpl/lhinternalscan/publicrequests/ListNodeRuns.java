@@ -47,6 +47,7 @@ public class ListNodeRuns
             BoundedObjectIdScanPb
                 .newBuilder()
                 .setStartObjectId(wfRunId + "/")
+                .setEndObjectId(wfRunId + "/~")
                 .build();
         return out;
     }
