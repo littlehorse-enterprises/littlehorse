@@ -6,7 +6,6 @@ import io.grpc.TlsServerCredentials;
 import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.util.LHProducer;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.config.ConfigBase;
 import io.littlehorse.jlib.common.config.LHWorkerConfig;
 import io.littlehorse.jlib.common.proto.HostInfoPb;
@@ -25,22 +24,21 @@ import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.AdminClientConfig;
-import org.apache.kafka.clients.admin.CreateTopicsResult;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.KafkaFuture;
 import org.apache.kafka.common.config.TopicConfig;
 import org.apache.kafka.common.errors.TopicExistsException;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Utils;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.state.HostInfo;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LHConfig extends ConfigBase {
 
-    private static final Logger log = Logger.getLogger(LHConfig.class);
+    private static final Logger log = LoggerFactory.getLogger(LHConfig.class);
 
     // Kafka and Kafka Streams-Specific Configuration Env Vars
     public static final String KAFKA_BOOTSTRAP_KEY = "LHS_KAFKA_BOOTSTRAP_SERVERS";
@@ -640,17 +638,13 @@ public class LHConfig extends ConfigBase {
 
     public void createKafkaTopic(NewTopic topic)
         throws InterruptedException, ExecutionException {
-        CreateTopicsResult result = kafkaAdmin.createTopics(
-            Collections.singleton(topic)
-        );
-        KafkaFuture<Void> future = result.values().get(topic.name());
         try {
-            future.get();
+            kafkaAdmin.createTopics(Collections.singleton(topic)).all().get();
+            log.info("Topic {} created.", topic.name());
         } catch (Exception e) {
-            if (
-                e.getCause() != null && e.getCause() instanceof TopicExistsException
-            ) {
-                LHUtil.log("Topic " + topic.name() + " already exists.");
+            Throwable cause = e.getCause();
+            if (cause != null && cause instanceof TopicExistsException) {
+                log.info("Topic {} already exists.", topic.name());
             } else {
                 throw e;
             }

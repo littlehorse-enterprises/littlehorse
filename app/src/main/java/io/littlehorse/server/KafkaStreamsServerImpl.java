@@ -130,6 +130,7 @@ import io.littlehorse.jlib.common.proto.WfRunIdPb;
 import io.littlehorse.jlib.common.proto.WfSpecIdPb;
 import io.littlehorse.jlib.common.proto.WfSpecMetricsQueryPb;
 import io.littlehorse.jlib.common.proto.WfSpecMetricsReplyPb;
+import io.littlehorse.server.metrics.MetricsCollectorRestoreListener;
 import io.littlehorse.server.metrics.PrometheusMetricExporter;
 import io.littlehorse.server.streamsimpl.BackendInternalComms;
 import io.littlehorse.server.streamsimpl.ServerTopology;
@@ -178,11 +179,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KafkaStreams.State;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
-    private static final Logger log = Logger.getLogger(KafkaStreamsServerImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(
+        KafkaStreamsServerImpl.class
+    );
     private LHConfig config;
     private Server grpcServer;
     private TaskQueueManager taskQueueManager;
@@ -246,13 +250,13 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
         coreStreams.setStateListener((newState, oldState) -> {
             coreState = newState;
-            log.info("" + new Date() + " New state for core: " + coreState);
+            log.info("New state for core: {}", coreState);
             updateHealth();
         });
 
         timerStreams.setStateListener((newState, oldState) -> {
             timerState = newState;
-            LHUtil.log("" + new Date() + " New state for timer: " + timerState);
+            log.info("New state for timer: {}", timerState);
             updateHealth();
         });
 
@@ -271,6 +275,20 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
         prometheusMetricExporter.bind(
             Map.of("core", coreStreams, "timer", timerStreams)
+        );
+
+        coreStreams.setGlobalStateRestoreListener(
+            new MetricsCollectorRestoreListener(
+                prometheusMetricExporter.getRegistry(),
+                Map.of("topology", "core")
+            )
+        );
+
+        timerStreams.setGlobalStateRestoreListener(
+            new MetricsCollectorRestoreListener(
+                prometheusMetricExporter.getRegistry(),
+                Map.of("topology", "timer")
+            )
         );
     }
 
