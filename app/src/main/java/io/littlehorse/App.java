@@ -1,70 +1,78 @@
 package io.littlehorse;
 
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import org.apache.kafka.clients.admin.NewTopic;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class App {
 
+    private static final Logger log = LoggerFactory.getLogger(App.class);
+
     public static void doIdempotentSetup(LHConfig config)
         throws InterruptedException, ExecutionException {
-        LHUtil.log("Creating topics!!");
+        log.info("Creating topics!!");
 
-        List<NewTopic> topics = config.getAllTopics();
-        for (NewTopic topic : topics) {
+        for (NewTopic topic : config.getAllTopics()) {
             config.createKafkaTopic(topic);
         }
 
         try {
-            Thread.sleep(1000);
-        } catch (Exception ignored) {}
+            TimeUnit.SECONDS.sleep(3);
+        } catch (InterruptedException ex) {
+            // ignored
+        }
 
-        LHUtil.log("Done creating topics");
+        log.info("Done creating topics");
     }
 
-    public static void main(String[] args)
-        throws InterruptedException, ExecutionException, IOException {
+    private static String formatProperties(Properties configProps) {
+        return configProps
+            .entrySet()
+            .stream()
+            .map(entry -> entry.getKey() + ": " + entry.getValue())
+            .collect(Collectors.joining("\n"));
+    }
+
+    private static Properties loadProperties(String[] args) {
         Properties configProps = new Properties();
 
         if (args.length == 1) {
-            System.out.println(
-                "Attempting to load config properties file from " + args[0]
-            );
             Path configPath = Path.of(args[0]);
+            log.info("Attempting to load config properties file from {}", configPath);
+
             if (!Files.exists(configPath)) {
-                System.out.println("Couldn't find config file at " + args[0]);
+                log.error("Couldn't find config file at {}", configPath);
                 System.exit(1);
             }
 
             try {
-                configProps.load(
-                    new InputStreamReader(new FileInputStream(configPath.toFile()))
-                );
+                configProps.load(new FileInputStream(configPath.toFile()));
             } catch (IOException exn) {
-                exn.printStackTrace();
-                System.out.println("Failed to load config file, using defaults");
+                log.error("Failed to load config file, using defaults", exn);
                 System.exit(1);
             }
         } else {
-            System.out.println("WARNING: No config file provided, using defaults.");
+            log.warn("WARNING: No config file provided, using defaults.");
         }
 
-        for (Map.Entry<Object, Object> entry : configProps.entrySet()) {
-            System.out.println(
-                entry.getKey().toString() + ": " + entry.getValue().toString()
-            );
-        }
-        System.out.flush();
+        return configProps;
+    }
+
+    public static void main(String[] args)
+        throws InterruptedException, ExecutionException, IOException {
+        Properties configProps = loadProperties(args);
+
+        log.info("Settings:\n{}", formatProperties(configProps));
 
         LHConfig config = new LHConfig(configProps);
         if (config.shouldCreateTopics()) {

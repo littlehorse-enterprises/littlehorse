@@ -4,9 +4,10 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.command.subcommand.AssignUserTaskRun;
 import io.littlehorse.common.model.command.subcommand.CompleteUserTaskRun;
 import io.littlehorse.common.model.meta.Node;
-import io.littlehorse.common.model.meta.UserTaskAction;
+import io.littlehorse.common.model.meta.usertasks.UTActionTrigger;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
 import io.littlehorse.common.model.wfrun.UserTaskEvent;
@@ -14,7 +15,6 @@ import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.jlib.common.proto.LHStatusPb;
 import io.littlehorse.jlib.common.proto.TaskResultCodePb;
-import io.littlehorse.jlib.common.proto.UserGroupsPb;
 import io.littlehorse.jlib.common.proto.UserTaskEventPb;
 import io.littlehorse.jlib.common.proto.UserTaskFieldResultPb;
 import io.littlehorse.jlib.common.proto.UserTaskRunPb;
@@ -35,11 +35,12 @@ import org.apache.commons.lang3.tuple.Pair;
 public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
 
     public String userTaskDefName;
+    public int userTaskDefVersion;
     public List<UserTaskEvent> events;
 
     public AssignedToCase assignedToType;
     public String specificUserId;
-    public UserGroupsPb groups;
+    public String userGroup;
 
     public String userId;
     public List<UserTaskFieldResultPb> results;
@@ -59,7 +60,8 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
         UserTaskRunPb.Builder out = UserTaskRunPb
             .newBuilder()
             .setUserTaskDefName(userTaskDefName)
-            .setStatus(status);
+            .setStatus(status)
+            .setUserTaskDefVersion(userTaskDefVersion);
 
         if (userId != null) out.setUserId(userId);
 
@@ -74,8 +76,8 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
             case SPECIFIC_USER_ID:
                 out.setSpecificUserId(specificUserId);
                 break;
-            case GROUPS:
-                out.setGroups(groups);
+            case USER_GROUP:
+                out.setUserGroup(userGroup);
                 break;
             case ASSIGNEDTO_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -87,6 +89,7 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
     public void initFrom(Message proto) {
         UserTaskRunPb p = (UserTaskRunPb) proto;
         userTaskDefName = p.getUserTaskDefName();
+        userTaskDefVersion = p.getUserTaskDefVersion();
         status = p.getStatus();
 
         if (p.hasUserId()) userId = p.getUserId();
@@ -104,8 +107,8 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
             case SPECIFIC_USER_ID:
                 specificUserId = p.getSpecificUserId();
                 break;
-            case GROUPS:
-                groups = p.getGroups();
+            case USER_GROUP:
+                userGroup = p.getUserGroup();
                 break;
             case ASSIGNEDTO_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -127,7 +130,7 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
         try {
             if (assignedToType == AssignedToCase.SPECIFIC_USER_ID) {
                 assignToSpecificUser(node);
-            } else if (assignedToType == AssignedToCase.GROUPS) {
+            } else if (assignedToType == AssignedToCase.USER_GROUP) {
                 assignToGroup(node);
             } else {
                 // not yet implemented--case when assigning
@@ -135,7 +138,9 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
 
             // I don't think there's anything to do other than schedule the timers for
             // the actions which need to occur.
-            scheduleActions(time, node);
+            for (UTActionTrigger action : node.userTaskNode.actions) {
+                scheduleAction(action);
+            }
             log.info("Arrived at user task!");
         } catch (LHVarSubError exn) {
             // darnit ):
@@ -175,14 +180,8 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
         throw new NotImplementedException();
     }
 
-    private void scheduleActions(Date time, Node node) {
-        for (UserTaskAction action : node.userTaskNode.actions) {
-            log.warn(
-                "Got an action " +
-                action.task +
-                ", but scheduling actions is not implemented"
-            );
-        }
+    private void scheduleAction(UTActionTrigger trigger) throws LHVarSubError {
+        trigger.schedule(nodeRun.threadRun.wfRun.cmdDao, this);
     }
 
     // Technically this should live in the `streamsimpl` directory, as the `Tag`
@@ -272,49 +271,60 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
         // TODO: Make it configurable on a per-group basis whether
         // a group is REMOTE or LOCAL tag? Some big groups should be LOCAL,
         // but small groups should be REMOTE.
-        if (groups != null) {
-            for (String group : groups.getRolesList()) {
-                out.add(
-                    new Tag(
-                        nodeRun,
-                        TagStorageTypePb.LOCAL_UNCOUNTED,
-                        Pair.of("status", status.toString()),
-                        Pair.of("userGroup", group)
-                    )
-                );
-                out.add(
-                    new Tag(
-                        nodeRun,
-                        TagStorageTypePb.LOCAL_UNCOUNTED,
-                        Pair.of("status", status.toString()),
-                        Pair.of("userTaskDefName", userTaskDefName),
-                        Pair.of("userGroup", group)
-                    )
-                );
-                out.add(
-                    new Tag(
-                        nodeRun,
-                        TagStorageTypePb.LOCAL_UNCOUNTED,
-                        Pair.of("userTaskDefName", userTaskDefName),
-                        Pair.of("userGroup", group)
-                    )
-                );
-                out.add(
-                    new Tag(
-                        nodeRun,
-                        TagStorageTypePb.LOCAL_UNCOUNTED,
-                        Pair.of("userGroup", group)
-                    )
-                );
-            }
+        if (userGroup != null) {
+            out.add(
+                new Tag(
+                    nodeRun,
+                    TagStorageTypePb.LOCAL_UNCOUNTED,
+                    Pair.of("status", status.toString()),
+                    Pair.of("userGroup", userGroup)
+                )
+            );
+            out.add(
+                new Tag(
+                    nodeRun,
+                    TagStorageTypePb.LOCAL_UNCOUNTED,
+                    Pair.of("status", status.toString()),
+                    Pair.of("userTaskDefName", userTaskDefName),
+                    Pair.of("userGroup", userGroup)
+                )
+            );
+            out.add(
+                new Tag(
+                    nodeRun,
+                    TagStorageTypePb.LOCAL_UNCOUNTED,
+                    Pair.of("userTaskDefName", userTaskDefName),
+                    Pair.of("userGroup", userGroup)
+                )
+            );
+            out.add(
+                new Tag(
+                    nodeRun,
+                    TagStorageTypePb.LOCAL_UNCOUNTED,
+                    Pair.of("userGroup", userGroup)
+                )
+            );
         }
         // TODO LH-317: Improve support for searching by assigned group
         return out;
     }
 
     // TODO: LH-307
-    public void processTaskAssignedEvent() {
-        throw new NotImplementedException();
+    public void processTaskAssignedEvent(AssignUserTaskRun event) {
+        switch (event.assigneeType) {
+            case USER_GROUP:
+                assignedToType = AssignedToCase.USER_GROUP;
+                userGroup = event.userGroup;
+                break;
+            case USER_ID:
+                assignedToType = AssignedToCase.SPECIFIC_USER_ID;
+                userId = event.userId;
+                specificUserId = event.userId;
+                break;
+            case ASSIGNEE_NOT_SET:
+                // TODO: return BAD_REQUEST_ERROR to client.
+                log.warn("TODO: Return error to client");
+        }
     }
 
     public void processTaskCompletedEvent(CompleteUserTaskRun event) {
@@ -327,10 +337,14 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
             return;
         }
 
+        userId = event.userId;
+        status = UserTaskRunStatusPb.DONE;
+
         // Now we need to create an output thing...
         // TODO LH-309: Validate this vs the schema
         Map<String, Object> raw = new HashMap<>();
         for (UserTaskFieldResultPb field : event.result.getFieldsList()) {
+            results.add(field);
             VariableValue fieldVal = VariableValue.fromProto(field.getValue());
             raw.put(field.getName(), fieldVal.getVal());
         }

@@ -2,19 +2,21 @@ package io.littlehorse.common.model.wfrun;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.wfrun.subnoderun.TaskRun;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.UserTaskEventPb;
 import io.littlehorse.jlib.common.proto.UserTaskEventPb.EventCase;
+import io.littlehorse.jlib.common.proto.UserTaskEventPb.UTECancelledPb;
+import io.littlehorse.jlib.common.proto.UserTaskEventPb.UTEReassignedPb;
+import io.littlehorse.jlib.common.proto.UserTaskEventPb.UTETaskExecutedPb;
 import java.util.Date;
 
 public class UserTaskEvent extends LHSerializable<UserTaskEventPb> {
 
     public Date time;
     public EventCase type;
-    public TaskRun action;
-    public String assignToUser;
-    public String assignToRole;
+    public UTETaskExecutedPb executed;
+    public UTEReassignedPb reassigned;
+    public UTECancelledPb cancelled;
 
     public Class<UserTaskEventPb> getProtoBaseClass() {
         return UserTaskEventPb.class;
@@ -26,17 +28,14 @@ public class UserTaskEvent extends LHSerializable<UserTaskEventPb> {
             .setTime(LHUtil.fromDate(time));
 
         switch (type) {
-            case ACTION:
-                out.setAction(action.toProto());
+            case TASK_EXECUTED:
+                out.setTaskExecuted(executed);
                 break;
-            case ASSIGN_TO_ROLE:
-                out.setAssignToRole(assignToRole);
+            case REASSIGNED:
+                out.setReassigned(reassigned);
                 break;
-            case ASSIGN_TO_USER:
-                out.setAssignToUser(assignToUser);
-                break;
-            case CANCEL_AND_FAIL:
-                out.setCancelAndFail(true);
+            case CANCELLED:
+                out.setCancelled(cancelled);
                 break;
             case EVENT_NOT_SET:
                 throw new RuntimeException("not possible");
@@ -50,17 +49,14 @@ public class UserTaskEvent extends LHSerializable<UserTaskEventPb> {
         type = p.getEventCase();
 
         switch (type) {
-            case ACTION:
-                action = TaskRun.fromProto(p.getAction());
+            case TASK_EXECUTED:
+                executed = p.getTaskExecuted();
                 break;
-            case ASSIGN_TO_ROLE:
-                assignToRole = p.getAssignToRole();
+            case REASSIGNED:
+                reassigned = p.getReassigned();
                 break;
-            case ASSIGN_TO_USER:
-                assignToUser = p.getAssignToUser();
-                break;
-            case CANCEL_AND_FAIL:
-                // nothing to do
+            case CANCELLED:
+                cancelled = p.getCancelled();
                 break;
             case EVENT_NOT_SET:
                 throw new RuntimeException("not possible");

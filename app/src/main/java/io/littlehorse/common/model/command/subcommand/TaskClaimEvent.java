@@ -8,12 +8,11 @@ import io.littlehorse.common.model.command.subcommandresponse.TaskClaimReply;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.observabilityevent.ObservabilityEvent;
 import io.littlehorse.common.model.observabilityevent.events.TaskStartOe;
-import io.littlehorse.common.model.wfrun.NodeRun;
+import io.littlehorse.common.model.wfrun.ScheduledTask;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.TaskClaimEventPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.LHResponseCodePb;
-import io.littlehorse.jlib.common.proto.LHStatusPb;
 import java.util.Date;
 
 public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
@@ -62,19 +61,6 @@ public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
             return null;
         }
 
-        // Now need to confirm that no one's claimed this task yet.
-        NodeRun thingToClaim = dao.getNodeRun(
-            wfRunId,
-            threadRunNumber,
-            taskRunPosition
-        );
-        if (thingToClaim.status != LHStatusPb.STARTING) {
-            // then it's already been claimed.
-            out.message = "Unable to claim task, try again.";
-            out.code = LHResponseCodePb.NOT_FOUND_ERROR;
-            return out;
-        }
-
         WfSpec wfSpec = dao.getWfSpec(wfRun.wfSpecName, wfRun.wfSpecVersion);
         if (wfSpec == null) {
             LHUtil.log(
@@ -86,15 +72,28 @@ public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
 
         // Needs to be done before we process the event, since processing the event
         // will delete the task schedule request.
-        out.result =
-            dao.markTaskAsScheduled(wfRunId, threadRunNumber, taskRunPosition);
+        ScheduledTask scheduledTask = dao.markTaskAsScheduled(
+            wfRunId,
+            threadRunNumber,
+            taskRunPosition
+        );
+
+        if (scheduledTask == null) {
+            // That means the task has been taken already.
+            out.message = "Unable to claim this task, someone beat you to it";
+            out.code = LHResponseCodePb.NOT_FOUND_ERROR;
+            return out;
+        }
+
+        out.result = scheduledTask;
         out.code = LHResponseCodePb.OK;
 
         TaskStartOe oe = new TaskStartOe();
         oe.taskRunPosition = taskRunPosition;
         oe.threadRunNumber = threadRunNumber;
         oe.workerId = "TODO: pass this to taskClaimEvent";
-        dao.addObservabilityEvent(new ObservabilityEvent(wfRunId, oe));
+        // TODO LH-338: re-support observability events
+        // dao.addObservabilityEvent(new ObservabilityEvent(wfRunId, oe));
 
         wfRun.wfSpec = wfSpec;
         wfRun.cmdDao = dao;

@@ -3,7 +3,7 @@ package io.littlehorse.common.model.objectId;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.ObjectId;
-import io.littlehorse.common.model.meta.UserTaskDef;
+import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
 import io.littlehorse.common.proto.GETableClassEnumPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.UserTaskDefIdPb;

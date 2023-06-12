@@ -36,12 +36,14 @@ import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.Host;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
 import io.littlehorse.common.model.metrics.TaskDefMetrics;
 import io.littlehorse.common.model.metrics.WfSpecMetrics;
 import io.littlehorse.common.model.objectId.ExternalEventDefId;
 import io.littlehorse.common.model.objectId.ExternalEventId;
 import io.littlehorse.common.model.objectId.NodeRunId;
 import io.littlehorse.common.model.objectId.TaskDefId;
+import io.littlehorse.common.model.objectId.UserTaskDefId;
 import io.littlehorse.common.model.objectId.VariableId;
 import io.littlehorse.common.model.objectId.WfRunId;
 import io.littlehorse.common.model.objectId.WfSpecId;
@@ -74,6 +76,7 @@ import io.littlehorse.jlib.common.proto.GetExternalEventReplyPb;
 import io.littlehorse.jlib.common.proto.GetLatestWfSpecPb;
 import io.littlehorse.jlib.common.proto.GetNodeRunReplyPb;
 import io.littlehorse.jlib.common.proto.GetTaskDefReplyPb;
+import io.littlehorse.jlib.common.proto.GetUserTaskDefReplyPb;
 import io.littlehorse.jlib.common.proto.GetVariableReplyPb;
 import io.littlehorse.jlib.common.proto.GetWfRunReplyPb;
 import io.littlehorse.jlib.common.proto.GetWfSpecReplyPb;
@@ -134,11 +137,13 @@ import io.littlehorse.jlib.common.proto.TaskDefMetricsQueryPb;
 import io.littlehorse.jlib.common.proto.TaskDefMetricsReplyPb;
 import io.littlehorse.jlib.common.proto.TaskResultEventPb;
 import io.littlehorse.jlib.common.proto.TaskWorkerHeartBeatPb;
+import io.littlehorse.jlib.common.proto.UserTaskDefIdPb;
 import io.littlehorse.jlib.common.proto.VariableIdPb;
 import io.littlehorse.jlib.common.proto.WfRunIdPb;
 import io.littlehorse.jlib.common.proto.WfSpecIdPb;
 import io.littlehorse.jlib.common.proto.WfSpecMetricsQueryPb;
 import io.littlehorse.jlib.common.proto.WfSpecMetricsReplyPb;
+import io.littlehorse.server.metrics.MetricsCollectorRestoreListener;
 import io.littlehorse.server.metrics.PrometheusMetricExporter;
 import io.littlehorse.server.streamsimpl.BackendInternalComms;
 import io.littlehorse.server.streamsimpl.ServerTopology;
@@ -187,11 +192,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KafkaStreams.State;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
-    private static final Logger log = Logger.getLogger(KafkaStreamsServerImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(
+        KafkaStreamsServerImpl.class
+    );
     private LHConfig config;
     private Server grpcServer;
     private TaskQueueManager taskQueueManager;
@@ -255,13 +263,13 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
         coreStreams.setStateListener((newState, oldState) -> {
             coreState = newState;
-            log.info("" + new Date() + " New state for core: " + coreState);
+            log.info("New state for core: {}", coreState);
             updateHealth();
         });
 
         timerStreams.setStateListener((newState, oldState) -> {
             timerState = newState;
-            LHUtil.log("" + new Date() + " New state for timer: " + timerState);
+            log.info("New state for timer: {}", timerState);
             updateHealth();
         });
 
@@ -280,6 +288,20 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
         prometheusMetricExporter.bind(
             Map.of("core", coreStreams, "timer", timerStreams)
+        );
+
+        coreStreams.setGlobalStateRestoreListener(
+            new MetricsCollectorRestoreListener(
+                prometheusMetricExporter.getRegistry(),
+                Map.of("topology", "core")
+            )
+        );
+
+        timerStreams.setGlobalStateRestoreListener(
+            new MetricsCollectorRestoreListener(
+                prometheusMetricExporter.getRegistry(),
+                Map.of("topology", "timer")
+            )
         );
     }
 
@@ -354,6 +376,29 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             LHConstants.META_PARTITION_KEY,
             observer,
             ServerTopology.CORE_STORE
+        );
+    }
+
+    @Override
+    public void getUserTaskDef(
+        UserTaskDefIdPb req,
+        StreamObserver<GetUserTaskDefReplyPb> ctx
+    ) {
+        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
+            ctx,
+            UserTaskDef.class,
+            GetUserTaskDefReplyPb.class,
+            config
+        );
+
+        internalComms.getStoreBytesAsync(
+            ServerTopology.CORE_STORE,
+            StoreUtils.getFullStoreKey(
+                new UserTaskDefId(req.getName(), req.getVersion()),
+                UserTaskDef.class
+            ),
+            LHConstants.META_PARTITION_KEY,
+            observer
         );
     }
 

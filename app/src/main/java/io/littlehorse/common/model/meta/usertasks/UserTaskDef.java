@@ -1,4 +1,4 @@
-package io.littlehorse.common.model.meta;
+package io.littlehorse.common.model.meta.usertasks;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;

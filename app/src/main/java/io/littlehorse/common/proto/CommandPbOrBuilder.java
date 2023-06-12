@@ -325,31 +325,46 @@ public interface CommandPbOrBuilder extends
   io.littlehorse.jlib.common.proto.CompleteUserTaskRunPbOrBuilder getCompleteUserTaskRunOrBuilder();
 
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.PutUserTaskDefPb put_user_task_def = 23;</code>
    * @return Whether the putUserTaskDef field is set.
    */
   boolean hasPutUserTaskDef();
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.PutUserTaskDefPb put_user_task_def = 23;</code>
    * @return The putUserTaskDef.
    */
   io.littlehorse.jlib.common.proto.PutUserTaskDefPb getPutUserTaskDef();
   /**
+   * <code>.littlehorse.PutUserTaskDefPb put_user_task_def = 23;</code>
+   */
+  io.littlehorse.jlib.common.proto.PutUserTaskDefPbOrBuilder getPutUserTaskDefOrBuilder();
+
+  /**
    * <pre>
    * TODO: Add SaveUserTask
    * </pre>
    *
-   * <code>.littlehorse.PutUserTaskDefPb put_user_task_def = 23;</code>
+   * <code>.littlehorse.TriggeredTaskRunPb triggered_task_run = 24;</code>
+   * @return Whether the triggeredTaskRun field is set.
    */
-  io.littlehorse.jlib.common.proto.PutUserTaskDefPbOrBuilder getPutUserTaskDefOrBuilder();
+  boolean hasTriggeredTaskRun();
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.TriggeredTaskRunPb triggered_task_run = 24;</code>
+   * @return The triggeredTaskRun.
+   */
+  io.littlehorse.common.proto.TriggeredTaskRunPb getTriggeredTaskRun();
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.TriggeredTaskRunPb triggered_task_run = 24;</code>
+   */
+  io.littlehorse.common.proto.TriggeredTaskRunPbOrBuilder getTriggeredTaskRunOrBuilder();
 
   public io.littlehorse.common.proto.CommandPb.CommandCase getCommandCase();
 }

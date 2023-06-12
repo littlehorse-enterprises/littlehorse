@@ -23,6 +23,7 @@ import io.littlehorse.common.model.command.subcommand.StopWfRun;
 import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
 import io.littlehorse.common.model.command.subcommand.TaskWorkerHeartBeat;
+import io.littlehorse.common.model.command.subcommand.TriggeredTaskRun;
 import io.littlehorse.common.proto.CommandPb;
 import io.littlehorse.common.proto.CommandPb.CommandCase;
 import io.littlehorse.common.util.LHUtil;
@@ -55,6 +56,7 @@ public class Command extends LHSerializable<CommandPb> {
     public PutUserTaskDef putUserTaskDef;
     public AssignUserTaskRun assignUserTaskRun;
     public CompleteUserTaskRun completeUserTaskRun;
+    public TriggeredTaskRun triggeredTaskRun;
 
     public Class<CommandPb> getProtoBaseClass() {
         return CommandPb.class;
@@ -136,6 +138,9 @@ public class Command extends LHSerializable<CommandPb> {
                 break;
             case COMPLETE_USER_TASK_RUN:
                 out.setCompleteUserTaskRun(completeUserTaskRun.toProto());
+                break;
+            case TRIGGERED_TASK_RUN:
+                out.setTriggeredTaskRun(triggeredTaskRun.toProto());
                 break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -232,6 +237,13 @@ public class Command extends LHSerializable<CommandPb> {
                         CompleteUserTaskRun.class
                     );
                 break;
+            case TRIGGERED_TASK_RUN:
+                triggeredTaskRun =
+                    LHSerializable.fromProto(
+                        p.getTriggeredTaskRun(),
+                        TriggeredTaskRun.class
+                    );
+                break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -279,6 +291,8 @@ public class Command extends LHSerializable<CommandPb> {
                 return assignUserTaskRun;
             case COMPLETE_USER_TASK_RUN:
                 return completeUserTaskRun;
+            case TRIGGERED_TASK_RUN:
+                return triggeredTaskRun;
             case COMMAND_NOT_SET:
         }
         throw new RuntimeException("Not possible");
@@ -346,6 +360,9 @@ public class Command extends LHSerializable<CommandPb> {
         } else if (cls.equals(CompleteUserTaskRun.class)) {
             type = CommandCase.COMPLETE_USER_TASK_RUN;
             completeUserTaskRun = (CompleteUserTaskRun) cmd;
+        } else if (cls.equals(TriggeredTaskRun.class)) {
+            type = CommandCase.TRIGGERED_TASK_RUN;
+            triggeredTaskRun = (TriggeredTaskRun) cmd;
         } else {
             throw new RuntimeException("Unrecognized class: " + cls.getName());
         }

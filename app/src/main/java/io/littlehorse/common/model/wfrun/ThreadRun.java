@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.command.subcommand.AssignUserTaskRun;
 import io.littlehorse.common.model.command.subcommand.CompleteUserTaskRun;
 import io.littlehorse.common.model.command.subcommand.ExternalEventTimeout;
 import io.littlehorse.common.model.command.subcommand.SleepNodeMatured;
@@ -37,6 +38,7 @@ import io.littlehorse.jlib.common.proto.ThreadHaltReasonPb;
 import io.littlehorse.jlib.common.proto.ThreadHaltReasonPb.ReasonCase;
 import io.littlehorse.jlib.common.proto.ThreadRunPb;
 import io.littlehorse.jlib.common.proto.ThreadTypePb;
+import io.littlehorse.jlib.common.proto.UserTaskRunStatusPb;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
 import java.util.ArrayList;
 import java.util.Date;
@@ -249,12 +251,35 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         nr.userTaskRun.processTaskCompletedEvent(event);
     }
 
+    public void processAssignUserTaskRun(AssignUserTaskRun event) {
+        NodeRun nr = getNodeRun(event.nodeRunPosition);
+        // TODO LH-303: make this throw an error back to client
+        if (nr.type != NodeTypeCase.USER_TASK) {
+            log.warn(
+                "Got an invalid request to completeTaskRun for wfRun {}, " +
+                "thread {}, and nodeRun {}: not a USER_TASK node.",
+                event.wfRunId,
+                event.threadRunNumber,
+                event.nodeRunPosition
+            );
+            return;
+        }
+
+        if (nr.userTaskRun.status == UserTaskRunStatusPb.DONE) {
+            log.warn("Tried to reassign already-completed task!");
+            return;
+        }
+
+        nr.userTaskRun.processTaskAssignedEvent(event);
+    }
+
     public void processTaskStartedEvent(TaskClaimEvent e) {
         NodeRun nr = getNodeRun(e.getNodeRunPosition());
 
         // TODO LH-303: make this throw an error back to client
         if (nr.type != NodeTypeCase.TASK) {
             // also check the exact noderun
+            // TODO LH-339: properly process User Task Triggered Actions
             LHUtil.log("Impossible, got a bad event. TASK_START on non-task node.");
             return;
         }
@@ -277,7 +302,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         NodeRun nr = getNodeRun(e.getNodeRunPosition());
         // TODO LH-303: make this throw an error back to client
         if (nr.type != NodeTypeCase.TASK) {
-            // Also check the exact noderun
+            // TODO LH-339: Properly process User Task Triggered Actions
             LHUtil.log("Impossible, got a bad event. TASK_START on non-task node.");
             return;
         }

@@ -5,11 +5,12 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.AssignUserTaskRunReply;
+import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.jlib.common.proto.AssignUserTaskRunPb;
 import io.littlehorse.jlib.common.proto.AssignUserTaskRunPb.AssigneeCase;
-import io.littlehorse.jlib.common.proto.UserGroupsPb;
+import io.littlehorse.jlib.common.proto.LHResponseCodePb;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.NotImplementedException;
 
 @Slf4j
 public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
@@ -20,7 +21,7 @@ public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
 
     public AssigneeCase assigneeType;
     public String userId;
-    public UserGroupsPb groups;
+    public String userGroup;
 
     public Class<AssignUserTaskRunPb> getProtoBaseClass() {
         return AssignUserTaskRunPb.class;
@@ -37,8 +38,8 @@ public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
             case USER_ID:
                 out.setUserId(userId);
                 break;
-            case GROUPS:
-                out.setGroups(groups);
+            case USER_GROUP:
+                out.setUserGroup(userGroup);
                 break;
             case ASSIGNEE_NOT_SET:
                 log.warn(
@@ -60,8 +61,8 @@ public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
             case USER_ID:
                 userId = p.getUserId();
                 break;
-            case GROUPS:
-                groups = p.getGroups();
+            case USER_GROUP:
+                userGroup = p.getUserGroup();
                 break;
             case ASSIGNEE_NOT_SET:
                 log.warn("Unset assignee. Should this be error?");
@@ -70,7 +71,33 @@ public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
     }
 
     public AssignUserTaskRunReply process(LHDAO dao, LHConfig config) {
-        throw new NotImplementedException();
+        WfRun wfRun = dao.getWfRun(wfRunId);
+        AssignUserTaskRunReply out = new AssignUserTaskRunReply();
+
+        if (wfRun == null) {
+            out.code = LHResponseCodePb.BAD_REQUEST_ERROR;
+            out.message = "Provided invalid wfRunId";
+            return out;
+        }
+
+        WfSpec wfSpec = dao.getWfSpec(wfRun.wfSpecName, wfRun.wfSpecVersion);
+        if (wfSpec == null) {
+            wfRun.failDueToWfSpecDeletion();
+            out.code = LHResponseCodePb.NOT_FOUND_ERROR;
+            out.message = "Apparently WfSpec was deleted!";
+            return out;
+        }
+
+        wfRun.wfSpec = wfSpec;
+        wfRun.processAssignUserTaskRun(this);
+
+        // TODO: We don't really check to see if the incoming was valid.
+        // For example, we should probably check to make sure that the specified
+        // node was actually a user task node...especially if customers are writing
+        // their own clients (whereas with Task Workers it is our own code).
+
+        out.code = LHResponseCodePb.OK;
+        return out;
     }
 
     public boolean hasResponse() {

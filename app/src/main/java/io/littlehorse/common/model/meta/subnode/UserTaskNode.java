@@ -5,12 +5,12 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.meta.SubNode;
-import io.littlehorse.common.model.meta.UserTaskAction;
-import io.littlehorse.common.model.meta.UserTaskDef;
 import io.littlehorse.common.model.meta.VariableAssignment;
+import io.littlehorse.common.model.meta.usertasks.UTActionTrigger;
+import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
 import io.littlehorse.common.model.wfrun.subnoderun.UserTaskRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
-import io.littlehorse.jlib.common.proto.UserTaskActionPb;
+import io.littlehorse.jlib.common.proto.UTActionTriggerPb;
 import io.littlehorse.jlib.common.proto.UserTaskNodePb;
 import io.littlehorse.jlib.common.proto.UserTaskNodePb.AssignmentCase;
 import io.littlehorse.jlib.common.proto.UserTaskRunPb.AssignedToCase;
@@ -24,7 +24,8 @@ public class UserTaskNode extends SubNode<UserTaskNodePb> {
     public AssignmentCase assignmentType;
     public VariableAssignment roleGroup;
     public VariableAssignment userId;
-    public List<UserTaskAction> actions;
+    public List<UTActionTrigger> actions;
+    public Integer userTaskDefVersion;
 
     public UserTaskNode() {
         this.actions = new ArrayList<>();
@@ -40,8 +41,8 @@ public class UserTaskNode extends SubNode<UserTaskNodePb> {
             .setUserTaskDefName(userTaskDefName);
 
         switch (assignmentType) {
-            case ROLE_GROUP:
-                out.setRoleGroup(roleGroup.toProto());
+            case USER_GROUP:
+                out.setUserGroup(roleGroup.toProto());
                 break;
             case USER_ID:
                 out.setUserId(userId.toProto());
@@ -50,8 +51,12 @@ public class UserTaskNode extends SubNode<UserTaskNodePb> {
                 throw new RuntimeException("Not possible");
         }
 
-        for (UserTaskAction action : actions) {
+        for (UTActionTrigger action : actions) {
             out.addActions(action.toProto());
+        }
+
+        if (userTaskDefVersion != null) {
+            out.setUserTaskDefVersion(userTaskDefVersion);
         }
 
         return out;
@@ -62,8 +67,8 @@ public class UserTaskNode extends SubNode<UserTaskNodePb> {
         assignmentType = p.getAssignmentCase();
         userTaskDefName = p.getUserTaskDefName();
         switch (assignmentType) {
-            case ROLE_GROUP:
-                roleGroup = VariableAssignment.fromProto(p.getRoleGroup());
+            case USER_GROUP:
+                roleGroup = VariableAssignment.fromProto(p.getUserGroup());
                 break;
             case USER_ID:
                 userId = VariableAssignment.fromProto(p.getUserId());
@@ -72,18 +77,23 @@ public class UserTaskNode extends SubNode<UserTaskNodePb> {
                 throw new RuntimeException("not possible");
         }
 
-        for (UserTaskActionPb action : p.getActionsList()) {
-            actions.add(LHSerializable.fromProto(action, UserTaskAction.class));
+        if (p.hasUserTaskDefVersion()) {
+            userTaskDefVersion = p.getUserTaskDefVersion();
+        }
+
+        for (UTActionTriggerPb action : p.getActionsList()) {
+            actions.add(LHSerializable.fromProto(action, UTActionTrigger.class));
         }
     }
 
     public UserTaskRun createRun(Date time) {
         UserTaskRun out = new UserTaskRun();
         out.userTaskDefName = userTaskDefName;
+        out.userTaskDefVersion = userTaskDefVersion;
 
         switch (assignmentType) {
-            case ROLE_GROUP:
-                out.assignedToType = AssignedToCase.GROUPS;
+            case USER_GROUP:
+                out.assignedToType = AssignedToCase.USER_GROUP;
                 // need to get groups to assign to.
                 // Tried to do it here, but we don't have access to the
                 // parent ThreadRun, so we will do it in arrive() instead.
@@ -100,14 +110,21 @@ public class UserTaskNode extends SubNode<UserTaskNodePb> {
 
     public void validate(LHGlobalMetaStores stores, LHConfig config)
         throws LHValidationError {
-        UserTaskDef utd = stores.getUserTaskDef(userTaskDefName, null);
+        UserTaskDef utd = stores.getUserTaskDef(userTaskDefName, userTaskDefVersion);
 
         if (utd == null) {
             throw new LHValidationError(
                 null,
-                "Specified UserTaskDef " + userTaskDefName + " not found"
+                "Specified UserTaskDef " +
+                userTaskDefName +
+                "/" +
+                userTaskDefVersion +
+                " not found"
             );
         }
+
+        // Now pin the version
+        userTaskDefVersion = utd.version;
 
         if (assignmentType == null) {
             throw new LHValidationError(

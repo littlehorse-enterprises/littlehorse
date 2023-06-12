@@ -10,8 +10,9 @@ public final class ServerFilterRules {
     // relevance ordered
     public static final List<ServerFilterRule> RULES = List.of(
         accept("kafka_stream_state_total_sst"),
-        accept("kafka_consumer_coordinator_rebalance"),
         accept("kafka_stream_state_live_sst"),
+        accept("kafka_stream_state_restoration"),
+        accept("kafka_consumer_coordinator_rebalance"),
         accept("kafka_producer_request"),
         accept("kafka_producer_outgoing_byte"),
         accept("kafka_producer_record_error"),

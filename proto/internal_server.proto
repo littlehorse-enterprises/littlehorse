@@ -356,6 +356,12 @@ message SleepNodeMaturedPb {
     int32 node_run_position = 3;
 }
 
+// This is currently used by the UserTaskRun ActionTrigger, it could be potentially
+// extended in the future to allow scheduling one-off tasks.
+message TriggeredTaskRunPb {
+    ScheduledTaskPb task_to_schedule = 1;
+}
+
 // This is the schema of everything that flows through the Central Command topic.
 message CommandPb {
     google.protobuf.Timestamp time = 1;
@@ -381,6 +387,7 @@ message CommandPb {
         AssignUserTaskRunPb assign_user_task_run = 21;
         CompleteUserTaskRunPb complete_user_task_run = 22;
         PutUserTaskDefPb put_user_task_def = 23;
+        TriggeredTaskRunPb triggered_task_run = 24;
         // TODO: Add SaveUserTask
     }
 }
