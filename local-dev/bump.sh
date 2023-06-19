@@ -67,7 +67,7 @@ read -rp "Do you wish to upgrade to $NEW_VERSION? " yn
 case $yn in
     [Yy]* )
         # update gradle artifact version
-        echo "version=$NEW_VERSION" > ./gradle.properties
+        sed -i "s/version=$CURRENT_VERSION/version=$NEW_VERSION/" ./gradle.properties
         git add --all
         git commit -m "New release $NEW_VERSION"
         git tag "$NEW_VERSION"
