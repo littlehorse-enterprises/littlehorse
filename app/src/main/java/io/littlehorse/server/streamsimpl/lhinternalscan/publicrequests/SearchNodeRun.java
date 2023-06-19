@@ -1,6 +1,7 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.objectId.NodeRunId;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GETableClassEnumPb;
@@ -15,6 +16,7 @@ import io.littlehorse.jlib.common.proto.SearchNodeRunPb;
 import io.littlehorse.jlib.common.proto.SearchNodeRunPb.ByTaskDefPb;
 import io.littlehorse.jlib.common.proto.SearchNodeRunPb.NoderunCriteriaCase;
 import io.littlehorse.jlib.common.proto.SearchNodeRunPb.StatusAndTaskDefPb;
+import io.littlehorse.jlib.common.proto.SearchNodeRunPb.UserTaskRunSearchPb;
 import io.littlehorse.jlib.common.proto.SearchNodeRunReplyPb;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
@@ -29,6 +31,7 @@ public class SearchNodeRun
     public StatusAndTaskDefPb statusAndTaskDef;
     private ByTaskDefPb taskDef;
     public String wfRunId;
+    public UserTaskRunSearchPb userTaskSearch;
 
     public GETableClassEnumPb getObjectType() {
         return GETableClassEnumPb.NODE_RUN;
@@ -58,6 +61,8 @@ public class SearchNodeRun
             case WF_RUN_ID:
                 wfRunId = p.getWfRunId();
                 break;
+            case USER_TASK_RUN:
+                userTaskSearch = p.getUserTaskRun();
             case TASK_DEF:
                 taskDef = p.getTaskDef();
                 break;
@@ -81,6 +86,8 @@ public class SearchNodeRun
             case WF_RUN_ID:
                 out.setWfRunId(wfRunId);
                 break;
+            case USER_TASK_RUN:
+                out.setUserTaskRun(userTaskSearch);
             case TASK_DEF:
                 out.setTaskDef(taskDef);
                 break;
@@ -97,7 +104,8 @@ public class SearchNodeRun
         return out;
     }
 
-    public InternalScan startInternalSearch(LHGlobalMetaStores stores) {
+    public InternalScan startInternalSearch(LHGlobalMetaStores stores)
+        throws LHValidationError {
         InternalScan out = new InternalScan();
         out.storeName = ServerTopology.CORE_STORE;
         out.resultType = ScanResultTypePb.OBJECT_ID;
@@ -150,6 +158,66 @@ public class SearchNodeRun
                     .setStartObjectId(wfRunId + "/")
                     .setEndObjectId(wfRunId + "/~")
                     .build();
+        } else if (type == NoderunCriteriaCase.USER_TASK_RUN) {
+            // TODO: This will change after we implement remote tags.
+            // For example, if request.hasUserId(), it will be REMOTE and the
+            // partitionKey will be attribute string; otherwise, it will be LOCAL.
+            out.type = ScanBoundaryCase.LOCAL_TAG_PREFIX_SCAN;
+            TagPrefixScanPb.Builder prefixScanBuilder = TagPrefixScanPb.newBuilder();
+
+            if (userTaskSearch.hasStatus()) {
+                prefixScanBuilder.addAttributes(
+                    new Attribute("status", userTaskSearch.getStatus().toString())
+                        .toProto()
+                );
+            }
+
+            if (userTaskSearch.hasUserTaskDef()) {
+                prefixScanBuilder.addAttributes(
+                    new Attribute("userTaskDefName", userTaskSearch.getUserTaskDef())
+                        .toProto()
+                );
+            }
+
+            if (userTaskSearch.hasUserId()) {
+                if (userTaskSearch.hasUserGroup()) {
+                    throw new LHValidationError(
+                        null,
+                        "Cannot specify UserID and User Group in same search!"
+                    );
+                }
+                prefixScanBuilder.addAttributes(
+                    new Attribute("userId", userTaskSearch.getUserId()).toProto()
+                );
+            }
+
+            if (userTaskSearch.hasUserGroup()) {
+                prefixScanBuilder.addAttributes(
+                    new Attribute("userGroup", userTaskSearch.getUserGroup())
+                        .toProto()
+                );
+            }
+
+            // TODO: allow unfiltered search. Need to either search without time
+            // constraints over object ids, or need to add an empty tag.
+            if (prefixScanBuilder.getAttributesCount() == 0) {
+                throw new LHValidationError(
+                    null,
+                    "Must specify at least one of: [status, userTaskDefName, userGroup, userId]"
+                );
+            }
+
+            if (userTaskSearch.hasEarliestStart()) {
+                prefixScanBuilder.setEarliestCreateTime(
+                    userTaskSearch.getEarliestStart()
+                );
+            }
+            if (userTaskSearch.hasLatestStart()) {
+                prefixScanBuilder.setLatestCreateTime(
+                    userTaskSearch.getLatestStart()
+                );
+            }
+            out.localTagPrefixScan = prefixScanBuilder.build();
         } else {
             throw new RuntimeException("Yikes, unimplemented type: " + type);
         }

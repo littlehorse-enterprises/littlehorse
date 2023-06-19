@@ -21,8 +21,10 @@ import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.Host;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
 import io.littlehorse.common.model.objectId.ExternalEventDefId;
 import io.littlehorse.common.model.objectId.TaskDefId;
+import io.littlehorse.common.model.objectId.UserTaskDefId;
 import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.proto.AttributePb;
 import io.littlehorse.common.proto.BookmarkPb;
@@ -1345,6 +1347,15 @@ class GlobalMetaStoresServerImpl implements LHGlobalMetaStores {
         return store.get(
             new ExternalEventDefId(name).toString(),
             ExternalEventDef.class
+        );
+    }
+
+    public UserTaskDef getUserTaskDef(String name, Integer version) {
+        return (
+            store.get(
+                new UserTaskDefId(name, version).getStoreKey(),
+                UserTaskDef.class
+            )
         );
     }
 }

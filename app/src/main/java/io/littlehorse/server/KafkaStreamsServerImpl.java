@@ -15,6 +15,8 @@ import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.SubCommand;
+import io.littlehorse.common.model.command.subcommand.AssignUserTaskRun;
+import io.littlehorse.common.model.command.subcommand.CompleteUserTaskRun;
 import io.littlehorse.common.model.command.subcommand.DeleteExternalEventDef;
 import io.littlehorse.common.model.command.subcommand.DeleteTaskDef;
 import io.littlehorse.common.model.command.subcommand.DeleteWfRun;
@@ -22,6 +24,7 @@ import io.littlehorse.common.model.command.subcommand.DeleteWfSpec;
 import io.littlehorse.common.model.command.subcommand.PutExternalEvent;
 import io.littlehorse.common.model.command.subcommand.PutExternalEventDef;
 import io.littlehorse.common.model.command.subcommand.PutTaskDef;
+import io.littlehorse.common.model.command.subcommand.PutUserTaskDef;
 import io.littlehorse.common.model.command.subcommand.PutWfSpec;
 import io.littlehorse.common.model.command.subcommand.ResumeWfRun;
 import io.littlehorse.common.model.command.subcommand.RunWf;
@@ -33,12 +36,14 @@ import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.Host;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
 import io.littlehorse.common.model.metrics.TaskDefMetrics;
 import io.littlehorse.common.model.metrics.WfSpecMetrics;
 import io.littlehorse.common.model.objectId.ExternalEventDefId;
 import io.littlehorse.common.model.objectId.ExternalEventId;
 import io.littlehorse.common.model.objectId.NodeRunId;
 import io.littlehorse.common.model.objectId.TaskDefId;
+import io.littlehorse.common.model.objectId.UserTaskDefId;
 import io.littlehorse.common.model.objectId.VariableId;
 import io.littlehorse.common.model.objectId.WfRunId;
 import io.littlehorse.common.model.objectId.WfSpecId;
@@ -55,6 +60,10 @@ import io.littlehorse.common.proto.WaitForCommandReplyPb;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.exception.LHSerdeError;
+import io.littlehorse.jlib.common.proto.AssignUserTaskRunPb;
+import io.littlehorse.jlib.common.proto.AssignUserTaskRunReplyPb;
+import io.littlehorse.jlib.common.proto.CompleteUserTaskRunPb;
+import io.littlehorse.jlib.common.proto.CompleteUserTaskRunReplyPb;
 import io.littlehorse.jlib.common.proto.DeleteExternalEventDefPb;
 import io.littlehorse.jlib.common.proto.DeleteObjectReplyPb;
 import io.littlehorse.jlib.common.proto.DeleteTaskDefPb;
@@ -67,6 +76,7 @@ import io.littlehorse.jlib.common.proto.GetExternalEventReplyPb;
 import io.littlehorse.jlib.common.proto.GetLatestWfSpecPb;
 import io.littlehorse.jlib.common.proto.GetNodeRunReplyPb;
 import io.littlehorse.jlib.common.proto.GetTaskDefReplyPb;
+import io.littlehorse.jlib.common.proto.GetUserTaskDefReplyPb;
 import io.littlehorse.jlib.common.proto.GetVariableReplyPb;
 import io.littlehorse.jlib.common.proto.GetWfRunReplyPb;
 import io.littlehorse.jlib.common.proto.GetWfSpecReplyPb;
@@ -95,6 +105,8 @@ import io.littlehorse.jlib.common.proto.PutExternalEventPb;
 import io.littlehorse.jlib.common.proto.PutExternalEventReplyPb;
 import io.littlehorse.jlib.common.proto.PutTaskDefPb;
 import io.littlehorse.jlib.common.proto.PutTaskDefReplyPb;
+import io.littlehorse.jlib.common.proto.PutUserTaskDefPb;
+import io.littlehorse.jlib.common.proto.PutUserTaskDefReplyPb;
 import io.littlehorse.jlib.common.proto.PutWfSpecPb;
 import io.littlehorse.jlib.common.proto.PutWfSpecReplyPb;
 import io.littlehorse.jlib.common.proto.RegisterTaskWorkerPb;
@@ -125,6 +137,7 @@ import io.littlehorse.jlib.common.proto.TaskDefMetricsQueryPb;
 import io.littlehorse.jlib.common.proto.TaskDefMetricsReplyPb;
 import io.littlehorse.jlib.common.proto.TaskResultEventPb;
 import io.littlehorse.jlib.common.proto.TaskWorkerHeartBeatPb;
+import io.littlehorse.jlib.common.proto.UserTaskDefIdPb;
 import io.littlehorse.jlib.common.proto.VariableIdPb;
 import io.littlehorse.jlib.common.proto.WfRunIdPb;
 import io.littlehorse.jlib.common.proto.WfSpecIdPb;
@@ -367,6 +380,29 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    public void getUserTaskDef(
+        UserTaskDefIdPb req,
+        StreamObserver<GetUserTaskDefReplyPb> ctx
+    ) {
+        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
+            ctx,
+            UserTaskDef.class,
+            GetUserTaskDefReplyPb.class,
+            config
+        );
+
+        internalComms.getStoreBytesAsync(
+            ServerTopology.CORE_STORE,
+            StoreUtils.getFullStoreKey(
+                new UserTaskDefId(req.getName(), req.getVersion()),
+                UserTaskDef.class
+            ),
+            LHConstants.META_PARTITION_KEY,
+            observer
+        );
+    }
+
+    @Override
     public void getTaskDef(TaskDefIdPb req, StreamObserver<GetTaskDefReplyPb> ctx) {
         StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
             ctx,
@@ -434,6 +470,40 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             ctx,
             PutExternalEventDef.class,
             PutExternalEventDefReplyPb.class
+        );
+    }
+
+    @Override
+    public void putUserTaskDef(
+        PutUserTaskDefPb req,
+        StreamObserver<PutUserTaskDefReplyPb> ctx
+    ) {
+        processCommand(req, ctx, PutUserTaskDef.class, PutUserTaskDefReplyPb.class);
+    }
+
+    @Override
+    public void assignUserTaskRun(
+        AssignUserTaskRunPb req,
+        StreamObserver<AssignUserTaskRunReplyPb> ctx
+    ) {
+        processCommand(
+            req,
+            ctx,
+            AssignUserTaskRun.class,
+            AssignUserTaskRunReplyPb.class
+        );
+    }
+
+    @Override
+    public void completeUserTaskRun(
+        CompleteUserTaskRunPb req,
+        StreamObserver<CompleteUserTaskRunReplyPb> ctx
+    ) {
+        processCommand(
+            req,
+            ctx,
+            CompleteUserTaskRun.class,
+            CompleteUserTaskRunReplyPb.class
         );
     }
 

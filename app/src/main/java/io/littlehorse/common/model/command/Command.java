@@ -3,6 +3,8 @@ package io.littlehorse.common.model.command;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.command.subcommand.AssignUserTaskRun;
+import io.littlehorse.common.model.command.subcommand.CompleteUserTaskRun;
 import io.littlehorse.common.model.command.subcommand.DeleteExternalEvent;
 import io.littlehorse.common.model.command.subcommand.DeleteExternalEventDef;
 import io.littlehorse.common.model.command.subcommand.DeleteTaskDef;
@@ -12,6 +14,7 @@ import io.littlehorse.common.model.command.subcommand.ExternalEventTimeout;
 import io.littlehorse.common.model.command.subcommand.PutExternalEvent;
 import io.littlehorse.common.model.command.subcommand.PutExternalEventDef;
 import io.littlehorse.common.model.command.subcommand.PutTaskDef;
+import io.littlehorse.common.model.command.subcommand.PutUserTaskDef;
 import io.littlehorse.common.model.command.subcommand.PutWfSpec;
 import io.littlehorse.common.model.command.subcommand.ResumeWfRun;
 import io.littlehorse.common.model.command.subcommand.RunWf;
@@ -20,6 +23,7 @@ import io.littlehorse.common.model.command.subcommand.StopWfRun;
 import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
 import io.littlehorse.common.model.command.subcommand.TaskWorkerHeartBeat;
+import io.littlehorse.common.model.command.subcommand.TriggeredTaskRun;
 import io.littlehorse.common.proto.CommandPb;
 import io.littlehorse.common.proto.CommandPb.CommandCase;
 import io.littlehorse.common.util.LHUtil;
@@ -49,6 +53,10 @@ public class Command extends LHSerializable<CommandPb> {
     public ExternalEventTimeout externalEventTimeout;
     public TaskWorkerHeartBeat taskWorkerHeartBeat;
     public DeleteExternalEvent deleteExternalEvent;
+    public PutUserTaskDef putUserTaskDef;
+    public AssignUserTaskRun assignUserTaskRun;
+    public CompleteUserTaskRun completeUserTaskRun;
+    public TriggeredTaskRun triggeredTaskRun;
 
     public Class<CommandPb> getProtoBaseClass() {
         return CommandPb.class;
@@ -121,6 +129,18 @@ public class Command extends LHSerializable<CommandPb> {
                 break;
             case DELETE_EXTERNAL_EVENT:
                 out.setDeleteExternalEvent(deleteExternalEvent.toProto());
+                break;
+            case PUT_USER_TASK_DEF:
+                out.setPutUserTaskDef(putUserTaskDef.toProto());
+                break;
+            case ASSIGN_USER_TASK_RUN:
+                out.setAssignUserTaskRun(assignUserTaskRun.toProto());
+                break;
+            case COMPLETE_USER_TASK_RUN:
+                out.setCompleteUserTaskRun(completeUserTaskRun.toProto());
+                break;
+            case TRIGGERED_TASK_RUN:
+                out.setTriggeredTaskRun(triggeredTaskRun.toProto());
                 break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -196,8 +216,35 @@ public class Command extends LHSerializable<CommandPb> {
                 deleteExternalEvent =
                     DeleteExternalEvent.fromProto(p.getDeleteExternalEvent());
                 break;
+            case PUT_USER_TASK_DEF:
+                putUserTaskDef =
+                    LHSerializable.fromProto(
+                        p.getPutUserTaskDef(),
+                        PutUserTaskDef.class
+                    );
+                break;
+            case ASSIGN_USER_TASK_RUN:
+                assignUserTaskRun =
+                    LHSerializable.fromProto(
+                        p.getAssignUserTaskRun(),
+                        AssignUserTaskRun.class
+                    );
+                break;
+            case COMPLETE_USER_TASK_RUN:
+                completeUserTaskRun =
+                    LHSerializable.fromProto(
+                        p.getCompleteUserTaskRun(),
+                        CompleteUserTaskRun.class
+                    );
+                break;
+            case TRIGGERED_TASK_RUN:
+                triggeredTaskRun =
+                    LHSerializable.fromProto(
+                        p.getTriggeredTaskRun(),
+                        TriggeredTaskRun.class
+                    );
+                break;
             case COMMAND_NOT_SET:
-            default:
                 throw new RuntimeException("Not possible");
         }
     }
@@ -238,6 +285,14 @@ public class Command extends LHSerializable<CommandPb> {
                 return taskWorkerHeartBeat;
             case DELETE_EXTERNAL_EVENT:
                 return deleteExternalEvent;
+            case PUT_USER_TASK_DEF:
+                return putUserTaskDef;
+            case ASSIGN_USER_TASK_RUN:
+                return assignUserTaskRun;
+            case COMPLETE_USER_TASK_RUN:
+                return completeUserTaskRun;
+            case TRIGGERED_TASK_RUN:
+                return triggeredTaskRun;
             case COMMAND_NOT_SET:
         }
         throw new RuntimeException("Not possible");
@@ -296,6 +351,18 @@ public class Command extends LHSerializable<CommandPb> {
         } else if (cls.equals(DeleteExternalEvent.class)) {
             type = CommandCase.DELETE_EXTERNAL_EVENT;
             deleteExternalEvent = (DeleteExternalEvent) cmd;
+        } else if (cls.equals(PutUserTaskDef.class)) {
+            type = CommandCase.PUT_USER_TASK_DEF;
+            putUserTaskDef = (PutUserTaskDef) cmd;
+        } else if (cls.equals(AssignUserTaskRun.class)) {
+            type = CommandCase.ASSIGN_USER_TASK_RUN;
+            assignUserTaskRun = (AssignUserTaskRun) cmd;
+        } else if (cls.equals(CompleteUserTaskRun.class)) {
+            type = CommandCase.COMPLETE_USER_TASK_RUN;
+            completeUserTaskRun = (CompleteUserTaskRun) cmd;
+        } else if (cls.equals(TriggeredTaskRun.class)) {
+            type = CommandCase.TRIGGERED_TASK_RUN;
+            triggeredTaskRun = (TriggeredTaskRun) cmd;
         } else {
             throw new RuntimeException("Unrecognized class: " + cls.getName());
         }

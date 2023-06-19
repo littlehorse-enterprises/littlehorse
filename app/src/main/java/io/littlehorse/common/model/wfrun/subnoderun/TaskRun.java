@@ -205,6 +205,7 @@ public class TaskRun extends SubNodeRun<TaskRunPb> {
                 );
         } catch (LHVarSubError exn) {
             // This should be impossible.
+            // UPDATE 6/9/2023: REALLY? I don't think so...
             throw new RuntimeException(exn);
         }
 

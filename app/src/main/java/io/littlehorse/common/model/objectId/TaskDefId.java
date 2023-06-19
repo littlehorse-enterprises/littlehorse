@@ -46,6 +46,6 @@ public class TaskDefId extends ObjectId<TaskDefIdPb, TaskDefPb, TaskDef> {
     }
 
     public GETableClassEnumPb getType() {
-        return GETableClassEnumPb.WF_SPEC;
+        return GETableClassEnumPb.TASK_DEF;
     }
 }

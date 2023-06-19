@@ -48,13 +48,12 @@ public class MetricsCollectorRestoreListener implements StateRestoreListener {
         final long endingOffset
     ) {
         log.debug(
-            "Started restoration of " +
-            storeName +
-            " partition " +
-            topicPartition.partition() +
-            " total records to be restored " +
+            "Started restoration of {}, partition {}. Total records to be restored: {}",
+            storeName,
+            topicPartition.partition(),
             (endingOffset - startingOffset)
         );
+
         Counter counter = registry.counter(
             "kafka_stream_state_restoration_started",
             createTags(topicPartition, storeName)
@@ -94,11 +93,9 @@ public class MetricsCollectorRestoreListener implements StateRestoreListener {
         final long numRestored
     ) {
         log.debug(
-            "Restored batch " +
-            numRestored +
-            " for " +
-            storeName +
-            " partition " +
+            "Restored batch {} for {} partition {}",
+            numRestored,
+            storeName,
             topicPartition.partition()
         );
 
@@ -117,9 +114,8 @@ public class MetricsCollectorRestoreListener implements StateRestoreListener {
         final long totalRestored
     ) {
         log.debug(
-            "Restoration complete for " +
-            storeName +
-            " partition " +
+            "Restoration complete for {} partition {}",
+            storeName,
             topicPartition.partition()
         );
 

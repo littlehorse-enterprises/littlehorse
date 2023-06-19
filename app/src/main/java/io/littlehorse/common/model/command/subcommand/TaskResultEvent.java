@@ -2,12 +2,10 @@ package io.littlehorse.common.model.command.subcommand;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.ReportTaskReply;
 import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.util.LHUtil;
@@ -26,7 +24,7 @@ public class TaskResultEvent extends SubCommand<TaskResultEventPb> {
     public VariableValue stdout;
     public VariableValue stderr;
     public TaskResultCodePb resultCode;
-    public boolean fromRpc;
+    public Integer utaTaskId;
 
     public String getPartitionKey() {
         return wfRunId;
@@ -45,7 +43,7 @@ public class TaskResultEvent extends SubCommand<TaskResultEventPb> {
     }
 
     public boolean hasResponse() {
-        return fromRpc;
+        return true;
     }
 
     public ReportTaskReply process(LHDAO dao, LHConfig config) {
@@ -61,17 +59,9 @@ public class TaskResultEvent extends SubCommand<TaskResultEventPb> {
         wfRun.cmdDao = dao;
 
         WfSpec wfSpec = dao.getWfSpec(wfRun.wfSpecName, wfRun.wfSpecVersion);
+
         if (wfSpec == null) {
-            wfRun.threadRuns
-                .get(0)
-                .fail(
-                    new Failure(
-                        TaskResultCodePb.INTERNAL_ERROR,
-                        "Appears wfSpec was deleted",
-                        LHConstants.INTERNAL_ERROR
-                    ),
-                    new Date()
-                );
+            wfRun.failDueToWfSpecDeletion();
             out.code = LHResponseCodePb.NOT_FOUND_ERROR;
             out.message = "Apparently WfSpec was deleted!";
             return out;
@@ -91,11 +81,11 @@ public class TaskResultEvent extends SubCommand<TaskResultEventPb> {
             .setThreadRunNumber(threadRunNumber)
             .setTaskRunPosition(taskRunPosition)
             .setTime(LHUtil.fromDate(time))
-            .setResultCode(resultCode)
-            .setFromRpc(fromRpc);
+            .setResultCode(resultCode);
 
         if (stdout != null) b.setOutput(stdout.toProto());
         if (stderr != null) b.setLogOutput(stderr.toProto());
+        if (utaTaskId != null) b.setUtaTaskId(utaTaskId);
 
         return b;
     }
@@ -107,13 +97,15 @@ public class TaskResultEvent extends SubCommand<TaskResultEventPb> {
         this.taskRunPosition = proto.getTaskRunPosition();
         this.time = LHUtil.fromProtoTs(proto.getTime());
         this.resultCode = proto.getResultCode();
-        this.fromRpc = proto.getFromRpc();
 
         if (proto.hasOutput()) {
             this.stdout = VariableValue.fromProto(proto.getOutput());
         }
         if (proto.hasLogOutput()) {
             this.stderr = VariableValue.fromProto(proto.getLogOutput());
+        }
+        if (proto.hasUtaTaskId()) {
+            utaTaskId = proto.getUtaTaskId();
         }
     }
 

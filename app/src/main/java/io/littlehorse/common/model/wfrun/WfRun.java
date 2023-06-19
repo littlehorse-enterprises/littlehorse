@@ -7,6 +7,7 @@ import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.command.Command;
+import io.littlehorse.common.model.command.subcommand.CompleteUserTaskRun;
 import io.littlehorse.common.model.command.subcommand.DeleteWfRun;
 import io.littlehorse.common.model.command.subcommand.ExternalEventTimeout;
 import io.littlehorse.common.model.command.subcommand.ResumeWfRun;
@@ -39,8 +40,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
 
+@Slf4j
 public class WfRun extends GETable<WfRunPb> {
 
     public String id;
@@ -409,11 +412,31 @@ public class WfRun extends GETable<WfRunPb> {
         advance(event.time);
     }
 
+    public void failDueToWfSpecDeletion() {
+        threadRuns
+            .get(0)
+            .fail(
+                new Failure(
+                    TaskResultCodePb.INTERNAL_ERROR,
+                    "Appears wfSpec was deleted",
+                    LHConstants.INTERNAL_ERROR
+                ),
+                new Date()
+            );
+    }
+
     public void processExternalEvent(ExternalEvent event) {
+        // TODO LH-303: maybe if the event has a `threadRunNumber` and
+        // `nodeRunPosition` set, it should do some validation here?
         for (ThreadRun thread : threadRuns) {
             thread.processExternalEvent(event);
         }
         advance(event.getCreatedAt());
+    }
+
+    public void processCompleteUserTaskRun(CompleteUserTaskRun event) {
+        ThreadRun thread = threadRuns.get(event.threadRunNumber);
+        thread.processCompleteUserTaskRun(event);
     }
 
     public void processStopRequest(StopWfRun req) throws LHValidationError {
@@ -515,7 +538,7 @@ public class WfRun extends GETable<WfRunPb> {
         if (newStatus == LHStatusPb.COMPLETED) {
             endTime = time;
             setStatus(LHStatusPb.COMPLETED);
-            System.out.println("Completed " + id + " at " + new Date());
+            log.info("Completed WfRun {} at {} ", id, new Date());
         } else if (newStatus == LHStatusPb.ERROR) {
             endTime = time;
             setStatus(LHStatusPb.ERROR);
