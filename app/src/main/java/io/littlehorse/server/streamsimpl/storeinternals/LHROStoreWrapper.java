@@ -7,6 +7,7 @@ import io.littlehorse.common.model.Storeable;
 import io.littlehorse.jlib.common.exception.LHSerdeError;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.LHKeyValueIterator;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueIterator;
@@ -27,6 +28,8 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
  * of consolidating into one state store far outweigh the extra code written
  * in this directory.
  */
+
+@Slf4j
 public class LHROStoreWrapper {
 
     protected ReadOnlyKeyValueStore<String, Bytes> store;
@@ -51,7 +54,7 @@ public class LHROStoreWrapper {
         try {
             return LHSerializable.fromBytes(raw.get(), cls, config);
         } catch (LHSerdeError exn) {
-            exn.printStackTrace();
+            log.error(exn.getMessage(), exn);
             throw new RuntimeException(
                 "Not possible to have this happen, indicates corrupted store."
             );

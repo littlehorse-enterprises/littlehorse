@@ -60,16 +60,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
-import org.apache.log4j.Logger;
 
+@Slf4j
 public class KafkaStreamsLHDAOImpl implements LHDAO {
-
-    private static final Logger log = Logger.getLogger(KafkaStreamsLHDAOImpl.class);
 
     private Map<String, NodeRun> nodeRunPuts;
     private Map<String, Variable> variablePuts;
@@ -639,8 +638,8 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
             while (iter.hasNext()) {
                 LHIterKeyValue<ScheduledTask> next = iter.next();
                 ScheduledTask scheduledTask = next.getValue();
-                LHUtil.log(
-                    "Rehydration: scheduling task:",
+                log.debug(
+                    "Rehydration: scheduling task: {}",
                     scheduledTask.getStoreKey()
                 );
                 server.onTaskScheduled(scheduledTask.taskDefName, scheduledTask);
@@ -865,7 +864,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         if (partitionIsClaimed) {
             server.onTaskScheduled(scheduledTask.taskDefName, scheduledTask);
         } else {
-            LHUtil.log("haven't claimed partitions, deferring scheduling of tsr");
+            log.debug("Haven't claimed partitions, deferring scheduling of tsr");
         }
     }
 
@@ -915,7 +914,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
             if (oldThing != null) {
                 localStore.delete(oldThing);
             } else {
-                log.debug("Tried to delete nonexistent " + cls.getName() + " " + key);
+                log.debug("Tried to delete nonexistent {} {}", cls.getName(), key);
             }
         }
     }
@@ -949,7 +948,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         } else {
             // Then we know that the object was created and deleted within the same
             // transaction, so we have nothing to do.
-            LHUtil.log("Warn: ", cls, objectId, "created and deleted in same txn.");
+            log.warn("{} {} created and deleted in same txn.", cls, objectId);
         }
     }
 
@@ -1079,7 +1078,9 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         ) {
             while (iter.hasNext()) {
                 LHIterKeyValue<TaskMetricUpdate> next = iter.next();
-                log.debug("Sending out metrics for " + next.getKey());
+
+                log.debug("Sending out metrics for {}", next.getKey());
+
                 localStore.delete(next.getKey());
                 TaskMetricUpdate tmu = next.getValue();
                 forwardTaskMetricUpdate(tmu);

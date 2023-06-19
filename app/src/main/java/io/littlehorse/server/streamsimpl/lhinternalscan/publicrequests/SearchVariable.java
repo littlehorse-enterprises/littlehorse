@@ -23,8 +23,10 @@ import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchVariableReply;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 
+@Slf4j
 public class SearchVariable
     extends PublicScanRequest<SearchVariablePb, SearchVariableReplyPb, VariableIdPb, VariableId, SearchVariableReply> {
 
@@ -47,8 +49,7 @@ public class SearchVariable
             try {
                 bookmark = BookmarkPb.parseFrom(p.getBookmark());
             } catch (Exception exn) {
-                LHUtil.log("Failed to load bookmark:");
-                exn.printStackTrace();
+                log.error("Failed to load bookmark: {}", exn.getMessage(), exn);
             }
         }
 

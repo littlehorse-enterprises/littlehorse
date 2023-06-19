@@ -278,9 +278,9 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
 
         // TODO LH-303: make this throw an error back to client
         if (nr.type != NodeTypeCase.TASK) {
+            log.error("Impossible, got a bad event. TASK_START on non-task node.");
             // also check the exact noderun
             // TODO LH-339: properly process User Task Triggered Actions
-            LHUtil.log("Impossible, got a bad event. TASK_START on non-task node.");
             return;
         }
         nr.taskRun.processStartedEvent(e);
@@ -289,8 +289,8 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     public void processExtEvtTimeout(ExternalEventTimeout timeout) {
         NodeRun nr = getNodeRun(timeout.nodeRunPosition);
         if (nr.type != NodeTypeCase.EXTERNAL_EVENT) {
-            log.warn(
-                "Impossible: got a misconfigured external event timeout: " +
+            log.error(
+                "Impossible: got a misconfigured external event timeout: {}",
                 nr.toJson()
             );
             return;
@@ -302,8 +302,8 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         NodeRun nr = getNodeRun(e.getNodeRunPosition());
         // TODO LH-303: make this throw an error back to client
         if (nr.type != NodeTypeCase.TASK) {
+            log.error("Impossible, got a bad event. TASK_START on non-task node.");
             // TODO LH-339: Properly process User Task Triggered Actions
-            LHUtil.log("Impossible, got a bad event. TASK_START on non-task node.");
             return;
         }
         nr.taskRun.processTaskResult(e);
@@ -312,7 +312,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     public void processSleepNodeMatured(SleepNodeMatured e) {
         NodeRun nr = getNodeRun(e.nodeRunPosition);
         if (nr.type != NodeTypeCase.SLEEP) {
-            LHUtil.log("Tried to mature on non-sleep node");
+            log.warn("Tried to mature on non-sleep node");
             // TODO: how do we wanna handle exceptions?
             return;
         }
@@ -422,9 +422,8 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
                 ) {
                     child.halt(childHaltReason);
                 } else {
-                    LHUtil.log(
-                        "Not halting sibling interrupt thread! This will change",
-                        "in future release."
+                    log.debug(
+                        "Not halting sibling interrupt thread! This will change, in future release."
                     );
                 }
             } else {
@@ -511,17 +510,17 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             // This means we just need to wait until advance() is called again
             // after Thread Resumption
 
-            LHUtil.log("Tried to advance HALTED thread. Doing nothing.");
+            log.info("Tried to advance HALTED thread. Doing nothing.");
             return false;
         } else if (status == LHStatusPb.HALTING) {
             // TODO: Decide whether we want to pull this out into a method
             // like `ThreadRun::updateStatus()` or keep it here
 
-            LHUtil.log("Tried to advance HALTING thread, checking if halted yet.");
+            log.info("Tried to advance HALTING thread, checking if halted yet.");
 
             if (currentNodeRun.canBeInterrupted()) {
                 setStatus(LHStatusPb.HALTED);
-                LHUtil.log("Moving thread to HALTED");
+                log.info("Moving thread to HALTED");
                 return true;
             } else {
                 return false;
@@ -696,10 +695,11 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
                     break;
                 }
             } catch (LHVarSubError exn) {
-                LHUtil.log(
-                    "Failing threadrun due to VarSubError",
+                log.error(
+                    "Failing threadrun due to VarSubError {} {}",
                     wfRun.id,
-                    currentNodePosition
+                    currentNodePosition,
+                    exn
                 );
                 fail(
                     new Failure(
@@ -866,7 +866,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             try {
                 mut.execute(this, varCache, nodeOutput);
             } catch (LHVarSubError exn) {
-                exn.printStackTrace();
+                log.error(exn.getMessage(), exn);
                 exn.addPrefix(
                     "Mutating variable " +
                     mut.lhsName +
@@ -977,6 +977,8 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     }
 }
 
+// TODO: Shouldn't we to move this class to its own file?
+@Slf4j
 class Comparer {
 
     @SuppressWarnings("all") // lol
@@ -987,7 +989,7 @@ class Comparer {
                 ((Comparable) left.getVal()).compareTo((Comparable) right.getVal());
             return result;
         } catch (Exception exn) {
-            LHUtil.log(exn.getMessage());
+            log.error(exn.getMessage(), exn);
             throw new LHVarSubError(exn, "Failed comparing the provided values.");
         }
     }

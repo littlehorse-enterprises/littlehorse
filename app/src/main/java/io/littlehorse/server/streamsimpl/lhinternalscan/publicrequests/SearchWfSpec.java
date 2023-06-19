@@ -9,7 +9,6 @@ import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.SearchWfSpecPb;
 import io.littlehorse.jlib.common.proto.SearchWfSpecReplyPb;
 import io.littlehorse.jlib.common.proto.WfSpecIdPb;
@@ -17,7 +16,9 @@ import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchWfSpecReply;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class SearchWfSpec
     extends PublicScanRequest<SearchWfSpecPb, SearchWfSpecReplyPb, WfSpecIdPb, WfSpecId, SearchWfSpecReply> {
 
@@ -39,8 +40,7 @@ public class SearchWfSpec
             try {
                 bookmark = BookmarkPb.parseFrom(p.getBookmark());
             } catch (Exception exn) {
-                LHUtil.log("Failed to load bookmark:");
-                exn.printStackTrace();
+                log.error("Failed to load bookmark: {}", exn.getMessage(), exn);
             }
         }
 

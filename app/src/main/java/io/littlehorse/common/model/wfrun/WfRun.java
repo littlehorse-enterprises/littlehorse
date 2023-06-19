@@ -185,7 +185,7 @@ public class WfRun extends GETable<WfRunPb> {
         try {
             tspec.validateStartVariables(variables);
         } catch (LHValidationError exn) {
-            LHUtil.log("Invalid variables received");
+            log.error("Invalid variables received", exn);
             // TODO: determine how observability events should look like for this case.
             thread.fail(
                 new Failure(

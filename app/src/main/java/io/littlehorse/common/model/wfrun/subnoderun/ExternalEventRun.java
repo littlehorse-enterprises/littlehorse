@@ -23,11 +23,10 @@ import io.littlehorse.jlib.common.proto.LHStatusPb;
 import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
 import java.util.Date;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class ExternalEventRun extends SubNodeRun<ExternalEventRunPb> {
-
-    private static final Logger log = Logger.getLogger(ExternalEventRun.class);
 
     public String externalEventDefName;
     public Date eventTime;

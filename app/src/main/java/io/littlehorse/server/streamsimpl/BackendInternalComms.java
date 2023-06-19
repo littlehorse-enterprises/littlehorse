@@ -81,6 +81,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.Serdes;
@@ -94,12 +95,9 @@ import org.apache.kafka.streams.ThreadMetadata;
 import org.apache.kafka.streams.state.HostInfo;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class BackendInternalComms implements Closeable {
-
-    private Logger log = LoggerFactory.getLogger(BackendInternalComms.class);
 
     private LHConfig config;
     private Server internalGrpcServer;
@@ -174,7 +172,7 @@ public class BackendInternalComms implements Closeable {
     }
 
     public void close() {
-        LHUtil.log("Closing backend internal comms");
+        log.info("Closing backend internal comms");
         for (ManagedChannel channel : channels.values()) {
             channel.shutdown();
         }
@@ -772,7 +770,7 @@ public class BackendInternalComms implements Closeable {
                         req.getStore()
                     );
             } catch (Exception exn) {
-                exn.printStackTrace();
+                log.error(exn.getMessage(), exn);
                 out.setCode(StoreQueryStatusPb.RSQ_NOT_AVAILABLE);
                 ctx.onNext(out.build());
                 ctx.onCompleted();

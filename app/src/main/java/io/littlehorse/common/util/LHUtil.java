@@ -16,8 +16,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
+@Slf4j
 public class LHUtil {
 
     public static final ObjectMapper mapper = new ObjectMapper();
@@ -38,30 +40,6 @@ public class LHUtil {
         }
 
         return out;
-    }
-
-    public static void logBack(int framesBack, Object... things) {
-        framesBack += 2; // 2 frames needed for processing the thing.
-        StackTraceElement ste = Thread.currentThread().getStackTrace()[framesBack];
-
-        StringBuilder builder = new StringBuilder();
-
-        builder.append("LHorse: ");
-        builder.append(ste.getMethodName());
-        builder.append("() ");
-        builder.append(ste.getFileName());
-        builder.append(": ");
-        builder.append(ste.getLineNumber());
-        builder.append(": ");
-        for (Object thing : things) {
-            builder.append(thing == null ? "null" : thing.toString());
-            builder.append(" ");
-        }
-        System.out.println(builder.toString());
-    }
-
-    public static void log(Object... things) {
-        logBack(1, things); // Add one frame back because of this method call.
     }
 
     public static String generateGuid() {
@@ -184,7 +162,7 @@ public class LHUtil {
         try {
             return mapper.readValue(jsonStr, List.class);
         } catch (JsonProcessingException exn) {
-            exn.printStackTrace();
+            log.error(exn.getMessage(), exn);
             return null;
         }
     }
@@ -194,7 +172,7 @@ public class LHUtil {
         try {
             return mapper.readValue(jsonStr, Map.class);
         } catch (JsonProcessingException exn) {
-            exn.printStackTrace();
+            log.error(exn.getMessage(), exn);
             return null;
         }
     }
@@ -209,7 +187,7 @@ public class LHUtil {
             try {
                 return mapper.writeValueAsString(obj);
             } catch (Exception exn) {
-                LHUtil.log("Failed writing map or list to json, returning null.");
+                log.error("Failed writing map or list to json, returning null.", exn);
                 return null;
             }
         }

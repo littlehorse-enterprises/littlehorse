@@ -11,16 +11,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.streams.processor.StateRestoreListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class MetricsCollectorRestoreListener implements StateRestoreListener {
-
-    private static final Logger log = LoggerFactory.getLogger(
-        MetricsCollectorRestoreListener.class
-    );
 
     private MeterRegistry registry;
     private List<Tag> extraTags;

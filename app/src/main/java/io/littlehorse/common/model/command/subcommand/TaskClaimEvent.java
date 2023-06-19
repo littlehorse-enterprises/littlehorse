@@ -6,7 +6,6 @@ import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.TaskClaimReply;
 import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.model.observabilityevent.ObservabilityEvent;
 import io.littlehorse.common.model.observabilityevent.events.TaskStartOe;
 import io.littlehorse.common.model.wfrun.ScheduledTask;
 import io.littlehorse.common.model.wfrun.WfRun;
@@ -14,7 +13,9 @@ import io.littlehorse.common.proto.TaskClaimEventPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.LHResponseCodePb;
 import java.util.Date;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
 
     public String wfRunId;
@@ -57,14 +58,14 @@ public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
 
         WfRun wfRun = dao.getWfRun(wfRunId);
         if (wfRun == null) {
-            LHUtil.log("WARN: Got taskResult for non-existent wfRun", wfRunId);
+            log.warn("Got taskResult for non-existent wfRun {}", wfRunId);
             return null;
         }
 
         WfSpec wfSpec = dao.getWfSpec(wfRun.wfSpecName, wfRun.wfSpecVersion);
         if (wfSpec == null) {
-            LHUtil.log(
-                "WARN: Got WfRun with missing WfSpec, should be impossible: ",
+            log.warn(
+                "Got WfRun with missing WfSpec, should be impossible: {}",
                 wfRunId
             );
             return null;

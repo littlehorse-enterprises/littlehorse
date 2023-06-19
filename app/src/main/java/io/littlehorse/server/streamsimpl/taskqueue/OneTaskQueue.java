@@ -6,13 +6,12 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 // One instance of this class is responsible for coordinating the grpc backend for
 // one specific TaskDef on one LH Server host.
+@Slf4j
 public class OneTaskQueue {
-
-    private final Logger log = Logger.getLogger(OneTaskQueue.class);
 
     private Queue<PollTaskRequestObserver> hungryClients;
     private Lock lock;
@@ -46,13 +45,10 @@ public class OneTaskQueue {
             lock.lock();
             hungryClients.removeIf(thing -> {
                 log.debug(
-                    "Instance " +
-                    parent.backend.getInstanceId() +
-                    ": Removing task queue observer for taskdef " +
-                    taskDefName +
-                    " with client id " +
-                    disconnectedObserver.getClientId() +
-                    ": " +
+                    "Instance {}: Removing task queue observer for taskdef {} with client id {}: {}",
+                    parent.backend.getInstanceId(),
+                    taskDefName,
+                    disconnectedObserver.getClientId(),
                     disconnectedObserver
                 );
                 return thing.equals(disconnectedObserver);
@@ -84,11 +80,9 @@ public class OneTaskQueue {
         //    add the task id to the taskid list.
 
         log.debug(
-            "Instance " +
-            hostName +
-            ": Task scheduled for wfRun " +
-            scheduledTaskId.wfRunId +
-            ", queue is empty? " +
+            "Instance {}: Task scheduled for wfRun {}, queue is empty? {}",
+            hostName,
+            scheduledTaskId.wfRunId,
             hungryClients.isEmpty()
         );
 
@@ -134,9 +128,8 @@ public class OneTaskQueue {
         }
 
         log.debug(
-            "Instance " +
-            hostName +
-            ": Poll request received for taskDef " +
+            "Instance {}: Poll request received for taskDef {}",
+            hostName,
             taskDefName
         );
 
@@ -170,10 +163,10 @@ public class OneTaskQueue {
             lock.unlock();
             // result = System.nanoTime() - start;
             // if (result > 100) {
-            //     LHUtil.log("Took", result, "ns");
+            //     log.debug("Took {}ns");
             // }
             // if (pendingTaskIds.size() > 2) {
-            //     LHUtil.log("Pending tasks size: " + pendingTaskIds.size());
+            //     log.debug("Pending tasks size: {}", pendingTaskIds.size());
             // }
         }
 

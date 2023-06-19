@@ -6,9 +6,10 @@ import com.google.protobuf.Message;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.proto.StoreQueryStatusPb;
 import io.littlehorse.common.proto.WaitForCommandReplyPb;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.LHResponseCodePb;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class POSTStreamObserver<U extends Message>
     implements StreamObserver<WaitForCommandReplyPb> {
 
@@ -27,10 +28,11 @@ public class POSTStreamObserver<U extends Message>
     }
 
     public void onError(Throwable t) {
-        LHUtil.log(
-            "Got onError() from postObserver. Returning RECORDED_NOT_PROCESSED",
+        log.error(
+            "Got onError() from postObserver. Returning RECORDED_NOT_PROCESSED: {} {}",
+            responseCls,
             t.getMessage(),
-            responseCls
+            t
         );
 
         U response = buildErrorResponse(
@@ -56,7 +58,7 @@ public class POSTStreamObserver<U extends Message>
 
             return response;
         } catch (Exception exn) {
-            exn.printStackTrace();
+            log.error(exn.getMessage(), exn);
             throw new RuntimeException("Yikerz, not possible");
         }
     }
@@ -68,7 +70,7 @@ public class POSTStreamObserver<U extends Message>
                 .getMethod("parseFrom", ByteString.class)
                 .invoke(null, bytes);
         } catch (Exception exn) {
-            exn.printStackTrace();
+            log.error(exn.getMessage(), exn);
             throw new RuntimeException("Not possible");
         }
     }

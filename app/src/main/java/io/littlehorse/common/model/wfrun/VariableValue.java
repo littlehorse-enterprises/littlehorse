@@ -16,8 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 
+@Slf4j
 public class VariableValue extends LHSerializable<VariableValuePb> {
 
     public VariableTypePb type;
@@ -253,7 +255,11 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
         } else if (List.class.isAssignableFrom(val.getClass())) {
             return new VariableValue((List<Object>) val);
         } else {
-            LHUtil.log(val, val.getClass());
+            log.error(
+                "Not possible to get this from jsonpath {}={}",
+                val,
+                val.getClass()
+            );
             throw new RuntimeException("Not possible to get this from jsonpath");
         }
     }
@@ -452,7 +458,11 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
                 throw new LHVarSubError(exn, "Couldn't convert strVal to INT");
             }
         } else {
-            LHUtil.log(LHUtil.objToString(jsonArrVal));
+            log.error(
+                "Can't convert {} to INT ({})",
+                type,
+                LHUtil.objToString(jsonArrVal)
+            );
             throw new LHVarSubError(null, "Cant convert " + type + " to INT");
         }
 

@@ -4,7 +4,9 @@ import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.jlib.common.proto.LHResponseCodePb;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class IntermediateGETResp<
     U extends Message, T extends LHSerializable<U>, V extends Message
 > {
@@ -39,7 +41,7 @@ public class IntermediateGETResp<
             }
             return (V) b.build();
         } catch (Exception exn) {
-            exn.printStackTrace();
+            log.error(exn.getMessage(), exn);
             throw new RuntimeException("Yikerz, not possible");
         }
     }

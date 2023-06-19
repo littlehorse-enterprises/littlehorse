@@ -12,14 +12,13 @@ import io.littlehorse.jlib.common.proto.MetricsWindowLengthPb;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
 import java.util.Date;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
-import org.apache.log4j.Logger;
 
+@Slf4j
 public class WfMetricUpdate
     extends Storeable<WfMetricUpdatePb>
     implements RepartitionSubCommand {
-
-    private static final Logger log = Logger.getLogger(WfMetricUpdate.class);
 
     public Date windowStart;
     public MetricsWindowLengthPb type;
@@ -138,7 +137,7 @@ public class WfMetricUpdate
         }
         store.put(this);
         store.put(toResponse());
-        log.debug("Put WfMetric object for key " + toResponse().getStoreKey());
+        log.debug("Put WfMetric object for key {}", toResponse().getStoreKey());
     }
 
     public Date getCreatedAt() {

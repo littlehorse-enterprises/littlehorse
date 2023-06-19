@@ -14,7 +14,6 @@ import io.littlehorse.common.model.meta.subnode.TaskNode;
 import io.littlehorse.common.model.meta.subnode.UserTaskNode;
 import io.littlehorse.common.model.meta.subnode.WaitForThreadNode;
 import io.littlehorse.common.util.LHGlobalMetaStores;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.EdgePb;
 import io.littlehorse.jlib.common.proto.FailureHandlerDefPb;
 import io.littlehorse.jlib.common.proto.NodePb;
@@ -25,7 +24,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class Node extends LHSerializable<NodePb> {
 
     public NodeCase type;
@@ -233,9 +234,11 @@ public class Node extends LHSerializable<NodePb> {
                 //     "Last outgoing edge has non-null condition!"
                 // );
 
-                LHUtil.log(
-                    "WARN: there is no default edge, better know what you're doing!",
-                    "Future releases will validate that everything is ok."
+                log.warn(
+                    """
+                        There is no default edge, better know what you're doing!.
+                        Future releases will validate that everything is ok.
+                    """
                 );
             }
         }

@@ -21,7 +21,9 @@ import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchWfRunReply;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class SearchWfRun
     extends PublicScanRequest<SearchWfRunPb, SearchWfRunReplyPb, WfRunIdPb, WfRunId, SearchWfRunReply> {
 
@@ -45,8 +47,7 @@ public class SearchWfRun
             try {
                 bookmark = BookmarkPb.parseFrom(p.getBookmark());
             } catch (Exception exn) {
-                LHUtil.log("Failed to load bookmark:");
-                exn.printStackTrace();
+                log.error("Failed to load bookmark: {}", exn.getMessage(), exn);
             }
         }
 

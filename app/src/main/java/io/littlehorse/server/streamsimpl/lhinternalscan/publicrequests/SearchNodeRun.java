@@ -10,7 +10,6 @@ import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb;
 import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.NodeRunIdPb;
 import io.littlehorse.jlib.common.proto.SearchNodeRunPb;
 import io.littlehorse.jlib.common.proto.SearchNodeRunPb.ByTaskDefPb;
@@ -23,7 +22,9 @@ import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchNodeRunReply;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class SearchNodeRun
     extends PublicScanRequest<SearchNodeRunPb, SearchNodeRunReplyPb, NodeRunIdPb, NodeRunId, SearchNodeRunReply> {
 
@@ -48,8 +49,7 @@ public class SearchNodeRun
             try {
                 bookmark = BookmarkPb.parseFrom(p.getBookmark());
             } catch (Exception exn) {
-                LHUtil.log("Failed to load bookmark:");
-                exn.printStackTrace();
+                log.error("Failed to load bookmark: {}", exn.getMessage(), exn);
             }
         }
 

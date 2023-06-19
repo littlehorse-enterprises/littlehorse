@@ -24,7 +24,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class NodeRun extends GETable<NodeRunPb> {
 
     public String wfRunId;
@@ -287,7 +289,7 @@ public class NodeRun extends GETable<NodeRunPb> {
         if (status == LHStatusPb.ERROR) {
             if (failureHandlerIds.size() == failures.size()) {
                 if (failures.size() == 0) {
-                    LHUtil.log("WARN: somehow failed with no failures.");
+                    log.warn("Somehow failed with no failures.");
                     return false;
                 }
                 for (int handlerId : failureHandlerIds) {
@@ -348,7 +350,7 @@ public class NodeRun extends GETable<NodeRunPb> {
         errorMessage = "Doing a retry: " + message;
         this.resultCode = resultCode;
 
-        LHUtil.log("Doing retry");
+        log.info("Doing retry");
 
         threadRun.activateNode(getNode());
     }

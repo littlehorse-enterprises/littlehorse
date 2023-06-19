@@ -2,13 +2,14 @@ package io.littlehorse.server.streamsimpl.util;
 
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.proto.WaitForCommandReplyPb;
-import io.littlehorse.common.util.LHUtil;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class AsyncWaiters {
 
     public Lock lock;
@@ -35,9 +36,7 @@ public class AsyncWaiters {
                 if (waiter.observer != null) {
                     // this means the request has come in again...
                     waiter.observer = observer;
-                    LHUtil.log(
-                        "Warn: got a retry request before the event was processed"
-                    );
+                    log.warn("Got a retry request before the event was processed");
                 } else {
                     waiter.observer = observer;
                     waiter.onMatched();
@@ -62,9 +61,7 @@ public class AsyncWaiters {
                     // they're idempotent, so we just take the first response.
 
                     // Basically, just ignore this.
-                    LHUtil.log(
-                        "Warn: just ignoring the second coming of this command id."
-                    );
+                    log.warn("Just ignoring the second coming of this command id.");
                 } else {
                     waiter.response = response;
                     waiter.onMatched();
@@ -89,7 +86,7 @@ public class AsyncWaiters {
                 if (age < MAX_WAITER_AGE) {
                     break;
                 }
-                LHUtil.log("removing from the iter");
+                log.debug("Removing from the iter");
                 AsyncWaiter waiter = pair.getValue();
                 if (waiter.observer != null) {
                     waiter.observer.onError(

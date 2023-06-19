@@ -14,19 +14,16 @@ import io.littlehorse.server.streamsimpl.storeinternals.utils.LHKeyValueIterator
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import java.time.Duration;
 import java.util.Date;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.kafka.streams.processor.PunctuationType;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
-import org.apache.log4j.Logger;
 
+@Slf4j
 public class RepartitionCommandProcessor
     implements Processor<String, RepartitionCommand, Void, Void> {
-
-    private static final Logger log = Logger.getLogger(
-        RepartitionCommandProcessor.class
-    );
 
     private LHStoreWrapper store;
     private LHConfig config;

@@ -2,9 +2,8 @@ plugins {
     id 'application'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
     id 'java'
-    id "io.freefair.lombok" version "8.0.1"
-
     id 'maven-publish'
+    id 'io.freefair.lombok' version '8.0.1'
 }
 
 group 'io.littlehorse'

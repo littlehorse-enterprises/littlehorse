@@ -49,7 +49,7 @@ public class ExternalEventTimeout extends SubCommand<ExternalEventNodeTimeoutPb>
         WfRun wfRun = dao.getWfRun(wfRunId);
 
         if (wfRun == null) {
-            log.warn("Got an externalEventTimeout for missing wfRun " + wfRunId);
+            log.warn("Got an externalEventTimeout for missing wfRun {}", wfRunId);
             return null;
         }
 

@@ -3,9 +3,10 @@ package io.littlehorse.common.model.meta;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.FailureHandlerDefPb;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class FailureHandlerDef extends LHSerializable<FailureHandlerDefPb> {
 
     public String specificFailure;
@@ -44,16 +45,16 @@ public class FailureHandlerDef extends LHSerializable<FailureHandlerDefPb> {
     public boolean doesHandle(String failureName) {
         if (specificFailure == null) {
             // Then it's a wildcard, which means match all exceptions.
-            LHUtil.log("wildcard exception handler...accepting.");
+            log.debug("Wildcard exception handler...accepting.");
             return true;
         }
 
         if (specificFailure.equals(failureName)) {
-            LHUtil.log("Exact match exception handler");
+            log.debug("Exact match exception handler");
             return true;
         }
 
-        LHUtil.log("Specific: ", this.specificFailure, " handling: " + failureName);
+        log.debug("Specific: {} handling: {}", this.specificFailure, failureName);
 
         if (specificFailure.equals(LHConstants.VAR_ERROR)) {
             return (

@@ -11,12 +11,13 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.KafkaStreamsServerImpl;
 import java.time.Duration;
 import java.util.Date;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.PunctuationType;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
-import org.apache.log4j.Logger;
 
+@Slf4j
 public class CommandProcessor
     implements Processor<String, Command, String, CommandProcessorOutput> {
 
@@ -24,7 +25,6 @@ public class CommandProcessor
     private KafkaStreamsLHDAOImpl dao;
     private LHConfig config;
     private KafkaStreamsServerImpl server;
-    private static final Logger log = Logger.getLogger(CommandProcessor.class);
 
     public CommandProcessor(LHConfig config, KafkaStreamsServerImpl server) {
         this.config = config;
@@ -50,14 +50,15 @@ public class CommandProcessor
     public void process(final Record<String, Command> commandRecord) {
         Command command = commandRecord.value();
         dao.setCommand(command);
+
         log.debug(
-            String.format(
-                "%s Processing command of type %s with commandId %s on partition ",
-                config.getLHInstanceId(),
-                command.type,
-                command.getPartitionKey()
-            )
+            "{} Processing command of type {} with commandId {} on partition {}",
+            config.getLHInstanceId(),
+            command.type,
+            command.commandId,
+            command.getPartitionKey()
         );
+
         try {
             AbstractResponse<?> response = command.process(dao, config);
             dao.commitChanges();
@@ -77,7 +78,7 @@ public class CommandProcessor
                 server.onResponseReceived(command.commandId, cmdReply);
             }
         } catch (Exception exn) {
-            exn.printStackTrace();
+            log.error(exn.getMessage(), exn);
             dao.abortChangesAndMarkWfRunFailed(exn.getMessage());
             // TODO: need to actually close off the response. Otherwise, the
             // request will hang until the CleanupOldWaiters() thing fires and

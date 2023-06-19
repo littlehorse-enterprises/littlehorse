@@ -10,13 +10,11 @@ import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.NewTopic;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class App {
-
-    private static final Logger log = LoggerFactory.getLogger(App.class);
 
     public static void doIdempotentSetup(LHConfig config)
         throws InterruptedException, ExecutionException {

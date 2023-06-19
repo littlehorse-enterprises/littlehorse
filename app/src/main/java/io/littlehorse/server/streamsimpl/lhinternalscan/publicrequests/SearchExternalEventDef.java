@@ -9,7 +9,6 @@ import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.ExternalEventDefIdPb;
 import io.littlehorse.jlib.common.proto.SearchExternalEventDefPb;
 import io.littlehorse.jlib.common.proto.SearchExternalEventDefReplyPb;
@@ -17,7 +16,9 @@ import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchExternalEventDefReply;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class SearchExternalEventDef
     extends PublicScanRequest<SearchExternalEventDefPb, SearchExternalEventDefReplyPb, ExternalEventDefIdPb, ExternalEventDefId, SearchExternalEventDefReply> {
 
@@ -38,8 +39,7 @@ public class SearchExternalEventDef
             try {
                 bookmark = BookmarkPb.parseFrom(p.getBookmark());
             } catch (Exception exn) {
-                LHUtil.log("Failed to load bookmark:");
-                exn.printStackTrace();
+                log.error("Failed to load bookmark: {}", exn.getMessage(), exn);
             }
         }
         if (p.hasPrefix()) prefix = p.getPrefix();

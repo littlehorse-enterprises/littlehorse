@@ -190,16 +190,13 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KafkaStreams.State;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
-    private static final Logger log = LoggerFactory.getLogger(
-        KafkaStreamsServerImpl.class
-    );
     private LHConfig config;
     private Server grpcServer;
     private TaskQueueManager taskQueueManager;
@@ -315,7 +312,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
                 try {
                     f.createNewFile();
                 } catch (IOException exn) {
-                    exn.printStackTrace();
+                    log.error(exn.getMessage(), exn);
                 }
                 isHealthy = true;
             }

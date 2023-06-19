@@ -3,11 +3,10 @@ package io.littlehorse.server.streamsimpl.taskqueue;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.jlib.common.proto.PollTaskPb;
 import io.littlehorse.jlib.common.proto.PollTaskReplyPb;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class PollTaskRequestObserver implements StreamObserver<PollTaskPb> {
-
-    private static final Logger log = Logger.getLogger(PollTaskRequestObserver.class);
 
     private StreamObserver<PollTaskReplyPb> responseObserver;
     private TaskQueueManager taskQueueManager;
@@ -43,11 +42,9 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskPb> {
     @Override
     public void onError(Throwable t) {
         log.info(
-            "Instance " +
-            taskQueueManager.backend.getInstanceId() +
-            ": Client " +
-            clientId +
-            " disconnected from task queue " +
+            "Instance {}: Client {} disconnected from task queue {}",
+            taskQueueManager.backend.getInstanceId(),
+            clientId,
             taskDefName
         );
         taskQueueManager.onRequestDisconnected(this);
@@ -63,9 +60,8 @@ public class PollTaskRequestObserver implements StreamObserver<PollTaskPb> {
             taskDefName = req.getTaskDefName();
         } else if (!taskDefName.equals(req.getTaskDefName())) {
             log.error(
-                "TaskDefName not null: " +
-                taskDefName +
-                " but doesnt match " +
+                "TaskDefName not null: {} but doesnt match {}",
+                taskDefName,
                 req.getTaskDefName()
             );
         }

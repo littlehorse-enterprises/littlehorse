@@ -13,7 +13,9 @@ import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
 import io.littlehorse.jlib.common.proto.WaitThreadRunPb;
 import java.util.Date;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class WaitThreadRun extends SubNodeRun<WaitThreadRunPb> {
 
     public Integer threadRunNumber;
@@ -88,7 +90,7 @@ public class WaitThreadRun extends SubNodeRun<WaitThreadRunPb> {
             return true;
         } else {
             // nothing to do.
-            LHUtil.log("still waiting for thread");
+            log.debug("Still waiting for thread");
             return false;
         }
     }

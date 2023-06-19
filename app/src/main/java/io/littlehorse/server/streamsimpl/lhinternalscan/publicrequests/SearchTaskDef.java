@@ -9,7 +9,6 @@ import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.SearchTaskDefPb;
 import io.littlehorse.jlib.common.proto.SearchTaskDefReplyPb;
 import io.littlehorse.jlib.common.proto.TaskDefIdPb;
@@ -17,7 +16,9 @@ import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchTaskDefReply;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class SearchTaskDef
     extends PublicScanRequest<SearchTaskDefPb, SearchTaskDefReplyPb, TaskDefIdPb, TaskDefId, SearchTaskDefReply> {
 
@@ -38,8 +39,7 @@ public class SearchTaskDef
             try {
                 bookmark = BookmarkPb.parseFrom(p.getBookmark());
             } catch (Exception exn) {
-                LHUtil.log("Failed to load bookmark:");
-                exn.printStackTrace();
+                log.error("Failed to load bookmark: {}", exn.getMessage(), exn);
             }
         }
         if (p.hasPrefix()) prefix = p.getPrefix();

@@ -9,8 +9,9 @@ import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.SleepNodeMaturedPb;
-import io.littlehorse.common.util.LHUtil;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class SleepNodeMatured extends SubCommand<SleepNodeMaturedPb> {
 
     public String wfRunId;
@@ -54,13 +55,13 @@ public class SleepNodeMatured extends SubCommand<SleepNodeMaturedPb> {
     public AbstractResponse<?> process(LHDAO dao, LHConfig config) {
         WfRun wfRun = dao.getWfRun(wfRunId);
         if (wfRun == null) {
-            LHUtil.log("Uh oh, invalid timer event, no associated WfRun found.");
+            log.debug("Uh oh, invalid timer event, no associated WfRun found.");
             return null;
         }
 
         WfSpec wfSpec = dao.getWfSpec(wfRun.wfSpecName, wfRun.wfSpecVersion);
         if (wfSpec == null) {
-            LHUtil.log("Uh oh, invalid timer event, no associated WfSpec found.");
+            log.debug("Uh oh, invalid timer event, no associated WfSpec found.");
             return null;
         }
         wfRun.wfSpec = wfSpec;
@@ -69,7 +70,7 @@ public class SleepNodeMatured extends SubCommand<SleepNodeMaturedPb> {
         try {
             wfRun.processSleepNodeMatured(this, dao.getEventTime());
         } catch (LHValidationError exn) {
-            LHUtil.log("Uh, invalid timer event: " + exn.getMessage());
+            log.debug("Uh, invalid timer event: {}", exn.getMessage(), exn);
         }
 
         return null;

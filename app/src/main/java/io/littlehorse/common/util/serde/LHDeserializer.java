@@ -2,10 +2,11 @@ package io.littlehorse.common.util.serde;
 
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.exception.LHSerdeError;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Deserializer;
 
+@Slf4j
 public class LHDeserializer<T extends LHSerializable<?>> implements Deserializer<T> {
 
     private Class<T> cls;
@@ -23,7 +24,7 @@ public class LHDeserializer<T extends LHSerializable<?>> implements Deserializer
         try {
             return LHSerializable.fromBytes(b, cls, config);
         } catch (LHSerdeError exn) {
-            LHUtil.log("Caught and re-throwing exception from deserializer.");
+            log.error("Caught and re-throwing exception from deserializer.", exn);
             throw new RuntimeException(exn);
         }
     }

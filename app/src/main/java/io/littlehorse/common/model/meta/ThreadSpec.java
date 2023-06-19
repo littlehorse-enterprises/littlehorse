@@ -6,7 +6,6 @@ import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.util.LHGlobalMetaStores;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.InterruptDefPb;
 import io.littlehorse.jlib.common.proto.NodePb;
 import io.littlehorse.jlib.common.proto.NodePb.NodeCase;
@@ -20,8 +19,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 
+@Slf4j
 public class ThreadSpec extends LHSerializable<ThreadSpecPb> {
 
     public String name;
@@ -263,11 +264,7 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPb> {
         for (Map.Entry<String, VariableDef> e : required.entrySet()) {
             VariableValue val = vars.get(e.getKey());
             if (val == null) {
-                LHUtil.log(
-                    "Variable",
-                    e.getKey(),
-                    "not provided, defaulting to null"
-                );
+                log.debug("Variable {} not provided, defaulting to null", e.getKey());
                 continue;
             }
 

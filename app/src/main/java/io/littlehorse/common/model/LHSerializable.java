@@ -5,11 +5,12 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.exception.LHSerdeError;
 import java.lang.reflect.InvocationTargetException;
+import lombok.extern.slf4j.Slf4j;
 
 // `P` is the proto class used to serialize.
+@Slf4j
 public abstract class LHSerializable<T extends Message> {
 
     public abstract GeneratedMessageV3.Builder<?> toProto();
@@ -45,7 +46,7 @@ public abstract class LHSerializable<T extends Message> {
             out.initFrom(proto);
             return out;
         } catch (Exception exn) {
-            LHUtil.log("this shouldn't be possible");
+            log.error("This shouldn't be possible", exn);
             throw new RuntimeException(exn);
         }
     }

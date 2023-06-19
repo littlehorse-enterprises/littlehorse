@@ -12,7 +12,9 @@ import io.littlehorse.jlib.common.proto.VariableTypePb;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class VariableMutation extends LHSerializable<VariableMutationPb> {
 
     public String lhsName;
@@ -161,7 +163,7 @@ public class VariableMutation extends LHSerializable<VariableMutationPb> {
         } catch (LHVarSubError exn) {
             throw exn;
         } catch (Exception exn) {
-            exn.printStackTrace();
+            log.error(exn.getMessage(), exn);
             throw new LHVarSubError(
                 exn,
                 "Caught unexpected error when mutating variables: " + exn.getMessage()
