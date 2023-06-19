@@ -32,7 +32,6 @@ public class GlobalMetadataProcessor implements Processor<String, Bytes, Void, V
         String key = record.key();
         Bytes value = record.value();
 
-        // System.out.println((value == null ? "delete " : "put ") + key);
         if (value == null) {
             store.delete(key);
         } else {

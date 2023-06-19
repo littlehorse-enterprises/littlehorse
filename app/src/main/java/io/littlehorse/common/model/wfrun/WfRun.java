@@ -40,8 +40,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
 
+@Slf4j
 public class WfRun extends GETable<WfRunPb> {
 
     public String id;
@@ -536,7 +538,7 @@ public class WfRun extends GETable<WfRunPb> {
         if (newStatus == LHStatusPb.COMPLETED) {
             endTime = time;
             setStatus(LHStatusPb.COMPLETED);
-            System.out.println("Completed " + id + " at " + new Date());
+            log.info("Completed WfRun {} at {} ", id, new Date());
         } else if (newStatus == LHStatusPb.ERROR) {
             endTime = time;
             setStatus(LHStatusPb.ERROR);

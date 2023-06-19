@@ -133,8 +133,6 @@ public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
             return out;
         }
 
-        System.out.println("Got here");
-
         if (
             utr.status != UserTaskRunStatusPb.CLAIMED &&
             utr.status != UserTaskRunStatusPb.ASSIGNED_NOT_CLAIMED &&
@@ -149,8 +147,6 @@ public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
         // In the future, we could add some verification to make sure that the
         // user actually exists. For now, this is fine.
         nr.userTaskRun.reassignTo(this);
-        System.out.println(assigneeType);
-        System.out.println(userGroup);
 
         wfRun.advance(dao.getEventTime());
         out.code = LHResponseCodePb.OK;

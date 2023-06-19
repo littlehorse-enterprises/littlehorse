@@ -365,7 +365,6 @@ public class LHConfig extends ConfigBase {
             LHConfig.ADVERTISED_LISTENERS_KEY,
             LHConfig.DEFAULT_PUBLIC_LISTENER
         );
-        System.out.println("Listener names are " + listenerNames);
 
         for (String lister : listenerNames.split(",")) {
             publicAdvertisedHostMap.put(lister, getHostForName(lister));

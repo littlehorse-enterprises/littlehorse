@@ -238,14 +238,6 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
             return new VariableValue();
         }
 
-        // if (!(val instanceof List)) {
-        //     System.out.println(val);
-        //     System.out.println(val.getClass());
-        //     throw new RuntimeException("Unexpected result from jsonpath");
-        // }
-
-        // val = ((List<Object>) val).get(0);
-
         if (Long.class.isAssignableFrom(val.getClass())) {
             return new VariableValue((long) val);
         } else if (Integer.class.isAssignableFrom(val.getClass())) {
