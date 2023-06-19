@@ -270,7 +270,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             return;
         }
 
-        nr.userTaskRun.processTaskAssignedEvent(event);
+        nr.userTaskRun.reassignTo(event);
     }
 
     public void processTaskStartedEvent(TaskClaimEvent e) {

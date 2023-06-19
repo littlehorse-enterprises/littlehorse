@@ -176,8 +176,23 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
     }
 
     private void assignToGroup(Node node) throws LHVarSubError {
-        // TODO: LH-317
-        throw new NotImplementedException();
+        VariableValue groupIdVal = nodeRun.threadRun.assignVariable(
+            node.userTaskNode.userGroup
+        );
+
+        if (groupIdVal.type != VariableTypePb.STR) {
+            throw new LHVarSubError(
+                null,
+                "VariableAssignment for group id should be STR!" +
+                " What we got is: " +
+                groupIdVal.type
+            );
+        }
+
+        userGroup = groupIdVal.strVal;
+        status = UserTaskRunStatusPb.ASSIGNED_NOT_CLAIMED;
+        specificUserId = null;
+        userId = null;
     }
 
     private void scheduleAction(UTActionTrigger trigger) throws LHVarSubError {
@@ -309,21 +324,23 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
         return out;
     }
 
-    // TODO: LH-307
-    public void processTaskAssignedEvent(AssignUserTaskRun event) {
+    public void reassignTo(AssignUserTaskRun event) {
         switch (event.assigneeType) {
             case USER_GROUP:
                 assignedToType = AssignedToCase.USER_GROUP;
                 userGroup = event.userGroup;
+                specificUserId = null;
+                userId = null;
+                status = UserTaskRunStatusPb.ASSIGNED_NOT_CLAIMED;
                 break;
             case USER_ID:
                 assignedToType = AssignedToCase.SPECIFIC_USER_ID;
                 userId = event.userId;
                 specificUserId = event.userId;
+                status = UserTaskRunStatusPb.CLAIMED;
                 break;
             case ASSIGNEE_NOT_SET:
-                // TODO: return BAD_REQUEST_ERROR to client.
-                log.warn("TODO: Return error to client");
+            // nothing to do, this isn't possible.
         }
     }
 

@@ -22,7 +22,7 @@ public class UserTaskNode extends SubNode<UserTaskNodePb> {
 
     public String userTaskDefName;
     public AssignmentCase assignmentType;
-    public VariableAssignment roleGroup;
+    public VariableAssignment userGroup;
     public VariableAssignment userId;
     public List<UTActionTrigger> actions;
     public Integer userTaskDefVersion;
@@ -42,7 +42,7 @@ public class UserTaskNode extends SubNode<UserTaskNodePb> {
 
         switch (assignmentType) {
             case USER_GROUP:
-                out.setUserGroup(roleGroup.toProto());
+                out.setUserGroup(userGroup.toProto());
                 break;
             case USER_ID:
                 out.setUserId(userId.toProto());
@@ -68,7 +68,7 @@ public class UserTaskNode extends SubNode<UserTaskNodePb> {
         userTaskDefName = p.getUserTaskDefName();
         switch (assignmentType) {
             case USER_GROUP:
-                roleGroup = VariableAssignment.fromProto(p.getUserGroup());
+                userGroup = VariableAssignment.fromProto(p.getUserGroup());
                 break;
             case USER_ID:
                 userId = VariableAssignment.fromProto(p.getUserId());
