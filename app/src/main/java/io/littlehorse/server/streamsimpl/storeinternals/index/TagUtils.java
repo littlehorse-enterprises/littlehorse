@@ -163,6 +163,13 @@ public class TagUtils {
                     Pair.of("status", thing.status.toString())
                 )
             );
+            out.add(
+                new Tag(
+                    thing,
+                    TagStorageTypePb.LOCAL_UNCOUNTED,
+                    Pair.of("taskDefName", thing.taskRun.taskDefName)
+                )
+            );
         } else if (thing.type == NodeTypeCase.USER_TASK) {
             out.addAll(thing.userTaskRun.getTags());
         }
