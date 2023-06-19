@@ -1,7 +1,7 @@
 package io.littlehorse.server.metrics;
 
-import com.sun.net.httpserver.HttpServer;
-import io.grpc.netty.shaded.io.netty.handler.codec.http.HttpResponseStatus;
+import io.javalin.Javalin;
+import io.javalin.http.Handler;
 import io.littlehorse.common.LHConfig;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tags;
@@ -15,8 +15,6 @@ import io.micrometer.prometheus.PrometheusMeterRegistry;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Map;
 import org.apache.kafka.streams.KafkaStreams;
@@ -29,7 +27,7 @@ public class PrometheusMetricExporter implements Closeable {
         PrometheusMetricExporter.class
     );
 
-    private HttpServer server;
+    private Javalin server;
     private List<KafkaStreamsMetrics> kafkaStreamsMeters;
     private PrometheusMeterRegistry prometheusRegistry;
     private LHConfig config;
@@ -78,38 +76,28 @@ public class PrometheusMetricExporter implements Closeable {
     public void start() throws IOException {
         int port = config.getPrometheusExporterPort();
         String path = config.getPrometheusExporterPath();
+
         log.info("Starting prometheus service at :{}{}", port, path);
-
-        server = HttpServer.create(new InetSocketAddress(port), 0);
-        server.createContext(
-            path,
-            httpExchange -> {
-                log.debug(
-                    "Request [from={}, path={}, method={}]",
-                    httpExchange.getRemoteAddress().getHostString(),
-                    httpExchange.getRequestURI().getPath(),
-                    httpExchange.getRequestMethod()
-                );
-                String response = prometheusRegistry.scrape();
-
-                httpExchange.sendResponseHeaders(
-                    HttpResponseStatus.OK.code(),
-                    response.getBytes().length
-                );
-                try (OutputStream os = httpExchange.getResponseBody()) {
-                    os.write(response.getBytes());
-                }
-            }
-        );
-        server.start();
-
+        server = Javalin.create().get(path, handleRequest()).start(port);
         log.info("Prometheus started");
+    }
+
+    private Handler handleRequest() {
+        return ctx -> {
+            log.debug(
+                "Request [from={}, path={}, method={}]",
+                ctx.req().getRemoteHost(),
+                ctx.path(),
+                ctx.method()
+            );
+            ctx.result(prometheusRegistry.scrape());
+        };
     }
 
     @Override
     public void close() {
         if (server != null) {
-            server.stop(1);
+            server.stop();
         }
         kafkaStreamsMeters.stream().forEach(metric -> metric.close());
         prometheusRegistry.close();

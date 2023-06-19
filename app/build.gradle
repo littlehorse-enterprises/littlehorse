@@ -60,6 +60,7 @@ dependencies {
 
     // Prometheus
     implementation 'io.micrometer:micrometer-registry-prometheus:latest.release'
+    implementation 'io.javalin:javalin:5.6.0'
 }
 
 
