@@ -12,9 +12,9 @@ import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.NodeRunIdPb;
 import io.littlehorse.jlib.common.proto.SearchNodeRunPb;
+import io.littlehorse.jlib.common.proto.SearchNodeRunPb.ByTaskDefPb;
 import io.littlehorse.jlib.common.proto.SearchNodeRunPb.NoderunCriteriaCase;
 import io.littlehorse.jlib.common.proto.SearchNodeRunPb.StatusAndTaskDefPb;
-import io.littlehorse.jlib.common.proto.SearchNodeRunPb.TaskDefPb;
 import io.littlehorse.jlib.common.proto.SearchNodeRunReplyPb;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
@@ -27,7 +27,7 @@ public class SearchNodeRun
 
     public NoderunCriteriaCase type;
     public StatusAndTaskDefPb statusAndTaskDef;
-    private TaskDefPb taskDefPb;
+    private ByTaskDefPb taskDef;
     public String wfRunId;
 
     public GETableClassEnumPb getObjectType() {
@@ -58,8 +58,8 @@ public class SearchNodeRun
             case WF_RUN_ID:
                 wfRunId = p.getWfRunId();
                 break;
-            case TASKDEF:
-                taskDefPb = p.getTaskdef();
+            case TASK_DEF:
+                taskDef = p.getTaskDef();
                 break;
             case NODERUNCRITERIA_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -81,8 +81,8 @@ public class SearchNodeRun
             case WF_RUN_ID:
                 out.setWfRunId(wfRunId);
                 break;
-            case TASKDEF:
-                out.setTaskdef(taskDefPb);
+            case TASK_DEF:
+                out.setTaskDef(taskDef);
                 break;
             case NODERUNCRITERIA_NOT_SET:
                 throw new RuntimeException("not possible");
@@ -126,19 +126,19 @@ public class SearchNodeRun
                 );
             }
             out.localTagPrefixScan = prefixScanBuilder.build();
-        } else if (type == NoderunCriteriaCase.TASKDEF) {
+        } else if (type == NoderunCriteriaCase.TASK_DEF) {
             out.type = ScanBoundaryCase.LOCAL_TAG_PREFIX_SCAN;
             TagPrefixScanPb.Builder prefixScanBuilder = TagPrefixScanPb
                 .newBuilder()
                 .addAttributes(
-                    new Attribute("taskDefName", taskDefPb.getTaskDefName()).toProto()
+                    new Attribute("taskDefName", taskDef.getTaskDefName()).toProto()
                 );
 
-            if (taskDefPb.hasEarliestStart()) {
-                prefixScanBuilder.setEarliestCreateTime(taskDefPb.getEarliestStart());
+            if (taskDef.hasEarliestStart()) {
+                prefixScanBuilder.setEarliestCreateTime(taskDef.getEarliestStart());
             }
-            if (taskDefPb.hasLatestStart()) {
-                prefixScanBuilder.setLatestCreateTime(taskDefPb.getLatestStart());
+            if (taskDef.hasLatestStart()) {
+                prefixScanBuilder.setLatestCreateTime(taskDef.getLatestStart());
             }
             out.localTagPrefixScan = prefixScanBuilder.build();
         } else if (type == NoderunCriteriaCase.WF_RUN_ID) {
