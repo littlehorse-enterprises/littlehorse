@@ -1,0 +1,26 @@
+plugins {
+    id 'application'
+    id 'java-library'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(":client")
+    implementation 'org.slf4j:slf4j-api:2.0.7'
+    implementation 'org.slf4j:slf4j-simple:2.0.7'
+}
+
+application {
+    mainClass = 'io.littlehorse.jtests.TestDriver'
+}
+
+// This is provided so that we can use the Reflection API to determine the names
+// of parameters for Task Functions and match them to the TaskDef param names.
+// Otherwise, the names just become the position in the order of args, which is
+// less descriptive.
+compileJava {
+    options.compilerArgs << '-parameters'
+}

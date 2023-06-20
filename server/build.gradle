@@ -1,0 +1,84 @@
+plugins {
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'java'
+    id 'maven-publish'
+    id 'io.freefair.lombok' version '8.0.1'
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = group
+            artifactId = 'littlehorse-server'
+            version = version
+            from components.java
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url = uri("https://packages.confluent.io/maven/")
+    }
+}
+
+dependencies {
+    // Use JUnit Jupiter for testing.
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
+    testImplementation 'org.assertj:assertj-core:3.24.2'
+    testImplementation 'org.junit-pioneer:junit-pioneer:2.0.0'
+    testImplementation 'org.mockito:mockito-core:5.2.0'
+    testImplementation 'net.datafaker:datafaker:1.9.0'
+
+    // I think this was added by gradle init. No touchy touchy.
+    implementation 'com.google.guava:guava:30.1.1-jre'
+
+    // Stuff for JSON processing
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.4'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.4'
+    implementation 'com.jayway.jsonpath:json-path:2.6.0'
+
+    // Logging
+    implementation 'org.slf4j:slf4j-api:2.0.7'
+    implementation 'org.slf4j:slf4j-log4j12:2.0.7'
+
+    // Stuff for Kafka
+    implementation 'org.apache.kafka:kafka-clients:3.4.0'
+    implementation 'org.apache.kafka:kafka-streams:3.4.0'
+
+    // Utils
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+
+    // gRPC and Protobuf now included in lh-jlib
+    implementation project(':client')
+
+    // Prometheus
+    implementation 'io.micrometer:micrometer-registry-prometheus:latest.release'
+    implementation 'io.javalin:javalin:5.6.0'
+}
+
+
+application {
+    // Define the main class for the application.
+    mainClass = 'io.littlehorse.App'
+    executableDir = 'server'
+}
+
+compileJava {
+    options.compilerArgs << '-parameters'
+}
+
+shadowJar {
+    mergeServiceFiles()
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        exceptionFormat = 'full'
+    }
+    jvmArgs = ['--add-opens', 'java.base/java.lang=ALL-UNNAMED', '--add-opens', 'java.base/java.util=ALL-UNNAMED']
+}

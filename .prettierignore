@@ -1,1 +1,2 @@
-app/src/main/java/io/littlehorse/common/proto
+server/src/main/java/io/littlehorse/common/proto
+client/src/main/java/io/littlehorse/jlib/common/proto

@@ -21,6 +21,6 @@ fi
 
 cd "$WORK_DIR"
 
-./gradlew clean installDist -x shadowJar -x test
+./gradlew server:clean server:installDist -x shadowJar -x test
 
-./app/build/install/app/server/app "$CONFIG_PATH"
+./server/build/install/server/server/server "$CONFIG_PATH"

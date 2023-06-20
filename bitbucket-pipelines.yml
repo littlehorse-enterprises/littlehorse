@@ -7,11 +7,9 @@ definitions:
         caches:
           - gradle
         script:
-          - git clone git@bitbucket.org:littlehorse-core/lh-jlib.git
-          - cd lh-jlib && gradle publishToMavenLocal -x javadoc -x test && cd ..
           - gradle test shadowJar
         artifacts:
-          - app/build/libs/app-*-all.jar
+          - server/build/libs/server-*-all.jar
     - step: &build-docker-image
         deployment: production
         name: Build and Deploy Docker Image

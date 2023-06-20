@@ -1,0 +1,4 @@
+allprojects {
+    group "${group}"
+    version "${version}"
+}

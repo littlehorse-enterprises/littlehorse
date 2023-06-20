@@ -1,0 +1,98 @@
+plugins {
+    // Because this is going to be a java library
+    id 'java-library'
+
+    // And we need to publish it.
+    id 'maven-publish'
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    archiveClassifier = 'sources'
+}
+
+task javadocJar(type: Jar) {
+    from javadoc
+    archiveClassifier = 'javadoc'
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = group
+            artifactId = 'littlehorse-client'
+            version = version
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
+}
+
+repositories {
+    // Use Maven Central for resolving dependencies.
+    mavenCentral()
+}
+
+dependencies {
+    // Use JUnit Jupiter for testing.
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
+    testImplementation 'org.assertj:assertj-core:3.24.2'
+    testImplementation 'org.junit-pioneer:junit-pioneer:2.0.0'
+    testImplementation 'net.datafaker:datafaker:1.9.0'
+    testImplementation 'org.slf4j:slf4j-log4j12:2.0.7'
+
+    // Logging interface
+    implementation 'org.slf4j:slf4j-api:2.0.7'
+
+    // Stuff for Kafka
+    implementation 'org.apache.kafka:kafka-clients:3.3.1'
+
+    // HTTP Client
+    implementation 'com.squareup.okhttp3:okhttp:4.9.0'
+
+    // Utils
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+
+    // JSONPath
+    api 'com.fasterxml.jackson.core:jackson-databind:2.12.4'
+    api 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.4'
+    api 'com.jayway.jsonpath:json-path:2.6.0'
+
+    // Protobuf
+    api 'com.google.protobuf:protobuf-java:3.21.2'
+    api 'com.google.protobuf:protobuf-java-util:3.21.2'
+    api 'io.grpc:grpc-netty-shaded:1.50.2'
+    api 'io.grpc:grpc-protobuf:1.50.2'
+    api 'io.grpc:grpc-services:1.50.2'
+    api 'io.grpc:grpc-stub:1.50.2'
+    api 'org.apache.tomcat:annotations-api:6.0.53'
+}
+
+// This is required so that we can use the Reflection API to determine the names
+// of parameters for Task Functions and match them to the TaskDef param names.
+compileJava {
+    options.compilerArgs << '-parameters'
+}
+
+javadoc {
+    excludes = [
+        'io/littlehorse/jlib/common/proto/**',
+        'io/littlehorse/jlib/wfsdk/internal/**',
+        'io/littlehorse/jlib/worker/internal/**',
+        'io/littlehorse/jlib/common/util/**',
+        'io/littlehorse/jlib/common/LHLibUtil.java',
+        '**/ConfigBase.java',
+        'io/littlehorse/jlib/common/exception/**'
+    ]
+    options.memberLevel = JavadocMemberLevel.PUBLIC
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        exceptionFormat = 'full'
+    }
+    jvmArgs = ['--add-opens', 'java.base/java.lang=ALL-UNNAMED', '--add-opens', 'java.base/java.util=ALL-UNNAMED']
+}

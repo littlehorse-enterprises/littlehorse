@@ -1,7 +1,7 @@
 # Ignore binary and build stuff
 .gradle
-app/build
-app/bin/
+*/build
+*/bin/
 
 
 # FOR THE TEST HARNESS:
