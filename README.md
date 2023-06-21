@@ -247,3 +247,32 @@ Upgrade to a new version:
 ```
 
 > More information at https://github.com/npm/node-semver
+
+
+## Code analysis
+
+Run sonar:
+
+```
+./local-dev/setup-code-analyzer.sh
+./local-dev/code-analysis.sh
+```
+
+Stop and start:
+
+```
+docker stop sonarqube
+docker start sonarqube
+```
+
+Clean sonar:
+
+```
+./local-dev/clean-code-analyzer.sh
+```
+
+Run dependency check (It could take several minutes):
+
+```
+./local-dev/dependencies-analysis.sh
+```
