@@ -1,19 +1,26 @@
 package io.littlehorse.common;
 
+import com.google.common.base.Strings;
 import io.grpc.ChannelCredentials;
 import io.grpc.TlsChannelCredentials;
 import io.grpc.TlsServerCredentials;
+import io.littlehorse.common.exceptions.LHMisconfigurationException;
 import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.jlib.common.config.ConfigBase;
-import io.littlehorse.jlib.common.config.LHWorkerConfig;
-import io.littlehorse.jlib.common.proto.HostInfoPb;
 import io.littlehorse.jlib.common.proto.VariableAssignmentPb.SourceCase;
+import io.littlehorse.server.auth.AuthorizationProtocol;
+import io.littlehorse.server.auth.OAuthConfig;
+import io.littlehorse.server.listener.ListenerProtocol;
+import io.littlehorse.server.listener.ServerListenerConfig;
+import io.littlehorse.server.listener.TlsConfig;
+import io.littlehorse.server.listener.TlsConfig.TlsConfigBuilder;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.AdminClientConfig;
@@ -33,7 +41,6 @@ import org.apache.kafka.common.errors.TopicExistsException;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Utils;
 import org.apache.kafka.streams.StreamsConfig;
-import org.apache.kafka.streams.state.HostInfo;
 
 @Slf4j
 public class LHConfig extends ConfigBase {
@@ -62,11 +69,6 @@ public class LHConfig extends ConfigBase {
         "LHS_DEFAULT_WFRUN_RETENTION_HOURS";
     public static final String DEFAULT_EXTERNAL_EVENT_RETENTION_HOURS =
         "LHS_DEFAULT_EXTERNAL_EVENT_RETENTION_HOURS";
-
-    // Host and Port Configuration Env Vars
-    public static final String ADVERTISED_LISTENERS_KEY =
-        "LHS_ADVERTISED_LISTENER_NAMES";
-    public static final String API_BIND_PORT_KEY = "LHS_API_BIND_PORT";
     public static final String INTERNAL_BIND_PORT_KEY = "LHS_INTERNAL_BIND_PORT";
     public static final String INTERNAL_ADVERTISED_HOST_KEY =
         "LHS_INTERNAL_ADVERTISED_HOST";
@@ -90,14 +92,21 @@ public class LHConfig extends ConfigBase {
 
     public static final String SHOULD_CREATE_TOPICS_KEY = "LHS_SHOULD_CREATE_TOPICS";
 
-    public static final String DEFAULT_PUBLIC_LISTENER =
-        LHWorkerConfig.DEFAULT_PUBLIC_LISTENER;
-
+    // PROMETHEUS
     public static final String PROMETHEUS_EXPORTER_PORT_KEY =
         "LHS_PROMETHEUS_EXPORTER_PORT";
-
     public static final String PROMETHEUS_EXPORTER_PATH_KEY =
         "LHS_PROMETHEUS_EXPORTER_PATH";
+
+    // ADVERTISED LISTENERS
+    public static final String ADVERTISED_LISTENERS_KEY = "LHS_ADVERTISED_LISTENERS";
+    public static final String ADVERTISED_LISTENERS_PROTOCOL_MAP_KEY =
+        "LHS_ADVERTISED_LISTENERS_PROTOCOL_MAP";
+    public static final String ADVERTISED_LISTENERS_AUTHORIZATION_MAP_KEY =
+        "LHS_ADVERTISED_LISTENERS_AUTHORIZATION_MAP";
+    private List<ServerListenerConfig> advertisedListenerConfigs;
+    private Map<String, ListenerProtocol> advertisedListenersProtocolMap;
+    private Map<String, AuthorizationProtocol> advertisedListenersAuthorizationMap;
 
     protected String[] getEnvKeyPrefixes() {
         return new String[] { "LHS_" };
@@ -329,7 +338,7 @@ public class LHConfig extends ConfigBase {
     }
 
     public int getPrometheusExporterPort() {
-        return Integer.valueOf(
+        return Integer.parseInt(
             getOrSetDefault(LHConfig.PROMETHEUS_EXPORTER_PORT_KEY, "5555")
         );
     }
@@ -338,65 +347,239 @@ public class LHConfig extends ConfigBase {
         return getOrSetDefault(LHConfig.PROMETHEUS_EXPORTER_PATH_KEY, "/metrics");
     }
 
-    public int getApiBindPort() {
-        return Integer.valueOf(getOrSetDefault(LHConfig.API_BIND_PORT_KEY, "5000"));
-    }
-
     // If INTERNAL_BIND_PORT isn't set, we just return API_BIND_PORT + 1.
     public int getInternalBindPort() {
-        return Integer.valueOf(
-            getOrSetDefault(
-                LHConfig.INTERNAL_BIND_PORT_KEY,
-                Integer.valueOf(getApiBindPort() + 1).toString()
-            )
+        return Integer.parseInt(
+            getOrSetDefault(LHConfig.INTERNAL_BIND_PORT_KEY, "5001")
         );
     }
 
-    private Map<String, HostInfoPb> publicAdvertisedHostMap;
+    public OAuthConfig getOAuthConfigByAdvertisedListenerName(
+        String advertisedListenerName
+    ) {
+        String configPrefix = "LHS_ADVERTISED_LISTENER_" + advertisedListenerName;
 
-    public Map<String, HostInfoPb> getPublicAdvertisedHostMap() {
-        if (publicAdvertisedHostMap != null) {
-            return publicAdvertisedHostMap;
-        }
-
-        publicAdvertisedHostMap = new HashMap<>();
-
-        String listenerNames = getOrSetDefault(
-            LHConfig.ADVERTISED_LISTENERS_KEY,
-            LHConfig.DEFAULT_PUBLIC_LISTENER
+        String clientId = getOrSetDefault(configPrefix + "_CLIENT_ID", null);
+        String clientSecret = getOrSetDefault(configPrefix + "_CLIENT_SECRET", null);
+        String authorizationServer = getOrSetDefault(
+            configPrefix + "_AUTHORIZATION_SERVER",
+            null
         );
 
-        for (String lister : listenerNames.split(",")) {
-            publicAdvertisedHostMap.put(lister, getHostForName(lister));
-        }
-
-        return publicAdvertisedHostMap;
-    }
-
-    private HostInfoPb getHostForName(String listenerName) {
-        String fullHost = getOrSetDefault(listenerName, "localhost:5000");
-
-        HostInfoPb.Builder out = HostInfoPb.newBuilder();
-        int colonIndex = fullHost.indexOf(":");
-        if (colonIndex == -1) {
-            throw new RuntimeException(
-                "Listener " + listenerName + " set to invalid host " + fullHost
+        if (clientId == null || clientSecret == null || authorizationServer == null) {
+            throw new LHMisconfigurationException(
+                """
+                OAuth configuration called but not provided.
+                Check missing client id, client secret or authorization server endpoint
+                """
             );
         }
 
-        out.setHost(fullHost.substring(0, colonIndex));
         try {
-            out.setPort(
-                Integer.valueOf(fullHost.substring(colonIndex + 1, fullHost.length()))
+            return OAuthConfig
+                .builder()
+                .authorizationServer(URI.create(authorizationServer))
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .build();
+        } catch (IllegalArgumentException e) {
+            throw new LHMisconfigurationException(
+                "Malformed URL check: " + configPrefix + "_WELLKNOWN_ENDPOINT"
             );
-        } catch (Exception exn) {
-            throw new RuntimeException(exn);
         }
-        return out.build();
     }
 
-    public HostInfo getInternalHostInfo() {
-        return new HostInfo(getInternalAdvertisedHost(), getInternalAdvertisedPort());
+    public TlsConfig getTlsConfigByAdvertisedListenerName(
+        String advertisedListenerName
+    ) {
+        String configPrefix = "LHS_ADVERTISED_LISTENER_" + advertisedListenerName;
+
+        String caCertFile = getOrSetDefault(configPrefix + "_CA_CERT", null);
+        String serverCertFile = getOrSetDefault(configPrefix + "_CERT", null);
+        String serverKeyFile = getOrSetDefault(configPrefix + "_KEY", null);
+
+        TlsConfigBuilder builder = TlsConfig.builder();
+
+        if (caCertFile != null) {
+            builder.caCert(new File(caCertFile));
+        }
+
+        if (serverCertFile == null || serverKeyFile == null) {
+            throw new LHMisconfigurationException(
+                "TLS configuration called but not provided. Check missing cert or key"
+            );
+        }
+
+        return builder
+            .cert(new File(serverCertFile))
+            .key(new File(serverKeyFile))
+            .build();
+    }
+
+    public Map<String, AuthorizationProtocol> getAdvertisedListenersAuthorizationMap() {
+        if (advertisedListenersAuthorizationMap != null) {
+            return advertisedListenersAuthorizationMap;
+        }
+
+        String rawAuthProtocolMap = getOrSetDefault(
+            LHConfig.ADVERTISED_LISTENERS_AUTHORIZATION_MAP_KEY,
+            null
+        );
+
+        if (Strings.isNullOrEmpty(rawAuthProtocolMap)) {
+            return advertisedListenersAuthorizationMap = Map.of();
+        }
+
+        String regexAllAuthProtocols = Arrays
+            .stream(AuthorizationProtocol.values())
+            .map(Enum::name)
+            .collect(Collectors.joining("|"));
+
+        if (
+            !rawAuthProtocolMap.matches(
+                "([a-zA-Z0-9_]+:(" + regexAllAuthProtocols + ")+,?)+"
+            )
+        ) {
+            throw new LHMisconfigurationException(
+                "Invalid configuration: " +
+                LHConfig.ADVERTISED_LISTENERS_AUTHORIZATION_MAP_KEY
+            );
+        }
+
+        List<String> rawAuthProtocols = Arrays.asList(rawAuthProtocolMap.split(","));
+
+        return (
+            advertisedListenersAuthorizationMap =
+                rawAuthProtocols
+                    .stream()
+                    .map(protocolMap -> protocolMap.split(":"))
+                    .collect(
+                        Collectors.toMap(
+                            strings -> strings[0],
+                            strings -> AuthorizationProtocol.valueOf(strings[1])
+                        )
+                    )
+        );
+    }
+
+    public Map<String, ListenerProtocol> getAdvertisedListenersProtocolMap() {
+        if (advertisedListenersProtocolMap != null) {
+            return advertisedListenersProtocolMap;
+        }
+
+        String rawProtocolMap = getOrSetDefault(
+            LHConfig.ADVERTISED_LISTENERS_PROTOCOL_MAP_KEY,
+            ""
+        );
+
+        String regexAllProtocols = Arrays
+            .stream(ListenerProtocol.values())
+            .map(Enum::name)
+            .collect(Collectors.joining("|"));
+
+        if (
+            !rawProtocolMap.matches("([a-zA-Z0-9_]+:(" + regexAllProtocols + ")+,?)+")
+        ) {
+            throw new LHMisconfigurationException(
+                "Invalid configuration: " +
+                LHConfig.ADVERTISED_LISTENERS_PROTOCOL_MAP_KEY
+            );
+        }
+
+        List<String> rawProtocols = Arrays.asList(rawProtocolMap.split(","));
+
+        return (
+            advertisedListenersProtocolMap =
+                rawProtocols
+                    .stream()
+                    .map(protocolMap -> protocolMap.split(":"))
+                    .collect(
+                        Collectors.toMap(
+                            strings -> strings[0],
+                            strings -> ListenerProtocol.valueOf(strings[1])
+                        )
+                    )
+        );
+    }
+
+    public List<ServerListenerConfig> getAdvertisedListeners() {
+        if (advertisedListenerConfigs != null) {
+            return advertisedListenerConfigs;
+        }
+
+        String rawListenersConfig = getOrSetDefault(
+            LHConfig.ADVERTISED_LISTENERS_KEY,
+            "PLAIN://localhost:5000"
+        );
+        Map<String, ListenerProtocol> advertisedListenersProtocolMap = getAdvertisedListenersProtocolMap();
+        Map<String, AuthorizationProtocol> advertisedListenersAuthMap = getAdvertisedListenersAuthorizationMap();
+
+        if (
+            !rawListenersConfig.matches("([a-zA-Z0-9_]+://[a-zA-Z0-9.\\-]+:\\d+,?)+")
+        ) {
+            throw new LHMisconfigurationException(
+                "Invalid configuration: " + LHConfig.ADVERTISED_LISTENERS_KEY
+            );
+        }
+
+        List<String> rawListenersConfigs = Arrays.asList(
+            rawListenersConfig.split(",")
+        );
+
+        List<ServerListenerConfig> listenersConfigs = rawListenersConfigs
+            .stream()
+            .map(listener -> {
+                String[] split = listener.split(":(//)?");
+                String name = split[0];
+                String host = split[1];
+                String port = split[2];
+                ListenerProtocol protocol = advertisedListenersProtocolMap.get(name);
+                AuthorizationProtocol authProtocol = advertisedListenersAuthMap.isEmpty()
+                    ? AuthorizationProtocol.NONE
+                    : advertisedListenersAuthMap.get(name);
+
+                return ServerListenerConfig
+                    .builder()
+                    .name(name)
+                    .host(host)
+                    .port(Integer.parseInt(port))
+                    .protocol(protocol)
+                    .config(this)
+                    .authorizationProtocol(authProtocol)
+                    .build();
+            })
+            .toList();
+
+        int totalDifferentPorts = listenersConfigs
+            .stream()
+            .map(ServerListenerConfig::getPort)
+            .collect(Collectors.toSet())
+            .size();
+
+        if (totalDifferentPorts != listenersConfigs.size()) {
+            throw new LHMisconfigurationException(
+                "Invalid configuration: " +
+                LHConfig.ADVERTISED_LISTENERS_KEY +
+                ". Ports should be different"
+            );
+        }
+
+        if (
+            listenersConfigs
+                .stream()
+                .anyMatch(serverListenerConfig ->
+                    serverListenerConfig.getProtocol() == null
+                )
+        ) {
+            throw new LHMisconfigurationException(
+                "Invalid configuration: " +
+                LHConfig.ADVERTISED_LISTENERS_PROTOCOL_MAP_KEY +
+                ". Missing protocols"
+            );
+        }
+
+        advertisedListenerConfigs = listenersConfigs;
+        return listenersConfigs;
     }
 
     public void cleanup() {

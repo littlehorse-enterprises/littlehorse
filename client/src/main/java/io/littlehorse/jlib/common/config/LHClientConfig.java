@@ -131,15 +131,18 @@ public class LHClientConfig extends ConfigBase {
             log.warn("Using insecure channel!");
             out = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build();
         } else {
-            log.info("Using mtls!");
+            log.info("Using secure connection!");
+            TlsChannelCredentials.Builder tlsBuilder = TlsChannelCredentials
+                .newBuilder()
+                .trustManager(new File(caCertFile));
 
-            File clientCert = new File(clientCertFile);
-            File clientKey = new File(clientKeyFile);
-            File rootCA = new File(caCertFile);
-
-            TlsChannelCredentials.Builder tlsBuilder = TlsChannelCredentials.newBuilder();
-            tlsBuilder.keyManager(clientCert, clientKey);
-            tlsBuilder.trustManager(rootCA);
+            if (clientCertFile != null && clientKeyFile != null) {
+                log.info("Using mtls!");
+                tlsBuilder.keyManager(
+                    new File(clientCertFile),
+                    new File(clientKeyFile)
+                );
+            }
 
             out =
                 Grpc

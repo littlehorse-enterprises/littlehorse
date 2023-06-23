@@ -59,6 +59,7 @@ import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.HostInfoPb;
+import io.littlehorse.server.listener.ServerListenerConfig;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.storeinternals.LHROStoreWrapper;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
@@ -839,7 +840,20 @@ public class BackendInternalComms implements Closeable {
             InternalGetAdvertisedHostsPb req,
             StreamObserver<InternalGetAdvertisedHostsReplyPb> ctx
         ) {
-            Map<String, HostInfoPb> hosts = config.getPublicAdvertisedHostMap();
+            Map<String, HostInfoPb> hosts = config
+                .getAdvertisedListeners()
+                .stream()
+                .collect(
+                    Collectors.toMap(
+                        ServerListenerConfig::getName,
+                        listenerConfig ->
+                            HostInfoPb
+                                .newBuilder()
+                                .setHost(listenerConfig.getHost())
+                                .setPort(listenerConfig.getPort())
+                                .build()
+                    )
+                );
             InternalGetAdvertisedHostsReplyPb.Builder out = InternalGetAdvertisedHostsReplyPb.newBuilder();
 
             out.putAllHosts(hosts);

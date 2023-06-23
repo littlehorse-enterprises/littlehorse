@@ -137,9 +137,6 @@ public interface LHDAO extends LHGlobalMetaStores {
         Date time
     );
 
-    public List<HostInfoPb> getAllAdvertisedHosts(String listenerName)
-        throws LHBadRequestError;
-
     public HostInfoPb getAdvertisedHost(Host host, String listenerName)
         throws LHBadRequestError, LHConnectionError;
 

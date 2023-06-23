@@ -21,3 +21,11 @@ services:
       BITNAMI_DEBUG: "true"
       KAFKA_CFG_NODE_ID: "1"
       KAFKA_KRAFT_CLUSTER_ID: abcdefghijklmnopqrstuv
+  keycloak:
+    network_mode: host
+    container_name: lh-server-auth
+    image: quay.io/keycloak/keycloak:21.1.1
+    command: ["start-dev", "--http-port=8888"]
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin

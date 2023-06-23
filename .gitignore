@@ -32,3 +32,9 @@ package-lock.json
 # Don't put the lhctl binary in the git tree.
 # NOTE: need to put "download lhctl" as part of onboarding process.
 build/lhctl
+
+# Intellij
+.idea/
+
+# Others
+local-dev/certs/

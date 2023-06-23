@@ -2,10 +2,6 @@ package io.littlehorse.server;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
-import io.grpc.Grpc;
-import io.grpc.Server;
-import io.grpc.ServerBuilder;
-import io.grpc.TlsServerCredentials;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
@@ -143,6 +139,7 @@ import io.littlehorse.jlib.common.proto.WfRunIdPb;
 import io.littlehorse.jlib.common.proto.WfSpecIdPb;
 import io.littlehorse.jlib.common.proto.WfSpecMetricsQueryPb;
 import io.littlehorse.jlib.common.proto.WfSpecMetricsReplyPb;
+import io.littlehorse.server.listener.ListenersManager;
 import io.littlehorse.server.metrics.MetricsCollectorRestoreListener;
 import io.littlehorse.server.metrics.PrometheusMetricExporter;
 import io.littlehorse.server.streamsimpl.BackendInternalComms;
@@ -178,18 +175,13 @@ import io.littlehorse.server.streamsimpl.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streamsimpl.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streamsimpl.util.GETStreamObserver;
 import io.littlehorse.server.streamsimpl.util.POSTStreamObserver;
-import io.micrometer.core.instrument.binder.grpc.MetricCollectingServerInterceptor;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KafkaStreams.State;
@@ -198,7 +190,6 @@ import org.apache.kafka.streams.KafkaStreams.State;
 public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     private LHConfig config;
-    private Server grpcServer;
     private TaskQueueManager taskQueueManager;
 
     private KafkaStreams coreStreams;
@@ -210,6 +201,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     private BackendInternalComms internalComms;
     private boolean isHealthy;
     private PrometheusMetricExporter prometheusMetricExporter;
+
+    private ListenersManager listenersManager;
 
     public KafkaStreamsServerImpl(LHConfig config) {
         this.config = config;
@@ -236,27 +229,14 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
                 config.getStreamsConfig("timer", false)
             );
 
-        ServerBuilder<?> builder;
+        prometheusMetricExporter = new PrometheusMetricExporter(config);
 
-        Executor executor = Executors.newFixedThreadPool(16);
-        TlsServerCredentials.Builder security = config.getServerCreds();
-        if (security == null) {
-            builder = ServerBuilder.forPort(config.getApiBindPort());
-        } else {
-            builder =
-                Grpc.newServerBuilderForPort(
-                    config.getApiBindPort(),
-                    security.build()
-                );
-        }
-
-        builder
-            .keepAliveTime(10, TimeUnit.SECONDS)
-            .keepAliveTimeout(3, TimeUnit.SECONDS)
-            .permitKeepAliveTime(10, TimeUnit.SECONDS)
-            .permitKeepAliveWithoutCalls(true)
-            .addService(this)
-            .executor(executor);
+        listenersManager =
+            new ListenersManager(
+                config,
+                this,
+                prometheusMetricExporter.getRegistry()
+            );
 
         coreStreams.setStateListener((newState, oldState) -> {
             coreState = newState;
@@ -271,17 +251,6 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         });
 
         internalComms = new BackendInternalComms(config, coreStreams, timerStreams);
-
-        prometheusMetricExporter = new PrometheusMetricExporter(config);
-
-        grpcServer =
-            builder
-                .intercept(
-                    new MetricCollectingServerInterceptor(
-                        prometheusMetricExporter.getRegistry()
-                    )
-                )
-                .build();
 
         prometheusMetricExporter.bind(
             Map.of("core", coreStreams, "timer", timerStreams)
@@ -1103,7 +1072,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         coreStreams.start();
         timerStreams.start();
         internalComms.start();
-        grpcServer.start();
+        listenersManager.start();
         prometheusMetricExporter.start();
     }
 
@@ -1138,11 +1107,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         })
             .start();
 
-        try {
-            log.info("Shutting down main server");
-            grpcServer.shutdownNow();
-            grpcServer.awaitTermination();
-        } catch (InterruptedException ignored) {}
+        log.info("Shutting down main servers");
+        listenersManager.close();
 
         try {
             latch.await();
@@ -1176,11 +1142,6 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
         latch.await();
         System.out.println("Done waiting for countdown latch");
-    }
-
-    public List<HostInfoPb> getAllAdvertisedHosts(String listenerName)
-        throws LHBadRequestError {
-        return internalComms.getAllAdvertisedHosts(listenerName);
     }
 
     public Set<Host> getAllInternalHosts() {

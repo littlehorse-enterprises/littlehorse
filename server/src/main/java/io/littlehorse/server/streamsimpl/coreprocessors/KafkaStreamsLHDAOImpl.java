@@ -1188,12 +1188,6 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     }
 
     @Override
-    public List<HostInfoPb> getAllAdvertisedHosts(String listenerName)
-        throws LHBadRequestError {
-        return server.getAllAdvertisedHosts(listenerName);
-    }
-
-    @Override
     public HostInfoPb getAdvertisedHost(Host host, String listenerName)
         throws LHBadRequestError, LHConnectionError {
         return server.getAdvertisedHost(host, listenerName);
