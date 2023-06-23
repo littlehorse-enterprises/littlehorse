@@ -10,7 +10,7 @@ then
   CONFIG_NAME="$1"
 fi
 
-CONFIG_PATH="${SCRIPT_DIR}/${CONFIG_NAME}.config"
+CONFIG_PATH="${SCRIPT_DIR}/configs/${CONFIG_NAME}.config"
 
 if [ ! -f "$CONFIG_PATH" ]
 then
