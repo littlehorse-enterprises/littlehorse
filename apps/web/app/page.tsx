@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Calendar } from "ui";
+import { Button, Calendar } from "ui";
 import moment from "moment"
 import { WorkflowExecutionMetrics } from "./components/metrics/WorkflowExecutionMetrics";
 import { TaskExecutionMetrics } from "./components/metrics/TaskExecutionMetrics";
+import { MetadataSearch } from "./components/tables/MetadataSearch";
 
 export default function Page() {
   const [windowLength, setWIndowLength] = useState('HOURS_2');
@@ -46,7 +47,14 @@ export default function Page() {
                     </div>
 
       </section>
-
+      
+      <section>
+        <div className="between">
+        <h2>Metadata search</h2> 
+          <Button>-test-</Button>
+        </div>
+        <MetadataSearch />
+      </section>
     </>
   );
 }

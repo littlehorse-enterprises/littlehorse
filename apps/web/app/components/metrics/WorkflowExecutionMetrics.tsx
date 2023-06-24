@@ -139,9 +139,9 @@ export const WorkflowExecutionMetrics = ({windows= 16, lastWindowStart=moment().
                     <H3 className="tracking-tight text-1xl title-dashboard">Workflow Execution metrics</H3>
                     <H4 className="tracking-tight text-1xl title-dashboard">Cluster level</H4>
                 </div>
-                <div className="text-right buttons-group">
-                <Button onClick={() => setChart('workflows')} className={`btn-dark ${chart === 'workflows' && "active-dark"}`}>Workflows</Button>
-                <Button onClick={() => setChart('latency')} className={`btn-dark ${chart === 'latency' && "active-dark"}`}>Latency</Button>
+                <div className="btns btns-right">
+                <Button onClick={() => setChart('workflows')} className={`btn btn-dark ${chart === 'workflows' && "active-dark"}`}>Workflows</Button>
+                <Button onClick={() => setChart('latency')} className={`btn btn-dark ${chart === 'latency' && "active-dark"}`}>Latency</Button>
                 </div>
             </div>
                             

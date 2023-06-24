@@ -4,6 +4,7 @@ import * as React from "react";
 export * from "./Header";
 
 export { Button, type ButtonProps } from "./components/Button";
+export { LoadMoreButton } from "./components/LoadMoreButton";
 export {
     H1, type H1Props,
     H2, type H2Props,
