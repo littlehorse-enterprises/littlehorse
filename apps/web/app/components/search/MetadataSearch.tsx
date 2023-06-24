@@ -6,26 +6,37 @@ interface Result{
     version?:number 
     type?:string
 }
-const allLimit = 10
+const allLimit = 5
+const defaultLimit = 15
+const keyDownDelay = 1000 // miliseconds
+
+
 
 let first = true
+let myTimeout:NodeJS.Timeout 
+
 export const MetadataSearch = () => {
+
     const [loading, setLoading] = useState(false)
     const [firstLoad, setFirstLoad] = useState(false)
-    const [limit, setLimit] = useState(10)
+    const [limit, setLimit] = useState(defaultLimit)
     const [taskDefBookmark, setTaskDefBookmark] = useState()
     const [wfSpecBookmark, setWfSpecBookmark] = useState()
-    const [bookmark, setExternalEventDefBookmark] = useState()
+    const [externalEventDefBookmark, setExternalEventDefBookmark] = useState()
     const [type, setType] = useState('')
     const [prefix, setPrefix] = useState('')
     const [results, setResults] = useState<any[]>([])
 
-    const fetchData = async(kind:string, paginate=false, useLimit=true ) => {
+    const fetchData = async(type:string, paginate=false, useLimit=true ) => {
+        let bookmark:string|undefined
+        if(type === "wfSpec") bookmark = wfSpecBookmark
+        if(type === "taskDef") bookmark = taskDefBookmark
+        if(type === "externalEventDef") bookmark = externalEventDefBookmark
         const filters:any = { limit:useLimit? limit: allLimit }
-        if(prefix) filters['prefix'] = prefix
+        if(prefix?.trim()) filters['prefix'] = prefix.trim()
         if(paginate && bookmark) filters['bookmark'] = bookmark
         if(paginate && !bookmark) return {status:'done'}
-        const res = await fetch('./api/search/'+kind,{
+        const res = await fetch('./api/search/'+type,{
             method:'POST',
             body: JSON.stringify({
                 ...filters
@@ -42,15 +53,18 @@ export const MetadataSearch = () => {
         if(type === "wfSpec") setWfSpecBookmark(bookmark)
         if(type === "taskDef") setTaskDefBookmark(bookmark)
         if(type === "externalEventDef") setExternalEventDefBookmark(bookmark)
-
         setResults(results.map( (v:Result) => ({...v, type:type.charAt(0).toUpperCase() + type.slice(1)})))
         setLoading(false)
     }
     const getMData = async () => {
+        setWfSpecBookmark(undefined)
+        setTaskDefBookmark(undefined)
+        setExternalEventDefBookmark(undefined)
         if(type) return getData()
 
         setLoading(true)
         setResults([])
+
         const wfSpecs = await fetchData('wfSpec', false, false)
         setWfSpecBookmark(wfSpecs.bookmark)
         setResults(prev => [...prev, ...wfSpecs.results.map((v:any) => ({...v, type:'WfSpecs'}))])
@@ -62,22 +76,59 @@ export const MetadataSearch = () => {
         const externalEventDefs = await fetchData('externalEventDef', false, false)
         setExternalEventDefBookmark(externalEventDefs.bookmark)
         setResults(prev => [...prev, ...externalEventDefs.results.map((v:any) => ({...v, type:'ExternalEventDef'}))])
+
         setFirstLoad(true)
+        setLoading(false)
+    }
+    const loadMMore = async () => {
+        if(type) return loadMore()
+        setLoading(true)
+
+        if(wfSpecBookmark){
+            const wfSpecs = await fetchData('wfSpec', true, false)
+            if(wfSpecs.status!='done'){
+                setWfSpecBookmark(wfSpecs.bookmark)
+                setResults(prev => [...prev, ...wfSpecs.results.map((v:any) => ({...v, type:'WfSpecs'}))])
+            } 
+        }
+
+        if(taskDefBookmark){
+            const taskDefs = await fetchData('taskDef', true, false)
+            if(taskDefs.status!='done'){
+                setTaskDefBookmark(taskDefs.bookmark)
+                setResults(prev => [...prev, ...taskDefs.results.map((v:any) => ({...v, type:'TaskDef'}))])
+            }
+        }
+        if(externalEventDefBookmark){
+            const externalEventDefs = await fetchData('externalEventDef', true, false)
+            if(externalEventDefs.status!='done'){
+                setExternalEventDefBookmark(externalEventDefs.bookmark)
+                setResults(prev => [...prev, ...externalEventDefs.results.map((v:any) => ({...v, type:'ExternalEventDef'}))])
+            }
+        }
+
         setLoading(false)
     }
     const loadMore = async () => {
         setLoading(true)
-        const {results, bookmark, status} = await fetchData('wfSpec',true)
+
+        const {results, bookmark, status} = await fetchData(type,true)
         if(status==='done') return 
-        setExternalEventDefBookmark(bookmark)
+            if(type === "wfSpec") setWfSpecBookmark(bookmark)
+            if(type === "taskDef") setTaskDefBookmark(bookmark)
+            if(type === "externalEventDef") setExternalEventDefBookmark(bookmark)
         setResults(prev => [...prev, ...results])
         setLoading(false)
     }
 
+    const keyDownHandler = (e:React.KeyboardEvent<HTMLInputElement>) => {
+        clearTimeout(myTimeout)
+        if( e.key == 'Enter' ) return getMData()
+        myTimeout = setTimeout(getMData, keyDownDelay);
+    }
 
     useEffect( () => {
         if(firstLoad) getMData()
-        
     },[type])
 
     useEffect( () => {
@@ -88,7 +139,7 @@ export const MetadataSearch = () => {
 
     return <div>
         Metadata Search 
-        <input placeholder="search" type="text" value={prefix} onChange={e => setPrefix(e.target.value)} />
+        <input placeholder="search" type="text" value={prefix} onKeyDown={keyDownHandler} onChange={e => setPrefix(e.target.value)} />
         <select value={type} onChange={e => setType(e.target.value)}>
             <option value="">All</option>
             <option value="wfSpec">WfDef</option>
@@ -96,9 +147,8 @@ export const MetadataSearch = () => {
             <option value="externalEventDef">ExternalEventDef</option>
         </select>
         <Button onClick={getMData}>Get Data</Button>
-        {/* {bookmark} */}
-        {results.map( r => <div key={r.name+''+r.version}>{r.name}: {r.version}: {r.type}</div>)}
-        <LoadMoreButton loading={loading} disabled={!bookmark} onClick={loadMore}>Load More</LoadMoreButton>
+        {results.map( (r:Result, ix:number) => <div key={ix}>{r.name}: {r.version}: {r.type}</div>)}
+        <LoadMoreButton loading={loading} disabled={!externalEventDefBookmark && !wfSpecBookmark && !taskDefBookmark} onClick={loadMMore}>Load More</LoadMoreButton>
         {!!type ? <input placeholder="limit" type="number" value={limit} onChange={e => setLimit(+e.target.value)} /> : undefined}
     </div>
 }

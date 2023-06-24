@@ -5,7 +5,7 @@ import { Button, Calendar } from "ui";
 import moment from "moment"
 import { WorkflowExecutionMetrics } from "./components/metrics/WorkflowExecutionMetrics";
 import { TaskExecutionMetrics } from "./components/metrics/TaskExecutionMetrics";
-import { MetadataSearch } from "./components/tables/MetadataSearch";
+import { MetadataSearch } from "./components/search/MetadataSearch";
 
 export default function Page() {
   const [windowLength, setWIndowLength] = useState('HOURS_2');

@@ -163,14 +163,17 @@ const Content = ({init, nextMonth, prevMonth, onApply,
 </div>
 }
 
-export const CalendarCanvas = ({type, setEndDT, setStartDT, onApply}:{type:string,setEndDT:(dt?:Date) => void, 
+export const CalendarCanvas = ({type, setEndDT, setStartDT, onApply, lastDate}:{
+    type:string,
+    lastDate:Date,
+    setEndDT:(dt?:Date) => void, 
     setStartDT:(dt?:Date) => void,
     onApply:() => void,
 }) => {
 
     const [date, setDate] = useState<Date>(moment().toDate())
-    const [selected, setSelected] = useState<Date>()
-    const [endSelected, setEndSelected] = useState<Date>()
+    const [selected, setSelected] = useState<Date | undefined>(lastDate)
+    const [endSelected, setEndSelected] = useState<Date | undefined>()
     
     const updateSelectedH = (H:string) => {
         setSelected(moment(selected).set('hour',+H).toDate())
@@ -219,6 +222,13 @@ export const CalendarCanvas = ({type, setEndDT, setStartDT, onApply}:{type:strin
         
 </div>
 }
+const getFirstDate = (date:Date, type:string, windows:number) => {
+    const dt = moment(date)
+    if(type==='DAYS_1') return dt.subtract(windows,'days').toDate()
+    if(type==='HOURS_2') return dt.subtract(windows*2,'hours').toDate()
+    if(type==='MINUTES_5') return dt.subtract(windows*5,'minutes').toDate()
+    return date
+}
 export const Calendar = ({
     type, changeType,
     lastDate, changeLastDate,
@@ -230,8 +240,8 @@ export const Calendar = ({
     }) => {
 
     const [ttype, setType] = useState(wl.find( t => t.value ===type) || wl[1])
-    const [startDt, setStartDT] = useState<Date>()
-    const [endDt, setEndDT] = useState<Date>()
+    const [startDt, setStartDT] = useState<Date | undefined>(getFirstDate(lastDate, type, noWindows))
+    const [endDt, setEndDT] = useState<Date | undefined>(lastDate)
     const [showCalendar, setShowCalendar] = useState(false)
     const [showWL, setShowWL] = useState(false)
 
@@ -321,7 +331,7 @@ export const Calendar = ({
                     <span className="material-icons-outlined">calendar_month</span>   
                 </div>
 
-                { showCalendar && <CalendarCanvas type={ttype.value} setStartDT={setStartDTHandler} setEndDT={setEndDTHandler} onApply={onApply} />}     
+                { showCalendar && <CalendarCanvas type={ttype.value} lastDate={lastDate} setStartDT={setStartDTHandler} setEndDT={setEndDTHandler} onApply={onApply} />}     
             </CInput>
         </div>
 
