@@ -1,6 +1,7 @@
 "use client";
 
 import { signOut, useSession } from "next-auth/react";
+import Image from "next/image";
 import { useState } from "react";
 
 const Avatar = ({session}:any) => {
@@ -30,7 +31,7 @@ export const LoginDropdown = () => {
             <div className={`login-dropdown__btn ${active && 'active'}`} onClick={() => setActive(prev => !prev)}>
                 <Avatar session={session} />
                 {session?.user?.email}
-                <img src="/expand_more.svg" alt="expand" />
+                <Image src="/expand_more.svg" alt="expand" width={12} height={7.4} />
             </div>
             {active && <div className="login-dropdown__dd">
                 <button onClick={() => signOut()}>Log out</button>
