@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "d3": "^7.8.5",
     "material-icons": "^1.13.8",
     "moment": "^2.29.4",
     "next": "^13.4.1",

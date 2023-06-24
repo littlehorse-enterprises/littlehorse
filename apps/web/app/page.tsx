@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { Calendar } from "ui";
 import moment from "moment"
+import { WorkflowExecutionMetrics } from "./components/metrics/WorkflowExecutionMetrics";
+import { TaskExecutionMetrics } from "./components/metrics/TaskExecutionMetrics";
 
 export default function Page() {
   const [windowLength, setWIndowLength] = useState('HOURS_2');
@@ -21,6 +23,28 @@ export default function Page() {
             changeNoWindows={setWindows} noWindows={windows}
             />
         </div>
+
+        <div className="grid gap-4 md:grid-cols-1">
+                        <div className="grid xs:grid-cols-1 md:grid-cols-1 workflow-dashboard"
+                        style={{
+                            background: "linear-gradient(180deg, #282B30 0%, #24272B 53.65%, #232529 100%)",
+                            boxShadow: "0px 2px 2px 0px rgba(0, 0, 0, 0.10), 0px 6px 6px 0px rgba(0, 0, 0, 0.06), 0px 12px 18px 0px rgba(0, 0, 0, 0.05)",
+                            minWidth:"1470px"
+                        }}
+                        >
+                            <WorkflowExecutionMetrics type={windowLength} windows={windows} lastWindowStart={lastDate} />
+                        </div>
+                        <div className="grid xs:grid-cols-2 md:grid-cols-1 task-dashboard"
+                            style={{
+                                background: "linear-gradient(180deg, #282B30 0%, #24272B 53.65%, #232529 100%)",
+                                boxShadow: "0px 2px 2px 0px rgba(0, 0, 0, 0.10), 0px 6px 6px 0px rgba(0, 0, 0, 0.06), 0px 12px 18px 0px rgba(0, 0, 0, 0.05)",
+                                minWidth:"1470px"
+                            }}
+                            >
+                            <TaskExecutionMetrics type={windowLength} windows={windows} lastWindowStart={lastDate} />
+                        </div>
+                    </div>
+
       </section>
 
     </>

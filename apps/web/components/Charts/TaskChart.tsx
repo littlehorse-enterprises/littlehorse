@@ -1,0 +1,308 @@
+import * as d3 from "d3";
+import { useCallback, useEffect } from "react";
+import moment from "moment"
+import { NewScrollBar } from "./NewScrollBar";
+
+const ttTemplate=`
+<header>{HEADER}</header>
+<main>
+    <div><div class="dot" style="background:#B769E8"></div><label>Scheduled:</label> <div class="value">{A}</div></div>
+    <div><div class="dot" style="background:#4D8FD6"></div><label>Started:</label> <div class="value">{B}</div></div>
+    <div><div class="dot" style="background:#27CBB8"></div><label>Completed:</label> <div class="value">{C}</div></div>
+    <div><div class="dot" style="background:#E6527F"></div><label>Failed:</label> <div class="value">{D}</div></div>
+</main>
+`
+
+// .range(["#B769E8", '#4D8FD6','#27CBB8', '#E6527F' ])
+const updateToolTipContent = (data:any,template:string, type:string) => {
+    return template
+        .replace('{HEADER}',moment(data.windowStart).format(`MMM DD${type === 'DAYS_1' ? '' : `, HH:${type==='HOURS_2' ? '00' : 'mm' }` }`))
+        .replace('{A}',data.a)
+        .replace('{B}',data.b)
+        .replace('{C}',data.c)
+        .replace('{D}',data.d)
+}
+
+const margin = {top: 10, right: 30, bottom: 60, left: 50},
+    width = 1390 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+const maxWBar = 76
+const minYAxisValue = 10
+const gap = 8
+const visibleWindows = Math.ceil((width)/(maxWBar+gap))
+const ShadowLight_100 = "#3D4149"
+
+    let  datam:any[] = []
+    let  stack:any
+    let  groups:any[] = []
+	let  _d3:d3.Selection<d3.BaseType, unknown, HTMLElement, any>
+    let svg:d3.Selection<SVGGElement, unknown, HTMLElement, any>
+
+interface Props {
+    data:any[]
+    type:string
+}
+export const TaskChart = ({data, type}:Props) => {
+
+    const onMoveScroll = (ix:number) => {
+        if(!svg) return false
+        // console.log('ix',ix)
+        // d3.select(".rangeInput")
+        // .property("value",ix+1);
+
+        const num = (ix+1)
+        // console.log('num', num)
+        svg.selectAll("g.bar")
+        .data(stack)
+        .selectAll("rect")
+        .data((d:any) => d )
+        .attr("x",(_d, ix)  =>  {
+            const val = ((maxWBar+gap) * (ix-(num-1))) 
+            return val < 0 ? -800 : val
+        })
+
+        svg.select("g.xa").selectAll('text')
+        .data(groups)
+        .attr("x", (_d, ix) => {
+            let val = ((ix-(num-1)) * (maxWBar + gap))+(maxWBar/2)
+            return val < 0 ? -800 : val
+        } )
+        svg.selectAll(".hours")
+        .data(groups)
+        .attr("x", (_d, ix) => {
+            let val = ((ix-(num-1)) * (maxWBar + gap))+(maxWBar/2)
+            return val < 0 ? -800 : val
+        } )
+        svg.selectAll(".shadow")
+        .data(datam)
+        .attr("x", (_d, i)  =>  {
+            let val = ((maxWBar+gap) * (i-(num-1))) 
+            return val < 0 ? -800 : val
+        })
+
+    }
+    // set the dimensions and margins of the graph
+    
+    // console.log('visibleWindows', visibleWindows)
+
+    // const firstWindowDt = lastWindowStart.clone().subtract(windows * 2,'hours')
+    // console.log('lastWindowStart',lastWindowStart.format())
+    // console.log('firstWindowDt',firstWindowDt.format())
+
+    const drawChart = useCallback((data:any[], type:string) => {
+       const clickHandler = (p:any, d:any) => {
+        console.log(p,d)
+       }
+        datam = data.map(d => ({
+            a:+d.data.totalScheduled || 0,
+            b:+d.data.totalStarted || 0,
+            c:+d.data.totalCompleted || 0,
+            d:+d.data.totalErrored || 0,
+            windowStart:d.label
+        }))
+        // console.log('values',values)
+        // var data = values.reverse();
+
+        // data = data.slice(-visibleWindows)
+
+        // let  groups = dates.reverse()
+        
+        // let  groups = dates.reverse()
+
+        groups = data.map(d => ({
+            l1:moment(d.label).format(`MMM DD${type==='DAYS_1' ? '' : ','}`),
+            l2:moment(d.label).format(`HH:${type==='HOURS_2' ? '00' : 'mm'}`),
+        }))
+        // console.log(datam)
+        // console.log(groups)
+        // groups = groups.slice(-visibleWindows)
+
+        let he = datam.map((values:any) => values.a +values.b + values.c + values.d)
+        let maxH = Math.max(...he) > (minYAxisValue*.9) ? Math.max(...he)+(minYAxisValue*.1) : minYAxisValue
+
+        // const groups = ["1","2","3","4"]
+        
+        // d3.select(".rangeInput")
+        // .property("min", 1)
+        // .property("max", windows-visibleWindows+1)
+        // // .property("value",windows-visibleWindows+1);
+        // .property("value",1);
+
+        // append the svg object to the body of the page
+        _d3.select("svg").remove();
+        svg = _d3.append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
+
+        // Add Y axis
+        var y = d3.scaleLinear()
+        .domain([0, maxH])
+        .range([ height, 0 ]);
+        svg.append("g")
+        .call(d3.axisLeft(y));
+
+        // X axis
+
+        // const x = d3.scaleBand()
+        // .domain(groups)
+        // .range([0, width])
+        // .padding(gap/100)
+
+        // const x = d3.scaleLinear()
+        // .domain(groups)
+        // .range([0, width])
+
+
+
+        // color palette = one color per subgroup
+        var color = d3.scaleOrdinal()
+        .domain(["a", "b", "c", "d"])
+        .range(["#B769E8", '#4D8FD6','#27CBB8', '#E6527F' ])
+
+        var stackedData = d3.stack()
+            .keys(["a", "b", "c", "d"])
+            .order(d3.stackOrderNone)
+            .offset(d3.stackOffsetNone);
+
+            stack = stackedData(datam);
+
+            svg.append("g")
+            .selectAll("g")
+            .data(datam)
+            .enter().append("rect").classed('shadow', true)
+            .style("opacity", 0)
+            .attr("fill", ShadowLight_100)
+            .attr("x", (_d, i)  =>  {
+                let val = ((maxWBar+gap) * (i)) 
+                return val < 0 ? -800 : val
+            })
+            .attr("y", 0 )
+            .attr("width", maxWBar)
+            .attr("height", height)
+
+            svg.append("g").classed('bars', true)
+            .style("pointer-events", "none")
+            .selectAll("g")
+            .data(stack)
+            .enter().append("g").classed('bar', true)
+            .style("pointer-events", "none")
+            .attr("fill", (d:any) => String(color(d.key)) )
+            .selectAll("rect")
+
+            // enter a second time = loop subgroup per subgroup to add all rectangles
+            .data((d:any) => d )
+            .enter().append("rect")
+            // .attr("x", (_d, i)  =>  ((maxWBar+gap) * (i-(windows-visibleWindows))) || 0 )
+            .attr("x",(_d, ix)  =>  {
+                const val = ((maxWBar+gap) * (ix)) 
+                return val < 0 ? -800 : val
+            })
+            .attr("y", (d:any) => y(d[1]) )
+            .attr("width", maxWBar)
+            .attr("height", (d:any) => y(d[0]) - y(d[1]) )
+
+            const xA = svg.append("g").classed('xa',true)
+        xA.append("line")
+            .style("stroke", "white")
+            .style("stroke-width", 1)
+            .attr("x1", 0)
+            .attr("y1", height+1)
+            .attr("x2", width+(gap*visibleWindows))
+            .attr("y2", height+1);
+        svg.select(".xa").selectAll("line")
+        .data(groups)
+        .enter().append("line")
+            .style("stroke", "white")
+            .style("stroke-width", 1)
+            .attr("x1", (d,ix) => (ix * (maxWBar + gap))-(gap/2) )
+            .attr("y1", height+1)
+            .attr("x2", (_d, ix) => (ix * (maxWBar + gap))-(gap/2) )
+            .attr("y2", height+5);
+        svg.select(".xa").selectAll("text")
+            .data(groups)
+            .enter().append("text")
+            .text( d => d.l1 )
+            .attr("text-anchor", "middle")
+            .style('fill', "white")
+            .style('font-size', "10px")
+            .attr("x", (_d, ix) => {
+                let val = ((ix) * (maxWBar + gap))+(maxWBar/2)
+                return val < 0 ? -800 : val
+            } )
+            .attr("y", height+15);
+
+        if(type != 'DAYS_1'){
+            svg.select(".xa").append("g").selectAll("text")
+            .data(groups)
+            .enter().append("text").classed('hours',true)
+            .text( d => d.l2 )
+            .attr("text-anchor", "middle")
+            .style('fill', "white")
+            .style('font-size', "10px")
+            .attr("x", (_d, ix) => {
+                let val = ((ix) * (maxWBar + gap))+(maxWBar/2)
+                return val < 0 ? -800 : val
+            } )
+            .attr("y", height+30);   
+        }
+
+        
+        d3.select("#task-chart-tooltip").html(updateToolTipContent({},ttTemplate, type))
+
+
+
+    svg.selectAll(".shadow")
+
+        .on("mouseover", function(d,i) {
+            d3.select(this).transition()
+                    .ease(d3.easeLinear)
+                    .duration(150)
+                    .style("opacity", 1);
+            d3.select("#task-chart-tooltip").style("visibility", "visible");
+        })
+        .on("mousemove", (e,d) => {
+            d3.select("#task-chart-tooltip").html(updateToolTipContent(d,ttTemplate, type))
+            .style('top',e.layerY+"px")
+            .style('left',e.offsetX+"px")
+
+        })
+        .on("mouseout", function(e) {
+            d3.select(this).transition()
+                .ease(d3.easeLinear)
+                .duration(150)
+                .style("opacity", 0);
+            d3.select("#task-chart-tooltip").style("visibility", "hidden");
+        })
+
+    },[])
+ 
+
+    const setD3 = useCallback((data:any[], type:string) => {
+        _d3 = d3.select("#task-chart")
+        drawChart(data,type) 
+    },[drawChart])
+
+    useEffect( () => {
+        setD3(data, type)
+    },[data, setD3, type ])
+    
+    useEffect( () => {
+        return () => {
+            _d3.select("svg").remove();
+        }
+    },[])
+
+    return <>
+       
+        <div id="task-chart" className="relative">
+            {/* <div className="absolute p-2 border rounded shadow pointer-events-none whitespace-nowrap bg-slate-700" id="task-chart-tooltip"></div> */}
+            <div className="mcToolTip" id="task-chart-tooltip"></div>
+        </div>
+        <NewScrollBar width={1405} windows={(data.length - visibleWindows) < 0 ? 1 : (data.length - visibleWindows)} onChange={onMoveScroll} />
+        {/* <Scrollbar onMove={onMoveScroll} width={width} windowsCount={data.length} visible={visibleWindows} /> */}
+
+    </>
+}
