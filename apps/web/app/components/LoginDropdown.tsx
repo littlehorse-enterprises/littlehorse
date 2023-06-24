@@ -1,5 +1,5 @@
 "use client";
-
+/* eslint-disable @next/next/no-img-element */
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useState } from "react";
