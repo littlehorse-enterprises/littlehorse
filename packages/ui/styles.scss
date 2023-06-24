@@ -1,5 +1,7 @@
+@import "./styles/variables";
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
 @import "./styles/login";
+@import "./styles/components";
 
 $color-primary: #7F7AFF;
 
@@ -8,6 +10,41 @@ html,body {
     margin: 0px;
     height: 100vh;
     background: #242529;
+}
+h1{
+    display: flex;
+    padding: 8px 16px;
+    gap: 10px;
+    width: 100%;
+
+    color: var(--color-bright-light, #EDEEF0);
+    font-size: 24px;
+    font-family: "Inter";
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+h2{
+    color: #EDEEF0;
+    font-size: 24px;
+    font-family: "Inter";
+    font-weight: 600;
+    margin: 0;
+    padding: 0;
+    line-height: 24px;
+}
+section{
+    display: flex;
+    padding: 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    align-self: stretch;
+    border-radius: 16px;
+    border: 1px solid var(--color-shadow-light, #3D4149);
+    background: var(--color-bg-linear-gradient, linear-gradient(180deg, #282B30 0%, #24272B 53.65%, #232529 100%));
+    /* shadow-darkbox01 */
+    box-shadow: 0px 27px 8px 0px rgba(0, 0, 0, 0.00), 0px 17px 7px 0px rgba(0, 0, 0, 0.01), 0px 10px 6px 0px rgba(0, 0, 0, 0.05), 0px 4px 4px 0px rgba(0, 0, 0, 0.09), 0px 1px 2px 0px rgba(0, 0, 0, 0.10), 0px 0px 0px 0px rgba(0, 0, 0, 0.10);
+
 }
 .display-block{
     display: block;
