@@ -4,6 +4,9 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
+      "env": [
+        "AUTH_SECRET","GOOGLE_ID","GOOGLE_SECRET","NEXTAUTH_URL","GITHUB_ID","GITHUB_SECRET", "AZURE_AD_CLIENT_ID", "AZURE_AD_CLIENT_SECRET", "AZURE_AD_TENANT_ID", "OKTA_CLIENT_ID", "OKTA_CLIENT_SECRET", "OKTA_ISSUER_URI", "API_URL"
+      ],
       "outputs": [".next/**", "!.next/cache/**"]
     },
     "lint": {},
