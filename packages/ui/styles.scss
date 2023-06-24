@@ -1,0 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+@import "./styles/login";
+
+$color-primary: #7F7AFF;
+
+html,body {
+    padding: 0px;
+    margin: 0px;
+    height: 100vh;
+    background: #242529;
+}
+.display-block{
+    display: block;
+}
+.color-primary{
+    color: $color-primary;
+}
+.mb-40{
+    margin-bottom: 40px;
+}

@@ -1,3 +1,5 @@
+import "../global.scss"
+import "ui/styles.scss"
 export default function RootLayout({
   children,
 }: {
