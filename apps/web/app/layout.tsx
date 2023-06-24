@@ -1,5 +1,6 @@
 import "../global.scss"
 import "ui/styles.scss"
+import 'material-icons/iconfont/material-icons.css';
 import { Providers } from "../providers";
 import { Container } from "ui";
 import { signOut } from "next-auth/react";

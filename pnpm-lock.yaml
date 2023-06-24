@@ -22,6 +22,12 @@ importers:
 
   apps/web:
     dependencies:
+      material-icons:
+        specifier: ^1.13.8
+        version: 1.13.8
+      moment:
+        specifier: ^2.29.4
+        version: 2.29.4
       next:
         specifier: ^13.4.1
         version: 13.4.1(react-dom@18.2.0)(react@18.2.0)(sass@1.63.6)
@@ -78,6 +84,10 @@ importers:
   packages/tsconfig: {}
 
   packages/ui:
+    dependencies:
+      moment:
+        specifier: ^2.29.4
+        version: 2.29.4
     devDependencies:
       '@types/react':
         specifier: ^18.2.0
@@ -2239,6 +2249,10 @@ packages:
     resolution: {integrity: sha512-s8UhlNe7vPKomQhC1qFelMokr/Sc3AgNbso3n74mVPA5LTZwkB9NlXf4XPamLxJE8h0gh73rM94xvwRT2CVInw==}
     dev: true
 
+  /material-icons@1.13.8:
+    resolution: {integrity: sha512-vnLGXKa/AwFUxUgkiX39EpYVFttPhDQcKdVylIqmUUqz+Eo/O9A3BkdPCU3/G5cJOTezHi5B/b8sEpKYgUNAwQ==}
+    dev: false
+
   /merge-stream@2.0.0:
     resolution: {integrity: sha512-abv/qOcuPfk3URPfDzmZU1LKmuw8kT+0nIHvKrKgFrwifol/doWcdA4ZqsWQ8ENrFKkd67Mfpo/LovbIUsbt3w==}
     dev: false
@@ -2284,6 +2298,10 @@ packages:
     dependencies:
       minimist: 1.2.8
     dev: true
+
+  /moment@2.29.4:
+    resolution: {integrity: sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==}
+    dev: false
 
   /ms@2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}

@@ -16,6 +16,7 @@ h1{
     padding: 8px 16px;
     gap: 10px;
     width: 100%;
+    flex: 1;
 
     color: var(--color-bright-light, #EDEEF0);
     font-size: 24px;
@@ -54,4 +55,33 @@ section{
 }
 .mb-40{
     margin-bottom: 40px;
+}
+.between{
+    display: flex;
+    flex: 1;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.flex{
+    display: flex;
+}
+.flex-1{
+    flex: 1 1 0%;
+}
+.items-center{
+    align-items: center;
+}
+.justify-center{
+    justify-content: center;
+}
+.w-10 {
+    width: 2.5rem/* 40px */;
+}
+.h-10 {
+    height: 2.5rem/* 40px */;
+}
+.align-middle {
+    vertical-align: middle;
 }

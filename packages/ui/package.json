@@ -16,5 +16,8 @@
     "react": "^17.0.2",
     "tsconfig": "workspace:*",
     "typescript": "^4.5.2"
+  },
+  "dependencies": {
+    "moment": "^2.29.4"
   }
 }

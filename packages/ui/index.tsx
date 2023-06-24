@@ -6,3 +6,5 @@ export * from "./Header";
 export * from "./components/Container"
 export * from "./components/Loader"
 export * from "./components/HeaderBar"
+
+export * from "./components/Calendar"
