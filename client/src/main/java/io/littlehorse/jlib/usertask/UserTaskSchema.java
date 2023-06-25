@@ -48,12 +48,17 @@ public class UserTaskSchema {
 
             UserTaskFieldPb.Builder fieldBuilder = UserTaskFieldPb
                 .newBuilder()
-                .setName(utf.name())
-                .setRequired(utf.required())
+                .setName(field.getName())
                 .setType(type);
 
-            if (!"".equals(utf.description())) {
+            if (utf.description() != null && !utf.description().isEmpty()) {
                 fieldBuilder.setDescription(utf.description());
+            }
+
+            if (utf.displayName() != null && !utf.displayName().isEmpty()) {
+                fieldBuilder.setDisplayName(utf.displayName());
+            } else {
+                fieldBuilder.setDisplayName(field.getName());
             }
 
             out.addFields(fieldBuilder);

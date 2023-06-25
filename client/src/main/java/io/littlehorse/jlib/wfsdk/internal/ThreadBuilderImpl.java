@@ -25,6 +25,7 @@ import io.littlehorse.jlib.common.proto.UTActionTriggerPb;
 import io.littlehorse.jlib.common.proto.UTActionTriggerPb.UTATaskPb;
 import io.littlehorse.jlib.common.proto.UserTaskNodePb;
 import io.littlehorse.jlib.common.proto.VariableAssignmentPb;
+import io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb;
 import io.littlehorse.jlib.common.proto.VariableDefPb;
 import io.littlehorse.jlib.common.proto.VariableMutationPb;
 import io.littlehorse.jlib.common.proto.VariableMutationPb.NodeOutputSourcePb;
@@ -186,6 +187,10 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         spec.putNodes(lastNodeName, curNode.build());
         // TODO LH-334: return a modified child class of NodeOutput which lets
         // us mutate variables
+    }
+
+    public LHFormatStringImpl format(String format, WfRunVariable... args) {
+        return new LHFormatStringImpl(this, format, args);
     }
 
     public NodeOutputImpl execute(String taskName, Object... args) {
@@ -702,7 +707,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         return "" + spec.getNodesCount() + "-" + name + "-" + type;
     }
 
-    private VariableAssignmentPb assignVariable(Object variable) {
+    public VariableAssignmentPb assignVariable(Object variable) {
         checkIfIsActive();
         VariableAssignmentPb.Builder builder = VariableAssignmentPb.newBuilder();
 
@@ -716,6 +721,14 @@ public class ThreadBuilderImpl implements ThreadBuilder {
             throw new RuntimeException(
                 "Error: Cannot use NodeOutput directly as input to" +
                 " task. First save to a WfRunVariable."
+            );
+        } else if (variable.getClass().equals(LHFormatStringImpl.class)) {
+            LHFormatStringImpl format = (LHFormatStringImpl) variable;
+            builder.setFormatString(
+                FormatStringPb
+                    .newBuilder()
+                    .setFormat(assignVariable(format.getFormat()))
+                    .addAllArgs(format.getArgs())
             );
         } else {
             try {

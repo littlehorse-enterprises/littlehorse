@@ -2,17 +2,19 @@ package io.littlehorse.common.model.meta.usertasks;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.jlib.common.proto.UserTaskFieldPb;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class UserTaskField extends LHSerializable<UserTaskFieldPb> {
 
-    public String name;
-    public VariableTypePb type;
-    public VariableValue defaultVal;
-    public boolean required;
-    public String description;
+    private String name;
+    private VariableTypePb type;
+    private String description;
+    private String displayName;
 
     public Class<UserTaskFieldPb> getProtoBaseClass() {
         return UserTaskFieldPb.class;
@@ -22,11 +24,9 @@ public class UserTaskField extends LHSerializable<UserTaskFieldPb> {
         UserTaskFieldPb p = (UserTaskFieldPb) proto;
         name = p.getName();
         type = p.getType();
-        required = p.getRequired();
+        displayName = p.getDisplayName();
+
         if (p.hasDescription()) description = p.getDescription();
-        if (p.hasDefaultVal()) {
-            defaultVal = VariableValue.fromProto(p.getDefaultVal());
-        }
     }
 
     public UserTaskFieldPb.Builder toProto() {
@@ -34,11 +34,9 @@ public class UserTaskField extends LHSerializable<UserTaskFieldPb> {
             .newBuilder()
             .setName(name)
             .setType(type)
-            .setRequired(required);
+            .setDisplayName(displayName);
 
         if (description != null) out.setDescription(description);
-        if (defaultVal != null) out.setDefaultVal(defaultVal.toProto().build());
-
         return out;
     }
 }

@@ -19,6 +19,7 @@ private static final long serialVersionUID = 0L;
     name_ = "";
     type_ = 0;
     description_ = "";
+    displayName_ = "";
   }
 
   @java.lang.Override
@@ -104,72 +105,19 @@ private static final long serialVersionUID = 0L;
     return result == null ? io.littlehorse.jlib.common.proto.VariableTypePb.UNRECOGNIZED : result;
   }
 
-  public static final int REQUIRED_FIELD_NUMBER = 3;
-  private boolean required_ = false;
-  /**
-   * <code>bool required = 3;</code>
-   * @return The required.
-   */
-  @java.lang.Override
-  public boolean getRequired() {
-    return required_;
-  }
-
-  public static final int DEFAULT_VAL_FIELD_NUMBER = 4;
-  private io.littlehorse.jlib.common.proto.VariableValuePb defaultVal_;
-  /**
-   * <code>optional .littlehorse.VariableValuePb default_val = 4;</code>
-   * @return Whether the defaultVal field is set.
-   */
-  @java.lang.Override
-  public boolean hasDefaultVal() {
-    return ((bitField0_ & 0x00000001) != 0);
-  }
-  /**
-   * <code>optional .littlehorse.VariableValuePb default_val = 4;</code>
-   * @return The defaultVal.
-   */
-  @java.lang.Override
-  public io.littlehorse.jlib.common.proto.VariableValuePb getDefaultVal() {
-    return defaultVal_ == null ? io.littlehorse.jlib.common.proto.VariableValuePb.getDefaultInstance() : defaultVal_;
-  }
-  /**
-   * <code>optional .littlehorse.VariableValuePb default_val = 4;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.jlib.common.proto.VariableValuePbOrBuilder getDefaultValOrBuilder() {
-    return defaultVal_ == null ? io.littlehorse.jlib.common.proto.VariableValuePb.getDefaultInstance() : defaultVal_;
-  }
-
-  public static final int DESCRIPTION_FIELD_NUMBER = 5;
+  public static final int DESCRIPTION_FIELD_NUMBER = 3;
   @SuppressWarnings("serial")
   private volatile java.lang.Object description_ = "";
   /**
-   * <pre>
-   * Later versions will allow stuff such as:
-   * 1. Validation (eg. email address, integer between 1-10, etc)
-   * 2. Nested object structures
-   * 3. Multi-Page forms (survey-js style)
-   * 4. Conditional rendering of forms based on input (surveyjs style)
-   * </pre>
-   *
-   * <code>optional string description = 5;</code>
+   * <code>optional string description = 3;</code>
    * @return Whether the description field is set.
    */
   @java.lang.Override
   public boolean hasDescription() {
-    return ((bitField0_ & 0x00000002) != 0);
+    return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <pre>
-   * Later versions will allow stuff such as:
-   * 1. Validation (eg. email address, integer between 1-10, etc)
-   * 2. Nested object structures
-   * 3. Multi-Page forms (survey-js style)
-   * 4. Conditional rendering of forms based on input (surveyjs style)
-   * </pre>
-   *
-   * <code>optional string description = 5;</code>
+   * <code>optional string description = 3;</code>
    * @return The description.
    */
   @java.lang.Override
@@ -186,15 +134,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <pre>
-   * Later versions will allow stuff such as:
-   * 1. Validation (eg. email address, integer between 1-10, etc)
-   * 2. Nested object structures
-   * 3. Multi-Page forms (survey-js style)
-   * 4. Conditional rendering of forms based on input (surveyjs style)
-   * </pre>
-   *
-   * <code>optional string description = 5;</code>
+   * <code>optional string description = 3;</code>
    * @return The bytes for description.
    */
   @java.lang.Override
@@ -206,6 +146,63 @@ private static final long serialVersionUID = 0L;
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
       description_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int DISPLAY_NAME_FIELD_NUMBER = 4;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object displayName_ = "";
+  /**
+   * <pre>
+   * Later versions will allow stuff such as:
+   * 1. Validation (eg. email address, integer between 1-10, etc)
+   * 2. Nested object structures
+   * 3. Multi-Page forms (survey-js style)
+   * 4. Conditional rendering of forms based on input (surveyjs style)
+   * 5. Default values and optional fields
+   * </pre>
+   *
+   * <code>string display_name = 4;</code>
+   * @return The displayName.
+   */
+  @java.lang.Override
+  public java.lang.String getDisplayName() {
+    java.lang.Object ref = displayName_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      displayName_ = s;
+      return s;
+    }
+  }
+  /**
+   * <pre>
+   * Later versions will allow stuff such as:
+   * 1. Validation (eg. email address, integer between 1-10, etc)
+   * 2. Nested object structures
+   * 3. Multi-Page forms (survey-js style)
+   * 4. Conditional rendering of forms based on input (surveyjs style)
+   * 5. Default values and optional fields
+   * </pre>
+   *
+   * <code>string display_name = 4;</code>
+   * @return The bytes for displayName.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getDisplayNameBytes() {
+    java.lang.Object ref = displayName_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      displayName_ = b;
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
@@ -232,14 +229,11 @@ private static final long serialVersionUID = 0L;
     if (type_ != io.littlehorse.jlib.common.proto.VariableTypePb.JSON_OBJ.getNumber()) {
       output.writeEnum(2, type_);
     }
-    if (required_ != false) {
-      output.writeBool(3, required_);
-    }
     if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeMessage(4, getDefaultVal());
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, description_);
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, description_);
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(displayName_)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 4, displayName_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -257,16 +251,11 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(2, type_);
     }
-    if (required_ != false) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBoolSize(3, required_);
-    }
     if (((bitField0_ & 0x00000001) != 0)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, getDefaultVal());
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, description_);
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, description_);
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(displayName_)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, displayName_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -286,18 +275,13 @@ private static final long serialVersionUID = 0L;
     if (!getName()
         .equals(other.getName())) return false;
     if (type_ != other.type_) return false;
-    if (getRequired()
-        != other.getRequired()) return false;
-    if (hasDefaultVal() != other.hasDefaultVal()) return false;
-    if (hasDefaultVal()) {
-      if (!getDefaultVal()
-          .equals(other.getDefaultVal())) return false;
-    }
     if (hasDescription() != other.hasDescription()) return false;
     if (hasDescription()) {
       if (!getDescription()
           .equals(other.getDescription())) return false;
     }
+    if (!getDisplayName()
+        .equals(other.getDisplayName())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -313,17 +297,12 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getName().hashCode();
     hash = (37 * hash) + TYPE_FIELD_NUMBER;
     hash = (53 * hash) + type_;
-    hash = (37 * hash) + REQUIRED_FIELD_NUMBER;
-    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-        getRequired());
-    if (hasDefaultVal()) {
-      hash = (37 * hash) + DEFAULT_VAL_FIELD_NUMBER;
-      hash = (53 * hash) + getDefaultVal().hashCode();
-    }
     if (hasDescription()) {
       hash = (37 * hash) + DESCRIPTION_FIELD_NUMBER;
       hash = (53 * hash) + getDescription().hashCode();
     }
+    hash = (37 * hash) + DISPLAY_NAME_FIELD_NUMBER;
+    hash = (53 * hash) + getDisplayName().hashCode();
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -441,19 +420,13 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.jlib.common.proto.UserTaskFieldPb.newBuilder()
     private Builder() {
-      maybeForceBuilderInitialization();
+
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-      maybeForceBuilderInitialization();
-    }
-    private void maybeForceBuilderInitialization() {
-      if (com.google.protobuf.GeneratedMessageV3
-              .alwaysUseFieldBuilders) {
-        getDefaultValFieldBuilder();
-      }
+
     }
     @java.lang.Override
     public Builder clear() {
@@ -461,13 +434,8 @@ private static final long serialVersionUID = 0L;
       bitField0_ = 0;
       name_ = "";
       type_ = 0;
-      required_ = false;
-      defaultVal_ = null;
-      if (defaultValBuilder_ != null) {
-        defaultValBuilder_.dispose();
-        defaultValBuilder_ = null;
-      }
       description_ = "";
+      displayName_ = "";
       return this;
     }
 
@@ -507,19 +475,13 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000002) != 0)) {
         result.type_ = type_;
       }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.required_ = required_;
-      }
       int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000008) != 0)) {
-        result.defaultVal_ = defaultValBuilder_ == null
-            ? defaultVal_
-            : defaultValBuilder_.build();
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.description_ = description_;
         to_bitField0_ |= 0x00000001;
       }
-      if (((from_bitField0_ & 0x00000010) != 0)) {
-        result.description_ = description_;
-        to_bitField0_ |= 0x00000002;
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.displayName_ = displayName_;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -576,15 +538,14 @@ private static final long serialVersionUID = 0L;
       if (other.type_ != 0) {
         setTypeValue(other.getTypeValue());
       }
-      if (other.getRequired() != false) {
-        setRequired(other.getRequired());
-      }
-      if (other.hasDefaultVal()) {
-        mergeDefaultVal(other.getDefaultVal());
-      }
       if (other.hasDescription()) {
         description_ = other.description_;
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000004;
+        onChanged();
+      }
+      if (!other.getDisplayName().isEmpty()) {
+        displayName_ = other.displayName_;
+        bitField0_ |= 0x00000008;
         onChanged();
       }
       this.mergeUnknownFields(other.getUnknownFields());
@@ -623,23 +584,16 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000002;
               break;
             } // case 16
-            case 24: {
-              required_ = input.readBool();
+            case 26: {
+              description_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000004;
               break;
-            } // case 24
+            } // case 26
             case 34: {
-              input.readMessage(
-                  getDefaultValFieldBuilder().getBuilder(),
-                  extensionRegistry);
+              displayName_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000008;
               break;
             } // case 34
-            case 42: {
-              description_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000010;
-              break;
-            } // case 42
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -782,183 +736,16 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private boolean required_ ;
-    /**
-     * <code>bool required = 3;</code>
-     * @return The required.
-     */
-    @java.lang.Override
-    public boolean getRequired() {
-      return required_;
-    }
-    /**
-     * <code>bool required = 3;</code>
-     * @param value The required to set.
-     * @return This builder for chaining.
-     */
-    public Builder setRequired(boolean value) {
-      
-      required_ = value;
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>bool required = 3;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearRequired() {
-      bitField0_ = (bitField0_ & ~0x00000004);
-      required_ = false;
-      onChanged();
-      return this;
-    }
-
-    private io.littlehorse.jlib.common.proto.VariableValuePb defaultVal_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.jlib.common.proto.VariableValuePb, io.littlehorse.jlib.common.proto.VariableValuePb.Builder, io.littlehorse.jlib.common.proto.VariableValuePbOrBuilder> defaultValBuilder_;
-    /**
-     * <code>optional .littlehorse.VariableValuePb default_val = 4;</code>
-     * @return Whether the defaultVal field is set.
-     */
-    public boolean hasDefaultVal() {
-      return ((bitField0_ & 0x00000008) != 0);
-    }
-    /**
-     * <code>optional .littlehorse.VariableValuePb default_val = 4;</code>
-     * @return The defaultVal.
-     */
-    public io.littlehorse.jlib.common.proto.VariableValuePb getDefaultVal() {
-      if (defaultValBuilder_ == null) {
-        return defaultVal_ == null ? io.littlehorse.jlib.common.proto.VariableValuePb.getDefaultInstance() : defaultVal_;
-      } else {
-        return defaultValBuilder_.getMessage();
-      }
-    }
-    /**
-     * <code>optional .littlehorse.VariableValuePb default_val = 4;</code>
-     */
-    public Builder setDefaultVal(io.littlehorse.jlib.common.proto.VariableValuePb value) {
-      if (defaultValBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        defaultVal_ = value;
-      } else {
-        defaultValBuilder_.setMessage(value);
-      }
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional .littlehorse.VariableValuePb default_val = 4;</code>
-     */
-    public Builder setDefaultVal(
-        io.littlehorse.jlib.common.proto.VariableValuePb.Builder builderForValue) {
-      if (defaultValBuilder_ == null) {
-        defaultVal_ = builderForValue.build();
-      } else {
-        defaultValBuilder_.setMessage(builderForValue.build());
-      }
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional .littlehorse.VariableValuePb default_val = 4;</code>
-     */
-    public Builder mergeDefaultVal(io.littlehorse.jlib.common.proto.VariableValuePb value) {
-      if (defaultValBuilder_ == null) {
-        if (((bitField0_ & 0x00000008) != 0) &&
-          defaultVal_ != null &&
-          defaultVal_ != io.littlehorse.jlib.common.proto.VariableValuePb.getDefaultInstance()) {
-          getDefaultValBuilder().mergeFrom(value);
-        } else {
-          defaultVal_ = value;
-        }
-      } else {
-        defaultValBuilder_.mergeFrom(value);
-      }
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional .littlehorse.VariableValuePb default_val = 4;</code>
-     */
-    public Builder clearDefaultVal() {
-      bitField0_ = (bitField0_ & ~0x00000008);
-      defaultVal_ = null;
-      if (defaultValBuilder_ != null) {
-        defaultValBuilder_.dispose();
-        defaultValBuilder_ = null;
-      }
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional .littlehorse.VariableValuePb default_val = 4;</code>
-     */
-    public io.littlehorse.jlib.common.proto.VariableValuePb.Builder getDefaultValBuilder() {
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return getDefaultValFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>optional .littlehorse.VariableValuePb default_val = 4;</code>
-     */
-    public io.littlehorse.jlib.common.proto.VariableValuePbOrBuilder getDefaultValOrBuilder() {
-      if (defaultValBuilder_ != null) {
-        return defaultValBuilder_.getMessageOrBuilder();
-      } else {
-        return defaultVal_ == null ?
-            io.littlehorse.jlib.common.proto.VariableValuePb.getDefaultInstance() : defaultVal_;
-      }
-    }
-    /**
-     * <code>optional .littlehorse.VariableValuePb default_val = 4;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.jlib.common.proto.VariableValuePb, io.littlehorse.jlib.common.proto.VariableValuePb.Builder, io.littlehorse.jlib.common.proto.VariableValuePbOrBuilder> 
-        getDefaultValFieldBuilder() {
-      if (defaultValBuilder_ == null) {
-        defaultValBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.jlib.common.proto.VariableValuePb, io.littlehorse.jlib.common.proto.VariableValuePb.Builder, io.littlehorse.jlib.common.proto.VariableValuePbOrBuilder>(
-                getDefaultVal(),
-                getParentForChildren(),
-                isClean());
-        defaultVal_ = null;
-      }
-      return defaultValBuilder_;
-    }
-
     private java.lang.Object description_ = "";
     /**
-     * <pre>
-     * Later versions will allow stuff such as:
-     * 1. Validation (eg. email address, integer between 1-10, etc)
-     * 2. Nested object structures
-     * 3. Multi-Page forms (survey-js style)
-     * 4. Conditional rendering of forms based on input (surveyjs style)
-     * </pre>
-     *
-     * <code>optional string description = 5;</code>
+     * <code>optional string description = 3;</code>
      * @return Whether the description field is set.
      */
     public boolean hasDescription() {
-      return ((bitField0_ & 0x00000010) != 0);
+      return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <pre>
-     * Later versions will allow stuff such as:
-     * 1. Validation (eg. email address, integer between 1-10, etc)
-     * 2. Nested object structures
-     * 3. Multi-Page forms (survey-js style)
-     * 4. Conditional rendering of forms based on input (surveyjs style)
-     * </pre>
-     *
-     * <code>optional string description = 5;</code>
+     * <code>optional string description = 3;</code>
      * @return The description.
      */
     public java.lang.String getDescription() {
@@ -974,15 +761,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Later versions will allow stuff such as:
-     * 1. Validation (eg. email address, integer between 1-10, etc)
-     * 2. Nested object structures
-     * 3. Multi-Page forms (survey-js style)
-     * 4. Conditional rendering of forms based on input (surveyjs style)
-     * </pre>
-     *
-     * <code>optional string description = 5;</code>
+     * <code>optional string description = 3;</code>
      * @return The bytes for description.
      */
     public com.google.protobuf.ByteString
@@ -999,15 +778,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Later versions will allow stuff such as:
-     * 1. Validation (eg. email address, integer between 1-10, etc)
-     * 2. Nested object structures
-     * 3. Multi-Page forms (survey-js style)
-     * 4. Conditional rendering of forms based on input (surveyjs style)
-     * </pre>
-     *
-     * <code>optional string description = 5;</code>
+     * <code>optional string description = 3;</code>
      * @param value The description to set.
      * @return This builder for chaining.
      */
@@ -1015,38 +786,22 @@ private static final long serialVersionUID = 0L;
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
       description_ = value;
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <pre>
-     * Later versions will allow stuff such as:
-     * 1. Validation (eg. email address, integer between 1-10, etc)
-     * 2. Nested object structures
-     * 3. Multi-Page forms (survey-js style)
-     * 4. Conditional rendering of forms based on input (surveyjs style)
-     * </pre>
-     *
-     * <code>optional string description = 5;</code>
+     * <code>optional string description = 3;</code>
      * @return This builder for chaining.
      */
     public Builder clearDescription() {
       description_ = getDefaultInstance().getDescription();
-      bitField0_ = (bitField0_ & ~0x00000010);
+      bitField0_ = (bitField0_ & ~0x00000004);
       onChanged();
       return this;
     }
     /**
-     * <pre>
-     * Later versions will allow stuff such as:
-     * 1. Validation (eg. email address, integer between 1-10, etc)
-     * 2. Nested object structures
-     * 3. Multi-Page forms (survey-js style)
-     * 4. Conditional rendering of forms based on input (surveyjs style)
-     * </pre>
-     *
-     * <code>optional string description = 5;</code>
+     * <code>optional string description = 3;</code>
      * @param value The bytes for description to set.
      * @return This builder for chaining.
      */
@@ -1055,7 +810,124 @@ private static final long serialVersionUID = 0L;
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
       description_ = value;
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object displayName_ = "";
+    /**
+     * <pre>
+     * Later versions will allow stuff such as:
+     * 1. Validation (eg. email address, integer between 1-10, etc)
+     * 2. Nested object structures
+     * 3. Multi-Page forms (survey-js style)
+     * 4. Conditional rendering of forms based on input (surveyjs style)
+     * 5. Default values and optional fields
+     * </pre>
+     *
+     * <code>string display_name = 4;</code>
+     * @return The displayName.
+     */
+    public java.lang.String getDisplayName() {
+      java.lang.Object ref = displayName_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        displayName_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <pre>
+     * Later versions will allow stuff such as:
+     * 1. Validation (eg. email address, integer between 1-10, etc)
+     * 2. Nested object structures
+     * 3. Multi-Page forms (survey-js style)
+     * 4. Conditional rendering of forms based on input (surveyjs style)
+     * 5. Default values and optional fields
+     * </pre>
+     *
+     * <code>string display_name = 4;</code>
+     * @return The bytes for displayName.
+     */
+    public com.google.protobuf.ByteString
+        getDisplayNameBytes() {
+      java.lang.Object ref = displayName_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        displayName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <pre>
+     * Later versions will allow stuff such as:
+     * 1. Validation (eg. email address, integer between 1-10, etc)
+     * 2. Nested object structures
+     * 3. Multi-Page forms (survey-js style)
+     * 4. Conditional rendering of forms based on input (surveyjs style)
+     * 5. Default values and optional fields
+     * </pre>
+     *
+     * <code>string display_name = 4;</code>
+     * @param value The displayName to set.
+     * @return This builder for chaining.
+     */
+    public Builder setDisplayName(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      displayName_ = value;
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Later versions will allow stuff such as:
+     * 1. Validation (eg. email address, integer between 1-10, etc)
+     * 2. Nested object structures
+     * 3. Multi-Page forms (survey-js style)
+     * 4. Conditional rendering of forms based on input (surveyjs style)
+     * 5. Default values and optional fields
+     * </pre>
+     *
+     * <code>string display_name = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearDisplayName() {
+      displayName_ = getDefaultInstance().getDisplayName();
+      bitField0_ = (bitField0_ & ~0x00000008);
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Later versions will allow stuff such as:
+     * 1. Validation (eg. email address, integer between 1-10, etc)
+     * 2. Nested object structures
+     * 3. Multi-Page forms (survey-js style)
+     * 4. Conditional rendering of forms based on input (surveyjs style)
+     * 5. Default values and optional fields
+     * </pre>
+     *
+     * <code>string display_name = 4;</code>
+     * @param value The bytes for displayName to set.
+     * @return This builder for chaining.
+     */
+    public Builder setDisplayNameBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      displayName_ = value;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }

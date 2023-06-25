@@ -125,9 +125,9 @@ public class TaskNode extends SubNode<TaskNodePb> {
         Set<String> out = new HashSet<>();
         if (
             timeoutSeconds != null &&
-            timeoutSeconds.rhsSourceType == SourceCase.VARIABLE_NAME
+            timeoutSeconds.getRhsSourceType() == SourceCase.VARIABLE_NAME
         ) {
-            out.add(timeoutSeconds.rhsVariableName);
+            out.add(timeoutSeconds.getVariableName());
         }
 
         for (VariableAssignment assn : variables) {

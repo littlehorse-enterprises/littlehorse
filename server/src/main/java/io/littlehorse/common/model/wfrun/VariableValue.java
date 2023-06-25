@@ -1,6 +1,5 @@
 package io.littlehorse.common.model.wfrun;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
 import com.jayway.jsonpath.JsonPath;
@@ -16,26 +15,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 
 @Slf4j
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class VariableValue extends LHSerializable<VariableValuePb> {
 
     public VariableTypePb type;
-
     public Map<String, Object> jsonObjVal;
-
     public List<Object> jsonArrVal;
-
     public Double doubleVal;
-
     public Boolean boolVal;
-
     public String strVal;
-
     public Long intVal;
-
     public byte[] bytesVal;
 
     public static VariableValue fromProto(VariableValuePb proto) {
@@ -370,31 +366,6 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
         return new VariableValue(m);
     }
 
-    // Intended for use only by Jackson to pretty-print the Json.
-    @JsonProperty("value")
-    public Object getValForJackson() {
-        switch (type) {
-            case INT:
-                return this.intVal;
-            case DOUBLE:
-                return this.doubleVal;
-            case STR:
-                return this.strVal;
-            case BOOL:
-                return this.boolVal;
-            case JSON_ARR:
-                return this.jsonArrVal;
-            case JSON_OBJ:
-                return this.jsonObjVal;
-            case BYTES:
-                // here's the magic, we turn the bytes into string.
-                return LHUtil.b64Encode(this.bytesVal);
-            case UNRECOGNIZED:
-            default:
-                return null;
-        }
-    }
-
     public Object getVal() {
         switch (type) {
             case INT:
@@ -411,10 +382,11 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
                 return this.jsonObjVal;
             case BYTES:
                 return this.bytesVal;
-            case UNRECOGNIZED:
-            default:
+            case NULL:
                 return null;
+            case UNRECOGNIZED:
         }
+        return null;
     }
 
     public VariableValue coerceToType(VariableTypePb otherType) throws LHVarSubError {
@@ -584,7 +556,7 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
         // according to the tags; hot variables should be of type LOCAL_COUNTED or
         // LOCAL_UNCOUNTED.
 
-        Pair<String, String> valuePair;
+        Pair<String, String> valuePair = null;
         switch (type) {
             case INT:
                 valuePair = Pair.of("intVal", LHUtil.toLhDbFormat(intVal));
@@ -602,9 +574,8 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
             case BYTES:
             case JSON_ARR:
             case JSON_OBJ:
-            case UNRECOGNIZED:
             case NULL:
-            default:
+            case UNRECOGNIZED:
                 valuePair = null;
         }
         return valuePair;

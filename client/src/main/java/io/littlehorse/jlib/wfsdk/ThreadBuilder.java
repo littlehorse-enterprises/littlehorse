@@ -56,6 +56,8 @@ public interface ThreadBuilder {
         String userGroup
     );
 
+    public LHFormatString format(String format, WfRunVariable... args);
+
     /**
      * Adds a User Task Node, and assigns it to a group of users.
      * @param userTaskDefName is the UserTaskDef to assign.

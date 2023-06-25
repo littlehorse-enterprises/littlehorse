@@ -298,9 +298,9 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPb> {
         String nodeName,
         VariableAssignment timeoutSeconds
     ) throws LHValidationError {
-        if (timeoutSeconds.rhsSourceType == SourceCase.VARIABLE_NAME) {
+        if (timeoutSeconds.getRhsSourceType() == SourceCase.VARIABLE_NAME) {
             Pair<String, VariableDef> defPair = lookupVarDef(
-                timeoutSeconds.rhsVariableName
+                timeoutSeconds.getVariableName()
             );
             if (defPair == null) {
                 throw new LHValidationError(
@@ -308,7 +308,7 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPb> {
                     "Timeout on node " +
                     nodeName +
                     " refers to missing variable " +
-                    timeoutSeconds.rhsVariableName
+                    timeoutSeconds.getVariableName()
                 );
             }
         }

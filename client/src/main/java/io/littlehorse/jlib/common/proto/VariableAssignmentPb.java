@@ -44,6 +44,987 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.jlib.common.proto.VariableAssignmentPb.class, io.littlehorse.jlib.common.proto.VariableAssignmentPb.Builder.class);
   }
 
+  public interface FormatStringPbOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:littlehorse.VariableAssignmentPb.FormatStringPb)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.littlehorse.VariableAssignmentPb format = 1;</code>
+     * @return Whether the format field is set.
+     */
+    boolean hasFormat();
+    /**
+     * <code>.littlehorse.VariableAssignmentPb format = 1;</code>
+     * @return The format.
+     */
+    io.littlehorse.jlib.common.proto.VariableAssignmentPb getFormat();
+    /**
+     * <code>.littlehorse.VariableAssignmentPb format = 1;</code>
+     */
+    io.littlehorse.jlib.common.proto.VariableAssignmentPbOrBuilder getFormatOrBuilder();
+
+    /**
+     * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+     */
+    java.util.List<io.littlehorse.jlib.common.proto.VariableAssignmentPb> 
+        getArgsList();
+    /**
+     * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+     */
+    io.littlehorse.jlib.common.proto.VariableAssignmentPb getArgs(int index);
+    /**
+     * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+     */
+    int getArgsCount();
+    /**
+     * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+     */
+    java.util.List<? extends io.littlehorse.jlib.common.proto.VariableAssignmentPbOrBuilder> 
+        getArgsOrBuilderList();
+    /**
+     * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+     */
+    io.littlehorse.jlib.common.proto.VariableAssignmentPbOrBuilder getArgsOrBuilder(
+        int index);
+  }
+  /**
+   * Protobuf type {@code littlehorse.VariableAssignmentPb.FormatStringPb}
+   */
+  public static final class FormatStringPb extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:littlehorse.VariableAssignmentPb.FormatStringPb)
+      FormatStringPbOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use FormatStringPb.newBuilder() to construct.
+    private FormatStringPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private FormatStringPb() {
+      args_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new FormatStringPb();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.littlehorse.jlib.common.proto.Service.internal_static_littlehorse_VariableAssignmentPb_FormatStringPb_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.littlehorse.jlib.common.proto.Service.internal_static_littlehorse_VariableAssignmentPb_FormatStringPb_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb.class, io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb.Builder.class);
+    }
+
+    public static final int FORMAT_FIELD_NUMBER = 1;
+    private io.littlehorse.jlib.common.proto.VariableAssignmentPb format_;
+    /**
+     * <code>.littlehorse.VariableAssignmentPb format = 1;</code>
+     * @return Whether the format field is set.
+     */
+    @java.lang.Override
+    public boolean hasFormat() {
+      return format_ != null;
+    }
+    /**
+     * <code>.littlehorse.VariableAssignmentPb format = 1;</code>
+     * @return The format.
+     */
+    @java.lang.Override
+    public io.littlehorse.jlib.common.proto.VariableAssignmentPb getFormat() {
+      return format_ == null ? io.littlehorse.jlib.common.proto.VariableAssignmentPb.getDefaultInstance() : format_;
+    }
+    /**
+     * <code>.littlehorse.VariableAssignmentPb format = 1;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.jlib.common.proto.VariableAssignmentPbOrBuilder getFormatOrBuilder() {
+      return format_ == null ? io.littlehorse.jlib.common.proto.VariableAssignmentPb.getDefaultInstance() : format_;
+    }
+
+    public static final int ARGS_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private java.util.List<io.littlehorse.jlib.common.proto.VariableAssignmentPb> args_;
+    /**
+     * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+     */
+    @java.lang.Override
+    public java.util.List<io.littlehorse.jlib.common.proto.VariableAssignmentPb> getArgsList() {
+      return args_;
+    }
+    /**
+     * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends io.littlehorse.jlib.common.proto.VariableAssignmentPbOrBuilder> 
+        getArgsOrBuilderList() {
+      return args_;
+    }
+    /**
+     * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+     */
+    @java.lang.Override
+    public int getArgsCount() {
+      return args_.size();
+    }
+    /**
+     * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.jlib.common.proto.VariableAssignmentPb getArgs(int index) {
+      return args_.get(index);
+    }
+    /**
+     * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.jlib.common.proto.VariableAssignmentPbOrBuilder getArgsOrBuilder(
+        int index) {
+      return args_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (format_ != null) {
+        output.writeMessage(1, getFormat());
+      }
+      for (int i = 0; i < args_.size(); i++) {
+        output.writeMessage(2, args_.get(i));
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (format_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getFormat());
+      }
+      for (int i = 0; i < args_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, args_.get(i));
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb)) {
+        return super.equals(obj);
+      }
+      io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb other = (io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb) obj;
+
+      if (hasFormat() != other.hasFormat()) return false;
+      if (hasFormat()) {
+        if (!getFormat()
+            .equals(other.getFormat())) return false;
+      }
+      if (!getArgsList()
+          .equals(other.getArgsList())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasFormat()) {
+        hash = (37 * hash) + FORMAT_FIELD_NUMBER;
+        hash = (53 * hash) + getFormat().hashCode();
+      }
+      if (getArgsCount() > 0) {
+        hash = (37 * hash) + ARGS_FIELD_NUMBER;
+        hash = (53 * hash) + getArgsList().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code littlehorse.VariableAssignmentPb.FormatStringPb}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:littlehorse.VariableAssignmentPb.FormatStringPb)
+        io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPbOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.littlehorse.jlib.common.proto.Service.internal_static_littlehorse_VariableAssignmentPb_FormatStringPb_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.littlehorse.jlib.common.proto.Service.internal_static_littlehorse_VariableAssignmentPb_FormatStringPb_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb.class, io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb.Builder.class);
+      }
+
+      // Construct using io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        format_ = null;
+        if (formatBuilder_ != null) {
+          formatBuilder_.dispose();
+          formatBuilder_ = null;
+        }
+        if (argsBuilder_ == null) {
+          args_ = java.util.Collections.emptyList();
+        } else {
+          args_ = null;
+          argsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.littlehorse.jlib.common.proto.Service.internal_static_littlehorse_VariableAssignmentPb_FormatStringPb_descriptor;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb getDefaultInstanceForType() {
+        return io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb build() {
+        io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb buildPartial() {
+        io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb result = new io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb(this);
+        buildPartialRepeatedFields(result);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartialRepeatedFields(io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb result) {
+        if (argsBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) != 0)) {
+            args_ = java.util.Collections.unmodifiableList(args_);
+            bitField0_ = (bitField0_ & ~0x00000002);
+          }
+          result.args_ = args_;
+        } else {
+          result.args_ = argsBuilder_.build();
+        }
+      }
+
+      private void buildPartial0(io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.format_ = formatBuilder_ == null
+              ? format_
+              : formatBuilder_.build();
+        }
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb) {
+          return mergeFrom((io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb other) {
+        if (other == io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb.getDefaultInstance()) return this;
+        if (other.hasFormat()) {
+          mergeFormat(other.getFormat());
+        }
+        if (argsBuilder_ == null) {
+          if (!other.args_.isEmpty()) {
+            if (args_.isEmpty()) {
+              args_ = other.args_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+            } else {
+              ensureArgsIsMutable();
+              args_.addAll(other.args_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.args_.isEmpty()) {
+            if (argsBuilder_.isEmpty()) {
+              argsBuilder_.dispose();
+              argsBuilder_ = null;
+              args_ = other.args_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+              argsBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getArgsFieldBuilder() : null;
+            } else {
+              argsBuilder_.addAllMessages(other.args_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                input.readMessage(
+                    getFormatFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                io.littlehorse.jlib.common.proto.VariableAssignmentPb m =
+                    input.readMessage(
+                        io.littlehorse.jlib.common.proto.VariableAssignmentPb.parser(),
+                        extensionRegistry);
+                if (argsBuilder_ == null) {
+                  ensureArgsIsMutable();
+                  args_.add(m);
+                } else {
+                  argsBuilder_.addMessage(m);
+                }
+                break;
+              } // case 18
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private io.littlehorse.jlib.common.proto.VariableAssignmentPb format_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.littlehorse.jlib.common.proto.VariableAssignmentPb, io.littlehorse.jlib.common.proto.VariableAssignmentPb.Builder, io.littlehorse.jlib.common.proto.VariableAssignmentPbOrBuilder> formatBuilder_;
+      /**
+       * <code>.littlehorse.VariableAssignmentPb format = 1;</code>
+       * @return Whether the format field is set.
+       */
+      public boolean hasFormat() {
+        return ((bitField0_ & 0x00000001) != 0);
+      }
+      /**
+       * <code>.littlehorse.VariableAssignmentPb format = 1;</code>
+       * @return The format.
+       */
+      public io.littlehorse.jlib.common.proto.VariableAssignmentPb getFormat() {
+        if (formatBuilder_ == null) {
+          return format_ == null ? io.littlehorse.jlib.common.proto.VariableAssignmentPb.getDefaultInstance() : format_;
+        } else {
+          return formatBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.littlehorse.VariableAssignmentPb format = 1;</code>
+       */
+      public Builder setFormat(io.littlehorse.jlib.common.proto.VariableAssignmentPb value) {
+        if (formatBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          format_ = value;
+        } else {
+          formatBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.littlehorse.VariableAssignmentPb format = 1;</code>
+       */
+      public Builder setFormat(
+          io.littlehorse.jlib.common.proto.VariableAssignmentPb.Builder builderForValue) {
+        if (formatBuilder_ == null) {
+          format_ = builderForValue.build();
+        } else {
+          formatBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.littlehorse.VariableAssignmentPb format = 1;</code>
+       */
+      public Builder mergeFormat(io.littlehorse.jlib.common.proto.VariableAssignmentPb value) {
+        if (formatBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0) &&
+            format_ != null &&
+            format_ != io.littlehorse.jlib.common.proto.VariableAssignmentPb.getDefaultInstance()) {
+            getFormatBuilder().mergeFrom(value);
+          } else {
+            format_ = value;
+          }
+        } else {
+          formatBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.littlehorse.VariableAssignmentPb format = 1;</code>
+       */
+      public Builder clearFormat() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        format_ = null;
+        if (formatBuilder_ != null) {
+          formatBuilder_.dispose();
+          formatBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.littlehorse.VariableAssignmentPb format = 1;</code>
+       */
+      public io.littlehorse.jlib.common.proto.VariableAssignmentPb.Builder getFormatBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return getFormatFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.littlehorse.VariableAssignmentPb format = 1;</code>
+       */
+      public io.littlehorse.jlib.common.proto.VariableAssignmentPbOrBuilder getFormatOrBuilder() {
+        if (formatBuilder_ != null) {
+          return formatBuilder_.getMessageOrBuilder();
+        } else {
+          return format_ == null ?
+              io.littlehorse.jlib.common.proto.VariableAssignmentPb.getDefaultInstance() : format_;
+        }
+      }
+      /**
+       * <code>.littlehorse.VariableAssignmentPb format = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.littlehorse.jlib.common.proto.VariableAssignmentPb, io.littlehorse.jlib.common.proto.VariableAssignmentPb.Builder, io.littlehorse.jlib.common.proto.VariableAssignmentPbOrBuilder> 
+          getFormatFieldBuilder() {
+        if (formatBuilder_ == null) {
+          formatBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.littlehorse.jlib.common.proto.VariableAssignmentPb, io.littlehorse.jlib.common.proto.VariableAssignmentPb.Builder, io.littlehorse.jlib.common.proto.VariableAssignmentPbOrBuilder>(
+                  getFormat(),
+                  getParentForChildren(),
+                  isClean());
+          format_ = null;
+        }
+        return formatBuilder_;
+      }
+
+      private java.util.List<io.littlehorse.jlib.common.proto.VariableAssignmentPb> args_ =
+        java.util.Collections.emptyList();
+      private void ensureArgsIsMutable() {
+        if (!((bitField0_ & 0x00000002) != 0)) {
+          args_ = new java.util.ArrayList<io.littlehorse.jlib.common.proto.VariableAssignmentPb>(args_);
+          bitField0_ |= 0x00000002;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          io.littlehorse.jlib.common.proto.VariableAssignmentPb, io.littlehorse.jlib.common.proto.VariableAssignmentPb.Builder, io.littlehorse.jlib.common.proto.VariableAssignmentPbOrBuilder> argsBuilder_;
+
+      /**
+       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       */
+      public java.util.List<io.littlehorse.jlib.common.proto.VariableAssignmentPb> getArgsList() {
+        if (argsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(args_);
+        } else {
+          return argsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       */
+      public int getArgsCount() {
+        if (argsBuilder_ == null) {
+          return args_.size();
+        } else {
+          return argsBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       */
+      public io.littlehorse.jlib.common.proto.VariableAssignmentPb getArgs(int index) {
+        if (argsBuilder_ == null) {
+          return args_.get(index);
+        } else {
+          return argsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       */
+      public Builder setArgs(
+          int index, io.littlehorse.jlib.common.proto.VariableAssignmentPb value) {
+        if (argsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureArgsIsMutable();
+          args_.set(index, value);
+          onChanged();
+        } else {
+          argsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       */
+      public Builder setArgs(
+          int index, io.littlehorse.jlib.common.proto.VariableAssignmentPb.Builder builderForValue) {
+        if (argsBuilder_ == null) {
+          ensureArgsIsMutable();
+          args_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          argsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       */
+      public Builder addArgs(io.littlehorse.jlib.common.proto.VariableAssignmentPb value) {
+        if (argsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureArgsIsMutable();
+          args_.add(value);
+          onChanged();
+        } else {
+          argsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       */
+      public Builder addArgs(
+          int index, io.littlehorse.jlib.common.proto.VariableAssignmentPb value) {
+        if (argsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureArgsIsMutable();
+          args_.add(index, value);
+          onChanged();
+        } else {
+          argsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       */
+      public Builder addArgs(
+          io.littlehorse.jlib.common.proto.VariableAssignmentPb.Builder builderForValue) {
+        if (argsBuilder_ == null) {
+          ensureArgsIsMutable();
+          args_.add(builderForValue.build());
+          onChanged();
+        } else {
+          argsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       */
+      public Builder addArgs(
+          int index, io.littlehorse.jlib.common.proto.VariableAssignmentPb.Builder builderForValue) {
+        if (argsBuilder_ == null) {
+          ensureArgsIsMutable();
+          args_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          argsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       */
+      public Builder addAllArgs(
+          java.lang.Iterable<? extends io.littlehorse.jlib.common.proto.VariableAssignmentPb> values) {
+        if (argsBuilder_ == null) {
+          ensureArgsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, args_);
+          onChanged();
+        } else {
+          argsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       */
+      public Builder clearArgs() {
+        if (argsBuilder_ == null) {
+          args_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+          onChanged();
+        } else {
+          argsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       */
+      public Builder removeArgs(int index) {
+        if (argsBuilder_ == null) {
+          ensureArgsIsMutable();
+          args_.remove(index);
+          onChanged();
+        } else {
+          argsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       */
+      public io.littlehorse.jlib.common.proto.VariableAssignmentPb.Builder getArgsBuilder(
+          int index) {
+        return getArgsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       */
+      public io.littlehorse.jlib.common.proto.VariableAssignmentPbOrBuilder getArgsOrBuilder(
+          int index) {
+        if (argsBuilder_ == null) {
+          return args_.get(index);  } else {
+          return argsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       */
+      public java.util.List<? extends io.littlehorse.jlib.common.proto.VariableAssignmentPbOrBuilder> 
+           getArgsOrBuilderList() {
+        if (argsBuilder_ != null) {
+          return argsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(args_);
+        }
+      }
+      /**
+       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       */
+      public io.littlehorse.jlib.common.proto.VariableAssignmentPb.Builder addArgsBuilder() {
+        return getArgsFieldBuilder().addBuilder(
+            io.littlehorse.jlib.common.proto.VariableAssignmentPb.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       */
+      public io.littlehorse.jlib.common.proto.VariableAssignmentPb.Builder addArgsBuilder(
+          int index) {
+        return getArgsFieldBuilder().addBuilder(
+            index, io.littlehorse.jlib.common.proto.VariableAssignmentPb.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .littlehorse.VariableAssignmentPb args = 2;</code>
+       */
+      public java.util.List<io.littlehorse.jlib.common.proto.VariableAssignmentPb.Builder> 
+           getArgsBuilderList() {
+        return getArgsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          io.littlehorse.jlib.common.proto.VariableAssignmentPb, io.littlehorse.jlib.common.proto.VariableAssignmentPb.Builder, io.littlehorse.jlib.common.proto.VariableAssignmentPbOrBuilder> 
+          getArgsFieldBuilder() {
+        if (argsBuilder_ == null) {
+          argsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              io.littlehorse.jlib.common.proto.VariableAssignmentPb, io.littlehorse.jlib.common.proto.VariableAssignmentPb.Builder, io.littlehorse.jlib.common.proto.VariableAssignmentPbOrBuilder>(
+                  args_,
+                  ((bitField0_ & 0x00000002) != 0),
+                  getParentForChildren(),
+                  isClean());
+          args_ = null;
+        }
+        return argsBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:littlehorse.VariableAssignmentPb.FormatStringPb)
+    }
+
+    // @@protoc_insertion_point(class_scope:littlehorse.VariableAssignmentPb.FormatStringPb)
+    private static final io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb();
+    }
+
+    public static io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<FormatStringPb>
+        PARSER = new com.google.protobuf.AbstractParser<FormatStringPb>() {
+      @java.lang.Override
+      public FormatStringPb parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<FormatStringPb> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<FormatStringPb> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private int bitField0_;
   private int sourceCase_ = 0;
   private java.lang.Object source_;
@@ -52,6 +1033,7 @@ private static final long serialVersionUID = 0L;
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
     VARIABLE_NAME(2),
     LITERAL_VALUE(3),
+    FORMAT_STRING(4),
     SOURCE_NOT_SET(0);
     private final int value;
     private SourceCase(int value) {
@@ -71,6 +1053,7 @@ private static final long serialVersionUID = 0L;
       switch (value) {
         case 2: return VARIABLE_NAME;
         case 3: return LITERAL_VALUE;
+        case 4: return FORMAT_STRING;
         case 0: return SOURCE_NOT_SET;
         default: return null;
       }
@@ -216,6 +1199,37 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.jlib.common.proto.VariableValuePb.getDefaultInstance();
   }
 
+  public static final int FORMAT_STRING_FIELD_NUMBER = 4;
+  /**
+   * <code>.littlehorse.VariableAssignmentPb.FormatStringPb format_string = 4;</code>
+   * @return Whether the formatString field is set.
+   */
+  @java.lang.Override
+  public boolean hasFormatString() {
+    return sourceCase_ == 4;
+  }
+  /**
+   * <code>.littlehorse.VariableAssignmentPb.FormatStringPb format_string = 4;</code>
+   * @return The formatString.
+   */
+  @java.lang.Override
+  public io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb getFormatString() {
+    if (sourceCase_ == 4) {
+       return (io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb) source_;
+    }
+    return io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.VariableAssignmentPb.FormatStringPb format_string = 4;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPbOrBuilder getFormatStringOrBuilder() {
+    if (sourceCase_ == 4) {
+       return (io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb) source_;
+    }
+    return io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -239,6 +1253,9 @@ private static final long serialVersionUID = 0L;
     if (sourceCase_ == 3) {
       output.writeMessage(3, (io.littlehorse.jlib.common.proto.VariableValuePb) source_);
     }
+    if (sourceCase_ == 4) {
+      output.writeMessage(4, (io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb) source_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -257,6 +1274,10 @@ private static final long serialVersionUID = 0L;
     if (sourceCase_ == 3) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, (io.littlehorse.jlib.common.proto.VariableValuePb) source_);
+    }
+    if (sourceCase_ == 4) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(4, (io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb) source_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -288,6 +1309,10 @@ private static final long serialVersionUID = 0L;
         if (!getLiteralValue()
             .equals(other.getLiteralValue())) return false;
         break;
+      case 4:
+        if (!getFormatString()
+            .equals(other.getFormatString())) return false;
+        break;
       case 0:
       default:
     }
@@ -314,6 +1339,10 @@ private static final long serialVersionUID = 0L;
       case 3:
         hash = (37 * hash) + LITERAL_VALUE_FIELD_NUMBER;
         hash = (53 * hash) + getLiteralValue().hashCode();
+        break;
+      case 4:
+        hash = (37 * hash) + FORMAT_STRING_FIELD_NUMBER;
+        hash = (53 * hash) + getFormatString().hashCode();
         break;
       case 0:
       default:
@@ -451,6 +1480,9 @@ private static final long serialVersionUID = 0L;
       if (literalValueBuilder_ != null) {
         literalValueBuilder_.clear();
       }
+      if (formatStringBuilder_ != null) {
+        formatStringBuilder_.clear();
+      }
       sourceCase_ = 0;
       source_ = null;
       return this;
@@ -501,6 +1533,10 @@ private static final long serialVersionUID = 0L;
       if (sourceCase_ == 3 &&
           literalValueBuilder_ != null) {
         result.source_ = literalValueBuilder_.build();
+      }
+      if (sourceCase_ == 4 &&
+          formatStringBuilder_ != null) {
+        result.source_ = formatStringBuilder_.build();
       }
     }
 
@@ -564,6 +1600,10 @@ private static final long serialVersionUID = 0L;
           mergeLiteralValue(other.getLiteralValue());
           break;
         }
+        case FORMAT_STRING: {
+          mergeFormatString(other.getFormatString());
+          break;
+        }
         case SOURCE_NOT_SET: {
           break;
         }
@@ -612,6 +1652,13 @@ private static final long serialVersionUID = 0L;
               sourceCase_ = 3;
               break;
             } // case 26
+            case 34: {
+              input.readMessage(
+                  getFormatStringFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              sourceCase_ = 4;
+              break;
+            } // case 34
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -956,6 +2003,148 @@ private static final long serialVersionUID = 0L;
       sourceCase_ = 3;
       onChanged();
       return literalValueBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb, io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb.Builder, io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPbOrBuilder> formatStringBuilder_;
+    /**
+     * <code>.littlehorse.VariableAssignmentPb.FormatStringPb format_string = 4;</code>
+     * @return Whether the formatString field is set.
+     */
+    @java.lang.Override
+    public boolean hasFormatString() {
+      return sourceCase_ == 4;
+    }
+    /**
+     * <code>.littlehorse.VariableAssignmentPb.FormatStringPb format_string = 4;</code>
+     * @return The formatString.
+     */
+    @java.lang.Override
+    public io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb getFormatString() {
+      if (formatStringBuilder_ == null) {
+        if (sourceCase_ == 4) {
+          return (io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb) source_;
+        }
+        return io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb.getDefaultInstance();
+      } else {
+        if (sourceCase_ == 4) {
+          return formatStringBuilder_.getMessage();
+        }
+        return io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.VariableAssignmentPb.FormatStringPb format_string = 4;</code>
+     */
+    public Builder setFormatString(io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb value) {
+      if (formatStringBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        source_ = value;
+        onChanged();
+      } else {
+        formatStringBuilder_.setMessage(value);
+      }
+      sourceCase_ = 4;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.VariableAssignmentPb.FormatStringPb format_string = 4;</code>
+     */
+    public Builder setFormatString(
+        io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb.Builder builderForValue) {
+      if (formatStringBuilder_ == null) {
+        source_ = builderForValue.build();
+        onChanged();
+      } else {
+        formatStringBuilder_.setMessage(builderForValue.build());
+      }
+      sourceCase_ = 4;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.VariableAssignmentPb.FormatStringPb format_string = 4;</code>
+     */
+    public Builder mergeFormatString(io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb value) {
+      if (formatStringBuilder_ == null) {
+        if (sourceCase_ == 4 &&
+            source_ != io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb.getDefaultInstance()) {
+          source_ = io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb.newBuilder((io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb) source_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          source_ = value;
+        }
+        onChanged();
+      } else {
+        if (sourceCase_ == 4) {
+          formatStringBuilder_.mergeFrom(value);
+        } else {
+          formatStringBuilder_.setMessage(value);
+        }
+      }
+      sourceCase_ = 4;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.VariableAssignmentPb.FormatStringPb format_string = 4;</code>
+     */
+    public Builder clearFormatString() {
+      if (formatStringBuilder_ == null) {
+        if (sourceCase_ == 4) {
+          sourceCase_ = 0;
+          source_ = null;
+          onChanged();
+        }
+      } else {
+        if (sourceCase_ == 4) {
+          sourceCase_ = 0;
+          source_ = null;
+        }
+        formatStringBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.VariableAssignmentPb.FormatStringPb format_string = 4;</code>
+     */
+    public io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb.Builder getFormatStringBuilder() {
+      return getFormatStringFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.VariableAssignmentPb.FormatStringPb format_string = 4;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPbOrBuilder getFormatStringOrBuilder() {
+      if ((sourceCase_ == 4) && (formatStringBuilder_ != null)) {
+        return formatStringBuilder_.getMessageOrBuilder();
+      } else {
+        if (sourceCase_ == 4) {
+          return (io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb) source_;
+        }
+        return io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.VariableAssignmentPb.FormatStringPb format_string = 4;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb, io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb.Builder, io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPbOrBuilder> 
+        getFormatStringFieldBuilder() {
+      if (formatStringBuilder_ == null) {
+        if (!(sourceCase_ == 4)) {
+          source_ = io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb.getDefaultInstance();
+        }
+        formatStringBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb, io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb.Builder, io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPbOrBuilder>(
+                (io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb) source_,
+                getParentForChildren(),
+                isClean());
+        source_ = null;
+      }
+      sourceCase_ = 4;
+      onChanged();
+      return formatStringBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

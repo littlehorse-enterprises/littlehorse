@@ -27,11 +27,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
 
 @Slf4j
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
 
     public String userTaskDefName;
@@ -46,6 +50,7 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
     public List<UserTaskFieldResultPb> results;
 
     public UserTaskRunStatusPb status;
+    private String notes;
 
     public UserTaskRun() {
         events = new ArrayList<>();
@@ -65,6 +70,8 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
 
         if (userId != null) out.setUserId(userId);
 
+        if (notes != null) out.setNotes(notes);
+
         for (UserTaskEvent event : events) {
             out.addEvents(event.toProto());
         }
@@ -74,10 +81,10 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
 
         switch (assignedToType) {
             case SPECIFIC_USER_ID:
-                out.setSpecificUserId(specificUserId);
+                if (specificUserId != null) out.setSpecificUserId(specificUserId);
                 break;
             case USER_GROUP:
-                out.setUserGroup(userGroup);
+                if (userGroup != null) out.setUserGroup(userGroup);
                 break;
             case ASSIGNEDTO_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -93,6 +100,8 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
         status = p.getStatus();
 
         if (p.hasUserId()) userId = p.getUserId();
+
+        if (p.hasNotes()) notes = p.getNotes();
 
         for (UserTaskEventPb ute : p.getEventsList()) {
             events.add(LHSerializable.fromProto(ute, UserTaskEvent.class));
@@ -128,17 +137,25 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
 
         // Need to either assign to a user or to a group.
         try {
+            if (node.userTaskNode.getNotes() != null) {
+                VariableValue notesVal = nodeRun.threadRun
+                    .assignVariable(node.userTaskNode.getNotes())
+                    .asStr();
+
+                notes = notesVal.getStrVal();
+            }
+
             if (assignedToType == AssignedToCase.SPECIFIC_USER_ID) {
                 assignToSpecificUser(node);
             } else if (assignedToType == AssignedToCase.USER_GROUP) {
                 assignToGroup(node);
             } else {
-                // not yet implemented--case when assigning
+                status = UserTaskRunStatusPb.UNASSIGNED;
             }
 
             // I don't think there's anything to do other than schedule the timers for
             // the actions which need to occur.
-            for (UTActionTrigger action : node.userTaskNode.actions) {
+            for (UTActionTrigger action : node.userTaskNode.getActions()) {
                 scheduleAction(action);
             }
             log.info("Arrived at user task!");
@@ -158,7 +175,7 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
 
     private void assignToSpecificUser(Node node) throws LHVarSubError {
         VariableValue userIdVal = nodeRun.threadRun.assignVariable(
-            node.userTaskNode.userId
+            node.userTaskNode.getUserId()
         );
 
         if (userIdVal.type != VariableTypePb.STR) {
@@ -177,7 +194,7 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
 
     private void assignToGroup(Node node) throws LHVarSubError {
         VariableValue groupIdVal = nodeRun.threadRun.assignVariable(
-            node.userTaskNode.userGroup
+            node.userTaskNode.getUserGroup()
         );
 
         if (groupIdVal.type != VariableTypePb.STR) {

@@ -40,6 +40,7 @@ import io.littlehorse.jlib.common.proto.ThreadRunPb;
 import io.littlehorse.jlib.common.proto.ThreadTypePb;
 import io.littlehorse.jlib.common.proto.UserTaskRunStatusPb;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -799,11 +800,13 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
                 return Comparer.contains(rhs, lhs);
             case NOT_IN:
                 return !Comparer.contains(rhs, lhs);
-            default:
-                throw new RuntimeException(
-                    "Unhandled comparison enum " + e.condition.comparator
-                );
+            case UNRECOGNIZED:
         }
+
+        // TODO: Refactor this line
+        throw new RuntimeException(
+            "Unhandled comparison enum " + e.condition.comparator
+        );
     }
 
     public ThreadRun getParent() {
@@ -880,7 +883,9 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         // If we got this far without a LHVarSubError, then we can safely save all
         // of the variables.
         for (Map.Entry<String, VariableValue> entry : varCache.entrySet()) {
-            // TODO: This needs to be extended once we add Threads.
+            // this method saves the variable into the appropriate ThreadRun,
+            // respecting the fact that child ThreadRun's can access their
+            // parents' variables.
             putVariable(entry.getKey(), entry.getValue());
         }
     }
@@ -899,32 +904,69 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         Map<String, VariableValue> txnCache
     ) throws LHVarSubError {
         VariableValue val = null;
-        switch (assn.rhsSourceType) {
+        switch (assn.getRhsSourceType()) {
             case LITERAL_VALUE:
-                val = assn.rhsLiteralValue;
+                val = assn.getRhsLiteralValue();
                 break;
             case VARIABLE_NAME:
-                if (txnCache.containsKey(assn.rhsVariableName)) {
-                    val = txnCache.get(assn.rhsVariableName);
+                if (txnCache.containsKey(assn.getVariableName())) {
+                    val = txnCache.get(assn.getVariableName());
                 } else {
-                    val = getVariable(assn.rhsVariableName).value;
+                    val = getVariable(assn.getVariableName()).value;
                 }
 
                 if (val == null) {
                     throw new LHVarSubError(
                         null,
-                        "Variable " + assn.rhsVariableName + " not in scope!"
+                        "Variable " + assn.getVariableName() + " not in scope!"
                     );
                 }
 
                 break;
+            case FORMAT_STRING:
+                // first, assign the format string
+                VariableValue formatStringVarVal = assignVariable(
+                    assn.getFormatString().getFormat(),
+                    txnCache
+                );
+                if (formatStringVarVal.getType() != VariableTypePb.STR) {
+                    throw new LHVarSubError(
+                        null,
+                        "Format String template isn't a STR; it's a " +
+                        formatStringVarVal.getType()
+                    );
+                }
+
+                List<Object> formatArgs = new ArrayList<>();
+
+                // second, assign the vars
+                for (VariableAssignment argAssn : assn.getFormatString().getArgs()) {
+                    VariableValue variableValue = assignVariable(argAssn, txnCache);
+                    formatArgs.add(variableValue.getVal());
+                }
+
+                // Finally, format the String.
+                val = new VariableValue();
+                val.type = VariableTypePb.STR;
+                try {
+                    val.strVal =
+                        MessageFormat.format(
+                            formatStringVarVal.strVal,
+                            formatArgs.toArray(new Object[0])
+                        );
+                } catch (RuntimeException e) {
+                    throw new LHVarSubError(e, "Error formatting variable");
+                }
+                break;
             case SOURCE_NOT_SET:
-            default:
-                throw new RuntimeException("Not possible");
+            // Not possible
         }
 
-        if (assn.jsonPath != null) {
-            val = val.jsonPath(assn.jsonPath);
+        // TODO: Refactor this line
+        if (val == null) throw new RuntimeException("Not possible");
+
+        if (assn.getJsonPath() != null) {
+            val = val.jsonPath(assn.getJsonPath());
         }
 
         return val;

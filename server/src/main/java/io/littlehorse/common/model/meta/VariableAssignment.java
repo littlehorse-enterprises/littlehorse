@@ -8,14 +8,18 @@ import io.littlehorse.jlib.common.proto.VariableAssignmentPb.SourceCase;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
 import java.util.HashSet;
 import java.util.Set;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class VariableAssignment extends LHSerializable<VariableAssignmentPb> {
 
-    public String jsonPath;
-
-    public SourceCase rhsSourceType;
-    public String rhsVariableName;
-    public VariableValue rhsLiteralValue;
+    private String jsonPath;
+    private SourceCase rhsSourceType;
+    private String variableName;
+    private VariableValue rhsLiteralValue;
+    private FormatString formatString;
 
     public Class<VariableAssignmentPb> getProtoBaseClass() {
         return VariableAssignmentPb.class;
@@ -28,10 +32,14 @@ public class VariableAssignment extends LHSerializable<VariableAssignmentPb> {
         rhsSourceType = p.getSourceCase();
         switch (rhsSourceType) {
             case VARIABLE_NAME:
-                rhsVariableName = p.getVariableName();
+                variableName = p.getVariableName();
                 break;
             case LITERAL_VALUE:
                 rhsLiteralValue = VariableValue.fromProto(p.getLiteralValue());
+                break;
+            case FORMAT_STRING:
+                formatString =
+                    LHSerializable.fromProto(p.getFormatString(), FormatString.class);
                 break;
             case SOURCE_NOT_SET:
             // nothing to do;
@@ -45,10 +53,13 @@ public class VariableAssignment extends LHSerializable<VariableAssignmentPb> {
 
         switch (rhsSourceType) {
             case VARIABLE_NAME:
-                out.setVariableName(rhsVariableName);
+                out.setVariableName(variableName);
                 break;
             case LITERAL_VALUE:
                 out.setLiteralValue(rhsLiteralValue.toProto());
+                break;
+            case FORMAT_STRING:
+                out.setFormatString(formatString.toProto());
                 break;
             case SOURCE_NOT_SET:
             // not possible.
@@ -66,7 +77,13 @@ public class VariableAssignment extends LHSerializable<VariableAssignmentPb> {
     public Set<String> getRequiredWfRunVarNames() {
         Set<String> out = new HashSet<>();
         if (rhsSourceType == SourceCase.VARIABLE_NAME) {
-            out.add(rhsVariableName);
+            out.add(variableName);
+        }
+        if (rhsSourceType == SourceCase.FORMAT_STRING) {
+            out.addAll(formatString.getFormat().getRequiredWfRunVarNames());
+            for (VariableAssignment arg : formatString.getArgs()) {
+                out.addAll(arg.getRequiredWfRunVarNames());
+            }
         }
         return out;
     }
@@ -77,7 +94,7 @@ public class VariableAssignment extends LHSerializable<VariableAssignmentPb> {
         VariableTypePb baseType;
 
         if (rhsSourceType == SourceCase.VARIABLE_NAME) {
-            VariableDef varDef = tspec.getVarDef(rhsVariableName);
+            VariableDef varDef = tspec.getVarDef(variableName);
             baseType = varDef.type;
         } else if (rhsSourceType == SourceCase.LITERAL_VALUE) {
             baseType = rhsLiteralValue.type;

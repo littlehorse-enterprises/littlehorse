@@ -290,6 +290,44 @@ private static final long serialVersionUID = 0L;
     return userTaskDefVersion_;
   }
 
+  public static final int NOTES_FIELD_NUMBER = 6;
+  private io.littlehorse.jlib.common.proto.VariableAssignmentPb notes_;
+  /**
+   * <pre>
+   * Allow WfRun-specific notes for this User Task.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableAssignmentPb notes = 6;</code>
+   * @return Whether the notes field is set.
+   */
+  @java.lang.Override
+  public boolean hasNotes() {
+    return ((bitField0_ & 0x00000002) != 0);
+  }
+  /**
+   * <pre>
+   * Allow WfRun-specific notes for this User Task.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableAssignmentPb notes = 6;</code>
+   * @return The notes.
+   */
+  @java.lang.Override
+  public io.littlehorse.jlib.common.proto.VariableAssignmentPb getNotes() {
+    return notes_ == null ? io.littlehorse.jlib.common.proto.VariableAssignmentPb.getDefaultInstance() : notes_;
+  }
+  /**
+   * <pre>
+   * Allow WfRun-specific notes for this User Task.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableAssignmentPb notes = 6;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.jlib.common.proto.VariableAssignmentPbOrBuilder getNotesOrBuilder() {
+    return notes_ == null ? io.littlehorse.jlib.common.proto.VariableAssignmentPb.getDefaultInstance() : notes_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -319,6 +357,9 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeInt32(5, userTaskDefVersion_);
     }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      output.writeMessage(6, getNotes());
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -347,6 +388,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(5, userTaskDefVersion_);
     }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(6, getNotes());
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -370,6 +415,11 @@ private static final long serialVersionUID = 0L;
     if (hasUserTaskDefVersion()) {
       if (getUserTaskDefVersion()
           != other.getUserTaskDefVersion()) return false;
+    }
+    if (hasNotes() != other.hasNotes()) return false;
+    if (hasNotes()) {
+      if (!getNotes()
+          .equals(other.getNotes())) return false;
     }
     if (!getAssignmentCase().equals(other.getAssignmentCase())) return false;
     switch (assignmentCase_) {
@@ -404,6 +454,10 @@ private static final long serialVersionUID = 0L;
     if (hasUserTaskDefVersion()) {
       hash = (37 * hash) + USER_TASK_DEF_VERSION_FIELD_NUMBER;
       hash = (53 * hash) + getUserTaskDefVersion();
+    }
+    if (hasNotes()) {
+      hash = (37 * hash) + NOTES_FIELD_NUMBER;
+      hash = (53 * hash) + getNotes().hashCode();
     }
     switch (assignmentCase_) {
       case 2:
@@ -534,13 +588,20 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.jlib.common.proto.UserTaskNodePb.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessageV3
+              .alwaysUseFieldBuilders) {
+        getActionsFieldBuilder();
+        getNotesFieldBuilder();
+      }
     }
     @java.lang.Override
     public Builder clear() {
@@ -561,6 +622,11 @@ private static final long serialVersionUID = 0L;
       }
       bitField0_ = (bitField0_ & ~0x00000008);
       userTaskDefVersion_ = 0;
+      notes_ = null;
+      if (notesBuilder_ != null) {
+        notesBuilder_.dispose();
+        notesBuilder_ = null;
+      }
       assignmentCase_ = 0;
       assignment_ = null;
       return this;
@@ -617,6 +683,12 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000010) != 0)) {
         result.userTaskDefVersion_ = userTaskDefVersion_;
         to_bitField0_ |= 0x00000001;
+      }
+      if (((from_bitField0_ & 0x00000020) != 0)) {
+        result.notes_ = notesBuilder_ == null
+            ? notes_
+            : notesBuilder_.build();
+        to_bitField0_ |= 0x00000002;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -712,6 +784,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasUserTaskDefVersion()) {
         setUserTaskDefVersion(other.getUserTaskDefVersion());
       }
+      if (other.hasNotes()) {
+        mergeNotes(other.getNotes());
+      }
       switch (other.getAssignmentCase()) {
         case USER_GROUP: {
           mergeUserGroup(other.getUserGroup());
@@ -788,6 +863,13 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000010;
               break;
             } // case 40
+            case 50: {
+              input.readMessage(
+                  getNotesFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000020;
+              break;
+            } // case 50
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1586,6 +1668,161 @@ private static final long serialVersionUID = 0L;
       userTaskDefVersion_ = 0;
       onChanged();
       return this;
+    }
+
+    private io.littlehorse.jlib.common.proto.VariableAssignmentPb notes_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.jlib.common.proto.VariableAssignmentPb, io.littlehorse.jlib.common.proto.VariableAssignmentPb.Builder, io.littlehorse.jlib.common.proto.VariableAssignmentPbOrBuilder> notesBuilder_;
+    /**
+     * <pre>
+     * Allow WfRun-specific notes for this User Task.
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableAssignmentPb notes = 6;</code>
+     * @return Whether the notes field is set.
+     */
+    public boolean hasNotes() {
+      return ((bitField0_ & 0x00000020) != 0);
+    }
+    /**
+     * <pre>
+     * Allow WfRun-specific notes for this User Task.
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableAssignmentPb notes = 6;</code>
+     * @return The notes.
+     */
+    public io.littlehorse.jlib.common.proto.VariableAssignmentPb getNotes() {
+      if (notesBuilder_ == null) {
+        return notes_ == null ? io.littlehorse.jlib.common.proto.VariableAssignmentPb.getDefaultInstance() : notes_;
+      } else {
+        return notesBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * Allow WfRun-specific notes for this User Task.
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableAssignmentPb notes = 6;</code>
+     */
+    public Builder setNotes(io.littlehorse.jlib.common.proto.VariableAssignmentPb value) {
+      if (notesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        notes_ = value;
+      } else {
+        notesBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000020;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Allow WfRun-specific notes for this User Task.
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableAssignmentPb notes = 6;</code>
+     */
+    public Builder setNotes(
+        io.littlehorse.jlib.common.proto.VariableAssignmentPb.Builder builderForValue) {
+      if (notesBuilder_ == null) {
+        notes_ = builderForValue.build();
+      } else {
+        notesBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000020;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Allow WfRun-specific notes for this User Task.
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableAssignmentPb notes = 6;</code>
+     */
+    public Builder mergeNotes(io.littlehorse.jlib.common.proto.VariableAssignmentPb value) {
+      if (notesBuilder_ == null) {
+        if (((bitField0_ & 0x00000020) != 0) &&
+          notes_ != null &&
+          notes_ != io.littlehorse.jlib.common.proto.VariableAssignmentPb.getDefaultInstance()) {
+          getNotesBuilder().mergeFrom(value);
+        } else {
+          notes_ = value;
+        }
+      } else {
+        notesBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000020;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Allow WfRun-specific notes for this User Task.
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableAssignmentPb notes = 6;</code>
+     */
+    public Builder clearNotes() {
+      bitField0_ = (bitField0_ & ~0x00000020);
+      notes_ = null;
+      if (notesBuilder_ != null) {
+        notesBuilder_.dispose();
+        notesBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Allow WfRun-specific notes for this User Task.
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableAssignmentPb notes = 6;</code>
+     */
+    public io.littlehorse.jlib.common.proto.VariableAssignmentPb.Builder getNotesBuilder() {
+      bitField0_ |= 0x00000020;
+      onChanged();
+      return getNotesFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Allow WfRun-specific notes for this User Task.
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableAssignmentPb notes = 6;</code>
+     */
+    public io.littlehorse.jlib.common.proto.VariableAssignmentPbOrBuilder getNotesOrBuilder() {
+      if (notesBuilder_ != null) {
+        return notesBuilder_.getMessageOrBuilder();
+      } else {
+        return notes_ == null ?
+            io.littlehorse.jlib.common.proto.VariableAssignmentPb.getDefaultInstance() : notes_;
+      }
+    }
+    /**
+     * <pre>
+     * Allow WfRun-specific notes for this User Task.
+     * </pre>
+     *
+     * <code>optional .littlehorse.VariableAssignmentPb notes = 6;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.jlib.common.proto.VariableAssignmentPb, io.littlehorse.jlib.common.proto.VariableAssignmentPb.Builder, io.littlehorse.jlib.common.proto.VariableAssignmentPbOrBuilder> 
+        getNotesFieldBuilder() {
+      if (notesBuilder_ == null) {
+        notesBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.jlib.common.proto.VariableAssignmentPb, io.littlehorse.jlib.common.proto.VariableAssignmentPb.Builder, io.littlehorse.jlib.common.proto.VariableAssignmentPbOrBuilder>(
+                getNotes(),
+                getParentForChildren(),
+                isClean());
+        notes_ = null;
+      }
+      return notesBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

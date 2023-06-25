@@ -25,6 +25,7 @@ private static final long serialVersionUID = 0L;
     userId_ = "";
     results_ = java.util.Collections.emptyList();
     status_ = 0;
+    notes_ = "";
   }
 
   @java.lang.Override
@@ -413,6 +414,53 @@ private static final long serialVersionUID = 0L;
     return userTaskDefVersion_;
   }
 
+  public static final int NOTES_FIELD_NUMBER = 9;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object notes_ = "";
+  /**
+   * <code>optional string notes = 9;</code>
+   * @return Whether the notes field is set.
+   */
+  @java.lang.Override
+  public boolean hasNotes() {
+    return ((bitField0_ & 0x00000002) != 0);
+  }
+  /**
+   * <code>optional string notes = 9;</code>
+   * @return The notes.
+   */
+  @java.lang.Override
+  public java.lang.String getNotes() {
+    java.lang.Object ref = notes_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      notes_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>optional string notes = 9;</code>
+   * @return The bytes for notes.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getNotesBytes() {
+    java.lang.Object ref = notes_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      notes_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -451,6 +499,9 @@ private static final long serialVersionUID = 0L;
     if (userTaskDefVersion_ != 0) {
       output.writeInt32(8, userTaskDefVersion_);
     }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 9, notes_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -488,6 +539,9 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(8, userTaskDefVersion_);
     }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(9, notes_);
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -517,6 +571,11 @@ private static final long serialVersionUID = 0L;
     if (status_ != other.status_) return false;
     if (getUserTaskDefVersion()
         != other.getUserTaskDefVersion()) return false;
+    if (hasNotes() != other.hasNotes()) return false;
+    if (hasNotes()) {
+      if (!getNotes()
+          .equals(other.getNotes())) return false;
+    }
     if (!getAssignedToCase().equals(other.getAssignedToCase())) return false;
     switch (assignedToCase_) {
       case 3:
@@ -559,6 +618,10 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + status_;
     hash = (37 * hash) + USER_TASK_DEF_VERSION_FIELD_NUMBER;
     hash = (53 * hash) + getUserTaskDefVersion();
+    if (hasNotes()) {
+      hash = (37 * hash) + NOTES_FIELD_NUMBER;
+      hash = (53 * hash) + getNotes().hashCode();
+    }
     switch (assignedToCase_) {
       case 3:
         hash = (37 * hash) + SPECIFIC_USER_ID_FIELD_NUMBER;
@@ -722,6 +785,7 @@ private static final long serialVersionUID = 0L;
       bitField0_ = (bitField0_ & ~0x00000020);
       status_ = 0;
       userTaskDefVersion_ = 0;
+      notes_ = "";
       assignedToCase_ = 0;
       assignedTo_ = null;
       return this;
@@ -793,6 +857,10 @@ private static final long serialVersionUID = 0L;
       }
       if (((from_bitField0_ & 0x00000080) != 0)) {
         result.userTaskDefVersion_ = userTaskDefVersion_;
+      }
+      if (((from_bitField0_ & 0x00000100) != 0)) {
+        result.notes_ = notes_;
+        to_bitField0_ |= 0x00000002;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -914,6 +982,11 @@ private static final long serialVersionUID = 0L;
       if (other.getUserTaskDefVersion() != 0) {
         setUserTaskDefVersion(other.getUserTaskDefVersion());
       }
+      if (other.hasNotes()) {
+        notes_ = other.notes_;
+        bitField0_ |= 0x00000100;
+        onChanged();
+      }
       switch (other.getAssignedToCase()) {
         case SPECIFIC_USER_ID: {
           assignedToCase_ = 3;
@@ -1015,6 +1088,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000080;
               break;
             } // case 64
+            case 74: {
+              notes_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000100;
+              break;
+            } // case 74
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1981,6 +2059,85 @@ private static final long serialVersionUID = 0L;
     public Builder clearUserTaskDefVersion() {
       bitField0_ = (bitField0_ & ~0x00000080);
       userTaskDefVersion_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object notes_ = "";
+    /**
+     * <code>optional string notes = 9;</code>
+     * @return Whether the notes field is set.
+     */
+    public boolean hasNotes() {
+      return ((bitField0_ & 0x00000100) != 0);
+    }
+    /**
+     * <code>optional string notes = 9;</code>
+     * @return The notes.
+     */
+    public java.lang.String getNotes() {
+      java.lang.Object ref = notes_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        notes_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>optional string notes = 9;</code>
+     * @return The bytes for notes.
+     */
+    public com.google.protobuf.ByteString
+        getNotesBytes() {
+      java.lang.Object ref = notes_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        notes_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>optional string notes = 9;</code>
+     * @param value The notes to set.
+     * @return This builder for chaining.
+     */
+    public Builder setNotes(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      notes_ = value;
+      bitField0_ |= 0x00000100;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional string notes = 9;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearNotes() {
+      notes_ = getDefaultInstance().getNotes();
+      bitField0_ = (bitField0_ & ~0x00000100);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional string notes = 9;</code>
+     * @param value The bytes for notes to set.
+     * @return This builder for chaining.
+     */
+    public Builder setNotesBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      notes_ = value;
+      bitField0_ |= 0x00000100;
       onChanged();
       return this;
     }

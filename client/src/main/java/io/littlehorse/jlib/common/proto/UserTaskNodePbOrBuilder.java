@@ -126,5 +126,32 @@ public interface UserTaskNodePbOrBuilder extends
    */
   int getUserTaskDefVersion();
 
+  /**
+   * <pre>
+   * Allow WfRun-specific notes for this User Task.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableAssignmentPb notes = 6;</code>
+   * @return Whether the notes field is set.
+   */
+  boolean hasNotes();
+  /**
+   * <pre>
+   * Allow WfRun-specific notes for this User Task.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableAssignmentPb notes = 6;</code>
+   * @return The notes.
+   */
+  io.littlehorse.jlib.common.proto.VariableAssignmentPb getNotes();
+  /**
+   * <pre>
+   * Allow WfRun-specific notes for this User Task.
+   * </pre>
+   *
+   * <code>optional .littlehorse.VariableAssignmentPb notes = 6;</code>
+   */
+  io.littlehorse.jlib.common.proto.VariableAssignmentPbOrBuilder getNotesOrBuilder();
+
   public io.littlehorse.jlib.common.proto.UserTaskNodePb.AssignmentCase getAssignmentCase();
 }

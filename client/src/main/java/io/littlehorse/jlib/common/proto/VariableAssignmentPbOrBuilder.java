@@ -56,5 +56,20 @@ public interface VariableAssignmentPbOrBuilder extends
    */
   io.littlehorse.jlib.common.proto.VariableValuePbOrBuilder getLiteralValueOrBuilder();
 
+  /**
+   * <code>.littlehorse.VariableAssignmentPb.FormatStringPb format_string = 4;</code>
+   * @return Whether the formatString field is set.
+   */
+  boolean hasFormatString();
+  /**
+   * <code>.littlehorse.VariableAssignmentPb.FormatStringPb format_string = 4;</code>
+   * @return The formatString.
+   */
+  io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb getFormatString();
+  /**
+   * <code>.littlehorse.VariableAssignmentPb.FormatStringPb format_string = 4;</code>
+   */
+  io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPbOrBuilder getFormatStringOrBuilder();
+
   public io.littlehorse.jlib.common.proto.VariableAssignmentPb.SourceCase getSourceCase();
 }

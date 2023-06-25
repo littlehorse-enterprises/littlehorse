@@ -17,15 +17,20 @@ import io.littlehorse.jlib.common.proto.UserTaskRunPb.AssignedToCase;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class UserTaskNode extends SubNode<UserTaskNodePb> {
 
-    public String userTaskDefName;
-    public AssignmentCase assignmentType;
-    public VariableAssignment userGroup;
-    public VariableAssignment userId;
-    public List<UTActionTrigger> actions;
-    public Integer userTaskDefVersion;
+    private String userTaskDefName;
+    private AssignmentCase assignmentType;
+    private VariableAssignment userGroup;
+    private VariableAssignment userId;
+    private List<UTActionTrigger> actions;
+    private Integer userTaskDefVersion;
+    private VariableAssignment notes;
 
     public UserTaskNode() {
         this.actions = new ArrayList<>();
@@ -59,6 +64,10 @@ public class UserTaskNode extends SubNode<UserTaskNodePb> {
             out.setUserTaskDefVersion(userTaskDefVersion);
         }
 
+        if (notes != null) {
+            out.setNotes(notes.toProto());
+        }
+
         return out;
     }
 
@@ -83,6 +92,10 @@ public class UserTaskNode extends SubNode<UserTaskNodePb> {
 
         for (UTActionTriggerPb action : p.getActionsList()) {
             actions.add(LHSerializable.fromProto(action, UTActionTrigger.class));
+        }
+
+        if (p.hasNotes()) {
+            notes = LHSerializable.fromProto(p.getNotes(), VariableAssignment.class);
         }
     }
 

@@ -182,8 +182,8 @@ public class Node extends LHSerializable<NodePb> {
         for (VariableMutation mut : variableMutations) {
             out.add(mut.lhsName);
             if (mut.rhsSourceVariable != null) {
-                if (mut.rhsSourceVariable.rhsVariableName != null) {
-                    out.add(mut.rhsSourceVariable.rhsVariableName);
+                if (mut.rhsSourceVariable.getVariableName() != null) {
+                    out.add(mut.rhsSourceVariable.getVariableName());
                 }
             }
         }

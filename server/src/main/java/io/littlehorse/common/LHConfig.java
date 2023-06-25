@@ -785,8 +785,8 @@ public class LHConfig extends ConfigBase {
 
         VariableValue val = new VariableValue(timeout);
         VariableAssignment out = new VariableAssignment();
-        out.rhsSourceType = SourceCase.LITERAL_VALUE;
-        out.rhsLiteralValue = val;
+        out.setRhsSourceType(SourceCase.LITERAL_VALUE);
+        out.setRhsLiteralValue(val);
         return out;
     }
 

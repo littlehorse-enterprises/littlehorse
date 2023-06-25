@@ -31,52 +31,22 @@ public interface UserTaskFieldPbOrBuilder extends
   io.littlehorse.jlib.common.proto.VariableTypePb getType();
 
   /**
-   * <code>bool required = 3;</code>
-   * @return The required.
-   */
-  boolean getRequired();
-
-  /**
-   * <code>optional .littlehorse.VariableValuePb default_val = 4;</code>
-   * @return Whether the defaultVal field is set.
-   */
-  boolean hasDefaultVal();
-  /**
-   * <code>optional .littlehorse.VariableValuePb default_val = 4;</code>
-   * @return The defaultVal.
-   */
-  io.littlehorse.jlib.common.proto.VariableValuePb getDefaultVal();
-  /**
-   * <code>optional .littlehorse.VariableValuePb default_val = 4;</code>
-   */
-  io.littlehorse.jlib.common.proto.VariableValuePbOrBuilder getDefaultValOrBuilder();
-
-  /**
-   * <pre>
-   * Later versions will allow stuff such as:
-   * 1. Validation (eg. email address, integer between 1-10, etc)
-   * 2. Nested object structures
-   * 3. Multi-Page forms (survey-js style)
-   * 4. Conditional rendering of forms based on input (surveyjs style)
-   * </pre>
-   *
-   * <code>optional string description = 5;</code>
+   * <code>optional string description = 3;</code>
    * @return Whether the description field is set.
    */
   boolean hasDescription();
   /**
-   * <pre>
-   * Later versions will allow stuff such as:
-   * 1. Validation (eg. email address, integer between 1-10, etc)
-   * 2. Nested object structures
-   * 3. Multi-Page forms (survey-js style)
-   * 4. Conditional rendering of forms based on input (surveyjs style)
-   * </pre>
-   *
-   * <code>optional string description = 5;</code>
+   * <code>optional string description = 3;</code>
    * @return The description.
    */
   java.lang.String getDescription();
+  /**
+   * <code>optional string description = 3;</code>
+   * @return The bytes for description.
+   */
+  com.google.protobuf.ByteString
+      getDescriptionBytes();
+
   /**
    * <pre>
    * Later versions will allow stuff such as:
@@ -84,11 +54,26 @@ public interface UserTaskFieldPbOrBuilder extends
    * 2. Nested object structures
    * 3. Multi-Page forms (survey-js style)
    * 4. Conditional rendering of forms based on input (surveyjs style)
+   * 5. Default values and optional fields
    * </pre>
    *
-   * <code>optional string description = 5;</code>
-   * @return The bytes for description.
+   * <code>string display_name = 4;</code>
+   * @return The displayName.
+   */
+  java.lang.String getDisplayName();
+  /**
+   * <pre>
+   * Later versions will allow stuff such as:
+   * 1. Validation (eg. email address, integer between 1-10, etc)
+   * 2. Nested object structures
+   * 3. Multi-Page forms (survey-js style)
+   * 4. Conditional rendering of forms based on input (surveyjs style)
+   * 5. Default values and optional fields
+   * </pre>
+   *
+   * <code>string display_name = 4;</code>
+   * @return The bytes for displayName.
    */
   com.google.protobuf.ByteString
-      getDescriptionBytes();
+      getDisplayNameBytes();
 }

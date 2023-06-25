@@ -153,5 +153,22 @@ public interface UserTaskRunPbOrBuilder extends
    */
   int getUserTaskDefVersion();
 
+  /**
+   * <code>optional string notes = 9;</code>
+   * @return Whether the notes field is set.
+   */
+  boolean hasNotes();
+  /**
+   * <code>optional string notes = 9;</code>
+   * @return The notes.
+   */
+  java.lang.String getNotes();
+  /**
+   * <code>optional string notes = 9;</code>
+   * @return The bytes for notes.
+   */
+  com.google.protobuf.ByteString
+      getNotesBytes();
+
   public io.littlehorse.jlib.common.proto.UserTaskRunPb.AssignedToCase getAssignedToCase();
 }
