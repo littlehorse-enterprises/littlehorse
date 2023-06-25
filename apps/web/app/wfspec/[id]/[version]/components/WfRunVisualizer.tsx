@@ -2,7 +2,9 @@
 import { useEffect, useState } from "react"
 import { WfSpecVisualizerChart } from "./WfSpecVisualizerChart";
 
-
+interface mapnode{
+    
+}
 export const WfRunVisualizer = ({id, version}:{id:string, version:number}) => {
 
     const [data, setData] = useState<any[]>([])
@@ -30,7 +32,7 @@ export const WfRunVisualizer = ({id, version}:{id:string, version:number}) => {
     }
     const mapData = (data:any) => {
         const entries = Object.entries(data?.threadSpecs?.entrypoint?.nodes)
-        const mappedData:any = entries.map((e,ix) => ({
+        const mappedData:any = entries.map((e:mapnode) => ({
             name:e[0],
             type:e[0].split("-").pop(),
             node:e[1],
