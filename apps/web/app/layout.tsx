@@ -4,7 +4,7 @@ import 'material-icons/iconfont/material-icons.css';
 import { Providers } from "../providers";
 import { Container } from "ui";
 import { signOut } from "next-auth/react";
-import { HeaderBar } from "./components/HeaderBar";
+import { HeaderBar } from "./(main)/components/HeaderBar";
 
 
 export const metadata = {

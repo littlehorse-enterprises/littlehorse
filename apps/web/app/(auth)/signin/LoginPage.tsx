@@ -11,7 +11,7 @@ export const LoginPage = () => {
         <div className="login">
       <div className="login_horse"></div>
       <div className="login_form">
-        <Image src="./logo-lh.svg" alt="logo-lh" width={218} height={80}/>
+        <Image src="/logo-lh.svg" alt="logo-lh" width={218} height={80}/>
         <form>
           <div className="title">
             Welcome to your

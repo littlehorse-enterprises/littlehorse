@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { Button, Calendar } from "ui";
 import moment from "moment"
-import { WorkflowExecutionMetrics } from "./components/metrics/WorkflowExecutionMetrics";
-import { TaskExecutionMetrics } from "./components/metrics/TaskExecutionMetrics";
-import { MetadataSearch } from "./components/search/MetadataSearch";
+import { WorkflowExecutionMetrics } from "./(main)/components/metrics/WorkflowExecutionMetrics";
+import { TaskExecutionMetrics } from "./(main)/components/metrics/TaskExecutionMetrics";
+import { MetadataSearch } from "./(main)/components/search/MetadataSearch";
 
 export default function Page() {
   const [windowLength, setWIndowLength] = useState('HOURS_2');
