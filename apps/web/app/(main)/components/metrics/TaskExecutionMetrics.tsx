@@ -6,7 +6,6 @@ import { TaskChart } from "../../../../components/Charts/TaskChart";
 import { LatencyTaskChart } from "../../../../components/Charts/LatencyTaskChart";
 import { Button, H3, H4 } from "ui";
 
-
 export interface taskDefMetric{
     windowStart: Date 
     type: string 

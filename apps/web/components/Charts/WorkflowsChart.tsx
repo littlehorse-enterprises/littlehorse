@@ -32,8 +32,6 @@ const minYAxisValue = 8000
 const visibleWindows = Math.ceil((width)/(maxWBar+gap))
 const ShadowLight_100 = "#3D4149"
 
-
-
 let  _d3:d3.Selection<d3.BaseType, unknown, HTMLElement, any>
 let svg:d3.Selection<SVGGElement, unknown, HTMLElement, any>
 let  datam:any[] = []
@@ -112,8 +110,8 @@ export const WorkflowsChart = ({data, type}:Props) => {
         
         // let  groups = dates.reverse()
         groups = data.map(d => ({
-            l1:moment(d.label).format('MMM DD,'),
-            l2:moment(d.label).format('HH:00'),
+            l1:moment(d.label).format(`MMM DD${type==='DAYS_1' ? '' : ','}`),
+            l2:moment(d.label).format(`HH:${type==='HOURS_2' ? '00' : 'mm'}`),
         }))
         // console.log(datam)
         // console.log(groups)
@@ -236,7 +234,8 @@ export const WorkflowsChart = ({data, type}:Props) => {
             } )
             .attr("y", height+15);
 
-        svg.select(".xa").append("g").selectAll("text")
+        if(type != 'DAYS_1'){
+            svg.select(".xa").append("g").selectAll("text")
             .data(groups)
             .enter().append("text").classed('hours',true)
             .text( d => d.l2 )
@@ -248,6 +247,8 @@ export const WorkflowsChart = ({data, type}:Props) => {
                 return val < 0 ? -800 : val
             } )
             .attr("y", height+30);   
+        }
+
         
         d3.select("#workflows-chart-tooltip").html(updateToolTipContent({},ttTemplate))
 
@@ -292,13 +293,11 @@ export const WorkflowsChart = ({data, type}:Props) => {
             _d3.select("svg").remove();
         }
     },[])
+    
     return <>
         <div id="workflows-chart" className="relative select-none">
-            {/* <div className="absolute p-2 border rounded shadow pointer-events-none whitespace-nowrap bg-slate-700" id="ttip"></div> */}
             <div className="mcToolTip" id="workflows-chart-tooltip"></div>
         </div>
-        {/* <input className="rangeInput" type="range" step={1}></input> */}
-        {/* <Scrollbar onMove={onMoveScroll} width={width} windowsCount={data.length} visible={visibleWindows} /> */}
         <NewScrollBar width={1405} windows={(data.length - visibleWindows) < 0 ? 1 : (data.length - visibleWindows)} onChange={onMoveScroll} />
     </>
 }

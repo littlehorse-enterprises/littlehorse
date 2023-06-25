@@ -113,8 +113,8 @@ export const LatencyChart = ({data, type}:Props) => {
         }))
         // let  groups = dates.reverse()
         groups = data.map(d => ({
-            l1:moment(d.label).format('MMM DD,'),
-            l2:moment(d.label).format('HH:00'),
+            l1:moment(d.label).format(`MMM DD${type==='DAYS_1' ? '' : ','}`),
+            l2:moment(d.label).format(`HH:${type==='HOURS_2' ? '00' : 'mm'}`),
         }))
 
 
@@ -253,19 +253,21 @@ export const LatencyChart = ({data, type}:Props) => {
                 return val < 0 ? -800 : val
             } )
             .attr("y", height+15);
-
-        svg.select(".xa").append("g").selectAll("text")
-            .data(groups)
-            .enter().append("text").classed('hours',true)
-            .text( d => d.l2 )
-            .attr("text-anchor", "middle")
-            .style('fill', "white")
-            .style('font-size', "10px")
-            .attr("x", (_d, ix) => {
-                let val = ((ix) * (maxWBar + gap))+(maxWBar/2)
-                return val < 0 ? -800 : val
-            } )
-            .attr("y", height+30);   
+        
+        if(type != 'DAYS_1'){
+            svg.select(".xa").append("g").selectAll("text")
+                .data(groups)
+                .enter().append("text").classed('hours',true)
+                .text( d => d.l2 )
+                .attr("text-anchor", "middle")
+                .style('fill', "white")
+                .style('font-size', "10px")
+                .attr("x", (_d, ix) => {
+                    let val = ((ix) * (maxWBar + gap))+(maxWBar/2)
+                    return val < 0 ? -800 : val
+                } )
+                .attr("y", height+30);   
+        }
         
         d3.select("#wf-latency-chart-tooltip").html(updateToolTipContent({},ttTemplate))
 

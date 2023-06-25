@@ -32,16 +32,17 @@ const gap = 8
 const visibleWindows = Math.ceil((width)/(maxWBar+gap))
 const ShadowLight_100 = "#3D4149"
 
-    let  datam:any[] = []
-    let  stack:any
-    let  groups:any[] = []
-	let  _d3:d3.Selection<d3.BaseType, unknown, HTMLElement, any>
-    let svg:d3.Selection<SVGGElement, unknown, HTMLElement, any>
+let  _d3:d3.Selection<d3.BaseType, unknown, HTMLElement, any>
+let svg:d3.Selection<SVGGElement, unknown, HTMLElement, any>
+let  datam:any[] = []
+let  stack:any
+let  groups:any[] = []
 
 interface Props {
     data:any[]
     type:string
 }
+
 export const TaskChart = ({data, type}:Props) => {
 
     const onMoveScroll = (ix:number) => {
@@ -81,18 +82,10 @@ export const TaskChart = ({data, type}:Props) => {
         })
 
     }
-    // set the dimensions and margins of the graph
-    
-    // console.log('visibleWindows', visibleWindows)
 
-    // const firstWindowDt = lastWindowStart.clone().subtract(windows * 2,'hours')
-    // console.log('lastWindowStart',lastWindowStart.format())
-    // console.log('firstWindowDt',firstWindowDt.format())
 
     const drawChart = useCallback((data:any[], type:string) => {
-       const clickHandler = (p:any, d:any) => {
-        console.log(p,d)
-       }
+
         datam = data.map(d => ({
             a:+d.data.totalScheduled || 0,
             b:+d.data.totalStarted || 0,
@@ -100,33 +93,15 @@ export const TaskChart = ({data, type}:Props) => {
             d:+d.data.totalErrored || 0,
             windowStart:d.label
         }))
-        // console.log('values',values)
-        // var data = values.reverse();
-
-        // data = data.slice(-visibleWindows)
-
-        // let  groups = dates.reverse()
-        
-        // let  groups = dates.reverse()
 
         groups = data.map(d => ({
             l1:moment(d.label).format(`MMM DD${type==='DAYS_1' ? '' : ','}`),
             l2:moment(d.label).format(`HH:${type==='HOURS_2' ? '00' : 'mm'}`),
         }))
-        // console.log(datam)
-        // console.log(groups)
-        // groups = groups.slice(-visibleWindows)
+
 
         let he = datam.map((values:any) => values.a +values.b + values.c + values.d)
         let maxH = Math.max(...he) > (minYAxisValue*.9) ? Math.max(...he)+(minYAxisValue*.1) : minYAxisValue
-
-        // const groups = ["1","2","3","4"]
-        
-        // d3.select(".rangeInput")
-        // .property("min", 1)
-        // .property("max", windows-visibleWindows+1)
-        // // .property("value",windows-visibleWindows+1);
-        // .property("value",1);
 
         // append the svg object to the body of the page
         _d3.select("svg").remove();
@@ -298,11 +273,9 @@ export const TaskChart = ({data, type}:Props) => {
     return <>
        
         <div id="task-chart" className="relative">
-            {/* <div className="absolute p-2 border rounded shadow pointer-events-none whitespace-nowrap bg-slate-700" id="task-chart-tooltip"></div> */}
             <div className="mcToolTip" id="task-chart-tooltip"></div>
         </div>
         <NewScrollBar width={1405} windows={(data.length - visibleWindows) < 0 ? 1 : (data.length - visibleWindows)} onChange={onMoveScroll} />
-        {/* <Scrollbar onMove={onMoveScroll} width={width} windowsCount={data.length} visible={visibleWindows} /> */}
 
     </>
 }

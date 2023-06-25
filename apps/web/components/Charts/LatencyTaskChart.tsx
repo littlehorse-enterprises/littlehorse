@@ -136,10 +136,11 @@ export const LatencyTaskChart = ({data, type}:Props) => {
             startToCompleteMax: +d.data.startToCompleteMax ? +d.data.startToCompleteMax/1000 : 0,
             startToCompleteAvg: +d.data.startToCompleteAvg ? +d.data.startToCompleteAvg/1000 : 0
         }))
-        // let  groups = dates.reverse()
+
+        
         groups = data.map(d => ({
-            l1:moment(d.label).format('MMM DD,'),
-            l2:moment(d.label).format('HH:00'),
+            l1:moment(d.label).format(`MMM DD${type==='DAYS_1' ? '' : ','}`),
+            l2:moment(d.label).format(`HH:${type==='HOURS_2' ? '00' : 'mm'}`),
         }))
 
 
@@ -299,8 +300,9 @@ export const LatencyTaskChart = ({data, type}:Props) => {
                 return val < 0 ? -800 : val
             } )
             .attr("y", height+15);
-
-        svg.select(".xa").append("g").selectAll("text")
+        
+        if(type != 'DAYS_1'){
+            svg.select(".xa").append("g").selectAll("text")
             .data(groups)
             .enter().append("text").classed('hours',true)
             .text( d => d.l2 )
@@ -311,7 +313,8 @@ export const LatencyTaskChart = ({data, type}:Props) => {
                 let val = ((ix) * (maxWBar + gap))+(maxWBar/2)
                 return val < 0 ? -800 : val
             } )
-            .attr("y", height+30);   
+            .attr("y", height+30); 
+        } 
         
         d3.select("#latency-chart-tooltip").html(updateToolTipContent({},ttTemplate))
 
