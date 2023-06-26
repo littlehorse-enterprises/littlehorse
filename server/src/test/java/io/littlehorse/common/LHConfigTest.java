@@ -75,9 +75,25 @@ public class LHConfigTest {
     }
 
     @Test
-    void validateProtocolAdvertisedListeners() {
+    void validateProtocolAdvertisedListenersIfMissing() {
         Properties properties = new Properties();
         properties.put(LHS_ADVERTISED_LISTENERS_PROTOCOL_MAP, "PLAIN:PLAIN,MTLS");
+
+        LHConfig config = new LHConfig(properties);
+
+        assertThrows(
+            LHMisconfigurationException.class,
+            config::getAdvertisedListenersProtocolMap
+        );
+    }
+
+    @Test
+    void validateProtocolAdvertisedListenersIfInvalidChar() {
+        Properties properties = new Properties();
+        properties.put(
+            LHS_ADVERTISED_LISTENERS_PROTOCOL_MAP,
+            "PLAIN:PLAIN$MTLS:MTLS"
+        );
 
         LHConfig config = new LHConfig(properties);
 
@@ -252,16 +268,39 @@ public class LHConfigTest {
         Properties properties = new Properties();
         properties.put(
             LHS_ADVERTISED_LISTENERS,
-            "PLAIN://localhost:5000,MTLS://localhost:6000"
+            "PLAIN_1://localhost:5000,PLAIN_2://localhost:6000"
         );
-        properties.put(LHS_ADVERTISED_LISTENERS_PROTOCOL_MAP, "PLAIN:PLAIN");
+        properties.put(LHS_ADVERTISED_LISTENERS_PROTOCOL_MAP, "PLAIN_1:PLAIN");
 
         LHConfig config = new LHConfig(properties);
 
-        assertThrows(
-            LHMisconfigurationException.class,
+        List<ServerListenerConfig> result = assertDoesNotThrow(
             config::getAdvertisedListeners
         );
+
+        assertThat(result)
+            .containsAll(
+                List.of(
+                    ServerListenerConfig
+                        .builder()
+                        .name("PLAIN_1")
+                        .host("localhost")
+                        .port(5000)
+                        .protocol(ListenerProtocol.PLAIN)
+                        .config(config)
+                        .authorizationProtocol(AuthorizationProtocol.NONE)
+                        .build(),
+                    ServerListenerConfig
+                        .builder()
+                        .name("PLAIN_2")
+                        .host("localhost")
+                        .port(6000)
+                        .protocol(ListenerProtocol.PLAIN)
+                        .config(config)
+                        .authorizationProtocol(AuthorizationProtocol.NONE)
+                        .build()
+                )
+            );
     }
 
     @Test

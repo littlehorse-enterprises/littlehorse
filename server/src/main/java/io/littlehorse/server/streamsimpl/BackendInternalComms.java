@@ -854,11 +854,13 @@ public class BackendInternalComms implements Closeable {
                                 .build()
                     )
                 );
-            InternalGetAdvertisedHostsReplyPb.Builder out = InternalGetAdvertisedHostsReplyPb.newBuilder();
 
-            out.putAllHosts(hosts);
+            InternalGetAdvertisedHostsReplyPb reply = InternalGetAdvertisedHostsReplyPb
+                .newBuilder()
+                .putAllHosts(hosts)
+                .build();
 
-            ctx.onNext(out.build());
+            ctx.onNext(reply);
             ctx.onCompleted();
         }
     }

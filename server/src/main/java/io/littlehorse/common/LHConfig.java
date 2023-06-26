@@ -47,8 +47,8 @@ public class LHConfig extends ConfigBase {
 
     // Kafka and Kafka Streams-Specific Configuration Env Vars
     public static final String KAFKA_BOOTSTRAP_KEY = "LHS_KAFKA_BOOTSTRAP_SERVERS";
-    public static final String LH_CLUSTER_ID_KEY = "LHS_CLUSTER_ID";
-    public static final String LH_INSTANCE_ID_KEY = "LHS_INSTANCE_ID";
+    public static final String LHS_CLUSTER_ID_KEY = "LHS_CLUSTER_ID";
+    public static final String LHS_INSTANCE_ID_KEY = "LHS_INSTANCE_ID";
     public static final String RACK_ID_KEY = "LHS_RACK_ID";
 
     public static final String REPLICATION_FACTOR_KEY = "LHS_REPLICATION_FACTOR";
@@ -308,15 +308,11 @@ public class LHConfig extends ConfigBase {
     }
 
     public String getLHClusterId() {
-        String clusterId = (String) props.get(LH_CLUSTER_ID_KEY);
-        if (clusterId == null) {
-            throw new RuntimeException("Must set LH_CLUSTER_ID!");
-        }
-        return clusterId;
+        return getOrSetDefault(LHConfig.LHS_CLUSTER_ID_KEY, "server1");
     }
 
     public String getLHInstanceId() {
-        return getOrSetDefault(LHConfig.LH_INSTANCE_ID_KEY, "Unset-group-iid-bad");
+        return getOrSetDefault(LHConfig.LHS_INSTANCE_ID_KEY, "server1");
     }
 
     public String getStateDirectory() {
@@ -469,7 +465,7 @@ public class LHConfig extends ConfigBase {
 
         String rawProtocolMap = getOrSetDefault(
             LHConfig.ADVERTISED_LISTENERS_PROTOCOL_MAP_KEY,
-            ""
+            "PLAIN:PLAIN"
         );
 
         String regexAllProtocols = Arrays
@@ -511,8 +507,8 @@ public class LHConfig extends ConfigBase {
             LHConfig.ADVERTISED_LISTENERS_KEY,
             "PLAIN://localhost:5000"
         );
-        Map<String, ListenerProtocol> advertisedListenersProtocolMap = getAdvertisedListenersProtocolMap();
-        Map<String, AuthorizationProtocol> advertisedListenersAuthMap = getAdvertisedListenersAuthorizationMap();
+        Map<String, ListenerProtocol> protocolMap = getAdvertisedListenersProtocolMap();
+        Map<String, AuthorizationProtocol> authMap = getAdvertisedListenersAuthorizationMap();
 
         if (
             !rawListenersConfig.matches("([a-zA-Z0-9_]+://[a-zA-Z0-9.\\-]+:\\d+,?)+")
@@ -533,10 +529,12 @@ public class LHConfig extends ConfigBase {
                 String name = split[0];
                 String host = split[1];
                 String port = split[2];
-                ListenerProtocol protocol = advertisedListenersProtocolMap.get(name);
-                AuthorizationProtocol authProtocol = advertisedListenersAuthMap.isEmpty()
+                ListenerProtocol protocol = protocolMap.get(name) == null
+                    ? ListenerProtocol.PLAIN
+                    : protocolMap.get(name);
+                AuthorizationProtocol authProtocol = authMap.get(name) == null
                     ? AuthorizationProtocol.NONE
-                    : advertisedListenersAuthMap.get(name);
+                    : authMap.get(name);
 
                 return ServerListenerConfig
                     .builder()
@@ -561,20 +559,6 @@ public class LHConfig extends ConfigBase {
                 "Invalid configuration: " +
                 LHConfig.ADVERTISED_LISTENERS_KEY +
                 ". Ports should be different"
-            );
-        }
-
-        if (
-            listenersConfigs
-                .stream()
-                .anyMatch(serverListenerConfig ->
-                    serverListenerConfig.getProtocol() == null
-                )
-        ) {
-            throw new LHMisconfigurationException(
-                "Invalid configuration: " +
-                LHConfig.ADVERTISED_LISTENERS_PROTOCOL_MAP_KEY +
-                ". Missing protocols"
             );
         }
 

@@ -10,23 +10,22 @@ import lombok.Getter;
 @EqualsAndHashCode
 public class TokenStatus {
 
-    private boolean active;
-    private Instant exp;
+    private String token;
+    private Instant expiration;
 
     public boolean isExpired() {
-        if (exp == null) {
+        if (expiration == null) {
             return true;
         }
-        return exp.isBefore(Instant.now());
+        return expiration.isBefore(Instant.now());
     }
 
     @Override
     public String toString() {
         return String.format(
-            "IntrospectResponse [active=%s, expired=%s, expiration date=%s]",
-            isActive(),
+            "IntrospectResponse [expired=%s, expiration date=%s]",
             isExpired(),
-            exp
+            expiration
         );
     }
 }

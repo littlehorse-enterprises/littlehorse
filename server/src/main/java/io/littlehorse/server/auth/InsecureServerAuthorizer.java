@@ -5,7 +5,7 @@ import io.grpc.ServerCall;
 import io.grpc.ServerCall.Listener;
 import io.grpc.ServerCallHandler;
 
-public class InsecureServerAuthorizer extends ServerAuthorizer {
+public class InsecureServerAuthorizer implements ServerAuthorizer {
 
     @Override
     public <ReqT, RespT> Listener<ReqT> interceptCall(

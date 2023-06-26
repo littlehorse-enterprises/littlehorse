@@ -35,7 +35,7 @@ public class PrometheusMetricExporter implements Closeable {
         new ServerMetricFilter(prometheusRegistry, ServerFilterRules.RULES);
     }
 
-    public MeterRegistry getRegistry() {
+    public MeterRegistry getMeterRegistry() {
         return prometheusRegistry;
     }
 

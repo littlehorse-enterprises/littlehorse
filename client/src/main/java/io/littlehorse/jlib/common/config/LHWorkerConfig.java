@@ -24,16 +24,16 @@ public class LHWorkerConfig extends LHClientConfig {
     /**
      * Listener to connect to.
      */
-    public static final String SERVER_CONNECT_LISTENER =
+    public static final String SERVER_CONNECT_LISTENER_KEY =
         "LHW_SERVER_CONNECT_LISTENER";
-    public static final String TASK_WORKER_VERSION = "LHW_TASK_WORKER_VERSION";
-    public static final String DEFAULT_PUBLIC_LISTENER = "LHW_DEFAULT_LISTENER";
+    public static final String TASK_WORKER_VERSION_KEY = "LHW_TASK_WORKER_VERSION";
+    public static final String DEFAULT_PUBLIC_LISTENER = "PLAIN";
 
     private static final Set<String> configNames = Collections.unmodifiableSet(
         Set.of(
             LHWorkerConfig.NUM_WORKER_THREADS_KEY,
-            LHWorkerConfig.SERVER_CONNECT_LISTENER,
-            LHWorkerConfig.TASK_WORKER_VERSION
+            LHWorkerConfig.SERVER_CONNECT_LISTENER_KEY,
+            LHWorkerConfig.TASK_WORKER_VERSION_KEY
         )
     );
 
@@ -100,7 +100,7 @@ public class LHWorkerConfig extends LHClientConfig {
      * @return Task Worker Version.
      */
     public String getTaskWorkerVersion() {
-        return getOrSetDefault(TASK_WORKER_VERSION, "");
+        return getOrSetDefault(TASK_WORKER_VERSION_KEY, "");
     }
 
     /**
@@ -125,7 +125,7 @@ public class LHWorkerConfig extends LHClientConfig {
      */
     public String getConnectListener() {
         return getOrSetDefault(
-            SERVER_CONNECT_LISTENER,
+            SERVER_CONNECT_LISTENER_KEY,
             LHWorkerConfig.DEFAULT_PUBLIC_LISTENER
         );
     }

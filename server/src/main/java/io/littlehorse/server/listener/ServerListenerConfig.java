@@ -13,7 +13,8 @@ import java.io.IOException;
 import lombok.Builder;
 import lombok.Getter;
 
-// read https://github.com/grpc/grpc-java/blob/master/examples/example-tls/README.md
+// https://github.com/grpc/grpc-java/blob/master/examples/example-tls/README.md
+// https://www.cloudflare.com/learning/access-management/what-is-mutual-tls/
 
 @Getter
 @Builder

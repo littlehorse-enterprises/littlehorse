@@ -235,7 +235,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             new ListenersManager(
                 config,
                 this,
-                prometheusMetricExporter.getRegistry()
+                prometheusMetricExporter.getMeterRegistry()
             );
 
         coreStreams.setStateListener((newState, oldState) -> {
@@ -258,14 +258,14 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
         coreStreams.setGlobalStateRestoreListener(
             new MetricsCollectorRestoreListener(
-                prometheusMetricExporter.getRegistry(),
+                prometheusMetricExporter.getMeterRegistry(),
                 Map.of("topology", "core")
             )
         );
 
         timerStreams.setGlobalStateRestoreListener(
             new MetricsCollectorRestoreListener(
-                prometheusMetricExporter.getRegistry(),
+                prometheusMetricExporter.getMeterRegistry(),
                 Map.of("topology", "timer")
             )
         );
