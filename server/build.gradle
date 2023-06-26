@@ -36,22 +36,18 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:5.2.0'
     testImplementation 'net.datafaker:datafaker:1.9.0'
 
-    // Stuff for JSON processing
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7.1'
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.4'
-    implementation 'com.jayway.jsonpath:json-path:2.8.0'
-
     // Logging
     implementation 'org.slf4j:slf4j-api:2.0.7'
     implementation 'org.slf4j:slf4j-log4j12:2.0.7'
 
     // Stuff for Kafka
-    implementation 'org.apache.kafka:kafka-clients:3.4.0'
-    implementation 'org.apache.kafka:kafka-streams:3.4.0'
+    implementation 'org.apache.kafka:kafka-clients:3.5.0'
+    implementation 'org.apache.kafka:kafka-streams:3.5.0'
+    implementation 'org.xerial.snappy:snappy-java:1.1.10.1'
 
     // Utils
     implementation 'org.apache.commons:commons-lang3:3.12.0'
-    implementation 'com.google.guava:guava:30.1.1-jre'
+    implementation 'com.google.guava:guava:32.0.1-jre'
 
     // OAuth
     implementation 'com.nimbusds:oauth2-oidc-sdk:10.9.2'
