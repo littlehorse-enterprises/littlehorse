@@ -1,8 +1,6 @@
 package io.littlehorse.jlib.common.config;
 
-import io.grpc.Channel;
 import io.littlehorse.jlib.common.proto.GetTaskDefReplyPb;
-import io.littlehorse.jlib.common.proto.LHPublicApiGrpc;
 import io.littlehorse.jlib.common.proto.LHResponseCodePb;
 import io.littlehorse.jlib.common.proto.TaskDefIdPb;
 import io.littlehorse.jlib.common.proto.TaskDefPb;
@@ -79,9 +77,7 @@ public class LHWorkerConfig extends LHClientConfig {
      */
     public TaskDefPb getTaskDef(String taskDefName) {
         try {
-            Channel chan = getChannel(getApiBootstrapHost(), getApiBootstrapPort());
-            GetTaskDefReplyPb reply = LHPublicApiGrpc
-                .newBlockingStub(chan)
+            GetTaskDefReplyPb reply = getBlockingStub()
                 .getTaskDef(TaskDefIdPb.newBuilder().setName(taskDefName).build());
             if (reply.getCode() != LHResponseCodePb.OK) {
                 throw new RuntimeException(

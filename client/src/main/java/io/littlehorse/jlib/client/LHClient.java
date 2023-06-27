@@ -22,7 +22,6 @@ import io.littlehorse.jlib.common.proto.GetTaskDefReplyPb;
 import io.littlehorse.jlib.common.proto.GetVariableReplyPb;
 import io.littlehorse.jlib.common.proto.GetWfRunReplyPb;
 import io.littlehorse.jlib.common.proto.GetWfSpecReplyPb;
-import io.littlehorse.jlib.common.proto.LHPublicApiGrpc;
 import io.littlehorse.jlib.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.jlib.common.proto.LHResponseCodePb;
 import io.littlehorse.jlib.common.proto.LHStatusPb;
@@ -81,13 +80,7 @@ public class LHClient {
     public LHPublicApiBlockingStub getGrpcClient() throws LHApiError {
         if (client == null) {
             try {
-                client =
-                    LHPublicApiGrpc.newBlockingStub(
-                        config.getChannel(
-                            config.getApiBootstrapHost(),
-                            config.getApiBootstrapPort()
-                        )
-                    );
+                client = config.getBlockingStub();
             } catch (IOException exn) {
                 throw new LHApiError(exn, "Could not connect to the API");
             }

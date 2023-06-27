@@ -4,6 +4,9 @@ import io.grpc.Channel;
 import io.grpc.Grpc;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.TlsChannelCredentials;
+import io.littlehorse.jlib.common.proto.LHPublicApiGrpc;
+import io.littlehorse.jlib.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.jlib.common.proto.LHPublicApiGrpc.LHPublicApiStub;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
@@ -109,13 +112,60 @@ public class LHClientConfig extends ConfigBase {
     }
 
     /**
+     * Gets a Blocking gRPC stub for the LH Public API on the configured host/port,
+     * which is generally the loadbalancer url.
+     * @return a blocking gRPC stub for the configured host/port.
+     * @throws IOException if stub creation fails.
+     */
+    public LHPublicApiBlockingStub getBlockingStub() throws IOException {
+        return getBlockingStub(getApiBootstrapHost(), getApiBootstrapPort());
+    }
+
+    /**
+     * Gets an Async gRPC stub for the LH Public API on a specified host and port.
+     * Generally used by the Task Worker, which needs to connect directly to a
+     * specific LH Server rather than the bootstrap host (loadbalancer).
+     * @param host is the host that the LH Server lives on.
+     * @param port is the port that the LH Server lives on.
+     * @return an async gRPC stub for that host/port combo.
+     * @throws IOException if stub creation fails.
+     */
+    public LHPublicApiStub getAsyncStub(String host, int port) throws IOException {
+        return LHPublicApiGrpc.newStub(getChannel(host, port));
+    }
+
+    /**
+     * Gets an Async gRPC stub for the LH Public API on the configured host/port,
+     * which is generally the loadbalancer url.
+     * @return an async gRPC stub for the configured host/port.
+     * @throws IOException if stub creation fails.
+     */
+    public LHPublicApiStub getAsyncStub() throws IOException {
+        return getAsyncStub(getApiBootstrapHost(), getApiBootstrapPort());
+    }
+
+    /**
+     * Gets a Blocking gRPC stub for the LH Public API on a specified host and port.
+     * Generally used by the Task Worker, which needs to connect directly to a
+     * specific LH Server rather than the bootstrap host (loadbalancer).
+     * @param host is the host that the LH Server lives on.
+     * @param port is the port that the LH Server lives on.
+     * @return a blocking gRPC stub for that host/port combo.
+     * @throws IOException if stub creation fails.
+     */
+    public LHPublicApiBlockingStub getBlockingStub(String host, int port)
+        throws IOException {
+        return LHPublicApiGrpc.newBlockingStub(getChannel(host, port));
+    }
+
+    /**
      * Returns a gRPC channel for the specified host/port combination.
      * @param host The host to connect to.
      * @param port the port to connect to.
      * @return a gRPC channel for that specified host/port combo.
      * @throws IOException if we can't connect.
      */
-    public Channel getChannel(String host, int port) throws IOException {
+    private Channel getChannel(String host, int port) throws IOException {
         String hostKey = host + ":" + port;
         if (createdChannels.containsKey(hostKey)) {
             return createdChannels.get(hostKey);

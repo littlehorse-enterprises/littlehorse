@@ -1,13 +1,11 @@
 package io.littlehorse.jlib.worker.internal;
 
-import io.grpc.Channel;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.jlib.common.LHLibUtil;
 import io.littlehorse.jlib.common.config.LHWorkerConfig;
 import io.littlehorse.jlib.common.exception.InputVarSubstitutionError;
 import io.littlehorse.jlib.common.exception.LHSerdeError;
 import io.littlehorse.jlib.common.proto.HostInfoPb;
-import io.littlehorse.jlib.common.proto.LHPublicApiGrpc;
 import io.littlehorse.jlib.common.proto.LHPublicApiGrpc.LHPublicApiStub;
 import io.littlehorse.jlib.common.proto.LHResponseCodePb;
 import io.littlehorse.jlib.common.proto.RegisterTaskWorkerPb;
@@ -70,11 +68,7 @@ public class LHServerConnectionManager
         this.mappings = mappings;
         this.taskDef = taskDef;
 
-        Channel bootstrapChannel = config.getChannel(
-            config.getApiBootstrapHost(),
-            config.getApiBootstrapPort()
-        );
-        this.bootstrapStub = LHPublicApiGrpc.newStub(bootstrapChannel);
+        this.bootstrapStub = config.getAsyncStub();
 
         this.running = false;
         this.runningConnections = new ArrayList<>();

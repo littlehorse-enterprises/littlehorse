@@ -1,9 +1,7 @@
 package io.littlehorse.jlib.worker.internal;
 
-import io.grpc.Channel;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.jlib.common.proto.HostInfoPb;
-import io.littlehorse.jlib.common.proto.LHPublicApiGrpc;
 import io.littlehorse.jlib.common.proto.LHPublicApiGrpc.LHPublicApiStub;
 import io.littlehorse.jlib.common.proto.PollTaskPb;
 import io.littlehorse.jlib.common.proto.PollTaskReplyPb;
@@ -30,9 +28,8 @@ public class LHServerConnection
         this.manager = manager;
         this.host = host;
 
-        Channel channel = manager.config.getChannel(host.getHost(), host.getPort());
+        this.stub = manager.config.getAsyncStub(host.getHost(), host.getPort());
 
-        this.stub = LHPublicApiGrpc.newStub(channel);
         this.pollClient = this.stub.pollTask(this);
 
         askForMoreWork();
