@@ -7,7 +7,7 @@ import moment from "moment"
 
 export const Metrics = () => {
   const [windowLength, setWIndowLength] = useState('HOURS_2');
-  const [windows, setWindows] = useState(12)
+  const [windows, setWindows] = useState(24)
   const [lastDate, setLastDate] = useState(moment().toDate())
 
   return <section>

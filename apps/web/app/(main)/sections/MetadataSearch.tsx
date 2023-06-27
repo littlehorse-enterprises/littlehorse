@@ -162,8 +162,7 @@ export const MetadataSearch = () => {
         
         <div className="end">
             <div className="btns btns-right">
-                <PerPage icon="/expand_more.svg" value={limit} onChange={setLimit} values={[10,20,30,60,100]} />
-                {!!type ? <PerPage icon="/expand_more.svg" value={limit} onChange={setLimit} values={[10,20,30,60,100]} /> : undefined}
+                {!!type ? <><Label>Rows per load:</Label><PerPage icon="/expand_more.svg" value={limit} onChange={setLimit} values={[10,20,30,60,100]} /> </>: undefined}
                 <LoadMoreButton loading={loading} disabled={!externalEventDefBookmark && !wfSpecBookmark && !taskDefBookmark} onClick={loadMMore}>Load More</LoadMoreButton>
             </div>
         </div>

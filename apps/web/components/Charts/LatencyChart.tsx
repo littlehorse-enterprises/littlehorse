@@ -27,9 +27,9 @@ const updateToolTipContent = (data:any,template:string) => {
 const margin = {top: 10, right: 30, bottom: 60, left: 50},
     width = _WIDTH - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom;
-const maxWBar = 76
+const maxWBar = 74
 const gap = 8
-const minYAxisValue = 8000
+const minYAxisValue = 10
 const visibleWindows = Math.ceil((width)/(maxWBar+gap))
 const ShadowLight_100 = "#3D4149"
 

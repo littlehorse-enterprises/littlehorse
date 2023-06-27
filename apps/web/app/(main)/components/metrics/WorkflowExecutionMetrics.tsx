@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import moment from "moment"
 import { WorkflowsChart } from "../../../../components/Charts/WorkflowsChart";
 import { LatencyChart } from "../../../../components/Charts/LatencyChart";
-import { Button, H3, H4 } from "ui";
+import { Button } from "ui";
 
 export interface taskDefMetric{
     windowStart: Date 

@@ -8,11 +8,11 @@
 
 .container{
 
-    min-width: 1200px;
+    min-width: 1200px;  //TMP
     margin: auto;
     color: var(--color-bright-light, #EDEEF0);
     font-family: "Inter";
-    width: 1440px;
+    width: 1440px; // TMP
     padding: 24px 36px;
     flex-direction: column;
     align-items: center;
@@ -21,6 +21,10 @@
 }
 
 .header-bar{
+    width: 1440px; //TMP
+    min-width: 1200px; //TMP
+    margin-left: auto;
+    margin-right: auto;
     display: flex;
     padding: 0px 36px;
     height: 56px;

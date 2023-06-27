@@ -27,9 +27,9 @@ const updateToolTipContent = (data:any,template:string) => {
 const margin = {top: 10, right: 30, bottom: 60, left: 50},
     width = _WIDTH - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom;
-const maxWBar = 76
+const maxWBar = 74
 const gap = 8
-const minYAxisValue = 8000
+const minYAxisValue = 10
 const visibleWindows = Math.ceil((width)/(maxWBar+gap))
 const ShadowLight_100 = "#3D4149"
 
@@ -46,6 +46,7 @@ interface Props {
 
 export const WorkflowsChart = ({data, type}:Props) => {
 
+    
     const onMoveScroll = (ix:number) => {
         if(!svg) return null
         // console.log('ix',ix)
@@ -143,7 +144,22 @@ export const WorkflowsChart = ({data, type}:Props) => {
         .domain([0, maxH])
         .range([ height, 0 ]);
         svg.append("g")
-        .call(d3.axisLeft(y));
+        .call(d3.axisLeft(y))
+
+        d3.select(".domain").remove();
+        // d3.selectAll('.tick').attr('transform','traslate(0)')
+        d3.selectAll('.tick').selectAll('line').remove()
+        d3.selectAll('.tick').selectAll('text')
+            .attr('fill','#9098A0')
+            .style('font-size', "12px")
+            .style('font-family', "Inter")
+            .attr('dy','-0.5em')
+            .attr('x','-4em')
+            .attr('text-anchor','start')
+        d3.selectAll('.tick').append('line')
+        .attr('x1','-4em')
+        .attr('x2',width+25).attr('stroke',"#3D4149")
+        // .call(d3.axisLeft(y).tickSize(width))
 
         // X axis
 
@@ -206,34 +222,35 @@ export const WorkflowsChart = ({data, type}:Props) => {
             .attr("height", (d:any) => y(d[0]) - y(d[1]) )
 
             const xA = svg.append("g").classed('xa',true)
-        xA.append("line")
-            .style("stroke", "white")
-            .style("stroke-width", 1)
-            .attr("x1", 0)
-            .attr("y1", height+1)
-            .attr("x2", width+(gap*visibleWindows))
-            .attr("y2", height+1);
-        svg.select(".xa").selectAll("line")
-        .data(groups)
-        .enter().append("line")
-            .style("stroke", "white")
-            .style("stroke-width", 1)
-            .attr("x1", (d,ix) => (ix * (maxWBar + gap))-(gap/2) )
-            .attr("y1", height+1)
-            .attr("x2", (_d, ix) => (ix * (maxWBar + gap))-(gap/2) )
-            .attr("y2", height+5);
+        // xA.append("line")
+        //     .style("stroke", "white")
+        //     .style("stroke-width", 1)
+        //     .attr("x1", 0)
+        //     .attr("y1", height+1)
+        //     .attr("x2", width+(gap*visibleWindows))
+        //     .attr("y2", height+1);
+        // svg.select(".xa").selectAll("line")
+        // .data(groups)
+        // .enter().append("line")
+        //     .style("stroke", "white")
+        //     .style("stroke-width", 1)
+        //     .attr("x1", (d,ix) => (ix * (maxWBar + gap))-(gap/2) )
+        //     .attr("y1", height+1)
+        //     .attr("x2", (_d, ix) => (ix * (maxWBar + gap))-(gap/2) )
+        //     .attr("y2", height+5);
         svg.select(".xa").selectAll("text")
             .data(groups)
             .enter().append("text")
             .text( d => d.l1 )
             .attr("text-anchor", "middle")
-            .style('fill', "white")
-            .style('font-size', "10px")
+            .style('fill', "#9098A0")
+            .style('font-size', "12px")
+            .style('font-family', "Inter")
             .attr("x", (_d, ix) => {
                 let val = ((ix) * (maxWBar + gap))+(maxWBar/2)
                 return val < 0 ? -800 : val
             } )
-            .attr("y", height+15);
+            .attr("y", height+18);
 
         if(type != 'DAYS_1'){
             svg.select(".xa").append("g").selectAll("text")
@@ -242,12 +259,13 @@ export const WorkflowsChart = ({data, type}:Props) => {
             .text( d => d.l2 )
             .attr("text-anchor", "middle")
             .style('fill', "white")
-            .style('font-size', "10px")
+            .style('font-size', "12px")
+            .style('font-family', "Inter")
             .attr("x", (_d, ix) => {
                 let val = ((ix) * (maxWBar + gap))+(maxWBar/2)
                 return val < 0 ? -800 : val
             } )
-            .attr("y", height+30);   
+            .attr("y", height+35);   
         }
 
         
