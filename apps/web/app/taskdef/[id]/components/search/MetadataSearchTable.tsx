@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Result } from "../../sections/MetadataSearch"
+import { Result } from "../../sections/TaskRunSearch"
 
 interface Props {
     results?:Result[]

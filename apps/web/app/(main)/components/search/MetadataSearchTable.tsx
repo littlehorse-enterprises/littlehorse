@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { Result } from "../../sections/MetadataSearch"
 
+
 interface Props {
     results?:Result[]
 }
