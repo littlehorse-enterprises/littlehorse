@@ -29,7 +29,7 @@ const margin = {top: 10, right: 30, bottom: 60, left: 50},
     height = 400 - margin.top - margin.bottom;
 const maxWBar = 74
 const gap = 8
-const minYAxisValue = 10
+const minYAxisValue = 11
 const visibleWindows = Math.ceil((width)/(maxWBar+gap))
 const ShadowLight_100 = "#3D4149"
 
@@ -144,7 +144,7 @@ export const WorkflowsChart = ({data, type}:Props) => {
         .domain([0, maxH])
         .range([ height, 0 ]);
         svg.append("g")
-        .call(d3.axisLeft(y))
+        .call(d3.axisLeft(y).ticks(6))
 
         d3.select(".domain").remove();
         // d3.selectAll('.tick').attr('transform','traslate(0)')
