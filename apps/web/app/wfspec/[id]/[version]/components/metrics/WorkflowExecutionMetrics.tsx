@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react"
 import moment from "moment"
-import { WorkflowsChart } from "../../../../components/Charts/WorkflowsChart";
-import { LatencyChart } from "../../../../components/Charts/LatencyChart";
-import { Button, H3, H4 } from "ui";
+import { Button } from "ui";
+import { WorkflowsChart } from "../../../../../../components/Charts/WorkflowsChart";
+import { LatencyChart } from "../../../../../../components/Charts/LatencyChart";
 
 export interface taskDefMetric{
     windowStart: Date 
@@ -24,8 +24,10 @@ interface Props{
     type: string
     windows: number
     lastWindowStart: Date
+    id: string 
+    version?: number
 }
-export const WorkflowExecutionMetrics = ({windows= 16, lastWindowStart=moment().toDate(), type="HOURS_2"}:Props) => {
+export const WorkflowExecutionMetrics = ({id, version, windows= 16, lastWindowStart=moment().toDate(), type="HOURS_2"}:Props) => {
     const [data, setData] = useState<any[]>([])
     const [chart, setChart] = useState('workflows')
     windows = windows > 300 ? 300 : windows
@@ -52,7 +54,7 @@ export const WorkflowExecutionMetrics = ({windows= 16, lastWindowStart=moment().
                 }) || {
                     "windowStart": curr.toString(),
                     type,
-                    "taskDefName": "CLUSTER_LEVEL_METRIC",
+                    "taskDefName": id,
                     "scheduleToStartMax": "0",
                     "scheduleToStartAvg": "0",
                     "startToCompleteMax": "0",
@@ -71,7 +73,7 @@ export const WorkflowExecutionMetrics = ({windows= 16, lastWindowStart=moment().
                 }) || {
                     "windowStart": curr.toString(),
                     type,
-                    "taskDefName": "CLUSTER_LEVEL_METRIC",
+                    "taskDefName": id,
                     "scheduleToStartMax": "0",
                     "scheduleToStartAvg": "0",
                     "startToCompleteMax": "0",
@@ -91,7 +93,7 @@ export const WorkflowExecutionMetrics = ({windows= 16, lastWindowStart=moment().
                 }) || {
                     "windowStart": curr.toString(),
                     type,
-                    "taskDefName": "CLUSTER_LEVEL_METRIC",
+                    "taskDefName": id,
                     "scheduleToStartMax": "0",
                     "scheduleToStartAvg": "0",
                     "startToCompleteMax": "0",
@@ -112,13 +114,13 @@ export const WorkflowExecutionMetrics = ({windows= 16, lastWindowStart=moment().
       }
 
     const getData = async () => {
-        const res = await fetch('./api/metrics/wfSpec',{
+        const res = await fetch('/api/metrics/wfSpec',{
             method:'POST',
             body: JSON.stringify({
                 lastWindowStart, 
                 numWindows: windows,
-                wfSpecName: "CLUSTER_LEVEL_METRIC",
-                wfSpecVersion: 0,
+                wfSpecName: id,
+                wfSpecVersion: version || 0,
                 windowLength: type
             }),
         })
@@ -136,8 +138,6 @@ export const WorkflowExecutionMetrics = ({windows= 16, lastWindowStart=moment().
         <article>
             <header>
                 <div className=".article-title">
-                    <h3>Workflow Execution metrics</h3>
-                    <h4>Cluster level</h4>
                 </div>
                 <div className="btns btns-right">
                     <Button onClick={() => setChart('workflows')} className={`btn btn-dark ${chart === 'workflows' && "active-dark"}`}>Workflows</Button>

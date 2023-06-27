@@ -33,11 +33,25 @@ h2{
     padding: 0;
     line-height: 24px;
 }
+h3{
+    color: var(--color-bright-light, #EDEEF0);
+    font-size: 16px;
+    font-family: "Inter";
+    font-weight: 700;
+    margin: 0px;
+}
+h4{
+    color: var(--color-bright-light, #EDEEF0);
+    font-size: 14px;
+    font-family: "Inter";
+    font-weight: normal;
+    margin: 0px;
+}
+
 section{
     display: flex;
     padding: 16px;
     flex-direction: column;
-    align-items: flex-start;
     gap: 16px;
     align-self: stretch;
     border-radius: 16px;
@@ -45,6 +59,28 @@ section{
     background: var(--color-bg-linear-gradient, linear-gradient(180deg, #282B30 0%, #24272B 53.65%, #232529 100%));
     /* shadow-darkbox01 */
     box-shadow: 0px 27px 8px 0px rgba(0, 0, 0, 0.00), 0px 17px 7px 0px rgba(0, 0, 0, 0.01), 0px 10px 6px 0px rgba(0, 0, 0, 0.05), 0px 4px 4px 0px rgba(0, 0, 0, 0.09), 0px 1px 2px 0px rgba(0, 0, 0, 0.10), 0px 0px 0px 0px rgba(0, 0, 0, 0.10);
+
+}
+article{
+    display: flex;
+    padding: 16px;
+    flex-direction: column;
+    gap: 24px;
+
+    border-radius: 8px;
+    border: 1px solid var(--color-shadow-light, #3D4149);
+    background: var(--color-bg-linear-gradient, linear-gradient(180deg, #282B30 0%, #24272B 53.65%, #232529 100%));
+
+    /* shadow-darkbox01 */
+    box-shadow: 0px 27px 8px 0px rgba(0, 0, 0, 0.00), 0px 17px 7px 0px rgba(0, 0, 0, 0.01), 0px 10px 6px 0px rgba(0, 0, 0, 0.05), 0px 4px 4px 0px rgba(0, 0, 0, 0.09), 0px 1px 2px 0px rgba(0, 0, 0, 0.10), 0px 0px 0px 0px rgba(0, 0, 0, 0.10);
+    header{
+        display: flex;
+        justify-content: space-between;
+        .article-title{
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
 
 }
 .display-block{
@@ -61,6 +97,13 @@ section{
     flex: 1;
     width: 100%;
     justify-content: space-between;
+    align-items: center;
+}
+.end{
+    display: flex;
+    flex: 1;
+    width: 100%;
+    justify-content: end;
     align-items: center;
 }
 

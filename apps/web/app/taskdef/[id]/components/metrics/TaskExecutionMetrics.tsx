@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react"
 import moment from "moment"
-import { WorkflowsChart } from "../../../../components/Charts/WorkflowsChart";
-import { LatencyChart } from "../../../../components/Charts/LatencyChart";
+
 import { Button, H3, H4 } from "ui";
+import { TaskChart } from "../../../../../components/Charts/TaskChart";
+import { LatencyTaskChart } from "../../../../../components/Charts/LatencyTaskChart";
 
 export interface taskDefMetric{
     windowStart: Date 
@@ -24,12 +25,13 @@ interface Props{
     type: string
     windows: number
     lastWindowStart: Date
+    id: string
 }
-export const WorkflowExecutionMetrics = ({windows= 16, lastWindowStart=moment().toDate(), type="HOURS_2"}:Props) => {
+export const TaskExecutionMetrics = ({id, windows= 16, lastWindowStart=moment().toDate(), type="HOURS_2"}:Props) => {
     const [data, setData] = useState<any[]>([])
-    const [chart, setChart] = useState('workflows')
+    const [chart, setChart] = useState('tasks')
     windows = windows > 300 ? 300 : windows
-
+    
     function timeoutP (_lastWindowStart:Date, data:any[]) {
         const lastWindowStart = moment(_lastWindowStart)
         let firstDate:moment.Moment
@@ -43,7 +45,7 @@ export const WorkflowExecutionMetrics = ({windows= 16, lastWindowStart=moment().
             lastWindowStart.subtract(fact,'minutes')
             firstDate = lastWindowStart.clone().subtract(windows*5,'minutes')
         }
-        const out:any[] =[]
+        const out:any =[]
         let curr = lastWindowStart.clone()
         if(type === 'HOURS_2'){
             while (curr.format('YMMDDHH') > firstDate.format('YMMDDHH')){
@@ -52,7 +54,7 @@ export const WorkflowExecutionMetrics = ({windows= 16, lastWindowStart=moment().
                 }) || {
                     "windowStart": curr.toString(),
                     type,
-                    "taskDefName": "CLUSTER_LEVEL_METRIC",
+                    "taskDefName": id,
                     "scheduleToStartMax": "0",
                     "scheduleToStartAvg": "0",
                     "startToCompleteMax": "0",
@@ -71,7 +73,7 @@ export const WorkflowExecutionMetrics = ({windows= 16, lastWindowStart=moment().
                 }) || {
                     "windowStart": curr.toString(),
                     type,
-                    "taskDefName": "CLUSTER_LEVEL_METRIC",
+                    "taskDefName": id,
                     "scheduleToStartMax": "0",
                     "scheduleToStartAvg": "0",
                     "startToCompleteMax": "0",
@@ -91,7 +93,7 @@ export const WorkflowExecutionMetrics = ({windows= 16, lastWindowStart=moment().
                 }) || {
                     "windowStart": curr.toString(),
                     type,
-                    "taskDefName": "CLUSTER_LEVEL_METRIC",
+                    "taskDefName": id,
                     "scheduleToStartMax": "0",
                     "scheduleToStartAvg": "0",
                     "startToCompleteMax": "0",
@@ -106,19 +108,18 @@ export const WorkflowExecutionMetrics = ({windows= 16, lastWindowStart=moment().
                 
             }
         }
-        console.log('OUT',out)
+        // console.log('OUT',out)
         return (out.reverse())
 
-      }
+    }
 
     const getData = async () => {
-        const res = await fetch('./api/metrics/wfSpec',{
+        const res = await fetch('./api/metrics/taskDef',{
             method:'POST',
             body: JSON.stringify({
-                lastWindowStart, 
+                lastWindowStart,
                 numWindows: windows,
-                wfSpecName: "CLUSTER_LEVEL_METRIC",
-                wfSpecVersion: 0,
+                taskDefName: id,
                 windowLength: type
             }),
         })
@@ -126,28 +127,27 @@ export const WorkflowExecutionMetrics = ({windows= 16, lastWindowStart=moment().
             const content = await res.json()
             setData( timeoutP(lastWindowStart,content.results))
         }
+
     }
 
     useEffect( () => {
         getData()
-    },[windows,lastWindowStart, type])
+    },[windows, lastWindowStart, type])
 
     return (
         <article>
             <header>
                 <div className=".article-title">
-                    <h3>Workflow Execution metrics</h3>
-                    <h4>Cluster level</h4>
                 </div>
                 <div className="btns btns-right">
-                    <Button onClick={() => setChart('workflows')} className={`btn btn-dark ${chart === 'workflows' && "active-dark"}`}>Workflows</Button>
+                    <Button onClick={() => setChart('tasks')} className={`btn btn-dark ${chart === 'tasks' && "active-dark"}`}>Tasks</Button>
                     <Button onClick={() => setChart('latency')} className={`btn btn-dark ${chart === 'latency' && "active-dark"}`}>Latency</Button>
                 </div>
             </header>
-        
+
             <div>
-                {chart === 'workflows' && <WorkflowsChart data={data} type={type}  />}
-                {chart === 'latency' && <LatencyChart data={data} type={type}  />}
+                {chart === 'tasks' && <TaskChart data={data} type={type} />}
+                {chart === 'latency' && <LatencyTaskChart data={data} type={type}  />}
             </div>
         </article>
     )

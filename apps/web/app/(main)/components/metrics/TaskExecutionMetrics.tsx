@@ -133,22 +133,22 @@ export const TaskExecutionMetrics = ({windows= 16, lastWindowStart=moment().toDa
     },[windows, lastWindowStart, type])
 
     return (
-        <>
-            <div className="grid md:grid-cols-2 xs:grid-cols-1">
-                <div>
-                    <H3 className="tracking-tight text-1xl title-dashboard">Task Execution metrics</H3>
-                    <H4 className="tracking-tight text-1xl title-dashboard">Cluster level</H4>
+        <article>
+            <header>
+                <div className=".article-title">
+                    <h3>Task Execution metrics</h3>
+                    <h4>Cluster level</h4>
                 </div>
                 <div className="btns btns-right">
                     <Button onClick={() => setChart('tasks')} className={`btn btn-dark ${chart === 'tasks' && "active-dark"}`}>Tasks</Button>
                     <Button onClick={() => setChart('latency')} className={`btn btn-dark ${chart === 'latency' && "active-dark"}`}>Latency</Button>
                 </div>
-            </div>
+            </header>
 
             <div>
                 {chart === 'tasks' && <TaskChart data={data} type={type} />}
                 {chart === 'latency' && <LatencyTaskChart data={data} type={type}  />}
             </div>
-        </>
+        </article>
     )
 }

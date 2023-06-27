@@ -1,22 +1,21 @@
-import Link from "next/link"
-import { useEffect, useState } from "react"
+"use client";
 import { Button, LoadMoreButton } from "ui"
+import { useEffect, useState } from "react"
+import { MetadataSearchTable } from "../components/search/MetadataSearchTable";
 
-interface Result{
+export interface Result{
     name:string 
     version?:number 
     type?:string
 }
+
 const allLimit = 5
 const defaultLimit = 15
 const keyDownDelay = 1000 // miliseconds
 
-
-
-
 let myTimeout:NodeJS.Timeout 
 
-export const MetadataSearch = () => {
+export const TaskRunSearch = () => {
     let first = true
 
     const [loading, setLoading] = useState(false)
@@ -38,7 +37,7 @@ export const MetadataSearch = () => {
         if(prefix?.trim()) filters['prefix'] = prefix.trim().toLocaleLowerCase()
         if(paginate && bookmark) filters['bookmark'] = bookmark
         if(paginate && !bookmark) return {status:'done'}
-        const res = await fetch('./api/search/'+type,{
+        const res = await fetch('/api/search/'+type,{
             method:'POST',
             body: JSON.stringify({
                 ...filters
@@ -115,11 +114,13 @@ export const MetadataSearch = () => {
         setLoading(true)
 
         const {results, bookmark, status} = await fetchData(type,true)
+        
         if(status==='done') return 
-            if(type === "wfSpec") setWfSpecBookmark(bookmark)
-            if(type === "taskDef") setTaskDefBookmark(bookmark)
-            if(type === "externalEventDef") setExternalEventDefBookmark(bookmark)
-        setResults(prev => [...prev, ...results])
+        
+        if(type === "wfSpec") setWfSpecBookmark(bookmark)
+        if(type === "taskDef") setTaskDefBookmark(bookmark)
+        if(type === "externalEventDef") setExternalEventDefBookmark(bookmark)
+        setResults(prev => [...prev, ...results.map((v:any) => ({...v, type:'TaskDef'}))])
         setLoading(false)
     }
 
@@ -138,32 +139,31 @@ export const MetadataSearch = () => {
         first = false
         getMData()
     },[])
+    return <section>
+        
+        <div className="between">
+            <h2>TaskRun search</h2> 
+            <div className="btns btns-right">
+                <input placeholder="search" type="text" value={prefix} onKeyDown={keyDownHandler} onChange={e => setPrefix(e.target.value)} />
+                <select value={type} onChange={e => setType(e.target.value)}>
+                    <option value="">All</option>
+                    <option value="wfSpec">wfSpec</option>
+                    <option value="taskDef">TaskDef</option>
+                    <option value="externalEventDef">ExternalEventDef</option>
+                </select>
+                <Button onClick={getMData}>Get Data</Button>
+            </div>
+        </div>
 
-    return <div>
-        Metadata Search 
-        <input placeholder="search" type="text" value={prefix} onKeyDown={keyDownHandler} onChange={e => setPrefix(e.target.value)} />
-        <select value={type} onChange={e => setType(e.target.value)}>
-            <option value="">All</option>
-            <option value="wfSpec">wfSpec</option>
-            <option value="taskDef">TaskDef</option>
-            <option value="externalEventDef">ExternalEventDef</option>
-        </select>
-        <Button onClick={getMData}>Get Data</Button>
-        <table>
-            <tbody>
-                {results.map( (r:Result, ix:number) => <tr key={ix}>
-                    <td>
-                        {(r.type==='WfSpec') ? <Link href={`/wfspec/${r.name}/${r.version}`}>{r.name}</Link>  :  undefined}
-                        {(r.type==='TaskDef') ? <Link href={`/taskdef/${r.name}`}>{r.name}</Link>  :  undefined}
-                        {(r.type==='ExternalEventDef') ? r.name :  undefined}
-                    </td>
-                    <td>{r.version}</td>
-                    <td>{r.type}</td>
-                </tr>)}
-            </tbody>
-        </table>
-        <LoadMoreButton loading={loading} disabled={!externalEventDefBookmark && !wfSpecBookmark && !taskDefBookmark} onClick={loadMMore}>Load More</LoadMoreButton>
-        {!!type ? <input placeholder="limit" type="number" value={limit} onChange={e => setLimit(+e.target.value)} /> : undefined}
-    </div>
+        {/* <MetadataSearchTable results={results} /> */}
+        
+        <div className="end">
+            <div className="btns btns-right">
+                {!!type ? <input placeholder="limit" type="number" value={limit} onChange={e => setLimit(+e.target.value)} /> : undefined}
+                <LoadMoreButton loading={loading} disabled={!externalEventDefBookmark && !wfSpecBookmark && !taskDefBookmark} onClick={loadMMore}>Load More</LoadMoreButton>
+            </div>
+        </div>
+
+    </section>
+
 }
-

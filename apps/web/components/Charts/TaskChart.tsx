@@ -3,6 +3,8 @@ import { useCallback, useEffect } from "react";
 import moment from "moment"
 import { NewScrollBar } from "./NewScrollBar";
 
+const _WIDTH = 1360
+
 const ttTemplate=`
 <header>{HEADER}</header>
 <main>
@@ -24,7 +26,7 @@ const updateToolTipContent = (data:any,template:string, type:string) => {
 }
 
 const margin = {top: 10, right: 30, bottom: 60, left: 50},
-    width = 1390 - margin.left - margin.right,
+    width = _WIDTH - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom;
 const maxWBar = 76
 const minYAxisValue = 10
@@ -275,7 +277,9 @@ export const TaskChart = ({data, type}:Props) => {
         <div id="task-chart" className="relative">
             <div className="mcToolTip" id="task-chart-tooltip"></div>
         </div>
-        <NewScrollBar width={1405} windows={(data.length - visibleWindows) < 0 ? 1 : (data.length - visibleWindows)} onChange={onMoveScroll} />
+        <div style={{ paddingLeft:"10px", paddingRight:"10px" }}>
+            <NewScrollBar width={_WIDTH-20} windows={(data.length - visibleWindows) < 0 ? 1 : (data.length - visibleWindows)} onChange={onMoveScroll} />
+        </div>
 
     </>
 }
