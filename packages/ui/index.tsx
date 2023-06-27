@@ -4,6 +4,9 @@ import * as React from "react";
 export * from "./Header";
 
 export { Button, type ButtonProps } from "./components/Button";
+export { Input } from "./components/Input/Input";
+export { Label } from "./components/Label/Label";
+export { PerPage } from "./components/PerPage/PerPage";
 export { LoadMoreButton } from "./components/LoadMoreButton";
 export {
     H1, type H1Props,

@@ -1,5 +1,5 @@
 "use client";
-import { Button, LoadMoreButton } from "ui"
+import { Button, Input, Label, LoadMoreButton, Loader, PerPage } from "ui"
 import { MetadataSearchTable } from "../components/search/MetadataSearchTable"
 import { useEffect, useState } from "react"
 
@@ -10,7 +10,7 @@ export interface Result{
 }
 
 const allLimit = 5
-const defaultLimit = 15
+const defaultLimit = 10
 const keyDownDelay = 1000 // miliseconds
 
 let myTimeout:NodeJS.Timeout 
@@ -144,22 +144,26 @@ export const MetadataSearch = () => {
         <div className="between">
             <h2>Metadata search</h2> 
             <div className="btns btns-right">
-                <input placeholder="search" type="text" value={prefix} onKeyDown={keyDownHandler} onChange={e => setPrefix(e.target.value)} />
-                <select value={type} onChange={e => setType(e.target.value)}>
-                    <option value="">All</option>
-                    <option value="wfSpec">wfSpec</option>
-                    <option value="taskDef">TaskDef</option>
-                    <option value="externalEventDef">ExternalEventDef</option>
-                </select>
-                <Button onClick={getMData}>Get Data</Button>
+                <Input icon="/search.svg" placeholder="Search by name or ID" type="text" value={prefix} onKeyDown={keyDownHandler} onChange={e => setPrefix(e.target.value)} />
+                <Label>Type:</Label>
+                <Button active={type === ''} onClick={() => setType("")}>All</Button>
+                <Button active={type === 'wfSpec'} onClick={() => setType("wfSpec")}>WfSpec</Button>
+                <Button active={type === 'taskDef'} onClick={() => setType("taskDef")}>TaskDef</Button>
+                <Button active={type === 'externalEventDef'} onClick={() => setType("externalEventDef")}>ExternalEventDef</Button>
             </div>
         </div>
-
-        <MetadataSearchTable results={results} />
+        <div style={{minHeight:'300px'}}>
+            {results.length ? (
+                <MetadataSearchTable results={results} />
+            ) : (
+                <Loader />
+            )}
+        </div>
         
         <div className="end">
             <div className="btns btns-right">
-                {!!type ? <input placeholder="limit" type="number" value={limit} onChange={e => setLimit(+e.target.value)} /> : undefined}
+                <PerPage icon="/expand_more.svg" value={limit} onChange={setLimit} values={[10,20,30,60,100]} />
+                {!!type ? <PerPage icon="/expand_more.svg" value={limit} onChange={setLimit} values={[10,20,30,60,100]} /> : undefined}
                 <LoadMoreButton loading={loading} disabled={!externalEventDefBookmark && !wfSpecBookmark && !taskDefBookmark} onClick={loadMMore}>Load More</LoadMoreButton>
             </div>
         </div>

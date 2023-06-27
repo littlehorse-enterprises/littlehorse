@@ -1,0 +1,36 @@
+.input-canvas{
+    position: relative;
+    img{
+        position: absolute;
+        top: 8px;
+        left: 10px;
+    }
+    .input{
+        display: flex;
+        width: 311px;
+        height: 32px;
+        padding: 10px;
+        align-items: center;
+        gap: 10px;
+        flex-shrink: 0;
+
+        border-radius: 4px;
+        border: 1px solid #4B5058;
+        background: #363A41;
+        box-sizing: border-box;
+        outline: none;
+
+        color: #EDEEF0;
+        text-align: left;
+        font-size: 14px;
+        font-family: "Inter";
+
+        &::placeholder{
+            color: #BDBDBD;
+        }
+
+        &.icon{
+            padding-left: 40px;
+        }
+    }
+}

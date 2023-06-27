@@ -1,23 +1,22 @@
 .btn{
 
     cursor: pointer;
-
     display: flex;
-width: 95px;
-height: 32px;
-padding: 12px;
-justify-content: center;
-align-items: center;
-text-align: center;
+    // min-width: 95px;
+    height: 32px;
+    padding: 12px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 
-border-radius: 4px;
-border: 1px solid var(--color-gray, #4D5461);
-background: var(--color-bg-dark, #242529);
+    border-radius: 4px;
+    border: 1px solid var(--color-gray, #4D5461);
+    background: var(--color-bg-dark, #242529);
 
-color: #FFF;
-text-align: center;
-font-size: 14px;
-font-family: "Inter";
+    color: #FFF;
+    text-align: center;
+    font-size: 14px;
+    font-family: "Inter";
 
 
 }
@@ -40,4 +39,10 @@ font-family: "Inter";
     border-radius: 4px;
     border: 1px solid var(--color-gray, #4D5461);
     background: var(--color-ghost-light, #363A41);
+}
+
+.btn.active-purple{
+    border-radius: 4px;
+    border: 1px solid var(--color-primary-light, #AAA7FF);
+    background: var(--color-primary, #7F7AFF);
 }
