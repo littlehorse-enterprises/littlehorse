@@ -2,12 +2,12 @@
 @import "../components/Button/button";
 @import "../components/LoadMoreButton/load_more_button";
 @import "./scrollbar";
+@import "./visualizer";
 @import "../components/Input/input";
 @import "../components/PerPage/per_page";
 @import "../components/Label/label";
 
 .container{
-
     min-width: 1200px;  //TMP
     margin: auto;
     color: var(--color-bright-light, #EDEEF0);

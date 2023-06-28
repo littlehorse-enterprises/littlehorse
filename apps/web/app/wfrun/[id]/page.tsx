@@ -1,5 +1,6 @@
 import Link from "next/link"
 import Breadcrumbs from "../../../components/Breadcrumbs"
+import { WfRunVisualization } from "./sections/WfRunVisualization"
 
 const WfRun = ({params}:{params:{id:string}}) => {
     return <>
@@ -14,9 +15,7 @@ const WfRun = ({params}:{params:{id:string}}) => {
                     active: true
                 }]} />
 
-     <section>
-        <h2>WfRun Visualizer</h2>
-     </section>
+     <WfRunVisualization id={params.id} />
     </>
     
 }

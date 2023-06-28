@@ -3,6 +3,7 @@ import { WfRunVisualizer } from "./components/visualizer/WfRunVisualizer"
 import { WorkflowExecutionMetrics } from "./sections/WorkflowExecutionMetrics"
 import { WfRunSearch } from "./sections/WfRunSearch"
 import Breadcrumbs from "../../../../components/Breadcrumbs"
+import { WfSpecVisualization } from "./sections/WfSpecVisualization"
 
 const WfSpec = ({params}:{params:{id:string, version:number}}) => {
     return <>
@@ -17,11 +18,10 @@ const WfSpec = ({params}:{params:{id:string, version:number}}) => {
                     active: true
                 }]} />
 
-     <WfRunVisualizer id={params.id} version={params.version} />
-
+     <WfSpecVisualization id={params.id} version={params.version} />
      <WorkflowExecutionMetrics id={params.id} version={params.version} />
 
-     <WfRunSearch />
+     <WfRunSearch id={params.id} version={params.version}  />
     </>
     
 }

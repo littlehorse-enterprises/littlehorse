@@ -5,7 +5,7 @@ import { WfSpecVisualizerChart } from "./WfSpecVisualizerChart";
 interface mapnode{
     
 }
-export const WfRunVisualizer = ({id, version}:{id:string, version:number}) => {
+export const WfRunVisualizer = ({id}:{id:string}) => {
 
     const [data, setData] = useState<any[]>([])
     const [output, setOutput] = useState<any>('')
@@ -30,6 +30,12 @@ export const WfRunVisualizer = ({id, version}:{id:string, version:number}) => {
         })
         return rec(mappedData,++i)
     }
+    const setThreads = (data:any) => {
+        console.log(data)
+        getWfSpec(data.wfSpecName, data.wfSpecVersion)
+        
+
+    }
     const mapData = (data:any) => {
         const entries = Object.entries(data?.threadSpecs?.entrypoint?.nodes)
         const mappedData:any = entries.map((e:mapnode) => ({
@@ -42,16 +48,29 @@ export const WfRunVisualizer = ({id, version}:{id:string, version:number}) => {
         }))
         return rec(mappedData,0)
     }
-    const getData = async () => {
+    const getWfSpec = async (id:string, version:number) => {
         const res = await fetch('/api/visualization/wfSpec',{
             method:'POST',
             body: JSON.stringify({
-                id, version
+                id,
+                version
             }),
         })
         if(res.ok){
             const content = await res.json()
             setData( mapData(content.result))
+        }
+    }
+    const getData = async () => {
+        const res = await fetch('/api/visualization/wfRun',{
+            method:'POST',
+            body: JSON.stringify({
+                id
+            }),
+        })
+        if(res.ok){
+            const {result} = await res.json()
+            setThreads(result)
         }
     }
 
