@@ -1,0 +1,93 @@
+.drawer{
+    display: flex;
+    flex: 1;
+    align-items: unset !important;
+    max-width: 384px;
+    box-sizing: border-box;
+    .frame{
+        display: flex;
+        flex: 1;
+        padding: 8px;
+        flex-direction: column;
+
+        border-radius: 8px;
+        border: 1px solid #3D4149;
+        label{
+            display: flex;
+            padding: 4px 0px;
+            align-items: flex-start;
+
+            margin-top: 4px;
+            margin-bottom: 8px;
+
+            color: #EDEEF0;
+            font-size: 10px;
+            font-family: "Inter";
+            text-transform: uppercase;
+        }
+        .input{
+            display: flex;
+            box-sizing: border-box;
+            height: 32px;
+            padding: 12px;
+            align-items: center;
+            gap: 10px;
+            align-self: stretch;
+
+            border-radius: 4px;
+            border: 1px solid #4B5058;
+            background: #363A41;
+
+            color: #EDEEF0;
+            text-align: center;
+            font-size: 14px;
+            font-family: "Inter";
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        
+    }
+    table{
+        display: flex;
+        flex-direction: column;
+        caption{
+            display: flex;
+            flex: 1;
+            color: var(--color-bright-light, #EDEEF0);
+            font-size: 14px;
+            font-family: "Inter";
+            font-weight: 600;
+            border: 1px solid #3D4149;
+            background: #373554;
+        }
+        thead{
+            width: 100%;
+            tr{
+                width: 100%;
+                display: flex;
+            }
+            th{
+                width: 100%;
+                color: var(--color-mild-light, #9098A0);
+                font-size: 10px;
+                font-family: "Inter";
+                font-weight: 500;
+                text-align: center;
+            }
+        }
+        tbody{
+            width: 100%;
+            tr{
+                width: 100%;
+                display: flex;
+            }
+            td{
+                width: 100%;
+                text-align: center;
+                color: var(--color-bright-light, #EDEEF0);
+                font-size: 12px;
+                font-family: "Inter";
+            }
+        }
+    }
+}

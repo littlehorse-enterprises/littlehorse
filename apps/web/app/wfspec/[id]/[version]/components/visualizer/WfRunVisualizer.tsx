@@ -1,14 +1,21 @@
 "use client"
 import { useEffect, useState } from "react"
 import { WfSpecVisualizerChart } from "./WfSpecVisualizerChart";
+import { Drawer } from "./Drawer";
+// import { DrawerComponent } from "../../../../../../components/Drawer/DrawerComponent";
+// import { Drawer } from "../../../../../../components/Drawer/Drawer";
 
 interface mapnode{
     
 }
 export const WfRunVisualizer = ({id, version}:{id:string, version:number}) => {
 
+    const [fulldata, setFullData] = useState<any>()
     const [data, setData] = useState<any[]>([])
     const [output, setOutput] = useState<any>('')
+    // const [drawerData, setDrawerData] = useState<any>()
+	// const [selectedNodeName, setSelectedNodeName] = useState<any>()
+	// const [nodeType, setNodeType] = useState<string | undefined>()
 
     const rec = (mappedData, i) => {
         let el = mappedData[i]
@@ -51,9 +58,19 @@ export const WfRunVisualizer = ({id, version}:{id:string, version:number}) => {
         })
         if(res.ok){
             const content = await res.json()
+            setFullData(content.result)
             setData( mapData(content.result))
         }
     }
+
+    // const drawerInternal = (
+	// 	<DrawerComponent
+	// 		internalComponent={nodeType}
+	// 		data={drawerData}
+	// 		nodeName={selectedNodeName}
+	// 		wfRunDrawer={false}
+	// 	/>
+	// )
 
     useEffect( () => {
         getData()
@@ -64,7 +81,11 @@ export const WfRunVisualizer = ({id, version}:{id:string, version:number}) => {
                 <WfSpecVisualizerChart data={data} onClick={setOutput} />
 
             </div>
-            <div className="drawer">{JSON.stringify(output, null,2)}</div>
+            
+            <Drawer output={output} thread={id} data={fulldata} />
+            {/* <Drawer title={'WfSpec Properties'}>{drawerInternal}</Drawer> */}
+            {/* {JSON.stringify(output, null,2)} */}
+
         </div>
     )
 }

@@ -1,12 +1,13 @@
 "use client"
 import { useEffect, useState } from "react"
 import { WfSpecVisualizerChart } from "./WfSpecVisualizerChart";
+import { Drawer } from "./Drawer";
 
 interface mapnode{
     
 }
 export const WfRunVisualizer = ({id}:{id:string}) => {
-
+    const [fulldata, setFullData] = useState<any>()
     const [data, setData] = useState<any[]>([])
     const [output, setOutput] = useState<any>('')
 
@@ -58,6 +59,7 @@ export const WfRunVisualizer = ({id}:{id:string}) => {
         })
         if(res.ok){
             const content = await res.json()
+            setFullData(content.result)
             setData( mapData(content.result))
         }
     }
@@ -83,7 +85,7 @@ export const WfRunVisualizer = ({id}:{id:string}) => {
                 <WfSpecVisualizerChart data={data} onClick={setOutput} />
 
             </div>
-            <div className="drawer">{JSON.stringify(output, null,2)}</div>
+            <Drawer output={output} thread={id} data={fulldata} />
         </div>
     )
 }
