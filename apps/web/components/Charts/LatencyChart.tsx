@@ -181,25 +181,27 @@ export const LatencyChart = ({data, type}:Props) => {
             .attr("y1", d => y(d.startToCompleteMax) )
             .attr("y2", d => y(d.startToCompleteAvg) )
 
-            dotg.data(datam)
-            .enter().append("line").classed('line-complete', true)
-            .attr("stroke", (_d, ix) => {
-                if(!ix) return "transparent"
-                return "#FFCC00"
-            } )
-            .attr("x1", (_d, ix) => {
-                let val = ((ix-1) * (maxWBar + gap))+(maxWBar/2)
-                return val < 0 ? -800 : val
-            } )
-            .attr("x2", (_d, ix) => {
-                let val = ((ix) * (maxWBar + gap))+(maxWBar/2)
-                return val < 0 ? -800 : val
-            } )
-            .attr("y1", (d,i) => {
-                if(!i) return 0
-                return y (datam[i-1]?.startToCompleteAvg)
-            })
-            .attr("y2", d => y(d.startToCompleteAvg) )
+
+            /////YELLOW LINE
+            // dotg.data(datam)
+            // .enter().append("line").classed('line-complete', true)
+            // .attr("stroke", (_d, ix) => {
+            //     if(!ix) return "transparent"
+            //     return "#FFCC00"
+            // } )
+            // .attr("x1", (_d, ix) => {
+            //     let val = ((ix-1) * (maxWBar + gap))+(maxWBar/2)
+            //     return val < 0 ? -800 : val
+            // } )
+            // .attr("x2", (_d, ix) => {
+            //     let val = ((ix) * (maxWBar + gap))+(maxWBar/2)
+            //     return val < 0 ? -800 : val
+            // } )
+            // .attr("y1", (d,i) => {
+            //     if(!i) return 0
+            //     return y (datam[i-1]?.startToCompleteAvg)
+            // })
+            // .attr("y2", d => y(d.startToCompleteAvg) )
             
             dotg.data(datam)
             .enter().append("circle").classed('dot-complete-max', true)
