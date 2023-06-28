@@ -11,9 +11,6 @@ export interface Result{
 
 const allLimit = 5
 const defaultLimit = 15
-const keyDownDelay = 1000 // miliseconds
-
-let myTimeout:NodeJS.Timeout 
 
 export const WfRunSearch = ({id, version}:any) => {
     let first = true
@@ -208,7 +205,7 @@ export const WfRunSearch = ({id, version}:any) => {
     return <section>
         
         <div className="between">
-            <h2>TaskRun search</h2> 
+            <h2>WfRun search</h2> 
             <div className="btns btns-right">
                 <CalendarB
                     changeEarlyDate={setStartDT} earlyDate={startDt}
