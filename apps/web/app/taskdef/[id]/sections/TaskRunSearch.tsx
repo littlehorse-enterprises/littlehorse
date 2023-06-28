@@ -1,12 +1,11 @@
 "use client";
-import { Button, LoadMoreButton } from "ui"
+import { Button, Label, LoadMoreButton, PerPage } from "ui"
 import { useEffect, useState } from "react"
-import { MetadataSearchTable } from "../components/search/MetadataSearchTable";
+import { TaskRunSearchTable } from "../components/search/TaskRunSearchTable";
 
 export interface Result{
-    name:string 
-    version?:number 
-    type?:string
+    wfRunId:string 
+    status?:string 
 }
 
 const allLimit = 5
@@ -15,31 +14,40 @@ const keyDownDelay = 1000 // miliseconds
 
 let myTimeout:NodeJS.Timeout 
 
-export const TaskRunSearch = () => {
+export const TaskRunSearch = ({id}:any) => {
     let first = true
 
     const [loading, setLoading] = useState(false)
     const [firstLoad, setFirstLoad] = useState(false)
     const [limit, setLimit] = useState(defaultLimit)
-    const [taskDefBookmark, setTaskDefBookmark] = useState()
-    const [wfSpecBookmark, setWfSpecBookmark] = useState()
-    const [externalEventDefBookmark, setExternalEventDefBookmark] = useState()
+
+    const [errorBookmark, setErrorBookmark] = useState()
+    const [completedBookmark, setCompletedBookmark] = useState()
+    const [startingBookmark, setStartingBookmark] = useState()
+    const [runningBookmark, setRunningBookmark] = useState()
+
     const [type, setType] = useState('')
-    const [prefix, setPrefix] = useState('')
     const [results, setResults] = useState<any[]>([])
 
     const fetchData = async(type:string, paginate=false, useLimit=true ) => {
         let bookmark:string|undefined
-        if(type === "wfSpec") bookmark = wfSpecBookmark
-        if(type === "taskDef") bookmark = taskDefBookmark
-        if(type === "externalEventDef") bookmark = externalEventDefBookmark
+        if(type === "ERROR") bookmark = errorBookmark
+        if(type === "COMPLETED") bookmark = completedBookmark
+        if(type === "STARTING") bookmark = startingBookmark
+        if(type === "RUNNING") bookmark = runningBookmark
+
         const filters:any = { limit:useLimit? limit: allLimit }
-        if(prefix?.trim()) filters['prefix'] = prefix.trim().toLocaleLowerCase()
+        // if(prefix?.trim()) filters['prefix'] = prefix.trim().toLocaleLowerCase()
         if(paginate && bookmark) filters['bookmark'] = bookmark
         if(paginate && !bookmark) return {status:'done'}
-        const res = await fetch('/api/search/'+type,{
+        const res = await fetch('/api/search/nodeRun',{
             method:'POST',
             body: JSON.stringify({
+                
+                statusAndTaskdef:{
+                    status: type,
+                    taskDefName: id
+                },
                 ...filters
             }),
         })
@@ -51,32 +59,38 @@ export const TaskRunSearch = () => {
     const getData = async () => {
         setLoading(true)
         const {results, bookmark} = await fetchData(type)
-        if(type === "wfSpec") setWfSpecBookmark(bookmark)
-        if(type === "taskDef") setTaskDefBookmark(bookmark)
-        if(type === "externalEventDef") setExternalEventDefBookmark(bookmark)
-        setResults(results.map( (v:Result) => ({...v, type:type.charAt(0).toUpperCase() + type.slice(1)})))
+        if(type === "ERROR") setErrorBookmark(bookmark)
+        if(type === "COMPLETED") setCompletedBookmark(bookmark)
+        if(type === "STARTING") setStartingBookmark(bookmark)
+        if(type === "RUNNING") setRunningBookmark(bookmark)
+        setResults(results.map( (v:Result) => ({...v, status:type})))
         setLoading(false)
     }
     const getMData = async () => {
-        setWfSpecBookmark(undefined)
-        setTaskDefBookmark(undefined)
-        setExternalEventDefBookmark(undefined)
+        setErrorBookmark(undefined)
+        setCompletedBookmark(undefined)
+        setStartingBookmark(undefined)
+        setRunningBookmark(undefined)
         if(type) return getData()
 
         setLoading(true)
         setResults([])
 
-        const wfSpecs = await fetchData('wfSpec', false, false)
-        setWfSpecBookmark(wfSpecs.bookmark)
-        setResults(prev => [...prev, ...wfSpecs.results.map((v:any) => ({...v, type:'WfSpec'}))])
+        const starting = await fetchData('STARTING', false, false)
+        setStartingBookmark(starting.bookmark)
+        setResults(prev => [...prev, ...starting.results.map((v:any) => ({...v, status:'STARTING'}))])
 
-        const taskDefs = await fetchData('taskDef', false, false)
-        setTaskDefBookmark(taskDefs.bookmark)
-        setResults(prev => [...prev, ...taskDefs.results.map((v:any) => ({...v, type:'TaskDef'}))])
+        const running = await fetchData('RUNNING', false, false)
+        setRunningBookmark(running.bookmark)
+        setResults(prev => [...prev, ...running.results.map((v:any) => ({...v, status:'RUNNING'}))])
 
-        const externalEventDefs = await fetchData('externalEventDef', false, false)
-        setExternalEventDefBookmark(externalEventDefs.bookmark)
-        setResults(prev => [...prev, ...externalEventDefs.results.map((v:any) => ({...v, type:'ExternalEventDef'}))])
+        const completed = await fetchData('COMPLETED', false, false)
+        setCompletedBookmark(completed.bookmark)
+        setResults(prev => [...prev, ...completed.results.map((v:any) => ({...v, status:'COMPLETED'}))])
+
+        const errors = await fetchData('ERROR', false, false)
+        setErrorBookmark(errors.bookmark)
+        setResults(prev => [...prev, ...errors.results.map((v:any) => ({...v, status:'ERROR'}))])
 
         setFirstLoad(true)
         setLoading(false)
@@ -85,28 +99,37 @@ export const TaskRunSearch = () => {
         if(type) return loadMore()
         setLoading(true)
 
-        if(wfSpecBookmark){
-            const wfSpecs = await fetchData('wfSpec', true, false)
-            if(wfSpecs.status!='done'){
-                setWfSpecBookmark(wfSpecs.bookmark)
-                setResults(prev => [...prev, ...wfSpecs.results.map((v:any) => ({...v, type:'WfSpec'}))])
+        
+
+        if(startingBookmark){
+            const starting = await fetchData('STARTING', true, false)
+            if(starting.status!='done'){
+                setStartingBookmark(starting.bookmark)
+                setResults(prev => [...prev, ...starting.results.map((v:any) => ({...v, status:'STARTING'}))])
+            }
+        }
+        if(runningBookmark){
+            const running = await fetchData('RUNNING', true, false)
+            if(running.status!='done'){
+                setRunningBookmark(running.bookmark)
+                setResults(prev => [...prev, ...running.results.map((v:any) => ({...v, status:'RUNNING'}))])
+            }
+        }
+        if(completedBookmark){
+            const completed = await fetchData('COMPLETED', true, false)
+            if(completed.status!='done'){
+                setCompletedBookmark(completed.bookmark)
+                setResults(prev => [...prev, ...completed.results.map((v:any) => ({...v, status:'COMPLETED'}))])
+            }
+        }
+        if(errorBookmark){
+            const tasks = await fetchData('ERROR', true, false)
+            if(tasks.status!='done'){
+                setErrorBookmark(tasks.bookmark)
+                setResults(prev => [...prev, ...tasks.results.map((v:any) => ({...v, status:'ERROR'}))])
             } 
         }
 
-        if(taskDefBookmark){
-            const taskDefs = await fetchData('taskDef', true, false)
-            if(taskDefs.status!='done'){
-                setTaskDefBookmark(taskDefs.bookmark)
-                setResults(prev => [...prev, ...taskDefs.results.map((v:any) => ({...v, type:'TaskDef'}))])
-            }
-        }
-        if(externalEventDefBookmark){
-            const externalEventDefs = await fetchData('externalEventDef', true, false)
-            if(externalEventDefs.status!='done'){
-                setExternalEventDefBookmark(externalEventDefs.bookmark)
-                setResults(prev => [...prev, ...externalEventDefs.results.map((v:any) => ({...v, type:'ExternalEventDef'}))])
-            }
-        }
 
         setLoading(false)
     }
@@ -117,10 +140,11 @@ export const TaskRunSearch = () => {
         
         if(status==='done') return 
         
-        if(type === "wfSpec") setWfSpecBookmark(bookmark)
-        if(type === "taskDef") setTaskDefBookmark(bookmark)
-        if(type === "externalEventDef") setExternalEventDefBookmark(bookmark)
-        setResults(prev => [...prev, ...results.map((v:any) => ({...v, type:'TaskDef'}))])
+        if(type === "ERROR") setErrorBookmark(bookmark)
+        if(type === "COMPLETED") setCompletedBookmark(bookmark)
+        if(type === "STARTING") setStartingBookmark(bookmark)
+        if(type === "RUNNING") setRunningBookmark(bookmark)
+        setResults(prev => [...prev, ...results.map((v:any) => ({...v, status:type}))])
         setLoading(false)
     }
 
@@ -144,23 +168,21 @@ export const TaskRunSearch = () => {
         <div className="between">
             <h2>TaskRun search</h2> 
             <div className="btns btns-right">
-                <input placeholder="search" type="text" value={prefix} onKeyDown={keyDownHandler} onChange={e => setPrefix(e.target.value)} />
-                <select value={type} onChange={e => setType(e.target.value)}>
-                    <option value="">All</option>
-                    <option value="wfSpec">wfSpec</option>
-                    <option value="taskDef">TaskDef</option>
-                    <option value="externalEventDef">ExternalEventDef</option>
-                </select>
-                <Button onClick={getMData}>Get Data</Button>
+
+                <Button active={type === ''} onClick={() => setType("")}>All</Button>
+                <Button active={type === 'STARTING'} onClick={() => setType("STARTING")}>Starting</Button>
+                <Button active={type === 'RUNNING'} onClick={() => setType("RUNNING")}>Running</Button>
+                <Button active={type === 'COMPLETED'} onClick={() => setType("COMPLETED")}>Completed</Button>
+                <Button active={type === 'ERROR'} onClick={() => setType("ERROR")}>Error</Button>
             </div>
         </div>
 
-        {/* <MetadataSearchTable results={results} /> */}
+        <TaskRunSearchTable results={results} />
         
         <div className="end">
             <div className="btns btns-right">
-                {!!type ? <input placeholder="limit" type="number" value={limit} onChange={e => setLimit(+e.target.value)} /> : undefined}
-                <LoadMoreButton loading={loading} disabled={!externalEventDefBookmark && !wfSpecBookmark && !taskDefBookmark} onClick={loadMMore}>Load More</LoadMoreButton>
+            {!!type ? <><Label>Rows per load:</Label><PerPage icon="/expand_more.svg" value={limit} onChange={setLimit} values={[10,20,30,60,100]} /> </>: undefined}
+                <LoadMoreButton loading={loading} disabled={!startingBookmark && !runningBookmark && !errorBookmark && !completedBookmark} onClick={loadMMore}>Load More</LoadMoreButton>
             </div>
         </div>
 

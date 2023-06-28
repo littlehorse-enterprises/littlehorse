@@ -1,4 +1,3 @@
-import Link from "next/link"
 import { TaskDefSchemaInformation } from "./sections/TaskDefSchemaInformation"
 import { TaskExecutionMetrics } from "./sections/TaskExecutionMetrics"
 import { TaskRunSearch } from "./sections/TaskRunSearch"
@@ -18,7 +17,7 @@ const WfRun = ({params}:{params:{id:string}}) => {
 
      <TaskDefSchemaInformation id={params.id}  />
      <TaskExecutionMetrics id={params.id} />
-     <TaskRunSearch />
+     <TaskRunSearch id={params.id} />
      
     </>
 }

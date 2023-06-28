@@ -9,7 +9,7 @@ export const TaskDefSchemaInformation = ({id}:{id:string}) => {
     const [inputVars, setInputVars] = useState<InputVarsTaskDef[]>([])
 
     const taskInformation = async () => {
-        console.log(id)
+
         const res = await fetch('/api/information/taskDef',{
             method:'POST',
             body: JSON.stringify({
@@ -45,7 +45,7 @@ export const TaskDefSchemaInformation = ({id}:{id:string}) => {
                     <td className='w-full text-center'>{row.name}</td>
                     <td className='w-full text-center'>{row.type}</td>
                 </tr>))
-                : (<Loading style={{heigth:'50vh'}} />)
+                : (loadingInputVars ? <Loading style={{padding:'20px'}} /> : <div className="flex items-center justify-center" style={{padding:'20px'}} >No variables required</div>)
                 }
             </tbody>
             </table>
