@@ -18,7 +18,9 @@ export const MetadataSearchTable = ({results}:Props) => {
                     <th className="w-full text-center">VERSION</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody style={{
+                height: "519px"
+            }}>
                 {results.map( (r:Result, ix:number) => <tr key={ix} className="flex w-full">
                     <td className="capitalize">
                         {(r.type==='WfSpec') ? <Link href={`/wfspec/${r.name}/${r.version}`}>{r.name}</Link>  :  undefined}

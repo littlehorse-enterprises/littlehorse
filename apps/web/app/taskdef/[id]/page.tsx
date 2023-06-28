@@ -2,15 +2,21 @@ import Link from "next/link"
 import { TaskDefSchemaInformation } from "./sections/TaskDefSchemaInformation"
 import { TaskExecutionMetrics } from "./sections/TaskExecutionMetrics"
 import { TaskRunSearch } from "./sections/TaskRunSearch"
+import Breadcrumbs from "../../../components/Breadcrumbs"
 
 const WfRun = ({params}:{params:{id:string}}) => {
     return <>
-     <h1>TaskDef | {params.id} </h1>
+     <h1><span className="lighter">TaskDef</span> <span className="line">|</span> {params.id.charAt(0).toUpperCase() + params.id.slice(1)} </h1>
 
-     {/* bread */}
-     <div className="flex" style={{width:"100%"}}><Link href={'/'}><span className="color-primary">Cluster Overview</span></Link> / <span>{params.id}</span></div>
-     
-     <TaskDefSchemaInformation />
+     <Breadcrumbs pwd={[{
+                    title: 'Cluster Overview',
+                    href: '/'
+                }, {
+                    title: `TaskDef: ${params.id.charAt(0).toUpperCase() + params.id.slice(1)}`,
+                    active: true
+                }]} />
+
+     <TaskDefSchemaInformation id={params.id}  />
      <TaskExecutionMetrics id={params.id} />
      <TaskRunSearch />
      

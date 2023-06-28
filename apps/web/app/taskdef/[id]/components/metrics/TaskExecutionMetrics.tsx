@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import moment from "moment"
 
-import { Button, H3, H4 } from "ui";
+import { Button } from "ui";
 import { TaskChart } from "../../../../../components/Charts/TaskChart";
 import { LatencyTaskChart } from "../../../../../components/Charts/LatencyTaskChart";
 
@@ -114,7 +114,7 @@ export const TaskExecutionMetrics = ({id, windows= 16, lastWindowStart=moment().
     }
 
     const getData = async () => {
-        const res = await fetch('./api/metrics/taskDef',{
+        const res = await fetch('/api/metrics/taskDef',{
             method:'POST',
             body: JSON.stringify({
                 lastWindowStart,

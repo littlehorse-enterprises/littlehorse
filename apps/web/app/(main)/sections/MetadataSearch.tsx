@@ -64,11 +64,12 @@ export const MetadataSearch = () => {
         if(type) return getData()
 
         setLoading(true)
-        setResults([])
+        // setResults([])
 
         const wfSpecs = await fetchData('wfSpec', false, false)
         setWfSpecBookmark(wfSpecs.bookmark)
-        setResults(prev => [...prev, ...wfSpecs.results.map((v:any) => ({...v, type:'WfSpec'}))])
+        setResults(prev => wfSpecs.results.map((v:any) => ({...v, type:'WfSpec'})))
+        // setResults(prev => [...prev, ...wfSpecs.results.map((v:any) => ({...v, type:'WfSpec'}))])
 
         const taskDefs = await fetchData('taskDef', false, false)
         setTaskDefBookmark(taskDefs.bookmark)
@@ -120,7 +121,7 @@ export const MetadataSearch = () => {
         if(type === "wfSpec") setWfSpecBookmark(bookmark)
         if(type === "taskDef") setTaskDefBookmark(bookmark)
         if(type === "externalEventDef") setExternalEventDefBookmark(bookmark)
-        setResults(prev => [...prev, ...results.map((v:any) => ({...v, type:'TaskDef'}))])
+        setResults(prev => [...prev, ...results.map((v:any) => ({...v, type:type.charAt(0).toUpperCase() + type.slice(1)}))])
         setLoading(false)
     }
 
@@ -145,14 +146,14 @@ export const MetadataSearch = () => {
             <h2>Metadata search</h2> 
             <div className="btns btns-right">
                 <Input icon="/search.svg" placeholder="Search by name or ID" type="text" value={prefix} onKeyDown={keyDownHandler} onChange={e => setPrefix(e.target.value)} />
-                <Label>Type:</Label>
+                <Label>TYPE:</Label>
                 <Button active={type === ''} onClick={() => setType("")}>All</Button>
                 <Button active={type === 'wfSpec'} onClick={() => setType("wfSpec")}>WfSpec</Button>
                 <Button active={type === 'taskDef'} onClick={() => setType("taskDef")}>TaskDef</Button>
                 <Button active={type === 'externalEventDef'} onClick={() => setType("externalEventDef")}>ExternalEventDef</Button>
             </div>
         </div>
-        <div style={{minHeight:'300px'}}>
+        <div style={{minHeight:'568px'}}>
             {results.length ? (
                 <MetadataSearchTable results={results} />
             ) : (

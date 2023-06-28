@@ -1,11 +1,18 @@
 import Link from "next/link"
+import Breadcrumbs from "../../../components/Breadcrumbs"
 
 const WfRun = ({params}:{params:{id:string}}) => {
     return <>
-     <h1>WfRun | {params.id} </h1>
 
-     {/* bread */}
-     <div className="flex" style={{width:"100%"}}><Link href={'/'}><span className="color-primary">Cluster Overview</span></Link> / <span>{params.id}</span></div>
+     <h1><span className="lighter">WfRun</span> <span className="line">|</span> {params.id.charAt(0).toUpperCase() + params.id.slice(1)} </h1>
+
+     <Breadcrumbs pwd={[{
+                    title: 'Cluster Overview',
+                    href: '/'
+                }, {
+                    title: `WfRun: ${params.id.charAt(0).toUpperCase() + params.id.slice(1)}`,
+                    active: true
+                }]} />
 
      <section>
         <h2>WfRun Visualizer</h2>
