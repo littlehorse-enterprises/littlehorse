@@ -46,7 +46,7 @@ public class LHClientConfigTest {
 
     @Test
     void haveAllConfigs() {
-        assertThat(LHClientConfig.configNames().size()).isEqualTo(6);
+        assertThat(LHClientConfig.configNames().size()).isEqualTo(9);
     }
 
     @Test

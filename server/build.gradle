@@ -49,9 +49,6 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'com.google.guava:guava:32.0.1-jre'
 
-    // OAuth
-    implementation 'com.nimbusds:oauth2-oidc-sdk:10.9.2'
-
     // gRPC and Protobuf now included in lh-jlib
     implementation project(':client')
 

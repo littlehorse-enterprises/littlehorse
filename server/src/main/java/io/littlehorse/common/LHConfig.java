@@ -4,14 +4,14 @@ import com.google.common.base.Strings;
 import io.grpc.ChannelCredentials;
 import io.grpc.TlsChannelCredentials;
 import io.grpc.TlsServerCredentials;
-import io.littlehorse.common.exceptions.LHMisconfigurationException;
 import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.util.LHProducer;
+import io.littlehorse.jlib.common.auth.OAuthConfig;
 import io.littlehorse.jlib.common.config.ConfigBase;
+import io.littlehorse.jlib.common.exception.LHMisconfigurationException;
 import io.littlehorse.jlib.common.proto.VariableAssignmentPb.SourceCase;
 import io.littlehorse.server.auth.AuthorizationProtocol;
-import io.littlehorse.server.auth.OAuthConfig;
 import io.littlehorse.server.listener.ListenerProtocol;
 import io.littlehorse.server.listener.ServerListenerConfig;
 import io.littlehorse.server.listener.TlsConfig;
@@ -343,7 +343,6 @@ public class LHConfig extends ConfigBase {
         return getOrSetDefault(LHConfig.PROMETHEUS_EXPORTER_PATH_KEY, "/metrics");
     }
 
-    // If INTERNAL_BIND_PORT isn't set, we just return API_BIND_PORT + 1.
     public int getInternalBindPort() {
         return Integer.parseInt(
             getOrSetDefault(LHConfig.INTERNAL_BIND_PORT_KEY, "5001")

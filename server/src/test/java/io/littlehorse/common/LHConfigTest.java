@@ -4,9 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import io.littlehorse.common.exceptions.LHMisconfigurationException;
+import io.littlehorse.jlib.common.auth.OAuthConfig;
+import io.littlehorse.jlib.common.exception.LHMisconfigurationException;
 import io.littlehorse.server.auth.AuthorizationProtocol;
-import io.littlehorse.server.auth.OAuthConfig;
 import io.littlehorse.server.listener.ListenerProtocol;
 import io.littlehorse.server.listener.ServerListenerConfig;
 import io.littlehorse.server.listener.TlsConfig;

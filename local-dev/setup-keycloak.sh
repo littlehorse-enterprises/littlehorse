@@ -5,19 +5,11 @@ set -e
 SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 cd "$SCRIPT_DIR"
 
-if [ -z "$1" ]; then
-    echo "No client id supplied."
-    exit 1
-fi
-
-if [ -z "$2" ]; then
-    echo "No client secret supplied."
-    exit 1
-fi
-
 REALM_NAME="lh"
-CLIENT_ID="$1"
-CLIENT_SECRET="$2"
+SERVER_CLIENT_ID="server"
+SERVER_CLIENT_SECRET="tTL9rw3U8fwPhAmJOWecFKJFaYTVjmCJ"
+WORKER_CLIENT_ID="worker"
+WORKER_CLIENT_SECRET="40317ab43bd34a9e93499c7ea03ad398"
 KEYCLOAK_ADMIN="admin"
 KEYCLOAK_ADMIN_PASSWORD="admin"
 KEYCLOAK_PORT="8888"
@@ -43,9 +35,18 @@ http -b -A bearer -a "$KEYCLOAK_ADMIN_ACCESS_TOKEN" "http://localhost:${KEYCLOAK
 
 http -b -A bearer -a "$KEYCLOAK_ADMIN_ACCESS_TOKEN" "http://localhost:${KEYCLOAK_PORT}/admin/realms/${REALM_NAME}/clients" \
     protocol=openid-connect \
-    clientId="$CLIENT_ID" \
-    id="$CLIENT_ID" \
-    secret="$CLIENT_SECRET" \
+    clientId="$SERVER_CLIENT_ID" \
+    id="$SERVER_CLIENT_ID" \
+    secret="$SERVER_CLIENT_SECRET" \
+    serviceAccountsEnabled:=true \
+    directAccessGrantsEnabled:=true \
+    publicClient:=false
+
+http -b -A bearer -a "$KEYCLOAK_ADMIN_ACCESS_TOKEN" "http://localhost:${KEYCLOAK_PORT}/admin/realms/${REALM_NAME}/clients" \
+    protocol=openid-connect \
+    clientId="$WORKER_CLIENT_ID" \
+    id="$WORKER_CLIENT_ID" \
+    secret="$WORKER_CLIENT_SECRET" \
     serviceAccountsEnabled:=true \
     directAccessGrantsEnabled:=true \
     publicClient:=false

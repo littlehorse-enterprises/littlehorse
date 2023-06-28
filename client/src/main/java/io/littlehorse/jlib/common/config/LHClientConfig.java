@@ -4,11 +4,15 @@ import io.grpc.Channel;
 import io.grpc.Grpc;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.TlsChannelCredentials;
+import io.littlehorse.jlib.common.auth.OAuthClient;
+import io.littlehorse.jlib.common.auth.OAuthConfig;
+import io.littlehorse.jlib.common.auth.OAuthCredentialsProvider;
 import io.littlehorse.jlib.common.proto.LHPublicApiGrpc;
 import io.littlehorse.jlib.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
 import io.littlehorse.jlib.common.proto.LHPublicApiGrpc.LHPublicApiStub;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,6 +59,11 @@ public class LHClientConfig extends ConfigBase {
      */
     public static final String CA_CERT_KEY = "LHC_CA_CERT";
 
+    public static final String OAUTH_CLIENT_ID_KEY = "LHC_OAUTH_CLIENT_ID";
+    public static final String OAUTH_CLIENT_SECRET_KEY = "LHC_OAUTH_CLIENT_SECRET";
+    public static final String OAUTH_AUTHORIZATION_SERVER_KEY =
+        "LHC_OAUTH_AUTHORIZATION_SERVER";
+
     private static final Set<String> configNames = Collections.unmodifiableSet(
         Set.of(
             LHClientConfig.API_HOST_KEY,
@@ -62,7 +71,10 @@ public class LHClientConfig extends ConfigBase {
             LHClientConfig.CLIENT_ID_KEY,
             LHClientConfig.CLIENT_CERT_KEY,
             LHClientConfig.CLIENT_KEY_KEY,
-            LHClientConfig.CA_CERT_KEY
+            LHClientConfig.CA_CERT_KEY,
+            LHClientConfig.OAUTH_AUTHORIZATION_SERVER_KEY,
+            LHClientConfig.OAUTH_CLIENT_ID_KEY,
+            LHClientConfig.OAUTH_CLIENT_SECRET_KEY
         )
     );
 
@@ -75,6 +87,10 @@ public class LHClientConfig extends ConfigBase {
     }
 
     private Map<String, Channel> createdChannels;
+
+    private OAuthClient oauthClient;
+    private OAuthConfig oauthConfig;
+    private OAuthCredentialsProvider oauthCredentialsProvider;
 
     /**
      * Creates an LHClientConfig. Loads default values for config from env vars.
@@ -122,6 +138,16 @@ public class LHClientConfig extends ConfigBase {
     }
 
     /**
+     * Gets an Async gRPC stub for the LH Public API on the configured host/port,
+     * which is generally the loadbalancer url.
+     * @return an async gRPC stub for the configured host/port.
+     * @throws IOException if stub creation fails.
+     */
+    public LHPublicApiStub getAsyncStub() throws IOException {
+        return getAsyncStub(getApiBootstrapHost(), getApiBootstrapPort());
+    }
+
+    /**
      * Gets an Async gRPC stub for the LH Public API on a specified host and port.
      * Generally used by the Task Worker, which needs to connect directly to a
      * specific LH Server rather than the bootstrap host (loadbalancer).
@@ -131,17 +157,12 @@ public class LHClientConfig extends ConfigBase {
      * @throws IOException if stub creation fails.
      */
     public LHPublicApiStub getAsyncStub(String host, int port) throws IOException {
+        if (isOauth()) {
+            return LHPublicApiGrpc
+                .newStub(getChannel(host, port))
+                .withCallCredentials(oauthCredentialsProvider);
+        }
         return LHPublicApiGrpc.newStub(getChannel(host, port));
-    }
-
-    /**
-     * Gets an Async gRPC stub for the LH Public API on the configured host/port,
-     * which is generally the loadbalancer url.
-     * @return an async gRPC stub for the configured host/port.
-     * @throws IOException if stub creation fails.
-     */
-    public LHPublicApiStub getAsyncStub() throws IOException {
-        return getAsyncStub(getApiBootstrapHost(), getApiBootstrapPort());
     }
 
     /**
@@ -155,6 +176,11 @@ public class LHClientConfig extends ConfigBase {
      */
     public LHPublicApiBlockingStub getBlockingStub(String host, int port)
         throws IOException {
+        if (isOauth()) {
+            return LHPublicApiGrpc
+                .newBlockingStub(getChannel(host, port))
+                .withCallCredentials(oauthCredentialsProvider);
+        }
         return LHPublicApiGrpc.newBlockingStub(getChannel(host, port));
     }
 
@@ -217,6 +243,40 @@ public class LHClientConfig extends ConfigBase {
             CLIENT_ID_KEY,
             "client-" + UUID.randomUUID().toString().replaceAll("-", "")
         );
+    }
+
+    public boolean isOauth() {
+        String clientId = getOrSetDefault(OAUTH_CLIENT_ID_KEY, null);
+        String clientSecret = getOrSetDefault(OAUTH_CLIENT_SECRET_KEY, null);
+        String authServer = getOrSetDefault(OAUTH_AUTHORIZATION_SERVER_KEY, null);
+
+        if (clientId == null && clientSecret == null && authServer == null) {
+            log.info("OAuth is disable");
+            return false;
+        }
+
+        log.info("OAuth is enable");
+
+        if (oauthConfig == null) {
+            oauthConfig =
+                OAuthConfig
+                    .builder()
+                    .authorizationServer(URI.create(authServer))
+                    .clientId(clientId)
+                    .clientSecret(clientSecret)
+                    .build();
+        }
+
+        if (oauthClient == null) {
+            oauthClient = new OAuthClient(oauthConfig);
+        }
+
+        if (oauthCredentialsProvider == null) {
+            oauthCredentialsProvider = new OAuthCredentialsProvider(oauthClient);
+        }
+
+        log.info("OAuth initialized");
+        return true;
     }
 
     @Override

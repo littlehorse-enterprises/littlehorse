@@ -133,7 +133,7 @@ public class BackendInternalComms implements Closeable {
         } else {
             builder =
                 Grpc.newServerBuilderForPort(
-                    config.getInternalAdvertisedPort(),
+                    config.getInternalBindPort(),
                     security.build()
                 );
         }

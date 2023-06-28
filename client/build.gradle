@@ -1,11 +1,7 @@
 plugins {
-    // Because this is going to be a java library
     id 'java-library'
-
-    // And we need to publish it.
     id 'maven-publish'
-
-    // code analysis
+    id 'io.freefair.lombok' version '8.0.1'
     id 'org.owasp.dependencycheck' version '8.2.1'
     id 'org.sonarqube' version '4.2.1.3168'
 }
@@ -53,6 +49,9 @@ dependencies {
 
     // Utils
     implementation 'org.apache.commons:commons-lang3:3.12.0'
+
+    // OAuth
+    implementation 'com.nimbusds:oauth2-oidc-sdk:10.9.2'
 
     // JSONPath
     api 'com.fasterxml.jackson.core:jackson-databind:2.15.2'

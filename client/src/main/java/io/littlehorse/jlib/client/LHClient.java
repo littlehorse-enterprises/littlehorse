@@ -66,7 +66,7 @@ public class LHClient {
     private LHPublicApiBlockingStub client;
 
     public LHClient(Properties props) {
-        config = new LHClientConfig(props);
+        this.config = new LHClientConfig(props);
     }
 
     public LHClient(LHClientConfig config) {

@@ -1,15 +1,21 @@
-package io.littlehorse.server.auth;
+package io.littlehorse.jlib.common.auth;
 
+import com.nimbusds.oauth2.sdk.AccessTokenResponse;
+import com.nimbusds.oauth2.sdk.ClientCredentialsGrant;
 import com.nimbusds.oauth2.sdk.GeneralException;
 import com.nimbusds.oauth2.sdk.ParseException;
+import com.nimbusds.oauth2.sdk.Scope;
 import com.nimbusds.oauth2.sdk.TokenIntrospectionRequest;
 import com.nimbusds.oauth2.sdk.TokenIntrospectionResponse;
 import com.nimbusds.oauth2.sdk.TokenIntrospectionSuccessResponse;
+import com.nimbusds.oauth2.sdk.TokenRequest;
+import com.nimbusds.oauth2.sdk.TokenResponse;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthentication;
 import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
 import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.id.Issuer;
+import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import java.io.IOException;
@@ -35,7 +41,36 @@ public class OAuthClient {
                 );
         } catch (GeneralException | IOException e) {
             log.error(e.getMessage(), e);
-            throw new UnexpectedAuthorizationServerException(e);
+            throw new AuthorizationServerException(e);
+        }
+    }
+
+    public TokenStatus getAccessToken() {
+        try {
+            TokenRequest request = new TokenRequest(
+                providerMetadata.getTokenEndpointURI(),
+                getCredentials(),
+                new ClientCredentialsGrant(),
+                new Scope("openid")
+            );
+
+            TokenResponse response = TokenResponse.parse(
+                request.toHTTPRequest().send()
+            );
+
+            if (!response.indicatesSuccess()) {
+                throw new AuthorizationServerException(
+                    "Error getting the token status: " +
+                    response.toErrorResponse().getErrorObject()
+                );
+            }
+
+            AccessTokenResponse successResponse = response.toSuccessResponse();
+            AccessToken accessToken = successResponse.getTokens().getAccessToken();
+            return introspect(accessToken.getValue());
+        } catch (ParseException | IOException e) {
+            log.error(e.getMessage(), e);
+            throw new AuthorizationServerException(e);
         }
     }
 
@@ -52,7 +87,7 @@ public class OAuthClient {
             );
 
             if (!response.indicatesSuccess()) {
-                throw new UnexpectedAuthorizationServerException(
+                throw new AuthorizationServerException(
                     "Error getting the token status: " +
                     response.toErrorResponse().getErrorObject()
                 );
@@ -67,7 +102,7 @@ public class OAuthClient {
             return TokenStatus.builder().token(token).expiration(expiration).build();
         } catch (ParseException | IOException e) {
             log.error(e.getMessage(), e);
-            throw new UnexpectedAuthorizationServerException(e);
+            throw new AuthorizationServerException(e);
         }
     }
 

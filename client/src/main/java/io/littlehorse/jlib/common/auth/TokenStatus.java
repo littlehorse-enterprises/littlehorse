@@ -1,4 +1,4 @@
-package io.littlehorse.server.auth;
+package io.littlehorse.jlib.common.auth;
 
 import java.time.Instant;
 import lombok.Builder;

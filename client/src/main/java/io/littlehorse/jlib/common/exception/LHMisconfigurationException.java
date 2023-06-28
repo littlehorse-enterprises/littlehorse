@@ -1,4 +1,4 @@
-package io.littlehorse.common.exceptions;
+package io.littlehorse.jlib.common.exception;
 
 public class LHMisconfigurationException extends RuntimeException {
 

@@ -105,8 +105,8 @@ public class TestDriver {
 
     public static void main(String[] args) throws Exception {
         Properties props = getConfigProps();
-        LHClient client = new LHClient(props);
         LHWorkerConfig workerConfig = new LHWorkerConfig(props);
+        LHClient client = new LHClient(workerConfig);
 
         for (Class<? extends Test> testClass : TEST_CLASSES) {
             Test test = testClass
