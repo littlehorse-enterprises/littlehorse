@@ -89,7 +89,7 @@ export const MetadataSearch = () => {
         if(wfSpecBookmark){
             const wfSpecs = await fetchData('wfSpec', true, false)
             if(wfSpecs.status!='done'){
-                setWfSpecBookmark(wfSpecs.bookmark)
+                setWfSpecBookmark(wfSpecs?.bookmark)
                 setResults(prev => [...prev, ...wfSpecs.results.map((v:any) => ({...v, type:'WfSpec'}))])
             } 
         }
