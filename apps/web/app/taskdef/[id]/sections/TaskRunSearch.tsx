@@ -1,7 +1,8 @@
 "use client";
-import { Button, Label, LoadMoreButton, PerPage } from "ui"
+import { Button, Calendar, CalendarB, Label, LoadMoreButton, PerPage } from "ui"
 import { useEffect, useState } from "react"
 import { TaskRunSearchTable } from "../components/search/TaskRunSearchTable";
+import moment from "moment";
 
 export interface Result{
     wfRunId:string 
@@ -21,6 +22,9 @@ export const TaskRunSearch = ({id}:any) => {
     const [firstLoad, setFirstLoad] = useState(false)
     const [limit, setLimit] = useState(defaultLimit)
 
+    const [startDt, setStartDT] = useState<Date>(moment().startOf('day').toDate())
+    const [endDt, setEndDT] = useState<Date>(moment().toDate())
+
     const [errorBookmark, setErrorBookmark] = useState()
     const [completedBookmark, setCompletedBookmark] = useState()
     const [startingBookmark, setStartingBookmark] = useState()
@@ -36,7 +40,8 @@ export const TaskRunSearch = ({id}:any) => {
         if(type === "STARTING") bookmark = startingBookmark
         if(type === "RUNNING") bookmark = runningBookmark
 
-        const filters:any = { limit:useLimit? limit: allLimit }
+        const filters:any = { 
+            limit:useLimit? limit: allLimit}
         // if(prefix?.trim()) filters['prefix'] = prefix.trim().toLocaleLowerCase()
         if(paginate && bookmark) filters['bookmark'] = bookmark
         if(paginate && !bookmark) return {status:'done'}
@@ -46,7 +51,9 @@ export const TaskRunSearch = ({id}:any) => {
                 
                 statusAndTaskdef:{
                     status: type,
-                    taskDefName: id
+                    taskDefName: id,
+                    earliestStart:startDt,
+                    latestStart:endDt
                 },
                 ...filters
             }),
@@ -130,7 +137,6 @@ export const TaskRunSearch = ({id}:any) => {
             } 
         }
 
-
         setLoading(false)
     }
     const loadMore = async () => {
@@ -148,15 +154,18 @@ export const TaskRunSearch = ({id}:any) => {
         setLoading(false)
     }
 
-    const keyDownHandler = (e:React.KeyboardEvent<HTMLInputElement>) => {
-        clearTimeout(myTimeout)
-        if( e.key == 'Enter' ) return getMData()
-        myTimeout = setTimeout(getMData, keyDownDelay);
-    }
+    // const keyDownHandler = (e:React.KeyboardEvent<HTMLInputElement>) => {
+    //     clearTimeout(myTimeout)
+    //     if( e.key == 'Enter' ) return getMData()
+    //     myTimeout = setTimeout(getMData, keyDownDelay);
+    // }
 
     useEffect( () => {
         if(firstLoad) getMData()
     },[type])
+    useEffect( () => {
+        if(firstLoad) getMData()
+    },[startDt, endDt])
 
     useEffect( () => {
         if(!first) return
@@ -168,7 +177,11 @@ export const TaskRunSearch = ({id}:any) => {
         <div className="between">
             <h2>TaskRun search</h2> 
             <div className="btns btns-right">
-
+                <CalendarB
+                    changeEarlyDate={setStartDT} earlyDate={startDt}
+                    changeLastDate={setEndDT} lastDate={endDt}
+                />
+                <Label>STATUS:</Label>
                 <Button active={type === ''} onClick={() => setType("")}>All</Button>
                 <Button active={type === 'STARTING'} onClick={() => setType("STARTING")}>Starting</Button>
                 <Button active={type === 'RUNNING'} onClick={() => setType("RUNNING")}>Running</Button>

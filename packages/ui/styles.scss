@@ -54,7 +54,9 @@ h4{
     font-weight: normal;
     margin: 0px;
 }
-
+.mt10{
+    margin-top: 10px;
+}
 section{
     display: flex;
     padding: 16px;
@@ -133,7 +135,12 @@ article{
     width: 100%
 }
 
-
+.color-mild-light{
+    color: #9098A0;
+}
+.text-white{
+    color: #fff;
+}
 .w-10 {
     width: 2.5rem/* 40px */;
 }

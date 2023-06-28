@@ -12,13 +12,15 @@ const wl = [
 ]
 
 
-const Content = ({init, nextMonth, prevMonth, onApply,
+export const Content = ({init, nextMonth, prevMonth, onApply,
     selectDay,
     updateSelectedH, updateSelectedM,
+    updateEndSelectedH, updateEndSelectedM,
     selected, endSelected, type}:{
         init:any, nextMonth:any, prevMonth:any, onApply: () => void,
     selectDay:any,
     updateSelectedH:any, updateSelectedM:any,
+    updateEndSelectedH:any, updateEndSelectedM:any,
     selected:any, endSelected:any, type:any
     }) => {
     const [weeks, setWeeks] = useState<any[]>([])
@@ -98,7 +100,7 @@ const Content = ({init, nextMonth, prevMonth, onApply,
             ${day.afterPresent ? 'afterPresent' : ''}
             `} key={day.day}><div className="items-center justify-center">{day.day} {day.today && <div className="dot"></div>}</div></div>)}
         </div>)}
-        {type === 'DAYS_1' && <div onClick={onApply}>
+        {type === 'DAYS_1' && <div onClick={onApply} className="applyButton mt10">
             Apply range
         </div>}
       
@@ -106,55 +108,120 @@ const Content = ({init, nextMonth, prevMonth, onApply,
 
     </div>
 
-    {type != 'DAYS_1' && <div style={{padding:"10px", marginLeft:"10px", borderLeft:"1px solid #4D5461]"}}>
-        <div>
-            <select className="bg-slate-700" 
-                value={moment(selected).format('HH')} 
-                onChange={e => updateSelectedH(e.target.value)} 
-                >
-                <option>00</option>
-                <option>01</option>
-                <option>02</option>
-                <option>03</option>
-                <option>04</option>
-                <option>05</option>
-                <option>06</option>
-                <option>07</option>
-                <option>08</option>
-                <option>09</option>
-                <option>10</option>
-                <option>11</option>
-                <option>13</option>
-                <option>14</option>
-                <option>15</option>
-                <option>16</option>
-                <option>17</option>
-                <option>18</option>
-                <option>19</option>
-                <option>20</option>
-                <option>21</option>
-                <option>22</option>
-                <option>23</option>
-            </select>
-            <select className="bg-slate-700" disabled={type === 'HOURS_2'} 
-                value={type === 'HOURS_2' ? '00' : moment(selected).format('mm')} 
-                onChange={e => updateSelectedM(e.target.value)} 
-                >
-                <option>00</option>
-                <option>05</option>
-                <option>10</option>
-                <option>15</option>
-                <option>20</option>
-                <option>25</option>
-                <option>30</option>
-                <option>35</option>
-                <option>40</option>
-                <option>45</option>
-                <option>50</option>
-                <option>55</option>
-            </select>
+    {type != 'DAYS_1' && <div className="timePickerCanvas">
+        <div className="block" >
+            <div className="label">From</div>
+            <div className="monthAndYear">
+                <span className="day">{moment(selected).format('DD')}</span>
+                <span className="month">{moment(selected).format('MMMM')}</span>
+                <span className="year">{moment(selected).format('Y')}</span>
+            </div>
+            <div className="pickers">
+                <select 
+                    value={moment(selected).format('HH')} 
+                    onChange={e => updateSelectedH(e.target.value)} 
+                    >
+                    <option>00</option>
+                    <option>01</option>
+                    <option>02</option>
+                    <option>03</option>
+                    <option>04</option>
+                    <option>05</option>
+                    <option>06</option>
+                    <option>07</option>
+                    <option>08</option>
+                    <option>09</option>
+                    <option>10</option>
+                    <option>11</option>
+                    <option>13</option>
+                    <option>14</option>
+                    <option>15</option>
+                    <option>16</option>
+                    <option>17</option>
+                    <option>18</option>
+                    <option>19</option>
+                    <option>20</option>
+                    <option>21</option>
+                    <option>22</option>
+                    <option>23</option>
+                </select>
+                <div className="dots">:</div>
+                <select className="bg-slate-700" disabled={type === 'HOURS_2'} 
+                    value={type === 'HOURS_2' ? '00' : moment(selected).format('mm')} 
+                    onChange={e => updateSelectedM(e.target.value)} 
+                    >
+                    <option>00</option>
+                    <option>05</option>
+                    <option>10</option>
+                    <option>15</option>
+                    <option>20</option>
+                    <option>25</option>
+                    <option>30</option>
+                    <option>35</option>
+                    <option>40</option>
+                    <option>45</option>
+                    <option>50</option>
+                    <option>55</option>
+                </select>
+            </div>
         </div>
-        <button onClick={onApply}>Apply range</button>
+        <div className="block">
+            <div className="label">To</div>
+            <div className="monthAndYear">
+                <span className="day">{endSelected ? moment(endSelected ).format('DD') : moment(selected ).format('DD')}</span>
+                <span className="month">{endSelected ? moment(endSelected ).format('MMMM') : moment(selected ).format('MMMM')}</span>
+                <span className="year">{endSelected ? moment(endSelected ).format('Y') : moment(selected ).format('Y')}</span>
+            </div>
+            <div className="pickers">
+                <select 
+                    value={endSelected ? moment(endSelected ).format('HH') : moment(selected ).format('HH')} 
+                    onChange={e => updateEndSelectedH(e.target.value)} 
+                    >
+                    <option>00</option>
+                    <option>01</option>
+                    <option>02</option>
+                    <option>03</option>
+                    <option>04</option>
+                    <option>05</option>
+                    <option>06</option>
+                    <option>07</option>
+                    <option>08</option>
+                    <option>09</option>
+                    <option>10</option>
+                    <option>11</option>
+                    <option>13</option>
+                    <option>14</option>
+                    <option>15</option>
+                    <option>16</option>
+                    <option>17</option>
+                    <option>18</option>
+                    <option>19</option>
+                    <option>20</option>
+                    <option>21</option>
+                    <option>22</option>
+                    <option>23</option>
+                </select>
+                <div className="dots">:</div>
+                <select className="bg-slate-700" disabled={type === 'HOURS_2'} 
+                    value={type === 'HOURS_2' ? '00' : (endSelected ? moment(endSelected ).format('mm') : moment(selected ).format('mm'))} 
+                    onChange={e => updateEndSelectedM(e.target.value)} 
+                    >
+                    <option>00</option>
+                    <option>05</option>
+                    <option>10</option>
+                    <option>15</option>
+                    <option>20</option>
+                    <option>25</option>
+                    <option>30</option>
+                    <option>35</option>
+                    <option>40</option>
+                    <option>45</option>
+                    <option>50</option>
+                    <option>55</option>
+                </select>
+            </div>
+        </div>
+        <button className="applyButton " onClick={onApply}>Apply range</button>
     </div>}
 
     
@@ -175,6 +242,12 @@ export const CalendarCanvas = ({type, setEndDT, setStartDT, onApply, lastDate}:{
     const [selected, setSelected] = useState<Date | undefined>(lastDate)
     const [endSelected, setEndSelected] = useState<Date | undefined>()
     
+    const updateEndSelectedH = (H:string) => {
+        setEndSelected(endSelected ? moment(endSelected).set('hour',+H).toDate() : moment(selected).set('hour',+H).toDate() )
+    }
+    const updateEndSelectedM = (M:string) => {
+        setEndSelected(endSelected ? moment(endSelected).set('minute',+M).toDate() : moment(selected).set('minute',+M).toDate() )
+    }
     const updateSelectedH = (H:string) => {
         setSelected(moment(selected).set('hour',+H).toDate())
     }
@@ -203,6 +276,14 @@ export const CalendarCanvas = ({type, setEndDT, setStartDT, onApply, lastDate}:{
         }
        
     }
+
+    useEffect(()=> {
+        setEndDT(endSelected)
+    },[endSelected])
+    useEffect(()=> {
+        setStartDT(selected)
+    },[selected])
+    
     const nextMonth = () => {
         setDate(date => moment(date).add(1,'month').toDate())
     }
@@ -216,6 +297,8 @@ export const CalendarCanvas = ({type, setEndDT, setStartDT, onApply, lastDate}:{
             selectDay={selectDate}
             endSelected={endSelected}
             updateSelectedH={updateSelectedH}
+            updateEndSelectedM={updateEndSelectedM}
+            updateEndSelectedH={updateEndSelectedH}
             updateSelectedM={updateSelectedM}
             onApply={onApply}
         />
@@ -315,11 +398,11 @@ export const Calendar = ({
                         <div className="placeholder">Select date and time</div>
                     ) : (
                         <>{(!!startDt && !endDt) ? (
-                            <div className="text-slate-500">
+                            <div className="color-mild-light">
                                 <span className="text-white"> {moment(startDt).format(`MMM DD ${ttype.value === 'HOURS_2' ? 'HH:00' : '' } ${ttype.value === 'MINUTES_5' ? 'HH:mm' : '' } `)}</span> 
                             </div>
                         ) : (
-                            <div className="text-slate-500"> from 
+                            <div className="color-mild-light"> from 
                                 <span className="text-white"> {moment(startDt).format(`MMM DD ${ttype.value === 'HOURS_2' ? 'HH:00' : '' } ${ttype.value === 'MINUTES_5' ? 'HH:mm' : '' } `)}</span> 
                                 to 
                                 <span className="text-white"> {moment(endDt).format(`MMM DD ${ttype.value === 'HOURS_2' ? 'HH:00' : '' } ${ttype.value === 'MINUTES_5' ? 'HH:mm' : '' }`)}</span> 
