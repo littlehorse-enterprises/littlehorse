@@ -7,9 +7,8 @@ import io.littlehorse.common.model.objectId.TaskWorkerGroupId;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.TaskWorkerGroupPb;
 import io.littlehorse.jlib.common.proto.TaskWorkerMetadataPb;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import io.littlehorse.server.streamsimpl.storeinternals.GETableIndex;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class TaskWorkerGroup extends GETable<TaskWorkerGroupPb> {
@@ -24,6 +23,11 @@ public class TaskWorkerGroup extends GETable<TaskWorkerGroupPb> {
     public Date getCreatedAt() {
         if (createdAt == null) createdAt = new Date();
         return createdAt;
+    }
+
+    @Override
+    public List<GETableIndex> getIndexes() {
+        return new ArrayList<>();
     }
 
     @Override

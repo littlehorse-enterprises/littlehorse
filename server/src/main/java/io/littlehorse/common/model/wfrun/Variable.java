@@ -4,10 +4,19 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.objectId.VariableId;
+import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.VariablePb;
+import io.littlehorse.server.streamsimpl.storeinternals.GETableIndex;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.commons.lang3.tuple.Pair;
 
+@Getter
+@Setter
 public class Variable extends GETable<VariablePb> {
 
     public VariableValue value;
@@ -64,5 +73,32 @@ public class Variable extends GETable<VariablePb> {
 
     public String getPartitionKey() {
         return wfRunId;
+    }
+
+    @Override
+    public List<GETableIndex> getIndexes() {
+        return List.of(
+            new GETableIndex(
+                Variable.class,
+                List.of(
+                    Pair.of("name", geTable -> List.of(((Variable) geTable).name)),
+                    Pair.of(
+                        "wfSpecName",
+                        geTable -> List.of(((Variable) geTable).getWfSpec().getName())
+                    ),
+                    Pair.of(
+                        "wfSpecVersion",
+                        geTable ->
+                            List.of(
+                                LHUtil.toLHDbVersionFormat(
+                                    ((Variable) geTable).getWfSpec().version
+                                )
+                            )
+                    )
+                ),
+                variable -> ((Variable) variable).value.getValueTagPair() != null,
+                TagStorageTypePb.LOCAL
+            )
+        );
     }
 }

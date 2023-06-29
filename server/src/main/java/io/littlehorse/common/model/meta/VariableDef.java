@@ -4,7 +4,11 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.jlib.common.proto.VariableDefPb;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class VariableDef extends LHSerializable<VariableDefPb> {
 
     public VariableTypePb type;

@@ -7,13 +7,15 @@ import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.Variable;
-import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.NodeRunPb.NodeTypeCase;
+import io.littlehorse.server.streamsimpl.storeinternals.GETableIndex;
+import io.littlehorse.server.streamsimpl.storeinternals.GETableIndexRegistry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class TagUtils {
@@ -31,12 +33,11 @@ public class TagUtils {
                 return tag((WfSpec) thing);
             case NODE_RUN:
                 return tag((NodeRun) thing);
-            case WF_RUN:
-                return tag((WfRun) thing);
             case EXTERNAL_EVENT:
                 return tag((ExternalEvent) thing);
             case VARIABLE:
                 return tag((Variable) thing);
+            case WF_RUN:
             case TASK_WORKER_GROUP:
             case TASK_DEF_METRICS:
             case WF_SPEC_METRICS:
@@ -51,57 +52,19 @@ public class TagUtils {
 
     private static List<Tag> tag(ExternalEventDef thing) {
         return Arrays.asList(
-            new Tag(
-                thing,
-                TagStorageTypePb.LOCAL_UNCOUNTED,
-                Pair.of("name", thing.name)
-            )
+            new Tag(thing, TagStorageTypePb.LOCAL, Pair.of("name", thing.name))
         );
     }
 
     private static List<Tag> tag(TaskDef thing) {
         return Arrays.asList(
-            new Tag(
-                thing,
-                TagStorageTypePb.LOCAL_UNCOUNTED,
-                Pair.of("name", thing.name)
-            )
+            new Tag(thing, TagStorageTypePb.LOCAL, Pair.of("name", thing.name))
         );
     }
 
     private static List<Tag> tag(WfSpec thing) {
         return Arrays.asList(
-            new Tag(
-                thing,
-                TagStorageTypePb.LOCAL_UNCOUNTED,
-                Pair.of("name", thing.name)
-            )
-        );
-    }
-
-    private static List<Tag> tag(WfRun thing) {
-        return Arrays.asList(
-            new Tag(
-                thing,
-                TagStorageTypePb.LOCAL_UNCOUNTED,
-                Pair.of("wfSpecName", thing.wfSpecName),
-                Pair.of(
-                    "wfSpecVersion",
-                    LHUtil.toLHDbVersionFormat(thing.wfSpecVersion)
-                ),
-                Pair.of("status", thing.status.toString())
-            ),
-            new Tag(
-                thing,
-                TagStorageTypePb.LOCAL_UNCOUNTED,
-                Pair.of("wfSpecName", thing.wfSpecName),
-                Pair.of("status", thing.status.toString())
-            ),
-            new Tag(
-                thing,
-                TagStorageTypePb.LOCAL_UNCOUNTED,
-                Pair.of("wfSpecName", thing.wfSpecName)
-            )
+            new Tag(thing, TagStorageTypePb.LOCAL, Pair.of("name", thing.name))
         );
     }
 
@@ -113,7 +76,7 @@ public class TagUtils {
             return Arrays.asList(
                 new Tag(
                     thing,
-                    TagStorageTypePb.LOCAL_UNCOUNTED,
+                    TagStorageTypePb.LOCAL,
                     valuePair,
                     Pair.of("name", thing.name),
                     Pair.of("wfSpecName", spec.name),
@@ -136,7 +99,7 @@ public class TagUtils {
         out.add(
             new Tag(
                 thing,
-                TagStorageTypePb.LOCAL_UNCOUNTED,
+                TagStorageTypePb.LOCAL,
                 Pair.of("type", thing.type.toString()),
                 Pair.of("status", thing.status.toString())
             )
@@ -146,7 +109,7 @@ public class TagUtils {
             out.add(
                 new Tag(
                     thing,
-                    TagStorageTypePb.LOCAL_UNCOUNTED,
+                    TagStorageTypePb.LOCAL,
                     Pair.of("type", "EXTERNAL_EVENT"),
                     Pair.of(
                         "externalEventDefName",
@@ -158,7 +121,7 @@ public class TagUtils {
             out.add(
                 new Tag(
                     thing,
-                    TagStorageTypePb.LOCAL_UNCOUNTED,
+                    TagStorageTypePb.LOCAL,
                     Pair.of("taskDefName", thing.taskRun.taskDefName),
                     Pair.of("status", thing.status.toString())
                 )
@@ -166,7 +129,7 @@ public class TagUtils {
             out.add(
                 new Tag(
                     thing,
-                    TagStorageTypePb.LOCAL_UNCOUNTED,
+                    TagStorageTypePb.LOCAL,
                     Pair.of("taskDefName", thing.taskRun.taskDefName)
                 )
             );

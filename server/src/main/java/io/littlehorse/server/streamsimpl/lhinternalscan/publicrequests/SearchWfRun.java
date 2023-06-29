@@ -1,12 +1,17 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.objectId.WfRunId;
+import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.proto.AttributePb;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb;
 import io.littlehorse.common.proto.ScanResultTypePb;
+import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.SearchWfRunPb;
@@ -20,8 +25,14 @@ import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchWfRunReply;
+import io.littlehorse.server.streamsimpl.storeinternals.GETableIndex;
+import io.littlehorse.server.streamsimpl.storeinternals.GETableIndexRegistry;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
+import io.littlehorse.server.streamsimpl.storeinternals.index.TagUtils;
+import java.util.Arrays;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.utils.CollectionUtils;
 
 @Slf4j
 public class SearchWfRun
@@ -99,63 +110,102 @@ public class SearchWfRun
     }
 
     public InternalScan startInternalSearch(LHGlobalMetaStores stores) {
+        return startLocalInternalSearch();
+    }
+
+    private List<String> searchAttributes() {
+        switch (type) {
+            case STATUS_AND_SPEC:
+                return Arrays.asList("wfSpecName", "status", "wfSpecVersion");
+            case NAME:
+                return Arrays.asList("wfSpecName");
+            case STATUS_AND_NAME:
+                return Arrays.asList("wfSpecName", "status");
+            default:
+                throw new RuntimeException("not possible");
+        }
+    }
+
+    private InternalScan startLocalInternalSearch() {
         InternalScan out = new InternalScan();
-        out.storeName = ServerTopology.CORE_STORE;
-        out.resultType = ScanResultTypePb.OBJECT_ID;
+        GETableIndex getableIndex = GETableIndexRegistry
+            .getInstance()
+            .findConfigurationForAttributes(WfRun.class, searchAttributes());
+        List<Attribute> attributes = buildTagAttributes();
+        // Converting to PB since this is a requirement for InternalScan#setLocalTagPrefixScan
+        List<AttributePb> attributePbs = attributes
+            .stream()
+            .map(attribute -> attribute.toProto().build())
+            .toList();
+        if (getableIndex.getTagStorageTypePb() == TagStorageTypePb.LOCAL) {
+            out.setStoreName(ServerTopology.CORE_STORE);
+            out.setResultType(ScanResultTypePb.OBJECT_ID);
+            out.setType(ScanBoundaryCase.LOCAL_TAG_PREFIX_SCAN);
 
+            TagPrefixScanPb.Builder prefixScanBuilder = TagPrefixScanPb
+                .newBuilder()
+                .addAllAttributes(attributePbs);
+
+            out.setLocalTagPrefixScan(prefixScanBuilder.build());
+            if (statusAndSpec != null) {
+                if (statusAndSpec.hasEarliestStart()) {
+                    prefixScanBuilder.setEarliestCreateTime(
+                        statusAndSpec.getEarliestStart()
+                    );
+                }
+                if (statusAndSpec.hasLatestStart()) {
+                    prefixScanBuilder.setLatestCreateTime(
+                        statusAndSpec.getLatestStart()
+                    );
+                }
+            }
+            return out;
+        } else {
+            // REMOTE_UNCOUNTED
+            out.setStoreName(ServerTopology.CORE_REPARTITION_STORE);
+            out.setResultType(ScanResultTypePb.OBJECT_ID);
+            out.setType(ScanBoundaryCase.REMOTE_TAG_PREFIX_SCAN);
+            RemoteTagPrefixScanPb remoteTagBuilder = RemoteTagPrefixScanPb
+                .newBuilder()
+                .addAllAttributes(attributePbs)
+                .build();
+            out.setRemoteTagPrefixScanPb(remoteTagBuilder);
+            out.setPartitionKey(getableIndex.getPartitionKeyForAttrs(attributes));
+            return out;
+        }
+    }
+
+    private List<Attribute> buildTagAttributes() {
         if (type == WfrunCriteriaCase.STATUS_AND_SPEC) {
-            out.type = ScanBoundaryCase.LOCAL_TAG_PREFIX_SCAN;
-            TagPrefixScanPb.Builder prefixScanBuilder = TagPrefixScanPb
-                .newBuilder()
-                .addAttributes(
-                    new Attribute("wfSpecName", statusAndSpec.getWfSpecName())
-                        .toProto()
-                )
-                .addAttributes(
-                    new Attribute(
-                        "wfSpecVersion",
-                        LHUtil.toLHDbVersionFormat(statusAndSpec.getWfSpecVersion())
-                    )
-                        .toProto()
-                )
-                .addAttributes(
-                    new Attribute("status", statusAndSpec.getStatus().toString())
-                        .toProto()
-                );
-
-            if (statusAndSpec.hasEarliestStart()) {
-                prefixScanBuilder.setEarliestCreateTime(
-                    statusAndSpec.getEarliestStart()
-                );
-            }
-            if (statusAndSpec.hasLatestStart()) {
-                prefixScanBuilder.setLatestCreateTime(statusAndSpec.getLatestStart());
-            }
-            out.localTagPrefixScan = prefixScanBuilder.build();
+            return buildStatusAndSpecAttributesPb();
         } else if (type == WfrunCriteriaCase.NAME) {
-            out.type = ScanBoundaryCase.LOCAL_TAG_PREFIX_SCAN;
-            TagPrefixScanPb.Builder prefixScanBuilder = TagPrefixScanPb
-                .newBuilder()
-                .addAttributes(
-                    new Attribute("wfSpecName", namePb.getWfSpecName()).toProto()
-                );
-            out.localTagPrefixScan = prefixScanBuilder.build();
+            return buildNameAttributePb();
         } else if (type == WfrunCriteriaCase.STATUS_AND_NAME) {
-            out.type = ScanBoundaryCase.LOCAL_TAG_PREFIX_SCAN;
-            TagPrefixScanPb.Builder prefixScanBuilder = TagPrefixScanPb
-                .newBuilder()
-                .addAttributes(
-                    new Attribute("wfSpecName", statusAndName.getWfSpecName())
-                        .toProto()
-                )
-                .addAttributes(
-                    new Attribute("status", statusAndName.getStatus().toString())
-                        .toProto()
-                );
-            out.localTagPrefixScan = prefixScanBuilder.build();
+            return buildStatusAndNameAttributesPb();
         } else {
             throw new RuntimeException("Not possible or unimplemented");
         }
-        return out;
+    }
+
+    private List<Attribute> buildStatusAndNameAttributesPb() {
+        return Arrays.asList(
+            new Attribute("wfSpecName", statusAndName.getWfSpecName()),
+            new Attribute("status", statusAndName.getStatus().toString())
+        );
+    }
+
+    private List<Attribute> buildNameAttributePb() {
+        return List.of(new Attribute("wfSpecName", namePb.getWfSpecName()));
+    }
+
+    private List<Attribute> buildStatusAndSpecAttributesPb() {
+        return Arrays.asList(
+            new Attribute("wfSpecName", statusAndSpec.getWfSpecName()),
+            new Attribute("status", statusAndSpec.getStatus().toString()),
+            new Attribute(
+                "wfSpecVersion",
+                LHUtil.toLHDbVersionFormat(statusAndSpec.getWfSpecVersion())
+            )
+        );
     }
 }

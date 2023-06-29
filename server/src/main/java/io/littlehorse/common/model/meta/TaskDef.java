@@ -3,14 +3,18 @@ package io.littlehorse.common.model.meta;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.objectId.TaskDefId;
+import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.TaskDefIdPb;
 import io.littlehorse.jlib.common.proto.TaskDefPb;
 import io.littlehorse.jlib.common.proto.VariableDefPb;
+import io.littlehorse.server.streamsimpl.storeinternals.GETableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class TaskDef extends GETable<TaskDefPb> {
 
@@ -25,6 +29,11 @@ public class TaskDef extends GETable<TaskDefPb> {
     public Date getCreatedAt() {
         if (createdAt == null) createdAt = new Date();
         return createdAt;
+    }
+
+    @Override
+    public List<GETableIndex> getIndexes() {
+        return new ArrayList<>();
     }
 
     public String getName() {

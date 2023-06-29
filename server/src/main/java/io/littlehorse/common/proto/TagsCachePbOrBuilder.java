@@ -8,27 +8,26 @@ public interface TagsCachePbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>repeated string tag_ids = 1;</code>
-   * @return A list containing the tagIds.
+   * <code>repeated .littlehorse.TagsCachePb.CachedTagPb cached_tags = 1;</code>
    */
-  java.util.List<java.lang.String>
-      getTagIdsList();
+  java.util.List<io.littlehorse.common.proto.TagsCachePb.CachedTagPb> 
+      getCachedTagsList();
   /**
-   * <code>repeated string tag_ids = 1;</code>
-   * @return The count of tagIds.
+   * <code>repeated .littlehorse.TagsCachePb.CachedTagPb cached_tags = 1;</code>
    */
-  int getTagIdsCount();
+  io.littlehorse.common.proto.TagsCachePb.CachedTagPb getCachedTags(int index);
   /**
-   * <code>repeated string tag_ids = 1;</code>
-   * @param index The index of the element to return.
-   * @return The tagIds at the given index.
+   * <code>repeated .littlehorse.TagsCachePb.CachedTagPb cached_tags = 1;</code>
    */
-  java.lang.String getTagIds(int index);
+  int getCachedTagsCount();
   /**
-   * <code>repeated string tag_ids = 1;</code>
-   * @param index The index of the value to return.
-   * @return The bytes of the tagIds at the given index.
+   * <code>repeated .littlehorse.TagsCachePb.CachedTagPb cached_tags = 1;</code>
    */
-  com.google.protobuf.ByteString
-      getTagIdsBytes(int index);
+  java.util.List<? extends io.littlehorse.common.proto.TagsCachePb.CachedTagPbOrBuilder> 
+      getCachedTagsOrBuilderList();
+  /**
+   * <code>repeated .littlehorse.TagsCachePb.CachedTagPb cached_tags = 1;</code>
+   */
+  io.littlehorse.common.proto.TagsCachePb.CachedTagPbOrBuilder getCachedTagsOrBuilder(
+      int index);
 }

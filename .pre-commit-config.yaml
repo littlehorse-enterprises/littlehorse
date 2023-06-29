@@ -5,9 +5,9 @@ repos:
       rev: v4.4.0
       hooks:
           - id: trailing-whitespace
-            exclude: (server|client)/src/main/java/io/littlehorse/common/proto/.*
+            exclude: (server|client)/src/main/java/io/littlehorse(/jlib)?/common/proto/.*
           - id: end-of-file-fixer
-            exclude: (server|client)/src/main/java/io/littlehorse/common/proto/.*
+            exclude: (server|client)/src/main/java/io/littlehorse(/jlib)?/common/proto/.*
           - id: check-yaml
           - id: check-added-large-files
     - repo: https://github.com/shellcheck-py/shellcheck-py

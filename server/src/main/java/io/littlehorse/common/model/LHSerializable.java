@@ -68,6 +68,7 @@ public abstract class LHSerializable<T extends Message> {
             out.initFrom(proto);
             return out;
         } catch (Exception exn) {
+            log.error(exn.getMessage(), exn);
             throw new LHSerdeError(
                 exn,
                 "unable to process bytes for " + cls.getName()

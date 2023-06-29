@@ -52,6 +52,8 @@ private static final long serialVersionUID = 0L;
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
     TASK_METRIC_UPDATE(3),
     WF_METRIC_UPDATE(4),
+    CREATE_REMOTE_TAG(5),
+    REMOVE_REMOTE_TAG(6),
     REPARTITIONCOMMAND_NOT_SET(0);
     private final int value;
     private RepartitionCommandCase(int value) {
@@ -71,6 +73,8 @@ private static final long serialVersionUID = 0L;
       switch (value) {
         case 3: return TASK_METRIC_UPDATE;
         case 4: return WF_METRIC_UPDATE;
+        case 5: return CREATE_REMOTE_TAG;
+        case 6: return REMOVE_REMOTE_TAG;
         case 0: return REPARTITIONCOMMAND_NOT_SET;
         default: return null;
       }
@@ -221,6 +225,68 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.WfMetricUpdatePb.getDefaultInstance();
   }
 
+  public static final int CREATE_REMOTE_TAG_FIELD_NUMBER = 5;
+  /**
+   * <code>.littlehorse.CreateRemoteTagPb create_remote_tag = 5;</code>
+   * @return Whether the createRemoteTag field is set.
+   */
+  @java.lang.Override
+  public boolean hasCreateRemoteTag() {
+    return repartitionCommandCase_ == 5;
+  }
+  /**
+   * <code>.littlehorse.CreateRemoteTagPb create_remote_tag = 5;</code>
+   * @return The createRemoteTag.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.CreateRemoteTagPb getCreateRemoteTag() {
+    if (repartitionCommandCase_ == 5) {
+       return (io.littlehorse.common.proto.CreateRemoteTagPb) repartitionCommand_;
+    }
+    return io.littlehorse.common.proto.CreateRemoteTagPb.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.CreateRemoteTagPb create_remote_tag = 5;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.CreateRemoteTagPbOrBuilder getCreateRemoteTagOrBuilder() {
+    if (repartitionCommandCase_ == 5) {
+       return (io.littlehorse.common.proto.CreateRemoteTagPb) repartitionCommand_;
+    }
+    return io.littlehorse.common.proto.CreateRemoteTagPb.getDefaultInstance();
+  }
+
+  public static final int REMOVE_REMOTE_TAG_FIELD_NUMBER = 6;
+  /**
+   * <code>.littlehorse.RemoveRemoteTagPb remove_remote_tag = 6;</code>
+   * @return Whether the removeRemoteTag field is set.
+   */
+  @java.lang.Override
+  public boolean hasRemoveRemoteTag() {
+    return repartitionCommandCase_ == 6;
+  }
+  /**
+   * <code>.littlehorse.RemoveRemoteTagPb remove_remote_tag = 6;</code>
+   * @return The removeRemoteTag.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.RemoveRemoteTagPb getRemoveRemoteTag() {
+    if (repartitionCommandCase_ == 6) {
+       return (io.littlehorse.common.proto.RemoveRemoteTagPb) repartitionCommand_;
+    }
+    return io.littlehorse.common.proto.RemoveRemoteTagPb.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.RemoveRemoteTagPb remove_remote_tag = 6;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.RemoveRemoteTagPbOrBuilder getRemoveRemoteTagOrBuilder() {
+    if (repartitionCommandCase_ == 6) {
+       return (io.littlehorse.common.proto.RemoveRemoteTagPb) repartitionCommand_;
+    }
+    return io.littlehorse.common.proto.RemoveRemoteTagPb.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -247,6 +313,12 @@ private static final long serialVersionUID = 0L;
     if (repartitionCommandCase_ == 4) {
       output.writeMessage(4, (io.littlehorse.common.proto.WfMetricUpdatePb) repartitionCommand_);
     }
+    if (repartitionCommandCase_ == 5) {
+      output.writeMessage(5, (io.littlehorse.common.proto.CreateRemoteTagPb) repartitionCommand_);
+    }
+    if (repartitionCommandCase_ == 6) {
+      output.writeMessage(6, (io.littlehorse.common.proto.RemoveRemoteTagPb) repartitionCommand_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -270,6 +342,14 @@ private static final long serialVersionUID = 0L;
     if (repartitionCommandCase_ == 4) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, (io.littlehorse.common.proto.WfMetricUpdatePb) repartitionCommand_);
+    }
+    if (repartitionCommandCase_ == 5) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(5, (io.littlehorse.common.proto.CreateRemoteTagPb) repartitionCommand_);
+    }
+    if (repartitionCommandCase_ == 6) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(6, (io.littlehorse.common.proto.RemoveRemoteTagPb) repartitionCommand_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -306,6 +386,14 @@ private static final long serialVersionUID = 0L;
         if (!getWfMetricUpdate()
             .equals(other.getWfMetricUpdate())) return false;
         break;
+      case 5:
+        if (!getCreateRemoteTag()
+            .equals(other.getCreateRemoteTag())) return false;
+        break;
+      case 6:
+        if (!getRemoveRemoteTag()
+            .equals(other.getRemoveRemoteTag())) return false;
+        break;
       case 0:
       default:
     }
@@ -336,6 +424,14 @@ private static final long serialVersionUID = 0L;
       case 4:
         hash = (37 * hash) + WF_METRIC_UPDATE_FIELD_NUMBER;
         hash = (53 * hash) + getWfMetricUpdate().hashCode();
+        break;
+      case 5:
+        hash = (37 * hash) + CREATE_REMOTE_TAG_FIELD_NUMBER;
+        hash = (53 * hash) + getCreateRemoteTag().hashCode();
+        break;
+      case 6:
+        hash = (37 * hash) + REMOVE_REMOTE_TAG_FIELD_NUMBER;
+        hash = (53 * hash) + getRemoveRemoteTag().hashCode();
         break;
       case 0:
       default:
@@ -481,6 +577,12 @@ private static final long serialVersionUID = 0L;
       if (wfMetricUpdateBuilder_ != null) {
         wfMetricUpdateBuilder_.clear();
       }
+      if (createRemoteTagBuilder_ != null) {
+        createRemoteTagBuilder_.clear();
+      }
+      if (removeRemoteTagBuilder_ != null) {
+        removeRemoteTagBuilder_.clear();
+      }
       repartitionCommandCase_ = 0;
       repartitionCommand_ = null;
       return this;
@@ -540,6 +642,14 @@ private static final long serialVersionUID = 0L;
       if (repartitionCommandCase_ == 4 &&
           wfMetricUpdateBuilder_ != null) {
         result.repartitionCommand_ = wfMetricUpdateBuilder_.build();
+      }
+      if (repartitionCommandCase_ == 5 &&
+          createRemoteTagBuilder_ != null) {
+        result.repartitionCommand_ = createRemoteTagBuilder_.build();
+      }
+      if (repartitionCommandCase_ == 6 &&
+          removeRemoteTagBuilder_ != null) {
+        result.repartitionCommand_ = removeRemoteTagBuilder_.build();
       }
     }
 
@@ -604,6 +714,14 @@ private static final long serialVersionUID = 0L;
           mergeWfMetricUpdate(other.getWfMetricUpdate());
           break;
         }
+        case CREATE_REMOTE_TAG: {
+          mergeCreateRemoteTag(other.getCreateRemoteTag());
+          break;
+        }
+        case REMOVE_REMOTE_TAG: {
+          mergeRemoveRemoteTag(other.getRemoveRemoteTag());
+          break;
+        }
         case REPARTITIONCOMMAND_NOT_SET: {
           break;
         }
@@ -660,6 +778,20 @@ private static final long serialVersionUID = 0L;
               repartitionCommandCase_ = 4;
               break;
             } // case 34
+            case 42: {
+              input.readMessage(
+                  getCreateRemoteTagFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              repartitionCommandCase_ = 5;
+              break;
+            } // case 42
+            case 50: {
+              input.readMessage(
+                  getRemoveRemoteTagFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              repartitionCommandCase_ = 6;
+              break;
+            } // case 50
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1172,6 +1304,290 @@ private static final long serialVersionUID = 0L;
       repartitionCommandCase_ = 4;
       onChanged();
       return wfMetricUpdateBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.CreateRemoteTagPb, io.littlehorse.common.proto.CreateRemoteTagPb.Builder, io.littlehorse.common.proto.CreateRemoteTagPbOrBuilder> createRemoteTagBuilder_;
+    /**
+     * <code>.littlehorse.CreateRemoteTagPb create_remote_tag = 5;</code>
+     * @return Whether the createRemoteTag field is set.
+     */
+    @java.lang.Override
+    public boolean hasCreateRemoteTag() {
+      return repartitionCommandCase_ == 5;
+    }
+    /**
+     * <code>.littlehorse.CreateRemoteTagPb create_remote_tag = 5;</code>
+     * @return The createRemoteTag.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.CreateRemoteTagPb getCreateRemoteTag() {
+      if (createRemoteTagBuilder_ == null) {
+        if (repartitionCommandCase_ == 5) {
+          return (io.littlehorse.common.proto.CreateRemoteTagPb) repartitionCommand_;
+        }
+        return io.littlehorse.common.proto.CreateRemoteTagPb.getDefaultInstance();
+      } else {
+        if (repartitionCommandCase_ == 5) {
+          return createRemoteTagBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.CreateRemoteTagPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.CreateRemoteTagPb create_remote_tag = 5;</code>
+     */
+    public Builder setCreateRemoteTag(io.littlehorse.common.proto.CreateRemoteTagPb value) {
+      if (createRemoteTagBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        repartitionCommand_ = value;
+        onChanged();
+      } else {
+        createRemoteTagBuilder_.setMessage(value);
+      }
+      repartitionCommandCase_ = 5;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.CreateRemoteTagPb create_remote_tag = 5;</code>
+     */
+    public Builder setCreateRemoteTag(
+        io.littlehorse.common.proto.CreateRemoteTagPb.Builder builderForValue) {
+      if (createRemoteTagBuilder_ == null) {
+        repartitionCommand_ = builderForValue.build();
+        onChanged();
+      } else {
+        createRemoteTagBuilder_.setMessage(builderForValue.build());
+      }
+      repartitionCommandCase_ = 5;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.CreateRemoteTagPb create_remote_tag = 5;</code>
+     */
+    public Builder mergeCreateRemoteTag(io.littlehorse.common.proto.CreateRemoteTagPb value) {
+      if (createRemoteTagBuilder_ == null) {
+        if (repartitionCommandCase_ == 5 &&
+            repartitionCommand_ != io.littlehorse.common.proto.CreateRemoteTagPb.getDefaultInstance()) {
+          repartitionCommand_ = io.littlehorse.common.proto.CreateRemoteTagPb.newBuilder((io.littlehorse.common.proto.CreateRemoteTagPb) repartitionCommand_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          repartitionCommand_ = value;
+        }
+        onChanged();
+      } else {
+        if (repartitionCommandCase_ == 5) {
+          createRemoteTagBuilder_.mergeFrom(value);
+        } else {
+          createRemoteTagBuilder_.setMessage(value);
+        }
+      }
+      repartitionCommandCase_ = 5;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.CreateRemoteTagPb create_remote_tag = 5;</code>
+     */
+    public Builder clearCreateRemoteTag() {
+      if (createRemoteTagBuilder_ == null) {
+        if (repartitionCommandCase_ == 5) {
+          repartitionCommandCase_ = 0;
+          repartitionCommand_ = null;
+          onChanged();
+        }
+      } else {
+        if (repartitionCommandCase_ == 5) {
+          repartitionCommandCase_ = 0;
+          repartitionCommand_ = null;
+        }
+        createRemoteTagBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.CreateRemoteTagPb create_remote_tag = 5;</code>
+     */
+    public io.littlehorse.common.proto.CreateRemoteTagPb.Builder getCreateRemoteTagBuilder() {
+      return getCreateRemoteTagFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.CreateRemoteTagPb create_remote_tag = 5;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.CreateRemoteTagPbOrBuilder getCreateRemoteTagOrBuilder() {
+      if ((repartitionCommandCase_ == 5) && (createRemoteTagBuilder_ != null)) {
+        return createRemoteTagBuilder_.getMessageOrBuilder();
+      } else {
+        if (repartitionCommandCase_ == 5) {
+          return (io.littlehorse.common.proto.CreateRemoteTagPb) repartitionCommand_;
+        }
+        return io.littlehorse.common.proto.CreateRemoteTagPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.CreateRemoteTagPb create_remote_tag = 5;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.CreateRemoteTagPb, io.littlehorse.common.proto.CreateRemoteTagPb.Builder, io.littlehorse.common.proto.CreateRemoteTagPbOrBuilder> 
+        getCreateRemoteTagFieldBuilder() {
+      if (createRemoteTagBuilder_ == null) {
+        if (!(repartitionCommandCase_ == 5)) {
+          repartitionCommand_ = io.littlehorse.common.proto.CreateRemoteTagPb.getDefaultInstance();
+        }
+        createRemoteTagBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.CreateRemoteTagPb, io.littlehorse.common.proto.CreateRemoteTagPb.Builder, io.littlehorse.common.proto.CreateRemoteTagPbOrBuilder>(
+                (io.littlehorse.common.proto.CreateRemoteTagPb) repartitionCommand_,
+                getParentForChildren(),
+                isClean());
+        repartitionCommand_ = null;
+      }
+      repartitionCommandCase_ = 5;
+      onChanged();
+      return createRemoteTagBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.RemoveRemoteTagPb, io.littlehorse.common.proto.RemoveRemoteTagPb.Builder, io.littlehorse.common.proto.RemoveRemoteTagPbOrBuilder> removeRemoteTagBuilder_;
+    /**
+     * <code>.littlehorse.RemoveRemoteTagPb remove_remote_tag = 6;</code>
+     * @return Whether the removeRemoteTag field is set.
+     */
+    @java.lang.Override
+    public boolean hasRemoveRemoteTag() {
+      return repartitionCommandCase_ == 6;
+    }
+    /**
+     * <code>.littlehorse.RemoveRemoteTagPb remove_remote_tag = 6;</code>
+     * @return The removeRemoteTag.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.RemoveRemoteTagPb getRemoveRemoteTag() {
+      if (removeRemoteTagBuilder_ == null) {
+        if (repartitionCommandCase_ == 6) {
+          return (io.littlehorse.common.proto.RemoveRemoteTagPb) repartitionCommand_;
+        }
+        return io.littlehorse.common.proto.RemoveRemoteTagPb.getDefaultInstance();
+      } else {
+        if (repartitionCommandCase_ == 6) {
+          return removeRemoteTagBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.RemoveRemoteTagPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.RemoveRemoteTagPb remove_remote_tag = 6;</code>
+     */
+    public Builder setRemoveRemoteTag(io.littlehorse.common.proto.RemoveRemoteTagPb value) {
+      if (removeRemoteTagBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        repartitionCommand_ = value;
+        onChanged();
+      } else {
+        removeRemoteTagBuilder_.setMessage(value);
+      }
+      repartitionCommandCase_ = 6;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.RemoveRemoteTagPb remove_remote_tag = 6;</code>
+     */
+    public Builder setRemoveRemoteTag(
+        io.littlehorse.common.proto.RemoveRemoteTagPb.Builder builderForValue) {
+      if (removeRemoteTagBuilder_ == null) {
+        repartitionCommand_ = builderForValue.build();
+        onChanged();
+      } else {
+        removeRemoteTagBuilder_.setMessage(builderForValue.build());
+      }
+      repartitionCommandCase_ = 6;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.RemoveRemoteTagPb remove_remote_tag = 6;</code>
+     */
+    public Builder mergeRemoveRemoteTag(io.littlehorse.common.proto.RemoveRemoteTagPb value) {
+      if (removeRemoteTagBuilder_ == null) {
+        if (repartitionCommandCase_ == 6 &&
+            repartitionCommand_ != io.littlehorse.common.proto.RemoveRemoteTagPb.getDefaultInstance()) {
+          repartitionCommand_ = io.littlehorse.common.proto.RemoveRemoteTagPb.newBuilder((io.littlehorse.common.proto.RemoveRemoteTagPb) repartitionCommand_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          repartitionCommand_ = value;
+        }
+        onChanged();
+      } else {
+        if (repartitionCommandCase_ == 6) {
+          removeRemoteTagBuilder_.mergeFrom(value);
+        } else {
+          removeRemoteTagBuilder_.setMessage(value);
+        }
+      }
+      repartitionCommandCase_ = 6;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.RemoveRemoteTagPb remove_remote_tag = 6;</code>
+     */
+    public Builder clearRemoveRemoteTag() {
+      if (removeRemoteTagBuilder_ == null) {
+        if (repartitionCommandCase_ == 6) {
+          repartitionCommandCase_ = 0;
+          repartitionCommand_ = null;
+          onChanged();
+        }
+      } else {
+        if (repartitionCommandCase_ == 6) {
+          repartitionCommandCase_ = 0;
+          repartitionCommand_ = null;
+        }
+        removeRemoteTagBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.RemoveRemoteTagPb remove_remote_tag = 6;</code>
+     */
+    public io.littlehorse.common.proto.RemoveRemoteTagPb.Builder getRemoveRemoteTagBuilder() {
+      return getRemoveRemoteTagFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.RemoveRemoteTagPb remove_remote_tag = 6;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.RemoveRemoteTagPbOrBuilder getRemoveRemoteTagOrBuilder() {
+      if ((repartitionCommandCase_ == 6) && (removeRemoteTagBuilder_ != null)) {
+        return removeRemoteTagBuilder_.getMessageOrBuilder();
+      } else {
+        if (repartitionCommandCase_ == 6) {
+          return (io.littlehorse.common.proto.RemoveRemoteTagPb) repartitionCommand_;
+        }
+        return io.littlehorse.common.proto.RemoveRemoteTagPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.RemoveRemoteTagPb remove_remote_tag = 6;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.common.proto.RemoveRemoteTagPb, io.littlehorse.common.proto.RemoveRemoteTagPb.Builder, io.littlehorse.common.proto.RemoveRemoteTagPbOrBuilder> 
+        getRemoveRemoteTagFieldBuilder() {
+      if (removeRemoteTagBuilder_ == null) {
+        if (!(repartitionCommandCase_ == 6)) {
+          repartitionCommand_ = io.littlehorse.common.proto.RemoveRemoteTagPb.getDefaultInstance();
+        }
+        removeRemoteTagBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.RemoveRemoteTagPb, io.littlehorse.common.proto.RemoveRemoteTagPb.Builder, io.littlehorse.common.proto.RemoveRemoteTagPbOrBuilder>(
+                (io.littlehorse.common.proto.RemoveRemoteTagPb) repartitionCommand_,
+                getParentForChildren(),
+                isClean());
+        repartitionCommand_ = null;
+      }
+      repartitionCommandCase_ = 6;
+      onChanged();
+      return removeRemoteTagBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

@@ -5,11 +5,19 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
 import io.littlehorse.jlib.common.exception.LHSerdeError;
+import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
+import io.littlehorse.server.streamsimpl.storeinternals.utils.LHIterKeyValue;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.LHKeyValueIterator;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
+import java.util.List;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
+import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
@@ -74,6 +82,33 @@ public class LHROStoreWrapper {
             cls,
             config
         );
+    }
+
+    public <T extends Storeable<?>> LHKeyValueIterator<T> prefixTagScan(
+        String prefix,
+        Class<T> cls
+    ) {
+        return new LHKeyValueIterator<>(
+            store.prefixScan(prefix, Serdes.String().serializer()),
+            cls,
+            config
+        );
+    }
+
+    public <T extends Storeable<?>> Stream<LHIterKeyValue<T>> prefixTagScanStream(
+        String prefix,
+        Class<T> cls
+    ) {
+        LHKeyValueIterator<T> iterator = new LHKeyValueIterator<>(
+            store.prefixScan("Tag/" + prefix, Serdes.String().serializer()),
+            cls,
+            config
+        );
+        var spliterator = Spliterators.spliteratorUnknownSize(
+            iterator,
+            Spliterator.ORDERED
+        );
+        return StreamSupport.stream(spliterator, false);
     }
 
     public <U extends Message, T extends Storeable<U>> T getLastFromPrefix(

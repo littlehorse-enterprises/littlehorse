@@ -1,10 +1,13 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
+import com.google.common.base.Strings;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.objectId.WfSpecId;
+import io.littlehorse.common.proto.AttributePb;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.InternalScanPb;
 import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.ScanResultTypePb;
@@ -23,6 +26,7 @@ public class SearchWfSpec
     extends PublicScanRequest<SearchWfSpecPb, SearchWfSpecReplyPb, WfSpecIdPb, WfSpecId, SearchWfSpecReply> {
 
     public String name;
+    public String taskDefName;
     public String prefix;
 
     public Class<SearchWfSpecPb> getProtoBaseClass() {
@@ -45,6 +49,7 @@ public class SearchWfSpec
         }
 
         if (p.hasName()) name = p.getName();
+        if (p.hasTaskDefName()) taskDefName = p.getTaskDefName();
         if (p.hasPrefix()) prefix = p.getPrefix();
     }
 
@@ -57,6 +62,7 @@ public class SearchWfSpec
             out.setLimit(limit);
         }
         if (name != null) out.setName(name);
+        if (taskDefName != null) out.setTaskDefName(taskDefName);
         if (prefix != null) out.setPrefix(prefix);
 
         return out;
@@ -90,6 +96,20 @@ public class SearchWfSpec
                     .newBuilder()
                     .setStartObjectId(prefix)
                     .setEndObjectId(prefix + "~")
+                    .build();
+        } else if (!Strings.isNullOrEmpty(taskDefName)) {
+            out.partitionKey = null;
+            out.type = ScanBoundaryCase.LOCAL_TAG_PREFIX_SCAN;
+            out.localTagPrefixScan =
+                InternalScanPb.TagPrefixScanPb
+                    .newBuilder()
+                    .addAttributes(
+                        AttributePb
+                            .newBuilder()
+                            .setKey("taskDef")
+                            .setVal(taskDefName)
+                            .build()
+                    )
                     .build();
         } else {
             // that means we want to search all wfSpecs

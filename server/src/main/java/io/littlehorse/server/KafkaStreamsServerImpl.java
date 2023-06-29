@@ -170,6 +170,7 @@ import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.Sear
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchVariableReply;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchWfRunReply;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchWfSpecReply;
+import io.littlehorse.server.streamsimpl.storeinternals.GETableIndexRegistry;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import io.littlehorse.server.streamsimpl.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streamsimpl.taskqueue.TaskQueueManager;
@@ -1120,6 +1121,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     public static void doMain(LHConfig config)
         throws IOException, InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
+        GETableIndexRegistry.getInstance();
         KafkaStreamsServerImpl server = new KafkaStreamsServerImpl(config);
         Runtime
             .getRuntime()

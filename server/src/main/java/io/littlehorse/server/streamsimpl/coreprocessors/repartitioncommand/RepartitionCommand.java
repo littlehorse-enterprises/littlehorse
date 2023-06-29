@@ -5,6 +5,8 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.RepartitionCommandPb;
 import io.littlehorse.common.proto.RepartitionCommandPb.RepartitionCommandCase;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
+import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.RemoveRemoteTag;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.TaskMetricUpdate;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.WfMetricUpdate;
 import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
@@ -19,6 +21,8 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
     public RepartitionCommandCase type;
     public TaskMetricUpdate taskMetricPartitionWindow;
     public WfMetricUpdate wfMetricPartitionWindow;
+    private CreateRemoteTag createRemoteTag;
+    private RemoveRemoteTag removeRemoteTag;
 
     public Class<RepartitionCommandPb> getProtoBaseClass() {
         return RepartitionCommandPb.class;
@@ -43,6 +47,12 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
         } else if (subCommand.getClass().equals(WfMetricUpdate.class)) {
             type = RepartitionCommandCase.WF_METRIC_UPDATE;
             wfMetricPartitionWindow = (WfMetricUpdate) subCommand;
+        } else if (subCommand.getClass().equals(CreateRemoteTag.class)) {
+            type = RepartitionCommandCase.CREATE_REMOTE_TAG;
+            createRemoteTag = (CreateRemoteTag) subCommand;
+        } else if (subCommand.getClass().equals(RemoveRemoteTag.class)) {
+            type = RepartitionCommandCase.REMOVE_REMOTE_TAG;
+            removeRemoteTag = (RemoveRemoteTag) subCommand;
         } else {
             throw new RuntimeException("Unknown class!");
         }
@@ -54,6 +64,10 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
                 return wfMetricPartitionWindow;
             case TASK_METRIC_UPDATE:
                 return taskMetricPartitionWindow;
+            case CREATE_REMOTE_TAG:
+                return createRemoteTag;
+            case REMOVE_REMOTE_TAG:
+                return removeRemoteTag;
             default:
                 throw new RuntimeException("Unrecognized!");
         }
@@ -74,6 +88,12 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
                 break;
             case WF_METRIC_UPDATE:
                 out.setWfMetricUpdate(wfMetricPartitionWindow.toProto());
+                break;
+            case CREATE_REMOTE_TAG:
+                out.setCreateRemoteTag(createRemoteTag.toProto());
+                break;
+            case REMOVE_REMOTE_TAG:
+                out.setRemoveRemoteTag(removeRemoteTag.toProto());
                 break;
             case REPARTITIONCOMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -101,6 +121,20 @@ public class RepartitionCommand extends LHSerializable<RepartitionCommandPb> {
                     LHSerializable.fromProto(
                         p.getWfMetricUpdate(),
                         WfMetricUpdate.class
+                    );
+                break;
+            case CREATE_REMOTE_TAG:
+                createRemoteTag =
+                    LHSerializable.fromProto(
+                        p.getCreateRemoteTag(),
+                        CreateRemoteTag.class
+                    );
+                break;
+            case REMOVE_REMOTE_TAG:
+                removeRemoteTag =
+                    LHSerializable.fromProto(
+                        p.getRemoveRemoteTag(),
+                        RemoveRemoteTag.class
                     );
                 break;
             case REPARTITIONCOMMAND_NOT_SET:

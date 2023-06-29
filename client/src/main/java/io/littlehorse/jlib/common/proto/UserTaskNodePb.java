@@ -195,7 +195,7 @@ private static final long serialVersionUID = 0L;
    * <pre>
    * This is used to, for example, send a push notification to a mobile app
    * to remind someone that they need to fill out a task, or to re-assign
-   * the task to another group of people 
+   * the task to another group of people
    * </pre>
    *
    * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
@@ -208,7 +208,7 @@ private static final long serialVersionUID = 0L;
    * <pre>
    * This is used to, for example, send a push notification to a mobile app
    * to remind someone that they need to fill out a task, or to re-assign
-   * the task to another group of people 
+   * the task to another group of people
    * </pre>
    *
    * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
@@ -222,7 +222,7 @@ private static final long serialVersionUID = 0L;
    * <pre>
    * This is used to, for example, send a push notification to a mobile app
    * to remind someone that they need to fill out a task, or to re-assign
-   * the task to another group of people 
+   * the task to another group of people
    * </pre>
    *
    * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
@@ -235,7 +235,7 @@ private static final long serialVersionUID = 0L;
    * <pre>
    * This is used to, for example, send a push notification to a mobile app
    * to remind someone that they need to fill out a task, or to re-assign
-   * the task to another group of people 
+   * the task to another group of people
    * </pre>
    *
    * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
@@ -248,7 +248,7 @@ private static final long serialVersionUID = 0L;
    * <pre>
    * This is used to, for example, send a push notification to a mobile app
    * to remind someone that they need to fill out a task, or to re-assign
-   * the task to another group of people 
+   * the task to another group of people
    * </pre>
    *
    * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
@@ -1274,7 +1274,7 @@ private static final long serialVersionUID = 0L;
      * <pre>
      * This is used to, for example, send a push notification to a mobile app
      * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people 
+     * the task to another group of people
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
@@ -1290,7 +1290,7 @@ private static final long serialVersionUID = 0L;
      * <pre>
      * This is used to, for example, send a push notification to a mobile app
      * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people 
+     * the task to another group of people
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
@@ -1306,7 +1306,7 @@ private static final long serialVersionUID = 0L;
      * <pre>
      * This is used to, for example, send a push notification to a mobile app
      * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people 
+     * the task to another group of people
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
@@ -1322,7 +1322,7 @@ private static final long serialVersionUID = 0L;
      * <pre>
      * This is used to, for example, send a push notification to a mobile app
      * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people 
+     * the task to another group of people
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
@@ -1345,7 +1345,7 @@ private static final long serialVersionUID = 0L;
      * <pre>
      * This is used to, for example, send a push notification to a mobile app
      * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people 
+     * the task to another group of people
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
@@ -1365,7 +1365,7 @@ private static final long serialVersionUID = 0L;
      * <pre>
      * This is used to, for example, send a push notification to a mobile app
      * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people 
+     * the task to another group of people
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
@@ -1387,7 +1387,7 @@ private static final long serialVersionUID = 0L;
      * <pre>
      * This is used to, for example, send a push notification to a mobile app
      * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people 
+     * the task to another group of people
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
@@ -1410,7 +1410,7 @@ private static final long serialVersionUID = 0L;
      * <pre>
      * This is used to, for example, send a push notification to a mobile app
      * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people 
+     * the task to another group of people
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
@@ -1430,7 +1430,7 @@ private static final long serialVersionUID = 0L;
      * <pre>
      * This is used to, for example, send a push notification to a mobile app
      * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people 
+     * the task to another group of people
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
@@ -1450,7 +1450,7 @@ private static final long serialVersionUID = 0L;
      * <pre>
      * This is used to, for example, send a push notification to a mobile app
      * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people 
+     * the task to another group of people
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
@@ -1471,7 +1471,7 @@ private static final long serialVersionUID = 0L;
      * <pre>
      * This is used to, for example, send a push notification to a mobile app
      * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people 
+     * the task to another group of people
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
@@ -1490,7 +1490,7 @@ private static final long serialVersionUID = 0L;
      * <pre>
      * This is used to, for example, send a push notification to a mobile app
      * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people 
+     * the task to another group of people
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
@@ -1509,7 +1509,7 @@ private static final long serialVersionUID = 0L;
      * <pre>
      * This is used to, for example, send a push notification to a mobile app
      * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people 
+     * the task to another group of people
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
@@ -1522,7 +1522,7 @@ private static final long serialVersionUID = 0L;
      * <pre>
      * This is used to, for example, send a push notification to a mobile app
      * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people 
+     * the task to another group of people
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
@@ -1538,7 +1538,7 @@ private static final long serialVersionUID = 0L;
      * <pre>
      * This is used to, for example, send a push notification to a mobile app
      * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people 
+     * the task to another group of people
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
@@ -1555,7 +1555,7 @@ private static final long serialVersionUID = 0L;
      * <pre>
      * This is used to, for example, send a push notification to a mobile app
      * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people 
+     * the task to another group of people
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
@@ -1568,7 +1568,7 @@ private static final long serialVersionUID = 0L;
      * <pre>
      * This is used to, for example, send a push notification to a mobile app
      * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people 
+     * the task to another group of people
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>
@@ -1582,7 +1582,7 @@ private static final long serialVersionUID = 0L;
      * <pre>
      * This is used to, for example, send a push notification to a mobile app
      * to remind someone that they need to fill out a task, or to re-assign
-     * the task to another group of people 
+     * the task to another group of people
      * </pre>
      *
      * <code>repeated .littlehorse.UTActionTriggerPb actions = 4;</code>

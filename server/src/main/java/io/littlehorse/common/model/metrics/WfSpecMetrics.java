@@ -8,7 +8,10 @@ import io.littlehorse.jlib.common.LHLibUtil;
 import io.littlehorse.jlib.common.proto.MetricsWindowLengthPb;
 import io.littlehorse.jlib.common.proto.WfSpecMetricsPb;
 import io.littlehorse.jlib.common.proto.WfSpecMetricsQueryPb;
+import io.littlehorse.server.streamsimpl.storeinternals.GETableIndex;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class WfSpecMetrics extends GETable<WfSpecMetricsPb> {
 
@@ -61,6 +64,11 @@ public class WfSpecMetrics extends GETable<WfSpecMetricsPb> {
 
     public String getPartitionKey() {
         return wfSpecName;
+    }
+
+    @Override
+    public List<GETableIndex> getIndexes() {
+        return new ArrayList<>();
     }
 
     public static String getObjectId(

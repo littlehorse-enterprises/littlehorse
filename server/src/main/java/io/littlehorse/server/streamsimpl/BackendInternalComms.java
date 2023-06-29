@@ -25,7 +25,9 @@ import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
 import io.littlehorse.common.model.objectId.ExternalEventDefId;
 import io.littlehorse.common.model.objectId.TaskDefId;
 import io.littlehorse.common.model.objectId.UserTaskDefId;
+import io.littlehorse.common.model.objectId.WfRunId;
 import io.littlehorse.common.model.objectId.WfSpecId;
+import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.AttributePb;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.CentralStoreQueryPb;
@@ -50,6 +52,8 @@ import io.littlehorse.common.proto.ServerStatePb;
 import io.littlehorse.common.proto.ServerStatusPb;
 import io.littlehorse.common.proto.StandByTaskStatePb;
 import io.littlehorse.common.proto.StoreQueryStatusPb;
+import io.littlehorse.common.proto.TagScanPb;
+import io.littlehorse.common.proto.TagScanReplyPb;
 import io.littlehorse.common.proto.TaskStatePb;
 import io.littlehorse.common.proto.TopologyInstanceStatePb;
 import io.littlehorse.common.proto.TopologyInstanceStateReplyPb;
@@ -66,6 +70,7 @@ import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.LHIterKeyValue;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.LHKeyValueIterator;
+import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import io.littlehorse.server.streamsimpl.util.AsyncWaiters;
 import java.io.Closeable;
 import java.io.IOException;
@@ -89,6 +94,7 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyQueryMetadata;
+import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StoreQueryParameters;
 import org.apache.kafka.streams.StreamsMetadata;
 import org.apache.kafka.streams.TaskMetadata;
@@ -828,6 +834,29 @@ public class BackendInternalComms implements Closeable {
         }
 
         @Override
+        public void tagScan(
+            io.littlehorse.common.proto.TagScanPb request,
+            io.grpc.stub.StreamObserver<io.littlehorse.common.proto.TagScanReplyPb> responseObserver
+        ) {
+            var store = getStore(
+                request.getPartition(),
+                false,
+                request.getStoreName()
+            );
+            var result = store
+                .prefixTagScanStream(request.getPrefixStoreKey(), Tag.class)
+                .limit(request.getLimit())
+                .map(kv -> {
+                    return kv.getValue().toProto().build();
+                })
+                .collect(Collectors.toList());
+            responseObserver.onNext(
+                TagScanReplyPb.newBuilder().addAllTags(result).build()
+            );
+            responseObserver.onCompleted();
+        }
+
+        @Override
         public void waitForCommand(
             WaitForCommandPb req,
             StreamObserver<WaitForCommandReplyPb> ctx
@@ -888,9 +917,76 @@ public class BackendInternalComms implements Closeable {
             search.type == ScanBoundaryCase.LOCAL_TAG_PREFIX_SCAN
         ) {
             return unhashedTagScan(search);
+        } else if (
+            search.partitionKey != null &&
+            search.type == ScanBoundaryCase.REMOTE_TAG_PREFIX_SCAN
+        ) {
+            return remoteTagScan(search);
         } else {
             throw new RuntimeException("Impossible: Unrecognized search type");
         }
+    }
+
+    private InternalScanReplyPb remoteTagScan(InternalScan search) {
+        KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
+            search.getStoreName(),
+            search.getPartitionKey(),
+            Serdes.String().serializer()
+        );
+        var out = InternalScanReplyPb.newBuilder();
+        var activeHost = meta.activeHost();
+
+        if (activeHost.equals(thisHost)) {
+            var store = getStore(meta.partition(), false, search.getStoreName());
+
+            String prefix = Tag.getAttributeStringFromPb(
+                search.getObjectType(),
+                search.getRemoteTagPrefixScanPb().getAttributesList()
+            );
+            var result = store
+                .prefixTagScanStream(prefix, Tag.class)
+                .limit(search.limit)
+                .map(kv -> {
+                    var objectId = kv.getValue().getDescribedObjectId();
+                    return ObjectId
+                        .fromString(
+                            objectId,
+                            GETable.getIdCls(search.getObjectType())
+                        )
+                        .toProto()
+                        .build()
+                        .toByteString();
+                })
+                .collect(Collectors.toList());
+            out.addAllResults(result);
+        } else {
+            var tagScan = TagScanPb
+                .newBuilder()
+                .setPartition(meta.partition())
+                .setPrefixStoreKey(search.getPartitionKey())
+                .setStoreName(search.getStoreName())
+                .setLimit(search.getLimit())
+                .build();
+            var tagScanReply = getInternalClient(activeHost).tagScan(tagScan);
+            var result = tagScanReply
+                .getTagsList()
+                .stream()
+                .map(tagPb -> {
+                    var objectId = tagPb.getDescribedObjectId();
+                    return ObjectId
+                        .fromString(
+                            objectId,
+                            GETable.getIdCls(search.getObjectType())
+                        )
+                        .toProto()
+                        .build()
+                        .toByteString();
+                })
+                .collect(Collectors.toList());
+            out.addAllResults(result);
+        }
+
+        return out.build();
     }
 
     private InternalScanReplyPb objectIdPrefixScan(InternalScan search)

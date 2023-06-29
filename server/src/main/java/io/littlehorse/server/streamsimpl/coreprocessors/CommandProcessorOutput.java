@@ -1,7 +1,11 @@
 package io.littlehorse.server.streamsimpl.coreprocessors;
 
 import io.littlehorse.common.model.LHSerializable;
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 public class CommandProcessorOutput {
 
     public String topic;

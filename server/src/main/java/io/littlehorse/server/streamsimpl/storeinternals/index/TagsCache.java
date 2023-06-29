@@ -1,18 +1,21 @@
 package io.littlehorse.server.streamsimpl.storeinternals.index;
 
 import com.google.protobuf.Message;
+import com.google.protobuf.MessageLite;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.TagsCachePb;
+import io.littlehorse.common.proto.TagsCachePb.CachedTagPb;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class TagsCache extends LHSerializable<TagsCachePb> {
 
-    public List<String> tagIds;
-
-    public TagsCache() {
-        this.tagIds = new ArrayList<>();
-    }
+    public List<CachedTag> tags = new ArrayList<>();
 
     public Class<TagsCachePb> getProtoBaseClass() {
         return TagsCachePb.class;
@@ -20,16 +23,19 @@ public class TagsCache extends LHSerializable<TagsCachePb> {
 
     public void initFrom(Message proto) {
         TagsCachePb p = (TagsCachePb) proto;
-        for (String tagId : p.getTagIdsList()) {
-            tagIds.add(tagId);
+        for (CachedTagPb ct : p.getCachedTagsList()) {
+            tags.add(CachedTag.fromProto(ct));
         }
     }
 
     public TagsCachePb.Builder toProto() {
-        TagsCachePb.Builder out = TagsCachePb.newBuilder();
-        for (String tagId : tagIds) {
-            out.addTagIds(tagId);
-        }
+        List<CachedTagPb> cachedTagPbs = tags
+            .stream()
+            .map(cachedTag -> cachedTag.toProto().build())
+            .toList();
+        TagsCachePb.Builder out = TagsCachePb
+            .newBuilder()
+            .addAllCachedTags(cachedTagPbs);
         return out;
     }
 
@@ -38,4 +44,11 @@ public class TagsCache extends LHSerializable<TagsCachePb> {
         out.initFrom(proto);
         return out;
     }
+
+    public List<String> getTagIds() {
+        return this.tags.stream().map(CachedTag::getId).toList();
+    }
+    // public void setTagIds(List<String> tagIds) {
+    //     this.tagIds = tagIds;
+    // }
 }

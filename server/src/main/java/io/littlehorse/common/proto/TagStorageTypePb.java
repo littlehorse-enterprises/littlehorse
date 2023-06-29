@@ -9,40 +9,24 @@ package io.littlehorse.common.proto;
 public enum TagStorageTypePb
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
-   * <code>LOCAL_UNCOUNTED = 0;</code>
+   * <code>LOCAL = 0;</code>
    */
-  LOCAL_UNCOUNTED(0),
+  LOCAL(0),
   /**
-   * <code>LOCAL_COUNTED = 1;</code>
+   * <code>REMOTE = 1;</code>
    */
-  LOCAL_COUNTED(1),
-  /**
-   * <code>LOCAL_HASH_UNCOUNTED = 2;</code>
-   */
-  LOCAL_HASH_UNCOUNTED(2),
-  /**
-   * <code>REMOTE_HASH_UNCOUNTED = 3;</code>
-   */
-  REMOTE_HASH_UNCOUNTED(3),
+  REMOTE(1),
   UNRECOGNIZED(-1),
   ;
 
   /**
-   * <code>LOCAL_UNCOUNTED = 0;</code>
+   * <code>LOCAL = 0;</code>
    */
-  public static final int LOCAL_UNCOUNTED_VALUE = 0;
+  public static final int LOCAL_VALUE = 0;
   /**
-   * <code>LOCAL_COUNTED = 1;</code>
+   * <code>REMOTE = 1;</code>
    */
-  public static final int LOCAL_COUNTED_VALUE = 1;
-  /**
-   * <code>LOCAL_HASH_UNCOUNTED = 2;</code>
-   */
-  public static final int LOCAL_HASH_UNCOUNTED_VALUE = 2;
-  /**
-   * <code>REMOTE_HASH_UNCOUNTED = 3;</code>
-   */
-  public static final int REMOTE_HASH_UNCOUNTED_VALUE = 3;
+  public static final int REMOTE_VALUE = 1;
 
 
   public final int getNumber() {
@@ -69,10 +53,8 @@ public enum TagStorageTypePb
    */
   public static TagStorageTypePb forNumber(int value) {
     switch (value) {
-      case 0: return LOCAL_UNCOUNTED;
-      case 1: return LOCAL_COUNTED;
-      case 2: return LOCAL_HASH_UNCOUNTED;
-      case 3: return REMOTE_HASH_UNCOUNTED;
+      case 0: return LOCAL;
+      case 1: return REMOTE;
       default: return null;
     }
   }

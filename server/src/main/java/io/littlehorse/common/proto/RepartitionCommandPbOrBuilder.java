@@ -69,5 +69,35 @@ public interface RepartitionCommandPbOrBuilder extends
    */
   io.littlehorse.common.proto.WfMetricUpdatePbOrBuilder getWfMetricUpdateOrBuilder();
 
+  /**
+   * <code>.littlehorse.CreateRemoteTagPb create_remote_tag = 5;</code>
+   * @return Whether the createRemoteTag field is set.
+   */
+  boolean hasCreateRemoteTag();
+  /**
+   * <code>.littlehorse.CreateRemoteTagPb create_remote_tag = 5;</code>
+   * @return The createRemoteTag.
+   */
+  io.littlehorse.common.proto.CreateRemoteTagPb getCreateRemoteTag();
+  /**
+   * <code>.littlehorse.CreateRemoteTagPb create_remote_tag = 5;</code>
+   */
+  io.littlehorse.common.proto.CreateRemoteTagPbOrBuilder getCreateRemoteTagOrBuilder();
+
+  /**
+   * <code>.littlehorse.RemoveRemoteTagPb remove_remote_tag = 6;</code>
+   * @return Whether the removeRemoteTag field is set.
+   */
+  boolean hasRemoveRemoteTag();
+  /**
+   * <code>.littlehorse.RemoveRemoteTagPb remove_remote_tag = 6;</code>
+   * @return The removeRemoteTag.
+   */
+  io.littlehorse.common.proto.RemoveRemoteTagPb getRemoveRemoteTag();
+  /**
+   * <code>.littlehorse.RemoveRemoteTagPb remove_remote_tag = 6;</code>
+   */
+  io.littlehorse.common.proto.RemoveRemoteTagPbOrBuilder getRemoveRemoteTagOrBuilder();
+
   public io.littlehorse.common.proto.RepartitionCommandPb.RepartitionCommandCase getRepartitionCommandCase();
 }

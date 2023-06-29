@@ -242,21 +242,21 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
         out.add(
             new Tag(
                 nodeRun,
-                TagStorageTypePb.LOCAL_UNCOUNTED,
+                TagStorageTypePb.LOCAL,
                 Pair.of("userTaskDefName", userTaskDefName)
             )
         );
         out.add(
             new Tag(
                 nodeRun,
-                TagStorageTypePb.LOCAL_UNCOUNTED,
+                TagStorageTypePb.LOCAL,
                 Pair.of("status", status.toString())
             )
         );
         out.add(
             new Tag(
                 nodeRun,
-                TagStorageTypePb.LOCAL_UNCOUNTED,
+                TagStorageTypePb.LOCAL,
                 Pair.of("userTaskDefName", userTaskDefName),
                 Pair.of("status", status.toString())
             )
@@ -269,7 +269,7 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
             out.add(
                 new Tag(
                     nodeRun,
-                    TagStorageTypePb.LOCAL_UNCOUNTED,
+                    TagStorageTypePb.LOCAL,
                     Pair.of("status", status.toString()),
                     Pair.of("userId", userId)
                 )
@@ -277,7 +277,7 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
             out.add(
                 new Tag(
                     nodeRun,
-                    TagStorageTypePb.LOCAL_UNCOUNTED,
+                    TagStorageTypePb.LOCAL,
                     Pair.of("status", status.toString()),
                     Pair.of("userTaskDefName", userTaskDefName),
                     Pair.of("userId", userId)
@@ -286,17 +286,13 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
             out.add(
                 new Tag(
                     nodeRun,
-                    TagStorageTypePb.LOCAL_UNCOUNTED,
+                    TagStorageTypePb.LOCAL,
                     Pair.of("userTaskDefName", userTaskDefName),
                     Pair.of("userId", userId)
                 )
             );
             out.add(
-                new Tag(
-                    nodeRun,
-                    TagStorageTypePb.LOCAL_UNCOUNTED,
-                    Pair.of("userId", userId)
-                )
+                new Tag(nodeRun, TagStorageTypePb.LOCAL, Pair.of("userId", userId))
             );
         }
 
@@ -307,7 +303,7 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
             out.add(
                 new Tag(
                     nodeRun,
-                    TagStorageTypePb.LOCAL_UNCOUNTED,
+                    TagStorageTypePb.LOCAL,
                     Pair.of("status", status.toString()),
                     Pair.of("userGroup", userGroup)
                 )
@@ -315,7 +311,7 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
             out.add(
                 new Tag(
                     nodeRun,
-                    TagStorageTypePb.LOCAL_UNCOUNTED,
+                    TagStorageTypePb.LOCAL,
                     Pair.of("status", status.toString()),
                     Pair.of("userTaskDefName", userTaskDefName),
                     Pair.of("userGroup", userGroup)
@@ -324,7 +320,7 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
             out.add(
                 new Tag(
                     nodeRun,
-                    TagStorageTypePb.LOCAL_UNCOUNTED,
+                    TagStorageTypePb.LOCAL,
                     Pair.of("userTaskDefName", userTaskDefName),
                     Pair.of("userGroup", userGroup)
                 )
@@ -332,7 +328,7 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
             out.add(
                 new Tag(
                     nodeRun,
-                    TagStorageTypePb.LOCAL_UNCOUNTED,
+                    TagStorageTypePb.LOCAL,
                     Pair.of("userGroup", userGroup)
                 )
             );

@@ -5,7 +5,10 @@ import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.objectId.ExternalEventId;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.ExternalEventPb;
+import io.littlehorse.server.streamsimpl.storeinternals.GETableIndex;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class ExternalEvent extends GETable<ExternalEventPb> {
 
@@ -74,6 +77,11 @@ public class ExternalEvent extends GETable<ExternalEventPb> {
             createdAt = new Date();
         }
         return createdAt;
+    }
+
+    @Override
+    public List<GETableIndex> getIndexes() {
+        return new ArrayList<>();
     }
 
     public static ExternalEvent fromProto(ExternalEventPb p) {

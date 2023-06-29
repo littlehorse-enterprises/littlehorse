@@ -1,0 +1,168 @@
+package io.littlehorse.server.streamsimpl.storeinternals;
+
+import io.littlehorse.TestUtil;
+import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.proto.TagStorageTypePb;
+import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
+import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionCommand;
+import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
+import io.littlehorse.server.streamsimpl.storeinternals.index.CachedTag;
+import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
+import io.littlehorse.server.streamsimpl.storeinternals.index.TagsCache;
+import java.util.List;
+import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.common.utils.Bytes;
+import org.apache.kafka.streams.processor.api.MockProcessorContext;
+import org.apache.kafka.streams.processor.api.Record;
+import org.apache.kafka.streams.state.KeyValueStore;
+import org.apache.kafka.streams.state.Stores;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+@ExtendWith(MockitoExtension.class)
+public class TagStorageManagerTest {
+
+    private final KeyValueStore<String, Bytes> store = Stores
+        .keyValueStoreBuilder(
+            Stores.inMemoryKeyValueStore("myStore"),
+            Serdes.String(),
+            Serdes.Bytes()
+        )
+        .withLoggingDisabled()
+        .build();
+
+    @Mock
+    private LHConfig lhConfig;
+
+    private LHStoreWrapper localStore = new LHStoreWrapper(store, lhConfig);
+
+    final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
+
+    @InjectMocks
+    private TagStorageManager tagStorageManager = new TagStorageManager(
+        localStore,
+        mockProcessorContext,
+        lhConfig
+    );
+
+    private Tag tag1 = TestUtil.tag();
+
+    private Tag tag2 = TestUtil.tag();
+
+    private List<Tag> tags;
+
+    private Attribute wfSpecNameAttribute = new Attribute("wfSpecName", "test-name");
+    private Attribute statusAttribute = new Attribute("status", "running");
+
+    private String tagsCacheKey = "123456";
+
+    @BeforeEach
+    void setup() {
+        store.init(mockProcessorContext.getStateStoreContext(), store);
+        tag1.setAttributes(List.of(wfSpecNameAttribute));
+        tag2.setAttributes(List.of(wfSpecNameAttribute, statusAttribute));
+        tags = List.of(tag1, tag2);
+    }
+
+    @Test
+    void saveTagsWithNewTagsCache() {
+        tagStorageManager.store(tags, "123456");
+        Tag tagResult1 = localStore.get(tag1.getStoreKey(), Tag.class);
+        Tag tagResult2 = localStore.get(tag2.getStoreKey(), Tag.class);
+        TagsCache tagsCache = localStore.getTagsCache("123456");
+        Assertions.assertThat(tagResult1).isNotNull();
+        Assertions.assertThat(tagResult2).isNotNull();
+        Assertions.assertThat(tagsCache).isNotNull();
+        Assertions.assertThat(tagsCache.getTags()).hasSize(2);
+        tagsCache
+            .getTags()
+            .forEach(cachedTag -> {
+                Assertions.assertThat(cachedTag.getId()).isNotNull();
+            });
+    }
+
+    @Test
+    void removeOldTags() {
+        String tagsCacheKey = "123456";
+        Tag tag3 = TestUtil.tag();
+        tags = List.of(tag2, tag3);
+        localStore.put(tag1);
+        TagsCache tagsCache = new TagsCache();
+        CachedTag cachedTag = new CachedTag();
+        cachedTag.setId(tag1.getStoreKey());
+        tagsCache.setTags(List.of(cachedTag));
+        localStore.putTagsCache(tagsCacheKey, tagsCache);
+
+        tagStorageManager.store(tags, tagsCacheKey);
+        TagsCache tagsCacheResult = localStore.getTagsCache(tagsCacheKey);
+        Assertions
+            .assertThat(localStore.get(tag2.getStoreKey(), Tag.class))
+            .isNotNull();
+        Assertions
+            .assertThat(localStore.get(tag3.getStoreKey(), Tag.class))
+            .isNotNull();
+        Assertions.assertThat(localStore.get(tag1.getStoreKey(), Tag.class)).isNull();
+        Assertions.assertThat(tagsCacheResult).isNotNull();
+        Assertions
+            .assertThat(tagsCacheResult.getTagIds())
+            .containsExactlyInAnyOrder(tag2.getStoreKey(), tag3.getStoreKey());
+    }
+
+    @Test
+    void sendRepartitionCommandForCreateRemoteTagSubCommand() {
+        String expectedPartitionKey = "WF_RUN/__wfSpecName_test-name";
+        tag1.setTagType(TagStorageTypePb.REMOTE);
+        tags = List.of(tag1, tag2);
+        tagStorageManager.store(tags, "test-cache-key");
+        List<? extends Record<? extends String, ? extends CommandProcessorOutput>> outputs = mockProcessorContext
+            .forwarded()
+            .stream()
+            .map(MockProcessorContext.CapturedForward::record)
+            .toList();
+        Assertions.assertThat(outputs).hasSize(1);
+        outputs.forEach(record -> {
+            Assertions.assertThat(record.key()).isEqualTo(expectedPartitionKey);
+            Assertions
+                .assertThat(record.value().getPartitionKey())
+                .isEqualTo(expectedPartitionKey);
+            Assertions
+                .assertThat(record.value().getPayload())
+                .isInstanceOf(RepartitionCommand.class);
+            RepartitionCommand repartitionCommand = (RepartitionCommand) record
+                .value()
+                .getPayload();
+            Assertions
+                .assertThat(repartitionCommand.getSubCommand().getPartitionKey())
+                .isEqualTo(expectedPartitionKey);
+        });
+    }
+
+    @Test
+    void sendRepartitionCommandForRemoveRemoteTagSubCommand() {
+        tag1.setTagType(TagStorageTypePb.REMOTE);
+        String tagsCacheKey = "123456";
+        Tag tag3 = TestUtil.tag();
+        tag3.setTagType(TagStorageTypePb.REMOTE);
+        tags = List.of(tag1, tag2);
+        TagsCache tagsCache = new TagsCache();
+        CachedTag cachedTag1 = new CachedTag();
+        cachedTag1.setId(tag3.getStoreKey());
+        CachedTag cachedTag2 = new CachedTag();
+        cachedTag2.setId(tag2.getStoreKey());
+        tagsCache.setTags(List.of(cachedTag1, cachedTag2));
+        localStore.putTagsCache(tagsCacheKey, tagsCache);
+
+        tagStorageManager.store(tags, tagsCacheKey);
+        List<? extends Record<? extends String, ? extends CommandProcessorOutput>> outputs = mockProcessorContext
+            .forwarded()
+            .stream()
+            .map(MockProcessorContext.CapturedForward::record)
+            .toList();
+        Assertions.assertThat(outputs).hasSize(2);
+    }
+}

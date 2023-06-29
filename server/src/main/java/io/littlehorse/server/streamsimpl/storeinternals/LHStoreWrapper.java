@@ -5,6 +5,7 @@ import io.littlehorse.common.model.GETable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
 import io.littlehorse.common.model.command.CommandResult;
+import io.littlehorse.common.proto.TagsCachePb.CachedTagPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.exception.LHSerdeError;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
@@ -12,6 +13,7 @@ import io.littlehorse.server.streamsimpl.storeinternals.index.TagUtils;
 import io.littlehorse.server.streamsimpl.storeinternals.index.TagsCache;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import java.util.Date;
+import java.util.function.Function;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueStore;
 
@@ -26,6 +28,11 @@ public class LHStoreWrapper extends LHROStoreWrapper {
 
     public void put(Storeable<?> thing) {
         String storeKey = StoreUtils.getFullStoreKey(thing);
+        System.out.println(storeKey);
+        store.put(storeKey, new Bytes(thing.toBytes(config)));
+    }
+
+    public void put(String storeKey, Storeable<?> thing) {
         store.put(storeKey, new Bytes(thing.toBytes(config)));
     }
 
@@ -51,6 +58,10 @@ public class LHStoreWrapper extends LHROStoreWrapper {
 
     public TagsCache getTagsCache(GETable<?> thing) {
         String tagCacheKey = StoreUtils.getTagsCacheKey(thing);
+        return getTagsCache(tagCacheKey);
+    }
+
+    public TagsCache getTagsCache(String tagCacheKey) {
         Bytes raw = store.get(tagCacheKey);
         if (raw == null) {
             return null;
@@ -64,14 +75,7 @@ public class LHStoreWrapper extends LHROStoreWrapper {
         }
     }
 
-    public void putTagsCache(GETable<?> thing) {
-        String tagCacheKey = StoreUtils.getTagsCacheKey(thing);
-
-        TagsCache newTagsCache = new TagsCache();
-        for (Tag tag : TagUtils.tagThing(thing)) {
-            newTagsCache.tagIds.add(tag.getStoreKey());
-        }
-
+    public void putTagsCache(String tagCacheKey, TagsCache newTagsCache) {
         store.put(tagCacheKey, new Bytes(newTagsCache.toBytes(config)));
     }
 

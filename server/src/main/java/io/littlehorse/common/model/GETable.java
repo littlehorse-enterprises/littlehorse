@@ -24,7 +24,9 @@ import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.server.streamsimpl.storeinternals.GETableIndex;
 import java.util.Date;
+import java.util.List;
 
 public abstract class GETable<T extends Message> extends Storeable<T> {
 
@@ -123,6 +125,8 @@ public abstract class GETable<T extends Message> extends Storeable<T> {
                 throw new RuntimeException("Uh oh, unrecognized enum");
         }
     }
+
+    public abstract List<GETableIndex> getIndexes();
 
     public abstract ObjectId<?, T, ?> getObjectId();
 

@@ -62,4 +62,21 @@ public interface SearchWfSpecPbOrBuilder extends
    */
   com.google.protobuf.ByteString
       getPrefixBytes();
+
+  /**
+   * <code>optional string task_def_name = 5;</code>
+   * @return Whether the taskDefName field is set.
+   */
+  boolean hasTaskDefName();
+  /**
+   * <code>optional string task_def_name = 5;</code>
+   * @return The taskDefName.
+   */
+  java.lang.String getTaskDefName();
+  /**
+   * <code>optional string task_def_name = 5;</code>
+   * @return The bytes for taskDefName.
+   */
+  com.google.protobuf.ByteString
+      getTaskDefNameBytes();
 }

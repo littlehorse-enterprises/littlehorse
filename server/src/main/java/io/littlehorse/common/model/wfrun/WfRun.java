@@ -23,6 +23,7 @@ import io.littlehorse.common.model.observabilityevent.ObservabilityEvent;
 import io.littlehorse.common.model.observabilityevent.events.ThreadStartOe;
 import io.littlehorse.common.model.observabilityevent.events.WfRunStatusOe;
 import io.littlehorse.common.model.wfrun.haltreason.ManualHalt;
+import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.LHStatusPb;
 import io.littlehorse.jlib.common.proto.PendingFailureHandlerPb;
@@ -33,6 +34,8 @@ import io.littlehorse.jlib.common.proto.ThreadRunPb;
 import io.littlehorse.jlib.common.proto.ThreadTypePb;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
 import io.littlehorse.jlib.common.proto.WfRunPb;
+import io.littlehorse.server.streamsimpl.storeinternals.GETableIndex;
+import java.util.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -40,10 +43,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 @Slf4j
+@Setter
 public class WfRun extends GETable<WfRunPb> {
 
     public String id;
@@ -65,6 +71,62 @@ public class WfRun extends GETable<WfRunPb> {
 
     public Date getCreatedAt() {
         return startTime;
+    }
+
+    @Override
+    public List<GETableIndex> getIndexes() {
+        return List.of(
+            new GETableIndex(
+                WfRun.class,
+                List.of(
+                    Pair.of(
+                        "wfSpecName",
+                        getable -> List.of(((WfRun) getable).getWfSpecName())
+                    )
+                ),
+                wfRunPb -> true,
+                TagStorageTypePb.REMOTE
+            ),
+            new GETableIndex(
+                WfRun.class,
+                List.of(
+                    Pair.of(
+                        "wfSpecName",
+                        getable -> List.of(((WfRun) getable).getWfSpecName())
+                    ),
+                    Pair.of(
+                        "status",
+                        getable -> List.of(((WfRun) getable).getStatus().toString())
+                    )
+                ),
+                wfRunPb -> true,
+                TagStorageTypePb.REMOTE
+            ),
+            new GETableIndex(
+                WfRun.class,
+                List.of(
+                    Pair.of(
+                        "wfSpecName",
+                        getable -> List.of(((WfRun) getable).getWfSpecName())
+                    ),
+                    Pair.of(
+                        "status",
+                        getable -> List.of(((WfRun) getable).getStatus().toString())
+                    ),
+                    Pair.of(
+                        "wfSpecVersion",
+                        getable ->
+                            List.of(
+                                LHUtil.toLHDbVersionFormat(
+                                    ((WfRun) getable).getWfSpecVersion()
+                                )
+                            )
+                    )
+                ),
+                wfRunPb -> true,
+                TagStorageTypePb.LOCAL
+            )
+        );
     }
 
     public WfSpec getWfSpec() {
@@ -236,6 +298,22 @@ public class WfRun extends GETable<WfRunPb> {
         thread.activateNode(thread.getCurrentNode());
         thread.advance(start);
         return thread;
+    }
+
+    public String getWfSpecName() {
+        return wfSpecName;
+    }
+
+    public LHStatusPb getStatus() {
+        return status;
+    }
+
+    public String getWfSpecFormattedVersion() {
+        return LHUtil.toLHDbVersionFormat(wfSpecVersion);
+    }
+
+    public int getWfSpecVersion() {
+        return wfSpecVersion;
     }
 
     private boolean startXnHandlersAndInterrupts(Date time) {

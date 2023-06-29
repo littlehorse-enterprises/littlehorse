@@ -93,6 +93,12 @@ message InternalScanPb {
         optional google.protobuf.Timestamp latest_create_time = 3;
     }
 
+    message RemoteTagPrefixScanPb {
+        repeated AttributePb attributes = 1;
+        optional google.protobuf.Timestamp earliest_create_time = 2;
+        optional google.protobuf.Timestamp latest_create_time = 3;
+    }
+
     message BoundedObjectIdScanPb {
         string start_object_id = 1;
         optional string end_object_id = 2;
@@ -109,6 +115,7 @@ message InternalScanPb {
     oneof scan_boundary {
         BoundedObjectIdScanPb bounded_object_id_scan = 7;
         TagPrefixScanPb local_tag_prefix_scan = 8;
+        RemoteTagPrefixScanPb remote_tag_prefix_scan = 9;
     }
 }
 
@@ -164,6 +171,8 @@ service LHInternals {
     rpc TopologyInstancesState(TopologyInstanceStatePb) returns (TopologyInstanceStateReplyPb) {}
 
     rpc LocalTasks(LocalTasksPb) returns (LocalTasksReplyPb) {}
+
+    rpc TagScan(TagScanPb) returns (TagScanReplyPb) {}
 }
 
 // Stuff for the metrics topology
@@ -181,6 +190,16 @@ message TaskMetricUpdatePb {
 
     string task_def_name = 11;
     int64 total_scheduled = 12;
+}
+
+
+message CreateRemoteTagPb {
+    TagPb tag = 1;
+}
+
+message RemoveRemoteTagPb {
+    string store_key = 1;
+    string partition_key = 2;
 }
 
 message WfMetricUpdatePb {
@@ -203,6 +222,8 @@ message RepartitionCommandPb {
     oneof repartition_command {
         TaskMetricUpdatePb task_metric_update = 3;
         WfMetricUpdatePb wf_metric_update = 4;
+        CreateRemoteTagPb create_remote_tag = 5;
+        RemoveRemoteTagPb remove_remote_tag = 6;
     }
 }
 
@@ -227,10 +248,8 @@ message AttributePb {
 }
 
 enum TagStorageTypePb {
-    LOCAL_UNCOUNTED = 0;
-    LOCAL_COUNTED = 1;
-    LOCAL_HASH_UNCOUNTED = 2;
-    REMOTE_HASH_UNCOUNTED = 3;
+    LOCAL = 0;
+    REMOTE = 1;
 }
 
 message TagPb {
@@ -243,13 +262,19 @@ message TagPb {
     // The following is not stored in the key.
     TagStorageTypePb tag_type = 5;
 
+    string store_key = 7;
+
     // Observation: it's possible that we could optimize by removing fields 1-4
     // and only relying upon the store key. However, that would complicate
     // the code a bit and may just be premature optimization.
 }
 
 message TagsCachePb {
-    repeated string tag_ids = 1;
+    message CachedTagPb {
+        string id = 1;
+        bool is_remote = 2;
+    }
+    repeated CachedTagPb cached_tags = 1;
 }
 
 message DiscreteTagLocalCounterPb {
@@ -451,4 +476,15 @@ message LocalTasksPb {
 message LocalTasksReplyPb {
     repeated TaskStatePb active_tasks = 1;
     repeated StandByTaskStatePb standby_tasks = 2;
+}
+
+message TagScanReplyPb {
+    repeated TagPb tags = 1;
+}
+
+message TagScanPb{
+    int32 partition = 1;
+    string prefix_store_key = 2;
+    string store_name = 3;
+    int64 limit = 4;
 }

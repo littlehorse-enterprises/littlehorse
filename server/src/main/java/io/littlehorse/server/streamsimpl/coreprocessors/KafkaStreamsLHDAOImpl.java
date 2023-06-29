@@ -1,5 +1,6 @@
 package io.littlehorse.server.streamsimpl.coreprocessors;
 
+import com.google.common.base.Functions;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
@@ -31,6 +32,8 @@ import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.ScheduledTask;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.proto.TagStorageTypePb;
+import io.littlehorse.common.proto.TagsCachePb.CachedTagPb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.exception.LHSerdeError;
@@ -43,24 +46,28 @@ import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionCommand;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.TaskMetricUpdate;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.WfMetricUpdate;
+import io.littlehorse.server.streamsimpl.storeinternals.GETableStorageManager;
 import io.littlehorse.server.streamsimpl.storeinternals.LHROStoreWrapper;
 import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
-import io.littlehorse.server.streamsimpl.storeinternals.index.DiscreteTagLocalCounter;
-import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
-import io.littlehorse.server.streamsimpl.storeinternals.index.TagChangesToBroadcast;
-import io.littlehorse.server.streamsimpl.storeinternals.index.TagUtils;
-import io.littlehorse.server.streamsimpl.storeinternals.index.TagsCache;
+import io.littlehorse.server.streamsimpl.storeinternals.index.*;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.LHIterKeyValue;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.LHKeyValueIterator;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import io.littlehorse.server.streamsimpl.util.InternalHosts;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
@@ -121,6 +128,8 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     private LHConfig config;
     private boolean partitionIsClaimed;
 
+    private GETableStorageManager geTableStorageManager;
+
     public KafkaStreamsLHDAOImpl(
         final ProcessorContext<String, CommandProcessorOutput> ctx,
         LHConfig config,
@@ -160,6 +169,8 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         );
         localStore = new LHStoreWrapper(rawLocalStore, config);
         globalStore = new LHROStoreWrapper(rawGlobalStore, config);
+
+        geTableStorageManager = new GETableStorageManager(localStore, config, ctx);
 
         partition = ctx.taskId().partition();
 
@@ -925,7 +936,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         Class<T> cls
     ) {
         if (val != null) {
-            saveAndIndexFlush(val);
+            geTableStorageManager.store(val);
         } else {
             deleteThingFlush(key, cls);
         }
@@ -939,9 +950,16 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         if (oldThing != null) {
             // Delete the old tag cache
             TagsCache cache = localStore.getTagsCache(oldThing);
-            for (String tagId : cache.tagIds) {
-                deleteTag(tagId);
-            }
+            // TODO refactor needed
+            /*for (CachedTag cachedTag : cache.tags) {
+                if (cachedTag.getIsRemote()) {
+                    log.error("TODO: Send a message to delete remote tag");
+                } else {
+                    localStore.delete(
+                        StoreUtils.getFullStoreKey(cachedTag.getId(), Tag.class)
+                    );
+                }
+            }*/
 
             localStore.deleteTagCache(oldThing);
             localStore.delete(oldThing);
@@ -949,82 +967,6 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
             // Then we know that the object was created and deleted within the same
             // transaction, so we have nothing to do.
             log.warn("{} {} created and deleted in same txn.", cls, objectId);
-        }
-    }
-
-    private void saveAndIndexFlush(GETable<?> thing) {
-        localStore.put(thing);
-
-        TagsCache oldEntriesObj = localStore.getTagsCache(thing);
-
-        List<String> oldTagIds =
-            (oldEntriesObj == null ? new ArrayList<>() : oldEntriesObj.tagIds);
-        List<String> newTagIds = new ArrayList<>();
-
-        for (Tag newTag : TagUtils.tagThing(thing)) {
-            if (!oldTagIds.contains(newTag.getStoreKey())) {
-                putTag(newTag);
-            }
-            newTagIds.add(newTag.getStoreKey());
-        }
-        for (String oldTagId : oldTagIds) {
-            if (!newTagIds.contains(oldTagId)) {
-                deleteTag(oldTagId);
-            }
-        }
-
-        localStore.putTagsCache(thing);
-    }
-
-    private void putTag(Tag tag) {
-        switch (tag.tagType) {
-            case REMOTE_HASH_UNCOUNTED:
-                throw new RuntimeException("Remote hash not implemented");
-            case LOCAL_HASH_UNCOUNTED:
-                throw new RuntimeException("Local hash not implemented");
-            case LOCAL_COUNTED:
-            case LOCAL_UNCOUNTED:
-                // Both of these involve storing the tag on the same partition
-                // as the described object.
-                localStore.put(tag);
-                TagChangesToBroadcast tctb = getTagChangesToBroadcast();
-
-                // If the counter is not null (i.e. LOCAL_COUNTED), then count.
-                if (tag.getCounterKey(partition) != null) {
-                    DiscreteTagLocalCounter counter = tctb.getCounter(tag);
-                    counter.localCount++;
-                    localStore.put(counter);
-                    localStore.putRaw(
-                        OUTGOING_CHANGELOG_KEY,
-                        new Bytes(tctb.toBytes(config))
-                    );
-                }
-                break;
-            case UNRECOGNIZED:
-                throw new RuntimeException("Not possible");
-        }
-    }
-
-    private void deleteTag(String tagId) {
-        // TODO: Handle the Remote and Hash types.
-
-        Tag tag = localStore.get(tagId, Tag.class);
-        localStore.delete(tag);
-
-        if (tag.getCounterKey(partition) != null) {
-            TagChangesToBroadcast tctb = getTagChangesToBroadcast();
-            DiscreteTagLocalCounter counter = tctb.getCounter(tag);
-            counter.localCount--;
-
-            if (counter.localCount >= 0) {
-                localStore.put(counter);
-            } else {
-                localStore.delete(counter);
-            }
-            localStore.putRaw(
-                OUTGOING_CHANGELOG_KEY,
-                new Bytes(tctb.toBytes(config))
-            );
         }
     }
 

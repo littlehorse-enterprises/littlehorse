@@ -10,10 +10,15 @@ import io.littlehorse.common.proto.TagPb;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHUtil;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+import lombok.Setter;
 import org.apache.commons.lang3.tuple.Pair;
 
+@Setter
 public class Tag extends Storeable<TagPb> {
 
     public TagStorageTypePb tagType;
@@ -26,12 +31,14 @@ public class Tag extends Storeable<TagPb> {
         return TagPb.class;
     }
 
+    @Override
     public TagPb.Builder toProto() {
         TagPb.Builder out = TagPb
             .newBuilder()
             .setObjectType(objectType)
             .setDescribedObjectId(describedObjectId)
             .setCreated(LHUtil.fromDate(createdAt))
+            .setStoreKey(this.getStoreKey())
             .setTagType(tagType);
 
         for (Attribute attr : attributes) {
@@ -40,6 +47,7 @@ public class Tag extends Storeable<TagPb> {
         return out;
     }
 
+    @Override
     public void initFrom(Message proto) {
         TagPb p = (TagPb) proto;
         objectType = p.getObjectType();
@@ -84,6 +92,23 @@ public class Tag extends Storeable<TagPb> {
         return builder.toString();
     }
 
+    public static String getAttributeStringFromPb(
+        GETableClassEnumPb objectType,
+        List<AttributePb> attributes
+    ) {
+        return getAttributeString(
+            objectType,
+            attributes
+                .stream()
+                .map(attr -> Attribute.fromProto(attr))
+                .collect(Collectors.toList())
+        );
+    }
+
+    public boolean isRemote() {
+        return tagType == TagStorageTypePb.REMOTE;
+    }
+
     public String getStoreKey() {
         StringBuilder builder = new StringBuilder(getAttributeString());
 
@@ -100,18 +125,19 @@ public class Tag extends Storeable<TagPb> {
 
     public String getCounterKey(int partition) {
         switch (tagType) {
-            case LOCAL_COUNTED:
+            case LOCAL:
                 return DiscreteTagLocalCounter.getObjectId(
                     getAttributeString(),
                     partition
                 );
-            case LOCAL_HASH_UNCOUNTED:
-            case LOCAL_UNCOUNTED:
-            case REMOTE_HASH_UNCOUNTED:
             case UNRECOGNIZED:
                 return null;
         }
         throw new RuntimeException("Not possible");
+    }
+
+    public TagStorageTypePb getTagStorageTypePb() {
+        return this.tagType;
     }
 
     @SafeVarargs
@@ -120,6 +146,14 @@ public class Tag extends Storeable<TagPb> {
         GETable<?> getable,
         TagStorageTypePb type,
         Pair<String, String>... atts
+    ) {
+        this(getable, type, Arrays.asList(atts));
+    }
+
+    public Tag(
+        GETable<?> getable,
+        TagStorageTypePb type,
+        Collection<Pair<String, String>> atts
     ) {
         this();
         this.objectType =
@@ -133,6 +167,24 @@ public class Tag extends Storeable<TagPb> {
         }
     }
 
+    public Tag(
+        TagStorageTypePb type,
+        GETableClassEnumPb objectType,
+        Collection<Attribute> attributes,
+        String describedObjectId,
+        Date createAt
+    ) {
+        this();
+        this.tagType = type;
+        this.objectType = objectType;
+        this.describedObjectId = describedObjectId;
+        if (objectType == GETableClassEnumPb.WF_RUN) {
+            System.out.println("describedObjectId" + describedObjectId);
+        }
+        this.createdAt = createAt;
+        this.attributes.addAll(attributes);
+    }
+
     public int hashCode() {
         return getStoreKey().hashCode();
     }
@@ -142,5 +194,17 @@ public class Tag extends Storeable<TagPb> {
         if (!(o instanceof Tag)) return false;
         Tag oe = (Tag) o;
         return getStoreKey().equals(oe.getStoreKey());
+    }
+
+    public List<Attribute> getAttributes() {
+        return attributes;
+    }
+
+    public String getDescribedObjectId() {
+        return describedObjectId;
+    }
+
+    public GETableClassEnumPb getObjectType() {
+        return objectType;
     }
 }

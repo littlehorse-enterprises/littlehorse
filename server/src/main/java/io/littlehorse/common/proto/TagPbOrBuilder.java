@@ -95,4 +95,16 @@ public interface TagPbOrBuilder extends
    * @return The tagType.
    */
   io.littlehorse.common.proto.TagStorageTypePb getTagType();
+
+  /**
+   * <code>string store_key = 7;</code>
+   * @return The storeKey.
+   */
+  java.lang.String getStoreKey();
+  /**
+   * <code>string store_key = 7;</code>
+   * @return The bytes for storeKey.
+   */
+  com.google.protobuf.ByteString
+      getStoreKeyBytes();
 }

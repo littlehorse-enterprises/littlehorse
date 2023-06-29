@@ -8,7 +8,10 @@ import io.littlehorse.jlib.common.LHLibUtil;
 import io.littlehorse.jlib.common.proto.MetricsWindowLengthPb;
 import io.littlehorse.jlib.common.proto.TaskDefMetricsPb;
 import io.littlehorse.jlib.common.proto.TaskDefMetricsQueryPb;
+import io.littlehorse.server.streamsimpl.storeinternals.GETableIndex;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class TaskDefMetrics extends GETable<TaskDefMetricsPb> {
 
@@ -63,6 +66,11 @@ public class TaskDefMetrics extends GETable<TaskDefMetricsPb> {
 
     public Date getCreatedAt() {
         return windowStart;
+    }
+
+    @Override
+    public List<GETableIndex> getIndexes() {
+        return new ArrayList<>();
     }
 
     public TaskDefMetricsId getObjectId() {

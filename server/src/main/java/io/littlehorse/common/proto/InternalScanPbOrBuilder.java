@@ -109,5 +109,20 @@ public interface InternalScanPbOrBuilder extends
    */
   io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPbOrBuilder getLocalTagPrefixScanOrBuilder();
 
+  /**
+   * <code>.littlehorse.InternalScanPb.RemoteTagPrefixScanPb remote_tag_prefix_scan = 9;</code>
+   * @return Whether the remoteTagPrefixScan field is set.
+   */
+  boolean hasRemoteTagPrefixScan();
+  /**
+   * <code>.littlehorse.InternalScanPb.RemoteTagPrefixScanPb remote_tag_prefix_scan = 9;</code>
+   * @return The remoteTagPrefixScan.
+   */
+  io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb getRemoteTagPrefixScan();
+  /**
+   * <code>.littlehorse.InternalScanPb.RemoteTagPrefixScanPb remote_tag_prefix_scan = 9;</code>
+   */
+  io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPbOrBuilder getRemoteTagPrefixScanOrBuilder();
+
   public io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase getScanBoundaryCase();
 }

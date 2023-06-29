@@ -16,7 +16,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private TagsCachePb() {
-    tagIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+    cachedTags_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -44,40 +44,673 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.common.proto.TagsCachePb.class, io.littlehorse.common.proto.TagsCachePb.Builder.class);
   }
 
-  public static final int TAG_IDS_FIELD_NUMBER = 1;
+  public interface CachedTagPbOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:littlehorse.TagsCachePb.CachedTagPb)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string id = 1;</code>
+     * @return The id.
+     */
+    java.lang.String getId();
+    /**
+     * <code>string id = 1;</code>
+     * @return The bytes for id.
+     */
+    com.google.protobuf.ByteString
+        getIdBytes();
+
+    /**
+     * <code>bool is_remote = 2;</code>
+     * @return The isRemote.
+     */
+    boolean getIsRemote();
+  }
+  /**
+   * Protobuf type {@code littlehorse.TagsCachePb.CachedTagPb}
+   */
+  public static final class CachedTagPb extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:littlehorse.TagsCachePb.CachedTagPb)
+      CachedTagPbOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use CachedTagPb.newBuilder() to construct.
+    private CachedTagPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private CachedTagPb() {
+      id_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new CachedTagPb();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_TagsCachePb_CachedTagPb_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_TagsCachePb_CachedTagPb_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.littlehorse.common.proto.TagsCachePb.CachedTagPb.class, io.littlehorse.common.proto.TagsCachePb.CachedTagPb.Builder.class);
+    }
+
+    public static final int ID_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object id_ = "";
+    /**
+     * <code>string id = 1;</code>
+     * @return The id.
+     */
+    @java.lang.Override
+    public java.lang.String getId() {
+      java.lang.Object ref = id_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        id_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string id = 1;</code>
+     * @return The bytes for id.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getIdBytes() {
+      java.lang.Object ref = id_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        id_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int IS_REMOTE_FIELD_NUMBER = 2;
+    private boolean isRemote_ = false;
+    /**
+     * <code>bool is_remote = 2;</code>
+     * @return The isRemote.
+     */
+    @java.lang.Override
+    public boolean getIsRemote() {
+      return isRemote_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, id_);
+      }
+      if (isRemote_ != false) {
+        output.writeBool(2, isRemote_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, id_);
+      }
+      if (isRemote_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(2, isRemote_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.littlehorse.common.proto.TagsCachePb.CachedTagPb)) {
+        return super.equals(obj);
+      }
+      io.littlehorse.common.proto.TagsCachePb.CachedTagPb other = (io.littlehorse.common.proto.TagsCachePb.CachedTagPb) obj;
+
+      if (!getId()
+          .equals(other.getId())) return false;
+      if (getIsRemote()
+          != other.getIsRemote()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId().hashCode();
+      hash = (37 * hash) + IS_REMOTE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getIsRemote());
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.littlehorse.common.proto.TagsCachePb.CachedTagPb parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.common.proto.TagsCachePb.CachedTagPb parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.TagsCachePb.CachedTagPb parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.common.proto.TagsCachePb.CachedTagPb parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.TagsCachePb.CachedTagPb parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.common.proto.TagsCachePb.CachedTagPb parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.TagsCachePb.CachedTagPb parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.common.proto.TagsCachePb.CachedTagPb parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.TagsCachePb.CachedTagPb parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.common.proto.TagsCachePb.CachedTagPb parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.littlehorse.common.proto.TagsCachePb.CachedTagPb parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.common.proto.TagsCachePb.CachedTagPb parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.littlehorse.common.proto.TagsCachePb.CachedTagPb prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code littlehorse.TagsCachePb.CachedTagPb}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:littlehorse.TagsCachePb.CachedTagPb)
+        io.littlehorse.common.proto.TagsCachePb.CachedTagPbOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_TagsCachePb_CachedTagPb_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_TagsCachePb_CachedTagPb_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.littlehorse.common.proto.TagsCachePb.CachedTagPb.class, io.littlehorse.common.proto.TagsCachePb.CachedTagPb.Builder.class);
+      }
+
+      // Construct using io.littlehorse.common.proto.TagsCachePb.CachedTagPb.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        id_ = "";
+        isRemote_ = false;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_TagsCachePb_CachedTagPb_descriptor;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.common.proto.TagsCachePb.CachedTagPb getDefaultInstanceForType() {
+        return io.littlehorse.common.proto.TagsCachePb.CachedTagPb.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.littlehorse.common.proto.TagsCachePb.CachedTagPb build() {
+        io.littlehorse.common.proto.TagsCachePb.CachedTagPb result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.common.proto.TagsCachePb.CachedTagPb buildPartial() {
+        io.littlehorse.common.proto.TagsCachePb.CachedTagPb result = new io.littlehorse.common.proto.TagsCachePb.CachedTagPb(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(io.littlehorse.common.proto.TagsCachePb.CachedTagPb result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.id_ = id_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.isRemote_ = isRemote_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.littlehorse.common.proto.TagsCachePb.CachedTagPb) {
+          return mergeFrom((io.littlehorse.common.proto.TagsCachePb.CachedTagPb)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.littlehorse.common.proto.TagsCachePb.CachedTagPb other) {
+        if (other == io.littlehorse.common.proto.TagsCachePb.CachedTagPb.getDefaultInstance()) return this;
+        if (!other.getId().isEmpty()) {
+          id_ = other.id_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (other.getIsRemote() != false) {
+          setIsRemote(other.getIsRemote());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                id_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 16: {
+                isRemote_ = input.readBool();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object id_ = "";
+      /**
+       * <code>string id = 1;</code>
+       * @return The id.
+       */
+      public java.lang.String getId() {
+        java.lang.Object ref = id_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          id_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string id = 1;</code>
+       * @return The bytes for id.
+       */
+      public com.google.protobuf.ByteString
+          getIdBytes() {
+        java.lang.Object ref = id_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          id_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string id = 1;</code>
+       * @param value The id to set.
+       * @return This builder for chaining.
+       */
+      public Builder setId(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        id_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string id = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearId() {
+        id_ = getDefaultInstance().getId();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string id = 1;</code>
+       * @param value The bytes for id to set.
+       * @return This builder for chaining.
+       */
+      public Builder setIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        id_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private boolean isRemote_ ;
+      /**
+       * <code>bool is_remote = 2;</code>
+       * @return The isRemote.
+       */
+      @java.lang.Override
+      public boolean getIsRemote() {
+        return isRemote_;
+      }
+      /**
+       * <code>bool is_remote = 2;</code>
+       * @param value The isRemote to set.
+       * @return This builder for chaining.
+       */
+      public Builder setIsRemote(boolean value) {
+        
+        isRemote_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool is_remote = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearIsRemote() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        isRemote_ = false;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:littlehorse.TagsCachePb.CachedTagPb)
+    }
+
+    // @@protoc_insertion_point(class_scope:littlehorse.TagsCachePb.CachedTagPb)
+    private static final io.littlehorse.common.proto.TagsCachePb.CachedTagPb DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.littlehorse.common.proto.TagsCachePb.CachedTagPb();
+    }
+
+    public static io.littlehorse.common.proto.TagsCachePb.CachedTagPb getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<CachedTagPb>
+        PARSER = new com.google.protobuf.AbstractParser<CachedTagPb>() {
+      @java.lang.Override
+      public CachedTagPb parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<CachedTagPb> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<CachedTagPb> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.littlehorse.common.proto.TagsCachePb.CachedTagPb getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public static final int CACHED_TAGS_FIELD_NUMBER = 1;
   @SuppressWarnings("serial")
-  private com.google.protobuf.LazyStringList tagIds_;
+  private java.util.List<io.littlehorse.common.proto.TagsCachePb.CachedTagPb> cachedTags_;
   /**
-   * <code>repeated string tag_ids = 1;</code>
-   * @return A list containing the tagIds.
+   * <code>repeated .littlehorse.TagsCachePb.CachedTagPb cached_tags = 1;</code>
    */
-  public com.google.protobuf.ProtocolStringList
-      getTagIdsList() {
-    return tagIds_;
+  @java.lang.Override
+  public java.util.List<io.littlehorse.common.proto.TagsCachePb.CachedTagPb> getCachedTagsList() {
+    return cachedTags_;
   }
   /**
-   * <code>repeated string tag_ids = 1;</code>
-   * @return The count of tagIds.
+   * <code>repeated .littlehorse.TagsCachePb.CachedTagPb cached_tags = 1;</code>
    */
-  public int getTagIdsCount() {
-    return tagIds_.size();
+  @java.lang.Override
+  public java.util.List<? extends io.littlehorse.common.proto.TagsCachePb.CachedTagPbOrBuilder> 
+      getCachedTagsOrBuilderList() {
+    return cachedTags_;
   }
   /**
-   * <code>repeated string tag_ids = 1;</code>
-   * @param index The index of the element to return.
-   * @return The tagIds at the given index.
+   * <code>repeated .littlehorse.TagsCachePb.CachedTagPb cached_tags = 1;</code>
    */
-  public java.lang.String getTagIds(int index) {
-    return tagIds_.get(index);
+  @java.lang.Override
+  public int getCachedTagsCount() {
+    return cachedTags_.size();
   }
   /**
-   * <code>repeated string tag_ids = 1;</code>
-   * @param index The index of the value to return.
-   * @return The bytes of the tagIds at the given index.
+   * <code>repeated .littlehorse.TagsCachePb.CachedTagPb cached_tags = 1;</code>
    */
-  public com.google.protobuf.ByteString
-      getTagIdsBytes(int index) {
-    return tagIds_.getByteString(index);
+  @java.lang.Override
+  public io.littlehorse.common.proto.TagsCachePb.CachedTagPb getCachedTags(int index) {
+    return cachedTags_.get(index);
+  }
+  /**
+   * <code>repeated .littlehorse.TagsCachePb.CachedTagPb cached_tags = 1;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.TagsCachePb.CachedTagPbOrBuilder getCachedTagsOrBuilder(
+      int index) {
+    return cachedTags_.get(index);
   }
 
   private byte memoizedIsInitialized = -1;
@@ -94,8 +727,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    for (int i = 0; i < tagIds_.size(); i++) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, tagIds_.getRaw(i));
+    for (int i = 0; i < cachedTags_.size(); i++) {
+      output.writeMessage(1, cachedTags_.get(i));
     }
     getUnknownFields().writeTo(output);
   }
@@ -106,13 +739,9 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    {
-      int dataSize = 0;
-      for (int i = 0; i < tagIds_.size(); i++) {
-        dataSize += computeStringSizeNoTag(tagIds_.getRaw(i));
-      }
-      size += dataSize;
-      size += 1 * getTagIdsList().size();
+    for (int i = 0; i < cachedTags_.size(); i++) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(1, cachedTags_.get(i));
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -129,8 +758,8 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.common.proto.TagsCachePb other = (io.littlehorse.common.proto.TagsCachePb) obj;
 
-    if (!getTagIdsList()
-        .equals(other.getTagIdsList())) return false;
+    if (!getCachedTagsList()
+        .equals(other.getCachedTagsList())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -142,9 +771,9 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (getTagIdsCount() > 0) {
-      hash = (37 * hash) + TAG_IDS_FIELD_NUMBER;
-      hash = (53 * hash) + getTagIdsList().hashCode();
+    if (getCachedTagsCount() > 0) {
+      hash = (37 * hash) + CACHED_TAGS_FIELD_NUMBER;
+      hash = (53 * hash) + getCachedTagsList().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -275,7 +904,12 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      tagIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      if (cachedTagsBuilder_ == null) {
+        cachedTags_ = java.util.Collections.emptyList();
+      } else {
+        cachedTags_ = null;
+        cachedTagsBuilder_.clear();
+      }
       bitField0_ = (bitField0_ & ~0x00000001);
       return this;
     }
@@ -310,11 +944,15 @@ private static final long serialVersionUID = 0L;
     }
 
     private void buildPartialRepeatedFields(io.littlehorse.common.proto.TagsCachePb result) {
-      if (((bitField0_ & 0x00000001) != 0)) {
-        tagIds_ = tagIds_.getUnmodifiableView();
-        bitField0_ = (bitField0_ & ~0x00000001);
+      if (cachedTagsBuilder_ == null) {
+        if (((bitField0_ & 0x00000001) != 0)) {
+          cachedTags_ = java.util.Collections.unmodifiableList(cachedTags_);
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
+        result.cachedTags_ = cachedTags_;
+      } else {
+        result.cachedTags_ = cachedTagsBuilder_.build();
       }
-      result.tagIds_ = tagIds_;
     }
 
     private void buildPartial0(io.littlehorse.common.proto.TagsCachePb result) {
@@ -365,15 +1003,31 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.common.proto.TagsCachePb other) {
       if (other == io.littlehorse.common.proto.TagsCachePb.getDefaultInstance()) return this;
-      if (!other.tagIds_.isEmpty()) {
-        if (tagIds_.isEmpty()) {
-          tagIds_ = other.tagIds_;
-          bitField0_ = (bitField0_ & ~0x00000001);
-        } else {
-          ensureTagIdsIsMutable();
-          tagIds_.addAll(other.tagIds_);
+      if (cachedTagsBuilder_ == null) {
+        if (!other.cachedTags_.isEmpty()) {
+          if (cachedTags_.isEmpty()) {
+            cachedTags_ = other.cachedTags_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureCachedTagsIsMutable();
+            cachedTags_.addAll(other.cachedTags_);
+          }
+          onChanged();
         }
-        onChanged();
+      } else {
+        if (!other.cachedTags_.isEmpty()) {
+          if (cachedTagsBuilder_.isEmpty()) {
+            cachedTagsBuilder_.dispose();
+            cachedTagsBuilder_ = null;
+            cachedTags_ = other.cachedTags_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+            cachedTagsBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getCachedTagsFieldBuilder() : null;
+          } else {
+            cachedTagsBuilder_.addAllMessages(other.cachedTags_);
+          }
+        }
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -402,9 +1056,16 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 10: {
-              java.lang.String s = input.readStringRequireUtf8();
-              ensureTagIdsIsMutable();
-              tagIds_.add(s);
+              io.littlehorse.common.proto.TagsCachePb.CachedTagPb m =
+                  input.readMessage(
+                      io.littlehorse.common.proto.TagsCachePb.CachedTagPb.parser(),
+                      extensionRegistry);
+              if (cachedTagsBuilder_ == null) {
+                ensureCachedTagsIsMutable();
+                cachedTags_.add(m);
+              } else {
+                cachedTagsBuilder_.addMessage(m);
+              }
               break;
             } // case 10
             default: {
@@ -424,108 +1085,244 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private com.google.protobuf.LazyStringList tagIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-    private void ensureTagIdsIsMutable() {
+    private java.util.List<io.littlehorse.common.proto.TagsCachePb.CachedTagPb> cachedTags_ =
+      java.util.Collections.emptyList();
+    private void ensureCachedTagsIsMutable() {
       if (!((bitField0_ & 0x00000001) != 0)) {
-        tagIds_ = new com.google.protobuf.LazyStringArrayList(tagIds_);
+        cachedTags_ = new java.util.ArrayList<io.littlehorse.common.proto.TagsCachePb.CachedTagPb>(cachedTags_);
         bitField0_ |= 0x00000001;
        }
     }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.common.proto.TagsCachePb.CachedTagPb, io.littlehorse.common.proto.TagsCachePb.CachedTagPb.Builder, io.littlehorse.common.proto.TagsCachePb.CachedTagPbOrBuilder> cachedTagsBuilder_;
+
     /**
-     * <code>repeated string tag_ids = 1;</code>
-     * @return A list containing the tagIds.
+     * <code>repeated .littlehorse.TagsCachePb.CachedTagPb cached_tags = 1;</code>
      */
-    public com.google.protobuf.ProtocolStringList
-        getTagIdsList() {
-      return tagIds_.getUnmodifiableView();
+    public java.util.List<io.littlehorse.common.proto.TagsCachePb.CachedTagPb> getCachedTagsList() {
+      if (cachedTagsBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(cachedTags_);
+      } else {
+        return cachedTagsBuilder_.getMessageList();
+      }
     }
     /**
-     * <code>repeated string tag_ids = 1;</code>
-     * @return The count of tagIds.
+     * <code>repeated .littlehorse.TagsCachePb.CachedTagPb cached_tags = 1;</code>
      */
-    public int getTagIdsCount() {
-      return tagIds_.size();
+    public int getCachedTagsCount() {
+      if (cachedTagsBuilder_ == null) {
+        return cachedTags_.size();
+      } else {
+        return cachedTagsBuilder_.getCount();
+      }
     }
     /**
-     * <code>repeated string tag_ids = 1;</code>
-     * @param index The index of the element to return.
-     * @return The tagIds at the given index.
+     * <code>repeated .littlehorse.TagsCachePb.CachedTagPb cached_tags = 1;</code>
      */
-    public java.lang.String getTagIds(int index) {
-      return tagIds_.get(index);
+    public io.littlehorse.common.proto.TagsCachePb.CachedTagPb getCachedTags(int index) {
+      if (cachedTagsBuilder_ == null) {
+        return cachedTags_.get(index);
+      } else {
+        return cachedTagsBuilder_.getMessage(index);
+      }
     }
     /**
-     * <code>repeated string tag_ids = 1;</code>
-     * @param index The index of the value to return.
-     * @return The bytes of the tagIds at the given index.
+     * <code>repeated .littlehorse.TagsCachePb.CachedTagPb cached_tags = 1;</code>
      */
-    public com.google.protobuf.ByteString
-        getTagIdsBytes(int index) {
-      return tagIds_.getByteString(index);
-    }
-    /**
-     * <code>repeated string tag_ids = 1;</code>
-     * @param index The index to set the value at.
-     * @param value The tagIds to set.
-     * @return This builder for chaining.
-     */
-    public Builder setTagIds(
-        int index, java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      ensureTagIdsIsMutable();
-      tagIds_.set(index, value);
-      onChanged();
+    public Builder setCachedTags(
+        int index, io.littlehorse.common.proto.TagsCachePb.CachedTagPb value) {
+      if (cachedTagsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureCachedTagsIsMutable();
+        cachedTags_.set(index, value);
+        onChanged();
+      } else {
+        cachedTagsBuilder_.setMessage(index, value);
+      }
       return this;
     }
     /**
-     * <code>repeated string tag_ids = 1;</code>
-     * @param value The tagIds to add.
-     * @return This builder for chaining.
+     * <code>repeated .littlehorse.TagsCachePb.CachedTagPb cached_tags = 1;</code>
      */
-    public Builder addTagIds(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      ensureTagIdsIsMutable();
-      tagIds_.add(value);
-      onChanged();
+    public Builder setCachedTags(
+        int index, io.littlehorse.common.proto.TagsCachePb.CachedTagPb.Builder builderForValue) {
+      if (cachedTagsBuilder_ == null) {
+        ensureCachedTagsIsMutable();
+        cachedTags_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        cachedTagsBuilder_.setMessage(index, builderForValue.build());
+      }
       return this;
     }
     /**
-     * <code>repeated string tag_ids = 1;</code>
-     * @param values The tagIds to add.
-     * @return This builder for chaining.
+     * <code>repeated .littlehorse.TagsCachePb.CachedTagPb cached_tags = 1;</code>
      */
-    public Builder addAllTagIds(
-        java.lang.Iterable<java.lang.String> values) {
-      ensureTagIdsIsMutable();
-      com.google.protobuf.AbstractMessageLite.Builder.addAll(
-          values, tagIds_);
-      onChanged();
+    public Builder addCachedTags(io.littlehorse.common.proto.TagsCachePb.CachedTagPb value) {
+      if (cachedTagsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureCachedTagsIsMutable();
+        cachedTags_.add(value);
+        onChanged();
+      } else {
+        cachedTagsBuilder_.addMessage(value);
+      }
       return this;
     }
     /**
-     * <code>repeated string tag_ids = 1;</code>
-     * @return This builder for chaining.
+     * <code>repeated .littlehorse.TagsCachePb.CachedTagPb cached_tags = 1;</code>
      */
-    public Builder clearTagIds() {
-      tagIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-      bitField0_ = (bitField0_ & ~0x00000001);
-      onChanged();
+    public Builder addCachedTags(
+        int index, io.littlehorse.common.proto.TagsCachePb.CachedTagPb value) {
+      if (cachedTagsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureCachedTagsIsMutable();
+        cachedTags_.add(index, value);
+        onChanged();
+      } else {
+        cachedTagsBuilder_.addMessage(index, value);
+      }
       return this;
     }
     /**
-     * <code>repeated string tag_ids = 1;</code>
-     * @param value The bytes of the tagIds to add.
-     * @return This builder for chaining.
+     * <code>repeated .littlehorse.TagsCachePb.CachedTagPb cached_tags = 1;</code>
      */
-    public Builder addTagIdsBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      ensureTagIdsIsMutable();
-      tagIds_.add(value);
-      onChanged();
+    public Builder addCachedTags(
+        io.littlehorse.common.proto.TagsCachePb.CachedTagPb.Builder builderForValue) {
+      if (cachedTagsBuilder_ == null) {
+        ensureCachedTagsIsMutable();
+        cachedTags_.add(builderForValue.build());
+        onChanged();
+      } else {
+        cachedTagsBuilder_.addMessage(builderForValue.build());
+      }
       return this;
+    }
+    /**
+     * <code>repeated .littlehorse.TagsCachePb.CachedTagPb cached_tags = 1;</code>
+     */
+    public Builder addCachedTags(
+        int index, io.littlehorse.common.proto.TagsCachePb.CachedTagPb.Builder builderForValue) {
+      if (cachedTagsBuilder_ == null) {
+        ensureCachedTagsIsMutable();
+        cachedTags_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        cachedTagsBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.TagsCachePb.CachedTagPb cached_tags = 1;</code>
+     */
+    public Builder addAllCachedTags(
+        java.lang.Iterable<? extends io.littlehorse.common.proto.TagsCachePb.CachedTagPb> values) {
+      if (cachedTagsBuilder_ == null) {
+        ensureCachedTagsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, cachedTags_);
+        onChanged();
+      } else {
+        cachedTagsBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.TagsCachePb.CachedTagPb cached_tags = 1;</code>
+     */
+    public Builder clearCachedTags() {
+      if (cachedTagsBuilder_ == null) {
+        cachedTags_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+      } else {
+        cachedTagsBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.TagsCachePb.CachedTagPb cached_tags = 1;</code>
+     */
+    public Builder removeCachedTags(int index) {
+      if (cachedTagsBuilder_ == null) {
+        ensureCachedTagsIsMutable();
+        cachedTags_.remove(index);
+        onChanged();
+      } else {
+        cachedTagsBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.TagsCachePb.CachedTagPb cached_tags = 1;</code>
+     */
+    public io.littlehorse.common.proto.TagsCachePb.CachedTagPb.Builder getCachedTagsBuilder(
+        int index) {
+      return getCachedTagsFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .littlehorse.TagsCachePb.CachedTagPb cached_tags = 1;</code>
+     */
+    public io.littlehorse.common.proto.TagsCachePb.CachedTagPbOrBuilder getCachedTagsOrBuilder(
+        int index) {
+      if (cachedTagsBuilder_ == null) {
+        return cachedTags_.get(index);  } else {
+        return cachedTagsBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.TagsCachePb.CachedTagPb cached_tags = 1;</code>
+     */
+    public java.util.List<? extends io.littlehorse.common.proto.TagsCachePb.CachedTagPbOrBuilder> 
+         getCachedTagsOrBuilderList() {
+      if (cachedTagsBuilder_ != null) {
+        return cachedTagsBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(cachedTags_);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.TagsCachePb.CachedTagPb cached_tags = 1;</code>
+     */
+    public io.littlehorse.common.proto.TagsCachePb.CachedTagPb.Builder addCachedTagsBuilder() {
+      return getCachedTagsFieldBuilder().addBuilder(
+          io.littlehorse.common.proto.TagsCachePb.CachedTagPb.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .littlehorse.TagsCachePb.CachedTagPb cached_tags = 1;</code>
+     */
+    public io.littlehorse.common.proto.TagsCachePb.CachedTagPb.Builder addCachedTagsBuilder(
+        int index) {
+      return getCachedTagsFieldBuilder().addBuilder(
+          index, io.littlehorse.common.proto.TagsCachePb.CachedTagPb.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .littlehorse.TagsCachePb.CachedTagPb cached_tags = 1;</code>
+     */
+    public java.util.List<io.littlehorse.common.proto.TagsCachePb.CachedTagPb.Builder> 
+         getCachedTagsBuilderList() {
+      return getCachedTagsFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.common.proto.TagsCachePb.CachedTagPb, io.littlehorse.common.proto.TagsCachePb.CachedTagPb.Builder, io.littlehorse.common.proto.TagsCachePb.CachedTagPbOrBuilder> 
+        getCachedTagsFieldBuilder() {
+      if (cachedTagsBuilder_ == null) {
+        cachedTagsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            io.littlehorse.common.proto.TagsCachePb.CachedTagPb, io.littlehorse.common.proto.TagsCachePb.CachedTagPb.Builder, io.littlehorse.common.proto.TagsCachePb.CachedTagPbOrBuilder>(
+                cachedTags_,
+                ((bitField0_ & 0x00000001) != 0),
+                getParentForChildren(),
+                isClean());
+        cachedTags_ = null;
+      }
+      return cachedTagsBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

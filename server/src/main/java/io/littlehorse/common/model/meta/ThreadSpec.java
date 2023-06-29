@@ -19,10 +19,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 
 @Slf4j
+@Setter
+@Getter
 public class ThreadSpec extends LHSerializable<ThreadSpecPb> {
 
     public String name;

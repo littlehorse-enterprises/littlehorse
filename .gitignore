@@ -19,6 +19,5 @@ build/lhctl
 # Intellij
 */.idea
 .idea/
-
 # Others
 local-dev/certs/

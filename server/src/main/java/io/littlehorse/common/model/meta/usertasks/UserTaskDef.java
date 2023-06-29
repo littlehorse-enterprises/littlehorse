@@ -10,6 +10,7 @@ import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.UserTaskDefPb;
 import io.littlehorse.jlib.common.proto.UserTaskFieldPb;
+import io.littlehorse.server.streamsimpl.storeinternals.GETableIndex;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -58,6 +59,11 @@ public class UserTaskDef extends GETable<UserTaskDefPb> {
 
     public Date getCreatedAt() {
         return createdAt;
+    }
+
+    @Override
+    public List<GETableIndex> getIndexes() {
+        return new ArrayList<>();
     }
 
     public UserTaskDefId getObjectId() {
