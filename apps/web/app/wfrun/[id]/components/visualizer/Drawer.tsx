@@ -15,7 +15,7 @@ export const Drawer = ({output, thread, data}:any) => {
             <label>THREADSPEC</label>
             <div className="input">{data?.entrypointThreadName}</div>
 
-            {output ? <div >
+            {output ? <div className="text" >
                 <label>TYPE</label>
                 <div className="input">{output.type}</div>
             </div> : undefined}

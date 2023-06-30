@@ -64,9 +64,15 @@ export const Drawer = ({output, thread, data}:any) => {
             
         </div>
 
-        {output.type == 'TASK' ? <div>
-            <h4>Task Node Information</h4>
-            <div style={{marginBottom:'20px'}}>{output.name}</div>
+        {output.type == 'TASK' ? <div style={{marginBottom:'20px'}}>
+                <div className="card" style={{marginBottom:'20px'}}>
+                    <img src="/TASKICON.svg" />
+                    <div className="text">
+                    <h4>Task Node Information</h4>
+                    <div >{output.name}</div>
+                </div>
+            </div>
+
             <div className="table" style={{marginBottom:'20px'}}>
                 <table>
                     <caption>TaskDef Variables</caption>

@@ -90,4 +90,34 @@
             }
         }
     }
+
+    .card{
+        display: flex;
+justify-content: center;
+align-items: center;
+gap: 12px;
+align-self: stretch;
+
+        color: var(--color-mild-light, #9098A0);
+        font-size: 12px;
+        font-family: "Inter";
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+
+        .text{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+        }
+        h4{
+            color: var(--color-bright-light, #EDEEF0);
+        font-size: 14px;
+        font-family: "Inter";
+        font-style: normal;
+        font-weight: 600;
+        line-height: normal;
+        }
+    }
 }
