@@ -44,7 +44,9 @@ export const Drawer = ({output, thread, data}:any) => {
         <div className="frame" style={{overflow:"auto"}}>
             {/* {JSON.stringify(data, null,2)} */}
             {JSON.stringify(output, null,2)}
+            {/* {JSON.stringify(thread, null,2)} */}
         </div>
         <div className="flex-1"></div>
     </div>
 }
+//variableDefs

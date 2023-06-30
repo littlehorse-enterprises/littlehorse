@@ -1,4 +1,3 @@
-import { Button } from "ui"
 
 export const Drawer = ({output, thread, data}:any) => {
     return <div className="drawer">
@@ -29,21 +28,20 @@ export const Drawer = ({output, thread, data}:any) => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>A</td>
-                        <td>B</td>
-                    </tr>
-                    <tr>
-                        <td>A</td>
-                        <td>B</td>
-                    </tr>
+                    {data?.threadSpecs[data?.entrypointThreadName]?.variableDefs?.map( (v, i) => <tr key={i}>
+                        <td>{v.name}</td>
+                        <td>{v.type}</td>
+                        {/* <td>{v.required}</td> */}
+                    </tr>)}
+
                 </tbody>
             </table>
             
         </div>
         <div className="frame" style={{overflow:"auto"}}>
-            {/* {JSON.stringify(data, null,2)} */}
-            {JSON.stringify(output, null,2)}
+
+            {JSON.stringify(data, null,2)}
+            {/* {JSON.stringify(output, null,2)} */}
         </div>
         <div className="flex-1"></div>
     </div>
