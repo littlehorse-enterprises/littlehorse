@@ -1,8 +1,17 @@
 .pop-up-wfrun-information {
+
+    padding: 16px;
+
     .header {
         display: inline-flex;
         align-items: center;
         gap: 20px;
         padding: 8px 0;
+    }
+
+    .snippet {
+        pre {
+            margin: 0;
+        }
     }
 }
