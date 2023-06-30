@@ -3,14 +3,11 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 //a11yDark
 import { stackoverflowDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
-interface props {
-}
-
-const Snippet = ({json}: props) => {
+const Snippet = ({value, language='json'}) => {
     
     return (<div className='frame'>
-        <SyntaxHighlighter style={stackoverflowDark} language="json">{
-            `${JSON.stringify(json, null, 2)}`
+        <SyntaxHighlighter style={stackoverflowDark} language={language}>{
+            `${language === 'json' && JSON.stringify(value, null, 2)}`
         }</SyntaxHighlighter>
     </div>);
 }
