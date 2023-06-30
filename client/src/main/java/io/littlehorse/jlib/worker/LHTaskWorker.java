@@ -19,16 +19,14 @@ import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * The LHTaskWorker talks to the LH Servers and executes a specified Task Method every
  * time a Task is scheduled.
  */
+@Slf4j
 public class LHTaskWorker implements Closeable {
-
-    private Logger log = LoggerFactory.getLogger(LHTaskWorker.class);
 
     public static HashMap<Class<?>, VariableTypePb> javaTypeToLHType = new HashMap<>() {
         {

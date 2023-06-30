@@ -7,7 +7,7 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
-import io.grpc.TlsServerCredentials;
+import io.grpc.ServerCredentials;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHBadRequestError;
@@ -63,7 +63,7 @@ import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.HostInfoPb;
-import io.littlehorse.server.listener.ServerListenerConfig;
+import io.littlehorse.server.listener.AdvertisedListenerConfig;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.storeinternals.LHROStoreWrapper;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
@@ -132,15 +132,16 @@ public class BackendInternalComms implements Closeable {
 
         ServerBuilder<?> builder;
         Executor executor = Executors.newFixedThreadPool(4);
-        clientCreds = config.getInternalServerClientCreds();
-        TlsServerCredentials.Builder security = config.getInternalServerCreds();
+        clientCreds = config.getInternalClientCreds();
+
+        ServerCredentials security = config.getInternalServerCreds();
         if (security == null) {
             builder = ServerBuilder.forPort(config.getInternalBindPort());
         } else {
             builder =
                 Grpc.newServerBuilderForPort(
                     config.getInternalBindPort(),
-                    security.build()
+                    config.getInternalServerCreds()
                 );
         }
 
@@ -874,7 +875,7 @@ public class BackendInternalComms implements Closeable {
                 .stream()
                 .collect(
                     Collectors.toMap(
-                        ServerListenerConfig::getName,
+                        AdvertisedListenerConfig::getName,
                         listenerConfig ->
                             HostInfoPb
                                 .newBuilder()

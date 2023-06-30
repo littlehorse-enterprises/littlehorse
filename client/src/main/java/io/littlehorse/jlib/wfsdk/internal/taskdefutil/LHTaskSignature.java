@@ -9,12 +9,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class LHTaskSignature {
-
-    private Logger log = LoggerFactory.getLogger(LHTaskSignature.class);
 
     List<VariableTypePb> paramTypes;
     List<String> varNames;

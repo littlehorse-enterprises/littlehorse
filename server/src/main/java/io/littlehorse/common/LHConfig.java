@@ -2,6 +2,7 @@ package io.littlehorse.common;
 
 import com.google.common.base.Strings;
 import io.grpc.ChannelCredentials;
+import io.grpc.ServerCredentials;
 import io.grpc.TlsChannelCredentials;
 import io.grpc.TlsServerCredentials;
 import io.littlehorse.common.model.meta.VariableAssignment;
@@ -12,6 +13,7 @@ import io.littlehorse.jlib.common.config.ConfigBase;
 import io.littlehorse.jlib.common.exception.LHMisconfigurationException;
 import io.littlehorse.jlib.common.proto.VariableAssignmentPb.SourceCase;
 import io.littlehorse.server.auth.AuthorizationProtocol;
+import io.littlehorse.server.listener.AdvertisedListenerConfig;
 import io.littlehorse.server.listener.ListenerProtocol;
 import io.littlehorse.server.listener.ServerListenerConfig;
 import io.littlehorse.server.listener.TlsConfig;
@@ -21,6 +23,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -75,10 +79,6 @@ public class LHConfig extends ConfigBase {
     public static final String INTERNAL_ADVERTISED_PORT_KEY =
         "LHS_INTERNAL_ADVERTISED_PORT";
 
-    public static final String CA_CERT_KEY = "LHS_CA_CERT";
-    public static final String SERVER_CERT_KEY = "LHS_SERVER_CERT";
-    public static final String SERVER_KEY_KEY = "LHS_SERVER_KEY";
-
     public static final String INTERNAL_CA_CERT_KEY = "LHS_INTERNAL_CA_CERT";
     public static final String INTERNAL_SERVER_CERT_KEY = "LHS_INTERNAL_SERVER_CERT";
     public static final String INTERNAL_SERVER_KEY_KEY = "LHS_INTERNAL_SERVER_KEY";
@@ -100,13 +100,15 @@ public class LHConfig extends ConfigBase {
 
     // ADVERTISED LISTENERS
     public static final String ADVERTISED_LISTENERS_KEY = "LHS_ADVERTISED_LISTENERS";
-    public static final String ADVERTISED_LISTENERS_PROTOCOL_MAP_KEY =
-        "LHS_ADVERTISED_LISTENERS_PROTOCOL_MAP";
-    public static final String ADVERTISED_LISTENERS_AUTHORIZATION_MAP_KEY =
-        "LHS_ADVERTISED_LISTENERS_AUTHORIZATION_MAP";
-    private List<ServerListenerConfig> advertisedListenerConfigs;
-    private Map<String, ListenerProtocol> advertisedListenersProtocolMap;
-    private Map<String, AuthorizationProtocol> advertisedListenersAuthorizationMap;
+    public static final String LISTENERS_KEY = "LHS_LISTENERS";
+    public static final String LISTENERS_PROTOCOL_MAP_KEY =
+        "LHS_LISTENERS_PROTOCOL_MAP";
+    public static final String LISTENERS_AUTHORIZATION_MAP_KEY =
+        "LHS_LISTENERS_AUTHORIZATION_MAP";
+    private List<ServerListenerConfig> listenerConfigs;
+    private List<AdvertisedListenerConfig> advertisedListenerConfigs;
+    private Map<String, ListenerProtocol> listenersProtocolMap;
+    private Map<String, AuthorizationProtocol> listenersAuthorizationMap;
 
     protected String[] getEnvKeyPrefixes() {
         return new String[] { "LHS_" };
@@ -349,10 +351,8 @@ public class LHConfig extends ConfigBase {
         );
     }
 
-    public OAuthConfig getOAuthConfigByAdvertisedListenerName(
-        String advertisedListenerName
-    ) {
-        String configPrefix = "LHS_ADVERTISED_LISTENER_" + advertisedListenerName;
+    public OAuthConfig getOAuthConfigByListener(String advertisedListenerName) {
+        String configPrefix = "LHS_LISTENER_" + advertisedListenerName;
 
         String clientId = getOrSetDefault(configPrefix + "_CLIENT_ID", null);
         String clientSecret = getOrSetDefault(configPrefix + "_CLIENT_SECRET", null);
@@ -360,6 +360,18 @@ public class LHConfig extends ConfigBase {
             configPrefix + "_AUTHORIZATION_SERVER",
             null
         );
+
+        String clientIdFile = getOrSetDefault(configPrefix + "_CLIENT_ID_FILE", null);
+        String clientSecretFile = getOrSetDefault(
+            configPrefix + "_CLIENT_SECRET_FILE",
+            null
+        );
+
+        if (clientIdFile != null && clientSecretFile != null) {
+            log.info("Loading OAuth credentials form files");
+            clientId = readFile(clientIdFile);
+            clientSecret = readFile(clientSecretFile);
+        }
 
         if (clientId == null || clientSecret == null || authorizationServer == null) {
             throw new LHMisconfigurationException(
@@ -384,10 +396,19 @@ public class LHConfig extends ConfigBase {
         }
     }
 
-    public TlsConfig getTlsConfigByAdvertisedListenerName(
-        String advertisedListenerName
-    ) {
-        String configPrefix = "LHS_ADVERTISED_LISTENER_" + advertisedListenerName;
+    private String readFile(String clientIdFile) {
+        try {
+            return Files.readString(Path.of(clientIdFile)).trim();
+        } catch (IOException e) {
+            throw new LHMisconfigurationException(
+                "Error loading file: " + clientIdFile,
+                e
+            );
+        }
+    }
+
+    public TlsConfig getTlsConfigByListener(String advertisedListenerName) {
+        String configPrefix = "LHS_LISTENER_" + advertisedListenerName;
 
         String caCertFile = getOrSetDefault(configPrefix + "_CA_CERT", null);
         String serverCertFile = getOrSetDefault(configPrefix + "_CERT", null);
@@ -411,18 +432,18 @@ public class LHConfig extends ConfigBase {
             .build();
     }
 
-    public Map<String, AuthorizationProtocol> getAdvertisedListenersAuthorizationMap() {
-        if (advertisedListenersAuthorizationMap != null) {
-            return advertisedListenersAuthorizationMap;
+    public Map<String, AuthorizationProtocol> getListenersAuthorizationMap() {
+        if (listenersAuthorizationMap != null) {
+            return listenersAuthorizationMap;
         }
 
         String rawAuthProtocolMap = getOrSetDefault(
-            LHConfig.ADVERTISED_LISTENERS_AUTHORIZATION_MAP_KEY,
+            LHConfig.LISTENERS_AUTHORIZATION_MAP_KEY,
             null
         );
 
         if (Strings.isNullOrEmpty(rawAuthProtocolMap)) {
-            return advertisedListenersAuthorizationMap = Map.of();
+            return listenersAuthorizationMap = Map.of();
         }
 
         String regexAllAuthProtocols = Arrays
@@ -436,15 +457,14 @@ public class LHConfig extends ConfigBase {
             )
         ) {
             throw new LHMisconfigurationException(
-                "Invalid configuration: " +
-                LHConfig.ADVERTISED_LISTENERS_AUTHORIZATION_MAP_KEY
+                "Invalid configuration: " + LHConfig.LISTENERS_AUTHORIZATION_MAP_KEY
             );
         }
 
         List<String> rawAuthProtocols = Arrays.asList(rawAuthProtocolMap.split(","));
 
         return (
-            advertisedListenersAuthorizationMap =
+            listenersAuthorizationMap =
                 rawAuthProtocols
                     .stream()
                     .map(protocolMap -> protocolMap.split(":"))
@@ -457,13 +477,13 @@ public class LHConfig extends ConfigBase {
         );
     }
 
-    public Map<String, ListenerProtocol> getAdvertisedListenersProtocolMap() {
-        if (advertisedListenersProtocolMap != null) {
-            return advertisedListenersProtocolMap;
+    public Map<String, ListenerProtocol> getListenersProtocolMap() {
+        if (listenersProtocolMap != null) {
+            return listenersProtocolMap;
         }
 
         String rawProtocolMap = getOrSetDefault(
-            LHConfig.ADVERTISED_LISTENERS_PROTOCOL_MAP_KEY,
+            LHConfig.LISTENERS_PROTOCOL_MAP_KEY,
             "PLAIN:PLAIN"
         );
 
@@ -476,15 +496,14 @@ public class LHConfig extends ConfigBase {
             !rawProtocolMap.matches("([a-zA-Z0-9_]+:(" + regexAllProtocols + ")+,?)+")
         ) {
             throw new LHMisconfigurationException(
-                "Invalid configuration: " +
-                LHConfig.ADVERTISED_LISTENERS_PROTOCOL_MAP_KEY
+                "Invalid configuration: " + LHConfig.LISTENERS_PROTOCOL_MAP_KEY
             );
         }
 
         List<String> rawProtocols = Arrays.asList(rawProtocolMap.split(","));
 
         return (
-            advertisedListenersProtocolMap =
+            listenersProtocolMap =
                 rawProtocols
                     .stream()
                     .map(protocolMap -> protocolMap.split(":"))
@@ -497,7 +516,72 @@ public class LHConfig extends ConfigBase {
         );
     }
 
-    public List<ServerListenerConfig> getAdvertisedListeners() {
+    public List<ServerListenerConfig> getListeners() {
+        if (listenerConfigs != null) {
+            return listenerConfigs;
+        }
+
+        String rawListenersConfig = getOrSetDefault(
+            LHConfig.LISTENERS_KEY,
+            "PLAIN:5000"
+        );
+        Map<String, ListenerProtocol> protocolMap = getListenersProtocolMap();
+        Map<String, AuthorizationProtocol> authMap = getListenersAuthorizationMap();
+
+        if (!rawListenersConfig.matches("([a-zA-Z0-9_]+:\\d+,?)+")) {
+            throw new LHMisconfigurationException(
+                "Invalid configuration: " + LHConfig.LISTENERS_KEY
+            );
+        }
+
+        List<String> rawListenersConfigs = Arrays.asList(
+            rawListenersConfig.split(",")
+        );
+
+        listenerConfigs =
+            rawListenersConfigs
+                .stream()
+                .map(listener -> {
+                    String[] split = listener.split(":");
+                    String name = split[0].trim();
+                    String port = split[1].trim();
+                    ListenerProtocol protocol = protocolMap.get(name) == null
+                        ? ListenerProtocol.PLAIN
+                        : protocolMap.get(name);
+                    AuthorizationProtocol authProtocol = authMap.get(name) == null
+                        ? AuthorizationProtocol.NONE
+                        : authMap.get(name);
+
+                    return ServerListenerConfig
+                        .builder()
+                        .name(name)
+                        .port(Integer.parseInt(port))
+                        .protocol(protocol)
+                        .config(this)
+                        .authorizationProtocol(authProtocol)
+                        .build();
+                })
+                .toList();
+
+        int totalDifferentPorts = listenerConfigs
+            .stream()
+            .map(ServerListenerConfig::getPort)
+            .collect(Collectors.toSet())
+            .size();
+
+        if (totalDifferentPorts != listenerConfigs.size()) {
+            listenerConfigs = null;
+            throw new LHMisconfigurationException(
+                "Invalid configuration: " +
+                LHConfig.LISTENERS_KEY +
+                ". Ports should be different"
+            );
+        }
+
+        return listenerConfigs;
+    }
+
+    public List<AdvertisedListenerConfig> getAdvertisedListeners() {
         if (advertisedListenerConfigs != null) {
             return advertisedListenerConfigs;
         }
@@ -506,8 +590,6 @@ public class LHConfig extends ConfigBase {
             LHConfig.ADVERTISED_LISTENERS_KEY,
             "PLAIN://localhost:5000"
         );
-        Map<String, ListenerProtocol> protocolMap = getAdvertisedListenersProtocolMap();
-        Map<String, AuthorizationProtocol> authMap = getAdvertisedListenersAuthorizationMap();
 
         if (
             !rawListenersConfig.matches("([a-zA-Z0-9_]+://[a-zA-Z0-9.\\-]+:\\d+,?)+")
@@ -517,52 +599,29 @@ public class LHConfig extends ConfigBase {
             );
         }
 
-        List<String> rawListenersConfigs = Arrays.asList(
+        List<String> rawAdvertisedListenerConfigs = Arrays.asList(
             rawListenersConfig.split(",")
         );
 
-        List<ServerListenerConfig> listenersConfigs = rawListenersConfigs
-            .stream()
-            .map(listener -> {
-                String[] split = listener.split(":(//)?");
-                String name = split[0];
-                String host = split[1];
-                String port = split[2];
-                ListenerProtocol protocol = protocolMap.get(name) == null
-                    ? ListenerProtocol.PLAIN
-                    : protocolMap.get(name);
-                AuthorizationProtocol authProtocol = authMap.get(name) == null
-                    ? AuthorizationProtocol.NONE
-                    : authMap.get(name);
+        advertisedListenerConfigs =
+            rawAdvertisedListenerConfigs
+                .stream()
+                .map(listener -> {
+                    String[] split = listener.split(":(//)?");
+                    String name = split[0].trim();
+                    String host = split[1].trim();
+                    String port = split[2].trim();
 
-                return ServerListenerConfig
-                    .builder()
-                    .name(name)
-                    .host(host)
-                    .port(Integer.parseInt(port))
-                    .protocol(protocol)
-                    .config(this)
-                    .authorizationProtocol(authProtocol)
-                    .build();
-            })
-            .toList();
+                    return AdvertisedListenerConfig
+                        .builder()
+                        .name(name)
+                        .port(Integer.parseInt(port))
+                        .host(host)
+                        .build();
+                })
+                .toList();
 
-        int totalDifferentPorts = listenersConfigs
-            .stream()
-            .map(ServerListenerConfig::getPort)
-            .collect(Collectors.toSet())
-            .size();
-
-        if (totalDifferentPorts != listenersConfigs.size()) {
-            throw new LHMisconfigurationException(
-                "Invalid configuration: " +
-                LHConfig.ADVERTISED_LISTENERS_KEY +
-                ". Ports should be different"
-            );
-        }
-
-        advertisedListenerConfigs = listenersConfigs;
-        return listenersConfigs;
+        return advertisedListenerConfigs;
     }
 
     public void cleanup() {
@@ -597,7 +656,7 @@ public class LHConfig extends ConfigBase {
             org.apache.kafka.common.serialization.StringSerializer.class
         );
         conf.put(ProducerConfig.ACKS_CONFIG, "all");
-        initKafkaSecurity(conf);
+        addKafkaSecuritySettings(conf);
         return conf;
     }
 
@@ -611,7 +670,7 @@ public class LHConfig extends ConfigBase {
      *
      * Either way, this all should be configurable.
      */
-    private void initKafkaSecurity(Properties conf) {
+    private void addKafkaSecuritySettings(Properties conf) {
         String keystoreLoc = getOrSetDefault(KAFKA_KEYSTORE_KEY, null);
         String keystorePassword = getOrSetDefault(KAFKA_KEYSTORE_PASSWORD_KEY, null);
         String truststoreLoc = getOrSetDefault(KAFKA_TRUSTSTORE_KEY, null);
@@ -748,13 +807,13 @@ public class LHConfig extends ConfigBase {
         // props.put(StreamsConfig.RACK_AWARE_ASSIGNMENT_TAGS_CONFIG, "rack");
         // props.put(StreamsConfig.CLIENT_TAG_PREFIX + "rack", getRackId());
 
-        initKafkaSecurity(props);
+        addKafkaSecuritySettings(props);
 
         return props;
     }
 
     public String getRackId() {
-        return getOrSetDefault(LHConfig.RACK_ID_KEY, "unset-rack-id-bad-bad");
+        return getOrSetDefault(LHConfig.RACK_ID_KEY, "unset-rack-id");
     }
 
     public int getStreamsCommitInterval() {
@@ -814,33 +873,39 @@ public class LHConfig extends ConfigBase {
         }
     }
 
-    public LHConfig(Properties props) {
-        this.props = props;
+    public LHConfig() {
+        super();
+        initKafkaAdmin();
+    }
 
-        Properties akProperties = new Properties();
-        akProperties.put(
+    public LHConfig(String propertiesPath) {
+        super(propertiesPath);
+        initKafkaAdmin();
+    }
+
+    public LHConfig(Properties props) {
+        super(props);
+        initKafkaAdmin();
+    }
+
+    private void initKafkaAdmin() {
+        Properties kafkaSettings = new Properties();
+        kafkaSettings.put(
             AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG,
             getBootstrapServers()
         );
-        initKafkaSecurity(akProperties);
-        this.kafkaAdmin = Admin.create(akProperties);
+        addKafkaSecuritySettings(kafkaSettings);
+        kafkaAdmin = Admin.create(kafkaSettings);
     }
 
-    public TlsServerCredentials.Builder getServerCreds() {
-        String caCertFile = getOrSetDefault(CA_CERT_KEY, null);
-        String serverCertFile = getOrSetDefault(SERVER_CERT_KEY, null);
-        String serverKeyFile = getOrSetDefault(SERVER_KEY_KEY, null);
-        return getCreds(caCertFile, serverCertFile, serverKeyFile);
-    }
-
-    public TlsServerCredentials.Builder getInternalServerCreds() {
+    public ServerCredentials getInternalServerCreds() {
         String caCertFile = getOrSetDefault(INTERNAL_CA_CERT_KEY, null);
         String serverCertFile = getOrSetDefault(INTERNAL_SERVER_CERT_KEY, null);
         String serverKeyFile = getOrSetDefault(INTERNAL_SERVER_KEY_KEY, null);
         return getCreds(caCertFile, serverCertFile, serverKeyFile);
     }
 
-    public ChannelCredentials getInternalServerClientCreds() {
+    public ChannelCredentials getInternalClientCreds() {
         String caCertFile = getOrSetDefault(INTERNAL_CA_CERT_KEY, null);
         String serverCertFile = getOrSetDefault(INTERNAL_SERVER_CERT_KEY, null);
         String serverKeyFile = getOrSetDefault(INTERNAL_SERVER_KEY_KEY, null);
@@ -858,18 +923,17 @@ public class LHConfig extends ConfigBase {
         File rootCA = new File(caCertFile);
 
         try {
-            TlsChannelCredentials.Builder out = TlsChannelCredentials
+            return TlsChannelCredentials
                 .newBuilder()
                 .keyManager(serverCert, serverKey)
-                .trustManager(rootCA);
-
-            return out.build();
+                .trustManager(rootCA)
+                .build();
         } catch (IOException exn) {
             throw new RuntimeException(exn);
         }
     }
 
-    private TlsServerCredentials.Builder getCreds(
+    private ServerCredentials getCreds(
         String caCertFile,
         String serverCertFile,
         String serverKeyFile
@@ -889,15 +953,24 @@ public class LHConfig extends ConfigBase {
         File rootCA = new File(caCertFile);
 
         try {
-            TlsServerCredentials.Builder out = TlsServerCredentials
+            return TlsServerCredentials
                 .newBuilder()
                 .keyManager(serverCert, serverKey)
                 .trustManager(rootCA)
-                .clientAuth(TlsServerCredentials.ClientAuth.REQUIRE);
-
-            return out;
+                .clientAuth(TlsServerCredentials.ClientAuth.REQUIRE)
+                .build();
         } catch (IOException exn) {
             throw new RuntimeException(exn);
         }
+    }
+
+    @Override
+    public String toString() {
+        return props
+            .entrySet()
+            .stream()
+            .map(entry -> entry.getKey() + ": " + entry.getValue())
+            .sorted()
+            .collect(Collectors.joining("\n"));
     }
 }

@@ -2,14 +2,9 @@ package io.littlehorse;
 
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.server.KafkaStreamsServerImpl;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.NewTopic;
 
@@ -27,52 +22,24 @@ public class App {
         try {
             TimeUnit.SECONDS.sleep(3);
         } catch (InterruptedException ex) {
-            // ignored
+            log.warn("InterruptedException was ignored");
         }
 
         log.info("Done creating topics");
     }
 
-    private static String formatProperties(Properties configProps) {
-        return configProps
-            .entrySet()
-            .stream()
-            .map(entry -> entry.getKey() + ": " + entry.getValue())
-            .collect(Collectors.joining("\n"));
-    }
+    public static void main(String[] args)
+        throws IOException, InterruptedException, ExecutionException {
+        LHConfig config;
 
-    private static Properties loadProperties(String[] args) {
-        Properties configProps = new Properties();
-
-        if (args.length == 1) {
-            Path configPath = Path.of(args[0]);
-            log.info("Attempting to load config properties file from {}", configPath);
-
-            if (!Files.exists(configPath)) {
-                log.error("Couldn't find config file at {}", configPath);
-                System.exit(1);
-            }
-
-            try {
-                configProps.load(new FileInputStream(configPath.toFile()));
-            } catch (IOException exn) {
-                log.error("Failed to load config file, using defaults", exn);
-                System.exit(1);
-            }
+        if (args.length > 0) {
+            config = new LHConfig(args[0]);
         } else {
-            log.warn("WARNING: No config file provided, using defaults.");
+            config = new LHConfig();
         }
 
-        return configProps;
-    }
+        log.info("Settings:\n{}", config);
 
-    public static void main(String[] args)
-        throws InterruptedException, ExecutionException, IOException {
-        Properties configProps = loadProperties(args);
-
-        log.info("Settings:\n{}", formatProperties(configProps));
-
-        LHConfig config = new LHConfig(configProps);
         if (config.shouldCreateTopics()) {
             doIdempotentSetup(config);
         }

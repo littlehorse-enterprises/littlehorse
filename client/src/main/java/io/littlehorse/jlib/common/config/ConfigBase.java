@@ -1,27 +1,23 @@
 package io.littlehorse.jlib.common.config;
 
+import io.littlehorse.jlib.common.exception.ConfigurationFileException;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public abstract class ConfigBase {
-
-    private static final Logger log = LoggerFactory.getLogger(ConfigBase.class);
 
     protected Properties props;
 
     public ConfigBase(String propLocation) {
         props = new Properties();
-        FileInputStream inputStream = null;
         try {
-            inputStream = new FileInputStream(propLocation);
-            props.load(inputStream);
-            inputStream.close();
-        } catch (IOException exn) {
-            throw new RuntimeException(exn);
+            props.load(new FileInputStream(propLocation));
+        } catch (IOException e) {
+            throw new ConfigurationFileException(e);
         }
     }
 

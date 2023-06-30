@@ -31,13 +31,11 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class LHServerConnectionManager
     implements StreamObserver<RegisterTaskWorkerReplyPb>, Closeable {
-
-    private Logger log = LoggerFactory.getLogger(LHServerConnectionManager.class);
 
     public Object executable;
     public Method taskMethod;

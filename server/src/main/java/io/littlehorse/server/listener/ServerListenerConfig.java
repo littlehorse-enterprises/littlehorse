@@ -21,7 +21,6 @@ import lombok.Getter;
 public class ServerListenerConfig {
 
     private String name;
-    private String host;
     private int port;
     private ListenerProtocol protocol;
     private AuthorizationProtocol authorizationProtocol;
@@ -35,7 +34,6 @@ public class ServerListenerConfig {
         return (
             port == that.port &&
             Objects.equal(name, that.name) &&
-            Objects.equal(host, that.host) &&
             protocol == that.protocol &&
             authorizationProtocol == that.authorizationProtocol
         );
@@ -43,25 +41,21 @@ public class ServerListenerConfig {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(name, host, port, protocol, authorizationProtocol);
+        return Objects.hashCode(name, port, protocol, authorizationProtocol);
     }
 
     public ServerCredentials getCredentials() {
         try {
             return switch (protocol) {
                 case TLS -> {
-                    TlsConfig tlsConfig = config.getTlsConfigByAdvertisedListenerName(
-                        name
-                    );
+                    TlsConfig tlsConfig = config.getTlsConfigByListener(name);
                     yield TlsServerCredentials
                         .newBuilder()
                         .keyManager(tlsConfig.getCert(), tlsConfig.getKey())
                         .build();
                 }
                 case MTLS -> {
-                    TlsConfig mtlsConfig = config.getTlsConfigByAdvertisedListenerName(
-                        name
-                    );
+                    TlsConfig mtlsConfig = config.getTlsConfigByListener(name);
                     yield TlsServerCredentials
                         .newBuilder()
                         .keyManager(mtlsConfig.getCert(), mtlsConfig.getKey())
@@ -79,7 +73,7 @@ public class ServerListenerConfig {
     public ServerAuthorizer getAuthorizer() {
         return switch (authorizationProtocol) {
             case OAUTH -> new OAuthServerAuthorizer(
-                config.getOAuthConfigByAdvertisedListenerName(name)
+                config.getOAuthConfigByListener(name)
             );
             default -> InsecureServerAuthorizer.create();
         };

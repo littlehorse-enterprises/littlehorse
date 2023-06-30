@@ -19,15 +19,13 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * This class is used to configure the LHClient class.
  */
+@Slf4j
 public class LHClientConfig extends ConfigBase {
-
-    private static final Logger log = LoggerFactory.getLogger(LHClientConfig.class);
 
     /**
      * The bootstrap host for the LH Server.

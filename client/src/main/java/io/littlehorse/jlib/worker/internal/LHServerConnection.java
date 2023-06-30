@@ -7,13 +7,11 @@ import io.littlehorse.jlib.common.proto.PollTaskPb;
 import io.littlehorse.jlib.common.proto.PollTaskReplyPb;
 import java.io.Closeable;
 import java.io.IOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class LHServerConnection
     implements Closeable, StreamObserver<PollTaskReplyPb> {
-
-    private Logger log = LoggerFactory.getLogger(LHServerConnection.class);
 
     private LHServerConnectionManager manager;
     private HostInfoPb host;

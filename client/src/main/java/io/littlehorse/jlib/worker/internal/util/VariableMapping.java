@@ -10,12 +10,10 @@ import io.littlehorse.jlib.common.proto.VarNameAndValPb;
 import io.littlehorse.jlib.common.proto.VariableDefPb;
 import io.littlehorse.jlib.common.proto.VariableValuePb;
 import io.littlehorse.jlib.worker.WorkerContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class VariableMapping {
-
-    private Logger log = LoggerFactory.getLogger(ReportTaskObserver.class);
 
     private String name;
     private Class<?> type;

@@ -20,7 +20,7 @@ public class ListenersManager implements Closeable {
         Executor executor = Executors.newFixedThreadPool(16);
         this.servers =
             config
-                .getAdvertisedListeners()
+                .getListeners()
                 .stream()
                 .map(serverListenerConfig ->
                     new ServerListener(serverListenerConfig, executor, service, meter)

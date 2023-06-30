@@ -44,12 +44,10 @@ import io.littlehorse.jlib.wfsdk.WorkflowCondition;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class ThreadBuilderImpl implements ThreadBuilder {
-
-    private Logger log = LoggerFactory.getLogger(ThreadBuilderImpl.class);
 
     private WorkflowImpl parent;
     private ThreadSpecPb.Builder spec;
@@ -499,9 +497,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         if (NodeOutputImpl.class.isAssignableFrom(rhs.getClass())) {
             NodeOutputImpl no = (NodeOutputImpl) rhs;
             if (!no.nodeName.equals(this.lastNodeName)) {
-                System.out.println(no.nodeName);
-                System.out.println(this.lastNodeName);
-                System.out.println(name);
+                log.debug("Mutating {} {} {}", no.nodeName, this.lastNodeName, name);
 
                 throw new RuntimeException(
                     "Cannot use an old NodeOutput from node " + no.nodeName

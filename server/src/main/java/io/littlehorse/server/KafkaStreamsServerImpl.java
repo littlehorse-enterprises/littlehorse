@@ -1127,7 +1127,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             .getRuntime()
             .addShutdownHook(
                 new Thread(() -> {
-                    System.out.println("Closing now!");
+                    log.info("Closing now!");
                     server.close();
                     config.cleanup();
                     latch.countDown();
@@ -1143,7 +1143,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             .start();
 
         latch.await();
-        System.out.println("Done waiting for countdown latch");
+        log.info("Done waiting for countdown latch");
     }
 
     public Set<Host> getAllInternalHosts() {

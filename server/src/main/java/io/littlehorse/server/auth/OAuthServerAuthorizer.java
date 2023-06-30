@@ -76,10 +76,11 @@ public class OAuthServerAuthorizer implements ServerAuthorizer {
         TokenStatus tokenStatus = tokenCache.getIfPresent(token);
 
         if (tokenStatus == null) {
+            log.debug("Introspecting a new token");
             tokenStatus = client.introspect(token);
             tokenCache.put(token, tokenStatus);
         } else {
-            log.debug("Using cache");
+            log.debug("Using cached token");
         }
 
         log.debug("{}", tokenStatus);

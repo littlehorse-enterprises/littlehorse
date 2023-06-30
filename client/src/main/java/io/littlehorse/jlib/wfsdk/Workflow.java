@@ -20,15 +20,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * The Workflow class represents a `WfSpec` object in the API.
  */
+@Slf4j
 public abstract class Workflow {
-
-    private Logger log = LoggerFactory.getLogger(Workflow.class);
 
     protected ThreadFunc entrypointThread;
     protected String name;

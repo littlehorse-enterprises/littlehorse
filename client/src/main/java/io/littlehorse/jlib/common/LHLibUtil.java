@@ -38,31 +38,6 @@ public class LHLibUtil {
         return fromMillis(date.getTime());
     }
 
-    public static void logBack(int framesBack, Object... things) {
-        framesBack += 2; // 2 frames needed for processing the thing.
-        StackTraceElement ste = Thread.currentThread().getStackTrace()[framesBack];
-
-        StringBuilder builder = new StringBuilder();
-
-        builder.append("LHorse: ");
-        builder.append(ste.getMethodName());
-        builder.append(" ");
-        builder.append(ste.getFileName());
-        builder.append(": ");
-        builder.append(ste.getLineNumber());
-        builder.append(": ");
-        for (Object thing : things) {
-            builder.append(thing == null ? "null" : thing.toString());
-            builder.append(" ");
-        }
-        System.out.println(builder.toString());
-    }
-
-    @Deprecated
-    public static void log(Object... things) {
-        logBack(1, things); // Add one frame back because of this method call.
-    }
-
     public static <T extends GeneratedMessageV3> T loadProto(
         byte[] data,
         Class<T> cls
