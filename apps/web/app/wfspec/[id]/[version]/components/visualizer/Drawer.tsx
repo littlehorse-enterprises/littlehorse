@@ -1,3 +1,4 @@
+import Link from "next/link"
 
 export const Drawer = ({output, thread, data}:any) => {
     return <div className="drawer">
@@ -38,9 +39,28 @@ export const Drawer = ({output, thread, data}:any) => {
             </table>
             
         </div>
+
+        {output.type == 'TASK' ? <div>
+            <h4>Task Node Information</h4>
+            <div style={{marginBottom:'20px'}}>{output.name}</div>
+            <div className="table" style={{marginBottom:'20px'}}>
+                <table>
+                    <caption>TaskDef Variables</caption>
+                </table>
+            </div>
+            <div className="table">
+                <table>
+                    <caption>TaskDef linked</caption>
+                    <tbody><tr><td><Link href={'/taskdef/'+output.node.task.taskDefName}>{output.node.task.taskDefName}</Link></td></tr></tbody>
+                </table>
+            </div>
+
+            
+        </div> : undefined}
         <div className="frame" style={{overflow:"auto"}}>
 
-            {JSON.stringify(data, null,2)}
+            {JSON.stringify(output.node, null,2)}
+            {/* {JSON.stringify(data, null,2)} */}
             {/* {JSON.stringify(output, null,2)} */}
         </div>
         <div className="flex-1"></div>
