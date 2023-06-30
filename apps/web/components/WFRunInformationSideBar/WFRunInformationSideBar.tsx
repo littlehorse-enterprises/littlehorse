@@ -29,7 +29,7 @@ const WFRunInformationSideBar = ({
                 }} >{errorLog ? 'Exception log' : 'JSON / Array values'}</h2>
 
             </div>
-            <Snippet json={output || {}} />
+            <Snippet value={output || {} } />
         </div>
     </div>);
 }
