@@ -1,6 +1,30 @@
+"use client"
 import Link from "next/link"
+import { useEffect, useState } from "react";
 
 export const Drawer = ({output, thread, data}:any) => {
+    const [taskdef_variables, setTaskDefVariables] = useState<any[]>([])
+    const taskInformation = async (id:string) => {
+
+        const res = await fetch('/api/information/taskDef',{
+            method:'POST',
+            body: JSON.stringify({
+                id
+            }),
+        })
+        if(res.ok){
+            const data: any = await res.json();
+            // const data: TaskDefInformationResponse = await res.json();
+            console.log(data)
+            setTaskDefVariables(data.result.inputVars);
+            // setLoadingInputVars(false);
+        }
+    }
+
+    useEffect(() => {
+        if(output.type == 'TASK') taskInformation(output.node.task.taskDefName)
+    },[output])
+
     return <div className="drawer">
 
         <h2 style={{
@@ -46,6 +70,20 @@ export const Drawer = ({output, thread, data}:any) => {
             <div className="table" style={{marginBottom:'20px'}}>
                 <table>
                     <caption>TaskDef Variables</caption>
+                    <thead>
+                    <tr>
+                        <th>NAME</th>
+                        <th>TYPE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {taskdef_variables?.map( (v, i) => <tr key={i}>
+                        <td>{v.name}</td>
+                        <td>{v.type}</td>
+                        {/* <td>{v.required}</td> */}
+                    </tr>)}
+
+                </tbody>
                 </table>
             </div>
             <div className="table">
@@ -57,12 +95,10 @@ export const Drawer = ({output, thread, data}:any) => {
 
             
         </div> : undefined}
-        <div className="frame" style={{overflow:"auto"}}>
-
-            {JSON.stringify(output.node, null,2)}
-            {/* {JSON.stringify(data, null,2)} */}
-            {/* {JSON.stringify(output, null,2)} */}
-        </div>
+        {/* <div className="frame" style={{overflow:"auto"}}>
+            {JSON.stringify(data, null,2)}
+            {JSON.stringify(output, null,2)}
+        </div> */}
         <div className="flex-1"></div>
     </div>
 }

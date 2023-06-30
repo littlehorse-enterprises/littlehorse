@@ -1,6 +1,9 @@
+import { useEffect } from "react";
 import { Button } from "ui"
 
 export const Drawer = ({output, thread, data}:any) => {
+
+
     return <div className="drawer">
 
         <h2 style={{
