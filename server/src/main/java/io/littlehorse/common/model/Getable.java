@@ -23,12 +23,12 @@ import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
-import io.littlehorse.common.proto.GETableClassEnumPb;
-import io.littlehorse.server.streamsimpl.storeinternals.GETableIndex;
+import io.littlehorse.common.proto.GetableClassEnumPb;
+import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import java.util.Date;
 import java.util.List;
 
-public abstract class GETable<T extends Message> extends Storeable<T> {
+public abstract class Getable<T extends Message> extends Storeable<T> {
 
     public abstract Date getCreatedAt();
 
@@ -36,35 +36,35 @@ public abstract class GETable<T extends Message> extends Storeable<T> {
         return getObjectId().getPartitionKey();
     }
 
-    public static GETableClassEnumPb getTypeEnum(Class<? extends GETable<?>> cls) {
+    public static GetableClassEnumPb getTypeEnum(Class<? extends Getable<?>> cls) {
         if (cls.equals(WfRun.class)) {
-            return GETableClassEnumPb.WF_RUN;
+            return GetableClassEnumPb.WF_RUN;
         } else if (cls.equals(NodeRun.class)) {
-            return GETableClassEnumPb.NODE_RUN;
+            return GetableClassEnumPb.NODE_RUN;
         } else if (cls.equals(WfSpec.class)) {
-            return GETableClassEnumPb.WF_SPEC;
+            return GetableClassEnumPb.WF_SPEC;
         } else if (cls.equals(TaskDef.class)) {
-            return GETableClassEnumPb.TASK_DEF;
+            return GetableClassEnumPb.TASK_DEF;
         } else if (cls.equals(Variable.class)) {
-            return GETableClassEnumPb.VARIABLE;
+            return GetableClassEnumPb.VARIABLE;
         } else if (cls.equals(ExternalEventDef.class)) {
-            return GETableClassEnumPb.EXTERNAL_EVENT_DEF;
+            return GetableClassEnumPb.EXTERNAL_EVENT_DEF;
         } else if (cls.equals(ExternalEvent.class)) {
-            return GETableClassEnumPb.EXTERNAL_EVENT;
+            return GetableClassEnumPb.EXTERNAL_EVENT;
         } else if (cls.equals(TaskDefMetrics.class)) {
-            return GETableClassEnumPb.TASK_DEF_METRICS;
+            return GetableClassEnumPb.TASK_DEF_METRICS;
         } else if (cls.equals(WfSpecMetrics.class)) {
-            return GETableClassEnumPb.WF_SPEC_METRICS;
+            return GetableClassEnumPb.WF_SPEC_METRICS;
         } else if (cls.equals(TaskWorkerGroup.class)) {
-            return GETableClassEnumPb.TASK_WORKER_GROUP;
+            return GetableClassEnumPb.TASK_WORKER_GROUP;
         } else if (cls.equals(UserTaskDef.class)) {
-            return GETableClassEnumPb.USER_TASK_DEF;
+            return GetableClassEnumPb.USER_TASK_DEF;
         } else {
             throw new RuntimeException("Uh oh, unrecognized: " + cls.getName());
         }
     }
 
-    public static Class<? extends GETable<?>> getCls(GETableClassEnumPb type) {
+    public static Class<? extends Getable<?>> getCls(GetableClassEnumPb type) {
         switch (type) {
             case WF_RUN:
                 return WfRun.class;
@@ -95,7 +95,7 @@ public abstract class GETable<T extends Message> extends Storeable<T> {
     }
 
     public static Class<? extends ObjectId<?, ?, ?>> getIdCls(
-        GETableClassEnumPb type
+        GetableClassEnumPb type
     ) {
         switch (type) {
             case WF_RUN:
@@ -126,7 +126,7 @@ public abstract class GETable<T extends Message> extends Storeable<T> {
         }
     }
 
-    public abstract List<GETableIndex> getIndexes();
+    public abstract List<GetableIndex> getIndexes();
 
     public abstract ObjectId<?, T, ?> getObjectId();
 

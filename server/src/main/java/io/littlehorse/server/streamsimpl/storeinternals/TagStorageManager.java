@@ -1,7 +1,7 @@
 package io.littlehorse.server.streamsimpl.storeinternals;
 
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.Getable;
 import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionCommand;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
@@ -13,7 +13,6 @@ import io.littlehorse.server.streamsimpl.storeinternals.index.TagsCache;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
@@ -112,10 +111,10 @@ public class TagStorageManager {
             .stream()
             .map(Attribute::getEscapedKey)
             .collect(Collectors.toList());
-        GETableIndex getableIndex = GETableIndexRegistry
+        GetableIndex getableIndex = GetableIndexRegistry
             .getInstance()
             .findConfigurationForAttributes(
-                GETable.getCls(tag.getObjectType()),
+                Getable.getCls(tag.getObjectType()),
                 attributeStrings
             );
         String partitionKey = getableIndex.getPartitionKeyForAttrs(

@@ -1,6 +1,6 @@
 package io.littlehorse.server.streamsimpl.storeinternals;
 
-import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.TaskWorkerGroup;
@@ -12,29 +12,28 @@ import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-public class GETableIndexRegistry {
+public class GetableIndexRegistry {
 
-    private static GETableIndexRegistry INSTANCE;
+    private static GetableIndexRegistry INSTANCE;
 
-    private GETableIndexRegistry() {
+    private GetableIndexRegistry() {
         // Hide constructor
     }
 
-    public static GETableIndexRegistry getInstance() {
+    public static GetableIndexRegistry getInstance() {
         if (INSTANCE != null) {
             return INSTANCE;
         }
-        INSTANCE = new GETableIndexRegistry();
+        INSTANCE = new GetableIndexRegistry();
         getables()
             .forEach(getableClass -> {
                 try {
-                    GETable<?> geTable = getableClass
+                    Getable<?> geTable = getableClass
                         .getDeclaredConstructor()
                         .newInstance();
-                    List<GETableIndex> geTableIndexes = geTable.getIndexes();
+                    List<GetableIndex> geTableIndexes = geTable.getIndexes();
                     INSTANCE.register(getableClass, geTableIndexes);
                 } catch (ReflectiveOperationException e) {
                     throw new RuntimeException(e);
@@ -43,7 +42,7 @@ public class GETableIndexRegistry {
         return INSTANCE;
     }
 
-    private static List<Class<? extends GETable<?>>> getables() {
+    private static List<Class<? extends Getable<?>>> getables() {
         return List.of(
             WfRun.class,
             ExternalEvent.class,
@@ -59,13 +58,13 @@ public class GETableIndexRegistry {
         );
     }
 
-    private final Map<Class<?>, List<GETableIndex>> indexes = new HashMap<>();
+    private final Map<Class<?>, List<GetableIndex>> indexes = new HashMap<>();
 
-    public GETableIndexRegistry register(
+    public GetableIndexRegistry register(
         Class<?> target,
-        List<GETableIndex> getableIndexes
+        List<GetableIndex> getableIndexes
     ) {
-        List<GETableIndex> registeredIndexes = indexes.getOrDefault(
+        List<GetableIndex> registeredIndexes = indexes.getOrDefault(
             target,
             new ArrayList<>()
         );
@@ -74,11 +73,11 @@ public class GETableIndexRegistry {
         return this;
     }
 
-    public List<GETableIndex> findIndexesFor(Class<?> getableClass) {
+    public List<GetableIndex> findIndexesFor(Class<?> getableClass) {
         return indexes.get(getableClass);
     }
 
-    public GETableIndex findConfigurationForAttributes(
+    public GetableIndex findConfigurationForAttributes(
         Class<?> getableClass,
         Collection<String> attributes
     ) {

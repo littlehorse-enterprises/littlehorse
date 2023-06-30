@@ -1,13 +1,12 @@
 package io.littlehorse.server.streamsimpl.coreprocessors;
 
-import com.google.common.base.Functions;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHBadRequestError;
 import io.littlehorse.common.exceptions.LHConnectionError;
-import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
 import io.littlehorse.common.model.command.Command;
@@ -32,8 +31,6 @@ import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.ScheduledTask;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
-import io.littlehorse.common.proto.TagStorageTypePb;
-import io.littlehorse.common.proto.TagsCachePb.CachedTagPb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.exception.LHSerdeError;
@@ -46,28 +43,23 @@ import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionCommand;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.TaskMetricUpdate;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.WfMetricUpdate;
-import io.littlehorse.server.streamsimpl.storeinternals.GETableStorageManager;
+import io.littlehorse.server.streamsimpl.storeinternals.GetableStorageManager;
 import io.littlehorse.server.streamsimpl.storeinternals.LHROStoreWrapper;
 import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
-import io.littlehorse.server.streamsimpl.storeinternals.index.*;
+import io.littlehorse.server.streamsimpl.storeinternals.index.DiscreteTagLocalCounter;
+import io.littlehorse.server.streamsimpl.storeinternals.index.TagChangesToBroadcast;
+import io.littlehorse.server.streamsimpl.storeinternals.index.TagsCache;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.LHIterKeyValue;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.LHKeyValueIterator;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import io.littlehorse.server.streamsimpl.util.InternalHosts;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
@@ -128,7 +120,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     private LHConfig config;
     private boolean partitionIsClaimed;
 
-    private GETableStorageManager geTableStorageManager;
+    private GetableStorageManager getableStorageManager;
 
     public KafkaStreamsLHDAOImpl(
         final ProcessorContext<String, CommandProcessorOutput> ctx,
@@ -170,7 +162,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         localStore = new LHStoreWrapper(rawLocalStore, config);
         globalStore = new LHROStoreWrapper(rawGlobalStore, config);
 
-        geTableStorageManager = new GETableStorageManager(localStore, config, ctx);
+        getableStorageManager = new GetableStorageManager(localStore, config, ctx);
 
         partition = ctx.taskId().partition();
 
@@ -894,7 +886,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         );
     }
 
-    private <U extends Message, T extends GETable<U>> void forwardGlobalMeta(
+    private <U extends Message, T extends Getable<U>> void forwardGlobalMeta(
         String objectId,
         T val,
         Class<T> cls
@@ -930,19 +922,19 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         }
     }
 
-    private <U extends Message, T extends GETable<U>> void saveOrDeleteGETableFlush(
+    private <U extends Message, T extends Getable<U>> void saveOrDeleteGETableFlush(
         String key,
         T val,
         Class<T> cls
     ) {
         if (val != null) {
-            geTableStorageManager.store(val);
+            getableStorageManager.store(val);
         } else {
             deleteThingFlush(key, cls);
         }
     }
 
-    private <U extends Message, T extends GETable<U>> void deleteThingFlush(
+    private <U extends Message, T extends Getable<U>> void deleteThingFlush(
         String objectId,
         Class<T> cls
     ) {

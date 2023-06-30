@@ -1,7 +1,7 @@
 package io.littlehorse.server.streamsimpl.storeinternals;
 
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
@@ -13,48 +13,41 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
-public class GETableStorageManager {
+public class GetableStorageManager {
 
     private LHStoreWrapper localStore;
 
-    private LHConfig lhConfig;
-
     private TagStorageManager tagStorageManager;
 
-    public GETableStorageManager(
+    public GetableStorageManager(
         LHStoreWrapper localStore,
-        LHConfig lhConfig,
+        LHConfig config,
         TagStorageManager tagStorageManager
     ) {
         this.localStore = localStore;
-        this.lhConfig = lhConfig;
         this.tagStorageManager = tagStorageManager;
     }
 
-    public GETableStorageManager(
+    public GetableStorageManager(
         LHStoreWrapper localStore,
-        LHConfig lhConfig,
+        LHConfig config,
         ProcessorContext<String, CommandProcessorOutput> context
     ) {
-        this(
-            localStore,
-            lhConfig,
-            new TagStorageManager(localStore, context, lhConfig)
-        );
+        this(localStore, config, new TagStorageManager(localStore, context, config));
     }
 
-    public void store(GETable<?> geTable) {
+    public void store(Getable<?> geTable) {
         localStore.put(geTable);
         Collection<Tag> tags = getTagsFor(geTable);
         String tagsCacheKey = StoreUtils.getTagsCacheKey(geTable);
         tagStorageManager.store(tags, tagsCacheKey);
     }
 
-    public Collection<Tag> getTagsFor(GETable<?> getAble) {
+    public Collection<Tag> getTagsFor(Getable<?> getAble) {
         if (getAble instanceof NodeRun) {
             return TagUtils.tagThing(getAble);
         }
-        List<GETableIndex> getAbleIndices = GETableIndexRegistry
+        List<GetableIndex> getAbleIndices = GetableIndexRegistry
             .getInstance()
             .findIndexesFor(getAble.getClass());
         return getAbleIndices
@@ -71,8 +64,8 @@ public class GETableStorageManager {
     }
 
     private Collection<List<Pair<String, String>>> extractTagValues(
-        GETableIndex getableIndex,
-        GETable<?> geTable
+        GetableIndex getableIndex,
+        Getable<?> geTable
     ) {
         return getableIndex
             .getKeys()

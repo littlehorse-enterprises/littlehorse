@@ -1,19 +1,15 @@
 package io.littlehorse.server.streamsimpl.storeinternals;
 
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
 import io.littlehorse.common.model.command.CommandResult;
-import io.littlehorse.common.proto.TagsCachePb.CachedTagPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.exception.LHSerdeError;
-import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
-import io.littlehorse.server.streamsimpl.storeinternals.index.TagUtils;
 import io.littlehorse.server.streamsimpl.storeinternals.index.TagsCache;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import java.util.Date;
-import java.util.function.Function;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueStore;
 
@@ -56,7 +52,7 @@ public class LHStoreWrapper extends LHROStoreWrapper {
         store.delete(rawKey);
     }
 
-    public TagsCache getTagsCache(GETable<?> thing) {
+    public TagsCache getTagsCache(Getable<?> thing) {
         String tagCacheKey = StoreUtils.getTagsCacheKey(thing);
         return getTagsCache(tagCacheKey);
     }
@@ -79,7 +75,7 @@ public class LHStoreWrapper extends LHROStoreWrapper {
         store.put(tagCacheKey, new Bytes(newTagsCache.toBytes(config)));
     }
 
-    public void deleteTagCache(GETable<?> thing) {
+    public void deleteTagCache(Getable<?> thing) {
         String tagCacheKey = StoreUtils.getTagsCacheKey(thing);
         store.delete(tagCacheKey);
     }

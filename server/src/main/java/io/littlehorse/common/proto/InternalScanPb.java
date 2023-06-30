@@ -47,1288 +47,8 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.common.proto.InternalScanPb.class, io.littlehorse.common.proto.InternalScanPb.Builder.class);
   }
 
-  public interface TagPrefixScanPbOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:littlehorse.InternalScanPb.TagPrefixScanPb)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-     */
-    java.util.List<io.littlehorse.common.proto.AttributePb> 
-        getAttributesList();
-    /**
-     * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-     */
-    io.littlehorse.common.proto.AttributePb getAttributes(int index);
-    /**
-     * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-     */
-    int getAttributesCount();
-    /**
-     * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-     */
-    java.util.List<? extends io.littlehorse.common.proto.AttributePbOrBuilder> 
-        getAttributesOrBuilderList();
-    /**
-     * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-     */
-    io.littlehorse.common.proto.AttributePbOrBuilder getAttributesOrBuilder(
-        int index);
-
-    /**
-     * <pre>
-     * TODO: Add time-based filters here.
-     * Note that each Tag has a timestamp at the end of it--that's what
-     * we will utilize.
-     * </pre>
-     *
-     * <code>optional .google.protobuf.Timestamp earliest_create_time = 2;</code>
-     * @return Whether the earliestCreateTime field is set.
-     */
-    boolean hasEarliestCreateTime();
-    /**
-     * <pre>
-     * TODO: Add time-based filters here.
-     * Note that each Tag has a timestamp at the end of it--that's what
-     * we will utilize.
-     * </pre>
-     *
-     * <code>optional .google.protobuf.Timestamp earliest_create_time = 2;</code>
-     * @return The earliestCreateTime.
-     */
-    com.google.protobuf.Timestamp getEarliestCreateTime();
-    /**
-     * <pre>
-     * TODO: Add time-based filters here.
-     * Note that each Tag has a timestamp at the end of it--that's what
-     * we will utilize.
-     * </pre>
-     *
-     * <code>optional .google.protobuf.Timestamp earliest_create_time = 2;</code>
-     */
-    com.google.protobuf.TimestampOrBuilder getEarliestCreateTimeOrBuilder();
-
-    /**
-     * <code>optional .google.protobuf.Timestamp latest_create_time = 3;</code>
-     * @return Whether the latestCreateTime field is set.
-     */
-    boolean hasLatestCreateTime();
-    /**
-     * <code>optional .google.protobuf.Timestamp latest_create_time = 3;</code>
-     * @return The latestCreateTime.
-     */
-    com.google.protobuf.Timestamp getLatestCreateTime();
-    /**
-     * <code>optional .google.protobuf.Timestamp latest_create_time = 3;</code>
-     */
-    com.google.protobuf.TimestampOrBuilder getLatestCreateTimeOrBuilder();
-  }
-  /**
-   * Protobuf type {@code littlehorse.InternalScanPb.TagPrefixScanPb}
-   */
-  public static final class TagPrefixScanPb extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:littlehorse.InternalScanPb.TagPrefixScanPb)
-      TagPrefixScanPbOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use TagPrefixScanPb.newBuilder() to construct.
-    private TagPrefixScanPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private TagPrefixScanPb() {
-      attributes_ = java.util.Collections.emptyList();
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new TagPrefixScanPb();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalScanPb_TagPrefixScanPb_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalScanPb_TagPrefixScanPb_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb.class, io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb.Builder.class);
-    }
-
-    private int bitField0_;
-    public static final int ATTRIBUTES_FIELD_NUMBER = 1;
-    @SuppressWarnings("serial")
-    private java.util.List<io.littlehorse.common.proto.AttributePb> attributes_;
-    /**
-     * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-     */
-    @java.lang.Override
-    public java.util.List<io.littlehorse.common.proto.AttributePb> getAttributesList() {
-      return attributes_;
-    }
-    /**
-     * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-     */
-    @java.lang.Override
-    public java.util.List<? extends io.littlehorse.common.proto.AttributePbOrBuilder> 
-        getAttributesOrBuilderList() {
-      return attributes_;
-    }
-    /**
-     * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-     */
-    @java.lang.Override
-    public int getAttributesCount() {
-      return attributes_.size();
-    }
-    /**
-     * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.AttributePb getAttributes(int index) {
-      return attributes_.get(index);
-    }
-    /**
-     * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.AttributePbOrBuilder getAttributesOrBuilder(
-        int index) {
-      return attributes_.get(index);
-    }
-
-    public static final int EARLIEST_CREATE_TIME_FIELD_NUMBER = 2;
-    private com.google.protobuf.Timestamp earliestCreateTime_;
-    /**
-     * <pre>
-     * TODO: Add time-based filters here.
-     * Note that each Tag has a timestamp at the end of it--that's what
-     * we will utilize.
-     * </pre>
-     *
-     * <code>optional .google.protobuf.Timestamp earliest_create_time = 2;</code>
-     * @return Whether the earliestCreateTime field is set.
-     */
-    @java.lang.Override
-    public boolean hasEarliestCreateTime() {
-      return ((bitField0_ & 0x00000001) != 0);
-    }
-    /**
-     * <pre>
-     * TODO: Add time-based filters here.
-     * Note that each Tag has a timestamp at the end of it--that's what
-     * we will utilize.
-     * </pre>
-     *
-     * <code>optional .google.protobuf.Timestamp earliest_create_time = 2;</code>
-     * @return The earliestCreateTime.
-     */
-    @java.lang.Override
-    public com.google.protobuf.Timestamp getEarliestCreateTime() {
-      return earliestCreateTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : earliestCreateTime_;
-    }
-    /**
-     * <pre>
-     * TODO: Add time-based filters here.
-     * Note that each Tag has a timestamp at the end of it--that's what
-     * we will utilize.
-     * </pre>
-     *
-     * <code>optional .google.protobuf.Timestamp earliest_create_time = 2;</code>
-     */
-    @java.lang.Override
-    public com.google.protobuf.TimestampOrBuilder getEarliestCreateTimeOrBuilder() {
-      return earliestCreateTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : earliestCreateTime_;
-    }
-
-    public static final int LATEST_CREATE_TIME_FIELD_NUMBER = 3;
-    private com.google.protobuf.Timestamp latestCreateTime_;
-    /**
-     * <code>optional .google.protobuf.Timestamp latest_create_time = 3;</code>
-     * @return Whether the latestCreateTime field is set.
-     */
-    @java.lang.Override
-    public boolean hasLatestCreateTime() {
-      return ((bitField0_ & 0x00000002) != 0);
-    }
-    /**
-     * <code>optional .google.protobuf.Timestamp latest_create_time = 3;</code>
-     * @return The latestCreateTime.
-     */
-    @java.lang.Override
-    public com.google.protobuf.Timestamp getLatestCreateTime() {
-      return latestCreateTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestCreateTime_;
-    }
-    /**
-     * <code>optional .google.protobuf.Timestamp latest_create_time = 3;</code>
-     */
-    @java.lang.Override
-    public com.google.protobuf.TimestampOrBuilder getLatestCreateTimeOrBuilder() {
-      return latestCreateTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestCreateTime_;
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      for (int i = 0; i < attributes_.size(); i++) {
-        output.writeMessage(1, attributes_.get(i));
-      }
-      if (((bitField0_ & 0x00000001) != 0)) {
-        output.writeMessage(2, getEarliestCreateTime());
-      }
-      if (((bitField0_ & 0x00000002) != 0)) {
-        output.writeMessage(3, getLatestCreateTime());
-      }
-      getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      for (int i = 0; i < attributes_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, attributes_.get(i));
-      }
-      if (((bitField0_ & 0x00000001) != 0)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, getEarliestCreateTime());
-      }
-      if (((bitField0_ & 0x00000002) != 0)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, getLatestCreateTime());
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb)) {
-        return super.equals(obj);
-      }
-      io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb other = (io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb) obj;
-
-      if (!getAttributesList()
-          .equals(other.getAttributesList())) return false;
-      if (hasEarliestCreateTime() != other.hasEarliestCreateTime()) return false;
-      if (hasEarliestCreateTime()) {
-        if (!getEarliestCreateTime()
-            .equals(other.getEarliestCreateTime())) return false;
-      }
-      if (hasLatestCreateTime() != other.hasLatestCreateTime()) return false;
-      if (hasLatestCreateTime()) {
-        if (!getLatestCreateTime()
-            .equals(other.getLatestCreateTime())) return false;
-      }
-      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      if (getAttributesCount() > 0) {
-        hash = (37 * hash) + ATTRIBUTES_FIELD_NUMBER;
-        hash = (53 * hash) + getAttributesList().hashCode();
-      }
-      if (hasEarliestCreateTime()) {
-        hash = (37 * hash) + EARLIEST_CREATE_TIME_FIELD_NUMBER;
-        hash = (53 * hash) + getEarliestCreateTime().hashCode();
-      }
-      if (hasLatestCreateTime()) {
-        hash = (37 * hash) + LATEST_CREATE_TIME_FIELD_NUMBER;
-        hash = (53 * hash) + getLatestCreateTime().hashCode();
-      }
-      hash = (29 * hash) + getUnknownFields().hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code littlehorse.InternalScanPb.TagPrefixScanPb}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:littlehorse.InternalScanPb.TagPrefixScanPb)
-        io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPbOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalScanPb_TagPrefixScanPb_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalScanPb_TagPrefixScanPb_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb.class, io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb.Builder.class);
-      }
-
-      // Construct using io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-          getAttributesFieldBuilder();
-          getEarliestCreateTimeFieldBuilder();
-          getLatestCreateTimeFieldBuilder();
-        }
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        bitField0_ = 0;
-        if (attributesBuilder_ == null) {
-          attributes_ = java.util.Collections.emptyList();
-        } else {
-          attributes_ = null;
-          attributesBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000001);
-        earliestCreateTime_ = null;
-        if (earliestCreateTimeBuilder_ != null) {
-          earliestCreateTimeBuilder_.dispose();
-          earliestCreateTimeBuilder_ = null;
-        }
-        latestCreateTime_ = null;
-        if (latestCreateTimeBuilder_ != null) {
-          latestCreateTimeBuilder_.dispose();
-          latestCreateTimeBuilder_ = null;
-        }
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalScanPb_TagPrefixScanPb_descriptor;
-      }
-
-      @java.lang.Override
-      public io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb getDefaultInstanceForType() {
-        return io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb build() {
-        io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb buildPartial() {
-        io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb result = new io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb(this);
-        buildPartialRepeatedFields(result);
-        if (bitField0_ != 0) { buildPartial0(result); }
-        onBuilt();
-        return result;
-      }
-
-      private void buildPartialRepeatedFields(io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb result) {
-        if (attributesBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) != 0)) {
-            attributes_ = java.util.Collections.unmodifiableList(attributes_);
-            bitField0_ = (bitField0_ & ~0x00000001);
-          }
-          result.attributes_ = attributes_;
-        } else {
-          result.attributes_ = attributesBuilder_.build();
-        }
-      }
-
-      private void buildPartial0(io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb result) {
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000002) != 0)) {
-          result.earliestCreateTime_ = earliestCreateTimeBuilder_ == null
-              ? earliestCreateTime_
-              : earliestCreateTimeBuilder_.build();
-          to_bitField0_ |= 0x00000001;
-        }
-        if (((from_bitField0_ & 0x00000004) != 0)) {
-          result.latestCreateTime_ = latestCreateTimeBuilder_ == null
-              ? latestCreateTime_
-              : latestCreateTimeBuilder_.build();
-          to_bitField0_ |= 0x00000002;
-        }
-        result.bitField0_ |= to_bitField0_;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb) {
-          return mergeFrom((io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb other) {
-        if (other == io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb.getDefaultInstance()) return this;
-        if (attributesBuilder_ == null) {
-          if (!other.attributes_.isEmpty()) {
-            if (attributes_.isEmpty()) {
-              attributes_ = other.attributes_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-            } else {
-              ensureAttributesIsMutable();
-              attributes_.addAll(other.attributes_);
-            }
-            onChanged();
-          }
-        } else {
-          if (!other.attributes_.isEmpty()) {
-            if (attributesBuilder_.isEmpty()) {
-              attributesBuilder_.dispose();
-              attributesBuilder_ = null;
-              attributes_ = other.attributes_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-              attributesBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getAttributesFieldBuilder() : null;
-            } else {
-              attributesBuilder_.addAllMessages(other.attributes_);
-            }
-          }
-        }
-        if (other.hasEarliestCreateTime()) {
-          mergeEarliestCreateTime(other.getEarliestCreateTime());
-        }
-        if (other.hasLatestCreateTime()) {
-          mergeLatestCreateTime(other.getLatestCreateTime());
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        if (extensionRegistry == null) {
-          throw new java.lang.NullPointerException();
-        }
-        try {
-          boolean done = false;
-          while (!done) {
-            int tag = input.readTag();
-            switch (tag) {
-              case 0:
-                done = true;
-                break;
-              case 10: {
-                io.littlehorse.common.proto.AttributePb m =
-                    input.readMessage(
-                        io.littlehorse.common.proto.AttributePb.parser(),
-                        extensionRegistry);
-                if (attributesBuilder_ == null) {
-                  ensureAttributesIsMutable();
-                  attributes_.add(m);
-                } else {
-                  attributesBuilder_.addMessage(m);
-                }
-                break;
-              } // case 10
-              case 18: {
-                input.readMessage(
-                    getEarliestCreateTimeFieldBuilder().getBuilder(),
-                    extensionRegistry);
-                bitField0_ |= 0x00000002;
-                break;
-              } // case 18
-              case 26: {
-                input.readMessage(
-                    getLatestCreateTimeFieldBuilder().getBuilder(),
-                    extensionRegistry);
-                bitField0_ |= 0x00000004;
-                break;
-              } // case 26
-              default: {
-                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                  done = true; // was an endgroup tag
-                }
-                break;
-              } // default:
-            } // switch (tag)
-          } // while (!done)
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.unwrapIOException();
-        } finally {
-          onChanged();
-        } // finally
-        return this;
-      }
-      private int bitField0_;
-
-      private java.util.List<io.littlehorse.common.proto.AttributePb> attributes_ =
-        java.util.Collections.emptyList();
-      private void ensureAttributesIsMutable() {
-        if (!((bitField0_ & 0x00000001) != 0)) {
-          attributes_ = new java.util.ArrayList<io.littlehorse.common.proto.AttributePb>(attributes_);
-          bitField0_ |= 0x00000001;
-         }
-      }
-
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          io.littlehorse.common.proto.AttributePb, io.littlehorse.common.proto.AttributePb.Builder, io.littlehorse.common.proto.AttributePbOrBuilder> attributesBuilder_;
-
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public java.util.List<io.littlehorse.common.proto.AttributePb> getAttributesList() {
-        if (attributesBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(attributes_);
-        } else {
-          return attributesBuilder_.getMessageList();
-        }
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public int getAttributesCount() {
-        if (attributesBuilder_ == null) {
-          return attributes_.size();
-        } else {
-          return attributesBuilder_.getCount();
-        }
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public io.littlehorse.common.proto.AttributePb getAttributes(int index) {
-        if (attributesBuilder_ == null) {
-          return attributes_.get(index);
-        } else {
-          return attributesBuilder_.getMessage(index);
-        }
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public Builder setAttributes(
-          int index, io.littlehorse.common.proto.AttributePb value) {
-        if (attributesBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureAttributesIsMutable();
-          attributes_.set(index, value);
-          onChanged();
-        } else {
-          attributesBuilder_.setMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public Builder setAttributes(
-          int index, io.littlehorse.common.proto.AttributePb.Builder builderForValue) {
-        if (attributesBuilder_ == null) {
-          ensureAttributesIsMutable();
-          attributes_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          attributesBuilder_.setMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public Builder addAttributes(io.littlehorse.common.proto.AttributePb value) {
-        if (attributesBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureAttributesIsMutable();
-          attributes_.add(value);
-          onChanged();
-        } else {
-          attributesBuilder_.addMessage(value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public Builder addAttributes(
-          int index, io.littlehorse.common.proto.AttributePb value) {
-        if (attributesBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureAttributesIsMutable();
-          attributes_.add(index, value);
-          onChanged();
-        } else {
-          attributesBuilder_.addMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public Builder addAttributes(
-          io.littlehorse.common.proto.AttributePb.Builder builderForValue) {
-        if (attributesBuilder_ == null) {
-          ensureAttributesIsMutable();
-          attributes_.add(builderForValue.build());
-          onChanged();
-        } else {
-          attributesBuilder_.addMessage(builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public Builder addAttributes(
-          int index, io.littlehorse.common.proto.AttributePb.Builder builderForValue) {
-        if (attributesBuilder_ == null) {
-          ensureAttributesIsMutable();
-          attributes_.add(index, builderForValue.build());
-          onChanged();
-        } else {
-          attributesBuilder_.addMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public Builder addAllAttributes(
-          java.lang.Iterable<? extends io.littlehorse.common.proto.AttributePb> values) {
-        if (attributesBuilder_ == null) {
-          ensureAttributesIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, attributes_);
-          onChanged();
-        } else {
-          attributesBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public Builder clearAttributes() {
-        if (attributesBuilder_ == null) {
-          attributes_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000001);
-          onChanged();
-        } else {
-          attributesBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public Builder removeAttributes(int index) {
-        if (attributesBuilder_ == null) {
-          ensureAttributesIsMutable();
-          attributes_.remove(index);
-          onChanged();
-        } else {
-          attributesBuilder_.remove(index);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public io.littlehorse.common.proto.AttributePb.Builder getAttributesBuilder(
-          int index) {
-        return getAttributesFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public io.littlehorse.common.proto.AttributePbOrBuilder getAttributesOrBuilder(
-          int index) {
-        if (attributesBuilder_ == null) {
-          return attributes_.get(index);  } else {
-          return attributesBuilder_.getMessageOrBuilder(index);
-        }
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public java.util.List<? extends io.littlehorse.common.proto.AttributePbOrBuilder> 
-           getAttributesOrBuilderList() {
-        if (attributesBuilder_ != null) {
-          return attributesBuilder_.getMessageOrBuilderList();
-        } else {
-          return java.util.Collections.unmodifiableList(attributes_);
-        }
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public io.littlehorse.common.proto.AttributePb.Builder addAttributesBuilder() {
-        return getAttributesFieldBuilder().addBuilder(
-            io.littlehorse.common.proto.AttributePb.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public io.littlehorse.common.proto.AttributePb.Builder addAttributesBuilder(
-          int index) {
-        return getAttributesFieldBuilder().addBuilder(
-            index, io.littlehorse.common.proto.AttributePb.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public java.util.List<io.littlehorse.common.proto.AttributePb.Builder> 
-           getAttributesBuilderList() {
-        return getAttributesFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          io.littlehorse.common.proto.AttributePb, io.littlehorse.common.proto.AttributePb.Builder, io.littlehorse.common.proto.AttributePbOrBuilder> 
-          getAttributesFieldBuilder() {
-        if (attributesBuilder_ == null) {
-          attributesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              io.littlehorse.common.proto.AttributePb, io.littlehorse.common.proto.AttributePb.Builder, io.littlehorse.common.proto.AttributePbOrBuilder>(
-                  attributes_,
-                  ((bitField0_ & 0x00000001) != 0),
-                  getParentForChildren(),
-                  isClean());
-          attributes_ = null;
-        }
-        return attributesBuilder_;
-      }
-
-      private com.google.protobuf.Timestamp earliestCreateTime_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> earliestCreateTimeBuilder_;
-      /**
-       * <pre>
-       * TODO: Add time-based filters here.
-       * Note that each Tag has a timestamp at the end of it--that's what
-       * we will utilize.
-       * </pre>
-       *
-       * <code>optional .google.protobuf.Timestamp earliest_create_time = 2;</code>
-       * @return Whether the earliestCreateTime field is set.
-       */
-      public boolean hasEarliestCreateTime() {
-        return ((bitField0_ & 0x00000002) != 0);
-      }
-      /**
-       * <pre>
-       * TODO: Add time-based filters here.
-       * Note that each Tag has a timestamp at the end of it--that's what
-       * we will utilize.
-       * </pre>
-       *
-       * <code>optional .google.protobuf.Timestamp earliest_create_time = 2;</code>
-       * @return The earliestCreateTime.
-       */
-      public com.google.protobuf.Timestamp getEarliestCreateTime() {
-        if (earliestCreateTimeBuilder_ == null) {
-          return earliestCreateTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : earliestCreateTime_;
-        } else {
-          return earliestCreateTimeBuilder_.getMessage();
-        }
-      }
-      /**
-       * <pre>
-       * TODO: Add time-based filters here.
-       * Note that each Tag has a timestamp at the end of it--that's what
-       * we will utilize.
-       * </pre>
-       *
-       * <code>optional .google.protobuf.Timestamp earliest_create_time = 2;</code>
-       */
-      public Builder setEarliestCreateTime(com.google.protobuf.Timestamp value) {
-        if (earliestCreateTimeBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          earliestCreateTime_ = value;
-        } else {
-          earliestCreateTimeBuilder_.setMessage(value);
-        }
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * TODO: Add time-based filters here.
-       * Note that each Tag has a timestamp at the end of it--that's what
-       * we will utilize.
-       * </pre>
-       *
-       * <code>optional .google.protobuf.Timestamp earliest_create_time = 2;</code>
-       */
-      public Builder setEarliestCreateTime(
-          com.google.protobuf.Timestamp.Builder builderForValue) {
-        if (earliestCreateTimeBuilder_ == null) {
-          earliestCreateTime_ = builderForValue.build();
-        } else {
-          earliestCreateTimeBuilder_.setMessage(builderForValue.build());
-        }
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * TODO: Add time-based filters here.
-       * Note that each Tag has a timestamp at the end of it--that's what
-       * we will utilize.
-       * </pre>
-       *
-       * <code>optional .google.protobuf.Timestamp earliest_create_time = 2;</code>
-       */
-      public Builder mergeEarliestCreateTime(com.google.protobuf.Timestamp value) {
-        if (earliestCreateTimeBuilder_ == null) {
-          if (((bitField0_ & 0x00000002) != 0) &&
-            earliestCreateTime_ != null &&
-            earliestCreateTime_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
-            getEarliestCreateTimeBuilder().mergeFrom(value);
-          } else {
-            earliestCreateTime_ = value;
-          }
-        } else {
-          earliestCreateTimeBuilder_.mergeFrom(value);
-        }
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * TODO: Add time-based filters here.
-       * Note that each Tag has a timestamp at the end of it--that's what
-       * we will utilize.
-       * </pre>
-       *
-       * <code>optional .google.protobuf.Timestamp earliest_create_time = 2;</code>
-       */
-      public Builder clearEarliestCreateTime() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        earliestCreateTime_ = null;
-        if (earliestCreateTimeBuilder_ != null) {
-          earliestCreateTimeBuilder_.dispose();
-          earliestCreateTimeBuilder_ = null;
-        }
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * TODO: Add time-based filters here.
-       * Note that each Tag has a timestamp at the end of it--that's what
-       * we will utilize.
-       * </pre>
-       *
-       * <code>optional .google.protobuf.Timestamp earliest_create_time = 2;</code>
-       */
-      public com.google.protobuf.Timestamp.Builder getEarliestCreateTimeBuilder() {
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return getEarliestCreateTimeFieldBuilder().getBuilder();
-      }
-      /**
-       * <pre>
-       * TODO: Add time-based filters here.
-       * Note that each Tag has a timestamp at the end of it--that's what
-       * we will utilize.
-       * </pre>
-       *
-       * <code>optional .google.protobuf.Timestamp earliest_create_time = 2;</code>
-       */
-      public com.google.protobuf.TimestampOrBuilder getEarliestCreateTimeOrBuilder() {
-        if (earliestCreateTimeBuilder_ != null) {
-          return earliestCreateTimeBuilder_.getMessageOrBuilder();
-        } else {
-          return earliestCreateTime_ == null ?
-              com.google.protobuf.Timestamp.getDefaultInstance() : earliestCreateTime_;
-        }
-      }
-      /**
-       * <pre>
-       * TODO: Add time-based filters here.
-       * Note that each Tag has a timestamp at the end of it--that's what
-       * we will utilize.
-       * </pre>
-       *
-       * <code>optional .google.protobuf.Timestamp earliest_create_time = 2;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
-          getEarliestCreateTimeFieldBuilder() {
-        if (earliestCreateTimeBuilder_ == null) {
-          earliestCreateTimeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
-                  getEarliestCreateTime(),
-                  getParentForChildren(),
-                  isClean());
-          earliestCreateTime_ = null;
-        }
-        return earliestCreateTimeBuilder_;
-      }
-
-      private com.google.protobuf.Timestamp latestCreateTime_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> latestCreateTimeBuilder_;
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_create_time = 3;</code>
-       * @return Whether the latestCreateTime field is set.
-       */
-      public boolean hasLatestCreateTime() {
-        return ((bitField0_ & 0x00000004) != 0);
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_create_time = 3;</code>
-       * @return The latestCreateTime.
-       */
-      public com.google.protobuf.Timestamp getLatestCreateTime() {
-        if (latestCreateTimeBuilder_ == null) {
-          return latestCreateTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestCreateTime_;
-        } else {
-          return latestCreateTimeBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_create_time = 3;</code>
-       */
-      public Builder setLatestCreateTime(com.google.protobuf.Timestamp value) {
-        if (latestCreateTimeBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          latestCreateTime_ = value;
-        } else {
-          latestCreateTimeBuilder_.setMessage(value);
-        }
-        bitField0_ |= 0x00000004;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_create_time = 3;</code>
-       */
-      public Builder setLatestCreateTime(
-          com.google.protobuf.Timestamp.Builder builderForValue) {
-        if (latestCreateTimeBuilder_ == null) {
-          latestCreateTime_ = builderForValue.build();
-        } else {
-          latestCreateTimeBuilder_.setMessage(builderForValue.build());
-        }
-        bitField0_ |= 0x00000004;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_create_time = 3;</code>
-       */
-      public Builder mergeLatestCreateTime(com.google.protobuf.Timestamp value) {
-        if (latestCreateTimeBuilder_ == null) {
-          if (((bitField0_ & 0x00000004) != 0) &&
-            latestCreateTime_ != null &&
-            latestCreateTime_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
-            getLatestCreateTimeBuilder().mergeFrom(value);
-          } else {
-            latestCreateTime_ = value;
-          }
-        } else {
-          latestCreateTimeBuilder_.mergeFrom(value);
-        }
-        bitField0_ |= 0x00000004;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_create_time = 3;</code>
-       */
-      public Builder clearLatestCreateTime() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        latestCreateTime_ = null;
-        if (latestCreateTimeBuilder_ != null) {
-          latestCreateTimeBuilder_.dispose();
-          latestCreateTimeBuilder_ = null;
-        }
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_create_time = 3;</code>
-       */
-      public com.google.protobuf.Timestamp.Builder getLatestCreateTimeBuilder() {
-        bitField0_ |= 0x00000004;
-        onChanged();
-        return getLatestCreateTimeFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_create_time = 3;</code>
-       */
-      public com.google.protobuf.TimestampOrBuilder getLatestCreateTimeOrBuilder() {
-        if (latestCreateTimeBuilder_ != null) {
-          return latestCreateTimeBuilder_.getMessageOrBuilder();
-        } else {
-          return latestCreateTime_ == null ?
-              com.google.protobuf.Timestamp.getDefaultInstance() : latestCreateTime_;
-        }
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_create_time = 3;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
-          getLatestCreateTimeFieldBuilder() {
-        if (latestCreateTimeBuilder_ == null) {
-          latestCreateTimeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
-                  getLatestCreateTime(),
-                  getParentForChildren(),
-                  isClean());
-          latestCreateTime_ = null;
-        }
-        return latestCreateTimeBuilder_;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:littlehorse.InternalScanPb.TagPrefixScanPb)
-    }
-
-    // @@protoc_insertion_point(class_scope:littlehorse.InternalScanPb.TagPrefixScanPb)
-    private static final io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb();
-    }
-
-    public static io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<TagPrefixScanPb>
-        PARSER = new com.google.protobuf.AbstractParser<TagPrefixScanPb>() {
-      @java.lang.Override
-      public TagPrefixScanPb parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        Builder builder = newBuilder();
-        try {
-          builder.mergeFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(builder.buildPartial());
-        } catch (com.google.protobuf.UninitializedMessageException e) {
-          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-        } catch (java.io.IOException e) {
-          throw new com.google.protobuf.InvalidProtocolBufferException(e)
-              .setUnfinishedMessage(builder.buildPartial());
-        }
-        return builder.buildPartial();
-      }
-    };
-
-    public static com.google.protobuf.Parser<TagPrefixScanPb> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<TagPrefixScanPb> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface RemoteTagPrefixScanPbOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:littlehorse.InternalScanPb.RemoteTagPrefixScanPb)
+  public interface TagScanPbOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:littlehorse.InternalScanPb.TagScanPb)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -1386,18 +106,18 @@ private static final long serialVersionUID = 0L;
     com.google.protobuf.TimestampOrBuilder getLatestCreateTimeOrBuilder();
   }
   /**
-   * Protobuf type {@code littlehorse.InternalScanPb.RemoteTagPrefixScanPb}
+   * Protobuf type {@code littlehorse.InternalScanPb.TagScanPb}
    */
-  public static final class RemoteTagPrefixScanPb extends
+  public static final class TagScanPb extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:littlehorse.InternalScanPb.RemoteTagPrefixScanPb)
-      RemoteTagPrefixScanPbOrBuilder {
+      // @@protoc_insertion_point(message_implements:littlehorse.InternalScanPb.TagScanPb)
+      TagScanPbOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use RemoteTagPrefixScanPb.newBuilder() to construct.
-    private RemoteTagPrefixScanPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use TagScanPb.newBuilder() to construct.
+    private TagScanPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private RemoteTagPrefixScanPb() {
+    private TagScanPb() {
       attributes_ = java.util.Collections.emptyList();
     }
 
@@ -1405,7 +125,7 @@ private static final long serialVersionUID = 0L;
     @SuppressWarnings({"unused"})
     protected java.lang.Object newInstance(
         UnusedPrivateParameter unused) {
-      return new RemoteTagPrefixScanPb();
+      return new TagScanPb();
     }
 
     @java.lang.Override
@@ -1415,15 +135,15 @@ private static final long serialVersionUID = 0L;
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalScanPb_RemoteTagPrefixScanPb_descriptor;
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalScanPb_TagScanPb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalScanPb_RemoteTagPrefixScanPb_fieldAccessorTable
+      return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalScanPb_TagScanPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb.class, io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb.Builder.class);
+              io.littlehorse.common.proto.InternalScanPb.TagScanPb.class, io.littlehorse.common.proto.InternalScanPb.TagScanPb.Builder.class);
     }
 
     private int bitField0_;
@@ -1574,10 +294,10 @@ private static final long serialVersionUID = 0L;
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb)) {
+      if (!(obj instanceof io.littlehorse.common.proto.InternalScanPb.TagScanPb)) {
         return super.equals(obj);
       }
-      io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb other = (io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb) obj;
+      io.littlehorse.common.proto.InternalScanPb.TagScanPb other = (io.littlehorse.common.proto.InternalScanPb.TagScanPb) obj;
 
       if (!getAttributesList()
           .equals(other.getAttributesList())) return false;
@@ -1619,69 +339,69 @@ private static final long serialVersionUID = 0L;
       return hash;
     }
 
-    public static io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb parseFrom(
+    public static io.littlehorse.common.proto.InternalScanPb.TagScanPb parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb parseFrom(
+    public static io.littlehorse.common.proto.InternalScanPb.TagScanPb parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb parseFrom(
+    public static io.littlehorse.common.proto.InternalScanPb.TagScanPb parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb parseFrom(
+    public static io.littlehorse.common.proto.InternalScanPb.TagScanPb parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb parseFrom(byte[] data)
+    public static io.littlehorse.common.proto.InternalScanPb.TagScanPb parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb parseFrom(
+    public static io.littlehorse.common.proto.InternalScanPb.TagScanPb parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb parseFrom(java.io.InputStream input)
+    public static io.littlehorse.common.proto.InternalScanPb.TagScanPb parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb parseFrom(
+    public static io.littlehorse.common.proto.InternalScanPb.TagScanPb parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb parseDelimitedFrom(java.io.InputStream input)
+    public static io.littlehorse.common.proto.InternalScanPb.TagScanPb parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb parseDelimitedFrom(
+    public static io.littlehorse.common.proto.InternalScanPb.TagScanPb parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb parseFrom(
+    public static io.littlehorse.common.proto.InternalScanPb.TagScanPb parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb parseFrom(
+    public static io.littlehorse.common.proto.InternalScanPb.TagScanPb parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1694,7 +414,7 @@ private static final long serialVersionUID = 0L;
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb prototype) {
+    public static Builder newBuilder(io.littlehorse.common.proto.InternalScanPb.TagScanPb prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -1710,26 +430,26 @@ private static final long serialVersionUID = 0L;
       return builder;
     }
     /**
-     * Protobuf type {@code littlehorse.InternalScanPb.RemoteTagPrefixScanPb}
+     * Protobuf type {@code littlehorse.InternalScanPb.TagScanPb}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:littlehorse.InternalScanPb.RemoteTagPrefixScanPb)
-        io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPbOrBuilder {
+        // @@protoc_insertion_point(builder_implements:littlehorse.InternalScanPb.TagScanPb)
+        io.littlehorse.common.proto.InternalScanPb.TagScanPbOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalScanPb_RemoteTagPrefixScanPb_descriptor;
+        return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalScanPb_TagScanPb_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalScanPb_RemoteTagPrefixScanPb_fieldAccessorTable
+        return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalScanPb_TagScanPb_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb.class, io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb.Builder.class);
+                io.littlehorse.common.proto.InternalScanPb.TagScanPb.class, io.littlehorse.common.proto.InternalScanPb.TagScanPb.Builder.class);
       }
 
-      // Construct using io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb.newBuilder()
+      // Construct using io.littlehorse.common.proto.InternalScanPb.TagScanPb.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -1774,17 +494,17 @@ private static final long serialVersionUID = 0L;
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalScanPb_RemoteTagPrefixScanPb_descriptor;
+        return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalScanPb_TagScanPb_descriptor;
       }
 
       @java.lang.Override
-      public io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb getDefaultInstanceForType() {
-        return io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb.getDefaultInstance();
+      public io.littlehorse.common.proto.InternalScanPb.TagScanPb getDefaultInstanceForType() {
+        return io.littlehorse.common.proto.InternalScanPb.TagScanPb.getDefaultInstance();
       }
 
       @java.lang.Override
-      public io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb build() {
-        io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb result = buildPartial();
+      public io.littlehorse.common.proto.InternalScanPb.TagScanPb build() {
+        io.littlehorse.common.proto.InternalScanPb.TagScanPb result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -1792,15 +512,15 @@ private static final long serialVersionUID = 0L;
       }
 
       @java.lang.Override
-      public io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb buildPartial() {
-        io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb result = new io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb(this);
+      public io.littlehorse.common.proto.InternalScanPb.TagScanPb buildPartial() {
+        io.littlehorse.common.proto.InternalScanPb.TagScanPb result = new io.littlehorse.common.proto.InternalScanPb.TagScanPb(this);
         buildPartialRepeatedFields(result);
         if (bitField0_ != 0) { buildPartial0(result); }
         onBuilt();
         return result;
       }
 
-      private void buildPartialRepeatedFields(io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb result) {
+      private void buildPartialRepeatedFields(io.littlehorse.common.proto.InternalScanPb.TagScanPb result) {
         if (attributesBuilder_ == null) {
           if (((bitField0_ & 0x00000001) != 0)) {
             attributes_ = java.util.Collections.unmodifiableList(attributes_);
@@ -1812,7 +532,7 @@ private static final long serialVersionUID = 0L;
         }
       }
 
-      private void buildPartial0(io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb result) {
+      private void buildPartial0(io.littlehorse.common.proto.InternalScanPb.TagScanPb result) {
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000002) != 0)) {
@@ -1864,16 +584,16 @@ private static final long serialVersionUID = 0L;
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb) {
-          return mergeFrom((io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb)other);
+        if (other instanceof io.littlehorse.common.proto.InternalScanPb.TagScanPb) {
+          return mergeFrom((io.littlehorse.common.proto.InternalScanPb.TagScanPb)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb other) {
-        if (other == io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb.getDefaultInstance()) return this;
+      public Builder mergeFrom(io.littlehorse.common.proto.InternalScanPb.TagScanPb other) {
+        if (other == io.littlehorse.common.proto.InternalScanPb.TagScanPb.getDefaultInstance()) return this;
         if (attributesBuilder_ == null) {
           if (!other.attributes_.isEmpty()) {
             if (attributes_.isEmpty()) {
@@ -2466,23 +1186,23 @@ private static final long serialVersionUID = 0L;
       }
 
 
-      // @@protoc_insertion_point(builder_scope:littlehorse.InternalScanPb.RemoteTagPrefixScanPb)
+      // @@protoc_insertion_point(builder_scope:littlehorse.InternalScanPb.TagScanPb)
     }
 
-    // @@protoc_insertion_point(class_scope:littlehorse.InternalScanPb.RemoteTagPrefixScanPb)
-    private static final io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:littlehorse.InternalScanPb.TagScanPb)
+    private static final io.littlehorse.common.proto.InternalScanPb.TagScanPb DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb();
+      DEFAULT_INSTANCE = new io.littlehorse.common.proto.InternalScanPb.TagScanPb();
     }
 
-    public static io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb getDefaultInstance() {
+    public static io.littlehorse.common.proto.InternalScanPb.TagScanPb getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<RemoteTagPrefixScanPb>
-        PARSER = new com.google.protobuf.AbstractParser<RemoteTagPrefixScanPb>() {
+    private static final com.google.protobuf.Parser<TagScanPb>
+        PARSER = new com.google.protobuf.AbstractParser<TagScanPb>() {
       @java.lang.Override
-      public RemoteTagPrefixScanPb parsePartialFrom(
+      public TagScanPb parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -2501,17 +1221,17 @@ private static final long serialVersionUID = 0L;
       }
     };
 
-    public static com.google.protobuf.Parser<RemoteTagPrefixScanPb> parser() {
+    public static com.google.protobuf.Parser<TagScanPb> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<RemoteTagPrefixScanPb> getParserForType() {
+    public com.google.protobuf.Parser<TagScanPb> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb getDefaultInstanceForType() {
+    public io.littlehorse.common.proto.InternalScanPb.TagScanPb getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -3256,8 +1976,7 @@ private static final long serialVersionUID = 0L;
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
     BOUNDED_OBJECT_ID_SCAN(7),
-    LOCAL_TAG_PREFIX_SCAN(8),
-    REMOTE_TAG_PREFIX_SCAN(9),
+    TAG_SCAN(8),
     SCANBOUNDARY_NOT_SET(0);
     private final int value;
     private ScanBoundaryCase(int value) {
@@ -3276,8 +1995,7 @@ private static final long serialVersionUID = 0L;
     public static ScanBoundaryCase forNumber(int value) {
       switch (value) {
         case 7: return BOUNDED_OBJECT_ID_SCAN;
-        case 8: return LOCAL_TAG_PREFIX_SCAN;
-        case 9: return REMOTE_TAG_PREFIX_SCAN;
+        case 8: return TAG_SCAN;
         case 0: return SCANBOUNDARY_NOT_SET;
         default: return null;
       }
@@ -3351,19 +2069,19 @@ private static final long serialVersionUID = 0L;
   public static final int OBJECT_TYPE_FIELD_NUMBER = 4;
   private int objectType_ = 0;
   /**
-   * <code>.littlehorse.GETableClassEnumPb object_type = 4;</code>
+   * <code>.littlehorse.GetableClassEnumPb object_type = 4;</code>
    * @return The enum numeric value on the wire for objectType.
    */
   @java.lang.Override public int getObjectTypeValue() {
     return objectType_;
   }
   /**
-   * <code>.littlehorse.GETableClassEnumPb object_type = 4;</code>
+   * <code>.littlehorse.GetableClassEnumPb object_type = 4;</code>
    * @return The objectType.
    */
-  @java.lang.Override public io.littlehorse.common.proto.GETableClassEnumPb getObjectType() {
-    io.littlehorse.common.proto.GETableClassEnumPb result = io.littlehorse.common.proto.GETableClassEnumPb.forNumber(objectType_);
-    return result == null ? io.littlehorse.common.proto.GETableClassEnumPb.UNRECOGNIZED : result;
+  @java.lang.Override public io.littlehorse.common.proto.GetableClassEnumPb getObjectType() {
+    io.littlehorse.common.proto.GetableClassEnumPb result = io.littlehorse.common.proto.GetableClassEnumPb.forNumber(objectType_);
+    return result == null ? io.littlehorse.common.proto.GetableClassEnumPb.UNRECOGNIZED : result;
   }
 
   public static final int STORE_NAME_FIELD_NUMBER = 5;
@@ -3409,6 +2127,11 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object partitionKey_ = "";
   /**
+   * <pre>
+   * If this is set: Remote Tag Scan
+   * Else: Local Tag Scan
+   * </pre>
+   *
    * <code>optional string partition_key = 6;</code>
    * @return Whether the partitionKey field is set.
    */
@@ -3417,6 +2140,11 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000002) != 0);
   }
   /**
+   * <pre>
+   * If this is set: Remote Tag Scan
+   * Else: Local Tag Scan
+   * </pre>
+   *
    * <code>optional string partition_key = 6;</code>
    * @return The partitionKey.
    */
@@ -3434,6 +2162,11 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
+   * <pre>
+   * If this is set: Remote Tag Scan
+   * Else: Local Tag Scan
+   * </pre>
+   *
    * <code>optional string partition_key = 6;</code>
    * @return The bytes for partitionKey.
    */
@@ -3483,66 +2216,35 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb.getDefaultInstance();
   }
 
-  public static final int LOCAL_TAG_PREFIX_SCAN_FIELD_NUMBER = 8;
+  public static final int TAG_SCAN_FIELD_NUMBER = 8;
   /**
-   * <code>.littlehorse.InternalScanPb.TagPrefixScanPb local_tag_prefix_scan = 8;</code>
-   * @return Whether the localTagPrefixScan field is set.
+   * <code>.littlehorse.InternalScanPb.TagScanPb tag_scan = 8;</code>
+   * @return Whether the tagScan field is set.
    */
   @java.lang.Override
-  public boolean hasLocalTagPrefixScan() {
+  public boolean hasTagScan() {
     return scanBoundaryCase_ == 8;
   }
   /**
-   * <code>.littlehorse.InternalScanPb.TagPrefixScanPb local_tag_prefix_scan = 8;</code>
-   * @return The localTagPrefixScan.
+   * <code>.littlehorse.InternalScanPb.TagScanPb tag_scan = 8;</code>
+   * @return The tagScan.
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb getLocalTagPrefixScan() {
+  public io.littlehorse.common.proto.InternalScanPb.TagScanPb getTagScan() {
     if (scanBoundaryCase_ == 8) {
-       return (io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb) scanBoundary_;
+       return (io.littlehorse.common.proto.InternalScanPb.TagScanPb) scanBoundary_;
     }
-    return io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb.getDefaultInstance();
+    return io.littlehorse.common.proto.InternalScanPb.TagScanPb.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.InternalScanPb.TagPrefixScanPb local_tag_prefix_scan = 8;</code>
+   * <code>.littlehorse.InternalScanPb.TagScanPb tag_scan = 8;</code>
    */
   @java.lang.Override
-  public io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPbOrBuilder getLocalTagPrefixScanOrBuilder() {
+  public io.littlehorse.common.proto.InternalScanPb.TagScanPbOrBuilder getTagScanOrBuilder() {
     if (scanBoundaryCase_ == 8) {
-       return (io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb) scanBoundary_;
+       return (io.littlehorse.common.proto.InternalScanPb.TagScanPb) scanBoundary_;
     }
-    return io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb.getDefaultInstance();
-  }
-
-  public static final int REMOTE_TAG_PREFIX_SCAN_FIELD_NUMBER = 9;
-  /**
-   * <code>.littlehorse.InternalScanPb.RemoteTagPrefixScanPb remote_tag_prefix_scan = 9;</code>
-   * @return Whether the remoteTagPrefixScan field is set.
-   */
-  @java.lang.Override
-  public boolean hasRemoteTagPrefixScan() {
-    return scanBoundaryCase_ == 9;
-  }
-  /**
-   * <code>.littlehorse.InternalScanPb.RemoteTagPrefixScanPb remote_tag_prefix_scan = 9;</code>
-   * @return The remoteTagPrefixScan.
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb getRemoteTagPrefixScan() {
-    if (scanBoundaryCase_ == 9) {
-       return (io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb) scanBoundary_;
-    }
-    return io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb.getDefaultInstance();
-  }
-  /**
-   * <code>.littlehorse.InternalScanPb.RemoteTagPrefixScanPb remote_tag_prefix_scan = 9;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPbOrBuilder getRemoteTagPrefixScanOrBuilder() {
-    if (scanBoundaryCase_ == 9) {
-       return (io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb) scanBoundary_;
-    }
-    return io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb.getDefaultInstance();
+    return io.littlehorse.common.proto.InternalScanPb.TagScanPb.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -3568,7 +2270,7 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(3, getBookmark());
     }
-    if (objectType_ != io.littlehorse.common.proto.GETableClassEnumPb.TASK_DEF.getNumber()) {
+    if (objectType_ != io.littlehorse.common.proto.GetableClassEnumPb.TASK_DEF.getNumber()) {
       output.writeEnum(4, objectType_);
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(storeName_)) {
@@ -3581,10 +2283,7 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(7, (io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb) scanBoundary_);
     }
     if (scanBoundaryCase_ == 8) {
-      output.writeMessage(8, (io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb) scanBoundary_);
-    }
-    if (scanBoundaryCase_ == 9) {
-      output.writeMessage(9, (io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb) scanBoundary_);
+      output.writeMessage(8, (io.littlehorse.common.proto.InternalScanPb.TagScanPb) scanBoundary_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -3607,7 +2306,7 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getBookmark());
     }
-    if (objectType_ != io.littlehorse.common.proto.GETableClassEnumPb.TASK_DEF.getNumber()) {
+    if (objectType_ != io.littlehorse.common.proto.GetableClassEnumPb.TASK_DEF.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(4, objectType_);
     }
@@ -3623,11 +2322,7 @@ private static final long serialVersionUID = 0L;
     }
     if (scanBoundaryCase_ == 8) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(8, (io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb) scanBoundary_);
-    }
-    if (scanBoundaryCase_ == 9) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(9, (io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb) scanBoundary_);
+        .computeMessageSize(8, (io.littlehorse.common.proto.InternalScanPb.TagScanPb) scanBoundary_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -3667,12 +2362,8 @@ private static final long serialVersionUID = 0L;
             .equals(other.getBoundedObjectIdScan())) return false;
         break;
       case 8:
-        if (!getLocalTagPrefixScan()
-            .equals(other.getLocalTagPrefixScan())) return false;
-        break;
-      case 9:
-        if (!getRemoteTagPrefixScan()
-            .equals(other.getRemoteTagPrefixScan())) return false;
+        if (!getTagScan()
+            .equals(other.getTagScan())) return false;
         break;
       case 0:
       default:
@@ -3710,12 +2401,8 @@ private static final long serialVersionUID = 0L;
         hash = (53 * hash) + getBoundedObjectIdScan().hashCode();
         break;
       case 8:
-        hash = (37 * hash) + LOCAL_TAG_PREFIX_SCAN_FIELD_NUMBER;
-        hash = (53 * hash) + getLocalTagPrefixScan().hashCode();
-        break;
-      case 9:
-        hash = (37 * hash) + REMOTE_TAG_PREFIX_SCAN_FIELD_NUMBER;
-        hash = (53 * hash) + getRemoteTagPrefixScan().hashCode();
+        hash = (37 * hash) + TAG_SCAN_FIELD_NUMBER;
+        hash = (53 * hash) + getTagScan().hashCode();
         break;
       case 0:
       default:
@@ -3868,11 +2555,8 @@ private static final long serialVersionUID = 0L;
       if (boundedObjectIdScanBuilder_ != null) {
         boundedObjectIdScanBuilder_.clear();
       }
-      if (localTagPrefixScanBuilder_ != null) {
-        localTagPrefixScanBuilder_.clear();
-      }
-      if (remoteTagPrefixScanBuilder_ != null) {
-        remoteTagPrefixScanBuilder_.clear();
+      if (tagScanBuilder_ != null) {
+        tagScanBuilder_.clear();
       }
       scanBoundaryCase_ = 0;
       scanBoundary_ = null;
@@ -3944,12 +2628,8 @@ private static final long serialVersionUID = 0L;
         result.scanBoundary_ = boundedObjectIdScanBuilder_.build();
       }
       if (scanBoundaryCase_ == 8 &&
-          localTagPrefixScanBuilder_ != null) {
-        result.scanBoundary_ = localTagPrefixScanBuilder_.build();
-      }
-      if (scanBoundaryCase_ == 9 &&
-          remoteTagPrefixScanBuilder_ != null) {
-        result.scanBoundary_ = remoteTagPrefixScanBuilder_.build();
+          tagScanBuilder_ != null) {
+        result.scanBoundary_ = tagScanBuilder_.build();
       }
     }
 
@@ -4024,12 +2704,8 @@ private static final long serialVersionUID = 0L;
           mergeBoundedObjectIdScan(other.getBoundedObjectIdScan());
           break;
         }
-        case LOCAL_TAG_PREFIX_SCAN: {
-          mergeLocalTagPrefixScan(other.getLocalTagPrefixScan());
-          break;
-        }
-        case REMOTE_TAG_PREFIX_SCAN: {
-          mergeRemoteTagPrefixScan(other.getRemoteTagPrefixScan());
+        case TAG_SCAN: {
+          mergeTagScan(other.getTagScan());
           break;
         }
         case SCANBOUNDARY_NOT_SET: {
@@ -4103,18 +2779,11 @@ private static final long serialVersionUID = 0L;
             } // case 58
             case 66: {
               input.readMessage(
-                  getLocalTagPrefixScanFieldBuilder().getBuilder(),
+                  getTagScanFieldBuilder().getBuilder(),
                   extensionRegistry);
               scanBoundaryCase_ = 8;
               break;
             } // case 66
-            case 74: {
-              input.readMessage(
-                  getRemoteTagPrefixScanFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              scanBoundaryCase_ = 9;
-              break;
-            } // case 74
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -4353,14 +3022,14 @@ private static final long serialVersionUID = 0L;
 
     private int objectType_ = 0;
     /**
-     * <code>.littlehorse.GETableClassEnumPb object_type = 4;</code>
+     * <code>.littlehorse.GetableClassEnumPb object_type = 4;</code>
      * @return The enum numeric value on the wire for objectType.
      */
     @java.lang.Override public int getObjectTypeValue() {
       return objectType_;
     }
     /**
-     * <code>.littlehorse.GETableClassEnumPb object_type = 4;</code>
+     * <code>.littlehorse.GetableClassEnumPb object_type = 4;</code>
      * @param value The enum numeric value on the wire for objectType to set.
      * @return This builder for chaining.
      */
@@ -4371,20 +3040,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.GETableClassEnumPb object_type = 4;</code>
+     * <code>.littlehorse.GetableClassEnumPb object_type = 4;</code>
      * @return The objectType.
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.GETableClassEnumPb getObjectType() {
-      io.littlehorse.common.proto.GETableClassEnumPb result = io.littlehorse.common.proto.GETableClassEnumPb.forNumber(objectType_);
-      return result == null ? io.littlehorse.common.proto.GETableClassEnumPb.UNRECOGNIZED : result;
+    public io.littlehorse.common.proto.GetableClassEnumPb getObjectType() {
+      io.littlehorse.common.proto.GetableClassEnumPb result = io.littlehorse.common.proto.GetableClassEnumPb.forNumber(objectType_);
+      return result == null ? io.littlehorse.common.proto.GetableClassEnumPb.UNRECOGNIZED : result;
     }
     /**
-     * <code>.littlehorse.GETableClassEnumPb object_type = 4;</code>
+     * <code>.littlehorse.GetableClassEnumPb object_type = 4;</code>
      * @param value The objectType to set.
      * @return This builder for chaining.
      */
-    public Builder setObjectType(io.littlehorse.common.proto.GETableClassEnumPb value) {
+    public Builder setObjectType(io.littlehorse.common.proto.GetableClassEnumPb value) {
       if (value == null) {
         throw new NullPointerException();
       }
@@ -4394,7 +3063,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.GETableClassEnumPb object_type = 4;</code>
+     * <code>.littlehorse.GetableClassEnumPb object_type = 4;</code>
      * @return This builder for chaining.
      */
     public Builder clearObjectType() {
@@ -4478,6 +3147,11 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object partitionKey_ = "";
     /**
+     * <pre>
+     * If this is set: Remote Tag Scan
+     * Else: Local Tag Scan
+     * </pre>
+     *
      * <code>optional string partition_key = 6;</code>
      * @return Whether the partitionKey field is set.
      */
@@ -4485,6 +3159,11 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000020) != 0);
     }
     /**
+     * <pre>
+     * If this is set: Remote Tag Scan
+     * Else: Local Tag Scan
+     * </pre>
+     *
      * <code>optional string partition_key = 6;</code>
      * @return The partitionKey.
      */
@@ -4501,6 +3180,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * If this is set: Remote Tag Scan
+     * Else: Local Tag Scan
+     * </pre>
+     *
      * <code>optional string partition_key = 6;</code>
      * @return The bytes for partitionKey.
      */
@@ -4518,6 +3202,11 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
+     * <pre>
+     * If this is set: Remote Tag Scan
+     * Else: Local Tag Scan
+     * </pre>
+     *
      * <code>optional string partition_key = 6;</code>
      * @param value The partitionKey to set.
      * @return This builder for chaining.
@@ -4531,6 +3220,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If this is set: Remote Tag Scan
+     * Else: Local Tag Scan
+     * </pre>
+     *
      * <code>optional string partition_key = 6;</code>
      * @return This builder for chaining.
      */
@@ -4541,6 +3235,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
+     * <pre>
+     * If this is set: Remote Tag Scan
+     * Else: Local Tag Scan
+     * </pre>
+     *
      * <code>optional string partition_key = 6;</code>
      * @param value The bytes for partitionKey to set.
      * @return This builder for chaining.
@@ -4698,71 +3397,71 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb, io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb.Builder, io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPbOrBuilder> localTagPrefixScanBuilder_;
+        io.littlehorse.common.proto.InternalScanPb.TagScanPb, io.littlehorse.common.proto.InternalScanPb.TagScanPb.Builder, io.littlehorse.common.proto.InternalScanPb.TagScanPbOrBuilder> tagScanBuilder_;
     /**
-     * <code>.littlehorse.InternalScanPb.TagPrefixScanPb local_tag_prefix_scan = 8;</code>
-     * @return Whether the localTagPrefixScan field is set.
+     * <code>.littlehorse.InternalScanPb.TagScanPb tag_scan = 8;</code>
+     * @return Whether the tagScan field is set.
      */
     @java.lang.Override
-    public boolean hasLocalTagPrefixScan() {
+    public boolean hasTagScan() {
       return scanBoundaryCase_ == 8;
     }
     /**
-     * <code>.littlehorse.InternalScanPb.TagPrefixScanPb local_tag_prefix_scan = 8;</code>
-     * @return The localTagPrefixScan.
+     * <code>.littlehorse.InternalScanPb.TagScanPb tag_scan = 8;</code>
+     * @return The tagScan.
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb getLocalTagPrefixScan() {
-      if (localTagPrefixScanBuilder_ == null) {
+    public io.littlehorse.common.proto.InternalScanPb.TagScanPb getTagScan() {
+      if (tagScanBuilder_ == null) {
         if (scanBoundaryCase_ == 8) {
-          return (io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb) scanBoundary_;
+          return (io.littlehorse.common.proto.InternalScanPb.TagScanPb) scanBoundary_;
         }
-        return io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb.getDefaultInstance();
+        return io.littlehorse.common.proto.InternalScanPb.TagScanPb.getDefaultInstance();
       } else {
         if (scanBoundaryCase_ == 8) {
-          return localTagPrefixScanBuilder_.getMessage();
+          return tagScanBuilder_.getMessage();
         }
-        return io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb.getDefaultInstance();
+        return io.littlehorse.common.proto.InternalScanPb.TagScanPb.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.InternalScanPb.TagPrefixScanPb local_tag_prefix_scan = 8;</code>
+     * <code>.littlehorse.InternalScanPb.TagScanPb tag_scan = 8;</code>
      */
-    public Builder setLocalTagPrefixScan(io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb value) {
-      if (localTagPrefixScanBuilder_ == null) {
+    public Builder setTagScan(io.littlehorse.common.proto.InternalScanPb.TagScanPb value) {
+      if (tagScanBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
         scanBoundary_ = value;
         onChanged();
       } else {
-        localTagPrefixScanBuilder_.setMessage(value);
+        tagScanBuilder_.setMessage(value);
       }
       scanBoundaryCase_ = 8;
       return this;
     }
     /**
-     * <code>.littlehorse.InternalScanPb.TagPrefixScanPb local_tag_prefix_scan = 8;</code>
+     * <code>.littlehorse.InternalScanPb.TagScanPb tag_scan = 8;</code>
      */
-    public Builder setLocalTagPrefixScan(
-        io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb.Builder builderForValue) {
-      if (localTagPrefixScanBuilder_ == null) {
+    public Builder setTagScan(
+        io.littlehorse.common.proto.InternalScanPb.TagScanPb.Builder builderForValue) {
+      if (tagScanBuilder_ == null) {
         scanBoundary_ = builderForValue.build();
         onChanged();
       } else {
-        localTagPrefixScanBuilder_.setMessage(builderForValue.build());
+        tagScanBuilder_.setMessage(builderForValue.build());
       }
       scanBoundaryCase_ = 8;
       return this;
     }
     /**
-     * <code>.littlehorse.InternalScanPb.TagPrefixScanPb local_tag_prefix_scan = 8;</code>
+     * <code>.littlehorse.InternalScanPb.TagScanPb tag_scan = 8;</code>
      */
-    public Builder mergeLocalTagPrefixScan(io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb value) {
-      if (localTagPrefixScanBuilder_ == null) {
+    public Builder mergeTagScan(io.littlehorse.common.proto.InternalScanPb.TagScanPb value) {
+      if (tagScanBuilder_ == null) {
         if (scanBoundaryCase_ == 8 &&
-            scanBoundary_ != io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb.getDefaultInstance()) {
-          scanBoundary_ = io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb.newBuilder((io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb) scanBoundary_)
+            scanBoundary_ != io.littlehorse.common.proto.InternalScanPb.TagScanPb.getDefaultInstance()) {
+          scanBoundary_ = io.littlehorse.common.proto.InternalScanPb.TagScanPb.newBuilder((io.littlehorse.common.proto.InternalScanPb.TagScanPb) scanBoundary_)
               .mergeFrom(value).buildPartial();
         } else {
           scanBoundary_ = value;
@@ -4770,19 +3469,19 @@ private static final long serialVersionUID = 0L;
         onChanged();
       } else {
         if (scanBoundaryCase_ == 8) {
-          localTagPrefixScanBuilder_.mergeFrom(value);
+          tagScanBuilder_.mergeFrom(value);
         } else {
-          localTagPrefixScanBuilder_.setMessage(value);
+          tagScanBuilder_.setMessage(value);
         }
       }
       scanBoundaryCase_ = 8;
       return this;
     }
     /**
-     * <code>.littlehorse.InternalScanPb.TagPrefixScanPb local_tag_prefix_scan = 8;</code>
+     * <code>.littlehorse.InternalScanPb.TagScanPb tag_scan = 8;</code>
      */
-    public Builder clearLocalTagPrefixScan() {
-      if (localTagPrefixScanBuilder_ == null) {
+    public Builder clearTagScan() {
+      if (tagScanBuilder_ == null) {
         if (scanBoundaryCase_ == 8) {
           scanBoundaryCase_ = 0;
           scanBoundary_ = null;
@@ -4793,192 +3492,50 @@ private static final long serialVersionUID = 0L;
           scanBoundaryCase_ = 0;
           scanBoundary_ = null;
         }
-        localTagPrefixScanBuilder_.clear();
+        tagScanBuilder_.clear();
       }
       return this;
     }
     /**
-     * <code>.littlehorse.InternalScanPb.TagPrefixScanPb local_tag_prefix_scan = 8;</code>
+     * <code>.littlehorse.InternalScanPb.TagScanPb tag_scan = 8;</code>
      */
-    public io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb.Builder getLocalTagPrefixScanBuilder() {
-      return getLocalTagPrefixScanFieldBuilder().getBuilder();
+    public io.littlehorse.common.proto.InternalScanPb.TagScanPb.Builder getTagScanBuilder() {
+      return getTagScanFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.InternalScanPb.TagPrefixScanPb local_tag_prefix_scan = 8;</code>
+     * <code>.littlehorse.InternalScanPb.TagScanPb tag_scan = 8;</code>
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPbOrBuilder getLocalTagPrefixScanOrBuilder() {
-      if ((scanBoundaryCase_ == 8) && (localTagPrefixScanBuilder_ != null)) {
-        return localTagPrefixScanBuilder_.getMessageOrBuilder();
+    public io.littlehorse.common.proto.InternalScanPb.TagScanPbOrBuilder getTagScanOrBuilder() {
+      if ((scanBoundaryCase_ == 8) && (tagScanBuilder_ != null)) {
+        return tagScanBuilder_.getMessageOrBuilder();
       } else {
         if (scanBoundaryCase_ == 8) {
-          return (io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb) scanBoundary_;
+          return (io.littlehorse.common.proto.InternalScanPb.TagScanPb) scanBoundary_;
         }
-        return io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb.getDefaultInstance();
+        return io.littlehorse.common.proto.InternalScanPb.TagScanPb.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.InternalScanPb.TagPrefixScanPb local_tag_prefix_scan = 8;</code>
+     * <code>.littlehorse.InternalScanPb.TagScanPb tag_scan = 8;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb, io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb.Builder, io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPbOrBuilder> 
-        getLocalTagPrefixScanFieldBuilder() {
-      if (localTagPrefixScanBuilder_ == null) {
+        io.littlehorse.common.proto.InternalScanPb.TagScanPb, io.littlehorse.common.proto.InternalScanPb.TagScanPb.Builder, io.littlehorse.common.proto.InternalScanPb.TagScanPbOrBuilder> 
+        getTagScanFieldBuilder() {
+      if (tagScanBuilder_ == null) {
         if (!(scanBoundaryCase_ == 8)) {
-          scanBoundary_ = io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb.getDefaultInstance();
+          scanBoundary_ = io.littlehorse.common.proto.InternalScanPb.TagScanPb.getDefaultInstance();
         }
-        localTagPrefixScanBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb, io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb.Builder, io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPbOrBuilder>(
-                (io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb) scanBoundary_,
+        tagScanBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.common.proto.InternalScanPb.TagScanPb, io.littlehorse.common.proto.InternalScanPb.TagScanPb.Builder, io.littlehorse.common.proto.InternalScanPb.TagScanPbOrBuilder>(
+                (io.littlehorse.common.proto.InternalScanPb.TagScanPb) scanBoundary_,
                 getParentForChildren(),
                 isClean());
         scanBoundary_ = null;
       }
       scanBoundaryCase_ = 8;
       onChanged();
-      return localTagPrefixScanBuilder_;
-    }
-
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb, io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb.Builder, io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPbOrBuilder> remoteTagPrefixScanBuilder_;
-    /**
-     * <code>.littlehorse.InternalScanPb.RemoteTagPrefixScanPb remote_tag_prefix_scan = 9;</code>
-     * @return Whether the remoteTagPrefixScan field is set.
-     */
-    @java.lang.Override
-    public boolean hasRemoteTagPrefixScan() {
-      return scanBoundaryCase_ == 9;
-    }
-    /**
-     * <code>.littlehorse.InternalScanPb.RemoteTagPrefixScanPb remote_tag_prefix_scan = 9;</code>
-     * @return The remoteTagPrefixScan.
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb getRemoteTagPrefixScan() {
-      if (remoteTagPrefixScanBuilder_ == null) {
-        if (scanBoundaryCase_ == 9) {
-          return (io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb) scanBoundary_;
-        }
-        return io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb.getDefaultInstance();
-      } else {
-        if (scanBoundaryCase_ == 9) {
-          return remoteTagPrefixScanBuilder_.getMessage();
-        }
-        return io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.littlehorse.InternalScanPb.RemoteTagPrefixScanPb remote_tag_prefix_scan = 9;</code>
-     */
-    public Builder setRemoteTagPrefixScan(io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb value) {
-      if (remoteTagPrefixScanBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        scanBoundary_ = value;
-        onChanged();
-      } else {
-        remoteTagPrefixScanBuilder_.setMessage(value);
-      }
-      scanBoundaryCase_ = 9;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.InternalScanPb.RemoteTagPrefixScanPb remote_tag_prefix_scan = 9;</code>
-     */
-    public Builder setRemoteTagPrefixScan(
-        io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb.Builder builderForValue) {
-      if (remoteTagPrefixScanBuilder_ == null) {
-        scanBoundary_ = builderForValue.build();
-        onChanged();
-      } else {
-        remoteTagPrefixScanBuilder_.setMessage(builderForValue.build());
-      }
-      scanBoundaryCase_ = 9;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.InternalScanPb.RemoteTagPrefixScanPb remote_tag_prefix_scan = 9;</code>
-     */
-    public Builder mergeRemoteTagPrefixScan(io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb value) {
-      if (remoteTagPrefixScanBuilder_ == null) {
-        if (scanBoundaryCase_ == 9 &&
-            scanBoundary_ != io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb.getDefaultInstance()) {
-          scanBoundary_ = io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb.newBuilder((io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb) scanBoundary_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          scanBoundary_ = value;
-        }
-        onChanged();
-      } else {
-        if (scanBoundaryCase_ == 9) {
-          remoteTagPrefixScanBuilder_.mergeFrom(value);
-        } else {
-          remoteTagPrefixScanBuilder_.setMessage(value);
-        }
-      }
-      scanBoundaryCase_ = 9;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.InternalScanPb.RemoteTagPrefixScanPb remote_tag_prefix_scan = 9;</code>
-     */
-    public Builder clearRemoteTagPrefixScan() {
-      if (remoteTagPrefixScanBuilder_ == null) {
-        if (scanBoundaryCase_ == 9) {
-          scanBoundaryCase_ = 0;
-          scanBoundary_ = null;
-          onChanged();
-        }
-      } else {
-        if (scanBoundaryCase_ == 9) {
-          scanBoundaryCase_ = 0;
-          scanBoundary_ = null;
-        }
-        remoteTagPrefixScanBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>.littlehorse.InternalScanPb.RemoteTagPrefixScanPb remote_tag_prefix_scan = 9;</code>
-     */
-    public io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb.Builder getRemoteTagPrefixScanBuilder() {
-      return getRemoteTagPrefixScanFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.littlehorse.InternalScanPb.RemoteTagPrefixScanPb remote_tag_prefix_scan = 9;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPbOrBuilder getRemoteTagPrefixScanOrBuilder() {
-      if ((scanBoundaryCase_ == 9) && (remoteTagPrefixScanBuilder_ != null)) {
-        return remoteTagPrefixScanBuilder_.getMessageOrBuilder();
-      } else {
-        if (scanBoundaryCase_ == 9) {
-          return (io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb) scanBoundary_;
-        }
-        return io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.littlehorse.InternalScanPb.RemoteTagPrefixScanPb remote_tag_prefix_scan = 9;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb, io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb.Builder, io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPbOrBuilder> 
-        getRemoteTagPrefixScanFieldBuilder() {
-      if (remoteTagPrefixScanBuilder_ == null) {
-        if (!(scanBoundaryCase_ == 9)) {
-          scanBoundary_ = io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb.getDefaultInstance();
-        }
-        remoteTagPrefixScanBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb, io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb.Builder, io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPbOrBuilder>(
-                (io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb) scanBoundary_,
-                getParentForChildren(),
-                isClean());
-        scanBoundary_ = null;
-      }
-      scanBoundaryCase_ = 9;
-      onChanged();
-      return remoteTagPrefixScanBuilder_;
+      return tagScanBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

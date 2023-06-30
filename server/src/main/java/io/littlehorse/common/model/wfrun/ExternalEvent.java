@@ -1,16 +1,16 @@
 package io.littlehorse.common.model.wfrun;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.objectId.ExternalEventId;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.ExternalEventPb;
-import io.littlehorse.server.streamsimpl.storeinternals.GETableIndex;
+import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class ExternalEvent extends GETable<ExternalEventPb> {
+public class ExternalEvent extends Getable<ExternalEventPb> {
 
     // We want Jackson to show  the full ID, not this.
     public String guid;
@@ -80,7 +80,7 @@ public class ExternalEvent extends GETable<ExternalEventPb> {
     }
 
     @Override
-    public List<GETableIndex> getIndexes() {
+    public List<GetableIndex> getIndexes() {
         return new ArrayList<>();
     }
 

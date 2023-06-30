@@ -3,7 +3,7 @@ package io.littlehorse.common.model.objectId;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.wfrun.Variable;
-import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.VariableIdPb;
 import io.littlehorse.jlib.common.proto.VariablePb;
@@ -57,7 +57,7 @@ public class VariableId extends ObjectId<VariableIdPb, VariablePb, Variable> {
         name = split[2];
     }
 
-    public GETableClassEnumPb getType() {
-        return GETableClassEnumPb.VARIABLE;
+    public GetableClassEnumPb getType() {
+        return GetableClassEnumPb.VARIABLE;
     }
 }

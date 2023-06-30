@@ -3,7 +3,7 @@ package io.littlehorse.common.model.objectId;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.wfrun.NodeRun;
-import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.NodeRunIdPb;
 import io.littlehorse.jlib.common.proto.NodeRunPb;
@@ -61,7 +61,7 @@ public class NodeRunId extends ObjectId<NodeRunIdPb, NodeRunPb, NodeRun> {
         position = Integer.valueOf(split[2]);
     }
 
-    public GETableClassEnumPb getType() {
-        return GETableClassEnumPb.NODE_RUN;
+    public GetableClassEnumPb getType() {
+        return GetableClassEnumPb.NODE_RUN;
     }
 }

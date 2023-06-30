@@ -1,10 +1,10 @@
 package io.littlehorse.server.streamsimpl.storeinternals.utils;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.Storeable;
-import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.GetableClassEnumPb;
 
 public class StoreUtils {
 
@@ -12,7 +12,7 @@ public class StoreUtils {
         return thing.getClass().getSimpleName() + "/" + thing.getStoreKey();
     }
 
-    public static <T extends Message, U extends GETable<T>> String getFullStoreKey(
+    public static <T extends Message, U extends Getable<T>> String getFullStoreKey(
         ObjectId<?, T, U> objectId,
         Class<? extends Storeable<T>> cls
     ) {
@@ -26,8 +26,8 @@ public class StoreUtils {
         return cls.getSimpleName() + "/" + objectId;
     }
 
-    public static String getFullStoreKey(String objectId, GETableClassEnumPb type) {
-        return getFullStoreKey(objectId, GETable.getCls(type));
+    public static String getFullStoreKey(String objectId, GetableClassEnumPb type) {
+        return getFullStoreKey(objectId, Getable.getCls(type));
     }
 
     /*
@@ -41,7 +41,7 @@ public class StoreUtils {
         return "Response/" + commandId;
     }
 
-    public static String getTagsCacheKey(GETable<?> thing) {
+    public static String getTagsCacheKey(Getable<?> thing) {
         return "TagCache-" + thing.getClass() + "/" + thing.getStoreKey();
     }
 }

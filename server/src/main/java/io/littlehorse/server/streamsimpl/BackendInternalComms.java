@@ -12,7 +12,7 @@ import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHBadRequestError;
 import io.littlehorse.common.exceptions.LHConnectionError;
-import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.Storeable;
@@ -25,20 +25,18 @@ import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
 import io.littlehorse.common.model.objectId.ExternalEventDefId;
 import io.littlehorse.common.model.objectId.TaskDefId;
 import io.littlehorse.common.model.objectId.UserTaskDefId;
-import io.littlehorse.common.model.objectId.WfRunId;
 import io.littlehorse.common.model.objectId.WfSpecId;
-import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.AttributePb;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.CentralStoreQueryPb;
 import io.littlehorse.common.proto.CentralStoreQueryPb.CentralStoreSubQueryPb;
 import io.littlehorse.common.proto.CentralStoreQueryReplyPb;
-import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.proto.InternalGetAdvertisedHostsPb;
 import io.littlehorse.common.proto.InternalGetAdvertisedHostsReplyPb;
 import io.littlehorse.common.proto.InternalScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
-import io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb;
+import io.littlehorse.common.proto.InternalScanPb.TagScanPb;
 import io.littlehorse.common.proto.InternalScanReplyPb;
 import io.littlehorse.common.proto.LHInternalsGrpc;
 import io.littlehorse.common.proto.LHInternalsGrpc.LHInternalsBlockingStub;
@@ -52,8 +50,6 @@ import io.littlehorse.common.proto.ServerStatePb;
 import io.littlehorse.common.proto.ServerStatusPb;
 import io.littlehorse.common.proto.StandByTaskStatePb;
 import io.littlehorse.common.proto.StoreQueryStatusPb;
-import io.littlehorse.common.proto.TagScanPb;
-import io.littlehorse.common.proto.TagScanReplyPb;
 import io.littlehorse.common.proto.TaskStatePb;
 import io.littlehorse.common.proto.TopologyInstanceStatePb;
 import io.littlehorse.common.proto.TopologyInstanceStateReplyPb;
@@ -70,7 +66,6 @@ import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.LHIterKeyValue;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.LHKeyValueIterator;
-import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import io.littlehorse.server.streamsimpl.util.AsyncWaiters;
 import java.io.Closeable;
 import java.io.IOException;
@@ -94,7 +89,6 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyQueryMetadata;
-import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StoreQueryParameters;
 import org.apache.kafka.streams.StreamsMetadata;
 import org.apache.kafka.streams.TaskMetadata;
@@ -415,59 +409,6 @@ public class BackendInternalComms implements Closeable {
         // CommandProcessor will notify the StreamObserver once the command is
         // processed.
     }
-
-    // public void internalListObjectsAsync(
-    //     InternalListObjectsPb req,
-    //     StreamObserver<InternalListObjectsReplyPb> ctx
-    // ) {
-    //     KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
-    //         ServerTopology.CORE_STORE,
-    //         req.getPartitionKey(),
-    //         Serdes.String().serializer()
-    //     );
-
-    //     if (meta.activeHost().equals(thisHost)) {
-    //         localInternalListObjectsAsync(req, ctx);
-    //     } else {
-    //         getInternalAsyncClient(meta.activeHost()).internalListObjects(req, ctx);
-    //     }
-    // }
-
-    // private void localInternalListObjectsAsync(
-    //     InternalListObjectsPb req,
-    //     StreamObserver<InternalListObjectsReplyPb> ctx
-    // ) {
-    //     KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
-    //         req.getStoreName(),
-    //         req.getPartitionKey(),
-    //         Serdes.String().serializer()
-    //     );
-    //     ReadOnlyKeyValueStore<String, Bytes> store = getRawStore(
-    //         meta.partition(),
-    //         false,
-    //         req.getStoreName()
-    //     );
-
-    //     String start = req.getObjectIdPrefixStart();
-    //     String end = req.hasObjectIdPrefixEnd()
-    //         ? req.getObjectIdPrefixEnd()
-    //         : start + "~"; // '~' is the last ascii char
-
-    //     InternalListObjectsReplyPb.Builder out = InternalListObjectsReplyPb
-    //         .newBuilder()
-    //         .setCode(StoreQueryStatusPb.RSQ_OK);
-
-    //     try (KeyValueIterator<String, Bytes> iter = store.range(start, end);) {
-    //         while (iter.hasNext()) {
-    //             out.addResults(ByteString.copyFrom(iter.next().value.get()));
-    //         }
-    //     } catch (Exception exn) {
-    //         out.setCode(StoreQueryStatusPb.RSQ_NOT_AVAILABLE);
-    //         out.setMessage("Failed looking up store data: " + exn.getMessage());
-    //     }
-
-    //     ctx.onNext(out.build());
-    // }
 
     private ReadOnlyKeyValueStore<String, Bytes> getRawStore(
         Integer specificPartition,
@@ -835,29 +776,6 @@ public class BackendInternalComms implements Closeable {
         }
 
         @Override
-        public void tagScan(
-            io.littlehorse.common.proto.TagScanPb request,
-            io.grpc.stub.StreamObserver<io.littlehorse.common.proto.TagScanReplyPb> responseObserver
-        ) {
-            var store = getStore(
-                request.getPartition(),
-                false,
-                request.getStoreName()
-            );
-            var result = store
-                .prefixTagScanStream(request.getPrefixStoreKey(), Tag.class)
-                .limit(request.getLimit())
-                .map(kv -> {
-                    return kv.getValue().toProto().build();
-                })
-                .collect(Collectors.toList());
-            responseObserver.onNext(
-                TagScanReplyPb.newBuilder().addAllTags(result).build()
-            );
-            responseObserver.onCompleted();
-        }
-
-        @Override
         public void waitForCommand(
             WaitForCommandPb req,
             StreamObserver<WaitForCommandReplyPb> ctx
@@ -907,28 +825,19 @@ public class BackendInternalComms implements Closeable {
         ) {
             return objectIdPrefixScan(search);
         } else if (
-            search.partitionKey != null &&
-            search.type == ScanBoundaryCase.LOCAL_TAG_PREFIX_SCAN
+            search.partitionKey != null && search.type == ScanBoundaryCase.TAG_SCAN
         ) {
-            // COLT_TODO: Support remote tags. This will require sending something
-            // to the repartition store.
-            throw new RuntimeException("Hashed Tag Scan not yet supported");
+            return specificPartitionTagScan(search);
         } else if (
-            search.partitionKey == null &&
-            search.type == ScanBoundaryCase.LOCAL_TAG_PREFIX_SCAN
+            search.partitionKey == null && search.type == ScanBoundaryCase.TAG_SCAN
         ) {
-            return unhashedTagScan(search);
-        } else if (
-            search.partitionKey != null &&
-            search.type == ScanBoundaryCase.REMOTE_TAG_PREFIX_SCAN
-        ) {
-            return remoteTagScan(search);
+            return allPartitionTagScan(search);
         } else {
             throw new RuntimeException("Impossible: Unrecognized search type");
         }
     }
 
-    private InternalScanReplyPb remoteTagScan(InternalScan search) {
+    private InternalScanReplyPb specificPartitionTagScan(InternalScan search) {
         KeyQueryMetadata meta = coreStreams.queryMetadataForKey(
             search.getStoreName(),
             search.getPartitionKey(),
@@ -942,7 +851,7 @@ public class BackendInternalComms implements Closeable {
 
             String prefix = Tag.getAttributeStringFromPb(
                 search.getObjectType(),
-                search.getRemoteTagPrefixScanPb().getAttributesList()
+                search.getTagScan().getAttributesList()
             );
             var result = store
                 .prefixTagScanStream(prefix, Tag.class)
@@ -952,7 +861,7 @@ public class BackendInternalComms implements Closeable {
                     return ObjectId
                         .fromString(
                             objectId,
-                            GETable.getIdCls(search.getObjectType())
+                            Getable.getIdCls(search.getObjectType())
                         )
                         .toProto()
                         .build()
@@ -961,30 +870,9 @@ public class BackendInternalComms implements Closeable {
                 .collect(Collectors.toList());
             out.addAllResults(result);
         } else {
-            var tagScan = TagScanPb
-                .newBuilder()
-                .setPartition(meta.partition())
-                .setPrefixStoreKey(search.getPartitionKey())
-                .setStoreName(search.getStoreName())
-                .setLimit(search.getLimit())
-                .build();
-            var tagScanReply = getInternalClient(activeHost).tagScan(tagScan);
-            var result = tagScanReply
-                .getTagsList()
-                .stream()
-                .map(tagPb -> {
-                    var objectId = tagPb.getDescribedObjectId();
-                    return ObjectId
-                        .fromString(
-                            objectId,
-                            GETable.getIdCls(search.getObjectType())
-                        )
-                        .toProto()
-                        .build()
-                        .toByteString();
-                })
-                .collect(Collectors.toList());
-            out.addAllResults(result);
+            InternalScanReplyPb reply = getInternalClient(activeHost)
+                .internalScan(search.toProto().build());
+            out.addAllResults(reply.getResultsList());
         }
 
         return out.build();
@@ -1051,7 +939,7 @@ public class BackendInternalComms implements Closeable {
             LHKeyValueIterator<? extends Storeable<?>> iter = store.range(
                 startKey,
                 endKey,
-                GETable.getCls(req.objectType)
+                Getable.getCls(req.objectType)
             )
         ) {
             while (iter.hasNext()) {
@@ -1102,12 +990,12 @@ public class BackendInternalComms implements Closeable {
     private ByteString iterKeyValueToInternalScanResult(
         LHIterKeyValue<? extends Storeable<?>> next,
         ScanResultTypePb resultType,
-        GETableClassEnumPb objectType
+        GetableClassEnumPb objectType
     ) {
         if (resultType == ScanResultTypePb.OBJECT) {
             return ByteString.copyFrom(next.getValue().toBytes(config));
         } else if (resultType == ScanResultTypePb.OBJECT_ID) {
-            Class<? extends ObjectId<?, ?, ?>> idCls = GETable.getIdCls(objectType);
+            Class<? extends ObjectId<?, ?, ?>> idCls = Getable.getIdCls(objectType);
 
             return ByteString.copyFrom(
                 ObjectId.fromString(next.getKey(), idCls).toBytes(config)
@@ -1117,7 +1005,7 @@ public class BackendInternalComms implements Closeable {
         }
     }
 
-    private InternalScanReplyPb unhashedTagScan(InternalScan search)
+    private InternalScanReplyPb allPartitionTagScan(InternalScan search)
         throws LHConnectionError {
         int limit = search.limit;
 
@@ -1127,7 +1015,7 @@ public class BackendInternalComms implements Closeable {
         // hasn't been completed yet (by consulting the Bookmark), and then
         // query the owner of that partition.
 
-        InternalScanReplyPb out = localUnhashedTagScan(search);
+        InternalScanReplyPb out = localAllPartitionTagScan(search);
         if (out.getResultsCount() >= limit) {
             // Then we've gotten all the data the client asked for.
             return out;
@@ -1161,8 +1049,8 @@ public class BackendInternalComms implements Closeable {
             InternalScan newReq = new InternalScan();
             newReq.bookmark = out.getUpdatedBookmark();
             newReq.limit = search.limit - out.getResultsCount();
-            newReq.localTagPrefixScan = search.localTagPrefixScan;
-            newReq.type = ScanBoundaryCase.LOCAL_TAG_PREFIX_SCAN;
+            newReq.tagScan = search.tagScan;
+            newReq.type = ScanBoundaryCase.TAG_SCAN;
             newReq.objectType = search.objectType;
             newReq.storeName = search.storeName;
             newReq.resultType = ScanResultTypePb.OBJECT_ID;
@@ -1245,7 +1133,7 @@ public class BackendInternalComms implements Closeable {
         return new GlobalMetaStoresServerImpl(coreStreams, config);
     }
 
-    private InternalScanReplyPb localUnhashedTagScan(InternalScan req) {
+    private InternalScanReplyPb localAllPartitionTagScan(InternalScan req) {
         log.debug("Local Tag prefix scan");
         if (req.partitionKey != null) {
             throw new RuntimeException("Not possible you nincompoop");
@@ -1276,7 +1164,7 @@ public class BackendInternalComms implements Closeable {
 
             // Add all matching objects from that partition
             Pair<List<ByteString>, PartitionBookmarkPb> result = onePartitionPaginatedTagScan(
-                req.localTagPrefixScan,
+                req.tagScan,
                 partBookmark,
                 curLimit,
                 req.objectType,
@@ -1320,10 +1208,10 @@ public class BackendInternalComms implements Closeable {
      * secondary index.
      */
     private Pair<List<ByteString>, PartitionBookmarkPb> onePartitionPaginatedTagScan(
-        TagPrefixScanPb tagPrefixScan,
+        TagScanPb tagPrefixScan,
         PartitionBookmarkPb bookmark,
         int limit,
-        GETableClassEnumPb objectType,
+        GetableClassEnumPb objectType,
         int partition,
         LHROStoreWrapper store
     ) {
@@ -1382,7 +1270,7 @@ public class BackendInternalComms implements Closeable {
 
                 // Turn the ID String into the ObjectId structure, then serialize it
                 // to proto
-                Class<? extends ObjectId<?, ?, ?>> idCls = GETable.getIdCls(
+                Class<? extends ObjectId<?, ?, ?>> idCls = Getable.getIdCls(
                     objectType
                 );
                 idsOut.add(

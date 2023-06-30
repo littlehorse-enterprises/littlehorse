@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.objectId.TaskDefId;
 import io.littlehorse.common.proto.BookmarkPb;
-import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.ScanResultTypePb;
@@ -28,8 +28,8 @@ public class SearchTaskDef
         return SearchTaskDefPb.class;
     }
 
-    public GETableClassEnumPb getObjectType() {
-        return GETableClassEnumPb.TASK_DEF;
+    public GetableClassEnumPb getObjectType() {
+        return GetableClassEnumPb.TASK_DEF;
     }
 
     public void initFrom(Message proto) {

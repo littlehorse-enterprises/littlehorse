@@ -1,13 +1,11 @@
 package io.littlehorse.server.streamsimpl.storeinternals.index;
 
 import com.google.protobuf.Message;
-import com.google.protobuf.MessageLite;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.TagsCachePb;
 import io.littlehorse.common.proto.TagsCachePb.CachedTagPb;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 

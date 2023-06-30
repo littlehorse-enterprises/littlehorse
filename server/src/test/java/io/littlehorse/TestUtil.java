@@ -1,6 +1,6 @@
 package io.littlehorse;
 
-import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.meta.ThreadSpec;
 import io.littlehorse.common.model.meta.VariableDef;
@@ -9,7 +9,7 @@ import io.littlehorse.common.model.meta.subnode.TaskNode;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.model.wfrun.WfRun;
-import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.jlib.common.proto.LHStatusPb;
 import io.littlehorse.jlib.common.proto.NodePb;
@@ -77,7 +77,7 @@ public class TestUtil {
         return taskNode;
     }
 
-    public static GETable<?> getable(Class<?> getableClass, String id) {
+    public static Getable<?> getable(Class<?> getableClass, String id) {
         if (getableClass.equals(WfRun.class)) {
             return wfRun(id);
         } else {
@@ -90,7 +90,7 @@ public class TestUtil {
     public static Tag tag() {
         Tag tag = new Tag();
         tag.setTagType(TagStorageTypePb.LOCAL);
-        tag.setObjectType(GETableClassEnumPb.WF_RUN);
+        tag.setObjectType(GetableClassEnumPb.WF_RUN);
         tag.setCreatedAt(new Date());
         tag.setDescribedObjectId(UUID.randomUUID().toString());
         return tag;

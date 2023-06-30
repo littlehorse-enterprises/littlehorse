@@ -170,7 +170,7 @@ import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.Sear
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchVariableReply;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchWfRunReply;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchWfSpecReply;
-import io.littlehorse.server.streamsimpl.storeinternals.GETableIndexRegistry;
+import io.littlehorse.server.streamsimpl.storeinternals.GetableIndexRegistry;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import io.littlehorse.server.streamsimpl.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streamsimpl.taskqueue.TaskQueueManager;
@@ -947,54 +947,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             PollTaskReplyPb.class,
             false // it's a stream, so we don't want to complete it.
         );
-        // // // the new way which short-circuits the need to wait for processing.
-        // recordClaimEventAndReturnTask(
-        //     taskClaimCommand,
-        //     tsr,
-        //     client.getResponseObserver()
-        // );
     }
-
-    // // DO NOT DELETE THIS
-    // private void recordClaimEventAndReturnTask(
-    //     Command taskClaimCommand,
-    //     TaskScheduleRequest tsr,
-    //     StreamObserver<PollTaskReplyPb> observer
-    // ) {
-    //     internalComms
-    //         .getProducer()
-    //         .send(
-    //             taskClaimCommand.getPartitionKey(),
-    //             taskClaimCommand,
-    //             config.getCoreCmdTopicName(),
-    //             (recordMeta, exn) -> {
-    //                 if (exn != null) {
-    //                     // Then the command wasn't successfully claimed. Just return
-    //                     // an empty reply and get the client to try again later.
-    //                     observer.onNext(
-    //                         PollTaskReplyPb
-    //                             .newBuilder()
-    //                             .setCode(LHResponseCodePb.CONNECTION_ERROR)
-    //                             .setMessage(
-    //                                 "Unable to claim command, had a kafka error: " +
-    //                                 exn.getMessage()
-    //                             )
-    //                             .build()
-    //                     );
-    //                 } else {
-    //                     // Then the message has been accepted by Kafka. It's time to
-    //                     // finally return the task to client.
-    //                     observer.onNext(
-    //                         PollTaskReplyPb
-    //                             .newBuilder()
-    //                             .setCode(LHResponseCodePb.OK)
-    //                             .setResult(tsr.toProto())
-    //                             .build()
-    //                     );
-    //                 }
-    //             }
-    //         );
-    // }
 
     public LHProducer getProducer() {
         return internalComms.getProducer();
@@ -1121,7 +1074,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     public static void doMain(LHConfig config)
         throws IOException, InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
-        GETableIndexRegistry.getInstance();
+        GetableIndexRegistry.getInstance();
         KafkaStreamsServerImpl server = new KafkaStreamsServerImpl(config);
         Runtime
             .getRuntime()

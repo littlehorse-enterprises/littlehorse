@@ -8,9 +8,9 @@ package io.littlehorse.common.proto;
  * Stuff for Index (internal to the store)
  * </pre>
  *
- * Protobuf enum {@code littlehorse.GETableClassEnumPb}
+ * Protobuf enum {@code littlehorse.GetableClassEnumPb}
  */
-public enum GETableClassEnumPb
+public enum GetableClassEnumPb
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
    * <code>TASK_DEF = 0;</code>
@@ -119,7 +119,7 @@ public enum GETableClassEnumPb
    * @deprecated Use {@link #forNumber(int)} instead.
    */
   @java.lang.Deprecated
-  public static GETableClassEnumPb valueOf(int value) {
+  public static GetableClassEnumPb valueOf(int value) {
     return forNumber(value);
   }
 
@@ -127,7 +127,7 @@ public enum GETableClassEnumPb
    * @param value The numeric wire value of the corresponding enum entry.
    * @return The enum associated with the given numeric wire value.
    */
-  public static GETableClassEnumPb forNumber(int value) {
+  public static GetableClassEnumPb forNumber(int value) {
     switch (value) {
       case 0: return TASK_DEF;
       case 1: return EXTERNAL_EVENT_DEF;
@@ -144,15 +144,15 @@ public enum GETableClassEnumPb
     }
   }
 
-  public static com.google.protobuf.Internal.EnumLiteMap<GETableClassEnumPb>
+  public static com.google.protobuf.Internal.EnumLiteMap<GetableClassEnumPb>
       internalGetValueMap() {
     return internalValueMap;
   }
   private static final com.google.protobuf.Internal.EnumLiteMap<
-      GETableClassEnumPb> internalValueMap =
-        new com.google.protobuf.Internal.EnumLiteMap<GETableClassEnumPb>() {
-          public GETableClassEnumPb findValueByNumber(int number) {
-            return GETableClassEnumPb.forNumber(number);
+      GetableClassEnumPb> internalValueMap =
+        new com.google.protobuf.Internal.EnumLiteMap<GetableClassEnumPb>() {
+          public GetableClassEnumPb findValueByNumber(int number) {
+            return GetableClassEnumPb.forNumber(number);
           }
         };
 
@@ -173,9 +173,9 @@ public enum GETableClassEnumPb
     return io.littlehorse.common.proto.InternalServer.getDescriptor().getEnumTypes().get(2);
   }
 
-  private static final GETableClassEnumPb[] VALUES = values();
+  private static final GetableClassEnumPb[] VALUES = values();
 
-  public static GETableClassEnumPb valueOf(
+  public static GetableClassEnumPb valueOf(
       com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
     if (desc.getType() != getDescriptor()) {
       throw new java.lang.IllegalArgumentException(
@@ -189,10 +189,10 @@ public enum GETableClassEnumPb
 
   private final int value;
 
-  private GETableClassEnumPb(int value) {
+  private GetableClassEnumPb(int value) {
     this.value = value;
   }
 
-  // @@protoc_insertion_point(enum_scope:littlehorse.GETableClassEnumPb)
+  // @@protoc_insertion_point(enum_scope:littlehorse.GetableClassEnumPb)
 }
 

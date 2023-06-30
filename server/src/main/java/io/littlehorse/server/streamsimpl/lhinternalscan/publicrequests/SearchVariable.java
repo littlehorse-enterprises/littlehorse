@@ -6,10 +6,10 @@ import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.objectId.VariableId;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.proto.BookmarkPb;
-import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
-import io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb;
+import io.littlehorse.common.proto.InternalScanPb.TagScanPb;
 import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
@@ -34,8 +34,8 @@ public class SearchVariable
     public NameAndValuePb value;
     public String wfRunId;
 
-    public GETableClassEnumPb getObjectType() {
-        return GETableClassEnumPb.VARIABLE;
+    public GetableClassEnumPb getObjectType() {
+        return GetableClassEnumPb.VARIABLE;
     }
 
     public Class<SearchVariablePb> getProtoBaseClass() {
@@ -110,7 +110,7 @@ public class SearchVariable
                     .setEndObjectId(wfRunId + "/~")
                     .build();
         } else if (type == VariableCriteriaCase.VALUE) {
-            out.type = ScanBoundaryCase.LOCAL_TAG_PREFIX_SCAN;
+            out.type = ScanBoundaryCase.TAG_SCAN;
 
             // This may get more tricky once we add variable schemas...
             VariableValue varval = VariableValue.fromProto(value.getValue());
@@ -144,8 +144,8 @@ public class SearchVariable
                 }
             }
 
-            out.localTagPrefixScan =
-                TagPrefixScanPb
+            out.tagScan =
+                TagScanPb
                     .newBuilder()
                     .addAttributes(
                         new Attribute(valuePair.getLeft(), valuePair.getRight())

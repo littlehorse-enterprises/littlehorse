@@ -40,15 +40,15 @@ public interface InternalScanPbOrBuilder extends
   io.littlehorse.common.proto.BookmarkPbOrBuilder getBookmarkOrBuilder();
 
   /**
-   * <code>.littlehorse.GETableClassEnumPb object_type = 4;</code>
+   * <code>.littlehorse.GetableClassEnumPb object_type = 4;</code>
    * @return The enum numeric value on the wire for objectType.
    */
   int getObjectTypeValue();
   /**
-   * <code>.littlehorse.GETableClassEnumPb object_type = 4;</code>
+   * <code>.littlehorse.GetableClassEnumPb object_type = 4;</code>
    * @return The objectType.
    */
-  io.littlehorse.common.proto.GETableClassEnumPb getObjectType();
+  io.littlehorse.common.proto.GetableClassEnumPb getObjectType();
 
   /**
    * <code>string store_name = 5;</code>
@@ -63,16 +63,31 @@ public interface InternalScanPbOrBuilder extends
       getStoreNameBytes();
 
   /**
+   * <pre>
+   * If this is set: Remote Tag Scan
+   * Else: Local Tag Scan
+   * </pre>
+   *
    * <code>optional string partition_key = 6;</code>
    * @return Whether the partitionKey field is set.
    */
   boolean hasPartitionKey();
   /**
+   * <pre>
+   * If this is set: Remote Tag Scan
+   * Else: Local Tag Scan
+   * </pre>
+   *
    * <code>optional string partition_key = 6;</code>
    * @return The partitionKey.
    */
   java.lang.String getPartitionKey();
   /**
+   * <pre>
+   * If this is set: Remote Tag Scan
+   * Else: Local Tag Scan
+   * </pre>
+   *
    * <code>optional string partition_key = 6;</code>
    * @return The bytes for partitionKey.
    */
@@ -95,34 +110,19 @@ public interface InternalScanPbOrBuilder extends
   io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPbOrBuilder getBoundedObjectIdScanOrBuilder();
 
   /**
-   * <code>.littlehorse.InternalScanPb.TagPrefixScanPb local_tag_prefix_scan = 8;</code>
-   * @return Whether the localTagPrefixScan field is set.
+   * <code>.littlehorse.InternalScanPb.TagScanPb tag_scan = 8;</code>
+   * @return Whether the tagScan field is set.
    */
-  boolean hasLocalTagPrefixScan();
+  boolean hasTagScan();
   /**
-   * <code>.littlehorse.InternalScanPb.TagPrefixScanPb local_tag_prefix_scan = 8;</code>
-   * @return The localTagPrefixScan.
+   * <code>.littlehorse.InternalScanPb.TagScanPb tag_scan = 8;</code>
+   * @return The tagScan.
    */
-  io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb getLocalTagPrefixScan();
+  io.littlehorse.common.proto.InternalScanPb.TagScanPb getTagScan();
   /**
-   * <code>.littlehorse.InternalScanPb.TagPrefixScanPb local_tag_prefix_scan = 8;</code>
+   * <code>.littlehorse.InternalScanPb.TagScanPb tag_scan = 8;</code>
    */
-  io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPbOrBuilder getLocalTagPrefixScanOrBuilder();
-
-  /**
-   * <code>.littlehorse.InternalScanPb.RemoteTagPrefixScanPb remote_tag_prefix_scan = 9;</code>
-   * @return Whether the remoteTagPrefixScan field is set.
-   */
-  boolean hasRemoteTagPrefixScan();
-  /**
-   * <code>.littlehorse.InternalScanPb.RemoteTagPrefixScanPb remote_tag_prefix_scan = 9;</code>
-   * @return The remoteTagPrefixScan.
-   */
-  io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb getRemoteTagPrefixScan();
-  /**
-   * <code>.littlehorse.InternalScanPb.RemoteTagPrefixScanPb remote_tag_prefix_scan = 9;</code>
-   */
-  io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPbOrBuilder getRemoteTagPrefixScanOrBuilder();
+  io.littlehorse.common.proto.InternalScanPb.TagScanPbOrBuilder getTagScanOrBuilder();
 
   public io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase getScanBoundaryCase();
 }

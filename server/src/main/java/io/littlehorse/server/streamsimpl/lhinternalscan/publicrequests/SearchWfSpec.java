@@ -6,7 +6,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.proto.AttributePb;
 import io.littlehorse.common.proto.BookmarkPb;
-import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.proto.InternalScanPb;
 import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
@@ -33,8 +33,8 @@ public class SearchWfSpec
         return SearchWfSpecPb.class;
     }
 
-    public GETableClassEnumPb getObjectType() {
-        return GETableClassEnumPb.WF_SPEC;
+    public GetableClassEnumPb getObjectType() {
+        return GetableClassEnumPb.WF_SPEC;
     }
 
     public void initFrom(Message proto) {
@@ -99,9 +99,9 @@ public class SearchWfSpec
                     .build();
         } else if (!Strings.isNullOrEmpty(taskDefName)) {
             out.partitionKey = null;
-            out.type = ScanBoundaryCase.LOCAL_TAG_PREFIX_SCAN;
-            out.localTagPrefixScan =
-                InternalScanPb.TagPrefixScanPb
+            out.type = ScanBoundaryCase.TAG_SCAN;
+            out.tagScan =
+                InternalScanPb.TagScanPb
                     .newBuilder()
                     .addAttributes(
                         AttributePb

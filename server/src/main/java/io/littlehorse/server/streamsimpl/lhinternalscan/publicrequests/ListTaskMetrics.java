@@ -2,7 +2,7 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.metrics.TaskDefMetrics;
-import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.ScanResultTypePb;
@@ -49,8 +49,8 @@ public class ListTaskMetrics
         taskDefName = p.getTaskDefName();
     }
 
-    public GETableClassEnumPb getObjectType() {
-        return GETableClassEnumPb.TASK_DEF_METRICS;
+    public GetableClassEnumPb getObjectType() {
+        return GetableClassEnumPb.TASK_DEF_METRICS;
     }
 
     public InternalScan startInternalSearch(LHGlobalMetaStores stores) {

@@ -2,7 +2,7 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.metrics.WfSpecMetrics;
-import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.ScanResultTypePb;
@@ -52,8 +52,8 @@ public class ListWfMetrics
         wfSpecVersion = p.getWfSpecVersion();
     }
 
-    public GETableClassEnumPb getObjectType() {
-        return GETableClassEnumPb.WF_SPEC_METRICS;
+    public GetableClassEnumPb getObjectType() {
+        return GetableClassEnumPb.WF_SPEC_METRICS;
     }
 
     public InternalScan startInternalSearch(LHGlobalMetaStores stores) {

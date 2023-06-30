@@ -1,7 +1,7 @@
 package io.littlehorse.common.model.wfrun;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.objectId.NodeRunId;
@@ -20,7 +20,7 @@ import io.littlehorse.jlib.common.proto.NodePb.NodeCase;
 import io.littlehorse.jlib.common.proto.NodeRunPb;
 import io.littlehorse.jlib.common.proto.NodeRunPb.NodeTypeCase;
 import io.littlehorse.jlib.common.proto.TaskResultCodePb;
-import io.littlehorse.server.streamsimpl.storeinternals.GETableIndex;
+import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -28,7 +28,7 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class NodeRun extends GETable<NodeRunPb> {
+public class NodeRun extends Getable<NodeRunPb> {
 
     public String wfRunId;
     public int threadRunNumber;
@@ -96,7 +96,7 @@ public class NodeRun extends GETable<NodeRunPb> {
     }
 
     @Override
-    public List<GETableIndex> getIndexes() {
+    public List<GetableIndex> getIndexes() {
         return new ArrayList<>();
     }
 

@@ -2,16 +2,16 @@ package io.littlehorse.common.model.meta;
 
 import com.google.protobuf.Message;
 import com.google.protobuf.util.Timestamps;
-import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.objectId.TaskWorkerGroupId;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.TaskWorkerGroupPb;
 import io.littlehorse.jlib.common.proto.TaskWorkerMetadataPb;
-import io.littlehorse.server.streamsimpl.storeinternals.GETableIndex;
+import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class TaskWorkerGroup extends GETable<TaskWorkerGroupPb> {
+public class TaskWorkerGroup extends Getable<TaskWorkerGroupPb> {
 
     public String taskDefName;
     public Date createdAt;
@@ -26,7 +26,7 @@ public class TaskWorkerGroup extends GETable<TaskWorkerGroupPb> {
     }
 
     @Override
-    public List<GETableIndex> getIndexes() {
+    public List<GetableIndex> getIndexes() {
         return new ArrayList<>();
     }
 

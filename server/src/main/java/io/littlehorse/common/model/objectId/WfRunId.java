@@ -3,7 +3,7 @@ package io.littlehorse.common.model.objectId;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.wfrun.WfRun;
-import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.jlib.common.proto.WfRunIdPb;
 import io.littlehorse.jlib.common.proto.WfRunPb;
 
@@ -44,7 +44,7 @@ public class WfRunId extends ObjectId<WfRunIdPb, WfRunPb, WfRun> {
         id = storeKey;
     }
 
-    public GETableClassEnumPb getType() {
-        return GETableClassEnumPb.WF_RUN;
+    public GetableClassEnumPb getType() {
+        return GetableClassEnumPb.WF_RUN;
     }
 }

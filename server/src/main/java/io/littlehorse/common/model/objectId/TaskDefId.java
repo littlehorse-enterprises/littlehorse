@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.meta.TaskDef;
-import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.jlib.common.proto.TaskDefIdPb;
 import io.littlehorse.jlib.common.proto.TaskDefPb;
 
@@ -45,7 +45,7 @@ public class TaskDefId extends ObjectId<TaskDefIdPb, TaskDefPb, TaskDef> {
         name = storeKey;
     }
 
-    public GETableClassEnumPb getType() {
-        return GETableClassEnumPb.TASK_DEF;
+    public GetableClassEnumPb getType() {
+        return GetableClassEnumPb.TASK_DEF;
     }
 }

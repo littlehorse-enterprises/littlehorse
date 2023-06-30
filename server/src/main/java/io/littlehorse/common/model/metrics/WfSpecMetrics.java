@@ -1,19 +1,19 @@
 package io.littlehorse.common.model.metrics;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.objectId.WfSpecMetricsId;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.LHLibUtil;
 import io.littlehorse.jlib.common.proto.MetricsWindowLengthPb;
 import io.littlehorse.jlib.common.proto.WfSpecMetricsPb;
 import io.littlehorse.jlib.common.proto.WfSpecMetricsQueryPb;
-import io.littlehorse.server.streamsimpl.storeinternals.GETableIndex;
+import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class WfSpecMetrics extends GETable<WfSpecMetricsPb> {
+public class WfSpecMetrics extends Getable<WfSpecMetricsPb> {
 
     public Date windowStart;
     public MetricsWindowLengthPb type;
@@ -67,7 +67,7 @@ public class WfSpecMetrics extends GETable<WfSpecMetricsPb> {
     }
 
     @Override
-    public List<GETableIndex> getIndexes() {
+    public List<GetableIndex> getIndexes() {
         return new ArrayList<>();
     }
 

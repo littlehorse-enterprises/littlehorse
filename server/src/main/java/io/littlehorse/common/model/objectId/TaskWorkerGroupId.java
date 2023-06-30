@@ -3,7 +3,7 @@ package io.littlehorse.common.model.objectId;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.meta.TaskWorkerGroup;
-import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.jlib.common.proto.TaskWorkerGroupIdPb;
 import io.littlehorse.jlib.common.proto.TaskWorkerGroupPb;
 
@@ -46,7 +46,7 @@ public class TaskWorkerGroupId
         taskDefName = storeKey;
     }
 
-    public GETableClassEnumPb getType() {
-        return GETableClassEnumPb.TASK_WORKER_GROUP;
+    public GetableClassEnumPb getType() {
+        return GetableClassEnumPb.TASK_WORKER_GROUP;
     }
 }

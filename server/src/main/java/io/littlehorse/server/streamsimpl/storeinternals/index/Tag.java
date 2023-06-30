@@ -1,11 +1,11 @@
 package io.littlehorse.server.streamsimpl.storeinternals.index;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.Storeable;
 import io.littlehorse.common.proto.AttributePb;
-import io.littlehorse.common.proto.GETableClassEnumPb;
-import io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb;
+import io.littlehorse.common.proto.GetableClassEnumPb;
+import io.littlehorse.common.proto.InternalScanPb.TagScanPb;
 import io.littlehorse.common.proto.TagPb;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHUtil;
@@ -22,7 +22,7 @@ import org.apache.commons.lang3.tuple.Pair;
 public class Tag extends Storeable<TagPb> {
 
     public TagStorageTypePb tagType;
-    public GETableClassEnumPb objectType;
+    public GetableClassEnumPb objectType;
     public List<Attribute> attributes;
     public Date createdAt;
     public String describedObjectId;
@@ -66,8 +66,8 @@ public class Tag extends Storeable<TagPb> {
     }
 
     public static String getAttributeString(
-        GETableClassEnumPb objectType,
-        TagPrefixScanPb prefixScanSpec
+        GetableClassEnumPb objectType,
+        TagScanPb prefixScanSpec
     ) {
         List<Attribute> attrs = new ArrayList<>();
         for (AttributePb apb : prefixScanSpec.getAttributesList()) {
@@ -77,7 +77,7 @@ public class Tag extends Storeable<TagPb> {
     }
 
     public static String getAttributeString(
-        GETableClassEnumPb objectType,
+        GetableClassEnumPb objectType,
         List<Attribute> attributes
     ) {
         StringBuilder builder = new StringBuilder();
@@ -93,7 +93,7 @@ public class Tag extends Storeable<TagPb> {
     }
 
     public static String getAttributeStringFromPb(
-        GETableClassEnumPb objectType,
+        GetableClassEnumPb objectType,
         List<AttributePb> attributes
     ) {
         return getAttributeString(
@@ -123,41 +123,28 @@ public class Tag extends Storeable<TagPb> {
         attributes = new ArrayList<>();
     }
 
-    public String getCounterKey(int partition) {
-        switch (tagType) {
-            case LOCAL:
-                return DiscreteTagLocalCounter.getObjectId(
-                    getAttributeString(),
-                    partition
-                );
-            case UNRECOGNIZED:
-                return null;
-        }
-        throw new RuntimeException("Not possible");
-    }
-
     public TagStorageTypePb getTagStorageTypePb() {
         return this.tagType;
     }
 
     @SafeVarargs
-    @SuppressWarnings("unchecked")
     public Tag(
-        GETable<?> getable,
+        Getable<?> getable,
         TagStorageTypePb type,
         Pair<String, String>... atts
     ) {
         this(getable, type, Arrays.asList(atts));
     }
 
+    @SuppressWarnings("unchecked")
     public Tag(
-        GETable<?> getable,
+        Getable<?> getable,
         TagStorageTypePb type,
         Collection<Pair<String, String>> atts
     ) {
         this();
         this.objectType =
-            GETable.getTypeEnum((Class<? extends GETable<?>>) getable.getClass());
+            Getable.getTypeEnum((Class<? extends Getable<?>>) getable.getClass());
         createdAt = getable.getCreatedAt();
         describedObjectId = getable.getStoreKey();
         this.tagType = type;
@@ -169,7 +156,7 @@ public class Tag extends Storeable<TagPb> {
 
     public Tag(
         TagStorageTypePb type,
-        GETableClassEnumPb objectType,
+        GetableClassEnumPb objectType,
         Collection<Attribute> attributes,
         String describedObjectId,
         Date createAt
@@ -178,7 +165,7 @@ public class Tag extends Storeable<TagPb> {
         this.tagType = type;
         this.objectType = objectType;
         this.describedObjectId = describedObjectId;
-        if (objectType == GETableClassEnumPb.WF_RUN) {
+        if (objectType == GetableClassEnumPb.WF_RUN) {
             System.out.println("describedObjectId" + describedObjectId);
         }
         this.createdAt = createAt;
@@ -204,7 +191,7 @@ public class Tag extends Storeable<TagPb> {
         return describedObjectId;
     }
 
-    public GETableClassEnumPb getObjectType() {
+    public GetableClassEnumPb getObjectType() {
         return objectType;
     }
 }

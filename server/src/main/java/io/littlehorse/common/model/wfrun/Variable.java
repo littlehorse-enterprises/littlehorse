@@ -1,14 +1,13 @@
 package io.littlehorse.common.model.wfrun;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.objectId.VariableId;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.VariablePb;
-import io.littlehorse.server.streamsimpl.storeinternals.GETableIndex;
-import java.util.ArrayList;
+import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import java.util.Date;
 import java.util.List;
 import lombok.Getter;
@@ -17,7 +16,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
 @Setter
-public class Variable extends GETable<VariablePb> {
+public class Variable extends Getable<VariablePb> {
 
     public VariableValue value;
     public String wfRunId;
@@ -76,9 +75,9 @@ public class Variable extends GETable<VariablePb> {
     }
 
     @Override
-    public List<GETableIndex> getIndexes() {
+    public List<GetableIndex> getIndexes() {
         return List.of(
-            new GETableIndex(
+            new GetableIndex(
                 Variable.class,
                 List.of(
                     Pair.of("name", geTable -> List.of(((Variable) geTable).name)),

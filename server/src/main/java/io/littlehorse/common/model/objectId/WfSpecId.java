@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.WfSpecIdPb;
 import io.littlehorse.jlib.common.proto.WfSpecPb;
@@ -54,7 +54,7 @@ public class WfSpecId extends ObjectId<WfSpecIdPb, WfSpecPb, WfSpec> {
         version = Integer.valueOf(split[1]);
     }
 
-    public GETableClassEnumPb getType() {
-        return GETableClassEnumPb.WF_SPEC;
+    public GetableClassEnumPb getType() {
+        return GetableClassEnumPb.WF_SPEC;
     }
 }

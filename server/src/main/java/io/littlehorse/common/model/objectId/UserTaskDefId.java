@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
-import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.UserTaskDefIdPb;
 import io.littlehorse.jlib.common.proto.UserTaskDefPb;
@@ -52,7 +52,7 @@ public class UserTaskDefId
         name = storeKey;
     }
 
-    public GETableClassEnumPb getType() {
-        return GETableClassEnumPb.USER_TASK_DEF;
+    public GetableClassEnumPb getType() {
+        return GetableClassEnumPb.USER_TASK_DEF;
     }
 }

@@ -55,7 +55,7 @@ private static final long serialVersionUID = 0L;
    * The following info is also stored in the key of the Tag in the store.
    * </pre>
    *
-   * <code>.littlehorse.GETableClassEnumPb object_type = 1;</code>
+   * <code>.littlehorse.GetableClassEnumPb object_type = 1;</code>
    * @return The enum numeric value on the wire for objectType.
    */
   @java.lang.Override public int getObjectTypeValue() {
@@ -66,12 +66,12 @@ private static final long serialVersionUID = 0L;
    * The following info is also stored in the key of the Tag in the store.
    * </pre>
    *
-   * <code>.littlehorse.GETableClassEnumPb object_type = 1;</code>
+   * <code>.littlehorse.GetableClassEnumPb object_type = 1;</code>
    * @return The objectType.
    */
-  @java.lang.Override public io.littlehorse.common.proto.GETableClassEnumPb getObjectType() {
-    io.littlehorse.common.proto.GETableClassEnumPb result = io.littlehorse.common.proto.GETableClassEnumPb.forNumber(objectType_);
-    return result == null ? io.littlehorse.common.proto.GETableClassEnumPb.UNRECOGNIZED : result;
+  @java.lang.Override public io.littlehorse.common.proto.GetableClassEnumPb getObjectType() {
+    io.littlehorse.common.proto.GetableClassEnumPb result = io.littlehorse.common.proto.GetableClassEnumPb.forNumber(objectType_);
+    return result == null ? io.littlehorse.common.proto.GetableClassEnumPb.UNRECOGNIZED : result;
   }
 
   public static final int ATTRIBUTES_FIELD_NUMBER = 2;
@@ -259,7 +259,7 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (objectType_ != io.littlehorse.common.proto.GETableClassEnumPb.TASK_DEF.getNumber()) {
+    if (objectType_ != io.littlehorse.common.proto.GetableClassEnumPb.TASK_DEF.getNumber()) {
       output.writeEnum(1, objectType_);
     }
     for (int i = 0; i < attributes_.size(); i++) {
@@ -286,7 +286,7 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (objectType_ != io.littlehorse.common.proto.GETableClassEnumPb.TASK_DEF.getNumber()) {
+    if (objectType_ != io.littlehorse.common.proto.GetableClassEnumPb.TASK_DEF.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(1, objectType_);
     }
@@ -751,7 +751,7 @@ private static final long serialVersionUID = 0L;
      * The following info is also stored in the key of the Tag in the store.
      * </pre>
      *
-     * <code>.littlehorse.GETableClassEnumPb object_type = 1;</code>
+     * <code>.littlehorse.GetableClassEnumPb object_type = 1;</code>
      * @return The enum numeric value on the wire for objectType.
      */
     @java.lang.Override public int getObjectTypeValue() {
@@ -762,7 +762,7 @@ private static final long serialVersionUID = 0L;
      * The following info is also stored in the key of the Tag in the store.
      * </pre>
      *
-     * <code>.littlehorse.GETableClassEnumPb object_type = 1;</code>
+     * <code>.littlehorse.GetableClassEnumPb object_type = 1;</code>
      * @param value The enum numeric value on the wire for objectType to set.
      * @return This builder for chaining.
      */
@@ -777,24 +777,24 @@ private static final long serialVersionUID = 0L;
      * The following info is also stored in the key of the Tag in the store.
      * </pre>
      *
-     * <code>.littlehorse.GETableClassEnumPb object_type = 1;</code>
+     * <code>.littlehorse.GetableClassEnumPb object_type = 1;</code>
      * @return The objectType.
      */
     @java.lang.Override
-    public io.littlehorse.common.proto.GETableClassEnumPb getObjectType() {
-      io.littlehorse.common.proto.GETableClassEnumPb result = io.littlehorse.common.proto.GETableClassEnumPb.forNumber(objectType_);
-      return result == null ? io.littlehorse.common.proto.GETableClassEnumPb.UNRECOGNIZED : result;
+    public io.littlehorse.common.proto.GetableClassEnumPb getObjectType() {
+      io.littlehorse.common.proto.GetableClassEnumPb result = io.littlehorse.common.proto.GetableClassEnumPb.forNumber(objectType_);
+      return result == null ? io.littlehorse.common.proto.GetableClassEnumPb.UNRECOGNIZED : result;
     }
     /**
      * <pre>
      * The following info is also stored in the key of the Tag in the store.
      * </pre>
      *
-     * <code>.littlehorse.GETableClassEnumPb object_type = 1;</code>
+     * <code>.littlehorse.GetableClassEnumPb object_type = 1;</code>
      * @param value The objectType to set.
      * @return This builder for chaining.
      */
-    public Builder setObjectType(io.littlehorse.common.proto.GETableClassEnumPb value) {
+    public Builder setObjectType(io.littlehorse.common.proto.GetableClassEnumPb value) {
       if (value == null) {
         throw new NullPointerException();
       }
@@ -808,7 +808,7 @@ private static final long serialVersionUID = 0L;
      * The following info is also stored in the key of the Tag in the store.
      * </pre>
      *
-     * <code>.littlehorse.GETableClassEnumPb object_type = 1;</code>
+     * <code>.littlehorse.GetableClassEnumPb object_type = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearObjectType() {

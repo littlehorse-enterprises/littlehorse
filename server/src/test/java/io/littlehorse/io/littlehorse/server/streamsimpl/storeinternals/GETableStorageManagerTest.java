@@ -2,13 +2,13 @@ package io.littlehorse.io.littlehorse.server.streamsimpl.storeinternals;
 
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.meta.ThreadSpec;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
-import io.littlehorse.server.streamsimpl.storeinternals.GETableStorageManager;
+import io.littlehorse.server.streamsimpl.storeinternals.GetableStorageManager;
 import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
 import io.littlehorse.server.streamsimpl.storeinternals.index.TagsCache;
 import java.util.Map;
@@ -46,13 +46,13 @@ public class GETableStorageManagerTest {
     private LHStoreWrapper localStoreWrapper;
 
     final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
-    private GETableStorageManager geTableStorageManager;
+    private GetableStorageManager geTableStorageManager;
 
     @BeforeEach
     void setup() {
         localStoreWrapper = new LHStoreWrapper(store, lhConfig);
         geTableStorageManager =
-            new GETableStorageManager(
+            new GetableStorageManager(
                 localStoreWrapper,
                 lhConfig,
                 mockProcessorContext
@@ -63,7 +63,7 @@ public class GETableStorageManagerTest {
     @ParameterizedTest
     @MethodSource("provideGetableObjectsAndIds")
     void storeNewGetableWithTags(
-        GETable<?> getable,
+        Getable<?> getable,
         String storeKey,
         int expectedTagsCount
     ) {

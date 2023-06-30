@@ -1,6 +1,6 @@
 package io.littlehorse.server.streamsimpl.storeinternals.index;
 
-import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.WfSpec;
@@ -10,20 +10,17 @@ import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.NodeRunPb.NodeTypeCase;
-import io.littlehorse.server.streamsimpl.storeinternals.GETableIndex;
-import io.littlehorse.server.streamsimpl.storeinternals.GETableIndexRegistry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class TagUtils {
 
     @SuppressWarnings("unchecked")
-    public static List<Tag> tagThing(GETable<?> thing) {
+    public static List<Tag> tagThing(Getable<?> thing) {
         switch (
-            GETable.getTypeEnum((Class<? extends GETable<?>>) (thing.getClass()))
+            Getable.getTypeEnum((Class<? extends Getable<?>>) (thing.getClass()))
         ) {
             case EXTERNAL_EVENT_DEF:
                 return tag((ExternalEventDef) thing);

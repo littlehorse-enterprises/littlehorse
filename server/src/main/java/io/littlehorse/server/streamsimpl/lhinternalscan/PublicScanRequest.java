@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.BookmarkPb;
-import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 
 /**
@@ -26,7 +26,7 @@ public abstract class PublicScanRequest<
     protected BookmarkPb bookmark;
     protected Integer limit;
 
-    public abstract GETableClassEnumPb getObjectType();
+    public abstract GetableClassEnumPb getObjectType();
 
     public int getLimit() {
         if (limit == null) {

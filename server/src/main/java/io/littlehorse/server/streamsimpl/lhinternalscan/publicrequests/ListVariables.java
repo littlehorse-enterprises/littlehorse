@@ -2,7 +2,7 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.wfrun.Variable;
-import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.ScanResultTypePb;
@@ -33,8 +33,8 @@ public class ListVariables
         wfRunId = p.getWfRunId();
     }
 
-    public GETableClassEnumPb getObjectType() {
-        return GETableClassEnumPb.VARIABLE;
+    public GetableClassEnumPb getObjectType() {
+        return GetableClassEnumPb.VARIABLE;
     }
 
     public InternalScan startInternalSearch(LHGlobalMetaStores stores) {

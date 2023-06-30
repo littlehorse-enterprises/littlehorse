@@ -3,7 +3,7 @@ package io.littlehorse.common.model.objectId;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
-import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.ExternalEventIdPb;
 import io.littlehorse.jlib.common.proto.ExternalEventPb;
@@ -58,7 +58,7 @@ public class ExternalEventId
         guid = split[2];
     }
 
-    public GETableClassEnumPb getType() {
-        return GETableClassEnumPb.EXTERNAL_EVENT;
+    public GetableClassEnumPb getType() {
+        return GetableClassEnumPb.EXTERNAL_EVENT;
     }
 }

@@ -5,7 +5,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.exceptions.LHVarSubError;
-import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.subcommand.CompleteUserTaskRun;
 import io.littlehorse.common.model.command.subcommand.DeleteWfRun;
@@ -34,8 +34,7 @@ import io.littlehorse.jlib.common.proto.ThreadRunPb;
 import io.littlehorse.jlib.common.proto.ThreadTypePb;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
 import io.littlehorse.jlib.common.proto.WfRunPb;
-import io.littlehorse.server.streamsimpl.storeinternals.GETableIndex;
-import java.util.*;
+import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -50,7 +49,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 @Slf4j
 @Setter
-public class WfRun extends GETable<WfRunPb> {
+public class WfRun extends Getable<WfRunPb> {
 
     public String id;
     public String wfSpecName;
@@ -74,9 +73,9 @@ public class WfRun extends GETable<WfRunPb> {
     }
 
     @Override
-    public List<GETableIndex> getIndexes() {
+    public List<GetableIndex> getIndexes() {
         return List.of(
-            new GETableIndex(
+            new GetableIndex(
                 WfRun.class,
                 List.of(
                     Pair.of(
@@ -87,7 +86,7 @@ public class WfRun extends GETable<WfRunPb> {
                 wfRunPb -> true,
                 TagStorageTypePb.REMOTE
             ),
-            new GETableIndex(
+            new GetableIndex(
                 WfRun.class,
                 List.of(
                     Pair.of(
@@ -102,7 +101,7 @@ public class WfRun extends GETable<WfRunPb> {
                 wfRunPb -> true,
                 TagStorageTypePb.REMOTE
             ),
-            new GETableIndex(
+            new GetableIndex(
                 WfRun.class,
                 List.of(
                     Pair.of(

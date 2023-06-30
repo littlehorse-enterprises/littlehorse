@@ -5,7 +5,7 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.command.subcommand.RunWf;
 import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.model.wfrun.WfRun;
@@ -18,7 +18,7 @@ import io.littlehorse.jlib.common.proto.ThreadSpecPb;
 import io.littlehorse.jlib.common.proto.ThreadTypePb;
 import io.littlehorse.jlib.common.proto.WfSpecIdPb;
 import io.littlehorse.jlib.common.proto.WfSpecPb;
-import io.littlehorse.server.streamsimpl.storeinternals.GETableIndex;
+import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import java.util.*;
 import lombok.Getter;
@@ -27,7 +27,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
 @Setter
-public class WfSpec extends GETable<WfSpecPb> {
+public class WfSpec extends Getable<WfSpecPb> {
 
     public String name;
     public int version;
@@ -65,9 +65,9 @@ public class WfSpec extends GETable<WfSpecPb> {
     }
 
     @Override
-    public List<GETableIndex> getIndexes() {
+    public List<GetableIndex> getIndexes() {
         return List.of(
-            new GETableIndex(
+            new GetableIndex(
                 WfSpec.class,
                 List.of(
                     Pair.of("taskDef", getable -> ((WfSpec) getable).taskDefNames())

@@ -1,19 +1,19 @@
 package io.littlehorse.common.model.metrics;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.objectId.TaskDefMetricsId;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.LHLibUtil;
 import io.littlehorse.jlib.common.proto.MetricsWindowLengthPb;
 import io.littlehorse.jlib.common.proto.TaskDefMetricsPb;
 import io.littlehorse.jlib.common.proto.TaskDefMetricsQueryPb;
-import io.littlehorse.server.streamsimpl.storeinternals.GETableIndex;
+import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class TaskDefMetrics extends GETable<TaskDefMetricsPb> {
+public class TaskDefMetrics extends Getable<TaskDefMetricsPb> {
 
     public Date windowStart;
     public MetricsWindowLengthPb type;
@@ -69,7 +69,7 @@ public class TaskDefMetrics extends GETable<TaskDefMetricsPb> {
     }
 
     @Override
-    public List<GETableIndex> getIndexes() {
+    public List<GetableIndex> getIndexes() {
         return new ArrayList<>();
     }
 

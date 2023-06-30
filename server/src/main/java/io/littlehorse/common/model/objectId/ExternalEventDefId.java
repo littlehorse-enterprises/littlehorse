@@ -4,7 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.meta.ExternalEventDef;
-import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.jlib.common.proto.ExternalEventDefIdPb;
 import io.littlehorse.jlib.common.proto.ExternalEventDefPb;
 
@@ -48,7 +48,7 @@ public class ExternalEventDefId
         name = storeKey;
     }
 
-    public GETableClassEnumPb getType() {
-        return GETableClassEnumPb.WF_SPEC;
+    public GetableClassEnumPb getType() {
+        return GetableClassEnumPb.WF_SPEC;
     }
 }

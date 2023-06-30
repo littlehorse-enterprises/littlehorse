@@ -3,7 +3,7 @@ package io.littlehorse.common.model.objectId;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.metrics.WfSpecMetrics;
-import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.MetricsWindowLengthPb;
 import io.littlehorse.jlib.common.proto.WfSpecMetricsIdPb;
@@ -75,7 +75,7 @@ public class WfSpecMetricsId
         windowStart = new Date(Long.valueOf(split[3]));
     }
 
-    public GETableClassEnumPb getType() {
-        return GETableClassEnumPb.WF_SPEC_METRICS;
+    public GetableClassEnumPb getType() {
+        return GetableClassEnumPb.WF_SPEC_METRICS;
     }
 }

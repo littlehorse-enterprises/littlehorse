@@ -1,15 +1,13 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.model.GETable;
+import com.google.protobuf.Timestamp;
 import io.littlehorse.common.model.objectId.WfRunId;
 import io.littlehorse.common.model.wfrun.WfRun;
-import io.littlehorse.common.proto.AttributePb;
 import io.littlehorse.common.proto.BookmarkPb;
-import io.littlehorse.common.proto.GETableClassEnumPb;
-import io.littlehorse.common.proto.InternalScanPb.RemoteTagPrefixScanPb;
+import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
-import io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb;
+import io.littlehorse.common.proto.InternalScanPb.TagScanPb;
 import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
@@ -25,14 +23,12 @@ import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchWfRunReply;
-import io.littlehorse.server.streamsimpl.storeinternals.GETableIndex;
-import io.littlehorse.server.streamsimpl.storeinternals.GETableIndexRegistry;
+import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
+import io.littlehorse.server.streamsimpl.storeinternals.GetableIndexRegistry;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
-import io.littlehorse.server.streamsimpl.storeinternals.index.TagUtils;
 import java.util.Arrays;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.common.utils.CollectionUtils;
 
 @Slf4j
 public class SearchWfRun
@@ -43,8 +39,8 @@ public class SearchWfRun
     private NamePb namePb;
     private StatusAndNamePb statusAndName;
 
-    public GETableClassEnumPb getObjectType() {
-        return GETableClassEnumPb.WF_RUN;
+    public GetableClassEnumPb getObjectType() {
+        return GetableClassEnumPb.WF_RUN;
     }
 
     public Class<SearchWfRunPb> getProtoBaseClass() {
@@ -128,51 +124,67 @@ public class SearchWfRun
 
     private InternalScan startLocalInternalSearch() {
         InternalScan out = new InternalScan();
-        GETableIndex getableIndex = GETableIndexRegistry
+        GetableIndex getableIndex = GetableIndexRegistry
             .getInstance()
             .findConfigurationForAttributes(WfRun.class, searchAttributes());
         List<Attribute> attributes = buildTagAttributes();
-        // Converting to PB since this is a requirement for InternalScan#setLocalTagPrefixScan
-        List<AttributePb> attributePbs = attributes
-            .stream()
-            .map(attribute -> attribute.toProto().build())
-            .toList();
+
+        TagScanPb.Builder tagScanBuilder = TagScanPb
+            .newBuilder()
+            .addAllAttributes(
+                attributes
+                    .stream()
+                    .map(attribute -> attribute.toProto().build())
+                    .toList()
+            );
+
+        if (getEarliestStart() != null) {
+            tagScanBuilder.setEarliestCreateTime(getEarliestStart());
+        }
+        if (getLatestStart() != null) {
+            tagScanBuilder.setLatestCreateTime(getLatestStart());
+        }
+
+        out.setTagScan(tagScanBuilder.build());
+        out.setType(ScanBoundaryCase.TAG_SCAN);
+
         if (getableIndex.getTagStorageTypePb() == TagStorageTypePb.LOCAL) {
+            // Local Tag Scan (All Partitions Tag Scan)
             out.setStoreName(ServerTopology.CORE_STORE);
             out.setResultType(ScanResultTypePb.OBJECT_ID);
-            out.setType(ScanBoundaryCase.LOCAL_TAG_PREFIX_SCAN);
-
-            TagPrefixScanPb.Builder prefixScanBuilder = TagPrefixScanPb
-                .newBuilder()
-                .addAllAttributes(attributePbs);
-
-            out.setLocalTagPrefixScan(prefixScanBuilder.build());
-            if (statusAndSpec != null) {
-                if (statusAndSpec.hasEarliestStart()) {
-                    prefixScanBuilder.setEarliestCreateTime(
-                        statusAndSpec.getEarliestStart()
-                    );
-                }
-                if (statusAndSpec.hasLatestStart()) {
-                    prefixScanBuilder.setLatestCreateTime(
-                        statusAndSpec.getLatestStart()
-                    );
-                }
-            }
-            return out;
         } else {
-            // REMOTE_UNCOUNTED
+            // Remote Tag Scan (Specific Partition Tag Scan)
             out.setStoreName(ServerTopology.CORE_REPARTITION_STORE);
             out.setResultType(ScanResultTypePb.OBJECT_ID);
-            out.setType(ScanBoundaryCase.REMOTE_TAG_PREFIX_SCAN);
-            RemoteTagPrefixScanPb remoteTagBuilder = RemoteTagPrefixScanPb
-                .newBuilder()
-                .addAllAttributes(attributePbs)
-                .build();
-            out.setRemoteTagPrefixScanPb(remoteTagBuilder);
             out.setPartitionKey(getableIndex.getPartitionKeyForAttrs(attributes));
-            return out;
         }
+        return out;
+    }
+
+    private Timestamp getEarliestStart() {
+        if (type == WfrunCriteriaCase.STATUS_AND_SPEC) {
+            if (statusAndSpec.hasEarliestStart()) {
+                return statusAndSpec.getEarliestStart();
+            }
+        } else if (type == WfrunCriteriaCase.STATUS_AND_NAME) {
+            if (statusAndName.hasEarliestStart()) {
+                return statusAndName.getEarliestStart();
+            }
+        }
+        return null;
+    }
+
+    private Timestamp getLatestStart() {
+        if (type == WfrunCriteriaCase.STATUS_AND_SPEC) {
+            if (statusAndSpec.hasLatestStart()) {
+                return statusAndSpec.getLatestStart();
+            }
+        } else if (type == WfrunCriteriaCase.STATUS_AND_NAME) {
+            if (statusAndName.hasLatestStart()) {
+                return statusAndName.getLatestStart();
+            }
+        }
+        return null;
     }
 
     private List<Attribute> buildTagAttributes() {

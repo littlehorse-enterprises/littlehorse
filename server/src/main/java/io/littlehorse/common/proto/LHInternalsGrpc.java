@@ -201,37 +201,6 @@ public final class LHInternalsGrpc {
     return getLocalTasksMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<io.littlehorse.common.proto.TagScanPb,
-      io.littlehorse.common.proto.TagScanReplyPb> getTagScanMethod;
-
-  @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "TagScan",
-      requestType = io.littlehorse.common.proto.TagScanPb.class,
-      responseType = io.littlehorse.common.proto.TagScanReplyPb.class,
-      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<io.littlehorse.common.proto.TagScanPb,
-      io.littlehorse.common.proto.TagScanReplyPb> getTagScanMethod() {
-    io.grpc.MethodDescriptor<io.littlehorse.common.proto.TagScanPb, io.littlehorse.common.proto.TagScanReplyPb> getTagScanMethod;
-    if ((getTagScanMethod = LHInternalsGrpc.getTagScanMethod) == null) {
-      synchronized (LHInternalsGrpc.class) {
-        if ((getTagScanMethod = LHInternalsGrpc.getTagScanMethod) == null) {
-          LHInternalsGrpc.getTagScanMethod = getTagScanMethod =
-              io.grpc.MethodDescriptor.<io.littlehorse.common.proto.TagScanPb, io.littlehorse.common.proto.TagScanReplyPb>newBuilder()
-              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "TagScan"))
-              .setSampledToLocalTracing(true)
-              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.common.proto.TagScanPb.getDefaultInstance()))
-              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  io.littlehorse.common.proto.TagScanReplyPb.getDefaultInstance()))
-              .setSchemaDescriptor(new LHInternalsMethodDescriptorSupplier("TagScan"))
-              .build();
-        }
-      }
-    }
-    return getTagScanMethod;
-  }
-
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -321,13 +290,6 @@ public final class LHInternalsGrpc {
         io.grpc.stub.StreamObserver<io.littlehorse.common.proto.LocalTasksReplyPb> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getLocalTasksMethod(), responseObserver);
     }
-
-    /**
-     */
-    default void tagScan(io.littlehorse.common.proto.TagScanPb request,
-        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.TagScanReplyPb> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getTagScanMethod(), responseObserver);
-    }
   }
 
   /**
@@ -404,14 +366,6 @@ public final class LHInternalsGrpc {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getLocalTasksMethod(), getCallOptions()), request, responseObserver);
     }
-
-    /**
-     */
-    public void tagScan(io.littlehorse.common.proto.TagScanPb request,
-        io.grpc.stub.StreamObserver<io.littlehorse.common.proto.TagScanReplyPb> responseObserver) {
-      io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getTagScanMethod(), getCallOptions()), request, responseObserver);
-    }
   }
 
   /**
@@ -470,13 +424,6 @@ public final class LHInternalsGrpc {
     public io.littlehorse.common.proto.LocalTasksReplyPb localTasks(io.littlehorse.common.proto.LocalTasksPb request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getLocalTasksMethod(), getCallOptions(), request);
-    }
-
-    /**
-     */
-    public io.littlehorse.common.proto.TagScanReplyPb tagScan(io.littlehorse.common.proto.TagScanPb request) {
-      return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getTagScanMethod(), getCallOptions(), request);
     }
   }
 
@@ -543,14 +490,6 @@ public final class LHInternalsGrpc {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getLocalTasksMethod(), getCallOptions()), request);
     }
-
-    /**
-     */
-    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.common.proto.TagScanReplyPb> tagScan(
-        io.littlehorse.common.proto.TagScanPb request) {
-      return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getTagScanMethod(), getCallOptions()), request);
-    }
   }
 
   private static final int METHODID_CENTRAL_STORE_QUERY = 0;
@@ -559,7 +498,6 @@ public final class LHInternalsGrpc {
   private static final int METHODID_GET_ADVERTISED_HOSTS = 3;
   private static final int METHODID_TOPOLOGY_INSTANCES_STATE = 4;
   private static final int METHODID_LOCAL_TASKS = 5;
-  private static final int METHODID_TAG_SCAN = 6;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -601,10 +539,6 @@ public final class LHInternalsGrpc {
         case METHODID_LOCAL_TASKS:
           serviceImpl.localTasks((io.littlehorse.common.proto.LocalTasksPb) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.LocalTasksReplyPb>) responseObserver);
-          break;
-        case METHODID_TAG_SCAN:
-          serviceImpl.tagScan((io.littlehorse.common.proto.TagScanPb) request,
-              (io.grpc.stub.StreamObserver<io.littlehorse.common.proto.TagScanReplyPb>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -666,13 +600,6 @@ public final class LHInternalsGrpc {
               io.littlehorse.common.proto.LocalTasksPb,
               io.littlehorse.common.proto.LocalTasksReplyPb>(
                 service, METHODID_LOCAL_TASKS)))
-        .addMethod(
-          getTagScanMethod(),
-          io.grpc.stub.ServerCalls.asyncUnaryCall(
-            new MethodHandlers<
-              io.littlehorse.common.proto.TagScanPb,
-              io.littlehorse.common.proto.TagScanReplyPb>(
-                service, METHODID_TAG_SCAN)))
         .build();
   }
 
@@ -727,7 +654,6 @@ public final class LHInternalsGrpc {
               .addMethod(getGetAdvertisedHostsMethod())
               .addMethod(getTopologyInstancesStateMethod())
               .addMethod(getLocalTasksMethod())
-              .addMethod(getTagScanMethod())
               .build();
         }
       }

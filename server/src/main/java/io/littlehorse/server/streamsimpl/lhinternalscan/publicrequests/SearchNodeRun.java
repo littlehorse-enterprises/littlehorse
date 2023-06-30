@@ -4,10 +4,10 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.objectId.NodeRunId;
 import io.littlehorse.common.proto.BookmarkPb;
-import io.littlehorse.common.proto.GETableClassEnumPb;
+import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
-import io.littlehorse.common.proto.InternalScanPb.TagPrefixScanPb;
+import io.littlehorse.common.proto.InternalScanPb.TagScanPb;
 import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.jlib.common.proto.NodeRunIdPb;
@@ -34,8 +34,8 @@ public class SearchNodeRun
     public String wfRunId;
     public UserTaskRunSearchPb userTaskSearch;
 
-    public GETableClassEnumPb getObjectType() {
-        return GETableClassEnumPb.NODE_RUN;
+    public GetableClassEnumPb getObjectType() {
+        return GetableClassEnumPb.NODE_RUN;
     }
 
     public Class<SearchNodeRunPb> getProtoBaseClass() {
@@ -111,8 +111,8 @@ public class SearchNodeRun
         out.resultType = ScanResultTypePb.OBJECT_ID;
 
         if (type == NoderunCriteriaCase.STATUS_AND_TASKDEF) {
-            out.type = ScanBoundaryCase.LOCAL_TAG_PREFIX_SCAN;
-            TagPrefixScanPb.Builder prefixScanBuilder = TagPrefixScanPb
+            out.type = ScanBoundaryCase.TAG_SCAN;
+            TagScanPb.Builder prefixScanBuilder = TagScanPb
                 .newBuilder()
                 .addAttributes(
                     new Attribute("taskDefName", statusAndTaskDef.getTaskDefName())
@@ -133,10 +133,10 @@ public class SearchNodeRun
                     statusAndTaskDef.getLatestStart()
                 );
             }
-            out.localTagPrefixScan = prefixScanBuilder.build();
+            out.tagScan = prefixScanBuilder.build();
         } else if (type == NoderunCriteriaCase.TASK_DEF) {
-            out.type = ScanBoundaryCase.LOCAL_TAG_PREFIX_SCAN;
-            TagPrefixScanPb.Builder prefixScanBuilder = TagPrefixScanPb
+            out.type = ScanBoundaryCase.TAG_SCAN;
+            TagScanPb.Builder prefixScanBuilder = TagScanPb
                 .newBuilder()
                 .addAttributes(
                     new Attribute("taskDefName", taskDef.getTaskDefName()).toProto()
@@ -148,7 +148,7 @@ public class SearchNodeRun
             if (taskDef.hasLatestStart()) {
                 prefixScanBuilder.setLatestCreateTime(taskDef.getLatestStart());
             }
-            out.localTagPrefixScan = prefixScanBuilder.build();
+            out.tagScan = prefixScanBuilder.build();
         } else if (type == NoderunCriteriaCase.WF_RUN_ID) {
             out.type = ScanBoundaryCase.BOUNDED_OBJECT_ID_SCAN;
             out.partitionKey = wfRunId;
@@ -162,8 +162,8 @@ public class SearchNodeRun
             // TODO: This will change after we implement remote tags.
             // For example, if request.hasUserId(), it will be REMOTE and the
             // partitionKey will be attribute string; otherwise, it will be LOCAL.
-            out.type = ScanBoundaryCase.LOCAL_TAG_PREFIX_SCAN;
-            TagPrefixScanPb.Builder prefixScanBuilder = TagPrefixScanPb.newBuilder();
+            out.type = ScanBoundaryCase.TAG_SCAN;
+            TagScanPb.Builder prefixScanBuilder = TagScanPb.newBuilder();
 
             if (userTaskSearch.hasStatus()) {
                 prefixScanBuilder.addAttributes(
@@ -217,7 +217,7 @@ public class SearchNodeRun
                     userTaskSearch.getLatestStart()
                 );
             }
-            out.localTagPrefixScan = prefixScanBuilder.build();
+            out.tagScan = prefixScanBuilder.build();
         } else {
             throw new RuntimeException("Yikes, unimplemented type: " + type);
         }

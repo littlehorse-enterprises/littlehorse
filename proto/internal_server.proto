@@ -84,16 +84,7 @@ message BookmarkPb { // Used for paginated responses
 }
 
 message InternalScanPb {
-    message TagPrefixScanPb {
-        repeated AttributePb attributes = 1;
-        // TODO: Add time-based filters here.
-        // Note that each Tag has a timestamp at the end of it--that's what
-        // we will utilize.
-        optional google.protobuf.Timestamp earliest_create_time = 2;
-        optional google.protobuf.Timestamp latest_create_time = 3;
-    }
-
-    message RemoteTagPrefixScanPb {
+    message TagScanPb {
         repeated AttributePb attributes = 1;
         optional google.protobuf.Timestamp earliest_create_time = 2;
         optional google.protobuf.Timestamp latest_create_time = 3;
@@ -107,15 +98,16 @@ message InternalScanPb {
     ScanResultTypePb result_type = 1;
     int32 limit = 2;
     optional BookmarkPb bookmark = 3;
-    GETableClassEnumPb object_type = 4;
+    GetableClassEnumPb object_type = 4;
     string store_name = 5;
 
+    // If this is set: Remote Tag Scan
+    // Else: Local Tag Scan
     optional string partition_key = 6;
 
     oneof scan_boundary {
         BoundedObjectIdScanPb bounded_object_id_scan = 7;
-        TagPrefixScanPb local_tag_prefix_scan = 8;
-        RemoteTagPrefixScanPb remote_tag_prefix_scan = 9;
+        TagScanPb tag_scan = 8;
     }
 }
 
@@ -172,7 +164,7 @@ service LHInternals {
 
     rpc LocalTasks(LocalTasksPb) returns (LocalTasksReplyPb) {}
 
-    rpc TagScan(TagScanPb) returns (TagScanReplyPb) {}
+    // rpc TagScan(TagScanPb) returns (TagScanReplyPb) {}
 }
 
 // Stuff for the metrics topology
@@ -228,7 +220,7 @@ message RepartitionCommandPb {
 }
 
 // Stuff for Index (internal to the store)
-enum GETableClassEnumPb {
+enum GetableClassEnumPb {
     TASK_DEF = 0;
     EXTERNAL_EVENT_DEF = 1;
     WF_SPEC = 2;
@@ -254,7 +246,7 @@ enum TagStorageTypePb {
 
 message TagPb {
     // The following info is also stored in the key of the Tag in the store.
-    GETableClassEnumPb object_type = 1;
+    GetableClassEnumPb object_type = 1;
     repeated AttributePb attributes = 2;
     string described_object_id = 3;
     google.protobuf.Timestamp created = 4;
@@ -476,15 +468,4 @@ message LocalTasksPb {
 message LocalTasksReplyPb {
     repeated TaskStatePb active_tasks = 1;
     repeated StandByTaskStatePb standby_tasks = 2;
-}
-
-message TagScanReplyPb {
-    repeated TagPb tags = 1;
-}
-
-message TagScanPb{
-    int32 partition = 1;
-    string prefix_store_key = 2;
-    string store_name = 3;
-    int64 limit = 4;
 }

@@ -3,19 +3,19 @@ package io.littlehorse.common.model.meta.usertasks;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.GETable;
+import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.objectId.UserTaskDefId;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.UserTaskDefPb;
 import io.littlehorse.jlib.common.proto.UserTaskFieldPb;
-import io.littlehorse.server.streamsimpl.storeinternals.GETableIndex;
+import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class UserTaskDef extends GETable<UserTaskDefPb> {
+public class UserTaskDef extends Getable<UserTaskDefPb> {
 
     public String name;
     public Date createdAt;
@@ -62,7 +62,7 @@ public class UserTaskDef extends GETable<UserTaskDefPb> {
     }
 
     @Override
-    public List<GETableIndex> getIndexes() {
+    public List<GetableIndex> getIndexes() {
         return new ArrayList<>();
     }
 
