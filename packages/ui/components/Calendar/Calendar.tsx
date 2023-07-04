@@ -4,6 +4,7 @@ import moment from "moment"
 import { useEffect, useState } from "react";
 import { YearSelector } from "./YearSelector";
 import { CInput } from "./CInput";
+import { useOutsideClick } from "../../utils";
 
 const wl = [
     {label:'1 day', value:"DAYS_1"},
@@ -349,6 +350,11 @@ export const Calendar = ({
     const setEndDTHandler = (date?:Date) => {
         setEndDT(date)
     }
+    // handler that will close the dropdown menu when the user clicks on different part of the page.
+    const handleOutsideClick = () => {
+        setShowWL(false)
+    };
+
     const onApply = () => {
         console.log('apply')
         const dt = moment(endDt || startDt || lastDate)
@@ -378,16 +384,21 @@ export const Calendar = ({
         
     }
 
+    // ref used to locate the ancestor Ref so the handler doesn't reopen the dropdown
+    const ancestorOutsideClickRef = React.useRef<HTMLDivElement>(null);
+    // anchor element that triggers handler when is not clicked.
+    const outsideClickRef = useOutsideClick(handleOutsideClick, ancestorOutsideClickRef);
+
     return <div className=" metricsCalendar">
-        <div className="controls" >
-            <CInput label={'WINDOW LENGHT:'} onClick={setShowWLHandler}>
+        <div className="controls" ref={ancestorOutsideClickRef}>
+            <CInput label={'WINDOW LENGHT:'} onClick={setShowWLHandler} >
                 {showWL ? (
                     <div className="placeholder">Select one</div>
                 ) : (
                     <div className="text">{ttype.label}</div>
                 )}
                 <span className="material-icons">expand_more</span>
-                { showWL && <div className="float">
+                { showWL && <div className="float" ref={outsideClickRef}>
                     {wl.map( w => <div key={w.value} className="option" onClick={e => setTypeHandler(e, w)}>{w.label}</div>)}
                 </div>}
             </CInput>
