@@ -189,7 +189,7 @@ export const Calendar = ({
 
     return <div className=" metricsCalendar">
         <div className="controls" ref={ancestorOutsideClickRef}>
-            <CInput label={'WINDOW LENGHT:'} onClick={setShowWLHandler} >
+            <CInput label={'WINDOW LENGTH:'} onClick={setShowWLHandler} >
                 {showWL ? (
                     <div className="placeholder">Select one</div>
                 ) : (
