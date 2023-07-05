@@ -4,8 +4,8 @@ import * as React from "react";
 import { useState } from "react";
 import { CInput } from "./CalendarComponents";
 import { useOutsideClick, getFirstDate } from "../../utils";
-import moment from "moment";
 import { CalendarCanvas } from "./CalendarCanvas";
+import moment from "moment";
 
 const wl = [
   { label: "1 day", value: "DAYS_1" },
@@ -104,7 +104,7 @@ export const Calendar = ({ type, changeType, lastDate, changeLastDate, noWindows
             <div className="float" ref={outsideClickRef}>
               {wl.map((w) => (
                 <div key={w.value} className="option" onClick={(e) => setTypeHandler(e, w)}>
-                  {w.label}
+                  {w.label}    
                 </div>
               ))}
             </div>

@@ -31,7 +31,7 @@ export const Drawer = ({output, thread, data}:any) => {
                         <th>TYPE</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody className="no-scrollbar">
                     <tr>
                         <td>A</td>
                         <td>B</td>

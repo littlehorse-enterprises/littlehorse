@@ -1,5 +1,6 @@
 "use client"
-import { useState, useEffect } from "react"
+
+import React, { useState, useEffect } from "react"
 import { Content } from "../CalendarComponents"
 import moment from "moment"
 
@@ -9,9 +10,10 @@ interface CalendarCanvasBProps {
     setEndDT:(dt?:Date) => void, 
     setStartDT:(dt?:Date) => void,
     onApply:() => void,
+    outsideCalendarClickRef: React.LegacyRef<HTMLDivElement>
 }
 
-export const CalendarCanvasB = ({earlyDate, setEndDT, setStartDT, onApply, lastDate}: CalendarCanvasBProps) => {
+export const CalendarCanvasB = ({earlyDate, setEndDT, setStartDT, onApply, lastDate, outsideCalendarClickRef}: CalendarCanvasBProps) => {
 
     const [date, setDate] = useState<Date>(moment().toDate())
     const [selected, setSelected] = useState<Date | undefined>(earlyDate)
@@ -66,7 +68,7 @@ export const CalendarCanvasB = ({earlyDate, setEndDT, setStartDT, onApply, lastD
     }
 
     return (
-        <div className="flex float">
+        <div className="flex float" ref={outsideCalendarClickRef}>
             <Content 
                 init={date} 
                 type={'MINUTES_5'} 
