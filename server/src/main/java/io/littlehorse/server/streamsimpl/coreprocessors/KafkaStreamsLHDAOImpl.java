@@ -597,7 +597,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         ) {
             while (iter.hasNext()) {
                 LHIterKeyValue<NodeRun> next = iter.next();
-                deleteThingFlush(next.getKey(), NodeRun.class);
+                getableStorageManager.delete(next.getKey(), NodeRun.class);
             }
         }
 
@@ -609,7 +609,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         ) {
             while (iter.hasNext()) {
                 LHIterKeyValue<Variable> next = iter.next();
-                deleteThingFlush(next.getKey(), Variable.class);
+                getableStorageManager.delete(next.getKey(), Variable.class);
             }
         }
 
@@ -621,7 +621,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         ) {
             while (iter.hasNext()) {
                 LHIterKeyValue<ExternalEvent> next = iter.next();
-                deleteThingFlush(next.getKey(), ExternalEvent.class);
+                getableStorageManager.delete(next.getKey(), ExternalEvent.class);
             }
         }
     }
@@ -930,35 +930,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         if (val != null) {
             getableStorageManager.store(val);
         } else {
-            deleteThingFlush(key, cls);
-        }
-    }
-
-    private <U extends Message, T extends Getable<U>> void deleteThingFlush(
-        String objectId,
-        Class<T> cls
-    ) {
-        T oldThing = localStore.get(objectId, cls);
-        if (oldThing != null) {
-            // Delete the old tag cache
-            TagsCache cache = localStore.getTagsCache(oldThing);
-            // TODO refactor needed
-            /*for (CachedTag cachedTag : cache.tags) {
-                if (cachedTag.getIsRemote()) {
-                    log.error("TODO: Send a message to delete remote tag");
-                } else {
-                    localStore.delete(
-                        StoreUtils.getFullStoreKey(cachedTag.getId(), Tag.class)
-                    );
-                }
-            }*/
-
-            localStore.deleteTagCache(oldThing);
-            localStore.delete(oldThing);
-        } else {
-            // Then we know that the object was created and deleted within the same
-            // transaction, so we have nothing to do.
-            log.warn("{} {} created and deleted in same txn.", cls, objectId);
+            getableStorageManager.delete(key, cls);
         }
     }
 

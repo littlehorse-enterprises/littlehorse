@@ -152,6 +152,7 @@ public class TagStorageManagerTest {
         TagsCache tagsCache = new TagsCache();
         CachedTag cachedTag1 = new CachedTag();
         cachedTag1.setId(tag3.getStoreKey());
+        cachedTag1.setRemote(true);
         CachedTag cachedTag2 = new CachedTag();
         cachedTag2.setId(tag2.getStoreKey());
         tagsCache.setTags(List.of(cachedTag1, cachedTag2));

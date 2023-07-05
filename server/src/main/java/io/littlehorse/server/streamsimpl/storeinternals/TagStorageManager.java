@@ -39,27 +39,31 @@ public class TagStorageManager {
             })
             .toList();
         this.storeLocalOrRemoteTag(tags, existingTagIds);
-        this.removeOldTags(tags, existingTagIds);
+        this.removeOldTags(tags, tagsCache.getTags());
         tagsCache.setTags(cachedTags);
         localStore.putTagsCache(tagsCacheKey, tagsCache);
     }
 
-    private void removeOldTags(Collection<Tag> newTags, List<String> cachedTagIds) {
+    private void removeOldTags(Collection<Tag> newTags, List<CachedTag> cachedTags) {
         List<String> newTagIds = newTags.stream().map(Tag::getStoreKey).toList();
-        List<String> tagsIdsToRemove = cachedTagIds
+        List<CachedTag> tagsIdsToRemove = cachedTags
             .stream()
-            .filter(cachedTagId -> !newTagIds.contains(cachedTagId))
+            .filter(cachedTag -> !newTagIds.contains(cachedTag.getId()))
             .toList();
         tagsIdsToRemove.forEach(this::removeTag);
     }
 
-    private void removeTag(String tagStoreKey) {
-        Tag tag = localStore.get(tagStoreKey, Tag.class);
-        if (tag != null) {
-            localStore.delete(tag);
+    public void removeTag(CachedTag cachedTag) {
+        if (cachedTag.isRemote()) {
+            String attributeString = extractAttributeStringFromStoreKey(
+                cachedTag.getId()
+            );
+            sendRepartitionCommandForRemoveRemoteTag(
+                cachedTag.getId(),
+                attributeString
+            );
         } else {
-            String attributeString = extractAttributeStringFromStoreKey(tagStoreKey);
-            sendRepartitionCommandForRemoveRemoteTag(tagStoreKey, attributeString);
+            localStore.deleteByStoreKey(cachedTag.getId(), Tag.class);
         }
     }
 

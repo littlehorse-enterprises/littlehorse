@@ -8,14 +8,21 @@ import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
+import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionCommand;
+import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.RemoveRemoteTag;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableStorageManager;
 import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
+import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
 import io.littlehorse.server.streamsimpl.storeinternals.index.TagsCache;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
+import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.Stores;
 import org.assertj.core.api.Assertions;
@@ -29,7 +36,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class GETableStorageManagerTest {
+public class GetableStorageManagerTest {
 
     private final KeyValueStore<String, Bytes> store = Stores
         .keyValueStoreBuilder(
@@ -74,6 +81,52 @@ public class GETableStorageManagerTest {
         TagsCache tagsCacheResult = localStoreWrapper.getTagsCache(getable);
         Assertions.assertThat(tagsCacheResult).isNotNull();
         Assertions.assertThat(tagsCacheResult.getTagIds()).hasSize(expectedTagsCount);
+    }
+
+    @Test
+    void deleteGetableWithTags() {
+        WfRun wfRun = TestUtil.wfRun("0000000");
+        geTableStorageManager.store(wfRun);
+        TagsCache tagsCache = localStoreWrapper.getTagsCache(wfRun);
+        Map<Boolean, List<Tag>> localOrRemoteTags = tagsCache
+            .getTagIds()
+            .stream()
+            .map(s -> localStoreWrapper.get(s, Tag.class))
+            .collect(Collectors.groupingBy(Objects::nonNull));
+
+        geTableStorageManager.delete(wfRun);
+        Assertions
+            .assertThat(localStoreWrapper.get(wfRun.getStoreKey(), WfRun.class))
+            .isNull();
+        TagsCache tagsCacheResult = localStoreWrapper.getTagsCache(wfRun);
+        List<Tag> localTagsToBeRemoved = localOrRemoteTags.get(true);
+        List<Tag> remoteTagsToBeRemoved = localOrRemoteTags.get(false);
+
+        long localTagsAfterDeletion = localTagsToBeRemoved
+            .stream()
+            .map(Tag::getStoreKey)
+            .map(s -> localStoreWrapper.get(s, Tag.class))
+            .filter(Objects::isNull)
+            .count();
+        long remoteTagsAfterDeletion = mockProcessorContext
+            .forwarded()
+            .stream()
+            .map(MockProcessorContext.CapturedForward::record)
+            .map(Record::value)
+            .map(CommandProcessorOutput::getPayload)
+            .map(lhSerializable -> (RepartitionCommand) lhSerializable)
+            .filter(repartitionCommand ->
+                repartitionCommand.getSubCommand() instanceof RemoveRemoteTag
+            )
+            .count();
+
+        Assertions
+            .assertThat(localTagsAfterDeletion)
+            .isEqualTo(localTagsToBeRemoved.size());
+        Assertions
+            .assertThat(remoteTagsAfterDeletion)
+            .isEqualTo(remoteTagsToBeRemoved.size());
+        Assertions.assertThat(tagsCacheResult).isNull();
     }
 
     @Test
