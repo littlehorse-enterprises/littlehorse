@@ -16,7 +16,7 @@ export const TaskRunSearchTable = ({results}:Props) => {
                 <th className="w-full text-center">STATUS</th>
             </tr>
         </thead>
-        <tbody style={{
+        <tbody className="scrollbar" style={{
             height: "519px"
         }}>
             {results.map( (r:Result, ix:number) => <tr key={ix} className="flex w-full">
