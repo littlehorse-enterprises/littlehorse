@@ -12,12 +12,14 @@ const wl = [
     {label:'5 minutes', value:"MINUTES_5"},
 ]
 
-export const CalendarCanvas = ({type, setEndDT, setStartDT, onApply, lastDate}:{
+// Calendar Canvas will be drilled with outsideCalendarClickRef so the click outside custom hook anchors the element and doesn't reopen
+export const CalendarCanvas = ({type, setEndDT, setStartDT, onApply, lastDate, outsideCalendarClickRef}:{
     type:string,
     lastDate:Date,
     setEndDT:(dt?:Date) => void, 
     setStartDT:(dt?:Date) => void,
     onApply:() => void,
+    outsideCalendarClickRef: any
 }) => {
 
     const [date, setDate] = useState<Date>(moment().toDate())
@@ -74,7 +76,7 @@ export const CalendarCanvas = ({type, setEndDT, setStartDT, onApply, lastDate}:{
     }
 
     return (
-        <div className="flex float">
+        <div className="flex float" ref={outsideCalendarClickRef}>
             <Content 
                 init={date} 
                 type={type} 
@@ -140,6 +142,10 @@ export const Calendar = ({
     const handleOutsideClick = () => {
         setShowWL(false)
     };
+    // handler that will close the calendar when the user clicks outside of it
+    const handleOutsideCalendarClick = () => {
+        setShowCalendar(false)
+    }
 
     const onApply = () => {
         console.log('apply')
@@ -175,6 +181,12 @@ export const Calendar = ({
     // anchor element that triggers handler when is not clicked.
     const outsideClickRef = useOutsideClick(handleOutsideClick, ancestorOutsideClickRef);
 
+
+    // ref used to locate the ancestor Ref so the handler doesn't reopen the calendar
+    const ancestorOutsideCalendarClickRef = React.useRef<HTMLDivElement>(null);
+    // anchor element that triggers handler when is not clicked.
+    const outsideCalendarClickRef = useOutsideClick(handleOutsideCalendarClick, ancestorOutsideCalendarClickRef);
+
     return <div className=" metricsCalendar">
         <div className="controls" ref={ancestorOutsideClickRef}>
             <CInput label={'WINDOW LENGHT:'} onClick={setShowWLHandler} >
@@ -190,7 +202,7 @@ export const Calendar = ({
             </CInput>
 
             <CInput label={'TIME RANGE:'} >
-                <div className="inputWrapper" onClick={setShowCalendarHandler}>
+                <div className="inputWrapper" onClick={setShowCalendarHandler} ref={ancestorOutsideCalendarClickRef}>
                     {!startDt ? (
                         <div className="placeholder">Select date and time</div>
                     ) : (
@@ -211,7 +223,7 @@ export const Calendar = ({
                     <span className="material-icons-outlined">calendar_month</span>   
                 </div>
 
-                { showCalendar && <CalendarCanvas type={ttype.value} lastDate={lastDate} setStartDT={setStartDTHandler} setEndDT={setEndDTHandler} onApply={onApply} />}     
+                { showCalendar && <CalendarCanvas type={ttype.value} lastDate={lastDate} setStartDT={setStartDTHandler} setEndDT={setEndDTHandler} onApply={onApply} outsideCalendarClickRef={outsideCalendarClickRef}/>}     
             </CInput>
         </div>
 
