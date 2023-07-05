@@ -14,7 +14,7 @@ export const Drawer = ({output, thread, data, properties, onToggleSideBar}:any) 
             <label>THREADSPEC</label>
             <div className="input">{data?.entrypointThreadName}</div>
 
-            {output ? <div >
+            {output ? <div className="text" >
                 <label>TYPE</label>
                 <div className="input">{output.type}</div>
             </div> : undefined}
@@ -30,7 +30,7 @@ export const Drawer = ({output, thread, data, properties, onToggleSideBar}:any) 
                         <th>TYPE</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody className="no-scrollbar">
                     <tr>
                         <td>A</td>
                         <td>B</td>
@@ -79,3 +79,4 @@ export const Drawer = ({output, thread, data, properties, onToggleSideBar}:any) 
         }
     </div>
 }
+//variableDefs

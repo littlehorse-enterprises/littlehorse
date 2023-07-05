@@ -40,7 +40,7 @@ export const TaskDefSchemaInformation = ({id}:{id:string}) => {
                     <th className="w-full text-center">TYPE</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody className="no-scrollbar">
                 {inputVars.length ? inputVars.map((row, index) => (<tr className="flex w-full" key={`${row.name}-${index}`}>
                     <td className='w-full text-center'>{row.name}</td>
                     <td className='w-full text-center'>{row.type}</td>

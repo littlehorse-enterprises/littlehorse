@@ -31,7 +31,7 @@ export const LoginDropdown = () => {
             <div className={`login-dropdown__btn ${active && 'active'}`} onClick={() => setActive(prev => !prev)}>
                 <Avatar session={session} />
                 {session?.user?.email}
-                <Image src="/expand_more.svg" alt="expand" width={12} height={7.4} />
+                <Image src="/expand_more.svg" alt="expand" width={12} height={7} />
             </div>
             {active && <div className="login-dropdown__dd">
                 <button onClick={() => signOut()}>Log out</button>
