@@ -1,9 +1,8 @@
-import { useEffect } from "react";
+import React from 'react';
 import { Button } from "ui"
 
-export const Drawer = ({output, thread, data}:any) => {
-
-
+export const Drawer = ({output, thread, data, properties, onToggleSideBar}:any) => {
+    
     return <div className="drawer">
 
         <h2 style={{
@@ -44,12 +43,40 @@ export const Drawer = ({output, thread, data}:any) => {
             </table>
             
         </div>
-        <div className="frame" style={{overflow:"auto"}}>
-            {/* {JSON.stringify(data, null,2)} */}
-            {JSON.stringify(output, null,2)}
-            {/* {JSON.stringify(thread, null,2)} */}
-        </div>
-        <div className="flex-1"></div>
+        {
+            properties && properties.failures.length > 0 && <div className="table">
+                    <table>
+                        <caption>Failures</caption>
+                        <thead>
+                            <tr>
+                                <th>NAME</th>
+                                <th>MESSAGE</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                properties.failures.map((failItem, index) => <React.Fragment>
+                                    <tr key={`${failItem.failureCode}-${index}`}>
+                                        <td>{failItem.failureName}</td>
+                                        <td className="message">{failItem.message}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className='th' colSpan={2}>OUTPUT</td>
+                                    </tr>
+                                    <tr>
+                                        <td colSpan={2}>
+                                            <Button className='color-primary' onClick={(e) => {e
+                                                e.preventDefault();
+                                                onToggleSideBar(true)
+                                            }}>Exception Log</Button>
+                                        </td>
+                                    </tr>
+                                    </React.Fragment>)
+                            }
+                        </tbody>
+                    </table>
+                </div>
+        }
     </div>
 }
 //variableDefs
