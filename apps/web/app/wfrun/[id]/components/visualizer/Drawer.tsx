@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button } from "ui"
 
 export const Drawer = ({output, thread, data, properties, onToggleSideBar}:any) => {
     
@@ -65,10 +64,10 @@ export const Drawer = ({output, thread, data, properties, onToggleSideBar}:any) 
                                     </tr>
                                     <tr>
                                         <td colSpan={2}>
-                                            <Button className='color-primary' onClick={(e) => {e
+                                            <button className='color-primary' onClick={(e) => {e
                                                 e.preventDefault();
                                                 onToggleSideBar(true)
-                                            }}>Exception Log</Button>
+                                            }}>Exception Log</button>
                                         </td>
                                     </tr>
                                     </React.Fragment>)
