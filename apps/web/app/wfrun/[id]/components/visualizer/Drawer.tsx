@@ -54,8 +54,8 @@ export const Drawer = ({output, thread, data, properties, onToggleSideBar}:any) 
                         </thead>
                         <tbody>
                             {
-                                properties.failures.map((failItem, index) => <React.Fragment>
-                                    <tr key={`${failItem.failureCode}-${index}`}>
+                                properties.failures.map((failItem, index) => <React.Fragment key={`${failItem.failureName}-${index}`}>
+                                    <tr>
                                         <td>{failItem.failureName}</td>
                                         <td className="message">{failItem.message}</td>
                                     </tr>
