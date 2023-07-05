@@ -856,8 +856,8 @@ public class BackendInternalComms implements Closeable {
             var result = store
                 .prefixTagScanStream(prefix, Tag.class)
                 .limit(search.limit)
-                .map(kv -> {
-                    var objectId = kv.getValue().getDescribedObjectId();
+                .map(tag -> {
+                    var objectId = tag.getDescribedObjectId();
                     return ObjectId
                         .fromString(
                             objectId,
