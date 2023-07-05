@@ -2,8 +2,7 @@
 
 import moment from "moment"
 import { useEffect, useState } from "react";
-import { CInput } from "./CInput";
-import { Content } from "./Calendar";
+import { Content, CInput } from "./CalendarComponents";
 
 export const CalendarCanvas = ({earlyDate, setEndDT, setStartDT, onApply, lastDate}:{
     earlyDate:Date,
@@ -65,19 +64,24 @@ export const CalendarCanvas = ({earlyDate, setEndDT, setStartDT, onApply, lastDa
         setDate(date => moment(date).subtract(1,'month').toDate())
     }
 
-    return   <div className="flex float">
-        <Content init={date} type={'MINUTES_5'} nextMonth={nextMonth} prevMonth={prevMonth} 
-            selected={selected}
-            selectDay={selectDate}
-            endSelected={endSelected}
-            updateSelectedH={updateSelectedH}
-            updateEndSelectedM={updateEndSelectedM}
-            updateEndSelectedH={updateEndSelectedH}
-            updateSelectedM={updateSelectedM}
-            onApply={onApply}
-        />
-        
-</div>
+    return (
+        <div className="flex float">
+            <Content 
+                init={date} 
+                type={'MINUTES_5'} 
+                nextMonth={nextMonth} 
+                prevMonth={prevMonth} 
+                selected={selected}
+                selectDay={selectDate}
+                endSelected={endSelected}
+                updateSelectedH={updateSelectedH}
+                updateEndSelectedM={updateEndSelectedM}
+                updateEndSelectedH={updateEndSelectedH}
+                updateSelectedM={updateSelectedM}
+                onApply={onApply}
+            />
+        </div>
+    )  
 }
 export const CalendarB = ({
     earlyDate, changeEarlyDate,
