@@ -1,4 +1,5 @@
-import * as React from "react";
+"use client"
+
 import { useState, useEffect } from "react";
 import { YearSelector } from "./YearSelector";
 import moment from "moment";
