@@ -172,7 +172,6 @@ article{
 
     border: 1px solid var(--color-gray-blue, #394150);
     border-radius: 9px;
-    overflow: hidden;
     background: linear-gradient(180deg, #282B30 0%, #24272B 53.65%, #232529 100%);
     table{
         border-collapse: collapse;
@@ -206,7 +205,6 @@ article{
     tbody{
         // height: 500px;
         
-        overflow-y: scroll;
         display: flex;
         flex-direction: column;
         width: 100%;
