@@ -1,2 +1,2 @@
-export { default as useOutsideClick } from './useOutsideClick';
+export { useOutsideClick } from './useOutsideClick';
 export { getFirstDate } from './calendarUtils';
