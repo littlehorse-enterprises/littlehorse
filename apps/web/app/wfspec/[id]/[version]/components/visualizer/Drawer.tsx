@@ -25,7 +25,7 @@ export const Drawer = ({output, thread, data}:any) => {
         if(output.type == 'TASK') taskInformation(output.node.task.taskDefName)
     },[output])
 
-    return <div className="drawer">
+    return <div className="drawer scrollbar">
 
         <h2 style={{
             paddingBottom:'8px',
