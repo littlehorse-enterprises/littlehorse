@@ -1,9 +1,11 @@
+"use client"
+
 import { useEffect, useRef } from "react";
 
 // this hook sets an alement with its ancenstor as an anchor to trigger a handler when the user clicks outside of it.
 // the ancestor ref was created to avoid any loop if the component already has a handler.
 
-const useOutsideClick = (
+export const useOutsideClick = (
   callback: () => void,
   ancestorRef: React.RefObject<HTMLDivElement> | null
 ): React.RefObject<HTMLDivElement> => {
