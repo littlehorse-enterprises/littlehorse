@@ -3,13 +3,18 @@ package io.littlehorse.common.model.wfrun;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.objectId.ExternalEventId;
+import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.ExternalEventPb;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.commons.lang3.tuple.Pair;
 
+@Getter
+@Setter
 public class ExternalEvent extends Getable<ExternalEventPb> {
 
     // We want Jackson to show  the full ID, not this.
@@ -81,7 +86,43 @@ public class ExternalEvent extends Getable<ExternalEventPb> {
 
     @Override
     public List<GetableIndex> getIndexes() {
-        return new ArrayList<>();
+        return List.of(
+            new GetableIndex(
+                ExternalEvent.class,
+                List.of(
+                    Pair.of(
+                        "extEvtDefName",
+                        getable ->
+                            List.of(
+                                ((ExternalEvent) getable).getExternalEventDefName()
+                            )
+                    ),
+                    Pair.of(
+                        "isClaimed",
+                        getable ->
+                            List.of(
+                                String.valueOf(((ExternalEvent) getable).isClaimed())
+                            )
+                    )
+                ),
+                wfRunPb -> true,
+                TagStorageTypePb.LOCAL
+            ),
+            new GetableIndex(
+                ExternalEvent.class,
+                List.of(
+                    Pair.of(
+                        "extEvtDefName",
+                        getable ->
+                            List.of(
+                                ((ExternalEvent) getable).getExternalEventDefName()
+                            )
+                    )
+                ),
+                wfRunPb -> true,
+                TagStorageTypePb.LOCAL
+            )
+        );
     }
 
     public static ExternalEvent fromProto(ExternalEventPb p) {

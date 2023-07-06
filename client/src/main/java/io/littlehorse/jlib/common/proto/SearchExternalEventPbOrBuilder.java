@@ -46,5 +46,20 @@ public interface SearchExternalEventPbOrBuilder extends
   com.google.protobuf.ByteString
       getWfRunIdBytes();
 
+  /**
+   * <code>.littlehorse.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb external_event_def_name_and_status = 4;</code>
+   * @return Whether the externalEventDefNameAndStatus field is set.
+   */
+  boolean hasExternalEventDefNameAndStatus();
+  /**
+   * <code>.littlehorse.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb external_event_def_name_and_status = 4;</code>
+   * @return The externalEventDefNameAndStatus.
+   */
+  io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb getExternalEventDefNameAndStatus();
+  /**
+   * <code>.littlehorse.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb external_event_def_name_and_status = 4;</code>
+   */
+  io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPbOrBuilder getExternalEventDefNameAndStatusOrBuilder();
+
   public io.littlehorse.jlib.common.proto.SearchExternalEventPb.ExtEvtCriteriaCase getExtEvtCriteriaCase();
 }

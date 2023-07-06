@@ -44,6 +44,664 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.jlib.common.proto.SearchExternalEventPb.class, io.littlehorse.jlib.common.proto.SearchExternalEventPb.Builder.class);
   }
 
+  public interface ByExtEvtDefNameAndStatusPbOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:littlehorse.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string external_event_def_name = 1;</code>
+     * @return The externalEventDefName.
+     */
+    java.lang.String getExternalEventDefName();
+    /**
+     * <code>string external_event_def_name = 1;</code>
+     * @return The bytes for externalEventDefName.
+     */
+    com.google.protobuf.ByteString
+        getExternalEventDefNameBytes();
+
+    /**
+     * <code>optional bool is_claimed = 2;</code>
+     * @return Whether the isClaimed field is set.
+     */
+    boolean hasIsClaimed();
+    /**
+     * <code>optional bool is_claimed = 2;</code>
+     * @return The isClaimed.
+     */
+    boolean getIsClaimed();
+  }
+  /**
+   * Protobuf type {@code littlehorse.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb}
+   */
+  public static final class ByExtEvtDefNameAndStatusPb extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:littlehorse.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb)
+      ByExtEvtDefNameAndStatusPbOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use ByExtEvtDefNameAndStatusPb.newBuilder() to construct.
+    private ByExtEvtDefNameAndStatusPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ByExtEvtDefNameAndStatusPb() {
+      externalEventDefName_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new ByExtEvtDefNameAndStatusPb();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.littlehorse.jlib.common.proto.Service.internal_static_littlehorse_SearchExternalEventPb_ByExtEvtDefNameAndStatusPb_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.littlehorse.jlib.common.proto.Service.internal_static_littlehorse_SearchExternalEventPb_ByExtEvtDefNameAndStatusPb_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb.class, io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int EXTERNAL_EVENT_DEF_NAME_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object externalEventDefName_ = "";
+    /**
+     * <code>string external_event_def_name = 1;</code>
+     * @return The externalEventDefName.
+     */
+    @java.lang.Override
+    public java.lang.String getExternalEventDefName() {
+      java.lang.Object ref = externalEventDefName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        externalEventDefName_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string external_event_def_name = 1;</code>
+     * @return The bytes for externalEventDefName.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getExternalEventDefNameBytes() {
+      java.lang.Object ref = externalEventDefName_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        externalEventDefName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int IS_CLAIMED_FIELD_NUMBER = 2;
+    private boolean isClaimed_ = false;
+    /**
+     * <code>optional bool is_claimed = 2;</code>
+     * @return Whether the isClaimed field is set.
+     */
+    @java.lang.Override
+    public boolean hasIsClaimed() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>optional bool is_claimed = 2;</code>
+     * @return The isClaimed.
+     */
+    @java.lang.Override
+    public boolean getIsClaimed() {
+      return isClaimed_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(externalEventDefName_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, externalEventDefName_);
+      }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeBool(2, isClaimed_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(externalEventDefName_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, externalEventDefName_);
+      }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(2, isClaimed_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb)) {
+        return super.equals(obj);
+      }
+      io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb other = (io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb) obj;
+
+      if (!getExternalEventDefName()
+          .equals(other.getExternalEventDefName())) return false;
+      if (hasIsClaimed() != other.hasIsClaimed()) return false;
+      if (hasIsClaimed()) {
+        if (getIsClaimed()
+            != other.getIsClaimed()) return false;
+      }
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + EXTERNAL_EVENT_DEF_NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getExternalEventDefName().hashCode();
+      if (hasIsClaimed()) {
+        hash = (37 * hash) + IS_CLAIMED_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+            getIsClaimed());
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code littlehorse.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:littlehorse.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb)
+        io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPbOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.littlehorse.jlib.common.proto.Service.internal_static_littlehorse_SearchExternalEventPb_ByExtEvtDefNameAndStatusPb_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.littlehorse.jlib.common.proto.Service.internal_static_littlehorse_SearchExternalEventPb_ByExtEvtDefNameAndStatusPb_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb.class, io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb.Builder.class);
+      }
+
+      // Construct using io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        externalEventDefName_ = "";
+        isClaimed_ = false;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.littlehorse.jlib.common.proto.Service.internal_static_littlehorse_SearchExternalEventPb_ByExtEvtDefNameAndStatusPb_descriptor;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb getDefaultInstanceForType() {
+        return io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb build() {
+        io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb buildPartial() {
+        io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb result = new io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.externalEventDefName_ = externalEventDefName_;
+        }
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.isClaimed_ = isClaimed_;
+          to_bitField0_ |= 0x00000001;
+        }
+        result.bitField0_ |= to_bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb) {
+          return mergeFrom((io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb other) {
+        if (other == io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb.getDefaultInstance()) return this;
+        if (!other.getExternalEventDefName().isEmpty()) {
+          externalEventDefName_ = other.externalEventDefName_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (other.hasIsClaimed()) {
+          setIsClaimed(other.getIsClaimed());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                externalEventDefName_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 16: {
+                isClaimed_ = input.readBool();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object externalEventDefName_ = "";
+      /**
+       * <code>string external_event_def_name = 1;</code>
+       * @return The externalEventDefName.
+       */
+      public java.lang.String getExternalEventDefName() {
+        java.lang.Object ref = externalEventDefName_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          externalEventDefName_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string external_event_def_name = 1;</code>
+       * @return The bytes for externalEventDefName.
+       */
+      public com.google.protobuf.ByteString
+          getExternalEventDefNameBytes() {
+        java.lang.Object ref = externalEventDefName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          externalEventDefName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string external_event_def_name = 1;</code>
+       * @param value The externalEventDefName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setExternalEventDefName(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        externalEventDefName_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string external_event_def_name = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearExternalEventDefName() {
+        externalEventDefName_ = getDefaultInstance().getExternalEventDefName();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string external_event_def_name = 1;</code>
+       * @param value The bytes for externalEventDefName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setExternalEventDefNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        externalEventDefName_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private boolean isClaimed_ ;
+      /**
+       * <code>optional bool is_claimed = 2;</code>
+       * @return Whether the isClaimed field is set.
+       */
+      @java.lang.Override
+      public boolean hasIsClaimed() {
+        return ((bitField0_ & 0x00000002) != 0);
+      }
+      /**
+       * <code>optional bool is_claimed = 2;</code>
+       * @return The isClaimed.
+       */
+      @java.lang.Override
+      public boolean getIsClaimed() {
+        return isClaimed_;
+      }
+      /**
+       * <code>optional bool is_claimed = 2;</code>
+       * @param value The isClaimed to set.
+       * @return This builder for chaining.
+       */
+      public Builder setIsClaimed(boolean value) {
+        
+        isClaimed_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bool is_claimed = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearIsClaimed() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        isClaimed_ = false;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:littlehorse.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb)
+    }
+
+    // @@protoc_insertion_point(class_scope:littlehorse.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb)
+    private static final io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb();
+    }
+
+    public static io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ByExtEvtDefNameAndStatusPb>
+        PARSER = new com.google.protobuf.AbstractParser<ByExtEvtDefNameAndStatusPb>() {
+      @java.lang.Override
+      public ByExtEvtDefNameAndStatusPb parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<ByExtEvtDefNameAndStatusPb> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ByExtEvtDefNameAndStatusPb> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private int bitField0_;
   private int extEvtCriteriaCase_ = 0;
   private java.lang.Object extEvtCriteria_;
@@ -51,6 +709,7 @@ private static final long serialVersionUID = 0L;
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
     WF_RUN_ID(3),
+    EXTERNAL_EVENT_DEF_NAME_AND_STATUS(4),
     EXTEVTCRITERIA_NOT_SET(0);
     private final int value;
     private ExtEvtCriteriaCase(int value) {
@@ -69,6 +728,7 @@ private static final long serialVersionUID = 0L;
     public static ExtEvtCriteriaCase forNumber(int value) {
       switch (value) {
         case 3: return WF_RUN_ID;
+        case 4: return EXTERNAL_EVENT_DEF_NAME_AND_STATUS;
         case 0: return EXTEVTCRITERIA_NOT_SET;
         default: return null;
       }
@@ -174,6 +834,37 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int EXTERNAL_EVENT_DEF_NAME_AND_STATUS_FIELD_NUMBER = 4;
+  /**
+   * <code>.littlehorse.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb external_event_def_name_and_status = 4;</code>
+   * @return Whether the externalEventDefNameAndStatus field is set.
+   */
+  @java.lang.Override
+  public boolean hasExternalEventDefNameAndStatus() {
+    return extEvtCriteriaCase_ == 4;
+  }
+  /**
+   * <code>.littlehorse.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb external_event_def_name_and_status = 4;</code>
+   * @return The externalEventDefNameAndStatus.
+   */
+  @java.lang.Override
+  public io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb getExternalEventDefNameAndStatus() {
+    if (extEvtCriteriaCase_ == 4) {
+       return (io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb) extEvtCriteria_;
+    }
+    return io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb external_event_def_name_and_status = 4;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPbOrBuilder getExternalEventDefNameAndStatusOrBuilder() {
+    if (extEvtCriteriaCase_ == 4) {
+       return (io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb) extEvtCriteria_;
+    }
+    return io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -197,6 +888,9 @@ private static final long serialVersionUID = 0L;
     if (extEvtCriteriaCase_ == 3) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 3, extEvtCriteria_);
     }
+    if (extEvtCriteriaCase_ == 4) {
+      output.writeMessage(4, (io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb) extEvtCriteria_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -216,6 +910,10 @@ private static final long serialVersionUID = 0L;
     }
     if (extEvtCriteriaCase_ == 3) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, extEvtCriteria_);
+    }
+    if (extEvtCriteriaCase_ == 4) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(4, (io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb) extEvtCriteria_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -248,6 +946,10 @@ private static final long serialVersionUID = 0L;
         if (!getWfRunId()
             .equals(other.getWfRunId())) return false;
         break;
+      case 4:
+        if (!getExternalEventDefNameAndStatus()
+            .equals(other.getExternalEventDefNameAndStatus())) return false;
+        break;
       case 0:
       default:
     }
@@ -274,6 +976,10 @@ private static final long serialVersionUID = 0L;
       case 3:
         hash = (37 * hash) + WF_RUN_ID_FIELD_NUMBER;
         hash = (53 * hash) + getWfRunId().hashCode();
+        break;
+      case 4:
+        hash = (37 * hash) + EXTERNAL_EVENT_DEF_NAME_AND_STATUS_FIELD_NUMBER;
+        hash = (53 * hash) + getExternalEventDefNameAndStatus().hashCode();
         break;
       case 0:
       default:
@@ -409,6 +1115,9 @@ private static final long serialVersionUID = 0L;
       bitField0_ = 0;
       bookmark_ = com.google.protobuf.ByteString.EMPTY;
       limit_ = 0;
+      if (externalEventDefNameAndStatusBuilder_ != null) {
+        externalEventDefNameAndStatusBuilder_.clear();
+      }
       extEvtCriteriaCase_ = 0;
       extEvtCriteria_ = null;
       return this;
@@ -460,6 +1169,10 @@ private static final long serialVersionUID = 0L;
     private void buildPartialOneofs(io.littlehorse.jlib.common.proto.SearchExternalEventPb result) {
       result.extEvtCriteriaCase_ = extEvtCriteriaCase_;
       result.extEvtCriteria_ = this.extEvtCriteria_;
+      if (extEvtCriteriaCase_ == 4 &&
+          externalEventDefNameAndStatusBuilder_ != null) {
+        result.extEvtCriteria_ = externalEventDefNameAndStatusBuilder_.build();
+      }
     }
 
     @java.lang.Override
@@ -519,6 +1232,10 @@ private static final long serialVersionUID = 0L;
           onChanged();
           break;
         }
+        case EXTERNAL_EVENT_DEF_NAME_AND_STATUS: {
+          mergeExternalEventDefNameAndStatus(other.getExternalEventDefNameAndStatus());
+          break;
+        }
         case EXTEVTCRITERIA_NOT_SET: {
           break;
         }
@@ -565,6 +1282,13 @@ private static final long serialVersionUID = 0L;
               extEvtCriteria_ = s;
               break;
             } // case 26
+            case 34: {
+              input.readMessage(
+                  getExternalEventDefNameAndStatusFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              extEvtCriteriaCase_ = 4;
+              break;
+            } // case 34
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -768,6 +1492,148 @@ private static final long serialVersionUID = 0L;
       extEvtCriteria_ = value;
       onChanged();
       return this;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb, io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb.Builder, io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPbOrBuilder> externalEventDefNameAndStatusBuilder_;
+    /**
+     * <code>.littlehorse.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb external_event_def_name_and_status = 4;</code>
+     * @return Whether the externalEventDefNameAndStatus field is set.
+     */
+    @java.lang.Override
+    public boolean hasExternalEventDefNameAndStatus() {
+      return extEvtCriteriaCase_ == 4;
+    }
+    /**
+     * <code>.littlehorse.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb external_event_def_name_and_status = 4;</code>
+     * @return The externalEventDefNameAndStatus.
+     */
+    @java.lang.Override
+    public io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb getExternalEventDefNameAndStatus() {
+      if (externalEventDefNameAndStatusBuilder_ == null) {
+        if (extEvtCriteriaCase_ == 4) {
+          return (io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb) extEvtCriteria_;
+        }
+        return io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb.getDefaultInstance();
+      } else {
+        if (extEvtCriteriaCase_ == 4) {
+          return externalEventDefNameAndStatusBuilder_.getMessage();
+        }
+        return io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb external_event_def_name_and_status = 4;</code>
+     */
+    public Builder setExternalEventDefNameAndStatus(io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb value) {
+      if (externalEventDefNameAndStatusBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        extEvtCriteria_ = value;
+        onChanged();
+      } else {
+        externalEventDefNameAndStatusBuilder_.setMessage(value);
+      }
+      extEvtCriteriaCase_ = 4;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb external_event_def_name_and_status = 4;</code>
+     */
+    public Builder setExternalEventDefNameAndStatus(
+        io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb.Builder builderForValue) {
+      if (externalEventDefNameAndStatusBuilder_ == null) {
+        extEvtCriteria_ = builderForValue.build();
+        onChanged();
+      } else {
+        externalEventDefNameAndStatusBuilder_.setMessage(builderForValue.build());
+      }
+      extEvtCriteriaCase_ = 4;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb external_event_def_name_and_status = 4;</code>
+     */
+    public Builder mergeExternalEventDefNameAndStatus(io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb value) {
+      if (externalEventDefNameAndStatusBuilder_ == null) {
+        if (extEvtCriteriaCase_ == 4 &&
+            extEvtCriteria_ != io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb.getDefaultInstance()) {
+          extEvtCriteria_ = io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb.newBuilder((io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb) extEvtCriteria_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          extEvtCriteria_ = value;
+        }
+        onChanged();
+      } else {
+        if (extEvtCriteriaCase_ == 4) {
+          externalEventDefNameAndStatusBuilder_.mergeFrom(value);
+        } else {
+          externalEventDefNameAndStatusBuilder_.setMessage(value);
+        }
+      }
+      extEvtCriteriaCase_ = 4;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb external_event_def_name_and_status = 4;</code>
+     */
+    public Builder clearExternalEventDefNameAndStatus() {
+      if (externalEventDefNameAndStatusBuilder_ == null) {
+        if (extEvtCriteriaCase_ == 4) {
+          extEvtCriteriaCase_ = 0;
+          extEvtCriteria_ = null;
+          onChanged();
+        }
+      } else {
+        if (extEvtCriteriaCase_ == 4) {
+          extEvtCriteriaCase_ = 0;
+          extEvtCriteria_ = null;
+        }
+        externalEventDefNameAndStatusBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb external_event_def_name_and_status = 4;</code>
+     */
+    public io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb.Builder getExternalEventDefNameAndStatusBuilder() {
+      return getExternalEventDefNameAndStatusFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb external_event_def_name_and_status = 4;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPbOrBuilder getExternalEventDefNameAndStatusOrBuilder() {
+      if ((extEvtCriteriaCase_ == 4) && (externalEventDefNameAndStatusBuilder_ != null)) {
+        return externalEventDefNameAndStatusBuilder_.getMessageOrBuilder();
+      } else {
+        if (extEvtCriteriaCase_ == 4) {
+          return (io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb) extEvtCriteria_;
+        }
+        return io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb external_event_def_name_and_status = 4;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb, io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb.Builder, io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPbOrBuilder> 
+        getExternalEventDefNameAndStatusFieldBuilder() {
+      if (externalEventDefNameAndStatusBuilder_ == null) {
+        if (!(extEvtCriteriaCase_ == 4)) {
+          extEvtCriteria_ = io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb.getDefaultInstance();
+        }
+        externalEventDefNameAndStatusBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb, io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb.Builder, io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPbOrBuilder>(
+                (io.littlehorse.jlib.common.proto.SearchExternalEventPb.ByExtEvtDefNameAndStatusPb) extEvtCriteria_,
+                getParentForChildren(),
+                isClean());
+        extEvtCriteria_ = null;
+      }
+      extEvtCriteriaCase_ = 4;
+      onChanged();
+      return externalEventDefNameAndStatusBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

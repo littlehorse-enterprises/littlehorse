@@ -73,7 +73,7 @@ public class WfSpec extends Getable<WfSpecPb> {
                     Pair.of("taskDef", getable -> ((WfSpec) getable).taskDefNames())
                 ),
                 wfSpec -> true,
-                TagStorageTypePb.LOCAL
+                TagStorageTypePb.REMOTE
             )
         );
     }
