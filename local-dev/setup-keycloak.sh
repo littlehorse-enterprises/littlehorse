@@ -10,6 +10,8 @@ SERVER_CLIENT_ID="server"
 SERVER_CLIENT_SECRET="tTL9rw3U8fwPhAmJOWecFKJFaYTVjmCJ"
 WORKER_CLIENT_ID="worker"
 WORKER_CLIENT_SECRET="40317ab43bd34a9e93499c7ea03ad398"
+CLI_CLIENT_ID="lhctl"
+CLI_CLIENT_SECRET="ee96a53af0034437bee816e63944e0f0"
 KEYCLOAK_ADMIN="admin"
 KEYCLOAK_ADMIN_PASSWORD="admin"
 KEYCLOAK_PORT="8888"
@@ -50,3 +52,12 @@ http -b -A bearer -a "$KEYCLOAK_ADMIN_ACCESS_TOKEN" "http://localhost:${KEYCLOAK
     serviceAccountsEnabled:=true \
     directAccessGrantsEnabled:=true \
     publicClient:=false
+
+http -b -A bearer -a "$KEYCLOAK_ADMIN_ACCESS_TOKEN" "http://localhost:${KEYCLOAK_PORT}/admin/realms/${REALM_NAME}/clients" \
+    protocol=openid-connect \
+    clientId="$CLI_CLIENT_ID" \
+    id="$CLI_CLIENT_ID" \
+    secret="$CLI_CLIENT_SECRET" \
+    directAccessGrantsEnabled:=false \
+    publicClient:=true \
+    redirectUris:='["http://127.0.0.1:25242/callback"]'
