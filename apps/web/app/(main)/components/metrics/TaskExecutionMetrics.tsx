@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import moment from "moment"
 import { TaskChart } from "../../../../components/Charts/TaskChart";
 import { LatencyTaskChart } from "../../../../components/Charts/LatencyTaskChart";
-import { Button, H3, H4 } from "ui";
+import { Button, H3, H4, Loader } from "ui";
 
 export interface taskDefMetric{
     windowStart: Date 
@@ -145,10 +145,14 @@ export const TaskExecutionMetrics = ({windows= 16, lastWindowStart=moment().toDa
                 </div>
             </header>
 
-            <div>
-                {chart === 'tasks' && <TaskChart data={data} type={type} />}
-                {chart === 'latency' && <LatencyTaskChart data={data} type={type}  />}
-            </div>
+            <div className={`${data.length === 0 ? 'flex items-center justify-items-center justify-center': ''}`} style={{
+                height: data.length === 0 ? '400px' : 'auto'
+            }}>{
+                data.length > 0 ? <>
+                    {chart === 'tasks' && <TaskChart data={data} type={type} />}
+                    {chart === 'latency' && <LatencyTaskChart data={data} type={type}  />}
+                </> : <Loader />
+            }</div>
         </article>
     )
 }
