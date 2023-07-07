@@ -1,5 +1,5 @@
 "use client";
-import { Button, Calendar, CalendarB, Label, LoadMoreButton, PerPage } from "ui"
+import { Button, Calendar, CalendarB, Label, LoadMoreButton, Loader, PerPage } from "ui"
 import { useEffect, useState } from "react"
 import { TaskRunSearchTable } from "../components/search/TaskRunSearchTable";
 import moment from "moment";
@@ -189,9 +189,11 @@ export const TaskRunSearch = ({id}:any) => {
                 <Button active={type === 'ERROR'} onClick={() => setType("ERROR")}>Error</Button>
             </div>
         </div>
-
-        <TaskRunSearchTable results={results} />
-        
+        <div style={{minHeight:'568px'}}
+            className={`${results.length === 0 ? 'flex items-center justify-items-center justify-center': ''}`}
+        >
+            {results.length > 0 ? <TaskRunSearchTable results={results} /> : <Loader />}
+        </div>
         <div className="end">
             <div className="btns btns-right">
             {!!type ? <><Label>Rows per load:</Label><PerPage icon="/expand_more.svg" value={limit} onChange={setLimit} values={[10,20,30,60,100]} /> </>: undefined}

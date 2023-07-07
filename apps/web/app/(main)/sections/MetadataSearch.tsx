@@ -153,7 +153,9 @@ export const MetadataSearch = () => {
                 <Button active={type === 'externalEventDef'} onClick={() => setType("externalEventDef")}>ExternalEventDef</Button>
             </div>
         </div>
-        <div style={{minHeight:'568px'}}>
+        <div style={{minHeight:'568px'}}
+            className={`${results.length === 0 ? 'flex items-center justify-items-center justify-center': ''}`}
+        >
             {results.length ? (
                 <MetadataSearchTable results={results} />
             ) : (
