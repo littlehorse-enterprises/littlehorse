@@ -9,9 +9,6 @@ import io.littlehorse.common.model.command.subcommand.ExternalEventTimeout;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.meta.subnode.ExternalEventNode;
 import io.littlehorse.common.model.objectId.ExternalEventId;
-import io.littlehorse.common.model.observabilityevent.ObservabilityEvent;
-import io.littlehorse.common.model.observabilityevent.events.ExtEvtMatchedOe;
-import io.littlehorse.common.model.observabilityevent.events.WaitingForExtEvtOe;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.LHTimer;
@@ -20,7 +17,6 @@ import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.ExternalEventRunPb;
 import io.littlehorse.jlib.common.proto.LHStatusPb;
-import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
@@ -84,7 +80,6 @@ public class ExternalEventRun extends SubNodeRun<ExternalEventRunPb> {
 
         nodeRun.fail(
             new Failure(
-                TaskResultCodePb.TIMEOUT,
                 "External Event did not arrive in time.",
                 LHConstants.TIMEOUT,
                 null
@@ -97,10 +92,13 @@ public class ExternalEventRun extends SubNodeRun<ExternalEventRunPb> {
         Node node = nodeRun.getNode();
         ExternalEventNode eNode = node.externalEventNode;
 
-        ExternalEvent evt = nodeRun.threadRun.wfRun.cmdDao.getUnclaimedEvent(
-            nodeRun.threadRun.wfRunId,
-            eNode.externalEventDefName
-        );
+        ExternalEvent evt = nodeRun
+            .getThreadRun()
+            .wfRun.getDao()
+            .getUnclaimedEvent(
+                nodeRun.getThreadRun().wfRunId,
+                eNode.externalEventDefName
+            );
         if (evt == null) {
             // It hasn't come in yet.
             return false;
@@ -113,15 +111,6 @@ public class ExternalEventRun extends SubNodeRun<ExternalEventRunPb> {
         evt.threadRunNumber = nodeRun.threadRunNumber;
 
         externalEventId = evt.getObjectId();
-
-        ExtEvtMatchedOe oe = new ExtEvtMatchedOe();
-        oe.extEvtDefName = externalEventDefName;
-        oe.extEvtGuid = evt.guid;
-        oe.nodeRunPosition = nodeRun.position;
-        oe.threadRunNumber = nodeRun.threadRunNumber;
-        nodeRun.threadRun.wfRun.cmdDao.addObservabilityEvent(
-            new ObservabilityEvent(nodeRun.wfRunId, oe)
-        );
 
         nodeRun.complete(evt.content, time);
         return true;
@@ -144,9 +133,9 @@ public class ExternalEventRun extends SubNodeRun<ExternalEventRunPb> {
 
         if (getNode().externalEventNode.timeoutSeconds != null) {
             try {
-                VariableValue timeoutSeconds = nodeRun.threadRun.assignVariable(
-                    getNode().externalEventNode.timeoutSeconds
-                );
+                VariableValue timeoutSeconds = nodeRun
+                    .getThreadRun()
+                    .assignVariable(getNode().externalEventNode.timeoutSeconds);
                 if (timeoutSeconds.type != VariableTypePb.INT) {
                     throw new LHVarSubError(
                         null,
@@ -157,7 +146,7 @@ public class ExternalEventRun extends SubNodeRun<ExternalEventRunPb> {
                 }
 
                 LHTimer timer = new LHTimer();
-                timer.topic = nodeRun.threadRun.wfRun.cmdDao.getWfRunEventQueue();
+                timer.topic = nodeRun.getThreadRun().wfRun.getDao().getCoreCmdTopic();
                 timer.key = nodeRun.wfRunId;
                 timer.maturationTime =
                     new Date(new Date().getTime() + (timeoutSeconds.intVal * 1000));
@@ -172,12 +161,11 @@ public class ExternalEventRun extends SubNodeRun<ExternalEventRunPb> {
                 cmd.time = timeoutEvt.time;
 
                 timer.payload = cmd.toProto().build().toByteArray();
-                nodeRun.threadRun.wfRun.cmdDao.scheduleTimer(timer);
+                nodeRun.getThreadRun().wfRun.getDao().scheduleTimer(timer);
                 log.info("Scheduled timer!");
             } catch (LHVarSubError exn) {
                 nodeRun.fail(
                     new Failure(
-                        TaskResultCodePb.VAR_SUB_ERROR,
                         "Failed determining timeout for ext evt node: " +
                         exn.getMessage(),
                         LHConstants.VAR_ERROR
@@ -186,13 +174,5 @@ public class ExternalEventRun extends SubNodeRun<ExternalEventRunPb> {
                 );
             }
         }
-
-        WaitingForExtEvtOe oe = new WaitingForExtEvtOe();
-        oe.extEvtDefName = externalEventDefName;
-        oe.nodeRunPosition = nodeRun.position;
-        oe.threadRunNumber = nodeRun.threadRunNumber;
-        nodeRun.threadRun.wfRun.cmdDao.addObservabilityEvent(
-            new ObservabilityEvent(nodeRun.wfRunId, oe)
-        );
     }
 }

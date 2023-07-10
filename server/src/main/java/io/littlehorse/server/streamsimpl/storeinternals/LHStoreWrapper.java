@@ -24,7 +24,6 @@ public class LHStoreWrapper extends LHROStoreWrapper {
 
     public void put(Storeable<?> thing) {
         String storeKey = StoreUtils.getFullStoreKey(thing);
-        System.out.println(storeKey);
         store.put(storeKey, new Bytes(thing.toBytes(config)));
     }
 

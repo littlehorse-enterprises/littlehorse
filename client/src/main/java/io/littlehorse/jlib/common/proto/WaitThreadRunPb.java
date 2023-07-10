@@ -17,7 +17,6 @@ private static final long serialVersionUID = 0L;
   }
   private WaitThreadRunPb() {
     threadStatus_ = 0;
-    threadResultCode_ = 0;
   }
 
   @java.lang.Override
@@ -75,21 +74,14 @@ private static final long serialVersionUID = 0L;
   public static final int THREAD_STATUS_FIELD_NUMBER = 2;
   private int threadStatus_ = 0;
   /**
-   * <code>optional .littlehorse.LHStatusPb thread_status = 2;</code>
-   * @return Whether the threadStatus field is set.
-   */
-  @java.lang.Override public boolean hasThreadStatus() {
-    return ((bitField0_ & 0x00000002) != 0);
-  }
-  /**
-   * <code>optional .littlehorse.LHStatusPb thread_status = 2;</code>
+   * <code>.littlehorse.LHStatusPb thread_status = 2;</code>
    * @return The enum numeric value on the wire for threadStatus.
    */
   @java.lang.Override public int getThreadStatusValue() {
     return threadStatus_;
   }
   /**
-   * <code>optional .littlehorse.LHStatusPb thread_status = 2;</code>
+   * <code>.littlehorse.LHStatusPb thread_status = 2;</code>
    * @return The threadStatus.
    */
   @java.lang.Override public io.littlehorse.jlib.common.proto.LHStatusPb getThreadStatus() {
@@ -97,35 +89,10 @@ private static final long serialVersionUID = 0L;
     return result == null ? io.littlehorse.jlib.common.proto.LHStatusPb.UNRECOGNIZED : result;
   }
 
-  public static final int THREAD_RESULT_CODE_FIELD_NUMBER = 3;
-  private int threadResultCode_ = 0;
-  /**
-   * <code>optional .littlehorse.TaskResultCodePb thread_result_code = 3;</code>
-   * @return Whether the threadResultCode field is set.
-   */
-  @java.lang.Override public boolean hasThreadResultCode() {
-    return ((bitField0_ & 0x00000004) != 0);
-  }
-  /**
-   * <code>optional .littlehorse.TaskResultCodePb thread_result_code = 3;</code>
-   * @return The enum numeric value on the wire for threadResultCode.
-   */
-  @java.lang.Override public int getThreadResultCodeValue() {
-    return threadResultCode_;
-  }
-  /**
-   * <code>optional .littlehorse.TaskResultCodePb thread_result_code = 3;</code>
-   * @return The threadResultCode.
-   */
-  @java.lang.Override public io.littlehorse.jlib.common.proto.TaskResultCodePb getThreadResultCode() {
-    io.littlehorse.jlib.common.proto.TaskResultCodePb result = io.littlehorse.jlib.common.proto.TaskResultCodePb.forNumber(threadResultCode_);
-    return result == null ? io.littlehorse.jlib.common.proto.TaskResultCodePb.UNRECOGNIZED : result;
-  }
-
-  public static final int THREAD_RUN_NUMBER_FIELD_NUMBER = 4;
+  public static final int THREAD_RUN_NUMBER_FIELD_NUMBER = 3;
   private int threadRunNumber_ = 0;
   /**
-   * <code>int32 thread_run_number = 4;</code>
+   * <code>int32 thread_run_number = 3;</code>
    * @return The threadRunNumber.
    */
   @java.lang.Override
@@ -150,14 +117,11 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(1, getThreadEndTime());
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
+    if (threadStatus_ != io.littlehorse.jlib.common.proto.LHStatusPb.STARTING.getNumber()) {
       output.writeEnum(2, threadStatus_);
     }
-    if (((bitField0_ & 0x00000004) != 0)) {
-      output.writeEnum(3, threadResultCode_);
-    }
     if (threadRunNumber_ != 0) {
-      output.writeInt32(4, threadRunNumber_);
+      output.writeInt32(3, threadRunNumber_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -172,17 +136,13 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, getThreadEndTime());
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
+    if (threadStatus_ != io.littlehorse.jlib.common.proto.LHStatusPb.STARTING.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(2, threadStatus_);
     }
-    if (((bitField0_ & 0x00000004) != 0)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(3, threadResultCode_);
-    }
     if (threadRunNumber_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(4, threadRunNumber_);
+        .computeInt32Size(3, threadRunNumber_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -204,14 +164,7 @@ private static final long serialVersionUID = 0L;
       if (!getThreadEndTime()
           .equals(other.getThreadEndTime())) return false;
     }
-    if (hasThreadStatus() != other.hasThreadStatus()) return false;
-    if (hasThreadStatus()) {
-      if (threadStatus_ != other.threadStatus_) return false;
-    }
-    if (hasThreadResultCode() != other.hasThreadResultCode()) return false;
-    if (hasThreadResultCode()) {
-      if (threadResultCode_ != other.threadResultCode_) return false;
-    }
+    if (threadStatus_ != other.threadStatus_) return false;
     if (getThreadRunNumber()
         != other.getThreadRunNumber()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
@@ -229,14 +182,8 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + THREAD_END_TIME_FIELD_NUMBER;
       hash = (53 * hash) + getThreadEndTime().hashCode();
     }
-    if (hasThreadStatus()) {
-      hash = (37 * hash) + THREAD_STATUS_FIELD_NUMBER;
-      hash = (53 * hash) + threadStatus_;
-    }
-    if (hasThreadResultCode()) {
-      hash = (37 * hash) + THREAD_RESULT_CODE_FIELD_NUMBER;
-      hash = (53 * hash) + threadResultCode_;
-    }
+    hash = (37 * hash) + THREAD_STATUS_FIELD_NUMBER;
+    hash = (53 * hash) + threadStatus_;
     hash = (37 * hash) + THREAD_RUN_NUMBER_FIELD_NUMBER;
     hash = (53 * hash) + getThreadRunNumber();
     hash = (29 * hash) + getUnknownFields().hashCode();
@@ -380,7 +327,6 @@ private static final long serialVersionUID = 0L;
         threadEndTimeBuilder_ = null;
       }
       threadStatus_ = 0;
-      threadResultCode_ = 0;
       threadRunNumber_ = 0;
       return this;
     }
@@ -424,13 +370,8 @@ private static final long serialVersionUID = 0L;
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
         result.threadStatus_ = threadStatus_;
-        to_bitField0_ |= 0x00000002;
       }
       if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.threadResultCode_ = threadResultCode_;
-        to_bitField0_ |= 0x00000004;
-      }
-      if (((from_bitField0_ & 0x00000008) != 0)) {
         result.threadRunNumber_ = threadRunNumber_;
       }
       result.bitField0_ |= to_bitField0_;
@@ -483,11 +424,8 @@ private static final long serialVersionUID = 0L;
       if (other.hasThreadEndTime()) {
         mergeThreadEndTime(other.getThreadEndTime());
       }
-      if (other.hasThreadStatus()) {
-        setThreadStatus(other.getThreadStatus());
-      }
-      if (other.hasThreadResultCode()) {
-        setThreadResultCode(other.getThreadResultCode());
+      if (other.threadStatus_ != 0) {
+        setThreadStatusValue(other.getThreadStatusValue());
       }
       if (other.getThreadRunNumber() != 0) {
         setThreadRunNumber(other.getThreadRunNumber());
@@ -531,15 +469,10 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 16
             case 24: {
-              threadResultCode_ = input.readEnum();
+              threadRunNumber_ = input.readInt32();
               bitField0_ |= 0x00000004;
               break;
             } // case 24
-            case 32: {
-              threadRunNumber_ = input.readInt32();
-              bitField0_ |= 0x00000008;
-              break;
-            } // case 32
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -678,21 +611,14 @@ private static final long serialVersionUID = 0L;
 
     private int threadStatus_ = 0;
     /**
-     * <code>optional .littlehorse.LHStatusPb thread_status = 2;</code>
-     * @return Whether the threadStatus field is set.
-     */
-    @java.lang.Override public boolean hasThreadStatus() {
-      return ((bitField0_ & 0x00000002) != 0);
-    }
-    /**
-     * <code>optional .littlehorse.LHStatusPb thread_status = 2;</code>
+     * <code>.littlehorse.LHStatusPb thread_status = 2;</code>
      * @return The enum numeric value on the wire for threadStatus.
      */
     @java.lang.Override public int getThreadStatusValue() {
       return threadStatus_;
     }
     /**
-     * <code>optional .littlehorse.LHStatusPb thread_status = 2;</code>
+     * <code>.littlehorse.LHStatusPb thread_status = 2;</code>
      * @param value The enum numeric value on the wire for threadStatus to set.
      * @return This builder for chaining.
      */
@@ -703,7 +629,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.LHStatusPb thread_status = 2;</code>
+     * <code>.littlehorse.LHStatusPb thread_status = 2;</code>
      * @return The threadStatus.
      */
     @java.lang.Override
@@ -712,7 +638,7 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.jlib.common.proto.LHStatusPb.UNRECOGNIZED : result;
     }
     /**
-     * <code>optional .littlehorse.LHStatusPb thread_status = 2;</code>
+     * <code>.littlehorse.LHStatusPb thread_status = 2;</code>
      * @param value The threadStatus to set.
      * @return This builder for chaining.
      */
@@ -726,7 +652,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.LHStatusPb thread_status = 2;</code>
+     * <code>.littlehorse.LHStatusPb thread_status = 2;</code>
      * @return This builder for chaining.
      */
     public Builder clearThreadStatus() {
@@ -736,69 +662,9 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int threadResultCode_ = 0;
-    /**
-     * <code>optional .littlehorse.TaskResultCodePb thread_result_code = 3;</code>
-     * @return Whether the threadResultCode field is set.
-     */
-    @java.lang.Override public boolean hasThreadResultCode() {
-      return ((bitField0_ & 0x00000004) != 0);
-    }
-    /**
-     * <code>optional .littlehorse.TaskResultCodePb thread_result_code = 3;</code>
-     * @return The enum numeric value on the wire for threadResultCode.
-     */
-    @java.lang.Override public int getThreadResultCodeValue() {
-      return threadResultCode_;
-    }
-    /**
-     * <code>optional .littlehorse.TaskResultCodePb thread_result_code = 3;</code>
-     * @param value The enum numeric value on the wire for threadResultCode to set.
-     * @return This builder for chaining.
-     */
-    public Builder setThreadResultCodeValue(int value) {
-      threadResultCode_ = value;
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional .littlehorse.TaskResultCodePb thread_result_code = 3;</code>
-     * @return The threadResultCode.
-     */
-    @java.lang.Override
-    public io.littlehorse.jlib.common.proto.TaskResultCodePb getThreadResultCode() {
-      io.littlehorse.jlib.common.proto.TaskResultCodePb result = io.littlehorse.jlib.common.proto.TaskResultCodePb.forNumber(threadResultCode_);
-      return result == null ? io.littlehorse.jlib.common.proto.TaskResultCodePb.UNRECOGNIZED : result;
-    }
-    /**
-     * <code>optional .littlehorse.TaskResultCodePb thread_result_code = 3;</code>
-     * @param value The threadResultCode to set.
-     * @return This builder for chaining.
-     */
-    public Builder setThreadResultCode(io.littlehorse.jlib.common.proto.TaskResultCodePb value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      bitField0_ |= 0x00000004;
-      threadResultCode_ = value.getNumber();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional .littlehorse.TaskResultCodePb thread_result_code = 3;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearThreadResultCode() {
-      bitField0_ = (bitField0_ & ~0x00000004);
-      threadResultCode_ = 0;
-      onChanged();
-      return this;
-    }
-
     private int threadRunNumber_ ;
     /**
-     * <code>int32 thread_run_number = 4;</code>
+     * <code>int32 thread_run_number = 3;</code>
      * @return The threadRunNumber.
      */
     @java.lang.Override
@@ -806,23 +672,23 @@ private static final long serialVersionUID = 0L;
       return threadRunNumber_;
     }
     /**
-     * <code>int32 thread_run_number = 4;</code>
+     * <code>int32 thread_run_number = 3;</code>
      * @param value The threadRunNumber to set.
      * @return This builder for chaining.
      */
     public Builder setThreadRunNumber(int value) {
       
       threadRunNumber_ = value;
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <code>int32 thread_run_number = 4;</code>
+     * <code>int32 thread_run_number = 3;</code>
      * @return This builder for chaining.
      */
     public Builder clearThreadRunNumber() {
-      bitField0_ = (bitField0_ & ~0x00000008);
+      bitField0_ = (bitField0_ & ~0x00000004);
       threadRunNumber_ = 0;
       onChanged();
       return this;

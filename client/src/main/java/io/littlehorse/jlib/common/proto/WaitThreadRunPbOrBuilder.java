@@ -23,39 +23,18 @@ public interface WaitThreadRunPbOrBuilder extends
   com.google.protobuf.TimestampOrBuilder getThreadEndTimeOrBuilder();
 
   /**
-   * <code>optional .littlehorse.LHStatusPb thread_status = 2;</code>
-   * @return Whether the threadStatus field is set.
-   */
-  boolean hasThreadStatus();
-  /**
-   * <code>optional .littlehorse.LHStatusPb thread_status = 2;</code>
+   * <code>.littlehorse.LHStatusPb thread_status = 2;</code>
    * @return The enum numeric value on the wire for threadStatus.
    */
   int getThreadStatusValue();
   /**
-   * <code>optional .littlehorse.LHStatusPb thread_status = 2;</code>
+   * <code>.littlehorse.LHStatusPb thread_status = 2;</code>
    * @return The threadStatus.
    */
   io.littlehorse.jlib.common.proto.LHStatusPb getThreadStatus();
 
   /**
-   * <code>optional .littlehorse.TaskResultCodePb thread_result_code = 3;</code>
-   * @return Whether the threadResultCode field is set.
-   */
-  boolean hasThreadResultCode();
-  /**
-   * <code>optional .littlehorse.TaskResultCodePb thread_result_code = 3;</code>
-   * @return The enum numeric value on the wire for threadResultCode.
-   */
-  int getThreadResultCodeValue();
-  /**
-   * <code>optional .littlehorse.TaskResultCodePb thread_result_code = 3;</code>
-   * @return The threadResultCode.
-   */
-  io.littlehorse.jlib.common.proto.TaskResultCodePb getThreadResultCode();
-
-  /**
-   * <code>int32 thread_run_number = 4;</code>
+   * <code>int32 thread_run_number = 3;</code>
    * @return The threadRunNumber.
    */
   int getThreadRunNumber();

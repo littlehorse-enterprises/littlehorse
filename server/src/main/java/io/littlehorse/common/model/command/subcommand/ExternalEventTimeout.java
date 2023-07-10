@@ -54,7 +54,6 @@ public class ExternalEventTimeout extends SubCommand<ExternalEventNodeTimeoutPb>
         }
 
         wfRun.wfSpec = dao.getWfSpec(wfRun.wfSpecName, wfRun.wfSpecVersion);
-        wfRun.cmdDao = dao;
         wfRun.processExtEvtTimeout(this);
 
         return null;

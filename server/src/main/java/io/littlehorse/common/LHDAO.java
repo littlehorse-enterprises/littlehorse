@@ -10,13 +10,15 @@ import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.TaskWorkerGroup;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
-import io.littlehorse.common.model.observabilityevent.ObservabilityEvent;
+import io.littlehorse.common.model.objectId.NodeRunId;
+import io.littlehorse.common.model.objectId.TaskRunId;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.ScheduledTask;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.jlib.common.proto.HostInfoPb;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.TaskMetricUpdate;
@@ -33,7 +35,7 @@ import java.util.List;
  * `LHGlobalMetaStores`.
  */
 public interface LHDAO extends LHGlobalMetaStores {
-    public String getWfRunEventQueue();
+    public String getCoreCmdTopic();
 
     public void setCommand(Command command);
 
@@ -46,6 +48,10 @@ public interface LHDAO extends LHGlobalMetaStores {
     public void putNodeRun(NodeRun nr);
 
     public NodeRun getNodeRun(String wfRunId, int threadNum, int position);
+
+    public default NodeRun getNodeRun(NodeRunId id) {
+        return getNodeRun(id.getWfRunId(), id.getThreadRunNumber(), id.getPosition());
+    }
 
     public void putVariable(Variable var);
 
@@ -89,11 +95,7 @@ public interface LHDAO extends LHGlobalMetaStores {
 
     public ExternalEventDef getExternalEventDef(String name);
 
-    public ScheduledTask markTaskAsScheduled(
-        String wfRunId,
-        int threadRunNumber,
-        int taskRunPosition
-    );
+    public ScheduledTask markTaskAsScheduled(TaskRunId taskRunId);
 
     public void putExternalEventDef(ExternalEventDef eed);
 
@@ -106,6 +108,10 @@ public interface LHDAO extends LHGlobalMetaStores {
     public DeleteObjectReply deleteExternalEventDef(String name);
 
     public DeleteObjectReply deleteExternalEvent(String externalEventId);
+
+    public TaskRun getTaskRun(TaskRunId taskRunId);
+
+    public void putTaskRun(TaskRun taskRun);
 
     /*
      * Clear any dirty cache if necessary
@@ -121,11 +127,7 @@ public interface LHDAO extends LHGlobalMetaStores {
     /*
      * Commit changes to the backing store.
      */
-    public List<ObservabilityEvent> commitChanges();
-
-    public List<ObservabilityEvent> getObservabilityEvents();
-
-    public void addObservabilityEvent(ObservabilityEvent evt);
+    public void commitChanges();
 
     public LHGlobalMetaStores getGlobalMetaStores();
 

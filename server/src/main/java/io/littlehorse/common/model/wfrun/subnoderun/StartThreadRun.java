@@ -11,7 +11,6 @@ import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.jlib.common.proto.LHStatusPb;
 import io.littlehorse.jlib.common.proto.StartThreadRunPb;
-import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import io.littlehorse.jlib.common.proto.ThreadTypePb;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
 import java.util.Date;
@@ -53,7 +52,7 @@ public class StartThreadRun extends SubNodeRun<StartThreadRunPb> {
 
     public boolean advanceIfPossible(Date time) {
         // nothing to do
-        return nodeRun.threadRun.advance(time);
+        return nodeRun.getThreadRun().advance(time);
     }
 
     public void arrive(Date time) {
@@ -64,29 +63,30 @@ public class StartThreadRun extends SubNodeRun<StartThreadRunPb> {
             for (Map.Entry<String, VariableAssignment> e : stn.variables.entrySet()) {
                 variables.put(
                     e.getKey(),
-                    nodeRun.threadRun.assignVariable(e.getValue())
+                    nodeRun.getThreadRun().assignVariable(e.getValue())
                 );
             }
         } catch (LHVarSubError exn) {
             Failure failure = new Failure();
             failure.message =
                 "Failed constructing input variables for thread: " + exn.getMessage();
-
-            failure.failureCode = TaskResultCodePb.FAILED;
             failure.failureName = LHConstants.VAR_SUB_ERROR;
 
             nodeRun.fail(failure, time);
         }
 
-        ThreadRun child = nodeRun.threadRun.wfRun.startThread(
-            nodeRun.getNode().startThreadNode.threadSpecName,
-            time,
-            nodeRun.threadRunNumber,
-            variables,
-            ThreadTypePb.CHILD
-        );
+        ThreadRun child = nodeRun
+            .getThreadRun()
+            .getWfRun()
+            .startThread(
+                nodeRun.getNode().startThreadNode.threadSpecName,
+                time,
+                nodeRun.threadRunNumber,
+                variables,
+                ThreadTypePb.CHILD
+            );
 
-        nodeRun.threadRun.childThreadIds.add(child.number);
+        nodeRun.getThreadRun().getChildThreadIds().add(child.number);
 
         if (child.status == LHStatusPb.ERROR) {
             Failure failure = new Failure();
@@ -94,7 +94,6 @@ public class StartThreadRun extends SubNodeRun<StartThreadRunPb> {
                 "Failed launching child thread. See child for details, id: " +
                 child.number;
 
-            failure.failureCode = TaskResultCodePb.FAILED;
             failure.failureName = LHConstants.CHILD_FAILURE;
             nodeRun.fail(failure, time);
         } else {

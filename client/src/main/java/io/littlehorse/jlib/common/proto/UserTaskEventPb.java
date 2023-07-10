@@ -448,19 +448,19 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>.littlehorse.TaskRunPb task_run = 1;</code>
+     * <code>.littlehorse.TaskRunIdPb task_run = 1;</code>
      * @return Whether the taskRun field is set.
      */
     boolean hasTaskRun();
     /**
-     * <code>.littlehorse.TaskRunPb task_run = 1;</code>
+     * <code>.littlehorse.TaskRunIdPb task_run = 1;</code>
      * @return The taskRun.
      */
-    io.littlehorse.jlib.common.proto.TaskRunPb getTaskRun();
+    io.littlehorse.jlib.common.proto.TaskRunIdPb getTaskRun();
     /**
-     * <code>.littlehorse.TaskRunPb task_run = 1;</code>
+     * <code>.littlehorse.TaskRunIdPb task_run = 1;</code>
      */
-    io.littlehorse.jlib.common.proto.TaskRunPbOrBuilder getTaskRunOrBuilder();
+    io.littlehorse.jlib.common.proto.TaskRunIdPbOrBuilder getTaskRunOrBuilder();
   }
   /**
    * Protobuf type {@code littlehorse.UserTaskEventPb.UTETaskExecutedPb}
@@ -503,9 +503,9 @@ private static final long serialVersionUID = 0L;
     }
 
     public static final int TASK_RUN_FIELD_NUMBER = 1;
-    private io.littlehorse.jlib.common.proto.TaskRunPb taskRun_;
+    private io.littlehorse.jlib.common.proto.TaskRunIdPb taskRun_;
     /**
-     * <code>.littlehorse.TaskRunPb task_run = 1;</code>
+     * <code>.littlehorse.TaskRunIdPb task_run = 1;</code>
      * @return Whether the taskRun field is set.
      */
     @java.lang.Override
@@ -513,19 +513,19 @@ private static final long serialVersionUID = 0L;
       return taskRun_ != null;
     }
     /**
-     * <code>.littlehorse.TaskRunPb task_run = 1;</code>
+     * <code>.littlehorse.TaskRunIdPb task_run = 1;</code>
      * @return The taskRun.
      */
     @java.lang.Override
-    public io.littlehorse.jlib.common.proto.TaskRunPb getTaskRun() {
-      return taskRun_ == null ? io.littlehorse.jlib.common.proto.TaskRunPb.getDefaultInstance() : taskRun_;
+    public io.littlehorse.jlib.common.proto.TaskRunIdPb getTaskRun() {
+      return taskRun_ == null ? io.littlehorse.jlib.common.proto.TaskRunIdPb.getDefaultInstance() : taskRun_;
     }
     /**
-     * <code>.littlehorse.TaskRunPb task_run = 1;</code>
+     * <code>.littlehorse.TaskRunIdPb task_run = 1;</code>
      */
     @java.lang.Override
-    public io.littlehorse.jlib.common.proto.TaskRunPbOrBuilder getTaskRunOrBuilder() {
-      return taskRun_ == null ? io.littlehorse.jlib.common.proto.TaskRunPb.getDefaultInstance() : taskRun_;
+    public io.littlehorse.jlib.common.proto.TaskRunIdPbOrBuilder getTaskRunOrBuilder() {
+      return taskRun_ == null ? io.littlehorse.jlib.common.proto.TaskRunIdPb.getDefaultInstance() : taskRun_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -864,31 +864,31 @@ private static final long serialVersionUID = 0L;
       }
       private int bitField0_;
 
-      private io.littlehorse.jlib.common.proto.TaskRunPb taskRun_;
+      private io.littlehorse.jlib.common.proto.TaskRunIdPb taskRun_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.littlehorse.jlib.common.proto.TaskRunPb, io.littlehorse.jlib.common.proto.TaskRunPb.Builder, io.littlehorse.jlib.common.proto.TaskRunPbOrBuilder> taskRunBuilder_;
+          io.littlehorse.jlib.common.proto.TaskRunIdPb, io.littlehorse.jlib.common.proto.TaskRunIdPb.Builder, io.littlehorse.jlib.common.proto.TaskRunIdPbOrBuilder> taskRunBuilder_;
       /**
-       * <code>.littlehorse.TaskRunPb task_run = 1;</code>
+       * <code>.littlehorse.TaskRunIdPb task_run = 1;</code>
        * @return Whether the taskRun field is set.
        */
       public boolean hasTaskRun() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
-       * <code>.littlehorse.TaskRunPb task_run = 1;</code>
+       * <code>.littlehorse.TaskRunIdPb task_run = 1;</code>
        * @return The taskRun.
        */
-      public io.littlehorse.jlib.common.proto.TaskRunPb getTaskRun() {
+      public io.littlehorse.jlib.common.proto.TaskRunIdPb getTaskRun() {
         if (taskRunBuilder_ == null) {
-          return taskRun_ == null ? io.littlehorse.jlib.common.proto.TaskRunPb.getDefaultInstance() : taskRun_;
+          return taskRun_ == null ? io.littlehorse.jlib.common.proto.TaskRunIdPb.getDefaultInstance() : taskRun_;
         } else {
           return taskRunBuilder_.getMessage();
         }
       }
       /**
-       * <code>.littlehorse.TaskRunPb task_run = 1;</code>
+       * <code>.littlehorse.TaskRunIdPb task_run = 1;</code>
        */
-      public Builder setTaskRun(io.littlehorse.jlib.common.proto.TaskRunPb value) {
+      public Builder setTaskRun(io.littlehorse.jlib.common.proto.TaskRunIdPb value) {
         if (taskRunBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -902,10 +902,10 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.TaskRunPb task_run = 1;</code>
+       * <code>.littlehorse.TaskRunIdPb task_run = 1;</code>
        */
       public Builder setTaskRun(
-          io.littlehorse.jlib.common.proto.TaskRunPb.Builder builderForValue) {
+          io.littlehorse.jlib.common.proto.TaskRunIdPb.Builder builderForValue) {
         if (taskRunBuilder_ == null) {
           taskRun_ = builderForValue.build();
         } else {
@@ -916,13 +916,13 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.TaskRunPb task_run = 1;</code>
+       * <code>.littlehorse.TaskRunIdPb task_run = 1;</code>
        */
-      public Builder mergeTaskRun(io.littlehorse.jlib.common.proto.TaskRunPb value) {
+      public Builder mergeTaskRun(io.littlehorse.jlib.common.proto.TaskRunIdPb value) {
         if (taskRunBuilder_ == null) {
           if (((bitField0_ & 0x00000001) != 0) &&
             taskRun_ != null &&
-            taskRun_ != io.littlehorse.jlib.common.proto.TaskRunPb.getDefaultInstance()) {
+            taskRun_ != io.littlehorse.jlib.common.proto.TaskRunIdPb.getDefaultInstance()) {
             getTaskRunBuilder().mergeFrom(value);
           } else {
             taskRun_ = value;
@@ -935,7 +935,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.TaskRunPb task_run = 1;</code>
+       * <code>.littlehorse.TaskRunIdPb task_run = 1;</code>
        */
       public Builder clearTaskRun() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -948,33 +948,33 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.littlehorse.TaskRunPb task_run = 1;</code>
+       * <code>.littlehorse.TaskRunIdPb task_run = 1;</code>
        */
-      public io.littlehorse.jlib.common.proto.TaskRunPb.Builder getTaskRunBuilder() {
+      public io.littlehorse.jlib.common.proto.TaskRunIdPb.Builder getTaskRunBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getTaskRunFieldBuilder().getBuilder();
       }
       /**
-       * <code>.littlehorse.TaskRunPb task_run = 1;</code>
+       * <code>.littlehorse.TaskRunIdPb task_run = 1;</code>
        */
-      public io.littlehorse.jlib.common.proto.TaskRunPbOrBuilder getTaskRunOrBuilder() {
+      public io.littlehorse.jlib.common.proto.TaskRunIdPbOrBuilder getTaskRunOrBuilder() {
         if (taskRunBuilder_ != null) {
           return taskRunBuilder_.getMessageOrBuilder();
         } else {
           return taskRun_ == null ?
-              io.littlehorse.jlib.common.proto.TaskRunPb.getDefaultInstance() : taskRun_;
+              io.littlehorse.jlib.common.proto.TaskRunIdPb.getDefaultInstance() : taskRun_;
         }
       }
       /**
-       * <code>.littlehorse.TaskRunPb task_run = 1;</code>
+       * <code>.littlehorse.TaskRunIdPb task_run = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          io.littlehorse.jlib.common.proto.TaskRunPb, io.littlehorse.jlib.common.proto.TaskRunPb.Builder, io.littlehorse.jlib.common.proto.TaskRunPbOrBuilder> 
+          io.littlehorse.jlib.common.proto.TaskRunIdPb, io.littlehorse.jlib.common.proto.TaskRunIdPb.Builder, io.littlehorse.jlib.common.proto.TaskRunIdPbOrBuilder> 
           getTaskRunFieldBuilder() {
         if (taskRunBuilder_ == null) {
           taskRunBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              io.littlehorse.jlib.common.proto.TaskRunPb, io.littlehorse.jlib.common.proto.TaskRunPb.Builder, io.littlehorse.jlib.common.proto.TaskRunPbOrBuilder>(
+              io.littlehorse.jlib.common.proto.TaskRunIdPb, io.littlehorse.jlib.common.proto.TaskRunIdPb.Builder, io.littlehorse.jlib.common.proto.TaskRunIdPbOrBuilder>(
                   getTaskRun(),
                   getParentForChildren(),
                   isClean());
@@ -1049,12 +1049,76 @@ private static final long serialVersionUID = 0L;
   public interface UTEReassignedPbOrBuilder extends
       // @@protoc_insertion_point(interface_extends:littlehorse.UserTaskEventPb.UTEReassignedPb)
       com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional string old_user_id = 1;</code>
+     * @return Whether the oldUserId field is set.
+     */
+    boolean hasOldUserId();
+    /**
+     * <code>optional string old_user_id = 1;</code>
+     * @return The oldUserId.
+     */
+    java.lang.String getOldUserId();
+    /**
+     * <code>optional string old_user_id = 1;</code>
+     * @return The bytes for oldUserId.
+     */
+    com.google.protobuf.ByteString
+        getOldUserIdBytes();
+
+    /**
+     * <code>optional string old_user_group = 2;</code>
+     * @return Whether the oldUserGroup field is set.
+     */
+    boolean hasOldUserGroup();
+    /**
+     * <code>optional string old_user_group = 2;</code>
+     * @return The oldUserGroup.
+     */
+    java.lang.String getOldUserGroup();
+    /**
+     * <code>optional string old_user_group = 2;</code>
+     * @return The bytes for oldUserGroup.
+     */
+    com.google.protobuf.ByteString
+        getOldUserGroupBytes();
+
+    /**
+     * <code>optional string new_user_id = 3;</code>
+     * @return Whether the newUserId field is set.
+     */
+    boolean hasNewUserId();
+    /**
+     * <code>optional string new_user_id = 3;</code>
+     * @return The newUserId.
+     */
+    java.lang.String getNewUserId();
+    /**
+     * <code>optional string new_user_id = 3;</code>
+     * @return The bytes for newUserId.
+     */
+    com.google.protobuf.ByteString
+        getNewUserIdBytes();
+
+    /**
+     * <code>optional string new_user_group = 4;</code>
+     * @return Whether the newUserGroup field is set.
+     */
+    boolean hasNewUserGroup();
+    /**
+     * <code>optional string new_user_group = 4;</code>
+     * @return The newUserGroup.
+     */
+    java.lang.String getNewUserGroup();
+    /**
+     * <code>optional string new_user_group = 4;</code>
+     * @return The bytes for newUserGroup.
+     */
+    com.google.protobuf.ByteString
+        getNewUserGroupBytes();
   }
   /**
-   * <pre>
-   * TODO
-   * </pre>
-   *
    * Protobuf type {@code littlehorse.UserTaskEventPb.UTEReassignedPb}
    */
   public static final class UTEReassignedPb extends
@@ -1067,6 +1131,10 @@ private static final long serialVersionUID = 0L;
       super(builder);
     }
     private UTEReassignedPb() {
+      oldUserId_ = "";
+      oldUserGroup_ = "";
+      newUserId_ = "";
+      newUserGroup_ = "";
     }
 
     @java.lang.Override
@@ -1094,6 +1162,195 @@ private static final long serialVersionUID = 0L;
               io.littlehorse.jlib.common.proto.UserTaskEventPb.UTEReassignedPb.class, io.littlehorse.jlib.common.proto.UserTaskEventPb.UTEReassignedPb.Builder.class);
     }
 
+    private int bitField0_;
+    public static final int OLD_USER_ID_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object oldUserId_ = "";
+    /**
+     * <code>optional string old_user_id = 1;</code>
+     * @return Whether the oldUserId field is set.
+     */
+    @java.lang.Override
+    public boolean hasOldUserId() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>optional string old_user_id = 1;</code>
+     * @return The oldUserId.
+     */
+    @java.lang.Override
+    public java.lang.String getOldUserId() {
+      java.lang.Object ref = oldUserId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        oldUserId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string old_user_id = 1;</code>
+     * @return The bytes for oldUserId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getOldUserIdBytes() {
+      java.lang.Object ref = oldUserId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        oldUserId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int OLD_USER_GROUP_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object oldUserGroup_ = "";
+    /**
+     * <code>optional string old_user_group = 2;</code>
+     * @return Whether the oldUserGroup field is set.
+     */
+    @java.lang.Override
+    public boolean hasOldUserGroup() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>optional string old_user_group = 2;</code>
+     * @return The oldUserGroup.
+     */
+    @java.lang.Override
+    public java.lang.String getOldUserGroup() {
+      java.lang.Object ref = oldUserGroup_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        oldUserGroup_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string old_user_group = 2;</code>
+     * @return The bytes for oldUserGroup.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getOldUserGroupBytes() {
+      java.lang.Object ref = oldUserGroup_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        oldUserGroup_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int NEW_USER_ID_FIELD_NUMBER = 3;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object newUserId_ = "";
+    /**
+     * <code>optional string new_user_id = 3;</code>
+     * @return Whether the newUserId field is set.
+     */
+    @java.lang.Override
+    public boolean hasNewUserId() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <code>optional string new_user_id = 3;</code>
+     * @return The newUserId.
+     */
+    @java.lang.Override
+    public java.lang.String getNewUserId() {
+      java.lang.Object ref = newUserId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        newUserId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string new_user_id = 3;</code>
+     * @return The bytes for newUserId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getNewUserIdBytes() {
+      java.lang.Object ref = newUserId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        newUserId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int NEW_USER_GROUP_FIELD_NUMBER = 4;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object newUserGroup_ = "";
+    /**
+     * <code>optional string new_user_group = 4;</code>
+     * @return Whether the newUserGroup field is set.
+     */
+    @java.lang.Override
+    public boolean hasNewUserGroup() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <code>optional string new_user_group = 4;</code>
+     * @return The newUserGroup.
+     */
+    @java.lang.Override
+    public java.lang.String getNewUserGroup() {
+      java.lang.Object ref = newUserGroup_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        newUserGroup_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string new_user_group = 4;</code>
+     * @return The bytes for newUserGroup.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getNewUserGroupBytes() {
+      java.lang.Object ref = newUserGroup_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        newUserGroup_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -1108,6 +1365,18 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) != 0)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, oldUserId_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, oldUserGroup_);
+      }
+      if (((bitField0_ & 0x00000004) != 0)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, newUserId_);
+      }
+      if (((bitField0_ & 0x00000008) != 0)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, newUserGroup_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -1117,6 +1386,18 @@ private static final long serialVersionUID = 0L;
       if (size != -1) return size;
 
       size = 0;
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, oldUserId_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, oldUserGroup_);
+      }
+      if (((bitField0_ & 0x00000004) != 0)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, newUserId_);
+      }
+      if (((bitField0_ & 0x00000008) != 0)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, newUserGroup_);
+      }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
       return size;
@@ -1132,6 +1413,26 @@ private static final long serialVersionUID = 0L;
       }
       io.littlehorse.jlib.common.proto.UserTaskEventPb.UTEReassignedPb other = (io.littlehorse.jlib.common.proto.UserTaskEventPb.UTEReassignedPb) obj;
 
+      if (hasOldUserId() != other.hasOldUserId()) return false;
+      if (hasOldUserId()) {
+        if (!getOldUserId()
+            .equals(other.getOldUserId())) return false;
+      }
+      if (hasOldUserGroup() != other.hasOldUserGroup()) return false;
+      if (hasOldUserGroup()) {
+        if (!getOldUserGroup()
+            .equals(other.getOldUserGroup())) return false;
+      }
+      if (hasNewUserId() != other.hasNewUserId()) return false;
+      if (hasNewUserId()) {
+        if (!getNewUserId()
+            .equals(other.getNewUserId())) return false;
+      }
+      if (hasNewUserGroup() != other.hasNewUserGroup()) return false;
+      if (hasNewUserGroup()) {
+        if (!getNewUserGroup()
+            .equals(other.getNewUserGroup())) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -1143,6 +1444,22 @@ private static final long serialVersionUID = 0L;
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasOldUserId()) {
+        hash = (37 * hash) + OLD_USER_ID_FIELD_NUMBER;
+        hash = (53 * hash) + getOldUserId().hashCode();
+      }
+      if (hasOldUserGroup()) {
+        hash = (37 * hash) + OLD_USER_GROUP_FIELD_NUMBER;
+        hash = (53 * hash) + getOldUserGroup().hashCode();
+      }
+      if (hasNewUserId()) {
+        hash = (37 * hash) + NEW_USER_ID_FIELD_NUMBER;
+        hash = (53 * hash) + getNewUserId().hashCode();
+      }
+      if (hasNewUserGroup()) {
+        hash = (37 * hash) + NEW_USER_GROUP_FIELD_NUMBER;
+        hash = (53 * hash) + getNewUserGroup().hashCode();
+      }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -1239,10 +1556,6 @@ private static final long serialVersionUID = 0L;
       return builder;
     }
     /**
-     * <pre>
-     * TODO
-     * </pre>
-     *
      * Protobuf type {@code littlehorse.UserTaskEventPb.UTEReassignedPb}
      */
     public static final class Builder extends
@@ -1275,6 +1588,11 @@ private static final long serialVersionUID = 0L;
       @java.lang.Override
       public Builder clear() {
         super.clear();
+        bitField0_ = 0;
+        oldUserId_ = "";
+        oldUserGroup_ = "";
+        newUserId_ = "";
+        newUserGroup_ = "";
         return this;
       }
 
@@ -1301,8 +1619,31 @@ private static final long serialVersionUID = 0L;
       @java.lang.Override
       public io.littlehorse.jlib.common.proto.UserTaskEventPb.UTEReassignedPb buildPartial() {
         io.littlehorse.jlib.common.proto.UserTaskEventPb.UTEReassignedPb result = new io.littlehorse.jlib.common.proto.UserTaskEventPb.UTEReassignedPb(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
         onBuilt();
         return result;
+      }
+
+      private void buildPartial0(io.littlehorse.jlib.common.proto.UserTaskEventPb.UTEReassignedPb result) {
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.oldUserId_ = oldUserId_;
+          to_bitField0_ |= 0x00000001;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.oldUserGroup_ = oldUserGroup_;
+          to_bitField0_ |= 0x00000002;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.newUserId_ = newUserId_;
+          to_bitField0_ |= 0x00000004;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.newUserGroup_ = newUserGroup_;
+          to_bitField0_ |= 0x00000008;
+        }
+        result.bitField0_ |= to_bitField0_;
       }
 
       @java.lang.Override
@@ -1349,6 +1690,26 @@ private static final long serialVersionUID = 0L;
 
       public Builder mergeFrom(io.littlehorse.jlib.common.proto.UserTaskEventPb.UTEReassignedPb other) {
         if (other == io.littlehorse.jlib.common.proto.UserTaskEventPb.UTEReassignedPb.getDefaultInstance()) return this;
+        if (other.hasOldUserId()) {
+          oldUserId_ = other.oldUserId_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (other.hasOldUserGroup()) {
+          oldUserGroup_ = other.oldUserGroup_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (other.hasNewUserId()) {
+          newUserId_ = other.newUserId_;
+          bitField0_ |= 0x00000004;
+          onChanged();
+        }
+        if (other.hasNewUserGroup()) {
+          newUserGroup_ = other.newUserGroup_;
+          bitField0_ |= 0x00000008;
+          onChanged();
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -1375,6 +1736,26 @@ private static final long serialVersionUID = 0L;
               case 0:
                 done = true;
                 break;
+              case 10: {
+                oldUserId_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                oldUserGroup_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 26: {
+                newUserId_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              case 34: {
+                newUserGroup_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 34
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -1388,6 +1769,323 @@ private static final long serialVersionUID = 0L;
         } finally {
           onChanged();
         } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object oldUserId_ = "";
+      /**
+       * <code>optional string old_user_id = 1;</code>
+       * @return Whether the oldUserId field is set.
+       */
+      public boolean hasOldUserId() {
+        return ((bitField0_ & 0x00000001) != 0);
+      }
+      /**
+       * <code>optional string old_user_id = 1;</code>
+       * @return The oldUserId.
+       */
+      public java.lang.String getOldUserId() {
+        java.lang.Object ref = oldUserId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          oldUserId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string old_user_id = 1;</code>
+       * @return The bytes for oldUserId.
+       */
+      public com.google.protobuf.ByteString
+          getOldUserIdBytes() {
+        java.lang.Object ref = oldUserId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          oldUserId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string old_user_id = 1;</code>
+       * @param value The oldUserId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setOldUserId(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        oldUserId_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string old_user_id = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearOldUserId() {
+        oldUserId_ = getDefaultInstance().getOldUserId();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string old_user_id = 1;</code>
+       * @param value The bytes for oldUserId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setOldUserIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        oldUserId_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object oldUserGroup_ = "";
+      /**
+       * <code>optional string old_user_group = 2;</code>
+       * @return Whether the oldUserGroup field is set.
+       */
+      public boolean hasOldUserGroup() {
+        return ((bitField0_ & 0x00000002) != 0);
+      }
+      /**
+       * <code>optional string old_user_group = 2;</code>
+       * @return The oldUserGroup.
+       */
+      public java.lang.String getOldUserGroup() {
+        java.lang.Object ref = oldUserGroup_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          oldUserGroup_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string old_user_group = 2;</code>
+       * @return The bytes for oldUserGroup.
+       */
+      public com.google.protobuf.ByteString
+          getOldUserGroupBytes() {
+        java.lang.Object ref = oldUserGroup_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          oldUserGroup_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string old_user_group = 2;</code>
+       * @param value The oldUserGroup to set.
+       * @return This builder for chaining.
+       */
+      public Builder setOldUserGroup(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        oldUserGroup_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string old_user_group = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearOldUserGroup() {
+        oldUserGroup_ = getDefaultInstance().getOldUserGroup();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string old_user_group = 2;</code>
+       * @param value The bytes for oldUserGroup to set.
+       * @return This builder for chaining.
+       */
+      public Builder setOldUserGroupBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        oldUserGroup_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object newUserId_ = "";
+      /**
+       * <code>optional string new_user_id = 3;</code>
+       * @return Whether the newUserId field is set.
+       */
+      public boolean hasNewUserId() {
+        return ((bitField0_ & 0x00000004) != 0);
+      }
+      /**
+       * <code>optional string new_user_id = 3;</code>
+       * @return The newUserId.
+       */
+      public java.lang.String getNewUserId() {
+        java.lang.Object ref = newUserId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          newUserId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string new_user_id = 3;</code>
+       * @return The bytes for newUserId.
+       */
+      public com.google.protobuf.ByteString
+          getNewUserIdBytes() {
+        java.lang.Object ref = newUserId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          newUserId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string new_user_id = 3;</code>
+       * @param value The newUserId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNewUserId(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        newUserId_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string new_user_id = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNewUserId() {
+        newUserId_ = getDefaultInstance().getNewUserId();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string new_user_id = 3;</code>
+       * @param value The bytes for newUserId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNewUserIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        newUserId_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object newUserGroup_ = "";
+      /**
+       * <code>optional string new_user_group = 4;</code>
+       * @return Whether the newUserGroup field is set.
+       */
+      public boolean hasNewUserGroup() {
+        return ((bitField0_ & 0x00000008) != 0);
+      }
+      /**
+       * <code>optional string new_user_group = 4;</code>
+       * @return The newUserGroup.
+       */
+      public java.lang.String getNewUserGroup() {
+        java.lang.Object ref = newUserGroup_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          newUserGroup_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string new_user_group = 4;</code>
+       * @return The bytes for newUserGroup.
+       */
+      public com.google.protobuf.ByteString
+          getNewUserGroupBytes() {
+        java.lang.Object ref = newUserGroup_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          newUserGroup_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string new_user_group = 4;</code>
+       * @param value The newUserGroup to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNewUserGroup(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        newUserGroup_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string new_user_group = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNewUserGroup() {
+        newUserGroup_ = getDefaultInstance().getNewUserGroup();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string new_user_group = 4;</code>
+       * @param value The bytes for newUserGroup to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNewUserGroupBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        newUserGroup_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
         return this;
       }
       @java.lang.Override

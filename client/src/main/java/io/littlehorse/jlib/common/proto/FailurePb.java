@@ -17,7 +17,6 @@ private static final long serialVersionUID = 0L;
   }
   private FailurePb() {
     failureName_ = "";
-    failureCode_ = 0;
     message_ = "";
   }
 
@@ -86,29 +85,11 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int FAILURE_CODE_FIELD_NUMBER = 2;
-  private int failureCode_ = 0;
-  /**
-   * <code>.littlehorse.TaskResultCodePb failure_code = 2;</code>
-   * @return The enum numeric value on the wire for failureCode.
-   */
-  @java.lang.Override public int getFailureCodeValue() {
-    return failureCode_;
-  }
-  /**
-   * <code>.littlehorse.TaskResultCodePb failure_code = 2;</code>
-   * @return The failureCode.
-   */
-  @java.lang.Override public io.littlehorse.jlib.common.proto.TaskResultCodePb getFailureCode() {
-    io.littlehorse.jlib.common.proto.TaskResultCodePb result = io.littlehorse.jlib.common.proto.TaskResultCodePb.forNumber(failureCode_);
-    return result == null ? io.littlehorse.jlib.common.proto.TaskResultCodePb.UNRECOGNIZED : result;
-  }
-
-  public static final int MESSAGE_FIELD_NUMBER = 3;
+  public static final int MESSAGE_FIELD_NUMBER = 2;
   @SuppressWarnings("serial")
   private volatile java.lang.Object message_ = "";
   /**
-   * <code>string message = 3;</code>
+   * <code>string message = 2;</code>
    * @return The message.
    */
   @java.lang.Override
@@ -125,7 +106,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>string message = 3;</code>
+   * <code>string message = 2;</code>
    * @return The bytes for message.
    */
   @java.lang.Override
@@ -143,10 +124,10 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int CONTENT_FIELD_NUMBER = 4;
+  public static final int CONTENT_FIELD_NUMBER = 3;
   private io.littlehorse.jlib.common.proto.VariableValuePb content_;
   /**
-   * <code>optional .littlehorse.VariableValuePb content = 4;</code>
+   * <code>optional .littlehorse.VariableValuePb content = 3;</code>
    * @return Whether the content field is set.
    */
   @java.lang.Override
@@ -154,7 +135,7 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <code>optional .littlehorse.VariableValuePb content = 4;</code>
+   * <code>optional .littlehorse.VariableValuePb content = 3;</code>
    * @return The content.
    */
   @java.lang.Override
@@ -162,7 +143,7 @@ private static final long serialVersionUID = 0L;
     return content_ == null ? io.littlehorse.jlib.common.proto.VariableValuePb.getDefaultInstance() : content_;
   }
   /**
-   * <code>optional .littlehorse.VariableValuePb content = 4;</code>
+   * <code>optional .littlehorse.VariableValuePb content = 3;</code>
    */
   @java.lang.Override
   public io.littlehorse.jlib.common.proto.VariableValuePbOrBuilder getContentOrBuilder() {
@@ -186,14 +167,11 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(failureName_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, failureName_);
     }
-    if (failureCode_ != io.littlehorse.jlib.common.proto.TaskResultCodePb.SUCCESS.getNumber()) {
-      output.writeEnum(2, failureCode_);
-    }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(message_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, message_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, message_);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeMessage(4, getContent());
+      output.writeMessage(3, getContent());
     }
     getUnknownFields().writeTo(output);
   }
@@ -207,16 +185,12 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(failureName_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, failureName_);
     }
-    if (failureCode_ != io.littlehorse.jlib.common.proto.TaskResultCodePb.SUCCESS.getNumber()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(2, failureCode_);
-    }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(message_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, message_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, message_);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, getContent());
+        .computeMessageSize(3, getContent());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -235,7 +209,6 @@ private static final long serialVersionUID = 0L;
 
     if (!getFailureName()
         .equals(other.getFailureName())) return false;
-    if (failureCode_ != other.failureCode_) return false;
     if (!getMessage()
         .equals(other.getMessage())) return false;
     if (hasContent() != other.hasContent()) return false;
@@ -256,8 +229,6 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + FAILURE_NAME_FIELD_NUMBER;
     hash = (53 * hash) + getFailureName().hashCode();
-    hash = (37 * hash) + FAILURE_CODE_FIELD_NUMBER;
-    hash = (53 * hash) + failureCode_;
     hash = (37 * hash) + MESSAGE_FIELD_NUMBER;
     hash = (53 * hash) + getMessage().hashCode();
     if (hasContent()) {
@@ -400,7 +371,6 @@ private static final long serialVersionUID = 0L;
       super.clear();
       bitField0_ = 0;
       failureName_ = "";
-      failureCode_ = 0;
       message_ = "";
       content_ = null;
       if (contentBuilder_ != null) {
@@ -444,13 +414,10 @@ private static final long serialVersionUID = 0L;
         result.failureName_ = failureName_;
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.failureCode_ = failureCode_;
-      }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
         result.message_ = message_;
       }
       int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000008) != 0)) {
+      if (((from_bitField0_ & 0x00000004) != 0)) {
         result.content_ = contentBuilder_ == null
             ? content_
             : contentBuilder_.build();
@@ -508,12 +475,9 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000001;
         onChanged();
       }
-      if (other.failureCode_ != 0) {
-        setFailureCodeValue(other.getFailureCodeValue());
-      }
       if (!other.getMessage().isEmpty()) {
         message_ = other.message_;
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000002;
         onChanged();
       }
       if (other.hasContent()) {
@@ -550,23 +514,18 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000001;
               break;
             } // case 10
-            case 16: {
-              failureCode_ = input.readEnum();
+            case 18: {
+              message_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000002;
               break;
-            } // case 16
+            } // case 18
             case 26: {
-              message_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000004;
-              break;
-            } // case 26
-            case 34: {
               input.readMessage(
                   getContentFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000008;
+              bitField0_ |= 0x00000004;
               break;
-            } // case 34
+            } // case 26
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -656,62 +615,9 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int failureCode_ = 0;
-    /**
-     * <code>.littlehorse.TaskResultCodePb failure_code = 2;</code>
-     * @return The enum numeric value on the wire for failureCode.
-     */
-    @java.lang.Override public int getFailureCodeValue() {
-      return failureCode_;
-    }
-    /**
-     * <code>.littlehorse.TaskResultCodePb failure_code = 2;</code>
-     * @param value The enum numeric value on the wire for failureCode to set.
-     * @return This builder for chaining.
-     */
-    public Builder setFailureCodeValue(int value) {
-      failureCode_ = value;
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.TaskResultCodePb failure_code = 2;</code>
-     * @return The failureCode.
-     */
-    @java.lang.Override
-    public io.littlehorse.jlib.common.proto.TaskResultCodePb getFailureCode() {
-      io.littlehorse.jlib.common.proto.TaskResultCodePb result = io.littlehorse.jlib.common.proto.TaskResultCodePb.forNumber(failureCode_);
-      return result == null ? io.littlehorse.jlib.common.proto.TaskResultCodePb.UNRECOGNIZED : result;
-    }
-    /**
-     * <code>.littlehorse.TaskResultCodePb failure_code = 2;</code>
-     * @param value The failureCode to set.
-     * @return This builder for chaining.
-     */
-    public Builder setFailureCode(io.littlehorse.jlib.common.proto.TaskResultCodePb value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      bitField0_ |= 0x00000002;
-      failureCode_ = value.getNumber();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.littlehorse.TaskResultCodePb failure_code = 2;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearFailureCode() {
-      bitField0_ = (bitField0_ & ~0x00000002);
-      failureCode_ = 0;
-      onChanged();
-      return this;
-    }
-
     private java.lang.Object message_ = "";
     /**
-     * <code>string message = 3;</code>
+     * <code>string message = 2;</code>
      * @return The message.
      */
     public java.lang.String getMessage() {
@@ -727,7 +633,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string message = 3;</code>
+     * <code>string message = 2;</code>
      * @return The bytes for message.
      */
     public com.google.protobuf.ByteString
@@ -744,7 +650,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string message = 3;</code>
+     * <code>string message = 2;</code>
      * @param value The message to set.
      * @return This builder for chaining.
      */
@@ -752,22 +658,22 @@ private static final long serialVersionUID = 0L;
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
       message_ = value;
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>string message = 3;</code>
+     * <code>string message = 2;</code>
      * @return This builder for chaining.
      */
     public Builder clearMessage() {
       message_ = getDefaultInstance().getMessage();
-      bitField0_ = (bitField0_ & ~0x00000004);
+      bitField0_ = (bitField0_ & ~0x00000002);
       onChanged();
       return this;
     }
     /**
-     * <code>string message = 3;</code>
+     * <code>string message = 2;</code>
      * @param value The bytes for message to set.
      * @return This builder for chaining.
      */
@@ -776,7 +682,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
       message_ = value;
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
@@ -785,14 +691,14 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.jlib.common.proto.VariableValuePb, io.littlehorse.jlib.common.proto.VariableValuePb.Builder, io.littlehorse.jlib.common.proto.VariableValuePbOrBuilder> contentBuilder_;
     /**
-     * <code>optional .littlehorse.VariableValuePb content = 4;</code>
+     * <code>optional .littlehorse.VariableValuePb content = 3;</code>
      * @return Whether the content field is set.
      */
     public boolean hasContent() {
-      return ((bitField0_ & 0x00000008) != 0);
+      return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>optional .littlehorse.VariableValuePb content = 4;</code>
+     * <code>optional .littlehorse.VariableValuePb content = 3;</code>
      * @return The content.
      */
     public io.littlehorse.jlib.common.proto.VariableValuePb getContent() {
@@ -803,7 +709,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>optional .littlehorse.VariableValuePb content = 4;</code>
+     * <code>optional .littlehorse.VariableValuePb content = 3;</code>
      */
     public Builder setContent(io.littlehorse.jlib.common.proto.VariableValuePb value) {
       if (contentBuilder_ == null) {
@@ -814,12 +720,12 @@ private static final long serialVersionUID = 0L;
       } else {
         contentBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <code>optional .littlehorse.VariableValuePb content = 4;</code>
+     * <code>optional .littlehorse.VariableValuePb content = 3;</code>
      */
     public Builder setContent(
         io.littlehorse.jlib.common.proto.VariableValuePb.Builder builderForValue) {
@@ -828,16 +734,16 @@ private static final long serialVersionUID = 0L;
       } else {
         contentBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <code>optional .littlehorse.VariableValuePb content = 4;</code>
+     * <code>optional .littlehorse.VariableValuePb content = 3;</code>
      */
     public Builder mergeContent(io.littlehorse.jlib.common.proto.VariableValuePb value) {
       if (contentBuilder_ == null) {
-        if (((bitField0_ & 0x00000008) != 0) &&
+        if (((bitField0_ & 0x00000004) != 0) &&
           content_ != null &&
           content_ != io.littlehorse.jlib.common.proto.VariableValuePb.getDefaultInstance()) {
           getContentBuilder().mergeFrom(value);
@@ -847,15 +753,15 @@ private static final long serialVersionUID = 0L;
       } else {
         contentBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <code>optional .littlehorse.VariableValuePb content = 4;</code>
+     * <code>optional .littlehorse.VariableValuePb content = 3;</code>
      */
     public Builder clearContent() {
-      bitField0_ = (bitField0_ & ~0x00000008);
+      bitField0_ = (bitField0_ & ~0x00000004);
       content_ = null;
       if (contentBuilder_ != null) {
         contentBuilder_.dispose();
@@ -865,15 +771,15 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>optional .littlehorse.VariableValuePb content = 4;</code>
+     * <code>optional .littlehorse.VariableValuePb content = 3;</code>
      */
     public io.littlehorse.jlib.common.proto.VariableValuePb.Builder getContentBuilder() {
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000004;
       onChanged();
       return getContentFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .littlehorse.VariableValuePb content = 4;</code>
+     * <code>optional .littlehorse.VariableValuePb content = 3;</code>
      */
     public io.littlehorse.jlib.common.proto.VariableValuePbOrBuilder getContentOrBuilder() {
       if (contentBuilder_ != null) {
@@ -884,7 +790,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>optional .littlehorse.VariableValuePb content = 4;</code>
+     * <code>optional .littlehorse.VariableValuePb content = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.jlib.common.proto.VariableValuePb, io.littlehorse.jlib.common.proto.VariableValuePb.Builder, io.littlehorse.jlib.common.proto.VariableValuePbOrBuilder> 

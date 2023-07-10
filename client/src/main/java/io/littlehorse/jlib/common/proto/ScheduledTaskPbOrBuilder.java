@@ -8,148 +8,92 @@ public interface ScheduledTaskPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string task_def_id = 1;</code>
+   * <code>.littlehorse.TaskRunIdPb task_run_id = 1;</code>
+   * @return Whether the taskRunId field is set.
+   */
+  boolean hasTaskRunId();
+  /**
+   * <code>.littlehorse.TaskRunIdPb task_run_id = 1;</code>
+   * @return The taskRunId.
+   */
+  io.littlehorse.jlib.common.proto.TaskRunIdPb getTaskRunId();
+  /**
+   * <code>.littlehorse.TaskRunIdPb task_run_id = 1;</code>
+   */
+  io.littlehorse.jlib.common.proto.TaskRunIdPbOrBuilder getTaskRunIdOrBuilder();
+
+  /**
+   * <code>.littlehorse.TaskDefIdPb task_def_id = 2;</code>
+   * @return Whether the taskDefId field is set.
+   */
+  boolean hasTaskDefId();
+  /**
+   * <code>.littlehorse.TaskDefIdPb task_def_id = 2;</code>
    * @return The taskDefId.
    */
-  java.lang.String getTaskDefId();
+  io.littlehorse.jlib.common.proto.TaskDefIdPb getTaskDefId();
   /**
-   * <code>string task_def_id = 1;</code>
-   * @return The bytes for taskDefId.
+   * <code>.littlehorse.TaskDefIdPb task_def_id = 2;</code>
    */
-  com.google.protobuf.ByteString
-      getTaskDefIdBytes();
+  io.littlehorse.jlib.common.proto.TaskDefIdPbOrBuilder getTaskDefIdOrBuilder();
 
   /**
-   * <code>string task_def_name = 2;</code>
-   * @return The taskDefName.
-   */
-  java.lang.String getTaskDefName();
-  /**
-   * <code>string task_def_name = 2;</code>
-   * @return The bytes for taskDefName.
-   */
-  com.google.protobuf.ByteString
-      getTaskDefNameBytes();
-
-  /**
-   * <code>int32 thread_run_number = 4;</code>
-   * @return The threadRunNumber.
-   */
-  int getThreadRunNumber();
-
-  /**
-   * <code>int32 task_run_number = 5;</code>
-   * @return The taskRunNumber.
-   */
-  int getTaskRunNumber();
-
-  /**
-   * <code>int32 task_run_position = 6;</code>
-   * @return The taskRunPosition.
-   */
-  int getTaskRunPosition();
-
-  /**
-   * <code>string wf_run_id = 7;</code>
-   * @return The wfRunId.
-   */
-  java.lang.String getWfRunId();
-  /**
-   * <code>string wf_run_id = 7;</code>
-   * @return The bytes for wfRunId.
-   */
-  com.google.protobuf.ByteString
-      getWfRunIdBytes();
-
-  /**
-   * <code>string wf_run_event_queue = 8;</code>
-   * @return The wfRunEventQueue.
-   */
-  java.lang.String getWfRunEventQueue();
-  /**
-   * <code>string wf_run_event_queue = 8;</code>
-   * @return The bytes for wfRunEventQueue.
-   */
-  com.google.protobuf.ByteString
-      getWfRunEventQueueBytes();
-
-  /**
-   * <code>string wf_spec_id = 9;</code>
-   * @return The wfSpecId.
-   */
-  java.lang.String getWfSpecId();
-  /**
-   * <code>string wf_spec_id = 9;</code>
-   * @return The bytes for wfSpecId.
-   */
-  com.google.protobuf.ByteString
-      getWfSpecIdBytes();
-
-  /**
-   * <code>int32 attempt_number = 10;</code>
+   * <code>int32 attempt_number = 3;</code>
    * @return The attemptNumber.
    */
   int getAttemptNumber();
 
   /**
-   * <code>string node_name = 11;</code>
-   * @return The nodeName.
-   */
-  java.lang.String getNodeName();
-  /**
-   * <code>string node_name = 11;</code>
-   * @return The bytes for nodeName.
-   */
-  com.google.protobuf.ByteString
-      getNodeNameBytes();
-
-  /**
-   * <code>repeated .littlehorse.VarNameAndValPb variables = 12;</code>
+   * <code>repeated .littlehorse.VarNameAndValPb variables = 4;</code>
    */
   java.util.List<io.littlehorse.jlib.common.proto.VarNameAndValPb> 
       getVariablesList();
   /**
-   * <code>repeated .littlehorse.VarNameAndValPb variables = 12;</code>
+   * <code>repeated .littlehorse.VarNameAndValPb variables = 4;</code>
    */
   io.littlehorse.jlib.common.proto.VarNameAndValPb getVariables(int index);
   /**
-   * <code>repeated .littlehorse.VarNameAndValPb variables = 12;</code>
+   * <code>repeated .littlehorse.VarNameAndValPb variables = 4;</code>
    */
   int getVariablesCount();
   /**
-   * <code>repeated .littlehorse.VarNameAndValPb variables = 12;</code>
+   * <code>repeated .littlehorse.VarNameAndValPb variables = 4;</code>
    */
   java.util.List<? extends io.littlehorse.jlib.common.proto.VarNameAndValPbOrBuilder> 
       getVariablesOrBuilderList();
   /**
-   * <code>repeated .littlehorse.VarNameAndValPb variables = 12;</code>
+   * <code>repeated .littlehorse.VarNameAndValPb variables = 4;</code>
    */
   io.littlehorse.jlib.common.proto.VarNameAndValPbOrBuilder getVariablesOrBuilder(
       int index);
 
   /**
-   * <code>.google.protobuf.Timestamp created_at = 13;</code>
+   * <code>.google.protobuf.Timestamp created_at = 5;</code>
    * @return Whether the createdAt field is set.
    */
   boolean hasCreatedAt();
   /**
-   * <code>.google.protobuf.Timestamp created_at = 13;</code>
+   * <code>.google.protobuf.Timestamp created_at = 5;</code>
    * @return The createdAt.
    */
   com.google.protobuf.Timestamp getCreatedAt();
   /**
-   * <code>.google.protobuf.Timestamp created_at = 13;</code>
+   * <code>.google.protobuf.Timestamp created_at = 5;</code>
    */
   com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
 
   /**
-   * <code>optional int32 uta_task_id = 14;</code>
-   * @return Whether the utaTaskId field is set.
+   * <code>.littlehorse.TaskRunSourcePb source = 6;</code>
+   * @return Whether the source field is set.
    */
-  boolean hasUtaTaskId();
+  boolean hasSource();
   /**
-   * <code>optional int32 uta_task_id = 14;</code>
-   * @return The utaTaskId.
+   * <code>.littlehorse.TaskRunSourcePb source = 6;</code>
+   * @return The source.
    */
-  int getUtaTaskId();
+  io.littlehorse.jlib.common.proto.TaskRunSourcePb getSource();
+  /**
+   * <code>.littlehorse.TaskRunSourcePb source = 6;</code>
+   */
+  io.littlehorse.jlib.common.proto.TaskRunSourcePbOrBuilder getSourceOrBuilder();
 }

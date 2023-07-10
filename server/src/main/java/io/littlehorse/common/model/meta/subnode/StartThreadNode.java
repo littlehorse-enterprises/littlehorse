@@ -80,7 +80,7 @@ public class StartThreadNode extends SubNode<StartThreadNodePb> {
         return out;
     }
 
-    public StartThreadRun createRun(Date time) {
+    public StartThreadRun createSubNodeRun(Date time) {
         StartThreadRun out = new StartThreadRun();
         out.threadSpecName = threadSpecName;
         return out;

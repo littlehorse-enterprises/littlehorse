@@ -13,6 +13,8 @@ import io.littlehorse.jlib.common.proto.NodeRunPb;
 import io.littlehorse.jlib.common.proto.NodeRunPb.NodeTypeCase;
 import io.littlehorse.jlib.common.proto.PutExternalEventDefPb;
 import io.littlehorse.jlib.common.proto.PutExternalEventPb;
+import io.littlehorse.jlib.common.proto.TaskRunIdPb;
+import io.littlehorse.jlib.common.proto.TaskRunPb;
 import io.littlehorse.jlib.common.proto.VariablePb;
 import io.littlehorse.jlib.common.proto.VariableValuePb;
 import io.littlehorse.jlib.common.proto.WfRunPb;
@@ -316,7 +318,10 @@ public abstract class WorkflowLogicTest extends Test {
         for (int i = 1; i <= numNodes; i++) {
             NodeRunPb nr = getNodeRun(client, wfRunId, threadRunNumber, i);
             if (nr.getNodeTypeCase() == NodeTypeCase.TASK) {
-                out.add(nr.getTask().getOutput());
+                TaskRunPb taskRun = getTaskRun(client, nr.getTask().getTaskRunId());
+                out.add(
+                    taskRun.getAttempts(taskRun.getAttemptsCount() - 1).getOutput()
+                );
             }
         }
         return out;
@@ -392,7 +397,10 @@ public abstract class WorkflowLogicTest extends Test {
             if (nr.getNodeTypeCase() != NodeTypeCase.TASK) {
                 continue;
             }
-            actualPath.add(nr.getTask().getOutput());
+            TaskRunPb taskRun = getTaskRun(client, nr.getTask().getTaskRunId());
+            actualPath.add(
+                taskRun.getAttempts(taskRun.getAttemptsCount() - 1).getOutput()
+            );
         }
 
         if (expectedPath.length != actualPath.size()) {
@@ -437,10 +445,11 @@ public abstract class WorkflowLogicTest extends Test {
             "Couldn't convert expected output to varval"
         );
 
+        TaskRunPb taskRun = getTaskRun(client, nodeRun.getTask().getTaskRunId());
         if (
             !LHLibUtil.areVariableValuesEqual(
                 expectedVarVal,
-                nodeRun.getTask().getOutput()
+                taskRun.getAttempts(taskRun.getAttemptsCount() - 1).getOutput()
             )
         ) {
             throw new LogicTestFailure(
@@ -453,6 +462,24 @@ public abstract class WorkflowLogicTest extends Test {
                 nodeRunPosition
             );
         }
+    }
+
+    public TaskRunPb getTaskRun(LHClient client, TaskRunIdPb taskRunId)
+        throws LogicTestFailure, LHApiError {
+        TaskRunPb result;
+        try {
+            result = client.getTaskRun(taskRunId);
+        } catch (Exception exn) {
+            throw new LogicTestFailure(
+                this,
+                "Couldn't connect to get taskrun: " + exn.getMessage()
+            );
+        }
+
+        if (result == null) {
+            throw new LogicTestFailure(this, "Couldn't find taskRun.");
+        }
+        return result;
     }
 
     public NodeRunPb getNodeRun(

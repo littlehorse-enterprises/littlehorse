@@ -21,19 +21,4 @@ public interface WaitForThreadNodePbOrBuilder extends
    * <code>.littlehorse.VariableAssignmentPb thread_run_number = 1;</code>
    */
   io.littlehorse.jlib.common.proto.VariableAssignmentPbOrBuilder getThreadRunNumberOrBuilder();
-
-  /**
-   * <code>.littlehorse.VariableAssignmentPb timeout_seconds = 2;</code>
-   * @return Whether the timeoutSeconds field is set.
-   */
-  boolean hasTimeoutSeconds();
-  /**
-   * <code>.littlehorse.VariableAssignmentPb timeout_seconds = 2;</code>
-   * @return The timeoutSeconds.
-   */
-  io.littlehorse.jlib.common.proto.VariableAssignmentPb getTimeoutSeconds();
-  /**
-   * <code>.littlehorse.VariableAssignmentPb timeout_seconds = 2;</code>
-   */
-  io.littlehorse.jlib.common.proto.VariableAssignmentPbOrBuilder getTimeoutSecondsOrBuilder();
 }

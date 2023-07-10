@@ -3,12 +3,10 @@ package io.littlehorse.common.model.wfrun;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.jlib.common.proto.FailurePb;
-import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 
 public class Failure extends LHSerializable<FailurePb> {
 
     public String failureName;
-    public TaskResultCodePb failureCode;
     public String message;
     public VariableValue content;
 
@@ -19,7 +17,6 @@ public class Failure extends LHSerializable<FailurePb> {
     public FailurePb.Builder toProto() {
         FailurePb.Builder out = FailurePb
             .newBuilder()
-            .setFailureCode(failureCode)
             .setMessage(message)
             .setFailureName(failureName);
 
@@ -30,7 +27,6 @@ public class Failure extends LHSerializable<FailurePb> {
 
     public void initFrom(Message proto) {
         FailurePb p = (FailurePb) proto;
-        failureCode = p.getFailureCode();
         failureName = p.getFailureName();
         message = p.getMessage();
 
@@ -47,21 +43,14 @@ public class Failure extends LHSerializable<FailurePb> {
 
     public Failure() {}
 
-    public Failure(TaskResultCodePb code, String message, String failureName) {
+    public Failure(String message, String failureName) {
         this.message = message;
         this.failureName = failureName;
-        this.failureCode = code;
     }
 
-    public Failure(
-        TaskResultCodePb code,
-        String message,
-        String failureName,
-        VariableValue content
-    ) {
+    public Failure(String message, String failureName, VariableValue content) {
         this.message = message;
         this.failureName = failureName;
-        this.failureCode = code;
         this.content = new VariableValue();
     }
 }

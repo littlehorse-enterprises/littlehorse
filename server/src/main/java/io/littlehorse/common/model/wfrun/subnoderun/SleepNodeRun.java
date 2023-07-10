@@ -12,7 +12,6 @@ import io.littlehorse.common.model.wfrun.SubNodeRun;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.SleepNodeRunPb;
-import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
 import java.util.Date;
 
@@ -57,7 +56,7 @@ public class SleepNodeRun extends SubNodeRun<SleepNodeRunPb> {
         }
 
         try {
-            maturationTime = sn.getMaturationTime(nodeRun.threadRun);
+            maturationTime = sn.getMaturationTime(nodeRun.getThreadRun());
             Command cmd = new Command();
             cmd.time = maturationTime;
             SleepNodeMatured snm = new SleepNodeMatured();
@@ -70,13 +69,13 @@ public class SleepNodeRun extends SubNodeRun<SleepNodeRunPb> {
             LHTimer timer = new LHTimer();
             timer.maturationTime = maturationTime;
             timer.key = nodeRun.wfRunId;
-            timer.topic = nodeRun.threadRun.wfRun.cmdDao.getWfRunEventQueue();
+            timer.topic =
+                nodeRun.getThreadRun().getWfRun().getDao().getCoreCmdTopic();
             timer.payload = cmd.toProto().build().toByteArray();
 
-            nodeRun.threadRun.wfRun.cmdDao.scheduleTimer(timer);
+            nodeRun.getThreadRun().getWfRun().getDao().scheduleTimer(timer);
         } catch (LHVarSubError exn) {
             Failure failure = new Failure(
-                TaskResultCodePb.VAR_SUB_ERROR,
                 "Failed calculating maturation for timer: " + exn.getMessage(),
                 LHConstants.VAR_SUB_ERROR
             );

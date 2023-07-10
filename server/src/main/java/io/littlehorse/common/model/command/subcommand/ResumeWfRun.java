@@ -54,7 +54,6 @@ public class ResumeWfRun extends SubCommand<ResumeWfRunPb> {
         }
 
         wfRun.wfSpec = wfSpec;
-        wfRun.cmdDao = dao;
         try {
             wfRun.processResumeRequest(this);
             out.code = LHResponseCodePb.OK;

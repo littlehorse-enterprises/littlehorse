@@ -8,74 +8,59 @@ public interface TaskClaimEventPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string wf_run_id = 1;</code>
-   * @return The wfRunId.
+   * <code>.littlehorse.TaskRunIdPb task_run_id = 1;</code>
+   * @return Whether the taskRunId field is set.
    */
-  java.lang.String getWfRunId();
+  boolean hasTaskRunId();
   /**
-   * <code>string wf_run_id = 1;</code>
-   * @return The bytes for wfRunId.
+   * <code>.littlehorse.TaskRunIdPb task_run_id = 1;</code>
+   * @return The taskRunId.
    */
-  com.google.protobuf.ByteString
-      getWfRunIdBytes();
+  io.littlehorse.jlib.common.proto.TaskRunIdPb getTaskRunId();
+  /**
+   * <code>.littlehorse.TaskRunIdPb task_run_id = 1;</code>
+   */
+  io.littlehorse.jlib.common.proto.TaskRunIdPbOrBuilder getTaskRunIdOrBuilder();
 
   /**
-   * <code>int32 thread_run_number = 2;</code>
-   * @return The threadRunNumber.
-   */
-  int getThreadRunNumber();
-
-  /**
-   * <code>int32 task_run_number = 3;</code>
-   * @return The taskRunNumber.
-   */
-  int getTaskRunNumber();
-
-  /**
-   * <code>int32 task_run_position = 4;</code>
-   * @return The taskRunPosition.
-   */
-  int getTaskRunPosition();
-
-  /**
-   * <code>.google.protobuf.Timestamp time = 5;</code>
+   * <code>.google.protobuf.Timestamp time = 2;</code>
    * @return Whether the time field is set.
    */
   boolean hasTime();
   /**
-   * <code>.google.protobuf.Timestamp time = 5;</code>
+   * <code>.google.protobuf.Timestamp time = 2;</code>
    * @return The time.
    */
   com.google.protobuf.Timestamp getTime();
   /**
-   * <code>.google.protobuf.Timestamp time = 5;</code>
+   * <code>.google.protobuf.Timestamp time = 2;</code>
    */
   com.google.protobuf.TimestampOrBuilder getTimeOrBuilder();
 
   /**
-   * <code>string task_worker_id = 6;</code>
+   * <code>string task_worker_id = 3;</code>
    * @return The taskWorkerId.
    */
   java.lang.String getTaskWorkerId();
   /**
-   * <code>string task_worker_id = 6;</code>
+   * <code>string task_worker_id = 3;</code>
    * @return The bytes for taskWorkerId.
    */
   com.google.protobuf.ByteString
       getTaskWorkerIdBytes();
 
   /**
-   * <code>optional string task_worker_version = 7;</code>
+   * <code>optional string task_worker_version = 4;</code>
    * @return Whether the taskWorkerVersion field is set.
    */
   boolean hasTaskWorkerVersion();
   /**
-   * <code>optional string task_worker_version = 7;</code>
+   * <code>optional string task_worker_version = 4;</code>
    * @return The taskWorkerVersion.
    */
   java.lang.String getTaskWorkerVersion();
   /**
-   * <code>optional string task_worker_version = 7;</code>
+   * <code>optional string task_worker_version = 4;</code>
    * @return The bytes for taskWorkerVersion.
    */
   com.google.protobuf.ByteString

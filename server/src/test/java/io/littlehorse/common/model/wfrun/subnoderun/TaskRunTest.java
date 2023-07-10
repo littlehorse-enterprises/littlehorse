@@ -1,18 +1,14 @@
 package io.littlehorse.common.model.wfrun.subnoderun;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
-import io.littlehorse.common.model.meta.Node;
-import io.littlehorse.common.model.meta.subnode.TaskNode;
-import io.littlehorse.common.model.wfrun.NodeRun;
-import io.littlehorse.common.model.wfrun.ThreadRun;
-import io.littlehorse.common.model.wfrun.VariableValue;
-import io.littlehorse.common.model.wfrun.WfRun;
-import java.util.UUID;
+import io.littlehorse.common.model.objectId.TaskRunId;
+import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
+import java.util.ArrayList;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.Test;
 
@@ -24,36 +20,21 @@ public class TaskRunTest {
     void setTaskWorkerVersionAndIdToTaskRun() throws LHVarSubError {
         // arrange. Complex because all the dependencies needed
         TaskRun taskRun = new TaskRun();
-        taskRun.nodeRun = mock(NodeRun.class);
-        taskRun.nodeRun.wfRunId = "";
-        taskRun.nodeRun.threadRun = mock(ThreadRun.class);
-        taskRun.nodeRun.threadRun.wfRun = mock(WfRun.class);
-        taskRun.nodeRun.threadRun.wfRun.cmdDao = mock(LHDAO.class);
-        VariableValue mockVariableValue = mock(VariableValue.class);
-        mockVariableValue.intVal = 0L;
-        Node mockNode = mock(Node.class);
-        mockNode.taskNode = mock(TaskNode.class);
+        taskRun.setId(new TaskRunId("asdf"));
+        taskRun.setInputVariables(new ArrayList<>());
+        taskRun.setDao(mock(LHDAO.class));
 
-        when(mockVariableValue.asInt()).thenReturn(mockVariableValue);
-
-        when(taskRun.nodeRun.getNode()).thenReturn(mockNode);
-
-        when(taskRun.nodeRun.threadRun.assignVariable(any()))
-            .thenReturn(mockVariableValue);
-
-        when(taskRun.nodeRun.threadRun.wfRun.cmdDao.getWfRunEventQueue())
-            .thenReturn("");
+        taskRun.scheduleAttempt();
 
         TaskClaimEvent taskClaimEvent = new TaskClaimEvent();
-        taskClaimEvent.taskWorkerVersion = faker.app().version();
-        taskClaimEvent.taskWorkerId = UUID.randomUUID().toString();
 
         // act
-        taskRun.processStartedEvent(taskClaimEvent);
+        taskRun.processStart(taskClaimEvent);
 
         // assert
-        assertThat(taskRun.taskWorkerVersion)
-            .isEqualTo(taskClaimEvent.taskWorkerVersion);
-        assertThat(taskRun.taskWorkerId).isEqualTo(taskClaimEvent.taskWorkerId);
+        assertThat(taskRun.getLatestAttempt().getTaskWorkerVersion())
+            .isEqualTo(taskClaimEvent.getTaskWorkerVersion());
+        assertThat(taskRun.getLatestAttempt().getTaskWorkerId())
+            .isEqualTo(taskClaimEvent.getTaskWorkerId());
     }
 }

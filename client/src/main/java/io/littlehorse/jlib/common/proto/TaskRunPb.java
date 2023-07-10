@@ -16,10 +16,9 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private TaskRunPb() {
-    taskDefId_ = "";
+    attempts_ = java.util.Collections.emptyList();
+    taskDefName_ = "";
     inputVariables_ = java.util.Collections.emptyList();
-    taskWorkerId_ = "";
-    taskWorkerVersion_ = "";
   }
 
   @java.lang.Override
@@ -47,151 +46,135 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.jlib.common.proto.TaskRunPb.class, io.littlehorse.jlib.common.proto.TaskRunPb.Builder.class);
   }
 
-  private int bitField0_;
-  public static final int ATTEMPT_NUMBER_FIELD_NUMBER = 1;
-  private int attemptNumber_ = 0;
+  public static final int ID_FIELD_NUMBER = 1;
+  private io.littlehorse.jlib.common.proto.TaskRunIdPb id_;
   /**
-   * <pre>
-   * Task only
-   * </pre>
-   *
-   * <code>int32 attempt_number = 1;</code>
-   * @return The attemptNumber.
+   * <code>.littlehorse.TaskRunIdPb id = 1;</code>
+   * @return Whether the id field is set.
    */
   @java.lang.Override
-  public int getAttemptNumber() {
-    return attemptNumber_;
+  public boolean hasId() {
+    return id_ != null;
+  }
+  /**
+   * <code>.littlehorse.TaskRunIdPb id = 1;</code>
+   * @return The id.
+   */
+  @java.lang.Override
+  public io.littlehorse.jlib.common.proto.TaskRunIdPb getId() {
+    return id_ == null ? io.littlehorse.jlib.common.proto.TaskRunIdPb.getDefaultInstance() : id_;
+  }
+  /**
+   * <code>.littlehorse.TaskRunIdPb id = 1;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.jlib.common.proto.TaskRunIdPbOrBuilder getIdOrBuilder() {
+    return id_ == null ? io.littlehorse.jlib.common.proto.TaskRunIdPb.getDefaultInstance() : id_;
   }
 
-  public static final int OUTPUT_FIELD_NUMBER = 2;
-  private io.littlehorse.jlib.common.proto.VariableValuePb output_;
-  /**
-   * <code>optional .littlehorse.VariableValuePb output = 2;</code>
-   * @return Whether the output field is set.
-   */
-  @java.lang.Override
-  public boolean hasOutput() {
-    return ((bitField0_ & 0x00000001) != 0);
-  }
-  /**
-   * <code>optional .littlehorse.VariableValuePb output = 2;</code>
-   * @return The output.
-   */
-  @java.lang.Override
-  public io.littlehorse.jlib.common.proto.VariableValuePb getOutput() {
-    return output_ == null ? io.littlehorse.jlib.common.proto.VariableValuePb.getDefaultInstance() : output_;
-  }
-  /**
-   * <code>optional .littlehorse.VariableValuePb output = 2;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.jlib.common.proto.VariableValuePbOrBuilder getOutputOrBuilder() {
-    return output_ == null ? io.littlehorse.jlib.common.proto.VariableValuePb.getDefaultInstance() : output_;
-  }
-
-  public static final int LOG_OUTPUT_FIELD_NUMBER = 3;
-  private io.littlehorse.jlib.common.proto.VariableValuePb logOutput_;
-  /**
-   * <code>optional .littlehorse.VariableValuePb log_output = 3;</code>
-   * @return Whether the logOutput field is set.
-   */
-  @java.lang.Override
-  public boolean hasLogOutput() {
-    return ((bitField0_ & 0x00000002) != 0);
-  }
-  /**
-   * <code>optional .littlehorse.VariableValuePb log_output = 3;</code>
-   * @return The logOutput.
-   */
-  @java.lang.Override
-  public io.littlehorse.jlib.common.proto.VariableValuePb getLogOutput() {
-    return logOutput_ == null ? io.littlehorse.jlib.common.proto.VariableValuePb.getDefaultInstance() : logOutput_;
-  }
-  /**
-   * <code>optional .littlehorse.VariableValuePb log_output = 3;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.jlib.common.proto.VariableValuePbOrBuilder getLogOutputOrBuilder() {
-    return logOutput_ == null ? io.littlehorse.jlib.common.proto.VariableValuePb.getDefaultInstance() : logOutput_;
-  }
-
-  public static final int START_TIME_FIELD_NUMBER = 4;
-  private com.google.protobuf.Timestamp startTime_;
-  /**
-   * <code>optional .google.protobuf.Timestamp start_time = 4;</code>
-   * @return Whether the startTime field is set.
-   */
-  @java.lang.Override
-  public boolean hasStartTime() {
-    return ((bitField0_ & 0x00000004) != 0);
-  }
-  /**
-   * <code>optional .google.protobuf.Timestamp start_time = 4;</code>
-   * @return The startTime.
-   */
-  @java.lang.Override
-  public com.google.protobuf.Timestamp getStartTime() {
-    return startTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : startTime_;
-  }
-  /**
-   * <code>optional .google.protobuf.Timestamp start_time = 4;</code>
-   */
-  @java.lang.Override
-  public com.google.protobuf.TimestampOrBuilder getStartTimeOrBuilder() {
-    return startTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : startTime_;
-  }
-
-  public static final int TASK_DEF_ID_FIELD_NUMBER = 5;
+  public static final int ATTEMPTS_FIELD_NUMBER = 2;
   @SuppressWarnings("serial")
-  private volatile java.lang.Object taskDefId_ = "";
+  private java.util.List<io.littlehorse.jlib.common.proto.TaskAttemptPb> attempts_;
   /**
-   * <code>string task_def_id = 5;</code>
-   * @return The taskDefId.
+   * <code>repeated .littlehorse.TaskAttemptPb attempts = 2;</code>
    */
   @java.lang.Override
-  public java.lang.String getTaskDefId() {
-    java.lang.Object ref = taskDefId_;
+  public java.util.List<io.littlehorse.jlib.common.proto.TaskAttemptPb> getAttemptsList() {
+    return attempts_;
+  }
+  /**
+   * <code>repeated .littlehorse.TaskAttemptPb attempts = 2;</code>
+   */
+  @java.lang.Override
+  public java.util.List<? extends io.littlehorse.jlib.common.proto.TaskAttemptPbOrBuilder> 
+      getAttemptsOrBuilderList() {
+    return attempts_;
+  }
+  /**
+   * <code>repeated .littlehorse.TaskAttemptPb attempts = 2;</code>
+   */
+  @java.lang.Override
+  public int getAttemptsCount() {
+    return attempts_.size();
+  }
+  /**
+   * <code>repeated .littlehorse.TaskAttemptPb attempts = 2;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.jlib.common.proto.TaskAttemptPb getAttempts(int index) {
+    return attempts_.get(index);
+  }
+  /**
+   * <code>repeated .littlehorse.TaskAttemptPb attempts = 2;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.jlib.common.proto.TaskAttemptPbOrBuilder getAttemptsOrBuilder(
+      int index) {
+    return attempts_.get(index);
+  }
+
+  public static final int MAX_ATTEMPTS_FIELD_NUMBER = 3;
+  private int maxAttempts_ = 0;
+  /**
+   * <code>int32 max_attempts = 3;</code>
+   * @return The maxAttempts.
+   */
+  @java.lang.Override
+  public int getMaxAttempts() {
+    return maxAttempts_;
+  }
+
+  public static final int TASK_DEF_NAME_FIELD_NUMBER = 4;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object taskDefName_ = "";
+  /**
+   * <code>string task_def_name = 4;</code>
+   * @return The taskDefName.
+   */
+  @java.lang.Override
+  public java.lang.String getTaskDefName() {
+    java.lang.Object ref = taskDefName_;
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      taskDefId_ = s;
+      taskDefName_ = s;
       return s;
     }
   }
   /**
-   * <code>string task_def_id = 5;</code>
-   * @return The bytes for taskDefId.
+   * <code>string task_def_name = 4;</code>
+   * @return The bytes for taskDefName.
    */
   @java.lang.Override
   public com.google.protobuf.ByteString
-      getTaskDefIdBytes() {
-    java.lang.Object ref = taskDefId_;
+      getTaskDefNameBytes() {
+    java.lang.Object ref = taskDefName_;
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      taskDefId_ = b;
+      taskDefName_ = b;
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
     }
   }
 
-  public static final int INPUT_VARIABLES_FIELD_NUMBER = 6;
+  public static final int INPUT_VARIABLES_FIELD_NUMBER = 5;
   @SuppressWarnings("serial")
   private java.util.List<io.littlehorse.jlib.common.proto.VarNameAndValPb> inputVariables_;
   /**
-   * <code>repeated .littlehorse.VarNameAndValPb input_variables = 6;</code>
+   * <code>repeated .littlehorse.VarNameAndValPb input_variables = 5;</code>
    */
   @java.lang.Override
   public java.util.List<io.littlehorse.jlib.common.proto.VarNameAndValPb> getInputVariablesList() {
     return inputVariables_;
   }
   /**
-   * <code>repeated .littlehorse.VarNameAndValPb input_variables = 6;</code>
+   * <code>repeated .littlehorse.VarNameAndValPb input_variables = 5;</code>
    */
   @java.lang.Override
   public java.util.List<? extends io.littlehorse.jlib.common.proto.VarNameAndValPbOrBuilder> 
@@ -199,21 +182,21 @@ private static final long serialVersionUID = 0L;
     return inputVariables_;
   }
   /**
-   * <code>repeated .littlehorse.VarNameAndValPb input_variables = 6;</code>
+   * <code>repeated .littlehorse.VarNameAndValPb input_variables = 5;</code>
    */
   @java.lang.Override
   public int getInputVariablesCount() {
     return inputVariables_.size();
   }
   /**
-   * <code>repeated .littlehorse.VarNameAndValPb input_variables = 6;</code>
+   * <code>repeated .littlehorse.VarNameAndValPb input_variables = 5;</code>
    */
   @java.lang.Override
   public io.littlehorse.jlib.common.proto.VarNameAndValPb getInputVariables(int index) {
     return inputVariables_.get(index);
   }
   /**
-   * <code>repeated .littlehorse.VarNameAndValPb input_variables = 6;</code>
+   * <code>repeated .littlehorse.VarNameAndValPb input_variables = 5;</code>
    */
   @java.lang.Override
   public io.littlehorse.jlib.common.proto.VarNameAndValPbOrBuilder getInputVariablesOrBuilder(
@@ -221,90 +204,56 @@ private static final long serialVersionUID = 0L;
     return inputVariables_.get(index);
   }
 
-  public static final int TASK_WORKER_ID_FIELD_NUMBER = 7;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object taskWorkerId_ = "";
+  public static final int SOURCE_FIELD_NUMBER = 6;
+  private io.littlehorse.jlib.common.proto.TaskRunSourcePb source_;
   /**
-   * <code>string task_worker_id = 7;</code>
-   * @return The taskWorkerId.
+   * <code>.littlehorse.TaskRunSourcePb source = 6;</code>
+   * @return Whether the source field is set.
    */
   @java.lang.Override
-  public java.lang.String getTaskWorkerId() {
-    java.lang.Object ref = taskWorkerId_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      taskWorkerId_ = s;
-      return s;
-    }
+  public boolean hasSource() {
+    return source_ != null;
   }
   /**
-   * <code>string task_worker_id = 7;</code>
-   * @return The bytes for taskWorkerId.
+   * <code>.littlehorse.TaskRunSourcePb source = 6;</code>
+   * @return The source.
    */
   @java.lang.Override
-  public com.google.protobuf.ByteString
-      getTaskWorkerIdBytes() {
-    java.lang.Object ref = taskWorkerId_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      taskWorkerId_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public io.littlehorse.jlib.common.proto.TaskRunSourcePb getSource() {
+    return source_ == null ? io.littlehorse.jlib.common.proto.TaskRunSourcePb.getDefaultInstance() : source_;
+  }
+  /**
+   * <code>.littlehorse.TaskRunSourcePb source = 6;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.jlib.common.proto.TaskRunSourcePbOrBuilder getSourceOrBuilder() {
+    return source_ == null ? io.littlehorse.jlib.common.proto.TaskRunSourcePb.getDefaultInstance() : source_;
   }
 
-  public static final int TASK_WORKER_VERSION_FIELD_NUMBER = 8;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object taskWorkerVersion_ = "";
+  public static final int SCHEDULED_AT_FIELD_NUMBER = 7;
+  private com.google.protobuf.Timestamp scheduledAt_;
   /**
-   * <code>optional string task_worker_version = 8;</code>
-   * @return Whether the taskWorkerVersion field is set.
+   * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
+   * @return Whether the scheduledAt field is set.
    */
   @java.lang.Override
-  public boolean hasTaskWorkerVersion() {
-    return ((bitField0_ & 0x00000008) != 0);
+  public boolean hasScheduledAt() {
+    return scheduledAt_ != null;
   }
   /**
-   * <code>optional string task_worker_version = 8;</code>
-   * @return The taskWorkerVersion.
+   * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
+   * @return The scheduledAt.
    */
   @java.lang.Override
-  public java.lang.String getTaskWorkerVersion() {
-    java.lang.Object ref = taskWorkerVersion_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      taskWorkerVersion_ = s;
-      return s;
-    }
+  public com.google.protobuf.Timestamp getScheduledAt() {
+    return scheduledAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : scheduledAt_;
   }
   /**
-   * <code>optional string task_worker_version = 8;</code>
-   * @return The bytes for taskWorkerVersion.
+   * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
    */
   @java.lang.Override
-  public com.google.protobuf.ByteString
-      getTaskWorkerVersionBytes() {
-    java.lang.Object ref = taskWorkerVersion_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      taskWorkerVersion_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public com.google.protobuf.TimestampOrBuilder getScheduledAtOrBuilder() {
+    return scheduledAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : scheduledAt_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -321,29 +270,26 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (attemptNumber_ != 0) {
-      output.writeInt32(1, attemptNumber_);
+    if (id_ != null) {
+      output.writeMessage(1, getId());
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeMessage(2, getOutput());
+    for (int i = 0; i < attempts_.size(); i++) {
+      output.writeMessage(2, attempts_.get(i));
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
-      output.writeMessage(3, getLogOutput());
+    if (maxAttempts_ != 0) {
+      output.writeInt32(3, maxAttempts_);
     }
-    if (((bitField0_ & 0x00000004) != 0)) {
-      output.writeMessage(4, getStartTime());
-    }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(taskDefId_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, taskDefId_);
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(taskDefName_)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 4, taskDefName_);
     }
     for (int i = 0; i < inputVariables_.size(); i++) {
-      output.writeMessage(6, inputVariables_.get(i));
+      output.writeMessage(5, inputVariables_.get(i));
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(taskWorkerId_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 7, taskWorkerId_);
+    if (source_ != null) {
+      output.writeMessage(6, getSource());
     }
-    if (((bitField0_ & 0x00000008) != 0)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 8, taskWorkerVersion_);
+    if (scheduledAt_ != null) {
+      output.writeMessage(7, getScheduledAt());
     }
     getUnknownFields().writeTo(output);
   }
@@ -354,34 +300,32 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (attemptNumber_ != 0) {
+    if (id_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(1, attemptNumber_);
+        .computeMessageSize(1, getId());
     }
-    if (((bitField0_ & 0x00000001) != 0)) {
+    for (int i = 0; i < attempts_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, getOutput());
+        .computeMessageSize(2, attempts_.get(i));
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
+    if (maxAttempts_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, getLogOutput());
+        .computeInt32Size(3, maxAttempts_);
     }
-    if (((bitField0_ & 0x00000004) != 0)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, getStartTime());
-    }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(taskDefId_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, taskDefId_);
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(taskDefName_)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, taskDefName_);
     }
     for (int i = 0; i < inputVariables_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(6, inputVariables_.get(i));
+        .computeMessageSize(5, inputVariables_.get(i));
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(taskWorkerId_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, taskWorkerId_);
+    if (source_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(6, getSource());
     }
-    if (((bitField0_ & 0x00000008) != 0)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(8, taskWorkerVersion_);
+    if (scheduledAt_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(7, getScheduledAt());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -398,33 +342,28 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.jlib.common.proto.TaskRunPb other = (io.littlehorse.jlib.common.proto.TaskRunPb) obj;
 
-    if (getAttemptNumber()
-        != other.getAttemptNumber()) return false;
-    if (hasOutput() != other.hasOutput()) return false;
-    if (hasOutput()) {
-      if (!getOutput()
-          .equals(other.getOutput())) return false;
+    if (hasId() != other.hasId()) return false;
+    if (hasId()) {
+      if (!getId()
+          .equals(other.getId())) return false;
     }
-    if (hasLogOutput() != other.hasLogOutput()) return false;
-    if (hasLogOutput()) {
-      if (!getLogOutput()
-          .equals(other.getLogOutput())) return false;
-    }
-    if (hasStartTime() != other.hasStartTime()) return false;
-    if (hasStartTime()) {
-      if (!getStartTime()
-          .equals(other.getStartTime())) return false;
-    }
-    if (!getTaskDefId()
-        .equals(other.getTaskDefId())) return false;
+    if (!getAttemptsList()
+        .equals(other.getAttemptsList())) return false;
+    if (getMaxAttempts()
+        != other.getMaxAttempts()) return false;
+    if (!getTaskDefName()
+        .equals(other.getTaskDefName())) return false;
     if (!getInputVariablesList()
         .equals(other.getInputVariablesList())) return false;
-    if (!getTaskWorkerId()
-        .equals(other.getTaskWorkerId())) return false;
-    if (hasTaskWorkerVersion() != other.hasTaskWorkerVersion()) return false;
-    if (hasTaskWorkerVersion()) {
-      if (!getTaskWorkerVersion()
-          .equals(other.getTaskWorkerVersion())) return false;
+    if (hasSource() != other.hasSource()) return false;
+    if (hasSource()) {
+      if (!getSource()
+          .equals(other.getSource())) return false;
+    }
+    if (hasScheduledAt() != other.hasScheduledAt()) return false;
+    if (hasScheduledAt()) {
+      if (!getScheduledAt()
+          .equals(other.getScheduledAt())) return false;
     }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
@@ -437,31 +376,29 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + ATTEMPT_NUMBER_FIELD_NUMBER;
-    hash = (53 * hash) + getAttemptNumber();
-    if (hasOutput()) {
-      hash = (37 * hash) + OUTPUT_FIELD_NUMBER;
-      hash = (53 * hash) + getOutput().hashCode();
+    if (hasId()) {
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId().hashCode();
     }
-    if (hasLogOutput()) {
-      hash = (37 * hash) + LOG_OUTPUT_FIELD_NUMBER;
-      hash = (53 * hash) + getLogOutput().hashCode();
+    if (getAttemptsCount() > 0) {
+      hash = (37 * hash) + ATTEMPTS_FIELD_NUMBER;
+      hash = (53 * hash) + getAttemptsList().hashCode();
     }
-    if (hasStartTime()) {
-      hash = (37 * hash) + START_TIME_FIELD_NUMBER;
-      hash = (53 * hash) + getStartTime().hashCode();
-    }
-    hash = (37 * hash) + TASK_DEF_ID_FIELD_NUMBER;
-    hash = (53 * hash) + getTaskDefId().hashCode();
+    hash = (37 * hash) + MAX_ATTEMPTS_FIELD_NUMBER;
+    hash = (53 * hash) + getMaxAttempts();
+    hash = (37 * hash) + TASK_DEF_NAME_FIELD_NUMBER;
+    hash = (53 * hash) + getTaskDefName().hashCode();
     if (getInputVariablesCount() > 0) {
       hash = (37 * hash) + INPUT_VARIABLES_FIELD_NUMBER;
       hash = (53 * hash) + getInputVariablesList().hashCode();
     }
-    hash = (37 * hash) + TASK_WORKER_ID_FIELD_NUMBER;
-    hash = (53 * hash) + getTaskWorkerId().hashCode();
-    if (hasTaskWorkerVersion()) {
-      hash = (37 * hash) + TASK_WORKER_VERSION_FIELD_NUMBER;
-      hash = (53 * hash) + getTaskWorkerVersion().hashCode();
+    if (hasSource()) {
+      hash = (37 * hash) + SOURCE_FIELD_NUMBER;
+      hash = (53 * hash) + getSource().hashCode();
+    }
+    if (hasScheduledAt()) {
+      hash = (37 * hash) + SCHEDULED_AT_FIELD_NUMBER;
+      hash = (53 * hash) + getScheduledAt().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -580,53 +517,49 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.jlib.common.proto.TaskRunPb.newBuilder()
     private Builder() {
-      maybeForceBuilderInitialization();
+
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-      maybeForceBuilderInitialization();
-    }
-    private void maybeForceBuilderInitialization() {
-      if (com.google.protobuf.GeneratedMessageV3
-              .alwaysUseFieldBuilders) {
-        getOutputFieldBuilder();
-        getLogOutputFieldBuilder();
-        getStartTimeFieldBuilder();
-        getInputVariablesFieldBuilder();
-      }
+
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      attemptNumber_ = 0;
-      output_ = null;
-      if (outputBuilder_ != null) {
-        outputBuilder_.dispose();
-        outputBuilder_ = null;
+      id_ = null;
+      if (idBuilder_ != null) {
+        idBuilder_.dispose();
+        idBuilder_ = null;
       }
-      logOutput_ = null;
-      if (logOutputBuilder_ != null) {
-        logOutputBuilder_.dispose();
-        logOutputBuilder_ = null;
+      if (attemptsBuilder_ == null) {
+        attempts_ = java.util.Collections.emptyList();
+      } else {
+        attempts_ = null;
+        attemptsBuilder_.clear();
       }
-      startTime_ = null;
-      if (startTimeBuilder_ != null) {
-        startTimeBuilder_.dispose();
-        startTimeBuilder_ = null;
-      }
-      taskDefId_ = "";
+      bitField0_ = (bitField0_ & ~0x00000002);
+      maxAttempts_ = 0;
+      taskDefName_ = "";
       if (inputVariablesBuilder_ == null) {
         inputVariables_ = java.util.Collections.emptyList();
       } else {
         inputVariables_ = null;
         inputVariablesBuilder_.clear();
       }
-      bitField0_ = (bitField0_ & ~0x00000020);
-      taskWorkerId_ = "";
-      taskWorkerVersion_ = "";
+      bitField0_ = (bitField0_ & ~0x00000010);
+      source_ = null;
+      if (sourceBuilder_ != null) {
+        sourceBuilder_.dispose();
+        sourceBuilder_ = null;
+      }
+      scheduledAt_ = null;
+      if (scheduledAtBuilder_ != null) {
+        scheduledAtBuilder_.dispose();
+        scheduledAtBuilder_ = null;
+      }
       return this;
     }
 
@@ -660,10 +593,19 @@ private static final long serialVersionUID = 0L;
     }
 
     private void buildPartialRepeatedFields(io.littlehorse.jlib.common.proto.TaskRunPb result) {
+      if (attemptsBuilder_ == null) {
+        if (((bitField0_ & 0x00000002) != 0)) {
+          attempts_ = java.util.Collections.unmodifiableList(attempts_);
+          bitField0_ = (bitField0_ & ~0x00000002);
+        }
+        result.attempts_ = attempts_;
+      } else {
+        result.attempts_ = attemptsBuilder_.build();
+      }
       if (inputVariablesBuilder_ == null) {
-        if (((bitField0_ & 0x00000020) != 0)) {
+        if (((bitField0_ & 0x00000010) != 0)) {
           inputVariables_ = java.util.Collections.unmodifiableList(inputVariables_);
-          bitField0_ = (bitField0_ & ~0x00000020);
+          bitField0_ = (bitField0_ & ~0x00000010);
         }
         result.inputVariables_ = inputVariables_;
       } else {
@@ -674,38 +616,26 @@ private static final long serialVersionUID = 0L;
     private void buildPartial0(io.littlehorse.jlib.common.proto.TaskRunPb result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.attemptNumber_ = attemptNumber_;
-      }
-      int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.output_ = outputBuilder_ == null
-            ? output_
-            : outputBuilder_.build();
-        to_bitField0_ |= 0x00000001;
+        result.id_ = idBuilder_ == null
+            ? id_
+            : idBuilder_.build();
       }
       if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.logOutput_ = logOutputBuilder_ == null
-            ? logOutput_
-            : logOutputBuilder_.build();
-        to_bitField0_ |= 0x00000002;
+        result.maxAttempts_ = maxAttempts_;
       }
       if (((from_bitField0_ & 0x00000008) != 0)) {
-        result.startTime_ = startTimeBuilder_ == null
-            ? startTime_
-            : startTimeBuilder_.build();
-        to_bitField0_ |= 0x00000004;
+        result.taskDefName_ = taskDefName_;
       }
-      if (((from_bitField0_ & 0x00000010) != 0)) {
-        result.taskDefId_ = taskDefId_;
+      if (((from_bitField0_ & 0x00000020) != 0)) {
+        result.source_ = sourceBuilder_ == null
+            ? source_
+            : sourceBuilder_.build();
       }
       if (((from_bitField0_ & 0x00000040) != 0)) {
-        result.taskWorkerId_ = taskWorkerId_;
+        result.scheduledAt_ = scheduledAtBuilder_ == null
+            ? scheduledAt_
+            : scheduledAtBuilder_.build();
       }
-      if (((from_bitField0_ & 0x00000080) != 0)) {
-        result.taskWorkerVersion_ = taskWorkerVersion_;
-        to_bitField0_ |= 0x00000008;
-      }
-      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -752,28 +682,48 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.jlib.common.proto.TaskRunPb other) {
       if (other == io.littlehorse.jlib.common.proto.TaskRunPb.getDefaultInstance()) return this;
-      if (other.getAttemptNumber() != 0) {
-        setAttemptNumber(other.getAttemptNumber());
+      if (other.hasId()) {
+        mergeId(other.getId());
       }
-      if (other.hasOutput()) {
-        mergeOutput(other.getOutput());
+      if (attemptsBuilder_ == null) {
+        if (!other.attempts_.isEmpty()) {
+          if (attempts_.isEmpty()) {
+            attempts_ = other.attempts_;
+            bitField0_ = (bitField0_ & ~0x00000002);
+          } else {
+            ensureAttemptsIsMutable();
+            attempts_.addAll(other.attempts_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.attempts_.isEmpty()) {
+          if (attemptsBuilder_.isEmpty()) {
+            attemptsBuilder_.dispose();
+            attemptsBuilder_ = null;
+            attempts_ = other.attempts_;
+            bitField0_ = (bitField0_ & ~0x00000002);
+            attemptsBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getAttemptsFieldBuilder() : null;
+          } else {
+            attemptsBuilder_.addAllMessages(other.attempts_);
+          }
+        }
       }
-      if (other.hasLogOutput()) {
-        mergeLogOutput(other.getLogOutput());
+      if (other.getMaxAttempts() != 0) {
+        setMaxAttempts(other.getMaxAttempts());
       }
-      if (other.hasStartTime()) {
-        mergeStartTime(other.getStartTime());
-      }
-      if (!other.getTaskDefId().isEmpty()) {
-        taskDefId_ = other.taskDefId_;
-        bitField0_ |= 0x00000010;
+      if (!other.getTaskDefName().isEmpty()) {
+        taskDefName_ = other.taskDefName_;
+        bitField0_ |= 0x00000008;
         onChanged();
       }
       if (inputVariablesBuilder_ == null) {
         if (!other.inputVariables_.isEmpty()) {
           if (inputVariables_.isEmpty()) {
             inputVariables_ = other.inputVariables_;
-            bitField0_ = (bitField0_ & ~0x00000020);
+            bitField0_ = (bitField0_ & ~0x00000010);
           } else {
             ensureInputVariablesIsMutable();
             inputVariables_.addAll(other.inputVariables_);
@@ -786,7 +736,7 @@ private static final long serialVersionUID = 0L;
             inputVariablesBuilder_.dispose();
             inputVariablesBuilder_ = null;
             inputVariables_ = other.inputVariables_;
-            bitField0_ = (bitField0_ & ~0x00000020);
+            bitField0_ = (bitField0_ & ~0x00000010);
             inputVariablesBuilder_ = 
               com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                  getInputVariablesFieldBuilder() : null;
@@ -795,15 +745,11 @@ private static final long serialVersionUID = 0L;
           }
         }
       }
-      if (!other.getTaskWorkerId().isEmpty()) {
-        taskWorkerId_ = other.taskWorkerId_;
-        bitField0_ |= 0x00000040;
-        onChanged();
+      if (other.hasSource()) {
+        mergeSource(other.getSource());
       }
-      if (other.hasTaskWorkerVersion()) {
-        taskWorkerVersion_ = other.taskWorkerVersion_;
-        bitField0_ |= 0x00000080;
-        onChanged();
+      if (other.hasScheduledAt()) {
+        mergeScheduledAt(other.getScheduledAt());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -831,38 +777,37 @@ private static final long serialVersionUID = 0L;
             case 0:
               done = true;
               break;
-            case 8: {
-              attemptNumber_ = input.readInt32();
+            case 10: {
+              input.readMessage(
+                  getIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
               bitField0_ |= 0x00000001;
               break;
-            } // case 8
+            } // case 10
             case 18: {
-              input.readMessage(
-                  getOutputFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              bitField0_ |= 0x00000002;
+              io.littlehorse.jlib.common.proto.TaskAttemptPb m =
+                  input.readMessage(
+                      io.littlehorse.jlib.common.proto.TaskAttemptPb.parser(),
+                      extensionRegistry);
+              if (attemptsBuilder_ == null) {
+                ensureAttemptsIsMutable();
+                attempts_.add(m);
+              } else {
+                attemptsBuilder_.addMessage(m);
+              }
               break;
             } // case 18
-            case 26: {
-              input.readMessage(
-                  getLogOutputFieldBuilder().getBuilder(),
-                  extensionRegistry);
+            case 24: {
+              maxAttempts_ = input.readInt32();
               bitField0_ |= 0x00000004;
               break;
-            } // case 26
+            } // case 24
             case 34: {
-              input.readMessage(
-                  getStartTimeFieldBuilder().getBuilder(),
-                  extensionRegistry);
+              taskDefName_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000008;
               break;
             } // case 34
             case 42: {
-              taskDefId_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000010;
-              break;
-            } // case 42
-            case 50: {
               io.littlehorse.jlib.common.proto.VarNameAndValPb m =
                   input.readMessage(
                       io.littlehorse.jlib.common.proto.VarNameAndValPb.parser(),
@@ -874,17 +819,21 @@ private static final long serialVersionUID = 0L;
                 inputVariablesBuilder_.addMessage(m);
               }
               break;
+            } // case 42
+            case 50: {
+              input.readMessage(
+                  getSourceFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000020;
+              break;
             } // case 50
             case 58: {
-              taskWorkerId_ = input.readStringRequireUtf8();
+              input.readMessage(
+                  getScheduledAtFieldBuilder().getBuilder(),
+                  extensionRegistry);
               bitField0_ |= 0x00000040;
               break;
             } // case 58
-            case 66: {
-              taskWorkerVersion_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000080;
-              break;
-            } // case 66
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -902,475 +851,465 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private int attemptNumber_ ;
+    private io.littlehorse.jlib.common.proto.TaskRunIdPb id_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.jlib.common.proto.TaskRunIdPb, io.littlehorse.jlib.common.proto.TaskRunIdPb.Builder, io.littlehorse.jlib.common.proto.TaskRunIdPbOrBuilder> idBuilder_;
     /**
-     * <pre>
-     * Task only
-     * </pre>
-     *
-     * <code>int32 attempt_number = 1;</code>
-     * @return The attemptNumber.
+     * <code>.littlehorse.TaskRunIdPb id = 1;</code>
+     * @return Whether the id field is set.
      */
-    @java.lang.Override
-    public int getAttemptNumber() {
-      return attemptNumber_;
+    public boolean hasId() {
+      return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <pre>
-     * Task only
-     * </pre>
-     *
-     * <code>int32 attempt_number = 1;</code>
-     * @param value The attemptNumber to set.
-     * @return This builder for chaining.
+     * <code>.littlehorse.TaskRunIdPb id = 1;</code>
+     * @return The id.
      */
-    public Builder setAttemptNumber(int value) {
-      
-      attemptNumber_ = value;
+    public io.littlehorse.jlib.common.proto.TaskRunIdPb getId() {
+      if (idBuilder_ == null) {
+        return id_ == null ? io.littlehorse.jlib.common.proto.TaskRunIdPb.getDefaultInstance() : id_;
+      } else {
+        return idBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.littlehorse.TaskRunIdPb id = 1;</code>
+     */
+    public Builder setId(io.littlehorse.jlib.common.proto.TaskRunIdPb value) {
+      if (idBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        id_ = value;
+      } else {
+        idBuilder_.setMessage(value);
+      }
       bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
-     * <pre>
-     * Task only
-     * </pre>
-     *
-     * <code>int32 attempt_number = 1;</code>
+     * <code>.littlehorse.TaskRunIdPb id = 1;</code>
+     */
+    public Builder setId(
+        io.littlehorse.jlib.common.proto.TaskRunIdPb.Builder builderForValue) {
+      if (idBuilder_ == null) {
+        id_ = builderForValue.build();
+      } else {
+        idBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.TaskRunIdPb id = 1;</code>
+     */
+    public Builder mergeId(io.littlehorse.jlib.common.proto.TaskRunIdPb value) {
+      if (idBuilder_ == null) {
+        if (((bitField0_ & 0x00000001) != 0) &&
+          id_ != null &&
+          id_ != io.littlehorse.jlib.common.proto.TaskRunIdPb.getDefaultInstance()) {
+          getIdBuilder().mergeFrom(value);
+        } else {
+          id_ = value;
+        }
+      } else {
+        idBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.TaskRunIdPb id = 1;</code>
+     */
+    public Builder clearId() {
+      bitField0_ = (bitField0_ & ~0x00000001);
+      id_ = null;
+      if (idBuilder_ != null) {
+        idBuilder_.dispose();
+        idBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.TaskRunIdPb id = 1;</code>
+     */
+    public io.littlehorse.jlib.common.proto.TaskRunIdPb.Builder getIdBuilder() {
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return getIdFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.TaskRunIdPb id = 1;</code>
+     */
+    public io.littlehorse.jlib.common.proto.TaskRunIdPbOrBuilder getIdOrBuilder() {
+      if (idBuilder_ != null) {
+        return idBuilder_.getMessageOrBuilder();
+      } else {
+        return id_ == null ?
+            io.littlehorse.jlib.common.proto.TaskRunIdPb.getDefaultInstance() : id_;
+      }
+    }
+    /**
+     * <code>.littlehorse.TaskRunIdPb id = 1;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.jlib.common.proto.TaskRunIdPb, io.littlehorse.jlib.common.proto.TaskRunIdPb.Builder, io.littlehorse.jlib.common.proto.TaskRunIdPbOrBuilder> 
+        getIdFieldBuilder() {
+      if (idBuilder_ == null) {
+        idBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.jlib.common.proto.TaskRunIdPb, io.littlehorse.jlib.common.proto.TaskRunIdPb.Builder, io.littlehorse.jlib.common.proto.TaskRunIdPbOrBuilder>(
+                getId(),
+                getParentForChildren(),
+                isClean());
+        id_ = null;
+      }
+      return idBuilder_;
+    }
+
+    private java.util.List<io.littlehorse.jlib.common.proto.TaskAttemptPb> attempts_ =
+      java.util.Collections.emptyList();
+    private void ensureAttemptsIsMutable() {
+      if (!((bitField0_ & 0x00000002) != 0)) {
+        attempts_ = new java.util.ArrayList<io.littlehorse.jlib.common.proto.TaskAttemptPb>(attempts_);
+        bitField0_ |= 0x00000002;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.jlib.common.proto.TaskAttemptPb, io.littlehorse.jlib.common.proto.TaskAttemptPb.Builder, io.littlehorse.jlib.common.proto.TaskAttemptPbOrBuilder> attemptsBuilder_;
+
+    /**
+     * <code>repeated .littlehorse.TaskAttemptPb attempts = 2;</code>
+     */
+    public java.util.List<io.littlehorse.jlib.common.proto.TaskAttemptPb> getAttemptsList() {
+      if (attemptsBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(attempts_);
+      } else {
+        return attemptsBuilder_.getMessageList();
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.TaskAttemptPb attempts = 2;</code>
+     */
+    public int getAttemptsCount() {
+      if (attemptsBuilder_ == null) {
+        return attempts_.size();
+      } else {
+        return attemptsBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.TaskAttemptPb attempts = 2;</code>
+     */
+    public io.littlehorse.jlib.common.proto.TaskAttemptPb getAttempts(int index) {
+      if (attemptsBuilder_ == null) {
+        return attempts_.get(index);
+      } else {
+        return attemptsBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.TaskAttemptPb attempts = 2;</code>
+     */
+    public Builder setAttempts(
+        int index, io.littlehorse.jlib.common.proto.TaskAttemptPb value) {
+      if (attemptsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureAttemptsIsMutable();
+        attempts_.set(index, value);
+        onChanged();
+      } else {
+        attemptsBuilder_.setMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.TaskAttemptPb attempts = 2;</code>
+     */
+    public Builder setAttempts(
+        int index, io.littlehorse.jlib.common.proto.TaskAttemptPb.Builder builderForValue) {
+      if (attemptsBuilder_ == null) {
+        ensureAttemptsIsMutable();
+        attempts_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        attemptsBuilder_.setMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.TaskAttemptPb attempts = 2;</code>
+     */
+    public Builder addAttempts(io.littlehorse.jlib.common.proto.TaskAttemptPb value) {
+      if (attemptsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureAttemptsIsMutable();
+        attempts_.add(value);
+        onChanged();
+      } else {
+        attemptsBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.TaskAttemptPb attempts = 2;</code>
+     */
+    public Builder addAttempts(
+        int index, io.littlehorse.jlib.common.proto.TaskAttemptPb value) {
+      if (attemptsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureAttemptsIsMutable();
+        attempts_.add(index, value);
+        onChanged();
+      } else {
+        attemptsBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.TaskAttemptPb attempts = 2;</code>
+     */
+    public Builder addAttempts(
+        io.littlehorse.jlib.common.proto.TaskAttemptPb.Builder builderForValue) {
+      if (attemptsBuilder_ == null) {
+        ensureAttemptsIsMutable();
+        attempts_.add(builderForValue.build());
+        onChanged();
+      } else {
+        attemptsBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.TaskAttemptPb attempts = 2;</code>
+     */
+    public Builder addAttempts(
+        int index, io.littlehorse.jlib.common.proto.TaskAttemptPb.Builder builderForValue) {
+      if (attemptsBuilder_ == null) {
+        ensureAttemptsIsMutable();
+        attempts_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        attemptsBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.TaskAttemptPb attempts = 2;</code>
+     */
+    public Builder addAllAttempts(
+        java.lang.Iterable<? extends io.littlehorse.jlib.common.proto.TaskAttemptPb> values) {
+      if (attemptsBuilder_ == null) {
+        ensureAttemptsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, attempts_);
+        onChanged();
+      } else {
+        attemptsBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.TaskAttemptPb attempts = 2;</code>
+     */
+    public Builder clearAttempts() {
+      if (attemptsBuilder_ == null) {
+        attempts_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+      } else {
+        attemptsBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.TaskAttemptPb attempts = 2;</code>
+     */
+    public Builder removeAttempts(int index) {
+      if (attemptsBuilder_ == null) {
+        ensureAttemptsIsMutable();
+        attempts_.remove(index);
+        onChanged();
+      } else {
+        attemptsBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.TaskAttemptPb attempts = 2;</code>
+     */
+    public io.littlehorse.jlib.common.proto.TaskAttemptPb.Builder getAttemptsBuilder(
+        int index) {
+      return getAttemptsFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .littlehorse.TaskAttemptPb attempts = 2;</code>
+     */
+    public io.littlehorse.jlib.common.proto.TaskAttemptPbOrBuilder getAttemptsOrBuilder(
+        int index) {
+      if (attemptsBuilder_ == null) {
+        return attempts_.get(index);  } else {
+        return attemptsBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.TaskAttemptPb attempts = 2;</code>
+     */
+    public java.util.List<? extends io.littlehorse.jlib.common.proto.TaskAttemptPbOrBuilder> 
+         getAttemptsOrBuilderList() {
+      if (attemptsBuilder_ != null) {
+        return attemptsBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(attempts_);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.TaskAttemptPb attempts = 2;</code>
+     */
+    public io.littlehorse.jlib.common.proto.TaskAttemptPb.Builder addAttemptsBuilder() {
+      return getAttemptsFieldBuilder().addBuilder(
+          io.littlehorse.jlib.common.proto.TaskAttemptPb.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .littlehorse.TaskAttemptPb attempts = 2;</code>
+     */
+    public io.littlehorse.jlib.common.proto.TaskAttemptPb.Builder addAttemptsBuilder(
+        int index) {
+      return getAttemptsFieldBuilder().addBuilder(
+          index, io.littlehorse.jlib.common.proto.TaskAttemptPb.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .littlehorse.TaskAttemptPb attempts = 2;</code>
+     */
+    public java.util.List<io.littlehorse.jlib.common.proto.TaskAttemptPb.Builder> 
+         getAttemptsBuilderList() {
+      return getAttemptsFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.jlib.common.proto.TaskAttemptPb, io.littlehorse.jlib.common.proto.TaskAttemptPb.Builder, io.littlehorse.jlib.common.proto.TaskAttemptPbOrBuilder> 
+        getAttemptsFieldBuilder() {
+      if (attemptsBuilder_ == null) {
+        attemptsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            io.littlehorse.jlib.common.proto.TaskAttemptPb, io.littlehorse.jlib.common.proto.TaskAttemptPb.Builder, io.littlehorse.jlib.common.proto.TaskAttemptPbOrBuilder>(
+                attempts_,
+                ((bitField0_ & 0x00000002) != 0),
+                getParentForChildren(),
+                isClean());
+        attempts_ = null;
+      }
+      return attemptsBuilder_;
+    }
+
+    private int maxAttempts_ ;
+    /**
+     * <code>int32 max_attempts = 3;</code>
+     * @return The maxAttempts.
+     */
+    @java.lang.Override
+    public int getMaxAttempts() {
+      return maxAttempts_;
+    }
+    /**
+     * <code>int32 max_attempts = 3;</code>
+     * @param value The maxAttempts to set.
      * @return This builder for chaining.
      */
-    public Builder clearAttemptNumber() {
-      bitField0_ = (bitField0_ & ~0x00000001);
-      attemptNumber_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private io.littlehorse.jlib.common.proto.VariableValuePb output_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.jlib.common.proto.VariableValuePb, io.littlehorse.jlib.common.proto.VariableValuePb.Builder, io.littlehorse.jlib.common.proto.VariableValuePbOrBuilder> outputBuilder_;
-    /**
-     * <code>optional .littlehorse.VariableValuePb output = 2;</code>
-     * @return Whether the output field is set.
-     */
-    public boolean hasOutput() {
-      return ((bitField0_ & 0x00000002) != 0);
-    }
-    /**
-     * <code>optional .littlehorse.VariableValuePb output = 2;</code>
-     * @return The output.
-     */
-    public io.littlehorse.jlib.common.proto.VariableValuePb getOutput() {
-      if (outputBuilder_ == null) {
-        return output_ == null ? io.littlehorse.jlib.common.proto.VariableValuePb.getDefaultInstance() : output_;
-      } else {
-        return outputBuilder_.getMessage();
-      }
-    }
-    /**
-     * <code>optional .littlehorse.VariableValuePb output = 2;</code>
-     */
-    public Builder setOutput(io.littlehorse.jlib.common.proto.VariableValuePb value) {
-      if (outputBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        output_ = value;
-      } else {
-        outputBuilder_.setMessage(value);
-      }
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional .littlehorse.VariableValuePb output = 2;</code>
-     */
-    public Builder setOutput(
-        io.littlehorse.jlib.common.proto.VariableValuePb.Builder builderForValue) {
-      if (outputBuilder_ == null) {
-        output_ = builderForValue.build();
-      } else {
-        outputBuilder_.setMessage(builderForValue.build());
-      }
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional .littlehorse.VariableValuePb output = 2;</code>
-     */
-    public Builder mergeOutput(io.littlehorse.jlib.common.proto.VariableValuePb value) {
-      if (outputBuilder_ == null) {
-        if (((bitField0_ & 0x00000002) != 0) &&
-          output_ != null &&
-          output_ != io.littlehorse.jlib.common.proto.VariableValuePb.getDefaultInstance()) {
-          getOutputBuilder().mergeFrom(value);
-        } else {
-          output_ = value;
-        }
-      } else {
-        outputBuilder_.mergeFrom(value);
-      }
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional .littlehorse.VariableValuePb output = 2;</code>
-     */
-    public Builder clearOutput() {
-      bitField0_ = (bitField0_ & ~0x00000002);
-      output_ = null;
-      if (outputBuilder_ != null) {
-        outputBuilder_.dispose();
-        outputBuilder_ = null;
-      }
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional .littlehorse.VariableValuePb output = 2;</code>
-     */
-    public io.littlehorse.jlib.common.proto.VariableValuePb.Builder getOutputBuilder() {
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return getOutputFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>optional .littlehorse.VariableValuePb output = 2;</code>
-     */
-    public io.littlehorse.jlib.common.proto.VariableValuePbOrBuilder getOutputOrBuilder() {
-      if (outputBuilder_ != null) {
-        return outputBuilder_.getMessageOrBuilder();
-      } else {
-        return output_ == null ?
-            io.littlehorse.jlib.common.proto.VariableValuePb.getDefaultInstance() : output_;
-      }
-    }
-    /**
-     * <code>optional .littlehorse.VariableValuePb output = 2;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.jlib.common.proto.VariableValuePb, io.littlehorse.jlib.common.proto.VariableValuePb.Builder, io.littlehorse.jlib.common.proto.VariableValuePbOrBuilder> 
-        getOutputFieldBuilder() {
-      if (outputBuilder_ == null) {
-        outputBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.jlib.common.proto.VariableValuePb, io.littlehorse.jlib.common.proto.VariableValuePb.Builder, io.littlehorse.jlib.common.proto.VariableValuePbOrBuilder>(
-                getOutput(),
-                getParentForChildren(),
-                isClean());
-        output_ = null;
-      }
-      return outputBuilder_;
-    }
-
-    private io.littlehorse.jlib.common.proto.VariableValuePb logOutput_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.jlib.common.proto.VariableValuePb, io.littlehorse.jlib.common.proto.VariableValuePb.Builder, io.littlehorse.jlib.common.proto.VariableValuePbOrBuilder> logOutputBuilder_;
-    /**
-     * <code>optional .littlehorse.VariableValuePb log_output = 3;</code>
-     * @return Whether the logOutput field is set.
-     */
-    public boolean hasLogOutput() {
-      return ((bitField0_ & 0x00000004) != 0);
-    }
-    /**
-     * <code>optional .littlehorse.VariableValuePb log_output = 3;</code>
-     * @return The logOutput.
-     */
-    public io.littlehorse.jlib.common.proto.VariableValuePb getLogOutput() {
-      if (logOutputBuilder_ == null) {
-        return logOutput_ == null ? io.littlehorse.jlib.common.proto.VariableValuePb.getDefaultInstance() : logOutput_;
-      } else {
-        return logOutputBuilder_.getMessage();
-      }
-    }
-    /**
-     * <code>optional .littlehorse.VariableValuePb log_output = 3;</code>
-     */
-    public Builder setLogOutput(io.littlehorse.jlib.common.proto.VariableValuePb value) {
-      if (logOutputBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        logOutput_ = value;
-      } else {
-        logOutputBuilder_.setMessage(value);
-      }
+    public Builder setMaxAttempts(int value) {
+      
+      maxAttempts_ = value;
       bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
-     * <code>optional .littlehorse.VariableValuePb log_output = 3;</code>
+     * <code>int32 max_attempts = 3;</code>
+     * @return This builder for chaining.
      */
-    public Builder setLogOutput(
-        io.littlehorse.jlib.common.proto.VariableValuePb.Builder builderForValue) {
-      if (logOutputBuilder_ == null) {
-        logOutput_ = builderForValue.build();
-      } else {
-        logOutputBuilder_.setMessage(builderForValue.build());
-      }
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional .littlehorse.VariableValuePb log_output = 3;</code>
-     */
-    public Builder mergeLogOutput(io.littlehorse.jlib.common.proto.VariableValuePb value) {
-      if (logOutputBuilder_ == null) {
-        if (((bitField0_ & 0x00000004) != 0) &&
-          logOutput_ != null &&
-          logOutput_ != io.littlehorse.jlib.common.proto.VariableValuePb.getDefaultInstance()) {
-          getLogOutputBuilder().mergeFrom(value);
-        } else {
-          logOutput_ = value;
-        }
-      } else {
-        logOutputBuilder_.mergeFrom(value);
-      }
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional .littlehorse.VariableValuePb log_output = 3;</code>
-     */
-    public Builder clearLogOutput() {
+    public Builder clearMaxAttempts() {
       bitField0_ = (bitField0_ & ~0x00000004);
-      logOutput_ = null;
-      if (logOutputBuilder_ != null) {
-        logOutputBuilder_.dispose();
-        logOutputBuilder_ = null;
-      }
+      maxAttempts_ = 0;
       onChanged();
       return this;
-    }
-    /**
-     * <code>optional .littlehorse.VariableValuePb log_output = 3;</code>
-     */
-    public io.littlehorse.jlib.common.proto.VariableValuePb.Builder getLogOutputBuilder() {
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return getLogOutputFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>optional .littlehorse.VariableValuePb log_output = 3;</code>
-     */
-    public io.littlehorse.jlib.common.proto.VariableValuePbOrBuilder getLogOutputOrBuilder() {
-      if (logOutputBuilder_ != null) {
-        return logOutputBuilder_.getMessageOrBuilder();
-      } else {
-        return logOutput_ == null ?
-            io.littlehorse.jlib.common.proto.VariableValuePb.getDefaultInstance() : logOutput_;
-      }
-    }
-    /**
-     * <code>optional .littlehorse.VariableValuePb log_output = 3;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.jlib.common.proto.VariableValuePb, io.littlehorse.jlib.common.proto.VariableValuePb.Builder, io.littlehorse.jlib.common.proto.VariableValuePbOrBuilder> 
-        getLogOutputFieldBuilder() {
-      if (logOutputBuilder_ == null) {
-        logOutputBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.jlib.common.proto.VariableValuePb, io.littlehorse.jlib.common.proto.VariableValuePb.Builder, io.littlehorse.jlib.common.proto.VariableValuePbOrBuilder>(
-                getLogOutput(),
-                getParentForChildren(),
-                isClean());
-        logOutput_ = null;
-      }
-      return logOutputBuilder_;
     }
 
-    private com.google.protobuf.Timestamp startTime_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> startTimeBuilder_;
+    private java.lang.Object taskDefName_ = "";
     /**
-     * <code>optional .google.protobuf.Timestamp start_time = 4;</code>
-     * @return Whether the startTime field is set.
+     * <code>string task_def_name = 4;</code>
+     * @return The taskDefName.
      */
-    public boolean hasStartTime() {
-      return ((bitField0_ & 0x00000008) != 0);
-    }
-    /**
-     * <code>optional .google.protobuf.Timestamp start_time = 4;</code>
-     * @return The startTime.
-     */
-    public com.google.protobuf.Timestamp getStartTime() {
-      if (startTimeBuilder_ == null) {
-        return startTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : startTime_;
-      } else {
-        return startTimeBuilder_.getMessage();
-      }
-    }
-    /**
-     * <code>optional .google.protobuf.Timestamp start_time = 4;</code>
-     */
-    public Builder setStartTime(com.google.protobuf.Timestamp value) {
-      if (startTimeBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        startTime_ = value;
-      } else {
-        startTimeBuilder_.setMessage(value);
-      }
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional .google.protobuf.Timestamp start_time = 4;</code>
-     */
-    public Builder setStartTime(
-        com.google.protobuf.Timestamp.Builder builderForValue) {
-      if (startTimeBuilder_ == null) {
-        startTime_ = builderForValue.build();
-      } else {
-        startTimeBuilder_.setMessage(builderForValue.build());
-      }
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional .google.protobuf.Timestamp start_time = 4;</code>
-     */
-    public Builder mergeStartTime(com.google.protobuf.Timestamp value) {
-      if (startTimeBuilder_ == null) {
-        if (((bitField0_ & 0x00000008) != 0) &&
-          startTime_ != null &&
-          startTime_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
-          getStartTimeBuilder().mergeFrom(value);
-        } else {
-          startTime_ = value;
-        }
-      } else {
-        startTimeBuilder_.mergeFrom(value);
-      }
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional .google.protobuf.Timestamp start_time = 4;</code>
-     */
-    public Builder clearStartTime() {
-      bitField0_ = (bitField0_ & ~0x00000008);
-      startTime_ = null;
-      if (startTimeBuilder_ != null) {
-        startTimeBuilder_.dispose();
-        startTimeBuilder_ = null;
-      }
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional .google.protobuf.Timestamp start_time = 4;</code>
-     */
-    public com.google.protobuf.Timestamp.Builder getStartTimeBuilder() {
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return getStartTimeFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>optional .google.protobuf.Timestamp start_time = 4;</code>
-     */
-    public com.google.protobuf.TimestampOrBuilder getStartTimeOrBuilder() {
-      if (startTimeBuilder_ != null) {
-        return startTimeBuilder_.getMessageOrBuilder();
-      } else {
-        return startTime_ == null ?
-            com.google.protobuf.Timestamp.getDefaultInstance() : startTime_;
-      }
-    }
-    /**
-     * <code>optional .google.protobuf.Timestamp start_time = 4;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
-        getStartTimeFieldBuilder() {
-      if (startTimeBuilder_ == null) {
-        startTimeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
-                getStartTime(),
-                getParentForChildren(),
-                isClean());
-        startTime_ = null;
-      }
-      return startTimeBuilder_;
-    }
-
-    private java.lang.Object taskDefId_ = "";
-    /**
-     * <code>string task_def_id = 5;</code>
-     * @return The taskDefId.
-     */
-    public java.lang.String getTaskDefId() {
-      java.lang.Object ref = taskDefId_;
+    public java.lang.String getTaskDefName() {
+      java.lang.Object ref = taskDefName_;
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        taskDefId_ = s;
+        taskDefName_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
       }
     }
     /**
-     * <code>string task_def_id = 5;</code>
-     * @return The bytes for taskDefId.
+     * <code>string task_def_name = 4;</code>
+     * @return The bytes for taskDefName.
      */
     public com.google.protobuf.ByteString
-        getTaskDefIdBytes() {
-      java.lang.Object ref = taskDefId_;
+        getTaskDefNameBytes() {
+      java.lang.Object ref = taskDefName_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        taskDefId_ = b;
+        taskDefName_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
     /**
-     * <code>string task_def_id = 5;</code>
-     * @param value The taskDefId to set.
+     * <code>string task_def_name = 4;</code>
+     * @param value The taskDefName to set.
      * @return This builder for chaining.
      */
-    public Builder setTaskDefId(
+    public Builder setTaskDefName(
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
-      taskDefId_ = value;
-      bitField0_ |= 0x00000010;
+      taskDefName_ = value;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
     /**
-     * <code>string task_def_id = 5;</code>
+     * <code>string task_def_name = 4;</code>
      * @return This builder for chaining.
      */
-    public Builder clearTaskDefId() {
-      taskDefId_ = getDefaultInstance().getTaskDefId();
-      bitField0_ = (bitField0_ & ~0x00000010);
+    public Builder clearTaskDefName() {
+      taskDefName_ = getDefaultInstance().getTaskDefName();
+      bitField0_ = (bitField0_ & ~0x00000008);
       onChanged();
       return this;
     }
     /**
-     * <code>string task_def_id = 5;</code>
-     * @param value The bytes for taskDefId to set.
+     * <code>string task_def_name = 4;</code>
+     * @param value The bytes for taskDefName to set.
      * @return This builder for chaining.
      */
-    public Builder setTaskDefIdBytes(
+    public Builder setTaskDefNameBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
-      taskDefId_ = value;
-      bitField0_ |= 0x00000010;
+      taskDefName_ = value;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -1378,9 +1317,9 @@ private static final long serialVersionUID = 0L;
     private java.util.List<io.littlehorse.jlib.common.proto.VarNameAndValPb> inputVariables_ =
       java.util.Collections.emptyList();
     private void ensureInputVariablesIsMutable() {
-      if (!((bitField0_ & 0x00000020) != 0)) {
+      if (!((bitField0_ & 0x00000010) != 0)) {
         inputVariables_ = new java.util.ArrayList<io.littlehorse.jlib.common.proto.VarNameAndValPb>(inputVariables_);
-        bitField0_ |= 0x00000020;
+        bitField0_ |= 0x00000010;
        }
     }
 
@@ -1388,7 +1327,7 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.jlib.common.proto.VarNameAndValPb, io.littlehorse.jlib.common.proto.VarNameAndValPb.Builder, io.littlehorse.jlib.common.proto.VarNameAndValPbOrBuilder> inputVariablesBuilder_;
 
     /**
-     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 6;</code>
+     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 5;</code>
      */
     public java.util.List<io.littlehorse.jlib.common.proto.VarNameAndValPb> getInputVariablesList() {
       if (inputVariablesBuilder_ == null) {
@@ -1398,7 +1337,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 6;</code>
+     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 5;</code>
      */
     public int getInputVariablesCount() {
       if (inputVariablesBuilder_ == null) {
@@ -1408,7 +1347,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 6;</code>
+     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 5;</code>
      */
     public io.littlehorse.jlib.common.proto.VarNameAndValPb getInputVariables(int index) {
       if (inputVariablesBuilder_ == null) {
@@ -1418,7 +1357,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 6;</code>
+     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 5;</code>
      */
     public Builder setInputVariables(
         int index, io.littlehorse.jlib.common.proto.VarNameAndValPb value) {
@@ -1435,7 +1374,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 6;</code>
+     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 5;</code>
      */
     public Builder setInputVariables(
         int index, io.littlehorse.jlib.common.proto.VarNameAndValPb.Builder builderForValue) {
@@ -1449,7 +1388,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 6;</code>
+     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 5;</code>
      */
     public Builder addInputVariables(io.littlehorse.jlib.common.proto.VarNameAndValPb value) {
       if (inputVariablesBuilder_ == null) {
@@ -1465,7 +1404,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 6;</code>
+     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 5;</code>
      */
     public Builder addInputVariables(
         int index, io.littlehorse.jlib.common.proto.VarNameAndValPb value) {
@@ -1482,7 +1421,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 6;</code>
+     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 5;</code>
      */
     public Builder addInputVariables(
         io.littlehorse.jlib.common.proto.VarNameAndValPb.Builder builderForValue) {
@@ -1496,7 +1435,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 6;</code>
+     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 5;</code>
      */
     public Builder addInputVariables(
         int index, io.littlehorse.jlib.common.proto.VarNameAndValPb.Builder builderForValue) {
@@ -1510,7 +1449,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 6;</code>
+     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 5;</code>
      */
     public Builder addAllInputVariables(
         java.lang.Iterable<? extends io.littlehorse.jlib.common.proto.VarNameAndValPb> values) {
@@ -1525,12 +1464,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 6;</code>
+     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 5;</code>
      */
     public Builder clearInputVariables() {
       if (inputVariablesBuilder_ == null) {
         inputVariables_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000020);
+        bitField0_ = (bitField0_ & ~0x00000010);
         onChanged();
       } else {
         inputVariablesBuilder_.clear();
@@ -1538,7 +1477,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 6;</code>
+     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 5;</code>
      */
     public Builder removeInputVariables(int index) {
       if (inputVariablesBuilder_ == null) {
@@ -1551,14 +1490,14 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 6;</code>
+     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 5;</code>
      */
     public io.littlehorse.jlib.common.proto.VarNameAndValPb.Builder getInputVariablesBuilder(
         int index) {
       return getInputVariablesFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 6;</code>
+     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 5;</code>
      */
     public io.littlehorse.jlib.common.proto.VarNameAndValPbOrBuilder getInputVariablesOrBuilder(
         int index) {
@@ -1568,7 +1507,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 6;</code>
+     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 5;</code>
      */
     public java.util.List<? extends io.littlehorse.jlib.common.proto.VarNameAndValPbOrBuilder> 
          getInputVariablesOrBuilderList() {
@@ -1579,14 +1518,14 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 6;</code>
+     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 5;</code>
      */
     public io.littlehorse.jlib.common.proto.VarNameAndValPb.Builder addInputVariablesBuilder() {
       return getInputVariablesFieldBuilder().addBuilder(
           io.littlehorse.jlib.common.proto.VarNameAndValPb.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 6;</code>
+     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 5;</code>
      */
     public io.littlehorse.jlib.common.proto.VarNameAndValPb.Builder addInputVariablesBuilder(
         int index) {
@@ -1594,7 +1533,7 @@ private static final long serialVersionUID = 0L;
           index, io.littlehorse.jlib.common.proto.VarNameAndValPb.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 6;</code>
+     * <code>repeated .littlehorse.VarNameAndValPb input_variables = 5;</code>
      */
     public java.util.List<io.littlehorse.jlib.common.proto.VarNameAndValPb.Builder> 
          getInputVariablesBuilderList() {
@@ -1607,7 +1546,7 @@ private static final long serialVersionUID = 0L;
         inputVariablesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             io.littlehorse.jlib.common.proto.VarNameAndValPb, io.littlehorse.jlib.common.proto.VarNameAndValPb.Builder, io.littlehorse.jlib.common.proto.VarNameAndValPbOrBuilder>(
                 inputVariables_,
-                ((bitField0_ & 0x00000020) != 0),
+                ((bitField0_ & 0x00000010) != 0),
                 getParentForChildren(),
                 isClean());
         inputVariables_ = null;
@@ -1615,155 +1554,242 @@ private static final long serialVersionUID = 0L;
       return inputVariablesBuilder_;
     }
 
-    private java.lang.Object taskWorkerId_ = "";
+    private io.littlehorse.jlib.common.proto.TaskRunSourcePb source_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.jlib.common.proto.TaskRunSourcePb, io.littlehorse.jlib.common.proto.TaskRunSourcePb.Builder, io.littlehorse.jlib.common.proto.TaskRunSourcePbOrBuilder> sourceBuilder_;
     /**
-     * <code>string task_worker_id = 7;</code>
-     * @return The taskWorkerId.
+     * <code>.littlehorse.TaskRunSourcePb source = 6;</code>
+     * @return Whether the source field is set.
      */
-    public java.lang.String getTaskWorkerId() {
-      java.lang.Object ref = taskWorkerId_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        taskWorkerId_ = s;
-        return s;
+    public boolean hasSource() {
+      return ((bitField0_ & 0x00000020) != 0);
+    }
+    /**
+     * <code>.littlehorse.TaskRunSourcePb source = 6;</code>
+     * @return The source.
+     */
+    public io.littlehorse.jlib.common.proto.TaskRunSourcePb getSource() {
+      if (sourceBuilder_ == null) {
+        return source_ == null ? io.littlehorse.jlib.common.proto.TaskRunSourcePb.getDefaultInstance() : source_;
       } else {
-        return (java.lang.String) ref;
+        return sourceBuilder_.getMessage();
       }
     }
     /**
-     * <code>string task_worker_id = 7;</code>
-     * @return The bytes for taskWorkerId.
+     * <code>.littlehorse.TaskRunSourcePb source = 6;</code>
      */
-    public com.google.protobuf.ByteString
-        getTaskWorkerIdBytes() {
-      java.lang.Object ref = taskWorkerId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        taskWorkerId_ = b;
-        return b;
+    public Builder setSource(io.littlehorse.jlib.common.proto.TaskRunSourcePb value) {
+      if (sourceBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        source_ = value;
       } else {
-        return (com.google.protobuf.ByteString) ref;
+        sourceBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000020;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.TaskRunSourcePb source = 6;</code>
+     */
+    public Builder setSource(
+        io.littlehorse.jlib.common.proto.TaskRunSourcePb.Builder builderForValue) {
+      if (sourceBuilder_ == null) {
+        source_ = builderForValue.build();
+      } else {
+        sourceBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000020;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.TaskRunSourcePb source = 6;</code>
+     */
+    public Builder mergeSource(io.littlehorse.jlib.common.proto.TaskRunSourcePb value) {
+      if (sourceBuilder_ == null) {
+        if (((bitField0_ & 0x00000020) != 0) &&
+          source_ != null &&
+          source_ != io.littlehorse.jlib.common.proto.TaskRunSourcePb.getDefaultInstance()) {
+          getSourceBuilder().mergeFrom(value);
+        } else {
+          source_ = value;
+        }
+      } else {
+        sourceBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000020;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.TaskRunSourcePb source = 6;</code>
+     */
+    public Builder clearSource() {
+      bitField0_ = (bitField0_ & ~0x00000020);
+      source_ = null;
+      if (sourceBuilder_ != null) {
+        sourceBuilder_.dispose();
+        sourceBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.TaskRunSourcePb source = 6;</code>
+     */
+    public io.littlehorse.jlib.common.proto.TaskRunSourcePb.Builder getSourceBuilder() {
+      bitField0_ |= 0x00000020;
+      onChanged();
+      return getSourceFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.TaskRunSourcePb source = 6;</code>
+     */
+    public io.littlehorse.jlib.common.proto.TaskRunSourcePbOrBuilder getSourceOrBuilder() {
+      if (sourceBuilder_ != null) {
+        return sourceBuilder_.getMessageOrBuilder();
+      } else {
+        return source_ == null ?
+            io.littlehorse.jlib.common.proto.TaskRunSourcePb.getDefaultInstance() : source_;
       }
     }
     /**
-     * <code>string task_worker_id = 7;</code>
-     * @param value The taskWorkerId to set.
-     * @return This builder for chaining.
+     * <code>.littlehorse.TaskRunSourcePb source = 6;</code>
      */
-    public Builder setTaskWorkerId(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      taskWorkerId_ = value;
-      bitField0_ |= 0x00000040;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string task_worker_id = 7;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearTaskWorkerId() {
-      taskWorkerId_ = getDefaultInstance().getTaskWorkerId();
-      bitField0_ = (bitField0_ & ~0x00000040);
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string task_worker_id = 7;</code>
-     * @param value The bytes for taskWorkerId to set.
-     * @return This builder for chaining.
-     */
-    public Builder setTaskWorkerIdBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      taskWorkerId_ = value;
-      bitField0_ |= 0x00000040;
-      onChanged();
-      return this;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.jlib.common.proto.TaskRunSourcePb, io.littlehorse.jlib.common.proto.TaskRunSourcePb.Builder, io.littlehorse.jlib.common.proto.TaskRunSourcePbOrBuilder> 
+        getSourceFieldBuilder() {
+      if (sourceBuilder_ == null) {
+        sourceBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.jlib.common.proto.TaskRunSourcePb, io.littlehorse.jlib.common.proto.TaskRunSourcePb.Builder, io.littlehorse.jlib.common.proto.TaskRunSourcePbOrBuilder>(
+                getSource(),
+                getParentForChildren(),
+                isClean());
+        source_ = null;
+      }
+      return sourceBuilder_;
     }
 
-    private java.lang.Object taskWorkerVersion_ = "";
+    private com.google.protobuf.Timestamp scheduledAt_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> scheduledAtBuilder_;
     /**
-     * <code>optional string task_worker_version = 8;</code>
-     * @return Whether the taskWorkerVersion field is set.
+     * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
+     * @return Whether the scheduledAt field is set.
      */
-    public boolean hasTaskWorkerVersion() {
-      return ((bitField0_ & 0x00000080) != 0);
+    public boolean hasScheduledAt() {
+      return ((bitField0_ & 0x00000040) != 0);
     }
     /**
-     * <code>optional string task_worker_version = 8;</code>
-     * @return The taskWorkerVersion.
+     * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
+     * @return The scheduledAt.
      */
-    public java.lang.String getTaskWorkerVersion() {
-      java.lang.Object ref = taskWorkerVersion_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        taskWorkerVersion_ = s;
-        return s;
+    public com.google.protobuf.Timestamp getScheduledAt() {
+      if (scheduledAtBuilder_ == null) {
+        return scheduledAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : scheduledAt_;
       } else {
-        return (java.lang.String) ref;
+        return scheduledAtBuilder_.getMessage();
       }
     }
     /**
-     * <code>optional string task_worker_version = 8;</code>
-     * @return The bytes for taskWorkerVersion.
+     * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
      */
-    public com.google.protobuf.ByteString
-        getTaskWorkerVersionBytes() {
-      java.lang.Object ref = taskWorkerVersion_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        taskWorkerVersion_ = b;
-        return b;
+    public Builder setScheduledAt(com.google.protobuf.Timestamp value) {
+      if (scheduledAtBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        scheduledAt_ = value;
       } else {
-        return (com.google.protobuf.ByteString) ref;
+        scheduledAtBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
+     */
+    public Builder setScheduledAt(
+        com.google.protobuf.Timestamp.Builder builderForValue) {
+      if (scheduledAtBuilder_ == null) {
+        scheduledAt_ = builderForValue.build();
+      } else {
+        scheduledAtBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
+     */
+    public Builder mergeScheduledAt(com.google.protobuf.Timestamp value) {
+      if (scheduledAtBuilder_ == null) {
+        if (((bitField0_ & 0x00000040) != 0) &&
+          scheduledAt_ != null &&
+          scheduledAt_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
+          getScheduledAtBuilder().mergeFrom(value);
+        } else {
+          scheduledAt_ = value;
+        }
+      } else {
+        scheduledAtBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
+     */
+    public Builder clearScheduledAt() {
+      bitField0_ = (bitField0_ & ~0x00000040);
+      scheduledAt_ = null;
+      if (scheduledAtBuilder_ != null) {
+        scheduledAtBuilder_.dispose();
+        scheduledAtBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
+     */
+    public com.google.protobuf.Timestamp.Builder getScheduledAtBuilder() {
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return getScheduledAtFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
+     */
+    public com.google.protobuf.TimestampOrBuilder getScheduledAtOrBuilder() {
+      if (scheduledAtBuilder_ != null) {
+        return scheduledAtBuilder_.getMessageOrBuilder();
+      } else {
+        return scheduledAt_ == null ?
+            com.google.protobuf.Timestamp.getDefaultInstance() : scheduledAt_;
       }
     }
     /**
-     * <code>optional string task_worker_version = 8;</code>
-     * @param value The taskWorkerVersion to set.
-     * @return This builder for chaining.
+     * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
      */
-    public Builder setTaskWorkerVersion(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      taskWorkerVersion_ = value;
-      bitField0_ |= 0x00000080;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional string task_worker_version = 8;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearTaskWorkerVersion() {
-      taskWorkerVersion_ = getDefaultInstance().getTaskWorkerVersion();
-      bitField0_ = (bitField0_ & ~0x00000080);
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional string task_worker_version = 8;</code>
-     * @param value The bytes for taskWorkerVersion to set.
-     * @return This builder for chaining.
-     */
-    public Builder setTaskWorkerVersionBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      taskWorkerVersion_ = value;
-      bitField0_ |= 0x00000080;
-      onChanged();
-      return this;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
+        getScheduledAtFieldBuilder() {
+      if (scheduledAtBuilder_ == null) {
+        scheduledAtBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
+                getScheduledAt(),
+                getParentForChildren(),
+                isClean());
+        scheduledAt_ = null;
+      }
+      return scheduledAtBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

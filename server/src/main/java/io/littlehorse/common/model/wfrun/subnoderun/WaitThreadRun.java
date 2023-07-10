@@ -9,7 +9,6 @@ import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.LHStatusPb;
-import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
 import io.littlehorse.jlib.common.proto.WaitThreadRunPb;
 import java.util.Date;
@@ -20,7 +19,6 @@ public class WaitThreadRun extends SubNodeRun<WaitThreadRunPb> {
 
     public Integer threadRunNumber;
     public Date threadEndTime;
-    public TaskResultCodePb threadResultCode;
     public LHStatusPb threadStatus;
 
     public Class<WaitThreadRunPb> getProtoBaseClass() {
@@ -33,12 +31,7 @@ public class WaitThreadRun extends SubNodeRun<WaitThreadRunPb> {
         if (p.hasThreadEndTime()) {
             threadEndTime = LHUtil.fromProtoTs(p.getThreadEndTime());
         }
-        if (p.hasThreadResultCode()) {
-            threadResultCode = p.getThreadResultCode();
-        }
-        if (p.hasThreadStatus()) {
-            threadStatus = p.getThreadStatus();
-        }
+        threadStatus = p.getThreadStatus();
     }
 
     public WaitThreadRunPb.Builder toProto() {
@@ -46,9 +39,7 @@ public class WaitThreadRun extends SubNodeRun<WaitThreadRunPb> {
             .newBuilder()
             .setThreadRunNumber(threadRunNumber);
 
-        if (threadResultCode != null) {
-            out.setThreadResultCode(threadResultCode);
-        }
+        out.setThreadStatus(threadStatus);
 
         if (threadEndTime != null) {
             out.setThreadEndTime(LHUtil.fromDate(threadEndTime));
@@ -81,7 +72,6 @@ public class WaitThreadRun extends SubNodeRun<WaitThreadRunPb> {
         } else if (toWait.status == LHStatusPb.ERROR) {
             nodeRun.fail(
                 new Failure(
-                    TaskResultCodePb.CHILD_FALIED,
                     "Thread failed: " + toWait.errorMessage,
                     LHConstants.CHILD_FAILURE
                 ),
@@ -98,14 +88,14 @@ public class WaitThreadRun extends SubNodeRun<WaitThreadRunPb> {
     public void arrive(Date time) {
         try {
             threadRunNumber =
-                nodeRun.threadRun
+                nodeRun
+                    .getThreadRun()
                     .assignVariable(getNode().waitForThreadNode.threadRunNumber)
                     .asInt()
                     .intVal.intValue();
         } catch (LHVarSubError exn) {
             nodeRun.fail(
                 new Failure(
-                    TaskResultCodePb.VAR_SUB_ERROR,
                     "Failed determining thread run number: " + exn.getMessage(),
                     LHConstants.VAR_SUB_ERROR
                 ),
@@ -116,7 +106,6 @@ public class WaitThreadRun extends SubNodeRun<WaitThreadRunPb> {
         if (threadRunNumber >= getWfRun().threadRuns.size() || threadRunNumber < 0) {
             nodeRun.fail(
                 new Failure(
-                    TaskResultCodePb.VAR_SUB_ERROR,
                     "Determined threadrunnumber " + threadRunNumber + " is invalid",
                     LHConstants.VAR_SUB_ERROR
                 ),
@@ -128,12 +117,11 @@ public class WaitThreadRun extends SubNodeRun<WaitThreadRunPb> {
 
         // Validate that we're not waiting on a thread that's above us in the
         // hierarchy
-        ThreadRun potentialParent = nodeRun.threadRun;
+        ThreadRun potentialParent = nodeRun.getThreadRun();
         while (potentialParent != null) {
             if (potentialParent.number == toWait.number) {
                 nodeRun.fail(
                     new Failure(
-                        TaskResultCodePb.VAR_SUB_ERROR,
                         "Determined threadrunnumber " +
                         threadRunNumber +
                         " is a parent!",

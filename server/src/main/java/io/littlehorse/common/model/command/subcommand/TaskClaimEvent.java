@@ -3,44 +3,58 @@ package io.littlehorse.common.model.command.subcommand;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHDAO;
+import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.TaskClaimReply;
-import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.model.observabilityevent.events.TaskStartOe;
+import io.littlehorse.common.model.objectId.TaskRunId;
 import io.littlehorse.common.model.wfrun.ScheduledTask;
-import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
 import io.littlehorse.common.proto.TaskClaimEventPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.LHResponseCodePb;
+import io.littlehorse.server.streamsimpl.taskqueue.PollTaskRequestObserver;
 import java.util.Date;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Getter
+@Setter
+/*
+ * In certain crash-failure scenarios, it is possible for there to be two in-flight
+ * TaskClaimEvent's. However, that's not a problem, because the processing of
+ * a TaskClaimEvent is strictly ordered, so if there are multiple in flight only
+ * one will receive the `ScheduledTask`, and therefore the second will be ignored.
+ */
 public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
 
-    public String wfRunId;
-    public int threadRunNumber;
-    public int taskRunNumber;
-    public int taskRunPosition;
-    public Date time;
-    public String taskWorkerVersion;
-    public String taskWorkerId;
+    private TaskRunId taskRunId;
+    private Date time;
+    private String taskWorkerVersion;
+    private String taskWorkerId;
+
+    public TaskClaimEvent() {}
+
+    public TaskClaimEvent(ScheduledTask task, PollTaskRequestObserver taskClaimer) {
+        this.taskRunId = task.getTaskRunId();
+        this.time = new Date();
+        this.taskWorkerId = taskClaimer.getClientId();
+        this.taskWorkerVersion = taskClaimer.getTaskWorkerVersion();
+    }
 
     public Class<TaskClaimEventPb> getProtoBaseClass() {
         return TaskClaimEventPb.class;
     }
 
     public String getPartitionKey() {
-        return wfRunId;
+        return taskRunId.getPartitionKey();
     }
 
     public TaskClaimEventPb.Builder toProto() {
         TaskClaimEventPb.Builder b = TaskClaimEventPb
             .newBuilder()
-            .setWfRunId(wfRunId)
-            .setThreadRunNumber(threadRunNumber)
-            .setTaskRunNumber(taskRunNumber)
-            .setTaskRunPosition(taskRunPosition)
+            .setTaskRunId(taskRunId.toProto())
             .setTaskWorkerVersion(taskWorkerVersion)
             .setTaskWorkerId(taskWorkerId)
             .setTime(LHUtil.fromDate(time));
@@ -48,57 +62,38 @@ public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
     }
 
     public boolean hasResponse() {
-        // TODO: It's wasteful to always put a response here, since when the
-        // taskdef's queue type is "KAFKA", no one looks at the response.
+        // TaskClaimEvents are always due to a Task Worker's poll request.
         return true;
     }
 
     public TaskClaimReply process(LHDAO dao, LHConfig config) {
         TaskClaimReply out = new TaskClaimReply();
 
-        WfRun wfRun = dao.getWfRun(wfRunId);
-        if (wfRun == null) {
-            log.warn("Got taskResult for non-existent wfRun {}", wfRunId);
-            return null;
-        }
-
-        WfSpec wfSpec = dao.getWfSpec(wfRun.wfSpecName, wfRun.wfSpecVersion);
-        if (wfSpec == null) {
-            log.warn(
-                "Got WfRun with missing WfSpec, should be impossible: {}",
-                wfRunId
-            );
-            return null;
+        TaskRun taskRun = dao.getTaskRun(taskRunId);
+        if (taskRun == null) {
+            log.warn("Got claimTask for non-existent taskRun {}", taskRunId);
+            out.setCode(LHResponseCodePb.BAD_REQUEST_ERROR);
+            out.setMessage("Couldn't find specified TaskRun");
+            return out;
         }
 
         // Needs to be done before we process the event, since processing the event
         // will delete the task schedule request.
-        ScheduledTask scheduledTask = dao.markTaskAsScheduled(
-            wfRunId,
-            threadRunNumber,
-            taskRunPosition
-        );
+        ScheduledTask scheduledTask = dao.markTaskAsScheduled(taskRunId);
 
         if (scheduledTask == null) {
             // That means the task has been taken already.
-            out.message = "Unable to claim this task, someone beat you to it";
-            out.code = LHResponseCodePb.NOT_FOUND_ERROR;
+            out.setMessage("Unable to claim this task, someone beat you to it");
+            out.setCode(LHResponseCodePb.NOT_FOUND_ERROR);
             return out;
         }
+
+        taskRun.processStart(this);
 
         out.result = scheduledTask;
         out.code = LHResponseCodePb.OK;
 
-        TaskStartOe oe = new TaskStartOe();
-        oe.taskRunPosition = taskRunPosition;
-        oe.threadRunNumber = threadRunNumber;
-        oe.workerId = "TODO: pass this to taskClaimEvent";
-        // TODO LH-338: re-support observability events
-        // dao.addObservabilityEvent(new ObservabilityEvent(wfRunId, oe));
-
-        wfRun.wfSpec = wfSpec;
-        wfRun.cmdDao = dao;
-        wfRun.processTaskStart(this);
+        // TODO: Task Started Metrics
         return out;
     }
 
@@ -110,20 +105,9 @@ public class TaskClaimEvent extends SubCommand<TaskClaimEventPb> {
 
     public void initFrom(Message p) {
         TaskClaimEventPb proto = (TaskClaimEventPb) p;
-        this.wfRunId = proto.getWfRunId();
-        this.threadRunNumber = proto.getThreadRunNumber();
-        this.taskRunNumber = proto.getTaskRunNumber();
-        this.taskRunPosition = proto.getTaskRunPosition();
+        taskRunId = LHSerializable.fromProto(proto.getTaskRunId(), TaskRunId.class);
         this.taskWorkerVersion = proto.getTaskWorkerVersion();
         this.taskWorkerId = proto.getTaskWorkerId();
         this.time = LHUtil.fromProtoTs(proto.getTime());
-    }
-
-    public Integer getThreadRunNumber() {
-        return threadRunNumber;
-    }
-
-    public Integer getNodeRunPosition() {
-        return taskRunPosition;
     }
 }

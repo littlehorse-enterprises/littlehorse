@@ -72,7 +72,7 @@ public class SleepNode extends SubNode<SleepNodePb> {
     }
 
     @Override
-    public SleepNodeRun createRun(Date time) {
+    public SleepNodeRun createSubNodeRun(Date time) {
         return new SleepNodeRun();
     }
 

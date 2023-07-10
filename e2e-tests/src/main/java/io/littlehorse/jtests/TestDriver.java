@@ -4,7 +4,7 @@ import io.littlehorse.jlib.client.LHClient;
 import io.littlehorse.jlib.common.config.LHWorkerConfig;
 import io.littlehorse.jtests.test.Test;
 import io.littlehorse.jtests.test.lifecycletests.AATaskDefDependency;
-import io.littlehorse.jtests.test.lifecycletests.ABSimpleDeleteDeadTask;
+import io.littlehorse.jtests.test.lifecycletests.ABSimpleDeleteDeadTaskWorker;
 import io.littlehorse.jtests.test.lifecycletests.ACSimpleTaskRebalancing;
 import io.littlehorse.jtests.test.workflowtests.AASequential;
 import io.littlehorse.jtests.test.workflowtests.ABIntInputVars;
@@ -73,7 +73,7 @@ public class TestDriver {
         AXConditionalWhileLogic.class,
         AYExtEvtFollowedByChildThread.class,
         AATaskDefDependency.class,
-        ABSimpleDeleteDeadTask.class,
+        ABSimpleDeleteDeadTaskWorker.class,
         ACSimpleTaskRebalancing.class
     );
 

@@ -16,12 +16,12 @@ import io.littlehorse.common.model.command.subcommand.PutExternalEventDef;
 import io.littlehorse.common.model.command.subcommand.PutTaskDef;
 import io.littlehorse.common.model.command.subcommand.PutUserTaskDef;
 import io.littlehorse.common.model.command.subcommand.PutWfSpec;
+import io.littlehorse.common.model.command.subcommand.ReportTaskRun;
 import io.littlehorse.common.model.command.subcommand.ResumeWfRun;
 import io.littlehorse.common.model.command.subcommand.RunWf;
 import io.littlehorse.common.model.command.subcommand.SleepNodeMatured;
 import io.littlehorse.common.model.command.subcommand.StopWfRun;
 import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
-import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
 import io.littlehorse.common.model.command.subcommand.TaskWorkerHeartBeat;
 import io.littlehorse.common.model.command.subcommand.TriggeredTaskRun;
 import io.littlehorse.common.proto.CommandPb;
@@ -29,14 +29,18 @@ import io.littlehorse.common.proto.CommandPb.CommandCase;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.streamsimpl.coreprocessors.KafkaStreamsLHDAOImpl;
 import java.util.Date;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class Command extends LHSerializable<CommandPb> {
 
     public String commandId;
     public Date time;
 
     public CommandCase type;
-    public TaskResultEvent taskResultEvent;
+    public ReportTaskRun reportTaskRun;
     public TaskClaimEvent taskClaimEvent;
     public PutExternalEvent putExternalEvent;
     public PutWfSpec putWfSpec;
@@ -70,6 +74,12 @@ public class Command extends LHSerializable<CommandPb> {
         this.setSubCommand(cmd);
     }
 
+    public Command(SubCommand<?> cmd, Date time) {
+        this.commandId = LHUtil.generateGuid();
+        this.time = time;
+        this.setSubCommand(cmd);
+    }
+
     public CommandPb.Builder toProto() {
         CommandPb.Builder out = CommandPb.newBuilder();
         out.setTime(LHUtil.fromDate(time));
@@ -79,8 +89,8 @@ public class Command extends LHSerializable<CommandPb> {
         }
 
         switch (type) {
-            case TASK_RESULT_EVENT:
-                out.setTaskResultEvent(taskResultEvent.toProto());
+            case REPORT_TASK_RUN:
+                out.setReportTaskRun(reportTaskRun.toProto());
                 break;
             case TASK_CLAIM_EVENT:
                 out.setTaskClaimEvent(taskClaimEvent.toProto());
@@ -158,8 +168,8 @@ public class Command extends LHSerializable<CommandPb> {
 
         type = p.getCommandCase();
         switch (type) {
-            case TASK_RESULT_EVENT:
-                taskResultEvent = TaskResultEvent.fromProto(p.getTaskResultEvent());
+            case REPORT_TASK_RUN:
+                reportTaskRun = ReportTaskRun.fromProto(p.getReportTaskRun());
                 break;
             case TASK_CLAIM_EVENT:
                 taskClaimEvent = TaskClaimEvent.fromProto(p.getTaskClaimEvent());
@@ -251,8 +261,8 @@ public class Command extends LHSerializable<CommandPb> {
 
     public SubCommand<?> getSubCommand() {
         switch (type) {
-            case TASK_RESULT_EVENT:
-                return taskResultEvent;
+            case REPORT_TASK_RUN:
+                return reportTaskRun;
             case TASK_CLAIM_EVENT:
                 return taskClaimEvent;
             case PUT_EXTERNAL_EVENT:
@@ -315,9 +325,9 @@ public class Command extends LHSerializable<CommandPb> {
         } else if (cls.equals(PutExternalEvent.class)) {
             type = CommandCase.PUT_EXTERNAL_EVENT;
             putExternalEvent = (PutExternalEvent) cmd;
-        } else if (cls.equals(TaskResultEvent.class)) {
-            type = CommandCase.TASK_RESULT_EVENT;
-            taskResultEvent = (TaskResultEvent) cmd;
+        } else if (cls.equals(ReportTaskRun.class)) {
+            type = CommandCase.REPORT_TASK_RUN;
+            reportTaskRun = (ReportTaskRun) cmd;
         } else if (cls.equals(TaskClaimEvent.class)) {
             type = CommandCase.TASK_CLAIM_EVENT;
             taskClaimEvent = (TaskClaimEvent) cmd;

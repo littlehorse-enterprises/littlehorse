@@ -3,7 +3,6 @@ package io.littlehorse.common.model.meta;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.command.subcommand.RunWf;
@@ -20,7 +19,13 @@ import io.littlehorse.jlib.common.proto.WfSpecIdPb;
 import io.littlehorse.jlib.common.proto.WfSpecPb;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.tuple.Pair;
@@ -257,26 +262,26 @@ public class WfSpec extends Getable<WfSpecPb> {
         }
     }
 
-    public WfRun startNewRun(RunWf evt, LHDAO dao) {
+    public WfRun startNewRun(RunWf evt) {
         WfRun out = new WfRun();
-        out.cmdDao = dao;
+        out.setDao(getDao());
         out.id = evt.id;
 
         out.wfSpec = this;
         out.wfSpecVersion = version;
         out.wfSpecName = name;
-        out.startTime = dao.getEventTime();
+        out.startTime = getDao().getEventTime();
         out.status = LHStatusPb.RUNNING;
 
         out.startThread(
             entrypointThreadName,
-            dao.getEventTime(),
+            getDao().getEventTime(),
             null,
             evt.variables,
             ThreadTypePb.ENTRYPOINT
         );
 
-        dao.saveWfRun(out);
+        getDao().saveWfRun(out);
 
         return out;
     }

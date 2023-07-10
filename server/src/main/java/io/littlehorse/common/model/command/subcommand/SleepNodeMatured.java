@@ -65,7 +65,6 @@ public class SleepNodeMatured extends SubCommand<SleepNodeMaturedPb> {
             return null;
         }
         wfRun.wfSpec = wfSpec;
-        wfRun.cmdDao = dao;
 
         try {
             wfRun.processSleepNodeMatured(this, dao.getEventTime());

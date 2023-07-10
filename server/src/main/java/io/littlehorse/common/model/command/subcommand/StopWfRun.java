@@ -55,7 +55,6 @@ public class StopWfRun extends SubCommand<StopWfRunPb> {
         }
 
         wfRun.wfSpec = wfSpec;
-        wfRun.cmdDao = dao;
         try {
             wfRun.processStopRequest(this);
             out.code = LHResponseCodePb.OK;

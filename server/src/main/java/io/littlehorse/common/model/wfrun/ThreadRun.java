@@ -8,8 +8,6 @@ import io.littlehorse.common.model.command.subcommand.AssignUserTaskRun;
 import io.littlehorse.common.model.command.subcommand.CompleteUserTaskRun;
 import io.littlehorse.common.model.command.subcommand.ExternalEventTimeout;
 import io.littlehorse.common.model.command.subcommand.SleepNodeMatured;
-import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
-import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
 import io.littlehorse.common.model.meta.Edge;
 import io.littlehorse.common.model.meta.FailureHandlerDef;
 import io.littlehorse.common.model.meta.InterruptDef;
@@ -22,9 +20,6 @@ import io.littlehorse.common.model.meta.VariableMutation;
 import io.littlehorse.common.model.meta.subnode.ExitNode;
 import io.littlehorse.common.model.meta.subnode.TaskNode;
 import io.littlehorse.common.model.objectId.ExternalEventId;
-import io.littlehorse.common.model.observabilityevent.ObservabilityEvent;
-import io.littlehorse.common.model.observabilityevent.events.InterruptedOe;
-import io.littlehorse.common.model.observabilityevent.events.ThreadStatusOe;
 import io.littlehorse.common.model.wfrun.haltreason.HandlingFailureHaltReason;
 import io.littlehorse.common.model.wfrun.haltreason.Interrupted;
 import io.littlehorse.common.model.wfrun.haltreason.ParentHalted;
@@ -33,7 +28,6 @@ import io.littlehorse.common.model.wfrun.haltreason.PendingInterruptHaltReason;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.LHStatusPb;
 import io.littlehorse.jlib.common.proto.NodeRunPb.NodeTypeCase;
-import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import io.littlehorse.jlib.common.proto.ThreadHaltReasonPb;
 import io.littlehorse.jlib.common.proto.ThreadHaltReasonPb.ReasonCase;
 import io.littlehorse.jlib.common.proto.ThreadRunPb;
@@ -46,9 +40,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Getter
+@Setter
 public class ThreadRun extends LHSerializable<ThreadRunPb> {
 
     public String wfRunId;
@@ -64,7 +62,6 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     public Date endTime;
 
     public String errorMessage;
-    public TaskResultCodePb resultCode;
 
     public List<Integer> childThreadIds;
     public Integer parentThreadId;
@@ -98,9 +95,6 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         }
         if (proto.hasErrorMessage()) {
             errorMessage = proto.getErrorMessage();
-        }
-        if (proto.hasResultCode()) {
-            resultCode = proto.getResultCode();
         }
         if (proto.hasParentThreadId()) parentThreadId = proto.getParentThreadId();
         for (Integer childId : proto.getChildThreadIdsList()) {
@@ -145,10 +139,6 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             .setCurrentNodePosition(currentNodePosition)
             .setStartTime(LHUtil.fromDate(startTime))
             .setType(type);
-
-        if (resultCode != null) {
-            out.setResultCode(resultCode);
-        }
 
         if (errorMessage != null) {
             out.setErrorMessage(errorMessage);
@@ -274,19 +264,6 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         nr.userTaskRun.reassignTo(event);
     }
 
-    public void processTaskStartedEvent(TaskClaimEvent e) {
-        NodeRun nr = getNodeRun(e.getNodeRunPosition());
-
-        // TODO LH-303: make this throw an error back to client
-        if (nr.type != NodeTypeCase.TASK) {
-            log.error("Impossible, got a bad event. TASK_START on non-task node.");
-            // also check the exact noderun
-            // TODO LH-339: properly process User Task Triggered Actions
-            return;
-        }
-        nr.taskRun.processStartedEvent(e);
-    }
-
     public void processExtEvtTimeout(ExternalEventTimeout timeout) {
         NodeRun nr = getNodeRun(timeout.nodeRunPosition);
         if (nr.type != NodeTypeCase.EXTERNAL_EVENT) {
@@ -297,17 +274,6 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             return;
         }
         nr.externalEventRun.processExternalEventTimeout(timeout);
-    }
-
-    public void processTaskResultEvent(TaskResultEvent e) {
-        NodeRun nr = getNodeRun(e.getNodeRunPosition());
-        // TODO LH-303: make this throw an error back to client
-        if (nr.type != NodeTypeCase.TASK) {
-            log.error("Impossible, got a bad event. TASK_START on non-task node.");
-            // TODO LH-339: Properly process User Task Triggered Actions
-            return;
-        }
-        nr.taskRun.processTaskResult(e);
     }
 
     public void processSleepNodeMatured(SleepNodeMatured e) {
@@ -357,12 +323,6 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         haltReason.type = ReasonCase.PENDING_INTERRUPT;
         haltReason.pendingInterrupt = new PendingInterruptHaltReason();
         haltReason.pendingInterrupt.externalEventId = trigger.getObjectId();
-
-        InterruptedOe oe = new InterruptedOe();
-        oe.extEvtDefName = trigger.externalEventDefName;
-        oe.extEvtGuid = trigger.guid;
-        oe.interruptedThread = number;
-        wfRun.cmdDao.addObservabilityEvent(new ObservabilityEvent(wfRunId, oe));
 
         // This also stops the children
         halt(haltReason);
@@ -468,10 +428,6 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
 
     public void setStatus(LHStatusPb status) {
         this.status = status;
-        ThreadStatusOe oe = new ThreadStatusOe();
-        oe.threadRunNumber = number;
-        oe.status = status;
-        wfRun.cmdDao.addObservabilityEvent(new ObservabilityEvent(wfRunId, oe));
     }
 
     /*
@@ -514,9 +470,6 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             log.info("Tried to advance HALTED thread. Doing nothing.");
             return false;
         } else if (status == LHStatusPb.HALTING) {
-            // TODO: Decide whether we want to pull this out into a method
-            // like `ThreadRun::updateStatus()` or keep it here
-
             log.info("Tried to advance HALTING thread, checking if halted yet.");
 
             if (currentNodeRun.canBeInterrupted()) {
@@ -548,6 +501,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
 
         Node curNode = getCurrentNode();
         FailureHandlerDef handler = null;
+
         for (FailureHandlerDef candidate : curNode.failureHandlers) {
             if (candidate.doesHandle(failure.failureName)) {
                 handler = candidate;
@@ -576,6 +530,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
 
         // This also stops the children
         halt(haltReason);
+        getWfRun().advance(getWfRun().getDao().getEventTime());
     }
 
     public void acknowledgeXnHandlerStarted(
@@ -606,7 +561,6 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     }
 
     public void dieForReal(Failure failure, Date time) {
-        this.resultCode = failure.failureCode;
         this.errorMessage = failure.message;
         setStatus(LHStatusPb.ERROR);
         this.endTime = time;
@@ -620,15 +574,12 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             child.halt(hr);
         }
 
-        wfRun.handleThreadStatus(number, new Date(), status);
-
         if (interruptTriggerId != null) {
             // then we're an interrupt thread and need to fail the parent.
 
             getParent() // guaranteed not to be null in this case
                 .failWithoutGrace(
                     new Failure(
-                        TaskResultCodePb.INTERRUPT_HANDLER_FAILED,
                         "Interrupt thread with id " + number + " failed!",
                         failure.failureName
                     ),
@@ -638,13 +589,14 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             getParent()
                 .failWithoutGrace(
                     new Failure(
-                        TaskResultCodePb.EXCEPTION_HANDLER_FAILED,
                         "Interrupt thread with id " + number + " failed!",
                         failure.failureName
                     ),
                     time
                 );
         }
+
+        wfRun.handleThreadStatus(number, new Date(), status);
     }
 
     public void failWithoutGrace(Failure failure, Date time) {
@@ -652,7 +604,6 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     }
 
     public void complete(Date time) {
-        this.resultCode = TaskResultCodePb.SUCCESS;
         this.errorMessage = null;
         setStatus(LHStatusPb.COMPLETED);
         endTime = time;
@@ -669,7 +620,6 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         } catch (LHVarSubError exn) {
             fail(
                 new Failure(
-                    TaskResultCodePb.VAR_MUTATION_ERROR,
                     "Failed mutating variables: " + exn.getMessage(),
                     LHConstants.VAR_MUTATION_ERROR
                 ),
@@ -682,6 +632,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             // If we got here, then we're good.
             advanceFrom(getCurrentNode());
         }
+        getWfRun().advance(eventTime);
     }
 
     public void advanceFrom(Node curNode) {
@@ -704,7 +655,6 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
                 );
                 fail(
                     new Failure(
-                        TaskResultCodePb.VAR_MUTATION_ERROR,
                         "Failed evaluating outgoing edge: " + exn.getMessage(),
                         LHConstants.VAR_MUTATION_ERROR
                     ),
@@ -718,7 +668,6 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             // possible
             fail(
                 new Failure(
-                    TaskResultCodePb.INTERNAL_ERROR,
                     "WfSpec was invalid. There were no activated outgoing edges" +
                     " from a non-exit node.",
                     LHConstants.INTERNAL_ERROR
@@ -734,11 +683,10 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         Date arrivalTime = new Date();
 
         currentNodePosition++;
-        NodeRun old = getCurrentNodeRun();
-        Node oldNode = old == null ? null : old.getNode();
 
         NodeRun cnr = new NodeRun();
-        cnr.threadRun = this;
+        cnr.setDao(wfRun.getDao());
+        cnr.setThreadRun(this);
         cnr.nodeName = node.name;
         cnr.status = LHStatusPb.STARTING;
 
@@ -748,26 +696,12 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         cnr.threadSpecName = threadSpecName;
 
         cnr.arrivalTime = arrivalTime;
-        cnr.wfSpecId = wfSpecName;
+        cnr.wfSpecId = wfRun.getWfSpec().getObjectId();
         cnr.nodeName = node.name;
 
         cnr.position = currentNodePosition;
 
-        if (oldNode == null || old == null) {
-            // then it's a start node
-            cnr.number = 0;
-            cnr.attemptNumber = 0;
-        } else if (oldNode.name.equals(node.name)) {
-            // Then it's a retry, since we don't allow edges pointing to the same
-            // node.
-            cnr.number = old.number;
-            cnr.attemptNumber = old.attemptNumber + 1;
-        } else {
-            // Not a retry, so it's a new "number" and attemptNumber is 0.
-            cnr.number = old.number + 1;
-            cnr.attemptNumber = 0;
-        }
-        cnr.setSubNodeRun(node.getSubNode().createRun(arrivalTime));
+        cnr.setSubNodeRun(node.getSubNode().createSubNodeRun(arrivalTime));
 
         putNodeRun(cnr);
 
@@ -814,11 +748,9 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         return wfRun.threadRuns.get(parentThreadId);
     }
 
-    // EMPLOYEE_TODO: We are going to implement intelligent variable locking. It will
-    // have to consider what happens here.
     public List<VarNameAndVal> assignVarsForNode(TaskNode node) throws LHVarSubError {
         List<VarNameAndVal> out = new ArrayList<>();
-        TaskDef taskDef = node.getTaskDef(wfRun.cmdDao);
+        TaskDef taskDef = node.getTaskDef();
 
         if (taskDef.inputVars.size() != node.variables.size()) {
             throw new LHVarSubError(
@@ -973,13 +905,13 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     }
 
     public void putNodeRun(NodeRun task) {
-        wfRun.cmdDao.putNodeRun(task);
+        wfRun.getDao().putNodeRun(task);
     }
 
     public NodeRun getNodeRun(int position) {
-        NodeRun out = wfRun.cmdDao.getNodeRun(wfRun.id, number, position);
+        NodeRun out = wfRun.getDao().getNodeRun(wfRun.id, number, position);
         if (out != null) {
-            out.threadRun = this;
+            out.setThreadRun(this);
         }
         return out;
     }
@@ -991,7 +923,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             toPut.name = varName;
             toPut.value = var;
             toPut.threadRunNumber = this.number;
-            wfRun.cmdDao.putVariable(toPut);
+            wfRun.getDao().putVariable(toPut);
         } else {
             if (getParent() != null) {
                 getParent().putVariable(varName, var);
@@ -1007,7 +939,7 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
     public Variable getVariable(String varName) {
         // For now, just do the local one
         // Once we have threads, this will do a backtrack up the thread tree.
-        Variable out = wfRun.cmdDao.getVariable(wfRunId, varName, this.number);
+        Variable out = wfRun.getDao().getVariable(wfRunId, varName, this.number);
         if (out != null) {
             return out;
         }

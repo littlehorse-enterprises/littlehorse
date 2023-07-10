@@ -20,7 +20,7 @@ public class App {
         }
 
         try {
-            TimeUnit.SECONDS.sleep(3);
+            TimeUnit.SECONDS.sleep(2);
         } catch (InterruptedException ex) {
             log.warn("InterruptedException was ignored");
         }

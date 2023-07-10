@@ -24,7 +24,7 @@ public class NopNode extends SubNode<NopNodePb> {
     public void validate(LHGlobalMetaStores stores, LHConfig config)
         throws LHValidationError {}
 
-    public EntrypointRun createRun(Date time) {
+    public EntrypointRun createSubNodeRun(Date time) {
         return new EntrypointRun();
     }
 }

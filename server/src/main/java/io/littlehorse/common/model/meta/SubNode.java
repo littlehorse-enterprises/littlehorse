@@ -12,7 +12,7 @@ import java.util.Set;
 
 public abstract class SubNode<T extends Message> extends LHSerializable<T> {
 
-    public abstract SubNodeRun<?> createRun(Date time);
+    public abstract SubNodeRun<?> createSubNodeRun(Date time);
 
     public abstract void validate(LHGlobalMetaStores stores, LHConfig config)
         throws LHValidationError;

@@ -8,122 +8,113 @@ public interface TaskRunPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <pre>
-   * Task only
-   * </pre>
-   *
-   * <code>int32 attempt_number = 1;</code>
-   * @return The attemptNumber.
+   * <code>.littlehorse.TaskRunIdPb id = 1;</code>
+   * @return Whether the id field is set.
    */
-  int getAttemptNumber();
+  boolean hasId();
+  /**
+   * <code>.littlehorse.TaskRunIdPb id = 1;</code>
+   * @return The id.
+   */
+  io.littlehorse.jlib.common.proto.TaskRunIdPb getId();
+  /**
+   * <code>.littlehorse.TaskRunIdPb id = 1;</code>
+   */
+  io.littlehorse.jlib.common.proto.TaskRunIdPbOrBuilder getIdOrBuilder();
 
   /**
-   * <code>optional .littlehorse.VariableValuePb output = 2;</code>
-   * @return Whether the output field is set.
+   * <code>repeated .littlehorse.TaskAttemptPb attempts = 2;</code>
    */
-  boolean hasOutput();
+  java.util.List<io.littlehorse.jlib.common.proto.TaskAttemptPb> 
+      getAttemptsList();
   /**
-   * <code>optional .littlehorse.VariableValuePb output = 2;</code>
-   * @return The output.
+   * <code>repeated .littlehorse.TaskAttemptPb attempts = 2;</code>
    */
-  io.littlehorse.jlib.common.proto.VariableValuePb getOutput();
+  io.littlehorse.jlib.common.proto.TaskAttemptPb getAttempts(int index);
   /**
-   * <code>optional .littlehorse.VariableValuePb output = 2;</code>
+   * <code>repeated .littlehorse.TaskAttemptPb attempts = 2;</code>
    */
-  io.littlehorse.jlib.common.proto.VariableValuePbOrBuilder getOutputOrBuilder();
+  int getAttemptsCount();
+  /**
+   * <code>repeated .littlehorse.TaskAttemptPb attempts = 2;</code>
+   */
+  java.util.List<? extends io.littlehorse.jlib.common.proto.TaskAttemptPbOrBuilder> 
+      getAttemptsOrBuilderList();
+  /**
+   * <code>repeated .littlehorse.TaskAttemptPb attempts = 2;</code>
+   */
+  io.littlehorse.jlib.common.proto.TaskAttemptPbOrBuilder getAttemptsOrBuilder(
+      int index);
 
   /**
-   * <code>optional .littlehorse.VariableValuePb log_output = 3;</code>
-   * @return Whether the logOutput field is set.
+   * <code>int32 max_attempts = 3;</code>
+   * @return The maxAttempts.
    */
-  boolean hasLogOutput();
-  /**
-   * <code>optional .littlehorse.VariableValuePb log_output = 3;</code>
-   * @return The logOutput.
-   */
-  io.littlehorse.jlib.common.proto.VariableValuePb getLogOutput();
-  /**
-   * <code>optional .littlehorse.VariableValuePb log_output = 3;</code>
-   */
-  io.littlehorse.jlib.common.proto.VariableValuePbOrBuilder getLogOutputOrBuilder();
+  int getMaxAttempts();
 
   /**
-   * <code>optional .google.protobuf.Timestamp start_time = 4;</code>
-   * @return Whether the startTime field is set.
+   * <code>string task_def_name = 4;</code>
+   * @return The taskDefName.
    */
-  boolean hasStartTime();
+  java.lang.String getTaskDefName();
   /**
-   * <code>optional .google.protobuf.Timestamp start_time = 4;</code>
-   * @return The startTime.
-   */
-  com.google.protobuf.Timestamp getStartTime();
-  /**
-   * <code>optional .google.protobuf.Timestamp start_time = 4;</code>
-   */
-  com.google.protobuf.TimestampOrBuilder getStartTimeOrBuilder();
-
-  /**
-   * <code>string task_def_id = 5;</code>
-   * @return The taskDefId.
-   */
-  java.lang.String getTaskDefId();
-  /**
-   * <code>string task_def_id = 5;</code>
-   * @return The bytes for taskDefId.
+   * <code>string task_def_name = 4;</code>
+   * @return The bytes for taskDefName.
    */
   com.google.protobuf.ByteString
-      getTaskDefIdBytes();
+      getTaskDefNameBytes();
 
   /**
-   * <code>repeated .littlehorse.VarNameAndValPb input_variables = 6;</code>
+   * <code>repeated .littlehorse.VarNameAndValPb input_variables = 5;</code>
    */
   java.util.List<io.littlehorse.jlib.common.proto.VarNameAndValPb> 
       getInputVariablesList();
   /**
-   * <code>repeated .littlehorse.VarNameAndValPb input_variables = 6;</code>
+   * <code>repeated .littlehorse.VarNameAndValPb input_variables = 5;</code>
    */
   io.littlehorse.jlib.common.proto.VarNameAndValPb getInputVariables(int index);
   /**
-   * <code>repeated .littlehorse.VarNameAndValPb input_variables = 6;</code>
+   * <code>repeated .littlehorse.VarNameAndValPb input_variables = 5;</code>
    */
   int getInputVariablesCount();
   /**
-   * <code>repeated .littlehorse.VarNameAndValPb input_variables = 6;</code>
+   * <code>repeated .littlehorse.VarNameAndValPb input_variables = 5;</code>
    */
   java.util.List<? extends io.littlehorse.jlib.common.proto.VarNameAndValPbOrBuilder> 
       getInputVariablesOrBuilderList();
   /**
-   * <code>repeated .littlehorse.VarNameAndValPb input_variables = 6;</code>
+   * <code>repeated .littlehorse.VarNameAndValPb input_variables = 5;</code>
    */
   io.littlehorse.jlib.common.proto.VarNameAndValPbOrBuilder getInputVariablesOrBuilder(
       int index);
 
   /**
-   * <code>string task_worker_id = 7;</code>
-   * @return The taskWorkerId.
+   * <code>.littlehorse.TaskRunSourcePb source = 6;</code>
+   * @return Whether the source field is set.
    */
-  java.lang.String getTaskWorkerId();
+  boolean hasSource();
   /**
-   * <code>string task_worker_id = 7;</code>
-   * @return The bytes for taskWorkerId.
+   * <code>.littlehorse.TaskRunSourcePb source = 6;</code>
+   * @return The source.
    */
-  com.google.protobuf.ByteString
-      getTaskWorkerIdBytes();
+  io.littlehorse.jlib.common.proto.TaskRunSourcePb getSource();
+  /**
+   * <code>.littlehorse.TaskRunSourcePb source = 6;</code>
+   */
+  io.littlehorse.jlib.common.proto.TaskRunSourcePbOrBuilder getSourceOrBuilder();
 
   /**
-   * <code>optional string task_worker_version = 8;</code>
-   * @return Whether the taskWorkerVersion field is set.
+   * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
+   * @return Whether the scheduledAt field is set.
    */
-  boolean hasTaskWorkerVersion();
+  boolean hasScheduledAt();
   /**
-   * <code>optional string task_worker_version = 8;</code>
-   * @return The taskWorkerVersion.
+   * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
+   * @return The scheduledAt.
    */
-  java.lang.String getTaskWorkerVersion();
+  com.google.protobuf.Timestamp getScheduledAt();
   /**
-   * <code>optional string task_worker_version = 8;</code>
-   * @return The bytes for taskWorkerVersion.
+   * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
    */
-  com.google.protobuf.ByteString
-      getTaskWorkerVersionBytes();
+  com.google.protobuf.TimestampOrBuilder getScheduledAtOrBuilder();
 }

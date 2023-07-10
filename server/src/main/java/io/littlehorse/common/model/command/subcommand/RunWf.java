@@ -6,8 +6,6 @@ import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.RunWfReply;
 import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.model.observabilityevent.ObservabilityEvent;
-import io.littlehorse.common.model.observabilityevent.events.WfRunStartOe;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.util.LHUtil;
@@ -87,14 +85,10 @@ public class RunWf extends SubCommand<RunWfPb> {
             return out;
         }
 
-        WfRunStartOe oe = new WfRunStartOe();
-        oe.wfSpecName = spec.name;
-        oe.wfSpecVersion = spec.version;
-        dao.addObservabilityEvent(new ObservabilityEvent(id, oe));
+        // TODO: Add WfRun Start Metrics
 
-        WfRun newRun = spec.startNewRun(this, dao);
+        WfRun newRun = spec.startNewRun(this);
         newRun.advance(dao.getEventTime());
-        dao.saveWfRun(newRun);
 
         if (newRun.status == LHStatusPb.ERROR) {
             out.code = LHResponseCodePb.BAD_REQUEST_ERROR;

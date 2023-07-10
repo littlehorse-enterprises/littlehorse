@@ -10,10 +10,10 @@ import io.littlehorse.jlib.common.proto.LHPublicApiGrpc.LHPublicApiStub;
 import io.littlehorse.jlib.common.proto.LHResponseCodePb;
 import io.littlehorse.jlib.common.proto.RegisterTaskWorkerPb;
 import io.littlehorse.jlib.common.proto.RegisterTaskWorkerReplyPb;
+import io.littlehorse.jlib.common.proto.ReportTaskRunPb;
 import io.littlehorse.jlib.common.proto.ScheduledTaskPb;
 import io.littlehorse.jlib.common.proto.TaskDefPb;
-import io.littlehorse.jlib.common.proto.TaskResultCodePb;
-import io.littlehorse.jlib.common.proto.TaskResultEventPb;
+import io.littlehorse.jlib.common.proto.TaskStatusPb;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
 import io.littlehorse.jlib.common.proto.VariableValuePb;
 import io.littlehorse.jlib.worker.WorkerContext;
@@ -100,26 +100,28 @@ public class LHServerConnectionManager
             });
     }
 
-    private void doTask(ScheduledTaskPb scheduleTask, LHPublicApiStub specificStub) {
-        TaskResultEventPb result = executeTask(
-            scheduleTask,
-            LHLibUtil.fromProtoTs(scheduleTask.getCreatedAt())
+    private void doTask(ScheduledTaskPb scheduledTask, LHPublicApiStub specificStub) {
+        ReportTaskRunPb result = executeTask(
+            scheduledTask,
+            LHLibUtil.fromProtoTs(scheduledTask.getCreatedAt())
         );
         this.workerSemaphore.release();
+        String wfRunId = LHLibUtil.getWfRunId(scheduledTask.getSource());
         try {
-            log.debug("Going to report task for wfRun {}", scheduleTask.getWfRunId());
+            log.debug("Going to report task for wfRun {}", wfRunId);
+            System.out.println(LHLibUtil.protoToJson(result));
             specificStub.reportTask(
                 result,
                 new ReportTaskObserver(this, result, TOTAL_RETRIES)
             );
             log.debug(
-                "Successfully reported task for wfRun {}",
-                scheduleTask.getWfRunId()
+                "Successfully contacted LHServer on reportTask for wfRun {}",
+                wfRunId
             );
         } catch (Exception exn) {
             log.warn(
                 "Failed to report task for wfRun {}: {}",
-                scheduleTask.getWfRunId(),
+                wfRunId,
                 exn.getMessage()
             );
             retryReportTask(result, TOTAL_RETRIES);
@@ -208,7 +210,7 @@ public class LHServerConnectionManager
         );
     }
 
-    public void retryReportTask(TaskResultEventPb result, int retriesLeft) {
+    public void retryReportTask(ReportTaskRunPb result, int retriesLeft) {
         // EMPLOYEE_TODO: create a queue or something that has delay and multiple
         // retries. This thing just tries again with the bootstrap host and hopes
         // that the request finds the right
@@ -217,7 +219,10 @@ public class LHServerConnectionManager
         // That's why we need an employee to fix it ;)
 
         threadPool.submit(() -> {
-            log.debug("Retrying reportTask rpc on wfRun {}", result.getWfRunId());
+            log.debug(
+                "Retrying reportTask rpc on taskRun {}",
+                LHLibUtil.taskRunIdToString(result.getTaskRunId())
+            );
             try {
                 // This should also slow down progress on tasks too, which should
                 // help prevent tons of overflow.
@@ -252,57 +257,54 @@ public class LHServerConnectionManager
 
     // Below is actual task execution logic
 
-    private TaskResultEventPb executeTask(
+    private ReportTaskRunPb executeTask(
         ScheduledTaskPb scheduledTask,
         Date scheduleTime
     ) {
-        TaskResultEventPb.Builder taskResult = TaskResultEventPb
+        ReportTaskRunPb.Builder taskResult = ReportTaskRunPb
             .newBuilder()
-            .setWfRunId(scheduledTask.getWfRunId())
-            .setTaskRunPosition(scheduledTask.getTaskRunPosition())
-            .setThreadRunNumber(scheduledTask.getThreadRunNumber());
-
-        if (scheduledTask.hasUtaTaskId()) {
-            taskResult.setUtaTaskId(scheduledTask.getUtaTaskId());
-        }
+            .setTaskRunId(scheduledTask.getTaskRunId())
+            .setAttemptNumber(scheduledTask.getAttemptNumber());
 
         WorkerContext wc = new WorkerContext(scheduledTask, scheduleTime);
 
         try {
             Object rawResult = invoke(scheduledTask, wc);
             VariableValuePb serialized = LHLibUtil.objToVarVal(rawResult);
-            taskResult.setResultCode(TaskResultCodePb.SUCCESS);
-            taskResult.setOutput(serialized.toBuilder());
+            taskResult
+                .setOutput(serialized.toBuilder())
+                .setStatus(TaskStatusPb.TASK_SUCCESS);
+
             if (wc.getLogOutput() != null) {
                 taskResult.setLogOutput(
                     VariableValuePb.newBuilder().setStr(wc.getLogOutput())
                 );
             }
         } catch (InputVarSubstitutionError exn) {
-            exn.printStackTrace();
+            log.error("Failed calculating task input variables", exn);
             taskResult.setLogOutput(exnToVarVal(exn, wc));
-            taskResult.setResultCode(TaskResultCodePb.VAR_SUB_ERROR);
+            taskResult.setStatus(TaskStatusPb.TASK_INPUT_VAR_SUB_ERROR);
         } catch (LHSerdeError exn) {
-            exn.printStackTrace();
+            log.error("Failed serializing Task Output", exn);
             taskResult.setLogOutput(exnToVarVal(exn, wc));
-            taskResult.setResultCode(TaskResultCodePb.VAR_SUB_ERROR);
+            taskResult.setStatus(TaskStatusPb.TASK_OUTPUT_SERIALIZING_ERROR);
         } catch (InvocationTargetException exn) {
-            exn.getCause().printStackTrace();
+            log.error("Task Method threw an exception", exn.getCause());
             taskResult.setLogOutput(exnToVarVal(exn.getCause(), wc));
-            taskResult.setResultCode(TaskResultCodePb.FAILED);
+            taskResult.setStatus(TaskStatusPb.TASK_FAILED);
         } catch (Exception exn) {
-            exn.printStackTrace();
+            log.error("Unexpected exception during task execution", exn);
             taskResult.setLogOutput(exnToVarVal(exn, wc));
-            taskResult.setResultCode(TaskResultCodePb.FAILED);
+            taskResult.setStatus(TaskStatusPb.TASK_FAILED);
         }
 
         taskResult.setTime(LHLibUtil.fromDate(new Date()));
         return taskResult.build();
-        // TODO: Use the client to send the request.
     }
 
     private Object invoke(ScheduledTaskPb scheduledTask, WorkerContext context)
         throws InputVarSubstitutionError, Exception {
+        log.error("Scheduled task:\n" + LHLibUtil.protoToJson(scheduledTask));
         List<Object> inputs = new ArrayList<>();
         for (VariableMapping mapping : this.mappings) {
             inputs.add(mapping.assign(scheduledTask, context));

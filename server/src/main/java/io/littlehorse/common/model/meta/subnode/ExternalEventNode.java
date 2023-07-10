@@ -58,7 +58,7 @@ public class ExternalEventNode extends SubNode<ExternalEventNodePb> {
         }
     }
 
-    public ExternalEventRun createRun(Date time) {
+    public ExternalEventRun createSubNodeRun(Date time) {
         ExternalEventRun out = new ExternalEventRun();
         out.externalEventDefName = externalEventDefName;
 

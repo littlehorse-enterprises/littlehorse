@@ -24,7 +24,7 @@ public class EntrypointNode extends SubNode<EntrypointNodePb> {
     public void validate(LHGlobalMetaStores stores, LHConfig config)
         throws LHValidationError {}
 
-    public EntrypointRun createRun(Date time) {
+    public EntrypointRun createSubNodeRun(Date time) {
         return new EntrypointRun();
     }
 }

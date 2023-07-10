@@ -2,12 +2,20 @@ package io.littlehorse.common.model.command.subcommandresponse;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.command.AbstractResponse;
+import io.littlehorse.jlib.common.proto.LHResponseCodePb;
 import io.littlehorse.jlib.common.proto.ReportTaskReplyPb;
 
 public class ReportTaskReply extends AbstractResponse<ReportTaskReplyPb> {
 
     public Class<ReportTaskReplyPb> getProtoBaseClass() {
         return ReportTaskReplyPb.class;
+    }
+
+    public ReportTaskReply() {}
+
+    public ReportTaskReply(LHResponseCodePb code, String message) {
+        this.code = code;
+        this.message = message;
     }
 
     public void initFrom(Message proto) {

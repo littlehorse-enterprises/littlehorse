@@ -1,10 +1,12 @@
 package io.littlehorse.jlib.worker.internal;
 
 import io.grpc.stub.StreamObserver;
+import io.littlehorse.jlib.common.LHLibUtil;
 import io.littlehorse.jlib.common.proto.HostInfoPb;
 import io.littlehorse.jlib.common.proto.LHPublicApiGrpc.LHPublicApiStub;
 import io.littlehorse.jlib.common.proto.PollTaskPb;
 import io.littlehorse.jlib.common.proto.PollTaskReplyPb;
+import io.littlehorse.jlib.common.proto.ScheduledTaskPb;
 import java.io.Closeable;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
@@ -51,18 +53,16 @@ public class LHServerConnection
     @Override
     public void onNext(PollTaskReplyPb taskToDo) {
         if (taskToDo.hasResult()) {
-            log.info(
-                "Received task schedule request for wfRun {}",
-                taskToDo.getResult().getWfRunId()
-            );
-            manager.submitTaskForExecution(taskToDo.getResult(), this.stub);
-            log.info(
-                "Scheduled task on threadpool for wfRun {}",
-                taskToDo.getResult().getWfRunId()
-            );
+            ScheduledTaskPb scheduledTask = taskToDo.getResult();
+            String wfRunId = LHLibUtil.getWfRunId(scheduledTask.getSource());
+            log.info("Received task schedule request for wfRun {}", wfRunId);
+
+            manager.submitTaskForExecution(scheduledTask, this.stub);
+
+            log.info("Scheduled task on threadpool for wfRun {}", wfRunId);
         } else {
             log.error(
-                "hmmm: {} {}",
+                "Didn't successfully claim task: {} {}",
                 taskToDo.getCode().toString(),
                 taskToDo.getMessage()
             );

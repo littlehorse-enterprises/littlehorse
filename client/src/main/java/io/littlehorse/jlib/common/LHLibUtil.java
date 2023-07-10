@@ -11,6 +11,8 @@ import com.google.protobuf.MessageOrBuilder;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.JsonFormat;
 import io.littlehorse.jlib.common.exception.LHSerdeError;
+import io.littlehorse.jlib.common.proto.TaskRunIdPb;
+import io.littlehorse.jlib.common.proto.TaskRunSourcePb;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
 import io.littlehorse.jlib.common.proto.VariableValuePb;
 import java.lang.reflect.InvocationTargetException;
@@ -82,6 +84,22 @@ public class LHLibUtil {
     public static <T extends Object> T deserializeFromjson(String json, Class<T> cls)
         throws JsonProcessingException {
         return mapper.readValue(json, cls);
+    }
+
+    public static String getWfRunId(TaskRunSourcePb taskRunSource) {
+        switch (taskRunSource.getTaskRunSourceCase()) {
+            case TASK_NODE:
+                return taskRunSource.getUserTaskTrigger().getNodeRunId().getWfRunId();
+            case USER_TASK_TRIGGER:
+                return taskRunSource.getTaskNode().getNodeRunId().getWfRunId();
+            case TASKRUNSOURCE_NOT_SET:
+            // we end up returning null
+        }
+        return null;
+    }
+
+    public static String taskRunIdToString(TaskRunIdPb taskRunId) {
+        return taskRunId.getPartitionKey() + "/" + taskRunId.getTaskGuid();
     }
 
     public static VariableValuePb objToVarVal(Object o) throws LHSerdeError {

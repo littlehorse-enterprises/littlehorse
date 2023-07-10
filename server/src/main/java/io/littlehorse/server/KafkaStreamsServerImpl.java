@@ -22,11 +22,11 @@ import io.littlehorse.common.model.command.subcommand.PutExternalEventDef;
 import io.littlehorse.common.model.command.subcommand.PutTaskDef;
 import io.littlehorse.common.model.command.subcommand.PutUserTaskDef;
 import io.littlehorse.common.model.command.subcommand.PutWfSpec;
+import io.littlehorse.common.model.command.subcommand.ReportTaskRun;
 import io.littlehorse.common.model.command.subcommand.ResumeWfRun;
 import io.littlehorse.common.model.command.subcommand.RunWf;
 import io.littlehorse.common.model.command.subcommand.StopWfRun;
 import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
-import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
 import io.littlehorse.common.model.command.subcommand.TaskWorkerHeartBeat;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.Host;
@@ -39,6 +39,7 @@ import io.littlehorse.common.model.objectId.ExternalEventDefId;
 import io.littlehorse.common.model.objectId.ExternalEventId;
 import io.littlehorse.common.model.objectId.NodeRunId;
 import io.littlehorse.common.model.objectId.TaskDefId;
+import io.littlehorse.common.model.objectId.TaskRunId;
 import io.littlehorse.common.model.objectId.UserTaskDefId;
 import io.littlehorse.common.model.objectId.VariableId;
 import io.littlehorse.common.model.objectId.WfRunId;
@@ -48,8 +49,8 @@ import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.ScheduledTask;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
 import io.littlehorse.common.proto.CentralStoreQueryReplyPb;
-import io.littlehorse.common.proto.CommandPb.CommandCase;
 import io.littlehorse.common.proto.InternalScanReplyPb;
 import io.littlehorse.common.proto.StoreQueryStatusPb;
 import io.littlehorse.common.proto.WaitForCommandReplyPb;
@@ -72,6 +73,7 @@ import io.littlehorse.jlib.common.proto.GetExternalEventReplyPb;
 import io.littlehorse.jlib.common.proto.GetLatestWfSpecPb;
 import io.littlehorse.jlib.common.proto.GetNodeRunReplyPb;
 import io.littlehorse.jlib.common.proto.GetTaskDefReplyPb;
+import io.littlehorse.jlib.common.proto.GetTaskRunReplyPb;
 import io.littlehorse.jlib.common.proto.GetUserTaskDefReplyPb;
 import io.littlehorse.jlib.common.proto.GetVariableReplyPb;
 import io.littlehorse.jlib.common.proto.GetWfRunReplyPb;
@@ -108,6 +110,7 @@ import io.littlehorse.jlib.common.proto.PutWfSpecReplyPb;
 import io.littlehorse.jlib.common.proto.RegisterTaskWorkerPb;
 import io.littlehorse.jlib.common.proto.RegisterTaskWorkerReplyPb;
 import io.littlehorse.jlib.common.proto.ReportTaskReplyPb;
+import io.littlehorse.jlib.common.proto.ReportTaskRunPb;
 import io.littlehorse.jlib.common.proto.ResumeWfRunPb;
 import io.littlehorse.jlib.common.proto.ResumeWfRunReplyPb;
 import io.littlehorse.jlib.common.proto.RunWfPb;
@@ -131,7 +134,7 @@ import io.littlehorse.jlib.common.proto.StopWfRunReplyPb;
 import io.littlehorse.jlib.common.proto.TaskDefIdPb;
 import io.littlehorse.jlib.common.proto.TaskDefMetricsQueryPb;
 import io.littlehorse.jlib.common.proto.TaskDefMetricsReplyPb;
-import io.littlehorse.jlib.common.proto.TaskResultEventPb;
+import io.littlehorse.jlib.common.proto.TaskRunIdPb;
 import io.littlehorse.jlib.common.proto.TaskWorkerHeartBeatPb;
 import io.littlehorse.jlib.common.proto.UserTaskDefIdPb;
 import io.littlehorse.jlib.common.proto.VariableIdPb;
@@ -179,7 +182,6 @@ import io.littlehorse.server.streamsimpl.util.POSTStreamObserver;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
@@ -515,10 +517,10 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
 
     @Override
     public void reportTask(
-        TaskResultEventPb req,
+        ReportTaskRunPb req,
         StreamObserver<ReportTaskReplyPb> ctx
     ) {
-        processCommand(req, ctx, TaskResultEvent.class, ReportTaskReplyPb.class);
+        processCommand(req, ctx, ReportTaskRun.class, ReportTaskReplyPb.class);
     }
 
     @Override
@@ -559,6 +561,25 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
                 NodeRun.class
             ),
             req.getWfRunId(),
+            observer
+        );
+    }
+
+    @Override
+    public void getTaskRun(TaskRunIdPb req, StreamObserver<GetTaskRunReplyPb> ctx) {
+        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
+            ctx,
+            TaskRun.class,
+            GetTaskRunReplyPb.class,
+            config
+        );
+
+        TaskRunId taskRunId = LHSerializable.fromProto(req, TaskRunId.class);
+
+        internalComms.getStoreBytesAsync(
+            ServerTopology.CORE_STORE,
+            StoreUtils.getFullStoreKey(taskRunId.getStoreKey(), TaskRun.class),
+            req.getPartitionKey(),
             observer
         );
     }
@@ -925,21 +946,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         ScheduledTask scheduledTask,
         PollTaskRequestObserver client
     ) {
-        TaskClaimEvent claimEvent = new TaskClaimEvent();
-        claimEvent.wfRunId = scheduledTask.wfRunId;
-        claimEvent.threadRunNumber = scheduledTask.threadRunNumber;
-        claimEvent.taskRunPosition = scheduledTask.taskRunPosition;
-        claimEvent.taskRunNumber = scheduledTask.taskRunNumber;
-        claimEvent.taskWorkerVersion = client.getTaskWorkerVersion();
-        claimEvent.taskWorkerId = client.getClientId();
-        claimEvent.time = new Date();
-
-        Command taskClaimCommand = new Command();
-        taskClaimCommand.type = CommandCase.TASK_CLAIM_EVENT;
-        taskClaimCommand.taskClaimEvent = claimEvent;
-        taskClaimCommand.time = new Date();
-
-        // the old way which synchronously processes:
+        TaskClaimEvent claimEvent = new TaskClaimEvent(scheduledTask, client);
         processCommand(
             claimEvent.toProto().build(),
             client.getResponseObserver(),
@@ -1018,8 +1025,8 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             );
     }
 
-    public void onTaskScheduled(String taskDefName, ScheduledTask scheduledTask) {
-        taskQueueManager.onTaskScheduled(taskDefName, scheduledTask);
+    public void onTaskScheduled(TaskDefId taskDef, ScheduledTask scheduledTask) {
+        taskQueueManager.onTaskScheduled(taskDef, scheduledTask);
     }
 
     public void start() throws IOException {

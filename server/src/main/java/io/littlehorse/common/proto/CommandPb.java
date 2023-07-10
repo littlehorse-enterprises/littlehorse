@@ -54,7 +54,7 @@ private static final long serialVersionUID = 0L;
   public enum CommandCase
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    TASK_RESULT_EVENT(3),
+    REPORT_TASK_RUN(3),
     TASK_CLAIM_EVENT(4),
     PUT_WF_SPEC(6),
     PUT_TASK_DEF(7),
@@ -92,7 +92,7 @@ private static final long serialVersionUID = 0L;
 
     public static CommandCase forNumber(int value) {
       switch (value) {
-        case 3: return TASK_RESULT_EVENT;
+        case 3: return REPORT_TASK_RUN;
         case 4: return TASK_CLAIM_EVENT;
         case 6: return PUT_WF_SPEC;
         case 7: return PUT_TASK_DEF;
@@ -201,35 +201,35 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int TASK_RESULT_EVENT_FIELD_NUMBER = 3;
+  public static final int REPORT_TASK_RUN_FIELD_NUMBER = 3;
   /**
-   * <code>.littlehorse.TaskResultEventPb task_result_event = 3;</code>
-   * @return Whether the taskResultEvent field is set.
+   * <code>.littlehorse.ReportTaskRunPb report_task_run = 3;</code>
+   * @return Whether the reportTaskRun field is set.
    */
   @java.lang.Override
-  public boolean hasTaskResultEvent() {
+  public boolean hasReportTaskRun() {
     return commandCase_ == 3;
   }
   /**
-   * <code>.littlehorse.TaskResultEventPb task_result_event = 3;</code>
-   * @return The taskResultEvent.
+   * <code>.littlehorse.ReportTaskRunPb report_task_run = 3;</code>
+   * @return The reportTaskRun.
    */
   @java.lang.Override
-  public io.littlehorse.jlib.common.proto.TaskResultEventPb getTaskResultEvent() {
+  public io.littlehorse.jlib.common.proto.ReportTaskRunPb getReportTaskRun() {
     if (commandCase_ == 3) {
-       return (io.littlehorse.jlib.common.proto.TaskResultEventPb) command_;
+       return (io.littlehorse.jlib.common.proto.ReportTaskRunPb) command_;
     }
-    return io.littlehorse.jlib.common.proto.TaskResultEventPb.getDefaultInstance();
+    return io.littlehorse.jlib.common.proto.ReportTaskRunPb.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.TaskResultEventPb task_result_event = 3;</code>
+   * <code>.littlehorse.ReportTaskRunPb report_task_run = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.jlib.common.proto.TaskResultEventPbOrBuilder getTaskResultEventOrBuilder() {
+  public io.littlehorse.jlib.common.proto.ReportTaskRunPbOrBuilder getReportTaskRunOrBuilder() {
     if (commandCase_ == 3) {
-       return (io.littlehorse.jlib.common.proto.TaskResultEventPb) command_;
+       return (io.littlehorse.jlib.common.proto.ReportTaskRunPb) command_;
     }
-    return io.littlehorse.jlib.common.proto.TaskResultEventPb.getDefaultInstance();
+    return io.littlehorse.jlib.common.proto.ReportTaskRunPb.getDefaultInstance();
   }
 
   public static final int TASK_CLAIM_EVENT_FIELD_NUMBER = 4;
@@ -885,7 +885,7 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, commandId_);
     }
     if (commandCase_ == 3) {
-      output.writeMessage(3, (io.littlehorse.jlib.common.proto.TaskResultEventPb) command_);
+      output.writeMessage(3, (io.littlehorse.jlib.common.proto.ReportTaskRunPb) command_);
     }
     if (commandCase_ == 4) {
       output.writeMessage(4, (io.littlehorse.common.proto.TaskClaimEventPb) command_);
@@ -965,7 +965,7 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 3) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, (io.littlehorse.jlib.common.proto.TaskResultEventPb) command_);
+        .computeMessageSize(3, (io.littlehorse.jlib.common.proto.ReportTaskRunPb) command_);
     }
     if (commandCase_ == 4) {
       size += com.google.protobuf.CodedOutputStream
@@ -1075,8 +1075,8 @@ private static final long serialVersionUID = 0L;
     if (!getCommandCase().equals(other.getCommandCase())) return false;
     switch (commandCase_) {
       case 3:
-        if (!getTaskResultEvent()
-            .equals(other.getTaskResultEvent())) return false;
+        if (!getReportTaskRun()
+            .equals(other.getReportTaskRun())) return false;
         break;
       case 4:
         if (!getTaskClaimEvent()
@@ -1182,8 +1182,8 @@ private static final long serialVersionUID = 0L;
     }
     switch (commandCase_) {
       case 3:
-        hash = (37 * hash) + TASK_RESULT_EVENT_FIELD_NUMBER;
-        hash = (53 * hash) + getTaskResultEvent().hashCode();
+        hash = (37 * hash) + REPORT_TASK_RUN_FIELD_NUMBER;
+        hash = (53 * hash) + getReportTaskRun().hashCode();
         break;
       case 4:
         hash = (37 * hash) + TASK_CLAIM_EVENT_FIELD_NUMBER;
@@ -1407,8 +1407,8 @@ private static final long serialVersionUID = 0L;
         timeBuilder_ = null;
       }
       commandId_ = "";
-      if (taskResultEventBuilder_ != null) {
-        taskResultEventBuilder_.clear();
+      if (reportTaskRunBuilder_ != null) {
+        reportTaskRunBuilder_.clear();
       }
       if (taskClaimEventBuilder_ != null) {
         taskClaimEventBuilder_.clear();
@@ -1523,8 +1523,8 @@ private static final long serialVersionUID = 0L;
       result.commandCase_ = commandCase_;
       result.command_ = this.command_;
       if (commandCase_ == 3 &&
-          taskResultEventBuilder_ != null) {
-        result.command_ = taskResultEventBuilder_.build();
+          reportTaskRunBuilder_ != null) {
+        result.command_ = reportTaskRunBuilder_.build();
       }
       if (commandCase_ == 4 &&
           taskClaimEventBuilder_ != null) {
@@ -1661,8 +1661,8 @@ private static final long serialVersionUID = 0L;
         onChanged();
       }
       switch (other.getCommandCase()) {
-        case TASK_RESULT_EVENT: {
-          mergeTaskResultEvent(other.getTaskResultEvent());
+        case REPORT_TASK_RUN: {
+          mergeReportTaskRun(other.getReportTaskRun());
           break;
         }
         case TASK_CLAIM_EVENT: {
@@ -1789,7 +1789,7 @@ private static final long serialVersionUID = 0L;
             } // case 18
             case 26: {
               input.readMessage(
-                  getTaskResultEventFieldBuilder().getBuilder(),
+                  getReportTaskRunFieldBuilder().getBuilder(),
                   extensionRegistry);
               commandCase_ = 3;
               break;
@@ -2165,71 +2165,71 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.jlib.common.proto.TaskResultEventPb, io.littlehorse.jlib.common.proto.TaskResultEventPb.Builder, io.littlehorse.jlib.common.proto.TaskResultEventPbOrBuilder> taskResultEventBuilder_;
+        io.littlehorse.jlib.common.proto.ReportTaskRunPb, io.littlehorse.jlib.common.proto.ReportTaskRunPb.Builder, io.littlehorse.jlib.common.proto.ReportTaskRunPbOrBuilder> reportTaskRunBuilder_;
     /**
-     * <code>.littlehorse.TaskResultEventPb task_result_event = 3;</code>
-     * @return Whether the taskResultEvent field is set.
+     * <code>.littlehorse.ReportTaskRunPb report_task_run = 3;</code>
+     * @return Whether the reportTaskRun field is set.
      */
     @java.lang.Override
-    public boolean hasTaskResultEvent() {
+    public boolean hasReportTaskRun() {
       return commandCase_ == 3;
     }
     /**
-     * <code>.littlehorse.TaskResultEventPb task_result_event = 3;</code>
-     * @return The taskResultEvent.
+     * <code>.littlehorse.ReportTaskRunPb report_task_run = 3;</code>
+     * @return The reportTaskRun.
      */
     @java.lang.Override
-    public io.littlehorse.jlib.common.proto.TaskResultEventPb getTaskResultEvent() {
-      if (taskResultEventBuilder_ == null) {
+    public io.littlehorse.jlib.common.proto.ReportTaskRunPb getReportTaskRun() {
+      if (reportTaskRunBuilder_ == null) {
         if (commandCase_ == 3) {
-          return (io.littlehorse.jlib.common.proto.TaskResultEventPb) command_;
+          return (io.littlehorse.jlib.common.proto.ReportTaskRunPb) command_;
         }
-        return io.littlehorse.jlib.common.proto.TaskResultEventPb.getDefaultInstance();
+        return io.littlehorse.jlib.common.proto.ReportTaskRunPb.getDefaultInstance();
       } else {
         if (commandCase_ == 3) {
-          return taskResultEventBuilder_.getMessage();
+          return reportTaskRunBuilder_.getMessage();
         }
-        return io.littlehorse.jlib.common.proto.TaskResultEventPb.getDefaultInstance();
+        return io.littlehorse.jlib.common.proto.ReportTaskRunPb.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.TaskResultEventPb task_result_event = 3;</code>
+     * <code>.littlehorse.ReportTaskRunPb report_task_run = 3;</code>
      */
-    public Builder setTaskResultEvent(io.littlehorse.jlib.common.proto.TaskResultEventPb value) {
-      if (taskResultEventBuilder_ == null) {
+    public Builder setReportTaskRun(io.littlehorse.jlib.common.proto.ReportTaskRunPb value) {
+      if (reportTaskRunBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
         command_ = value;
         onChanged();
       } else {
-        taskResultEventBuilder_.setMessage(value);
+        reportTaskRunBuilder_.setMessage(value);
       }
       commandCase_ = 3;
       return this;
     }
     /**
-     * <code>.littlehorse.TaskResultEventPb task_result_event = 3;</code>
+     * <code>.littlehorse.ReportTaskRunPb report_task_run = 3;</code>
      */
-    public Builder setTaskResultEvent(
-        io.littlehorse.jlib.common.proto.TaskResultEventPb.Builder builderForValue) {
-      if (taskResultEventBuilder_ == null) {
+    public Builder setReportTaskRun(
+        io.littlehorse.jlib.common.proto.ReportTaskRunPb.Builder builderForValue) {
+      if (reportTaskRunBuilder_ == null) {
         command_ = builderForValue.build();
         onChanged();
       } else {
-        taskResultEventBuilder_.setMessage(builderForValue.build());
+        reportTaskRunBuilder_.setMessage(builderForValue.build());
       }
       commandCase_ = 3;
       return this;
     }
     /**
-     * <code>.littlehorse.TaskResultEventPb task_result_event = 3;</code>
+     * <code>.littlehorse.ReportTaskRunPb report_task_run = 3;</code>
      */
-    public Builder mergeTaskResultEvent(io.littlehorse.jlib.common.proto.TaskResultEventPb value) {
-      if (taskResultEventBuilder_ == null) {
+    public Builder mergeReportTaskRun(io.littlehorse.jlib.common.proto.ReportTaskRunPb value) {
+      if (reportTaskRunBuilder_ == null) {
         if (commandCase_ == 3 &&
-            command_ != io.littlehorse.jlib.common.proto.TaskResultEventPb.getDefaultInstance()) {
-          command_ = io.littlehorse.jlib.common.proto.TaskResultEventPb.newBuilder((io.littlehorse.jlib.common.proto.TaskResultEventPb) command_)
+            command_ != io.littlehorse.jlib.common.proto.ReportTaskRunPb.getDefaultInstance()) {
+          command_ = io.littlehorse.jlib.common.proto.ReportTaskRunPb.newBuilder((io.littlehorse.jlib.common.proto.ReportTaskRunPb) command_)
               .mergeFrom(value).buildPartial();
         } else {
           command_ = value;
@@ -2237,19 +2237,19 @@ private static final long serialVersionUID = 0L;
         onChanged();
       } else {
         if (commandCase_ == 3) {
-          taskResultEventBuilder_.mergeFrom(value);
+          reportTaskRunBuilder_.mergeFrom(value);
         } else {
-          taskResultEventBuilder_.setMessage(value);
+          reportTaskRunBuilder_.setMessage(value);
         }
       }
       commandCase_ = 3;
       return this;
     }
     /**
-     * <code>.littlehorse.TaskResultEventPb task_result_event = 3;</code>
+     * <code>.littlehorse.ReportTaskRunPb report_task_run = 3;</code>
      */
-    public Builder clearTaskResultEvent() {
-      if (taskResultEventBuilder_ == null) {
+    public Builder clearReportTaskRun() {
+      if (reportTaskRunBuilder_ == null) {
         if (commandCase_ == 3) {
           commandCase_ = 0;
           command_ = null;
@@ -2260,50 +2260,50 @@ private static final long serialVersionUID = 0L;
           commandCase_ = 0;
           command_ = null;
         }
-        taskResultEventBuilder_.clear();
+        reportTaskRunBuilder_.clear();
       }
       return this;
     }
     /**
-     * <code>.littlehorse.TaskResultEventPb task_result_event = 3;</code>
+     * <code>.littlehorse.ReportTaskRunPb report_task_run = 3;</code>
      */
-    public io.littlehorse.jlib.common.proto.TaskResultEventPb.Builder getTaskResultEventBuilder() {
-      return getTaskResultEventFieldBuilder().getBuilder();
+    public io.littlehorse.jlib.common.proto.ReportTaskRunPb.Builder getReportTaskRunBuilder() {
+      return getReportTaskRunFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.TaskResultEventPb task_result_event = 3;</code>
+     * <code>.littlehorse.ReportTaskRunPb report_task_run = 3;</code>
      */
     @java.lang.Override
-    public io.littlehorse.jlib.common.proto.TaskResultEventPbOrBuilder getTaskResultEventOrBuilder() {
-      if ((commandCase_ == 3) && (taskResultEventBuilder_ != null)) {
-        return taskResultEventBuilder_.getMessageOrBuilder();
+    public io.littlehorse.jlib.common.proto.ReportTaskRunPbOrBuilder getReportTaskRunOrBuilder() {
+      if ((commandCase_ == 3) && (reportTaskRunBuilder_ != null)) {
+        return reportTaskRunBuilder_.getMessageOrBuilder();
       } else {
         if (commandCase_ == 3) {
-          return (io.littlehorse.jlib.common.proto.TaskResultEventPb) command_;
+          return (io.littlehorse.jlib.common.proto.ReportTaskRunPb) command_;
         }
-        return io.littlehorse.jlib.common.proto.TaskResultEventPb.getDefaultInstance();
+        return io.littlehorse.jlib.common.proto.ReportTaskRunPb.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.TaskResultEventPb task_result_event = 3;</code>
+     * <code>.littlehorse.ReportTaskRunPb report_task_run = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.jlib.common.proto.TaskResultEventPb, io.littlehorse.jlib.common.proto.TaskResultEventPb.Builder, io.littlehorse.jlib.common.proto.TaskResultEventPbOrBuilder> 
-        getTaskResultEventFieldBuilder() {
-      if (taskResultEventBuilder_ == null) {
+        io.littlehorse.jlib.common.proto.ReportTaskRunPb, io.littlehorse.jlib.common.proto.ReportTaskRunPb.Builder, io.littlehorse.jlib.common.proto.ReportTaskRunPbOrBuilder> 
+        getReportTaskRunFieldBuilder() {
+      if (reportTaskRunBuilder_ == null) {
         if (!(commandCase_ == 3)) {
-          command_ = io.littlehorse.jlib.common.proto.TaskResultEventPb.getDefaultInstance();
+          command_ = io.littlehorse.jlib.common.proto.ReportTaskRunPb.getDefaultInstance();
         }
-        taskResultEventBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.jlib.common.proto.TaskResultEventPb, io.littlehorse.jlib.common.proto.TaskResultEventPb.Builder, io.littlehorse.jlib.common.proto.TaskResultEventPbOrBuilder>(
-                (io.littlehorse.jlib.common.proto.TaskResultEventPb) command_,
+        reportTaskRunBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.jlib.common.proto.ReportTaskRunPb, io.littlehorse.jlib.common.proto.ReportTaskRunPb.Builder, io.littlehorse.jlib.common.proto.ReportTaskRunPbOrBuilder>(
+                (io.littlehorse.jlib.common.proto.ReportTaskRunPb) command_,
                 getParentForChildren(),
                 isClean());
         command_ = null;
       }
       commandCase_ = 3;
       onChanged();
-      return taskResultEventBuilder_;
+      return reportTaskRunBuilder_;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<

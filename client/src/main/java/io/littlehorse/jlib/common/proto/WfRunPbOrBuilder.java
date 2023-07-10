@@ -8,19 +8,11 @@ public interface WfRunPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <pre>
-   * Yeah ok it's similar to WfRunStatePb but hear me out
-   * </pre>
-   *
    * <code>string id = 1;</code>
    * @return The id.
    */
   java.lang.String getId();
   /**
-   * <pre>
-   * Yeah ok it's similar to WfRunStatePb but hear me out
-   * </pre>
-   *
    * <code>string id = 1;</code>
    * @return The bytes for id.
    */
@@ -55,12 +47,6 @@ public interface WfRunPbOrBuilder extends
    * @return The status.
    */
   io.littlehorse.jlib.common.proto.LHStatusPb getStatus();
-
-  /**
-   * <code>int64 last_update_offset = 5;</code>
-   * @return The lastUpdateOffset.
-   */
-  long getLastUpdateOffset();
 
   /**
    * <code>.google.protobuf.Timestamp start_time = 6;</code>

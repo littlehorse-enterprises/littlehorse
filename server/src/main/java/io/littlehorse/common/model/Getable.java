@@ -1,6 +1,7 @@
 package io.littlehorse.common.model;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.TaskWorkerGroup;
@@ -27,10 +28,18 @@ import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import java.util.Date;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public abstract class Getable<T extends Message> extends Storeable<T> {
 
     public abstract Date getCreatedAt();
+
+    // This is here for convenience. It's to be set by the LHDAOImpl, but only
+    // when doing processing (not interactive queries).
+    private LHDAO dao;
 
     public String getPartitionKey() {
         return getObjectId().getPartitionKey();

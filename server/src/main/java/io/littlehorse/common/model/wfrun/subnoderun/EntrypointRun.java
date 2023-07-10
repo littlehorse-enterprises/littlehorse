@@ -24,7 +24,7 @@ public class EntrypointRun extends SubNodeRun<EntrypointRunPb> {
     }
 
     public boolean advanceIfPossible(Date time) {
-        nodeRun.threadRun.advanceFrom(nodeRun.getNode());
+        nodeRun.getThreadRun().advanceFrom(nodeRun.getNode());
         // By definition something changed
         return true;
     }

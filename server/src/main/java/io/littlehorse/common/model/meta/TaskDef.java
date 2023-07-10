@@ -12,7 +12,11 @@ import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class TaskDef extends Getable<TaskDefPb> {
 
     public String name;

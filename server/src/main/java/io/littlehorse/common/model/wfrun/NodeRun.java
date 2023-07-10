@@ -5,12 +5,13 @@ import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.objectId.NodeRunId;
+import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.model.wfrun.subnoderun.EntrypointRun;
 import io.littlehorse.common.model.wfrun.subnoderun.ExitRun;
 import io.littlehorse.common.model.wfrun.subnoderun.ExternalEventRun;
 import io.littlehorse.common.model.wfrun.subnoderun.SleepNodeRun;
 import io.littlehorse.common.model.wfrun.subnoderun.StartThreadRun;
-import io.littlehorse.common.model.wfrun.subnoderun.TaskRun;
+import io.littlehorse.common.model.wfrun.subnoderun.TaskNodeRun;
 import io.littlehorse.common.model.wfrun.subnoderun.UserTaskRun;
 import io.littlehorse.common.model.wfrun.subnoderun.WaitThreadRun;
 import io.littlehorse.common.util.LHUtil;
@@ -19,14 +20,18 @@ import io.littlehorse.jlib.common.proto.LHStatusPb;
 import io.littlehorse.jlib.common.proto.NodePb.NodeCase;
 import io.littlehorse.jlib.common.proto.NodeRunPb;
 import io.littlehorse.jlib.common.proto.NodeRunPb.NodeTypeCase;
-import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+@Getter
+@Setter
 @Slf4j
 public class NodeRun extends Getable<NodeRunPb> {
 
@@ -34,27 +39,23 @@ public class NodeRun extends Getable<NodeRunPb> {
     public int threadRunNumber;
     public int position;
 
-    public int attemptNumber;
-    public int number;
     public LHStatusPb status;
 
     public Date arrivalTime;
     public Date endTime;
 
-    public String wfSpecId;
+    public WfSpecId wfSpecId;
     public String wfSpecName;
     public String threadSpecName;
     public String nodeName;
 
-    public TaskResultCodePb resultCode;
     public String errorMessage;
-    public NodeTypeCase type;
-
-    public TaskRun taskRun;
-    public ExternalEventRun externalEventRun;
 
     public List<Failure> failures;
 
+    public ExternalEventRun externalEventRun;
+    public TaskNodeRun taskRun;
+    public NodeTypeCase type;
     public ExitRun exitRun;
     public EntrypointRun entrypointRun;
     public StartThreadRun startThreadRun;
@@ -76,7 +77,21 @@ public class NodeRun extends Getable<NodeRunPb> {
         return null;
     }
 
-    public ThreadRun threadRun;
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    private ThreadRun threadRunDoNotUseMe;
+
+    public ThreadRun getThreadRun() {
+        if (threadRunDoNotUseMe == null) {
+            WfRun wfRun = getDao().getWfRun(wfRunId);
+            threadRunDoNotUseMe = wfRun.getThreadRuns().get(threadRunNumber);
+        }
+        return threadRunDoNotUseMe;
+    }
+
+    public void setThreadRun(ThreadRun threadRun) {
+        threadRunDoNotUseMe = threadRun;
+    }
 
     public Failure getLatestFailure() {
         if (failures.size() == 0) return null;
@@ -97,6 +112,7 @@ public class NodeRun extends Getable<NodeRunPb> {
 
     @Override
     public List<GetableIndex> getIndexes() {
+        // TODO
         return new ArrayList<>();
     }
 
@@ -106,27 +122,23 @@ public class NodeRun extends Getable<NodeRunPb> {
         threadRunNumber = proto.getThreadRunNumber();
         position = proto.getPosition();
 
-        number = proto.getNumber();
-
         arrivalTime = LHUtil.fromProtoTs(proto.getArrivalTime());
         if (proto.hasEndTime()) {
             endTime = LHUtil.fromProtoTs(proto.getEndTime());
         }
 
-        wfSpecId = proto.getWfSpecId();
+        wfSpecId = LHSerializable.fromProto(proto.getWfSpecId(), WfSpecId.class);
         threadSpecName = proto.getThreadSpecName();
         nodeName = proto.getNodeName();
         status = proto.getStatus();
-        attemptNumber = proto.getAttemptNumber();
-
-        if (proto.hasResultCode()) resultCode = proto.getResultCode();
 
         if (proto.hasErrorMessage()) errorMessage = proto.getErrorMessage();
 
         type = proto.getNodeTypeCase();
         switch (type) {
             case TASK:
-                taskRun = TaskRun.fromProto(proto.getTask());
+                taskRun =
+                    LHSerializable.fromProto(proto.getTask(), TaskNodeRun.class);
                 break;
             case EXTERNAL_EVENT:
                 externalEventRun =
@@ -190,9 +202,9 @@ public class NodeRun extends Getable<NodeRunPb> {
 
     public void setSubNodeRun(SubNodeRun<?> snr) {
         Class<?> cls = snr.getClass();
-        if (cls.equals(TaskRun.class)) {
+        if (cls.equals(TaskNodeRun.class)) {
             type = NodeTypeCase.TASK;
-            taskRun = (TaskRun) snr;
+            taskRun = (TaskNodeRun) snr;
         } else if (cls.equals(EntrypointRun.class)) {
             type = NodeTypeCase.ENTRYPOINT;
             entrypointRun = (EntrypointRun) snr;
@@ -227,17 +239,13 @@ public class NodeRun extends Getable<NodeRunPb> {
             .setWfRunId(wfRunId)
             .setThreadRunNumber(threadRunNumber)
             .setPosition(position)
-            .setNumber(number)
             .setStatus(status)
             .setArrivalTime(LHUtil.fromDate(arrivalTime))
-            .setWfSpecId(wfSpecId)
+            .setWfSpecId(wfSpecId.toProto())
             .setThreadSpecName(threadSpecName)
-            .setNodeName(nodeName)
-            .setAttemptNumber(attemptNumber);
+            .setNodeName(nodeName);
 
         if (endTime != null) out.setEndTime(LHUtil.fromDate(endTime));
-
-        if (resultCode != null) out.setResultCode(resultCode);
 
         if (errorMessage != null) out.setErrorMessage(errorMessage);
 
@@ -299,7 +307,8 @@ public class NodeRun extends Getable<NodeRunPb> {
                     return false;
                 }
                 for (int handlerId : failureHandlerIds) {
-                    ThreadRun handler = threadRun.wfRun.threadRuns.get(handlerId);
+                    ThreadRun handler = getThreadRun()
+                        .wfRun.threadRuns.get(handlerId);
                     if (handler.status != LHStatusPb.COMPLETED) {
                         return false;
                     }
@@ -311,7 +320,7 @@ public class NodeRun extends Getable<NodeRunPb> {
     }
 
     public Node getNode() {
-        return threadRun.getThreadSpec().nodes.get(nodeName);
+        return getThreadRun().getThreadSpec().nodes.get(nodeName);
     }
 
     public NodeCase getNodeType() {
@@ -329,7 +338,7 @@ public class NodeRun extends Getable<NodeRunPb> {
 
     public boolean advanceIfPossible(Date time) {
         if (isCompletedOrRecoveredFromFailure()) {
-            threadRun.advanceFrom(getNode());
+            getThreadRun().advanceFrom(getNode());
             return true;
         } else {
             return getSubNodeRun().advanceIfPossible(time);
@@ -339,25 +348,14 @@ public class NodeRun extends Getable<NodeRunPb> {
     public void complete(VariableValue output, Date time) {
         endTime = time;
         status = LHStatusPb.COMPLETED;
-        threadRun.completeCurrentNode(output, time);
+        getThreadRun().completeCurrentNode(output, time);
     }
 
     public void fail(Failure failure, Date time) {
         this.failures.add(failure);
         endTime = time;
         status = LHStatusPb.ERROR;
-        resultCode = failure.failureCode;
         errorMessage = failure.message;
-        threadRun.fail(failure, time);
-    }
-
-    public void doRetry(TaskResultCodePb resultCode, String message, Date time) {
-        endTime = time;
-        errorMessage = "Doing a retry: " + message;
-        this.resultCode = resultCode;
-
-        log.info("Doing retry");
-
-        threadRun.activateNode(getNode());
+        getThreadRun().fail(failure, time);
     }
 }

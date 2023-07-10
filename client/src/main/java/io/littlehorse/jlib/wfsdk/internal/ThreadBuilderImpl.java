@@ -19,7 +19,6 @@ import io.littlehorse.jlib.common.proto.NopNodePb;
 import io.littlehorse.jlib.common.proto.SleepNodePb;
 import io.littlehorse.jlib.common.proto.StartThreadNodePb;
 import io.littlehorse.jlib.common.proto.TaskNodePb;
-import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import io.littlehorse.jlib.common.proto.ThreadSpecPb;
 import io.littlehorse.jlib.common.proto.UTActionTriggerPb;
 import io.littlehorse.jlib.common.proto.UTActionTriggerPb.UTATaskPb;
@@ -579,7 +578,6 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         if (output != null) failureBuilder.setContent(assignVariable(output));
         if (message != null) failureBuilder.setMessage(message);
         failureBuilder.setFailureName(failureName);
-        failureBuilder.setFailureCode(TaskResultCodePb.FAILED);
 
         ExitNodePb exitNode = ExitNodePb
             .newBuilder()

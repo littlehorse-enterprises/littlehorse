@@ -9,8 +9,6 @@ import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.PutExternalEventReply;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.model.observabilityevent.ObservabilityEvent;
-import io.littlehorse.common.model.observabilityevent.events.ExtEvtRegisteredOe;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.LHTimer;
@@ -19,7 +17,6 @@ import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.LHResponseCodePb;
 import io.littlehorse.jlib.common.proto.PutExternalEventPb;
-import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import java.util.Date;
 import org.apache.commons.lang3.time.DateUtils;
 
@@ -80,16 +77,8 @@ public class PutExternalEvent extends SubCommand<PutExternalEventPb> {
 
         dao.saveExternalEvent(evt);
 
-        ExtEvtRegisteredOe oe = new ExtEvtRegisteredOe();
-        oe.extEvtDefName = evt.externalEventDefName;
-        oe.guid = evt.guid;
-        oe.content = evt.content;
-        oe.threadRunNumber = evt.threadRunNumber;
-        oe.nodeRunPosition = evt.nodeRunPosition;
-        dao.addObservabilityEvent(new ObservabilityEvent(evt.wfRunId, oe));
-
         LHTimer timer = new LHTimer();
-        timer.topic = dao.getWfRunEventQueue();
+        timer.topic = dao.getCoreCmdTopic();
         timer.key = this.wfRunId;
         Date now = new Date();
         timer.maturationTime = DateUtils.addHours(now, eed.retentionHours);
@@ -112,7 +101,6 @@ public class PutExternalEvent extends SubCommand<PutExternalEventPb> {
                     .get(0)
                     .fail(
                         new Failure(
-                            TaskResultCodePb.INTERNAL_ERROR,
                             "Appears wfSpec was deleted",
                             LHConstants.INTERNAL_ERROR
                         ),
@@ -122,7 +110,6 @@ public class PutExternalEvent extends SubCommand<PutExternalEventPb> {
                 out.message = "Apparently WfSpec was deleted!";
             } else {
                 wfRun.wfSpec = spec;
-                wfRun.cmdDao = dao;
                 wfRun.processExternalEvent(evt);
                 out.code = LHResponseCodePb.OK;
             }

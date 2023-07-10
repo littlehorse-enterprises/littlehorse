@@ -3,7 +3,7 @@ package io.littlehorse.jlib.worker.internal.util;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.jlib.common.proto.LHResponseCodePb;
 import io.littlehorse.jlib.common.proto.ReportTaskReplyPb;
-import io.littlehorse.jlib.common.proto.TaskResultEventPb;
+import io.littlehorse.jlib.common.proto.ReportTaskRunPb;
 import io.littlehorse.jlib.worker.internal.LHServerConnectionManager;
 import lombok.extern.slf4j.Slf4j;
 
@@ -11,12 +11,12 @@ import lombok.extern.slf4j.Slf4j;
 public class ReportTaskObserver implements StreamObserver<ReportTaskReplyPb> {
 
     private LHServerConnectionManager manager;
-    private TaskResultEventPb reportedTask;
+    private ReportTaskRunPb reportedTask;
     private int retriesLeft;
 
     public ReportTaskObserver(
         LHServerConnectionManager manager,
-        TaskResultEventPb reportedTask,
+        ReportTaskRunPb reportedTask,
         int retriesLeft
     ) {
         this.manager = manager;

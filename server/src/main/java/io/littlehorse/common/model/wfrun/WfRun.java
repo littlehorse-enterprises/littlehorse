@@ -2,7 +2,6 @@ package io.littlehorse.common.model.wfrun;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.Getable;
@@ -13,22 +12,16 @@ import io.littlehorse.common.model.command.subcommand.ExternalEventTimeout;
 import io.littlehorse.common.model.command.subcommand.ResumeWfRun;
 import io.littlehorse.common.model.command.subcommand.SleepNodeMatured;
 import io.littlehorse.common.model.command.subcommand.StopWfRun;
-import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
-import io.littlehorse.common.model.command.subcommand.TaskResultEvent;
 import io.littlehorse.common.model.meta.ThreadSpec;
 import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.objectId.WfRunId;
-import io.littlehorse.common.model.observabilityevent.ObservabilityEvent;
-import io.littlehorse.common.model.observabilityevent.events.ThreadStartOe;
-import io.littlehorse.common.model.observabilityevent.events.WfRunStatusOe;
 import io.littlehorse.common.model.wfrun.haltreason.ManualHalt;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.LHStatusPb;
 import io.littlehorse.jlib.common.proto.PendingFailureHandlerPb;
 import io.littlehorse.jlib.common.proto.PendingInterruptPb;
-import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import io.littlehorse.jlib.common.proto.ThreadHaltReasonPb.ReasonCase;
 import io.littlehorse.jlib.common.proto.ThreadRunPb;
 import io.littlehorse.jlib.common.proto.ThreadTypePb;
@@ -42,6 +35,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
@@ -49,13 +43,13 @@ import org.apache.commons.lang3.tuple.Pair;
 
 @Slf4j
 @Setter
+@Getter
 public class WfRun extends Getable<WfRunPb> {
 
     public String id;
     public String wfSpecName;
     public int wfSpecVersion;
     public LHStatusPb status;
-    public long lastUpdateOffset;
     public Date startTime;
     public Date endTime;
     public List<ThreadRun> threadRuns;
@@ -142,7 +136,6 @@ public class WfRun extends Getable<WfRunPb> {
         wfSpecName = proto.getWfSpecName();
         wfSpecVersion = proto.getWfSpecVersion();
         status = proto.getStatus();
-        lastUpdateOffset = proto.getLastUpdateOffset();
         startTime = LHUtil.fromProtoTs(proto.getStartTime());
 
         if (proto.hasEndTime()) {
@@ -182,7 +175,6 @@ public class WfRun extends Getable<WfRunPb> {
             .setWfSpecName(wfSpecName)
             .setWfSpecVersion(wfSpecVersion)
             .setStatus(status)
-            .setLastUpdateOffset(lastUpdateOffset)
             .setStartTime(LHUtil.fromDate(startTime));
 
         if (endTime != null) {
@@ -211,8 +203,6 @@ public class WfRun extends Getable<WfRunPb> {
     // Below is used by scheduler
 
     public WfSpec wfSpec;
-
-    public LHDAO cmdDao;
 
     public ThreadRun startThread(
         String threadName,
@@ -250,7 +240,6 @@ public class WfRun extends Getable<WfRunPb> {
             // TODO: determine how observability events should look like for this case.
             thread.fail(
                 new Failure(
-                    TaskResultCodePb.VAR_MUTATION_ERROR,
                     "Failed validating variables on start: " + exn.getMessage(),
                     LHConstants.VAR_MUTATION_ERROR
                 ),
@@ -258,20 +247,6 @@ public class WfRun extends Getable<WfRunPb> {
             );
             return thread;
         }
-
-        ThreadStartOe oe = new ThreadStartOe();
-        oe.threadRunNumber = thread.number;
-        oe.threadSpecName = thread.threadSpecName;
-        oe.variables = new HashMap<>();
-        oe.type = type;
-        // need a deepcopy
-        for (Map.Entry<String, VariableValue> e : variables.entrySet()) {
-            oe.variables.put(
-                e.getKey(),
-                VariableValue.fromProto(e.getValue().toProto().build())
-            );
-        }
-        cmdDao.addObservabilityEvent(new ObservabilityEvent(id, oe));
 
         for (VariableDef varDef : tspec.variableDefs) {
             String varName = varDef.name;
@@ -350,9 +325,8 @@ public class WfRun extends Getable<WfRunPb> {
             ThreadSpec iSpec = wfSpec.threadSpecs.get(pi.handlerSpecName);
             if (iSpec.variableDefs.size() > 0) {
                 vars = new HashMap<>();
-                ExternalEvent event = cmdDao.getExternalEvent(
-                    pi.externalEventId.getStoreKey()
-                );
+                ExternalEvent event = getDao()
+                    .getExternalEvent(pi.externalEventId.getStoreKey());
                 vars.put(LHConstants.EXT_EVT_HANDLER_VAR, event.content);
             } else {
                 vars = new HashMap<>();
@@ -369,7 +343,6 @@ public class WfRun extends Getable<WfRunPb> {
             if (interruptor.status == LHStatusPb.ERROR) {
                 toInterrupt.fail(
                     new Failure(
-                        TaskResultCodePb.FAILED,
                         "Failed launching interrupt thread with id: " +
                         interruptor.number,
                         LHConstants.CHILD_FAILURE
@@ -426,7 +399,6 @@ public class WfRun extends Getable<WfRunPb> {
             if (fh.status == LHStatusPb.ERROR) {
                 fh.fail(
                     new Failure(
-                        TaskResultCodePb.FAILED,
                         "Failed launching interrupt thread with id: " + fh.number,
                         LHConstants.CHILD_FAILURE
                     ),
@@ -446,7 +418,10 @@ public class WfRun extends Getable<WfRunPb> {
         for (ThreadRun thread : threadRuns) {
             statusChanged = thread.updateStatus() || statusChanged;
         }
-        statusChanged = startXnHandlersAndInterrupts(time) || statusChanged;
+        log.warn("About to startxnhanlders");
+        boolean xnHandlersStarted = startXnHandlersAndInterrupts(time);
+        log.warn("Got results {}", xnHandlersStarted);
+        statusChanged = xnHandlersStarted || statusChanged;
         for (int i = threadRuns.size() - 1; i >= 0; i--) {
             ThreadRun thread = threadRuns.get(i);
             statusChanged = thread.advance(time) || statusChanged;
@@ -477,27 +452,11 @@ public class WfRun extends Getable<WfRunPb> {
         advance(timeout.time);
     }
 
-    public void processTaskResult(TaskResultEvent event) {
-        ThreadRun handler = threadRuns.get(event.threadRunNumber);
-        handler.processTaskResultEvent(event);
-        advance(event.time);
-    }
-
-    public void processTaskStart(TaskClaimEvent event) {
-        ThreadRun handler = threadRuns.get(event.threadRunNumber);
-        handler.processTaskStartedEvent(event);
-        advance(event.time);
-    }
-
     public void failDueToWfSpecDeletion() {
         threadRuns
             .get(0)
             .fail(
-                new Failure(
-                    TaskResultCodePb.INTERNAL_ERROR,
-                    "Appears wfSpec was deleted",
-                    LHConstants.INTERNAL_ERROR
-                ),
+                new Failure("Appears wfSpec was deleted", LHConstants.INTERNAL_ERROR),
                 new Date()
             );
     }
@@ -577,13 +536,10 @@ public class WfRun extends Getable<WfRunPb> {
 
     private void setStatus(LHStatusPb status) {
         this.status = status;
-        WfRunStatusOe oe = new WfRunStatusOe();
-        oe.status = status;
-        cmdDao.addObservabilityEvent(new ObservabilityEvent(id, oe));
 
         if (status.equals(LHStatusPb.COMPLETED) || status.equals(LHStatusPb.ERROR)) {
             LHTimer timer = new LHTimer();
-            timer.topic = this.cmdDao.getWfRunEventQueue();
+            timer.topic = this.getDao().getCoreCmdTopic();
             timer.key = id;
             Date now = new Date();
             timer.maturationTime =
@@ -595,7 +551,7 @@ public class WfRun extends Getable<WfRunPb> {
             deleteWfRunCmd.setSubCommand(deleteWfRun);
             deleteWfRunCmd.time = timer.maturationTime;
             timer.payload = deleteWfRunCmd.toProto().build().toByteArray();
-            this.cmdDao.scheduleTimer(timer);
+            this.getDao().scheduleTimer(timer);
         }
     }
 
@@ -605,22 +561,23 @@ public class WfRun extends Getable<WfRunPb> {
         Date time,
         LHStatusPb newStatus
     ) {
-        if (threadRunNumber != 0) {
-            // Nothing to do, since all we care about is the root thread.
-            return;
+        // WfRun Status is determined by the Entrypoint Thread
+        if (threadRunNumber == 0) {
+            // TODO: In the future, there may be some other lifecycle hooks here, such as forcibly
+            // killing (or waiting for) any child threads. To be determined based on threading design.
+            if (newStatus == LHStatusPb.COMPLETED) {
+                endTime = time;
+                setStatus(LHStatusPb.COMPLETED);
+                log.info("Completed WfRun {} at {} ", id, new Date());
+            } else if (newStatus == LHStatusPb.ERROR) {
+                endTime = time;
+                setStatus(LHStatusPb.ERROR);
+            }
         }
 
-        // TODO: In the future, there may be some other lifecycle hooks here, such as forcibly
-        // killing (or waiting for) any child threads. To be determined based on threading design.
-        if (newStatus == LHStatusPb.COMPLETED) {
-            endTime = time;
-            setStatus(LHStatusPb.COMPLETED);
-            log.info("Completed WfRun {} at {} ", id, new Date());
-        } else if (newStatus == LHStatusPb.ERROR) {
-            endTime = time;
-            setStatus(LHStatusPb.ERROR);
-        }
-        // TODO: when there are multiple threads, we need to think about what happens when one thread
-        // fails and others are still alive.
+        // ThreadRuns depend on each other, for example Exception Handler Threads or
+        // child threads, so we need to signal to the other threads that they might
+        // want to wake up. Ding Ding Ding! Get out of bed.
+        advance(time);
     }
 }

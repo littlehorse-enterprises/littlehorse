@@ -10,11 +10,11 @@ import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.meta.usertasks.UTActionTrigger;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
-import io.littlehorse.common.model.wfrun.UserTaskEvent;
 import io.littlehorse.common.model.wfrun.VariableValue;
+import io.littlehorse.common.model.wfrun.usertaskevent.UTEReassigned;
+import io.littlehorse.common.model.wfrun.usertaskevent.UserTaskEvent;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.jlib.common.proto.LHStatusPb;
-import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import io.littlehorse.jlib.common.proto.UserTaskEventPb;
 import io.littlehorse.jlib.common.proto.UserTaskFieldResultPb;
 import io.littlehorse.jlib.common.proto.UserTaskRunPb;
@@ -27,15 +27,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
 
 @Slf4j
-@Data
-@EqualsAndHashCode(callSuper = false)
+@Getter
+@Setter
 public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
 
     public String userTaskDefName;
@@ -138,7 +138,8 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
         // Need to either assign to a user or to a group.
         try {
             if (node.userTaskNode.getNotes() != null) {
-                VariableValue notesVal = nodeRun.threadRun
+                VariableValue notesVal = nodeRun
+                    .getThreadRun()
                     .assignVariable(node.userTaskNode.getNotes())
                     .asStr();
 
@@ -163,7 +164,6 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
             // darnit ):
             nodeRun.fail(
                 new Failure(
-                    TaskResultCodePb.VAR_SUB_ERROR,
                     "Invalid variables when creating UserTaskRun: " +
                     exn.getMessage(),
                     LHConstants.VAR_SUB_ERROR
@@ -174,9 +174,9 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
     }
 
     private void assignToSpecificUser(Node node) throws LHVarSubError {
-        VariableValue userIdVal = nodeRun.threadRun.assignVariable(
-            node.userTaskNode.getUserId()
-        );
+        VariableValue userIdVal = nodeRun
+            .getThreadRun()
+            .assignVariable(node.userTaskNode.getUserId());
 
         if (userIdVal.type != VariableTypePb.STR) {
             throw new LHVarSubError(
@@ -190,12 +190,17 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
         specificUserId = userIdVal.strVal;
         status = UserTaskRunStatusPb.CLAIMED;
         userId = specificUserId;
+
+        // now add Audit Log Event
+        UTEReassigned reassigned = new UTEReassigned();
+        reassigned.setNewUserId(specificUserId);
+        events.add(new UserTaskEvent(reassigned, new Date()));
     }
 
     private void assignToGroup(Node node) throws LHVarSubError {
-        VariableValue groupIdVal = nodeRun.threadRun.assignVariable(
-            node.userTaskNode.getUserGroup()
-        );
+        VariableValue groupIdVal = nodeRun
+            .getThreadRun()
+            .assignVariable(node.userTaskNode.getUserGroup());
 
         if (groupIdVal.type != VariableTypePb.STR) {
             throw new LHVarSubError(
@@ -210,10 +215,15 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
         status = UserTaskRunStatusPb.ASSIGNED_NOT_CLAIMED;
         specificUserId = null;
         userId = null;
+
+        // now add Audit Log Event
+        UTEReassigned reassigned = new UTEReassigned();
+        reassigned.setNewUserGroup(userGroup);
+        events.add(new UserTaskEvent(reassigned, new Date()));
     }
 
     private void scheduleAction(UTActionTrigger trigger) throws LHVarSubError {
-        trigger.schedule(nodeRun.threadRun.wfRun.cmdDao, this);
+        trigger.schedule(nodeRun.getThreadRun().wfRun.getDao(), this);
     }
 
     // Technically this should live in the `streamsimpl` directory, as the `Tag`
@@ -338,8 +348,14 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
     }
 
     public void reassignTo(AssignUserTaskRun event) {
+        UTEReassigned ute = new UTEReassigned();
         switch (event.assigneeType) {
             case USER_GROUP:
+                ute.setNewUserGroup(event.userGroup);
+                ute.setOldUserGroup(userGroup);
+                ute.setNewUserId(null);
+                ute.setOldUserId(userId);
+
                 assignedToType = AssignedToCase.USER_GROUP;
                 userGroup = event.userGroup;
                 specificUserId = null;
@@ -347,6 +363,9 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
                 status = UserTaskRunStatusPb.ASSIGNED_NOT_CLAIMED;
                 break;
             case USER_ID:
+                ute.setNewUserId(event.userId);
+                ute.setOldUserId(userId);
+
                 assignedToType = AssignedToCase.SPECIFIC_USER_ID;
                 userId = event.userId;
                 specificUserId = event.userId;
@@ -355,6 +374,8 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
             case ASSIGNEE_NOT_SET:
             // nothing to do, this isn't possible.
         }
+
+        events.add(new UserTaskEvent(ute, new Date()));
     }
 
     public void processTaskCompletedEvent(CompleteUserTaskRun event) {

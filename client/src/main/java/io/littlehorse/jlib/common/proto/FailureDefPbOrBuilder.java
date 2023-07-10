@@ -20,40 +20,29 @@ public interface FailureDefPbOrBuilder extends
       getFailureNameBytes();
 
   /**
-   * <code>.littlehorse.TaskResultCodePb failure_code = 2;</code>
-   * @return The enum numeric value on the wire for failureCode.
-   */
-  int getFailureCodeValue();
-  /**
-   * <code>.littlehorse.TaskResultCodePb failure_code = 2;</code>
-   * @return The failureCode.
-   */
-  io.littlehorse.jlib.common.proto.TaskResultCodePb getFailureCode();
-
-  /**
-   * <code>string message = 3;</code>
+   * <code>string message = 2;</code>
    * @return The message.
    */
   java.lang.String getMessage();
   /**
-   * <code>string message = 3;</code>
+   * <code>string message = 2;</code>
    * @return The bytes for message.
    */
   com.google.protobuf.ByteString
       getMessageBytes();
 
   /**
-   * <code>optional .littlehorse.VariableAssignmentPb content = 4;</code>
+   * <code>optional .littlehorse.VariableAssignmentPb content = 3;</code>
    * @return Whether the content field is set.
    */
   boolean hasContent();
   /**
-   * <code>optional .littlehorse.VariableAssignmentPb content = 4;</code>
+   * <code>optional .littlehorse.VariableAssignmentPb content = 3;</code>
    * @return The content.
    */
   io.littlehorse.jlib.common.proto.VariableAssignmentPb getContent();
   /**
-   * <code>optional .littlehorse.VariableAssignmentPb content = 4;</code>
+   * <code>optional .littlehorse.VariableAssignmentPb content = 3;</code>
    */
   io.littlehorse.jlib.common.proto.VariableAssignmentPbOrBuilder getContentOrBuilder();
 }

@@ -7,12 +7,16 @@ import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.NodeRunIdPb;
 import io.littlehorse.jlib.common.proto.NodeRunPb;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class NodeRunId extends ObjectId<NodeRunIdPb, NodeRunPb, NodeRun> {
 
-    public String wfRunId;
-    public int threadRunNumber;
-    public int position;
+    private String wfRunId;
+    private int threadRunNumber;
+    private int position;
 
     public NodeRunId() {}
 

@@ -99,7 +99,7 @@ public class UserTaskNode extends SubNode<UserTaskNodePb> {
         }
     }
 
-    public UserTaskRun createRun(Date time) {
+    public UserTaskRun createSubNodeRun(Date time) {
         UserTaskRun out = new UserTaskRun();
         out.userTaskDefName = userTaskDefName;
         out.userTaskDefVersion = userTaskDefVersion;

@@ -3,7 +3,9 @@ package io.littlehorse.common.model.wfrun;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.LHSerializable;
+import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.proto.LHTimerPb;
 import io.littlehorse.common.util.LHUtil;
 import java.util.Date;
@@ -16,6 +18,13 @@ public class LHTimer extends LHSerializable<LHTimerPb> {
     public byte[] payload;
 
     public LHTimer() {}
+
+    public LHTimer(Command command, LHDAO dao) {
+        maturationTime = command.getTime();
+        payload = command.toProto().build().toByteArray();
+        key = command.getPartitionKey();
+        topic = dao.getCoreCmdTopic();
+    }
 
     public void initFrom(Message proto) {
         LHTimerPb p = (LHTimerPb) proto;

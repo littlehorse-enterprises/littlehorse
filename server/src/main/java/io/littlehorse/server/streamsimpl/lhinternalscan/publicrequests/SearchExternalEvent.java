@@ -94,7 +94,7 @@ public class SearchExternalEvent
                 SearchExternalEventPb.ByExtEvtDefNameAndStatusPb.Builder byExtEvtDefNameAndStatusPb = SearchExternalEventPb.ByExtEvtDefNameAndStatusPb
                     .newBuilder()
                     .setExternalEventDefName(externalEventDefName);
-                isClaimed.ifPresent(byExtEvtDefNameAndStatusPb::setIsClaimed);
+                isClaimed.ifPresent(b -> byExtEvtDefNameAndStatusPb.setIsClaimed(b));
                 out.setExternalEventDefNameAndStatus(byExtEvtDefNameAndStatusPb);
                 break;
             case EXTEVTCRITERIA_NOT_SET:

@@ -38,7 +38,7 @@ public class ExitNode extends SubNode<ExitNodePb> {
         if (failureDef != null) failureDef.validate();
     }
 
-    public ExitRun createRun(Date time) {
+    public ExitRun createSubNodeRun(Date time) {
         return new ExitRun();
     }
 

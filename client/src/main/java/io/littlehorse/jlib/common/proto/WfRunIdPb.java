@@ -4,10 +4,6 @@
 package io.littlehorse.jlib.common.proto;
 
 /**
- * <pre>
- * WfRun
- * </pre>
- *
  * Protobuf type {@code littlehorse.WfRunIdPb}
  */
 public final class WfRunIdPb extends
@@ -242,10 +238,6 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * <pre>
-   * WfRun
-   * </pre>
-   *
    * Protobuf type {@code littlehorse.WfRunIdPb}
    */
   public static final class Builder extends

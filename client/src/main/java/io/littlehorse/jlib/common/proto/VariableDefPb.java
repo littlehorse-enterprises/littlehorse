@@ -102,17 +102,6 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int REQUIRED_FIELD_NUMBER = 3;
-  private boolean required_ = false;
-  /**
-   * <code>bool required = 3;</code>
-   * @return The required.
-   */
-  @java.lang.Override
-  public boolean getRequired() {
-    return required_;
-  }
-
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -133,9 +122,6 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, name_);
     }
-    if (required_ != false) {
-      output.writeBool(3, required_);
-    }
     getUnknownFields().writeTo(output);
   }
 
@@ -151,10 +137,6 @@ private static final long serialVersionUID = 0L;
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, name_);
-    }
-    if (required_ != false) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBoolSize(3, required_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -174,8 +156,6 @@ private static final long serialVersionUID = 0L;
     if (type_ != other.type_) return false;
     if (!getName()
         .equals(other.getName())) return false;
-    if (getRequired()
-        != other.getRequired()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -191,9 +171,6 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + type_;
     hash = (37 * hash) + NAME_FIELD_NUMBER;
     hash = (53 * hash) + getName().hashCode();
-    hash = (37 * hash) + REQUIRED_FIELD_NUMBER;
-    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-        getRequired());
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -325,7 +302,6 @@ private static final long serialVersionUID = 0L;
       bitField0_ = 0;
       type_ = 0;
       name_ = "";
-      required_ = false;
       return this;
     }
 
@@ -364,9 +340,6 @@ private static final long serialVersionUID = 0L;
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
         result.name_ = name_;
-      }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.required_ = required_;
       }
     }
 
@@ -422,9 +395,6 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000002;
         onChanged();
       }
-      if (other.getRequired() != false) {
-        setRequired(other.getRequired());
-      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -461,11 +431,6 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000002;
               break;
             } // case 18
-            case 24: {
-              required_ = input.readBool();
-              bitField0_ |= 0x00000004;
-              break;
-            } // case 24
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -604,38 +569,6 @@ private static final long serialVersionUID = 0L;
       checkByteStringIsUtf8(value);
       name_ = value;
       bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-
-    private boolean required_ ;
-    /**
-     * <code>bool required = 3;</code>
-     * @return The required.
-     */
-    @java.lang.Override
-    public boolean getRequired() {
-      return required_;
-    }
-    /**
-     * <code>bool required = 3;</code>
-     * @param value The required to set.
-     * @return This builder for chaining.
-     */
-    public Builder setRequired(boolean value) {
-      
-      required_ = value;
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>bool required = 3;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearRequired() {
-      bitField0_ = (bitField0_ & ~0x00000004);
-      required_ = false;
       onChanged();
       return this;
     }

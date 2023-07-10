@@ -8,8 +8,7 @@ set -e
 # First, re-compile the public client proto
 rm -rf client/src/main/java/io/littlehorse/jlib/common/proto/
 
-protoc --experimental_allow_proto3_optional \
-    --grpc-java_out="${WORK_DIR}/client/src/main/java/" \
+protoc --grpc-java_out="${WORK_DIR}/client/src/main/java/" \
     --java_out="${WORK_DIR}/client/src/main/java/" \
     -I="$WORK_DIR/proto/lh-proto/proto/" \
     "$WORK_DIR/proto/lh-proto/proto/service.proto"
@@ -17,8 +16,7 @@ protoc --experimental_allow_proto3_optional \
 # Next, compile the internal-server proto
 rm -rf server/src/main/java/io/littlehorse/common/proto/
 
-protoc --experimental_allow_proto3_optional \
-    --grpc-java_out="${WORK_DIR}/server/src/main/java/" \
+protoc --grpc-java_out="${WORK_DIR}/server/src/main/java/" \
     --java_out="${WORK_DIR}/server/src/main/java/" \
     -I="${WORK_DIR}/proto/lh-proto/proto:${WORK_DIR}/proto/" \
     "${WORK_DIR}/proto/internal_server.proto"

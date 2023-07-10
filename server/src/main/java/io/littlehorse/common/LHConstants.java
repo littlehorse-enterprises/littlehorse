@@ -41,6 +41,8 @@ public class LHConstants {
         )
     );
 
+    public static final int DEFAULT_TASK_TIMEOUT_SECONDS = 15;
+
     public static final int DEFAULT_LIMIT = 1000;
     public static final int MIN_WORKER_ASSIGNMENT_BY_SERVER = 2;
     public static final long MAX_TASK_WORKER_INACTIVITY = 15L;

@@ -114,22 +114,6 @@ public interface ThreadRunPbOrBuilder extends
       getErrorMessageBytes();
 
   /**
-   * <code>optional .littlehorse.TaskResultCodePb result_code = 10;</code>
-   * @return Whether the resultCode field is set.
-   */
-  boolean hasResultCode();
-  /**
-   * <code>optional .littlehorse.TaskResultCodePb result_code = 10;</code>
-   * @return The enum numeric value on the wire for resultCode.
-   */
-  int getResultCodeValue();
-  /**
-   * <code>optional .littlehorse.TaskResultCodePb result_code = 10;</code>
-   * @return The resultCode.
-   */
-  io.littlehorse.jlib.common.proto.TaskResultCodePb getResultCode();
-
-  /**
    * <code>repeated int32 child_thread_ids = 11;</code>
    * @return A list containing the childThreadIds.
    */

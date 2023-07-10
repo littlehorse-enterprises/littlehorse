@@ -165,9 +165,6 @@ public class Tag extends Storeable<TagPb> {
         this.tagType = type;
         this.objectType = objectType;
         this.describedObjectId = describedObjectId;
-        if (objectType == GetableClassEnumPb.WF_RUN) {
-            System.out.println("describedObjectId" + describedObjectId);
-        }
         this.createdAt = createAt;
         this.attributes.addAll(attributes);
     }

@@ -1,11 +1,16 @@
 package io.littlehorse.common.model.wfrun;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.meta.WfSpec;
 import java.util.Date;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public abstract class SubNodeRun<T extends Message> extends LHSerializable<T> {
 
     public NodeRun nodeRun;
@@ -29,14 +34,18 @@ public abstract class SubNodeRun<T extends Message> extends LHSerializable<T> {
     }
 
     public WfSpec getWfSpec() {
-        return nodeRun.threadRun.wfRun.wfSpec;
+        return getWfRun().getWfSpec();
     }
 
     public WfRun getWfRun() {
-        return nodeRun.threadRun.wfRun;
+        return nodeRun.getThreadRun().getWfRun();
     }
 
     public Node getNode() {
         return nodeRun.getNode();
+    }
+
+    public LHDAO getDao() {
+        return nodeRun.getThreadRun().getWfRun().getDao();
     }
 }

@@ -32,18 +32,6 @@ public interface NodeRunPbOrBuilder extends
   int getPosition();
 
   /**
-   * <code>int32 attempt_number = 4;</code>
-   * @return The attemptNumber.
-   */
-  int getAttemptNumber();
-
-  /**
-   * <code>int32 number = 5;</code>
-   * @return The number.
-   */
-  int getNumber();
-
-  /**
    * <code>.littlehorse.LHStatusPb status = 6;</code>
    * @return The enum numeric value on the wire for status.
    */
@@ -85,16 +73,19 @@ public interface NodeRunPbOrBuilder extends
   com.google.protobuf.TimestampOrBuilder getEndTimeOrBuilder();
 
   /**
-   * <code>string wf_spec_id = 9;</code>
+   * <code>.littlehorse.WfSpecIdPb wf_spec_id = 9;</code>
+   * @return Whether the wfSpecId field is set.
+   */
+  boolean hasWfSpecId();
+  /**
+   * <code>.littlehorse.WfSpecIdPb wf_spec_id = 9;</code>
    * @return The wfSpecId.
    */
-  java.lang.String getWfSpecId();
+  io.littlehorse.jlib.common.proto.WfSpecIdPb getWfSpecId();
   /**
-   * <code>string wf_spec_id = 9;</code>
-   * @return The bytes for wfSpecId.
+   * <code>.littlehorse.WfSpecIdPb wf_spec_id = 9;</code>
    */
-  com.google.protobuf.ByteString
-      getWfSpecIdBytes();
+  io.littlehorse.jlib.common.proto.WfSpecIdPbOrBuilder getWfSpecIdOrBuilder();
 
   /**
    * <code>string thread_spec_name = 10;</code>
@@ -119,22 +110,6 @@ public interface NodeRunPbOrBuilder extends
    */
   com.google.protobuf.ByteString
       getNodeNameBytes();
-
-  /**
-   * <code>optional .littlehorse.TaskResultCodePb result_code = 12;</code>
-   * @return Whether the resultCode field is set.
-   */
-  boolean hasResultCode();
-  /**
-   * <code>optional .littlehorse.TaskResultCodePb result_code = 12;</code>
-   * @return The enum numeric value on the wire for resultCode.
-   */
-  int getResultCodeValue();
-  /**
-   * <code>optional .littlehorse.TaskResultCodePb result_code = 12;</code>
-   * @return The resultCode.
-   */
-  io.littlehorse.jlib.common.proto.TaskResultCodePb getResultCode();
 
   /**
    * <code>optional string error_message = 13;</code>
@@ -178,19 +153,19 @@ public interface NodeRunPbOrBuilder extends
       int index);
 
   /**
-   * <code>.littlehorse.TaskRunPb task = 15;</code>
+   * <code>.littlehorse.TaskNodeRunPb task = 15;</code>
    * @return Whether the task field is set.
    */
   boolean hasTask();
   /**
-   * <code>.littlehorse.TaskRunPb task = 15;</code>
+   * <code>.littlehorse.TaskNodeRunPb task = 15;</code>
    * @return The task.
    */
-  io.littlehorse.jlib.common.proto.TaskRunPb getTask();
+  io.littlehorse.jlib.common.proto.TaskNodeRunPb getTask();
   /**
-   * <code>.littlehorse.TaskRunPb task = 15;</code>
+   * <code>.littlehorse.TaskNodeRunPb task = 15;</code>
    */
-  io.littlehorse.jlib.common.proto.TaskRunPbOrBuilder getTaskOrBuilder();
+  io.littlehorse.jlib.common.proto.TaskNodeRunPbOrBuilder getTaskOrBuilder();
 
   /**
    * <code>.littlehorse.ExternalEventRunPb external_event = 16;</code>

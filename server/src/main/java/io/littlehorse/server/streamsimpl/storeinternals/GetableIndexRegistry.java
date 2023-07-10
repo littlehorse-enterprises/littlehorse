@@ -12,6 +12,7 @@ import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
 import java.util.*;
 
 public class GetableIndexRegistry {
@@ -54,7 +55,8 @@ public class GetableIndexRegistry {
             WfSpec.class,
             WfSpecMetrics.class,
             TaskDef.class,
-            UserTaskDef.class
+            UserTaskDef.class,
+            TaskRun.class
         );
     }
 

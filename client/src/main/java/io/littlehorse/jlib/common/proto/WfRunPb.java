@@ -54,10 +54,6 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object id_ = "";
   /**
-   * <pre>
-   * Yeah ok it's similar to WfRunStatePb but hear me out
-   * </pre>
-   *
    * <code>string id = 1;</code>
    * @return The id.
    */
@@ -75,10 +71,6 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <pre>
-   * Yeah ok it's similar to WfRunStatePb but hear me out
-   * </pre>
-   *
    * <code>string id = 1;</code>
    * @return The bytes for id.
    */
@@ -163,17 +155,6 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override public io.littlehorse.jlib.common.proto.LHStatusPb getStatus() {
     io.littlehorse.jlib.common.proto.LHStatusPb result = io.littlehorse.jlib.common.proto.LHStatusPb.forNumber(status_);
     return result == null ? io.littlehorse.jlib.common.proto.LHStatusPb.UNRECOGNIZED : result;
-  }
-
-  public static final int LAST_UPDATE_OFFSET_FIELD_NUMBER = 5;
-  private long lastUpdateOffset_ = 0L;
-  /**
-   * <code>int64 last_update_offset = 5;</code>
-   * @return The lastUpdateOffset.
-   */
-  @java.lang.Override
-  public long getLastUpdateOffset() {
-    return lastUpdateOffset_;
   }
 
   public static final int START_TIME_FIELD_NUMBER = 6;
@@ -377,9 +358,6 @@ private static final long serialVersionUID = 0L;
     if (status_ != io.littlehorse.jlib.common.proto.LHStatusPb.STARTING.getNumber()) {
       output.writeEnum(4, status_);
     }
-    if (lastUpdateOffset_ != 0L) {
-      output.writeInt64(5, lastUpdateOffset_);
-    }
     if (startTime_ != null) {
       output.writeMessage(6, getStartTime());
     }
@@ -417,10 +395,6 @@ private static final long serialVersionUID = 0L;
     if (status_ != io.littlehorse.jlib.common.proto.LHStatusPb.STARTING.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(4, status_);
-    }
-    if (lastUpdateOffset_ != 0L) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt64Size(5, lastUpdateOffset_);
     }
     if (startTime_ != null) {
       size += com.google.protobuf.CodedOutputStream
@@ -464,8 +438,6 @@ private static final long serialVersionUID = 0L;
     if (getWfSpecVersion()
         != other.getWfSpecVersion()) return false;
     if (status_ != other.status_) return false;
-    if (getLastUpdateOffset()
-        != other.getLastUpdateOffset()) return false;
     if (hasStartTime() != other.hasStartTime()) return false;
     if (hasStartTime()) {
       if (!getStartTime()
@@ -501,9 +473,6 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getWfSpecVersion();
     hash = (37 * hash) + STATUS_FIELD_NUMBER;
     hash = (53 * hash) + status_;
-    hash = (37 * hash) + LAST_UPDATE_OFFSET_FIELD_NUMBER;
-    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-        getLastUpdateOffset());
     if (hasStartTime()) {
       hash = (37 * hash) + START_TIME_FIELD_NUMBER;
       hash = (53 * hash) + getStartTime().hashCode();
@@ -667,7 +636,6 @@ private static final long serialVersionUID = 0L;
       wfSpecName_ = "";
       wfSpecVersion_ = 0;
       status_ = 0;
-      lastUpdateOffset_ = 0L;
       startTime_ = null;
       if (startTimeBuilder_ != null) {
         startTimeBuilder_.dispose();
@@ -684,21 +652,21 @@ private static final long serialVersionUID = 0L;
         threadRuns_ = null;
         threadRunsBuilder_.clear();
       }
-      bitField0_ = (bitField0_ & ~0x00000080);
+      bitField0_ = (bitField0_ & ~0x00000040);
       if (pendingInterruptsBuilder_ == null) {
         pendingInterrupts_ = java.util.Collections.emptyList();
       } else {
         pendingInterrupts_ = null;
         pendingInterruptsBuilder_.clear();
       }
-      bitField0_ = (bitField0_ & ~0x00000100);
+      bitField0_ = (bitField0_ & ~0x00000080);
       if (pendingFailuresBuilder_ == null) {
         pendingFailures_ = java.util.Collections.emptyList();
       } else {
         pendingFailures_ = null;
         pendingFailuresBuilder_.clear();
       }
-      bitField0_ = (bitField0_ & ~0x00000200);
+      bitField0_ = (bitField0_ & ~0x00000100);
       return this;
     }
 
@@ -733,27 +701,27 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartialRepeatedFields(io.littlehorse.jlib.common.proto.WfRunPb result) {
       if (threadRunsBuilder_ == null) {
-        if (((bitField0_ & 0x00000080) != 0)) {
+        if (((bitField0_ & 0x00000040) != 0)) {
           threadRuns_ = java.util.Collections.unmodifiableList(threadRuns_);
-          bitField0_ = (bitField0_ & ~0x00000080);
+          bitField0_ = (bitField0_ & ~0x00000040);
         }
         result.threadRuns_ = threadRuns_;
       } else {
         result.threadRuns_ = threadRunsBuilder_.build();
       }
       if (pendingInterruptsBuilder_ == null) {
-        if (((bitField0_ & 0x00000100) != 0)) {
+        if (((bitField0_ & 0x00000080) != 0)) {
           pendingInterrupts_ = java.util.Collections.unmodifiableList(pendingInterrupts_);
-          bitField0_ = (bitField0_ & ~0x00000100);
+          bitField0_ = (bitField0_ & ~0x00000080);
         }
         result.pendingInterrupts_ = pendingInterrupts_;
       } else {
         result.pendingInterrupts_ = pendingInterruptsBuilder_.build();
       }
       if (pendingFailuresBuilder_ == null) {
-        if (((bitField0_ & 0x00000200) != 0)) {
+        if (((bitField0_ & 0x00000100) != 0)) {
           pendingFailures_ = java.util.Collections.unmodifiableList(pendingFailures_);
-          bitField0_ = (bitField0_ & ~0x00000200);
+          bitField0_ = (bitField0_ & ~0x00000100);
         }
         result.pendingFailures_ = pendingFailures_;
       } else {
@@ -776,15 +744,12 @@ private static final long serialVersionUID = 0L;
         result.status_ = status_;
       }
       if (((from_bitField0_ & 0x00000010) != 0)) {
-        result.lastUpdateOffset_ = lastUpdateOffset_;
-      }
-      if (((from_bitField0_ & 0x00000020) != 0)) {
         result.startTime_ = startTimeBuilder_ == null
             ? startTime_
             : startTimeBuilder_.build();
       }
       int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000040) != 0)) {
+      if (((from_bitField0_ & 0x00000020) != 0)) {
         result.endTime_ = endTimeBuilder_ == null
             ? endTime_
             : endTimeBuilder_.build();
@@ -853,9 +818,6 @@ private static final long serialVersionUID = 0L;
       if (other.status_ != 0) {
         setStatusValue(other.getStatusValue());
       }
-      if (other.getLastUpdateOffset() != 0L) {
-        setLastUpdateOffset(other.getLastUpdateOffset());
-      }
       if (other.hasStartTime()) {
         mergeStartTime(other.getStartTime());
       }
@@ -866,7 +828,7 @@ private static final long serialVersionUID = 0L;
         if (!other.threadRuns_.isEmpty()) {
           if (threadRuns_.isEmpty()) {
             threadRuns_ = other.threadRuns_;
-            bitField0_ = (bitField0_ & ~0x00000080);
+            bitField0_ = (bitField0_ & ~0x00000040);
           } else {
             ensureThreadRunsIsMutable();
             threadRuns_.addAll(other.threadRuns_);
@@ -879,7 +841,7 @@ private static final long serialVersionUID = 0L;
             threadRunsBuilder_.dispose();
             threadRunsBuilder_ = null;
             threadRuns_ = other.threadRuns_;
-            bitField0_ = (bitField0_ & ~0x00000080);
+            bitField0_ = (bitField0_ & ~0x00000040);
             threadRunsBuilder_ = 
               com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                  getThreadRunsFieldBuilder() : null;
@@ -892,7 +854,7 @@ private static final long serialVersionUID = 0L;
         if (!other.pendingInterrupts_.isEmpty()) {
           if (pendingInterrupts_.isEmpty()) {
             pendingInterrupts_ = other.pendingInterrupts_;
-            bitField0_ = (bitField0_ & ~0x00000100);
+            bitField0_ = (bitField0_ & ~0x00000080);
           } else {
             ensurePendingInterruptsIsMutable();
             pendingInterrupts_.addAll(other.pendingInterrupts_);
@@ -905,7 +867,7 @@ private static final long serialVersionUID = 0L;
             pendingInterruptsBuilder_.dispose();
             pendingInterruptsBuilder_ = null;
             pendingInterrupts_ = other.pendingInterrupts_;
-            bitField0_ = (bitField0_ & ~0x00000100);
+            bitField0_ = (bitField0_ & ~0x00000080);
             pendingInterruptsBuilder_ = 
               com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                  getPendingInterruptsFieldBuilder() : null;
@@ -918,7 +880,7 @@ private static final long serialVersionUID = 0L;
         if (!other.pendingFailures_.isEmpty()) {
           if (pendingFailures_.isEmpty()) {
             pendingFailures_ = other.pendingFailures_;
-            bitField0_ = (bitField0_ & ~0x00000200);
+            bitField0_ = (bitField0_ & ~0x00000100);
           } else {
             ensurePendingFailuresIsMutable();
             pendingFailures_.addAll(other.pendingFailures_);
@@ -931,7 +893,7 @@ private static final long serialVersionUID = 0L;
             pendingFailuresBuilder_.dispose();
             pendingFailuresBuilder_ = null;
             pendingFailures_ = other.pendingFailures_;
-            bitField0_ = (bitField0_ & ~0x00000200);
+            bitField0_ = (bitField0_ & ~0x00000100);
             pendingFailuresBuilder_ = 
               com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                  getPendingFailuresFieldBuilder() : null;
@@ -986,23 +948,18 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000008;
               break;
             } // case 32
-            case 40: {
-              lastUpdateOffset_ = input.readInt64();
-              bitField0_ |= 0x00000010;
-              break;
-            } // case 40
             case 50: {
               input.readMessage(
                   getStartTimeFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000020;
+              bitField0_ |= 0x00000010;
               break;
             } // case 50
             case 58: {
               input.readMessage(
                   getEndTimeFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000040;
+              bitField0_ |= 0x00000020;
               break;
             } // case 58
             case 66: {
@@ -1063,10 +1020,6 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object id_ = "";
     /**
-     * <pre>
-     * Yeah ok it's similar to WfRunStatePb but hear me out
-     * </pre>
-     *
      * <code>string id = 1;</code>
      * @return The id.
      */
@@ -1083,10 +1036,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Yeah ok it's similar to WfRunStatePb but hear me out
-     * </pre>
-     *
      * <code>string id = 1;</code>
      * @return The bytes for id.
      */
@@ -1104,10 +1053,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Yeah ok it's similar to WfRunStatePb but hear me out
-     * </pre>
-     *
      * <code>string id = 1;</code>
      * @param value The id to set.
      * @return This builder for chaining.
@@ -1121,10 +1066,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Yeah ok it's similar to WfRunStatePb but hear me out
-     * </pre>
-     *
      * <code>string id = 1;</code>
      * @return This builder for chaining.
      */
@@ -1135,10 +1076,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Yeah ok it's similar to WfRunStatePb but hear me out
-     * </pre>
-     *
      * <code>string id = 1;</code>
      * @param value The bytes for id to set.
      * @return This builder for chaining.
@@ -1310,38 +1247,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private long lastUpdateOffset_ ;
-    /**
-     * <code>int64 last_update_offset = 5;</code>
-     * @return The lastUpdateOffset.
-     */
-    @java.lang.Override
-    public long getLastUpdateOffset() {
-      return lastUpdateOffset_;
-    }
-    /**
-     * <code>int64 last_update_offset = 5;</code>
-     * @param value The lastUpdateOffset to set.
-     * @return This builder for chaining.
-     */
-    public Builder setLastUpdateOffset(long value) {
-      
-      lastUpdateOffset_ = value;
-      bitField0_ |= 0x00000010;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>int64 last_update_offset = 5;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearLastUpdateOffset() {
-      bitField0_ = (bitField0_ & ~0x00000010);
-      lastUpdateOffset_ = 0L;
-      onChanged();
-      return this;
-    }
-
     private com.google.protobuf.Timestamp startTime_;
     private com.google.protobuf.SingleFieldBuilderV3<
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> startTimeBuilder_;
@@ -1350,7 +1255,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the startTime field is set.
      */
     public boolean hasStartTime() {
-      return ((bitField0_ & 0x00000020) != 0);
+      return ((bitField0_ & 0x00000010) != 0);
     }
     /**
      * <code>.google.protobuf.Timestamp start_time = 6;</code>
@@ -1375,7 +1280,7 @@ private static final long serialVersionUID = 0L;
       } else {
         startTimeBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
@@ -1389,7 +1294,7 @@ private static final long serialVersionUID = 0L;
       } else {
         startTimeBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
@@ -1398,7 +1303,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeStartTime(com.google.protobuf.Timestamp value) {
       if (startTimeBuilder_ == null) {
-        if (((bitField0_ & 0x00000020) != 0) &&
+        if (((bitField0_ & 0x00000010) != 0) &&
           startTime_ != null &&
           startTime_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
           getStartTimeBuilder().mergeFrom(value);
@@ -1408,7 +1313,7 @@ private static final long serialVersionUID = 0L;
       } else {
         startTimeBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
@@ -1416,7 +1321,7 @@ private static final long serialVersionUID = 0L;
      * <code>.google.protobuf.Timestamp start_time = 6;</code>
      */
     public Builder clearStartTime() {
-      bitField0_ = (bitField0_ & ~0x00000020);
+      bitField0_ = (bitField0_ & ~0x00000010);
       startTime_ = null;
       if (startTimeBuilder_ != null) {
         startTimeBuilder_.dispose();
@@ -1429,7 +1334,7 @@ private static final long serialVersionUID = 0L;
      * <code>.google.protobuf.Timestamp start_time = 6;</code>
      */
     public com.google.protobuf.Timestamp.Builder getStartTimeBuilder() {
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000010;
       onChanged();
       return getStartTimeFieldBuilder().getBuilder();
     }
@@ -1469,7 +1374,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the endTime field is set.
      */
     public boolean hasEndTime() {
-      return ((bitField0_ & 0x00000040) != 0);
+      return ((bitField0_ & 0x00000020) != 0);
     }
     /**
      * <code>optional .google.protobuf.Timestamp end_time = 7;</code>
@@ -1494,7 +1399,7 @@ private static final long serialVersionUID = 0L;
       } else {
         endTimeBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
@@ -1508,7 +1413,7 @@ private static final long serialVersionUID = 0L;
       } else {
         endTimeBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
@@ -1517,7 +1422,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeEndTime(com.google.protobuf.Timestamp value) {
       if (endTimeBuilder_ == null) {
-        if (((bitField0_ & 0x00000040) != 0) &&
+        if (((bitField0_ & 0x00000020) != 0) &&
           endTime_ != null &&
           endTime_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
           getEndTimeBuilder().mergeFrom(value);
@@ -1527,7 +1432,7 @@ private static final long serialVersionUID = 0L;
       } else {
         endTimeBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
@@ -1535,7 +1440,7 @@ private static final long serialVersionUID = 0L;
      * <code>optional .google.protobuf.Timestamp end_time = 7;</code>
      */
     public Builder clearEndTime() {
-      bitField0_ = (bitField0_ & ~0x00000040);
+      bitField0_ = (bitField0_ & ~0x00000020);
       endTime_ = null;
       if (endTimeBuilder_ != null) {
         endTimeBuilder_.dispose();
@@ -1548,7 +1453,7 @@ private static final long serialVersionUID = 0L;
      * <code>optional .google.protobuf.Timestamp end_time = 7;</code>
      */
     public com.google.protobuf.Timestamp.Builder getEndTimeBuilder() {
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000020;
       onChanged();
       return getEndTimeFieldBuilder().getBuilder();
     }
@@ -1583,9 +1488,9 @@ private static final long serialVersionUID = 0L;
     private java.util.List<io.littlehorse.jlib.common.proto.ThreadRunPb> threadRuns_ =
       java.util.Collections.emptyList();
     private void ensureThreadRunsIsMutable() {
-      if (!((bitField0_ & 0x00000080) != 0)) {
+      if (!((bitField0_ & 0x00000040) != 0)) {
         threadRuns_ = new java.util.ArrayList<io.littlehorse.jlib.common.proto.ThreadRunPb>(threadRuns_);
-        bitField0_ |= 0x00000080;
+        bitField0_ |= 0x00000040;
        }
     }
 
@@ -1735,7 +1640,7 @@ private static final long serialVersionUID = 0L;
     public Builder clearThreadRuns() {
       if (threadRunsBuilder_ == null) {
         threadRuns_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000080);
+        bitField0_ = (bitField0_ & ~0x00000040);
         onChanged();
       } else {
         threadRunsBuilder_.clear();
@@ -1812,7 +1717,7 @@ private static final long serialVersionUID = 0L;
         threadRunsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             io.littlehorse.jlib.common.proto.ThreadRunPb, io.littlehorse.jlib.common.proto.ThreadRunPb.Builder, io.littlehorse.jlib.common.proto.ThreadRunPbOrBuilder>(
                 threadRuns_,
-                ((bitField0_ & 0x00000080) != 0),
+                ((bitField0_ & 0x00000040) != 0),
                 getParentForChildren(),
                 isClean());
         threadRuns_ = null;
@@ -1823,9 +1728,9 @@ private static final long serialVersionUID = 0L;
     private java.util.List<io.littlehorse.jlib.common.proto.PendingInterruptPb> pendingInterrupts_ =
       java.util.Collections.emptyList();
     private void ensurePendingInterruptsIsMutable() {
-      if (!((bitField0_ & 0x00000100) != 0)) {
+      if (!((bitField0_ & 0x00000080) != 0)) {
         pendingInterrupts_ = new java.util.ArrayList<io.littlehorse.jlib.common.proto.PendingInterruptPb>(pendingInterrupts_);
-        bitField0_ |= 0x00000100;
+        bitField0_ |= 0x00000080;
        }
     }
 
@@ -1975,7 +1880,7 @@ private static final long serialVersionUID = 0L;
     public Builder clearPendingInterrupts() {
       if (pendingInterruptsBuilder_ == null) {
         pendingInterrupts_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000100);
+        bitField0_ = (bitField0_ & ~0x00000080);
         onChanged();
       } else {
         pendingInterruptsBuilder_.clear();
@@ -2052,7 +1957,7 @@ private static final long serialVersionUID = 0L;
         pendingInterruptsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             io.littlehorse.jlib.common.proto.PendingInterruptPb, io.littlehorse.jlib.common.proto.PendingInterruptPb.Builder, io.littlehorse.jlib.common.proto.PendingInterruptPbOrBuilder>(
                 pendingInterrupts_,
-                ((bitField0_ & 0x00000100) != 0),
+                ((bitField0_ & 0x00000080) != 0),
                 getParentForChildren(),
                 isClean());
         pendingInterrupts_ = null;
@@ -2063,9 +1968,9 @@ private static final long serialVersionUID = 0L;
     private java.util.List<io.littlehorse.jlib.common.proto.PendingFailureHandlerPb> pendingFailures_ =
       java.util.Collections.emptyList();
     private void ensurePendingFailuresIsMutable() {
-      if (!((bitField0_ & 0x00000200) != 0)) {
+      if (!((bitField0_ & 0x00000100) != 0)) {
         pendingFailures_ = new java.util.ArrayList<io.littlehorse.jlib.common.proto.PendingFailureHandlerPb>(pendingFailures_);
-        bitField0_ |= 0x00000200;
+        bitField0_ |= 0x00000100;
        }
     }
 
@@ -2215,7 +2120,7 @@ private static final long serialVersionUID = 0L;
     public Builder clearPendingFailures() {
       if (pendingFailuresBuilder_ == null) {
         pendingFailures_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000200);
+        bitField0_ = (bitField0_ & ~0x00000100);
         onChanged();
       } else {
         pendingFailuresBuilder_.clear();
@@ -2292,7 +2197,7 @@ private static final long serialVersionUID = 0L;
         pendingFailuresBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             io.littlehorse.jlib.common.proto.PendingFailureHandlerPb, io.littlehorse.jlib.common.proto.PendingFailureHandlerPb.Builder, io.littlehorse.jlib.common.proto.PendingFailureHandlerPbOrBuilder>(
                 pendingFailures_,
-                ((bitField0_ & 0x00000200) != 0),
+                ((bitField0_ & 0x00000100) != 0),
                 getParentForChildren(),
                 isClean());
         pendingFailures_ = null;

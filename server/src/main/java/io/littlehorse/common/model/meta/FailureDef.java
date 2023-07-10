@@ -9,7 +9,6 @@ import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.jlib.common.proto.FailureDefPb;
-import io.littlehorse.jlib.common.proto.TaskResultCodePb;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,7 +16,6 @@ import java.util.Set;
 public class FailureDef extends LHSerializable<FailureDefPb> {
 
     public String failureName;
-    public TaskResultCodePb failureCode;
     public String message;
     public VariableAssignment content;
 
@@ -28,7 +26,6 @@ public class FailureDef extends LHSerializable<FailureDefPb> {
     public FailureDefPb.Builder toProto() {
         FailureDefPb.Builder out = FailureDefPb
             .newBuilder()
-            .setFailureCode(failureCode)
             .setFailureName(failureName)
             .setMessage(message);
 
@@ -42,7 +39,6 @@ public class FailureDef extends LHSerializable<FailureDefPb> {
         FailureDefPb p = (FailureDefPb) proto;
         failureName = p.getFailureName();
         message = p.getMessage();
-        failureCode = p.getFailureCode();
 
         if (p.hasContent()) {
             content = VariableAssignment.fromProto(p.getContent());
@@ -75,7 +71,6 @@ public class FailureDef extends LHSerializable<FailureDefPb> {
     public Failure getFailure(ThreadRun thread) {
         Failure out = new Failure();
         out.failureName = failureName;
-        out.failureCode = failureCode;
         out.message = message;
 
         if (this.content != null) {

@@ -19,6 +19,7 @@ import io.littlehorse.jlib.common.proto.GetExternalEventReplyPb;
 import io.littlehorse.jlib.common.proto.GetLatestWfSpecPb;
 import io.littlehorse.jlib.common.proto.GetNodeRunReplyPb;
 import io.littlehorse.jlib.common.proto.GetTaskDefReplyPb;
+import io.littlehorse.jlib.common.proto.GetTaskRunReplyPb;
 import io.littlehorse.jlib.common.proto.GetVariableReplyPb;
 import io.littlehorse.jlib.common.proto.GetWfRunReplyPb;
 import io.littlehorse.jlib.common.proto.GetWfSpecReplyPb;
@@ -46,6 +47,8 @@ import io.littlehorse.jlib.common.proto.SearchWfRunReplyPb;
 import io.littlehorse.jlib.common.proto.StopWfRunPb;
 import io.littlehorse.jlib.common.proto.TaskDefIdPb;
 import io.littlehorse.jlib.common.proto.TaskDefPb;
+import io.littlehorse.jlib.common.proto.TaskRunIdPb;
+import io.littlehorse.jlib.common.proto.TaskRunPb;
 import io.littlehorse.jlib.common.proto.VariableIdPb;
 import io.littlehorse.jlib.common.proto.VariablePb;
 import io.littlehorse.jlib.common.proto.WfRunIdPb;
@@ -141,6 +144,16 @@ public class LHClient {
         } else {
             return null;
         }
+    }
+
+    public TaskRunPb getTaskRun(TaskRunIdPb id) throws LHApiError {
+        GetTaskRunReplyPb reply = (GetTaskRunReplyPb) doRequest(() -> {
+            return getGrpcClient().getTaskRun(id);
+        });
+        if (reply.hasResult()) {
+            return reply.getResult();
+        }
+        return null;
     }
 
     public NodeRunPb getNodeRun(String wfRunId, int threadRunNumber, int position)

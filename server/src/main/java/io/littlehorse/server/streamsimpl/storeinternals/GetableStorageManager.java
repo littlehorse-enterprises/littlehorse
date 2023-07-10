@@ -3,10 +3,8 @@ package io.littlehorse.server.streamsimpl.storeinternals;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.Getable;
-import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
-import io.littlehorse.server.streamsimpl.storeinternals.index.TagUtils;
 import io.littlehorse.server.streamsimpl.storeinternals.index.TagsCache;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import java.util.Collection;
@@ -65,9 +63,6 @@ public class GetableStorageManager {
     }
 
     public Collection<Tag> getTagsFor(Getable<?> getAble) {
-        if (getAble instanceof NodeRun) {
-            return TagUtils.tagThing(getAble);
-        }
         List<GetableIndex> getAbleIndices = GetableIndexRegistry
             .getInstance()
             .findIndexesFor(getAble.getClass());

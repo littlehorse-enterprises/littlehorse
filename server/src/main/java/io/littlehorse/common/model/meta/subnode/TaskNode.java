@@ -2,17 +2,22 @@ package io.littlehorse.common.model.meta.subnode;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.common.LHDAO;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.meta.SubNode;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.meta.VariableAssignment;
-import io.littlehorse.common.model.wfrun.subnoderun.TaskRun;
+import io.littlehorse.common.model.meta.VariableDef;
+import io.littlehorse.common.model.wfrun.ThreadRun;
+import io.littlehorse.common.model.wfrun.VarNameAndVal;
+import io.littlehorse.common.model.wfrun.VariableValue;
+import io.littlehorse.common.model.wfrun.subnoderun.TaskNodeRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.jlib.common.proto.TaskNodePb;
 import io.littlehorse.jlib.common.proto.VariableAssignmentPb;
-import io.littlehorse.jlib.common.proto.VariableAssignmentPb.SourceCase;
+import io.littlehorse.jlib.common.proto.VariableTypePb;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -28,13 +33,14 @@ public class TaskNode extends SubNode<TaskNodePb> {
     public String taskDefName;
     public int retries;
     public List<VariableAssignment> variables;
-    public VariableAssignment timeoutSeconds;
+    public int timeoutSeconds;
 
     private TaskDef taskDef;
 
-    public TaskDef getTaskDef(LHDAO dao) {
+    public TaskDef getTaskDef() {
         if (taskDef == null) {
-            taskDef = dao.getTaskDef(taskDefName);
+            taskDef =
+                node.getThreadSpec().getWfSpec().getDao().getTaskDef(taskDefName);
         }
         return taskDef;
     }
@@ -58,8 +64,9 @@ public class TaskNode extends SubNode<TaskNodePb> {
         taskDefName = p.getTaskDefName();
         retries = p.getRetries();
 
-        if (p.hasTimeoutSeconds()) {
-            timeoutSeconds = VariableAssignment.fromProto(p.getTimeoutSeconds());
+        timeoutSeconds = p.getTimeoutSeconds();
+        if (timeoutSeconds == 0) {
+            timeoutSeconds = LHConstants.DEFAULT_TASK_TIMEOUT_SECONDS;
         }
 
         for (VariableAssignmentPb assn : p.getVariablesList()) {
@@ -71,14 +78,11 @@ public class TaskNode extends SubNode<TaskNodePb> {
         TaskNodePb.Builder out = TaskNodePb
             .newBuilder()
             .setTaskDefName(taskDefName)
+            .setTimeoutSeconds(timeoutSeconds)
             .setRetries(retries);
 
         for (VariableAssignment va : variables) {
             out.addVariables(va.toProto());
-        }
-
-        if (timeoutSeconds != null) {
-            out.setTimeoutSeconds(timeoutSeconds.toProto());
         }
         return out;
     }
@@ -117,33 +121,65 @@ public class TaskNode extends SubNode<TaskNodePb> {
         // project, we will have to add schemas for JSON typed variables, and do
         // some jsonpath processing as well.
 
-        if (timeoutSeconds == null) {
-            timeoutSeconds = config.getDefaultTaskTimeout();
-        } else {
-            node.threadSpec.validateTimeoutAssignment(node.name, timeoutSeconds);
+        if (timeoutSeconds == 0) {
+            timeoutSeconds = LHConstants.DEFAULT_TASK_TIMEOUT_SECONDS;
         }
     }
 
     @Override
     public Set<String> getNeededVariableNames() {
         Set<String> out = new HashSet<>();
-        if (
-            timeoutSeconds != null &&
-            timeoutSeconds.getRhsSourceType() == SourceCase.VARIABLE_NAME
-        ) {
-            out.add(timeoutSeconds.getVariableName());
-        }
-
         for (VariableAssignment assn : variables) {
             out.addAll(assn.getRequiredWfRunVarNames());
         }
         return out;
     }
 
-    public TaskRun createRun(Date time) {
-        TaskRun out = new TaskRun();
-        out.taskDefName = taskDefName;
+    public List<VarNameAndVal> assignInputVars(ThreadRun thread)
+        throws LHVarSubError {
+        List<VarNameAndVal> out = new ArrayList<>();
+        if (getTaskDef().getInputVars().size() != variables.size()) {
+            throw new LHVarSubError(
+                null,
+                "Impossible: got different number of taskdef vars and node input vars"
+            );
+        }
 
+        for (int i = 0; i < taskDef.inputVars.size(); i++) {
+            VariableDef requiredVarDef = taskDef.inputVars.get(i);
+            VariableAssignment assn = variables.get(i);
+            String varName = requiredVarDef.name;
+            VariableValue val;
+
+            if (assn != null) {
+                val = thread.assignVariable(assn);
+            } else {
+                throw new LHVarSubError(
+                    null,
+                    "Variable " + varName + " is unassigned."
+                );
+            }
+            if (val.type != requiredVarDef.type && val.type != VariableTypePb.NULL) {
+                throw new LHVarSubError(
+                    null,
+                    "Variable " +
+                    varName +
+                    " should be " +
+                    requiredVarDef.type +
+                    " but is of type " +
+                    val.type
+                );
+            }
+            out.add(new VarNameAndVal(varName, val));
+        }
+
+        return out;
+    }
+
+    @Override
+    public TaskNodeRun createSubNodeRun(Date time) {
+        TaskNodeRun out = new TaskNodeRun();
+        // Note: all of the initialization is done in `TaskNodeRun#arrive()`
         return out;
     }
 }

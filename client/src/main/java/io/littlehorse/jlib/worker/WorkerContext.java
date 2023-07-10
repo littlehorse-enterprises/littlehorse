@@ -1,7 +1,10 @@
 package io.littlehorse.jlib.worker;
 
+import io.littlehorse.jlib.common.LHLibUtil;
 import io.littlehorse.jlib.common.proto.NodeRunIdPb;
 import io.littlehorse.jlib.common.proto.ScheduledTaskPb;
+import io.littlehorse.jlib.common.proto.TaskRunIdPb;
+import io.littlehorse.jlib.common.proto.TaskRunSourcePb;
 import java.util.Date;
 
 /**
@@ -31,15 +34,7 @@ public class WorkerContext {
      * @return the Id of the WfRun for the NodeRun that's being executed.
      */
     public String getWfRunId() {
-        return scheduledTask.getWfRunId();
-    }
-
-    /**
-     * Returns the threadRunNumber of the NodeRun that's being executed.
-     * @return the threadRunNumber of the NodeRun that's being executed.
-     */
-    public int getThreadRunNumber() {
-        return scheduledTask.getThreadRunNumber();
+        return LHLibUtil.getWfRunId(scheduledTask.getSource());
     }
 
     /**
@@ -47,12 +42,15 @@ public class WorkerContext {
      * @return a `NodeRunIdPb` protobuf class with the ID from the executed NodeRun.
      */
     public NodeRunIdPb getNodeRunId() {
-        return NodeRunIdPb
-            .newBuilder()
-            .setWfRunId(scheduledTask.getWfRunId())
-            .setThreadRunNumber(scheduledTask.getThreadRunNumber())
-            .setPosition(scheduledTask.getTaskRunPosition())
-            .build();
+        TaskRunSourcePb source = scheduledTask.getSource();
+        switch (source.getTaskRunSourceCase()) {
+            case TASK_NODE:
+                return source.getTaskNode().getNodeRunId();
+            case USER_TASK_TRIGGER:
+                return source.getUserTaskTrigger().getNodeRunId();
+            case TASKRUNSOURCE_NOT_SET:
+        }
+        return null;
     }
 
     /**
@@ -62,27 +60,6 @@ public class WorkerContext {
      */
     public int getAttemptNumber() {
         return scheduledTask.getAttemptNumber();
-    }
-
-    /**
-     * Returns the Node Run Number of the Task Run that is being executed. Note taht
-     * this differs from the Node Run Position.
-     *
-     * When there is a retry, for example, a new Node Run (with an incremented Node
-     * Run Position) is created. But the Task Run Number is the same as the previous
-     * Task Run that is being retried.
-     * @return the current Task Run Number.
-     */
-    public int getTaskRunNumber() {
-        return scheduledTask.getTaskRunNumber();
-    }
-
-    /**
-     * Returns the Node Run Position of the Task Run that's being executed.
-     * @return The Node Run Position of the Task Run that's being executed.
-     */
-    public int getTaskRunPosition() {
-        return scheduledTask.getTaskRunPosition();
     }
 
     /**
@@ -118,18 +95,16 @@ public class WorkerContext {
         return stderr;
     }
 
+    public TaskRunIdPb getTaskRunId() {
+        return scheduledTask.getTaskRunId();
+    }
+
     /**
      * Returns an idempotency key that can be used to make calls to upstream api's
-     * idempotent.
+     * idempotent across TaskRun Retries.
      * @return an idempotency key.
      */
     public String getIdempotencyKey() {
-        return (
-            getWfRunId() +
-            "/" +
-            getThreadRunNumber() +
-            "/" +
-            scheduledTask.getTaskRunNumber()
-        );
+        return LHLibUtil.taskRunIdToString(getTaskRunId());
     }
 }

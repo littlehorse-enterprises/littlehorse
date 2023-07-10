@@ -5,13 +5,10 @@ import io.grpc.ChannelCredentials;
 import io.grpc.ServerCredentials;
 import io.grpc.TlsChannelCredentials;
 import io.grpc.TlsServerCredentials;
-import io.littlehorse.common.model.meta.VariableAssignment;
-import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.jlib.common.auth.OAuthConfig;
 import io.littlehorse.jlib.common.config.ConfigBase;
 import io.littlehorse.jlib.common.exception.LHMisconfigurationException;
-import io.littlehorse.jlib.common.proto.VariableAssignmentPb.SourceCase;
 import io.littlehorse.server.auth.AuthorizationProtocol;
 import io.littlehorse.server.listener.AdvertisedListenerConfig;
 import io.littlehorse.server.listener.ListenerProtocol;
@@ -67,7 +64,6 @@ public class LHConfig extends ConfigBase {
         "LHS_STREAMS_NUM_STANDBY_REPLICAS";
 
     // General LittleHorse Runtime Behavior Config Env Vars
-    public static final String DEFAULT_TIMEOUT_KEY = "LHS_DEFAULT_TASK_TIMEOUT";
     public static final String KAFKA_TOPIC_PREFIX_KEY = "LHS_KAFKA_PREFIX";
     public static final String DEFAULT_WFRUN_RETENTION_HOURS =
         "LHS_DEFAULT_WFRUN_RETENTION_HOURS";
@@ -818,18 +814,6 @@ public class LHConfig extends ConfigBase {
 
     public int getStreamsCommitInterval() {
         return Integer.valueOf(getOrSetDefault(LHConfig.COMMIT_INTERVAL_KEY, "100"));
-    }
-
-    public VariableAssignment getDefaultTaskTimeout() {
-        int timeout = Integer.valueOf(
-            getOrSetDefault(LHConfig.DEFAULT_TIMEOUT_KEY, "10")
-        );
-
-        VariableValue val = new VariableValue(timeout);
-        VariableAssignment out = new VariableAssignment();
-        out.setRhsSourceType(SourceCase.LITERAL_VALUE);
-        out.setRhsLiteralValue(val);
-        return out;
     }
 
     public int getDefaultWfRunRetentionHours() {

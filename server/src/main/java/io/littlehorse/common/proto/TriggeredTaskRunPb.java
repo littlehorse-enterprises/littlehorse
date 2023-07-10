@@ -49,9 +49,9 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int TASK_TO_SCHEDULE_FIELD_NUMBER = 1;
-  private io.littlehorse.jlib.common.proto.ScheduledTaskPb taskToSchedule_;
+  private io.littlehorse.jlib.common.proto.TaskNodePb taskToSchedule_;
   /**
-   * <code>.littlehorse.ScheduledTaskPb task_to_schedule = 1;</code>
+   * <code>.littlehorse.TaskNodePb task_to_schedule = 1;</code>
    * @return Whether the taskToSchedule field is set.
    */
   @java.lang.Override
@@ -59,19 +59,45 @@ private static final long serialVersionUID = 0L;
     return taskToSchedule_ != null;
   }
   /**
-   * <code>.littlehorse.ScheduledTaskPb task_to_schedule = 1;</code>
+   * <code>.littlehorse.TaskNodePb task_to_schedule = 1;</code>
    * @return The taskToSchedule.
    */
   @java.lang.Override
-  public io.littlehorse.jlib.common.proto.ScheduledTaskPb getTaskToSchedule() {
-    return taskToSchedule_ == null ? io.littlehorse.jlib.common.proto.ScheduledTaskPb.getDefaultInstance() : taskToSchedule_;
+  public io.littlehorse.jlib.common.proto.TaskNodePb getTaskToSchedule() {
+    return taskToSchedule_ == null ? io.littlehorse.jlib.common.proto.TaskNodePb.getDefaultInstance() : taskToSchedule_;
   }
   /**
-   * <code>.littlehorse.ScheduledTaskPb task_to_schedule = 1;</code>
+   * <code>.littlehorse.TaskNodePb task_to_schedule = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.jlib.common.proto.ScheduledTaskPbOrBuilder getTaskToScheduleOrBuilder() {
-    return taskToSchedule_ == null ? io.littlehorse.jlib.common.proto.ScheduledTaskPb.getDefaultInstance() : taskToSchedule_;
+  public io.littlehorse.jlib.common.proto.TaskNodePbOrBuilder getTaskToScheduleOrBuilder() {
+    return taskToSchedule_ == null ? io.littlehorse.jlib.common.proto.TaskNodePb.getDefaultInstance() : taskToSchedule_;
+  }
+
+  public static final int SOURCE_FIELD_NUMBER = 2;
+  private io.littlehorse.jlib.common.proto.NodeRunIdPb source_;
+  /**
+   * <code>.littlehorse.NodeRunIdPb source = 2;</code>
+   * @return Whether the source field is set.
+   */
+  @java.lang.Override
+  public boolean hasSource() {
+    return source_ != null;
+  }
+  /**
+   * <code>.littlehorse.NodeRunIdPb source = 2;</code>
+   * @return The source.
+   */
+  @java.lang.Override
+  public io.littlehorse.jlib.common.proto.NodeRunIdPb getSource() {
+    return source_ == null ? io.littlehorse.jlib.common.proto.NodeRunIdPb.getDefaultInstance() : source_;
+  }
+  /**
+   * <code>.littlehorse.NodeRunIdPb source = 2;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.jlib.common.proto.NodeRunIdPbOrBuilder getSourceOrBuilder() {
+    return source_ == null ? io.littlehorse.jlib.common.proto.NodeRunIdPb.getDefaultInstance() : source_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -91,6 +117,9 @@ private static final long serialVersionUID = 0L;
     if (taskToSchedule_ != null) {
       output.writeMessage(1, getTaskToSchedule());
     }
+    if (source_ != null) {
+      output.writeMessage(2, getSource());
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -103,6 +132,10 @@ private static final long serialVersionUID = 0L;
     if (taskToSchedule_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, getTaskToSchedule());
+    }
+    if (source_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(2, getSource());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -124,6 +157,11 @@ private static final long serialVersionUID = 0L;
       if (!getTaskToSchedule()
           .equals(other.getTaskToSchedule())) return false;
     }
+    if (hasSource() != other.hasSource()) return false;
+    if (hasSource()) {
+      if (!getSource()
+          .equals(other.getSource())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -138,6 +176,10 @@ private static final long serialVersionUID = 0L;
     if (hasTaskToSchedule()) {
       hash = (37 * hash) + TASK_TO_SCHEDULE_FIELD_NUMBER;
       hash = (53 * hash) + getTaskToSchedule().hashCode();
+    }
+    if (hasSource()) {
+      hash = (37 * hash) + SOURCE_FIELD_NUMBER;
+      hash = (53 * hash) + getSource().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -278,6 +320,11 @@ private static final long serialVersionUID = 0L;
         taskToScheduleBuilder_.dispose();
         taskToScheduleBuilder_ = null;
       }
+      source_ = null;
+      if (sourceBuilder_ != null) {
+        sourceBuilder_.dispose();
+        sourceBuilder_ = null;
+      }
       return this;
     }
 
@@ -315,6 +362,11 @@ private static final long serialVersionUID = 0L;
         result.taskToSchedule_ = taskToScheduleBuilder_ == null
             ? taskToSchedule_
             : taskToScheduleBuilder_.build();
+      }
+      if (((from_bitField0_ & 0x00000002) != 0)) {
+        result.source_ = sourceBuilder_ == null
+            ? source_
+            : sourceBuilder_.build();
       }
     }
 
@@ -365,6 +417,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasTaskToSchedule()) {
         mergeTaskToSchedule(other.getTaskToSchedule());
       }
+      if (other.hasSource()) {
+        mergeSource(other.getSource());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -398,6 +453,13 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000001;
               break;
             } // case 10
+            case 18: {
+              input.readMessage(
+                  getSourceFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000002;
+              break;
+            } // case 18
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -415,31 +477,31 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private io.littlehorse.jlib.common.proto.ScheduledTaskPb taskToSchedule_;
+    private io.littlehorse.jlib.common.proto.TaskNodePb taskToSchedule_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.jlib.common.proto.ScheduledTaskPb, io.littlehorse.jlib.common.proto.ScheduledTaskPb.Builder, io.littlehorse.jlib.common.proto.ScheduledTaskPbOrBuilder> taskToScheduleBuilder_;
+        io.littlehorse.jlib.common.proto.TaskNodePb, io.littlehorse.jlib.common.proto.TaskNodePb.Builder, io.littlehorse.jlib.common.proto.TaskNodePbOrBuilder> taskToScheduleBuilder_;
     /**
-     * <code>.littlehorse.ScheduledTaskPb task_to_schedule = 1;</code>
+     * <code>.littlehorse.TaskNodePb task_to_schedule = 1;</code>
      * @return Whether the taskToSchedule field is set.
      */
     public boolean hasTaskToSchedule() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>.littlehorse.ScheduledTaskPb task_to_schedule = 1;</code>
+     * <code>.littlehorse.TaskNodePb task_to_schedule = 1;</code>
      * @return The taskToSchedule.
      */
-    public io.littlehorse.jlib.common.proto.ScheduledTaskPb getTaskToSchedule() {
+    public io.littlehorse.jlib.common.proto.TaskNodePb getTaskToSchedule() {
       if (taskToScheduleBuilder_ == null) {
-        return taskToSchedule_ == null ? io.littlehorse.jlib.common.proto.ScheduledTaskPb.getDefaultInstance() : taskToSchedule_;
+        return taskToSchedule_ == null ? io.littlehorse.jlib.common.proto.TaskNodePb.getDefaultInstance() : taskToSchedule_;
       } else {
         return taskToScheduleBuilder_.getMessage();
       }
     }
     /**
-     * <code>.littlehorse.ScheduledTaskPb task_to_schedule = 1;</code>
+     * <code>.littlehorse.TaskNodePb task_to_schedule = 1;</code>
      */
-    public Builder setTaskToSchedule(io.littlehorse.jlib.common.proto.ScheduledTaskPb value) {
+    public Builder setTaskToSchedule(io.littlehorse.jlib.common.proto.TaskNodePb value) {
       if (taskToScheduleBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -453,10 +515,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ScheduledTaskPb task_to_schedule = 1;</code>
+     * <code>.littlehorse.TaskNodePb task_to_schedule = 1;</code>
      */
     public Builder setTaskToSchedule(
-        io.littlehorse.jlib.common.proto.ScheduledTaskPb.Builder builderForValue) {
+        io.littlehorse.jlib.common.proto.TaskNodePb.Builder builderForValue) {
       if (taskToScheduleBuilder_ == null) {
         taskToSchedule_ = builderForValue.build();
       } else {
@@ -467,13 +529,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ScheduledTaskPb task_to_schedule = 1;</code>
+     * <code>.littlehorse.TaskNodePb task_to_schedule = 1;</code>
      */
-    public Builder mergeTaskToSchedule(io.littlehorse.jlib.common.proto.ScheduledTaskPb value) {
+    public Builder mergeTaskToSchedule(io.littlehorse.jlib.common.proto.TaskNodePb value) {
       if (taskToScheduleBuilder_ == null) {
         if (((bitField0_ & 0x00000001) != 0) &&
           taskToSchedule_ != null &&
-          taskToSchedule_ != io.littlehorse.jlib.common.proto.ScheduledTaskPb.getDefaultInstance()) {
+          taskToSchedule_ != io.littlehorse.jlib.common.proto.TaskNodePb.getDefaultInstance()) {
           getTaskToScheduleBuilder().mergeFrom(value);
         } else {
           taskToSchedule_ = value;
@@ -486,7 +548,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ScheduledTaskPb task_to_schedule = 1;</code>
+     * <code>.littlehorse.TaskNodePb task_to_schedule = 1;</code>
      */
     public Builder clearTaskToSchedule() {
       bitField0_ = (bitField0_ & ~0x00000001);
@@ -499,39 +561,158 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.ScheduledTaskPb task_to_schedule = 1;</code>
+     * <code>.littlehorse.TaskNodePb task_to_schedule = 1;</code>
      */
-    public io.littlehorse.jlib.common.proto.ScheduledTaskPb.Builder getTaskToScheduleBuilder() {
+    public io.littlehorse.jlib.common.proto.TaskNodePb.Builder getTaskToScheduleBuilder() {
       bitField0_ |= 0x00000001;
       onChanged();
       return getTaskToScheduleFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.ScheduledTaskPb task_to_schedule = 1;</code>
+     * <code>.littlehorse.TaskNodePb task_to_schedule = 1;</code>
      */
-    public io.littlehorse.jlib.common.proto.ScheduledTaskPbOrBuilder getTaskToScheduleOrBuilder() {
+    public io.littlehorse.jlib.common.proto.TaskNodePbOrBuilder getTaskToScheduleOrBuilder() {
       if (taskToScheduleBuilder_ != null) {
         return taskToScheduleBuilder_.getMessageOrBuilder();
       } else {
         return taskToSchedule_ == null ?
-            io.littlehorse.jlib.common.proto.ScheduledTaskPb.getDefaultInstance() : taskToSchedule_;
+            io.littlehorse.jlib.common.proto.TaskNodePb.getDefaultInstance() : taskToSchedule_;
       }
     }
     /**
-     * <code>.littlehorse.ScheduledTaskPb task_to_schedule = 1;</code>
+     * <code>.littlehorse.TaskNodePb task_to_schedule = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.jlib.common.proto.ScheduledTaskPb, io.littlehorse.jlib.common.proto.ScheduledTaskPb.Builder, io.littlehorse.jlib.common.proto.ScheduledTaskPbOrBuilder> 
+        io.littlehorse.jlib.common.proto.TaskNodePb, io.littlehorse.jlib.common.proto.TaskNodePb.Builder, io.littlehorse.jlib.common.proto.TaskNodePbOrBuilder> 
         getTaskToScheduleFieldBuilder() {
       if (taskToScheduleBuilder_ == null) {
         taskToScheduleBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.jlib.common.proto.ScheduledTaskPb, io.littlehorse.jlib.common.proto.ScheduledTaskPb.Builder, io.littlehorse.jlib.common.proto.ScheduledTaskPbOrBuilder>(
+            io.littlehorse.jlib.common.proto.TaskNodePb, io.littlehorse.jlib.common.proto.TaskNodePb.Builder, io.littlehorse.jlib.common.proto.TaskNodePbOrBuilder>(
                 getTaskToSchedule(),
                 getParentForChildren(),
                 isClean());
         taskToSchedule_ = null;
       }
       return taskToScheduleBuilder_;
+    }
+
+    private io.littlehorse.jlib.common.proto.NodeRunIdPb source_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.jlib.common.proto.NodeRunIdPb, io.littlehorse.jlib.common.proto.NodeRunIdPb.Builder, io.littlehorse.jlib.common.proto.NodeRunIdPbOrBuilder> sourceBuilder_;
+    /**
+     * <code>.littlehorse.NodeRunIdPb source = 2;</code>
+     * @return Whether the source field is set.
+     */
+    public boolean hasSource() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>.littlehorse.NodeRunIdPb source = 2;</code>
+     * @return The source.
+     */
+    public io.littlehorse.jlib.common.proto.NodeRunIdPb getSource() {
+      if (sourceBuilder_ == null) {
+        return source_ == null ? io.littlehorse.jlib.common.proto.NodeRunIdPb.getDefaultInstance() : source_;
+      } else {
+        return sourceBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.littlehorse.NodeRunIdPb source = 2;</code>
+     */
+    public Builder setSource(io.littlehorse.jlib.common.proto.NodeRunIdPb value) {
+      if (sourceBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        source_ = value;
+      } else {
+        sourceBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.NodeRunIdPb source = 2;</code>
+     */
+    public Builder setSource(
+        io.littlehorse.jlib.common.proto.NodeRunIdPb.Builder builderForValue) {
+      if (sourceBuilder_ == null) {
+        source_ = builderForValue.build();
+      } else {
+        sourceBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.NodeRunIdPb source = 2;</code>
+     */
+    public Builder mergeSource(io.littlehorse.jlib.common.proto.NodeRunIdPb value) {
+      if (sourceBuilder_ == null) {
+        if (((bitField0_ & 0x00000002) != 0) &&
+          source_ != null &&
+          source_ != io.littlehorse.jlib.common.proto.NodeRunIdPb.getDefaultInstance()) {
+          getSourceBuilder().mergeFrom(value);
+        } else {
+          source_ = value;
+        }
+      } else {
+        sourceBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.NodeRunIdPb source = 2;</code>
+     */
+    public Builder clearSource() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      source_ = null;
+      if (sourceBuilder_ != null) {
+        sourceBuilder_.dispose();
+        sourceBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.NodeRunIdPb source = 2;</code>
+     */
+    public io.littlehorse.jlib.common.proto.NodeRunIdPb.Builder getSourceBuilder() {
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return getSourceFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.NodeRunIdPb source = 2;</code>
+     */
+    public io.littlehorse.jlib.common.proto.NodeRunIdPbOrBuilder getSourceOrBuilder() {
+      if (sourceBuilder_ != null) {
+        return sourceBuilder_.getMessageOrBuilder();
+      } else {
+        return source_ == null ?
+            io.littlehorse.jlib.common.proto.NodeRunIdPb.getDefaultInstance() : source_;
+      }
+    }
+    /**
+     * <code>.littlehorse.NodeRunIdPb source = 2;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.jlib.common.proto.NodeRunIdPb, io.littlehorse.jlib.common.proto.NodeRunIdPb.Builder, io.littlehorse.jlib.common.proto.NodeRunIdPbOrBuilder> 
+        getSourceFieldBuilder() {
+      if (sourceBuilder_ == null) {
+        sourceBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.jlib.common.proto.NodeRunIdPb, io.littlehorse.jlib.common.proto.NodeRunIdPb.Builder, io.littlehorse.jlib.common.proto.NodeRunIdPbOrBuilder>(
+                getSource(),
+                getParentForChildren(),
+                isClean());
+        source_ = null;
+      }
+      return sourceBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

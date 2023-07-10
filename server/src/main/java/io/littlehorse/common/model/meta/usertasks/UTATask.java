@@ -11,7 +11,6 @@ import io.littlehorse.common.model.meta.VariableMutation;
 import io.littlehorse.common.model.meta.subnode.TaskNode;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.NodeRun;
-import io.littlehorse.common.model.wfrun.ScheduledTask;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.model.wfrun.subnoderun.UserTaskRun;
 import io.littlehorse.jlib.common.proto.UTActionTriggerPb.UTATaskPb;
@@ -56,47 +55,37 @@ public class UTATask extends LHSerializable<UTATaskPb> {
     // Like hey both use the same TaskNode
     public void schedule(LHDAO dao, UserTaskRun utr, UTActionTrigger trigger)
         throws LHVarSubError {
-        ScheduledTask scheduledTask = new ScheduledTask();
-        NodeRun nodeRun = utr.nodeRun;
-        Node node = nodeRun.getNode();
-
-        scheduledTask.wfRunEventQueue =
-            nodeRun.threadRun.wfRun.cmdDao.getWfRunEventQueue();
-        scheduledTask.taskDefId = task.taskDefName;
-        scheduledTask.taskDefName = task.taskDefName;
-        scheduledTask.taskRunNumber = nodeRun.number;
-        scheduledTask.taskRunPosition = nodeRun.position;
-        scheduledTask.threadRunNumber = nodeRun.threadRunNumber;
-        scheduledTask.wfRunId = nodeRun.threadRun.wfRunId;
-        scheduledTask.wfSpecId = nodeRun.threadRun.wfSpecName;
-        scheduledTask.nodeName = node.name;
-        scheduledTask.variables = nodeRun.threadRun.assignVarsForNode(task);
+        NodeRun nodeRun = utr.getNodeRun();
+        Node node = utr.getNode();
 
         // Next, figure out when the task should be scheduled.
-        VariableValue delaySeconds = nodeRun.threadRun.assignVariable(
-            trigger.delaySeconds
+        VariableValue delaySeconds = nodeRun
+            .getThreadRun()
+            .assignVariable(trigger.delaySeconds);
+
+        Date maturationTime = new Date(
+            System.currentTimeMillis() + (1000 * delaySeconds.intVal)
         );
 
-        if (delaySeconds.type != VariableTypePb.INT) {
+        if (delaySeconds.getType() != VariableTypePb.INT) {
             throw new LHVarSubError(
                 null,
                 "Delay for User Task Action was not an INT, got a " +
-                delaySeconds.type
+                delaySeconds.getType()
             );
         }
 
-        LHTimer timer = new LHTimer();
-        timer.topic = dao.getWfRunEventQueue();
-        timer.key = utr.nodeRun.wfRunId;
-        timer.maturationTime =
-            new Date(System.currentTimeMillis() + (1000 * delaySeconds.intVal));
+        LHTimer timer = new LHTimer(
+            new Command(
+                new TriggeredTaskRun(
+                    node.getTaskNode(),
+                    utr.getNodeRun().getObjectId()
+                ),
+                maturationTime
+            ),
+            dao
+        );
 
-        Command cmd = new Command();
-        cmd.time = timer.maturationTime;
-        cmd.setSubCommand(new TriggeredTaskRun());
-        cmd.triggeredTaskRun.scheduledTask = scheduledTask;
-
-        timer.payload = cmd.toProto().build().toByteArray();
         dao.scheduleTimer(timer);
     }
 }

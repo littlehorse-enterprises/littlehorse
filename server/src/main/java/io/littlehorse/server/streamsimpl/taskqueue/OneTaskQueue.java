@@ -1,6 +1,7 @@
 package io.littlehorse.server.streamsimpl.taskqueue;
 
 import io.littlehorse.common.model.wfrun.ScheduledTask;
+import io.littlehorse.jlib.common.LHLibUtil;
 // import io.littlehorse.common.util.LHUtil;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -82,7 +83,7 @@ public class OneTaskQueue {
         log.debug(
             "Instance {}: Task scheduled for wfRun {}, queue is empty? {}",
             hostName,
-            scheduledTaskId.wfRunId,
+            LHLibUtil.getWfRunId(scheduledTaskId.getSource().toProto().build()),
             hungryClients.isEmpty()
         );
 
@@ -141,8 +142,6 @@ public class OneTaskQueue {
         //    `hungryClients` list.
         ScheduledTask nextTask = null;
 
-        // long result = 0;
-        // long start = System.nanoTime();
         try {
             lock.lock();
 
@@ -161,13 +160,6 @@ public class OneTaskQueue {
             }
         } finally {
             lock.unlock();
-            // result = System.nanoTime() - start;
-            // if (result > 100) {
-            //     log.debug("Took {}ns");
-            // }
-            // if (pendingTaskIds.size() > 2) {
-            //     log.debug("Pending tasks size: {}", pendingTaskIds.size());
-            // }
         }
 
         if (nextTask != null) {

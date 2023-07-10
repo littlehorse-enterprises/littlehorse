@@ -7,8 +7,11 @@ import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.jlib.common.proto.TaskDefIdPb;
 import io.littlehorse.jlib.common.proto.TaskDefPb;
+import lombok.Getter;
+import lombok.Setter;
 
-// Used by TaskDef, TaskDef, and ExternalEventDef
+@Getter
+@Setter
 public class TaskDefId extends ObjectId<TaskDefIdPb, TaskDefPb, TaskDef> {
 
     public String name;
