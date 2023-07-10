@@ -53,7 +53,7 @@ dependencies {
     implementation 'com.google.guava:guava:32.0.1-jre'
 
     // gRPC and Protobuf now included in lh-jlib
-    implementation project(':client')
+    implementation project(':sdk-java')
 
     // Prometheus
     implementation 'io.micrometer:micrometer-registry-prometheus:latest.release'

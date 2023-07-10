@@ -1,2 +1,2 @@
-rootProject.name = 'lh-server'
-include('server', 'client', 'e2e-tests')
+rootProject.name = 'littlehorse'
+include('server', 'sdk-java', 'e2e-tests')

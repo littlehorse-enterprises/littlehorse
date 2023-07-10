@@ -19,7 +19,7 @@ The LittleHorse project currently has multiple repositories, described below:
     -   [`e2e-tests`](https://bitbucket.org/littlehorse-core/lh-server/src/master/e2e-tests/)
         -   A series of system integration tests used to verify the cohesive behavior of
             the LH Server, Java Workflow SDK, and Java Task Library together.
--   [`lh-golib`](https://bitbucket.org/littlehorse-core/lh-golib)
+-   [`sdk-go`](https://bitbucket.org/littlehorse-core/littlehorse/sdk-go)
     -   The `lhctl` command line interface.
     -   Library for creating `WfSpec`'s in GoLang (under development).
     -   Library for executing `TaskRun`'s in GoLang (under development).
@@ -40,7 +40,7 @@ This repository requires the following system dependencies:
 -   `docker` and `docker-compose-plugin`
 -   `npm` (this is a dev dependency)
 
-Additionally, you'll eventually want to install `lhctl` as per the `lh-golib` repository.
+Additionally, you'll eventually want to install `lhctl` as per the `sdk-go` repository.
 
 ### Setting Up the Linters
 
@@ -138,7 +138,7 @@ Also note that mTLS will NOT be enabled; therefore, you should not have any clie
 
 The LittleHorse docker image (for now) requires the `lhctl` command line client, which is used for Kubernetes Health Checks. (That's a longer story).
 
-Before you can build the image, you should compile the `lhctl` binary in the `lh-golib` repository, and then `cp $(which lhctl) ./build/`.
+Before you can build the image, you should compile the `lhctl` binary in the `sdk-go` repository, and then `cp $(which lhctl) ./build/`.
 
 Now you can build the `littlehorse` docker image by running:
 

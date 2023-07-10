@@ -1,3 +1,0 @@
-[submodule "proto/lh-proto"]
-	path = proto/lh-proto
-	url = git@bitbucket.org:littlehorse-core/lh-proto.git

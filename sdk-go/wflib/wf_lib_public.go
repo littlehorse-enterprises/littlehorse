@@ -1,0 +1,139 @@
+package wflib
+
+import (
+	"bitbucket.org/littlehorse-core/littlehorse/sdk-go/common/model"
+)
+
+type ThreadFunc func(*ThreadBuilder)
+
+func NewWorkflow(threadFunc ThreadFunc, name string) *LHWorkflow {
+	return &LHWorkflow{
+		Name:             name,
+		EntrypointThread: threadFunc,
+	}
+}
+
+type LHWorkflow struct {
+	EntrypointThread ThreadFunc
+	Name             string
+
+	spec  model.PutWfSpecPb
+	funcs map[string]ThreadFunc
+}
+
+type ThreadBuilder struct {
+	Name              string
+	isActive          bool
+	spec              model.ThreadSpecPb
+	wf                *LHWorkflow
+	lastNodeName      *string
+	lastNodeCondition *WorkflowCondition
+}
+
+type WfRunVariable struct {
+	Name    string
+	VarType *model.VariableTypePb
+
+	thread   *ThreadBuilder
+	jsonPath *string
+}
+
+type NodeOutput struct {
+	nodeName string
+	jsonPath *string
+	thread   *ThreadBuilder
+}
+
+type WorkflowCondition struct {
+	spec          *model.EdgeConditionPb
+	createdAtNode string
+}
+
+type SpawnedThread struct {
+	thread       *ThreadBuilder
+	threadNumVar *WfRunVariable
+}
+
+func (n *NodeOutput) JsonPath(path string) NodeOutput {
+	return n.jsonPathImpl(path)
+}
+
+func (w *WfRunVariable) JsonPath(path string) WfRunVariable {
+	return w.jsonPathImpl(path)
+}
+
+func (l *LHWorkflow) Compile() (*model.PutWfSpecPb, error) {
+	return l.compile()
+}
+
+func (t *ThreadBuilder) AddVariable(
+	name string, varType model.VariableTypePb,
+) *WfRunVariable {
+	return t.addVariable(name, varType)
+}
+
+func (t *ThreadBuilder) Execute(name string, args ...interface{}) NodeOutput {
+	return t.executeTask(name, args)
+}
+
+func (t *ThreadBuilder) Mutate(
+	lhs *WfRunVariable,
+	mutation model.VariableMutationTypePb,
+	rhs interface{},
+) {
+	t.mutate(lhs, mutation, rhs)
+}
+
+func (t *ThreadBuilder) Condition(
+	lhs interface{}, op model.ComparatorPb, rhs interface{},
+) *WorkflowCondition {
+	return t.condition(lhs, op, rhs)
+}
+
+type IfElseBody func(t *ThreadBuilder)
+
+func (t *ThreadBuilder) DoIf(cond *WorkflowCondition, doIf IfElseBody) {
+	t.doIf(cond, doIf)
+}
+
+func (t *ThreadBuilder) DoIfElse(cond *WorkflowCondition, doIf IfElseBody, doElse IfElseBody) {
+	t.doIfElse(cond, doIf, doElse)
+}
+
+func (t *ThreadBuilder) DoWhile(cond *WorkflowCondition, whileBody ThreadFunc) {
+	t.doWhile(cond, whileBody)
+}
+
+func (t *ThreadBuilder) SpawnThread(
+	tFunc ThreadFunc, threadName string, args map[string]interface{},
+) *SpawnedThread {
+	return t.spawnThread(tFunc, threadName, args)
+}
+
+func (t *ThreadBuilder) WaitForThread(s *SpawnedThread) NodeOutput {
+	return *t.waitForThread(s)
+}
+
+func (t *ThreadBuilder) WaitForEvent(eventName string) NodeOutput {
+	return *t.waitForEvent(eventName)
+}
+
+func (t *ThreadBuilder) Sleep(sleepSeconds int) {
+	t.sleep(sleepSeconds)
+}
+
+func (t *ThreadBuilder) Fail(content interface{}, failureName string, msg *string) {
+	t.fail(content, failureName, msg)
+}
+
+func (t *ThreadBuilder) HandleInterrupt(interruptName string, handler ThreadFunc) {
+	t.handleInterrupt(interruptName, handler)
+}
+
+func (t *ThreadBuilder) HandleException(
+	nodeOutput *NodeOutput,
+	exceptionName *string,
+	handler ThreadFunc,
+) {
+	t.handleException(nodeOutput, exceptionName, handler)
+}

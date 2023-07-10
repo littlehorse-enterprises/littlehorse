@@ -1,0 +1,1377 @@
+syntax = "proto3";
+
+package littlehorse;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = ".;model";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.jlib.common.proto";
+
+enum LHResponseCodePb {
+  OK = 0;
+  CONNECTION_ERROR = 1;
+  NOT_FOUND_ERROR = 2;
+  BAD_REQUEST_ERROR = 3;
+  VALIDATION_ERROR = 4;
+  ALREADY_EXISTS_ERROR = 5;
+  REPORTED_BUT_NOT_PROCESSED = 6;
+}
+
+enum LHStatusPb {
+  STARTING = 0;
+  RUNNING = 1;
+  COMPLETED = 2;
+  HALTING = 3;
+  HALTED = 4;
+  ERROR = 5;
+}
+
+enum TaskStatusPb {
+  TASK_SCHEDULED = 0;
+  TASK_RUNNING = 1;
+  TASK_SUCCESS = 2;
+  TASK_FAILED = 3;
+  TASK_TIMEOUT = 4;
+  TASK_OUTPUT_SERIALIZING_ERROR = 5;
+  TASK_INPUT_VAR_SUB_ERROR = 6;
+}
+
+message WfSpecIdPb {
+  string name = 1;
+  int32 version = 2;
+}
+
+message TaskDefIdPb {
+  string name = 1;
+}
+
+message ExternalEventDefIdPb {
+  string name = 1;
+}
+
+message GetLatestWfSpecPb {
+  string name = 1;
+}
+
+message GetLatestUserTaskDefPb {
+  string name = 1;
+}
+
+message GetWfSpecReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  optional WfSpecPb result = 3;
+}
+
+message PutWfSpecPb {
+  string name = 1;
+  reserved 2, 3, 4;
+  map<string, ThreadSpecPb> thread_specs = 5;
+  string entrypoint_thread_name = 6;
+  optional int32 retention_hours = 7;
+}
+
+message PutWfSpecReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  optional WfSpecPb result = 3;
+}
+
+message GetTaskDefReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  optional TaskDefPb result = 3;
+}
+
+message PutTaskDefPb {
+  string name = 1;
+  repeated VariableDefPb input_vars = 2;
+}
+
+message PutTaskDefReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  optional TaskDefPb result = 3;
+}
+
+message PutUserTaskDefPb {
+  string name = 1;
+  repeated UserTaskFieldPb fields = 2;
+  optional string description = 3;
+}
+
+message PutUserTaskDefReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  optional UserTaskDefPb result = 3;
+}
+
+message GetUserTaskDefReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  optional UserTaskDefPb result = 3;
+}
+
+message PutExternalEventDefPb {
+  string name = 1;
+  optional int32 retention_hours = 2;
+}
+
+message PutExternalEventDefReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  optional ExternalEventDefPb result = 3;
+}
+
+message GetExternalEventDefReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  optional ExternalEventDefPb result = 3;
+}
+
+message GetWfRunReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  optional WfRunPb result = 3;
+}
+
+message GetNodeRunReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  optional NodeRunPb result = 3;
+}
+
+message GetTaskRunReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  optional TaskRunPb result = 3;
+}
+
+message GetVariableReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  optional VariablePb result = 3;
+}
+
+message GetExternalEventReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  optional ExternalEventPb result = 3;
+}
+
+message PutExternalEventPb {
+  string wf_run_id = 1;
+  string external_event_def_name = 2;
+  optional string guid = 3;
+  VariableValuePb content = 5;
+  optional int32 thread_run_number = 6;
+  optional int32 node_run_position = 7;
+  reserved 4, 8;
+}
+
+message DeleteExternalEventPb {
+  string wf_run_id = 1;
+  string external_event_def_name = 2;
+  string guid = 3;
+}
+
+message PutExternalEventReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  optional ExternalEventPb result = 3;
+}
+
+message RunWfPb {
+  string wf_spec_name = 1;
+  optional int32 wf_spec_version = 2;
+  map<string, VariableValuePb> variables = 3;
+  optional string id = 4;
+}
+
+message RunWfReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  optional int32 wf_spec_version = 3;
+  optional string wf_run_id = 4;
+}
+
+message SearchWfRunPb {
+  optional bytes bookmark = 1;
+  optional int32 limit = 2;
+
+  message StatusAndSpecPb {
+    string wf_spec_name = 1;
+    LHStatusPb status = 2;
+    int32 wf_spec_version = 3;
+    optional google.protobuf.Timestamp earliest_start = 4;
+    optional google.protobuf.Timestamp latest_start = 5;
+  }
+  message NamePb {
+    string wf_spec_name = 1;
+    optional google.protobuf.Timestamp earliest_start = 2;
+    optional google.protobuf.Timestamp latest_start = 3;
+  }
+  message StatusAndNamePb {
+    string wf_spec_name = 1;
+    LHStatusPb status = 2;
+    optional google.protobuf.Timestamp earliest_start = 3;
+    optional google.protobuf.Timestamp latest_start = 4;
+  }
+  oneof wfrun_criteria {
+    StatusAndSpecPb status_and_spec = 3;
+    NamePb name = 4;
+    StatusAndNamePb status_and_name = 5;
+  }
+}
+
+message SearchWfRunReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  repeated WfRunIdPb results = 3;
+
+  // The bookmark is used internally by the backend implementation to enable
+  // pagination. If you wish to do a multi-part paginated request, you should
+  // pass in the bookmark (unaltered) to the next request.
+  optional bytes bookmark = 4;
+}
+
+message SearchNodeRunPb {
+  optional bytes bookmark = 1;
+  optional int32 limit = 2;
+
+  message StatusAndTaskDefPb {
+    LHStatusPb status = 1;
+    string task_def_name = 2;
+    optional google.protobuf.Timestamp earliest_start = 3;
+    optional google.protobuf.Timestamp latest_start = 4;
+  }
+
+  message UserTaskRunSearchPb {
+    optional UserTaskRunStatusPb status = 1;
+    optional string user_task_def = 2;
+    optional string user_id = 3;
+    optional string user_group = 4;
+
+    optional google.protobuf.Timestamp earliest_start = 5;
+    optional google.protobuf.Timestamp latest_start = 6;
+  }
+
+  message ByTaskDefPb {
+    string task_def_name = 2;
+    optional google.protobuf.Timestamp earliest_start = 3;
+    optional google.protobuf.Timestamp latest_start = 4;
+  }
+
+  oneof noderun_criteria {
+    StatusAndTaskDefPb status_and_taskdef = 3;
+    string wf_run_id = 4;
+    ByTaskDefPb task_def = 5;
+    UserTaskRunSearchPb user_task_run = 6;
+  }
+}
+
+
+message SearchNodeRunReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  repeated NodeRunIdPb results = 3;
+  optional bytes bookmark = 4;
+}
+
+message SearchVariablePb {
+  optional bytes bookmark = 1;
+  optional int32 limit = 2;
+
+  message NameAndValuePb {
+    VariableValuePb value = 1;
+    optional int32 wf_spec_version = 2;
+    string var_name = 3;
+    string wf_spec_name = 4;
+  }
+
+  oneof variable_criteria {
+    string wf_run_id = 3;
+    NameAndValuePb value = 4;
+  }
+}
+
+message SearchVariableReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  repeated VariableIdPb results = 3;
+  optional bytes bookmark = 4;
+}
+
+message SearchTaskDefPb {
+  optional bytes bookmark = 1;
+  optional int32 limit = 2;
+  optional string prefix = 3;
+}
+
+message SearchTaskDefReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  repeated TaskDefIdPb results = 3;
+  optional bytes bookmark = 4;
+}
+
+message SearchUserTaskDefPb {
+  optional bytes bookmark = 1;
+  optional int32 limit = 2;
+  oneof user_task_def_criteria {
+    string prefix = 3;
+    string name = 4;
+  }
+}
+
+message SearchUserTaskDefReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  repeated UserTaskDefIdPb results = 3;
+  optional bytes bookmark = 4;
+}
+
+message SearchWfSpecPb {
+  optional bytes bookmark = 1;
+  optional int32 limit = 2;
+  oneof wf_spec_criteria {
+    string name = 3;
+    string prefix = 4;
+    string task_def_name = 5;
+  }
+}
+
+message SearchWfSpecReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  repeated WfSpecIdPb results = 3;
+  optional bytes bookmark = 4;
+}
+
+message SearchExternalEventDefPb {
+  optional bytes bookmark = 1;
+  optional int32 limit = 2;
+  optional string prefix = 3;
+}
+
+message SearchExternalEventDefReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  repeated ExternalEventDefIdPb results = 3;
+  optional bytes bookmark = 4;
+}
+
+message SearchExternalEventPb {
+  optional bytes bookmark = 1;
+  optional int32 limit = 2;
+
+  message ByExtEvtDefNameAndStatusPb {
+    string external_event_def_name = 1;
+    optional bool is_claimed = 2;
+  }
+
+  oneof ext_evt_criteria {
+    string wf_run_id = 3;
+    ByExtEvtDefNameAndStatusPb external_event_def_name_and_status = 4;
+  }
+}
+
+message SearchExternalEventReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  repeated ExternalEventIdPb results = 3;
+  optional bytes bookmark = 4;
+}
+
+message ListNodeRunsPb {
+  string wf_run_id = 1;
+}
+
+message ListNodeRunsReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  repeated NodeRunPb results = 3;
+}
+
+message ListVariablesPb {
+  string wf_run_id = 1;
+}
+
+message ListVariablesReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  repeated VariablePb results = 3;
+}
+
+message ListExternalEventsPb {
+  string wf_run_id = 1;
+}
+
+message ListExternalEventsReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  repeated ExternalEventPb results = 3;
+}
+
+message RegisterTaskWorkerPb {
+  string client_id = 1;
+  string task_def_name = 2;
+  string listener_name = 3;
+}
+
+message TaskWorkerHeartBeatPb {
+  string client_id = 1;
+  string task_def_name = 2;
+  string listener_name = 3;
+}
+
+message RegisterTaskWorkerReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  repeated HostInfoPb your_hosts = 3;
+}
+
+message HostInfoPb {
+  string host = 1;
+  int32 port = 2;
+}
+
+message TaskWorkerMetadataPb {
+  string client_id = 1;
+  google.protobuf.Timestamp latest_heartbeat = 2;
+  repeated HostInfoPb hosts = 3;
+}
+
+message TaskWorkerGroupPb {
+  string task_def_name = 1;
+  google.protobuf.Timestamp created_at = 2;
+  map<string, TaskWorkerMetadataPb> task_workers = 3;
+}
+
+message TaskWorkerGroupIdPb {
+  string task_def_name = 1;
+}
+
+message PollTaskPb {
+  string task_def_name = 1;
+  string client_id = 2;
+  optional string task_worker_version = 3;
+}
+
+message ScheduledTaskPb {
+  TaskRunIdPb task_run_id = 1;
+  TaskDefIdPb task_def_id = 2;
+  int32 attempt_number = 3;
+
+  repeated VarNameAndValPb variables = 4;
+  google.protobuf.Timestamp created_at = 5;
+
+  TaskRunSourcePb source = 6;
+}
+
+message TaskRunSourcePb {
+  oneof task_run_source {
+    TaskNodeReferencePb task_node = 1;
+    UserTaskTriggerReferencePb user_task_trigger = 2;
+  }
+}
+
+message PollTaskReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  optional ScheduledTaskPb result = 3;
+}
+
+message ReportTaskRunPb {
+  TaskRunIdPb task_run_id = 1;
+  google.protobuf.Timestamp time = 2;
+  TaskStatusPb status = 3;
+  optional VariableValuePb output = 4;
+  optional VariableValuePb log_output = 5;
+  int32 attempt_number = 6;
+}
+
+message ReportTaskReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+}
+
+message StopWfRunPb {
+  string wf_run_id = 1;
+  int32 thread_run_number = 2;
+}
+
+message StopWfRunReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+}
+
+message ResumeWfRunPb {
+  string wf_run_id = 1;
+  int32 thread_run_number = 2;
+}
+
+message ResumeWfRunReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+}
+
+message DeleteWfRunPb {
+  string wf_run_id = 1;
+}
+
+message DeleteTaskDefPb {
+  string name = 1;
+}
+
+message DeleteUserTaskDefPb {
+  string name = 1;
+  int32 version = 2;
+}
+
+message DeleteWfSpecPb {
+  string name = 1;
+  int32 version = 2;
+}
+
+message DeleteExternalEventDefPb {
+  string name = 1;
+}
+
+message DeleteObjectReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+}
+
+message HealthCheckPb {
+}
+
+enum LHHealthResultPb {
+  LH_HEALTH_RUNNING = 0;
+  LH_HEALTH_REBALANCING = 1;
+  LH_HEALTH_ERROR = 2;
+}
+
+message HealthCheckReplyPb {
+  LHHealthResultPb core_state = 1;
+  LHHealthResultPb timer_state = 2;
+}
+
+message TaskDefMetricsQueryPb {
+  google.protobuf.Timestamp window_start = 1;
+  MetricsWindowLengthPb window_type = 2;
+  optional string task_def_name = 3;
+}
+
+message TaskDefMetricsReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  optional TaskDefMetricsPb result = 3;
+}
+
+message ListTaskMetricsPb {
+  google.protobuf.Timestamp last_window_start = 1;
+  int32 num_windows = 2;
+  string task_def_name = 3;
+  MetricsWindowLengthPb window_length = 4;
+}
+
+message ListTaskMetricsReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  repeated TaskDefMetricsPb results = 3;
+}
+
+message WfSpecMetricsQueryPb {
+  google.protobuf.Timestamp window_start = 1;
+  MetricsWindowLengthPb window_type = 2;
+  string wf_spec_name = 3;
+  int32 wf_spec_version = 4;
+}
+
+message WfSpecMetricsReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  optional WfSpecMetricsPb result = 3;
+}
+
+message ListWfMetricsPb {
+  google.protobuf.Timestamp last_window_start = 1;
+  int32 num_windows = 2;
+  string wf_spec_name = 3;
+  int32 wf_spec_version = 4;
+  MetricsWindowLengthPb window_length = 5;
+}
+
+message ListWfMetricsReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  repeated WfSpecMetricsPb results = 3;
+}
+
+service LHPublicApi {
+  rpc PutTaskDef(PutTaskDefPb) returns (PutTaskDefReplyPb) {}
+  rpc GetTaskDef(TaskDefIdPb) returns (GetTaskDefReplyPb) {}
+
+  rpc PutExternalEventDef(PutExternalEventDefPb) returns (PutExternalEventDefReplyPb) {}
+  rpc GetExternalEventDef(ExternalEventDefIdPb) returns (GetExternalEventDefReplyPb) {}
+
+  rpc PutWfSpec(PutWfSpecPb) returns (PutWfSpecReplyPb) {}
+  rpc GetWfSpec(WfSpecIdPb) returns (GetWfSpecReplyPb) {}
+  rpc GetLatestWfSpec(GetLatestWfSpecPb) returns (GetWfSpecReplyPb) {}
+
+  rpc PutUserTaskDef(PutUserTaskDefPb) returns (PutUserTaskDefReplyPb) {}
+  rpc GetUserTaskDef(UserTaskDefIdPb) returns (GetUserTaskDefReplyPb) {}
+  rpc GetLatestUserTaskDef(GetLatestUserTaskDefPb) returns (GetUserTaskDefReplyPb) {}
+
+  rpc RunWf(RunWfPb) returns (RunWfReplyPb) {}
+  rpc GetWfRun(WfRunIdPb) returns (GetWfRunReplyPb) {}
+
+  rpc AssignUserTaskRun(AssignUserTaskRunPb) returns (AssignUserTaskRunReplyPb) {}
+  rpc CompleteUserTaskRun(CompleteUserTaskRunPb) returns (CompleteUserTaskRunReplyPb) {}
+
+  rpc GetNodeRun(NodeRunIdPb) returns (GetNodeRunReplyPb) {}
+  rpc ListNodeRuns(ListNodeRunsPb) returns (ListNodeRunsReplyPb) {}
+
+  rpc GetTaskRun(TaskRunIdPb) returns (GetTaskRunReplyPb) {}
+
+  rpc GetVariable(VariableIdPb) returns (GetVariableReplyPb) {}
+  rpc ListVariables(ListVariablesPb) returns (ListVariablesReplyPb) {}
+
+  rpc PutExternalEvent(PutExternalEventPb) returns (PutExternalEventReplyPb) {}
+  rpc GetExternalEvent(ExternalEventIdPb) returns (GetExternalEventReplyPb) {}
+  rpc ListExternalEvents(ListExternalEventsPb) returns (ListExternalEventsReplyPb) {}
+
+  rpc SearchWfRun(SearchWfRunPb) returns (SearchWfRunReplyPb) {}
+  rpc SearchNodeRun(SearchNodeRunPb) returns (SearchNodeRunReplyPb) {}
+  rpc SearchVariable(SearchVariablePb) returns (SearchVariableReplyPb) {}
+  rpc SearchTaskDef(SearchTaskDefPb) returns (SearchTaskDefReplyPb) {}
+  rpc SearchUserTaskDef(SearchUserTaskDefPb) returns (SearchUserTaskDefReplyPb) {}
+  rpc SearchWfSpec(SearchWfSpecPb) returns (SearchWfSpecReplyPb) {}
+  rpc SearchExternalEventDef(SearchExternalEventDefPb) returns (SearchExternalEventDefReplyPb) {}
+  rpc SearchExternalEvent(SearchExternalEventPb) returns (SearchExternalEventReplyPb) {}
+
+  rpc RegisterTaskWorker(RegisterTaskWorkerPb) returns (RegisterTaskWorkerReplyPb) {}
+  rpc PollTask(stream PollTaskPb) returns (stream PollTaskReplyPb) {}
+  rpc ReportTask(ReportTaskRunPb) returns (ReportTaskReplyPb) {}
+
+  rpc StopWfRun(StopWfRunPb) returns (StopWfRunReplyPb) {}
+  rpc ResumeWfRun(ResumeWfRunPb) returns (ResumeWfRunReplyPb) {}
+  rpc DeleteWfRun(DeleteWfRunPb) returns (DeleteObjectReplyPb) {}
+  rpc DeleteTaskDef(DeleteTaskDefPb) returns (DeleteObjectReplyPb) {}
+  rpc DeleteWfSpec(DeleteWfSpecPb) returns (DeleteObjectReplyPb) {}
+  rpc DeleteUserTaskDef(DeleteUserTaskDefPb) returns (DeleteObjectReplyPb) {}
+  rpc DeleteExternalEventDef(DeleteExternalEventDefPb) returns (DeleteObjectReplyPb) {}
+
+  rpc HealthCheck(HealthCheckPb) returns (HealthCheckReplyPb) {}
+
+  rpc TaskDefMetrics(TaskDefMetricsQueryPb) returns (TaskDefMetricsReplyPb) {}
+  rpc WfSpecMetrics(WfSpecMetricsQueryPb) returns (WfSpecMetricsReplyPb) {}
+  rpc ListTaskDefMetrics(ListTaskMetricsPb) returns (ListTaskMetricsReplyPb) {}
+  rpc ListWfSpecMetrics(ListWfMetricsPb) returns (ListWfMetricsReplyPb) {}
+}
+
+// Variable
+enum VariableTypePb {
+  JSON_OBJ = 0;
+  JSON_ARR = 1;
+  DOUBLE = 2;
+  BOOL = 3;
+  STR = 4;
+  INT = 5;
+  BYTES = 6;
+  NULL = 7;
+}
+
+message VariableValuePb {
+  VariableTypePb type = 1;
+  optional string json_obj = 2;
+  optional string json_arr = 3;
+  optional double double = 4;
+  optional bool bool = 5;
+  optional string str = 6;
+  optional int64 int = 7;
+  optional bytes bytes = 8;
+}
+
+message VariableIdPb {
+  string wf_run_id = 1;
+  int32 thread_run_number = 2;
+  string name = 3;
+}
+
+message VariablePb {
+  VariableValuePb value = 1;
+  string wf_run_id = 2;
+  int32 thread_run_number = 3;
+  string name = 4;
+  google.protobuf.Timestamp date = 5;
+}
+
+message VarNameAndValPb {
+  string var_name = 1;
+  VariableValuePb value = 2;
+}
+
+// External Event
+message ExternalEventIdPb {
+  string wf_run_id = 1;
+  string external_event_def_name = 2;
+  string guid = 3;
+}
+
+message ExternalEventPb {
+  string wf_run_id = 1;
+  string external_event_def_name = 2;
+  string guid = 3;
+  google.protobuf.Timestamp created_at = 4;
+  VariableValuePb content = 5;
+  optional int32 thread_run_number = 6;
+  optional int32 node_run_position = 7;
+  bool claimed = 8;
+}
+
+message WfRunIdPb {
+  string id = 1;
+}
+
+message WfRunPb {
+  string id = 1;
+  string wf_spec_name = 2;
+  int32 wf_spec_version = 3;
+  LHStatusPb status = 4;
+
+  google.protobuf.Timestamp start_time = 6;
+  optional google.protobuf.Timestamp end_time = 7;
+  repeated ThreadRunPb thread_runs = 8;
+
+  repeated PendingInterruptPb pending_interrupts = 9;
+  repeated PendingFailureHandlerPb pending_failures = 10;
+}
+
+enum ThreadTypePb {
+  ENTRYPOINT = 0;
+  CHILD = 1;
+  INTERRUPT = 2;
+  FAILURE_HANDLER = 3;
+}
+
+message ThreadRunPb {
+  string wf_run_id = 1;
+  int32 number = 2;
+
+  LHStatusPb status = 3;
+  string wf_spec_name = 4;
+  int32 wf_spec_version = 5;
+  string thread_spec_name = 6;
+
+  google.protobuf.Timestamp start_time = 7;
+  optional google.protobuf.Timestamp end_time = 8;
+
+  optional string error_message = 9;
+
+  repeated int32 child_thread_ids = 11;
+  optional int32 parent_thread_id = 12;
+
+  repeated ThreadHaltReasonPb halt_reasons = 13;
+  optional ExternalEventIdPb interrupt_trigger_id = 14;
+  optional FailureBeingHandledPb failure_being_handled = 15;
+
+  int32 current_node_position = 16;
+  repeated int32 handled_failed_children = 17;
+
+  ThreadTypePb type = 18;
+}
+
+message FailureBeingHandledPb {
+  int32 thread_run_number = 1;
+  int32 node_run_position = 2;
+  int32 failure_number = 3;
+}
+
+message PendingInterruptPb {
+  ExternalEventIdPb external_event_id = 1;
+  string handler_spec_name = 2;
+  int32 interrupted_thread_id = 3;
+}
+
+message PendingFailureHandlerPb {
+  int32 failed_thread_run = 1;
+  string handler_spec_name = 2;
+}
+
+message PendingInterruptHaltReasonPb {
+  ExternalEventIdPb external_event_id = 1;
+}
+
+message PendingFailureHandlerHaltReasonPb {
+  int32 node_run_position = 1;
+}
+
+message HandlingFailureHaltReasonPb {
+  int32 handler_thread_id = 1;
+}
+
+message ParentHaltedPb {
+  int32 parent_thread_id = 1;
+}
+
+message InterruptedPb {
+  int32 interrupt_thread_id = 1;
+}
+
+message ManualHaltPb {
+  // Nothing to store.
+  bool meaning_of_life = 137;
+}
+
+message ThreadHaltReasonPb {
+  oneof reason {
+    ParentHaltedPb parent_halted = 1;
+    InterruptedPb interrupted = 2;
+    PendingInterruptHaltReasonPb pending_interrupt = 3;
+    PendingFailureHandlerHaltReasonPb pending_failure = 4;
+    HandlingFailureHaltReasonPb handling_failure = 5;
+    ManualHaltPb manual_halt = 6;
+  }
+}
+
+message NodeRunIdPb {
+  string wf_run_id = 1;
+  int32 thread_run_number = 2;
+  int32 position = 3;
+}
+
+message TaskNodeRunPb {
+  TaskRunIdPb task_run_id = 1;
+}
+
+message NodeRunPb {
+  string wf_run_id = 1;
+  int32 thread_run_number = 2;
+  int32 position = 3;
+
+  LHStatusPb status = 6;
+
+  google.protobuf.Timestamp arrival_time = 7;
+  optional google.protobuf.Timestamp end_time = 8;
+  WfSpecIdPb wf_spec_id = 9;
+  string thread_spec_name = 10;
+  string node_name = 11;
+
+  optional string error_message = 13;
+
+  repeated FailurePb failures = 14;
+
+  oneof node_type {
+    TaskNodeRunPb task = 15;
+    ExternalEventRunPb external_event = 16;
+    EntrypointRunPb entrypoint = 17;
+    ExitRunPb exit = 19;
+    StartThreadRunPb start_thread = 20;
+    WaitThreadRunPb wait_thread = 21;
+    SleepNodeRunPb sleep = 22;
+    UserTaskRunPb user_task = 24;
+  }
+  repeated int32 failure_handler_ids = 23;
+}
+
+message FailurePb {
+  string failure_name = 1;
+  string message = 2;
+  optional VariableValuePb content = 3;
+}
+
+message TaskAttemptPb {
+  optional VariableValuePb output = 1;
+  optional VariableValuePb log_output = 2;
+
+  optional google.protobuf.Timestamp schedule_time = 3;
+  optional google.protobuf.Timestamp start_time = 4;
+  optional google.protobuf.Timestamp end_time = 5;
+  string task_worker_id = 7;
+  optional string task_worker_version = 8;
+
+  TaskStatusPb status = 9;
+}
+
+// Ridgeline asks "Want the ability to schedule Ad-Hoc Tasks".
+// That means to schedule a TaskRun without associating the TaskRun with any
+// WfRun. I don't think we want to add that feature JUST YET, but we could make
+// it work.
+message TaskRunIdPb {
+  // In all cases except for the "Ad-Hoc Tasks"  (which we haven't implemented
+  // yet), partition_key will just be wf_run_id.
+  string partition_key = 1;
+  string task_guid = 2;
+}
+
+message TaskRunPb {
+  TaskRunIdPb id = 1;
+  repeated TaskAttemptPb attempts = 2;
+  int32 max_attempts = 3;
+  string task_def_name = 4;
+  repeated VarNameAndValPb input_variables = 5;
+
+  TaskRunSourcePb source = 6;
+  google.protobuf.Timestamp scheduled_at = 7;
+}
+
+message TaskNodeReferencePb {
+  NodeRunIdPb node_run_id = 1;
+  WfSpecIdPb wf_spec_id = 2;
+}
+
+message UserTaskTriggerReferencePb {
+  NodeRunIdPb node_run_id = 1;
+  int32 user_task_event_number = 2;
+  WfSpecIdPb wf_spec_id = 3;
+}
+
+message EntrypointRunPb {
+}
+
+message ExitRunPb {
+} // Later will have info once we add threads
+
+message StartThreadRunPb {
+  optional int32 child_thread_id = 1;
+  string thread_spec_name = 2;
+}
+
+message WaitThreadRunPb {
+  optional google.protobuf.Timestamp thread_end_time = 1;
+  LHStatusPb thread_status = 2;
+  int32 thread_run_number = 3;
+}
+
+message ExternalEventRunPb {
+  string external_event_def_name = 1;
+  optional google.protobuf.Timestamp event_time = 2;
+  optional ExternalEventIdPb external_event_id = 3;
+}
+
+message SleepNodeRunPb {
+  google.protobuf.Timestamp maturation_time = 1;
+}
+
+// WfSpec stuff
+
+enum ComparatorPb {
+  LESS_THAN = 0;
+  GREATER_THAN = 1;
+  LESS_THAN_EQ = 2;
+  GREATER_THAN_EQ = 3;
+  EQUALS = 4;
+  NOT_EQUALS = 5;
+  IN = 6;
+  NOT_IN = 7;
+}
+
+message EdgeConditionPb {
+  ComparatorPb comparator = 1;
+  VariableAssignmentPb left = 2;
+  VariableAssignmentPb right = 3;
+}
+
+message EdgePb {
+  string sink_node_name = 1;
+  optional EdgeConditionPb condition = 2;
+}
+
+enum VariableMutationTypePb {
+  ASSIGN = 0;
+  ADD = 1;
+  EXTEND = 2;
+  SUBTRACT = 3;
+  MULTIPLY = 4;
+  DIVIDE = 5;
+  REMOVE_IF_PRESENT = 6;
+  REMOVE_INDEX = 7;
+  REMOVE_KEY = 8;
+}
+
+message VariableAssignmentPb {
+  message FormatStringPb {
+    VariableAssignmentPb format = 1;
+    repeated VariableAssignmentPb args = 2;
+  }
+
+  optional string json_path = 1;
+  oneof source {
+    string variable_name = 2;
+    VariableValuePb literal_value = 3;
+    FormatStringPb format_string = 4;
+  }
+}
+
+message VariableMutationPb {
+  message NodeOutputSourcePb {
+    optional string jsonpath = 10;
+  }
+  string lhs_name = 1;
+  optional string lhs_json_path = 2;
+  VariableMutationTypePb operation = 3;
+  oneof rhs_value {
+    VariableAssignmentPb source_variable = 4;
+    VariableValuePb literal_value = 5;
+    NodeOutputSourcePb node_output = 6;
+  }
+}
+
+message NopNodePb {
+}
+
+message SleepNodePb {
+  oneof sleep_length {
+    VariableAssignmentPb raw_seconds = 1;
+    VariableAssignmentPb timestamp = 2;
+    VariableAssignmentPb iso_date = 3;
+  }
+}
+
+message NodePb {
+  repeated EdgePb outgoing_edges = 1;
+  repeated VariableMutationPb variable_mutations = 2;
+  repeated FailureHandlerDefPb failure_handlers = 4;
+  oneof node {
+    EntrypointNodePb entrypoint = 5;
+    ExitNodePb exit = 6;
+    TaskNodePb task = 7;
+    ExternalEventNodePb external_event = 8;
+    StartThreadNodePb start_thread = 9;
+    WaitForThreadNodePb wait_for_thread = 10;
+    NopNodePb nop = 11;
+    SleepNodePb sleep = 12;
+    UserTaskNodePb user_task = 13;
+  }
+}
+
+message UserTaskFieldPb {
+  string name = 1;
+  VariableTypePb type = 2;
+  optional string description = 3;
+  string display_name = 4;
+  // Later versions will allow stuff such as:
+  // 1. Validation (eg. email address, integer between 1-10, etc)
+  // 2. Nested object structures
+  // 3. Multi-Page forms (survey-js style)
+  // 4. Conditional rendering of forms based on input (surveyjs style)
+  // 5. Default values and optional fields
+}
+
+message UserTaskDefIdPb {
+  string name = 1;
+  int32 version = 2;
+}
+
+message UserTaskDefPb {
+  string name = 1;
+  int32 version = 2;
+  optional string description = 3;
+  repeated UserTaskFieldPb fields = 4;
+  google.protobuf.Timestamp created_at = 5;
+}
+
+message UTActionTriggerPb {
+  message UTACancelPb {
+  }
+
+  message UTATaskPb {
+    TaskNodePb task = 1;
+    repeated VariableMutationPb mutations = 2;
+  }
+
+  message UTAReassignPb {
+    oneof assign_to {
+      VariableAssignmentPb user_id = 1;
+      VariableAssignmentPb user_group = 2;
+    }
+  }
+
+  oneof action {
+    UTATaskPb task = 1;
+    UTACancelPb cancel = 2;
+    UTAReassignPb reassign = 3;
+    // later on, might enable scheduling entire ThreadRuns
+  }
+
+  // When this action should happen
+  oneof schedule_time {
+    VariableAssignmentPb delay_seconds = 5;
+    // Later on, might add trigger features such as
+    // "schedule this action when task is rescheduled" etc.
+  }
+
+  // Later on, add logic to handle failures, such as:
+  // - couldn't assign to user
+  // - a TaskRun in an Action failed.
+  // Basically, it would take a `FailureHandlerDef`.
+}
+
+message UserTaskNodePb {
+  string user_task_def_name = 1;
+
+  // to whom should the Node be assigned?
+  oneof assignment {
+    VariableAssignmentPb user_group = 2;
+    VariableAssignmentPb user_id = 3;
+  }
+
+  // This is used to, for example, send a push notification to a mobile app
+  // to remind someone that they need to fill out a task, or to re-assign
+  // the task to another group of people
+  repeated UTActionTriggerPb actions = 4;
+
+  // So, once the WfSpec is created, this will be pinned to a version. Customer
+  // can optionally specify a specific version or can leave it null, in which
+  // case we just use the latest
+  optional int32 user_task_def_version = 5;
+
+  // Allow WfRun-specific notes for this User Task.
+  optional VariableAssignmentPb notes = 6;
+}
+
+message UserTaskEventPb {
+  google.protobuf.Timestamp time = 1;
+
+  message UTECancelledPb {
+  }
+
+  message UTETaskExecutedPb {
+    TaskRunIdPb task_run = 1;
+  }
+
+  message UTEReassignedPb {
+    optional string old_user_id = 1;
+    optional string old_user_group = 2;
+    optional string new_user_id = 3;
+    optional string new_user_group = 4;
+  }
+
+  oneof event {
+    UTETaskExecutedPb task_executed = 2;
+    UTEReassignedPb reassigned = 3;
+    UTECancelledPb cancelled = 4;
+    // TODO: Add "save user task" and "complete user task" to the
+    // audit log
+  }
+}
+
+enum UserTaskRunStatusPb {
+  UNASSIGNED = 0;
+  ASSIGNED_NOT_CLAIMED = 1;
+  CLAIMED = 2;
+  DONE = 3;
+  CANCELLED = 4;
+}
+
+// This is a SubNodeRun
+message UserTaskRunPb {
+  string user_task_def_name = 1;
+  repeated UserTaskEventPb events = 2;
+
+  // There are two ways the task could have been assigned
+  // 1. The task can be taken by one specific person
+  // 2. The task can be taken by anyone who is a member of a certain set of groups
+  oneof assigned_to {
+    string specific_user_id = 3;
+    string user_group = 4;
+  }
+
+  // The task may be in one of two states:
+  // 1. Claimed by a specific person.
+  // 2. Not yet claimed.
+  optional string user_id = 5;
+  repeated UserTaskFieldResultPb results = 6;
+
+  UserTaskRunStatusPb status = 7;
+  int32 user_task_def_version = 8;
+
+  optional string notes = 9;
+}
+
+message AssignUserTaskRunPb {
+  string wf_run_id = 1;
+  int32 thread_run_number = 2;
+  int32 node_run_position = 3;
+
+  bool override_claim = 4;
+
+  oneof assignee {
+    string user_id = 5;
+    string user_group = 6;
+  }
+}
+
+message AssignUserTaskRunReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+
+  // TODO: Later on, add info about current assignee/status.
+}
+
+message CompleteUserTaskRunReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+}
+
+message UserTaskFieldResultPb {
+  string name = 1;
+  optional VariableValuePb value = 2;
+}
+
+message UserTaskResultPb {
+  repeated UserTaskFieldResultPb fields = 1;
+}
+
+message SaveUserTaskRunPb {
+  UserTaskResultPb result = 1;
+  string user_id = 2;
+  repeated UserTaskFieldResultPb results = 3;
+}
+
+message CompleteUserTaskRunPb {
+  string wf_run_id = 1;
+  int32 thread_run_number = 2;
+  int32 node_run_position = 3;
+
+  UserTaskResultPb result = 4;
+  string user_id = 5;
+}
+
+message StartThreadNodePb {
+  string thread_spec_name = 1;
+  map<string, VariableAssignmentPb> variables = 2;
+}
+
+message FailureHandlerDefPb {
+  optional string specific_failure = 1;
+  string handler_spec_name = 2;
+}
+
+message WaitForThreadNodePb {
+  VariableAssignmentPb thread_run_number = 1;
+}
+
+message TaskNodePb {
+  string task_def_name = 1;
+  int32 timeout_seconds = 2;
+  int32 retries = 3;
+  repeated VariableAssignmentPb variables = 4;
+}
+
+message ExternalEventNodePb {
+  string external_event_def_name = 1;
+  VariableAssignmentPb timeout_seconds = 2;
+}
+
+message EntrypointNodePb {
+
+}
+
+message ExitNodePb {
+  optional FailureDefPb failure_def = 1;
+}
+
+message FailureDefPb {
+  string failure_name = 1;
+  string message = 2;
+  optional VariableAssignmentPb content = 3;
+}
+
+message VariableDefPb {
+  VariableTypePb type = 1;
+  string name = 2;
+}
+
+message InterruptDefPb {
+  string external_event_def_name = 1;
+  string handler_spec_name = 2;
+}
+
+message ThreadSpecPb {
+  map<string, NodePb> nodes = 1;
+  repeated VariableDefPb variable_defs = 2;
+  repeated InterruptDefPb interrupt_defs = 3;
+}
+
+message WfSpecPb {
+  string name = 1;
+  int32 version = 2;
+  google.protobuf.Timestamp created_at = 3;
+  LHStatusPb status = 4;
+
+  map<string, ThreadSpecPb> thread_specs = 5;
+  string entrypoint_thread_name = 6;
+  int32 retention_hours = 7;
+}
+
+// TaskDef
+message OutputSchemaPb {
+  VariableTypePb output_type = 1;
+}
+
+message TaskDefPb {
+  string name = 1;
+  repeated VariableDefPb input_vars = 2;
+  google.protobuf.Timestamp created_at = 3;
+}
+
+// ExternalEventDef
+message ExternalEventDefPb {
+  string name = 1;
+  google.protobuf.Timestamp created_at = 2;
+  int32 retention_hours = 3;
+
+  // TODO: Add output schema.
+  // TODO: Add ability to correlate to WfRun.
+  // TODO: Add ability to auto-provision a webhook listener.
+}
+
+// Metrics
+enum MetricsWindowLengthPb {
+  MINUTES_5 = 0;
+  HOURS_2 = 1;
+  DAYS_1 = 2;
+}
+
+message TaskDefMetricsIdPb {
+  google.protobuf.Timestamp window_start = 1;
+  MetricsWindowLengthPb window_type = 2;
+  string task_def_name = 3;
+}
+
+message TaskDefMetricsPb {
+  google.protobuf.Timestamp window_start = 1;
+  MetricsWindowLengthPb type = 2;
+  string taskDefName = 3;
+  int64 schedule_to_start_max = 4;
+  int64 schedule_to_start_avg = 5;
+  int64 start_to_complete_max = 6;
+  int64 start_to_complete_avg = 7;
+  int64 total_completed = 8;
+  int64 total_errored = 9;
+  int64 total_started = 10;
+  int64 total_scheduled = 11;
+}
+
+message WfSpecMetricsIdPb {
+  google.protobuf.Timestamp window_start = 1;
+  MetricsWindowLengthPb window_type = 2;
+  string wf_spec_name = 3;
+  int32 wf_spec_version = 4;
+}
+
+message WfSpecMetricsPb {
+  google.protobuf.Timestamp window_start = 1;
+  MetricsWindowLengthPb type = 2;
+  string wfSpecName = 3;
+  int32 wfSpecVersion = 4;
+  int64 total_started = 5;
+  int64 total_completed = 6;
+  int64 total_errored = 7;
+  int64 start_to_complete_max = 8;
+  int64 start_to_complete_avg = 9;
+}
