@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import moment from "moment"
 import { WorkflowsChart } from "../../../../components/Charts/WorkflowsChart";
 import { LatencyChart } from "../../../../components/Charts/LatencyChart";
-import { Button } from "ui";
+import { Button, Loader } from "ui";
 
 export interface taskDefMetric{
     windowStart: Date 
@@ -145,9 +145,17 @@ export const WorkflowExecutionMetrics = ({windows= 16, lastWindowStart=moment().
                 </div>
             </header>
         
-            <div>
-                {chart === 'workflows' && <WorkflowsChart data={data} type={type}  />}
-                {chart === 'latency' && <LatencyChart data={data} type={type}  />}
+            <div className={`${data.length === 0 ? 'flex items-center justify-items-center justify-center': ''}`} style={{
+                height: data.length === 0 ? '400px' : 'auto'
+            }}>
+                {
+                    data.length > 0 ?
+                        <>
+                            {chart === 'workflows' && <WorkflowsChart data={data} type={type}  />}
+                            {chart === 'latency' && <LatencyChart data={data} type={type}  />}
+                        </>
+                    : <Loader />
+                }
             </div>
         </article>
     )

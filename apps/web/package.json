@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev --port 3001",
     "build": "next build",
-    "start": "next start",
+    "start": "next start --port 80",
     "lint": "next lint"
   },
   "dependencies": {
@@ -16,6 +16,7 @@
     "next-auth": "^4.22.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-syntax-highlighter": "^15.5.0",
     "sass": "^1.63.6",
     "ui": "workspace:*"
   },

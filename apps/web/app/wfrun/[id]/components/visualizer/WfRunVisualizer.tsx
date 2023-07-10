@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react"
 import { WfSpecVisualizerChart } from "./WfSpecVisualizerChart";
 import { Drawer } from "./Drawer";
+import WFRunInformationSideBar from "../../../../../components/WFRunInformationSideBar";
 
 interface mapnode{
     
@@ -10,7 +11,11 @@ export const WfRunVisualizer = ({id}:{id:string}) => {
     const [fulldata, setFullData] = useState<any>()
     const [data, setData] = useState<any[]>([])
     const [output, setOutput] = useState<any>('')
-
+    const [wfRunProperties, setWfRunProperties] = useState<any>('');
+    const [showError, setShowError] = useState(false);
+    const [toggleSideBar, setToggleSideBar] = useState(false);
+    const [sideBarData, setSideBarData] = useState('');
+    
     const rec = (mappedData, i) => {
         let el = mappedData[i]
         if(!el.childs.length) return mappedData
@@ -34,9 +39,10 @@ export const WfRunVisualizer = ({id}:{id:string}) => {
     const setThreads = (data:any) => {
         console.log(data)
         getWfSpec(data.wfSpecName, data.wfSpecVersion)
-        
-
+        getWfRunProperties(data.threadRuns[0].number, data.threadRuns[0].currentNodePosition);
     }
+
+
     const mapData = (data:any) => {
         const entries = Object.entries(data?.threadSpecs?.entrypoint?.nodes)
         const mappedData:any = entries.map((e:mapnode) => ({
@@ -76,16 +82,50 @@ export const WfRunVisualizer = ({id}:{id:string}) => {
         }
     }
 
+    const getWfRunProperties = async(number: number, position: number) => {
+        const res = await fetch(`/api/search/nodeRun/${number}/${position}`,{
+            method:'POST',
+            body: JSON.stringify({
+                id
+            }),
+        })
+        if(res.ok){
+            const wfRunData = await res.json();
+            setWfRunProperties(wfRunData.result);
+        }
+    }
+
     useEffect( () => {
         getData()
-    },[])
+    },[]);
+
+    useEffect(() => {
+        if (showError) {
+            setSideBarData(wfRunProperties)
+            setToggleSideBar(true);
+        }
+    }, [showError])
+
+
+    useEffect(() => {
+        if (!toggleSideBar) {
+            setShowError(false);
+        }
+    }, [toggleSideBar])
+
     return (
         <div className="visualizer">
             <div className="canvas">
                 <WfSpecVisualizerChart data={data} onClick={setOutput} />
 
             </div>
-            <Drawer output={output} thread={id} data={fulldata} />
+            <Drawer output={output} thread={id} data={fulldata} onToggleSideBar={setShowError} properties={wfRunProperties} />
+            <WFRunInformationSideBar
+                toggleSideBar={toggleSideBar}
+                setToggleSideBar={setToggleSideBar}
+                output={sideBarData}
+                errorLog={showError}
+            />
         </div>
     )
 }

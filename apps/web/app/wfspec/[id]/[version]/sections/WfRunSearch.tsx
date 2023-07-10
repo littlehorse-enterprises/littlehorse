@@ -1,5 +1,5 @@
 "use client";
-import { Button, Calendar, CalendarB, Label, LoadMoreButton, PerPage } from "ui"
+import { Button, Calendar, CalendarB, Label, LoadMoreButton, Loader, PerPage } from "ui"
 import { useEffect, useState } from "react"
 import moment from "moment";
 import { WfRunSearchTable } from "../components/search/WfRunSearchTable";
@@ -221,8 +221,11 @@ export const WfRunSearch = ({id, version}:any) => {
                 <Button active={type === 'HALTED'} onClick={() => setType("HALTED")}>Halted</Button>
             </div>
         </div>
-
-        <WfRunSearchTable results={results} />
+        <div style={{minHeight:'568px'}}
+            className={`${results.length === 0 ? 'flex items-center justify-items-center justify-center': ''}`}
+        >
+            {results.length > 0 ? <WfRunSearchTable results={results} /> : <Loader />}
+        </div>
         
         <div className="end">
             <div className="btns btns-right">
