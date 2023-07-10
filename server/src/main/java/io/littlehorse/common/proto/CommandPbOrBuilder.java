@@ -340,31 +340,46 @@ public interface CommandPbOrBuilder extends
   io.littlehorse.jlib.common.proto.PutUserTaskDefPbOrBuilder getPutUserTaskDefOrBuilder();
 
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.TriggeredTaskRunPb triggered_task_run = 24;</code>
    * @return Whether the triggeredTaskRun field is set.
    */
   boolean hasTriggeredTaskRun();
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.TriggeredTaskRunPb triggered_task_run = 24;</code>
    * @return The triggeredTaskRun.
    */
   io.littlehorse.common.proto.TriggeredTaskRunPb getTriggeredTaskRun();
   /**
+   * <code>.littlehorse.TriggeredTaskRunPb triggered_task_run = 24;</code>
+   */
+  io.littlehorse.common.proto.TriggeredTaskRunPbOrBuilder getTriggeredTaskRunOrBuilder();
+
+  /**
    * <pre>
    * TODO: Add SaveUserTask
    * </pre>
    *
-   * <code>.littlehorse.TriggeredTaskRunPb triggered_task_run = 24;</code>
+   * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
+   * @return Whether the deleteUserTaskDef field is set.
    */
-  io.littlehorse.common.proto.TriggeredTaskRunPbOrBuilder getTriggeredTaskRunOrBuilder();
+  boolean hasDeleteUserTaskDef();
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
+   * @return The deleteUserTaskDef.
+   */
+  io.littlehorse.jlib.common.proto.DeleteUserTaskDefPb getDeleteUserTaskDef();
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
+   */
+  io.littlehorse.jlib.common.proto.DeleteUserTaskDefPbOrBuilder getDeleteUserTaskDefOrBuilder();
 
   public io.littlehorse.common.proto.CommandPb.CommandCase getCommandCase();
 }

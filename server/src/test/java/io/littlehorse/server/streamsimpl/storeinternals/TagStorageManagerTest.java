@@ -2,6 +2,7 @@ package io.littlehorse.server.streamsimpl.storeinternals;
 
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionCommand;
@@ -71,10 +72,10 @@ public class TagStorageManagerTest {
 
     @Test
     void saveTagsWithNewTagsCache() {
-        tagStorageManager.store(tags, "123456");
+        tagStorageManager.store(tags, "123456", WfRun.class);
         Tag tagResult1 = localStore.get(tag1.getStoreKey(), Tag.class);
         Tag tagResult2 = localStore.get(tag2.getStoreKey(), Tag.class);
-        TagsCache tagsCache = localStore.getTagsCache("123456");
+        TagsCache tagsCache = localStore.getTagsCache("123456", WfRun.class);
         Assertions.assertThat(tagResult1).isNotNull();
         Assertions.assertThat(tagResult2).isNotNull();
         Assertions.assertThat(tagsCache).isNotNull();
@@ -88,7 +89,7 @@ public class TagStorageManagerTest {
 
     @Test
     void removeOldTags() {
-        String tagsCacheKey = "123456";
+        String wfRunId = "123456";
         Tag tag3 = TestUtil.tag();
         tags = List.of(tag2, tag3);
         localStore.put(tag1);
@@ -96,10 +97,10 @@ public class TagStorageManagerTest {
         CachedTag cachedTag = new CachedTag();
         cachedTag.setId(tag1.getStoreKey());
         tagsCache.setTags(List.of(cachedTag));
-        localStore.putTagsCache(tagsCacheKey, tagsCache);
+        localStore.putTagsCache(wfRunId, WfRun.class, tagsCache);
 
-        tagStorageManager.store(tags, tagsCacheKey);
-        TagsCache tagsCacheResult = localStore.getTagsCache(tagsCacheKey);
+        tagStorageManager.store(tags, wfRunId, WfRun.class);
+        TagsCache tagsCacheResult = localStore.getTagsCache(wfRunId, WfRun.class);
         Assertions
             .assertThat(localStore.get(tag2.getStoreKey(), Tag.class))
             .isNotNull();
@@ -118,7 +119,7 @@ public class TagStorageManagerTest {
         String expectedPartitionKey = "WF_RUN/__wfSpecName_test-name";
         tag1.setTagType(TagStorageTypePb.REMOTE);
         tags = List.of(tag1, tag2);
-        tagStorageManager.store(tags, "test-cache-key");
+        tagStorageManager.store(tags, "test-wfrun-id", WfRun.class);
         List<? extends Record<? extends String, ? extends CommandProcessorOutput>> outputs = mockProcessorContext
             .forwarded()
             .stream()
@@ -145,7 +146,7 @@ public class TagStorageManagerTest {
     @Test
     void sendRepartitionCommandForRemoveRemoteTagSubCommand() {
         tag1.setTagType(TagStorageTypePb.REMOTE);
-        String tagsCacheKey = "123456";
+        String wfRunId = "123456";
         Tag tag3 = TestUtil.tag();
         tag3.setTagType(TagStorageTypePb.REMOTE);
         tags = List.of(tag1, tag2);
@@ -156,9 +157,9 @@ public class TagStorageManagerTest {
         CachedTag cachedTag2 = new CachedTag();
         cachedTag2.setId(tag2.getStoreKey());
         tagsCache.setTags(List.of(cachedTag1, cachedTag2));
-        localStore.putTagsCache(tagsCacheKey, tagsCache);
+        localStore.putTagsCache(wfRunId, WfRun.class, tagsCache);
 
-        tagStorageManager.store(tags, tagsCacheKey);
+        tagStorageManager.store(tags, wfRunId, WfRun.class);
         List<? extends Record<? extends String, ? extends CommandProcessorOutput>> outputs = mockProcessorContext
             .forwarded()
             .stream()

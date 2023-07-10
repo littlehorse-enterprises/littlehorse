@@ -19,28 +19,4 @@ public class SearchVariableReply
     public Class<VariableIdPb> getResultProtoClass() {
         return VariableIdPb.class;
     }
-    // public SearchVariableReplyPb.Builder toProto() {
-    //     SearchVariableReplyPb.Builder out = SearchVariableReplyPb
-    //         .newBuilder()
-    //         .setCode(code);
-    //     if (message != null) out.setMessage(message);
-    //     if (bookmark != null) out.setBookmark(ByteString.copyFrom(bookmark));
-
-    //     for (String objectId : objectIds) {
-    //         out.addIds(Variable.parseId(objectId));
-    //     }
-
-    //     return out;
-    // }
-
-    // public void initFrom(Message proto) {
-    //     SearchVariableReplyPb p = (SearchVariableReplyPb) proto;
-    //     code = p.getCode();
-    //     if (p.hasMessage()) message = p.getMessage();
-    //     if (p.hasBookmark()) bookmark = p.getBookmark().toByteArray();
-
-    //     for (VariableIdPb id : p.getIdsList()) {
-    //         objectIds.add(Variable.getObjectId(id));
-    //     }
-    // }
 }

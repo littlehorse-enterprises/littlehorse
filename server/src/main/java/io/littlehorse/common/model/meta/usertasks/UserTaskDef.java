@@ -11,6 +11,7 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.UserTaskDefPb;
 import io.littlehorse.jlib.common.proto.UserTaskFieldPb;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
+import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -50,6 +51,7 @@ public class UserTaskDef extends Getable<UserTaskDefPb> {
         UserTaskDefPb p = (UserTaskDefPb) proto;
         name = p.getName();
         createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
+        version = p.getVersion();
         if (p.hasDescription()) description = p.getDescription();
 
         for (UserTaskFieldPb utf : p.getFieldsList()) {
@@ -68,6 +70,11 @@ public class UserTaskDef extends Getable<UserTaskDefPb> {
 
     public UserTaskDefId getObjectId() {
         return new UserTaskDefId(name, version);
+    }
+
+    public static String getFullPrefixByName(String name) {
+        // TODO MVP-140: Remove StoreUtils.java
+        return StoreUtils.getFullStoreKey(name + "/", UserTaskDef.class);
     }
 
     public void validate(LHGlobalMetaStores stores, LHConfig config)

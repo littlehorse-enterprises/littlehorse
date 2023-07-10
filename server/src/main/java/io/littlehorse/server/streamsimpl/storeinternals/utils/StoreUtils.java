@@ -41,7 +41,16 @@ public class StoreUtils {
         return "Response/" + commandId;
     }
 
+    @SuppressWarnings("unchecked")
     public static String getTagsCacheKey(Getable<?> thing) {
-        return "TagCache-" + thing.getClass() + "/" + thing.getStoreKey();
+        Class<Getable<?>> cls = (Class<Getable<?>>) thing.getClass();
+        return getTagsCacheKey(thing.getStoreKey(), cls);
+    }
+
+    public static String getTagsCacheKey(
+        String getableId,
+        Class<? extends Getable<?>> cls
+    ) {
+        return "TagCache-" + cls + "/" + getableId;
     }
 }

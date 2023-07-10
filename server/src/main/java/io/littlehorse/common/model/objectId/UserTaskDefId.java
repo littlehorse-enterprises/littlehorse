@@ -49,7 +49,9 @@ public class UserTaskDefId
     }
 
     public void initFrom(String storeKey) {
-        name = storeKey;
+        String[] split = storeKey.split("/");
+        name = split[0];
+        version = Integer.valueOf(split[1]);
     }
 
     public GetableClassEnumPb getType() {

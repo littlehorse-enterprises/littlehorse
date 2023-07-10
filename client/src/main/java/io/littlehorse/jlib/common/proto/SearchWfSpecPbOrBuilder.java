@@ -30,53 +30,55 @@ public interface SearchWfSpecPbOrBuilder extends
   int getLimit();
 
   /**
-   * <code>optional string name = 3;</code>
+   * <code>string name = 3;</code>
    * @return Whether the name field is set.
    */
   boolean hasName();
   /**
-   * <code>optional string name = 3;</code>
+   * <code>string name = 3;</code>
    * @return The name.
    */
   java.lang.String getName();
   /**
-   * <code>optional string name = 3;</code>
+   * <code>string name = 3;</code>
    * @return The bytes for name.
    */
   com.google.protobuf.ByteString
       getNameBytes();
 
   /**
-   * <code>optional string prefix = 4;</code>
+   * <code>string prefix = 4;</code>
    * @return Whether the prefix field is set.
    */
   boolean hasPrefix();
   /**
-   * <code>optional string prefix = 4;</code>
+   * <code>string prefix = 4;</code>
    * @return The prefix.
    */
   java.lang.String getPrefix();
   /**
-   * <code>optional string prefix = 4;</code>
+   * <code>string prefix = 4;</code>
    * @return The bytes for prefix.
    */
   com.google.protobuf.ByteString
       getPrefixBytes();
 
   /**
-   * <code>optional string task_def_name = 5;</code>
+   * <code>string task_def_name = 5;</code>
    * @return Whether the taskDefName field is set.
    */
   boolean hasTaskDefName();
   /**
-   * <code>optional string task_def_name = 5;</code>
+   * <code>string task_def_name = 5;</code>
    * @return The taskDefName.
    */
   java.lang.String getTaskDefName();
   /**
-   * <code>optional string task_def_name = 5;</code>
+   * <code>string task_def_name = 5;</code>
    * @return The bytes for taskDefName.
    */
   com.google.protobuf.ByteString
       getTaskDefNameBytes();
+
+  public io.littlehorse.jlib.common.proto.SearchWfSpecPb.WfSpecCriteriaCase getWfSpecCriteriaCase();
 }

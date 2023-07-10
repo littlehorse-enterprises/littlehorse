@@ -51,6 +51,7 @@ private static final long serialVersionUID = 0L;
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
     PREFIX(3),
+    NAME(4),
     USERTASKDEFCRITERIA_NOT_SET(0);
     private final int value;
     private UserTaskDefCriteriaCase(int value) {
@@ -69,6 +70,7 @@ private static final long serialVersionUID = 0L;
     public static UserTaskDefCriteriaCase forNumber(int value) {
       switch (value) {
         case 3: return PREFIX;
+        case 4: return NAME;
         case 0: return USERTASKDEFCRITERIA_NOT_SET;
         default: return null;
       }
@@ -124,10 +126,6 @@ private static final long serialVersionUID = 0L;
 
   public static final int PREFIX_FIELD_NUMBER = 3;
   /**
-   * <pre>
-   * TODO: add more fields to user task def, such as default assignment, etc
-   * </pre>
-   *
    * <code>string prefix = 3;</code>
    * @return Whether the prefix field is set.
    */
@@ -135,10 +133,6 @@ private static final long serialVersionUID = 0L;
     return userTaskDefCriteriaCase_ == 3;
   }
   /**
-   * <pre>
-   * TODO: add more fields to user task def, such as default assignment, etc
-   * </pre>
-   *
    * <code>string prefix = 3;</code>
    * @return The prefix.
    */
@@ -160,10 +154,6 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <pre>
-   * TODO: add more fields to user task def, such as default assignment, etc
-   * </pre>
-   *
    * <code>string prefix = 3;</code>
    * @return The bytes for prefix.
    */
@@ -178,6 +168,58 @@ private static final long serialVersionUID = 0L;
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
       if (userTaskDefCriteriaCase_ == 3) {
+        userTaskDefCriteria_ = b;
+      }
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int NAME_FIELD_NUMBER = 4;
+  /**
+   * <code>string name = 4;</code>
+   * @return Whether the name field is set.
+   */
+  public boolean hasName() {
+    return userTaskDefCriteriaCase_ == 4;
+  }
+  /**
+   * <code>string name = 4;</code>
+   * @return The name.
+   */
+  public java.lang.String getName() {
+    java.lang.Object ref = "";
+    if (userTaskDefCriteriaCase_ == 4) {
+      ref = userTaskDefCriteria_;
+    }
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      if (userTaskDefCriteriaCase_ == 4) {
+        userTaskDefCriteria_ = s;
+      }
+      return s;
+    }
+  }
+  /**
+   * <code>string name = 4;</code>
+   * @return The bytes for name.
+   */
+  public com.google.protobuf.ByteString
+      getNameBytes() {
+    java.lang.Object ref = "";
+    if (userTaskDefCriteriaCase_ == 4) {
+      ref = userTaskDefCriteria_;
+    }
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      if (userTaskDefCriteriaCase_ == 4) {
         userTaskDefCriteria_ = b;
       }
       return b;
@@ -209,6 +251,9 @@ private static final long serialVersionUID = 0L;
     if (userTaskDefCriteriaCase_ == 3) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 3, userTaskDefCriteria_);
     }
+    if (userTaskDefCriteriaCase_ == 4) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 4, userTaskDefCriteria_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -228,6 +273,9 @@ private static final long serialVersionUID = 0L;
     }
     if (userTaskDefCriteriaCase_ == 3) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, userTaskDefCriteria_);
+    }
+    if (userTaskDefCriteriaCase_ == 4) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, userTaskDefCriteria_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -260,6 +308,10 @@ private static final long serialVersionUID = 0L;
         if (!getPrefix()
             .equals(other.getPrefix())) return false;
         break;
+      case 4:
+        if (!getName()
+            .equals(other.getName())) return false;
+        break;
       case 0:
       default:
     }
@@ -286,6 +338,10 @@ private static final long serialVersionUID = 0L;
       case 3:
         hash = (37 * hash) + PREFIX_FIELD_NUMBER;
         hash = (53 * hash) + getPrefix().hashCode();
+        break;
+      case 4:
+        hash = (37 * hash) + NAME_FIELD_NUMBER;
+        hash = (53 * hash) + getName().hashCode();
         break;
       case 0:
       default:
@@ -531,6 +587,12 @@ private static final long serialVersionUID = 0L;
           onChanged();
           break;
         }
+        case NAME: {
+          userTaskDefCriteriaCase_ = 4;
+          userTaskDefCriteria_ = other.userTaskDefCriteria_;
+          onChanged();
+          break;
+        }
         case USERTASKDEFCRITERIA_NOT_SET: {
           break;
         }
@@ -577,6 +639,12 @@ private static final long serialVersionUID = 0L;
               userTaskDefCriteria_ = s;
               break;
             } // case 26
+            case 34: {
+              java.lang.String s = input.readStringRequireUtf8();
+              userTaskDefCriteriaCase_ = 4;
+              userTaskDefCriteria_ = s;
+              break;
+            } // case 34
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -690,10 +758,6 @@ private static final long serialVersionUID = 0L;
     }
 
     /**
-     * <pre>
-     * TODO: add more fields to user task def, such as default assignment, etc
-     * </pre>
-     *
      * <code>string prefix = 3;</code>
      * @return Whether the prefix field is set.
      */
@@ -702,10 +766,6 @@ private static final long serialVersionUID = 0L;
       return userTaskDefCriteriaCase_ == 3;
     }
     /**
-     * <pre>
-     * TODO: add more fields to user task def, such as default assignment, etc
-     * </pre>
-     *
      * <code>string prefix = 3;</code>
      * @return The prefix.
      */
@@ -728,10 +788,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * TODO: add more fields to user task def, such as default assignment, etc
-     * </pre>
-     *
      * <code>string prefix = 3;</code>
      * @return The bytes for prefix.
      */
@@ -755,10 +811,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * TODO: add more fields to user task def, such as default assignment, etc
-     * </pre>
-     *
      * <code>string prefix = 3;</code>
      * @param value The prefix to set.
      * @return This builder for chaining.
@@ -772,10 +824,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * TODO: add more fields to user task def, such as default assignment, etc
-     * </pre>
-     *
      * <code>string prefix = 3;</code>
      * @return This builder for chaining.
      */
@@ -788,10 +836,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * TODO: add more fields to user task def, such as default assignment, etc
-     * </pre>
-     *
      * <code>string prefix = 3;</code>
      * @param value The bytes for prefix to set.
      * @return This builder for chaining.
@@ -801,6 +845,99 @@ private static final long serialVersionUID = 0L;
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
       userTaskDefCriteriaCase_ = 3;
+      userTaskDefCriteria_ = value;
+      onChanged();
+      return this;
+    }
+
+    /**
+     * <code>string name = 4;</code>
+     * @return Whether the name field is set.
+     */
+    @java.lang.Override
+    public boolean hasName() {
+      return userTaskDefCriteriaCase_ == 4;
+    }
+    /**
+     * <code>string name = 4;</code>
+     * @return The name.
+     */
+    @java.lang.Override
+    public java.lang.String getName() {
+      java.lang.Object ref = "";
+      if (userTaskDefCriteriaCase_ == 4) {
+        ref = userTaskDefCriteria_;
+      }
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (userTaskDefCriteriaCase_ == 4) {
+          userTaskDefCriteria_ = s;
+        }
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string name = 4;</code>
+     * @return The bytes for name.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getNameBytes() {
+      java.lang.Object ref = "";
+      if (userTaskDefCriteriaCase_ == 4) {
+        ref = userTaskDefCriteria_;
+      }
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        if (userTaskDefCriteriaCase_ == 4) {
+          userTaskDefCriteria_ = b;
+        }
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string name = 4;</code>
+     * @param value The name to set.
+     * @return This builder for chaining.
+     */
+    public Builder setName(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      userTaskDefCriteriaCase_ = 4;
+      userTaskDefCriteria_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string name = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearName() {
+      if (userTaskDefCriteriaCase_ == 4) {
+        userTaskDefCriteriaCase_ = 0;
+        userTaskDefCriteria_ = null;
+        onChanged();
+      }
+      return this;
+    }
+    /**
+     * <code>string name = 4;</code>
+     * @param value The bytes for name to set.
+     * @return This builder for chaining.
+     */
+    public Builder setNameBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      userTaskDefCriteriaCase_ = 4;
       userTaskDefCriteria_ = value;
       onChanged();
       return this;

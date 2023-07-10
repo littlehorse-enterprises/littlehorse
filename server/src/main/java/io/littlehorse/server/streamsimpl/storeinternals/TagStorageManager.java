@@ -25,8 +25,12 @@ public class TagStorageManager {
     private ProcessorContext<String, CommandProcessorOutput> context;
     private LHConfig lhConfig;
 
-    public void store(Collection<Tag> tags, String tagsCacheKey) {
-        TagsCache tagsCache = localStore.getTagsCache(tagsCacheKey);
+    public void store(
+        Collection<Tag> tags,
+        String getableId,
+        Class<? extends Getable<?>> getableCls
+    ) {
+        TagsCache tagsCache = localStore.getTagsCache(getableId, getableCls);
         tagsCache = tagsCache != null ? tagsCache : new TagsCache();
         List<String> existingTagIds = tagsCache.getTagIds();
         List<CachedTag> cachedTags = tags
@@ -41,7 +45,7 @@ public class TagStorageManager {
         this.storeLocalOrRemoteTag(tags, existingTagIds);
         this.removeOldTags(tags, tagsCache.getTags());
         tagsCache.setTags(cachedTags);
-        localStore.putTagsCache(tagsCacheKey, tagsCache);
+        localStore.putTagsCache(getableId, getableCls, tagsCache);
     }
 
     private void removeOldTags(Collection<Tag> newTags, List<CachedTag> cachedTags) {

@@ -17,9 +17,6 @@ private static final long serialVersionUID = 0L;
   }
   private SearchWfSpecPb() {
     bookmark_ = com.google.protobuf.ByteString.EMPTY;
-    name_ = "";
-    prefix_ = "";
-    taskDefName_ = "";
   }
 
   @java.lang.Override
@@ -48,6 +45,49 @@ private static final long serialVersionUID = 0L;
   }
 
   private int bitField0_;
+  private int wfSpecCriteriaCase_ = 0;
+  private java.lang.Object wfSpecCriteria_;
+  public enum WfSpecCriteriaCase
+      implements com.google.protobuf.Internal.EnumLite,
+          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+    NAME(3),
+    PREFIX(4),
+    TASK_DEF_NAME(5),
+    WFSPECCRITERIA_NOT_SET(0);
+    private final int value;
+    private WfSpecCriteriaCase(int value) {
+      this.value = value;
+    }
+    /**
+     * @param value The number of the enum to look for.
+     * @return The enum associated with the given number.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static WfSpecCriteriaCase valueOf(int value) {
+      return forNumber(value);
+    }
+
+    public static WfSpecCriteriaCase forNumber(int value) {
+      switch (value) {
+        case 3: return NAME;
+        case 4: return PREFIX;
+        case 5: return TASK_DEF_NAME;
+        case 0: return WFSPECCRITERIA_NOT_SET;
+        default: return null;
+      }
+    }
+    public int getNumber() {
+      return this.value;
+    }
+  };
+
+  public WfSpecCriteriaCase
+  getWfSpecCriteriaCase() {
+    return WfSpecCriteriaCase.forNumber(
+        wfSpecCriteriaCase_);
+  }
+
   public static final int BOOKMARK_FIELD_NUMBER = 1;
   private com.google.protobuf.ByteString bookmark_ = com.google.protobuf.ByteString.EMPTY;
   /**
@@ -87,46 +127,51 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int NAME_FIELD_NUMBER = 3;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object name_ = "";
   /**
-   * <code>optional string name = 3;</code>
+   * <code>string name = 3;</code>
    * @return Whether the name field is set.
    */
-  @java.lang.Override
   public boolean hasName() {
-    return ((bitField0_ & 0x00000004) != 0);
+    return wfSpecCriteriaCase_ == 3;
   }
   /**
-   * <code>optional string name = 3;</code>
+   * <code>string name = 3;</code>
    * @return The name.
    */
-  @java.lang.Override
   public java.lang.String getName() {
-    java.lang.Object ref = name_;
+    java.lang.Object ref = "";
+    if (wfSpecCriteriaCase_ == 3) {
+      ref = wfSpecCriteria_;
+    }
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      name_ = s;
+      if (wfSpecCriteriaCase_ == 3) {
+        wfSpecCriteria_ = s;
+      }
       return s;
     }
   }
   /**
-   * <code>optional string name = 3;</code>
+   * <code>string name = 3;</code>
    * @return The bytes for name.
    */
-  @java.lang.Override
   public com.google.protobuf.ByteString
       getNameBytes() {
-    java.lang.Object ref = name_;
+    java.lang.Object ref = "";
+    if (wfSpecCriteriaCase_ == 3) {
+      ref = wfSpecCriteria_;
+    }
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      name_ = b;
+      if (wfSpecCriteriaCase_ == 3) {
+        wfSpecCriteria_ = b;
+      }
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
@@ -134,46 +179,51 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int PREFIX_FIELD_NUMBER = 4;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object prefix_ = "";
   /**
-   * <code>optional string prefix = 4;</code>
+   * <code>string prefix = 4;</code>
    * @return Whether the prefix field is set.
    */
-  @java.lang.Override
   public boolean hasPrefix() {
-    return ((bitField0_ & 0x00000008) != 0);
+    return wfSpecCriteriaCase_ == 4;
   }
   /**
-   * <code>optional string prefix = 4;</code>
+   * <code>string prefix = 4;</code>
    * @return The prefix.
    */
-  @java.lang.Override
   public java.lang.String getPrefix() {
-    java.lang.Object ref = prefix_;
+    java.lang.Object ref = "";
+    if (wfSpecCriteriaCase_ == 4) {
+      ref = wfSpecCriteria_;
+    }
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      prefix_ = s;
+      if (wfSpecCriteriaCase_ == 4) {
+        wfSpecCriteria_ = s;
+      }
       return s;
     }
   }
   /**
-   * <code>optional string prefix = 4;</code>
+   * <code>string prefix = 4;</code>
    * @return The bytes for prefix.
    */
-  @java.lang.Override
   public com.google.protobuf.ByteString
       getPrefixBytes() {
-    java.lang.Object ref = prefix_;
+    java.lang.Object ref = "";
+    if (wfSpecCriteriaCase_ == 4) {
+      ref = wfSpecCriteria_;
+    }
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      prefix_ = b;
+      if (wfSpecCriteriaCase_ == 4) {
+        wfSpecCriteria_ = b;
+      }
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
@@ -181,46 +231,51 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int TASK_DEF_NAME_FIELD_NUMBER = 5;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object taskDefName_ = "";
   /**
-   * <code>optional string task_def_name = 5;</code>
+   * <code>string task_def_name = 5;</code>
    * @return Whether the taskDefName field is set.
    */
-  @java.lang.Override
   public boolean hasTaskDefName() {
-    return ((bitField0_ & 0x00000010) != 0);
+    return wfSpecCriteriaCase_ == 5;
   }
   /**
-   * <code>optional string task_def_name = 5;</code>
+   * <code>string task_def_name = 5;</code>
    * @return The taskDefName.
    */
-  @java.lang.Override
   public java.lang.String getTaskDefName() {
-    java.lang.Object ref = taskDefName_;
+    java.lang.Object ref = "";
+    if (wfSpecCriteriaCase_ == 5) {
+      ref = wfSpecCriteria_;
+    }
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      taskDefName_ = s;
+      if (wfSpecCriteriaCase_ == 5) {
+        wfSpecCriteria_ = s;
+      }
       return s;
     }
   }
   /**
-   * <code>optional string task_def_name = 5;</code>
+   * <code>string task_def_name = 5;</code>
    * @return The bytes for taskDefName.
    */
-  @java.lang.Override
   public com.google.protobuf.ByteString
       getTaskDefNameBytes() {
-    java.lang.Object ref = taskDefName_;
+    java.lang.Object ref = "";
+    if (wfSpecCriteriaCase_ == 5) {
+      ref = wfSpecCriteria_;
+    }
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      taskDefName_ = b;
+      if (wfSpecCriteriaCase_ == 5) {
+        wfSpecCriteria_ = b;
+      }
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
@@ -247,14 +302,14 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000002) != 0)) {
       output.writeInt32(2, limit_);
     }
-    if (((bitField0_ & 0x00000004) != 0)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, name_);
+    if (wfSpecCriteriaCase_ == 3) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, wfSpecCriteria_);
     }
-    if (((bitField0_ & 0x00000008) != 0)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 4, prefix_);
+    if (wfSpecCriteriaCase_ == 4) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 4, wfSpecCriteria_);
     }
-    if (((bitField0_ & 0x00000010) != 0)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, taskDefName_);
+    if (wfSpecCriteriaCase_ == 5) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, wfSpecCriteria_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -273,14 +328,14 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(2, limit_);
     }
-    if (((bitField0_ & 0x00000004) != 0)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, name_);
+    if (wfSpecCriteriaCase_ == 3) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, wfSpecCriteria_);
     }
-    if (((bitField0_ & 0x00000008) != 0)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, prefix_);
+    if (wfSpecCriteriaCase_ == 4) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, wfSpecCriteria_);
     }
-    if (((bitField0_ & 0x00000010) != 0)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, taskDefName_);
+    if (wfSpecCriteriaCase_ == 5) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, wfSpecCriteria_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -307,20 +362,22 @@ private static final long serialVersionUID = 0L;
       if (getLimit()
           != other.getLimit()) return false;
     }
-    if (hasName() != other.hasName()) return false;
-    if (hasName()) {
-      if (!getName()
-          .equals(other.getName())) return false;
-    }
-    if (hasPrefix() != other.hasPrefix()) return false;
-    if (hasPrefix()) {
-      if (!getPrefix()
-          .equals(other.getPrefix())) return false;
-    }
-    if (hasTaskDefName() != other.hasTaskDefName()) return false;
-    if (hasTaskDefName()) {
-      if (!getTaskDefName()
-          .equals(other.getTaskDefName())) return false;
+    if (!getWfSpecCriteriaCase().equals(other.getWfSpecCriteriaCase())) return false;
+    switch (wfSpecCriteriaCase_) {
+      case 3:
+        if (!getName()
+            .equals(other.getName())) return false;
+        break;
+      case 4:
+        if (!getPrefix()
+            .equals(other.getPrefix())) return false;
+        break;
+      case 5:
+        if (!getTaskDefName()
+            .equals(other.getTaskDefName())) return false;
+        break;
+      case 0:
+      default:
     }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
@@ -341,17 +398,21 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + LIMIT_FIELD_NUMBER;
       hash = (53 * hash) + getLimit();
     }
-    if (hasName()) {
-      hash = (37 * hash) + NAME_FIELD_NUMBER;
-      hash = (53 * hash) + getName().hashCode();
-    }
-    if (hasPrefix()) {
-      hash = (37 * hash) + PREFIX_FIELD_NUMBER;
-      hash = (53 * hash) + getPrefix().hashCode();
-    }
-    if (hasTaskDefName()) {
-      hash = (37 * hash) + TASK_DEF_NAME_FIELD_NUMBER;
-      hash = (53 * hash) + getTaskDefName().hashCode();
+    switch (wfSpecCriteriaCase_) {
+      case 3:
+        hash = (37 * hash) + NAME_FIELD_NUMBER;
+        hash = (53 * hash) + getName().hashCode();
+        break;
+      case 4:
+        hash = (37 * hash) + PREFIX_FIELD_NUMBER;
+        hash = (53 * hash) + getPrefix().hashCode();
+        break;
+      case 5:
+        hash = (37 * hash) + TASK_DEF_NAME_FIELD_NUMBER;
+        hash = (53 * hash) + getTaskDefName().hashCode();
+        break;
+      case 0:
+      default:
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -484,9 +545,8 @@ private static final long serialVersionUID = 0L;
       bitField0_ = 0;
       bookmark_ = com.google.protobuf.ByteString.EMPTY;
       limit_ = 0;
-      name_ = "";
-      prefix_ = "";
-      taskDefName_ = "";
+      wfSpecCriteriaCase_ = 0;
+      wfSpecCriteria_ = null;
       return this;
     }
 
@@ -514,6 +574,7 @@ private static final long serialVersionUID = 0L;
     public io.littlehorse.jlib.common.proto.SearchWfSpecPb buildPartial() {
       io.littlehorse.jlib.common.proto.SearchWfSpecPb result = new io.littlehorse.jlib.common.proto.SearchWfSpecPb(this);
       if (bitField0_ != 0) { buildPartial0(result); }
+      buildPartialOneofs(result);
       onBuilt();
       return result;
     }
@@ -529,19 +590,12 @@ private static final long serialVersionUID = 0L;
         result.limit_ = limit_;
         to_bitField0_ |= 0x00000002;
       }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.name_ = name_;
-        to_bitField0_ |= 0x00000004;
-      }
-      if (((from_bitField0_ & 0x00000008) != 0)) {
-        result.prefix_ = prefix_;
-        to_bitField0_ |= 0x00000008;
-      }
-      if (((from_bitField0_ & 0x00000010) != 0)) {
-        result.taskDefName_ = taskDefName_;
-        to_bitField0_ |= 0x00000010;
-      }
       result.bitField0_ |= to_bitField0_;
+    }
+
+    private void buildPartialOneofs(io.littlehorse.jlib.common.proto.SearchWfSpecPb result) {
+      result.wfSpecCriteriaCase_ = wfSpecCriteriaCase_;
+      result.wfSpecCriteria_ = this.wfSpecCriteria_;
     }
 
     @java.lang.Override
@@ -594,20 +648,28 @@ private static final long serialVersionUID = 0L;
       if (other.hasLimit()) {
         setLimit(other.getLimit());
       }
-      if (other.hasName()) {
-        name_ = other.name_;
-        bitField0_ |= 0x00000004;
-        onChanged();
-      }
-      if (other.hasPrefix()) {
-        prefix_ = other.prefix_;
-        bitField0_ |= 0x00000008;
-        onChanged();
-      }
-      if (other.hasTaskDefName()) {
-        taskDefName_ = other.taskDefName_;
-        bitField0_ |= 0x00000010;
-        onChanged();
+      switch (other.getWfSpecCriteriaCase()) {
+        case NAME: {
+          wfSpecCriteriaCase_ = 3;
+          wfSpecCriteria_ = other.wfSpecCriteria_;
+          onChanged();
+          break;
+        }
+        case PREFIX: {
+          wfSpecCriteriaCase_ = 4;
+          wfSpecCriteria_ = other.wfSpecCriteria_;
+          onChanged();
+          break;
+        }
+        case TASK_DEF_NAME: {
+          wfSpecCriteriaCase_ = 5;
+          wfSpecCriteria_ = other.wfSpecCriteria_;
+          onChanged();
+          break;
+        }
+        case WFSPECCRITERIA_NOT_SET: {
+          break;
+        }
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -646,18 +708,21 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 16
             case 26: {
-              name_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000004;
+              java.lang.String s = input.readStringRequireUtf8();
+              wfSpecCriteriaCase_ = 3;
+              wfSpecCriteria_ = s;
               break;
             } // case 26
             case 34: {
-              prefix_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000008;
+              java.lang.String s = input.readStringRequireUtf8();
+              wfSpecCriteriaCase_ = 4;
+              wfSpecCriteria_ = s;
               break;
             } // case 34
             case 42: {
-              taskDefName_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000010;
+              java.lang.String s = input.readStringRequireUtf8();
+              wfSpecCriteriaCase_ = 5;
+              wfSpecCriteria_ = s;
               break;
             } // case 42
             default: {
@@ -675,6 +740,21 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
+    private int wfSpecCriteriaCase_ = 0;
+    private java.lang.Object wfSpecCriteria_;
+    public WfSpecCriteriaCase
+        getWfSpecCriteriaCase() {
+      return WfSpecCriteriaCase.forNumber(
+          wfSpecCriteriaCase_);
+    }
+
+    public Builder clearWfSpecCriteria() {
+      wfSpecCriteriaCase_ = 0;
+      wfSpecCriteria_ = null;
+      onChanged();
+      return this;
+    }
+
     private int bitField0_;
 
     private com.google.protobuf.ByteString bookmark_ = com.google.protobuf.ByteString.EMPTY;
@@ -757,72 +837,86 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.lang.Object name_ = "";
     /**
-     * <code>optional string name = 3;</code>
+     * <code>string name = 3;</code>
      * @return Whether the name field is set.
      */
+    @java.lang.Override
     public boolean hasName() {
-      return ((bitField0_ & 0x00000004) != 0);
+      return wfSpecCriteriaCase_ == 3;
     }
     /**
-     * <code>optional string name = 3;</code>
+     * <code>string name = 3;</code>
      * @return The name.
      */
+    @java.lang.Override
     public java.lang.String getName() {
-      java.lang.Object ref = name_;
+      java.lang.Object ref = "";
+      if (wfSpecCriteriaCase_ == 3) {
+        ref = wfSpecCriteria_;
+      }
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        name_ = s;
+        if (wfSpecCriteriaCase_ == 3) {
+          wfSpecCriteria_ = s;
+        }
         return s;
       } else {
         return (java.lang.String) ref;
       }
     }
     /**
-     * <code>optional string name = 3;</code>
+     * <code>string name = 3;</code>
      * @return The bytes for name.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString
         getNameBytes() {
-      java.lang.Object ref = name_;
+      java.lang.Object ref = "";
+      if (wfSpecCriteriaCase_ == 3) {
+        ref = wfSpecCriteria_;
+      }
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        name_ = b;
+        if (wfSpecCriteriaCase_ == 3) {
+          wfSpecCriteria_ = b;
+        }
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
     /**
-     * <code>optional string name = 3;</code>
+     * <code>string name = 3;</code>
      * @param value The name to set.
      * @return This builder for chaining.
      */
     public Builder setName(
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
-      name_ = value;
-      bitField0_ |= 0x00000004;
+      wfSpecCriteriaCase_ = 3;
+      wfSpecCriteria_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>optional string name = 3;</code>
+     * <code>string name = 3;</code>
      * @return This builder for chaining.
      */
     public Builder clearName() {
-      name_ = getDefaultInstance().getName();
-      bitField0_ = (bitField0_ & ~0x00000004);
-      onChanged();
+      if (wfSpecCriteriaCase_ == 3) {
+        wfSpecCriteriaCase_ = 0;
+        wfSpecCriteria_ = null;
+        onChanged();
+      }
       return this;
     }
     /**
-     * <code>optional string name = 3;</code>
+     * <code>string name = 3;</code>
      * @param value The bytes for name to set.
      * @return This builder for chaining.
      */
@@ -830,78 +924,92 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.ByteString value) {
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
-      name_ = value;
-      bitField0_ |= 0x00000004;
+      wfSpecCriteriaCase_ = 3;
+      wfSpecCriteria_ = value;
       onChanged();
       return this;
     }
 
-    private java.lang.Object prefix_ = "";
     /**
-     * <code>optional string prefix = 4;</code>
+     * <code>string prefix = 4;</code>
      * @return Whether the prefix field is set.
      */
+    @java.lang.Override
     public boolean hasPrefix() {
-      return ((bitField0_ & 0x00000008) != 0);
+      return wfSpecCriteriaCase_ == 4;
     }
     /**
-     * <code>optional string prefix = 4;</code>
+     * <code>string prefix = 4;</code>
      * @return The prefix.
      */
+    @java.lang.Override
     public java.lang.String getPrefix() {
-      java.lang.Object ref = prefix_;
+      java.lang.Object ref = "";
+      if (wfSpecCriteriaCase_ == 4) {
+        ref = wfSpecCriteria_;
+      }
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        prefix_ = s;
+        if (wfSpecCriteriaCase_ == 4) {
+          wfSpecCriteria_ = s;
+        }
         return s;
       } else {
         return (java.lang.String) ref;
       }
     }
     /**
-     * <code>optional string prefix = 4;</code>
+     * <code>string prefix = 4;</code>
      * @return The bytes for prefix.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString
         getPrefixBytes() {
-      java.lang.Object ref = prefix_;
+      java.lang.Object ref = "";
+      if (wfSpecCriteriaCase_ == 4) {
+        ref = wfSpecCriteria_;
+      }
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        prefix_ = b;
+        if (wfSpecCriteriaCase_ == 4) {
+          wfSpecCriteria_ = b;
+        }
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
     /**
-     * <code>optional string prefix = 4;</code>
+     * <code>string prefix = 4;</code>
      * @param value The prefix to set.
      * @return This builder for chaining.
      */
     public Builder setPrefix(
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
-      prefix_ = value;
-      bitField0_ |= 0x00000008;
+      wfSpecCriteriaCase_ = 4;
+      wfSpecCriteria_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>optional string prefix = 4;</code>
+     * <code>string prefix = 4;</code>
      * @return This builder for chaining.
      */
     public Builder clearPrefix() {
-      prefix_ = getDefaultInstance().getPrefix();
-      bitField0_ = (bitField0_ & ~0x00000008);
-      onChanged();
+      if (wfSpecCriteriaCase_ == 4) {
+        wfSpecCriteriaCase_ = 0;
+        wfSpecCriteria_ = null;
+        onChanged();
+      }
       return this;
     }
     /**
-     * <code>optional string prefix = 4;</code>
+     * <code>string prefix = 4;</code>
      * @param value The bytes for prefix to set.
      * @return This builder for chaining.
      */
@@ -909,78 +1017,92 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.ByteString value) {
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
-      prefix_ = value;
-      bitField0_ |= 0x00000008;
+      wfSpecCriteriaCase_ = 4;
+      wfSpecCriteria_ = value;
       onChanged();
       return this;
     }
 
-    private java.lang.Object taskDefName_ = "";
     /**
-     * <code>optional string task_def_name = 5;</code>
+     * <code>string task_def_name = 5;</code>
      * @return Whether the taskDefName field is set.
      */
+    @java.lang.Override
     public boolean hasTaskDefName() {
-      return ((bitField0_ & 0x00000010) != 0);
+      return wfSpecCriteriaCase_ == 5;
     }
     /**
-     * <code>optional string task_def_name = 5;</code>
+     * <code>string task_def_name = 5;</code>
      * @return The taskDefName.
      */
+    @java.lang.Override
     public java.lang.String getTaskDefName() {
-      java.lang.Object ref = taskDefName_;
+      java.lang.Object ref = "";
+      if (wfSpecCriteriaCase_ == 5) {
+        ref = wfSpecCriteria_;
+      }
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        taskDefName_ = s;
+        if (wfSpecCriteriaCase_ == 5) {
+          wfSpecCriteria_ = s;
+        }
         return s;
       } else {
         return (java.lang.String) ref;
       }
     }
     /**
-     * <code>optional string task_def_name = 5;</code>
+     * <code>string task_def_name = 5;</code>
      * @return The bytes for taskDefName.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString
         getTaskDefNameBytes() {
-      java.lang.Object ref = taskDefName_;
+      java.lang.Object ref = "";
+      if (wfSpecCriteriaCase_ == 5) {
+        ref = wfSpecCriteria_;
+      }
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        taskDefName_ = b;
+        if (wfSpecCriteriaCase_ == 5) {
+          wfSpecCriteria_ = b;
+        }
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
     /**
-     * <code>optional string task_def_name = 5;</code>
+     * <code>string task_def_name = 5;</code>
      * @param value The taskDefName to set.
      * @return This builder for chaining.
      */
     public Builder setTaskDefName(
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
-      taskDefName_ = value;
-      bitField0_ |= 0x00000010;
+      wfSpecCriteriaCase_ = 5;
+      wfSpecCriteria_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>optional string task_def_name = 5;</code>
+     * <code>string task_def_name = 5;</code>
      * @return This builder for chaining.
      */
     public Builder clearTaskDefName() {
-      taskDefName_ = getDefaultInstance().getTaskDefName();
-      bitField0_ = (bitField0_ & ~0x00000010);
-      onChanged();
+      if (wfSpecCriteriaCase_ == 5) {
+        wfSpecCriteriaCase_ = 0;
+        wfSpecCriteria_ = null;
+        onChanged();
+      }
       return this;
     }
     /**
-     * <code>optional string task_def_name = 5;</code>
+     * <code>string task_def_name = 5;</code>
      * @param value The bytes for taskDefName to set.
      * @return This builder for chaining.
      */
@@ -988,8 +1110,8 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.ByteString value) {
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
-      taskDefName_ = value;
-      bitField0_ |= 0x00000010;
+      wfSpecCriteriaCase_ = 5;
+      wfSpecCriteria_ = value;
       onChanged();
       return this;
     }

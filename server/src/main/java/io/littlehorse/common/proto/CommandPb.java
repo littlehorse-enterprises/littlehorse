@@ -75,6 +75,7 @@ private static final long serialVersionUID = 0L;
     COMPLETE_USER_TASK_RUN(22),
     PUT_USER_TASK_DEF(23),
     TRIGGERED_TASK_RUN(24),
+    DELETE_USER_TASK_DEF(25),
     COMMAND_NOT_SET(0);
     private final int value;
     private CommandCase(int value) {
@@ -113,6 +114,7 @@ private static final long serialVersionUID = 0L;
         case 22: return COMPLETE_USER_TASK_RUN;
         case 23: return PUT_USER_TASK_DEF;
         case 24: return TRIGGERED_TASK_RUN;
+        case 25: return DELETE_USER_TASK_DEF;
         case 0: return COMMAND_NOT_SET;
         default: return null;
       }
@@ -823,10 +825,6 @@ private static final long serialVersionUID = 0L;
 
   public static final int TRIGGERED_TASK_RUN_FIELD_NUMBER = 24;
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.TriggeredTaskRunPb triggered_task_run = 24;</code>
    * @return Whether the triggeredTaskRun field is set.
    */
@@ -835,10 +833,6 @@ private static final long serialVersionUID = 0L;
     return commandCase_ == 24;
   }
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.TriggeredTaskRunPb triggered_task_run = 24;</code>
    * @return The triggeredTaskRun.
    */
@@ -850,10 +844,6 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.TriggeredTaskRunPb.getDefaultInstance();
   }
   /**
-   * <pre>
-   * TODO: Add SaveUserTask
-   * </pre>
-   *
    * <code>.littlehorse.TriggeredTaskRunPb triggered_task_run = 24;</code>
    */
   @java.lang.Override
@@ -862,6 +852,49 @@ private static final long serialVersionUID = 0L;
        return (io.littlehorse.common.proto.TriggeredTaskRunPb) command_;
     }
     return io.littlehorse.common.proto.TriggeredTaskRunPb.getDefaultInstance();
+  }
+
+  public static final int DELETE_USER_TASK_DEF_FIELD_NUMBER = 25;
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
+   * @return Whether the deleteUserTaskDef field is set.
+   */
+  @java.lang.Override
+  public boolean hasDeleteUserTaskDef() {
+    return commandCase_ == 25;
+  }
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
+   * @return The deleteUserTaskDef.
+   */
+  @java.lang.Override
+  public io.littlehorse.jlib.common.proto.DeleteUserTaskDefPb getDeleteUserTaskDef() {
+    if (commandCase_ == 25) {
+       return (io.littlehorse.jlib.common.proto.DeleteUserTaskDefPb) command_;
+    }
+    return io.littlehorse.jlib.common.proto.DeleteUserTaskDefPb.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * TODO: Add SaveUserTask
+   * </pre>
+   *
+   * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.jlib.common.proto.DeleteUserTaskDefPbOrBuilder getDeleteUserTaskDefOrBuilder() {
+    if (commandCase_ == 25) {
+       return (io.littlehorse.jlib.common.proto.DeleteUserTaskDefPb) command_;
+    }
+    return io.littlehorse.jlib.common.proto.DeleteUserTaskDefPb.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -946,6 +979,9 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 24) {
       output.writeMessage(24, (io.littlehorse.common.proto.TriggeredTaskRunPb) command_);
+    }
+    if (commandCase_ == 25) {
+      output.writeMessage(25, (io.littlehorse.jlib.common.proto.DeleteUserTaskDefPb) command_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -1046,6 +1082,10 @@ private static final long serialVersionUID = 0L;
     if (commandCase_ == 24) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(24, (io.littlehorse.common.proto.TriggeredTaskRunPb) command_);
+    }
+    if (commandCase_ == 25) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(25, (io.littlehorse.jlib.common.proto.DeleteUserTaskDefPb) command_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1158,6 +1198,10 @@ private static final long serialVersionUID = 0L;
         if (!getTriggeredTaskRun()
             .equals(other.getTriggeredTaskRun())) return false;
         break;
+      case 25:
+        if (!getDeleteUserTaskDef()
+            .equals(other.getDeleteUserTaskDef())) return false;
+        break;
       case 0:
       default:
     }
@@ -1264,6 +1308,10 @@ private static final long serialVersionUID = 0L;
       case 24:
         hash = (37 * hash) + TRIGGERED_TASK_RUN_FIELD_NUMBER;
         hash = (53 * hash) + getTriggeredTaskRun().hashCode();
+        break;
+      case 25:
+        hash = (37 * hash) + DELETE_USER_TASK_DEF_FIELD_NUMBER;
+        hash = (53 * hash) + getDeleteUserTaskDef().hashCode();
         break;
       case 0:
       default:
@@ -1470,6 +1518,9 @@ private static final long serialVersionUID = 0L;
       if (triggeredTaskRunBuilder_ != null) {
         triggeredTaskRunBuilder_.clear();
       }
+      if (deleteUserTaskDefBuilder_ != null) {
+        deleteUserTaskDefBuilder_.clear();
+      }
       commandCase_ = 0;
       command_ = null;
       return this;
@@ -1605,6 +1656,10 @@ private static final long serialVersionUID = 0L;
       if (commandCase_ == 24 &&
           triggeredTaskRunBuilder_ != null) {
         result.command_ = triggeredTaskRunBuilder_.build();
+      }
+      if (commandCase_ == 25 &&
+          deleteUserTaskDefBuilder_ != null) {
+        result.command_ = deleteUserTaskDefBuilder_.build();
       }
     }
 
@@ -1743,6 +1798,10 @@ private static final long serialVersionUID = 0L;
         }
         case TRIGGERED_TASK_RUN: {
           mergeTriggeredTaskRun(other.getTriggeredTaskRun());
+          break;
+        }
+        case DELETE_USER_TASK_DEF: {
+          mergeDeleteUserTaskDef(other.getDeleteUserTaskDef());
           break;
         }
         case COMMAND_NOT_SET: {
@@ -1934,6 +1993,13 @@ private static final long serialVersionUID = 0L;
               commandCase_ = 24;
               break;
             } // case 194
+            case 202: {
+              input.readMessage(
+                  getDeleteUserTaskDefFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              commandCase_ = 25;
+              break;
+            } // case 202
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -5007,10 +5073,6 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.littlehorse.common.proto.TriggeredTaskRunPb, io.littlehorse.common.proto.TriggeredTaskRunPb.Builder, io.littlehorse.common.proto.TriggeredTaskRunPbOrBuilder> triggeredTaskRunBuilder_;
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.TriggeredTaskRunPb triggered_task_run = 24;</code>
      * @return Whether the triggeredTaskRun field is set.
      */
@@ -5019,10 +5081,6 @@ private static final long serialVersionUID = 0L;
       return commandCase_ == 24;
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.TriggeredTaskRunPb triggered_task_run = 24;</code>
      * @return The triggeredTaskRun.
      */
@@ -5041,10 +5099,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.TriggeredTaskRunPb triggered_task_run = 24;</code>
      */
     public Builder setTriggeredTaskRun(io.littlehorse.common.proto.TriggeredTaskRunPb value) {
@@ -5061,10 +5115,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.TriggeredTaskRunPb triggered_task_run = 24;</code>
      */
     public Builder setTriggeredTaskRun(
@@ -5079,10 +5129,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.TriggeredTaskRunPb triggered_task_run = 24;</code>
      */
     public Builder mergeTriggeredTaskRun(io.littlehorse.common.proto.TriggeredTaskRunPb value) {
@@ -5106,10 +5152,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.TriggeredTaskRunPb triggered_task_run = 24;</code>
      */
     public Builder clearTriggeredTaskRun() {
@@ -5129,20 +5171,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.TriggeredTaskRunPb triggered_task_run = 24;</code>
      */
     public io.littlehorse.common.proto.TriggeredTaskRunPb.Builder getTriggeredTaskRunBuilder() {
       return getTriggeredTaskRunFieldBuilder().getBuilder();
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.TriggeredTaskRunPb triggered_task_run = 24;</code>
      */
     @java.lang.Override
@@ -5157,10 +5191,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * TODO: Add SaveUserTask
-     * </pre>
-     *
      * <code>.littlehorse.TriggeredTaskRunPb triggered_task_run = 24;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
@@ -5180,6 +5210,184 @@ private static final long serialVersionUID = 0L;
       commandCase_ = 24;
       onChanged();
       return triggeredTaskRunBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.jlib.common.proto.DeleteUserTaskDefPb, io.littlehorse.jlib.common.proto.DeleteUserTaskDefPb.Builder, io.littlehorse.jlib.common.proto.DeleteUserTaskDefPbOrBuilder> deleteUserTaskDefBuilder_;
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
+     * @return Whether the deleteUserTaskDef field is set.
+     */
+    @java.lang.Override
+    public boolean hasDeleteUserTaskDef() {
+      return commandCase_ == 25;
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
+     * @return The deleteUserTaskDef.
+     */
+    @java.lang.Override
+    public io.littlehorse.jlib.common.proto.DeleteUserTaskDefPb getDeleteUserTaskDef() {
+      if (deleteUserTaskDefBuilder_ == null) {
+        if (commandCase_ == 25) {
+          return (io.littlehorse.jlib.common.proto.DeleteUserTaskDefPb) command_;
+        }
+        return io.littlehorse.jlib.common.proto.DeleteUserTaskDefPb.getDefaultInstance();
+      } else {
+        if (commandCase_ == 25) {
+          return deleteUserTaskDefBuilder_.getMessage();
+        }
+        return io.littlehorse.jlib.common.proto.DeleteUserTaskDefPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
+     */
+    public Builder setDeleteUserTaskDef(io.littlehorse.jlib.common.proto.DeleteUserTaskDefPb value) {
+      if (deleteUserTaskDefBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+        onChanged();
+      } else {
+        deleteUserTaskDefBuilder_.setMessage(value);
+      }
+      commandCase_ = 25;
+      return this;
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
+     */
+    public Builder setDeleteUserTaskDef(
+        io.littlehorse.jlib.common.proto.DeleteUserTaskDefPb.Builder builderForValue) {
+      if (deleteUserTaskDefBuilder_ == null) {
+        command_ = builderForValue.build();
+        onChanged();
+      } else {
+        deleteUserTaskDefBuilder_.setMessage(builderForValue.build());
+      }
+      commandCase_ = 25;
+      return this;
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
+     */
+    public Builder mergeDeleteUserTaskDef(io.littlehorse.jlib.common.proto.DeleteUserTaskDefPb value) {
+      if (deleteUserTaskDefBuilder_ == null) {
+        if (commandCase_ == 25 &&
+            command_ != io.littlehorse.jlib.common.proto.DeleteUserTaskDefPb.getDefaultInstance()) {
+          command_ = io.littlehorse.jlib.common.proto.DeleteUserTaskDefPb.newBuilder((io.littlehorse.jlib.common.proto.DeleteUserTaskDefPb) command_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          command_ = value;
+        }
+        onChanged();
+      } else {
+        if (commandCase_ == 25) {
+          deleteUserTaskDefBuilder_.mergeFrom(value);
+        } else {
+          deleteUserTaskDefBuilder_.setMessage(value);
+        }
+      }
+      commandCase_ = 25;
+      return this;
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
+     */
+    public Builder clearDeleteUserTaskDef() {
+      if (deleteUserTaskDefBuilder_ == null) {
+        if (commandCase_ == 25) {
+          commandCase_ = 0;
+          command_ = null;
+          onChanged();
+        }
+      } else {
+        if (commandCase_ == 25) {
+          commandCase_ = 0;
+          command_ = null;
+        }
+        deleteUserTaskDefBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
+     */
+    public io.littlehorse.jlib.common.proto.DeleteUserTaskDefPb.Builder getDeleteUserTaskDefBuilder() {
+      return getDeleteUserTaskDefFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.jlib.common.proto.DeleteUserTaskDefPbOrBuilder getDeleteUserTaskDefOrBuilder() {
+      if ((commandCase_ == 25) && (deleteUserTaskDefBuilder_ != null)) {
+        return deleteUserTaskDefBuilder_.getMessageOrBuilder();
+      } else {
+        if (commandCase_ == 25) {
+          return (io.littlehorse.jlib.common.proto.DeleteUserTaskDefPb) command_;
+        }
+        return io.littlehorse.jlib.common.proto.DeleteUserTaskDefPb.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * TODO: Add SaveUserTask
+     * </pre>
+     *
+     * <code>.littlehorse.DeleteUserTaskDefPb delete_user_task_def = 25;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.jlib.common.proto.DeleteUserTaskDefPb, io.littlehorse.jlib.common.proto.DeleteUserTaskDefPb.Builder, io.littlehorse.jlib.common.proto.DeleteUserTaskDefPbOrBuilder> 
+        getDeleteUserTaskDefFieldBuilder() {
+      if (deleteUserTaskDefBuilder_ == null) {
+        if (!(commandCase_ == 25)) {
+          command_ = io.littlehorse.jlib.common.proto.DeleteUserTaskDefPb.getDefaultInstance();
+        }
+        deleteUserTaskDefBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.jlib.common.proto.DeleteUserTaskDefPb, io.littlehorse.jlib.common.proto.DeleteUserTaskDefPb.Builder, io.littlehorse.jlib.common.proto.DeleteUserTaskDefPbOrBuilder>(
+                (io.littlehorse.jlib.common.proto.DeleteUserTaskDefPb) command_,
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      commandCase_ = 25;
+      onChanged();
+      return deleteUserTaskDefBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

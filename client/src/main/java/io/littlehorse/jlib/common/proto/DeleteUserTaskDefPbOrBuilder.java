@@ -18,4 +18,10 @@ public interface DeleteUserTaskDefPbOrBuilder extends
    */
   com.google.protobuf.ByteString
       getNameBytes();
+
+  /**
+   * <code>int32 version = 2;</code>
+   * @return The version.
+   */
+  int getVersion();
 }

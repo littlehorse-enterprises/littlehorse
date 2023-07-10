@@ -30,33 +30,38 @@ public interface SearchUserTaskDefPbOrBuilder extends
   int getLimit();
 
   /**
-   * <pre>
-   * TODO: add more fields to user task def, such as default assignment, etc
-   * </pre>
-   *
    * <code>string prefix = 3;</code>
    * @return Whether the prefix field is set.
    */
   boolean hasPrefix();
   /**
-   * <pre>
-   * TODO: add more fields to user task def, such as default assignment, etc
-   * </pre>
-   *
    * <code>string prefix = 3;</code>
    * @return The prefix.
    */
   java.lang.String getPrefix();
   /**
-   * <pre>
-   * TODO: add more fields to user task def, such as default assignment, etc
-   * </pre>
-   *
    * <code>string prefix = 3;</code>
    * @return The bytes for prefix.
    */
   com.google.protobuf.ByteString
       getPrefixBytes();
+
+  /**
+   * <code>string name = 4;</code>
+   * @return Whether the name field is set.
+   */
+  boolean hasName();
+  /**
+   * <code>string name = 4;</code>
+   * @return The name.
+   */
+  java.lang.String getName();
+  /**
+   * <code>string name = 4;</code>
+   * @return The bytes for name.
+   */
+  com.google.protobuf.ByteString
+      getNameBytes();
 
   public io.littlehorse.jlib.common.proto.SearchUserTaskDefPb.UserTaskDefCriteriaCase getUserTaskDefCriteriaCase();
 }

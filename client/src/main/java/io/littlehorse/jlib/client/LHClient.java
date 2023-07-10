@@ -8,6 +8,7 @@ import io.littlehorse.jlib.common.exception.LHApiError;
 import io.littlehorse.jlib.common.exception.LHSerdeError;
 import io.littlehorse.jlib.common.proto.DeleteExternalEventDefPb;
 import io.littlehorse.jlib.common.proto.DeleteTaskDefPb;
+import io.littlehorse.jlib.common.proto.DeleteUserTaskDefPb;
 import io.littlehorse.jlib.common.proto.DeleteWfRunPb;
 import io.littlehorse.jlib.common.proto.DeleteWfSpecPb;
 import io.littlehorse.jlib.common.proto.ExternalEventDefIdPb;
@@ -35,6 +36,7 @@ import io.littlehorse.jlib.common.proto.PutExternalEventReplyPb;
 import io.littlehorse.jlib.common.proto.PutTaskDefPb;
 import io.littlehorse.jlib.common.proto.PutTaskDefReplyPb;
 import io.littlehorse.jlib.common.proto.PutUserTaskDefPb;
+import io.littlehorse.jlib.common.proto.PutUserTaskDefReplyPb;
 import io.littlehorse.jlib.common.proto.PutWfSpecPb;
 import io.littlehorse.jlib.common.proto.PutWfSpecReplyPb;
 import io.littlehorse.jlib.common.proto.ResumeWfRunPb;
@@ -49,6 +51,7 @@ import io.littlehorse.jlib.common.proto.TaskDefIdPb;
 import io.littlehorse.jlib.common.proto.TaskDefPb;
 import io.littlehorse.jlib.common.proto.TaskRunIdPb;
 import io.littlehorse.jlib.common.proto.TaskRunPb;
+import io.littlehorse.jlib.common.proto.UserTaskDefPb;
 import io.littlehorse.jlib.common.proto.VariableIdPb;
 import io.littlehorse.jlib.common.proto.VariablePb;
 import io.littlehorse.jlib.common.proto.WfRunIdPb;
@@ -379,6 +382,29 @@ public class LHClient {
         } else {
             return null;
         }
+    }
+
+    public UserTaskDefPb putUserTaskDef(
+        PutUserTaskDefPb req,
+        boolean swallowAlreadyExists
+    ) throws LHApiError {
+        PutUserTaskDefReplyPb response = (PutUserTaskDefReplyPb) doRequest(() -> {
+            return getGrpcClient().putUserTaskDef(req);
+        });
+        if (response.hasResult()) {
+            return response.getResult();
+        } else {
+            return null;
+        }
+    }
+
+    public void deleteUserTaskDef(String userTaskDefName) throws LHApiError {
+        doRequest(() -> {
+            return getGrpcClient()
+                .deleteUserTaskDef(
+                    DeleteUserTaskDefPb.newBuilder().setName(userTaskDefName).build()
+                );
+        });
     }
 
     public WfSpecPb putWfSpec(PutWfSpecPb req) throws LHApiError {

@@ -103,6 +103,8 @@ public interface LHDAO extends LHGlobalMetaStores {
 
     public DeleteObjectReply deleteTaskDef(String name);
 
+    public DeleteObjectReply deleteUserTaskDef(String name, int version);
+
     public DeleteObjectReply deleteWfSpec(String name, int version);
 
     public DeleteObjectReply deleteExternalEventDef(String name);

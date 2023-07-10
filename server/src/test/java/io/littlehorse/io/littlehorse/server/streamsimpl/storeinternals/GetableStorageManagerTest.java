@@ -78,7 +78,10 @@ public class GetableStorageManagerTest {
         Assertions
             .assertThat(localStoreWrapper.get(storeKey, getable.getClass()))
             .isNotNull();
-        TagsCache tagsCacheResult = localStoreWrapper.getTagsCache(getable);
+        TagsCache tagsCacheResult = localStoreWrapper.getTagsCache(
+            getable.getStoreKey(),
+            (Class<? extends Getable<?>>) getable.getClass()
+        );
         Assertions.assertThat(tagsCacheResult).isNotNull();
         Assertions.assertThat(tagsCacheResult.getTagIds()).hasSize(expectedTagsCount);
     }
@@ -87,7 +90,10 @@ public class GetableStorageManagerTest {
     void deleteGetableWithTags() {
         WfRun wfRun = TestUtil.wfRun("0000000");
         geTableStorageManager.store(wfRun);
-        TagsCache tagsCache = localStoreWrapper.getTagsCache(wfRun);
+        TagsCache tagsCache = localStoreWrapper.getTagsCache(
+            wfRun.getStoreKey(),
+            WfRun.class
+        );
         Map<Boolean, List<Tag>> localOrRemoteTags = tagsCache
             .getTagIds()
             .stream()
@@ -98,7 +104,10 @@ public class GetableStorageManagerTest {
         Assertions
             .assertThat(localStoreWrapper.get(wfRun.getStoreKey(), WfRun.class))
             .isNull();
-        TagsCache tagsCacheResult = localStoreWrapper.getTagsCache(wfRun);
+        TagsCache tagsCacheResult = localStoreWrapper.getTagsCache(
+            wfRun.getStoreKey(),
+            WfRun.class
+        );
         List<Tag> localTagsToBeRemoved = localOrRemoteTags.get(true);
         List<Tag> remoteTagsToBeRemoved = localOrRemoteTags.get(false);
 
@@ -154,7 +163,10 @@ public class GetableStorageManagerTest {
         Assertions
             .assertThat(localStoreWrapper.get(expectedStoreKey, WfSpec.class))
             .isNotNull();
-        TagsCache tagsCacheResult = localStoreWrapper.getTagsCache(wfSpec);
+        TagsCache tagsCacheResult = localStoreWrapper.getTagsCache(
+            wfSpec.getStoreKey(),
+            WfSpec.class
+        );
         Assertions.assertThat(tagsCacheResult.getTagIds()).hasSize(2);
         for (String tagId : tagsCacheResult.getTagIds()) {
             Assertions

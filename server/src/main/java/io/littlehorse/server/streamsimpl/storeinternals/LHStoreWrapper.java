@@ -59,13 +59,13 @@ public class LHStoreWrapper extends LHROStoreWrapper {
         store.delete(rawKey);
     }
 
-    public TagsCache getTagsCache(Getable<?> thing) {
-        String tagCacheKey = StoreUtils.getTagsCacheKey(thing);
-        return getTagsCache(tagCacheKey);
-    }
+    // public TagsCache getTagsCache(Getable<?> thing) {
+    //     String tagCacheKey = StoreUtils.getTagsCacheKey(thing);
+    //     return getTagsCache(tagCacheKey);
+    // }
 
-    public TagsCache getTagsCache(String tagCacheKey) {
-        Bytes raw = store.get(tagCacheKey);
+    public TagsCache getTagsCache(String getableId, Class<? extends Getable<?>> cls) {
+        Bytes raw = store.get(StoreUtils.getTagsCacheKey(getableId, cls));
         if (raw == null) {
             return null;
         }
@@ -78,8 +78,15 @@ public class LHStoreWrapper extends LHROStoreWrapper {
         }
     }
 
-    public void putTagsCache(String tagCacheKey, TagsCache newTagsCache) {
-        store.put(tagCacheKey, new Bytes(newTagsCache.toBytes(config)));
+    public void putTagsCache(
+        String getableId,
+        Class<? extends Getable<?>> getableCls,
+        TagsCache newTagsCache
+    ) {
+        store.put(
+            StoreUtils.getTagsCacheKey(getableId, getableCls),
+            new Bytes(newTagsCache.toBytes(config))
+        );
     }
 
     public void deleteTagCache(Getable<?> thing) {

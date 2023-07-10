@@ -554,6 +554,20 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     }
 
     @Override
+    public DeleteObjectReply deleteUserTaskDef(String name, int version) {
+        UserTaskDef toDelete = getUserTaskDef(name, version);
+        DeleteObjectReply out = new DeleteObjectReply();
+        if (toDelete == null) {
+            out.code = LHResponseCodePb.NOT_FOUND_ERROR;
+            out.message = "Couldn't find object with provided ID.";
+        } else {
+            userTaskDefPuts.put(toDelete.getStoreKey(), null);
+            out.code = LHResponseCodePb.OK;
+        }
+        return out;
+    }
+
+    @Override
     public DeleteObjectReply deleteWfSpec(String name, int version) {
         WfSpec toDelete = getWfSpec(name, version);
         DeleteObjectReply out = new DeleteObjectReply();

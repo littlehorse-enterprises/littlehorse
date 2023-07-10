@@ -344,6 +344,7 @@ message CommandPb {
         CompleteUserTaskRunPb complete_user_task_run = 22;
         PutUserTaskDefPb put_user_task_def = 23;
         TriggeredTaskRunPb triggered_task_run = 24;
+        DeleteUserTaskDefPb delete_user_task_def = 25;
         // TODO: Add SaveUserTask
     }
 }

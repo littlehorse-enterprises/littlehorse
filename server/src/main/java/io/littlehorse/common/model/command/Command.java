@@ -8,6 +8,7 @@ import io.littlehorse.common.model.command.subcommand.CompleteUserTaskRun;
 import io.littlehorse.common.model.command.subcommand.DeleteExternalEvent;
 import io.littlehorse.common.model.command.subcommand.DeleteExternalEventDef;
 import io.littlehorse.common.model.command.subcommand.DeleteTaskDef;
+import io.littlehorse.common.model.command.subcommand.DeleteUserTaskDef;
 import io.littlehorse.common.model.command.subcommand.DeleteWfRun;
 import io.littlehorse.common.model.command.subcommand.DeleteWfSpec;
 import io.littlehorse.common.model.command.subcommand.ExternalEventTimeout;
@@ -61,6 +62,7 @@ public class Command extends LHSerializable<CommandPb> {
     public AssignUserTaskRun assignUserTaskRun;
     public CompleteUserTaskRun completeUserTaskRun;
     public TriggeredTaskRun triggeredTaskRun;
+    public DeleteUserTaskDef deleteUserTaskDef;
 
     public Class<CommandPb> getProtoBaseClass() {
         return CommandPb.class;
@@ -151,6 +153,9 @@ public class Command extends LHSerializable<CommandPb> {
                 break;
             case TRIGGERED_TASK_RUN:
                 out.setTriggeredTaskRun(triggeredTaskRun.toProto());
+                break;
+            case DELETE_USER_TASK_DEF:
+                out.setDeleteUserTaskDef(deleteUserTaskDef.toProto());
                 break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -254,6 +259,13 @@ public class Command extends LHSerializable<CommandPb> {
                         TriggeredTaskRun.class
                     );
                 break;
+            case DELETE_USER_TASK_DEF:
+                deleteUserTaskDef =
+                    LHSerializable.fromProto(
+                        p.getDeleteUserTaskDef(),
+                        DeleteUserTaskDef.class
+                    );
+                break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -303,6 +315,8 @@ public class Command extends LHSerializable<CommandPb> {
                 return completeUserTaskRun;
             case TRIGGERED_TASK_RUN:
                 return triggeredTaskRun;
+            case DELETE_USER_TASK_DEF:
+                return deleteUserTaskDef;
             case COMMAND_NOT_SET:
         }
         throw new RuntimeException("Not possible");
@@ -373,8 +387,13 @@ public class Command extends LHSerializable<CommandPb> {
         } else if (cls.equals(TriggeredTaskRun.class)) {
             type = CommandCase.TRIGGERED_TASK_RUN;
             triggeredTaskRun = (TriggeredTaskRun) cmd;
+        } else if (cls.equals(DeleteUserTaskDef.class)) {
+            type = CommandCase.DELETE_USER_TASK_DEF;
+            deleteUserTaskDef = (DeleteUserTaskDef) cmd;
         } else {
-            throw new RuntimeException("Unrecognized class: " + cls.getName());
+            throw new IllegalArgumentException(
+                "Unrecognized SubCommand class: " + cls.getName()
+            );
         }
     }
 

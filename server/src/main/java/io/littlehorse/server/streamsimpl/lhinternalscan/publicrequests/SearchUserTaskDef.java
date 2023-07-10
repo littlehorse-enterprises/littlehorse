@@ -1,50 +1,47 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
-import com.google.common.base.Strings;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
-import io.littlehorse.common.model.objectId.WfSpecId;
-import io.littlehorse.common.proto.AttributePb;
+import io.littlehorse.common.model.objectId.UserTaskDefId;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnumPb;
-import io.littlehorse.common.proto.InternalScanPb;
 import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
-import io.littlehorse.jlib.common.proto.SearchWfSpecPb;
-import io.littlehorse.jlib.common.proto.SearchWfSpecPb.WfSpecCriteriaCase;
-import io.littlehorse.jlib.common.proto.SearchWfSpecReplyPb;
-import io.littlehorse.jlib.common.proto.WfSpecIdPb;
+import io.littlehorse.jlib.common.proto.SearchUserTaskDefPb;
+import io.littlehorse.jlib.common.proto.SearchUserTaskDefPb.UserTaskDefCriteriaCase;
+import io.littlehorse.jlib.common.proto.SearchUserTaskDefReplyPb;
+import io.littlehorse.jlib.common.proto.UserTaskDefIdPb;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
-import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchWfSpecReply;
+import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchUserTaskDefReply;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+// TODO: there seems to be quite a bit of code duplication here, see SearchWfSpec.
 @Slf4j
 @Getter
 @Setter
-public class SearchWfSpec
-    extends PublicScanRequest<SearchWfSpecPb, SearchWfSpecReplyPb, WfSpecIdPb, WfSpecId, SearchWfSpecReply> {
+public class SearchUserTaskDef
+    extends PublicScanRequest<SearchUserTaskDefPb, SearchUserTaskDefReplyPb, UserTaskDefIdPb, UserTaskDefId, SearchUserTaskDefReply> {
 
-    private WfSpecCriteriaCase type;
+    private UserTaskDefCriteriaCase type;
     private String name;
-    private String taskDefName;
     private String prefix;
 
-    public Class<SearchWfSpecPb> getProtoBaseClass() {
-        return SearchWfSpecPb.class;
+    public Class<SearchUserTaskDefPb> getProtoBaseClass() {
+        return SearchUserTaskDefPb.class;
     }
 
     public GetableClassEnumPb getObjectType() {
-        return GetableClassEnumPb.WF_SPEC;
+        return GetableClassEnumPb.USER_TASK_DEF;
     }
 
     public void initFrom(Message proto) {
-        SearchWfSpecPb p = (SearchWfSpecPb) proto;
+        SearchUserTaskDefPb p = (SearchUserTaskDefPb) proto;
         if (p.hasLimit()) limit = p.getLimit();
         if (p.hasBookmark()) {
             try {
@@ -54,7 +51,7 @@ public class SearchWfSpec
             }
         }
 
-        type = p.getWfSpecCriteriaCase();
+        type = p.getUserTaskDefCriteriaCase();
         switch (type) {
             case NAME:
                 name = p.getName();
@@ -62,16 +59,13 @@ public class SearchWfSpec
             case PREFIX:
                 prefix = p.getPrefix();
                 break;
-            case TASK_DEF_NAME:
-                taskDefName = p.getTaskDefName();
-                break;
-            case WFSPECCRITERIA_NOT_SET:
-            // nothing to do, we just return all the WfSpec's.
+            case USERTASKDEFCRITERIA_NOT_SET:
+            // nothing to do, we just return all the UserTaskDef's.
         }
     }
 
-    public SearchWfSpecPb.Builder toProto() {
-        SearchWfSpecPb.Builder out = SearchWfSpecPb.newBuilder();
+    public SearchUserTaskDefPb.Builder toProto() {
+        SearchUserTaskDefPb.Builder out = SearchUserTaskDefPb.newBuilder();
         if (bookmark != null) {
             out.setBookmark(bookmark.toByteString());
         }
@@ -85,17 +79,14 @@ public class SearchWfSpec
             case PREFIX:
                 out.setPrefix(prefix);
                 break;
-            case TASK_DEF_NAME:
-                out.setTaskDefName(taskDefName);
-                break;
-            case WFSPECCRITERIA_NOT_SET:
-            // nothing to do, we just return all the WfSpec's.
+            case USERTASKDEFCRITERIA_NOT_SET:
+            // nothing to do, we just return all the UserTaskDef's.
         }
         return out;
     }
 
-    public static SearchWfSpec fromProto(SearchWfSpecPb proto) {
-        SearchWfSpec out = new SearchWfSpec();
+    public static SearchUserTaskDef fromProto(SearchUserTaskDefPb proto) {
+        SearchUserTaskDef out = new SearchUserTaskDef();
         out.initFrom(proto);
         return out;
     }
@@ -123,22 +114,8 @@ public class SearchWfSpec
                     .setStartObjectId(prefix)
                     .setEndObjectId(prefix + "~")
                     .build();
-        } else if (!Strings.isNullOrEmpty(taskDefName)) {
-            out.partitionKey = null;
-            out.type = ScanBoundaryCase.TAG_SCAN;
-            out.tagScan =
-                InternalScanPb.TagScanPb
-                    .newBuilder()
-                    .addAttributes(
-                        AttributePb
-                            .newBuilder()
-                            .setKey("taskDef")
-                            .setVal(taskDefName)
-                            .build()
-                    )
-                    .build();
         } else {
-            // that means we want to search all wfSpecs
+            // that means we want to search all UserTaskDefs
             out.boundedObjectIdScan =
                 BoundedObjectIdScanPb.newBuilder().setStartObjectId("").build();
         }

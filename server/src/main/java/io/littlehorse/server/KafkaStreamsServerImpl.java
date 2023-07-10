@@ -15,6 +15,7 @@ import io.littlehorse.common.model.command.subcommand.AssignUserTaskRun;
 import io.littlehorse.common.model.command.subcommand.CompleteUserTaskRun;
 import io.littlehorse.common.model.command.subcommand.DeleteExternalEventDef;
 import io.littlehorse.common.model.command.subcommand.DeleteTaskDef;
+import io.littlehorse.common.model.command.subcommand.DeleteUserTaskDef;
 import io.littlehorse.common.model.command.subcommand.DeleteWfRun;
 import io.littlehorse.common.model.command.subcommand.DeleteWfSpec;
 import io.littlehorse.common.model.command.subcommand.PutExternalEvent;
@@ -64,12 +65,14 @@ import io.littlehorse.jlib.common.proto.CompleteUserTaskRunReplyPb;
 import io.littlehorse.jlib.common.proto.DeleteExternalEventDefPb;
 import io.littlehorse.jlib.common.proto.DeleteObjectReplyPb;
 import io.littlehorse.jlib.common.proto.DeleteTaskDefPb;
+import io.littlehorse.jlib.common.proto.DeleteUserTaskDefPb;
 import io.littlehorse.jlib.common.proto.DeleteWfRunPb;
 import io.littlehorse.jlib.common.proto.DeleteWfSpecPb;
 import io.littlehorse.jlib.common.proto.ExternalEventDefIdPb;
 import io.littlehorse.jlib.common.proto.ExternalEventIdPb;
 import io.littlehorse.jlib.common.proto.GetExternalEventDefReplyPb;
 import io.littlehorse.jlib.common.proto.GetExternalEventReplyPb;
+import io.littlehorse.jlib.common.proto.GetLatestUserTaskDefPb;
 import io.littlehorse.jlib.common.proto.GetLatestWfSpecPb;
 import io.littlehorse.jlib.common.proto.GetNodeRunReplyPb;
 import io.littlehorse.jlib.common.proto.GetTaskDefReplyPb;
@@ -123,6 +126,8 @@ import io.littlehorse.jlib.common.proto.SearchNodeRunPb;
 import io.littlehorse.jlib.common.proto.SearchNodeRunReplyPb;
 import io.littlehorse.jlib.common.proto.SearchTaskDefPb;
 import io.littlehorse.jlib.common.proto.SearchTaskDefReplyPb;
+import io.littlehorse.jlib.common.proto.SearchUserTaskDefPb;
+import io.littlehorse.jlib.common.proto.SearchUserTaskDefReplyPb;
 import io.littlehorse.jlib.common.proto.SearchVariablePb;
 import io.littlehorse.jlib.common.proto.SearchVariableReplyPb;
 import io.littlehorse.jlib.common.proto.SearchWfRunPb;
@@ -158,6 +163,7 @@ import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchExt
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchExternalEventDef;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchNodeRun;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchTaskDef;
+import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchUserTaskDef;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchVariable;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchWfRun;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchWfSpec;
@@ -170,6 +176,7 @@ import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.Sear
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchExternalEventReply;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchNodeRunReply;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchTaskDefReply;
+import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchUserTaskDefReply;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchVariableReply;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchWfRunReply;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchWfSpecReply;
@@ -342,6 +349,28 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         );
         internalComms.getLastFromPrefixAsync(
             WfSpec.getFullPrefixByName(req.getName()),
+            LHConstants.META_PARTITION_KEY,
+            observer,
+            ServerTopology.CORE_STORE
+        );
+    }
+
+    @Override
+    public void getLatestUserTaskDef(
+        GetLatestUserTaskDefPb req,
+        StreamObserver<GetUserTaskDefReplyPb> ctx
+    ) {
+        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
+            ctx,
+            UserTaskDef.class,
+            GetUserTaskDefReplyPb.class,
+            config
+        );
+
+        // TODO MVP-140: Remove StoreUtils.java. Then in here we would pass in
+        // a GetableClassEnumPb.
+        internalComms.getLastFromPrefixAsync(
+            UserTaskDef.getFullPrefixByName(req.getName()),
             LHConstants.META_PARTITION_KEY,
             observer,
             ServerTopology.CORE_STORE
@@ -729,6 +758,18 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    public void searchUserTaskDef(
+        SearchUserTaskDefPb req,
+        StreamObserver<SearchUserTaskDefReplyPb> ctx
+    ) {
+        handleScan(
+            SearchUserTaskDef.fromProto(req),
+            ctx,
+            SearchUserTaskDefReply.class
+        );
+    }
+
+    @Override
     public void searchWfSpec(
         SearchWfSpecPb req,
         StreamObserver<SearchWfSpecReplyPb> ctx
@@ -895,6 +936,14 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         StreamObserver<DeleteObjectReplyPb> ctx
     ) {
         processCommand(req, ctx, DeleteTaskDef.class, DeleteObjectReplyPb.class);
+    }
+
+    @Override
+    public void deleteUserTaskDef(
+        DeleteUserTaskDefPb req,
+        StreamObserver<DeleteObjectReplyPb> ctx
+    ) {
+        processCommand(req, ctx, DeleteUserTaskDef.class, DeleteObjectReplyPb.class);
     }
 
     @Override
