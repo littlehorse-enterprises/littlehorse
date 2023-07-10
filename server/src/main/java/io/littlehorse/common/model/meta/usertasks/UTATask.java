@@ -6,7 +6,6 @@ import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.subcommand.TriggeredTaskRun;
-import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.meta.VariableMutation;
 import io.littlehorse.common.model.meta.subnode.TaskNode;
 import io.littlehorse.common.model.wfrun.LHTimer;
@@ -56,7 +55,6 @@ public class UTATask extends LHSerializable<UTATaskPb> {
     public void schedule(LHDAO dao, UserTaskRun utr, UTActionTrigger trigger)
         throws LHVarSubError {
         NodeRun nodeRun = utr.getNodeRun();
-        Node node = utr.getNode();
 
         // Next, figure out when the task should be scheduled.
         VariableValue delaySeconds = nodeRun
@@ -77,10 +75,7 @@ public class UTATask extends LHSerializable<UTATaskPb> {
 
         LHTimer timer = new LHTimer(
             new Command(
-                new TriggeredTaskRun(
-                    node.getTaskNode(),
-                    utr.getNodeRun().getObjectId()
-                ),
+                new TriggeredTaskRun(task, utr.getNodeRun().getObjectId()),
                 maturationTime
             ),
             dao

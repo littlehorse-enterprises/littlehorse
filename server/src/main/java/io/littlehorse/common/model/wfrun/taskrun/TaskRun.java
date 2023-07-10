@@ -8,6 +8,7 @@ import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.subcommand.ReportTaskRun;
 import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.command.subcommandresponse.ReportTaskReply;
+import io.littlehorse.common.model.meta.subnode.TaskNode;
 import io.littlehorse.common.model.objectId.TaskDefId;
 import io.littlehorse.common.model.objectId.TaskRunId;
 import io.littlehorse.common.model.wfrun.LHTimer;
@@ -51,6 +52,7 @@ public class TaskRun extends Getable<TaskRunPb> {
         taskDefName = p.getTaskDefName();
         maxAttempts = p.getMaxAttempts();
         scheduledAt = LHUtil.fromProtoTs(p.getScheduledAt());
+        id = LHSerializable.fromProto(p.getId(), TaskRunId.class);
 
         for (TaskAttemptPb attempt : p.getAttemptsList()) {
             attempts.add(LHSerializable.fromProto(attempt, TaskAttempt.class));
@@ -90,11 +92,18 @@ public class TaskRun extends Getable<TaskRunPb> {
         attempts = new ArrayList<>();
     }
 
-    public TaskRun(LHDAO dao, List<VarNameAndVal> inputVars, TaskRunSource source) {
+    public TaskRun(
+        LHDAO dao,
+        List<VarNameAndVal> inputVars,
+        TaskRunSource source,
+        TaskNode node
+    ) {
         this();
         this.inputVariables = inputVars;
         this.taskRunSource = source;
         this.setDao(dao);
+        this.taskDefName = node.getTaskDefName();
+        this.maxAttempts = node.getRetries() + 1;
     }
 
     @Override

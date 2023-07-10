@@ -14,6 +14,7 @@ import io.littlehorse.common.model.wfrun.subnoderun.StartThreadRun;
 import io.littlehorse.common.model.wfrun.subnoderun.TaskNodeRun;
 import io.littlehorse.common.model.wfrun.subnoderun.UserTaskRun;
 import io.littlehorse.common.model.wfrun.subnoderun.WaitThreadRun;
+import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.jlib.common.proto.FailurePb;
 import io.littlehorse.jlib.common.proto.LHStatusPb;
@@ -29,6 +30,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
 @Setter
@@ -110,10 +112,331 @@ public class NodeRun extends Getable<NodeRunPb> {
         return arrivalTime;
     }
 
+    /*
+     * One comment on this method: it really should be a _static_ method, since
+     * it's called only once by the GetableIndexRegistry upon startup to create
+     * indexes. The GetableIndex objects that get created don't depend on the
+     * content of any Getable; however, the way the GetableIndex is expressed (i.e.
+     * which Tags are created) depends on the individual Getable.
+     */
     @Override
     public List<GetableIndex> getIndexes() {
-        // TODO
-        return new ArrayList<>();
+        List<GetableIndex> out = new ArrayList<>();
+
+        // First, indexes that apply to all Getables.
+        out.add(
+            new GetableIndex(
+                NodeRun.class,
+                List.of(
+                    Pair.of(
+                        "status",
+                        nodeRun -> List.of(((NodeRun) nodeRun).getStatus().toString())
+                    ),
+                    Pair.of(
+                        "type",
+                        nodeRun -> List.of(((NodeRun) nodeRun).getType().toString())
+                    )
+                ),
+                nodeRun -> true, // applies to all NodeRuns
+                TagStorageTypePb.LOCAL
+            )
+        );
+
+        out.addAll(getUserTaskIndexes());
+        return out;
+    }
+
+    private List<GetableIndex> getUserTaskIndexes() {
+        List<GetableIndex> out = new ArrayList<>();
+
+        // userTaskDefName
+        out.add(
+            new GetableIndex(
+                NodeRun.class,
+                List.of(
+                    Pair.of(
+                        "userTaskDefName",
+                        nodeRun ->
+                            List.of(
+                                ((NodeRun) nodeRun).getUserTaskRun()
+                                    .getUserTaskDefName()
+                            )
+                    )
+                ),
+                nodeRun ->
+                    ((NodeRun) nodeRun).getType().equals(NodeTypeCase.USER_TASK),
+                TagStorageTypePb.LOCAL
+            )
+        );
+
+        // userTaskDefName, status
+        out.add(
+            new GetableIndex(
+                NodeRun.class,
+                List.of(
+                    Pair.of(
+                        "userTaskDefName",
+                        nodeRun ->
+                            List.of(
+                                ((NodeRun) nodeRun).getUserTaskRun()
+                                    .getUserTaskDefName()
+                            )
+                    ),
+                    Pair.of(
+                        "status",
+                        nodeRun ->
+                            List.of(
+                                ((NodeRun) nodeRun).getUserTaskRun()
+                                    .getStatus()
+                                    .toString()
+                            )
+                    )
+                ),
+                nodeRun ->
+                    ((NodeRun) nodeRun).getType().equals(NodeTypeCase.USER_TASK),
+                TagStorageTypePb.LOCAL
+            )
+        );
+
+        // status
+        out.add(
+            new GetableIndex(
+                NodeRun.class,
+                List.of(
+                    Pair.of(
+                        "status",
+                        nodeRun ->
+                            List.of(
+                                ((NodeRun) nodeRun).getUserTaskRun()
+                                    .getStatus()
+                                    .toString()
+                            )
+                    )
+                ),
+                nodeRun ->
+                    ((NodeRun) nodeRun).getType().equals(NodeTypeCase.USER_TASK),
+                TagStorageTypePb.LOCAL
+            )
+        );
+
+        // UserId
+        out.add(
+            new GetableIndex(
+                NodeRun.class,
+                List.of(
+                    Pair.of(
+                        "userId",
+                        nodeRun ->
+                            List.of(((NodeRun) nodeRun).getUserTaskRun().getUserId())
+                    )
+                ),
+                nodeRun -> {
+                    return (
+                        ((NodeRun) nodeRun).getType()
+                            .equals(NodeTypeCase.USER_TASK) &&
+                        ((NodeRun) nodeRun).getUserTaskRun().getUserId() != null
+                    );
+                },
+                TagStorageTypePb.LOCAL // TODO_EDUWER: Make this REMOTE
+            )
+        );
+
+        // User Id and status
+        out.add(
+            new GetableIndex(
+                NodeRun.class,
+                List.of(
+                    Pair.of(
+                        "status",
+                        nodeRun ->
+                            List.of(
+                                ((NodeRun) nodeRun).getUserTaskRun()
+                                    .getStatus()
+                                    .toString()
+                            )
+                    ),
+                    Pair.of(
+                        "userId",
+                        nodeRun ->
+                            List.of(((NodeRun) nodeRun).getUserTaskRun().getUserId())
+                    )
+                ),
+                nodeRun -> {
+                    return (
+                        ((NodeRun) nodeRun).getType()
+                            .equals(NodeTypeCase.USER_TASK) &&
+                        ((NodeRun) nodeRun).getUserTaskRun().getUserId() != null
+                    );
+                },
+                TagStorageTypePb.LOCAL // TODO_EDUWER: make this REMOTE
+            )
+        );
+        // User Id, status, userTaskDefName
+        out.add(
+            new GetableIndex(
+                NodeRun.class,
+                List.of(
+                    Pair.of(
+                        "status",
+                        nodeRun ->
+                            List.of(
+                                ((NodeRun) nodeRun).getUserTaskRun()
+                                    .getStatus()
+                                    .toString()
+                            )
+                    ),
+                    Pair.of(
+                        "userTaskDefName",
+                        nodeRun ->
+                            List.of(
+                                ((NodeRun) nodeRun).getUserTaskRun()
+                                    .getUserTaskDefName()
+                            )
+                    ),
+                    Pair.of(
+                        "userId",
+                        nodeRun ->
+                            List.of(((NodeRun) nodeRun).getUserTaskRun().getUserId())
+                    )
+                ),
+                nodeRun -> {
+                    return (
+                        ((NodeRun) nodeRun).getType()
+                            .equals(NodeTypeCase.USER_TASK) &&
+                        ((NodeRun) nodeRun).getUserTaskRun().getUserId() != null
+                    );
+                },
+                TagStorageTypePb.LOCAL // TODO_EDUWER: Make this Remote
+            )
+        );
+
+        /* -------- group tasks -------- */
+        out.add(
+            new GetableIndex(
+                NodeRun.class,
+                List.of(
+                    Pair.of(
+                        "status",
+                        nodeRun ->
+                            List.of(
+                                ((NodeRun) nodeRun).getUserTaskRun()
+                                    .getStatus()
+                                    .toString()
+                            )
+                    ),
+                    Pair.of(
+                        "userTaskDefName",
+                        nodeRun ->
+                            List.of(
+                                ((NodeRun) nodeRun).getUserTaskRun()
+                                    .getUserTaskDefName()
+                            )
+                    ),
+                    Pair.of(
+                        "userGroup",
+                        nodeRun ->
+                            List.of(
+                                ((NodeRun) nodeRun).getUserTaskRun().getUserGroup()
+                            )
+                    )
+                ),
+                nodeRun -> {
+                    return (
+                        ((NodeRun) nodeRun).getType()
+                            .equals(NodeTypeCase.USER_TASK) &&
+                        ((NodeRun) nodeRun).getUserTaskRun().getUserGroup() != null
+                    );
+                },
+                TagStorageTypePb.LOCAL // maybe make this remote?
+            )
+        );
+        // status, userGroup
+        out.add(
+            new GetableIndex(
+                NodeRun.class,
+                List.of(
+                    Pair.of(
+                        "status",
+                        nodeRun ->
+                            List.of(
+                                ((NodeRun) nodeRun).getUserTaskRun()
+                                    .getStatus()
+                                    .toString()
+                            )
+                    ),
+                    Pair.of(
+                        "userGroup",
+                        nodeRun ->
+                            List.of(
+                                ((NodeRun) nodeRun).getUserTaskRun().getUserGroup()
+                            )
+                    )
+                ),
+                nodeRun -> {
+                    return (
+                        ((NodeRun) nodeRun).getType()
+                            .equals(NodeTypeCase.USER_TASK) &&
+                        ((NodeRun) nodeRun).getUserTaskRun().getUserGroup() != null
+                    );
+                },
+                TagStorageTypePb.LOCAL // this MIGHT be better as REMOTE, not sure
+            )
+        );
+
+        out.add(
+            new GetableIndex(
+                NodeRun.class,
+                List.of(
+                    Pair.of(
+                        "userTaskDefName",
+                        nodeRun ->
+                            List.of(
+                                ((NodeRun) nodeRun).getUserTaskRun()
+                                    .getUserTaskDefName()
+                            )
+                    ),
+                    Pair.of(
+                        "userGroup",
+                        nodeRun ->
+                            List.of(
+                                ((NodeRun) nodeRun).getUserTaskRun().getUserGroup()
+                            )
+                    )
+                ),
+                nodeRun -> {
+                    return (
+                        ((NodeRun) nodeRun).getType()
+                            .equals(NodeTypeCase.USER_TASK) &&
+                        ((NodeRun) nodeRun).getUserTaskRun().getUserGroup() != null
+                    );
+                },
+                TagStorageTypePb.LOCAL
+            )
+        );
+
+        out.add(
+            new GetableIndex(
+                NodeRun.class,
+                List.of(
+                    Pair.of(
+                        "userGroup",
+                        nodeRun ->
+                            List.of(
+                                ((NodeRun) nodeRun).getUserTaskRun().getUserGroup()
+                            )
+                    )
+                ),
+                nodeRun -> {
+                    return (
+                        ((NodeRun) nodeRun).getType()
+                            .equals(NodeTypeCase.USER_TASK) &&
+                        ((NodeRun) nodeRun).getUserTaskRun().getUserGroup() != null
+                    );
+                },
+                TagStorageTypePb.LOCAL
+            )
+        );
+        return out;
     }
 
     public void initFrom(Message p) {

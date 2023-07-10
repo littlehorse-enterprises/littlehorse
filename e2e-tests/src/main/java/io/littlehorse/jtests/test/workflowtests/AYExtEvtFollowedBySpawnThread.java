@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class AYExtEvtFollowedByChildThread extends WorkflowLogicTest {
+public class AYExtEvtFollowedBySpawnThread extends WorkflowLogicTest {
 
-    public AYExtEvtFollowedByChildThread(
+    public AYExtEvtFollowedBySpawnThread(
         LHClient client,
         LHWorkerConfig workerConfig
     ) {
@@ -24,7 +24,10 @@ public class AYExtEvtFollowedByChildThread extends WorkflowLogicTest {
     }
 
     public String getDescription() {
-        return "Tests that WAIT_FOR_THREAD throws when child thread dies.";
+        return (
+            "Tests that we can neatly segway from EXTERNAL_EVENT to " +
+            "SPAWN_THREAD node."
+        );
     }
 
     public Workflow getWorkflowImpl() {
@@ -39,7 +42,6 @@ public class AYExtEvtFollowedByChildThread extends WorkflowLogicTest {
                     "first-thread",
                     null
                 );
-
                 thread.execute("ay-task");
                 thread.waitForThread(child);
             }

@@ -30,7 +30,8 @@ import io.littlehorse.jtests.test.workflowtests.AUExceptionHandlerTask;
 import io.littlehorse.jtests.test.workflowtests.AVChildThreadInterrupt;
 import io.littlehorse.jtests.test.workflowtests.AWChildThreadExceptionHandler;
 import io.littlehorse.jtests.test.workflowtests.AXConditionalWhileLogic;
-import io.littlehorse.jtests.test.workflowtests.AYExtEvtFollowedByChildThread;
+import io.littlehorse.jtests.test.workflowtests.AYExtEvtFollowedBySpawnThread;
+import io.littlehorse.jtests.test.workflowtests.AZUserTasksBasic;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -71,7 +72,8 @@ public class TestDriver {
         AVChildThreadInterrupt.class,
         AWChildThreadExceptionHandler.class,
         AXConditionalWhileLogic.class,
-        AYExtEvtFollowedByChildThread.class,
+        AYExtEvtFollowedBySpawnThread.class,
+        AZUserTasksBasic.class,
         AATaskDefDependency.class,
         ABSimpleDeleteDeadTaskWorker.class,
         ACSimpleTaskRebalancing.class

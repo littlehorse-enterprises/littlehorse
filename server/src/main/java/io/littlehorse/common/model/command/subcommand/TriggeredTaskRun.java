@@ -9,13 +9,21 @@ import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.meta.subnode.TaskNode;
 import io.littlehorse.common.model.objectId.NodeRunId;
+import io.littlehorse.common.model.objectId.TaskRunId;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.ScheduledTask;
+import io.littlehorse.common.model.wfrun.TaskAttempt;
 import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.VarNameAndVal;
 import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
+import io.littlehorse.common.model.wfrun.taskrun.TaskRunSource;
+import io.littlehorse.common.model.wfrun.taskrun.UserTaskTriggerReference;
+import io.littlehorse.common.model.wfrun.usertaskevent.UTETaskExecuted;
+import io.littlehorse.common.model.wfrun.usertaskevent.UserTaskEvent;
 import io.littlehorse.common.proto.TriggeredTaskRunPb;
 import io.littlehorse.jlib.common.proto.LHStatusPb;
+import java.util.Date;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -57,6 +65,7 @@ public class TriggeredTaskRun extends SubCommand<TriggeredTaskRunPb> {
     }
 
     public AbstractResponse<?> process(LHDAO dao, LHConfig config) {
+        taskToSchedule.setDao(dao);
         String wfRunId = source.getWfRunId();
 
         log.info(
@@ -91,13 +100,33 @@ public class TriggeredTaskRun extends SubCommand<TriggeredTaskRunPb> {
 
         try {
             List<VarNameAndVal> inputVars = taskToSchedule.assignInputVars(thread);
+            TaskRunId taskRunId = new TaskRunId(wfRunId);
             ScheduledTask toSchedule = new ScheduledTask(
-                userTaskNR.getNode().getTaskNode().getTaskDef().getObjectId(),
+                taskToSchedule.getTaskDef().getObjectId(),
                 inputVars,
                 userTaskNR.getUserTaskRun()
             );
+            toSchedule.setTaskRunId(taskRunId);
 
+            TaskRun taskRun = new TaskRun(
+                dao,
+                inputVars,
+                new TaskRunSource(
+                    new UserTaskTriggerReference(userTaskNR.getUserTaskRun())
+                ),
+                taskToSchedule
+            );
+            taskRun.setId(taskRunId);
+            taskRun.getAttempts().add(new TaskAttempt());
+            dao.putTaskRun(taskRun);
             dao.scheduleTask(toSchedule);
+
+            userTaskNR
+                .getUserTaskRun()
+                .getEvents()
+                .add(new UserTaskEvent(new UTETaskExecuted(taskRunId), new Date()));
+
+            dao.putNodeRun(userTaskNR); // should be unnecessary
         } catch (LHVarSubError exn) {
             log.error(
                 "Failed scheduling a Triggered Task Run, but the WfRun will continue",

@@ -101,7 +101,7 @@ public abstract class WorkflowLogicTest extends Test {
         return result.toString();
     }
 
-    private void deploy(LHClient client, LHWorkerConfig workerConfig)
+    protected void deploy(LHClient client, LHWorkerConfig workerConfig)
         throws LogicTestFailure {
         workers = new ArrayList<>();
 

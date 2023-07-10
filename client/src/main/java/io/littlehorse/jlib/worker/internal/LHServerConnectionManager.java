@@ -109,7 +109,6 @@ public class LHServerConnectionManager
         String wfRunId = LHLibUtil.getWfRunId(scheduledTask.getSource());
         try {
             log.debug("Going to report task for wfRun {}", wfRunId);
-            System.out.println(LHLibUtil.protoToJson(result));
             specificStub.reportTask(
                 result,
                 new ReportTaskObserver(this, result, TOTAL_RETRIES)
@@ -304,7 +303,6 @@ public class LHServerConnectionManager
 
     private Object invoke(ScheduledTaskPb scheduledTask, WorkerContext context)
         throws InputVarSubstitutionError, Exception {
-        log.error("Scheduled task:\n" + LHLibUtil.protoToJson(scheduledTask));
         List<Object> inputs = new ArrayList<>();
         for (VariableMapping mapping : this.mappings) {
             inputs.add(mapping.assign(scheduledTask, context));

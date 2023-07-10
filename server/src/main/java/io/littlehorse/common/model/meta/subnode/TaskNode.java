@@ -3,6 +3,7 @@ package io.littlehorse.common.model.meta.subnode;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.meta.Node;
@@ -36,11 +37,15 @@ public class TaskNode extends SubNode<TaskNodePb> {
     public int timeoutSeconds;
 
     private TaskDef taskDef;
+    private LHDAO dao;
 
     public TaskDef getTaskDef() {
         if (taskDef == null) {
-            taskDef =
-                node.getThreadSpec().getWfSpec().getDao().getTaskDef(taskDefName);
+            if (dao == null && node != null) {
+                // Only works for when this is part of a Node, not a UTATask.
+                dao = node.getThreadSpec().getWfSpec().getDao();
+            }
+            taskDef = dao.getTaskDef(taskDefName);
         }
         return taskDef;
     }

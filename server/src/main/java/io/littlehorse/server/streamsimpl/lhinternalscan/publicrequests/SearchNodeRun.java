@@ -104,6 +104,7 @@ public class SearchNodeRun
         return out;
     }
 
+    // TODO_EDUWER: Make this use your GetableIndexRegistry
     public InternalScan startInternalSearch(LHGlobalMetaStores stores)
         throws LHValidationError {
         InternalScan out = new InternalScan();

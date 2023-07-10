@@ -20,6 +20,8 @@ public class UserTaskTriggerReference
     private int userTaskEventNumber;
     private WfSpecId wfSpecId;
 
+    public UserTaskTriggerReference() {}
+
     public UserTaskTriggerReference(UserTaskRun utr) {
         nodeRunId = utr.getNodeRun().getObjectId();
         // Trust in the Force

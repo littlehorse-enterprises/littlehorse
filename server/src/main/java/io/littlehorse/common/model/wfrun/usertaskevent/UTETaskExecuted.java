@@ -13,6 +13,12 @@ public class UTETaskExecuted extends LHSerializable<UTETaskExecutedPb> {
 
     private TaskRunId taskRunId;
 
+    public UTETaskExecuted() {}
+
+    public UTETaskExecuted(TaskRunId taskRunId) {
+        this.taskRunId = taskRunId;
+    }
+
     public Class<UTETaskExecutedPb> getProtoBaseClass() {
         return UTETaskExecutedPb.class;
     }

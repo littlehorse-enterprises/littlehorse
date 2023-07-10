@@ -76,11 +76,11 @@ public class TaskNodeRun extends SubNodeRun<TaskNodeRunPb> {
         TaskRun task = new TaskRun(
             getDao(),
             inputVariables,
-            new TaskRunSource(source)
+            new TaskRunSource(source),
+            node.getTaskNode()
         );
         this.taskRunId = new TaskRunId(nodeRun.getPartitionKey());
         task.setId(taskRunId);
-        task.setTaskDefName(node.getTaskNode().getTaskDefName());
 
         // When creating a new Getable for the first time, we need to explicitly
         // save it.

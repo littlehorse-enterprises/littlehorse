@@ -80,18 +80,18 @@ public class GetableStorageManager {
         localStore.deleteTagCache(getable);
     }
 
-    public Collection<Tag> getTagsFor(Getable<?> getAble) {
+    public Collection<Tag> getTagsFor(Getable<?> getable) {
         List<GetableIndex> getAbleIndices = GetableIndexRegistry
             .getInstance()
-            .findIndexesFor(getAble.getClass());
+            .findIndexesFor(getable.getClass());
         return getAbleIndices
             .stream()
-            .filter(geTableIndex -> geTableIndex.isActive(getAble))
+            .filter(geTableIndex -> geTableIndex.isActive(getable))
             .flatMap(getableIndex ->
-                extractTagValues(getableIndex, getAble)
+                extractTagValues(getableIndex, getable)
                     .stream()
                     .map(pairs ->
-                        new Tag(getAble, getableIndex.getTagStorageTypePb(), pairs)
+                        new Tag(getable, getableIndex.getTagStorageTypePb(), pairs)
                     )
             )
             .collect(Collectors.toList());

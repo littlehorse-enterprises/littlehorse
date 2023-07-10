@@ -13,7 +13,6 @@ import io.littlehorse.common.model.wfrun.SubNodeRun;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.model.wfrun.usertaskevent.UTEReassigned;
 import io.littlehorse.common.model.wfrun.usertaskevent.UserTaskEvent;
-import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.jlib.common.proto.LHStatusPb;
 import io.littlehorse.jlib.common.proto.UserTaskEventPb;
 import io.littlehorse.jlib.common.proto.UserTaskFieldResultPb;
@@ -21,7 +20,6 @@ import io.littlehorse.jlib.common.proto.UserTaskRunPb;
 import io.littlehorse.jlib.common.proto.UserTaskRunPb.AssignedToCase;
 import io.littlehorse.jlib.common.proto.UserTaskRunStatusPb;
 import io.littlehorse.jlib.common.proto.VariableTypePb;
-import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -31,7 +29,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.NotImplementedException;
-import org.apache.commons.lang3.tuple.Pair;
 
 @Slf4j
 @Getter
@@ -224,127 +221,6 @@ public class UserTaskRun extends SubNodeRun<UserTaskRunPb> {
 
     private void scheduleAction(UTActionTrigger trigger) throws LHVarSubError {
         trigger.schedule(nodeRun.getThreadRun().wfRun.getDao(), this);
-    }
-
-    // Technically this should live in the `streamsimpl` directory, as the `Tag`
-    // is specific to the Kafka Streams Backend, but it doesn't look like we'll be
-    // using any other backend for a while, so this can live here for now.
-    //
-    // That's why the other GETable's don't have a getTags(); rather, we use
-    // TagUtils.java, which lives in streamsimpl.
-    public List<Tag> getTags() {
-        List<Tag> out = new ArrayList<>();
-
-        /*
-         * There are four possible fields in each tag:
-         * 1. status
-         * 2. userTaskDefName
-         * 3. userId
-         * 4. userGroup
-         *
-         * They are always in that order. 3) and 4) are mutually exclusive.
-         *
-         * When searching, it is valid to provide any combination of the three tags, but
-         * at least one must be set.
-         */
-
-        // Tag by status and User Task Def Name
-        out.add(
-            new Tag(
-                nodeRun,
-                TagStorageTypePb.LOCAL,
-                Pair.of("userTaskDefName", userTaskDefName)
-            )
-        );
-        out.add(
-            new Tag(
-                nodeRun,
-                TagStorageTypePb.LOCAL,
-                Pair.of("status", status.toString())
-            )
-        );
-        out.add(
-            new Tag(
-                nodeRun,
-                TagStorageTypePb.LOCAL,
-                Pair.of("userTaskDefName", userTaskDefName),
-                Pair.of("status", status.toString())
-            )
-        );
-
-        // Tag by user if claimed.
-        // When REMOTE tags are supported, note that every tag here will be
-        // a REMOTE tag since a single user can only execute so many tasks...
-        if (userId != null) {
-            out.add(
-                new Tag(
-                    nodeRun,
-                    TagStorageTypePb.LOCAL,
-                    Pair.of("status", status.toString()),
-                    Pair.of("userId", userId)
-                )
-            );
-            out.add(
-                new Tag(
-                    nodeRun,
-                    TagStorageTypePb.LOCAL,
-                    Pair.of("status", status.toString()),
-                    Pair.of("userTaskDefName", userTaskDefName),
-                    Pair.of("userId", userId)
-                )
-            );
-            out.add(
-                new Tag(
-                    nodeRun,
-                    TagStorageTypePb.LOCAL,
-                    Pair.of("userTaskDefName", userTaskDefName),
-                    Pair.of("userId", userId)
-                )
-            );
-            out.add(
-                new Tag(nodeRun, TagStorageTypePb.LOCAL, Pair.of("userId", userId))
-            );
-        }
-
-        // TODO: Make it configurable on a per-group basis whether
-        // a group is REMOTE or LOCAL tag? Some big groups should be LOCAL,
-        // but small groups should be REMOTE.
-        if (userGroup != null) {
-            out.add(
-                new Tag(
-                    nodeRun,
-                    TagStorageTypePb.LOCAL,
-                    Pair.of("status", status.toString()),
-                    Pair.of("userGroup", userGroup)
-                )
-            );
-            out.add(
-                new Tag(
-                    nodeRun,
-                    TagStorageTypePb.LOCAL,
-                    Pair.of("status", status.toString()),
-                    Pair.of("userTaskDefName", userTaskDefName),
-                    Pair.of("userGroup", userGroup)
-                )
-            );
-            out.add(
-                new Tag(
-                    nodeRun,
-                    TagStorageTypePb.LOCAL,
-                    Pair.of("userTaskDefName", userTaskDefName),
-                    Pair.of("userGroup", userGroup)
-                )
-            );
-            out.add(
-                new Tag(
-                    nodeRun,
-                    TagStorageTypePb.LOCAL,
-                    Pair.of("userGroup", userGroup)
-                )
-            );
-        }
-        // TODO LH-317: Improve support for searching by assigned group
-        return out;
     }
 
     public void reassignTo(AssignUserTaskRun event) {
