@@ -9,8 +9,8 @@ import io.littlehorse.common.model.wfrun.haltreason.ParentHalted;
 import io.littlehorse.common.model.wfrun.haltreason.PendingFailureHandlerHaltReason;
 import io.littlehorse.common.model.wfrun.haltreason.PendingInterruptHaltReason;
 import io.littlehorse.common.model.wfrun.haltreason.SubHaltReason;
-import io.littlehorse.jlib.common.proto.ThreadHaltReasonPb;
-import io.littlehorse.jlib.common.proto.ThreadHaltReasonPb.ReasonCase;
+import io.littlehorse.sdk.common.proto.ThreadHaltReasonPb;
+import io.littlehorse.sdk.common.proto.ThreadHaltReasonPb.ReasonCase;
 
 public class ThreadHaltReason extends LHSerializable<ThreadHaltReasonPb> {
 

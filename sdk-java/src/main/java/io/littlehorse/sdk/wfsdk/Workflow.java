@@ -1,15 +1,15 @@
-package io.littlehorse.jlib.wfsdk;
+package io.littlehorse.sdk.wfsdk;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.MessageOrBuilder;
 import com.google.protobuf.util.JsonFormat;
-import io.littlehorse.jlib.client.LHClient;
-import io.littlehorse.jlib.common.LHLibUtil;
-import io.littlehorse.jlib.common.exception.LHApiError;
-import io.littlehorse.jlib.common.proto.PutExternalEventDefPb;
-import io.littlehorse.jlib.common.proto.PutTaskDefPb;
-import io.littlehorse.jlib.common.proto.PutWfSpecPb;
-import io.littlehorse.jlib.wfsdk.internal.WorkflowImpl;
+import io.littlehorse.sdk.client.LHClient;
+import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.exception.LHApiError;
+import io.littlehorse.sdk.common.proto.PutExternalEventDefPb;
+import io.littlehorse.sdk.common.proto.PutTaskDefPb;
+import io.littlehorse.sdk.common.proto.PutWfSpecPb;
+import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;

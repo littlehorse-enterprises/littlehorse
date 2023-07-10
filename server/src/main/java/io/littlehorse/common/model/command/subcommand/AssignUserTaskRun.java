@@ -10,11 +10,11 @@ import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.model.wfrun.subnoderun.UserTaskRun;
-import io.littlehorse.jlib.common.proto.AssignUserTaskRunPb;
-import io.littlehorse.jlib.common.proto.AssignUserTaskRunPb.AssigneeCase;
-import io.littlehorse.jlib.common.proto.LHResponseCodePb;
-import io.littlehorse.jlib.common.proto.NodeRunPb.NodeTypeCase;
-import io.littlehorse.jlib.common.proto.UserTaskRunStatusPb;
+import io.littlehorse.sdk.common.proto.AssignUserTaskRunPb;
+import io.littlehorse.sdk.common.proto.AssignUserTaskRunPb.AssigneeCase;
+import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.NodeRunPb.NodeTypeCase;
+import io.littlehorse.sdk.common.proto.UserTaskRunStatusPb;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

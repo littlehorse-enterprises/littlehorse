@@ -1,8 +1,8 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies;
 
 import io.littlehorse.common.model.metrics.WfSpecMetrics;
-import io.littlehorse.jlib.common.proto.ListWfMetricsReplyPb;
-import io.littlehorse.jlib.common.proto.WfSpecMetricsPb;
+import io.littlehorse.sdk.common.proto.ListWfMetricsReplyPb;
+import io.littlehorse.sdk.common.proto.WfSpecMetricsPb;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 
 public class ListWfMetricsReply

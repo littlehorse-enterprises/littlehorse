@@ -2,7 +2,7 @@ package io.littlehorse.common.model.wfrun.usertaskevent;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.jlib.common.proto.UserTaskEventPb.UTEReassignedPb;
+import io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

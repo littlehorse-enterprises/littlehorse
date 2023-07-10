@@ -7,7 +7,7 @@ import io.littlehorse.common.model.meta.FailureDef;
 import io.littlehorse.common.model.meta.SubNode;
 import io.littlehorse.common.model.wfrun.subnoderun.ExitRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
-import io.littlehorse.jlib.common.proto.ExitNodePb;
+import io.littlehorse.sdk.common.proto.ExitNodePb;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;

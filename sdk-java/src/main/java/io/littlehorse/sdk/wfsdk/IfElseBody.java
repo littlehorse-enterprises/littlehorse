@@ -1,4 +1,4 @@
-package io.littlehorse.jlib.wfsdk;
+package io.littlehorse.sdk.wfsdk;
 
 /**
  * Functional interface representing a body of Workflow code to be executed inside

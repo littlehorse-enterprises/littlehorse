@@ -2,7 +2,7 @@ package io.littlehorse.common.model.wfrun.usertaskevent;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.jlib.common.proto.UserTaskEventPb.UTECancelledPb;
+import io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb;
 
 public class UTECancelled extends LHSerializable<UTECancelledPb> {
 

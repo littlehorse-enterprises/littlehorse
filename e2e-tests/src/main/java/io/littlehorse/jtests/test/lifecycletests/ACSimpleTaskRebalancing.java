@@ -1,14 +1,14 @@
 package io.littlehorse.jtests.test.lifecycletests;
 
-import io.littlehorse.jlib.client.LHClient;
-import io.littlehorse.jlib.common.config.LHWorkerConfig;
-import io.littlehorse.jlib.common.exception.LHApiError;
-import io.littlehorse.jlib.common.proto.HostInfoPb;
-import io.littlehorse.jlib.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
-import io.littlehorse.jlib.common.proto.PutTaskDefPb;
-import io.littlehorse.jlib.common.proto.RegisterTaskWorkerPb;
-import io.littlehorse.jlib.common.proto.RegisterTaskWorkerReplyPb;
 import io.littlehorse.jtests.test.Test;
+import io.littlehorse.sdk.client.LHClient;
+import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.exception.LHApiError;
+import io.littlehorse.sdk.common.proto.HostInfoPb;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.PutTaskDefPb;
+import io.littlehorse.sdk.common.proto.RegisterTaskWorkerPb;
+import io.littlehorse.sdk.common.proto.RegisterTaskWorkerReplyPb;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;

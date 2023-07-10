@@ -1,4 +1,4 @@
-package io.littlehorse.jlib.usertask.annotations;
+package io.littlehorse.sdk.usertask.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;

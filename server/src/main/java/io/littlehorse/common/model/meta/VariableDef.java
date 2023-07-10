@@ -2,8 +2,8 @@ package io.littlehorse.common.model.meta;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.jlib.common.proto.VariableDefPb;
-import io.littlehorse.jlib.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.VariableDefPb;
+import io.littlehorse.sdk.common.proto.VariableTypePb;
 import lombok.Getter;
 import lombok.Setter;
 

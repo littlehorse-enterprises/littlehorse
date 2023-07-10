@@ -1,7 +1,7 @@
-package io.littlehorse.jlib.wfsdk;
+package io.littlehorse.sdk.wfsdk;
 
-import io.littlehorse.jlib.common.proto.ComparatorPb;
-import io.littlehorse.jlib.common.proto.VariableMutationTypePb;
+import io.littlehorse.sdk.common.proto.ComparatorPb;
+import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
 import java.util.Map;
 
 /**

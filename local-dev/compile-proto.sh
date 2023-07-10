@@ -6,7 +6,7 @@ WORK_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
 set -e
 
 # First, re-compile the public client proto
-rm -rf ${WORK_DIR}/sdk-java/src/main/java/io/littlehorse/jlib/common/proto/
+rm -rf ${WORK_DIR}/sdk-java/src/main/java/io/littlehorse/sdk/common/proto/
 rm -rf ${WORK_DIR}/sdk-go/common/model/*.pb.go
 
 protoc --grpc-java_out="${WORK_DIR}/sdk-java/src/main/java/" \

@@ -8,7 +8,7 @@ import io.littlehorse.common.model.meta.SubNode;
 import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.common.model.wfrun.subnoderun.ExternalEventRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
-import io.littlehorse.jlib.common.proto.ExternalEventNodePb;
+import io.littlehorse.sdk.common.proto.ExternalEventNodePb;
 import java.util.Date;
 
 public class ExternalEventNode extends SubNode<ExternalEventNodePb> {

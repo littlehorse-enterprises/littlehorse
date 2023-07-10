@@ -15,8 +15,8 @@ import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.jlib.common.proto.LHResponseCodePb;
-import io.littlehorse.jlib.common.proto.PutExternalEventPb;
+import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.PutExternalEventPb;
 import java.util.Date;
 import org.apache.commons.lang3.time.DateUtils;
 

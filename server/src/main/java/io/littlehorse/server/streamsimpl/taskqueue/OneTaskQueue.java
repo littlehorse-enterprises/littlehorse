@@ -1,7 +1,7 @@
 package io.littlehorse.server.streamsimpl.taskqueue;
 
 import io.littlehorse.common.model.wfrun.ScheduledTask;
-import io.littlehorse.jlib.common.LHLibUtil;
+import io.littlehorse.sdk.common.LHLibUtil;
 // import io.littlehorse.common.util.LHUtil;
 import java.util.LinkedList;
 import java.util.Queue;

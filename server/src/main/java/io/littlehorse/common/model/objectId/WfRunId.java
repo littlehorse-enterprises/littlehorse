@@ -4,8 +4,8 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.GetableClassEnumPb;
-import io.littlehorse.jlib.common.proto.WfRunIdPb;
-import io.littlehorse.jlib.common.proto.WfRunPb;
+import io.littlehorse.sdk.common.proto.WfRunIdPb;
+import io.littlehorse.sdk.common.proto.WfRunPb;
 
 public class WfRunId extends ObjectId<WfRunIdPb, WfRunPb, WfRun> {
 

@@ -1,7 +1,5 @@
 package io.littlehorse.jtests;
 
-import io.littlehorse.jlib.client.LHClient;
-import io.littlehorse.jlib.common.config.LHWorkerConfig;
 import io.littlehorse.jtests.test.Test;
 import io.littlehorse.jtests.test.lifecycletests.AATaskDefDependency;
 import io.littlehorse.jtests.test.lifecycletests.ABSimpleDeleteDeadTaskWorker;
@@ -32,6 +30,8 @@ import io.littlehorse.jtests.test.workflowtests.AWChildThreadExceptionHandler;
 import io.littlehorse.jtests.test.workflowtests.AXConditionalWhileLogic;
 import io.littlehorse.jtests.test.workflowtests.AYExtEvtFollowedBySpawnThread;
 import io.littlehorse.jtests.test.workflowtests.AZUserTasksBasic;
+import io.littlehorse.sdk.client.LHClient;
+import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;

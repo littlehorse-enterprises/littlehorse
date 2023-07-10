@@ -7,8 +7,8 @@ import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
 import io.littlehorse.common.model.objectId.ExternalEventId;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
-import io.littlehorse.jlib.common.proto.DeleteExternalEventPb;
-import io.littlehorse.jlib.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.DeleteExternalEventPb;
+import io.littlehorse.sdk.common.proto.LHResponseCodePb;
 
 public class DeleteExternalEvent extends SubCommand<DeleteExternalEventPb> {
 

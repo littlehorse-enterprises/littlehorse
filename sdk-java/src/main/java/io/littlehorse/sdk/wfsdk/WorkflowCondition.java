@@ -1,4 +1,4 @@
-package io.littlehorse.jlib.wfsdk;
+package io.littlehorse.sdk.wfsdk;
 
 /**
  * A WorkflowCondition is a representation of a boolean expression.

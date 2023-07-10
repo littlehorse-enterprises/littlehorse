@@ -2,7 +2,7 @@ package io.littlehorse.common.util.serde;
 
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.jlib.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeError;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Deserializer;
 

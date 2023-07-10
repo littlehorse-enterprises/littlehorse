@@ -5,8 +5,8 @@ import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.jlib.common.proto.TaskRunIdPb;
-import io.littlehorse.jlib.common.proto.TaskRunPb;
+import io.littlehorse.sdk.common.proto.TaskRunIdPb;
+import io.littlehorse.sdk.common.proto.TaskRunPb;
 
 public class TaskRunId extends ObjectId<TaskRunIdPb, TaskRunPb, TaskRun> {
 

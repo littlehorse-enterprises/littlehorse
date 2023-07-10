@@ -1,4 +1,4 @@
-package io.littlehorse.jlib.common;
+package io.littlehorse.sdk.common;
 
 import static com.google.protobuf.util.Timestamps.fromMillis;
 
@@ -10,11 +10,11 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.MessageOrBuilder;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.JsonFormat;
-import io.littlehorse.jlib.common.exception.LHSerdeError;
-import io.littlehorse.jlib.common.proto.TaskRunIdPb;
-import io.littlehorse.jlib.common.proto.TaskRunSourcePb;
-import io.littlehorse.jlib.common.proto.VariableTypePb;
-import io.littlehorse.jlib.common.proto.VariableValuePb;
+import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.proto.TaskRunIdPb;
+import io.littlehorse.sdk.common.proto.TaskRunSourcePb;
+import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.VariableValuePb;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Instant;
 import java.util.Date;

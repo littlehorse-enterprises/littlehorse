@@ -2,8 +2,8 @@ package io.littlehorse.common.model.wfrun;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.jlib.common.proto.UserTaskFieldResultPb;
-import io.littlehorse.jlib.common.proto.UserTaskResultPb;
+import io.littlehorse.sdk.common.proto.UserTaskFieldResultPb;
+import io.littlehorse.sdk.common.proto.UserTaskResultPb;
 import java.util.ArrayList;
 import java.util.List;
 

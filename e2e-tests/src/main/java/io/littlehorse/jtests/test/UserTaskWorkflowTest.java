@@ -1,9 +1,9 @@
 package io.littlehorse.jtests.test;
 
-import io.littlehorse.jlib.client.LHClient;
-import io.littlehorse.jlib.common.config.LHWorkerConfig;
-import io.littlehorse.jlib.common.exception.LHApiError;
-import io.littlehorse.jlib.usertask.UserTaskSchema;
+import io.littlehorse.sdk.client.LHClient;
+import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.exception.LHApiError;
+import io.littlehorse.sdk.usertask.UserTaskSchema;
 import java.util.Map;
 
 public abstract class UserTaskWorkflowTest extends WorkflowLogicTest {

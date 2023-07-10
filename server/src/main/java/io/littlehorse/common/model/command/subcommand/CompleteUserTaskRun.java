@@ -7,9 +7,9 @@ import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.CompleteUserTaskRunReply;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.wfrun.WfRun;
-import io.littlehorse.jlib.common.proto.CompleteUserTaskRunPb;
-import io.littlehorse.jlib.common.proto.LHResponseCodePb;
-import io.littlehorse.jlib.common.proto.UserTaskResultPb;
+import io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb;
+import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.UserTaskResultPb;
 import java.util.Date;
 
 public class CompleteUserTaskRun extends SubCommand<CompleteUserTaskRunPb> {

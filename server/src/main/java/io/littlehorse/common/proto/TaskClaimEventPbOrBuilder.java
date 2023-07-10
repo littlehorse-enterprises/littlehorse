@@ -16,11 +16,11 @@ public interface TaskClaimEventPbOrBuilder extends
    * <code>.littlehorse.TaskRunIdPb task_run_id = 1;</code>
    * @return The taskRunId.
    */
-  io.littlehorse.jlib.common.proto.TaskRunIdPb getTaskRunId();
+  io.littlehorse.sdk.common.proto.TaskRunIdPb getTaskRunId();
   /**
    * <code>.littlehorse.TaskRunIdPb task_run_id = 1;</code>
    */
-  io.littlehorse.jlib.common.proto.TaskRunIdPbOrBuilder getTaskRunIdOrBuilder();
+  io.littlehorse.sdk.common.proto.TaskRunIdPbOrBuilder getTaskRunIdOrBuilder();
 
   /**
    * <code>.google.protobuf.Timestamp time = 2;</code>

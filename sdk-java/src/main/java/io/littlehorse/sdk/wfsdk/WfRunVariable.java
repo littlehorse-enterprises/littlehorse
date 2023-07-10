@@ -1,4 +1,4 @@
-package io.littlehorse.jlib.wfsdk;
+package io.littlehorse.sdk.wfsdk;
 
 /**
  * A WfRunVariable is a handle on a Variable in a WfSpec.

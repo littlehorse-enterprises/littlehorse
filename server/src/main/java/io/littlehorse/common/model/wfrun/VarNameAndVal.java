@@ -2,7 +2,7 @@ package io.littlehorse.common.model.wfrun;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.jlib.common.proto.VarNameAndValPb;
+import io.littlehorse.sdk.common.proto.VarNameAndValPb;
 
 public class VarNameAndVal extends LHSerializable<VarNameAndValPb> {
 

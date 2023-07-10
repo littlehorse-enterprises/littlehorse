@@ -1,10 +1,10 @@
-package io.littlehorse.jlib.wfsdk.internal.taskdefutil;
+package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 
-import io.littlehorse.jlib.common.LHLibUtil;
-import io.littlehorse.jlib.common.exception.TaskSchemaMismatchError;
-import io.littlehorse.jlib.common.proto.VariableTypePb;
-import io.littlehorse.jlib.worker.LHTaskMethod;
-import io.littlehorse.jlib.worker.WorkerContext;
+import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
+import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.worker.LHTaskMethod;
+import io.littlehorse.sdk.worker.WorkerContext;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;

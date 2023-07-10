@@ -1,8 +1,8 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies;
 
 import io.littlehorse.common.model.objectId.WfRunId;
-import io.littlehorse.jlib.common.proto.SearchWfRunReplyPb;
-import io.littlehorse.jlib.common.proto.WfRunIdPb;
+import io.littlehorse.sdk.common.proto.SearchWfRunReplyPb;
+import io.littlehorse.sdk.common.proto.WfRunIdPb;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 
 public class SearchWfRunReply

@@ -5,7 +5,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
 import io.littlehorse.common.LHConfig;
-import io.littlehorse.jlib.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeError;
 import java.lang.reflect.InvocationTargetException;
 import lombok.extern.slf4j.Slf4j;
 

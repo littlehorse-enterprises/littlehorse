@@ -12,7 +12,7 @@ import io.littlehorse.common.model.wfrun.VarNameAndVal;
 import io.littlehorse.common.model.wfrun.taskrun.TaskNodeReference;
 import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
 import io.littlehorse.common.model.wfrun.taskrun.TaskRunSource;
-import io.littlehorse.jlib.common.proto.TaskNodeRunPb;
+import io.littlehorse.sdk.common.proto.TaskNodeRunPb;
 import java.util.Date;
 import java.util.List;
 import lombok.Getter;

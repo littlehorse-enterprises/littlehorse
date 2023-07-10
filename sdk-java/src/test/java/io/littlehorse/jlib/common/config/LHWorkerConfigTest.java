@@ -1,4 +1,4 @@
-package io.littlehorse.jlib.common.config;
+package io.littlehorse.sdk.common.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;

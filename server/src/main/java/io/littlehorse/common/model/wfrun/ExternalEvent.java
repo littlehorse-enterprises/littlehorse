@@ -5,7 +5,7 @@ import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.objectId.ExternalEventId;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.jlib.common.proto.ExternalEventPb;
+import io.littlehorse.sdk.common.proto.ExternalEventPb;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import java.util.Date;
 import java.util.List;

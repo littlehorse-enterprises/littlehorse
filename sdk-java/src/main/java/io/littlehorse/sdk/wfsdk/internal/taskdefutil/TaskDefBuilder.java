@@ -1,9 +1,9 @@
-package io.littlehorse.jlib.wfsdk.internal.taskdefutil;
+package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 
-import io.littlehorse.jlib.common.exception.TaskSchemaMismatchError;
-import io.littlehorse.jlib.common.proto.PutTaskDefPb;
-import io.littlehorse.jlib.common.proto.VariableDefPb;
-import io.littlehorse.jlib.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
+import io.littlehorse.sdk.common.proto.PutTaskDefPb;
+import io.littlehorse.sdk.common.proto.VariableDefPb;
+import io.littlehorse.sdk.common.proto.VariableTypePb;
 import java.util.List;
 
 public class TaskDefBuilder {

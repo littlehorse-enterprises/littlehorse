@@ -14,8 +14,8 @@ import io.littlehorse.common.model.command.subcommandresponse.RegisterTaskWorker
 import io.littlehorse.common.model.meta.Host;
 import io.littlehorse.common.model.meta.TaskWorkerGroup;
 import io.littlehorse.common.model.meta.TaskWorkerMetadata;
-import io.littlehorse.jlib.common.proto.LHResponseCodePb;
-import io.littlehorse.jlib.common.proto.TaskWorkerHeartBeatPb;
+import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb;
 import io.littlehorse.server.streamsimpl.util.InternalHosts;
 import java.time.Duration;
 import java.time.Instant;

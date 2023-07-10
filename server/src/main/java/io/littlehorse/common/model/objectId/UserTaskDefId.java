@@ -6,8 +6,8 @@ import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.jlib.common.proto.UserTaskDefIdPb;
-import io.littlehorse.jlib.common.proto.UserTaskDefPb;
+import io.littlehorse.sdk.common.proto.UserTaskDefIdPb;
+import io.littlehorse.sdk.common.proto.UserTaskDefPb;
 
 public class UserTaskDefId
     extends ObjectId<UserTaskDefIdPb, UserTaskDefPb, UserTaskDef> {

@@ -2,8 +2,8 @@ package io.littlehorse.common.model.meta.usertasks;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.jlib.common.proto.UserTaskFieldPb;
-import io.littlehorse.jlib.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.UserTaskFieldPb;
+import io.littlehorse.sdk.common.proto.VariableTypePb;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

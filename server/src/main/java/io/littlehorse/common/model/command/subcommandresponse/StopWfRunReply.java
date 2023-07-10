@@ -2,7 +2,7 @@ package io.littlehorse.common.model.command.subcommandresponse;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.command.AbstractResponse;
-import io.littlehorse.jlib.common.proto.StopWfRunReplyPb;
+import io.littlehorse.sdk.common.proto.StopWfRunReplyPb;
 
 public class StopWfRunReply extends AbstractResponse<StopWfRunReplyPb> {
 

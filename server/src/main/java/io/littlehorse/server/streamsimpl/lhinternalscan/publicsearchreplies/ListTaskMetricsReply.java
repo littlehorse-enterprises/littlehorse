@@ -1,8 +1,8 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies;
 
 import io.littlehorse.common.model.metrics.TaskDefMetrics;
-import io.littlehorse.jlib.common.proto.ListTaskMetricsReplyPb;
-import io.littlehorse.jlib.common.proto.TaskDefMetricsPb;
+import io.littlehorse.sdk.common.proto.ListTaskMetricsReplyPb;
+import io.littlehorse.sdk.common.proto.TaskDefMetricsPb;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 
 public class ListTaskMetricsReply

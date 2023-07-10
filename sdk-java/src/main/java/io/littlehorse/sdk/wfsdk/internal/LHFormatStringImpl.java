@@ -1,7 +1,7 @@
-package io.littlehorse.jlib.wfsdk.internal;
+package io.littlehorse.sdk.wfsdk.internal;
 
-import io.littlehorse.jlib.common.proto.VariableAssignmentPb;
-import io.littlehorse.jlib.wfsdk.LHFormatString;
+import io.littlehorse.sdk.common.proto.VariableAssignmentPb;
+import io.littlehorse.sdk.wfsdk.LHFormatString;
 import java.util.ArrayList;
 import java.util.List;
 

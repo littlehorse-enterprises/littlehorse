@@ -1,6 +1,6 @@
-package io.littlehorse.jlib.wfsdk.internal;
+package io.littlehorse.sdk.wfsdk.internal;
 
-import io.littlehorse.jlib.wfsdk.SpawnedThread;
+import io.littlehorse.sdk.wfsdk.SpawnedThread;
 
 public class SpawnedThreadImpl implements SpawnedThread {
 

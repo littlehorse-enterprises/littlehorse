@@ -5,7 +5,7 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
-import io.littlehorse.jlib.common.proto.DeleteWfRunPb;
+import io.littlehorse.sdk.common.proto.DeleteWfRunPb;
 
 public class DeleteWfRun extends SubCommand<DeleteWfRunPb> {
 

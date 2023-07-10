@@ -2,7 +2,7 @@ package io.littlehorse.common.model.wfrun;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.jlib.common.proto.FailureBeingHandledPb;
+import io.littlehorse.sdk.common.proto.FailureBeingHandledPb;
 
 public class FailureBeingHandled extends LHSerializable<FailureBeingHandledPb> {
 

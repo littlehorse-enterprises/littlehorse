@@ -151,19 +151,19 @@ private static final long serialVersionUID = 0L;
   public static final int VARIABLES_FIELD_NUMBER = 3;
   private static final class VariablesDefaultEntryHolder {
     static final com.google.protobuf.MapEntry<
-        java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb> defaultEntry =
+        java.lang.String, io.littlehorse.sdk.common.proto.VariableValuePb> defaultEntry =
             com.google.protobuf.MapEntry
-            .<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb>newDefaultInstance(
+            .<java.lang.String, io.littlehorse.sdk.common.proto.VariableValuePb>newDefaultInstance(
                 io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_WfRunRequestPb_VariablesEntry_descriptor, 
                 com.google.protobuf.WireFormat.FieldType.STRING,
                 "",
                 com.google.protobuf.WireFormat.FieldType.MESSAGE,
-                io.littlehorse.jlib.common.proto.VariableValuePb.getDefaultInstance());
+                io.littlehorse.sdk.common.proto.VariableValuePb.getDefaultInstance());
   }
   @SuppressWarnings("serial")
   private com.google.protobuf.MapField<
-      java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb> variables_;
-  private com.google.protobuf.MapField<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb>
+      java.lang.String, io.littlehorse.sdk.common.proto.VariableValuePb> variables_;
+  private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.VariableValuePb>
   internalGetVariables() {
     if (variables_ == null) {
       return com.google.protobuf.MapField.emptyMapField(
@@ -188,14 +188,14 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   @java.lang.Deprecated
-  public java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb> getVariables() {
+  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValuePb> getVariables() {
     return getVariablesMap();
   }
   /**
    * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
    */
   @java.lang.Override
-  public java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb> getVariablesMap() {
+  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValuePb> getVariablesMap() {
     return internalGetVariables().getMap();
   }
   /**
@@ -203,12 +203,12 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public /* nullable */
-io.littlehorse.jlib.common.proto.VariableValuePb getVariablesOrDefault(
+io.littlehorse.sdk.common.proto.VariableValuePb getVariablesOrDefault(
       java.lang.String key,
       /* nullable */
-io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
+io.littlehorse.sdk.common.proto.VariableValuePb defaultValue) {
     if (key == null) { throw new NullPointerException("map key"); }
-    java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb> map =
+    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValuePb> map =
         internalGetVariables().getMap();
     return map.containsKey(key) ? map.get(key) : defaultValue;
   }
@@ -216,10 +216,10 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
    * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
    */
   @java.lang.Override
-  public io.littlehorse.jlib.common.proto.VariableValuePb getVariablesOrThrow(
+  public io.littlehorse.sdk.common.proto.VariableValuePb getVariablesOrThrow(
       java.lang.String key) {
     if (key == null) { throw new NullPointerException("map key"); }
-    java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb> map =
+    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValuePb> map =
         internalGetVariables().getMap();
     if (!map.containsKey(key)) {
       throw new java.lang.IllegalArgumentException();
@@ -268,9 +268,9 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(wfSpecId_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, wfSpecId_);
     }
-    for (java.util.Map.Entry<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb> entry
+    for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.VariableValuePb> entry
          : internalGetVariables().getMap().entrySet()) {
-      com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb>
+      com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.VariableValuePb>
       variables__ = VariablesDefaultEntryHolder.defaultEntry.newBuilderForType()
           .setKey(entry.getKey())
           .setValue(entry.getValue())
@@ -623,7 +623,7 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
               break;
             } // case 18
             case 26: {
-              com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb>
+              com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.VariableValuePb>
               variables__ = input.readMessage(
                   VariablesDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
               internalGetMutableVariables().getMutableMap().put(
@@ -800,8 +800,8 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
     }
 
     private com.google.protobuf.MapField<
-        java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb> variables_;
-    private com.google.protobuf.MapField<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb>
+        java.lang.String, io.littlehorse.sdk.common.proto.VariableValuePb> variables_;
+    private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.VariableValuePb>
         internalGetVariables() {
       if (variables_ == null) {
         return com.google.protobuf.MapField.emptyMapField(
@@ -809,7 +809,7 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
       }
       return variables_;
     }
-    private com.google.protobuf.MapField<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb>
+    private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.VariableValuePb>
         internalGetMutableVariables() {
       if (variables_ == null) {
         variables_ = com.google.protobuf.MapField.newMapField(
@@ -839,14 +839,14 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
      */
     @java.lang.Override
     @java.lang.Deprecated
-    public java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb> getVariables() {
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValuePb> getVariables() {
       return getVariablesMap();
     }
     /**
      * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
      */
     @java.lang.Override
-    public java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb> getVariablesMap() {
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValuePb> getVariablesMap() {
       return internalGetVariables().getMap();
     }
     /**
@@ -854,12 +854,12 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
      */
     @java.lang.Override
     public /* nullable */
-io.littlehorse.jlib.common.proto.VariableValuePb getVariablesOrDefault(
+io.littlehorse.sdk.common.proto.VariableValuePb getVariablesOrDefault(
         java.lang.String key,
         /* nullable */
-io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
+io.littlehorse.sdk.common.proto.VariableValuePb defaultValue) {
       if (key == null) { throw new NullPointerException("map key"); }
-      java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb> map =
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValuePb> map =
           internalGetVariables().getMap();
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
@@ -867,10 +867,10 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
      * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
      */
     @java.lang.Override
-    public io.littlehorse.jlib.common.proto.VariableValuePb getVariablesOrThrow(
+    public io.littlehorse.sdk.common.proto.VariableValuePb getVariablesOrThrow(
         java.lang.String key) {
       if (key == null) { throw new NullPointerException("map key"); }
-      java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb> map =
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValuePb> map =
           internalGetVariables().getMap();
       if (!map.containsKey(key)) {
         throw new java.lang.IllegalArgumentException();
@@ -897,7 +897,7 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
      * Use alternate mutation accessors instead.
      */
     @java.lang.Deprecated
-    public java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb>
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValuePb>
         getMutableVariables() {
       bitField0_ |= 0x00000004;
       return internalGetMutableVariables().getMutableMap();
@@ -907,7 +907,7 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
      */
     public Builder putVariables(
         java.lang.String key,
-        io.littlehorse.jlib.common.proto.VariableValuePb value) {
+        io.littlehorse.sdk.common.proto.VariableValuePb value) {
       if (key == null) { throw new NullPointerException("map key"); }
       if (value == null) { throw new NullPointerException("map value"); }
       internalGetMutableVariables().getMutableMap()
@@ -919,7 +919,7 @@ io.littlehorse.jlib.common.proto.VariableValuePb defaultValue) {
      * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
      */
     public Builder putAllVariables(
-        java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb> values) {
+        java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValuePb> values) {
       internalGetMutableVariables().getMutableMap()
           .putAll(values);
       bitField0_ |= 0x00000004;

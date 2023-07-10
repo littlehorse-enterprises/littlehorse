@@ -1,8 +1,8 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies;
 
 import io.littlehorse.common.model.objectId.VariableId;
-import io.littlehorse.jlib.common.proto.SearchVariableReplyPb;
-import io.littlehorse.jlib.common.proto.VariableIdPb;
+import io.littlehorse.sdk.common.proto.SearchVariableReplyPb;
+import io.littlehorse.sdk.common.proto.VariableIdPb;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 
 public class SearchVariableReply

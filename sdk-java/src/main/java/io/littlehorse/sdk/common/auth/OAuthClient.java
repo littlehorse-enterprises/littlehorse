@@ -1,4 +1,4 @@
-package io.littlehorse.jlib.common.auth;
+package io.littlehorse.sdk.common.auth;
 
 import com.nimbusds.oauth2.sdk.AccessTokenResponse;
 import com.nimbusds.oauth2.sdk.ClientCredentialsGrant;

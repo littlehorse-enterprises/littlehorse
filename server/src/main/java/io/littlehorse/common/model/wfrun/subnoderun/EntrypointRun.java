@@ -2,7 +2,7 @@ package io.littlehorse.common.model.wfrun.subnoderun;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
-import io.littlehorse.jlib.common.proto.EntrypointRunPb;
+import io.littlehorse.sdk.common.proto.EntrypointRunPb;
 import java.util.Date;
 
 public class EntrypointRun extends SubNodeRun<EntrypointRunPb> {

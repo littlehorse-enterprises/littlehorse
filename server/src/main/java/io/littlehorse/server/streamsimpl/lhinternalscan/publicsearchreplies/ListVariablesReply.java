@@ -1,8 +1,8 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies;
 
 import io.littlehorse.common.model.wfrun.Variable;
-import io.littlehorse.jlib.common.proto.ListVariablesReplyPb;
-import io.littlehorse.jlib.common.proto.VariablePb;
+import io.littlehorse.sdk.common.proto.ListVariablesReplyPb;
+import io.littlehorse.sdk.common.proto.VariablePb;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 
 public class ListVariablesReply

@@ -1,4 +1,4 @@
-package io.littlehorse.jlib.wfsdk;
+package io.littlehorse.sdk.wfsdk;
 
 public interface UserTaskOutput extends NodeOutput {
     public UserTaskOutput withNotes(String notes);

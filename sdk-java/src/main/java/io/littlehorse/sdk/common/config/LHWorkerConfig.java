@@ -1,9 +1,9 @@
-package io.littlehorse.jlib.common.config;
+package io.littlehorse.sdk.common.config;
 
-import io.littlehorse.jlib.common.proto.GetTaskDefReplyPb;
-import io.littlehorse.jlib.common.proto.LHResponseCodePb;
-import io.littlehorse.jlib.common.proto.TaskDefIdPb;
-import io.littlehorse.jlib.common.proto.TaskDefPb;
+import io.littlehorse.sdk.common.proto.GetTaskDefReplyPb;
+import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.TaskDefIdPb;
+import io.littlehorse.sdk.common.proto.TaskDefPb;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;

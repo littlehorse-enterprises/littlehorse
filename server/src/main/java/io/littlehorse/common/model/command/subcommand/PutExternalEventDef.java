@@ -8,8 +8,8 @@ import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.PutExternalEventDefReply;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.jlib.common.proto.LHResponseCodePb;
-import io.littlehorse.jlib.common.proto.PutExternalEventDefPb;
+import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.PutExternalEventDefPb;
 
 public class PutExternalEventDef extends SubCommand<PutExternalEventDefPb> {
 

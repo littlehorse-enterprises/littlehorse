@@ -1,6 +1,6 @@
-package io.littlehorse.jlib.common.config;
+package io.littlehorse.sdk.common.config;
 
-import io.littlehorse.jlib.common.exception.ConfigurationFileException;
+import io.littlehorse.sdk.common.exception.ConfigurationFileException;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Map;

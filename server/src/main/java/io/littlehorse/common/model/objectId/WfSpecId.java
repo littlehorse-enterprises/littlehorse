@@ -6,8 +6,8 @@ import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.jlib.common.proto.WfSpecIdPb;
-import io.littlehorse.jlib.common.proto.WfSpecPb;
+import io.littlehorse.sdk.common.proto.WfSpecIdPb;
+import io.littlehorse.sdk.common.proto.WfSpecPb;
 
 // Used by WfSpec, TaskDef, and ExternalEventDef
 public class WfSpecId extends ObjectId<WfSpecIdPb, WfSpecPb, WfSpec> {

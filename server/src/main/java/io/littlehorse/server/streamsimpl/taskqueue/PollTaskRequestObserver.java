@@ -1,8 +1,8 @@
 package io.littlehorse.server.streamsimpl.taskqueue;
 
 import io.grpc.stub.StreamObserver;
-import io.littlehorse.jlib.common.proto.PollTaskPb;
-import io.littlehorse.jlib.common.proto.PollTaskReplyPb;
+import io.littlehorse.sdk.common.proto.PollTaskPb;
+import io.littlehorse.sdk.common.proto.PollTaskReplyPb;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

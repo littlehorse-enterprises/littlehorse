@@ -5,9 +5,9 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.WfRun;
-import io.littlehorse.jlib.common.proto.HandlingFailureHaltReasonPb;
-import io.littlehorse.jlib.common.proto.LHStatusPb;
-import io.littlehorse.jlib.common.proto.NodeRunPb.NodeTypeCase;
+import io.littlehorse.sdk.common.proto.HandlingFailureHaltReasonPb;
+import io.littlehorse.sdk.common.proto.LHStatusPb;
+import io.littlehorse.sdk.common.proto.NodeRunPb.NodeTypeCase;
 
 public class HandlingFailureHaltReason
     extends LHSerializable<HandlingFailureHaltReasonPb>

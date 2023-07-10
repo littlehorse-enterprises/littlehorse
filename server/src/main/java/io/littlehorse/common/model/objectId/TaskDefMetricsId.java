@@ -5,9 +5,9 @@ import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.metrics.TaskDefMetrics;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.jlib.common.proto.MetricsWindowLengthPb;
-import io.littlehorse.jlib.common.proto.TaskDefMetricsIdPb;
-import io.littlehorse.jlib.common.proto.TaskDefMetricsPb;
+import io.littlehorse.sdk.common.proto.MetricsWindowLengthPb;
+import io.littlehorse.sdk.common.proto.TaskDefMetricsIdPb;
+import io.littlehorse.sdk.common.proto.TaskDefMetricsPb;
 import java.util.Date;
 
 public class TaskDefMetricsId

@@ -2,8 +2,8 @@ package io.littlehorse.common.model.meta;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.jlib.common.exception.LHSerdeError;
-import io.littlehorse.jlib.common.proto.HostInfoPb;
+import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.proto.HostInfoPb;
 
 public class Host extends LHSerializable<HostInfoPb> implements Comparable<Host> {
 

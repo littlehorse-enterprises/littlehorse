@@ -1,4 +1,4 @@
-package io.littlehorse.jlib.common.exception;
+package io.littlehorse.sdk.common.exception;
 
 public class LHSerdeError extends Exception {
 

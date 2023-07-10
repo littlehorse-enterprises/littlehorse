@@ -11,8 +11,8 @@ import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.jlib.common.proto.SleepNodeRunPb;
-import io.littlehorse.jlib.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.SleepNodeRunPb;
+import io.littlehorse.sdk.common.proto.VariableTypePb;
 import java.util.Date;
 
 public class SleepNodeRun extends SubNodeRun<SleepNodeRunPb> {

@@ -2,9 +2,9 @@ package io.littlehorse.common.model.command.subcommandresponse;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.command.AbstractResponse;
-import io.littlehorse.jlib.common.proto.HostInfoPb;
-import io.littlehorse.jlib.common.proto.RegisterTaskWorkerReplyPb;
-import io.littlehorse.jlib.common.proto.RegisterTaskWorkerReplyPb.Builder;
+import io.littlehorse.sdk.common.proto.HostInfoPb;
+import io.littlehorse.sdk.common.proto.RegisterTaskWorkerReplyPb;
+import io.littlehorse.sdk.common.proto.RegisterTaskWorkerReplyPb.Builder;
 import java.util.ArrayList;
 import java.util.List;
 

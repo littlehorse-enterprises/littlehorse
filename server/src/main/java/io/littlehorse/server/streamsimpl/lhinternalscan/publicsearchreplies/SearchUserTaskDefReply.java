@@ -1,8 +1,8 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies;
 
 import io.littlehorse.common.model.objectId.UserTaskDefId;
-import io.littlehorse.jlib.common.proto.SearchUserTaskDefReplyPb;
-import io.littlehorse.jlib.common.proto.UserTaskDefIdPb;
+import io.littlehorse.sdk.common.proto.SearchUserTaskDefReplyPb;
+import io.littlehorse.sdk.common.proto.UserTaskDefIdPb;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 
 public class SearchUserTaskDefReply

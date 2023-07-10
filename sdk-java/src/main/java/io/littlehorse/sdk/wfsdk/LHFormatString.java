@@ -1,3 +1,3 @@
-package io.littlehorse.jlib.wfsdk;
+package io.littlehorse.sdk.wfsdk;
 
 public interface LHFormatString {}

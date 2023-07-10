@@ -4,8 +4,8 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.meta.TaskWorkerGroup;
 import io.littlehorse.common.proto.GetableClassEnumPb;
-import io.littlehorse.jlib.common.proto.TaskWorkerGroupIdPb;
-import io.littlehorse.jlib.common.proto.TaskWorkerGroupPb;
+import io.littlehorse.sdk.common.proto.TaskWorkerGroupIdPb;
+import io.littlehorse.sdk.common.proto.TaskWorkerGroupPb;
 
 public class TaskWorkerGroupId
     extends ObjectId<TaskWorkerGroupIdPb, TaskWorkerGroupPb, TaskWorkerGroup> {

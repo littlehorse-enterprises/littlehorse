@@ -1,10 +1,10 @@
-package io.littlehorse.jlib.wfsdk.internal;
+package io.littlehorse.sdk.wfsdk.internal;
 
-import io.littlehorse.jlib.common.proto.PutTaskDefPb;
-import io.littlehorse.jlib.common.proto.PutWfSpecPb;
-import io.littlehorse.jlib.wfsdk.ThreadFunc;
-import io.littlehorse.jlib.wfsdk.Workflow;
-import io.littlehorse.jlib.wfsdk.internal.taskdefutil.TaskDefBuilder;
+import io.littlehorse.sdk.common.proto.PutTaskDefPb;
+import io.littlehorse.sdk.common.proto.PutWfSpecPb;
+import io.littlehorse.sdk.wfsdk.ThreadFunc;
+import io.littlehorse.sdk.wfsdk.Workflow;
+import io.littlehorse.sdk.wfsdk.internal.taskdefutil.TaskDefBuilder;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;

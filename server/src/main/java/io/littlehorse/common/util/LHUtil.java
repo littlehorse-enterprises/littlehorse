@@ -8,7 +8,7 @@ import com.google.common.hash.Hashing;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.jlib.common.proto.MetricsWindowLengthPb;
+import io.littlehorse.sdk.common.proto.MetricsWindowLengthPb;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Base64;

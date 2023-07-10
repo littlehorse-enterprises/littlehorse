@@ -6,11 +6,11 @@ import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.common.model.wfrun.subnoderun.UserTaskRun;
-import io.littlehorse.jlib.common.proto.UTActionTriggerPb;
-import io.littlehorse.jlib.common.proto.UTActionTriggerPb.ActionCase;
-import io.littlehorse.jlib.common.proto.UTActionTriggerPb.ScheduleTimeCase;
-import io.littlehorse.jlib.common.proto.UTActionTriggerPb.UTACancelPb;
-import io.littlehorse.jlib.common.proto.UTActionTriggerPb.UTAReassignPb;
+import io.littlehorse.sdk.common.proto.UTActionTriggerPb;
+import io.littlehorse.sdk.common.proto.UTActionTriggerPb.ActionCase;
+import io.littlehorse.sdk.common.proto.UTActionTriggerPb.ScheduleTimeCase;
+import io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTACancelPb;
+import io.littlehorse.sdk.common.proto.UTActionTriggerPb.UTAReassignPb;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

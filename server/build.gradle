@@ -52,7 +52,7 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'com.google.guava:guava:32.0.1-jre'
 
-    // gRPC and Protobuf now included in lh-jlib
+    // gRPC and Protobuf now included in lh-sdk
     implementation project(':sdk-java')
 
     // Prometheus

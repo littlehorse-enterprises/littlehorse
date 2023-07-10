@@ -1,10 +1,10 @@
-package io.littlehorse.jlib.wfsdk.internal;
+package io.littlehorse.sdk.wfsdk.internal;
 
-import io.littlehorse.jlib.common.proto.NodePb;
-import io.littlehorse.jlib.common.proto.VariableAssignmentPb;
-import io.littlehorse.jlib.wfsdk.LHFormatString;
-import io.littlehorse.jlib.wfsdk.UserTaskOutput;
-import io.littlehorse.jlib.wfsdk.WfRunVariable;
+import io.littlehorse.sdk.common.proto.NodePb;
+import io.littlehorse.sdk.common.proto.VariableAssignmentPb;
+import io.littlehorse.sdk.wfsdk.LHFormatString;
+import io.littlehorse.sdk.wfsdk.UserTaskOutput;
+import io.littlehorse.sdk.wfsdk.WfRunVariable;
 
 public class UserTaskOutputImpl extends NodeOutputImpl implements UserTaskOutput {
 

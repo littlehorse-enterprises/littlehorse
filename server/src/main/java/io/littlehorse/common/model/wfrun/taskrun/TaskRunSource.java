@@ -2,8 +2,8 @@ package io.littlehorse.common.model.wfrun.taskrun;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.jlib.common.proto.TaskRunSourcePb;
-import io.littlehorse.jlib.common.proto.TaskRunSourcePb.TaskRunSourceCase;
+import io.littlehorse.sdk.common.proto.TaskRunSourcePb;
+import io.littlehorse.sdk.common.proto.TaskRunSourcePb.TaskRunSourceCase;
 import lombok.Getter;
 import lombok.Setter;
 

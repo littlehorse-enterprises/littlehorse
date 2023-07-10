@@ -1,4 +1,4 @@
-package io.littlehorse.jlib.common.auth;
+package io.littlehorse.sdk.common.auth;
 
 import java.net.URI;
 import lombok.Builder;

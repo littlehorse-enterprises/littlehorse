@@ -8,9 +8,9 @@ import io.littlehorse.common.model.wfrun.SubNodeRun;
 import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.jlib.common.proto.LHStatusPb;
-import io.littlehorse.jlib.common.proto.VariableTypePb;
-import io.littlehorse.jlib.common.proto.WaitThreadRunPb;
+import io.littlehorse.sdk.common.proto.LHStatusPb;
+import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.WaitThreadRunPb;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 

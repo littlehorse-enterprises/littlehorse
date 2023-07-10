@@ -58,7 +58,7 @@ import io.littlehorse.common.proto.WaitForCommandReplyPb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.jlib.common.proto.HostInfoPb;
+import io.littlehorse.sdk.common.proto.HostInfoPb;
 import io.littlehorse.server.listener.AdvertisedListenerConfig;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.storeinternals.LHROStoreWrapper;

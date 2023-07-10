@@ -5,8 +5,8 @@ import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.jlib.common.proto.ExternalEventIdPb;
-import io.littlehorse.jlib.common.proto.ExternalEventPb;
+import io.littlehorse.sdk.common.proto.ExternalEventIdPb;
+import io.littlehorse.sdk.common.proto.ExternalEventPb;
 
 public class ExternalEventId
     extends ObjectId<ExternalEventIdPb, ExternalEventPb, ExternalEvent> {

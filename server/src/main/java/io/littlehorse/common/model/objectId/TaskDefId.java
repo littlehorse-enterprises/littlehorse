@@ -5,8 +5,8 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.proto.GetableClassEnumPb;
-import io.littlehorse.jlib.common.proto.TaskDefIdPb;
-import io.littlehorse.jlib.common.proto.TaskDefPb;
+import io.littlehorse.sdk.common.proto.TaskDefIdPb;
+import io.littlehorse.sdk.common.proto.TaskDefPb;
 import lombok.Getter;
 import lombok.Setter;
 

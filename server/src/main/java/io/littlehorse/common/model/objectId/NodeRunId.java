@@ -5,8 +5,8 @@ import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.jlib.common.proto.NodeRunIdPb;
-import io.littlehorse.jlib.common.proto.NodeRunPb;
+import io.littlehorse.sdk.common.proto.NodeRunIdPb;
+import io.littlehorse.sdk.common.proto.NodeRunPb;
 import lombok.Getter;
 import lombok.Setter;
 

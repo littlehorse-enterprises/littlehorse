@@ -31,7 +31,7 @@ public interface TaskMetricUpdatePbOrBuilder extends
    * <code>.littlehorse.MetricsWindowLengthPb type = 2;</code>
    * @return The type.
    */
-  io.littlehorse.jlib.common.proto.MetricsWindowLengthPb getType();
+  io.littlehorse.sdk.common.proto.MetricsWindowLengthPb getType();
 
   /**
    * <code>int64 num_entries = 3;</code>

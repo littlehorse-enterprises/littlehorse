@@ -1,8 +1,8 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies;
 
 import io.littlehorse.common.model.wfrun.NodeRun;
-import io.littlehorse.jlib.common.proto.ListNodeRunsReplyPb;
-import io.littlehorse.jlib.common.proto.NodeRunPb;
+import io.littlehorse.sdk.common.proto.ListNodeRunsReplyPb;
+import io.littlehorse.sdk.common.proto.NodeRunPb;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 
 public class ListNodeRunsReply

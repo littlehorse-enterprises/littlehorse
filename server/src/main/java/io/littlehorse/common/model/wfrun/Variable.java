@@ -6,7 +6,7 @@ import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.objectId.VariableId;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.jlib.common.proto.VariablePb;
+import io.littlehorse.sdk.common.proto.VariablePb;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import java.util.Date;
 import java.util.List;

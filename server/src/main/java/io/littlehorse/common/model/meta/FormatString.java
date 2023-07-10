@@ -2,8 +2,8 @@ package io.littlehorse.common.model.meta;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.jlib.common.proto.VariableAssignmentPb;
-import io.littlehorse.jlib.common.proto.VariableAssignmentPb.FormatStringPb;
+import io.littlehorse.sdk.common.proto.VariableAssignmentPb;
+import io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPb;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;

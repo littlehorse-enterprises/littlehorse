@@ -1,4 +1,4 @@
-package io.littlehorse.jlib.worker;
+package io.littlehorse.sdk.worker;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

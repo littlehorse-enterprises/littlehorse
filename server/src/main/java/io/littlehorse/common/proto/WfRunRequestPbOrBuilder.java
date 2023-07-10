@@ -49,24 +49,24 @@ public interface WfRunRequestPbOrBuilder extends
    * Use {@link #getVariablesMap()} instead.
    */
   @java.lang.Deprecated
-  java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb>
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValuePb>
   getVariables();
   /**
    * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
    */
-  java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.VariableValuePb>
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValuePb>
   getVariablesMap();
   /**
    * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
    */
   /* nullable */
-io.littlehorse.jlib.common.proto.VariableValuePb getVariablesOrDefault(
+io.littlehorse.sdk.common.proto.VariableValuePb getVariablesOrDefault(
       java.lang.String key,
       /* nullable */
-io.littlehorse.jlib.common.proto.VariableValuePb defaultValue);
+io.littlehorse.sdk.common.proto.VariableValuePb defaultValue);
   /**
    * <code>map&lt;string, .littlehorse.VariableValuePb&gt; variables = 3;</code>
    */
-  io.littlehorse.jlib.common.proto.VariableValuePb getVariablesOrThrow(
+  io.littlehorse.sdk.common.proto.VariableValuePb getVariablesOrThrow(
       java.lang.String key);
 }

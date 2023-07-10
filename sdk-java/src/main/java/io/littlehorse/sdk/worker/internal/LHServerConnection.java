@@ -1,12 +1,12 @@
-package io.littlehorse.jlib.worker.internal;
+package io.littlehorse.sdk.worker.internal;
 
 import io.grpc.stub.StreamObserver;
-import io.littlehorse.jlib.common.LHLibUtil;
-import io.littlehorse.jlib.common.proto.HostInfoPb;
-import io.littlehorse.jlib.common.proto.LHPublicApiGrpc.LHPublicApiStub;
-import io.littlehorse.jlib.common.proto.PollTaskPb;
-import io.littlehorse.jlib.common.proto.PollTaskReplyPb;
-import io.littlehorse.jlib.common.proto.ScheduledTaskPb;
+import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.proto.HostInfoPb;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiStub;
+import io.littlehorse.sdk.common.proto.PollTaskPb;
+import io.littlehorse.sdk.common.proto.PollTaskReplyPb;
+import io.littlehorse.sdk.common.proto.ScheduledTaskPb;
 import java.io.Closeable;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;

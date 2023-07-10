@@ -453,7 +453,7 @@ public final class InternalServer {
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.google.protobuf.TimestampProto.getDescriptor(),
-          io.littlehorse.jlib.common.proto.Service.getDescriptor(),
+          io.littlehorse.sdk.common.proto.Service.getDescriptor(),
         });
     internal_static_littlehorse_CommandResultPb_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -714,7 +714,7 @@ public final class InternalServer {
         internal_static_littlehorse_LocalTasksReplyPb_descriptor,
         new java.lang.String[] { "ActiveTasks", "StandbyTasks", });
     com.google.protobuf.TimestampProto.getDescriptor();
-    io.littlehorse.jlib.common.proto.Service.getDescriptor();
+    io.littlehorse.sdk.common.proto.Service.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

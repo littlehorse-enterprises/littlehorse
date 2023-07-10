@@ -10,8 +10,8 @@ import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.TaskAttempt;
 import io.littlehorse.common.model.wfrun.VariableValue;
-import io.littlehorse.jlib.common.proto.TaskNodeReferencePb;
-import io.littlehorse.jlib.common.proto.TaskStatusPb;
+import io.littlehorse.sdk.common.proto.TaskNodeReferencePb;
+import io.littlehorse.sdk.common.proto.TaskStatusPb;
 import lombok.Getter;
 import lombok.Setter;
 

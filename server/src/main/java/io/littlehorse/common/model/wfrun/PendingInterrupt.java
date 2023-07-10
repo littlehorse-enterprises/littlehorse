@@ -3,7 +3,7 @@ package io.littlehorse.common.model.wfrun;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.objectId.ExternalEventId;
-import io.littlehorse.jlib.common.proto.PendingInterruptPb;
+import io.littlehorse.sdk.common.proto.PendingInterruptPb;
 
 public class PendingInterrupt extends LHSerializable<PendingInterruptPb> {
 

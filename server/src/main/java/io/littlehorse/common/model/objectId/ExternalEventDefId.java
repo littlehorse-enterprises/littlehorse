@@ -5,8 +5,8 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.meta.ExternalEventDef;
 import io.littlehorse.common.proto.GetableClassEnumPb;
-import io.littlehorse.jlib.common.proto.ExternalEventDefIdPb;
-import io.littlehorse.jlib.common.proto.ExternalEventDefPb;
+import io.littlehorse.sdk.common.proto.ExternalEventDefIdPb;
+import io.littlehorse.sdk.common.proto.ExternalEventDefPb;
 
 // Used by ExternalEventDef, TaskDef, and ExternalEventDef
 public class ExternalEventDefId

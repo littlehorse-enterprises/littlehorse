@@ -11,9 +11,9 @@ import io.littlehorse.common.model.command.subcommandresponse.PutUserTaskDefRepl
 import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
 import io.littlehorse.common.model.meta.usertasks.UserTaskField;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.jlib.common.proto.LHResponseCodePb;
-import io.littlehorse.jlib.common.proto.PutUserTaskDefPb;
-import io.littlehorse.jlib.common.proto.UserTaskFieldPb;
+import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.PutUserTaskDefPb;
+import io.littlehorse.sdk.common.proto.UserTaskFieldPb;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

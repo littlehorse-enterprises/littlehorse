@@ -1,10 +1,10 @@
-package io.littlehorse.jlib.worker;
+package io.littlehorse.sdk.worker;
 
-import io.littlehorse.jlib.common.LHLibUtil;
-import io.littlehorse.jlib.common.proto.NodeRunIdPb;
-import io.littlehorse.jlib.common.proto.ScheduledTaskPb;
-import io.littlehorse.jlib.common.proto.TaskRunIdPb;
-import io.littlehorse.jlib.common.proto.TaskRunSourcePb;
+import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.proto.NodeRunIdPb;
+import io.littlehorse.sdk.common.proto.ScheduledTaskPb;
+import io.littlehorse.sdk.common.proto.TaskRunIdPb;
+import io.littlehorse.sdk.common.proto.TaskRunSourcePb;
 import java.util.Date;
 
 /**

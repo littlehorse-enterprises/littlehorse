@@ -7,7 +7,7 @@ import io.littlehorse.common.model.objectId.NodeRunId;
 import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.model.wfrun.TaskAttempt;
 import io.littlehorse.common.model.wfrun.subnoderun.UserTaskRun;
-import io.littlehorse.jlib.common.proto.UserTaskTriggerReferencePb;
+import io.littlehorse.sdk.common.proto.UserTaskTriggerReferencePb;
 import lombok.Getter;
 import lombok.Setter;
 

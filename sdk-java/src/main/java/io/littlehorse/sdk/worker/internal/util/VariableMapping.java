@@ -1,15 +1,15 @@
-package io.littlehorse.jlib.worker.internal.util;
+package io.littlehorse.sdk.worker.internal.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import io.littlehorse.jlib.common.LHLibUtil;
-import io.littlehorse.jlib.common.exception.InputVarSubstitutionError;
-import io.littlehorse.jlib.common.exception.TaskSchemaMismatchError;
-import io.littlehorse.jlib.common.proto.ScheduledTaskPb;
-import io.littlehorse.jlib.common.proto.TaskDefPb;
-import io.littlehorse.jlib.common.proto.VarNameAndValPb;
-import io.littlehorse.jlib.common.proto.VariableDefPb;
-import io.littlehorse.jlib.common.proto.VariableValuePb;
-import io.littlehorse.jlib.worker.WorkerContext;
+import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.exception.InputVarSubstitutionError;
+import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
+import io.littlehorse.sdk.common.proto.ScheduledTaskPb;
+import io.littlehorse.sdk.common.proto.TaskDefPb;
+import io.littlehorse.sdk.common.proto.VarNameAndValPb;
+import io.littlehorse.sdk.common.proto.VariableDefPb;
+import io.littlehorse.sdk.common.proto.VariableValuePb;
+import io.littlehorse.sdk.worker.WorkerContext;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

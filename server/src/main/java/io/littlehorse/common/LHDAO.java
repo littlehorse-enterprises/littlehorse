@@ -20,7 +20,7 @@ import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
-import io.littlehorse.jlib.common.proto.HostInfoPb;
+import io.littlehorse.sdk.common.proto.HostInfoPb;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.TaskMetricUpdate;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.WfMetricUpdate;
 import io.littlehorse.server.streamsimpl.util.InternalHosts;

@@ -1,8 +1,8 @@
-package io.littlehorse.jlib.wfsdk.internal;
+package io.littlehorse.sdk.wfsdk.internal;
 
-import io.littlehorse.jlib.common.proto.ComparatorPb;
-import io.littlehorse.jlib.common.proto.EdgeConditionPb;
-import io.littlehorse.jlib.wfsdk.WorkflowCondition;
+import io.littlehorse.sdk.common.proto.ComparatorPb;
+import io.littlehorse.sdk.common.proto.EdgeConditionPb;
+import io.littlehorse.sdk.wfsdk.WorkflowCondition;
 
 public class WorkflowConditionImpl implements WorkflowCondition {
 

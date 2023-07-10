@@ -1,8 +1,8 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies;
 
 import io.littlehorse.common.model.wfrun.ExternalEvent;
-import io.littlehorse.jlib.common.proto.ExternalEventPb;
-import io.littlehorse.jlib.common.proto.ListExternalEventsReplyPb;
+import io.littlehorse.sdk.common.proto.ExternalEventPb;
+import io.littlehorse.sdk.common.proto.ListExternalEventsReplyPb;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanReply;
 
 public class ListExternalEventsReply

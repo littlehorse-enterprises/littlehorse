@@ -2,7 +2,7 @@ package io.littlehorse.common.model.meta;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.jlib.common.proto.EdgePb;
+import io.littlehorse.sdk.common.proto.EdgePb;
 import java.util.HashSet;
 import java.util.Set;
 

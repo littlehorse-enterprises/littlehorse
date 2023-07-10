@@ -1,6 +1,6 @@
-package io.littlehorse.jlib.common.exception;
+package io.littlehorse.sdk.common.exception;
 
-import io.littlehorse.jlib.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.LHResponseCodePb;
 
 public class LHApiError extends Exception {
 

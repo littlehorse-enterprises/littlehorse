@@ -6,7 +6,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
-import io.littlehorse.jlib.common.proto.DeleteUserTaskDefPb;
+import io.littlehorse.sdk.common.proto.DeleteUserTaskDefPb;
 
 public class DeleteUserTaskDef extends SubCommand<DeleteUserTaskDefPb> {
 

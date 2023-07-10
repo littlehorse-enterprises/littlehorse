@@ -1,10 +1,10 @@
-package io.littlehorse.jlib.usertask;
+package io.littlehorse.sdk.usertask;
 
-import io.littlehorse.jlib.common.LHLibUtil;
-import io.littlehorse.jlib.common.proto.PutUserTaskDefPb;
-import io.littlehorse.jlib.common.proto.UserTaskFieldPb;
-import io.littlehorse.jlib.common.proto.VariableTypePb;
-import io.littlehorse.jlib.usertask.annotations.UserTaskField;
+import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.proto.PutUserTaskDefPb;
+import io.littlehorse.sdk.common.proto.UserTaskFieldPb;
+import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.usertask.annotations.UserTaskField;
 import java.lang.reflect.Field;
 
 public class UserTaskSchema {

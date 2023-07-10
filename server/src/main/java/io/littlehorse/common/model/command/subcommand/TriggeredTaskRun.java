@@ -22,7 +22,7 @@ import io.littlehorse.common.model.wfrun.taskrun.UserTaskTriggerReference;
 import io.littlehorse.common.model.wfrun.usertaskevent.UTETaskExecuted;
 import io.littlehorse.common.model.wfrun.usertaskevent.UserTaskEvent;
 import io.littlehorse.common.proto.TriggeredTaskRunPb;
-import io.littlehorse.jlib.common.proto.LHStatusPb;
+import io.littlehorse.sdk.common.proto.LHStatusPb;
 import java.util.Date;
 import java.util.List;
 import lombok.Getter;

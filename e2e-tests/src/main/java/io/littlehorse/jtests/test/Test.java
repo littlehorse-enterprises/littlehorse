@@ -1,7 +1,7 @@
 package io.littlehorse.jtests.test;
 
-import io.littlehorse.jlib.client.LHClient;
-import io.littlehorse.jlib.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.client.LHClient;
+import io.littlehorse.sdk.common.config.LHWorkerConfig;
 
 /*
  * A `Test` is like a Unit Test but it is actually useful: it checks end-to-end

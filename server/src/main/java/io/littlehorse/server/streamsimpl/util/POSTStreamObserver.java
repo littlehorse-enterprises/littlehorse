@@ -6,7 +6,7 @@ import com.google.protobuf.Message;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.proto.StoreQueryStatusPb;
 import io.littlehorse.common.proto.WaitForCommandReplyPb;
-import io.littlehorse.jlib.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.LHResponseCodePb;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

@@ -8,8 +8,8 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.VariableValue;
-import io.littlehorse.jlib.common.proto.FailureDefPb;
-import io.littlehorse.jlib.common.proto.VariableTypePb;
+import io.littlehorse.sdk.common.proto.FailureDefPb;
+import io.littlehorse.sdk.common.proto.VariableTypePb;
 import java.util.HashSet;
 import java.util.Set;
 

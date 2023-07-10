@@ -1,15 +1,15 @@
-package io.littlehorse.jlib.common.config;
+package io.littlehorse.sdk.common.config;
 
 import io.grpc.Channel;
 import io.grpc.Grpc;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.TlsChannelCredentials;
-import io.littlehorse.jlib.common.auth.OAuthClient;
-import io.littlehorse.jlib.common.auth.OAuthConfig;
-import io.littlehorse.jlib.common.auth.OAuthCredentialsProvider;
-import io.littlehorse.jlib.common.proto.LHPublicApiGrpc;
-import io.littlehorse.jlib.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
-import io.littlehorse.jlib.common.proto.LHPublicApiGrpc.LHPublicApiStub;
+import io.littlehorse.sdk.common.auth.OAuthClient;
+import io.littlehorse.sdk.common.auth.OAuthConfig;
+import io.littlehorse.sdk.common.auth.OAuthCredentialsProvider;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiBlockingStub;
+import io.littlehorse.sdk.common.proto.LHPublicApiGrpc.LHPublicApiStub;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;

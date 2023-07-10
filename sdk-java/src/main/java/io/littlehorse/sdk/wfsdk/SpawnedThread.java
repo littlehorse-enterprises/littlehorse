@@ -1,4 +1,4 @@
-package io.littlehorse.jlib.wfsdk;
+package io.littlehorse.sdk.wfsdk;
 
 /**
  * This is the output of `ThreadBuilder::spawnThread()`. It is used as

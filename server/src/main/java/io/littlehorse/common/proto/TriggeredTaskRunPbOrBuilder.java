@@ -16,11 +16,11 @@ public interface TriggeredTaskRunPbOrBuilder extends
    * <code>.littlehorse.TaskNodePb task_to_schedule = 1;</code>
    * @return The taskToSchedule.
    */
-  io.littlehorse.jlib.common.proto.TaskNodePb getTaskToSchedule();
+  io.littlehorse.sdk.common.proto.TaskNodePb getTaskToSchedule();
   /**
    * <code>.littlehorse.TaskNodePb task_to_schedule = 1;</code>
    */
-  io.littlehorse.jlib.common.proto.TaskNodePbOrBuilder getTaskToScheduleOrBuilder();
+  io.littlehorse.sdk.common.proto.TaskNodePbOrBuilder getTaskToScheduleOrBuilder();
 
   /**
    * <code>.littlehorse.NodeRunIdPb source = 2;</code>
@@ -31,9 +31,9 @@ public interface TriggeredTaskRunPbOrBuilder extends
    * <code>.littlehorse.NodeRunIdPb source = 2;</code>
    * @return The source.
    */
-  io.littlehorse.jlib.common.proto.NodeRunIdPb getSource();
+  io.littlehorse.sdk.common.proto.NodeRunIdPb getSource();
   /**
    * <code>.littlehorse.NodeRunIdPb source = 2;</code>
    */
-  io.littlehorse.jlib.common.proto.NodeRunIdPbOrBuilder getSourceOrBuilder();
+  io.littlehorse.sdk.common.proto.NodeRunIdPbOrBuilder getSourceOrBuilder();
 }

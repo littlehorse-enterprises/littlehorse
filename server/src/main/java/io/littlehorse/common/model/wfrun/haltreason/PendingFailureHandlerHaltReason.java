@@ -3,7 +3,7 @@ package io.littlehorse.common.model.wfrun.haltreason;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.wfrun.WfRun;
-import io.littlehorse.jlib.common.proto.PendingFailureHandlerHaltReasonPb;
+import io.littlehorse.sdk.common.proto.PendingFailureHandlerHaltReasonPb;
 
 public class PendingFailureHandlerHaltReason
     extends LHSerializable<PendingFailureHandlerHaltReasonPb>

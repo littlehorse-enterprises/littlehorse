@@ -1,4 +1,4 @@
-package io.littlehorse.jlib.common.auth;
+package io.littlehorse.sdk.common.auth;
 
 public class AuthorizationServerException extends RuntimeException {
 

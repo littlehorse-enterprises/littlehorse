@@ -3,7 +3,7 @@ package io.littlehorse.server.streamsimpl.storeinternals.utils;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
-import io.littlehorse.jlib.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeError;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.Stream;

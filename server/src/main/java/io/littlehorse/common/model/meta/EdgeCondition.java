@@ -3,8 +3,8 @@ package io.littlehorse.common.model.meta;
 import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.jlib.common.proto.ComparatorPb;
-import io.littlehorse.jlib.common.proto.EdgeConditionPb;
+import io.littlehorse.sdk.common.proto.ComparatorPb;
+import io.littlehorse.sdk.common.proto.EdgeConditionPb;
 import java.util.HashSet;
 import java.util.Set;
 

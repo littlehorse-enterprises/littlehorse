@@ -76,13 +76,13 @@ compileJava {
 
 javadoc {
     excludes = [
-        'io/littlehorse/jlib/common/proto/**',
-        'io/littlehorse/jlib/wfsdk/internal/**',
-        'io/littlehorse/jlib/worker/internal/**',
-        'io/littlehorse/jlib/common/util/**',
-        'io/littlehorse/jlib/common/LHLibUtil.java',
+        'io/littlehorse/sdk/common/proto/**',
+        'io/littlehorse/sdk/wfsdk/internal/**',
+        'io/littlehorse/sdk/worker/internal/**',
+        'io/littlehorse/sdk/common/util/**',
+        'io/littlehorse/sdk/common/LHLibUtil.java',
         '**/ConfigBase.java',
-        'io/littlehorse/jlib/common/exception/**'
+        'io/littlehorse/sdk/common/exception/**'
     ]
     options.memberLevel = JavadocMemberLevel.PUBLIC
 }

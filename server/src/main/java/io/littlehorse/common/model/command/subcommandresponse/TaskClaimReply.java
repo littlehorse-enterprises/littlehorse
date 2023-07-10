@@ -3,7 +3,7 @@ package io.littlehorse.common.model.command.subcommandresponse;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.command.AbstractResponse;
 import io.littlehorse.common.model.wfrun.ScheduledTask;
-import io.littlehorse.jlib.common.proto.PollTaskReplyPb;
+import io.littlehorse.sdk.common.proto.PollTaskReplyPb;
 import lombok.Getter;
 import lombok.Setter;
 

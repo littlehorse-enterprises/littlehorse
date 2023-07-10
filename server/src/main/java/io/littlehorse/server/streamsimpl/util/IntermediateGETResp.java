@@ -3,7 +3,7 @@ package io.littlehorse.server.streamsimpl.util;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.jlib.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.LHResponseCodePb;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

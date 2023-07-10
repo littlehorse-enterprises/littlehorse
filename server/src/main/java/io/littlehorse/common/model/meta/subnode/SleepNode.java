@@ -9,8 +9,8 @@ import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.common.model.wfrun.ThreadRun;
 import io.littlehorse.common.model.wfrun.subnoderun.SleepNodeRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
-import io.littlehorse.jlib.common.proto.SleepNodePb;
-import io.littlehorse.jlib.common.proto.SleepNodePb.SleepLengthCase;
+import io.littlehorse.sdk.common.proto.SleepNodePb;
+import io.littlehorse.sdk.common.proto.SleepNodePb.SleepLengthCase;
 import java.time.Instant;
 import java.util.Date;
 

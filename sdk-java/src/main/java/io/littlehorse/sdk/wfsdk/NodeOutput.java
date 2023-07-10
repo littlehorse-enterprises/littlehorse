@@ -1,4 +1,4 @@
-package io.littlehorse.jlib.wfsdk;
+package io.littlehorse.sdk.wfsdk;
 
 /**
  * `NodeOutput` represents the output of a Node execution. It can be used to

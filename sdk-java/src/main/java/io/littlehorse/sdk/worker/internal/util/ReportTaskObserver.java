@@ -1,10 +1,10 @@
-package io.littlehorse.jlib.worker.internal.util;
+package io.littlehorse.sdk.worker.internal.util;
 
 import io.grpc.stub.StreamObserver;
-import io.littlehorse.jlib.common.proto.LHResponseCodePb;
-import io.littlehorse.jlib.common.proto.ReportTaskReplyPb;
-import io.littlehorse.jlib.common.proto.ReportTaskRunPb;
-import io.littlehorse.jlib.worker.internal.LHServerConnectionManager;
+import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.ReportTaskReplyPb;
+import io.littlehorse.sdk.common.proto.ReportTaskRunPb;
+import io.littlehorse.sdk.worker.internal.LHServerConnectionManager;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

@@ -1,7 +1,7 @@
-package io.littlehorse.jlib.wfsdk.internal;
+package io.littlehorse.sdk.wfsdk.internal;
 
-import io.littlehorse.jlib.common.proto.VariableTypePb;
-import io.littlehorse.jlib.wfsdk.WfRunVariable;
+import io.littlehorse.sdk.common.proto.VariableTypePb;
+import io.littlehorse.sdk.wfsdk.WfRunVariable;
 
 public class WfRunVariableImpl implements WfRunVariable {
 

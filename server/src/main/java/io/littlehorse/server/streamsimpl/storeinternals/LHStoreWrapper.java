@@ -6,7 +6,7 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
 import io.littlehorse.common.model.command.CommandResult;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.jlib.common.exception.LHSerdeError;
+import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streamsimpl.storeinternals.index.TagsCache;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import java.util.Date;

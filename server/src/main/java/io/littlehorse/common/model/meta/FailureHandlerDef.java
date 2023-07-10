@@ -3,7 +3,7 @@ package io.littlehorse.common.model.meta;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.jlib.common.proto.FailureHandlerDefPb;
+import io.littlehorse.sdk.common.proto.FailureHandlerDefPb;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

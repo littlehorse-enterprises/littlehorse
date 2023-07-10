@@ -1,16 +1,16 @@
 package io.littlehorse.jtests.test.lifecycletests;
 
-import io.littlehorse.jlib.client.LHClient;
-import io.littlehorse.jlib.common.config.LHWorkerConfig;
-import io.littlehorse.jlib.common.exception.LHApiError;
-import io.littlehorse.jlib.common.proto.LHResponseCodePb;
-import io.littlehorse.jlib.common.proto.PutTaskDefPb;
-import io.littlehorse.jlib.common.proto.PutWfSpecPb;
-import io.littlehorse.jlib.common.proto.PutWfSpecReplyPb;
-import io.littlehorse.jlib.common.proto.WfSpecPb;
-import io.littlehorse.jlib.wfsdk.Workflow;
-import io.littlehorse.jlib.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.jtests.test.Test;
+import io.littlehorse.sdk.client.LHClient;
+import io.littlehorse.sdk.common.config.LHWorkerConfig;
+import io.littlehorse.sdk.common.exception.LHApiError;
+import io.littlehorse.sdk.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.PutTaskDefPb;
+import io.littlehorse.sdk.common.proto.PutWfSpecPb;
+import io.littlehorse.sdk.common.proto.PutWfSpecReplyPb;
+import io.littlehorse.sdk.common.proto.WfSpecPb;
+import io.littlehorse.sdk.wfsdk.Workflow;
+import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import java.util.UUID;
 
 /*

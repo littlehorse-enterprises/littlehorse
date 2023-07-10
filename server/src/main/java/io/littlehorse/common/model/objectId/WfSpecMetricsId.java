@@ -5,9 +5,9 @@ import io.littlehorse.common.model.ObjectId;
 import io.littlehorse.common.model.metrics.WfSpecMetrics;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.jlib.common.proto.MetricsWindowLengthPb;
-import io.littlehorse.jlib.common.proto.WfSpecMetricsIdPb;
-import io.littlehorse.jlib.common.proto.WfSpecMetricsPb;
+import io.littlehorse.sdk.common.proto.MetricsWindowLengthPb;
+import io.littlehorse.sdk.common.proto.WfSpecMetricsIdPb;
+import io.littlehorse.sdk.common.proto.WfSpecMetricsPb;
 import java.util.Date;
 
 public class WfSpecMetricsId

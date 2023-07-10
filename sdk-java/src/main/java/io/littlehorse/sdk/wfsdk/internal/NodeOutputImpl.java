@@ -1,6 +1,6 @@
-package io.littlehorse.jlib.wfsdk.internal;
+package io.littlehorse.sdk.wfsdk.internal;
 
-import io.littlehorse.jlib.wfsdk.NodeOutput;
+import io.littlehorse.sdk.wfsdk.NodeOutput;
 
 public class NodeOutputImpl implements NodeOutput {
 

@@ -20,24 +20,24 @@ public interface InternalGetAdvertisedHostsReplyPbOrBuilder extends
    * Use {@link #getHostsMap()} instead.
    */
   @java.lang.Deprecated
-  java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.HostInfoPb>
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.HostInfoPb>
   getHosts();
   /**
    * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
    */
-  java.util.Map<java.lang.String, io.littlehorse.jlib.common.proto.HostInfoPb>
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.HostInfoPb>
   getHostsMap();
   /**
    * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
    */
   /* nullable */
-io.littlehorse.jlib.common.proto.HostInfoPb getHostsOrDefault(
+io.littlehorse.sdk.common.proto.HostInfoPb getHostsOrDefault(
       java.lang.String key,
       /* nullable */
-io.littlehorse.jlib.common.proto.HostInfoPb defaultValue);
+io.littlehorse.sdk.common.proto.HostInfoPb defaultValue);
   /**
    * <code>map&lt;string, .littlehorse.HostInfoPb&gt; hosts = 1;</code>
    */
-  io.littlehorse.jlib.common.proto.HostInfoPb getHostsOrThrow(
+  io.littlehorse.sdk.common.proto.HostInfoPb getHostsOrThrow(
       java.lang.String key);
 }

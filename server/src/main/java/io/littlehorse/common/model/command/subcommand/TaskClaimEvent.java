@@ -11,7 +11,7 @@ import io.littlehorse.common.model.wfrun.ScheduledTask;
 import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
 import io.littlehorse.common.proto.TaskClaimEventPb;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.jlib.common.proto.LHResponseCodePb;
+import io.littlehorse.sdk.common.proto.LHResponseCodePb;
 import io.littlehorse.server.streamsimpl.taskqueue.PollTaskRequestObserver;
 import java.util.Date;
 import lombok.Getter;
