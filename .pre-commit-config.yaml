@@ -1,13 +1,20 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
+define: &exclude |
+              (?x)(
+                  ^server/src/main/java/io/littlehorse/common/proto/|
+                  ^sdk-java/src/main/java/io/littlehorse/sdk/common/proto/|
+                  ^sdk-go/common/model/
+              )
+
 repos:
     - repo: https://github.com/pre-commit/pre-commit-hooks
       rev: v4.4.0
       hooks:
           - id: trailing-whitespace
-            exclude: (server|client)/src/main/java/io/littlehorse(/sdk)?/common/proto/.*
+            exclude: *exclude
           - id: end-of-file-fixer
-            exclude: (server|client)/src/main/java/io/littlehorse(/sdk)?/common/proto/.*
+            exclude: *exclude
           - id: check-yaml
           - id: check-added-large-files
     - repo: https://github.com/shellcheck-py/shellcheck-py
@@ -34,8 +41,14 @@ repos:
             pass_filenames: false
             entry: ./local-dev/compile-proto.sh
           - id: tests
-            name: Running Tests
+            name: Running Java Tests
             language: system
             always_run: true
             pass_filenames: false
             entry: ./gradlew test
+          - id: test
+            name: Running Go files
+            language: system
+            always_run: true
+            pass_filenames: false
+            entry: go test ./...

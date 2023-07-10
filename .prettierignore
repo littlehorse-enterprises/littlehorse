@@ -1,2 +1,2 @@
 server/src/main/java/io/littlehorse/common/proto
-client/src/main/java/io/littlehorse/sdk/common/proto
+sdk-java/src/main/java/io/littlehorse/sdk/common/proto
