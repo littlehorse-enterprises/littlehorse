@@ -74,7 +74,7 @@ let nodes:any[] = [];
 export const WfSpecVisualizerChart = ({data, onClick}:{data:any, onClick:(n:any) => void}) => {
     const clickHandler = (_p:any, d:any) => {
         console.log(_p,d)
-        onClick(d)
+        onClick(d.name)
     }
     
     const minHeight = 862
