@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { WfSpecVisualizerChart } from './WfSpecVisualizerChart'
-//import WFRunInformationSideBar from '../../../../../../components/WFRunInformationSideBar'
+import WFRunInformationSideBar from '../../../../../../components/WFRunInformationSideBar'
 import { DrawerComponent } from '../../../../../../components/Drawer/DrawerComponent'
 import { Drawer } from '../../../../../../components/Drawer/Drawer'
 import {
@@ -23,10 +23,20 @@ export const WfRunVisualizer = ({
 	const [nodeType, setNodeType] = useState<string | undefined>()
 
 	const [output, setOutput] = useState<any>('')
-	const [wfRunProperties, setWfRunProperties] = useState<any>('')
+	//const [wfRunProperties, setWfRunProperties] = useState<any>('')
 	const [showError, setShowError] = useState(false)
 	const [toggleSideBar, setToggleSideBar] = useState(false)
 	const [sideBarData, setSideBarData] = useState('')
+
+	const [error, setError] = useState<any>()
+	const [nodeData, setNodeData] = useState<any>()
+	const [wfRunData, setWfRunData] = useState<any>()
+
+	console.log('error', error);
+	console.log('data', nodeData);
+	console.log('wfrundata', wfRunData);
+	
+	
 
 	const rec = (mappedData, i) => {
 		let el = mappedData[i]
@@ -52,10 +62,10 @@ export const WfRunVisualizer = ({
 	const setThreads = (data: any) => {
 		console.log(data)
 		getWfSpec(data.wfSpecName, data.wfSpecVersion)
-		getWfRunProperties(
-			data.threadRuns[0].number,
-			data.threadRuns[0].currentNodePosition
-		)
+		//getWfRunProperties(
+		//	data.threadRuns[0].number,
+		//	data.threadRuns[0].currentNodePosition
+		//)
 	}
 
 	const mapData = (data: any) => {
@@ -106,7 +116,7 @@ export const WfRunVisualizer = ({
 		})
 		if (res.ok) {
 			const wfRunData = await res.json()
-			setWfRunProperties(wfRunData.result)
+			//setWfRunProperties(wfRunData.result)
 		}
 	}
 
@@ -116,7 +126,7 @@ export const WfRunVisualizer = ({
 
 	useEffect(() => {
 		if (showError) {
-			setSideBarData(wfRunProperties)
+			//setSideBarData(wfRunProperties)
 			setToggleSideBar(true)
 		}
 	}, [showError])
@@ -143,6 +153,11 @@ export const WfRunVisualizer = ({
 			data={drawerData}
 			nodeName={selectedNodeName}
 			wfRunId={id}
+			setToggleSideBar={setToggleSideBar}
+			setCode={setSideBarData}
+			//setErrorData={setError}
+			//setSelectedNodeData={setNodeData}
+			//setWfRunData={setWfRunData}
 		/>
 	)
 
@@ -152,12 +167,12 @@ export const WfRunVisualizer = ({
 				<WfSpecVisualizerChart data={data} onClick={setSelectedNodeName} />
 			</div>
 			<Drawer title={'WfSpec Properties'}>{drawerInternal}</Drawer>
-			{/* <WFRunInformationSideBar
+			<WFRunInformationSideBar
 				toggleSideBar={toggleSideBar}
 				setToggleSideBar={setToggleSideBar}
 				output={sideBarData}
 				errorLog={showError}
-			/> */}
+			/>
 		</div>
 	)
 }

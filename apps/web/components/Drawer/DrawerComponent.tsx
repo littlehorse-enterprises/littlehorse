@@ -11,6 +11,11 @@ interface DrawerComponentProps {
 	data: any
 	nodeName: string
 	wfRunId?: string
+	//setErrorData: (value: any) => void;
+	//setSelectedNodeData: (value: any) => void;
+	//setWfRunData: (value: any) => void;
+	setToggleSideBar: (value: boolean) => void;
+	setCode: (code: string) => void
 }
 
 export const DrawerComponent = (props: DrawerComponentProps) => {
@@ -146,7 +151,10 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
 									const inputs = (data as any).inputVariables.map(
 										(element: any, index: number) => {
 											const variableType: string = element.value.type
-											const correctKey = variableType.toLowerCase() || ''
+											const correctKey = variableType.split('_').map((w,i) => {
+												if(i===0) return w.toLowerCase();
+												else return w.charAt(0) + w.slice(1).toLowerCase()
+											}).join('') || ''
 											const value = element.value[correctKey] || ''
 
 											processedData[index].value = value
@@ -162,7 +170,10 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
 									const outputs = (data as any).inputVariables.map(
 										(element: any) => {
 											const variableType: string = element.value.type
-											const correctKey = variableType.toLowerCase() || ''
+											const correctKey = variableType.split('_').map((w,i) => {
+												if(i===0) return w.toLowerCase();
+												else return w.charAt(0) + w.slice(1).toLowerCase()
+											}).join('') || ''
 											const value = element.value[correctKey] || ''
 
 											return {
@@ -216,8 +227,8 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
 										completionTime: wfRunNode.endTime || '',
 										status: wfRunNode.status
 									},
-									guid: data.externalEventId.guid,
-									arrivedTime: data.eventTime,
+									guid: data.externalEventId?.guid || '',
+									arrivedTime: data?.eventTime || '',
 									arrived: data.eventTime ? 'YES' : 'NO'
 								}
 
@@ -318,6 +329,22 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
 		threadName
 	])
 
+	const setToggleSideBar = (value: boolean, code: string) => {
+		props.setToggleSideBar(value);
+		props.setCode(JSON.parse(code));
+	}
+	/*useEffect(() => {
+		props.setErrorData(errorData)
+	}, [errorData]);
+
+
+	useEffect(() => {
+		props.setSelectedNodeData(selectedNodeData)
+	}, [selectedNodeData]);
+
+	useEffect(() => {
+		props.setWfRunData(wfRunData)
+	}, [wfRunData]);*/
 	return (
 		<div className='drawer-component'>
 			<>
@@ -359,7 +386,8 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
 							data: selectedNodeData,
 							nodeName: props.nodeName,
 							errorData: errorData,
-							wfRunData: wfRunData
+							wfRunData: wfRunData,
+							setToggleSideBar: setToggleSideBar
 						}}
 					/>
 				)}

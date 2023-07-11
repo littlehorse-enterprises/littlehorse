@@ -26,7 +26,8 @@ interface TaskDefInformationProps {
 			type: string
 			value: string
 		}[]
-	}
+	},
+	setToggleSideBar: (value: boolean, code?: string) => void;
 }
 
 export const TaskDefInformation = (props: TaskDefInformationProps) => {
@@ -72,13 +73,19 @@ export const TaskDefInformation = (props: TaskDefInformationProps) => {
 				{props.data &&
 					props.data.map(
 						({ name, type, variableName, value }, index: number) => {
+							let link;
+							if (type === 'JSON_OBJ' || type === 'JSON_ARR') {
+								link = <button className='btn btn-wfrun-link' onClick={(e) => {
+									props.setToggleSideBar(true, value)
+								}}>See More</button>
+							}
 							if (props.wfRunData)
 								return (
 									<div key={index} className='grid-4'>
 										<p className='center'>{name}</p>
 										<p className='center'>{type}</p>
 										<p className='center'>{variableName}</p>
-										<p className='center'>{value}</p>
+										<p className='center'>{link ? link : value}</p>
 									</div>
 								)
 							else
@@ -104,11 +111,17 @@ export const TaskDefInformation = (props: TaskDefInformationProps) => {
 						{props.wfRunData.inputs &&
 							props.wfRunData.inputs.map(
 								({ name, type, value }, index: number) => {
+									let link;
+									if (type === 'JSON_OBJ' || type === 'JSON_ARR') {
+										link = <button className='btn btn-wfrun-link' onClick={(e) => {
+											props.setToggleSideBar(true, value)
+										}}>See More</button>
+									}
 									return (
 										<div key={index} className='grid-3'>
 											<p className='center'>{name}</p>
 											<p className='center'>{type}</p>
-											<p className='center'>{value}</p>
+											<p className='center'>{link ? link : value}</p>
 										</div>
 									)
 								}
@@ -122,10 +135,16 @@ export const TaskDefInformation = (props: TaskDefInformationProps) => {
 						</div>
 						{props.wfRunData.outputs &&
 							props.wfRunData.outputs.map(({ type, value }, index: number) => {
+								let link;
+								if (type === 'JSON_OBJ' || type === 'JSON_ARR') {
+									link = <button className='btn btn-wfrun-link' onClick={(e) => {
+										props.setToggleSideBar(true, value)
+									}}>See More</button>
+								}
 								return (
 									<div key={index} className='grid-2'>
 										<p className='center'>{type}</p>
-										<p className='center'>{value}</p>
+										<p className='center'>{link ? link : value}</p>
 									</div>
 								)
 							})}
