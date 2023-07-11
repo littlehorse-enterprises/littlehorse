@@ -333,8 +333,8 @@ public class BackendInternalComms implements Closeable {
         if (desiredHost == null) {
             String message = String.format(
                 """
-                Unknown listener name %s. Check LHS_ADVERTISED_LISTENER_NAMES on
-                LH Server and check the LHW_CONNECT_LISTENER_NAME config on task worker.
+                Unknown listener name %s. Check LHS_ADVERTISED_LISTENERS on
+                LH Server and check the LHW_SERVER_CONNECT_LISTENER config on task worker.
                 """,
                 listenerName
             );
