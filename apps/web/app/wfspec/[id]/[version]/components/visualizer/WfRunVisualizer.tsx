@@ -112,7 +112,7 @@ export const WfRunVisualizer = ({
 	}, [])
 	return (
 		<div className='visualizer'>
-			<div className='canvas'>
+			<div className='canvas scrollbar'>
 				<WfSpecVisualizerChart data={data} onClick={setSelectedNodeName} />
 			</div>
 			<Drawer title={'WfSpec Properties'}>{drawerInternal}</Drawer>
