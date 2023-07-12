@@ -1,6 +1,5 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { WfSpecVisualizerChart } from './WfSpecVisualizerChart'
 import WFRunInformationSideBar from '../../../../../../components/WFRunInformationSideBar'
 import { DrawerComponent } from '../../../../../../components/Drawer/DrawerComponent'
 import { Drawer } from '../../../../../../components/Drawer/Drawer'
@@ -8,6 +7,7 @@ import {
 	getMainDrawerData,
 	nodeTypes
 } from '../../../../../../components/Drawer/internals/drawerInternals'
+import { WfRunVisualizerChart } from './WfRunVisualizerChart'
 
 interface mapnode {}
 export const WfRunVisualizer = ({
@@ -30,7 +30,7 @@ export const WfRunVisualizer = ({
 
 	const rec = (mappedData, i) => {
 		let el = mappedData[i]
-		if (!el.childs.length) return mappedData
+		if (!el.childs.length) return mappedData //if not childs close the REC function
 		if (el.type === 'WAIT_FOR_THREAD') {
 			let wft = el.node.waitForThread.threadRunNumber.variableName
 			let thread = mappedData.find(m => m.name === wft)
@@ -38,10 +38,18 @@ export const WfRunVisualizer = ({
 		}
 		mappedData = mappedData.map(m => {
 			if (el.childs.includes(m.name)) {
-				m.level = el.level + 1
+				m.level = el.level + 1 // each child heritate parent level + 1
+				if(m.type === 'NOP' ){
+					m.px = 'center'
+				}else{
+					m.px = el.px
+				}
 				if (el.childs.length > 1) {
 					m.level = el.level + 2
 					m.px = m.name === el.childs[0] ? 'left' : 'right'
+				}
+				if(m.type === 'NOP' && m.childs.length === 1){
+					el.cNOP = m.name
 				}
 			}
 			return m
@@ -49,9 +57,11 @@ export const WfRunVisualizer = ({
 		return rec(mappedData, ++i)
 	}
 
+	const [run, setRun ] = useState()
 	const setThreads = (data: any) => {
-		console.log(data)
+		// console.log('threads',data)
 		getWfSpec(data.wfSpecName, data.wfSpecVersion)
+		setRun(data.threadRuns[0])
 	}
 
 	const mapData = (data: any) => {
@@ -124,7 +134,7 @@ export const WfRunVisualizer = ({
 	return (
 		<div className='visualizer'>
 			<div className='canvas'>
-				<WfSpecVisualizerChart data={data} onClick={setSelectedNodeName} />
+				<WfRunVisualizerChart data={data} onClick={setSelectedNodeName} run={run} />
 			</div>
 			<Drawer title={'WfSpec Properties'}>{drawerInternal}</Drawer>
 			<WFRunInformationSideBar

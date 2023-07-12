@@ -342,15 +342,15 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
 			<>
 				<div className='drawer__threadSelector'>
 					<p className='drawer__threadSelector__header'>THREADSPEC NAME</p>
-					<div className='drawer__threadSelector__selector'>
+					<div className='drawer__threadSelector__container'>
 						<select
-							className='drawer__threadSelector__selector__label'
+							className='drawer__threadSelector__container__select'
 							value={threadName}
 							onChange={event => setThreadName(event.target.value)}
 						>
 							{props.data &&
 								Object.keys(props.data.threadSpecs).map(name => {
-									return <option value={name}>{name}</option>
+									return <option key={name} value={name}>{name}</option>
 								})}
 						</select>
 					</div>

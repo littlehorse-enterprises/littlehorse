@@ -4,6 +4,7 @@ import * as d3 from "d3";
 import * as ReactDOMServer from 'react-dom/server';
 import { TaskNode } from "./TaskNode";
 
+
 const conditions = {
     EQUALS:'=',
     NOT_EQUALS:'!=',
@@ -89,18 +90,19 @@ let nodes:any[] = [];
          + "l" + 3 + "," + -3
   }
 
-export const WfSpecVisualizerChart = ({data, onClick}:{data:any, onClick:(n:any) => void}) => {
+export const WfRunVisualizerChart = ({data, onClick, run}:{data:any, onClick:(n:any) => void, run:any}) => {
     const clickHandler = (_p:any, d:any) => {
         console.log(_p,d)
         onClick(d.name)
         console.log(d.name)
+        console.log('run',run)
         _d3.select('.selected-node').classed('selected-node',false)
         _d3.select('.c'+d.name).classed('selected-node',true)
        
     }
     
     const minHeight = 862
-    const drawChart = useCallback((data:any[]) => {
+    const drawChart = useCallback((data:any[], run:any) => {
         _d3.select("svg").remove();
         let svg = _d3.append("svg")
             .attr("width",width)
@@ -206,9 +208,9 @@ export const WfSpecVisualizerChart = ({data, onClick}:{data:any, onClick:(n:any)
             .append("path")
             .attr("class", d => d.name)
             .attr("d", (d) => {
-                console.log('CNOP', data.find( dd => dd.name === d.cNOP))
+                // console.log('CNOP', data.find( dd => dd.name === d.cNOP))
                 const cnopl =  data.find( dd => dd.name === d.cNOP).level
-                console.log((cnopl-d.level)*66)
+                // console.log((cnopl-d.level)*66)
                 const condh = d.type === 'NOP' ? 100 : 0
                 if(d.px === 'left'){
                     return lbArrow((width/2)+15, ((d.level-1) * 110)-85 +condh - ((cnopl-d.level)*400), 110, ((cnopl-d.level)*81.5)+54, 12)
@@ -313,26 +315,26 @@ export const WfSpecVisualizerChart = ({data, onClick}:{data:any, onClick:(n:any)
                 .attr('y', (d,i) => (110*d.level)+50)
             .append('xhtml:div')
                 .attr('style', 'width:100%; height:100%; display:flex;')
-                .html((d:any) => ReactDOMServer.renderToString(<TaskNode d={d} />))
+                .html((d:any) => ReactDOMServer.renderToString(<TaskNode d={d} run={run} />))
                 .select('.node').on("click",clickHandler)
         
 
     },[])
 
 
-    const setD3 = useCallback((data:any[]) => {
+    const setD3 = useCallback((data:any[], run:any) => {
         _d3 = d3.select("#visualizer")
-        drawChart(data) 
+        drawChart(data, run) 
     },[drawChart])
 
 
     useEffect( () => {
-        setD3(data)
-    },[data, setD3 ])
+        if(run) setD3(data, run)
+    },[data, setD3, run ])
 
     useEffect( () => {
         return () => {
-            _d3.select("svg").remove();
+            if(_d3) _d3.select("svg").remove();
         }
     },[])
     return (

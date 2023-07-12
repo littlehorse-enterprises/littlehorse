@@ -125,11 +125,11 @@ export const Calendar = ({ type, changeType, lastDate, changeLastDate, noWindows
                   </div>
                 ) : (
                   <div className="color-mild-light">
-                    from
+                    from{` `}
                     <span className="text-white">
                       {moment(startDt).format(`MMM DD ${ttype.value === "HOURS_2" ? "HH:00" : ""} ${ttype.value === "MINUTES_5" ? "HH:mm" : ""} `)}
                     </span>
-                    to
+                    to{` `}
                     <span className="text-white">
                       {moment(endDt).format(`MMM DD ${ttype.value === "HOURS_2" ? "HH:00" : ""} ${ ttype.value === "MINUTES_5" ? "HH:mm" : ""}`)}
                     </span>

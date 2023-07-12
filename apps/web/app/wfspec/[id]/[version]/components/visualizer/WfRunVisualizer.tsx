@@ -23,7 +23,7 @@ export const WfRunVisualizer = ({
 
 	const rec = (mappedData, i) => {
 		let el = mappedData[i]
-		if (!el.childs.length) return mappedData
+		if (!el.childs.length) return mappedData //if not childs close the REC function
 		if (el.type === 'WAIT_FOR_THREAD') {
 			let wft = el.node.waitForThread.threadRunNumber.variableName
 			let thread = mappedData.find(m => m.name === wft)
@@ -31,10 +31,18 @@ export const WfRunVisualizer = ({
 		}
 		mappedData = mappedData.map(m => {
 			if (el.childs.includes(m.name)) {
-				m.level = el.level + 1
+				m.level = el.level + 1 // each child heritate parent level + 1
+				if(m.type === 'NOP' ){
+					m.px = 'center'
+				}else{
+					m.px = el.px
+				}
 				if (el.childs.length > 1) {
 					m.level = el.level + 2
 					m.px = m.name === el.childs[0] ? 'left' : 'right'
+				}
+				if(m.type === 'NOP' && m.childs.length === 1){
+					el.cNOP = m.name
 				}
 			}
 			return m
@@ -51,6 +59,7 @@ export const WfRunVisualizer = ({
 			level: 0,
 			px: 'center'
 		}))
+		console.log(mappedData)
 		return rec(mappedData, 0)
 	}
 	const getData = async () => {
