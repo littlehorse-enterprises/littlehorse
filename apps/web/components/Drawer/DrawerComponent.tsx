@@ -330,8 +330,12 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
 							onChange={event => setThreadName(event.target.value)}
 						>
 							{props.data &&
-								Object.keys(props.data.threadSpecs).map(name => {
-									return <option key={name} value={name}>{name}</option>
+								Object.keys(props.data.threadSpecs).map((name, index) => {
+									return (
+										<option key={index} value={name}>
+											{name}
+										</option>
+									)
 								})}
 						</select>
 					</div>

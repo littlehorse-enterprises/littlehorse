@@ -42,3 +42,8 @@ export const getMainDrawerData = async (name: string, setDrawerData: any) => {
 		setDrawerData(content.data.result)
 	} else console.warn('INVALID RESPONSE FROM API')
 }
+
+export const getThreadName = nodeName => {
+	const split = nodeName.split('-')
+	return split[1] + ' ' + split[2]
+}
