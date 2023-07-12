@@ -1,8 +1,6 @@
-import Link from 'next/link'
 import React from 'react'
 import Breadcrumbs from '../../../../components/Breadcrumbs'
 import { WfRunVisualization } from './sections/WfRunVisualization'
-import WfSpec from '../../../wfspec/[id]/[version]/page'
 
 const WfRun = ({ params }: { params: { wfspec: string; id: string } }) => {
 	return (
