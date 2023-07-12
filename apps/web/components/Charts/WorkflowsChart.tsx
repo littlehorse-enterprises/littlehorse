@@ -283,8 +283,13 @@ export const WorkflowsChart = ({data, type}:Props) => {
         })
         .on("mousemove", (e,d) => {
             d3.select("#workflows-chart-tooltip").html(updateToolTipContent(d,ttTemplate))
-            .style('top',e.layerY+"px")
-            .style('left',e.offsetX+"px")
+            .style('top',(e.layerY+10)+"px")
+            .style('left',() => {
+                if(e.layerX > width){
+                    return (e.layerX-160)+"px"
+                }
+                return (e.layerX+10)+"px"
+            })
 
         })
         .on("mouseout", function(e) {
