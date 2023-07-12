@@ -47,7 +47,7 @@ repos:
             pass_filenames: false
             entry: ./gradlew test
           - id: test
-            name: Running Go files
+            name: Running Go Tests
             language: system
             always_run: true
             pass_filenames: false

@@ -347,8 +347,8 @@ public class LHConfig extends ConfigBase {
         );
     }
 
-    public OAuthConfig getOAuthConfigByListener(String advertisedListenerName) {
-        String configPrefix = "LHS_LISTENER_" + advertisedListenerName;
+    public OAuthConfig getOAuthConfigByListener(String listenerName) {
+        String configPrefix = "LHS_LISTENER_" + listenerName;
 
         String clientId = getOrSetDefault(configPrefix + "_CLIENT_ID", null);
         String clientSecret = getOrSetDefault(configPrefix + "_CLIENT_SECRET", null);
@@ -403,8 +403,8 @@ public class LHConfig extends ConfigBase {
         }
     }
 
-    public TlsConfig getTlsConfigByListener(String advertisedListenerName) {
-        String configPrefix = "LHS_LISTENER_" + advertisedListenerName;
+    public TlsConfig getTlsConfigByListener(String listenerName) {
+        String configPrefix = "LHS_LISTENER_" + listenerName;
 
         String caCertFile = getOrSetDefault(configPrefix + "_CA_CERT", null);
         String serverCertFile = getOrSetDefault(configPrefix + "_CERT", null);
