@@ -3,6 +3,7 @@ import Image from 'next/image'
 import spawnChildSvg from './spawn-child.svg'
 import polylineSvg from './polyline.svg'
 import { FailureInformation, LH_EXCEPTION } from './FailureInformation'
+import { parseKey } from './drawerInternals'
 
 interface WaitChildInformationProps {
 	linkedThread: () => void
@@ -12,9 +13,19 @@ interface WaitChildInformationProps {
 		exception: LH_EXCEPTION | string
 	}[]
 	wfRunDrawer?: boolean
+	setToggleSideBar: (value: boolean, isError: boolean, code: string, language?: string) => void;
 }
 
 export const WaitChildInformation = (props: WaitChildInformationProps) => {
+	const onParseError = (data: any) => {
+		if (typeof data  == 'string') {
+			props.setToggleSideBar(true, true, data, 'str')
+			return;
+		}
+		const key = parseKey(data.type.toLowerCase());
+		const error = data[key];
+		props.setToggleSideBar(true, true, error, key)
+	}
 	return (
 		<>
 			<div className='component-header'>
@@ -59,7 +70,7 @@ export const WaitChildInformation = (props: WaitChildInformationProps) => {
 					</div>
 				</div>
 			)}
-			{<FailureInformation data={props.errorData} />}
+			{<FailureInformation data={props.errorData} openError={onParseError} />}
 		</>
 	)
 }

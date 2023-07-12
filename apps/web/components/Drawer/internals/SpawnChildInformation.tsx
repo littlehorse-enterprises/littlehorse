@@ -4,6 +4,7 @@ import spawnChildSvg from './spawn-child.svg'
 import polylineSvg from './polyline.svg'
 import { FailureInformation, LH_EXCEPTION } from './FailureInformation'
 import { NodeData, NodeDataProps } from './NodeData'
+import { parseKey } from './drawerInternals'
 
 interface SpawnChildInformationProps {
 	linkedThread: () => void
@@ -15,9 +16,19 @@ interface SpawnChildInformationProps {
 	wfRunData?: {
 		nodeData: NodeDataProps
 	}
+	setToggleSideBar: (value: boolean, isError: boolean, code: string, language?: string) => void;
 }
 
 export const SpawnChildInformation = (props: SpawnChildInformationProps) => {
+	const onParseError = (data: any) => {
+		if (typeof data  == 'string') {
+			props.setToggleSideBar(true, true, data, 'str')
+			return;
+		}
+		const key = parseKey(data.type.toLowerCase());
+		const error = data[key];
+		props.setToggleSideBar(true, true, error, key)
+	}
 	return (
 		<>
 			<div className='component-header'>
@@ -66,7 +77,7 @@ export const SpawnChildInformation = (props: SpawnChildInformationProps) => {
 					</div>
 				</div>
 			)}
-			<FailureInformation data={props.errorData} />
+			<FailureInformation data={props.errorData} openError={onParseError} />
 		</>
 	)
 }

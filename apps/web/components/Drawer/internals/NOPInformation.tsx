@@ -5,7 +5,8 @@ import { FailureInformation, LH_EXCEPTION } from './FailureInformation'
 import {
 	conditionSymbol,
 	getFullVariableName,
-	getNOP_RHS
+	getNOP_RHS,
+	parseKey
 } from './drawerInternals'
 
 interface NOPInformationProps {
@@ -15,6 +16,7 @@ interface NOPInformationProps {
 		handlerSpecName: string
 		exception: LH_EXCEPTION | string
 	}[]
+	setToggleSideBar: (value: boolean, isError: boolean, code: string, language?: string) => void;
 }
 
 interface outgoingEdgesCondition {
@@ -29,6 +31,15 @@ interface outgoingEdgesCondition {
 }
 
 export const NOPInformation = (props: NOPInformationProps) => {
+	const onParseError = (data: any) => {
+		if (typeof data  == 'string') {
+			props.setToggleSideBar(true, true, data, 'str')
+			return;
+		}
+		const key = parseKey(data.type.toLowerCase());
+		const error = data[key];
+		props.setToggleSideBar(true, true, error, key)
+	}
 	return (
 		<>
 			{props.nodeName && (
@@ -79,7 +90,7 @@ export const NOPInformation = (props: NOPInformationProps) => {
 								}
 							)}
 					</div>
-					<FailureInformation data={props.errorData} />
+					<FailureInformation data={props.errorData} openError={onParseError} />
 				</>
 			)}
 		</>

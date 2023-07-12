@@ -7,6 +7,7 @@ import {
 	getMainDrawerData,
 	nodeTypes
 } from '../../../../../../components/Drawer/internals/drawerInternals'
+import WFRunInformationSideBar from '../../../../../../components/WFRunInformationSideBar'
 
 interface mapnode {}
 export const WfRunVisualizer = ({
@@ -20,6 +21,13 @@ export const WfRunVisualizer = ({
 	const [drawerData, setDrawerData] = useState<any>()
 	const [selectedNodeName, setSelectedNodeName] = useState<any>()
 	const [nodeType, setNodeType] = useState<string | undefined>()
+
+
+	const [output, setOutput] = useState<any>('')
+	const [language, setLanguage] = useState<any>();
+	const [showError, setShowError] = useState(false)
+	const [toggleSideBar, setToggleSideBar] = useState(false)
+	const [sideBarData, setSideBarData] = useState('')
 
 	const rec = (mappedData, i) => {
 		let el = mappedData[i]
@@ -91,6 +99,11 @@ export const WfRunVisualizer = ({
 			internalComponent={nodeType}
 			data={drawerData}
 			nodeName={selectedNodeName}
+			wfRunId={id}
+			setToggleSideBar={setToggleSideBar}
+			setCode={setSideBarData}
+			setLanguage={setLanguage}
+			setError={setShowError}
 		/>
 	)
 
@@ -103,6 +116,13 @@ export const WfRunVisualizer = ({
 				<WfSpecVisualizerChart data={data} onClick={setSelectedNodeName} />
 			</div>
 			<Drawer title={'WfSpec Properties'}>{drawerInternal}</Drawer>
+			<WFRunInformationSideBar
+				toggleSideBar={toggleSideBar}
+				setToggleSideBar={setToggleSideBar}
+				output={sideBarData}
+				errorLog={showError}
+				language={language}
+			/>
 		</div>
 	)
 }

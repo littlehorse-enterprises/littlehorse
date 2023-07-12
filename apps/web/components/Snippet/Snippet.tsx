@@ -11,7 +11,7 @@ const Snippet = ({value, language='json'}) => {
     useEffect(() => {
         if (language === 'int' ||
             language === 'str') {
-                setSnippetLanguage('javascript');
+                setSnippetLanguage('plaintext');
             }
         else {
             setSnippetLanguage('json')

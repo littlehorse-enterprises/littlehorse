@@ -34,6 +34,10 @@ interface TaskDefInformationProps {
 export const TaskDefInformation = (props: TaskDefInformationProps) => {
 
 	const onParseError = (data: any) => {
+		if (typeof data  == 'string') {
+			props.setToggleSideBar(true, true, data, 'str')
+			return;
+		}
 		const key = parseKey(data.type.toLowerCase());
 		const error = data[key];
 		props.setToggleSideBar(true, true, error, key)

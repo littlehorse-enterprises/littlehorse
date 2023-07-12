@@ -12,8 +12,8 @@ export enum LH_EXCEPTION {
 }
 
 interface FailureInformationProps {
-	data: any[],
-	openError: (value: any) => void
+	data: any[];
+	openError: (value: any) => void;
 }
 
 export const FailureInformation = (props: FailureInformationProps) => {
@@ -57,7 +57,7 @@ export const FailureInformation = (props: FailureInformationProps) => {
 											<div
 												className='drawer__task__link__container__clickable'
 												onClick={() => {
-													props.openError(element.log)
+													props.openError(element.log || element.message)
 												}}
 											>
 												<Image src={linkSvg} alt={'link'} width={20} height={10} />

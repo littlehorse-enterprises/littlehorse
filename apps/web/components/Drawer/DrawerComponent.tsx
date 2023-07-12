@@ -105,6 +105,8 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
 					)
 					if (wfRunNode) {
 						getErrorData(wfRunNode, 'failures')
+					} else {
+						setErrorData([])
 					}
 				} else {
 					getErrorData(props.data.threadSpecs.entrypoint.nodes[props.nodeName], 'failureHandlers')
@@ -388,7 +390,8 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
 						{...{
 							data: selectedNodeData,
 							nodeName: props.nodeName,
-							errorData: errorData
+							errorData: errorData,
+							setToggleSideBar: setToggleSideBar
 						}}
 					/>
 				)}
@@ -398,7 +401,8 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
 							data: selectedNodeData,
 							nodeName: props.nodeName,
 							errorData: errorData,
-							wfRunData: wfRunData
+							wfRunData: wfRunData,
+							setToggleSideBar: setToggleSideBar
 						}}
 					/>
 				)}
@@ -408,7 +412,8 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
 							linkedThread: changeThread,
 							nodeName: props.nodeName,
 							errorData: errorData,
-							wfRunData: wfRunData
+							wfRunData: wfRunData,
+							setToggleSideBar: setToggleSideBar
 						}}
 					/>
 				)}
@@ -418,7 +423,8 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
 							linkedThread: changeThread,
 							nodeName: props.nodeName,
 							errorData: errorData,
-							wfRunDrawer: props.wfRunId === undefined ? false : true
+							wfRunDrawer: props.wfRunId === undefined ? false : true,
+							setToggleSideBar: setToggleSideBar
 						}}
 					/>
 				)}
