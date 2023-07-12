@@ -4,6 +4,7 @@ import linkSvg from './link.svg'
 import correctArrowSvg from './correct-arrow.svg'
 import { FailureInformation, LH_EXCEPTION } from './FailureInformation'
 import { NodeData, NodeDataProps } from './NodeData'
+import Link from 'next/link'
 
 interface TaskDefInformationProps {
 	linkedThread: () => void
@@ -135,15 +136,18 @@ export const TaskDefInformation = (props: TaskDefInformationProps) => {
 			<div className='drawer__task__link'>
 				<div className='drawer__task__link__title'>TaskDef linked</div>
 				<div className='drawer__task__link__container'>
-					<div
+					<Link href={'/taskdef/'+props?.nodeName.split('-').slice(1,-1).join('-')}
 						className='drawer__task__link__container__clickable'
-						onClick={() => props.linkedThread()}
+						style={{
+							textDecoration:'none'
+						}}
 					>
 						<Image src={linkSvg} alt={'link'} width={20} height={10} />
 						<p className='drawer__task__link__container__clickable__text'>
-							request-confirmation
+							{props?.nodeName.split('-').slice(1,-1).join('-') || ''}
 						</p>
-					</div>
+					</Link>
+					
 				</div>
 			</div>
 			<FailureInformation data={props.errorData} />

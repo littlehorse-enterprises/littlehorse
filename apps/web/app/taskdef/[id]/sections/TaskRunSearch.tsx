@@ -192,7 +192,7 @@ export const TaskRunSearch = ({id}:any) => {
         <div style={{minHeight:'568px'}}
             className={`${results.length === 0 ? 'flex items-center justify-items-center justify-center': ''}`}
         >
-            {results.length > 0 ? <TaskRunSearchTable results={results} /> : <Loader />}
+            {results.length > 0 ? <TaskRunSearchTable wfspec={id} results={results} /> : <Loader />}
         </div>
         <div className="end">
             <div className="btns btns-right">
