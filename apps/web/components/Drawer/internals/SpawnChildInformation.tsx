@@ -4,7 +4,7 @@ import spawnChildSvg from './spawn-child.svg'
 import polylineSvg from './polyline.svg'
 import { FailureInformation, LH_EXCEPTION } from './FailureInformation'
 import { NodeData, NodeDataProps } from './NodeData'
-import { parseKey } from './drawerInternals'
+import { parseKey, getThreadName } from './drawerInternals'
 
 interface SpawnChildInformationProps {
 	linkedThread: () => void
@@ -52,7 +52,7 @@ export const SpawnChildInformation = (props: SpawnChildInformationProps) => {
 									className='drawer__startThread__wfrun__table__link'
 									onClick={() => props.linkedThread()}
 								>
-									spawned-thread
+									{getThreadName(props.nodeName)}
 								</p>
 							</div>
 						</div>
@@ -71,7 +71,7 @@ export const SpawnChildInformation = (props: SpawnChildInformationProps) => {
 						>
 							<Image src={polylineSvg} alt={'polyline'} width={12} />
 							<p className='drawer__startThread__link__container__clickable__text'>
-								spawned-thread
+								{getThreadName(props.nodeName)}
 							</p>
 						</div>
 					</div>

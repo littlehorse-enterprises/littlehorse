@@ -10,8 +10,11 @@ interface DrawerProps {
 export const Drawer = (props: DrawerProps) => {
 	return (
 		<div className='drawer'>
-			<header>
-				<button onClick={() => console.warn('Missing clickHandler')}>
+			<header className='drawer__header'>
+				<button
+					className='drawer__header__button'
+					onClick={() => console.warn('Missing clickHandler')}
+				>
 					<Image
 						src={arrowRightSvg}
 						alt={'arrow-right'}
@@ -19,7 +22,7 @@ export const Drawer = (props: DrawerProps) => {
 						height={24}
 					/>
 				</button>
-				<p className='ml-2'>{props.title}</p>
+				<p>{props.title}</p>
 			</header>
 			{props.children}
 		</div>

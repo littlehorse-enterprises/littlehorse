@@ -49,3 +49,8 @@ export const parseKey = (variableType: string) => {
 		else return w.charAt(0) + w.slice(1).toLowerCase()
 	}).join('')
 }
+
+export const getThreadName = nodeName => {
+	const split = nodeName.split('-')
+	return split[1] + ' ' + split[2]
+}
