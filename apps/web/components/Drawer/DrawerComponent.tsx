@@ -331,7 +331,7 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
 						>
 							{props.data &&
 								Object.keys(props.data.threadSpecs).map(name => {
-									return <option value={name}>{name}</option>
+									return <option key={name} value={name}>{name}</option>
 								})}
 						</select>
 					</div>
