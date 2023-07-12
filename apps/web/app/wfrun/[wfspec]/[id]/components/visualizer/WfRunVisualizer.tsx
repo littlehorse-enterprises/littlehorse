@@ -8,6 +8,7 @@ import {
 	nodeTypes
 } from '../../../../../../components/Drawer/internals/drawerInternals'
 import { WfRunVisualizerChart } from './WfRunVisualizerChart'
+import { Loader } from 'ui'
 
 interface mapnode {}
 export const WfRunVisualizer = ({
@@ -21,8 +22,8 @@ export const WfRunVisualizer = ({
 	const [drawerData, setDrawerData] = useState<any>()
 	const [selectedNodeName, setSelectedNodeName] = useState<any>()
 	const [nodeType, setNodeType] = useState<string | undefined>()
+	const [loading, setLoading] = useState(true);
 
-	const [output, setOutput] = useState<any>('')
 	const [language, setLanguage] = useState<any>();
 	const [showError, setShowError] = useState(false)
 	const [toggleSideBar, setToggleSideBar] = useState(false)
@@ -74,6 +75,7 @@ export const WfRunVisualizer = ({
 			level: 0,
 			px: 'center'
 		}))
+		setLoading(false);
 		return rec(mappedData, 0)
 	}
 
@@ -133,8 +135,10 @@ export const WfRunVisualizer = ({
 
 	return (
 		<div className='visualizer'>
-			<div className='canvas scrollbar'>
-				<WfRunVisualizerChart data={data} onClick={setSelectedNodeName} run={run} />
+			<div
+				className={`canvas scrollbar ${data.length === 0 ? 'flex items-center justify-items-center justify-center': ''}`}
+			>
+				{ loading ? <Loader /> : <WfRunVisualizerChart data={data} onClick={setSelectedNodeName} run={run} />}
 			</div>
 			<Drawer title={'WfSpec Properties'}>{drawerInternal}</Drawer>
 			<WFRunInformationSideBar
