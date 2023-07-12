@@ -4,6 +4,7 @@ import linkSvg from './link.svg'
 import correctArrowSvg from './correct-arrow.svg'
 import { FailureInformation, LH_EXCEPTION } from './FailureInformation'
 import { NodeData, NodeDataProps } from './NodeData'
+import { parseKey } from './drawerInternals'
 
 interface TaskDefInformationProps {
 	linkedThread: () => void
@@ -27,10 +28,21 @@ interface TaskDefInformationProps {
 			value: string
 		}[]
 	},
-	setToggleSideBar: (value: boolean, code?: string) => void;
+	setToggleSideBar: (value: boolean, isError: boolean, code: string, language?: string) => void;
 }
 
 export const TaskDefInformation = (props: TaskDefInformationProps) => {
+
+	const onParseError = (data: any) => {
+		const key = parseKey(data.type.toLowerCase());
+		const error = data[key];
+		props.setToggleSideBar(true, true, error, key)
+	}
+
+	const LinkToSnipper = (value: any) => <button className='btn btn-wfrun-link' onClick={(e) => {
+		props.setToggleSideBar(true, false, value.data)
+	}}>See More</button>
+
 	return (
 		<>
 			<div className='component-header'>
@@ -75,9 +87,7 @@ export const TaskDefInformation = (props: TaskDefInformationProps) => {
 						({ name, type, variableName, value }, index: number) => {
 							let link;
 							if (type === 'JSON_OBJ' || type === 'JSON_ARR') {
-								link = <button className='btn btn-wfrun-link' onClick={(e) => {
-									props.setToggleSideBar(true, value)
-								}}>See More</button>
+								link = <LinkToSnipper data={value} />
 							}
 							if (props.wfRunData)
 								return (
@@ -113,9 +123,7 @@ export const TaskDefInformation = (props: TaskDefInformationProps) => {
 								({ name, type, value }, index: number) => {
 									let link;
 									if (type === 'JSON_OBJ' || type === 'JSON_ARR') {
-										link = <button className='btn btn-wfrun-link' onClick={(e) => {
-											props.setToggleSideBar(true, value)
-										}}>See More</button>
+										link = <LinkToSnipper data={value} />
 									}
 									return (
 										<div key={index} className='grid-3'>
@@ -137,9 +145,7 @@ export const TaskDefInformation = (props: TaskDefInformationProps) => {
 							props.wfRunData.outputs.map(({ type, value }, index: number) => {
 								let link;
 								if (type === 'JSON_OBJ' || type === 'JSON_ARR') {
-									link = <button className='btn btn-wfrun-link' onClick={(e) => {
-										props.setToggleSideBar(true, value)
-									}}>See More</button>
+									link = <LinkToSnipper data={value} />
 								}
 								return (
 									<div key={index} className='grid-2'>
@@ -165,7 +171,7 @@ export const TaskDefInformation = (props: TaskDefInformationProps) => {
 					</div>
 				</div>
 			</div>
-			<FailureInformation data={props.errorData} />
+			<FailureInformation data={props.errorData} openError={onParseError} />
 		</>
 	)
 }

@@ -1,21 +1,22 @@
 import React, { useEffect, useState } from 'react'
+import os from 'os';
 import { TaskDefInformation } from './internals/TaskDefInformation'
 import { NOPInformation } from './internals/NOPInformation'
 import { ExternalEventInformation } from './internals/ExternalEventInformation'
 import { SpawnChildInformation } from './internals/SpawnChildInformation'
 import { WaitChildInformation } from './internals/WaitChildInformation'
 import { LH_EXCEPTION } from './internals/FailureInformation'
+import { parseKey } from './internals/drawerInternals'
 
 interface DrawerComponentProps {
 	internalComponent?: string | undefined
 	data: any
 	nodeName: string
 	wfRunId?: string
-	//setErrorData: (value: any) => void;
-	//setSelectedNodeData: (value: any) => void;
-	//setWfRunData: (value: any) => void;
 	setToggleSideBar: (value: boolean) => void;
-	setCode: (code: string) => void
+	setCode: (code: string) => void;
+	setLanguage: (language: string) => void
+	setError: (value: boolean) => void
 }
 
 export const DrawerComponent = (props: DrawerComponentProps) => {
@@ -52,27 +53,21 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
 		} else console.warn('INVALID RESPONSE FROM API')
 	}
 
-	const getErrorData: any = (node: any) => {
+	const getErrorData: any = (node: any, key: string) => {
 		if (node) {
-			const data = node.failureHandlers.map(
-				(element: { handlerSpecName: string; specificFailure?: string }) => {
-					let exception = 'ANY EXCEPTION'
-
-					if (element.specificFailure)
-						exception =
-							LH_EXCEPTION[element.specificFailure as keyof typeof LH_EXCEPTION]
-
-					if (exception === undefined && element.specificFailure)
-						exception = element.specificFailure
-
+			const logs = 'task' in node ?  node.task.logOutput : null
+			const data = node[key].map(
+				(element: any) => {
 					return {
-						handlerSpecName: element.handlerSpecName,
-						exception: exception
+						...element,
+						log: logs,
 					}
 				}
 			)
 
 			setErrorData(data)
+		} else {
+			setErrorData([])
 		}
 	}
 
@@ -104,7 +99,16 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
 				setSelectedNodeData(undefined)
 				setWfRunData(undefined)
 				setSelectedNode(props.data.threadSpecs.entrypoint.nodes[props.nodeName])
-				getErrorData(props.data.threadSpecs.entrypoint.nodes[props.nodeName])
+				if (props.wfRunId) {
+					const wfRunNode = wfRunRawData.find(
+						(element: any) => element.nodeName === props.nodeName
+					)
+					if (wfRunNode) {
+						getErrorData(wfRunNode, 'failures')
+					}
+				} else {
+					getErrorData(props.data.threadSpecs.entrypoint.nodes[props.nodeName], 'failureHandlers')
+				}
 			}
 
 			const processComplexData = {
@@ -146,15 +150,11 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
 							if (wfRunNode && props.internalComponent) {
 								const data =
 									wfRunNode[props.internalComponent as keyof typeof wfRunNode]
-
 								if (data) {
 									const inputs = (data as any).inputVariables.map(
 										(element: any, index: number) => {
 											const variableType: string = element.value.type
-											const correctKey = variableType.split('_').map((w,i) => {
-												if(i===0) return w.toLowerCase();
-												else return w.charAt(0) + w.slice(1).toLowerCase()
-											}).join('') || ''
+											const correctKey = parseKey(variableType) || ''
 											const value = element.value[correctKey] || ''
 
 											processedData[index].value = value
@@ -170,10 +170,7 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
 									const outputs = (data as any).inputVariables.map(
 										(element: any) => {
 											const variableType: string = element.value.type
-											const correctKey = variableType.split('_').map((w,i) => {
-												if(i===0) return w.toLowerCase();
-												else return w.charAt(0) + w.slice(1).toLowerCase()
-											}).join('') || ''
+											const correctKey = parseKey(variableType) || ''
 											const value = element.value[correctKey] || ''
 
 											return {
@@ -329,22 +326,17 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
 		threadName
 	])
 
-	const setToggleSideBar = (value: boolean, code: string) => {
+	const setToggleSideBar = (value: boolean, isError: boolean, code: string, language?: string) => {
 		props.setToggleSideBar(value);
-		props.setCode(JSON.parse(code));
+		if (language === undefined || language === 'jsonObj' || language === 'jsonArr') {			
+			props.setCode(JSON.parse(code));
+			return;
+		}
+		props.setCode(code)
+		props.setLanguage(language);
+		props.setError(isError)
 	}
-	/*useEffect(() => {
-		props.setErrorData(errorData)
-	}, [errorData]);
 
-
-	useEffect(() => {
-		props.setSelectedNodeData(selectedNodeData)
-	}, [selectedNodeData]);
-
-	useEffect(() => {
-		props.setWfRunData(wfRunData)
-	}, [wfRunData]);*/
 	return (
 		<div className='drawer-component'>
 			<>

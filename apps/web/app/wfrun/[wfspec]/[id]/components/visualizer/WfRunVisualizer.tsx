@@ -23,20 +23,10 @@ export const WfRunVisualizer = ({
 	const [nodeType, setNodeType] = useState<string | undefined>()
 
 	const [output, setOutput] = useState<any>('')
-	//const [wfRunProperties, setWfRunProperties] = useState<any>('')
+	const [language, setLanguage] = useState<any>();
 	const [showError, setShowError] = useState(false)
 	const [toggleSideBar, setToggleSideBar] = useState(false)
 	const [sideBarData, setSideBarData] = useState('')
-
-	const [error, setError] = useState<any>()
-	const [nodeData, setNodeData] = useState<any>()
-	const [wfRunData, setWfRunData] = useState<any>()
-
-	console.log('error', error);
-	console.log('data', nodeData);
-	console.log('wfrundata', wfRunData);
-	
-	
 
 	const rec = (mappedData, i) => {
 		let el = mappedData[i]
@@ -62,10 +52,6 @@ export const WfRunVisualizer = ({
 	const setThreads = (data: any) => {
 		console.log(data)
 		getWfSpec(data.wfSpecName, data.wfSpecVersion)
-		//getWfRunProperties(
-		//	data.threadRuns[0].number,
-		//	data.threadRuns[0].currentNodePosition
-		//)
 	}
 
 	const mapData = (data: any) => {
@@ -107,35 +93,10 @@ export const WfRunVisualizer = ({
 		}
 	}
 
-	const getWfRunProperties = async (number: number, position: number) => {
-		const res = await fetch(`/api/search/nodeRun/${number}/${position}`, {
-			method: 'POST',
-			body: JSON.stringify({
-				id
-			})
-		})
-		if (res.ok) {
-			const wfRunData = await res.json()
-			//setWfRunProperties(wfRunData.result)
-		}
-	}
-
 	useEffect(() => {
 		getData()
 	}, [])
 
-	useEffect(() => {
-		if (showError) {
-			//setSideBarData(wfRunProperties)
-			setToggleSideBar(true)
-		}
-	}, [showError])
-
-	useEffect(() => {
-		if (!toggleSideBar) {
-			setShowError(false)
-		}
-	}, [toggleSideBar])
 
 	useEffect(() => {
 		if (drawerData === undefined) getMainDrawerData(wfspec, setDrawerData)
@@ -155,9 +116,8 @@ export const WfRunVisualizer = ({
 			wfRunId={id}
 			setToggleSideBar={setToggleSideBar}
 			setCode={setSideBarData}
-			//setErrorData={setError}
-			//setSelectedNodeData={setNodeData}
-			//setWfRunData={setWfRunData}
+			setLanguage={setLanguage}
+			setError={setShowError}
 		/>
 	)
 
@@ -172,6 +132,7 @@ export const WfRunVisualizer = ({
 				setToggleSideBar={setToggleSideBar}
 				output={sideBarData}
 				errorLog={showError}
+				language={language}
 			/>
 		</div>
 	)

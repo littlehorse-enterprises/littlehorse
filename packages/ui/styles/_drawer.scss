@@ -176,6 +176,10 @@
 				grid-template-columns: repeat(2, minmax(0, 1fr));
 				align-items: center;
 				background: #2d2f36;
+
+				&__one-column {
+					grid-template-columns: repeat(1, minmax(0, 1fr));
+				}
 			}
 		}
 
@@ -184,6 +188,10 @@
 			border-radius: 8px;
 			display: flex;
 			flex-direction: column;
+
+			&__no-border {
+				border: none;
+			}
 
 			&__title {
 				display: flex;

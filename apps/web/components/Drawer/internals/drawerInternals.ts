@@ -42,3 +42,10 @@ export const getMainDrawerData = async (name: string, setDrawerData: any) => {
 		setDrawerData(content.data.result)
 	} else console.warn('INVALID RESPONSE FROM API')
 }
+
+export const parseKey = (variableType: string) => {
+	return variableType.split('_').map((w, i) => {
+		if (i === 0) return w.toLowerCase()
+		else return w.charAt(0) + w.slice(1).toLowerCase()
+	}).join('')
+}

@@ -1,6 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
 import exceptionSvg from './exception.svg'
+import linkSvg from './link.svg'
 
 export enum LH_EXCEPTION {
 	CHILD_FAILURE = 'Child failure',
@@ -11,7 +12,8 @@ export enum LH_EXCEPTION {
 }
 
 interface FailureInformationProps {
-	data: { handlerSpecName: string; exception: LH_EXCEPTION | string }[]
+	data: any[],
+	openError: (value: any) => void
 }
 
 export const FailureInformation = (props: FailureInformationProps) => {
@@ -19,32 +21,58 @@ export const FailureInformation = (props: FailureInformationProps) => {
 		<>
 			{props.data.length > 0 && (
 				<>
-					<div className='lh-border lh-round flex flex-col overflow-y-auto'>
-						<div className='lh-drawer-title flex gap-3 justify-center p-3'>
-							<Image
+					<div className='component-header'>
+						<Image
 								src={exceptionSvg}
 								alt={'exception'}
 								width={24}
 								height={24}
-							/>
-							<p>Failure Handlers</p>
+						/>
+						<div>
+							<p>Exception log</p>
 						</div>
-						<div className='lh-drawer-headers grid grid-cols-2'>
-							<p className='text-center p-3'>EXCEPTION TYPE</p>
-							<p className='text-center p-3'>HANDLER THREAD NAME</p>
+					</div>
+					<div className="drawer__task__wfrun-outputs">
+						<div className='class="drawer__task__wfrun-outputs__header"'>
+							<div className='drawer__task__wfrun-outputs__label'>Outputs</div>
+							<div className='drawer__task__wfrun-outputs__header'>
+								<p className='center'>NAME</p>
+								<p className='center'>MESSAGE</p>
+							</div>
 						</div>
 						{props.data.map((element, index: number) => {
 							return (
-								<div
-									key={index}
-									className='grid grid-cols-2 overflow-x-hidden items-center'
-								>
-									<p className='text-center p-3'>{element.exception}</p>
-									<p className='text-center p-3'>{element.handlerSpecName}</p>
-								</div>
+								<>
+									<div key={index}
+										className='grid-2'
+									>
+										<p className='center'>{element.failureName}</p>
+										<p className='center'>{element.message}</p>
+									</div>
+									<div className="drawer__task__wfrun-outputs__header grid-1 drawer__task__wfrun-outputs__header__one-column">
+										<p className='center'>Output</p>
+									</div>
+									<div className='drawer__task__link drawer__task__link__no-border'>
+										<div className='drawer__task__link__container'>
+											<div
+												className='drawer__task__link__container__clickable'
+												onClick={() => {
+													props.openError(element.log)
+												}}
+											>
+												<Image src={linkSvg} alt={'link'} width={20} height={10} />
+												<p className='drawer__task__link__container__clickable__text'>
+													Exception Log
+												</p>
+											</div>
+										</div>
+									</div>
+								</>
 							)
 						})}
 					</div>
+
+					
 				</>
 			)}
 		</>
