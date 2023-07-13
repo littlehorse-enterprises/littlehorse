@@ -541,10 +541,16 @@ func (t *ThreadBuilder) spawnThread(
 
 func (t *ThreadBuilder) waitForThreads(s... *SpawnedThread) *NodeOutput {
 	t.checkIfIsActive()
-	nodeName, node := t.createBlankNode("wait", "WAIT_THREAD")
+	nodeName, node := t.createBlankNode("wait", "WAIT_THREADS")
+	node.Node = &model.NodePb_WaitForThreads{
+		WaitForThreads: &model.WaitForThreadsNodePb{
+			Threads: make([]*model.WaitForThreadsNodePb_ThreadToWaitForPb, 0),
+		},
+	}
 
 	for _, spawnedThread := range s {
-		threadRunNumberAssn, _ := t.assignVariable(spawnedThread)
+		threadRunNumberAssn, _ := t.assignVariable(spawnedThread.threadNumVar)
+
 		node.GetWaitForThreads().Threads = append(node.GetWaitForThreads().Threads, 
 			&model.WaitForThreadsNodePb_ThreadToWaitForPb{
 				ThreadRunNumber: threadRunNumberAssn,
