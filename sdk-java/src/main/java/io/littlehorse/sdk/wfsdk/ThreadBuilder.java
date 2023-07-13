@@ -175,10 +175,11 @@ public interface ThreadBuilder {
 
     /**
      * Adds a WAIT_FOR_THREAD node which waits for a Child ThreadRun to complete.
-     * @param threadToWaitFor is a SpawnedThread created by a call to spawnThread.
+     * @param threadsToWaitFor is an array of SpawnedThread objects returned
+     * one or more calls to spawnThread.
      * @return a NodeOutput that can be used for timeouts or exception handling.
      */
-    public NodeOutput waitForThread(SpawnedThread threadToWaitFor);
+    public NodeOutput waitForThreads(SpawnedThread... threadsToWaitFor);
 
     /**
      * Adds an EXTERNAL_EVENT node which blocks until an 'ExternalEvent' of the

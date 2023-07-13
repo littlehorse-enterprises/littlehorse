@@ -31,7 +31,8 @@ import io.littlehorse.sdk.common.proto.VariableMutationPb.NodeOutputSourcePb;
 import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
 import io.littlehorse.sdk.common.proto.VariableTypePb;
 import io.littlehorse.sdk.common.proto.VariableValuePb;
-import io.littlehorse.sdk.common.proto.WaitForThreadNodePb;
+import io.littlehorse.sdk.common.proto.WaitForThreadsNodePb;
+import io.littlehorse.sdk.common.proto.WaitForThreadsNodePb.ThreadToWaitForPb;
 import io.littlehorse.sdk.wfsdk.IfElseBody;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
@@ -548,18 +549,23 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         this.addMutationToCurrentNode(mutation.build());
     }
 
-    public NodeOutputImpl waitForThread(SpawnedThread threadToWaitFor) {
+    public NodeOutputImpl waitForThreads(SpawnedThread... threadsToWaitFor) {
         checkIfIsActive();
-        SpawnedThreadImpl threadToWait = (SpawnedThreadImpl) threadToWaitFor;
-        WaitForThreadNodePb waitNode = WaitForThreadNodePb
-            .newBuilder()
-            .setThreadRunNumber(assignVariable(threadToWait.internalThreadVar))
-            .build();
+        WaitForThreadsNodePb.Builder waitNode = WaitForThreadsNodePb.newBuilder();
+
+        for (int i = 0; i < threadsToWaitFor.length; i++) {
+            SpawnedThreadImpl st = (SpawnedThreadImpl) threadsToWaitFor[i];
+            waitNode.addThreads(
+                ThreadToWaitForPb
+                    .newBuilder()
+                    .setThreadRunNumber(assignVariable(st.internalThreadVar))
+            );
+        }
 
         String nodeName = addNode(
-            threadToWait.childThreadName,
-            NodeCase.WAIT_FOR_THREAD,
-            waitNode
+            "threads",
+            NodeCase.WAIT_FOR_THREADS,
+            waitNode.build()
         );
 
         return new NodeOutputImpl(nodeName, this);
@@ -689,8 +695,8 @@ public class ThreadBuilderImpl implements ThreadBuilder {
             case START_THREAD:
                 node.setStartThread((StartThreadNodePb) subNode);
                 break;
-            case WAIT_FOR_THREAD:
-                node.setWaitForThread((WaitForThreadNodePb) subNode);
+            case WAIT_FOR_THREADS:
+                node.setWaitForThreads((WaitForThreadsNodePb) subNode);
                 break;
             case NOP:
                 node.setNop((NopNodePb) subNode);

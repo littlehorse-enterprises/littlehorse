@@ -3,12 +3,16 @@ package io.littlehorse.common.model.wfrun;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.sdk.common.proto.FailureBeingHandledPb;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class FailureBeingHandled extends LHSerializable<FailureBeingHandledPb> {
 
-    public int threadRunNumber;
-    public int nodeRunPosition;
-    public int failureNumber;
+    private int threadRunNumber;
+    private int nodeRunPosition;
+    private int failureNumber;
 
     public Class<FailureBeingHandledPb> getProtoBaseClass() {
         return FailureBeingHandledPb.class;

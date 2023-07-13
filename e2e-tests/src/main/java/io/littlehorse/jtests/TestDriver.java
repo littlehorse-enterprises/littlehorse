@@ -31,6 +31,8 @@ import io.littlehorse.jtests.test.workflowtests.AXConditionalWhileLogic;
 import io.littlehorse.jtests.test.workflowtests.AYExtEvtFollowedBySpawnThread;
 import io.littlehorse.jtests.test.workflowtests.AZUserTasksBasic;
 import io.littlehorse.jtests.test.workflowtests.BASleepUntilTimestamp;
+import io.littlehorse.jtests.test.workflowtests.BBWaitMultipleChildren;
+import io.littlehorse.jtests.test.workflowtests.BCChildFinishesFirst;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import java.io.FileInputStream;
@@ -76,6 +78,8 @@ public class TestDriver {
         AYExtEvtFollowedBySpawnThread.class,
         AZUserTasksBasic.class,
         BASleepUntilTimestamp.class,
+        BBWaitMultipleChildren.class,
+        BCChildFinishesFirst.class,
         AATaskDefDependency.class,
         ABSimpleDeleteDeadTaskWorker.class,
         ACSimpleTaskRebalancing.class
@@ -137,11 +141,8 @@ public class TestDriver {
                     ": " +
                     exnMessage
                 );
-                try {
-                    test.cleanup();
-                } catch (Exception exn2) {
-                    log.warn("Failed cleaning up: " + exn2.getMessage());
-                }
+                // Don't want to clean up the test, leave it for debugging
+                // purposes.
                 System.exit(1);
             }
         }

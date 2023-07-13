@@ -155,19 +155,19 @@ public interface NodePbOrBuilder extends
   io.littlehorse.sdk.common.proto.StartThreadNodePbOrBuilder getStartThreadOrBuilder();
 
   /**
-   * <code>.littlehorse.WaitForThreadNodePb wait_for_thread = 10;</code>
-   * @return Whether the waitForThread field is set.
+   * <code>.littlehorse.WaitForThreadsNodePb wait_for_threads = 10;</code>
+   * @return Whether the waitForThreads field is set.
    */
-  boolean hasWaitForThread();
+  boolean hasWaitForThreads();
   /**
-   * <code>.littlehorse.WaitForThreadNodePb wait_for_thread = 10;</code>
-   * @return The waitForThread.
+   * <code>.littlehorse.WaitForThreadsNodePb wait_for_threads = 10;</code>
+   * @return The waitForThreads.
    */
-  io.littlehorse.sdk.common.proto.WaitForThreadNodePb getWaitForThread();
+  io.littlehorse.sdk.common.proto.WaitForThreadsNodePb getWaitForThreads();
   /**
-   * <code>.littlehorse.WaitForThreadNodePb wait_for_thread = 10;</code>
+   * <code>.littlehorse.WaitForThreadsNodePb wait_for_threads = 10;</code>
    */
-  io.littlehorse.sdk.common.proto.WaitForThreadNodePbOrBuilder getWaitForThreadOrBuilder();
+  io.littlehorse.sdk.common.proto.WaitForThreadsNodePbOrBuilder getWaitForThreadsOrBuilder();
 
   /**
    * <code>.littlehorse.NopNodePb nop = 11;</code>

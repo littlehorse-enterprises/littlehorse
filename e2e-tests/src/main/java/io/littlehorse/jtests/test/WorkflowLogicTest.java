@@ -327,6 +327,13 @@ public abstract class WorkflowLogicTest extends Test {
         return out;
     }
 
+    protected void assertThat(boolean assertion, String message)
+        throws LogicTestFailure {
+        if (!assertion) {
+            throw new LogicTestFailure(this, "Test case failed: " + message);
+        }
+    }
+
     public void assertTaskOutputsMatch(
         LHClient client,
         String wfRunId,

@@ -56,7 +56,7 @@ private static final long serialVersionUID = 0L;
     TASK(7),
     EXTERNAL_EVENT(8),
     START_THREAD(9),
-    WAIT_FOR_THREAD(10),
+    WAIT_FOR_THREADS(10),
     NOP(11),
     SLEEP(12),
     USER_TASK(13),
@@ -82,7 +82,7 @@ private static final long serialVersionUID = 0L;
         case 7: return TASK;
         case 8: return EXTERNAL_EVENT;
         case 9: return START_THREAD;
-        case 10: return WAIT_FOR_THREAD;
+        case 10: return WAIT_FOR_THREADS;
         case 11: return NOP;
         case 12: return SLEEP;
         case 13: return USER_TASK;
@@ -379,35 +379,35 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.StartThreadNodePb.getDefaultInstance();
   }
 
-  public static final int WAIT_FOR_THREAD_FIELD_NUMBER = 10;
+  public static final int WAIT_FOR_THREADS_FIELD_NUMBER = 10;
   /**
-   * <code>.littlehorse.WaitForThreadNodePb wait_for_thread = 10;</code>
-   * @return Whether the waitForThread field is set.
+   * <code>.littlehorse.WaitForThreadsNodePb wait_for_threads = 10;</code>
+   * @return Whether the waitForThreads field is set.
    */
   @java.lang.Override
-  public boolean hasWaitForThread() {
+  public boolean hasWaitForThreads() {
     return nodeCase_ == 10;
   }
   /**
-   * <code>.littlehorse.WaitForThreadNodePb wait_for_thread = 10;</code>
-   * @return The waitForThread.
+   * <code>.littlehorse.WaitForThreadsNodePb wait_for_threads = 10;</code>
+   * @return The waitForThreads.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WaitForThreadNodePb getWaitForThread() {
+  public io.littlehorse.sdk.common.proto.WaitForThreadsNodePb getWaitForThreads() {
     if (nodeCase_ == 10) {
-       return (io.littlehorse.sdk.common.proto.WaitForThreadNodePb) node_;
+       return (io.littlehorse.sdk.common.proto.WaitForThreadsNodePb) node_;
     }
-    return io.littlehorse.sdk.common.proto.WaitForThreadNodePb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.WaitForThreadsNodePb.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.WaitForThreadNodePb wait_for_thread = 10;</code>
+   * <code>.littlehorse.WaitForThreadsNodePb wait_for_threads = 10;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.WaitForThreadNodePbOrBuilder getWaitForThreadOrBuilder() {
+  public io.littlehorse.sdk.common.proto.WaitForThreadsNodePbOrBuilder getWaitForThreadsOrBuilder() {
     if (nodeCase_ == 10) {
-       return (io.littlehorse.sdk.common.proto.WaitForThreadNodePb) node_;
+       return (io.littlehorse.sdk.common.proto.WaitForThreadsNodePb) node_;
     }
-    return io.littlehorse.sdk.common.proto.WaitForThreadNodePb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.WaitForThreadsNodePb.getDefaultInstance();
   }
 
   public static final int NOP_FIELD_NUMBER = 11;
@@ -542,7 +542,7 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(9, (io.littlehorse.sdk.common.proto.StartThreadNodePb) node_);
     }
     if (nodeCase_ == 10) {
-      output.writeMessage(10, (io.littlehorse.sdk.common.proto.WaitForThreadNodePb) node_);
+      output.writeMessage(10, (io.littlehorse.sdk.common.proto.WaitForThreadsNodePb) node_);
     }
     if (nodeCase_ == 11) {
       output.writeMessage(11, (io.littlehorse.sdk.common.proto.NopNodePb) node_);
@@ -596,7 +596,7 @@ private static final long serialVersionUID = 0L;
     }
     if (nodeCase_ == 10) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(10, (io.littlehorse.sdk.common.proto.WaitForThreadNodePb) node_);
+        .computeMessageSize(10, (io.littlehorse.sdk.common.proto.WaitForThreadsNodePb) node_);
     }
     if (nodeCase_ == 11) {
       size += com.google.protobuf.CodedOutputStream
@@ -654,8 +654,8 @@ private static final long serialVersionUID = 0L;
             .equals(other.getStartThread())) return false;
         break;
       case 10:
-        if (!getWaitForThread()
-            .equals(other.getWaitForThread())) return false;
+        if (!getWaitForThreads()
+            .equals(other.getWaitForThreads())) return false;
         break;
       case 11:
         if (!getNop()
@@ -717,8 +717,8 @@ private static final long serialVersionUID = 0L;
         hash = (53 * hash) + getStartThread().hashCode();
         break;
       case 10:
-        hash = (37 * hash) + WAIT_FOR_THREAD_FIELD_NUMBER;
-        hash = (53 * hash) + getWaitForThread().hashCode();
+        hash = (37 * hash) + WAIT_FOR_THREADS_FIELD_NUMBER;
+        hash = (53 * hash) + getWaitForThreads().hashCode();
         break;
       case 11:
         hash = (37 * hash) + NOP_FIELD_NUMBER;
@@ -900,8 +900,8 @@ private static final long serialVersionUID = 0L;
       if (startThreadBuilder_ != null) {
         startThreadBuilder_.clear();
       }
-      if (waitForThreadBuilder_ != null) {
-        waitForThreadBuilder_.clear();
+      if (waitForThreadsBuilder_ != null) {
+        waitForThreadsBuilder_.clear();
       }
       if (nopBuilder_ != null) {
         nopBuilder_.clear();
@@ -1005,8 +1005,8 @@ private static final long serialVersionUID = 0L;
         result.node_ = startThreadBuilder_.build();
       }
       if (nodeCase_ == 10 &&
-          waitForThreadBuilder_ != null) {
-        result.node_ = waitForThreadBuilder_.build();
+          waitForThreadsBuilder_ != null) {
+        result.node_ = waitForThreadsBuilder_.build();
       }
       if (nodeCase_ == 11 &&
           nopBuilder_ != null) {
@@ -1165,8 +1165,8 @@ private static final long serialVersionUID = 0L;
           mergeStartThread(other.getStartThread());
           break;
         }
-        case WAIT_FOR_THREAD: {
-          mergeWaitForThread(other.getWaitForThread());
+        case WAIT_FOR_THREADS: {
+          mergeWaitForThreads(other.getWaitForThreads());
           break;
         }
         case NOP: {
@@ -1287,7 +1287,7 @@ private static final long serialVersionUID = 0L;
             } // case 74
             case 82: {
               input.readMessage(
-                  getWaitForThreadFieldBuilder().getBuilder(),
+                  getWaitForThreadsFieldBuilder().getBuilder(),
                   extensionRegistry);
               nodeCase_ = 10;
               break;
@@ -2776,71 +2776,71 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.WaitForThreadNodePb, io.littlehorse.sdk.common.proto.WaitForThreadNodePb.Builder, io.littlehorse.sdk.common.proto.WaitForThreadNodePbOrBuilder> waitForThreadBuilder_;
+        io.littlehorse.sdk.common.proto.WaitForThreadsNodePb, io.littlehorse.sdk.common.proto.WaitForThreadsNodePb.Builder, io.littlehorse.sdk.common.proto.WaitForThreadsNodePbOrBuilder> waitForThreadsBuilder_;
     /**
-     * <code>.littlehorse.WaitForThreadNodePb wait_for_thread = 10;</code>
-     * @return Whether the waitForThread field is set.
+     * <code>.littlehorse.WaitForThreadsNodePb wait_for_threads = 10;</code>
+     * @return Whether the waitForThreads field is set.
      */
     @java.lang.Override
-    public boolean hasWaitForThread() {
+    public boolean hasWaitForThreads() {
       return nodeCase_ == 10;
     }
     /**
-     * <code>.littlehorse.WaitForThreadNodePb wait_for_thread = 10;</code>
-     * @return The waitForThread.
+     * <code>.littlehorse.WaitForThreadsNodePb wait_for_threads = 10;</code>
+     * @return The waitForThreads.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.WaitForThreadNodePb getWaitForThread() {
-      if (waitForThreadBuilder_ == null) {
+    public io.littlehorse.sdk.common.proto.WaitForThreadsNodePb getWaitForThreads() {
+      if (waitForThreadsBuilder_ == null) {
         if (nodeCase_ == 10) {
-          return (io.littlehorse.sdk.common.proto.WaitForThreadNodePb) node_;
+          return (io.littlehorse.sdk.common.proto.WaitForThreadsNodePb) node_;
         }
-        return io.littlehorse.sdk.common.proto.WaitForThreadNodePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.WaitForThreadsNodePb.getDefaultInstance();
       } else {
         if (nodeCase_ == 10) {
-          return waitForThreadBuilder_.getMessage();
+          return waitForThreadsBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.WaitForThreadNodePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.WaitForThreadsNodePb.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.WaitForThreadNodePb wait_for_thread = 10;</code>
+     * <code>.littlehorse.WaitForThreadsNodePb wait_for_threads = 10;</code>
      */
-    public Builder setWaitForThread(io.littlehorse.sdk.common.proto.WaitForThreadNodePb value) {
-      if (waitForThreadBuilder_ == null) {
+    public Builder setWaitForThreads(io.littlehorse.sdk.common.proto.WaitForThreadsNodePb value) {
+      if (waitForThreadsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
         node_ = value;
         onChanged();
       } else {
-        waitForThreadBuilder_.setMessage(value);
+        waitForThreadsBuilder_.setMessage(value);
       }
       nodeCase_ = 10;
       return this;
     }
     /**
-     * <code>.littlehorse.WaitForThreadNodePb wait_for_thread = 10;</code>
+     * <code>.littlehorse.WaitForThreadsNodePb wait_for_threads = 10;</code>
      */
-    public Builder setWaitForThread(
-        io.littlehorse.sdk.common.proto.WaitForThreadNodePb.Builder builderForValue) {
-      if (waitForThreadBuilder_ == null) {
+    public Builder setWaitForThreads(
+        io.littlehorse.sdk.common.proto.WaitForThreadsNodePb.Builder builderForValue) {
+      if (waitForThreadsBuilder_ == null) {
         node_ = builderForValue.build();
         onChanged();
       } else {
-        waitForThreadBuilder_.setMessage(builderForValue.build());
+        waitForThreadsBuilder_.setMessage(builderForValue.build());
       }
       nodeCase_ = 10;
       return this;
     }
     /**
-     * <code>.littlehorse.WaitForThreadNodePb wait_for_thread = 10;</code>
+     * <code>.littlehorse.WaitForThreadsNodePb wait_for_threads = 10;</code>
      */
-    public Builder mergeWaitForThread(io.littlehorse.sdk.common.proto.WaitForThreadNodePb value) {
-      if (waitForThreadBuilder_ == null) {
+    public Builder mergeWaitForThreads(io.littlehorse.sdk.common.proto.WaitForThreadsNodePb value) {
+      if (waitForThreadsBuilder_ == null) {
         if (nodeCase_ == 10 &&
-            node_ != io.littlehorse.sdk.common.proto.WaitForThreadNodePb.getDefaultInstance()) {
-          node_ = io.littlehorse.sdk.common.proto.WaitForThreadNodePb.newBuilder((io.littlehorse.sdk.common.proto.WaitForThreadNodePb) node_)
+            node_ != io.littlehorse.sdk.common.proto.WaitForThreadsNodePb.getDefaultInstance()) {
+          node_ = io.littlehorse.sdk.common.proto.WaitForThreadsNodePb.newBuilder((io.littlehorse.sdk.common.proto.WaitForThreadsNodePb) node_)
               .mergeFrom(value).buildPartial();
         } else {
           node_ = value;
@@ -2848,19 +2848,19 @@ private static final long serialVersionUID = 0L;
         onChanged();
       } else {
         if (nodeCase_ == 10) {
-          waitForThreadBuilder_.mergeFrom(value);
+          waitForThreadsBuilder_.mergeFrom(value);
         } else {
-          waitForThreadBuilder_.setMessage(value);
+          waitForThreadsBuilder_.setMessage(value);
         }
       }
       nodeCase_ = 10;
       return this;
     }
     /**
-     * <code>.littlehorse.WaitForThreadNodePb wait_for_thread = 10;</code>
+     * <code>.littlehorse.WaitForThreadsNodePb wait_for_threads = 10;</code>
      */
-    public Builder clearWaitForThread() {
-      if (waitForThreadBuilder_ == null) {
+    public Builder clearWaitForThreads() {
+      if (waitForThreadsBuilder_ == null) {
         if (nodeCase_ == 10) {
           nodeCase_ = 0;
           node_ = null;
@@ -2871,50 +2871,50 @@ private static final long serialVersionUID = 0L;
           nodeCase_ = 0;
           node_ = null;
         }
-        waitForThreadBuilder_.clear();
+        waitForThreadsBuilder_.clear();
       }
       return this;
     }
     /**
-     * <code>.littlehorse.WaitForThreadNodePb wait_for_thread = 10;</code>
+     * <code>.littlehorse.WaitForThreadsNodePb wait_for_threads = 10;</code>
      */
-    public io.littlehorse.sdk.common.proto.WaitForThreadNodePb.Builder getWaitForThreadBuilder() {
-      return getWaitForThreadFieldBuilder().getBuilder();
+    public io.littlehorse.sdk.common.proto.WaitForThreadsNodePb.Builder getWaitForThreadsBuilder() {
+      return getWaitForThreadsFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.WaitForThreadNodePb wait_for_thread = 10;</code>
+     * <code>.littlehorse.WaitForThreadsNodePb wait_for_threads = 10;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.WaitForThreadNodePbOrBuilder getWaitForThreadOrBuilder() {
-      if ((nodeCase_ == 10) && (waitForThreadBuilder_ != null)) {
-        return waitForThreadBuilder_.getMessageOrBuilder();
+    public io.littlehorse.sdk.common.proto.WaitForThreadsNodePbOrBuilder getWaitForThreadsOrBuilder() {
+      if ((nodeCase_ == 10) && (waitForThreadsBuilder_ != null)) {
+        return waitForThreadsBuilder_.getMessageOrBuilder();
       } else {
         if (nodeCase_ == 10) {
-          return (io.littlehorse.sdk.common.proto.WaitForThreadNodePb) node_;
+          return (io.littlehorse.sdk.common.proto.WaitForThreadsNodePb) node_;
         }
-        return io.littlehorse.sdk.common.proto.WaitForThreadNodePb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.WaitForThreadsNodePb.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.WaitForThreadNodePb wait_for_thread = 10;</code>
+     * <code>.littlehorse.WaitForThreadsNodePb wait_for_threads = 10;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.WaitForThreadNodePb, io.littlehorse.sdk.common.proto.WaitForThreadNodePb.Builder, io.littlehorse.sdk.common.proto.WaitForThreadNodePbOrBuilder> 
-        getWaitForThreadFieldBuilder() {
-      if (waitForThreadBuilder_ == null) {
+        io.littlehorse.sdk.common.proto.WaitForThreadsNodePb, io.littlehorse.sdk.common.proto.WaitForThreadsNodePb.Builder, io.littlehorse.sdk.common.proto.WaitForThreadsNodePbOrBuilder> 
+        getWaitForThreadsFieldBuilder() {
+      if (waitForThreadsBuilder_ == null) {
         if (!(nodeCase_ == 10)) {
-          node_ = io.littlehorse.sdk.common.proto.WaitForThreadNodePb.getDefaultInstance();
+          node_ = io.littlehorse.sdk.common.proto.WaitForThreadsNodePb.getDefaultInstance();
         }
-        waitForThreadBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.WaitForThreadNodePb, io.littlehorse.sdk.common.proto.WaitForThreadNodePb.Builder, io.littlehorse.sdk.common.proto.WaitForThreadNodePbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.WaitForThreadNodePb) node_,
+        waitForThreadsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.WaitForThreadsNodePb, io.littlehorse.sdk.common.proto.WaitForThreadsNodePb.Builder, io.littlehorse.sdk.common.proto.WaitForThreadsNodePbOrBuilder>(
+                (io.littlehorse.sdk.common.proto.WaitForThreadsNodePb) node_,
                 getParentForChildren(),
                 isClean());
         node_ = null;
       }
       nodeCase_ = 10;
       onChanged();
-      return waitForThreadBuilder_;
+      return waitForThreadsBuilder_;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<

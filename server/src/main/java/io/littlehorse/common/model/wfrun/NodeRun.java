@@ -13,7 +13,7 @@ import io.littlehorse.common.model.wfrun.subnoderun.SleepNodeRun;
 import io.littlehorse.common.model.wfrun.subnoderun.StartThreadRun;
 import io.littlehorse.common.model.wfrun.subnoderun.TaskNodeRun;
 import io.littlehorse.common.model.wfrun.subnoderun.UserTaskRun;
-import io.littlehorse.common.model.wfrun.subnoderun.WaitThreadRun;
+import io.littlehorse.common.model.wfrun.subnoderun.WaitForThreadsRun;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.FailurePb;
@@ -61,7 +61,7 @@ public class NodeRun extends Getable<NodeRunPb> {
     public ExitRun exitRun;
     public EntrypointRun entrypointRun;
     public StartThreadRun startThreadRun;
-    public WaitThreadRun waitThreadRun;
+    public WaitForThreadsRun waitThreadsRun;
     public SleepNodeRun sleepNodeRun;
     public UserTaskRun userTaskRun;
 
@@ -476,8 +476,8 @@ public class NodeRun extends Getable<NodeRunPb> {
             case START_THREAD:
                 startThreadRun = StartThreadRun.fromProto(proto.getStartThread());
                 break;
-            case WAIT_THREAD:
-                waitThreadRun = WaitThreadRun.fromProto(proto.getWaitThread());
+            case WAIT_THREADS:
+                waitThreadsRun = WaitForThreadsRun.fromProto(proto.getWaitThreads());
                 break;
             case SLEEP:
                 sleepNodeRun = SleepNodeRun.fromProto(proto.getSleep());
@@ -510,8 +510,8 @@ public class NodeRun extends Getable<NodeRunPb> {
                 return entrypointRun;
             case EXIT:
                 return exitRun;
-            case WAIT_THREAD:
-                return waitThreadRun;
+            case WAIT_THREADS:
+                return waitThreadsRun;
             case START_THREAD:
                 return startThreadRun;
             case SLEEP:
@@ -540,9 +540,9 @@ public class NodeRun extends Getable<NodeRunPb> {
         } else if (cls.equals(StartThreadRun.class)) {
             type = NodeTypeCase.START_THREAD;
             startThreadRun = (StartThreadRun) snr;
-        } else if (cls.equals(WaitThreadRun.class)) {
-            type = NodeTypeCase.WAIT_THREAD;
-            waitThreadRun = (WaitThreadRun) snr;
+        } else if (cls.equals(WaitForThreadsRun.class)) {
+            type = NodeTypeCase.WAIT_THREADS;
+            waitThreadsRun = (WaitForThreadsRun) snr;
         } else if (cls.equals(SleepNodeRun.class)) {
             type = NodeTypeCase.SLEEP;
             sleepNodeRun = (SleepNodeRun) snr;
@@ -588,8 +588,8 @@ public class NodeRun extends Getable<NodeRunPb> {
             case START_THREAD:
                 out.setStartThread(startThreadRun.toProto());
                 break;
-            case WAIT_THREAD:
-                out.setWaitThread(waitThreadRun.toProto());
+            case WAIT_THREADS:
+                out.setWaitThreads(waitThreadsRun.toProto());
                 break;
             case SLEEP:
                 out.setSleep(sleepNodeRun.toProto());

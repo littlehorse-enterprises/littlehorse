@@ -844,7 +844,7 @@ message NodeRunIdPb {
 }
 
 message TaskNodeRunPb {
-  TaskRunIdPb task_run_id = 1;
+  optional TaskRunIdPb task_run_id = 1;
 }
 
 message NodeRunPb {
@@ -870,7 +870,7 @@ message NodeRunPb {
     EntrypointRunPb entrypoint = 17;
     ExitRunPb exit = 19;
     StartThreadRunPb start_thread = 20;
-    WaitThreadRunPb wait_thread = 21;
+    WaitForThreadsRunPb wait_threads = 21;
     SleepNodeRunPb sleep = 22;
     UserTaskRunPb user_task = 24;
   }
@@ -940,10 +940,14 @@ message StartThreadRunPb {
   string thread_spec_name = 2;
 }
 
-message WaitThreadRunPb {
-  optional google.protobuf.Timestamp thread_end_time = 1;
-  LHStatusPb thread_status = 2;
-  int32 thread_run_number = 3;
+message WaitForThreadsRunPb {
+  message WaitForThreadPb {
+    optional google.protobuf.Timestamp thread_end_time = 1;
+    LHStatusPb thread_status = 2;
+    int32 thread_run_number = 3;
+  }
+
+  repeated WaitForThreadPb threads = 1;
 }
 
 message ExternalEventRunPb {
@@ -1041,7 +1045,7 @@ message NodePb {
     TaskNodePb task = 7;
     ExternalEventNodePb external_event = 8;
     StartThreadNodePb start_thread = 9;
-    WaitForThreadNodePb wait_for_thread = 10;
+    WaitForThreadsNodePb wait_for_threads = 10;
     NopNodePb nop = 11;
     SleepNodePb sleep = 12;
     UserTaskNodePb user_task = 13;
@@ -1251,8 +1255,11 @@ message FailureHandlerDefPb {
   string handler_spec_name = 2;
 }
 
-message WaitForThreadNodePb {
-  VariableAssignmentPb thread_run_number = 1;
+message WaitForThreadsNodePb {
+  message ThreadToWaitForPb {
+    VariableAssignmentPb thread_run_number = 1;
+  }
+  repeated ThreadToWaitForPb threads = 1;
 }
 
 message TaskNodePb {

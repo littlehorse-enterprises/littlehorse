@@ -30,13 +30,15 @@ public class TaskNodeRun extends SubNodeRun<TaskNodeRunPb> {
 
     public void initFrom(Message proto) {
         TaskNodeRunPb p = (TaskNodeRunPb) proto;
-        taskRunId = LHSerializable.fromProto(p.getTaskRunId(), TaskRunId.class);
+        if (p.hasTaskRunId()) {
+            taskRunId = LHSerializable.fromProto(p.getTaskRunId(), TaskRunId.class);
+        }
     }
 
     public TaskNodeRunPb.Builder toProto() {
-        TaskNodeRunPb.Builder out = TaskNodeRunPb
-            .newBuilder()
-            .setTaskRunId(taskRunId.toProto());
+        TaskNodeRunPb.Builder out = TaskNodeRunPb.newBuilder();
+
+        if (taskRunId != null) out.setTaskRunId(taskRunId.toProto());
 
         return out;
     }
@@ -61,7 +63,7 @@ public class TaskNodeRun extends SubNodeRun<TaskNodeRunPb> {
             nodeRun.fail(
                 new Failure(
                     "Failed calculating TaskRun Input Vars: " + exn.getMessage(),
-                    LHConstants.VAR_MUTATION_ERROR
+                    LHConstants.VAR_SUB_ERROR
                 ),
                 time
             );

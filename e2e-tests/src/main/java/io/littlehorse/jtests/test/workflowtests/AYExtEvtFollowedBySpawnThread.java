@@ -43,7 +43,7 @@ public class AYExtEvtFollowedBySpawnThread extends WorkflowLogicTest {
                     null
                 );
                 thread.execute("ay-task");
-                thread.waitForThread(child);
+                thread.waitForThreads(child);
             }
         );
     }

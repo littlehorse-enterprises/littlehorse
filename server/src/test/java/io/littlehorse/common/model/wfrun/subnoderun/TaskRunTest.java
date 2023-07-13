@@ -9,12 +9,9 @@ import io.littlehorse.common.model.command.subcommand.TaskClaimEvent;
 import io.littlehorse.common.model.objectId.TaskRunId;
 import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
 import java.util.ArrayList;
-import net.datafaker.Faker;
 import org.junit.jupiter.api.Test;
 
 public class TaskRunTest {
-
-    private Faker faker = new Faker();
 
     @Test
     void setTaskWorkerVersionAndIdToTaskRun() throws LHVarSubError {

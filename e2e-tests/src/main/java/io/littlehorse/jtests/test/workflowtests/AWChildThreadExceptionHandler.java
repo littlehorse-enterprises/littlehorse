@@ -42,7 +42,7 @@ public class AWChildThreadExceptionHandler extends WorkflowLogicTest {
                     null
                 );
 
-                NodeOutput toHandle = thread.waitForThread(childThread);
+                NodeOutput toHandle = thread.waitForThreads(childThread);
                 thread.handleException(
                     toHandle,
                     null,

@@ -11,7 +11,11 @@ import io.littlehorse.common.model.wfrun.haltreason.PendingInterruptHaltReason;
 import io.littlehorse.common.model.wfrun.haltreason.SubHaltReason;
 import io.littlehorse.sdk.common.proto.ThreadHaltReasonPb;
 import io.littlehorse.sdk.common.proto.ThreadHaltReasonPb.ReasonCase;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class ThreadHaltReason extends LHSerializable<ThreadHaltReasonPb> {
 
     public ParentHalted parentHalted;

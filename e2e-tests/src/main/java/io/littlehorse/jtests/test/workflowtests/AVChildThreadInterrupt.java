@@ -95,7 +95,7 @@ public class AVChildThreadInterrupt extends WorkflowLogicTest {
 
                 thread.sleepSeconds(3);
                 thread.execute("av-obiwan");
-                thread.waitForThread(childThread);
+                thread.waitForThreads(childThread);
             }
         );
     }

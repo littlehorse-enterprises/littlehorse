@@ -12,7 +12,7 @@ import io.littlehorse.common.model.meta.subnode.SleepNode;
 import io.littlehorse.common.model.meta.subnode.StartThreadNode;
 import io.littlehorse.common.model.meta.subnode.TaskNode;
 import io.littlehorse.common.model.meta.subnode.UserTaskNode;
-import io.littlehorse.common.model.meta.subnode.WaitForThreadNode;
+import io.littlehorse.common.model.meta.subnode.WaitForThreadsNode;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.EdgePb;
 import io.littlehorse.sdk.common.proto.FailureHandlerDefPb;
@@ -39,7 +39,7 @@ public class Node extends LHSerializable<NodePb> {
     public EntrypointNode entrypointNode;
     public ExitNode exitNode;
     public StartThreadNode startThreadNode;
-    public WaitForThreadNode waitForThreadNode;
+    public WaitForThreadsNode waitForThreadsNode;
     public NopNode nop;
     public SleepNode sleepNode;
     public UserTaskNode userTaskNode;
@@ -84,8 +84,8 @@ public class Node extends LHSerializable<NodePb> {
             case START_THREAD:
                 out.setStartThread(startThreadNode.toProto());
                 break;
-            case WAIT_FOR_THREAD:
-                out.setWaitForThread(waitForThreadNode.toProto());
+            case WAIT_FOR_THREADS:
+                out.setWaitForThreads(waitForThreadsNode.toProto());
                 break;
             case NOP:
                 out.setNop(NopNodePb.newBuilder());
@@ -144,9 +144,9 @@ public class Node extends LHSerializable<NodePb> {
                 startThreadNode = new StartThreadNode();
                 startThreadNode.initFrom(proto.getStartThread());
                 break;
-            case WAIT_FOR_THREAD:
-                waitForThreadNode = new WaitForThreadNode();
-                waitForThreadNode.initFrom(proto.getWaitForThread());
+            case WAIT_FOR_THREADS:
+                waitForThreadsNode = new WaitForThreadsNode();
+                waitForThreadsNode.initFrom(proto.getWaitForThreads());
                 break;
             case NOP:
                 nop = new NopNode();
@@ -268,8 +268,8 @@ public class Node extends LHSerializable<NodePb> {
                 return externalEventNode;
             case START_THREAD:
                 return startThreadNode;
-            case WAIT_FOR_THREAD:
-                return waitForThreadNode;
+            case WAIT_FOR_THREADS:
+                return waitForThreadsNode;
             case NOP:
                 return nop;
             case SLEEP:

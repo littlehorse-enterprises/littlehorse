@@ -55,7 +55,7 @@ public class ARChildThreadSimple extends WorkflowLogicTest {
                 );
 
                 thread.execute("ar-obiwan");
-                thread.waitForThread(child);
+                thread.waitForThreads(child);
 
                 thread.execute("ar-echo", sharedVar);
             }

@@ -228,19 +228,19 @@ public interface NodeRunPbOrBuilder extends
   io.littlehorse.sdk.common.proto.StartThreadRunPbOrBuilder getStartThreadOrBuilder();
 
   /**
-   * <code>.littlehorse.WaitThreadRunPb wait_thread = 21;</code>
-   * @return Whether the waitThread field is set.
+   * <code>.littlehorse.WaitForThreadsRunPb wait_threads = 21;</code>
+   * @return Whether the waitThreads field is set.
    */
-  boolean hasWaitThread();
+  boolean hasWaitThreads();
   /**
-   * <code>.littlehorse.WaitThreadRunPb wait_thread = 21;</code>
-   * @return The waitThread.
+   * <code>.littlehorse.WaitForThreadsRunPb wait_threads = 21;</code>
+   * @return The waitThreads.
    */
-  io.littlehorse.sdk.common.proto.WaitThreadRunPb getWaitThread();
+  io.littlehorse.sdk.common.proto.WaitForThreadsRunPb getWaitThreads();
   /**
-   * <code>.littlehorse.WaitThreadRunPb wait_thread = 21;</code>
+   * <code>.littlehorse.WaitForThreadsRunPb wait_threads = 21;</code>
    */
-  io.littlehorse.sdk.common.proto.WaitThreadRunPbOrBuilder getWaitThreadOrBuilder();
+  io.littlehorse.sdk.common.proto.WaitForThreadsRunPbOrBuilder getWaitThreadsOrBuilder();
 
   /**
    * <code>.littlehorse.SleepNodeRunPb sleep = 22;</code>

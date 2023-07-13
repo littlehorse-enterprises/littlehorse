@@ -130,6 +130,13 @@ public class WfRun extends Getable<WfRunPb> {
         this.wfSpec = spec;
     }
 
+    public ThreadRun getThreadRun(int threadRunNumber) {
+        if (threadRunNumber < 0 || threadRunNumber >= threadRuns.size()) {
+            return null;
+        }
+        return threadRuns.get(threadRunNumber);
+    }
+
     public void initFrom(Message p) {
         WfRunPb proto = (WfRunPb) p;
         id = proto.getId();
@@ -391,10 +398,11 @@ public class WfRun extends Getable<WfRunPb> {
             failedThr.getCurrentNodeRun().failureHandlerIds.add(fh.number);
 
             fh.failureBeingHandled = new FailureBeingHandled();
-            fh.failureBeingHandled.failureNumber =
-                failedThr.getCurrentNodeRun().failures.size() - 1;
-            fh.failureBeingHandled.nodeRunPosition = failedThr.currentNodePosition;
-            fh.failureBeingHandled.threadRunNumber = pfh.failedThreadRun;
+            fh.failureBeingHandled.setFailureNumber(
+                failedThr.getCurrentNodeRun().failures.size() - 1
+            );
+            fh.failureBeingHandled.setNodeRunPosition(failedThr.currentNodePosition);
+            fh.failureBeingHandled.setThreadRunNumber(pfh.failedThreadRun);
 
             if (fh.status == LHStatusPb.ERROR) {
                 fh.fail(

@@ -403,13 +403,24 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
             return false;
         } else if (status == LHStatusPb.HALTED) {
             // determine if halt reasons are resolved or not.
+
+            // This is where ThreadRun's wake up for example when an exception handler
+            // completes.
             for (int i = haltReasons.size() - 1; i >= 0; i--) {
                 ThreadHaltReason hr = haltReasons.get(i);
                 if (hr.isResolved()) {
                     haltReasons.remove(i);
+                    log.debug(
+                        "Removed haltReason {} on thread {} {}, leaving: {}",
+                        hr,
+                        wfRunId,
+                        number,
+                        haltReasons
+                    );
                 }
             }
             if (haltReasons.isEmpty()) {
+                log.debug("Thread {} is alive again!", number);
                 setStatus(LHStatusPb.RUNNING);
                 return true;
             } else {

@@ -7,7 +7,7 @@ import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
 import io.littlehorse.sdk.common.proto.LHStatusPb;
 import io.littlehorse.sdk.common.proto.NodeRunPb;
-import io.littlehorse.sdk.common.proto.WaitThreadRunPb;
+import io.littlehorse.sdk.common.proto.WaitForThreadsRunPb;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -42,7 +42,7 @@ public class ASChildThreadFails extends WorkflowLogicTest {
                 );
 
                 thread.execute("as-obiwan");
-                thread.waitForThread(child);
+                thread.waitForThreads(child);
                 thread.execute("as-obiwan");
             }
         );
@@ -62,8 +62,10 @@ public class ASChildThreadFails extends WorkflowLogicTest {
         assertTaskOutputsMatch(client, wfRunId, 0, new ASSimpleTask().obiwan());
 
         NodeRunPb nr = getNodeRun(client, wfRunId, 0, 3);
-        WaitThreadRunPb wtr = nr.getWaitThread();
-        if (wtr.getThreadRunNumber() != 1) {
+
+        WaitForThreadsRunPb wtr = nr.getWaitThreads();
+        // There's only one thread in this example, so we only look at the first.
+        if (wtr.getThreads(0).getThreadRunNumber() != 1) {
             throw new LogicTestFailure(
                 this,
                 wfRunId + " should have waited for thread 1"
