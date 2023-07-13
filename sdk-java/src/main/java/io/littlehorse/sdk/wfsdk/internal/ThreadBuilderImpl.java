@@ -43,9 +43,13 @@ import io.littlehorse.sdk.wfsdk.WorkflowCondition;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Getter
+@Setter
 public class ThreadBuilderImpl implements ThreadBuilder {
 
     private WorkflowImpl parent;
@@ -411,6 +415,14 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         SleepNodePb.Builder n = SleepNodePb
             .newBuilder()
             .setRawSeconds(assignVariable(secondsToSleep));
+        addNode("sleep", NodeCase.SLEEP, n.build());
+    }
+
+    public void sleepUntil(WfRunVariable timestamp) {
+        checkIfIsActive();
+        SleepNodePb.Builder n = SleepNodePb
+            .newBuilder()
+            .setTimestamp(assignVariable(timestamp));
         addNode("sleep", NodeCase.SLEEP, n.build());
     }
 

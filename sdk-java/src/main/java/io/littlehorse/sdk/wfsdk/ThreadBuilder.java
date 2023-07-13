@@ -226,6 +226,15 @@ public interface ThreadBuilder {
     public void sleepSeconds(Object seconds);
 
     /**
+     * Adds a SLEEP node which makes the ThreadRun sleep until a specified
+     * timestamp, provided as an INT WfRunVariable (note that INT in LH is a 64-bit
+     * integer).
+     * @param seconds a WfRunVariable which evaluates to a VariableTypePb.INT
+     * specifying the epoch timestamp (in milliseconds) to wait for.
+     */
+    public void sleepUntil(WfRunVariable timestamp);
+
+    /**
      * Adds a Failure Handler to the Node specified by the provided NodeOutput.
      * @param node is a handle to the Node for which we want to catch a failure.
      * @param exceptionName is the name of the specific exception to handle. If left

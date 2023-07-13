@@ -30,6 +30,7 @@ import io.littlehorse.jtests.test.workflowtests.AWChildThreadExceptionHandler;
 import io.littlehorse.jtests.test.workflowtests.AXConditionalWhileLogic;
 import io.littlehorse.jtests.test.workflowtests.AYExtEvtFollowedBySpawnThread;
 import io.littlehorse.jtests.test.workflowtests.AZUserTasksBasic;
+import io.littlehorse.jtests.test.workflowtests.BASleepUntilTimestamp;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import java.io.FileInputStream;
@@ -74,6 +75,7 @@ public class TestDriver {
         AXConditionalWhileLogic.class,
         AYExtEvtFollowedBySpawnThread.class,
         AZUserTasksBasic.class,
+        BASleepUntilTimestamp.class,
         AATaskDefDependency.class,
         ABSimpleDeleteDeadTaskWorker.class,
         ACSimpleTaskRebalancing.class
