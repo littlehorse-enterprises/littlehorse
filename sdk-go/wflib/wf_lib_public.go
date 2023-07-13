@@ -110,8 +110,8 @@ func (t *ThreadBuilder) SpawnThread(
 	return t.spawnThread(tFunc, threadName, args)
 }
 
-func (t *ThreadBuilder) WaitForThread(s *SpawnedThread) NodeOutput {
-	return *t.waitForThread(s)
+func (t *ThreadBuilder) WaitForThreads(s... *SpawnedThread) NodeOutput {
+	return *t.waitForThreads(s...)
 }
 
 func (t *ThreadBuilder) WaitForEvent(eventName string) NodeOutput {

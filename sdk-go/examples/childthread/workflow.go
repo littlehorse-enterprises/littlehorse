@@ -25,5 +25,5 @@ func ChildThreadWorkflow(thread *wflib.ThreadBuilder) {
 	)
 
 	thread.Execute("parent-thread-task")
-	thread.WaitForThread(childThread)
+	thread.WaitForThreads(childThread)
 }
