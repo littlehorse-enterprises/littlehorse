@@ -64,25 +64,33 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Properties;
-import org.apache.commons.lang3.NotImplementedException;
 
 public class LHClient {
 
     private LHClientConfig config;
     private LHPublicApiBlockingStub client;
 
+    /**
+     * Creates a client given a properties object
+     * @param props settings
+     */
     public LHClient(Properties props) {
         this.config = new LHClientConfig(props);
     }
 
+    /**
+     * Creates a client given a client config
+     * @param config existing client config
+     */
     public LHClient(LHClientConfig config) {
         this.config = config;
     }
 
-    public PutUserTaskDefPb compileUserTaskDef(Object userTask) {
-        throw new NotImplementedException();
-    }
-
+    /**
+     * Returns the underline RPC client
+     * @return A blocking stub
+     * @throws LHApiError If it could not connect to the API
+     */
     public LHPublicApiBlockingStub getGrpcClient() throws LHApiError {
         if (client == null) {
             try {
@@ -94,6 +102,12 @@ public class LHClient {
         return client;
     }
 
+    /**
+     * Gets a external event
+     * @param name External event name
+     * @return A external event definition
+     * @throws LHApiError If it could not connect to the API
+     */
     public ExternalEventDefPb getExternalEventDef(String name) throws LHApiError {
         GetExternalEventDefReplyPb reply = (GetExternalEventDefReplyPb) doRequest(() -> {
                 return getGrpcClient()
@@ -110,6 +124,12 @@ public class LHClient {
         }
     }
 
+    /**
+     * Gets a task definition given the name
+     * @param name Name of the task
+     * @return A task definition
+     * @throws LHApiError if it failed contacting to the API
+     */
     public TaskDefPb getTaskDef(String name) throws LHApiError {
         GetTaskDefReplyPb reply = (GetTaskDefReplyPb) doRequest(() -> {
             return getGrpcClient()
@@ -123,6 +143,23 @@ public class LHClient {
         }
     }
 
+    /**
+     * Gets the workflow specification for a given workflow name
+     * @param name Workflow name
+     * @return A workflow specification with the workflow's data and status
+     * @throws LHApiError if it failed contacting to the API
+     */
+    public WfSpecPb getWfSpec(String name) throws LHApiError {
+        return getWfSpec(name, null);
+    }
+
+    /**
+     * Gets the workflow specification for a given workflow name and version
+     * @param name Workflow name
+     * @param version Version of the registered workflow
+     * @return A workflow specification with the workflow's data and status
+     * @throws LHApiError if it failed contacting to the API
+     */
     public WfSpecPb getWfSpec(String name, Integer version) throws LHApiError {
         GetWfSpecReplyPb reply = (GetWfSpecReplyPb) doRequest(() -> {
             if (version != null) {
@@ -149,6 +186,12 @@ public class LHClient {
         }
     }
 
+    /**
+     * Return a task execution data given an id
+     * @param id of the task run
+     * @return The task run that has already been executed
+     * @throws LHApiError if it failed contacting to the API
+     */
     public TaskRunPb getTaskRun(TaskRunIdPb id) throws LHApiError {
         GetTaskRunReplyPb reply = (GetTaskRunReplyPb) doRequest(() -> {
             return getGrpcClient().getTaskRun(id);
@@ -285,15 +328,6 @@ public class LHClient {
         } else {
             return null;
         }
-    }
-
-    public String runWfArgList(
-        String wfSpecName,
-        Integer wfSpecVersion,
-        String wfRunId,
-        Arg[] args
-    ) throws LHApiError {
-        return runWf(wfSpecName, wfSpecVersion, wfRunId, args);
     }
 
     public String runWf(

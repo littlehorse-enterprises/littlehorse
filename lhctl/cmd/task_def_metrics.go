@@ -27,7 +27,7 @@ back an hour ago for TaskDef "my-task" you can:
 
 lhctl taskDefMetrics my-task MINUTES_5 12
 
-If you want to get taskDef Metrics at the cluster leve, use CLUSTER_LEVEL_METRIC as your
+If you want to get taskDef Metrics at the cluster level, use CLUSTER_LEVEL_METRIC as your
 taskDefName.
 `,
 	Run: func(cmd *cobra.Command, args []string) {

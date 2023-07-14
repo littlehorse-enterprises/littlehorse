@@ -23,31 +23,44 @@ currently do not carry Schema information (this will change in a future release)
 
 The payload is deserialized according to the type. JSON objects should be provided as
 a string; BYTES objects should be b64-encoded.
+
+It's also possible to pass a null input:
+lhctl postEvent <wfRunId> <externalEventName> NULL
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 4 {
-			log.Fatal("Required args: <wfRunId> <externalEventName> <varType> <payload>")
-
+		if len(args) < 3 {
+			log.Fatal("Required args: <wfRunId> <externalEventName> <varType> <payload> or  <wfRunId> <externalEventName> NULL")
 		}
 
-		wfRunId, eedName, varTypeStr, payloadStr := args[0], args[1], args[2], args[3]
-
+		wfRunId, eedName, varTypeStr := args[0], args[1], args[2]
 		varType, validVarType := model.VariableTypePb_value[varTypeStr]
 
 		if !validVarType {
 			log.Fatal(
-				"Unrecognized varType. Valid options: INT, STR, BYTES, BOOL, JSON_OBJ, JSON_ARR, DOUBLE.",
+				"Unrecognized varType. Valid options: INT, STR, BYTES, BOOL, JSON_OBJ, JSON_ARR, DOUBLE or NULL.",
 			)
-
 		}
 
 		varTypeEnum := model.VariableTypePb(varType)
 
-		content, err := common.StrToVarVal(payloadStr, varTypeEnum)
+		content := &model.VariableValuePb{
+			Type: model.VariableTypePb_NULL,
+		}
 
-		if err != nil {
-			log.Fatal("Failed deserializing payload: " + err.Error())
+		if len(args) == 3 && varTypeEnum != model.VariableTypePb_NULL {
+			log.Fatal(
+				"Payload is required",
+			)
+		}
 
+		if len(args) == 4 {
+			payloadStr := args[3]
+
+			var err error
+			content, err = common.StrToVarVal(payloadStr, varTypeEnum)
+			if err != nil {
+				log.Fatal("Failed deserializing payload: " + err.Error())
+			}
 		}
 
 		req := model.PutExternalEventPb{

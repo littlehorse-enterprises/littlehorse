@@ -68,6 +68,14 @@ public class LHTaskWorker implements Closeable {
         this.taskDefName = taskDefName;
     }
 
+    /**
+     * `TaskDef` to execute
+     * @return the name of the `TaskDef` to execute
+     */
+    public String getTaskDefName() {
+        return taskDefName;
+    }
+
     private void createManager() throws LHApiError {
         try {
             validateTaskDefAndExecutable();
@@ -91,15 +99,24 @@ public class LHTaskWorker implements Closeable {
         }
     }
 
-    private void checkTaskDefExists() throws LHApiError {
+    /**
+     * Checks if the TaskDef exists
+     * @return true if the task is registered or false otherwise
+     * @throws LHApiError if the call fails.
+     */
+    public boolean doesTaskDefExist() throws LHApiError {
         this.taskDef = lhClient.getTaskDef(taskDefName);
+        return this.taskDef != null;
+    }
 
-        if (this.taskDef == null) {
-            throw new LHApiError(
-                "Couldn't find TaskDef: " + taskDefName,
-                LHResponseCodePb.NOT_FOUND_ERROR
-            );
-        }
+    /**
+     * Deploys the  TaskDef object to the LH Server.
+     * This is a convenience method, generally not recommended for
+     * production (in production you should manually use the PutTaskDef).
+     * @throws LHApiError if the call fails.
+     */
+    public void registerTaskDef() throws LHApiError {
+        registerTaskDef(false);
     }
 
     /**
@@ -195,7 +212,12 @@ public class LHTaskWorker implements Closeable {
      * executable Java object, or if the Worker cannot connect to the LH Server.
      */
     public void start() throws LHApiError {
-        checkTaskDefExists();
+        if (!doesTaskDefExist()) {
+            throw new LHApiError(
+                "Couldn't find TaskDef: " + taskDefName,
+                LHResponseCodePb.NOT_FOUND_ERROR
+            );
+        }
         createManager();
         manager.start();
     }

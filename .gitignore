@@ -1,6 +1,8 @@
 # Ignore binary and build stuff
 .gradle
-*/build
+examples/*/build/
+examples/*/bin/
+*/build/
 */bin/
 
 # Emacs-related stuff
@@ -15,9 +17,9 @@ package-lock.json
 # NOTE: need to put "download lhctl" as part of onboarding process.
 build/lhctl
 
-
 # Intellij
 */.idea
 .idea/
+
 # Others
 local-dev/certs/

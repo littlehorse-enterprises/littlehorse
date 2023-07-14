@@ -23,7 +23,7 @@ var getNodeRunCmd = &cobra.Command{
 	Long: `NodeRun's are identified uniquely by the combination of the following:
 	- Associated WfRun Id
 	- ThreadRun Number
-	- NodeRun Number (i.e. chronological position within the threadrun)
+	- NodeRun Number (i.e. chronological position within the ThreadRun)
 
 	You may provide all three identifiers as three separate arguments or you may provide
 	them delimited by the '/' character, as returned in all 'search' command queries.`,
@@ -106,7 +106,7 @@ Choose one of the following option groups:
 // For user task search. Use any combination of the following, except note
 // that userId and userGroup are mutually exclusive.
 [userTaskDefName, userTaskStatus, userId, userGroup]
- 
+
 * Note: You may optionally use the earliesMinutesAgo and latestMinutesAgo
   options with any group except [--wfRunId] to put a time bound on WfRun's
   which are returned. The time bound applies to the time that the WfRun was

@@ -437,8 +437,8 @@ public class LHConfigTest {
         String clientSecret = UUID.randomUUID().toString();
         String server =
             "https://" + faker.internet().url() + "/" + faker.internet().slug();
-        String fileClientId = faker.file().fileName("/tmp", null, "txt", null);
-        String fileClientSecret = faker.file().fileName("/tmp", null, "txt", null);
+        String fileClientId = "/tmp/test-" + UUID.randomUUID() + ".txt";
+        String fileClientSecret = "/tmp/test-" + UUID.randomUUID() + ".txt";
 
         Files.writeString(Path.of(fileClientId), clientId);
         Files.writeString(Path.of(fileClientSecret), clientSecret);

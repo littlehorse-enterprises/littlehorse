@@ -80,7 +80,7 @@ var searchTaskDefCmd = &cobra.Command{
 	Short: "Search for TaskDefs",
 	Long: `Search for TaskDefs.
 
-No option groups for Search TaskDef are supported. Therefore, this comand searches
+No option groups for Search TaskDef are supported. Therefore, this command searches
 for all TaskDefs.
 	`,
 	Run: func(cmd *cobra.Command, args []string) {

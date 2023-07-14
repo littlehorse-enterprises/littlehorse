@@ -31,7 +31,7 @@ var getTaskRunCmd = &cobra.Command{
 		}
 
 		if needsHelp {
-			log.Fatal("Must provide 1 or 2 arguments. See 'lhctl get nodeRun -h'")
+			log.Fatal("Must provide 1 or 2 arguments. See 'lhctl get taskRun -h'")
 		}
 
 		common.PrintResp(getGlobalClient(cmd).GetTaskRun(

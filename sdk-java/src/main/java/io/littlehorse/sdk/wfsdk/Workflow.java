@@ -147,6 +147,28 @@ public abstract class Workflow {
     }
 
     /**
+     * Checks if the WfSpec exists
+     * @param client is an LHClient.
+     * @return true if the workflow spec is registered or false otherwise
+     * @throws LHApiError if the call fails.
+     */
+    public boolean doesWfSpecExist(LHClient client) throws LHApiError {
+        return client.getWfSpec(name) != null;
+    }
+
+    /**
+     * Checks if the WfSpec exists for a given version
+     * @param client is an LHClient.
+     * @param version workflow version
+     * @return true if the workflow spec is registered for this version or false otherwise
+     * @throws LHApiError
+     */
+    public boolean doesWfSpecExist(LHClient client, Integer version)
+        throws LHApiError {
+        return client.getWfSpec(name, version) != null;
+    }
+
+    /**
      * Deploys the WfSpec object to the LH Server.
      * Registering the WfSpec via Workflow::registerWfSpec()
      * is the same as client.putWfSpec(workflow.compileWorkflow()).
