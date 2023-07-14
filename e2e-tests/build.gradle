@@ -10,11 +10,13 @@ repositories {
 dependencies {
     implementation project(":sdk-java")
     implementation 'org.slf4j:slf4j-api:2.0.7'
-    implementation 'org.slf4j:slf4j-simple:2.0.7'
+    implementation 'org.apache.logging.log4j:log4j-slf4j2-impl:2.20.0'
+    implementation 'org.reflections:reflections:0.10.2' // This reflection API isNOT under active development or maintenance, look for an alternative
+    implementation 'commons-cli:commons-cli:1.5.0'
 }
 
 application {
-    mainClass = 'io.littlehorse.jtests.TestDriver'
+    mainClass = 'io.littlehorse.tests.TestDriver'
 }
 
 // This is provided so that we can use the Reflection API to determine the names
