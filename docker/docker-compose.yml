@@ -19,8 +19,6 @@ services:
       BITNAMI_DEBUG: "true"
       KAFKA_CFG_NODE_ID: "1"
       KAFKA_KRAFT_CLUSTER_ID: abcdefghijklmnopqrstuv
-    ports:
-      - "19092:19092"
   littlehorse:
     container_name: lh-server
     build:
