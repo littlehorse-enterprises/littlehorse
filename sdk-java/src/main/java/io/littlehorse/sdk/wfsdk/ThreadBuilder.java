@@ -230,7 +230,7 @@ public interface ThreadBuilder {
      * Adds a SLEEP node which makes the ThreadRun sleep until a specified
      * timestamp, provided as an INT WfRunVariable (note that INT in LH is a 64-bit
      * integer).
-     * @param seconds a WfRunVariable which evaluates to a VariableTypePb.INT
+     * @param timestamp a WfRunVariable which evaluates to a VariableTypePb.INT
      * specifying the epoch timestamp (in milliseconds) to wait for.
      */
     public void sleepUntil(WfRunVariable timestamp);

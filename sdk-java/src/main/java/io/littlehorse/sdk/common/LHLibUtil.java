@@ -89,9 +89,9 @@ public class LHLibUtil {
     public static String getWfRunId(TaskRunSourcePb taskRunSource) {
         switch (taskRunSource.getTaskRunSourceCase()) {
             case TASK_NODE:
-                return taskRunSource.getUserTaskTrigger().getNodeRunId().getWfRunId();
-            case USER_TASK_TRIGGER:
                 return taskRunSource.getTaskNode().getNodeRunId().getWfRunId();
+            case USER_TASK_TRIGGER:
+                return taskRunSource.getUserTaskTrigger().getNodeRunId().getWfRunId();
             case TASKRUNSOURCE_NOT_SET:
             // we end up returning null
         }

@@ -466,7 +466,9 @@ public abstract class WorkflowLogicTest extends Test {
                 ", " +
                 threadRunNumber +
                 ", " +
-                nodeRunPosition
+                nodeRunPosition +
+                ", expected:\n" +
+                expectedOutput
             );
         }
     }

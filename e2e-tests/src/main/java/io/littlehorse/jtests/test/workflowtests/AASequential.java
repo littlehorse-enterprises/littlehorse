@@ -9,6 +9,7 @@ import io.littlehorse.sdk.common.proto.LHStatusPb;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
+import io.littlehorse.sdk.worker.WorkerContext;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,7 +44,13 @@ public class AASequential extends WorkflowLogicTest {
         assertStatus(client, wfRunId, LHStatusPb.COMPLETED);
 
         for (int i = 1; i < 3; i++) {
-            assertTaskOutput(client, wfRunId, 0, i, new SimpleTask().obiWan());
+            assertTaskOutput(
+                client,
+                wfRunId,
+                0,
+                i,
+                "hello there from wfRun " + wfRunId + " on nodeRun " + i
+            );
         }
 
         return Arrays.asList(wfRunId);
@@ -53,7 +60,12 @@ public class AASequential extends WorkflowLogicTest {
 class SimpleTask {
 
     @LHTaskMethod("aa-simple")
-    public String obiWan() {
-        return "hello there";
+    public String obiWan(WorkerContext context) {
+        return (
+            "hello there from wfRun " +
+            context.getWfRunId() +
+            " on nodeRun " +
+            context.getNodeRunId().getPosition()
+        );
     }
 }
