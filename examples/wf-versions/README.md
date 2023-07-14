@@ -1,4 +1,4 @@
-## Running the `WorkflowVersionsExample.java` Example
+## Running WorkflowVersionsExample
 
 In this example you will learn how to define several WfSpec versions, and
 how to run them.

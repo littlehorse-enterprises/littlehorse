@@ -333,7 +333,7 @@ public class LHConfig extends ConfigBase {
 
     public int getPrometheusExporterPort() {
         return Integer.parseInt(
-            getOrSetDefault(LHConfig.PROMETHEUS_EXPORTER_PORT_KEY, "5555")
+            getOrSetDefault(LHConfig.PROMETHEUS_EXPORTER_PORT_KEY, "1822")
         );
     }
 
@@ -343,7 +343,7 @@ public class LHConfig extends ConfigBase {
 
     public int getInternalBindPort() {
         return Integer.parseInt(
-            getOrSetDefault(LHConfig.INTERNAL_BIND_PORT_KEY, "5001")
+            getOrSetDefault(LHConfig.INTERNAL_BIND_PORT_KEY, "2011")
         );
     }
 
@@ -519,7 +519,7 @@ public class LHConfig extends ConfigBase {
 
         String rawListenersConfig = getOrSetDefault(
             LHConfig.LISTENERS_KEY,
-            "PLAIN:5000"
+            "PLAIN:2023"
         );
         Map<String, ListenerProtocol> protocolMap = getListenersProtocolMap();
         Map<String, AuthorizationProtocol> authMap = getListenersAuthorizationMap();
@@ -584,7 +584,7 @@ public class LHConfig extends ConfigBase {
 
         String rawListenersConfig = getOrSetDefault(
             LHConfig.ADVERTISED_LISTENERS_KEY,
-            "PLAIN://localhost:5000"
+            "PLAIN://localhost:2023"
         );
 
         if (

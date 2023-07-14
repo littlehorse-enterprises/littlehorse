@@ -23,7 +23,7 @@ Create a file `~/.config/littlehorse.config` and configure it as follows:
 
 ```
 LHC_API_HOST=foo.bar.com  # Host for the LH Server
-LHC_API_PORT=5000
+LHC_API_PORT=2023
 
 # If necessary, configure the following client certs:
 LHC_CA_CERT=<path to ca cert file>

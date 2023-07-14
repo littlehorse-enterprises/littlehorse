@@ -233,7 +233,7 @@ public class LHClientConfig extends ConfigBase {
     }
 
     public int getApiBootstrapPort() {
-        return Integer.valueOf(getOrSetDefault(API_PORT_KEY, "5000"));
+        return Integer.valueOf(getOrSetDefault(API_PORT_KEY, "2023"));
     }
 
     public String getClientId() {

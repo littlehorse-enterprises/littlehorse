@@ -1,8 +1,7 @@
 ## E2E tests
 
 1. You need a LH cluster already running
-2. Configure your ~/.config/littlehorse.config file
-3. Then you can run the e2e test with next commands:
+2. Then you can run the e2e test with next commands:
 
 Run all e2e tests:
 
@@ -27,6 +26,18 @@ Help:
 ```
 ./gradlew e2e-test:run --args="-h"
 ```
+
+### Configurations
+
+Default configuration:
+```
+LHC_API_HOST=localhost
+LHC_API_PORT=2023
+LHW_TASK_WORKER_VERSION=lh.integration-tests.local
+```
+
+Also, you can configure your `~/.config/littlehorse.config` file
+if your server's configuration if different to the default values.
 
 
 ### Usage:

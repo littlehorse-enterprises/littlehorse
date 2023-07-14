@@ -1,4 +1,4 @@
-## Running the `MutationExample.java` Example
+## Running MutationExample
 
 In this example you will see how to mutate variables.
 

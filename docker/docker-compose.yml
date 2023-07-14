@@ -1,15 +1,15 @@
 services:
   kafka:
-    network_mode: host
-    container_name: lh-server-kafka
+    container_name: lh-kafka
     image: bitnami/kafka:3.5
     environment:
       ALLOW_PLAINTEXT_LISTENER: "yes"
       KAFKA_ENABLE_KRAFT: "yes"
-      KAFKA_CFG_LISTENERS: CONTROLLER://127.0.0.1:29092,PLAINTEXT://127.0.0.1:9092
-      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://127.0.0.1:9092
+      KAFKA_CFG_LISTENERS: CONTROLLER://:29092,EXTERNAL://:19092,INTERNAL://:9092
+      KAFKA_CFG_ADVERTISED_LISTENERS: EXTERNAL://localhost:19092,INTERNAL://kafka:9092
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,INTERNAL:PLAINTEXT
+      KAFKA_CFG_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_CFG_BROKER_ID: "1"
-      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
       KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
       KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR: "1"
       KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "1"
@@ -19,11 +19,15 @@ services:
       BITNAMI_DEBUG: "true"
       KAFKA_CFG_NODE_ID: "1"
       KAFKA_KRAFT_CLUSTER_ID: abcdefghijklmnopqrstuv
-  keycloak:
-    network_mode: host
-    container_name: lh-server-auth
-    image: quay.io/keycloak/keycloak:21.1.1
-    command: ["start-dev", "--http-port=8888"]
+    ports:
+      - "19092:19092"
+  littlehorse:
+    container_name: lh-server
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
     environment:
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
+      LHS_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      LHS_SHOULD_CREATE_TOPICS: "true"
+    ports:
+      - "2023:2023"

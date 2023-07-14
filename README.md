@@ -130,7 +130,7 @@ You can confirm that the Server is running via:
 
 ## Configuring Clients
 
-When you run the LH Server according to the command above, the API Host is `localhost` and the API Port is `5000`.
+When you run the LH Server according to the command above, the API Host is `localhost` and the API Port is `2023`.
 
 Also note that mTLS will NOT be enabled; therefore, you should not have any client keys or certs configured in your `~/.config/littlehorse.config` if you wish to interact with the LH Server running in your terminal as per this README.
 
@@ -207,11 +207,11 @@ Running two brokers is slightly tricky as you must configure the ports, advertis
 However, you can start two Brokers in your terminal as follows:
 
 ```
-# The first server has an external API port of 5000
+# The first server has an external API port of 2023
 ./local-dev/do-server.sh
 
 # <In another terminal>
-# The second server has an external API port of 5002
+# The second server has an external API port of 2033
 ./local-dev/do-server.sh server-2
 ```
 

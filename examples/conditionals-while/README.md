@@ -1,4 +1,4 @@
-## Running the `ConditionalsWhileExample.java` Example
+## Running ConditionalsWhileExample
 
 In this example you will see how to define a while loop with LH.
 Use doWhile(WorkflowCondition condition, ThreadFunc whileBody) to define the loop,

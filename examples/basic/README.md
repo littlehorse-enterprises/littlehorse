@@ -1,4 +1,4 @@
-## Running the `BasicExample.java` Example
+## Running BasicExample
 
 This is a simple example, which does two things:
 

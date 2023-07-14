@@ -1,4 +1,4 @@
-## Running the `ParallelApprovalExample.java` Example
+## Running ParallelApprovalExample
 
 In this example you will see the poser of the thread.waitForThreads feature.
 When multiples thread are running in parallel and you need to wait for all of them to finish,

@@ -1,4 +1,4 @@
-## Running the `RunWfExample.java` Example
+## Running RunWfExample.java
 
 In This example you are going to learn how to request a wf run
 programmatically using:

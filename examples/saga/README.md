@@ -1,4 +1,4 @@
-## Running the `SagaExample.java` Example
+## Running SagaExample
 
 LH support advanced microservices patterns like Sagas.
 Here you are going to be able to see how to define a workflow for a saga transaction.

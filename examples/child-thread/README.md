@@ -1,4 +1,4 @@
-## Running the `ChildThreadExample.java` Example
+## Running ChildThreadExample
 
 In this example you will see how to instantiate a child thread
 and then wait until it has finished its execution before

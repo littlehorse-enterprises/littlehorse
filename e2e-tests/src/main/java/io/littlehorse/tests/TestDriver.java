@@ -34,7 +34,7 @@ public class TestDriver {
     public static Properties getConfigProps() {
         Properties props = new Properties();
         props.put("LHC_API_HOST", "localhost");
-        props.put("LHC_API_PORT", 5000);
+        props.put("LHC_API_PORT", 2023);
         props.put("LHW_TASK_WORKER_VERSION", "lh.integration-tests.local");
 
         Path configPath = Path.of(

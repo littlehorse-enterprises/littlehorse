@@ -1,4 +1,4 @@
-## Running the `ExternalEventExample.java` Example
+## Running ExternalEventExample
 
 This example demonstrates the asynchronous ExternalEvent functionality.
 We will use "thread.waitForEvent" to wait for an external event, then when it arrives

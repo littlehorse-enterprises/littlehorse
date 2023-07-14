@@ -117,7 +117,7 @@ func NewConfigFromEnv() *LHConfig {
 
 	return &LHConfig{
 		ApiHost:  getEnvOrDefault(API_HOST_KEY, "localhost"),
-		ApiPort:  getEnvOrDefault(API_PORT_KEY, "5000"),
+		ApiPort:  getEnvOrDefault(API_PORT_KEY, "2023"),
 		ClientId: getEnvOrDefault(CLIENT_ID_KEY, "unset-client"),
 
 		CertFile: stringPtr(os.Getenv(CERT_FILE_KEY)),
@@ -149,7 +149,7 @@ func NewConfigFromProps(filePath string) (*LHConfig, error) {
 
 	return &LHConfig{
 		ApiHost:  p.GetString(API_HOST_KEY, "localhost"),
-		ApiPort:  p.GetString(API_PORT_KEY, "5000"),
+		ApiPort:  p.GetString(API_PORT_KEY, "2023"),
 		ClientId: p.GetString(CLIENT_ID_KEY, "unset-client"),
 
 		CertFile: stringPtr(p.GetString(CERT_FILE_KEY, "")),

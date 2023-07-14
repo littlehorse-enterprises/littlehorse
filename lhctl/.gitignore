@@ -1,7 +1,0 @@
-*~
-
-# binary file, also different depending on platform
-lhctl
-
-*.code-workspace
-bin/*

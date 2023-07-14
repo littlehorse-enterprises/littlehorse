@@ -1,4 +1,4 @@
-## Running the `WorkerContextExample.java` Example
+## Running WorkerContextExample
 
 This example shows how to get access to the context when executing a task.
 Go to the class `MyWorker`.

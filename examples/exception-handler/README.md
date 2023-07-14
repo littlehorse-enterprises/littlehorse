@@ -1,4 +1,4 @@
-## Running the `ExceptionHandlerExample.java` Example
+## Running ExceptionHandlerExample
 
 This is a simple demonstration of a workflow that handles the failure of a task with
 the handleException() functionality, which spawns a child thread and then

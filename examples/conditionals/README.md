@@ -1,4 +1,4 @@
-## Running the `ConditionalsExample.java` Example
+## Running ConditionalsExample
 
 In this example you will see how to use conditionals.
 It will execute an "if" or "else" depending on the value of "bar".

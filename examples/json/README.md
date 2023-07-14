@@ -1,4 +1,4 @@
-## Running the `JsonExample.java` Example
+## Running JsonExample
 
 This workflow demonstrates the ability of the Java SDK to serialize/deserialize
 JSON and allow Task developers to interact with real Java objects.

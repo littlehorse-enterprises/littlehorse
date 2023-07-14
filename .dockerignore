@@ -1,0 +1,8 @@
+# Ignore everything
+*
+!server/
+!sdk-java/
+!gradle.properties
+!settings.gradle
+!docker/docker-entrypoint.sh
+!docker/log4j2.properties

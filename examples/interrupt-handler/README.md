@@ -1,4 +1,4 @@
-## Running the `InterruptHandlerExample.java` Example
+## Running InterruptHandlerExample
 
 This example shows how to interrupt a workflow execution.
 You need to register and interrupt handler with thread.registerInterruptHandler.

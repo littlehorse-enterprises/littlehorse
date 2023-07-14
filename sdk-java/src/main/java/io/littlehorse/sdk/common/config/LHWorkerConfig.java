@@ -112,7 +112,7 @@ public class LHWorkerConfig extends LHClientConfig {
      * @return the API Bootstrap port.
      */
     public int getApiBootstrapPort() {
-        return Integer.valueOf(String.valueOf(getOrSetDefault(API_PORT_KEY, "5000")));
+        return Integer.valueOf(String.valueOf(getOrSetDefault(API_PORT_KEY, "2023")));
     }
 
     /**
