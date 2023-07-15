@@ -39,7 +39,7 @@ public class TaskNodeRun extends SubNodeRun<TaskNodeRunPb> {
     public TaskNodeRunPb.Builder toProto() {
         TaskNodeRunPb.Builder out = TaskNodeRunPb.newBuilder();
 
-        out.setTaskRunId(taskRunId.toProto());
+        if (taskRunId != null) out.setTaskRunId(taskRunId.toProto());
 
         return out;
     }
@@ -67,10 +67,6 @@ public class TaskNodeRun extends SubNodeRun<TaskNodeRunPb> {
                 ),
                 time
             );
-            this.taskRunId = new TaskRunId();
-            // prevents serialization error with NPE.
-            this.taskRunId.partitionKey = "";
-            this.taskRunId.taskGuid = "";
             return;
         }
 

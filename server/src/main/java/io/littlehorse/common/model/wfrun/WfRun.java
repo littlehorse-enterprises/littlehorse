@@ -426,9 +426,7 @@ public class WfRun extends Getable<WfRunPb> {
         for (ThreadRun thread : threadRuns) {
             statusChanged = thread.updateStatus() || statusChanged;
         }
-        log.warn("About to startxnhanlders");
         boolean xnHandlersStarted = startXnHandlersAndInterrupts(time);
-        log.warn("Got results {}", xnHandlersStarted);
         statusChanged = xnHandlersStarted || statusChanged;
         for (int i = threadRuns.size() - 1; i >= 0; i--) {
             ThreadRun thread = threadRuns.get(i);

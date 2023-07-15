@@ -8,8 +8,7 @@ import java.util.Set;
 public class LHConstants {
 
     // Other various constants used by code
-    public static final Duration PUNCTUATOR_INERVAL = Duration.ofSeconds(4);
-    public static final Duration TICKER_INTERVAL = Duration.ofSeconds(4);
+    public static final Duration PUNCTUATOR_INERVAL = Duration.ofSeconds(2);
     public static final String EXT_EVT_HANDLER_VAR = "INPUT";
 
     // Make all global metadata use the same partition key so that they're processed

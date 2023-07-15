@@ -58,7 +58,7 @@ public class AVChildThreadInterrupt extends WorkflowLogicTest {
                             VariableMutationTypePb.ADD,
                             interruptInput
                         );
-                        parentHandler.sleepSeconds(3);
+                        parentHandler.sleepSeconds(1);
                     }
                 );
 
@@ -77,7 +77,7 @@ public class AVChildThreadInterrupt extends WorkflowLogicTest {
                                     VariableTypePb.INT
                                 );
                                 childHandler.execute("av-obiwan");
-                                childHandler.sleepSeconds(3);
+                                childHandler.sleepSeconds(1);
                                 childHandler.mutate(
                                     childInt,
                                     VariableMutationTypePb.ADD,
@@ -87,13 +87,13 @@ public class AVChildThreadInterrupt extends WorkflowLogicTest {
                         );
 
                         child.execute("av-obiwan");
-                        child.sleepSeconds(3);
+                        child.sleepSeconds(1);
                     },
                     "child",
                     Map.of("child-int", 0)
                 );
 
-                thread.sleepSeconds(3);
+                thread.sleepSeconds(1);
                 thread.execute("av-obiwan");
                 thread.waitForThreads(childThread);
             }
@@ -117,7 +117,7 @@ public class AVChildThreadInterrupt extends WorkflowLogicTest {
     private String runWithNoInterrupts(LHClient client)
         throws LogicTestFailure, InterruptedException, LHApiError {
         String wfRunId = runWf(client, Arg.of("parent-int", 0));
-        Thread.sleep(1000 * 8);
+        Thread.sleep(1000 * 3);
         assertStatus(client, wfRunId, LHStatusPb.COMPLETED);
         assertTaskOutputsMatch(client, wfRunId, 0, "hello there");
         assertTaskOutputsMatch(client, wfRunId, 1, "hello there");
@@ -131,13 +131,13 @@ public class AVChildThreadInterrupt extends WorkflowLogicTest {
         String wfRunId = runWf(client, Arg.of("parent-int", 0));
 
         sendEvent(client, wfRunId, CHILD_EVENT, 10, null);
-        Thread.sleep(1000 * 1);
+        Thread.sleep(500);
         assertStatus(client, wfRunId, LHStatusPb.RUNNING);
         assertThreadStatus(client, wfRunId, 0, LHStatusPb.RUNNING);
         assertThreadStatus(client, wfRunId, 1, LHStatusPb.HALTED);
         assertThreadStatus(client, wfRunId, 2, LHStatusPb.RUNNING);
 
-        Thread.sleep(1000 * 12);
+        Thread.sleep(1000 * 5);
 
         assertStatus(client, wfRunId, LHStatusPb.COMPLETED);
         assertTaskOutputsMatch(client, wfRunId, 0, "hello there");
@@ -153,14 +153,14 @@ public class AVChildThreadInterrupt extends WorkflowLogicTest {
         String wfRunId = runWf(client, Arg.of("parent-int", 0));
 
         sendEvent(client, wfRunId, PARENT_EVENT, 10, null);
-        Thread.sleep(1000 * 1);
+        Thread.sleep(500);
         assertStatus(client, wfRunId, LHStatusPb.RUNNING);
 
         assertThreadStatus(client, wfRunId, 0, LHStatusPb.HALTED);
         assertThreadStatus(client, wfRunId, 1, LHStatusPb.HALTED);
         assertThreadStatus(client, wfRunId, 2, LHStatusPb.RUNNING);
 
-        Thread.sleep(1000 * 15);
+        Thread.sleep(1000 * 5);
 
         assertStatus(client, wfRunId, LHStatusPb.COMPLETED);
         assertTaskOutputsMatch(client, wfRunId, 0, "hello there");
@@ -177,7 +177,7 @@ public class AVChildThreadInterrupt extends WorkflowLogicTest {
 
         sendEvent(client, wfRunId, PARENT_EVENT, 10, null);
         sendEvent(client, wfRunId, CHILD_EVENT, 10, null);
-        Thread.sleep(1000 * 1);
+        Thread.sleep(500);
         assertStatus(client, wfRunId, LHStatusPb.RUNNING);
         assertThreadStatus(client, wfRunId, 0, LHStatusPb.HALTED);
         assertThreadStatus(client, wfRunId, 1, LHStatusPb.HALTED);
@@ -187,7 +187,7 @@ public class AVChildThreadInterrupt extends WorkflowLogicTest {
         assertThreadStatus(client, wfRunId, 2, LHStatusPb.RUNNING);
         assertThreadStatus(client, wfRunId, 3, LHStatusPb.RUNNING);
 
-        Thread.sleep(1000 * 15);
+        Thread.sleep(1000 * 8);
 
         assertStatus(client, wfRunId, LHStatusPb.COMPLETED);
         assertTaskOutputsMatch(client, wfRunId, 0, "hello there");
