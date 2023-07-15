@@ -1013,6 +1013,10 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         internalComms.onResponseReceived(commandId, response);
     }
 
+    public void sendErrorToClient(String commandId, Exception caught) {
+        internalComms.sendErrorToClientForCommand(commandId, caught);
+    }
+
     private <
         U extends Message, T extends SubCommand<U>, V extends Message
     > void processCommand(

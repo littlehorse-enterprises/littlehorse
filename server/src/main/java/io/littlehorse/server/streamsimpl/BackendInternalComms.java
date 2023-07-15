@@ -400,6 +400,10 @@ public class BackendInternalComms implements Closeable {
         asyncWaiters.put(commandId, response);
     }
 
+    public void sendErrorToClientForCommand(String commandId, Exception caught) {
+        asyncWaiters.markCommandFailed(commandId, caught);
+    }
+
     private void localWaitForCommand(
         String commandId,
         StreamObserver<WaitForCommandReplyPb> observer

@@ -33,15 +33,32 @@ public class AsyncWaiters {
             if (waiter == null) {
                 waiters.put(commandId, new AsyncWaiter(commandId, observer));
             } else {
-                if (waiter.observer != null) {
+                if (waiter.getObserver() != null) {
                     // this means the request has come in again...
-                    waiter.observer = observer;
+                    waiter.setObserver(observer);
                     log.warn("Got a retry request before the event was processed");
                 } else {
-                    waiter.observer = observer;
+                    waiter.setObserver(observer);
                     waiter.onMatched();
                     waiters.remove(commandId);
                 }
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public void markCommandFailed(String commandId, Exception exception) {
+        // This happens when there is an unexpected error in the processing.
+        try {
+            lock.lock();
+            AsyncWaiter waiter = waiters.get(commandId);
+            if (waiter == null) {
+                waiters.put(commandId, new AsyncWaiter(commandId, exception));
+            } else {
+                waiter.setCaughtException(exception);
+                waiter.onMatched();
+                waiters.remove(commandId);
             }
         } finally {
             lock.unlock();
@@ -56,14 +73,14 @@ public class AsyncWaiters {
             if (waiter == null) {
                 waiters.put(commandId, new AsyncWaiter(commandId, response));
             } else {
-                if (waiter.response != null) {
+                if (waiter.getResponse() != null) {
                     // this means that a duplicate Kafka event came through, but
                     // they're idempotent, so we just take the first response.
 
                     // Basically, just ignore this.
                     log.warn("Just ignoring the second coming of this command id.");
                 } else {
-                    waiter.response = response;
+                    waiter.setResponse(response);
                     waiter.onMatched();
                     waiters.remove(commandId);
                 }
@@ -82,18 +99,20 @@ public class AsyncWaiters {
             long now = System.currentTimeMillis();
             while (iter.hasNext()) {
                 Map.Entry<String, AsyncWaiter> pair = iter.next();
-                long age = now - pair.getValue().arrivalTime.getTime();
+                long age = now - pair.getValue().getArrivalTime().getTime();
                 if (age < MAX_WAITER_AGE) {
                     break;
                 }
                 log.debug("Removing from the iter");
                 AsyncWaiter waiter = pair.getValue();
-                if (waiter.observer != null) {
-                    waiter.observer.onError(
-                        new RuntimeException(
-                            "Request not processed on this worker, likely due to rebalance"
-                        )
-                    );
+                if (waiter.getObserver() != null) {
+                    waiter
+                        .getObserver()
+                        .onError(
+                            new RuntimeException(
+                                "Request not processed on this worker, likely due to rebalance"
+                            )
+                        );
                 }
                 iter.remove();
             }

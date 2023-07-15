@@ -38,7 +38,7 @@ public class TaskNodeRun extends SubNodeRun<TaskNodeRunPb> {
     public TaskNodeRunPb.Builder toProto() {
         TaskNodeRunPb.Builder out = TaskNodeRunPb.newBuilder();
 
-        if (taskRunId != null) out.setTaskRunId(taskRunId.toProto());
+        out.setTaskRunId(taskRunId.toProto());
 
         return out;
     }

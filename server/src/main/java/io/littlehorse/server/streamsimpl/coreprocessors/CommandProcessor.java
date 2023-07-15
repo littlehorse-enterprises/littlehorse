@@ -48,6 +48,17 @@ public class CommandProcessor
 
     @Override
     public void process(final Record<String, Command> commandRecord) {
+        // We have another wrapper here as a guard against a poison pill (even
+        // though we test extensively to prevent poison pills, it's better
+        // to be safe than sorry.)
+        try {
+            processHelper(commandRecord);
+        } catch (Exception exn) {
+            log.error("Unexpected error processing record: ", exn);
+        }
+    }
+
+    private void processHelper(final Record<String, Command> commandRecord) {
         Command command = commandRecord.value();
         dao.setCommand(command);
 
@@ -78,14 +89,15 @@ public class CommandProcessor
                 server.onResponseReceived(command.commandId, cmdReply);
             }
         } catch (Exception exn) {
-            log.error(exn.getMessage(), exn);
+            log.error("Caught exception processing command: ", exn);
             dao.abortChangesAndMarkWfRunFailed(exn.getMessage());
-            // TODO: need to actually close off the response. Otherwise, the
-            // request will hang until the CleanupOldWaiters() thing fires and
-            // cleans stuff up.
-
+            if (command.hasResponse() && command.getCommandId() != null) {
+                server.sendErrorToClient(command.getCommandId(), exn);
+            }
             // Should we have a DLQ? I don't think that makes sense...the internals
-            // of a database like Postgres don't have a DLQ for their WAL.
+            // of a database like Postgres don't have a DLQ for their WAL. However,
+            // we should add metrics. If we get here, then A Very Bad Thing has
+            // happened and the LH Server should know about it.
         }
     }
 
