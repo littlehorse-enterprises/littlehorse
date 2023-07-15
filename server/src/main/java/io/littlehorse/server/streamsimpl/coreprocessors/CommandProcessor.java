@@ -90,10 +90,10 @@ public class CommandProcessor
             }
         } catch (Exception exn) {
             log.error("Caught exception processing command: ", exn);
-            dao.abortChangesAndMarkWfRunFailed(exn.getMessage());
             if (command.hasResponse() && command.getCommandId() != null) {
                 server.sendErrorToClient(command.getCommandId(), exn);
             }
+            dao.abortChangesAndMarkWfRunFailed(exn.getMessage());
             // Should we have a DLQ? I don't think that makes sense...the internals
             // of a database like Postgres don't have a DLQ for their WAL. However,
             // we should add metrics. If we get here, then A Very Bad Thing has

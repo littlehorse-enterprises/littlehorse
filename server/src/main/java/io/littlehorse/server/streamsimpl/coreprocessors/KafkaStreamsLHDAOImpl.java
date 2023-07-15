@@ -490,8 +490,9 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         clearThingsToWrite();
     }
 
-    // TODO: Determine if this actually happens, and if it's worth the
-    // complexity of our cacheing/wfRunPuts/etc.
+    // This method should only be called if we have a serious unknown bug in
+    // LittleHorse that causes an unexpected exception to occur while executing
+    // CommandProcessor#process().
     @Override
     public void abortChangesAndMarkWfRunFailed(String message) {
         for (Map.Entry<String, WfRun> e : wfRunPuts.entrySet()) {
@@ -512,6 +513,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         }
 
         clearThingsToWrite();
+        throw new RuntimeException("test");
     }
 
     @Override
