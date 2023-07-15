@@ -5,6 +5,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.meta.Node;
+import io.littlehorse.common.model.meta.TaskDef;
 import io.littlehorse.common.model.objectId.TaskRunId;
 import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.SubNodeRun;
@@ -54,6 +55,25 @@ public class TaskNodeRun extends SubNodeRun<TaskNodeRunPb> {
         // creating a TaskRun also causes the first TaskAttempt to be scheduled.
 
         Node node = nodeRun.getNode();
+
+        TaskDef td = node.getTaskNode().getTaskDef();
+        if (td == null) {
+            // that means the TaskDef was deleted between now and the time that the
+            // WfSpec was first created. Yikers!
+            nodeRun.fail(
+                new Failure(
+                    "Appears that TaskDef was deleted!",
+                    LHConstants.TASK_ERROR
+                ),
+                time
+            );
+            this.taskRunId = new TaskRunId();
+            // prevents serialization error with NPE.
+            this.taskRunId.partitionKey = "";
+            this.taskRunId.taskGuid = "";
+            return;
+        }
+
         List<VarNameAndVal> inputVariables;
 
         try {
