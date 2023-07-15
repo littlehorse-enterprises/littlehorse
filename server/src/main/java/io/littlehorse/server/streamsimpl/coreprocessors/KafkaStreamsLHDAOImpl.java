@@ -513,7 +513,6 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         }
 
         clearThingsToWrite();
-        throw new RuntimeException("test");
     }
 
     @Override
