@@ -84,7 +84,7 @@ public class ATInterruptsBasic extends WorkflowLogicTest {
         throws LogicTestFailure, InterruptedException, LHApiError {
         String id = runWf(client, Arg.of("my-int", 5));
         assertStatus(client, id, LHStatusPb.RUNNING);
-        Thread.sleep(8 * 1000);
+        Thread.sleep(3 * 1000);
         assertStatus(client, id, LHStatusPb.COMPLETED);
         assertVarEqual(client, id, 0, "my-int", 5);
         return id;
@@ -99,7 +99,7 @@ public class ATInterruptsBasic extends WorkflowLogicTest {
 
         runWf(id, client, Arg.of("my-int", 5));
         assertStatus(client, id, LHStatusPb.RUNNING);
-        Thread.sleep(8 * 1000);
+        Thread.sleep(3 * 1000);
         assertStatus(client, id, LHStatusPb.COMPLETED);
         assertVarEqual(client, id, 0, "my-int", 5);
         return id;
@@ -121,8 +121,7 @@ public class ATInterruptsBasic extends WorkflowLogicTest {
         assertTaskOutputsMatch(client, id, 1, "hello there");
         assertTaskOutputsMatch(client, id, 2, "hello there");
         assertStatus(client, id, LHStatusPb.RUNNING);
-        Thread.sleep(8 * 1000);
-        Thread.sleep(1000);
+        Thread.sleep(7 * 1000);
         assertStatus(client, id, LHStatusPb.COMPLETED);
         assertVarEqual(client, id, 0, "my-int", 25);
         return id;
@@ -134,7 +133,7 @@ public class ATInterruptsBasic extends WorkflowLogicTest {
 
         sendEvent(client, id, INTERRUPT_NAME, 10, null);
 
-        Thread.sleep(8 * 1000);
+        Thread.sleep(3 * 1000);
 
         assertStatus(client, id, LHStatusPb.COMPLETED);
         assertVarEqual(client, id, 0, "my-int", 15);
@@ -147,7 +146,7 @@ public class ATInterruptsBasic extends WorkflowLogicTest {
         String id = runWf(client, Arg.of("my-int", 5));
         sendEvent(client, id, INTERRUPT_NAME, "bad input should crash", null);
         assertStatus(client, id, LHStatusPb.ERROR);
-        Thread.sleep(8 * 1000);
+        Thread.sleep(3 * 1000);
         // should still be dead after the sleep node expires
         assertStatus(client, id, LHStatusPb.ERROR);
         return id;
