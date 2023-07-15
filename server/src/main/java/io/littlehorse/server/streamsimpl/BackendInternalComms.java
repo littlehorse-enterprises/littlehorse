@@ -156,6 +156,8 @@ public class BackendInternalComms implements Closeable {
             );
         this.producer = config.getProducer();
         this.asyncWaiters = new AsyncWaiters();
+
+        // TODO: Optimize this later.
         new Thread(() -> {
             while (true) {
                 try {

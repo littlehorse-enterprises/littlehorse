@@ -103,7 +103,6 @@ public class AsyncWaiters {
                 if (age < MAX_WAITER_AGE) {
                     break;
                 }
-                log.debug("Removing from the iter");
                 AsyncWaiter waiter = pair.getValue();
                 if (waiter.getObserver() != null) {
                     waiter

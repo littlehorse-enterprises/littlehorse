@@ -23,7 +23,7 @@ public class ADTaskDefDeleted extends Test {
 
     public static final String TASK_DEF_1 = "ad-lifecycle-taskdef1";
     public static final String TASK_DEF_2 = "ad-lifecycle-taskdef2";
-    public static final String WF_SPEC_NAME = "ad-lifecycle-wfspec";
+    public static final String WF_SPEC_NAME = "ad-taskdef-deleted";
     private String wfRunId;
     private LHTaskWorker worker1;
     private LHTaskWorker worker2;
