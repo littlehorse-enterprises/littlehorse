@@ -121,10 +121,25 @@ public class TaskNode extends SubNode<TaskNodePb> {
             );
         }
 
-        // EMPLOYEE_TODO: do some checking of types so that users can't shoot
-        // themselves in the foot with mismatched var types. As part of this large
-        // project, we will have to add schemas for JSON typed variables, and do
-        // some jsonpath processing as well.
+        // Currently, we don't do any type-checking for JSON_ARR or JSON_OBJ variables
+        // because they are not strongly-typed. Future versions of LittleHorse will
+        // include the ability to register a schema for JSON Variables. For strongly-
+        // typed JSON variables (i.e. those with a schema), we will also validate
+        // those as well.
+        for (int i = 0; i < variables.size(); i++) {
+            VariableDef taskDefVar = taskDef.getInputVars().get(i);
+            VariableAssignment assn = variables.get(i);
+            if (!assn.canBeType(taskDefVar.getType(), this.node.getThreadSpec())) {
+                throw new LHValidationError(
+                    null,
+                    "Input variable " +
+                    i +
+                    " needs to be " +
+                    taskDefVar.getType() +
+                    " but cannot be!"
+                );
+            }
+        }
 
         if (timeoutSeconds == 0) {
             timeoutSeconds = LHConstants.DEFAULT_TASK_TIMEOUT_SECONDS;
