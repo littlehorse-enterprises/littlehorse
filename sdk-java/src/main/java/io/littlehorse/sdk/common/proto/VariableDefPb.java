@@ -18,6 +18,8 @@ private static final long serialVersionUID = 0L;
   private VariableDefPb() {
     type_ = 0;
     name_ = "";
+    indexType_ = 0;
+    jsonIndexes_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -45,6 +47,7 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.VariableDefPb.class, io.littlehorse.sdk.common.proto.VariableDefPb.Builder.class);
   }
 
+  private int bitField0_;
   public static final int TYPE_FIELD_NUMBER = 1;
   private int type_ = 0;
   /**
@@ -102,6 +105,72 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int INDEX_TYPE_FIELD_NUMBER = 3;
+  private int indexType_ = 0;
+  /**
+   * <code>optional .littlehorse.IndexTypePb index_type = 3;</code>
+   * @return Whether the indexType field is set.
+   */
+  @java.lang.Override public boolean hasIndexType() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <code>optional .littlehorse.IndexTypePb index_type = 3;</code>
+   * @return The enum numeric value on the wire for indexType.
+   */
+  @java.lang.Override public int getIndexTypeValue() {
+    return indexType_;
+  }
+  /**
+   * <code>optional .littlehorse.IndexTypePb index_type = 3;</code>
+   * @return The indexType.
+   */
+  @java.lang.Override public io.littlehorse.sdk.common.proto.IndexTypePb getIndexType() {
+    io.littlehorse.sdk.common.proto.IndexTypePb result = io.littlehorse.sdk.common.proto.IndexTypePb.forNumber(indexType_);
+    return result == null ? io.littlehorse.sdk.common.proto.IndexTypePb.UNRECOGNIZED : result;
+  }
+
+  public static final int JSON_INDEXES_FIELD_NUMBER = 4;
+  @SuppressWarnings("serial")
+  private java.util.List<io.littlehorse.sdk.common.proto.JsonIndexPb> jsonIndexes_;
+  /**
+   * <code>repeated .littlehorse.JsonIndexPb json_indexes = 4;</code>
+   */
+  @java.lang.Override
+  public java.util.List<io.littlehorse.sdk.common.proto.JsonIndexPb> getJsonIndexesList() {
+    return jsonIndexes_;
+  }
+  /**
+   * <code>repeated .littlehorse.JsonIndexPb json_indexes = 4;</code>
+   */
+  @java.lang.Override
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.JsonIndexPbOrBuilder> 
+      getJsonIndexesOrBuilderList() {
+    return jsonIndexes_;
+  }
+  /**
+   * <code>repeated .littlehorse.JsonIndexPb json_indexes = 4;</code>
+   */
+  @java.lang.Override
+  public int getJsonIndexesCount() {
+    return jsonIndexes_.size();
+  }
+  /**
+   * <code>repeated .littlehorse.JsonIndexPb json_indexes = 4;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.JsonIndexPb getJsonIndexes(int index) {
+    return jsonIndexes_.get(index);
+  }
+  /**
+   * <code>repeated .littlehorse.JsonIndexPb json_indexes = 4;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.JsonIndexPbOrBuilder getJsonIndexesOrBuilder(
+      int index) {
+    return jsonIndexes_.get(index);
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -122,6 +191,12 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, name_);
     }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      output.writeEnum(3, indexType_);
+    }
+    for (int i = 0; i < jsonIndexes_.size(); i++) {
+      output.writeMessage(4, jsonIndexes_.get(i));
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -137,6 +212,14 @@ private static final long serialVersionUID = 0L;
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, name_);
+    }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeEnumSize(3, indexType_);
+    }
+    for (int i = 0; i < jsonIndexes_.size(); i++) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(4, jsonIndexes_.get(i));
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -156,6 +239,12 @@ private static final long serialVersionUID = 0L;
     if (type_ != other.type_) return false;
     if (!getName()
         .equals(other.getName())) return false;
+    if (hasIndexType() != other.hasIndexType()) return false;
+    if (hasIndexType()) {
+      if (indexType_ != other.indexType_) return false;
+    }
+    if (!getJsonIndexesList()
+        .equals(other.getJsonIndexesList())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -171,6 +260,14 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + type_;
     hash = (37 * hash) + NAME_FIELD_NUMBER;
     hash = (53 * hash) + getName().hashCode();
+    if (hasIndexType()) {
+      hash = (37 * hash) + INDEX_TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + indexType_;
+    }
+    if (getJsonIndexesCount() > 0) {
+      hash = (37 * hash) + JSON_INDEXES_FIELD_NUMBER;
+      hash = (53 * hash) + getJsonIndexesList().hashCode();
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -302,6 +399,14 @@ private static final long serialVersionUID = 0L;
       bitField0_ = 0;
       type_ = 0;
       name_ = "";
+      indexType_ = 0;
+      if (jsonIndexesBuilder_ == null) {
+        jsonIndexes_ = java.util.Collections.emptyList();
+      } else {
+        jsonIndexes_ = null;
+        jsonIndexesBuilder_.clear();
+      }
+      bitField0_ = (bitField0_ & ~0x00000008);
       return this;
     }
 
@@ -328,9 +433,22 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.VariableDefPb buildPartial() {
       io.littlehorse.sdk.common.proto.VariableDefPb result = new io.littlehorse.sdk.common.proto.VariableDefPb(this);
+      buildPartialRepeatedFields(result);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
+    }
+
+    private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.VariableDefPb result) {
+      if (jsonIndexesBuilder_ == null) {
+        if (((bitField0_ & 0x00000008) != 0)) {
+          jsonIndexes_ = java.util.Collections.unmodifiableList(jsonIndexes_);
+          bitField0_ = (bitField0_ & ~0x00000008);
+        }
+        result.jsonIndexes_ = jsonIndexes_;
+      } else {
+        result.jsonIndexes_ = jsonIndexesBuilder_.build();
+      }
     }
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.VariableDefPb result) {
@@ -341,6 +459,12 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000002) != 0)) {
         result.name_ = name_;
       }
+      int to_bitField0_ = 0;
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.indexType_ = indexType_;
+        to_bitField0_ |= 0x00000001;
+      }
+      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -395,6 +519,35 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000002;
         onChanged();
       }
+      if (other.hasIndexType()) {
+        setIndexType(other.getIndexType());
+      }
+      if (jsonIndexesBuilder_ == null) {
+        if (!other.jsonIndexes_.isEmpty()) {
+          if (jsonIndexes_.isEmpty()) {
+            jsonIndexes_ = other.jsonIndexes_;
+            bitField0_ = (bitField0_ & ~0x00000008);
+          } else {
+            ensureJsonIndexesIsMutable();
+            jsonIndexes_.addAll(other.jsonIndexes_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.jsonIndexes_.isEmpty()) {
+          if (jsonIndexesBuilder_.isEmpty()) {
+            jsonIndexesBuilder_.dispose();
+            jsonIndexesBuilder_ = null;
+            jsonIndexes_ = other.jsonIndexes_;
+            bitField0_ = (bitField0_ & ~0x00000008);
+            jsonIndexesBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getJsonIndexesFieldBuilder() : null;
+          } else {
+            jsonIndexesBuilder_.addAllMessages(other.jsonIndexes_);
+          }
+        }
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -431,6 +584,24 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000002;
               break;
             } // case 18
+            case 24: {
+              indexType_ = input.readEnum();
+              bitField0_ |= 0x00000004;
+              break;
+            } // case 24
+            case 34: {
+              io.littlehorse.sdk.common.proto.JsonIndexPb m =
+                  input.readMessage(
+                      io.littlehorse.sdk.common.proto.JsonIndexPb.parser(),
+                      extensionRegistry);
+              if (jsonIndexesBuilder_ == null) {
+                ensureJsonIndexesIsMutable();
+                jsonIndexes_.add(m);
+              } else {
+                jsonIndexesBuilder_.addMessage(m);
+              }
+              break;
+            } // case 34
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -571,6 +742,306 @@ private static final long serialVersionUID = 0L;
       bitField0_ |= 0x00000002;
       onChanged();
       return this;
+    }
+
+    private int indexType_ = 0;
+    /**
+     * <code>optional .littlehorse.IndexTypePb index_type = 3;</code>
+     * @return Whether the indexType field is set.
+     */
+    @java.lang.Override public boolean hasIndexType() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <code>optional .littlehorse.IndexTypePb index_type = 3;</code>
+     * @return The enum numeric value on the wire for indexType.
+     */
+    @java.lang.Override public int getIndexTypeValue() {
+      return indexType_;
+    }
+    /**
+     * <code>optional .littlehorse.IndexTypePb index_type = 3;</code>
+     * @param value The enum numeric value on the wire for indexType to set.
+     * @return This builder for chaining.
+     */
+    public Builder setIndexTypeValue(int value) {
+      indexType_ = value;
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.IndexTypePb index_type = 3;</code>
+     * @return The indexType.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.IndexTypePb getIndexType() {
+      io.littlehorse.sdk.common.proto.IndexTypePb result = io.littlehorse.sdk.common.proto.IndexTypePb.forNumber(indexType_);
+      return result == null ? io.littlehorse.sdk.common.proto.IndexTypePb.UNRECOGNIZED : result;
+    }
+    /**
+     * <code>optional .littlehorse.IndexTypePb index_type = 3;</code>
+     * @param value The indexType to set.
+     * @return This builder for chaining.
+     */
+    public Builder setIndexType(io.littlehorse.sdk.common.proto.IndexTypePb value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      bitField0_ |= 0x00000004;
+      indexType_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional .littlehorse.IndexTypePb index_type = 3;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearIndexType() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      indexType_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private java.util.List<io.littlehorse.sdk.common.proto.JsonIndexPb> jsonIndexes_ =
+      java.util.Collections.emptyList();
+    private void ensureJsonIndexesIsMutable() {
+      if (!((bitField0_ & 0x00000008) != 0)) {
+        jsonIndexes_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.JsonIndexPb>(jsonIndexes_);
+        bitField0_ |= 0x00000008;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.JsonIndexPb, io.littlehorse.sdk.common.proto.JsonIndexPb.Builder, io.littlehorse.sdk.common.proto.JsonIndexPbOrBuilder> jsonIndexesBuilder_;
+
+    /**
+     * <code>repeated .littlehorse.JsonIndexPb json_indexes = 4;</code>
+     */
+    public java.util.List<io.littlehorse.sdk.common.proto.JsonIndexPb> getJsonIndexesList() {
+      if (jsonIndexesBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(jsonIndexes_);
+      } else {
+        return jsonIndexesBuilder_.getMessageList();
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.JsonIndexPb json_indexes = 4;</code>
+     */
+    public int getJsonIndexesCount() {
+      if (jsonIndexesBuilder_ == null) {
+        return jsonIndexes_.size();
+      } else {
+        return jsonIndexesBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.JsonIndexPb json_indexes = 4;</code>
+     */
+    public io.littlehorse.sdk.common.proto.JsonIndexPb getJsonIndexes(int index) {
+      if (jsonIndexesBuilder_ == null) {
+        return jsonIndexes_.get(index);
+      } else {
+        return jsonIndexesBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.JsonIndexPb json_indexes = 4;</code>
+     */
+    public Builder setJsonIndexes(
+        int index, io.littlehorse.sdk.common.proto.JsonIndexPb value) {
+      if (jsonIndexesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureJsonIndexesIsMutable();
+        jsonIndexes_.set(index, value);
+        onChanged();
+      } else {
+        jsonIndexesBuilder_.setMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.JsonIndexPb json_indexes = 4;</code>
+     */
+    public Builder setJsonIndexes(
+        int index, io.littlehorse.sdk.common.proto.JsonIndexPb.Builder builderForValue) {
+      if (jsonIndexesBuilder_ == null) {
+        ensureJsonIndexesIsMutable();
+        jsonIndexes_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        jsonIndexesBuilder_.setMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.JsonIndexPb json_indexes = 4;</code>
+     */
+    public Builder addJsonIndexes(io.littlehorse.sdk.common.proto.JsonIndexPb value) {
+      if (jsonIndexesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureJsonIndexesIsMutable();
+        jsonIndexes_.add(value);
+        onChanged();
+      } else {
+        jsonIndexesBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.JsonIndexPb json_indexes = 4;</code>
+     */
+    public Builder addJsonIndexes(
+        int index, io.littlehorse.sdk.common.proto.JsonIndexPb value) {
+      if (jsonIndexesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureJsonIndexesIsMutable();
+        jsonIndexes_.add(index, value);
+        onChanged();
+      } else {
+        jsonIndexesBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.JsonIndexPb json_indexes = 4;</code>
+     */
+    public Builder addJsonIndexes(
+        io.littlehorse.sdk.common.proto.JsonIndexPb.Builder builderForValue) {
+      if (jsonIndexesBuilder_ == null) {
+        ensureJsonIndexesIsMutable();
+        jsonIndexes_.add(builderForValue.build());
+        onChanged();
+      } else {
+        jsonIndexesBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.JsonIndexPb json_indexes = 4;</code>
+     */
+    public Builder addJsonIndexes(
+        int index, io.littlehorse.sdk.common.proto.JsonIndexPb.Builder builderForValue) {
+      if (jsonIndexesBuilder_ == null) {
+        ensureJsonIndexesIsMutable();
+        jsonIndexes_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        jsonIndexesBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.JsonIndexPb json_indexes = 4;</code>
+     */
+    public Builder addAllJsonIndexes(
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.JsonIndexPb> values) {
+      if (jsonIndexesBuilder_ == null) {
+        ensureJsonIndexesIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, jsonIndexes_);
+        onChanged();
+      } else {
+        jsonIndexesBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.JsonIndexPb json_indexes = 4;</code>
+     */
+    public Builder clearJsonIndexes() {
+      if (jsonIndexesBuilder_ == null) {
+        jsonIndexes_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+      } else {
+        jsonIndexesBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.JsonIndexPb json_indexes = 4;</code>
+     */
+    public Builder removeJsonIndexes(int index) {
+      if (jsonIndexesBuilder_ == null) {
+        ensureJsonIndexesIsMutable();
+        jsonIndexes_.remove(index);
+        onChanged();
+      } else {
+        jsonIndexesBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.JsonIndexPb json_indexes = 4;</code>
+     */
+    public io.littlehorse.sdk.common.proto.JsonIndexPb.Builder getJsonIndexesBuilder(
+        int index) {
+      return getJsonIndexesFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .littlehorse.JsonIndexPb json_indexes = 4;</code>
+     */
+    public io.littlehorse.sdk.common.proto.JsonIndexPbOrBuilder getJsonIndexesOrBuilder(
+        int index) {
+      if (jsonIndexesBuilder_ == null) {
+        return jsonIndexes_.get(index);  } else {
+        return jsonIndexesBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.JsonIndexPb json_indexes = 4;</code>
+     */
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.JsonIndexPbOrBuilder> 
+         getJsonIndexesOrBuilderList() {
+      if (jsonIndexesBuilder_ != null) {
+        return jsonIndexesBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(jsonIndexes_);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.JsonIndexPb json_indexes = 4;</code>
+     */
+    public io.littlehorse.sdk.common.proto.JsonIndexPb.Builder addJsonIndexesBuilder() {
+      return getJsonIndexesFieldBuilder().addBuilder(
+          io.littlehorse.sdk.common.proto.JsonIndexPb.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .littlehorse.JsonIndexPb json_indexes = 4;</code>
+     */
+    public io.littlehorse.sdk.common.proto.JsonIndexPb.Builder addJsonIndexesBuilder(
+        int index) {
+      return getJsonIndexesFieldBuilder().addBuilder(
+          index, io.littlehorse.sdk.common.proto.JsonIndexPb.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .littlehorse.JsonIndexPb json_indexes = 4;</code>
+     */
+    public java.util.List<io.littlehorse.sdk.common.proto.JsonIndexPb.Builder> 
+         getJsonIndexesBuilderList() {
+      return getJsonIndexesFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.JsonIndexPb, io.littlehorse.sdk.common.proto.JsonIndexPb.Builder, io.littlehorse.sdk.common.proto.JsonIndexPbOrBuilder> 
+        getJsonIndexesFieldBuilder() {
+      if (jsonIndexesBuilder_ == null) {
+        jsonIndexesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.JsonIndexPb, io.littlehorse.sdk.common.proto.JsonIndexPb.Builder, io.littlehorse.sdk.common.proto.JsonIndexPbOrBuilder>(
+                jsonIndexes_,
+                ((bitField0_ & 0x00000008) != 0),
+                getParentForChildren(),
+                isClean());
+        jsonIndexes_ = null;
+      }
+      return jsonIndexesBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

@@ -2,60 +2,55 @@ package io.littlehorse.server.streamsimpl.storeinternals;
 
 import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.proto.TagStorageTypePb;
-import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
-import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
-import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
+import java.util.Optional;
 import java.util.function.Predicate;
+import lombok.Getter;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class GetableIndex {
+@Getter
+public class GetableIndex<T extends Getable<?>> {
 
-    private Collection<Pair<String, Function<Getable<?>, List<String>>>> keys;
-    private TagStorageTypePb tagStorageTypePb;
-    private Predicate<Getable<?>> isGETableActive;
-
-    private Class<? extends Getable<?>> target;
+    private List<Pair<String, ValueType>> attributes;
+    private Optional<TagStorageTypePb> tagStorageTypePb;
+    private Predicate<T> conditional;
 
     public GetableIndex(
-        Class<? extends Getable<?>> target,
-        Collection<Pair<String, Function<Getable<?>, List<String>>>> keys,
-        Predicate<Getable<?>> isGETableActive,
-        TagStorageTypePb tagStorageTypePb
+        List<Pair<String, ValueType>> attributes,
+        Optional<TagStorageTypePb> tagStorageTypePb,
+        Predicate<T> conditional
     ) {
+        this.attributes = attributes;
         this.tagStorageTypePb = tagStorageTypePb;
-        this.keys = keys;
-        this.isGETableActive = isGETableActive;
-        this.target = target;
+        this.conditional = conditional;
     }
 
-    public TagStorageTypePb getTagStorageTypePb() {
-        return tagStorageTypePb;
+    public GetableIndex(
+        List<Pair<String, ValueType>> attributes,
+        Optional<TagStorageTypePb> tagStorageTypePb
+    ) {
+        this(attributes, tagStorageTypePb, null);
     }
 
-    public String getPartitionKeyForAttrs(List<Attribute> attributes) {
-        return Tag.getAttributeString(Getable.getTypeEnum(target), attributes);
-    }
-
-    public Collection<String> getKeys() {
-        return keys.stream().map(Pair::getLeft).toList();
-    }
-
-    private Function<Getable<?>, List<String>> findFunction(String key) {
-        return keys
+    public boolean searchAttributesMatch(List<String> searchAttributes) {
+        return attributes
             .stream()
-            .filter(stringFunctionPair -> stringFunctionPair.getLeft().equals(key))
-            .map(Pair::getRight)
-            .findFirst()
-            .orElse(null);
+            .map(Pair::getKey)
+            .toList()
+            .equals(searchAttributes);
     }
 
-    public List<String> getValue(Getable<?> getable, String key) {
-        return findFunction(key).apply(getable);
+    @SuppressWarnings("unchecked")
+    public <J extends Getable<?>> boolean isValid(J getable) {
+        if (conditional != null) {
+            return conditional.test((T) getable);
+        } else {
+            return true;
+        }
     }
 
-    public boolean isActive(Getable<?> getable) {
-        return isGETableActive.test(getable);
+    public enum ValueType {
+        SINGLE,
+        DYNAMIC,
     }
 }

@@ -10,9 +10,12 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streamsimpl.storeinternals.index.TagsCache;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import java.util.Date;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueStore;
 
+@Slf4j
 public class LHStoreWrapper extends LHROStoreWrapper {
 
     private KeyValueStore<String, Bytes> store;
@@ -24,6 +27,7 @@ public class LHStoreWrapper extends LHROStoreWrapper {
 
     public void put(Storeable<?> thing) {
         String storeKey = StoreUtils.getFullStoreKey(thing);
+        log.debug(storeKey);
         store.put(storeKey, new Bytes(thing.toBytes(config)));
     }
 

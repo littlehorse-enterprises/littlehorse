@@ -1,6 +1,9 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
+import static io.littlehorse.server.streamsimpl.storeinternals.index.Tag.*;
+
 import com.google.protobuf.Message;
+import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.objectId.ExternalEventId;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.proto.BookmarkPb;
@@ -20,7 +23,6 @@ import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchExternalEventReply;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
-import io.littlehorse.server.streamsimpl.storeinternals.GetableIndexRegistry;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
 import java.util.List;
 import java.util.Optional;
@@ -111,12 +113,6 @@ public class SearchExternalEvent
 
         out.storeName = ServerTopology.CORE_STORE;
         out.resultType = ScanResultTypePb.OBJECT_ID;
-        GetableIndex getableIndex = GetableIndexRegistry
-            .getInstance()
-            .findConfigurationForAttributes(
-                ExternalEvent.class,
-                getSearchAttributes()
-            );
         List<Attribute> attributes = buildTagAttributes();
 
         if (type == ExtEvtCriteriaCase.WF_RUN_ID) {
@@ -140,14 +136,40 @@ public class SearchExternalEvent
                         .toList()
                 );
             out.setTagScan(tagScanBuilder.build());
-            if (getableIndex.getTagStorageTypePb() == TagStorageTypePb.LOCAL) {
-                out.setStoreName(ServerTopology.CORE_STORE);
-                out.setResultType(ScanResultTypePb.OBJECT_ID);
-            } else {
-                out.setStoreName(ServerTopology.CORE_REPARTITION_STORE);
-                out.setResultType(ScanResultTypePb.OBJECT_ID);
-                out.setPartitionKey(getableIndex.getPartitionKeyForAttrs(attributes));
-            }
+            List<String> searchAttributes = getSearchAttributes();
+            List<GetableIndex<? extends Getable<?>>> indexConfigurations = new ExternalEvent()
+                .getIndexConfigurations();
+            indexConfigurations
+                .stream()
+                .filter(getableIndexConfiguration -> {
+                    return getableIndexConfiguration.searchAttributesMatch(
+                        searchAttributes
+                    );
+                })
+                .findFirst()
+                .ifPresent(getableIndexConfiguration -> {
+                    if (
+                        getableIndexConfiguration.getTagStorageTypePb().get() ==
+                        TagStorageTypePb.LOCAL
+                    ) {
+                        out.setStoreName(ServerTopology.CORE_STORE);
+                        out.setResultType(ScanResultTypePb.OBJECT_ID);
+                    } else {
+                        out.setStoreName(ServerTopology.CORE_REPARTITION_STORE);
+                        out.setResultType(ScanResultTypePb.OBJECT_ID);
+                        out.setPartitionKey(
+                            getAttributeString(
+                                Getable.getTypeEnum(ExternalEvent.class),
+                                buildTagAttributes()
+                            )
+                        );
+                    }
+                });
+            /*TODO: getableIndex
+                .getTagStorageTypePb()
+                .ifPresent(tagStorageTypePb -> {
+
+                });*/
         } else {
             throw new IllegalArgumentException(
                 "%s type is not supported yet".formatted(type)

@@ -99,7 +99,7 @@ public class LHLibUtil {
     }
 
     public static String taskRunIdToString(TaskRunIdPb taskRunId) {
-        return taskRunId.getPartitionKey() + "/" + taskRunId.getTaskGuid();
+        return taskRunId.getWfRunId() + "/" + taskRunId.getTaskGuid();
     }
 
     public static VariableValuePb objToVarVal(Object o) throws LHSerdeError {

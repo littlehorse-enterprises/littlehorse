@@ -126,6 +126,8 @@ import io.littlehorse.sdk.common.proto.SearchNodeRunPb;
 import io.littlehorse.sdk.common.proto.SearchNodeRunReplyPb;
 import io.littlehorse.sdk.common.proto.SearchTaskDefPb;
 import io.littlehorse.sdk.common.proto.SearchTaskDefReplyPb;
+import io.littlehorse.sdk.common.proto.SearchTaskRunPb;
+import io.littlehorse.sdk.common.proto.SearchTaskRunReplyPb;
 import io.littlehorse.sdk.common.proto.SearchUserTaskDefPb;
 import io.littlehorse.sdk.common.proto.SearchUserTaskDefReplyPb;
 import io.littlehorse.sdk.common.proto.SearchVariablePb;
@@ -163,6 +165,7 @@ import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchExt
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchExternalEventDef;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchNodeRun;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchTaskDef;
+import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchTaskRun;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchUserTaskDef;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchVariable;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchWfRun;
@@ -176,11 +179,11 @@ import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.Sear
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchExternalEventReply;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchNodeRunReply;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchTaskDefReply;
+import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchTaskRunReply;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchUserTaskDefReply;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchVariableReply;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchWfRunReply;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchWfSpecReply;
-import io.littlehorse.server.streamsimpl.storeinternals.GetableIndexRegistry;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import io.littlehorse.server.streamsimpl.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streamsimpl.taskqueue.TaskQueueManager;
@@ -608,7 +611,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         internalComms.getStoreBytesAsync(
             ServerTopology.CORE_STORE,
             StoreUtils.getFullStoreKey(taskRunId.getStoreKey(), TaskRun.class),
-            req.getPartitionKey(),
+            req.getWfRunId(),
             observer
         );
     }
@@ -739,6 +742,14 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         StreamObserver<SearchNodeRunReplyPb> ctx
     ) {
         handleScan(SearchNodeRun.fromProto(req), ctx, SearchNodeRunReply.class);
+    }
+
+    @Override
+    public void searchTaskRun(
+        SearchTaskRunPb req,
+        StreamObserver<SearchTaskRunReplyPb> ctx
+    ) {
+        handleScan(SearchTaskRun.fromProto(req), ctx, SearchTaskRunReply.class);
     }
 
     @Override
@@ -1134,7 +1145,6 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     public static void doMain(LHConfig config)
         throws IOException, InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
-        GetableIndexRegistry.getInstance();
         KafkaStreamsServerImpl server = new KafkaStreamsServerImpl(config);
         Runtime
             .getRuntime()

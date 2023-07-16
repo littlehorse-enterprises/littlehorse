@@ -29,4 +29,44 @@ public interface VariableDefPbOrBuilder extends
    */
   com.google.protobuf.ByteString
       getNameBytes();
+
+  /**
+   * <code>optional .littlehorse.IndexTypePb index_type = 3;</code>
+   * @return Whether the indexType field is set.
+   */
+  boolean hasIndexType();
+  /**
+   * <code>optional .littlehorse.IndexTypePb index_type = 3;</code>
+   * @return The enum numeric value on the wire for indexType.
+   */
+  int getIndexTypeValue();
+  /**
+   * <code>optional .littlehorse.IndexTypePb index_type = 3;</code>
+   * @return The indexType.
+   */
+  io.littlehorse.sdk.common.proto.IndexTypePb getIndexType();
+
+  /**
+   * <code>repeated .littlehorse.JsonIndexPb json_indexes = 4;</code>
+   */
+  java.util.List<io.littlehorse.sdk.common.proto.JsonIndexPb> 
+      getJsonIndexesList();
+  /**
+   * <code>repeated .littlehorse.JsonIndexPb json_indexes = 4;</code>
+   */
+  io.littlehorse.sdk.common.proto.JsonIndexPb getJsonIndexes(int index);
+  /**
+   * <code>repeated .littlehorse.JsonIndexPb json_indexes = 4;</code>
+   */
+  int getJsonIndexesCount();
+  /**
+   * <code>repeated .littlehorse.JsonIndexPb json_indexes = 4;</code>
+   */
+  java.util.List<? extends io.littlehorse.sdk.common.proto.JsonIndexPbOrBuilder> 
+      getJsonIndexesOrBuilderList();
+  /**
+   * <code>repeated .littlehorse.JsonIndexPb json_indexes = 4;</code>
+   */
+  io.littlehorse.sdk.common.proto.JsonIndexPbOrBuilder getJsonIndexesOrBuilder(
+      int index);
 }

@@ -8,26 +8,16 @@ public interface TaskRunIdPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <pre>
-   * In all cases except for the "Ad-Hoc Tasks"  (which we haven't implemented
-   * yet), partition_key will just be wf_run_id.
-   * </pre>
-   *
-   * <code>string partition_key = 1;</code>
-   * @return The partitionKey.
+   * <code>string wf_run_id = 1;</code>
+   * @return The wfRunId.
    */
-  java.lang.String getPartitionKey();
+  java.lang.String getWfRunId();
   /**
-   * <pre>
-   * In all cases except for the "Ad-Hoc Tasks"  (which we haven't implemented
-   * yet), partition_key will just be wf_run_id.
-   * </pre>
-   *
-   * <code>string partition_key = 1;</code>
-   * @return The bytes for partitionKey.
+   * <code>string wf_run_id = 1;</code>
+   * @return The bytes for wfRunId.
    */
   com.google.protobuf.ByteString
-      getPartitionKeyBytes();
+      getWfRunIdBytes();
 
   /**
    * <code>string task_guid = 2;</code>

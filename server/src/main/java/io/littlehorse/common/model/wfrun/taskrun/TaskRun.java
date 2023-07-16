@@ -15,6 +15,7 @@ import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.ScheduledTask;
 import io.littlehorse.common.model.wfrun.TaskAttempt;
 import io.littlehorse.common.model.wfrun.VarNameAndVal;
+import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
 import io.littlehorse.sdk.common.proto.TaskAttemptPb;
@@ -22,12 +23,15 @@ import io.littlehorse.sdk.common.proto.TaskRunPb;
 import io.littlehorse.sdk.common.proto.TaskStatusPb;
 import io.littlehorse.sdk.common.proto.VarNameAndValPb;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
+import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
 @Setter
@@ -42,6 +46,7 @@ public class TaskRun extends Getable<TaskRunPb> {
     private TaskRunSource taskRunSource;
     private Date scheduledAt;
     private int timeoutSeconds;
+    private TaskStatusPb status;
 
     public Class<TaskRunPb> getProtoBaseClass() {
         return TaskRunPb.class;
@@ -53,6 +58,7 @@ public class TaskRun extends Getable<TaskRunPb> {
         maxAttempts = p.getMaxAttempts();
         scheduledAt = LHUtil.fromProtoTs(p.getScheduledAt());
         id = LHSerializable.fromProto(p.getId(), TaskRunId.class);
+        status = p.getStatus();
 
         for (TaskAttemptPb attempt : p.getAttemptsList()) {
             attempts.add(LHSerializable.fromProto(attempt, TaskAttempt.class));
@@ -67,7 +73,8 @@ public class TaskRun extends Getable<TaskRunPb> {
             .newBuilder()
             .setTaskDefName(taskDefName)
             .setMaxAttempts(maxAttempts)
-            .setScheduledAt(LHUtil.fromDate(scheduledAt));
+            .setScheduledAt(LHUtil.fromDate(scheduledAt))
+            .setStatus(status);
 
         for (VarNameAndVal v : inputVariables) {
             out.addInputVariables(v.toProto());
@@ -81,6 +88,58 @@ public class TaskRun extends Getable<TaskRunPb> {
 
     public Date getCreatedAt() {
         return scheduledAt;
+    }
+
+    @Override
+    public List<GetableIndex<? extends Getable<?>>> getIndexConfigurations() {
+        return List.of(
+            new GetableIndex<>(
+                List.of(Pair.of("taskDefName", GetableIndex.ValueType.SINGLE)),
+                Optional.of(TagStorageTypePb.LOCAL)
+            ),
+            new GetableIndex<>(
+                List.of(
+                    Pair.of("taskDefName", GetableIndex.ValueType.SINGLE),
+                    Pair.of("status", GetableIndex.ValueType.SINGLE)
+                ),
+                Optional.of(TagStorageTypePb.LOCAL)
+            )
+            // NOTE: we're not indexing just based on status because we don't want
+            // to have too many reads/writes in RocksDB as those are expensive.
+            //
+            // Additionally, we could index based on the number of retries, so that
+            // we can find all TaskRun's that have been retried. But that maybe can
+            // be in the 0.1.1 release, not 0.1.0
+        );
+    }
+
+    @Override
+    public List<IndexedField> getIndexValues(
+        String key,
+        Optional<TagStorageTypePb> tagStorageTypePb
+    ) {
+        switch (key) {
+            case "taskDefName" -> {
+                return List.of(
+                    new IndexedField(
+                        key,
+                        this.getTaskDefName(),
+                        TagStorageTypePb.LOCAL
+                    )
+                );
+            }
+            case "status" -> {
+                return List.of(
+                    new IndexedField(
+                        key,
+                        this.status.toString(),
+                        TagStorageTypePb.LOCAL
+                    )
+                );
+            }
+        }
+        log.warn("Received unknown key for TaskRun Index: {}", key);
+        return null;
     }
 
     // Not in the proto
@@ -104,6 +163,7 @@ public class TaskRun extends Getable<TaskRunPb> {
         this.setDao(dao);
         this.taskDefName = node.getTaskDefName();
         this.maxAttempts = node.getRetries() + 1;
+        this.status = TaskStatusPb.TASK_SCHEDULED;
     }
 
     @Override
@@ -115,11 +175,6 @@ public class TaskRun extends Getable<TaskRunPb> {
         TaskRun out = new TaskRun();
         out.initFrom(proto);
         return out;
-    }
-
-    // EDUWER_TODO: index taskruns
-    public List<GetableIndex> getIndexes() {
-        return new ArrayList<>();
     }
 
     public TaskAttempt getLatestAttempt() {
@@ -163,6 +218,8 @@ public class TaskRun extends Getable<TaskRunPb> {
     }
 
     public void processStart(TaskClaimEvent se) {
+        this.status = TaskStatusPb.TASK_RUNNING;
+
         // create a timer to mark the task is timeout if it does not finish
         ReportTaskRun taskResult = new ReportTaskRun();
         taskResult.setTaskRunId(id);
@@ -223,12 +280,15 @@ public class TaskRun extends Getable<TaskRunPb> {
         if (ce.getStatus() == TaskStatusPb.TASK_SUCCESS) {
             // Tell the WfRun that the TaskRun is done.
             taskRunSource.getSubSource().onCompleted(attempt, getDao());
+            status = TaskStatusPb.TASK_SUCCESS;
             return new ReportTaskReply(LHResponseCodePb.OK, null);
         }
 
         if (shouldRetry()) {
+            status = TaskStatusPb.TASK_SCHEDULED;
             scheduleAttempt();
         } else {
+            status = ce.getStatus();
             taskRunSource.getSubSource().onFailed(attempt, getDao());
         }
         return new ReportTaskReply(LHResponseCodePb.OK, null);

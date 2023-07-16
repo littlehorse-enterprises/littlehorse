@@ -4,27 +4,27 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * Protobuf type {@code littlehorse.TaskRunIdPb}
+ * Protobuf type {@code littlehorse.JsonIndexPb}
  */
-public final class TaskRunIdPb extends
+public final class JsonIndexPb extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:littlehorse.TaskRunIdPb)
-    TaskRunIdPbOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.JsonIndexPb)
+    JsonIndexPbOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use TaskRunIdPb.newBuilder() to construct.
-  private TaskRunIdPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use JsonIndexPb.newBuilder() to construct.
+  private JsonIndexPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private TaskRunIdPb() {
-    wfRunId_ = "";
-    taskGuid_ = "";
+  private JsonIndexPb() {
+    path_ = "";
+    indexType_ = 0;
   }
 
   @java.lang.Override
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new TaskRunIdPb();
+    return new JsonIndexPb();
   }
 
   @java.lang.Override
@@ -34,93 +34,72 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_TaskRunIdPb_descriptor;
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_JsonIndexPb_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_TaskRunIdPb_fieldAccessorTable
+    return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_JsonIndexPb_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.sdk.common.proto.TaskRunIdPb.class, io.littlehorse.sdk.common.proto.TaskRunIdPb.Builder.class);
+            io.littlehorse.sdk.common.proto.JsonIndexPb.class, io.littlehorse.sdk.common.proto.JsonIndexPb.Builder.class);
   }
 
-  public static final int WF_RUN_ID_FIELD_NUMBER = 1;
+  public static final int PATH_FIELD_NUMBER = 1;
   @SuppressWarnings("serial")
-  private volatile java.lang.Object wfRunId_ = "";
+  private volatile java.lang.Object path_ = "";
   /**
-   * <code>string wf_run_id = 1;</code>
-   * @return The wfRunId.
+   * <code>string path = 1;</code>
+   * @return The path.
    */
   @java.lang.Override
-  public java.lang.String getWfRunId() {
-    java.lang.Object ref = wfRunId_;
+  public java.lang.String getPath() {
+    java.lang.Object ref = path_;
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      wfRunId_ = s;
+      path_ = s;
       return s;
     }
   }
   /**
-   * <code>string wf_run_id = 1;</code>
-   * @return The bytes for wfRunId.
+   * <code>string path = 1;</code>
+   * @return The bytes for path.
    */
   @java.lang.Override
   public com.google.protobuf.ByteString
-      getWfRunIdBytes() {
-    java.lang.Object ref = wfRunId_;
+      getPathBytes() {
+    java.lang.Object ref = path_;
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      wfRunId_ = b;
+      path_ = b;
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
     }
   }
 
-  public static final int TASK_GUID_FIELD_NUMBER = 2;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object taskGuid_ = "";
+  public static final int INDEX_TYPE_FIELD_NUMBER = 2;
+  private int indexType_ = 0;
   /**
-   * <code>string task_guid = 2;</code>
-   * @return The taskGuid.
+   * <code>.littlehorse.IndexTypePb index_type = 2;</code>
+   * @return The enum numeric value on the wire for indexType.
    */
-  @java.lang.Override
-  public java.lang.String getTaskGuid() {
-    java.lang.Object ref = taskGuid_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      taskGuid_ = s;
-      return s;
-    }
+  @java.lang.Override public int getIndexTypeValue() {
+    return indexType_;
   }
   /**
-   * <code>string task_guid = 2;</code>
-   * @return The bytes for taskGuid.
+   * <code>.littlehorse.IndexTypePb index_type = 2;</code>
+   * @return The indexType.
    */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getTaskGuidBytes() {
-    java.lang.Object ref = taskGuid_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      taskGuid_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  @java.lang.Override public io.littlehorse.sdk.common.proto.IndexTypePb getIndexType() {
+    io.littlehorse.sdk.common.proto.IndexTypePb result = io.littlehorse.sdk.common.proto.IndexTypePb.forNumber(indexType_);
+    return result == null ? io.littlehorse.sdk.common.proto.IndexTypePb.UNRECOGNIZED : result;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -137,11 +116,11 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(wfRunId_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, wfRunId_);
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(path_)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, path_);
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(taskGuid_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, taskGuid_);
+    if (indexType_ != io.littlehorse.sdk.common.proto.IndexTypePb.LOCAL_INDEX.getNumber()) {
+      output.writeEnum(2, indexType_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -152,11 +131,12 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(wfRunId_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, wfRunId_);
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(path_)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, path_);
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(taskGuid_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, taskGuid_);
+    if (indexType_ != io.littlehorse.sdk.common.proto.IndexTypePb.LOCAL_INDEX.getNumber()) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeEnumSize(2, indexType_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -168,15 +148,14 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.sdk.common.proto.TaskRunIdPb)) {
+    if (!(obj instanceof io.littlehorse.sdk.common.proto.JsonIndexPb)) {
       return super.equals(obj);
     }
-    io.littlehorse.sdk.common.proto.TaskRunIdPb other = (io.littlehorse.sdk.common.proto.TaskRunIdPb) obj;
+    io.littlehorse.sdk.common.proto.JsonIndexPb other = (io.littlehorse.sdk.common.proto.JsonIndexPb) obj;
 
-    if (!getWfRunId()
-        .equals(other.getWfRunId())) return false;
-    if (!getTaskGuid()
-        .equals(other.getTaskGuid())) return false;
+    if (!getPath()
+        .equals(other.getPath())) return false;
+    if (indexType_ != other.indexType_) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -188,78 +167,78 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + WF_RUN_ID_FIELD_NUMBER;
-    hash = (53 * hash) + getWfRunId().hashCode();
-    hash = (37 * hash) + TASK_GUID_FIELD_NUMBER;
-    hash = (53 * hash) + getTaskGuid().hashCode();
+    hash = (37 * hash) + PATH_FIELD_NUMBER;
+    hash = (53 * hash) + getPath().hashCode();
+    hash = (37 * hash) + INDEX_TYPE_FIELD_NUMBER;
+    hash = (53 * hash) + indexType_;
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
   }
 
-  public static io.littlehorse.sdk.common.proto.TaskRunIdPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.JsonIndexPb parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.TaskRunIdPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.JsonIndexPb parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.TaskRunIdPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.JsonIndexPb parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.TaskRunIdPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.JsonIndexPb parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.TaskRunIdPb parseFrom(byte[] data)
+  public static io.littlehorse.sdk.common.proto.JsonIndexPb parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.TaskRunIdPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.JsonIndexPb parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.TaskRunIdPb parseFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.JsonIndexPb parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.TaskRunIdPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.JsonIndexPb parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.TaskRunIdPb parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.JsonIndexPb parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.TaskRunIdPb parseDelimitedFrom(
+  public static io.littlehorse.sdk.common.proto.JsonIndexPb parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.TaskRunIdPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.JsonIndexPb parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.TaskRunIdPb parseFrom(
+  public static io.littlehorse.sdk.common.proto.JsonIndexPb parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -272,7 +251,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.sdk.common.proto.TaskRunIdPb prototype) {
+  public static Builder newBuilder(io.littlehorse.sdk.common.proto.JsonIndexPb prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -288,26 +267,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code littlehorse.TaskRunIdPb}
+   * Protobuf type {@code littlehorse.JsonIndexPb}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.TaskRunIdPb)
-      io.littlehorse.sdk.common.proto.TaskRunIdPbOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.JsonIndexPb)
+      io.littlehorse.sdk.common.proto.JsonIndexPbOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_TaskRunIdPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_JsonIndexPb_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_TaskRunIdPb_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_JsonIndexPb_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.TaskRunIdPb.class, io.littlehorse.sdk.common.proto.TaskRunIdPb.Builder.class);
+              io.littlehorse.sdk.common.proto.JsonIndexPb.class, io.littlehorse.sdk.common.proto.JsonIndexPb.Builder.class);
     }
 
-    // Construct using io.littlehorse.sdk.common.proto.TaskRunIdPb.newBuilder()
+    // Construct using io.littlehorse.sdk.common.proto.JsonIndexPb.newBuilder()
     private Builder() {
 
     }
@@ -321,25 +300,25 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      wfRunId_ = "";
-      taskGuid_ = "";
+      path_ = "";
+      indexType_ = 0;
       return this;
     }
 
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_TaskRunIdPb_descriptor;
+      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_JsonIndexPb_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.TaskRunIdPb getDefaultInstanceForType() {
-      return io.littlehorse.sdk.common.proto.TaskRunIdPb.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.JsonIndexPb getDefaultInstanceForType() {
+      return io.littlehorse.sdk.common.proto.JsonIndexPb.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.TaskRunIdPb build() {
-      io.littlehorse.sdk.common.proto.TaskRunIdPb result = buildPartial();
+    public io.littlehorse.sdk.common.proto.JsonIndexPb build() {
+      io.littlehorse.sdk.common.proto.JsonIndexPb result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -347,20 +326,20 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.TaskRunIdPb buildPartial() {
-      io.littlehorse.sdk.common.proto.TaskRunIdPb result = new io.littlehorse.sdk.common.proto.TaskRunIdPb(this);
+    public io.littlehorse.sdk.common.proto.JsonIndexPb buildPartial() {
+      io.littlehorse.sdk.common.proto.JsonIndexPb result = new io.littlehorse.sdk.common.proto.JsonIndexPb(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(io.littlehorse.sdk.common.proto.TaskRunIdPb result) {
+    private void buildPartial0(io.littlehorse.sdk.common.proto.JsonIndexPb result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.wfRunId_ = wfRunId_;
+        result.path_ = path_;
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.taskGuid_ = taskGuid_;
+        result.indexType_ = indexType_;
       }
     }
 
@@ -398,25 +377,23 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.sdk.common.proto.TaskRunIdPb) {
-        return mergeFrom((io.littlehorse.sdk.common.proto.TaskRunIdPb)other);
+      if (other instanceof io.littlehorse.sdk.common.proto.JsonIndexPb) {
+        return mergeFrom((io.littlehorse.sdk.common.proto.JsonIndexPb)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.sdk.common.proto.TaskRunIdPb other) {
-      if (other == io.littlehorse.sdk.common.proto.TaskRunIdPb.getDefaultInstance()) return this;
-      if (!other.getWfRunId().isEmpty()) {
-        wfRunId_ = other.wfRunId_;
+    public Builder mergeFrom(io.littlehorse.sdk.common.proto.JsonIndexPb other) {
+      if (other == io.littlehorse.sdk.common.proto.JsonIndexPb.getDefaultInstance()) return this;
+      if (!other.getPath().isEmpty()) {
+        path_ = other.path_;
         bitField0_ |= 0x00000001;
         onChanged();
       }
-      if (!other.getTaskGuid().isEmpty()) {
-        taskGuid_ = other.taskGuid_;
-        bitField0_ |= 0x00000002;
-        onChanged();
+      if (other.indexType_ != 0) {
+        setIndexTypeValue(other.getIndexTypeValue());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -445,15 +422,15 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 10: {
-              wfRunId_ = input.readStringRequireUtf8();
+              path_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000001;
               break;
             } // case 10
-            case 18: {
-              taskGuid_ = input.readStringRequireUtf8();
+            case 16: {
+              indexType_ = input.readEnum();
               bitField0_ |= 0x00000002;
               break;
-            } // case 18
+            } // case 16
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -471,146 +448,127 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private java.lang.Object wfRunId_ = "";
+    private java.lang.Object path_ = "";
     /**
-     * <code>string wf_run_id = 1;</code>
-     * @return The wfRunId.
+     * <code>string path = 1;</code>
+     * @return The path.
      */
-    public java.lang.String getWfRunId() {
-      java.lang.Object ref = wfRunId_;
+    public java.lang.String getPath() {
+      java.lang.Object ref = path_;
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        wfRunId_ = s;
+        path_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
       }
     }
     /**
-     * <code>string wf_run_id = 1;</code>
-     * @return The bytes for wfRunId.
+     * <code>string path = 1;</code>
+     * @return The bytes for path.
      */
     public com.google.protobuf.ByteString
-        getWfRunIdBytes() {
-      java.lang.Object ref = wfRunId_;
+        getPathBytes() {
+      java.lang.Object ref = path_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        wfRunId_ = b;
+        path_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
     /**
-     * <code>string wf_run_id = 1;</code>
-     * @param value The wfRunId to set.
+     * <code>string path = 1;</code>
+     * @param value The path to set.
      * @return This builder for chaining.
      */
-    public Builder setWfRunId(
+    public Builder setPath(
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
-      wfRunId_ = value;
+      path_ = value;
       bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
-     * <code>string wf_run_id = 1;</code>
+     * <code>string path = 1;</code>
      * @return This builder for chaining.
      */
-    public Builder clearWfRunId() {
-      wfRunId_ = getDefaultInstance().getWfRunId();
+    public Builder clearPath() {
+      path_ = getDefaultInstance().getPath();
       bitField0_ = (bitField0_ & ~0x00000001);
       onChanged();
       return this;
     }
     /**
-     * <code>string wf_run_id = 1;</code>
-     * @param value The bytes for wfRunId to set.
+     * <code>string path = 1;</code>
+     * @param value The bytes for path to set.
      * @return This builder for chaining.
      */
-    public Builder setWfRunIdBytes(
+    public Builder setPathBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
-      wfRunId_ = value;
+      path_ = value;
       bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
 
-    private java.lang.Object taskGuid_ = "";
+    private int indexType_ = 0;
     /**
-     * <code>string task_guid = 2;</code>
-     * @return The taskGuid.
+     * <code>.littlehorse.IndexTypePb index_type = 2;</code>
+     * @return The enum numeric value on the wire for indexType.
      */
-    public java.lang.String getTaskGuid() {
-      java.lang.Object ref = taskGuid_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        taskGuid_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
+    @java.lang.Override public int getIndexTypeValue() {
+      return indexType_;
     }
     /**
-     * <code>string task_guid = 2;</code>
-     * @return The bytes for taskGuid.
-     */
-    public com.google.protobuf.ByteString
-        getTaskGuidBytes() {
-      java.lang.Object ref = taskGuid_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        taskGuid_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string task_guid = 2;</code>
-     * @param value The taskGuid to set.
+     * <code>.littlehorse.IndexTypePb index_type = 2;</code>
+     * @param value The enum numeric value on the wire for indexType to set.
      * @return This builder for chaining.
      */
-    public Builder setTaskGuid(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      taskGuid_ = value;
+    public Builder setIndexTypeValue(int value) {
+      indexType_ = value;
       bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
-     * <code>string task_guid = 2;</code>
+     * <code>.littlehorse.IndexTypePb index_type = 2;</code>
+     * @return The indexType.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.IndexTypePb getIndexType() {
+      io.littlehorse.sdk.common.proto.IndexTypePb result = io.littlehorse.sdk.common.proto.IndexTypePb.forNumber(indexType_);
+      return result == null ? io.littlehorse.sdk.common.proto.IndexTypePb.UNRECOGNIZED : result;
+    }
+    /**
+     * <code>.littlehorse.IndexTypePb index_type = 2;</code>
+     * @param value The indexType to set.
      * @return This builder for chaining.
      */
-    public Builder clearTaskGuid() {
-      taskGuid_ = getDefaultInstance().getTaskGuid();
+    public Builder setIndexType(io.littlehorse.sdk.common.proto.IndexTypePb value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      bitField0_ |= 0x00000002;
+      indexType_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.IndexTypePb index_type = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearIndexType() {
       bitField0_ = (bitField0_ & ~0x00000002);
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string task_guid = 2;</code>
-     * @param value The bytes for taskGuid to set.
-     * @return This builder for chaining.
-     */
-    public Builder setTaskGuidBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      taskGuid_ = value;
-      bitField0_ |= 0x00000002;
+      indexType_ = 0;
       onChanged();
       return this;
     }
@@ -627,23 +585,23 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.TaskRunIdPb)
+    // @@protoc_insertion_point(builder_scope:littlehorse.JsonIndexPb)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.TaskRunIdPb)
-  private static final io.littlehorse.sdk.common.proto.TaskRunIdPb DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.JsonIndexPb)
+  private static final io.littlehorse.sdk.common.proto.JsonIndexPb DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.TaskRunIdPb();
+    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.JsonIndexPb();
   }
 
-  public static io.littlehorse.sdk.common.proto.TaskRunIdPb getDefaultInstance() {
+  public static io.littlehorse.sdk.common.proto.JsonIndexPb getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<TaskRunIdPb>
-      PARSER = new com.google.protobuf.AbstractParser<TaskRunIdPb>() {
+  private static final com.google.protobuf.Parser<JsonIndexPb>
+      PARSER = new com.google.protobuf.AbstractParser<JsonIndexPb>() {
     @java.lang.Override
-    public TaskRunIdPb parsePartialFrom(
+    public JsonIndexPb parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -662,17 +620,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<TaskRunIdPb> parser() {
+  public static com.google.protobuf.Parser<JsonIndexPb> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<TaskRunIdPb> getParserForType() {
+  public com.google.protobuf.Parser<JsonIndexPb> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.TaskRunIdPb getDefaultInstanceForType() {
+  public io.littlehorse.sdk.common.proto.JsonIndexPb getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

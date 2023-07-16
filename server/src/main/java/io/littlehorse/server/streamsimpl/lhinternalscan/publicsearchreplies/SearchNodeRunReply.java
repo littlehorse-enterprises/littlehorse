@@ -19,28 +19,4 @@ public class SearchNodeRunReply
     public Class<NodeRunId> getResultJavaClass() {
         return NodeRunId.class;
     }
-    // public SearchNodeRunReplyPb.Builder toProto() {
-    //     SearchNodeRunReplyPb.Builder out = SearchNodeRunReplyPb
-    //         .newBuilder()
-    //         .setCode(code);
-    //     if (message != null) out.setMessage(message);
-    //     if (bookmark != null) out.setBookmark(ByteString.copyFrom(bookmark));
-
-    //     for (NodeRunId) {
-    //         out.addIds(NodeRun.parseId(objectId));
-    //     }
-
-    //     return out;
-    // }
-
-    // public void initFrom(Message proto) {
-    //     SearchNodeRunReplyPb p = (SearchNodeRunReplyPb) proto;
-    //     code = p.getCode();
-    //     if (p.hasMessage()) message = p.getMessage();
-    //     if (p.hasBookmark()) bookmark = p.getBookmark().toByteArray();
-
-    //     for (NodeRunIdPb id : p.getIdsList()) {
-    //         objectIds.add(NodeRun.getObjectId(id));
-    //     }
-    // }
 }

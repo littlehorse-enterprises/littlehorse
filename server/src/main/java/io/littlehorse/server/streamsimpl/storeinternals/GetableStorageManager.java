@@ -3,12 +3,15 @@ package io.littlehorse.server.streamsimpl.storeinternals;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.Getable;
+import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
 import io.littlehorse.server.streamsimpl.storeinternals.index.TagsCache;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
+import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
@@ -38,7 +41,7 @@ public class GetableStorageManager {
     }
 
     @SuppressWarnings("unchecked")
-    public void store(Getable<?> getable) {
+    public <T extends Getable<?>> void store(T getable) {
         localStore.put(getable);
         Collection<Tag> tags = getTagsFor(getable);
         tagStorageManager.store(
@@ -80,43 +83,93 @@ public class GetableStorageManager {
         localStore.deleteTagCache(getable);
     }
 
-    public Collection<Tag> getTagsFor(Getable<?> getable) {
-        List<GetableIndex> getAbleIndices = GetableIndexRegistry
-            .getInstance()
-            .findIndexesFor(getable.getClass());
-        return getAbleIndices
-            .stream()
-            .filter(geTableIndex -> geTableIndex.isActive(getable))
-            .flatMap(getableIndex ->
-                extractTagValues(getableIndex, getable)
-                    .stream()
-                    .map(pairs ->
-                        new Tag(getable, getableIndex.getTagStorageTypePb(), pairs)
-                    )
-            )
-            .collect(Collectors.toList());
+    public <T extends Getable<?>> Collection<Tag> getTagsFor(T getable) {
+        return extractTagValues(getable);
     }
 
-    private Collection<List<Pair<String, String>>> extractTagValues(
-        GetableIndex getableIndex,
-        Getable<?> geTable
-    ) {
-        return getableIndex
-            .getKeys()
-            .stream()
-            .flatMap(key ->
-                getableIndex
-                    .getValue(geTable, key)
-                    .stream()
-                    .map(value -> Pair.of(key, value))
-            )
-            .collect(
-                Collectors.groupingBy(pair ->
-                    getableIndex
-                        .getValue(geTable, pair.getLeft())
-                        .indexOf(pair.getRight())
+    private <T extends Getable<?>> List<Tag> extractTagValues(T geTable) {
+        List<Tag> tags = new ArrayList<>();
+        for (GetableIndex<? extends Getable<?>> indexConfiguration : geTable.getIndexConfigurations()) {
+            if (!indexConfiguration.isValid(geTable)) {
+                continue;
+            }
+            Optional<TagStorageTypePb> tagStorageTypePb = indexConfiguration.getTagStorageTypePb();
+            List<IndexedField> singleIndexedValues = indexConfiguration
+                .getAttributes()
+                .stream()
+                .filter(stringValueTypePair -> {
+                    return stringValueTypePair
+                        .getValue()
+                        .equals(GetableIndex.ValueType.SINGLE);
+                })
+                .map(stringValueTypePair -> {
+                    return geTable
+                        .getIndexValues(
+                            stringValueTypePair.getKey(),
+                            tagStorageTypePb
+                        )
+                        .get(0);
+                })
+                .toList();
+            List<IndexedField> dynamicIndexedFields = indexConfiguration
+                .getAttributes()
+                .stream()
+                .filter(stringValueTypePair -> {
+                    return stringValueTypePair
+                        .getValue()
+                        .equals(GetableIndex.ValueType.DYNAMIC);
+                })
+                .flatMap(stringValueTypePair ->
+                    geTable
+                        .getIndexValues(
+                            stringValueTypePair.getKey(),
+                            tagStorageTypePb
+                        )
+                        .stream()
                 )
-            )
-            .values();
+                .toList();
+            List<List<IndexedField>> combine = combine(
+                singleIndexedValues,
+                dynamicIndexedFields
+            );
+            for (List<IndexedField> list : combine) {
+                TagStorageTypePb storageType = list
+                    .stream()
+                    .map(IndexedField::getTagStorageTypePb)
+                    .filter(tagStorageTypePb1 ->
+                        tagStorageTypePb1 == TagStorageTypePb.REMOTE
+                    )
+                    .findAny()
+                    .orElse(TagStorageTypePb.LOCAL);
+                List<Pair<String, String>> pairs = list
+                    .stream()
+                    .map(indexedField ->
+                        Pair.of(
+                            indexedField.getKey(),
+                            indexedField.getValue().toString()
+                        )
+                    )
+                    .toList();
+                tags.add(new Tag(geTable, storageType, pairs));
+            }
+        }
+        return tags;
+    }
+
+    private List<List<IndexedField>> combine(
+        List<IndexedField> source,
+        List<IndexedField> multiple
+    ) {
+        if (multiple.isEmpty()) {
+            return List.of(source);
+        }
+        List<List<IndexedField>> result = new ArrayList<>();
+        for (IndexedField dynamicIndexedField : multiple) {
+            List<IndexedField> list = Stream
+                .concat(source.stream(), Stream.of(dynamicIndexedField))
+                .toList();
+            result.add(list);
+        }
+        return result;
     }
 }

@@ -2,15 +2,20 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.model.Getable;
+import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.objectId.VariableId;
-import io.littlehorse.common.model.wfrun.VariableValue;
+import io.littlehorse.common.model.wfrun.Variable;
+import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.proto.AttributePb;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.InternalScanPb.TagScanPb;
 import io.littlehorse.common.proto.ScanResultTypePb;
+import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.SearchVariablePb;
@@ -18,13 +23,18 @@ import io.littlehorse.sdk.common.proto.SearchVariablePb.NameAndValuePb;
 import io.littlehorse.sdk.common.proto.SearchVariablePb.VariableCriteriaCase;
 import io.littlehorse.sdk.common.proto.SearchVariableReplyPb;
 import io.littlehorse.sdk.common.proto.VariableIdPb;
+import io.littlehorse.sdk.common.proto.VariableValuePb;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchVariableReply;
+import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
+import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Pair;
 
 @Slf4j
 public class SearchVariable
@@ -112,11 +122,6 @@ public class SearchVariable
         } else if (type == VariableCriteriaCase.VALUE) {
             out.type = ScanBoundaryCase.TAG_SCAN;
 
-            // This may get more tricky once we add variable schemas...
-            VariableValue varval = VariableValue.fromProto(value.getValue());
-
-            Pair<String, String> valuePair = varval.getValueTagPair();
-
             // This may change depending on the type of the tag. For example,
             // sparse strings (such as emails) may be REMOTE_HASH_UNCOUNTED; whereas
             // hot boolean variables may be LOCAL_UNCOUNTED
@@ -143,30 +148,101 @@ public class SearchVariable
                     wfSpecVersion = spec.version;
                 }
             }
-
+            List<Attribute> attributes = getAttributes(wfSpecVersion);
+            List<AttributePb> attributesPb = attributes
+                .stream()
+                .map(Attribute::toProto)
+                .map(AttributePb.Builder::build)
+                .toList();
             out.tagScan =
-                TagScanPb
-                    .newBuilder()
-                    .addAttributes(
-                        new Attribute(valuePair.getLeft(), valuePair.getRight())
-                            .toProto()
-                    )
-                    .addAttributes(
-                        new Attribute("name", value.getVarName()).toProto()
-                    )
-                    .addAttributes(
-                        new Attribute("wfSpecName", value.getWfSpecName()).toProto()
-                    )
-                    .addAttributes(
-                        new Attribute(
-                            "wfSpecVersion",
-                            LHUtil.toLHDbVersionFormat(wfSpecVersion)
-                        )
-                            .toProto()
-                    )
-                    .build();
+                TagScanPb.newBuilder().addAllAttributes(attributesPb).build();
+            Consumer<TagStorageTypePb> storageTypeSearchSetter = tagStorageTypePb -> {
+                setSearchTypeFromTagStorageType(tagStorageTypePb, out, wfSpecVersion);
+            };
+            getStorageTypeFromVariableIndexConfiguration()
+                .ifPresentOrElse(
+                    storageTypeSearchSetter,
+                    () -> setSearchTypeFromWfSpec(out, wfSpecVersion, stores)
+                );
         }
 
         return out;
+    }
+
+    private Optional<TagStorageTypePb> getStorageTypeFromVariableIndexConfiguration() {
+        return new Variable()
+            .getIndexConfigurations()
+            .stream()
+            //Filter matching configuration
+            .filter(getableIndexConfiguration ->
+                getableIndexConfiguration.searchAttributesMatch(searchAttributes())
+            )
+            .map(GetableIndex::getTagStorageTypePb)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .findFirst();
+    }
+
+    private void setSearchTypeFromWfSpec(
+        InternalScan out,
+        int wfSpecVersion,
+        LHGlobalMetaStores stores
+    ) {
+        WfSpec spec = stores.getWfSpec(value.getWfSpecName(), null);
+        spec
+            .getThreadSpecs()
+            .entrySet()
+            .stream()
+            .flatMap(stringThreadSpecEntry ->
+                stringThreadSpecEntry.getValue().getVariableDefs().stream()
+            )
+            .filter(variableDef -> variableDef.getName().equals(value.getVarName()))
+            .filter(variableDef ->
+                variableDef.getType().equals(value.getValue().getType())
+            )
+            .map(VariableDef::getTagStorageTypePb)
+            .findFirst()
+            .ifPresent(tagStorageTypePb -> {
+                setSearchTypeFromTagStorageType(tagStorageTypePb, out, wfSpecVersion);
+            });
+    }
+
+    private void setSearchTypeFromTagStorageType(
+        TagStorageTypePb tagStorageTypePb,
+        InternalScan out,
+        int wfSpecVersion
+    ) {
+        if (tagStorageTypePb == TagStorageTypePb.LOCAL) {
+            // Local Tag Scan (All Partitions Tag Scan)
+            out.setStoreName(ServerTopology.CORE_STORE);
+            out.setResultType(ScanResultTypePb.OBJECT_ID);
+        } else {
+            // Remote Tag Scan (Specific Partition Tag Scan)
+            out.setStoreName(ServerTopology.CORE_REPARTITION_STORE);
+            out.setResultType(ScanResultTypePb.OBJECT_ID);
+            out.setPartitionKey(
+                Tag.getAttributeString(
+                    Getable.getTypeEnum(WfRun.class),
+                    getAttributes(wfSpecVersion)
+                )
+            );
+        }
+    }
+
+    private List<Attribute> getAttributes(int wfSpecVersion) {
+        return List.of(
+            new Attribute("name", value.getVarName()),
+            new Attribute("value", getVariableValue(value.getValue())),
+            new Attribute("wfSpecName", value.getWfSpecName()),
+            new Attribute("wfSpecVersion", LHUtil.toLHDbVersionFormat(wfSpecVersion))
+        );
+    }
+
+    private String getVariableValue(VariableValuePb value) {
+        return value.getStr();
+    }
+
+    private List<String> searchAttributes() {
+        return List.of("name", "value", "wfSpecName", "wfSpecVersion");
     }
 }

@@ -6,13 +6,24 @@ import io.littlehorse.common.model.meta.ThreadSpec;
 import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.meta.subnode.TaskNode;
+import io.littlehorse.common.model.objectId.TaskRunId;
+import io.littlehorse.common.model.objectId.WfSpecId;
+import io.littlehorse.common.model.wfrun.ExternalEvent;
+import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.wfrun.subnoderun.TaskNodeRun;
+import io.littlehorse.common.model.wfrun.subnoderun.UserTaskRun;
+import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.sdk.common.proto.LHStatusPb;
 import io.littlehorse.sdk.common.proto.NodePb;
+import io.littlehorse.sdk.common.proto.NodeRunPb;
+import io.littlehorse.sdk.common.proto.TaskStatusPb;
+import io.littlehorse.sdk.common.proto.UserTaskRunPb;
+import io.littlehorse.sdk.common.proto.UserTaskRunStatusPb;
 import io.littlehorse.sdk.common.proto.VariableTypePb;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
 import java.util.Date;
@@ -41,6 +52,58 @@ public class TestUtil {
         return variable;
     }
 
+    public static NodeRun nodeRun() {
+        NodeRun nodeRun = new NodeRun();
+        nodeRun.setWfRunId("0000000");
+        nodeRun.setPosition(0);
+        nodeRun.setThreadRunNumber(1);
+        nodeRun.setStatus(LHStatusPb.RUNNING);
+        nodeRun.setType(NodeRunPb.NodeTypeCase.TASK);
+        nodeRun.setArrivalTime(new Date());
+        nodeRun.setWfSpecId(wfSpecId());
+        nodeRun.setThreadSpecName("test-thread");
+        nodeRun.setNodeName("test-node-name");
+        nodeRun.setTaskRun(taskNodeRun());
+        nodeRun.setUserTaskRun(userTaskRun());
+        return nodeRun;
+    }
+
+    public static UserTaskRun userTaskRun() {
+        UserTaskRun userTaskRun = new UserTaskRun();
+        userTaskRun.setUserTaskDefName("ut-name");
+        userTaskRun.setStatus(UserTaskRunStatusPb.CLAIMED);
+        userTaskRun.setAssignedToType(UserTaskRunPb.AssignedToCase.USER_GROUP);
+        userTaskRun.setUserId("33333");
+        userTaskRun.setUserGroup("1234567");
+        return userTaskRun;
+    }
+
+    public static WfSpecId wfSpecId() {
+        WfSpecId wfSpecId = new WfSpecId("testName", 0);
+        return wfSpecId;
+    }
+
+    public static TaskNodeRun taskNodeRun() {
+        TaskNodeRun taskNodeRun = new TaskNodeRun();
+        taskNodeRun.setTaskRunId(taskRunId());
+        return taskNodeRun;
+    }
+
+    public static TaskRun taskRun() {
+        TaskRun taskRun = new TaskRun();
+        taskRun.setId(taskRunId());
+        taskRun.setTaskDefName("test-name");
+        taskRun.setMaxAttempts(10);
+        taskRun.setScheduledAt(new Date());
+        taskRun.setStatus(TaskStatusPb.TASK_SCHEDULED);
+        return taskRun;
+    }
+
+    public static TaskRunId taskRunId() {
+        TaskRunId taskRunId = new TaskRunId("1234", "01010");
+        return taskRunId;
+    }
+
     public static VariableValue variableValue() {
         VariableValue variableValue = new VariableValue();
         variableValue.setStrVal("testVarValue");
@@ -54,6 +117,7 @@ public class TestUtil {
         spec.setCreatedAt(new Date());
         spec.setEntrypointThreadName("testEntrypointThreadName");
         spec.setStatus(LHStatusPb.RUNNING);
+        spec.setThreadSpecs(Map.of("entrypoint", threadSpec()));
         return spec;
     }
 
@@ -94,6 +158,16 @@ public class TestUtil {
         tag.setCreatedAt(new Date());
         tag.setDescribedObjectId(UUID.randomUUID().toString());
         return tag;
+    }
+
+    public static ExternalEvent externalEvent() {
+        ExternalEvent externalEvent = new ExternalEvent();
+        externalEvent.setExternalEventDefName("test-name");
+        externalEvent.setClaimed(true);
+        externalEvent.setWfRunId("0000000");
+        externalEvent.setGuid("0000001");
+        externalEvent.setContent(variableValue());
+        return externalEvent;
     }
 
     public static VariableDef variableDef(

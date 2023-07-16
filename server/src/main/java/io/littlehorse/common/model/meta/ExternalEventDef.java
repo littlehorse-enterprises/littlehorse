@@ -3,14 +3,16 @@ package io.littlehorse.common.model.meta;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.objectId.ExternalEventDefId;
+import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEventDefIdPb;
 import io.littlehorse.sdk.common.proto.ExternalEventDefPb;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
+import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public class ExternalEventDef extends Getable<ExternalEventDefPb> {
 
@@ -26,8 +28,8 @@ public class ExternalEventDef extends Getable<ExternalEventDefPb> {
     }
 
     @Override
-    public List<GetableIndex> getIndexes() {
-        return new ArrayList<>();
+    public List<GetableIndex<? extends Getable<?>>> getIndexConfigurations() {
+        return List.of();
     }
 
     public String getName() {
@@ -70,5 +72,13 @@ public class ExternalEventDef extends Getable<ExternalEventDefPb> {
 
     public ExternalEventDefId getObjectId() {
         return new ExternalEventDefId(name);
+    }
+
+    @Override
+    public List<IndexedField> getIndexValues(
+        String key,
+        Optional<TagStorageTypePb> tagStorageTypePb
+    ) {
+        return List.of();
     }
 }

@@ -18,6 +18,7 @@ import io.littlehorse.sdk.common.proto.ThreadTypePb;
 import io.littlehorse.sdk.common.proto.WfSpecIdPb;
 import io.littlehorse.sdk.common.proto.WfSpecPb;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
+import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,6 +26,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
@@ -70,17 +72,29 @@ public class WfSpec extends Getable<WfSpecPb> {
     }
 
     @Override
-    public List<GetableIndex> getIndexes() {
+    public List<GetableIndex<? extends Getable<?>>> getIndexConfigurations() {
         return List.of(
-            new GetableIndex(
-                WfSpec.class,
-                List.of(
-                    Pair.of("taskDef", getable -> ((WfSpec) getable).taskDefNames())
-                ),
-                wfSpec -> true,
-                TagStorageTypePb.REMOTE
+            new GetableIndex<>(
+                List.of(Pair.of("taskDef", GetableIndex.ValueType.DYNAMIC)),
+                Optional.of(TagStorageTypePb.REMOTE)
             )
         );
+    }
+
+    @Override
+    public List<IndexedField> getIndexValues(
+        String key,
+        Optional<TagStorageTypePb> tagStorageTypePb
+    ) {
+        if (key.equals("taskDef")) {
+            return this.taskDefNames()
+                .stream()
+                .map(taskDefName ->
+                    new IndexedField(key, taskDefName, tagStorageTypePb.get())
+                )
+                .toList();
+        }
+        return List.of();
     }
 
     public List<String> taskDefNames() {

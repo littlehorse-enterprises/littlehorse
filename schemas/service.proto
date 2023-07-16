@@ -236,16 +236,39 @@ message SearchWfRunReplyPb {
   optional bytes bookmark = 4;
 }
 
-message SearchNodeRunPb {
+message SearchTaskRunPb {
   optional bytes bookmark = 1;
   optional int32 limit = 2;
 
   message StatusAndTaskDefPb {
-    LHStatusPb status = 1;
+    TaskStatusPb status = 1;
     string task_def_name = 2;
     optional google.protobuf.Timestamp earliest_start = 3;
     optional google.protobuf.Timestamp latest_start = 4;
   }
+
+  message ByTaskDefPb {
+    string task_def_name = 1;
+    optional google.protobuf.Timestamp earliest_start = 2;
+    optional google.protobuf.Timestamp latest_start = 3;
+  }
+
+  oneof task_run_criteria {
+    StatusAndTaskDefPb status_and_task_def = 3;
+    ByTaskDefPb task_def = 4;
+  }
+}
+
+message SearchTaskRunReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  repeated TaskRunIdPb results = 3;
+  optional bytes bookmark = 4;
+}
+
+message SearchNodeRunPb {
+  optional bytes bookmark = 1;
+  optional int32 limit = 2;
 
   message UserTaskRunSearchPb {
     optional UserTaskRunStatusPb status = 1;
@@ -257,16 +280,8 @@ message SearchNodeRunPb {
     optional google.protobuf.Timestamp latest_start = 6;
   }
 
-  message ByTaskDefPb {
-    string task_def_name = 2;
-    optional google.protobuf.Timestamp earliest_start = 3;
-    optional google.protobuf.Timestamp latest_start = 4;
-  }
-
   oneof noderun_criteria {
-    StatusAndTaskDefPb status_and_taskdef = 3;
     string wf_run_id = 4;
-    ByTaskDefPb task_def = 5;
     UserTaskRunSearchPb user_task_run = 6;
   }
 }
@@ -645,6 +660,7 @@ service LHPublicApi {
 
   rpc SearchWfRun(SearchWfRunPb) returns (SearchWfRunReplyPb) {}
   rpc SearchNodeRun(SearchNodeRunPb) returns (SearchNodeRunReplyPb) {}
+  rpc SearchTaskRun(SearchTaskRunPb) returns (SearchTaskRunReplyPb) {}
   rpc SearchVariable(SearchVariablePb) returns (SearchVariableReplyPb) {}
   rpc SearchTaskDef(SearchTaskDefPb) returns (SearchTaskDefReplyPb) {}
   rpc SearchUserTaskDef(SearchUserTaskDefPb) returns (SearchUserTaskDefReplyPb) {}
@@ -896,14 +912,8 @@ message TaskAttemptPb {
   TaskStatusPb status = 9;
 }
 
-// Ridgeline asks "Want the ability to schedule Ad-Hoc Tasks".
-// That means to schedule a TaskRun without associating the TaskRun with any
-// WfRun. I don't think we want to add that feature JUST YET, but we could make
-// it work.
 message TaskRunIdPb {
-  // In all cases except for the "Ad-Hoc Tasks"  (which we haven't implemented
-  // yet), partition_key will just be wf_run_id.
-  string partition_key = 1;
+  string wf_run_id = 1;
   string task_guid = 2;
 }
 
@@ -916,6 +926,8 @@ message TaskRunPb {
 
   TaskRunSourcePb source = 6;
   google.protobuf.Timestamp scheduled_at = 7;
+
+  TaskStatusPb status = 8;
 }
 
 message TaskNodeReferencePb {
@@ -1288,9 +1300,21 @@ message FailureDefPb {
   optional VariableAssignmentPb content = 3;
 }
 
+enum IndexTypePb {
+  LOCAL_INDEX = 0;
+  REMOTE_INDEX = 1;
+}
+
 message VariableDefPb {
   VariableTypePb type = 1;
   string name = 2;
+  optional IndexTypePb index_type = 3;
+  repeated JsonIndexPb json_indexes = 4;
+}
+
+message JsonIndexPb {
+  string path = 1;
+  IndexTypePb index_type = 2;
 }
 
 message InterruptDefPb {

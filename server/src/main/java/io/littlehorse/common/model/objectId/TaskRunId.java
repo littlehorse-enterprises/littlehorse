@@ -10,13 +10,13 @@ import io.littlehorse.sdk.common.proto.TaskRunPb;
 
 public class TaskRunId extends ObjectId<TaskRunIdPb, TaskRunPb, TaskRun> {
 
-    public String partitionKey;
+    public String wfRunId;
     public String taskGuid;
 
     public TaskRunId() {}
 
     public TaskRunId(String partitionKey, String guid) {
-        this.partitionKey = partitionKey;
+        this.wfRunId = partitionKey;
         this.taskGuid = guid;
     }
 
@@ -29,30 +29,30 @@ public class TaskRunId extends ObjectId<TaskRunIdPb, TaskRunPb, TaskRun> {
     }
 
     public String getPartitionKey() {
-        return partitionKey;
+        return wfRunId;
     }
 
     public void initFrom(Message proto) {
         TaskRunIdPb p = (TaskRunIdPb) proto;
-        partitionKey = p.getPartitionKey();
+        wfRunId = p.getWfRunId();
         taskGuid = p.getTaskGuid();
     }
 
     public TaskRunIdPb.Builder toProto() {
         TaskRunIdPb.Builder out = TaskRunIdPb
             .newBuilder()
-            .setPartitionKey(partitionKey)
+            .setWfRunId(wfRunId)
             .setTaskGuid(taskGuid);
         return out;
     }
 
     public String getStoreKey() {
-        return LHUtil.getCompositeId(partitionKey, taskGuid);
+        return LHUtil.getCompositeId(wfRunId, taskGuid);
     }
 
     public void initFrom(String storeKey) {
         String[] split = storeKey.split("/");
-        partitionKey = split[0];
+        wfRunId = split[0];
         taskGuid = split[1];
     }
 

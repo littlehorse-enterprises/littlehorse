@@ -117,4 +117,15 @@ public interface TaskRunPbOrBuilder extends
    * <code>.google.protobuf.Timestamp scheduled_at = 7;</code>
    */
   com.google.protobuf.TimestampOrBuilder getScheduledAtOrBuilder();
+
+  /**
+   * <code>.littlehorse.TaskStatusPb status = 8;</code>
+   * @return The enum numeric value on the wire for status.
+   */
+  int getStatusValue();
+  /**
+   * <code>.littlehorse.TaskStatusPb status = 8;</code>
+   * @return The status.
+   */
+  io.littlehorse.sdk.common.proto.TaskStatusPb getStatus();
 }

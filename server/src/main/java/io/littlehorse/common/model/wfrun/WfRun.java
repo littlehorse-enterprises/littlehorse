@@ -28,12 +28,14 @@ import io.littlehorse.sdk.common.proto.ThreadTypePb;
 import io.littlehorse.sdk.common.proto.VariableTypePb;
 import io.littlehorse.sdk.common.proto.WfRunPb;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
+import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
@@ -67,59 +69,65 @@ public class WfRun extends Getable<WfRunPb> {
     }
 
     @Override
-    public List<GetableIndex> getIndexes() {
+    public List<GetableIndex<? extends Getable<?>>> getIndexConfigurations() {
         return List.of(
-            new GetableIndex(
-                WfRun.class,
-                List.of(
-                    Pair.of(
-                        "wfSpecName",
-                        getable -> List.of(((WfRun) getable).getWfSpecName())
-                    )
-                ),
-                wfRunPb -> true,
-                TagStorageTypePb.REMOTE
+            new GetableIndex<>(
+                List.of(Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE)),
+                Optional.of(TagStorageTypePb.REMOTE)
             ),
-            new GetableIndex(
-                WfRun.class,
+            new GetableIndex<>(
                 List.of(
-                    Pair.of(
-                        "wfSpecName",
-                        getable -> List.of(((WfRun) getable).getWfSpecName())
-                    ),
-                    Pair.of(
-                        "status",
-                        getable -> List.of(((WfRun) getable).getStatus().toString())
-                    )
+                    Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
+                    Pair.of("status", GetableIndex.ValueType.SINGLE)
                 ),
-                wfRunPb -> true,
-                TagStorageTypePb.REMOTE
+                Optional.of(TagStorageTypePb.REMOTE)
             ),
-            new GetableIndex(
-                WfRun.class,
+            new GetableIndex<>(
                 List.of(
-                    Pair.of(
-                        "wfSpecName",
-                        getable -> List.of(((WfRun) getable).getWfSpecName())
-                    ),
-                    Pair.of(
-                        "status",
-                        getable -> List.of(((WfRun) getable).getStatus().toString())
-                    ),
-                    Pair.of(
-                        "wfSpecVersion",
-                        getable ->
-                            List.of(
-                                LHUtil.toLHDbVersionFormat(
-                                    ((WfRun) getable).getWfSpecVersion()
-                                )
-                            )
-                    )
+                    Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
+                    Pair.of("status", GetableIndex.ValueType.SINGLE),
+                    Pair.of("wfSpecVersion", GetableIndex.ValueType.SINGLE)
                 ),
-                wfRunPb -> true,
-                TagStorageTypePb.LOCAL
+                Optional.of(TagStorageTypePb.LOCAL)
             )
         );
+    }
+
+    @Override
+    public List<IndexedField> getIndexValues(
+        String key,
+        Optional<TagStorageTypePb> tagStorageTypePb
+    ) {
+        switch (key) {
+            case "wfSpecName" -> {
+                return List.of(
+                    new IndexedField(
+                        key,
+                        this.getWfSpecName(),
+                        tagStorageTypePb.get()
+                    )
+                );
+            }
+            case "status" -> {
+                return List.of(
+                    new IndexedField(
+                        key,
+                        this.getStatus().toString(),
+                        tagStorageTypePb.get()
+                    )
+                );
+            }
+            case "wfSpecVersion" -> {
+                return List.of(
+                    new IndexedField(
+                        key,
+                        LHUtil.toLHDbVersionFormat(this.getWfSpecVersion()),
+                        TagStorageTypePb.LOCAL
+                    )
+                );
+            }
+        }
+        return List.of();
     }
 
     public WfSpec getWfSpec() {

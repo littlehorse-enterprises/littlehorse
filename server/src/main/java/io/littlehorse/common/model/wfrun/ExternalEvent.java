@@ -7,8 +7,10 @@ import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.ExternalEventPb;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
+import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.tuple.Pair;
@@ -85,6 +87,47 @@ public class ExternalEvent extends Getable<ExternalEventPb> {
     }
 
     @Override
+    public List<GetableIndex<? extends Getable<?>>> getIndexConfigurations() {
+        return List.of(
+            new GetableIndex<>(
+                List.of(
+                    Pair.of("extEvtDefName", GetableIndex.ValueType.SINGLE),
+                    Pair.of("isClaimed", GetableIndex.ValueType.SINGLE)
+                ),
+                Optional.of(TagStorageTypePb.LOCAL)
+            ),
+            new GetableIndex<>(
+                List.of(Pair.of("extEvtDefName", GetableIndex.ValueType.SINGLE)),
+                Optional.of(TagStorageTypePb.LOCAL)
+            )
+        );
+    }
+
+    @Override
+    public List<IndexedField> getIndexValues(
+        String key,
+        Optional<TagStorageTypePb> tagStorageTypePb
+    ) {
+        switch (key) {
+            case "extEvtDefName" -> {
+                return List.of(
+                    new IndexedField(
+                        key,
+                        this.getExternalEventDefName(),
+                        tagStorageTypePb.get()
+                    )
+                );
+            }
+            case "isClaimed" -> {
+                return List.of(
+                    new IndexedField(key, this.isClaimed(), tagStorageTypePb.get())
+                );
+            }
+        }
+        return List.of();
+    }
+
+    /*@Override
     public List<GetableIndex> getIndexes() {
         return List.of(
             new GetableIndex(
@@ -106,7 +149,7 @@ public class ExternalEvent extends Getable<ExternalEventPb> {
                     )
                 ),
                 wfRunPb -> true,
-                TagStorageTypePb.LOCAL
+                Optional.of(TagStorageTypePb.LOCAL)
             ),
             new GetableIndex(
                 ExternalEvent.class,
@@ -120,10 +163,10 @@ public class ExternalEvent extends Getable<ExternalEventPb> {
                     )
                 ),
                 wfRunPb -> true,
-                TagStorageTypePb.LOCAL
+                Optional.of(TagStorageTypePb.LOCAL)
             )
         );
-    }
+    }*/
 
     public static ExternalEvent fromProto(ExternalEventPb p) {
         ExternalEvent out = new ExternalEvent();

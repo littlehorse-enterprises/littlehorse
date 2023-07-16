@@ -100,8 +100,8 @@ Search for NodeRun's by either the WfRunId or by providing the taskDefName and t
 Returns a list of ObjectId's that can be passed into 'lhctl get nodeRun'.
 
 Choose one of the following option groups:
+// Returns all NodeRun's from a specified WfRun.
 [wfRunId]
-[taskDefName, status]
 
 // For user task search. Use any combination of the following, except note
 // that userId and userGroup are mutually exclusive.
@@ -114,62 +114,13 @@ Choose one of the following option groups:
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		status, _ := cmd.Flags().GetString("status")
-		taskDefName, _ := cmd.Flags().GetString("taskDefName")
 		wfRunId, _ := cmd.Flags().GetString("wfRunId")
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")
 
 		var search *model.SearchNodeRunPb
 
-		if status != "" {
-			if taskDefName == "" {
-				log.Fatal("Must provide taskDefName along with status!")
-			}
-			earliest, latest := loadEarliestAndLatestStart(cmd)
-
-			search = &model.SearchNodeRunPb{
-				NoderunCriteria: &model.SearchNodeRunPb_StatusAndTaskdef{
-					StatusAndTaskdef: &model.SearchNodeRunPb_StatusAndTaskDefPb{
-						Status:        model.LHStatusPb(model.LHStatusPb_value[status]),
-						TaskDefName:   taskDefName,
-						EarliestStart: earliest,
-						LatestStart:   latest,
-					},
-				},
-			}
-		} else if taskDefName != "" {
-			earliestMinutesAgo, _ := cmd.Flags().GetInt("earliestMinutesAgo")
-			latestMinutesAgo, _ := cmd.Flags().GetInt32("latestMinutesAgo")
-			earliestStartTime := &timestamppb.Timestamp{}
-			latestStartTime := &timestamppb.Timestamp{}
-
-			if earliestMinutesAgo == -1 {
-				earliestStartTime = nil
-			} else {
-				earliestStartTime = timestamppb.New(
-					time.Now().Add(-1 * time.Duration(earliestMinutesAgo) * time.Minute),
-				)
-			}
-
-			if latestMinutesAgo == -1 {
-				latestStartTime = nil
-			} else {
-				latestStartTime = timestamppb.New(
-					time.Now().Add(-1 * time.Duration(latestMinutesAgo) * time.Minute),
-				)
-			}
-
-			search = &model.SearchNodeRunPb{
-				NoderunCriteria: &model.SearchNodeRunPb_TaskDef{
-					TaskDef: &model.SearchNodeRunPb_ByTaskDefPb{
-						TaskDefName:   taskDefName,
-						EarliestStart: earliestStartTime,
-						LatestStart:   latestStartTime,
-					},
-				},
-			}
-		} else if wfRunId != "" {
+		if wfRunId != "" {
 			search = &model.SearchNodeRunPb{
 				NoderunCriteria: &model.SearchNodeRunPb_WfRunId{
 					WfRunId: wfRunId,
@@ -262,8 +213,6 @@ func init() {
 	listCmd.AddCommand(listNodeRunCmd)
 
 	searchNodeRunCmd.Flags().String("wfRunId", "", "WfRunId for which to return all NodeRun id's.")
-	searchNodeRunCmd.Flags().String("status", "", "Status of NodeRun's to search for.")
-	searchNodeRunCmd.Flags().String("taskDefName", "", "TaskDef ID of NodeRun's to search for.")
 	searchNodeRunCmd.Flags().String("userTaskDefName", "", "UserTaskDef ID of User Task Run's to search for.")
 	searchNodeRunCmd.Flags().String("userId", "", "Search for User Task Runs assigned to this User ID.")
 	searchNodeRunCmd.Flags().String("userGroup", "", "Search for User Task Runs assigned to this User Group.")
@@ -271,7 +220,6 @@ func init() {
 	searchNodeRunCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for nodeRuns that started no more than this number of minutes ago")
 	searchNodeRunCmd.Flags().Int("latestMinutesAgo", -1, "Search only for nodeRuns that started at least this number of minutes ago")
 
-	searchNodeRunCmd.MarkFlagsMutuallyExclusive("status", "wfRunId")
 	searchNodeRunCmd.MarkFlagsMutuallyExclusive("wfRunId", "userTaskDefName")
 	searchNodeRunCmd.MarkFlagsMutuallyExclusive("wfRunId", "userId")
 	searchNodeRunCmd.MarkFlagsMutuallyExclusive("wfRunId", "userGroup")

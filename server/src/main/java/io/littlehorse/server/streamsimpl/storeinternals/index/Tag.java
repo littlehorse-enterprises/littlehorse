@@ -76,6 +76,10 @@ public class Tag extends Storeable<TagPb> {
         return getAttributeString(objectType, attrs);
     }
 
+    public String getPartitionKey() {
+        return getAttributeString(getObjectType(), attributes);
+    }
+
     public static String getAttributeString(
         GetableClassEnumPb objectType,
         List<Attribute> attributes

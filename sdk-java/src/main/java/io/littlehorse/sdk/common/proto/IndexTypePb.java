@@ -4,41 +4,29 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * <pre>
- * Metrics
- * </pre>
- *
- * Protobuf enum {@code littlehorse.MetricsWindowLengthPb}
+ * Protobuf enum {@code littlehorse.IndexTypePb}
  */
-public enum MetricsWindowLengthPb
+public enum IndexTypePb
     implements com.google.protobuf.ProtocolMessageEnum {
   /**
-   * <code>MINUTES_5 = 0;</code>
+   * <code>LOCAL_INDEX = 0;</code>
    */
-  MINUTES_5(0),
+  LOCAL_INDEX(0),
   /**
-   * <code>HOURS_2 = 1;</code>
+   * <code>REMOTE_INDEX = 1;</code>
    */
-  HOURS_2(1),
-  /**
-   * <code>DAYS_1 = 2;</code>
-   */
-  DAYS_1(2),
+  REMOTE_INDEX(1),
   UNRECOGNIZED(-1),
   ;
 
   /**
-   * <code>MINUTES_5 = 0;</code>
+   * <code>LOCAL_INDEX = 0;</code>
    */
-  public static final int MINUTES_5_VALUE = 0;
+  public static final int LOCAL_INDEX_VALUE = 0;
   /**
-   * <code>HOURS_2 = 1;</code>
+   * <code>REMOTE_INDEX = 1;</code>
    */
-  public static final int HOURS_2_VALUE = 1;
-  /**
-   * <code>DAYS_1 = 2;</code>
-   */
-  public static final int DAYS_1_VALUE = 2;
+  public static final int REMOTE_INDEX_VALUE = 1;
 
 
   public final int getNumber() {
@@ -55,7 +43,7 @@ public enum MetricsWindowLengthPb
    * @deprecated Use {@link #forNumber(int)} instead.
    */
   @java.lang.Deprecated
-  public static MetricsWindowLengthPb valueOf(int value) {
+  public static IndexTypePb valueOf(int value) {
     return forNumber(value);
   }
 
@@ -63,24 +51,23 @@ public enum MetricsWindowLengthPb
    * @param value The numeric wire value of the corresponding enum entry.
    * @return The enum associated with the given numeric wire value.
    */
-  public static MetricsWindowLengthPb forNumber(int value) {
+  public static IndexTypePb forNumber(int value) {
     switch (value) {
-      case 0: return MINUTES_5;
-      case 1: return HOURS_2;
-      case 2: return DAYS_1;
+      case 0: return LOCAL_INDEX;
+      case 1: return REMOTE_INDEX;
       default: return null;
     }
   }
 
-  public static com.google.protobuf.Internal.EnumLiteMap<MetricsWindowLengthPb>
+  public static com.google.protobuf.Internal.EnumLiteMap<IndexTypePb>
       internalGetValueMap() {
     return internalValueMap;
   }
   private static final com.google.protobuf.Internal.EnumLiteMap<
-      MetricsWindowLengthPb> internalValueMap =
-        new com.google.protobuf.Internal.EnumLiteMap<MetricsWindowLengthPb>() {
-          public MetricsWindowLengthPb findValueByNumber(int number) {
-            return MetricsWindowLengthPb.forNumber(number);
+      IndexTypePb> internalValueMap =
+        new com.google.protobuf.Internal.EnumLiteMap<IndexTypePb>() {
+          public IndexTypePb findValueByNumber(int number) {
+            return IndexTypePb.forNumber(number);
           }
         };
 
@@ -98,12 +85,12 @@ public enum MetricsWindowLengthPb
   }
   public static final com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.Service.getDescriptor().getEnumTypes().get(10);
+    return io.littlehorse.sdk.common.proto.Service.getDescriptor().getEnumTypes().get(9);
   }
 
-  private static final MetricsWindowLengthPb[] VALUES = values();
+  private static final IndexTypePb[] VALUES = values();
 
-  public static MetricsWindowLengthPb valueOf(
+  public static IndexTypePb valueOf(
       com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
     if (desc.getType() != getDescriptor()) {
       throw new java.lang.IllegalArgumentException(
@@ -117,10 +104,10 @@ public enum MetricsWindowLengthPb
 
   private final int value;
 
-  private MetricsWindowLengthPb(int value) {
+  private IndexTypePb(int value) {
     this.value = value;
   }
 
-  // @@protoc_insertion_point(enum_scope:littlehorse.MetricsWindowLengthPb)
+  // @@protoc_insertion_point(enum_scope:littlehorse.IndexTypePb)
 }
 

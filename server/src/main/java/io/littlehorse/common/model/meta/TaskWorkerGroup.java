@@ -4,10 +4,12 @@ import com.google.protobuf.Message;
 import com.google.protobuf.util.Timestamps;
 import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.objectId.TaskWorkerGroupId;
+import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.TaskWorkerGroupPb;
 import io.littlehorse.sdk.common.proto.TaskWorkerMetadataPb;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
+import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -26,13 +28,21 @@ public class TaskWorkerGroup extends Getable<TaskWorkerGroupPb> {
     }
 
     @Override
-    public List<GetableIndex> getIndexes() {
-        return new ArrayList<>();
+    public List<GetableIndex<? extends Getable<?>>> getIndexConfigurations() {
+        return List.of();
     }
 
     @Override
     public TaskWorkerGroupId getObjectId() {
         return new TaskWorkerGroupId(taskDefName);
+    }
+
+    @Override
+    public List<IndexedField> getIndexValues(
+        String key,
+        Optional<TagStorageTypePb> tagStorageTypePb
+    ) {
+        return List.of();
     }
 
     @Override

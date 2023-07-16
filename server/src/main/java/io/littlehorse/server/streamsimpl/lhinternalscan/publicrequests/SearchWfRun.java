@@ -2,6 +2,7 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
+import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.objectId.WfRunId;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.BookmarkPb;
@@ -24,10 +25,11 @@ import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchWfRunReply;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
-import io.littlehorse.server.streamsimpl.storeinternals.GetableIndexRegistry;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
+import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -124,9 +126,6 @@ public class SearchWfRun
 
     private InternalScan startLocalInternalSearch() {
         InternalScan out = new InternalScan();
-        GetableIndex getableIndex = GetableIndexRegistry
-            .getInstance()
-            .findConfigurationForAttributes(WfRun.class, searchAttributes());
         List<Attribute> attributes = buildTagAttributes();
 
         TagScanPb.Builder tagScanBuilder = TagScanPb
@@ -147,17 +146,33 @@ public class SearchWfRun
 
         out.setTagScan(tagScanBuilder.build());
         out.setType(ScanBoundaryCase.TAG_SCAN);
-
-        if (getableIndex.getTagStorageTypePb() == TagStorageTypePb.LOCAL) {
-            // Local Tag Scan (All Partitions Tag Scan)
-            out.setStoreName(ServerTopology.CORE_STORE);
-            out.setResultType(ScanResultTypePb.OBJECT_ID);
-        } else {
-            // Remote Tag Scan (Specific Partition Tag Scan)
-            out.setStoreName(ServerTopology.CORE_REPARTITION_STORE);
-            out.setResultType(ScanResultTypePb.OBJECT_ID);
-            out.setPartitionKey(getableIndex.getPartitionKeyForAttrs(attributes));
-        }
+        new WfRun()
+            .getIndexConfigurations()
+            .stream()
+            .filter(getableIndexConfiguration ->
+                getableIndexConfiguration.searchAttributesMatch(searchAttributes())
+            )
+            .map(GetableIndex::getTagStorageTypePb)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .findFirst()
+            .ifPresent(tagStorageTypePb -> {
+                if (tagStorageTypePb == TagStorageTypePb.LOCAL) {
+                    // Local Tag Scan (All Partitions Tag Scan)
+                    out.setStoreName(ServerTopology.CORE_STORE);
+                    out.setResultType(ScanResultTypePb.OBJECT_ID);
+                } else {
+                    // Remote Tag Scan (Specific Partition Tag Scan)
+                    out.setStoreName(ServerTopology.CORE_REPARTITION_STORE);
+                    out.setResultType(ScanResultTypePb.OBJECT_ID);
+                    out.setPartitionKey(
+                        Tag.getAttributeString(
+                            Getable.getTypeEnum(WfRun.class),
+                            buildTagAttributes()
+                        )
+                    );
+                }
+            });
         return out;
     }
 

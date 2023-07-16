@@ -43,6 +43,7 @@ const (
 	LHPublicApi_ListExternalEvents_FullMethodName     = "/littlehorse.LHPublicApi/ListExternalEvents"
 	LHPublicApi_SearchWfRun_FullMethodName            = "/littlehorse.LHPublicApi/SearchWfRun"
 	LHPublicApi_SearchNodeRun_FullMethodName          = "/littlehorse.LHPublicApi/SearchNodeRun"
+	LHPublicApi_SearchTaskRun_FullMethodName          = "/littlehorse.LHPublicApi/SearchTaskRun"
 	LHPublicApi_SearchVariable_FullMethodName         = "/littlehorse.LHPublicApi/SearchVariable"
 	LHPublicApi_SearchTaskDef_FullMethodName          = "/littlehorse.LHPublicApi/SearchTaskDef"
 	LHPublicApi_SearchUserTaskDef_FullMethodName      = "/littlehorse.LHPublicApi/SearchUserTaskDef"
@@ -94,6 +95,7 @@ type LHPublicApiClient interface {
 	ListExternalEvents(ctx context.Context, in *ListExternalEventsPb, opts ...grpc.CallOption) (*ListExternalEventsReplyPb, error)
 	SearchWfRun(ctx context.Context, in *SearchWfRunPb, opts ...grpc.CallOption) (*SearchWfRunReplyPb, error)
 	SearchNodeRun(ctx context.Context, in *SearchNodeRunPb, opts ...grpc.CallOption) (*SearchNodeRunReplyPb, error)
+	SearchTaskRun(ctx context.Context, in *SearchTaskRunPb, opts ...grpc.CallOption) (*SearchTaskRunReplyPb, error)
 	SearchVariable(ctx context.Context, in *SearchVariablePb, opts ...grpc.CallOption) (*SearchVariableReplyPb, error)
 	SearchTaskDef(ctx context.Context, in *SearchTaskDefPb, opts ...grpc.CallOption) (*SearchTaskDefReplyPb, error)
 	SearchUserTaskDef(ctx context.Context, in *SearchUserTaskDefPb, opts ...grpc.CallOption) (*SearchUserTaskDefReplyPb, error)
@@ -341,6 +343,15 @@ func (c *lHPublicApiClient) SearchNodeRun(ctx context.Context, in *SearchNodeRun
 	return out, nil
 }
 
+func (c *lHPublicApiClient) SearchTaskRun(ctx context.Context, in *SearchTaskRunPb, opts ...grpc.CallOption) (*SearchTaskRunReplyPb, error) {
+	out := new(SearchTaskRunReplyPb)
+	err := c.cc.Invoke(ctx, LHPublicApi_SearchTaskRun_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *lHPublicApiClient) SearchVariable(ctx context.Context, in *SearchVariablePb, opts ...grpc.CallOption) (*SearchVariableReplyPb, error) {
 	out := new(SearchVariableReplyPb)
 	err := c.cc.Invoke(ctx, LHPublicApi_SearchVariable_FullMethodName, in, out, opts...)
@@ -580,6 +591,7 @@ type LHPublicApiServer interface {
 	ListExternalEvents(context.Context, *ListExternalEventsPb) (*ListExternalEventsReplyPb, error)
 	SearchWfRun(context.Context, *SearchWfRunPb) (*SearchWfRunReplyPb, error)
 	SearchNodeRun(context.Context, *SearchNodeRunPb) (*SearchNodeRunReplyPb, error)
+	SearchTaskRun(context.Context, *SearchTaskRunPb) (*SearchTaskRunReplyPb, error)
 	SearchVariable(context.Context, *SearchVariablePb) (*SearchVariableReplyPb, error)
 	SearchTaskDef(context.Context, *SearchTaskDefPb) (*SearchTaskDefReplyPb, error)
 	SearchUserTaskDef(context.Context, *SearchUserTaskDefPb) (*SearchUserTaskDefReplyPb, error)
@@ -679,6 +691,9 @@ func (UnimplementedLHPublicApiServer) SearchWfRun(context.Context, *SearchWfRunP
 }
 func (UnimplementedLHPublicApiServer) SearchNodeRun(context.Context, *SearchNodeRunPb) (*SearchNodeRunReplyPb, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchNodeRun not implemented")
+}
+func (UnimplementedLHPublicApiServer) SearchTaskRun(context.Context, *SearchTaskRunPb) (*SearchTaskRunReplyPb, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchTaskRun not implemented")
 }
 func (UnimplementedLHPublicApiServer) SearchVariable(context.Context, *SearchVariablePb) (*SearchVariableReplyPb, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchVariable not implemented")
@@ -1188,6 +1203,24 @@ func _LHPublicApi_SearchNodeRun_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LHPublicApi_SearchTaskRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchTaskRunPb)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LHPublicApiServer).SearchTaskRun(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LHPublicApi_SearchTaskRun_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LHPublicApiServer).SearchTaskRun(ctx, req.(*SearchTaskRunPb))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LHPublicApi_SearchVariable_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SearchVariablePb)
 	if err := dec(in); err != nil {
@@ -1676,6 +1709,10 @@ var LHPublicApi_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SearchNodeRun",
 			Handler:    _LHPublicApi_SearchNodeRun_Handler,
+		},
+		{
+			MethodName: "SearchTaskRun",
+			Handler:    _LHPublicApi_SearchTaskRun_Handler,
 		},
 		{
 			MethodName: "SearchVariable",

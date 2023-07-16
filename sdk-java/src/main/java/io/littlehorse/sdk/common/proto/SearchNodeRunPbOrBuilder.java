@@ -30,21 +30,6 @@ public interface SearchNodeRunPbOrBuilder extends
   int getLimit();
 
   /**
-   * <code>.littlehorse.SearchNodeRunPb.StatusAndTaskDefPb status_and_taskdef = 3;</code>
-   * @return Whether the statusAndTaskdef field is set.
-   */
-  boolean hasStatusAndTaskdef();
-  /**
-   * <code>.littlehorse.SearchNodeRunPb.StatusAndTaskDefPb status_and_taskdef = 3;</code>
-   * @return The statusAndTaskdef.
-   */
-  io.littlehorse.sdk.common.proto.SearchNodeRunPb.StatusAndTaskDefPb getStatusAndTaskdef();
-  /**
-   * <code>.littlehorse.SearchNodeRunPb.StatusAndTaskDefPb status_and_taskdef = 3;</code>
-   */
-  io.littlehorse.sdk.common.proto.SearchNodeRunPb.StatusAndTaskDefPbOrBuilder getStatusAndTaskdefOrBuilder();
-
-  /**
    * <code>string wf_run_id = 4;</code>
    * @return Whether the wfRunId field is set.
    */
@@ -60,21 +45,6 @@ public interface SearchNodeRunPbOrBuilder extends
    */
   com.google.protobuf.ByteString
       getWfRunIdBytes();
-
-  /**
-   * <code>.littlehorse.SearchNodeRunPb.ByTaskDefPb task_def = 5;</code>
-   * @return Whether the taskDef field is set.
-   */
-  boolean hasTaskDef();
-  /**
-   * <code>.littlehorse.SearchNodeRunPb.ByTaskDefPb task_def = 5;</code>
-   * @return The taskDef.
-   */
-  io.littlehorse.sdk.common.proto.SearchNodeRunPb.ByTaskDefPb getTaskDef();
-  /**
-   * <code>.littlehorse.SearchNodeRunPb.ByTaskDefPb task_def = 5;</code>
-   */
-  io.littlehorse.sdk.common.proto.SearchNodeRunPb.ByTaskDefPbOrBuilder getTaskDefOrBuilder();
 
   /**
    * <code>.littlehorse.SearchNodeRunPb.UserTaskRunSearchPb user_task_run = 6;</code>

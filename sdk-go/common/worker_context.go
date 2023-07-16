@@ -48,7 +48,7 @@ func (wc *WorkerContext) GetScheduledTime() *timestamppb.Timestamp {
 }
 
 func (wc *WorkerContext) GetIdempotencyKey() string {
-	return wc.ScheduledTask.TaskRunId.PartitionKey + "/" + wc.ScheduledTask.TaskRunId.TaskGuid
+	return wc.ScheduledTask.TaskRunId.WfRunId + "/" + wc.ScheduledTask.TaskRunId.TaskGuid
 }
 
 func (wc *WorkerContext) Log(thing interface{}) {

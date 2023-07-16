@@ -12,9 +12,7 @@ import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.NodeRunIdPb;
 import io.littlehorse.sdk.common.proto.SearchNodeRunPb;
-import io.littlehorse.sdk.common.proto.SearchNodeRunPb.ByTaskDefPb;
 import io.littlehorse.sdk.common.proto.SearchNodeRunPb.NoderunCriteriaCase;
-import io.littlehorse.sdk.common.proto.SearchNodeRunPb.StatusAndTaskDefPb;
 import io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb;
 import io.littlehorse.sdk.common.proto.SearchNodeRunReplyPb;
 import io.littlehorse.server.streamsimpl.ServerTopology;
@@ -29,8 +27,6 @@ public class SearchNodeRun
     extends PublicScanRequest<SearchNodeRunPb, SearchNodeRunReplyPb, NodeRunIdPb, NodeRunId, SearchNodeRunReply> {
 
     public NoderunCriteriaCase type;
-    public StatusAndTaskDefPb statusAndTaskDef;
-    private ByTaskDefPb taskDef;
     public String wfRunId;
     public UserTaskRunSearchPb userTaskSearch;
 
@@ -55,16 +51,11 @@ public class SearchNodeRun
 
         type = p.getNoderunCriteriaCase();
         switch (type) {
-            case STATUS_AND_TASKDEF:
-                statusAndTaskDef = p.getStatusAndTaskdef();
-                break;
             case WF_RUN_ID:
                 wfRunId = p.getWfRunId();
                 break;
             case USER_TASK_RUN:
                 userTaskSearch = p.getUserTaskRun();
-            case TASK_DEF:
-                taskDef = p.getTaskDef();
                 break;
             case NODERUNCRITERIA_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -80,17 +71,11 @@ public class SearchNodeRun
             out.setLimit(limit);
         }
         switch (type) {
-            case STATUS_AND_TASKDEF:
-                out.setStatusAndTaskdef(statusAndTaskDef);
-                break;
             case WF_RUN_ID:
                 out.setWfRunId(wfRunId);
                 break;
             case USER_TASK_RUN:
                 out.setUserTaskRun(userTaskSearch);
-            case TASK_DEF:
-                out.setTaskDef(taskDef);
-                break;
             case NODERUNCRITERIA_NOT_SET:
                 throw new RuntimeException("not possible");
         }
@@ -111,46 +96,7 @@ public class SearchNodeRun
         out.storeName = ServerTopology.CORE_STORE;
         out.resultType = ScanResultTypePb.OBJECT_ID;
 
-        if (type == NoderunCriteriaCase.STATUS_AND_TASKDEF) {
-            out.type = ScanBoundaryCase.TAG_SCAN;
-            TagScanPb.Builder prefixScanBuilder = TagScanPb
-                .newBuilder()
-                .addAttributes(
-                    new Attribute("taskDefName", statusAndTaskDef.getTaskDefName())
-                        .toProto()
-                )
-                .addAttributes(
-                    new Attribute("status", statusAndTaskDef.getStatus().toString())
-                        .toProto()
-                );
-
-            if (statusAndTaskDef.hasEarliestStart()) {
-                prefixScanBuilder.setEarliestCreateTime(
-                    statusAndTaskDef.getEarliestStart()
-                );
-            }
-            if (statusAndTaskDef.hasLatestStart()) {
-                prefixScanBuilder.setLatestCreateTime(
-                    statusAndTaskDef.getLatestStart()
-                );
-            }
-            out.tagScan = prefixScanBuilder.build();
-        } else if (type == NoderunCriteriaCase.TASK_DEF) {
-            out.type = ScanBoundaryCase.TAG_SCAN;
-            TagScanPb.Builder prefixScanBuilder = TagScanPb
-                .newBuilder()
-                .addAttributes(
-                    new Attribute("taskDefName", taskDef.getTaskDefName()).toProto()
-                );
-
-            if (taskDef.hasEarliestStart()) {
-                prefixScanBuilder.setEarliestCreateTime(taskDef.getEarliestStart());
-            }
-            if (taskDef.hasLatestStart()) {
-                prefixScanBuilder.setLatestCreateTime(taskDef.getLatestStart());
-            }
-            out.tagScan = prefixScanBuilder.build();
-        } else if (type == NoderunCriteriaCase.WF_RUN_ID) {
+        if (type == NoderunCriteriaCase.WF_RUN_ID) {
             out.type = ScanBoundaryCase.BOUNDED_OBJECT_ID_SCAN;
             out.partitionKey = wfRunId;
             out.boundedObjectIdScan =
@@ -220,7 +166,7 @@ public class SearchNodeRun
             }
             out.tagScan = prefixScanBuilder.build();
         } else {
-            throw new RuntimeException("Yikes, unimplemented type: " + type);
+            throw new LHValidationError(null, "Yikes, unimplemented type: " + type);
         }
         return out;
     }

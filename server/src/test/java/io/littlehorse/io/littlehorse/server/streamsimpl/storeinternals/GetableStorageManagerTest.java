@@ -3,12 +3,23 @@ package io.littlehorse.io.littlehorse.server.streamsimpl.storeinternals;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.Getable;
+import io.littlehorse.common.model.meta.JsonIndex;
 import io.littlehorse.common.model.meta.ThreadSpec;
+import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.wfrun.ExternalEvent;
+import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
+import io.littlehorse.common.proto.TagStorageTypePb;
+import io.littlehorse.sdk.common.proto.IndexTypePb;
+import io.littlehorse.sdk.common.proto.NodeRunPb;
+import io.littlehorse.sdk.common.proto.VariableTypePb;
 import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionCommand;
+import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionSubCommand;
+import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.RemoveRemoteTag;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableStorageManager;
 import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
@@ -19,6 +30,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
@@ -175,9 +187,506 @@ public class GetableStorageManagerTest {
         }
     }
 
+    @Test
+    void storeBooleanVariableWithUserDefinedStorageType() {
+        Variable variable = TestUtil.variable("test-id");
+        variable.setName("variableName");
+        variable.getValue().setType(VariableTypePb.BOOL);
+        variable.getValue().setBoolVal(true);
+        variable
+            .getWfSpec()
+            .getThreadSpecs()
+            .forEach((s, threadSpec) -> {
+                VariableDef variableDef1 = new VariableDef();
+                variableDef1.setName("variableName");
+                variableDef1.setType(VariableTypePb.BOOL);
+                VariableDef variableDef2 = new VariableDef();
+                variableDef2.setName("variableName2");
+                variableDef2.setType(VariableTypePb.BOOL);
+                threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
+            });
+        String expectedStoreKey = "";
+        geTableStorageManager.store(variable);
+        Assertions
+            .assertThat(
+                localStoreWrapper.prefixTagScanStream(expectedStoreKey, Tag.class)
+            )
+            .isNotEmpty()
+            .allMatch(tag -> {
+                Assertions.assertThat(tag).isNotNull();
+                return true;
+            });
+    }
+
+    @Test
+    void storeLocalStringVariableWithUserDefinedStorageType() {
+        Variable variable = TestUtil.variable("test-id");
+        variable.setName("variableName");
+        variable.getValue().setType(VariableTypePb.STR);
+        variable.getValue().setStrVal("ThisShouldBeLocal");
+        variable
+            .getWfSpec()
+            .getThreadSpecs()
+            .forEach((s, threadSpec) -> {
+                VariableDef variableDef1 = new VariableDef();
+                variableDef1.setName("variableName");
+                variableDef1.setType(VariableTypePb.STR);
+                VariableDef variableDef2 = new VariableDef();
+                variableDef2.setName("variableName2");
+                variableDef2.setType(VariableTypePb.STR);
+                threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
+            });
+        String expectedStoreKey =
+            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_ThisShouldBeLocal";
+        geTableStorageManager.store(variable);
+        Assertions
+            .assertThat(
+                localStoreWrapper.prefixTagScanStream(expectedStoreKey, Tag.class)
+            )
+            .isNotEmpty()
+            .allMatch(tag -> {
+                Assertions.assertThat(tag).isNotNull();
+                return true;
+            });
+    }
+
+    @Test
+    void storeRemoteStringVariableWithUserDefinedStorageType() {
+        Variable variable = TestUtil.variable("test-id");
+        variable.setName("variableName");
+        variable.getValue().setType(VariableTypePb.STR);
+        variable.getValue().setStrVal("ThisShouldBeRemote");
+        variable
+            .getWfSpec()
+            .getThreadSpecs()
+            .forEach((s, threadSpec) -> {
+                VariableDef variableDef1 = new VariableDef();
+                variableDef1.setName("variableName");
+                variableDef1.setType(VariableTypePb.STR);
+                variableDef1.setTagStorageTypePb(TagStorageTypePb.REMOTE);
+                VariableDef variableDef2 = new VariableDef();
+                variableDef2.setName("variableName2");
+                variableDef2.setType(VariableTypePb.STR);
+                threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
+            });
+        String expectedStoreKey =
+            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_ThisShouldBeRemote";
+        geTableStorageManager.store(variable);
+        List<RepartitionCommand> repartitionCommands = mockProcessorContext
+            .forwarded()
+            .stream()
+            .map(MockProcessorContext.CapturedForward::record)
+            .map(Record::value)
+            .map(CommandProcessorOutput::getPayload)
+            .map(lhSerializable -> (RepartitionCommand) lhSerializable)
+            .filter(repartitionCommand ->
+                repartitionCommand.getSubCommand() instanceof CreateRemoteTag
+            )
+            .toList();
+        Assertions.assertThat(repartitionCommands).hasSize(1);
+        RepartitionCommand repartitionCommand = repartitionCommands.get(0);
+        Assertions
+            .assertThat(repartitionCommand.getSubCommand().getPartitionKey())
+            .isEqualTo(expectedStoreKey);
+    }
+
+    @Test
+    void storeLocalIntVariableWithUserDefinedStorageType() {
+        Variable variable = TestUtil.variable("test-id");
+        variable.setName("variableName");
+        variable.getValue().setType(VariableTypePb.INT);
+        variable.getValue().setIntVal(20L);
+        variable
+            .getWfSpec()
+            .getThreadSpecs()
+            .forEach((s, threadSpec) -> {
+                VariableDef variableDef1 = new VariableDef();
+                variableDef1.setName("variableName");
+                variableDef1.setType(VariableTypePb.INT);
+                variableDef1.setTagStorageTypePb(TagStorageTypePb.LOCAL);
+                VariableDef variableDef2 = new VariableDef();
+                variableDef2.setName("variableName2");
+                variableDef2.setType(VariableTypePb.STR);
+                threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
+            });
+        String expectedStoreKey =
+            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_20";
+        geTableStorageManager.store(variable);
+        Assertions
+            .assertThat(
+                localStoreWrapper.prefixTagScanStream(expectedStoreKey, Tag.class)
+            )
+            .isNotEmpty()
+            .allMatch(tag -> {
+                Assertions.assertThat(tag).isNotNull();
+                return true;
+            });
+    }
+
+    @Test
+    void storeRemoteIntVariableWithUserDefinedStorageType() {
+        Variable variable = TestUtil.variable("test-id");
+        variable.setName("variableName");
+        variable.getValue().setType(VariableTypePb.INT);
+        variable.getValue().setIntVal(20L);
+        variable
+            .getWfSpec()
+            .getThreadSpecs()
+            .forEach((s, threadSpec) -> {
+                VariableDef variableDef1 = new VariableDef();
+                variableDef1.setName("variableName");
+                variableDef1.setType(VariableTypePb.INT);
+                variableDef1.setTagStorageTypePb(TagStorageTypePb.REMOTE);
+                VariableDef variableDef2 = new VariableDef();
+                variableDef2.setName("variableName2");
+                variableDef2.setType(VariableTypePb.STR);
+                threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
+            });
+        String expectedStoreKey =
+            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_20";
+        geTableStorageManager.store(variable);
+        List<RepartitionCommand> repartitionCommands = mockProcessorContext
+            .forwarded()
+            .stream()
+            .map(MockProcessorContext.CapturedForward::record)
+            .map(Record::value)
+            .map(CommandProcessorOutput::getPayload)
+            .map(lhSerializable -> (RepartitionCommand) lhSerializable)
+            .filter(repartitionCommand ->
+                repartitionCommand.getSubCommand() instanceof CreateRemoteTag
+            )
+            .toList();
+        Assertions.assertThat(repartitionCommands).hasSize(1);
+        RepartitionCommand repartitionCommand = repartitionCommands.get(0);
+        Assertions
+            .assertThat(repartitionCommand.getSubCommand().getPartitionKey())
+            .isEqualTo(expectedStoreKey);
+    }
+
+    @Test
+    void storeLocalDoubleVariableWithUserDefinedStorageType() {
+        Variable variable = TestUtil.variable("test-id");
+        variable.setName("variableName");
+        variable.getValue().setType(VariableTypePb.DOUBLE);
+        variable.getValue().setDoubleVal(21.0);
+        variable
+            .getWfSpec()
+            .getThreadSpecs()
+            .forEach((s, threadSpec) -> {
+                VariableDef variableDef1 = new VariableDef();
+                variableDef1.setName("variableName");
+                variableDef1.setType(VariableTypePb.DOUBLE);
+                variableDef1.setTagStorageTypePb(TagStorageTypePb.LOCAL);
+                VariableDef variableDef2 = new VariableDef();
+                variableDef2.setName("variableName2");
+                variableDef2.setType(VariableTypePb.STR);
+                threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
+            });
+        String expectedStoreKey =
+            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_21.0";
+        geTableStorageManager.store(variable);
+        Assertions
+            .assertThat(
+                localStoreWrapper.prefixTagScanStream(expectedStoreKey, Tag.class)
+            )
+            .isNotEmpty()
+            .allMatch(tag -> {
+                Assertions.assertThat(tag).isNotNull();
+                return true;
+            });
+    }
+
+    @Test
+    void storeRemoteDoubleVariableWithUserDefinedStorageType() {
+        Variable variable = TestUtil.variable("test-id");
+        variable.setName("variableName");
+        variable.getValue().setType(VariableTypePb.DOUBLE);
+        variable.getValue().setDoubleVal(21.0);
+        variable
+            .getWfSpec()
+            .getThreadSpecs()
+            .forEach((s, threadSpec) -> {
+                VariableDef variableDef1 = new VariableDef();
+                variableDef1.setName("variableName");
+                variableDef1.setType(VariableTypePb.DOUBLE);
+                variableDef1.setTagStorageTypePb(TagStorageTypePb.REMOTE);
+                VariableDef variableDef2 = new VariableDef();
+                variableDef2.setName("variableName2");
+                variableDef2.setType(VariableTypePb.STR);
+                threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
+            });
+        String expectedStoreKey =
+            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_21.0";
+        geTableStorageManager.store(variable);
+        List<RepartitionCommand> repartitionCommands = mockProcessorContext
+            .forwarded()
+            .stream()
+            .map(MockProcessorContext.CapturedForward::record)
+            .map(Record::value)
+            .map(CommandProcessorOutput::getPayload)
+            .map(lhSerializable -> (RepartitionCommand) lhSerializable)
+            .filter(repartitionCommand ->
+                repartitionCommand.getSubCommand() instanceof CreateRemoteTag
+            )
+            .toList();
+        Assertions.assertThat(repartitionCommands).hasSize(1);
+        RepartitionCommand repartitionCommand = repartitionCommands.get(0);
+        Assertions
+            .assertThat(repartitionCommand.getSubCommand().getPartitionKey())
+            .isEqualTo(expectedStoreKey);
+    }
+
+    private List<RepartitionCommand> remoteTagsCreated() {
+        return mockProcessorContext
+            .forwarded()
+            .stream()
+            .map(MockProcessorContext.CapturedForward::record)
+            .map(Record::value)
+            .map(CommandProcessorOutput::getPayload)
+            .map(lhSerializable -> (RepartitionCommand) lhSerializable)
+            .filter(repartitionCommand ->
+                repartitionCommand.getSubCommand() instanceof CreateRemoteTag
+            )
+            .toList();
+    }
+
+    @Test
+    void storeLocalJsonVariablesWithUserDefinedStorageType() {
+        Variable variable = TestUtil.variable("test-id");
+        variable.setName("variableName");
+        variable.getValue().setType(VariableTypePb.JSON_OBJ);
+        variable
+            .getValue()
+            .setJsonObjVal(
+                Map.of(
+                    "name",
+                    "test",
+                    "age",
+                    20,
+                    "car",
+                    Map.of("brand", "Ford", "model", "Escape")
+                )
+            );
+        variable
+            .getWfSpec()
+            .getThreadSpecs()
+            .forEach((s, threadSpec) -> {
+                VariableDef variableDef1 = new VariableDef();
+                variableDef1.setName("variableName");
+                variableDef1.setType(VariableTypePb.JSON_OBJ);
+                VariableDef variableDef2 = new VariableDef();
+                variableDef2.setName("variableName2");
+                variableDef2.setType(VariableTypePb.STR);
+                threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
+            });
+        String expectedStoreKey1 =
+            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__name_test";
+        String expectedStoreKey2 =
+            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__age_20";
+        String expectedStoreKey3 =
+            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__car.brand_Ford";
+        String expectedStoreKey4 =
+            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__car.model_Escape";
+        geTableStorageManager.store(variable);
+        List<String> storedTags = localStoreWrapper
+            .prefixTagScanStream("VARIABLE/", Tag.class)
+            .map(Tag::getStoreKey)
+            .map(s -> s.split("/"))
+            .map(strings -> strings[0] + "/" + strings[1])
+            .toList();
+        Assertions
+            .assertThat(storedTags)
+            .containsExactlyInAnyOrder(
+                expectedStoreKey1,
+                expectedStoreKey2,
+                expectedStoreKey3,
+                expectedStoreKey4
+            );
+    }
+
+    @Test
+    void storeRemoteJsonVariablesWithUserDefinedStorageType() {
+        Variable variable = TestUtil.variable("test-id");
+        variable.setName("variableName");
+        variable.getValue().setType(VariableTypePb.JSON_OBJ);
+        variable
+            .getValue()
+            .setJsonObjVal(
+                Map.of(
+                    "name",
+                    "test",
+                    "age",
+                    20,
+                    "car",
+                    Map.of("brand", "Ford", "model", "Escape")
+                )
+            );
+        variable
+            .getWfSpec()
+            .getThreadSpecs()
+            .forEach((s, threadSpec) -> {
+                VariableDef variableDef1 = new VariableDef();
+                variableDef1.setName("variableName");
+                variableDef1.setType(VariableTypePb.JSON_OBJ);
+                JsonIndex jsonIndex = new JsonIndex(
+                    "car.model",
+                    IndexTypePb.REMOTE_INDEX
+                );
+                variableDef1.setJsonIndices(List.of(jsonIndex));
+                VariableDef variableDef2 = new VariableDef();
+                variableDef2.setName("variableName2");
+                variableDef2.setType(VariableTypePb.STR);
+                threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
+            });
+        String expectedStoreKey1 =
+            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__name_test";
+        String expectedStoreKey2 =
+            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__age_20";
+        String expectedStoreKey3 =
+            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__car.brand_Ford";
+        String expectedStoreKey4 =
+            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__car.model_Escape";
+        geTableStorageManager.store(variable);
+        List<String> remoteTagsCreated = remoteTagsCreated()
+            .stream()
+            .map(RepartitionCommand::getSubCommand)
+            .map(RepartitionSubCommand::getPartitionKey)
+            .toList();
+
+        List<String> storedTags = localStoreWrapper
+            .prefixTagScanStream("VARIABLE/", Tag.class)
+            .map(Tag::getStoreKey)
+            .map(s -> s.split("/"))
+            .map(strings -> strings[0] + "/" + strings[1])
+            .toList();
+        Assertions
+            .assertThat(storedTags)
+            .containsExactlyInAnyOrder(
+                expectedStoreKey1,
+                expectedStoreKey2,
+                expectedStoreKey3
+            );
+        Assertions
+            .assertThat(remoteTagsCreated)
+            .containsExactlyInAnyOrder(expectedStoreKey4);
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideNodeRunObjects")
+    void storeNodeRun(
+        NodeRun nodeRun,
+        List<Pair<String, TagStorageTypePb>> expectedStoreKeys,
+        NodeRunPb.NodeTypeCase nodeTypeCase
+    ) {
+        List<String> expectedLocalStoreKeys = expectedStoreKeys
+            .stream()
+            .filter(stringTagStorageTypePbPair ->
+                stringTagStorageTypePbPair.getValue() == TagStorageTypePb.LOCAL
+            )
+            .map(Pair::getKey)
+            .toList();
+        List<String> expectedRemoteStoreKeys = expectedStoreKeys
+            .stream()
+            .filter(stringTagStorageTypePbPair ->
+                stringTagStorageTypePbPair.getValue() == TagStorageTypePb.REMOTE
+            )
+            .map(Pair::getKey)
+            .toList();
+        nodeRun.setType(nodeTypeCase);
+        geTableStorageManager.store(nodeRun);
+        List<String> localTags = localStoreWrapper
+            .prefixTagScanStream("NODE_RUN/", Tag.class)
+            .map(Tag::getStoreKey)
+            .map(s -> s.split("/"))
+            .map(strings -> strings[0] + "/" + strings[1])
+            .toList();
+        Assertions
+            .assertThat(localTags)
+            .containsExactlyInAnyOrderElementsOf(expectedLocalStoreKeys);
+        List<String> remoteTags = remoteTagsCreated()
+            .stream()
+            .map(RepartitionCommand::getSubCommand)
+            .map(RepartitionSubCommand::getPartitionKey)
+            .toList();
+        Assertions
+            .assertThat(remoteTags)
+            .containsExactlyInAnyOrderElementsOf(expectedRemoteStoreKeys);
+    }
+
+    private static Stream<Arguments> provideNodeRunObjects() {
+        NodeRun nodeRun = TestUtil.nodeRun();
+        String userTaskDefName =
+            "__userTaskDefName_%s".formatted(
+                    nodeRun.getUserTaskRun().getUserTaskDefName()
+                );
+        String userId = "__userId_%s".formatted(nodeRun.getUserTaskRun().getUserId());
+        String userGroupId =
+            "__userGroupId_%s".formatted(nodeRun.getUserTaskRun().getUserGroup());
+        return Stream.of(
+            Arguments.of(
+                nodeRun,
+                List.of(
+                    Pair.of(
+                        "NODE_RUN/__status_RUNNING__type_TASK",
+                        TagStorageTypePb.LOCAL
+                    )
+                ),
+                NodeRunPb.NodeTypeCase.TASK
+            ),
+            Arguments.of(
+                nodeRun,
+                List.of(
+                    Pair.of(
+                        "NODE_RUN/__status_RUNNING__type_USER_TASK",
+                        TagStorageTypePb.LOCAL
+                    ),
+                    Pair.of("NODE_RUN/__status_RUNNING", TagStorageTypePb.LOCAL),
+                    Pair.of(
+                        "NODE_RUN/__status_RUNNING" + userTaskDefName,
+                        TagStorageTypePb.LOCAL
+                    ),
+                    Pair.of("NODE_RUN/" + userTaskDefName, TagStorageTypePb.LOCAL),
+                    Pair.of("NODE_RUN/" + userId, TagStorageTypePb.REMOTE),
+                    Pair.of(
+                        "NODE_RUN/__status_RUNNING" + userTaskDefName + userId,
+                        TagStorageTypePb.REMOTE
+                    ),
+                    Pair.of(
+                        "NODE_RUN/__status_RUNNING" + userId,
+                        TagStorageTypePb.REMOTE
+                    ),
+                    Pair.of(
+                        "NODE_RUN/__status_RUNNING" + userGroupId,
+                        TagStorageTypePb.REMOTE
+                    ),
+                    Pair.of("NODE_RUN/" + userGroupId, TagStorageTypePb.REMOTE),
+                    Pair.of(
+                        "NODE_RUN/__status_RUNNING" + userTaskDefName + userGroupId,
+                        TagStorageTypePb.REMOTE
+                    )
+                ),
+                NodeRunPb.NodeTypeCase.USER_TASK
+            )
+        );
+    }
+
     private static Stream<Arguments> provideGetableObjectsAndIds() {
         WfRun wfRun = TestUtil.wfRun("0000000");
+        TaskRun taskRun = TestUtil.taskRun();
         Variable variable = TestUtil.variable("0000000");
+        variable.setName("variableName");
+        variable.getValue().setType(VariableTypePb.STR);
+        variable.getValue().setStrVal("ThisShouldBeLocal");
+        variable
+            .getWfSpec()
+            .getThreadSpecs()
+            .forEach((s, threadSpec) -> {
+                VariableDef variableDef1 = new VariableDef();
+                variableDef1.setName("variableName");
+                variableDef1.setType(VariableTypePb.STR);
+                threadSpec.setVariableDefs(List.of(variableDef1));
+            });
+        ExternalEvent externalEvent = TestUtil.externalEvent();
         WfSpec wfSpec = TestUtil.wfSpec("testWfSpecName");
         ThreadSpec threadSpec1 = TestUtil.threadSpec();
         threadSpec1
@@ -196,8 +705,10 @@ public class GetableStorageManagerTest {
         );
         return Stream.of(
             Arguments.of(wfRun, wfRun.getObjectId().getStoreKey(), 3),
+            Arguments.of(taskRun, taskRun.getObjectId().getStoreKey(), 2),
             Arguments.of(variable, variable.getObjectId().getStoreKey(), 1),
-            Arguments.of(wfSpec, wfSpec.getObjectId().getStoreKey(), 2)
+            Arguments.of(wfSpec, wfSpec.getObjectId().getStoreKey(), 2),
+            Arguments.of(externalEvent, externalEvent.getObjectId().getStoreKey(), 2)
         );
     }
 }

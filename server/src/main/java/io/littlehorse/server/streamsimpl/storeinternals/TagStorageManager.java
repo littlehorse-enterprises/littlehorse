@@ -114,20 +114,7 @@ public class TagStorageManager {
 
     private void sendRepartitionCommandForCreateRemoteTag(Tag tag) {
         CreateRemoteTag command = new CreateRemoteTag(tag);
-        List<String> attributeStrings = tag
-            .getAttributes()
-            .stream()
-            .map(Attribute::getEscapedKey)
-            .collect(Collectors.toList());
-        GetableIndex getableIndex = GetableIndexRegistry
-            .getInstance()
-            .findConfigurationForAttributes(
-                Getable.getCls(tag.getObjectType()),
-                attributeStrings
-            );
-        String partitionKey = getableIndex.getPartitionKeyForAttrs(
-            tag.getAttributes()
-        );
+        String partitionKey = tag.getPartitionKey();
         CommandProcessorOutput cpo = new CommandProcessorOutput();
         cpo.setPartitionKey(partitionKey);
         cpo.setTopic(this.lhConfig.getRepartitionTopicName());

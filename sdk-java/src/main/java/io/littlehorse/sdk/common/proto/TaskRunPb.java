@@ -19,6 +19,7 @@ private static final long serialVersionUID = 0L;
     attempts_ = java.util.Collections.emptyList();
     taskDefName_ = "";
     inputVariables_ = java.util.Collections.emptyList();
+    status_ = 0;
   }
 
   @java.lang.Override
@@ -256,6 +257,24 @@ private static final long serialVersionUID = 0L;
     return scheduledAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : scheduledAt_;
   }
 
+  public static final int STATUS_FIELD_NUMBER = 8;
+  private int status_ = 0;
+  /**
+   * <code>.littlehorse.TaskStatusPb status = 8;</code>
+   * @return The enum numeric value on the wire for status.
+   */
+  @java.lang.Override public int getStatusValue() {
+    return status_;
+  }
+  /**
+   * <code>.littlehorse.TaskStatusPb status = 8;</code>
+   * @return The status.
+   */
+  @java.lang.Override public io.littlehorse.sdk.common.proto.TaskStatusPb getStatus() {
+    io.littlehorse.sdk.common.proto.TaskStatusPb result = io.littlehorse.sdk.common.proto.TaskStatusPb.forNumber(status_);
+    return result == null ? io.littlehorse.sdk.common.proto.TaskStatusPb.UNRECOGNIZED : result;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -290,6 +309,9 @@ private static final long serialVersionUID = 0L;
     }
     if (scheduledAt_ != null) {
       output.writeMessage(7, getScheduledAt());
+    }
+    if (status_ != io.littlehorse.sdk.common.proto.TaskStatusPb.TASK_SCHEDULED.getNumber()) {
+      output.writeEnum(8, status_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -326,6 +348,10 @@ private static final long serialVersionUID = 0L;
     if (scheduledAt_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(7, getScheduledAt());
+    }
+    if (status_ != io.littlehorse.sdk.common.proto.TaskStatusPb.TASK_SCHEDULED.getNumber()) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeEnumSize(8, status_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -365,6 +391,7 @@ private static final long serialVersionUID = 0L;
       if (!getScheduledAt()
           .equals(other.getScheduledAt())) return false;
     }
+    if (status_ != other.status_) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -400,6 +427,8 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + SCHEDULED_AT_FIELD_NUMBER;
       hash = (53 * hash) + getScheduledAt().hashCode();
     }
+    hash = (37 * hash) + STATUS_FIELD_NUMBER;
+    hash = (53 * hash) + status_;
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -560,6 +589,7 @@ private static final long serialVersionUID = 0L;
         scheduledAtBuilder_.dispose();
         scheduledAtBuilder_ = null;
       }
+      status_ = 0;
       return this;
     }
 
@@ -635,6 +665,9 @@ private static final long serialVersionUID = 0L;
         result.scheduledAt_ = scheduledAtBuilder_ == null
             ? scheduledAt_
             : scheduledAtBuilder_.build();
+      }
+      if (((from_bitField0_ & 0x00000080) != 0)) {
+        result.status_ = status_;
       }
     }
 
@@ -751,6 +784,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasScheduledAt()) {
         mergeScheduledAt(other.getScheduledAt());
       }
+      if (other.status_ != 0) {
+        setStatusValue(other.getStatusValue());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -834,6 +870,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000040;
               break;
             } // case 58
+            case 64: {
+              status_ = input.readEnum();
+              bitField0_ |= 0x00000080;
+              break;
+            } // case 64
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1790,6 +1831,59 @@ private static final long serialVersionUID = 0L;
         scheduledAt_ = null;
       }
       return scheduledAtBuilder_;
+    }
+
+    private int status_ = 0;
+    /**
+     * <code>.littlehorse.TaskStatusPb status = 8;</code>
+     * @return The enum numeric value on the wire for status.
+     */
+    @java.lang.Override public int getStatusValue() {
+      return status_;
+    }
+    /**
+     * <code>.littlehorse.TaskStatusPb status = 8;</code>
+     * @param value The enum numeric value on the wire for status to set.
+     * @return This builder for chaining.
+     */
+    public Builder setStatusValue(int value) {
+      status_ = value;
+      bitField0_ |= 0x00000080;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.TaskStatusPb status = 8;</code>
+     * @return The status.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.TaskStatusPb getStatus() {
+      io.littlehorse.sdk.common.proto.TaskStatusPb result = io.littlehorse.sdk.common.proto.TaskStatusPb.forNumber(status_);
+      return result == null ? io.littlehorse.sdk.common.proto.TaskStatusPb.UNRECOGNIZED : result;
+    }
+    /**
+     * <code>.littlehorse.TaskStatusPb status = 8;</code>
+     * @param value The status to set.
+     * @return This builder for chaining.
+     */
+    public Builder setStatus(io.littlehorse.sdk.common.proto.TaskStatusPb value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      bitField0_ |= 0x00000080;
+      status_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.TaskStatusPb status = 8;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearStatus() {
+      bitField0_ = (bitField0_ & ~0x00000080);
+      status_ = 0;
+      onChanged();
+      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

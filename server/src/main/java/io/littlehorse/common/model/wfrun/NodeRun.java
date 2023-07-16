@@ -1,5 +1,6 @@
 package io.littlehorse.common.model.wfrun;
 
+import com.google.common.base.Strings;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.LHSerializable;
@@ -22,10 +23,12 @@ import io.littlehorse.sdk.common.proto.NodePb.NodeCase;
 import io.littlehorse.sdk.common.proto.NodeRunPb;
 import io.littlehorse.sdk.common.proto.NodeRunPb.NodeTypeCase;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
+import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -112,331 +115,146 @@ public class NodeRun extends Getable<NodeRunPb> {
         return arrivalTime;
     }
 
-    /*
-     * One comment on this method: it really should be a _static_ method, since
-     * it's called only once by the GetableIndexRegistry upon startup to create
-     * indexes. The GetableIndex objects that get created don't depend on the
-     * content of any Getable; however, the way the GetableIndex is expressed (i.e.
-     * which Tags are created) depends on the individual Getable.
-     */
     @Override
-    public List<GetableIndex> getIndexes() {
-        List<GetableIndex> out = new ArrayList<>();
-
-        // First, indexes that apply to all Getables.
-        out.add(
-            new GetableIndex(
-                NodeRun.class,
+    public List<GetableIndex<? extends Getable<?>>> getIndexConfigurations() {
+        return List.of(
+            new GetableIndex<NodeRun>(
                 List.of(
-                    Pair.of(
-                        "status",
-                        nodeRun -> List.of(((NodeRun) nodeRun).getStatus().toString())
-                    ),
-                    Pair.of(
-                        "type",
-                        nodeRun -> List.of(((NodeRun) nodeRun).getType().toString())
-                    )
+                    Pair.of("status", GetableIndex.ValueType.SINGLE),
+                    Pair.of("type", GetableIndex.ValueType.SINGLE)
                 ),
-                nodeRun -> true, // applies to all NodeRuns
-                TagStorageTypePb.LOCAL
+                Optional.of(TagStorageTypePb.LOCAL)
+            ),
+            new GetableIndex<NodeRun>(
+                List.of(Pair.of("userTaskDefName", GetableIndex.ValueType.SINGLE)),
+                Optional.of(TagStorageTypePb.LOCAL),
+                nodeRun -> nodeRun.getType().equals(NodeTypeCase.USER_TASK)
+            ),
+            new GetableIndex<NodeRun>(
+                List.of(
+                    Pair.of("status", GetableIndex.ValueType.SINGLE),
+                    Pair.of("userTaskDefName", GetableIndex.ValueType.SINGLE)
+                ),
+                Optional.of(TagStorageTypePb.LOCAL),
+                nodeRun -> nodeRun.getType().equals(NodeTypeCase.USER_TASK)
+            ),
+            new GetableIndex<NodeRun>(
+                List.of(Pair.of("status", GetableIndex.ValueType.SINGLE)),
+                Optional.of(TagStorageTypePb.LOCAL),
+                nodeRun -> nodeRun.getType().equals(NodeTypeCase.USER_TASK)
+            ),
+            new GetableIndex<NodeRun>(
+                List.of(Pair.of("userId", GetableIndex.ValueType.SINGLE)),
+                Optional.of(TagStorageTypePb.REMOTE),
+                nodeRun ->
+                    nodeRun.getType().equals(NodeTypeCase.USER_TASK) &&
+                    !Strings.isNullOrEmpty(nodeRun.getUserTaskRun().getUserId())
+            ),
+            new GetableIndex<NodeRun>(
+                List.of(
+                    Pair.of("status", GetableIndex.ValueType.SINGLE),
+                    Pair.of("userId", GetableIndex.ValueType.SINGLE)
+                ),
+                Optional.of(TagStorageTypePb.REMOTE),
+                nodeRun ->
+                    nodeRun.getType().equals(NodeTypeCase.USER_TASK) &&
+                    !Strings.isNullOrEmpty(nodeRun.getUserTaskRun().getUserId())
+            ),
+            new GetableIndex<NodeRun>(
+                List.of(
+                    Pair.of("status", GetableIndex.ValueType.SINGLE),
+                    Pair.of("userTaskDefName", GetableIndex.ValueType.SINGLE),
+                    Pair.of("userId", GetableIndex.ValueType.SINGLE)
+                ),
+                Optional.of(TagStorageTypePb.REMOTE),
+                nodeRun ->
+                    nodeRun.getType().equals(NodeTypeCase.USER_TASK) &&
+                    !Strings.isNullOrEmpty(nodeRun.getUserTaskRun().getUserId())
+            ),
+            new GetableIndex<NodeRun>(
+                List.of(
+                    Pair.of("status", GetableIndex.ValueType.SINGLE),
+                    Pair.of("userTaskDefName", GetableIndex.ValueType.SINGLE),
+                    Pair.of("userGroupId", GetableIndex.ValueType.SINGLE)
+                ),
+                Optional.of(TagStorageTypePb.REMOTE),
+                nodeRun ->
+                    nodeRun.getType().equals(NodeTypeCase.USER_TASK) &&
+                    !Strings.isNullOrEmpty(nodeRun.getUserTaskRun().getUserGroup())
+            ),
+            new GetableIndex<NodeRun>(
+                List.of(
+                    Pair.of("status", GetableIndex.ValueType.SINGLE),
+                    Pair.of("userGroupId", GetableIndex.ValueType.SINGLE)
+                ),
+                Optional.of(TagStorageTypePb.REMOTE),
+                nodeRun ->
+                    nodeRun.getType().equals(NodeTypeCase.USER_TASK) &&
+                    !Strings.isNullOrEmpty(nodeRun.getUserTaskRun().getUserGroup())
+            ),
+            new GetableIndex<NodeRun>(
+                List.of(Pair.of("userGroupId", GetableIndex.ValueType.SINGLE)),
+                Optional.of(TagStorageTypePb.REMOTE),
+                nodeRun ->
+                    nodeRun.getType().equals(NodeTypeCase.USER_TASK) &&
+                    !Strings.isNullOrEmpty(nodeRun.getUserTaskRun().getUserGroup())
             )
         );
-
-        out.addAll(getUserTaskIndexes());
-        return out;
     }
 
-    private List<GetableIndex> getUserTaskIndexes() {
-        List<GetableIndex> out = new ArrayList<>();
-
-        // userTaskDefName
-        out.add(
-            new GetableIndex(
-                NodeRun.class,
-                List.of(
-                    Pair.of(
-                        "userTaskDefName",
-                        nodeRun ->
-                            List.of(
-                                ((NodeRun) nodeRun).getUserTaskRun()
-                                    .getUserTaskDefName()
-                            )
+    @Override
+    public List<IndexedField> getIndexValues(
+        String key,
+        Optional<TagStorageTypePb> tagStorageTypePb
+    ) {
+        switch (key) {
+            case "status" -> {
+                return List.of(
+                    new IndexedField(
+                        key,
+                        this.getStatus().toString(),
+                        TagStorageTypePb.LOCAL
                     )
-                ),
-                nodeRun ->
-                    ((NodeRun) nodeRun).getType().equals(NodeTypeCase.USER_TASK),
-                TagStorageTypePb.LOCAL
-            )
-        );
-
-        // userTaskDefName, status
-        out.add(
-            new GetableIndex(
-                NodeRun.class,
-                List.of(
-                    Pair.of(
-                        "userTaskDefName",
-                        nodeRun ->
-                            List.of(
-                                ((NodeRun) nodeRun).getUserTaskRun()
-                                    .getUserTaskDefName()
-                            )
-                    ),
-                    Pair.of(
-                        "status",
-                        nodeRun ->
-                            List.of(
-                                ((NodeRun) nodeRun).getUserTaskRun()
-                                    .getStatus()
-                                    .toString()
-                            )
+                );
+            }
+            case "type" -> {
+                return List.of(
+                    new IndexedField(
+                        key,
+                        this.getType().toString(),
+                        TagStorageTypePb.LOCAL
                     )
-                ),
-                nodeRun ->
-                    ((NodeRun) nodeRun).getType().equals(NodeTypeCase.USER_TASK),
-                TagStorageTypePb.LOCAL
-            )
-        );
-
-        // status
-        out.add(
-            new GetableIndex(
-                NodeRun.class,
-                List.of(
-                    Pair.of(
-                        "status",
-                        nodeRun ->
-                            List.of(
-                                ((NodeRun) nodeRun).getUserTaskRun()
-                                    .getStatus()
-                                    .toString()
-                            )
+                );
+            }
+            case "userTaskDefName" -> {
+                return List.of(
+                    new IndexedField(
+                        key,
+                        this.getUserTaskRun().getUserTaskDefName(),
+                        TagStorageTypePb.LOCAL
                     )
-                ),
-                nodeRun ->
-                    ((NodeRun) nodeRun).getType().equals(NodeTypeCase.USER_TASK),
-                TagStorageTypePb.LOCAL
-            )
-        );
-
-        // UserId
-        out.add(
-            new GetableIndex(
-                NodeRun.class,
-                List.of(
-                    Pair.of(
-                        "userId",
-                        nodeRun ->
-                            List.of(((NodeRun) nodeRun).getUserTaskRun().getUserId())
+                );
+            }
+            case "userId" -> {
+                return List.of(
+                    new IndexedField(
+                        key,
+                        this.getUserTaskRun().getUserId(),
+                        tagStorageTypePb.get()
                     )
-                ),
-                nodeRun -> {
-                    return (
-                        ((NodeRun) nodeRun).getType()
-                            .equals(NodeTypeCase.USER_TASK) &&
-                        ((NodeRun) nodeRun).getUserTaskRun().getUserId() != null
-                    );
-                },
-                TagStorageTypePb.LOCAL // TODO_EDUWER: Make this REMOTE
-            )
-        );
-
-        // User Id and status
-        out.add(
-            new GetableIndex(
-                NodeRun.class,
-                List.of(
-                    Pair.of(
-                        "status",
-                        nodeRun ->
-                            List.of(
-                                ((NodeRun) nodeRun).getUserTaskRun()
-                                    .getStatus()
-                                    .toString()
-                            )
-                    ),
-                    Pair.of(
-                        "userId",
-                        nodeRun ->
-                            List.of(((NodeRun) nodeRun).getUserTaskRun().getUserId())
+                );
+            }
+            case "userGroupId" -> {
+                return List.of(
+                    new IndexedField(
+                        key,
+                        this.getUserTaskRun().getUserGroup(),
+                        tagStorageTypePb.get()
                     )
-                ),
-                nodeRun -> {
-                    return (
-                        ((NodeRun) nodeRun).getType()
-                            .equals(NodeTypeCase.USER_TASK) &&
-                        ((NodeRun) nodeRun).getUserTaskRun().getUserId() != null
-                    );
-                },
-                TagStorageTypePb.LOCAL // TODO_EDUWER: make this REMOTE
-            )
-        );
-        // User Id, status, userTaskDefName
-        out.add(
-            new GetableIndex(
-                NodeRun.class,
-                List.of(
-                    Pair.of(
-                        "status",
-                        nodeRun ->
-                            List.of(
-                                ((NodeRun) nodeRun).getUserTaskRun()
-                                    .getStatus()
-                                    .toString()
-                            )
-                    ),
-                    Pair.of(
-                        "userTaskDefName",
-                        nodeRun ->
-                            List.of(
-                                ((NodeRun) nodeRun).getUserTaskRun()
-                                    .getUserTaskDefName()
-                            )
-                    ),
-                    Pair.of(
-                        "userId",
-                        nodeRun ->
-                            List.of(((NodeRun) nodeRun).getUserTaskRun().getUserId())
-                    )
-                ),
-                nodeRun -> {
-                    return (
-                        ((NodeRun) nodeRun).getType()
-                            .equals(NodeTypeCase.USER_TASK) &&
-                        ((NodeRun) nodeRun).getUserTaskRun().getUserId() != null
-                    );
-                },
-                TagStorageTypePb.LOCAL // TODO_EDUWER: Make this Remote
-            )
-        );
-
-        /* -------- group tasks -------- */
-        out.add(
-            new GetableIndex(
-                NodeRun.class,
-                List.of(
-                    Pair.of(
-                        "status",
-                        nodeRun ->
-                            List.of(
-                                ((NodeRun) nodeRun).getUserTaskRun()
-                                    .getStatus()
-                                    .toString()
-                            )
-                    ),
-                    Pair.of(
-                        "userTaskDefName",
-                        nodeRun ->
-                            List.of(
-                                ((NodeRun) nodeRun).getUserTaskRun()
-                                    .getUserTaskDefName()
-                            )
-                    ),
-                    Pair.of(
-                        "userGroup",
-                        nodeRun ->
-                            List.of(
-                                ((NodeRun) nodeRun).getUserTaskRun().getUserGroup()
-                            )
-                    )
-                ),
-                nodeRun -> {
-                    return (
-                        ((NodeRun) nodeRun).getType()
-                            .equals(NodeTypeCase.USER_TASK) &&
-                        ((NodeRun) nodeRun).getUserTaskRun().getUserGroup() != null
-                    );
-                },
-                TagStorageTypePb.LOCAL // maybe make this remote?
-            )
-        );
-        // status, userGroup
-        out.add(
-            new GetableIndex(
-                NodeRun.class,
-                List.of(
-                    Pair.of(
-                        "status",
-                        nodeRun ->
-                            List.of(
-                                ((NodeRun) nodeRun).getUserTaskRun()
-                                    .getStatus()
-                                    .toString()
-                            )
-                    ),
-                    Pair.of(
-                        "userGroup",
-                        nodeRun ->
-                            List.of(
-                                ((NodeRun) nodeRun).getUserTaskRun().getUserGroup()
-                            )
-                    )
-                ),
-                nodeRun -> {
-                    return (
-                        ((NodeRun) nodeRun).getType()
-                            .equals(NodeTypeCase.USER_TASK) &&
-                        ((NodeRun) nodeRun).getUserTaskRun().getUserGroup() != null
-                    );
-                },
-                TagStorageTypePb.LOCAL // this MIGHT be better as REMOTE, not sure
-            )
-        );
-
-        out.add(
-            new GetableIndex(
-                NodeRun.class,
-                List.of(
-                    Pair.of(
-                        "userTaskDefName",
-                        nodeRun ->
-                            List.of(
-                                ((NodeRun) nodeRun).getUserTaskRun()
-                                    .getUserTaskDefName()
-                            )
-                    ),
-                    Pair.of(
-                        "userGroup",
-                        nodeRun ->
-                            List.of(
-                                ((NodeRun) nodeRun).getUserTaskRun().getUserGroup()
-                            )
-                    )
-                ),
-                nodeRun -> {
-                    return (
-                        ((NodeRun) nodeRun).getType()
-                            .equals(NodeTypeCase.USER_TASK) &&
-                        ((NodeRun) nodeRun).getUserTaskRun().getUserGroup() != null
-                    );
-                },
-                TagStorageTypePb.LOCAL
-            )
-        );
-
-        out.add(
-            new GetableIndex(
-                NodeRun.class,
-                List.of(
-                    Pair.of(
-                        "userGroup",
-                        nodeRun ->
-                            List.of(
-                                ((NodeRun) nodeRun).getUserTaskRun().getUserGroup()
-                            )
-                    )
-                ),
-                nodeRun -> {
-                    return (
-                        ((NodeRun) nodeRun).getType()
-                            .equals(NodeTypeCase.USER_TASK) &&
-                        ((NodeRun) nodeRun).getUserTaskRun().getUserGroup() != null
-                    );
-                },
-                TagStorageTypePb.LOCAL
-            )
-        );
-        return out;
+                );
+            }
+        }
+        return List.of();
     }
 
     public void initFrom(Message p) {

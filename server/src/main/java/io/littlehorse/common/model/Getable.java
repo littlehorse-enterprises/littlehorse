@@ -14,6 +14,7 @@ import io.littlehorse.common.model.objectId.ExternalEventId;
 import io.littlehorse.common.model.objectId.NodeRunId;
 import io.littlehorse.common.model.objectId.TaskDefId;
 import io.littlehorse.common.model.objectId.TaskDefMetricsId;
+import io.littlehorse.common.model.objectId.TaskRunId;
 import io.littlehorse.common.model.objectId.TaskWorkerGroupId;
 import io.littlehorse.common.model.objectId.UserTaskDefId;
 import io.littlehorse.common.model.objectId.VariableId;
@@ -24,10 +25,14 @@ import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
+import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
 import io.littlehorse.common.proto.GetableClassEnumPb;
+import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
+import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -68,8 +73,12 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
             return GetableClassEnumPb.TASK_WORKER_GROUP;
         } else if (cls.equals(UserTaskDef.class)) {
             return GetableClassEnumPb.USER_TASK_DEF;
+        } else if (cls.equals(TaskRun.class)) {
+            return GetableClassEnumPb.TASK_RUN;
         } else {
-            throw new RuntimeException("Uh oh, unrecognized: " + cls.getName());
+            throw new IllegalArgumentException(
+                "Uh oh, unrecognized: " + cls.getName()
+            );
         }
     }
 
@@ -97,10 +106,14 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
                 return TaskWorkerGroup.class;
             case USER_TASK_DEF:
                 return UserTaskDef.class;
+            case TASK_RUN:
+                return TaskRun.class;
             case UNRECOGNIZED:
-            default:
-                throw new RuntimeException("Uh oh, unrecognized enum");
+            // default:
         }
+        throw new IllegalArgumentException(
+            "Unrecognized/unimplemented GetableClassEnumPb"
+        );
     }
 
     public static Class<? extends ObjectId<?, ?, ?>> getIdCls(
@@ -129,19 +142,27 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
                 return TaskWorkerGroupId.class;
             case USER_TASK_DEF:
                 return UserTaskDefId.class;
+            case TASK_RUN:
+                return TaskRunId.class;
             case UNRECOGNIZED:
-            default:
-                throw new RuntimeException("Uh oh, unrecognized enum");
         }
+        throw new IllegalArgumentException(
+            "Unrecognized/unimplemented GetableClassEnumPb"
+        );
     }
 
-    public abstract List<GetableIndex> getIndexes();
+    public abstract List<GetableIndex<? extends Getable<?>>> getIndexConfigurations();
 
     public abstract ObjectId<?, T, ?> getObjectId();
 
     public String getStoreKey() {
         return getObjectId().getStoreKey();
     }
+
+    public abstract List<IndexedField> getIndexValues(
+        String key,
+        Optional<TagStorageTypePb> tagStorageTypePb
+    );
 }
 /*
  * Some random thoughts:

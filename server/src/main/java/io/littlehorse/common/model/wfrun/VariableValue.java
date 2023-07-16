@@ -571,9 +571,11 @@ public class VariableValue extends LHSerializable<VariableValuePb> {
             case BOOL:
                 valuePair = Pair.of("boolVal", String.valueOf(boolVal));
                 break;
+            case JSON_OBJ:
+                valuePair = Pair.of("jsonObj", String.valueOf(jsonObjVal.toString()));
+                break;
             case BYTES:
             case JSON_ARR:
-            case JSON_OBJ:
             case NULL:
             case UNRECOGNIZED:
                 valuePair = null;
