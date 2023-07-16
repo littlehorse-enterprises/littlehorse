@@ -19,6 +19,10 @@ services:
       BITNAMI_DEBUG: "true"
       KAFKA_CFG_NODE_ID: "1"
       KAFKA_KRAFT_CLUSTER_ID: abcdefghijklmnopqrstuv
+    restart: on-failure
+    healthcheck:
+      test: kafka-topics.sh --bootstrap-server kafka:9092 --list > /dev/null 2>&1
+      interval: 5s
   littlehorse:
     container_name: lh-server
     build:
@@ -27,5 +31,12 @@ services:
     environment:
       LHS_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       LHS_SHOULD_CREATE_TOPICS: "true"
+    restart: on-failure
+    healthcheck:
+      test: cat /tmp/lhHealth
+      interval: 5s
+    depends_on:
+      kafka:
+        condition: service_healthy
     ports:
       - "2023:2023"
