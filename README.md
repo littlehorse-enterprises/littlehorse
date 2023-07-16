@@ -8,39 +8,131 @@ For a description of the architecture, see the [architecture docs](docs/ARCH.md)
 
 The LittleHorse project currently has multiple repositories, described below:
 
--   [`lh-server`](https://bitbucket.org/littlehorse-core/lh-server)
-    -   [`server`](https://bitbucket.org/littlehorse-core/lh-server/src/master/client/)
-        - Code for the LittleHorse Server.
-    -   [`client`](https://bitbucket.org/littlehorse-core/lh-server/src/master/client/)
-        -   Protocol Buffer definitions used by clients and the `lh-server` repo.
-        -   Library for creating `WfSpec`'s in Java.
-        -   Library for executing `TaskRun`'s in Java.
-        -   Shared constants, including configuration constants used by the LH Server.
-    -   [`e2e-tests`](https://bitbucket.org/littlehorse-core/lh-server/src/master/e2e-tests/)
-        -   A series of system integration tests used to verify the cohesive behavior of
-            the LH Server, Java Workflow SDK, and Java Task Library together.
--   [`sdk-go`](https://bitbucket.org/littlehorse-core/littlehorse/sdk-go)
-    -   The `lhctl` command line interface.
-    -   Library for creating `WfSpec`'s in GoLang (under development).
-    -   Library for executing `TaskRun`'s in GoLang (under development).
--   [`lh-proto`](https://bitbucket.org/littlehorse-core/lh-proto/src/master)
-    -   The LittleHorse Protocol Buffer Specification.
-    -   It is mounted as a `git submodule` in this repo, and a few others.
+- [`server`](server)
+  - Code for LittleHorse Server.
+- [`sdk-java`](sdk-java)
+  - Library for creating `WfSpec`'s in Java.
+  - Library for executing `TaskRun`'s in Java.
+- [`sdk-go`](sdk-go)
+  - Library for creating `WfSpec`'s in GoLang.
+  - Library for executing `TaskRun`'s in GoLang.
+- [`lhctl`](lhctl)
+  - The `lhctl` command line interface.
+- [`e2e-tests`](e2e-tests)
+  - A series of system integration tests used to verify the cohesive behavior of
+    the LH Server, Java Workflow SDK, and Java Task Library together.
+- [`examples`](examples)
+  - A series of examples with different level of complexity.
+- [`schemas`](schemas)
+  - The LittleHorse Protocol Buffer Specification.
+- [`docker`](docker)
+  - The LittleHorse Docker Image.
 
-# Development
+## Quick Start
 
-This section describes how to run the LittleHorse server in a development environment.
-
-## Prerequisites
+### Prerequisites
 
 This repository requires the following system dependencies:
 
--   `openjdk`, preferably version 17 or later.
--   `gradle`, preferably version 7.4 or later.
--   `docker` and `docker-compose-plugin`
--   `npm` (this is a dev dependency)
+- `openjdk`, preferably version 17 or later.
+- `gradle`, preferably version 7.4 or later.
+- `docker` and `docker-compose-plugin`.
+- `go`.
 
-Additionally, you'll eventually want to install `lhctl` as per the `sdk-go` repository.
+### Running Locally
+
+Install `lhctl`:
+
+```
+cd lhctl
+go install .
+```
+
+> Make sure it's on the path <br />
+> `export GOPATH="$(go env GOPATH)"` <br />
+> `export PATH="$PATH:$GOPATH/bin"`
+
+Verify the installation:
+
+```
+lhctl
+```
+
+Start a LH Server with:
+
+```
+cd docker
+docker compose up -d
+```
+
+When you run the LH Server according to the command above, the API Host is `localhost` and the API Port is `2023`.
+Now configure `~/.config/littlehorse.config`:
+
+```
+LHC_API_HOST=localhost
+LHC_API_PORT=2023
+```
+
+You can confirm that the Server is running via:
+
+```
+lhctl search wfSpec
+```
+
+Result:
+
+```
+{
+  "code":  "OK",
+  "objectIds":  []
+}
+```
+
+Now let's run an example:
+
+> More examples at [examples](examples).
+
+```
+gradle example-basic:run
+```
+
+In another terminal, use `lhctl` to run the workflow:
+
+```
+# Here, we specify that the "input-name" variable = "Obi-Wan"
+lhctl run example-basic input-name Obi-Wan
+```
+
+Now let's inspect the result:
+
+```
+# This call shows the result
+lhctl get wfRun <wf run id>
+
+# This will show you all nodes in tha run
+lhctl get nodeRun <wf run id> 0 1
+
+# This shows the task run information
+lhctl get taskRun <wf run id> <task run global id>
+```
+
+## Development
+
+This section describes how to run the LittleHorse server in a development environment.
+
+### Prerequisites
+
+This repository requires the following system dependencies:
+
+- `openjdk`, preferably version 17 or later.
+- `gradle`, preferably version 7.4 or later.
+- `docker` and `docker-compose-plugin`.
+- `go`, `protoc`, `protoc-gen-go`, `protoc-gen-go-grpc` and `protoc-gen-grpc-java`.
+    - [Protocol Buffer Compiler](https://grpc.io/docs/protoc-installation/)
+    - [Java gRPC compiler plugin](https://github.com/grpc/grpc-java/blob/master/compiler/README.md)
+    - This needs to be put somewhere in your `PATH`.
+- `npm` (this is a dev dependency)
+- `pre-commit` (this is a dev dependency)
 
 ### Setting Up the Linters
 
@@ -53,226 +145,24 @@ npm install  # This uses the package.json
 npm run format  # This runs the linters
 ```
 
-This repository (and all other LittleHorse Java repo's) have the `.vscode` folder checked into source control. The `settings.json` file is configured properly to enable formatting on save, but you first need to install the `Prettier - Code formatter` extension by `esbenp` on VSCode.
+This repository (and all other LittleHorse Java repo's) have the `.vscode` folder checked into source control. The `settings.json` file is configured properly to enable formatting on save, but you first need to install the [Prettier - Code formatter](https://open-vsx.org/extension/esbenp/prettier-vscode) extension.
 
-Install all the extensions:
-
-```bash
-jq ".recommendations[]" .vscode/extensions.json | xargs -L1 codium --install-extension
-```
-
-### Git Submodule (For Protocol Buffers)
-
-You need to install:
-
-- [Protocol Buffer Compiler](https://grpc.io/docs/protoc-installation/)
-- [Java gRPC compiler plugin](https://github.com/grpc/grpc-java/blob/master/compiler/README.md)
-  - This needs to be put somewhere in your `PATH`.
-
-As mentioned before, there is a Git Submodule for the `lh-proto` repo. What gives?
-
-Well, there are some internal (i.e. not public-facing) API's defined in the `proto/` section of this repository. In order to compile those protocol buffers, we need to include the standard LittleHorse Proto in our classpath. One way to do that would be to require everyone to set a proto classpath env var; alternatively, we chose to just put the code here in this repo.
-
-In order to compile the protocol buffers after making a change to `lh-proto` repo, `client`, or `proto/internal_server.proto`, you first need to add the git submodule (this needs to be done only once):
-
-```
-git submodule init
-git submodule update
-cd proto/lh-proto
-git checkout master && git pull
-cd ../..
-```
-
-Then, you can make changes to `lh-proto/internal_server.proto`, and compile those as follows:
-
-```
-./local-dev/compile-proto.sh
-```
-
-When making changes to the upstream `lh-proto` repository, it is recommended to push your changes on the protocol buffer repository to some branch (`foo`). Then, you can:
-
-```
-cd proto/lh-proto
-git fetch && git checkout foo && git pull
-cd ../..
-./local-dev/compile-proto.sh
-```
 
 ### Setup Pre-commit
+
+https://pre-commit.com/ is a framework for managing and maintaining multi-language pre-commit hooks.
 
 ```bash
 pre-commit install
 ```
 
-## Running LH
+### Components
 
-The LH Server depends on Kafka as a backend database. To start Kafka using docker compose, you can run:
+The LittleHorse ecosystem has different component, for information about to develop on each of them go to:
 
-```
-./local-dev/setup.sh
-```
-
-Next, you can start the LH server itself. The server can be started in a single command:
-
-```
-./local-dev/do-server.sh
-```
-
-You can confirm that the Server is running via:
-
-```
--> lhctl search wfSpec
-{
-  "code":  "OK",
-  "objectIds":  []
-}
-```
-
-## Configuring Clients
-
-When you run the LH Server according to the command above, the API Host is `localhost` and the API Port is `2023`.
-
-Also note that mTLS will NOT be enabled; therefore, you should not have any client keys or certs configured in your `~/.config/littlehorse.config` if you wish to interact with the LH Server running in your terminal as per this README.
-
-## Building the Image
-
-The LittleHorse docker image (for now) requires the `lhctl` command line client, which is used for Kubernetes Health Checks. (That's a longer story).
-
-Before you can build the image, you should compile the `lhctl` binary in the `sdk-go` repository, and then `cp $(which lhctl) ./build/`.
-
-Now you can build the `littlehorse` docker image by running:
-
-```
-./local-dev/build.sh
-```
-
-Run server with docker (default config `local-dev/server-1.config`):
-
-```
-./local-dev/do-docker-server.sh
-```
-
-Run server with docker and specific config:
-
-```
-./local-dev/do-docker-server.sh <config-name>
-
-# Example
-./local-dev/do-docker-server.sh server-2
-```
-
-This step is needed to develop on KIND.
-
-
-### Running Tests
-
-Run unit test:
-
-```
-./gradlew test
-```
-
-Run all e2e tests:
-
-```
-./gradlew e2e-test:run
-```
-
-Run specific e2e tests:
-
-```
-./gradlew e2e-test:run --args 'tests AASequential ABIntInputVars'
-```
-
-### Publishing to Maven Local
-
-The `wfsdk` in particular is a library that will be published to maven central for production use. For local development, you can publish it to your local maven repository as follows:
-
-```
-./local-dev/publish-locally.sh
-```
-
-This step is necessary before building other components.
-
-## Advanced
-
-This section covers more advanced topics that you'll need to know when modifying the actual LH Server code.
-
-### Running Multiple LH Servers
-
-LittleHorse is a distributed system in which the different LH Server Instances (Brokers) need to communicate with each other. For example (among many others), all GET requests on the API use Interactive Queries, which involves requests between the different Brokers. Therefore, you'll need to be able to test with multiple brokers running at once.
-
-Running two brokers is slightly tricky as you must configure the ports, advertised hostnames, and Kafka group instance ID's correctly.
-
-However, you can start two Brokers in your terminal as follows:
-
-```
-# The first server has an external API port of 2023
-./local-dev/do-server.sh
-
-# <In another terminal>
-# The second server has an external API port of 2033
-./local-dev/do-server.sh server-2
-```
-
-### Debug Cycle
-
-To "reset" the LittleHorse cluster, you need to delete the data in Kafka and also delete the KafkaStreams RocksDB state. That can be done as follows:
-
-1. Stop all LH Server processes.
-2. Run `./local-dev/refresh.sh`.
-3. Start the LH Servers again.
-
-## Cleanup
-
-You can clean up (i.e. stop Kafka and delete the data from the state directory) as follows:
-
-```
-./local-dev/cleanup.sh
-```
-
-## Release a new version
-
-Install semver command:
-
-```
-npm install
-```
-
-Upgrade to a new version:
-
-```bash
-./local-dev/bump.sh -i <major, minor, patch>
-./local-dev/bump.sh -i prerelease --preid <alpha, beta, rc>
-```
-
-> More information at https://github.com/npm/node-semver
-
-
-## Code analysis
-
-Run sonar:
-
-```
-./local-dev/setup-code-analyzer.sh
-./local-dev/code-analysis.sh
-```
-
-Stop and start:
-
-```
-docker stop sonarqube
-docker start sonarqube
-```
-
-Clean sonar:
-
-```
-./local-dev/clean-code-analyzer.sh
-```
-
-Run dependency check (It could take several minutes):
-
-```
-./local-dev/dependencies-analysis.sh
-```
+- [`server`](server)
+- [`sdk-java`](sdk-java)
+- [`sdk-go`](sdk-go)
+- [`lhctl`](lhctl)
+- [`e2e-tests`](e2e-tests)
+- [`examples`](examples)

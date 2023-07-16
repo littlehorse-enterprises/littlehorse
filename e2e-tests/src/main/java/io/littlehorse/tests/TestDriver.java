@@ -164,7 +164,7 @@ public class TestDriver {
                 .builder("t")
                 .longOpt("threads")
                 .hasArg(true)
-                .desc("number of threads default 8")
+                .desc("number of threads, default 8")
                 .required(false)
                 .build()
         );
