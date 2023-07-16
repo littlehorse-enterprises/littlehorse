@@ -105,7 +105,7 @@ public class LHClient {
     /**
      * Gets a external event
      * @param name External event name
-     * @return A external event definition
+     * @return A external event definition, or null if it does not exist
      * @throws LHApiError If it could not connect to the API
      */
     public ExternalEventDefPb getExternalEventDef(String name) throws LHApiError {
@@ -127,7 +127,7 @@ public class LHClient {
     /**
      * Gets a task definition given the name
      * @param name Name of the task
-     * @return A task definition
+     * @return A task definition, or null if it does not exist
      * @throws LHApiError if it failed contacting to the API
      */
     public TaskDefPb getTaskDef(String name) throws LHApiError {
@@ -146,7 +146,7 @@ public class LHClient {
     /**
      * Gets the workflow specification for a given workflow name
      * @param name Workflow name
-     * @return A workflow specification with the workflow's data and status
+     * @return A workflow specification with the workflow's data and status, or null if the spec does not exist
      * @throws LHApiError if it failed contacting to the API
      */
     public WfSpecPb getWfSpec(String name) throws LHApiError {
@@ -157,7 +157,7 @@ public class LHClient {
      * Gets the workflow specification for a given workflow name and version
      * @param name Workflow name
      * @param version Version of the registered workflow
-     * @return A workflow specification with the workflow's data and status
+     * @return A workflow specification with the workflow's data and status, or null if the spec does not exist
      * @throws LHApiError if it failed contacting to the API
      */
     public WfSpecPb getWfSpec(String name, Integer version) throws LHApiError {
@@ -187,9 +187,9 @@ public class LHClient {
     }
 
     /**
-     * Return a task execution data given an id
+     * Returns a task execution data given an id
      * @param id of the task run
-     * @return The task run that has already been executed
+     * @return The task run that has already been executed, or null is the task does not exist
      * @throws LHApiError if it failed contacting to the API
      */
     public TaskRunPb getTaskRun(TaskRunIdPb id) throws LHApiError {
@@ -202,6 +202,14 @@ public class LHClient {
         return null;
     }
 
+    /**
+     * Returns a node run given a workflow, thread run number and position in the thread run
+     * @param wfRunId workflow run identification
+     * @param threadRunNumber number of the subsequent thread
+     * @param position in the thread
+     * @return null if the NodeRun does not exist, or the NodeRun's data otherwise
+     * @throws LHApiError if it failed contacting to the API
+     */
     public NodeRunPb getNodeRun(String wfRunId, int threadRunNumber, int position)
         throws LHApiError {
         GetNodeRunReplyPb reply = (GetNodeRunReplyPb) doRequest(() -> {
@@ -223,6 +231,14 @@ public class LHClient {
         }
     }
 
+    /**
+     * Returns a passed variable to a thread
+     * @param wfRunId workflow run identification
+     * @param threadRunNumber number of the subsequent thread
+     * @param name of the variable
+     * @return The variable's data if it does exist, or null otherwise
+     * @throws LHApiError if it failed contacting to the API
+     */
     public VariablePb getVariable(String wfRunId, int threadRunNumber, String name)
         throws LHApiError {
         GetVariableReplyPb reply = (GetVariableReplyPb) doRequest(() -> {
@@ -244,6 +260,14 @@ public class LHClient {
         }
     }
 
+    /**
+     * Returns an emitted external event for a specific workflow run
+     * @param wfRunId workflow run identification
+     * @param externalEventName name of the external event
+     * @param guid external event's global unique identifier
+     * @return The external event's data if it does exist, or null otherwise
+     * @throws LHApiError if it failed contacting to the API
+     */
     public ExternalEventPb getExternalEvent(
         String wfRunId,
         String externalEventName,
@@ -268,6 +292,12 @@ public class LHClient {
         }
     }
 
+    /**
+     * Gets a workflow run given an id
+     * @param id of the workflow run
+     * @return A workflow run if it does exist, null otherwise
+     * @throws LHApiError
+     */
     public WfRunPb getWfRun(String id) throws LHApiError {
         GetWfRunReplyPb reply = (GetWfRunReplyPb) doRequest(() -> {
             return getGrpcClient().getWfRun(WfRunIdPb.newBuilder().setId(id).build());
@@ -330,6 +360,16 @@ public class LHClient {
         }
     }
 
+    /**
+     * Makes a request to the server to execute a workflow specification.
+     * Despite the request is synchronous, the execution of the workflow is asynchronous
+     * @param wfSpecName workflow name
+     * @param wfSpecVersion workflow version. This is optional, pass null for the server to decide
+     * @param wfRunId workflow run id. This is optional, pass null for the server to decide
+     * @param args list of variables. This is optional
+     * @return The workflow run identification
+     * @throws LHApiError If there is an error when connecting to the server
+     */
     public String runWf(
         String wfSpecName,
         Integer wfSpecVersion,
@@ -361,10 +401,17 @@ public class LHClient {
         if (response.hasWfRunId()) {
             return response.getWfRunId();
         } else {
-            return null;
+            // to prevent any missed validation
+            throw new LHApiError(response.getMessage(), response.getCode());
         }
     }
 
+    /**
+     * Emits an external event to the server
+     * @param req put external event request
+     * @return An external event when successful
+     * @throws LHApiError If there is an error when connecting to the server
+     */
     public ExternalEventPb putExternalEvent(PutExternalEventPb req)
         throws LHApiError {
         PutExternalEventReplyPb response = (PutExternalEventReplyPb) doRequest(() -> {
@@ -373,15 +420,29 @@ public class LHClient {
         if (response.hasResult()) {
             return response.getResult();
         } else {
-            return null;
+            // to prevent any missed validation
+            throw new LHApiError(response.getMessage(), response.getCode());
         }
     }
 
+    /**
+     * Creates a new external event definition. It throws and error if already exists
+     * @param req put external event definition request
+     * @return The definition's data when successful
+     * @throws LHApiError If there is an error when connecting to the server
+     */
     public ExternalEventDefPb putExternalEventDef(PutExternalEventDefPb req)
         throws LHApiError {
         return putExternalEventDef(req, false);
     }
 
+    /**
+     * Creates a new external event definition
+     * @param req put external event definition request
+     * @param swallowAlreadyExists this flag defines if whether or not to throw an error if it already exist
+     * @return The definition's data when successful
+     * @throws LHApiError If there is an error when connecting to the server
+     */
     public ExternalEventDefPb putExternalEventDef(
         PutExternalEventDefPb req,
         boolean swallowAlreadyExists
@@ -395,14 +456,28 @@ public class LHClient {
         if (response.hasResult()) {
             return response.getResult();
         } else {
-            return null;
+            // to prevent any missed validation
+            throw new LHApiError(response.getMessage(), response.getCode());
         }
     }
 
+    /**
+     * Creates a task definition. It throws and error if already exists
+     * @param req request
+     * @return Task definition's data
+     * @throws LHApiError If there is an error when connecting to the server
+     */
     public TaskDefPb putTaskDef(PutTaskDefPb req) throws LHApiError {
         return putTaskDef(req, false);
     }
 
+    /**
+     * Creates a task definition
+     * @param req request
+     * @param swallowAlreadyExists this flag defines if whether or not to throw an error if it already exist
+     * @return Task definition's data
+     * @throws LHApiError If there is an error when connecting to the server
+     */
     public TaskDefPb putTaskDef(PutTaskDefPb req, boolean swallowAlreadyExists)
         throws LHApiError {
         PutTaskDefReplyPb response = (PutTaskDefReplyPb) doRequest(
@@ -414,33 +489,52 @@ public class LHClient {
         if (response.hasResult()) {
             return response.getResult();
         } else {
-            return null;
+            // to prevent any missed validation
+            throw new LHApiError(response.getMessage(), response.getCode());
         }
     }
 
+    /**
+     * Creates a user task definition. It throws and error if already exists
+     * @param req request
+     * @return User task definition
+     * @throws LHApiError If there is an error when connecting to the server
+     */
+    public UserTaskDefPb putUserTaskDef(PutUserTaskDefPb req) throws LHApiError {
+        return putUserTaskDef(req, false);
+    }
+
+    /**
+     * Creates a user task definition
+     * @param req request
+     * @param swallowAlreadyExists this flag defines if whether or not to throw an error if it already exist
+     * @return User task definition
+     * @throws LHApiError If there is an error when connecting to the server
+     */
     public UserTaskDefPb putUserTaskDef(
         PutUserTaskDefPb req,
         boolean swallowAlreadyExists
     ) throws LHApiError {
-        PutUserTaskDefReplyPb response = (PutUserTaskDefReplyPb) doRequest(() -> {
-            return getGrpcClient().putUserTaskDef(req);
-        });
+        PutUserTaskDefReplyPb response = (PutUserTaskDefReplyPb) doRequest(
+            () -> {
+                return getGrpcClient().putUserTaskDef(req);
+            },
+            swallowAlreadyExists
+        );
         if (response.hasResult()) {
             return response.getResult();
         } else {
-            return null;
+            // to prevent any missed validation
+            throw new LHApiError(response.getMessage(), response.getCode());
         }
     }
 
-    public void deleteUserTaskDef(String userTaskDefName) throws LHApiError {
-        doRequest(() -> {
-            return getGrpcClient()
-                .deleteUserTaskDef(
-                    DeleteUserTaskDefPb.newBuilder().setName(userTaskDefName).build()
-                );
-        });
-    }
-
+    /**
+     * Creates a new workflow specification. Increments the version of the workflow if already exists.
+     * @param req request
+     * @return WfSpec's data
+     * @throws LHApiError If there is an error when connecting to the server
+     */
     public WfSpecPb putWfSpec(PutWfSpecPb req) throws LHApiError {
         PutWfSpecReplyPb response = (PutWfSpecReplyPb) doRequest(() -> {
             return getGrpcClient().putWfSpec(req);
@@ -448,10 +542,17 @@ public class LHClient {
         if (response.hasResult()) {
             return response.getResult();
         } else {
-            return null;
+            // to prevent any missed validation
+            throw new LHApiError(response.getMessage(), response.getCode());
         }
     }
 
+    /**
+     * Halts a thread for a given workflow run. Move the tread to RUNNING to HALTED
+     * @param wfRunId workflow run identification
+     * @param threadRunNumber number of the subsequent thread
+     * @throws LHApiError If there is an error when connecting to the server
+     */
     public void stopWfRun(String wfRunId, int threadRunNumber) throws LHApiError {
         doRequest(() -> {
             return getGrpcClient()
@@ -465,6 +566,12 @@ public class LHClient {
         });
     }
 
+    /**
+     * Resume a thread execution. Move the thread form HALTED to RUNNING
+     * @param wfRunId workflow run identification
+     * @param threadRunNumber number of the subsequent thread
+     * @throws LHApiError If there is an error when connecting to the server
+     */
     public void resumeWfRun(String wfRunId, int threadRunNumber) throws LHApiError {
         doRequest(() -> {
             return getGrpcClient()
@@ -478,6 +585,25 @@ public class LHClient {
         });
     }
 
+    /**
+     * Deletes a user task definition given a name
+     * @param userTaskDefName name of the task to be deleted
+     * @throws LHApiError If there is an error when connecting to the server
+     */
+    public void deleteUserTaskDef(String userTaskDefName) throws LHApiError {
+        doRequest(() -> {
+            return getGrpcClient()
+                .deleteUserTaskDef(
+                    DeleteUserTaskDefPb.newBuilder().setName(userTaskDefName).build()
+                );
+        });
+    }
+
+    /**
+     * Deletes a workflow run given its id
+     * @param wfRunId id of the workflow run to be deleted
+     * @throws LHApiError If there is an error when connecting to the server
+     */
     public void deleteWfRun(String wfRunId) throws LHApiError {
         doRequest(() -> {
             return getGrpcClient()
@@ -485,6 +611,11 @@ public class LHClient {
         });
     }
 
+    /**
+     * Deletes a task definition given its name
+     * @param name of the task definition to be deleted
+     * @throws LHApiError If there is an error when connecting to the server
+     */
     public void deleteTaskDef(String name) throws LHApiError {
         doRequest(() -> {
             return getGrpcClient()
@@ -492,6 +623,11 @@ public class LHClient {
         });
     }
 
+    /**
+     * Delete san external event definition given its name
+     * @param name of the external event definition to be deleted
+     * @throws LHApiError If there is an error when connecting to the server
+     */
     public void deleteExternalEventDef(String name) throws LHApiError {
         doRequest(() -> {
             return getGrpcClient()
@@ -501,6 +637,12 @@ public class LHClient {
         });
     }
 
+    /**
+     * Deletes a workflow specification given its name and version
+     * @param name of the specification
+     * @param version of the specification
+     * @throws LHApiError If there is an error when connecting to the server
+     */
     public void deleteWfSpec(String name, int version) throws LHApiError {
         doRequest(() -> {
             return getGrpcClient()
