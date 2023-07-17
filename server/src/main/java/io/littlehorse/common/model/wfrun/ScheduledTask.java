@@ -5,7 +5,6 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
 import io.littlehorse.common.model.objectId.TaskDefId;
 import io.littlehorse.common.model.objectId.TaskRunId;
-import io.littlehorse.common.model.wfrun.subnoderun.UserTaskRun;
 import io.littlehorse.common.model.wfrun.taskrun.TaskRunSource;
 import io.littlehorse.common.model.wfrun.taskrun.UserTaskTriggerReference;
 import io.littlehorse.common.util.LHUtil;

@@ -1141,7 +1141,9 @@ public class BackendInternalComms implements Closeable {
     private InternalScanReplyPb localAllPartitionTagScan(InternalScan req) {
         log.debug("Local Tag prefix scan");
         if (req.partitionKey != null) {
-            throw new RuntimeException("Not possible you nincompoop");
+            throw new IllegalArgumentException(
+                "called localAllPartitionTagScan with partitionKey"
+            );
         }
 
         int curLimit = req.limit;

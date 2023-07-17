@@ -233,6 +233,7 @@ enum GetableClassEnumPb {
     TASK_WORKER_GROUP = 9;
     USER_TASK_DEF = 10;
     TASK_RUN = 11;
+    USER_TASK_RUN = 12;
 }
 
 message AttributePb {

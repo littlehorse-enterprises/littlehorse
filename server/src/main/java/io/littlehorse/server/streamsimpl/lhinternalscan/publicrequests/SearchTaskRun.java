@@ -104,38 +104,51 @@ public class SearchTaskRun
             out.type = ScanBoundaryCase.TAG_SCAN;
 
             // partiiton key should be null, since it's a LOCAL search.
-            out.setTagScan(
-                TagScanPb
-                    .newBuilder()
-                    .addAttributes(
-                        AttributePb
-                            .newBuilder()
-                            .setKey("taskDefName")
-                            .setVal(taskDef.getTaskDefName())
-                    )
-                    .build()
-            );
+            TagScanPb.Builder scanBuilder = TagScanPb
+                .newBuilder()
+                .addAttributes(
+                    AttributePb
+                        .newBuilder()
+                        .setKey("taskDefName")
+                        .setVal(taskDef.getTaskDefName())
+                );
+
+            if (taskDef.hasEarliestStart()) {
+                scanBuilder.setEarliestCreateTime(taskDef.getEarliestStart());
+            }
+            if (taskDef.hasLatestStart()) {
+                scanBuilder.setLatestCreateTime(taskDef.getLatestStart());
+            }
+            out.setTagScan(scanBuilder.build());
         } else if (type == TaskRunCriteriaCase.STATUS_AND_TASK_DEF) {
             out.storeName = ServerTopology.CORE_STORE;
             out.type = ScanBoundaryCase.TAG_SCAN;
 
-            out.setTagScan(
-                TagScanPb
-                    .newBuilder()
-                    .addAttributes(
-                        AttributePb
-                            .newBuilder()
-                            .setKey("taskDefName")
-                            .setVal(statusAndTaskDef.getTaskDefName())
-                    )
-                    .addAttributes(
-                        AttributePb
-                            .newBuilder()
-                            .setKey("status")
-                            .setVal(statusAndTaskDef.getStatus().toString())
-                    )
-                    .build()
-            );
+            TagScanPb.Builder scanBuilder = TagScanPb
+                .newBuilder()
+                .addAttributes(
+                    AttributePb
+                        .newBuilder()
+                        .setKey("taskDefName")
+                        .setVal(statusAndTaskDef.getTaskDefName())
+                )
+                .addAttributes(
+                    AttributePb
+                        .newBuilder()
+                        .setKey("status")
+                        .setVal(statusAndTaskDef.getStatus().toString())
+                );
+
+            if (statusAndTaskDef.hasEarliestStart()) {
+                scanBuilder.setEarliestCreateTime(
+                    statusAndTaskDef.getEarliestStart()
+                );
+            }
+            if (statusAndTaskDef.hasLatestStart()) {
+                scanBuilder.setLatestCreateTime(statusAndTaskDef.getLatestStart());
+            }
+
+            out.setTagScan(scanBuilder.build());
         } else {
             throw new LHValidationError(
                 null,

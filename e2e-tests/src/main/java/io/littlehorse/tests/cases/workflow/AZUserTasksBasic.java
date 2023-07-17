@@ -7,11 +7,9 @@ import io.littlehorse.sdk.common.exception.LHApiError;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunPb;
 import io.littlehorse.sdk.common.proto.LHStatusPb;
-import io.littlehorse.sdk.common.proto.NodeRunIdPb;
 import io.littlehorse.sdk.common.proto.NodeRunPb;
-import io.littlehorse.sdk.common.proto.SearchNodeRunPb;
-import io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb;
-import io.littlehorse.sdk.common.proto.SearchNodeRunReplyPb;
+import io.littlehorse.sdk.common.proto.SearchUserTaskRunPb;
+import io.littlehorse.sdk.common.proto.SearchUserTaskRunReplyPb;
 import io.littlehorse.sdk.common.proto.TaskRunIdPb;
 import io.littlehorse.sdk.common.proto.TaskRunPb;
 import io.littlehorse.sdk.common.proto.TaskStatusPb;
@@ -19,6 +17,7 @@ import io.littlehorse.sdk.common.proto.UserTaskEventPb;
 import io.littlehorse.sdk.common.proto.UserTaskEventPb.EventCase;
 import io.littlehorse.sdk.common.proto.UserTaskFieldResultPb;
 import io.littlehorse.sdk.common.proto.UserTaskResultPb;
+import io.littlehorse.sdk.common.proto.UserTaskRunIdPb;
 import io.littlehorse.sdk.common.proto.UserTaskRunPb;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatusPb;
 import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
@@ -92,7 +91,10 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
 
         // Get the UserTaskRun, ensure that there is an event with a taskRunId
         NodeRunPb firstUserTask = getNodeRun(client, wfRunId, 0, 1);
-        UserTaskRunPb utr = firstUserTask.getUserTask();
+        UserTaskRunPb utr = getUserTaskRun(
+            client,
+            firstUserTask.getUserTask().getUserTaskRunId()
+        );
 
         if (utr.getEventsCount() < 2) {
             throw new LogicTestFailure(
@@ -121,24 +123,20 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
         }
 
         // Look for UserTaskRun's with `eduwer` as the user
-        SearchNodeRunReplyPb results = client
+        SearchUserTaskRunReplyPb results = client
             .getGrpcClient()
-            .searchNodeRun(
-                SearchNodeRunPb
+            .searchUserTaskRun(
+                SearchUserTaskRunPb
                     .newBuilder()
-                    .setUserTaskRun(
-                        UserTaskRunSearchPb
-                            .newBuilder()
-                            .setUserId("eduwer")
-                            .setUserTaskDef(USER_TASK_DEF_NAME)
-                            .setStatus(UserTaskRunStatusPb.CLAIMED)
-                    )
+                    .setUserId("eduwer")
+                    .setUserTaskDefName(USER_TASK_DEF_NAME)
+                    .setStatus(UserTaskRunStatusPb.CLAIMED)
                     .build()
             );
 
-        NodeRunIdPb found = null;
+        UserTaskRunIdPb found = null;
 
-        for (NodeRunIdPb candidate : results.getResultsList()) {
+        for (UserTaskRunIdPb candidate : results.getResultsList()) {
             if (candidate.getWfRunId().equals(wfRunId)) {
                 found = candidate;
                 break;
@@ -156,9 +154,7 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
                 .completeUserTaskRun(
                     CompleteUserTaskRunPb
                         .newBuilder()
-                        .setWfRunId(wfRunId)
-                        .setNodeRunPosition(1)
-                        .setThreadRunNumber(0)
+                        .setUserTaskRunId(found)
                         .setResult(
                             UserTaskResultPb
                                 .newBuilder()

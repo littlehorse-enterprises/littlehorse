@@ -47,7 +47,6 @@ public class GetableStorageManager {
         tagStorageManager.store(
             tags,
             getable.getStoreKey(),
-            // SAUL_EDUWER_TODO: Why is this "unchecked" warning?
             (Class<? extends Getable<?>>) getable.getClass()
         );
     }
@@ -71,6 +70,7 @@ public class GetableStorageManager {
             return;
         }
         localStore.delete(getable);
+
         TagsCache tagsCache = localStore.getTagsCache(
             getable.getStoreKey(),
             (Class<? extends Getable<?>>) getable.getClass()

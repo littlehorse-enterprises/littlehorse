@@ -7,14 +7,17 @@ import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.meta.subnode.TaskNode;
 import io.littlehorse.common.model.objectId.TaskRunId;
+import io.littlehorse.common.model.objectId.UserTaskDefId;
+import io.littlehorse.common.model.objectId.UserTaskRunId;
 import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.NodeRun;
+import io.littlehorse.common.model.wfrun.UserTaskRun;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.model.wfrun.subnoderun.TaskNodeRun;
-import io.littlehorse.common.model.wfrun.subnoderun.UserTaskRun;
+import io.littlehorse.common.model.wfrun.subnoderun.UserTaskNodeRun;
 import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.proto.TagStorageTypePb;
@@ -64,13 +67,21 @@ public class TestUtil {
         nodeRun.setThreadSpecName("test-thread");
         nodeRun.setNodeName("test-node-name");
         nodeRun.setTaskRun(taskNodeRun());
-        nodeRun.setUserTaskRun(userTaskRun());
+        nodeRun.setUserTaskRun(userTaskNodeRun(nodeRun.getWfRunId()));
         return nodeRun;
     }
 
-    public static UserTaskRun userTaskRun() {
+    public static UserTaskNodeRun userTaskNodeRun(String wfRunId) {
+        UserTaskRun utr = userTaskRun(wfRunId);
+        UserTaskNodeRun out = new UserTaskNodeRun();
+        out.setUserTaskRunId(utr.getObjectId());
+        return out;
+    }
+
+    public static UserTaskRun userTaskRun(String wfRunId) {
         UserTaskRun userTaskRun = new UserTaskRun();
-        userTaskRun.setUserTaskDefName("ut-name");
+        userTaskRun.setId(new UserTaskRunId(wfRunId, "fdsa"));
+        userTaskRun.setUserTaskDefId(new UserTaskDefId("ut-name", 0));
         userTaskRun.setStatus(UserTaskRunStatusPb.CLAIMED);
         userTaskRun.setAssignedToType(UserTaskRunPb.AssignedToCase.USER_GROUP);
         userTaskRun.setUserId("33333");

@@ -646,7 +646,7 @@ private static final long serialVersionUID = 0L;
 
   public static final int USER_TASK_FIELD_NUMBER = 24;
   /**
-   * <code>.littlehorse.UserTaskRunPb user_task = 24;</code>
+   * <code>.littlehorse.UserTaskNodeRunPb user_task = 24;</code>
    * @return Whether the userTask field is set.
    */
   @java.lang.Override
@@ -654,25 +654,25 @@ private static final long serialVersionUID = 0L;
     return nodeTypeCase_ == 24;
   }
   /**
-   * <code>.littlehorse.UserTaskRunPb user_task = 24;</code>
+   * <code>.littlehorse.UserTaskNodeRunPb user_task = 24;</code>
    * @return The userTask.
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserTaskRunPb getUserTask() {
+  public io.littlehorse.sdk.common.proto.UserTaskNodeRunPb getUserTask() {
     if (nodeTypeCase_ == 24) {
-       return (io.littlehorse.sdk.common.proto.UserTaskRunPb) nodeType_;
+       return (io.littlehorse.sdk.common.proto.UserTaskNodeRunPb) nodeType_;
     }
-    return io.littlehorse.sdk.common.proto.UserTaskRunPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.UserTaskNodeRunPb.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.UserTaskRunPb user_task = 24;</code>
+   * <code>.littlehorse.UserTaskNodeRunPb user_task = 24;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserTaskRunPbOrBuilder getUserTaskOrBuilder() {
+  public io.littlehorse.sdk.common.proto.UserTaskNodeRunPbOrBuilder getUserTaskOrBuilder() {
     if (nodeTypeCase_ == 24) {
-       return (io.littlehorse.sdk.common.proto.UserTaskRunPb) nodeType_;
+       return (io.littlehorse.sdk.common.proto.UserTaskNodeRunPb) nodeType_;
     }
-    return io.littlehorse.sdk.common.proto.UserTaskRunPb.getDefaultInstance();
+    return io.littlehorse.sdk.common.proto.UserTaskNodeRunPb.getDefaultInstance();
   }
 
   public static final int FAILURE_HANDLER_IDS_FIELD_NUMBER = 23;
@@ -781,7 +781,7 @@ private static final long serialVersionUID = 0L;
       output.writeInt32NoTag(failureHandlerIds_.getInt(i));
     }
     if (nodeTypeCase_ == 24) {
-      output.writeMessage(24, (io.littlehorse.sdk.common.proto.UserTaskRunPb) nodeType_);
+      output.writeMessage(24, (io.littlehorse.sdk.common.proto.UserTaskNodeRunPb) nodeType_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -876,7 +876,7 @@ private static final long serialVersionUID = 0L;
     }
     if (nodeTypeCase_ == 24) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(24, (io.littlehorse.sdk.common.proto.UserTaskRunPb) nodeType_);
+        .computeMessageSize(24, (io.littlehorse.sdk.common.proto.UserTaskNodeRunPb) nodeType_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -3731,9 +3731,9 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UserTaskRunPb, io.littlehorse.sdk.common.proto.UserTaskRunPb.Builder, io.littlehorse.sdk.common.proto.UserTaskRunPbOrBuilder> userTaskBuilder_;
+        io.littlehorse.sdk.common.proto.UserTaskNodeRunPb, io.littlehorse.sdk.common.proto.UserTaskNodeRunPb.Builder, io.littlehorse.sdk.common.proto.UserTaskNodeRunPbOrBuilder> userTaskBuilder_;
     /**
-     * <code>.littlehorse.UserTaskRunPb user_task = 24;</code>
+     * <code>.littlehorse.UserTaskNodeRunPb user_task = 24;</code>
      * @return Whether the userTask field is set.
      */
     @java.lang.Override
@@ -3741,27 +3741,27 @@ private static final long serialVersionUID = 0L;
       return nodeTypeCase_ == 24;
     }
     /**
-     * <code>.littlehorse.UserTaskRunPb user_task = 24;</code>
+     * <code>.littlehorse.UserTaskNodeRunPb user_task = 24;</code>
      * @return The userTask.
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserTaskRunPb getUserTask() {
+    public io.littlehorse.sdk.common.proto.UserTaskNodeRunPb getUserTask() {
       if (userTaskBuilder_ == null) {
         if (nodeTypeCase_ == 24) {
-          return (io.littlehorse.sdk.common.proto.UserTaskRunPb) nodeType_;
+          return (io.littlehorse.sdk.common.proto.UserTaskNodeRunPb) nodeType_;
         }
-        return io.littlehorse.sdk.common.proto.UserTaskRunPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UserTaskNodeRunPb.getDefaultInstance();
       } else {
         if (nodeTypeCase_ == 24) {
           return userTaskBuilder_.getMessage();
         }
-        return io.littlehorse.sdk.common.proto.UserTaskRunPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UserTaskNodeRunPb.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.UserTaskRunPb user_task = 24;</code>
+     * <code>.littlehorse.UserTaskNodeRunPb user_task = 24;</code>
      */
-    public Builder setUserTask(io.littlehorse.sdk.common.proto.UserTaskRunPb value) {
+    public Builder setUserTask(io.littlehorse.sdk.common.proto.UserTaskNodeRunPb value) {
       if (userTaskBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -3775,10 +3775,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UserTaskRunPb user_task = 24;</code>
+     * <code>.littlehorse.UserTaskNodeRunPb user_task = 24;</code>
      */
     public Builder setUserTask(
-        io.littlehorse.sdk.common.proto.UserTaskRunPb.Builder builderForValue) {
+        io.littlehorse.sdk.common.proto.UserTaskNodeRunPb.Builder builderForValue) {
       if (userTaskBuilder_ == null) {
         nodeType_ = builderForValue.build();
         onChanged();
@@ -3789,13 +3789,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UserTaskRunPb user_task = 24;</code>
+     * <code>.littlehorse.UserTaskNodeRunPb user_task = 24;</code>
      */
-    public Builder mergeUserTask(io.littlehorse.sdk.common.proto.UserTaskRunPb value) {
+    public Builder mergeUserTask(io.littlehorse.sdk.common.proto.UserTaskNodeRunPb value) {
       if (userTaskBuilder_ == null) {
         if (nodeTypeCase_ == 24 &&
-            nodeType_ != io.littlehorse.sdk.common.proto.UserTaskRunPb.getDefaultInstance()) {
-          nodeType_ = io.littlehorse.sdk.common.proto.UserTaskRunPb.newBuilder((io.littlehorse.sdk.common.proto.UserTaskRunPb) nodeType_)
+            nodeType_ != io.littlehorse.sdk.common.proto.UserTaskNodeRunPb.getDefaultInstance()) {
+          nodeType_ = io.littlehorse.sdk.common.proto.UserTaskNodeRunPb.newBuilder((io.littlehorse.sdk.common.proto.UserTaskNodeRunPb) nodeType_)
               .mergeFrom(value).buildPartial();
         } else {
           nodeType_ = value;
@@ -3812,7 +3812,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UserTaskRunPb user_task = 24;</code>
+     * <code>.littlehorse.UserTaskNodeRunPb user_task = 24;</code>
      */
     public Builder clearUserTask() {
       if (userTaskBuilder_ == null) {
@@ -3831,38 +3831,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.UserTaskRunPb user_task = 24;</code>
+     * <code>.littlehorse.UserTaskNodeRunPb user_task = 24;</code>
      */
-    public io.littlehorse.sdk.common.proto.UserTaskRunPb.Builder getUserTaskBuilder() {
+    public io.littlehorse.sdk.common.proto.UserTaskNodeRunPb.Builder getUserTaskBuilder() {
       return getUserTaskFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.UserTaskRunPb user_task = 24;</code>
+     * <code>.littlehorse.UserTaskNodeRunPb user_task = 24;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.UserTaskRunPbOrBuilder getUserTaskOrBuilder() {
+    public io.littlehorse.sdk.common.proto.UserTaskNodeRunPbOrBuilder getUserTaskOrBuilder() {
       if ((nodeTypeCase_ == 24) && (userTaskBuilder_ != null)) {
         return userTaskBuilder_.getMessageOrBuilder();
       } else {
         if (nodeTypeCase_ == 24) {
-          return (io.littlehorse.sdk.common.proto.UserTaskRunPb) nodeType_;
+          return (io.littlehorse.sdk.common.proto.UserTaskNodeRunPb) nodeType_;
         }
-        return io.littlehorse.sdk.common.proto.UserTaskRunPb.getDefaultInstance();
+        return io.littlehorse.sdk.common.proto.UserTaskNodeRunPb.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.UserTaskRunPb user_task = 24;</code>
+     * <code>.littlehorse.UserTaskNodeRunPb user_task = 24;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UserTaskRunPb, io.littlehorse.sdk.common.proto.UserTaskRunPb.Builder, io.littlehorse.sdk.common.proto.UserTaskRunPbOrBuilder> 
+        io.littlehorse.sdk.common.proto.UserTaskNodeRunPb, io.littlehorse.sdk.common.proto.UserTaskNodeRunPb.Builder, io.littlehorse.sdk.common.proto.UserTaskNodeRunPbOrBuilder> 
         getUserTaskFieldBuilder() {
       if (userTaskBuilder_ == null) {
         if (!(nodeTypeCase_ == 24)) {
-          nodeType_ = io.littlehorse.sdk.common.proto.UserTaskRunPb.getDefaultInstance();
+          nodeType_ = io.littlehorse.sdk.common.proto.UserTaskNodeRunPb.getDefaultInstance();
         }
         userTaskBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.UserTaskRunPb, io.littlehorse.sdk.common.proto.UserTaskRunPb.Builder, io.littlehorse.sdk.common.proto.UserTaskRunPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.UserTaskRunPb) nodeType_,
+            io.littlehorse.sdk.common.proto.UserTaskNodeRunPb, io.littlehorse.sdk.common.proto.UserTaskNodeRunPb.Builder, io.littlehorse.sdk.common.proto.UserTaskNodeRunPbOrBuilder>(
+                (io.littlehorse.sdk.common.proto.UserTaskNodeRunPb) nodeType_,
                 getParentForChildren(),
                 isClean());
         nodeType_ = null;

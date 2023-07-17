@@ -7,7 +7,6 @@ import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHBadRequestError;
 import io.littlehorse.common.exceptions.LHConnectionError;
 import io.littlehorse.common.model.Getable;
-import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
 import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.subcommandresponse.DeleteObjectReply;
@@ -22,6 +21,7 @@ import io.littlehorse.common.model.objectId.NodeRunId;
 import io.littlehorse.common.model.objectId.TaskDefId;
 import io.littlehorse.common.model.objectId.TaskRunId;
 import io.littlehorse.common.model.objectId.UserTaskDefId;
+import io.littlehorse.common.model.objectId.UserTaskRunId;
 import io.littlehorse.common.model.objectId.VariableId;
 import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
@@ -29,12 +29,12 @@ import io.littlehorse.common.model.wfrun.Failure;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.ScheduledTask;
+import io.littlehorse.common.model.wfrun.UserTaskRun;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.sdk.common.proto.HostInfoPb;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
 import io.littlehorse.sdk.common.proto.MetricsWindowLengthPb;
@@ -46,8 +46,6 @@ import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repar
 import io.littlehorse.server.streamsimpl.storeinternals.GetableStorageManager;
 import io.littlehorse.server.streamsimpl.storeinternals.LHROStoreWrapper;
 import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
-import io.littlehorse.server.streamsimpl.storeinternals.index.DiscreteTagLocalCounter;
-import io.littlehorse.server.streamsimpl.storeinternals.index.TagChangesToBroadcast;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.LHIterKeyValue;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.LHKeyValueIterator;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
@@ -75,19 +73,17 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     private Map<String, WfSpec> wfSpecPuts;
     private Map<String, TaskDef> taskDefPuts;
     private Map<String, TaskRun> taskRunPuts;
+    private Map<String, UserTaskRun> userTaskRunPuts;
     private Map<String, UserTaskDef> userTaskDefPuts;
     private Map<String, ExternalEventDef> extEvtDefPuts;
     private Map<String, ScheduledTask> scheduledTaskPuts;
     private Map<String, TaskWorkerGroup> taskWorkerGroupPuts;
     private List<LHTimer> timersToSchedule;
     private Command command;
-    private int partition;
     private KafkaStreamsServerImpl server;
     private Map<String, TaskMetricUpdate> taskMetricPuts;
     private Map<String, WfMetricUpdate> wfMetricPuts;
     private Set<Host> currentHosts;
-
-    private static final String OUTGOING_CHANGELOG_KEY = "OUTGOING_CHANGELOG";
 
     /*
      * Certain metadata objects (eg. WfSpec, TaskDef, ExternalEventDef) are "global"
@@ -145,6 +141,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         wfMetricPuts = new HashMap<>();
         taskWorkerGroupPuts = new HashMap<>();
         taskRunPuts = new HashMap<>();
+        userTaskRunPuts = new HashMap<>();
 
         // TODO: Here is where we want to eventually add some cacheing for GET to
         // the WfSpec and TaskDef etc.
@@ -162,8 +159,6 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         globalStore = new LHROStoreWrapper(rawGlobalStore, config);
 
         getableStorageManager = new GetableStorageManager(localStore, config, ctx);
-
-        partition = ctx.taskId().partition();
 
         scheduledTaskPuts = new HashMap<>();
         timersToSchedule = new ArrayList<>();
@@ -204,6 +199,25 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         TaskRun out = localStore.get(key, TaskRun.class);
         if (out != null) {
             taskRunPuts.put(key, out);
+            out.setDao(this);
+        }
+        return out;
+    }
+
+    @Override
+    public void putUserTaskRun(UserTaskRun utr) {
+        userTaskRunPuts.put(utr.getStoreKey(), utr);
+    }
+
+    @Override
+    public UserTaskRun getUserTaskRun(UserTaskRunId userTaskRunId) {
+        String key = userTaskRunId.getStoreKey();
+        if (userTaskRunPuts.containsKey(key)) {
+            return userTaskRunPuts.get(key);
+        }
+        UserTaskRun out = localStore.get(key, UserTaskRun.class);
+        if (out != null) {
+            userTaskRunPuts.put(key, out);
             out.setDao(this);
         }
         return out;
@@ -643,6 +657,30 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         }
 
         try (
+            LHKeyValueIterator<UserTaskRun> iter = localStore.prefixScan(
+                prefix,
+                UserTaskRun.class
+            )
+        ) {
+            while (iter.hasNext()) {
+                LHIterKeyValue<UserTaskRun> next = iter.next();
+                getableStorageManager.delete(next.getKey(), UserTaskRun.class);
+            }
+        }
+
+        try (
+            LHKeyValueIterator<TaskRun> iter = localStore.prefixScan(
+                prefix,
+                TaskRun.class
+            )
+        ) {
+            while (iter.hasNext()) {
+                LHIterKeyValue<TaskRun> next = iter.next();
+                getableStorageManager.delete(next.getKey(), TaskRun.class);
+            }
+        }
+
+        try (
             LHKeyValueIterator<ExternalEvent> iter = localStore.prefixScan(
                 prefix,
                 ExternalEvent.class
@@ -679,32 +717,6 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         }
     }
 
-    public void broadcastTagCounts(long time) {
-        TagChangesToBroadcast changes = getTagChangesToBroadcast();
-
-        for (Map.Entry<String, DiscreteTagLocalCounter> e : changes.changelog.entrySet()) {
-            DiscreteTagLocalCounter c = e.getValue();
-            String key = StoreUtils.getFullStoreKey(c);
-            CommandProcessorOutput output = new CommandProcessorOutput();
-            output.partitionKey = key;
-            output.topic = config.getGlobalMetadataCLTopicName();
-
-            if (c.localCount > 0) {
-                output.payload = e.getValue();
-            } else {
-                // tombstone
-                output.payload = null;
-            }
-
-            ctx.forward(new Record<>(key, output, time));
-        }
-
-        // reset the changes; next time tags are put, they will be updated.
-        if (!changes.changelog.isEmpty()) {
-            localStore.deleteRaw(OUTGOING_CHANGELOG_KEY);
-        }
-    }
-
     private void flush() {
         for (Map.Entry<String, NodeRun> e : nodeRunPuts.entrySet()) {
             saveOrDeleteGETableFlush(e.getKey(), e.getValue(), NodeRun.class);
@@ -717,6 +729,9 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         }
         for (Map.Entry<String, TaskRun> e : taskRunPuts.entrySet()) {
             saveOrDeleteGETableFlush(e.getKey(), e.getValue(), TaskRun.class);
+        }
+        for (Map.Entry<String, UserTaskRun> e : userTaskRunPuts.entrySet()) {
+            saveOrDeleteGETableFlush(e.getKey(), e.getValue(), UserTaskRun.class);
         }
         // Turns out that we have to save the WfRun's before we save the Variable.
         for (Map.Entry<String, Variable> e : variablePuts.entrySet()) {
@@ -949,27 +964,6 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
             getableStorageManager.store(val);
         } else {
             getableStorageManager.delete(key, cls);
-        }
-    }
-
-    private TagChangesToBroadcast getTagChangesToBroadcast() {
-        Bytes b = localStore.getRaw(OUTGOING_CHANGELOG_KEY);
-        if (b == null) {
-            TagChangesToBroadcast out = new TagChangesToBroadcast();
-            out.partition = this.partition;
-            return out;
-        }
-        try {
-            TagChangesToBroadcast out = LHSerializable.fromBytes(
-                b.get(),
-                TagChangesToBroadcast.class,
-                config
-            );
-            out.partition = this.partition;
-            return out;
-        } catch (LHSerdeError exn) {
-            // Not Possible unless bug in LittleHorse
-            throw new RuntimeException(exn);
         }
     }
 

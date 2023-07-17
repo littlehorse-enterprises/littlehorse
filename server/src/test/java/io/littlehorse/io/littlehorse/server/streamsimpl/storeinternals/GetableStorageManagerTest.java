@@ -615,13 +615,6 @@ public class GetableStorageManagerTest {
 
     private static Stream<Arguments> provideNodeRunObjects() {
         NodeRun nodeRun = TestUtil.nodeRun();
-        String userTaskDefName =
-            "__userTaskDefName_%s".formatted(
-                    nodeRun.getUserTaskRun().getUserTaskDefName()
-                );
-        String userId = "__userId_%s".formatted(nodeRun.getUserTaskRun().getUserId());
-        String userGroupId =
-            "__userGroupId_%s".formatted(nodeRun.getUserTaskRun().getUserGroup());
         return Stream.of(
             Arguments.of(
                 nodeRun,
@@ -632,40 +625,6 @@ public class GetableStorageManagerTest {
                     )
                 ),
                 NodeRunPb.NodeTypeCase.TASK
-            ),
-            Arguments.of(
-                nodeRun,
-                List.of(
-                    Pair.of(
-                        "NODE_RUN/__status_RUNNING__type_USER_TASK",
-                        TagStorageTypePb.LOCAL
-                    ),
-                    Pair.of("NODE_RUN/__status_RUNNING", TagStorageTypePb.LOCAL),
-                    Pair.of(
-                        "NODE_RUN/__status_RUNNING" + userTaskDefName,
-                        TagStorageTypePb.LOCAL
-                    ),
-                    Pair.of("NODE_RUN/" + userTaskDefName, TagStorageTypePb.LOCAL),
-                    Pair.of("NODE_RUN/" + userId, TagStorageTypePb.REMOTE),
-                    Pair.of(
-                        "NODE_RUN/__status_RUNNING" + userTaskDefName + userId,
-                        TagStorageTypePb.REMOTE
-                    ),
-                    Pair.of(
-                        "NODE_RUN/__status_RUNNING" + userId,
-                        TagStorageTypePb.REMOTE
-                    ),
-                    Pair.of(
-                        "NODE_RUN/__status_RUNNING" + userGroupId,
-                        TagStorageTypePb.REMOTE
-                    ),
-                    Pair.of("NODE_RUN/" + userGroupId, TagStorageTypePb.REMOTE),
-                    Pair.of(
-                        "NODE_RUN/__status_RUNNING" + userTaskDefName + userGroupId,
-                        TagStorageTypePb.REMOTE
-                    )
-                ),
-                NodeRunPb.NodeTypeCase.USER_TASK
             )
         );
     }

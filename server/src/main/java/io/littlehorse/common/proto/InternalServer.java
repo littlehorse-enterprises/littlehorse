@@ -423,31 +423,31 @@ public final class InternalServer {
       "standby_tasks\030\002 \003(\0132\037.littlehorse.StandB" +
       "yTaskStatePb*7\n\022StoreQueryStatusPb\022\n\n\006RS" +
       "Q_OK\020\000\022\025\n\021RSQ_NOT_AVAILABLE\020\002*-\n\020ScanRes" +
-      "ultTypePb\022\r\n\tOBJECT_ID\020\000\022\n\n\006OBJECT\020\001*\346\001\n" +
+      "ultTypePb\022\r\n\tOBJECT_ID\020\000\022\n\n\006OBJECT\020\001*\371\001\n" +
       "\022GetableClassEnumPb\022\014\n\010TASK_DEF\020\000\022\026\n\022EXT" +
       "ERNAL_EVENT_DEF\020\001\022\013\n\007WF_SPEC\020\002\022\n\n\006WF_RUN" +
       "\020\003\022\014\n\010NODE_RUN\020\004\022\014\n\010VARIABLE\020\005\022\022\n\016EXTERN" +
       "AL_EVENT\020\006\022\024\n\020TASK_DEF_METRICS\020\007\022\023\n\017WF_S" +
       "PEC_METRICS\020\010\022\025\n\021TASK_WORKER_GROUP\020\t\022\021\n\r" +
-      "USER_TASK_DEF\020\n\022\014\n\010TASK_RUN\020\013*)\n\020TagStor" +
-      "ageTypePb\022\t\n\005LOCAL\020\000\022\n\n\006REMOTE\020\001*,\n\016Serv" +
-      "erStatusPb\022\013\n\007HOST_UP\020\000\022\r\n\tHOST_DOWN\020\0012\300" +
-      "\004\n\013LHInternals\022^\n\021CentralStoreQuery\022 .li" +
-      "ttlehorse.CentralStoreQueryPb\032%.littleho" +
-      "rse.CentralStoreQueryReplyPb\"\000\022O\n\014Intern" +
-      "alScan\022\033.littlehorse.InternalScanPb\032 .li" +
-      "ttlehorse.InternalScanReplyPb\"\000\022U\n\016waitF" +
-      "orCommand\022\035.littlehorse.WaitForCommandPb" +
-      "\032\".littlehorse.WaitForCommandReplyPb\"\000\022q" +
-      "\n\022GetAdvertisedHosts\022).littlehorse.Inter" +
-      "nalGetAdvertisedHostsPb\032..littlehorse.In" +
-      "ternalGetAdvertisedHostsReplyPb\"\000\022k\n\026Top" +
-      "ologyInstancesState\022$.littlehorse.Topolo" +
-      "gyInstanceStatePb\032).littlehorse.Topology" +
-      "InstanceStateReplyPb\"\000\022I\n\nLocalTasks\022\031.l" +
-      "ittlehorse.LocalTasksPb\032\036.littlehorse.Lo" +
-      "calTasksReplyPb\"\000B\037\n\033io.littlehorse.comm" +
-      "on.protoP\001b\006proto3"
+      "USER_TASK_DEF\020\n\022\014\n\010TASK_RUN\020\013\022\021\n\rUSER_TA" +
+      "SK_RUN\020\014*)\n\020TagStorageTypePb\022\t\n\005LOCAL\020\000\022" +
+      "\n\n\006REMOTE\020\001*,\n\016ServerStatusPb\022\013\n\007HOST_UP" +
+      "\020\000\022\r\n\tHOST_DOWN\020\0012\300\004\n\013LHInternals\022^\n\021Cen" +
+      "tralStoreQuery\022 .littlehorse.CentralStor" +
+      "eQueryPb\032%.littlehorse.CentralStoreQuery" +
+      "ReplyPb\"\000\022O\n\014InternalScan\022\033.littlehorse." +
+      "InternalScanPb\032 .littlehorse.InternalSca" +
+      "nReplyPb\"\000\022U\n\016waitForCommand\022\035.littlehor" +
+      "se.WaitForCommandPb\032\".littlehorse.WaitFo" +
+      "rCommandReplyPb\"\000\022q\n\022GetAdvertisedHosts\022" +
+      ").littlehorse.InternalGetAdvertisedHosts" +
+      "Pb\032..littlehorse.InternalGetAdvertisedHo" +
+      "stsReplyPb\"\000\022k\n\026TopologyInstancesState\022$" +
+      ".littlehorse.TopologyInstanceStatePb\032).l" +
+      "ittlehorse.TopologyInstanceStateReplyPb\"" +
+      "\000\022I\n\nLocalTasks\022\031.littlehorse.LocalTasks" +
+      "Pb\032\036.littlehorse.LocalTasksReplyPb\"\000B\037\n\033" +
+      "io.littlehorse.common.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

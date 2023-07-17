@@ -8,12 +8,16 @@ import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.UserTaskDefIdPb;
 import io.littlehorse.sdk.common.proto.UserTaskDefPb;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class UserTaskDefId
     extends ObjectId<UserTaskDefIdPb, UserTaskDefPb, UserTaskDef> {
 
-    public String name;
-    public int version;
+    private String name;
+    private int version;
 
     public UserTaskDefId() {}
 

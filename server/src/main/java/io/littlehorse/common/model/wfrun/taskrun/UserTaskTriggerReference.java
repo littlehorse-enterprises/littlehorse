@@ -6,7 +6,7 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.objectId.NodeRunId;
 import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.model.wfrun.TaskAttempt;
-import io.littlehorse.common.model.wfrun.subnoderun.UserTaskRun;
+import io.littlehorse.common.model.wfrun.UserTaskRun;
 import io.littlehorse.sdk.common.proto.UserTaskTriggerReferencePb;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,7 +23,7 @@ public class UserTaskTriggerReference
     public UserTaskTriggerReference() {}
 
     public UserTaskTriggerReference(UserTaskRun utr) {
-        nodeRunId = utr.getNodeRun().getObjectId();
+        nodeRunId = utr.getNodeRunId();
         // Trust in the Force
         userTaskEventNumber = utr.getEvents().size();
         wfSpecId = utr.getNodeRun().getWfSpecId();

@@ -42,12 +42,14 @@ import io.littlehorse.common.model.objectId.NodeRunId;
 import io.littlehorse.common.model.objectId.TaskDefId;
 import io.littlehorse.common.model.objectId.TaskRunId;
 import io.littlehorse.common.model.objectId.UserTaskDefId;
+import io.littlehorse.common.model.objectId.UserTaskRunId;
 import io.littlehorse.common.model.objectId.VariableId;
 import io.littlehorse.common.model.objectId.WfRunId;
 import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.ScheduledTask;
+import io.littlehorse.common.model.wfrun.UserTaskRun;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
@@ -78,6 +80,7 @@ import io.littlehorse.sdk.common.proto.GetNodeRunReplyPb;
 import io.littlehorse.sdk.common.proto.GetTaskDefReplyPb;
 import io.littlehorse.sdk.common.proto.GetTaskRunReplyPb;
 import io.littlehorse.sdk.common.proto.GetUserTaskDefReplyPb;
+import io.littlehorse.sdk.common.proto.GetUserTaskRunReplyPb;
 import io.littlehorse.sdk.common.proto.GetVariableReplyPb;
 import io.littlehorse.sdk.common.proto.GetWfRunReplyPb;
 import io.littlehorse.sdk.common.proto.GetWfSpecReplyPb;
@@ -130,6 +133,8 @@ import io.littlehorse.sdk.common.proto.SearchTaskRunPb;
 import io.littlehorse.sdk.common.proto.SearchTaskRunReplyPb;
 import io.littlehorse.sdk.common.proto.SearchUserTaskDefPb;
 import io.littlehorse.sdk.common.proto.SearchUserTaskDefReplyPb;
+import io.littlehorse.sdk.common.proto.SearchUserTaskRunPb;
+import io.littlehorse.sdk.common.proto.SearchUserTaskRunReplyPb;
 import io.littlehorse.sdk.common.proto.SearchVariablePb;
 import io.littlehorse.sdk.common.proto.SearchVariableReplyPb;
 import io.littlehorse.sdk.common.proto.SearchWfRunPb;
@@ -144,6 +149,7 @@ import io.littlehorse.sdk.common.proto.TaskDefMetricsReplyPb;
 import io.littlehorse.sdk.common.proto.TaskRunIdPb;
 import io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatPb;
 import io.littlehorse.sdk.common.proto.UserTaskDefIdPb;
+import io.littlehorse.sdk.common.proto.UserTaskRunIdPb;
 import io.littlehorse.sdk.common.proto.VariableIdPb;
 import io.littlehorse.sdk.common.proto.WfRunIdPb;
 import io.littlehorse.sdk.common.proto.WfSpecIdPb;
@@ -167,6 +173,7 @@ import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchNod
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchTaskDef;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchTaskRun;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchUserTaskDef;
+import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchUserTaskRun;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchVariable;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchWfRun;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests.SearchWfSpec;
@@ -181,6 +188,7 @@ import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.Sear
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchTaskDefReply;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchTaskRunReply;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchUserTaskDefReply;
+import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchUserTaskRunReply;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchVariableReply;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchWfRunReply;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchWfSpecReply;
@@ -617,6 +625,34 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
     }
 
     @Override
+    public void getUserTaskRun(
+        UserTaskRunIdPb req,
+        StreamObserver<GetUserTaskRunReplyPb> ctx
+    ) {
+        StreamObserver<CentralStoreQueryReplyPb> observer = new GETStreamObserver<>(
+            ctx,
+            UserTaskRun.class,
+            GetUserTaskRunReplyPb.class,
+            config
+        );
+
+        UserTaskRunId userTaskRunId = LHSerializable.fromProto(
+            req,
+            UserTaskRunId.class
+        );
+
+        internalComms.getStoreBytesAsync(
+            ServerTopology.CORE_STORE,
+            StoreUtils.getFullStoreKey(
+                userTaskRunId.getStoreKey(),
+                UserTaskRun.class
+            ),
+            req.getWfRunId(),
+            observer
+        );
+    }
+
+    @Override
     public void taskDefMetrics(
         TaskDefMetricsQueryPb req,
         StreamObserver<TaskDefMetricsReplyPb> ctx
@@ -750,6 +786,18 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         StreamObserver<SearchTaskRunReplyPb> ctx
     ) {
         handleScan(SearchTaskRun.fromProto(req), ctx, SearchTaskRunReply.class);
+    }
+
+    @Override
+    public void searchUserTaskRun(
+        SearchUserTaskRunPb req,
+        StreamObserver<SearchUserTaskRunReplyPb> ctx
+    ) {
+        handleScan(
+            SearchUserTaskRun.fromProto(req),
+            ctx,
+            SearchUserTaskRunReply.class
+        );
     }
 
     @Override

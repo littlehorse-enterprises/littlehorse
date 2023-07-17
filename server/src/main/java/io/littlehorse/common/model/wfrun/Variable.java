@@ -1,8 +1,10 @@
 package io.littlehorse.common.model.wfrun;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.meta.JsonIndex;
+import io.littlehorse.common.model.meta.ThreadSpec;
 import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.objectId.VariableId;
@@ -10,6 +12,7 @@ import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.IndexTypePb;
 import io.littlehorse.sdk.common.proto.VariablePb;
+import io.littlehorse.sdk.common.proto.VariableTypePb;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
 import java.util.Date;
@@ -17,20 +20,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
 @Setter
+@Slf4j
 public class Variable extends Getable<VariablePb> {
 
     public VariableValue value;
     public String wfRunId;
     public int threadRunNumber;
     public String name;
+    public String threadSpecName;
     public Date date;
 
     private WfSpec wfSpec;
@@ -92,7 +96,12 @@ public class Variable extends Getable<VariablePb> {
                     Pair.of("wfSpecVersion", GetableIndex.ValueType.SINGLE),
                     Pair.of("variable", GetableIndex.ValueType.DYNAMIC)
                 ),
-                Optional.empty()
+                Optional.empty(),
+                variable ->
+                    ((Variable) variable).getValue().getType() !=
+                    VariableTypePb.NULL &&
+                    !((Variable) variable).getName()
+                        .equals(LHConstants.EXT_EVT_HANDLER_VAR)
             )
         );
     }
@@ -129,14 +138,14 @@ public class Variable extends Getable<VariablePb> {
     }
 
     private Map<String, VariableDef> variableDefMap() {
-        return this.getWfSpec()
-            .getThreadSpecs()
-            .entrySet()
-            .stream()
-            .flatMap(stringThreadSpecEntry -> {
-                return stringThreadSpecEntry.getValue().getVariableDefs().stream();
-            })
-            .collect(Collectors.toMap(VariableDef::getName, Function.identity()));
+        Map<String, VariableDef> out = new HashMap<>();
+        for (ThreadSpec tSpec : getWfSpec().getThreadSpecs().values()) {
+            for (VariableDef varDef : tSpec.getVariableDefs()) {
+                out.put(varDef.getName(), varDef);
+            }
+        }
+
+        return out;
     }
 
     private List<IndexedField> getDynamicFields() {
@@ -204,9 +213,11 @@ public class Variable extends Getable<VariablePb> {
                     .toList();
             }
             default -> {
-                throw new IllegalArgumentException(
-                    "Variable %s not supported yet".formatted(variableValue.getType())
+                log.warn(
+                    "Tags unimplemented for variable type: {}",
+                    variableValue.getType()
                 );
+                return List.of();
             }
         }
     }

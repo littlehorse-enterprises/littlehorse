@@ -1,6 +1,3 @@
-/*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
@@ -127,52 +124,7 @@ Choose one of the following option groups:
 				},
 			}
 		} else {
-			// then it's a userTask search.
-			earliest, latest := loadEarliestAndLatestStart(cmd)
-
-			var status *model.UserTaskRunStatusPb = nil
-
-			statusStr, _ := cmd.Flags().GetString("userTaskStatus")
-			if statusStr != "" {
-				statusVal := model.UserTaskRunStatusPb(model.UserTaskRunStatusPb_value[statusStr])
-				status = &statusVal
-			}
-
-			var userId *string = nil
-			userIdStr, _ := cmd.Flags().GetString("userId")
-			if userIdStr != "" {
-				userId = &userIdStr
-			}
-
-			var userGroup *string = nil
-			userGroupStr, _ := cmd.Flags().GetString("userGroup")
-			if userGroupStr != "" {
-				userGroup = &userGroupStr
-			}
-
-			var userTaskDefName *string = nil
-			userTaskDefNameStr, _ := cmd.Flags().GetString("userTaskDefName")
-			if userTaskDefNameStr != "" {
-				userTaskDefName = &userTaskDefNameStr
-			}
-
-			if status == nil && userTaskDefName == nil && userGroup == nil && userId == nil {
-				log.Fatal("must provide at least one searchable attribute")
-			}
-
-			search = &model.SearchNodeRunPb{
-				NoderunCriteria: &model.SearchNodeRunPb_UserTaskRun{
-					UserTaskRun: &model.SearchNodeRunPb_UserTaskRunSearchPb{
-						Status:      status,
-						UserId:      userId,
-						UserTaskDef: userTaskDefName,
-						UserGroup:   userGroup,
-
-						EarliestStart: earliest,
-						LatestStart:   latest,
-					},
-				},
-			}
+			log.Fatal("Must provide --wfRunId flag")
 		}
 		search.Bookmark = bookmark
 		search.Limit = &limit

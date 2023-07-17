@@ -17,12 +17,14 @@ import io.littlehorse.common.model.objectId.TaskDefMetricsId;
 import io.littlehorse.common.model.objectId.TaskRunId;
 import io.littlehorse.common.model.objectId.TaskWorkerGroupId;
 import io.littlehorse.common.model.objectId.UserTaskDefId;
+import io.littlehorse.common.model.objectId.UserTaskRunId;
 import io.littlehorse.common.model.objectId.VariableId;
 import io.littlehorse.common.model.objectId.WfRunId;
 import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.model.objectId.WfSpecMetricsId;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.NodeRun;
+import io.littlehorse.common.model.wfrun.UserTaskRun;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
@@ -75,6 +77,8 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
             return GetableClassEnumPb.USER_TASK_DEF;
         } else if (cls.equals(TaskRun.class)) {
             return GetableClassEnumPb.TASK_RUN;
+        } else if (cls.equals(UserTaskRun.class)) {
+            return GetableClassEnumPb.USER_TASK_RUN;
         } else {
             throw new IllegalArgumentException(
                 "Uh oh, unrecognized: " + cls.getName()
@@ -108,6 +112,8 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
                 return UserTaskDef.class;
             case TASK_RUN:
                 return TaskRun.class;
+            case USER_TASK_RUN:
+                return UserTaskRun.class;
             case UNRECOGNIZED:
             // default:
         }
@@ -144,6 +150,8 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
                 return UserTaskDefId.class;
             case TASK_RUN:
                 return TaskRunId.class;
+            case USER_TASK_RUN:
+                return UserTaskRunId.class;
             case UNRECOGNIZED:
         }
         throw new IllegalArgumentException(

@@ -5,7 +5,7 @@ package io.littlehorse.sdk.common.proto;
 
 /**
  * <pre>
- * This is a SubNodeRun
+ * This is a Getable
  * </pre>
  *
  * Protobuf type {@code littlehorse.UserTaskRunPb}
@@ -20,11 +20,10 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private UserTaskRunPb() {
-    userTaskDefName_ = "";
-    events_ = java.util.Collections.emptyList();
     userId_ = "";
     results_ = java.util.Collections.emptyList();
     status_ = 0;
+    events_ = java.util.Collections.emptyList();
     notes_ = "";
   }
 
@@ -95,84 +94,56 @@ private static final long serialVersionUID = 0L;
         assignedToCase_);
   }
 
-  public static final int USER_TASK_DEF_NAME_FIELD_NUMBER = 1;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object userTaskDefName_ = "";
+  public static final int ID_FIELD_NUMBER = 1;
+  private io.littlehorse.sdk.common.proto.UserTaskRunIdPb id_;
   /**
-   * <code>string user_task_def_name = 1;</code>
-   * @return The userTaskDefName.
+   * <code>.littlehorse.UserTaskRunIdPb id = 1;</code>
+   * @return Whether the id field is set.
    */
   @java.lang.Override
-  public java.lang.String getUserTaskDefName() {
-    java.lang.Object ref = userTaskDefName_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      userTaskDefName_ = s;
-      return s;
-    }
+  public boolean hasId() {
+    return id_ != null;
   }
   /**
-   * <code>string user_task_def_name = 1;</code>
-   * @return The bytes for userTaskDefName.
+   * <code>.littlehorse.UserTaskRunIdPb id = 1;</code>
+   * @return The id.
    */
   @java.lang.Override
-  public com.google.protobuf.ByteString
-      getUserTaskDefNameBytes() {
-    java.lang.Object ref = userTaskDefName_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      userTaskDefName_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public io.littlehorse.sdk.common.proto.UserTaskRunIdPb getId() {
+    return id_ == null ? io.littlehorse.sdk.common.proto.UserTaskRunIdPb.getDefaultInstance() : id_;
+  }
+  /**
+   * <code>.littlehorse.UserTaskRunIdPb id = 1;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.UserTaskRunIdPbOrBuilder getIdOrBuilder() {
+    return id_ == null ? io.littlehorse.sdk.common.proto.UserTaskRunIdPb.getDefaultInstance() : id_;
   }
 
-  public static final int EVENTS_FIELD_NUMBER = 2;
-  @SuppressWarnings("serial")
-  private java.util.List<io.littlehorse.sdk.common.proto.UserTaskEventPb> events_;
+  public static final int USER_TASK_DEF_ID_FIELD_NUMBER = 2;
+  private io.littlehorse.sdk.common.proto.UserTaskDefIdPb userTaskDefId_;
   /**
-   * <code>repeated .littlehorse.UserTaskEventPb events = 2;</code>
+   * <code>.littlehorse.UserTaskDefIdPb user_task_def_id = 2;</code>
+   * @return Whether the userTaskDefId field is set.
    */
   @java.lang.Override
-  public java.util.List<io.littlehorse.sdk.common.proto.UserTaskEventPb> getEventsList() {
-    return events_;
+  public boolean hasUserTaskDefId() {
+    return userTaskDefId_ != null;
   }
   /**
-   * <code>repeated .littlehorse.UserTaskEventPb events = 2;</code>
+   * <code>.littlehorse.UserTaskDefIdPb user_task_def_id = 2;</code>
+   * @return The userTaskDefId.
    */
   @java.lang.Override
-  public java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskEventPbOrBuilder> 
-      getEventsOrBuilderList() {
-    return events_;
+  public io.littlehorse.sdk.common.proto.UserTaskDefIdPb getUserTaskDefId() {
+    return userTaskDefId_ == null ? io.littlehorse.sdk.common.proto.UserTaskDefIdPb.getDefaultInstance() : userTaskDefId_;
   }
   /**
-   * <code>repeated .littlehorse.UserTaskEventPb events = 2;</code>
+   * <code>.littlehorse.UserTaskDefIdPb user_task_def_id = 2;</code>
    */
   @java.lang.Override
-  public int getEventsCount() {
-    return events_.size();
-  }
-  /**
-   * <code>repeated .littlehorse.UserTaskEventPb events = 2;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserTaskEventPb getEvents(int index) {
-    return events_.get(index);
-  }
-  /**
-   * <code>repeated .littlehorse.UserTaskEventPb events = 2;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserTaskEventPbOrBuilder getEventsOrBuilder(
-      int index) {
-    return events_.get(index);
+  public io.littlehorse.sdk.common.proto.UserTaskDefIdPbOrBuilder getUserTaskDefIdOrBuilder() {
+    return userTaskDefId_ == null ? io.littlehorse.sdk.common.proto.UserTaskDefIdPb.getDefaultInstance() : userTaskDefId_;
   }
 
   public static final int SPECIFIC_USER_ID_FIELD_NUMBER = 3;
@@ -403,15 +374,45 @@ private static final long serialVersionUID = 0L;
     return result == null ? io.littlehorse.sdk.common.proto.UserTaskRunStatusPb.UNRECOGNIZED : result;
   }
 
-  public static final int USER_TASK_DEF_VERSION_FIELD_NUMBER = 8;
-  private int userTaskDefVersion_ = 0;
+  public static final int EVENTS_FIELD_NUMBER = 8;
+  @SuppressWarnings("serial")
+  private java.util.List<io.littlehorse.sdk.common.proto.UserTaskEventPb> events_;
   /**
-   * <code>int32 user_task_def_version = 8;</code>
-   * @return The userTaskDefVersion.
+   * <code>repeated .littlehorse.UserTaskEventPb events = 8;</code>
    */
   @java.lang.Override
-  public int getUserTaskDefVersion() {
-    return userTaskDefVersion_;
+  public java.util.List<io.littlehorse.sdk.common.proto.UserTaskEventPb> getEventsList() {
+    return events_;
+  }
+  /**
+   * <code>repeated .littlehorse.UserTaskEventPb events = 8;</code>
+   */
+  @java.lang.Override
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskEventPbOrBuilder> 
+      getEventsOrBuilderList() {
+    return events_;
+  }
+  /**
+   * <code>repeated .littlehorse.UserTaskEventPb events = 8;</code>
+   */
+  @java.lang.Override
+  public int getEventsCount() {
+    return events_.size();
+  }
+  /**
+   * <code>repeated .littlehorse.UserTaskEventPb events = 8;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.UserTaskEventPb getEvents(int index) {
+    return events_.get(index);
+  }
+  /**
+   * <code>repeated .littlehorse.UserTaskEventPb events = 8;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.UserTaskEventPbOrBuilder getEventsOrBuilder(
+      int index) {
+    return events_.get(index);
   }
 
   public static final int NOTES_FIELD_NUMBER = 9;
@@ -461,6 +462,76 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int SCHEDULED_TIME_FIELD_NUMBER = 10;
+  private com.google.protobuf.Timestamp scheduledTime_;
+  /**
+   * <code>.google.protobuf.Timestamp scheduled_time = 10;</code>
+   * @return Whether the scheduledTime field is set.
+   */
+  @java.lang.Override
+  public boolean hasScheduledTime() {
+    return scheduledTime_ != null;
+  }
+  /**
+   * <code>.google.protobuf.Timestamp scheduled_time = 10;</code>
+   * @return The scheduledTime.
+   */
+  @java.lang.Override
+  public com.google.protobuf.Timestamp getScheduledTime() {
+    return scheduledTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : scheduledTime_;
+  }
+  /**
+   * <code>.google.protobuf.Timestamp scheduled_time = 10;</code>
+   */
+  @java.lang.Override
+  public com.google.protobuf.TimestampOrBuilder getScheduledTimeOrBuilder() {
+    return scheduledTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : scheduledTime_;
+  }
+
+  public static final int NODE_RUN_ID_FIELD_NUMBER = 11;
+  private io.littlehorse.sdk.common.proto.NodeRunIdPb nodeRunId_;
+  /**
+   * <pre>
+   * If we ever allow ad-hoc User Tasks, this will move to an optional
+   * field, or a `oneof user_task_source` field. However, note that such
+   * a change would be fine from the API Compatibility perspective.
+   * </pre>
+   *
+   * <code>.littlehorse.NodeRunIdPb node_run_id = 11;</code>
+   * @return Whether the nodeRunId field is set.
+   */
+  @java.lang.Override
+  public boolean hasNodeRunId() {
+    return nodeRunId_ != null;
+  }
+  /**
+   * <pre>
+   * If we ever allow ad-hoc User Tasks, this will move to an optional
+   * field, or a `oneof user_task_source` field. However, note that such
+   * a change would be fine from the API Compatibility perspective.
+   * </pre>
+   *
+   * <code>.littlehorse.NodeRunIdPb node_run_id = 11;</code>
+   * @return The nodeRunId.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.NodeRunIdPb getNodeRunId() {
+    return nodeRunId_ == null ? io.littlehorse.sdk.common.proto.NodeRunIdPb.getDefaultInstance() : nodeRunId_;
+  }
+  /**
+   * <pre>
+   * If we ever allow ad-hoc User Tasks, this will move to an optional
+   * field, or a `oneof user_task_source` field. However, note that such
+   * a change would be fine from the API Compatibility perspective.
+   * </pre>
+   *
+   * <code>.littlehorse.NodeRunIdPb node_run_id = 11;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.NodeRunIdPbOrBuilder getNodeRunIdOrBuilder() {
+    return nodeRunId_ == null ? io.littlehorse.sdk.common.proto.NodeRunIdPb.getDefaultInstance() : nodeRunId_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -475,11 +546,11 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(userTaskDefName_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, userTaskDefName_);
+    if (id_ != null) {
+      output.writeMessage(1, getId());
     }
-    for (int i = 0; i < events_.size(); i++) {
-      output.writeMessage(2, events_.get(i));
+    if (userTaskDefId_ != null) {
+      output.writeMessage(2, getUserTaskDefId());
     }
     if (assignedToCase_ == 3) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 3, assignedTo_);
@@ -496,11 +567,17 @@ private static final long serialVersionUID = 0L;
     if (status_ != io.littlehorse.sdk.common.proto.UserTaskRunStatusPb.UNASSIGNED.getNumber()) {
       output.writeEnum(7, status_);
     }
-    if (userTaskDefVersion_ != 0) {
-      output.writeInt32(8, userTaskDefVersion_);
+    for (int i = 0; i < events_.size(); i++) {
+      output.writeMessage(8, events_.get(i));
     }
     if (((bitField0_ & 0x00000002) != 0)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 9, notes_);
+    }
+    if (scheduledTime_ != null) {
+      output.writeMessage(10, getScheduledTime());
+    }
+    if (nodeRunId_ != null) {
+      output.writeMessage(11, getNodeRunId());
     }
     getUnknownFields().writeTo(output);
   }
@@ -511,12 +588,13 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(userTaskDefName_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, userTaskDefName_);
-    }
-    for (int i = 0; i < events_.size(); i++) {
+    if (id_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, events_.get(i));
+        .computeMessageSize(1, getId());
+    }
+    if (userTaskDefId_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(2, getUserTaskDefId());
     }
     if (assignedToCase_ == 3) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, assignedTo_);
@@ -535,12 +613,20 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(7, status_);
     }
-    if (userTaskDefVersion_ != 0) {
+    for (int i = 0; i < events_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(8, userTaskDefVersion_);
+        .computeMessageSize(8, events_.get(i));
     }
     if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(9, notes_);
+    }
+    if (scheduledTime_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(10, getScheduledTime());
+    }
+    if (nodeRunId_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(11, getNodeRunId());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -557,10 +643,16 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.UserTaskRunPb other = (io.littlehorse.sdk.common.proto.UserTaskRunPb) obj;
 
-    if (!getUserTaskDefName()
-        .equals(other.getUserTaskDefName())) return false;
-    if (!getEventsList()
-        .equals(other.getEventsList())) return false;
+    if (hasId() != other.hasId()) return false;
+    if (hasId()) {
+      if (!getId()
+          .equals(other.getId())) return false;
+    }
+    if (hasUserTaskDefId() != other.hasUserTaskDefId()) return false;
+    if (hasUserTaskDefId()) {
+      if (!getUserTaskDefId()
+          .equals(other.getUserTaskDefId())) return false;
+    }
     if (hasUserId() != other.hasUserId()) return false;
     if (hasUserId()) {
       if (!getUserId()
@@ -569,12 +661,22 @@ private static final long serialVersionUID = 0L;
     if (!getResultsList()
         .equals(other.getResultsList())) return false;
     if (status_ != other.status_) return false;
-    if (getUserTaskDefVersion()
-        != other.getUserTaskDefVersion()) return false;
+    if (!getEventsList()
+        .equals(other.getEventsList())) return false;
     if (hasNotes() != other.hasNotes()) return false;
     if (hasNotes()) {
       if (!getNotes()
           .equals(other.getNotes())) return false;
+    }
+    if (hasScheduledTime() != other.hasScheduledTime()) return false;
+    if (hasScheduledTime()) {
+      if (!getScheduledTime()
+          .equals(other.getScheduledTime())) return false;
+    }
+    if (hasNodeRunId() != other.hasNodeRunId()) return false;
+    if (hasNodeRunId()) {
+      if (!getNodeRunId()
+          .equals(other.getNodeRunId())) return false;
     }
     if (!getAssignedToCase().equals(other.getAssignedToCase())) return false;
     switch (assignedToCase_) {
@@ -600,11 +702,13 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + USER_TASK_DEF_NAME_FIELD_NUMBER;
-    hash = (53 * hash) + getUserTaskDefName().hashCode();
-    if (getEventsCount() > 0) {
-      hash = (37 * hash) + EVENTS_FIELD_NUMBER;
-      hash = (53 * hash) + getEventsList().hashCode();
+    if (hasId()) {
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId().hashCode();
+    }
+    if (hasUserTaskDefId()) {
+      hash = (37 * hash) + USER_TASK_DEF_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getUserTaskDefId().hashCode();
     }
     if (hasUserId()) {
       hash = (37 * hash) + USER_ID_FIELD_NUMBER;
@@ -616,11 +720,21 @@ private static final long serialVersionUID = 0L;
     }
     hash = (37 * hash) + STATUS_FIELD_NUMBER;
     hash = (53 * hash) + status_;
-    hash = (37 * hash) + USER_TASK_DEF_VERSION_FIELD_NUMBER;
-    hash = (53 * hash) + getUserTaskDefVersion();
+    if (getEventsCount() > 0) {
+      hash = (37 * hash) + EVENTS_FIELD_NUMBER;
+      hash = (53 * hash) + getEventsList().hashCode();
+    }
     if (hasNotes()) {
       hash = (37 * hash) + NOTES_FIELD_NUMBER;
       hash = (53 * hash) + getNotes().hashCode();
+    }
+    if (hasScheduledTime()) {
+      hash = (37 * hash) + SCHEDULED_TIME_FIELD_NUMBER;
+      hash = (53 * hash) + getScheduledTime().hashCode();
+    }
+    if (hasNodeRunId()) {
+      hash = (37 * hash) + NODE_RUN_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getNodeRunId().hashCode();
     }
     switch (assignedToCase_) {
       case 3:
@@ -731,7 +845,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * This is a SubNodeRun
+   * This is a Getable
    * </pre>
    *
    * Protobuf type {@code littlehorse.UserTaskRunPb}
@@ -767,14 +881,16 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      userTaskDefName_ = "";
-      if (eventsBuilder_ == null) {
-        events_ = java.util.Collections.emptyList();
-      } else {
-        events_ = null;
-        eventsBuilder_.clear();
+      id_ = null;
+      if (idBuilder_ != null) {
+        idBuilder_.dispose();
+        idBuilder_ = null;
       }
-      bitField0_ = (bitField0_ & ~0x00000002);
+      userTaskDefId_ = null;
+      if (userTaskDefIdBuilder_ != null) {
+        userTaskDefIdBuilder_.dispose();
+        userTaskDefIdBuilder_ = null;
+      }
       userId_ = "";
       if (resultsBuilder_ == null) {
         results_ = java.util.Collections.emptyList();
@@ -784,8 +900,24 @@ private static final long serialVersionUID = 0L;
       }
       bitField0_ = (bitField0_ & ~0x00000020);
       status_ = 0;
-      userTaskDefVersion_ = 0;
+      if (eventsBuilder_ == null) {
+        events_ = java.util.Collections.emptyList();
+      } else {
+        events_ = null;
+        eventsBuilder_.clear();
+      }
+      bitField0_ = (bitField0_ & ~0x00000080);
       notes_ = "";
+      scheduledTime_ = null;
+      if (scheduledTimeBuilder_ != null) {
+        scheduledTimeBuilder_.dispose();
+        scheduledTimeBuilder_ = null;
+      }
+      nodeRunId_ = null;
+      if (nodeRunIdBuilder_ != null) {
+        nodeRunIdBuilder_.dispose();
+        nodeRunIdBuilder_ = null;
+      }
       assignedToCase_ = 0;
       assignedTo_ = null;
       return this;
@@ -822,15 +954,6 @@ private static final long serialVersionUID = 0L;
     }
 
     private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.UserTaskRunPb result) {
-      if (eventsBuilder_ == null) {
-        if (((bitField0_ & 0x00000002) != 0)) {
-          events_ = java.util.Collections.unmodifiableList(events_);
-          bitField0_ = (bitField0_ & ~0x00000002);
-        }
-        result.events_ = events_;
-      } else {
-        result.events_ = eventsBuilder_.build();
-      }
       if (resultsBuilder_ == null) {
         if (((bitField0_ & 0x00000020) != 0)) {
           results_ = java.util.Collections.unmodifiableList(results_);
@@ -840,12 +963,28 @@ private static final long serialVersionUID = 0L;
       } else {
         result.results_ = resultsBuilder_.build();
       }
+      if (eventsBuilder_ == null) {
+        if (((bitField0_ & 0x00000080) != 0)) {
+          events_ = java.util.Collections.unmodifiableList(events_);
+          bitField0_ = (bitField0_ & ~0x00000080);
+        }
+        result.events_ = events_;
+      } else {
+        result.events_ = eventsBuilder_.build();
+      }
     }
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.UserTaskRunPb result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.userTaskDefName_ = userTaskDefName_;
+        result.id_ = idBuilder_ == null
+            ? id_
+            : idBuilder_.build();
+      }
+      if (((from_bitField0_ & 0x00000002) != 0)) {
+        result.userTaskDefId_ = userTaskDefIdBuilder_ == null
+            ? userTaskDefId_
+            : userTaskDefIdBuilder_.build();
       }
       int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000010) != 0)) {
@@ -855,12 +994,19 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000040) != 0)) {
         result.status_ = status_;
       }
-      if (((from_bitField0_ & 0x00000080) != 0)) {
-        result.userTaskDefVersion_ = userTaskDefVersion_;
-      }
       if (((from_bitField0_ & 0x00000100) != 0)) {
         result.notes_ = notes_;
         to_bitField0_ |= 0x00000002;
+      }
+      if (((from_bitField0_ & 0x00000200) != 0)) {
+        result.scheduledTime_ = scheduledTimeBuilder_ == null
+            ? scheduledTime_
+            : scheduledTimeBuilder_.build();
+      }
+      if (((from_bitField0_ & 0x00000400) != 0)) {
+        result.nodeRunId_ = nodeRunIdBuilder_ == null
+            ? nodeRunId_
+            : nodeRunIdBuilder_.build();
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -914,36 +1060,11 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.UserTaskRunPb other) {
       if (other == io.littlehorse.sdk.common.proto.UserTaskRunPb.getDefaultInstance()) return this;
-      if (!other.getUserTaskDefName().isEmpty()) {
-        userTaskDefName_ = other.userTaskDefName_;
-        bitField0_ |= 0x00000001;
-        onChanged();
+      if (other.hasId()) {
+        mergeId(other.getId());
       }
-      if (eventsBuilder_ == null) {
-        if (!other.events_.isEmpty()) {
-          if (events_.isEmpty()) {
-            events_ = other.events_;
-            bitField0_ = (bitField0_ & ~0x00000002);
-          } else {
-            ensureEventsIsMutable();
-            events_.addAll(other.events_);
-          }
-          onChanged();
-        }
-      } else {
-        if (!other.events_.isEmpty()) {
-          if (eventsBuilder_.isEmpty()) {
-            eventsBuilder_.dispose();
-            eventsBuilder_ = null;
-            events_ = other.events_;
-            bitField0_ = (bitField0_ & ~0x00000002);
-            eventsBuilder_ = 
-              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                 getEventsFieldBuilder() : null;
-          } else {
-            eventsBuilder_.addAllMessages(other.events_);
-          }
-        }
+      if (other.hasUserTaskDefId()) {
+        mergeUserTaskDefId(other.getUserTaskDefId());
       }
       if (other.hasUserId()) {
         userId_ = other.userId_;
@@ -979,13 +1100,42 @@ private static final long serialVersionUID = 0L;
       if (other.status_ != 0) {
         setStatusValue(other.getStatusValue());
       }
-      if (other.getUserTaskDefVersion() != 0) {
-        setUserTaskDefVersion(other.getUserTaskDefVersion());
+      if (eventsBuilder_ == null) {
+        if (!other.events_.isEmpty()) {
+          if (events_.isEmpty()) {
+            events_ = other.events_;
+            bitField0_ = (bitField0_ & ~0x00000080);
+          } else {
+            ensureEventsIsMutable();
+            events_.addAll(other.events_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.events_.isEmpty()) {
+          if (eventsBuilder_.isEmpty()) {
+            eventsBuilder_.dispose();
+            eventsBuilder_ = null;
+            events_ = other.events_;
+            bitField0_ = (bitField0_ & ~0x00000080);
+            eventsBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getEventsFieldBuilder() : null;
+          } else {
+            eventsBuilder_.addAllMessages(other.events_);
+          }
+        }
       }
       if (other.hasNotes()) {
         notes_ = other.notes_;
         bitField0_ |= 0x00000100;
         onChanged();
+      }
+      if (other.hasScheduledTime()) {
+        mergeScheduledTime(other.getScheduledTime());
+      }
+      if (other.hasNodeRunId()) {
+        mergeNodeRunId(other.getNodeRunId());
       }
       switch (other.getAssignedToCase()) {
         case SPECIFIC_USER_ID: {
@@ -1031,21 +1181,17 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 10: {
-              userTaskDefName_ = input.readStringRequireUtf8();
+              input.readMessage(
+                  getIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
               bitField0_ |= 0x00000001;
               break;
             } // case 10
             case 18: {
-              io.littlehorse.sdk.common.proto.UserTaskEventPb m =
-                  input.readMessage(
-                      io.littlehorse.sdk.common.proto.UserTaskEventPb.parser(),
-                      extensionRegistry);
-              if (eventsBuilder_ == null) {
-                ensureEventsIsMutable();
-                events_.add(m);
-              } else {
-                eventsBuilder_.addMessage(m);
-              }
+              input.readMessage(
+                  getUserTaskDefIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000002;
               break;
             } // case 18
             case 26: {
@@ -1083,16 +1229,38 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000040;
               break;
             } // case 56
-            case 64: {
-              userTaskDefVersion_ = input.readInt32();
-              bitField0_ |= 0x00000080;
+            case 66: {
+              io.littlehorse.sdk.common.proto.UserTaskEventPb m =
+                  input.readMessage(
+                      io.littlehorse.sdk.common.proto.UserTaskEventPb.parser(),
+                      extensionRegistry);
+              if (eventsBuilder_ == null) {
+                ensureEventsIsMutable();
+                events_.add(m);
+              } else {
+                eventsBuilder_.addMessage(m);
+              }
               break;
-            } // case 64
+            } // case 66
             case 74: {
               notes_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000100;
               break;
             } // case 74
+            case 82: {
+              input.readMessage(
+                  getScheduledTimeFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000200;
+              break;
+            } // case 82
+            case 90: {
+              input.readMessage(
+                  getNodeRunIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000400;
+              break;
+            } // case 90
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1125,316 +1293,242 @@ private static final long serialVersionUID = 0L;
 
     private int bitField0_;
 
-    private java.lang.Object userTaskDefName_ = "";
+    private io.littlehorse.sdk.common.proto.UserTaskRunIdPb id_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.UserTaskRunIdPb, io.littlehorse.sdk.common.proto.UserTaskRunIdPb.Builder, io.littlehorse.sdk.common.proto.UserTaskRunIdPbOrBuilder> idBuilder_;
     /**
-     * <code>string user_task_def_name = 1;</code>
-     * @return The userTaskDefName.
+     * <code>.littlehorse.UserTaskRunIdPb id = 1;</code>
+     * @return Whether the id field is set.
      */
-    public java.lang.String getUserTaskDefName() {
-      java.lang.Object ref = userTaskDefName_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        userTaskDefName_ = s;
-        return s;
+    public boolean hasId() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>.littlehorse.UserTaskRunIdPb id = 1;</code>
+     * @return The id.
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskRunIdPb getId() {
+      if (idBuilder_ == null) {
+        return id_ == null ? io.littlehorse.sdk.common.proto.UserTaskRunIdPb.getDefaultInstance() : id_;
       } else {
-        return (java.lang.String) ref;
+        return idBuilder_.getMessage();
       }
     }
     /**
-     * <code>string user_task_def_name = 1;</code>
-     * @return The bytes for userTaskDefName.
+     * <code>.littlehorse.UserTaskRunIdPb id = 1;</code>
      */
-    public com.google.protobuf.ByteString
-        getUserTaskDefNameBytes() {
-      java.lang.Object ref = userTaskDefName_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        userTaskDefName_ = b;
-        return b;
+    public Builder setId(io.littlehorse.sdk.common.proto.UserTaskRunIdPb value) {
+      if (idBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        id_ = value;
       } else {
-        return (com.google.protobuf.ByteString) ref;
+        idBuilder_.setMessage(value);
       }
-    }
-    /**
-     * <code>string user_task_def_name = 1;</code>
-     * @param value The userTaskDefName to set.
-     * @return This builder for chaining.
-     */
-    public Builder setUserTaskDefName(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      userTaskDefName_ = value;
       bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
     /**
-     * <code>string user_task_def_name = 1;</code>
-     * @return This builder for chaining.
+     * <code>.littlehorse.UserTaskRunIdPb id = 1;</code>
      */
-    public Builder clearUserTaskDefName() {
-      userTaskDefName_ = getDefaultInstance().getUserTaskDefName();
+    public Builder setId(
+        io.littlehorse.sdk.common.proto.UserTaskRunIdPb.Builder builderForValue) {
+      if (idBuilder_ == null) {
+        id_ = builderForValue.build();
+      } else {
+        idBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UserTaskRunIdPb id = 1;</code>
+     */
+    public Builder mergeId(io.littlehorse.sdk.common.proto.UserTaskRunIdPb value) {
+      if (idBuilder_ == null) {
+        if (((bitField0_ & 0x00000001) != 0) &&
+          id_ != null &&
+          id_ != io.littlehorse.sdk.common.proto.UserTaskRunIdPb.getDefaultInstance()) {
+          getIdBuilder().mergeFrom(value);
+        } else {
+          id_ = value;
+        }
+      } else {
+        idBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000001;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UserTaskRunIdPb id = 1;</code>
+     */
+    public Builder clearId() {
       bitField0_ = (bitField0_ & ~0x00000001);
+      id_ = null;
+      if (idBuilder_ != null) {
+        idBuilder_.dispose();
+        idBuilder_ = null;
+      }
       onChanged();
       return this;
     }
     /**
-     * <code>string user_task_def_name = 1;</code>
-     * @param value The bytes for userTaskDefName to set.
-     * @return This builder for chaining.
+     * <code>.littlehorse.UserTaskRunIdPb id = 1;</code>
      */
-    public Builder setUserTaskDefNameBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      userTaskDefName_ = value;
+    public io.littlehorse.sdk.common.proto.UserTaskRunIdPb.Builder getIdBuilder() {
       bitField0_ |= 0x00000001;
       onChanged();
-      return this;
+      return getIdFieldBuilder().getBuilder();
     }
-
-    private java.util.List<io.littlehorse.sdk.common.proto.UserTaskEventPb> events_ =
-      java.util.Collections.emptyList();
-    private void ensureEventsIsMutable() {
-      if (!((bitField0_ & 0x00000002) != 0)) {
-        events_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.UserTaskEventPb>(events_);
-        bitField0_ |= 0x00000002;
-       }
-    }
-
-    private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UserTaskEventPb, io.littlehorse.sdk.common.proto.UserTaskEventPb.Builder, io.littlehorse.sdk.common.proto.UserTaskEventPbOrBuilder> eventsBuilder_;
-
     /**
-     * <code>repeated .littlehorse.UserTaskEventPb events = 2;</code>
+     * <code>.littlehorse.UserTaskRunIdPb id = 1;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.UserTaskEventPb> getEventsList() {
-      if (eventsBuilder_ == null) {
-        return java.util.Collections.unmodifiableList(events_);
+    public io.littlehorse.sdk.common.proto.UserTaskRunIdPbOrBuilder getIdOrBuilder() {
+      if (idBuilder_ != null) {
+        return idBuilder_.getMessageOrBuilder();
       } else {
-        return eventsBuilder_.getMessageList();
+        return id_ == null ?
+            io.littlehorse.sdk.common.proto.UserTaskRunIdPb.getDefaultInstance() : id_;
       }
     }
     /**
-     * <code>repeated .littlehorse.UserTaskEventPb events = 2;</code>
+     * <code>.littlehorse.UserTaskRunIdPb id = 1;</code>
      */
-    public int getEventsCount() {
-      if (eventsBuilder_ == null) {
-        return events_.size();
-      } else {
-        return eventsBuilder_.getCount();
-      }
-    }
-    /**
-     * <code>repeated .littlehorse.UserTaskEventPb events = 2;</code>
-     */
-    public io.littlehorse.sdk.common.proto.UserTaskEventPb getEvents(int index) {
-      if (eventsBuilder_ == null) {
-        return events_.get(index);
-      } else {
-        return eventsBuilder_.getMessage(index);
-      }
-    }
-    /**
-     * <code>repeated .littlehorse.UserTaskEventPb events = 2;</code>
-     */
-    public Builder setEvents(
-        int index, io.littlehorse.sdk.common.proto.UserTaskEventPb value) {
-      if (eventsBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureEventsIsMutable();
-        events_.set(index, value);
-        onChanged();
-      } else {
-        eventsBuilder_.setMessage(index, value);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.UserTaskEventPb events = 2;</code>
-     */
-    public Builder setEvents(
-        int index, io.littlehorse.sdk.common.proto.UserTaskEventPb.Builder builderForValue) {
-      if (eventsBuilder_ == null) {
-        ensureEventsIsMutable();
-        events_.set(index, builderForValue.build());
-        onChanged();
-      } else {
-        eventsBuilder_.setMessage(index, builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.UserTaskEventPb events = 2;</code>
-     */
-    public Builder addEvents(io.littlehorse.sdk.common.proto.UserTaskEventPb value) {
-      if (eventsBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureEventsIsMutable();
-        events_.add(value);
-        onChanged();
-      } else {
-        eventsBuilder_.addMessage(value);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.UserTaskEventPb events = 2;</code>
-     */
-    public Builder addEvents(
-        int index, io.littlehorse.sdk.common.proto.UserTaskEventPb value) {
-      if (eventsBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureEventsIsMutable();
-        events_.add(index, value);
-        onChanged();
-      } else {
-        eventsBuilder_.addMessage(index, value);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.UserTaskEventPb events = 2;</code>
-     */
-    public Builder addEvents(
-        io.littlehorse.sdk.common.proto.UserTaskEventPb.Builder builderForValue) {
-      if (eventsBuilder_ == null) {
-        ensureEventsIsMutable();
-        events_.add(builderForValue.build());
-        onChanged();
-      } else {
-        eventsBuilder_.addMessage(builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.UserTaskEventPb events = 2;</code>
-     */
-    public Builder addEvents(
-        int index, io.littlehorse.sdk.common.proto.UserTaskEventPb.Builder builderForValue) {
-      if (eventsBuilder_ == null) {
-        ensureEventsIsMutable();
-        events_.add(index, builderForValue.build());
-        onChanged();
-      } else {
-        eventsBuilder_.addMessage(index, builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.UserTaskEventPb events = 2;</code>
-     */
-    public Builder addAllEvents(
-        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.UserTaskEventPb> values) {
-      if (eventsBuilder_ == null) {
-        ensureEventsIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, events_);
-        onChanged();
-      } else {
-        eventsBuilder_.addAllMessages(values);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.UserTaskEventPb events = 2;</code>
-     */
-    public Builder clearEvents() {
-      if (eventsBuilder_ == null) {
-        events_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000002);
-        onChanged();
-      } else {
-        eventsBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.UserTaskEventPb events = 2;</code>
-     */
-    public Builder removeEvents(int index) {
-      if (eventsBuilder_ == null) {
-        ensureEventsIsMutable();
-        events_.remove(index);
-        onChanged();
-      } else {
-        eventsBuilder_.remove(index);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .littlehorse.UserTaskEventPb events = 2;</code>
-     */
-    public io.littlehorse.sdk.common.proto.UserTaskEventPb.Builder getEventsBuilder(
-        int index) {
-      return getEventsFieldBuilder().getBuilder(index);
-    }
-    /**
-     * <code>repeated .littlehorse.UserTaskEventPb events = 2;</code>
-     */
-    public io.littlehorse.sdk.common.proto.UserTaskEventPbOrBuilder getEventsOrBuilder(
-        int index) {
-      if (eventsBuilder_ == null) {
-        return events_.get(index);  } else {
-        return eventsBuilder_.getMessageOrBuilder(index);
-      }
-    }
-    /**
-     * <code>repeated .littlehorse.UserTaskEventPb events = 2;</code>
-     */
-    public java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskEventPbOrBuilder> 
-         getEventsOrBuilderList() {
-      if (eventsBuilder_ != null) {
-        return eventsBuilder_.getMessageOrBuilderList();
-      } else {
-        return java.util.Collections.unmodifiableList(events_);
-      }
-    }
-    /**
-     * <code>repeated .littlehorse.UserTaskEventPb events = 2;</code>
-     */
-    public io.littlehorse.sdk.common.proto.UserTaskEventPb.Builder addEventsBuilder() {
-      return getEventsFieldBuilder().addBuilder(
-          io.littlehorse.sdk.common.proto.UserTaskEventPb.getDefaultInstance());
-    }
-    /**
-     * <code>repeated .littlehorse.UserTaskEventPb events = 2;</code>
-     */
-    public io.littlehorse.sdk.common.proto.UserTaskEventPb.Builder addEventsBuilder(
-        int index) {
-      return getEventsFieldBuilder().addBuilder(
-          index, io.littlehorse.sdk.common.proto.UserTaskEventPb.getDefaultInstance());
-    }
-    /**
-     * <code>repeated .littlehorse.UserTaskEventPb events = 2;</code>
-     */
-    public java.util.List<io.littlehorse.sdk.common.proto.UserTaskEventPb.Builder> 
-         getEventsBuilderList() {
-      return getEventsFieldBuilder().getBuilderList();
-    }
-    private com.google.protobuf.RepeatedFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.UserTaskEventPb, io.littlehorse.sdk.common.proto.UserTaskEventPb.Builder, io.littlehorse.sdk.common.proto.UserTaskEventPbOrBuilder> 
-        getEventsFieldBuilder() {
-      if (eventsBuilder_ == null) {
-        eventsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.UserTaskEventPb, io.littlehorse.sdk.common.proto.UserTaskEventPb.Builder, io.littlehorse.sdk.common.proto.UserTaskEventPbOrBuilder>(
-                events_,
-                ((bitField0_ & 0x00000002) != 0),
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.UserTaskRunIdPb, io.littlehorse.sdk.common.proto.UserTaskRunIdPb.Builder, io.littlehorse.sdk.common.proto.UserTaskRunIdPbOrBuilder> 
+        getIdFieldBuilder() {
+      if (idBuilder_ == null) {
+        idBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.UserTaskRunIdPb, io.littlehorse.sdk.common.proto.UserTaskRunIdPb.Builder, io.littlehorse.sdk.common.proto.UserTaskRunIdPbOrBuilder>(
+                getId(),
                 getParentForChildren(),
                 isClean());
-        events_ = null;
+        id_ = null;
       }
-      return eventsBuilder_;
+      return idBuilder_;
+    }
+
+    private io.littlehorse.sdk.common.proto.UserTaskDefIdPb userTaskDefId_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.UserTaskDefIdPb, io.littlehorse.sdk.common.proto.UserTaskDefIdPb.Builder, io.littlehorse.sdk.common.proto.UserTaskDefIdPbOrBuilder> userTaskDefIdBuilder_;
+    /**
+     * <code>.littlehorse.UserTaskDefIdPb user_task_def_id = 2;</code>
+     * @return Whether the userTaskDefId field is set.
+     */
+    public boolean hasUserTaskDefId() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>.littlehorse.UserTaskDefIdPb user_task_def_id = 2;</code>
+     * @return The userTaskDefId.
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskDefIdPb getUserTaskDefId() {
+      if (userTaskDefIdBuilder_ == null) {
+        return userTaskDefId_ == null ? io.littlehorse.sdk.common.proto.UserTaskDefIdPb.getDefaultInstance() : userTaskDefId_;
+      } else {
+        return userTaskDefIdBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.littlehorse.UserTaskDefIdPb user_task_def_id = 2;</code>
+     */
+    public Builder setUserTaskDefId(io.littlehorse.sdk.common.proto.UserTaskDefIdPb value) {
+      if (userTaskDefIdBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        userTaskDefId_ = value;
+      } else {
+        userTaskDefIdBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UserTaskDefIdPb user_task_def_id = 2;</code>
+     */
+    public Builder setUserTaskDefId(
+        io.littlehorse.sdk.common.proto.UserTaskDefIdPb.Builder builderForValue) {
+      if (userTaskDefIdBuilder_ == null) {
+        userTaskDefId_ = builderForValue.build();
+      } else {
+        userTaskDefIdBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UserTaskDefIdPb user_task_def_id = 2;</code>
+     */
+    public Builder mergeUserTaskDefId(io.littlehorse.sdk.common.proto.UserTaskDefIdPb value) {
+      if (userTaskDefIdBuilder_ == null) {
+        if (((bitField0_ & 0x00000002) != 0) &&
+          userTaskDefId_ != null &&
+          userTaskDefId_ != io.littlehorse.sdk.common.proto.UserTaskDefIdPb.getDefaultInstance()) {
+          getUserTaskDefIdBuilder().mergeFrom(value);
+        } else {
+          userTaskDefId_ = value;
+        }
+      } else {
+        userTaskDefIdBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UserTaskDefIdPb user_task_def_id = 2;</code>
+     */
+    public Builder clearUserTaskDefId() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      userTaskDefId_ = null;
+      if (userTaskDefIdBuilder_ != null) {
+        userTaskDefIdBuilder_.dispose();
+        userTaskDefIdBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.UserTaskDefIdPb user_task_def_id = 2;</code>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskDefIdPb.Builder getUserTaskDefIdBuilder() {
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return getUserTaskDefIdFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.UserTaskDefIdPb user_task_def_id = 2;</code>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskDefIdPbOrBuilder getUserTaskDefIdOrBuilder() {
+      if (userTaskDefIdBuilder_ != null) {
+        return userTaskDefIdBuilder_.getMessageOrBuilder();
+      } else {
+        return userTaskDefId_ == null ?
+            io.littlehorse.sdk.common.proto.UserTaskDefIdPb.getDefaultInstance() : userTaskDefId_;
+      }
+    }
+    /**
+     * <code>.littlehorse.UserTaskDefIdPb user_task_def_id = 2;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.UserTaskDefIdPb, io.littlehorse.sdk.common.proto.UserTaskDefIdPb.Builder, io.littlehorse.sdk.common.proto.UserTaskDefIdPbOrBuilder> 
+        getUserTaskDefIdFieldBuilder() {
+      if (userTaskDefIdBuilder_ == null) {
+        userTaskDefIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.UserTaskDefIdPb, io.littlehorse.sdk.common.proto.UserTaskDefIdPb.Builder, io.littlehorse.sdk.common.proto.UserTaskDefIdPbOrBuilder>(
+                getUserTaskDefId(),
+                getParentForChildren(),
+                isClean());
+        userTaskDefId_ = null;
+      }
+      return userTaskDefIdBuilder_;
     }
 
     /**
@@ -2031,36 +2125,244 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int userTaskDefVersion_ ;
+    private java.util.List<io.littlehorse.sdk.common.proto.UserTaskEventPb> events_ =
+      java.util.Collections.emptyList();
+    private void ensureEventsIsMutable() {
+      if (!((bitField0_ & 0x00000080) != 0)) {
+        events_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.UserTaskEventPb>(events_);
+        bitField0_ |= 0x00000080;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.UserTaskEventPb, io.littlehorse.sdk.common.proto.UserTaskEventPb.Builder, io.littlehorse.sdk.common.proto.UserTaskEventPbOrBuilder> eventsBuilder_;
+
     /**
-     * <code>int32 user_task_def_version = 8;</code>
-     * @return The userTaskDefVersion.
+     * <code>repeated .littlehorse.UserTaskEventPb events = 8;</code>
      */
-    @java.lang.Override
-    public int getUserTaskDefVersion() {
-      return userTaskDefVersion_;
+    public java.util.List<io.littlehorse.sdk.common.proto.UserTaskEventPb> getEventsList() {
+      if (eventsBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(events_);
+      } else {
+        return eventsBuilder_.getMessageList();
+      }
     }
     /**
-     * <code>int32 user_task_def_version = 8;</code>
-     * @param value The userTaskDefVersion to set.
-     * @return This builder for chaining.
+     * <code>repeated .littlehorse.UserTaskEventPb events = 8;</code>
      */
-    public Builder setUserTaskDefVersion(int value) {
-      
-      userTaskDefVersion_ = value;
-      bitField0_ |= 0x00000080;
-      onChanged();
+    public int getEventsCount() {
+      if (eventsBuilder_ == null) {
+        return events_.size();
+      } else {
+        return eventsBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.UserTaskEventPb events = 8;</code>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskEventPb getEvents(int index) {
+      if (eventsBuilder_ == null) {
+        return events_.get(index);
+      } else {
+        return eventsBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.UserTaskEventPb events = 8;</code>
+     */
+    public Builder setEvents(
+        int index, io.littlehorse.sdk.common.proto.UserTaskEventPb value) {
+      if (eventsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureEventsIsMutable();
+        events_.set(index, value);
+        onChanged();
+      } else {
+        eventsBuilder_.setMessage(index, value);
+      }
       return this;
     }
     /**
-     * <code>int32 user_task_def_version = 8;</code>
-     * @return This builder for chaining.
+     * <code>repeated .littlehorse.UserTaskEventPb events = 8;</code>
      */
-    public Builder clearUserTaskDefVersion() {
-      bitField0_ = (bitField0_ & ~0x00000080);
-      userTaskDefVersion_ = 0;
-      onChanged();
+    public Builder setEvents(
+        int index, io.littlehorse.sdk.common.proto.UserTaskEventPb.Builder builderForValue) {
+      if (eventsBuilder_ == null) {
+        ensureEventsIsMutable();
+        events_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        eventsBuilder_.setMessage(index, builderForValue.build());
+      }
       return this;
+    }
+    /**
+     * <code>repeated .littlehorse.UserTaskEventPb events = 8;</code>
+     */
+    public Builder addEvents(io.littlehorse.sdk.common.proto.UserTaskEventPb value) {
+      if (eventsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureEventsIsMutable();
+        events_.add(value);
+        onChanged();
+      } else {
+        eventsBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.UserTaskEventPb events = 8;</code>
+     */
+    public Builder addEvents(
+        int index, io.littlehorse.sdk.common.proto.UserTaskEventPb value) {
+      if (eventsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureEventsIsMutable();
+        events_.add(index, value);
+        onChanged();
+      } else {
+        eventsBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.UserTaskEventPb events = 8;</code>
+     */
+    public Builder addEvents(
+        io.littlehorse.sdk.common.proto.UserTaskEventPb.Builder builderForValue) {
+      if (eventsBuilder_ == null) {
+        ensureEventsIsMutable();
+        events_.add(builderForValue.build());
+        onChanged();
+      } else {
+        eventsBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.UserTaskEventPb events = 8;</code>
+     */
+    public Builder addEvents(
+        int index, io.littlehorse.sdk.common.proto.UserTaskEventPb.Builder builderForValue) {
+      if (eventsBuilder_ == null) {
+        ensureEventsIsMutable();
+        events_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        eventsBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.UserTaskEventPb events = 8;</code>
+     */
+    public Builder addAllEvents(
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.UserTaskEventPb> values) {
+      if (eventsBuilder_ == null) {
+        ensureEventsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, events_);
+        onChanged();
+      } else {
+        eventsBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.UserTaskEventPb events = 8;</code>
+     */
+    public Builder clearEvents() {
+      if (eventsBuilder_ == null) {
+        events_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000080);
+        onChanged();
+      } else {
+        eventsBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.UserTaskEventPb events = 8;</code>
+     */
+    public Builder removeEvents(int index) {
+      if (eventsBuilder_ == null) {
+        ensureEventsIsMutable();
+        events_.remove(index);
+        onChanged();
+      } else {
+        eventsBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.UserTaskEventPb events = 8;</code>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskEventPb.Builder getEventsBuilder(
+        int index) {
+      return getEventsFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .littlehorse.UserTaskEventPb events = 8;</code>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskEventPbOrBuilder getEventsOrBuilder(
+        int index) {
+      if (eventsBuilder_ == null) {
+        return events_.get(index);  } else {
+        return eventsBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.UserTaskEventPb events = 8;</code>
+     */
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskEventPbOrBuilder> 
+         getEventsOrBuilderList() {
+      if (eventsBuilder_ != null) {
+        return eventsBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(events_);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.UserTaskEventPb events = 8;</code>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskEventPb.Builder addEventsBuilder() {
+      return getEventsFieldBuilder().addBuilder(
+          io.littlehorse.sdk.common.proto.UserTaskEventPb.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .littlehorse.UserTaskEventPb events = 8;</code>
+     */
+    public io.littlehorse.sdk.common.proto.UserTaskEventPb.Builder addEventsBuilder(
+        int index) {
+      return getEventsFieldBuilder().addBuilder(
+          index, io.littlehorse.sdk.common.proto.UserTaskEventPb.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .littlehorse.UserTaskEventPb events = 8;</code>
+     */
+    public java.util.List<io.littlehorse.sdk.common.proto.UserTaskEventPb.Builder> 
+         getEventsBuilderList() {
+      return getEventsFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.UserTaskEventPb, io.littlehorse.sdk.common.proto.UserTaskEventPb.Builder, io.littlehorse.sdk.common.proto.UserTaskEventPbOrBuilder> 
+        getEventsFieldBuilder() {
+      if (eventsBuilder_ == null) {
+        eventsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.UserTaskEventPb, io.littlehorse.sdk.common.proto.UserTaskEventPb.Builder, io.littlehorse.sdk.common.proto.UserTaskEventPbOrBuilder>(
+                events_,
+                ((bitField0_ & 0x00000080) != 0),
+                getParentForChildren(),
+                isClean());
+        events_ = null;
+      }
+      return eventsBuilder_;
     }
 
     private java.lang.Object notes_ = "";
@@ -2140,6 +2442,298 @@ private static final long serialVersionUID = 0L;
       bitField0_ |= 0x00000100;
       onChanged();
       return this;
+    }
+
+    private com.google.protobuf.Timestamp scheduledTime_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> scheduledTimeBuilder_;
+    /**
+     * <code>.google.protobuf.Timestamp scheduled_time = 10;</code>
+     * @return Whether the scheduledTime field is set.
+     */
+    public boolean hasScheduledTime() {
+      return ((bitField0_ & 0x00000200) != 0);
+    }
+    /**
+     * <code>.google.protobuf.Timestamp scheduled_time = 10;</code>
+     * @return The scheduledTime.
+     */
+    public com.google.protobuf.Timestamp getScheduledTime() {
+      if (scheduledTimeBuilder_ == null) {
+        return scheduledTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : scheduledTime_;
+      } else {
+        return scheduledTimeBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.google.protobuf.Timestamp scheduled_time = 10;</code>
+     */
+    public Builder setScheduledTime(com.google.protobuf.Timestamp value) {
+      if (scheduledTimeBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        scheduledTime_ = value;
+      } else {
+        scheduledTimeBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000200;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.google.protobuf.Timestamp scheduled_time = 10;</code>
+     */
+    public Builder setScheduledTime(
+        com.google.protobuf.Timestamp.Builder builderForValue) {
+      if (scheduledTimeBuilder_ == null) {
+        scheduledTime_ = builderForValue.build();
+      } else {
+        scheduledTimeBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000200;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.google.protobuf.Timestamp scheduled_time = 10;</code>
+     */
+    public Builder mergeScheduledTime(com.google.protobuf.Timestamp value) {
+      if (scheduledTimeBuilder_ == null) {
+        if (((bitField0_ & 0x00000200) != 0) &&
+          scheduledTime_ != null &&
+          scheduledTime_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
+          getScheduledTimeBuilder().mergeFrom(value);
+        } else {
+          scheduledTime_ = value;
+        }
+      } else {
+        scheduledTimeBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000200;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.google.protobuf.Timestamp scheduled_time = 10;</code>
+     */
+    public Builder clearScheduledTime() {
+      bitField0_ = (bitField0_ & ~0x00000200);
+      scheduledTime_ = null;
+      if (scheduledTimeBuilder_ != null) {
+        scheduledTimeBuilder_.dispose();
+        scheduledTimeBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.google.protobuf.Timestamp scheduled_time = 10;</code>
+     */
+    public com.google.protobuf.Timestamp.Builder getScheduledTimeBuilder() {
+      bitField0_ |= 0x00000200;
+      onChanged();
+      return getScheduledTimeFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.google.protobuf.Timestamp scheduled_time = 10;</code>
+     */
+    public com.google.protobuf.TimestampOrBuilder getScheduledTimeOrBuilder() {
+      if (scheduledTimeBuilder_ != null) {
+        return scheduledTimeBuilder_.getMessageOrBuilder();
+      } else {
+        return scheduledTime_ == null ?
+            com.google.protobuf.Timestamp.getDefaultInstance() : scheduledTime_;
+      }
+    }
+    /**
+     * <code>.google.protobuf.Timestamp scheduled_time = 10;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
+        getScheduledTimeFieldBuilder() {
+      if (scheduledTimeBuilder_ == null) {
+        scheduledTimeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
+                getScheduledTime(),
+                getParentForChildren(),
+                isClean());
+        scheduledTime_ = null;
+      }
+      return scheduledTimeBuilder_;
+    }
+
+    private io.littlehorse.sdk.common.proto.NodeRunIdPb nodeRunId_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.NodeRunIdPb, io.littlehorse.sdk.common.proto.NodeRunIdPb.Builder, io.littlehorse.sdk.common.proto.NodeRunIdPbOrBuilder> nodeRunIdBuilder_;
+    /**
+     * <pre>
+     * If we ever allow ad-hoc User Tasks, this will move to an optional
+     * field, or a `oneof user_task_source` field. However, note that such
+     * a change would be fine from the API Compatibility perspective.
+     * </pre>
+     *
+     * <code>.littlehorse.NodeRunIdPb node_run_id = 11;</code>
+     * @return Whether the nodeRunId field is set.
+     */
+    public boolean hasNodeRunId() {
+      return ((bitField0_ & 0x00000400) != 0);
+    }
+    /**
+     * <pre>
+     * If we ever allow ad-hoc User Tasks, this will move to an optional
+     * field, or a `oneof user_task_source` field. However, note that such
+     * a change would be fine from the API Compatibility perspective.
+     * </pre>
+     *
+     * <code>.littlehorse.NodeRunIdPb node_run_id = 11;</code>
+     * @return The nodeRunId.
+     */
+    public io.littlehorse.sdk.common.proto.NodeRunIdPb getNodeRunId() {
+      if (nodeRunIdBuilder_ == null) {
+        return nodeRunId_ == null ? io.littlehorse.sdk.common.proto.NodeRunIdPb.getDefaultInstance() : nodeRunId_;
+      } else {
+        return nodeRunIdBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * If we ever allow ad-hoc User Tasks, this will move to an optional
+     * field, or a `oneof user_task_source` field. However, note that such
+     * a change would be fine from the API Compatibility perspective.
+     * </pre>
+     *
+     * <code>.littlehorse.NodeRunIdPb node_run_id = 11;</code>
+     */
+    public Builder setNodeRunId(io.littlehorse.sdk.common.proto.NodeRunIdPb value) {
+      if (nodeRunIdBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        nodeRunId_ = value;
+      } else {
+        nodeRunIdBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000400;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If we ever allow ad-hoc User Tasks, this will move to an optional
+     * field, or a `oneof user_task_source` field. However, note that such
+     * a change would be fine from the API Compatibility perspective.
+     * </pre>
+     *
+     * <code>.littlehorse.NodeRunIdPb node_run_id = 11;</code>
+     */
+    public Builder setNodeRunId(
+        io.littlehorse.sdk.common.proto.NodeRunIdPb.Builder builderForValue) {
+      if (nodeRunIdBuilder_ == null) {
+        nodeRunId_ = builderForValue.build();
+      } else {
+        nodeRunIdBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000400;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If we ever allow ad-hoc User Tasks, this will move to an optional
+     * field, or a `oneof user_task_source` field. However, note that such
+     * a change would be fine from the API Compatibility perspective.
+     * </pre>
+     *
+     * <code>.littlehorse.NodeRunIdPb node_run_id = 11;</code>
+     */
+    public Builder mergeNodeRunId(io.littlehorse.sdk.common.proto.NodeRunIdPb value) {
+      if (nodeRunIdBuilder_ == null) {
+        if (((bitField0_ & 0x00000400) != 0) &&
+          nodeRunId_ != null &&
+          nodeRunId_ != io.littlehorse.sdk.common.proto.NodeRunIdPb.getDefaultInstance()) {
+          getNodeRunIdBuilder().mergeFrom(value);
+        } else {
+          nodeRunId_ = value;
+        }
+      } else {
+        nodeRunIdBuilder_.mergeFrom(value);
+      }
+      bitField0_ |= 0x00000400;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If we ever allow ad-hoc User Tasks, this will move to an optional
+     * field, or a `oneof user_task_source` field. However, note that such
+     * a change would be fine from the API Compatibility perspective.
+     * </pre>
+     *
+     * <code>.littlehorse.NodeRunIdPb node_run_id = 11;</code>
+     */
+    public Builder clearNodeRunId() {
+      bitField0_ = (bitField0_ & ~0x00000400);
+      nodeRunId_ = null;
+      if (nodeRunIdBuilder_ != null) {
+        nodeRunIdBuilder_.dispose();
+        nodeRunIdBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * If we ever allow ad-hoc User Tasks, this will move to an optional
+     * field, or a `oneof user_task_source` field. However, note that such
+     * a change would be fine from the API Compatibility perspective.
+     * </pre>
+     *
+     * <code>.littlehorse.NodeRunIdPb node_run_id = 11;</code>
+     */
+    public io.littlehorse.sdk.common.proto.NodeRunIdPb.Builder getNodeRunIdBuilder() {
+      bitField0_ |= 0x00000400;
+      onChanged();
+      return getNodeRunIdFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * If we ever allow ad-hoc User Tasks, this will move to an optional
+     * field, or a `oneof user_task_source` field. However, note that such
+     * a change would be fine from the API Compatibility perspective.
+     * </pre>
+     *
+     * <code>.littlehorse.NodeRunIdPb node_run_id = 11;</code>
+     */
+    public io.littlehorse.sdk.common.proto.NodeRunIdPbOrBuilder getNodeRunIdOrBuilder() {
+      if (nodeRunIdBuilder_ != null) {
+        return nodeRunIdBuilder_.getMessageOrBuilder();
+      } else {
+        return nodeRunId_ == null ?
+            io.littlehorse.sdk.common.proto.NodeRunIdPb.getDefaultInstance() : nodeRunId_;
+      }
+    }
+    /**
+     * <pre>
+     * If we ever allow ad-hoc User Tasks, this will move to an optional
+     * field, or a `oneof user_task_source` field. However, note that such
+     * a change would be fine from the API Compatibility perspective.
+     * </pre>
+     *
+     * <code>.littlehorse.NodeRunIdPb node_run_id = 11;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.littlehorse.sdk.common.proto.NodeRunIdPb, io.littlehorse.sdk.common.proto.NodeRunIdPb.Builder, io.littlehorse.sdk.common.proto.NodeRunIdPbOrBuilder> 
+        getNodeRunIdFieldBuilder() {
+      if (nodeRunIdBuilder_ == null) {
+        nodeRunIdBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.littlehorse.sdk.common.proto.NodeRunIdPb, io.littlehorse.sdk.common.proto.NodeRunIdPb.Builder, io.littlehorse.sdk.common.proto.NodeRunIdPbOrBuilder>(
+                getNodeRunId(),
+                getParentForChildren(),
+                isClean());
+        nodeRunId_ = null;
+      }
+      return nodeRunIdBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

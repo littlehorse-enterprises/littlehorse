@@ -30,36 +30,21 @@ public interface SearchNodeRunPbOrBuilder extends
   int getLimit();
 
   /**
-   * <code>string wf_run_id = 4;</code>
+   * <code>string wf_run_id = 3;</code>
    * @return Whether the wfRunId field is set.
    */
   boolean hasWfRunId();
   /**
-   * <code>string wf_run_id = 4;</code>
+   * <code>string wf_run_id = 3;</code>
    * @return The wfRunId.
    */
   java.lang.String getWfRunId();
   /**
-   * <code>string wf_run_id = 4;</code>
+   * <code>string wf_run_id = 3;</code>
    * @return The bytes for wfRunId.
    */
   com.google.protobuf.ByteString
       getWfRunIdBytes();
-
-  /**
-   * <code>.littlehorse.SearchNodeRunPb.UserTaskRunSearchPb user_task_run = 6;</code>
-   * @return Whether the userTaskRun field is set.
-   */
-  boolean hasUserTaskRun();
-  /**
-   * <code>.littlehorse.SearchNodeRunPb.UserTaskRunSearchPb user_task_run = 6;</code>
-   * @return The userTaskRun.
-   */
-  io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb getUserTaskRun();
-  /**
-   * <code>.littlehorse.SearchNodeRunPb.UserTaskRunSearchPb user_task_run = 6;</code>
-   */
-  io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPbOrBuilder getUserTaskRunOrBuilder();
 
   public io.littlehorse.sdk.common.proto.SearchNodeRunPb.NoderunCriteriaCase getNoderunCriteriaCase();
 }

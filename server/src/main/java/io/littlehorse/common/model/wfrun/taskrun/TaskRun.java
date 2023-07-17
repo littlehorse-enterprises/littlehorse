@@ -74,7 +74,8 @@ public class TaskRun extends Getable<TaskRunPb> {
             .setTaskDefName(taskDefName)
             .setMaxAttempts(maxAttempts)
             .setScheduledAt(LHUtil.fromDate(scheduledAt))
-            .setStatus(status);
+            .setStatus(status)
+            .setId(id.toProto());
 
         for (VarNameAndVal v : inputVariables) {
             out.addInputVariables(v.toProto());

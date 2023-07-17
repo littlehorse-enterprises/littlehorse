@@ -51,6 +51,6 @@ public class StoreUtils {
         String getableId,
         Class<? extends Getable<?>> cls
     ) {
-        return "TagCache-" + cls + "/" + getableId;
+        return "TagCache/" + cls.getSimpleName() + "/" + getableId;
     }
 }

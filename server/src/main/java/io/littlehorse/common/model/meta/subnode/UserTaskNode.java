@@ -8,19 +8,20 @@ import io.littlehorse.common.model.meta.SubNode;
 import io.littlehorse.common.model.meta.VariableAssignment;
 import io.littlehorse.common.model.meta.usertasks.UTActionTrigger;
 import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
-import io.littlehorse.common.model.wfrun.subnoderun.UserTaskRun;
+import io.littlehorse.common.model.wfrun.subnoderun.UserTaskNodeRun;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.UTActionTriggerPb;
 import io.littlehorse.sdk.common.proto.UserTaskNodePb;
 import io.littlehorse.sdk.common.proto.UserTaskNodePb.AssignmentCase;
-import io.littlehorse.sdk.common.proto.UserTaskRunPb.AssignedToCase;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode(callSuper = false)
 public class UserTaskNode extends SubNode<UserTaskNodePb> {
 
@@ -99,26 +100,8 @@ public class UserTaskNode extends SubNode<UserTaskNodePb> {
         }
     }
 
-    public UserTaskRun createSubNodeRun(Date time) {
-        UserTaskRun out = new UserTaskRun();
-        out.userTaskDefName = userTaskDefName;
-        out.userTaskDefVersion = userTaskDefVersion;
-
-        switch (assignmentType) {
-            case USER_GROUP:
-                out.assignedToType = AssignedToCase.USER_GROUP;
-                // need to get groups to assign to.
-                // Tried to do it here, but we don't have access to the
-                // parent ThreadRun, so we will do it in arrive() instead.
-                break;
-            case USER_ID:
-                out.assignedToType = AssignedToCase.SPECIFIC_USER_ID;
-            // same with getting assigned user.
-
-            case ASSIGNMENT_NOT_SET:
-            // Not possible, would be validation error.
-        }
-        return out;
+    public UserTaskNodeRun createSubNodeRun(Date time) {
+        return new UserTaskNodeRun();
     }
 
     public void validate(LHGlobalMetaStores stores, LHConfig config)

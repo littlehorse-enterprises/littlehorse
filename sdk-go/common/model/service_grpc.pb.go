@@ -29,6 +29,7 @@ const (
 	LHPublicApi_PutUserTaskDef_FullMethodName         = "/littlehorse.LHPublicApi/PutUserTaskDef"
 	LHPublicApi_GetUserTaskDef_FullMethodName         = "/littlehorse.LHPublicApi/GetUserTaskDef"
 	LHPublicApi_GetLatestUserTaskDef_FullMethodName   = "/littlehorse.LHPublicApi/GetLatestUserTaskDef"
+	LHPublicApi_GetUserTaskRun_FullMethodName         = "/littlehorse.LHPublicApi/GetUserTaskRun"
 	LHPublicApi_RunWf_FullMethodName                  = "/littlehorse.LHPublicApi/RunWf"
 	LHPublicApi_GetWfRun_FullMethodName               = "/littlehorse.LHPublicApi/GetWfRun"
 	LHPublicApi_AssignUserTaskRun_FullMethodName      = "/littlehorse.LHPublicApi/AssignUserTaskRun"
@@ -44,6 +45,7 @@ const (
 	LHPublicApi_SearchWfRun_FullMethodName            = "/littlehorse.LHPublicApi/SearchWfRun"
 	LHPublicApi_SearchNodeRun_FullMethodName          = "/littlehorse.LHPublicApi/SearchNodeRun"
 	LHPublicApi_SearchTaskRun_FullMethodName          = "/littlehorse.LHPublicApi/SearchTaskRun"
+	LHPublicApi_SearchUserTaskRun_FullMethodName      = "/littlehorse.LHPublicApi/SearchUserTaskRun"
 	LHPublicApi_SearchVariable_FullMethodName         = "/littlehorse.LHPublicApi/SearchVariable"
 	LHPublicApi_SearchTaskDef_FullMethodName          = "/littlehorse.LHPublicApi/SearchTaskDef"
 	LHPublicApi_SearchUserTaskDef_FullMethodName      = "/littlehorse.LHPublicApi/SearchUserTaskDef"
@@ -81,6 +83,7 @@ type LHPublicApiClient interface {
 	PutUserTaskDef(ctx context.Context, in *PutUserTaskDefPb, opts ...grpc.CallOption) (*PutUserTaskDefReplyPb, error)
 	GetUserTaskDef(ctx context.Context, in *UserTaskDefIdPb, opts ...grpc.CallOption) (*GetUserTaskDefReplyPb, error)
 	GetLatestUserTaskDef(ctx context.Context, in *GetLatestUserTaskDefPb, opts ...grpc.CallOption) (*GetUserTaskDefReplyPb, error)
+	GetUserTaskRun(ctx context.Context, in *UserTaskRunIdPb, opts ...grpc.CallOption) (*GetUserTaskRunReplyPb, error)
 	RunWf(ctx context.Context, in *RunWfPb, opts ...grpc.CallOption) (*RunWfReplyPb, error)
 	GetWfRun(ctx context.Context, in *WfRunIdPb, opts ...grpc.CallOption) (*GetWfRunReplyPb, error)
 	AssignUserTaskRun(ctx context.Context, in *AssignUserTaskRunPb, opts ...grpc.CallOption) (*AssignUserTaskRunReplyPb, error)
@@ -96,6 +99,7 @@ type LHPublicApiClient interface {
 	SearchWfRun(ctx context.Context, in *SearchWfRunPb, opts ...grpc.CallOption) (*SearchWfRunReplyPb, error)
 	SearchNodeRun(ctx context.Context, in *SearchNodeRunPb, opts ...grpc.CallOption) (*SearchNodeRunReplyPb, error)
 	SearchTaskRun(ctx context.Context, in *SearchTaskRunPb, opts ...grpc.CallOption) (*SearchTaskRunReplyPb, error)
+	SearchUserTaskRun(ctx context.Context, in *SearchUserTaskRunPb, opts ...grpc.CallOption) (*SearchUserTaskRunReplyPb, error)
 	SearchVariable(ctx context.Context, in *SearchVariablePb, opts ...grpc.CallOption) (*SearchVariableReplyPb, error)
 	SearchTaskDef(ctx context.Context, in *SearchTaskDefPb, opts ...grpc.CallOption) (*SearchTaskDefReplyPb, error)
 	SearchUserTaskDef(ctx context.Context, in *SearchUserTaskDefPb, opts ...grpc.CallOption) (*SearchUserTaskDefReplyPb, error)
@@ -211,6 +215,15 @@ func (c *lHPublicApiClient) GetUserTaskDef(ctx context.Context, in *UserTaskDefI
 func (c *lHPublicApiClient) GetLatestUserTaskDef(ctx context.Context, in *GetLatestUserTaskDefPb, opts ...grpc.CallOption) (*GetUserTaskDefReplyPb, error) {
 	out := new(GetUserTaskDefReplyPb)
 	err := c.cc.Invoke(ctx, LHPublicApi_GetLatestUserTaskDef_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *lHPublicApiClient) GetUserTaskRun(ctx context.Context, in *UserTaskRunIdPb, opts ...grpc.CallOption) (*GetUserTaskRunReplyPb, error) {
+	out := new(GetUserTaskRunReplyPb)
+	err := c.cc.Invoke(ctx, LHPublicApi_GetUserTaskRun_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -346,6 +359,15 @@ func (c *lHPublicApiClient) SearchNodeRun(ctx context.Context, in *SearchNodeRun
 func (c *lHPublicApiClient) SearchTaskRun(ctx context.Context, in *SearchTaskRunPb, opts ...grpc.CallOption) (*SearchTaskRunReplyPb, error) {
 	out := new(SearchTaskRunReplyPb)
 	err := c.cc.Invoke(ctx, LHPublicApi_SearchTaskRun_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *lHPublicApiClient) SearchUserTaskRun(ctx context.Context, in *SearchUserTaskRunPb, opts ...grpc.CallOption) (*SearchUserTaskRunReplyPb, error) {
+	out := new(SearchUserTaskRunReplyPb)
+	err := c.cc.Invoke(ctx, LHPublicApi_SearchUserTaskRun_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -577,6 +599,7 @@ type LHPublicApiServer interface {
 	PutUserTaskDef(context.Context, *PutUserTaskDefPb) (*PutUserTaskDefReplyPb, error)
 	GetUserTaskDef(context.Context, *UserTaskDefIdPb) (*GetUserTaskDefReplyPb, error)
 	GetLatestUserTaskDef(context.Context, *GetLatestUserTaskDefPb) (*GetUserTaskDefReplyPb, error)
+	GetUserTaskRun(context.Context, *UserTaskRunIdPb) (*GetUserTaskRunReplyPb, error)
 	RunWf(context.Context, *RunWfPb) (*RunWfReplyPb, error)
 	GetWfRun(context.Context, *WfRunIdPb) (*GetWfRunReplyPb, error)
 	AssignUserTaskRun(context.Context, *AssignUserTaskRunPb) (*AssignUserTaskRunReplyPb, error)
@@ -592,6 +615,7 @@ type LHPublicApiServer interface {
 	SearchWfRun(context.Context, *SearchWfRunPb) (*SearchWfRunReplyPb, error)
 	SearchNodeRun(context.Context, *SearchNodeRunPb) (*SearchNodeRunReplyPb, error)
 	SearchTaskRun(context.Context, *SearchTaskRunPb) (*SearchTaskRunReplyPb, error)
+	SearchUserTaskRun(context.Context, *SearchUserTaskRunPb) (*SearchUserTaskRunReplyPb, error)
 	SearchVariable(context.Context, *SearchVariablePb) (*SearchVariableReplyPb, error)
 	SearchTaskDef(context.Context, *SearchTaskDefPb) (*SearchTaskDefReplyPb, error)
 	SearchUserTaskDef(context.Context, *SearchUserTaskDefPb) (*SearchUserTaskDefReplyPb, error)
@@ -650,6 +674,9 @@ func (UnimplementedLHPublicApiServer) GetUserTaskDef(context.Context, *UserTaskD
 func (UnimplementedLHPublicApiServer) GetLatestUserTaskDef(context.Context, *GetLatestUserTaskDefPb) (*GetUserTaskDefReplyPb, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetLatestUserTaskDef not implemented")
 }
+func (UnimplementedLHPublicApiServer) GetUserTaskRun(context.Context, *UserTaskRunIdPb) (*GetUserTaskRunReplyPb, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserTaskRun not implemented")
+}
 func (UnimplementedLHPublicApiServer) RunWf(context.Context, *RunWfPb) (*RunWfReplyPb, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RunWf not implemented")
 }
@@ -694,6 +721,9 @@ func (UnimplementedLHPublicApiServer) SearchNodeRun(context.Context, *SearchNode
 }
 func (UnimplementedLHPublicApiServer) SearchTaskRun(context.Context, *SearchTaskRunPb) (*SearchTaskRunReplyPb, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchTaskRun not implemented")
+}
+func (UnimplementedLHPublicApiServer) SearchUserTaskRun(context.Context, *SearchUserTaskRunPb) (*SearchUserTaskRunReplyPb, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchUserTaskRun not implemented")
 }
 func (UnimplementedLHPublicApiServer) SearchVariable(context.Context, *SearchVariablePb) (*SearchVariableReplyPb, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchVariable not implemented")
@@ -947,6 +977,24 @@ func _LHPublicApi_GetLatestUserTaskDef_Handler(srv interface{}, ctx context.Cont
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LHPublicApiServer).GetLatestUserTaskDef(ctx, req.(*GetLatestUserTaskDefPb))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LHPublicApi_GetUserTaskRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserTaskRunIdPb)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LHPublicApiServer).GetUserTaskRun(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LHPublicApi_GetUserTaskRun_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LHPublicApiServer).GetUserTaskRun(ctx, req.(*UserTaskRunIdPb))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1217,6 +1265,24 @@ func _LHPublicApi_SearchTaskRun_Handler(srv interface{}, ctx context.Context, de
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LHPublicApiServer).SearchTaskRun(ctx, req.(*SearchTaskRunPb))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LHPublicApi_SearchUserTaskRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchUserTaskRunPb)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LHPublicApiServer).SearchUserTaskRun(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LHPublicApi_SearchUserTaskRun_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LHPublicApiServer).SearchUserTaskRun(ctx, req.(*SearchUserTaskRunPb))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1655,6 +1721,10 @@ var LHPublicApi_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LHPublicApi_GetLatestUserTaskDef_Handler,
 		},
 		{
+			MethodName: "GetUserTaskRun",
+			Handler:    _LHPublicApi_GetUserTaskRun_Handler,
+		},
+		{
 			MethodName: "RunWf",
 			Handler:    _LHPublicApi_RunWf_Handler,
 		},
@@ -1713,6 +1783,10 @@ var LHPublicApi_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SearchTaskRun",
 			Handler:    _LHPublicApi_SearchTaskRun_Handler,
+		},
+		{
+			MethodName: "SearchUserTaskRun",
+			Handler:    _LHPublicApi_SearchUserTaskRun_Handler,
 		},
 		{
 			MethodName: "SearchVariable",

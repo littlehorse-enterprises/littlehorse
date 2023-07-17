@@ -3,32 +3,32 @@ package io.littlehorse.common.model.command.subcommand;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.LHDAO;
+import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.command.subcommandresponse.AssignUserTaskRunReply;
-import io.littlehorse.common.model.meta.WfSpec;
-import io.littlehorse.common.model.wfrun.NodeRun;
-import io.littlehorse.common.model.wfrun.ThreadRun;
+import io.littlehorse.common.model.objectId.UserTaskRunId;
+import io.littlehorse.common.model.wfrun.UserTaskRun;
 import io.littlehorse.common.model.wfrun.WfRun;
-import io.littlehorse.common.model.wfrun.subnoderun.UserTaskRun;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunPb;
 import io.littlehorse.sdk.common.proto.AssignUserTaskRunPb.AssigneeCase;
 import io.littlehorse.sdk.common.proto.LHResponseCodePb;
-import io.littlehorse.sdk.common.proto.NodeRunPb.NodeTypeCase;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatusPb;
+import java.util.Date;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Getter
+@Setter
 public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
 
-    public String wfRunId;
-    public int threadRunNumber;
-    public int nodeRunPosition;
+    private UserTaskRunId userTaskRunId;
+    private boolean overrideClaim;
 
-    public boolean overrideClaim;
-
-    public AssigneeCase assigneeType;
-    public String userId;
-    public String userGroup;
+    private AssigneeCase assigneeType;
+    private String userId;
+    private String userGroup;
 
     public Class<AssignUserTaskRunPb> getProtoBaseClass() {
         return AssignUserTaskRunPb.class;
@@ -37,9 +37,7 @@ public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
     public AssignUserTaskRunPb.Builder toProto() {
         AssignUserTaskRunPb.Builder out = AssignUserTaskRunPb
             .newBuilder()
-            .setWfRunId(wfRunId)
-            .setThreadRunNumber(threadRunNumber)
-            .setNodeRunPosition(nodeRunPosition)
+            .setUserTaskRunId(userTaskRunId.toProto())
             .setOverrideClaim(overrideClaim);
 
         switch (assigneeType) {
@@ -60,9 +58,8 @@ public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
 
     public void initFrom(Message proto) {
         AssignUserTaskRunPb p = (AssignUserTaskRunPb) proto;
-        wfRunId = p.getWfRunId();
-        threadRunNumber = p.getThreadRunNumber();
-        nodeRunPosition = p.getNodeRunPosition();
+        userTaskRunId =
+            LHSerializable.fromProto(p.getUserTaskRunId(), UserTaskRunId.class);
         assigneeType = p.getAssigneeCase();
         overrideClaim = p.getOverrideClaim();
 
@@ -79,8 +76,11 @@ public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
         }
     }
 
+    public String getWfRunId() {
+        return userTaskRunId.getWfRunId();
+    }
+
     public AssignUserTaskRunReply process(LHDAO dao, LHConfig config) {
-        WfRun wfRun = dao.getWfRun(wfRunId);
         AssignUserTaskRunReply out = new AssignUserTaskRunReply();
 
         if (assigneeType == AssigneeCase.ASSIGNEE_NOT_SET) {
@@ -89,66 +89,45 @@ public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
             return out;
         }
 
-        if (wfRun == null) {
+        UserTaskRun utr = dao.getUserTaskRun(userTaskRunId);
+        if (utr == null) {
             out.code = LHResponseCodePb.BAD_REQUEST_ERROR;
-            out.message = "Provided invalid wfRunId";
+            out.message = "Couldn't find userTaskRun " + userTaskRunId;
             return out;
         }
 
-        // First, find the WfSpec
-        WfSpec wfSpec = dao.getWfSpec(wfRun.wfSpecName, wfRun.wfSpecVersion);
-        if (wfSpec == null) {
-            wfRun.failDueToWfSpecDeletion();
-            out.code = LHResponseCodePb.NOT_FOUND_ERROR;
-            out.message = "Apparently WfSpec was deleted!";
-            return out;
-        }
-
-        wfRun.wfSpec = wfSpec;
-
-        // Next, process the node.
-        ThreadRun thread = wfRun.threadRuns.get(threadRunNumber);
-        if (thread == null) {
-            out.code = LHResponseCodePb.BAD_REQUEST_ERROR;
-            out.message = "Could not find specified threadRun";
-            return out;
-        }
-
-        NodeRun nr = thread.getNodeRun(this.nodeRunPosition);
-        if (nr == null) {
-            out.code = LHResponseCodePb.BAD_REQUEST_ERROR;
-            out.message = "Could not find specified nodeRun";
-            return out;
-        }
-        if (nr.type != NodeTypeCase.USER_TASK) {
-            out.code = LHResponseCodePb.BAD_REQUEST_ERROR;
-            out.message = "Specified NodeRun not a User Task Node!";
-            return out;
-        }
-
-        UserTaskRun utr = nr.userTaskRun;
-        if (!overrideClaim && utr.specificUserId != null) {
+        if (!overrideClaim && utr.getSpecificUserId() != null) {
             out.code = LHResponseCodePb.ALREADY_EXISTS_ERROR;
-            out.message = "User Task Run already assigned to " + utr.specificUserId;
+            out.message =
+                "User Task Run already assigned to " + utr.getSpecificUserId();
             return out;
         }
 
         if (
-            utr.status != UserTaskRunStatusPb.CLAIMED &&
-            utr.status != UserTaskRunStatusPb.ASSIGNED_NOT_CLAIMED &&
-            utr.status != UserTaskRunStatusPb.UNASSIGNED
+            utr.getStatus() != UserTaskRunStatusPb.CLAIMED &&
+            utr.getStatus() != UserTaskRunStatusPb.ASSIGNED_NOT_CLAIMED &&
+            utr.getStatus() != UserTaskRunStatusPb.UNASSIGNED
         ) {
             out.code = LHResponseCodePb.BAD_REQUEST_ERROR;
             out.message =
                 "Couldn't reassign User Task Run since it  is in terminal status " +
-                utr.status;
+                utr.getStatus();
         }
 
         // In the future, we could add some verification to make sure that the
         // user actually exists. For now, this is fine.
-        nr.userTaskRun.reassignTo(this);
+        utr.reassignTo(this);
+        WfRun wfRun = dao.getWfRun(getWfRunId());
+        if (wfRun == null) {
+            log.error(
+                "Impossible: Got the UserTaskRun but WfRun missing {}",
+                getWfRunId()
+            );
+            return out;
+        }
 
-        wfRun.advance(dao.getEventTime());
+        wfRun.advance(new Date());
+
         out.code = LHResponseCodePb.OK;
         return out;
     }
@@ -158,6 +137,6 @@ public class AssignUserTaskRun extends SubCommand<AssignUserTaskRunPb> {
     }
 
     public String getPartitionKey() {
-        return wfRunId;
+        return getWfRunId();
     }
 }

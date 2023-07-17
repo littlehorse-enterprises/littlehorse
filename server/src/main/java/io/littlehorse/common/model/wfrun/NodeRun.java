@@ -1,6 +1,5 @@
 package io.littlehorse.common.model.wfrun;
 
-import com.google.common.base.Strings;
 import com.google.protobuf.Message;
 import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.LHSerializable;
@@ -13,7 +12,7 @@ import io.littlehorse.common.model.wfrun.subnoderun.ExternalEventRun;
 import io.littlehorse.common.model.wfrun.subnoderun.SleepNodeRun;
 import io.littlehorse.common.model.wfrun.subnoderun.StartThreadRun;
 import io.littlehorse.common.model.wfrun.subnoderun.TaskNodeRun;
-import io.littlehorse.common.model.wfrun.subnoderun.UserTaskRun;
+import io.littlehorse.common.model.wfrun.subnoderun.UserTaskNodeRun;
 import io.littlehorse.common.model.wfrun.subnoderun.WaitForThreadsRun;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHUtil;
@@ -66,7 +65,7 @@ public class NodeRun extends Getable<NodeRunPb> {
     public StartThreadRun startThreadRun;
     public WaitForThreadsRun waitThreadsRun;
     public SleepNodeRun sleepNodeRun;
-    public UserTaskRun userTaskRun;
+    public UserTaskNodeRun userTaskRun;
 
     public List<Integer> failureHandlerIds;
 
@@ -124,80 +123,6 @@ public class NodeRun extends Getable<NodeRunPb> {
                     Pair.of("type", GetableIndex.ValueType.SINGLE)
                 ),
                 Optional.of(TagStorageTypePb.LOCAL)
-            ),
-            new GetableIndex<NodeRun>(
-                List.of(Pair.of("userTaskDefName", GetableIndex.ValueType.SINGLE)),
-                Optional.of(TagStorageTypePb.LOCAL),
-                nodeRun -> nodeRun.getType().equals(NodeTypeCase.USER_TASK)
-            ),
-            new GetableIndex<NodeRun>(
-                List.of(
-                    Pair.of("status", GetableIndex.ValueType.SINGLE),
-                    Pair.of("userTaskDefName", GetableIndex.ValueType.SINGLE)
-                ),
-                Optional.of(TagStorageTypePb.LOCAL),
-                nodeRun -> nodeRun.getType().equals(NodeTypeCase.USER_TASK)
-            ),
-            new GetableIndex<NodeRun>(
-                List.of(Pair.of("status", GetableIndex.ValueType.SINGLE)),
-                Optional.of(TagStorageTypePb.LOCAL),
-                nodeRun -> nodeRun.getType().equals(NodeTypeCase.USER_TASK)
-            ),
-            new GetableIndex<NodeRun>(
-                List.of(Pair.of("userId", GetableIndex.ValueType.SINGLE)),
-                Optional.of(TagStorageTypePb.REMOTE),
-                nodeRun ->
-                    nodeRun.getType().equals(NodeTypeCase.USER_TASK) &&
-                    !Strings.isNullOrEmpty(nodeRun.getUserTaskRun().getUserId())
-            ),
-            new GetableIndex<NodeRun>(
-                List.of(
-                    Pair.of("status", GetableIndex.ValueType.SINGLE),
-                    Pair.of("userId", GetableIndex.ValueType.SINGLE)
-                ),
-                Optional.of(TagStorageTypePb.REMOTE),
-                nodeRun ->
-                    nodeRun.getType().equals(NodeTypeCase.USER_TASK) &&
-                    !Strings.isNullOrEmpty(nodeRun.getUserTaskRun().getUserId())
-            ),
-            new GetableIndex<NodeRun>(
-                List.of(
-                    Pair.of("status", GetableIndex.ValueType.SINGLE),
-                    Pair.of("userTaskDefName", GetableIndex.ValueType.SINGLE),
-                    Pair.of("userId", GetableIndex.ValueType.SINGLE)
-                ),
-                Optional.of(TagStorageTypePb.REMOTE),
-                nodeRun ->
-                    nodeRun.getType().equals(NodeTypeCase.USER_TASK) &&
-                    !Strings.isNullOrEmpty(nodeRun.getUserTaskRun().getUserId())
-            ),
-            new GetableIndex<NodeRun>(
-                List.of(
-                    Pair.of("status", GetableIndex.ValueType.SINGLE),
-                    Pair.of("userTaskDefName", GetableIndex.ValueType.SINGLE),
-                    Pair.of("userGroupId", GetableIndex.ValueType.SINGLE)
-                ),
-                Optional.of(TagStorageTypePb.REMOTE),
-                nodeRun ->
-                    nodeRun.getType().equals(NodeTypeCase.USER_TASK) &&
-                    !Strings.isNullOrEmpty(nodeRun.getUserTaskRun().getUserGroup())
-            ),
-            new GetableIndex<NodeRun>(
-                List.of(
-                    Pair.of("status", GetableIndex.ValueType.SINGLE),
-                    Pair.of("userGroupId", GetableIndex.ValueType.SINGLE)
-                ),
-                Optional.of(TagStorageTypePb.REMOTE),
-                nodeRun ->
-                    nodeRun.getType().equals(NodeTypeCase.USER_TASK) &&
-                    !Strings.isNullOrEmpty(nodeRun.getUserTaskRun().getUserGroup())
-            ),
-            new GetableIndex<NodeRun>(
-                List.of(Pair.of("userGroupId", GetableIndex.ValueType.SINGLE)),
-                Optional.of(TagStorageTypePb.REMOTE),
-                nodeRun ->
-                    nodeRun.getType().equals(NodeTypeCase.USER_TASK) &&
-                    !Strings.isNullOrEmpty(nodeRun.getUserTaskRun().getUserGroup())
             )
         );
     }
@@ -226,34 +151,8 @@ public class NodeRun extends Getable<NodeRunPb> {
                     )
                 );
             }
-            case "userTaskDefName" -> {
-                return List.of(
-                    new IndexedField(
-                        key,
-                        this.getUserTaskRun().getUserTaskDefName(),
-                        TagStorageTypePb.LOCAL
-                    )
-                );
-            }
-            case "userId" -> {
-                return List.of(
-                    new IndexedField(
-                        key,
-                        this.getUserTaskRun().getUserId(),
-                        tagStorageTypePb.get()
-                    )
-                );
-            }
-            case "userGroupId" -> {
-                return List.of(
-                    new IndexedField(
-                        key,
-                        this.getUserTaskRun().getUserGroup(),
-                        tagStorageTypePb.get()
-                    )
-                );
-            }
         }
+        log.warn("Tried to get value for unknown index field {}", key);
         return List.of();
     }
 
@@ -302,7 +201,10 @@ public class NodeRun extends Getable<NodeRunPb> {
                 break;
             case USER_TASK:
                 userTaskRun =
-                    LHSerializable.fromProto(proto.getUserTask(), UserTaskRun.class);
+                    LHSerializable.fromProto(
+                        proto.getUserTask(),
+                        UserTaskNodeRun.class
+                    );
                 break;
             case NODETYPE_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -364,9 +266,9 @@ public class NodeRun extends Getable<NodeRunPb> {
         } else if (cls.equals(SleepNodeRun.class)) {
             type = NodeTypeCase.SLEEP;
             sleepNodeRun = (SleepNodeRun) snr;
-        } else if (cls.equals(UserTaskRun.class)) {
+        } else if (cls.equals(UserTaskNodeRun.class)) {
             type = NodeTypeCase.USER_TASK;
-            userTaskRun = (UserTaskRun) snr;
+            userTaskRun = (UserTaskNodeRun) snr;
         } else {
             throw new RuntimeException("Didn't recognize " + snr.getClass());
         }

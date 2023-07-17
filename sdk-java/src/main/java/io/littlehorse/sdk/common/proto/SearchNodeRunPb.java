@@ -44,1477 +44,13 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.SearchNodeRunPb.class, io.littlehorse.sdk.common.proto.SearchNodeRunPb.Builder.class);
   }
 
-  public interface UserTaskRunSearchPbOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:littlehorse.SearchNodeRunPb.UserTaskRunSearchPb)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>optional .littlehorse.UserTaskRunStatusPb status = 1;</code>
-     * @return Whether the status field is set.
-     */
-    boolean hasStatus();
-    /**
-     * <code>optional .littlehorse.UserTaskRunStatusPb status = 1;</code>
-     * @return The enum numeric value on the wire for status.
-     */
-    int getStatusValue();
-    /**
-     * <code>optional .littlehorse.UserTaskRunStatusPb status = 1;</code>
-     * @return The status.
-     */
-    io.littlehorse.sdk.common.proto.UserTaskRunStatusPb getStatus();
-
-    /**
-     * <code>optional string user_task_def = 2;</code>
-     * @return Whether the userTaskDef field is set.
-     */
-    boolean hasUserTaskDef();
-    /**
-     * <code>optional string user_task_def = 2;</code>
-     * @return The userTaskDef.
-     */
-    java.lang.String getUserTaskDef();
-    /**
-     * <code>optional string user_task_def = 2;</code>
-     * @return The bytes for userTaskDef.
-     */
-    com.google.protobuf.ByteString
-        getUserTaskDefBytes();
-
-    /**
-     * <code>optional string user_id = 3;</code>
-     * @return Whether the userId field is set.
-     */
-    boolean hasUserId();
-    /**
-     * <code>optional string user_id = 3;</code>
-     * @return The userId.
-     */
-    java.lang.String getUserId();
-    /**
-     * <code>optional string user_id = 3;</code>
-     * @return The bytes for userId.
-     */
-    com.google.protobuf.ByteString
-        getUserIdBytes();
-
-    /**
-     * <code>optional string user_group = 4;</code>
-     * @return Whether the userGroup field is set.
-     */
-    boolean hasUserGroup();
-    /**
-     * <code>optional string user_group = 4;</code>
-     * @return The userGroup.
-     */
-    java.lang.String getUserGroup();
-    /**
-     * <code>optional string user_group = 4;</code>
-     * @return The bytes for userGroup.
-     */
-    com.google.protobuf.ByteString
-        getUserGroupBytes();
-
-    /**
-     * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
-     * @return Whether the earliestStart field is set.
-     */
-    boolean hasEarliestStart();
-    /**
-     * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
-     * @return The earliestStart.
-     */
-    com.google.protobuf.Timestamp getEarliestStart();
-    /**
-     * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
-     */
-    com.google.protobuf.TimestampOrBuilder getEarliestStartOrBuilder();
-
-    /**
-     * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
-     * @return Whether the latestStart field is set.
-     */
-    boolean hasLatestStart();
-    /**
-     * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
-     * @return The latestStart.
-     */
-    com.google.protobuf.Timestamp getLatestStart();
-    /**
-     * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
-     */
-    com.google.protobuf.TimestampOrBuilder getLatestStartOrBuilder();
-  }
-  /**
-   * Protobuf type {@code littlehorse.SearchNodeRunPb.UserTaskRunSearchPb}
-   */
-  public static final class UserTaskRunSearchPb extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:littlehorse.SearchNodeRunPb.UserTaskRunSearchPb)
-      UserTaskRunSearchPbOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use UserTaskRunSearchPb.newBuilder() to construct.
-    private UserTaskRunSearchPb(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private UserTaskRunSearchPb() {
-      status_ = 0;
-      userTaskDef_ = "";
-      userId_ = "";
-      userGroup_ = "";
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new UserTaskRunSearchPb();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_SearchNodeRunPb_UserTaskRunSearchPb_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_SearchNodeRunPb_UserTaskRunSearchPb_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb.class, io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb.Builder.class);
-    }
-
-    private int bitField0_;
-    public static final int STATUS_FIELD_NUMBER = 1;
-    private int status_ = 0;
-    /**
-     * <code>optional .littlehorse.UserTaskRunStatusPb status = 1;</code>
-     * @return Whether the status field is set.
-     */
-    @java.lang.Override public boolean hasStatus() {
-      return ((bitField0_ & 0x00000001) != 0);
-    }
-    /**
-     * <code>optional .littlehorse.UserTaskRunStatusPb status = 1;</code>
-     * @return The enum numeric value on the wire for status.
-     */
-    @java.lang.Override public int getStatusValue() {
-      return status_;
-    }
-    /**
-     * <code>optional .littlehorse.UserTaskRunStatusPb status = 1;</code>
-     * @return The status.
-     */
-    @java.lang.Override public io.littlehorse.sdk.common.proto.UserTaskRunStatusPb getStatus() {
-      io.littlehorse.sdk.common.proto.UserTaskRunStatusPb result = io.littlehorse.sdk.common.proto.UserTaskRunStatusPb.forNumber(status_);
-      return result == null ? io.littlehorse.sdk.common.proto.UserTaskRunStatusPb.UNRECOGNIZED : result;
-    }
-
-    public static final int USER_TASK_DEF_FIELD_NUMBER = 2;
-    @SuppressWarnings("serial")
-    private volatile java.lang.Object userTaskDef_ = "";
-    /**
-     * <code>optional string user_task_def = 2;</code>
-     * @return Whether the userTaskDef field is set.
-     */
-    @java.lang.Override
-    public boolean hasUserTaskDef() {
-      return ((bitField0_ & 0x00000002) != 0);
-    }
-    /**
-     * <code>optional string user_task_def = 2;</code>
-     * @return The userTaskDef.
-     */
-    @java.lang.Override
-    public java.lang.String getUserTaskDef() {
-      java.lang.Object ref = userTaskDef_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        userTaskDef_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>optional string user_task_def = 2;</code>
-     * @return The bytes for userTaskDef.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getUserTaskDefBytes() {
-      java.lang.Object ref = userTaskDef_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        userTaskDef_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int USER_ID_FIELD_NUMBER = 3;
-    @SuppressWarnings("serial")
-    private volatile java.lang.Object userId_ = "";
-    /**
-     * <code>optional string user_id = 3;</code>
-     * @return Whether the userId field is set.
-     */
-    @java.lang.Override
-    public boolean hasUserId() {
-      return ((bitField0_ & 0x00000004) != 0);
-    }
-    /**
-     * <code>optional string user_id = 3;</code>
-     * @return The userId.
-     */
-    @java.lang.Override
-    public java.lang.String getUserId() {
-      java.lang.Object ref = userId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        userId_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>optional string user_id = 3;</code>
-     * @return The bytes for userId.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getUserIdBytes() {
-      java.lang.Object ref = userId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        userId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int USER_GROUP_FIELD_NUMBER = 4;
-    @SuppressWarnings("serial")
-    private volatile java.lang.Object userGroup_ = "";
-    /**
-     * <code>optional string user_group = 4;</code>
-     * @return Whether the userGroup field is set.
-     */
-    @java.lang.Override
-    public boolean hasUserGroup() {
-      return ((bitField0_ & 0x00000008) != 0);
-    }
-    /**
-     * <code>optional string user_group = 4;</code>
-     * @return The userGroup.
-     */
-    @java.lang.Override
-    public java.lang.String getUserGroup() {
-      java.lang.Object ref = userGroup_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        userGroup_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>optional string user_group = 4;</code>
-     * @return The bytes for userGroup.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getUserGroupBytes() {
-      java.lang.Object ref = userGroup_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        userGroup_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int EARLIEST_START_FIELD_NUMBER = 5;
-    private com.google.protobuf.Timestamp earliestStart_;
-    /**
-     * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
-     * @return Whether the earliestStart field is set.
-     */
-    @java.lang.Override
-    public boolean hasEarliestStart() {
-      return ((bitField0_ & 0x00000010) != 0);
-    }
-    /**
-     * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
-     * @return The earliestStart.
-     */
-    @java.lang.Override
-    public com.google.protobuf.Timestamp getEarliestStart() {
-      return earliestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : earliestStart_;
-    }
-    /**
-     * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
-     */
-    @java.lang.Override
-    public com.google.protobuf.TimestampOrBuilder getEarliestStartOrBuilder() {
-      return earliestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : earliestStart_;
-    }
-
-    public static final int LATEST_START_FIELD_NUMBER = 6;
-    private com.google.protobuf.Timestamp latestStart_;
-    /**
-     * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
-     * @return Whether the latestStart field is set.
-     */
-    @java.lang.Override
-    public boolean hasLatestStart() {
-      return ((bitField0_ & 0x00000020) != 0);
-    }
-    /**
-     * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
-     * @return The latestStart.
-     */
-    @java.lang.Override
-    public com.google.protobuf.Timestamp getLatestStart() {
-      return latestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
-    }
-    /**
-     * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
-     */
-    @java.lang.Override
-    public com.google.protobuf.TimestampOrBuilder getLatestStartOrBuilder() {
-      return latestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (((bitField0_ & 0x00000001) != 0)) {
-        output.writeEnum(1, status_);
-      }
-      if (((bitField0_ & 0x00000002) != 0)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, userTaskDef_);
-      }
-      if (((bitField0_ & 0x00000004) != 0)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, userId_);
-      }
-      if (((bitField0_ & 0x00000008) != 0)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, userGroup_);
-      }
-      if (((bitField0_ & 0x00000010) != 0)) {
-        output.writeMessage(5, getEarliestStart());
-      }
-      if (((bitField0_ & 0x00000020) != 0)) {
-        output.writeMessage(6, getLatestStart());
-      }
-      getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (((bitField0_ & 0x00000001) != 0)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(1, status_);
-      }
-      if (((bitField0_ & 0x00000002) != 0)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, userTaskDef_);
-      }
-      if (((bitField0_ & 0x00000004) != 0)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, userId_);
-      }
-      if (((bitField0_ & 0x00000008) != 0)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, userGroup_);
-      }
-      if (((bitField0_ & 0x00000010) != 0)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, getEarliestStart());
-      }
-      if (((bitField0_ & 0x00000020) != 0)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(6, getLatestStart());
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb)) {
-        return super.equals(obj);
-      }
-      io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb other = (io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb) obj;
-
-      if (hasStatus() != other.hasStatus()) return false;
-      if (hasStatus()) {
-        if (status_ != other.status_) return false;
-      }
-      if (hasUserTaskDef() != other.hasUserTaskDef()) return false;
-      if (hasUserTaskDef()) {
-        if (!getUserTaskDef()
-            .equals(other.getUserTaskDef())) return false;
-      }
-      if (hasUserId() != other.hasUserId()) return false;
-      if (hasUserId()) {
-        if (!getUserId()
-            .equals(other.getUserId())) return false;
-      }
-      if (hasUserGroup() != other.hasUserGroup()) return false;
-      if (hasUserGroup()) {
-        if (!getUserGroup()
-            .equals(other.getUserGroup())) return false;
-      }
-      if (hasEarliestStart() != other.hasEarliestStart()) return false;
-      if (hasEarliestStart()) {
-        if (!getEarliestStart()
-            .equals(other.getEarliestStart())) return false;
-      }
-      if (hasLatestStart() != other.hasLatestStart()) return false;
-      if (hasLatestStart()) {
-        if (!getLatestStart()
-            .equals(other.getLatestStart())) return false;
-      }
-      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      if (hasStatus()) {
-        hash = (37 * hash) + STATUS_FIELD_NUMBER;
-        hash = (53 * hash) + status_;
-      }
-      if (hasUserTaskDef()) {
-        hash = (37 * hash) + USER_TASK_DEF_FIELD_NUMBER;
-        hash = (53 * hash) + getUserTaskDef().hashCode();
-      }
-      if (hasUserId()) {
-        hash = (37 * hash) + USER_ID_FIELD_NUMBER;
-        hash = (53 * hash) + getUserId().hashCode();
-      }
-      if (hasUserGroup()) {
-        hash = (37 * hash) + USER_GROUP_FIELD_NUMBER;
-        hash = (53 * hash) + getUserGroup().hashCode();
-      }
-      if (hasEarliestStart()) {
-        hash = (37 * hash) + EARLIEST_START_FIELD_NUMBER;
-        hash = (53 * hash) + getEarliestStart().hashCode();
-      }
-      if (hasLatestStart()) {
-        hash = (37 * hash) + LATEST_START_FIELD_NUMBER;
-        hash = (53 * hash) + getLatestStart().hashCode();
-      }
-      hash = (29 * hash) + getUnknownFields().hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code littlehorse.SearchNodeRunPb.UserTaskRunSearchPb}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:littlehorse.SearchNodeRunPb.UserTaskRunSearchPb)
-        io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPbOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_SearchNodeRunPb_UserTaskRunSearchPb_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_SearchNodeRunPb_UserTaskRunSearchPb_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb.class, io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb.Builder.class);
-      }
-
-      // Construct using io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-          getEarliestStartFieldBuilder();
-          getLatestStartFieldBuilder();
-        }
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        bitField0_ = 0;
-        status_ = 0;
-        userTaskDef_ = "";
-        userId_ = "";
-        userGroup_ = "";
-        earliestStart_ = null;
-        if (earliestStartBuilder_ != null) {
-          earliestStartBuilder_.dispose();
-          earliestStartBuilder_ = null;
-        }
-        latestStart_ = null;
-        if (latestStartBuilder_ != null) {
-          latestStartBuilder_.dispose();
-          latestStartBuilder_ = null;
-        }
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_SearchNodeRunPb_UserTaskRunSearchPb_descriptor;
-      }
-
-      @java.lang.Override
-      public io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb getDefaultInstanceForType() {
-        return io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb build() {
-        io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb buildPartial() {
-        io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb result = new io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb(this);
-        if (bitField0_ != 0) { buildPartial0(result); }
-        onBuilt();
-        return result;
-      }
-
-      private void buildPartial0(io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb result) {
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) != 0)) {
-          result.status_ = status_;
-          to_bitField0_ |= 0x00000001;
-        }
-        if (((from_bitField0_ & 0x00000002) != 0)) {
-          result.userTaskDef_ = userTaskDef_;
-          to_bitField0_ |= 0x00000002;
-        }
-        if (((from_bitField0_ & 0x00000004) != 0)) {
-          result.userId_ = userId_;
-          to_bitField0_ |= 0x00000004;
-        }
-        if (((from_bitField0_ & 0x00000008) != 0)) {
-          result.userGroup_ = userGroup_;
-          to_bitField0_ |= 0x00000008;
-        }
-        if (((from_bitField0_ & 0x00000010) != 0)) {
-          result.earliestStart_ = earliestStartBuilder_ == null
-              ? earliestStart_
-              : earliestStartBuilder_.build();
-          to_bitField0_ |= 0x00000010;
-        }
-        if (((from_bitField0_ & 0x00000020) != 0)) {
-          result.latestStart_ = latestStartBuilder_ == null
-              ? latestStart_
-              : latestStartBuilder_.build();
-          to_bitField0_ |= 0x00000020;
-        }
-        result.bitField0_ |= to_bitField0_;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb) {
-          return mergeFrom((io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb other) {
-        if (other == io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb.getDefaultInstance()) return this;
-        if (other.hasStatus()) {
-          setStatus(other.getStatus());
-        }
-        if (other.hasUserTaskDef()) {
-          userTaskDef_ = other.userTaskDef_;
-          bitField0_ |= 0x00000002;
-          onChanged();
-        }
-        if (other.hasUserId()) {
-          userId_ = other.userId_;
-          bitField0_ |= 0x00000004;
-          onChanged();
-        }
-        if (other.hasUserGroup()) {
-          userGroup_ = other.userGroup_;
-          bitField0_ |= 0x00000008;
-          onChanged();
-        }
-        if (other.hasEarliestStart()) {
-          mergeEarliestStart(other.getEarliestStart());
-        }
-        if (other.hasLatestStart()) {
-          mergeLatestStart(other.getLatestStart());
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        if (extensionRegistry == null) {
-          throw new java.lang.NullPointerException();
-        }
-        try {
-          boolean done = false;
-          while (!done) {
-            int tag = input.readTag();
-            switch (tag) {
-              case 0:
-                done = true;
-                break;
-              case 8: {
-                status_ = input.readEnum();
-                bitField0_ |= 0x00000001;
-                break;
-              } // case 8
-              case 18: {
-                userTaskDef_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000002;
-                break;
-              } // case 18
-              case 26: {
-                userId_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000004;
-                break;
-              } // case 26
-              case 34: {
-                userGroup_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000008;
-                break;
-              } // case 34
-              case 42: {
-                input.readMessage(
-                    getEarliestStartFieldBuilder().getBuilder(),
-                    extensionRegistry);
-                bitField0_ |= 0x00000010;
-                break;
-              } // case 42
-              case 50: {
-                input.readMessage(
-                    getLatestStartFieldBuilder().getBuilder(),
-                    extensionRegistry);
-                bitField0_ |= 0x00000020;
-                break;
-              } // case 50
-              default: {
-                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                  done = true; // was an endgroup tag
-                }
-                break;
-              } // default:
-            } // switch (tag)
-          } // while (!done)
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.unwrapIOException();
-        } finally {
-          onChanged();
-        } // finally
-        return this;
-      }
-      private int bitField0_;
-
-      private int status_ = 0;
-      /**
-       * <code>optional .littlehorse.UserTaskRunStatusPb status = 1;</code>
-       * @return Whether the status field is set.
-       */
-      @java.lang.Override public boolean hasStatus() {
-        return ((bitField0_ & 0x00000001) != 0);
-      }
-      /**
-       * <code>optional .littlehorse.UserTaskRunStatusPb status = 1;</code>
-       * @return The enum numeric value on the wire for status.
-       */
-      @java.lang.Override public int getStatusValue() {
-        return status_;
-      }
-      /**
-       * <code>optional .littlehorse.UserTaskRunStatusPb status = 1;</code>
-       * @param value The enum numeric value on the wire for status to set.
-       * @return This builder for chaining.
-       */
-      public Builder setStatusValue(int value) {
-        status_ = value;
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .littlehorse.UserTaskRunStatusPb status = 1;</code>
-       * @return The status.
-       */
-      @java.lang.Override
-      public io.littlehorse.sdk.common.proto.UserTaskRunStatusPb getStatus() {
-        io.littlehorse.sdk.common.proto.UserTaskRunStatusPb result = io.littlehorse.sdk.common.proto.UserTaskRunStatusPb.forNumber(status_);
-        return result == null ? io.littlehorse.sdk.common.proto.UserTaskRunStatusPb.UNRECOGNIZED : result;
-      }
-      /**
-       * <code>optional .littlehorse.UserTaskRunStatusPb status = 1;</code>
-       * @param value The status to set.
-       * @return This builder for chaining.
-       */
-      public Builder setStatus(io.littlehorse.sdk.common.proto.UserTaskRunStatusPb value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        bitField0_ |= 0x00000001;
-        status_ = value.getNumber();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .littlehorse.UserTaskRunStatusPb status = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearStatus() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        status_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object userTaskDef_ = "";
-      /**
-       * <code>optional string user_task_def = 2;</code>
-       * @return Whether the userTaskDef field is set.
-       */
-      public boolean hasUserTaskDef() {
-        return ((bitField0_ & 0x00000002) != 0);
-      }
-      /**
-       * <code>optional string user_task_def = 2;</code>
-       * @return The userTaskDef.
-       */
-      public java.lang.String getUserTaskDef() {
-        java.lang.Object ref = userTaskDef_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          userTaskDef_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>optional string user_task_def = 2;</code>
-       * @return The bytes for userTaskDef.
-       */
-      public com.google.protobuf.ByteString
-          getUserTaskDefBytes() {
-        java.lang.Object ref = userTaskDef_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          userTaskDef_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string user_task_def = 2;</code>
-       * @param value The userTaskDef to set.
-       * @return This builder for chaining.
-       */
-      public Builder setUserTaskDef(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
-        userTaskDef_ = value;
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string user_task_def = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearUserTaskDef() {
-        userTaskDef_ = getDefaultInstance().getUserTaskDef();
-        bitField0_ = (bitField0_ & ~0x00000002);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string user_task_def = 2;</code>
-       * @param value The bytes for userTaskDef to set.
-       * @return This builder for chaining.
-       */
-      public Builder setUserTaskDefBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        checkByteStringIsUtf8(value);
-        userTaskDef_ = value;
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object userId_ = "";
-      /**
-       * <code>optional string user_id = 3;</code>
-       * @return Whether the userId field is set.
-       */
-      public boolean hasUserId() {
-        return ((bitField0_ & 0x00000004) != 0);
-      }
-      /**
-       * <code>optional string user_id = 3;</code>
-       * @return The userId.
-       */
-      public java.lang.String getUserId() {
-        java.lang.Object ref = userId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          userId_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>optional string user_id = 3;</code>
-       * @return The bytes for userId.
-       */
-      public com.google.protobuf.ByteString
-          getUserIdBytes() {
-        java.lang.Object ref = userId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          userId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string user_id = 3;</code>
-       * @param value The userId to set.
-       * @return This builder for chaining.
-       */
-      public Builder setUserId(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
-        userId_ = value;
-        bitField0_ |= 0x00000004;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string user_id = 3;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearUserId() {
-        userId_ = getDefaultInstance().getUserId();
-        bitField0_ = (bitField0_ & ~0x00000004);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string user_id = 3;</code>
-       * @param value The bytes for userId to set.
-       * @return This builder for chaining.
-       */
-      public Builder setUserIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        checkByteStringIsUtf8(value);
-        userId_ = value;
-        bitField0_ |= 0x00000004;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object userGroup_ = "";
-      /**
-       * <code>optional string user_group = 4;</code>
-       * @return Whether the userGroup field is set.
-       */
-      public boolean hasUserGroup() {
-        return ((bitField0_ & 0x00000008) != 0);
-      }
-      /**
-       * <code>optional string user_group = 4;</code>
-       * @return The userGroup.
-       */
-      public java.lang.String getUserGroup() {
-        java.lang.Object ref = userGroup_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          userGroup_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>optional string user_group = 4;</code>
-       * @return The bytes for userGroup.
-       */
-      public com.google.protobuf.ByteString
-          getUserGroupBytes() {
-        java.lang.Object ref = userGroup_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          userGroup_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string user_group = 4;</code>
-       * @param value The userGroup to set.
-       * @return This builder for chaining.
-       */
-      public Builder setUserGroup(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
-        userGroup_ = value;
-        bitField0_ |= 0x00000008;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string user_group = 4;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearUserGroup() {
-        userGroup_ = getDefaultInstance().getUserGroup();
-        bitField0_ = (bitField0_ & ~0x00000008);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string user_group = 4;</code>
-       * @param value The bytes for userGroup to set.
-       * @return This builder for chaining.
-       */
-      public Builder setUserGroupBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        checkByteStringIsUtf8(value);
-        userGroup_ = value;
-        bitField0_ |= 0x00000008;
-        onChanged();
-        return this;
-      }
-
-      private com.google.protobuf.Timestamp earliestStart_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> earliestStartBuilder_;
-      /**
-       * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
-       * @return Whether the earliestStart field is set.
-       */
-      public boolean hasEarliestStart() {
-        return ((bitField0_ & 0x00000010) != 0);
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
-       * @return The earliestStart.
-       */
-      public com.google.protobuf.Timestamp getEarliestStart() {
-        if (earliestStartBuilder_ == null) {
-          return earliestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : earliestStart_;
-        } else {
-          return earliestStartBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
-       */
-      public Builder setEarliestStart(com.google.protobuf.Timestamp value) {
-        if (earliestStartBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          earliestStart_ = value;
-        } else {
-          earliestStartBuilder_.setMessage(value);
-        }
-        bitField0_ |= 0x00000010;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
-       */
-      public Builder setEarliestStart(
-          com.google.protobuf.Timestamp.Builder builderForValue) {
-        if (earliestStartBuilder_ == null) {
-          earliestStart_ = builderForValue.build();
-        } else {
-          earliestStartBuilder_.setMessage(builderForValue.build());
-        }
-        bitField0_ |= 0x00000010;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
-       */
-      public Builder mergeEarliestStart(com.google.protobuf.Timestamp value) {
-        if (earliestStartBuilder_ == null) {
-          if (((bitField0_ & 0x00000010) != 0) &&
-            earliestStart_ != null &&
-            earliestStart_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
-            getEarliestStartBuilder().mergeFrom(value);
-          } else {
-            earliestStart_ = value;
-          }
-        } else {
-          earliestStartBuilder_.mergeFrom(value);
-        }
-        bitField0_ |= 0x00000010;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
-       */
-      public Builder clearEarliestStart() {
-        bitField0_ = (bitField0_ & ~0x00000010);
-        earliestStart_ = null;
-        if (earliestStartBuilder_ != null) {
-          earliestStartBuilder_.dispose();
-          earliestStartBuilder_ = null;
-        }
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
-       */
-      public com.google.protobuf.Timestamp.Builder getEarliestStartBuilder() {
-        bitField0_ |= 0x00000010;
-        onChanged();
-        return getEarliestStartFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
-       */
-      public com.google.protobuf.TimestampOrBuilder getEarliestStartOrBuilder() {
-        if (earliestStartBuilder_ != null) {
-          return earliestStartBuilder_.getMessageOrBuilder();
-        } else {
-          return earliestStart_ == null ?
-              com.google.protobuf.Timestamp.getDefaultInstance() : earliestStart_;
-        }
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp earliest_start = 5;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
-          getEarliestStartFieldBuilder() {
-        if (earliestStartBuilder_ == null) {
-          earliestStartBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
-                  getEarliestStart(),
-                  getParentForChildren(),
-                  isClean());
-          earliestStart_ = null;
-        }
-        return earliestStartBuilder_;
-      }
-
-      private com.google.protobuf.Timestamp latestStart_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> latestStartBuilder_;
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
-       * @return Whether the latestStart field is set.
-       */
-      public boolean hasLatestStart() {
-        return ((bitField0_ & 0x00000020) != 0);
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
-       * @return The latestStart.
-       */
-      public com.google.protobuf.Timestamp getLatestStart() {
-        if (latestStartBuilder_ == null) {
-          return latestStart_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
-        } else {
-          return latestStartBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
-       */
-      public Builder setLatestStart(com.google.protobuf.Timestamp value) {
-        if (latestStartBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          latestStart_ = value;
-        } else {
-          latestStartBuilder_.setMessage(value);
-        }
-        bitField0_ |= 0x00000020;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
-       */
-      public Builder setLatestStart(
-          com.google.protobuf.Timestamp.Builder builderForValue) {
-        if (latestStartBuilder_ == null) {
-          latestStart_ = builderForValue.build();
-        } else {
-          latestStartBuilder_.setMessage(builderForValue.build());
-        }
-        bitField0_ |= 0x00000020;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
-       */
-      public Builder mergeLatestStart(com.google.protobuf.Timestamp value) {
-        if (latestStartBuilder_ == null) {
-          if (((bitField0_ & 0x00000020) != 0) &&
-            latestStart_ != null &&
-            latestStart_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
-            getLatestStartBuilder().mergeFrom(value);
-          } else {
-            latestStart_ = value;
-          }
-        } else {
-          latestStartBuilder_.mergeFrom(value);
-        }
-        bitField0_ |= 0x00000020;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
-       */
-      public Builder clearLatestStart() {
-        bitField0_ = (bitField0_ & ~0x00000020);
-        latestStart_ = null;
-        if (latestStartBuilder_ != null) {
-          latestStartBuilder_.dispose();
-          latestStartBuilder_ = null;
-        }
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
-       */
-      public com.google.protobuf.Timestamp.Builder getLatestStartBuilder() {
-        bitField0_ |= 0x00000020;
-        onChanged();
-        return getLatestStartFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
-       */
-      public com.google.protobuf.TimestampOrBuilder getLatestStartOrBuilder() {
-        if (latestStartBuilder_ != null) {
-          return latestStartBuilder_.getMessageOrBuilder();
-        } else {
-          return latestStart_ == null ?
-              com.google.protobuf.Timestamp.getDefaultInstance() : latestStart_;
-        }
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp latest_start = 6;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
-          getLatestStartFieldBuilder() {
-        if (latestStartBuilder_ == null) {
-          latestStartBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
-                  getLatestStart(),
-                  getParentForChildren(),
-                  isClean());
-          latestStart_ = null;
-        }
-        return latestStartBuilder_;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:littlehorse.SearchNodeRunPb.UserTaskRunSearchPb)
-    }
-
-    // @@protoc_insertion_point(class_scope:littlehorse.SearchNodeRunPb.UserTaskRunSearchPb)
-    private static final io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb();
-    }
-
-    public static io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<UserTaskRunSearchPb>
-        PARSER = new com.google.protobuf.AbstractParser<UserTaskRunSearchPb>() {
-      @java.lang.Override
-      public UserTaskRunSearchPb parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        Builder builder = newBuilder();
-        try {
-          builder.mergeFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(builder.buildPartial());
-        } catch (com.google.protobuf.UninitializedMessageException e) {
-          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-        } catch (java.io.IOException e) {
-          throw new com.google.protobuf.InvalidProtocolBufferException(e)
-              .setUnfinishedMessage(builder.buildPartial());
-        }
-        return builder.buildPartial();
-      }
-    };
-
-    public static com.google.protobuf.Parser<UserTaskRunSearchPb> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<UserTaskRunSearchPb> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
   private int bitField0_;
   private int noderunCriteriaCase_ = 0;
   private java.lang.Object noderunCriteria_;
   public enum NoderunCriteriaCase
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    WF_RUN_ID(4),
-    USER_TASK_RUN(6),
+    WF_RUN_ID(3),
     NODERUNCRITERIA_NOT_SET(0);
     private final int value;
     private NoderunCriteriaCase(int value) {
@@ -1532,8 +68,7 @@ private static final long serialVersionUID = 0L;
 
     public static NoderunCriteriaCase forNumber(int value) {
       switch (value) {
-        case 4: return WF_RUN_ID;
-        case 6: return USER_TASK_RUN;
+        case 3: return WF_RUN_ID;
         case 0: return NODERUNCRITERIA_NOT_SET;
         default: return null;
       }
@@ -1587,21 +122,21 @@ private static final long serialVersionUID = 0L;
     return limit_;
   }
 
-  public static final int WF_RUN_ID_FIELD_NUMBER = 4;
+  public static final int WF_RUN_ID_FIELD_NUMBER = 3;
   /**
-   * <code>string wf_run_id = 4;</code>
+   * <code>string wf_run_id = 3;</code>
    * @return Whether the wfRunId field is set.
    */
   public boolean hasWfRunId() {
-    return noderunCriteriaCase_ == 4;
+    return noderunCriteriaCase_ == 3;
   }
   /**
-   * <code>string wf_run_id = 4;</code>
+   * <code>string wf_run_id = 3;</code>
    * @return The wfRunId.
    */
   public java.lang.String getWfRunId() {
     java.lang.Object ref = "";
-    if (noderunCriteriaCase_ == 4) {
+    if (noderunCriteriaCase_ == 3) {
       ref = noderunCriteria_;
     }
     if (ref instanceof java.lang.String) {
@@ -1610,64 +145,33 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (noderunCriteriaCase_ == 4) {
+      if (noderunCriteriaCase_ == 3) {
         noderunCriteria_ = s;
       }
       return s;
     }
   }
   /**
-   * <code>string wf_run_id = 4;</code>
+   * <code>string wf_run_id = 3;</code>
    * @return The bytes for wfRunId.
    */
   public com.google.protobuf.ByteString
       getWfRunIdBytes() {
     java.lang.Object ref = "";
-    if (noderunCriteriaCase_ == 4) {
+    if (noderunCriteriaCase_ == 3) {
       ref = noderunCriteria_;
     }
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      if (noderunCriteriaCase_ == 4) {
+      if (noderunCriteriaCase_ == 3) {
         noderunCriteria_ = b;
       }
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
     }
-  }
-
-  public static final int USER_TASK_RUN_FIELD_NUMBER = 6;
-  /**
-   * <code>.littlehorse.SearchNodeRunPb.UserTaskRunSearchPb user_task_run = 6;</code>
-   * @return Whether the userTaskRun field is set.
-   */
-  @java.lang.Override
-  public boolean hasUserTaskRun() {
-    return noderunCriteriaCase_ == 6;
-  }
-  /**
-   * <code>.littlehorse.SearchNodeRunPb.UserTaskRunSearchPb user_task_run = 6;</code>
-   * @return The userTaskRun.
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb getUserTaskRun() {
-    if (noderunCriteriaCase_ == 6) {
-       return (io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb) noderunCriteria_;
-    }
-    return io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb.getDefaultInstance();
-  }
-  /**
-   * <code>.littlehorse.SearchNodeRunPb.UserTaskRunSearchPb user_task_run = 6;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPbOrBuilder getUserTaskRunOrBuilder() {
-    if (noderunCriteriaCase_ == 6) {
-       return (io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb) noderunCriteria_;
-    }
-    return io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb.getDefaultInstance();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -1690,11 +194,8 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000002) != 0)) {
       output.writeInt32(2, limit_);
     }
-    if (noderunCriteriaCase_ == 4) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 4, noderunCriteria_);
-    }
-    if (noderunCriteriaCase_ == 6) {
-      output.writeMessage(6, (io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb) noderunCriteria_);
+    if (noderunCriteriaCase_ == 3) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, noderunCriteria_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -1713,12 +214,8 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(2, limit_);
     }
-    if (noderunCriteriaCase_ == 4) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, noderunCriteria_);
-    }
-    if (noderunCriteriaCase_ == 6) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(6, (io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb) noderunCriteria_);
+    if (noderunCriteriaCase_ == 3) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, noderunCriteria_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1747,13 +244,9 @@ private static final long serialVersionUID = 0L;
     }
     if (!getNoderunCriteriaCase().equals(other.getNoderunCriteriaCase())) return false;
     switch (noderunCriteriaCase_) {
-      case 4:
+      case 3:
         if (!getWfRunId()
             .equals(other.getWfRunId())) return false;
-        break;
-      case 6:
-        if (!getUserTaskRun()
-            .equals(other.getUserTaskRun())) return false;
         break;
       case 0:
       default:
@@ -1778,13 +271,9 @@ private static final long serialVersionUID = 0L;
       hash = (53 * hash) + getLimit();
     }
     switch (noderunCriteriaCase_) {
-      case 4:
+      case 3:
         hash = (37 * hash) + WF_RUN_ID_FIELD_NUMBER;
         hash = (53 * hash) + getWfRunId().hashCode();
-        break;
-      case 6:
-        hash = (37 * hash) + USER_TASK_RUN_FIELD_NUMBER;
-        hash = (53 * hash) + getUserTaskRun().hashCode();
         break;
       case 0:
       default:
@@ -1920,9 +409,6 @@ private static final long serialVersionUID = 0L;
       bitField0_ = 0;
       bookmark_ = com.google.protobuf.ByteString.EMPTY;
       limit_ = 0;
-      if (userTaskRunBuilder_ != null) {
-        userTaskRunBuilder_.clear();
-      }
       noderunCriteriaCase_ = 0;
       noderunCriteria_ = null;
       return this;
@@ -1974,10 +460,6 @@ private static final long serialVersionUID = 0L;
     private void buildPartialOneofs(io.littlehorse.sdk.common.proto.SearchNodeRunPb result) {
       result.noderunCriteriaCase_ = noderunCriteriaCase_;
       result.noderunCriteria_ = this.noderunCriteria_;
-      if (noderunCriteriaCase_ == 6 &&
-          userTaskRunBuilder_ != null) {
-        result.noderunCriteria_ = userTaskRunBuilder_.build();
-      }
     }
 
     @java.lang.Override
@@ -2032,13 +514,9 @@ private static final long serialVersionUID = 0L;
       }
       switch (other.getNoderunCriteriaCase()) {
         case WF_RUN_ID: {
-          noderunCriteriaCase_ = 4;
+          noderunCriteriaCase_ = 3;
           noderunCriteria_ = other.noderunCriteria_;
           onChanged();
-          break;
-        }
-        case USER_TASK_RUN: {
-          mergeUserTaskRun(other.getUserTaskRun());
           break;
         }
         case NODERUNCRITERIA_NOT_SET: {
@@ -2081,19 +559,12 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000002;
               break;
             } // case 16
-            case 34: {
+            case 26: {
               java.lang.String s = input.readStringRequireUtf8();
-              noderunCriteriaCase_ = 4;
+              noderunCriteriaCase_ = 3;
               noderunCriteria_ = s;
               break;
-            } // case 34
-            case 50: {
-              input.readMessage(
-                  getUserTaskRunFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              noderunCriteriaCase_ = 6;
-              break;
-            } // case 50
+            } // case 26
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -2207,28 +678,28 @@ private static final long serialVersionUID = 0L;
     }
 
     /**
-     * <code>string wf_run_id = 4;</code>
+     * <code>string wf_run_id = 3;</code>
      * @return Whether the wfRunId field is set.
      */
     @java.lang.Override
     public boolean hasWfRunId() {
-      return noderunCriteriaCase_ == 4;
+      return noderunCriteriaCase_ == 3;
     }
     /**
-     * <code>string wf_run_id = 4;</code>
+     * <code>string wf_run_id = 3;</code>
      * @return The wfRunId.
      */
     @java.lang.Override
     public java.lang.String getWfRunId() {
       java.lang.Object ref = "";
-      if (noderunCriteriaCase_ == 4) {
+      if (noderunCriteriaCase_ == 3) {
         ref = noderunCriteria_;
       }
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (noderunCriteriaCase_ == 4) {
+        if (noderunCriteriaCase_ == 3) {
           noderunCriteria_ = s;
         }
         return s;
@@ -2237,21 +708,21 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string wf_run_id = 4;</code>
+     * <code>string wf_run_id = 3;</code>
      * @return The bytes for wfRunId.
      */
     @java.lang.Override
     public com.google.protobuf.ByteString
         getWfRunIdBytes() {
       java.lang.Object ref = "";
-      if (noderunCriteriaCase_ == 4) {
+      if (noderunCriteriaCase_ == 3) {
         ref = noderunCriteria_;
       }
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        if (noderunCriteriaCase_ == 4) {
+        if (noderunCriteriaCase_ == 3) {
           noderunCriteria_ = b;
         }
         return b;
@@ -2260,24 +731,24 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string wf_run_id = 4;</code>
+     * <code>string wf_run_id = 3;</code>
      * @param value The wfRunId to set.
      * @return This builder for chaining.
      */
     public Builder setWfRunId(
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
-      noderunCriteriaCase_ = 4;
+      noderunCriteriaCase_ = 3;
       noderunCriteria_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>string wf_run_id = 4;</code>
+     * <code>string wf_run_id = 3;</code>
      * @return This builder for chaining.
      */
     public Builder clearWfRunId() {
-      if (noderunCriteriaCase_ == 4) {
+      if (noderunCriteriaCase_ == 3) {
         noderunCriteriaCase_ = 0;
         noderunCriteria_ = null;
         onChanged();
@@ -2285,7 +756,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string wf_run_id = 4;</code>
+     * <code>string wf_run_id = 3;</code>
      * @param value The bytes for wfRunId to set.
      * @return This builder for chaining.
      */
@@ -2293,152 +764,10 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.ByteString value) {
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
-      noderunCriteriaCase_ = 4;
+      noderunCriteriaCase_ = 3;
       noderunCriteria_ = value;
       onChanged();
       return this;
-    }
-
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb, io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb.Builder, io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPbOrBuilder> userTaskRunBuilder_;
-    /**
-     * <code>.littlehorse.SearchNodeRunPb.UserTaskRunSearchPb user_task_run = 6;</code>
-     * @return Whether the userTaskRun field is set.
-     */
-    @java.lang.Override
-    public boolean hasUserTaskRun() {
-      return noderunCriteriaCase_ == 6;
-    }
-    /**
-     * <code>.littlehorse.SearchNodeRunPb.UserTaskRunSearchPb user_task_run = 6;</code>
-     * @return The userTaskRun.
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb getUserTaskRun() {
-      if (userTaskRunBuilder_ == null) {
-        if (noderunCriteriaCase_ == 6) {
-          return (io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb) noderunCriteria_;
-        }
-        return io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb.getDefaultInstance();
-      } else {
-        if (noderunCriteriaCase_ == 6) {
-          return userTaskRunBuilder_.getMessage();
-        }
-        return io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.littlehorse.SearchNodeRunPb.UserTaskRunSearchPb user_task_run = 6;</code>
-     */
-    public Builder setUserTaskRun(io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb value) {
-      if (userTaskRunBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        noderunCriteria_ = value;
-        onChanged();
-      } else {
-        userTaskRunBuilder_.setMessage(value);
-      }
-      noderunCriteriaCase_ = 6;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.SearchNodeRunPb.UserTaskRunSearchPb user_task_run = 6;</code>
-     */
-    public Builder setUserTaskRun(
-        io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb.Builder builderForValue) {
-      if (userTaskRunBuilder_ == null) {
-        noderunCriteria_ = builderForValue.build();
-        onChanged();
-      } else {
-        userTaskRunBuilder_.setMessage(builderForValue.build());
-      }
-      noderunCriteriaCase_ = 6;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.SearchNodeRunPb.UserTaskRunSearchPb user_task_run = 6;</code>
-     */
-    public Builder mergeUserTaskRun(io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb value) {
-      if (userTaskRunBuilder_ == null) {
-        if (noderunCriteriaCase_ == 6 &&
-            noderunCriteria_ != io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb.getDefaultInstance()) {
-          noderunCriteria_ = io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb.newBuilder((io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb) noderunCriteria_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          noderunCriteria_ = value;
-        }
-        onChanged();
-      } else {
-        if (noderunCriteriaCase_ == 6) {
-          userTaskRunBuilder_.mergeFrom(value);
-        } else {
-          userTaskRunBuilder_.setMessage(value);
-        }
-      }
-      noderunCriteriaCase_ = 6;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.SearchNodeRunPb.UserTaskRunSearchPb user_task_run = 6;</code>
-     */
-    public Builder clearUserTaskRun() {
-      if (userTaskRunBuilder_ == null) {
-        if (noderunCriteriaCase_ == 6) {
-          noderunCriteriaCase_ = 0;
-          noderunCriteria_ = null;
-          onChanged();
-        }
-      } else {
-        if (noderunCriteriaCase_ == 6) {
-          noderunCriteriaCase_ = 0;
-          noderunCriteria_ = null;
-        }
-        userTaskRunBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>.littlehorse.SearchNodeRunPb.UserTaskRunSearchPb user_task_run = 6;</code>
-     */
-    public io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb.Builder getUserTaskRunBuilder() {
-      return getUserTaskRunFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.littlehorse.SearchNodeRunPb.UserTaskRunSearchPb user_task_run = 6;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPbOrBuilder getUserTaskRunOrBuilder() {
-      if ((noderunCriteriaCase_ == 6) && (userTaskRunBuilder_ != null)) {
-        return userTaskRunBuilder_.getMessageOrBuilder();
-      } else {
-        if (noderunCriteriaCase_ == 6) {
-          return (io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb) noderunCriteria_;
-        }
-        return io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.littlehorse.SearchNodeRunPb.UserTaskRunSearchPb user_task_run = 6;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb, io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb.Builder, io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPbOrBuilder> 
-        getUserTaskRunFieldBuilder() {
-      if (userTaskRunBuilder_ == null) {
-        if (!(noderunCriteriaCase_ == 6)) {
-          noderunCriteria_ = io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb.getDefaultInstance();
-        }
-        userTaskRunBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb, io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb.Builder, io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPbOrBuilder>(
-                (io.littlehorse.sdk.common.proto.SearchNodeRunPb.UserTaskRunSearchPb) noderunCriteria_,
-                getParentForChildren(),
-                isClean());
-        noderunCriteria_ = null;
-      }
-      noderunCriteriaCase_ = 6;
-      onChanged();
-      return userTaskRunBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

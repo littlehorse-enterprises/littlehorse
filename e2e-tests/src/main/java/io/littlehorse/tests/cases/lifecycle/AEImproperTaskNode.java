@@ -94,7 +94,7 @@ public class AEImproperTaskNode extends Test {
         )
             .registerWfSpec(client);
 
-        Thread.sleep(100); // Wait for the data to propagate
+        Thread.sleep(200); // Wait for the data to propagate
         worker.start();
 
         this.failWfRun =

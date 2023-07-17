@@ -15,6 +15,8 @@ import io.littlehorse.sdk.common.proto.PutExternalEventDefPb;
 import io.littlehorse.sdk.common.proto.PutExternalEventPb;
 import io.littlehorse.sdk.common.proto.TaskRunIdPb;
 import io.littlehorse.sdk.common.proto.TaskRunPb;
+import io.littlehorse.sdk.common.proto.UserTaskRunIdPb;
+import io.littlehorse.sdk.common.proto.UserTaskRunPb;
 import io.littlehorse.sdk.common.proto.VariablePb;
 import io.littlehorse.sdk.common.proto.VariableValuePb;
 import io.littlehorse.sdk.common.proto.WfRunPb;
@@ -394,7 +396,7 @@ public abstract class WorkflowLogicTest extends Test {
         Object... expectedPath
     ) throws LogicTestFailure, InterruptedException, LHApiError {
         String wfRunId = runWf(client, Arg.of("input", input));
-        Thread.sleep(200);
+        Thread.sleep(400);
         assertStatus(client, wfRunId, LHStatusPb.COMPLETED);
         WfRunPb wfRun = getWfRun(client, wfRunId);
 
@@ -516,6 +518,31 @@ public abstract class WorkflowLogicTest extends Test {
                 threadRunNumber +
                 " " +
                 nodeRunPosition
+            );
+        }
+
+        return result;
+    }
+
+    public UserTaskRunPb getUserTaskRun(LHClient client, UserTaskRunIdPb id)
+        throws LogicTestFailure, LHApiError {
+        UserTaskRunPb result;
+        try {
+            result = client.getUserTaskRun(id);
+        } catch (Exception exn) {
+            throw new LogicTestFailure(
+                this,
+                "Couldn't connect to get UserTaskRun: " + exn.getMessage()
+            );
+        }
+
+        if (result == null) {
+            throw new LogicTestFailure(
+                this,
+                "Couldn't find userTaskRun " +
+                id.getWfRunId() +
+                "/" +
+                id.getUserTaskGuid()
             );
         }
 

@@ -8,64 +8,55 @@ public interface AssignUserTaskRunPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string wf_run_id = 1;</code>
-   * @return The wfRunId.
+   * <code>.littlehorse.UserTaskRunIdPb user_task_run_id = 1;</code>
+   * @return Whether the userTaskRunId field is set.
    */
-  java.lang.String getWfRunId();
+  boolean hasUserTaskRunId();
   /**
-   * <code>string wf_run_id = 1;</code>
-   * @return The bytes for wfRunId.
+   * <code>.littlehorse.UserTaskRunIdPb user_task_run_id = 1;</code>
+   * @return The userTaskRunId.
    */
-  com.google.protobuf.ByteString
-      getWfRunIdBytes();
+  io.littlehorse.sdk.common.proto.UserTaskRunIdPb getUserTaskRunId();
+  /**
+   * <code>.littlehorse.UserTaskRunIdPb user_task_run_id = 1;</code>
+   */
+  io.littlehorse.sdk.common.proto.UserTaskRunIdPbOrBuilder getUserTaskRunIdOrBuilder();
 
   /**
-   * <code>int32 thread_run_number = 2;</code>
-   * @return The threadRunNumber.
-   */
-  int getThreadRunNumber();
-
-  /**
-   * <code>int32 node_run_position = 3;</code>
-   * @return The nodeRunPosition.
-   */
-  int getNodeRunPosition();
-
-  /**
-   * <code>bool override_claim = 4;</code>
+   * <code>bool override_claim = 2;</code>
    * @return The overrideClaim.
    */
   boolean getOverrideClaim();
 
   /**
-   * <code>string user_id = 5;</code>
+   * <code>string user_id = 3;</code>
    * @return Whether the userId field is set.
    */
   boolean hasUserId();
   /**
-   * <code>string user_id = 5;</code>
+   * <code>string user_id = 3;</code>
    * @return The userId.
    */
   java.lang.String getUserId();
   /**
-   * <code>string user_id = 5;</code>
+   * <code>string user_id = 3;</code>
    * @return The bytes for userId.
    */
   com.google.protobuf.ByteString
       getUserIdBytes();
 
   /**
-   * <code>string user_group = 6;</code>
+   * <code>string user_group = 4;</code>
    * @return Whether the userGroup field is set.
    */
   boolean hasUserGroup();
   /**
-   * <code>string user_group = 6;</code>
+   * <code>string user_group = 4;</code>
    * @return The userGroup.
    */
   java.lang.String getUserGroup();
   /**
-   * <code>string user_group = 6;</code>
+   * <code>string user_group = 4;</code>
    * @return The bytes for userGroup.
    */
   com.google.protobuf.ByteString

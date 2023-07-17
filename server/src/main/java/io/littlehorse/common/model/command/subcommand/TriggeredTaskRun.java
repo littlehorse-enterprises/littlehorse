@@ -10,10 +10,12 @@ import io.littlehorse.common.model.command.SubCommand;
 import io.littlehorse.common.model.meta.subnode.TaskNode;
 import io.littlehorse.common.model.objectId.NodeRunId;
 import io.littlehorse.common.model.objectId.TaskRunId;
+import io.littlehorse.common.model.objectId.UserTaskRunId;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.ScheduledTask;
 import io.littlehorse.common.model.wfrun.TaskAttempt;
 import io.littlehorse.common.model.wfrun.ThreadRun;
+import io.littlehorse.common.model.wfrun.UserTaskRun;
 import io.littlehorse.common.model.wfrun.VarNameAndVal;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
@@ -89,6 +91,8 @@ public class TriggeredTaskRun extends SubCommand<TriggeredTaskRunPb> {
 
         // Get the NodeRun
         NodeRun userTaskNR = dao.getNodeRun(source);
+        UserTaskRunId userTaskRunId = userTaskNR.getUserTaskRun().getUserTaskRunId();
+        UserTaskRun userTaskRun = dao.getUserTaskRun(userTaskRunId);
 
         if (userTaskNR.status != LHStatusPb.RUNNING) {
             log.info("NodeRun is not RUNNING anymore, so can't take action!");
@@ -104,16 +108,14 @@ public class TriggeredTaskRun extends SubCommand<TriggeredTaskRunPb> {
             ScheduledTask toSchedule = new ScheduledTask(
                 taskToSchedule.getTaskDef().getObjectId(),
                 inputVars,
-                userTaskNR.getUserTaskRun()
+                userTaskRun
             );
             toSchedule.setTaskRunId(taskRunId);
 
             TaskRun taskRun = new TaskRun(
                 dao,
                 inputVars,
-                new TaskRunSource(
-                    new UserTaskTriggerReference(userTaskNR.getUserTaskRun())
-                ),
+                new TaskRunSource(new UserTaskTriggerReference(userTaskRun)),
                 taskToSchedule
             );
             taskRun.setId(taskRunId);
@@ -121,8 +123,7 @@ public class TriggeredTaskRun extends SubCommand<TriggeredTaskRunPb> {
             dao.putTaskRun(taskRun);
             dao.scheduleTask(toSchedule);
 
-            userTaskNR
-                .getUserTaskRun()
+            userTaskRun
                 .getEvents()
                 .add(new UserTaskEvent(new UTETaskExecuted(taskRunId), new Date()));
 

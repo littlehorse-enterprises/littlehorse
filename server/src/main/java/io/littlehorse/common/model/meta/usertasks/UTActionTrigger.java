@@ -5,7 +5,7 @@ import io.littlehorse.common.LHDAO;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.meta.VariableAssignment;
-import io.littlehorse.common.model.wfrun.subnoderun.UserTaskRun;
+import io.littlehorse.common.model.wfrun.UserTaskRun;
 import io.littlehorse.sdk.common.proto.UTActionTriggerPb;
 import io.littlehorse.sdk.common.proto.UTActionTriggerPb.ActionCase;
 import io.littlehorse.sdk.common.proto.UTActionTriggerPb.ScheduleTimeCase;

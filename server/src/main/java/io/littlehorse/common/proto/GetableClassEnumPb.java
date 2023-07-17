@@ -60,6 +60,10 @@ public enum GetableClassEnumPb
    * <code>TASK_RUN = 11;</code>
    */
   TASK_RUN(11),
+  /**
+   * <code>USER_TASK_RUN = 12;</code>
+   */
+  USER_TASK_RUN(12),
   UNRECOGNIZED(-1),
   ;
 
@@ -111,6 +115,10 @@ public enum GetableClassEnumPb
    * <code>TASK_RUN = 11;</code>
    */
   public static final int TASK_RUN_VALUE = 11;
+  /**
+   * <code>USER_TASK_RUN = 12;</code>
+   */
+  public static final int USER_TASK_RUN_VALUE = 12;
 
 
   public final int getNumber() {
@@ -149,6 +157,7 @@ public enum GetableClassEnumPb
       case 9: return TASK_WORKER_GROUP;
       case 10: return USER_TASK_DEF;
       case 11: return TASK_RUN;
+      case 12: return USER_TASK_RUN;
       default: return null;
     }
   }

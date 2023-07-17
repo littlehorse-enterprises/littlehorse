@@ -8,40 +8,34 @@ public interface UserTaskRunPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string user_task_def_name = 1;</code>
-   * @return The userTaskDefName.
+   * <code>.littlehorse.UserTaskRunIdPb id = 1;</code>
+   * @return Whether the id field is set.
    */
-  java.lang.String getUserTaskDefName();
+  boolean hasId();
   /**
-   * <code>string user_task_def_name = 1;</code>
-   * @return The bytes for userTaskDefName.
+   * <code>.littlehorse.UserTaskRunIdPb id = 1;</code>
+   * @return The id.
    */
-  com.google.protobuf.ByteString
-      getUserTaskDefNameBytes();
+  io.littlehorse.sdk.common.proto.UserTaskRunIdPb getId();
+  /**
+   * <code>.littlehorse.UserTaskRunIdPb id = 1;</code>
+   */
+  io.littlehorse.sdk.common.proto.UserTaskRunIdPbOrBuilder getIdOrBuilder();
 
   /**
-   * <code>repeated .littlehorse.UserTaskEventPb events = 2;</code>
+   * <code>.littlehorse.UserTaskDefIdPb user_task_def_id = 2;</code>
+   * @return Whether the userTaskDefId field is set.
    */
-  java.util.List<io.littlehorse.sdk.common.proto.UserTaskEventPb> 
-      getEventsList();
+  boolean hasUserTaskDefId();
   /**
-   * <code>repeated .littlehorse.UserTaskEventPb events = 2;</code>
+   * <code>.littlehorse.UserTaskDefIdPb user_task_def_id = 2;</code>
+   * @return The userTaskDefId.
    */
-  io.littlehorse.sdk.common.proto.UserTaskEventPb getEvents(int index);
+  io.littlehorse.sdk.common.proto.UserTaskDefIdPb getUserTaskDefId();
   /**
-   * <code>repeated .littlehorse.UserTaskEventPb events = 2;</code>
+   * <code>.littlehorse.UserTaskDefIdPb user_task_def_id = 2;</code>
    */
-  int getEventsCount();
-  /**
-   * <code>repeated .littlehorse.UserTaskEventPb events = 2;</code>
-   */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskEventPbOrBuilder> 
-      getEventsOrBuilderList();
-  /**
-   * <code>repeated .littlehorse.UserTaskEventPb events = 2;</code>
-   */
-  io.littlehorse.sdk.common.proto.UserTaskEventPbOrBuilder getEventsOrBuilder(
-      int index);
+  io.littlehorse.sdk.common.proto.UserTaskDefIdPbOrBuilder getUserTaskDefIdOrBuilder();
 
   /**
    * <code>string specific_user_id = 3;</code>
@@ -148,10 +142,28 @@ public interface UserTaskRunPbOrBuilder extends
   io.littlehorse.sdk.common.proto.UserTaskRunStatusPb getStatus();
 
   /**
-   * <code>int32 user_task_def_version = 8;</code>
-   * @return The userTaskDefVersion.
+   * <code>repeated .littlehorse.UserTaskEventPb events = 8;</code>
    */
-  int getUserTaskDefVersion();
+  java.util.List<io.littlehorse.sdk.common.proto.UserTaskEventPb> 
+      getEventsList();
+  /**
+   * <code>repeated .littlehorse.UserTaskEventPb events = 8;</code>
+   */
+  io.littlehorse.sdk.common.proto.UserTaskEventPb getEvents(int index);
+  /**
+   * <code>repeated .littlehorse.UserTaskEventPb events = 8;</code>
+   */
+  int getEventsCount();
+  /**
+   * <code>repeated .littlehorse.UserTaskEventPb events = 8;</code>
+   */
+  java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskEventPbOrBuilder> 
+      getEventsOrBuilderList();
+  /**
+   * <code>repeated .littlehorse.UserTaskEventPb events = 8;</code>
+   */
+  io.littlehorse.sdk.common.proto.UserTaskEventPbOrBuilder getEventsOrBuilder(
+      int index);
 
   /**
    * <code>optional string notes = 9;</code>
@@ -169,6 +181,54 @@ public interface UserTaskRunPbOrBuilder extends
    */
   com.google.protobuf.ByteString
       getNotesBytes();
+
+  /**
+   * <code>.google.protobuf.Timestamp scheduled_time = 10;</code>
+   * @return Whether the scheduledTime field is set.
+   */
+  boolean hasScheduledTime();
+  /**
+   * <code>.google.protobuf.Timestamp scheduled_time = 10;</code>
+   * @return The scheduledTime.
+   */
+  com.google.protobuf.Timestamp getScheduledTime();
+  /**
+   * <code>.google.protobuf.Timestamp scheduled_time = 10;</code>
+   */
+  com.google.protobuf.TimestampOrBuilder getScheduledTimeOrBuilder();
+
+  /**
+   * <pre>
+   * If we ever allow ad-hoc User Tasks, this will move to an optional
+   * field, or a `oneof user_task_source` field. However, note that such
+   * a change would be fine from the API Compatibility perspective.
+   * </pre>
+   *
+   * <code>.littlehorse.NodeRunIdPb node_run_id = 11;</code>
+   * @return Whether the nodeRunId field is set.
+   */
+  boolean hasNodeRunId();
+  /**
+   * <pre>
+   * If we ever allow ad-hoc User Tasks, this will move to an optional
+   * field, or a `oneof user_task_source` field. However, note that such
+   * a change would be fine from the API Compatibility perspective.
+   * </pre>
+   *
+   * <code>.littlehorse.NodeRunIdPb node_run_id = 11;</code>
+   * @return The nodeRunId.
+   */
+  io.littlehorse.sdk.common.proto.NodeRunIdPb getNodeRunId();
+  /**
+   * <pre>
+   * If we ever allow ad-hoc User Tasks, this will move to an optional
+   * field, or a `oneof user_task_source` field. However, note that such
+   * a change would be fine from the API Compatibility perspective.
+   * </pre>
+   *
+   * <code>.littlehorse.NodeRunIdPb node_run_id = 11;</code>
+   */
+  io.littlehorse.sdk.common.proto.NodeRunIdPbOrBuilder getNodeRunIdOrBuilder();
 
   public io.littlehorse.sdk.common.proto.UserTaskRunPb.AssignedToCase getAssignedToCase();
 }

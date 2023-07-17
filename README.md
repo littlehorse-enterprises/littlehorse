@@ -13,24 +13,24 @@ For a description of the architecture, see the [architecture docs](docs/ARCH.md)
 The LittleHorse project currently has multiple repositories, described below:
 
 - [`server`](server)
-  - Code for LittleHorse Server.
+    - Code for LittleHorse Server.
 - [`sdk-java`](sdk-java)
-  - Library for creating `WfSpec`'s in Java.
-  - Library for executing `TaskRun`'s in Java.
+    - Library for creating `WfSpec`'s in Java.
+    - Library for executing `TaskRun`'s in Java.
 - [`sdk-go`](sdk-go)
-  - Library for creating `WfSpec`'s in GoLang.
-  - Library for executing `TaskRun`'s in GoLang.
+    - Library for creating `WfSpec`'s in GoLang.
+    - Library for executing `TaskRun`'s in GoLang.
 - [`lhctl`](lhctl)
-  - The `lhctl` command line interface.
+    - The `lhctl` command line interface.
 - [`e2e-tests`](e2e-tests)
-  - A series of system integration tests used to verify the cohesive behavior of
+    - A series of system integration tests used to verify the cohesive behavior of
     the LH Server, Java Workflow SDK, and Java Task Library together.
 - [`examples`](examples)
-  - A series of examples with different level of complexity.
+    - A series of examples with different level of complexity.
 - [`schemas`](schemas)
-  - The LittleHorse Protocol Buffer Specification.
+    - The LittleHorse Protocol Buffer Specification.
 - [`docker`](docker)
-  - The LittleHorse Docker Image.
+    - The LittleHorse Docker Image.
 
 ## Quickstart
 

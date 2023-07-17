@@ -8,51 +8,42 @@ public interface CompleteUserTaskRunPbOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string wf_run_id = 1;</code>
-   * @return The wfRunId.
+   * <code>.littlehorse.UserTaskRunIdPb user_task_run_id = 1;</code>
+   * @return Whether the userTaskRunId field is set.
    */
-  java.lang.String getWfRunId();
+  boolean hasUserTaskRunId();
   /**
-   * <code>string wf_run_id = 1;</code>
-   * @return The bytes for wfRunId.
+   * <code>.littlehorse.UserTaskRunIdPb user_task_run_id = 1;</code>
+   * @return The userTaskRunId.
    */
-  com.google.protobuf.ByteString
-      getWfRunIdBytes();
+  io.littlehorse.sdk.common.proto.UserTaskRunIdPb getUserTaskRunId();
+  /**
+   * <code>.littlehorse.UserTaskRunIdPb user_task_run_id = 1;</code>
+   */
+  io.littlehorse.sdk.common.proto.UserTaskRunIdPbOrBuilder getUserTaskRunIdOrBuilder();
 
   /**
-   * <code>int32 thread_run_number = 2;</code>
-   * @return The threadRunNumber.
-   */
-  int getThreadRunNumber();
-
-  /**
-   * <code>int32 node_run_position = 3;</code>
-   * @return The nodeRunPosition.
-   */
-  int getNodeRunPosition();
-
-  /**
-   * <code>.littlehorse.UserTaskResultPb result = 4;</code>
+   * <code>.littlehorse.UserTaskResultPb result = 2;</code>
    * @return Whether the result field is set.
    */
   boolean hasResult();
   /**
-   * <code>.littlehorse.UserTaskResultPb result = 4;</code>
+   * <code>.littlehorse.UserTaskResultPb result = 2;</code>
    * @return The result.
    */
   io.littlehorse.sdk.common.proto.UserTaskResultPb getResult();
   /**
-   * <code>.littlehorse.UserTaskResultPb result = 4;</code>
+   * <code>.littlehorse.UserTaskResultPb result = 2;</code>
    */
   io.littlehorse.sdk.common.proto.UserTaskResultPbOrBuilder getResultOrBuilder();
 
   /**
-   * <code>string user_id = 5;</code>
+   * <code>string user_id = 3;</code>
    * @return The userId.
    */
   java.lang.String getUserId();
   /**
-   * <code>string user_id = 5;</code>
+   * <code>string user_id = 3;</code>
    * @return The bytes for userId.
    */
   com.google.protobuf.ByteString

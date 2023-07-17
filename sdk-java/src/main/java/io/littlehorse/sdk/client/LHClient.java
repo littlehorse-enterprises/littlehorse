@@ -21,6 +21,7 @@ import io.littlehorse.sdk.common.proto.GetLatestWfSpecPb;
 import io.littlehorse.sdk.common.proto.GetNodeRunReplyPb;
 import io.littlehorse.sdk.common.proto.GetTaskDefReplyPb;
 import io.littlehorse.sdk.common.proto.GetTaskRunReplyPb;
+import io.littlehorse.sdk.common.proto.GetUserTaskRunReplyPb;
 import io.littlehorse.sdk.common.proto.GetVariableReplyPb;
 import io.littlehorse.sdk.common.proto.GetWfRunReplyPb;
 import io.littlehorse.sdk.common.proto.GetWfSpecReplyPb;
@@ -52,6 +53,8 @@ import io.littlehorse.sdk.common.proto.TaskDefPb;
 import io.littlehorse.sdk.common.proto.TaskRunIdPb;
 import io.littlehorse.sdk.common.proto.TaskRunPb;
 import io.littlehorse.sdk.common.proto.UserTaskDefPb;
+import io.littlehorse.sdk.common.proto.UserTaskRunIdPb;
+import io.littlehorse.sdk.common.proto.UserTaskRunPb;
 import io.littlehorse.sdk.common.proto.VariableIdPb;
 import io.littlehorse.sdk.common.proto.VariablePb;
 import io.littlehorse.sdk.common.proto.WfRunIdPb;
@@ -187,9 +190,9 @@ public class LHClient {
     }
 
     /**
-     * Returns a task execution data given an id
-     * @param id of the task run
-     * @return The task run that has already been executed, or null is the task does not exist
+     * Returns a TaskRun given an id
+     * @param id of the UserTaskRun
+     * @return The TaskRun if it exists, or null if it does not exist.
      * @throws LHApiError if it failed contacting to the API
      */
     public TaskRunPb getTaskRun(TaskRunIdPb id) throws LHApiError {
@@ -203,9 +206,26 @@ public class LHClient {
     }
 
     /**
-     * Returns a node run given a workflow, thread run number and position in the thread run
+     * Returns a UserTaskRun given an id
+     * @param id of the UserTaskRun
+     * @return The UserTaskRun if exists, else null.
+     * @throws LHApiError if it failed contacting to the API
+     */
+    public UserTaskRunPb getUserTaskRun(UserTaskRunIdPb id) throws LHApiError {
+        GetUserTaskRunReplyPb reply = (GetUserTaskRunReplyPb) doRequest(() -> {
+            return getGrpcClient().getUserTaskRun(id);
+        });
+        if (reply.hasResult()) {
+            return reply.getResult();
+        }
+        return null;
+    }
+
+    /**
+     * Returns a NodeRun given a workflow, thread run number and position in the
+     * ThreadRun
      * @param wfRunId workflow run identification
-     * @param threadRunNumber number of the subsequent thread
+     * @param threadRunNumber number of the relevant thread
      * @param position in the thread
      * @return null if the NodeRun does not exist, or the NodeRun's data otherwise
      * @throws LHApiError if it failed contacting to the API

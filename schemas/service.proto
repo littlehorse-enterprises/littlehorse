@@ -148,6 +148,12 @@ message GetTaskRunReplyPb {
   optional TaskRunPb result = 3;
 }
 
+message GetUserTaskRunReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  optional UserTaskRunPb result = 3;
+}
+
 message GetVariableReplyPb {
   LHResponseCodePb code = 1;
   optional string message = 2;
@@ -270,27 +276,38 @@ message SearchNodeRunPb {
   optional bytes bookmark = 1;
   optional int32 limit = 2;
 
-  message UserTaskRunSearchPb {
-    optional UserTaskRunStatusPb status = 1;
-    optional string user_task_def = 2;
-    optional string user_id = 3;
-    optional string user_group = 4;
-
-    optional google.protobuf.Timestamp earliest_start = 5;
-    optional google.protobuf.Timestamp latest_start = 6;
-  }
-
   oneof noderun_criteria {
-    string wf_run_id = 4;
-    UserTaskRunSearchPb user_task_run = 6;
+    string wf_run_id = 3;
   }
 }
-
 
 message SearchNodeRunReplyPb {
   LHResponseCodePb code = 1;
   optional string message = 2;
   repeated NodeRunIdPb results = 3;
+  optional bytes bookmark = 4;
+}
+
+message SearchUserTaskRunPb {
+  optional bytes bookmark = 1;
+  optional int32 limit = 2;
+
+  optional UserTaskRunStatusPb status = 3;
+  optional string user_task_def_name = 4;
+
+  oneof task_owner {
+    string user_id = 5;
+    string user_group = 6;
+  }
+
+  optional google.protobuf.Timestamp earliest_start = 7;
+  optional google.protobuf.Timestamp latest_start = 8;
+}
+
+message SearchUserTaskRunReplyPb {
+  LHResponseCodePb code = 1;
+  optional string message = 2;
+  repeated UserTaskRunIdPb results = 3;
   optional bytes bookmark = 4;
 }
 
@@ -639,6 +656,7 @@ service LHPublicApi {
   rpc PutUserTaskDef(PutUserTaskDefPb) returns (PutUserTaskDefReplyPb) {}
   rpc GetUserTaskDef(UserTaskDefIdPb) returns (GetUserTaskDefReplyPb) {}
   rpc GetLatestUserTaskDef(GetLatestUserTaskDefPb) returns (GetUserTaskDefReplyPb) {}
+  rpc GetUserTaskRun(UserTaskRunIdPb) returns (GetUserTaskRunReplyPb) {}
 
   rpc RunWf(RunWfPb) returns (RunWfReplyPb) {}
   rpc GetWfRun(WfRunIdPb) returns (GetWfRunReplyPb) {}
@@ -661,6 +679,7 @@ service LHPublicApi {
   rpc SearchWfRun(SearchWfRunPb) returns (SearchWfRunReplyPb) {}
   rpc SearchNodeRun(SearchNodeRunPb) returns (SearchNodeRunReplyPb) {}
   rpc SearchTaskRun(SearchTaskRunPb) returns (SearchTaskRunReplyPb) {}
+  rpc SearchUserTaskRun(SearchUserTaskRunPb) returns (SearchUserTaskRunReplyPb) {}
   rpc SearchVariable(SearchVariablePb) returns (SearchVariableReplyPb) {}
   rpc SearchTaskDef(SearchTaskDefPb) returns (SearchTaskDefReplyPb) {}
   rpc SearchUserTaskDef(SearchUserTaskDefPb) returns (SearchUserTaskDefReplyPb) {}
@@ -863,6 +882,10 @@ message TaskNodeRunPb {
   optional TaskRunIdPb task_run_id = 1;
 }
 
+message UserTaskNodeRunPb {
+  optional UserTaskRunIdPb user_task_run_id = 1;
+}
+
 message NodeRunPb {
   string wf_run_id = 1;
   int32 thread_run_number = 2;
@@ -888,7 +911,7 @@ message NodeRunPb {
     StartThreadRunPb start_thread = 20;
     WaitForThreadsRunPb wait_threads = 21;
     SleepNodeRunPb sleep = 22;
-    UserTaskRunPb user_task = 24;
+    UserTaskNodeRunPb user_task = 24;
   }
   repeated int32 failure_handler_ids = 23;
 }
@@ -1183,10 +1206,15 @@ enum UserTaskRunStatusPb {
   CANCELLED = 4;
 }
 
-// This is a SubNodeRun
+message UserTaskRunIdPb {
+  string wf_run_id = 1;
+  string user_task_guid = 2;
+}
+
+// This is a Getable
 message UserTaskRunPb {
-  string user_task_def_name = 1;
-  repeated UserTaskEventPb events = 2;
+  UserTaskRunIdPb id = 1;
+  UserTaskDefIdPb user_task_def_id = 2;
 
   // There are two ways the task could have been assigned
   // 1. The task can be taken by one specific person
@@ -1201,23 +1229,25 @@ message UserTaskRunPb {
   // 2. Not yet claimed.
   optional string user_id = 5;
   repeated UserTaskFieldResultPb results = 6;
-
   UserTaskRunStatusPb status = 7;
-  int32 user_task_def_version = 8;
-
+  repeated UserTaskEventPb events = 8;
   optional string notes = 9;
+  google.protobuf.Timestamp scheduled_time = 10;
+
+  // If we ever allow ad-hoc User Tasks, this will move to an optional
+  // field, or a `oneof user_task_source` field. However, note that such
+  // a change would be fine from the API Compatibility perspective.
+  NodeRunIdPb node_run_id = 11;
 }
 
 message AssignUserTaskRunPb {
-  string wf_run_id = 1;
-  int32 thread_run_number = 2;
-  int32 node_run_position = 3;
+  UserTaskRunIdPb user_task_run_id = 1;
 
-  bool override_claim = 4;
+  bool override_claim = 2;
 
   oneof assignee {
-    string user_id = 5;
-    string user_group = 6;
+    string user_id = 3;
+    string user_group = 4;
   }
 }
 
@@ -1249,12 +1279,10 @@ message SaveUserTaskRunPb {
 }
 
 message CompleteUserTaskRunPb {
-  string wf_run_id = 1;
-  int32 thread_run_number = 2;
-  int32 node_run_position = 3;
+  UserTaskRunIdPb user_task_run_id = 1;
 
-  UserTaskResultPb result = 4;
-  string user_id = 5;
+  UserTaskResultPb result = 2;
+  string user_id = 3;
 }
 
 message StartThreadNodePb {

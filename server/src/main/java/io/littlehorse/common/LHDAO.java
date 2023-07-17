@@ -12,10 +12,12 @@ import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
 import io.littlehorse.common.model.objectId.NodeRunId;
 import io.littlehorse.common.model.objectId.TaskRunId;
+import io.littlehorse.common.model.objectId.UserTaskRunId;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
 import io.littlehorse.common.model.wfrun.LHTimer;
 import io.littlehorse.common.model.wfrun.NodeRun;
 import io.littlehorse.common.model.wfrun.ScheduledTask;
+import io.littlehorse.common.model.wfrun.UserTaskRun;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
@@ -114,6 +116,10 @@ public interface LHDAO extends LHGlobalMetaStores {
     public TaskRun getTaskRun(TaskRunId taskRunId);
 
     public void putTaskRun(TaskRun taskRun);
+
+    public void putUserTaskRun(UserTaskRun taskRun);
+
+    public UserTaskRun getUserTaskRun(UserTaskRunId userTaskRunId);
 
     /*
      * Clear any dirty cache if necessary

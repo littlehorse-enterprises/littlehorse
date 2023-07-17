@@ -4,8 +4,6 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.LHSerializable;
-import io.littlehorse.common.model.command.subcommand.AssignUserTaskRun;
-import io.littlehorse.common.model.command.subcommand.CompleteUserTaskRun;
 import io.littlehorse.common.model.command.subcommand.ExternalEventTimeout;
 import io.littlehorse.common.model.command.subcommand.SleepNodeMatured;
 import io.littlehorse.common.model.meta.Edge;
@@ -32,7 +30,6 @@ import io.littlehorse.sdk.common.proto.ThreadHaltReasonPb;
 import io.littlehorse.sdk.common.proto.ThreadHaltReasonPb.ReasonCase;
 import io.littlehorse.sdk.common.proto.ThreadRunPb;
 import io.littlehorse.sdk.common.proto.ThreadTypePb;
-import io.littlehorse.sdk.common.proto.UserTaskRunStatusPb;
 import io.littlehorse.sdk.common.proto.VariableTypePb;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -225,44 +222,44 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         }
     }
 
-    public void processCompleteUserTaskRun(CompleteUserTaskRun event) {
-        NodeRun nr = getNodeRun(event.nodeRunPosition);
-        // TODO LH-303: make this throw an error back to client
-        if (nr.type != NodeTypeCase.USER_TASK) {
-            log.warn(
-                "Got an invalid request to completeTaskRun for wfRun {}, " +
-                "thread {}, and nodeRun {}: not a USER_TASK node.",
-                event.wfRunId,
-                event.threadRunNumber,
-                event.nodeRunPosition
-            );
-            return;
-        }
+    // public void processCompleteUserTaskRun(CompleteUserTaskRun event) {
+    //     NodeRun nr = getNodeRun(event.nodeRunPosition);
+    //     // TODO LH-303: make this throw an error back to client
+    //     if (nr.type != NodeTypeCase.USER_TASK) {
+    //         log.warn(
+    //             "Got an invalid request to completeTaskRun for wfRun {}, " +
+    //             "thread {}, and nodeRun {}: not a USER_TASK node.",
+    //             event.wfRunId,
+    //             event.threadRunNumber,
+    //             event.nodeRunPosition
+    //         );
+    //         return;
+    //     }
 
-        nr.userTaskRun.processTaskCompletedEvent(event);
-    }
+    //     nr.userTaskRun.processTaskCompletedEvent(event);
+    // }
 
-    public void processAssignUserTaskRun(AssignUserTaskRun event) {
-        NodeRun nr = getNodeRun(event.nodeRunPosition);
-        // TODO LH-303: make this throw an error back to client
-        if (nr.type != NodeTypeCase.USER_TASK) {
-            log.warn(
-                "Got an invalid request to completeTaskRun for wfRun {}, " +
-                "thread {}, and nodeRun {}: not a USER_TASK node.",
-                event.wfRunId,
-                event.threadRunNumber,
-                event.nodeRunPosition
-            );
-            return;
-        }
+    // public void processAssignUserTaskRun(AssignUserTaskRun event) {
+    //     NodeRun nr = getNodeRun(event.nodeRunPosition);
+    //     // TODO LH-303: make this throw an error back to client
+    //     if (nr.type != NodeTypeCase.USER_TASK) {
+    //         log.warn(
+    //             "Got an invalid request to completeTaskRun for wfRun {}, " +
+    //             "thread {}, and nodeRun {}: not a USER_TASK node.",
+    //             event.wfRunId,
+    //             event.threadRunNumber,
+    //             event.nodeRunPosition
+    //         );
+    //         return;
+    //     }
 
-        if (nr.userTaskRun.status == UserTaskRunStatusPb.DONE) {
-            log.warn("Tried to reassign already-completed task!");
-            return;
-        }
+    //     if (nr.userTaskRun.status == UserTaskRunStatusPb.DONE) {
+    //         log.warn("Tried to reassign already-completed task!");
+    //         return;
+    //     }
 
-        nr.userTaskRun.reassignTo(event);
-    }
+    //     nr.userTaskRun.reassignTo(event);
+    // }
 
     public void processExtEvtTimeout(ExternalEventTimeout timeout) {
         NodeRun nr = getNodeRun(timeout.nodeRunPosition);

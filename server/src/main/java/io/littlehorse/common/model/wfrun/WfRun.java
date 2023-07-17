@@ -6,7 +6,6 @@ import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.command.Command;
-import io.littlehorse.common.model.command.subcommand.CompleteUserTaskRun;
 import io.littlehorse.common.model.command.subcommand.DeleteWfRun;
 import io.littlehorse.common.model.command.subcommand.ExternalEventTimeout;
 import io.littlehorse.common.model.command.subcommand.ResumeWfRun;
@@ -482,11 +481,6 @@ public class WfRun extends Getable<WfRunPb> {
             thread.processExternalEvent(event);
         }
         advance(event.getCreatedAt());
-    }
-
-    public void processCompleteUserTaskRun(CompleteUserTaskRun event) {
-        ThreadRun thread = threadRuns.get(event.threadRunNumber);
-        thread.processCompleteUserTaskRun(event);
     }
 
     public void processStopRequest(StopWfRun req) throws LHValidationError {

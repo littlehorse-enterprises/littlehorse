@@ -258,19 +258,19 @@ public interface NodeRunPbOrBuilder extends
   io.littlehorse.sdk.common.proto.SleepNodeRunPbOrBuilder getSleepOrBuilder();
 
   /**
-   * <code>.littlehorse.UserTaskRunPb user_task = 24;</code>
+   * <code>.littlehorse.UserTaskNodeRunPb user_task = 24;</code>
    * @return Whether the userTask field is set.
    */
   boolean hasUserTask();
   /**
-   * <code>.littlehorse.UserTaskRunPb user_task = 24;</code>
+   * <code>.littlehorse.UserTaskNodeRunPb user_task = 24;</code>
    * @return The userTask.
    */
-  io.littlehorse.sdk.common.proto.UserTaskRunPb getUserTask();
+  io.littlehorse.sdk.common.proto.UserTaskNodeRunPb getUserTask();
   /**
-   * <code>.littlehorse.UserTaskRunPb user_task = 24;</code>
+   * <code>.littlehorse.UserTaskNodeRunPb user_task = 24;</code>
    */
-  io.littlehorse.sdk.common.proto.UserTaskRunPbOrBuilder getUserTaskOrBuilder();
+  io.littlehorse.sdk.common.proto.UserTaskNodeRunPbOrBuilder getUserTaskOrBuilder();
 
   /**
    * <code>repeated int32 failure_handler_ids = 23;</code>
