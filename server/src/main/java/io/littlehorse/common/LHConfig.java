@@ -394,7 +394,7 @@ public class LHConfig extends ConfigBase {
                 .build();
         } catch (IllegalArgumentException e) {
             throw new LHMisconfigurationException(
-                "Malformed URL check: " + configPrefix + "_WELLKNOWN_ENDPOINT"
+                "Malformed URL check: " + configPrefix + "_AUTHORIZATION_SERVER"
             );
         }
     }
