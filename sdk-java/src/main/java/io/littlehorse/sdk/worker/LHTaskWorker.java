@@ -226,6 +226,8 @@ public class LHTaskWorker implements Closeable {
      * Cleanly shuts down the Task Worker.
      */
     public void close() {
-        manager.close();
+        if (manager != null) {
+            manager.close();
+        }
     }
 }

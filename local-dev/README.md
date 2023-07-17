@@ -148,3 +148,58 @@ Run server with docker and specific config:
 ```
 ./local-dev/compile-proto.sh
 ```
+
+## Configuring OAuth2
+
+> You need to install [httpie](https://httpie.io/cli)
+
+Creates client at keycloak:
+
+```
+./local-dev/setup-keycloak.sh
+```
+
+Clients:
+
+| Client Id | Client Secret                    | Description                                                    |
+| --------- | -------------------------------- | -------------------------------------------------------------- |
+| server    | 3bdca420cf6c48e2aa4f56d46d6327e0 | Server Introspection                                           |
+| worker    | 40317ab43bd34a9e93499c7ea03ad398 | For Workers to issue access tokens (Client Credentials FLow)   |
+| lhctl     | ee96a53af0034437bee816e63944e0f0 | For lhctl cli to issue access tokens (Authorization Code Flow) |
+
+Creates certificates:
+
+```
+./local-dev/issue-certificates.sh
+```
+
+Update config:
+
+```
+LHS_LISTENERS=OAUTH:2023
+LHS_LISTENERS_PROTOCOL_MAP=OAUTH:TLS
+LHS_LISTENERS_AUTHORIZATION_MAP=OAUTH:OAUTH
+
+LHS_LISTENER_OAUTH_CERT=local-dev/certs/server/server.crt
+LHS_LISTENER_OAUTH_KEY=local-dev/certs/server/server.key
+
+LHS_LISTENER_OAUTH_CLIENT_ID=server
+LHS_LISTENER_OAUTH_CLIENT_SECRET=3bdca420cf6c48e2aa4f56d46d6327e0
+LHS_LISTENER_OAUTH_AUTHORIZATION_SERVER=http://localhost:8888/realms/lh
+```
+
+> Check file [oauth.config](configs/oauth.config)
+
+
+Run the server:
+
+```
+./local-dev/do-server.sh oauth
+```
+
+Open Keycloak:
+
+http://localhost:8888
+
+- User: `admin`
+- Password: `admin`

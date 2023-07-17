@@ -17,7 +17,6 @@ import io.littlehorse.server.listener.TlsConfig;
 import io.littlehorse.server.listener.TlsConfig.TlsConfigBuilder;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
@@ -64,7 +63,7 @@ public class LHConfig extends ConfigBase {
         "LHS_STREAMS_NUM_STANDBY_REPLICAS";
 
     // General LittleHorse Runtime Behavior Config Env Vars
-    public static final String KAFKA_TOPIC_PREFIX_KEY = "LHS_KAFKA_PREFIX";
+    public static final String KAFKA_TOPIC_PREFIX_KEY = "LHS_KAFKA_TOPIC_PREFIX";
     public static final String DEFAULT_WFRUN_RETENTION_HOURS =
         "LHS_DEFAULT_WFRUN_RETENTION_HOURS";
     public static final String DEFAULT_EXTERNAL_EVENT_RETENTION_HOURS =
@@ -82,9 +81,13 @@ public class LHConfig extends ConfigBase {
     public static final String KAFKA_TRUSTSTORE_KEY = "LHS_KAFKA_TRUSTSTORE";
     public static final String KAFKA_TRUSTSTORE_PASSWORD_KEY =
         "LHS_KAFKA_TRUSTSTORE_PASSWORD";
+    public static final String KAFKA_TRUSTSTORE_PASSWORD_FILE_KEY =
+        "LHS_KAFKA_TRUSTSTORE_PASSWORD_FILE";
     public static final String KAFKA_KEYSTORE_KEY = "LHS_KAFKA_KEYSTORE";
     public static final String KAFKA_KEYSTORE_PASSWORD_KEY =
         "LHS_KAFKA_KEYSTORE_PASSWORD";
+    public static final String KAFKA_KEYSTORE_PASSWORD_FILE_KEY =
+        "LHS_KAFKA_KEYSTORE_PASSWORD_FILE";
 
     public static final String SHOULD_CREATE_TOPICS_KEY = "LHS_SHOULD_CREATE_TOPICS";
 
@@ -306,7 +309,7 @@ public class LHConfig extends ConfigBase {
     }
 
     public String getLHClusterId() {
-        return getOrSetDefault(LHConfig.LHS_CLUSTER_ID_KEY, "server1");
+        return getOrSetDefault(LHConfig.LHS_CLUSTER_ID_KEY, "cluster1");
     }
 
     public String getLHInstanceId() {
@@ -326,7 +329,7 @@ public class LHConfig extends ConfigBase {
         return Integer.valueOf(
             getOrSetDefault(
                 LHConfig.INTERNAL_ADVERTISED_PORT_KEY,
-                Integer.valueOf(getInternalBindPort()).toString()
+                String.valueOf(getInternalBindPort())
             )
         );
     }
@@ -363,10 +366,14 @@ public class LHConfig extends ConfigBase {
             null
         );
 
-        if (clientIdFile != null && clientSecretFile != null) {
-            log.info("Loading OAuth credentials form files");
-            clientId = readFile(clientIdFile);
-            clientSecret = readFile(clientSecretFile);
+        if (clientSecretFile != null) {
+            log.info("Loading OAuth2 Client Secret form file");
+            clientSecret = loadSettingFromFile(clientSecretFile);
+        }
+
+        if (clientIdFile != null) {
+            log.info("Loading OAuth2 Client Id form files");
+            clientId = loadSettingFromFile(clientIdFile);
         }
 
         if (clientId == null || clientSecret == null || authorizationServer == null) {
@@ -388,17 +395,6 @@ public class LHConfig extends ConfigBase {
         } catch (IllegalArgumentException e) {
             throw new LHMisconfigurationException(
                 "Malformed URL check: " + configPrefix + "_WELLKNOWN_ENDPOINT"
-            );
-        }
-    }
-
-    private String readFile(String clientIdFile) {
-        try {
-            return Files.readString(Path.of(clientIdFile)).trim();
-        } catch (IOException e) {
-            throw new LHMisconfigurationException(
-                "Error loading file: " + clientIdFile,
-                e
             );
         }
     }
@@ -634,7 +630,7 @@ public class LHConfig extends ConfigBase {
     }
 
     public boolean shouldCreateTopics() {
-        return Boolean.valueOf(getOrSetDefault(SHOULD_CREATE_TOPICS_KEY, "true"));
+        return Boolean.valueOf(getOrSetDefault(SHOULD_CREATE_TOPICS_KEY, "false"));
     }
 
     public Properties getKafkaProducerConfig(String component) {
@@ -669,11 +665,29 @@ public class LHConfig extends ConfigBase {
     private void addKafkaSecuritySettings(Properties conf) {
         String keystoreLoc = getOrSetDefault(KAFKA_KEYSTORE_KEY, null);
         String keystorePassword = getOrSetDefault(KAFKA_KEYSTORE_PASSWORD_KEY, null);
+        String keystorePasswordFile = getOrSetDefault(
+            KAFKA_KEYSTORE_PASSWORD_FILE_KEY,
+            null
+        );
         String truststoreLoc = getOrSetDefault(KAFKA_TRUSTSTORE_KEY, null);
         String truststorePassword = getOrSetDefault(
             KAFKA_TRUSTSTORE_PASSWORD_KEY,
             null
         );
+        String truststorePasswordFile = getOrSetDefault(
+            KAFKA_TRUSTSTORE_PASSWORD_FILE_KEY,
+            null
+        );
+
+        if (keystorePasswordFile != null) {
+            log.info("Loading Keystore Password form file");
+            keystorePassword = loadSettingFromFile(keystorePasswordFile);
+        }
+
+        if (truststorePasswordFile != null) {
+            log.info("Loading Truststore Password form files");
+            truststorePassword = loadSettingFromFile(truststorePasswordFile);
+        }
 
         if (
             keystoreLoc == null &&
@@ -707,18 +721,21 @@ public class LHConfig extends ConfigBase {
 
         conf.put("ssl.keystore.type", "PKCS12");
         conf.put("ssl.keystore.location", keystoreLoc);
-        conf.put("ssl.keystore.password", loadPasswordFrom(keystorePassword));
+        conf.put("ssl.keystore.password", keystorePassword);
 
         conf.put("ssl.truststore.type", "PKCS12");
         conf.put("ssl.truststore.location", truststoreLoc);
-        conf.put("ssl.truststore.password", loadPasswordFrom(truststorePassword));
+        conf.put("ssl.truststore.password", truststorePassword);
     }
 
-    private static String loadPasswordFrom(String fileName) {
-        try (FileInputStream is = new FileInputStream(new File(fileName));) {
-            return new String(is.readAllBytes());
-        } catch (IOException exn) {
-            throw new RuntimeException(exn);
+    private String loadSettingFromFile(String fileName) {
+        try {
+            return Files.readString(Path.of(fileName)).trim();
+        } catch (IOException e) {
+            throw new LHMisconfigurationException(
+                "Error loading file: " + fileName,
+                e
+            );
         }
     }
 
@@ -817,17 +834,15 @@ public class LHConfig extends ConfigBase {
     }
 
     public int getDefaultWfRunRetentionHours() {
-        int retentionHours = Integer.valueOf(
+        return Integer.valueOf(
             getOrSetDefault(LHConfig.DEFAULT_WFRUN_RETENTION_HOURS, "168")
         );
-        return retentionHours;
     }
 
     public int getDefaultExternalEventRetentionHours() {
-        int retentionHours = Integer.valueOf(
+        return Integer.valueOf(
             getOrSetDefault(LHConfig.DEFAULT_EXTERNAL_EVENT_RETENTION_HOURS, "168")
         );
-        return retentionHours;
     }
 
     public int getStandbyReplicas() {
@@ -953,7 +968,15 @@ public class LHConfig extends ConfigBase {
         return props
             .entrySet()
             .stream()
-            .map(entry -> entry.getKey() + ": " + entry.getValue())
+            .map(entry ->
+                String.format(
+                    "%s=%s",
+                    entry.getKey(),
+                    entry.getKey().toString().matches(".*(PASSWORD|CLIENT_SECRET).*")
+                        ? "*********"
+                        : entry.getValue()
+                )
+            )
             .sorted()
             .collect(Collectors.joining("\n"));
     }

@@ -97,7 +97,7 @@ odd total number of args. See 'lhctl run --help' for details.`)
 
 				varDef := varDefs[varName]
 				if varDef == nil {
-					log.Fatal("Variable name", varName, "not found in WfSpec.")
+					log.Fatal("Variable name '" + varName + "' not found in WfSpec.")
 				}
 
 				runReq.Variables[varName], err = common.StrToVarVal(

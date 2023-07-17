@@ -48,3 +48,5 @@ You can confirm that the Server is running via:
 ```
 ../local-dev/compile-proto.sh
 ```
+
+## Configurations

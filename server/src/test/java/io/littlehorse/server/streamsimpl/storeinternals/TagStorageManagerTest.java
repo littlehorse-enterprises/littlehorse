@@ -60,8 +60,6 @@ public class TagStorageManagerTest {
     private Attribute wfSpecNameAttribute = new Attribute("wfSpecName", "test-name");
     private Attribute statusAttribute = new Attribute("status", "running");
 
-    private String tagsCacheKey = "123456";
-
     @BeforeEach
     void setup() {
         store.init(mockProcessorContext.getStateStoreContext(), store);

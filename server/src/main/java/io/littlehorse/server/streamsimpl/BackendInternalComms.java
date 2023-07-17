@@ -1088,10 +1088,9 @@ public class BackendInternalComms implements Closeable {
 
     private HostInfo getHostForPartition(int partition) {
         if (partition >= config.getClusterPartitions()) {
-            throw new RuntimeException("Colt you need to sleep more you moron");
+            throw new RuntimeException("Unrecognized partition");
         }
 
-        // This is O(N) where N is # of partitions...not too great yikerz
         Collection<StreamsMetadata> all = coreStreams.metadataForAllStreamsClients();
         for (StreamsMetadata meta : all) {
             for (TopicPartition tp : meta.topicPartitions()) {
