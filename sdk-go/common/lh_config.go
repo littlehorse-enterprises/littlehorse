@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 
 	"bitbucket.org/littlehorse-core/littlehorse/sdk-go/common/auth"
 	"bitbucket.org/littlehorse-core/littlehorse/sdk-go/common/model"
+	"github.com/google/uuid"
 	"github.com/magiconair/properties"
 
 	"google.golang.org/grpc"
@@ -28,7 +30,6 @@ const (
 	NUM_WORKER_THREADS_KEY      = "LHW_NUM_WORKER_THREADS"
 	TASK_WORKER_VERSION_KEY     = "LHW_TASK_WORKER_VERSION"
 	SERVER_CONNECT_LISTENER_KEY = "LHW_SERVER_CONNECT_LISTENER"
-	DEFAULT_LISTENER            = "PLAIN"
 
 	OAUTH_CLIENT_ID_KEY            = "LHC_OAUTH_CLIENT_ID"
 	OAUTH_CLIENT_SECRET_KEY        = "LHC_OAUTH_CLIENT_SECRET"
@@ -37,6 +38,7 @@ const (
 	OAUTH_CALLBACK_PORT_KEY        = "LHC_OAUTH_CALLBACK_PORT"
 	OAUTH_CREDENTIALS_LOCATION_KEY = "LHC_OAUTH_CREDENTIALS_LOCATION"
 
+	DEFAULT_LISTENER            = "PLAIN"
 	DEFAULT_OAUTH_CALLBACK_PORT = 25242
 )
 
@@ -150,13 +152,13 @@ func NewConfigFromProps(filePath string) (*LHConfig, error) {
 	return &LHConfig{
 		ApiHost:  p.GetString(API_HOST_KEY, "localhost"),
 		ApiPort:  p.GetString(API_PORT_KEY, "2023"),
-		ClientId: p.GetString(CLIENT_ID_KEY, "unset-client"),
+		ClientId: p.GetString(CLIENT_ID_KEY, "client-" + generateRandomClientId()),
 
 		CertFile: stringPtr(p.GetString(CERT_FILE_KEY, "")),
 		KeyFile:  stringPtr(p.GetString(KEY_FILE_KEY, "")),
 		CaCert:   stringPtr(p.GetString(CA_CERT_FILE_KEY, "")),
 
-		NumWorkerThreads:      int32FromProp(p, NUM_WORKER_THREADS_KEY, 2),
+		NumWorkerThreads:      int32FromProp(p, NUM_WORKER_THREADS_KEY, 8),
 		TaskWorkerVersion:     p.GetString(TASK_WORKER_VERSION_KEY, ""),
 		ServerConnectListener: p.GetString(SERVER_CONNECT_LISTENER_KEY, DEFAULT_LISTENER),
 
@@ -171,6 +173,11 @@ func NewConfigFromProps(filePath string) (*LHConfig, error) {
 			CredentialsLocation: p.GetString(OAUTH_CREDENTIALS_LOCATION_KEY, homeDir("/.config/littlehorse.credentials")),
 		},
 	}, nil
+}
+
+func generateRandomClientId() string {
+	uuid := uuid.NewString()
+	return strings.ReplaceAll(uuid, "-", "")
 }
 
 func homeDir(append string) string {
