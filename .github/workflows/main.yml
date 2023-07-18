@@ -1,7 +1,7 @@
 - name: Checkout
   uses: actions/checkout@v2
   with:
-      fetch-depth: 0 # <-- clone with complete history
+    fetch-depth: 0
 - name: Push
   uses: heussd/mirror-to-bitbucket-github-action@v2
   with:
