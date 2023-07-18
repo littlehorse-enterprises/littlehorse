@@ -1,0 +1,23 @@
+name: 'Mirror to BitBucket GitHub Action'
+
+on: 
+   push:
+    branches:
+      - main
+      - dev
+      
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Push
+        uses: heussd/mirror-to-bitbucket-github-action@v2
+        with:
+          username: ErnestoHP
+          spacename: eh-altimetrik
+          repository: lh-dashboard
+          password: ${{ secrets.BITBUCKET_PASSWORD }}
