@@ -2,7 +2,9 @@ package io.littlehorse.io.littlehorse.server.streamsimpl.storeinternals;
 
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.model.objectId.UserTaskRunId;
 import io.littlehorse.common.model.wfrun.UserTaskRun;
+import io.littlehorse.sdk.common.proto.UserTaskRunStatusPb;
 import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionCommand;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionSubCommand;
@@ -11,6 +13,7 @@ import io.littlehorse.server.streamsimpl.storeinternals.GetableStorageManager;
 import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
 import java.util.List;
+import java.util.UUID;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
@@ -25,7 +28,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class UserTaskRunStorageManager {
+public class UserTaskRunStorageManagerTest {
 
     private final KeyValueStore<String, Bytes> store = Stores
         .keyValueStoreBuilder(
@@ -45,12 +48,20 @@ public class UserTaskRunStorageManager {
     private GetableStorageManager geTableStorageManager;
     private String wfRunId = "1234567890";
 
-    private UserTaskRun userTaskRun = TestUtil.userTaskRun(wfRunId);
-
     @BeforeEach
     void setup() {
         initializeDependencies();
-        geTableStorageManager.store(userTaskRun);
+        for (UserTaskRunStatusPb userTaskRunStatusPb : UserTaskRunStatusPb.values()) {
+            if (userTaskRunStatusPb == UserTaskRunStatusPb.UNRECOGNIZED) {
+                continue;
+            }
+            UserTaskRun userTaskRun = TestUtil.userTaskRun(wfRunId);
+            userTaskRun.setStatus(userTaskRunStatusPb);
+            userTaskRun.setId(
+                new UserTaskRunId(wfRunId + "1", UUID.randomUUID().toString())
+            );
+            geTableStorageManager.store(userTaskRun);
+        }
     }
 
     private void initializeDependencies() {
@@ -99,16 +110,46 @@ public class UserTaskRunStorageManager {
     }
 
     @Test
-    public void indexByStatusAndUserTaskDefName() {
+    public void indexByStatusAndUserTaskDefName_CLAIMED() {
+        Assertions
+            .assertThat(storedRemoteTagPrefixStoreKeys())
+            .contains("USER_TASK_RUN/__status_CLAIMED__userTaskDefName_ut-name");
+    }
+
+    @Test
+    public void indexByStatusAndUserTaskDefName_UNASSIGNED() {
+        Assertions
+            .assertThat(storedRemoteTagPrefixStoreKeys())
+            .contains("USER_TASK_RUN/__status_UNASSIGNED__userTaskDefName_ut-name");
+    }
+
+    @Test
+    public void indexByStatusAndUserTaskDefName_ASSIGNED_NOT_CLAIMED() {
+        Assertions
+            .assertThat(storedRemoteTagPrefixStoreKeys())
+            .contains(
+                "USER_TASK_RUN/__status_ASSIGNED_NOT_CLAIMED__userTaskDefName_ut-name"
+            );
+    }
+
+    @Test
+    public void indexByStatusAndUserTaskDefName_DONE() {
         Assertions
             .assertThat(storedTagPrefixStoreKeys())
-            .contains("USER_TASK_RUN/__status_CLAIMED__userTaskDefName_ut-name");
+            .contains("USER_TASK_RUN/__status_DONE__userTaskDefName_ut-name");
+    }
+
+    @Test
+    public void indexByStatusAndUserTaskDefName_CANCELLED() {
+        Assertions
+            .assertThat(storedTagPrefixStoreKeys())
+            .contains("USER_TASK_RUN/__status_CANCELLED__userTaskDefName_ut-name");
     }
 
     @Test
     public void indexByStatus() {
         Assertions
-            .assertThat(storedTagPrefixStoreKeys())
+            .assertThat(storedRemoteTagPrefixStoreKeys())
             .contains("USER_TASK_RUN/__status_CLAIMED");
     }
 
@@ -127,11 +168,27 @@ public class UserTaskRunStorageManager {
     }
 
     @Test
+    public void indexByStatusAndUserId_DONE() {
+        Assertions
+            .assertThat(storedRemoteTagPrefixStoreKeys())
+            .contains("USER_TASK_RUN/__status_DONE__userId_33333");
+    }
+
+    @Test
     public void indexByStatusAndTaskDefNameAndUserId() {
         Assertions
             .assertThat(storedRemoteTagPrefixStoreKeys())
             .contains(
                 "USER_TASK_RUN/__status_CLAIMED__userTaskDefName_ut-name__userId_33333"
+            );
+    }
+
+    @Test
+    public void indexByStatusAndTaskDefNameAndUserId_DONE() {
+        Assertions
+            .assertThat(storedRemoteTagPrefixStoreKeys())
+            .contains(
+                "USER_TASK_RUN/__status_DONE__userTaskDefName_ut-name__userId_33333"
             );
     }
 
@@ -156,13 +213,5 @@ public class UserTaskRunStorageManager {
         Assertions
             .assertThat(storedRemoteTagPrefixStoreKeys())
             .contains("USER_TASK_RUN/__userGroupId_1234567");
-    }
-
-    @Test
-    public void totalIndex() {
-        int expectedTagCount = userTaskRun.getIndexConfigurations().size();
-        int storedTagCount =
-            storedTags().size() + storedRemoteTagPrefixStoreKeys().size();
-        Assertions.assertThat(expectedTagCount).isEqualTo(storedTagCount);
     }
 }

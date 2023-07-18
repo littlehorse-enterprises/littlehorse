@@ -370,7 +370,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
                     Pair.of("status", GetableIndex.ValueType.SINGLE),
                     Pair.of("userId", GetableIndex.ValueType.SINGLE)
                 ),
-                Optional.of(TagStorageTypePb.REMOTE),
+                Optional.of(TagStorageTypePb.LOCAL),
                 userTaskRun -> !Strings.isNullOrEmpty(userTaskRun.getUserId())
             ),
             new GetableIndex<UserTaskRun>(
@@ -379,7 +379,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
                     Pair.of("userTaskDefName", GetableIndex.ValueType.SINGLE),
                     Pair.of("userId", GetableIndex.ValueType.SINGLE)
                 ),
-                Optional.of(TagStorageTypePb.REMOTE),
+                Optional.of(TagStorageTypePb.LOCAL),
                 userTaskRun -> !Strings.isNullOrEmpty(userTaskRun.getUserId())
             ),
             new GetableIndex<UserTaskRun>(
@@ -388,7 +388,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
                     Pair.of("userTaskDefName", GetableIndex.ValueType.SINGLE),
                     Pair.of("userGroupId", GetableIndex.ValueType.SINGLE)
                 ),
-                Optional.of(TagStorageTypePb.REMOTE),
+                Optional.of(TagStorageTypePb.LOCAL),
                 userTaskRun -> !Strings.isNullOrEmpty(userTaskRun.getUserGroup())
             ),
             new GetableIndex<UserTaskRun>(
@@ -396,7 +396,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
                     Pair.of("status", GetableIndex.ValueType.SINGLE),
                     Pair.of("userGroupId", GetableIndex.ValueType.SINGLE)
                 ),
-                Optional.of(TagStorageTypePb.REMOTE),
+                Optional.of(TagStorageTypePb.LOCAL),
                 userTaskRun -> !Strings.isNullOrEmpty(userTaskRun.getUserGroup())
             ),
             new GetableIndex<UserTaskRun>(
@@ -407,6 +407,18 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         );
     }
 
+    public boolean isRemote() {
+        return isRemote(this.getStatus());
+    }
+
+    public static boolean isRemote(UserTaskRunStatusPb userTaskRunStatusPb) {
+        return (
+            userTaskRunStatusPb == UserTaskRunStatusPb.CLAIMED ||
+            userTaskRunStatusPb == UserTaskRunStatusPb.ASSIGNED_NOT_CLAIMED ||
+            userTaskRunStatusPb == UserTaskRunStatusPb.UNASSIGNED
+        );
+    }
+
     @Override
     public List<IndexedField> getIndexValues(
         String key,
@@ -414,13 +426,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
     ) {
         switch (key) {
             case "status" -> {
-                return List.of(
-                    new IndexedField(
-                        key,
-                        this.getStatus().toString(),
-                        tagStorageTypePb.get() // wut is this supposed to be?
-                    )
-                );
+                return List.of(getIndexedStatusField(key, tagStorageTypePb));
             }
             case "userTaskDefName" -> {
                 return List.of(
@@ -433,7 +439,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
             }
             case "userId" -> {
                 return List.of(
-                    new IndexedField(key, this.getUserId(), tagStorageTypePb.get())
+                    new IndexedField(key, this.getUserId(), TagStorageTypePb.REMOTE)
                 );
             }
             case "userGroupId" -> {
@@ -444,5 +450,16 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         }
         log.warn("Tried to get value for unknown index field {}", key);
         return List.of();
+    }
+
+    private IndexedField getIndexedStatusField(
+        String key,
+        Optional<TagStorageTypePb> tagStorageTypePbOptional
+    ) {
+        TagStorageTypePb tagStorageTypePb = tagStorageTypePbOptional.get();
+        if (this.isRemote()) {
+            tagStorageTypePb = TagStorageTypePb.REMOTE;
+        }
+        return new IndexedField(key, this.getStatus().toString(), tagStorageTypePb);
     }
 }

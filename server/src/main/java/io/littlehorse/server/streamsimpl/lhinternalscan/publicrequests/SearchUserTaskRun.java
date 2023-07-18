@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +50,7 @@ public class SearchUserTaskRun
 
     private Date latestStart;
     private Date earliestStart;
+    private TagStorageTypePb storageTypePbByStatus;
 
     public GetableClassEnumPb getObjectType() {
         return GetableClassEnumPb.USER_TASK_RUN;
@@ -156,9 +158,6 @@ public class SearchUserTaskRun
         out.resultType = ScanResultTypePb.OBJECT_ID;
         out.objectType = getObjectType();
 
-        // TODO: This will change after we implement remote tags.
-        // For example, if request.hasUserId(), it will be REMOTE and the
-        // partitionKey will be attribute string; otherwise, it will be LOCAL.
         out.type = ScanBoundaryCase.TAG_SCAN;
         TagScanPb.Builder prefixScanBuilder = TagScanPb.newBuilder();
         List<Attribute> attributes = getSearchAttributes();
@@ -169,14 +168,22 @@ public class SearchUserTaskRun
                 .map(AttributePb.Builder::build)
                 .toList()
         );
-        TagStorageTypePb tagStorageTypePb = getStorageTypeForSearchAttributes(
-            attributes.stream().map(Attribute::getEscapedKey).toList()
-        )
-            .orElseThrow(() ->
-                new LHValidationError(
-                    "There is no index configuration for this search"
-                )
-            );
+        Supplier<TagStorageTypePb> storageTypeForSearchAttributes = () -> {
+            return getStorageTypeForSearchAttributes(
+                attributes.stream().map(Attribute::getEscapedKey).toList()
+            )
+                .orElseThrow(() ->
+                    new IllegalStateException(
+                        "There is no index configuration for this search"
+                    )
+                );
+        };
+        TagStorageTypePb tagStorageTypePb = tagStorageTypePbByUserId()
+            .orElseGet(() -> tagStorageTypePbByStatus().orElse(null));
+        tagStorageTypePb =
+            Optional
+                .ofNullable(tagStorageTypePb)
+                .orElseGet(storageTypeForSearchAttributes);
         if (tagStorageTypePb == TagStorageTypePb.LOCAL) {
             // Local Tag Scan (All Partitions Tag Scan)
             out.setStoreName(ServerTopology.CORE_STORE);
@@ -211,6 +218,22 @@ public class SearchUserTaskRun
         out.tagScan = prefixScanBuilder.build();
 
         return out;
+    }
+
+    private Optional<TagStorageTypePb> tagStorageTypePbByStatus() {
+        return Optional
+            .ofNullable(status)
+            .map(userTaskRunStatusPb -> {
+                if (UserTaskRun.isRemote(userTaskRunStatusPb)) {
+                    return TagStorageTypePb.REMOTE;
+                } else {
+                    return TagStorageTypePb.LOCAL;
+                }
+            });
+    }
+
+    private Optional<TagStorageTypePb> tagStorageTypePbByUserId() {
+        return Optional.ofNullable(userId).map(userId -> TagStorageTypePb.REMOTE);
     }
 
     private List<Attribute> getSearchAttributes() {
