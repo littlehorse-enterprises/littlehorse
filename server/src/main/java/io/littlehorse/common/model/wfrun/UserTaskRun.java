@@ -362,7 +362,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
             ),
             new GetableIndex<UserTaskRun>(
                 List.of(Pair.of("userId", GetableIndex.ValueType.SINGLE)),
-                Optional.of(TagStorageTypePb.LOCAL),
+                Optional.of(TagStorageTypePb.REMOTE),
                 userTaskRun -> !Strings.isNullOrEmpty(userTaskRun.getUserId())
             ),
             new GetableIndex<UserTaskRun>(
@@ -370,7 +370,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
                     Pair.of("status", GetableIndex.ValueType.SINGLE),
                     Pair.of("userId", GetableIndex.ValueType.SINGLE)
                 ),
-                Optional.of(TagStorageTypePb.LOCAL),
+                Optional.of(TagStorageTypePb.REMOTE),
                 userTaskRun -> !Strings.isNullOrEmpty(userTaskRun.getUserId())
             ),
             new GetableIndex<UserTaskRun>(
@@ -379,7 +379,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
                     Pair.of("userTaskDefName", GetableIndex.ValueType.SINGLE),
                     Pair.of("userId", GetableIndex.ValueType.SINGLE)
                 ),
-                Optional.of(TagStorageTypePb.LOCAL),
+                Optional.of(TagStorageTypePb.REMOTE),
                 userTaskRun -> !Strings.isNullOrEmpty(userTaskRun.getUserId())
             ),
             new GetableIndex<UserTaskRun>(
@@ -388,7 +388,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
                     Pair.of("userTaskDefName", GetableIndex.ValueType.SINGLE),
                     Pair.of("userGroupId", GetableIndex.ValueType.SINGLE)
                 ),
-                Optional.of(TagStorageTypePb.LOCAL),
+                Optional.of(TagStorageTypePb.REMOTE),
                 userTaskRun -> !Strings.isNullOrEmpty(userTaskRun.getUserGroup())
             ),
             new GetableIndex<UserTaskRun>(
@@ -396,12 +396,12 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
                     Pair.of("status", GetableIndex.ValueType.SINGLE),
                     Pair.of("userGroupId", GetableIndex.ValueType.SINGLE)
                 ),
-                Optional.of(TagStorageTypePb.LOCAL),
+                Optional.of(TagStorageTypePb.REMOTE),
                 userTaskRun -> !Strings.isNullOrEmpty(userTaskRun.getUserGroup())
             ),
             new GetableIndex<UserTaskRun>(
                 List.of(Pair.of("userGroupId", GetableIndex.ValueType.SINGLE)),
-                Optional.of(TagStorageTypePb.LOCAL),
+                Optional.of(TagStorageTypePb.REMOTE),
                 userTaskRun -> !Strings.isNullOrEmpty(userTaskRun.getUserGroup())
             )
         );

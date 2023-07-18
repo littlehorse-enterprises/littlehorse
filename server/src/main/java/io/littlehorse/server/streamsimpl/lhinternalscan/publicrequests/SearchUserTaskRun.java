@@ -2,12 +2,16 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHValidationError;
+import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.objectId.UserTaskRunId;
+import io.littlehorse.common.model.wfrun.UserTaskRun;
+import io.littlehorse.common.proto.AttributePb;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.InternalScanPb.TagScanPb;
 import io.littlehorse.common.proto.ScanResultTypePb;
+import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.SearchUserTaskRunPb;
@@ -19,8 +23,13 @@ import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchUserTaskRunReply;
+import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
+import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -83,7 +92,6 @@ public class SearchUserTaskRun
         // we can throw an LHValidationError when processing the search.
         if (p.hasUserGroup()) userGroup = p.getUserGroup();
         if (p.hasUserId()) userId = p.getUserId();
-
         if (p.hasLatestStart()) {
             latestStart = LHUtil.fromProtoTs(p.getLatestStart());
         }
@@ -131,8 +139,18 @@ public class SearchUserTaskRun
         return out;
     }
 
+    private void validateUserGroupAndUserId() throws LHValidationError {
+        if (userGroup != null && userId != null) {
+            throw new LHValidationError(
+                null,
+                "Cannot specify UserID and User Group in same search!"
+            );
+        }
+    }
+
     public InternalScan startInternalSearch(LHGlobalMetaStores stores)
         throws LHValidationError {
+        this.validateUserGroupAndUserId();
         InternalScan out = new InternalScan();
         out.storeName = ServerTopology.CORE_STORE;
         out.resultType = ScanResultTypePb.OBJECT_ID;
@@ -143,34 +161,35 @@ public class SearchUserTaskRun
         // partitionKey will be attribute string; otherwise, it will be LOCAL.
         out.type = ScanBoundaryCase.TAG_SCAN;
         TagScanPb.Builder prefixScanBuilder = TagScanPb.newBuilder();
-
-        if (status != null) {
-            prefixScanBuilder.addAttributes(
-                new Attribute("status", this.getStatus().toString()).toProto()
+        List<Attribute> attributes = getSearchAttributes();
+        prefixScanBuilder.addAllAttributes(
+            attributes
+                .stream()
+                .map(Attribute::toProto)
+                .map(AttributePb.Builder::build)
+                .toList()
+        );
+        TagStorageTypePb tagStorageTypePb = getStorageTypeForSearchAttributes(
+            attributes.stream().map(Attribute::getEscapedKey).toList()
+        )
+            .orElseThrow(() ->
+                new LHValidationError(
+                    "There is no index configuration for this search"
+                )
             );
-        }
-
-        if (userTaskDefName != null) {
-            prefixScanBuilder.addAttributes(
-                new Attribute("userTaskDefName", this.getUserTaskDefName()).toProto()
-            );
-        }
-
-        if (userId != null) {
-            if (userGroup != null) {
-                throw new LHValidationError(
-                    null,
-                    "Cannot specify UserID and User Group in same search!"
-                );
-            }
-            prefixScanBuilder.addAttributes(
-                new Attribute("userId", this.getUserId()).toProto()
-            );
-        }
-
-        if (userGroup != null) {
-            prefixScanBuilder.addAttributes(
-                new Attribute("userGroup", this.getUserGroup()).toProto()
+        if (tagStorageTypePb == TagStorageTypePb.LOCAL) {
+            // Local Tag Scan (All Partitions Tag Scan)
+            out.setStoreName(ServerTopology.CORE_STORE);
+            out.setResultType(ScanResultTypePb.OBJECT_ID);
+        } else {
+            // Remote Tag Scan (Specific Partition Tag Scan)
+            out.setStoreName(ServerTopology.CORE_REPARTITION_STORE);
+            out.setResultType(ScanResultTypePb.OBJECT_ID);
+            out.setPartitionKey(
+                Tag.getAttributeString(
+                    Getable.getTypeEnum(UserTaskRun.class),
+                    attributes
+                )
             );
         }
 
@@ -192,5 +211,39 @@ public class SearchUserTaskRun
         out.tagScan = prefixScanBuilder.build();
 
         return out;
+    }
+
+    private List<Attribute> getSearchAttributes() {
+        List<Attribute> attributes = new ArrayList<>();
+        if (status != null) {
+            attributes.add(new Attribute("status", this.getStatus().toString()));
+        }
+        if (userTaskDefName != null) {
+            attributes.add(
+                new Attribute("userTaskDefName", this.getUserTaskDefName())
+            );
+        }
+
+        if (userId != null) {
+            attributes.add(new Attribute("userId", this.getUserId()));
+        }
+
+        if (userGroup != null) {
+            attributes.add(new Attribute("userGroup", this.getUserGroup()));
+        }
+        return attributes;
+    }
+
+    private Optional<TagStorageTypePb> getStorageTypeForSearchAttributes(
+        List<String> attributes
+    ) {
+        return new UserTaskRun()
+            .getIndexConfigurations()
+            .stream()
+            .filter(getableIndex -> getableIndex.searchAttributesMatch(attributes))
+            .map(GetableIndex::getTagStorageTypePb)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .findFirst();
     }
 }

@@ -67,7 +67,6 @@ public class TestUtil {
         nodeRun.setThreadSpecName("test-thread");
         nodeRun.setNodeName("test-node-name");
         nodeRun.setTaskRun(taskNodeRun());
-        nodeRun.setUserTaskRun(userTaskNodeRun(nodeRun.getWfRunId()));
         return nodeRun;
     }
 
@@ -86,6 +85,8 @@ public class TestUtil {
         userTaskRun.setAssignedToType(UserTaskRunPb.AssignedToCase.USER_GROUP);
         userTaskRun.setUserId("33333");
         userTaskRun.setUserGroup("1234567");
+        userTaskRun.setScheduledTime(new Date());
+        userTaskRun.setNodeRunId(nodeRun().getObjectId());
         return userTaskRun;
     }
 
