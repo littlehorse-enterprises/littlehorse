@@ -17,4 +17,6 @@ jobs:
       - name: Push
         uses: heussd/mirror-to-bitbucket-github-action@v2
         with:
+          username: eh-altimetrik
+          repository: lh-dashboard
           password: ${{ secrets.BITBUCKET_PASSWORD }}
