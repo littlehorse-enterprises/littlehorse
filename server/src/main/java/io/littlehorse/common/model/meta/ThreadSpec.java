@@ -100,7 +100,7 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPb> {
      * to *start* this thread.
      */
 
-    public Map<String, VariableDef> getRequiredInputVariables() {
+    public Map<String, VariableDef> getInputVariableDefs() {
         HashMap<String, VariableDef> out = new HashMap<>();
         for (VariableDef vd : variableDefs) {
             out.put(vd.name, vd);
@@ -263,7 +263,7 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPb> {
 
     public void validateStartVariables(Map<String, VariableValue> vars)
         throws LHValidationError {
-        Map<String, VariableDef> required = getRequiredInputVariables();
+        Map<String, VariableDef> required = getInputVariableDefs();
 
         for (Map.Entry<String, VariableDef> e : required.entrySet()) {
             VariableValue val = vars.get(e.getKey());
@@ -326,15 +326,13 @@ public class ThreadSpec extends LHSerializable<ThreadSpecPb> {
 
     public void validateStartVariablesByType(Map<String, VariableAssignment> vars)
         throws LHValidationError {
-        Map<String, VariableDef> required = getRequiredInputVariables();
+        Map<String, VariableDef> inputVarDefs = getInputVariableDefs();
 
-        for (Map.Entry<String, VariableDef> e : required.entrySet()) {
+        for (Map.Entry<String, VariableDef> e : inputVarDefs.entrySet()) {
             VariableAssignment assn = vars.get(e.getKey());
             if (assn == null) {
-                throw new LHValidationError(
-                    null,
-                    "Thread " + name + " requires variable " + e.getKey()
-                );
+                // It will be created as NULL for the input.
+                continue;
             }
 
             if (!assn.canBeType(e.getValue().type, this)) {

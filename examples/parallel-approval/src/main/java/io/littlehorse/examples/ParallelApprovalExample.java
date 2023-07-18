@@ -35,7 +35,7 @@ public class ParallelApprovalExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl(
-            "example-parallel-approval",
+            "parallel-approval",
             thread -> {
                 // Initialize variables.
                 WfRunVariable person1Approved = thread.addVariable(
@@ -54,6 +54,12 @@ public class ParallelApprovalExample {
                     "all-approved",
                     VariableTypePb.BOOL
                 );
+
+                // Variables are initialized to NULL. Need to set to a real value.
+                thread.mutate(allApproved, VariableMutationTypePb.ASSIGN, false);
+                thread.mutate(person1Approved, VariableMutationTypePb.ASSIGN, false);
+                thread.mutate(person2Approved, VariableMutationTypePb.ASSIGN, false);
+                thread.mutate(person3Approved, VariableMutationTypePb.ASSIGN, false);
 
                 // Kick off the reminder workflow
                 thread.spawnThread(

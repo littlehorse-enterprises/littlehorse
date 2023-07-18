@@ -222,7 +222,7 @@ public class WfSpec extends Getable<WfSpecPb> {
     }
 
     public Map<String, VariableDef> getRequiredVariables() {
-        return threadSpecs.get(entrypointThreadName).getRequiredInputVariables();
+        return threadSpecs.get(entrypointThreadName).getInputVariableDefs();
     }
 
     /*

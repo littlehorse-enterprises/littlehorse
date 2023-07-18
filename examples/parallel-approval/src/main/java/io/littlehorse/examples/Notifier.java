@@ -13,12 +13,12 @@ public class Notifier {
     @LHTaskMethod("calculate-next-notification")
     public long calculateNextNotification() {
         log.debug("Executing calculate-next-notification");
-        return Instant.now().plus(1, ChronoUnit.DAYS).toEpochMilli();
+        return Instant.now().plus(20, ChronoUnit.SECONDS).toEpochMilli();
     }
 
     @LHTaskMethod("reminder-task")
     public String reminderTask() {
-        log.debug("reminder-task");
+        System.out.println("\n\n\n\n******\nreminder-task!!!\n******\n\n\n");
         return "I just sent a reminder!";
     }
 }

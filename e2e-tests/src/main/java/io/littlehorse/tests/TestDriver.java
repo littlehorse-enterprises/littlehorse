@@ -97,7 +97,7 @@ public class TestDriver {
 
         int threads = cmd.hasOption("t")
             ? Integer.parseInt(cmd.getOptionValue("t"))
-            : 1;
+            : 4;
 
         ForkJoinPool customThreadPool = new ForkJoinPool(threads);
 

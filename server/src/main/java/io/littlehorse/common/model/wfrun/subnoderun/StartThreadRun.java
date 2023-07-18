@@ -52,7 +52,7 @@ public class StartThreadRun extends SubNodeRun<StartThreadRunPb> {
 
     public boolean advanceIfPossible(Date time) {
         // nothing to do
-        return nodeRun.getThreadRun().advance(time);
+        return false;
     }
 
     public void arrive(Date time) {
