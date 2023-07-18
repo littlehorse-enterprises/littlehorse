@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 public class TestDriver {
 
+    private static final int DEFAULT_THREADS = 4;
     private static final Logger log = LoggerFactory.getLogger(TestDriver.class);
 
     public static Properties getConfigProps() {
@@ -97,7 +98,7 @@ public class TestDriver {
 
         int threads = cmd.hasOption("t")
             ? Integer.parseInt(cmd.getOptionValue("t"))
-            : 4;
+            : DEFAULT_THREADS;
 
         ForkJoinPool customThreadPool = new ForkJoinPool(threads);
 
@@ -164,7 +165,7 @@ public class TestDriver {
                 .builder("t")
                 .longOpt("threads")
                 .hasArg(true)
-                .desc("number of threads, default 8")
+                .desc("number of threads, default " + DEFAULT_THREADS)
                 .required(false)
                 .build()
         );
