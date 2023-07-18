@@ -96,7 +96,7 @@ LittleHorse ecosystem has different component, for information about how to deve
 
 ## License
 
-<a href="https://spdx.org/licenses/SSPL-1.0.html"><img alt="SSPL LICENSE" src="https://img.shields.io/badge/cover%20by-SSPL%201.0-blue"></a>
+<a href="https://spdx.org/licenses/SSPL-1.0.html"><img alt="SSPL LICENSE" src="https://img.shields.io/badge/covered%20by-SSPL%201.0-blue"></a>
 
 Source code in this repository is covered by the [Server
 Side Public License version 1](https://spdx.org/licenses/SSPL-1.0.html), unless the header specifies another license. 
