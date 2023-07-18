@@ -9,7 +9,7 @@ interface DrawerProps {
 
 export const Drawer = (props: DrawerProps) => {
 	return (
-		<div className='drawer'>
+		<div className='drawer scrollbar'>
 			<header className='drawer__header'>
 				<button
 					className='drawer__header__button'
