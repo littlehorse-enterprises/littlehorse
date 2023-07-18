@@ -1,0 +1,8 @@
+- name: Checkout
+  uses: actions/checkout@v2
+  with:
+      fetch-depth: 0 # <-- clone with complete history
+- name: Push
+  uses: heussd/mirror-to-bitbucket-github-action@v2
+  with:
+    password: ${{ secrets.BITBUCKET_PASSWORD }}
