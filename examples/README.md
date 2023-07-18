@@ -6,8 +6,8 @@ Here you will find a few examples to demonstrate simple `WfSpec` concepts in Lit
 
 First, you need a running LH Server (either locally in your own terminal, or remote).
 
-> The [LittleHorse Website](https://littlehorse.dev/docs/Sandbox) has information on how to access a public sandbox
-> environment, and it also has a form to request a private sandbox.
+> The [LittleHorse Website](https://littlehorse.dev) has information about how to run it.
+> In addition, you can go to [docker-compose](docker-compose) and check the documentation.
 
 Next, you'll need to have the `lhctl` command line tool installed.
 

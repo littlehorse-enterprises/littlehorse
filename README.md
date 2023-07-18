@@ -4,13 +4,15 @@
 
 # LittleHorse
 
+<a href="https://littlehorse.dev/"><img alt="littlehorse.dev" src="https://img.shields.io/badge/-LittleHorse.dev-7f7aff"></a>
+
 This repository contains the code for the core LittleHorse Components.
 
 For a description of the architecture, see the [architecture docs](docs/ARCH.md).
 
 ## LH Repository Inventory
 
-The LittleHorse project currently has multiple repositories, described below:
+The LittleHorse project currently has multiple components, described below:
 
 - [`server`](server)
     - Code for LittleHorse Server.
@@ -70,8 +72,6 @@ To install the formatter, all you need to do is first install Node.js as per the
 npm install  # This uses the package.json
 npm run format  # This runs the linters
 ```
-
-This repository (and all other LittleHorse Java repo's) have the `.vscode` folder checked into source control. The `settings.json` file is configured properly to enable formatting on save, but you first need to install the [Prettier - Code formatter](https://open-vsx.org/extension/esbenp/prettier-vscode) extension.
 
 
 ### Setup Pre-commit

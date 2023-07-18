@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: littlehorse-sandbox
+  labels:
+    app: littlehorse-sandbox
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: littlehorse-sandbox
+  template:
+    metadata:
+      labels:
+        app: littlehorse-sandbox
+    spec:
+      containers:
+        - name: littlehorse-sandbox
+          image: littlehorse.io/littlehorse-server:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 2023
+          env:
+            - name: LHS_KAFKA_BOOTSTRAP_SERVERS
+              value: my-cluster-kafka-bootstrap:9092
+            - name: LHS_SHOULD_CREATE_TOPICS
+              value: "true"
+            - name: LHS_STATE_DIR
+              value: /kafkaState
+          volumeMounts:
+            - name: littlehorse-sandbox
+              mountPath: /kafkaState
+      volumes:
+        - name: littlehorse-sandbox
+          persistentVolumeClaim:
+            claimName: littlehorse-sandbox
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: littlehorse-sandbox
+spec:
+  type: NodePort
+  selector:
+    app: littlehorse-sandbox
+  ports:
+    - protocol: TCP
+      port: 2023
+      targetPort: 2023
+      nodePort: 32023
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: littlehorse-sandbox
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: standard
+  volumeMode: Filesystem
