@@ -1,23 +1,15 @@
 package io.littlehorse.tests;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.sdk.common.proto.ExternalEventIdPb;
-import io.littlehorse.sdk.common.proto.ExternalEventPb;
 import io.littlehorse.sdk.common.proto.LHStatusPb;
 import io.littlehorse.sdk.common.proto.NodeRunPb;
 import io.littlehorse.sdk.common.proto.NodeRunPb.NodeTypeCase;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefPb;
-import io.littlehorse.sdk.common.proto.PutExternalEventPb;
-import io.littlehorse.sdk.common.proto.TaskRunIdPb;
 import io.littlehorse.sdk.common.proto.TaskRunPb;
-import io.littlehorse.sdk.common.proto.UserTaskRunIdPb;
-import io.littlehorse.sdk.common.proto.UserTaskRunPb;
-import io.littlehorse.sdk.common.proto.VariablePb;
 import io.littlehorse.sdk.common.proto.VariableValuePb;
 import io.littlehorse.sdk.common.proto.WfRunPb;
 import io.littlehorse.sdk.common.util.Arg;
@@ -28,7 +20,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +29,7 @@ public abstract class WorkflowLogicTest extends Test {
     private static Logger log = LoggerFactory.getLogger(WorkflowLogicTest.class);
 
     public abstract List<String> launchAndCheckWorkflows(LHClient client)
-        throws LogicTestFailure, LHApiError, InterruptedException;
+        throws TestFailure, LHApiError, InterruptedException;
 
     protected abstract Workflow getWorkflowImpl();
 
@@ -104,7 +95,7 @@ public abstract class WorkflowLogicTest extends Test {
     }
 
     protected void deploy(LHClient client, LHWorkerConfig workerConfig)
-        throws LogicTestFailure {
+        throws TestFailure {
         workers = new ArrayList<>();
 
         // Now need to create LHTaskWorkers and run them for all worker objects.
@@ -119,7 +110,7 @@ public abstract class WorkflowLogicTest extends Test {
                     worker.start();
                 } catch (LHApiError exn) {
                     exn.printStackTrace();
-                    throw new LogicTestFailure(
+                    throw new TestFailure(
                         this,
                         "Failed to start worker, failing test."
                     );
@@ -137,7 +128,7 @@ public abstract class WorkflowLogicTest extends Test {
                     true
                 );
             } catch (LHApiError exn) {
-                throw new LogicTestFailure(
+                throw new TestFailure(
                     this,
                     "Failed deploying external event def: " + exn.getMessage()
                 );
@@ -158,7 +149,7 @@ public abstract class WorkflowLogicTest extends Test {
 
             wfSpecVersion = client.getWfSpec(getWorkflowName(), null).getVersion();
         } catch (LHApiError exn) {
-            throw new LogicTestFailure(
+            throw new TestFailure(
                 this,
                 "Failed deploying test case: " + exn.getMessage()
             );
@@ -170,7 +161,7 @@ public abstract class WorkflowLogicTest extends Test {
     private List<LHTaskWorker> getWorkersFromExecutable(
         Object exe,
         LHWorkerConfig workerConfig
-    ) throws LogicTestFailure {
+    ) throws TestFailure {
         List<LHTaskWorker> out = new ArrayList<>();
 
         for (Method method : exe.getClass().getMethods()) {
@@ -187,16 +178,12 @@ public abstract class WorkflowLogicTest extends Test {
     }
 
     protected String runWf(LHClient client, Arg... params)
-        throws LogicTestFailure, LHApiError {
+        throws TestFailure, LHApiError {
         return runWf(generateGuid(), client, params);
     }
 
-    public static String generateGuid() {
-        return UUID.randomUUID().toString().replaceAll("-", "");
-    }
-
     protected String runWf(String id, LHClient client, Arg... params)
-        throws LogicTestFailure, LHApiError {
+        throws TestFailure, LHApiError {
         String resultingId = client.runWf(
             getWorkflowName(),
             wfSpecVersion,
@@ -212,189 +199,11 @@ public abstract class WorkflowLogicTest extends Test {
         return resultingId;
     }
 
-    protected ExternalEventIdPb sendEvent(
-        LHClient client,
-        String wfRunId,
-        String eventName,
-        Object content,
-        String guid
-    ) throws LogicTestFailure, LHApiError {
-        VariableValuePb varVal = objToVarVal(
-            content,
-            "Failed converting event input"
-        );
-        if (guid == null) {
-            guid = generateGuid();
-        }
-        PutExternalEventPb.Builder req = PutExternalEventPb
-            .newBuilder()
-            .setContent(varVal)
-            .setWfRunId(wfRunId)
-            .setExternalEventDefName(eventName)
-            .setGuid(guid);
-        try {
-            client.putExternalEvent(req.build());
-        } catch (Exception exn) {
-            throw new LogicTestFailure(
-                this,
-                "Failed posting external event: " + exn.getMessage()
-            );
-        }
-
-        return ExternalEventIdPb
-            .newBuilder()
-            .setExternalEventDefName(eventName)
-            .setGuid(guid)
-            .setWfRunId(wfRunId)
-            .build();
-    }
-
-    protected ExternalEventPb getExternalEvent(
-        LHClient client,
-        ExternalEventIdPb eventId
-    ) throws LogicTestFailure, LHApiError {
-        ExternalEventPb reply;
-        try {
-            reply =
-                client.getExternalEvent(
-                    eventId.getWfRunId(),
-                    eventId.getExternalEventDefName(),
-                    eventId.getGuid()
-                );
-        } catch (Exception exn) {
-            throw new LogicTestFailure(
-                this,
-                "Failed getting ExternalEvent: " + exn.getMessage()
-            );
-        }
-        return reply;
-    }
-
-    public void assertThreadStatus(
-        LHClient client,
-        String wfRunId,
-        int threadRunId,
-        LHStatusPb status
-    ) throws LogicTestFailure, LHApiError {
-        WfRunPb wfRun = getWfRun(client, wfRunId);
-        if (wfRun.getThreadRuns(threadRunId).getStatus() != status) {
-            throw new LogicTestFailure(
-                this,
-                "Expected status " +
-                status +
-                " for wfRun " +
-                wfRunId +
-                " but got status " +
-                wfRun.getThreadRuns(threadRunId).getStatus()
-            );
-        }
-    }
-
-    public void assertStatus(LHClient client, String wfRunId, LHStatusPb status)
-        throws LogicTestFailure, LHApiError {
-        WfRunPb wfRun = getWfRun(client, wfRunId);
-        if (wfRun.getStatus() != status) {
-            throw new LogicTestFailure(
-                this,
-                "Expected status " +
-                status +
-                " for wfRun " +
-                wfRunId +
-                " but got status " +
-                wfRun.getStatus()
-            );
-        }
-    }
-
-    public List<VariableValuePb> getTaskRunOutputs(
-        LHClient client,
-        String wfRunId,
-        int threadRunNumber
-    ) throws LogicTestFailure, LHApiError {
-        List<VariableValuePb> out = new ArrayList<>();
-
-        int numNodes = getWfRun(client, wfRunId)
-            .getThreadRuns(threadRunNumber)
-            .getCurrentNodePosition();
-        // skip entrypoint node
-        for (int i = 1; i <= numNodes; i++) {
-            NodeRunPb nr = getNodeRun(client, wfRunId, threadRunNumber, i);
-            if (nr.getNodeTypeCase() == NodeTypeCase.TASK) {
-                TaskRunPb taskRun = getTaskRun(client, nr.getTask().getTaskRunId());
-                out.add(
-                    taskRun.getAttempts(taskRun.getAttemptsCount() - 1).getOutput()
-                );
-            }
-        }
-        return out;
-    }
-
-    protected void assertThat(boolean assertion, String message)
-        throws LogicTestFailure {
-        if (!assertion) {
-            throw new LogicTestFailure(this, "Test case failed: " + message);
-        }
-    }
-
-    public void assertTaskOutputsMatch(
-        LHClient client,
-        String wfRunId,
-        int threadRunNumber,
-        Object... desiredOutputs
-    ) throws LogicTestFailure, LHApiError {
-        List<VariableValuePb> actual = getTaskRunOutputs(
-            client,
-            wfRunId,
-            threadRunNumber
-        );
-
-        if (actual.size() != desiredOutputs.length) {
-            throw new LogicTestFailure(
-                this,
-                "Expected " +
-                desiredOutputs.length +
-                " task runs but got " +
-                actual.size() +
-                " on wfRun " +
-                wfRunId +
-                " thread " +
-                threadRunNumber
-            );
-        }
-
-        for (int i = 0; i < desiredOutputs.length; i++) {
-            VariableValuePb desired = objToVarVal(
-                desiredOutputs[i],
-                "Yikes couldn't convert"
-            );
-
-            if (!LHLibUtil.areVariableValuesEqual(desired, actual.get(i))) {
-                throw new LogicTestFailure(
-                    this,
-                    "Node outputs didn't match on the " + i + " th task execution!"
-                );
-            }
-        }
-    }
-
-    protected void fail(String message, String wfRunId, Object input)
-        throws LogicTestFailure {
-        throw new LogicTestFailure(
-            this,
-            "WfRun " +
-            wfRunId +
-            " Evaluated conditions wrong: " +
-            message +
-            "\n with input " +
-            input.toString()
-        );
-    }
-
     protected String runWithInputsAndCheckPath(
         LHClient client,
         Object input,
         Object... expectedPath
-    ) throws LogicTestFailure, InterruptedException, LHApiError {
+    ) throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = runWf(client, Arg.of("input", input));
         Thread.sleep(400);
         assertStatus(client, wfRunId, LHStatusPb.COMPLETED);
@@ -434,254 +243,5 @@ public abstract class WorkflowLogicTest extends Test {
         }
 
         return wfRunId;
-    }
-
-    public void assertTaskOutput(
-        LHClient client,
-        String wfRunId,
-        int threadRunNumber,
-        int nodeRunPosition,
-        Object expectedOutput
-    ) throws LogicTestFailure, LHApiError {
-        NodeRunPb nodeRun = getNodeRun(
-            client,
-            wfRunId,
-            threadRunNumber,
-            nodeRunPosition
-        );
-        VariableValuePb expectedVarVal = objToVarVal(
-            expectedOutput,
-            "Couldn't convert expected output to varval"
-        );
-
-        TaskRunPb taskRun = getTaskRun(client, nodeRun.getTask().getTaskRunId());
-        if (
-            !LHLibUtil.areVariableValuesEqual(
-                expectedVarVal,
-                taskRun.getAttempts(taskRun.getAttemptsCount() - 1).getOutput()
-            )
-        ) {
-            throw new LogicTestFailure(
-                this,
-                "Did not get expected node output on " +
-                wfRunId +
-                ", " +
-                threadRunNumber +
-                ", " +
-                nodeRunPosition +
-                ", expected:\n" +
-                expectedOutput
-            );
-        }
-    }
-
-    public TaskRunPb getTaskRun(LHClient client, TaskRunIdPb taskRunId)
-        throws LogicTestFailure, LHApiError {
-        TaskRunPb result;
-        try {
-            result = client.getTaskRun(taskRunId);
-        } catch (Exception exn) {
-            throw new LogicTestFailure(
-                this,
-                "Couldn't connect to get taskrun: " + exn.getMessage()
-            );
-        }
-
-        if (result == null) {
-            throw new LogicTestFailure(this, "Couldn't find taskRun.");
-        }
-        return result;
-    }
-
-    public NodeRunPb getNodeRun(
-        LHClient client,
-        String wfRunId,
-        int threadRunNumber,
-        int nodeRunPosition
-    ) throws LogicTestFailure, LHApiError {
-        NodeRunPb result;
-        try {
-            result = client.getNodeRun(wfRunId, threadRunNumber, nodeRunPosition);
-        } catch (Exception exn) {
-            throw new LogicTestFailure(
-                this,
-                "Couldn't connect to get wfRun: " + exn.getMessage()
-            );
-        }
-
-        if (result == null) {
-            throw new LogicTestFailure(
-                this,
-                "Couldn't find nodeRun " +
-                wfRunId +
-                " " +
-                threadRunNumber +
-                " " +
-                nodeRunPosition
-            );
-        }
-
-        return result;
-    }
-
-    public UserTaskRunPb getUserTaskRun(LHClient client, UserTaskRunIdPb id)
-        throws LogicTestFailure, LHApiError {
-        UserTaskRunPb result;
-        try {
-            result = client.getUserTaskRun(id);
-        } catch (Exception exn) {
-            throw new LogicTestFailure(
-                this,
-                "Couldn't connect to get UserTaskRun: " + exn.getMessage()
-            );
-        }
-
-        if (result == null) {
-            throw new LogicTestFailure(
-                this,
-                "Couldn't find userTaskRun " +
-                id.getWfRunId() +
-                "/" +
-                id.getUserTaskGuid()
-            );
-        }
-
-        return result;
-    }
-
-    public VariablePb getVariable(
-        LHClient client,
-        String wfRunId,
-        int threadRunNumber,
-        String name
-    ) throws LogicTestFailure {
-        VariablePb result;
-
-        try {
-            result = client.getVariable(wfRunId, threadRunNumber, name);
-        } catch (Exception exn) {
-            throw new LogicTestFailure(
-                this,
-                "Couldn't connect to server: " + exn.getMessage()
-            );
-        }
-
-        if (result == null) {
-            throw new LogicTestFailure(
-                this,
-                "Couldn't find variable " +
-                wfRunId +
-                " " +
-                threadRunNumber +
-                " " +
-                name
-            );
-        }
-
-        return result;
-    }
-
-    public List<?> getVarAsList(
-        LHClient client,
-        String wfRunId,
-        int threadRunNumber,
-        String varName
-    ) throws LogicTestFailure {
-        VariableValuePb varVal = getVariable(
-            client,
-            wfRunId,
-            threadRunNumber,
-            varName
-        )
-            .getValue();
-        try {
-            return LHLibUtil.deserializeFromjson(varVal.getJsonArr(), List.class);
-        } catch (JsonProcessingException exn) {
-            throw new LogicTestFailure(
-                this,
-                "Couldn't deserialize variable " + varName + ":" + exn.getMessage()
-            );
-        }
-    }
-
-    public <T> T getVarAsObj(
-        LHClient client,
-        String wfRunId,
-        int threadRunNumber,
-        String varName,
-        Class<T> cls
-    ) throws LogicTestFailure {
-        VariableValuePb varVal = getVariable(
-            client,
-            wfRunId,
-            threadRunNumber,
-            varName
-        )
-            .getValue();
-        try {
-            return LHLibUtil.deserializeFromjson(varVal.getJsonObj(), cls);
-        } catch (JsonProcessingException exn) {
-            throw new LogicTestFailure(
-                this,
-                "Couldn't deserialize variable " + varName + ":" + exn.getMessage()
-            );
-        }
-    }
-
-    public void assertVarEqual(
-        LHClient client,
-        String wfRunId,
-        int threadRunNumber,
-        String name,
-        Object desiredValue
-    ) throws LogicTestFailure {
-        VariableValuePb var = getVariable(client, wfRunId, threadRunNumber, name)
-            .getValue();
-
-        if (
-            !LHLibUtil.areVariableValuesEqual(
-                objToVarVal(desiredValue, "Couldn't convert desiredValue to var val"),
-                var
-            )
-        ) {
-            throw new LogicTestFailure(
-                this,
-                "WfRun " +
-                wfRunId +
-                " Variable " +
-                name +
-                " thread " +
-                threadRunNumber +
-                " wrong value"
-            );
-        }
-    }
-
-    public WfRunPb getWfRun(LHClient client, String id)
-        throws LogicTestFailure, LHApiError {
-        WfRunPb result;
-        try {
-            result = client.getWfRun(id);
-        } catch (Exception exn) {
-            throw new LogicTestFailure(
-                this,
-                "Couldn't connect to get wfRun: " + exn.getMessage()
-            );
-        }
-
-        if (result == null) {
-            throw new LogicTestFailure(this, "Couldn't find wfRun " + id);
-        }
-
-        return result;
-    }
-
-    private VariableValuePb objToVarVal(Object o, String exnMessage)
-        throws LogicTestFailure {
-        try {
-            return LHLibUtil.objToVarVal(o);
-        } catch (LHSerdeError exn) {
-            throw new LogicTestFailure(this, exnMessage + ": " + exn.getMessage());
-        }
     }
 }

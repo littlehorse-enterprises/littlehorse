@@ -89,7 +89,7 @@ public class CommandProcessor
                 server.onResponseReceived(command.commandId, cmdReply);
             }
         } catch (Exception exn) {
-            log.error("Caught exception processing command: ", exn);
+            log.error("Caught exception processing command: {}", exn);
             if (command.hasResponse() && command.getCommandId() != null) {
                 server.sendErrorToClient(command.getCommandId(), exn);
             }

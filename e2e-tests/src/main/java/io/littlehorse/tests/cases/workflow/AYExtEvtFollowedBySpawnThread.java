@@ -8,7 +8,7 @@ import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
-import io.littlehorse.tests.LogicTestFailure;
+import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.WorkflowLogicTest;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,7 +53,7 @@ public class AYExtEvtFollowedBySpawnThread extends WorkflowLogicTest {
     }
 
     public List<String> launchAndCheckWorkflows(LHClient client)
-        throws LogicTestFailure, InterruptedException, LHApiError {
+        throws TestFailure, InterruptedException, LHApiError {
         List<String> out = new ArrayList<>();
 
         String wfRunId = runWf(client);

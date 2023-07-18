@@ -12,7 +12,7 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
-import io.littlehorse.tests.LogicTestFailure;
+import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.WorkflowLogicTest;
 import java.util.Arrays;
 import java.util.List;
@@ -70,7 +70,7 @@ public class ATInterruptsBasic extends WorkflowLogicTest {
     }
 
     public List<String> launchAndCheckWorkflows(LHClient client)
-        throws LogicTestFailure, InterruptedException, LHApiError {
+        throws TestFailure, InterruptedException, LHApiError {
         return Arrays.asList(
             runWithoutInterrupt(client),
             sendEventBefore(client),
@@ -81,7 +81,7 @@ public class ATInterruptsBasic extends WorkflowLogicTest {
     }
 
     private String runWithoutInterrupt(LHClient client)
-        throws LogicTestFailure, InterruptedException, LHApiError {
+        throws TestFailure, InterruptedException, LHApiError {
         String id = runWf(client, Arg.of("my-int", 5));
         assertStatus(client, id, LHStatusPb.RUNNING);
         Thread.sleep(3 * 1000);
@@ -91,7 +91,7 @@ public class ATInterruptsBasic extends WorkflowLogicTest {
     }
 
     private String sendEventBefore(LHClient client)
-        throws LogicTestFailure, InterruptedException, LHApiError {
+        throws TestFailure, InterruptedException, LHApiError {
         String id = generateGuid();
 
         // post an event before running the wf
@@ -106,7 +106,7 @@ public class ATInterruptsBasic extends WorkflowLogicTest {
     }
 
     private String twoInterrupts(LHClient client)
-        throws LogicTestFailure, InterruptedException, LHApiError {
+        throws TestFailure, InterruptedException, LHApiError {
         String id = runWf(client, Arg.of("my-int", 5));
 
         sendEvent(client, id, INTERRUPT_NAME, 10, null);
@@ -128,7 +128,7 @@ public class ATInterruptsBasic extends WorkflowLogicTest {
     }
 
     private String oneInterrupt(LHClient client)
-        throws LogicTestFailure, InterruptedException, LHApiError {
+        throws TestFailure, InterruptedException, LHApiError {
         String id = runWf(client, Arg.of("my-int", 5));
 
         sendEvent(client, id, INTERRUPT_NAME, 10, null);
@@ -142,7 +142,7 @@ public class ATInterruptsBasic extends WorkflowLogicTest {
     }
 
     private String invalidEventTypeShouldFail(LHClient client)
-        throws LogicTestFailure, InterruptedException, LHApiError {
+        throws TestFailure, InterruptedException, LHApiError {
         String id = runWf(client, Arg.of("my-int", 5));
         sendEvent(client, id, INTERRUPT_NAME, "bad input should crash", null);
         assertStatus(client, id, LHStatusPb.ERROR);

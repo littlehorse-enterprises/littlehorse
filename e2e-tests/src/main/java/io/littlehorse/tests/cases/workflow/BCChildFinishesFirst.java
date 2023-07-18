@@ -9,7 +9,7 @@ import io.littlehorse.sdk.wfsdk.ThreadBuilder;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
-import io.littlehorse.tests.LogicTestFailure;
+import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.WorkflowLogicTest;
 import java.util.Arrays;
 import java.util.List;
@@ -64,7 +64,7 @@ public class BCChildFinishesFirst extends WorkflowLogicTest {
     }
 
     public List<String> launchAndCheckWorkflows(LHClient client)
-        throws LogicTestFailure, InterruptedException, LHApiError {
+        throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = runWf(client);
         Thread.sleep(100);
         assertStatus(client, wfRunId, LHStatusPb.RUNNING);

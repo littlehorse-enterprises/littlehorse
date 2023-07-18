@@ -193,25 +193,25 @@ public class UserTaskRunStorageManagerTest {
     }
 
     @Test
-    public void indexByStatusAndUserGroupId() {
+    public void indexByStatusAndUserGroup() {
         Assertions
             .assertThat(storedRemoteTagPrefixStoreKeys())
-            .contains("USER_TASK_RUN/__status_CLAIMED__userGroupId_1234567");
+            .contains("USER_TASK_RUN/__status_CLAIMED__userGroup_1234567");
     }
 
     @Test
-    public void indexByStatusUserAndTaskDefNameAndUserGroupId() {
+    public void indexByStatusUserAndTaskDefNameAndUserGroup() {
         Assertions
             .assertThat(storedRemoteTagPrefixStoreKeys())
             .contains(
-                "USER_TASK_RUN/__status_CLAIMED__userTaskDefName_ut-name__userGroupId_1234567"
+                "USER_TASK_RUN/__status_CLAIMED__userTaskDefName_ut-name__userGroup_1234567"
             );
     }
 
     @Test
-    public void indexByUserGroupId() {
+    public void indexByUserGroup() {
         Assertions
             .assertThat(storedRemoteTagPrefixStoreKeys())
-            .contains("USER_TASK_RUN/__userGroupId_1234567");
+            .contains("USER_TASK_RUN/__userGroup_1234567");
     }
 }

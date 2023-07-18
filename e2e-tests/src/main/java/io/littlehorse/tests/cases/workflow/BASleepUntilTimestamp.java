@@ -10,7 +10,7 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
-import io.littlehorse.tests.LogicTestFailure;
+import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.WorkflowLogicTest;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class BASleepUntilTimestamp extends WorkflowLogicTest {
     }
 
     public List<String> launchAndCheckWorkflows(LHClient client)
-        throws LogicTestFailure, InterruptedException, LHApiError {
+        throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = runWf(
             client,
             Arg.of(

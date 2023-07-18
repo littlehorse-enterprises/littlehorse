@@ -128,4 +128,10 @@ public interface TaskRunPbOrBuilder extends
    * @return The status.
    */
   io.littlehorse.sdk.common.proto.TaskStatusPb getStatus();
+
+  /**
+   * <code>int32 timeout_seconds = 9;</code>
+   * @return The timeoutSeconds.
+   */
+  int getTimeoutSeconds();
 }

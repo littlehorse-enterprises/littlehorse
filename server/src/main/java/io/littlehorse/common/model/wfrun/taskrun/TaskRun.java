@@ -59,6 +59,7 @@ public class TaskRun extends Getable<TaskRunPb> {
         scheduledAt = LHUtil.fromProtoTs(p.getScheduledAt());
         id = LHSerializable.fromProto(p.getId(), TaskRunId.class);
         status = p.getStatus();
+        timeoutSeconds = p.getTimeoutSeconds();
 
         for (TaskAttemptPb attempt : p.getAttemptsList()) {
             attempts.add(LHSerializable.fromProto(attempt, TaskAttempt.class));
@@ -75,6 +76,7 @@ public class TaskRun extends Getable<TaskRunPb> {
             .setMaxAttempts(maxAttempts)
             .setScheduledAt(LHUtil.fromDate(scheduledAt))
             .setStatus(status)
+            .setTimeoutSeconds(timeoutSeconds)
             .setId(id.toProto());
 
         for (VarNameAndVal v : inputVariables) {
@@ -165,6 +167,7 @@ public class TaskRun extends Getable<TaskRunPb> {
         this.taskDefName = node.getTaskDefName();
         this.maxAttempts = node.getRetries() + 1;
         this.status = TaskStatusPb.TASK_SCHEDULED;
+        this.timeoutSeconds = node.getTimeoutSeconds();
     }
 
     @Override

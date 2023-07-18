@@ -10,7 +10,7 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
-import io.littlehorse.tests.LogicTestFailure;
+import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.WorkflowLogicTest;
 import java.util.Arrays;
 import java.util.List;
@@ -53,7 +53,7 @@ public class AXConditionalWhileLogic extends WorkflowLogicTest {
     }
 
     public List<String> launchAndCheckWorkflows(LHClient client)
-        throws LogicTestFailure, InterruptedException, LHApiError {
+        throws TestFailure, InterruptedException, LHApiError {
         return Arrays.asList(
             runWithInputsAndCheckPath(client, 3, 3, 2, 1),
             runWithInputsAndCheckPath(client, 2, 2, 1)

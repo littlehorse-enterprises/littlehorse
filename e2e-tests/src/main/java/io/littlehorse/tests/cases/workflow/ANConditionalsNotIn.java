@@ -11,7 +11,7 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
-import io.littlehorse.tests.LogicTestFailure;
+import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.WorkflowLogicTest;
 import java.util.Arrays;
 import java.util.List;
@@ -62,7 +62,7 @@ public class ANConditionalsNotIn extends WorkflowLogicTest {
     }
 
     private String assertThatFails(LHClient client, Object lhs, Object rhs)
-        throws LogicTestFailure, InterruptedException, LHApiError {
+        throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = runWf(client, Arg.of("input", new ANInputObj(lhs, rhs)));
         Thread.sleep(3000);
         assertStatus(client, wfRunId, LHStatusPb.ERROR);
@@ -76,7 +76,7 @@ public class ANConditionalsNotIn extends WorkflowLogicTest {
     // private String twoInts() throws TestFailure
 
     public List<String> launchAndCheckWorkflows(LHClient client)
-        throws LogicTestFailure, InterruptedException, LHApiError {
+        throws TestFailure, InterruptedException, LHApiError {
         return Arrays.asList(
             runWithInputsAndCheckPath(
                 client,

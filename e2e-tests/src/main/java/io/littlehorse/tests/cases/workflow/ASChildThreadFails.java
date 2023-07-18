@@ -10,7 +10,7 @@ import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
-import io.littlehorse.tests.LogicTestFailure;
+import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.WorkflowLogicTest;
 import java.util.Arrays;
 import java.util.List;
@@ -53,7 +53,7 @@ public class ASChildThreadFails extends WorkflowLogicTest {
     }
 
     public List<String> launchAndCheckWorkflows(LHClient client)
-        throws LogicTestFailure, InterruptedException, LHApiError {
+        throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = runWf(client);
         Thread.sleep(500);
         assertStatus(client, wfRunId, LHStatusPb.ERROR);
@@ -66,10 +66,7 @@ public class ASChildThreadFails extends WorkflowLogicTest {
         WaitForThreadsRunPb wtr = nr.getWaitThreads();
         // There's only one thread in this example, so we only look at the first.
         if (wtr.getThreads(0).getThreadRunNumber() != 1) {
-            throw new LogicTestFailure(
-                this,
-                wfRunId + " should have waited for thread 1"
-            );
+            throw new TestFailure(this, wfRunId + " should have waited for thread 1");
         }
 
         return Arrays.asList(wfRunId);

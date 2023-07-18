@@ -28,7 +28,7 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
-import io.littlehorse.tests.LogicTestFailure;
+import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.UserTaskWorkflowTest;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -83,7 +83,7 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
     }
 
     public List<String> launchAndCheckWorkflows(LHClient client)
-        throws LogicTestFailure, InterruptedException, LHApiError {
+        throws TestFailure, InterruptedException, LHApiError {
         List<String> out = new ArrayList<>();
 
         String wfRunId = runWf(client);
@@ -97,7 +97,7 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
         );
 
         if (utr.getEventsCount() < 2) {
-            throw new LogicTestFailure(
+            throw new TestFailure(
                 this,
                 "Workflow " +
                 wfRunId +
@@ -106,7 +106,7 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
         }
         UserTaskEventPb ute = utr.getEvents(1);
         if (!ute.getEventCase().equals(EventCase.TASK_EXECUTED)) {
-            throw new LogicTestFailure(
+            throw new TestFailure(
                 this,
                 "Workflow " + wfRunId + " usertask run doesn't have proper event set!"
             );
@@ -116,7 +116,7 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
         TaskRunIdPb executedTaskRunId = ute.getTaskExecuted().getTaskRun();
         TaskRunPb taskRun = getTaskRun(client, executedTaskRunId);
         if (taskRun.getAttempts(0).getStatus() != TaskStatusPb.TASK_SUCCESS) {
-            throw new LogicTestFailure(
+            throw new TestFailure(
                 this,
                 "Workflow " + wfRunId + " usertask run reminder didn't complete!"
             );
@@ -144,7 +144,7 @@ public class AZUserTasksBasic extends UserTaskWorkflowTest {
         }
 
         if (found == null) {
-            throw new LogicTestFailure(this, "Couldn't find Eduwer's task!");
+            throw new TestFailure(this, "Couldn't find Eduwer's task!");
         }
 
         // Now we execute the task

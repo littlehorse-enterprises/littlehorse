@@ -11,7 +11,7 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
-import io.littlehorse.tests.LogicTestFailure;
+import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.WorkflowLogicTest;
 import java.util.Arrays;
 import java.util.List;
@@ -47,7 +47,7 @@ public class AEVarMutationsRemoveKey extends WorkflowLogicTest {
     }
 
     public List<String> launchAndCheckWorkflows(LHClient client)
-        throws LogicTestFailure, InterruptedException, LHApiError {
+        throws TestFailure, InterruptedException, LHApiError {
         String wfWithFoo = runWf(
             client,
             Arg.of("my-obj", Map.of("foo", "bar", "baz", 2))
@@ -61,19 +61,16 @@ public class AEVarMutationsRemoveKey extends WorkflowLogicTest {
 
         Map<?, ?> removed = getVarAsObj(client, wfWithFoo, 0, "my-obj", Map.class);
         if (removed.containsKey("foo")) {
-            throw new LogicTestFailure(
-                this,
-                "failed to remove the key 'foo' from myObj"
-            );
+            throw new TestFailure(this, "failed to remove the key 'foo' from myObj");
         }
 
         if (((Integer) removed.get("baz")) != 2) {
-            throw new LogicTestFailure(this, "myObj got corrupted");
+            throw new TestFailure(this, "myObj got corrupted");
         }
 
         removed = getVarAsObj(client, wfWithoutFoo, 0, "my-obj", Map.class);
         if (((Integer) removed.get("baz")) != 2) {
-            throw new LogicTestFailure(this, "myObj got corrupted");
+            throw new TestFailure(this, "myObj got corrupted");
         }
 
         return Arrays.asList(wfWithFoo, wfWithoutFoo);

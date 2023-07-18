@@ -1,7 +1,6 @@
 package io.littlehorse.sdk.client;
 
 import com.google.protobuf.MessageOrBuilder;
-import com.google.protobuf.Timestamp;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHClientConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
@@ -45,7 +44,6 @@ import io.littlehorse.sdk.common.proto.RunWfPb;
 import io.littlehorse.sdk.common.proto.RunWfReplyPb;
 import io.littlehorse.sdk.common.proto.SearchWfRunPb;
 import io.littlehorse.sdk.common.proto.SearchWfRunPb.StatusAndSpecPb;
-import io.littlehorse.sdk.common.proto.SearchWfRunPb.StatusAndSpecPb.Builder;
 import io.littlehorse.sdk.common.proto.SearchWfRunReplyPb;
 import io.littlehorse.sdk.common.proto.StopWfRunPb;
 import io.littlehorse.sdk.common.proto.TaskDefIdPb;
@@ -65,6 +63,7 @@ import io.littlehorse.sdk.common.util.Arg;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -331,7 +330,7 @@ public class LHClient {
     }
 
     /**
-     * Returns a list of ids which match the input parameters or null otherwise
+     * Returns a list of ids which match the input parameters
      * @param workflowName Name to search for
      * @param version Version to search for
      * @param status Status of WfRuns to search for (STARTING, RUNNING, COMPLETED, HALTING, HALTED, ERROR)
@@ -344,21 +343,21 @@ public class LHClient {
         String workflowName,
         int version,
         LHStatusPb status,
-        Timestamp earliestStart,
-        Timestamp latestStart
+        Date earliestStart,
+        Date latestStart
     ) throws LHApiError {
-        Builder statusBuilder = StatusAndSpecPb
+        StatusAndSpecPb.Builder statusBuilder = StatusAndSpecPb
             .newBuilder()
             .setWfSpecName(workflowName)
             .setWfSpecVersion(version)
             .setStatus(status);
 
         if (earliestStart != null) {
-            statusBuilder.setEarliestStart(earliestStart);
+            statusBuilder.setEarliestStart(LHLibUtil.fromDate(earliestStart));
         }
 
         if (latestStart != null) {
-            statusBuilder.setLatestStart(latestStart);
+            statusBuilder.setLatestStart(LHLibUtil.fromDate(latestStart));
         }
 
         StatusAndSpecPb statusAndSpecPb = statusBuilder.build();
@@ -373,16 +372,13 @@ public class LHClient {
                 );
         });
 
-        if (reply.getResultsCount() > 0) {
-            return reply.getResultsList();
-        } else {
-            return null;
-        }
+        return reply.getResultsList();
     }
 
     /**
-     * Makes a request to the server to execute a workflow specification.
-     * Despite the request is synchronous, the execution of the workflow is asynchronous
+     * Makes a request to the server to execute a workflow specification. The
+     * execution of the WfRun is asynchronous; the RunWf request only blocks until
+     * the first step of the WfRun is *scheduled*.
      * @param wfSpecName workflow name
      * @param wfSpecVersion workflow version. This is optional, pass null for the server to decide
      * @param wfRunId workflow run id. This is optional, pass null for the server to decide

@@ -168,22 +168,20 @@ public class SearchUserTaskRun
                 .map(AttributePb.Builder::build)
                 .toList()
         );
-        Supplier<TagStorageTypePb> storageTypeForSearchAttributes = () -> {
-            return getStorageTypeForSearchAttributes(
-                attributes.stream().map(Attribute::getEscapedKey).toList()
-            )
-                .orElseThrow(() ->
-                    new IllegalStateException(
-                        "There is no index configuration for this search"
-                    )
-                );
-        };
         TagStorageTypePb tagStorageTypePb = tagStorageTypePbByUserId()
             .orElseGet(() -> tagStorageTypePbByStatus().orElse(null));
-        tagStorageTypePb =
-            Optional
-                .ofNullable(tagStorageTypePb)
-                .orElseGet(storageTypeForSearchAttributes);
+        if (tagStorageTypePb == null) {
+            Optional<TagStorageTypePb> tagStorageTypePbOptional = getStorageTypeForSearchAttributes(
+                attributes.stream().map(Attribute::getEscapedKey).toList()
+            );
+            if (tagStorageTypePbOptional.isEmpty()) {
+                throw new LHValidationError(
+                    "There is no index configuration for this search"
+                );
+            }
+            tagStorageTypePb = tagStorageTypePbOptional.get();
+        }
+
         if (tagStorageTypePb == TagStorageTypePb.LOCAL) {
             // Local Tag Scan (All Partitions Tag Scan)
             out.setStoreName(ServerTopology.CORE_STORE);

@@ -12,7 +12,7 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
-import io.littlehorse.tests.LogicTestFailure;
+import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.WorkflowLogicTest;
 import java.util.Arrays;
 import java.util.List;
@@ -68,7 +68,7 @@ public class ACVarMutationsJsonObj extends WorkflowLogicTest {
     }
 
     public List<String> launchAndCheckWorkflows(LHClient client)
-        throws LogicTestFailure, InterruptedException, LHApiError {
+        throws TestFailure, InterruptedException, LHApiError {
         ACJsonPathThing worker = new ACJsonPathThing();
         /* Create a POJO which will be a json like:
         {
@@ -103,7 +103,7 @@ public class ACVarMutationsJsonObj extends WorkflowLogicTest {
                 inputVar.subObject.foo.length() + inputVar.subObject.bar
             )
         ) {
-            throw new LogicTestFailure(
+            throw new TestFailure(
                 this,
                 "Got wrong value for variable my-var on jsonpath $.subObject.bar"
             );

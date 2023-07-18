@@ -386,7 +386,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
                 List.of(
                     Pair.of("status", GetableIndex.ValueType.SINGLE),
                     Pair.of("userTaskDefName", GetableIndex.ValueType.SINGLE),
-                    Pair.of("userGroupId", GetableIndex.ValueType.SINGLE)
+                    Pair.of("userGroup", GetableIndex.ValueType.SINGLE)
                 ),
                 Optional.of(TagStorageTypePb.LOCAL),
                 userTaskRun -> !Strings.isNullOrEmpty(userTaskRun.getUserGroup())
@@ -394,13 +394,13 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
             new GetableIndex<UserTaskRun>(
                 List.of(
                     Pair.of("status", GetableIndex.ValueType.SINGLE),
-                    Pair.of("userGroupId", GetableIndex.ValueType.SINGLE)
+                    Pair.of("userGroup", GetableIndex.ValueType.SINGLE)
                 ),
                 Optional.of(TagStorageTypePb.LOCAL),
                 userTaskRun -> !Strings.isNullOrEmpty(userTaskRun.getUserGroup())
             ),
             new GetableIndex<UserTaskRun>(
-                List.of(Pair.of("userGroupId", GetableIndex.ValueType.SINGLE)),
+                List.of(Pair.of("userGroup", GetableIndex.ValueType.SINGLE)),
                 Optional.of(TagStorageTypePb.REMOTE),
                 userTaskRun -> !Strings.isNullOrEmpty(userTaskRun.getUserGroup())
             )
@@ -442,7 +442,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
                     new IndexedField(key, this.getUserId(), TagStorageTypePb.REMOTE)
                 );
             }
-            case "userGroupId" -> {
+            case "userGroup" -> {
                 return List.of(
                     new IndexedField(key, this.getUserGroup(), tagStorageTypePb.get())
                 );

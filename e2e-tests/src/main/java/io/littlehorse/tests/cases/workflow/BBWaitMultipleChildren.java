@@ -20,7 +20,7 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
-import io.littlehorse.tests.LogicTestFailure;
+import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.WorkflowLogicTest;
 import java.util.Arrays;
 import java.util.List;
@@ -111,7 +111,7 @@ public class BBWaitMultipleChildren extends WorkflowLogicTest {
     }
 
     public List<String> launchAndCheckWorkflows(LHClient client)
-        throws LogicTestFailure, InterruptedException, LHApiError {
+        throws TestFailure, InterruptedException, LHApiError {
         return Arrays.asList(
             happyPath(client),
             firstThreadFails(client),
@@ -120,11 +120,11 @@ public class BBWaitMultipleChildren extends WorkflowLogicTest {
     }
 
     private VariableValuePb generateEvent(String key, Object value)
-        throws LogicTestFailure {
+        throws TestFailure {
         try {
             return LHLibUtil.objToVarVal(Map.of(key, value));
         } catch (LHSerdeError exn) {
-            throw new LogicTestFailure(
+            throw new TestFailure(
                 this,
                 "impossible: serde error: " + exn.getMessage()
             );
@@ -135,7 +135,7 @@ public class BBWaitMultipleChildren extends WorkflowLogicTest {
      * This tests the happy path case where thread 1 finishes first.
      */
     private String happyPath(LHClient client)
-        throws LogicTestFailure, InterruptedException, LHApiError {
+        throws TestFailure, InterruptedException, LHApiError {
         String id = runWf(null, client);
         assertStatus(client, id, LHStatusPb.RUNNING);
 
@@ -231,7 +231,7 @@ public class BBWaitMultipleChildren extends WorkflowLogicTest {
     }
 
     private String firstThreadFails(LHClient client)
-        throws LogicTestFailure, InterruptedException, LHApiError {
+        throws TestFailure, InterruptedException, LHApiError {
         String id = runWf(null, client);
         assertStatus(client, id, LHStatusPb.RUNNING);
 
@@ -320,7 +320,7 @@ public class BBWaitMultipleChildren extends WorkflowLogicTest {
     }
 
     private String secondThreadFails(LHClient client)
-        throws LogicTestFailure, InterruptedException, LHApiError {
+        throws TestFailure, InterruptedException, LHApiError {
         String id = runWf(null, client);
         assertStatus(client, id, LHStatusPb.RUNNING);
 

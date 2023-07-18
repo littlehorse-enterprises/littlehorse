@@ -9,7 +9,7 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
-import io.littlehorse.tests.LogicTestFailure;
+import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.WorkflowLogicTest;
 import java.util.Arrays;
 import java.util.List;
@@ -63,7 +63,7 @@ public class AIConditionalsLessThan extends WorkflowLogicTest {
         Object lhs,
         Object rhs,
         boolean shouldEqual
-    ) throws LogicTestFailure, InterruptedException, LHApiError {
+    ) throws TestFailure, InterruptedException, LHApiError {
         InputObj input = new InputObj(lhs, rhs);
 
         if (shouldEqual) {
@@ -80,7 +80,7 @@ public class AIConditionalsLessThan extends WorkflowLogicTest {
     // private String twoInts() throws TestFailure
 
     public List<String> launchAndCheckWorkflows(LHClient client)
-        throws LogicTestFailure, InterruptedException, LHApiError {
+        throws TestFailure, InterruptedException, LHApiError {
         return Arrays.asList(
             runWithInputsAndCheck(client, 1, 2, true),
             runWithInputsAndCheck(client, 1, 1, false),

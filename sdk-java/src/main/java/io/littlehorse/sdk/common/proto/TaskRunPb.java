@@ -275,6 +275,17 @@ private static final long serialVersionUID = 0L;
     return result == null ? io.littlehorse.sdk.common.proto.TaskStatusPb.UNRECOGNIZED : result;
   }
 
+  public static final int TIMEOUT_SECONDS_FIELD_NUMBER = 9;
+  private int timeoutSeconds_ = 0;
+  /**
+   * <code>int32 timeout_seconds = 9;</code>
+   * @return The timeoutSeconds.
+   */
+  @java.lang.Override
+  public int getTimeoutSeconds() {
+    return timeoutSeconds_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -312,6 +323,9 @@ private static final long serialVersionUID = 0L;
     }
     if (status_ != io.littlehorse.sdk.common.proto.TaskStatusPb.TASK_SCHEDULED.getNumber()) {
       output.writeEnum(8, status_);
+    }
+    if (timeoutSeconds_ != 0) {
+      output.writeInt32(9, timeoutSeconds_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -353,6 +367,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(8, status_);
     }
+    if (timeoutSeconds_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(9, timeoutSeconds_);
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -392,6 +410,8 @@ private static final long serialVersionUID = 0L;
           .equals(other.getScheduledAt())) return false;
     }
     if (status_ != other.status_) return false;
+    if (getTimeoutSeconds()
+        != other.getTimeoutSeconds()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -429,6 +449,8 @@ private static final long serialVersionUID = 0L;
     }
     hash = (37 * hash) + STATUS_FIELD_NUMBER;
     hash = (53 * hash) + status_;
+    hash = (37 * hash) + TIMEOUT_SECONDS_FIELD_NUMBER;
+    hash = (53 * hash) + getTimeoutSeconds();
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -590,6 +612,7 @@ private static final long serialVersionUID = 0L;
         scheduledAtBuilder_ = null;
       }
       status_ = 0;
+      timeoutSeconds_ = 0;
       return this;
     }
 
@@ -668,6 +691,9 @@ private static final long serialVersionUID = 0L;
       }
       if (((from_bitField0_ & 0x00000080) != 0)) {
         result.status_ = status_;
+      }
+      if (((from_bitField0_ & 0x00000100) != 0)) {
+        result.timeoutSeconds_ = timeoutSeconds_;
       }
     }
 
@@ -787,6 +813,9 @@ private static final long serialVersionUID = 0L;
       if (other.status_ != 0) {
         setStatusValue(other.getStatusValue());
       }
+      if (other.getTimeoutSeconds() != 0) {
+        setTimeoutSeconds(other.getTimeoutSeconds());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -875,6 +904,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000080;
               break;
             } // case 64
+            case 72: {
+              timeoutSeconds_ = input.readInt32();
+              bitField0_ |= 0x00000100;
+              break;
+            } // case 72
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1882,6 +1916,38 @@ private static final long serialVersionUID = 0L;
     public Builder clearStatus() {
       bitField0_ = (bitField0_ & ~0x00000080);
       status_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private int timeoutSeconds_ ;
+    /**
+     * <code>int32 timeout_seconds = 9;</code>
+     * @return The timeoutSeconds.
+     */
+    @java.lang.Override
+    public int getTimeoutSeconds() {
+      return timeoutSeconds_;
+    }
+    /**
+     * <code>int32 timeout_seconds = 9;</code>
+     * @param value The timeoutSeconds to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTimeoutSeconds(int value) {
+      
+      timeoutSeconds_ = value;
+      bitField0_ |= 0x00000100;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 timeout_seconds = 9;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearTimeoutSeconds() {
+      bitField0_ = (bitField0_ & ~0x00000100);
+      timeoutSeconds_ = 0;
       onChanged();
       return this;
     }

@@ -11,7 +11,7 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
-import io.littlehorse.tests.LogicTestFailure;
+import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.WorkflowLogicTest;
 import java.util.Arrays;
 import java.util.List;
@@ -62,7 +62,7 @@ public class AMConditionalsIn extends WorkflowLogicTest {
     }
 
     private String assertThatFails(LHClient client, Object lhs, Object rhs)
-        throws LogicTestFailure, InterruptedException, LHApiError {
+        throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = runWf(client, Arg.of("input", new AMInputObj(lhs, rhs)));
         Thread.sleep(200);
         assertStatus(client, wfRunId, LHStatusPb.ERROR);
@@ -74,7 +74,7 @@ public class AMConditionalsIn extends WorkflowLogicTest {
         Object lhs,
         Object rhs,
         boolean shouldEqual
-    ) throws LogicTestFailure, InterruptedException, LHApiError {
+    ) throws TestFailure, InterruptedException, LHApiError {
         InputObj input = new InputObj(lhs, rhs);
 
         if (shouldEqual) {
@@ -89,7 +89,7 @@ public class AMConditionalsIn extends WorkflowLogicTest {
     }
 
     public List<String> launchAndCheckWorkflows(LHClient client)
-        throws LogicTestFailure, InterruptedException, LHApiError {
+        throws TestFailure, InterruptedException, LHApiError {
         return Arrays.asList(
             runWithInputsAndCheck(client, Map.of("a", 1), Map.of("a", 1), false),
             runWithInputsAndCheck(client, "hi", Map.of("hi", 2), true),

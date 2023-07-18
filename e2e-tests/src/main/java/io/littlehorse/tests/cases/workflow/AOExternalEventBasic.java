@@ -12,7 +12,7 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
-import io.littlehorse.tests.LogicTestFailure;
+import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.WorkflowLogicTest;
 import java.util.Arrays;
 import java.util.List;
@@ -53,7 +53,7 @@ public class AOExternalEventBasic extends WorkflowLogicTest {
     }
 
     public List<String> launchAndCheckWorkflows(LHClient client)
-        throws LogicTestFailure, InterruptedException, LHApiError {
+        throws TestFailure, InterruptedException, LHApiError {
         return Arrays.asList(
             sendEventBeforeWfRun(client),
             sendEventAfterWfRun(client),
@@ -63,7 +63,7 @@ public class AOExternalEventBasic extends WorkflowLogicTest {
     }
 
     private String sendEventBeforeWfRun(LHClient client)
-        throws LogicTestFailure, InterruptedException, LHApiError {
+        throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = generateGuid();
         ExternalEventIdPb extEvtId = sendEvent(
             client,
@@ -81,7 +81,7 @@ public class AOExternalEventBasic extends WorkflowLogicTest {
         assertTaskOutput(client, wfRunId, 0, 2, "hello there evt-content");
         ExternalEventPb evt = getExternalEvent(client, extEvtId);
         if (!evt.getWfRunId().equals(wfRunId)) {
-            throw new LogicTestFailure(
+            throw new TestFailure(
                 this,
                 "Failed to associate evt with wfRun " + wfRunId
             );
@@ -91,7 +91,7 @@ public class AOExternalEventBasic extends WorkflowLogicTest {
     }
 
     private String sendEventAfterWfRun(LHClient client)
-        throws LogicTestFailure, InterruptedException, LHApiError {
+        throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = generateGuid();
         // here only difference is we run the workflow first
         runWf(wfRunId, client);
@@ -115,7 +115,7 @@ public class AOExternalEventBasic extends WorkflowLogicTest {
         assertTaskOutput(client, wfRunId, 0, 2, "hello there evt-content");
         ExternalEventPb evt = getExternalEvent(client, extEvtId);
         if (!evt.getClaimed()) {
-            throw new LogicTestFailure(
+            throw new TestFailure(
                 this,
                 "Failed to associate evt with wfRun " + wfRunId
             );
@@ -125,7 +125,7 @@ public class AOExternalEventBasic extends WorkflowLogicTest {
     }
 
     private String sendTwoEventsBefore(LHClient client)
-        throws LogicTestFailure, InterruptedException, LHApiError {
+        throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = generateGuid();
         ExternalEventIdPb extEvtIdOne = sendEvent(
             client,
@@ -150,7 +150,7 @@ public class AOExternalEventBasic extends WorkflowLogicTest {
         assertTaskOutput(client, wfRunId, 0, 2, "hello there evt-content");
         ExternalEventPb evt = getExternalEvent(client, extEvtIdOne);
         if (!evt.hasNodeRunPosition()) {
-            throw new LogicTestFailure(
+            throw new TestFailure(
                 this,
                 "Failed to associate evt with wfRun " + wfRunId
             );
@@ -158,17 +158,14 @@ public class AOExternalEventBasic extends WorkflowLogicTest {
 
         ExternalEventPb evtTwo = getExternalEvent(client, extEvtIdTwo);
         if (evtTwo.hasNodeRunPosition()) {
-            throw new LogicTestFailure(
-                this,
-                "Should not have associated second event!"
-            );
+            throw new TestFailure(this, "Should not have associated second event!");
         }
 
         return wfRunId;
     }
 
     private String dontSendEvent(LHClient client)
-        throws LogicTestFailure, InterruptedException, LHApiError {
+        throws TestFailure, InterruptedException, LHApiError {
         String wfRunId = runWf(client);
         Thread.sleep(500);
         // TODO: Inspect the node run a bit

@@ -11,7 +11,7 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
-import io.littlehorse.tests.LogicTestFailure;
+import io.littlehorse.tests.TestFailure;
 import io.littlehorse.tests.WorkflowLogicTest;
 import java.util.Arrays;
 import java.util.List;
@@ -56,7 +56,7 @@ public class AFVarMutationsRemoveFromList extends WorkflowLogicTest {
     }
 
     public List<String> launchAndCheckWorkflows(LHClient client)
-        throws LogicTestFailure, InterruptedException, LHApiError {
+        throws TestFailure, InterruptedException, LHApiError {
         // Workflow removes number 5, then removes "hello", then removes
         // index 3. That should throw index out of bounds exception here
         List<?> wfOneInput = Arrays.asList(5, "hello", 3, 4);
@@ -76,7 +76,7 @@ public class AFVarMutationsRemoveFromList extends WorkflowLogicTest {
         List<?> removed = getVarAsList(client, wfOne, 0, "list-one");
         for (int i = 0; i < wfOneInput.size(); i++) {
             if (!wfOneInput.get(i).equals(removed.get(i))) {
-                throw new LogicTestFailure(this, "Should have rolled back mutation.");
+                throw new TestFailure(this, "Should have rolled back mutation.");
             }
         }
 
@@ -84,7 +84,7 @@ public class AFVarMutationsRemoveFromList extends WorkflowLogicTest {
         removed = getVarAsList(client, wfTwo, 0, "list-one");
         for (int i = 0; i < removed.size(); i++) {
             if (!desired.get(i).equals(removed.get(i))) {
-                throw new LogicTestFailure(this, "Didn't get required thing");
+                throw new TestFailure(this, "Didn't get required thing");
             }
         }
 

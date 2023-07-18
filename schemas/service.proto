@@ -951,6 +951,8 @@ message TaskRunPb {
   google.protobuf.Timestamp scheduled_at = 7;
 
   TaskStatusPb status = 8;
+
+  int32 timeout_seconds = 9;
 }
 
 message TaskNodeReferencePb {

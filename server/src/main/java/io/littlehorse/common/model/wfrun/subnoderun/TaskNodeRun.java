@@ -91,6 +91,7 @@ public class TaskNodeRun extends SubNodeRun<TaskNodeRunPb> {
             nodeRun.getObjectId(),
             nodeRun.getWfSpecId()
         );
+
         TaskRun task = new TaskRun(
             getDao(),
             inputVariables,

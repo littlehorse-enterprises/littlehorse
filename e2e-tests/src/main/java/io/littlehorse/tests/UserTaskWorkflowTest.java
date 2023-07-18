@@ -22,8 +22,7 @@ public abstract class UserTaskWorkflowTest extends WorkflowLogicTest {
         super.cleanup();
     }
 
-    public void deploy(LHClient client, LHWorkerConfig config)
-        throws LogicTestFailure {
+    public void deploy(LHClient client, LHWorkerConfig config) throws TestFailure {
         // Deploy the UserTaskDef's
         for (Map.Entry<String, Object> pair : getRequiredUserTaskForms().entrySet()) {
             UserTaskSchema schema = new UserTaskSchema(
@@ -33,7 +32,7 @@ public abstract class UserTaskWorkflowTest extends WorkflowLogicTest {
             try {
                 client.putUserTaskDef(schema.compile(), true);
             } catch (LHApiError exn) {
-                throw new LogicTestFailure(
+                throw new TestFailure(
                     this,
                     "Failed setting up userTask: " + exn.getMessage()
                 );
