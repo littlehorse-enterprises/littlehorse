@@ -7,7 +7,6 @@ import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.objectId.VariableId;
 import io.littlehorse.common.model.wfrun.Variable;
-import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.AttributePb;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnumPb;
@@ -33,7 +32,6 @@ import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -156,14 +154,13 @@ public class SearchVariable
                 .toList();
             out.tagScan =
                 TagScanPb.newBuilder().addAllAttributes(attributesPb).build();
-            Consumer<TagStorageTypePb> storageTypeSearchSetter = tagStorageTypePb -> {
+            TagStorageTypePb tagStorageTypePb = getStorageTypeFromVariableIndexConfiguration()
+                .orElse(null);
+            if (tagStorageTypePb != null) {
                 setSearchTypeFromTagStorageType(tagStorageTypePb, out, wfSpecVersion);
-            };
-            getStorageTypeFromVariableIndexConfiguration()
-                .ifPresentOrElse(
-                    storageTypeSearchSetter,
-                    () -> setSearchTypeFromWfSpec(out, wfSpecVersion, stores)
-                );
+            } else {
+                setSearchTypeFromWfSpec(out, wfSpecVersion, stores);
+            }
         }
 
         return out;
@@ -187,9 +184,10 @@ public class SearchVariable
         InternalScan out,
         int wfSpecVersion,
         LHGlobalMetaStores stores
-    ) {
+    ) throws LHValidationError {
         WfSpec spec = stores.getWfSpec(value.getWfSpecName(), null);
-        spec
+
+        TagStorageTypePb tagStorageTypePb = spec
             .getThreadSpecs()
             .entrySet()
             .stream()
@@ -202,16 +200,17 @@ public class SearchVariable
             )
             .map(VariableDef::getTagStorageTypePb)
             .findFirst()
-            .ifPresent(tagStorageTypePb -> {
-                setSearchTypeFromTagStorageType(tagStorageTypePb, out, wfSpecVersion);
-            });
+            .orElse(null);
+        if (tagStorageTypePb != null) {
+            setSearchTypeFromTagStorageType(tagStorageTypePb, out, wfSpecVersion);
+        }
     }
 
     private void setSearchTypeFromTagStorageType(
         TagStorageTypePb tagStorageTypePb,
         InternalScan out,
         int wfSpecVersion
-    ) {
+    ) throws LHValidationError {
         if (tagStorageTypePb == TagStorageTypePb.LOCAL) {
             // Local Tag Scan (All Partitions Tag Scan)
             out.setStoreName(ServerTopology.CORE_STORE);
@@ -222,24 +221,34 @@ public class SearchVariable
             out.setResultType(ScanResultTypePb.OBJECT_ID);
             out.setPartitionKey(
                 Tag.getAttributeString(
-                    Getable.getTypeEnum(WfRun.class),
+                    Getable.getTypeEnum(Variable.class),
                     getAttributes(wfSpecVersion)
                 )
             );
         }
     }
 
-    private List<Attribute> getAttributes(int wfSpecVersion) {
+    private List<Attribute> getAttributes(int wfSpecVersion)
+        throws LHValidationError {
         return List.of(
-            new Attribute("name", value.getVarName()),
-            new Attribute("value", getVariableValue(value.getValue())),
             new Attribute("wfSpecName", value.getWfSpecName()),
-            new Attribute("wfSpecVersion", LHUtil.toLHDbVersionFormat(wfSpecVersion))
+            new Attribute("wfSpecVersion", LHUtil.toLHDbVersionFormat(wfSpecVersion)),
+            new Attribute(value.getVarName(), getVariableValue(value.getValue()))
         );
     }
 
-    private String getVariableValue(VariableValuePb value) {
-        return value.getStr();
+    private String getVariableValue(VariableValuePb value) throws LHValidationError {
+        return switch (value.getType()) {
+            case STR -> value.getStr();
+            case BOOL -> String.valueOf(value.getBool());
+            case INT -> String.valueOf(value.getInt());
+            case DOUBLE -> String.valueOf(value.getDouble());
+            default -> {
+                throw new LHValidationError(
+                    "Search for %s not supported".formatted(value.getType())
+                );
+            }
+        };
     }
 
     private List<String> searchAttributes() {
