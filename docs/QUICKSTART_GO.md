@@ -24,7 +24,7 @@ Verify the installation:
 lhctl
 ```
 
-Start a LH Server with:
+Start your LH Server with:
 
 ```
 cd docker

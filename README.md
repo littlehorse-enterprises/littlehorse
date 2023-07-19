@@ -6,13 +6,17 @@
 
 <a href="https://littlehorse.dev/"><img alt="littlehorse.dev" src="https://img.shields.io/badge/-LittleHorse.dev-7f7aff"></a>
 
-This repository contains the code for the core LittleHorse Components.
+[LittleHorse](https://littlehorse.dev) is a high-performance microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications. The LittleHorse Runtime has uses in fields such as:
 
-For a description of the architecture, see the [architecture docs](docs/ARCH.md).
+- Business Process Management
+- Event-Driven Systems
+- Logistics Management Applications
+- Financial Transaction Processing
+- And More.
 
 ## LH Repository Inventory
 
-The LittleHorse project currently has multiple components, described below:
+The LittleHorse repository contains the following components:
 
 - [`server`](server)
     - Code for LittleHorse Server.
@@ -34,65 +38,14 @@ The LittleHorse project currently has multiple components, described below:
 - [`docker`](docker)
     - The LittleHorse Docker Image.
 
-## Quickstart
+## Getting Started
 
-- [Java Quickstart](docs/QUICKSTART_JAVA.md)
-- [Go Quickstart](docs/QUICKSTART_GO.md)
+To get started *using* LittleHorse, check out the [Java Quickstart](docs/QUICKSTART_JAVA.md) or the [GoLang Quickstart](docs/QUICKSTART_GOLANG.md).
 
-## Configurations
+To get started *developing* LittleHorse, check out the [Development Guide](docs/DEVELOPING.md).
 
 - [Server Configurations](docs/CONFIGURATIONS_SERVER.md)
 - [Workers/Clients Configurations](docs/CONFIGURATIONS_CLIENTS.md)
-
-## Development
-
-This section describes how to run the LittleHorse server in a development environment.
-
-### Prerequisites
-
-This repository requires the following system dependencies:
-
-- `openjdk`, preferably version 17 or later.
-- `gradle`, preferably version 7.4 or later.
-- `docker` and `docker-compose-plugin`.
-- `go`, `protoc`, `protoc-gen-go`, `protoc-gen-go-grpc` and `protoc-gen-grpc-java`.
-    - [Protocol Buffer Compiler](https://grpc.io/docs/protoc-installation/)
-    - [Java gRPC compiler plugin](https://github.com/grpc/grpc-java/blob/master/compiler/README.md)
-    - This needs to be put somewhere in your `PATH`.
-- `npm` (this is a dev dependency)
-- `pre-commit` (this is a dev dependency)
-
-### Setting Up the Linters
-
-We have decided to use the [Prettier for Java](https://github.com/jhipster/prettier-java) linter. It is the same linter used by most Javascript projects but adapted for Java. Therefore, it requires Node.js as a prerequisite to run.
-
-To install the formatter, all you need to do is first install Node.js as per the website, and then run:
-
-```
-npm install  # This uses the package.json
-npm run format  # This runs the linters
-```
-
-
-### Setup Pre-commit
-
-https://pre-commit.com/ is a framework for managing and maintaining multi-language pre-commit hooks.
-
-```bash
-pre-commit install
-```
-
-### Components
-
-LittleHorse ecosystem has different component, for information about how to develop go to:
-
-- [`server`](server)
-- [`sdk-java`](sdk-java)
-- [`sdk-go`](sdk-go)
-- [`lhctl`](lhctl)
-- [`e2e-tests`](e2e-tests)
-- [`examples`](examples)
-
 
 ## License
 
