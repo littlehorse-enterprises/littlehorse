@@ -3,8 +3,8 @@ package while
 import (
 	"fmt"
 
-	"github.com/littlehorse-eng/littlehorse/sdk-go/common/model"
-	"github.com/littlehorse-eng/littlehorse/sdk-go/wflib"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/wflib"
 )
 
 func Donut(num int) int {

@@ -1,7 +1,7 @@
 package wflib
 
 import (
-	"github.com/littlehorse-eng/littlehorse/sdk-go/common/model"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 )
 
 type ThreadFunc func(*ThreadBuilder)

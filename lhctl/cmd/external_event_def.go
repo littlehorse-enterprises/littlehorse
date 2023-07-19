@@ -9,8 +9,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/littlehorse-eng/littlehorse/sdk-go/common"
-	"github.com/littlehorse-eng/littlehorse/sdk-go/common/model"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"

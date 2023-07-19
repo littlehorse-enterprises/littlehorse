@@ -9,8 +9,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/littlehorse-eng/littlehorse/sdk-go/common"
-	"github.com/littlehorse-eng/littlehorse/sdk-go/common/model"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 

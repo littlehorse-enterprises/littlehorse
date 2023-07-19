@@ -3,7 +3,7 @@ package examples
 import (
 	"log"
 
-	"github.com/littlehorse-eng/littlehorse/sdk-go/common"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
 )
 
 func LoadConfigAndClient() (*common.LHConfig, *common.LHClient) {

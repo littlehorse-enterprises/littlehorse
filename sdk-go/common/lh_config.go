@@ -9,8 +9,8 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
-	"github.com/littlehorse-eng/littlehorse/sdk-go/common/auth"
-	"github.com/littlehorse-eng/littlehorse/sdk-go/common/model"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/auth"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 	"github.com/magiconair/properties"
 
 	"google.golang.org/grpc"

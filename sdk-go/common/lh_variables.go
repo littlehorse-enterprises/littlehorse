@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"strconv"
 
-	"github.com/littlehorse-eng/littlehorse/sdk-go/common/model"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common/model"
 )
 
 func StrToVarVal(input string, varType model.VariableTypePb) (*model.VariableValuePb, error) {

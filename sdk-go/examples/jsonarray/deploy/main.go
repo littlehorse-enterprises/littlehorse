@@ -3,10 +3,10 @@ package main
 import (
 	"log"
 
-	"github.com/littlehorse-eng/littlehorse/sdk-go/common"
-	"github.com/littlehorse-eng/littlehorse/sdk-go/examples"
-	"github.com/littlehorse-eng/littlehorse/sdk-go/examples/jsonarray"
-	"github.com/littlehorse-eng/littlehorse/sdk-go/wflib"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/examples"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/examples/jsonarray"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/wflib"
 )
 
 func main() {

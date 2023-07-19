@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/littlehorse-eng/littlehorse/sdk-go/common"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
 )
 
 func main() {

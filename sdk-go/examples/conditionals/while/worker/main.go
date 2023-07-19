@@ -3,9 +3,9 @@ package main
 import (
 	"log"
 
-	"github.com/littlehorse-eng/littlehorse/sdk-go/examples"
-	"github.com/littlehorse-eng/littlehorse/sdk-go/examples/conditionals/while"
-	"github.com/littlehorse-eng/littlehorse/sdk-go/taskworker"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/examples"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/examples/conditionals/while"
+	"github.com/littlehorse-enterprises/littlehorse/sdk-go/taskworker"
 )
 
 func main() {
