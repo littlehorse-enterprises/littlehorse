@@ -3,7 +3,6 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '7.1.2'
     id 'java'
     id 'maven-publish'
-    id 'io.freefair.lombok' version '8.0.1'
 
     // code analysis
     id 'org.owasp.dependencycheck' version '8.2.1'
@@ -29,6 +28,9 @@ repositories {
     }
 }
 
+def kafkaVersion='3.5.0'
+def lombokVersion='1.18.28'
+
 dependencies {
     // Use JUnit Jupiter for testing.
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
@@ -43,9 +45,9 @@ dependencies {
     implementation 'org.apache.logging.log4j:log4j-slf4j2-impl:2.20.0'
 
     // Stuff for Kafka
-    implementation 'org.apache.kafka:kafka-clients:3.5.0'
-    implementation 'org.apache.kafka:kafka-streams:3.5.0'
-    testImplementation 'org.apache.kafka:kafka-streams-test-utils:3.5.0'
+    implementation "org.apache.kafka:kafka-clients:${kafkaVersion}"
+    implementation "org.apache.kafka:kafka-streams:${kafkaVersion}"
+    testImplementation "org.apache.kafka:kafka-streams-test-utils:${kafkaVersion}"
 
     // Utils
     implementation 'org.apache.commons:commons-lang3:3.12.0'
@@ -55,8 +57,14 @@ dependencies {
     implementation project(':sdk-java')
 
     // Prometheus
-    implementation 'io.micrometer:micrometer-registry-prometheus:latest.release'
+    implementation 'io.micrometer:micrometer-registry-prometheus:1.11.2'
     implementation 'io.javalin:javalin:5.6.0'
+
+    // Lombok stuffs
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 }
 
 
