@@ -44,8 +44,8 @@ To get started *using* LittleHorse, check out the [Java Quickstart](docs/QUICKST
 
 To get started *developing* LittleHorse, check out the [Development Guide](docs/DEVELOPING.md).
 
-- [Server Configurations](docs/CONFIGURATIONS_SERVER.md)
-- [Workers/Clients Configurations](docs/CONFIGURATIONS_CLIENTS.md)
+- [Server Configurations](docs/SERVER_CONFIGURATIONS.md)
+- [Workers/Clients Configurations](docs/CLIENT_CONFIGURATIONS.md)
 
 ## License
 
