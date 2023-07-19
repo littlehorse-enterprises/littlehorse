@@ -56,7 +56,7 @@ Result:
 }
 ```
 
-Now let's run an example:
+Now let's run an example. This example lives in the `examples/basic` folder, and is a "Hello World" example of LittleHorse.
 
 > More examples at [examples](../examples).
 
@@ -77,9 +77,9 @@ Now let's inspect the result:
 # This call shows the result
 lhctl get wfRun <wf run id>
 
-# This will show you all nodes in tha run
+# Inspect the first NodeRun of the WfRun
 lhctl get nodeRun <wf run id> 0 1
 
 # This shows the task run information
-lhctl get taskRun <wf run id> <task run global id>
+lhctl get taskRun <wfRunId> <taskGuid>
 ```
