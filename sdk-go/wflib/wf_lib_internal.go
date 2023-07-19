@@ -6,8 +6,8 @@ import (
 	"strings"
 	"unicode"
 
-	"bitbucket.org/littlehorse-core/littlehorse/sdk-go/common"
-	"bitbucket.org/littlehorse-core/littlehorse/sdk-go/common/model"
+	"github.com/littlehorse-eng/littlehorse/sdk-go/common"
+	"github.com/littlehorse-eng/littlehorse/sdk-go/common/model"
 	"github.com/ztrue/tracerr"
 )
 
@@ -539,7 +539,7 @@ func (t *ThreadBuilder) spawnThread(
 	}
 }
 
-func (t *ThreadBuilder) waitForThreads(s... *SpawnedThread) *NodeOutput {
+func (t *ThreadBuilder) waitForThreads(s ...*SpawnedThread) *NodeOutput {
 	t.checkIfIsActive()
 	nodeName, node := t.createBlankNode("wait", "WAIT_THREADS")
 	node.Node = &model.NodePb_WaitForThreads{
@@ -551,7 +551,7 @@ func (t *ThreadBuilder) waitForThreads(s... *SpawnedThread) *NodeOutput {
 	for _, spawnedThread := range s {
 		threadRunNumberAssn, _ := t.assignVariable(spawnedThread.threadNumVar)
 
-		node.GetWaitForThreads().Threads = append(node.GetWaitForThreads().Threads, 
+		node.GetWaitForThreads().Threads = append(node.GetWaitForThreads().Threads,
 			&model.WaitForThreadsNodePb_ThreadToWaitForPb{
 				ThreadRunNumber: threadRunNumberAssn,
 			},

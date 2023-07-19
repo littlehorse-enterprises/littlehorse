@@ -3,7 +3,7 @@ package exceptionhandler
 import (
 	"errors"
 
-	"bitbucket.org/littlehorse-core/littlehorse/sdk-go/wflib"
+	"github.com/littlehorse-eng/littlehorse/sdk-go/wflib"
 )
 
 func SomeStableTask() string {

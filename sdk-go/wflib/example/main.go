@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	"bitbucket.org/littlehorse-core/littlehorse/sdk-go/common/model"
-	"bitbucket.org/littlehorse-core/littlehorse/sdk-go/wflib"
+	"github.com/littlehorse-eng/littlehorse/sdk-go/common/model"
+	"github.com/littlehorse-eng/littlehorse/sdk-go/wflib"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 

@@ -11,8 +11,8 @@ import (
 	"os"
 	"time"
 
-	"bitbucket.org/littlehorse-core/littlehorse/sdk-go/common"
 	"github.com/coreos/go-oidc/v3/oidc"
+	"github.com/littlehorse-eng/littlehorse/sdk-go/common"
 	"github.com/pkg/browser"
 	"github.com/spf13/cobra"
 	"golang.org/x/oauth2"

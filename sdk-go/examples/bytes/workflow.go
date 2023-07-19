@@ -1,7 +1,7 @@
 package bytes
 
 import (
-	"bitbucket.org/littlehorse-core/littlehorse/sdk-go/wflib"
+	"github.com/littlehorse-eng/littlehorse/sdk-go/wflib"
 )
 
 func Greet(byteInput []byte) int {

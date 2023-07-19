@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"bitbucket.org/littlehorse-core/littlehorse/sdk-go/common"
+	"github.com/littlehorse-eng/littlehorse/sdk-go/common"
 )
 
 func main() {

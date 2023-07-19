@@ -3,9 +3,9 @@ package main
 import (
 	"log"
 
-	"bitbucket.org/littlehorse-core/littlehorse/sdk-go/examples"
-	"bitbucket.org/littlehorse-core/littlehorse/sdk-go/examples/jsonarray"
-	"bitbucket.org/littlehorse-core/littlehorse/sdk-go/taskworker"
+	"github.com/littlehorse-eng/littlehorse/sdk-go/examples"
+	"github.com/littlehorse-eng/littlehorse/sdk-go/examples/jsonarray"
+	"github.com/littlehorse-eng/littlehorse/sdk-go/taskworker"
 )
 
 func main() {

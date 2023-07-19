@@ -8,7 +8,7 @@ import (
 	"reflect"
 	"strings"
 
-	"bitbucket.org/littlehorse-core/littlehorse/sdk-go/common/model"
+	"github.com/littlehorse-eng/littlehorse/sdk-go/common/model"
 )
 
 type TaskFuncArg struct {

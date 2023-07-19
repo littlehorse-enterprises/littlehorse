@@ -1,7 +1,7 @@
 package wflib
 
 import (
-	"bitbucket.org/littlehorse-core/littlehorse/sdk-go/common/model"
+	"github.com/littlehorse-eng/littlehorse/sdk-go/common/model"
 )
 
 type ThreadFunc func(*ThreadBuilder)
@@ -110,7 +110,7 @@ func (t *ThreadBuilder) SpawnThread(
 	return t.spawnThread(tFunc, threadName, args)
 }
 
-func (t *ThreadBuilder) WaitForThreads(s... *SpawnedThread) NodeOutput {
+func (t *ThreadBuilder) WaitForThreads(s ...*SpawnedThread) NodeOutput {
 	return *t.waitForThreads(s...)
 }
 

@@ -1,4 +1,4 @@
-module bitbucket.org/littlehorse-core/littlehorse
+module github.com/littlehorse-eng/littlehorse
 
 go 1.20
 

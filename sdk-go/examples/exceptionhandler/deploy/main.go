@@ -3,10 +3,10 @@ package main
 import (
 	"log"
 
-	"bitbucket.org/littlehorse-core/littlehorse/sdk-go/common"
-	"bitbucket.org/littlehorse-core/littlehorse/sdk-go/examples"
-	"bitbucket.org/littlehorse-core/littlehorse/sdk-go/examples/exceptionhandler"
-	"bitbucket.org/littlehorse-core/littlehorse/sdk-go/wflib"
+	"github.com/littlehorse-eng/littlehorse/sdk-go/common"
+	"github.com/littlehorse-eng/littlehorse/sdk-go/examples"
+	"github.com/littlehorse-eng/littlehorse/sdk-go/examples/exceptionhandler"
+	"github.com/littlehorse-eng/littlehorse/sdk-go/wflib"
 )
 
 func main() {

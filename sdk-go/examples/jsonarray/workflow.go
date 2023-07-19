@@ -1,8 +1,8 @@
 package jsonarray
 
 import (
-	"bitbucket.org/littlehorse-core/littlehorse/sdk-go/common/model"
-	"bitbucket.org/littlehorse-core/littlehorse/sdk-go/wflib"
+	"github.com/littlehorse-eng/littlehorse/sdk-go/common/model"
+	"github.com/littlehorse-eng/littlehorse/sdk-go/wflib"
 )
 
 type InputData struct {

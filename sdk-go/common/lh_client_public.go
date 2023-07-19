@@ -3,7 +3,7 @@ package common
 import (
 	"errors"
 
-	"bitbucket.org/littlehorse-core/littlehorse/sdk-go/common/model"
+	"github.com/littlehorse-eng/littlehorse/sdk-go/common/model"
 	"golang.org/x/net/context"
 )
 

@@ -8,9 +8,9 @@ import (
 	"strconv"
 	"strings"
 
-	"bitbucket.org/littlehorse-core/littlehorse/sdk-go/common/auth"
-	"bitbucket.org/littlehorse-core/littlehorse/sdk-go/common/model"
 	"github.com/google/uuid"
+	"github.com/littlehorse-eng/littlehorse/sdk-go/common/auth"
+	"github.com/littlehorse-eng/littlehorse/sdk-go/common/model"
 	"github.com/magiconair/properties"
 
 	"google.golang.org/grpc"
@@ -152,7 +152,7 @@ func NewConfigFromProps(filePath string) (*LHConfig, error) {
 	return &LHConfig{
 		ApiHost:  p.GetString(API_HOST_KEY, "localhost"),
 		ApiPort:  p.GetString(API_PORT_KEY, "2023"),
-		ClientId: p.GetString(CLIENT_ID_KEY, "client-" + generateRandomClientId()),
+		ClientId: p.GetString(CLIENT_ID_KEY, "client-"+generateRandomClientId()),
 
 		CertFile: stringPtr(p.GetString(CERT_FILE_KEY, "")),
 		KeyFile:  stringPtr(p.GetString(KEY_FILE_KEY, "")),
