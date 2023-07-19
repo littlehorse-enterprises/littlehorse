@@ -12,6 +12,7 @@ import io.littlehorse.sdk.common.proto.ExitNodePb;
 import io.littlehorse.sdk.common.proto.ExternalEventNodePb;
 import io.littlehorse.sdk.common.proto.FailureDefPb;
 import io.littlehorse.sdk.common.proto.FailureHandlerDefPb;
+import io.littlehorse.sdk.common.proto.IndexTypePb;
 import io.littlehorse.sdk.common.proto.InterruptDefPb;
 import io.littlehorse.sdk.common.proto.NodePb;
 import io.littlehorse.sdk.common.proto.NodePb.NodeCase;
@@ -270,9 +271,19 @@ public class ThreadBuilderImpl implements ThreadBuilder {
     }
 
     public WfRunVariableImpl addVariable(String name, Object typeOrDefaultVal) {
+        return addVariable(name, typeOrDefaultVal, null);
+    }
+
+    public WfRunVariableImpl addVariable(
+        String name,
+        Object typeOrDefaultVal,
+        IndexTypePb indexTypePb
+    ) {
         checkIfIsActive();
         VariableDefPb.Builder varDefBuilder = VariableDefPb.newBuilder();
-
+        if (indexTypePb != null) {
+            varDefBuilder.setIndexType(indexTypePb);
+        }
         if (typeOrDefaultVal instanceof VariableTypePb) {
             varDefBuilder.setType((VariableTypePb) typeOrDefaultVal);
         } else {
