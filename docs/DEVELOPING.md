@@ -6,8 +6,10 @@ This document details how to set up your laptop to develop LittleHorse.
 
 This repository requires the following system dependencies:
 
-- `openjdk`, preferably version 17 or later.
-- `gradle`, preferably version 7.4 or later.
+- `java`
+    - [sdk-java](sdk-java): Java 11
+    - [server](server): Java 17
+- `gradle`, preferably version 8 or later.
 - `docker` and `docker-compose-plugin`.
 - `go`, `protoc`, `protoc-gen-go`, `protoc-gen-go-grpc` and `protoc-gen-grpc-java`.
     - [Protocol Buffer Compiler](https://grpc.io/docs/protoc-installation/)

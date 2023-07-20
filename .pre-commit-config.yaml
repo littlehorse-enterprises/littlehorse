@@ -22,10 +22,6 @@ repos:
       hooks:
         - id: shellcheck
           args: [-x]
-    - repo: https://github.com/hadolint/hadolint
-      rev: v2.12.1-beta
-      hooks:
-        - id: hadolint-docker
     - repo: local
       hooks:
           - id: prettier

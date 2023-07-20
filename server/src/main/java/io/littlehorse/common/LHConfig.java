@@ -630,7 +630,7 @@ public class LHConfig extends ConfigBase {
     }
 
     public boolean shouldCreateTopics() {
-        return Boolean.valueOf(getOrSetDefault(SHOULD_CREATE_TOPICS_KEY, "false"));
+        return Boolean.valueOf(getOrSetDefault(SHOULD_CREATE_TOPICS_KEY, "true"));
     }
 
     public Properties getKafkaProducerConfig(String component) {

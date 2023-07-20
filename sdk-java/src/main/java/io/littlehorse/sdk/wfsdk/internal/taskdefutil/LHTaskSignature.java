@@ -76,12 +76,10 @@ public class LHTaskSignature {
 
             if (!param.isNamePresent()) {
                 log.warn(
-                    """
-                    Was unable to inspect parameter names using
-                    reflection; please compile with `javac -Parameters` to enable that.
-                    Will use param position as its name, which makes resulting TaskDef
-                    harder to understand.
-                    """
+                    "Was unable to inspect parameter names using" +
+                    "reflection; please compile with `javac -Parameters` to enable that." +
+                    "Will use param position as its name, which makes resulting TaskDef" +
+                    "harder to understand."
                 );
             }
             paramTypes.add(paramLHType);
