@@ -29,15 +29,8 @@ func init() {
 }
 
 func run(cmd *cobra.Command, args []string) {
-	configLoc, err := cmd.Flags().GetString("configFile")
-	if err != nil {
-		Fatal(err)
-	}
 
-	lhConfig, err := common.NewConfigFromProps(configLoc)
-	if err != nil {
-		Fatal(err)
-	}
+	lhConfig := getGlobalConfig(cmd)
 
 	if !lhConfig.OauthConfig.IsEnabled() {
 		Fatal("OAuth configs not found")
@@ -71,7 +64,7 @@ func run(cmd *cobra.Command, args []string) {
 	}
 
 	mux.HandleFunc("/", handleHomeRequest(oauth2Config))
-	mux.HandleFunc("/callback", handleCallbackRequest(ctx, localServer, lhConfig, oauthProvider, oauth2Config))
+	mux.HandleFunc("/callback", handleCallbackRequest(ctx, localServer, &lhConfig, oauthProvider, oauth2Config))
 
 	time.AfterFunc(time.Minute, func() {
 		Fatal("Timeout")

@@ -3,7 +3,6 @@ package common
 import (
 	"crypto/tls"
 	"crypto/x509"
-	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -120,13 +119,13 @@ func NewConfigFromEnv() *LHConfig {
 	return &LHConfig{
 		ApiHost:  getEnvOrDefault(API_HOST_KEY, "localhost"),
 		ApiPort:  getEnvOrDefault(API_PORT_KEY, "2023"),
-		ClientId: getEnvOrDefault(CLIENT_ID_KEY, "unset-client"),
+		ClientId: getEnvOrDefault(CLIENT_ID_KEY, "client-" + generateRandomClientId()),
 
 		CertFile: stringPtr(os.Getenv(CERT_FILE_KEY)),
 		KeyFile:  stringPtr(os.Getenv(KEY_FILE_KEY)),
 		CaCert:   stringPtr(os.Getenv(CA_CERT_FILE_KEY)),
 
-		NumWorkerThreads:      int32FromEnv(NUM_WORKER_THREADS_KEY, 2),
+		NumWorkerThreads:      int32FromEnv(NUM_WORKER_THREADS_KEY, 8),
 		TaskWorkerVersion:     os.Getenv(TASK_WORKER_VERSION_KEY),
 		ServerConnectListener: getEnvOrDefault(SERVER_CONNECT_LISTENER_KEY, DEFAULT_LISTENER),
 
@@ -146,7 +145,7 @@ func NewConfigFromEnv() *LHConfig {
 func NewConfigFromProps(filePath string) (*LHConfig, error) {
 	p, err := properties.LoadFile(filePath, properties.UTF8)
 	if err != nil {
-		return nil, fmt.Errorf("failed to load properties file: %w", err)
+		return nil, err
 	}
 
 	return &LHConfig{

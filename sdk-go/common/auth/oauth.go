@@ -70,7 +70,7 @@ type FileTokenSource struct {
 func (fileTokenSource FileTokenSource) GetRequestMetadata(ctx context.Context, uri ...string) (map[string]string, error) {
 	byteValue, err := os.ReadFile(fileTokenSource.CredentialsLocation)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("OAuth2 is enabled but it was not possible to load the credentials: ", err, ". Run 'lhctl login'.")
 	}
 
 	token := &oauth2.Token{}

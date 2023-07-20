@@ -25,6 +25,7 @@ to quickly create a Cobra application.`,
 }
 
 var globalClient *model.LHPublicApiClient
+var globalConfig *common.LHConfig
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
@@ -43,9 +44,9 @@ func init() {
 	)
 }
 
-func getGlobalClient(cmd *cobra.Command) model.LHPublicApiClient {
-	if globalClient != nil {
-		return *globalClient
+func getGlobalConfig(cmd *cobra.Command) common.LHConfig {
+	if globalConfig != nil {
+		return *globalConfig
 	}
 
 	configLoc, err := cmd.Flags().GetString("configFile")
@@ -53,14 +54,28 @@ func getGlobalClient(cmd *cobra.Command) model.LHPublicApiClient {
 		log.Fatal(err)
 	}
 
-	config, err := common.NewConfigFromProps(configLoc)
+	globalConfig, err = common.NewConfigFromProps(configLoc)
+
+	if err != nil {
+		globalConfig = common.NewConfigFromEnv()
+	}
+
+	return *globalConfig
+}
+
+func getGlobalClient(cmd *cobra.Command) model.LHPublicApiClient {
+	if globalClient != nil {
+		return *globalClient
+	}
+
+	config := getGlobalConfig(cmd)
+
+	var err error
+
+	globalClient, err = config.GetGrpcClient()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	globalClient, err := config.GetGrpcClient()
-	if err != nil {
-		log.Fatal(err)
-	}
 	return *globalClient
 }
