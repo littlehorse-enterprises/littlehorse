@@ -2,8 +2,10 @@
 
 ### Prerequisites
 
-- `openjdk`, preferably version 17 or later.
-- `gradle`, preferably version 7.4 or later.
+- `java`
+    - [sdk-java](sdk-java): Java 11
+    - [server](server): Java 17
+- `gradle`, preferably version 8 or later.
 - `docker` and `docker-compose-plugin`.
 - `go`.
 

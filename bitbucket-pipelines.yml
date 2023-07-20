@@ -1,16 +1,17 @@
-image: gradle:8
+image: ubuntu:22.04
 
 definitions:
+  services:
+      docker:
+        memory: 3072
   steps:
     - step: &build-test
         name: Build and Test
-        caches:
-          - gradle
         script:
-          - gradle test shadowJar
-        artifacts:
-          - server/build/libs/server-*-all.jar
+          - apt-get update && apt-get install -y openjdk-11-jdk-headless openjdk-17-jdk-headless
+          - ./gradlew test shadowJar
     - step: &build-docker-image
+        size: 2x
         deployment: production
         name: Build and Deploy Docker Image
         services:

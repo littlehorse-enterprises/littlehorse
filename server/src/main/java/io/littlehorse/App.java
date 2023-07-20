@@ -33,8 +33,10 @@ public class App {
         LHConfig config;
 
         if (args.length > 0) {
+            log.info("Loading configuration from file '{}'", args[0]);
             config = new LHConfig(args[0]);
         } else {
+            log.info("Loading configuration from env variables");
             config = new LHConfig();
         }
 

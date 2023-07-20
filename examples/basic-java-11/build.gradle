@@ -2,12 +2,12 @@ plugins {
     id 'application'
 }
 
-sourceCompatibility=17
-targetCompatibility=17
+sourceCompatibility=11
+targetCompatibility=11
 
 java {
   toolchain {
-    languageVersion = JavaLanguageVersion.of(17)
+    languageVersion = JavaLanguageVersion.of(11)
   }
 }
 
@@ -23,5 +23,5 @@ dependencies {
 }
 
 application {
-    mainClass = 'io.littlehorse.examples.ExceptionHandlerExample'
+    mainClass = 'io.littlehorse.examples.BasicExample'
 }

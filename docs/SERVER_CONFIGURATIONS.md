@@ -392,10 +392,10 @@ Provides rack awareness to the cluster. [Kafka Official](https://kafka.apache.or
 
 ### `LHS_SHOULD_CREATE_TOPICS`
 
-Defines if the server should create its own topics. It is useful for development environments. Not recommended for production environments.
+Defines if the server should create its own topics. It is useful for development environments. *Disable this for production environments* `LHS_SHOULD_CREATE_TOPICS=false`.
 
 - **Type:** boolean
-- **Default:** false
+- **Default:** true
 - **Importance:** low
 
 ---

@@ -6,3 +6,5 @@
 !settings.gradle
 !docker/docker-entrypoint.sh
 !docker/log4j2.properties
+!gradle/
+!gradlew
