@@ -5,6 +5,7 @@
 # LittleHorse
 
 <a href="https://littlehorse.dev/"><img alt="littlehorse.dev" src="https://img.shields.io/badge/-LittleHorse.dev-7f7aff"></a>
+<a href="https://central.sonatype.com/artifact/io.littlehorse/littlehorse-client"><img alt="littlehorse-client" src="https://img.shields.io/maven-central/v/io.littlehorse/littlehorse-client"></a>
 
 [LittleHorse](https://littlehorse.dev) is a high-performance microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications. The LittleHorse Runtime has uses in fields such as:
 
@@ -40,7 +41,7 @@ The LittleHorse repository contains the following components:
 
 ## Getting Started
 
-To get started *using* LittleHorse, check out the [Java Quickstart](docs/QUICKSTART_JAVA.md) or the [GoLang Quickstart](docs/QUICKSTART_GOLANG.md).
+To get started *using* LittleHorse, check out the [Java Quickstart](docs/QUICKSTART_JAVA.md) or the [GoLang Quickstart](docs/QUICKSTART_GO.md).
 
 To get started *developing* LittleHorse, check out the [Development Guide](docs/DEVELOPING.md).
 
@@ -51,4 +52,4 @@ To get started *developing* LittleHorse, check out the [Development Guide](docs/
 
 <a href="https://spdx.org/licenses/SSPL-1.0.html"><img alt="SSPL LICENSE" src="https://img.shields.io/badge/covered%20by-SSPL%201.0-blue"></a>
 
-All code in this repository is covered by the [Server Side Public License version 1](https://spdx.org/licenses/SSPL-1.0.html). All code is intellectual property of LittleHorse Enterprises LLC.
+All code in this repository is covered by the [Server Side Public License, Version 1](https://spdx.org/licenses/SSPL-1.0.html). All code is intellectual property of LittleHorse Enterprises LLC.
