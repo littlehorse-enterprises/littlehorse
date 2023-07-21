@@ -25,6 +25,11 @@ private static final long serialVersionUID = 0L;
     return new UserTaskEventPb();
   }
 
+  @java.lang.Override
+  public final com.google.protobuf.UnknownFieldSet
+  getUnknownFields() {
+    return this.unknownFields;
+  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEventPb_descriptor;
@@ -64,6 +69,11 @@ private static final long serialVersionUID = 0L;
       return new UTECancelledPb();
     }
 
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEventPb_UTECancelledPb_descriptor;
@@ -175,13 +185,11 @@ private static final long serialVersionUID = 0L;
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-
     public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-
     public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTECancelledPb parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -476,6 +484,11 @@ private static final long serialVersionUID = 0L;
       return new UTETaskExecutedPb();
     }
 
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEventPb_UTETaskExecutedPb_descriptor;
@@ -629,13 +642,11 @@ private static final long serialVersionUID = 0L;
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-
     public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-
     public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTETaskExecutedPb parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -1133,6 +1144,11 @@ private static final long serialVersionUID = 0L;
       return new UTEReassignedPb();
     }
 
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_UserTaskEventPb_UTEReassignedPb_descriptor;
@@ -1493,13 +1509,11 @@ private static final long serialVersionUID = 0L;
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-
     public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-
     public static io.littlehorse.sdk.common.proto.UserTaskEventPb.UTEReassignedPb parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -2139,7 +2153,6 @@ private static final long serialVersionUID = 0L;
   }
 
   private int eventCase_ = 0;
-  @SuppressWarnings("serial")
   private java.lang.Object event_;
   public enum EventCase
       implements com.google.protobuf.Internal.EnumLite,
@@ -2484,13 +2497,11 @@ private static final long serialVersionUID = 0L;
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-
   public static io.littlehorse.sdk.common.proto.UserTaskEventPb parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-
   public static io.littlehorse.sdk.common.proto.UserTaskEventPb parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)

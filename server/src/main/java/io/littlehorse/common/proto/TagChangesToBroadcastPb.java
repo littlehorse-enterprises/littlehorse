@@ -25,6 +25,11 @@ private static final long serialVersionUID = 0L;
     return new TagChangesToBroadcastPb();
   }
 
+  @java.lang.Override
+  public final com.google.protobuf.UnknownFieldSet
+  getUnknownFields() {
+    return this.unknownFields;
+  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_TagChangesToBroadcastPb_descriptor;
@@ -271,13 +276,11 @@ io.littlehorse.common.proto.DiscreteTagLocalCounterPb defaultValue) {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-
   public static io.littlehorse.common.proto.TagChangesToBroadcastPb parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-
   public static io.littlehorse.common.proto.TagChangesToBroadcastPb parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -668,7 +671,7 @@ io.littlehorse.common.proto.DiscreteTagLocalCounterPb defaultValue) {
      * @return This builder for chaining.
      */
     public Builder setPartition(int value) {
-
+      
       partition_ = value;
       bitField0_ |= 0x00000002;
       onChanged();

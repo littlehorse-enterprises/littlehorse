@@ -30,6 +30,11 @@ private static final long serialVersionUID = 0L;
     return new BookmarkPb();
   }
 
+  @java.lang.Override
+  public final com.google.protobuf.UnknownFieldSet
+  getUnknownFields() {
+    return this.unknownFields;
+  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_BookmarkPb_descriptor;
@@ -87,7 +92,7 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public boolean containsInProgressPartitions(
       int key) {
-
+    
     return internalGetInProgressPartitions().getMap().containsKey(key);
   }
   /**
@@ -114,7 +119,7 @@ io.littlehorse.common.proto.PartitionBookmarkPb getInProgressPartitionsOrDefault
       int key,
       /* nullable */
 io.littlehorse.common.proto.PartitionBookmarkPb defaultValue) {
-
+    
     java.util.Map<java.lang.Integer, io.littlehorse.common.proto.PartitionBookmarkPb> map =
         internalGetInProgressPartitions().getMap();
     return map.containsKey(key) ? map.get(key) : defaultValue;
@@ -125,7 +130,7 @@ io.littlehorse.common.proto.PartitionBookmarkPb defaultValue) {
   @java.lang.Override
   public io.littlehorse.common.proto.PartitionBookmarkPb getInProgressPartitionsOrThrow(
       int key) {
-
+    
     java.util.Map<java.lang.Integer, io.littlehorse.common.proto.PartitionBookmarkPb> map =
         internalGetInProgressPartitions().getMap();
     if (!map.containsKey(key)) {
@@ -311,13 +316,11 @@ io.littlehorse.common.proto.PartitionBookmarkPb defaultValue) {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-
   public static io.littlehorse.common.proto.BookmarkPb parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-
   public static io.littlehorse.common.proto.BookmarkPb parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -626,7 +629,7 @@ io.littlehorse.common.proto.PartitionBookmarkPb defaultValue) {
     @java.lang.Override
     public boolean containsInProgressPartitions(
         int key) {
-
+      
       return internalGetInProgressPartitions().getMap().containsKey(key);
     }
     /**
@@ -653,7 +656,7 @@ io.littlehorse.common.proto.PartitionBookmarkPb getInProgressPartitionsOrDefault
         int key,
         /* nullable */
 io.littlehorse.common.proto.PartitionBookmarkPb defaultValue) {
-
+      
       java.util.Map<java.lang.Integer, io.littlehorse.common.proto.PartitionBookmarkPb> map =
           internalGetInProgressPartitions().getMap();
       return map.containsKey(key) ? map.get(key) : defaultValue;
@@ -664,7 +667,7 @@ io.littlehorse.common.proto.PartitionBookmarkPb defaultValue) {
     @java.lang.Override
     public io.littlehorse.common.proto.PartitionBookmarkPb getInProgressPartitionsOrThrow(
         int key) {
-
+      
       java.util.Map<java.lang.Integer, io.littlehorse.common.proto.PartitionBookmarkPb> map =
           internalGetInProgressPartitions().getMap();
       if (!map.containsKey(key)) {
@@ -683,7 +686,7 @@ io.littlehorse.common.proto.PartitionBookmarkPb defaultValue) {
      */
     public Builder removeInProgressPartitions(
         int key) {
-
+      
       internalGetMutableInProgressPartitions().getMutableMap()
           .remove(key);
       return this;
@@ -703,7 +706,7 @@ io.littlehorse.common.proto.PartitionBookmarkPb defaultValue) {
     public Builder putInProgressPartitions(
         int key,
         io.littlehorse.common.proto.PartitionBookmarkPb value) {
-
+      
       if (value == null) { throw new NullPointerException("map value"); }
       internalGetMutableInProgressPartitions().getMutableMap()
           .put(key, value);
@@ -760,7 +763,7 @@ io.littlehorse.common.proto.PartitionBookmarkPb defaultValue) {
      */
     public Builder setCompletedPartitions(
         int index, int value) {
-
+      
       ensureCompletedPartitionsIsMutable();
       completedPartitions_.setInt(index, value);
       onChanged();
@@ -772,7 +775,7 @@ io.littlehorse.common.proto.PartitionBookmarkPb defaultValue) {
      * @return This builder for chaining.
      */
     public Builder addCompletedPartitions(int value) {
-
+      
       ensureCompletedPartitionsIsMutable();
       completedPartitions_.addInt(value);
       onChanged();

@@ -26,6 +26,11 @@ private static final long serialVersionUID = 0L;
     return new SearchUserTaskDefPb();
   }
 
+  @java.lang.Override
+  public final com.google.protobuf.UnknownFieldSet
+  getUnknownFields() {
+    return this.unknownFields;
+  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_SearchUserTaskDefPb_descriptor;
@@ -41,7 +46,6 @@ private static final long serialVersionUID = 0L;
 
   private int bitField0_;
   private int userTaskDefCriteriaCase_ = 0;
-  @SuppressWarnings("serial")
   private java.lang.Object userTaskDefCriteria_;
   public enum UserTaskDefCriteriaCase
       implements com.google.protobuf.Internal.EnumLite,
@@ -391,13 +395,11 @@ private static final long serialVersionUID = 0L;
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-
   public static io.littlehorse.sdk.common.proto.SearchUserTaskDefPb parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-
   public static io.littlehorse.sdk.common.proto.SearchUserTaskDefPb parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -738,7 +740,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setLimit(int value) {
-
+      
       limit_ = value;
       bitField0_ |= 0x00000002;
       onChanged();

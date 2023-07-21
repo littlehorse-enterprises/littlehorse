@@ -10,21 +10,17 @@ package io.littlehorse.common.proto;
  * However, that Host:
  * a) is internal to Kubernetes and
  * b) points to the internal listener, not the public listener.
- *
  * When a Task Worker connects to one LH Server via the bootstrap url (i.e. the
  * K8s service that points to all LH Servers), it needs to discover individual
  * endpoints for each LH Server.
- *
  * Each LH Server has multiple advertised listeners for Task Workers. For example,
  * the general configuration will have one external listener, which can be accessed
  * over Ingress (eg. via Istio Ingressgateway and DNS), and one internal listener,
  * which only works for clients in the same kubernetes cluster.
- *
  * Each listener (eg public/k8s-internal) has a name assigned to it. The Task Worker
  * is configured to use a certain listener name based on which network it's in.
  * The LHPublicApi grpc method 'registerTaskWorkerPb' takes in a Listener Name
  * and returns listeners for all LH Servers.
- *
  * This endpoint is used to help the LHPublicApi get info about each of the LH
  * Servers so that it can formulate the response described above.
  * </pre>
@@ -50,6 +46,11 @@ private static final long serialVersionUID = 0L;
     return new InternalGetAdvertisedHostsPb();
   }
 
+  @java.lang.Override
+  public final com.google.protobuf.UnknownFieldSet
+  getUnknownFields() {
+    return this.unknownFields;
+  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return io.littlehorse.common.proto.InternalServer.internal_static_littlehorse_InternalGetAdvertisedHostsPb_descriptor;
@@ -161,13 +162,11 @@ private static final long serialVersionUID = 0L;
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-
   public static io.littlehorse.common.proto.InternalGetAdvertisedHostsPb parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-
   public static io.littlehorse.common.proto.InternalGetAdvertisedHostsPb parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -216,21 +215,17 @@ private static final long serialVersionUID = 0L;
    * However, that Host:
    * a) is internal to Kubernetes and
    * b) points to the internal listener, not the public listener.
-   *
    * When a Task Worker connects to one LH Server via the bootstrap url (i.e. the
    * K8s service that points to all LH Servers), it needs to discover individual
    * endpoints for each LH Server.
-   *
    * Each LH Server has multiple advertised listeners for Task Workers. For example,
    * the general configuration will have one external listener, which can be accessed
    * over Ingress (eg. via Istio Ingressgateway and DNS), and one internal listener,
    * which only works for clients in the same kubernetes cluster.
-   *
    * Each listener (eg public/k8s-internal) has a name assigned to it. The Task Worker
    * is configured to use a certain listener name based on which network it's in.
    * The LHPublicApi grpc method 'registerTaskWorkerPb' takes in a Listener Name
    * and returns listeners for all LH Servers.
-   *
    * This endpoint is used to help the LHPublicApi get info about each of the LH
    * Servers so that it can formulate the response described above.
    * </pre>

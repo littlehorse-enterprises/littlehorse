@@ -153,5 +153,5 @@ public interface UserTaskNodePbOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getNotesOrBuilder();
 
-  io.littlehorse.sdk.common.proto.UserTaskNodePb.AssignmentCase getAssignmentCase();
+  public io.littlehorse.sdk.common.proto.UserTaskNodePb.AssignmentCase getAssignmentCase();
 }

@@ -126,5 +126,5 @@ public interface SearchUserTaskRunPbOrBuilder extends
    */
   com.google.protobuf.TimestampOrBuilder getLatestStartOrBuilder();
 
-  io.littlehorse.sdk.common.proto.SearchUserTaskRunPb.TaskOwnerCase getTaskOwnerCase();
+  public io.littlehorse.sdk.common.proto.SearchUserTaskRunPb.TaskOwnerCase getTaskOwnerCase();
 }

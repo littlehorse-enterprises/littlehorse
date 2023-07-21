@@ -97,5 +97,5 @@ public interface ThreadHaltReasonPbOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.ManualHaltPbOrBuilder getManualHaltOrBuilder();
 
-  io.littlehorse.sdk.common.proto.ThreadHaltReasonPb.ReasonCase getReasonCase();
+  public io.littlehorse.sdk.common.proto.ThreadHaltReasonPb.ReasonCase getReasonCase();
 }
