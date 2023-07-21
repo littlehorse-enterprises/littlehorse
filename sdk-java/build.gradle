@@ -1,6 +1,11 @@
 plugins {
     id 'java-library'
+
+    // publish
     id 'maven-publish'
+    id 'signing'
+
+    // code analysis
     id 'org.owasp.dependencycheck' version '8.2.1'
     id 'org.sonarqube' version '4.2.1.3168'
 }
@@ -14,27 +19,65 @@ java {
   }
 }
 
-task sourcesJar(type: Jar) {
-    from sourceSets.main.allJava
-    archiveClassifier = 'sources'
+task javadocJar(type: Jar) {
+    archiveClassifier = 'javadoc'
+    from javadoc
 }
 
-task javadocJar(type: Jar) {
-    from javadoc
-    archiveClassifier = 'javadoc'
+task sourcesJar(type: Jar) {
+    archiveClassifier = 'sources'
+    from sourceSets.main.allSource
 }
 
 publishing {
+    repositories {
+        maven {
+            name = "ossrh"
+            url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            credentials {
+                username = findProperty('ossrhUsername')
+                password = findProperty('ossrhPassword')
+            }
+        }
+    }
+
     publications {
-        maven(MavenPublication) {
+        mavenJava(MavenPublication) {
             groupId = group
             artifactId = 'littlehorse-client'
             version = version
             from components.java
             artifact sourcesJar
             artifact javadocJar
+            pom {
+                name = 'LittleHorse Client'
+                description = 'LittleHorse is a high-performance microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications'
+                url = 'https://github.com/littlehorse-enterprises/littlehorse'
+                licenses {
+                    license {
+                        name = 'Server Side Public License, Version 1'
+                        url = 'https://spdx.org/licenses/SSPL-1.0.html'
+                    }
+                }
+                developers {
+                    developer {
+                        name = 'LittleHorse Engineering'
+                        email = 'engineering@littlehorse.io'
+                    }
+                }
+                scm {
+                    url = 'https://github.com/littlehorse-enterprises/littlehorse'
+                    connection = 'scm:git://github.com/littlehorse-enterprises/littlehorse.git'
+                    developerConnection = 'scm:git:ssh://github.com/littlehorse-enterprises/littlehorse.git'
+                }
+                packaging = 'jar'
+            }
         }
     }
+}
+
+signing {
+    sign publishing.publications.mavenJava
 }
 
 repositories {
