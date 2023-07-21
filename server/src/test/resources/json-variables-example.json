@@ -1,0 +1,47 @@
+{
+  "_id": "64b95d35b44ebafdf871b23e",
+  "index": 0,
+  "guid": "42070f6b-38d2-4ccb-965e-ed320f831777",
+  "isActive": false,
+  "balance": 2759.63439943929493949342942,
+  "picture": "http://placehold.it/32x32",
+  "profile": {
+    "age": 30,
+    "eyeColor": "brown",
+    "name": "Forbes Booth",
+    "gender": "male",
+    "company": "QUAREX",
+    "email": "forbesbooth@quarex.com",
+    "phone": "+1 (945) 502-2267",
+    "address": "725 Jerome Street, Charco, District Of Columbia, 1519"
+  },
+  "about": "Consequat exercitation officia ut mollit in aute amet. Consequat laborum elit id incididunt quis aliquip pariatur magna eu velit ad dolore. Consectetur excepteur ut sit magna magna sunt qui dolore est officia aliquip. Quis deserunt aliqua consequat id et excepteur nulla qui. Id exercitation occaecat duis nostrud quis cupidatat et nisi mollit non. Consectetur quis mollit magna Lorem anim qui pariatur. Incididunt fugiat enim duis consequat mollit nisi elit pariatur et excepteur id voluptate dolor.\r\n",
+  "registered": "2018-09-02T10:37:59 +05:00",
+  "latitude": -76.237755,
+  "longitude": -161.488966,
+  "tags": [
+    "ex",
+    "fugiat",
+    "id",
+    "labore",
+    "dolor",
+    "consectetur",
+    "veniam"
+  ],
+  "friends": [
+    {
+      "id": 0,
+      "name": "Keller Jordan"
+    },
+    {
+      "id": 1,
+      "name": "Bryan Flynn"
+    },
+    {
+      "id": 2,
+      "name": "Roberson Patton"
+    }
+  ],
+  "greeting": "Hello, Forbes Booth! You have 7 unread messages.",
+  "favoriteFruit": "banana"
+}
