@@ -63,5 +63,5 @@ public interface SearchUserTaskDefPbOrBuilder extends
   com.google.protobuf.ByteString
       getNameBytes();
 
-  public io.littlehorse.sdk.common.proto.SearchUserTaskDefPb.UserTaskDefCriteriaCase getUserTaskDefCriteriaCase();
+  io.littlehorse.sdk.common.proto.SearchUserTaskDefPb.UserTaskDefCriteriaCase getUserTaskDefCriteriaCase();
 }

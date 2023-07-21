@@ -214,5 +214,5 @@ public interface NodePbOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.UserTaskNodePbOrBuilder getUserTaskOrBuilder();
 
-  public io.littlehorse.sdk.common.proto.NodePb.NodeCase getNodeCase();
+  io.littlehorse.sdk.common.proto.NodePb.NodeCase getNodeCase();
 }

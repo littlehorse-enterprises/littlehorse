@@ -152,9 +152,13 @@ public class Variable extends Getable<VariablePb> {
         VariableValue variableValue = getValue();
         Map<String, VariableDef> stringVariableDefMap = variableDefMap();
         VariableDef variableDef = stringVariableDefMap.get(this.getName());
-        TagStorageTypePb tagStorageTypePb = variableDef.getTagStorageTypePb() != null
-            ? variableDef.getTagStorageTypePb()
-            : TagStorageTypePb.LOCAL;
+        TagStorageTypePb tagStorageTypePb = variableDef.getTagStorageTypePb();
+        if (
+            tagStorageTypePb == null &&
+            variableDef.getType() != VariableTypePb.JSON_OBJ
+        ) {
+            return List.of();
+        }
         switch (variableValue.getType()) {
             case STR -> {
                 return List.of(

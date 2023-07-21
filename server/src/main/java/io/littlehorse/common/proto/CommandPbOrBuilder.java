@@ -381,5 +381,5 @@ public interface CommandPbOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.DeleteUserTaskDefPbOrBuilder getDeleteUserTaskDefOrBuilder();
 
-  public io.littlehorse.common.proto.CommandPb.CommandCase getCommandCase();
+  io.littlehorse.common.proto.CommandPb.CommandCase getCommandCase();
 }

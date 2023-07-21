@@ -61,5 +61,5 @@ public interface SearchVariablePbOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.SearchVariablePb.NameAndValuePbOrBuilder getValueOrBuilder();
 
-  public io.littlehorse.sdk.common.proto.SearchVariablePb.VariableCriteriaCase getVariableCriteriaCase();
+  io.littlehorse.sdk.common.proto.SearchVariablePb.VariableCriteriaCase getVariableCriteriaCase();
 }

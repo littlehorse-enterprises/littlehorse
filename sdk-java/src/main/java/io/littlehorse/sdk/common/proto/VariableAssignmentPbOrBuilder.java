@@ -71,5 +71,5 @@ public interface VariableAssignmentPbOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.VariableAssignmentPb.FormatStringPbOrBuilder getFormatStringOrBuilder();
 
-  public io.littlehorse.sdk.common.proto.VariableAssignmentPb.SourceCase getSourceCase();
+  io.littlehorse.sdk.common.proto.VariableAssignmentPb.SourceCase getSourceCase();
 }

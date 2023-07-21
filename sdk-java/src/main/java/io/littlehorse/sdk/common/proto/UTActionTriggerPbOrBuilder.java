@@ -94,7 +94,7 @@ public interface UTActionTriggerPbOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.VariableAssignmentPbOrBuilder getDelaySecondsOrBuilder();
 
-  public io.littlehorse.sdk.common.proto.UTActionTriggerPb.ActionCase getActionCase();
+  io.littlehorse.sdk.common.proto.UTActionTriggerPb.ActionCase getActionCase();
 
-  public io.littlehorse.sdk.common.proto.UTActionTriggerPb.ScheduleTimeCase getScheduleTimeCase();
+  io.littlehorse.sdk.common.proto.UTActionTriggerPb.ScheduleTimeCase getScheduleTimeCase();
 }

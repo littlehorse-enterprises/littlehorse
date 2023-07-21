@@ -231,6 +231,7 @@ public class GetableStorageManagerTest {
                 VariableDef variableDef1 = new VariableDef();
                 variableDef1.setName("variableName");
                 variableDef1.setType(VariableTypePb.STR);
+                variableDef1.setTagStorageTypePb(TagStorageTypePb.LOCAL);
                 VariableDef variableDef2 = new VariableDef();
                 variableDef2.setName("variableName2");
                 variableDef2.setType(VariableTypePb.STR);
