@@ -12,7 +12,7 @@ import org.junitpioneer.jupiter.DisabledUntil;
 public class WorkflowCompilationTest {
 
     @Test
-    @DisabledUntil(date = "2023-07-22")
+    //@DisabledUntil(date = "2023-07-22")
     public void shouldThrowMisconfigurationExceptionWhenMultiplesThreadsWithSameName() {
         WorkflowImpl wf = new WorkflowImpl(
             "asdf",
@@ -49,6 +49,7 @@ public class WorkflowCompilationTest {
         Assertions.assertThat(throwable).isNotNull();
         Assertions
             .assertThat(throwable)
-            .isInstanceOf(LHMisconfigurationException.class);
+            .isInstanceOf(LHMisconfigurationException.class)
+            .hasMessage("Thread my-thread already exists");
     }
 }
