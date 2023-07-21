@@ -3,9 +3,11 @@ package io.littlehorse.io.littlehorse.server.streamsimpl.storeinternals;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConfig;
+import io.littlehorse.common.model.meta.JsonIndex;
 import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.model.wfrun.VariableValue;
+import io.littlehorse.sdk.common.proto.IndexTypePb;
 import io.littlehorse.sdk.common.proto.VariableTypePb;
 import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableStorageManager;
@@ -45,8 +47,6 @@ public class JsonVariableStorageManagerTest {
 
     final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
     private GetableStorageManager geTableStorageManager;
-    private String wfRunId = "1234567890";
-
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
@@ -62,6 +62,13 @@ public class JsonVariableStorageManagerTest {
             "testVariable",
             VariableTypePb.JSON_OBJ
         );
+        List<JsonIndex> indices = List.of(
+            new JsonIndex("$.about", IndexTypePb.LOCAL_INDEX),
+            new JsonIndex("$.profile.email", IndexTypePb.LOCAL_INDEX),
+            new JsonIndex("$.tags", IndexTypePb.LOCAL_INDEX),
+            new JsonIndex("$.balance", IndexTypePb.LOCAL_INDEX)
+        );
+        variableDef.setJsonIndices(indices);
         variable
             .getWfSpec()
             .getThreadSpecs()
@@ -102,7 +109,7 @@ public class JsonVariableStorageManagerTest {
     @Test
     void storeLongAttributeValueText() {
         String expectedStoreKey =
-            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__about_" +
+            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.about_" +
             "Consequat exercitation officia ut mollit in aute amet. Consequat laborum elit id " +
             "incididunt quis aliquip pariatur magna eu velit ad dolore. Consectetur excepteur " +
             "ut sit magna magna sunt qui dolore est officia aliquip. Quis deserunt aliqua consequat " +
@@ -115,28 +122,30 @@ public class JsonVariableStorageManagerTest {
     @Test
     void storeEmailAttributeValue() {
         String expectedStoreKey =
-            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__profile.email_forbesbooth@quarex.com";
+            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.profile.email_forbesbooth@quarex.com";
         Assertions.assertThat(storedTagPrefixStoreKeys()).contains(expectedStoreKey);
     }
 
     @Test
     void storeInnerArrayObject() {
         String expectedStoreKey =
-            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__tags_[ex, fugiat, id, labore, dolor, consectetur, veniam]";
+            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.tags_[ex, fugiat, id, labore, dolor, consectetur, veniam]";
         Assertions.assertThat(storedTagPrefixStoreKeys()).contains(expectedStoreKey);
     }
 
     @Test
     void storeDoubleAttributeValue() {
         String expectedStoreKey =
-            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__balance_2759.634399439295";
+            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.balance_2759.634399439295";
         Assertions.assertThat(storedTagPrefixStoreKeys()).contains(expectedStoreKey);
     }
 
     @Test
-    void tagsSize() {
+    void preventStorageForNonIndexedAttributes() {
         String expectedStoreKey =
-            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__balance_2759.634399439295";
-        Assertions.assertThat(storedTagPrefixStoreKeys()).contains(expectedStoreKey);
+            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.registered_2018-09-02T10:37:59 +05:00";
+        Assertions
+            .assertThat(storedTagPrefixStoreKeys())
+            .doesNotContain(expectedStoreKey);
     }
 }

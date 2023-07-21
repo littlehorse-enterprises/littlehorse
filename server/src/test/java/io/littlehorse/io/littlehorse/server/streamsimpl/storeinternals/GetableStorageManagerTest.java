@@ -475,19 +475,26 @@ public class GetableStorageManagerTest {
                 VariableDef variableDef1 = new VariableDef();
                 variableDef1.setName("variableName");
                 variableDef1.setType(VariableTypePb.JSON_OBJ);
+                List<JsonIndex> indices = List.of(
+                    new JsonIndex("$.name", IndexTypePb.LOCAL_INDEX),
+                    new JsonIndex("$.age", IndexTypePb.LOCAL_INDEX),
+                    new JsonIndex("$.car.brand", IndexTypePb.LOCAL_INDEX),
+                    new JsonIndex("$.car.model", IndexTypePb.LOCAL_INDEX)
+                );
+                variableDef1.setJsonIndices(indices);
                 VariableDef variableDef2 = new VariableDef();
                 variableDef2.setName("variableName2");
                 variableDef2.setType(VariableTypePb.STR);
                 threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
             });
         String expectedStoreKey1 =
-            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__name_test";
+            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.name_test";
         String expectedStoreKey2 =
-            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__age_20";
+            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.age_20";
         String expectedStoreKey3 =
-            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__car.brand_Ford";
+            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.car.brand_Ford";
         String expectedStoreKey4 =
-            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__car.model_Escape";
+            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.car.model_Escape";
         geTableStorageManager.store(variable);
         List<String> storedTags = localStoreWrapper
             .prefixTagScanStream("VARIABLE/", Tag.class)
@@ -529,24 +536,26 @@ public class GetableStorageManagerTest {
                 VariableDef variableDef1 = new VariableDef();
                 variableDef1.setName("variableName");
                 variableDef1.setType(VariableTypePb.JSON_OBJ);
-                JsonIndex jsonIndex = new JsonIndex(
-                    "car.model",
-                    IndexTypePb.REMOTE_INDEX
+                List<JsonIndex> indices = List.of(
+                    new JsonIndex("$.name", IndexTypePb.LOCAL_INDEX),
+                    new JsonIndex("$.age", IndexTypePb.LOCAL_INDEX),
+                    new JsonIndex("$.car.brand", IndexTypePb.LOCAL_INDEX),
+                    new JsonIndex("$.car.model", IndexTypePb.REMOTE_INDEX)
                 );
-                variableDef1.setJsonIndices(List.of(jsonIndex));
+                variableDef1.setJsonIndices(indices);
                 VariableDef variableDef2 = new VariableDef();
                 variableDef2.setName("variableName2");
                 variableDef2.setType(VariableTypePb.STR);
                 threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
             });
         String expectedStoreKey1 =
-            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__name_test";
+            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.name_test";
         String expectedStoreKey2 =
-            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__age_20";
+            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.age_20";
         String expectedStoreKey3 =
-            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__car.brand_Ford";
+            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.car.brand_Ford";
         String expectedStoreKey4 =
-            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__car.model_Escape";
+            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.car.model_Escape";
         geTableStorageManager.store(variable);
         List<String> remoteTagsCreated = remoteTagsCreated()
             .stream()
