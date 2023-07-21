@@ -30,32 +30,24 @@ public class VariablesExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl(
-            "example-variables",
+            "example-variables3",
             thread -> {
-                WfRunVariable inputText = thread.addVariable(
-                    "input-text",
-                    VariableTypePb.STR,
-                    IndexTypePb.REMOTE_INDEX
-                );
-                WfRunVariable addLength = thread.addVariable(
-                    "add-length",
-                    VariableTypePb.BOOL,
-                    IndexTypePb.LOCAL_INDEX
-                );
-                WfRunVariable userId = thread.addVariable(
-                    "user-id",
-                    VariableTypePb.INT,
-                    IndexTypePb.LOCAL_INDEX
-                );
-                WfRunVariable sentimentScore = thread.addVariable(
-                    "sentiment-score",
-                    VariableTypePb.DOUBLE,
-                    IndexTypePb.REMOTE_INDEX
-                );
-                WfRunVariable processedResult = thread.addVariable(
-                    "processed-result",
-                    VariableTypePb.JSON_OBJ
-                );
+                WfRunVariable inputText = thread
+                    .addVariable("input-text", VariableTypePb.STR)
+                    .withIndex(IndexTypePb.REMOTE_INDEX);
+                WfRunVariable addLength = thread
+                    .addVariable("add-length", VariableTypePb.BOOL)
+                    .withIndex(IndexTypePb.LOCAL_INDEX);
+                WfRunVariable userId = thread
+                    .addVariable("user-id", VariableTypePb.INT)
+                    .withIndex(IndexTypePb.LOCAL_INDEX);
+                WfRunVariable sentimentScore = thread
+                    .addVariable("sentiment-score", VariableTypePb.DOUBLE)
+                    .withIndex(IndexTypePb.REMOTE_INDEX);
+                WfRunVariable processedResult = thread
+                    .addVariable("processed-result", VariableTypePb.JSON_OBJ)
+                    .withJsonIndex("$.text", IndexTypePb.LOCAL_INDEX)
+                    .withJsonIndex("$.userId", IndexTypePb.REMOTE_INDEX);
                 NodeOutput sentimentAnalysisOutput = thread.execute(
                     "sentiment-analysis",
                     inputText
