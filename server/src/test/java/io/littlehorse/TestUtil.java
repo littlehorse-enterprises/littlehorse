@@ -45,9 +45,9 @@ public class TestUtil {
         return wfRun;
     }
 
-    public static Variable variable(String id) {
+    public static Variable variable(String wfRunId) {
         Variable variable = new Variable();
-        variable.setWfRunId(id);
+        variable.setWfRunId(wfRunId);
         variable.setThreadRunNumber(0);
         variable.setName("test");
         variable.setValue(variableValue());
