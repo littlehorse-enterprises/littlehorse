@@ -72,14 +72,14 @@ public class WfRun extends Getable<WfRunPb> {
         return List.of(
             new GetableIndex<>(
                 List.of(Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE)),
-                Optional.of(TagStorageTypePb.REMOTE)
+                Optional.of(TagStorageTypePb.LOCAL)
             ),
             new GetableIndex<>(
                 List.of(
                     Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
                     Pair.of("status", GetableIndex.ValueType.SINGLE)
                 ),
-                Optional.of(TagStorageTypePb.REMOTE)
+                Optional.of(TagStorageTypePb.LOCAL)
             ),
             new GetableIndex<>(
                 List.of(
