@@ -13,12 +13,6 @@ plugins {
 sourceCompatibility=11
 targetCompatibility=11
 
-java {
-  toolchain {
-    languageVersion = JavaLanguageVersion.of(11)
-  }
-}
-
 task javadocJar(type: Jar) {
     archiveClassifier = 'javadoc'
     from javadoc

@@ -1,8 +1,7 @@
-FROM ubuntu:22.04 as builder
+FROM gradle:8 as builder
 WORKDIR /lh
-RUN apt-get update && apt-get install -y openjdk-11-jdk-headless openjdk-17-jdk-headless
 COPY . /lh
-RUN ./gradlew server:shadowJar -x test
+RUN gradle server:shadowJar -x test
 
 FROM amazoncorretto:17
 WORKDIR /lh
