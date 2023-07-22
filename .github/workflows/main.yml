@@ -23,4 +23,4 @@ jobs:
           distribution: "corretto"
           java-version: "17"
       - name: Tests
-        run: ./gradlew test
+        run: ./gradlew test shadowJar
