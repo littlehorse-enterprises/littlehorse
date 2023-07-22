@@ -43,5 +43,5 @@ jobs:
         with:
           distribution: "corretto"
           java-version: "11"
-      - name: Publish
-        # run: ./gradlew sdk-java:publish -Psigning.secretKeyRingFile=/home/runner/.gnupg/pubring.kbx -Psigning.password=${{ secrets.GPG_PASSPHRASE }} -Psigning.keyId=${{ vars.GPG_KEY_ID }} -PossrhUsername=${{ secrets.OSSRH_USERNAME }} -PossrhPassword=${{ secrets.OSSRH_PASSWORD }}
+      # - name: Publish
+        # run: ./gradlew sdk-java:publish -Psigning.secretKeyRingFile=/home/runner/.gnupg/secring.kbx -Psigning.password=${{ secrets.GPG_PASSPHRASE }} -Psigning.keyId=${{ vars.GPG_KEY_ID }} -PossrhUsername=${{ secrets.OSSRH_USERNAME }} -PossrhPassword=${{ secrets.OSSRH_PASSWORD }}
