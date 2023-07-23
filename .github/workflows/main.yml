@@ -3,7 +3,7 @@ run-name: Tests
 on:
   push:
     branches:
-      - "*"
+      - "**"
 
 jobs:
   tests-sdk-java:
