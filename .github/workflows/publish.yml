@@ -2,8 +2,6 @@ name: publish
 run-name: Publish to Maven Central
 on:
   push:
-    branches: # temporary
-        - "**"
     tags:
       - "[0-9]+.[0-9]+.[0-9]+*" # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#filter-pattern-cheat-sheet
 
