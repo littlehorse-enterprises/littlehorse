@@ -27,7 +27,7 @@ lhctl
 Start your LH Server with:
 
 ```
-cd docker
+cd examples/docker-compose
 docker compose up -d
 ```
 

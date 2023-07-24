@@ -1,5 +1,6 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
+import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.proto.PutTaskDefPb;
 import io.littlehorse.sdk.common.proto.PutWfSpecPb;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
@@ -119,6 +120,11 @@ public class WorkflowImpl extends Workflow {
     // TODO: See if we can determine the name of the function using reflection
     // so we don't need to pass in the name.
     public String addSubThread(String subThreadName, ThreadFunc subThreadFunc) {
+        if (threadFuncs.containsKey(subThreadName)) {
+            throw new LHMisconfigurationException(
+                String.format("Thread %s already exists", subThreadName)
+            );
+        }
         threadFuncs.put(subThreadName, subThreadFunc);
         return subThreadName;
     }

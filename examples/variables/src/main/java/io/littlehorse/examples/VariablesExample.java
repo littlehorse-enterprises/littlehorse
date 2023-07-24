@@ -34,23 +34,19 @@ public class VariablesExample {
             thread -> {
                 WfRunVariable inputText = thread.addVariable(
                     "input-text",
-                    VariableTypePb.STR,
-                    IndexTypePb.REMOTE_INDEX
+                    VariableTypePb.STR
                 );
                 WfRunVariable addLength = thread.addVariable(
                     "add-length",
-                    VariableTypePb.BOOL,
-                    IndexTypePb.LOCAL_INDEX
+                    VariableTypePb.BOOL
                 );
                 WfRunVariable userId = thread.addVariable(
                     "user-id",
-                    VariableTypePb.INT,
-                    IndexTypePb.LOCAL_INDEX
+                    VariableTypePb.INT
                 );
                 WfRunVariable sentimentScore = thread.addVariable(
                     "sentiment-score",
-                    VariableTypePb.DOUBLE,
-                    IndexTypePb.REMOTE_INDEX
+                    VariableTypePb.DOUBLE
                 );
                 WfRunVariable processedResult = thread.addVariable(
                     "processed-result",

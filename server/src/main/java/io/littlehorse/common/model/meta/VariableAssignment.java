@@ -98,6 +98,8 @@ public class VariableAssignment extends LHSerializable<VariableAssignmentPb> {
             baseType = varDef.type;
         } else if (rhsSourceType == SourceCase.LITERAL_VALUE) {
             baseType = rhsLiteralValue.type;
+        } else if (rhsSourceType == SourceCase.FORMAT_STRING) {
+            baseType = VariableTypePb.STR;
         } else {
             throw new RuntimeException("impossible");
         }

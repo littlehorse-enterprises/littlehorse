@@ -14,6 +14,7 @@ import io.littlehorse.sdk.common.proto.FailureDefPb;
 import io.littlehorse.sdk.common.proto.FailureHandlerDefPb;
 import io.littlehorse.sdk.common.proto.IndexTypePb;
 import io.littlehorse.sdk.common.proto.InterruptDefPb;
+import io.littlehorse.sdk.common.proto.JsonIndexPb;
 import io.littlehorse.sdk.common.proto.NodePb;
 import io.littlehorse.sdk.common.proto.NodePb.NodeCase;
 import io.littlehorse.sdk.common.proto.NopNodePb;
@@ -42,6 +43,7 @@ import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.UserTaskOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.WorkflowCondition;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +58,7 @@ public class ThreadBuilderImpl implements ThreadBuilder {
 
     private WorkflowImpl parent;
     private ThreadSpecPb.Builder spec;
+    private List<WfRunVariableImpl> wfRunVariables = new ArrayList<>();
     public String lastNodeName;
     public String name;
     private EdgeConditionPb lastNodeCondition;
@@ -85,7 +88,27 @@ public class ThreadBuilderImpl implements ThreadBuilder {
     }
 
     public ThreadSpecPb.Builder getSpec() {
+        List<VariableDefPb> variableDefPbs = new ArrayList<>();
+        for (WfRunVariableImpl wfRunVariable : wfRunVariables) {
+            VariableDefPb variableDefPb = variableDefPb(wfRunVariable);
+            variableDefPbs.add(variableDefPb);
+        }
+        spec.clearVariableDefs();
+        spec.addAllVariableDefs(variableDefPbs);
         return spec;
+    }
+
+    private VariableDefPb variableDefPb(WfRunVariableImpl wfRunVariable) {
+        VariableDefPb.Builder varDefBuilder = VariableDefPb.newBuilder();
+        varDefBuilder.setType(wfRunVariable.getType());
+        varDefBuilder.setName(wfRunVariable.getName());
+        if (wfRunVariable.getIndexTypePb() != null) {
+            varDefBuilder.setIndexType(wfRunVariable.getIndexTypePb());
+        }
+        for (JsonIndexPb jsonIndexPb : wfRunVariable.getJsonIndexPbs()) {
+            varDefBuilder.addJsonIndexes(jsonIndexPb);
+        }
+        return varDefBuilder.build();
     }
 
     public UserTaskOutputImpl assignUserTaskToUser(
@@ -271,33 +294,13 @@ public class ThreadBuilderImpl implements ThreadBuilder {
     }
 
     public WfRunVariableImpl addVariable(String name, Object typeOrDefaultVal) {
-        return addVariable(name, typeOrDefaultVal, null);
-    }
-
-    public WfRunVariableImpl addVariable(
-        String name,
-        Object typeOrDefaultVal,
-        IndexTypePb indexTypePb
-    ) {
         checkIfIsActive();
-        VariableDefPb.Builder varDefBuilder = VariableDefPb.newBuilder();
-        if (indexTypePb != null) {
-            varDefBuilder.setIndexType(indexTypePb);
-        }
-        if (typeOrDefaultVal instanceof VariableTypePb) {
-            varDefBuilder.setType((VariableTypePb) typeOrDefaultVal);
-        } else {
-            try {
-                VariableValuePb defaultVal = LHLibUtil.objToVarVal(typeOrDefaultVal);
-                varDefBuilder.setType(defaultVal.getType());
-            } catch (LHSerdeError exn) {
-                throw new RuntimeException(exn);
-            }
-        }
-
-        varDefBuilder.setName(name);
-        spec.addVariableDefs(varDefBuilder);
-        return new WfRunVariableImpl(name, varDefBuilder.getType(), this);
+        WfRunVariableImpl wfRunVariable = new WfRunVariableImpl(
+            name,
+            typeOrDefaultVal
+        );
+        wfRunVariables.add(wfRunVariable);
+        return wfRunVariable;
     }
 
     public void doIf(WorkflowCondition condition, IfElseBody ifBody) {

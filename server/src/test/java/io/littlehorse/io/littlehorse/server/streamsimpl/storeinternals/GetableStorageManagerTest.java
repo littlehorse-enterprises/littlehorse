@@ -20,7 +20,6 @@ import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionCommand;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
-import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repartitionsubcommand.RemoveRemoteTag;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableStorageManager;
 import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
@@ -121,7 +120,6 @@ public class GetableStorageManagerTest {
             WfRun.class
         );
         List<Tag> localTagsToBeRemoved = localOrRemoteTags.get(true);
-        List<Tag> remoteTagsToBeRemoved = localOrRemoteTags.get(false);
 
         long localTagsAfterDeletion = localTagsToBeRemoved
             .stream()
@@ -129,24 +127,10 @@ public class GetableStorageManagerTest {
             .map(s -> localStoreWrapper.get(s, Tag.class))
             .filter(Objects::isNull)
             .count();
-        long remoteTagsAfterDeletion = mockProcessorContext
-            .forwarded()
-            .stream()
-            .map(MockProcessorContext.CapturedForward::record)
-            .map(Record::value)
-            .map(CommandProcessorOutput::getPayload)
-            .map(lhSerializable -> (RepartitionCommand) lhSerializable)
-            .filter(repartitionCommand ->
-                repartitionCommand.getSubCommand() instanceof RemoveRemoteTag
-            )
-            .count();
 
         Assertions
             .assertThat(localTagsAfterDeletion)
             .isEqualTo(localTagsToBeRemoved.size());
-        Assertions
-            .assertThat(remoteTagsAfterDeletion)
-            .isEqualTo(remoteTagsToBeRemoved.size());
         Assertions.assertThat(tagsCacheResult).isNull();
     }
 

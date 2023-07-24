@@ -89,24 +89,6 @@ public interface ThreadBuilder {
     public WfRunVariable addVariable(String name, Object typeOrDefaultVal);
 
     /**
-     * Defines a Variable in the `ThreadSpec` and returns a handle to it.
-     * @param name the name of the variable.
-     * @param typeOrDefaultVal is either the type of the variable, from
-     * the `VariableTypePb` enum, or an object representing the default
-     * value of the Variable. If an object (or primitive) is provided, the
-     * Task Worker Library casts the provided value to a VariableValue and
-     * sets that as the default.
-     * @param indexTypePb This argument indicates the storage method for the variable.
-     * Set it to REMOTE for variables with low cardinality.
-     * @return a handle to the created WfRunVariable.
-     */
-    public WfRunVariable addVariable(
-        String name,
-        Object typeOrDefaultVal,
-        IndexTypePb indexTypePb
-    );
-
-    /**
      * Conditionally executes some workflow code; equivalent to an if() statement
      * in programming.
      * @param condition is the WorkflowCondition to be satisfied.
