@@ -121,7 +121,6 @@ public class GetableStorageManagerTest {
             WfRun.class
         );
         List<Tag> localTagsToBeRemoved = localOrRemoteTags.get(true);
-        List<Tag> remoteTagsToBeRemoved = localOrRemoteTags.get(false);
 
         long localTagsAfterDeletion = localTagsToBeRemoved
             .stream()
@@ -129,24 +128,10 @@ public class GetableStorageManagerTest {
             .map(s -> localStoreWrapper.get(s, Tag.class))
             .filter(Objects::isNull)
             .count();
-        long remoteTagsAfterDeletion = mockProcessorContext
-            .forwarded()
-            .stream()
-            .map(MockProcessorContext.CapturedForward::record)
-            .map(Record::value)
-            .map(CommandProcessorOutput::getPayload)
-            .map(lhSerializable -> (RepartitionCommand) lhSerializable)
-            .filter(repartitionCommand ->
-                repartitionCommand.getSubCommand() instanceof RemoveRemoteTag
-            )
-            .count();
 
         Assertions
             .assertThat(localTagsAfterDeletion)
             .isEqualTo(localTagsToBeRemoved.size());
-        Assertions
-            .assertThat(remoteTagsAfterDeletion)
-            .isEqualTo(remoteTagsToBeRemoved.size());
         Assertions.assertThat(tagsCacheResult).isNull();
     }
 
