@@ -7,7 +7,6 @@ include(
 
 [
     'basic',
-    'basic-java-11',
     'variables',
     'child-thread',
     'conditionals',
