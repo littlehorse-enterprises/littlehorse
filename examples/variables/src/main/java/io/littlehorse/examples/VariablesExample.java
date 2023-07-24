@@ -1,9 +1,11 @@
 package io.littlehorse.examples;
 
+import static io.littlehorse.sdk.common.proto.IndexTypePb.LOCAL_INDEX;
+import static io.littlehorse.sdk.common.proto.IndexTypePb.REMOTE_INDEX;
+
 import io.littlehorse.sdk.client.LHClient;
 import io.littlehorse.sdk.common.config.LHWorkerConfig;
 import io.littlehorse.sdk.common.exception.LHApiError;
-import io.littlehorse.sdk.common.proto.IndexTypePb;
 import io.littlehorse.sdk.common.proto.VariableMutationTypePb;
 import io.littlehorse.sdk.common.proto.VariableTypePb;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
@@ -30,24 +32,24 @@ public class VariablesExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl(
-            "example-variables3",
+            "example-variables",
             thread -> {
                 WfRunVariable inputText = thread
                     .addVariable("input-text", VariableTypePb.STR)
-                    .withIndex(IndexTypePb.REMOTE_INDEX);
-                WfRunVariable addLength = thread
-                    .addVariable("add-length", VariableTypePb.BOOL)
-                    .withIndex(IndexTypePb.LOCAL_INDEX);
+                    .withIndex(LOCAL_INDEX);
+                WfRunVariable addLength = thread.addVariable(
+                    "add-length",
+                    VariableTypePb.BOOL
+                );
                 WfRunVariable userId = thread
                     .addVariable("user-id", VariableTypePb.INT)
-                    .withIndex(IndexTypePb.LOCAL_INDEX);
+                    .withIndex(REMOTE_INDEX);
                 WfRunVariable sentimentScore = thread
                     .addVariable("sentiment-score", VariableTypePb.DOUBLE)
-                    .withIndex(IndexTypePb.REMOTE_INDEX);
+                    .withIndex(LOCAL_INDEX);
                 WfRunVariable processedResult = thread
                     .addVariable("processed-result", VariableTypePb.JSON_OBJ)
-                    .withJsonIndex("$.text", IndexTypePb.LOCAL_INDEX)
-                    .withJsonIndex("$.userId", IndexTypePb.REMOTE_INDEX);
+                    .withJsonIndex("$.sentimentScore", REMOTE_INDEX);
                 NodeOutput sentimentAnalysisOutput = thread.execute(
                     "sentiment-analysis",
                     inputText

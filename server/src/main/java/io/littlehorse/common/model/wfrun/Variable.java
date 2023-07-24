@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
@@ -152,9 +153,13 @@ public class Variable extends Getable<VariablePb> {
         VariableValue variableValue = getValue();
         Map<String, VariableDef> stringVariableDefMap = variableDefMap();
         VariableDef variableDef = stringVariableDefMap.get(this.getName());
-        TagStorageTypePb tagStorageTypePb = variableDef.getTagStorageTypePb() != null
-            ? variableDef.getTagStorageTypePb()
-            : TagStorageTypePb.LOCAL;
+        TagStorageTypePb tagStorageTypePb = variableDef.getTagStorageTypePb();
+        if (
+            tagStorageTypePb == null &&
+            variableDef.getType() != VariableTypePb.JSON_OBJ
+        ) {
+            return List.of();
+        }
         switch (variableValue.getType()) {
             case STR -> {
                 return List.of(
@@ -194,7 +199,7 @@ public class Variable extends Getable<VariablePb> {
             }
             case JSON_OBJ -> {
                 Map<String, Object> flattenedMap = new HashMap<>();
-                flatten("", variableValue.getJsonObjVal(), flattenedMap);
+                flatten("$.", variableValue.getJsonObjVal(), flattenedMap);
                 return flattenedMap
                     .entrySet()
                     .stream()
@@ -203,13 +208,17 @@ public class Variable extends Getable<VariablePb> {
                             variableDef,
                             keyValueJson.getKey()
                         )
-                            .orElse(TagStorageTypePb.LOCAL);
+                            .orElse(null);
+                        if (storageTypePb == null) {
+                            return null;
+                        }
                         return new IndexedField(
                             keyValueJson.getKey(),
                             keyValueJson.getValue(),
                             storageTypePb
                         );
                     })
+                    .filter(Objects::nonNull)
                     .toList();
             }
             default -> {
