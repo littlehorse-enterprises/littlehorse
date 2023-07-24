@@ -39,10 +39,12 @@ public class VariableDef extends LHSerializable<VariableDefPb> {
                     new JsonIndex(jsonIndexPb.getPath(), jsonIndexPb.getIndexType())
                 )
                 .toList();
-        if (p.getIndexType() == IndexTypePb.REMOTE_INDEX) {
-            tagStorageTypePb = TagStorageTypePb.REMOTE;
-        } else {
-            tagStorageTypePb = TagStorageTypePb.LOCAL;
+        if (p.hasIndexType()) {
+            if (p.getIndexType() == IndexTypePb.REMOTE_INDEX) {
+                tagStorageTypePb = TagStorageTypePb.REMOTE;
+            } else {
+                tagStorageTypePb = TagStorageTypePb.LOCAL;
+            }
         }
     }
 

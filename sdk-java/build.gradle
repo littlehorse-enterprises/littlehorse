@@ -13,12 +13,6 @@ plugins {
 sourceCompatibility=11
 targetCompatibility=11
 
-java {
-  toolchain {
-    languageVersion = JavaLanguageVersion.of(11)
-  }
-}
-
 task javadocJar(type: Jar) {
     archiveClassifier = 'javadoc'
     from javadoc
@@ -77,6 +71,7 @@ publishing {
 }
 
 signing {
+    required { gradle.taskGraph.hasTask("publish") }
     sign publishing.publications.mavenJava
 }
 
@@ -85,7 +80,7 @@ repositories {
     mavenCentral()
 }
 
-def grpcVersion='1.56.0'
+def grpcVersion='1.56.1'
 def lombokVersion='1.18.28'
 
 dependencies {
