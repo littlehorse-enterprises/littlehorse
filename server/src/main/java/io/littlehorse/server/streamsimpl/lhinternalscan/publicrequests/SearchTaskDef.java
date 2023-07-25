@@ -2,12 +2,14 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.objectId.TaskDefId;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.ScanResultTypePb;
+import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.SearchTaskDefPb;
 import io.littlehorse.sdk.common.proto.SearchTaskDefReplyPb;
@@ -15,6 +17,7 @@ import io.littlehorse.sdk.common.proto.TaskDefIdPb;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
+import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundary;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchTaskDefReply;
 import lombok.extern.slf4j.Slf4j;
 
@@ -84,5 +87,18 @@ public class SearchTaskDef
                 BoundedObjectIdScanPb.newBuilder().setStartObjectId("").build();
         }
         return out;
+    }
+
+    @Override
+    public TagStorageTypePb getTagStorageType() throws LHValidationError {
+        return null;
+    }
+
+    @Override
+    public void validate() throws LHValidationError {}
+
+    @Override
+    public SearchScanBoundary getScanBoundary(String searchAttributeString) {
+        return null;
     }
 }

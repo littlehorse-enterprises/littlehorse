@@ -11,6 +11,7 @@ import io.littlehorse.common.proto.InternalScanPb;
 import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.ScanResultTypePb;
+import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.SearchWfSpecPb;
 import io.littlehorse.sdk.common.proto.SearchWfSpecPb.WfSpecCriteriaCase;
@@ -19,6 +20,7 @@ import io.littlehorse.sdk.common.proto.WfSpecIdPb;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
+import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundary;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchWfSpecReply;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
 import java.util.List;
@@ -146,5 +148,18 @@ public class SearchWfSpec
     @Override
     public List<Attribute> getSearchAttributes() throws LHValidationError {
         return List.of(new Attribute("taskDef", taskDefName));
+    }
+
+    @Override
+    public TagStorageTypePb getTagStorageType() throws LHValidationError {
+        return null;
+    }
+
+    @Override
+    public void validate() throws LHValidationError {}
+
+    @Override
+    public SearchScanBoundary getScanBoundary(String searchAttributeString) {
+        return null;
     }
 }

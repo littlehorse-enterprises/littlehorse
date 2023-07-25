@@ -24,6 +24,7 @@ import io.littlehorse.sdk.common.proto.VariableValuePb;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
+import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundary;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchVariableReply;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
@@ -225,6 +226,19 @@ public class SearchVariable
             new Attribute("wfSpecVersion", LHUtil.toLHDbVersionFormat(wfSpecVersion)),
             new Attribute(value.getVarName(), getVariableValue(value.getValue()))
         );
+    }
+
+    @Override
+    public TagStorageTypePb getTagStorageType() throws LHValidationError {
+        return null;
+    }
+
+    @Override
+    public void validate() throws LHValidationError {}
+
+    @Override
+    public SearchScanBoundary getScanBoundary(String searchAttributeString) {
+        return null;
     }
 
     private String getVariableValue(VariableValuePb value) throws LHValidationError {

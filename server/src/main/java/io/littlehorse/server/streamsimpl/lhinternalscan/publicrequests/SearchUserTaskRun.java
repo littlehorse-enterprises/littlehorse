@@ -1,6 +1,7 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
+import com.google.protobuf.Timestamp;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.objectId.UserTaskRunId;
 import io.littlehorse.common.model.wfrun.UserTaskRun;
@@ -18,8 +19,11 @@ import io.littlehorse.sdk.common.proto.SearchUserTaskRunReplyPb;
 import io.littlehorse.sdk.common.proto.UserTaskRunIdPb;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatusPb;
 import io.littlehorse.server.streamsimpl.ServerTopology;
+import io.littlehorse.server.streamsimpl.lhinternalscan.AbstractGetableSearchStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
+import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundary;
+import io.littlehorse.server.streamsimpl.lhinternalscan.TagScanBoundary;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchUserTaskRunReply;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
@@ -136,62 +140,8 @@ public class SearchUserTaskRun
 
     public InternalScan startInternalSearch(LHGlobalMetaStores stores)
         throws LHValidationError {
-        this.validateUserGroupAndUserId();
-        InternalScan out = new InternalScan();
-        out.storeName = ServerTopology.CORE_STORE;
-        out.resultType = ScanResultTypePb.OBJECT_ID;
-        out.objectType = getObjectType();
-
-        out.type = ScanBoundaryCase.TAG_SCAN;
-        TagScanPb.Builder prefixScanBuilder = TagScanPb.newBuilder();
-        prefixScanBuilder.setKeyPrefix(getSearchAttributeString());
-        TagStorageTypePb tagStorageTypePb = tagStorageTypePbByUserId()
-            .orElseGet(() -> tagStorageTypePbByStatus().orElse(null));
-        if (tagStorageTypePb == null) {
-            List<String> attributes = getSearchAttributes()
-                .stream()
-                .map(Attribute::getEscapedKey)
-                .toList();
-            Optional<TagStorageTypePb> tagStorageTypePbOptional = getStorageTypeForSearchAttributes(
-                attributes
-            );
-            if (tagStorageTypePbOptional.isEmpty()) {
-                throw new LHValidationError(
-                    "There is no index configuration for this search"
-                );
-            }
-            tagStorageTypePb = tagStorageTypePbOptional.get();
-        }
-
-        if (tagStorageTypePb == TagStorageTypePb.LOCAL) {
-            // Local Tag Scan (All Partitions Tag Scan)
-            out.setStoreName(ServerTopology.CORE_STORE);
-            out.setResultType(ScanResultTypePb.OBJECT_ID);
-        } else {
-            // Remote Tag Scan (Specific Partition Tag Scan)
-            out.setStoreName(ServerTopology.CORE_REPARTITION_STORE);
-            out.setResultType(ScanResultTypePb.OBJECT_ID);
-            out.setPartitionKey(getSearchAttributeString());
-        }
-
-        // TODO: allow unfiltered search. Need to either search without time
-        // constraints over object ids, or need to add an empty tag.
-        if (getSearchAttributes().isEmpty()) {
-            throw new LHValidationError(
-                null,
-                "Must specify at least one of: [status, userTaskDefName, userGroup, userId]"
-            );
-        }
-
-        if (earliestStart != null) {
-            prefixScanBuilder.setEarliestCreateTime(LHUtil.fromDate(earliestStart));
-        }
-        if (latestStart != null) {
-            prefixScanBuilder.setLatestCreateTime(LHUtil.fromDate(latestStart));
-        }
-        out.tagScan = prefixScanBuilder.build();
-
-        return out;
+        // Replaced by GetableSearchStrategy
+        return null;
     }
 
     private Optional<TagStorageTypePb> tagStorageTypePbByStatus() {
@@ -230,6 +180,48 @@ public class SearchUserTaskRun
             attributes.add(new Attribute("userGroup", this.getUserGroup()));
         }
         return attributes;
+    }
+
+    @Override
+    public TagStorageTypePb getTagStorageType() throws LHValidationError {
+        TagStorageTypePb tagStorageTypePb = tagStorageTypePbByUserId()
+            .orElseGet(() -> tagStorageTypePbByStatus().orElse(null));
+        if (tagStorageTypePb == null) {
+            List<String> attributes = getSearchAttributes()
+                .stream()
+                .map(Attribute::getEscapedKey)
+                .toList();
+            Optional<TagStorageTypePb> tagStorageTypePbOptional = getStorageTypeForSearchAttributes(
+                attributes
+            );
+            if (tagStorageTypePbOptional.isEmpty()) {
+                throw new LHValidationError(
+                    "There is no index configuration for this search"
+                );
+            }
+            tagStorageTypePb = tagStorageTypePbOptional.get();
+        }
+        return tagStorageTypePb;
+    }
+
+    @Override
+    public void validate() throws LHValidationError {
+        this.validateUserGroupAndUserId();
+        if (getSearchAttributes().isEmpty()) {
+            throw new LHValidationError(
+                null,
+                "Must specify at least one of: [status, userTaskDefName, userGroup, userId]"
+            );
+        }
+    }
+
+    @Override
+    public SearchScanBoundary getScanBoundary(String searchAttributeString) {
+        return new TagScanBoundary(
+            searchAttributeString,
+            Optional.ofNullable(earliestStart),
+            Optional.ofNullable(latestStart)
+        );
     }
 
     private Optional<TagStorageTypePb> getStorageTypeForSearchAttributes(
