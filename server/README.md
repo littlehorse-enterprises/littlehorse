@@ -50,3 +50,6 @@ You can confirm that the Server is running via:
 ```
 
 ## Configurations
+
+- [Server Configurations](../docs/SERVER_CONFIGURATIONS.md)
+- [Workers/Clients Configurations](../docs/CLIENT_CONFIGURATIONS.md)
