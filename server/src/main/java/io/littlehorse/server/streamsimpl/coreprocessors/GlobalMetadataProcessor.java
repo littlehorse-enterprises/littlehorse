@@ -1,15 +1,33 @@
 package io.littlehorse.server.streamsimpl.coreprocessors;
 
 import io.littlehorse.server.streamsimpl.ServerTopology;
+import io.littlehorse.server.streamsimpl.storeinternals.LHROStoreWrapper;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 
+class WfSpecCache {
+
+    private ConcurrentHashMap<String, WfSpec> wfSpecCache;
+
+    public WfSpec getLatestWfSpec(String name, LHROStoreWrapper store) {
+        if (!wfSpecCache.containsKey(name)) {
+            // query the global store, and save into cache map
+        }
+    }
+
+    public WfSpec getWfSpec(String name, int version, LHROStoreWrapper store) {}
+}
+
 public class GlobalMetadataProcessor implements Processor<String, Bytes, Void, Void> {
 
     private KeyValueStore<String, Bytes> store;
+
+    public GlobalMetadataProcessor(WfSpecCache cache) {
+        this.wfSpecCache = cache;
+    }
 
     public void init(final ProcessorContext<Void, Void> ctx) {
         store = ctx.getStateStore(ServerTopology.GLOBAL_STORE);
@@ -31,6 +49,16 @@ public class GlobalMetadataProcessor implements Processor<String, Bytes, Void, V
     public void process(final Record<String, Bytes> record) {
         String key = record.key();
         Bytes value = record.value();
+
+        if (key.startsWith("WfSpec")) {
+            if (value == null) {
+                String name = getNameFromKey(key);
+                cache.remove(name);
+            } else {
+                WfSpec spec = WfSpec.fromBytes(value.get());
+                cache.put(spec.getName(), spec);
+            }
+        }
 
         if (value == null) {
             store.delete(key);

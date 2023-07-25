@@ -272,17 +272,23 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     // It would return the last wfSpec version before the one called by put().
     // However, that doesn't happen in the code now; we should file a JIRA to
     // take care of it for later.
+    //
+    // 1. Create a Map<String, WfSpec> and use it as a read-through cache
+    // 2. Update the cache directly from the Global Store Processor
     @Override
     public WfSpec getWfSpec(String name, Integer version) {
         LHROStoreWrapper store = isHotMetadataPartition ? localStore : globalStore;
-        WfSpec out;
-        if (version != null) {
-            out = store.get(new WfSpecId(name, version).getStoreKey(), WfSpec.class);
-        } else {
-            out = store.getLastFromPrefix(name, WfSpec.class);
-        }
-        if (out != null) out.setDao(this);
+
+        WfSpec out = cache.get(name, version, store);
         return out;
+        // WfSpec out;
+        // if (version != null) {
+        //     out = store.get(new WfSpecId(name, version).getStoreKey(), WfSpec.class);
+        // } else {
+        //     out = store.getLastFromPrefix(name, WfSpec.class);
+        // }
+        // if (out != null) out.setDao(this);
+        // return out;
     }
 
     // TODO: Investigate whether there is a potential issue with
