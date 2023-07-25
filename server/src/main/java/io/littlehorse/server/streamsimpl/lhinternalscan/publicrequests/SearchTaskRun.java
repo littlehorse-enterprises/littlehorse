@@ -107,7 +107,7 @@ public class SearchTaskRun
             // partiiton key should be null, since it's a LOCAL search.
             TagScanPb.Builder scanBuilder = TagScanPb
                 .newBuilder()
-                .setKeyPrefix(tagPrefixStoreKey());
+                .setKeyPrefix(getSearchAttributeString());
 
             if (taskDef.hasEarliestStart()) {
                 scanBuilder.setEarliestCreateTime(taskDef.getEarliestStart());
@@ -122,7 +122,7 @@ public class SearchTaskRun
 
             TagScanPb.Builder scanBuilder = TagScanPb
                 .newBuilder()
-                .setKeyPrefix(tagPrefixStoreKey());
+                .setKeyPrefix(getSearchAttributeString());
 
             if (statusAndTaskDef.hasEarliestStart()) {
                 scanBuilder.setEarliestCreateTime(
@@ -141,7 +141,7 @@ public class SearchTaskRun
     }
 
     @Override
-    public List<Attribute> searchAttributes() {
+    public List<Attribute> getSearchAttributes() {
         if (type == TaskRunCriteriaCase.TASK_DEF) {
             return List.of(
                 new Attribute("taskDefName", statusAndTaskDef.getTaskDefName())

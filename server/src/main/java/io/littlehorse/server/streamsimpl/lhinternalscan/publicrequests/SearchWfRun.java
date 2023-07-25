@@ -3,7 +3,6 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.objectId.WfRunId;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.BookmarkPb;
@@ -27,7 +26,6 @@ import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchWfRunReply;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
-import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -137,7 +135,7 @@ public class SearchWfRun
         if (getLatestStart() != null) {
             tagScanBuilder.setLatestCreateTime(getLatestStart());
         }
-        tagScanBuilder.setKeyPrefix(tagPrefixStoreKey());
+        tagScanBuilder.setKeyPrefix(getSearchAttributeString());
 
         out.setTagScan(tagScanBuilder.build());
         out.setType(ScanBoundaryCase.TAG_SCAN);
@@ -163,7 +161,7 @@ public class SearchWfRun
                 // Remote Tag Scan (Specific Partition Tag Scan)
                 out.setStoreName(ServerTopology.CORE_REPARTITION_STORE);
                 out.setResultType(ScanResultTypePb.OBJECT_ID);
-                out.setPartitionKey(tagPrefixStoreKey());
+                out.setPartitionKey(getSearchAttributeString());
             }
         }
         return out;
@@ -195,7 +193,7 @@ public class SearchWfRun
         return null;
     }
 
-    public List<Attribute> searchAttributes() {
+    public List<Attribute> getSearchAttributes() {
         if (type == WfrunCriteriaCase.STATUS_AND_SPEC) {
             return buildStatusAndSpecAttributesPb();
         } else if (type == WfrunCriteriaCase.NAME) {

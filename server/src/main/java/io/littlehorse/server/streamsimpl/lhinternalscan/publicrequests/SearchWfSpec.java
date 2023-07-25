@@ -5,7 +5,6 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.objectId.WfSpecId;
-import io.littlehorse.common.proto.AttributePb;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.proto.InternalScanPb;
@@ -133,7 +132,7 @@ public class SearchWfSpec
             out.tagScan =
                 InternalScanPb.TagScanPb
                     .newBuilder()
-                    .setKeyPrefix(tagPrefixStoreKey())
+                    .setKeyPrefix(getSearchAttributeString())
                     .build();
         } else {
             // that means we want to search all wfSpecs
@@ -145,7 +144,7 @@ public class SearchWfSpec
     }
 
     @Override
-    public List<Attribute> searchAttributes() throws LHValidationError {
+    public List<Attribute> getSearchAttributes() throws LHValidationError {
         return List.of(new Attribute("taskDef", taskDefName));
     }
 }

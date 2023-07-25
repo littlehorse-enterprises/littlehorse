@@ -50,11 +50,26 @@ public abstract class PublicScanRequest<
         return out;
     }
 
-    public String tagPrefixStoreKey() throws LHValidationError {
-        return Tag.getAttributeString(getObjectType(), searchAttributes());
+    /**
+     * Retrieves the attribute string used for search operations. The attribute string is intended to be used by the
+     * {@link io.littlehorse.server.streamsimpl.BackendInternalComms#doScan(InternalScan)} method to perform scans over
+     * stored tags.
+     *
+     * @return The attribute string in the format:
+     * VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_21.0
+     *
+     * @throws LHValidationError if there are invalid options in the input arguments.
+     */
+    public String getSearchAttributeString() throws LHValidationError {
+        return Tag.getAttributeString(getObjectType(), getSearchAttributes());
     }
 
-    public List<Attribute> searchAttributes() throws LHValidationError {
+    /**
+     * Build search attributes from search input arguments
+     * @return {@link Attribute} attributes associated to search operation
+     * @throws LHValidationError if there are invalid options in the input arguments.
+     */
+    public List<Attribute> getSearchAttributes() throws LHValidationError {
         return List.of();
     }
 }

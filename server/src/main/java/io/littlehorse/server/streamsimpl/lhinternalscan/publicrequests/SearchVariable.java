@@ -2,12 +2,10 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.objectId.VariableId;
 import io.littlehorse.common.model.wfrun.Variable;
-import io.littlehorse.common.proto.AttributePb;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
@@ -29,7 +27,6 @@ import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchVariableReply;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
-import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -147,7 +144,10 @@ public class SearchVariable
                 }
             }
             out.tagScan =
-                TagScanPb.newBuilder().setKeyPrefix(tagPrefixStoreKey()).build();
+                TagScanPb
+                    .newBuilder()
+                    .setKeyPrefix(getSearchAttributeString())
+                    .build();
             TagStorageTypePb tagStorageTypePb = getStorageTypeFromVariableIndexConfiguration()
                 .orElse(null);
             if (tagStorageTypePb != null) {
@@ -215,11 +215,11 @@ public class SearchVariable
             // Remote Tag Scan (Specific Partition Tag Scan)
             out.setStoreName(ServerTopology.CORE_REPARTITION_STORE);
             out.setResultType(ScanResultTypePb.OBJECT_ID);
-            out.setPartitionKey(tagPrefixStoreKey());
+            out.setPartitionKey(getSearchAttributeString());
         }
     }
 
-    public List<Attribute> searchAttributes() throws LHValidationError {
+    public List<Attribute> getSearchAttributes() throws LHValidationError {
         return List.of(
             new Attribute("wfSpecName", value.getWfSpecName()),
             new Attribute("wfSpecVersion", LHUtil.toLHDbVersionFormat(wfSpecVersion)),

@@ -1,7 +1,5 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
-import static io.littlehorse.server.streamsimpl.storeinternals.index.Tag.*;
-
 import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.Getable;
@@ -128,9 +126,9 @@ public class SearchExternalEvent
         ) {
             out.setType(ScanBoundaryCase.TAG_SCAN);
             InternalScanPb.TagScanPb.Builder tagScanBuilder = InternalScanPb.TagScanPb.newBuilder();
-            tagScanBuilder.setKeyPrefix(tagPrefixStoreKey());
+            tagScanBuilder.setKeyPrefix(getSearchAttributeString());
             out.setTagScan(tagScanBuilder.build());
-            List<String> searchAttributes = searchAttributes()
+            List<String> searchAttributes = getSearchAttributes()
                 .stream()
                 .map(Attribute::getEscapedKey)
                 .toList();
@@ -154,7 +152,7 @@ public class SearchExternalEvent
                 } else {
                     out.setStoreName(ServerTopology.CORE_REPARTITION_STORE);
                     out.setResultType(ScanResultTypePb.OBJECT_ID);
-                    out.setPartitionKey(tagPrefixStoreKey());
+                    out.setPartitionKey(getSearchAttributeString());
                 }
             }
         } else {
@@ -165,7 +163,7 @@ public class SearchExternalEvent
         return out;
     }
 
-    public List<Attribute> searchAttributes() {
+    public List<Attribute> getSearchAttributes() {
         return isClaimed
             .map(claimed ->
                 List.of(
