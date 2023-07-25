@@ -21,7 +21,8 @@ include(
     'saga',
     'parallel-approval',
     'mutation',
-    'user-tasks'
+    'user-tasks',
+    'hundred-tasks'
 ].each { example ->
     include "example-$example"
     project(":example-$example").projectDir = new File(rootProject.projectDir, "examples/$example")

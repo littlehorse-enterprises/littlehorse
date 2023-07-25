@@ -536,7 +536,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         RegisterTaskWorkerPb req,
         StreamObserver<RegisterTaskWorkerReplyPb> responseObserver
     ) {
-        log.debug(
+        log.trace(
             "Receiving RegisterTaskWorkerPb (heartbeat) from: " + req.getClientId()
         );
 

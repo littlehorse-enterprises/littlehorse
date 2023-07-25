@@ -62,7 +62,7 @@ public class CommandProcessor
         Command command = commandRecord.value();
         dao.setCommand(command);
 
-        log.debug(
+        log.trace(
             "{} Processing command of type {} with commandId {} on partition {}",
             config.getLHInstanceId(),
             command.type,

@@ -80,7 +80,7 @@ public class OneTaskQueue {
         // 2. There are no clients waiting for requests. In this case, we just
         //    add the task id to the taskid list.
 
-        log.debug(
+        log.trace(
             "Instance {}: Task scheduled for wfRun {}, queue is empty? {}",
             hostName,
             LHLibUtil.getWfRunId(scheduledTaskId.getSource().toProto().build()),
@@ -128,7 +128,7 @@ public class OneTaskQueue {
             throw new RuntimeException("Not possible, got mismatched taskdef name");
         }
 
-        log.debug(
+        log.trace(
             "Instance {}: Poll request received for taskDef {}",
             hostName,
             taskDefName

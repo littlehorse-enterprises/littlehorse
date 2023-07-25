@@ -6,6 +6,7 @@ import io.grpc.ServerCredentials;
 import io.grpc.TlsChannelCredentials;
 import io.grpc.TlsServerCredentials;
 import io.littlehorse.common.util.LHProducer;
+import io.littlehorse.common.util.RocksConfigSetter;
 import io.littlehorse.sdk.common.auth.OAuthConfig;
 import io.littlehorse.sdk.common.config.ConfigBase;
 import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
@@ -819,6 +820,11 @@ public class LHConfig extends ConfigBase {
 
         // props.put(StreamsConfig.RACK_AWARE_ASSIGNMENT_TAGS_CONFIG, "rack");
         // props.put(StreamsConfig.CLIENT_TAG_PREFIX + "rack", getRackId());
+
+        props.put(
+            StreamsConfig.ROCKSDB_CONFIG_SETTER_CLASS_CONFIG,
+            RocksConfigSetter.class
+        );
 
         addKafkaSecuritySettings(props);
 

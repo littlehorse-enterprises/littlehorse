@@ -26,7 +26,7 @@ public class LHStoreWrapper extends LHROStoreWrapper {
 
     public void put(Storeable<?> thing) {
         String storeKey = StoreUtils.getFullStoreKey(thing);
-        log.debug(storeKey);
+        log.trace("Putting {}", storeKey);
         store.put(storeKey, new Bytes(thing.toBytes(config)));
     }
 
@@ -35,7 +35,9 @@ public class LHStoreWrapper extends LHROStoreWrapper {
     }
 
     public void delete(Storeable<?> thing) {
-        store.delete(StoreUtils.getFullStoreKey(thing));
+        String storeKey = StoreUtils.getFullStoreKey(thing);
+        log.trace("Deleting {}", storeKey);
+        store.delete(storeKey);
     }
 
     public void deleteByStoreKey(
@@ -61,11 +63,6 @@ public class LHStoreWrapper extends LHROStoreWrapper {
     public void deleteRaw(String rawKey) {
         store.delete(rawKey);
     }
-
-    // public TagsCache getTagsCache(Getable<?> thing) {
-    //     String tagCacheKey = StoreUtils.getTagsCacheKey(thing);
-    //     return getTagsCache(tagCacheKey);
-    // }
 
     public TagsCache getTagsCache(String getableId, Class<? extends Getable<?>> cls) {
         Bytes raw = store.get(StoreUtils.getTagsCacheKey(getableId, cls));
