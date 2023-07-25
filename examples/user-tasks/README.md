@@ -74,7 +74,11 @@ The second option to find the UserTaskRun's ID is to check the `NodeRun`. Recall
 lhctl get nodeRun <wfRunId> 0 1
 ```
 
+<<<<<<< HEAD
 You should see in `$.result.userTask.userTaskRunId` the same ID that resulted from all of the searches above.
+=======
+You should see in `$.result.userTask.id` the same ID that resulted from all of the searches above.
+>>>>>>> 46c73083 (Adds User Task Example with lhctl)
 
 
 #### Execute the User Task Run
