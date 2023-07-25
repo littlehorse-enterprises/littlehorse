@@ -222,45 +222,6 @@ public class ThreadRun extends LHSerializable<ThreadRunPb> {
         }
     }
 
-    // public void processCompleteUserTaskRun(CompleteUserTaskRun event) {
-    //     NodeRun nr = getNodeRun(event.nodeRunPosition);
-    //     // TODO LH-303: make this throw an error back to client
-    //     if (nr.type != NodeTypeCase.USER_TASK) {
-    //         log.warn(
-    //             "Got an invalid request to completeTaskRun for wfRun {}, " +
-    //             "thread {}, and nodeRun {}: not a USER_TASK node.",
-    //             event.wfRunId,
-    //             event.threadRunNumber,
-    //             event.nodeRunPosition
-    //         );
-    //         return;
-    //     }
-
-    //     nr.userTaskRun.processTaskCompletedEvent(event);
-    // }
-
-    // public void processAssignUserTaskRun(AssignUserTaskRun event) {
-    //     NodeRun nr = getNodeRun(event.nodeRunPosition);
-    //     // TODO LH-303: make this throw an error back to client
-    //     if (nr.type != NodeTypeCase.USER_TASK) {
-    //         log.warn(
-    //             "Got an invalid request to completeTaskRun for wfRun {}, " +
-    //             "thread {}, and nodeRun {}: not a USER_TASK node.",
-    //             event.wfRunId,
-    //             event.threadRunNumber,
-    //             event.nodeRunPosition
-    //         );
-    //         return;
-    //     }
-
-    //     if (nr.userTaskRun.status == UserTaskRunStatusPb.DONE) {
-    //         log.warn("Tried to reassign already-completed task!");
-    //         return;
-    //     }
-
-    //     nr.userTaskRun.reassignTo(event);
-    // }
-
     public void processExtEvtTimeout(ExternalEventTimeout timeout) {
         NodeRun nr = getNodeRun(timeout.nodeRunPosition);
         if (nr.type != NodeTypeCase.EXTERNAL_EVENT) {

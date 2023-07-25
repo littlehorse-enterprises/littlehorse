@@ -1,10 +1,12 @@
 package cmd
 
 import (
+	"bufio"
 	"context"
 	"errors"
 	"fmt"
 	"log"
+	"os"
 	"strings"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/common"
@@ -253,10 +255,14 @@ func executeUserTask(wfRunId string, userTaskGuid string, client *model.LHPublic
 }
 
 func promptFor(prompt string, varType model.VariableTypePb) (*model.VariableValuePb, error) {
-	fmt.Print(prompt + " (put multiple-word responses in '' quotes): ")
-	var userInput string
-	fmt.Scanln(&userInput)
-	return common.StrToVarVal(userInput, varType)
+	fmt.Print(prompt + ": ")
+	// Create a new buffered reader to read from standard input
+	reader := bufio.NewReader(os.Stdin)
+
+	// Read the entire line of text entered by the user
+	// The returned line will include the newline character '\n', so we'll trim it.
+	userInput, _ := reader.ReadString('\n')
+	return common.StrToVarVal(userInput[:len(userInput)-1], varType)
 }
 
 func getUserTaskDef(userTaskRun *model.UserTaskRunPb, client *model.LHPublicApiClient) (*model.UserTaskDefPb, error) {
@@ -293,6 +299,10 @@ func init() {
 	searchCmd.AddCommand(searchUserTaskRunCmd)
 	executeCmd.AddCommand(executeUserTaskRunCmd)
 	assignCmd.AddCommand(assignUserTaskRunCmd)
+
+	assignUserTaskRunCmd.Flags().String("userId", "", "User Id to assign to.")
+	assignUserTaskRunCmd.Flags().String("userGroup", "", "User Group to assign to.")
+	assignUserTaskRunCmd.MarkFlagsMutuallyExclusive("userId", "userGroup")
 
 	searchUserTaskRunCmd.Flags().String("userTaskDefName", "", "UserTaskDef ID of User Task Run's to search for.")
 	searchUserTaskRunCmd.Flags().String("userId", "", "Search for User Task Runs assigned to this User ID.")
