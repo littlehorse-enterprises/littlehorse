@@ -2,12 +2,10 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.meta.VariableDef;
 import io.littlehorse.common.model.meta.WfSpec;
 import io.littlehorse.common.model.objectId.VariableId;
 import io.littlehorse.common.model.wfrun.Variable;
-import io.littlehorse.common.proto.AttributePb;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
@@ -29,7 +27,6 @@ import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchVariableReply;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
-import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +38,7 @@ public class SearchVariable
     public VariableCriteriaCase type;
     public NameAndValuePb value;
     public String wfRunId;
+    private int wfSpecVersion;
 
     public GetableClassEnumPb getObjectType() {
         return GetableClassEnumPb.VARIABLE;
@@ -125,7 +123,6 @@ public class SearchVariable
             // hot boolean variables may be LOCAL_UNCOUNTED
             out.partitionKey = null;
 
-            int wfSpecVersion;
             if (value.hasWfSpecVersion()) {
                 wfSpecVersion = value.getWfSpecVersion();
                 WfSpec spec = stores.getWfSpec(value.getWfSpecName(), wfSpecVersion);
@@ -146,14 +143,11 @@ public class SearchVariable
                     wfSpecVersion = spec.version;
                 }
             }
-            List<Attribute> attributes = getAttributes(wfSpecVersion);
-            List<AttributePb> attributesPb = attributes
-                .stream()
-                .map(Attribute::toProto)
-                .map(AttributePb.Builder::build)
-                .toList();
             out.tagScan =
-                TagScanPb.newBuilder().addAllAttributes(attributesPb).build();
+                TagScanPb
+                    .newBuilder()
+                    .setKeyPrefix(getSearchAttributeString())
+                    .build();
             TagStorageTypePb tagStorageTypePb = getStorageTypeFromVariableIndexConfiguration()
                 .orElse(null);
             if (tagStorageTypePb != null) {
@@ -172,7 +166,9 @@ public class SearchVariable
             .stream()
             //Filter matching configuration
             .filter(getableIndexConfiguration ->
-                getableIndexConfiguration.searchAttributesMatch(searchAttributes())
+                getableIndexConfiguration.searchAttributesMatch(
+                    searchAttributesString()
+                )
             )
             .map(GetableIndex::getTagStorageTypePb)
             .filter(Optional::isPresent)
@@ -219,17 +215,11 @@ public class SearchVariable
             // Remote Tag Scan (Specific Partition Tag Scan)
             out.setStoreName(ServerTopology.CORE_REPARTITION_STORE);
             out.setResultType(ScanResultTypePb.OBJECT_ID);
-            out.setPartitionKey(
-                Tag.getAttributeString(
-                    Getable.getTypeEnum(Variable.class),
-                    getAttributes(wfSpecVersion)
-                )
-            );
+            out.setPartitionKey(getSearchAttributeString());
         }
     }
 
-    private List<Attribute> getAttributes(int wfSpecVersion)
-        throws LHValidationError {
+    public List<Attribute> getSearchAttributes() throws LHValidationError {
         return List.of(
             new Attribute("wfSpecName", value.getWfSpecName()),
             new Attribute("wfSpecVersion", LHUtil.toLHDbVersionFormat(wfSpecVersion)),
@@ -251,7 +241,7 @@ public class SearchVariable
         };
     }
 
-    private List<String> searchAttributes() {
+    private List<String> searchAttributesString() {
         return List.of("name", "value", "wfSpecName", "wfSpecVersion");
     }
 }

@@ -6,6 +6,9 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
+import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
+import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
+import java.util.List;
 
 /**
  * T : The protobuf for the PublicScanRequest
@@ -45,5 +48,31 @@ public abstract class PublicScanRequest<
         out.bookmark = bookmark;
         out.objectType = getObjectType();
         return out;
+    }
+
+    /**
+     * Retrieves the attribute string used for search operations. The attribute string is intended to be used by the
+     * {@link io.littlehorse.server.streamsimpl.BackendInternalComms#doScan(InternalScan)} method to perform scans over
+     * stored tags.
+     *
+     * @return The attribute string in the format:
+     * VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_21.0
+     *
+     * @throws LHValidationError if there are invalid options in the input arguments.
+     */
+    public String getSearchAttributeString() throws LHValidationError {
+        return Tag.getAttributeString(getObjectType(), getSearchAttributes());
+    }
+
+    /**
+     * Builds search attributes based on the provided search input arguments.
+     * This method is intended to be overridden by subclasses to implement custom logic.
+     *
+     * @return {@link Attribute} containing attributes associated with the search operation.
+     *
+     * @throws LHValidationError if there are invalid options in the input arguments.
+     */
+    public List<Attribute> getSearchAttributes() throws LHValidationError {
+        return List.of();
     }
 }

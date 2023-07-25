@@ -2,10 +2,8 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHValidationError;
-import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.objectId.UserTaskRunId;
 import io.littlehorse.common.model.wfrun.UserTaskRun;
-import io.littlehorse.common.proto.AttributePb;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
@@ -25,12 +23,10 @@ import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchUserTaskRunReply;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
-import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -75,18 +71,6 @@ public class SearchUserTaskRun
         if (p.hasUserTaskDefName()) userTaskDefName = p.getUserTaskDefName();
 
         ownerCase = p.getTaskOwnerCase();
-        /*
-        switch (ownerCase) {
-            case USER_GROUP:
-                userGroup = p.getUserGroup();
-                break;
-            case USER_ID:
-                userId = p.getUserId();
-                break;
-            case TASKOWNER_NOT_SET:
-            // In this case, we search regardless of owner.
-        }
-        */
         // Note: Typically, we would do as above. However, if a client (eg. the
         // grpc-gateway) sets both userId and userGroup, the way protobuf works
         // dictates that we would search by userGroup (since it has a higher
@@ -160,19 +144,16 @@ public class SearchUserTaskRun
 
         out.type = ScanBoundaryCase.TAG_SCAN;
         TagScanPb.Builder prefixScanBuilder = TagScanPb.newBuilder();
-        List<Attribute> attributes = getSearchAttributes();
-        prefixScanBuilder.addAllAttributes(
-            attributes
-                .stream()
-                .map(Attribute::toProto)
-                .map(AttributePb.Builder::build)
-                .toList()
-        );
+        prefixScanBuilder.setKeyPrefix(getSearchAttributeString());
         TagStorageTypePb tagStorageTypePb = tagStorageTypePbByUserId()
             .orElseGet(() -> tagStorageTypePbByStatus().orElse(null));
         if (tagStorageTypePb == null) {
+            List<String> attributes = getSearchAttributes()
+                .stream()
+                .map(Attribute::getEscapedKey)
+                .toList();
             Optional<TagStorageTypePb> tagStorageTypePbOptional = getStorageTypeForSearchAttributes(
-                attributes.stream().map(Attribute::getEscapedKey).toList()
+                attributes
             );
             if (tagStorageTypePbOptional.isEmpty()) {
                 throw new LHValidationError(
@@ -190,17 +171,12 @@ public class SearchUserTaskRun
             // Remote Tag Scan (Specific Partition Tag Scan)
             out.setStoreName(ServerTopology.CORE_REPARTITION_STORE);
             out.setResultType(ScanResultTypePb.OBJECT_ID);
-            out.setPartitionKey(
-                Tag.getAttributeString(
-                    Getable.getTypeEnum(UserTaskRun.class),
-                    attributes
-                )
-            );
+            out.setPartitionKey(getSearchAttributeString());
         }
 
         // TODO: allow unfiltered search. Need to either search without time
         // constraints over object ids, or need to add an empty tag.
-        if (prefixScanBuilder.getAttributesCount() == 0) {
+        if (getSearchAttributes().isEmpty()) {
             throw new LHValidationError(
                 null,
                 "Must specify at least one of: [status, userTaskDefName, userGroup, userId]"
@@ -234,7 +210,8 @@ public class SearchUserTaskRun
         return Optional.ofNullable(userId).map(userId -> TagStorageTypePb.REMOTE);
     }
 
-    private List<Attribute> getSearchAttributes() {
+    @Override
+    public List<Attribute> getSearchAttributes() {
         List<Attribute> attributes = new ArrayList<>();
         if (status != null) {
             attributes.add(new Attribute("status", this.getStatus().toString()));

@@ -65,17 +65,6 @@ public class Tag extends Storeable<TagPb> {
         return getAttributeString(objectType, attributes);
     }
 
-    public static String getAttributeString(
-        GetableClassEnumPb objectType,
-        TagScanPb prefixScanSpec
-    ) {
-        List<Attribute> attrs = new ArrayList<>();
-        for (AttributePb apb : prefixScanSpec.getAttributesList()) {
-            attrs.add(Attribute.fromProto(apb));
-        }
-        return getAttributeString(objectType, attrs);
-    }
-
     public String getPartitionKey() {
         return getAttributeString(getObjectType(), attributes);
     }

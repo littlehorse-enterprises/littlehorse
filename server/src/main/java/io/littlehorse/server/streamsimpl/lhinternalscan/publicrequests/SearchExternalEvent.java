@@ -1,8 +1,7 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
-import static io.littlehorse.server.streamsimpl.storeinternals.index.Tag.*;
-
 import com.google.protobuf.Message;
+import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.objectId.ExternalEventId;
 import io.littlehorse.common.model.wfrun.ExternalEvent;
@@ -108,13 +107,12 @@ public class SearchExternalEvent
         return out;
     }
 
-    public InternalScan startInternalSearch(LHGlobalMetaStores stores) {
+    public InternalScan startInternalSearch(LHGlobalMetaStores stores)
+        throws LHValidationError {
         InternalScan out = new InternalScan();
 
         out.storeName = ServerTopology.CORE_STORE;
         out.resultType = ScanResultTypePb.OBJECT_ID;
-        List<Attribute> attributes = buildTagAttributes();
-
         if (type == ExtEvtCriteriaCase.WF_RUN_ID) {
             out.type = ScanBoundaryCase.BOUNDED_OBJECT_ID_SCAN;
             out.partitionKey = wfRunId;
@@ -127,19 +125,16 @@ public class SearchExternalEvent
             type.equals(ExtEvtCriteriaCase.EXTERNAL_EVENT_DEF_NAME_AND_STATUS)
         ) {
             out.setType(ScanBoundaryCase.TAG_SCAN);
-            InternalScanPb.TagScanPb.Builder tagScanBuilder = InternalScanPb.TagScanPb
-                .newBuilder()
-                .addAllAttributes(
-                    attributes
-                        .stream()
-                        .map(attribute -> attribute.toProto().build())
-                        .toList()
-                );
+            InternalScanPb.TagScanPb.Builder tagScanBuilder = InternalScanPb.TagScanPb.newBuilder();
+            tagScanBuilder.setKeyPrefix(getSearchAttributeString());
             out.setTagScan(tagScanBuilder.build());
-            List<String> searchAttributes = getSearchAttributes();
+            List<String> searchAttributes = getSearchAttributes()
+                .stream()
+                .map(Attribute::getEscapedKey)
+                .toList();
             List<GetableIndex<? extends Getable<?>>> indexConfigurations = new ExternalEvent()
                 .getIndexConfigurations();
-            indexConfigurations
+            GetableIndex<? extends Getable<?>> getableIndex = indexConfigurations
                 .stream()
                 .filter(getableIndexConfiguration -> {
                     return getableIndexConfiguration.searchAttributesMatch(
@@ -147,29 +142,19 @@ public class SearchExternalEvent
                     );
                 })
                 .findFirst()
-                .ifPresent(getableIndexConfiguration -> {
-                    if (
-                        getableIndexConfiguration.getTagStorageTypePb().get() ==
-                        TagStorageTypePb.LOCAL
-                    ) {
-                        out.setStoreName(ServerTopology.CORE_STORE);
-                        out.setResultType(ScanResultTypePb.OBJECT_ID);
-                    } else {
-                        out.setStoreName(ServerTopology.CORE_REPARTITION_STORE);
-                        out.setResultType(ScanResultTypePb.OBJECT_ID);
-                        out.setPartitionKey(
-                            getAttributeString(
-                                Getable.getTypeEnum(ExternalEvent.class),
-                                buildTagAttributes()
-                            )
-                        );
-                    }
-                });
-            /*TODO: getableIndex
-                .getTagStorageTypePb()
-                .ifPresent(tagStorageTypePb -> {
-
-                });*/
+                .orElse(null);
+            if (getableIndex != null) {
+                if (
+                    getableIndex.getTagStorageTypePb().get() == TagStorageTypePb.LOCAL
+                ) {
+                    out.setStoreName(ServerTopology.CORE_STORE);
+                    out.setResultType(ScanResultTypePb.OBJECT_ID);
+                } else {
+                    out.setStoreName(ServerTopology.CORE_REPARTITION_STORE);
+                    out.setResultType(ScanResultTypePb.OBJECT_ID);
+                    out.setPartitionKey(getSearchAttributeString());
+                }
+            }
         } else {
             throw new IllegalArgumentException(
                 "%s type is not supported yet".formatted(type)
@@ -178,7 +163,7 @@ public class SearchExternalEvent
         return out;
     }
 
-    private List<Attribute> buildTagAttributes() {
+    public List<Attribute> getSearchAttributes() {
         return isClaimed
             .map(claimed ->
                 List.of(
@@ -187,18 +172,5 @@ public class SearchExternalEvent
                 )
             )
             .orElse(List.of(new Attribute("extEvtDefName", externalEventDefName)));
-    }
-
-    private List<String> getSearchAttributes() {
-        switch (type) {
-            case EXTERNAL_EVENT_DEF_NAME_AND_STATUS:
-                return isClaimed
-                    .map(aBoolean -> List.of("extEvtDefName", "isClaimed"))
-                    .orElse(List.of("extEvtDefName"));
-            default:
-                throw new IllegalArgumentException(
-                    "%s type is not supported yet".formatted(type)
-                );
-        }
     }
 }

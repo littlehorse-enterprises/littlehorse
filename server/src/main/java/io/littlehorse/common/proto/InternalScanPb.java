@@ -52,58 +52,46 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-     */
-    java.util.List<io.littlehorse.common.proto.AttributePb> 
-        getAttributesList();
-    /**
-     * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-     */
-    io.littlehorse.common.proto.AttributePb getAttributes(int index);
-    /**
-     * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-     */
-    int getAttributesCount();
-    /**
-     * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-     */
-    java.util.List<? extends io.littlehorse.common.proto.AttributePbOrBuilder> 
-        getAttributesOrBuilderList();
-    /**
-     * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-     */
-    io.littlehorse.common.proto.AttributePbOrBuilder getAttributesOrBuilder(
-        int index);
-
-    /**
-     * <code>optional .google.protobuf.Timestamp earliest_create_time = 2;</code>
+     * <code>optional .google.protobuf.Timestamp earliest_create_time = 1;</code>
      * @return Whether the earliestCreateTime field is set.
      */
     boolean hasEarliestCreateTime();
     /**
-     * <code>optional .google.protobuf.Timestamp earliest_create_time = 2;</code>
+     * <code>optional .google.protobuf.Timestamp earliest_create_time = 1;</code>
      * @return The earliestCreateTime.
      */
     com.google.protobuf.Timestamp getEarliestCreateTime();
     /**
-     * <code>optional .google.protobuf.Timestamp earliest_create_time = 2;</code>
+     * <code>optional .google.protobuf.Timestamp earliest_create_time = 1;</code>
      */
     com.google.protobuf.TimestampOrBuilder getEarliestCreateTimeOrBuilder();
 
     /**
-     * <code>optional .google.protobuf.Timestamp latest_create_time = 3;</code>
+     * <code>optional .google.protobuf.Timestamp latest_create_time = 2;</code>
      * @return Whether the latestCreateTime field is set.
      */
     boolean hasLatestCreateTime();
     /**
-     * <code>optional .google.protobuf.Timestamp latest_create_time = 3;</code>
+     * <code>optional .google.protobuf.Timestamp latest_create_time = 2;</code>
      * @return The latestCreateTime.
      */
     com.google.protobuf.Timestamp getLatestCreateTime();
     /**
-     * <code>optional .google.protobuf.Timestamp latest_create_time = 3;</code>
+     * <code>optional .google.protobuf.Timestamp latest_create_time = 2;</code>
      */
     com.google.protobuf.TimestampOrBuilder getLatestCreateTimeOrBuilder();
+
+    /**
+     * <code>string key_prefix = 3;</code>
+     * @return The keyPrefix.
+     */
+    java.lang.String getKeyPrefix();
+    /**
+     * <code>string key_prefix = 3;</code>
+     * @return The bytes for keyPrefix.
+     */
+    com.google.protobuf.ByteString
+        getKeyPrefixBytes();
   }
   /**
    * Protobuf type {@code littlehorse.InternalScanPb.TagScanPb}
@@ -118,7 +106,7 @@ private static final long serialVersionUID = 0L;
       super(builder);
     }
     private TagScanPb() {
-      attributes_ = java.util.Collections.emptyList();
+      keyPrefix_ = "";
     }
 
     @java.lang.Override
@@ -147,51 +135,10 @@ private static final long serialVersionUID = 0L;
     }
 
     private int bitField0_;
-    public static final int ATTRIBUTES_FIELD_NUMBER = 1;
-    @SuppressWarnings("serial")
-    private java.util.List<io.littlehorse.common.proto.AttributePb> attributes_;
-    /**
-     * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-     */
-    @java.lang.Override
-    public java.util.List<io.littlehorse.common.proto.AttributePb> getAttributesList() {
-      return attributes_;
-    }
-    /**
-     * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-     */
-    @java.lang.Override
-    public java.util.List<? extends io.littlehorse.common.proto.AttributePbOrBuilder> 
-        getAttributesOrBuilderList() {
-      return attributes_;
-    }
-    /**
-     * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-     */
-    @java.lang.Override
-    public int getAttributesCount() {
-      return attributes_.size();
-    }
-    /**
-     * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.AttributePb getAttributes(int index) {
-      return attributes_.get(index);
-    }
-    /**
-     * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.AttributePbOrBuilder getAttributesOrBuilder(
-        int index) {
-      return attributes_.get(index);
-    }
-
-    public static final int EARLIEST_CREATE_TIME_FIELD_NUMBER = 2;
+    public static final int EARLIEST_CREATE_TIME_FIELD_NUMBER = 1;
     private com.google.protobuf.Timestamp earliestCreateTime_;
     /**
-     * <code>optional .google.protobuf.Timestamp earliest_create_time = 2;</code>
+     * <code>optional .google.protobuf.Timestamp earliest_create_time = 1;</code>
      * @return Whether the earliestCreateTime field is set.
      */
     @java.lang.Override
@@ -199,7 +146,7 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>optional .google.protobuf.Timestamp earliest_create_time = 2;</code>
+     * <code>optional .google.protobuf.Timestamp earliest_create_time = 1;</code>
      * @return The earliestCreateTime.
      */
     @java.lang.Override
@@ -207,17 +154,17 @@ private static final long serialVersionUID = 0L;
       return earliestCreateTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : earliestCreateTime_;
     }
     /**
-     * <code>optional .google.protobuf.Timestamp earliest_create_time = 2;</code>
+     * <code>optional .google.protobuf.Timestamp earliest_create_time = 1;</code>
      */
     @java.lang.Override
     public com.google.protobuf.TimestampOrBuilder getEarliestCreateTimeOrBuilder() {
       return earliestCreateTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : earliestCreateTime_;
     }
 
-    public static final int LATEST_CREATE_TIME_FIELD_NUMBER = 3;
+    public static final int LATEST_CREATE_TIME_FIELD_NUMBER = 2;
     private com.google.protobuf.Timestamp latestCreateTime_;
     /**
-     * <code>optional .google.protobuf.Timestamp latest_create_time = 3;</code>
+     * <code>optional .google.protobuf.Timestamp latest_create_time = 2;</code>
      * @return Whether the latestCreateTime field is set.
      */
     @java.lang.Override
@@ -225,7 +172,7 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>optional .google.protobuf.Timestamp latest_create_time = 3;</code>
+     * <code>optional .google.protobuf.Timestamp latest_create_time = 2;</code>
      * @return The latestCreateTime.
      */
     @java.lang.Override
@@ -233,11 +180,50 @@ private static final long serialVersionUID = 0L;
       return latestCreateTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestCreateTime_;
     }
     /**
-     * <code>optional .google.protobuf.Timestamp latest_create_time = 3;</code>
+     * <code>optional .google.protobuf.Timestamp latest_create_time = 2;</code>
      */
     @java.lang.Override
     public com.google.protobuf.TimestampOrBuilder getLatestCreateTimeOrBuilder() {
       return latestCreateTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : latestCreateTime_;
+    }
+
+    public static final int KEY_PREFIX_FIELD_NUMBER = 3;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object keyPrefix_ = "";
+    /**
+     * <code>string key_prefix = 3;</code>
+     * @return The keyPrefix.
+     */
+    @java.lang.Override
+    public java.lang.String getKeyPrefix() {
+      java.lang.Object ref = keyPrefix_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        keyPrefix_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string key_prefix = 3;</code>
+     * @return The bytes for keyPrefix.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getKeyPrefixBytes() {
+      java.lang.Object ref = keyPrefix_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        keyPrefix_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     private byte memoizedIsInitialized = -1;
@@ -254,14 +240,14 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      for (int i = 0; i < attributes_.size(); i++) {
-        output.writeMessage(1, attributes_.get(i));
-      }
       if (((bitField0_ & 0x00000001) != 0)) {
-        output.writeMessage(2, getEarliestCreateTime());
+        output.writeMessage(1, getEarliestCreateTime());
       }
       if (((bitField0_ & 0x00000002) != 0)) {
-        output.writeMessage(3, getLatestCreateTime());
+        output.writeMessage(2, getLatestCreateTime());
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(keyPrefix_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, keyPrefix_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -272,17 +258,16 @@ private static final long serialVersionUID = 0L;
       if (size != -1) return size;
 
       size = 0;
-      for (int i = 0; i < attributes_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, attributes_.get(i));
-      }
       if (((bitField0_ & 0x00000001) != 0)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, getEarliestCreateTime());
+          .computeMessageSize(1, getEarliestCreateTime());
       }
       if (((bitField0_ & 0x00000002) != 0)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, getLatestCreateTime());
+          .computeMessageSize(2, getLatestCreateTime());
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(keyPrefix_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, keyPrefix_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -299,8 +284,6 @@ private static final long serialVersionUID = 0L;
       }
       io.littlehorse.common.proto.InternalScanPb.TagScanPb other = (io.littlehorse.common.proto.InternalScanPb.TagScanPb) obj;
 
-      if (!getAttributesList()
-          .equals(other.getAttributesList())) return false;
       if (hasEarliestCreateTime() != other.hasEarliestCreateTime()) return false;
       if (hasEarliestCreateTime()) {
         if (!getEarliestCreateTime()
@@ -311,6 +294,8 @@ private static final long serialVersionUID = 0L;
         if (!getLatestCreateTime()
             .equals(other.getLatestCreateTime())) return false;
       }
+      if (!getKeyPrefix()
+          .equals(other.getKeyPrefix())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -322,10 +307,6 @@ private static final long serialVersionUID = 0L;
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      if (getAttributesCount() > 0) {
-        hash = (37 * hash) + ATTRIBUTES_FIELD_NUMBER;
-        hash = (53 * hash) + getAttributesList().hashCode();
-      }
       if (hasEarliestCreateTime()) {
         hash = (37 * hash) + EARLIEST_CREATE_TIME_FIELD_NUMBER;
         hash = (53 * hash) + getEarliestCreateTime().hashCode();
@@ -334,6 +315,8 @@ private static final long serialVersionUID = 0L;
         hash = (37 * hash) + LATEST_CREATE_TIME_FIELD_NUMBER;
         hash = (53 * hash) + getLatestCreateTime().hashCode();
       }
+      hash = (37 * hash) + KEY_PREFIX_FIELD_NUMBER;
+      hash = (53 * hash) + getKeyPrefix().hashCode();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -462,7 +445,6 @@ private static final long serialVersionUID = 0L;
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
-          getAttributesFieldBuilder();
           getEarliestCreateTimeFieldBuilder();
           getLatestCreateTimeFieldBuilder();
         }
@@ -471,13 +453,6 @@ private static final long serialVersionUID = 0L;
       public Builder clear() {
         super.clear();
         bitField0_ = 0;
-        if (attributesBuilder_ == null) {
-          attributes_ = java.util.Collections.emptyList();
-        } else {
-          attributes_ = null;
-          attributesBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000001);
         earliestCreateTime_ = null;
         if (earliestCreateTimeBuilder_ != null) {
           earliestCreateTimeBuilder_.dispose();
@@ -488,6 +463,7 @@ private static final long serialVersionUID = 0L;
           latestCreateTimeBuilder_.dispose();
           latestCreateTimeBuilder_ = null;
         }
+        keyPrefix_ = "";
         return this;
       }
 
@@ -514,38 +490,28 @@ private static final long serialVersionUID = 0L;
       @java.lang.Override
       public io.littlehorse.common.proto.InternalScanPb.TagScanPb buildPartial() {
         io.littlehorse.common.proto.InternalScanPb.TagScanPb result = new io.littlehorse.common.proto.InternalScanPb.TagScanPb(this);
-        buildPartialRepeatedFields(result);
         if (bitField0_ != 0) { buildPartial0(result); }
         onBuilt();
         return result;
       }
 
-      private void buildPartialRepeatedFields(io.littlehorse.common.proto.InternalScanPb.TagScanPb result) {
-        if (attributesBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) != 0)) {
-            attributes_ = java.util.Collections.unmodifiableList(attributes_);
-            bitField0_ = (bitField0_ & ~0x00000001);
-          }
-          result.attributes_ = attributes_;
-        } else {
-          result.attributes_ = attributesBuilder_.build();
-        }
-      }
-
       private void buildPartial0(io.littlehorse.common.proto.InternalScanPb.TagScanPb result) {
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000002) != 0)) {
+        if (((from_bitField0_ & 0x00000001) != 0)) {
           result.earliestCreateTime_ = earliestCreateTimeBuilder_ == null
               ? earliestCreateTime_
               : earliestCreateTimeBuilder_.build();
           to_bitField0_ |= 0x00000001;
         }
-        if (((from_bitField0_ & 0x00000004) != 0)) {
+        if (((from_bitField0_ & 0x00000002) != 0)) {
           result.latestCreateTime_ = latestCreateTimeBuilder_ == null
               ? latestCreateTime_
               : latestCreateTimeBuilder_.build();
           to_bitField0_ |= 0x00000002;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.keyPrefix_ = keyPrefix_;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -594,37 +560,16 @@ private static final long serialVersionUID = 0L;
 
       public Builder mergeFrom(io.littlehorse.common.proto.InternalScanPb.TagScanPb other) {
         if (other == io.littlehorse.common.proto.InternalScanPb.TagScanPb.getDefaultInstance()) return this;
-        if (attributesBuilder_ == null) {
-          if (!other.attributes_.isEmpty()) {
-            if (attributes_.isEmpty()) {
-              attributes_ = other.attributes_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-            } else {
-              ensureAttributesIsMutable();
-              attributes_.addAll(other.attributes_);
-            }
-            onChanged();
-          }
-        } else {
-          if (!other.attributes_.isEmpty()) {
-            if (attributesBuilder_.isEmpty()) {
-              attributesBuilder_.dispose();
-              attributesBuilder_ = null;
-              attributes_ = other.attributes_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-              attributesBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getAttributesFieldBuilder() : null;
-            } else {
-              attributesBuilder_.addAllMessages(other.attributes_);
-            }
-          }
-        }
         if (other.hasEarliestCreateTime()) {
           mergeEarliestCreateTime(other.getEarliestCreateTime());
         }
         if (other.hasLatestCreateTime()) {
           mergeLatestCreateTime(other.getLatestCreateTime());
+        }
+        if (!other.getKeyPrefix().isEmpty()) {
+          keyPrefix_ = other.keyPrefix_;
+          bitField0_ |= 0x00000004;
+          onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -653,29 +598,21 @@ private static final long serialVersionUID = 0L;
                 done = true;
                 break;
               case 10: {
-                io.littlehorse.common.proto.AttributePb m =
-                    input.readMessage(
-                        io.littlehorse.common.proto.AttributePb.parser(),
-                        extensionRegistry);
-                if (attributesBuilder_ == null) {
-                  ensureAttributesIsMutable();
-                  attributes_.add(m);
-                } else {
-                  attributesBuilder_.addMessage(m);
-                }
+                input.readMessage(
+                    getEarliestCreateTimeFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000001;
                 break;
               } // case 10
               case 18: {
                 input.readMessage(
-                    getEarliestCreateTimeFieldBuilder().getBuilder(),
+                    getLatestCreateTimeFieldBuilder().getBuilder(),
                     extensionRegistry);
                 bitField0_ |= 0x00000002;
                 break;
               } // case 18
               case 26: {
-                input.readMessage(
-                    getLatestCreateTimeFieldBuilder().getBuilder(),
-                    extensionRegistry);
+                keyPrefix_ = input.readStringRequireUtf8();
                 bitField0_ |= 0x00000004;
                 break;
               } // case 26
@@ -696,258 +633,18 @@ private static final long serialVersionUID = 0L;
       }
       private int bitField0_;
 
-      private java.util.List<io.littlehorse.common.proto.AttributePb> attributes_ =
-        java.util.Collections.emptyList();
-      private void ensureAttributesIsMutable() {
-        if (!((bitField0_ & 0x00000001) != 0)) {
-          attributes_ = new java.util.ArrayList<io.littlehorse.common.proto.AttributePb>(attributes_);
-          bitField0_ |= 0x00000001;
-         }
-      }
-
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          io.littlehorse.common.proto.AttributePb, io.littlehorse.common.proto.AttributePb.Builder, io.littlehorse.common.proto.AttributePbOrBuilder> attributesBuilder_;
-
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public java.util.List<io.littlehorse.common.proto.AttributePb> getAttributesList() {
-        if (attributesBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(attributes_);
-        } else {
-          return attributesBuilder_.getMessageList();
-        }
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public int getAttributesCount() {
-        if (attributesBuilder_ == null) {
-          return attributes_.size();
-        } else {
-          return attributesBuilder_.getCount();
-        }
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public io.littlehorse.common.proto.AttributePb getAttributes(int index) {
-        if (attributesBuilder_ == null) {
-          return attributes_.get(index);
-        } else {
-          return attributesBuilder_.getMessage(index);
-        }
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public Builder setAttributes(
-          int index, io.littlehorse.common.proto.AttributePb value) {
-        if (attributesBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureAttributesIsMutable();
-          attributes_.set(index, value);
-          onChanged();
-        } else {
-          attributesBuilder_.setMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public Builder setAttributes(
-          int index, io.littlehorse.common.proto.AttributePb.Builder builderForValue) {
-        if (attributesBuilder_ == null) {
-          ensureAttributesIsMutable();
-          attributes_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          attributesBuilder_.setMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public Builder addAttributes(io.littlehorse.common.proto.AttributePb value) {
-        if (attributesBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureAttributesIsMutable();
-          attributes_.add(value);
-          onChanged();
-        } else {
-          attributesBuilder_.addMessage(value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public Builder addAttributes(
-          int index, io.littlehorse.common.proto.AttributePb value) {
-        if (attributesBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureAttributesIsMutable();
-          attributes_.add(index, value);
-          onChanged();
-        } else {
-          attributesBuilder_.addMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public Builder addAttributes(
-          io.littlehorse.common.proto.AttributePb.Builder builderForValue) {
-        if (attributesBuilder_ == null) {
-          ensureAttributesIsMutable();
-          attributes_.add(builderForValue.build());
-          onChanged();
-        } else {
-          attributesBuilder_.addMessage(builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public Builder addAttributes(
-          int index, io.littlehorse.common.proto.AttributePb.Builder builderForValue) {
-        if (attributesBuilder_ == null) {
-          ensureAttributesIsMutable();
-          attributes_.add(index, builderForValue.build());
-          onChanged();
-        } else {
-          attributesBuilder_.addMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public Builder addAllAttributes(
-          java.lang.Iterable<? extends io.littlehorse.common.proto.AttributePb> values) {
-        if (attributesBuilder_ == null) {
-          ensureAttributesIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, attributes_);
-          onChanged();
-        } else {
-          attributesBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public Builder clearAttributes() {
-        if (attributesBuilder_ == null) {
-          attributes_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000001);
-          onChanged();
-        } else {
-          attributesBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public Builder removeAttributes(int index) {
-        if (attributesBuilder_ == null) {
-          ensureAttributesIsMutable();
-          attributes_.remove(index);
-          onChanged();
-        } else {
-          attributesBuilder_.remove(index);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public io.littlehorse.common.proto.AttributePb.Builder getAttributesBuilder(
-          int index) {
-        return getAttributesFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public io.littlehorse.common.proto.AttributePbOrBuilder getAttributesOrBuilder(
-          int index) {
-        if (attributesBuilder_ == null) {
-          return attributes_.get(index);  } else {
-          return attributesBuilder_.getMessageOrBuilder(index);
-        }
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public java.util.List<? extends io.littlehorse.common.proto.AttributePbOrBuilder> 
-           getAttributesOrBuilderList() {
-        if (attributesBuilder_ != null) {
-          return attributesBuilder_.getMessageOrBuilderList();
-        } else {
-          return java.util.Collections.unmodifiableList(attributes_);
-        }
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public io.littlehorse.common.proto.AttributePb.Builder addAttributesBuilder() {
-        return getAttributesFieldBuilder().addBuilder(
-            io.littlehorse.common.proto.AttributePb.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public io.littlehorse.common.proto.AttributePb.Builder addAttributesBuilder(
-          int index) {
-        return getAttributesFieldBuilder().addBuilder(
-            index, io.littlehorse.common.proto.AttributePb.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .littlehorse.AttributePb attributes = 1;</code>
-       */
-      public java.util.List<io.littlehorse.common.proto.AttributePb.Builder> 
-           getAttributesBuilderList() {
-        return getAttributesFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          io.littlehorse.common.proto.AttributePb, io.littlehorse.common.proto.AttributePb.Builder, io.littlehorse.common.proto.AttributePbOrBuilder> 
-          getAttributesFieldBuilder() {
-        if (attributesBuilder_ == null) {
-          attributesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              io.littlehorse.common.proto.AttributePb, io.littlehorse.common.proto.AttributePb.Builder, io.littlehorse.common.proto.AttributePbOrBuilder>(
-                  attributes_,
-                  ((bitField0_ & 0x00000001) != 0),
-                  getParentForChildren(),
-                  isClean());
-          attributes_ = null;
-        }
-        return attributesBuilder_;
-      }
-
       private com.google.protobuf.Timestamp earliestCreateTime_;
       private com.google.protobuf.SingleFieldBuilderV3<
           com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> earliestCreateTimeBuilder_;
       /**
-       * <code>optional .google.protobuf.Timestamp earliest_create_time = 2;</code>
+       * <code>optional .google.protobuf.Timestamp earliest_create_time = 1;</code>
        * @return Whether the earliestCreateTime field is set.
        */
       public boolean hasEarliestCreateTime() {
-        return ((bitField0_ & 0x00000002) != 0);
+        return ((bitField0_ & 0x00000001) != 0);
       }
       /**
-       * <code>optional .google.protobuf.Timestamp earliest_create_time = 2;</code>
+       * <code>optional .google.protobuf.Timestamp earliest_create_time = 1;</code>
        * @return The earliestCreateTime.
        */
       public com.google.protobuf.Timestamp getEarliestCreateTime() {
@@ -958,7 +655,7 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>optional .google.protobuf.Timestamp earliest_create_time = 2;</code>
+       * <code>optional .google.protobuf.Timestamp earliest_create_time = 1;</code>
        */
       public Builder setEarliestCreateTime(com.google.protobuf.Timestamp value) {
         if (earliestCreateTimeBuilder_ == null) {
@@ -969,12 +666,12 @@ private static final long serialVersionUID = 0L;
         } else {
           earliestCreateTimeBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000002;
+        bitField0_ |= 0x00000001;
         onChanged();
         return this;
       }
       /**
-       * <code>optional .google.protobuf.Timestamp earliest_create_time = 2;</code>
+       * <code>optional .google.protobuf.Timestamp earliest_create_time = 1;</code>
        */
       public Builder setEarliestCreateTime(
           com.google.protobuf.Timestamp.Builder builderForValue) {
@@ -983,16 +680,16 @@ private static final long serialVersionUID = 0L;
         } else {
           earliestCreateTimeBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000002;
+        bitField0_ |= 0x00000001;
         onChanged();
         return this;
       }
       /**
-       * <code>optional .google.protobuf.Timestamp earliest_create_time = 2;</code>
+       * <code>optional .google.protobuf.Timestamp earliest_create_time = 1;</code>
        */
       public Builder mergeEarliestCreateTime(com.google.protobuf.Timestamp value) {
         if (earliestCreateTimeBuilder_ == null) {
-          if (((bitField0_ & 0x00000002) != 0) &&
+          if (((bitField0_ & 0x00000001) != 0) &&
             earliestCreateTime_ != null &&
             earliestCreateTime_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
             getEarliestCreateTimeBuilder().mergeFrom(value);
@@ -1002,15 +699,15 @@ private static final long serialVersionUID = 0L;
         } else {
           earliestCreateTimeBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000002;
+        bitField0_ |= 0x00000001;
         onChanged();
         return this;
       }
       /**
-       * <code>optional .google.protobuf.Timestamp earliest_create_time = 2;</code>
+       * <code>optional .google.protobuf.Timestamp earliest_create_time = 1;</code>
        */
       public Builder clearEarliestCreateTime() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+        bitField0_ = (bitField0_ & ~0x00000001);
         earliestCreateTime_ = null;
         if (earliestCreateTimeBuilder_ != null) {
           earliestCreateTimeBuilder_.dispose();
@@ -1020,15 +717,15 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>optional .google.protobuf.Timestamp earliest_create_time = 2;</code>
+       * <code>optional .google.protobuf.Timestamp earliest_create_time = 1;</code>
        */
       public com.google.protobuf.Timestamp.Builder getEarliestCreateTimeBuilder() {
-        bitField0_ |= 0x00000002;
+        bitField0_ |= 0x00000001;
         onChanged();
         return getEarliestCreateTimeFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .google.protobuf.Timestamp earliest_create_time = 2;</code>
+       * <code>optional .google.protobuf.Timestamp earliest_create_time = 1;</code>
        */
       public com.google.protobuf.TimestampOrBuilder getEarliestCreateTimeOrBuilder() {
         if (earliestCreateTimeBuilder_ != null) {
@@ -1039,7 +736,7 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>optional .google.protobuf.Timestamp earliest_create_time = 2;</code>
+       * <code>optional .google.protobuf.Timestamp earliest_create_time = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
@@ -1059,14 +756,14 @@ private static final long serialVersionUID = 0L;
       private com.google.protobuf.SingleFieldBuilderV3<
           com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> latestCreateTimeBuilder_;
       /**
-       * <code>optional .google.protobuf.Timestamp latest_create_time = 3;</code>
+       * <code>optional .google.protobuf.Timestamp latest_create_time = 2;</code>
        * @return Whether the latestCreateTime field is set.
        */
       public boolean hasLatestCreateTime() {
-        return ((bitField0_ & 0x00000004) != 0);
+        return ((bitField0_ & 0x00000002) != 0);
       }
       /**
-       * <code>optional .google.protobuf.Timestamp latest_create_time = 3;</code>
+       * <code>optional .google.protobuf.Timestamp latest_create_time = 2;</code>
        * @return The latestCreateTime.
        */
       public com.google.protobuf.Timestamp getLatestCreateTime() {
@@ -1077,7 +774,7 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>optional .google.protobuf.Timestamp latest_create_time = 3;</code>
+       * <code>optional .google.protobuf.Timestamp latest_create_time = 2;</code>
        */
       public Builder setLatestCreateTime(com.google.protobuf.Timestamp value) {
         if (latestCreateTimeBuilder_ == null) {
@@ -1088,12 +785,12 @@ private static final long serialVersionUID = 0L;
         } else {
           latestCreateTimeBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000002;
         onChanged();
         return this;
       }
       /**
-       * <code>optional .google.protobuf.Timestamp latest_create_time = 3;</code>
+       * <code>optional .google.protobuf.Timestamp latest_create_time = 2;</code>
        */
       public Builder setLatestCreateTime(
           com.google.protobuf.Timestamp.Builder builderForValue) {
@@ -1102,16 +799,16 @@ private static final long serialVersionUID = 0L;
         } else {
           latestCreateTimeBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000002;
         onChanged();
         return this;
       }
       /**
-       * <code>optional .google.protobuf.Timestamp latest_create_time = 3;</code>
+       * <code>optional .google.protobuf.Timestamp latest_create_time = 2;</code>
        */
       public Builder mergeLatestCreateTime(com.google.protobuf.Timestamp value) {
         if (latestCreateTimeBuilder_ == null) {
-          if (((bitField0_ & 0x00000004) != 0) &&
+          if (((bitField0_ & 0x00000002) != 0) &&
             latestCreateTime_ != null &&
             latestCreateTime_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
             getLatestCreateTimeBuilder().mergeFrom(value);
@@ -1121,15 +818,15 @@ private static final long serialVersionUID = 0L;
         } else {
           latestCreateTimeBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000002;
         onChanged();
         return this;
       }
       /**
-       * <code>optional .google.protobuf.Timestamp latest_create_time = 3;</code>
+       * <code>optional .google.protobuf.Timestamp latest_create_time = 2;</code>
        */
       public Builder clearLatestCreateTime() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000002);
         latestCreateTime_ = null;
         if (latestCreateTimeBuilder_ != null) {
           latestCreateTimeBuilder_.dispose();
@@ -1139,15 +836,15 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>optional .google.protobuf.Timestamp latest_create_time = 3;</code>
+       * <code>optional .google.protobuf.Timestamp latest_create_time = 2;</code>
        */
       public com.google.protobuf.Timestamp.Builder getLatestCreateTimeBuilder() {
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000002;
         onChanged();
         return getLatestCreateTimeFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .google.protobuf.Timestamp latest_create_time = 3;</code>
+       * <code>optional .google.protobuf.Timestamp latest_create_time = 2;</code>
        */
       public com.google.protobuf.TimestampOrBuilder getLatestCreateTimeOrBuilder() {
         if (latestCreateTimeBuilder_ != null) {
@@ -1158,7 +855,7 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>optional .google.protobuf.Timestamp latest_create_time = 3;</code>
+       * <code>optional .google.protobuf.Timestamp latest_create_time = 2;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
@@ -1172,6 +869,78 @@ private static final long serialVersionUID = 0L;
           latestCreateTime_ = null;
         }
         return latestCreateTimeBuilder_;
+      }
+
+      private java.lang.Object keyPrefix_ = "";
+      /**
+       * <code>string key_prefix = 3;</code>
+       * @return The keyPrefix.
+       */
+      public java.lang.String getKeyPrefix() {
+        java.lang.Object ref = keyPrefix_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          keyPrefix_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string key_prefix = 3;</code>
+       * @return The bytes for keyPrefix.
+       */
+      public com.google.protobuf.ByteString
+          getKeyPrefixBytes() {
+        java.lang.Object ref = keyPrefix_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          keyPrefix_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string key_prefix = 3;</code>
+       * @param value The keyPrefix to set.
+       * @return This builder for chaining.
+       */
+      public Builder setKeyPrefix(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        keyPrefix_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string key_prefix = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearKeyPrefix() {
+        keyPrefix_ = getDefaultInstance().getKeyPrefix();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string key_prefix = 3;</code>
+       * @param value The bytes for keyPrefix to set.
+       * @return This builder for chaining.
+       */
+      public Builder setKeyPrefixBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        keyPrefix_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
       }
       @java.lang.Override
       public final Builder setUnknownFields(

@@ -849,17 +849,18 @@ public class BackendInternalComms implements Closeable {
             search.getPartitionKey(),
             Serdes.String().serializer()
         );
-        var out = InternalScanReplyPb.newBuilder();
-        var activeHost = meta.activeHost();
+        InternalScanReplyPb.Builder out = InternalScanReplyPb.newBuilder();
+        HostInfo activeHost = meta.activeHost();
 
         if (activeHost.equals(thisHost)) {
-            var store = getStore(meta.partition(), false, search.getStoreName());
-
-            String prefix = Tag.getAttributeStringFromPb(
-                search.getObjectType(),
-                search.getTagScan().getAttributesList()
+            LHROStoreWrapper store = getStore(
+                meta.partition(),
+                false,
+                search.getStoreName()
             );
-            var result = store
+
+            String prefix = search.getTagScan().getKeyPrefix() + "/";
+            List<ByteString> result = store
                 .prefixTagScanStream(prefix, Tag.class)
                 .limit(search.limit)
                 .map(tag -> {
@@ -1222,10 +1223,6 @@ public class BackendInternalComms implements Closeable {
         int partition,
         LHROStoreWrapper store
     ) {
-        List<Attribute> attributes = new ArrayList<>();
-        for (AttributePb atpb : tagPrefixScan.getAttributesList()) {
-            attributes.add(Attribute.fromProto(atpb));
-        }
         PartitionBookmarkPb bookmarkOut = null;
         List<ByteString> idsOut = new ArrayList<>();
 
@@ -1233,7 +1230,7 @@ public class BackendInternalComms implements Closeable {
         String endKey;
 
         if (bookmark == null) {
-            startKey = Tag.getAttributeString(objectType, attributes) + "/";
+            startKey = tagPrefixScan.getKeyPrefix() + "/";
             if (tagPrefixScan.hasEarliestCreateTime()) {
                 startKey +=
                     LHUtil.toLhDbFormat(
@@ -1245,7 +1242,7 @@ public class BackendInternalComms implements Closeable {
             startKey = bookmark.getLastKey();
         }
 
-        endKey = Tag.getAttributeString(objectType, attributes) + "/";
+        endKey = tagPrefixScan.getKeyPrefix() + "/";
         if (tagPrefixScan.hasLatestCreateTime()) {
             endKey +=
                 LHUtil.toLhDbFormat(
