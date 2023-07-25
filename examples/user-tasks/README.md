@@ -39,11 +39,7 @@ gradle example-user-tasks:run
 In another terminal, use `lhctl` to run the workflow. Note that we set the initial `user-id` of the person requesting the new item to `anakin`.
 
 ```
-<<<<<<< HEAD
 lhctl run it-request user-id anakin
-=======
-lhctl run it-approval user-id anakin
->>>>>>> 46c73083 (Adds User Task Example with lhctl)
 ```
 
 We check the status of the `WfRun` and see that it's running:
