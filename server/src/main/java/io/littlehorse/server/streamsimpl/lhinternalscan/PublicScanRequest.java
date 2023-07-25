@@ -65,8 +65,11 @@ public abstract class PublicScanRequest<
     }
 
     /**
-     * Build search attributes from search input arguments
-     * @return {@link Attribute} attributes associated to search operation
+     * Builds search attributes based on the provided search input arguments.
+     * This method is intended to be overridden by subclasses to implement custom logic.
+     *
+     * @return {@link Attribute} containing attributes associated with the search operation.
+     *
      * @throws LHValidationError if there are invalid options in the input arguments.
      */
     public List<Attribute> getSearchAttributes() throws LHValidationError {
