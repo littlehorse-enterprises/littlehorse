@@ -85,9 +85,9 @@ message BookmarkPb { // Used for paginated responses
 
 message InternalScanPb {
     message TagScanPb {
-        repeated AttributePb attributes = 1;
-        optional google.protobuf.Timestamp earliest_create_time = 2;
-        optional google.protobuf.Timestamp latest_create_time = 3;
+        optional google.protobuf.Timestamp earliest_create_time = 1;
+        optional google.protobuf.Timestamp latest_create_time = 2;
+        string key_prefix = 3;
     }
 
     message BoundedObjectIdScanPb {

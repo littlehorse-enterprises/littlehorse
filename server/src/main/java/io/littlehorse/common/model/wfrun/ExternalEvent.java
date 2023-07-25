@@ -127,47 +127,6 @@ public class ExternalEvent extends Getable<ExternalEventPb> {
         return List.of();
     }
 
-    /*@Override
-    public List<GetableIndex> getIndexes() {
-        return List.of(
-            new GetableIndex(
-                ExternalEvent.class,
-                List.of(
-                    Pair.of(
-                        "extEvtDefName",
-                        getable ->
-                            List.of(
-                                ((ExternalEvent) getable).getExternalEventDefName()
-                            )
-                    ),
-                    Pair.of(
-                        "isClaimed",
-                        getable ->
-                            List.of(
-                                String.valueOf(((ExternalEvent) getable).isClaimed())
-                            )
-                    )
-                ),
-                wfRunPb -> true,
-                Optional.of(TagStorageTypePb.LOCAL)
-            ),
-            new GetableIndex(
-                ExternalEvent.class,
-                List.of(
-                    Pair.of(
-                        "extEvtDefName",
-                        getable ->
-                            List.of(
-                                ((ExternalEvent) getable).getExternalEventDefName()
-                            )
-                    )
-                ),
-                wfRunPb -> true,
-                Optional.of(TagStorageTypePb.LOCAL)
-            )
-        );
-    }*/
-
     public static ExternalEvent fromProto(ExternalEventPb p) {
         ExternalEvent out = new ExternalEvent();
         out.initFrom(p);

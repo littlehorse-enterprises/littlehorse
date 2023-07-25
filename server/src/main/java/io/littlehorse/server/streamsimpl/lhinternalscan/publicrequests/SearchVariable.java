@@ -41,6 +41,7 @@ public class SearchVariable
     public VariableCriteriaCase type;
     public NameAndValuePb value;
     public String wfRunId;
+    private int wfSpecVersion;
 
     public GetableClassEnumPb getObjectType() {
         return GetableClassEnumPb.VARIABLE;
@@ -125,7 +126,6 @@ public class SearchVariable
             // hot boolean variables may be LOCAL_UNCOUNTED
             out.partitionKey = null;
 
-            int wfSpecVersion;
             if (value.hasWfSpecVersion()) {
                 wfSpecVersion = value.getWfSpecVersion();
                 WfSpec spec = stores.getWfSpec(value.getWfSpecName(), wfSpecVersion);
@@ -146,14 +146,8 @@ public class SearchVariable
                     wfSpecVersion = spec.version;
                 }
             }
-            List<Attribute> attributes = getAttributes(wfSpecVersion);
-            List<AttributePb> attributesPb = attributes
-                .stream()
-                .map(Attribute::toProto)
-                .map(AttributePb.Builder::build)
-                .toList();
             out.tagScan =
-                TagScanPb.newBuilder().addAllAttributes(attributesPb).build();
+                TagScanPb.newBuilder().setKeyPrefix(tagPrefixStoreKey()).build();
             TagStorageTypePb tagStorageTypePb = getStorageTypeFromVariableIndexConfiguration()
                 .orElse(null);
             if (tagStorageTypePb != null) {
@@ -172,7 +166,9 @@ public class SearchVariable
             .stream()
             //Filter matching configuration
             .filter(getableIndexConfiguration ->
-                getableIndexConfiguration.searchAttributesMatch(searchAttributes())
+                getableIndexConfiguration.searchAttributesMatch(
+                    searchAttributesString()
+                )
             )
             .map(GetableIndex::getTagStorageTypePb)
             .filter(Optional::isPresent)
@@ -219,17 +215,11 @@ public class SearchVariable
             // Remote Tag Scan (Specific Partition Tag Scan)
             out.setStoreName(ServerTopology.CORE_REPARTITION_STORE);
             out.setResultType(ScanResultTypePb.OBJECT_ID);
-            out.setPartitionKey(
-                Tag.getAttributeString(
-                    Getable.getTypeEnum(Variable.class),
-                    getAttributes(wfSpecVersion)
-                )
-            );
+            out.setPartitionKey(tagPrefixStoreKey());
         }
     }
 
-    private List<Attribute> getAttributes(int wfSpecVersion)
-        throws LHValidationError {
+    public List<Attribute> searchAttributes() throws LHValidationError {
         return List.of(
             new Attribute("wfSpecName", value.getWfSpecName()),
             new Attribute("wfSpecVersion", LHUtil.toLHDbVersionFormat(wfSpecVersion)),
@@ -251,7 +241,7 @@ public class SearchVariable
         };
     }
 
-    private List<String> searchAttributes() {
+    private List<String> searchAttributesString() {
         return List.of("name", "value", "wfSpecName", "wfSpecVersion");
     }
 }

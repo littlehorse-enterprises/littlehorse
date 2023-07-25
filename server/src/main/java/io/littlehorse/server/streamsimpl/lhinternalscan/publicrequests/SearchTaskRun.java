@@ -3,7 +3,6 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.objectId.TaskRunId;
-import io.littlehorse.common.proto.AttributePb;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
@@ -20,6 +19,8 @@ import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchTaskRunReply;
+import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -106,12 +107,7 @@ public class SearchTaskRun
             // partiiton key should be null, since it's a LOCAL search.
             TagScanPb.Builder scanBuilder = TagScanPb
                 .newBuilder()
-                .addAttributes(
-                    AttributePb
-                        .newBuilder()
-                        .setKey("taskDefName")
-                        .setVal(taskDef.getTaskDefName())
-                );
+                .setKeyPrefix(tagPrefixStoreKey());
 
             if (taskDef.hasEarliestStart()) {
                 scanBuilder.setEarliestCreateTime(taskDef.getEarliestStart());
@@ -126,18 +122,7 @@ public class SearchTaskRun
 
             TagScanPb.Builder scanBuilder = TagScanPb
                 .newBuilder()
-                .addAttributes(
-                    AttributePb
-                        .newBuilder()
-                        .setKey("taskDefName")
-                        .setVal(statusAndTaskDef.getTaskDefName())
-                )
-                .addAttributes(
-                    AttributePb
-                        .newBuilder()
-                        .setKey("status")
-                        .setVal(statusAndTaskDef.getStatus().toString())
-                );
+                .setKeyPrefix(tagPrefixStoreKey());
 
             if (statusAndTaskDef.hasEarliestStart()) {
                 scanBuilder.setEarliestCreateTime(
@@ -150,11 +135,22 @@ public class SearchTaskRun
 
             out.setTagScan(scanBuilder.build());
         } else {
-            throw new LHValidationError(
-                null,
-                "Yikes, unimplemented search type: " + type
-            );
+            throw new LHValidationError("Unimplemented search type: " + type);
         }
         return out;
+    }
+
+    @Override
+    public List<Attribute> searchAttributes() {
+        if (type == TaskRunCriteriaCase.TASK_DEF) {
+            return List.of(
+                new Attribute("taskDefName", statusAndTaskDef.getTaskDefName())
+            );
+        } else {
+            return List.of(
+                new Attribute("taskDefName", statusAndTaskDef.getTaskDefName()),
+                new Attribute("status", statusAndTaskDef.getStatus().toString())
+            );
+        }
     }
 }

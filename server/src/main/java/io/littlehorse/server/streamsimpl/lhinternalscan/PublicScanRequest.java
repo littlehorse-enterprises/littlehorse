@@ -6,6 +6,9 @@ import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
+import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
+import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
+import java.util.List;
 
 /**
  * T : The protobuf for the PublicScanRequest
@@ -45,5 +48,13 @@ public abstract class PublicScanRequest<
         out.bookmark = bookmark;
         out.objectType = getObjectType();
         return out;
+    }
+
+    public String tagPrefixStoreKey() throws LHValidationError {
+        return Tag.getAttributeString(getObjectType(), searchAttributes());
+    }
+
+    public List<Attribute> searchAttributes() throws LHValidationError {
+        return List.of();
     }
 }

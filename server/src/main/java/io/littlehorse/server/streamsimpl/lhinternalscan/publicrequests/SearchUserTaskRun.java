@@ -160,19 +160,15 @@ public class SearchUserTaskRun
 
         out.type = ScanBoundaryCase.TAG_SCAN;
         TagScanPb.Builder prefixScanBuilder = TagScanPb.newBuilder();
-        List<Attribute> attributes = getSearchAttributes();
-        prefixScanBuilder.addAllAttributes(
-            attributes
-                .stream()
-                .map(Attribute::toProto)
-                .map(AttributePb.Builder::build)
-                .toList()
-        );
         TagStorageTypePb tagStorageTypePb = tagStorageTypePbByUserId()
             .orElseGet(() -> tagStorageTypePbByStatus().orElse(null));
         if (tagStorageTypePb == null) {
+            List<String> attributes = searchAttributes()
+                .stream()
+                .map(Attribute::getEscapedKey)
+                .toList();
             Optional<TagStorageTypePb> tagStorageTypePbOptional = getStorageTypeForSearchAttributes(
-                attributes.stream().map(Attribute::getEscapedKey).toList()
+                attributes
             );
             if (tagStorageTypePbOptional.isEmpty()) {
                 throw new LHValidationError(
@@ -190,17 +186,12 @@ public class SearchUserTaskRun
             // Remote Tag Scan (Specific Partition Tag Scan)
             out.setStoreName(ServerTopology.CORE_REPARTITION_STORE);
             out.setResultType(ScanResultTypePb.OBJECT_ID);
-            out.setPartitionKey(
-                Tag.getAttributeString(
-                    Getable.getTypeEnum(UserTaskRun.class),
-                    attributes
-                )
-            );
+            out.setPartitionKey(tagPrefixStoreKey());
         }
 
         // TODO: allow unfiltered search. Need to either search without time
         // constraints over object ids, or need to add an empty tag.
-        if (prefixScanBuilder.getAttributesCount() == 0) {
+        if (searchAttributes().isEmpty()) {
             throw new LHValidationError(
                 null,
                 "Must specify at least one of: [status, userTaskDefName, userGroup, userId]"
@@ -234,7 +225,8 @@ public class SearchUserTaskRun
         return Optional.ofNullable(userId).map(userId -> TagStorageTypePb.REMOTE);
     }
 
-    private List<Attribute> getSearchAttributes() {
+    @Override
+    public List<Attribute> searchAttributes() {
         List<Attribute> attributes = new ArrayList<>();
         if (status != null) {
             attributes.add(new Attribute("status", this.getStatus().toString()));

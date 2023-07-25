@@ -2,6 +2,7 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
+import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.objectId.WfRunId;
 import io.littlehorse.common.model.wfrun.WfRun;
@@ -107,11 +108,12 @@ public class SearchWfRun
         return out;
     }
 
-    public InternalScan startInternalSearch(LHGlobalMetaStores stores) {
+    public InternalScan startInternalSearch(LHGlobalMetaStores stores)
+        throws LHValidationError {
         return startLocalInternalSearch();
     }
 
-    private List<String> searchAttributes() {
+    private List<String> searchAttributesString() {
         switch (type) {
             case STATUS_AND_SPEC:
                 return Arrays.asList("wfSpecName", "status", "wfSpecVersion");
@@ -124,18 +126,10 @@ public class SearchWfRun
         }
     }
 
-    private InternalScan startLocalInternalSearch() {
+    private InternalScan startLocalInternalSearch() throws LHValidationError {
         InternalScan out = new InternalScan();
-        List<Attribute> attributes = buildTagAttributes();
 
-        TagScanPb.Builder tagScanBuilder = TagScanPb
-            .newBuilder()
-            .addAllAttributes(
-                attributes
-                    .stream()
-                    .map(attribute -> attribute.toProto().build())
-                    .toList()
-            );
+        TagScanPb.Builder tagScanBuilder = TagScanPb.newBuilder();
 
         if (getEarliestStart() != null) {
             tagScanBuilder.setEarliestCreateTime(getEarliestStart());
@@ -143,36 +137,35 @@ public class SearchWfRun
         if (getLatestStart() != null) {
             tagScanBuilder.setLatestCreateTime(getLatestStart());
         }
+        tagScanBuilder.setKeyPrefix(tagPrefixStoreKey());
 
         out.setTagScan(tagScanBuilder.build());
         out.setType(ScanBoundaryCase.TAG_SCAN);
-        new WfRun()
+        TagStorageTypePb storageTypePb = new WfRun()
             .getIndexConfigurations()
             .stream()
             .filter(getableIndexConfiguration ->
-                getableIndexConfiguration.searchAttributesMatch(searchAttributes())
+                getableIndexConfiguration.searchAttributesMatch(
+                    searchAttributesString()
+                )
             )
             .map(GetableIndex::getTagStorageTypePb)
             .filter(Optional::isPresent)
             .map(Optional::get)
             .findFirst()
-            .ifPresent(tagStorageTypePb -> {
-                if (tagStorageTypePb == TagStorageTypePb.LOCAL) {
-                    // Local Tag Scan (All Partitions Tag Scan)
-                    out.setStoreName(ServerTopology.CORE_STORE);
-                    out.setResultType(ScanResultTypePb.OBJECT_ID);
-                } else {
-                    // Remote Tag Scan (Specific Partition Tag Scan)
-                    out.setStoreName(ServerTopology.CORE_REPARTITION_STORE);
-                    out.setResultType(ScanResultTypePb.OBJECT_ID);
-                    out.setPartitionKey(
-                        Tag.getAttributeString(
-                            Getable.getTypeEnum(WfRun.class),
-                            buildTagAttributes()
-                        )
-                    );
-                }
-            });
+            .orElse(null);
+        if (storageTypePb != null) {
+            if (storageTypePb == TagStorageTypePb.LOCAL) {
+                // Local Tag Scan (All Partitions Tag Scan)
+                out.setStoreName(ServerTopology.CORE_STORE);
+                out.setResultType(ScanResultTypePb.OBJECT_ID);
+            } else {
+                // Remote Tag Scan (Specific Partition Tag Scan)
+                out.setStoreName(ServerTopology.CORE_REPARTITION_STORE);
+                out.setResultType(ScanResultTypePb.OBJECT_ID);
+                out.setPartitionKey(tagPrefixStoreKey());
+            }
+        }
         return out;
     }
 
@@ -202,7 +195,7 @@ public class SearchWfRun
         return null;
     }
 
-    private List<Attribute> buildTagAttributes() {
+    public List<Attribute> searchAttributes() {
         if (type == WfrunCriteriaCase.STATUS_AND_SPEC) {
             return buildStatusAndSpecAttributesPb();
         } else if (type == WfrunCriteriaCase.NAME) {

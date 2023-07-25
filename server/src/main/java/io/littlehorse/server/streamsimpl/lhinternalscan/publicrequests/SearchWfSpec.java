@@ -3,6 +3,7 @@ package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 import com.google.common.base.Strings;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.common.proto.AttributePb;
 import io.littlehorse.common.proto.BookmarkPb;
@@ -20,6 +21,8 @@ import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchWfSpecReply;
+import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -100,7 +103,8 @@ public class SearchWfSpec
         return out;
     }
 
-    public InternalScan startInternalSearch(LHGlobalMetaStores stores) {
+    public InternalScan startInternalSearch(LHGlobalMetaStores stores)
+        throws LHValidationError {
         InternalScan out = new InternalScan();
         out.storeName = ServerTopology.CORE_STORE;
         out.resultType = ScanResultTypePb.OBJECT_ID;
@@ -129,13 +133,7 @@ public class SearchWfSpec
             out.tagScan =
                 InternalScanPb.TagScanPb
                     .newBuilder()
-                    .addAttributes(
-                        AttributePb
-                            .newBuilder()
-                            .setKey("taskDef")
-                            .setVal(taskDefName)
-                            .build()
-                    )
+                    .setKeyPrefix(tagPrefixStoreKey())
                     .build();
         } else {
             // that means we want to search all wfSpecs
@@ -144,5 +142,10 @@ public class SearchWfSpec
         }
 
         return out;
+    }
+
+    @Override
+    public List<Attribute> searchAttributes() throws LHValidationError {
+        return List.of(new Attribute("taskDef", taskDefName));
     }
 }
