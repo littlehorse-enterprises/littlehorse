@@ -857,15 +857,17 @@ public class LHConfig extends ConfigBase {
         );
     }
 
-    public void createKafkaTopic(NewTopic topic)
+    public boolean createKafkaTopic(NewTopic topic)
         throws InterruptedException, ExecutionException {
         try {
             kafkaAdmin.createTopics(Collections.singleton(topic)).all().get();
             log.info("Topic {} created.", topic.name());
+            return true;
         } catch (Exception e) {
             Throwable cause = e.getCause();
             if (cause != null && cause instanceof TopicExistsException) {
                 log.info("Topic {} already exists.", topic.name());
+                return false;
             } else {
                 throw e;
             }

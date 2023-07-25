@@ -15,17 +15,22 @@ public class App {
         throws InterruptedException, ExecutionException {
         log.info("Creating topics!!");
 
+        boolean createdATopic = false;
         for (NewTopic topic : config.getAllTopics()) {
-            config.createKafkaTopic(topic);
+            createdATopic = config.createKafkaTopic(topic) || createdATopic;
         }
 
-        try {
-            TimeUnit.SECONDS.sleep(5);
-        } catch (InterruptedException ex) {
-            log.warn("InterruptedException was ignored");
+        if (createdATopic) {
+            log.info("Sleeping 5 seconds to allow topic creation to propagate");
+            try {
+                TimeUnit.SECONDS.sleep(5);
+            } catch (InterruptedException ex) {
+                log.warn("InterruptedException was ignored");
+            }
+            log.info("Done creating topics");
+        } else {
+            log.info("Looks like all the topics already existed!");
         }
-
-        log.info("Done creating topics");
     }
 
     public static void main(String[] args)

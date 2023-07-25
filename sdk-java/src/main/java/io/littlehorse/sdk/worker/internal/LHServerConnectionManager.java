@@ -76,7 +76,7 @@ public class LHServerConnectionManager
         this.rebalanceThread =
             new Thread(() -> {
                 while (this.running) {
-                    askForMetadata();
+                    doHeartbeat();
                     try {
                         Thread.sleep(5000);
                     } catch (Exception ignored) {
@@ -197,7 +197,7 @@ public class LHServerConnectionManager
         // nothing to do
     }
 
-    private void askForMetadata() {
+    private void doHeartbeat() {
         bootstrapStub.registerTaskWorker(
             RegisterTaskWorkerPb
                 .newBuilder()
