@@ -90,7 +90,7 @@ public class SearchTaskDef
     }
 
     @Override
-    public TagStorageTypePb getTagStorageType() throws LHValidationError {
+    public TagStorageTypePb indexTypeForSearch() throws LHValidationError {
         return null;
     }
 

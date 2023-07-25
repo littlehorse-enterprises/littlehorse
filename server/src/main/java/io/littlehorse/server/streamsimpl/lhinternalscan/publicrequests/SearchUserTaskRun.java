@@ -1,15 +1,11 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
-import com.google.protobuf.Timestamp;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.objectId.UserTaskRunId;
 import io.littlehorse.common.model.wfrun.UserTaskRun;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnumPb;
-import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
-import io.littlehorse.common.proto.InternalScanPb.TagScanPb;
-import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
@@ -18,8 +14,6 @@ import io.littlehorse.sdk.common.proto.SearchUserTaskRunPb.TaskOwnerCase;
 import io.littlehorse.sdk.common.proto.SearchUserTaskRunReplyPb;
 import io.littlehorse.sdk.common.proto.UserTaskRunIdPb;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatusPb;
-import io.littlehorse.server.streamsimpl.ServerTopology;
-import io.littlehorse.server.streamsimpl.lhinternalscan.AbstractGetableSearchStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundary;
@@ -183,7 +177,7 @@ public class SearchUserTaskRun
     }
 
     @Override
-    public TagStorageTypePb getTagStorageType() throws LHValidationError {
+    public TagStorageTypePb indexTypeForSearch() throws LHValidationError {
         TagStorageTypePb tagStorageTypePb = tagStorageTypePbByUserId()
             .orElseGet(() -> tagStorageTypePbByStatus().orElse(null));
         if (tagStorageTypePb == null) {

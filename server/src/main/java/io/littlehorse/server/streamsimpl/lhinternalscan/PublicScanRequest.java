@@ -51,17 +51,14 @@ public abstract class PublicScanRequest<
         );
         if (searchScanBoundary != null) {
             getableSearchStrategy =
-                new AbstractGetableSearchStrategy(
-                    getObjectType(),
-                    searchScanBoundary
-                );
+                new GetableSearchStrategyImpl(getObjectType(), searchScanBoundary);
         }
         InternalScan out;
         if (getableSearchStrategy == null) {
             out = startInternalSearch(stores);
         } else {
             out =
-                getableSearchStrategy.buildInternalScan(stores, getTagStorageType());
+                getableSearchStrategy.buildInternalScan(stores, indexTypeForSearch());
         }
         if (out.limit == 0) out.limit = getLimit();
         out.bookmark = bookmark;
@@ -101,7 +98,7 @@ public abstract class PublicScanRequest<
      * @throws LHValidationError if there are validation errors in the input.
      */
 
-    public abstract TagStorageTypePb getTagStorageType() throws LHValidationError;
+    public abstract TagStorageTypePb indexTypeForSearch() throws LHValidationError;
 
     /**
      * Validate input parameters for the search operation

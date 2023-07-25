@@ -10,12 +10,12 @@ import io.littlehorse.server.streamsimpl.ServerTopology;
 import lombok.Getter;
 
 @Getter
-public class AbstractGetableSearchStrategy implements GetableSearchStrategy {
+public class GetableSearchStrategyImpl implements GetableSearchStrategy {
 
     private GetableClassEnumPb getableClassEnum;
     private SearchScanBoundary searchScanBoundary;
 
-    public AbstractGetableSearchStrategy(
+    public GetableSearchStrategyImpl(
         GetableClassEnumPb getableClassEnum,
         SearchScanBoundary searchScanBoundary
     ) {

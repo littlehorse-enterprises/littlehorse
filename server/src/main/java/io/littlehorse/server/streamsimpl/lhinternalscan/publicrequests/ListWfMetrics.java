@@ -97,7 +97,7 @@ public class ListWfMetrics
     }
 
     @Override
-    public TagStorageTypePb getTagStorageType() throws LHValidationError {
+    public TagStorageTypePb indexTypeForSearch() throws LHValidationError {
         return null;
     }
 

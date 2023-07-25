@@ -165,7 +165,7 @@ public class SearchWfRun
     }
 
     @Override
-    public TagStorageTypePb getTagStorageType() throws LHValidationError {
+    public TagStorageTypePb indexTypeForSearch() throws LHValidationError {
         return new WfRun()
             .getIndexConfigurations()
             .stream()

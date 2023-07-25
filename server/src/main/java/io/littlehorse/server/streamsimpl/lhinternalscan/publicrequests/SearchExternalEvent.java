@@ -176,7 +176,7 @@ public class SearchExternalEvent
     }
 
     @Override
-    public TagStorageTypePb getTagStorageType() throws LHValidationError {
+    public TagStorageTypePb indexTypeForSearch() throws LHValidationError {
         return null;
     }
 
