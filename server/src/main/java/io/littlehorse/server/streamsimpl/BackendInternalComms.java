@@ -859,7 +859,7 @@ public class BackendInternalComms implements Closeable {
                 search.getStoreName()
             );
 
-            String prefix = search.getTagScan().getKeyPrefix();
+            String prefix = search.getTagScan().getKeyPrefix() + "/";
             List<ByteString> result = store
                 .prefixTagScanStream(prefix, Tag.class)
                 .limit(search.limit)

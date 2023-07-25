@@ -160,6 +160,7 @@ public class SearchUserTaskRun
 
         out.type = ScanBoundaryCase.TAG_SCAN;
         TagScanPb.Builder prefixScanBuilder = TagScanPb.newBuilder();
+        prefixScanBuilder.setKeyPrefix(tagPrefixStoreKey());
         TagStorageTypePb tagStorageTypePb = tagStorageTypePbByUserId()
             .orElseGet(() -> tagStorageTypePbByStatus().orElse(null));
         if (tagStorageTypePb == null) {
