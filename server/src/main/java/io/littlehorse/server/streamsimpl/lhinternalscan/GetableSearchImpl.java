@@ -36,13 +36,20 @@ public class GetableSearchImpl implements GetableSearch {
             );
             out.setType(InternalScanPb.ScanBoundaryCase.TAG_SCAN);
         } else {
-            throw new LHValidationError("Scan boundary not supported yet");
+            out.setBoundedObjectIdScan(
+                (InternalScanPb.BoundedObjectIdScanPb) searchScanBoundary.buildScanProto()
+            );
+            out.setType(InternalScanPb.ScanBoundaryCase.BOUNDED_OBJECT_ID_SCAN);
+            out.setResultType(ScanResultTypePb.OBJECT);
+            out.setStoreName(ServerTopology.CORE_REPARTITION_STORE);
+            out.setPartitionKey(searchScanBoundary.getSearchAttributeString());
         }
+
         if (tagStorageType == TagStorageTypePb.REMOTE) {
             out.setStoreName(ServerTopology.CORE_REPARTITION_STORE);
             out.setResultType(ScanResultTypePb.OBJECT_ID);
             out.setPartitionKey(searchScanBoundary.getSearchAttributeString());
-        } else {
+        } else if (tagStorageType == TagStorageTypePb.LOCAL) {
             out.storeName = ServerTopology.CORE_STORE;
             out.resultType = ScanResultTypePb.OBJECT_ID;
         }

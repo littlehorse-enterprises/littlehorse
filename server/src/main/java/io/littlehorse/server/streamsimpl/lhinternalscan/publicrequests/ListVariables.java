@@ -14,6 +14,7 @@ import io.littlehorse.sdk.common.proto.ListVariablesReplyPb;
 import io.littlehorse.sdk.common.proto.VariablePb;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
+import io.littlehorse.server.streamsimpl.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.ListVariablesReply;
@@ -41,22 +42,12 @@ public class ListVariables
     }
 
     public InternalScan startInternalSearch(LHGlobalMetaStores stores) {
-        InternalScan out = new InternalScan();
-        out.storeName = ServerTopology.CORE_STORE;
-        out.resultType = ScanResultTypePb.OBJECT;
-        out.type = ScanBoundaryCase.BOUNDED_OBJECT_ID_SCAN;
-        out.partitionKey = wfRunId;
-        out.boundedObjectIdScan =
-            BoundedObjectIdScanPb
-                .newBuilder()
-                .setStartObjectId(wfRunId + "/")
-                .build();
-        return out;
+        return null;
     }
 
     @Override
     public TagStorageTypePb indexTypeForSearch() throws LHValidationError {
-        return null;
+        return TagStorageTypePb.LOCAL;
     }
 
     @Override
@@ -64,6 +55,6 @@ public class ListVariables
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
-        return null;
+        return new ObjectIdScanBoundaryStrategy(wfRunId);
     }
 }
