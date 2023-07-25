@@ -181,12 +181,12 @@ public class SearchUserTaskRun
         TagStorageTypePb tagStorageTypePb = tagStorageTypePbByUserId()
             .orElseGet(() -> tagStorageTypePbByStatus().orElse(null));
         if (tagStorageTypePb == null) {
-            List<String> attributes = getSearchAttributes()
+            List<String> searchAttributes = getSearchAttributes()
                 .stream()
                 .map(Attribute::getEscapedKey)
                 .toList();
             Optional<TagStorageTypePb> tagStorageTypePbOptional = getStorageTypeForSearchAttributes(
-                attributes
+                searchAttributes
             );
             if (tagStorageTypePbOptional.isEmpty()) {
                 throw new LHValidationError(

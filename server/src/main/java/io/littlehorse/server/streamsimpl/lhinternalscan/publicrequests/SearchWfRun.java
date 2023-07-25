@@ -117,17 +117,6 @@ public class SearchWfRun
         );
     }
 
-    private List<String> searchAttributesString() {
-        switch (type) {
-            case STATUS_AND_SPEC:
-                return Arrays.asList("wfSpecName", "status", "wfSpecVersion");
-            case NAME:
-                return Arrays.asList("wfSpecName");
-            default:
-                return Arrays.asList("wfSpecName", "status");
-        }
-    }
-
     private Timestamp getEarliestStart() {
         if (type == WfrunCriteriaCase.STATUS_AND_SPEC) {
             if (statusAndSpec.hasEarliestStart()) {
@@ -166,13 +155,15 @@ public class SearchWfRun
 
     @Override
     public TagStorageTypePb indexTypeForSearch() throws LHValidationError {
+        List<String> searchAttributeKeys = getSearchAttributes()
+            .stream()
+            .map(Attribute::getEscapedKey)
+            .toList();
         return new WfRun()
             .getIndexConfigurations()
             .stream()
             .filter(getableIndexConfiguration ->
-                getableIndexConfiguration.searchAttributesMatch(
-                    searchAttributesString()
-                )
+                getableIndexConfiguration.searchAttributesMatch(searchAttributeKeys)
             )
             .map(GetableIndex::getTagStorageTypePb)
             .filter(Optional::isPresent)
