@@ -11,7 +11,7 @@ public interface SearchScanBoundaryStrategy {
      * Builds a specific type of scan boundary.
      * @return Scan Boundary proto representation as defined in {@link io.littlehorse.common.proto.InternalScanPb}.
      */
-    Message buildProto();
+    Message buildScanProto();
 
     /**
      * Retrieves the attribute string used for the search operation.

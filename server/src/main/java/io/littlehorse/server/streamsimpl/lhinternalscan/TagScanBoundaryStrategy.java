@@ -24,7 +24,7 @@ public class TagScanBoundaryStrategy implements SearchScanBoundaryStrategy {
     }
 
     @Override
-    public Message buildProto() {
+    public Message buildScanProto() {
         InternalScanPb.TagScanPb.Builder prefixScanBuilder = InternalScanPb.TagScanPb.newBuilder();
         prefixScanBuilder.setKeyPrefix(keyPrefix);
         Consumer<Date> setLatestStartToBuilder = date -> {
