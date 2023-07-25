@@ -266,7 +266,7 @@ public class TaskRun extends Getable<TaskRunPb> {
             //    Currently, we don't resurrect the workflow. However, in the future,
             //    we may want to do something more with it, but it gets really
             //    complicated very quickly from a user semantics perspective.
-            log.debug(
+            log.trace(
                 "Ignored {} TaskRunResult on TaskRun {} attempt no. {} w/status {}",
                 ce.getStatus(),
                 id.getStoreKey(),
