@@ -4,7 +4,7 @@ import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 
-public interface GetableSearchStrategy {
+public interface GetableSearch {
     InternalScan buildInternalScan(
         LHGlobalMetaStores stores,
         TagStorageTypePb tagStorageType

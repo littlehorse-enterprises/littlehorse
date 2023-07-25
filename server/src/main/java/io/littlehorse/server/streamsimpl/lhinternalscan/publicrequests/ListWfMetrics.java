@@ -17,7 +17,7 @@ import io.littlehorse.sdk.common.proto.WfSpecMetricsPb;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
-import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundary;
+import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.ListWfMetricsReply;
 import java.util.Date;
 
@@ -105,7 +105,7 @@ public class ListWfMetrics
     public void validate() throws LHValidationError {}
 
     @Override
-    public SearchScanBoundary getScanBoundary(String searchAttributeString) {
+    public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
         return null;
     }
 }

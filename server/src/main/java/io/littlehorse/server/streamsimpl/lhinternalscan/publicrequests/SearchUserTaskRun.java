@@ -16,8 +16,8 @@ import io.littlehorse.sdk.common.proto.UserTaskRunIdPb;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatusPb;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
-import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundary;
-import io.littlehorse.server.streamsimpl.lhinternalscan.TagScanBoundary;
+import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrategy;
+import io.littlehorse.server.streamsimpl.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchUserTaskRunReply;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
@@ -210,8 +210,8 @@ public class SearchUserTaskRun
     }
 
     @Override
-    public SearchScanBoundary getScanBoundary(String searchAttributeString) {
-        return new TagScanBoundary(
+    public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
+        return new TagScanBoundaryStrategy(
             searchAttributeString,
             Optional.ofNullable(earliestStart),
             Optional.ofNullable(latestStart)

@@ -29,7 +29,7 @@ public abstract class PublicScanRequest<
 
     protected BookmarkPb bookmark;
     protected Integer limit;
-    protected GetableSearchStrategy getableSearchStrategy;
+    protected GetableSearch getableSearch;
 
     public abstract GetableClassEnumPb getObjectType();
 
@@ -46,19 +46,18 @@ public abstract class PublicScanRequest<
 
     public InternalScan getInternalSearch(LHGlobalMetaStores stores)
         throws LHValidationError {
-        SearchScanBoundary searchScanBoundary = getScanBoundary(
+        SearchScanBoundaryStrategy searchScanBoundaryStrategy = getScanBoundary(
             getSearchAttributeString()
         );
-        if (searchScanBoundary != null) {
-            getableSearchStrategy =
-                new GetableSearchStrategyImpl(getObjectType(), searchScanBoundary);
+        if (searchScanBoundaryStrategy != null) {
+            getableSearch =
+                new GetableSearchImpl(getObjectType(), searchScanBoundaryStrategy);
         }
         InternalScan out;
-        if (getableSearchStrategy == null) {
+        if (getableSearch == null) {
             out = startInternalSearch(stores);
         } else {
-            out =
-                getableSearchStrategy.buildInternalScan(stores, indexTypeForSearch());
+            out = getableSearch.buildInternalScan(stores, indexTypeForSearch());
         }
         if (out.limit == 0) out.limit = getLimit();
         out.bookmark = bookmark;
@@ -106,5 +105,7 @@ public abstract class PublicScanRequest<
      */
     public abstract void validate() throws LHValidationError;
 
-    public abstract SearchScanBoundary getScanBoundary(String searchAttributeString);
+    public abstract SearchScanBoundaryStrategy getScanBoundary(
+        String searchAttributeString
+    );
 }

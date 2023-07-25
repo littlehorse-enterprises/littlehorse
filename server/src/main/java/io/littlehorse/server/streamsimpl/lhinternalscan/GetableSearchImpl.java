@@ -10,17 +10,17 @@ import io.littlehorse.server.streamsimpl.ServerTopology;
 import lombok.Getter;
 
 @Getter
-public class GetableSearchStrategyImpl implements GetableSearchStrategy {
+public class GetableSearchImpl implements GetableSearch {
 
     private GetableClassEnumPb getableClassEnum;
-    private SearchScanBoundary searchScanBoundary;
+    private SearchScanBoundaryStrategy searchScanBoundary;
 
-    public GetableSearchStrategyImpl(
+    public GetableSearchImpl(
         GetableClassEnumPb getableClassEnum,
-        SearchScanBoundary searchScanBoundary
+        SearchScanBoundaryStrategy searchScanBoundaryStrategy
     ) {
         this.getableClassEnum = getableClassEnum;
-        this.searchScanBoundary = searchScanBoundary;
+        this.searchScanBoundary = searchScanBoundaryStrategy;
     }
 
     @Override
@@ -49,6 +49,6 @@ public class GetableSearchStrategyImpl implements GetableSearchStrategy {
     }
 
     public boolean isTagScan() {
-        return searchScanBoundary instanceof TagScanBoundary;
+        return searchScanBoundary instanceof TagScanBoundaryStrategy;
     }
 }

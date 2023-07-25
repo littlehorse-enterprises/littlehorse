@@ -17,7 +17,7 @@ import io.littlehorse.sdk.common.proto.SearchExternalEventDefReplyPb;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
-import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundary;
+import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchExternalEventDefReply;
 import lombok.extern.slf4j.Slf4j;
 
@@ -100,7 +100,7 @@ public class SearchExternalEventDef
     public void validate() throws LHValidationError {}
 
     @Override
-    public SearchScanBoundary getScanBoundary(String searchAttributeString) {
+    public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
         return null;
     }
 }

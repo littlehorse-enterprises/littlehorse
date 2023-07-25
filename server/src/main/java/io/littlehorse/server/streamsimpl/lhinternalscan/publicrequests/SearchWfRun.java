@@ -19,8 +19,8 @@ import io.littlehorse.sdk.common.proto.SearchWfRunReplyPb;
 import io.littlehorse.sdk.common.proto.WfRunIdPb;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
-import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundary;
-import io.littlehorse.server.streamsimpl.lhinternalscan.TagScanBoundary;
+import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrategy;
+import io.littlehorse.server.streamsimpl.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchWfRunReply;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
@@ -189,8 +189,8 @@ public class SearchWfRun
     }
 
     @Override
-    public SearchScanBoundary getScanBoundary(String searchAttributeString) {
-        return new TagScanBoundary(
+    public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
+        return new TagScanBoundaryStrategy(
             searchAttributeString,
             Optional.ofNullable(LHUtil.fromProtoTs(getEarliestStart())),
             Optional.ofNullable(LHUtil.fromProtoTs(getLatestStart()))
