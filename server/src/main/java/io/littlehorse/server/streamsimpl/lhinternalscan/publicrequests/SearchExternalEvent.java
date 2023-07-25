@@ -20,6 +20,7 @@ import io.littlehorse.sdk.common.proto.SearchExternalEventReplyPb;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
+import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchExternalEventReply;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
@@ -172,5 +173,18 @@ public class SearchExternalEvent
                 )
             )
             .orElse(List.of(new Attribute("extEvtDefName", externalEventDefName)));
+    }
+
+    @Override
+    public TagStorageTypePb indexTypeForSearch() throws LHValidationError {
+        return null;
+    }
+
+    @Override
+    public void validate() throws LHValidationError {}
+
+    @Override
+    public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
+        return null;
     }
 }

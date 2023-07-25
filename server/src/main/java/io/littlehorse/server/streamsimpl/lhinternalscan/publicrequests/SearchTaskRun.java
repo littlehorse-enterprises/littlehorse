@@ -8,6 +8,7 @@ import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.InternalScanPb.TagScanPb;
 import io.littlehorse.common.proto.ScanResultTypePb;
+import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.SearchTaskRunPb;
 import io.littlehorse.sdk.common.proto.SearchTaskRunPb.ByTaskDefPb;
@@ -18,6 +19,7 @@ import io.littlehorse.sdk.common.proto.TaskRunIdPb;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
+import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchTaskRunReply;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
 import java.util.List;
@@ -152,5 +154,18 @@ public class SearchTaskRun
                 new Attribute("status", statusAndTaskDef.getStatus().toString())
             );
         }
+    }
+
+    @Override
+    public TagStorageTypePb indexTypeForSearch() throws LHValidationError {
+        return null;
+    }
+
+    @Override
+    public void validate() throws LHValidationError {}
+
+    @Override
+    public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
+        return null;
     }
 }

@@ -5,6 +5,7 @@ import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnumPb;
+import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
@@ -28,6 +29,7 @@ public abstract class PublicScanRequest<
 
     protected BookmarkPb bookmark;
     protected Integer limit;
+    protected GetableSearch getableSearch;
 
     public abstract GetableClassEnumPb getObjectType();
 
@@ -38,12 +40,25 @@ public abstract class PublicScanRequest<
         return limit;
     }
 
+    @Deprecated
     protected abstract InternalScan startInternalSearch(LHGlobalMetaStores stores)
         throws LHValidationError;
 
     public InternalScan getInternalSearch(LHGlobalMetaStores stores)
         throws LHValidationError {
-        InternalScan out = startInternalSearch(stores);
+        SearchScanBoundaryStrategy searchScanBoundaryStrategy = getScanBoundary(
+            getSearchAttributeString()
+        );
+        if (searchScanBoundaryStrategy != null) {
+            getableSearch =
+                new GetableSearchImpl(getObjectType(), searchScanBoundaryStrategy);
+        }
+        InternalScan out;
+        if (getableSearch == null) {
+            out = startInternalSearch(stores);
+        } else {
+            out = getableSearch.buildInternalScan(stores, indexTypeForSearch());
+        }
         if (out.limit == 0) out.limit = getLimit();
         out.bookmark = bookmark;
         out.objectType = getObjectType();
@@ -75,4 +90,22 @@ public abstract class PublicScanRequest<
     public List<Attribute> getSearchAttributes() throws LHValidationError {
         return List.of();
     }
+
+    /**
+     * Returns the storage type to be used by this search operation.
+     * @return The storage type or null if not specified in the configuration.
+     * @throws LHValidationError if there are validation errors in the input.
+     */
+
+    public abstract TagStorageTypePb indexTypeForSearch() throws LHValidationError;
+
+    /**
+     * Validate input parameters for the search operation
+     * @throws LHValidationError if there are validation errors in the input.
+     */
+    public abstract void validate() throws LHValidationError;
+
+    public abstract SearchScanBoundaryStrategy getScanBoundary(
+        String searchAttributeString
+    );
 }

@@ -7,9 +7,6 @@ import io.littlehorse.common.model.objectId.WfRunId;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnumPb;
-import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
-import io.littlehorse.common.proto.InternalScanPb.TagScanPb;
-import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
@@ -20,9 +17,10 @@ import io.littlehorse.sdk.common.proto.SearchWfRunPb.StatusAndSpecPb;
 import io.littlehorse.sdk.common.proto.SearchWfRunPb.WfrunCriteriaCase;
 import io.littlehorse.sdk.common.proto.SearchWfRunReplyPb;
 import io.littlehorse.sdk.common.proto.WfRunIdPb;
-import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
+import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrategy;
+import io.littlehorse.server.streamsimpl.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchWfRunReply;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
@@ -108,63 +106,15 @@ public class SearchWfRun
 
     public InternalScan startInternalSearch(LHGlobalMetaStores stores)
         throws LHValidationError {
-        return startLocalInternalSearch();
+        return null;
     }
 
-    private List<String> searchAttributesString() {
-        switch (type) {
-            case STATUS_AND_SPEC:
-                return Arrays.asList("wfSpecName", "status", "wfSpecVersion");
-            case NAME:
-                return Arrays.asList("wfSpecName");
-            case STATUS_AND_NAME:
-                return Arrays.asList("wfSpecName", "status");
-            default:
-                throw new RuntimeException("not possible");
-        }
-    }
-
-    private InternalScan startLocalInternalSearch() throws LHValidationError {
-        InternalScan out = new InternalScan();
-
-        TagScanPb.Builder tagScanBuilder = TagScanPb.newBuilder();
-
-        if (getEarliestStart() != null) {
-            tagScanBuilder.setEarliestCreateTime(getEarliestStart());
-        }
-        if (getLatestStart() != null) {
-            tagScanBuilder.setLatestCreateTime(getLatestStart());
-        }
-        tagScanBuilder.setKeyPrefix(getSearchAttributeString());
-
-        out.setTagScan(tagScanBuilder.build());
-        out.setType(ScanBoundaryCase.TAG_SCAN);
-        TagStorageTypePb storageTypePb = new WfRun()
-            .getIndexConfigurations()
-            .stream()
-            .filter(getableIndexConfiguration ->
-                getableIndexConfiguration.searchAttributesMatch(
-                    searchAttributesString()
-                )
-            )
-            .map(GetableIndex::getTagStorageTypePb)
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .findFirst()
-            .orElse(null);
-        if (storageTypePb != null) {
-            if (storageTypePb == TagStorageTypePb.LOCAL) {
-                // Local Tag Scan (All Partitions Tag Scan)
-                out.setStoreName(ServerTopology.CORE_STORE);
-                out.setResultType(ScanResultTypePb.OBJECT_ID);
-            } else {
-                // Remote Tag Scan (Specific Partition Tag Scan)
-                out.setStoreName(ServerTopology.CORE_REPARTITION_STORE);
-                out.setResultType(ScanResultTypePb.OBJECT_ID);
-                out.setPartitionKey(getSearchAttributeString());
-            }
-        }
-        return out;
+    private List<WfrunCriteriaCase> supportedCriteriaCases() {
+        return List.of(
+            WfrunCriteriaCase.STATUS_AND_SPEC,
+            WfrunCriteriaCase.NAME,
+            WfrunCriteriaCase.STATUS_AND_NAME
+        );
     }
 
     private Timestamp getEarliestStart() {
@@ -198,11 +148,44 @@ public class SearchWfRun
             return buildStatusAndSpecAttributesPb();
         } else if (type == WfrunCriteriaCase.NAME) {
             return buildNameAttributePb();
-        } else if (type == WfrunCriteriaCase.STATUS_AND_NAME) {
-            return buildStatusAndNameAttributesPb();
         } else {
-            throw new RuntimeException("Not possible or unimplemented");
+            return buildStatusAndNameAttributesPb();
         }
+    }
+
+    @Override
+    public TagStorageTypePb indexTypeForSearch() throws LHValidationError {
+        List<String> searchAttributeKeys = getSearchAttributes()
+            .stream()
+            .map(Attribute::getEscapedKey)
+            .toList();
+        return new WfRun()
+            .getIndexConfigurations()
+            .stream()
+            .filter(getableIndexConfiguration ->
+                getableIndexConfiguration.searchAttributesMatch(searchAttributeKeys)
+            )
+            .map(GetableIndex::getTagStorageTypePb)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .findFirst()
+            .orElse(null);
+    }
+
+    @Override
+    public void validate() throws LHValidationError {
+        if (!supportedCriteriaCases().contains(type)) {
+            throw new LHValidationError("Search case not supported yet");
+        }
+    }
+
+    @Override
+    public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
+        return new TagScanBoundaryStrategy(
+            searchAttributeString,
+            Optional.ofNullable(LHUtil.fromProtoTs(getEarliestStart())),
+            Optional.ofNullable(LHUtil.fromProtoTs(getLatestStart()))
+        );
     }
 
     private List<Attribute> buildStatusAndNameAttributesPb() {
