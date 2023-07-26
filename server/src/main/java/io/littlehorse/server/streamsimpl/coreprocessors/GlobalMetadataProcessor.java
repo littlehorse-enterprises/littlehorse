@@ -1,17 +1,23 @@
 package io.littlehorse.server.streamsimpl.coreprocessors;
 
 import io.littlehorse.server.streamsimpl.ServerTopology;
+import io.littlehorse.server.streamsimpl.util.WfSpecCacheManager;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 
+@Slf4j
 public class GlobalMetadataProcessor implements Processor<String, Bytes, Void, Void> {
 
     private KeyValueStore<String, Bytes> store;
+    private final WfSpecCacheManager wfSpecCacheManager;
 
-    public GlobalMetadataProcessor() {}
+    public GlobalMetadataProcessor(WfSpecCacheManager wfSpecCacheManager) {
+        this.wfSpecCacheManager = wfSpecCacheManager;
+    }
 
     public void init(final ProcessorContext<Void, Void> ctx) {
         store = ctx.getStateStore(ServerTopology.GLOBAL_STORE);
@@ -34,7 +40,11 @@ public class GlobalMetadataProcessor implements Processor<String, Bytes, Void, V
         String key = record.key();
         Bytes value = record.value();
 
-        // TODO: Start using write-through cache here
+        try {
+            wfSpecCacheManager.addToCache(key, value);
+        } catch (Exception ex) {
+            log.error("Failed to cache on WfSpec cache", ex);
+        }
 
         if (value == null) {
             store.delete(key);
