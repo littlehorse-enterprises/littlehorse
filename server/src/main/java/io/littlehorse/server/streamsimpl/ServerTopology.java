@@ -159,7 +159,7 @@ public class ServerTopology {
             config.getGlobalMetadataCLTopicName(),
             GLOBAL_META_PROCESSOR,
             () -> {
-                return new GlobalMetadataProcessor(/* pass something here */);
+                return new GlobalMetadataProcessor();
             }
             // add lambda to return the processor
         );
