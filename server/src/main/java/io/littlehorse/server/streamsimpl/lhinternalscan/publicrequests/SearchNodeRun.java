@@ -94,7 +94,7 @@ public class SearchNodeRun
         if (type == NoderunCriteriaCase.WF_RUN_ID) {
             return new ObjectIdScanBoundaryStrategy(wfRunId);
         } else {
-            throw new LHValidationError("Yikes, unimplemented type: " + type);
+            throw new LHValidationError("Unimplemented type: " + type);
         }
     }
 }
