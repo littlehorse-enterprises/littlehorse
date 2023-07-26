@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
 
 @Slf4j
-public class CacheManager {
+public class WfSpecCacheManager {
 
     private static final Pattern WFSPEC_KEY_PATTERN = Pattern.compile(
         "WfSpec\\/(?<name>.+)\\/(?<version>\\d+)"
@@ -18,7 +18,7 @@ public class CacheManager {
 
     private final LHCache<WfSpecId, WfSpec> wfSpecCache;
 
-    public CacheManager(LHCache<WfSpecId, WfSpec> wfSpecCache) {
+    public WfSpecCacheManager(LHCache<WfSpecId, WfSpec> wfSpecCache) {
         this.wfSpecCache = wfSpecCache;
     }
 
