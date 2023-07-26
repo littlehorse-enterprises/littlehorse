@@ -34,7 +34,7 @@ public class SearchExternalEvent
     public ExtEvtCriteriaCase type;
     public String wfRunId;
     private String externalEventDefName;
-    private Optional<Boolean> isClaimed;
+    private Optional<Boolean> isClaimed = Optional.empty();
 
     public GetableClassEnumPb getObjectType() {
         return GetableClassEnumPb.EXTERNAL_EVENT;
