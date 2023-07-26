@@ -4,9 +4,6 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.metrics.WfSpecMetrics;
 import io.littlehorse.common.proto.GetableClassEnumPb;
-import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
-import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
-import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.common.util.LHUtil;
@@ -14,7 +11,6 @@ import io.littlehorse.sdk.common.proto.ListWfMetricsPb;
 import io.littlehorse.sdk.common.proto.ListWfMetricsReplyPb;
 import io.littlehorse.sdk.common.proto.MetricsWindowLengthPb;
 import io.littlehorse.sdk.common.proto.WfSpecMetricsPb;
-import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
@@ -61,12 +57,9 @@ public class ListWfMetrics
         return GetableClassEnumPb.WF_SPEC_METRICS;
     }
 
-    public InternalScan startInternalSearch(LHGlobalMetaStores stores) {
-        return null;
-    }
-
     @Override
-    public TagStorageTypePb indexTypeForSearch() throws LHValidationError {
+    public TagStorageTypePb indexTypeForSearch(LHGlobalMetaStores stores)
+        throws LHValidationError {
         return null;
     }
 

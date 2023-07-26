@@ -4,15 +4,11 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.wfrun.Variable;
 import io.littlehorse.common.proto.GetableClassEnumPb;
-import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
-import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
-import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.ListVariablesPb;
 import io.littlehorse.sdk.common.proto.ListVariablesReplyPb;
 import io.littlehorse.sdk.common.proto.VariablePb;
-import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
@@ -41,12 +37,9 @@ public class ListVariables
         return GetableClassEnumPb.VARIABLE;
     }
 
-    public InternalScan startInternalSearch(LHGlobalMetaStores stores) {
-        return null;
-    }
-
     @Override
-    public TagStorageTypePb indexTypeForSearch() throws LHValidationError {
+    public TagStorageTypePb indexTypeForSearch(LHGlobalMetaStores stores)
+        throws LHValidationError {
         return TagStorageTypePb.LOCAL;
     }
 

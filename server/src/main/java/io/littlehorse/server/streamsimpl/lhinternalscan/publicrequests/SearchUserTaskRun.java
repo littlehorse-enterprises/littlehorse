@@ -132,12 +132,6 @@ public class SearchUserTaskRun
         }
     }
 
-    public InternalScan startInternalSearch(LHGlobalMetaStores stores)
-        throws LHValidationError {
-        // Replaced by GetableSearchStrategy
-        return null;
-    }
-
     private Optional<TagStorageTypePb> tagStorageTypePbByStatus() {
         return Optional
             .ofNullable(status)
@@ -177,7 +171,8 @@ public class SearchUserTaskRun
     }
 
     @Override
-    public TagStorageTypePb indexTypeForSearch() throws LHValidationError {
+    public TagStorageTypePb indexTypeForSearch(LHGlobalMetaStores stores)
+        throws LHValidationError {
         TagStorageTypePb tagStorageTypePb = tagStorageTypePbByUserId()
             .orElseGet(() -> tagStorageTypePbByStatus().orElse(null));
         if (tagStorageTypePb == null) {
