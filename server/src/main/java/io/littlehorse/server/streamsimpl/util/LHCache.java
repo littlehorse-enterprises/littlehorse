@@ -12,7 +12,9 @@ public class LHCache<K, V> {
             return cache.get(key);
         }
         V value = cacheable.get();
-        cache.put(key, value);
+        if (value != null) {
+            cache.put(key, value);
+        }
         return value;
     }
 

@@ -9,6 +9,7 @@ import io.littlehorse.common.proto.StoreQueryStatusPb;
 import io.littlehorse.common.proto.WaitForCommandReplyPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.server.KafkaStreamsServerImpl;
+import io.littlehorse.server.streamsimpl.util.WfSpecCache;
 import java.time.Duration;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
@@ -25,10 +26,16 @@ public class CommandProcessor
     private KafkaStreamsLHDAOImpl dao;
     private LHConfig config;
     private KafkaStreamsServerImpl server;
+    private final WfSpecCache wfSpecCache;
 
-    public CommandProcessor(LHConfig config, KafkaStreamsServerImpl server) {
+    public CommandProcessor(
+        LHConfig config,
+        KafkaStreamsServerImpl server,
+        WfSpecCache wfSpecCache
+    ) {
         this.config = config;
         this.server = server;
+        this.wfSpecCache = wfSpecCache;
     }
 
     @Override
@@ -36,7 +43,7 @@ public class CommandProcessor
         // temporary hack
 
         this.ctx = ctx;
-        dao = new KafkaStreamsLHDAOImpl(this.ctx, config, server);
+        dao = new KafkaStreamsLHDAOImpl(this.ctx, config, server, wfSpecCache);
         dao.onPartitionClaimed();
 
         ctx.schedule(
