@@ -34,6 +34,8 @@ public class GlobalMetadataProcessor implements Processor<String, Bytes, Void, V
         String key = record.key();
         Bytes value = record.value();
 
+        // TODO: Start using write-through cache here
+
         if (value == null) {
             store.delete(key);
         } else {

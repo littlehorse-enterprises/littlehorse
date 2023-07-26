@@ -274,6 +274,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     // take care of it for later.
     @Override
     public WfSpec getWfSpec(String name, Integer version) {
+        // TODO: Start using read-through cache here
         LHROStoreWrapper store = isHotMetadataPartition ? localStore : globalStore;
         WfSpec out;
         if (version != null) {

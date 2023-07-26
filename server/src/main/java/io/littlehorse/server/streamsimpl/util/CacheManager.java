@@ -1,11 +1,11 @@
 package io.littlehorse.server.streamsimpl.util;
 
 import io.littlehorse.common.model.meta.WfSpec;
+import io.littlehorse.common.model.objectId.WfSpecId;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.common.utils.Bytes;
 
 @Slf4j
@@ -14,9 +14,11 @@ public class CacheManager {
     private static final Pattern WFSPEC_KEY_PATTERN = Pattern.compile(
         "WfSpec\\/(?<name>.+)\\/(?<version>\\d+)"
     );
-    private final LHCache<Pair<String, Integer>, WfSpec> wfSpecCache;
+    public static final int LATEST_VERSION = -1;
 
-    public CacheManager(LHCache<Pair<String, Integer>, WfSpec> wfSpecCache) {
+    private final LHCache<WfSpecId, WfSpec> wfSpecCache;
+
+    public CacheManager(LHCache<WfSpecId, WfSpec> wfSpecCache) {
         this.wfSpecCache = wfSpecCache;
     }
 
@@ -27,8 +29,8 @@ public class CacheManager {
         if (isWfSpec) {
             String name = wfSpecMatcher.group("name");
             Integer version = Integer.valueOf(wfSpecMatcher.group("version"));
-            Pair<String, Integer> cacheVersionKey = Pair.of(name, version);
-            Pair<String, Integer> cacheLatestKey = Pair.of(name, null);
+            WfSpecId cacheVersionKey = new WfSpecId(name, version);
+            WfSpecId cacheLatestKey = new WfSpecId(name, LATEST_VERSION);
             if (value == null) {
                 wfSpecCache.evictCache(cacheVersionKey);
                 wfSpecCache.evictCache(cacheLatestKey);
