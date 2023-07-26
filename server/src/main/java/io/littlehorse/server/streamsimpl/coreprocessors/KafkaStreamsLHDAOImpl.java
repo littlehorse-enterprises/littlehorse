@@ -284,20 +284,17 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
             LHROStoreWrapper store = isHotMetadataPartition
                 ? localStore
                 : globalStore;
-            WfSpec out;
             if (version != null) {
-                out =
-                    store.get(
-                        new WfSpecId(name, version).getStoreKey(),
-                        WfSpec.class
-                    );
-            } else {
-                out = store.getLastFromPrefix(name, WfSpec.class);
+                return store.get(
+                    new WfSpecId(name, version).getStoreKey(),
+                    WfSpec.class
+                );
             }
-            if (out != null) out.setDao(this);
-            return out;
+            return store.getLastFromPrefix(name, WfSpec.class);
         };
-        return wfSpecCache.getOrCache(name, version, findWfSpec);
+        WfSpec wfSpec = wfSpecCache.getOrCache(name, version, findWfSpec);
+        if (wfSpec != null) wfSpec.setDao(this);
+        return wfSpec;
     }
 
     // TODO: Investigate whether there is a potential issue with
