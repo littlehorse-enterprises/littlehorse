@@ -6,16 +6,13 @@ import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.objectId.ExternalEventDefId;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnumPb;
-import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
-import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
-import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.ExternalEventDefIdPb;
 import io.littlehorse.sdk.common.proto.SearchExternalEventDefPb;
 import io.littlehorse.sdk.common.proto.SearchExternalEventDefReplyPb;
-import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
+import io.littlehorse.server.streamsimpl.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchExternalEventDefReply;
@@ -67,33 +64,10 @@ public class SearchExternalEventDef
         return out;
     }
 
-    public InternalScan startInternalSearch(LHGlobalMetaStores stores) {
-        InternalScan out = new InternalScan();
-        out.type = ScanBoundaryCase.BOUNDED_OBJECT_ID_SCAN;
-        out.partitionKey = LHConstants.META_PARTITION_KEY;
-
-        out.storeName = ServerTopology.CORE_STORE;
-        out.resultType = ScanResultTypePb.OBJECT_ID;
-
-        if (prefix != null && !prefix.equals("")) {
-            // Prefix scan on name
-            out.boundedObjectIdScan =
-                BoundedObjectIdScanPb
-                    .newBuilder()
-                    .setStartObjectId(prefix)
-                    .setEndObjectId(prefix + "~")
-                    .build();
-        } else {
-            out.boundedObjectIdScan =
-                BoundedObjectIdScanPb.newBuilder().setStartObjectId("").build();
-        }
-
-        return out;
-    }
-
     @Override
-    public TagStorageTypePb indexTypeForSearch() throws LHValidationError {
-        return null;
+    public TagStorageTypePb indexTypeForSearch(LHGlobalMetaStores stores)
+        throws LHValidationError {
+        return TagStorageTypePb.LOCAL;
     }
 
     @Override
@@ -101,6 +75,18 @@ public class SearchExternalEventDef
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
-        return null;
+        if (prefix != null && !prefix.equals("")) {
+            return new ObjectIdScanBoundaryStrategy(
+                LHConstants.META_PARTITION_KEY,
+                prefix,
+                prefix + "~"
+            );
+        } else {
+            return new ObjectIdScanBoundaryStrategy(
+                LHConstants.META_PARTITION_KEY,
+                "",
+                "~"
+            );
+        }
     }
 }

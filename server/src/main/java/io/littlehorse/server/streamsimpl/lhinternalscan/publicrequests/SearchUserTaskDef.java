@@ -6,17 +6,14 @@ import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.objectId.UserTaskDefId;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnumPb;
-import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
-import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
-import io.littlehorse.common.proto.ScanResultTypePb;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.SearchUserTaskDefPb;
 import io.littlehorse.sdk.common.proto.SearchUserTaskDefPb.UserTaskDefCriteriaCase;
 import io.littlehorse.sdk.common.proto.SearchUserTaskDefReplyPb;
 import io.littlehorse.sdk.common.proto.UserTaskDefIdPb;
-import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
+import io.littlehorse.server.streamsimpl.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchUserTaskDefReply;
@@ -94,40 +91,9 @@ public class SearchUserTaskDef
         return out;
     }
 
-    public InternalScan startInternalSearch(LHGlobalMetaStores stores) {
-        InternalScan out = new InternalScan();
-        out.storeName = ServerTopology.CORE_STORE;
-        out.resultType = ScanResultTypePb.OBJECT_ID;
-        out.type = ScanBoundaryCase.BOUNDED_OBJECT_ID_SCAN;
-        out.partitionKey = LHConstants.META_PARTITION_KEY;
-
-        if (name != null && !name.equals("")) {
-            // exact match on name
-            out.boundedObjectIdScan =
-                BoundedObjectIdScanPb
-                    .newBuilder()
-                    .setStartObjectId(name + "/")
-                    .setEndObjectId(name + "/~")
-                    .build();
-        } else if (prefix != null && !prefix.equals("")) {
-            // Prefix scan on name
-            out.boundedObjectIdScan =
-                BoundedObjectIdScanPb
-                    .newBuilder()
-                    .setStartObjectId(prefix)
-                    .setEndObjectId(prefix + "~")
-                    .build();
-        } else {
-            // that means we want to search all UserTaskDefs
-            out.boundedObjectIdScan =
-                BoundedObjectIdScanPb.newBuilder().setStartObjectId("").build();
-        }
-
-        return out;
-    }
-
     @Override
-    public TagStorageTypePb indexTypeForSearch() throws LHValidationError {
+    public TagStorageTypePb indexTypeForSearch(LHGlobalMetaStores stores)
+        throws LHValidationError {
         return null;
     }
 
@@ -136,6 +102,24 @@ public class SearchUserTaskDef
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
-        return null;
+        if (name != null && !name.equals("")) {
+            return new ObjectIdScanBoundaryStrategy(
+                LHConstants.META_PARTITION_KEY,
+                name + "/",
+                name + "/~"
+            );
+        } else if (prefix != null && !prefix.equals("")) {
+            return new ObjectIdScanBoundaryStrategy(
+                LHConstants.META_PARTITION_KEY,
+                prefix + "/",
+                prefix + "~"
+            );
+        } else {
+            return new ObjectIdScanBoundaryStrategy(
+                LHConstants.META_PARTITION_KEY,
+                "",
+                "~"
+            );
+        }
     }
 }

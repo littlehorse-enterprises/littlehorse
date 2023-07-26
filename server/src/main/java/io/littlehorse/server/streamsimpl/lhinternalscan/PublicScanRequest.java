@@ -40,25 +40,17 @@ public abstract class PublicScanRequest<
         return limit;
     }
 
-    @Deprecated
-    protected abstract InternalScan startInternalSearch(LHGlobalMetaStores stores)
-        throws LHValidationError;
-
     public InternalScan getInternalSearch(LHGlobalMetaStores stores)
         throws LHValidationError {
         SearchScanBoundaryStrategy searchScanBoundaryStrategy = getScanBoundary(
             getSearchAttributeString()
         );
-        if (searchScanBoundaryStrategy != null) {
-            getableSearch =
-                new GetableSearchImpl(getObjectType(), searchScanBoundaryStrategy);
-        }
-        InternalScan out;
-        if (getableSearch == null) {
-            out = startInternalSearch(stores);
-        } else {
-            out = getableSearch.buildInternalScan(stores, indexTypeForSearch());
-        }
+        getableSearch =
+            new GetableSearchImpl(getObjectType(), searchScanBoundaryStrategy);
+        InternalScan out = getableSearch.buildInternalScan(
+            stores,
+            indexTypeForSearch(stores)
+        );
         if (out.limit == 0) out.limit = getLimit();
         out.bookmark = bookmark;
         out.objectType = getObjectType();
@@ -97,7 +89,8 @@ public abstract class PublicScanRequest<
      * @throws LHValidationError if there are validation errors in the input.
      */
 
-    public abstract TagStorageTypePb indexTypeForSearch() throws LHValidationError;
+    public abstract TagStorageTypePb indexTypeForSearch(LHGlobalMetaStores stores)
+        throws LHValidationError;
 
     /**
      * Validate input parameters for the search operation
@@ -107,5 +100,5 @@ public abstract class PublicScanRequest<
 
     public abstract SearchScanBoundaryStrategy getScanBoundary(
         String searchAttributeString
-    );
+    ) throws LHValidationError;
 }

@@ -104,11 +104,6 @@ public class SearchWfRun
         return out;
     }
 
-    public InternalScan startInternalSearch(LHGlobalMetaStores stores)
-        throws LHValidationError {
-        return null;
-    }
-
     private List<WfrunCriteriaCase> supportedCriteriaCases() {
         return List.of(
             WfrunCriteriaCase.STATUS_AND_SPEC,
@@ -154,7 +149,8 @@ public class SearchWfRun
     }
 
     @Override
-    public TagStorageTypePb indexTypeForSearch() throws LHValidationError {
+    public TagStorageTypePb indexTypeForSearch(LHGlobalMetaStores stores)
+        throws LHValidationError {
         List<String> searchAttributeKeys = getSearchAttributes()
             .stream()
             .map(Attribute::getEscapedKey)
