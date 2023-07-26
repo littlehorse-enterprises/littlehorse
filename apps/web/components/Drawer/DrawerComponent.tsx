@@ -385,7 +385,7 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
             <p className="center">TYPE</p>
           </div>
           {mainData &&
-            mainData.map(({ name, type, value }, index) => {
+            mainData.map(({ name, type }, index) => {
               return (
                 <div key={index} className="grid-2">
                   <p className="center">{name}</p>
