@@ -119,11 +119,33 @@ class WfSpecCacheTest {
         @Test
         public void shouldNotCacheNullValues() {
             final WfSpecCache wfSpecCache = new WfSpecCache();
-            final WfSpecId cacheKey = new WfSpecId("WF1", 23);
+            String name = "WF1";
+            int version = 23;
+            final WfSpecId cacheKey = new WfSpecId(name, version);
 
             wfSpecCache.getOrCache(cacheKey, () -> null);
+            wfSpecCache.getOrCache(name, version, () -> null);
 
             assertThat(wfSpecCache.get(cacheKey)).isNull();
+        }
+
+        @Test
+        public void shouldCreateLatestVersionWhenVersionIsNull() {
+            final WfSpecCache wfSpecCache = new WfSpecCache();
+            String name = "WF1";
+            Integer version = null;
+            WfSpec wfSpec = TestUtil.wfSpec(name);
+
+            wfSpecCache.getOrCache(name, version, () -> wfSpec);
+
+            WfSpec cachedLatestWfSpec = wfSpecCache.get(
+                new WfSpecId(name, LATEST_VERSION)
+            );
+
+            assertThat(cachedLatestWfSpec)
+                .usingRecursiveComparison()
+                .ignoringFields("threadSpecs")
+                .isEqualTo(wfSpec);
         }
     }
 }
