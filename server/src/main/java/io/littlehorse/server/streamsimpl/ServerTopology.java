@@ -12,6 +12,7 @@ import io.littlehorse.server.streamsimpl.coreprocessors.GlobalMetadataProcessor;
 import io.littlehorse.server.streamsimpl.coreprocessors.RepartitionCommandProcessor;
 import io.littlehorse.server.streamsimpl.coreprocessors.TimerProcessor;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionCommand;
+import io.littlehorse.server.streamsimpl.util.WfSpecCache;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -75,7 +76,7 @@ public class ServerTopology {
         KafkaStreamsServerImpl server
     ) {
         Topology topo = new Topology();
-
+        WfSpecCache wfSpecCache = new WfSpecCache();
         topo.addSource(
             CORE_SOURCE, // source name
             Serdes.String().deserializer(), // key deserializer
@@ -86,7 +87,7 @@ public class ServerTopology {
         topo.addProcessor(
             CORE_PROCESSOR,
             () -> {
-                return new CommandProcessor(config, server);
+                return new CommandProcessor(config, server, wfSpecCache);
             },
             CORE_SOURCE
         );
@@ -159,7 +160,7 @@ public class ServerTopology {
             config.getGlobalMetadataCLTopicName(),
             GLOBAL_META_PROCESSOR,
             () -> {
-                return new GlobalMetadataProcessor();
+                return new GlobalMetadataProcessor(wfSpecCache);
             }
             // add lambda to return the processor
         );

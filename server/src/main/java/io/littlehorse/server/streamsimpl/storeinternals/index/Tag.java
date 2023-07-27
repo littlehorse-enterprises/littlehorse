@@ -5,7 +5,6 @@ import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.Storeable;
 import io.littlehorse.common.proto.AttributePb;
 import io.littlehorse.common.proto.GetableClassEnumPb;
-import io.littlehorse.common.proto.InternalScanPb.TagScanPb;
 import io.littlehorse.common.proto.TagPb;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHUtil;

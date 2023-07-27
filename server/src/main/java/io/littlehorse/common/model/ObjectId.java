@@ -30,6 +30,11 @@ public abstract class ObjectId<
         return getStoreKey().equals(((ObjectId<?, ?, ?>) other).getStoreKey());
     }
 
+    @Override
+    public int hashCode() {
+        return getStoreKey().hashCode();
+    }
+
     public static <
         T extends Message, U extends Message, V extends LHSerializable<U>
     > ObjectId<?, ?, ?> fromString(

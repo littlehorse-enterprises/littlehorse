@@ -50,12 +50,14 @@ import io.littlehorse.server.streamsimpl.storeinternals.utils.LHIterKeyValue;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.LHKeyValueIterator;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import io.littlehorse.server.streamsimpl.util.InternalHosts;
+import io.littlehorse.server.streamsimpl.util.WfSpecCache;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
@@ -113,6 +115,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     private LHROStoreWrapper globalStore;
     private ProcessorContext<String, CommandProcessorOutput> ctx;
     private LHConfig config;
+    private final WfSpecCache wfSpecCache;
     private boolean partitionIsClaimed;
 
     private GetableStorageManager getableStorageManager;
@@ -120,11 +123,13 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     public KafkaStreamsLHDAOImpl(
         final ProcessorContext<String, CommandProcessorOutput> ctx,
         LHConfig config,
-        KafkaStreamsServerImpl server
+        KafkaStreamsServerImpl server,
+        WfSpecCache wfSpecCache
     ) {
         this.server = server;
         this.ctx = ctx;
         this.config = config;
+        this.wfSpecCache = wfSpecCache;
 
         // At the start, we haven't claimed the partition until the claim event comes
         this.partitionIsClaimed = false;
@@ -274,15 +279,21 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
     // take care of it for later.
     @Override
     public WfSpec getWfSpec(String name, Integer version) {
-        LHROStoreWrapper store = isHotMetadataPartition ? localStore : globalStore;
-        WfSpec out;
-        if (version != null) {
-            out = store.get(new WfSpecId(name, version).getStoreKey(), WfSpec.class);
-        } else {
-            out = store.getLastFromPrefix(name, WfSpec.class);
-        }
-        if (out != null) out.setDao(this);
-        return out;
+        Supplier<WfSpec> findWfSpec = () -> {
+            LHROStoreWrapper store = isHotMetadataPartition
+                ? localStore
+                : globalStore;
+            if (version != null) {
+                return store.get(
+                    new WfSpecId(name, version).getStoreKey(),
+                    WfSpec.class
+                );
+            }
+            return store.getLastFromPrefix(name, WfSpec.class);
+        };
+        WfSpec wfSpec = wfSpecCache.getOrCache(name, version, findWfSpec);
+        if (wfSpec != null) wfSpec.setDao(this);
+        return wfSpec;
     }
 
     // TODO: Investigate whether there is a potential issue with
@@ -976,6 +987,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         wfRunPuts.clear();
         wfSpecPuts.clear();
         taskDefPuts.clear();
+        taskRunPuts.clear();
         userTaskDefPuts.clear();
         extEvtDefPuts.clear();
         taskWorkerGroupPuts.clear();

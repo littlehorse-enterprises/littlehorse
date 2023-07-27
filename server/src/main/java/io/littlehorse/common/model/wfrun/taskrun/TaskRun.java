@@ -60,6 +60,7 @@ public class TaskRun extends Getable<TaskRunPb> {
         id = LHSerializable.fromProto(p.getId(), TaskRunId.class);
         status = p.getStatus();
         timeoutSeconds = p.getTimeoutSeconds();
+        taskRunSource = LHSerializable.fromProto(p.getSource(), TaskRunSource.class);
 
         for (TaskAttemptPb attempt : p.getAttemptsList()) {
             attempts.add(LHSerializable.fromProto(attempt, TaskAttempt.class));
@@ -76,6 +77,7 @@ public class TaskRun extends Getable<TaskRunPb> {
             .setMaxAttempts(maxAttempts)
             .setScheduledAt(LHUtil.fromDate(scheduledAt))
             .setStatus(status)
+            .setSource(taskRunSource.toProto())
             .setTimeoutSeconds(timeoutSeconds)
             .setId(id.toProto());
 

@@ -42,6 +42,7 @@ import io.littlehorse.sdk.common.proto.PutWfSpecReplyPb;
 import io.littlehorse.sdk.common.proto.ResumeWfRunPb;
 import io.littlehorse.sdk.common.proto.RunWfPb;
 import io.littlehorse.sdk.common.proto.RunWfReplyPb;
+import io.littlehorse.sdk.common.proto.SearchTaskRunReplyPb;
 import io.littlehorse.sdk.common.proto.SearchWfRunPb;
 import io.littlehorse.sdk.common.proto.SearchWfRunPb.StatusAndSpecPb;
 import io.littlehorse.sdk.common.proto.SearchWfRunReplyPb;
