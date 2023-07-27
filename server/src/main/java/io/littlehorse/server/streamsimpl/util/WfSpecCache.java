@@ -29,10 +29,12 @@ public class WfSpecCache extends LHCache<WfSpecId, WfSpec> {
             WfSpecId cacheVersionKey = new WfSpecId(name, version);
             WfSpecId cacheLatestKey = new WfSpecId(name, LATEST_VERSION);
             if (value == null) {
+                log.trace("Evicting wfSpecCache for {}", cacheVersionKey);
                 evictCache(cacheVersionKey);
                 evictCache(cacheLatestKey);
             } else {
                 WfSpec wfSpec = WfSpec.fromBytes(value.get(), WfSpec.class, null);
+                log.trace("Updating wfSpecCache for {}", cacheVersionKey);
                 updateCache(cacheVersionKey, wfSpec);
                 updateCache(cacheLatestKey, wfSpec);
             }

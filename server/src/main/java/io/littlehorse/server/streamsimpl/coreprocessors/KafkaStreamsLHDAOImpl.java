@@ -50,7 +50,6 @@ import io.littlehorse.server.streamsimpl.storeinternals.utils.LHIterKeyValue;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.LHKeyValueIterator;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import io.littlehorse.server.streamsimpl.util.InternalHosts;
-import io.littlehorse.server.streamsimpl.util.LHCache;
 import io.littlehorse.server.streamsimpl.util.WfSpecCache;
 import java.util.ArrayList;
 import java.util.Date;
