@@ -6,10 +6,7 @@ import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
 import io.littlehorse.common.LHConfig;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 
 // `P` is the proto class used to serialize.
@@ -21,8 +18,6 @@ public abstract class LHSerializable<T extends Message> {
     public abstract void initFrom(Message proto) throws LHSerdeError;
 
     public abstract Class<? extends GeneratedMessageV3> getProtoBaseClass();
-
-    private static Map<Class<?>, Constructor<?>> constructorCache = new HashMap<>();
 
     public String toJson() {
         try {
@@ -42,22 +37,12 @@ public abstract class LHSerializable<T extends Message> {
         return toProto().build().toByteArray();
     }
 
-    @SuppressWarnings("unchecked")
-    private static <U extends Message, T extends LHSerializable<U>> T getInstance(
-        Class<T> cls
-    ) throws Exception {
-        if (!constructorCache.containsKey(cls)) {
-            constructorCache.put(cls, cls.getDeclaredConstructor());
-        }
-        return (T) constructorCache.get(cls).newInstance();
-    }
-
     public static <U extends Message, T extends LHSerializable<U>> T fromProto(
         U proto,
         Class<T> cls
     ) {
         try {
-            T out = getInstance(cls);
+            T out = cls.getDeclaredConstructor().newInstance();
             out.initFrom(proto);
             return out;
         } catch (Exception exn) {
