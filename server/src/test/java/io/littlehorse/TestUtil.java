@@ -18,7 +18,9 @@ import io.littlehorse.common.model.wfrun.VariableValue;
 import io.littlehorse.common.model.wfrun.WfRun;
 import io.littlehorse.common.model.wfrun.subnoderun.TaskNodeRun;
 import io.littlehorse.common.model.wfrun.subnoderun.UserTaskNodeRun;
+import io.littlehorse.common.model.wfrun.taskrun.TaskNodeReference;
 import io.littlehorse.common.model.wfrun.taskrun.TaskRun;
+import io.littlehorse.common.model.wfrun.taskrun.TaskRunSource;
 import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.sdk.common.proto.LHStatusPb;
@@ -104,6 +106,11 @@ public class TestUtil {
     public static TaskRun taskRun() {
         TaskRun taskRun = new TaskRun();
         taskRun.setId(taskRunId());
+        taskRun.setTaskRunSource(
+            new TaskRunSource(
+                new TaskNodeReference(nodeRun().getObjectId(), wfSpecId())
+            )
+        );
         taskRun.setTaskDefName("test-name");
         taskRun.setMaxAttempts(10);
         taskRun.setScheduledAt(new Date());
