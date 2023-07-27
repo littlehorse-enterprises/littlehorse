@@ -1,26 +1,28 @@
 package io.littlehorse.server.streamsimpl.lhinternalscan.publicrequests;
 
 import com.google.protobuf.Message;
+import com.google.protobuf.Timestamp;
 import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.objectId.TaskRunId;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnumPb;
-import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
-import io.littlehorse.common.proto.InternalScanPb.TagScanPb;
-import io.littlehorse.common.proto.ScanResultTypePb;
+import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.SearchTaskRunPb;
 import io.littlehorse.sdk.common.proto.SearchTaskRunPb.ByTaskDefPb;
 import io.littlehorse.sdk.common.proto.SearchTaskRunPb.StatusAndTaskDefPb;
 import io.littlehorse.sdk.common.proto.SearchTaskRunPb.TaskRunCriteriaCase;
 import io.littlehorse.sdk.common.proto.SearchTaskRunReplyPb;
 import io.littlehorse.sdk.common.proto.TaskRunIdPb;
-import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
+import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrategy;
+import io.littlehorse.server.streamsimpl.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchTaskRunReply;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
 import java.util.List;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -94,50 +96,30 @@ public class SearchTaskRun
         return out;
     }
 
-    public InternalScan startInternalSearch(LHGlobalMetaStores stores)
-        throws LHValidationError {
-        InternalScan out = new InternalScan();
-        out.setResultType(ScanResultTypePb.OBJECT_ID);
-        out.setObjectType(getObjectType());
-
+    private Timestamp getEarliestStart() {
         if (type == TaskRunCriteriaCase.TASK_DEF) {
-            out.storeName = ServerTopology.CORE_STORE;
-            out.type = ScanBoundaryCase.TAG_SCAN;
-
-            // partiiton key should be null, since it's a LOCAL search.
-            TagScanPb.Builder scanBuilder = TagScanPb
-                .newBuilder()
-                .setKeyPrefix(getSearchAttributeString());
-
             if (taskDef.hasEarliestStart()) {
-                scanBuilder.setEarliestCreateTime(taskDef.getEarliestStart());
+                return taskDef.getEarliestStart();
             }
-            if (taskDef.hasLatestStart()) {
-                scanBuilder.setLatestCreateTime(taskDef.getLatestStart());
-            }
-            out.setTagScan(scanBuilder.build());
         } else if (type == TaskRunCriteriaCase.STATUS_AND_TASK_DEF) {
-            out.storeName = ServerTopology.CORE_STORE;
-            out.type = ScanBoundaryCase.TAG_SCAN;
-
-            TagScanPb.Builder scanBuilder = TagScanPb
-                .newBuilder()
-                .setKeyPrefix(getSearchAttributeString());
-
             if (statusAndTaskDef.hasEarliestStart()) {
-                scanBuilder.setEarliestCreateTime(
-                    statusAndTaskDef.getEarliestStart()
-                );
+                return statusAndTaskDef.getEarliestStart();
             }
-            if (statusAndTaskDef.hasLatestStart()) {
-                scanBuilder.setLatestCreateTime(statusAndTaskDef.getLatestStart());
-            }
-
-            out.setTagScan(scanBuilder.build());
-        } else {
-            throw new LHValidationError("Unimplemented search type: " + type);
         }
-        return out;
+        return null;
+    }
+
+    private Timestamp getLatestStart() {
+        if (type == TaskRunCriteriaCase.TASK_DEF) {
+            if (taskDef.hasLatestStart()) {
+                return taskDef.getLatestStart();
+            }
+        } else if (type == TaskRunCriteriaCase.STATUS_AND_TASK_DEF) {
+            if (statusAndTaskDef.hasLatestStart()) {
+                return statusAndTaskDef.getLatestStart();
+            }
+        }
+        return null;
     }
 
     @Override
@@ -151,6 +133,32 @@ public class SearchTaskRun
                 new Attribute("taskDefName", statusAndTaskDef.getTaskDefName()),
                 new Attribute("status", statusAndTaskDef.getStatus().toString())
             );
+        }
+    }
+
+    @Override
+    public TagStorageTypePb indexTypeForSearch(LHGlobalMetaStores stores)
+        throws LHValidationError {
+        return TagStorageTypePb.LOCAL;
+    }
+
+    @Override
+    public void validate() throws LHValidationError {}
+
+    @Override
+    public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString)
+        throws LHValidationError {
+        if (
+            type == TaskRunCriteriaCase.TASK_DEF ||
+            type == TaskRunCriteriaCase.STATUS_AND_TASK_DEF
+        ) {
+            return new TagScanBoundaryStrategy(
+                searchAttributeString,
+                Optional.ofNullable(LHUtil.fromProtoTs(getEarliestStart())),
+                Optional.ofNullable(LHUtil.fromProtoTs(getLatestStart()))
+            );
+        } else {
+            throw new LHValidationError("Unimplemented search type: " + type);
         }
     }
 }

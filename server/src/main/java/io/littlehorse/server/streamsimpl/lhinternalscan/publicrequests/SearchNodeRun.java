@@ -5,17 +5,16 @@ import io.littlehorse.common.exceptions.LHValidationError;
 import io.littlehorse.common.model.objectId.NodeRunId;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnumPb;
-import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
-import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
-import io.littlehorse.common.proto.ScanResultTypePb;
+import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.NodeRunIdPb;
 import io.littlehorse.sdk.common.proto.SearchNodeRunPb;
 import io.littlehorse.sdk.common.proto.SearchNodeRunPb.NoderunCriteriaCase;
 import io.littlehorse.sdk.common.proto.SearchNodeRunReplyPb;
-import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
+import io.littlehorse.server.streamsimpl.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
+import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchNodeRunReply;
 import lombok.extern.slf4j.Slf4j;
 
@@ -80,25 +79,22 @@ public class SearchNodeRun
         return out;
     }
 
-    // TODO_EDUWER: Make this use your GetableIndexRegistry
-    public InternalScan startInternalSearch(LHGlobalMetaStores stores)
+    @Override
+    public TagStorageTypePb indexTypeForSearch(LHGlobalMetaStores stores)
         throws LHValidationError {
-        InternalScan out = new InternalScan();
-        out.storeName = ServerTopology.CORE_STORE;
-        out.resultType = ScanResultTypePb.OBJECT_ID;
+        return TagStorageTypePb.LOCAL;
+    }
 
+    @Override
+    public void validate() throws LHValidationError {}
+
+    @Override
+    public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString)
+        throws LHValidationError {
         if (type == NoderunCriteriaCase.WF_RUN_ID) {
-            out.type = ScanBoundaryCase.BOUNDED_OBJECT_ID_SCAN;
-            out.partitionKey = wfRunId;
-            out.boundedObjectIdScan =
-                BoundedObjectIdScanPb
-                    .newBuilder()
-                    .setStartObjectId(wfRunId + "/")
-                    .setEndObjectId(wfRunId + "/~")
-                    .build();
+            return new ObjectIdScanBoundaryStrategy(wfRunId);
         } else {
-            throw new LHValidationError(null, "Yikes, unimplemented type: " + type);
+            throw new LHValidationError("Unimplemented type: " + type);
         }
-        return out;
     }
 }

@@ -23,7 +23,10 @@ import io.littlehorse.sdk.common.proto.VariableIdPb;
 import io.littlehorse.sdk.common.proto.VariableValuePb;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
+import io.littlehorse.server.streamsimpl.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
+import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrategy;
+import io.littlehorse.server.streamsimpl.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchVariableReply;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
@@ -99,67 +102,6 @@ public class SearchVariable
         return out;
     }
 
-    public InternalScan startInternalSearch(LHGlobalMetaStores stores)
-        throws LHValidationError {
-        InternalScan out = new InternalScan();
-
-        out.storeName = ServerTopology.CORE_STORE;
-        out.resultType = ScanResultTypePb.OBJECT_ID;
-
-        if (type == VariableCriteriaCase.WF_RUN_ID) {
-            out.type = ScanBoundaryCase.BOUNDED_OBJECT_ID_SCAN;
-            out.partitionKey = wfRunId;
-            out.boundedObjectIdScan =
-                BoundedObjectIdScanPb
-                    .newBuilder()
-                    .setStartObjectId(wfRunId + "/")
-                    .setEndObjectId(wfRunId + "/~")
-                    .build();
-        } else if (type == VariableCriteriaCase.VALUE) {
-            out.type = ScanBoundaryCase.TAG_SCAN;
-
-            // This may change depending on the type of the tag. For example,
-            // sparse strings (such as emails) may be REMOTE_HASH_UNCOUNTED; whereas
-            // hot boolean variables may be LOCAL_UNCOUNTED
-            out.partitionKey = null;
-
-            if (value.hasWfSpecVersion()) {
-                wfSpecVersion = value.getWfSpecVersion();
-                WfSpec spec = stores.getWfSpec(value.getWfSpecName(), wfSpecVersion);
-                if (spec == null) {
-                    throw new LHValidationError(
-                        null,
-                        "Couldn't find specified wfSpec"
-                    );
-                }
-            } else {
-                WfSpec spec = stores.getWfSpec(value.getWfSpecName(), null);
-                if (spec == null) {
-                    throw new LHValidationError(
-                        null,
-                        "Search refers to missing WfSpec"
-                    );
-                } else {
-                    wfSpecVersion = spec.version;
-                }
-            }
-            out.tagScan =
-                TagScanPb
-                    .newBuilder()
-                    .setKeyPrefix(getSearchAttributeString())
-                    .build();
-            TagStorageTypePb tagStorageTypePb = getStorageTypeFromVariableIndexConfiguration()
-                .orElse(null);
-            if (tagStorageTypePb != null) {
-                setSearchTypeFromTagStorageType(tagStorageTypePb, out, wfSpecVersion);
-            } else {
-                setSearchTypeFromWfSpec(out, wfSpecVersion, stores);
-            }
-        }
-
-        return out;
-    }
-
     private Optional<TagStorageTypePb> getStorageTypeFromVariableIndexConfiguration() {
         return new Variable()
             .getIndexConfigurations()
@@ -176,14 +118,10 @@ public class SearchVariable
             .findFirst();
     }
 
-    private void setSearchTypeFromWfSpec(
-        InternalScan out,
-        int wfSpecVersion,
-        LHGlobalMetaStores stores
-    ) throws LHValidationError {
+    private TagStorageTypePb indexTypeForSearchFromWfSpec(LHGlobalMetaStores stores) {
         WfSpec spec = stores.getWfSpec(value.getWfSpecName(), null);
 
-        TagStorageTypePb tagStorageTypePb = spec
+        return spec
             .getThreadSpecs()
             .entrySet()
             .stream()
@@ -197,26 +135,6 @@ public class SearchVariable
             .map(VariableDef::getTagStorageTypePb)
             .findFirst()
             .orElse(null);
-        if (tagStorageTypePb != null) {
-            setSearchTypeFromTagStorageType(tagStorageTypePb, out, wfSpecVersion);
-        }
-    }
-
-    private void setSearchTypeFromTagStorageType(
-        TagStorageTypePb tagStorageTypePb,
-        InternalScan out,
-        int wfSpecVersion
-    ) throws LHValidationError {
-        if (tagStorageTypePb == TagStorageTypePb.LOCAL) {
-            // Local Tag Scan (All Partitions Tag Scan)
-            out.setStoreName(ServerTopology.CORE_STORE);
-            out.setResultType(ScanResultTypePb.OBJECT_ID);
-        } else {
-            // Remote Tag Scan (Specific Partition Tag Scan)
-            out.setStoreName(ServerTopology.CORE_REPARTITION_STORE);
-            out.setResultType(ScanResultTypePb.OBJECT_ID);
-            out.setPartitionKey(getSearchAttributeString());
-        }
     }
 
     public List<Attribute> getSearchAttributes() throws LHValidationError {
@@ -225,6 +143,30 @@ public class SearchVariable
             new Attribute("wfSpecVersion", LHUtil.toLHDbVersionFormat(wfSpecVersion)),
             new Attribute(value.getVarName(), getVariableValue(value.getValue()))
         );
+    }
+
+    @Override
+    public TagStorageTypePb indexTypeForSearch(LHGlobalMetaStores stores)
+        throws LHValidationError {
+        return getStorageTypeFromVariableIndexConfiguration()
+            .orElse(indexTypeForSearchFromWfSpec(stores));
+    }
+
+    @Override
+    public void validate() throws LHValidationError {}
+
+    @Override
+    public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
+        if (type == VariableCriteriaCase.WF_RUN_ID) {
+            return new ObjectIdScanBoundaryStrategy(wfRunId);
+        } else if (type == VariableCriteriaCase.VALUE) {
+            return new TagScanBoundaryStrategy(
+                searchAttributeString,
+                Optional.empty(),
+                Optional.empty()
+            );
+        }
+        return null;
     }
 
     private String getVariableValue(VariableValuePb value) throws LHValidationError {

@@ -11,6 +11,7 @@ import io.littlehorse.common.proto.InternalScanPb;
 import io.littlehorse.common.proto.InternalScanPb.BoundedObjectIdScanPb;
 import io.littlehorse.common.proto.InternalScanPb.ScanBoundaryCase;
 import io.littlehorse.common.proto.ScanResultTypePb;
+import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.common.util.LHGlobalMetaStores;
 import io.littlehorse.sdk.common.proto.SearchWfSpecPb;
 import io.littlehorse.sdk.common.proto.SearchWfSpecPb.WfSpecCriteriaCase;
@@ -18,10 +19,14 @@ import io.littlehorse.sdk.common.proto.SearchWfSpecReplyPb;
 import io.littlehorse.sdk.common.proto.WfSpecIdPb;
 import io.littlehorse.server.streamsimpl.ServerTopology;
 import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
+import io.littlehorse.server.streamsimpl.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
+import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrategy;
+import io.littlehorse.server.streamsimpl.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.publicsearchreplies.SearchWfSpecReply;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Attribute;
 import java.util.List;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -102,49 +107,46 @@ public class SearchWfSpec
         return out;
     }
 
-    public InternalScan startInternalSearch(LHGlobalMetaStores stores)
-        throws LHValidationError {
-        InternalScan out = new InternalScan();
-        out.storeName = ServerTopology.CORE_STORE;
-        out.resultType = ScanResultTypePb.OBJECT_ID;
-        out.type = ScanBoundaryCase.BOUNDED_OBJECT_ID_SCAN;
-        out.partitionKey = LHConstants.META_PARTITION_KEY;
-
-        if (name != null && !name.equals("")) {
-            // exact match on name
-            out.boundedObjectIdScan =
-                BoundedObjectIdScanPb
-                    .newBuilder()
-                    .setStartObjectId(name + "/")
-                    .setEndObjectId(name + "/~")
-                    .build();
-        } else if (prefix != null && !prefix.equals("")) {
-            // Prefix scan on name
-            out.boundedObjectIdScan =
-                BoundedObjectIdScanPb
-                    .newBuilder()
-                    .setStartObjectId(prefix)
-                    .setEndObjectId(prefix + "~")
-                    .build();
-        } else if (!Strings.isNullOrEmpty(taskDefName)) {
-            out.partitionKey = null;
-            out.type = ScanBoundaryCase.TAG_SCAN;
-            out.tagScan =
-                InternalScanPb.TagScanPb
-                    .newBuilder()
-                    .setKeyPrefix(getSearchAttributeString())
-                    .build();
-        } else {
-            // that means we want to search all wfSpecs
-            out.boundedObjectIdScan =
-                BoundedObjectIdScanPb.newBuilder().setStartObjectId("").build();
-        }
-
-        return out;
+    @Override
+    public List<Attribute> getSearchAttributes() {
+        return List.of(new Attribute("taskDef", taskDefName));
     }
 
     @Override
-    public List<Attribute> getSearchAttributes() throws LHValidationError {
-        return List.of(new Attribute("taskDef", taskDefName));
+    public TagStorageTypePb indexTypeForSearch(LHGlobalMetaStores stores)
+        throws LHValidationError {
+        return null;
+    }
+
+    @Override
+    public void validate() throws LHValidationError {}
+
+    @Override
+    public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
+        if (name != null && !name.equals("")) {
+            return new ObjectIdScanBoundaryStrategy(
+                LHConstants.META_PARTITION_KEY,
+                name + "/",
+                name + "/~"
+            );
+        } else if (prefix != null && !prefix.equals("")) {
+            return new ObjectIdScanBoundaryStrategy(
+                LHConstants.META_PARTITION_KEY,
+                name + "/",
+                name + "/~"
+            );
+        } else if (!Strings.isNullOrEmpty(taskDefName)) {
+            return new TagScanBoundaryStrategy(
+                searchAttributeString,
+                Optional.empty(),
+                Optional.empty()
+            );
+        } else {
+            return new ObjectIdScanBoundaryStrategy(
+                LHConstants.META_PARTITION_KEY,
+                "",
+                "~"
+            );
+        }
     }
 }
