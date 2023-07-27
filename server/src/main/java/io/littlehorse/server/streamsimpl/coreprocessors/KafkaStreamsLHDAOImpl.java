@@ -987,6 +987,7 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         wfRunPuts.clear();
         wfSpecPuts.clear();
         taskDefPuts.clear();
+        taskRunPuts.clear();
         userTaskDefPuts.clear();
         extEvtDefPuts.clear();
         taskWorkerGroupPuts.clear();
