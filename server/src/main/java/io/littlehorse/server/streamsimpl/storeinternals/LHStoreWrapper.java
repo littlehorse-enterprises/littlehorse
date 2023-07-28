@@ -4,7 +4,9 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
+import io.littlehorse.common.model.command.Command;
 import io.littlehorse.common.model.command.CommandResult;
+import io.littlehorse.common.proto.CommandPb.CommandCase;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streamsimpl.storeinternals.index.TagsCache;
@@ -18,26 +20,32 @@ import org.apache.kafka.streams.state.KeyValueStore;
 public class LHStoreWrapper extends LHROStoreWrapper {
 
     private KeyValueStore<String, Bytes> store;
+    private int totalPuts;
+    private int totalDeletes;
+    private int totalGets;
 
     public LHStoreWrapper(KeyValueStore<String, Bytes> store, LHConfig config) {
         super(store, config);
         this.store = store;
+        totalPuts = 0;
+        totalDeletes = 0;
+        totalGets = 0;
     }
 
     public void put(Storeable<?> thing) {
         String storeKey = StoreUtils.getFullStoreKey(thing);
-        log.trace("Putting {}", storeKey);
-        store.put(storeKey, new Bytes(thing.toBytes(config)));
+        put(storeKey, thing);
     }
 
     public void put(String storeKey, Storeable<?> thing) {
+        totalPuts++;
+        log.trace("Putting {}", storeKey);
         store.put(storeKey, new Bytes(thing.toBytes(config)));
     }
 
     public void delete(Storeable<?> thing) {
         String storeKey = StoreUtils.getFullStoreKey(thing);
-        log.trace("Deleting {}", storeKey);
-        store.delete(storeKey);
+        delete(storeKey);
     }
 
     public void deleteByStoreKey(
@@ -49,23 +57,28 @@ public class LHStoreWrapper extends LHROStoreWrapper {
     }
 
     public void delete(String fullStoreKey) {
+        log.trace("Deleting {}", fullStoreKey);
+        totalDeletes++;
         store.delete(fullStoreKey);
     }
 
     public Bytes getRaw(String rawKey) {
+        totalGets++;
         return store.get(rawKey);
     }
 
     public void putRaw(String rawKey, Bytes rawVal) {
+        totalPuts++;
         store.put(rawKey, rawVal);
     }
 
     public void deleteRaw(String rawKey) {
+        totalDeletes++;
         store.delete(rawKey);
     }
 
     public TagsCache getTagsCache(String getableId, Class<? extends Getable<?>> cls) {
-        Bytes raw = store.get(StoreUtils.getTagsCacheKey(getableId, cls));
+        Bytes raw = getRaw(StoreUtils.getTagsCacheKey(getableId, cls));
         if (raw == null) {
             return null;
         }
@@ -83,7 +96,7 @@ public class LHStoreWrapper extends LHROStoreWrapper {
         Class<? extends Getable<?>> getableCls,
         TagsCache newTagsCache
     ) {
-        store.put(
+        putRaw(
             StoreUtils.getTagsCacheKey(getableId, getableCls),
             new Bytes(newTagsCache.toBytes(config))
         );
@@ -91,16 +104,22 @@ public class LHStoreWrapper extends LHROStoreWrapper {
 
     public void deleteTagCache(Getable<?> thing) {
         String tagCacheKey = StoreUtils.getTagsCacheKey(thing);
-        store.delete(tagCacheKey);
+        delete(tagCacheKey);
     }
 
-    public void putResponseToDelete(String objId) {
-        String key = "responsekeys" + LHUtil.toLhDbFormat(new Date().getTime());
-        store.put(
-            key,
-            new Bytes(
-                StoreUtils.getFullStoreKey(objId, CommandResult.class).getBytes()
-            )
+    public void clearCommandMetrics(Command cmd) {
+        if (cmd.getType() == CommandCase.TASK_WORKER_HEART_BEAT) {
+            return;
+        }
+        log.trace(
+            "{}: {} gets, {} puts, {} deletes",
+            cmd.getType().toString(),
+            totalGets,
+            totalPuts,
+            totalDeletes
         );
+        totalGets = 0;
+        totalPuts = 0;
+        totalDeletes = 0;
     }
 }

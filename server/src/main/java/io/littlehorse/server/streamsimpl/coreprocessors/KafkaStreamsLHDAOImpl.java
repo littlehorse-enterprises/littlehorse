@@ -993,6 +993,8 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         taskWorkerGroupPuts.clear();
         taskMetricPuts = new HashMap<>();
         wfMetricPuts = new HashMap<>();
+
+        localStore.clearCommandMetrics(getCommand());
     }
 
     public void forwardAndClearMetricsUpdatesUntil() {
