@@ -11,7 +11,6 @@ import io.littlehorse.sdk.common.proto.ListTaskMetricsPb;
 import io.littlehorse.sdk.common.proto.ListTaskMetricsReplyPb;
 import io.littlehorse.sdk.common.proto.MetricsWindowLengthPb;
 import io.littlehorse.sdk.common.proto.TaskDefMetricsPb;
-import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrategy;
