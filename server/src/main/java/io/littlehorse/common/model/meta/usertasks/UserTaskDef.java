@@ -13,7 +13,6 @@ import io.littlehorse.sdk.common.proto.UserTaskDefPb;
 import io.littlehorse.sdk.common.proto.UserTaskFieldPb;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
-import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -81,11 +80,6 @@ public class UserTaskDef extends Getable<UserTaskDefPb> {
         Optional<TagStorageTypePb> tagStorageTypePb
     ) {
         return List.of();
-    }
-
-    public static String getFullPrefixByName(String name) {
-        // TODO MVP-140: Remove StoreUtils.java
-        return StoreUtils.getFullStoreKey(name + "/", UserTaskDef.class);
     }
 
     public void validate(LHGlobalMetaStores stores, LHConfig config)

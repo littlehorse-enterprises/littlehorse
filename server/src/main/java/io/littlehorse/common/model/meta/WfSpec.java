@@ -19,7 +19,6 @@ import io.littlehorse.sdk.common.proto.WfSpecIdPb;
 import io.littlehorse.sdk.common.proto.WfSpecPb;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
-import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -57,10 +56,6 @@ public class WfSpec extends Getable<WfSpecPb> {
 
     public String getName() {
         return name;
-    }
-
-    public static String getFullPrefixByName(String name) {
-        return StoreUtils.getFullStoreKey(name + "/", WfSpec.class);
     }
 
     public Date getCreatedAt() {

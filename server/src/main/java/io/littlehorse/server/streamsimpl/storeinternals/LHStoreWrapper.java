@@ -45,6 +45,10 @@ public class LHStoreWrapper extends LHROStoreWrapper {
         delete(storeKey);
     }
 
+    public void delete(String storeKey, Class<? extends Storeable<?>> cls) {
+        delete(StoreUtils.getFullStoreKey(storeKey, cls));
+    }
+
     public void deleteByStoreKey(
         String storeKey,
         Class<? extends Storeable<?>> storeableClass

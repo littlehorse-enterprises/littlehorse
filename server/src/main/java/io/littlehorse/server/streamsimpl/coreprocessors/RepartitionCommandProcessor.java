@@ -11,7 +11,6 @@ import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.repar
 import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.LHIterKeyValue;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.LHKeyValueIterator;
-import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import java.time.Duration;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
@@ -78,9 +77,7 @@ public class RepartitionCommandProcessor
                     metric.windowStart,
                     metric.taskDefName
                 );
-                store.delete(
-                    StoreUtils.getFullStoreKey(taskDefMetricKey, TaskDefMetrics.class)
-                );
+                store.delete(taskDefMetricKey, TaskDefMetrics.class);
             }
         }
     }
@@ -103,9 +100,7 @@ public class RepartitionCommandProcessor
                     metric.wfSpecName,
                     metric.wfSpecVersion
                 );
-                store.delete(
-                    StoreUtils.getFullStoreKey(wfSpecMetricKey, WfSpecMetrics.class)
-                );
+                store.delete(wfSpecMetricKey, WfSpecMetrics.class);
             }
         }
     }

@@ -13,7 +13,7 @@ import org.apache.kafka.common.utils.Bytes;
 public class WfSpecCache extends LHCache<WfSpecId, WfSpec> {
 
     private static final Pattern WFSPEC_KEY_PATTERN = Pattern.compile(
-        "WfSpec\\/(?<name>.+)\\/(?<version>\\d+)"
+        "2\\/(?<name>.+)\\/(?<version>\\d+)"
     );
     public static final int LATEST_VERSION = -1;
 

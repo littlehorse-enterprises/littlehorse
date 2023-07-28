@@ -10,7 +10,6 @@ import io.littlehorse.sdk.common.proto.TaskDefPb;
 import io.littlehorse.sdk.common.proto.VariableDefPb;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
-import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -54,10 +53,6 @@ public class TaskDef extends Getable<TaskDefPb> {
         Optional<TagStorageTypePb> tagStorageTypePb
     ) {
         return List.of();
-    }
-
-    public static String getFullPrefixByName(String name) {
-        return StoreUtils.getFullStoreKey(name + "/", TaskDef.class);
     }
 
     public Class<TaskDefPb> getProtoBaseClass() {
