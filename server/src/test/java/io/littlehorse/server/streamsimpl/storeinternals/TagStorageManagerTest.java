@@ -114,7 +114,7 @@ public class TagStorageManagerTest {
 
     @Test
     void sendRepartitionCommandForCreateRemoteTagSubCommand() {
-        String expectedPartitionKey = "WF_RUN/__wfSpecName_test-name";
+        String expectedPartitionKey = "3/__wfSpecName_test-name";
         tag1.setTagType(TagStorageTypePb.REMOTE);
         tags = List.of(tag1, tag2);
         tagStorageManager.store(tags, "test-wfrun-id", WfRun.class);
