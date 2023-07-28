@@ -15,7 +15,6 @@ import io.littlehorse.sdk.common.proto.SearchTaskRunPb.StatusAndTaskDefPb;
 import io.littlehorse.sdk.common.proto.SearchTaskRunPb.TaskRunCriteriaCase;
 import io.littlehorse.sdk.common.proto.SearchTaskRunReplyPb;
 import io.littlehorse.sdk.common.proto.TaskRunIdPb;
-import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.TagScanBoundaryStrategy;

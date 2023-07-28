@@ -13,7 +13,6 @@ import io.littlehorse.sdk.common.proto.ExternalEventIdPb;
 import io.littlehorse.sdk.common.proto.SearchExternalEventPb;
 import io.littlehorse.sdk.common.proto.SearchExternalEventPb.ExtEvtCriteriaCase;
 import io.littlehorse.sdk.common.proto.SearchExternalEventReplyPb;
-import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrategy;

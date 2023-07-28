@@ -11,7 +11,6 @@ import io.littlehorse.sdk.common.proto.NodeRunIdPb;
 import io.littlehorse.sdk.common.proto.SearchNodeRunPb;
 import io.littlehorse.sdk.common.proto.SearchNodeRunPb.NoderunCriteriaCase;
 import io.littlehorse.sdk.common.proto.SearchNodeRunReplyPb;
-import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrategy;

@@ -12,7 +12,6 @@ import io.littlehorse.sdk.common.proto.SearchUserTaskDefPb;
 import io.littlehorse.sdk.common.proto.SearchUserTaskDefPb.UserTaskDefCriteriaCase;
 import io.littlehorse.sdk.common.proto.SearchUserTaskDefReplyPb;
 import io.littlehorse.sdk.common.proto.UserTaskDefIdPb;
-import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrategy;

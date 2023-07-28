@@ -11,7 +11,6 @@ import io.littlehorse.sdk.common.proto.ListWfMetricsPb;
 import io.littlehorse.sdk.common.proto.ListWfMetricsReplyPb;
 import io.littlehorse.sdk.common.proto.MetricsWindowLengthPb;
 import io.littlehorse.sdk.common.proto.WfSpecMetricsPb;
-import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrategy;

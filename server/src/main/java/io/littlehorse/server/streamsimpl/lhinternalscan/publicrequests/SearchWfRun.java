@@ -17,7 +17,6 @@ import io.littlehorse.sdk.common.proto.SearchWfRunPb.StatusAndSpecPb;
 import io.littlehorse.sdk.common.proto.SearchWfRunPb.WfrunCriteriaCase;
 import io.littlehorse.sdk.common.proto.SearchWfRunReplyPb;
 import io.littlehorse.sdk.common.proto.WfRunIdPb;
-import io.littlehorse.server.streamsimpl.lhinternalscan.InternalScan;
 import io.littlehorse.server.streamsimpl.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streamsimpl.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streamsimpl.lhinternalscan.TagScanBoundaryStrategy;
