@@ -9,7 +9,6 @@ import io.littlehorse.sdk.common.proto.ExternalEventDefIdPb;
 import io.littlehorse.sdk.common.proto.ExternalEventDefPb;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
-import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -34,10 +33,6 @@ public class ExternalEventDef extends Getable<ExternalEventDefPb> {
 
     public String getName() {
         return name;
-    }
-
-    public static String getFullPrefixByName(String name) {
-        return StoreUtils.getFullStoreKey(name + "/", ExternalEventDef.class);
     }
 
     public Class<ExternalEventDefPb> getProtoBaseClass() {

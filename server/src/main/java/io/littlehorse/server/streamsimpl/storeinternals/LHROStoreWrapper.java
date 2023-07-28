@@ -5,6 +5,7 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
+import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.LHKeyValueIterator;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.LHKeyValueStream;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
@@ -94,7 +95,10 @@ public class LHROStoreWrapper {
         Class<T> cls
     ) {
         LHKeyValueStream<T> keyValueStream = new LHKeyValueStream<>(
-            store.prefixScan("Tag/" + prefix, Serdes.String().serializer()),
+            store.prefixScan(
+                StoreUtils.getSubstorePrefix(Tag.class),
+                Serdes.String().serializer()
+            ),
             cls,
             config
         );

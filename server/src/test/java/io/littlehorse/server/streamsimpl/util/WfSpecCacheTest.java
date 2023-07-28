@@ -73,7 +73,7 @@ class WfSpecCacheTest {
         public void shouldEvictWfSpecWithVersionFromCacheWhenValueIsNull()
             throws LHSerdeError {
             final WfSpecCache wfSpecCache = new WfSpecCache();
-            final String key = "WfSpec/WF1/23";
+            final String key = "2/WF1/23";
             final WfSpecId cacheKey = new WfSpecId("WF1", 23);
             final Bytes value = null;
 
@@ -88,7 +88,7 @@ class WfSpecCacheTest {
         public void shouldEvictLatestWfSpecFromCacheWhenValueIsNull()
             throws LHSerdeError {
             final WfSpecCache wfSpecCache = new WfSpecCache();
-            final String key = "WfSpec/WF1/23";
+            final String key = "2/WF1/23";
             final WfSpecId latestCacheKey = new WfSpecId("WF1", LATEST_VERSION);
             final Bytes value = null;
 
@@ -103,7 +103,7 @@ class WfSpecCacheTest {
         public void shouldNotCacheKeysThatAreNotWfSpec() throws LHSerdeError {
             final WfSpecCache wfSpecCache = new WfSpecCache();
             final String nonWfSpecKey =
-                "TaskRun/WF1/123/0b80d81e-8984-4da5-8312-f19e3fbfa780";
+                "11/WF1/123/0b80d81e-8984-4da5-8312-f19e3fbfa780";
             final WfSpecId cacheKey = new WfSpecId("WF1", 23);
             final Bytes value = Bytes.wrap(TestUtil.taskRun().toBytes(null));
 

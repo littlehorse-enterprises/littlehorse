@@ -8,7 +8,6 @@ import io.littlehorse.sdk.common.exception.LHSerdeError;
 import io.littlehorse.server.streamsimpl.coreprocessors.repartitioncommand.RepartitionSubCommand;
 import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
-import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
 public class RemoveRemoteTag
@@ -50,8 +49,7 @@ public class RemoveRemoteTag
         LHStoreWrapper repartitionedStore,
         ProcessorContext<Void, Void> ctx
     ) {
-        String fullStoreKey = StoreUtils.getFullStoreKey(this.storeKey, Tag.class);
-        repartitionedStore.delete(fullStoreKey);
+        repartitionedStore.delete(this.storeKey, Tag.class);
     }
 
     @Override

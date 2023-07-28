@@ -935,16 +935,18 @@ public class KafkaStreamsLHDAOImpl implements LHDAO {
         T val,
         Class<T> cls
     ) {
+        String fullStoreKey = StoreUtils.getFullStoreKey(objectId, cls);
+
         // The serializer provided in the sink will produce a tombstone if
         // `val` is null.
         CommandProcessorOutput output = new CommandProcessorOutput(
             config.getGlobalMetadataCLTopicName(),
             val,
-            StoreUtils.getFullStoreKey(objectId, cls)
+            fullStoreKey
         );
         ctx.forward(
             new Record<String, CommandProcessorOutput>(
-                StoreUtils.getFullStoreKey(objectId, cls),
+                fullStoreKey,
                 output,
                 System.currentTimeMillis()
             )

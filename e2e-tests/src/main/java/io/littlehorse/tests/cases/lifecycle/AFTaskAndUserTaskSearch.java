@@ -93,7 +93,7 @@ Tests various aspects of TaskRun and UserTaskRun searc:
         );
         wfSpecVersion = result.getVersion();
 
-        Thread.sleep(120);
+        Thread.sleep(150);
 
         String failWf = client.runWf(
             WF_SPEC_NAME,
@@ -211,7 +211,7 @@ Tests various aspects of TaskRun and UserTaskRun searc:
             assignReply.getCode() == LHResponseCodePb.OK,
             "should be able to reassign with override claim"
         );
-        Thread.sleep(120); // allow remote tag to propagate
+        Thread.sleep(150); // allow remote tag to propagate
 
         // Shouldn't be obiwan's task anymore
         assertNotContainsWfRun(
@@ -238,7 +238,7 @@ Tests various aspects of TaskRun and UserTaskRun searc:
             reAssignReply.getCode() == LHResponseCodePb.OK,
             "should be able to reassign"
         );
-        Thread.sleep(120); //allow remote indexes to propagate
+        Thread.sleep(150); //allow remote indexes to propagate
         assertContainsWfRun(
             searchUserTaskRunsUserGroup(
                 "mygroup",
@@ -262,7 +262,7 @@ Tests various aspects of TaskRun and UserTaskRun searc:
                     .setUserTaskRunId(userTaskId)
                     .build()
             );
-        Thread.sleep(120); // allow remote tag to propagate
+        Thread.sleep(150); // allow remote tag to propagate
 
         assertContainsWfRun(searchUserTaskRunsUserId("yoda"), succeedWf);
         assertContainsWfRun(
@@ -297,7 +297,7 @@ Tests various aspects of TaskRun and UserTaskRun searc:
                     )
                     .build()
             );
-        Thread.sleep(120);
+        Thread.sleep(150);
 
         assertContainsWfRun(
             searchUserTaskRunsUserId("yoda", UserTaskRunStatusPb.DONE),

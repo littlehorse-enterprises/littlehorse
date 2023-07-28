@@ -359,7 +359,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
             config
         );
         internalComms.getLastFromPrefixAsync(
-            WfSpec.getFullPrefixByName(req.getName()),
+            StoreUtils.getFullPrefixByName(req.getName(), WfSpec.class),
             LHConstants.META_PARTITION_KEY,
             observer,
             ServerTopology.CORE_STORE
@@ -381,7 +381,7 @@ public class KafkaStreamsServerImpl extends LHPublicApiImplBase {
         // TODO MVP-140: Remove StoreUtils.java. Then in here we would pass in
         // a GetableClassEnumPb.
         internalComms.getLastFromPrefixAsync(
-            UserTaskDef.getFullPrefixByName(req.getName()),
+            StoreUtils.getFullPrefixByName(req.getName(), UserTaskDef.class),
             LHConstants.META_PARTITION_KEY,
             observer,
             ServerTopology.CORE_STORE
