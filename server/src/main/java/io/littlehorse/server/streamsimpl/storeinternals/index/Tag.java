@@ -73,7 +73,7 @@ public class Tag extends Storeable<TagPb> {
         List<Attribute> attributes
     ) {
         StringBuilder builder = new StringBuilder();
-        builder.append(objectType.toString());
+        builder.append(objectType.getNumber());
         builder.append("/");
         for (Attribute attr : attributes) {
             builder.append("__");
