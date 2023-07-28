@@ -138,8 +138,8 @@ public class GetableStorageManagerTest {
     void storeWfSpecWithBooleanVariables() {
         WfSpec wfSpec = TestUtil.wfSpec("test-name");
         String expectedStoreKey = "test-name/00000";
-        String expectedTagId1 = "WF_SPEC/__taskDef_input-name1/";
-        String expectedTagId2 = "WF_SPEC/__taskDef_input-name2/";
+        String expectedTagId1 = "2/__taskDef_input-name1/";
+        String expectedTagId2 = "2/__taskDef_input-name2/";
         ThreadSpec threadSpec1 = TestUtil.threadSpec();
         threadSpec1
             .getNodes()
@@ -222,7 +222,7 @@ public class GetableStorageManagerTest {
                 threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
             });
         String expectedStoreKey =
-            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_ThisShouldBeLocal";
+            "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_ThisShouldBeLocal";
         geTableStorageManager.store(variable);
         Assertions
             .assertThat(
@@ -255,7 +255,7 @@ public class GetableStorageManagerTest {
                 threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
             });
         String expectedStoreKey =
-            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_ThisShouldBeRemote";
+            "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_ThisShouldBeRemote";
         geTableStorageManager.store(variable);
         List<RepartitionCommand> repartitionCommands = mockProcessorContext
             .forwarded()
@@ -295,7 +295,7 @@ public class GetableStorageManagerTest {
                 threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
             });
         String expectedStoreKey =
-            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_20";
+            "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_20";
         geTableStorageManager.store(variable);
         Assertions
             .assertThat(
@@ -328,7 +328,7 @@ public class GetableStorageManagerTest {
                 threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
             });
         String expectedStoreKey =
-            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_20";
+            "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_20";
         geTableStorageManager.store(variable);
         List<RepartitionCommand> repartitionCommands = mockProcessorContext
             .forwarded()
@@ -368,7 +368,7 @@ public class GetableStorageManagerTest {
                 threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
             });
         String expectedStoreKey =
-            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_21.0";
+            "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_21.0";
         geTableStorageManager.store(variable);
         Assertions
             .assertThat(
@@ -401,7 +401,7 @@ public class GetableStorageManagerTest {
                 threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
             });
         String expectedStoreKey =
-            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_21.0";
+            "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_21.0";
         geTableStorageManager.store(variable);
         List<RepartitionCommand> repartitionCommands = mockProcessorContext
             .forwarded()
@@ -472,16 +472,16 @@ public class GetableStorageManagerTest {
                 threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
             });
         String expectedStoreKey1 =
-            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.name_test";
+            "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.name_test";
         String expectedStoreKey2 =
-            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.age_20";
+            "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.age_20";
         String expectedStoreKey3 =
-            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.car.brand_Ford";
+            "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.car.brand_Ford";
         String expectedStoreKey4 =
-            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.car.model_Escape";
+            "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.car.model_Escape";
         geTableStorageManager.store(variable);
         List<String> storedTags = localStoreWrapper
-            .prefixTagScanStream("VARIABLE/", Tag.class)
+            .prefixTagScanStream("5/", Tag.class)
             .map(Tag::getStoreKey)
             .map(s -> s.split("/"))
             .map(strings -> strings[0] + "/" + strings[1])
@@ -533,13 +533,13 @@ public class GetableStorageManagerTest {
                 threadSpec.setVariableDefs(List.of(variableDef1, variableDef2));
             });
         String expectedStoreKey1 =
-            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.name_test";
+            "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.name_test";
         String expectedStoreKey2 =
-            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.age_20";
+            "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.age_20";
         String expectedStoreKey3 =
-            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.car.brand_Ford";
+            "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.car.brand_Ford";
         String expectedStoreKey4 =
-            "VARIABLE/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.car.model_Escape";
+            "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.car.model_Escape";
         geTableStorageManager.store(variable);
         List<String> remoteTagsCreated = remoteTagsCreated()
             .stream()
@@ -548,7 +548,7 @@ public class GetableStorageManagerTest {
             .toList();
 
         List<String> storedTags = localStoreWrapper
-            .prefixTagScanStream("VARIABLE/", Tag.class)
+            .prefixTagScanStream("5/", Tag.class)
             .map(Tag::getStoreKey)
             .map(s -> s.split("/"))
             .map(strings -> strings[0] + "/" + strings[1])
@@ -589,7 +589,7 @@ public class GetableStorageManagerTest {
         nodeRun.setType(nodeTypeCase);
         geTableStorageManager.store(nodeRun);
         List<String> localTags = localStoreWrapper
-            .prefixTagScanStream("NODE_RUN/", Tag.class)
+            .prefixTagScanStream("4/", Tag.class)
             .map(Tag::getStoreKey)
             .map(s -> s.split("/"))
             .map(strings -> strings[0] + "/" + strings[1])
@@ -613,10 +613,7 @@ public class GetableStorageManagerTest {
             Arguments.of(
                 nodeRun,
                 List.of(
-                    Pair.of(
-                        "NODE_RUN/__status_RUNNING__type_TASK",
-                        TagStorageTypePb.LOCAL
-                    )
+                    Pair.of("4/__status_RUNNING__type_TASK", TagStorageTypePb.LOCAL)
                 ),
                 NodeRunPb.NodeTypeCase.TASK
             )

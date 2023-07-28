@@ -32,11 +32,15 @@ import io.littlehorse.common.proto.GetableClassEnumPb;
 import io.littlehorse.common.proto.TagStorageTypePb;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableIndex;
 import io.littlehorse.server.streamsimpl.storeinternals.IndexedField;
+import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
 @Setter
@@ -171,6 +175,90 @@ public abstract class Getable<T extends Message> extends Storeable<T> {
         String key,
         Optional<TagStorageTypePb> tagStorageTypePb
     );
+
+    public List<Tag> getIndexEntries() {
+        List<Tag> out = new ArrayList<>();
+        for (GetableIndex<? extends Getable<?>> indexConfiguration : this.getIndexConfigurations()) {
+            if (!indexConfiguration.isValid(this)) {
+                continue;
+            }
+            Optional<TagStorageTypePb> tagStorageTypePb = indexConfiguration.getTagStorageTypePb();
+            List<IndexedField> singleIndexedValues = indexConfiguration
+                .getAttributes()
+                .stream()
+                .filter(stringValueTypePair -> {
+                    return stringValueTypePair
+                        .getValue()
+                        .equals(GetableIndex.ValueType.SINGLE);
+                })
+                .map(stringValueTypePair -> {
+                    return this.getIndexValues(
+                            stringValueTypePair.getKey(),
+                            tagStorageTypePb
+                        )
+                        .get(0);
+                })
+                .toList();
+            List<IndexedField> dynamicIndexedFields = indexConfiguration
+                .getAttributes()
+                .stream()
+                .filter(stringValueTypePair -> {
+                    return stringValueTypePair
+                        .getValue()
+                        .equals(GetableIndex.ValueType.DYNAMIC);
+                })
+                .flatMap(stringValueTypePair ->
+                    this.getIndexValues(
+                            stringValueTypePair.getKey(),
+                            tagStorageTypePb
+                        )
+                        .stream()
+                )
+                .toList();
+            List<List<IndexedField>> combine = combine(
+                singleIndexedValues,
+                dynamicIndexedFields
+            );
+            for (List<IndexedField> list : combine) {
+                TagStorageTypePb storageType = list
+                    .stream()
+                    .map(IndexedField::getTagStorageTypePb)
+                    .filter(tagStorageTypePb1 ->
+                        tagStorageTypePb1 == TagStorageTypePb.REMOTE
+                    )
+                    .findAny()
+                    .orElse(TagStorageTypePb.LOCAL);
+                List<Pair<String, String>> pairs = list
+                    .stream()
+                    .map(indexedField ->
+                        Pair.of(
+                            indexedField.getKey(),
+                            indexedField.getValue().toString()
+                        )
+                    )
+                    .toList();
+                out.add(new Tag(this, storageType, pairs));
+            }
+        }
+        return out;
+    }
+
+    private List<List<IndexedField>> combine(
+        List<IndexedField> source,
+        List<IndexedField> multiple
+    ) {
+        if (multiple.isEmpty()) {
+            return List.of(source);
+        }
+        List<List<IndexedField>> result = new ArrayList<>();
+        for (IndexedField dynamicIndexedField : multiple) {
+            List<IndexedField> list = Stream
+                .concat(source.stream(), Stream.of(dynamicIndexedField))
+                .toList();
+            result.add(list);
+        }
+        return result;
+    }
 }
 /*
  * Some random thoughts:
