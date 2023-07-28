@@ -271,15 +271,10 @@ message TagsCachePb {
     repeated CachedTagPb cached_tags = 1;
 }
 
-message DiscreteTagLocalCounterPb {
-    int64 local_count = 1;
-    string tag_attributes = 2;
-    int32 partition = 3;
-}
-
-message TagChangesToBroadcastPb {
-    map<string, DiscreteTagLocalCounterPb> changelog = 1;
-    int32 partition = 2;
+message StoredGetablePb {
+    TagsCachePb index_cache = 1;
+    bytes getable_payload = 2;
+    GetableClassEnumPb type = 3;
 }
 
 // This section defines the "Command"
