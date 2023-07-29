@@ -17,7 +17,7 @@ jobs:
           distribution: "corretto"
           java-version: "17"
       - name: Tests
-        run: ./gradlew server:test server:shadowJar
+        run: ./gradlew server:test
   deploy:
     needs: [tests]
     runs-on: ubuntu-latest
