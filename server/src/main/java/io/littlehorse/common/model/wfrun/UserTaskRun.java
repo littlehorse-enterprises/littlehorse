@@ -78,8 +78,6 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
         this.nodeRunId = nodeRun.getObjectId();
         this.id = new UserTaskRunId(nodeRunId.getWfRunId());
         this.scheduledTime = new Date();
-        events = new ArrayList<>();
-        results = new ArrayList<>();
 
         switch (utn.getAssignmentType()) {
             case USER_GROUP:
