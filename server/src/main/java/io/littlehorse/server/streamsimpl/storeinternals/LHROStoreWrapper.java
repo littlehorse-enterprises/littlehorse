@@ -90,21 +90,6 @@ public class LHROStoreWrapper {
         );
     }
 
-    public <T extends Storeable<?>> Stream<T> prefixTagScanStream(
-        String prefix,
-        Class<T> cls
-    ) {
-        LHKeyValueStream<T> keyValueStream = new LHKeyValueStream<>(
-            store.prefixScan(
-                StoreUtils.getSubstorePrefix(Tag.class),
-                Serdes.String().serializer()
-            ),
-            cls,
-            config
-        );
-        return keyValueStream.stream().map(stringTKeyValue -> stringTKeyValue.value);
-    }
-
     public <U extends Message, T extends Storeable<U>> T getLastFromPrefix(
         String prefix,
         Class<T> cls
