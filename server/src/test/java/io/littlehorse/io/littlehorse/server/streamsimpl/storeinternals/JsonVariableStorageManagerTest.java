@@ -13,9 +13,14 @@ import io.littlehorse.server.streamsimpl.coreprocessors.CommandProcessorOutput;
 import io.littlehorse.server.streamsimpl.storeinternals.GetableStorageManager;
 import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
+import io.littlehorse.server.streamsimpl.storeinternals.utils.LHIterKeyValue;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
@@ -94,7 +99,17 @@ public class JsonVariableStorageManagerTest {
     }
 
     private List<Tag> storedTags() {
-        return localStoreWrapper.prefixTagScanStream("", Tag.class).toList();
+        return localTagScan("").map(LHIterKeyValue::getValue).toList();
+    }
+
+    private Stream<LHIterKeyValue<Tag>> localTagScan(String keyPrefix) {
+        return StreamSupport.stream(
+            Spliterators.spliteratorUnknownSize(
+                localStoreWrapper.prefixScan(keyPrefix, Tag.class),
+                Spliterator.ORDERED
+            ),
+            false
+        );
     }
 
     private List<String> storedTagPrefixStoreKeys() {

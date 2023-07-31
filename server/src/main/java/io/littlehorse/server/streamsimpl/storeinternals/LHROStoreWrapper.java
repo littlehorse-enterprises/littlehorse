@@ -5,9 +5,7 @@ import io.littlehorse.common.LHConfig;
 import io.littlehorse.common.model.LHSerializable;
 import io.littlehorse.common.model.Storeable;
 import io.littlehorse.sdk.common.exception.LHSerdeError;
-import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.LHKeyValueIterator;
-import io.littlehorse.server.streamsimpl.storeinternals.utils.LHKeyValueStream;
 import io.littlehorse.server.streamsimpl.storeinternals.utils.StoreUtils;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
@@ -88,21 +86,6 @@ public class LHROStoreWrapper {
             cls,
             config
         );
-    }
-
-    public <T extends Storeable<?>> Stream<T> prefixTagScanStream(
-        String prefix,
-        Class<T> cls
-    ) {
-        LHKeyValueStream<T> keyValueStream = new LHKeyValueStream<>(
-            store.prefixScan(
-                StoreUtils.getSubstorePrefix(Tag.class),
-                Serdes.String().serializer()
-            ),
-            cls,
-            config
-        );
-        return keyValueStream.stream().map(stringTKeyValue -> stringTKeyValue.value);
     }
 
     public <U extends Message, T extends Storeable<U>> T getLastFromPrefix(

@@ -24,11 +24,15 @@ import io.littlehorse.server.streamsimpl.storeinternals.GetableStorageManager;
 import io.littlehorse.server.streamsimpl.storeinternals.LHStoreWrapper;
 import io.littlehorse.server.streamsimpl.storeinternals.index.Tag;
 import io.littlehorse.server.streamsimpl.storeinternals.index.TagsCache;
+import io.littlehorse.server.streamsimpl.storeinternals.utils.LHIterKeyValue;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -192,10 +196,7 @@ public class GetableStorageManagerTest {
         String expectedStoreKey = "";
         geTableStorageManager.store(variable);
         Assertions
-            .assertThat(
-                localStoreWrapper.prefixTagScanStream(expectedStoreKey, Tag.class)
-            )
-            .isNotEmpty()
+            .assertThat(this.localTagScan(expectedStoreKey))
             .allMatch(tag -> {
                 Assertions.assertThat(tag).isNotNull();
                 return true;
@@ -225,10 +226,7 @@ public class GetableStorageManagerTest {
             "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_ThisShouldBeLocal";
         geTableStorageManager.store(variable);
         Assertions
-            .assertThat(
-                localStoreWrapper.prefixTagScanStream(expectedStoreKey, Tag.class)
-            )
-            .isNotEmpty()
+            .assertThat(this.localTagScan(expectedStoreKey))
             .allMatch(tag -> {
                 Assertions.assertThat(tag).isNotNull();
                 return true;
@@ -298,10 +296,7 @@ public class GetableStorageManagerTest {
             "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_20";
         geTableStorageManager.store(variable);
         Assertions
-            .assertThat(
-                localStoreWrapper.prefixTagScanStream(expectedStoreKey, Tag.class)
-            )
-            .isNotEmpty()
+            .assertThat(this.localTagScan(expectedStoreKey))
             .allMatch(tag -> {
                 Assertions.assertThat(tag).isNotNull();
                 return true;
@@ -371,10 +366,7 @@ public class GetableStorageManagerTest {
             "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__variableName_21.0";
         geTableStorageManager.store(variable);
         Assertions
-            .assertThat(
-                localStoreWrapper.prefixTagScanStream(expectedStoreKey, Tag.class)
-            )
-            .isNotEmpty()
+            .assertThat(this.localTagScan(expectedStoreKey))
             .allMatch(tag -> {
                 Assertions.assertThat(tag).isNotNull();
                 return true;
@@ -480,8 +472,8 @@ public class GetableStorageManagerTest {
         String expectedStoreKey4 =
             "5/__wfSpecName_testWfSpecName__wfSpecVersion_00000__$.car.model_Escape";
         geTableStorageManager.store(variable);
-        List<String> storedTags = localStoreWrapper
-            .prefixTagScanStream("5/", Tag.class)
+        List<String> storedTags = localTagScan("5/")
+            .map(LHIterKeyValue::getValue)
             .map(Tag::getStoreKey)
             .map(s -> s.split("/"))
             .map(strings -> strings[0] + "/" + strings[1])
@@ -547,8 +539,8 @@ public class GetableStorageManagerTest {
             .map(RepartitionSubCommand::getPartitionKey)
             .toList();
 
-        List<String> storedTags = localStoreWrapper
-            .prefixTagScanStream("5/", Tag.class)
+        List<String> storedTags = localTagScan("5/")
+            .map(LHIterKeyValue::getValue)
             .map(Tag::getStoreKey)
             .map(s -> s.split("/"))
             .map(strings -> strings[0] + "/" + strings[1])
@@ -588,8 +580,8 @@ public class GetableStorageManagerTest {
             .toList();
         nodeRun.setType(nodeTypeCase);
         geTableStorageManager.store(nodeRun);
-        List<String> localTags = localStoreWrapper
-            .prefixTagScanStream("4/", Tag.class)
+        List<String> localTags = localTagScan("4/")
+            .map(LHIterKeyValue::getValue)
             .map(Tag::getStoreKey)
             .map(s -> s.split("/"))
             .map(strings -> strings[0] + "/" + strings[1])
@@ -617,6 +609,16 @@ public class GetableStorageManagerTest {
                 ),
                 NodeRunPb.NodeTypeCase.TASK
             )
+        );
+    }
+
+    private Stream<LHIterKeyValue<Tag>> localTagScan(String keyPrefix) {
+        return StreamSupport.stream(
+            Spliterators.spliteratorUnknownSize(
+                localStoreWrapper.prefixScan(keyPrefix, Tag.class),
+                Spliterator.ORDERED
+            ),
+            false
         );
     }
 

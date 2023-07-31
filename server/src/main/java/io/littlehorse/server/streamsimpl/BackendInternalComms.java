@@ -858,22 +858,31 @@ public class BackendInternalComms implements Closeable {
             );
 
             String prefix = search.getTagScan().getKeyPrefix() + "/";
-            List<ByteString> result = store
-                .prefixTagScanStream(prefix, Tag.class)
-                .limit(search.limit)
-                .map(tag -> {
-                    var objectId = tag.getDescribedObjectId();
-                    return ObjectId
+            try (
+                LHKeyValueIterator<Tag> tagScanResultIterator = store.prefixScan(
+                    prefix,
+                    Tag.class
+                )
+            ) {
+                List<ByteString> matchingObjectIds = new ArrayList<>();
+                while (tagScanResultIterator.hasNext()) {
+                    LHIterKeyValue<Tag> currentItem = tagScanResultIterator.next();
+                    Tag matchingTag = currentItem.getValue();
+                    ByteString matchingObjectId = ObjectId
                         .fromString(
-                            objectId,
+                            matchingTag.getDescribedObjectId(),
                             Getable.getIdCls(search.getObjectType())
                         )
                         .toProto()
                         .build()
                         .toByteString();
-                })
-                .collect(Collectors.toList());
-            out.addAllResults(result);
+                    matchingObjectIds.add(matchingObjectId);
+                    if (matchingObjectIds.size() == search.getLimit()) {
+                        break;
+                    }
+                }
+                out.addAllResults(matchingObjectIds);
+            }
         } else {
             InternalScanReplyPb reply = getInternalClient(activeHost)
                 .internalScan(search.toProto().build());
