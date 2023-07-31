@@ -73,6 +73,7 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
     }
 
     public UserTaskRun(UserTaskDef utd, UserTaskNode utn, NodeRun nodeRun) {
+        this();
         this.userTaskDefId = utd.getObjectId();
         this.nodeRunId = nodeRun.getObjectId();
         this.id = new UserTaskRunId(nodeRunId.getWfRunId());
