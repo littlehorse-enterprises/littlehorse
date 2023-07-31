@@ -16,6 +16,7 @@ import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +64,15 @@ public class UserTasksExample {
                     itRequest.jsonPath("$.justification")
                 )
             );
+        String financeTeamEmailBody = "Hi finance team, you have a new assigned task";
+        String financeTeamEmail = "finance@gmail.com";
+        thread.scheduleTaskAfter(
+            financeUserTaskOutput,
+            2,
+            EMAIL_TASK_NAME,
+            financeTeamEmail,
+            financeTeamEmailBody
+        );
 
         thread.mutate(
             isApproved,
