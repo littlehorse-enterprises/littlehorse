@@ -48,10 +48,4 @@ public interface CompleteUserTaskRunPbOrBuilder extends
    */
   com.google.protobuf.ByteString
       getUserIdBytes();
-
-  /**
-   * <code>bool ignore_claim = 4;</code>
-   * @return The ignoreClaim.
-   */
-  boolean getIgnoreClaim();
 }

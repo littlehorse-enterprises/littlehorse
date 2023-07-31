@@ -135,17 +135,6 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int IGNORE_CLAIM_FIELD_NUMBER = 4;
-  private boolean ignoreClaim_ = false;
-  /**
-   * <code>bool ignore_claim = 4;</code>
-   * @return The ignoreClaim.
-   */
-  @java.lang.Override
-  public boolean getIgnoreClaim() {
-    return ignoreClaim_;
-  }
-
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -169,9 +158,6 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(userId_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 3, userId_);
     }
-    if (ignoreClaim_ != false) {
-      output.writeBool(4, ignoreClaim_);
-    }
     getUnknownFields().writeTo(output);
   }
 
@@ -191,10 +177,6 @@ private static final long serialVersionUID = 0L;
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(userId_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, userId_);
-    }
-    if (ignoreClaim_ != false) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBoolSize(4, ignoreClaim_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -223,8 +205,6 @@ private static final long serialVersionUID = 0L;
     }
     if (!getUserId()
         .equals(other.getUserId())) return false;
-    if (getIgnoreClaim()
-        != other.getIgnoreClaim()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -246,9 +226,6 @@ private static final long serialVersionUID = 0L;
     }
     hash = (37 * hash) + USER_ID_FIELD_NUMBER;
     hash = (53 * hash) + getUserId().hashCode();
-    hash = (37 * hash) + IGNORE_CLAIM_FIELD_NUMBER;
-    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-        getIgnoreClaim());
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -389,7 +366,6 @@ private static final long serialVersionUID = 0L;
         resultBuilder_ = null;
       }
       userId_ = "";
-      ignoreClaim_ = false;
       return this;
     }
 
@@ -435,9 +411,6 @@ private static final long serialVersionUID = 0L;
       }
       if (((from_bitField0_ & 0x00000004) != 0)) {
         result.userId_ = userId_;
-      }
-      if (((from_bitField0_ & 0x00000008) != 0)) {
-        result.ignoreClaim_ = ignoreClaim_;
       }
     }
 
@@ -496,9 +469,6 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000004;
         onChanged();
       }
-      if (other.getIgnoreClaim() != false) {
-        setIgnoreClaim(other.getIgnoreClaim());
-      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -544,11 +514,6 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000004;
               break;
             } // case 26
-            case 32: {
-              ignoreClaim_ = input.readBool();
-              bitField0_ |= 0x00000008;
-              break;
-            } // case 32
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -872,38 +837,6 @@ private static final long serialVersionUID = 0L;
       checkByteStringIsUtf8(value);
       userId_ = value;
       bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-
-    private boolean ignoreClaim_ ;
-    /**
-     * <code>bool ignore_claim = 4;</code>
-     * @return The ignoreClaim.
-     */
-    @java.lang.Override
-    public boolean getIgnoreClaim() {
-      return ignoreClaim_;
-    }
-    /**
-     * <code>bool ignore_claim = 4;</code>
-     * @param value The ignoreClaim to set.
-     * @return This builder for chaining.
-     */
-    public Builder setIgnoreClaim(boolean value) {
-      
-      ignoreClaim_ = value;
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>bool ignore_claim = 4;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearIgnoreClaim() {
-      bitField0_ = (bitField0_ & ~0x00000008);
-      ignoreClaim_ = false;
       onChanged();
       return this;
     }

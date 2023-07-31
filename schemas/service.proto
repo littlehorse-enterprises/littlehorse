@@ -1285,7 +1285,6 @@ message CompleteUserTaskRunPb {
 
   UserTaskResultPb result = 2;
   string user_id = 3;
-  bool ignore_claim = 4;
 }
 
 message StartThreadNodePb {
