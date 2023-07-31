@@ -30,10 +30,7 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
   const [errorData, setErrorData] = useState<any>([]);
   const [lastSelectedNode, setLastSelectedNode] = useState<any>();
   const [threadName, setThreadName] = useState<string>();
-  useEffect(() => {
-    console.log("useEffect wfRunData", wfRunRawData);
-  }, [wfRunRawData]);
-  console.log("runnnn", props.run);
+
   const changeThread = () => {
     if (props.data.threadSpecs) {
       const keys = Object.keys(props.data.threadSpecs);
@@ -90,7 +87,7 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
           selectedThread = props.data.entrypointThreadName;
           setThreadName(selectedThread);
         }
-        //console.log("Tabla izq", mainData);
+
         setMainData(
           props.data.threadSpecs[selectedThread || threadName].variableDefs
         );
@@ -308,6 +305,8 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
                   },
                 };
 
+                console.log("wfRunComplexData", wfRunComplexData);
+
                 setWfRunData(wfRunComplexData);
               }
             }
@@ -377,9 +376,7 @@ export const DrawerComponent = (props: DrawerComponentProps) => {
           </div>
         </div>
         <div className="drawer__mainTable">
-          <div className="drawer__mainTable__header">
-            {props.run ? "ThreadRun Variables" : "ThreadSpec Variables"}
-          </div>
+          <div className="drawer__mainTable__header">ThreadRun Variables</div>
           <div className="drawer__mainTable__header__subheaders">
             <p className="center ">NAME</p>
             <p className="center">TYPE</p>
