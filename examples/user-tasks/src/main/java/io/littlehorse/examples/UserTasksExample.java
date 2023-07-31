@@ -63,6 +63,15 @@ public class UserTasksExample {
                     itRequest.jsonPath("$.justification")
                 )
             );
+        String financeTeamEmailBody = "Hi finance team, you have a new assigned task";
+        String financeTeamEmail = "finance@gmail.com";
+        thread.scheduleTaskAfter(
+            financeUserTaskOutput,
+            2,
+            EMAIL_TASK_NAME,
+            financeTeamEmail,
+            financeTeamEmailBody
+        );
 
         thread.mutate(
             isApproved,
