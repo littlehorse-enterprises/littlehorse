@@ -207,10 +207,13 @@ article{
     tbody{
         // height: 500px;
         
-        overflow-y: scroll;
         display: flex;
         flex-direction: column;
         width: 100%;
+
+        &.scrollbar {
+            overflow-y: scroll;
+        }
         tr{
             border-bottom: 1px solid var(--color-gray-blue, #394150);
         }
@@ -254,3 +257,4 @@ article{
     }
 
 }
+

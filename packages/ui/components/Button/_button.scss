@@ -46,3 +46,15 @@
     border: 1px solid var(--color-primary-light, #AAA7FF);
     background: var(--color-primary, #7F7AFF);
 }
+
+.btn-wfrun-link {
+    color: var(--color-primary, #7F7AFF);
+    text-align: center;
+    font-family: Inter;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    border: none;
+    display: inline-block;
+}

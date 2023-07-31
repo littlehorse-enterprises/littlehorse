@@ -50,9 +50,39 @@ export const LatencyChart = ({data, type}:Props) => {
         if(!svg) return null
         const num = (ix+1)
         
-            svg.selectAll(".line-complete")
-            .data(groups)
+
+         ///YELLOW LINE
+
+        //  .attr("x1", (_d, ix) => {
+        //      let val = ((ix-1) * (maxWBar + gap))+(maxWBar/2)
+        //      return val < 0 ? -800 : val
+        //  } )
+        //  .attr("x2", (_d, ix) => {
+        //      let val = ((ix) * (maxWBar + gap))+(maxWBar/2)
+        //      return val < 0 ? -800 : val
+        //  } )
+
+
+
+            svg.selectAll(".line-complete-yellow")
+            .data(datam)
+            .attr("stroke", (_d, ix) => {
+                let val = (((ix-1-(num-1))) * (maxWBar + gap))+(maxWBar/2)
+                if(val > (width-20)) return "transparent"
+                return val < 0 ? "transparent" : "#FFCC00"
+            } )
             .attr("x1", (_d, ix) => {
+                let val = (((ix-1-(num-1))) * (maxWBar + gap))+(maxWBar/2)
+                return val < 0 ? -800 : val
+            } )
+            .attr("x2", (_d, ix) => {
+                let val = (((ix-(num-1))) * (maxWBar + gap))+(maxWBar/2)
+                return val < 0 ? -800 : val
+            } )
+            svg.selectAll(".line-complete")
+            .data(datam)
+            .attr("x1", (_d, ix) => {
+                console.log(ix, num, (ix-(num-1)), _d)
                 let val = (((ix-(num-1))) * (maxWBar + gap))+(maxWBar/2)
                 return val < 0 ? -800 : val
             } )
@@ -182,26 +212,31 @@ export const LatencyChart = ({data, type}:Props) => {
             .attr("y2", d => y(d.startToCompleteAvg) )
 
 
-            /////YELLOW LINE
-            // dotg.data(datam)
-            // .enter().append("line").classed('line-complete', true)
-            // .attr("stroke", (_d, ix) => {
-            //     if(!ix) return "transparent"
-            //     return "#FFCC00"
-            // } )
-            // .attr("x1", (_d, ix) => {
-            //     let val = ((ix-1) * (maxWBar + gap))+(maxWBar/2)
-            //     return val < 0 ? -800 : val
-            // } )
-            // .attr("x2", (_d, ix) => {
-            //     let val = ((ix) * (maxWBar + gap))+(maxWBar/2)
-            //     return val < 0 ? -800 : val
-            // } )
-            // .attr("y1", (d,i) => {
-            //     if(!i) return 0
-            //     return y (datam[i-1]?.startToCompleteAvg)
-            // })
-            // .attr("y2", d => y(d.startToCompleteAvg) )
+            ///YELLOW LINE
+            dotg.data(datam)
+            .enter().append("line").classed('line-complete-yellow', true)
+            .attr("stroke", (_d, ix) => {
+                let val = ((ix-1) * (maxWBar + gap))+(maxWBar/2)
+                if(!ix) return "transparent"
+                if(ix+1 === _d.length) return "transparent"
+                if(val > (width-20)) return "transparent"
+                return val < 0 ? "transparent" : "#FFCC00"
+            } )
+            .attr("x1", (_d, ix) => {
+                let val = ((ix-1) * (maxWBar + gap))+(maxWBar/2)
+                return val < 0 ? -800 : val
+            } )
+            .attr("x2", (_d, ix) => {
+                let val = ((ix) * (maxWBar + gap))+(maxWBar/2)
+                return val < 0 ? -800 : val
+            } )
+            .attr("y1", (d,i) => {
+                if(!i) return 0
+                return y (datam[i-1]?.startToCompleteAvg)
+                // return y (datam[i-1]?.startToCompleteMax)
+            })
+            // .attr("y2", d => y(d.startToCompleteMax) )
+            .attr("y2", d => y(d.startToCompleteAvg) )
             
             dotg.data(datam)
             .enter().append("circle").classed('dot-complete-max', true)
@@ -286,8 +321,13 @@ export const LatencyChart = ({data, type}:Props) => {
         })
         .on("mousemove", (e,d) => {
             d3.select("#wf-latency-chart-tooltip").html(updateToolTipContent(d,ttTemplate))
-            .style('top',e.layerY+"px")
-            .style('left',e.offsetX+"px")
+            .style('top',(e.layerY+10)+"px")
+            .style('left',() => {
+                if(e.layerX > width){
+                    return (e.layerX-160)+"px"
+                }
+                return (e.layerX+10)+"px"
+            })
 
         })
         .on("mouseout", function(e) {

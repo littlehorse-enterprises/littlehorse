@@ -5,7 +5,8 @@ const WFRunInformationSideBar = ({
     toggleSideBar,
     setToggleSideBar,
     output,
-    errorLog
+    errorLog,
+    language
 }) => {
 
     if (!toggleSideBar) {
@@ -29,7 +30,7 @@ const WFRunInformationSideBar = ({
                 }} >{errorLog ? 'Exception log' : 'JSON / Array values'}</h2>
 
             </div>
-            <Snippet value={output || {} } />
+            <Snippet value={output} language={language} />
         </div>
     </div>);
 }

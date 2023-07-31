@@ -1,7 +1,18 @@
 "use client"
 import { useCallback, useEffect } from "react";
 import * as d3 from "d3";
+import * as ReactDOMServer from 'react-dom/server';
+import { TaskNode } from "./TaskNode";
 
+
+const conditions = {
+    EQUALS:'=',
+    NOT_EQUALS:'!=',
+    GREATER_THAN: '>',
+    GREATER_THAN_EQ: '>=',
+    LESS_THAN_EQ: '<=',
+    LESS_THAN: '<'
+}
 let  _d3:d3.Selection<d3.BaseType, unknown, HTMLElement, any>
 // let svg:d3.Selection<SVGGElement, unknown, HTMLElement, any>
 
@@ -9,6 +20,14 @@ const boxHeight = 300;
 const width=936;
 const height=900;
 
+const conditionsRender = (cond:any) => {
+    let left=`${cond.condition.left.variableName}${cond.condition.left.jsonPath ? `.jsonPath(${cond.condition.left.jsonPath})` : ''}`;
+    let right=''
+    if( cond.condition.right.literalValue.type==='BOOL') right = cond.condition.right.literalValue.bool
+    if( cond.condition.right.literalValue.type==='INT') right = cond.condition.right.literalValue.int
+    if( cond.condition.right.literalValue.type==='STR') right = cond.condition.right.literalValue.str
+    return `${left} ${conditions[cond.condition.comparator]} ${right}`
+}
 let nodes:any[] = [];
   nodes.push([width / 2, boxHeight / 1.5]);
   nodes.push([width / 4, boxHeight / 3]);
@@ -71,18 +90,23 @@ let nodes:any[] = [];
          + "l" + 3 + "," + -3
   }
 
-export const WfSpecVisualizerChart = ({data, onClick}:{data:any, onClick:(n:any) => void}) => {
+export const WfRunVisualizerChart = ({data, onClick, run}:{data:any, onClick:(n:any) => void, run:any}) => {
     const clickHandler = (_p:any, d:any) => {
         console.log(_p,d)
-        onClick(d)
+        onClick(d.name)
+        console.log(d.name)
+        console.log('run',run)
+        _d3.select('.selected-node').classed('selected-node',false)
+        _d3.select('.c'+d.name).classed('selected-node',true)
+       
     }
     
     const minHeight = 862
-    const drawChart = useCallback((data:any[]) => {
+    const drawChart = useCallback((data:any[], run:any) => {
         _d3.select("svg").remove();
         let svg = _d3.append("svg")
             .attr("width",width)
-            .attr("height",data.length*110 < minHeight ? minHeight : data.length*110);
+            .attr("height",(Math.max(...data.map(d => d.level))*120)+100 < minHeight ? minHeight : (Math.max(...data.map(d => d.level))*120)+100);
             // .attr("height",height);
 
 
@@ -104,8 +128,8 @@ export const WfSpecVisualizerChart = ({data, onClick}:{data:any, onClick:(n:any)
                 return (width/2)+px
             })
             .attr("y1", (d) => {
-                if(d.level === 1)  return (d.level * 90) +38
-                return (d.level * 90) +30
+                // if(d.level === 1)  return (d.level * 110)
+                return (d.level * 110)
             })
             .attr("x2", d => {
                 let px = 0
@@ -113,7 +137,7 @@ export const WfSpecVisualizerChart = ({data, onClick}:{data:any, onClick:(n:any)
                 if(d.px === 'right') px = 150
                 return (width/2)+px
             })
-            .attr("y2", (d) => ((d.level+1) * 90) -32)
+            .attr("y2", (d) => ((d.level) * 110) +55  )
 
         lineG.data(data)
         .enter()
@@ -129,14 +153,14 @@ export const WfSpecVisualizerChart = ({data, onClick}:{data:any, onClick:(n:any)
                 if(d.px === 'right') px = 150
                 return (width/2)-3+px
             })
-            .attr("y1", (d) => ((d.level+1) * 90) -35)
+            .attr("y1", (d) => ((d.level) * 110) +55 -3)
             .attr("x2", d => {
                 let px = 0
                 if(d.px === 'left') px = -150
                 if(d.px === 'right') px = 150
                 return (width/2)+px
             })
-            .attr("y2", (d) => ((d.level+1) * 90) -32)
+            .attr("y2", (d) => ((d.level) * 110) +55 )
         lineG.data(data)
         .enter()
             .append("line")
@@ -151,104 +175,17 @@ export const WfSpecVisualizerChart = ({data, onClick}:{data:any, onClick:(n:any)
                 if(d.px === 'right') px = 150
                 return (width/2)+3+px
             })
-            .attr("y1", (d) => ((d.level+1) * 90) -35)
+            .attr("y1", (d) => ((d.level) * 110) +55 -3)
             .attr("x2", d => {
                 let px = 0
                 if(d.px === 'left') px = -150
                 if(d.px === 'right') px = 150
                 return (width/2)+px
             })
-            .attr("y2", (d) => ((d.level+1) * 90) -32)
+            .attr("y2", (d) => ((d.level) * 110) +55)
         
 
-        //NODES
-        let nodes = svg.append("g").selectAll("g");
-        nodes.data(data)
-        .enter()
-            .append("path")
-            .attr("class", d => d.name)
-            .attr("d", function(d,i) {
-                let px = 0
-                if(d.px === 'left') px = -150
-                if(d.px === 'right') px = 150
-                if(d.type === 'ENTRYPOINT')  return roundedRect((width/2)+px, (d.level * 90) +65 , 120, 56, 28);
-                if(d.type === 'EXIT')  return roundedRect((width/2)+px, (d.level * 90) +65 , 100, 56, 28);
-                if(d.type === 'TASK')  return roundedRect((width/2)+px, (d.level * 90) +65 , 180, 48, 12);
-                if(d.type === 'START_THREAD')  return roundedRect((width/2)+px, (d.level * 90) +65 , 180, 48, 12);
-                if(d.type === 'WAIT_FOR_THREAD')  return roundedRect((width/2)+px, (d.level * 90) +65 , 180, 48, 12);
-                return roundedRect((width/2)+px, (d.level * 90) +65 , 97, 48, 12);
-            })
-            .attr("fill-opacity",(d) => {
-                if(d.type === 'ENTRYPOINT')  return .2;
-                if(d.type === 'EXIT')  return .2;
-                return 1;
-            })
-            .attr("fill",(d) => {
-                if(d.type === 'ENTRYPOINT')  return '#007AFF';
-                if(d.type === 'EXIT')  return '#34C759';
-                return '#363A41';
-            })
-            .attr("stroke",(d) => {
-                if(d.type === 'ENTRYPOINT')  return '#007AFF';
-                if(d.type === 'EXIT')  return '#34C759';
-                return '#363A41';
-            }).on("click",clickHandler)
-            .style("cursor", "pointer")
-     
-        //ICONS
-        svg.selectAll("image")
-        .data(data)
-        .enter()
-        .append("image")
-        .attr("xlink:href",(d) => "/"+d.type+".svg")
-        .attr("x", (d) => {
-            let px = 0
-            if(d.px === 'left') px = -150
-            if(d.px === 'right') px = 150
-            if(d.type === 'ENTRYPOINT')  return (width/2 - 45)
-            if(d.type === 'EXIT')  return (width/2 - 30)
-            if(d.type === 'NOP')  return (width/2 - 35)
-            if(d.type === 'START_THREAD')  return (width/2 - 75)+px
-            if(d.type === 'WAIT_FOR_THREAD')  return (width/2 -75)+px
-            return (width/2 - 75)+px
-        })
-        .attr("y", (d, i) => {
-            if(d.type === 'ENTRYPOINT')  return (d.level*90)+79;
-            if(d.type === 'EXIT')  return (d.level*90)+79;
-            if(d.type === 'START_THREAD')  return (d.level*90)+77;
-            if(d.type === 'WAIT_FOR_THREAD')  return (d.level*90)+77;
-            return  (d.level*90)+77
-        })
-        .attr("width", 24)
-        .attr("height", 24);
-
-        //TEXT
-        let textG = svg.append("g").selectAll("g");
-        textG.data(data)
-        .enter()
-            .append("text")
-            .text( d => d.name.split('-').slice(1, -1).join(' '))
-            .attr("text-anchor", "left")
-            .style('fill', "white")
-            .style('font-size', "10px")
-            .attr("x", d => {
-                let px = 0
-                if(d.px === 'left') px = -150
-                if(d.px === 'right') px = 150
-                if(d.type === 'ENTRYPOINT')  return (width/2 - 10)
-                if(d.type === 'EXIT')  return (width/2 +5)
-                if(d.type === 'START_THREAD')  return (width/2 - 35)+px
-                if(d.type === 'WAIT_FOR_THREAD')  return (width/2 -35)+px
-                if(d.type === 'TASK')  return (width/2 -35)+px
-                return (width/2)+px
-            })
-            .attr("y", (d) => {
-                if(d.type === 'ENTRYPOINT')  return (d.level * 90) +95
-                if(d.type === 'EXIT')  return (d.level * 90) +95
-                if(d.type === 'TASK')  return (d.level * 90) +90
-                return (d.level * 90) +92
-            })
-            .style("pointer-events", "none")
+   
 
         
         // NOP LINES
@@ -257,28 +194,49 @@ export const WfSpecVisualizerChart = ({data, onClick}:{data:any, onClick:(n:any)
             .enter()
             .append("path")
             .attr("class", d => d.name)
-            .attr("d", (d,i) => rArrow(width/2, (d.level * 90) +65 , 100, 48, 12)).attr('fill','none').attr('stroke','#B3B3B3')
+            .attr("d", (d,i) => rArrow((width/2)-45, (d.level * 110) +85 , 130, 48, 12)).attr('fill','none').attr('stroke','#B3B3B3')
+
         lineG2.data(data.filter( d => d.type === "NOP" && d.node.outgoingEdges.length > 1))
             .enter()
             .append("path")
             .attr("class", d => d.name)
-            .attr("d", (d) => lArrow(width/2, (d.level * 90) +65 , 100, 48, 12)).attr('fill','none').attr('stroke','#B3B3B3')
-        lineG2.data(data.filter( d => d.type === "NOP" && d.node.outgoingEdges.length > 1))
+            .attr("d", (d) => lArrow((width/2)+45, (d.level * 110) +85 , 130, 48, 12)).attr('fill','none').attr('stroke','#B3B3B3')
+
+
+        lineG2.data(data.filter( d => d.cNOP))
             .enter()
             .append("path")
             .attr("class", d => d.name)
-            .attr("d", (d) => rbArrow(width/2, (d.level * 90) +65 , 100, 48, 12)).attr('fill','none').attr('stroke','#B3B3B3')
-        lineG2.data(data.filter( d => d.type === "NOP" && d.node.outgoingEdges.length > 1))
-            .enter()
-            .append("path")
-            .attr("class", d => d.name)
-            .attr("d", (d) => lbArrow(width/2, (d.level * 90) +65 , 100, 48, 12)).attr('fill','none').attr('stroke','#B3B3B3')
+            .attr("d", (d) => {
+                // console.log('CNOP', data.find( dd => dd.name === d.cNOP))
+                const cnopl =  data.find( dd => dd.name === d.cNOP).level
+                // console.log((cnopl-d.level)*66)
+                const condh = d.type === 'NOP' ? 100 : 0
+                if(d.px === 'left'){
+                    return lbArrow((width/2)+15, ((d.level-1) * 110)-85 +condh - ((cnopl-d.level)*400), 110, ((cnopl-d.level)*81.5)+54, 12)
+                }
+                return rbArrow((width/2)-15, ((d.level-1) * 110)-85 +condh - ((cnopl-d.level)*400), 110, ((cnopl-d.level)*81.5)+54, 12)
+
+                //function backArrow(x, y, width, height, radius) {
+            })
+            .attr('fill','none').attr('stroke','#B3B3B3')
+
+        // lineG2.data(data.filter( d => d.type === "NOP" && d.node.outgoingEdges.length > 1))
+        //     .enter()
+        //     .append("path")
+        //     .attr("class", d => d.name)
+        //     .attr("d", (d) => rbArrow(width/2, (d.level * 130) +50 , 100, 52, 15)).attr('fill','none').attr('stroke','#B3B3B3')
+        // lineG2.data(data.filter( d => d.type === "NOP" && d.node.outgoingEdges.length > 1))
+        //     .enter()
+        //     .append("path")
+        //     .attr("class", d => d.name)
+        //     .attr("d", (d) => lbArrow(width/2, (d.level * 130) +50 , 100, 51, 12)).attr('fill','none').attr('stroke','#B3B3B3')
 
         // WAIT_FOR_THREAD
         lineG2.data(data.filter( d => d.type === "WAIT_FOR_THREAD"))
             .enter()
             .append("path")
-            .attr("d", (d) => backArrow(width/2, (d.level * 90) +65 , 100, (d.level * 90)-(d.wlevel * 90), 12)).attr('fill','none').attr('stroke','#7F7AFF')
+            .attr("d", (d) => backArrow(width/2, (d.level * 110) +65 , 110+(d.px === 'left' ? -110 : (d.px === 'right' ? 150 : 0)), ((d.level * 110))-((d.wlevel * 110)+5), 12)).attr('fill','none').attr('stroke','#7F7AFF')
 
             
 
@@ -287,76 +245,96 @@ export const WfSpecVisualizerChart = ({data, onClick}:{data:any, onClick:(n:any)
         textGN.data(data.filter( d => d.type === "NOP" && d.node.outgoingEdges.length > 1))
         .enter()
             .append("text")
-            .text( d => d.node.outgoingEdges[0].condition.comparator)
-            .attr("text-anchor", "center")
-            .style('fill', "white")
+            .text('CONDITION')
+            .attr("text-anchor", "middle")
+            .style('fill', "#9098A0")
             .style('font-size', "10px")
+            .style('font-family', "Inter")
+            .style('font-weight', "400")
             .attr("x", d => {
-                return (width/2)-180
+                return (width/2)-150
             })
-            .attr("y", (d) => (d.level * 90) +150)
+            .attr("y", (d) => (d.level * 110) +175)
             .style("pointer-events", "none")
 
         textGN.data(data.filter( d => d.type === "NOP" && d.node.outgoingEdges.length > 1))
         .enter()
             .append("text")
-            .text( d => d.node.outgoingEdges[0].sinkNodeName)
-            .attr("text-anchor", "center")
+            .text( d => conditionsRender(d.node.outgoingEdges[0]))
+            .attr("text-anchor", "middle")
+            .style('font-family', "Inter")
+            .style('font-weight', "400")
             .style('fill', "white")
-            .style('font-size', "10px")
+            .style('font-size', "14px")
             .attr("x", d => {
-                return (width/2)-180
+                return (width/2)-150
             })
-            .attr("y", (d) => (d.level * 90) +150 + 30)
+            .attr("y", (d) => (d.level * 110) +175 + 20)
             .style("pointer-events", "none")
 
 
         textGN.data(data.filter( d => d.type === "NOP" && d.node.outgoingEdges.length > 1))
         .enter()
             .append("text")
-            .text( d => d.node.outgoingEdges[1].condition.comparator)
-            .attr("text-anchor", "center")
-            .style('fill', "white")
+            .text('CONDITION')
+            .attr("text-anchor", "middle")
+            .style('fill', "#9098A0")
             .style('font-size', "10px")
+            .style('font-family', "Inter")
+            .style('font-weight', "400")
             .attr("x", d => {
-                return (width/2)+120
+                return (width/2)+155
             })
-            .attr("y", (d) => (d.level * 90) +150)
+            .attr("y", (d) => (d.level * 110) +175)
             .style("pointer-events", "none")
         textGN.data(data.filter( d => d.type === "NOP" && d.node.outgoingEdges.length > 1))
         .enter()
             .append("text")
-            .text( d => d.node.outgoingEdges[1].sinkNodeName)
-            .attr("text-anchor", "center")
+            .text( d => conditionsRender(d.node.outgoingEdges[1]))
+            .attr("text-anchor", "middle")
+            .style('font-family', "Inter")
+            .style('font-weight', "400")
             .style('fill', "white")
-            .style('font-size', "10px")
+            .style('font-size', "14px")
             .attr("x", d => {
-                return (width/2)+120
+                return (width/2)+155
             })
-            .attr("y", (d) => (d.level * 90) +150 +30)
+            .attr("y", (d) => (d.level * 110) +175 +20)
             .style("pointer-events", "none")
 
 
 
-
+                 //NODES
+        let nodes = svg.append("g").selectAll("g");
+        nodes.data(data)
+        .enter()
+            .append("foreignObject")
+                .attr('width', 400)
+                .attr('x', (d,i) => ( (width/2)-200)+(d.px === 'left' ? -150 : (d.px === 'right' ? 150 : 0)) )
+                .attr('height',110)
+                .attr('y', (d,i) => (110*d.level)+50)
+            .append('xhtml:div')
+                .attr('style', 'width:100%; height:100%; display:flex;')
+                .html((d:any) => ReactDOMServer.renderToString(<TaskNode d={d} run={run} />))
+                .select('.node').on("click",clickHandler)
         
 
     },[])
 
 
-    const setD3 = useCallback((data:any[]) => {
+    const setD3 = useCallback((data:any[], run:any) => {
         _d3 = d3.select("#visualizer")
-        drawChart(data) 
+        drawChart(data, run) 
     },[drawChart])
 
 
     useEffect( () => {
-        setD3(data)
-    },[data, setD3 ])
+        if(run) setD3(data, run)
+    },[data, setD3, run ])
 
     useEffect( () => {
         return () => {
-            _d3.select("svg").remove();
+            if(_d3) _d3.select("svg").remove();
         }
     },[])
     return (
