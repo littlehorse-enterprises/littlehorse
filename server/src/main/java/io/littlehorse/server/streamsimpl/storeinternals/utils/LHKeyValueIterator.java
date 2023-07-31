@@ -8,7 +8,7 @@ import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueIterator;
 
 public class LHKeyValueIterator<T extends Storeable<?>>
-    implements Iterator<LHIterKeyValue<T>>, Closeable {
+    implements Iterator<LHIterKeyValue<T>>, Closeable, AutoCloseable {
 
     private KeyValueIterator<String, Bytes> rawIter;
     private Class<T> cls;

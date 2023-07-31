@@ -858,28 +858,31 @@ public class BackendInternalComms implements Closeable {
             );
 
             String prefix = search.getTagScan().getKeyPrefix() + "/";
-            LHKeyValueIterator<Tag> tagScanResultIterator = store.prefixScan(
-                prefix,
-                Tag.class
-            );
-            List<ByteString> matchingObjectIds = new ArrayList<>();
-            while (tagScanResultIterator.hasNext()) {
-                LHIterKeyValue<Tag> currentItem = tagScanResultIterator.next();
-                Tag matchingTag = currentItem.getValue();
-                ByteString matchingObjectId = ObjectId
-                    .fromString(
-                        matchingTag.getDescribedObjectId(),
-                        Getable.getIdCls(search.getObjectType())
-                    )
-                    .toProto()
-                    .build()
-                    .toByteString();
-                matchingObjectIds.add(matchingObjectId);
-                if (matchingObjectIds.size() == search.getLimit()) {
-                    break;
+            try (
+                LHKeyValueIterator<Tag> tagScanResultIterator = store.prefixScan(
+                    prefix,
+                    Tag.class
+                )
+            ) {
+                List<ByteString> matchingObjectIds = new ArrayList<>();
+                while (tagScanResultIterator.hasNext()) {
+                    LHIterKeyValue<Tag> currentItem = tagScanResultIterator.next();
+                    Tag matchingTag = currentItem.getValue();
+                    ByteString matchingObjectId = ObjectId
+                        .fromString(
+                            matchingTag.getDescribedObjectId(),
+                            Getable.getIdCls(search.getObjectType())
+                        )
+                        .toProto()
+                        .build()
+                        .toByteString();
+                    matchingObjectIds.add(matchingObjectId);
+                    if (matchingObjectIds.size() == search.getLimit()) {
+                        break;
+                    }
                 }
+                out.addAllResults(matchingObjectIds);
             }
-            out.addAllResults(matchingObjectIds);
         } else {
             InternalScanReplyPb reply = getInternalClient(activeHost)
                 .internalScan(search.toProto().build());
