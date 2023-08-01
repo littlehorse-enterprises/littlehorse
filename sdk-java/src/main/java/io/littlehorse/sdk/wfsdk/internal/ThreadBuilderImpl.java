@@ -118,6 +118,26 @@ public class ThreadBuilderImpl implements ThreadBuilder {
         return assignUserTaskHelper(userTaskDefName, userId, null);
     }
 
+    @Override
+    public void scheduleReassignmentToGroupOnDeadline(int deadlineSeconds) {
+        checkIfIsActive();
+        NodePb.Builder curNode = spec.getNodesOrThrow(lastNodeName).toBuilder();
+        curNode
+            .getUserTaskBuilder()
+            .addActions(
+                UTActionTriggerPb
+                    .newBuilder()
+                    .setReassign(
+                        UTActionTriggerPb.UTAReassignPb
+                            .newBuilder()
+                            .setUserGroup(assignVariable("finance"))
+                            .build()
+                    )
+                    .build()
+            );
+        spec.putNodes(lastNodeName, curNode.build());
+    }
+
     public UserTaskOutputImpl assignUserTaskToUser(
         String userTaskDefName,
         WfRunVariable userId

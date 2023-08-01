@@ -3,6 +3,7 @@ package io.littlehorse.common.model.wfrun;
 import com.google.common.base.Strings;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.exceptions.LHException;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.Getable;
 import io.littlehorse.common.model.LHSerializable;
@@ -10,6 +11,7 @@ import io.littlehorse.common.model.command.subcommand.AssignUserTaskRun;
 import io.littlehorse.common.model.command.subcommand.CompleteUserTaskRun;
 import io.littlehorse.common.model.meta.Node;
 import io.littlehorse.common.model.meta.subnode.UserTaskNode;
+import io.littlehorse.common.model.meta.usertasks.UTAReassign;
 import io.littlehorse.common.model.meta.usertasks.UTActionTrigger;
 import io.littlehorse.common.model.meta.usertasks.UserTaskDef;
 import io.littlehorse.common.model.objectId.NodeRunId;
@@ -274,34 +276,62 @@ public class UserTaskRun extends Getable<UserTaskRunPb> {
     }
 
     public void reassignTo(AssignUserTaskRun event) {
-        UTEReassigned ute = new UTEReassigned();
+        UTEReassigned reassigned = null;
         switch (event.getAssigneeType()) {
             case USER_GROUP:
-                ute.setNewUserGroup(event.getUserGroup());
-                ute.setOldUserGroup(userGroup);
-                ute.setNewUserId(null);
-                ute.setOldUserId(userId);
-
-                assignedToType = AssignedToCase.USER_GROUP;
-                userGroup = event.getUserGroup();
-                specificUserId = null;
-                userId = null;
-                status = UserTaskRunStatusPb.ASSIGNED_NOT_CLAIMED;
+                reassigned = buildUserGroupReassignment(event.getUserGroup());
                 break;
             case USER_ID:
-                ute.setNewUserId(event.getUserId());
-                ute.setOldUserId(userId);
-
-                assignedToType = AssignedToCase.SPECIFIC_USER_ID;
-                userId = event.getUserId();
-                specificUserId = event.getUserId();
-                status = UserTaskRunStatusPb.CLAIMED;
+                reassigned = buildUserReassignment(event.getUserId());
                 break;
             case ASSIGNEE_NOT_SET:
-            // nothing to do, this isn't possible.
         }
+        if (reassigned != null) {
+            events.add(new UserTaskEvent(reassigned, new Date()));
+        }
+    }
 
-        events.add(new UserTaskEvent(ute, new Date()));
+    public void reassignTo(UTAReassign reassign) {
+        UTEReassigned reassigned = null;
+        String newOwner = reassign.getNewOwner().getRhsLiteralValue().getStrVal();
+        switch (reassign.getAssignToCase()) {
+            case USER_ID:
+                reassigned = buildUserReassignment(newOwner);
+                break;
+            case USER_GROUP:
+                reassigned = buildUserGroupReassignment(newOwner);
+            case ASSIGNTO_NOT_SET:
+        }
+        if (reassigned != null) {
+            events.add(new UserTaskEvent(reassigned, new Date()));
+        }
+    }
+
+    private UTEReassigned buildUserGroupReassignment(String newUserGroup) {
+        UTEReassigned ute = new UTEReassigned();
+        ute.setNewUserGroup(newUserGroup);
+        ute.setOldUserGroup(userGroup);
+        ute.setNewUserId(null);
+        ute.setOldUserId(userId);
+
+        assignedToType = AssignedToCase.USER_GROUP;
+        userGroup = newUserGroup;
+        specificUserId = null;
+        userId = null;
+        status = UserTaskRunStatusPb.ASSIGNED_NOT_CLAIMED;
+        return ute;
+    }
+
+    private UTEReassigned buildUserReassignment(String newUserId) {
+        UTEReassigned ute = new UTEReassigned();
+        ute.setNewUserId(newUserId);
+        ute.setOldUserId(userId);
+
+        assignedToType = AssignedToCase.SPECIFIC_USER_ID;
+        userId = newUserId;
+        specificUserId = newUserId;
+        status = UserTaskRunStatusPb.CLAIMED;
+        return ute;
     }
 
     public void processTaskCompletedEvent(CompleteUserTaskRun event) {

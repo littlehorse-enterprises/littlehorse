@@ -19,7 +19,7 @@ public class UTActionTrigger extends LHSerializable<UTActionTriggerPb> {
     public ActionCase actionType;
     public UTATask task;
     public UTACancelPb cancel;
-    public UTAReassignPb reassign;
+    public UTAReassign reassign;
 
     public ScheduleTimeCase scheduleTimeType;
     public VariableAssignment delaySeconds;
@@ -39,7 +39,7 @@ public class UTActionTrigger extends LHSerializable<UTActionTriggerPb> {
                 out.setCancel(cancel);
                 break;
             case REASSIGN:
-                out.setReassign(reassign);
+                out.setReassign(reassign.toProto());
                 break;
             case ACTION_NOT_SET:
                 throw new RuntimeException("Not possible");
@@ -61,7 +61,7 @@ public class UTActionTrigger extends LHSerializable<UTActionTriggerPb> {
                 task.schedule(dao, utr, this);
                 break;
             case REASSIGN:
-                log.warn("Unimplemented: Reassignment trigger");
+                utr.reassignTo(reassign);
                 break;
             case CANCEL:
                 log.warn("Unimplemented: Cancel trigger");
@@ -89,7 +89,8 @@ public class UTActionTrigger extends LHSerializable<UTActionTriggerPb> {
                 task = LHSerializable.fromProto(p.getTask(), UTATask.class);
                 break;
             case REASSIGN:
-                reassign = p.getReassign();
+                reassign =
+                    LHSerializable.fromProto(p.getReassign(), UTAReassign.class);
                 break;
             case CANCEL:
                 cancel = p.getCancel();
